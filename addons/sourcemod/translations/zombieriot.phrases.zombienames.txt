@@ -2648,6 +2648,10 @@
 		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
 		"ru" 	"Лидер Руины\nОна не сражается с вами с полную силу...\nОна только использует силу магического гребеня\nЕсли вы увидете эффекты на её руках,Это озночает что одно из её Комбо готово"
 	}
+	"Fractal Cannon"
+	{
+		"en"	"Fractal Cannon"
+	}
 	"Ealing"
 	{
 		"en"	"Ealing"

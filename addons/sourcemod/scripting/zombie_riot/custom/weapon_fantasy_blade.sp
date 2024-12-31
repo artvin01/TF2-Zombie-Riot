@@ -481,7 +481,7 @@ static void Create_Halo_And_Wings(int client)
 
 	int pap = i_Current_Pap[client];
 
-	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//so the wings don't intefere with one another
+	bool HasWings = MagiaWingsDo(client);
 	if(HasWings)
 	{
 		if(pap>=2)

@@ -6,6 +6,7 @@ int i_SetBannerType[MAXPLAYERS+1];
 static bool b_ClientHasAncientBanner[MAXENTITIES];
 static float b_EntityRecievedBuff[MAXENTITIES];
 static float b_EntityRecievedBuff2[MAXENTITIES];
+static bool b_EntityRecievedNonOwner[MAXENTITIES];
 Handle Timer_AncientBanner = null;
 Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
@@ -25,6 +26,7 @@ void BannerOnEntityCreated(int entity)
 {
 	b_ClientHasAncientBanner[entity] = false;
 	b_EntityRecievedBuff[entity] = 0.0;
+	b_EntityRecievedNonOwner[entity] = false;
 }
 
 enum
@@ -332,19 +334,31 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			}
 		}
 	}
+	//If it returns 1, then it means it doesnt get full benifit
+	//if it returns 2, then it gets full benifit
+	int OwnerType = 0;
 	if(ThereWasABuff)
 	{
 		for(int ally=1; ally<=MaxClients; ally++)
 		{
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
-				if(HasSpecificBuff(ally, "Ancient Banner"))
+				OwnerType = HasSpecificBuff(ally, "Ancient Banner");
+				if(OwnerType == 2)
 				{
-					ModifyEntityAncientBuff(ally, 1, 0.8, true, 1.2);
+					//clear.
+					if(b_EntityRecievedNonOwner[ally])
+						ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2, PlayerCountBuffAttackspeedScaling);
+
+					ModifyEntityAncientBuff(ally, 1, 0.8, true, 1.2, 1.01);
+				}
+				else if(OwnerType == 1)
+				{
+					ModifyEntityAncientBuff(ally, 1, 0.8, true, 1.2, PlayerCountBuffAttackspeedScaling);
 				}
 				else
 				{
-					ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2);
+					ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2, PlayerCountBuffAttackspeedScaling);
 				}
 			}
 		}
@@ -353,13 +367,22 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
-				if(HasSpecificBuff(ally, "Ancient Banner"))
+				OwnerType = HasSpecificBuff(ally, "Ancient Banner");
+				if(OwnerType == 2)
 				{
-					ModifyEntityAncientBuff(ally, 2, 0.8, true, 1.2);
+					//clear.
+					if(b_EntityRecievedNonOwner[ally])
+						ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2, PlayerCountBuffAttackspeedScaling);
+
+					ModifyEntityAncientBuff(ally, 2, 0.8, true, 1.2, 1.01);
+				}
+				else if(OwnerType == 1)
+				{
+					ModifyEntityAncientBuff(ally, 2, 0.8, true, 1.2, PlayerCountBuffAttackspeedScaling);
 				}
 				else
 				{
-					ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2);
+					ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2, PlayerCountBuffAttackspeedScaling);
 				}
 			}
 		}
@@ -370,7 +393,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 		{
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
-				ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2);
+				ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2, PlayerCountBuffAttackspeedScaling);
 			}
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
@@ -378,7 +401,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
-				ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2);
+				ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2, PlayerCountBuffAttackspeedScaling);
 			}
 		}
 		Timer_AncientBanner = null;
@@ -417,10 +440,16 @@ void BuffBattilonsActivate(int client, int weapon)
 	1: client
 	2: entity
 */
-static void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
+static void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2, float ScalingDo)
 {
-	float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, PlayerCountBuffAttackspeedScaling);
-	float BuffValueDo2 = MaxNumBuffValue(buffammount2, 1.0, PlayerCountBuffAttackspeedScaling);
+	float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, ScalingDo);
+	float BuffValueDo2 = MaxNumBuffValue(buffammount2, 1.0, ScalingDo);
+	if(GrantBuff && ScalingDo == PlayerCountBuffAttackspeedScaling) //we presume its a self buff
+		b_EntityRecievedNonOwner[entity] = true;
+	
+	if(!GrantBuff)
+		b_EntityRecievedNonOwner[entity] = false;
+
 	if(type == 1)
 	{
 		int i, weapon;

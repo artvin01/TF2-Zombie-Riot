@@ -2787,7 +2787,7 @@ int IsSilvesterTransforming(int silvester)
 		return 0;
 
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(silvester);
-	if(npc.m_flNextChargeSpecialAttack > GetGameTime())
+	if(npc.m_flNextChargeSpecialAttack > GetGameTime(npc.index))
 	{
 		return 1; //Transforming, make goggles immune to damage.
 	}

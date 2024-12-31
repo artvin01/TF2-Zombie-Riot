@@ -19,6 +19,8 @@ static bool b_overdrive_active[MAXTF2PLAYERS];
 static float fl_main_laser_distance[MAXTF2PLAYERS];
 static int i_cosmetic_effect[MAXTF2PLAYERS];
 
+static int i_WeaponGotLastmanBuff[MAXENTITIES];
+
 static float f_AniSoundSpam[MAXTF2PLAYERS];
 #define FRACTAL_KIT_SHIELDSOUND1 "weapons/rescue_ranger_charge_01.wav"
 #define FRACTAL_KIT_SHIELDSOUND2 "weapons/rescue_ranger_charge_02.wav"
@@ -29,7 +31,7 @@ static float f_AniSoundSpam[MAXTF2PLAYERS];
 #define FRACTAL_KIT_STARFALL_COST 75.0
 #define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8
 #define KRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
-#define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.25
+#define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.15
 static float fl_max_crystal_amt[MAXTF2PLAYERS];
 static float fl_current_crystal_amt[MAXTF2PLAYERS];
 
@@ -120,15 +122,27 @@ static void HaloManagment(int client, bool force = false)
 	if(IsValidEntity(halo_particle))
 		return;
 	/*
-	int viewmodelModel;
-	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	
-	if(!IsValidEntity(viewmodelModel))
-		return;
 	*/
 	if(AtEdictLimit(EDICT_PLAYER))
 	{
 		Delete_Halo(client);
+		return;
+	}
+
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+	if(MagiaWingsDo(client) && IsValidEntity(viewmodelModel))
+	{
+		// :3
+		float flPos[3];
+		GetAttachment(viewmodelModel, "head", flPos, NULL_VECTOR);
+		flPos[2] += 10.0;
+		int particle = ParticleEffectAt(flPos, "unusual_invasion_boogaloop_2", 0.0);
+		AddEntityToThirdPersonTransitMode(client, particle);
+		SetParent(viewmodelModel, particle, "head");
+		i_cosmetic_effect[client] = EntIndexToEntRef(particle);
 		return;
 	}
 
@@ -547,8 +561,6 @@ static void Kill_Animation(int client)
 	}
 	SetEntityMoveType(client, MOVETYPE_WALK);
 }
-
-
 void Activate_Fractal_Kit(int client, int weapon)
 {
 	if(h_TimerManagement[client] != null)
@@ -560,6 +572,8 @@ void Activate_Fractal_Kit(int client, int weapon)
 			//Yes?
 			if(b_cannon_animation_active[client])
 				Kill_Cannon(client);
+			
+			i_WeaponGotLastmanBuff[weapon] = false;
 			delete h_TimerManagement[client];
 			h_TimerManagement[client] = null;
 			DataPack pack;
@@ -579,6 +593,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 		if(b_cannon_animation_active[client])
 			Kill_Cannon(client);
 
+		i_WeaponGotLastmanBuff[weapon] = false;
 		PrecacheTwirlMusic();
 		DataPack pack;
 		h_TimerManagement[client] = CreateDataTimer(0.1, Timer_Weapon_Managment, pack, TIMER_REPEAT);
@@ -686,9 +701,6 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 
 	//fantasia has a very high firerate penalty, due to that I need to make sure the adjustment here compensates for that.
 	Time *= (Attributes_Get(weapon, 6, 3.0)/3.0);
-
-	if(LastMann)
-		Time *= 0.5;
 
 	fl_fantasia_true_duration[client] = Time;
 	fl_fantasia_duration[client] = GameTime + Time;
@@ -832,6 +844,7 @@ static Action Fantasia_Tick(int client)
 				Laser.Radius = fl_fantasia_radius;
 				Laser.End_Point = Previous_Loc;
 				Laser.Start_Point = endLoc;
+				Laser.Damage = fl_fantasia_damage[client];
 				Laser.Detect_Targets(OnFantasiaHit);
 			}
 		}
@@ -888,16 +901,18 @@ void Fractal_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 		}
 	}
 }
-static void OnFantasiaHit(int client, int target, int damagetype, float damage)
+static void OnFantasiaHit(int client, int target, int damagetype, float &damage)
 {
 	float GameTime = GetGameTime();
 	if(f_GlobalHitDetectionLogic[client][target] > GameTime)
 		return;
 	f_GlobalHitDetectionLogic[client][target] = GameTime + 1.0;
+
 	float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
 	fl_fantasia_targetshit[client] *= FRACTAL_KIT_FANTASIA_ONHIT_LOSS;
 	SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
-	fl_current_crystal_amt[client] += (RaidbossIgnoreBuildingsLogic(1) ? FRACTAL_KIT_FANTASIA_GAIN * 4.0 : FRACTAL_KIT_FANTASIA_GAIN);
+	
+	fl_current_crystal_amt[client] += ((b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target]) ? FRACTAL_KIT_FANTASIA_GAIN * 4.0 : FRACTAL_KIT_FANTASIA_GAIN);
 
 	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
 		fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
@@ -1192,7 +1207,7 @@ static Action Mana_Harvester_Tick(int client)
 
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0)*0.1);
-	float damage = 7.5 * Attributes_Get(weapon, 410, 1.0);
+	float damage = 7.0 * Attributes_Get(weapon, 410, 1.0);
 	if(Current_Mana[client] < mana_cost)
 	{
 		struct_Harvester_Data[client].Active = false;
@@ -1228,15 +1243,15 @@ static Action Mana_Harvester_Tick(int client)
 	//we now have every valid target within range / within line of sight, comence the harvesting!
 	int color[4]; color = Kit_Color();
 
-	bool raid = RaidbossIgnoreBuildingsLogic(1);
-
 	if(i_CurrentEquippedPerk[client] == 4)
-		mana_cost = RoundToFloor(mana_cost * 1.1);
+		mana_cost = RoundToFloor(mana_cost * 1.33);
 
 	for(int i=0 ; i < FRACTAL_HARVESTER_MAX_AMT ; i++)
 	{
 		if(!struct_Harvester_Data[client].Enumerated_Ents[i])
 			break;	//we have run out of targets, abort loop.
+
+		bool raid = b_thisNpcIsARaid[struct_Harvester_Data[client].Enumerated_Ents[i]];
 
 		int laser;
 		//"effect_hand_l"
@@ -1375,7 +1390,8 @@ public void Kit_Fractal_Primary_Cannon(int client, int weapon, bool &result, int
 		delay_hud[client] = 0.0;
 		b_cannon_animation_active[client] = true;
 		Initiate_Cannon(client, weapon);
-		//Delete_Halo(client);
+		if(MagiaWingsDo(client))
+			Delete_Halo(client);
 	}
 }
 static void Kill_Cannon(int client)
@@ -1566,6 +1582,8 @@ static void Hud(int client, int weapon)
 				//m1: mana harvester.
 				//m2: Mana Ion.
 			}
+
+			Fractal_Weapon_LastMannHandle(weapon, 6, 0.75);
 		}
 		case 3:
 		{
@@ -1578,6 +1596,8 @@ static void Hud(int client, int weapon)
 				Format(HUDText, sizeof(HUDText), "Press [M1] To Cast ĄFantasiaČ [Cost:%.0f]", FRACTAL_KIT_FANTASIA_COST);
 				//m1: fantasia
 			}
+
+			Fractal_Weapon_LastMannHandle(weapon, 6, 0.5);
 		}
 	}
 
@@ -1588,6 +1608,25 @@ static void Hud(int client, int weapon)
 
 	PrintHintText(client, HUDText);
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+}
+static void Fractal_Weapon_LastMannHandle(int weapon, int attribute, float value)
+{
+	if(LastMann)
+	{
+		if(!i_WeaponGotLastmanBuff[weapon])
+		{
+			i_WeaponGotLastmanBuff[weapon] = true;
+			Attributes_SetMulti(weapon, attribute, value);
+		}
+	}
+	else
+	{
+		if(i_WeaponGotLastmanBuff[weapon])
+		{
+			i_WeaponGotLastmanBuff[weapon] = false;
+			Attributes_SetMulti(weapon, attribute, 1 / value);
+		}
+	}
 }
 #define FRACTAL_SHIELD_YAW 45.0
 float Player_OnTakeDamage_Fractal(int victim, float &damage, float damagePosition[3], int attacker)
@@ -1827,6 +1866,8 @@ enum struct Player_Laser_Logic
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Player_Laser_BEAM_TraceUsers, this.client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 		FinishLagCompensation_Base_boss();
+
+		float Dmg = this.Damage;
 				
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
@@ -1844,7 +1885,7 @@ enum struct Player_Laser_Logic
 					Call_PushCell(this.client);
 					Call_PushCell(victim);
 					Call_PushCell(this.damagetype);
-					Call_PushFloatRef(this.Damage);
+					Call_PushFloatRef(Dmg);
 					Call_Finish();
 
 					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
@@ -1883,7 +1924,7 @@ enum struct Player_Laser_Logic
 		delete trace;
 		FinishLagCompensation_Base_boss();
 
-		float TargetHitFalloff = 1.0;
+		float Dmg = this.Damage;
 				
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
@@ -1894,12 +1935,6 @@ enum struct Player_Laser_Logic
 
 				float playerPos[3];
 				WorldSpaceCenter(victim, playerPos);
-
-				float Dmg = this.Damage;
-
-				Dmg *= TargetHitFalloff;
-
-				TargetHitFalloff *= Falloff;
 				
 				SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
@@ -1909,10 +1944,12 @@ enum struct Player_Laser_Logic
 					Call_PushCell(this.client);
 					Call_PushCell(victim);
 					Call_PushCell(this.damagetype);
-					Call_PushFloatRef(this.Damage);
+					Call_PushFloatRef(Dmg);
 					Call_Finish();
 					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
 				}
+
+				Dmg *= Falloff;
 			}
 		}
 	}

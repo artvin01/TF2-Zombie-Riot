@@ -107,6 +107,8 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 #if !defined RTS
 stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(!CheckInHud())
+		HudDamageIndicator(victim,damagetype, false);
 #if defined ZR
 	if(VIPBuilding_Active())
 		return true;
@@ -451,21 +453,22 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	NpcArmorExtra(victim, attacker, inflictor, damage, damagetype);
 	if(!CheckInHud())
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-	//Do armor.
-	if(CheckInHud())
-		return false;
-
-	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
+	
+	if(!CheckInHud())
 	{
-		if(attacker <= MaxClients && attacker > 0)
+		//Do armor.
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-			if(IsValidEntity(weapon))
-				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
-		}
+			if(attacker <= MaxClients && attacker > 0)
+			{
+				if(IsValidEntity(weapon))
+					NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+			}
 #if defined ZR
-		BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
+			BarracksUnitAttack_NPCTakeDamagePost(victim, inflictor, damage, damagetype);
 #endif
+		}
+		
 	}
 
 	return false;
@@ -576,7 +579,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker,inflictor, basedamage, damagetype);
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
-	if(attacker >= MaxClients && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0)
+	if(GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0)
 	{
 		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
 	}
@@ -591,6 +594,9 @@ stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, floa
 	if(Rogue_InItallianWrath(weapon))
 		damage *= 2.0;
 #endif
+	if(!CheckInHud())
+		HudDamageIndicator(attacker,damagetype, true);
+		
 	return false;
 }
 #endif

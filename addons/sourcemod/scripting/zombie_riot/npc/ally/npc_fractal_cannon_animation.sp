@@ -180,12 +180,12 @@ methodmap Fracatal_Kit_Animation < CClotBody
 			}
 		}
 		npc.PlayLaserStart();
-		//if(b_TwirlHairpins[client])
-		//{
-		//	float flPos[3], flAng[3];
-		//	npc.GetAttachment("head", flPos, flAng);	
-		//	npc.m_iHaloSlot = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
-		//}
+		if(MagiaWingsDo(client))
+		{
+			float flPos[3], flAng[3];
+			npc.GetAttachment("head", flPos, flAng);	
+			npc.m_iHaloSlot = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
+		}
 		npc.m_bisWalking = false;
 	
 		npc.AddActivityViaSequence("taunt_the_scaredycat_medic");

@@ -644,6 +644,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				Rogue_OnAbilityUse(weapon);
 				Yakuza_AddCharge(client, -RequiredHeat);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
+				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
 				HeatActionCooldown[client] = GetGameTime() + 0.5;
 				if(WeaponStyle[client] != Style_Dragon)
@@ -694,6 +695,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
+						f_AntiStuckPhaseThroughFirstCheck[client] = 0.0;
 						IncreaceEntityDamageTakenBy(client, 0.0001, 0.75);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
 						flMaxhealth *= 0.45;
