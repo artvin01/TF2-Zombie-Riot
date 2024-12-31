@@ -2334,6 +2334,10 @@ float GetWaveSetupCooldown()
 	return Cooldown;
 }
 
+int Waves_GetLevel()
+{
+	return WaveLevel;
+}
 
 void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 {

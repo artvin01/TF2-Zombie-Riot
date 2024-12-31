@@ -909,11 +909,11 @@ void Rogue_BattleVictory()
 
 				if(BattleIngots > 4)
 				{
-					recover = CurrentFloor > 1 ? 4 : 5;
+					recover = CurrentFloor > 1 ? 4 : 6;
 				}
 				else if(BattleIngots > 1)
 				{
-					recover = CurrentFloor > 1 ? 3 : 4;
+					recover = CurrentFloor > 1 ? 3 : 5;
 				}
 
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);

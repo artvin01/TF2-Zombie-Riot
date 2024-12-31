@@ -359,7 +359,7 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
 
 	bool BlockAnyways = false;
-	if(damagePosition[0]) //Make sure if it doesnt
+	if(!damagePosition[0]) //Make sure if it doesnt
 	{
 		if(IsValidEntity(attacker))
 		{

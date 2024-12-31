@@ -194,3 +194,38 @@ public void Rogue_Smoking_Remove()
 	Smoking = false;
 	Rogue_Refresh_Remove();
 }
+
+public void Rogue_FreeWeapon_Collect()
+{
+	Store_RandomizeNPCStore(0, 1, _, 0.0);
+}
+
+public void Rogue_StartSP1_WaveStart()
+{
+	StartSP(6.0);
+}
+
+public void Rogue_StartSP2_WaveStart()
+{
+	StartSP(12.0);
+}
+
+public void Rogue_StartSP3_WaveStart()
+{
+	StartSP(18.0);
+}
+
+static void StartSP(float amount)
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			int i, other;
+			while(TF2_GetItem(ally, other, i))
+			{
+				Saga_ChargeReduction(client, other, amount);
+			}
+		}
+	}
+}
