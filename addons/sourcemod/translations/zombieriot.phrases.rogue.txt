@@ -1800,6 +1800,10 @@
 	{
 		"en"	"Guln"
 	}
+	"Automatic Robot Defense"
+	{
+		"en"	"Automatic Robot Defense"
+	}
 	"Cursed Relic"
 	{
 		"en"	"Cursed Relic"

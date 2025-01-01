@@ -1148,6 +1148,14 @@
 	{
 		"en"	"Secret Hunter ⚠"
 	}
+	"Whiteflower Avenger's"
+	{
+		"en"	"Whiteflower Avenger's"
+	}
+	"Whiteflower Avenger's!"
+	{
+		"en"	"Whiteflower Avenger's ⚠"
+	}
 	"Barricade"
 	{
 		"en"	"Barricade"
