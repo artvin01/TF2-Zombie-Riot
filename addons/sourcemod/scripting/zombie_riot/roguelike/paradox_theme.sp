@@ -7,6 +7,7 @@ static bool RedMoon;
 static bool StartEasyMode;
 static bool StartLastman;
 static bool ForceNextHunter;
+
 static Handle FrostTimer;
 static ArrayList WinterTheme;
 
@@ -16,6 +17,7 @@ public float Rogue_Encounter_ForcedHunterBattle()
 	Rogue_SetBattleIngots(4 + (Rogue_GetRound() / 2));
 	return 0.0;
 }
+
 
 bool Rogue_Paradox_IgnoreOdds()
 {
