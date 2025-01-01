@@ -80,14 +80,14 @@ static const char g_AngerSounds[][] = {
 	also some names are just uhh. pending.
 	also also, some probably won't make it in. probably.
 
-	1 - Spiral Fracture:
+	1 - Spiral Fracture: - likely no.
 		Stand in spot. do anim.
 		300~ HU's in 8 directions walls appear. touching said wall will kill you.
 		the walls spin.
 
 		Within 300 HU's players would be safe.
 
-	2 - XX?
+	2 - XX?				- will do
 		
 		Fire off projectiles in 16 directions.
 		These projectiles slowdown slowly.
@@ -103,7 +103,7 @@ static const char g_AngerSounds[][] = {
 		once lasers become thick and deal dmg, move normally
 
 	//say happens on 90-75% hp?
-	3 - Chaos CONTROL (actual name pending.)
+	3 - Chaos CONTROL (actual name pending.) - will do
 		3 special points on the map appears using pre set vectors.
 		Magia anchors spawn. chaos affected model smth like that.
 		And a countdown begins.
@@ -135,7 +135,7 @@ static const char g_AngerSounds[][] = {
 		4.2 Does Anim. big blade. it spawns forward of the npc. then after a few seconds it spins a few times around the npc very fast dealing dmg to anyone caught in the blades AOE
 
 
-	5 - Frame-Shift-Cannon:
+	5 - Frame-Shift-Cannon: - dunno
 		Does anim, long charge up.
 		Unleashes a fucking DEATH BEAM.
 		anything caught in up in it just dies.
@@ -144,13 +144,13 @@ static const char g_AngerSounds[][] = {
 
 		Forward facing.
 
-	6 - Stellarararar
+	6 - Stellarararar - dunno
 		happens at around 25% hp.
 
 		A massive stellar weaver is summoned at the center of the arena. it cannot take damage, its simply a threat that exists.
 		best you can do is distract it.
 
-	7 - Crystal Shield:
+	7 - Crystal Shield: - will do
 		Creates 3 crystals that spin around the boss.
 		While active each shield gives 25% dmg resist.
 		Each crystal has its own health pool.
@@ -166,7 +166,7 @@ static const char g_AngerSounds[][] = {
 			but they also only start blocking 10% dmg.
 
 	
-	8 - Crystal Teleport
+	8 - Crystal Teleport - na
 		Spawns 16 crystals.
 		these crystals randomly teleport from the npc. for X amount of times.
 		A beam of light at each crystal is created into the sky.
@@ -174,7 +174,7 @@ static const char g_AngerSounds[][] = {
 		While active the boss gets battery.
 		idk what else they could do.
 
-	9 - Infinity Laser Works (get it?)
+	9 - Infinity Laser Works (get it?) - maybe.
 		Does anim. floats up.
 		Several portals or somethingl ike that appears behind the npc in a circle/pattern.
 
@@ -193,7 +193,11 @@ static const char g_AngerSounds[][] = {
 */
 
 #define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
+#define LELOUCH_CRYSTAL_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl"
 
+#define LELOUCH_CRYSTAL_SHIELD_STRENGTH 0.1	//How much res each crystal gives. eg: 4 crystals alive, each does 0.1, total res is 40%
+
+static bool b_crystals_active[MAXENTITIES];
 static bool b_animation_set[MAXENTITIES];
 static bool b_test_mode[MAXENTITIES];
 
@@ -228,7 +232,7 @@ static void ClotPrecache()
 	Zero(b_animation_set);
 
 	PrecacheModel(LELOUCH_BLADE_MODEL, true);
-
+	PrecacheModel(LELOUCH_CRYSTAL_MODEL, true);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, char[] data)
 {
@@ -324,11 +328,46 @@ methodmap Lelouch < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flCrystalCoolDownTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	public char[] GetName()
 	{
 		char Name[255];
 		Format(Name, sizeof(Name), "%s%s%s:", NameColour, c_NpcName[this.index], TextColour);
 		return Name;
+	}
+	public void RangedArmour(float value)
+	{
+		int crystals = i_Alive_Crystals(this);
+		if(crystals>0)
+			value -= (crystals*LELOUCH_CRYSTAL_SHIELD_STRENGTH);
+
+		float GameTime = GetGameTime(this.index);
+		if(this.m_flDoingAnimation > GameTime)
+			value *=0.75;
+
+		if(value <= 0.05)
+			value = 0.05;
+
+		this.m_flRangedArmor = value;
+	}
+	public void MeleeArmour(float value)
+	{
+		int crystals = i_Alive_Crystals(this);
+		if(crystals>0)
+			value -= (crystals*LELOUCH_CRYSTAL_SHIELD_STRENGTH);
+
+		float GameTime = GetGameTime(this.index);
+		if(this.m_flDoingAnimation > GameTime)
+			value *=0.75;
+
+		if(value <= 0.05)
+			value = 0.05;
+
+		this.m_flMeleeArmor = value;
 	}
 
 	public Lelouch(float vecPos[3], float vecAng[3], int ally, char[] data)
@@ -349,6 +388,9 @@ methodmap Lelouch < CClotBody
 		c_NpcName[npc.index] = "Lelouch";	//Lelouch Vi Britania.
 
 		npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + 1.0; //GetRandomFloat(15.0, 30.0);
+
+		b_crystals_active[npc.index] = false;
+		npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 2.0;
 		
 		
 		/*
@@ -412,8 +454,17 @@ methodmap Lelouch < CClotBody
 		npc.Anger = false;
 		b_animation_set[npc.index] = false;
 
-		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 15);
+		Ruina_Set_Overlord(npc.index, true);
+
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeScaling = 8008.5;
+			RaidAllowsBuildings = true;
+		}
 
 		return npc;
 	}
@@ -445,6 +496,11 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	npc.RangedArmour(1.0);
+	npc.MeleeArmour(1.5);
+
+	Crystal_Passive_Logic(npc);
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
@@ -454,6 +510,9 @@ static void ClotThink(int iNPC)
 
 	if(Blade_Logic(npc))
 		return;
+
+	//beloved ruinian crystals.
+	Create_Crystal_Shields(npc);
 
 	npc.AdjustWalkCycle();
 
@@ -508,6 +567,125 @@ static void ClotThink(int iNPC)
 
 	npc.PlayIdleAlertSound();
 }
+//Crystal Logic
+#define LELOUCH_MAX_CRYSTALS 5
+enum struct Crystal_Data
+{
+	int index;
+
+	int Create(Lelouch npc, float Loc[3], int Health)
+	{
+		int Crystal = i_CreateManipulation(npc, Loc, {0.0,0.0,0.0}, LELOUCH_CRYSTAL_MODEL, Health, 1.0);
+		if(!IsValidEntity(Crystal))
+			return -1;
+
+		this.index = EntRefToEntIndex(Crystal);
+
+		return Crystal;
+	}
+	bool Valid()
+	{
+		int Crystal = EntRefToEntIndex(this.index);
+		if(!IsValidEntity(Crystal))
+			return false;
+
+		return true;
+	}
+	void Move(float Loc[3], float Angles[3])
+	{
+		if(!this.Valid())
+			return;
+		int Crystal = EntRefToEntIndex(this.index);
+		Manipulation npc = view_as<Manipulation>(Crystal);
+		TeleportEntity(npc.index, Loc, Angles);
+		npc.SetVelocity({0.0,0.0,0.0});
+	}
+	void Kill()
+	{
+		Kill_Manipulation(this.index);
+	}
+}
+static Crystal_Data struct_Crystals[MAXENTITIES][LELOUCH_MAX_CRYSTALS];
+
+static float fl_crystal_angles[MAXENTITIES];
+static bool Create_Crystal_Shields(Lelouch npc)
+{
+	if(b_crystals_active[npc.index])
+		return false;
+
+	if(npc.m_flBladeCoolDownTimer > GetGameTime(npc.index))
+		return false;
+
+	for(int i= 0 ; i < LELOUCH_MAX_CRYSTALS ; i++)
+	{
+		struct_Crystals[npc.index][i].Kill();
+	}
+	
+	int Health = ReturnEntityMaxHealth(npc.index);
+		Health = RoundToFloor(Health*0.05);
+
+	b_crystals_active[npc.index] = true;
+	for(int i= 0 ; i < LELOUCH_MAX_CRYSTALS ; i++)
+	{
+		float Angles[3];
+		Angles[0] = 0.0;
+		Angles[1] = 360.0/LELOUCH_MAX_CRYSTALS*i;
+		Angles[2] = 0.0;
+		float Origin[3]; GetAbsOrigin(npc.index, Origin); Origin[2]+=50.0;
+		Get_Fake_Forward_Vec(150.0, Angles, Origin, Origin);
+		
+		struct_Crystals[npc.index][i].Create(npc, Origin, Health);
+	}
+
+	return true;
+}
+static void Crystal_Passive_Logic(Lelouch npc)
+{
+	if(!b_crystals_active[npc.index])
+		return;
+
+	npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + 60.0;
+	if(fl_crystal_angles[npc.index] > 360.0)
+		fl_crystal_angles[npc.index] -=360.0;
+	
+	fl_crystal_angles[npc.index] += 2.5;
+
+	int loop_for = i_Alive_Crystals(npc);
+	//crystal count is 0, which means that either all the crystals have been killed, or the crystals have been deleted, either way, abort.
+	if(loop_for<= 0)
+	{
+		b_crystals_active[npc.index] = false;
+		return;
+	}
+	for(int i= 0 ; i < loop_for ; i++)
+	{
+		float Angles[3];
+		Angles[0] = 0.0;
+		Angles[1] = fl_crystal_angles[npc.index] + 360.0/loop_for*i;
+		Angles[2] = 0.0;
+		float Origin[3]; GetAbsOrigin(npc.index, Origin); Origin[2]+=50.0;
+		float Offset_Loc[3];
+		Get_Fake_Forward_Vec(150.0, Angles, Offset_Loc, Origin);
+		float Crystal_Angles[3];
+		MakeVectorFromPoints(Origin, Offset_Loc, Crystal_Angles);
+		GetVectorAngles(Crystal_Angles, Crystal_Angles);
+		
+		struct_Crystals[npc.index][i].Move(Offset_Loc, Crystal_Angles);
+	}
+
+
+}
+static int i_Alive_Crystals(Lelouch npc)
+{
+	int count = 0;
+	for(int i= 0 ; i < LELOUCH_MAX_CRYSTALS ; i++)
+	{
+		if(struct_Crystals[npc.index][i].Valid())
+			count++;
+	}
+	return count;
+}
+
 // Blade Logic
 static int i_BladeLogic[MAXENTITIES];
 static float fl_BladeLogic_Duration[2];
@@ -547,7 +725,7 @@ static bool Blade_Logic(Lelouch npc)
 		//do giant sword swing forward.
 		float Angles[3]; Angles = GetNPCAngles(npc.index);
 		int Health = ReturnEntityMaxHealth(npc.index);
-		Health = RoundToFloor(Health*0.1);
+		Health = RoundToFloor(Health*0.05);
 		float Loc[3]; GetAbsOrigin(npc.index, Loc); 
 		Loc[2]+=150.0;	//make it spawn a bit up 
 		Angles[0] = 90.0;	//make it pitched.
@@ -969,6 +1147,14 @@ static void NPC_Death(int entity)
 	}
 	
 	Ruina_NPCDeath_Override(entity);
+
+	if(npc.index==EntRefToEntIndex(RaidBossActive))
+		RaidBossActive=INVALID_ENT_REFERENCE;
+
+	for(int i= 0 ; i < LELOUCH_MAX_CRYSTALS ; i++)
+	{
+		struct_Crystals[npc.index][i].Kill();
+	}
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
