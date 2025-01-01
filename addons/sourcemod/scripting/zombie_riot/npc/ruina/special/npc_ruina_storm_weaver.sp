@@ -344,6 +344,7 @@ methodmap Storm_Weaver < CClotBody
 		b_IgnoreAllCollisionNPC[npc.index]=true;
 		//b_ForceCollisionWithProjectile[npc.index]=true;
 
+		npc.m_bDissapearOnDeath = true;
 		b_stellar_weaver_allow_attack[npc.index] = false;
 		
 		return npc;
@@ -709,7 +710,6 @@ static void ClotThink(int iNPC)
 
 	if(!IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)) && fl_special_invuln_timer[npc.index] < GameTime)
 	{
-		npc.m_bDissapearOnDeath = true;	
 		//CPrintToChatAll("death cause no hp.");
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		func_NPCThink[npc.index] = INVALID_FUNCTION;

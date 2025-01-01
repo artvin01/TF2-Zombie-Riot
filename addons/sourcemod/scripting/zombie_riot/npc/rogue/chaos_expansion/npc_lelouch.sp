@@ -66,6 +66,15 @@ static const char g_AngerSounds[][] = {
 		Blade Slam Done!
 		Blade Spin Done!
 
+	Crystals:
+		Basic crystal operation Done.
+		Make crystal Spin laser.
+		Port over ability 8 into one of the laser mods.
+		Add a cool animation for when the crystals get summoned, something akin to what karlas does. it looks cool.
+			- disco_fever
+			
+			maybe whenever you kill all the crystals he does an anim: taunt_commending_clap_spy
+
 	Base Model: Spy
 
 	Theme: https://www.youtube.com/watch?v=lwoG7Cg1f5I
@@ -165,16 +174,7 @@ static const char g_AngerSounds[][] = {
 			The crystals start shooting the target the npc is attacking. they also move slightly upward.
 			but they also only start blocking 10% dmg.
 
-	
-	8 - Crystal Teleport - na
-		Spawns 16 crystals.
-		these crystals randomly teleport from the npc. for X amount of times.
-		A beam of light at each crystal is created into the sky.
-
-		While active the boss gets battery.
-		idk what else they could do.
-
-	9 - Infinity Laser Works (get it?) - maybe.
+	8 - Infinity Laser Works (get it?) - maybe.
 		Does anim. floats up.
 		Several portals or somethingl ike that appears behind the npc in a circle/pattern.
 
@@ -575,9 +575,11 @@ enum struct Crystal_Data
 
 	int Create(Lelouch npc, float Loc[3], int Health)
 	{
-		int Crystal = i_CreateManipulation(npc, Loc, {0.0,0.0,0.0}, LELOUCH_CRYSTAL_MODEL, Health, 1.0);
+		int Crystal = i_CreateManipulation(npc, Loc, {0.0,0.0,0.0}, LELOUCH_CRYSTAL_MODEL, Health, 3.0);
 		if(!IsValidEntity(Crystal))
 			return -1;
+
+		c_NpcName[Crystal] = "Lelouch Crystal";
 
 		this.index = EntRefToEntIndex(Crystal);
 
@@ -589,16 +591,58 @@ enum struct Crystal_Data
 		if(!IsValidEntity(Crystal))
 			return false;
 
+		if(b_NpcHasDied[Crystal])
+			return false;
+
 		return true;
 	}
 	void Move(float Loc[3], float Angles[3])
 	{
 		if(!this.Valid())
 			return;
+
 		int Crystal = EntRefToEntIndex(this.index);
+
+		float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
+	
+		GetEntPropVector(Crystal, Prop_Send, "m_vecOrigin", Entity_Loc);
+		
+		MakeVectorFromPoints(Entity_Loc, Loc, vecView);
+		GetVectorAngles(vecView, vecView);
+		
+		float dist = GetVectorDistance(Entity_Loc, Loc);
+
+		if(dist > 500.0)
+		{
+			//target location unusually far, assume it got stuck, and thus teleport to the target location.
+			f_StuckOutOfBoundsCheck[Crystal] = GetGameTime() + 5.0;	//alongside that give it a bit of "noclip"
+			TeleportEntity(Crystal, Loc, Angles);
+			return;
+		}
+
+		GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+
+		Entity_Loc[0]+=vecFwd[0] * dist;
+		Entity_Loc[1]+=vecFwd[1] * dist;
+		Entity_Loc[2]+=vecFwd[2] * dist;
+		
+		GetEntPropVector(Crystal, Prop_Send, "m_vecOrigin", vecFwd);
+		
+		SubtractVectors(Entity_Loc, vecFwd, vecVel);
+		ScaleVector(vecVel, 10.0);
+
+		TeleportEntity(Crystal, NULL_VECTOR, Angles, NULL_VECTOR);
 		Manipulation npc = view_as<Manipulation>(Crystal);
-		TeleportEntity(npc.index, Loc, Angles);
-		npc.SetVelocity({0.0,0.0,0.0});
+		npc.SetVelocity(vecVel);
+
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 5.0);
+
+		if(npc.IsOnGround())
+		{
+			GetEntPropVector(Crystal, Prop_Send, "m_vecOrigin", Entity_Loc);
+			Entity_Loc[2] += 50.0;
+			PluginBot_Jump(npc.index, Entity_Loc);
+		}
 	}
 	void Kill()
 	{
@@ -613,7 +657,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	if(b_crystals_active[npc.index])
 		return false;
 
-	if(npc.m_flBladeCoolDownTimer > GetGameTime(npc.index))
+	if(npc.m_flCrystalCoolDownTimer > GetGameTime(npc.index))
 		return false;
 
 	for(int i= 0 ; i < LELOUCH_MAX_CRYSTALS ; i++)
@@ -632,10 +676,12 @@ static bool Create_Crystal_Shields(Lelouch npc)
 		Angles[1] = 360.0/LELOUCH_MAX_CRYSTALS*i;
 		Angles[2] = 0.0;
 		float Origin[3]; GetAbsOrigin(npc.index, Origin); Origin[2]+=50.0;
-		Get_Fake_Forward_Vec(150.0, Angles, Origin, Origin);
+		Get_Fake_Forward_Vec(245.0, Angles, Origin, Origin);
 		
 		struct_Crystals[npc.index][i].Create(npc, Origin, Health);
 	}
+
+	npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 20.0;
 
 	return true;
 }
@@ -648,16 +694,29 @@ static void Crystal_Passive_Logic(Lelouch npc)
 	if(fl_crystal_angles[npc.index] > 360.0)
 		fl_crystal_angles[npc.index] -=360.0;
 	
-	fl_crystal_angles[npc.index] += 2.5;
+	fl_crystal_angles[npc.index] += 10.0;
 
 	int loop_for = i_Alive_Crystals(npc);
 	//crystal count is 0, which means that either all the crystals have been killed, or the crystals have been deleted, either way, abort.
 	if(loop_for<= 0)
 	{
+		Lelouch_Lines(npc, "My absolute defence field, how dare you destroy it!");
 		b_crystals_active[npc.index] = false;
 		return;
 	}
-	for(int i= 0 ; i < loop_for ; i++)
+	//re order our struct into a different struct to move the ents.
+	Crystal_Data total_crystals[LELOUCH_MAX_CRYSTALS];
+	int crystal_loop = 0;
+	for(int i= 0 ; i < LELOUCH_MAX_CRYSTALS ; i++)
+	{
+		if(struct_Crystals[npc.index][i].Valid())
+		{
+			total_crystals[crystal_loop] = struct_Crystals[npc.index][i];
+			crystal_loop++;
+		}
+	}
+
+	for(int i=0 ; i < loop_for; i++)
 	{
 		float Angles[3];
 		Angles[0] = 0.0;
@@ -665,15 +724,15 @@ static void Crystal_Passive_Logic(Lelouch npc)
 		Angles[2] = 0.0;
 		float Origin[3]; GetAbsOrigin(npc.index, Origin); Origin[2]+=50.0;
 		float Offset_Loc[3];
-		Get_Fake_Forward_Vec(150.0, Angles, Offset_Loc, Origin);
+		Get_Fake_Forward_Vec(245.0, Angles, Offset_Loc, Origin);
 		float Crystal_Angles[3];
 		MakeVectorFromPoints(Origin, Offset_Loc, Crystal_Angles);
 		GetVectorAngles(Crystal_Angles, Crystal_Angles);
 		
-		struct_Crystals[npc.index][i].Move(Offset_Loc, Crystal_Angles);
+		total_crystals[i].Move(Offset_Loc, Crystal_Angles);
 	}
 
-
+	npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 120.0;
 }
 static int i_Alive_Crystals(Lelouch npc)
 {
@@ -868,7 +927,7 @@ static void BladeLogic_Tick(int iNPC)
 			Laser.client = npc.index;			//whose using the laser?
 			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
 			Laser.End_Point = Final_Vec;		//where does the laser end?
-			Laser.Damage = 100.0;				//how much dmg should it do?		//100.0*RaidModeScaling
+			Laser.Damage = Modify_Damage(-1, 100.0);				//how much dmg should it do?		//100.0*RaidModeScaling
 			Laser.Bonus_Damage = 500.0;			//dmg vs things that should take bonus dmg.
 			Laser.damagetype = DMG_PLASMA;		//dmg type.
 			Laser.Radius = 25.0;				//how big the radius is / hull.
@@ -908,8 +967,8 @@ static void BladeLogic_Tick(int iNPC)
 			Laser.client = npc.index;			//whose using the laser?
 			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
 			Laser.End_Point = Blade_Origin;		//where does the laser end?
-			Laser.Damage = 100.0;				//how much dmg should it do?		//100.0*RaidModeScaling
-			Laser.Bonus_Damage = 500.0;			//dmg vs things that should take bonus dmg.
+			Laser.Damage = Modify_Damage(-1, 100.0);				//how much dmg should it do?		//100.0*RaidModeScaling
+			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 100.0);			//dmg vs things that should take bonus dmg.
 			Laser.damagetype = DMG_PLASMA;		//dmg type.
 			Laser.Radius = 25.0;				//how big the radius is / hull.
 			Laser.Deal_Damage();				//and now we kill
@@ -921,8 +980,6 @@ static void BladeLogic_Tick(int iNPC)
 			i_BladeLogic[npc.index] = -1;
 		}
 	}
-
-	//todo: blade SPIN logic.
 }
 
 //Usefull stuff.
@@ -1073,17 +1130,16 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	AddVectors(Pos, Direction, Vec_Target);
 }
 
-/*
-static float Modify_Damage(Lelouch npc, int Target, float damage)
+
+static float Modify_Damage(int Target, float damage)
 {
+	damage *=RaidModeScaling;
+
+	if(!IsValidEntity(Target))
+		return damage;
+
 	if(ShouldNpcDealBonusDamage(Target))
 		damage*=10.0;
-
-	//if(NpcStats_IsEnemySilenced(npc.index))
-	//	damage *=0.5;
-
-	//if(npc.Anger)
-	//	damage *=1.3;
 
 	if(Target > MaxClients)
 		return damage;
@@ -1102,7 +1158,7 @@ static float Modify_Damage(Lelouch npc, int Target, float damage)
 		damage *= 1.7;
 
 	return damage;
-}*/
+}
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 

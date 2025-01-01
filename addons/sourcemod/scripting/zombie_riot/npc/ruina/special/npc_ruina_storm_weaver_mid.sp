@@ -94,6 +94,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 		b_DoNotUnStuck[npc.index] = true;
 
+		npc.m_bDissapearOnDeath = true;
 		b_NoKnockbackFromSources[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -161,7 +162,6 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_bDissapearOnDeath = true;	
 		//CPrintToChatAll("death cause no hp.");
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		func_NPCThink[npc.index] = INVALID_FUNCTION;

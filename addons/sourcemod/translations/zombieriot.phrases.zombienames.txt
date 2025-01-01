@@ -2650,7 +2650,11 @@
 	}
 	"Lelouch Blade"
 	{
-		"en"	"Lelouch Blade"
+		"en"	"Lelouch's Blade"
+	}
+	"Lelouch Crystal"
+	{
+		"en"	"Lelouch's Crystal"
 	}
 	"Lelouch"
 	{

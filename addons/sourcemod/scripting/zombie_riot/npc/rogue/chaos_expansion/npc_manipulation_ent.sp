@@ -62,6 +62,8 @@ methodmap Manipulation < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 
 		b_NoGravity[npc.index] = true;
+
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.Anger = false;
 
@@ -81,7 +83,6 @@ static void ClotThink(int iNPC)
 	//our state has been set to invalid, kill.
 	if(npc.m_iState == -1)
 	{
-		npc.m_bDissapearOnDeath = true;	
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		npc.m_iState = 0;
@@ -148,10 +149,10 @@ static void NPC_Death(int entity)
 	
 	Ruina_NPCDeath_Override(entity);
 		
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
