@@ -44,9 +44,9 @@ void SeabornCaster_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornCaster(vecPos, vecAng, team);
+	return SeabornCaster(vecPos, vecAng, team, data);
 }
 
 methodmap SeabornCaster < CClotBody
@@ -72,7 +72,7 @@ methodmap SeabornCaster < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornCaster(float vecPos[3], float vecAng[3], int ally)
+	public SeabornCaster(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeabornCaster npc = view_as<SeabornCaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally, false));
 
@@ -97,8 +97,6 @@ methodmap SeabornCaster < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flRangedArmor = 0.8;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("0.7");
@@ -107,9 +105,18 @@ methodmap SeabornCaster < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/all_class/trn_wiz_hat_spy.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+		if(!StrContains(data, "normal"))
+		{
+			npc.m_iBleedType = BLEEDTYPE_NORMAL;
+			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+		}
 
 		return npc;
 	}

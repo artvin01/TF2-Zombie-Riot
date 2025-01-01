@@ -58,9 +58,9 @@ void SeabornVanguard_Precache()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornVanguard(vecPos, vecAng, team);
+	return SeabornVanguard(vecPos, vecAng, team, data);
 }
 
 methodmap SeabornVanguard < CClotBody
@@ -90,7 +90,7 @@ methodmap SeabornVanguard < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornVanguard(float vecPos[3], float vecAng[3], int ally)
+	public SeabornVanguard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeabornVanguard npc = view_as<SeabornVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "35000", ally, false));
 
@@ -114,8 +114,6 @@ methodmap SeabornVanguard < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 		SetVariantString("1.15");
@@ -125,15 +123,25 @@ methodmap SeabornVanguard < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/demo/demo_shogun_kabuto/demo_shogun_kabuto.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
+		if(!StrContains(data, "normal"))
+		{
+			npc.m_iBleedType = BLEEDTYPE_NORMAL;
+			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
+		}
 
 		SpeedCache = 0.0;
 
