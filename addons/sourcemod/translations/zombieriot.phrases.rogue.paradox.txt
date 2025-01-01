@@ -1084,6 +1084,14 @@
 	{
 		"en"	"Scout Rush ⚠"
 	}
+	"False Information"
+	{
+		"en"	"False Information"
+	}
+	"False Information!"
+	{
+		"en"	"False Information ⚠"
+	}
 	"Jumping Jacks"
 	{
 		"en"	"Jumping Jacks"
