@@ -3402,6 +3402,10 @@
 		"en"	"Victorian Signaller"
 		"ko"	"빅토리아 전령병"
 	}
+	"Chaos Affecteed Signaller"
+	{
+		"en"	"Chaos Affecteed Signaller"
+	}
 	"Humbee"
 	{
 		"en"	"Irongate Humbee"
@@ -3491,6 +3495,10 @@
 	{
 		"en"	"Trooper  Assulter"
 		"ko"	"트루퍼 보병"
+	}
+	"Cyborg Assulter"
+	{
+		"en"	"Cyborg Assulter"
 	}
 	"Anti-Armor Infantry"
 	{
