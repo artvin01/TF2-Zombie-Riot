@@ -3810,4 +3810,8 @@
 	{
 		"en"	"Major Voided"
 	}
+	"Chaos Evil Demon"
+	{
+		"en"	"Chaos Evil Demon"
+	}
 }
