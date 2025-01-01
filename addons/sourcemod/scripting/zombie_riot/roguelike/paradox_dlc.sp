@@ -217,7 +217,8 @@ public void Rogue_StartSP3_WaveStart()
 
 static void StartSP(float amount)
 {
-	for(int client = 1; client <= MaxClients; client++)
+	int please_fix_me;
+	/*for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
@@ -227,5 +228,5 @@ static void StartSP(float amount)
 				Saga_ChargeReduction(client, other, amount);
 			}
 		}
-	}
+	}*/
 }
