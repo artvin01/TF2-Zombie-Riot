@@ -208,19 +208,24 @@ methodmap LostKnight < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
+		float flPos[3], flAng[3];
+		npc.GetAttachment("head", flPos, flAng);
+		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,-5.0,-10.0});
+		npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,5.0,-15.0});
+
 		LastSpawnDiversio = GetGameTime() + 5.0;
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 1000.0);
 		switch(Decicion)
 		{
 			case 2:
 			{
-				Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 500.0);
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 3000.0, 500.0);
 				if(Decicion == 2)
 				{
-					Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 250.0);
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 3000.0, 250.0);
 					if(Decicion == 2)
 					{
-						Decicion = TeleportDiversioToRandLocation(npc.index, true, 2500.0, 0.0);
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 3000.0, 0.0);
 					}
 				}
 			}
@@ -317,9 +322,15 @@ public void LostKnight_ClotThink(int iNPC)
 	float DurationGive = 9999.0;
 	for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 	{
-		ApplyStatusEffect(npc.index, entitycount, "Combine Command", DurationGive);
-		ApplyStatusEffect(npc.index, entitycount, "Buff Banner", DurationGive);
-		ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", DurationGive);
+		if(IsValidEntity(entitycount) && entitycount != npc.index)
+		{
+			if(GetTeam(npc.index) == GetTeam(entitycount))
+			{
+				ApplyStatusEffect(npc.index, entitycount, "Combine Command", DurationGive);
+				ApplyStatusEffect(npc.index, entitycount, "Buff Banner", DurationGive);
+				ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", DurationGive);
+			}
+		}
 	}
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -501,6 +512,10 @@ public void LostKnight_NPCDeath(int entity)
 		FogEntity = INVALID_ENT_REFERENCE;
 	}
 		
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable1))

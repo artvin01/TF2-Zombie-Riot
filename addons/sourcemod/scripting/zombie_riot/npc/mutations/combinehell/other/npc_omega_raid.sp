@@ -292,7 +292,7 @@ methodmap OmegaRaid < CClotBody
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
 				ShowGameText(client_check, "item_armor", 1, "%s", "Omega shows up");
-				switch(GetRandomInt(0,2))
+				/*switch(GetRandomInt(0,2))
 				{
 				case 0:
 					CPrintToChatAll("{gold}Omega{default}: Fuck this, I don't need my weapons to dispose of you.", text);
@@ -300,7 +300,7 @@ methodmap OmegaRaid < CClotBody
 					CPrintToChatAll("{gold}Omega{default}: We meet once again.", text);
 				case 2:
 					CPrintToChatAll("{gold}Omega{default}: A lot of dead bodies on the way here.", text);
-				}
+				}*/
 			}
 		}
 		
@@ -340,7 +340,7 @@ methodmap OmegaRaid < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 310.0;
+		npc.m_flSpeed = 270.0;
 		npc.Anger = false;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 				
@@ -433,7 +433,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 					npc.FaceTowards(VecEnemy, 150.0);
 					//NemalAirSlice(npc.index, TargetEnemy, DamageCalc, 215, 150, 0, 200.0, 6, 1750.0, "rockettrail_fire");
 					npc.PlayRangedSound();
-					npc.FireRocket(vecTarget, DamageCalc, 1500.0, "models/weapons/w_missile.mdl", 1.75);
+					npc.FireRocket(vecTarget, DamageCalc, 1000.0, "models/weapons/w_missile.mdl", 1.75);
 				}
 			}
 		}

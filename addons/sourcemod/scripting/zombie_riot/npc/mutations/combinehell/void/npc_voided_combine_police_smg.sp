@@ -186,7 +186,7 @@ methodmap VoidCombinePoliceSmg < CClotBody
 
 		npc.m_fbGunout = false;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		

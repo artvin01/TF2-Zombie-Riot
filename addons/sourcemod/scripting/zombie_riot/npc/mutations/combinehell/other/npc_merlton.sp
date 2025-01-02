@@ -38,7 +38,7 @@ static char g_AngerSound[][] = {
 	"npc/dog/dog_on_dropship.wav",
 };
 
-static bool b_Boss_Minion[MAXENTITIES];
+//static bool b_Boss_Minion[MAXENTITIES];
 static int i_Data;
 void Merlton_Boss_OnMapStart_NPC()
 {
@@ -100,7 +100,14 @@ methodmap Merlton_Boss < CClotBody
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], _, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if(this.m_fbGunout)
+		{
+			EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		}
+		else
+		{
+			EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], _, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		}
 	}
 	public void PlayMeleeSound()
 	{
@@ -139,7 +146,8 @@ methodmap Merlton_Boss < CClotBody
 		npc.m_fbGunout = clone ? true : false;
 		npc.Anger = clone ? true : false;
 
-		b_Boss_Minion[npc.index] = clone ? true : false;
+		//b_Boss_Minion[npc.index] = false;
+		Is_a_Medic[npc.index] = true;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.i_Cant_Find_Allies = 0;
@@ -162,6 +170,17 @@ methodmap Merlton_Boss < CClotBody
 		{
 			npc.PlayHeIsAwake();
 			npc.fl_Spawn_Minions = GetGameTime(npc.index) + 10.0;
+		}
+		else
+		{
+			//b_Boss_Minion[npc.index] = true;
+			Is_a_Medic[npc.index] = true;
+		}
+
+		if(StrContains(data, "enraged") != -1)
+		{
+			npc.Anger = true;
+			npc.PlayAngerSound();
 		}
 		
 		return npc;
@@ -214,7 +233,7 @@ static void Merlton_Boss_ClotThink(int iNPC)
 			Annonce_Spawn(npc, 3);//yes ik i took it off my npc
 		}
 
-		if(IsValidAlly(npc.index, closest))
+		if(IsValidAlly(npc.index, closest) /*&& Merlton_IsNotMyClone(npc.index, closest)*/)
 		{
 			NPC_SetGoalEntity(npc.index, closest);
 			float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
@@ -223,6 +242,7 @@ static void Merlton_Boss_ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecLook, true);
 			if(flDistanceToTarget < 250000)
 			{
+				
 				if(flDistanceToTarget < 62500)
 				{
 					NPC_StopPathing(npc.index);
@@ -247,10 +267,14 @@ static void Merlton_Boss_ClotThink(int iNPC)
 				}
 			}
 		}
+		/*else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+		}*/
 
 		if(npc.m_flGetClosestTargetTime < gameTime)
 		{
-			npc.m_iTargetAlly = GetClosestAlly(npc.index, _, _, Merlton_IsNotMyClone);
+			npc.m_iTargetAlly = GetClosestAlly(npc.index);
 			npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 			
 			if(npc.m_iTargetAlly <= 0)//No valid allies, anger mode.
@@ -312,14 +336,15 @@ static void Merlton_Boss_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
+/*
 static bool Merlton_IsNotMyClone(int provider, int entity)
 {
-	if(!b_Boss_Minion[entity])
+	if(b_Boss_Minion[entity])
 	{
-		return true;
+		return false;
 	}
-	return false;
-}
+	return true;
+}*/
 
 public Action Merlton_Boss_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -350,7 +375,7 @@ public void Merlton_Boss_NPCDeath(int entity)
 
 	npc.PlayDeathSound();
 
-	b_Boss_Minion[npc.index] = false;
+	//b_Boss_Minion[npc.index] = false;
 }
 
 void Merlton_SelfDefense(Merlton_Boss npc, float gameTime, int target, float distance)
@@ -379,8 +404,8 @@ void Merlton_SelfDefense(Merlton_Boss npc, float gameTime, int target, float dis
 					float damageDealt = npc.m_fbGunout ? 65.0 : 120.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.0;
-					
-					if(npc.Anger)
+
+					if(npc.Anger && !npc.m_fbGunout)
 					{
 						float explosivedmg = 80.0, radius = 160.0;
 						Explode_Logic_Custom(explosivedmg, npc.index, npc.index, -1, _, radius, _, _, true);
@@ -436,7 +461,7 @@ static void Annonce_Spawn(Merlton_Boss npc, int amount = 1)
 {
 	Enemy enemy;
 	enemy.Index = i_Data;//NPC_GetByPlugin("npc_annonce_brawl");
-	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/6;
+	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/16;
 	if(health != 0)
 	{
 		enemy.Health = health;
