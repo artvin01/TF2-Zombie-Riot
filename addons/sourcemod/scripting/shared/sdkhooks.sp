@@ -1306,9 +1306,9 @@ public void OnPostThink(int client)
 				//matrix
 				case 4:
 				{
-					red = 0;
-					green = 200;
-					blue = 0;
+					red = 54;
+					green = 77;
+					blue = 43;
 				}
 				//seaborn
 				default:
