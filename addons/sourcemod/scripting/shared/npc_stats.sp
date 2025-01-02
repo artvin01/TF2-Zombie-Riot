@@ -6030,11 +6030,14 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 		int PassCheck = 0;
 		if(area != NULL_AREA)
 		{
+			/*
 			int NavAttribs = area.GetAttributes();
 			if(NavAttribs & NAV_MESH_DONT_HIDE)
 			{
 				PassCheck = 2;
 			}
+			//This is for plaers only.
+			*/
 		}
 		else
 		{
