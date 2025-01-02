@@ -54,31 +54,21 @@ methodmap TwirlFollowerr < CClotBody
 {
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayCoughSound() 
+	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_CoughRandom[GetRandomInt(0, sizeof(g_CoughRandom) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-	}
-	public void PlayDeathSound(int who) 
-	{
-		EmitSoundToAll("npc/strider/striderx_die1.wav", who, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-	}
-	public void PlayBobMeleePostHit()
-	{
-		int pitch = GetRandomInt(70,80);
-		EmitSoundToAll(g_BobSuperMeleeCharge_Hit[GetRandomInt(0, sizeof(g_BobSuperMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
-		EmitSoundToAll(g_BobSuperMeleeCharge_Hit[GetRandomInt(0, sizeof(g_BobSuperMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
+		EmitSoundToAll("npc/strider/striderx_die1.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayRangeAttackSound() {
 		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
-	public void SpeechTalk(int client)
+	public void SpeechTalk()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		if(GetEntityFlags(client) & FL_FROZEN)
+		if(GetEntityFlags(this.index) & FL_FROZEN)
 			return;
 
 		switch(GetURandomInt() % 11)
@@ -151,16 +141,6 @@ methodmap TwirlFollowerr < CClotBody
 	{
 		NpcSpeechBubble(this.index, speechtext, 5, {255, 255, 255, 255}, {0.0,0.0,120.0}, endingtextscroll);
 	}
-	property float m_flDeathAnimation
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
-	}
-	property float m_flDeathAnimationCD
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
-	}
 	
 	public TwirlFollowerr(float vecPos[3], float vecAng[3],int ally, const char[] data)
 	{
@@ -168,7 +148,6 @@ methodmap TwirlFollowerr < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "sword");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -185,7 +164,6 @@ methodmap TwirlFollowerr < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
-		npc.m_flDeathAnimation = 0.0;
 		npc.m_bScalesWithWaves = true;
 
 		int skin = 1;	//1=blue, 0=red
@@ -205,7 +183,7 @@ methodmap TwirlFollowerr < CClotBody
 
 		SetVariantInt(RUINA_WINGS_4);
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
-		SetVariantInt(npc.i_weapon_type());
+		SetVariantInt(RUINA_TWIRL_CREST_4);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
@@ -303,11 +281,11 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	npc.PlayIdleAlertSound();
+	npc.SpeechTalk();
 }
 
 
-int TwirlFollowerrSelfDefense(VoidSpreader npc, float gameTime, int target, float distance)
+int TwirlFollowerrSelfDefense(TwirlFollowerr npc, float gameTime, int target, float distance)
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
@@ -337,9 +315,11 @@ int TwirlFollowerrSelfDefense(VoidSpreader npc, float gameTime, int target, floa
 					npc.m_iState = 0;
 				else
 					npc.m_iState = 1;
-				
 
-				npc.FireParticleRocket(target_vec, DamageProject, projectile_speed , Radius , Particle, _, _, true, flPos);
+				float flPos[3];
+			
+				GetAttachment(npc.index, "effect_hand_r", flPos, NULL_VECTOR);
+				npc.FireParticleRocket(target_vec, DamageProject, projectile_speed , 0.0 , Particle, false, _, true, flPos);
 			}
 			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.5))
 			{
@@ -397,24 +377,22 @@ static void ClotDeath(int entity)
 {
 	TwirlFollowerr npc = view_as<TwirlFollowerr>(entity);
 
+	npc.PlayDeathSound();
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
-	
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
-	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
-	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-	
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 }

@@ -343,16 +343,16 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 					//I hit them, time to destroy.
 					Elemental_AddChaosDamage(HitEnemy, npc.index, 400, false, true);
 					float vPredictedPos[3];
-					PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+					PredictSubjectPosition(npc, HitEnemy,_,_, vPredictedPos);
 					vPredictedPos = GetBehindTarget(HitEnemy, 30.0 ,vPredictedPos);
 					static float hullcheckmaxs[3];
 					static float hullcheckmins[3];
 					hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 					hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
 
-					float PreviousPos[3];
-					WorldSpaceCenter(npc.index, PreviousPos);
-					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					float VecEnemy[3];
+					WorldSpaceCenter(npc.index, VecEnemy);
+					WorldSpaceCenter(npc.index, WorldSpaceVec);
 					
 					bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 					if(Succeed)

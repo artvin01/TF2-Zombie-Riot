@@ -194,6 +194,7 @@ static const char g_AngerSounds[][] = {
 
 #define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
 #define LELOUCH_CRYSTAL_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl"
+#define LELOUCH_LIGHT_MODEL "models/effects/vol_light256x512.mdl"
 
 #define LELOUCH_CRYSTAL_SHIELD_STRENGTH 0.1	//How much res each crystal gives. eg: 4 crystals alive, each does 0.1, total res is 40%
 
@@ -203,6 +204,9 @@ static bool b_test_mode[MAXENTITIES];
 
 static const char NameColour[] = "{black}";
 static const char TextColour[] = "{snow}";
+
+static int i_wingslot[MAXENTITIES];
+static int i_specialentslot[MAXENTITIES];
 
 void Lelouch_OnMapStart_NPC()
 {
@@ -231,6 +235,7 @@ static void ClotPrecache()
 
 	Zero(b_animation_set);
 
+	PrecacheModel(LELOUCH_LIGHT_MODEL, true);
 	PrecacheModel(LELOUCH_BLADE_MODEL, true);
 	PrecacheModel(LELOUCH_CRYSTAL_MODEL, true);
 }
@@ -333,6 +338,71 @@ methodmap Lelouch < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
+	property float m_flCrystalSpiralLaserCoolDownTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flRevertAnim
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_flFreezeAnim
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+
+	property int m_iWingSlot
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_wingslot[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_wingslot[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_wingslot[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iSpecialEntSlot
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_specialentslot[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_specialentslot[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_specialentslot[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+
 	public char[] GetName()
 	{
 		char Name[255];
@@ -391,6 +461,10 @@ methodmap Lelouch < CClotBody
 
 		b_crystals_active[npc.index] = false;
 		npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 2.0;
+		npc.m_flCrystalSpiralLaserCoolDownTimer = GetGameTime(npc.index) + 3.0;
+
+		npc.m_flRevertAnim = FAR_FUTURE;
+		npc.m_flFreezeAnim = FAR_FUTURE;
 		
 		
 		/*
@@ -512,11 +586,17 @@ static void ClotThink(int iNPC)
 		return;
 
 	//beloved ruinian crystals.
-	Create_Crystal_Shields(npc);
+	if(Create_Crystal_Shields(npc))
+		return;
+
+	if(Initiate_Crystal_LaserSpin(npc))
+		return;
 
 	npc.AdjustWalkCycle();
 
 	Ruina_Add_Battery(npc.index, 5.0);
+
+	Handle_Animations(npc);
 
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
@@ -572,6 +652,7 @@ static void ClotThink(int iNPC)
 enum struct Crystal_Data
 {
 	int index;
+	int state;
 
 	int Create(Lelouch npc, float Loc[3], int Health)
 	{
@@ -579,7 +660,12 @@ enum struct Crystal_Data
 		if(!IsValidEntity(Crystal))
 			return -1;
 
+		this.state = 0;
+
 		c_NpcName[Crystal] = "Lelouch Crystal";
+
+		Manipulation crystal = view_as<Manipulation>(Crystal);
+		crystal.m_flDoingAnimation = FAR_FUTURE;
 
 		this.index = EntRefToEntIndex(Crystal);
 
@@ -683,14 +769,27 @@ static bool Create_Crystal_Shields(Lelouch npc)
 
 	npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 20.0;
 
+	float Duration = 5.0;
+	Initiate_Anim(npc, Duration, "disco_fever", _,_, true);
+
+	npc.m_flRevertAnim = GetGameTime(npc.index) + Duration;
+
+	if(IsValidEntity(npc.m_iSpecialEntSlot))
+		RemoveEntity(npc.m_iSpecialEntSlot);
+
+	npc.m_iSpecialEntSlot = npc.EquipItemSeperate("head", LELOUCH_LIGHT_MODEL ,_,_,_,300.0);
+
 	return true;
 }
+#define LELOUCH_CRYSTAL_SPRIAL_WINDUP 2.5
 static void Crystal_Passive_Logic(Lelouch npc)
 {
 	if(!b_crystals_active[npc.index])
 		return;
 
-	npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + 60.0;
+	float GameTime = GetGameTime(npc.index);
+
+	npc.m_flBladeCoolDownTimer = GameTime + 60.0;
 	if(fl_crystal_angles[npc.index] > 360.0)
 		fl_crystal_angles[npc.index] -=360.0;
 	
@@ -728,11 +827,81 @@ static void Crystal_Passive_Logic(Lelouch npc)
 		float Crystal_Angles[3];
 		MakeVectorFromPoints(Origin, Offset_Loc, Crystal_Angles);
 		GetVectorAngles(Crystal_Angles, Crystal_Angles);
+
+		int state = total_crystals[i].state;
+		switch(state)
+		{
+			case 1:	//spin around, shoot lasers.
+			{
+				float New_Angles[3]; New_Angles = Crystal_Angles;
+				if(npc.m_flFreezeAnim > GameTime)
+				{
+					float Ratio = (npc.m_flFreezeAnim - GameTime) / LELOUCH_CRYSTAL_SPRIAL_WINDUP;
+					float Offset_Pitch = 90.0 - 90.0 * Ratio;
+
+					New_Angles[0] = Offset_Pitch;
+
+				}
+				else
+				{
+					Ruina_Laser_Logic Laser;
+					Laser.client = npc.index;
+					Laser.DoForwardTrace_Custom(Crystal_Angles, Offset_Loc, -1.0);
+					Laser.Damage = Modify_Damage(-1, 100.0);				//how much dmg should it do?		//100.0*RaidModeScaling
+					Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 100.0);			//dmg vs things that should take bonus dmg.
+					Laser.damagetype = DMG_PLASMA;		//dmg type.
+					Laser.Radius = 25.0;				//how big the radius is / hull.
+					Laser.Deal_Damage();
+
+					int color[4]; color = {255,255,255,255};
+					TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.1, 15.0, 15.0, 0, 2.5, color, 0);
+					TE_SendToAll(0.0);
+
+					New_Angles[0] = -90.0;
+				}
+					
+
+
+				Crystal_Angles = New_Angles;
+			}
+			case 2:
+			{
+
+			}
+		}
 		
 		total_crystals[i].Move(Offset_Loc, Crystal_Angles);
 	}
 
 	npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 120.0;
+}
+
+static bool Initiate_Crystal_LaserSpin(Lelouch npc)
+{
+	//our crystals do not exist, abort.
+	if(!b_crystals_active[npc.index])
+		return false;
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flCrystalSpiralLaserCoolDownTimer > GameTime)
+		return false;
+
+	for(int i= 0 ; i < LELOUCH_MAX_CRYSTALS ; i++)
+	{
+		struct_Crystals[npc.index][i].state = 1;
+	}
+	float Duration = 10.0;
+	float WindUp = LELOUCH_CRYSTAL_SPRIAL_WINDUP;
+	Initiate_Anim(npc, WindUp+Duration, "taunt_highFiveStart", _,_, true);
+
+	npc.m_flRevertAnim = GameTime + Duration + WindUp;
+	npc.m_flFreezeAnim = GameTime + WindUp;
+
+	npc.m_flCrystalSpiralLaserCoolDownTimer = GameTime + 120.0;
+
+	return true;
+
 }
 static int i_Alive_Crystals(Lelouch npc)
 {
@@ -928,7 +1097,7 @@ static void BladeLogic_Tick(int iNPC)
 			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
 			Laser.End_Point = Final_Vec;		//where does the laser end?
 			Laser.Damage = Modify_Damage(-1, 100.0);				//how much dmg should it do?		//100.0*RaidModeScaling
-			Laser.Bonus_Damage = 500.0;			//dmg vs things that should take bonus dmg.
+			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 100.0);			//dmg vs things that should take bonus dmg.
 			Laser.damagetype = DMG_PLASMA;		//dmg type.
 			Laser.Radius = 25.0;				//how big the radius is / hull.
 			Laser.Deal_Damage();				//and now we kill
@@ -984,6 +1153,25 @@ static void BladeLogic_Tick(int iNPC)
 
 //Usefull stuff.
 
+static void Handle_Animations(Lelouch npc)
+{
+	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flFreezeAnim < GameTime)
+	{
+		npc.m_flFreezeAnim = FAR_FUTURE;
+		npc.SetPlaybackRate(0.0);
+	}
+	if(npc.m_flRevertAnim > GameTime)
+		return;
+
+	npc.m_flRevertAnim = FAR_FUTURE;
+
+	if(IsValidEntity(npc.m_iSpecialEntSlot))
+		RemoveEntity(npc.m_iSpecialEntSlot);
+
+	End_Animation(npc);
+}
 static void Kill_Manipulation(int Manip_Ref)
 {
 	int Manip_NPC = EntRefToEntIndex(Manip_Ref);
@@ -1230,6 +1418,10 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable9))
 		RemoveEntity(npc.m_iWearable9);
+	if(IsValidEntity(npc.m_iWingSlot))
+		RemoveEntity(npc.m_iWingSlot);
+	if(IsValidEntity(npc.m_iSpecialEntSlot))
+		RemoveEntity(npc.m_iSpecialEntSlot);
 }
 void Lelouch_Lines(Lelouch npc, const char[] text)
 {
