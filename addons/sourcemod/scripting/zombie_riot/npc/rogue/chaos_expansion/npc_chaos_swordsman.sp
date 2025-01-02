@@ -82,7 +82,7 @@ public void ChaosSwordsman_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Chaos Swordsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "chaos_sword");
-	data.IconCustom = false;
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_BlueParadox;
 	data.Func = ClotSummon;

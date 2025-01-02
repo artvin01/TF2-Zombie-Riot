@@ -1539,7 +1539,7 @@
 	}
 	"Roaming Chaos Demons!"
 	{
-		"en"	""Roaming Chaos Demons ⚠"
+		"en"	"Roaming Chaos Demons ⚠"
 	}
 	"Antagonising Iberians"
 	{

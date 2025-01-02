@@ -955,6 +955,10 @@
 		"pt"		"Rebelde"
 		"nl"		"Rebel"
 	}
+	"Chaos Rebel"
+	{
+		"en" 		"Chaos Rebel"
+	}
 	"Barney"
 	{
 		"en" 		"Barney"

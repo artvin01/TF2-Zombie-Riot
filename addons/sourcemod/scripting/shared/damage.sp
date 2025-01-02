@@ -605,7 +605,8 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
-	if(Rogue_InItallianWrath(weapon))
+	//cant be 0
+	if(attacker > 0 && Rogue_InItallianWrath(weapon))
 		damage *= 2.0;
 	
 	if(!CheckInHud())

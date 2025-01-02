@@ -914,6 +914,7 @@ methodmap Citizen < CClotBody
 		
 		bool barney = data[0] == 'b';
 		bool alyx = data[0] == 'a';
+		bool chaos = data[0] == 'c';
 		
 		int seed = barney ? -160920040 : (alyx ? -50 : GetURandomInt());
 		bool female = !(seed % 2);
@@ -1005,6 +1006,19 @@ methodmap Citizen < CClotBody
 		{
 			npc.SetDowned(0);
 			npc.m_bStaticNPC = true;
+		}
+		if(chaos)
+		{
+			float flPos[3], flAng[3];
+					
+			npc.GetAttachment("eyes", flPos, flAng);
+			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {10.0,0.0,-5.0});
+			npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {10.0,0.0,-20.0});
+			npc.StartPathing();
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 125, 125, 125, 255);
+			npc.m_bRebelAgressive = true;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Chaos Rebel");
 		}
 		
 		return npc;
