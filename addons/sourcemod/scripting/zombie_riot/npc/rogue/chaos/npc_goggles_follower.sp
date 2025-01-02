@@ -646,6 +646,17 @@ methodmap GogglesFollower < CClotBody
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 		npc.Speech("Thanks for helping me.");
 
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
+			{
+				view_as<CClotBody>(other).m_bDissapearOnDeath = true;
+				SmiteNpcToDeath(other);
+				break;
+			}
+		}
+
 		return npc;
 	}
 }

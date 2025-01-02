@@ -122,7 +122,7 @@
 	}
 	"Bob's Assistance Desc"
 	{
-		"en"	"Bob joins you and steers you beyond this.\n{green}Bob the First joins you, {red}gain 30 Chaos Infliction, {blue}and opens up something."
+		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1% health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
 	}
 	"Small Comic Book"
 	{
@@ -628,13 +628,13 @@
 	{
 		"en"	"A simple puppet made by Iberian children using trinkets found on the seacoast.\n{green}Enemies take 1000 mage damage every second while stunned"
 	}
-	"Victory Horn"
+	"Garlic Bread"
 	{
-		"en"	"Victory Horn"
+		"en"	"Garlic Bread"
 	}
-	"Victory Horn Desc"
+	"Garlic Bread Desc"
 	{
-		"en"	"Blow the horn, cry out, and scatter our foes with its roar!\n{green}Enemies are debuffed for twice as long"
+		"en"	"Yummy.\n{green}Enemies are debuffed for twice as long"
 	}
 	"Flash Camera"
 	{
@@ -667,6 +667,39 @@
 	"Castle Offspring Desc"
 	{
 		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60%%, {red}resets when knocked down"
+	}
+
+	"Waldch Assistance"
+	{
+		"en"	"Waldch's Assistance"
+	}
+	"Waldch Assistance Desc"
+	{
+		"en"	"Waldch joins you."
+	}
+	"Kahmlstein Guidance"
+	{
+		"en"	"Kahmlstein's Guidance"
+	}
+	"Kahmlstein Guidance Desc"
+	{
+		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
+	}
+	"Twirl Guidance"
+	{
+		"en"	"Twirl's Guidance"
+	}
+	"Twirl Guidance Desc"
+	{
+		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds, mage weapons instead gain +100%% max mana and mana regen"
+	}
+	"Unauthorized Ruina Gem"
+	{
+		"en"	"Unauthorized Ruina Gem"
+	}
+	"Unauthorized Ruina Gem Desc"
+	{
+		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health"
 	}
 
 	"Missing Mountains"
@@ -818,6 +851,18 @@
 	{
 		"en"	"You seek what he seeks now."
 	}
+	"Prophecy Option 1c"
+	{
+		"en"	"It's Twirl"
+	}
+	"Prophecy Desc 1c"
+	{
+		"en"	"{green}Twirl will acompany you {blue}and the ending is changed."
+	}
+	"Prophecy Lore 1c"
+	{
+		"en"	"You seek what he seeks now."
+	}
 	"Prophecy Lore 2"
 	{
 		"en"	"Chaos still looms over. You feel knowledge in your head."
@@ -881,6 +926,14 @@
 	"Prophecy Desc 3b"
 	{
 		"en"	"{blue}Something happens..."
+	}
+	"Prophecy Lore 4"
+	{
+		"en"	"LORE IN THE MENU BEFORE ITEM"
+	}
+	"Prophecy Lore 4a"
+	{
+		"en"	"LORE IN THE CHAT AFTER ITEM"
 	}
 	"Lost Villager"
 	{
@@ -1124,22 +1177,6 @@
 		"en"	"Bob The Second returns with some money in hand."
 	}
 
-	"Waldch Assistance"
-	{
-		"en"	"Waldch's Assistance"
-	}
-	"Waldch Assistance Desc"
-	{
-		"en"	"Waldch joins you."
-	}
-	"Kahmlstein Guidance"
-	{
-		"en"	"Kahmlstein's Guidance"
-	}
-	"Kahmlstein Guidance Desc"
-	{
-		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
-	}
 	"Bad Water"
 	{
 		"en"	"Bad Water"
