@@ -76,6 +76,16 @@ methodmap Manipulation < CClotBody
 		return npc;
 	}
 }
+static float fl_manisaved_Loc[MAXENTITIES][2][3];
+float[] GetManipulationTargetVec(Manipulation npc, int state)
+{
+	float return_val[3]; return_val = fl_manisaved_Loc[npc.index][state];
+	return return_val;
+}
+void SetManipulationTargetVec(Manipulation npc, int state, float Vec[3])
+{
+	fl_manisaved_Loc[npc.index][state] = Vec;
+}
 static void ClotThink(int iNPC)
 {
 	Manipulation npc = view_as<Manipulation>(iNPC);
