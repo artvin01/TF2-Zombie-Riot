@@ -116,13 +116,13 @@
 	{
 		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 cash and 30 ammo supplies"
 	}
-	"Something Else"
+	"Bob's Assistance"
 	{
-		"en"	"Something Else"
+		"en"	"Bob's Assistance"
 	}
-	"Something Else Desc"
+	"Bob's Assistance Desc"
 	{
-		"en"	"You brought something else with you.\n{red}Gain 30 Chaos Infliction"
+		"en"	"Bob joins you and steers you beyond this.\n{green}Bob the First joins you, {red}gain 30 Chaos Infliction, {blue}and opens up something."
 	}
 	"Small Comic Book"
 	{

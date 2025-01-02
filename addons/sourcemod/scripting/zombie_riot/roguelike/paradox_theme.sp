@@ -172,6 +172,17 @@ public void Rogue_Weapon_Collect()
 public void Rogue_Something_Collect()
 {
 	Rogue_AddChaos(30, true);
+	
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_goggles_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
 }
 
 public void Rogue_HeavyWind_Weapon(int entity)
