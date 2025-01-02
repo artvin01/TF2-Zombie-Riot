@@ -227,7 +227,6 @@ methodmap OmegaRaid < CClotBody
 	{
 		OmegaRaid npc = view_as<OmegaRaid>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1000000", ally));
 
-		char text[255];
 		bool item = StrContains(data, "item") != -1;
 		if(item)
 		{
@@ -292,18 +291,19 @@ methodmap OmegaRaid < CClotBody
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
 				ShowGameText(client_check, "item_armor", 1, "%s", "Omega shows up");
-				/*switch(GetRandomInt(0,2))
-				{
-				case 0:
-					CPrintToChatAll("{gold}Omega{default}: Fuck this, I don't need my weapons to dispose of you.", text);
-				case 1:
-					CPrintToChatAll("{gold}Omega{default}: We meet once again.", text);
-				case 2:
-					CPrintToChatAll("{gold}Omega{default}: A lot of dead bodies on the way here.", text);
-				}*/
 			}
 		}
 		
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{gold}Omega{default}: Fuck this, I don't need my weapons to dispose of you.");
+			case 1:
+				CPrintToChatAll("{gold}Omega{default}: We meet once again.");
+			case 2:
+				CPrintToChatAll("{gold}Omega{default}: A lot of dead bodies on the way here.");
+		}
+
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		if(RaidModeScaling < 55)
 		{
