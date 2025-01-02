@@ -776,7 +776,10 @@ void NPC_ConfigSetup()
 	ChaosSickKnight_OnMapStart_NPC();
 	ChaosInjuredCultist_OnMapStart_NPC();
 	ChaosEvilDemon_OnMapStart_NPC();
+	ChaosSwordsman_OnMapStart_NPC();
 	DuckFollower_Setup();
+	BobTheFirstFollower_Setup();
+	TwirlFollowerr_Setup();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -1707,6 +1710,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_duck_follower.sp"
 
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_evil_chaos_demon.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_chaos_swordsman.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_bob_first_follower.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_twirl_follower.sp"
 
 #include "zombie_riot/npc/survival/npc_nightmare.sp"
 #include "zombie_riot/npc/survival/npc_petrisisbaron.sp"

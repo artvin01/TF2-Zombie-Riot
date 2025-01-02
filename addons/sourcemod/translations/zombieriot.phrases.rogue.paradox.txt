@@ -116,13 +116,13 @@
 	{
 		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 cash and 30 ammo supplies"
 	}
-	"Something Else"
+	"Bob's Request"
 	{
-		"en"	"Something Else"
+		"en"	"Bob's Request"
 	}
-	"Something Else Desc"
+	"Bob's Request Desc"
 	{
-		"en"	"You brought something else with you.\n{red}Gain 30 Chaos Infliction"
+		"en"	"Bob the first acompanies you.\n{red}Gain 30 Chaos Infliction"
 	}
 	"Small Comic Book"
 	{

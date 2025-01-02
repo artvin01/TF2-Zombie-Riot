@@ -198,8 +198,6 @@ methodmap ChaosSwordsman < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		
-
 		func_NPCDeath[npc.index] = ChaosSwordsman_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = ChaosSwordsman_OnTakeDamage;
 		func_NPCThink[npc.index] = ChaosSwordsman_ClotThink;

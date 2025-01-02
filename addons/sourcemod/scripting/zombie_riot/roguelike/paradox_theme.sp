@@ -169,7 +169,7 @@ public void Rogue_Weapon_Collect()
 	Ammo_Count_Ready += 30;
 }
 
-public void Rogue_Something_Collect()
+public void Rogue_BobsRequest_Collect()
 {
 	Rogue_AddChaos(30, true);
 }

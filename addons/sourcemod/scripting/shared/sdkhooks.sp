@@ -2711,6 +2711,16 @@ void UpdatePlayerFakeModel(int client)
 stock void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
 	if(!Flat)
+	{
+		if(amount > 1.0)
+			ApplyStatusEffect(entity, entity, "Heavy Laccerations", duration);
+	}
+	else
+	{
+		if(amount > 0.0)
+			ApplyStatusEffect(entity, entity, "Heavy Laccerations", duration);
+	}
+	if(!Flat)
 		f_MultiDamageTaken[entity] *= amount;
 	else
 		f_MultiDamageTaken_Flat[entity] += amount;

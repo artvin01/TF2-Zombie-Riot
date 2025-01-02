@@ -3018,4 +3018,9 @@ void StatusEffects_StatusEffectListOnly()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "W");
 	data.Positive 					= true;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Heavy Laccerations");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⸗");
+	data.Positive 					= false;
+	StatusEffect_AddGlobal(data);
 }
