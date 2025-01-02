@@ -108,6 +108,7 @@ void InitStatusEffects()
 	StatusEffects_Victoria();
 	StatusEffects_Pernell();
 	StatusEffects_Medieval();
+	StatusEffects_MERLT0N_BUFF();
 	StatusEffects_SupportWeapons();
 	StatusEffects_BobDuck();
 	StatusEffects_ElementalWand();
@@ -2128,6 +2129,22 @@ void StatusEffects_Medieval()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_DealFunc 		= Hussar_Warscream_DamageDealFunc;
+	StatusEffect_AddGlobal(data);
+}
+void StatusEffects_MERLT0N_BUFF()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "MERLT0N-BUFF");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Μ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.5;
+	data.DamageDealMulti			= 0.5;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
 

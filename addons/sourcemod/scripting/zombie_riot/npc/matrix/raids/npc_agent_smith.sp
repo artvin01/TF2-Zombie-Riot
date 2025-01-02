@@ -172,6 +172,7 @@ methodmap AgentSmith < CClotBody
 		
 		if(raid)
 		{
+			i_TalkDelayCheck = -1;
 			EmitSoundToAll("weapons/physgun_off.wav", _, _, _, _, 1.0);	
 			EmitSoundToAll("weapons/physgun_off.wav", _, _, _, _, 1.0);	
 		}

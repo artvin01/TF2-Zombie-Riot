@@ -3013,10 +3013,10 @@
 		"en" 		"Zombine"
 		"ru" 		"Зомбайн"
 	}
-	"Omega"
+	"3650"
 	{
-		"en"		"Omega"
-		"ru" 		"Омега"
+		"en"		"3650"
+		"ru" 		"3650"
 	}
 	"Nemal"
 	{
@@ -3777,6 +3777,63 @@
 	"Smith"
 	{
 		"en"		"Smith"
+	}
+	"Seaborn Metro Cop"
+	{
+		"en"		"Seaborn Metro Cop"
+	}
+	"Seaborn Metro Raider"
+	{
+		"en"		"Seaborn Metro Raider"
+	}
+	"Seaborn W.F. Rifler"
+	{
+		"en"		"Seaborn W.F. Rifler"
+	}
+	"Seaborn W.F. Elite"
+	{
+		"en"		"Seaborn W.F. Elite"
+	}
+	"Seaborn W.F. Shotgunner"
+	{
+		"en"		"Seaborn W.F. Shotgunner"
+	}
+	"Voided Metro Cop"
+	{
+		"en"		"Voided Metro Cop"
+	}
+	"Voided Metro Raider"
+	{
+		"en"		"Voided Metro Raider"
+	}
+	"Voided W.F. Rifler"
+	{
+		"en"		"Voided W.F. Rifler"
+	}
+	"Voided W.F. Elite"
+	{
+		"en"		"Voided W.F. Elite"
+	}
+	"Voided W.F. Shotgunner"
+	{
+		"en"		"Voided W.F. Shotgunner"
+	}
+	"Hunter"
+	{
+		"en"		"Hunter"
+	}
+	"Merlton"
+	{
+		"en"		"Merlton"
+	}
+	"Lost Knight"
+	{
+		"en"		"Lost Knight"
+	}
+	"Omega"
+	{
+		"en"		"Omega"
+		"ru"		"Омега"
 	}
 	"Victoria"
 	{

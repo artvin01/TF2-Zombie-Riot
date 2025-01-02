@@ -307,7 +307,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 6500.0;
-		
+
 		//money fix
 		enemy.Does_Not_Scale = 1;
 		count = 1;
@@ -390,7 +390,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Is_Outlined = true;
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
-		
+
 		enemy.Index = NPC_GetByPlugin("npc_sentinel");
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
@@ -425,10 +425,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
 			enemy.Is_Boss = 1;
-		
+
 		if(ImmuneNuke && !(enemy.Index % ImmuneNuke))
 			enemy.Is_Immune_To_Nuke = true;
-		
+
 		if(KillBonus)
 			enemy.Credits += KillBonus;
 
@@ -451,7 +451,7 @@ bool Freeplay_ShouldMiniBoss()
 	Flagellant_MiniBossChance(decrease);
 	if(decrease < 1)
 		return true;
-	
+
 	chance *= float(10 / decrease);
 	return (chance > GetURandomFloat());
 }
@@ -469,16 +469,16 @@ void Freeplay_SpawnEnemy(int entity)
 
 	if(PernellBuff)
 		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
-	
+
 	if(FusionBuff > 1)
 		ApplyStatusEffect(entity, entity, "Self Empowerment", 999999.0);	
-	
+
 	if(FusionBuff == 1 || FusionBuff > 2)
 		ApplyStatusEffect(entity, entity, "Ally Empowerment", 999999.0);	
-	
+
 	if(OceanBuff > 1)
 		ApplyStatusEffect(entity, entity, "Oceanic Scream", 999999.0);	
-	
+
 	if(OceanBuff > 0)
 		ApplyStatusEffect(entity, entity, "Oceanic Singing", 999999.0);	
 
@@ -490,7 +490,7 @@ void Freeplay_SpawnEnemy(int entity)
 
 	if(VictoriaBuff)
 		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
-	
+
 	if(SquadBuff)
 		ApplyStatusEffect(entity, entity, "Squad Leader", 999999.0);	
 
@@ -533,25 +533,25 @@ void Freeplay_SpawnEnemy(int entity)
 
 	if(IceDebuff > 2)
 		ApplyStatusEffect(entity, entity, "Near Zero", 999999.0);	
-	
+
 	if(IceDebuff > 1)
 		ApplyStatusEffect(entity, entity, "Cryo", 999999.0);	
-	
+
 	if(IceDebuff > 0)
 		ApplyStatusEffect(entity, entity, "Freeze", 999999.0);	
-	
+
 	if(TeslarDebuff > 1)
 		ApplyStatusEffect(entity, entity, "Teslar Electricution", 999999.0);	
-	
+
 	if(TeslarDebuff > 0)
 		ApplyStatusEffect(entity, entity, "Teslar Shock", 999999.0);	
-	
+
 	if(CrippleDebuff > 0)
 	{
 		ApplyStatusEffect(entity, entity, "Cripple", 999999.0);	
 		CrippleDebuff--;
 	}
-	
+
 	if(CudgelDebuff > 0)
 	{
 		ApplyStatusEffect(entity, entity, "Cudgelled", 999999.0);	

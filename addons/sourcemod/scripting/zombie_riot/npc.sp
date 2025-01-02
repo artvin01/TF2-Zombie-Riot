@@ -183,7 +183,7 @@ void NPC_ConfigSetup()
 	NecroCalcium_OnMapStart_NPC();
 	CuredFatherGrigori_OnMapStart_NPC();
 	FallenWarrior_OnMapStart();
-	Omega_OnMapStart();
+	ThirtySixFifty_OnMapStart();
 	
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
@@ -836,6 +836,23 @@ void NPC_ConfigSetup()
 	VictorianDroneAnvil_MapStart();
 	Victorian_Tacticalunit_OnMapStart_NPC();
 	Victorian_TacticalProtector_OnMapStart_NPC();
+
+	//Combine Mutation
+	OmegaRaid_OnMapStart_NPC();
+	LostKnight_OnMapStart_NPC();
+	Merlton_Boss_OnMapStart_NPC();
+	BobFollower_Setup();
+	Hunter_OnMapStart_NPC();
+	Void_Combine_Police_Pistol_OnMapStart_NPC();
+	VoidCombinePoliceSmg_OnMapStart_NPC();
+	VoidCombineElite_OnMapStart_NPC();
+	VoidCombineSoldierAr2_OnMapStart_NPC();
+	VoidCombineSoldierShotgun_OnMapStart_NPC();
+	Seaborn_Combine_Police_Pistol_OnMapStart_NPC();
+	SeabornCombinePoliceSmg_OnMapStart_NPC();
+	SeabornCombineElite_OnMapStart_NPC();
+	SeabornCombineSoldierAr2_OnMapStart_NPC();
+	SeabornCombineSoldierShotgun_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1232,7 +1249,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_wandering_spirit.sp"
 #include "zombie_riot/npc/special/npc_vengefull_spirit.sp"
 #include "zombie_riot/npc/special/npc_fallen_warrior.sp"
-#include "zombie_riot/npc/special/npc_omega.sp"
+#include "zombie_riot/npc/special/npc_3650.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -1699,10 +1716,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_duck_follower.sp"
 
-#include "zombie_riot/npc/survival/npc_nightmare.sp"
-#include "zombie_riot/npc/survival/npc_petrisisbaron.sp"
-#include "zombie_riot/npc/survival/npc_sphynx.sp"
-#include "zombie_riot/npc/survival/npc_zombine.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_nightmare.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_petrisisbaron.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_sphynx.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_zombine.sp"
 
 
 
@@ -1818,6 +1835,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/victoria/npc_harrison.sp"
 #include "zombie_riot/npc/raidmode_bosses/victoria/npc_castellan.sp"
 
+//Matrix Enemies
 #include "zombie_riot/npc/matrix/15/npc_agentalan.sp"
 #include "zombie_riot/npc/matrix/15/npc_agentalexander.sp"
 #include "zombie_riot/npc/matrix/15/npc_agentchase.sp"
@@ -1853,13 +1871,34 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/matrix/60/npc_agentross.sp"
 #include "zombie_riot/npc/matrix/60/npc_agentspencer.sp"
 #include "zombie_riot/npc/matrix/60/npc_agenttodd.sp"
+
+//Matrix Raids
 #include "zombie_riot/npc/matrix/raids/npc_agentjohnson.sp"
 #include "zombie_riot/npc/matrix/raids/npc_agentthompson.sp"
 #include "zombie_riot/npc/matrix/raids/npc_twins.sp"
 #include "zombie_riot/npc/matrix/raids/npc_agent_smith.sp"
+
+//Matrix Freeplay Enemies
 #include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentdave.sp"
 #include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentwayne.sp"
 #include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentian.sp"
 #include "zombie_riot/npc/matrix/freeplay/npc_freeplay_agentspencer.sp"
+
+//Combine Hell Mutation
+#include "zombie_riot/npc/mutations/combinehell/other/npc_hunter.sp"
+#include "zombie_riot/npc/mutations/combinehell/other/npc_merlton.sp"
+#include "zombie_riot/npc/mutations/combinehell/other/npc_combine_lost_knight.sp"
+#include "zombie_riot/npc/mutations/combinehell/other/npc_omega_raid.sp"
+#include "zombie_riot/npc/mutations/combinehell/other/npc_bob_follower.sp"
+#include "zombie_riot/npc/mutations/combinehell/seaborn/npc_seaborn_combine_police_pistol.sp"
+#include "zombie_riot/npc/mutations/combinehell/seaborn/npc_seaborn_combine_police_smg.sp"
+#include "zombie_riot/npc/mutations/combinehell/seaborn/npc_seaborn_combine_soldier_elite.sp"
+#include "zombie_riot/npc/mutations/combinehell/seaborn/npc_seaborn_combine_soldier_ar2.sp"
+#include "zombie_riot/npc/mutations/combinehell/seaborn/npc_seaborn_combine_soldier_shotgun.sp"
+#include "zombie_riot/npc/mutations/combinehell/void/npc_voided_combine_police_pistol.sp"
+#include "zombie_riot/npc/mutations/combinehell/void/npc_voided_combine_police_smg.sp"
+#include "zombie_riot/npc/mutations/combinehell/void/npc_voided_combine_soldier_elite.sp"
+#include "zombie_riot/npc/mutations/combinehell/void/npc_voided_combine_soldier_ar2.sp"
+#include "zombie_riot/npc/mutations/combinehell/void/npc_voided_combine_soldier_shotgun.sp"
 
 #include "zombie_riot/npc/voices/npc_stalker_wisp.sp"
