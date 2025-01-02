@@ -8971,6 +8971,8 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 			if(HasSpecificBuff(npc, "Shook Head"))
 				Duration_Stun_Post *= 0.5;
 		}
+
+		Rogue_ParadoxDLC_StunTime(npc, Duration_Stun_Post);
 	}
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];

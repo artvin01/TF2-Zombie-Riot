@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 static float LastGameTime;
+static char LastData[96];
 static bool LastResult;
 
 void RogueCondition_Setup()
@@ -19,12 +20,18 @@ void RogueCondition_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	char buffers[3][64];
-	ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	static char buffers[3][64];
 
-	if(LastGameTime != GetGameTime())
+	bool same = StrEqual(data, LastData);
+	if(!same)
 	{
-		LastGameTime = GetGameTime();
+		strcopy(LastData, sizeof(LastData), data);
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	}
+
+	if(!same || (GetGameTime() > LastGameTime))
+	{
+		LastGameTime = GetGameTime() + 0.5;
 		LastResult = true;
 
 		if(buffers[0][0] == '.' || IsCharNumeric(buffers[0][0]))

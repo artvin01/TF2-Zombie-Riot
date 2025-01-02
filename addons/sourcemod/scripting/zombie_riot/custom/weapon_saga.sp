@@ -260,7 +260,7 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 	}
 	else
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		MakePlayerGiveResponseVoice(client, 4); //haha!
 		WeaponCharge[client] -= cost + 1;
 		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))

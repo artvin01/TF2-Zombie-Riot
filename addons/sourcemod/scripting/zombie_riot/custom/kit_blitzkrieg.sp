@@ -634,7 +634,7 @@ static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 
 	i_ion_effects[client] = patern;
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 
 	float damage = Attributes_Get(weapon, 868, 1000.0);
 

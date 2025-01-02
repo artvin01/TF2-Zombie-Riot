@@ -7,8 +7,6 @@
 #define DMG_MEDIGUN_LOW 1.25
 #define DMG_WIDOWS_WINE 1.35
 
-
-
 float BarbariansMindNotif[MAXTF2PLAYERS];
 void DamageModifMapStart()
 {

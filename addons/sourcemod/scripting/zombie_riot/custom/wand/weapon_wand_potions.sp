@@ -98,7 +98,7 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 {
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -108,7 +108,7 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 
 	if(PotionM1(client, weapon, touch, extra))
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, cooldown);
 	}
 }
@@ -530,7 +530,7 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 45.0);
 
 	EmitSoundToClient(client, SOUND_TRANSFORM1);
@@ -565,7 +565,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 	
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 45.0);
 
 	EmitSoundToClient(client, SOUND_TRANSFORM2);

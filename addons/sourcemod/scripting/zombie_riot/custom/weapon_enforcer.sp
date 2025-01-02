@@ -230,7 +230,7 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 				Ability_Apply_Cooldown(client, slot, 3.0);	
 			}
 
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			ShowClientManualAmmoCount(client, weapon);
 		}
 		else

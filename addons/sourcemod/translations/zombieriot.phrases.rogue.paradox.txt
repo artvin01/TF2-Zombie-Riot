@@ -580,6 +580,94 @@
 	{
 		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20%% firing, reload, and healing speed {red}but gain 8 Chaos Infliction after a stage"
 	}
+	"Silver Seal Letter"
+	{
+		"en"	"Silver Seal Letter"
+	}
+	"Silver Seal Letter Desc"
+	{
+		"en"	"You made a deal with an old man. If the time comes, it's now.\n{green}Recover a random weapon that has no cost to buy or upgrade."
+	}
+	"Ancient Vuntulum Silver Coin"
+	{
+		"en"	"Ancient Vuntulum Silver Coin"
+	}
+	"Ancient Vuntulum Silver Coin Desc"
+	{
+		"en"	"It is in very good shape, making it highly valuable as a collector's item.\n{green}Weapon ability cooldowns are reduced by 6s when a wave starts"
+	}
+	"Bank of Vunt Check"
+	{
+		"en"	"Bank of Vunt Check"
+	}
+	"Bank of Vunt Check Desc"
+	{
+		"en"	"An extravagant checkbook plated in gold and silver.\n{green}Weapon ability cooldowns are reduced by 9s when a wave starts"
+	}
+	"Second Economic Reform Act"
+	{
+		"en"	"Second Economic Reform Act"
+	}
+	"Second Economic Reform Act Desc"
+	{
+		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 12s when a wave starts"
+	}
+	"String Puppet"
+	{
+		"en"	"String Puppet"
+	}
+	"String Puppet Desc"
+	{
+		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take 700 mage damage every second while stunned"
+	}
+	"Children's Puppet"
+	{
+		"en"	"Children's Puppet"
+	}
+	"Children's Puppet Desc"
+	{
+		"en"	"A simple puppet made by Iberian children using trinkets found on the seacoast.\n{green}Enemies take 1000 mage damage every second while stunned"
+	}
+	"Victory Horn"
+	{
+		"en"	"Victory Horn"
+	}
+	"Victory Horn Desc"
+	{
+		"en"	"Blow the horn, cry out, and scatter our foes with its roar!\n{green}Enemies are debuffed for twice as long"
+	}
+	"Flash Camera"
+	{
+		"en"	"Flash Camera"
+	}
+	"Flash Camera Desc"
+	{
+		"en"	"Every photo shot by this camera is washed out in white.\n{green}Enemies are stunned for x2.1 longer"
+	}
+	"Therapy Tape"
+	{
+		"en"	"Therapy Tape"
+	}
+	"Therapy Tape Desc"
+	{
+		"en"	"He tried to stop you from listening.\n{green}Enemies are stunned for x2.5 longer"
+	}
+	"Black Tulip"
+	{
+		"en"	"Black Tulip"
+	}
+	"Black Tulip Desc"
+	{
+		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases over 120 seconds, up to +60%%, {red}resets after using a weapon ability"
+	}
+	"Castle Offspring"
+	{
+		"en"	"Castle's Offspring"
+	}
+	"Castle Offspring Desc"
+	{
+		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60%%, {red}resets when knocked down"
+	}
 
 	"Missing Mountains"
 	{

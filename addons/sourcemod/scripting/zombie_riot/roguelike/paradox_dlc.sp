@@ -6,6 +6,13 @@ static bool ReduceChaos1;
 static bool ReduceChaos2;
 static int MachinaWaldch;
 static bool Smoking;
+static bool LongDebuff;
+static bool ShortStun;
+static bool LongStun;
+static Handle TulipTimer;
+static float CurrentTulipDamage[MAXTF2PLAYERS];
+static Handle CastleTimer;
+static float CurrentCastleHealth[MAXTF2PLAYERS];
 
 void Rogue_ParadoxDLC_Flawless()
 {
@@ -29,6 +36,27 @@ void Rogue_ParadoxDLC_BattleChaos(float &chaos)
 	
 	if(Smoking)
 		chaos += 8.0;
+}
+
+void Rogue_ParadoxDLC_DebuffTime(int entity, float &time)
+{
+	if(LongDebuff && GetTeam(entity) != TFTeam_Red)
+		time *= 2.0;
+}
+
+void Rogue_ParadoxDLC_StunTime(int entity, float &time)
+{
+	if(ShortStun && GetTeam(entity) != TFTeam_Red)
+		time *= 2.1;
+	
+	if(LongStun && GetTeam(entity) != TFTeam_Red)
+		time *= 2.5;
+}
+
+void Rogue_ParadoxDLC_AbilityUsed(int client)
+{
+	if(TulipTimer)
+		RequestFrame(BlackTulipDecay, GetClientUserId(client));
 }
 
 public void Rogue_Flawless1_Collect()
@@ -217,16 +245,216 @@ public void Rogue_StartSP3_WaveStart()
 
 static void StartSP(float amount)
 {
-	int please_fix_me;
-	/*for(int client = 1; client <= MaxClients; client++)
+	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
 			int i, other;
-			while(TF2_GetItem(ally, other, i))
+			while(TF2_GetItem(client, other, i))
 			{
 				Saga_ChargeReduction(client, other, amount);
 			}
 		}
-	}*/
+	}
+}
+
+public void Rogue_StunPuppet1_Enemy(int entity)
+{
+	CreateTimer(0.1, StunPuppet1_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+static Action StunPuppet1_Timer(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity == -1 || b_NpcHasDied[entity])
+		return Plugin_Stop;
+	
+	if(fl_NextDelayTime[entity] > (GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT))
+		SDKHooks_TakeDamage(entity, LastHitRef[entity], LastHitRef[entity], 70.0, DMG_PLASMA, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+	
+	return Plugin_Continue;
+}
+
+public void Rogue_StunPuppet2_Enemy(int entity)
+{
+	CreateTimer(0.1, StunPuppet2_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+static Action StunPuppet2_Timer(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity == -1 || b_NpcHasDied[entity])
+		return Plugin_Stop;
+	
+	if(fl_NextDelayTime[entity] > (GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT))
+		SDKHooks_TakeDamage(entity, LastHitRef[entity], LastHitRef[entity], 100.0, DMG_PLASMA, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+	
+	return Plugin_Continue;
+}
+
+public void Rogue_LongDebuff_Collect()
+{
+	LongDebuff = true;
+}
+
+public void Rogue_LongDebuff_Remove()
+{
+	LongDebuff = false;
+}
+
+public void Rogue_LongStun1_Collect()
+{
+	ShortStun = true;
+}
+
+public void Rogue_LongStun1_Remove()
+{
+	ShortStun = false;
+}
+
+public void Rogue_LongStun2_Collect()
+{
+	LongStun = true;
+}
+
+public void Rogue_LongStun2_Remove()
+{
+	LongStun = false;
+}
+
+public void Rogue_BlackTulip_Collect()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		CurrentTulipDamage[client] = 1.0;
+	}
+
+	TulipTimer = CreateTimer(1.0, Tulip_Timer, _, TIMER_REPEAT);
+}
+
+static Action Tulip_Timer(Handle timer)
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && CurrentTulipDamage[client] < 1.6)
+		{
+			CurrentTulipDamage[client] *= 1.004;
+
+			int i, entity;
+			while(TF2_GetItem(client, entity, i))
+			{
+				if(Attributes_Has(entity, 2))
+					Attributes_SetMulti(entity, 2, 1.004);
+				
+				if(Attributes_Has(entity, 8))
+					Attributes_SetMulti(entity, 8, 1.004);
+				
+				if(Attributes_Has(entity, 410))
+					Attributes_SetMulti(entity, 410, 1.004);
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+static void BlackTulipDecay(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client && CurrentTulipDamage[client] > 1.0)
+	{
+		int i, entity;
+		while(TF2_GetItem(client, entity, i))
+		{
+			if(Attributes_Has(entity, 2))
+				Attributes_SetMulti(entity, 2, 1.0 / CurrentTulipDamage[client]);
+			
+			if(Attributes_Has(entity, 8))
+				Attributes_SetMulti(entity, 8, 1.0 / CurrentTulipDamage[client]);
+			
+			if(Attributes_Has(entity, 410))
+				Attributes_SetMulti(entity, 410, 1.0 / CurrentTulipDamage[client]);
+		}
+
+		CurrentTulipDamage[client] = 1.0;
+	}
+}
+
+public void Rogue_BlackTulip_Weapon(int entity, int client)
+{
+	if(Attributes_Has(entity, 2))
+		Attributes_SetMulti(entity, 2, CurrentTulipDamage[client]);
+	
+	if(Attributes_Has(entity, 8))
+		Attributes_SetMulti(entity, 8, CurrentTulipDamage[client]);
+	
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, CurrentTulipDamage[client]);
+}
+
+public void Rogue_BlackTulip_Ally(int entity, StringMap map)
+{
+	if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(Citizen_IsIt(entity))	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+			npc.m_fGunBonusDamage *= 1.6;
+		}
+	}
+}
+
+public void Rogue_BlackTulip_Remove()
+{
+	delete TulipTimer;
+	Rogue_Refresh_Remove();
+}
+
+public void Rogue_CastleSpring_Collect()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		CurrentCastleHealth[client] = 1.0;
+	}
+
+	CastleTimer = CreateTimer(1.0, Castle_Timer, _, TIMER_REPEAT);
+}
+
+static Action Castle_Timer(Handle timer)
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			if(IsPlayerAlive(client) && dieingstate[client] == 0)
+			{
+				if(CurrentCastleHealth[client] < 1.6)
+					CurrentCastleHealth[client] *= 1.0016;
+			}
+			else
+			{
+				CurrentCastleHealth[client] = 1.0;
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+public void Rogue_CastleSpring_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +X% max health
+		map.GetValue("26", value);
+		map.SetValue("26", value * CurrentCastleHealth[entity]);
+	}
+}
+
+public void Rogue_CastleSpring_Remove()
+{
+	delete CastleTimer;
+	Rogue_Refresh_Remove();
 }

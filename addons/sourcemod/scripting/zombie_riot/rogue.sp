@@ -739,24 +739,24 @@ void Rogue_RoundEnd()
 
 	if(CurrentCollection)
 	{
+		ArrayList list = CurrentCollection;
+		CurrentCollection = null;
+
 		Artifact artifact;
-		int length = CurrentCollection.Length;
+		int length = list.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			Artifacts.GetArray(list.Get(i), artifact);
 			if(artifact.FuncRemove != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, artifact.FuncRemove);
 				Call_Finish();
-
-				CurrentCollection.Erase(i);
-				i--;
-				length--;
 			}
 		}
 
-		delete CurrentCollection;
+		delete list;
 	}
+	
 	StartingItem[0] = 0;
 	
 	if(CurseOne != -1)
@@ -2294,13 +2294,13 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(StrEqual(artifact.Name, name, false))
 			{
+				CurrentCollection.Erase(i);
 				if(artifact.FuncRemove != INVALID_FUNCTION)
 				{
 					//call remove function.
 					Call_StartFunction(null, artifact.FuncRemove);
 					Call_Finish();
 				}
-				CurrentCollection.Erase(i);
 				return;
 			}
 		}

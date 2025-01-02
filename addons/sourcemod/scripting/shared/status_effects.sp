@@ -392,6 +392,10 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration)
 			return;
 		}
 	}
+
+	if(!Apply_MasterStatusEffect.Positive)
+		Rogue_ParadoxDLC_DebuffTime(victim, Duration);
+
 	int CurrentSlotSaved = Apply_MasterStatusEffect.Slot;
 	int CurrentPriority = Apply_MasterStatusEffect.SlotPriority;
 	if(CurrentSlotSaved > 0)

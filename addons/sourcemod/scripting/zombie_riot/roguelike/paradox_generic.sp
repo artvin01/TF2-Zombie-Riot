@@ -817,12 +817,7 @@ public void Rogue_BobDuck_Ally(int entity, StringMap map)
 
 		// +25% max health
 		map.GetValue("26", value);
-
-		value += ClassHealth(WeaponClass[entity]);
-		value *= 1.25;
-		value -= ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", value);
+		map.SetValue("26", value * 1.25);
 
 		// +25% building damage
 		value = 1.0;

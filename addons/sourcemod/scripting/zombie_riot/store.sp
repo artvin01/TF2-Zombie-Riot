@@ -4875,7 +4875,7 @@ void Store_ApplyAttribs(int client)
 	}
 	else
 	{
-		map.SetValue("26", RemoveExtraHealth(ClassForStats, 1.0));		// Health
+		map.SetValue("125", RemoveExtraHealth(ClassForStats, 1.0));		// Health
 	}
 
 	float MovementSpeed = 330.0;

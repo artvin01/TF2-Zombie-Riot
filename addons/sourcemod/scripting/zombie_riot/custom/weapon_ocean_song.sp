@@ -512,7 +512,7 @@ public void Ocean_song_ability(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 75.0);
 		f_OceanBuffAbility[client] = GetGameTime() + 15.0;
 		float UserLoc[3];

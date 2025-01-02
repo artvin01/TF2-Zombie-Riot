@@ -115,7 +115,7 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 
 		if(find)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			//Boom! Do effects and buff weapon!
 
 			if(pap == 2)

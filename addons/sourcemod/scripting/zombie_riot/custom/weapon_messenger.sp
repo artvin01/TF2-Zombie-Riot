@@ -133,7 +133,7 @@ public void Messenger_Modechange(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 7.5);
 			EmitSoundToAll(SOUND_MES_CHANGE, client, SNDCHAN_AUTO, 65, _, 0.45, 115);
 			if(Change[client])

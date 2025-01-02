@@ -9,12 +9,14 @@ void Rogue_OnAbilityUseMapStart()
 {
 	Zero(f_WrathOfItallians);
 }
-void Rogue_OnAbilityUse(int weapon)
+void Rogue_OnAbilityUse(int client, int weapon)
 {
 	if(b_WrathOfItallians)
 	{
 		f_WrathOfItallians[weapon] = GetGameTime() + 1.0;
 	}
+
+	Rogue_ParadoxDLC_AbilityUsed(client);
 }
 
 bool Rogue_InItallianWrath(int weapon)
