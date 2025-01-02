@@ -181,8 +181,8 @@ methodmap HallamDemonWhisperer < CClotBody
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("eyes", flPos, flAng);
-		npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {0.0,0.0,0.0});
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {0.0,0.0,-15.0});
+		npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {10.0,0.0,0.0});
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {10.0,0.0,-15.0});
 		npc.StartPathing();
 		
 		return npc;
@@ -291,8 +291,8 @@ public void HallamDemonWhisperer_ClotThink(int iNPC)
 
 				HallamGreatDemon npcally = view_as<HallamGreatDemon>(NpcSpawnDemon);
 				npcally.GetAttachment("eyes", flPos, flAng);
-				npcally.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npcally.index, "eyes", {0.0,0.0,0.0});
-				npcally.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npcally.index, "eyes", {0.0,0.0,-15.0});
+				npcally.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npcally.index, "eyes", {10.0,0.0,0.0});
+				npcally.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npcally.index, "eyes", {10.0,0.0,-15.0});
 			}
 		}
 		for(int LoopExplode; LoopExplode <= 10; LoopExplode++)

@@ -165,19 +165,19 @@ methodmap ChaosEvilDemon < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 125, 125, 125, 200);
+		SetEntityRenderColor(npc.index, 65, 65, 65, 200);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 200);
+		SetEntityRenderColor(npc.m_iWearable3, 65, 65, 65, 255);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 200);
+		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 65, 255);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 200);
+		SetEntityRenderColor(npc.m_iWearable1, 65, 65, 65, 255);
 
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("eyes", flPos, flAng);
-		npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {0.0,0.0,0.0});
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {0.0,0.0,-15.0});
+		npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {10.0,0.0,0.0});
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {10.0,0.0,-15.0});
 		npc.StartPathing();
 		
 		return npc;

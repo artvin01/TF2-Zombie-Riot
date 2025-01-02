@@ -88,7 +88,7 @@ methodmap BobTheFirstFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 11)
+		switch(GetURandomInt() % 22)
 		{
 			case 0:
 			{
@@ -141,6 +141,59 @@ methodmap BobTheFirstFollower < CClotBody
 			{
 				this.Speech("Chaos, i still dont know if its made by someone, or a force of nature.");
 				this.SpeechDelay(5.0, "Time will tell what it is..");
+			}
+			case 11:
+			{
+				this.Speech("What freaks me out?");
+				this.SpeechDelay(5.0, "Ever lost your best friend to another friend?");
+				this.SpeechDelay(10.0, "That.");
+			}
+			case 12:
+			{
+				this.Speech("Im not emotionless.");
+				this.SpeechDelay(5.0, "I just dont show it to everyone i meet.");
+			}
+			case 13:
+			{
+				this.Speech("Twirl, the only one to think alike me.");
+				this.SpeechDelay(5.0, "If it were opposite day.");
+			}
+			case 14:
+			{
+				this.Speech("How i made clones in our battle?");
+				this.SpeechDelay(5.0, "I didnt, i just moved around.");
+			}
+			case 15:
+			{
+				this.Speech("Think you'd stand a chance against me and bladedance?");
+			}
+			case 16:
+			{
+				this.Speech("My favorite drink?");
+				this.SpeechDelay(5.0, "Banana Juice.");
+			}
+			case 17:
+			{
+				this.Speech("Omega?","...");
+			}
+			case 18:
+			{
+				this.Speech("You think i'd be sorry for attacking you?");
+				this.SpeechDelay(5.0, "You should be sorry for being so god damn careless with the seaborn.");
+			}
+			case 19:
+			{
+				this.Speech("If you ever think i'll trust that second bob faker, ill laugh.");
+				this.SpeechDelay(9.0, "He acts like an expidonsan.");
+			}
+			case 20:
+			{
+				this.Speech("I wonder what could would think of whiteflowers death","...");
+				this.SpeechDelay(8.0, "He's be probably very upset.");
+			}
+			case 21:
+			{
+				this.Speech("Cherrish your friends as much as you can, while they are still here.");
 			}
 		}
 		

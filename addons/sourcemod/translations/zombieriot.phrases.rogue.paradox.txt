@@ -1579,15 +1579,15 @@
 	}
 	"Mazeat Lost Tech Option 1a"
 	{
-		"en"	"Take Something else."
+		"en"	"Take Something else"
 	}
 	"Mazeat Lost Tech Desc 1a"
 	{
-		"en"	"Take whats inside the closet instead, cant risk it.\nObtain money and a high value item."
+		"en"	"Take whats inside the closet instead, cant risk it.\n{green}Obtain money and a high value item."
 	}
 	"Mazeat Lost Tech Option 1b"
 	{
-		"en"	"Take The Price."
+		"en"	"Take The Price"
 	}
 	"Mazeat Lost Tech Desc 1b"
 	{

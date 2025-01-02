@@ -992,8 +992,8 @@ public float Rogue_Encounter_MazeatLostTech()
 	strcopy(vote.Desc, sizeof(vote.Desc), "Mazeat Lost Tech Desc 1a");
 	list.PushArray(vote);
 	
-	strcopy(vote.Name, sizeof(vote.Name), "Mazeat Lost Tech Option 1a");
-	strcopy(vote.Desc, sizeof(vote.Desc), "Mazeat Lost Tech Desc 1a");
+	strcopy(vote.Name, sizeof(vote.Name), "Mazeat Lost Tech Option 1b");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Mazeat Lost Tech Desc 1b");
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
@@ -1007,7 +1007,6 @@ public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
 	{
 		case 0:
 		{
-			PrintToChatAll("%t", "Mazeat Lost Tech 1b");
 			GiveCash(5000);
 			Artifact artifact;
 			if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
@@ -1015,7 +1014,6 @@ public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
 		}
 		case 1:
 		{
-			PrintToChatAll("%t", "Mazeat Lost Tech 1b");
 			Rogue_GiveNamedArtifact("Mazeat Lost Technology", true);
 			Rogue_StartThisBattle(5.0);
 			Rogue_SetBattleIngots(1);
