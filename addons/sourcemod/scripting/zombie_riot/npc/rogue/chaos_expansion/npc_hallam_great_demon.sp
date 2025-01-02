@@ -46,8 +46,8 @@ void HallamGreatDemon_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheModel("models/props_halloween/eyeball_projectile.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Chaos Evil Demon");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_evil_demon");
+	strcopy(data.Name, sizeof(data.Name), "Hallam's Great Demon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hallam_gerat_demon");
 	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -108,6 +108,11 @@ methodmap HallamGreatDemon < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
+	property float m_flSpawnWhisperer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
 	property bool m_bFakeClone
 	{
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
@@ -128,20 +133,21 @@ methodmap HallamGreatDemon < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
-			RaidModeScaling = 0.0;
+			RaidModeScaling = 100.0;
 		}
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_flSpawnWhisperer = 1.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(HallamGreatDemon_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(HallamGreatDemon_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(HallamGreatDemon_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 125.0;
+		npc.m_flSpeed = 300.0;
 		
 		
 		int skin = 1;
@@ -165,6 +171,12 @@ methodmap HallamGreatDemon < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 200);
 		
+		float flPos[3], flAng[3];
+				
+		npc.GetAttachment("eyes", flPos, flAng);
+		npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {0.0,0.0,0.0});
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {0.0,0.0,-15.0});
+		
 		return npc;
 	}
 }
@@ -185,6 +197,43 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+	if(npc.m_flSpawnWhisperer)
+	{
+		float SelfPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		int flMaxHealthally = ReturnEntityMaxHealth(npc.index);
+		int spawn_index = NPC_CreateByName("npc_ihanal_demon_whisperer", npc.index, pos, ang, GetTeam(this.index));
+		if(spawn_index > MaxClients)
+		{
+			flMaxHealthally /= 2;
+			npc.m_iTargetally = spawn_index;
+			HallamGreatDemon npcally = view_as<HallamGreatDemon>(spawn_index);
+			nnpcallypc.m_iTargetally = npc.index;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
+			fl_TotalArmor[spawn_index] = fl_TotalArmor[npc.index];
+		}
+		npc.m_flSpawnWhisperer = 0.0;
+		return;
+	}
+	float DemonScaling = 0.5;
+	if(IsValidEntity(npc.m_iTargetAlly))
+	{
+		//They are alive, get buffs slowly.
+		int flMaxHealthally = ReturnEntityMaxHealth(npc.m_iTargetAlly);
+		int Currenthealth = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iHealth");
+
+		DemonScaling = float(Currenthealth) / (flMaxHealthally);
+	}
+	DemonScaling += 1.0;
+	npc.m_flSpeed = 250.0 * DemonScaling;
+	RaidModeScaling = 100.0 * DemonScaling;
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -194,8 +243,46 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 
 	if(npc.m_flHealCooldownDo < GetGameTime(npc.index))
 	{
-		//spawn little fucks
-		npc.m_flHealCooldownDo = GetGameTime(npc.index) + 5.5;
+		if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+		{
+			//spawn little fucks every so often
+			float SelfPos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			TE_Particle("teleported_blue", SelfPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			int flMaxHealthally = ReturnEntityMaxHealth(npc.index);
+			int NpcSpawnDemon = NPC_CreateById(AncientDemonNpcId(), -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
+			if(IsValidEntity(NpcSpawnDemon))
+			{
+				flMaxHealth /= 80;
+				flMaxHealth *= DemonScaling;
+				if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
+				{
+					NpcAddedToZombiesLeftCurrently(NpcSpawnDemon, true);
+				}
+				i_RaidGrantExtra[NpcSpawnDemon] = -1;
+				SetEntProp(NpcSpawnDemon, Prop_Data, "m_iHealth", flMaxHealth);
+				SetEntProp(NpcSpawnDemon, Prop_Data, "m_iMaxHealth", flMaxHealth);
+				float scale = GetEntPropFloat(self, Prop_Send, "m_flModelScale");
+				SetEntPropFloat(NpcSpawnDemon, Prop_Send, "m_flModelScale", scale * 0.7);
+				fl_Extra_MeleeArmor[NpcSpawnDemon] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[NpcSpawnDemon] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[NpcSpawnDemon] = fl_Extra_Speed[npc.index];
+				fl_Extra_Damage[NpcSpawnDemon] = fl_Extra_Damage[npc.index];
+				fl_TotalArmor[NpcSpawnDemon] = fl_TotalArmor[npc.index];
+				fl_Extra_Damage[NpcSpawnDemon] *= 2.25;
+				fl_Extra_Damage[NpcSpawnDemon] *= DemonScaling;
+				float flPos[3], flAng[3];
+						
+				HallamGreatDemon npcally = view_as<HallamGreatDemon>(spawn_index);
+				npcally.GetAttachment("eyes", flPos, flAng);
+				npcally.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npcally.index, "eyes", {0.0,0.0,0.0});
+				npcally.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npcally.index, "eyes", {0.0,0.0,-15.0});
+			}
+			npc.m_flHealCooldownDo = GetGameTime(npc.index) + 5.5;
+			if(RaidModeScaling >= 200.0)
+				npc.m_flHealCooldownDo = GetGameTime(npc.index) + 3.0;
+		}
 	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -220,7 +307,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		HallamGreatDemonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		HallamGreatDemonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget, DemonScaling); 
 	}
 	else
 	{
@@ -268,7 +355,7 @@ public void HallamGreatDemon_NPCDeath(int entity)
 
 }
 
-void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int target, float distance)
+void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int target, float distance, float Scaling)
 {
 
 	if(npc.m_flAttackHappens)
@@ -290,8 +377,8 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					int ElementalDamage = 200;
-					float damageDealt = 450.0;
+					int ElementalDamage = 200 * DemonScaling;
+					float damageDealt = 450.0 * DemonScaling;
 
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
@@ -321,8 +408,8 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
-				int ElementalDamage = 150;
-				float damageDealt = 120.0;
+				int ElementalDamage = 150 * DemonScaling;
+				float damageDealt = 120.0 * DemonScaling;
 
 				int entity = npc.FireArrow(vecTarget, damageDealt, 800.0, "models/props_halloween/eyeball_projectile.mdl");
 				i_ChaosArrowAmount[entity] = ElementalDamage;

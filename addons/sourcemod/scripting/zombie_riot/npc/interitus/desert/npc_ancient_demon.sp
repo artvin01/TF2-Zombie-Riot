@@ -65,6 +65,10 @@ void DesertAncientDemon_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
+int AncientDemonNpcId()
+{
+	return NPCId;
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
@@ -262,6 +266,10 @@ public void DesertAncientDemon_NPCDeath(int entity)
 	}
 		
 	
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))

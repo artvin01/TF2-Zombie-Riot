@@ -27,7 +27,7 @@ static const char g_IdleAlertedSounds[][] =
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"player/invuln_off_vaccinator.wav"
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -43,7 +43,7 @@ static const char g_RangedAttackSounds[][] = {
 };
 
 
-void HallamGreatDemon_OnMapStart_NPC()
+void HallamDemonWhisperer_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -54,8 +54,8 @@ void HallamGreatDemon_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheModel("models/props_halloween/eyeball_projectile.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Chaos Evil Demon");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_evil_demon");
+	strcopy(data.Name, sizeof(data.Name), "Ihanal Demon Whisperer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ihanal_demon_whisperer");
 	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -67,9 +67,9 @@ void HallamGreatDemon_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return HallamGreatDemon(vecPos, vecAng, team);
+	return HallamDemonWhisperer(vecPos, vecAng, team);
 }
-methodmap HallamGreatDemon < CClotBody
+methodmap HallamDemonWhisperer < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -99,7 +99,7 @@ methodmap HallamGreatDemon < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,75);
 	}
 	public void PlayRangedSound()
 	{
@@ -120,9 +120,14 @@ methodmap HallamGreatDemon < CClotBody
 	{
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
 	}
-	public HallamGreatDemon(float vecPos[3], float vecAng[3], int ally)
+	property float m_flSilvesterHudCD
 	{
-		HallamGreatDemon npc = view_as<HallamGreatDemon>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.4", "15000", ally, _, true));
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	public HallamDemonWhisperer(float vecPos[3], float vecAng[3], int ally)
+	{
+		HallamDemonWhisperer npc = view_as<HallamDemonWhisperer>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -136,7 +141,7 @@ methodmap HallamGreatDemon < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
-			RaidModeScaling = 0.0;
+			RaidModeScaling = 100.0;
 		}
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -144,12 +149,12 @@ methodmap HallamGreatDemon < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(HallamGreatDemon_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(HallamGreatDemon_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(HallamGreatDemon_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(HallamDemonWhisperer_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(HallamDemonWhisperer_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(HallamDemonWhisperer_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 125.0;
+		npc.m_flSpeed = 330.0;
 		
 		
 		int skin = 1;
@@ -159,19 +164,19 @@ methodmap HallamGreatDemon < CClotBody
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/dec24_le_frosteaux/dec24_le_frosteaux.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/dec24_laire_filteure/dec24_laire_filteure.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2024_badlands_bandido_style1/hwn2024_badlands_bandido_style1.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 125, 125, 125, 200);
+		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 200);
+		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 200);
+		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 200);
+		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
 
 		float flPos[3], flAng[3];
 				
@@ -184,9 +189,9 @@ methodmap HallamGreatDemon < CClotBody
 	}
 }
 
-public void HallamGreatDemon_ClotThink(int iNPC)
+public void HallamDemonWhisperer_ClotThink(int iNPC)
 {
-	HallamGreatDemon npc = view_as<HallamGreatDemon>(iNPC);
+	HallamDemonWhisperer npc = view_as<HallamDemonWhisperer>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -206,65 +211,152 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	if(npc.m_flHealCooldownDo < GetGameTime(npc.index))
-	{
-		npc.m_flHealCooldownDo = GetGameTime(npc.index) + 0.5;
-		ExpidonsaGroupHeal(npc.index, 1000.0, 99, 3000.0, 1.0, false,Expidonsa_DontHealSameIndex, HallamGreatDemonAfterBuff);
-		DesertYadeamDoHealEffect(npc.index, 1000.0);
-	}
-
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
+	//Set raid to this one incase the previous one has died or somehow vanished
 	
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	if(npc.m_flSilvesterHudCD < GetGameTime())
 	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		npc.m_flSilvesterHudCD = GetGameTime() + 0.2;
+		//Set raid to this one incase the previous one has died or somehow vanished
+		if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+		{
+			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+			{
+				if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+				{
+					Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+				}	
+			}
+		}
+		else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
+		{	
+			RaidBossActive = EntIndexToEntRef(npc.index);
+		}
+	}
+
+	if(IsValidAlly(npc.index, npc.m_iTargetAlly))
+	{
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
+		{
+			//too close.
+			npc.StopPathing();
+		}
+		else if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+			PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.StartPathing();
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			npc.StartPathing();
 		}
-		HallamGreatDemonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		HallamDemonWhispererSelfDefense(npc,GetGameTime(npc.index), npc.m_iTargetAlly, flDistanceToTarget); 
 	}
 	else
 	{
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		for(int Loop; Loop <= 15; Loop++)
+		{
+			float SelfPos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			TE_Particle("teleported_blue", SelfPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			int flMaxHealthally = ReturnEntityMaxHealth(npc.index);
+			int NpcSpawnDemon = NPC_CreateById(AncientDemonNpcId(), -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
+			if(IsValidEntity(NpcSpawnDemon))
+			{
+				flMaxHealth /= 20;
+				flMaxHealth *= DemonScaling;
+				if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
+				{
+					NpcAddedToZombiesLeftCurrently(NpcSpawnDemon, true);
+				}
+				i_RaidGrantExtra[NpcSpawnDemon] = -1;
+				SetEntProp(NpcSpawnDemon, Prop_Data, "m_iHealth", flMaxHealth);
+				SetEntProp(NpcSpawnDemon, Prop_Data, "m_iMaxHealth", flMaxHealth);
+				float scale = GetEntPropFloat(self, Prop_Send, "m_flModelScale");
+				SetEntPropFloat(NpcSpawnDemon, Prop_Send, "m_flModelScale", scale * 0.7);
+				fl_Extra_MeleeArmor[NpcSpawnDemon] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[NpcSpawnDemon] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[NpcSpawnDemon] = fl_Extra_Speed[npc.index];
+				fl_Extra_Damage[NpcSpawnDemon] = fl_Extra_Damage[npc.index];
+				fl_TotalArmor[NpcSpawnDemon] = fl_TotalArmor[npc.index];
+				fl_Extra_Damage[NpcSpawnDemon] *= 3.0;
+
+				HallamGreatDemon npcally = view_as<HallamGreatDemon>(spawn_index);
+				npcally.GetAttachment("eyes", flPos, flAng);
+				npcally.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npcally.index, "eyes", {0.0,0.0,0.0});
+				npcally.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npcally.index, "eyes", {0.0,0.0,-15.0});
+			}
+		}
+		for(int LoopExplode; LoopExplode <= 10; LoopExplode++)
+		{
+			float pos1[3];
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos1);
+			pos1[0] += GetRandomFloat(-30.0,30.0);
+			pos1[1] += GetRandomFloat(-30.0,30.0);
+			pos1[2] += GetRandomFloat(15.0,60.0);
+			DataPack pack_boom1 = new DataPack();
+			pack_boom1.WriteFloat(pos1[0]);
+			pack_boom1.WriteFloat(pos1[1]);
+			pack_boom1.WriteFloat(pos1[2]);
+			pack_boom1.WriteCell(0);
+			RequestFrame(MakeExplosionFrameLater, pack_boom1);
+		}
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		npc.m_flNextThinkTime = FAR_FUTURE;
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		//If ally somehow dies before him, explode into like 20 demons.
 	}
 	npc.PlayIdleAlertSound();
 }
 
-public Action HallamGreatDemon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action HallamDemonWhisperer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	HallamGreatDemon npc = view_as<HallamGreatDemon>(victim);
+	HallamDemonWhisperer npc = view_as<HallamDemonWhisperer>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		if(attacker <= MaxClients && (TeutonType[attacker] != TEUTON_NONE) || dieingstate[attacker] != 0)
+			return Plugin_Changed;
+
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+
+		float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) 
+		{
+			if(IsValidAlly(npc.index, npc.m_iTargetAlly))
+			{
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "False Therapy", 3.0);
+				HallamDemonWhisperer npcally = view_as<HallamDemonWhisperer>(npc.m_iTargetAlly);
+				npc.m_iTarget = attacker;
+				float vecAlly[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecAlly);
+				float vecMe[3]; WorldSpaceCenter(attacker, vecMe);
+				spawnBeam(0.3, 255, 50, 50, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.3, 255, 50, 50, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
+			}
+			//if close enough.
+		}
+		//when hurt, forces main demon to attack said target
 	}
 	
 	return Plugin_Changed;
 }
 
-public void HallamGreatDemon_NPCDeath(int entity)
+public void HallamDemonWhisperer_NPCDeath(int entity)
 {
-	HallamGreatDemon npc = view_as<HallamGreatDemon>(entity);
+	HallamDemonWhisperer npc = view_as<HallamDemonWhisperer>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -284,144 +376,37 @@ public void HallamGreatDemon_NPCDeath(int entity)
 
 }
 
-void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int target, float distance)
+void HallamDemonWhispererSelfDefense(HallamDemonWhisperer npc, float gameTime, int target, float distance)
 {
-
-	if(npc.m_flAttackHappens)
-	{
-		if(npc.m_flAttackHappens < gameTime)
-		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))
-			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
-				{
-					int ElementalDamage = 200;
-					float damageDealt = 450.0;
-
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
-
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Elemental_AddChaosDamage(target, npc.index, ElementalDamage, true, true);
-					
-					// Hit sound
-					npc.PlayMeleeHitSound();
-				} 
-			}
-			delete swingTrace;
-		}
-		return;
-	}
-
-	if(npc.m_flNextRangedSpecialAttack)
-	{
-		if(npc.m_flNextRangedSpecialAttack < gameTime)
-		{
-			npc.m_flNextRangedSpecialAttack = 0.0;
-			
-			if(npc.m_iTarget > 0)
-			{	
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-				npc.FaceTowards(vecTarget, 15000.0);
-				
-				npc.PlayRangedSound();
-				int ElementalDamage = 150;
-				float damageDealt = 120.0;
-
-				int entity = npc.FireArrow(vecTarget, damageDealt, 800.0, "models/props_halloween/eyeball_projectile.mdl");
-				i_ChaosArrowAmount[entity] = ElementalDamage;
-				
-				if(entity != -1)
-				{
-					if(IsValidEntity(f_ArrowTrailParticle[entity]))
-						RemoveEntity(f_ArrowTrailParticle[entity]);
-
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(entity, 100, 100, 255, 255);
-					
-					WorldSpaceCenter(entity, vecTarget);
-					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "tranq_distortion_trail", 3.0);
-					SetParent(entity, f_ArrowTrailParticle[entity]);
-					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
-				}
-			}
-		}
-		return;
-	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 		{
 			int Enemy_I_See;
 								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			Enemy_I_See = Can_I_See_Enemy_Only(npc.index, npc.m_iTargetAlly);
 					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
+			if(IsValidAlly(npc.index, Enemy_I_See))
 			{
-				npc.m_iTarget = Enemy_I_See;
+				float vecAlly[3]; WorldSpaceCenter(Enemy_I_See, vecAlly);
+				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						
 				npc.m_flAttackHappens = gameTime + 0.15;
 				npc.m_flDoingAnimation = gameTime + 0.15;
 				npc.m_flNextMeleeAttack = gameTime + 0.65;
+				
+				ApplyStatusEffect(entity, npc.m_iTargetAlly, "Buff Banner", 3.0);	
+				ApplyStatusEffect(entity, npc.m_iTargetAlly, "Battilons Backup", 3.0);	
+				ApplyStatusEffect(entity, npc.m_iTargetAlly, "Squad Leader", 3.0);
+				HealEntityGlobal(entity, npc.m_iTargetAlly, float(maxhealth) / 100, 1.0, 0.0, HEAL_SELFHEAL);
+				spawnBeam(0.8, 50, 255, 50, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.8, 50, 255, 50, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 			}
 		}		
 	}
-	if(gameTime > npc.m_flNextRangedAttack)
-	{
-		if(distance > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
-		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
-			{
-				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_THROW");
-						
-				npc.m_flNextRangedSpecialAttack = gameTime + 0.15;
-				npc.m_flDoingAnimation = gameTime + 0.15;
-				npc.m_flNextRangedAttack = gameTime + 1.0;
-			}
-		}		
-	}
-}
-
-
-void HallamGreatDemonAfterBuff(int entity, int victim)
-{
-	ApplyStatusEffect(entity, victim, "Buff Banner", 0.6);	
-	ApplyStatusEffect(entity, victim, "Battilons Backup", 0.6);	
-	ApplyStatusEffect(entity, victim, "Squad Leader", 0.6);
-
-	//buff self too
-	ApplyStatusEffect(entity, entity, "Buff Banner", 0.6);	
-	ApplyStatusEffect(entity, entity, "Battilons Backup", 0.6);	
-	ApplyStatusEffect(entity, entity, "Squad Leader", 0.6);
-
-
-	float vecSelf[3];
-	WorldSpaceCenter(entity, vecSelf);
-	float vecAlly[3];
-	WorldSpaceCenter(victim, vecAlly);
-	//If it healed someone, heal himself!
-	int maxhealth = ReturnEntityMaxHealth(entity);
-	HealEntityGlobal(entity, entity, float(maxhealth) / 500, 1.0, 0.0, HEAL_SELFHEAL);
-	TE_SetupBeamPoints(vecSelf, vecAlly, Shared_BEAM_Laser, 0, 0, 0, 0.25, 10.0, 10.0, 0, 1.0, {65,255,65,125}, 3);
-	TE_SendToAll(0.0);
 }
