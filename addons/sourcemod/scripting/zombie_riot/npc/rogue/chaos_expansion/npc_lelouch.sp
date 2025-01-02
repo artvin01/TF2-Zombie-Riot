@@ -69,8 +69,8 @@ static const char g_AngerSounds[][] = {
 	Crystals:
 		Basic crystal operation Done.
 		Make crystal Spin laser.
-		Port over ability 8 into one of the laser mods.
-		Add a cool animation for when the crystals get summoned, something akin to what karlas does. it looks cool.
+		Port over ability 8 into one of the laser mods. Done. Just need to add dmg laser code.
+		Add a cool animation for when the crystals get summoned, something akin to what karlas does. it looks cool. somewhat done. needs more tweaking.
 			- disco_fever
 			
 			maybe whenever you kill all the crystals he does an anim: taunt_commending_clap_spy
