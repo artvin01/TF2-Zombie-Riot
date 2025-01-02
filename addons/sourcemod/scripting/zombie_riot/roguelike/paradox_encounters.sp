@@ -280,6 +280,7 @@ public float Rogue_Encounter_Prophecy1()
 	list.PushArray(vote);
 
 	bool easyMode = Rogue_HasNamedArtifact("Compass and Map");
+	bool hardMode = Rogue_HasNamedArtifact("Bob's Assistance");
 	bool found;
 
 	if(!easyMode)
@@ -309,7 +310,7 @@ public float Rogue_Encounter_Prophecy1()
 	}
 	list.PushArray(vote);
 
-	if(!easyMode)
+	if(hardMode)
 	{
 		bool rogue, runia;
 		for(int client = 1; client <= MaxClients; client++)
@@ -347,14 +348,22 @@ public float Rogue_Encounter_Prophecy1()
 }
 public void Rogue_Vote_Prophecy1(const Vote vote, int index)
 {
-	if(index)
+	switch(index)
 	{
-		PrintToChatAll("%t", "Prophecy Lore 1b");
-		Rogue_GiveNamedArtifact("Waldch Assistance", true);
-	}
-	else
-	{
-		PrintToChatAll("%t", "Prophecy Lore 1a");
+		case 0:
+		{
+			PrintToChatAll("%t", "Prophecy Lore 1a");
+		}
+		case 1:
+		{
+			PrintToChatAll("%t", "Prophecy Lore 1b");
+			Rogue_GiveNamedArtifact("Waldch Assistance", true);
+		}
+		case 2:
+		{
+			PrintToChatAll("%t", "Prophecy Lore 1c");
+			Rogue_GiveNamedArtifact("Twirl Guidance");
+		}
 	}
 }
 
@@ -384,6 +393,7 @@ public float Rogue_Encounter_Prophecy2()
 	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
 
 	bool waldch = Rogue_HasNamedArtifact("Waldch Assistance");
+	bool twirl = Rogue_HasNamedArtifact("Twirl Guidance");
 	bool kalm;
 	if(waldch)
 	{
@@ -400,7 +410,16 @@ public float Rogue_Encounter_Prophecy2()
 
 	Vote vote;
 
-	if(kalm)
+	if(twirl)
+	{
+		ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Prophecy2, "Prophecy Lore 4");
+
+		strcopy(vote.Name, sizeof(vote.Name), "Unauthorized Ruina Gem");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		vote.Config[0] = 1;
+		list.PushArray(vote);
+	}
+	else if(kalm)
 	{
 		ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Prophecy2, "Prophecy Lore 3");
 
@@ -445,9 +464,16 @@ public void Rogue_Vote_Prophecy2(const Vote vote, int index)
 {
 	if(vote.Config[0])
 	{
-		Rogue_GiveNamedArtifact("Kahmlstein Guidance");
+		if(index)
+		{
+			Rogue_GiveNamedArtifact("Kahmlstein Guidance");
 
-		Rogue_RemoveChaos(50);
+			Rogue_RemoveChaos(50);
+		}
+		else
+		{
+			Rogue_GiveNamedArtifact("Unauthorized Ruina Gem");
+		}
 	}
 	else
 	{
@@ -720,7 +746,12 @@ public float Rogue_Encounter_FortituousOpportunity()
 }
 public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
 {
-	if(vote.Config[0])
+	if(StrEqual(vote.Config, "Unauthorized Ruina Gem"))
+	{
+		// The mercs gave away the gem, what do you do now Twirl
+		CPrintToChatAll("{yellow}You idiots!!!");
+	}
+	else if(vote.Config[0])
 	{
 		CPrintToChatAll("%t", "Fortituous Opportunity Lore 1", vote.Config);
 		Rogue_RemoveNamedArtifact(vote.Config);
