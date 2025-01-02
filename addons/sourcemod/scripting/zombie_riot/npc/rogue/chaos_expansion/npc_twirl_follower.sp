@@ -139,12 +139,12 @@ methodmap TwirlFollowerr < CClotBody
 	}
 	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
 	{
-		NpcSpeechBubble(this.index, speechtext, 5, {255, 255, 255, 255}, {0.0,0.0,120.0}, endingtextscroll);
+		NpcSpeechBubble(this.index, speechtext, 5, {255, 255, 255, 255}, {0.0,0.0,90.0}, endingtextscroll);
 	}
 	
 	public TwirlFollowerr(float vecPos[3], float vecAng[3],int ally, const char[] data)
 	{
-		TwirlFollowerr npc = view_as<TwirlFollowerr>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.15", "50000", TFTeam_Red, true, true));
+		TwirlFollowerr npc = view_as<TwirlFollowerr>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", TFTeam_Red, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -244,6 +244,10 @@ static void ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		npc.m_iTargetWalkTo = -1;
+		npc.SetActivity("ACT_MP_RUN_MELEE");
+		npc.m_bisWalking = true;
+		npc.StartPathing();
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -280,6 +284,31 @@ static void ClotThink(int iNPC)
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
+		int ally = npc.m_iTargetWalkTo;
+		if(IsValidAlly(npc.index,ally))
+		{
+			float vecTarget[3]; WorldSpaceCenter(ally, vecTarget );
+		
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(flDistanceToTarget > 25000.0)
+			{
+				npc.m_bisWalking = true;
+				NPC_SetGoalEntity(npc.index, ally);
+				npc.StartPathing();
+				npc.SetActivity("ACT_MP_RUN_MELEE");
+				return;
+			}
+
+			npc.m_bisWalking = false;
+			npc.StopPathing();
+			npc.SetActivity("ACT_MP_STAND_MELEE");
+		}
+		else
+		{
+			ally = GetClosestAllyPlayer(npc.index);
+			npc.m_iTargetWalkTo = ally;
+		}
 	}
 	npc.SpeechTalk();
 }
@@ -289,7 +318,7 @@ int TwirlFollowerrSelfDefense(TwirlFollowerr npc, float gameTime, int target, fl
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.5))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.5))
 		{
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 					
@@ -297,7 +326,7 @@ int TwirlFollowerrSelfDefense(TwirlFollowerr npc, float gameTime, int target, fl
 			{
 				npc.m_iTarget = Enemy_I_See;
 				float target_vec[3];
-				npc.m_flNextMeleeAttack = gameTime + 1.5;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
 				float DamageProject = 30.0;
 				float projectile_speed = 900.0;
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
@@ -321,7 +350,7 @@ int TwirlFollowerrSelfDefense(TwirlFollowerr npc, float gameTime, int target, fl
 				GetAttachment(npc.index, "effect_hand_r", flPos, NULL_VECTOR);
 				npc.FireParticleRocket(target_vec, DamageProject, projectile_speed , 0.0 , Particle, false, _, true, flPos);
 			}
-			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.5))
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.5))
 			{
 				//target is too far, try to close in
 				return 0;
@@ -338,7 +367,7 @@ int TwirlFollowerrSelfDefense(TwirlFollowerr npc, float gameTime, int target, fl
 		}
 		else
 		{
-			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.5))
+			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.5))
 			{
 				//target is too far, try to close in
 				return 0;
@@ -355,7 +384,7 @@ int TwirlFollowerrSelfDefense(TwirlFollowerr npc, float gameTime, int target, fl
 	}
 	else
 	{
-		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.5))
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.5))
 		{
 			//target is too far, try to close in
 			return 0;

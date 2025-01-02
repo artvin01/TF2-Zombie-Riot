@@ -256,7 +256,7 @@ public void HallamDemonWhisperer_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			npc.StartPathing();
 		}
-		HallamDemonWhispererSelfDefense(npc,GetGameTime(npc.index), npc.m_iTargetAlly, flDistanceToTarget); 
+		HallamDemonWhispererSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
@@ -264,14 +264,13 @@ public void HallamDemonWhisperer_ClotThink(int iNPC)
 		{
 			float SelfPos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			float AllyAng[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
 			TE_Particle("teleported_blue", SelfPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-			int flMaxHealthally = ReturnEntityMaxHealth(npc.index);
+			int flMaxHealth = ReturnEntityMaxHealth(npc.index);
 			int NpcSpawnDemon = NPC_CreateById(AncientDemonNpcId(), -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
 			if(IsValidEntity(NpcSpawnDemon))
 			{
 				flMaxHealth /= 20;
-				flMaxHealth *= DemonScaling;
 				if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
 				{
 					NpcAddedToZombiesLeftCurrently(NpcSpawnDemon, true);
@@ -279,7 +278,7 @@ public void HallamDemonWhisperer_ClotThink(int iNPC)
 				i_RaidGrantExtra[NpcSpawnDemon] = -1;
 				SetEntProp(NpcSpawnDemon, Prop_Data, "m_iHealth", flMaxHealth);
 				SetEntProp(NpcSpawnDemon, Prop_Data, "m_iMaxHealth", flMaxHealth);
-				float scale = GetEntPropFloat(self, Prop_Send, "m_flModelScale");
+				float scale = GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 				SetEntPropFloat(NpcSpawnDemon, Prop_Send, "m_flModelScale", scale * 0.7);
 				fl_Extra_MeleeArmor[NpcSpawnDemon] = fl_Extra_MeleeArmor[npc.index];
 				fl_Extra_RangedArmor[NpcSpawnDemon] = fl_Extra_RangedArmor[npc.index];
@@ -288,7 +287,9 @@ public void HallamDemonWhisperer_ClotThink(int iNPC)
 				fl_TotalArmor[NpcSpawnDemon] = fl_TotalArmor[npc.index];
 				fl_Extra_Damage[NpcSpawnDemon] *= 3.0;
 
-				HallamGreatDemon npcally = view_as<HallamGreatDemon>(spawn_index);
+				float flPos[3], flAng[3];
+
+				HallamGreatDemon npcally = view_as<HallamGreatDemon>(NpcSpawnDemon);
 				npcally.GetAttachment("eyes", flPos, flAng);
 				npcally.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npcally.index, "eyes", {0.0,0.0,0.0});
 				npcally.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npcally.index, "eyes", {0.0,0.0,-15.0});
@@ -340,7 +341,7 @@ public Action HallamDemonWhisperer_OnTakeDamage(int victim, int &attacker, int &
 			{
 				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "False Therapy", 3.0);
 				HallamDemonWhisperer npcally = view_as<HallamDemonWhisperer>(npc.m_iTargetAlly);
-				npc.m_iTarget = attacker;
+				npcally.m_iTarget = attacker;
 				float vecAlly[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecAlly);
 				float vecMe[3]; WorldSpaceCenter(attacker, vecMe);
 				spawnBeam(0.3, 255, 50, 50, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
@@ -376,7 +377,7 @@ public void HallamDemonWhisperer_NPCDeath(int entity)
 
 }
 
-void HallamDemonWhispererSelfDefense(HallamDemonWhisperer npc, float gameTime, int target, float distance)
+void HallamDemonWhispererSelfDefense(HallamDemonWhisperer npc, float gameTime, float distance)
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
@@ -396,11 +397,11 @@ void HallamDemonWhispererSelfDefense(HallamDemonWhisperer npc, float gameTime, i
 				npc.m_flAttackHappens = gameTime + 0.15;
 				npc.m_flDoingAnimation = gameTime + 0.15;
 				npc.m_flNextMeleeAttack = gameTime + 0.65;
-				
-				ApplyStatusEffect(entity, npc.m_iTargetAlly, "Buff Banner", 3.0);	
-				ApplyStatusEffect(entity, npc.m_iTargetAlly, "Battilons Backup", 3.0);	
-				ApplyStatusEffect(entity, npc.m_iTargetAlly, "Squad Leader", 3.0);
-				HealEntityGlobal(entity, npc.m_iTargetAlly, float(maxhealth) / 100, 1.0, 0.0, HEAL_SELFHEAL);
+				int maxhealthally = ReturnEntityMaxHealth(npc.m_iTargetAlly);
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Buff Banner", 3.0);	
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Battilons Backup", 3.0);	
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Squad Leader", 3.0);
+				HealEntityGlobal(npc.index, npc.m_iTargetAlly, float(maxhealthally) / 100, 1.0, 0.0, HEAL_SELFHEAL);
 				spawnBeam(0.8, 50, 255, 50, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
 				spawnBeam(0.8, 50, 255, 50, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
@@ -409,4 +410,18 @@ void HallamDemonWhispererSelfDefense(HallamDemonWhisperer npc, float gameTime, i
 			}
 		}		
 	}
+}
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
 }

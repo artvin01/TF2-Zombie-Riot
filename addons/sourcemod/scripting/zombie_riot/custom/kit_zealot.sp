@@ -69,13 +69,14 @@ bool Zealot_Sugmar(int client)
 }
 public void Weapon_ZealotRCheckCD(int client, int weapon, bool &result, int slot)
 {
-
-	
 	return;
 }
 
 void Zealot_ApplyGlobalRCooldown(int client, float Duration)
 {
+	if(MazeatItemHas())
+		Duration *= 0.75;
+
 	f_DashCooldownZealot[client] = GetGameTime() + Duration;
 	int weapon1;
 	int ie;

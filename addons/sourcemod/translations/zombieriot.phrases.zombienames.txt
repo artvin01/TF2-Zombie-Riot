@@ -2968,6 +2968,10 @@
 	{
 		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
 	}
+	"Chaos Mercenaries"
+	{
+		"en"	"Chaos Mercenaries"
+	}
 	"Chaos Knight?"
 	{
 		"en"	"Chaos Knight?"

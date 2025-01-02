@@ -748,8 +748,10 @@ public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
 {
 	if(StrEqual(vote.Config, "Unauthorized Ruina Gem"))
 	{
-		// The mercs gave away the gem, what do you do now Twirl
-		CPrintToChatAll("{yellow}You idiots!!!");
+		CPrintToChatAll("{purple}Twirl: {snow}........................... So you are a traitor. Go to hell.");
+		CPrintToChatAll("{crismon}Twirl leaves you alone in the desert, bob the second also leaves you... Uh... did you think this one through?");
+		ForcePlayerLoss();
+		//If mercs give it away, you just auto loose.
 	}
 	else if(vote.Config[0])
 	{
@@ -794,7 +796,7 @@ public float Rogue_Encounter_EmergencyDispatch()
 	
 	if(count < 5)
 	{
-		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1");
+		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1a");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1a");
 		strcopy(vote.Append, sizeof(vote.Append), " Bob The Second");
 		vote.Config[0] = -1;
@@ -806,7 +808,7 @@ public float Rogue_Encounter_EmergencyDispatch()
 		int pos;
 		SortIntegers(players, count, Sort_Random);
 
-		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1");
+		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1b");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1b");
 
 		for(int i; i < 3; i++)
@@ -961,4 +963,62 @@ public float Rogue_Encounter_EscapeBattle()
 	Rogue_StartGenericVote(20.0);
 
 	return 25.0;
+}
+
+public float Rogue_Encounter_MazeatLostTech()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 1);
+		}
+	}
+
+	RemoveAllCustomMusic();
+
+	strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/bishopsoftheoldfaith.mp3");
+	MusicString1.Time = 999;
+	MusicString1.Volume = 1.0;
+	MusicString1.Custom = true;
+	strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Bishops of the Old Faith");
+	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
+	
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_MazeatLostTech, "Mazeat Lost Tech Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Mazeat Lost Tech Option 1a");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Mazeat Lost Tech Desc 1a");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Mazeat Lost Tech Option 1a");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Mazeat Lost Tech Desc 1a");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 30.0;
+}
+
+public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			PrintToChatAll("%t", "Mazeat Lost Tech 1b");
+			GiveCash(5000);
+			Artifact artifact;
+			if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+		}
+		case 1:
+		{
+			PrintToChatAll("%t", "Mazeat Lost Tech 1b");
+			Rogue_GiveNamedArtifact("Mazeat Lost Technology", true);
+			Rogue_StartThisBattle(5.0);
+			Rogue_SetBattleIngots(1);
+		}
+	}
 }

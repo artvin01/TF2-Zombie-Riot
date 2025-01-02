@@ -122,7 +122,7 @@
 	}
 	"Bob's Assistance Desc"
 	{
-		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1% health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
+		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1%% health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
 	}
 	"Small Comic Book"
 	{
@@ -391,6 +391,14 @@
 	"Peek into the Eternal Night"
 	{
 		"en"	"''Peek into the Eternal Night''"
+	}
+	"Mazeat Lost Technology"
+	{
+		"en"	"''Mazeat Lost Technology''"
+	}
+	"Mazeat Lost Technology Desc"
+	{
+		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 25%%"
 	}
 	"Peek into the Eternal Night Desc"
 	{
@@ -861,7 +869,7 @@
 	}
 	"Prophecy Lore 1c"
 	{
-		"en"	"You seek what he seeks now."
+		"en"	"You seek what she seeks now."
 	}
 	"Prophecy Lore 2"
 	{
@@ -929,11 +937,11 @@
 	}
 	"Prophecy Lore 4"
 	{
-		"en"	"LORE IN THE MENU BEFORE ITEM"
+		"en"	"Twirl offers something..."
 	}
 	"Prophecy Lore 4a"
 	{
-		"en"	"LORE IN THE CHAT AFTER ITEM"
+		"en"	"{snow}Twirl hands you a gem she made herself, how neat! Probably shouldnt give it away, gift is a gift afterall."
 	}
 	"Lost Villager"
 	{
@@ -1484,5 +1492,105 @@
 	"The Old The New"
 	{
 		"en"	"The Old, The New ⚠"
+	}
+	"Not so Missunderstood"
+	{
+		"en"	"Not so Missunderstood"
+	}
+	"Not so Missunderstood!"
+	{
+		"en"	"Not so Missunderstood ⚠"
+	}
+	"Broken Defenses"
+	{
+		"en"	"Not so Missunderstood"
+	}
+	"Broken Defenses!"
+	{
+		"en"	"Broken Defenses ⚠"
+	}
+	"Freezer Water?"
+	{
+		"en"	"Freezer Water?"
+	}
+	"Home of the North?"
+	{
+		"en"	"Home of the North?"
+	}
+	"Godly army Under Chaos"
+	{
+		"en"	"Godly army Under Chaos"
+	}
+	"Godly army Under Chaos!"
+	{
+		"en"	"Godly army Under Chaos ⚠"
+	}
+	"Forsaken Tribe"
+	{
+		"en"	"Forsaken Tribe"
+	}
+	"Forsaken Tribe!"
+	{
+		"en"	"Forsaken Tribe ⚠"
+	}
+	"Roaming Chaos Demons"
+	{
+		"en"	"Roaming Chaos Demons"
+	}
+	"Roaming Chaos Demons!"
+	{
+		"en"	""Roaming Chaos Demons ⚠"
+	}
+	"Antagonising Iberians"
+	{
+		"en"	"Antagonising Iberians"
+	}
+	"Antagonising Iberians!"
+	{
+		"en"	"Antagonising Iberians ⚠"
+	}
+	"Lost Zombies"
+	{
+		"en"	"Lost Zombies"
+	}
+	"Lost Zombies!"
+	{
+		"en"	"Lost Zombies ⚠"
+	}
+	"Mercs against Mercs"
+	{
+		"en"	"Mercs against Mercs"
+	}
+	"Mercs against Mercs!"
+	{
+		"en"	"Mercs against Mercs ⚠"
+	}
+	"Ruania"
+	{
+		"en"	"Ruania"
+	}
+	"The Great Demons Of Hallam"
+	{
+		"en"	"The Great Demons Of Hallam"
+	}
+	"Mazeat Lost Tech Lore"
+	{
+		"en"	"You stumble upon a great artifact guarded by mechanisms..."
+	}
+	"Mazeat Lost Tech Option 1a"
+	{
+		"en"	"Take Something else."
+	}
+	"Mazeat Lost Tech Desc 1a"
+	{
+		"en"	"Take whats inside the closet instead, cant risk it.\nObtain money and a high value item."
+	}
+	"Mazeat Lost Tech Option 1b"
+	{
+		"en"	"Take The Price."
+	}
+	"Mazeat Lost Tech Desc 1b"
+	{
+		"en"	"Obtain a Grant item, but you might get unwanted attention."
 	}
 }

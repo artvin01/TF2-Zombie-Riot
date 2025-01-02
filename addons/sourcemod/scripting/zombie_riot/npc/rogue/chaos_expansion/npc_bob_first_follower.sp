@@ -22,10 +22,12 @@ static int NPCId;
 void BobTheFirstFollower_Setup()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bob The First");
+	strcopy(data.Name, sizeof(data.Name), "Bob the First");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_first_follower");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	for (int i = 0; i < (sizeof(g_BobSuperMeleeCharge_Hit)); i++) { PrecacheSound(g_BobSuperMeleeCharge_Hit[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -154,7 +156,7 @@ methodmap BobTheFirstFollower < CClotBody
 	}
 	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
 	{
-		NpcSpeechBubble(this.index, speechtext, 5, {255, 255, 255, 255}, {0.0,0.0,120.0}, endingtextscroll);
+		NpcSpeechBubble(this.index, speechtext, 5, {255, 255, 255, 255}, {0.0,0.0,90.0}, endingtextscroll);
 	}
 	property float m_flDeathAnimation
 	{

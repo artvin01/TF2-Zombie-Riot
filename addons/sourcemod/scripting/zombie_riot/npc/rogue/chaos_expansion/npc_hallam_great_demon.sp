@@ -203,16 +203,16 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int flMaxHealthally = ReturnEntityMaxHealth(npc.index);
-		int spawn_index = NPC_CreateByName("npc_ihanal_demon_whisperer", npc.index, pos, ang, GetTeam(this.index));
+		int spawn_index = NPC_CreateByName("npc_ihanal_demon_whisperer", npc.index, SelfPos, ang, GetTeam(npc.index));
 		if(spawn_index > MaxClients)
 		{
 			flMaxHealthally /= 2;
-			npc.m_iTargetally = spawn_index;
+			npc.m_iTargetAlly = spawn_index;
 			HallamGreatDemon npcally = view_as<HallamGreatDemon>(spawn_index);
-			nnpcallypc.m_iTargetally = npc.index;
+			npcally.m_iTargetAlly = npc.index;
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", flMaxHealthally);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", flMaxHealthally);
 			fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
 			fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
 			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[npc.index];
@@ -248,9 +248,9 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 			//spawn little fucks every so often
 			float SelfPos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			float AllyAng[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", AllyAng);
 			TE_Particle("teleported_blue", SelfPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-			int flMaxHealthally = ReturnEntityMaxHealth(npc.index);
+			int flMaxHealth = ReturnEntityMaxHealth(npc.index);
 			int NpcSpawnDemon = NPC_CreateById(AncientDemonNpcId(), -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
 			if(IsValidEntity(NpcSpawnDemon))
 			{
@@ -263,7 +263,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 				i_RaidGrantExtra[NpcSpawnDemon] = -1;
 				SetEntProp(NpcSpawnDemon, Prop_Data, "m_iHealth", flMaxHealth);
 				SetEntProp(NpcSpawnDemon, Prop_Data, "m_iMaxHealth", flMaxHealth);
-				float scale = GetEntPropFloat(self, Prop_Send, "m_flModelScale");
+				float scale = GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 				SetEntPropFloat(NpcSpawnDemon, Prop_Send, "m_flModelScale", scale * 0.7);
 				fl_Extra_MeleeArmor[NpcSpawnDemon] = fl_Extra_MeleeArmor[npc.index];
 				fl_Extra_RangedArmor[NpcSpawnDemon] = fl_Extra_RangedArmor[npc.index];
@@ -274,7 +274,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 				fl_Extra_Damage[NpcSpawnDemon] *= DemonScaling;
 				float flPos[3], flAng[3];
 						
-				HallamGreatDemon npcally = view_as<HallamGreatDemon>(spawn_index);
+				HallamGreatDemon npcally = view_as<HallamGreatDemon>(NpcSpawnDemon);
 				npcally.GetAttachment("eyes", flPos, flAng);
 				npcally.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npcally.index, "eyes", {0.0,0.0,0.0});
 				npcally.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npcally.index, "eyes", {0.0,0.0,-15.0});
@@ -377,8 +377,8 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					int ElementalDamage = 200 * DemonScaling;
-					float damageDealt = 450.0 * DemonScaling;
+					int ElementalDamage = RoundToNearest(200.0 * Scaling);
+					float damageDealt = 450.0 * Scaling;
 
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
@@ -408,8 +408,8 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
-				int ElementalDamage = 150 * DemonScaling;
-				float damageDealt = 120.0 * DemonScaling;
+				int ElementalDamage = RoundToNearest(150.0 * Scaling);
+				float damageDealt = 120.0 * Scaling;
 
 				int entity = npc.FireArrow(vecTarget, damageDealt, 800.0, "models/props_halloween/eyeball_projectile.mdl");
 				i_ChaosArrowAmount[entity] = ElementalDamage;
@@ -471,28 +471,4 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 			}
 		}		
 	}
-}
-
-
-void HallamGreatDemonAfterBuff(int entity, int victim)
-{
-	ApplyStatusEffect(entity, victim, "Buff Banner", 0.6);	
-	ApplyStatusEffect(entity, victim, "Battilons Backup", 0.6);	
-	ApplyStatusEffect(entity, victim, "Squad Leader", 0.6);
-
-	//buff self too
-	ApplyStatusEffect(entity, entity, "Buff Banner", 0.6);	
-	ApplyStatusEffect(entity, entity, "Battilons Backup", 0.6);	
-	ApplyStatusEffect(entity, entity, "Squad Leader", 0.6);
-
-
-	float vecSelf[3];
-	WorldSpaceCenter(entity, vecSelf);
-	float vecAlly[3];
-	WorldSpaceCenter(victim, vecAlly);
-	//If it healed someone, heal himself!
-	int maxhealth = ReturnEntityMaxHealth(entity);
-	HealEntityGlobal(entity, entity, float(maxhealth) / 500, 1.0, 0.0, HEAL_SELFHEAL);
-	TE_SetupBeamPoints(vecSelf, vecAlly, Shared_BEAM_Laser, 0, 0, 0, 0.25, 10.0, 10.0, 0, 1.0, {65,255,65,125}, 3);
-	TE_SendToAll(0.0);
 }

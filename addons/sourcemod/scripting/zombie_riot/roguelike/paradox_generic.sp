@@ -79,6 +79,7 @@ public float Rogue_Encounter_ParadoxShop()
 	StartShopVote(true);
 	return 35.0;
 }
+
 static void StartShopVote(bool first)
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");

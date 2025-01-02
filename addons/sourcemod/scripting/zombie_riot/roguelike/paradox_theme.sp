@@ -347,6 +347,23 @@ public void Rogue_BlueGoggles_Remove()
 	*/
 }
 
+bool MazeatTechLost;
+
+bool MazeatItemHas()
+{
+	return MazeatTechLost;
+}
+
+public void Rogue_MazeatLostTech_Collect()
+{
+	MazeatTechLost = true;
+}
+
+public void Rogue_MazeatLostTech_Remove()
+{
+	MazeatTechLost = false;
+}
+
 static Handle KahmlsteinTimer;
 
 public void Rogue_Kahmlstein_Collect()
@@ -473,7 +490,7 @@ public void Rogue_RuinaGem_StageStart()
 
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && !b_NpcIsInvulnerable[entity] && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
 		{
 			RuniaGemTimers.Push(CreateTimer(1.0, RuniaGem_Timer, EntIndexToEntRef(entity), TIMER_REPEAT));
@@ -512,7 +529,7 @@ static Action RuniaGem_Timer(Handle timer, int ref)
 		else
 		{
 			GiveCompleteInvul(entity, 2.0);
-			f_OneShotProtectionTimer[entity] = GameTime + 60.0;
+			f_OneShotProtectionTimer[entity] = GetGameTime() + 60.0;
 			SetEntityHealth(entity, maxhealth);
 		}
 
