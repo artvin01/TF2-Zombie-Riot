@@ -781,7 +781,7 @@ void NPC_ConfigSetup()
 	ChaosSwordsman_OnMapStart_NPC();
 	DuckFollower_Setup();
 	BobTheFirstFollower_Setup();
-	TwirlFollowerr_Setup();
+	TwirlFollower_Setup();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
