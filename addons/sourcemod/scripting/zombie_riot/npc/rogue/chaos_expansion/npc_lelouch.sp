@@ -1463,8 +1463,7 @@ static void FindTargets_OnLaserHit(int client, int target, int damagetype, float
 static float[] GetNPCAngles(int entity)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
-	float Angles[3], startPoint[3];
-	WorldSpaceCenter(npc.index, startPoint);
+	float Angles[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
 	int iPitch = npc.LookupPoseParameter("body_pitch");
 			
