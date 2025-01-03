@@ -143,6 +143,8 @@ int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
 int g_Ruina_BEAM_lightning;
+char g_Ruina_Glow_Blue;	//blue
+char g_Ruina_Glow_Red;	//red
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -151,7 +153,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 void Ruina_Ai_Core_Mapstart()
 {
-
 	NPCData data1;
 	strcopy(data1.Name, sizeof(data1.Name), "Mana Overload");
 	strcopy(data1.Plugin, sizeof(data1.Plugin), "npc_donoteveruse_3");
@@ -246,6 +247,9 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
 
 	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
+
+	g_Ruina_Glow_Blue = PrecacheModel("sprites/blueglow2.vmt", true);
+	g_Ruina_Glow_Red = PrecacheModel("sprites/redglow2.vmt", true);
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {

@@ -149,7 +149,7 @@ methodmap TwirlFollower < CClotBody
 			case 8:
 			{
 				this.Speech("Sometimes I wonder, what would life be if I wasn't a mage", "...");
-				this.SpeechDelay(5.0,"Probably hell");
+				this.SpeechDelay(7.0,"Probably hell");
 			}
 			case 9:
 			{
