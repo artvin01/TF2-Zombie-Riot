@@ -1593,9 +1593,9 @@
 	{
 		"en"	"Ruania"
 	}
-	"Chaos Ruinianian"
+	"Chaos Ruinian"
 	{
-		"en"	"Chaos Ruinianian"
+		"en"	"Chaos Ruinian"
 	}
 	"The Irritated Soldiers"
 	{
@@ -1603,11 +1603,11 @@
 	}
 	"Hiding Ruanian"
 	{
-		"en"	""Hiding Ruanian"
+		"en"	"Hiding Ruanian"
 	}
-	"The Roaming Weaver"
+	"The Magic Betrayed"
 	{
-		"en"	"The Roaming Weaver"
+		"en"	"The Magic Betrayed"
 	}
 	"The Courtain"
 	{

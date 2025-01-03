@@ -2343,6 +2343,14 @@
 	{
 		"en"	"Ancient Demon"
 	}
+	"Hallam's Great Demon"
+	{
+		"en"	"Hallam's Great Demon"
+	}
+	"Ihanal Demon Whisperer"
+	{
+		"en"	"Ihanal Demon Whisperer"
+	}
 	"Winter Sniper"
 	{
 		"en"	"Winter Sniper"
@@ -2655,6 +2663,10 @@
 	"Malianius Desc"
 	{
 		"en"	"A stronger Variant"
+	}
+	"Elite Rulianius"
+	{
+		"en"	"Elite Rulianius"
 	}
 	"Rulianius"
 	{
