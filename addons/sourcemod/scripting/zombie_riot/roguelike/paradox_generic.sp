@@ -3,25 +3,40 @@
 
 static ArrayList ShopListing;
 
+int ShopSetting = 0;
 public float Rogue_Encounter_ParadoxShop()
 {
-	for(int client = 1; client <= MaxClients; client++)
+	ShopSetting = 0;
+	return Rogue_Encounter_ParadoxShop_Internal();
+}
+public float Rogue_Encounter_ParadoxShop_Ruina()
+{
+	ShopSetting = 1;
+	return Rogue_Encounter_ParadoxShop_Internal();
+}
+public float Rogue_Encounter_ParadoxShop_Internal()
+{	
+	if(ShopSetting == 0)
 	{
-		if(IsClientInGame(client))
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 1);
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 1);
+			}
 		}
+
+		RemoveAllCustomMusic();
+
+		strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/knucklebones.mp3");
+		MusicString1.Time = 999;
+		MusicString1.Volume = 1.0;
+		MusicString1.Custom = true;
+		strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Knucklebones");
+		strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
+		
 	}
-
-	RemoveAllCustomMusic();
-
-	strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/knucklebones.mp3");
-	MusicString1.Time = 999;
-	MusicString1.Volume = 1.0;
-	MusicString1.Custom = true;
-	strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Knucklebones");
-	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
 
 	delete ShopListing;
 	ShopListing = new ArrayList(sizeof(Artifact));
@@ -82,7 +97,19 @@ public float Rogue_Encounter_ParadoxShop()
 
 static void StartShopVote(bool first)
 {
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
+	ArrayList list;
+	switch(ShopSetting)
+	{
+		case 0:
+			list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
+		case 1:
+		{
+			if(Rogue_HasNamedArtifact("Mark of a Thief"))
+				list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter_Ruina, "Shop Encounter Title Ruina Evil");
+			else
+				list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter_Ruina, "Shop Encounter Title Ruina");
+		}
+	}
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
@@ -91,36 +118,110 @@ static void StartShopVote(bool first)
 	strcopy(vote.Config, sizeof(vote.Config), "-1");
 	list.PushArray(vote);
 
-	Artifact artifact;
-	int ingots = Rogue_GetIngots();
 	int length = ShopListing.Length;
-	for(int i; i < length; i++)
+	if(ShopSetting == 0 || (ShopSetting == 1 || !Rogue_HasNamedArtifact("Mark of a Thief")))
 	{
-		ShopListing.GetArray(i, artifact);
+		Artifact artifact;
+		int ingots = Rogue_GetIngots();
+		for(int i; i < length; i++)
+		{
+			ShopListing.GetArray(i, artifact);
 
-		int cost = artifact.ShopCost;
+			int cost = artifact.ShopCost;
 
-		Rogue_ParadoxGeneric_ShopCost(cost);
+			Rogue_ParadoxGeneric_ShopCost(cost);
 
-		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
-		Format(vote.Append, sizeof(vote.Append), " △%d", cost);
-		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
-		IntToString(i, vote.Config, sizeof(vote.Config));
-		vote.Locked = ingots < cost;
-		list.PushArray(vote);
+			strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+			Format(vote.Append, sizeof(vote.Append), " △%d", cost);
+			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+			IntToString(i, vote.Config, sizeof(vote.Config));
+			vote.Locked = ingots < cost;
+			list.PushArray(vote);
+		}
+		if(length)
+		{
+			strcopy(vote.Name, sizeof(vote.Name), "Steal Grigori");
+			vote.Append[0] = 0;
+			strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
+			strcopy(vote.Config, sizeof(vote.Config), "-2");
+			vote.Locked = false;
+			list.PushArray(vote);
+		}	
 	}
-
-	if(length)
+	if(ShopSetting == 1)
 	{
-		strcopy(vote.Name, sizeof(vote.Name), "Steal Grigori");
+		int ingots = Rogue_GetIngots();
+		strcopy(vote.Name, sizeof(vote.Name), "Ruinian Shop Help Out");
 		vote.Append[0] = 0;
-		strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
-		strcopy(vote.Config, sizeof(vote.Config), "-2");
-		vote.Locked = false;
-		list.PushArray(vote);
+		strcopy(vote.Desc, sizeof(vote.Desc), "Ruinian Shop Help");
+		strcopy(vote.Config, sizeof(vote.Config), "-3");
+		int cost = 18;
+		if(Rogue_HasNamedArtifact("Mark of a Thief"))
+		{
+			cost = 36;
+		}
+		Format(vote.Append, sizeof(vote.Append), " △%d", cost);
+		vote.Locked = ingots < cost;
 	}
 
 	Rogue_StartGenericVote(length ? (first ? 30.0 : 15.0) : 3.0);
+}
+
+public void Rogue_Vote_Shop2Encounter_Ruina(const Vote vote)
+{
+	Artifact artifact;
+	int index = StringToInt(vote.Config);
+	switch(index)
+	{
+		case -1:
+		{
+			Rogue_SetProgressTime(5.0, false);
+
+			delete ShopListing;
+
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "*")) != -1)
+			{
+				if(entity < MAXENTITIES)
+				{
+					GetEntPropString(entity, Prop_Data, "m_iName", artifact.Name, sizeof(artifact.Name));
+					if(StrEqual(artifact.Name, "zr_store_prop", false))
+						AcceptEntityInput(entity, "Disable");
+				}
+			}
+		}
+		case -2:
+		{
+			Rogue_GiveNamedArtifact("Mark of a Thief", true);
+			Rogue_GiveNamedArtifact("Evil Within from Ruina's Great Crystal");
+
+			CPrintToChatAll("%t", "Shop Ruina Sad");
+			CPrintToChatAll("%t", "Shop Ruina Sad 1");
+		}
+		case -3:
+		{
+			Rogue_GiveNamedArtifact("Great Within from Ruina's Great Crystal");
+
+			CPrintToChatAll("%t", "Shop Ruina Happy");
+			CPrintToChatAll("%t", "Shop Ruina Happy 1");
+		}
+		default:
+		{
+			ShopListing.GetArray(index, artifact);
+			ShopListing.Erase(index);
+
+			Rogue_GiveNamedArtifact(artifact.Name);
+
+			int cost = artifact.ShopCost;
+
+			Rogue_ParadoxGeneric_ShopCost(cost);
+			
+			Rogue_AddIngots(-cost, true);
+
+			StartShopVote(false);
+			Rogue_SetProgressTime(20.0, false);
+		}
+	}
 }
 public void Rogue_Vote_Shop2Encounter(const Vote vote)
 {

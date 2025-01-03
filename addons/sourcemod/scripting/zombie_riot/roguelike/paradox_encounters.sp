@@ -1020,3 +1020,5 @@ public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
 		}
 	}
 }
+
+

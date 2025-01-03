@@ -245,6 +245,20 @@ public void Rogue_HeavyRain_Enemy(int entity)
 	}
 }
 
+public void Rogue_Ruinan_BadGuy(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.15;
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 1.25));
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.25));
+}
+
+public void Rogue_Ruinan_GoodGuy(int entity)
+{
+	fl_Extra_Damage[entity] *= 0.9;
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 0.85));
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 0.85));
+}
+
 public void Rogue_Curse_HeavyRain(bool enable)
 {
 	if(enable)

@@ -508,6 +508,30 @@
 	{
 		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
 	}
+	"Evil Within from Ruina's Great Crystal"
+	{
+		"en"	"Evil Within from Ruina's Great Crystal"
+	}
+	"Evil Within from Ruina's Great Crystal Desc"
+	{
+		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies have 25%% more HP and 15%% more damage."
+	}
+	"Great Within from Ruina's Great Crystal"
+	{
+		"en"	"Great Within from Ruina's Great Crystal"
+	}
+	"Great Within from Ruina's Great Crystal Desc"
+	{
+		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies have has 15%% Less HP and 10%% less damage."
+	}
+	"Ruinian Shop Help Out"
+	{
+		"en"	"Give Money to the Ruinian"
+	}
+	"Ruinian Shop Help Out Desc"
+	{
+		"en"	"Give the Ruinian a certain amount of cash {green} and obtain Twirls Favor."
+	}
 	"Bob's Duck"
 	{
 		"en"	"Bob's Duck"
@@ -1569,9 +1593,9 @@
 	{
 		"en"	"Ruania"
 	}
-	"Chaos Ruanians"
+	"Chaos Ruinianian"
 	{
-		"en"	"Chaos Ruanians"
+		"en"	"Chaos Ruinianian"
 	}
 	"The Irritated Soldiers"
 	{
