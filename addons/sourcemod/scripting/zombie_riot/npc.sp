@@ -1737,10 +1737,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_hallam_great_demon.sp"
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_Ihanal_demon_whisperer.sp"
 
-#include "zombie_riot/npc/survival/npc_nightmare.sp"
-#include "zombie_riot/npc/survival/npc_petrisisbaron.sp"
-#include "zombie_riot/npc/survival/npc_sphynx.sp"
-#include "zombie_riot/npc/survival/npc_zombine.sp"
 
 #include "zombie_riot/npc/mutations/truesurvival/npc_nightmare.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_petrisisbaron.sp"
