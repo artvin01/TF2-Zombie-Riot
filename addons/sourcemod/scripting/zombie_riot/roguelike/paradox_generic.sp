@@ -119,7 +119,7 @@ static void StartShopVote(bool first)
 	list.PushArray(vote);
 
 	int length = ShopListing.Length;
-	if(ShopSetting == 0 || (ShopSetting == 1 || !Rogue_HasNamedArtifact("Mark of a Thief")))
+	if(ShopSetting == 0 || (ShopSetting == 1 && !Rogue_HasNamedArtifact("Mark of a Thief")))
 	{
 		Artifact artifact;
 		int ingots = Rogue_GetIngots();

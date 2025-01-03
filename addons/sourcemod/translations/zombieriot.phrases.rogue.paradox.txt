@@ -1609,9 +1609,9 @@
 	{
 		"en"	"The Irritated Soldiers"
 	}
-	"Hiding Ruanian"
+	"Hiding Ruinian"
 	{
-		"en"	"Hiding Ruanian"
+		"en"	"Hiding Ruinian"
 	}
 	"The Magic Betrayed"
 	{
