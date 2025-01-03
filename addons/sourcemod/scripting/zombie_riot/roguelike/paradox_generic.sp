@@ -165,7 +165,7 @@ static void StartShopVote(bool first)
 		int ingots = Rogue_GetIngots();
 		strcopy(vote.Name, sizeof(vote.Name), "Ruinian Shop Help Out");
 		vote.Append[0] = 0;
-		strcopy(vote.Desc, sizeof(vote.Desc), "Ruinian Shop Help");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Ruinian Shop Help Out Desc");
 		strcopy(vote.Config, sizeof(vote.Config), "-3");
 		int cost = 18;
 		if(Rogue_HasNamedArtifact("Mark of a Thief"))
