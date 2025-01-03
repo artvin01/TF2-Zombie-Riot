@@ -1791,27 +1791,43 @@ static void DeathRay_Logic(Lelouch npc)
 
 	float Origin[3];
 
-	for(int i= 0 ; i < 3 ; i++)
+	if(Rogue_Mode())
 	{
-		int Slave = EntRefToEntIndex(i_AnchorID_Ref[npc.index][i]);
-		if(!IsValidEntity(Slave))
+		Origin = {8727.020508, -121.295174, -3100.386963};
+		for(int i= 0 ; i < 3 ; i++)
 		{
-			//something went horribly wrong.
-			return;
+			int Slave = EntRefToEntIndex(i_AnchorID_Ref[npc.index][i]);
+			if(!IsValidEntity(Slave))
+			{
+				return;
+			}
+			Anchor = Slave;
 		}
-		float SlaveVec[3]; GetAbsOrigin(Slave, SlaveVec);
-		Origin[0]+=SlaveVec[0];
-		Origin[1]+=SlaveVec[1];
-		Origin[2]+=SlaveVec[2];
-
-		Anchor = Slave;
 	}
+	else
+	{
+		for(int i= 0 ; i < 3 ; i++)
+		{
+			int Slave = EntRefToEntIndex(i_AnchorID_Ref[npc.index][i]);
+			if(!IsValidEntity(Slave))
+			{
+				//something went horribly wrong.
+				return;
+			}
+			float SlaveVec[3]; GetAbsOrigin(Slave, SlaveVec);
+			Origin[0]+=SlaveVec[0];
+			Origin[1]+=SlaveVec[1];
+			Origin[2]+=SlaveVec[2];
 
-	Origin[0] /=3.0;
-	Origin[1] /=3.0;
-	Origin[2] /=3.0;
+			Anchor = Slave;
+		}
 
-	Origin[2]+=200.0;
+		Origin[0] /=3.0;
+		Origin[1] /=3.0;
+		Origin[2] /=3.0;
+
+		Origin[2]+=200.0;
+	}
 
 	float TE_Duration =0.1;
 
