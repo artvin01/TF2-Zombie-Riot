@@ -1252,7 +1252,6 @@ static bool Initiate_Crystal_LaserWorks(Lelouch npc)
 	npc.m_flCrystalLaserWorks = GameTime + 120.0;
 
 	return true;
-
 }
 static int i_Alive_Crystals(Lelouch npc)
 {
