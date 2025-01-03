@@ -3006,6 +3006,14 @@
 	{
 		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
 	}
+	"Chaos Swordsman"
+	{
+		"en"	"Chaos Swordsman"
+	}
+	"Chaos Swordsman Desc"
+	{
+		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
+	}
 	"Chaos Mercenaries"
 	{
 		"en"	"Chaos Mercenaries"

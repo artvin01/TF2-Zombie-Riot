@@ -74,7 +74,7 @@ methodmap TwirlFollower < CClotBody
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll("npc/strider/striderx_die1.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+	//	EmitSoundToAll("npc/strider/striderx_die1.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayRangeAttackSound() {
 		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -608,7 +608,7 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 		float flPos[3];
 			
 		GetAttachment(npc.index, "effect_hand_r", flPos, NULL_VECTOR);
-
+		
 		float 	projectile_speed = 1100.0,
 				target_vec[3];
 
@@ -621,7 +621,8 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 		else
 			Particle = "raygun_projectile_red";
 
-		npc.FireParticleRocket(target_vec, Dmg , projectile_speed , 0.0 , Particle, true, _, true, flPos);
+		int projectile = npc.FireParticleRocket(target_vec, Dmg , projectile_speed , 0.0 , Particle, true, _, true, flPos);
+		b_ScalesWithWaves[projectile] = true;
 	}
 	else
 	{
@@ -649,7 +650,7 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 					if(IsValidEnemy(npc.index, target))
 					{
 			
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 40.0, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 						float Kb = 450.0;
 
 						Custom_Knockback(npc.index, target, Kb, true);
@@ -862,7 +863,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 
 	if(update)
 	{
-		float Dps = 30.0;
+		float Dps = 10.0;
 		Laser.Damage = Dps;
 		Laser.Radius = Radius;
 		Laser.Bonus_Damage = Dps;

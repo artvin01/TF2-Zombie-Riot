@@ -375,11 +375,11 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 		{
 			npc.m_flDoingAnimation = gameTime + 0.2;
 			npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,2.0);
-			npc.m_flRangedSpecialDelay = gameTime + 0.2;
+			npc.m_flRangedSpecialDelay = gameTime + 0.20;
 		}
 		if(npc.m_flNextRangedSpecialAttack < gameTime)
 		{
-			npc.m_flDoingAnimation = gameTime + 0.2;
+			npc.m_flDoingAnimation = gameTime + 0.25;
 			npc.m_flNextRangedSpecialAttack = 0.0;
 		}
 		return;
@@ -514,10 +514,10 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 				}
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				//how long do they do their pulse attack barrage?
-				npc.m_flNextRangedSpecialAttack = gameTime + 1.0;
-				npc.m_flRangedSpecialDelay = gameTime + 1.2;
-				npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.5);
-				npc.m_flNextRangedAttack = gameTime + 12.35;
+				npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
+				npc.m_flRangedSpecialDelay = gameTime + 1.0;
+				npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.4);
+				npc.m_flNextRangedAttack = gameTime + 10.35;
 			}
 		}
 	}

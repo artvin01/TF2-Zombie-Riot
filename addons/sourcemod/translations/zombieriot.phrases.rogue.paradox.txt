@@ -1569,6 +1569,26 @@
 	{
 		"en"	"Ruania"
 	}
+	"Chaos Ruanians"
+	{
+		"en"	"Chaos Ruanians"
+	}
+	"The Irritated Soldiers"
+	{
+		"en"	"The Irritated Soldiers"
+	}
+	"Hiding Ruanian"
+	{
+		"en"	""Hiding Ruanian"
+	}
+	"The Roaming Weaver"
+	{
+		"en"	"The Roaming Weaver"
+	}
+	"The Courtain"
+	{
+		"en"	"The Courtain"
+	}
 	"The Great Demons Of Hallam"
 	{
 		"en"	"The Great Demons Of Hallam"
