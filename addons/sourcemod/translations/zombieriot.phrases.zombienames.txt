@@ -3468,9 +3468,9 @@
 		"en"	"Victorian Signaller"
 		"ko"	"빅토리아 전령병"
 	}
-	"Chaos Affecteed Signaller"
+	"Chaos Affected Signaller"
 	{
-		"en"	"Chaos Affecteed Signaller"
+		"en"	"Chaos Affected Signaller"
 	}
 	"Humbee"
 	{
