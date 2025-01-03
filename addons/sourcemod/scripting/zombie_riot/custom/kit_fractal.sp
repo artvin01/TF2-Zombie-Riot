@@ -647,6 +647,7 @@ static void Delete_Fantasia(int client)
 	}
 }
 
+static float fl_fantasia_targetshit[MAXTF2PLAYERS];
 static float fl_fantasia_damage[MAXTF2PLAYERS];
 static float fl_fantasia_true_duration[MAXTF2PLAYERS];
 public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
@@ -711,6 +712,7 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 
 	Origin[2]-=17.5;
 
+	fl_fantasia_targetshit[client] = 1.0;
 	fl_fantasia_damage[client] = 100.0;
 	fl_fantasia_damage[client] *= Attributes_Get(weapon, 410, 1.0);
 
@@ -906,8 +908,10 @@ static void OnFantasiaHit(int client, int target, int damagetype, float &damage)
 		return;
 	f_GlobalHitDetectionLogic[client][target] = GameTime + 1.0;
 
-	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA);
-	damage *= FRACTAL_KIT_FANTASIA_ONHIT_LOSS;
+	float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
+	fl_fantasia_targetshit[client] *= FRACTAL_KIT_FANTASIA_ONHIT_LOSS;
+	SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
+	
 	fl_current_crystal_amt[client] += ((b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target]) ? FRACTAL_KIT_FANTASIA_GAIN * 4.0 : FRACTAL_KIT_FANTASIA_GAIN);
 
 	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
@@ -1862,6 +1866,8 @@ enum struct Player_Laser_Logic
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Player_Laser_BEAM_TraceUsers, this.client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 		FinishLagCompensation_Base_boss();
+
+		float Dmg = this.Damage;
 				
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
@@ -1879,7 +1885,7 @@ enum struct Player_Laser_Logic
 					Call_PushCell(this.client);
 					Call_PushCell(victim);
 					Call_PushCell(this.damagetype);
-					Call_PushFloatRef(this.Damage);
+					Call_PushFloatRef(Dmg);
 					Call_Finish();
 
 					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
@@ -1918,7 +1924,7 @@ enum struct Player_Laser_Logic
 		delete trace;
 		FinishLagCompensation_Base_boss();
 
-		float TargetHitFalloff = 1.0;
+		float Dmg = this.Damage;
 				
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
@@ -1929,12 +1935,6 @@ enum struct Player_Laser_Logic
 
 				float playerPos[3];
 				WorldSpaceCenter(victim, playerPos);
-
-				float Dmg = this.Damage;
-
-				Dmg *= TargetHitFalloff;
-
-				TargetHitFalloff *= Falloff;
 				
 				SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
@@ -1944,10 +1944,12 @@ enum struct Player_Laser_Logic
 					Call_PushCell(this.client);
 					Call_PushCell(victim);
 					Call_PushCell(this.damagetype);
-					Call_PushFloatRef(this.Damage);
+					Call_PushFloatRef(Dmg);
 					Call_Finish();
 					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
 				}
+
+				Dmg *= Falloff;
 			}
 		}
 	}

@@ -29,12 +29,12 @@ static const char g_BoomSounds[][] =
 	"ambient/energy/whiteflash.wav"
 };
 
-void Omega_OnMapStart()		//for whatever reason it has to be "OnMapStart" rather than just "MapStart" for the icons to display
+void ThirtySixFifty_OnMapStart()		//for whatever reason it has to be "OnMapStart" rather than just "MapStart" for the icons to display
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Omega");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_omega");
-	strcopy(data.Icon, sizeof(data.Icon), "omega");
+	strcopy(data.Name, sizeof(data.Name), "3650");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_3650");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_elite");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
@@ -62,7 +62,7 @@ static void ClotPrecache()	//lol this shit is messy as fuck but ignore it, aight
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Omega(vecPos, vecAng, team);
+	return ThirtySixFifty(vecPos, vecAng, team);
 }
 static char[] GetPanzerHealth()
 {
@@ -92,7 +92,7 @@ static char[] GetPanzerHealth()
 	return buffer;
 }
 
-methodmap Omega < CClotBody
+methodmap ThirtySixFifty < CClotBody
 {
 	public void PlayDeathSound()
 	{
@@ -161,9 +161,9 @@ methodmap Omega < CClotBody
 			this.m_iWearable1 = this.EquipItem("head", model);
 	}
 
-	public Omega(float vecPos[3], float vecAng[3], int ally)
+	public ThirtySixFifty(float vecPos[3], float vecAng[3], int ally)
 	{
-		Omega npc = view_as<Omega>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetPanzerHealth(), ally, .IgnoreBuildings = true));
+		ThirtySixFifty npc = view_as<ThirtySixFifty>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetPanzerHealth(), ally, .IgnoreBuildings = true));
 		
 		i_NpcWeight[npc.index] = 4;
 		
@@ -180,9 +180,6 @@ methodmap Omega < CClotBody
 		*/
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/combine_super_soldier.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/sniper/jarate_headband.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		/*
 			Variables
@@ -222,7 +219,7 @@ methodmap Omega < CClotBody
 }
 static void ClotThink(int iNPC)
 {
-	Omega npc = view_as<Omega>(iNPC);
+	ThirtySixFifty npc = view_as<ThirtySixFifty>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -640,7 +637,7 @@ static void ClotThink(int iNPC)
 	}
 }
 
-public Action Timer_RemoveEntityOmega(Handle timer, any entid)
+public Action Timer_RemoveEntityThirtySixFifty(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity) && entity>MaxClients)
@@ -651,17 +648,14 @@ public Action Timer_RemoveEntityOmega(Handle timer, any entid)
 		//TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 
-		Omega npc = view_as<Omega>(entity);
+		ThirtySixFifty npc = view_as<ThirtySixFifty>(entity);
 
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
 	
 		if(IsValidEntity(npc.m_iWearable2))
 			RemoveEntity(npc.m_iWearable2);
-	
-		if(IsValidEntity(npc.m_iWearable3))
-			RemoveEntity(npc.m_iWearable3);
-	
+
 		if(IsValidEntity(npc.m_iWearable4))
 			RemoveEntity(npc.m_iWearable4);
 	
@@ -677,7 +671,7 @@ public Action Timer_RemoveEntityOmega(Handle timer, any entid)
 
 static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage)
 {
-	Omega npc = view_as<Omega>(victim);
+	ThirtySixFifty npc = view_as<ThirtySixFifty>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -693,7 +687,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 
 static void ClotDeath(int entity)
 {
-	Omega npc = view_as<Omega>(entity);
+	ThirtySixFifty npc = view_as<ThirtySixFifty>(entity);
 
 	for(int i; i < 9; i++)
 	{
@@ -735,7 +729,7 @@ static void ClotDeath(int entity)
 		}
 		pos[2] += 20.0;
 		
-		CreateTimer(1.0, Timer_RemoveEntityOmega, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE); //timer that starts the Timer_RemoveEntityOmega chain of events
+		CreateTimer(1.0, Timer_RemoveEntityThirtySixFifty, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE); //timer that starts the Timer_RemoveEntityThirtySixFifty chain of events
 	}
 	
 	Citizen_MiniBossDeath(entity);

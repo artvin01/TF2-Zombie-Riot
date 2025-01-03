@@ -273,6 +273,28 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
+    /*
+			case 23:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_atomizer");
+				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 24:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_the_wall");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 25:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_harrison");
+				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 26:	
+			{
+				enemy.Index = NPC_GetByPlugin("npc_castellan");
+				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+    */
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -280,12 +302,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 		//raids otherwise have too much damage.
-		enemy.ExtraDamage *= 0.55;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
+		enemy.ExtraDamage *= 0.75;
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 		//some raids dont scale with DMG, fix it here
 
-		enemy.Credits += 5000.0;
-		
+		enemy.Credits += 6500.0;
+
 		//money fix
 		enemy.Does_Not_Scale = 1;
 		count = 1;
@@ -310,7 +332,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 3;
 
-		switch(GetRandomInt(1, 7)) // All super minibosses recieve a 65% damage boost, with the exception of Omega who gets 10% after a very... unfortunate testing session
+		switch(GetRandomInt(1, 7))
 		{
 			case 1: // Rogue cta doctor
 			{
@@ -341,12 +363,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 6: // Lucius or lucian or luciaus or whatever the name is  i forgor
 			{
 				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 7: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
-				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
 
@@ -368,12 +390,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Is_Outlined = true;
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
-		
+
 		enemy.Index = NPC_GetByPlugin("npc_sentinel");
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
 		enemy.ExtraSpeed = 2.0;
-		enemy.ExtraSize = 0.25; // smol
+		enemy.ExtraSize = 0.2; // smol
 		enemy.Credits += 1.0;
 		strcopy(enemy.CustomName, sizeof(enemy.CustomName), "Antinel");
 
@@ -403,10 +425,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
 			enemy.Is_Boss = 1;
-		
+
 		if(ImmuneNuke && !(enemy.Index % ImmuneNuke))
 			enemy.Is_Immune_To_Nuke = true;
-		
+
 		if(KillBonus)
 			enemy.Credits += KillBonus;
 
@@ -429,7 +451,7 @@ bool Freeplay_ShouldMiniBoss()
 	Flagellant_MiniBossChance(decrease);
 	if(decrease < 1)
 		return true;
-	
+
 	chance *= float(10 / decrease);
 	return (chance > GetURandomFloat());
 }
@@ -447,16 +469,16 @@ void Freeplay_SpawnEnemy(int entity)
 
 	if(PernellBuff)
 		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
-	
+
 	if(FusionBuff > 1)
 		ApplyStatusEffect(entity, entity, "Self Empowerment", 999999.0);	
-	
+
 	if(FusionBuff == 1 || FusionBuff > 2)
 		ApplyStatusEffect(entity, entity, "Ally Empowerment", 999999.0);	
-	
+
 	if(OceanBuff > 1)
 		ApplyStatusEffect(entity, entity, "Oceanic Scream", 999999.0);	
-	
+
 	if(OceanBuff > 0)
 		ApplyStatusEffect(entity, entity, "Oceanic Singing", 999999.0);	
 
@@ -468,7 +490,7 @@ void Freeplay_SpawnEnemy(int entity)
 
 	if(VictoriaBuff)
 		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
-	
+
 	if(SquadBuff)
 		ApplyStatusEffect(entity, entity, "Squad Leader", 999999.0);	
 
@@ -511,25 +533,25 @@ void Freeplay_SpawnEnemy(int entity)
 
 	if(IceDebuff > 2)
 		ApplyStatusEffect(entity, entity, "Near Zero", 999999.0);	
-	
+
 	if(IceDebuff > 1)
 		ApplyStatusEffect(entity, entity, "Cryo", 999999.0);	
-	
+
 	if(IceDebuff > 0)
 		ApplyStatusEffect(entity, entity, "Freeze", 999999.0);	
-	
+
 	if(TeslarDebuff > 1)
 		ApplyStatusEffect(entity, entity, "Teslar Electricution", 999999.0);	
-	
+
 	if(TeslarDebuff > 0)
 		ApplyStatusEffect(entity, entity, "Teslar Shock", 999999.0);	
-	
+
 	if(CrippleDebuff > 0)
 	{
 		ApplyStatusEffect(entity, entity, "Cripple", 999999.0);	
 		CrippleDebuff--;
 	}
-	
+
 	if(CudgelDebuff > 0)
 	{
 		ApplyStatusEffect(entity, entity, "Cudgelled", 999999.0);	
@@ -543,7 +565,7 @@ void Freeplay_SpawnEnemy(int entity)
 		{
 			fl_Extra_MeleeArmor[entity] *= 0.85;
 			fl_Extra_RangedArmor[entity] *= 0.85;
-			SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 1.1);
+    SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.1));
 		}
 		case 2:
 		{
@@ -718,7 +740,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 90;
+		rand = GetURandomInt() % 71;
 
 	if(wrathofirln)
 	{
@@ -823,11 +845,11 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			int randomcripple = GetRandomInt(50, 350);
+			int randomcripple = GetRandomInt(100, 600);
 			CrippleDebuff += randomcripple;
 			CPrintToChatAll("{green}The next %d enemies will now gain the Crippled debuff.", randomcripple);
 
-			int randomcudgel = GetRandomInt(50, 350);
+			int randomcudgel = GetRandomInt(100, 600);
 			CudgelDebuff += randomcudgel;
 			CPrintToChatAll("{green}The next %d enemies will now gain the Cudgel debuff.", randomcudgel);
 		}
@@ -1059,118 +1081,115 @@ void Freeplay_SetupStart(bool extra = false)
 			RampartBuff++;
 		}
 
-		switch(GetRandomInt(1, 22))
+		RaidFight = GetRandomInt(1, 26);
+		switch(RaidFight)
 		{
 			case 1:
 			{
 				CPrintToChatAll("{yellow}The True Fusion Warrior will appear in the next wave!");
-				RaidFight = 1;
 			}
 			case 2:
 			{
 				CPrintToChatAll("{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
-				RaidFight = 2;
 			}
 			case 3:
 			{
 				CPrintToChatAll("{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
-				RaidFight = 3;
 			}
 			case 4:
 			{
 				CPrintToChatAll("{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
-				RaidFight = 4;
 			}
 			case 5:
 			{
 				CPrintToChatAll("{blue}Sensal is on his way to arrest you and your team in the next wave!");
-				RaidFight = 5;
 			}
 			case 6:
 			{
 				CPrintToChatAll("{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
-				RaidFight = 6;
 			}
 			case 7:
 			{
 				CPrintToChatAll("{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
-				RaidFight = 7;
 			}
 			case 8:
 			{
 				CPrintToChatAll("{lightblue}The Messenger will deliver you a deadly message next wave.");
-				RaidFight = 8;
 			}
 			case 9:
 			{
 				CPrintToChatAll("{white}????????????? is coming...");
-				RaidFight = 9;
 			}
 			case 10:
 			{
 				CPrintToChatAll("{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
-				RaidFight = 10;
 			}
 			case 11:
 			{
 				CPrintToChatAll("{green}Nemesis has come to spread the xeno infection on the next wave...");
-				RaidFight = 11;
 			}
 			case 12:
 			{
 				CPrintToChatAll("{green}Mr.X has come to spread the xeno infection on the next wave...");
-				RaidFight = 12;
 			}
 			case 13:
 			{
 				CPrintToChatAll("{midnightblue}Corrupted Barney is coming...");
-				RaidFight = 13;
 			}
 			case 14:
 			{
 				CPrintToChatAll("{crimson}Whiteflower, the Traitor, will appear in the next wave.");
-				RaidFight = 14;
 			}
 			case 15:
 			{
 				CPrintToChatAll("{purple}An Unspeakable entity is approaching...");
-				RaidFight = 15;
 			}
 			case 16:
 			{
 				CPrintToChatAll("{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
-				RaidFight = 16;
 			}
 			case 17:
 			{
 				CPrintToChatAll("{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
-				RaidFight = 17;
 			}
 			case 18:
 			{
 				CPrintToChatAll("{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
-				RaidFight = 18;
 			}
 			case 19:
 			{
 				CPrintToChatAll("{community}Agent Thompson will appear in the next wave.");
-				RaidFight = 19;
 			}
 			case 20:
 			{
 				CPrintToChatAll("{forestgreen}The Twins will appear in the next wave.");
-				RaidFight = 20;
 			}
 			case 21:
 			{
 				CPrintToChatAll("{community}Agent Jackson will appear in the next wave.");
-				RaidFight = 21;
 			}
 			case 22:
 			{
 				CPrintToChatAll("{darkgreen}Agent Smith will appear in the next wave.");
-				RaidFight = 22;
 			}
+    /*
+			case 23:
+			{
+				CPrintToChatAll("{blue}The Atomizer has spotted your team, get ready next wave!");
+			}
+			case 24:
+			{
+				CPrintToChatAll("{lightblue}Huscarls is approaching to erradicate your team next wave!");
+			}
+			case 25:
+			{
+				CPrintToChatAll("{skyblue}Harrison and his fully-loaded arsenal will exterminate you next wave!");
+			}
+			case 26:
+			{
+				CPrintToChatAll("{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
+			}
+    */
 		}
 
 		for (int client = 0; client < MaxClients; client++)
@@ -1386,7 +1405,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +15% resist and +10% health!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +15% resist and +10% HP!");
 				PerkMachine = 1;
 			}
 			case 22:
@@ -1514,240 +1533,139 @@ void Freeplay_SetupStart(bool extra = false)
 				EnemyChance--;
 			}
 	
-			/// RAID SKULLS ///
-			case 33:
+			/// RAID SKULL ///
+			case 33, 34, 35:
 			{
 				if(RaidFight)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
-				RaidFight = 1;
-			}
-			case 34:
-			{
-				if(RaidFight)
+				RaidFight = GetRandomInt(1, 22);
+
+				switch(RaidFight)
 				{
-					Freeplay_SetupStart();
-					return;
+					case 2:
+					{
+						strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
+					}
+					case 3:
+					{
+						strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
+					}
+					case 4:
+					{
+						strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
+					}
+					case 5:
+					{
+						strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
+					}
+					case 6:
+					{
+						strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
+					}
+					case 7:
+					{
+						strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
+					}
+					case 8:
+					{
+						strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
+					}
+					case 9:
+					{
+						strcopy(message, sizeof(message), "{white}????????????? is coming...");
+					}
+					case 10:
+					{
+						strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
+					}
+					case 11:
+					{
+						strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
+					}
+					case 12:
+					{
+						strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
+					}
+					case 13:
+					{
+						strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
+					}
+					case 14:
+					{
+						strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
+					}
+					case 15:
+					{
+						strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
+					}
+					case 16:
+					{
+						strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
+					}
+					case 17:
+					{
+						strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
+					}
+					case 18:
+					{
+						strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
+					}
+					case 19:
+					{
+						strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
+					}
+					case 20:
+					{
+						strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
+					}
+					case 21:
+					{
+						strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
+					}
+					case 22:
+					{
+						strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
+					}
+      /*
+					case 23:
+					{
+						strcopy(message, sizeof(message), "{blue}The Atomizer has spotted your team, get ready next wave!");
+					}
+					case 24:
+					{
+						strcopy(message, sizeof(message), "{lightblue}Huscarls is approaching to erradicate your team next wave!");
+					}
+					case 25:
+					{
+						strcopy(message, sizeof(message), "{skyblue}Harrison and his fully-loaded arsenal will exterminate you next wave!");
+					}
+					case 26:
+					{
+						strcopy(message, sizeof(message), "{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
+					}
+      */
+					default:
+					{
+						strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
+					}
 				}
-				strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
-				RaidFight = 2;
-			}
-			case 35:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
-				RaidFight = 3;
-			}
-			case 36:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
-				RaidFight = 4;
-			}
-			case 37:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
-				RaidFight = 5;
-			}
-			case 38:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
-				RaidFight = 6;
-			}
-			case 39:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
-				RaidFight = 7;
-			}
-			case 40:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
-				RaidFight = 8;
-			}
-			case 41:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{white}????????????? is coming...");
-				RaidFight = 9;
-			}
-			case 42:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
-				RaidFight = 10;
-			}
-			case 43:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
-				RaidFight = 11;
-			}
-			case 44:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
-				RaidFight = 12;
-			}
-			case 45:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
-				RaidFight = 13;
-			}
-			case 46:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
-				RaidFight = 14;
-			}
-			case 47:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
-				RaidFight = 15;
-			}
-			case 48:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
-				RaidFight = 16;
-			}
-			case 49:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
-				RaidFight = 17;
-			}
-			case 50:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
-				RaidFight = 18;
-			}
-			case 51:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
-				RaidFight = 19;
-			}
-			case 52:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
-				RaidFight = 20;
-			}
-			case 53:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
-				RaidFight = 21;
-			}
-			case 54:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
-				RaidFight = 22;
 			}
 	
 			/// SAMU'S SKULLS (new!) ///
-			case 55:
+			case 36:
 			{
 				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
 				SpeedMult += 0.1;
 			}
-			case 56:
+			case 37:
 			{
 				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
 				SpeedMult += 0.15;
 			}
-			case 57:
+			case 38:
 			{
 				if(SpeedMult < 0.35) // i'll go with a minimum of -65% movement speed since freeplay enemies move way faster than usual, and certain buffs make them faster
 				{
@@ -1757,7 +1675,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
 				SpeedMult -= 0.1;
 			}
-			case 58:
+			case 39:
 			{
 				if(SpeedMult < 0.35)
 				{
@@ -1767,17 +1685,17 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
 				SpeedMult -= 0.15;
 			}
-			case 59:
+			case 40:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
 				MeleeMult += 0.2;
 			}
-			case 60:
+			case 41:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more melee damage.");
 				MeleeMult += 0.25;
 			}
-			case 61:
+			case 42:
 			{
 				if(MeleeMult < 0.05) // 95% melee res max
 				{
@@ -1791,7 +1709,7 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.05;
 				}
 			}
-			case 62:
+			case 43:
 			{
 				if(MeleeMult < 0.05)
 				{
@@ -1805,17 +1723,17 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.05;
 				}
 			}
-			case 63:
+			case 44:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
 				RangedMult += 0.20;
 			}
-			case 64:
+			case 45:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more ranged damage.");
 				RangedMult += 0.25;
 			}
-			case 65:
+			case 46:
 			{
 				if(RangedMult < 0.05) // 95% ranged res max
 				{
@@ -1829,7 +1747,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 66:
+			case 47:
 			{
 				if(RangedMult < 0.05)
 				{
@@ -1843,7 +1761,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 67:
+			case 48:
 			{
 				if(SuperMiniBoss)
 				{
@@ -1854,19 +1772,19 @@ void Freeplay_SetupStart(bool extra = false)
 				SuperMiniBoss = true;
 				EmitSoundToAll("mvm/mvm_warning.wav");
 			}
-			case 68:
+			case 49:
 			{
 				if(ExplodingNPC)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				ExplodeNPCDamage = GetRandomInt(50, 250);
+				ExplodeNPCDamage = GetRandomInt(25, 125);
 				strcopy(message, sizeof(message), "{red}Now, enemies will explode on death!");
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
-			case 69:
+			case 50:
 			{
 				if(EnemyShields >= 15)
 				{
@@ -1877,7 +1795,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
 				EnemyShields += 3;
 			}
-			case 70:
+			case 51:
 			{
 				if(EnemyShields >= 15)
 				{
@@ -1888,7 +1806,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 				EnemyShields += 6;
 			}
-			case 71:
+			case 52:
 			{
 				if(EnemyShields <= 0)
 				{
@@ -1899,7 +1817,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
 				EnemyShields -= 2;
 			}
-			case 72:
+			case 53:
 			{
 				if(EnemyShields <= 0)
 				{
@@ -1910,7 +1828,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
 				EnemyShields -= 4;
 			}
-			case 73:
+			case 54:
 			{
 				if(VoidBuff > 2)
 				{
@@ -1923,7 +1841,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VoidBuff++;
 				}
 			}
-			case 74:
+			case 55:
 			{
 				if(VictoriaBuff)
 				{
@@ -1936,7 +1854,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VictoriaBuff = true;
 				}
 			}
-			case 75:
+			case 56:
 			{
 				if(SquadBuff)
 				{
@@ -1949,7 +1867,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SquadBuff = true;
 				}
 			}
-			case 76:
+			case 57:
 			{
 				if(Coffee)
 				{
@@ -1962,7 +1880,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Coffee = true;
 				}
 			}
-			case 77:
+			case 58:
 			{
 				if(StrangleDebuff > 3)
 				{
@@ -1975,7 +1893,7 @@ void Freeplay_SetupStart(bool extra = false)
 					StrangleDebuff++;
 				}
 			}
-			case 78:
+			case 59:
 			{
 				if(ProsperityDebuff > 3)
 				{
@@ -1988,7 +1906,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ProsperityDebuff++;
 				}
 			}
-			case 79:
+			case 60:
 			{
 				if(SilenceDebuff)
 				{
@@ -2001,7 +1919,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SilenceDebuff = true;
 				}
 			}
-			case 80:
+			case 61:
 			{
 				if(ExtraEnemySize <= 0.35) // 65% less size max
 				{
@@ -2011,7 +1929,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 10%");
 				ExtraEnemySize -= 0.10;
 			}
-			case 81:
+			case 62:
 			{
 				if(ExtraEnemySize <= 0.35) // 65% less size max
 				{
@@ -2021,7 +1939,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 15%");
 				ExtraEnemySize -= 0.15;
 			}
-			case 82:
+			case 63:
 			{
 				if(ExtraEnemySize >= 4.0) // 300% more size max
 				{
@@ -2031,7 +1949,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
 				ExtraEnemySize += 0.10;
 			}
-			case 83:
+			case 64:
 			{
 				if(ExtraEnemySize >= 4.0) // 300% more size max
 				{
@@ -2041,7 +1959,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 15%");
 				ExtraEnemySize += 0.15;
 			}
-			case 84:
+			case 65:
 			{
 				//10% chance, otherwise retry.
 				if(GetRandomFloat(0.0, 1.0) <= 0.1)
@@ -2055,7 +1973,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 			}
-			case 85:
+			case 66:
 			{
 				if(UnlockedSpeed)
 				{
@@ -2066,7 +1984,7 @@ void Freeplay_SetupStart(bool extra = false)
 				Store_DiscountNamedItem("Adrenaline", 999);
 				strcopy(message, sizeof(message), "{green}Adrenaline is now buyable in the passive store!");
 			}
-			case 86:
+			case 67:
 			{
 				if(CheesyPresence)
 				{
@@ -2079,7 +1997,7 @@ void Freeplay_SetupStart(bool extra = false)
 					CheesyPresence = true;
 				}
 			}
-			case 87:
+			case 68:
 			{
 				if(EloquenceBuff > 2)
 				{
@@ -2092,7 +2010,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuff++;
 				}
 			}
-			case 88:
+			case 69:
 			{
 				if(RampartBuff > 2)
 				{
@@ -2105,7 +2023,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuff++;
 				}
 			}
-			case 89:
+			case 70:
 			{
 				if(AntinelNextWave)
 				{
@@ -2128,7 +2046,7 @@ void Freeplay_SetupStart(bool extra = false)
 		if(RaidFight && !IsRaidWave)
 		{
 			IsRaidWave = true;
-			CPrintToChatAll("{green}Winning this wave will reward you with 5000 extra credits.");
+			CPrintToChatAll("{green}Winning this wave will reward you with 6500 extra credits.");
 			EmitSoundToAll("mvm/mvm_used_powerup.wav", _, _, _, _, 0.67);
 		}
 
