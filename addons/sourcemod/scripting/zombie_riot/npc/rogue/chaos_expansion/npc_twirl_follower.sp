@@ -368,6 +368,7 @@ methodmap TwirlFollower < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		TwirlEarsApply(npc.index,_,0.75);
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 
@@ -1080,6 +1081,8 @@ static void ClotDeath(int entity)
 	TwirlFollower npc = view_as<TwirlFollower>(entity);
 
 	npc.PlayDeathSound();
+	
+	ExpidonsaRemoveEffects(entity);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
