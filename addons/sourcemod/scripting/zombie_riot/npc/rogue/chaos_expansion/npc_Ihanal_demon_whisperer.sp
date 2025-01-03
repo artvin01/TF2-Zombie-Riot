@@ -99,7 +99,7 @@ methodmap HallamDemonWhisperer < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,75);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,GetRandomInt(70,80));
 	}
 	public void PlayRangedSound()
 	{
@@ -108,7 +108,6 @@ methodmap HallamDemonWhisperer < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
-
 	}
 	
 	property float m_flHealCooldownDo
@@ -387,24 +386,26 @@ void HallamDemonWhispererSelfDefense(HallamDemonWhisperer npc, float gameTime, f
 			Enemy_I_See = Can_I_See_Ally(npc.index, npc.m_iTargetAlly);
 			if(IsValidAlly(npc.index, Enemy_I_See))
 			{
-				float vecAlly[3]; WorldSpaceCenter(Enemy_I_See, vecAlly);
+				float vecAlly[3];
+				GetEntPropVector(Enemy_I_See, Prop_Data, "m_vecAbsOrigin", vecAlly);
 				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						
 				npc.m_flAttackHappens = gameTime + 0.15;
 				npc.m_flDoingAnimation = gameTime + 0.15;
-				npc.m_flNextMeleeAttack = gameTime + 0.65;
+				npc.m_flNextMeleeAttack = gameTime + 1.3;
 				int maxhealthally = ReturnEntityMaxHealth(npc.m_iTargetAlly);
-				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Buff Banner", 3.0);	
-				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Battilons Backup", 3.0);	
-				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Squad Leader", 3.0);
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Buff Banner", 5.0);	
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Battilons Backup", 5.0);	
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Squad Leader", 5.0);
 				HealEntityGlobal(npc.index, npc.m_iTargetAlly, float(maxhealthally) / 100, 1.0, 0.0, HEAL_SELFHEAL);
-				spawnBeam(0.8, 50, 255, 50, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
-				spawnBeam(0.8, 50, 255, 50, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				vecAlly[2] += 45.0;
+				spawnBeam(0.8, 50, 255, 50, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.8, 50, 255, 50, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
 			}
 		}		
 	}

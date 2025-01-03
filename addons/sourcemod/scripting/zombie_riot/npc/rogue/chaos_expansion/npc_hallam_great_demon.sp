@@ -47,9 +47,9 @@ void HallamGreatDemon_OnMapStart_NPC()
 	PrecacheModel("models/props_halloween/eyeball_projectile.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Hallam's Great Demon");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hallam_gerat_demon");
-	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
-	data.IconCustom = false;
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hallam_great_demon");
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_insane");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_BlueParadox;
 	data.Func = ClotSummon;
@@ -123,7 +123,7 @@ methodmap HallamGreatDemon < CClotBody
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
+
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -143,7 +143,7 @@ methodmap HallamGreatDemon < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(HallamGreatDemon_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 250.0;
 		
 		
 		int skin = 1;
@@ -228,8 +228,12 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		DemonScaling *= -1.0;
 		DemonScaling += 1.0;
 	}
+	else
+	{
+		DemonScaling += 0.25;
+	}
 	DemonScaling += 1.0;
-	npc.m_flSpeed = 250.0 * DemonScaling;
+	npc.m_flSpeed = 200.0 * DemonScaling;
 	RaidModeScaling = 1.0 * DemonScaling;
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -402,14 +406,16 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 			
 			if(npc.m_iTarget > 0)
 			{	
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-				npc.FaceTowards(vecTarget, 15000.0);
+				float projectile_speed = 1100.0;
+				float vPredictedPos[3];
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, projectile_speed, _,vPredictedPos);
+				npc.FaceTowards(vPredictedPos, 15000.0);
 				
 				npc.PlayRangedSound();
 				int ElementalDamage = RoundToNearest(350.0 * Scaling);
 				float damageDealt = 350.0 * Scaling;
 
-				int entity = npc.FireArrow(vecTarget, damageDealt, 1100.0, "models/props_halloween/eyeball_projectile.mdl");
+				int entity = npc.FireArrow(vPredictedPos, damageDealt, projectile_speed, "models/props_halloween/eyeball_projectile.mdl");
 				i_ChaosArrowAmount[entity] = ElementalDamage;
 				
 				if(entity != -1)
@@ -418,10 +424,10 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(entity, 100, 100, 255, 255);
+					SetEntityRenderColor(entity, 15, 15, 15, 255);
 					
-					WorldSpaceCenter(entity, vecTarget);
-					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "tranq_distortion_trail", 3.0);
+					WorldSpaceCenter(entity, vPredictedPos);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vPredictedPos, "tranq_distortion_trail", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 				}
@@ -460,8 +466,7 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_THROW");
+				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 						
 				npc.m_flNextRangedSpecialAttack = gameTime + 0.15;
 				npc.m_flDoingAnimation = gameTime + 0.15;
