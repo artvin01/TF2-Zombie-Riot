@@ -500,6 +500,14 @@
 	{
 		"en"	"Fight Father Grigori for the chance to take all his items without pay"
 	}
+	"Steal Ruinian"
+	{
+		"en"	"Take them from the Ruinian"
+	}
+	"Steal Ruinian Desc"
+	{
+		"en"	"Steal all their precious items!\n{crimson}But twirl might not like that."
+	}
 	"Mark of a Thief"
 	{
 		"en"	"Mark of a Thief"
@@ -1527,7 +1535,7 @@
 	}
 	"Broken Defenses"
 	{
-		"en"	"Not so Missunderstood"
+		"en"	"Broken Defenses"
 	}
 	"Broken Defenses!"
 	{
@@ -1635,6 +1643,6 @@
 	}
 	"Mazeat Lost Tech Desc 1b"
 	{
-		"en"	"Obtain a Grant item, but you might get unwanted attention."
+		"en"	"{green}Obtain a Grant item, {crimson}but you might get unwanted attention."
 	}
 }

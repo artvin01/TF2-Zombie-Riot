@@ -1382,7 +1382,7 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 	}
 }
 
-static stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {	
 	float ExtraDamageDealt;
 

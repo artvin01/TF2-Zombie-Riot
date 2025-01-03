@@ -1014,9 +1014,9 @@ public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
 		}
 		case 1:
 		{
-			Rogue_GiveNamedArtifact("Mazeat Lost Technology", true);
+			Rogue_GiveNamedArtifact("Mazeat Lost Technology");
 			Rogue_StartThisBattle(5.0);
-			Rogue_SetBattleIngots(1);
+			Rogue_SetBattleIngots(6);
 		}
 	}
 }

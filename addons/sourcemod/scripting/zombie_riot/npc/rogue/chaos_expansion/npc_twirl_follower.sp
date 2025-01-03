@@ -614,15 +614,14 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = 30.0;
+		float Dmg = 19.0;
 		char Particle[50];
 		if(npc.m_iState % 2)
 			Particle = "raygun_projectile_blue";
 		else
 			Particle = "raygun_projectile_red";
 
-		int projectile = npc.FireParticleRocket(target_vec, Dmg , projectile_speed , 0.0 , Particle, true, _, true, flPos);
-		b_ScalesWithWaves[projectile] = true;
+		npc.FireParticleRocket(target_vec, Dmg , projectile_speed , 0.0 , Particle, false, false, true, flPos, .inflictor = npc.index);
 	}
 	else
 	{

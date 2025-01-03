@@ -780,6 +780,7 @@ void NPC_ConfigSetup()
 	HallamGreatDemon_OnMapStart_NPC();
 	HallamDemonWhisperer_OnMapStart_NPC();
 	ChaosSwordsman_OnMapStart_NPC();
+	MajorVoided_MapStart();
 	DuckFollower_Setup();
 	BobTheFirstFollower_Setup();
 	TwirlFollower_Setup();
@@ -1736,7 +1737,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_twirl_follower.sp"
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_hallam_great_demon.sp"
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_Ihanal_demon_whisperer.sp"
-
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_majorvoided.sp"
 
 #include "zombie_riot/npc/mutations/truesurvival/npc_nightmare.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_petrisisbaron.sp"

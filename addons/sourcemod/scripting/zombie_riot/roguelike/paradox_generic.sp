@@ -140,12 +140,24 @@ static void StartShopVote(bool first)
 		}
 		if(length)
 		{
-			strcopy(vote.Name, sizeof(vote.Name), "Steal Grigori");
-			vote.Append[0] = 0;
-			strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
-			strcopy(vote.Config, sizeof(vote.Config), "-2");
-			vote.Locked = false;
-			list.PushArray(vote);
+			if(ShopSetting == 0)
+			{
+				strcopy(vote.Name, sizeof(vote.Name), "Steal Grigori");
+				vote.Append[0] = 0;
+				strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
+				strcopy(vote.Config, sizeof(vote.Config), "-2");
+				vote.Locked = false;
+				list.PushArray(vote);
+			}
+			else
+			{
+				strcopy(vote.Name, sizeof(vote.Name), "Steal Ruinian");
+				vote.Append[0] = 0;
+				strcopy(vote.Desc, sizeof(vote.Desc), "Steal Ruinian Desc");
+				strcopy(vote.Config, sizeof(vote.Config), "-2");
+				vote.Locked = false;
+				list.PushArray(vote);
+			}
 		}	
 	}
 	if(ShopSetting == 1)
@@ -162,6 +174,7 @@ static void StartShopVote(bool first)
 		}
 		Format(vote.Append, sizeof(vote.Append), " △%d", cost);
 		vote.Locked = ingots < cost;
+		list.PushArray(vote);
 	}
 
 	Rogue_StartGenericVote(length ? (first ? 30.0 : 15.0) : 3.0);
@@ -192,6 +205,18 @@ public void Rogue_Vote_Shop2Encounter_Ruina(const Vote vote)
 		}
 		case -2:
 		{
+			if(ShopListing)
+			{
+				int length = ShopListing.Length;
+				for(int i; i < length; i++)
+				{
+					ShopListing.GetArray(i, artifact);
+					if(artifact.ShopCost > 8)
+						Rogue_GiveNamedArtifact(artifact.Name);
+				}
+
+				delete ShopListing;
+			}
 			Rogue_GiveNamedArtifact("Mark of a Thief", true);
 			Rogue_GiveNamedArtifact("Evil Within from Ruina's Great Crystal");
 

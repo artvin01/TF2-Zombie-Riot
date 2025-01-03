@@ -188,7 +188,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 20:
 			{
-				this.Speech("I wonder what could would think of whiteflowers death","...");
+				this.Speech("I wonder what Guln would think of whiteflowers death","...");
 				this.SpeechDelay(8.0, "He's be probably very upset.");
 			}
 			case 21:
