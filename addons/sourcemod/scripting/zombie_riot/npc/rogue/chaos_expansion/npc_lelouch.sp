@@ -75,6 +75,12 @@ static const char g_AngerSounds[][] = {
 			
 			maybe whenever you kill all the crystals he does an anim: taunt_commending_clap_spy
 
+
+	Cosmetics:
+		- Make a custom sword/blade
+		- Make someform of wings, take inspiration for the wings from his main knightmare that he uses.
+		- a cape, of someform, gotta look for one inside loadout.tf to get a good one.
+
 	Base Model: Spy
 
 	Theme: https://www.youtube.com/watch?v=lwoG7Cg1f5I
@@ -513,7 +519,13 @@ methodmap Lelouch < CClotBody
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		/*npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+
+		npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4);
+
+		SetVariantInt(RUINA_FANTASY_BLADE);	//so does this actually look good with spy, no clue, if it doesn't use stage 4 rul blades
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+
+		/*
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
