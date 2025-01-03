@@ -886,14 +886,13 @@ static void Crystal_Passive_Logic(Lelouch npc)
 					Ruina_Laser_Logic Laser;
 					Laser.client = npc.index;
 					Laser.DoForwardTrace_Custom(Crystal_Angles, Offset_Loc, -1.0);
-					Laser.Damage = Modify_Damage(-1, 100.0);				//how much dmg should it do?		//100.0*RaidModeScaling
-					Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 100.0);			//dmg vs things that should take bonus dmg.
+					Laser.Damage = Modify_Damage(-1, 50.0);				//how much dmg should it do?		//100.0*RaidModeScaling
+					Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 50.0);			//dmg vs things that should take bonus dmg.
 					Laser.damagetype = DMG_PLASMA;		//dmg type.
 					Laser.Radius = 25.0;				//how big the radius is / hull.
-					Laser.Deal_Damage();
+					Laser.Deal_Damage(On_LaserHi_OverflowMana);
 
-					int color[4]; color = {255,255,255,255};
-					TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.2, 15.0, 15.0, 0, 2.5, color, 0);
+					TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.2, 15.0, 15.0, 0, 2.5, Lelouch_Colors(), 0);
 					TE_SendToAll(0.0);
 
 					New_Angles[0] = -90.0;
@@ -995,20 +994,32 @@ static void Crystal_Passive_Logic(Lelouch npc)
 				float Middle_Vec[3];
 				Get_Fake_Forward_Vec(Dist * Ratio, New_Angles, Middle_Vec, Laser_Path[0]);
 
-				int color[4]; color = {255,255,255,255};
-				TE_SetupBeamPoints(Offset_Loc, Middle_Vec, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.2, 15.0, 15.0, 0, 2.5, color, 0);
-				TE_SendToAll(0.0);
+				
 
 				if(b_test_mode[npc.index])
 				{
-					color = {255,0,255,255};
+					int color[4] = {255,0,255,255};
 					TE_SetupBeamPoints(Laser_Path[0], Laser_Path[1], g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.1, 15.0, 15.0, 0, 2.5, color, 0);
 					TE_SendToAll(0.0);
 				}
 
+				
+
 				//now get the angle from the crystal to the middle vector, that way we can turn the crystal towards where its aiming.
 				MakeVectorFromPoints(Offset_Loc, Middle_Vec, Crystal_Angles);
 				GetVectorAngles(Crystal_Angles, Crystal_Angles);
+
+				Ruina_Laser_Logic Laser;			//now reuse my beloved laser logic.
+				Laser.client = npc.index;			//whose using the laser?
+				Laser.DoForwardTrace_Custom(Crystal_Angles, Offset_Loc, -1.0);
+				Laser.Damage = Modify_Damage(-1, 30.0);				//how much dmg should it do?		//100.0*RaidModeScaling
+				Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 30.0);			//dmg vs things that should take bonus dmg.
+				Laser.damagetype = DMG_PLASMA;		//dmg type.
+				Laser.Radius = 25.0;				//how big the radius is / hull.
+				Laser.Deal_Damage(On_LaserHi_OverflowMana);				//and now we kill
+
+				TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.2, 15.0, 15.0, 0, 2.5, Lelouch_Colors(), 0);
+				TE_SendToAll(0.0);
 
 				Crystal_Angles[0] -= 90.0;
 			}
@@ -1018,20 +1029,6 @@ static void Crystal_Passive_Logic(Lelouch npc)
 	}
 
 	npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 120.0;
-}
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
 }
 static int i_targets_traced[50];
 static void GetEntitiesForSlicers(int entity, int victim, float damage, int weapon)
@@ -1348,11 +1345,11 @@ static void BladeLogic_Tick(int iNPC)
 			Laser.client = npc.index;			//whose using the laser?
 			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
 			Laser.End_Point = Final_Vec;		//where does the laser end?
-			Laser.Damage = Modify_Damage(-1, 100.0);				//how much dmg should it do?		//100.0*RaidModeScaling
-			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 100.0);			//dmg vs things that should take bonus dmg.
+			Laser.Damage = Modify_Damage(-1, 75.0);				//how much dmg should it do?		//100.0*RaidModeScaling
+			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 75.0);			//dmg vs things that should take bonus dmg.
 			Laser.damagetype = DMG_PLASMA;		//dmg type.
 			Laser.Radius = 25.0;				//how big the radius is / hull.
-			Laser.Deal_Damage();				//and now we kill
+			Laser.Deal_Damage(On_LaserHi_OverflowMana);				//and now we kill
 		}
 		case 1:
 		{
@@ -1388,11 +1385,11 @@ static void BladeLogic_Tick(int iNPC)
 			Laser.client = npc.index;			//whose using the laser?
 			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
 			Laser.End_Point = Blade_Origin;		//where does the laser end?
-			Laser.Damage = Modify_Damage(-1, 100.0);				//how much dmg should it do?		//100.0*RaidModeScaling
-			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 100.0);			//dmg vs things that should take bonus dmg.
+			Laser.Damage = Modify_Damage(-1, 50.0);				//how much dmg should it do?		//100.0*RaidModeScaling
+			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 50.0);			//dmg vs things that should take bonus dmg.
 			Laser.damagetype = DMG_PLASMA;		//dmg type.
 			Laser.Radius = 25.0;				//how big the radius is / hull.
-			Laser.Deal_Damage();				//and now we kill
+			Laser.Deal_Damage(On_LaserHi_OverflowMana);				//and now we kill
 
 		}
 		default:
@@ -1404,6 +1401,31 @@ static void BladeLogic_Tick(int iNPC)
 }
 
 //Usefull stuff.
+
+static void On_LaserHi_OverflowMana(int client, int target, int damagetype, float damage)
+{
+	Lelouch npc = view_as<Lelouch>(client);
+	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? 55 : 45), true);
+}
+static int[] Lelouch_Colors()
+{
+	int color[4] = {255,255,255,255};
+	return color;
+}
+static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
+{
+	float tmp[3];
+	float actualBeamOffset[3];
+
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	Result_Vec[0] += actualBeamOffset[0];
+	Result_Vec[1] += actualBeamOffset[1];
+	Result_Vec[2] += actualBeamOffset[2];
+}
 
 static void Handle_Animations(Lelouch npc)
 {
