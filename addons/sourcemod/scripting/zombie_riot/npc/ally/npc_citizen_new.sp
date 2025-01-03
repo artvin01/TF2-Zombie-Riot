@@ -2415,7 +2415,7 @@ public void Citizen_ClotThink(int iNPC)
 	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.04 * 0.01, (npc.m_iClassRole == Cit_Medic ? 1.0 : 0.5), 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 
 	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
-	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1));
+	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1) || GetTeam(npc.index) != TFTeam_Red);
 
 	// See if our target is still valid
 	int target = npc.m_iTarget;
@@ -2520,6 +2520,10 @@ public void Citizen_ClotThink(int iNPC)
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	bool injured = (health < 60) || (health < (maxhealth / 5));
 	bool seakAlly = npc.m_bGetClosestTargetTimeAlly;
+
+	//Making them do this on enemies seems to break them, just dont.
+	if(GetTeam(npc.index) != TFTeam_Red)
+		seakAlly = false;
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	float vecTarget[3];
 	static char buffer[32];

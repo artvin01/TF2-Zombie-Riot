@@ -57,7 +57,7 @@ void HallamDemonWhisperer_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Ihanal Demon Whisperer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ihanal_demon_whisperer");
 	strcopy(data.Icon, sizeof(data.Icon), "spy");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_BlueParadox;
 	data.Func = ClotSummon;
@@ -306,7 +306,7 @@ public void HallamDemonWhisperer_ClotThink(int iNPC)
 			pack_boom1.WriteFloat(pos1[0]);
 			pack_boom1.WriteFloat(pos1[1]);
 			pack_boom1.WriteFloat(pos1[2]);
-			pack_boom1.WriteCell(0);
+			pack_boom1.WriteCell(1);
 			RequestFrame(MakeExplosionFrameLater, pack_boom1);
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -335,7 +335,7 @@ public Action HallamDemonWhisperer_OnTakeDamage(int victim, int &attacker, int &
 		float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) 
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0) 
 		{
 			if(IsValidAlly(npc.index, npc.m_iTargetAlly))
 			{
@@ -381,12 +381,10 @@ void HallamDemonWhispererSelfDefense(HallamDemonWhisperer npc, float gameTime, f
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0))
 		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy_Only(npc.index, npc.m_iTargetAlly);
-					
+			int Enemy_I_See;					
+			Enemy_I_See = Can_I_See_Ally(npc.index, npc.m_iTargetAlly);
 			if(IsValidAlly(npc.index, Enemy_I_See))
 			{
 				float vecAlly[3]; WorldSpaceCenter(Enemy_I_See, vecAlly);
