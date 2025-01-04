@@ -390,7 +390,11 @@ void NPC_ConfigSetup()
 	Ruina_Storm_Weaver_MapStart();
 	Ruina_Storm_Weaver_Mid_MapStart();
 
+	Interstellar_Weaver_MapStart();
+	Interstellar_Weaver_MapStart_Mid();
+
 #endif
+
 
 	Kit_Fractal_NPC_MapStart();
 
@@ -1363,6 +1367,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_lelouch.sp"
 #include "zombie_riot/npc/rogue/chaos_expansion/npc_manipulation_ent.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_interstellar_weaver.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_interstellar_weaver_mid.sp"
 
 //Alt
 
