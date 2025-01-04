@@ -3,27 +3,6 @@
 
 #define SELL_AMOUNT 0.9
 
-static const int SlotLimits[] =
-{
-	1,	// 0	Head
-	1,	// 1	Chest
-	1,	// 2	Leggings
-	1,	// 3	Shoes
-	1,	// 4	Monkey Knowledge
-	1,	// 5
-	1,	// 6	Extra Gear
-	1,	// 7	Grenade/Potion
-	1,	// 8	Buildings
-	1,	// 9
-	1,	// 10
-	1,	// 11
-	1,	// 12
-	1,	// 13
-	1,	// 14
-	1,	// 15
-	1	// 16
-};
-
 enum struct ItemInfo
 {
 	int Cost;
@@ -1656,7 +1635,6 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 {
 	if(slot >= 0)
 	{
-		int count;
 		int length = StoreItems.Length;
 		static Item item;
 		for(int i; i<length; i++)
@@ -1664,14 +1642,10 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 			StoreItems.GetArray(i, item);
 			if(item.Equipped[client] && item.Slot == slot)
 			{
-				count++;
-				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
-				{
-					static ItemInfo info;
-					item.GetItemInfo(0, info);
-					Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
-					break;
-				}
+				static ItemInfo info;
+				item.GetItemInfo(0, info);
+				Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
+				break;
 			}
 		}
 	}
@@ -1682,8 +1656,6 @@ void Store_EquipSlotCheck(int client, Item mainItem)
 	if(mainItem.IgnoreSlots)
 		return;
 	
-	int count;
-
 	int slot = mainItem.Slot;
 
 	static ItemInfo info;
@@ -1720,13 +1692,9 @@ void Store_EquipSlotCheck(int client, Item mainItem)
 
 			if(slot >= 0 && subItem.Slot == slot)
 			{
-				count++;
-				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
-				{
-					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
-					Store_Unequip(client, i);
-					continue;
-				}
+				PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
+				Store_Unequip(client, i);
+				continue;
 			}
 		}
 	}
@@ -3400,37 +3368,6 @@ static void MenuPage(int client, int section)
 		
 		if(item.GiftId != -1 && !Items_HasIdItem(client, item.GiftId))
 			continue;
-		
-		/*if(NPCOnly[client] != 2 && NPCOnly[client] != 3 && item.Slot >= 0)
-		{
-			int count;
-			for(int a; a<length; a++)
-			{
-				if(a == i)
-					continue;
-				
-				StoreItems.GetArray(a, item2);
-				if(item2.Equipped[client] && item2.Slot == item.Slot)
-					count++;
-			}
-			
-			if(count)
-			{
-				bool blocked;
-				if(item.Slot >= sizeof(SlotLimits))
-					blocked = true;
-				
-				if(count >= SlotLimits[item.Slot])
-					blocked = true;
-				
-				if(blocked)
-				{
-					menu.AddItem("-1", TranslateItemName(client, item.Name, 1), ITEMDRAW_DISABLED);
-					found = true;
-					continue;
-				}
-			}
-		}*/
 
 		if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
