@@ -274,8 +274,17 @@ static Action StunPuppet1_Timer(Handle timer, int ref)
 	if(entity == -1 || b_NpcHasDied[entity])
 		return Plugin_Stop;
 	
+	float DamageDeal = 8.0;
+	float ExtraDamageDealt;
+
+	ExtraDamageDealt = ExtraDamageWaveScaling(); //at wave 60, this will equal to 60* dmg
+	if(ExtraDamageDealt <= 0.35)
+	{
+		ExtraDamageDealt = 0.35;
+	}
+	DamageDeal *= ExtraDamageDealt;
 	if(fl_NextDelayTime[entity] > (GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT))
-		SDKHooks_TakeDamage(entity, LastHitRef[entity], LastHitRef[entity], 70.0, DMG_PLASMA, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+		SDKHooks_TakeDamage(entity, LastHitRef[entity], LastHitRef[entity], DamageDeal, DMG_PLASMA, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 	
 	return Plugin_Continue;
 }
@@ -291,8 +300,17 @@ static Action StunPuppet2_Timer(Handle timer, int ref)
 	if(entity == -1 || b_NpcHasDied[entity])
 		return Plugin_Stop;
 	
+	float DamageDeal = 12.0;
+	float ExtraDamageDealt;
+
+	ExtraDamageDealt = ExtraDamageWaveScaling(); //at wave 60, this will equal to 60* dmg
+	if(ExtraDamageDealt <= 0.35)
+	{
+		ExtraDamageDealt = 0.35;
+	}
+	DamageDeal *= ExtraDamageDealt;
 	if(fl_NextDelayTime[entity] > (GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT))
-		SDKHooks_TakeDamage(entity, LastHitRef[entity], LastHitRef[entity], 100.0, DMG_PLASMA, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+		SDKHooks_TakeDamage(entity, LastHitRef[entity], LastHitRef[entity], DamageDeal, DMG_PLASMA, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 	
 	return Plugin_Continue;
 }

@@ -1382,11 +1382,15 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 	}
 }
 
+float ExtraDamageWaveScaling()
+{
+	return (CurrentCash * 0.001);
+}
 stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {	
 	float ExtraDamageDealt;
 
-	ExtraDamageDealt = CurrentCash * 0.001; //at wave 60, this will equal to 60* dmg
+	ExtraDamageDealt = ExtraDamageWaveScaling(); //at wave 60, this will equal to 60* dmg
 	if(ExtraDamageDealt <= 0.35)
 	{
 		ExtraDamageDealt = 0.35;

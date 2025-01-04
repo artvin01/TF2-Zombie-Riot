@@ -658,7 +658,7 @@
 	}
 	"String Puppet Desc"
 	{
-		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take 700 mage damage every second while stunned"
+		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take Light mage damage every second while stunned"
 	}
 	"Children's Puppet"
 	{
@@ -666,7 +666,7 @@
 	}
 	"Children's Puppet Desc"
 	{
-		"en"	"A simple puppet made by Iberian children using trinkets found on the seacoast.\n{green}Enemies take 1000 mage damage every second while stunned"
+		"en"	"A simple puppet made by Iberian children using trinkets found on the seacoast.\n{green}Enemies take Heavy mage damage every second while stunned"
 	}
 	"Garlic Bread"
 	{
