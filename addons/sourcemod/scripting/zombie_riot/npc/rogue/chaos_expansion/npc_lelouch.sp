@@ -553,16 +553,6 @@ methodmap Lelouch < CClotBody
 		npc.StartPathing();
 
 		FreezeTimer(false);
-		
-	/*	static const char Items[][] = {	//temp
-			"models/workshop/player/items/all_class/jogon/jogon_medic.mdl",
-			"models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_medic.mdl",
-			"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl",
-			"models/workshop/player/items/medic/sf14_vampire_makeover/sf14_vampire_makeover.mdl",
-			"models/workshop/player/items/medic/dec17_coldfront_carapace/dec17_coldfront_carapace.mdl",
-			RUINA_CUSTOM_MODELS_3,
-			RUINA_CUSTOM_MODELS_2
-		};*/
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -578,23 +568,13 @@ methodmap Lelouch < CClotBody
 		SetVariantInt(RUINA_FANTASY_BLADE);	//so does this actually look good with spy, no clue, if it doesn't use stage 4 rul blades
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
-		/*
-		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
-		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
-		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
-
-		SetVariantInt(RUINA_WINGS_3);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
-		SetVariantInt(RUINA_IMPACT_LANCE_4);
-		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
-
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");	*/
-		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_spy.mdl", _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/sept2014_lady_killer/sept2014_lady_killer.mdl", _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/spy/dec2014_the_puffy_provocateur/dec2014_the_puffy_provocateur.mdl", _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/pyro/hwn2020_seared_sorcerer_style2/hwn2020_seared_sorcerer_style2.mdl", _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", "models/player/items/spy/hwn_spy_misc2.mdl", _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/spy/spy_spats.mdl", _, skin);
+		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tw2_roman_wreath/tw2_roman_wreath_spy.mdl", _, skin);
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
@@ -647,6 +627,10 @@ methodmap Lelouch < CClotBody
 
 		if(b_test_mode[npc.index])
 			RaidModeTime = FAR_FUTURE;
+
+		if(Rogue_Mode())
+			Rogue_Dome_WaveEnd();
+
 		return npc;
 	}
 	
@@ -811,6 +795,7 @@ static void OnMeleeLaserTraceHit(int client, int target, int damagetype, float d
 {
 	Lelouch npc = view_as<Lelouch>(client);
 	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? 55 : 45), true);
+	npc.PlayMeleeHitSound();
 
 	if(AtEdictLimit(EDICT_RAID))
 		return;
@@ -946,6 +931,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 		Get_Fake_Forward_Vec(245.0, Angles, Origin, Origin);
 		
 		struct_Crystals[npc.index][i].Create(npc, Origin, Health);
+		struct_Crystals[npc.index][i].state = 0;
 	}
 
 	npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 20.0;
@@ -984,7 +970,7 @@ static void Crystal_Passive_Logic(Lelouch npc)
 		Lelouch_Lines(npc, "My absolute defence field, how dare you destroy it!");
 		b_crystals_active[npc.index] = false;
 
-		if(npc.m_flDoingAnimation > GameTime)
+		if(npc.m_flDoingAnimation > GameTime && npc.m_flCrystalRevert < GameTime)
 			return;
 		
 		float Duration = 4.0;
@@ -1047,6 +1033,8 @@ static void Crystal_Passive_Logic(Lelouch npc)
 			{
 				fl_crystal_spin_speed[npc.index] = (npc.Anger ? 5.0 : 3.0);
 				
+				float Radius = 25.0;
+
 				float New_Angles[3]; New_Angles = Crystal_Angles;
 				if(npc.m_flFreezeAnim > GameTime && npc.m_flFreezeAnim != FAR_FUTURE)
 				{
@@ -1054,10 +1042,21 @@ static void Crystal_Passive_Logic(Lelouch npc)
 					float Offset_Pitch = 90.0 - 90.0 * Ratio;
 
 					New_Angles[0] = Offset_Pitch;
+
+					Crystal_Angles = New_Angles;
+
+					//make a special laser pointer so players can tell its about to shoot and MURDER you!
+					Ruina_Laser_Logic Laser;
+					Laser.client = npc.index;
+					Crystal_Angles[0]-=90.0;	//need to make it look properly up, otherwise it will go into the ground
+					Laser.DoForwardTrace_Custom(Crystal_Angles, Offset_Loc, -1.0);
+					Crystal_Angles[0]+=90.0;
+					float Diameter = Radius*2.0;
+					TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.2, Diameter*0.6, Diameter*0.6, 0, 2.5, Lelouch_Colors(), 0);
+					TE_SendToAll(0.0);
 				}
 				else
 				{
-					float Radius = 25.0;
 					Ruina_Laser_Logic Laser;
 					Laser.client = npc.index;
 					Laser.DoForwardTrace_Custom(Crystal_Angles, Offset_Loc, -1.0);
@@ -1394,24 +1393,24 @@ static bool Blade_Logic(Lelouch npc)
 		//do giant sword swing forward.
 		float Angles[3]; Angles = GetNPCAngles(npc.index);
 		int Health = ReturnEntityMaxHealth(npc.index);
-		Health = RoundToFloor(Health*0.05);
+		Health = RoundToFloor(Health*0.025);
 		float Loc[3]; GetAbsOrigin(npc.index, Loc); 
 		Loc[2]+=150.0;	//make it spawn a bit up 
 		Angles[0] = 90.0;	//make it pitched.
 		Angles[2] = 90.0;	//turn it sideways.
 		Blade_NPC = i_CreateManipulation(npc, Loc, Angles, LELOUCH_BLADE_MODEL, Health, 4.5);
 
-		WindUp = 1.0;
-		Time = 1.5;
+		WindUp = 2.5;
+		Time = 2.0;
 		i_BladeLogic[npc.index] = 0;
 
-		Recharge = 90.0;
+		Recharge = 80.0;
 	}
 	else
 	{
 		// do giant sword spin.
 		i_BladeLogic[npc.index] = 1;
-		Recharge = 120.0;
+		Recharge = 100.0;
 
 		if(GetRandomInt(1,2) == 1)
 			b_Invert = true;
@@ -1420,14 +1419,14 @@ static bool Blade_Logic(Lelouch npc)
 
 		float Angles[3]; Angles = GetNPCAngles(npc.index);	Angles[0] = 0.0;	//nullify pitch.
 		int Health = ReturnEntityMaxHealth(npc.index);
-		Health = RoundToFloor(Health*0.1);
+		Health = RoundToFloor(Health*0.025);
 		float Loc[3]; GetAbsOrigin(npc.index, Loc); Loc[2]+=25.0;
 		Get_Fake_Forward_Vec(150.0, Angles, Loc, Loc);
 		Angles[1]+=180.0;
 		Blade_NPC = i_CreateManipulation(npc, Loc, Angles, LELOUCH_BLADE_MODEL, Health, 4.5);
 
-		WindUp = 1.5;
-		Time = 3.75;
+		WindUp = 2.5;
+		Time = 5.0;
 	}
 	//invalid blade npc. retry.
 	if(!IsValidAlly(npc.index, Blade_NPC))
@@ -1440,11 +1439,17 @@ static bool Blade_Logic(Lelouch npc)
 
 	Manipulation blade = view_as<Manipulation>(Blade_NPC);
 
+	blade.m_iTeamGlow = TF2_CreateGlow(blade.index);
+	blade.m_bTeamGlowDefault = false;
+
+	SetVariantColor(view_as<int>({255, 255, 255, 255}));
+	AcceptEntityInput(blade.m_iTeamGlow, "SetGlowColor");
+
 	b_animation_set[npc.index] = false;
 
 	fl_BladeLogic_Duration[i_BladeLogic[npc.index]] = Time;
 
-	Initiate_Anim(npc, WindUp+Time, "taunt_highFiveStart", _,_, true);
+	Initiate_Anim(npc, WindUp+Time+0.1, "taunt_highFiveStart", _,_, true);
 
 	c_NpcName[blade.index] = "Lelouch Blade";
 
@@ -1537,8 +1542,8 @@ static void BladeLogic_Tick(int iNPC)
 			Laser.client = npc.index;			//whose using the laser?
 			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
 			Laser.End_Point = Final_Vec;		//where does the laser end?
-			Laser.Damage = Modify_Damage(-1, 75.0);				//how much dmg should it do?		//100.0*RaidModeScaling
-			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 75.0);			//dmg vs things that should take bonus dmg.
+			Laser.Damage = Modify_Damage(-1, 5.0);				//how much dmg should it do?		//100.0*RaidModeScaling
+			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 5.0);			//dmg vs things that should take bonus dmg.
 			Laser.damagetype = DMG_PLASMA;		//dmg type.
 			Laser.Radius = 25.0;				//how big the radius is / hull.
 			Laser.Deal_Damage(On_LaserHit_OverflowMana);				//and now we kill
@@ -1577,8 +1582,8 @@ static void BladeLogic_Tick(int iNPC)
 			Laser.client = npc.index;			//whose using the laser?
 			Laser.Start_Point = Blade_EndVec;	//where does the laser start?
 			Laser.End_Point = Blade_Origin;		//where does the laser end?
-			Laser.Damage = Modify_Damage(-1, 50.0);				//how much dmg should it do?		//100.0*RaidModeScaling
-			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 50.0);			//dmg vs things that should take bonus dmg.
+			Laser.Damage = Modify_Damage(-1, 2.5);				//how much dmg should it do?		//100.0*RaidModeScaling
+			Laser.Bonus_Damage = 5.0 * Modify_Damage(-1, 2.5);			//dmg vs things that should take bonus dmg.
 			Laser.damagetype = DMG_PLASMA;		//dmg type.
 			Laser.Radius = 25.0;				//how big the radius is / hull.
 			Laser.Deal_Damage(On_LaserHit_OverflowMana);				//and now we kill
@@ -2308,10 +2313,10 @@ static void NPC_Death(int entity)
 		}
 	}
 		
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))

@@ -632,6 +632,14 @@ static void Spawning_Logic(Magia_Anchor npc)
 		health = RoundToFloor(health * 2.0);
 	if(wave >=60)
 		health = RoundToFloor(health * 1.5);
+
+	switch(i_special_tower_logic[npc.index])
+	{
+		case 1:
+		{
+			health = RoundToCeil(health*2.0);
+		}
+	}
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{
@@ -679,6 +687,14 @@ static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int c
 
 				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
 				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+
+				switch(i_special_tower_logic[npc.index])
+				{
+					case 1:
+					{
+						fl_Extra_Damage[spawn_index] *= 3.5;
+					}
+				}
 			}	
 		}
 		return;
