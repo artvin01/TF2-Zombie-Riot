@@ -19,11 +19,12 @@ enum struct MusicEnum
 			kv.GetString("author", this.Artist, sizeof(this.Artist));
 			this.Time = kv.GetNum("time");
 			this.Volume = kv.GetFloat("volume", 2.0);
-			this.Custom = view_as<bool>(kv.GetNum("download"));
+			int download = kv.GetNum("download");
 
+			this.Custom = view_as<bool>(download);
 			if(this.Custom)
 			{
-				PrecacheSoundCustom(this.Path);
+				PrecacheSoundCustom(this.Path, _, download);
 			}
 			else
 			{

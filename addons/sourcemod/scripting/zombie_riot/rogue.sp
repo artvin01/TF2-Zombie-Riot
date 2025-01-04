@@ -116,6 +116,7 @@ enum struct Stage
 	char WaveSet[PLATFORM_MAX_PATH];
 	char ArtifactKey[64];
 	bool InverseKey;
+	MusicEnum IntroMusic;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -131,6 +132,7 @@ enum struct Stage
 		kv.GetString("skyname", this.Skyname, 64);
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		this.Repeat = view_as<bool>(kv.GetNum("repeatable"));
+		this.IntroMusic.SetupKv("intromusic", kv);
 		
 		kv.GetString("func_start", this.WaveSet, PLATFORM_MAX_PATH);
 		this.FuncStart = this.WaveSet[0] ? GetFunctionByName(null, this.WaveSet) : INVALID_FUNCTION;
@@ -1619,6 +1621,30 @@ static void StartStage(const Stage stage)
 	BattleIngots = CurrentFloor > 1 ? 4 : 3;
 	RequiredBattle = false;
 	SetAllCamera();
+
+	if(stage.IntroMusic.Path[0])
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				SetMusicTimer(client, GetTime() + RoundToNearest(stage.IntroMusic.Time));
+				Music_Stop_All(client);
+
+				if(stage.IntroMusic.Custom)
+				{
+					EmitCustomToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, stage.IntroMusic.Volume);
+				}
+				else
+				{
+					EmitSoundToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				}
+			}
+		}
+
+		RemoveAllCustomMusic();
+	}
 
 	float time = stage.WaveSet[0] ? 0.0 : 5.0;
 	if(stage.FuncStart != INVALID_FUNCTION)

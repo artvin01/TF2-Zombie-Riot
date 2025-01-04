@@ -597,8 +597,6 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 
 public float Rogue_Encounter_DowntimeRecreation()
 {
-	GiveCash(4000);
-
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_DowntimeRecreation, "Downtime Recreation Lore");
 	Vote vote;
 
@@ -700,8 +698,6 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 
 public float Rogue_Encounter_FortituousOpportunity()
 {
-	GiveCash(4000);
-
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_FortituousOpportunity, "Fortituous Opportunity Lore");
 	Vote vote;
 
@@ -759,7 +755,7 @@ public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
 		Rogue_RemoveNamedArtifact(vote.Config);
 		
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 	else
@@ -873,7 +869,7 @@ public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
 	else
 	{
 		PrintToChatAll("%t", "Emergency Dispatch Lore 2");
-		GiveCash(((Rogue_GetFloor() + 1) * 2000) + 1000);
+		GiveCash((Rogue_GetFloor() * 2000) + 1000);
 	}
 }
 public bool Rogue_BlueParadox_CanTeutonUpdate(int client)
