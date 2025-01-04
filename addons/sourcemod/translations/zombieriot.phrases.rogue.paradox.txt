@@ -594,7 +594,7 @@
 	}
 	"Energy Life Vest Desc"
 	{
-		"en"	"A powered life vest to keep you safe, why does it run on power?\n{yellow}2 Australium Ingots are consumed to reduce 1 Chaos Infliction"
+		"en"	"A powered life vest to keep you safe, why does it run on power?\n{yellow}1 Australium Ingots are consumed to reduce 1 Chaos Infliction"
 	}
 	"The Scraper"
 	{
@@ -1170,11 +1170,15 @@
 	}
 	"Emergency Dispatch Option 1a"
 	{
-		"en"	"Send Bob The Second to help."
+		"en"	"Send"
 	}
 	"Emergency Dispatch Desc 1a"
 	{
 		"en"	"{red}Send Bob The Second to help."
+	}
+	"Emergency Dispatch Option 1b"
+	{
+		"en"	"Send "
 	}
 	"Emergency Dispatch Desc 1b"
 	{

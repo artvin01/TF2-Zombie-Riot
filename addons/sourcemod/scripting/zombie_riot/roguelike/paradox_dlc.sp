@@ -120,18 +120,18 @@ public void Rogue_MercenaryInsurance_Ally(int entity, StringMap map)
 public void Rogue_LifeVest_Collect()
 {
 	int chaos = Rogue_GetChaos();
-	int remove = Rogue_GetIngots() / 2;
+	int remove = Rogue_GetIngots() / 1;
 	if(remove > chaos)
 		remove = chaos;
 
-	Rogue_AddIngots(-(remove / 2), true);
+	Rogue_AddIngots(-(remove / 1), true);
 	Rogue_RemoveChaos(remove);
 }
 
 public void Rogue_LifeVest_IngotChanged(int &ingots)
 {
 	int chaos = Rogue_GetChaos();
-	int remove = ingots / 2;
+	int remove = ingots / 1;
 	if(remove > chaos)
 		remove = chaos;
 
