@@ -724,7 +724,11 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	Rogue_SetProgressTime(wait, true, true);
 
 	if(RogueTheme == BlueParadox)
+	{
+		//reveal 15
 		Store_RandomizeNPCStore(0, 10);
+		Store_RandomizeNPCStore(0, 5);
+	}
 }
 
 void Rogue_RoundEnd()
@@ -1594,13 +1598,15 @@ void Rogue_StartThisBattle(float time = 10.0)
 static void StartBattle(const Stage stage, float time = 3.0)
 {
 	Rogue_TriggerFunction(Artifact::FuncStageStart);
-
-	for(int client = 1; client <= MaxClients; client++)
+	if(!stage.IntroMusic.Path[0])
 	{
-		if(IsClientInGame(client))
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 3);
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 3);
+			}
 		}
 	}
 
@@ -1634,7 +1640,6 @@ static void StartStage(const Stage stage)
 			{
 				Music_Stop_All(client);
 				SetMusicTimer(client, GetTime() + stage.IntroMusic.Time);
-
 				if(stage.IntroMusic.Custom)
 				{
 					EmitCustomToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, stage.IntroMusic.Volume);

@@ -2461,8 +2461,8 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 		
 	if(unlock)
 	{
-		if(GrigoriCashLogic < 4000)
-			GrigoriCashLogic = 4000;
+		if(GrigoriCashLogic < 5000)
+			GrigoriCashLogic = 5000;
 	}
 
 	for(int i; i < length; i++)
@@ -2501,7 +2501,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				if(!item.NPCSeller && !item.RogueAlwaysSell)
 				{
 					item.GetItemInfo(0, info);
-					if(info.Cost > 1000 && info.Cost_Unlock < (GrigoriCashLogic / 4))
+					if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 4))
 						indexes[amount++] = i;
 				}
 			}

@@ -1750,20 +1750,33 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		damage *= 1.5;
 	}
 #endif
-
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
-		if(f_MultiDamageTaken[victim] <= 1.0 && (!(damagetype & DMG_TRUEDAMAGE)))
+		if((damagetype & DMG_TRUEDAMAGE))
+		{
+			if(f_MultiDamageTaken[victim] >= 1.0)
+			{
+				damage *= f_MultiDamageTaken[victim];
+			}
+		}
+		else
 			damage *= f_MultiDamageTaken[victim];
 	}
 	if(f_MultiDamageTaken_Flat[victim] != 1.0)
 	{
-		if(f_MultiDamageTaken_Flat[victim] <= 1.0 && (!(damagetype & DMG_TRUEDAMAGE)))
+		if((damagetype & DMG_TRUEDAMAGE))
+		{
+			if(f_MultiDamageTaken_Flat[victim] >= 1.0)
+			{
+				damage *= f_MultiDamageTaken_Flat[victim];
+			}
+		}
+		else
 			damage *= f_MultiDamageTaken_Flat[victim];
 	}
 
 #if defined ZR
-	if(i_CurrentEquippedPerk[victim] == 2 && (!(damagetype & DMG_TRUEDAMAGE)))
+	if(i_CurrentEquippedPerk[victim] == 2 && !(damagetype & DMG_TRUEDAMAGE))
 		damage *= 0.85;
 #endif
 }

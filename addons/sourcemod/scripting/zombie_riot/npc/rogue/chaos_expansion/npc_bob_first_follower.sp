@@ -355,7 +355,7 @@ static void ClotThink(int iNPC)
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-						IncreaceEntityDamageTakenBy(target, 0.1, 3.0, true);
+						IncreaceEntityDamageTakenBy(target, 0.02, 3.0, true);
 					}
 				}
 

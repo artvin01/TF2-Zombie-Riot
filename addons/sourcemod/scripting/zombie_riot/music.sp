@@ -344,7 +344,6 @@ public Action SetTimeBack(Handle timer)
 
 void Music_Stop_All(int client)
 {
-	
 	if(DelayStopSoundAll[client] < GetGameTime())
 	{
 		//dont spam these
