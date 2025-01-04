@@ -1245,7 +1245,7 @@ enum struct Ruina_Self_Defense
 
 				if(OnSwing && OnSwing!=INVALID_FUNCTION)
 				{
-					Call_StartFunction(null, OnAttack);
+					Call_StartFunction(null, OnSwing);
 					Call_PushCell(npc.index);
 					Call_Finish();
 				}

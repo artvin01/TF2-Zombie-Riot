@@ -2227,6 +2227,10 @@
 	{
 		"en"	"Stellar Weaver"
 	}
+	"Interstellar Weaver"
+	{
+		"en"	"Interstellar Weaver"
+	}
 	"Daedalus"
 	{
 		"en"	"Daedalus"

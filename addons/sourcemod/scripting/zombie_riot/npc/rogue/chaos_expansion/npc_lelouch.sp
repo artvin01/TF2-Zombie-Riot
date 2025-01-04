@@ -211,6 +211,7 @@ static const char g_LaserLoop[][] = {
 
 */
 
+int i_Lelouch_Index;
 #define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
 #define LELOUCH_CRYSTAL_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl"
 #define LELOUCH_LIGHT_MODEL "models/effects/vol_light256x512.mdl"
@@ -608,6 +609,8 @@ methodmap Lelouch < CClotBody
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 15);
 		Ruina_Set_Overlord(npc.index, true);
 
+		i_Lelouch_Index = EntIndexToEntRef(npc.index);
+
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -769,6 +772,7 @@ static void Self_Defense(Lelouch npc, float flDistanceToTarget)
 	Melee.target = npc.m_iTarget;
 	Melee.fl_distance_to_target = flDistanceToTarget;
 	Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
+	//something of note. this dmg will stack ontop of the dmg dealt by the OnMeleeSwing Trace extra thing.
 	Melee.damage = Modify_Damage(-1, 25.0);
 	Melee.bonus_dmg = Modify_Damage(-1, 50.0);
 	Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
@@ -777,7 +781,7 @@ static void Self_Defense(Lelouch npc, float flDistanceToTarget)
 	Melee.turn_speed = 20000.0;
 	Melee.gameTime = GameTime;
 	Melee.status = 0;
-	Melee.Swing_Melee(_,OnMeleeSwing);
+	Melee.Swing_Melee(INVALID_FUNCTION,OnMeleeSwing);
 
 	switch(Melee.status)
 	{
@@ -814,7 +818,7 @@ static void OnMeleeLaserTraceHit(int client, int target, int damagetype, float d
 	float Thick_Start = GetRandomFloat(8.0, 16.0);
 	float Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
 	int color[4]; color = Lelouch_Colors();
-	int laser = ConnectWithBeam(npc.m_iWearable1, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
+	int laser = ConnectWithBeam(npc.index, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
 	if(IsValidEntity(laser))
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }
@@ -1765,6 +1769,7 @@ static void Anchor_Phase_Logic(Lelouch npc)
 				if(IsValidEntity(Anchor))
 					i_AnchorID_Ref[npc.index][i] = Anchor;
 			}
+			FreezeTimer(false);
 			fl_Anchor_Logic[npc.index] = FAR_FUTURE;
 		}
 		
@@ -1794,6 +1799,7 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			Lelouch_Lines(npc, "Atleast you managed to kill an anchor");
 		}
+		FreezeTimer(false);
 		Equalize_Anchor_Hp(npc);
 		b_NpcIsInvulnerable[npc.index] = false;
 	}
@@ -2232,6 +2238,12 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 
 		Lelouch_Lines(npc, "You bitch");
+
+
+
+		CPrintToChatAll("{purple}Twirl{snow}: How in the bloody hell did you get that ancient artifact flying again?");
+		Lelouch_Lines(npc,"One girl's trash, another man's teasure.");
+		i_summon_weaver(npc);
 	}
 
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
@@ -2244,6 +2256,29 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	return Plugin_Changed;
 }
+static int i_summon_weaver(Lelouch npc)
+{
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	int maxhealth;
+
+	maxhealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+	float Npc_Loc[3]; GetAbsOrigin(npc.index, Npc_Loc);
+	int spawn_index = NPC_CreateByName("npc_interstellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index));
+	if(spawn_index > MaxClients)
+	{
+		if(GetTeam(npc.index) != TFTeam_Red)
+		{
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		}
+		Interstellar_Weaver worm = view_as<Interstellar_Weaver>(spawn_index);
+		worm.m_iState = EntIndexToEntRef(npc.index);
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+	}
+	return spawn_index;
+}
 
 static void NPC_Death(int entity)
 {
@@ -2252,6 +2287,8 @@ static void NPC_Death(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	
+	i_Lelouch_Index = INVALID_ENT_REFERENCE;
 	
 	Ruina_NPCDeath_Override(entity);
 
