@@ -722,6 +722,9 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	}
 
 	Rogue_SetProgressTime(wait, true, true);
+
+	if(RogueTheme == BlueParadox)
+		Store_RandomizeNPCStore(0, 10);
 }
 
 void Rogue_RoundEnd()
@@ -951,7 +954,8 @@ void Rogue_BattleVictory()
 
 	if(CurrentType)
 	{
-		Rogue_NextProgress();
+		Rogue_SetProgressTime(5.0, false);
+		//Rogue_NextProgress();
 	}
 	else
 	{
