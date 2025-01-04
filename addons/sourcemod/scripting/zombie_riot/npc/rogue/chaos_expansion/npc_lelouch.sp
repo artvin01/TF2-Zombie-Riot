@@ -84,6 +84,9 @@ static const char g_LaserLoop[][] = {
 		- Make someform of wings, take inspiration for the wings from his main knightmare that he uses.
 		- a cape, of someform, gotta look for one inside loadout.tf to get a good one.
 
+	Secondary:
+		- Proper text lines. "you bitch" probably wouldn't be thaaat good for a live server
+
 
 
 	for final anchors ability thing:
@@ -297,6 +300,9 @@ methodmap Lelouch < CClotBody
 		
 		
 	}
+	public void PlayMeleeMissSound() {
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
+	}
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
@@ -304,15 +310,9 @@ methodmap Lelouch < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
 	public void PlayDeathSound() {
-	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -612,8 +612,34 @@ methodmap Lelouch < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 400.0;
-			RaidModeScaling = 8008.5;
-			RaidAllowsBuildings = true;
+			RaidAllowsBuildings = false;
+
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+		
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+			
+			float amount_of_people = ZRStocks_PlayerScalingDynamic();
+			
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			
+			amount_of_people *= 0.12;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
+				
+			RaidModeScaling *= amount_of_people;
+
+			RaidModeScaling *= 1.1;
 		}
 
 		if(b_test_mode[npc.index])
@@ -718,7 +744,6 @@ static void ClotThink(int iNPC)
 
 	Body_Pitch(npc, Npc_Vec, vecTarget);
 	
-
 	if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*5.0)
 	{
 		npc.m_bAllowBackWalking = true;
@@ -729,7 +754,69 @@ static void ClotThink(int iNPC)
 		npc.m_bAllowBackWalking = false;
 	}
 
+	Self_Defense(npc, flDistanceToTarget);
+
 	npc.PlayIdleAlertSound();
+}
+static void Self_Defense(Lelouch npc, float flDistanceToTarget)
+{
+	float GameTime = GetGameTime(npc.index);
+
+	//EZ
+	Ruina_Self_Defense Melee;
+
+	Melee.iNPC = npc.index;
+	Melee.target = npc.m_iTarget;
+	Melee.fl_distance_to_target = flDistanceToTarget;
+	Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
+	Melee.damage = Modify_Damage(-1, 25.0);
+	Melee.bonus_dmg = Modify_Damage(-1, 50.0);
+	Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
+	Melee.swing_speed = 0.9;
+	Melee.swing_delay = 0.37;
+	Melee.turn_speed = 20000.0;
+	Melee.gameTime = GameTime;
+	Melee.status = 0;
+	Melee.Swing_Melee(_,OnMeleeSwing);
+
+	switch(Melee.status)
+	{
+		case 1:	//we swung
+			npc.PlayMeleeSound();
+		case 2:	//we hit something
+			npc.PlayMeleeHitSound();
+		case 3:	//we missed
+			npc.PlayMeleeMissSound();
+		//0 means nothing.
+	}
+}
+
+static void OnMeleeSwing(int iNPC)
+{
+	Lelouch npc = view_as<Lelouch>(iNPC);
+	
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	Laser.DoForwardTrace_Basic(100.0);
+	Laser.Radius = 100.0;
+	Laser.Damage = Modify_Damage(-1, 15.0);
+	Laser.Bonus_Damage = 5 *Modify_Damage(-1, 15.0);
+	Laser.Deal_Damage(OnMeleeLaserTraceHit);
+}
+static void OnMeleeLaserTraceHit(int client, int target, int damagetype, float damage)
+{
+	Lelouch npc = view_as<Lelouch>(client);
+	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? 55 : 45), true);
+
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+
+	float Thick_Start = GetRandomFloat(8.0, 16.0);
+	float Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
+	int color[4]; color = Lelouch_Colors();
+	int laser = ConnectWithBeam(npc.m_iWearable1, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
+	if(IsValidEntity(laser))
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }
 //Crystal Logic
 #define LELOUCH_MAX_CRYSTALS 5
@@ -1564,7 +1651,7 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	
 	float AproxRandomSpaceToWalkTo[3];
 	WorldSpaceCenter(npc.index, AproxRandomSpaceToWalkTo);
-	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), red ? "nospawns;noweaver;full" : "noweaver;full");
+	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), red ? "nospawns;noweaver;full" : "lelouch;noweaver;full");
 	if(spawn_index > MaxClients)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)
@@ -1865,12 +1952,16 @@ static void DeathRay_Logic(Lelouch npc)
 	Laser.Radius = 25.0;				//how big the radius is / hull.
 	Laser.Deal_Damage((b_Anchors_Red ? INVALID_FUNCTION : On_LaserHit_OverflowMana));
 
+	int color[4]; color = Lelouch_Colors();
+	if(b_Anchors_Red)
+		color = {255, 25,25,255};
+
 	float Diameter = Laser.Radius*2.0;
 	float Start1 = ClampBeamWidth(GetRandomFloat(Diameter*0.5, Diameter*1.5));
 	float End = ClampBeamWidth(GetRandomFloat(Diameter*0.25, Diameter*1.1));
-	TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.2, Diameter*0.6, Diameter*0.6, 0, 2.5, Lelouch_Colors(), 0);
+	TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Laser, g_Ruina_BEAM_Laser, 0, 0, 0.2, Diameter*0.6, Diameter*0.6, 0, 2.5, color, 0);
 	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.2, Start1, End, 0, 2.5, Lelouch_Colors(), 0);
+	TE_SetupBeamPoints(Laser.Start_Point, Laser.End_Point, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.2, Start1, End, 0, 2.5, color, 0);
 	TE_SendToAll(0.0);
 
 	
@@ -2133,19 +2224,16 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	Create_Anchors(npc);
 		
 
-/*
+
 	if(!npc.Anger && (ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
 
 
-		if(npc.m_bThisNpcIsABoss)
-		{
-			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
-		}
+		Lelouch_Lines(npc, "You bitch");
 	}
-*/	
+
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

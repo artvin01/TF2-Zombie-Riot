@@ -1233,7 +1233,7 @@ enum struct Ruina_Self_Defense
 	float gameTime;
 	int status;
 
-	void Swing_Melee(Function OnAttack = INVALID_FUNCTION)
+	void Swing_Melee(Function OnAttack = INVALID_FUNCTION, Function OnSwing = INVALID_FUNCTION)
 	{
 		CClotBody npc = view_as<CClotBody>(this.iNPC);
 
@@ -1242,6 +1242,13 @@ enum struct Ruina_Self_Defense
 			if(npc.m_flAttackHappens < this.gameTime)
 			{
 				npc.m_flAttackHappens = 0.0;
+
+				if(OnSwing && OnSwing!=INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, OnAttack);
+					Call_PushCell(npc.index);
+					Call_Finish();
+				}
 				
 				Handle swingTrace;
 				float target_vec[3]; WorldSpaceCenter(this.target, target_vec);
