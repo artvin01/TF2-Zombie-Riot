@@ -739,7 +739,7 @@
 	}
 	"Unauthorized Ruina Gem Desc"
 	{
-		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health"
+		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 20 Chaos Affliction."
 	}
 
 	"Missing Mountains"
@@ -1167,6 +1167,10 @@
 	"Emergency Dispatch Option 1"
 	{
 		"en"	"Send"
+	}
+	"Emergency Dispatch Option 1a"
+	{
+		"en"	"Send Bob The Second to help."
 	}
 	"Emergency Dispatch Desc 1a"
 	{

@@ -2480,8 +2480,8 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 		
 	if(unlock)
 	{
-		if(GrigoriCashLogic < 8500)
-			GrigoriCashLogic = 8500;
+		if(GrigoriCashLogic < 4000)
+			GrigoriCashLogic = 4000;
 	}
 
 	for(int i; i < length; i++)
@@ -2491,7 +2491,11 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 		{
 			if(item.GregOnlySell == 2)	// We always sell this if unbought
 			{
-				item.NPCSeller_Discount = override < 0.0 ? 0.7 : override;
+				float ApplySale = 0.7;
+				if(override > 0.0)
+					ApplySale = override;
+
+				item.NPCSeller_Discount = ApplySale;
 				item.NPCSeller = true;
 
 				for(int c = 1; c <= MaxClients; c++)
@@ -2584,7 +2588,14 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				SellsMax++;
 				continue;
 			}
-			item.NPCSeller_Discount = override < 0.0 ? override : (rogue ? 0.5 : 0.8);
+			float ApplySale = 0.8;
+			if(rogue)
+				ApplySale = 0.5;
+				
+			if(override > 0.0)
+				ApplySale = override;
+				
+			item.NPCSeller_Discount = ApplySale;
 			if(addItem != 0 && item.NPCSeller_WaveStart <= 0)
 			{
 				CPrintToChatAll("{green}%s [$$]",item.Name);
@@ -2631,7 +2642,12 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				Format(buffer, sizeof(buffer), "%s%s %s", buffer, i ? "," : "", item.Name);
 
 				item.NPCSeller = true;
-				item.NPCSeller_Discount = override < 0.0 ? override : 1.0;
+				float ApplySale = 1.0;
+
+				if(override > 0.0)
+					ApplySale = override;
+					
+				item.NPCSeller_Discount = ApplySale;
 				StoreItems.SetArray(indexes[i], item);
 			}
 

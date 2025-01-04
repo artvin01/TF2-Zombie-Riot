@@ -59,6 +59,11 @@ void Rogue_ParadoxDLC_AbilityUsed(int client)
 		RequestFrame(BlackTulipDecay, GetClientUserId(client));
 }
 
+public void Rogue_RuinaGem_Collect()
+{
+	Rogue_RemoveChaos(20);
+}
+
 public void Rogue_Flawless1_Collect()
 {
 	FlawlessAmount += 6;

@@ -2360,7 +2360,7 @@ void GiveXP(int client, int xp)
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
-		if(!CvarLeveling.BoolValue)
+		if(CvarLeveling.BoolValue)
 		{
 			if(Level[client] < STARTER_WEAPON_LEVEL)
 			{
@@ -2386,10 +2386,9 @@ void GiveXP(int client, int xp)
 				
 				Store_PrintLevelItems(client, Level[client]);
 			}
+			if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
+				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
 		}
-
-		if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
-			CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
 	}
 }
 

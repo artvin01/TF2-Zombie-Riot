@@ -533,18 +533,18 @@ static Action RuniaGem_Timer(Handle timer, int ref)
 	{
 		int health = entity > MaxClients ? GetEntProp(entity, Prop_Data, "m_iHealth") : GetClientHealth(entity);
 		int maxhealth = ReturnEntityMaxHealth(entity);
-		if(maxhealth >= (health / 2))
+		if(health > (maxhealth / 2))
 			return Plugin_Continue;
 		
 		if(entity > MaxClients)
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
+			HealEntityGlobal(entity, entity, float(maxhealth / 2), 1.0, 1.0, HEAL_ABSOLUTE);
 		}
 		else
 		{
 			GiveCompleteInvul(entity, 2.0);
 			f_OneShotProtectionTimer[entity] = GetGameTime() + 60.0;
-			SetEntityHealth(entity, maxhealth);
+			HealEntityGlobal(entity, entity, float(maxhealth / 2), 1.0, 1.0, HEAL_ABSOLUTE);
 		}
 
 		EmitSoundToAll("misc/halloween/spell_overheal.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);

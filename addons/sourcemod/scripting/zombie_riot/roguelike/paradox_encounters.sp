@@ -524,6 +524,7 @@ public float Rogue_Encounter_LostVillager()
 
 	return 30.0;
 }
+
 public void Rogue_Vote_LostVillager(const Vote vote, int index)
 {
 	if(vote.Config[0])

@@ -68,7 +68,7 @@ methodmap BobTheFirstFollower < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME - 0.3);
 	}
 	public void PlayDeathSound(int who) 
 	{
@@ -189,7 +189,7 @@ methodmap BobTheFirstFollower < CClotBody
 			case 20:
 			{
 				this.Speech("I wonder what Guln would think of whiteflowers death","...");
-				this.SpeechDelay(8.0, "He's be probably very upset.");
+				this.SpeechDelay(8.0, "He'd be probably very upset.");
 			}
 			case 21:
 			{
@@ -355,7 +355,7 @@ static void ClotThink(int iNPC)
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-						IncreaceEntityDamageTakenBy(target, 0.01, 3.0, true);
+						IncreaceEntityDamageTakenBy(target, 0.1, 3.0, true);
 					}
 				}
 

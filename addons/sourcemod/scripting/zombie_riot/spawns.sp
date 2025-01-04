@@ -130,7 +130,6 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 				continue;
 			
-			
 			if(spawn.MaxWavesAllowed != 999)
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
@@ -215,6 +214,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		{
 			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy));
 		}
+		/*
 		else if(name[0])
 		{
 			float playerSpeedUp = 1.0 + (MultiGlobalEnemy * 0.5);
@@ -222,6 +222,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 
 			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (baseTime / playerSpeedUp));
 		}
+		*/
 		else
 		{
 			float nearSpeedUp = 4.0 * (spawn.Points / HighestPoints);

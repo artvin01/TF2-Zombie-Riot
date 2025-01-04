@@ -155,14 +155,19 @@ methodmap Rulianius < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		bool rogue_Extra = StrContains(data, "rogue") != -1;
+		npc.m_flNextRangedBarrage_Singular = 99999999.9;
+		npc.m_flNextRangedBarrage_Spam = 0.0;
+		fl_npc_basespeed = 300.0;
 		if(rogue_Extra)
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Elite Rulianius");
 			npc.m_flNextRangedBarrage_Singular = GetGameTime() + GetRandomFloat(5.0, 30.0);
+			float flPos[3];
+			float flAng[3];
+			npc.GetAttachment("effect_hand_r", flPos, flAng);
+			npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+			fl_npc_basespeed = 330.0;
 		}
-
-		npc.m_flNextRangedBarrage_Singular = 99999999.9;
-		npc.m_flNextRangedBarrage_Spam = 0.0;
 		
 		/*
 			"The Brawling Buccaneer"	"models/workshop/player/items/soldier/jul13_gangplank_garment/jul13_gangplank_garment.mdl"
@@ -173,7 +178,6 @@ methodmap Rulianius < CClotBody
 		*/
 		
 		//IDLE
-		fl_npc_basespeed = 300.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -664,6 +668,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
 
 

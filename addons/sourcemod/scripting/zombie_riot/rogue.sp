@@ -910,7 +910,7 @@ void Rogue_BattleVictory()
 			}
 			case BlueParadox:
 			{
-				int recover;
+				int recover = 4;
 
 				if(BattleIngots > 4)
 				{
@@ -1632,8 +1632,8 @@ static void StartStage(const Stage stage)
 		{
 			if(IsClientInGame(client))
 			{
-				SetMusicTimer(client, GetTime() + RoundToNearest(stage.IntroMusic.Time));
 				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + stage.IntroMusic.Time);
 
 				if(stage.IntroMusic.Custom)
 				{
