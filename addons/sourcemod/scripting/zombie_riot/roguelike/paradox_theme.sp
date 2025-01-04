@@ -448,7 +448,16 @@ public void Rogue_Twirl_Collect()
 	delete KahmlsteinTimer;
 	KahmlsteinTimer = CreateTimer(1.5, Timer_TwirlTimer, _, TIMER_REPEAT);
 }
-
+public void Rogue_Twirl_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value = 1.0;
+		// +100% mana cap and regen
+		map.GetValue("405", value);
+		map.SetValue("405", value * 2.0);
+	}
+}
 public void Rogue_Twirl_Weapon(int entity, StringMap map)
 {
 	if(map)	// Player
