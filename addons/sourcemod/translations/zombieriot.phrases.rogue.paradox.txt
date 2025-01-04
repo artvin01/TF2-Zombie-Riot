@@ -1437,7 +1437,7 @@
 	{
 		"en"	"Freezer Water ⚠"
 	}
-	"Freezer Water ?"
+	"Freezer Water?"
 	{
 		"en"	"Freezer Water ☠"
 	}
@@ -1449,7 +1449,7 @@
 	{
 		"en"	"Home of the North ⚠"
 	}
-	"Home of the North ?"
+	"Home of the North?"
 	{
 		"en"	"Home of the North ☠"
 	}
@@ -1540,14 +1540,6 @@
 	"Broken Defenses!"
 	{
 		"en"	"Broken Defenses ⚠"
-	}
-	"Freezer Water?"
-	{
-		"en"	"Freezer Water?"
-	}
-	"Home of the North?"
-	{
-		"en"	"Home of the North?"
 	}
 	"Godly army Under Chaos"
 	{

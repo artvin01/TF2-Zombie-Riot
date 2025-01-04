@@ -1163,8 +1163,21 @@ bool Store_CanPapItem(int client, int index)
 		static Item item;
 		StoreItems.GetArray(index, item);
 		
-		if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell)
-			return false;
+		if(Rogue_UnlockStore())
+		{
+			if(item.ChildKit)
+			{
+				static Item parent;
+				StoreItems.GetArray(item.Section, parent);
+
+				if(!parent.NPCSeller && !parent.RogueAlwaysSell)
+					return false;
+			}
+			else if(!item.NPCSeller && !item.RogueAlwaysSell)
+			{
+				return false;
+			}
+		}
 		
 		if(item.Owned[client])
 		{
@@ -2507,19 +2520,13 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			}
 			else if(unlock && !ResetStore)	// Don't reset items, add random ones (rogue)
 			{
-				/*if(addItem == 0 && !subtract_wave && item.NPCSeller_First)
-				{
-					item.NPCSeller = false;
-					item.NPCSeller_First = false;
-				}
-				else*/
 				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
 				{
 					item.NPCSeller_WaveStart--;
 					StoreItems.SetArray(i, item);
 				}
 
-				if(!item.NPCSeller)
+				if(!item.NPCSeller && !item.RogueAlwaysSell)
 				{
 					item.GetItemInfo(0, info);
 					if(info.Cost > 1000 && info.Cost_Unlock < (GrigoriCashLogic / 4))
@@ -2608,6 +2615,8 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	}
 	else if(unlock)
 	{
+		ArrayList sections = new ArrayList();
+
 		SortIntegers(indexes, amount, Sort_Random);
 		int SellsMax = addItem;
 		if(SellsMax > 0 && amount > 0)
@@ -2626,6 +2635,16 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			{
 				StoreItems.GetArray(indexes[i], item);
 
+				if(amount > SellsMax)
+				{
+					// Skip some items to increase the rate of other sections
+					if(sections.FindValue(item.Section) != -1)
+					{
+						SellsMax++;
+						continue;
+					}
+				}
+
 				// Blah: Item
 				// Blash, Item
 				Format(buffer, sizeof(buffer), "%s%s %s", buffer, i ? "," : "", item.Name);
@@ -2633,10 +2652,13 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				item.NPCSeller = true;
 				item.NPCSeller_Discount = override < 0.0 ? override : 1.0;
 				StoreItems.SetArray(indexes[i], item);
+				sections.Push(item.Section);
 			}
 
 			CPrintToChatAll(buffer);
 		}
+
+		delete sections;
 	}
 }
 
@@ -3426,26 +3448,22 @@ static void MenuPage(int client, int section)
 					{
 						if(Rogue_UnlockStore())
 						{
-							if(item.NPCSeller_Discount < 1.0)
+							if(item.NPCSeller_WaveStart > 0)
 							{
-								FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
-							}	
-							else if(item.NPCSeller_WaveStart > 0)
-							{
-								FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$}", item.NPCSeller_WaveStart);
+								Format(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$}", item.NPCSeller_WaveStart);
 							}
-						}
-						else if(item.NPCSeller_Discount < 0.71)
-						{
-							FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
+							else if(item.NPCSeller && item.NPCSeller_Discount < 1.0)
+							{
+								Format(buffer, sizeof(buffer), "%s {$}", buffer);
+							}
 						}
 						else if(item.NPCSeller_WaveStart > 0)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$$}", item.NPCSeller_WaveStart);
+							Format(buffer, sizeof(buffer), "%s {$$} [Waves Left:%i]", buffer, item.NPCSeller_WaveStart);
 						}
 						else if(item.NPCSeller)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
+							Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
 						}
 					}
 					
@@ -3545,26 +3563,22 @@ static void MenuPage(int client, int section)
 				{
 					if(Rogue_UnlockStore())
 					{
-						if(item.NPCSeller_Discount < 1.0 && item.NPCSeller)
+						if(item.NPCSeller_WaveStart > 0)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
-						}	
-						else if(item.NPCSeller_WaveStart > 0)
-						{
-							FormatEx(buffer, sizeof(buffer), "%s {$ Waves Left: %d}", buffer, item.NPCSeller_WaveStart);
+							Format(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$}", item.NPCSeller_WaveStart);
 						}
-					}
-					else if(item.NPCSeller_Discount < 0.71 && item.NPCSeller)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s {$$}", buffer);
+						else if(item.NPCSeller && item.NPCSeller_Discount < 1.0)
+						{
+							Format(buffer, sizeof(buffer), "%s {$}", buffer);
+						}
 					}
 					else if(item.NPCSeller_WaveStart > 0)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s {$$ Waves Left: %d}", buffer, item.NPCSeller_WaveStart);
+						Format(buffer, sizeof(buffer), "%s {$$} [Waves Left:%i]", buffer, item.NPCSeller_WaveStart);
 					}
 					else if(item.NPCSeller)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
+						Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
 					}
 				}
 
