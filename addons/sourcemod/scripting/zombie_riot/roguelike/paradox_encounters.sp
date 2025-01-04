@@ -534,7 +534,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 1a");
 
-				int recover = 4;
+				int recover = 5;
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
 				Store_RandomizeNPCStore(0, recover);
 			}
@@ -587,7 +587,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 				Rogue_AddChaos(15);
 				GiveCash(2000);
 				Rogue_AddIngots(15);
-				int recover = 4;
+				int recover = 5;
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
 				Store_RandomizeNPCStore(0, recover);
 			}
@@ -745,7 +745,7 @@ public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
 	if(StrEqual(vote.Config, "Unauthorized Ruina Gem"))
 	{
 		CPrintToChatAll("{purple}Twirl{snow}: ........................... So you all are traitors. Go to hell.");
-		CPrintToChatAll("{crismon}Twirl leaves you alone in the desert, bob the second also leaves you... Uh... did you think this one through?");
+		CPrintToChatAll("{crimson}Twirl leaves you alone in the desert, bob the second also leaves you... Uh... did you think this one through?");
 		ForcePlayerLoss();
 		//If mercs give it away, you just auto loose.
 	}
@@ -1010,9 +1010,11 @@ public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
 		}
 		case 1:
 		{
-			Rogue_GiveNamedArtifact("Mazeat Lost Technology", true);
+			Rogue_GiveNamedArtifact("Mazeat Lost Technology");
 			Rogue_StartThisBattle(5.0);
-			Rogue_SetBattleIngots(1);
+			Rogue_SetBattleIngots(6);
 		}
 	}
 }
+
+

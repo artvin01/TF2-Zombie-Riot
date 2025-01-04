@@ -72,7 +72,7 @@ methodmap BobTheFirstFollower < CClotBody
 	}
 	public void PlayDeathSound(int who) 
 	{
-		EmitSoundToAll("npc/strider/striderx_die1.wav", who, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+	//	EmitSoundToAll("npc/strider/striderx_die1.wav", who, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayBobMeleePostHit()
 	{
@@ -174,7 +174,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 17:
 			{
-				this.Speech("Omega?","...");
+				this.Speech("Omega?","Well, after that stunt he pulled in Nova Prospekt, I trust him.");
 			}
 			case 18:
 			{
@@ -188,7 +188,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 20:
 			{
-				this.Speech("I wonder what could would think of whiteflowers death","...");
+				this.Speech("I wonder what Guln would think of whiteflowers death","...");
 				this.SpeechDelay(8.0, "He's be probably very upset.");
 			}
 			case 21:

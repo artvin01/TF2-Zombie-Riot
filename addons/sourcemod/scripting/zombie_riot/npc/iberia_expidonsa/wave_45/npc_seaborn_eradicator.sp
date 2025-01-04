@@ -137,7 +137,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 35.0);
+		SetMoraleDoIberia(npc.index, 100.0);
 		Is_a_Medic[npc.index] = true;
 		
 
@@ -228,7 +228,6 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 		{
 			if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)))
 			{
-				
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					npc.m_flEnrageHappening = GetGameTime() + 2.0;
@@ -244,21 +243,20 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 					}
 					return;
 				}
-				npc.m_flRecheckIfAlliesDead = GetGameTime() + 2.0;
+				//wait before trying again!
+				npc.m_flRecheckIfAlliesDead = GetGameTime() + 5.0;
 				npc.m_iChanged_WalkCycle = 1;
 				return;
 			}	
 			else
 			{
+				//5 second waiting time
 				npc.m_iChanged_WalkCycle = 2;
 			}
 			
 		}	
 	}
-	else
-	{
-
-	}
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);

@@ -46,7 +46,7 @@ methodmap StalkerShared < CClotBody
 			if(RandomArea != NULL_AREA)
 			{
 				int NavAttribs = RandomArea.GetAttributes();
-				if(NavAttribs & NAV_MESH_AVOID)
+				if(NavAttribs & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE|NAV_MESH_NO_HOSTAGES))
 				{
 					continue;
 				}

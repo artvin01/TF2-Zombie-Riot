@@ -337,11 +337,11 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 				NormalizeVector(vecDir, vecDir);
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				int HitEnemy = FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 350.0, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				int HitEnemy = FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 300.0, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 				if(IsValidEnemy(npc.index, HitEnemy))
 				{
 					//I hit them, time to destroy.
-					Elemental_AddChaosDamage(HitEnemy, npc.index, 400, false, true);
+					Elemental_AddChaosDamage(HitEnemy, npc.index, 200, false, true);
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, HitEnemy,_,_, vPredictedPos);
 					vPredictedPos = GetBehindTarget(HitEnemy, 30.0 ,vPredictedPos);
@@ -373,13 +373,13 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 		}
 		if(npc.m_flDoingAnimation < gameTime)
 		{
-			npc.m_flDoingAnimation = gameTime + 0.1;
-			npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,3.0);
-			npc.m_flRangedSpecialDelay = gameTime + 0.1;
+			npc.m_flDoingAnimation = gameTime + 0.2;
+			npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,2.0);
+			npc.m_flRangedSpecialDelay = gameTime + 0.20;
 		}
 		if(npc.m_flNextRangedSpecialAttack < gameTime)
 		{
-			npc.m_flDoingAnimation = gameTime + 0.1;
+			npc.m_flDoingAnimation = gameTime + 0.25;
 			npc.m_flNextRangedSpecialAttack = 0.0;
 		}
 		return;
@@ -514,10 +514,10 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 				}
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				//how long do they do their pulse attack barrage?
-				npc.m_flNextRangedSpecialAttack = gameTime + 1.0;
-				npc.m_flRangedSpecialDelay = gameTime + 0.8;
-				npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.5);
-				npc.m_flNextRangedAttack = gameTime + 9.35;
+				npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
+				npc.m_flRangedSpecialDelay = gameTime + 1.0;
+				npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.4);
+				npc.m_flNextRangedAttack = gameTime + 10.35;
 			}
 		}
 	}

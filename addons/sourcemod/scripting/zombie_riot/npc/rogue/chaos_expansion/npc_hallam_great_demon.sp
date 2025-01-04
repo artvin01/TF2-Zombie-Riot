@@ -8,21 +8,16 @@ static const char g_DeathSounds[][] =
 	"vo/halloween_boss/knight_pain03.mp3"
 };
 
-static const char g_HurtSounds[][] =
-{
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3"
-};
-
 static const char g_IdleAlertedSounds[][] =
 {
-	"misc/halloween/strongman_fast_swing_01.wav",
+	"vo/halloween_boss/knight_laugh01.mp3",
+	"vo/halloween_boss/knight_laugh02.mp3",
+	"vo/halloween_boss/knight_laugh03.mp3",
+	"vo/halloween_boss/knight_laugh04.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"misc/halloween/strongman_fast_swing_01.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -33,22 +28,27 @@ static const char g_RangedAttackSounds[][] = {
 	"weapons/airboat/airboat_gun_energy1.wav",
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
+static const char g_SpawnDemonSound[][] =
+{
+	"ui/halloween_boss_escape_ten.wav",
+};
+
 
 
 void HallamGreatDemon_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_SpawnDemonSound)); i++) { PrecacheSound(g_SpawnDemonSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheModel("models/props_halloween/eyeball_projectile.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Hallam's Great Demon");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hallam_gerat_demon");
-	strcopy(data.Icon, sizeof(data.Icon), "spy");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hallam_great_demon");
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_insane");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_BlueParadox;
@@ -73,17 +73,6 @@ methodmap HallamGreatDemon < CClotBody
 		
 	}
 	
-	public void PlayHurtSound() 
-	{
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
-		
-	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
@@ -91,7 +80,7 @@ methodmap HallamGreatDemon < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,130);
 	}
 	public void PlayRangedSound()
 	{
@@ -101,6 +90,10 @@ methodmap HallamGreatDemon < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
 
+	}
+	public void PlayDemonSpawnSound() 
+	{
+		EmitSoundToAll(g_SpawnDemonSound[GetRandomInt(0, sizeof(g_SpawnDemonSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,GetRandomInt(120,130));
 	}
 	
 	property float m_flHealCooldownDo
@@ -128,12 +121,15 @@ methodmap HallamGreatDemon < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
+		SetVariantInt(4);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
-			RaidModeScaling = 100.0;
+			RaidModeScaling = 1.0;
 		}
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -147,7 +143,7 @@ methodmap HallamGreatDemon < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(HallamGreatDemon_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 250.0;
 		
 		
 		int skin = 1;
@@ -167,7 +163,7 @@ methodmap HallamGreatDemon < CClotBody
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 65, 65, 65, 255);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 125, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 65, 255);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 65, 65, 65, 255);
 		
@@ -193,10 +189,9 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();
 	}
+
 	if(npc.m_flSpawnWhisperer)
 	{
 		float SelfPos[3];
@@ -233,9 +228,13 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		DemonScaling *= -1.0;
 		DemonScaling += 1.0;
 	}
+	else
+	{
+		DemonScaling += 0.25;
+	}
 	DemonScaling += 1.0;
-	npc.m_flSpeed = 250.0 * DemonScaling;
-	RaidModeScaling = 100.0 * DemonScaling;
+	npc.m_flSpeed = 200.0 * DemonScaling;
+	RaidModeScaling = 1.0 * DemonScaling;
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -247,6 +246,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 	{
 		if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
 		{
+			npc.PlayDemonSpawnSound();
 			//spawn little fucks every so often
 			float SelfPos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
@@ -380,7 +380,7 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				if(IsValidEnemy(npc.index, target))
 				{
 					int ElementalDamage = RoundToNearest(200.0 * Scaling);
-					float damageDealt = 450.0 * Scaling;
+					float damageDealt = 550.0 * Scaling;
 
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
@@ -406,14 +406,16 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 			
 			if(npc.m_iTarget > 0)
 			{	
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-				npc.FaceTowards(vecTarget, 15000.0);
+				float projectile_speed = 1100.0;
+				float vPredictedPos[3];
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, projectile_speed, _,vPredictedPos);
+				npc.FaceTowards(vPredictedPos, 15000.0);
 				
 				npc.PlayRangedSound();
-				int ElementalDamage = RoundToNearest(150.0 * Scaling);
-				float damageDealt = 120.0 * Scaling;
+				int ElementalDamage = RoundToNearest(350.0 * Scaling);
+				float damageDealt = 350.0 * Scaling;
 
-				int entity = npc.FireArrow(vecTarget, damageDealt, 800.0, "models/props_halloween/eyeball_projectile.mdl");
+				int entity = npc.FireArrow(vPredictedPos, damageDealt, projectile_speed, "models/props_halloween/eyeball_projectile.mdl");
 				i_ChaosArrowAmount[entity] = ElementalDamage;
 				
 				if(entity != -1)
@@ -422,10 +424,10 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(entity, 100, 100, 255, 255);
+					SetEntityRenderColor(entity, 15, 15, 15, 255);
 					
-					WorldSpaceCenter(entity, vecTarget);
-					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "tranq_distortion_trail", 3.0);
+					WorldSpaceCenter(entity, vPredictedPos);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vPredictedPos, "tranq_distortion_trail", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 				}
@@ -455,7 +457,7 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 	}
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
-		if(distance > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+		if(distance > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 		{
 			int Enemy_I_See;
 								
@@ -464,8 +466,7 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_THROW");
+				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 						
 				npc.m_flNextRangedSpecialAttack = gameTime + 0.15;
 				npc.m_flDoingAnimation = gameTime + 0.15;

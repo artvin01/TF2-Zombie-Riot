@@ -74,7 +74,7 @@ methodmap TwirlFollower < CClotBody
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll("npc/strider/striderx_die1.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+	//	EmitSoundToAll("npc/strider/striderx_die1.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayRangeAttackSound() {
 		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -149,7 +149,7 @@ methodmap TwirlFollower < CClotBody
 			case 8:
 			{
 				this.Speech("Sometimes I wonder, what would life be if I wasn't a mage", "...");
-				this.SpeechDelay(5.0,"Probably hell");
+				this.SpeechDelay(7.0,"Probably hell");
 			}
 			case 9:
 			{
@@ -368,6 +368,7 @@ methodmap TwirlFollower < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		TwirlEarsApply(npc.index,_,0.75);
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 
@@ -608,20 +609,20 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 		float flPos[3];
 			
 		GetAttachment(npc.index, "effect_hand_r", flPos, NULL_VECTOR);
-
+		
 		float 	projectile_speed = 1100.0,
 				target_vec[3];
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = 30.0;
+		float Dmg = 19.0;
 		char Particle[50];
 		if(npc.m_iState % 2)
 			Particle = "raygun_projectile_blue";
 		else
 			Particle = "raygun_projectile_red";
 
-		npc.FireParticleRocket(target_vec, Dmg , projectile_speed , 0.0 , Particle, true, _, true, flPos);
+		npc.FireParticleRocket(target_vec, Dmg , projectile_speed , 0.0 , Particle, false, false, true, flPos, .inflictor = npc.index);
 	}
 	else
 	{
@@ -649,7 +650,7 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 					if(IsValidEnemy(npc.index, target))
 					{
 			
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 40.0, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 						float Kb = 450.0;
 
 						Custom_Knockback(npc.index, target, Kb, true);
@@ -862,7 +863,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 
 	if(update)
 	{
-		float Dps = 30.0;
+		float Dps = 10.0;
 		Laser.Damage = Dps;
 		Laser.Radius = Radius;
 		Laser.Bonus_Damage = Dps;
@@ -1080,6 +1081,8 @@ static void ClotDeath(int entity)
 	TwirlFollower npc = view_as<TwirlFollower>(entity);
 
 	npc.PlayDeathSound();
+	
+	ExpidonsaRemoveEffects(entity);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

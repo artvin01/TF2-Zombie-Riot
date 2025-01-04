@@ -2185,10 +2185,12 @@ int ActiveCurrentNpcsBarracksTotal()
 
 void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage, int damagetype)
 {
+
 	BarrackBody npc = view_as<BarrackBody>(attacker);
 	int owner = GetClientOfUserId(npc.OwnerUserId);
 	if(IsValidClient(owner))
 	{
+
 		int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[owner]);
 		if(!IsValidEntity(entity))
 			return;
@@ -2203,6 +2205,7 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 		{
 			return;
 		}
+
 		//make sure they have a barracks
 
 		int MaxHealth = ReturnEntityMaxHealth(victim);
@@ -2215,6 +2218,7 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 		{
 			gain *= 4.5;
 		}
+
 		gain = damage * gain / float(MaxHealth);
 		float vecTarget[3]; WorldSpaceCenter(owner, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(attacker, VecSelfNpc);
@@ -2224,6 +2228,7 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 			gain *= 0.35;
 		}
 		gain *= 0.85;
-		SummonerRenerateResources(owner, gain, 0.0);
+		//Should ignore setup...
+		SummonerRenerateResources(owner, gain, 0.0, true);
 	}
 }

@@ -112,6 +112,7 @@ methodmap SeabornSupporter < CClotBody
 		{
 			npc.m_iBleedType = BLEEDTYPE_NORMAL;
 			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Supporter");
 		}
 		else
 		{

@@ -3502,7 +3502,7 @@ static void MenuPage(int client, int section)
 				{
 					continue;
 				}
-				else if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell)
+				else if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [NOT FOUND]", TranslateItemName(client, item.Name, info.Custom_Name));
 					style = (info.Cost_Unlock > 1000 || !StarterCashMode[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
@@ -3545,7 +3545,7 @@ static void MenuPage(int client, int section)
 				{
 					if(Rogue_UnlockStore())
 					{
-						if(item.NPCSeller_Discount < 1.0)
+						if(item.NPCSeller_Discount < 1.0 && item.NPCSeller)
 						{
 							FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
 						}	
@@ -3554,7 +3554,7 @@ static void MenuPage(int client, int section)
 							FormatEx(buffer, sizeof(buffer), "%s {$ Waves Left: %d}", buffer, item.NPCSeller_WaveStart);
 						}
 					}
-					else if(item.NPCSeller_Discount < 0.71)
+					else if(item.NPCSeller_Discount < 0.71 && item.NPCSeller)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s {$$}", buffer);
 					}

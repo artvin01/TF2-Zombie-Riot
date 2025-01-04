@@ -1965,30 +1965,60 @@
 		"en"		"Seaborn Guard"
 		"ru" 		"Морерождённый страж"
 	}
+	"Guard"
+	{
+		"en"		"Guard"
+		"ru" 		"страж"
+	}
 	"Seaborn Defender"
 	{
 		"en"		"Seaborn Defender"
 		"ru" 		"Морерождённый Защитник"
+	}
+	"Defender"
+	{
+		"en"		"Defender"
+		"ru" 		"Защитник"
 	}
 	"Seaborn Vanguard"
 	{
 		"en"		"Seaborn Vanguard"
 		"ru" 		"Морерождённый Авангард"
 	}
+	"Vanguard"
+	{
+		"en"		"Vanguard"
+		"ru" 		"Авангард"
+	}
 	"Seaborn Caster"
 	{
 		"en"		"Seaborn Caster"
 		"ru" 		"Морерождённый Маг"
+	}
+	"Caster"
+	{
+		"en"		"Caster"
+		"ru" 		"Маг"
 	}
 	"Seaborn Specialist"
 	{
 		"en"		"Seaborn Specialist"
 		"ru" 		"Морерождённый Специалист"
 	}
+	"Specialist"
+	{
+		"en"		"Specialist"
+		"ru" 		"Специалист"
+	}
 	"Seaborn Supporter"
 	{
 		"en"		"Seaborn Supporter"
 		"ru" 		"Морерождённый Поддерживающий"
+	}
+	"Supporter"
+	{
+		"en"		"Supporter"
+		"ru" 		"Поддерживающий"
 	}
 	"Theocracy"
 	{
@@ -2313,6 +2343,14 @@
 	{
 		"en"	"Ancient Demon"
 	}
+	"Hallam's Great Demon"
+	{
+		"en"	"Hallam's Great Demon"
+	}
+	"Ihanal Demon Whisperer"
+	{
+		"en"	"Ihanal Demon Whisperer"
+	}
 	"Winter Sniper"
 	{
 		"en"	"Winter Sniper"
@@ -2626,6 +2664,10 @@
 	{
 		"en"	"A stronger Variant"
 	}
+	"Elite Rulianius"
+	{
+		"en"	"Elite Rulianius"
+	}
 	"Rulianius"
 	{
 		"en"	"Rulianius"
@@ -2663,6 +2705,10 @@
 	"Lelouch"
 	{
 		"en"	"Lelouch"
+	}
+	"Fractal Cannon"
+	{
+		"en"	"Fractal Cannon"
 	}
 	"Ealing"
 	{
@@ -2972,6 +3018,14 @@
 	{
 		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
 	}
+	"Chaos Swordsman"
+	{
+		"en"	"Chaos Swordsman"
+	}
+	"Chaos Swordsman Desc"
+	{
+		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
+	}
 	"Chaos Mercenaries"
 	{
 		"en"	"Chaos Mercenaries"
@@ -3029,10 +3083,10 @@
 		"en" 		"Zombine"
 		"ru" 		"Зомбайн"
 	}
-	"Omega"
+	"3650"
 	{
-		"en"		"Omega"
-		"ru" 		"Омега"
+		"en"		"3650"
+		"ru" 		"3650"
 	}
 	"Nemal"
 	{
@@ -3414,9 +3468,13 @@
 		"en"	"Victorian Signaller"
 		"ko"	"빅토리아 전령병"
 	}
-	"Chaos Affecteed Signaller"
+	"Chaos Affected Signaller"
 	{
-		"en"	"Chaos Affecteed Signaller"
+		"en"	"Chaos Affected Signaller"
+	}
+	"Chaos Affected Eradicator"
+	{
+		"en"	"Chaos Affected Eradicator"
 	}
 	"Humbee"
 	{
@@ -3801,6 +3859,63 @@
 	"Smith"
 	{
 		"en"		"Smith"
+	}
+	"Seaborn Metro Cop"
+	{
+		"en"		"Seaborn Metro Cop"
+	}
+	"Seaborn Metro Raider"
+	{
+		"en"		"Seaborn Metro Raider"
+	}
+	"Seaborn W.F. Rifler"
+	{
+		"en"		"Seaborn W.F. Rifler"
+	}
+	"Seaborn W.F. Elite"
+	{
+		"en"		"Seaborn W.F. Elite"
+	}
+	"Seaborn W.F. Shotgunner"
+	{
+		"en"		"Seaborn W.F. Shotgunner"
+	}
+	"Voided Metro Cop"
+	{
+		"en"		"Voided Metro Cop"
+	}
+	"Voided Metro Raider"
+	{
+		"en"		"Voided Metro Raider"
+	}
+	"Voided W.F. Rifler"
+	{
+		"en"		"Voided W.F. Rifler"
+	}
+	"Voided W.F. Elite"
+	{
+		"en"		"Voided W.F. Elite"
+	}
+	"Voided W.F. Shotgunner"
+	{
+		"en"		"Voided W.F. Shotgunner"
+	}
+	"Hunter"
+	{
+		"en"		"Hunter"
+	}
+	"Merlton"
+	{
+		"en"		"Merlton"
+	}
+	"Lost Knight"
+	{
+		"en"		"Lost Knight"
+	}
+	"Omega"
+	{
+		"en"		"Omega"
+		"ru"		"Омега"
 	}
 	"Victoria"
 	{
