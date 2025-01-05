@@ -211,11 +211,23 @@ static const char g_LaserLoop[][] = {
 
 */
 
+static bool b_said_player_weaponline[MAXTF2PLAYERS];
+static float fl_said_player_weaponline_time[MAXENTITIES];
+
 int i_Lelouch_Index;
 #define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
 #define LELOUCH_CRYSTAL_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl"
 #define LELOUCH_LIGHT_MODEL "models/effects/vol_light256x512.mdl"
 #define LELOUCH_THEME "#zombiesurvival/forest_rogue/lelouch_theme.mp3"
+
+#define LELOUCH_CRYSTAL_SPIN_SOUND_INIT	 	"npc/strider/charging.wav"
+#define LELOUCH_CRYSTAL_WORKS_SOUND_INIT	"weapons/cguard/charging.wav"
+
+//hl1/ambience/alien_powernode.wav
+//hl1/ambience/alien_cycletone.wav
+
+#define LELOUCH_CRYSTAL_SHIELD_BEGINSPIN	"misc/doomsday_cap_open_start.wav"
+#define LELOUCH_CRYSTAL_SHIELD_ACTIVATE		"mvm/mvm_tele_activate.wav"
 
 #define LELOUCH_CRYSTAL_SHIELD_STRENGTH 0.1	//How much res each crystal gives. eg: 4 crystals alive, each does 0.1, total res is 40%
 
@@ -268,17 +280,59 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_AngerSounds);
 
+	PrecacheSound(LELOUCH_CRYSTAL_SPIN_SOUND_INIT);
+	PrecacheSound(LELOUCH_CRYSTAL_WORKS_SOUND_INIT);
+	PrecacheSound(LELOUCH_CRYSTAL_SHIELD_BEGINSPIN);
+	PrecacheSound(LELOUCH_CRYSTAL_SHIELD_ACTIVATE);
+
 	Zero(b_animation_set);
 
-	PrecacheModel(LELOUCH_LIGHT_MODEL, true);
-	PrecacheModel(LELOUCH_BLADE_MODEL, true);
-	PrecacheModel(LELOUCH_CRYSTAL_MODEL, true);
+	PrecacheModel(LELOUCH_LIGHT_MODEL);
+	PrecacheModel(LELOUCH_BLADE_MODEL);
+	PrecacheModel(LELOUCH_CRYSTAL_MODEL);
 
 	PrecacheSoundCustom(LELOUCH_THEME);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, char[] data)
 {
 	return Lelouch(vecPos, vecAng, team, data);
+}
+Action Timer_Lelouch_Repeat_Sound(Handle Timer, DataPack data)
+{
+	ResetPack(data);
+	int client = EntRefToEntIndex(data.ReadCell());
+	char Sound[255];
+	data.ReadString(Sound, sizeof(Sound));
+	int type = data.ReadCell();
+	float Volume = data.ReadFloat();
+	int pitch = data.ReadCell();
+
+	if(!IsValidEntity(client))
+		return Plugin_Stop;
+
+	switch(type)
+	{
+		case 1:
+		{
+			EmitSoundToAll(Sound, client, _, SNDLEVEL_NORMAL, _, Volume, pitch);
+		}
+		case 2:
+		{
+			float Loc[3];
+			data.ReadFloatArray(Loc, 3);
+			EmitSoundToAll(Sound, client, _, SNDLEVEL_NORMAL, _, Volume, pitch, -1, Loc);
+		}
+		case 3:
+		{
+			EmitSoundToAll(Sound, client, _, SNDLEVEL_RAIDSIREN, _, Volume, pitch);
+		}
+		default:
+		{
+			EmitSoundToAll(Sound, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, Volume, pitch);
+		}
+	}
+
+	return Plugin_Stop;
 }
 static float fl_npc_basespeed;
 methodmap Lelouch < CClotBody
@@ -355,6 +409,21 @@ methodmap Lelouch < CClotBody
 		
 		EmitCustomToAll(g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, 0.7);
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
+	}
+	public void PlayCrystalSounds()
+	{
+		EmitSoundToAll(LELOUCH_CRYSTAL_SHIELD_BEGINSPIN, this.index, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 50);
+		char SoundString[255];
+		SoundString = LELOUCH_CRYSTAL_SHIELD_ACTIVATE;
+		DataPack data;
+		CreateDataTimer(7.0, Timer_Lelouch_Repeat_Sound, data, TIMER_FLAG_NO_MAPCHANGE);
+		data.WriteCell(EntIndexToEntRef(this.index));
+		data.WriteString(SoundString);
+		data.WriteCell(3);		//type.
+		data.WriteFloat(1.0);	//volume
+		data.WriteCell(50);		//pitch
+		//data.WriteFloatArray(Random_Loc, 3);	//if type is 2, sets where it shall spawn.
+
 	}
 
 	property float m_flBladeCoolDownTimer
@@ -456,7 +525,7 @@ methodmap Lelouch < CClotBody
 
 		float GameTime = GetGameTime(this.index);
 		if(this.m_flDoingAnimation > GameTime)
-			value *=0.75;
+			value *=0.35;
 
 		if(value <= 0.05)
 			value = 0.05;
@@ -471,7 +540,7 @@ methodmap Lelouch < CClotBody
 
 		float GameTime = GetGameTime(this.index);
 		if(this.m_flDoingAnimation > GameTime)
-			value *=0.75;
+			value *=0.35;
 
 		if(value <= 0.05)
 			value = 0.05;
@@ -489,6 +558,13 @@ methodmap Lelouch < CClotBody
 		this.m_iWearable1 = this.EquipItem("effect_hand_r", RUINA_CUSTOM_MODELS_4);
 		SetVariantInt(RUINA_FANTASY_BLADE);
 		AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
+	}
+	public int Set_Particle(char[] Particle, char[] Attachment)
+	{
+		float flPos[3], flAng[3];
+
+		this.GetAttachment(Attachment, flPos, flAng);
+		return ParticleEffectAt_Parent(flPos, Particle, this.index, Attachment, {0.0,0.0,0.0});
 	}
 
 	public Lelouch(float vecPos[3], float vecAng[3], int ally, char[] data)
@@ -508,12 +584,12 @@ methodmap Lelouch < CClotBody
 
 		c_NpcName[npc.index] = "Lelouch";	//Lelouch Vi Britania.
 
-		npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + 1.0; //GetRandomFloat(15.0, 30.0);
+		npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
 
 		b_crystals_active[npc.index] = false;
 		npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 2.0;
-		npc.m_flCrystalSpiralLaserCoolDownTimer = GetGameTime(npc.index) + 3.0;
-		npc.m_flCrystalLaserWorks = GetGameTime(npc.index) + 4.0;
+		npc.m_flCrystalSpiralLaserCoolDownTimer = GetGameTime(npc.index) + 15.0;
+		npc.m_flCrystalLaserWorks = GetGameTime(npc.index) + 10.0;
 
 		npc.m_flRevertAnim = FAR_FUTURE;
 		npc.m_flFreezeAnim = FAR_FUTURE;
@@ -575,6 +651,14 @@ methodmap Lelouch < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", "models/player/items/spy/hwn_spy_misc2.mdl", _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/spy/spy_spats.mdl", _, skin);
 		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tw2_roman_wreath/tw2_roman_wreath_spy.mdl", _, skin);
+
+		npc.m_iWearable9 = npc.EquipItemSeperate("head", LELOUCH_CRYSTAL_MODEL, _,_, 2.75, 50.0);
+
+		if(IsValidEntity(npc.m_iWearable9))
+		{
+			SetEntityRenderMode(npc.m_iWearable9, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable9, 150, 150, 150, 100);
+		}
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
@@ -585,8 +669,8 @@ methodmap Lelouch < CClotBody
 		npc.Anger = false;
 		b_animation_set[npc.index] = false;
 
-		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);	//is a melee npc
-		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 15);
+		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);	//is a global npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_GLOBAL_NPC, true, 999, 999);
 		Ruina_Set_Overlord(npc.index, true);
 
 		i_Lelouch_Index = EntIndexToEntRef(npc.index);
@@ -630,6 +714,9 @@ methodmap Lelouch < CClotBody
 
 		if(Rogue_Mode())
 			Rogue_Dome_WaveEnd();
+
+		Zero(b_said_player_weaponline);
+		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 
 		return npc;
 	}
@@ -918,6 +1005,8 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	int Health = ReturnEntityMaxHealth(npc.index);
 		Health = RoundToFloor(Health*0.05);
 
+	npc.PlayCrystalSounds();
+
 	fl_crystal_spin_speed[npc.index] = 0.0;
 
 	b_crystals_active[npc.index] = true;
@@ -991,6 +1080,7 @@ static void Crystal_Passive_Logic(Lelouch npc)
 		{
 			struct_Crystals[npc.index][y].state = 0;
 		}
+		Ruina_Master_Rally(npc.index, false);
 		npc.m_flCrystalRevert = FAR_FUTURE;
 	}
 
@@ -1297,6 +1387,11 @@ static bool Initiate_Crystal_LaserSpin(Lelouch npc)
 	{
 		struct_Crystals[npc.index][i].state = 1;
 	}
+
+	Ruina_Master_Rally(npc.index, true);
+
+	EmitSoundToAll(LELOUCH_CRYSTAL_SPIN_SOUND_INIT, npc.index, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 75);
+	
 	float Duration = 10.0;
 	float WindUp = LELOUCH_CRYSTAL_SPRIAL_WINDUP;
 	Initiate_Anim(npc, WindUp+Duration, "taunt_the_fist_bump", _,_, true);
@@ -1323,6 +1418,10 @@ static bool Initiate_Crystal_LaserWorks(Lelouch npc)
 
 	if(npc.m_flCrystalLaserWorks > GameTime)
 		return false;
+
+	Ruina_Master_Rally(npc.index, true);
+
+	EmitSoundToAll(LELOUCH_CRYSTAL_WORKS_SOUND_INIT, npc.index, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 75);
 
 	for(int i= 0 ; i < LELOUCH_MAX_CRYSTALS ; i++)
 	{
@@ -1599,6 +1698,82 @@ static void BladeLogic_Tick(int iNPC)
 
 //Anchor Logic
 #define LELOUCH_ANCHOR_STAGE_TIMER 120.0 //120.0
+enum struct Anchor_Lifeloss_Data
+{
+	int particles[4];
+	int lasers[4];
+
+	//flaregun_energyfield_red
+	//flaregun_energyfield_blue
+
+	void Nuke()
+	{
+		for(int i=0 ; i <sizeof(this.particles); i++)
+		{
+			int part = EntRefToEntIndex(this.particles[i]);
+			if(IsValidEntity(part))
+				RemoveEntity(part);
+
+			this.particles[i] = INVALID_ENT_REFERENCE;
+		}
+		for(int i=0 ; i <sizeof(this.lasers); i++)
+		{
+			int part = EntRefToEntIndex(this.lasers[i]);
+			if(IsValidEntity(part))
+				RemoveEntity(part);
+
+			this.lasers[i] = INVALID_ENT_REFERENCE;
+		}
+	}
+}
+static Anchor_Lifeloss_Data struct_Anchors_Effects[MAXENTITIES];
+static void Create_Anchor_Phase_Effects(Lelouch npc)
+{
+	struct_Anchors_Effects[npc.index].Nuke();
+
+	int ent1 = npc.Set_Particle("flaregun_energyfield_red", "effect_hand_r");
+	int ent2 = npc.Set_Particle("flaregun_energyfield_blue", "effect_hand_l");
+	struct_Anchors_Effects[npc.index].particles[0] = EntIndexToEntRef(ent1);
+	struct_Anchors_Effects[npc.index].particles[1] = EntIndexToEntRef(ent2);
+	
+	float Loc1[3], Loc2[3];
+	float Angles[3], Origin[3]; WorldSpaceCenter(npc.index, Origin); Angles = GetNPCAngles(npc.index);
+	Loc1 = Origin;
+	Loc2 = Origin;
+	Offset_Vector({0.0, -50.0, 255.0}, Angles, Loc1);
+	Offset_Vector({0.0, 50.0, 255.0}, Angles, Loc2);
+
+	int color[4]; color = Lelouch_Colors();
+
+	int laser1 = ConnectWithBeam(ent1, -1, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM, _, Loc1);
+	int laser2 = ConnectWithBeam(ent2, -1, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM, _, Loc2);
+
+	float Middle_Vec[3]; Middle_Vec = Loc1;
+	Middle_Vec[0] += Loc2[0];
+	Middle_Vec[1] += Loc2[1];
+	Middle_Vec[2] += Loc2[2];
+
+	Middle_Vec[0] /=2.0;
+	Middle_Vec[1] /=2.0;
+	Middle_Vec[2] /=2.0;
+
+	Middle_Vec[2]+=125.0;
+
+	int laser3 = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM, Loc1, Middle_Vec);
+	int laser4 = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM, Loc2, Middle_Vec);
+
+	struct_Anchors_Effects[npc.index].lasers[0] = EntIndexToEntRef(laser1);
+	struct_Anchors_Effects[npc.index].lasers[1] = EntIndexToEntRef(laser2);
+	struct_Anchors_Effects[npc.index].lasers[2] = EntIndexToEntRef(laser3);
+	struct_Anchors_Effects[npc.index].lasers[3] = EntIndexToEntRef(laser4);
+
+	int ent3 = ParticleEffectAt(Middle_Vec, "flaregun_energyfield_red", 0.0);
+	int ent4 = ParticleEffectAt(Middle_Vec, "flaregun_energyfield_blue", 0.0);
+	struct_Anchors_Effects[npc.index].particles[2] = EntIndexToEntRef(ent3);
+	struct_Anchors_Effects[npc.index].particles[3] = EntIndexToEntRef(ent4);
+
+
+}
 static void Create_Anchors(Lelouch npc)
 {
 	if(b_Anchors_Created[npc.index])
@@ -1650,12 +1825,52 @@ static void Create_Anchors(Lelouch npc)
 			i_AnchorID_Ref[npc.index][i] = EntIndexToEntRef(anchor); 
 	}
 
+
+	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), RoundToCeil(4.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(125000.0 * MultiGlobalHighHealthBoss), RoundToCeil(4.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(352569.0 * MultiGlobalHighHealthBoss),1, true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemy), true);
+
+	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",	200000, RoundToCeil(6.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(8.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",	500000, RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	100000, RoundToCeil(6.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	200000, RoundToCeil(10.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",		150000,  RoundToCeil(3.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",	75000,  RoundToCeil(30.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
+
+	//400-500k for melee enemies
+
+	/*
+	npc_ruina_magianius    6000
+	npc_ruina_loonarionus  7500
+	npc_ruina_heliarionus  6000
+	npc_ruina_euranionis   8000
+	npc_ruina_draconia     9000
+	npc_ruina_malianius    12500
+	npc_ruina_lazurus      8000
+	npc_ruina_aetherianus  9000
+	npc_ruina_rulianius    30000
+	npc_ruina_astrianious  20000
+	*/
+
+	Create_Anchor_Phase_Effects(npc);
+
 	FreezeTimer(true);
 }
 static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 {
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	float Tower_Health = MaxHealth*0.25;
+
+	if(!red)
+	{
+		EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
+		EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
+	}
 
 	
 	float AproxRandomSpaceToWalkTo[3];
@@ -1765,6 +1980,7 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			RaidModeScaling = fl_RaidModeScaling_Buffer;
 
+			struct_Anchors_Effects[npc.index].Nuke();
 			b_NpcIsInvulnerable[npc.index] = false;
 			b_DeathRay = true;
 
@@ -1804,8 +2020,10 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			Lelouch_Lines(npc, "Atleast you managed to kill an anchor");
 		}
+		RaidModeScaling = fl_RaidModeScaling_Buffer;
 		FreezeTimer(false);
 		Equalize_Anchor_Hp(npc);
+		struct_Anchors_Effects[npc.index].Nuke();
 		b_NpcIsInvulnerable[npc.index] = false;
 	}
 
@@ -2234,21 +2452,41 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	Create_Anchors(npc);
 		
+	Lelouch_Weapon_Lines(npc, attacker);
 
+	int Max_Health = ReturnEntityMaxHealth(npc.index);
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
-	if(!npc.Anger && (ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp
+	if(IsValidEntity(npc.m_iWearable9))
+	{
+		float Ratio = ( float(Health)/float(Max_Health) ) - 0.25;
+		SetEntityRenderMode(npc.m_iWearable9, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable9, 150, 150, 150, RoundToFloor(100*Ratio));
+	}
+
+	if(!npc.Anger && (Max_Health/2) >= Health) //Anger after half hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
 
+		if(IsValidEntity(npc.m_iWearable9))
+			RemoveEntity(npc.m_iWearable9);
 
-		Lelouch_Lines(npc, "You bitch");
+		float Duration = 6.0;
+		Initiate_Anim(npc, Duration, "taunt_unleashed_rage_spy", 0.5,_, true, true);
 
+		npc.m_flRevertAnim = GetGameTime(npc.index) + Duration;
 
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:	Lelouch_Lines(npc, "My crystal shield, you will pay for that");
+			case 1: Lelouch_Lines(npc, "AGH, HOW DARE YOU");
+			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me");
+		}
+		
 
-		CPrintToChatAll("{purple}Twirl{snow}: How in the bloody hell did you get that ancient artifact flying again?");
-		Lelouch_Lines(npc,"One girl's trash, another man's teasure.");
-		i_summon_weaver(npc);
+		CreateTimer(Duration, LelouchLifeloss, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+		
 	}
 
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
@@ -2260,6 +2498,139 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	}
 	
 	return Plugin_Changed;
+}
+static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
+{
+	if(GetTeam(alaxios) == TFTeam_Red)
+	{
+		count /= 2;
+		if(count < 1)
+		{
+			count = 1;
+		}
+		for(int Spawns; Spawns <= count; Spawns++)
+		{
+			float pos[3]; GetEntPropVector(alaxios, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(alaxios, Prop_Data, "m_angRotation", ang);
+			
+			int summon = NPC_CreateByName(plugin_name, -1, pos, ang, GetTeam(alaxios));
+			if(summon > MaxClients)
+			{
+				fl_Extra_Damage[summon] = 10.0;
+				if(!health)
+				{
+					health = GetEntProp(summon, Prop_Data, "m_iMaxHealth");
+				}
+				SetEntProp(summon, Prop_Data, "m_iHealth", health / 10);
+				SetEntProp(summon, Prop_Data, "m_iMaxHealth", health / 10);
+			}
+		}
+		return;
+	}
+		
+	Enemy enemy;
+	enemy.Index = NPC_GetByPlugin(plugin_name);
+	if(health != 0)
+	{
+		enemy.Health = health;
+	}
+	enemy.Is_Boss = view_as<int>(is_a_boss);
+	enemy.Is_Immune_To_Nuke = true;
+	//do not bother outlining.
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	enemy.ExtraSpeed = 1.0;
+	enemy.ExtraDamage = 3.5;
+	enemy.ExtraSize = 1.0;		
+	enemy.Team = GetTeam(alaxios);
+	if(!Waves_InFreeplay())
+	{
+		for(int i; i<count; i++)
+		{
+			Waves_AddNextEnemy(enemy);
+		}
+	}
+	else
+	{
+		int postWaves = CurrentRound - Waves_GetMaxRound();
+		Freeplay_AddEnemy(postWaves, enemy, count);
+		if(count > 0)
+		{
+			for(int a; a < count; a++)
+			{
+				Waves_AddNextEnemy(enemy);
+			}
+		}
+	}
+
+	Zombies_Currently_Still_Ongoing += count;
+}
+static Action LelouchLifeloss(Handle Timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidEntity(client))
+		return Plugin_Stop;
+
+	Lelouch npc = view_as<Lelouch>(client);
+
+	CPrintToChatAll("{purple}Twirl{snow}: How in the bloody hell did you get that ancient artifact flying again?");
+	Lelouch_Lines(npc,"One girl's trash, another man's teasure.");
+	i_summon_weaver(npc);
+
+	return Plugin_Stop;
+}
+static void Lelouch_Weapon_Lines(Lelouch npc, int client)
+{
+	if(client > MaxClients)
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon))	//invalid weapon, go back and get a valid one you <...>
+		return;
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		/*
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 
+		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		
+		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				
+		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				
+		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		
+		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			
+		 				
+		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		
+		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		
+		*/
+		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapons shows you care more for aesthetics then functionality {gold}%N", client);  case 2: Format(Text_Lines, sizeof(Text_Lines), "That weapon is more flashy then effective {gold}%N", client);}
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "You bitch {gold}%N", client); 
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		Lelouch_Lines(npc, Text_Lines);
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
 }
 static int i_summon_weaver(Lelouch npc)
 {
@@ -2296,6 +2667,8 @@ static void NPC_Death(int entity)
 	i_Lelouch_Index = INVALID_ENT_REFERENCE;
 	
 	Ruina_NPCDeath_Override(entity);
+
+	struct_Anchors_Effects[npc.index].Nuke();
 
 	if(npc.index==EntRefToEntIndex(RaidBossActive))
 		RaidBossActive=INVALID_ENT_REFERENCE;

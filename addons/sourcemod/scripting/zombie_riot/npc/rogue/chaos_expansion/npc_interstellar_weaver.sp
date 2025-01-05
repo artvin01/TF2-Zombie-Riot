@@ -27,12 +27,8 @@ static const char g_AdvAttackSounds[][] = {
 
 #define INTERSTELLAR_WEAVER_FLIGHT_SPEED 330.0
 
-
-
-static bool b_storm_weaver_noclip[MAXENTITIES];
 static float fl_trace_timeout[MAXENTITIES];
 static float fl_recently_teleported[MAXENTITIES];
-static float fl_cantseetimeout[MAXENTITIES];
 static float fl_teleport_time[MAXENTITIES];
 //static float fl_teleporting_time[MAXENTITIES];
 static int i_segment_id[MAXENTITIES][INTERSTELLAR_WEAVER_LENGTH+1];
@@ -65,7 +61,6 @@ static void ClotPrecache()
 	//PrecacheSoundCustom(STELLAR_WEAVER_THEME);
 
 	Zero2(i_segment_id);
-	Zero(b_storm_weaver_noclip);
 
 	PrecacheModel(INTERSTELLAR_WEAVER_HEAD_MODEL);
 	Zero(i_storm_weaver_damage_instance);
@@ -190,9 +185,6 @@ methodmap Interstellar_Weaver < CClotBody
 			Music_SetRaidMusic(music);*/
 		}
 
-		
-
-		//fl_cantseetimeout[npc.index]=GetGameTime()+RUINA_CANTSEE_TIMEOUT+2.5;
 		fl_teleport_time[npc.index]=0.0;
 		fl_recently_teleported[npc.index]=0.0;
 
@@ -258,9 +250,6 @@ methodmap Interstellar_Weaver < CClotBody
 		Zero(fl_touch_timeout);
 
 		fl_ruina_battery[npc.index] = 0.0;
-
-		b_storm_weaver_noclip[npc.index]=false;
-
 		b_IgnoreAllCollisionNPC[npc.index]=true;
 		//b_ForceCollisionWithProjectile[npc.index]=true;
 
@@ -289,7 +278,6 @@ static int Storm_Weaver_Create_Tail(Interstellar_Weaver npc, int follow_ID, int 
 	{
 		b_ignore_npc[spawn_index]=true;
 		b_stellar_weaver_allow_attack[spawn_index] = false;
-		b_storm_weaver_noclip[spawn_index]=false;
 		//Flies through everything, but can still be hit/calls hits?
 		b_IgnoreAllCollisionNPC[spawn_index] = true;
 		f_NoUnstuckVariousReasons[spawn_index] = FAR_FUTURE;
@@ -309,7 +297,7 @@ static int Storm_Weaver_Create_Tail(Interstellar_Weaver npc, int follow_ID, int 
 	}
 	return spawn_index;
 }
-void Interstellar_Weaver_Middle_Movement(Interstellar_Weaver_Mid npc, float loc[3], bool Los)
+void Interstellar_Weaver_Middle_Movement(Interstellar_Weaver_Mid npc, float loc[3])
 {
 	float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
 	
@@ -350,20 +338,6 @@ void Interstellar_Weaver_Middle_Movement(Interstellar_Weaver_Mid npc, float loc[
 	TeleportEntity(npc.index, NULL_VECTOR, vecView, NULL_VECTOR);
 
 	npc.SetVelocity(vecVel);
-
-	if(Los)	//true=we cant see.
-	{
-		fl_cantseetimeout[npc.index] = GetGameTime() + RUINA_CANTSEE_TIMEOUT;
-		if(!b_storm_weaver_noclip[npc.index])
-		{
-			Storm_Weaver_Delete_Collision(npc.index);
-			return;
-		}
-	}
-	if(b_storm_weaver_noclip[npc.index] && fl_cantseetimeout[npc.index] <= GetGameTime())
-	{
-		Storm_Weaver_Restore_Collisions(npc.index);
-	}	
 }
 static void Storm_Weaver_Pulse_Solo_Mode(Interstellar_Weaver npc)
 {
@@ -571,7 +545,7 @@ static void Storm_Weaver_Damage_Touch(int entity, int other)
 			if(fl_touch_timeout[other] < GameTime)
 			{
 				fl_touch_timeout[other] = GameTime+0.1;
-				SDKHooks_TakeDamage(other, entity, entity, 30.0, DMG_CRUSH, -1);
+				SDKHooks_TakeDamage(other, entity, entity, 30.0*RaidModeScaling, DMG_CRUSH, -1);
 			}
 		}
 	}
@@ -589,7 +563,6 @@ static void ClotThink(int iNPC)
 	f_StuckOutOfBoundsCheck[npc.index] = GetGameTime() + 10.0;
 	float GameTime = GetGameTime(npc.index);
 
-	//if(!b_storm_weaver_noclip[npc.index])
 	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 100.0 * ((ZR_GetWaveCount()+1)/60.0));
 
 	if(!IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)) && fl_special_invuln_timer[npc.index] < GameTime)
@@ -768,10 +741,6 @@ static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 	{
 		New_Target = Target;
 	}
-	else
-	{
-		//fl_cantseetimeout[npc.index] = GameTime + RUINA_CANTSEE_TIMEOUT;
-	}
 
 	//if(npc.IsOnGround())
 	//{
@@ -812,30 +781,7 @@ static void Storm_Weaver_Fly(Interstellar_Weaver npc, float target_vec[3])
 	Interstellar_Weaver_Mid worm_head = view_as<Interstellar_Weaver_Mid>(npc.index);
 
 
-	Interstellar_Weaver_Middle_Movement(worm_head, HeadFollow, Check_Line_Of_Sight_Vector(npc_vec, HeadFollow, npc.index));
-}
-static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int attacker)
-{
-	Ruina_Laser_Logic Laser;
-	Laser.client = attacker;
-	Laser.Start_Point = pos_npc;
-
-	float vecAngles[3];
-	//get the enemy gamer's location.
-	//get the angles from the current location of the crystal to the enemy gamer
-	MakeVectorFromPoints(pos_npc, Enemy_Loc, vecAngles);
-	GetVectorAngles(vecAngles, vecAngles);
-	//get the estimated distance to the enemy gamer,
-	float Dist = GetVectorDistance(Enemy_Loc, pos_npc);
-	//do a trace from the current location of the crystal to the enemy gamer.
-	Laser.DoForwardTrace_Custom(vecAngles, pos_npc, Dist);	//alongside that, use the estimated distance so that our end location from the trace is where the player is.
-
-	float Trace_Loc[3];
-	Trace_Loc = Laser.End_Point;	//get the end location of the trace.
-	//see if the vectors match up, if they do we can safely say the target is in line of sight of the origin npc/loc
-
-	return Similar_Vec(Trace_Loc, Enemy_Loc);
-
+	Interstellar_Weaver_Middle_Movement(worm_head, HeadFollow);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {

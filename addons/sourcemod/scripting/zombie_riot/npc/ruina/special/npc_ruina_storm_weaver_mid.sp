@@ -148,16 +148,7 @@ static void ClotThink(int iNPC)
 	{
 		float Follow_Loc[3];
 		GetEntPropVector(follow_id, Prop_Send, "m_vecOrigin", Follow_Loc);
-
-		int I_see=Can_I_See_Ally(npc.index, follow_id);
-		if(I_see==follow_id)
-		{
-			Storm_Weaver_Middle_Movement(npc, Follow_Loc, false);	//we can see it, travel normally!
-		}
-		else
-		{
-			Storm_Weaver_Middle_Movement(npc, Follow_Loc, true);	//we can't see the thing we are following, noclip
-		}
+		Storm_Weaver_Middle_Movement(npc, Follow_Loc);	//we can see it, travel normally!
 		
 	}
 	else
@@ -168,8 +159,6 @@ static void ClotThink(int iNPC)
 
 		return;
 	}
-
-
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		int Enemy_I_See;
