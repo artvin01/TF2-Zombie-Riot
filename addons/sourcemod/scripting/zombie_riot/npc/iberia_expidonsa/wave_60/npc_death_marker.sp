@@ -271,7 +271,7 @@ void IberiaDeathMarkerSelfDefense(IberiaDeathMarker npc, float gameTime, int tar
 					//gimic of new wavetype, but silenceable.
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
-					NpcStats_IberiaMarkEnemy(target, 6.0);
+					ApplyStatusEffect(npc.index, target, "Marked", 6.0);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

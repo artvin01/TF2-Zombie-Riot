@@ -649,8 +649,10 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	Leper_HudDelay[client] = GetGameTime() + 0.5;
 }
-public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
+	if(!(damagetype & DMG_TRUEDAMAGE))
+		return damage;
 	if (Leper_InAnimation[victim] > GetGameTime())
 	{
 		return damage * 0.75; //half damage during animations.

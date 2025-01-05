@@ -92,6 +92,10 @@ static const char g_PlayRocketshotready[][] = {
 static const char g_LaserBeamSounds[][] = {
 	"weapons/bumper_car_speed_boost_start.wav",
 };
+static const char g_LaserBeamSoundsStart[][] = {
+	"weapons/cow_mangler_over_charge_shot.wav",
+};
+
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
@@ -142,6 +146,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsPrepare)); i++) { PrecacheSound(g_RangedAttackSoundsPrepare[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MG42AttackSounds)); i++) { PrecacheSound(g_MG42AttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_LaserBeamSounds)); i++) { PrecacheSound(g_LaserBeamSounds[i]); }
+	for (int i = 0; i < (sizeof(g_LaserBeamSoundsStart)); i++) { PrecacheSound(g_LaserBeamSoundsStart[i]); }
+
 	PrecacheSound(g_DronShotHitSounds);
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
@@ -266,6 +273,10 @@ methodmap Harrison < CClotBody
 	{
 		EmitSoundToAll(g_LaserBeamSounds[GetRandomInt(0, sizeof(g_LaserBeamSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
 	}
+	public void PlayLaserBeamSoundStart()
+	{
+		EmitSoundToAll(g_LaserBeamSoundsStart[GetRandomInt(0, sizeof(g_LaserBeamSoundsStart) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
+	}
 	property float m_flTimeUntillSummonRocket
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
@@ -353,6 +364,7 @@ methodmap Harrison < CClotBody
 			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+			RemoveAllDamageAddition();
 			//IDLE
 			npc.m_iState = 0;
 			npc.m_flGetClosestTargetTime = 0.0;
@@ -756,7 +768,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.SetPlaybackRate(1.0);
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_iChanged_WalkCycle = 0;
-					f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
+					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 					
 					npc.m_flSpeed = 300.0;
 					if(IsValidEntity(npc.m_iWearable8))
@@ -1112,7 +1124,6 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
 
-		npc.PlayLaserBeamSound();
 
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed, 40.0, vecTarget);
 		if(!Can_I_See_Enemy_Only(npc.index, target)) //cant see enemy in the predicted position, we will instead just attack normally
@@ -1130,9 +1141,14 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		{
 			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
 		}
+		if(npc.m_iOverlordComboAttack == 0)
+		{
+			npc.PlayLaserBeamSoundStart();
+		}
 		//float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		if(npc.m_iOverlordComboAttack < 12)
 		{
+			npc.PlayLaserBeamSound();
 			npc.m_iOverlordComboAttack += 1;
 			HarrisonInitiateLaserAttack(npc.index, vecTarget, flPos); //laser finger!
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
@@ -1418,7 +1434,7 @@ static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float
 	int green = 200;
 	int blue = 200;
 	int colorLayer4[4];
-	float diameter = float(5 * 4);
+	float diameter = float(10 * 4);
 	SetColorRGBA(colorLayer4, red, green, blue, 200);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
@@ -1431,7 +1447,7 @@ static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float
 	TE_SendToAll(0.0);
 	int glowColor[4];
 	SetColorRGBA(glowColor, red, green, blue, 200);
-	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.2), 0, 0.5, glowColor, 0);
 	TE_SendToAll(0.0);
 
 	DataPack pack = new DataPack();
@@ -1494,8 +1510,8 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 35.0 * RaidModeScaling;
-	float FarDamage = 30.0 * RaidModeScaling;
+	float CloseDamage = 70.0 * RaidModeScaling;
+	float FarDamage = 60.0 * RaidModeScaling;
 	float MaxDistance = 5000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
@@ -1508,8 +1524,11 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 			if (damage < 0)
 				damage *= -1.0;
 
+			
+			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
+				damage *= 0.25;
 
-			SDKHooks_TakeDamage(victim, entity, entity, damage * RaidModeScaling, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				
 		}
 	}
@@ -1790,7 +1809,7 @@ static bool Victoria_Support(Harrison npc)
 			TE_SendToAll();
 			if(Vs_RechargeTime[npc.index] > (Vs_RechargeTimeMax[npc.index] - 1.0))
 			{
-				Vs_ParticleSpawned[enemy[i]] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+				Vs_ParticleSpawned[enemy[i]] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 				SetEdictFlags(Vs_ParticleSpawned[enemy[i]], (GetEdictFlags(Vs_ParticleSpawned[enemy[i]]) | FL_EDICT_ALWAYS));
 				Vs_IncomingBoom=true;
 			}
@@ -1801,16 +1820,14 @@ static bool Victoria_Support(Harrison npc)
 			position[0] = Vs_Temp_Pos[enemy[i]][0];
 			position[1] = Vs_Temp_Pos[enemy[i]][1];
 			position[2] = Vs_Temp_Pos[enemy[i]][2] - 100.0;
-			TeleportEntity(Vs_ParticleSpawned[enemy[i]], position, NULL_VECTOR, NULL_VECTOR);
+			TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]]), position, NULL_VECTOR, NULL_VECTOR);
 			position[2] += 100.0;
 			
-			b_ThisNpcIsSawrunner[npc.index] = true;
-			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 			if(YaWeFxxked[npc.index])
 				Explode_Logic_Custom(9001.0, 0, npc.index, -1, position, 1000.0, 1.0, _, true, 20, _, _, FxxkOFF);
 			else
 				Explode_Logic_Custom((YaWeFxxked[npc.index] ? 9001.0 : 100.0*RaidModeScaling), 0, npc.index, -1, position, (YaWeFxxked[npc.index] ? 1000.0 : 125.0), 1.0, _, true, 20);
-			b_ThisNpcIsSawrunner[npc.index] = false;
 			ParticleEffectAt(position, "hightower_explosion", 1.0);
 			i_ExplosiveProjectileHexArray[npc.index] = 0; 
 			Vs_Fired = true;
@@ -1860,9 +1877,9 @@ static Action Dron_Laser_Particle_StartTouch(int entity, int target)
 		inflictor = owner;
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	float damage = 35.0;
+	float damage = 10.0;
 	damage *= RaidModeScaling;
-	Explode_Logic_Custom(damage, owner, inflictor, -1, ProjectileLoc, 250.0, _, _, true, _, false, _);
+	Explode_Logic_Custom(damage, owner, inflictor, -1, ProjectileLoc, 150.0, _, _, true, _, false, _);
 	ParticleEffectAt(ProjectileLoc, "mvm_soldier_shockwave", 1.0);
 	ParticleEffectAt(ProjectileLoc, "drg_cow_explosion_sparkles_blue", 1.5);
 	EmitSoundToAll(g_DronShotHitSounds, 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, ProjectileLoc);

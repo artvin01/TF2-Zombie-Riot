@@ -230,13 +230,13 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		bool magic;
 		bool pierce;
 		
-		if((damagetype & DMG_SLASH) || NpcStats_IsEnemySilenced(victim))
+		if((damagetype & DMG_TRUEDAMAGE) || NpcStats_IsEnemySilenced(victim))
 		{
 			pierce = true;
 		}
 		else
 		{
-			if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(victim))
+			if((damagetype & DMG_BLAST))
 			{
 				hot = true;
 				pierce = true;

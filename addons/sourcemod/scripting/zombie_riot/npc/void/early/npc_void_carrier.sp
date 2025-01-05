@@ -186,7 +186,8 @@ public void VoidCarrier_ClotThink(int iNPC)
 		Injured[2] += 30.0;
 		b_NoGravity[npc.m_iTargetAlly] = true;
 		b_DoNotUnStuck[npc.m_iTargetAlly] = true;
-		b_CannotBeKnockedUp[npc.m_iTargetAlly] = true;
+		ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Solid Stance", 999999.0);	
+		
 		SDKCall_SetLocalOrigin(npc.m_iTargetAlly, Injured); //keep teleporting just incase.
 		LiberiBuff[npc.m_iTargetAlly] = GetGameTime() + 0.09;
 		FreezeNpcInTime(npc.m_iTargetAlly, 0.09);
@@ -317,7 +318,8 @@ static void LiberiBuffThink(int entity)
 		b_NpcIsInvulnerable[entity] = false;
 		b_NoGravity[entity] = false;
 		b_DoNotUnStuck[entity] = false;
-		b_CannotBeKnockedUp[entity] = false;
+		RemoveSpecificBuff(entity, "Solid Stance");
+		
 		SDKUnhook(entity, SDKHook_ThinkPost, LiberiBuffThink);	
 	}
 }

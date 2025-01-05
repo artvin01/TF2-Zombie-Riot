@@ -290,7 +290,7 @@ static void Equalize_HP(Lancelot npc, int &attacker, int &inflictor, float &dama
 {
 
 	int valids[10];
-	int i=1;
+	int i=0;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
 		if(i > 9)
@@ -375,7 +375,6 @@ static void ClotThink(int iNPC)
 
 	Ruina_Add_Battery(npc.index, 5.0);
 
-
 	if(b_leader[npc.index])
 	{
 		if(npc.m_flGetClosestTargetTime < GameTime)
@@ -425,11 +424,20 @@ static void ClotThink(int iNPC)
 	{
 		if(fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
-			if(!IsValidEntity(npc.m_iWearable8))
+			if(!AtEdictLimit(EDICT_NPC))
 			{
-				float flPos[3], flAng[3];
-				npc.GetAttachment("effect_hand_r", flPos, flAng);
-				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+				if(!IsValidEntity(npc.m_iWearable8))
+				{
+					float flPos[3];
+					npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
+					npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+				}
+				if(!IsValidEntity(npc.m_iWearable9))
+				{
+					float flPos[3]; // original
+					npc.GetAttachment("head", flPos, NULL_VECTOR);
+					npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
+				}
 			}
 		}
 	}
@@ -437,6 +445,8 @@ static void ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iWearable8))
 			RemoveEntity(npc.m_iWearable8);
+		if(IsValidEntity(npc.m_iWearable9))
+			RemoveEntity(npc.m_iWearable9);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -752,4 +762,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 }

@@ -227,9 +227,9 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		int target = GetClosestAlly(npc.index, (250.0 * 250.0), _,DoctorBuffAlly);
 		if(target)
 		{
-			if(f_PernellBuff[target] < GetGameTime())
+			if(HasSpecificBuff(target, "False Therapy"))
 			{
-				f_PernellBuff[target] = GetGameTime() + 30.0;
+				ApplyStatusEffect(npc.index, target, "False Therapy", 30.0);
 				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_SECONDARY",_,_,_,3.0);
 			}
 		}
@@ -533,8 +533,8 @@ public void SpecialDoctor_NPCDeath(int entity)
 
 public bool DoctorBuffAlly(int provider, int entity)
 {
-	if(f_PernellBuff[entity] < GetGameTime())
+	if(HasSpecificBuff(entity, "False Therapy"))
 		return true;
-
+		
 	return false;
 }

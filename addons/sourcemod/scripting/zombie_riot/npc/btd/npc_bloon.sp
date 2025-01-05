@@ -665,13 +665,13 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	bool magic;
 	bool pierce;
 	
-	if((damagetype & DMG_SLASH))
+	if((damagetype & DMG_TRUEDAMAGE))
 	{
 		pierce = true;
 	}
 	else
 	{
-		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
+		if((damagetype & DMG_BLAST))
 		{
 			hot = true;
 			pierce = true;

@@ -11,6 +11,8 @@ static float CastleBreaker_HUDDelay[MAXTF2PLAYERS];
 static int CastleBreaker_Cylinder[MAXTF2PLAYERS];
 static float CastleBreaker_SoundsDelay[MAXTF2PLAYERS];
 static int CashGainLimitWavePer_CastleBreaker[MAXTF2PLAYERS];
+static float CastleBreaker_DoubleTapR[MAXTF2PLAYERS];
+static bool CastleBreaker_ModeLock[MAXTF2PLAYERS];
 
 #define MAX_CASH_PER_WAVE_CASTLEBREAKER 500
 
@@ -36,7 +38,7 @@ void AddCustomCashMadeThisWave(int client, int cash)
 	CashGainLimitWavePer_CastleBreaker[client] += cash;
 }
 
-void CastleBreaker_Map_Precache() //Anything that needs to be precaced like sounds or something.
+static void CastleBreaker_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	PrecacheSound("ambient/cp_harbor/furnace_1_shot_05.wav");
 	PrecacheSound("weapons/grenade_launcher_worldreload.wav");
@@ -92,13 +94,16 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Ammo", Ammo_Cost);
-			Ability_Apply_Cooldown(client, 3, 5.0);
-			Change[client]=false;
-			DataPack pack;
-			CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-			pack.WriteCell(GetClientUserId(client));
-			pack.WriteCell(weapon);
-			pack.WriteCell(Change[client]);
+			if(!CastleBreaker_ModeLock[client])
+			{
+				Ability_Apply_Cooldown(client, 3, 5.0);
+				Change[client]=false;
+				DataPack pack;
+				CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+				pack.WriteCell(GetClientUserId(client));
+				pack.WriteCell(weapon);
+				pack.WriteCell(Change[client]);
+			}
 			return;
 		}
 		new_ammo -= 12;
@@ -111,6 +116,39 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 {
 	if(IsValidEntity(client))
 	{
+		bool ignore=false;
+		static float angles[3];
+		GetClientEyeAngles(client, angles);
+		if(angles[0] > 85.0)
+		{
+			if(CastleBreaker_DoubleTapR[client] < GetGameTime())
+				CastleBreaker_DoubleTapR[client] = GetGameTime() + 0.2;
+			else
+				ignore=true;
+		}
+		
+		if(!ignore && GetEntityFlags(client) & FL_DUCKING)
+		{
+			CastleBreaker_ModeLock[client]=!CastleBreaker_ModeLock[client];
+			ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			if(CastleBreaker_ModeLock[client])
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Ability Lock");
+			else
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Ability Unlock");
+			return;
+		}
+		
+		if(!ignore && CastleBreaker_ModeLock[client])
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Ability has Lock!");
+			return;
+		}
+		
 		int Ammo_Cost = 12;
 		int new_ammo = GetAmmo(client, 8); //rocket ammo
 		if(new_ammo < 12)
@@ -227,14 +265,14 @@ public void Enable_CastleBreakerWeapon(int client, int weapon) // Enable managem
 		{
 			if(h_TimerCastleBreakerWeaponManagement[i])
 			{
-				b_WeaponSpecificClassBuff[weapon][3] = true;
-				Attributes_SetMulti(weapon, 621, 1.1);
+				ApplyStatusEffect(weapon, weapon, "Castle Breaking Power", 9999999.0);
+				Attributes_SetMulti(weapon, 2, 1.1);
 			}
 		}
 	}
 }
 
-public Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
+static Action Timer_Management_CastleBreaker(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
@@ -292,13 +330,10 @@ void WeaponCastleBreaker_OnTakeDamageNpc(int attacker, int victim, float &damage
 		float spawnLoc[3];
 		float BaseDMG = 200.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
-		BaseDMG *= Attributes_Get(weapon, 621, 1.0);
-		float Radius = EXPLOSION_RADIUS;
-		Radius *= Attributes_Get(weapon, 99, 1.0);
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 
-		Explode_Logic_Custom(BaseDMG, attacker, attacker, weapon, position, Radius, Falloff);
+		Explode_Logic_Custom(BaseDMG, attacker, attacker, weapon, position, _, Falloff);
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.2);
 		SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime(attacker)+1.2);
 		
@@ -314,14 +349,14 @@ void WeaponCastleBreaker_OnTakeDamage( int victim, float &damage)
 	}
 }
 
-public Action Timer_Bool_CastleBreaker(Handle timer, any userid)
+static Action Timer_Bool_CastleBreaker(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
 	b_AbilityActivated[client] = false;
 	return Plugin_Stop;
 }
 
-void CreateCastleBreakerEffect(int client)
+static void CreateCastleBreakerEffect(int client)
 {
 	int new_ammo = GetAmmo(client, 8);
 	if(CastleBreaker_HUDDelay[client] < GetGameTime())
@@ -355,7 +390,7 @@ void CreateCastleBreakerEffect(int client)
 	else
 		DestroyCastleBreakerEffect(client);
 }
-void DestroyCastleBreakerEffect(int client)
+static void DestroyCastleBreakerEffect(int client)
 {
 	int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
 	if(IsValidEntity(entity))
@@ -377,7 +412,7 @@ static Action Timer_ChangeSound(Handle timer, DataPack pack)
 		{
 			case 5:
 			{
-				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", client, SNDCHAN_AUTO, 65, _, 1.1, 115);
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", client, SNDCHAN_AUTO, 65, _, 1.0, 115);
 				CastleBreaker_Cylinder[client]=0;
 				return Plugin_Stop;
 			}
@@ -395,7 +430,7 @@ static Action Timer_ChangeSound(Handle timer, DataPack pack)
 		{
 			case 0:
 			{
-				EmitSoundToAll("weapons/sniper_railgun_bolt_back.wav", client, SNDCHAN_AUTO, 65, _, 1.1, 115);
+				EmitSoundToAll("weapons/sniper_railgun_bolt_back.wav", client, SNDCHAN_AUTO, 65, _, 1.0, 115);
 				
 				CastleBreaker_Cylinder[client]++;
 				CastleBreaker_SoundsDelay[client] = GetGameTime() + 0.01;

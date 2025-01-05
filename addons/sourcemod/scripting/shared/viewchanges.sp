@@ -298,6 +298,20 @@ public void AntiSameFrameUpdateRemove0(int client)
 	b_AntiSameFrameUpdate[client][0] = false;
 }
 
+
+void Viewchange_UpdateDelay(int client)
+{
+	RequestFrame(Viewchange_UpdateDelay_Internal, EntIndexToEntRef(client));
+}
+
+void Viewchange_UpdateDelay_Internal(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+		return;
+
+	ViewChange_Update(client);
+}
 void ViewChange_Update(int client, bool full = true)
 {
 	if(full)

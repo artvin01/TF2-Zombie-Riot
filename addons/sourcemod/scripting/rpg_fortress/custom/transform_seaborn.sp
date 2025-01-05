@@ -192,7 +192,7 @@ public void Seaborn_TakeDamage_form_3(int victim, int &attacker, int &inflictor,
 		
 		WeaponRes[victim] = ref;
 
-		if(damagetype & (DMG_SLASH|DMG_DROWN))
+		if(damagetype & (DMG_TRUEDAMAGE|DMG_OUTOFBOUNDS))
 		{
 		}
 		else if(damagetype & DMG_CLUB)

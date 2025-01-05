@@ -137,7 +137,7 @@ public void TownGuardPistol_ClotThink(int iNPC)
 							enemy.m_iDeathDamage += 19;
 							if(enemy.m_iDeathDamage > 99)
 							{
-								SDKHooks_TakeDamage(target, 0, 0, ReturnEntityMaxHealth(target) * 1.4, DMG_DROWN);
+								SDKHooks_TakeDamage(target, 0, 0, ReturnEntityMaxHealth(target) * 1.4, DMG_TRUEDAMAGE);
 							}
 						}
 						

@@ -18,6 +18,7 @@ void DuckFollower_Setup()
 {
 	PrecacheModel("models/workshop/player/items/pyro/eotl_ducky/eotl_bonus_duck.mdl");
 
+	for (int i = 0; i < (sizeof(g_IdleSounds)); i++) { PrecacheSound(g_IdleSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bob's Duck ''Dubby''");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_duck_follower");
@@ -110,7 +111,7 @@ static void ClotThink(int iNPC)
 		{
 			// Close enough
 			npc.StopPathing();
-			f_BobDuckBuff[ally] = GetGameTime() + 3.0;
+			ApplyStatusEffect(npc.index, ally, "Bobs Duck Dubby", 3.0);
 		}
 		else
 		{

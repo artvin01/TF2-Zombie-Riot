@@ -11,6 +11,8 @@ static float RWI_LockOnAngle[MAXENTITIES];
 static float RMR_RocketVelocity[MAXENTITIES];
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static int Ark_Hits[MAXPLAYERS+1]={0, ...};
+static int Ark_AlreadyParried[MAXPLAYERS+1]={0, ...};
+static float Ark_ParryTiming[MAXPLAYERS+1];
 
 static int Ark_Level[MAXPLAYERS+1]={0, ...};
 
@@ -53,6 +55,7 @@ void Ark_autoaim_Map_Precache()
 	PrecacheSound(SOUND_QUIBAI_SHOT);
 	PrecacheSound(SOUND_LAPPLAND_ABILITY);
 	PrecacheSound("weapons/bombinomicon_explode1.wav");
+	PrecacheSound("weapons/tf2_back_scatter.wav");
 	Zero(f_AniSoundSpam);
 	Zero(h_TimerLappLandManagement);
 	Zero(i_LappLandHitsDone);
@@ -60,6 +63,7 @@ void Ark_autoaim_Map_Precache()
 	Zero(f_LappLandhuddelay);
 	Zero(h_TimerWeaponArkManagement);
 	Zero(f_WeaponArkhuddelay);
+	Zero(Ark_ParryTiming);
 }
 
 void Reset_stats_LappLand_Singular(int client) //This is on disconnect/connect
@@ -79,6 +83,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
 		Ark_Level[client] = 0;
 		
@@ -120,6 +125,7 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
 		Ark_Level[client] = 1;
 		
@@ -163,6 +169,7 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
 		Ark_Level[client] = 2;
 		
@@ -205,15 +212,17 @@ public void Ark_empower_ability_4(int client, int weapon, bool crit, int slot) /
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
+		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
 		Ark_Level[client] = 3;
 		
 		weapon_id[client] = weapon;
 
 		Ark_Hits[client] = 15;
+		Ark_AlreadyParried[client] = 0;
 				
 				
-		ApplyTempAttrib(weapon, 6, 0.75, 3.0);
+		ApplyTempAttrib(weapon, 6, 0.75, 5.0);
 
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -483,107 +492,129 @@ public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for
 
 
 //stuff that gets activated upon taking damage
-public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
-	if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
+	//if (Ability_Check_Cooldown(victim, 2) >= 14.0 && Ability_Check_Cooldown(victim, 2) < 16.0)
+	if (Ark_ParryTiming[victim] > GetGameTime())
 	{
-		float damage_reflected = damage;
-		if(damage_reflected >= 300.0)
-			damage_reflected = 300.0;
-
-		//PrintToChatAll("parry worked");
-		if(Ark_Level[victim] == 3)
+		if(!CheckInHud())
 		{
-			damage_reflected *= 40.0;
-			
-			if(Ark_Hits[victim] < 25)
+			float damage_reflected = damage;
+			if(Ark_AlreadyParried[victim] == 0 && Ark_Level[victim] == 3)
 			{
-				Ark_Hits[victim] = 25;
+				if(damage_reflected >= 500.0)
+				{
+					damage_reflected = 500.0;
+					//ClientCommand(victim, "playgamesound weapons/tf2_back_scatter.wav");
+					EmitSoundToClient(victim, "weapons/tf2_back_scatter.wav", victim, SNDCHAN_AUTO, 80, _, 1.0, 110);
+				}
+				damage_reflected = damage_reflected * 5;
+				Ark_AlreadyParried[victim] = 1;
 			}
-			Ark_Hits[victim] += 1;
-		}
-		else if(Ark_Level[victim] == 2)
-		{
-			damage_reflected *= 30.0;
-			
-			if(Ark_Hits[victim] < 20)
+			else
 			{
-				Ark_Hits[victim] = 20;
+				if(damage_reflected >= 300.0)
+				{
+					damage_reflected = 300.0;
+				}
 			}
-			Ark_Hits[victim] += 1;		
-		}
-		else if(Ark_Level[victim] == 1)
-		{
-			damage_reflected *= 15.0;
-			
-			if(Ark_Hits[victim] < 12)
+			//PrintToChatAll("parry worked");
+			if(Ark_Level[victim] == 3)
 			{
-				Ark_Hits[victim] = 12;
+				damage_reflected *= 40.0;
+				
+				if(Ark_Hits[victim] < 25)
+				{
+					Ark_Hits[victim] = 25;
+				}
+				Ark_Hits[victim] += 1;
 			}
-			Ark_Hits[victim] += 1;		
-		}
-		else
-		{
-			damage_reflected *= 6.0;
-			
-			if(Ark_Hits[victim] < 3)
+			else if(Ark_Level[victim] == 2)
 			{
-				Ark_Hits[victim] = 3;
+				damage_reflected *= 30.0;
+				
+				if(Ark_Hits[victim] < 20)
+				{
+					Ark_Hits[victim] = 20;
+				}
+				Ark_Hits[victim] += 1;		
 			}
-			Ark_Hits[victim] += 1;	
+			else if(Ark_Level[victim] == 1)
+			{
+				damage_reflected *= 15.0;
+				
+				if(Ark_Hits[victim] < 12)
+				{
+					Ark_Hits[victim] = 12;
+				}
+				Ark_Hits[victim] += 1;		
+			}
+			else
+			{
+				damage_reflected *= 6.0;
+				
+				if(Ark_Hits[victim] < 6)
+				{
+					Ark_Hits[victim] = 6;
+				}
+				Ark_Hits[victim] += 1;	
+			}
+			
+			if(f_AniSoundSpam[victim] < GetGameTime())
+			{
+				f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+				ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+			}
+			
+			static float angles[3];
+			GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+			float vecForward[3];
+			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+			static float Entity_Position[3];
+			WorldSpaceCenter(attacker, Entity_Position );
+			
+			float flPos[3]; // original
+			float flAng[3]; // original
+			
+			GetAttachment(victim, "effect_hand_r", flPos, flAng);
+			
+			int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
+
+
+		//	TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, flAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
+			
+			DataPack pack = new DataPack();
+			pack.WriteCell(EntIndexToEntRef(particler));
+			pack.WriteFloat(Entity_Position[0]);
+			pack.WriteFloat(Entity_Position[1]);
+			pack.WriteFloat(Entity_Position[2]);
+			
+			RequestFrame(TeleportParticleArk, pack);
+
+			float ReflectPosVec[3];
+			CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
+
+			DataPack packdmg = new DataPack();
+			packdmg.WriteCell(EntIndexToEntRef(attacker));
+			packdmg.WriteCell(EntIndexToEntRef(victim));
+			packdmg.WriteCell(EntIndexToEntRef(victim));
+			packdmg.WriteFloat(damage_reflected);
+			packdmg.WriteCell(DMG_CLUB);
+			packdmg.WriteCell(EntIndexToEntRef(weapon));
+			packdmg.WriteFloat(ReflectPosVec[0]);
+			packdmg.WriteFloat(ReflectPosVec[1]);
+			packdmg.WriteFloat(ReflectPosVec[2]);
+			packdmg.WriteFloat(Entity_Position[0]);
+			packdmg.WriteFloat(Entity_Position[1]);
+			packdmg.WriteFloat(Entity_Position[2]);
+			packdmg.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+			RequestFrame(CauseDamageLaterSDKHooks_Takedamage, packdmg);
+				
 		}
-		
-		if(f_AniSoundSpam[victim] < GetGameTime())
-		{
-			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
-			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
-		}
-		
-		static float angles[3];
-		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		WorldSpaceCenter(attacker, Entity_Position );
-		
-		float flPos[3]; // original
-		float flAng[3]; // original
-		
-		GetAttachment(victim, "effect_hand_r", flPos, flAng);
-		
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage * 0.1;
 
-
-	//	TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, flAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
-		
-		DataPack pack = new DataPack();
-		pack.WriteCell(EntIndexToEntRef(particler));
-		pack.WriteFloat(Entity_Position[0]);
-		pack.WriteFloat(Entity_Position[1]);
-		pack.WriteFloat(Entity_Position[2]);
-		
-		RequestFrame(TeleportParticleArk, pack);
-
-		float ReflectPosVec[3];
-		CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
-
-		DataPack packdmg = new DataPack();
-		packdmg.WriteCell(EntIndexToEntRef(attacker));
-		packdmg.WriteCell(EntIndexToEntRef(victim));
-		packdmg.WriteCell(EntIndexToEntRef(victim));
-		packdmg.WriteFloat(damage_reflected);
-		packdmg.WriteCell(DMG_CLUB);
-		packdmg.WriteCell(EntIndexToEntRef(weapon));
-		packdmg.WriteFloat(ReflectPosVec[0]);
-		packdmg.WriteFloat(ReflectPosVec[1]);
-		packdmg.WriteFloat(ReflectPosVec[2]);
-		packdmg.WriteFloat(Entity_Position[0]);
-		packdmg.WriteFloat(Entity_Position[1]);
-		packdmg.WriteFloat(Entity_Position[2]);
-		packdmg.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
-		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, packdmg);
-
-		return damage * 0.1;
+		return damage;
 	}
 	else 
 	{
@@ -842,7 +873,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 
 		if(f_LappLandAbilityActive[owner] < GetGameTime())
 		{
-			NpcStats_SilenceEnemy(target, LAPPLAND_SILENCE_DUR_NORMAL);
+			ApplyStatusEffect(owner, target, "Silenced", LAPPLAND_SILENCE_DUR_NORMAL);
 			i_LappLandHitsDone[owner] += 1;
 			if(i_LappLandHitsDone[owner] >= LAPPLAND_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 			{
@@ -1034,7 +1065,7 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 		{
 			if(f_LappLandAbilityActive[attacker] < GetGameTime())
 			{
-				NpcStats_SilenceEnemy(victim, LAPPLAND_SILENCE_DUR_NORMAL);
+				ApplyStatusEffect(attacker, victim, "Silenced", LAPPLAND_SILENCE_DUR_NORMAL);
 				i_LappLandHitsDone[attacker] += 2;
 				if(i_LappLandHitsDone[attacker] >= LAPPLAND_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 				{
@@ -1076,7 +1107,7 @@ void Weapon_Ark_SilenceAOE(int enemyStruck, float duration)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EnemyPos);
 			if (GetVectorDistance(EnemyPos, VictimPos, true) <= (LAPPLAND_AOE_SILENCE_RANGE_SQUARED))
 			{
-				NpcStats_SilenceEnemy(entity, duration);
+				ApplyStatusEffect(entity, entity, "Silenced", duration);
 			}
 		}
 	}
@@ -1167,7 +1198,7 @@ float Npc_OnTakeDamage_Quibai(float damage ,int attacker, int damagetype, int in
 			ChangeAttackspeedQuibai(attacker,weapon);
 			if(f_LappLandAbilityActive[attacker] < GetGameTime())
 			{
-				NpcStats_SilenceEnemy(victim, QUIBAI_SILENCE_DUR_NORMAL);
+				ApplyStatusEffect(attacker, victim, "Silenced", QUIBAI_SILENCE_DUR_NORMAL);
 				i_LappLandHitsDone[attacker] += 2;
 				if(i_LappLandHitsDone[attacker] >= QUIBAI_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 				{
@@ -1203,7 +1234,7 @@ public void Melee_QuibaiArkTouch(int entity, int target)
 
 		if(f_LappLandAbilityActive[owner] < GetGameTime())
 		{
-			NpcStats_SilenceEnemy(target, QUIBAI_SILENCE_DUR_NORMAL);
+			ApplyStatusEffect(owner, target, "Silenced", QUIBAI_SILENCE_DUR_NORMAL);
 			i_LappLandHitsDone[owner] += 1;
 			if(i_LappLandHitsDone[owner] >= QUIBAI_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 			{

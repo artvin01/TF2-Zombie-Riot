@@ -638,12 +638,13 @@ methodmap GogglesFollower < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
+		WaldchEarsApply(npc.index,_, 0.75);
 
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
-		npc.Speech("What? Where am I?");
+		npc.Speech("Thanks for helping me.");
 
 		return npc;
 	}

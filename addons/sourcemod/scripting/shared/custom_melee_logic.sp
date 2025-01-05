@@ -293,7 +293,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	//this is a problem.
 	//we will modify the ranges for specically these traces in melee to compensate for this lack of sight.
 	float vecSwingEndHull[3];
-	float vecSwingEndHullHeadshot[3];
 	
 	float ExtraMeleeRange = 1.0;
 	if(weapon > 0)
@@ -305,10 +304,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * ExtraMeleeRange);
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * ExtraMeleeRange);
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * ExtraMeleeRange);
-
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
 	
 		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
 		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
@@ -320,10 +315,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * ExtraMeleeRange);
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * ExtraMeleeRange);
 
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
-
 		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
 		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
 		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
@@ -331,55 +322,57 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
 	
+	i_MeleeHitboxHit[client] = -1;
+	int HitTargetFilter = 0;
+	if(weapon > 0 && b_MeleeCanHeadshot[weapon])
+	{
+		Handle TempTrace;
+		TempTrace = TR_TraceRayFilterEx(vecSwingStart, ang, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+		if (TR_DidHit(TempTrace))
+		{
+			int target_temp = TR_GetEntityIndex(TempTrace);
+			//its confirmed to be a headshot.
+			if(target_temp > 0 && !b_CannotBeHeadshot[target_temp])
+			{
+				i_MeleeHitboxHit[client] = TR_GetHitGroup(TempTrace);
+				HitTargetFilter = target_temp;
+			}
+		} 	
+		delete TempTrace;
+	}
 	if(enemies_hit_aoe <= 1)
 	{
 		//not a cleave.
 		if(!Hit_ally)
 		{
-			// See if we hit anything.
-			/*
-				Inacse we want to hit, hitboxes.
-			*/
-			i_MeleeHitboxHit[client] = -1;
-
-			if(weapon > 0 && b_MeleeCanHeadshot[weapon])
+			bool FireNormalTrace = true;
+			if(HitTargetFilter)
 			{
-				//can we headshot?
-				//if yes, did we hit an enemy?
-				//if no, resort to normal hit detection.
-				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEndHullHeadshot, MASK_SHOT, RayType_EndPoint, BulletAndMeleeTrace, client );
-				if ( TR_GetFraction(trace) < 1.0)
+				BulletTraceFilterEntity(HitTargetFilter);
+				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
+				if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
 				{
-					int target = TR_GetEntityIndex(trace);	
-					if(target > 0)
-					{
-						i_MeleeHitboxHit[client] = TR_GetHitGroup(trace);
-						return;
-					}
-					else
-					{
-						FinishLagCompensation_Base_boss();
-						b_LagCompNPC_No_Layers = true;
-						StartLagCompensation_Base_Boss(client);
-						delete trace;
-					}
-				}
-				else
-				{
-					FinishLagCompensation_Base_boss();
-					b_LagCompNPC_No_Layers = true;
-					StartLagCompensation_Base_Boss(client);
 					delete trace;
+					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+					FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
+				}
+				if(HitTargetFilter == TR_GetEntityIndex(trace))
+				{
+					FireNormalTrace = false;
+				}
+				BulletTraceFilterEntity(0);
+			}
+			if(FireNormalTrace)
+			{
+				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
+				if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
+				{
+					delete trace;
+					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+					FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
 				}
 			}
-			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
-			if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
-			{
-				delete trace;
-				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
-				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
-			}
+
 		}
 		else
 		{
@@ -390,7 +383,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceAlly, client );
 				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}			
 		}		
 	}
@@ -409,11 +401,9 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
 				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client);
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}
 		}
 	}
-
 }
 
 stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon, bool &PlayOnceOnly = false)
@@ -572,9 +562,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		Handle swingTrace;
 		if(!b_MeleeCanHeadshot[weapon])
 			b_LagCompNPC_No_Layers = true;
+		/*
 		else
 			b_LagCompNPC_ExtendBoundingBox = true;
-
+		*/
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward,_,_,_,_,aoeSwing, weapon);

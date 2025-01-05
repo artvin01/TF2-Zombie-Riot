@@ -2648,6 +2648,10 @@
 		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
 		"ru" 	"Лидер Руины\nОна не сражается с вами с полную силу...\nОна только использует силу магического гребеня\nЕсли вы увидете эффекты на её руках,Это озночает что одно из её Комбо готово"
 	}
+	"Fractal Cannon"
+	{
+		"en"	"Fractal Cannon"
+	}
 	"Ealing"
 	{
 		"en"	"Ealing"
@@ -3173,10 +3177,10 @@
 		"en" 		"Zombine"
 		"ru" 		"Зомбайн"
 	}
-	"Omega"
+	"3650"
 	{
-		"en"		"Omega"
-		"ru" 		"Омега"
+		"en"		"3650"
+		"ru" 		"3650"
 	}
 	"Nemal"
 	{
@@ -3938,6 +3942,63 @@
 	{
 		"en"		"Smith"
 	}
+	"Seaborn Metro Cop"
+	{
+		"en"		"Seaborn Metro Cop"
+	}
+	"Seaborn Metro Raider"
+	{
+		"en"		"Seaborn Metro Raider"
+	}
+	"Seaborn W.F. Rifler"
+	{
+		"en"		"Seaborn W.F. Rifler"
+	}
+	"Seaborn W.F. Elite"
+	{
+		"en"		"Seaborn W.F. Elite"
+	}
+	"Seaborn W.F. Shotgunner"
+	{
+		"en"		"Seaborn W.F. Shotgunner"
+	}
+	"Voided Metro Cop"
+	{
+		"en"		"Voided Metro Cop"
+	}
+	"Voided Metro Raider"
+	{
+		"en"		"Voided Metro Raider"
+	}
+	"Voided W.F. Rifler"
+	{
+		"en"		"Voided W.F. Rifler"
+	}
+	"Voided W.F. Elite"
+	{
+		"en"		"Voided W.F. Elite"
+	}
+	"Voided W.F. Shotgunner"
+	{
+		"en"		"Voided W.F. Shotgunner"
+	}
+	"Hunter"
+	{
+		"en"		"Hunter"
+	}
+	"Merlton"
+	{
+		"en"		"Merlton"
+	}
+	"Lost Knight"
+	{
+		"en"		"Lost Knight"
+	}
+	"Omega"
+	{
+		"en"		"Omega"
+		"ru"		"Омега"
+	}
 	"Victoria"
 	{
 		"en"		"Victoria"
@@ -3945,5 +4006,13 @@
 	"Matrix"
 	{
 		"en"		"Matrix"
+	}
+	"Positive"
+	{
+		"en"		"Positive"
+	}
+	"Negative"
+	{
+		"en"		"Negative"
 	}
 }

@@ -466,7 +466,8 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 				
 					npc.PlayMeleeHitSound();
 					if(target_hit <= MaxClients)
-						TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
+						if(!HasSpecificBuff(target, "Fluid Movement"))
+							TF2_StunPlayer(target, 1.5, 0.5, TF_STUNFLAG_SLOWDOWN);
 				} 
 			}
 			delete swingTrace;

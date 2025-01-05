@@ -348,7 +348,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				float damage = 45.0;
+				float damage = 20.0;
 				damage *= RaidModeScaling;
 				bool silenced = NpcStats_IsEnemySilenced(npc.index);
 				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -460,7 +460,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "pistol");
 
-				float damage = 15.0;
+				float damage = 10.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");
@@ -564,7 +564,7 @@ static Action AgentJohnson_OnTakeDamage(int victim, int &attacker, int &inflicto
 			if(npc.m_flRangedArmor > 2.0)
 			npc.m_flRangedArmor = 2.0;
 		}
-		else if(!(damagetype & DMG_SLASH))
+		else if(!(damagetype & DMG_TRUEDAMAGE))
 		{
 			npc.m_flRangedArmor -= 0.05;
 			if(npc.m_flRangedArmor < 0.05)

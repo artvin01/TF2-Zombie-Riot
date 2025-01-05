@@ -332,11 +332,14 @@ public Action HealPurgatory(Handle cut_timer, int client)
 }
 
 //stuff that gets activated upon taking any damage
-public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
-	BlockHealEasy[victim] = true;
-	delete HealPurgatory_timer[victim];
-	if (f_ParryDuration[victim] > GetGameTime())
+	if(!CheckInHud())
+	{
+		BlockHealEasy[victim] = true;
+		delete HealPurgatory_timer[victim];	
+	}
+	if (!CheckInHud() && f_ParryDuration[victim] > GetGameTime())
 	{
 		if(Board_Level[victim] == 1)
 		{
@@ -370,9 +373,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		{
 			Board_Hits[victim] += 1;
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-			float time = GetGameTime() + 3.95;
-			if(f_CudgelDebuff[attacker] <= time)
-				f_CudgelDebuff[attacker] = time;
+			ApplyStatusEffect(victim, attacker, "Cudgelled", 4.0);
 		}
 		else if(Board_Level[victim] == 0)
 		{
@@ -453,63 +454,90 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 		}
 
-		switch (ParryCounter)
+		if(!(damagetype & DMG_TRUEDAMAGE))
 		{
-			case 1:
+			switch (ParryCounter)
 			{
-				return damage * 0.3;
-			}
-			case 2:
-			{
-				return damage * 0.4;
-			}
-			default:
-			{
-				return damage * 0.5;
+				case 1:
+				{
+					return damage * 0.3;
+				}
+				case 2:
+				{
+					return damage * 0.4;
+				}
+				default:
+				{
+					return damage * 0.5;
+				}
 			}
 		}
+		return damage;
 
 	}
 	else if(Board_Level[victim] == 0) //board
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
+
 		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 1) //spike
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
 		return damage * 0.95;
 	}
 	else if(Board_Level[victim] == 2) //leaf
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
 		return damage * 0.85;
 	}
 	else if(Board_Level[victim] == 3) //rookie
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
 		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 4) //punish
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
 		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 5) //ramp
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
 		return damage * 0.75;
 	}
 	else if(Board_Level[victim] == 6) //the last one cudgel
 	{
 		//PrintToChatAll("damage resist");
-		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
 		return damage * 0.85;
 	}
 	else

@@ -259,6 +259,7 @@ methodmap RaidbossNemesis < CClotBody
 			}
 		}
 		b_thisNpcIsARaid[npc.index] = true;
+		RemoveAllDamageAddition();
 
 		Music_SetRaidMusicSimple("#zombie_riot/320_now_1.mp3", 200, true, 1.3);
 		RaidModeScaling = 9999999.99;
@@ -1135,7 +1136,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	if(IsValidEntity(client))
 	{
 		AcceptEntityInput(client, "ClearParent");
-		b_NoGravity[client] = true;
+		b_NoGravity[client] = false;
 		npc.SetVelocity({0.0,0.0,0.0});
 		if(IsValidClient(client))
 		{
@@ -1209,7 +1210,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 			{
 				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 				{
-					f_HussarBuff[other] = FAR_FUTURE;
+					ApplyStatusEffect(npc.index, other, "Hussar's Warscream", 999999.0);	
 				}
 			}
 		}

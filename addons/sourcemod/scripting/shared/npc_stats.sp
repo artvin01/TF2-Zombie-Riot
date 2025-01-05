@@ -29,7 +29,6 @@ bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;
-bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
@@ -657,7 +656,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 		if(IsRaidBoss)
 		{
-			RemoveAllDamageAddition();
+		//	RemoveAllDamageAddition();
 		}
 #endif
 	
@@ -1459,28 +1458,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()							{ return view_as<bool>(i_InSafeZone[this.index]); }
 	}
-	property float m_fHighTeslarDebuff 
-	{
-		public get()							{ return f_HighTeslarDebuff[this.index]; }
-		public set(float TempValueForProperty) 	{ f_HighTeslarDebuff[this.index] = TempValueForProperty; }
-	}
-	property float m_fLowTeslarDebuff 
-	{
-		public get()							{ return f_LowTeslarDebuff[this.index]; }
-		public set(float TempValueForProperty) 	{ f_LowTeslarDebuff[this.index] = TempValueForProperty; }
-	}
-	
-	property float mf_WidowsWineDebuff 
-	{
-		public get()							{ return f_WidowsWineDebuff[this.index]; }
-		public set(float TempValueForProperty) 	{ f_WidowsWineDebuff[this.index] = TempValueForProperty; }
-	}
-	
-	property bool m_bFrozen
-	{
-		public get()				{ return b_Frozen[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Frozen[this.index] = TempValueForProperty; }
-	}
 	
 	property bool m_bAllowBackWalking
 	{
@@ -1593,7 +1570,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		speed_for_return *= RTS_GameSpeed();
 #endif
 
-		bool Is_Boss = true;
 #if defined ZR
 		if(IS_MusicReleasingRadio() && GetTeam(this.index) != TFTeam_Red)
 			speed_for_return *= 0.9;
@@ -1603,14 +1579,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return *= 1.25;
 		}
 #endif
-		if(!this.m_bThisNpcIsABoss)
-		{
-			if(!b_thisNpcIsARaid[this.index])
-			{
-				Is_Boss = false;
-			}
-		}
-		
 		if(f_TankGrabbedStandStill[this.index] > Gametime)
 		{
 			speed_for_return = 0.0;
@@ -1621,53 +1589,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return = 0.0;
 			return speed_for_return;
 		}
-		if (this.m_bFrozen && !b_CannotBeSlowed[this.index])
-		{
-			speed_for_return = 0.0;
-			return speed_for_return;
-		}	
-		if(f_PernellBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.25;
-		}
-		if(f_HussarBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.20;
-		}
-		if(f_SquadLeaderBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.33;
-		}
-		if(f_VictorianCallToArms[this.index] > Gametime)
-		{
-			speed_for_return *= 1.15;
-		}
-		if(f_CaffeinatorBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.5;
-		}
-		if(f_VoidAfflictionStrength2[this.index] > Gametime)
-		{
-			speed_for_return *= 1.15;
-		}
-		else if(f_VoidAfflictionStrength[this.index] > Gametime)
-		{
-			speed_for_return *= 1.05;
-		}
-		if(f_GodAlaxiosBuff[this.index] > Gametime)
-		{
-			speed_for_return *= 1.50;
-		}
+		
 #if defined ZR
 		if(MoraleBoostLevelAt(this.index) > 0)
 		{
 			speed_for_return *= EntityMoraleBoostReturn(this.index, 1);
-		}
-#endif
-#if defined RUINA_BASE	
-		if(f_Ruina_Speed_Buff[this.index] > Gametime)
-		{
-			speed_for_return *= f_Ruina_Speed_Buff_Amt[this.index];
 		}
 #endif
 
@@ -1675,25 +1601,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		SeabornVanguard_SpeedBuff(this, speed_for_return);	
 #endif
 
-		if(!Is_Boss && !b_CannotBeSlowed[this.index]) //Make sure that any slow debuffs dont affect these.
-		{
-			if(f_MaimDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.35;
-			}
-			if(f_PotionShrinkEffect[this.index] > Gametime)
-			{
-				speed_for_return *= 0.35;
-			}
-			if(f_PassangerDebuff[this.index] > Gametime)
-			{
-#if defined ZR
-				speed_for_return *= 0.20;
-#else
-				speed_for_return *= 0.75;
-#endif
-			}
 #if defined RPG
+		if(!Is_Boss && !HasSpecificBuff(this.index, "Fluid Movement")) //Make sure that any slow debuffs dont affect these.
+		{
 			switch(BubbleProcStatusLogicCheck(this.index))
 			{
 				case -1:
@@ -1705,126 +1615,8 @@ methodmap CClotBody < CBaseCombatCharacter
 					speed_for_return *= 0.85; 
 				}
 			}
+		}
 #endif
-			if(this.m_fHighTeslarDebuff > Gametime)
-			{
-				speed_for_return *= 0.65;
-			}
-			else if(this.m_fLowTeslarDebuff > Gametime)
-			{
-				speed_for_return *= 0.75;
-			}
-
-			if(f_SpecterDyingDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.4;
-			}
-			
-			if(f_HighIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.85;
-			}
-			else if(f_LowIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.90;
-			}
-			else if (f_VeryLowIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.95;
-			}
-			else if (f_LudoDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= GetRandomFloat(0.7, 0.9);
-			}
-			else if (f_SpadeLudoDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= GetRandomFloat(0.7, 0.85);
-			}
-		}
-		else if (!b_CannotBeSlowed[this.index])
-		{
-			if(this.m_fHighTeslarDebuff > Gametime)
-			{
-				speed_for_return *= 0.9;
-			}
-			else if(this.m_fLowTeslarDebuff > Gametime)
-			{
-				speed_for_return *= 0.95;
-			}
-			if(f_PassangerDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.9;
-			}
-			if(f_MaimDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.9;
-			}
-			if(f_PotionShrinkEffect[this.index] > Gametime)
-			{
-				speed_for_return *= 0.5;
-			}
-			
-			if(f_HighIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.95;
-			}
-			else if(f_LowIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.96;
-			}
-			else if (f_VeryLowIceDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.97;
-			}
-			else if (f_LudoDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.96;
-			}
-			else if (f_SpadeLudoDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.94;
-			}
-			if(f_SpecterDyingDebuff[this.index] > Gametime)
-			{
-				speed_for_return *= 0.75;
-			}
-		}
-		if(this.mf_WidowsWineDebuff > Gametime && !b_CannotBeSlowed[this.index])
-		{
-			float slowdown_amount = this.mf_WidowsWineDebuff - Gametime;
-			
-			float max_amount = FL_WIDOWS_WINE_DURATION;
-			
-			slowdown_amount = slowdown_amount / max_amount;
-			
-			slowdown_amount -= 1.0;
-			
-			slowdown_amount *= -1.0;
-			
-			if(!Is_Boss)
-			{
-				if(slowdown_amount < 0.1)
-				{
-					slowdown_amount = 0.1;
-				}
-				else if(slowdown_amount > 1.0)
-				{
-					slowdown_amount = 1.0;
-				}	
-			}
-			else
-			{
-				if(slowdown_amount < 0.8)
-				{
-					slowdown_amount = 0.8;
-				}
-				else if(slowdown_amount > 1.0)
-				{
-					slowdown_amount = 1.0;
-				}	
-			}
-			speed_for_return *= slowdown_amount;
-		}		
 
 		return speed_for_return;
 	}
@@ -1842,6 +1634,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		float GetPercentageAdjust = 1.0;
 		GetPercentageAdjust = this.GetDebuffPercentage();	
+		StatusEffect_SpeedModifier(this.index, GetPercentageAdjust);
 		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
 
 #if defined ZR
@@ -1849,7 +1642,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			GetPercentageAdjust *= 1.1;
 		}
-
 		if(GetTeam(this.index) != TFTeam_Red && Zombie_DelayExtraSpeed() != 1.0)
 		{
 			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
@@ -1873,7 +1665,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
 		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 #endif
+		//in freeplay there should be a speed limit, otherwise they will just have infinite speed and youre screwed.
+		
 
+		if(Waves_InFreeplay())
+		{
+			if((this.m_flSpeed * GetPercentageAdjust) > 500.0)
+				return (500.0 * Zombie_DelayExtraSpeed());
+		}
+		
 		return (this.m_flSpeed * GetPercentageAdjust);
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -6405,7 +6205,7 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if((i_CurrentEquippedPerk[iNPC] == 1 || f_VoidAfflictionStrength[iNPC] > GetGameTime() || f_VoidAfflictionStrength2[iNPC] > GetGameTime()) && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if(i_CurrentEquippedPerk[iNPC] == 1 || NpcStats_WeakVoidBuff(iNPC) || NpcStats_StrongVoidBuff(iNPC) && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
@@ -6426,7 +6226,7 @@ public void NpcBaseThink(int iNPC)
 		{
 			HealingAmount *= 0.125;
 		}
-		if(f_VoidAfflictionStrength2[iNPC] > GetGameTime())
+		if(NpcStats_StrongVoidBuff(iNPC))
 			HealingAmount *= 1.25;
 
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
@@ -6854,6 +6654,12 @@ stock void Custom_Knockback(int attacker,
 	 float OverrideLookAng[3] ={0.0,0.0,0.0},
 	  bool area_push = false)
 {
+	if(HasSpecificBuff(enemy, "Solid Stance"))
+	{
+		//dont be immune to self displacements
+		if(attacker != enemy)
+			return;
+	}
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
 		float vAngles[3], vDirection[3];
@@ -8821,6 +8627,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {
+	StatusEffectReset(entity);
 #if defined ZR
 	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
 	i_SpawnProtectionEntity[entity] = -1; 
@@ -8828,7 +8635,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
-	b_ThisNpcIsSawrunner[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
 	b_NameNoTranslation[entity] = false;
 #endif
@@ -8951,9 +8757,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_NextRangedBarrage_Singular[entity] = 0.0;
 	b_CannotBeHeadshot[entity] = false;
 	b_CannotBeBackstabbed[entity] = false;
-	b_CannotBeStunned[entity] = false;
-	b_CannotBeKnockedUp[entity] = false;
-	b_CannotBeSlowed[entity] = false;
 	b_AvoidObstacleType_Time[entity] = 0.0;
 
 	b_NextRangedBarrage_OnGoing[entity] = false;
@@ -9006,7 +8809,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	IgniteFor[entity] = 0;
 	BurnDamage[entity] = 0.0;
 	IgniteRef[entity] = -1;
-	f_NpcImmuneToBleed[entity] = 0.0;
 	f_CreditsOnKill[entity] = 0.0;
 	i_PluginBot_ApproachDelay[entity] = 0;
 	i_npcspawnprotection[entity] = 0;
@@ -9020,40 +8822,12 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_WasPathingToHere[entity][0] = 0.0;
 	f3_WasPathingToHere[entity][1] = 0.0;
 	f3_WasPathingToHere[entity][2] = 0.0;
-	f_LowTeslarDebuff[entity] = 0.0;
-	f_ElementalAmplification[entity] = 0.0;
 	
-	f_LudoDebuff[entity] = 0.0;
-	f_SpadeLudoDebuff[entity] = 0.0;
-	f_Silenced[entity] = 0.0;
-	f_IberiaMarked[entity] = 0.0;
-	f_HighTeslarDebuff[entity] = 0.0;
-	f_VoidAfflictionStrength[entity] = 0.0;
-	f_VoidAfflictionStrength2[entity] = 0.0;
-	f_VoidAfflictionStandOn[entity] = 0.0;
-	f_WidowsWineDebuff[entity] = 0.0;
-	f_SpecterDyingDebuff[entity] = 0.0;
-	f_VeryLowIceDebuff[entity] = 0.0;
-	f_LowIceDebuff[entity] = 0.0;
-	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;
 	b_NoGravity[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
 	f_TimeFrozenStill[entity] = 0.0;
-	f_BuildingAntiRaid[entity] = 0.0;
-	f_MaimDebuff[entity] = 0.0;
-	f_PassangerDebuff[entity] = 0.0;
-	f_CrippleDebuff[entity] = 0.0;
-	f_GoldTouchDebuff[entity] = 0.0;
-	f_StrangleDebuff[entity] = 0.0;
-	f_CudgelDebuff[entity] = 0.0;
 	f_DuelStatus[entity] = 0.0;
-	f_PotionShrinkEffect[entity] = 0.0;
-	f_EnfeebleEffect[entity] = 0.0;
-	f_LeeMinorEffect[entity] = 0.0;
-	f_LeeMajorEffect[entity] = 0.0;
-	f_LeeSuperEffect[entity] = 0.0;
-	f_LogosDebuff[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_TotalArmor[entity] = 1.0;
@@ -9065,12 +8839,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Extra_Damage[entity] = 1.0;
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
-	f_PernellBuff[entity] = 0.0;
-	f_HussarBuff[entity] = 0.0;
-	f_SquadLeaderBuff[entity] = 0.0;
-	f_VictorianCallToArms[entity] = 0.0;
-	f_CaffeinatorBuff[entity] = 0.0;
-	f_GodAlaxiosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
 	f_RaidStunResistance[entity] = 0.0;
@@ -9628,10 +9396,13 @@ public void KillNpc(int ref)
 
 stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = false)
 {
-	if(!IgnoreAllLogic && b_CannotBeStunned[npc])
-	{
+	if(HasSpecificBuff(npc, "Clear Head") && !IgnoreAllLogic)
 		return;
-	}
+
+	//Emergency incase it wasnt an npc.
+	if(!b_ThisWasAnNpc[npc])
+		return;
+
 	float GameTime = GetGameTime();
 	float TimeSinceLastStunSubtract;
 	TimeSinceLastStunSubtract = f_TimeSinceLastStunHit[npc] - GameTime;
@@ -9651,18 +9422,21 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	}
 
 	float Duration_Stun_Post = Duration_Stun;
-	if(!IgnoreAllLogic && b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
+	if(!IgnoreAllLogic)
 	{
 		if(f_RaidStunResistance[npc] > GameTime)
 		{
-			Duration_Stun_Post *= 0.5;
+			if(HasSpecificBuff(npc, "Shook Head"))
+				Duration_Stun_Post *= 0.5;
 		}
 	}
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun_Post;
-	f_RaidStunResistance[npc] = GameTime + Duration_Stun;
+	if(b_thisNpcIsARaid[npc])
+		ApplyStatusEffect(npc, npc, "Shook Head", Duration_Stun * 3.0);	
+
 	npcclot.Update();
 
 	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
@@ -9676,85 +9450,19 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	}
 }
 
-stock void NpcStats_SilenceEnemy(int enemy, float duration)
-{
-	float GameTime = GetGameTime();
-	if(f_Silenced[enemy] < (GameTime + duration))
-	{
-		f_Silenced[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
-	}
-}
-
-stock void NpcStats_IberiaMarkEnemy(int enemy, float duration)
-{
-	float GameTime = GetGameTime();
-	if(f_IberiaMarked[enemy] < (GameTime + duration))
-	{
-		f_IberiaMarked[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
-	}
-}
-stock bool NpcStats_IberiaIsEnemyMarked(int enemy)
-{
-	if(!IsValidEntity(enemy))
-		return true; //they dont exist, pretend as if they are silenced.
-
-	if(f_IberiaMarked[enemy] < GetGameTime())
-	{
-		return false;
-	}
-	return true;
-}
-
-stock bool NpcStats_IsEnemySilenced(int enemy)
-{
-	if(!IsValidEntity(enemy))
-		return true; //they dont exist, pretend as if they are silenced.
-
-	if(f_Silenced[enemy] < GetGameTime())
-	{
-		return false;
-	}
-	return true;
-}
-
-stock bool NpcStats_VictorianCallToArms(int enemy)
-{
-	if(!IsValidEntity(enemy))
-		return true; //they dont exist, pretend as if they are silenced.
-
-	if(f_VictorianCallToArms[enemy] < GetGameTime())
-	{
-		return false;
-	}
-	return true;
-}
-
 #if defined ZR
-void NPCStats_RemoveAllDebuffs(int enemy)
+void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 {
-	f_HighTeslarDebuff[enemy] = 0.0;
-	f_LowTeslarDebuff[enemy] = 0.0;
-	f_LudoDebuff[enemy] = 0.0;
-	f_SpadeLudoDebuff[enemy] = 0.0;
 	IgniteFor[enemy] = 0;
-	f_HighIceDebuff[enemy] = 0.0;
-	f_LowIceDebuff[enemy] = 0.0;
-	f_VeryLowIceDebuff[enemy] = 0.0;
-	f_WidowsWineDebuff[enemy] = 0.0;
-	f_CrippleDebuff[enemy] = 0.0;
-	f_GoldTouchDebuff[enemy] = 0.0;
-	f_StrangleDebuff[enemy] = 0.0;
-	f_CudgelDebuff[enemy] = 0.0;
-	f_MaimDebuff[enemy] = 0.0;
-	f_PotionShrinkEffect[enemy] = 0.0;
-	f_EnfeebleEffect[enemy] = 0.0;
-	f_LeeMinorEffect[enemy] = 0.0;
-	f_LeeMajorEffect[enemy] = 0.0;
-	f_LeeSuperEffect[enemy] = 0.0;
-	f_LogosDebuff[enemy] = 0.0;
-	f_SpecterDyingDebuff[enemy] = 0.0;
-	f_PassangerDebuff[enemy] = 0.0;
+	//for 0.6 seconds, so all bleed get cleared
+	if(Duration <= 0.6)
+		Duration = 0.6;
+
+	RemoveAllBuffs(enemy, false);
+	ApplyRapidSuturing(enemy);
+	ApplyStatusEffect(enemy, enemy, "Hardened Aura", Duration);
 }
+
 #endif
 
 
@@ -10113,19 +9821,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	HealthColour[2] = 255;
 	HealthColour[3] = 255;
 
-	if(NpcStats_IsEnemySilenced(npc.index))
-	{
-		Format(HealthText, sizeof(HealthText), "X");
-	}
-	if(NpcStats_IberiaIsEnemyMarked(npc.index))
-	{
-		Format(HealthText, sizeof(HealthText), "%sM",HealthText);
-	}
-	if(NpcStats_VictorianCallToArms(npc.index))
-	{
-		Format(HealthText, sizeof(HealthText), "@",HealthText);
-	}
-
+	StatusEffects_HudAbove(npc.index, HealthText, sizeof(HealthText));
 #if defined ZR
 	VausMagicaRemoveShield(npc.index);
 	if(MoraleBoostLevelAt(npc.index) > 0) //hussar!
@@ -10149,14 +9845,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
 	}
-	if(f_VoidAfflictionStrength2[npc.index] > GetGameTime())
-	{
-		Format(HealthText, sizeof(HealthText), "%svV",HealthText);
-	}
-	else if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
-	{
-		Format(HealthText, sizeof(HealthText), "%sv",HealthText);
-	}
+
 	/*
 	if(IgniteFor[npc.index] > 0)
 	{
@@ -10668,7 +10357,7 @@ stock void SmiteNpcToDeath(int entity)
 		return;
 		
 	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
-	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_SLASH, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
+	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_TRUEDAMAGE, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
 }
 
 void MapStartResetNpc()
@@ -11438,7 +11127,7 @@ stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 			NpcStuckZoneWarning(client, damage, 0);	
 			if(damage >= 0.25)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
 			}
 		}
 	}

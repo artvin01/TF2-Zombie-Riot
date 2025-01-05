@@ -325,6 +325,7 @@ methodmap TrueFusionWarrior < CClotBody
 		{
 			RaidModeScaling *= 0.38;
 		}
+		RemoveAllDamageAddition();
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		
@@ -428,6 +429,8 @@ methodmap TrueFusionWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 2);
 		SetVariantInt(2048);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+		
+		SilvesterEarsApply(npc.index);
 	//	FusionApplyEffects(npc.index, 0);
 		return npc;
 	}
@@ -995,7 +998,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			b_angered_twice[npc.index] = true; //	>:(
 			RaidModeTime += 60.0;
 
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			GiveProgressDelay(20.0);
 			RemoveNpcFromEnemyList(npc.index);
@@ -1015,7 +1018,6 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			}
 			int skin = 1;
 			SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-			ExpidonsaRemoveEffects(npc.index);
 
 			if(IsValidEntity(npc.m_iWearable1))
 			{
@@ -1029,18 +1031,9 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 
 			SetVariantColor(view_as<int>({150, 150, 0, 150}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-			ExpidonsaRemoveEffects(npc.index);
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
 		}
-	}
-	if(f_NpcImmuneToBleed[npc.index] > GetGameTime())
-	{
-		damage = 0.0;
-	}
-	else if(f_NpcImmuneToBleed[npc.index] + 1.0 > GetGameTime()) //for 2 seconds he will take next to no damage.
-	{
-		damage *= 0.1;
 	}
 	return Plugin_Changed;
 }

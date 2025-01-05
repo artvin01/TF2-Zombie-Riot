@@ -352,6 +352,7 @@ methodmap Huscarls < CClotBody
 		}
 		else
 		{
+			RemoveAllDamageAddition();
 			func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 			func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
@@ -678,7 +679,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
-				f_VictorianCallToArms[entity] = gameTime;
+				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
 	}
 	
@@ -753,7 +754,7 @@ static void Internal_ClotThink(int iNPC)
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
 						LifeSupportDevice[npc.index][I_cant_do_this_all_day[npc.index]-1] = spawn_index;
-						MechanizedProtector[npc.index][I_cant_do_this_all_day[npc.index]-1] = ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+						MechanizedProtector[npc.index][I_cant_do_this_all_day[npc.index]-1] = EntIndexToEntRef(ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM));
 						TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
 						npc.PlayTeleportSound();
 					}
@@ -869,7 +870,7 @@ static void Internal_ClotThink(int iNPC)
 					if(Delay_Attribute[npc.index] < gameTime)
 					{
 						b_NpcIsInvulnerable[npc.index] = false;
-						f_VictorianCallToArms[npc.index] = GetGameTime(npc.index) + 999.0;
+						ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
 						MyGundammmmmm[npc.index]=false;
 						I_cant_do_this_all_day[npc.index] = 0;
 					}
@@ -990,13 +991,13 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	bool magic;
 	bool pierce;
 
-	if((damagetype & DMG_SLASH))
+	if((damagetype & DMG_TRUEDAMAGE))
 	{
 		pierce = true;
 	}
 	else
 	{
-		if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != gameTime)
+		if((damagetype & DMG_BLAST))
 		{
 			hot = true;
 			pierce = true;
@@ -1714,7 +1715,7 @@ static void NPC_Go_away(int entity, int victim, float damage, int weapon)
 	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
 	if(IsValidEntity(npc.index) && IsValidEntity(victim) && !IsValidClient(victim) && GetTeam(npc.index) != GetTeam(victim))
 	{
-		SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_SLASH, -1, _, vecHit);
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, 1000.0, DMG_TRUEDAMAGE, -1, _, vecHit);
 		Custom_Knockback(npc.index, victim, 1500.0, true);
 	}
 }
@@ -1801,7 +1802,8 @@ static void Ground_Slam(int entity, int victim, float damage, int weapon)
 		if(!IsInvuln(victim))
 		{
 			if(IsValidClient(victim))
-				TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+				if(!HasSpecificBuff(victim, "Fluid Movement"))
+					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 			Custom_Knockback(entity, victim, 70.0, true);
 		}
 		else Custom_Knockback(entity, victim, 140.0, true);
@@ -1903,7 +1905,7 @@ static bool Victoria_Support(Huscarls npc)
 		{
 			position[0] = 525.0;
 			position[1] = 1600.0;
-			Vs_ParticleSpawned[npc.index] = ParticleEffectAt(position, "kartimpacttrail", 2.0);
+			Vs_ParticleSpawned[npc.index] = EntIndexToEntRef(ParticleEffectAt(position, "kartimpacttrail", 2.0));
 			SetEdictFlags(Vs_ParticleSpawned[npc.index], (GetEdictFlags(Vs_ParticleSpawned[npc.index]) | FL_EDICT_ALWAYS));
 			SetEntProp(Vs_ParticleSpawned[npc.index], Prop_Data, "m_iHammerID", npc.index);
 			npc.PlayIncomingBoomSound();
@@ -1915,13 +1917,12 @@ static bool Victoria_Support(Huscarls npc)
 		position[0] = Vs_Temp_Pos[npc.index][0];
 		position[1] = Vs_Temp_Pos[npc.index][1];
 		position[2] = Vs_Temp_Pos[npc.index][2] - 100.0;
-		TeleportEntity(Vs_ParticleSpawned[npc.index], position, NULL_VECTOR, NULL_VECTOR);
+		TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[npc.index]), position, NULL_VECTOR, NULL_VECTOR);
 		position[2] += 100.0;
 		
-		b_ThisNpcIsSawrunner[npc.index] = true;
-		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+		i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 		Explode_Logic_Custom(100.0*RaidModeScaling, 0, npc.index, -1, position, 500.0, 1.0, _, true, 20);
-		b_ThisNpcIsSawrunner[npc.index] = false;
+		
 		ParticleEffectAt(position, "hightower_explosion", 1.0);
 		i_ExplosiveProjectileHexArray[npc.index] = 0; 
 		npc.PlayBoomSound();
@@ -2029,7 +2030,8 @@ static void Shield_Knockback(int entity, int victim, float damage, int weapon)
 		if(!IsInvuln(victim))
 		{
 			if(IsValidClient(victim))
-				TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
+				if(!HasSpecificBuff(victim, "Fluid Movement"))
+					TF2_StunPlayer(victim, 0.2, 0.8, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 			Custom_Knockback(entity, victim, 70.0, true);
 		}
 		else Custom_Knockback(entity, victim, 140.0, true);

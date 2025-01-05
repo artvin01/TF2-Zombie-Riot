@@ -391,7 +391,7 @@ void BuildingAntiRaidInternal(int entity, int victim, float damage, int weapon)
 
 	if(b_thisNpcIsARaid[victim])
 	{
-		f_BuildingAntiRaid[victim] = GetGameTime() + 3.0;
+		ApplyStatusEffect(entity, victim, "Iberia's Anti Raid", 3.0);
 	}
 }
 

@@ -61,6 +61,7 @@ static char g_AngerSounds[][] = {
 #define LEX_LASER_LOOP_SOUND	"player/taunt_rocket_hover_loop.wav"//"weapons/gauss/chargeloop.wav"
 #define LEX_LASER_LOOP_SOUND1	"ambient/machines/combine_shield_touch_loop1.wav"
 #define LEX_LASER_ENDSOUND		"weapons/physcannon/physcannon_drop.wav"
+#define LEX_LASER_DURATION 		5.5
 
 void Lex_OnMapStart_NPC()
 {
@@ -75,6 +76,10 @@ void Lex_OnMapStart_NPC()
 	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
+
+	PrecacheSound(LEX_LASER_LOOP_SOUND);
+	PrecacheSound(LEX_LASER_LOOP_SOUND1);
+	PrecacheSound(LEX_LASER_ENDSOUND);
 }
 static void ClotPrecache()
 {
@@ -87,10 +92,6 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_AngerSounds);
-
-	PrecacheSound(LEX_LASER_LOOP_SOUND);
-	PrecacheSound(LEX_LASER_LOOP_SOUND1);
-	PrecacheSound(LEX_LASER_ENDSOUND);
 
 	PrecacheModel("models/player/medic.mdl");
 }
@@ -949,31 +950,6 @@ static void NPC_Death(int entity)
 	
 }
 
-static Action Laser_Revert(Handle timer, int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(IsValidEntity(client))
-	{
-		Lex npc = view_as<Lex>(client);
-		npc.m_flSpeed = fl_npc_basespeed;
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
-
-		f_NpcTurnPenalty[npc.index] = 1.0;
-		npc.StartPathing();
-
-		npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_1);
-
-		SetVariantInt(RUINA_W30_HAND_CREST);
-		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
-
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.0;
-	}
-
-	return Plugin_Stop;
-}
-
 static int i_effect_amt[MAXENTITIES];
 
 static void Initiate_Laser(Lex npc)
@@ -984,7 +960,8 @@ static void Initiate_Laser(Lex npc)
 	npc.m_flRangedArmor = 0.5;
 	npc.m_flMeleeArmor = 0.5;
 
-	float Duration = 5.5;
+	float WindUp = 1.5;
+	float Duration = LEX_LASER_DURATION + WindUp;
 
 	float GameTime = GetGameTime();
 
@@ -1001,12 +978,10 @@ static void Initiate_Laser(Lex npc)
 	}
 
 	f_NpcTurnPenalty[npc.index] = 0.0;
-	
-	CreateTimer(Duration, Laser_Revert, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 
 	fl_ruina_throttle[npc.index] = 0.0;
 	i_effect_amt[npc.index] = 0;
-	npc.m_flReloadIn = GameTime + 0.75;
+	npc.m_flReloadIn = GameTime + WindUp;
 
 	float npc_vec[3];
 	GetAbsOrigin(npc.index, npc_vec);
@@ -1054,8 +1029,8 @@ static void Initiate_Laser(Lex npc)
 		TeleportEntity(Hand_Thing, NULL_VECTOR, flAng, NULL_VECTOR);
 
 	}
-
-	
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+	ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);		//due to how the laser TE effects are setup, a stun could cause a situation where the TE effects ware off, but it still deals damage.
 	SDKHook(npc.index, SDKHook_Think, Laser_Tick);
 }
 
@@ -1069,6 +1044,9 @@ static Action Laser_Tick(int client)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, Laser_Tick);
 
+		RemoveSpecificBuff(npc.index, "Solid Stance");
+		RemoveSpecificBuff(npc.index, "Clear Head");
+
 		EmitSoundToAll(LEX_LASER_ENDSOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
 		EmitSoundToAll(LEX_LASER_ENDSOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
 
@@ -1079,6 +1057,21 @@ static Action Laser_Tick(int client)
 		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
 		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
 		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
+
+		npc.m_flSpeed = fl_npc_basespeed;
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		f_NpcTurnPenalty[npc.index] = 1.0;
+		npc.StartPathing();
+
+		npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_1);
+
+		SetVariantInt(RUINA_W30_HAND_CREST);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.0;
 
 		for(int i=0 ; i < 3 ; i++)
 		{
@@ -1110,8 +1103,12 @@ static Action Laser_Tick(int client)
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Basic(2500.0);
 	Laser.Radius = Radius;
-	Laser.Damage = 100.0;
-	Laser.Bonus_Damage = 200.0;
+	float Ratio = 1.0 - (npc.m_flDoingAnimation - GameTime) / LEX_LASER_DURATION;
+	if(Ratio < 0.1)	
+		Ratio = 0.1;
+	float dmg = 125.0 * Ratio;
+	Laser.Damage = dmg;
+	Laser.Bonus_Damage = dmg*2.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage(On_LaserHit_Big);
 

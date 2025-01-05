@@ -60,7 +60,6 @@ static int CurrentWeaponComboAt[MAXTF2PLAYERS];
 static float LastDamage[MAXTF2PLAYERS];
 static float LastSpeed[MAXTF2PLAYERS];
 static float CurrentlyInAttack[MAXTF2PLAYERS];
-static bool SpecialLastMan;
 static bool Precached;
 static float HeatActionCooldown[MAXTF2PLAYERS];
 static float HeatActionCooldownEnemy[MAXENTITIES];
@@ -74,7 +73,7 @@ void Yakuza_MapStart()
 	Zero(HeatActionCooldown);
 	Zero(HeatActionCooldownEnemy);
 	Precached = false;
-	SpecialLastMan = false;
+	SpecialLastMan = 0;
 	PrecacheSound("items/pegleg_01.wav");
 	PrecacheSound("items/pegleg_02.wav");
 	PrecacheSound("items/powerup_pickup_base.wav");
@@ -109,7 +108,7 @@ bool Yakuza_IsNotInJoint(int client)
 	return WeaponTimer[client] != null;	
 }
 
-bool Yakuza_Lastman(any toggle = -1)
+int Yakuza_Lastman(any toggle = -1)
 {
 	if(toggle != -1)
 		SpecialLastMan = view_as<bool>(toggle);
@@ -645,6 +644,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				Rogue_OnAbilityUse(weapon);
 				Yakuza_AddCharge(client, -RequiredHeat);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
+				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
 				HeatActionCooldown[client] = GetGameTime() + 0.5;
 				if(WeaponStyle[client] != Style_Dragon)
@@ -695,6 +695,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						DamageBase *= Attributes_Get(weapon, 2, 1.0);
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
+						f_AntiStuckPhaseThroughFirstCheck[client] = 0.0;
 						IncreaceEntityDamageTakenBy(client, 0.0001, 0.75);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
 						flMaxhealth *= 0.45;
@@ -761,7 +762,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			
 			float VicLoc[3];
 			VicLoc[2] += halved ? 250.0 : 450.0; //Jump up.
-			if(!VIPBuilding_Active())
+			if(!VIPBuilding_Active() && !HasSpecificBuff(target, "Solid Stance"))
 			{
 				SDKUnhook(target, SDKHook_Think, NpcJumpThink);
 				f3_KnockbackToTake[target] = VicLoc;
@@ -973,69 +974,50 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 
 void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damagetype, int weapon)
 {
-	if(LastMann)
+	if(!(damagetype & DMG_TRUEDAMAGE))
 	{
-		damage *= 0.75;
-	}
-	if(WeaponStyle[victim] == Style_Brawler)
-		damage *= 0.90;
+		if(LastMann)
+		{
+			damage *= 0.75;
+		}
+		if(WeaponStyle[victim] == Style_Brawler)
+			damage *= 0.90;
 
-	if(WeaponStyle[victim] == Style_Dragon)
-		damage *= 0.8;
-
-	if(WeaponStyle[victim] == Style_Beast)
-	{
-		if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
-			damage *= 0.7;
-		else
+		if(WeaponStyle[victim] == Style_Dragon)
 			damage *= 0.8;
-	}
 
-	if((damagetype & DMG_SLASH) || attacker <= MaxClients)
-		return;
-	
-	//You actually gain alot of heat with brawler mode when blocking!
-	//todo: add logic during brawlermode and Dragon mode
-	//dragon mode has limited heatgain on block in kiwami, but with hnow ZR works and how dragonmode works here, it sohuldnt be limited.
-	
-	//With beastmode, you cant actually block youre just immune to knockback, but that in ZR sucks, so it should be the best to block with.
-	if((damagetype & DMG_CLUB) && BlockNextFor[victim] > GetGameTime())
-	{
-		int rand = (GetURandomInt() % 4) + 1;
-		ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
-		ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
-		damage = 0.0;
-		return;
-	}
+		if(WeaponStyle[victim] == Style_Beast)
+		{
+			if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+				damage *= 0.7;
+			else
+				damage *= 0.8;
+		}
 
-	Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
+		if((damagetype & DMG_TRUEDAMAGE) || attacker <= MaxClients)
+			return;
+		
+		//You actually gain alot of heat with brawler mode when blocking!
+		//todo: add logic during brawlermode and Dragon mode
+		//dragon mode has limited heatgain on block in kiwami, but with hnow ZR works and how dragonmode works here, it sohuldnt be limited.
+		
+		//With beastmode, you cant actually block youre just immune to knockback, but that in ZR sucks, so it should be the best to block with.
+		if((damagetype & DMG_CLUB) && BlockNextFor[victim] > GetGameTime())
+		{
+			if(!CheckInHud())
+			{
+				int rand = (GetURandomInt() % 4) + 1;
+				ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+				ClientCommand(victim, "playgamesound player/resistance_heavy%d.wav", rand);
+			}
+			damage = 0.0;
+			return;
+		}
+	}
+	if(!CheckInHud())
+		Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
 }
 
-
-float Yakuza_SelfTakeDamageHud(int victim, int weapon)
-{
-	float damagereturn = 1.0;
-	if(LastMann)
-	{
-		damagereturn *= 0.75;
-	}
-
-	if(WeaponStyle[victim] == Style_Brawler)
-		damagereturn *= 0.90;
-
-	if(WeaponStyle[victim] == Style_Dragon)
-		damagereturn *= 0.8;
-
-	if(WeaponStyle[victim] == Style_Beast)
-	{
-		if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
-			damagereturn *= 0.7;
-		else
-			damagereturn *= 0.8;
-	}
-
-	return damagereturn;
-}
 static int DoSpecialActionYakuza(int client, float DamageBase, const char[] animation, float duration, int target)
 {
 	//Reduce the damgae they take in half during the animtion, just incase, evne though they are untargetable anyways.

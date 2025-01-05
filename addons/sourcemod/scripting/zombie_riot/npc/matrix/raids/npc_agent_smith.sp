@@ -172,6 +172,7 @@ methodmap AgentSmith < CClotBody
 		
 		if(raid)
 		{
+			i_TalkDelayCheck = -1;
 			EmitSoundToAll("weapons/physgun_off.wav", _, _, _, _, 1.0);	
 			EmitSoundToAll("weapons/physgun_off.wav", _, _, _, _, 1.0);	
 		}
@@ -203,6 +204,7 @@ methodmap AgentSmith < CClotBody
 			npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_ambassador/c_ambassador_xmas.mdl");
 			npc.m_bFUCKYOU = false;
 			AgentSmith_WeaponSwaps(npc);
+			Zero(b_said_player_weaponline);
 		}
 		else if(clone)
 		{
@@ -226,7 +228,6 @@ methodmap AgentSmith < CClotBody
 		
 		f_TalkDelayCheck = 0.0;
 		i_TalkDelayCheck = 0;
-		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		//npc.m_bDissapearOnDeath = true;
 		
@@ -346,7 +347,7 @@ static void AgentSmith_ClotThink(int iNPC)
         {
 			Smith_Timeslow(GetRandomFloat(1.0, 0.7), 3.0);
 			npc.m_flAbilityOrAttack0 = gameTime + 1.0;
-			Agent_Smith_Cloner(npc, 1, RoundToCeil(15000.0 * MultiGlobalEnemy), 2.0);
+			Agent_Smith_Cloner(npc, 1, RoundToCeil(75000.0 * MultiGlobalEnemy), 2.0);
         }
 	}
 
@@ -969,7 +970,7 @@ static void PrepareSmith_Raid(AgentSmith npc)
 	i_NpcWeight[npc.index] = 4;
 	b_thisNpcIsARaid[npc.index] = true;
 	npc.m_bThisNpcIsABoss = true;
-	RaidModeTime = GetGameTime(npc.index) + 245.0;
+	RaidModeTime = GetGameTime(npc.index) + 225.0;
 	RaidBossActive = EntIndexToEntRef(npc.index);
 	RaidAllowsBuildings = false;
 	RaidModeScaling = float(ZR_GetWaveCount()+1);

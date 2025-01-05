@@ -92,9 +92,9 @@ methodmap Huirgrajo < CClotBody
 		npc.m_flWaveScale = (ZR_GetWaveCount() + 1) * 0.1;
 		npc.m_flExtraDamage *= npc.m_flWaveScale;
 		
-		b_CannotBeStunned[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
-		b_CannotBeSlowed[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		
 		static const int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);

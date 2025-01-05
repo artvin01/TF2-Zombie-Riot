@@ -10,6 +10,7 @@ static int SoundLevel[MAXTF2PLAYERS];
 
 static ArrayList ExtraList;
 static int ExtraLevel[MAXTF2PLAYERS];
+static bool DoingSoundFix[MAXTF2PLAYERS];
 
 void FileNetwork_PluginStart()
 {
@@ -68,6 +69,7 @@ void FileNetwork_ClientPutInServer(int client)
 #if !defined UseDownloadTable
 	//give 3 seconds of breathing
 	CreateTimer(3.0, Timer_FilenetworkBegin, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+	DoingSoundFix[client] = false;
 #endif
 }
 
@@ -386,6 +388,33 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 			else
 			{
 				SoundLevel[client]++;
+				if(IsValidClient(client))
+				{
+					/*
+					char buffer[PLATFORM_MAX_PATH];
+					Format(buffer, sizeof(buffer), "%s", download);
+					ReplaceString(buffer, sizeof(buffer), "#", "");
+					ReplaceString(buffer, sizeof(buffer), "sound/", "");
+
+					PrecacheSound(buffer);
+					EmitSoundToClient(client, buffer, client, SNDCHAN_STATIC, .volume = 0.1);
+
+					PrintToChat(client, "%s",buffer);
+					DataPack pack1;
+					CreateDataTimer(5.0, Timer_FixSoundsCancelThem, pack1, TIMER_FLAG_NO_MAPCHANGE);
+					pack1.WriteString(buffer);
+					pack1.WriteCell(EntIndexToEntRef(client));
+					*/
+					if(!DoingSoundFix[client])
+					{
+						DataPack pack2;
+						CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+						pack2.WriteCell(0);
+						pack2.WriteCell(EntIndexToEntRef(client));
+						pack2.WriteCell(0);
+						DoingSoundFix[client] = true;
+					}
+				}
 			}
 
 			SendNextFile(client);
@@ -403,6 +432,88 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 
 	delete pack;
 }
+public void Manual_SoundcacheFixTest(int client)
+{
+	SetGlobalTransTarget(client);
+	if(SoundList)
+	{
+		DataPack pack;
+		CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(0);
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(1);
+	}
+}
+
+public Action StartSoundCache_ManualLoop(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int SoundListArrayLoc = pack.ReadCell();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	bool ShowNotif = view_as<bool>(pack.ReadCell());
+	if(IsValidClient(client))
+	{
+		if(SoundListArrayLoc >= SoundList.Length)
+		{
+			if(ShowNotif)
+				PrintToChat(client,"%t", "FixSoundManual Success");
+
+			DoingSoundFix[client] = false;
+			return Plugin_Handled;
+		}
+		if(SoundLevel[client] > SoundListArrayLoc)
+		{
+			if(ShowNotif)
+				PrintToChat(client, "[ZR SOUND FIX] %i / %i", SoundListArrayLoc, SoundList.Length);
+
+			char sound[PLATFORM_MAX_PATH];
+			SoundList.GetString(SoundListArrayLoc, sound, sizeof(sound));
+			ReplaceString(sound, sizeof(sound), "sound/", "");
+			EmitCustomToClient(client, sound, client, SNDCHAN_AUTO, .volume = 0.01);
+			SoundListArrayLoc++;
+			DataPack pack2;
+			CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+			pack2.WriteCell(SoundListArrayLoc);
+			pack2.WriteCell(EntIndexToEntRef(client));
+			pack2.WriteCell(ShowNotif);
+
+			DataPack pack1;
+			CreateDataTimer(1.5, Timer_FixSoundsCancelThem, pack1, TIMER_FLAG_NO_MAPCHANGE);
+			pack1.WriteString(sound);
+			pack1.WriteCell(EntIndexToEntRef(client));
+			pack1.WriteCell(ShowNotif);
+		}
+		else
+		{
+			if(ShowNotif)
+			{
+				PrintToChat(client,"%t", "FixSoundManual Fail");
+				return Plugin_Handled;
+			}
+			//Try again, and wait.
+			DataPack pack2;
+			CreateDataTimer(3.0, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+			pack2.WriteCell(SoundListArrayLoc);
+			pack2.WriteCell(EntIndexToEntRef(client));
+			pack2.WriteCell(ShowNotif);
+		}
+	}
+	return Plugin_Handled; 
+}
+
+public Action Timer_FixSoundsCancelThem(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	char sound[PLATFORM_MAX_PATH];
+	pack.ReadString(sound, PLATFORM_MAX_PATH);
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidClient(client))
+	{
+		EmitSoundToClient(client, sound, client, SNDCHAN_AUTO, _, SND_STOP, SNDVOL_NORMAL);
+	}
+	return Plugin_Handled; 
+}
+
 
 public void FileNetwork_SendResults(int client, const char[] file, bool success, DataPack pack)
 {
@@ -424,7 +535,7 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 				{
 					LogError("Failed to queue file \"%s\" to client", filecheck);
 					DeleteFile(filecheck);
-						//LogError("Failed to delete file \"%s\"", filecheck);
+					//LogError("Failed to delete file \"%s\"", filecheck);
 				}
 			}
 			else
@@ -439,8 +550,22 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			}
 			else
 			{
+				//Fix soundcache issues
+				/*
+					//When the sound is first played, it has an ugly ass reverb to it, this fixes it.
+				*/
+				if(!DoingSoundFix[client])
+				{
+					DataPack pack2;
+					CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+					pack2.WriteCell(0);
+					pack2.WriteCell(EntIndexToEntRef(client));
+					pack2.WriteCell(0);
+					DoingSoundFix[client] = true;
+				}
 				SoundLevel[client]++;
 			}
+
 
 			SendNextFile(client);
 		}

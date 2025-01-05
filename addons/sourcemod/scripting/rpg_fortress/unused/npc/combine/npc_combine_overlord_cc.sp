@@ -226,7 +226,7 @@ public Action CombineOverlordCC_TakeDamage(int victim, int &attacker, int &infli
 		if(npc.m_flMeleeArmor > 1.5)
 			npc.m_flMeleeArmor = 1.5;
 	}
-	else if(!(damagetype & DMG_SLASH))
+	else if(!(damagetype & DMG_TRUEDAMAGE))
 	{
 		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		npc.m_flRangedArmor += 0.005;

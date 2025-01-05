@@ -14,9 +14,9 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 	if(LastHitTarget == victim)
 		return 0.0;
 	
-	if(LastHitTarget != victim && !(damagetype & DMG_SLASH) && !(damagetype & DMG_BLAST))
+	if(LastHitTarget != victim && !(damagetype & DMG_TRUEDAMAGE) && !(damagetype & DMG_BLAST))
 	{
-		damagetype |= DMG_SLASH;
+		damagetype |= DMG_TRUEDAMAGE;
 		
 		if(SmartBounce)
 		{
@@ -74,7 +74,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 		else
 		{
 			int value = i_ExplosiveProjectileHexArray[attacker];
-			i_ExplosiveProjectileHexArray[attacker] = 0;	// If DMG_SLASH doesn't block NPC_OnTakeDamage_Equipped_Weapon_Logic, adjust this
+			i_ExplosiveProjectileHexArray[attacker] = 0;	// If DMG_TRUEDAMAGE doesn't block NPC_OnTakeDamage_Equipped_Weapon_Logic, adjust this
 			LastHitTarget = victim;
 			
 			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, _, false, 4);
@@ -95,14 +95,12 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 	
 	if(duration)
 	{
-		if((damagetype & DMG_SLASH) || (damagetype & DMG_BLAST))
+		if((damagetype & DMG_TRUEDAMAGE) || (damagetype & DMG_BLAST))
 			duration *= 2.0 / 3.0;
 		
 		if(f_ChargeTerroriserSniper[weapon] > 70.0)
 		{
-			duration += GetGameTime();
-			if(duration > f_MaimDebuff[victim])
-				f_MaimDebuff[victim] = duration;
+			ApplyStatusEffect(attacker, victim, "Maimed", duration);
 		}
 	}
 
@@ -115,18 +113,15 @@ float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float 
 
 	if(duration)
 	{
-		if((damagetype & DMG_SLASH) || (damagetype & DMG_BLAST))
+		if((damagetype & DMG_TRUEDAMAGE) || (damagetype & DMG_BLAST))
 			duration *= 2.0 / 3.0;
 		
 		if(f_ChargeTerroriserSniper[weapon] > 70.0)
 		{
-			float time = GetGameTime();
-			if((duration + time) > f_MaimDebuff[victim])
-				f_MaimDebuff[victim] = (duration + time);
+			ApplyStatusEffect(attacker, victim, "Maimed", duration);
 			
 			duration *= 2.0;
-			if((duration + time) > f_CrippleDebuff[victim])
-				f_CrippleDebuff[victim] = (duration + time);
+			ApplyStatusEffect(attacker, victim, "Cripple", duration);
 		}
 	}
 	

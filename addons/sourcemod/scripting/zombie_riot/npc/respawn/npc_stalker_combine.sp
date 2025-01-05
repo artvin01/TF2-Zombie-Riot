@@ -46,7 +46,7 @@ methodmap StalkerShared < CClotBody
 			if(RandomArea != NULL_AREA)
 			{
 				int NavAttribs = RandomArea.GetAttributes();
-				if(NavAttribs & NAV_MESH_AVOID)
+				if(NavAttribs & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE|NAV_MESH_NO_HOSTAGES))
 				{
 					continue;
 				}
@@ -628,7 +628,7 @@ public Action StalkerCombine_OnTakeDamage(int victim, int &attacker, int &inflic
 	if(damage > 9999999.9)
 		return Plugin_Continue;
 	
-	if(damagetype & DMG_DROWN)
+	if(damagetype & DMG_OUTOFBOUNDS)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -655,13 +655,8 @@ public Action StalkerCombine_OnTakeDamage(int victim, int &attacker, int &inflic
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	// This stalker can't be killed but can be slowed via normal means
-	if(f_SpecterDyingDebuff[victim] < gameTime)
-		f_SpecterDyingDebuff[victim] = gameTime;
 	
-	f_SpecterDyingDebuff[victim] += damage / 150.0;
-	if(f_SpecterDyingDebuff[victim] > (gameTime + 5.0))
-		f_SpecterDyingDebuff[victim] = gameTime + 5.0;
+	ApplyStatusEffect(victim, victim, "Specter's Aura", 5.0);
 
 	if(!b_StaticNPC[victim])
 		return Plugin_Changed;
