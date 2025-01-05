@@ -335,7 +335,6 @@ methodmap Storm_Weaver < CClotBody
 
 		fl_ruina_battery[npc.index] = 0.0;
 
-		b_IgnoreAllCollisionNPC[npc.index]=true;
 		//b_ForceCollisionWithProjectile[npc.index]=true;
 
 		npc.m_bDissapearOnDeath = true;
