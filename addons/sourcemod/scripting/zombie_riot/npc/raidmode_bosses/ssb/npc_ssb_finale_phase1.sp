@@ -56,6 +56,18 @@ static float HellRing_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };		//Skull f
 static float HellRing_Falloff_MultiHit[4] = { 0.66, 0.76, 0.86, 1.0 }; 		//Amount to multiply explosion damage for each target hit.
 static float HellRing_Pitch[4] = { 5.0, 5.0, 5.0, 5.0 };					//Amount to tilt skull vertical velocity on spawn, used mainly for VFX.
 
+//SPATIAL DISPLACEMENT: SSB claps his hands and teleports directly above a random enemy. After a short delay, he will fall to the ground, creating a shockwave
+//when he lands. This shockwave knocks enemies away.
+static float Teleport_Height[4] = { 1200.0, 1100.0, 1000.0, 900.0 };		//Maximum distance above the target SSB will teleport. If a valid height is not found, he'll choose a random nav spot instead of an enemy.
+static float Teleport_Delay[4] = { 0.75, 0.7, 0.65, 0.60 };					//Delay after teleporting before SSB falls down. DO NOT make this longer than 0.85, the ability will break if you do. I know how to fix it, but unless it becomes totally necessary to make this longer than 0.85 I won't bother.
+static float Teleport_FallSpeed[4] = { 800.0, 900.0, 1000.0, 1200.0 };		//Speed at which SSB falls to the ground when he begins falling.
+static float Teleport_Radius[4] = { 150.0, 175.0, 200.0, 250.0 };			//Shockwave radius.
+static float Teleport_DMG[4] = { 600.0, 900.0, 1200.0, 1800.0 };			//Base shockwave damage.
+static float Teleport_Falloff_MultiHit[4] = { 0.5, 0.66, 0.75, 0.85 };		//Amount to multiply damage per target hit by the shockwave.
+static float Teleport_Falloff_Range[4] = { 0.25, 0.25, 0.33, 0.5 };			//Distance-based falloff.
+static float Teleport_EntityMult[4] = { 4.0, 6.0, 8.0, 10.0 };				//Amount to multiply damage dealt to entities.
+static float Teleport_KB[4] = { 400.0, 600.0, 800.0, 1200.0 };				//Knockback velocity applied to enemies hit by the shockwave.
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -111,6 +123,7 @@ static char g_SSBChair_ChairThudSounds[][] = {
 };
 
 #define SND_SNAP					"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_snap.mp3"
+#define SND_CLAP					"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_clap.mp3"
 #define SND_BOMBARDMENT_STRIKE		")misc/halloween/spell_spawn_boss.wav"
 #define SND_BOMBARDMENT_MARKED		")misc/halloween/hwn_bomb_flash.wav"
 #define SND_BOMBARDMENT_CHARGEUP	")items/powerup_pickup_crits.wav"
@@ -153,6 +166,7 @@ public void SSBChair_OnMapStart_NPC()
 
 	PrecacheSound(SND_SPAWN_ALERT);
 	PrecacheSound(SND_SNAP);
+	PrecacheSound(SND_CLAP);
 	PrecacheSound(SND_BOMBARDMENT_STRIKE);
 	PrecacheSound(SND_BOMBARDMENT_MARKED);
 	PrecacheSound(SND_BOMBARDMENT_CHARGEUP);
@@ -519,6 +533,63 @@ public Action HellRing_StartHoming(Handle timer, int ref)
 	return Plugin_Continue;
 }
 
+public void SSBChair_Teleport(SSBChair ssb, int target)
+{
+	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_CLAP", SSBChair_Teleport_Activate, PARTICLE_HELL_HAND, PARTICLE_HELL_SNAP, "", "effect_hand_L", SND_HELL_CHARGEUP);
+}
+
+public void SSBChair_Teleport_Activate(SSBChair ssb, int target)
+{
+	ArrayList enemies = GetRandomlySortedEnemies(ssb);
+
+	bool passed = GetArraySize(enemies) > 0;	//First check: do we even have any enemies to teleport to? Should almost always pass during actual gameplay.
+	if (passed)
+	{
+		//Second test: do we have at least one enemy who we can teleport above without getting stuck?
+		float telePos[3], teleAng[3];
+		teleAng[0] = -90.0;
+		for (int i = 0; i < GetArraySize(enemies); i++)
+		{
+			
+		}
+
+		//Both tests passed: teleport above the chosen enemy.
+	}
+
+	//One of the checks failed, try to teleport above a random nearby nav area instead of a player.
+	//If the chosen nav area can't be teleported above, just teleport directly to it and skip the shockwave portion of this ability.
+	if (!passed)
+	{
+
+	}
+
+	delete enemies;
+}
+
+public ArrayList GetRandomlySortedEnemies(CClotBody user)
+{
+	ArrayList list = new ArrayList(255);
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		if (IsValidEnemy(user.index, i))
+			PushArrayCell(list, i);
+	}
+
+	if (GetArraySize(list) > 0)
+	{
+		for(int i = 0; i < GetArraySize(list) - 1; i++)
+		{
+			int me = GetArrayCell(list, i);
+			int them = GetRandomInt(i + 1, GetArraySize(list) - 1);
+			SetArrayCell(list, i, GetArrayCell(list, them));
+			SetArrayCell(list, them, me);
+		}
+	}
+
+	return list;
+}
+
 methodmap SSBChair < CClotBody
 {
 	public void PlayIdleSound() {
@@ -681,6 +752,7 @@ methodmap SSBChair < CClotBody
 		//TODO: Populate abilities here
 		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(15.0, 5.0, 0, SSBChair_Bombardment));
 		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(18.0, 8.0, 0, SSBChair_RingOfHell));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(20.0, 10.0, 0, SSBChair_Teleport));
 	}
 
 	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
@@ -890,9 +962,13 @@ public void SSBChair_AnimEvent(int entity, int event)
 		{
 			EmitSoundToAll(SND_SNAP, _, _, 120);
 		}
-		case 1005:	//Death Waver spell cast, arm has been swung, play sound.
+		case 1005:	//Something has been swung, play sound.
 		{
 			EmitSoundToAll(SND_BIG_SWING, npc.index, _, 120);
+		}
+		case 1006:	//Hands have clapped, play sound.
+		{
+			EmitSoundToAll(SND_CLAP, _, _, 120);
 		}
 	}
 }
