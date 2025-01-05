@@ -51,8 +51,8 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
-		b_IgnoreAllCollisionNPC[spawn_index] = true;
-		f_NoUnstuckVariousReasons[spawn_index] = FAR_FUTURE;
+		b_IgnoreAllCollisionNPC[npc.index] = true;
+		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
 		
 		MK2[npc.index]=false;
 		Limit[npc.index]=false;
@@ -90,7 +90,6 @@ methodmap VictorianDroneAnvil < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
-		b_IgnoreAllCollisionNPC[npc.index]=true;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = true;
 		npc.Anger = false;
@@ -184,7 +183,6 @@ static void ClotThink(int iNPC)
 	else
 	{
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
-		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
