@@ -28,8 +28,6 @@ static const char g_AdvAttackSounds[][] = {
 #define INTERSTELLAR_WEAVER_FLIGHT_SPEED 330.0
 
 
-static int SaveSolidFlags[MAXENTITIES];
-static int SaveSolidType[MAXENTITIES];
 
 static bool b_storm_weaver_noclip[MAXENTITIES];
 static float fl_trace_timeout[MAXENTITIES];
@@ -115,9 +113,9 @@ methodmap Interstellar_Weaver < CClotBody
 		{
 			//b_thisNpcIsABoss[npc.index] = true;
 		}
+		b_IgnoreAllCollisionNPC[npc.index] = true;
+		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
 
-		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
-		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
 
 		int ModelApply = ApplyCustomModelToWandProjectile(npc.index, RUINA_CUSTOM_MODELS_4, StringToFloat(INTERSTELLAR_WEAVER_MODEL_SIZE), "icbm_idle");
 		
@@ -292,10 +290,10 @@ static int Storm_Weaver_Create_Tail(Interstellar_Weaver npc, int follow_ID, int 
 		b_ignore_npc[spawn_index]=true;
 		b_stellar_weaver_allow_attack[spawn_index] = false;
 		b_storm_weaver_noclip[spawn_index]=false;
-		b_IgnoreAllCollisionNPC[spawn_index]=true;
-
-		SaveSolidFlags[spawn_index]=GetEntProp(spawn_index, Prop_Send, "m_usSolidFlags");
-		SaveSolidType[spawn_index]=GetEntProp(spawn_index, Prop_Send, "m_nSolidType");
+		//Flies through everything, but can still be hit/calls hits?
+		b_IgnoreAllCollisionNPC[spawn_index] = true;
+		f_NoUnstuckVariousReasons[spawn_index] = FAR_FUTURE;
+		AddNpcToAliveList(spawn_index, 1);
 
 		fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
 		fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
