@@ -959,6 +959,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
+
+		//if an npc is said to ignore all collisions, then it primarily means world as of now, do additional checks at a later time.
+		if(b_IgnoreAllCollisionNPC[entity1] && entity2 == 0)
+		{
+			return false;
+		}
 #if !defined RTS
 		if(b_ProjectileCollideIgnoreWorld[entity1])
 		{
@@ -1144,6 +1150,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 			{
 				//if a player needs to get unstuck.
+				return false;
+			}
+			else if(!DoingLagCompensation && (entity2 <= MaxClients && entity2 > 0) && b_IgnoreAllCollisionNPC[entity1])
+			{
 				return false;
 			}
 			

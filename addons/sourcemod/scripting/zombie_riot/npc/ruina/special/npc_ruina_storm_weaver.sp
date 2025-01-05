@@ -77,8 +77,6 @@ enum struct Ruina_Flight_Pather
 
 		b_NoGravity[dot] = true;
 
-		MakeObjectIntangeable(dot);
-
 		Storm_Weaver_Delete_Collision(dot);
 
 		return dot;
@@ -247,6 +245,10 @@ methodmap Storm_Weaver < CClotBody
 		Flight_Computer[npc.index].Speed = RUINA_STORM_WEAVER_FLIGHT_SPEED*fl_Extra_Speed[npc.index];
 		Flight_Computer[npc.index].Acceleration = 75.0;
 
+		//Flies through everything, but can still be hit/calls hits?
+		b_IgnoreAllCollisionNPC[npc.index] = true;
+		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
+
 		//if(StrContains(data, "anchor") != -1)
 		//	i_anchor_id[npc.index] = npc.m_iState;
 		
@@ -369,7 +371,11 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		b_ignore_npc[spawn_index]=true;
 		b_stellar_weaver_allow_attack[spawn_index] = false;
 		b_storm_weaver_noclip[spawn_index]=false;
-		b_IgnoreAllCollisionNPC[spawn_index]=true;
+
+		//Flies through everything, but can still be hit/calls hits?
+		b_IgnoreAllCollisionNPC[spawn_index] = true;
+		f_NoUnstuckVariousReasons[spawn_index] = FAR_FUTURE;
+		AddNpcToAliveList(spawn_index, 1);
 
 		SaveSolidFlags[spawn_index]=GetEntProp(spawn_index, Prop_Send, "m_usSolidFlags");
 		SaveSolidType[spawn_index]=GetEntProp(spawn_index, Prop_Send, "m_nSolidType");
@@ -671,6 +677,7 @@ static void Storm_Weaver_Damage_Touch(int entity, int other)
 
 void Storm_Weaver_Delete_Collision(int iNPC)
 {
+	/*
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	b_storm_weaver_noclip[npc.index]=true;
@@ -678,10 +685,12 @@ void Storm_Weaver_Delete_Collision(int iNPC)
 	MakeObjectIntangeable(npc.index);
 
 	f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
+	*/
 
 }
 void Storm_Weaver_Restore_Collisions(int iNPC)
 {
+	/*
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	b_storm_weaver_noclip[npc.index]=false;
@@ -695,6 +704,7 @@ void Storm_Weaver_Restore_Collisions(int iNPC)
 		SetEntityCollisionGroup(npc.index, 24);
 	else
 		SetEntityCollisionGroup(npc.index, 9);
+		*/
 }
 
 static void ClotThink(int iNPC)

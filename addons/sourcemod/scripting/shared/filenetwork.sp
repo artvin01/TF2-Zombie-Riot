@@ -469,7 +469,7 @@ public Action StartSoundCache_ManualLoop(Handle timer, DataPack pack)
 			char sound[PLATFORM_MAX_PATH];
 			SoundList.GetString(SoundListArrayLoc, sound, sizeof(sound));
 			ReplaceString(sound, sizeof(sound), "sound/", "");
-			EmitCustomToClient(client, sound, client, SNDCHAN_AUTO, .volume = 0.01);
+			EmitCustomToClient(client, sound, client, SNDCHAN_AUTO, .volume = 0.01, .pitch = 1);
 			SoundListArrayLoc++;
 			DataPack pack2;
 			CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
