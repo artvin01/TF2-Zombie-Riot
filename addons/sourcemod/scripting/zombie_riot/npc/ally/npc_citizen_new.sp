@@ -4501,7 +4501,7 @@ static bool RunFromNPC(int entity)
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 	if(StrContains(npc_classname, "npc_sawrunner") != -1 ||
-		StrContains(npc_classname, "npc_omega") != -1 ||
+		StrContains(npc_classname, "npc_3650") != -1 ||
 		StrContains(npc_classname, "npc_lastknight") != -1 ||
 		StrContains(npc_classname, "npc_saintcarmen") != -1)
 	{

@@ -195,6 +195,7 @@ methodmap LostKnight < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flMeleeArmor = 0.01;
 		npc.m_flRangedArmor = 0.01;
+		b_thisNpcHasAnOutline[npc.index] = false;
 		
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.8");
