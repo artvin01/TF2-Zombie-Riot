@@ -2378,6 +2378,8 @@ static int i_CreateManipulation(Lelouch npc, float Spawn_Loc[3], float Spawn_Ang
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Spawn_HP);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Spawn_HP);
 
+		AddNpcToAliveList(spawn_index, 1);
+
 		if(size != 1.0)
 		{
 			float scale = GetEntPropFloat(spawn_index, Prop_Send, "m_flModelScale");
