@@ -7,9 +7,6 @@ static bool MK2[MAXENTITIES];
 static bool Limit[MAXENTITIES];
 static int OverrideAlly[MAXENTITIES];
 
-static int SaveSolidFlags[MAXENTITIES];
-static int SaveSolidType[MAXENTITIES];
-
 void VictorianDroneAnvil_MapStart()
 {
 	PrecacheModel("models/props_teaser/saucer.mdl");
@@ -54,8 +51,8 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
-		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
-		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
+		b_IgnoreAllCollisionNPC[spawn_index] = true;
+		f_NoUnstuckVariousReasons[spawn_index] = FAR_FUTURE;
 		
 		MK2[npc.index]=false;
 		Limit[npc.index]=false;
@@ -222,12 +219,6 @@ static void ClotThink(int iNPC)
 		case 0://attack
 		{
 			npc.m_bisWalking = false;
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
-			if(GetTeam(npc.index) == TFTeam_Red)
-				SetEntityCollisionGroup(npc.index, 24);
-			else
-				SetEntityCollisionGroup(npc.index, 9);
 			npc.m_flCharge_delay = gameTime + 0.8;
 			
 			if(!npc.Anger && Limit[npc.index])
@@ -242,8 +233,6 @@ static void ClotThink(int iNPC)
 		}
 		case 2://notfound
 		{
-			MakeObjectIntangeable(npc.index);
-			b_IgnoreAllCollisionNPC[npc.index]=true;
 			if(gameTime > npc.m_flCharge_delay)
 			{
 				npc.m_bisWalking = true;
