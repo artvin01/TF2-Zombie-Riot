@@ -12,8 +12,6 @@ static int OverrideTarget[MAXENTITIES];
 static int OverrideAlly[MAXENTITIES];
 static float IDiying[MAXENTITIES];
 
-static int SaveSolidFlags[MAXENTITIES];
-static int SaveSolidType[MAXENTITIES];
 
 void VictorianDroneFragments_MapStart()
 {
@@ -66,8 +64,6 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
-		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
-		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
 		MK2[npc.index]=false;
 		Limit[npc.index]=false;
 		ISVOLI[npc.index]=false;
@@ -114,7 +110,8 @@ methodmap VictorianDroneFragments < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
-		b_IgnoreAllCollisionNPC[npc.index]=true;
+		b_IgnoreAllCollisionNPC[spawn_index] = true;
+		f_NoUnstuckVariousReasons[spawn_index] = FAR_FUTURE;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = true;
 		npc.m_bFUCKYOU = true;
@@ -356,12 +353,6 @@ static void ClotThink(int iNPC)
 		if(GetVectorDistance(SET_XZY_POS[npc.index], VecSelfNpc) < 200.0)
 		{
 			float NPCAng[3];
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
-			if(GetTeam(npc.index) == TFTeam_Red)
-				SetEntityCollisionGroup(npc.index, 24);
-			else
-				SetEntityCollisionGroup(npc.index, 9);
 			npc.m_flSpeed = 0.0;
 			VecSelfNpc[2] += 500.0;
 			npc.SetVelocity({0.0,0.0,0.0});
@@ -381,7 +372,6 @@ static void ClotThink(int iNPC)
 			if(gameTime > npc.m_flCharge_delay)
 			{
 				float Pathing[3], Npvel[3], NPCAng[3];
-				MakeObjectIntangeable(npc.index);
 				SubtractVectors(SET_XZY_POS[npc.index], VecSelfNpc, Pathing);
 				GetEntPropVector(npc.m_iWearable4, Prop_Data, "m_angRotation", NPCAng);
 				npc.GetVelocity(Npvel);
