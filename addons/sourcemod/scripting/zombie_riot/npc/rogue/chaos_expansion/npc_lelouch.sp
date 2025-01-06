@@ -593,6 +593,8 @@ methodmap Lelouch < CClotBody
 		npc.m_flRevertAnim = FAR_FUTURE;
 		npc.m_flFreezeAnim = FAR_FUTURE;
 		npc.m_flCrystalRevert = FAR_FUTURE;
+		b_thisNpcIsARaid[npc.index] = true;
+		Ruina_Set_No_Retreat(npc.index);
 
 		fl_nightmare_cannon_core_sound_timer[npc.index] = 0.0;
 		b_Anchors_Created[npc.index] = false;
@@ -1063,6 +1065,8 @@ enum struct Crystal_Data
 
 		if(dist > 500.0)
 		{
+			//target location unusually far, assume it got stuck, and thus teleport to the target location.
+			f_StuckOutOfBoundsCheck[Crystal] = GetGameTime() + 5.0;	//alongside that give it a bit of "noclip"
 			TeleportEntity(Crystal, Loc, Angles);
 			return;
 		}
@@ -1937,10 +1941,10 @@ static void Create_Anchors(Lelouch npc)
 	}
 
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), RoundToCeil(4.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(125000.0 * MultiGlobalHighHealthBoss), RoundToCeil(4.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(250000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(125000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(352569.0 * MultiGlobalHighHealthBoss),1, true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(300000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 
 	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",	200000, RoundToCeil(6.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(8.0 * MultiGlobalEnemy));
@@ -2673,6 +2677,7 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	enemy.ExtraDamage = 3.5;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
+	Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_3");
 	if(!Waves_InFreeplay())
 	{
 		for(int i; i<count; i++)

@@ -18,9 +18,10 @@ void Rogue_ParadoxDLC_Flawless()
 {
 	if(Smoking)
 	{
-		Rogue_AddChaos(8);
+		Rogue_AddChaos(5);
 	}
-	else if(FlawlessAmount)
+
+	if(FlawlessAmount)
 	{
 		Rogue_RemoveChaos(FlawlessAmount);
 	}
@@ -33,9 +34,6 @@ void Rogue_ParadoxDLC_BattleChaos(float &chaos)
 	
 	if(ReduceChaos2)
 		chaos *= 0.4;
-	
-	if(Smoking)
-		chaos += 8.0;
 }
 
 void Rogue_ParadoxDLC_DebuffTime(int entity, float &time)
@@ -47,10 +45,10 @@ void Rogue_ParadoxDLC_DebuffTime(int entity, float &time)
 void Rogue_ParadoxDLC_StunTime(int entity, float &time)
 {
 	if(ShortStun && GetTeam(entity) != TFTeam_Red)
-		time *= 2.1;
+		time *= 1.25;
 	
 	if(LongStun && GetTeam(entity) != TFTeam_Red)
-		time *= 2.5;
+		time *= 1.35;
 }
 
 void Rogue_ParadoxDLC_AbilityUsed(int client)
@@ -61,7 +59,7 @@ void Rogue_ParadoxDLC_AbilityUsed(int client)
 
 public void Rogue_RuinaGem_Collect()
 {
-	Rogue_RemoveChaos(20);
+	Rogue_RemoveChaos(50);
 }
 
 public void Rogue_Flawless1_Collect()
@@ -130,6 +128,9 @@ public void Rogue_LifeVest_Collect()
 
 public void Rogue_LifeVest_IngotChanged(int &ingots)
 {
+	if(ingots <= 0)
+		return;
+		
 	int chaos = Rogue_GetChaos();
 	int remove = ingots;
 	if(remove > chaos)
