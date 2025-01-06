@@ -363,7 +363,16 @@ bool Items_HasNamedItem(int client, const char[] name)
 			static GiftItem item;
 			GiftItems.GetArray(i, item);
 			if(StrEqual(item.Name, name, false))
-				return view_as<bool>(GetFlagsOfLevel(client, IdToLevel(i)) & IdToFlag(i));
+			{
+				if(client)
+					return view_as<bool>(GetFlagsOfLevel(client, IdToLevel(i)) & IdToFlag(i));
+				
+				for(int target = 1; target <= MaxClients; target++)
+				{
+					if(IsClientInGame(target) && GetClientTeam(target) == 2 && (GetFlagsOfLevel(target, IdToLevel(i)) & IdToFlag(i)))
+						return true;
+				}
+			}
 		}
 	}
 	

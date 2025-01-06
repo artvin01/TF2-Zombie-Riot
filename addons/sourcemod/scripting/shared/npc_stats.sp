@@ -2606,7 +2606,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return entity;
 	}
-	public int FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0, bool hide_projectile = true)
+	public int FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "",
+	 bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false,
+	 float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0, bool hide_projectile = true)
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		//this.GetVectors(vecForward, vecSwingStart, vecAngles);
@@ -6030,11 +6032,14 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 		int PassCheck = 0;
 		if(area != NULL_AREA)
 		{
+			/*
 			int NavAttribs = area.GetAttributes();
 			if(NavAttribs & NAV_MESH_DONT_HIDE)
 			{
 				PassCheck = 2;
 			}
+			//This is for plaers only.
+			*/
 		}
 		else
 		{
@@ -6647,11 +6652,12 @@ void GibCollidePlayerInteraction(int gib, int player)
 			{
 				if(!i_IsWandWeapon[weapon]) //Make sure its not wand.
 				{
-					if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Data, "m_iHealth"))
+					float Heal_Amount = 0.0;
+					
+					Heal_Amount = Attributes_Get(weapon, 180, 1.0);
+					//Make sure heal is higher then 0
+					if(Heal_Amount > 0.0 && SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Data, "m_iHealth"))
 					{
-						float Heal_Amount = 0.0;
-						
-						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
 						f_GibHealingAmount[gib] *= Heal_Amount;
 						
 						float Heal_Amount_calc;
@@ -8971,6 +8977,8 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 			if(HasSpecificBuff(npc, "Shook Head"))
 				Duration_Stun_Post *= 0.5;
 		}
+
+		Rogue_ParadoxDLC_StunTime(npc, Duration_Stun_Post);
 	}
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];

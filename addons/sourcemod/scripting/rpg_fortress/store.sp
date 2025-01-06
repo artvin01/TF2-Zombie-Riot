@@ -395,7 +395,10 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 		{
 			static ItemInfo info;
 			EquippedItems.GetArray(pos, info);
-			
+			if(MazeatItemHas())
+			{
+				cooldown *= 0.75;
+			}
 			info.Cooldown[what_slot - 1] = cooldown + GetGameTime();
 
 			EquippedItems.SetArray(pos, info);

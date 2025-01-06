@@ -602,8 +602,7 @@ methodmap Stella < CClotBody
 	}
 	public void Set_Particle(char[] Particle, char[] Attachment, int index = 0)
 	{
-		if(IsValidEntity(this.m_iParticles1))
-			RemoveEntity(this.m_iParticles1);
+		
 
 		float flPos[3], flAng[3];
 
@@ -613,9 +612,24 @@ methodmap Stella < CClotBody
 
 		switch(index)
 		{
-			case 0: this.m_iParticles1 = particle;
-			case 1: this.m_iParticles2 = particle;
-			case 2: this.m_iParticles3 = particle;
+			case 0: 
+			{
+				if(IsValidEntity(this.m_iParticles1))
+					RemoveEntity(this.m_iParticles1);
+				this.m_iParticles1 = particle;
+			}
+			case 1: 
+			{
+				if(IsValidEntity(this.m_iParticles2))
+					RemoveEntity(this.m_iParticles2);
+				this.m_iParticles2 = particle;
+			}
+			case 2: 
+			{
+				if(IsValidEntity(this.m_iParticles3))
+					RemoveEntity(this.m_iParticles3);
+				this.m_iParticles3 = particle;
+			}
 			default: 
 			{
 				//failsafe.
@@ -1164,7 +1178,7 @@ static void Ruina_Ion_Storm(int entity)
 	}
 	
 }
-static Action IonStorm_OffsetTimer(Handle Timer, DataPack data)
+Action IonStorm_OffsetTimer(Handle Timer, DataPack data)
 {
 	data.Reset();
 	int target = EntRefToEntIndex(data.ReadCell());

@@ -334,7 +334,7 @@ public void FullMoonAbilityM2(int client, int weapon, bool crit, int slot)
 		return;	
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 //	MakePlayerGiveResponseVoice(client, 1); //haha!
 //	EmitCustomToAll(GetRandomInt(0,1) ? "zombie_riot/weapons/hellagur_warcry1.mp3" : "zombie_riot/weapons/hellagur_warcry2.mp3", 

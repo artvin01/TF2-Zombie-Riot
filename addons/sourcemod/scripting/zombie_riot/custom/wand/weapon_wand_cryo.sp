@@ -118,7 +118,7 @@ public void Cryo_CheckBurst(int client, int weapon, bool &result, int slot, floa
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Cryo_ActivateBurst(client, weapon, result, slot, damage, freezemult, mana_cost, radius);
 			}
 			else

@@ -80,7 +80,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 		Ark_ParryTiming[client] = GetGameTime() + 1.0;
@@ -122,7 +122,7 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 		Ark_ParryTiming[client] = GetGameTime() + 1.0;
@@ -166,7 +166,7 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 		Ark_ParryTiming[client] = GetGameTime() + 1.0;
@@ -209,7 +209,7 @@ public void Ark_empower_ability_4(int client, int weapon, bool crit, int slot) /
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 		Ark_ParryTiming[client] = GetGameTime() + 1.0;
@@ -720,7 +720,7 @@ public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int sl
 			}
 			*/
 
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 15.0);
 			
 			damage *= Attributes_Get(weapon, 2, 1.0);

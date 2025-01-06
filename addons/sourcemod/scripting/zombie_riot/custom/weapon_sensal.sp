@@ -151,7 +151,7 @@ public void Sensal_Ability_M2(int client, int weapon, bool crit, int slot) // th
 		Ability_Apply_Cooldown(client, slot, 0.25);
 		if(f_SensalAbilityCharge_1[client] >= 0.5 || CvarInfiniteCash.BoolValue)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			SummonScytheSensalProjectile(client, weapon);
 			f_SensalAbilityCharge_1[client] -= 0.5;
 			if(f_SensalAbilityCharge_1[client] < 0.0)
@@ -177,7 +177,7 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 	{
 		if(f_SensalAbilityCharge_2[client] >= 1.0 || CvarInfiniteCash.BoolValue)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 1.0);
 			f_SensalAbilityCharge_2[client] -= 1.0;
 			if(f_SensalAbilityCharge_2[client] < 0.0)

@@ -146,7 +146,7 @@ public void Star_Shooter_Meteor_shower_ability(int client, int weapon, bool crit
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 45.0);
 		ClientCommand(client, "playgamesound weapons/cow_mangler_over_charge_shot.wav");
 

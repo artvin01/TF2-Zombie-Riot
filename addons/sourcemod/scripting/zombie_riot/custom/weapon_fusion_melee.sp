@@ -176,7 +176,7 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 
 		Duration[client] = GetGameTime() + 10.0; //Just a test.
@@ -217,7 +217,7 @@ public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, in
 	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 
 		Duration[client] = GetGameTime() + 10.0; //Just a test.
@@ -340,7 +340,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 
 			if(validpos)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 				float damage = 500.0;
 				damage *= Attributes_Get(weapon, 2, 1.0);
@@ -1155,7 +1155,7 @@ public void Siccerino_ability_m2(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 30.0); //Semi long cooldown, this is a strong buff.
 
 		EmitSoundToAll(SICCERINO_FAST_ATTACK_SOUND, client, SNDCHAN_STATIC, 90, _, 0.6);
@@ -1290,7 +1290,7 @@ public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0); //Semi long cooldown, this is a strong buff.
 
 		EmitSoundToAll(SICCERINO_PREPARE_SICCORS_SOUND, client, SNDCHAN_STATIC, 70, _, 0.6);
@@ -1691,7 +1691,7 @@ public void Void_MeleeDoubleTapAbility(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 		f_VoidDoubleTapAbility[client] = GetGameTime() + 10.0; //Just a test.
 		ApplyStatusEffect(client, client, "Self Empowerment", 10.0);

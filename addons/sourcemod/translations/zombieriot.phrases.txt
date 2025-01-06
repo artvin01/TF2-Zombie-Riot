@@ -2233,15 +2233,11 @@
 	}
 	"Skip Starter Confirm"
 	{
-		"en"		"You will be set to Level 5 and have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
-		"ru"		"Вы получите 5-й уровень и доступ к продвинутому оружию\nВы знакомы с основами покупки и выживания?\n "
-		"chi"       "你将被设置为5级，并可以使用先进的武器\n你熟悉购买和生存的基本知识吗?\n如若你不了解玩法，请误跳过新手教程!"
+		"en"		"You have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
 	}
 	"Skip Starter Yes"
 	{
-		"en"		"Yes, set me to Level 5"
-		"ru"		"Да, дайте мне 5-й уровень"
-		"chi"       "是的，设置到5级(慎重)"
+		"en"		"Yes, unlock advanced weapons"
 	}
 	"nothing"
 	{

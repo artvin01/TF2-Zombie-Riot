@@ -122,7 +122,7 @@ static float fl_weaver_charge[MAXENTITIES];
 static int i_weaver_index[MAXENTITIES];
 static int i_wave[MAXENTITIES];
 static bool b_allow_spawns[MAXENTITIES];
-
+static int i_special_tower_logic[MAXENTITIES];
 static int i_current_cycle[MAXENTITIES];
 static int i_strikes[MAXTF2PLAYERS];
 
@@ -258,6 +258,10 @@ methodmap Magia_Anchor < CClotBody
 		else
 			b_allow_spawns[npc.index] = true;
 		
+		i_special_tower_logic[npc.index] = 0;
+
+		if(StrContains(data, "lelouch") != -1)
+			i_special_tower_logic[npc.index] = 1;
 		
 		if(StrContains(data, "raid") != -1)
 			i_RaidGrantExtra[npc.index] = RAIDITEM_INDEX_WIN_COND;
@@ -428,7 +432,23 @@ static void ClotThink(int iNPC)
 		
 		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 		VecSelfNpcabs[2] += 100.0;
-		if(SpawnedOneAlready > GetGameTime())
+		if(GetTeam(npc.index) == TFTeam_Red)
+		{
+			Event event = CreateEvent("show_annotation");
+			if(event)
+			{
+				event.SetFloat("worldPosX", VecSelfNpcabs[0]);
+				event.SetFloat("worldPosY", VecSelfNpcabs[1]);
+				event.SetFloat("worldPosZ", VecSelfNpcabs[2]);
+				event.SetFloat("lifetime", 7.0);
+				event.SetString("text", "Allied Magia Anchors!");
+				event.SetString("play_sound", "vo/null.mp3");
+				IdRef++;
+				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
+				event.Fire();
+			}
+		}
+		else if(SpawnedOneAlready > GetGameTime())
 		{
 			Event event = CreateEvent("show_annotation");
 			if(event)
@@ -459,6 +479,7 @@ static void ClotThink(int iNPC)
 				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
 				event.Fire();
 			}
+			SpawnedOneAlready = GetGameTime() + 60.0;
 		}
 	}
 	
@@ -550,12 +571,64 @@ static void Spawning_Logic(Magia_Anchor npc)
 		return;
 
 	int npc_current_count;
+	int others = 0;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
+		switch(i_special_tower_logic[npc.index])
 		{
-			npc_current_count += 1;
+			case 1:	//for lelouch, only count the drones as valid npc total
+			{
+				if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
+				{
+					char npc_classname[60];
+					NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+
+					bool valid = false;
+
+					static const char Compare[][] = {
+						"npc_ruina_drone",
+						"npc_ruina_dronian",
+						"npc_ruina_dronis",
+						"npc_ruina_dronianis"
+					};
+
+					for(int i=0 ; i < 4 ; i ++)
+					{
+						if(StrEqual(npc_classname, Compare[i]))
+						{
+							valid = true;
+							break;
+						}
+					}
+					if(valid)
+					{
+						npc_current_count += 1;
+					}
+					else
+					{
+						others ++;
+					}
+				}
+			}
+			default:
+			{
+				if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
+				{
+					npc_current_count += 1;
+				}
+			}
+		}
+		
+	}
+
+	bool slower = false;
+	if(i_special_tower_logic[npc.index] == 1)
+	{
+		//for lelouch make it so if other npc's exist, slow it down a bit. that way the "wave spawn" can actually spawn.
+		if(others > 10)
+		{
+			slower = true;
 		}
 	}
 
@@ -567,6 +640,10 @@ static void Spawning_Logic(Magia_Anchor npc)
 	if(Ratio < -0.5)
 		Ratio=-0.5;
 	float Time = 1.0 + Ratio;
+	if(slower)
+	{
+		Time *=2.0;
+	}
 	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 	float ratio = float(wave)/60.0;
 	int health = RoundToFloor(15000.0*ratio);
@@ -574,6 +651,14 @@ static void Spawning_Logic(Magia_Anchor npc)
 		health = RoundToFloor(health * 2.0);
 	if(wave >=60)
 		health = RoundToFloor(health * 1.5);
+
+	switch(i_special_tower_logic[npc.index])
+	{
+		case 1:
+		{
+			health = RoundToCeil(health*2.0);
+		}
+	}
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{
@@ -621,6 +706,14 @@ static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int c
 
 				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
 				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+
+				switch(i_special_tower_logic[npc.index])
+				{
+					case 1:
+					{
+						fl_Extra_Damage[spawn_index] *= 3.5;
+					}
+				}
 			}	
 		}
 		return;

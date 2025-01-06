@@ -41,7 +41,7 @@ public void Red_charge_ability(int client, int weapon, bool crit, int slot) // t
 		}
 		i_RedBladeNpcToCharge[client] = EntIndexToEntRef(target);
 
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 10.0);
 		EmitSoundToAll("items/powerup_pickup_supernova_activate.wav", client, _, 80, _, 0.8, 100);
 

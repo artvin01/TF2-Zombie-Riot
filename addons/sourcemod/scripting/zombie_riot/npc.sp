@@ -390,9 +390,16 @@ void NPC_ConfigSetup()
 	Ruina_Storm_Weaver_MapStart();
 	Ruina_Storm_Weaver_Mid_MapStart();
 
+	Interstellar_Weaver_MapStart();
+	Interstellar_Weaver_MapStart_Mid();
+
 #endif
 
+
 	Kit_Fractal_NPC_MapStart();
+
+	Lelouch_OnMapStart_NPC();
+	Manipulation_OnMapStart_NPC();
 
 	//Expidonsa Waves
 //wave 1-15:
@@ -773,7 +780,14 @@ void NPC_ConfigSetup()
 	ChaosInsane_OnMapStart_NPC();
 	ChaosSickKnight_OnMapStart_NPC();
 	ChaosInjuredCultist_OnMapStart_NPC();
+	ChaosEvilDemon_OnMapStart_NPC();
+	HallamGreatDemon_OnMapStart_NPC();
+	HallamDemonWhisperer_OnMapStart_NPC();
+	ChaosSwordsman_OnMapStart_NPC();
+	MajorVoided_MapStart();
 	DuckFollower_Setup();
+	BobTheFirstFollower_Setup();
+	TwirlFollower_Setup();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -1350,6 +1364,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/ally/npc_fractal_cannon_animation.sp"
 
+
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_lelouch.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_manipulation_ent.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_interstellar_weaver.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_interstellar_weaver_mid.sp"
+
 //Alt
 
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
@@ -1716,10 +1736,20 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_duck_follower.sp"
 
+
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_evil_chaos_demon.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_chaos_swordsman.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_bob_first_follower.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_twirl_follower.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_hallam_great_demon.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_Ihanal_demon_whisperer.sp"
+#include "zombie_riot/npc/rogue/chaos_expansion/npc_majorvoided.sp"
+
 #include "zombie_riot/npc/mutations/truesurvival/npc_nightmare.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_petrisisbaron.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_sphynx.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zombine.sp"
+
 
 
 

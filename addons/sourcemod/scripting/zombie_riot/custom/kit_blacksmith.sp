@@ -219,7 +219,7 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 10.0);
 
 	ClientCommand(client, "playgamesound weapons/gunslinger_three_hit.wav");

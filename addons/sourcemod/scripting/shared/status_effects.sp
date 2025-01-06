@@ -396,6 +396,10 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration)
 			return;
 		}
 	}
+
+	if(!Apply_MasterStatusEffect.Positive)
+		Rogue_ParadoxDLC_DebuffTime(victim, Duration);
+
 	int CurrentSlotSaved = Apply_MasterStatusEffect.Slot;
 	int CurrentPriority = Apply_MasterStatusEffect.SlotPriority;
 	if(CurrentSlotSaved > 0)
@@ -3033,5 +3037,10 @@ void StatusEffects_StatusEffectListOnly()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia Morale Boost");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "W");
 	data.Positive 					= true;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Heavy Laccerations");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⸗");
+	data.Positive 					= false;
 	StatusEffect_AddGlobal(data);
 }

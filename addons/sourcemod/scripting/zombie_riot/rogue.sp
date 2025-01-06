@@ -45,6 +45,11 @@ enum struct Artifact
 	Function FuncAlly;
 	Function FuncEnemy;
 	Function FuncWeapon;
+	Function FuncWaveStart;
+	Function FuncStageStart;
+	Function FuncIngotChanged;
+	Function FuncRecoverWeapon;
+	Function FuncStageEnd;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -65,6 +70,21 @@ enum struct Artifact
 		
 		kv.GetString("func_weapon", this.Name, 64);
 		this.FuncWeapon = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_wavestart", this.Name, 64);
+		this.FuncWaveStart = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_stagestart", this.Name, 64);
+		this.FuncStageStart = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_ingotchanged", this.Name, 64);
+		this.FuncIngotChanged = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_recoverweapon", this.Name, 64);
+		this.FuncRecoverWeapon = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_stageend", this.Name, 64);
+		this.FuncStageEnd = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
@@ -96,6 +116,7 @@ enum struct Stage
 	char WaveSet[PLATFORM_MAX_PATH];
 	char ArtifactKey[64];
 	bool InverseKey;
+	MusicEnum IntroMusic;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -111,6 +132,7 @@ enum struct Stage
 		kv.GetString("skyname", this.Skyname, 64);
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		this.Repeat = view_as<bool>(kv.GetNum("repeatable"));
+		this.IntroMusic.SetupKv("intromusic", kv);
 		
 		kv.GetString("func_start", this.WaveSet, PLATFORM_MAX_PATH);
 		this.FuncStart = this.WaveSet[0] ? GetFunctionByName(null, this.WaveSet) : INVALID_FUNCTION;
@@ -511,6 +533,7 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 	{
 		if(VoteFunc == INVALID_FUNCTION)
 		{
+			bool levels = CvarLeveling.BoolValue;
 			Menu menu = new Menu(Rogue_CallVoteH);
 			
 			SetGlobalTransTarget(client);
@@ -525,13 +548,17 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			for(int i; i < length; i++)
 			{
 				Voting.GetArray(i, vote);
-				Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
-				int MenuDo = ITEMDRAW_DISABLED;
-				if(!vote.Level)
-					MenuDo = ITEMDRAW_DEFAULT;
-				if(Level[client] >= 1)
-					MenuDo = ITEMDRAW_DEFAULT;
-				menu.AddItem(vote.Name, vote.Config, MenuDo);
+
+				if(levels)
+				{
+					Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
+				}
+				else
+				{
+					Format(vote.Config, sizeof(vote.Config), "%t", vote.Name);
+				}
+
+				menu.AddItem(vote.Name, vote.Config);
 			}
 			
 			menu.ExitButton = false;
@@ -695,6 +722,16 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	}
 
 	Rogue_SetProgressTime(wait, true, true);
+
+	if(RogueTheme == BlueParadox)
+	{
+		CPrintToChatAll("{crimson}[ZR] Resetting found Weapons.....");
+		//prevents when restarting, finding 2 instantly...
+		Store_RandomizeNPCStore(1);
+		//reveal 15
+		Store_RandomizeNPCStore(0, 10);
+		Store_RandomizeNPCStore(0, 5);
+	}
 }
 
 void Rogue_RoundEnd()
@@ -714,24 +751,24 @@ void Rogue_RoundEnd()
 
 	if(CurrentCollection)
 	{
+		ArrayList list = CurrentCollection;
+		CurrentCollection = null;
+
 		Artifact artifact;
-		int length = CurrentCollection.Length;
+		int length = list.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			Artifacts.GetArray(list.Get(i), artifact);
 			if(artifact.FuncRemove != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, artifact.FuncRemove);
 				Call_Finish();
-
-				CurrentCollection.Erase(i);
-				i--;
-				length--;
 			}
 		}
 
-		delete CurrentCollection;
+		delete list;
 	}
+	
 	StartingItem[0] = 0;
 	
 	if(CurseOne != -1)
@@ -857,6 +894,8 @@ void Rogue_BattleVictory()
 {
 	ReviveAll();
 	Waves_RoundEnd();
+	bool victory = true;
+	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 	Store_RogueEndFightReset();
 	Rogue_ParadoxShop_Victory();
 
@@ -878,14 +917,21 @@ void Rogue_BattleVictory()
 			}
 			case BlueParadox:
 			{
+				int recover = 4;
+
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 4 : 5);
+					recover = CurrentFloor > 1 ? 6 : 8;
 				}
 				else if(BattleIngots > 1)
 				{
-					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 3 : 4);
+					recover = CurrentFloor > 1 ? 4 : 6;
 				}
+
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+
+				if(recover)
+					Store_RandomizeNPCStore(0, recover);
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
 				{
@@ -908,10 +954,15 @@ void Rogue_BattleVictory()
 		BattleChaos -= float(chaos);
 		Rogue_AddChaos(chaos);
 	}
+	else
+	{
+		Rogue_ParadoxDLC_Flawless();
+	}
 
 	if(CurrentType)
 	{
-		Rogue_NextProgress();
+		Rogue_SetProgressTime(5.0, false);
+		//Rogue_NextProgress();
 	}
 	else
 	{
@@ -930,6 +981,8 @@ void Rogue_BattleVictory()
 bool Rogue_BattleLost()
 {
 	Rogue_ParadoxShop_Fail();
+	bool victory = false;
+	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 
 	if(RogueTheme == BlueParadox)
 		Rogue_Dome_WaveEnd();
@@ -1547,12 +1600,16 @@ void Rogue_StartThisBattle(float time = 10.0)
 
 static void StartBattle(const Stage stage, float time = 3.0)
 {
-	for(int client = 1; client <= MaxClients; client++)
+	Rogue_TriggerFunction(Artifact::FuncStageStart);
+	if(!stage.IntroMusic.Path[0])
 	{
-		if(IsClientInGame(client))
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 3);
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 3);
+			}
 		}
 	}
 
@@ -1577,6 +1634,29 @@ static void StartStage(const Stage stage)
 	BattleIngots = CurrentFloor > 1 ? 4 : 3;
 	RequiredBattle = false;
 	SetAllCamera();
+
+	if(stage.IntroMusic.Path[0])
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + stage.IntroMusic.Time);
+				if(stage.IntroMusic.Custom)
+				{
+					EmitCustomToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, stage.IntroMusic.Volume);
+				}
+				else
+				{
+					EmitSoundToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				}
+			}
+		}
+
+		RemoveAllCustomMusic();
+	}
 
 	float time = stage.WaveSet[0] ? 0.0 : 5.0;
 	if(stage.FuncStart != INVALID_FUNCTION)
@@ -1923,7 +2003,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
 	delete ProgressTimer;
-	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_RoundStartTimer : Rogue_ProgressTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_ProgressTimer : Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	if(hud)
 		SpawnTimer(time);
@@ -2095,7 +2175,9 @@ void Rogue_PlayerDowned(int client)
 	if(!Waves_InSetup() && RogueTheme == BlueParadox)
 	{
 		// Gain 10.0 for the total of all players downing
-		BattleChaos += 10.0 / float(CurrentPlayers);
+		float chaos = 10.0 / float(CurrentPlayers);
+		Rogue_ParadoxDLC_BattleChaos(chaos);
+		BattleChaos += chaos;
 	}
 }
 
@@ -2250,13 +2332,13 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(StrEqual(artifact.Name, name, false))
 			{
+				CurrentCollection.Erase(i);
 				if(artifact.FuncRemove != INVALID_FUNCTION)
 				{
 					//call remove function.
 					Call_StartFunction(null, artifact.FuncRemove);
 					Call_Finish();
 				}
-				CurrentCollection.Erase(i);
 				return;
 			}
 		}
@@ -2275,6 +2357,26 @@ stock ArrayList Rogue_GetCurrentArtifacts()
 	return Artifacts;
 }
 
+void Rogue_TriggerFunction(int pos, any &data = 0)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = CurrentCollection.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			Function func = GetItemInArray(artifact, pos);
+			if(func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCellRef(data);
+				Call_Finish();
+			}
+		}
+	}
+}
+
 int Rogue_GetIngots()
 {
 	return CurrentIngots;
@@ -2283,20 +2385,23 @@ int Rogue_GetIngots()
 void Rogue_AddIngots(int amount, bool silent = false)
 {
 	int given = amount;
-	Rogue_Whiteflower_IngotGiven(given);
+	Rogue_TriggerFunction(Artifact::FuncIngotChanged, given);
 
-	CurrentIngots += given;
-	Waves_UpdateMvMStats();
-
-	if(!silent)
+	if(given)
 	{
-		if(amount < 0)
+		CurrentIngots += given;
+		Waves_UpdateMvMStats();
+
+		if(!silent)
 		{
-			CPrintToChatAll("%t", "Lost Ingots", -amount);
-		}
-		else
-		{
-			CPrintToChatAll("%t", "Gained Ingots", amount);
+			if(given < 0)
+			{
+				CPrintToChatAll("%t", "Lost Ingots", -given);
+			}
+			else
+			{
+				CPrintToChatAll("%t", "Gained Ingots", given);
+			}
 		}
 	}
 }
@@ -2726,3 +2831,4 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/paradox_dome.sp"
 
 #include "roguelike/item_whiteflower.sp"
+#include "roguelike/paradox_dlc.sp"

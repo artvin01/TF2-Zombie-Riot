@@ -151,7 +151,7 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 				return;
 			}
 
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 30.0);
 
 			Current_Mana[client]-=mana_cost;
@@ -271,7 +271,7 @@ public void Impact_Lance_Throw_Lance(int client, int weapon, bool crit, int slot
 		
 		delay_hud[client] = 0.0;
 
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
 
 		float speed = 1250.0;

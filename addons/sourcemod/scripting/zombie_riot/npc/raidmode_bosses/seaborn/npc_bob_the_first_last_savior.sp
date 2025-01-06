@@ -115,7 +115,7 @@ void RaidbossBobTheFirst_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "?????????????");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;

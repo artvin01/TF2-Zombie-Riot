@@ -132,7 +132,7 @@ public void Weapon_Walter_M2(int client, int weapon, bool &result, int slot)
 		}
 		else
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 
 			MakePlayerGiveResponseVoice(client, 1); //haha!
 			int entity = Store_GiveSpecificItem(client, "Explosive Dawn");

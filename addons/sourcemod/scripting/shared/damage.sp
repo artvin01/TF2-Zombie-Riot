@@ -7,8 +7,6 @@
 #define DMG_MEDIGUN_LOW 1.25
 #define DMG_WIDOWS_WINE 1.35
 
-
-
 float BarbariansMindNotif[MAXTF2PLAYERS];
 void DamageModifMapStart()
 {
@@ -107,26 +105,23 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 #if !defined RTS
 stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+#if defined RPG
+	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
+	{
+		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
+			return true;
+
+		if(!CheckInHud())
+			LastHitRef[victim] = EntIndexToEntRef(attacker);
+	}
+#endif
+
 	if(!CheckInHud())
 		HudDamageIndicator(victim,damagetype, false);
 #if defined ZR
 	if(VIPBuilding_Active())
 		return true;
-#endif
-#if defined ZR
-
-	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
-	{
-#if defined RPG
-		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
-#endif
-			return true;
-
-#if defined RPG
-		if(!CheckInHud())
-			LastHitRef[victim] = EntIndexToEntRef(attacker);
-#endif	
-	}
+	
 	float GameTime = GetGameTime();
 
 	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
@@ -146,7 +141,29 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
 			damage *= 3.0;	//when a raid is alive, make quantum armor 8x as bad at tanking.
-			
+	
+	if(!CheckInHud())
+	{
+		// Reduce damage taken as new players in extreme difficulties
+		if(Level[victim] < 29 && Database_IsCached(victim))
+		{
+			int rank = Waves_GetLevel();
+			if(rank > Level[victim])
+			{
+				// Up to 50 level difference for 50% res
+				float reduce = (rank - Level[victim]) / 100.0;
+				if(reduce > 0.5)
+					reduce = 0.5;
+				
+				// Between 20-29 make it less of a spike between handicap and none
+				if(Level[victim] > 19)
+					reduce *= (29 - Level[victim]) * 0.1;
+
+				damage *= 1.0 - reduce;
+			}
+		}
+	}
+
 	if(!CheckInHud())
 	{
 		switch(i_CurrentEquippedPerk[victim])
@@ -591,8 +608,31 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 stock bool Damage_PlayerAttacker(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
-	if(Rogue_InItallianWrath(weapon))
+	//cant be 0
+	if(attacker > 0 && Rogue_InItallianWrath(weapon))
 		damage *= 2.0;
+	
+	if(!CheckInHud())
+	{
+		// Increase damage dealt as new players in extreme difficulties
+		if(Level[attacker] < 29 && Database_IsCached(attacker))
+		{
+			int rank = Waves_GetLevel();
+			if(rank > Level[attacker])
+			{
+				// Up to 50 level difference for 50% damage
+				float increase = (rank - Level[attacker]) / 100.0;
+				if(increase > 0.5)
+					increase = 0.5;
+				
+				// Between 20-29 make it less of a spike between handicap and none
+				if(Level[attacker] > 19)
+					increase *= (29 - Level[attacker]) * 0.1;
+
+				damage *= 1.0 + increase;
+			}
+		}
+	}
 #endif
 	if(!CheckInHud())
 		HudDamageIndicator(attacker,damagetype, true);
@@ -1342,11 +1382,15 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 	}
 }
 
-static stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+float ExtraDamageWaveScaling()
+{
+	return (CurrentCash * 0.001);
+}
+stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {	
 	float ExtraDamageDealt;
 
-	ExtraDamageDealt = CurrentCash * 0.001; //at wave 60, this will equal to 60* dmg
+	ExtraDamageDealt = ExtraDamageWaveScaling(); //at wave 60, this will equal to 60* dmg
 	if(ExtraDamageDealt <= 0.35)
 	{
 		ExtraDamageDealt = 0.35;
@@ -1710,20 +1754,33 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		damage *= 1.5;
 	}
 #endif
-
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
-		if(f_MultiDamageTaken[victim] <= 1.0 && (!(damagetype & DMG_TRUEDAMAGE)))
+		if((damagetype & DMG_TRUEDAMAGE))
+		{
+			if(f_MultiDamageTaken[victim] >= 1.0)
+			{
+				damage *= f_MultiDamageTaken[victim];
+			}
+		}
+		else
 			damage *= f_MultiDamageTaken[victim];
 	}
 	if(f_MultiDamageTaken_Flat[victim] != 1.0)
 	{
-		if(f_MultiDamageTaken_Flat[victim] <= 1.0 && (!(damagetype & DMG_TRUEDAMAGE)))
+		if((damagetype & DMG_TRUEDAMAGE))
+		{
+			if(f_MultiDamageTaken_Flat[victim] >= 1.0)
+			{
+				damage *= f_MultiDamageTaken_Flat[victim];
+			}
+		}
+		else
 			damage *= f_MultiDamageTaken_Flat[victim];
 	}
 
 #if defined ZR
-	if(i_CurrentEquippedPerk[victim] == 2 && (!(damagetype & DMG_TRUEDAMAGE)))
+	if(i_CurrentEquippedPerk[victim] == 2 && !(damagetype & DMG_TRUEDAMAGE))
 		damage *= 0.85;
 #endif
 }

@@ -462,7 +462,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			Ability_Apply_Cooldown(client, slot, 1.0);
 			WeaponCharge[client] -= cost;
 
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(ConnectWithBeam(client, entity, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER)), TIMER_FLAG_NO_MAPCHANGE);
 		}

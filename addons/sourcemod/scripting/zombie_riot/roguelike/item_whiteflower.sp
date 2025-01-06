@@ -11,23 +11,12 @@ enum struct SoulBuff
 }
 
 static ArrayList AnnouncedBuff;
-static bool CoinExchanger;
 static int RottenBone;
 static int EmptyPlate;
 
 void Rogue_Whiteflower_Reset()
 {
 	delete AnnouncedBuff;
-}
-
-void Rogue_Whiteflower_IngotGiven(int &ingots)
-{
-	if(CoinExchanger)
-	{
-		CurrentCash += 200 * ingots;
-		GlobalExtraCash += 200 * ingots;
-		ingots = 0;
-	}
 }
 
 bool Rogue_Whiteflower_RemainDrop(int type)
@@ -325,13 +314,14 @@ public void Rogue_Exchanger_Collect()
 	
 	CurrentCash += 200 * ingots;
 	GlobalExtraCash += 200 * ingots;
-
-	CoinExchanger = true;
 }
 
-public void Rogue_Exchanger_Remove()
+public void Rogue_Exchanger_IngotChanged(int &ingots)
 {
-	CoinExchanger = false;
+	CurrentCash += 200 * ingots;
+	GlobalExtraCash += 200 * ingots;
+	CPrintToChatAll("{green}%t","Cash Gained!", 200 * ingots);
+	ingots = 0;
 }
 
 public void Rogue_RareWeapon_Collect()

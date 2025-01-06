@@ -260,7 +260,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 	//This ability has no cooldown in itself, it just relies on hits you do.
 	if(i_IreneHitsDone[client] >= IRENE_JUDGEMENT_MAX_HITS_NEEDED || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		i_IreneHitsDone[client] = 0;
 		//Sucess! You have enough charges.
 		//Heavy logic incomming.

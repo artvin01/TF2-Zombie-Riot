@@ -280,13 +280,15 @@ public float Rogue_Encounter_Prophecy1()
 	list.PushArray(vote);
 
 	bool easyMode = Rogue_HasNamedArtifact("Compass and Map");
+	bool hardMode = Rogue_HasNamedArtifact("Bob's Assistance");
 	bool found;
 
 	if(!easyMode)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM1))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM1) &&
+				Items_HasNamedItem(client, "Bob's Curing Hand"))
 			{
 				found = true;
 				break;
@@ -304,9 +306,41 @@ public float Rogue_Encounter_Prophecy1()
 	else if(!found)
 	{
 		vote.Locked = true;
-		strcopy(vote.Append, sizeof(vote.Append), " (???)");
+		strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 1 and Defeat Stella & Karlas)");
 	}
 	list.PushArray(vote);
+
+	if(hardMode)
+	{
+		bool rogue, runia;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM3))
+			{
+				rogue = true;
+				
+				if(Items_HasNamedItem(client, "Kahmlsteins Last Will") && Items_HasNamedItem(client, "Twirl's Hairpins"))
+				{
+					runia = true;
+					break;
+				}
+			}
+		}
+
+		if(rogue)
+		{
+			strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 1c");
+			strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 1c");
+
+			if(!runia)
+			{
+				vote.Locked = true;
+				strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 3 and Defeat Unspeakable and Twirl)");
+			}
+
+			list.PushArray(vote);
+		}
+	}
 
 	Rogue_StartGenericVote(20.0);
 
@@ -314,14 +348,22 @@ public float Rogue_Encounter_Prophecy1()
 }
 public void Rogue_Vote_Prophecy1(const Vote vote, int index)
 {
-	if(index)
+	switch(index)
 	{
-		PrintToChatAll("%t", "Prophecy Lore 1b");
-		Rogue_GiveNamedArtifact("Waldch Assistance", true);
-	}
-	else
-	{
-		PrintToChatAll("%t", "Prophecy Lore 1a");
+		case 0:
+		{
+			PrintToChatAll("%t", "Prophecy Lore 1a");
+		}
+		case 1:
+		{
+			PrintToChatAll("%t", "Prophecy Lore 1b");
+			Rogue_GiveNamedArtifact("Waldch Assistance", true);
+		}
+		case 2:
+		{
+			PrintToChatAll("%t", "Prophecy Lore 1c");
+			Rogue_GiveNamedArtifact("Twirl Guidance");
+		}
 	}
 }
 
@@ -351,12 +393,14 @@ public float Rogue_Encounter_Prophecy2()
 	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
 
 	bool waldch = Rogue_HasNamedArtifact("Waldch Assistance");
+	bool twirl = Rogue_HasNamedArtifact("Twirl Guidance");
 	bool kalm;
 	if(waldch)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM2))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM2) &&
+				Items_HasNamedItem(client, "Kahml's Contained Chaos"))
 			{
 				kalm = true;
 				break;
@@ -366,7 +410,16 @@ public float Rogue_Encounter_Prophecy2()
 
 	Vote vote;
 
-	if(kalm)
+	if(twirl)
+	{
+		ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Prophecy2, "Prophecy Lore 4");
+
+		strcopy(vote.Name, sizeof(vote.Name), "Unauthorized Ruina Gem");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		vote.Config[0] = 1;
+		list.PushArray(vote);
+	}
+	else if(kalm)
 	{
 		ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Prophecy2, "Prophecy Lore 3");
 
@@ -390,7 +443,7 @@ public float Rogue_Encounter_Prophecy2()
 		if(waldch)
 		{
 			vote.Locked = true;
-			strcopy(vote.Append, sizeof(vote.Append), " (No Waldch)");
+			strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 2 and Defeat Kahmlstein)");
 		}
 
 		strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 2b");
@@ -399,6 +452,7 @@ public float Rogue_Encounter_Prophecy2()
 
 		strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 2c");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 2c");
+		vote.Append[0] = 0;
 		list.PushArray(vote);
 	}
 
@@ -410,9 +464,16 @@ public void Rogue_Vote_Prophecy2(const Vote vote, int index)
 {
 	if(vote.Config[0])
 	{
-		Rogue_GiveNamedArtifact("Kahmlstein Guidance");
+		if(index)
+		{
+			Rogue_GiveNamedArtifact("Kahmlstein Guidance");
 
-		Rogue_RemoveChaos(50);
+			Rogue_RemoveChaos(50);
+		}
+		else
+		{
+			Rogue_GiveNamedArtifact("Unauthorized Ruina Gem");
+		}
 	}
 	else
 	{
@@ -427,7 +488,10 @@ public void Rogue_Vote_Prophecy2(const Vote vote, int index)
 			{
 				PrintToChatAll("%t", "Prophecy Lore 2b");
 				Rogue_AddChaos(20);
-				Store_RandomizeNPCStore(0, 10);
+
+				int recover = 10;
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+				Store_RandomizeNPCStore(0, recover);
 			}
 			case 2:
 			{
@@ -460,6 +524,7 @@ public float Rogue_Encounter_LostVillager()
 
 	return 30.0;
 }
+
 public void Rogue_Vote_LostVillager(const Vote vote, int index)
 {
 	if(vote.Config[0])
@@ -469,7 +534,10 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			case 0:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 1a");
-				Store_RandomizeNPCStore(0, 4);
+
+				int recover = 5;
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+				Store_RandomizeNPCStore(0, recover);
 			}
 			case 1:
 			{
@@ -520,7 +588,9 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 				Rogue_AddChaos(15);
 				GiveCash(2000);
 				Rogue_AddIngots(15);
-				Store_RandomizeNPCStore(0, 4);
+				int recover = 5;
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+				Store_RandomizeNPCStore(0, recover);
 			}
 		}
 	}
@@ -528,8 +598,6 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 
 public float Rogue_Encounter_DowntimeRecreation()
 {
-	GiveCash(4000);
-
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_DowntimeRecreation, "Downtime Recreation Lore");
 	Vote vote;
 
@@ -587,7 +655,10 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 				case 4, 5, 6:
 				{
 					Rogue_AddIngots(-4);
-					Store_RandomizeNPCStore(0, 1);
+
+					int recover = 1;
+					Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+					Store_RandomizeNPCStore(0, recover);
 					title = 'e';
 				}
 				case 7, 8:
@@ -628,8 +699,6 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 
 public float Rogue_Encounter_FortituousOpportunity()
 {
-	GiveCash(4000);
-
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_FortituousOpportunity, "Fortituous Opportunity Lore");
 	Vote vote;
 
@@ -674,13 +743,20 @@ public float Rogue_Encounter_FortituousOpportunity()
 }
 public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
 {
-	if(vote.Config[0])
+	if(StrEqual(vote.Config, "Unauthorized Ruina Gem"))
+	{
+		CPrintToChatAll("{purple}Twirl{snow}: ........................... So you all are traitors. Go to hell.");
+		CPrintToChatAll("{crimson}Twirl leaves you alone in the desert, bob the second also leaves you... Uh... did you think this one through?");
+		ForcePlayerLoss();
+		//If mercs give it away, you just auto loose.
+	}
+	else if(vote.Config[0])
 	{
 		CPrintToChatAll("%t", "Fortituous Opportunity Lore 1", vote.Config);
 		Rogue_RemoveNamedArtifact(vote.Config);
 		
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 	else
@@ -717,7 +793,7 @@ public float Rogue_Encounter_EmergencyDispatch()
 	
 	if(count < 5)
 	{
-		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1");
+		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1a");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1a");
 		strcopy(vote.Append, sizeof(vote.Append), " Bob The Second");
 		vote.Config[0] = -1;
@@ -729,7 +805,7 @@ public float Rogue_Encounter_EmergencyDispatch()
 		int pos;
 		SortIntegers(players, count, Sort_Random);
 
-		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1");
+		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1b");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1b");
 
 		for(int i; i < 3; i++)
@@ -794,7 +870,7 @@ public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
 	else
 	{
 		PrintToChatAll("%t", "Emergency Dispatch Lore 2");
-		GiveCash(((Rogue_GetFloor() + 1) * 2000) + 1000);
+		GiveCash((Rogue_GetFloor() * 2000) + 1000);
 	}
 }
 public bool Rogue_BlueParadox_CanTeutonUpdate(int client)
@@ -885,3 +961,61 @@ public float Rogue_Encounter_EscapeBattle()
 
 	return 25.0;
 }
+
+public float Rogue_Encounter_MazeatLostTech()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 1);
+		}
+	}
+
+	RemoveAllCustomMusic();
+
+	strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/bishopsoftheoldfaith.mp3");
+	MusicString1.Time = 999;
+	MusicString1.Volume = 1.0;
+	MusicString1.Custom = true;
+	strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Bishops of the Old Faith");
+	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
+	
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_MazeatLostTech, "Mazeat Lost Tech Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Mazeat Lost Tech Option 1a");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Mazeat Lost Tech Desc 1a");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Mazeat Lost Tech Option 1b");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Mazeat Lost Tech Desc 1b");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 30.0;
+}
+
+public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			GiveCash(5000);
+			Artifact artifact;
+			if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+		}
+		case 1:
+		{
+			Rogue_GiveNamedArtifact("Mazeat Lost Technology");
+			Rogue_StartThisBattle(5.0);
+			Rogue_SetBattleIngots(6);
+		}
+	}
+}
+
+

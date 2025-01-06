@@ -60,7 +60,7 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 40)
 		{
-			Rogue_OnAbilityUse(entity);
+			Rogue_OnAbilityUse(client, entity);
 			new_ammo -= 40;
 			SetAmmo(client, 23, new_ammo);
 			CurrentAmmo[client][23] = GetAmmo(client, 23);

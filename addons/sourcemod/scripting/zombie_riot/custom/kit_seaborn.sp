@@ -19,7 +19,7 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 90.0);
 
 	EmitSoundToClient(client, "ambient/halloween/thunder_01.wav");
@@ -202,7 +202,7 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 60.0);
 
 	ClientCommand(client, "playgamesound ambient/halloween/male_scream_13.wav");
@@ -232,7 +232,7 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 75.0);
 
 	ClientCommand(client, "playgamesound ambient/halloween/male_scream_13.wav");
@@ -265,7 +265,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 90.0);
 
 	ClientCommand(client, "playgamesound ambient/halloween/male_scream_13.wav");

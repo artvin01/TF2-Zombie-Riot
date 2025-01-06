@@ -55,7 +55,7 @@ public void Hunting_Rifle_Ability(int client, int weapon, bool crit, int slot)	 
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 45.0);
 		ClientCommand(client, "playgamesound weapons/recon_ping.wav");
 		ApplyTempAttrib(weapon, 2, 2.2, 10.0);					// dmg buff while ability is activated
@@ -80,7 +80,7 @@ public void Hunting_Rifle_Ability2(int client, int weapon, bool crit, int slot)	
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 45.0);
 		ClientCommand(client, "playgamesound weapons/recon_ping.wav");
 		ApplyTempAttrib(weapon, 2, 3.0, 15.0);					// dmg buff while ability is activated
