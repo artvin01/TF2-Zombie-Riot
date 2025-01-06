@@ -2844,13 +2844,14 @@ static Action KaboomRogueOnlyEffect_LeLouch(Handle Timer, int nothing)
 		SavePos = {8705.115234, -137.372833, -3051.154297};
 		SavePos[0] += GetRandomFloat(-100.0,100.0);
 		SavePos[1] += GetRandomFloat(-100.0,100.0);
-		SavePos[2] += GetRandomFloat(-100.0,100.0);
+		SavePos[2] += GetRandomFloat(-300.0,100.0);
 		DataPack pack_boom1 = new DataPack();
 		pack_boom1.WriteFloat(SavePos[0]);
 		pack_boom1.WriteFloat(SavePos[1]);
 		pack_boom1.WriteFloat(SavePos[2]);
-		pack_boom1.WriteCell(1);
+		pack_boom1.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom1);
+		EmitAmbientSound("ambient/explosions/explode_3.wav", SavePos, _, 90, _,1.0, GetRandomInt(75, 110));
 		ParticleEffectAt(SavePos, "powerup_supernova_explode_blue", 0.25);
 	}
 	return Plugin_Stop;
