@@ -593,8 +593,18 @@ methodmap Lelouch < CClotBody
 		npc.m_flRevertAnim = FAR_FUTURE;
 		npc.m_flFreezeAnim = FAR_FUTURE;
 		npc.m_flCrystalRevert = FAR_FUTURE;
+
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+
 		Ruina_Set_No_Retreat(npc.index);
+		RemoveAllDamageAddition();
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+
+		SetVariantColor(view_as<int>({255, 255, 255, 255}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		fl_nightmare_cannon_core_sound_timer[npc.index] = 0.0;
 		b_Anchors_Created[npc.index] = false;
@@ -680,7 +690,7 @@ methodmap Lelouch < CClotBody
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 400.0;
+			RaidModeTime = GetGameTime() + 400.0;
 
 			WaveStart_SubWaveStart(GetGameTime() + 600.0);
 			//this shouldnt ever start, no anti delay here.

@@ -798,16 +798,12 @@ methodmap Twirl < CClotBody
 		npc.GetAttachment("head", flPos, flAng);	
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
 		
-
 		SetVariantInt(RUINA_WINGS_4);
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
 		npc.Anger = false;
-
-		
-		
 
 		if(StrContains(data, "triple_enemies") != -1)
 		{
