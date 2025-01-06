@@ -542,28 +542,105 @@ public void SSBChair_Teleport_Activate(SSBChair ssb, int target)
 {
 	ArrayList enemies = GetRandomlySortedEnemies(ssb);
 
+	float endPos[3];
 	bool passed = GetArraySize(enemies) > 0;	//First check: do we even have any enemies to teleport to? Should almost always pass during actual gameplay.
 	if (passed)
 	{
 		//Second test: do we have at least one enemy who we can teleport above without getting stuck?
-		float telePos[3], teleAng[3];
-		teleAng[0] = -90.0;
 		for (int i = 0; i < GetArraySize(enemies); i++)
 		{
-			
+			float vicPos[3];
+			WorldSpaceCenter(i, vicPos);
+
+			bool success = SSBChair_Teleport_CheckSpaceAbovePoint(vicPos, Teleport_Height[Chair_Tier[ssb.index]], endPos);
+
+			if (success)
+				break;
+			else if (i == GetArraySize(enemies) - 1)
+				passed = false;
 		}
 
 		//Both tests passed: teleport above the chosen enemy.
+		if (passed)
+		{
+			ssb.Teleport(endPos, true);
+		}
 	}
 
-	//One of the checks failed, try to teleport above a random nearby nav area instead of a player.
-	//If the chosen nav area can't be teleported above, just teleport directly to it and skip the shockwave portion of this ability.
+	//None of the living enemies have a valid space above them, try to teleport above a random nearby nav area instead of a player.
+	//If none of the chosen nav areas can be teleported above, just teleport directly to it and skip the shockwave portion of this ability.
 	if (!passed)
 	{
+		float ssbPos[3];
+		WorldSpaceCenter(ssb.index, ssbPos);
+		ArrayList areas = GetAllNearbyAreas(ssbPos, Teleport_FallbackRadius[Chair_Tier[ssb.index]]);
 
+		if (GetArraySize(areas) > 0)
+		{
+			ScrambleArray(areas);
+			for (int i = 0; i < GetArraySize(areas); i++)
+			{
+				float randPos[3];
+				CNavArea navi = GetArrayCell(areas, i);
+				navi.GetCenter(randPos);
+
+				bool success = SSBChair_Teleport_CheckSpaceAbovePoint(randPos, Teleport_Height[Chair_Tier[ssb.index]], endPos);
+				if (success)
+				{
+					passed = true;
+					break;
+				}
+				else if (i == GetArraySize(areas) - 1)
+				{
+					ssb.Teleport(randPos, false);
+				}
+			}
+		}
+
+		if (passed)
+		{
+			ssb.Teleport(endPos, true);
+		}
+
+		delete areas;
 	}
 
 	delete enemies;
+}
+
+public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float height, float endPos[3])
+{
+	float ssbMaxs[3], ssbMins[3], teleAng[3];
+	ssbMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+	ssbMins = view_as<float>( { -24.0, -24.0, 0.0 } );
+	//NOTE: The ability will get weird if we decide to manually override his scale, but that won't happen in normal gameplay so that doesn't really matter.
+	ScaleVector(ssbMaxs, SSB_CHAIR_SCALE);
+	ScaleVector(ssbMins, SSB_CHAIR_SCALE);
+
+	teleAng[0] = -90.0;
+
+	//First: Get the point directly above the given position.
+	GetPointFromAngles(startPos, teleAng, height, endPos, Priest_IgnoreAll, MASK_SHOT);
+	TR_TraceRayFilterEx(startPos, endPos, MASK_SHOT, RayType_EndPoint, Trace_WorldOnly);
+
+	//Next: Check to see if our trace hit anything. If it did, that means we hit a ceiling.
+	//Therefore: try to move down a bit. If we cannot move down without being below the start point,
+	//that means the space above the given position is not a valid teleport spot, so return false.
+	float dist = GetVectorDistance(startPos, endPos);
+	if (TR_DidHit())
+	{
+		if (dist < ssbMaxs[2] * 1.15)
+			return false;
+
+		endPos[2] -= ssbMaxs[2];
+	}
+
+	//Finally: run a hull check for the teleport position to make sure SSB won't get stuck if he teleports there.
+	TR_TraceHullFilterEx(endPos, endPos, ssbMins, ssbMaxs, MASK_SHOT, Trace_WorldOnly);
+	if (TR_DidHit())
+		return false;
+
+	return true;
 }
 
 public ArrayList GetRandomlySortedEnemies(CClotBody user)
@@ -576,6 +653,13 @@ public ArrayList GetRandomlySortedEnemies(CClotBody user)
 			PushArrayCell(list, i);
 	}
 
+	ScrambleArray(list);
+
+	return list;
+}
+
+public void ScrambleArray(ArrayList list)
+{
 	if (GetArraySize(list) > 0)
 	{
 		for(int i = 0; i < GetArraySize(list) - 1; i++)
@@ -586,8 +670,6 @@ public ArrayList GetRandomlySortedEnemies(CClotBody user)
 			SetArrayCell(list, them, me);
 		}
 	}
-
-	return list;
 }
 
 methodmap SSBChair < CClotBody
@@ -815,6 +897,11 @@ methodmap SSBChair < CClotBody
 			this.m_iWearable3 = ParticleEffectAt_Parent(pos, handParticle, this.index, effectPoint);
 			EmitSoundToAll(sound, this.index, _, 120);
 		}
+	}
+
+	public void Teleport(float pos[3], bool shockwave)
+	{
+		
 	}
 
 	public SSBChair(int client, float vecPos[3], float vecAng[3], int ally)
