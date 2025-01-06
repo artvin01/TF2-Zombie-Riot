@@ -618,7 +618,7 @@
 	}
 	"Pack of Smokes Desc"
 	{
-		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20%% firing, reload, and healing speed {red}but gain 8 Chaos Infliction after a stage"
+		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20%% firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
 	}
 	"Silver Seal Letter"
 	{

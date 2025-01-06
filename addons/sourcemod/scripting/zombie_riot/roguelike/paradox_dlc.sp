@@ -18,9 +18,10 @@ void Rogue_ParadoxDLC_Flawless()
 {
 	if(Smoking)
 	{
-		Rogue_AddChaos(8);
+		Rogue_AddChaos(5);
 	}
-	else if(FlawlessAmount)
+
+	if(FlawlessAmount)
 	{
 		Rogue_RemoveChaos(FlawlessAmount);
 	}
@@ -33,9 +34,6 @@ void Rogue_ParadoxDLC_BattleChaos(float &chaos)
 	
 	if(ReduceChaos2)
 		chaos *= 0.4;
-	
-	if(Smoking)
-		chaos += 8.0;
 }
 
 void Rogue_ParadoxDLC_DebuffTime(int entity, float &time)
@@ -130,6 +128,9 @@ public void Rogue_LifeVest_Collect()
 
 public void Rogue_LifeVest_IngotChanged(int &ingots)
 {
+	if(ingots <= 0)
+		return;
+		
 	int chaos = Rogue_GetChaos();
 	int remove = ingots;
 	if(remove > chaos)
