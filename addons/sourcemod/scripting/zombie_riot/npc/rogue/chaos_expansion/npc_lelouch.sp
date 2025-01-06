@@ -1063,8 +1063,6 @@ enum struct Crystal_Data
 
 		if(dist > 500.0)
 		{
-			//target location unusually far, assume it got stuck, and thus teleport to the target location.
-			f_StuckOutOfBoundsCheck[Crystal] = GetGameTime() + 5.0;	//alongside that give it a bit of "noclip"
 			TeleportEntity(Crystal, Loc, Angles);
 			return;
 		}
