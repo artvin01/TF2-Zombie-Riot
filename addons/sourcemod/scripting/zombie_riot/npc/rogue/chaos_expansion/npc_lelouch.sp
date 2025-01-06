@@ -255,7 +255,7 @@ void Lelouch_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Lelouch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_lelouch");
-	data.Category = Type_Ruina;
+	data.Category = Type_BlueParadox;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	strcopy(data.Icon, sizeof(data.Icon), "Chaos_insane"); 						//leaderboard_class_(insert the name)
@@ -586,9 +586,9 @@ methodmap Lelouch < CClotBody
 		npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
 
 		b_crystals_active[npc.index] = false;
-		npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 2.0;
-		npc.m_flCrystalSpiralLaserCoolDownTimer = GetGameTime(npc.index) + 15.0;
-		npc.m_flCrystalLaserWorks = GetGameTime(npc.index) + 10.0;
+		npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
+		npc.m_flCrystalSpiralLaserCoolDownTimer = GetGameTime(npc.index) + GetRandomFloat(25.0, 45.0);
+		npc.m_flCrystalLaserWorks = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
 
 		npc.m_flRevertAnim = FAR_FUTURE;
 		npc.m_flFreezeAnim = FAR_FUTURE;
@@ -741,7 +741,20 @@ static void Lelouch_WinLine(int entity)
 	CPrintToChatAll("{purple}Twirl{snow}: hahah, guess there's nothing left to lose, Lelouch, have you ever seen what our ion barrage can truly achive if we pump every spare Petawatt into it?");
 	Lelouch_Lines(npc, "...");
 
-	CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
+	if(Rogue_Mode())
+	{
+		float flPos[3]; // original
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+		CreateEarthquake(flPos, 8.0, 9999.9, 16.0, 255.0);
+		CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
+
+		//kaboom effect
+		for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
+		{
+			CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		GiveProgressDelay(12.0);
+	}
 
 	Ruina_Ion_Storm(entity);
 	EmitSoundToAll(BLITZLIGHT_ATTACK);
@@ -800,7 +813,20 @@ static void ClotThink(int iNPC)
 		Ruina_Ion_Storm(npc.index);
 		EmitSoundToAll(BLITZLIGHT_ATTACK);
 
-		CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
+		if(Rogue_Mode())
+		{
+			float flPos[3]; // original
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			CreateEarthquake(flPos, 8.0, 9999.9, 16.0, 255.0);
+			CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
+
+			//kaboom effect
+			for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
+			{
+				CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
+			}
+			GiveProgressDelay(12.0);
+		}
 
 		Lelouch_Lines(npc, "Wait WHAT-");
 
@@ -2711,17 +2737,19 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		/*
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 
 		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		
-		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				
-		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				
-		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		
+		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 							
+		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 				
 		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			
 		 				
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		
 		*/
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapon {gold}%N{snow}. It looks identical to my own. Fortunately my one's the genuine article.", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "What a shoody looking weapon you have there {gold}%N{snow}, if only you had the real one.", client);}
+		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "I never could understand why {purple}Twirl{snow} was so obssed with \"{blue}The storm that is aproaching{snow}\". Do you {gold}%N{snow} know perchance", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Whose this {blue}Vergil{snow} you speak of {gold}%N{snow}?", client);}
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg was the only good thing that came out of the alliance, {gold}%N{snow}. You sure know how to choose good weapons", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "A real shame that you {gold}%N{snow} destroyed Blitzkrieg before I got a chance to \"Upgrade\" him...", client);}
+		case WEAPON_KIT_FRACTAL:  switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "The hell is that thing your using {gold}%N{snow} yet its power is familiar..", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Wait are you {gold}%N{snow} using a fragment of {purple}Twirl{snow}'s power?", client);}
+		case WEAPON_BOOMSTICK: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "Overcompensating there {gold}%N{snow} for something?", client); 							case 2: Format(Text_Lines, sizeof(Text_Lines), "Why is shooting a huge piece of metal so effective {gold}%N{snow} explain this to me immediately!", client);}
 		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapons shows you care more for aesthetics then functionality {gold}%N", client);  case 2: Format(Text_Lines, sizeof(Text_Lines), "That weapon is more flashy then effective {gold}%N", client);}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "You bitch {gold}%N", client); 
 
@@ -2818,20 +2846,22 @@ static void NPC_Death(int entity)
 	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index])
 	{
 		Lelouch_Lines(npc, "You... You really think if i die youll prevent the gateway opening??? You are so foolish....");
+		//it isn't rouge mode? don't do anything else
+		if(!Rogue_Mode())
+			return;
+
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 		CreateEarthquake(flPos, 8.0, 9999.9, 16.0, 255.0);
 		CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, Timer_FadoutOffset_Global, 50, TIMER_FLAG_NO_MAPCHANGE);
-		if(Rogue_Mode())
+
+		//kaboom effect
+		for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
 		{
-			//kaboom effect
-			for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
-			{
-				CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
-			}
-			GiveProgressDelay(12.0);
+			CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
 		}
+		GiveProgressDelay(12.0);
 	}
 	
 }
@@ -2886,7 +2916,13 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 	if(nothing == 69)
 	{
 		ParticleEffectAt({8705.115234, -137.372833, -3051.154297}, "hightower_explosion", 1.0);
-		CPrintToChatAll("{purple}Twirl{snow}: Oh Crap... I'll escort you, hold on.");
+		CPrintToChatAll("{purple}Twirl{snow}: Oh damn, he actually used his own life to open the gate. I'll get us out of here, hold on tight!");
+		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
+		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
+	}
+	if(nothing == 68)
+	{
+		ParticleEffectAt({8705.115234, -137.372833, -3051.154297}, "hightower_explosion", 1.0);
 		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
 		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
 	}

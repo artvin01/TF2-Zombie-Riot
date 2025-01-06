@@ -10,18 +10,11 @@ void Manipulation_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "nothing");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_manipulation");
-	data.Category = Type_Ruina;
+	data.IconCustom = true;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
-	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), ""); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
-}
-static void ClotPrecache()
-{
-	
-
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, char[] data)
 {
@@ -68,6 +61,10 @@ methodmap Manipulation < CClotBody
 		npc.Anger = false;
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);
+
+		//Flies through everything, but can still be hit/calls hits?
+		b_IgnoreAllCollisionNPC[npc.index] = true;
+		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
 
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 99999.0);	
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 99999.0);	
