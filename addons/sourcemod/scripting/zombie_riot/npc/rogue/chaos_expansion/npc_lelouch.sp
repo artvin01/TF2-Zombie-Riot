@@ -2827,7 +2827,7 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 	{
 		if(IsValidClient(i))
 		{
-			UTIL_ScreenFade(i, 500, 99, FFADE_OUT, 0, 0, 0, 255);
+			UTIL_ScreenFade(i, 450, 15, FFADE_OUT, 0, 0, 0, 255);
 		}
 	}
 	return Plugin_Stop;
