@@ -1178,7 +1178,7 @@ static void Ruina_Ion_Storm(int entity)
 	}
 	
 }
-static Action IonStorm_OffsetTimer(Handle Timer, DataPack data)
+Action IonStorm_OffsetTimer(Handle Timer, DataPack data)
 {
 	data.Reset();
 	int target = EntRefToEntIndex(data.ReadCell());

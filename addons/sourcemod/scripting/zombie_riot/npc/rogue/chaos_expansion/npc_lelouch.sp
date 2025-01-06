@@ -48,12 +48,7 @@ static const char g_TeleportSounds[][] = {
 };
 
 static const char g_AngerSounds[][] = {
-	"vo/medic_cartgoingforwardoffense01.mp3",
-	"vo/medic_cartgoingforwardoffense02.mp3",
-	"vo/medic_cartgoingforwardoffense03.mp3",
-	"vo/medic_cartgoingforwardoffense06.mp3",
-	"vo/medic_cartgoingforwardoffense07.mp3",
-	"vo/medic_cartgoingforwardoffense08.mp3",
+	"mvm/mvm_tank_deploy.wav",
 };
 static const char g_LaserLoop[][] = {
 	"zombiesurvival/seaborn/loop_laser.mp3"
@@ -334,6 +329,9 @@ Action Timer_Lelouch_Repeat_Sound(Handle Timer, DataPack data)
 
 	return Plugin_Stop;
 }
+static bool b_lastman[MAXENTITIES];
+static bool b_wonviatimer[MAXENTITIES];
+static bool b_wonviakill[MAXENTITIES];
 static float fl_npc_basespeed;
 methodmap Lelouch < CClotBody
 {
@@ -619,6 +617,7 @@ methodmap Lelouch < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+		func_NPCFuncWin[npc.index] = view_as<Function>(Lelouch_WinLine);
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
@@ -718,9 +717,60 @@ methodmap Lelouch < CClotBody
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 
+		b_wonviatimer[npc.index] = false;
+
 		return npc;
 	}
 	
+	
+}
+static void Lelouch_WinLine(int entity)
+{
+	b_wonviakill[entity] = true;
+	Lelouch npc = view_as<Lelouch>(entity);
+	if(b_wonviatimer[npc.index])
+		return;
+	
+	switch(GetRandomInt(0, 1))
+	{
+		case 0: Lelouch_Lines(npc, "Twirl you're all alone");
+		case 1: Lelouch_Lines(npc, "They all failed Twirl, now all thats left is you..");
+	}
+
+	CPrintToChatAll("{purple}Twirl{snow}: hahah, guess there's nothing left to lose, Lelouch, have you ever seen what our ion barrage can truly achive if we pump every spare Petawatt into it?");
+	Lelouch_Lines(npc, "...");
+
+	CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
+
+	Ruina_Ion_Storm(entity);
+	EmitSoundToAll(BLITZLIGHT_ATTACK);
+
+}
+static void Ruina_Ion_Storm(int iNPC)
+{
+	DataPack pack;
+	CreateDataTimer(1.0, IonStorm_OffsetTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(iNPC));
+	pack.WriteCell(EntIndexToEntRef(iNPC));
+
+	float rng = 1.0;
+	for(int a; a < i_MaxcountNpcTotal; a++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && i_NpcInternalId[entity] != TwirlFollower_ID())
+		{
+			rng+=0.1;
+
+			if(GetRandomFloat(0.0,1.0) > rng)
+				continue;
+
+			DataPack loop_pack;
+			CreateDataTimer(GetRandomFloat(0.0, 1.0)*rng+0.25, IonStorm_OffsetTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+			loop_pack.WriteCell(EntIndexToEntRef(entity));
+			loop_pack.WriteCell(EntIndexToEntRef(iNPC));
+			rng = 0.0;
+		}
+	}
 	
 }
 static void ClotThink(int iNPC)
@@ -729,10 +779,46 @@ static void ClotThink(int iNPC)
 	
 	KeepTimerFrozen();
 
+	if(RaidModeTime < GetGameTime())
+	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		b_wonviatimer[npc.index] = true;
+
+		if(!b_wonviakill[npc.index])
+		{
+			switch(GetRandomInt(0, 1))
+			{
+				case 0: Lelouch_Lines(npc, "It is too late, the end has come atlast");
+				case 1: Lelouch_Lines(npc, "Twirl tell me, how does it feel to be on the losing side for once?");
+			}
+		}
+
+		CPrintToChatAll("{purple}Twirl{snow}: To hell with it all, this shall become ground zero, a no mans land!");
+		Ruina_Ion_Storm(npc.index);
+		EmitSoundToAll(BLITZLIGHT_ATTACK);
+
+		CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
+
+		Lelouch_Lines(npc, "Wait WHAT-");
+
+		return;
+	}
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
+	}
+
+	if(LastMann && !b_lastman[npc.index])
+	{
+		b_lastman[npc.index] = true;
+		switch(GetRandomInt(0, 1))
+		{
+			case 0: Lelouch_Lines(npc, "Its only you and Twirl left.");
+			case 1: Lelouch_Lines(npc, "The gateway is nearly fully charged, and you're all almost dead. How magnificent");
+		}
 	}
 
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -1974,7 +2060,18 @@ static void Anchor_Phase_Logic(Lelouch npc)
 			End_Animation(npc);
 			npc.m_flDoingAnimation = 0.0;
 
-			Lelouch_Lines(npc, "you killed all the anchors within the aloted time");
+			switch(GetRandomInt(0,1))
+			{
+				case 0: Lelouch_Lines(npc, "You have killed all the anchors within the aloted time");
+				case 1: Lelouch_Lines(npc, "My Anchors, how dare you");
+			}
+			
+			switch(GetRandomInt(0,1))
+			{
+				case 0: CPrintToChatAll("{purple}Twirl{snow}: All your Anchors are belong to me now");
+				case 1: CPrintToChatAll("{purple}Twirl{snow}: I'm yoinking your Anchor's now~");
+			}
+			
 
 			b_Anchors_Red = true;
 
@@ -2004,7 +2101,7 @@ static void Anchor_Phase_Logic(Lelouch npc)
 			End_Animation(npc);
 			npc.m_flDoingAnimation = 0.0;
 
-			Lelouch_Lines(npc, "Wow, you have low dps lmao");
+			Lelouch_Lines(npc, "Now behold, the power of a Tri-Anchor Laser system!");
 
 			b_Anchors_Red = false;
 
@@ -2018,7 +2115,13 @@ static void Anchor_Phase_Logic(Lelouch npc)
 			End_Animation(npc);
 			npc.m_flDoingAnimation = 0.0;
 
-			Lelouch_Lines(npc, "Atleast you managed to kill an anchor");
+			switch(GetRandomInt(0,1))
+			{
+				case 0: Lelouch_Lines(npc, "You managed to avert certain doom for yourself, good for you");
+				case 1: Lelouch_Lines(npc, "You almost made, have a complimentary *clap clap*");
+			}
+
+			CPrintToChatAll("{purple}Twirl{snow}: Well on the bright side we don't have to worry about his death ray");
 		}
 		RaidModeScaling = fl_RaidModeScaling_Buffer;
 		FreezeTimer(false);
@@ -2710,6 +2813,24 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWingSlot);
 	if(IsValidEntity(npc.m_iSpecialEntSlot))
 		RemoveEntity(npc.m_iSpecialEntSlot);
+
+	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index])
+	{
+		float AddLelouchDeathLinesHere_and_fade_to_black = 69.420;
+		CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	
+}
+static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
+{
+	for(int i=0 ; i < MaxClients ; i++)
+	{
+		if(IsValidClient(i))
+		{
+			UTIL_ScreenFade(i, 450, 15, FFADE_OUT, 0, 0, 0, 255);
+		}
+	}
+	return Plugin_Stop;
 }
 void Lelouch_Lines(Lelouch npc, const char[] text)
 {
