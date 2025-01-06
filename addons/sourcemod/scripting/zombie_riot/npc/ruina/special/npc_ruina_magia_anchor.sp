@@ -571,6 +571,7 @@ static void Spawning_Logic(Magia_Anchor npc)
 		return;
 
 	int npc_current_count;
+	int others = 0;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
@@ -604,6 +605,10 @@ static void Spawning_Logic(Magia_Anchor npc)
 					{
 						npc_current_count += 1;
 					}
+					else
+					{
+						others ++;
+					}
 				}
 			}
 			default:
@@ -617,6 +622,16 @@ static void Spawning_Logic(Magia_Anchor npc)
 		
 	}
 
+	bool slower = false;
+	if(i_special_tower_logic[npc.index] == 1)
+	{
+		//for lelouch make it so if other npc's exist, slow it down a bit. that way the "wave spawn" can actually spawn.
+		if(others > 10)
+		{
+			slower = true;
+		}
+	}
+
 	if(npc_current_count > LimitNpcs)
 		return;
 
@@ -625,6 +640,10 @@ static void Spawning_Logic(Magia_Anchor npc)
 	if(Ratio < -0.5)
 		Ratio=-0.5;
 	float Time = 1.0 + Ratio;
+	if(slower)
+	{
+		Time *=2.0;
+	}
 	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 	float ratio = float(wave)/60.0;
 	int health = RoundToFloor(15000.0*ratio);
