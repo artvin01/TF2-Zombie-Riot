@@ -255,7 +255,7 @@ void Lelouch_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Lelouch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_lelouch");
-	data.Category = Type_Ruina;
+	data.Category = Type_BlueParadox;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	strcopy(data.Icon, sizeof(data.Icon), "Chaos_insane"); 						//leaderboard_class_(insert the name)
@@ -2737,17 +2737,19 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		/*
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 
 		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		
-		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				
-		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				
-		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		
+		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 							
+		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 				
 		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			
 		 				
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		
 		*/
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapon {gold}%N{snow}. It looks identical to my own. Fortunately my one's the genuine article.", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "What a shoody looking weapon you have there {gold}%N{snow}, if only you had the real one.", client);}
+		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "I never could understand why {purple}Twirl{snow} was so obssed with \"The storm that is aproaching\". Do you {gold}%N{snow} know perchance", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Whose this {blue}Vergil{snow} you speak of {gold}%N{snow}?", client);}
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg was the only good thing that came out of the alliance, {gold}%N{snow}. You sure know how to choose good weapons", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "A real shame that you {gold}%N{snow} destroyed Blitzkrieg before I got a chance to \"Upgrade\" him...", client);}
+		case WEAPON_KIT_FRACTAL:  switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "The hell is that thing your using {gold}%N{snow} yet its power is familiar..", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Wait are you {gold}%N{snow} using a fragment of {purple}Twirl{snow}'s power?", client);}
+		case WEAPON_BOOMSTICK: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "Overcompensating there {gold}%N{snow} for something?", client); 							case 2: Format(Text_Lines, sizeof(Text_Lines), "Why is shooting a huge piece of metal so effective {gold}%N{snow} explain this to me immediately!", client);}
 		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapons shows you care more for aesthetics then functionality {gold}%N", client);  case 2: Format(Text_Lines, sizeof(Text_Lines), "That weapon is more flashy then effective {gold}%N", client);}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "You bitch {gold}%N", client); 
 
