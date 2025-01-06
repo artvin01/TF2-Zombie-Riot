@@ -136,12 +136,12 @@ static Action TrueStrengthTimer(Handle dashHud, DataPack pack)
 			float damageDelt = RPGStats_FlatDamageSetStats(o_attacker, 0, StengthStats);
 			damageDelt *= 0.25;
 			damageDelt *= 0.35;
-			damageDelt *= float(i_BleedStackLogic[o_attacker][victim]) / float(i_BleedStackLogicMax[o_attacker]);
+			damageDelt *= (float(i_BleedStackLogic[o_attacker][victim]) + 0.001) / (float(i_BleedStackLogicMax[o_attacker]) + 0.001);
 			float pos[3];
 			WorldSpaceCenter(victim, pos);
 			//it shall pierce abit of flat resistance.
 			f_FlatDamagePiercing[o_attacker] = 0.35;
-			SDKHooks_TakeDamage(victim, o_attacker, o_attacker, damageDelt, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			SDKHooks_TakeDamage(victim, o_attacker, o_attacker, damageDelt, DMG_CLUB, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 			f_FlatDamagePiercing[o_attacker] = 1.0;
 			return Plugin_Continue;
 		}
