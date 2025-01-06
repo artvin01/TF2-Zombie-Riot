@@ -334,6 +334,17 @@ static Action Timer_ParadoxFrost(Handle timer)
 
 public void Rogue_BlueGoggles_Collect()
 {
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	//dont allow both bob and goggles, only 1 follower.
+	
 	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
 	{
 		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
