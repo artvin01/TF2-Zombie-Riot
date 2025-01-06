@@ -593,6 +593,8 @@ methodmap Lelouch < CClotBody
 		npc.m_flRevertAnim = FAR_FUTURE;
 		npc.m_flFreezeAnim = FAR_FUTURE;
 		npc.m_flCrystalRevert = FAR_FUTURE;
+		b_thisNpcIsARaid[npc.index] = true;
+		Ruina_Set_No_Retreat(npc.index);
 
 		fl_nightmare_cannon_core_sound_timer[npc.index] = 0.0;
 		b_Anchors_Created[npc.index] = false;
@@ -2675,6 +2677,7 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	enemy.ExtraDamage = 3.5;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
+	Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_3");
 	if(!Waves_InFreeplay())
 	{
 		for(int i; i<count; i++)

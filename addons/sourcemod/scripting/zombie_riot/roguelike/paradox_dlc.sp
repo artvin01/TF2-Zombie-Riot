@@ -45,10 +45,10 @@ void Rogue_ParadoxDLC_DebuffTime(int entity, float &time)
 void Rogue_ParadoxDLC_StunTime(int entity, float &time)
 {
 	if(ShortStun && GetTeam(entity) != TFTeam_Red)
-		time *= 2.1;
+		time *= 1.25;
 	
 	if(LongStun && GetTeam(entity) != TFTeam_Red)
-		time *= 2.5;
+		time *= 1.35;
 }
 
 void Rogue_ParadoxDLC_AbilityUsed(int client)
@@ -59,7 +59,7 @@ void Rogue_ParadoxDLC_AbilityUsed(int client)
 
 public void Rogue_RuinaGem_Collect()
 {
-	Rogue_RemoveChaos(20);
+	Rogue_RemoveChaos(50);
 }
 
 public void Rogue_Flawless1_Collect()
