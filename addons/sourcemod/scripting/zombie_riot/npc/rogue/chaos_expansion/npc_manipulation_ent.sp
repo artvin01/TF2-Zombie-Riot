@@ -69,6 +69,10 @@ methodmap Manipulation < CClotBody
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);
 
+		//Flies through everything, but can still be hit/calls hits?
+		b_IgnoreAllCollisionNPC[npc.index] = true;
+		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
+
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 99999.0);	
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 99999.0);	
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 99999.0);	

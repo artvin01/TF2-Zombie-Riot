@@ -586,9 +586,9 @@ methodmap Lelouch < CClotBody
 		npc.m_flBladeCoolDownTimer = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
 
 		b_crystals_active[npc.index] = false;
-		npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 2.0;
-		npc.m_flCrystalSpiralLaserCoolDownTimer = GetGameTime(npc.index) + 15.0;
-		npc.m_flCrystalLaserWorks = GetGameTime(npc.index) + 10.0;
+		npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
+		npc.m_flCrystalSpiralLaserCoolDownTimer = GetGameTime(npc.index) + GetRandomFloat(25.0, 45.0);
+		npc.m_flCrystalLaserWorks = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
 
 		npc.m_flRevertAnim = FAR_FUTURE;
 		npc.m_flFreezeAnim = FAR_FUTURE;
@@ -741,7 +741,20 @@ static void Lelouch_WinLine(int entity)
 	CPrintToChatAll("{purple}Twirl{snow}: hahah, guess there's nothing left to lose, Lelouch, have you ever seen what our ion barrage can truly achive if we pump every spare Petawatt into it?");
 	Lelouch_Lines(npc, "...");
 
-	CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
+	if(Rogue_Mode())
+	{
+		float flPos[3]; // original
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+		CreateEarthquake(flPos, 8.0, 9999.9, 16.0, 255.0);
+		CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
+
+		//kaboom effect
+		for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
+		{
+			CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		GiveProgressDelay(12.0);
+	}
 
 	Ruina_Ion_Storm(entity);
 	EmitSoundToAll(BLITZLIGHT_ATTACK);
@@ -800,7 +813,20 @@ static void ClotThink(int iNPC)
 		Ruina_Ion_Storm(npc.index);
 		EmitSoundToAll(BLITZLIGHT_ATTACK);
 
-		CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
+		if(Rogue_Mode())
+		{
+			float flPos[3]; // original
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			CreateEarthquake(flPos, 8.0, 9999.9, 16.0, 255.0);
+			CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
+
+			//kaboom effect
+			for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
+			{
+				CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
+			}
+			GiveProgressDelay(12.0);
+		}
 
 		Lelouch_Lines(npc, "Wait WHAT-");
 
@@ -2818,20 +2844,22 @@ static void NPC_Death(int entity)
 	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index])
 	{
 		Lelouch_Lines(npc, "You... You really think if i die youll prevent the gateway opening??? You are so foolish....");
+		//it isn't rouge mode? don't do anything else
+		if(!Rogue_Mode())
+			return;
+
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 		CreateEarthquake(flPos, 8.0, 9999.9, 16.0, 255.0);
 		CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(10.0, Timer_FadoutOffset_Global, 50, TIMER_FLAG_NO_MAPCHANGE);
-		if(Rogue_Mode())
+
+		//kaboom effect
+		for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
 		{
-			//kaboom effect
-			for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
-			{
-				CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
-			}
-			GiveProgressDelay(12.0);
+			CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
 		}
+		GiveProgressDelay(12.0);
 	}
 	
 }
@@ -2886,7 +2914,13 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 	if(nothing == 69)
 	{
 		ParticleEffectAt({8705.115234, -137.372833, -3051.154297}, "hightower_explosion", 1.0);
-		CPrintToChatAll("{purple}Twirl{snow}: Oh Crap... I'll escort you, hold on.");
+		CPrintToChatAll("{purple}Twirl{snow}: Oh damn, he actually used his own life to open the gate. I'll get us out of here, hold on tight!");
+		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
+		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
+	}
+	if(nothing == 68)
+	{
+		ParticleEffectAt({8705.115234, -137.372833, -3051.154297}, "hightower_explosion", 1.0);
 		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
 		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
 	}
