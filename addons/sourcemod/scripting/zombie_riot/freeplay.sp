@@ -492,7 +492,7 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
 
 	if(SquadBuff)
-		ApplyStatusEffect(entity, entity, "Squad Leader", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
 
 	if(Coffee)
 	{
@@ -996,7 +996,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff!");
+			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff for 20 seconds!");
 			SquadBuff = true;
 		}
 
@@ -1863,7 +1863,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff for 20 seconds!");
 					SquadBuff = true;
 				}
 			}
