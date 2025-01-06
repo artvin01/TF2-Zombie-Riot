@@ -642,7 +642,7 @@ static void Spawning_Logic(Magia_Anchor npc)
 	float Time = 1.0 + Ratio;
 	if(slower)
 	{
-		Time *=2.0;
+		Time *=5.0;
 	}
 	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 	float ratio = float(wave)/60.0;
