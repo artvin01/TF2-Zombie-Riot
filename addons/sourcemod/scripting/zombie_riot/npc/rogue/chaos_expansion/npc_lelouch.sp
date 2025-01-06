@@ -265,6 +265,7 @@ void Lelouch_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
+	PrecacheSound("items/cart_explode.wav");
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -740,7 +741,7 @@ static void Lelouch_WinLine(int entity)
 	CPrintToChatAll("{purple}Twirl{snow}: hahah, guess there's nothing left to lose, Lelouch, have you ever seen what our ion barrage can truly achive if we pump every spare Petawatt into it?");
 	Lelouch_Lines(npc, "...");
 
-	CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
 
 	Ruina_Ion_Storm(entity);
 	EmitSoundToAll(BLITZLIGHT_ATTACK);
@@ -799,7 +800,7 @@ static void ClotThink(int iNPC)
 		Ruina_Ion_Storm(npc.index);
 		EmitSoundToAll(BLITZLIGHT_ATTACK);
 
-		CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(5.0, Timer_FadoutOffset_Global, 68, TIMER_FLAG_NO_MAPCHANGE);
 
 		Lelouch_Lines(npc, "Wait WHAT-");
 
@@ -2816,20 +2817,88 @@ static void NPC_Death(int entity)
 
 	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index])
 	{
-		float AddLelouchDeathLinesHere_and_fade_to_black = 69.420;
+		Lelouch_Lines(npc, "You... You really think if i die youll prevent the gateway opening??? You are so foolish....");
+		float flPos[3]; // original
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+		CreateEarthquake(flPos, 8.0, 9999.9, 16.0, 255.0);
 		CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(10.0, Timer_FadoutOffset_Global, 50, TIMER_FLAG_NO_MAPCHANGE);
+		if(Rogue_Mode())
+		{
+			//kaboom effect
+			for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
+			{
+				CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
+			}
+			GiveProgressDelay(12.0);
+		}
 	}
 	
 }
+static Action KaboomRogueOnlyEffect_LeLouch(Handle Timer, int nothing)
+{
+	float SavePos[3];
+	for(int LoopExplode; LoopExplode <= 2; LoopExplode++)
+	{
+		//Middle of island
+		SavePos = {8705.115234, -137.372833, -3051.154297};
+		SavePos[0] += GetRandomFloat(-100.0,100.0);
+		SavePos[1] += GetRandomFloat(-100.0,100.0);
+		SavePos[2] += GetRandomFloat(-100.0,100.0);
+		DataPack pack_boom1 = new DataPack();
+		pack_boom1.WriteFloat(SavePos[0]);
+		pack_boom1.WriteFloat(SavePos[1]);
+		pack_boom1.WriteFloat(SavePos[2]);
+		pack_boom1.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom1);
+		ParticleEffectAt(SavePos, "powerup_supernova_explode_blue", 0.25);
+	}
+	return Plugin_Stop;
+}
 static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 {
+	if(nothing == 50)
+	{
+		CPrintToChatAll("{crimson}The Island falls down as Twirl escorts you, Lelouch was successfull in the end, but he paid with his life..");
+		CPrintToChatAll("{crimson}The Space to the Courtain has weakened... something terrible is comming...");
+		for(int i=0 ; i < MaxClients ; i++)
+		{
+			if(IsValidClient(i) && Rogue_Mode())
+			{
+				//safe spot?
+				TeleportEntity(i, {83.142601, -1510.043335, -6910.704590}, NULL_VECTOR, NULL_VECTOR);
+			}
+		}
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entity))
+			{
+				if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
+				{
+					TeleportEntity(entity, {83.142601, -1510.043335, -6910.704590}, NULL_VECTOR, NULL_VECTOR);
+				}
+			}
+		}
+		return Plugin_Stop;
+	}
+	if(nothing == 69)
+	{
+		ParticleEffectAt({8705.115234, -137.372833, -3051.154297}, "hightower_explosion", 1.0);
+		CPrintToChatAll("{purple}Twirl{snow}: Oh Crap... I'll escort you, hold on.");
+		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
+		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
+	}
+		
 	for(int i=0 ; i < MaxClients ; i++)
 	{
-		if(IsValidClient(i))
+		if(IsValidClient(i) && Rogue_Mode())
 		{
-			UTIL_ScreenFade(i, 450, 15, FFADE_OUT, 0, 0, 0, 255);
+			TF2_StunPlayer(i, 10.0, 0.1, TF_STUNFLAGS_LOSERSTATE);
 		}
 	}
+	if(Rogue_Mode())
+		CauseFadeInAndFadeOut(0,4.0,4.0,10.0, "255");
 	return Plugin_Stop;
 }
 void Lelouch_Lines(Lelouch npc, const char[] text)

@@ -2003,7 +2003,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
 	delete ProgressTimer;
-	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_RoundStartTimer : Rogue_ProgressTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_ProgressTimer : Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	if(hud)
 		SpawnTimer(time);

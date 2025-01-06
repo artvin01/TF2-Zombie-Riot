@@ -3110,6 +3110,10 @@
 	{
 		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
 	}
+	"Antinel"
+	{
+		"en"		"Antinel"
+	}
 	"Ironborus"
 	{
 		"en"		"Ironborus"

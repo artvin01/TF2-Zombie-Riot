@@ -1746,7 +1746,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		{
 			if(!applied_lastmann_buffs_once)
 			{
-				CauseFadeInAndFadeOut(0,1.0,1.0,1.0);
+				CauseFadeInAndFadeOut(0,1.0,1.0,1.0, "235");
 				PlayTeamDeadSound();
 				Zero(delay_hud); //Allow the hud to immedietly update
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)

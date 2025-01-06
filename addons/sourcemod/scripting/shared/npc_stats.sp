@@ -6652,11 +6652,12 @@ void GibCollidePlayerInteraction(int gib, int player)
 			{
 				if(!i_IsWandWeapon[weapon]) //Make sure its not wand.
 				{
-					if(SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Data, "m_iHealth"))
+					float Heal_Amount = 0.0;
+					
+					Heal_Amount = Attributes_Get(weapon, 180, 1.0);
+					//Make sure heal is higher then 0
+					if(Heal_Amount > 0.0 && SDKCall_GetMaxHealth(player) > GetEntProp(player, Prop_Data, "m_iHealth"))
 					{
-						float Heal_Amount = 0.0;
-						
-						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
 						f_GibHealingAmount[gib] *= Heal_Amount;
 						
 						float Heal_Amount_calc;
