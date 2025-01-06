@@ -795,7 +795,7 @@ static void Ruina_Ion_Storm(int iNPC)
 				continue;
 
 			DataPack loop_pack;
-			CreateDataTimer(GetRandomFloat(0.0, 1.0)*rng+0.25, IonStorm_OffsetTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(GetRandomFloat(0.0, 1.0)*rng+0.25, IonStorm_OffsetTimer, loop_pack, TIMER_FLAG_NO_MAPCHANGE);
 			loop_pack.WriteCell(EntIndexToEntRef(entity));
 			loop_pack.WriteCell(EntIndexToEntRef(iNPC));
 			rng = 0.0;
