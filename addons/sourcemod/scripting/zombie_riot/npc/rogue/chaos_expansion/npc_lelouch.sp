@@ -1939,10 +1939,10 @@ static void Create_Anchors(Lelouch npc)
 	}
 
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), RoundToCeil(4.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(125000.0 * MultiGlobalHighHealthBoss), RoundToCeil(4.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(250000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(125000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(352569.0 * MultiGlobalHighHealthBoss),1, true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(300000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 
 	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",	200000, RoundToCeil(6.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(8.0 * MultiGlobalEnemy));
