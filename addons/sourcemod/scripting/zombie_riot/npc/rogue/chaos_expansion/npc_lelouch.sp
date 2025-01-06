@@ -740,6 +740,8 @@ static void Lelouch_WinLine(int entity)
 	CPrintToChatAll("{purple}Twirl{snow}: hahah, guess there's nothing left to lose, Lelouch, have you ever seen what our ion barrage can truly achive if we pump every spare Petawatt into it?");
 	Lelouch_Lines(npc, "...");
 
+	CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
+
 	Ruina_Ion_Storm(entity);
 	EmitSoundToAll(BLITZLIGHT_ATTACK);
 
@@ -796,6 +798,8 @@ static void ClotThink(int iNPC)
 		CPrintToChatAll("{purple}Twirl{snow}: To hell with it all, this shall become ground zero, a no mans land!");
 		Ruina_Ion_Storm(npc.index);
 		EmitSoundToAll(BLITZLIGHT_ATTACK);
+
+		CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
 
 		Lelouch_Lines(npc, "Wait WHAT-");
 
@@ -2813,7 +2817,20 @@ static void NPC_Death(int entity)
 	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index])
 	{
 		float AddLelouchDeathLinesHere_and_fade_to_black = 69.420;
+		CreateTimer(5.0, Timer_FadoutOffset_Global, 69, TIMER_FLAG_NO_MAPCHANGE);
 	}
+	
+}
+static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
+{
+	for(int i=0 ; i < MaxClients ; i++)
+	{
+		if(IsValidClient(i))
+		{
+			UTIL_ScreenFade(i, 500, 99, FFADE_OUT, 0, 0, 0, 255);
+		}
+	}
+	return Plugin_Stop;
 }
 void Lelouch_Lines(Lelouch npc, const char[] text)
 {
