@@ -477,8 +477,11 @@ static void ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		if(Laser_Initiate(npc))
-			return;
+		//Target close enough to hit
+		if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTarget))) //Check if i can even see.
+			if(Laser_Initiate(npc))
+				return;
+				
 
 		int PrimaryThreatIndex = npc.m_iTarget;
 
