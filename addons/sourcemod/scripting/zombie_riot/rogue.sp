@@ -957,6 +957,9 @@ void Rogue_BattleVictory()
 	if(chaos < 0)
 		chaos = 0;
 
+	if(chaos > 15)
+		chaos = 15;
+		
 	if(chaos > 0)
 	{
 		BattleChaos -= float(chaos);
