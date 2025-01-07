@@ -648,6 +648,7 @@ public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float heig
 	//that means the space above the given position is not a valid teleport spot, so return false.
 
 	//TODO: TRACE_WORLDONLY DOES NOT DETECT THE SKYBOX SO IT BREAKS THE ABILITY! FIX WHEN ARTVIN RESPONDS!
+	//TODO: MAKE THIS A HULL TRACE INSTEAD!
 	TR_TraceRayFilter(startPos, endPos, MASK_SHOT, RayType_EndPoint, Trace_WorldOnly);
 	
 	if (TR_DidHit())
@@ -699,7 +700,9 @@ public void SSBChair_Teleport_SlamDelay(DataPack pack)
 	if (GetGameTime(ssb.index) >= endTime)
 	{
 		RequestFrame(SSBChair_Teleport_Falling, EntIndexToEntRef(ssb.index));
-		EmitSoundToAll(SND_BIG_SWING, _, _, 120);
+		EmitSoundToAll(SND_BIG_SWING, ssb.index, _, 120);
+		EmitSoundToAll(SND_FALLING_SCREAM, ssb.index, _, 120);
+		EmitSoundToAll(SND_BIG_SWING, ssb.index, _, 120);
 		EmitSoundToAll(SND_FALLING_SCREAM, ssb.index, _, 120);
 
 		int iActivity = ssb.LookupActivity("ACT_FINALE_CHAIR_AIRBORNE");
@@ -745,9 +748,13 @@ public void SSBChair_Teleport_Falling(int ref)
 		ParticleEffectAt(pos, PARTICLE_TELEPORT_SLAM_1);
 		ParticleEffectAt(pos, PARTICLE_TELEPORT_SLAM_2);
 		ParticleEffectAt(pos, PARTICLE_TELEPORT_SLAM_3);
-		EmitSoundToAll(SND_TELEPORT_SLAM_1, _, _, 120, _, _, 80);
-		EmitSoundToAll(SND_TELEPORT_SLAM_2, _, _, 120, _, 0.8, 80);
+		EmitSoundToAll(SND_TELEPORT_SLAM_1, ssb.index, _, 120, _, _, 80);
+		EmitSoundToAll(SND_TELEPORT_SLAM_1, ssb.index, _, 120, _, _, 80);
+		EmitSoundToAll(SND_TELEPORT_SLAM_2, ssb.index, _, 120, _, 0.8, 80);
+		EmitSoundToAll(SND_TELEPORT_SLAM_2, ssb.index, _, 120, _, 0.8, 80);
 		EmitSoundToAll(SND_FALLING_LAND, ssb.index, _, 120);
+		EmitSoundToAll(SND_FALLING_LAND, ssb.index, _, 120);
+		StopSound(ssb.index, SNDCHAN_AUTO, SND_FALLING_SCREAM);
 		StopSound(ssb.index, SNDCHAN_AUTO, SND_FALLING_SCREAM);
 
 		bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
