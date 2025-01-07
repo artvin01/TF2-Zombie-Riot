@@ -787,6 +787,7 @@ static void Smith_Infection(AgentSmith npc)
 			if(fl_Cure_Meter[victim] >= 10.0)
 			{
 				Smith_Reset_Infection(npc, victim);
+				TF2_RemoveCondition(victim, TFCond_Dazed);
 			}
 			return;
 		}
