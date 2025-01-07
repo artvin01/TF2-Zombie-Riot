@@ -494,6 +494,18 @@ static void ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	if(i_special_tower_logic[npc.index] == 1)
+	{
+		float Radius = 300.0;
+		Master_Apply_Defense_Buff(npc.index, Radius, 5.0, 0.75);	//25% resistances
+		Master_Apply_Attack_Buff(npc.index, Radius, 5.0, 0.25);		//25% dmg bonus
+
+		float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=30.0;
+		int color[4]; Ruina_Color(color);
+		TE_SetupBeamRingPoint(Npc_Vec, Radius*2.0, Radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, 0.1, 30.0, 0.1, color, 1, 0);
+		TE_SendToAll();
+	}
+
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
 	{
 		Raid_Spwaning_Logic(npc);

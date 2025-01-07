@@ -287,6 +287,8 @@ static void ClotPrecache()
 	PrecacheModel(LELOUCH_BLADE_MODEL);
 	PrecacheModel(LELOUCH_CRYSTAL_MODEL);
 
+	PrecacheSound("mvm/mvm_tele_deliver.wav");
+
 	PrecacheSoundCustom(LELOUCH_THEME);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, char[] data)
@@ -618,11 +620,21 @@ methodmap Lelouch < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
 		Music_SetRaidMusic(music);	
 		
-		/*
-			
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				LookAtTarget(client_check, npc.index);
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "item_armor", 1, "%t", "Lelouch Spawn");
+			}
+		}
 
-
-		*/
+		if(!b_test_mode[npc.index])	//my EARS
+		{
+			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+		}	
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -2226,6 +2238,10 @@ static int i_GetTarget_Lazy_Method(float end_point[3], int Team)
 		}
 	}
 
+	//as far as I am aware, non-red buildings do not exist.
+	if(Team == TFTeam_Red)
+		return valid_target;
+
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
@@ -2771,12 +2787,12 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		
 		*/
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapon {gold}%N{snow}. It looks identical to my own. Fortunately my one's the genuine article.", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "What a shoody looking weapon you have there {gold}%N{snow}, if only you had the real one.", client);}
-		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "I never could understand why {purple}Twirl{snow} was so obssed with \"{blue}The storm that is aproaching{snow}\". Do you {gold}%N{snow} know perchance", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Whose this {blue}Vergil{snow} you speak of {gold}%N{snow}?", client);}
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg was the only good thing that came out of the alliance, {gold}%N{snow}. You sure know how to choose good weapons", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "A real shame that you {gold}%N{snow} destroyed Blitzkrieg before I got a chance to \"Upgrade\" him...", client);}
-		case WEAPON_KIT_FRACTAL:  switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "The hell is that thing your using {gold}%N{snow} yet its power is familiar..", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Wait are you {gold}%N{snow} using a fragment of {purple}Twirl{snow}'s power?", client);}
-		case WEAPON_BOOMSTICK: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "Overcompensating there {gold}%N{snow} for something?", client); 							case 2: Format(Text_Lines, sizeof(Text_Lines), "Why is shooting a huge piece of metal so effective {gold}%N{snow} explain this to me immediately!", client);}
-		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapons shows you care more for aesthetics then functionality {gold}%N", client);  case 2: Format(Text_Lines, sizeof(Text_Lines), "That weapon is more flashy then effective {gold}%N", client);}
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(1,2)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapon {gold}%N{snow}. It looks identical to my own. Fortunately my one's the genuine article.", client);  														case 2: Format(Text_Lines, sizeof(Text_Lines), "What a shoody looking weapon you have there {gold}%N{snow}, if only you had the real one.", client);}
+		case WEAPON_YAMATO: switch(GetRandomInt(1,2)) 				{case 1: Format(Text_Lines, sizeof(Text_Lines), "I never could understand why {purple}Twirl{snow} was so obssed with \"{blue}The storm that is aproaching{snow}\". Do you {gold}%N{snow} know perchance", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Whose this {blue}Vergil{snow} you speak of {gold}%N{snow}?", client);}
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(1,2)) 	{case 1: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg was the only good thing that came out of the alliance, {gold}%N{snow}. You sure know how to choose good weapons", client);  								case 2: Format(Text_Lines, sizeof(Text_Lines), "A real shame that you {gold}%N{snow} destroyed Blitzkrieg before I got a chance to \"Upgrade\" him...", client);}
+		case WEAPON_KIT_FRACTAL:  switch(GetRandomInt(1,2))			{case 1: Format(Text_Lines, sizeof(Text_Lines), "The hell is that thing your using {gold}%N{snow} yet its power is familiar..", client);  																				case 2: Format(Text_Lines, sizeof(Text_Lines), "Wait are you {gold}%N{snow} using a fragment of {purple}Twirl{snow}'s power?", client);}
+		case WEAPON_BOOMSTICK: switch(GetRandomInt(1,2))			{case 1: Format(Text_Lines, sizeof(Text_Lines), "Overcompensating there {gold}%N{snow} for something?", client); 																										case 2: Format(Text_Lines, sizeof(Text_Lines), "Why is shooting a huge piece of metal so effective {gold}%N{snow} explain this to me immediately!", client);}
+		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(1,2))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapons shows you care more for aesthetics then functionality {gold}%N", client); 						case 2: Format(Text_Lines, sizeof(Text_Lines), "That weapon is more flashy then effective {gold}%N", client);}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "You bitch {gold}%N", client); 
 
 		default:
