@@ -909,7 +909,7 @@ static void ClotThink(int iNPC)
 
 	npc.AdjustWalkCycle();
 
-	Ruina_Add_Battery(npc.index, 5.0);
+	//Ruina_Add_Battery(npc.index, 5.0);
 
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
@@ -921,6 +921,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
+	/*
 	if(fl_ruina_battery[npc.index]>2500.0)
 	{
 		if(fl_ruina_battery_timeout[npc.index] < GameTime)
@@ -931,7 +932,7 @@ static void ClotThink(int iNPC)
 	else
 	{
 		
-	}
+	}*/
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		NPC_StopPathing(npc.index);
