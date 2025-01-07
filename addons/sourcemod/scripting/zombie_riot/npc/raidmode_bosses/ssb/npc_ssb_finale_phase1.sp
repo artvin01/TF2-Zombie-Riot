@@ -634,8 +634,8 @@ public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float heig
 	ssbMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 	ssbMins = view_as<float>( { -24.0, -24.0, 0.0 } );
 	//NOTE: The ability will get weird if we decide to manually override his scale, but that won't happen in normal gameplay so that doesn't really matter.
-	ScaleVector(ssbMaxs, StringToFloat(SSB_CHAIR_SCALE) + 0.165);
-	ScaleVector(ssbMins, StringToFloat(SSB_CHAIR_SCALE) + 0.165);
+	ScaleVector(ssbMaxs, StringToFloat(SSB_CHAIR_SCALE));
+	ScaleVector(ssbMins, StringToFloat(SSB_CHAIR_SCALE));
 
 	//First: Get the point directly above the given position.
 	ang[0] = -90.0;
@@ -648,15 +648,17 @@ public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float heig
 	//that means the space above the given position is not a valid teleport spot, so return false.
 
 	//TODO: TRACE_WORLDONLY DOES NOT DETECT THE SKYBOX SO IT BREAKS THE ABILITY! FIX WHEN ARTVIN RESPONDS!
-	//TODO: MAKE THIS A HULL TRACE INSTEAD!
-	TR_TraceRayFilter(startPos, endPos, MASK_SHOT, RayType_EndPoint, Trace_WorldOnly);
+	TR_TraceHullFilter(startPos, endPos, ssbMins, ssbMaxs, MASK_SHOT, Trace_WorldOnly);
 	
 	if (TR_DidHit())
 	{
 		CPrintToChatAll("{vintage}DID hit a ceiling!");
 
-		TR_GetEndPosition(endPos);
-		float dist = GetVectorDistance(startPos, endPos);
+		float blocked[3];
+		TR_GetEndPosition(blocked);
+
+		float dist = GetVectorDistance(startPos, blocked);
+		endPos[2] = blocked[2];
 
 		if (dist < ssbMaxs[2] * 1.2)
 		{
@@ -671,6 +673,13 @@ public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float heig
 	SpawnBeam_Vectors(startPos, endPos, 3.0, 255, 120, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, 1, 0.1);
 	ParticleEffectAt(startPos, PARTICLE_FIREBALL_BLUE, 3.0);
 	ParticleEffectAt(endPos, PARTICLE_FIREBALL_BLUE, 3.0);
+
+	TR_TraceRayFilter(startPos, endPos, MASK_SHOT, RayType_EndPoint, Trace_WorldOnly);
+	if (TR_DidHit())
+	{
+		CPrintToChatAll("{blue}Check failed: Ceiling too low!");
+		return false;
+	}
 
 	//Finally: run a hull check for the teleport position to make sure SSB won't get stuck if he teleports there.
 	TR_TraceHullFilter(endPos, endPos, ssbMins, ssbMaxs, MASK_SHOT, Trace_WorldOnly);
@@ -725,7 +734,7 @@ public void SSBChair_Teleport_SlamDelay(DataPack pack)
 	RequestFrame(SSBChair_Teleport_SlamDelay, pack);
 }
 
-ArrayList Teleport_Victims;
+ArrayList Teleport_Victims = null;
 
 public void SSBChair_Teleport_Falling(int ref)
 {
@@ -766,7 +775,10 @@ public void SSBChair_Teleport_Falling(int ref)
 	}
 	else
 	{
-		float pos[3], ssbMaxs[3], ssbMins[3];
+		if (Teleport_Victims == null)
+			Teleport_Victims = CreateArray(255);
+
+		float pos[3], endPos[3], ssbMaxs[3], ssbMins[3];
 
 		ssbMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 		ssbMins = view_as<float>( { -24.0, -24.0, 0.0 } );
@@ -774,20 +786,23 @@ public void SSBChair_Teleport_Falling(int ref)
 		ScaleVector(ssbMaxs, StringToFloat(SSB_CHAIR_SCALE) + 0.165);
 		ScaleVector(ssbMins, StringToFloat(SSB_CHAIR_SCALE) + 0.165);
 
-		WorldSpaceCenter(ssb.index, pos);
+		GetEntPropVector(ssb.index, Prop_Send, "m_vecOrigin", pos);
+		endPos = pos;
+		endPos[2] -= 10.0;
 
-		TR_TraceHullFilter(pos, pos, ssbMins, ssbMaxs, MASK_SHOT, SSBChair_Teleport_InstaKillFilter, ssb.index);
+		TR_TraceHullFilter(pos, endPos, ssbMins, ssbMaxs, MASK_SHOT, SSBChair_Teleport_InstaKillFilter, ssb.index);
 
-		if (Teleport_Victims != null)
+		if (GetArraySize(Teleport_Victims) > 0)
 		{
 			for (int i = 0; i < GetArraySize(Teleport_Victims); i++)
 			{
 				int vic = GetArrayCell(Teleport_Victims, i);
-				SDKHooks_TakeDamage(vic, ssb.index, ssb.index, 999999.0, DMG_TRUEDAMAGE);
+				CPrintToChatAll("Dealing lethal damage to %N", vic);
+				SDKHooks_TakeDamage(vic, ssb.index, ssb.index, 999999.0, DMG_TRUEDAMAGE, _, _, _, false);
 			}
-
-			delete Teleport_Victims;
 		}
+
+		delete Teleport_Victims;
 	}
 
 	RequestFrame(SSBChair_Teleport_Falling, ref);
@@ -797,9 +812,6 @@ public bool SSBChair_Teleport_InstaKillFilter(int entity, int mask, int user)
 {
 	if (IsValidEnemy(user, entity))
 	{
-		if (Teleport_Victims == null)
-			Teleport_Victims = CreateArray(255);
-
 		PushArrayCell(Teleport_Victims, entity);
 	}
 
@@ -812,7 +824,6 @@ public void SSBChair_Teleport_DoKnockback(int attacker, int victim, float damage
 		return;
 
 	Custom_Knockback(attacker, victim, Teleport_Knockback[Chair_Tier[attacker]], true, _, true, _, _, _, _, true);
-	CPrintToChatAll("Doing knockback");
 }
 
 public ArrayList GetRandomlySortedEnemies(CClotBody user)
