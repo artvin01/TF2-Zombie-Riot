@@ -302,8 +302,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 		//raids otherwise have too much damage.
-		enemy.ExtraDamage *= 0.75;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
+		enemy.ExtraDamage *= 0.45;
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.8);
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 6500.0;
@@ -317,14 +317,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else if(FriendlyDay)
 	{
 		enemy.Team = TFTeam_Red;
-		count = 15;
+		count = 5;
 		FriendlyDay = false;
 
 		if(enemy.Health)
-			enemy.Health /= 5;
+			enemy.Health *= 0.65;
 
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage *= 15.0;
+			enemy.ExtraDamage *= 20.0;
 	}
 	else if(SuperMiniBoss)
 	{
@@ -393,7 +393,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		enemy.Index = NPC_GetByPlugin("npc_sentinel");
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.8);
 		enemy.ExtraSpeed = 2.0;
 		enemy.ExtraSize = 0.2; // smol
 		enemy.Credits += 1.0;
@@ -418,7 +418,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 
-		count = RoundToFloor((count * (((postWaves * 2) + 99) * 0.009)) * 0.5);
+		count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 
 		if(count > 45)
 			count = 45;
@@ -492,7 +492,7 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
 
 	if(SquadBuff)
-		ApplyStatusEffect(entity, entity, "Squad Leader", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
 
 	if(Coffee)
 	{
@@ -900,7 +900,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			CPrintToChatAll("{green}You will gain 15 random friendly units.");
+			CPrintToChatAll("{green}You will gain 5 random friendly units.");
 			FriendlyDay = true;
 		}
 		else
@@ -996,7 +996,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff!");
+			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff for 20 seconds!");
 			SquadBuff = true;
 		}
 
@@ -1461,7 +1461,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}You will gain 15 random friendly units.");
+				strcopy(message, sizeof(message), "{green}You will gain 5 random friendly units.");
 				FriendlyDay = true;
 			}
 			case 27:
@@ -1863,7 +1863,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff for 20 seconds!");
 					SquadBuff = true;
 				}
 			}
