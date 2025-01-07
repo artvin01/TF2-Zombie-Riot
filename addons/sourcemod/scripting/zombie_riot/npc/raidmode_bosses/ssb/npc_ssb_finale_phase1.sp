@@ -13,6 +13,7 @@ static bool Chair_UsingAbility[2049] = { false, ... };	//Whether or not SSB is c
 Function Chair_QueuedSpell[2049];			//The spell which will be cast when SSB's cast animation plays out.
 
 static bool Chair_ChangeSequence[2049] = { false, ... };
+static bool useHeightOverride[2049] = { false, ... };
 static char Chair_Sequence[2049][255];
 static char Chair_SpellEffect[2049][255];
 static char Chair_SpellEffectExtra[2049][255];
@@ -58,7 +59,7 @@ static float HellRing_Pitch[4] = { 5.0, 5.0, 5.0, 5.0 };					//Amount to tilt sk
 
 //SPATIAL DISPLACEMENT: SSB claps his hands and teleports directly above a random enemy. After a short delay, he will fall to the ground, creating a shockwave
 //when he lands. This shockwave knocks enemies away.
-static float Teleport_Height[4] = { 600.0, 600.0, 600.0, 600.0 };				//Maximum distance above the target SSB will teleport. If a valid height is not found, he'll choose a random nav spot instead of an enemy.
+static float Teleport_Height[4] = { 800.0, 800.0, 800.0, 800.0 };				//Maximum distance above the target SSB will teleport. If a valid height is not found, he'll choose a random nav spot instead of an enemy.
 static float Teleport_Delay[4] = { 0.5, 0.45, 0.4, 0.33 };						//Delay after teleporting before SSB falls down. DO NOT make this longer than 0.5, the ability will break if you do. I know how to fix it, but unless it becomes totally necessary to make this longer than 0.85 I won't bother.
 static float Teleport_FallSpeed[4] = { 800.0, 900.0, 1000.0, 1200.0 };			//Rate at which SSB falls to the ground when he begins falling.
 static float Teleport_Radius[4] = { 150.0, 155.0, 160.0, 165.0 };				//Shockwave radius.
@@ -553,12 +554,17 @@ public Action HellRing_StartHoming(Handle timer, int ref)
 
 public void SSBChair_Teleport(SSBChair ssb, int target)
 {
+	useHeightOverride[ssb.index] = false;
 	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_CLAP", SSBChair_Teleport_Activate, PARTICLE_TELEPORT_HAND, "", "", "effect_hand_L", SND_TELEPORT_CHARGEUP, "effect_hand_R");
 }
 
-public void SSBChair_Teleport_Activate(SSBChair ssb, int target)
+void SSBChair_Teleport_Activate(SSBChair ssb, int target, float heightOverride = 0.0)
 {
 	ArrayList enemies = GetRandomlySortedEnemies(ssb);
+
+	float height = Teleport_Height[Chair_Tier[ssb.index]];
+	if (useHeightOverride[ssb.index])
+		height = heightOverride;
 
 	float endPos[3];
 	bool passed = GetArraySize(enemies) > 0;	//First check: do we even have any enemies to teleport to? Should almost always pass during actual gameplay.
@@ -572,7 +578,7 @@ public void SSBChair_Teleport_Activate(SSBChair ssb, int target)
 			float vicPos[3];
 			WorldSpaceCenter(vic, vicPos);
 
-			bool success = SSBChair_Teleport_CheckSpaceAbovePoint(vicPos, Teleport_Height[Chair_Tier[ssb.index]], endPos);
+			bool success = SSBChair_Teleport_CheckSpaceAbovePoint(vicPos, height, endPos, ssb.index);
 
 			if (success)
 				break;
@@ -604,7 +610,7 @@ public void SSBChair_Teleport_Activate(SSBChair ssb, int target)
 				CNavArea navi = GetArrayCell(areas, i);
 				navi.GetCenter(randPos);
 
-				bool success = SSBChair_Teleport_CheckSpaceAbovePoint(randPos, Teleport_Height[Chair_Tier[ssb.index]], endPos);
+				bool success = SSBChair_Teleport_CheckSpaceAbovePoint(randPos, height, endPos, ssb.index);
 				if (success)
 				{
 					passed = true;
@@ -628,7 +634,7 @@ public void SSBChair_Teleport_Activate(SSBChair ssb, int target)
 	delete enemies;
 }
 
-public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float height, float endPos[3])
+public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float height, float endPos[3], int user)
 {
 	float ssbMaxs[3], ssbMins[3], ang[3], Direction[3];
 	ssbMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -648,12 +654,10 @@ public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float heig
 	//that means the space above the given position is not a valid teleport spot, so return false.
 
 	//TODO: TRACE_WORLDONLY DOES NOT DETECT THE SKYBOX SO IT BREAKS THE ABILITY! FIX WHEN ARTVIN RESPONDS!
-	TR_TraceHullFilter(startPos, endPos, ssbMins, ssbMaxs, MASK_SHOT, Trace_WorldOnly);
+	TR_TraceHullFilter(startPos, endPos, ssbMins, ssbMaxs, (GetTeam(user) == TFTeam_Red ? (MASK_NPCSOLID | MASK_PLAYERSOLID) : MASK_NPCSOLID), TraceRayHitWorldOnly, user);
 	
 	if (TR_DidHit())
 	{
-		CPrintToChatAll("{vintage}DID hit a ceiling!");
-
 		float blocked[3];
 		TR_GetEndPosition(blocked);
 
@@ -661,33 +665,24 @@ public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float heig
 		endPos[2] = blocked[2];
 
 		if (dist < ssbMaxs[2] * 1.2)
-		{
-			CPrintToChatAll("{orange}Check failed: Ceiling too low! (HULL)");
 			return false;
-		}
 
 		endPos[2] -= ssbMaxs[2] * 1.15;
 	}
 
 	//Debug VFX:
-	SpawnBeam_Vectors(startPos, endPos, 3.0, 255, 120, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, 1, 0.1);
+	/*SpawnBeam_Vectors(startPos, endPos, 3.0, 255, 120, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, 1, 0.1);
 	ParticleEffectAt(startPos, PARTICLE_FIREBALL_BLUE, 3.0);
-	ParticleEffectAt(endPos, PARTICLE_FIREBALL_BLUE, 3.0);
+	ParticleEffectAt(endPos, PARTICLE_FIREBALL_BLUE, 3.0);*/
 
-	TR_TraceRayFilter(startPos, endPos, MASK_SHOT, RayType_EndPoint, Trace_WorldOnly);
+	TR_TraceRayFilter(startPos, endPos, (GetTeam(user) == TFTeam_Red ? (MASK_NPCSOLID | MASK_PLAYERSOLID) : MASK_NPCSOLID), RayType_EndPoint, TraceRayHitWorldOnly, user);
 	if (TR_DidHit())
-	{
-		CPrintToChatAll("{blue}Check failed: Ceiling too low! (RAY)");
 		return false;
-	}
 
 	//Finally: run one last hull check for the final teleport position to make sure SSB won't get stuck if he teleports there.
-	TR_TraceHullFilter(endPos, endPos, ssbMins, ssbMaxs, MASK_SHOT, Trace_WorldOnly);
-	if (TR_DidHit())
-	{
-		CPrintToChatAll("{red}Check failed: space too tight!");
+	//TR_TraceHullFilter(endPos, endPos, ssbMins, ssbMaxs, MASK_SHOT, TraceRayHitWorldOnly, user);
+	if (IsSpaceOccupiedWorldOnly(endPos, ssbMins, ssbMaxs, user))
 		return false;
-	}
 
 	return true;
 }
@@ -1014,9 +1009,9 @@ methodmap SSBChair < CClotBody
 		SSB_ChairSpells[this.index] = new ArrayList(255);
 
 		//TODO: Populate abilities here
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(15.0, 5.0, 0, SSBChair_Bombardment));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(18.0, 8.0, 0, SSBChair_RingOfHell));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(/*20.0, 10.0,*/5.0, 5.0, 0, SSBChair_Teleport));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(9.0, 3.0, 0, SSBChair_Bombardment));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(12.0, 6.0, 0, SSBChair_RingOfHell));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(15.0, 9.0, 0, SSBChair_Teleport));
 	}
 
 	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
@@ -1171,8 +1166,9 @@ methodmap SSBChair < CClotBody
 		npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_4", npc.index, "righteye", {0.0,0.0,0.0});
 		npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_4", npc.index, "lefteye", {0.0,0.0,0.0});
 
-		TeleportDiversioToRandLocation(npc.index, _, 600.0);
-		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
+		useHeightOverride[npc.index] = true;
+		SSBChair_Teleport_Activate(npc, -1, 1800.0);
+		Chair_UsingAbility[npc.index] = true;
 		EmitSoundToAll(SND_SPAWN_ALERT);
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
