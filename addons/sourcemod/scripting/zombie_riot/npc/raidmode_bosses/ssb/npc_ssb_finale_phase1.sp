@@ -662,14 +662,14 @@ public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float heig
 
 		if (dist < ssbMaxs[2] * 1.2)
 		{
-			CPrintToChatAll("{orange}Check failed: Ceiling too low!");
+			CPrintToChatAll("{orange}Check failed: Ceiling too low! (HULL)");
 			return false;
 		}
 
 		endPos[2] -= ssbMaxs[2] * 1.15;
 	}
 
-	//Debug:
+	//Debug VFX:
 	SpawnBeam_Vectors(startPos, endPos, 3.0, 255, 120, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, 1, 0.1);
 	ParticleEffectAt(startPos, PARTICLE_FIREBALL_BLUE, 3.0);
 	ParticleEffectAt(endPos, PARTICLE_FIREBALL_BLUE, 3.0);
@@ -677,11 +677,11 @@ public bool SSBChair_Teleport_CheckSpaceAbovePoint(float startPos[3], float heig
 	TR_TraceRayFilter(startPos, endPos, MASK_SHOT, RayType_EndPoint, Trace_WorldOnly);
 	if (TR_DidHit())
 	{
-		CPrintToChatAll("{blue}Check failed: Ceiling too low!");
+		CPrintToChatAll("{blue}Check failed: Ceiling too low! (RAY)");
 		return false;
 	}
 
-	//Finally: run a hull check for the teleport position to make sure SSB won't get stuck if he teleports there.
+	//Finally: run one last hull check for the final teleport position to make sure SSB won't get stuck if he teleports there.
 	TR_TraceHullFilter(endPos, endPos, ssbMins, ssbMaxs, MASK_SHOT, Trace_WorldOnly);
 	if (TR_DidHit())
 	{
@@ -797,7 +797,6 @@ public void SSBChair_Teleport_Falling(int ref)
 			for (int i = 0; i < GetArraySize(Teleport_Victims); i++)
 			{
 				int vic = GetArrayCell(Teleport_Victims, i);
-				CPrintToChatAll("Dealing lethal damage to %N", vic);
 				SDKHooks_TakeDamage(vic, ssb.index, ssb.index, 999999.0, DMG_TRUEDAMAGE, _, _, _, false);
 			}
 		}
