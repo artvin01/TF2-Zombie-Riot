@@ -593,8 +593,18 @@ methodmap Lelouch < CClotBody
 		npc.m_flRevertAnim = FAR_FUTURE;
 		npc.m_flFreezeAnim = FAR_FUTURE;
 		npc.m_flCrystalRevert = FAR_FUTURE;
+
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+
 		Ruina_Set_No_Retreat(npc.index);
+		RemoveAllDamageAddition();
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+
+		SetVariantColor(view_as<int>({255, 255, 255, 255}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		fl_nightmare_cannon_core_sound_timer[npc.index] = 0.0;
 		b_Anchors_Created[npc.index] = false;
@@ -680,7 +690,11 @@ methodmap Lelouch < CClotBody
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 400.0;
+			RaidModeTime = GetGameTime() + 400.0;
+
+			WaveStart_SubWaveStart(GetGameTime() + 600.0);
+			//this shouldnt ever start, no anti delay here.
+
 			RaidAllowsBuildings = false;
 
 			RaidModeScaling = float(ZR_GetWaveCount()+1);
@@ -781,7 +795,7 @@ static void Ruina_Ion_Storm(int iNPC)
 				continue;
 
 			DataPack loop_pack;
-			CreateDataTimer(GetRandomFloat(0.0, 1.0)*rng+0.25, IonStorm_OffsetTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(GetRandomFloat(0.0, 1.0)*rng+0.25, IonStorm_OffsetTimer, loop_pack, TIMER_FLAG_NO_MAPCHANGE);
 			loop_pack.WriteCell(EntIndexToEntRef(entity));
 			loop_pack.WriteCell(EntIndexToEntRef(iNPC));
 			rng = 0.0;
@@ -895,7 +909,7 @@ static void ClotThink(int iNPC)
 
 	npc.AdjustWalkCycle();
 
-	Ruina_Add_Battery(npc.index, 5.0);
+	//Ruina_Add_Battery(npc.index, 5.0);
 
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
@@ -907,6 +921,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
+	/*
 	if(fl_ruina_battery[npc.index]>2500.0)
 	{
 		if(fl_ruina_battery_timeout[npc.index] < GameTime)
@@ -917,7 +932,7 @@ static void ClotThink(int iNPC)
 	else
 	{
 		
-	}
+	}*/
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		NPC_StopPathing(npc.index);
@@ -1941,21 +1956,23 @@ static void Create_Anchors(Lelouch npc)
 	}
 
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(250000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(125000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(300000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(175000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(352569.0 * MultiGlobalHighHealthBoss),1, true);
 	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(300000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",	200000, RoundToCeil(6.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(8.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",	500000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	100000, RoundToCeil(6.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	200000, RoundToCeil(10.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",		150000,  RoundToCeil(3.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",	75000,  RoundToCeil(30.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",200000, RoundToCeil(4.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(6.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",500000, RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	200000, RoundToCeil(8.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(4.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",	150000, RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",75000,  RoundToCeil(20.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",100000, RoundToCeil(4.0 * MultiGlobalEnemy));
+
+	Ruina_Master_Rally(npc.index, false);
 
 	//400-500k for melee enemies
 
@@ -2618,6 +2635,12 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me");
 		}
 		
+		RaidModeScaling *= 1.2;
+
+		RaidModeTime += 200.0;
+
+		WaveStart_SubWaveStart(GetGameTime() + 600.0);
+		//this shouldnt ever start, no anti delay here.
 
 		CreateTimer(Duration, LelouchLifeloss, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 		
@@ -2677,7 +2700,7 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	enemy.ExtraDamage = 3.5;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
-	Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_3");
+	Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_5");
 	if(!Waves_InFreeplay())
 	{
 		for(int i; i<count; i++)

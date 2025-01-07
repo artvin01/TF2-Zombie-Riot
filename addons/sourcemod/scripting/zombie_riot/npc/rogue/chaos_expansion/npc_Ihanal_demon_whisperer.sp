@@ -325,9 +325,11 @@ public Action HallamDemonWhisperer_OnTakeDamage(int victim, int &attacker, int &
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		if(attacker <= MaxClients && (TeutonType[attacker] != TEUTON_NONE) || dieingstate[attacker] != 0)
-			return Plugin_Changed;
-
+		if(attacker <= MaxClients)
+		{
+			if(TeutonType[attacker] != TEUTON_NONE || dieingstate[attacker] != 0)
+				return Plugin_Changed;
+		}
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 
