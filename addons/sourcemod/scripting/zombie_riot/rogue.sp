@@ -951,16 +951,21 @@ void Rogue_BattleVictory()
 		Rogue_AddIngots(BattleIngots);
 	}
 
+	//tiny compensation
 	int chaos = RoundToFloor(BattleChaos);
+	chaos -= 2;
+	if(chaos < 0)
+		chaos = 0;
+
+	if(chaos > 15)
+		chaos = 15;
+		
 	if(chaos > 0)
 	{
 		BattleChaos -= float(chaos);
 		Rogue_AddChaos(chaos);
 	}
-	else
-	{
-		Rogue_ParadoxDLC_Flawless();
-	}
+	Rogue_ParadoxDLC_Flawless(chaos);
 
 	if(CurrentType)
 	{

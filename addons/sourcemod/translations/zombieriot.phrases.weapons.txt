@@ -2878,4 +2878,56 @@
 		"en"	"Steam Knight's Spear"
 		"ko"	"증기 기사의 창"
 	}
+	"Blue Cheese"
+	{
+		"en" "Blue Cheese"
+	}
+	"Fentanyl"
+	{
+		"en" "Fentanyl"
+	}
+	"Dubious Cheesy Ideas"
+	{
+		"en" "Dubious Cheesy Ideas"
+	}
+	"Messed Up Cheesy Brain"
+	{
+		"en" "Messed Up Cheesy Brain"
+	}
+	"Waldch's Railgun Rounds"
+	{
+		"en" "Waldch's Railgun Rounds"
+	}
+	"Cheesy Doomsday Pack"
+	{
+		"en" "Cheesy Doomsday Pack"
+	}
+	"Magical Fontina Aura"
+	{
+		"en" "Magical Fontina Aura"
+	}
+	"Domain Expansion: Cheese"
+	{
+		"en" "Domain Expansion: Cheese"
+	}
+	"Bob's Willpower"
+	{
+		"en" "Bob's Willpower"
+	}
+	"A Wheel of Gouda"
+	{
+		"en" "A Wheel of Gouda"
+	}
+	"THE BIG CHEESE!"
+	{
+		"en" "THE BIG CHEESE!"
+	}
+	"Voided Rejuvenator Pack"
+	{
+		"en" "Voided Rejuvenator Pack"
+	}
+	"Cheesy Slimy Aid Kit"
+	{
+		"en" "Cheesy Slimy Aid Kit"
+	}
 }

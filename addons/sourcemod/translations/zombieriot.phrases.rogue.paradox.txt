@@ -554,7 +554,7 @@
 	}
 	"Underground Scorch Desc"
 	{
-		"en"	"The people of the sea are unconcerned with what happens on land...\n{green}Reduce Chaos Infliction by 6 if a stage is completed without gaining Chaos Infliction"
+		"en"	"The people of the sea are unconcerned with what happens on land...\n{green}Reduce Chaos Infliction by 6 if a stage is completed without gaining more then 5 Chaos Infliction"
 	}
 	"Great Machinations"
 	{
@@ -562,7 +562,7 @@
 	}
 	"Great Machinations Desc"
 	{
-		"en"	"Do not envy the sun on the surface. We can do better.\n{green}Reduce Chaos Infliction by 9 if a stage is completed without gaining Chaos Infliction."
+		"en"	"Do not envy the sun on the surface. We can do better.\n{green}Reduce Chaos Infliction by 9 if a stage is completed without gaining more then 5 Chaos Infliction."
 	}
 	"Solidified Lamp Oil"
 	{
