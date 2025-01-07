@@ -287,6 +287,8 @@ static void ClotPrecache()
 	PrecacheModel(LELOUCH_BLADE_MODEL);
 	PrecacheModel(LELOUCH_CRYSTAL_MODEL);
 
+	PrecacheSound("mvm/mvm_tele_deliver.wav");
+
 	PrecacheSoundCustom(LELOUCH_THEME);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, char[] data)
@@ -594,6 +596,18 @@ methodmap Lelouch < CClotBody
 		npc.m_flFreezeAnim = FAR_FUTURE;
 		npc.m_flCrystalRevert = FAR_FUTURE;
 
+		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+
+		Ruina_Set_No_Retreat(npc.index);
+		RemoveAllDamageAddition();
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+
+		SetVariantColor(view_as<int>({255, 255, 255, 255}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+
 		fl_nightmare_cannon_core_sound_timer[npc.index] = 0.0;
 		b_Anchors_Created[npc.index] = false;
 		
@@ -606,11 +620,21 @@ methodmap Lelouch < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
 		Music_SetRaidMusic(music);	
 		
-		/*
-			
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				LookAtTarget(client_check, npc.index);
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "item_armor", 1, "%t", "Lelouch Spawn");
+			}
+		}
 
-
-		*/
+		if(!b_test_mode[npc.index])	//my EARS
+		{
+			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+		}	
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -678,7 +702,11 @@ methodmap Lelouch < CClotBody
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 400.0;
+			RaidModeTime = GetGameTime() + 400.0;
+
+			WaveStart_SubWaveStart(GetGameTime() + 600.0);
+			//this shouldnt ever start, no anti delay here.
+
 			RaidAllowsBuildings = false;
 
 			RaidModeScaling = float(ZR_GetWaveCount()+1);
@@ -779,7 +807,7 @@ static void Ruina_Ion_Storm(int iNPC)
 				continue;
 
 			DataPack loop_pack;
-			CreateDataTimer(GetRandomFloat(0.0, 1.0)*rng+0.25, IonStorm_OffsetTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(GetRandomFloat(0.0, 1.0)*rng+0.25, IonStorm_OffsetTimer, loop_pack, TIMER_FLAG_NO_MAPCHANGE);
 			loop_pack.WriteCell(EntIndexToEntRef(entity));
 			loop_pack.WriteCell(EntIndexToEntRef(iNPC));
 			rng = 0.0;
@@ -893,7 +921,7 @@ static void ClotThink(int iNPC)
 
 	npc.AdjustWalkCycle();
 
-	Ruina_Add_Battery(npc.index, 5.0);
+	//Ruina_Add_Battery(npc.index, 5.0);
 
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
@@ -905,6 +933,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
+	/*
 	if(fl_ruina_battery[npc.index]>2500.0)
 	{
 		if(fl_ruina_battery_timeout[npc.index] < GameTime)
@@ -915,7 +944,7 @@ static void ClotThink(int iNPC)
 	else
 	{
 		
-	}
+	}*/
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		NPC_StopPathing(npc.index);
@@ -1939,21 +1968,23 @@ static void Create_Anchors(Lelouch npc)
 	}
 
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(250000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(125000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(300000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(175000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(352569.0 * MultiGlobalHighHealthBoss),1, true);
 	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(300000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",	200000, RoundToCeil(6.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(8.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",	500000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	100000, RoundToCeil(6.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	200000, RoundToCeil(10.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",		150000,  RoundToCeil(3.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",	75000,  RoundToCeil(30.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",200000, RoundToCeil(4.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(6.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",500000, RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	200000, RoundToCeil(8.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(4.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",	150000, RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",75000,  RoundToCeil(20.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",100000, RoundToCeil(4.0 * MultiGlobalEnemy));
+
+	Ruina_Master_Rally(npc.index, false);
 
 	//400-500k for melee enemies
 
@@ -2206,6 +2237,10 @@ static int i_GetTarget_Lazy_Method(float end_point[3], int Team)
 			Radius = Dist;
 		}
 	}
+
+	//as far as I am aware, non-red buildings do not exist.
+	if(Team == TFTeam_Red)
+		return valid_target;
 
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
@@ -2616,6 +2651,12 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me");
 		}
 		
+		RaidModeScaling *= 1.2;
+
+		RaidModeTime += 200.0;
+
+		WaveStart_SubWaveStart(GetGameTime() + 600.0);
+		//this shouldnt ever start, no anti delay here.
 
 		CreateTimer(Duration, LelouchLifeloss, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 		
@@ -2675,6 +2716,7 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	enemy.ExtraDamage = 3.5;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
+	Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_5");
 	if(!Waves_InFreeplay())
 	{
 		for(int i; i<count; i++)
@@ -2745,12 +2787,12 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		
 		*/
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapon {gold}%N{snow}. It looks identical to my own. Fortunately my one's the genuine article.", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "What a shoody looking weapon you have there {gold}%N{snow}, if only you had the real one.", client);}
-		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "I never could understand why {purple}Twirl{snow} was so obssed with \"{blue}The storm that is aproaching{snow}\". Do you {gold}%N{snow} know perchance", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Whose this {blue}Vergil{snow} you speak of {gold}%N{snow}?", client);}
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg was the only good thing that came out of the alliance, {gold}%N{snow}. You sure know how to choose good weapons", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "A real shame that you {gold}%N{snow} destroyed Blitzkrieg before I got a chance to \"Upgrade\" him...", client);}
-		case WEAPON_KIT_FRACTAL:  switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "The hell is that thing your using {gold}%N{snow} yet its power is familiar..", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Wait are you {gold}%N{snow} using a fragment of {purple}Twirl{snow}'s power?", client);}
-		case WEAPON_BOOMSTICK: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "Overcompensating there {gold}%N{snow} for something?", client); 							case 2: Format(Text_Lines, sizeof(Text_Lines), "Why is shooting a huge piece of metal so effective {gold}%N{snow} explain this to me immediately!", client);}
-		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapons shows you care more for aesthetics then functionality {gold}%N", client);  case 2: Format(Text_Lines, sizeof(Text_Lines), "That weapon is more flashy then effective {gold}%N", client);}
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(1,2)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapon {gold}%N{snow}. It looks identical to my own. Fortunately my one's the genuine article.", client);  														case 2: Format(Text_Lines, sizeof(Text_Lines), "What a shoody looking weapon you have there {gold}%N{snow}, if only you had the real one.", client);}
+		case WEAPON_YAMATO: switch(GetRandomInt(1,2)) 				{case 1: Format(Text_Lines, sizeof(Text_Lines), "I never could understand why {purple}Twirl{snow} was so obssed with \"{blue}The storm that is aproaching{snow}\". Do you {gold}%N{snow} know perchance", client);  	case 2: Format(Text_Lines, sizeof(Text_Lines), "Whose this {blue}Vergil{snow} you speak of {gold}%N{snow}?", client);}
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(1,2)) 	{case 1: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg was the only good thing that came out of the alliance, {gold}%N{snow}. You sure know how to choose good weapons", client);  								case 2: Format(Text_Lines, sizeof(Text_Lines), "A real shame that you {gold}%N{snow} destroyed Blitzkrieg before I got a chance to \"Upgrade\" him...", client);}
+		case WEAPON_KIT_FRACTAL:  switch(GetRandomInt(1,2))			{case 1: Format(Text_Lines, sizeof(Text_Lines), "The hell is that thing your using {gold}%N{snow} yet its power is familiar..", client);  																				case 2: Format(Text_Lines, sizeof(Text_Lines), "Wait are you {gold}%N{snow} using a fragment of {purple}Twirl{snow}'s power?", client);}
+		case WEAPON_BOOMSTICK: switch(GetRandomInt(1,2))			{case 1: Format(Text_Lines, sizeof(Text_Lines), "Overcompensating there {gold}%N{snow} for something?", client); 																										case 2: Format(Text_Lines, sizeof(Text_Lines), "Why is shooting a huge piece of metal so effective {gold}%N{snow} explain this to me immediately!", client);}
+		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_PULSE, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_FEED: switch(GetRandomInt(1,2))	{case 1: Format(Text_Lines, sizeof(Text_Lines), "That weapons shows you care more for aesthetics then functionality {gold}%N", client); 						case 2: Format(Text_Lines, sizeof(Text_Lines), "That weapon is more flashy then effective {gold}%N", client);}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "You bitch {gold}%N", client); 
 
 		default:

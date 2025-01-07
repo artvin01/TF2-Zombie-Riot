@@ -494,6 +494,18 @@ static void ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	if(i_special_tower_logic[npc.index] == 1)
+	{
+		float Radius = 300.0;
+		Master_Apply_Defense_Buff(npc.index, Radius, 5.0, 0.75);	//25% resistances
+		Master_Apply_Attack_Buff(npc.index, Radius, 5.0, 0.25);		//25% dmg bonus
+
+		float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=30.0;
+		int color[4]; Ruina_Color(color);
+		TE_SetupBeamRingPoint(Npc_Vec, Radius*2.0, Radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, 0.1, 30.0, 0.1, color, 1, 0);
+		TE_SendToAll();
+	}
+
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
 	{
 		Raid_Spwaning_Logic(npc);
@@ -571,68 +583,23 @@ static void Spawning_Logic(Magia_Anchor npc)
 		return;
 
 	int npc_current_count;
-	int others = 0;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-		switch(i_special_tower_logic[npc.index])
+		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
 		{
-			case 1:	//for lelouch, only count the drones as valid npc total
-			{
-				if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
-				{
-					char npc_classname[60];
-					NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-
-					bool valid = false;
-
-					static const char Compare[][] = {
-						"npc_ruina_drone",
-						"npc_ruina_dronian",
-						"npc_ruina_dronis",
-						"npc_ruina_dronianis"
-					};
-
-					for(int i=0 ; i < 4 ; i ++)
-					{
-						if(StrEqual(npc_classname, Compare[i]))
-						{
-							valid = true;
-							break;
-						}
-					}
-					if(valid)
-					{
-						npc_current_count += 1;
-					}
-					else
-					{
-						others ++;
-					}
-				}
-			}
-			default:
-			{
-				if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
-				{
-					npc_current_count += 1;
-				}
-			}
+			npc_current_count += 1;
 		}
-		
 	}
 
-	bool slower = false;
-	if(i_special_tower_logic[npc.index] == 1)
+	int limit = MaxEnemiesAllowedSpawnNext(0);
+
+	switch(i_special_tower_logic[npc.index])
 	{
-		//for lelouch make it so if other npc's exist, slow it down a bit. that way the "wave spawn" can actually spawn.
-		if(others > 10)
-		{
-			slower = true;
-		}
+		case 1: limit /=2;
 	}
 
-	if(npc_current_count > LimitNpcs)
+	if(npc_current_count > limit)
 		return;
 
 	int wave = i_wave[npc.index];
@@ -640,10 +607,6 @@ static void Spawning_Logic(Magia_Anchor npc)
 	if(Ratio < -0.5)
 		Ratio=-0.5;
 	float Time = 1.0 + Ratio;
-	if(slower)
-	{
-		Time *=2.0;
-	}
 	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 	float ratio = float(wave)/60.0;
 	int health = RoundToFloor(15000.0*ratio);

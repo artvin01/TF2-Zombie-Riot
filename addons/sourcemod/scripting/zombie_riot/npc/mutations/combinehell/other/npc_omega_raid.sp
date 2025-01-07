@@ -232,10 +232,12 @@ methodmap OmegaRaid < CClotBody
 		{
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 5;
+			npc.m_flSpeed = 250.0;
 		}
-		if(!item)
+		else
 		{
 			npc.m_bDissapearOnDeath = true;
+			npc.m_flSpeed = 310.0;
 		}
 		
 		i_NpcWeight[npc.index] = 5;
@@ -340,7 +342,6 @@ methodmap OmegaRaid < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 270.0;
 		npc.Anger = false;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 				
@@ -621,7 +622,7 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				float damage = 33.0;
+				float damage = 25.0;
 				int closest = npc.m_iTarget;
 				float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 				damage *= RaidModeScaling;

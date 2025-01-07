@@ -235,6 +235,10 @@ static void NPC_Death(int entity)
 {
 	Interstellar_Weaver_Mid npc = view_as<Interstellar_Weaver_Mid>(entity);
 	
+	ApplyStatusEffect(npc.index, npc.index, "Clear Head", 0.0);	
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.0);	
+	ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 0.0);	
+	
 	npc.m_iState = -1;
 	
 	Ruina_NPCDeath_Override(entity);

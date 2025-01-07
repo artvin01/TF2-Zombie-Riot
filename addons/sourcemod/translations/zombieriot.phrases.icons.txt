@@ -419,6 +419,10 @@
 		"fr"		"Sa majesté, l'Ultime Sorceresse est ici..."
 		"chi"		"女王陛下，至高法师，法术之主，降临了。"
 	}
+	"Lelouch Spawn"
+	{
+		"en"		"Kill him before he opens the gate"
+	}
 	"3650 1"
 	{
 		"en"		"Armaments locked and loaded."

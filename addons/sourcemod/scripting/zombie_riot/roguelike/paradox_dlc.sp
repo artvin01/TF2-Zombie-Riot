@@ -14,14 +14,15 @@ static float CurrentTulipDamage[MAXTF2PLAYERS];
 static Handle CastleTimer;
 static float CurrentCastleHealth[MAXTF2PLAYERS];
 
-void Rogue_ParadoxDLC_Flawless()
+void Rogue_ParadoxDLC_Flawless(int chaos)
 {
 	if(Smoking)
 	{
+		//always add 5.
 		Rogue_AddChaos(5);
 	}
 
-	if(FlawlessAmount)
+	if(FlawlessAmount && chaos <= 5)
 	{
 		Rogue_RemoveChaos(FlawlessAmount);
 	}
@@ -45,10 +46,10 @@ void Rogue_ParadoxDLC_DebuffTime(int entity, float &time)
 void Rogue_ParadoxDLC_StunTime(int entity, float &time)
 {
 	if(ShortStun && GetTeam(entity) != TFTeam_Red)
-		time *= 2.1;
+		time *= 1.25;
 	
 	if(LongStun && GetTeam(entity) != TFTeam_Red)
-		time *= 2.5;
+		time *= 1.35;
 }
 
 void Rogue_ParadoxDLC_AbilityUsed(int client)
@@ -59,7 +60,7 @@ void Rogue_ParadoxDLC_AbilityUsed(int client)
 
 public void Rogue_RuinaGem_Collect()
 {
-	Rogue_RemoveChaos(20);
+	Rogue_RemoveChaos(50);
 }
 
 public void Rogue_Flawless1_Collect()

@@ -235,6 +235,10 @@ methodmap Interstellar_Weaver < CClotBody
 
 		ParticleEffectAt(npc_vec, "eyeboss_death_vortex", 5.0);
 
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+
 		b_ignore_npc[npc.index]=true;
 		int follow_id = npc.index;
 		for(int i=0 ; i< INTERSTELLAR_WEAVER_LENGTH ; i++)
@@ -282,6 +286,10 @@ static int Storm_Weaver_Create_Tail(Interstellar_Weaver npc, int follow_ID, int 
 		b_IgnoreAllCollisionNPC[spawn_index] = true;
 		f_NoUnstuckVariousReasons[spawn_index] = FAR_FUTURE;
 		AddNpcToAliveList(spawn_index, 1);
+
+		ApplyStatusEffect(spawn_index, spawn_index, "Clear Head", FAR_FUTURE);	
+		ApplyStatusEffect(spawn_index, spawn_index, "Solid Stance", FAR_FUTURE);	
+		ApplyStatusEffect(spawn_index, spawn_index, "Fluid Movement", FAR_FUTURE);	
 
 		fl_Extra_Damage[spawn_index] = fl_Extra_Damage[npc.index];
 		fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
@@ -833,6 +841,10 @@ static void NPC_Death(int entity)
 	{
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
+
+	ApplyStatusEffect(npc.index, npc.index, "Clear Head", 0.0);	
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.0);	
+	ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 0.0);	
 	
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos1);

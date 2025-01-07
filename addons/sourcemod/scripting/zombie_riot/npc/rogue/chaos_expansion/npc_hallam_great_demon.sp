@@ -121,9 +121,12 @@ methodmap HallamGreatDemon < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
+
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
+
+		
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);

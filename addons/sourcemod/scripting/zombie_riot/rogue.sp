@@ -923,10 +923,13 @@ void Rogue_BattleVictory()
 				{
 					recover = CurrentFloor > 1 ? 6 : 8;
 				}
-				else if(BattleIngots > 1)
+				else if(BattleIngots >= 1)
 				{
 					recover = CurrentFloor > 1 ? 4 : 6;
 				}
+
+				if(BattleIngots >= 1 && CurrentFloor >= 4)
+					recover += 5;
 
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
 
@@ -948,16 +951,21 @@ void Rogue_BattleVictory()
 		Rogue_AddIngots(BattleIngots);
 	}
 
+	//tiny compensation
 	int chaos = RoundToFloor(BattleChaos);
+	chaos -= 2;
+	if(chaos < 0)
+		chaos = 0;
+
+	if(chaos > 15)
+		chaos = 15;
+		
 	if(chaos > 0)
 	{
 		BattleChaos -= float(chaos);
 		Rogue_AddChaos(chaos);
 	}
-	else
-	{
-		Rogue_ParadoxDLC_Flawless();
-	}
+	Rogue_ParadoxDLC_Flawless(chaos);
 
 	if(CurrentType)
 	{
