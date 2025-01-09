@@ -334,6 +334,7 @@ static Action Timer_ParadoxFrost(Handle timer)
 
 public void Rogue_BlueGoggles_Collect()
 {
+	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
@@ -343,6 +344,7 @@ public void Rogue_BlueGoggles_Collect()
 			break;
 		}
 	}
+	*/
 	//dont allow both bob and goggles, only 1 follower.
 	
 	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
