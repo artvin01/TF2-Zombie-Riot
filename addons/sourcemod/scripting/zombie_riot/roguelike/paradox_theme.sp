@@ -464,9 +464,9 @@ public void Rogue_Twirl_Ally(int entity, StringMap map)
 	if(map)	// Player
 	{
 		float value = 1.0;
-		// +100% mana cap and regen
+		// +15% mana cap and regen
 		map.GetValue("405", value);
-		map.SetValue("405", value * 2.0);
+		map.SetValue("405", value * 1.15);
 	}
 }
 public void Rogue_Twirl_Weapon(int entity, StringMap map)
@@ -490,8 +490,8 @@ static Action Timer_TwirlTimer(Handle timer)
 			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
 			{
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon != -1 && !Attributes_Has(weapon, 410))
-					Saga_ChargeReduction(client, weapon, 1.0);
+				if(weapon != -1)
+					Saga_ChargeReduction(client, weapon, 0.5);
 			}
 		}
 	}

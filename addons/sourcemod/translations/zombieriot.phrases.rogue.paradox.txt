@@ -731,7 +731,7 @@
 	}
 	"Twirl Guidance Desc"
 	{
-		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds, mage weapons instead gain +100%% max mana and mana regen"
+		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15%% max mana and mana regen"
 	}
 	"Unauthorized Ruina Gem"
 	{
