@@ -622,7 +622,7 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				float damage = 25.0;
+				float damage = 20.0;
 				int closest = npc.m_iTarget;
 				float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 				damage *= RaidModeScaling;
@@ -694,7 +694,7 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 							{
 								damage *= RaidModeScaling + 100.0;
 								npc.AddGesture("ACT_PUSH_PLAYER");
-								TF2_AddCondition(target, TFCond_FreezeInput, 2.0);
+								TF2_AddCondition(target, TFCond_FreezeInput, 1.0);
 								Custom_Knockback(npc.index, targetTrace, 1000.0, true, true);
 								Explode_Logic_Custom(50.0, -1, npc.index, -1, vecTarget, 100.0, _, _, true, _, false);
 								ParticleEffectAt(vecTarget, "hightower_explosion", 1.0);
