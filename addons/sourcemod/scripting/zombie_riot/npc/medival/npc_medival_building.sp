@@ -297,7 +297,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 			IncreaceSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
 
-			if((GetTeam(iNPC) != TFTeam_Red && npc_current_count < LimitNpcs) || (GetTeam(iNPC) == TFTeam_Red && npc_current_count < 6))
+			if((GetTeam(iNPC) != TFTeam_Red && npc_current_count < MaxEnemiesAllowedSpawnNext(0)) || (GetTeam(iNPC) == TFTeam_Red && npc_current_count < 6))
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);

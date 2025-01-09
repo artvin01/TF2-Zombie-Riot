@@ -339,7 +339,7 @@ public void Weapon_German_M2(int client, int weapon, bool &result, int slot)
 		}
 		else
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
 			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 

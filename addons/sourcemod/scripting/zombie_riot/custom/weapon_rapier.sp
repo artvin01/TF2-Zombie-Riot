@@ -220,7 +220,7 @@ public void Weapon_Rapier_M2(int client, int weapon, bool crit, int slot)
 			return;
 		}
 			
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		static float EntLoc[3];
 

@@ -36,12 +36,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 
 		// +20% max health
 		map.GetValue("26", value);
-
-		value += ClassHealth(WeaponClass[entity]);
-		value *= 1.2;
-		value -= ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", value);
+		map.SetValue("26", value * 1.2);
 
 		// -10% movement speed
 		value = 1.0;
@@ -114,12 +109,7 @@ public void Rogue_Brokenblade_Ally(int entity, StringMap map)
 
 		// -20% max health
 		map.GetValue("26", value);
-
-		value += ClassHealth(WeaponClass[entity]);
-		value *= 0.8;
-		value -= ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", value);
+		map.SetValue("26", value * 0.8);
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
@@ -156,16 +146,11 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 
 			float value;
 
-			// +200% max health
+			// +100% max health
 			map.GetValue("26", value);
+			map.SetValue("26", value * 2.0);
 
-			value += ClassHealth(WeaponClass[entity]);
-			value *= 2.0;
-			value -= ClassHealth(WeaponClass[entity]);
-
-			map.SetValue("26", value);
-
-			// +200% building damage
+			// +100% building damage
 			value = 1.0;
 			map.GetValue("287", value);
 			map.SetValue("287", value * 2.0);
@@ -194,9 +179,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 	{
 		float last;
 		map.GetValue("26", last);
-		last += ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", RemoveExtraHealth(WeaponClass[entity], LastFlowerHealth));
+		map.SetValue("26", LastFlowerHealth);
 
 		LastFlowerHealth = last * 1.25;
 	}
@@ -240,8 +223,6 @@ public void Rogue_Shadow_Ally(int entity, StringMap map)
 		
 		float last;
 		map.GetValue("26", last);
-		last += ClassHealth(WeaponClass[entity]);
-
 		LastShadowHealth.Push(RoundFloat(last));
 	}
 	else if(!b_NpcHasDied[entity] && LastShadowHealth && !LastShadowHealth.Empty)	// NPCs
@@ -292,12 +273,7 @@ public void Rogue_CombineCrown_Ally(int entity, StringMap map)
 
 		// -5% max health
 		map.GetValue("26", value);
-
-		value += ClassHealth(WeaponClass[entity]);
-		value *= 0.95;
-		value -= ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", value);
+		map.SetValue("26", value * 0.95);
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{

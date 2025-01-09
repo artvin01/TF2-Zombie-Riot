@@ -796,7 +796,7 @@ static void MerchantStart(int client, int slot)
 	int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 	if(weapon != -1)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 
 		MerchantAbilitySlot[client] = slot;
 		MerchantWeaponRef[client] = EntIndexToEntRef(weapon);

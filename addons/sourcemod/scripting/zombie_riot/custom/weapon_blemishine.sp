@@ -29,7 +29,7 @@ public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, 
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, BLEMISHINE_COOLDOWN);
 		f_Blemishine_AbilityActive[client] = GetGameTime() + BLEMISHINE_ABILITY_ACTIVE;
 		float flPos[3];
@@ -73,7 +73,7 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, BLEMISHINE_COOLDOWN);
 		f_Blemishine_AbilityActive[client] = GetGameTime() + BLEMISHINE_ABILITY_ACTIVE;
 		float flPos[3];
@@ -117,7 +117,7 @@ public void Weapon_BlemishineAttackM2Strongest(int client, int weapon, bool &res
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, BLEMISHINE_COOLDOWN);
 		f_Blemishine_AbilityActive[client] = GetGameTime() + BLEMISHINE_ABILITY_ACTIVE;
 		float flPos[3];

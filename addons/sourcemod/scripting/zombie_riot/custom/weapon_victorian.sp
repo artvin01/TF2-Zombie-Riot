@@ -361,7 +361,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 		{
 			if(Ability_Check_Cooldown(client, slot) < 0.0 && how_many_supercharge_left[client] == 0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 50.0);
 				how_many_supercharge_left[client] += 10;
 				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 70, _, 1.0);
@@ -369,7 +369,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 			}
 			else if(how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 1)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				how_many_shots_reserved = how_many_supercharge_left;
 				Mega_Burst[client] = true;
 				EmitSoundToAll(SOUND_VIC_SUPER_CHARGE, client, SNDCHAN_AUTO, 70, _, 1.0);
@@ -423,7 +423,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 		}
 		if(Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 30.0);
 			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 70, _, 1.0);
 			During_Ability[client] = true;

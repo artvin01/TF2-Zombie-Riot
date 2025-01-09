@@ -312,6 +312,9 @@ methodmap Lex < CClotBody
 			ally.m_bThisNpcIsABoss = this.m_bThisNpcIsABoss;
 			if(this.m_bThisNpcIsABoss)
 				GiveNpcOutLineLastOrBoss(ally.index, true);
+
+			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[this.index];
+			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[this.index];
 		}
 	}
 	public void AdjustWalkCycle()

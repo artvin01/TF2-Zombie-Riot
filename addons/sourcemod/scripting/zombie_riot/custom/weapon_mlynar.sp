@@ -228,7 +228,7 @@ public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME);
 		f_MlynarAbilityActiveTime[client] = GetGameTime() + 15.0;
 		b_MlynarResetStats[client] = true;
@@ -265,7 +265,7 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
 		{
 			Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME - 5.0);

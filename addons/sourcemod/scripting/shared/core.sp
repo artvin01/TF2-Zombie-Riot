@@ -94,6 +94,7 @@ public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
+ConVar CvarLeveling;
 #endif
 
 ConVar CvarDisableThink;

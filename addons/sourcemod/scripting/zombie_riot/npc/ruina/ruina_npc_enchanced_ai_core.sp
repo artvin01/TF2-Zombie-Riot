@@ -143,6 +143,8 @@ int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
 int g_Ruina_BEAM_lightning;
+char g_Ruina_Glow_Blue;	//blue
+char g_Ruina_Glow_Red;	//red
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -151,7 +153,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 void Ruina_Ai_Core_Mapstart()
 {
-
 	NPCData data1;
 	strcopy(data1.Name, sizeof(data1.Name), "Mana Overload");
 	strcopy(data1.Plugin, sizeof(data1.Plugin), "npc_donoteveruse_3");
@@ -246,6 +247,9 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
 
 	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
+
+	g_Ruina_Glow_Blue = PrecacheModel("sprites/blueglow2.vmt", true);
+	g_Ruina_Glow_Red = PrecacheModel("sprites/redglow2.vmt", true);
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
@@ -1229,7 +1233,7 @@ enum struct Ruina_Self_Defense
 	float gameTime;
 	int status;
 
-	void Swing_Melee(Function OnAttack = INVALID_FUNCTION)
+	void Swing_Melee(Function OnAttack = INVALID_FUNCTION, Function OnSwing = INVALID_FUNCTION)
 	{
 		CClotBody npc = view_as<CClotBody>(this.iNPC);
 
@@ -1238,6 +1242,13 @@ enum struct Ruina_Self_Defense
 			if(npc.m_flAttackHappens < this.gameTime)
 			{
 				npc.m_flAttackHappens = 0.0;
+
+				if(OnSwing && OnSwing!=INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, OnSwing);
+					Call_PushCell(npc.index);
+					Call_Finish();
+				}
 				
 				Handle swingTrace;
 				float target_vec[3]; WorldSpaceCenter(this.target, target_vec);
@@ -2490,7 +2501,6 @@ enum struct Ruina_Laser_Logic
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 
-				
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
 			int victim = Ruina_Laser_BEAM_HitDetected[loop];

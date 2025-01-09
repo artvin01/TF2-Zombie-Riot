@@ -273,12 +273,52 @@ void MedivalRam_NPCDeath(int entity)
 	if(Garrison[entity])
 	{
 		int Team = GetTeam(npc.index);
-		
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
-		
 		for(int i; i < 6; i++)
 		{
-			NPC_CreateById(Garrison[entity], -1, pos, ang, Team);
+			float PosTemp[3];
+			PosTemp = pos;
+			PosTemp[0] += GetRandomFloat(-5.0, 5.0);
+			PosTemp[1] += GetRandomFloat(-5.0, 5.0);
+			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+			{
+				NPC_CreateById(Garrison[entity], -1, PosTemp, ang, Team);
+			}
+			else
+			{
+				// Hit sound
+				int ParticleSpawnEffect = ParticleEffectAt(PosTemp, "npc_boss_bomb_alert_plate", -1.0);
+				DataPack pack;
+				CreateDataTimer(0.1, Medival_Ram_Spawner_Delay, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+				pack.WriteCell(EntIndexToEntRef(ParticleSpawnEffect));
+				pack.WriteCell(Garrison[entity]);
+				pack.WriteFloatArray(PosTemp, sizeof(PosTemp));
+				pack.WriteFloatArray(ang, sizeof(ang));
+				pack.WriteCell(Team);
+			}
 		}
 	}
+}
+
+
+public Action Medival_Ram_Spawner_Delay(Handle timer, DataPack pack)
+{
+	GiveProgressDelay(1.0);
+	//Keep waiting.
+	if(MaxEnemiesAllowedSpawnNext(1) < EnemyNpcAlive)
+		return Plugin_Continue;
+
+	pack.Reset();
+	int ParticleEffect = EntRefToEntIndex(pack.ReadCell());
+	int GarrisonType = pack.ReadCell();
+	float pos[3];
+	pack.ReadFloatArray(pos, sizeof(pos));
+	float ang[3];
+	pack.ReadFloatArray(ang, sizeof(pos));
+	int Team = pack.ReadCell();
+
+	NPC_CreateById(GarrisonType, -1, pos, ang, Team);
+	if(IsValidEntity(ParticleEffect))
+		RemoveEntity(ParticleEffect);
+	return Plugin_Stop;
 }

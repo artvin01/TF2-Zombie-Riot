@@ -134,7 +134,7 @@ public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				float speedtime = Actualmana / 100.0 + 5.0;
 				Ability_Apply_Cooldown(client, slot, speedtime);	//Cooldown based on how much mana the player currently has.
 				

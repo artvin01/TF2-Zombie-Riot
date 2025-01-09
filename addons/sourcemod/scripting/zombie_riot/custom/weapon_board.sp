@@ -98,7 +98,7 @@ public void Board_empower_ability(int client, int weapon, bool crit, int slot) /
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
@@ -130,7 +130,7 @@ public void Board_empower_ability_Spike(int client, int weapon, bool crit, int s
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
@@ -161,7 +161,7 @@ public void Board_empower_ability_Leaf(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
@@ -195,7 +195,7 @@ public void Board_empower_ability_Rookie(int client, int weapon, bool crit, int 
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 3.0;
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
@@ -228,7 +228,7 @@ public void Board_empower_ability_Punishment(int client, int weapon, bool crit, 
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
@@ -262,7 +262,7 @@ public void Board_empower_ability_Rampart(int client, int weapon, bool crit, int
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
@@ -296,7 +296,7 @@ public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int 
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 3.0;
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);

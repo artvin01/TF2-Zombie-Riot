@@ -756,6 +756,14 @@
 	{
 		"en"	"Increaces damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
 	}
+	"Heavy Laccerations"
+	{
+		"en" 	"Heavy Laccerations"
+	}
+	"Heavy Laccerations Desc"
+	{
+		"en"	"Uncureable.\nIncreaced damage taken dynamically."
+	}
 	"Bleed"
 	{
 		"en"	"Bleed"
