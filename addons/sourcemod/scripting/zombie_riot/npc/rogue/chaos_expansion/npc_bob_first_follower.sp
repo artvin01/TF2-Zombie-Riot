@@ -174,7 +174,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 17:
 			{
-				this.Speech("Omega?","Well, after that stunt he pulled in Nova Prospekt, I trust him.");
+				this.Speech("Omega? Well, after that stunt he pulled in Nova Prospekt, I trust him.");
 			}
 			case 18:
 			{
