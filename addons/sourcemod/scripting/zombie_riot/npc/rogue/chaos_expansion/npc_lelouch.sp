@@ -699,43 +699,40 @@ methodmap Lelouch < CClotBody
 
 		i_Lelouch_Index = EntIndexToEntRef(npc.index);
 
-		if(!IsValidEntity(RaidBossActive))
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidModeTime = GetGameTime() + 400.0;
+
+		WaveStart_SubWaveStart(GetGameTime() + 600.0);
+		//this shouldnt ever start, no anti delay here.
+
+		RaidAllowsBuildings = false;
+
+		RaidModeScaling = float(ZR_GetWaveCount()+1);
+	
+		if(RaidModeScaling < 55)
 		{
-			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime() + 400.0;
-
-			WaveStart_SubWaveStart(GetGameTime() + 600.0);
-			//this shouldnt ever start, no anti delay here.
-
-			RaidAllowsBuildings = false;
-
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
-		
-			if(RaidModeScaling < 55)
-			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
-			}
-			else
-			{
-				RaidModeScaling *= 0.38;
-			}
-			
-			float amount_of_people = ZRStocks_PlayerScalingDynamic();
-			
-			if(amount_of_people > 12.0)
-			{
-				amount_of_people = 12.0;
-			}
-			
-			amount_of_people *= 0.12;
-			
-			if(amount_of_people < 1.0)
-				amount_of_people = 1.0;
-				
-			RaidModeScaling *= amount_of_people;
-
-			RaidModeScaling *= 1.1;
+			RaidModeScaling *= 0.19; //abit low, inreacing
 		}
+		else
+		{
+			RaidModeScaling *= 0.38;
+		}
+		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
+		
+		if(amount_of_people > 12.0)
+		{
+			amount_of_people = 12.0;
+		}
+		
+		amount_of_people *= 0.12;
+		
+		if(amount_of_people < 1.0)
+			amount_of_people = 1.0;
+			
+		RaidModeScaling *= amount_of_people;
+
+		RaidModeScaling *= 1.1;
 
 		if(b_test_mode[npc.index])
 			RaidModeTime = FAR_FUTURE;
