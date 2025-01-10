@@ -84,7 +84,7 @@ public void SeabornCombineSoldierShotgun_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "combine_shotgun");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Hidden;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

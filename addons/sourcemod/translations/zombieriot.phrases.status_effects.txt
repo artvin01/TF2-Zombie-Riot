@@ -356,6 +356,14 @@
 	{
 		"en"	"Slowly Heals dependant on %% of max HP overtime.\nBoosts NPC'S Speed by 15%%\nLess damage taken by 20%%\nBeing a player, or/and being silenced each reduces this by 5%% flat.\nIncreases Damage delt by 30%%, If silenced, this is 15%%"
 	}
+	"MERLT0N-BUFF"
+	{
+		"en"	"MERLT0N-BUFF"
+	}
+	"MERLT0N-BUFF Desc"
+	{
+		"en"	"Reduces damage taken by 50%%\nBoosts damage dealt by 50%%"
+	}
 	"Combine Command"
 	{
 		"en"	"Combine Command"
