@@ -159,6 +159,30 @@
 		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
 	}
+	"Shop Encounter Title Ruina"
+	{
+		"en"	"You find a Ruinian who's hiding, they say they have some things to give you for cash, needed to escape from here apperantly."
+	}
+	"Shop Encounter Title Ruina Evil"
+	{
+		"en"	"''Hey i saw you steal before! get away from here! i dont trust you!''"
+	}
+	"Shop Ruina Sad"
+	{
+		"en"	"{snow}Hiuldan:{default} Why...? Twirl why do you let them..?"
+	}
+	"Shop Ruina Sad 1"
+	{
+		"en"	"{purple}Twirl{snow}: ... I will give you a personal ride home, i dont know why they are like this. But this is very important, im very sorry."
+	}
+	"Shop Ruina Happy"
+	{
+		"en"	"{snow}Hiuldan:{default} W-What?? for free?? Youre too generous!!!"
+	}
+	"Shop Ruina Happy 1"
+	{
+		"en"	"{purple}Twirl{snow}: ... i half expected you to rob that poor guy given your track record, im proud of you."
+	}
 	"Better save up now"
 	{
 		"en"	"Better save up now"
@@ -1792,13 +1816,17 @@
 	{
 		"en"	"W.F. Mercenary Iberian"
 	}
-	"W.F. Mercenary Ruinan"
+	"W.F. Mercenary Ruinian"
 	{
-		"en"	"W.F. Mercenary Ruinan"
+		"en"	"W.F. Mercenary Ruinian"
 	}
 	"Guln"
 	{
 		"en"	"Guln"
+	}
+	"Automatic Robot Defense"
+	{
+		"en"	"Automatic Robot Defense"
 	}
 	"Cursed Relic"
 	{

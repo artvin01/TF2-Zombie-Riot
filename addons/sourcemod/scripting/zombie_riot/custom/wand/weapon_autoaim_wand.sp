@@ -40,7 +40,7 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				if(pap == 0)
 				{
 					Ability_Apply_Cooldown(client, slot, 2.0);

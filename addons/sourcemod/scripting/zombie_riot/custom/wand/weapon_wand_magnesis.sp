@@ -291,7 +291,7 @@ void Magnesis_FireProjectile(int client, int weapon, int tier)
 
     if(mana_cost <= Current_Mana[client])
 	{	
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 2.0);
 		Mana_Hud_Delay[client] = 0.0;
 		Current_Mana[client] -= mana_cost;
@@ -542,7 +542,7 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		WritePackCell(pack, EntIndexToEntRef(start));
 		WritePackCell(pack, EntIndexToEntRef(end));
 
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
@@ -846,7 +846,7 @@ void Newtonian_FireProjectile(int client, int weapon, int tier)
 
 	if(mana_cost <= Current_Mana[client])
 	{	
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
@@ -887,7 +887,7 @@ void Newtonian_TryShockwave(int client, int weapon, int tier)
 
 	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		

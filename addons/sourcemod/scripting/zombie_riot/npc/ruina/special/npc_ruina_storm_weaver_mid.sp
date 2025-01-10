@@ -94,6 +94,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 		b_DoNotUnStuck[npc.index] = true;
 
+		npc.m_bDissapearOnDeath = true;
 		b_NoKnockbackFromSources[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -147,29 +148,17 @@ static void ClotThink(int iNPC)
 	{
 		float Follow_Loc[3];
 		GetEntPropVector(follow_id, Prop_Send, "m_vecOrigin", Follow_Loc);
-
-		int I_see=Can_I_See_Ally(npc.index, follow_id);
-		if(I_see==follow_id)
-		{
-			Storm_Weaver_Middle_Movement(npc, Follow_Loc, false);	//we can see it, travel normally!
-		}
-		else
-		{
-			Storm_Weaver_Middle_Movement(npc, Follow_Loc, true);	//we can't see the thing we are following, noclip
-		}
+		Storm_Weaver_Middle_Movement(npc, Follow_Loc);	//we can see it, travel normally!
 		
 	}
 	else
 	{
-		npc.m_bDissapearOnDeath = true;	
 		//CPrintToChatAll("death cause no hp.");
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 
 		return;
 	}
-
-
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		int Enemy_I_See;
@@ -249,4 +238,12 @@ static void NPC_Death(int entity)
 	
 	Ruina_NPCDeath_Override(entity);
 
+	float pos1[3];
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos1);
+	DataPack pack_boom1 = new DataPack();
+	pack_boom1.WriteFloat(pos1[0]);
+	pack_boom1.WriteFloat(pos1[1]);
+	pack_boom1.WriteFloat(pos1[2]);
+	pack_boom1.WriteCell(1);
+	RequestFrame(MakeExplosionFrameLater, pack_boom1);
 }

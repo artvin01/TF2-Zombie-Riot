@@ -24,7 +24,7 @@ public void Weapon_Wand_AttackSpeed(int client, int weapon, bool &result, int sl
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 15.0);
 				
 				weapon_id[client] = weapon;

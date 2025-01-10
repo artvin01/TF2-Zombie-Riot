@@ -309,7 +309,7 @@ public void Weapon_FlagellantMelee_M2(int client, int weapon, bool crit, int slo
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 44.0);
 
 	ClientCommand(client, "playgamesound misc/halloween/spell_skeleton_horde_cast.wav");
@@ -557,7 +557,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 
 	if(validEnemy)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 
 		TriggerSelfDamage(client, 0.025);
 		
@@ -752,7 +752,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 
 	if(validEnemy)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 
 		int round = Rogue_GetRoundScale();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);

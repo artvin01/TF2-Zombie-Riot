@@ -3,25 +3,40 @@
 
 static ArrayList ShopListing;
 
+int ShopSetting = 0;
 public float Rogue_Encounter_ParadoxShop()
 {
-	for(int client = 1; client <= MaxClients; client++)
+	ShopSetting = 0;
+	return Rogue_Encounter_ParadoxShop_Internal();
+}
+public float Rogue_Encounter_ParadoxShop_Ruina()
+{
+	ShopSetting = 1;
+	return Rogue_Encounter_ParadoxShop_Internal();
+}
+public float Rogue_Encounter_ParadoxShop_Internal()
+{	
+	if(ShopSetting == 0)
 	{
-		if(IsClientInGame(client))
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 1);
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 1);
+			}
 		}
+
+		RemoveAllCustomMusic();
+
+		strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/knucklebones.mp3");
+		MusicString1.Time = 999;
+		MusicString1.Volume = 1.0;
+		MusicString1.Custom = true;
+		strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Knucklebones");
+		strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
+		
 	}
-
-	RemoveAllCustomMusic();
-
-	strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/knucklebones.mp3");
-	MusicString1.Time = 999;
-	MusicString1.Volume = 1.0;
-	MusicString1.Custom = true;
-	strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Knucklebones");
-	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
 
 	delete ShopListing;
 	ShopListing = new ArrayList(sizeof(Artifact));
@@ -32,9 +47,9 @@ public float Rogue_Encounter_ParadoxShop()
 
 	bool rare = !(GetURandomInt() % 4);
 
-	if(ingots > 7)
+	if(!rare)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 8) != -1)
+		if(Rogue_GetRandomArtfiact(artifact, true, 6) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -43,7 +58,7 @@ public float Rogue_Encounter_ParadoxShop()
 		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 		
-		if(!rare && Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -79,9 +94,22 @@ public float Rogue_Encounter_ParadoxShop()
 	StartShopVote(true);
 	return 35.0;
 }
+
 static void StartShopVote(bool first)
 {
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
+	ArrayList list;
+	switch(ShopSetting)
+	{
+		case 0:
+			list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
+		case 1:
+		{
+			if(Rogue_HasNamedArtifact("Mark of a Thief"))
+				list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter_Ruina, "Shop Encounter Title Ruina Evil");
+			else
+				list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter_Ruina, "Shop Encounter Title Ruina");
+		}
+	}
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
@@ -90,36 +118,135 @@ static void StartShopVote(bool first)
 	strcopy(vote.Config, sizeof(vote.Config), "-1");
 	list.PushArray(vote);
 
-	Artifact artifact;
-	int ingots = Rogue_GetIngots();
 	int length = ShopListing.Length;
-	for(int i; i < length; i++)
+	if(ShopSetting == 0 || (ShopSetting == 1 && !Rogue_HasNamedArtifact("Mark of a Thief")))
 	{
-		ShopListing.GetArray(i, artifact);
+		Artifact artifact;
+		int ingots = Rogue_GetIngots();
+		for(int i; i < length; i++)
+		{
+			ShopListing.GetArray(i, artifact);
 
-		int cost = artifact.ShopCost;
+			int cost = artifact.ShopCost;
 
-		Rogue_ParadoxGeneric_ShopCost(cost);
+			Rogue_ParadoxGeneric_ShopCost(cost);
 
-		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+			strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+			Format(vote.Append, sizeof(vote.Append), " △%d", cost);
+			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+			IntToString(i, vote.Config, sizeof(vote.Config));
+			vote.Locked = ingots < cost;
+			list.PushArray(vote);
+		}
+		if(length)
+		{
+			if(ShopSetting == 0)
+			{
+				strcopy(vote.Name, sizeof(vote.Name), "Steal Grigori");
+				vote.Append[0] = 0;
+				strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
+				strcopy(vote.Config, sizeof(vote.Config), "-2");
+				vote.Locked = false;
+				list.PushArray(vote);
+			}
+			else
+			{
+				strcopy(vote.Name, sizeof(vote.Name), "Steal Ruinian");
+				vote.Append[0] = 0;
+				strcopy(vote.Desc, sizeof(vote.Desc), "Steal Ruinian Desc");
+				strcopy(vote.Config, sizeof(vote.Config), "-2");
+				vote.Locked = false;
+				list.PushArray(vote);
+			}
+		}	
+	}
+	if(ShopSetting == 1)
+	{
+		int ingots = Rogue_GetIngots();
+		strcopy(vote.Name, sizeof(vote.Name), "Ruinian Shop Help Out");
+		vote.Append[0] = 0;
+		strcopy(vote.Desc, sizeof(vote.Desc), "Ruinian Shop Help Out Desc");
+		strcopy(vote.Config, sizeof(vote.Config), "-3");
+		int cost = 18;
+		if(Rogue_HasNamedArtifact("Mark of a Thief"))
+		{
+			cost = 36;
+		}
 		Format(vote.Append, sizeof(vote.Append), " △%d", cost);
-		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
-		IntToString(i, vote.Config, sizeof(vote.Config));
 		vote.Locked = ingots < cost;
 		list.PushArray(vote);
 	}
 
-	if(length)
-	{
-		strcopy(vote.Name, sizeof(vote.Name), "Steal Grigori");
-		vote.Append[0] = 0;
-		strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
-		strcopy(vote.Config, sizeof(vote.Config), "-2");
-		vote.Locked = false;
-		list.PushArray(vote);
-	}
-
 	Rogue_StartGenericVote(length ? (first ? 30.0 : 15.0) : 3.0);
+}
+
+public void Rogue_Vote_Shop2Encounter_Ruina(const Vote vote)
+{
+	Artifact artifact;
+	int index = StringToInt(vote.Config);
+	switch(index)
+	{
+		case -1:
+		{
+			Rogue_SetProgressTime(5.0, false);
+
+			delete ShopListing;
+
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "*")) != -1)
+			{
+				if(entity < MAXENTITIES)
+				{
+					GetEntPropString(entity, Prop_Data, "m_iName", artifact.Name, sizeof(artifact.Name));
+					if(StrEqual(artifact.Name, "zr_store_prop", false))
+						AcceptEntityInput(entity, "Disable");
+				}
+			}
+		}
+		case -2:
+		{
+			if(ShopListing)
+			{
+				int length = ShopListing.Length;
+				for(int i; i < length; i++)
+				{
+					ShopListing.GetArray(i, artifact);
+					if(artifact.ShopCost > 8)
+						Rogue_GiveNamedArtifact(artifact.Name);
+				}
+
+				delete ShopListing;
+			}
+			Rogue_GiveNamedArtifact("Mark of a Thief", true);
+			Rogue_GiveNamedArtifact("Evil Within from Ruina's Great Crystal");
+
+			CPrintToChatAll("%t", "Shop Ruina Sad");
+			CPrintToChatAll("%t", "Shop Ruina Sad 1");
+		}
+		case -3:
+		{
+			Rogue_GiveNamedArtifact("Great Within from Ruina's Great Crystal");
+
+			CPrintToChatAll("%t", "Shop Ruina Happy");
+			CPrintToChatAll("%t", "Shop Ruina Happy 1");
+		}
+		default:
+		{
+			ShopListing.GetArray(index, artifact);
+			ShopListing.Erase(index);
+
+			Rogue_GiveNamedArtifact(artifact.Name);
+
+			int cost = artifact.ShopCost;
+
+			Rogue_ParadoxGeneric_ShopCost(cost);
+			
+			Rogue_AddIngots(-cost, true);
+
+			StartShopVote(false);
+			Rogue_SetProgressTime(20.0, false);
+		}
+	}
 }
 public void Rogue_Vote_Shop2Encounter(const Vote vote)
 {
@@ -189,7 +316,8 @@ void Rogue_ParadoxShop_Victory()
 		for(int i; i < length; i++)
 		{
 			ShopListing.GetArray(i, artifact);
-			Rogue_GiveNamedArtifact(artifact.Name);
+			if(artifact.ShopCost > 8)
+				Rogue_GiveNamedArtifact(artifact.Name);
 		}
 
 		delete ShopListing;
@@ -271,17 +399,23 @@ static void GiveMaxHealth(int entity, StringMap map, float amount)
 
 public void Rogue_Store1_Collect()
 {
-	Store_RandomizeNPCStore(0, 1);
+	int recover = 1;
+	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+	Store_RandomizeNPCStore(0, recover);
 }
 
 public void Rogue_Store2_Collect()
 {
-	Store_RandomizeNPCStore(0, 2);
+	int recover = 2;
+	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+	Store_RandomizeNPCStore(0, recover);
 }
 
 public void Rogue_Store3_Collect()
 {
-	Store_RandomizeNPCStore(0, 3);
+	int recover = 3;
+	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+	Store_RandomizeNPCStore(0, recover);
 }
 
 public void Rogue_Shield1_Collect()
@@ -704,90 +838,6 @@ public void Rogue_ShopSale_Remove()
 	ShopSale = false;
 }
 
-public void Rogue_BlueGoggles_Collect()
-{
-	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
-	{
-		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
-		{
-			float flPos[3];
-			GetClientAbsOrigin(client_summon, flPos);
-			NPC_CreateByName("npc_goggles_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
-			break;
-		}
-	}
-}
-
-public void Rogue_BlueGoggles_Remove()
-{
-	/*
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
-		{
-			SmiteNpcToDeath(other);
-			break;
-		}
-	}
-	*/
-}
-
-static Handle KahmlsteinTimer;
-
-public void Rogue_Kahmlstein_Collect()
-{
-	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
-	{
-		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
-		{
-			float flPos[3];
-			GetClientAbsOrigin(client_summon, flPos);
-			NPC_CreateByName("npc_kahmlstein_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
-			break;
-		}
-	}
-
-	delete KahmlsteinTimer;
-	KahmlsteinTimer = CreateTimer(1.5, Timer_KahmlsteinTimer, _, TIMER_REPEAT);
-}
-
-public void Rogue_Kahmlstein_Remove()
-{
-	/*
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(other != -1 && i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
-		{
-			SmiteNpcToDeath(other);
-			break;
-		}
-	}
-	*/
-
-	delete KahmlsteinTimer;
-	Rogue_Refresh_Remove();
-}
-
-static Action Timer_KahmlsteinTimer(Handle timer)
-{
-	if(Rogue_CanRegen())
-	{
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
-			{
-				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon != -1)
-					Saga_ChargeReduction(client, weapon, 1.0);
-			}
-		}
-	}
-
-	return Plugin_Continue;
-}
-
 public void Rogue_BobDuck_Collect()
 {
 	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
@@ -810,12 +860,7 @@ public void Rogue_BobDuck_Ally(int entity, StringMap map)
 
 		// +25% max health
 		map.GetValue("26", value);
-
-		value += ClassHealth(WeaponClass[entity]);
-		value *= 1.25;
-		value -= ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", value);
+		map.SetValue("26", value * 1.25);
 
 		// +25% building damage
 		value = 1.0;

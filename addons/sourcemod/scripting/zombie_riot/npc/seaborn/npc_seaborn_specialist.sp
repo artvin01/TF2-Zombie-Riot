@@ -61,9 +61,9 @@ void SeabornSpecialist_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornSpecialist(vecPos, vecAng, team);
+	return SeabornSpecialist(vecPos, vecAng, team, data);
 }
 
 methodmap SeabornSpecialist < CClotBody
@@ -97,7 +97,7 @@ methodmap SeabornSpecialist < CClotBody
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSpecialist(float vecPos[3], float vecAng[3], int ally)
+	public SeabornSpecialist(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool teleported;
 
@@ -154,30 +154,37 @@ methodmap SeabornSpecialist < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/hw2013_shamans_skull/hw2013_shamans_skull.mdl",_,_, 2.0);
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("forward", "models/workshop/player/items/soldier/sf14_hellhunters_headpiece/sf14_hellhunters_headpiece.mdl",_,_, 1.2);
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
 		
 		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 155, 155, 255, 255);
-
+		if(!StrContains(data, "normal"))
+		{
+			npc.m_iBleedType = BLEEDTYPE_NORMAL;
+			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Specialist");
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable4, 155, 155, 255, 255);
+		}
 		return npc;
 	}
 }

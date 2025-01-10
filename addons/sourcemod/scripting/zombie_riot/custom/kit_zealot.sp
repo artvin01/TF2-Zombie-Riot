@@ -69,13 +69,14 @@ bool Zealot_Sugmar(int client)
 }
 public void Weapon_ZealotRCheckCD(int client, int weapon, bool &result, int slot)
 {
-
-	
 	return;
 }
 
 void Zealot_ApplyGlobalRCooldown(int client, float Duration)
 {
+	if(MazeatItemHas())
+		Duration *= 0.75;
+
 	f_DashCooldownZealot[client] = GetGameTime() + Duration;
 	int weapon1;
 	int ie;
@@ -129,7 +130,7 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				//ignore rest.
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 60.0);
 
 				f_ChargeDuration[client] = GetGameTime() + CHARGE_DURATION;
@@ -249,7 +250,7 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float BuffDuration = 5.0;
 		switch(i_PaPLevel[client])
 		{
@@ -642,7 +643,7 @@ public void Client_ZealotThink(int client)
 	}
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 
 	MaxDodgeCount[client]--;
 

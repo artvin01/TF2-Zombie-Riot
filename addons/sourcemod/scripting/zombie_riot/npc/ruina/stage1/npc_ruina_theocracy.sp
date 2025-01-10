@@ -533,7 +533,7 @@ static void Theocracy_Melee_Hit(int client, int target, float vecHit[3])
 
 	int color[4]; Ruina_Color(color);
 
-	float Thick_Start = GetRandomFloat(4.0, 8.0);
+	float Thick_Start = GetRandomFloat(8.0, 16.0);
 	float Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
 	int laser = ConnectWithBeam(npc.m_iWearable1, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
 	if(IsValidEntity(laser))
@@ -565,7 +565,7 @@ static void Theocracy_Melee_Hit(int client, int target, float vecHit[3])
 		if(AtEdictLimit(EDICT_NPC))
 			continue;
 
-		Thick_Start = GetRandomFloat(4.0, 8.0);
+		Thick_Start = GetRandomFloat(8.0, 16.0);
 		Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
 		laser = ConnectWithBeam(Laser_Origin, i_detected_ends[i], color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
 		if(IsValidEntity(laser))

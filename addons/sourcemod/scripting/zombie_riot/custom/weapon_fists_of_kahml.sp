@@ -108,7 +108,7 @@ public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
 
 	if(how_many_times_fisted[client] >= 3)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		if(IsValidEntity(viewmodelModel))
 		{
 			GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
@@ -175,7 +175,7 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 60.0);
 		Attributes_Set(weapon, 396, 0.25);
 
@@ -188,8 +188,15 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		int spawn_index = NPC_CreateByName("npc_allied_kahml_afterimage", client, flPos, fAng, GetTeam(client));
 		f_DurationOfProjectileAttack[client] = GetGameTime() + 10.0;
+		if(Items_HasNamedItem(client, "Kahml's Contained Chaos"))
+		{
+			f_DurationOfProjectileAttack[client] += 2.0;
+		}
 		if(spawn_index > 0)
 		{
+			if(Items_HasNamedItem(client, "Kahml's Contained Chaos"))
+				fl_RangedSpecialDelay[spawn_index] = GetGameTime() + 12.0;
+				
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
@@ -201,25 +208,6 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		}
 	}
 }
-
-public void Enable_Kahml_Fist_Ability(int client, int weapon) 
-{
-	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_KAHMLFIST)
-		return;
-
-	if(Items_HasNamedItem(client, "Kahml's Contained Chaos"))
-	{
-		if(f_DurationOfProjectileAttack[client] > GetGameTime())
-		{
-			i_InternalMeleeTrace[weapon] = false;
-			Attributes_Set(weapon, 396, 0.25);
-		}
-
-		i_Hex_WeaponUsesTheseAbilities[weapon] |= ABILITY_R;  //R status to weapon
-		EntityFuncAttack3[weapon] = view_as<Function>(Fists_of_Kahml_Ablity_2);
-	}
-}
-
 
 public void Melee_KahmlFistTouch(int entity, int target)
 {

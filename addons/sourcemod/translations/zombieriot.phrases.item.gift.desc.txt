@@ -2165,9 +2165,9 @@
 		"en"		"Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person."
 		"ru"		"Сильнее чем любой другой зомби во всём,Кошмар-это сила с которой нужно считатся.1 взмах его когтей может положить почти любого."
 	}
-	"Omega Desc"
+	"3650 Desc"
 	{
-		"en"		"Possesses an arsenal of weapons, self-taught runaway soldier who works alone...for now."
+		"en"		"Possesses an arsenal of weapons, won't trust anyone who gets in his way."
 		"ru"		"Владеет арсеналом оружия,беглый солдат-самоучка, который работает в одиночку... пока."
 	}
 	"Barracks Iberian Runner Desc"
@@ -2380,5 +2380,9 @@
 	"Agent Smith Desc"
 	{
 		"en"		"It is purpose that defines us.\nInitially appears as a normal boss which can multiply for up to 64 times.\nAppears later on once more, with the ability to infect players and turn them into clones, better cure them fast!"
+	}
+	"Major Voided Desc"
+	{
+		"en"	"A taken over giant machine by the Void.\nAble to fire when has enough rounds and can't change target while firing.\nExplodes on death killing all non-bosses."
 	}
 }

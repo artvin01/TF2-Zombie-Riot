@@ -225,8 +225,6 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
-
-		SetEntPropString(npc.index, Prop_Data, "m_iName", "blue_goggles");
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");
 		SetVariantString("1.0");

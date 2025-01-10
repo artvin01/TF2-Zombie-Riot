@@ -340,7 +340,7 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		EmitSoundToAll(SOUND_MADNESS_ENTER2, client, SNDCHAN_STATIC, 70, _, 0.9);
 		EmitSoundToAll(SOUND_MADNESS_ENTER, client, SNDCHAN_STATIC, 70, _, 0.9);
 		

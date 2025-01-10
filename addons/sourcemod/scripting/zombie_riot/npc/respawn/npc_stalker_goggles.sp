@@ -16,6 +16,7 @@ static char g_RangedAttackSounds[][] = {
 };
 
 bool AppearedBefore_Suicide;
+static int NPCId;
 void StalkerGoggles_OnMapStart()
 {
 	PrecacheModel("models/bots/sniper/bot_sniper.mdl");
@@ -31,7 +32,12 @@ void StalkerGoggles_OnMapStart()
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int StalkerGoggles_ID()
+{
+	return NPCId;
 }
 
 void ResetWaldchLogic()
@@ -284,7 +290,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	//2 waves passed or its a raid.
 	if(npc.i_GunMode <= (Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann || AppearedBefore_Suicide)
 	{
-		if(npc.m_iSurrender == 0)
+		if(!Rogue_Mode() && npc.m_iSurrender == 0)
 		{
 			if(AppearedBefore_Suicide)
 			{
@@ -578,7 +584,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
-	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
+	if(!Rogue_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;

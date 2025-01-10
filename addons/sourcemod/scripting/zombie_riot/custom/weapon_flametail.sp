@@ -105,7 +105,7 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 	}
 	else
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		MakePlayerGiveResponseVoice(client, 4);
 
 		int cash;

@@ -1273,7 +1273,7 @@ public void Cosmic_Terror_RailCannon(int client, int weapon, bool crit, int slot
 
 	if(i_Railcannon_ammo[client]>0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 10.0);
 
 		fl_Railcannon_recharge[client] = GameTime+10.0;

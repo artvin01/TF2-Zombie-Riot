@@ -147,7 +147,7 @@ public void Lantean_Reload_Ability(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 5.0);
 
 			Current_Mana[client] -=mana_cost;
@@ -209,7 +209,7 @@ public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 30.0);
 
 			Current_Mana[client] -= mana_cost;

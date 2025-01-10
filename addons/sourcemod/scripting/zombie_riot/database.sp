@@ -24,7 +24,15 @@ void Database_PluginStart()
 	Database db = SQLite_UseDatabase(DATABASE_LOCAL, error, sizeof(error));
 	Database_LocalConnected(db, error);
 	
-	Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
+	if(SQL_CheckConfig(DATABASE_GLOBAL))
+	{
+		Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
+	}
+	else
+	{
+		db = SQLite_UseDatabase(DATABASE_GLOBAL, error, sizeof(error));
+		Database_GlobalConnected(db, error, db);
+	}
 
 	RegServerCmd("zr_convert_from_textstore", DBCommand);
 
@@ -137,11 +145,6 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 	{
 		LogError("[Database_GlobalConnected] %s", error);
 	}
-}
-
-bool Database_IsLan()
-{
-	return !Global;
 }
 
 bool Database_IsCached(int client)
