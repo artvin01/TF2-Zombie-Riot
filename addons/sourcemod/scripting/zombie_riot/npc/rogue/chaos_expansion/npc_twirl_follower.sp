@@ -386,10 +386,10 @@ methodmap TwirlFollower < CClotBody
 		if(Rogue_Mode())
 		{
 			// Cutscene Here
-			npc.Speech("Bob did his job, chaos is over here in one of the Ruanian cities.");
+			npc.Speech("Thanks bob, ill need your help for this!");
 			npc.SpeechDelay(5.0, "This might actually be serious for once","...");
 			Rogue_SetProgressTime(10.0, false);
-
+		/*
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
@@ -400,6 +400,7 @@ methodmap TwirlFollower < CClotBody
 					break;
 				}
 			}
+		*/
 		}
 		return npc;
 	}
@@ -477,8 +478,11 @@ static void ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		if(Laser_Initiate(npc))
-			return;
+		//Target close enough to hit
+		if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTarget))) //Check if i can even see.
+			if(Laser_Initiate(npc))
+				return;
+				
 
 		int PrimaryThreatIndex = npc.m_iTarget;
 

@@ -645,7 +645,7 @@ methodmap GogglesFollower < CClotBody
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 		npc.Speech("Thanks for helping me.");
-
+		/*
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
@@ -656,6 +656,7 @@ methodmap GogglesFollower < CClotBody
 				break;
 			}
 		}
+		*/
 
 		return npc;
 	}
