@@ -38,7 +38,7 @@ bool b_storm_weaver_solo;
 bool b_stellar_weaver_true_solo;
 bool b_stellar_weaver_allow_attack[MAXENTITIES];
 float fl_stellar_weaver_special_attack_offset;
-int i_storm_weaver_damage_instance[MAXTF2PLAYERS+1];
+int i_storm_weaver_damage_instance[MAXENTITIES];
 static float fl_trace_timeout[MAXENTITIES];
 static float fl_recently_teleported[MAXENTITIES];
 static float fl_teleport_time[MAXENTITIES];
@@ -339,6 +339,8 @@ methodmap Storm_Weaver < CClotBody
 
 		npc.m_bDissapearOnDeath = true;
 		b_stellar_weaver_allow_attack[npc.index] = false;
+
+		npc.m_flMeleeArmor = 2.0;
 		
 		return npc;
 	}
@@ -381,6 +383,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
+		tail.m_flMeleeArmor = 2.0;
 	}
 	return spawn_index;
 }
@@ -585,27 +588,7 @@ void Storm_Weaver_Share_With_Anchor_Damage(int iNPC, int &attacker, int &inflict
 	if(i_HexCustomDamageTypes[npc.index] & ZR_DAMAGE_NPC_REFLECT)	//do not.
 		return;
 
-	if(damagetype & DMG_CLUB)	//if a person is brave enough to melee this thing, reward them handsomely
-	{
-		damage *=2.5;
-	}
-	else	//otherwise...
-	{
-		damage *= 0.75;
-	}
-
 	//CPrintToChatAll("four");
-	
-	if(attacker>MAXTF2PLAYERS)
-	{
-		int Anchor_Id = i_GetMagiaAnchor(npc);
-		if(IsEntityAlive(Anchor_Id) && !b_NpcIsInvulnerable[Anchor_Id])
-		{
-			SDKHooks_TakeDamage(Anchor_Id, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
-		}
-
-		return;
-	}
 
 	if(i_storm_weaver_damage_instance[attacker]>=RUINA_DAMAGE_INSTANCES_PER_FRAME)
 		return;
