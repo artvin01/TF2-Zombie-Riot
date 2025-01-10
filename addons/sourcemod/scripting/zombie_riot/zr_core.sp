@@ -239,6 +239,7 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
+	Type_Mutation
 }
 
 //int Bob_To_Player[MAXENTITIES];
