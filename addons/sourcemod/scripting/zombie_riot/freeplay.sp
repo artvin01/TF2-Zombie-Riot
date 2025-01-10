@@ -224,7 +224,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 14:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_whiteflower_boss");
-				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(7500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraMeleeRes *= 4.0;
 				enemy.ExtraRangedRes *= 3.0;
 			}
@@ -303,7 +303,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		}
 		//raids otherwise have too much damage.
 		enemy.ExtraDamage *= 0.45;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.8);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 6500.0;
