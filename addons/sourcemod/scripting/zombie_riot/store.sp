@@ -6393,7 +6393,23 @@ static stock void ItemCostPap(int client, const Item item, const ItemInfo info, 
 		if(Rogue_UnlockStore() && item.NPCSeller)
 			cost = RoundFloat(cost * item.NPCSeller_Discount);
 		
-		if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
+		bool NotFoundCost = false;
+		if(Rogue_UnlockStore())
+		{
+			if(item.ChildKit)
+			{
+				static Item parent;
+				StoreItems.GetArray(item.Section, parent);
+
+				if(!parent.NPCSeller && !parent.RogueAlwaysSell)
+					NotFoundCost = true;
+			}
+			else if(!item.NPCSeller && !item.RogueAlwaysSell)
+			{
+				NotFoundCost = true;
+			}
+		}
+		if(NotFoundCost)
 		{
 			cost = RoundToNearest(float(cost) * 1.2); 
 		}
