@@ -1141,7 +1141,7 @@ bool Store_CanPapItem(int client, int index)
 	{
 		static Item item;
 		StoreItems.GetArray(index, item);
-		
+		/*
 		if(Rogue_UnlockStore())
 		{
 			if(item.ChildKit)
@@ -1157,7 +1157,7 @@ bool Store_CanPapItem(int client, int index)
 				return false;
 			}
 		}
-		
+		*/
 		if(item.Owned[client])
 		{
 			ItemInfo info;
@@ -3475,8 +3475,7 @@ static void MenuPage(int client, int section)
 				}
 				else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [NOT FOUND]", TranslateItemName(client, item.Name, info.Custom_Name));
-					style = (info.Cost_Unlock > 1000 || !StarterCashMode[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
+					FormatEx(buffer, sizeof(buffer), "%s [↓]", TranslateItemName(client, item.Name, info.Custom_Name));
 				}
 				else if(!item.WhiteOut && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 				{
@@ -6297,7 +6296,10 @@ static void ItemCost(int client, Item item, int &cost)
 	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * Rogue_GetRoundScale();
 
-
+	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
+	{
+		cost = RoundToNearest(float(cost) * 1.2); 
+	}
 	static ItemInfo info;
 	item.GetItemInfo(0, info);
 	if(StarterCashMode[client])
@@ -6391,6 +6393,10 @@ static stock void ItemCostPap(int client, const Item item, const ItemInfo info, 
 		if(Rogue_UnlockStore() && item.NPCSeller)
 			cost = RoundFloat(cost * item.NPCSeller_Discount);
 		
+		if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
+		{
+			cost = RoundToNearest(float(cost) * 1.2); 
+		}
 		Rogue_Curse_PackPriceMulti(cost);
 	}
 }
