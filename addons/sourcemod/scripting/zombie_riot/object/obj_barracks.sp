@@ -1346,7 +1346,7 @@ void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
 		SupplyRate[client] += 10;
 
-	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"))	// lol
+	if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))	// lol
 		SupplyRate[client] += 10;
 
 
@@ -1358,7 +1358,7 @@ void CheckSummonerUpgrades(int client)
 
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
-	WildingenBuilder2[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"));
+	WildingenBuilder2[client] = view_as<bool>(Store_HasNamedItem(client, "Dubious Cheesy Ideas"));
 }
 #define MAXRESOURCECAP 2000.0
 void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0, bool ignoresetup = false)
