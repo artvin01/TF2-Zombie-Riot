@@ -1203,6 +1203,9 @@ static void Crystal_Passive_Logic(Lelouch npc)
 
 		if(npc.m_flDoingAnimation > GameTime && npc.m_flCrystalRevert < GameTime)
 			return;
+
+		if(b_NpcIsInvulnerable[npc.index])
+			return;
 		
 		float Duration = 4.0;
 		Initiate_Anim(npc, Duration, "taunt_commending_clap_spy", _,_, true);
@@ -1960,6 +1963,9 @@ static void Create_Anchors(Lelouch npc)
 	Initiate_Anim(npc, FAR_FUTURE, "taunt_curtain_call", _,_, true);
 	npc.m_flFreezeAnim = GameTime + 4.0;
 
+	EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);
+	EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);
+
 	for(int i=0 ; i < 3 ; i++)
 	{
 		int anchor = i_CreateAnchor(npc, i);
@@ -2010,15 +2016,12 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	float Tower_Health = MaxHealth*0.25;
 
-	if(!red)
-	{
-		EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
-		EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
-	}
-
 	
 	float AproxRandomSpaceToWalkTo[3];
 	WorldSpaceCenter(npc.index, AproxRandomSpaceToWalkTo);
+	// do not spawn ontop of lelouches head, although it shouldn't matter for spawning stuff, just incase the teleport SOMEHOW fails
+	AproxRandomSpaceToWalkTo[0]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
+	AproxRandomSpaceToWalkTo[1]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), red ? "nospawns;noweaver;full" : "lelouch;noweaver;full");
 	if(spawn_index > MaxClients)
 	{
@@ -2029,7 +2032,7 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 		if(Rogue_Mode())
 			TeleportEntity(spawn_index, fl_Anchor_Fixed_Spawn_Pos[loop]);
 		else
-			TeleportDiversioToRandLocation(spawn_index, true);
+			TeleportDiversioToRandLocation(spawn_index, true, 5000.0, 125.0);
 
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health));
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
@@ -2716,7 +2719,8 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	enemy.ExtraDamage = 3.5;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
-	Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_5");
+	if(Rogue_Mode())
+		Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_5");
 	if(!Waves_InFreeplay())
 	{
 		for(int i; i<count; i++)
