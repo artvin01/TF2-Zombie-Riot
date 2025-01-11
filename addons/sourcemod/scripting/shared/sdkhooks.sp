@@ -1660,6 +1660,12 @@ int CheckInHud()
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(IsValidEntity(victim) && b_On_Self_Damage[victim] && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PROTOTYPE && !(GetEntityFlags(victim)&FL_ONGROUND))
+			i_RocketJump_Count[victim]++;
+		return Plugin_Continue;
+	}
 	if(!CheckInHud())
 	{
 		ClientPassAliveCheck[victim] = false;
