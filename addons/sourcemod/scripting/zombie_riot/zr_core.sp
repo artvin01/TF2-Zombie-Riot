@@ -1812,7 +1812,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						if(Wkit_Soldin_LastMann(client))
 						{
 							Wkit_Soldin_LastMann_buff(client, true);
-							CPrintToChatAll("{crimson}%N's weapon is Now System Overdrive...",client);
+							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
 							Yakuza_Lastman(4);
 						}
 						

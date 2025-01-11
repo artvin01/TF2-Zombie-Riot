@@ -8,7 +8,6 @@ static int Market_Perk[MAXTF2PLAYERS];
 static int i_MarketParticleOne[MAXTF2PLAYERS];
 static int i_MarketParticleTwo[MAXTF2PLAYERS];
 static int i_RocketJump_AirboneTime[MAXTF2PLAYERS];
-int i_RocketJump_Count[MAXTF2PLAYERS];
 
 static float i_SoldinAmmoSet[MAXTF2PLAYERS];
 static float i_SoldinFierRateSet[MAXTF2PLAYERS];
@@ -17,6 +16,9 @@ static int i_SoldinCharging[MAXTF2PLAYERS];
 static int i_SoldinChargingMAX[MAXTF2PLAYERS];
 static bool b_SoldinPowerHit[MAXTF2PLAYERS];
 static bool b_SoldinLastMann_Buff;
+static bool PrecachedMusic;
+
+
 
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 
@@ -64,10 +66,10 @@ void Wkit_Soldin_LastMann_buff(int client, bool b_On)
 
 public void Wkit_Soldin_OnMapStart()
 {
+	PrecachedMusic = false;
 	Zero(Market_WeaponPap);
 	Zero(Market_Perk);
 	Zero(MarketHUDDelay);
-	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3",_,1);
 }
 
 public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -76,6 +78,11 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 	{
 		if(i_CustomWeaponEquipLogic[weapon]==WEAPON_KIT_PROTOTYPE)
 		{
+			if(!PrecachedMusic)
+			{
+				PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3",_,1);
+				PrecachedMusic = true;
+			}
 			Market_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
 			Market_Perk[client]=i_CurrentEquippedPerk[client];
 			int getweapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -98,6 +105,11 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 	}
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PROTOTYPE)
 	{
+		if(!PrecachedMusic)
+		{
+			PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3",_,1);
+			PrecachedMusic = true;
+		}
 		Market_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
 		Market_Perk[client]=i_CurrentEquippedPerk[client];
 		int getweapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -173,9 +185,21 @@ public void Wkit_Soldin_NPCTakeDamage(int attacker, int victim, float &damage, i
 					Rogue_OnAbilityUse(attacker, weapon);
 					float position[3]; WorldSpaceCenter(victim, position);
 					position[2]+=35.0;
-					ParticleEffectAt(position, "hightower_explosion", 1.0);
-					EmitSoundToAll(g_BoomSounds, victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-					if(RaidbossIgnoreBuildingsLogic(1))damage *= 2.0;
+					DataPack pack_boom = new DataPack();
+					pack_boom.WriteFloat(position[0]);
+					pack_boom.WriteFloat(position[1]);
+					pack_boom.WriteFloat(position[2]);
+					pack_boom.WriteCell(0);
+					RequestFrame(MakeExplosionFrameLater, pack_boom);
+
+					//For client only cus too much fancy shit
+					EmitSoundToClient(victim, g_BoomSounds, victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					TE_Particle("hightower_explosion", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
+
+					TE_Particle("mvm_soldier_shockwave", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+					if(RaidbossIgnoreBuildingsLogic(1))
+						damage *= 2.0;
+
 					Explode_Logic_Custom(damage*2.0, attacker, attacker, weapon, position, 250.0, 0.75, _, _, _, _, _, Ground_Slam);
 					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.0);
 					SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime(attacker)+1.0);
