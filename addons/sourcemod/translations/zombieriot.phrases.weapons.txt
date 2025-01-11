@@ -2878,4 +2878,9 @@
 		"en"	"Steam Knight's Spear"
 		"ko"	"증기 기사의 창"
 	}
+	"Prototype Kit"
+	{
+		"en"		"Prototype Kit"
+		"ko"		"프로토타입 키트"
+	}
 }

@@ -5781,24 +5781,24 @@ public void NpcBaseThink(int iNPC)
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
 		float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.002;
-	
+		
+		float HpScalingDecreace = 1.0;
+
 		if(b_thisNpcIsARaid[iNPC])
 		{
 			HealingAmount *= 0.025;
 			//this means it uses scaling somehow.
-			if(i_MedkitAnnoyance[iNPC] != 0)
-			{
-				int CurrentPlayersAlive = CountPlayersOnRed(1);
-				float HpScalingDecreace = float(CurrentPlayersAlive) / float(i_MedkitAnnoyance[iNPC]);
-				HealingAmount *= HpScalingDecreace;
-			}
+			HpScalingDecreace = NpcDoHealthRegenScaling();
 		}
 		else if(b_thisNpcIsABoss[iNPC])
 		{
 			HealingAmount *= 0.125;
+			HpScalingDecreace = NpcDoHealthRegenScaling();
 		}
 		if(NpcStats_StrongVoidBuff(iNPC))
 			HealingAmount *= 1.25;
+
+		HealingAmount *= HpScalingDecreace;
 
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
 		
@@ -5839,7 +5839,10 @@ public void NpcBaseThink(int iNPC)
 	//is npc somehow outside any nav mesh
 	NpcStuckInSomethingOutOfBonunds(npc, iNPC);
 }
-
+float NpcDoHealthRegenScaling()
+{
+	return (float(CountPlayersOnRed(1)) / float(CountPlayersOnRed(0)));
+}
 public void NpcSetGravity(CClotBody npc, int iNPC)
 {
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())

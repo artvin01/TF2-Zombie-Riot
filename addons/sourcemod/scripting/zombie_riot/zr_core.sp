@@ -214,7 +214,8 @@ enum
 	WEAPON_ZEALOT_MELEE = 132,
 	WEAPON_ZEALOT_GUN = 133,
 	WEAPON_ZEALOT_POTION = 134,
-	WEAPON_KIT_FRACTAL	= 135
+	WEAPON_KIT_FRACTAL	= 135,
+	WEAPON_KIT_PROTOTYPE	= 136
 }
 
 enum
@@ -239,6 +240,7 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
+	Type_Mutation
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -580,6 +582,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/weapon_walter.sp"
 #include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
 #include "zombie_riot/custom/weapon_castlebreaker.sp"
+#include "zombie_riot/custom/kit_soldine.sp"
 
 void ZR_PluginLoad()
 {
@@ -870,6 +873,7 @@ void ZR_MapStart()
 	Logos_MapStart();
 	ResetMapStartCastleBreakerWeapon();
 	OnMapStartZealot();
+	Wkit_Soldin_OnMapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1804,6 +1808,12 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							Max_Fractal_Crystals(client);
 							CPrintToChatAll("{purple}Twirl{crimson}'s Essence enters %N...",client);
 							Yakuza_Lastman(3);
+						}
+						if(Wkit_Soldin_LastMann(client))
+						{
+							Wkit_Soldin_LastMann_buff(client, true);
+							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
+							Yakuza_Lastman(4);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

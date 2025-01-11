@@ -113,6 +113,10 @@
 		"fr"		"Alliés de Interitus"
 		"ru"		"Альянс Разрушения"
 	}
+	"Mutations"
+	{
+		"en"		"Mutations"
+	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
@@ -2380,6 +2384,62 @@
 	"Agent Smith Desc"
 	{
 		"en"		"It is purpose that defines us.\nInitially appears as a normal boss which can multiply for up to 64 times.\nAppears later on once more, with the ability to infect players and turn them into clones, better cure them fast!"
+	}
+	"Seaborn Metro Cop Desc"
+	{
+		"en"		"Their combat has been enhanced by the Seaborn infection.\nFires bullets extremely fast."
+	}
+	"Seaborn Metro Raider Desc"
+	{
+		"en"		"Looks like these guys did not forget their SMG grenades."
+	}
+	"Seaborn W.F. Rifler Desc"
+	{
+		"en"		"Throws a grenade, has increased firing speed."
+	}
+	"Seaborn W.F. Elite Desc"
+	{
+		"en"		"Increased Energy Ball Fire Rate."
+	}
+	"Seaborn W.F. Shotgunner Desc"
+	{
+		"en"		"Will shove you if you get too close."
+	}
+	"Voided Metro Cop Desc"
+	{
+		"en"		"Increased ammo capacity, applies the Cripple debuff with his stunstick."
+	}
+	"Voided Metro Raider Desc"
+	{
+		"en"		"Increased range. Inflicts Void with bullets."
+	}
+	"Voided W.F. Rifler Desc"
+	{
+		"en"		"One reload, and afterwards they keep firing infinitely. Don't ask them where the ammo comes from."
+	}
+	"Voided W.F. Elite Desc"
+	{
+		"en"		"Fires 3 Energy Balls one after another with increased damage."
+	}
+	"Voided W.F. Shotgunner Desc"
+	{
+		"en"		"Lunges at you to close the distance."
+	}
+	"Hunter Desc"
+	{
+		"en"		"A dog-like creature that isn't very friendly to Mercenaries.\nWill occasionally charge, gaining 50 percent resistance while actively charging.\nWill occasionally fire flechettes.\nEvery 5th hit, it'll skewer whatever is in its way, dealing extra damage and inflicting bleed."
+	}
+	"Merlton Desc"
+	{
+		"en"		"A robot that gained powers from the Seaborn infection. Seemingly hasn't been corrupted by it though.\nApplies 'MERLT0N-BUFF' on enemies.\nSummons copies of itself, although in a smaller form.\nWill become enraged if it has no one left to look after."
+	}
+	"Lost Knight Desc"
+	{
+		"en"		"This Knight does not belong here.\nA thick fog enters the room with the Knight.\nThe Knight applies 3 permanent buffs on every enemy.\nBetter not leave him as the last one alive..."
+	}
+	"Omega Desc"
+	{
+		"en"		"He has come to save Bob from Whiteflower's Soldiers.\nThe unfortunate part? He thinks you're a part of them.\nDespite performing hand-to-hand combat, he still keeps his trusty Rocket Launcher with him.\nAfter enough hits, his hands will start generating enough energy to perform a powerful attack."
 	}
 	"Major Voided Desc"
 	{
