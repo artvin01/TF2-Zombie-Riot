@@ -1223,9 +1223,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					{
 						flMaxhealth *= 0.75;
 					}
-					int CurrentPlayersAlive = CountPlayersOnRed(1);
-					float HpScalingDecreace = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
-					flMaxhealth *= HpScalingDecreace;
+					flMaxhealth *= NpcDoHealthRegenScaling();
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{

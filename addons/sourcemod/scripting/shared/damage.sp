@@ -75,19 +75,23 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 
 stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-//	float GameTime = GetGameTime();
-
 #if defined ZR
-	if(Rogue_Mode() && GetTeam(victim) == TFTeam_Red)
+	if(Rogue_Mode())
 	{
-		int scale = Rogue_GetRoundScale();
-		if(scale < 2)
+		//Has to be here.
+		damage *= RogueBladedance_DamageBonus(attacker, inflictor, victim);
+
+		if(GetTeam(victim) == TFTeam_Red)
 		{
-			damage *= 0.50;
-		}
-		else if(scale < 4)
-		{
-			damage *= 0.75;
+			int scale = Rogue_GetRoundScale();
+			if(scale < 2)
+			{
+				damage *= 0.50;
+			}
+			else if(scale < 4)
+			{
+				damage *= 0.75;
+			}
 		}
 	}
 #endif
@@ -307,6 +311,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	float GameTime = GetGameTime();
 	
 #if defined ZR
+
 	if(Rogue_Mode() && GetTeam(victim) != TFTeam_Red)
 	{
 		if(!CheckInHud())

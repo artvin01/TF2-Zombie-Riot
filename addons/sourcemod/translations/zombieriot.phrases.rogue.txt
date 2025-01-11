@@ -1555,7 +1555,7 @@
 	}
 	"Bladedance Desc"
 	{
-		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus."
+		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus, and +100%% Healing Rate."
 	}
 	"Whiteflower"
 	{
