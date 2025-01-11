@@ -96,7 +96,7 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 			delete MarketTimer[client];
 			MarketTimer[client] = null;
 			DataPack pack;
-			MarketTimer[client] = CreateDataTimer(0.1, Timer_Wkit_Soldin, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			MarketTimer[client] = CreateDataTimer(0.1, Timer_Wkit_Soldin, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			pack.WriteCell(EntIndexToEntRef(melee));
@@ -121,7 +121,7 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 		}
 		int melee = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		DataPack pack;
-		MarketTimer[client] = CreateDataTimer(0.1, Timer_Wkit_Soldin, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		MarketTimer[client] = CreateDataTimer(0.1, Timer_Wkit_Soldin, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(EntIndexToEntRef(melee));
@@ -193,7 +193,7 @@ public void Wkit_Soldin_NPCTakeDamage(int attacker, int victim, float &damage, i
 					RequestFrame(MakeExplosionFrameLater, pack_boom);
 
 					//For client only cus too much fancy shit
-					EmitSoundToClient(victim, g_BoomSounds, victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					EmitSoundToClient(attacker, g_BoomSounds, victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					TE_Particle("hightower_explosion", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
 
 					TE_Particle("mvm_soldier_shockwave", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);

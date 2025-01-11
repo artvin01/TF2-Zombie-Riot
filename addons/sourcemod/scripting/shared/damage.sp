@@ -1142,6 +1142,11 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				WeaponZealot_OnTakeDamage_Gun(attacker, victim, damage);
 		}
+		case WEAPON_KIT_PROTOTYPE:
+		{
+			if(!CheckInHud())
+				Wkit_Soldin_NPCTakeDamage(attacker, victim, damage, weapon, damagetype);
+		}
 	}
 #endif
 
