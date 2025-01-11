@@ -421,11 +421,11 @@ static Action Cosmic_Heat_Tick(int client)
 		//CPrintToChatAll("overheat: %i", fl_Cosmic_Heat[client]);
 		if(b_cosmic_overheat[client])	//if you overheat this thing, have fun cooling it down.
 		{
-			fl_Cosmic_Heat[client]-=2.5;
+			fl_Cosmic_Heat[client]-=20.0;
 		}
 		else
 		{
-			fl_Cosmic_Heat[client]-=7.0+(Cosmic_Terror_Pap[client]*1.25);
+			fl_Cosmic_Heat[client]-=35.0+(Cosmic_Terror_Pap[client]*25.0);
 		}
 	}
 	return Plugin_Continue;
@@ -769,6 +769,11 @@ static void Cosmic_Terror_FullCharge(int client, float speed, float gametime)
 
 		if(fl_cosmic_heating_timer[client] > gametime + 0.5)
 			fl_cosmic_heating_timer[client] = gametime + 0.5;
+	}
+	else
+	{
+		if(fl_cosmic_heating_timer[client] < gametime - 10.0 )
+			fl_cosmic_heating_timer[client] = gametime - 10.0;	//a limit of 10 seconds of overheating still lens.
 	}
 
 	Cosmic_BeamLoc[client] = Vec_Current;
