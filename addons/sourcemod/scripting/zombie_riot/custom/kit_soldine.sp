@@ -258,7 +258,7 @@ public Action Timer_Soldine_Kit(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-#define SOLDINE_JUMPDURATIONUFF 1.5
+#define SOLDINE_JUMPDURATIONUFF 2.0
 static void Wkit_Soldin_Effect(int client)
 {
 	if(!TF2_IsPlayerInCondition(client, TFCond_BlastJumping))
@@ -285,7 +285,8 @@ static void Wkit_Soldin_Effect(int client)
 	int getweapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 	if(IsValidEntity(getweapon))
 	{
-		ApplyTempAttrib(getweapon, 6, 0.5, SOLDINE_JUMPDURATIONUFF);
+		ApplyTempAttrib(getweapon, 6, 0.35, SOLDINE_JUMPDURATIONUFF);
+		ApplyTempAttrib(getweapon, 178, 0.25, SOLDINE_JUMPDURATIONUFF);
 		Rogue_OnAbilityUse(client, getweapon);
 	}
 
@@ -293,9 +294,9 @@ static void Wkit_Soldin_Effect(int client)
 	{
 		int RocketLoad = GetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"));
 		int RockeyAmmo=	GetAmmo(client, 8);
-		int RocketAmmoMAX=RoundToCeil(12.0* Attributes_Get(getweapon, 4, 1.0));
-		SetAmmo(client, 8, RockeyAmmo-1);
-		SetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), RocketLoad+1);
+		int RocketAmmoMAX=RoundToCeil(8.0* Attributes_Get(getweapon, 4, 1.0));
+		SetAmmo(client, 8, RockeyAmmo-RocketAmmoMAX);
+		SetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), RocketLoad+RocketAmmoMAX);
 	}
 	int entity;
 	entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -350,6 +351,11 @@ public void Wkit_Soldin_NPCTakeDamage_Melee(int attacker, int victim, float &dam
 			{
 				if(i_SoldineMeleeCharge[attacker] >= SOLDINE_MAX_MELEE_CHARGE)
 				{
+					if(f_SoldineRocketJumpDuration[attacker] > GetGameTime())
+					{
+						damage *= 2.0;
+						DisplayCritAboveNpc(victim, attacker, true, _, _, false);
+					}
 					Rogue_OnAbilityUse(attacker, weapon);
 					float position[3]; WorldSpaceCenter(victim, position);
 					position[2]+=35.0;
@@ -401,6 +407,8 @@ public void Wkit_Soldin_NPCTakeDamage_Ranged(int attacker, int victim, float &da
 		damage *= 1.15;
 		if(!CheckInHud())
 			DisplayCritAboveNpc(victim, attacker, true, _, _, true);
+
+		ChargeSoldineMeleeHit(attacker,false);
 	}
 	else
 	{
