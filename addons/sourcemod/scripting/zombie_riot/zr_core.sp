@@ -215,7 +215,8 @@ enum
 	WEAPON_ZEALOT_GUN = 133,
 	WEAPON_ZEALOT_POTION = 134,
 	WEAPON_KIT_FRACTAL	= 135,
-	WEAPON_KIT_PROTOTYPE	= 136
+	WEAPON_KIT_PROTOTYPE	= 136,
+	WEAPON_KIT_PROTOTYPE_MELEE	= 137
 }
 
 enum
@@ -1811,7 +1812,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						}
 						if(Wkit_Soldin_LastMann(client))
 						{
-							Wkit_Soldin_LastMann_buff(client, true);
+							ChargeSoldineMeleeHit(client,true, 999.9);
+							ChargeSoldineRocketJump(client, true, 999.9);
 							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
 							Yakuza_Lastman(4);
 						}

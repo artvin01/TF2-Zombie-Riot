@@ -4142,44 +4142,24 @@
 		"en"	"It's a normal melee weapon."
 		"ko"	"평범한 근접 무기 입니다."
 	}
-	"Proto Kit Market Gardener Desc Pap 1"
+	"Soldine Kit Pap 1"
 	{
-		"en"	"Gained some system privileges.\nIncreased Stats."
-		"ko"	"일부 시스템권한을 얻었습니다\n스텟 증가."
+		"en"	"Unlock Your Super Melee hit, charges with hurting enemies."
 	}
-	"Proto Kit Market Gardener Desc Pap 2"
+	"Soldine Kit Pap 2"
 	{
-		"en"	"You've got full access!\nIncreased Stats.\nMelee Hit To Battery Charge!\nPower attack possible after Rocket Barrage ends!"
-		"ko"	"모든 권한 흭득 완료!\n스텟 증가.\n근접 공격으로 배터리 충전 가능\n로켓 폭격후 파워 어택 가능"
+		"en"	"Unlock Your Robot Jump, Charges with hurting enemies."
 	}
-	"Proto Kit Market Gardener Desc Pap 3"
+	"Soldine Kit Pap 3"
 	{
-		"en"	"Increased Stats."
-		"ko"	"스텟 증가."
+		"en"	"Everything charges faster, Your super melee hit now Maxes your armor!"
 	}
-	"Proto Kit Rocket Launcher Desc"
+	"Soldine Kit Pap 4"
 	{
-		"en"	"It's a normal rocket launcher."
-		"ko"	"평범한 로켓 발사기 입니다."
+		"en"	"Everything charges faster, super hit now gives upto 25%% Over Armmor instantly!"
 	}
-	"Proto Kit Rocket Launcher Desc Pap 1"
+	"Soldine Kit Pap rest"
 	{
-		"en"	"Gained some system privileges.\nIncreased Stats."
-		"ko"	"일부 시스템권한을 얻었습니다\n스텟 증가."
-	}
-	"Proto Kit Rocket Launcher Desc Pap 2"
-	{
-		"en"	"You've got full access!\nIncreased Stats.\nAdditional stat increases based on battery charge.\nRocket jump possible after full charge!\nRocket Barrage activates when rocket jumping!"
-		"ko"	"모든 권한 흭득 완료!\n스텟 증가.\n배터리 충전량에 따른 추가 스텟 증가.\n완전 충전후 로켓 점프가능!\n로켓 점프중 로켓을 난사 할수있음!"
-	}
-	"Proto Kit Rocket Launcher Desc Pap 3"
-	{
-		"en"	"Increased Stats."
-		"ko"	"스텟 증가."
-	}
-	"Proto Kit Rocket Launcher Desc Pap 2"
-	{
-		"en"	"Gained some system privileges.\nIncreased Stats."
-		"ko"	"일부 시스템권한을 얻었습니다\n스텟 증가."
+		"en"	"Increaces Stats"
 	}
 }
