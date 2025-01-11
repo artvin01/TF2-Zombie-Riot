@@ -6005,6 +6005,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SpikeLayer(client, entity);
 		Enable_SensalWeapon(client, entity);
 		Enable_FusionWeapon(client, entity);
+		Wkit_Soldin_Enable(client, entity);
 //		Enable_Blemishine(client, entity);
 		Gladiia_Enable(client, entity);
 		Vampire_KnifesDmgMulti(client, entity);
