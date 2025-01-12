@@ -131,7 +131,7 @@ methodmap Barrack_Combine_Collos < BarrackBody
 
 	public Barrack_Combine_Collos(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "600", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "500", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
@@ -208,7 +208,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 					if(!npc.m_fbRangedSpecialOn)
 					{
 						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
+						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
 						npc.PlayRangedAttackSecondarySound();
 						npc.m_fbRangedSpecialOn = true;
 						npc.Anger = true;
@@ -228,7 +228,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 
 							if(npc.Anger)
 							{
-								damage *= 2.0;
+								damage *= 5.0;
 							}
 							
 							if(target > 0) 

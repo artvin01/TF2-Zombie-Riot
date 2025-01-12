@@ -1,8 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int i_overcharge[MAXENTITIES];
-
+static const char g_RangedAttackSounds[][] = {
+	"weapons/capper_shoot.wav",
+};
 static const char g_IdleSounds[][] =
 {
 	"vo/medic_battlecry01.mp3",
@@ -19,15 +20,18 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3",
 };
 
-public void Barrack_Alt_Crossbowmedic_MapStart()
+static float fl_npc_basespeed;
+
+public void Barrack_Alt_Intermediate_Mage_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");
+	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Crossbow Medic");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_crossbow");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Intermediate Mage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_alt_intermediate_mage");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -36,14 +40,12 @@ public void Barrack_Alt_Crossbowmedic_MapStart()
 	NPC_Add(data);
 }
 
-
-static float fl_npc_basespeed;
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Intermediate_Mage(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Alt_Crossbowmedic < BarrackBody
+methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -61,35 +63,45 @@ methodmap Barrack_Alt_Crossbowmedic < BarrackBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	public Barrack_Alt_Crossbowmedic(int client, float vecPos[3], float vecAng[3], int ally)
+	public void PlayRangedSound() {
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+
+	}
+	public Barrack_Alt_Intermediate_Mage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Alt_Crossbowmedic npc = view_as<Barrack_Alt_Crossbowmedic>(BarrackBody(client, vecPos, vecAng, "145", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Alt_Intermediate_Mage npc = view_as<Barrack_Alt_Intermediate_Mage>(BarrackBody(client, vecPos, vecAng, "165", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Alt_Crossbowmedic_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Alt_Crossbowmedic_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Alt_Intermediate_Mage_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Intermediate_Mage_ClotThink;
 
-		fl_npc_basespeed = 125.0;
-		npc.m_flSpeed = 125.0;
+		npc.m_flSpeed = 200.0;
+		fl_npc_basespeed = 200.0;
 		
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow_xmas.mdl");
-		SetVariantString("1.5");
+		
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/Jul13_Se_Headset/Jul13_Se_Headset_medic.mdl");
-		SetVariantString("1.3");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/Xms2013_Medic_Robe/Xms2013_Medic_Robe.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+		
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/Jul13_Se_Headset/Jul13_Se_Headset_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop_partner/player/items/sniper/c_bet_brinkhood/c_bet_brinkhood.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/Xms2013_Medic_Hood/Xms2013_Medic_Hood.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -100,19 +112,15 @@ methodmap Barrack_Alt_Crossbowmedic < BarrackBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		
-		
-		
-		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-		
-		i_overcharge[npc.index] = 0;
+		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
 		return npc;
 	}
 }
 
-public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
+public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 {
-	Barrack_Alt_Crossbowmedic npc = view_as<Barrack_Alt_Crossbowmedic>(iNPC);
+	Barrack_Alt_Intermediate_Mage npc = view_as<Barrack_Alt_Intermediate_Mage>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -125,7 +133,7 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 1562500.0)
+			if(flDistanceToTarget < 120000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -135,35 +143,21 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						float speed = 750.0;
-						if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
-						{
-							PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
-						}
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
-						npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+						
+						npc.PlayRangedSound();
+						
 						float flPos[3]; // original
 						float flAng[3]; // original
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-						if(i_overcharge[npc.index]>=10)
-						{
-							i_overcharge[npc.index]=0;
-							npc.PlayRangedSound();
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 562.5, 1)*2.0 , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-							npc.m_flNextMeleeAttack = GameTime + (4.25 * npc.BonusFireRate);
-							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
-						}
-						else
-						{
 							
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 562.5, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-							npc.m_flNextMeleeAttack = GameTime + (2.75 * npc.BonusFireRate);
-							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
-							i_overcharge[npc.index]++;
-						}
-						
-						npc.PlayRangedSound();
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),350.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
+						npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 					}
 				}
 			}
@@ -173,7 +167,7 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 125.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 1562500.0, _,false);
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 120000.0, _, false);
 
 		if(npc.m_flNextMeleeAttack > GameTime)
 		{
@@ -186,8 +180,8 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Alt_Crossbowmedic_NPCDeath(int entity)
+void Barrack_Alt_Intermediate_Mage_NPCDeath(int entity)
 {
-	Barrack_Alt_Crossbowmedic npc = view_as<Barrack_Alt_Crossbowmedic>(entity);
+	Barrack_Alt_Intermediate_Mage npc = view_as<Barrack_Alt_Intermediate_Mage>(entity);
 	BarrackBody_NPCDeath(npc.index);
 }

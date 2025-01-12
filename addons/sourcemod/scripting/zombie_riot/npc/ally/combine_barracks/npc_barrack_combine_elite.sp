@@ -111,7 +111,7 @@ methodmap Barrack_Combine_Elite < BarrackBody
 
 	public Barrack_Combine_Elite(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "425", "models/combine_super_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "300", "models/combine_super_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -154,7 +154,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 300000.0)
+			if(flDistanceToTarget < 240000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -197,7 +197,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 175.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 148.75, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;		
 						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
@@ -217,11 +217,11 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 240.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 240.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 210000.0,_, true);
 
 		if(npc.m_flNextRangedAttack > GameTime)
 		{
-			npc.m_flSpeed = 0.0;
+			npc.m_flSpeed = 120.0;
 		}
 		else if(npc.m_flNextMeleeAttack > GameTime)
 		{

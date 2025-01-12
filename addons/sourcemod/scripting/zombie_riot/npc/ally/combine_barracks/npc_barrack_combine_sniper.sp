@@ -45,7 +45,7 @@ void Barracks_Combine_Sniper_Precache()
 	
 	PrecacheModel("models/player/hwm/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Sniper");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Peacekeeper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_sniper");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -108,9 +108,8 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Sniper_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Sniper_ClotThink;
-		npc.m_flSpeed = 150.0;
+		npc.m_flSpeed = 250.0;
 
-		npc.m_iAttacksTillReload = 1;
 		npc.m_flNextRangedAttack = 0.0;
 		
 		KillFeed_SetKillIcon(npc.index, "sniperrifle");
@@ -144,23 +143,19 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-
-			if(flDistanceToTarget < 800000.0)
+			
+			if(flDistanceToTarget < 700000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					//Can we attack right now?
-					if(npc.m_iAttacksTillReload < 1)
-					{
-						npc.AddGesture("ACT_RELOAD_SHOTGUN1");
-						npc.m_flNextRangedAttack = GameTime + 3.0;
-						npc.m_iAttacksTillReload = 1;
-						npc.PlayPistolReload();
-					}
 					if(npc.m_flNextRangedAttack < GameTime)
 					{
+						npc.SetActivity("ACT_MP_STAND_PRIMARY");
+						npc.m_flReloadDelay = GameTime + (2.0 * npc.BonusFireRate);
+						npc.m_flNextRangedAttack = GameTime + (5.0 * npc.BonusFireRate);
+						
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
@@ -177,17 +172,15 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (3.0 * npc.BonusFireRate);
-							npc.m_iAttacksTillReload = 0;
-							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 6800.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 13600.0, 1), DMG_BULLET, -1, _, vecHit);
+							ApplyStatusEffect(npc.index, target, "Silenced", 2.0);
 						} 		
 						delete swingTrace;		
-						npc.m_flSpeed = 150.0;		
+						npc.m_flSpeed = 250.0;		
 					}
 					else
 					{
-						npc.m_flSpeed = 150.0;
+						npc.m_flSpeed = 250.0;
 					}
 				}
 			}
@@ -196,8 +189,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE_ANGRY_RPG", "ACT_RUN_RPG", 750000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_IDLE_ANGRY_RPG", "ACT_RUN_RPG", 550000.0,_, true);
 	}
 }
 

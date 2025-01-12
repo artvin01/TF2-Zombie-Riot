@@ -173,6 +173,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		npc.m_flSpeed = 180.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_iAttacksTillReload = 0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -262,10 +263,8 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),11000.0, 0), DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9000.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
-								//	ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
-								//	DesertYadeamDoHealEffect(npc.index, 150.0);
 								} 
 							}
 							delete swingTrace;
@@ -280,8 +279,8 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedSpecialAttack = GameTime + 5.0;
-					ExpidonsaGroupHeal(npc.index, 100.0, 5, 8000.0, 0.0, false,Expidonsa_DontHealSameIndex);
-					DesertYadeamDoHealEffect(npc.index, 100.0);
+					ExpidonsaGroupHeal(npc.index, 150.0, 2, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),507.0, 0), 1.0, true, IberiaBarracks_HealSelfLimitCD);
+					DesertYadeamDoHealEffect(npc.index, 150.0);
 					GuardianAOEBuff(npc,GetGameTime(npc.index));
 
 					npc.PlayRangedAttackSecondarySound();
@@ -289,7 +288,19 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 			}
 			if(npc.Anger)
 			{
-				if(flDistanceToTarget < 250000.0)
+				if(npc.m_iAttacksTillReload >= 45) // After 45 attacks he returns to melee/support mode with 50% armor
+				{
+					NpcSpeechBubble(npc.index, "Armor repaired, i'm ready to support everyone again!", 5, {75, 255, 255, 255}, {0.0,0.0,60.0}, "");
+					GrantEntityArmor(iNPC, false, 0.5, 0.66, 0);
+					if(IsValidEntity(npc.m_iWearable2))
+					RemoveEntity(npc.m_iWearable2);
+					npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
+					SetVariantString("1.3");
+					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+					npc.Anger = false;
+					npc.m_iAttacksTillReload = 0;
+				}
+				if(flDistanceToTarget < 75000.0)
 				{
 					int PrimaryThreatIndex = npc.m_iTarget;
 					int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
@@ -298,11 +309,13 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 					{
 						if(npc.m_flNextRangedAttack < GameTime)
 						{
+							float damage = 5000.0;
+							
 							if(!npc.m_fbRangedSpecialOn)
 							{
 								float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 								npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 5000.0, 1), 450.0, "models/weapons/c_models/c_leechgun/c_leech_proj.mdl",1.75);
-								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
+								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 6.0;
 								npc.PlayRangedAttackRocket();
 								npc.m_fbRangedSpecialOn = true;
 							}
@@ -322,9 +335,15 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								view_as<CClotBody>(npc.m_iWearable2).GetAttachment("muzzle", origin, angles);
 								ShootLaser(npc.m_iWearable2, "bullet_tracer02_red", origin, vecHit, false );
 								
-								npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
-								
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3450.0, 1), DMG_BULLET, -1, _, vecHit);
+								npc.m_flNextRangedAttack = GameTime + (0.6 * npc.BonusFireRate);
+								npc.m_iAttacksTillReload ++;
+								if(npc.CmdOverride == Command_HoldPos)
+								{
+									npc.m_iAttacksTillReload --; // If it's holding a position it won't progress the armor repair
+									damage *= 0.66; // Deals 33% less damage if in hold position too, so can't abuse his dps form for camping a cade
+								}
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1), DMG_BULLET, -1, _, vecHit);
+
 							} 		
 							delete swingTrace;			
 						}
@@ -416,7 +435,7 @@ void Barracks_Iberia_Lighthouse_Guardian_NPCDeath(int entity)
 {
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(entity);
 	BarrackBody_NPCDeath(npc.index);
-//	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1000.0, 0), 1.0, true);
+	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2000.0, 0), 1.0, true, IberiaBarracks_HealSelfLimitCD);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	npc.PlayNPCDeath();
