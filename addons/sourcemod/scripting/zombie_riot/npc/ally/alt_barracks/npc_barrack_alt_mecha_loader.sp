@@ -196,11 +196,12 @@ void Barrack_Alt_Mecha_Loader_NPCDeath(int entity)
 	Barrack_Alt_Mecha_Loader npc = view_as<Barrack_Alt_Mecha_Loader>(entity);
 	
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2250, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, vecMe, 200*2.0 ,_,0.8, false); // Heavy goes boom on death
+	Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2250.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, vecMe, 200*2.0 ,_,0.8, false); // Heavy goes boom on death
 	
 	BarrackBody_NPCDeath(npc.index);
 	if(IsValidEntity(npc.m_iWearable1))
-	RemoveEntity(npc.m_iWearable1);
+		RemoveEntity(npc.m_iWearable1);
+		
 	npc.PlayNPCDeath();
 
 }
