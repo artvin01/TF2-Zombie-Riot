@@ -175,7 +175,7 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 					if(npc.m_iAttacksTillReload < 1)
 					{
 						npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY",_,_,_,0.5);
-						npc.m_flNextRangedAttack = GameTime + (3.00 * npc.BonusFireRate);
+						npc.m_flNextRangedAttack = GameTime + (6.00 * npc.BonusFireRate);
 						npc.m_iAttacksTillReload = 6;
 						npc.PlayPistolReload();
 					}

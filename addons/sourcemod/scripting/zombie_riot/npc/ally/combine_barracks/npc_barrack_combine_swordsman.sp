@@ -131,7 +131,7 @@ methodmap Barrack_Combine_Sword < BarrackBody
 
 	public Barrack_Combine_Sword(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(BarrackBody(client, vecPos, vecAng, "180", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(BarrackBody(client, vecPos, vecAng, "225", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -197,7 +197,7 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 					if(!npc.m_fbRangedSpecialOn)
 					{
 						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
+						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
 						npc.PlayRangedAttackSecondarySound();
 						npc.m_fbRangedSpecialOn = true;
 						npc.Anger = true;
@@ -213,11 +213,11 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
-							float damage = 525.0;
+							float damage = 333.0;
 
 							if(npc.Anger)
 							{
-								damage *= 2.0;
+								damage *= 5.0;
 							}
 
 							if(target > 0) 
