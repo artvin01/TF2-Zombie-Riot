@@ -4180,19 +4180,19 @@
 	}
 	"Waldch's Railgun Rounds Desc"
 	{
-		"en"	"How kind of him.\nIncreases ranged damage by +75%% and clipsize by +35%%.\nIncreases accuracy by +20%% and projectile speed by +25%%."
+		"en"	"How kind of him.\nIncreases ranged damage by +75%% and clipsize by +50%%.\nIncreases accuracy by +20%% and projectile speed by +25%%."
 	}
 	"Cheesy Doomsday Pack Desc"
 	{
-		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%% and clipsize by +50%%.\nIncreases accuracy by +35%% and projectile speed by +50%%."
+		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%% and doubles clipsize.\nIncreases accuracy by +35%% and projectile speed by +50%%."
 	}
 	"Magical Fontina Aura Desc"
 	{
-		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +75%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%."
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +80%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%."
 	}
 	"Domain Expansion: Cheese Desc"
 	{
-		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +100%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%."
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +120%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%."
 	}
 	"Bob's Willpower Desc"
 	{
