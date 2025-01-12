@@ -4226,6 +4226,11 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 #if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
+#if defined RPG
+	ApplyTempAttrib_Internal(entity, index, multi, duration);
+	return;
+#endif
+#if defined ZR
 	if(entity <= MaxClients)
 	{
 		//if were giving it to a client directly, dont do the below.
@@ -4243,6 +4248,7 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 		TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
 		TempStoreAttrib.Apply_TempAttrib(owner, entity);
 	}
+#endif
 }
 
 stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3)

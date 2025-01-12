@@ -348,7 +348,6 @@ float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
-float f_BannerAproxDur[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_DuelStatus[MAXENTITIES];
@@ -404,6 +403,7 @@ int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 //Used for any double arrays like lantean wand or health hose.
 float f_GlobalHitDetectionLogic[MAXENTITIES][MAXENTITIES];
 #if defined ZR
+float f_BannerAproxDur[MAXENTITIES];
 bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
 #endif
 

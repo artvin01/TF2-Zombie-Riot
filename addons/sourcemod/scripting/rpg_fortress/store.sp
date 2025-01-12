@@ -274,6 +274,7 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 void RpgPluginStart_Store()
 {
 	RegConsoleCmd("rpg_settings", SettingsStore_Command);
+	ClearAllTempAttributes();
 }
 
 public Action SettingsStore_Command(int client, int args)
@@ -395,10 +396,12 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 		{
 			static ItemInfo info;
 			EquippedItems.GetArray(pos, info);
+#if defined ZR
 			if(MazeatItemHas())
 			{
 				cooldown *= 0.75;
 			}
+#endif
 			info.Cooldown[what_slot - 1] = cooldown + GetGameTime();
 
 			EquippedItems.SetArray(pos, info);
@@ -2082,4 +2085,79 @@ public void Ammo_TagDeploy(int client, int weapon, int index)
 int GetAmmoType_WeaponPrimary(int weapon)
 {
 	return OriginalWeapon_AmmoType[weapon];
+}
+
+
+
+static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
+
+/*
+	Example:
+
+	static TempAttribStore TempStoreAttrib;
+
+	TempStoreAttrib.Attribute = 6;
+	TempStoreAttrib.Value = 0.75;
+	TempStoreAttrib.GameTimeRemoveAt = GetGameTime() + 5.0; //5 second duration
+	TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[weapon];
+	TempStoreAttrib.Apply_TempAttrib(client, weapon);
+
+	//gives attackspeed for 5 seconds with an increace of 25%!
+
+
+*/
+enum struct TempAttribStore
+{
+	int Attribute;
+	float Value;
+	float GameTimeRemoveAt;
+	int Weapon_StoreIndex;
+	/*
+	Function FuncBeforeApply;
+	Function FuncAfterApply;
+	*/
+	void Apply_TempAttrib(int client, int weapon)
+	{
+		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime());
+		if(!List_TempApplyWeaponPer[client])
+			List_TempApplyWeaponPer[client] = new ArrayList(sizeof(TempAttribStore));
+
+		List_TempApplyWeaponPer[client].PushArray(this);
+	}
+}
+
+//on map restart
+void ClearAllTempAttributes()
+{
+	for(int c = 0; c < MAXTF2PLAYERS; c++)
+	{
+		delete List_TempApplyWeaponPer[c];
+	}
+}
+
+stock void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
+{
+	if(!List_TempApplyWeaponPer[client])
+	{
+		return;
+	}
+	static TempAttribStore TempStoreAttrib;
+	int length = List_TempApplyWeaponPer[client].Length;
+	for(int i; i<length; i++)
+	{
+		List_TempApplyWeaponPer[client].GetArray(i, TempStoreAttrib);
+		if(TempStoreAttrib.GameTimeRemoveAt < GetGameTime())
+		{
+			List_TempApplyWeaponPer[client].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
+		if(storeindex == TempStoreAttrib.Weapon_StoreIndex)
+		{
+			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime());
+			//Give all the things needed to the weapon again.
+		}
+	}
+	//????
 }

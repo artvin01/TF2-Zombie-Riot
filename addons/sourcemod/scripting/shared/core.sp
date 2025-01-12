@@ -2847,9 +2847,7 @@ public void OnEntityDestroyed(int entity)
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
-#if defined ZR
 		WeaponWeaponAdditionOnRemoved(entity);
-#endif
 		CurrentEntities--;
 
 		if(entity > MaxClients)

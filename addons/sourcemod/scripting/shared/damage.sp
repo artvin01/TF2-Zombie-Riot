@@ -578,9 +578,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 {
 	float basedamage = damage;
 	
+#if defined ZR
 	float DamageBuffExtraScaling = 1.0;
 
-#if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
 		//only scale if its a player, and if the attacking npc is red too
@@ -595,10 +595,21 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 #endif
 
 	//This buffs up damage in anyway possible
+#if defined ZR
 	if(CheckInHud() != 2)
 		damage += StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, basedamage, damagetype);
+#else
+	if(CheckInHud() != 2)
+		damage += StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, basedamage, damagetype);
+#endif
 
+
+#if defined ZR
 	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker,inflictor, basedamage, damagetype);
+#else
+	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker, basedamage, damagetype);
+#endif
+
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
 	if(GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0)
@@ -1899,6 +1910,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 #endif
 
+	char BufferAdd[6];
 #if defined ZR
 	if(Victoria_Support_RechargeTime(victim))
 	{
@@ -1955,8 +1967,8 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	
 	//Display Modifiers here.
-	char BufferAdd[6];
 	ZRModifs_CharBuffToAdd(BufferAdd);
+#endif
 	int Victim_weapon = -1;
 
 	if(victim <= MaxClients)
@@ -1975,5 +1987,4 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			Format(Debuff_Adder_left, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_left);
 		}
 	}
-#endif
 }
