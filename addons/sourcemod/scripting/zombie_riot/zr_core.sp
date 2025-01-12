@@ -2007,7 +2007,13 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 		Armor_Max = 1000;
 										
 	else if(ArmorLevel == 200)
-		Armor_Max = 2000;	
+		Armor_Max = 2000;
+
+	else if(ArmorLevel == 250)
+		Armor_Max = 4000;
+
+	else if(ArmorLevel == 300)
+		Armor_Max = 7500;
 		
 	else
 		Armor_Max = 200;
