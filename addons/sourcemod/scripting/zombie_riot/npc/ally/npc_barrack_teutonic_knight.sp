@@ -35,7 +35,10 @@ methodmap BarrackTeuton < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = BarrackTeuton_NPCDeath;
 		func_NPCThink[npc.index] = BarrackTeuton_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = BarrackTeuton_OnTakeDamage;
 		npc.m_flSpeed = 250.0;
+		
+		npc.Anger = false;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.8");
@@ -97,9 +100,17 @@ public void BarrackTeuton_ClotThink(int iNPC)
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
+							float damage = 9000.0;
+							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9000.0, 0), DMG_CLUB, -1, _, vecHit);
+								if(npc.Anger) // Wrathful strike, hits significantly harder if the teutonic took more than 33% max hp as damage from 1 source, deactivates after 1 hit
+								{
+									damage *= 2.5;
+									npc.Anger = false;
+									ResetTeutonWeapon(npc, 0);
+								}
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -114,7 +125,7 @@ public void BarrackTeuton_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_TEUTON_NEW_IDLE", "ACT_TEUTON_NEW_WALK");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_NEW_IDLE", "ACT_TEUTON_NEW_WALK");
 	}
 }
 
@@ -122,4 +133,55 @@ void BarrackTeuton_NPCDeath(int entity)
 {
 	BarrackTeuton npc = view_as<BarrackTeuton>(entity);
 	BarrackBody_NPCDeath(npc.index);
+}
+
+public Action BarrackTeuton_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	//Valid attackers only.
+	if(attacker <= 0)
+		return Plugin_Continue;
+		
+	BarrackTeuton npc = view_as<BarrackTeuton>(victim);
+	
+	float Maxhealth = ReturnEntityMaxHealth(npc.index) + 0.0;
+	if((ReturnEntityMaxHealth(npc.index)/3) <= damage) // If teutonic takes a single instance of damage higher than 1/3 of his max hp he instead takes only 33% of his max hp as dmg and enrages
+	{
+		IgniteTargetEffect(npc.m_iWearable1);
+		damage = Maxhealth/3;
+		npc.Anger = true;
+		switch(GetRandomInt(1, 2))
+		{
+			case 1:
+			{
+				NpcSpeechBubble(npc.index, "Now you've done it!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+			case 2:
+			{
+				NpcSpeechBubble(npc.index, "Anger...", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+			case 3:
+			{
+				NpcSpeechBubble(npc.index, "You'll pay for that!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			}
+		}
+	}
+
+	return Plugin_Changed;
+}
+
+void ResetTeutonWeapon(BarrackTeuton npc, int weapon_Type)
+{
+	if(IsValidEntity(npc.m_iWearable1))
+	{
+		RemoveEntity(npc.m_iWearable1);
+	}
+	switch(weapon_Type)
+	{
+		case 0:
+		{
+			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+			SetVariantString("0.8");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		}
+	}
 }

@@ -81,7 +81,7 @@ public void BarrackArbelast_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (3.0 * npc.BonusFireRate);
 						npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 					}
 				}
@@ -104,7 +104,7 @@ void BarrackArbelast_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			npc.FireArrow(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1500.0, 1), 1200.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
+			npc.FireArrow(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1750.0, 1), 1200.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
 		}
 	}
 }
