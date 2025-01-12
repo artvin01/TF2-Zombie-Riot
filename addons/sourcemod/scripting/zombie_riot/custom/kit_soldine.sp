@@ -29,6 +29,7 @@ public void Wkit_Soldin_OnMapStart()
 	Zero(i_SoldineMeleeCharge);
 	Zero(i_SoldineRocketjumpCharge);
 	Zero(f_SoldineRocketJumpDuration);
+	Zero(Soldine_HudDelay);
 }
 
 void ChargeSoldineMeleeHit(int client, bool Melee, float Multi = 1.0)
@@ -252,6 +253,7 @@ public Action Timer_Soldine_Kit(Handle timer, DataPack pack)
 	{
 		Delete_Hand(client);
 	}
+	Soldine_EyeHandler(client);
 	Soldine_Hud_Logic(client, weapon, false);
 	Wkit_Soldin_Effect(client);
 		
