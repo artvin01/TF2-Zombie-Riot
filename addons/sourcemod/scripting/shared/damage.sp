@@ -1166,14 +1166,17 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 #endif
 
 #if defined RPG
-	switch(i_CustomWeaponEquipLogic[weapon])
+	if(!CheckInHud())
 	{
-		case WEAPON_BIGFRYINGPAN:
+		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			if(b_thisNpcIsABoss[victim])
-				Custom_Knockback(attacker, victim, 330.0);
-			else
-				Custom_Knockback(attacker, victim, 1000.0);
+			case WEAPON_BIGFRYINGPAN:
+			{
+				if(b_thisNpcIsABoss[victim])
+					Custom_Knockback(attacker, victim, 330.0);
+				else
+					Custom_Knockback(attacker, victim, 1000.0);
+			}
 		}
 	}
 #endif
