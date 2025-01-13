@@ -91,6 +91,10 @@ public void SDKHook_ScoreThink(int entity)
 	static int offset_Cash = -1;
 	static int offset_Healing = -1;
 
+#if defined ZR
+	static int offset_Alive = -1;
+#endif
+
 
 		
 	if(offset == -1) 
@@ -108,11 +112,20 @@ public void SDKHook_ScoreThink(int entity)
 	if(offset_Cash == -1) 
 		offset_Cash = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
 
+#if defined ZR
+	//Alive
+	if(offset_Alive == -1) 
+		offset_Alive = FindSendPropInfo("CTFPlayerResource", "m_bAlive");
+	
+	bool alive[MAXTF2PLAYERS];
+#endif
+
 	int CashCurrentlyOwned[MAXTF2PLAYERS];
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
 		CashCurrentlyOwned[client] = CurrentCash-CashSpent[client];
+		alive[client] = (TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client));
 #else
 		CashCurrentlyOwned[client] = TextStore_Cash(client);
 #endif
@@ -124,6 +137,7 @@ public void SDKHook_ScoreThink(int entity)
 	
 #if defined ZR
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
+	SetEntDataArray(entity, offset_Alive, alive, MaxClients + 1);
 #else
 	SetEntDataArray(entity, offset, Level, MaxClients + 1);
 #endif
