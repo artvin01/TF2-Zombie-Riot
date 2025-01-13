@@ -450,6 +450,14 @@ void Music_Stop_All(int client)
 
 void Music_PostThink(int client)
 {
+	if(LastMann_BeforeLastman && !LastMann)
+	{
+		if(Give_Cond_Timer[client] < GetGameTime())
+		{
+			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 2.0);
+			Give_Cond_Timer[client] = GetGameTime() + 1.0;
+		}
+	}
 	if(LastMann)
 	{
 		if(Give_Cond_Timer[client] < GetGameTime())
@@ -459,13 +467,8 @@ void Music_PostThink(int client)
 				if(TeutonType[client] == TEUTON_NONE)
 				{
 					TF2_AddCondition(client, TFCond_DefenseBuffed, 2.0);
-			//		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, 2.0);
-			//		TF2_AddCondition(client, TFCond_RuneHaste, 2.0);
-			//		if(Attributes_FindOnPlayerZR(client, 232))
-			//			TF2_AddCondition(client, TFCond_CritCanteen, 2.0);
 					
 					Give_Cond_Timer[client] = GetGameTime() + 1.0;
-				//	Attributes_Set(client, 442, 0.7674418604651163);
 				}
 			}
 		}
