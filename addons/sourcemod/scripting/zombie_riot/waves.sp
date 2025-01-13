@@ -3330,17 +3330,36 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			
 			Citizen_SetupStart();
 
-			if(CurrentRound == 100)
+			if(CurrentRound == 150)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{
 						SetHudTextParams(-1.0, -1.0, 5.0, 255, 255, 0, 255);
-						ShowHudText(client, -1, "--ALERT--\nWave 100 reached.\nRaids will now have x2 HP.");
+						ShowHudText(client, -1, "--ALERT--\nWave 150 reached.\nRaids will now have x2 HP.");
 					}
 				}
 			}
+		}
+		else if(CurrentRound == 500)
+		{
+			InSetup = true;
+			ExcuteRelay("zr_setuptime");
+
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+				{
+					Items_GiveNamedItem(client, "No-lifer Trophy");
+					Items_GiveNamedItem(client, "A Block of Cheese");
+					CPrintToChat(client, "{lime}Your backpack feels heavier. 2 unlocks were added to your inventory....");
+				}
+			}
+
+			Freeplay_SetupStart(true);
+			Waves_SetReadyStatus(1);
+			Citizen_SetupStart();
 		}
 		else
 		{
