@@ -3329,6 +3329,18 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			RequestFrames(StopMapMusicAll, 60);
 			
 			Citizen_SetupStart();
+
+			if(CurrentRound == 100)
+			{
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && !b_IsPlayerABot[client])
+					{
+						SetHudTextParams(-1.0, -1.0, 5.0, 255, 255, 0, 255);
+						ShowHudText(client, -1, "--ALERT--\nWave 100 reached.\nRaids will now have x2 HP.");
+					}
+				}
+			}
 		}
 		else
 		{
