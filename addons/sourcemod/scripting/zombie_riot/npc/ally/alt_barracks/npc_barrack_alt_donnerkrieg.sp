@@ -64,7 +64,7 @@ public void Barrack_Alt_Donnerkrieg_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Donnerkrieg");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_donnerkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_alt_donnerkrieg");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -316,23 +316,25 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 			}
 			int Enemy_I_See;		
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			if(flDistanceToTarget < 562500 && IsValidEnemy(npc.index, Enemy_I_See))
+			if(flDistanceToTarget < 300000 && IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 				{	
 					npc.m_iAmountProjectiles += 1;
 					npc.m_flNextRangedBarrage_Singular = GameTime + 0.1;
 					npc.PlayRangedSound();
-							
+					
+					float speed = 750.0;					
 					float flPos[3]; // original
 					float flAng[3]; // original
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-								
-					npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 937.5, 1) , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-					if (npc.m_iAmountProjectiles >= 10)
+					
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);					
+					npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2200.0, 1) , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					if (npc.m_iAmountProjectiles >= 15)
 					{
 						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GameTime + 15.0 * npc.BonusFireRate;
+						npc.m_flNextRangedBarrage_Spam = GameTime + 10.0 * npc.BonusFireRate;
 					}
 				}
 			}
@@ -386,8 +388,8 @@ static void Primary_Attack_BEAM_Iku_Ability(int client, float GameTime)
 	
 	Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(client);
 
-	Ikunagae_BEAM_CloseDPT[client] = 3000.0;
-	Ikunagae_BEAM_FarDPT[client] = 1500.0;
+	Ikunagae_BEAM_CloseDPT[client] = 4000.0;
+	Ikunagae_BEAM_FarDPT[client] = 2000.0;
 	Ikunagae_BEAM_MaxDistance[client] = 500;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");

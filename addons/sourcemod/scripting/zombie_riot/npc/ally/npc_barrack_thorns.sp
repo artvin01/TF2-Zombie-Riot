@@ -91,16 +91,16 @@ methodmap BarrackThorns < BarrackBody
 		
 		char healthSize[10];
 
-		Format(healthSize, sizeof(healthSize), "1000");
+		Format(healthSize, sizeof(healthSize), "800");
 
 		if(elite)
 		{
-			Format(healthSize, sizeof(healthSize), "2000");
+			Format(healthSize, sizeof(healthSize), "1600");
 		}
 
 		if(MaxPot)
 		{
-			Format(healthSize, sizeof(healthSize), "3000");
+			Format(healthSize, sizeof(healthSize), "2400");
 		}
 
 		BarrackThorns npc = view_as<BarrackThorns>(BarrackBody(client, vecPos, vecAng, healthSize,_,_,"0.75",_,"models/pickups/pickup_powerup_thorns.mdl"));
@@ -122,6 +122,7 @@ methodmap BarrackThorns < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = BarrackThorns_NPCDeath;
 		func_NPCThink[npc.index] = BarrackThorns_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = BarrackThorns_OnTakeDamage;
 
 		ThornsDelayTimerUpgrade[npc.index] = GetGameTime() + 5.0;
 
@@ -197,16 +198,6 @@ public void BarrackThorns_ClotThink(int iNPC)
 		else
 		{
 			ThornsDelayTimerUpgrade[npc.index] = FAR_FUTURE;
-		}
-	}
-	if(npc.m_flDoingAnimation)
-	{
-		npc.m_flSpeed = 0.0;
-		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
-		{
-			npc.m_flDoingAnimation = 0.0;
-			npc.StartPathing();
-			npc.m_flSpeed = 250.0;
 		}
 	}
 	else
@@ -300,28 +291,25 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 			if(ThornsAbilityActive[npc.index] > GetGameTime(npc.index) || ThornsDecidedOnAttack[npc.index] == 3)
 			{
-				if(flDistanceToTarget < (650.0 * 650.0) || ThornsDecidedOnAttack[npc.index] == 3)
+				if(flDistanceToTarget < (550.0 * 550.0) || ThornsDecidedOnAttack[npc.index] == 3)
 				{
 					ThornsBasicAttackM2Ability(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}
 			}
 			else
 			{
-				if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 1)
+				if(flDistanceToTarget < (400.0 * 400.0) && flDistanceToTarget > (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 1)
 				{
 					ThornsBasicAttackM1Ranged(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}
-				if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget < (100.0 * 100.0) ||ThornsDecidedOnAttack[npc.index] == 2)
+				if(flDistanceToTarget < (400.0 * 400.0) && flDistanceToTarget < (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 2)
 				{
 					ThornsBasicAttackM1Melee(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}				
 			}
 
 		}
-		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
-		{
-			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_THORNS_STAND", "ACT_THORNS_WALK");
-		}
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_THORNS_STAND", "ACT_THORNS_WALK", 140000.0,_, true);
 	}
 }
 
@@ -393,7 +381,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 					if(target > 0) 
 					{
 						ThornsAbilityAttackTimes[npc.index] += 1;
-						float damage = 1000.0;
+						float damage = 5000.0;
 						if(ThornsLevelAt[npc.index] == 2)
 						{
 							damage *= 2.0;
@@ -401,6 +389,10 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 						else if(ThornsLevelAt[npc.index] == 1)
 						{
 							damage *= 1.5;
+						}
+					if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
+						{
+							damage *= 0.5;
 						}
 						SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);						
 
@@ -434,11 +426,8 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 				npc.m_flAttackHappens = gameTime + AnimRate;
 				npc.m_flNextMeleeAttack = gameTime + Attackrate;
 				npc.m_flDoingAnimation = gameTime + 1.0;
-				NPC_StopPathing(npc.index);
-				npc.m_flSpeed = 0.0;
 				ThornsDecidedOnAttack[npc.index] = 2;
 				ThornsAttackedSince[npc.index] = GetGameTime(npc.index) + 5.0;
-				//make thorns not move when attacking.
 			}
 		}
 	}
@@ -480,7 +469,10 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 					{
 						damage *= 1.5;
 					}
-							
+					if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
+					{
+						damage *= 0.5;
+					}		
 					float flPos[3]; // original
 					float flAng[3]; // original
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
@@ -523,9 +515,6 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 				npc.m_flAttackHappens = gameTime + AnimRate;
 				npc.m_flNextMeleeAttack = gameTime + Attackrate;
 				npc.m_flDoingAnimation = gameTime + 1.0;
-				NPC_StopPathing(npc.index);
-				npc.m_flSpeed = 0.0;
-				//make thorns not move when attacking.
 				ThornsDecidedOnAttack[npc.index] = 1;
 				ThornsAttackedSince[npc.index] = GetGameTime(npc.index) + 5.0;
 			}
@@ -560,29 +549,26 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 				{
 					npc.PlayRangedSoundAbility();
 
-					float damage = 1000.0;
-
-					if(ThornsAbilityActiveTimes[npc.index] > 1)
-					{
-						damage = 1100.0;
-					}
+					float damage = 1540.0;
 					
 					if(ThornsLevelAt[npc.index] == 2)
 					{
-						damage *= 1.5;
+						damage *= 1.8;
 					}
 					else if(ThornsLevelAt[npc.index] == 1)
 					{
-						damage *= 1.25;
+						damage *= 1.5;
 					}
-							
+					if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
+					{
+						damage *= 0.5;
+					}		
 					float flPos[3]; // original
 					float flAng[3]; // original
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
 					float vecTarget[3];
 					float speed = 2000.0;
 					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_,vecTarget);
-					npc.m_flSpeed = 0.0;
 					int rocket;
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				
@@ -634,12 +620,26 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					npc.m_flNextMeleeAttack = gameTime + Attackrate;
 					npc.m_flDoingAnimation = gameTime + 0.75;					
 				}
-				NPC_StopPathing(npc.index);
-				npc.m_flSpeed = 0.0;
-				//make thorns not move when attacking.
 				ThornsDecidedOnAttack[npc.index] = 3;
 				ThornsAttackedSince[npc.index] = GetGameTime(npc.index) + 5.0;
 			}
 		}
 	}
+}
+
+public Action BarrackThorns_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	//Valid attackers only.
+	if(attacker <= 0)
+		return Plugin_Continue;
+		
+	BarrackThorns npc = view_as<BarrackThorns>(victim);
+	
+	float Maxhealth = ReturnEntityMaxHealth(npc.index) + 0.0;
+	if((ReturnEntityMaxHealth(npc.index)/2) <= damage) // If teutonic takes a single instance of damage higher than 1/2 of his max hp he instead takes only 50% of his max hp as dmg
+	{
+		damage = Maxhealth/2;
+	}
+
+	return Plugin_Changed;
 }

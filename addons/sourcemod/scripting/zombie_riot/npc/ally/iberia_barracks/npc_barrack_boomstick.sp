@@ -102,7 +102,7 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 
 	public Barrack_Iberia_Boomstick(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(BarrackBody(client, vecPos, vecAng, "300", "models/player/engineer.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(BarrackBody(client, vecPos, vecAng, "250", "models/player/engineer.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -140,6 +140,9 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 {
 	Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(iNPC);
 	float GameTime = GetGameTime(iNPC);
+	
+	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);	
+	
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
@@ -152,7 +155,7 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 400000.0)
+			if(flDistanceToTarget < 250000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -162,7 +165,7 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 					if(npc.m_iAttacksTillReload < 1)//reloading?
 					{
 						npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-						npc.m_flNextRangedAttack = GameTime + (4.0 * npc.BonusFireRate);
+						npc.m_flNextRangedAttack = GameTime + (5.0 * npc.BonusFireRate);
 						npc.m_iAttacksTillReload += 1;
 						npc.PlayPistolReload();
 					}
@@ -171,7 +174,7 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
-						npc.FaceTowards(vecTarget, 400000.0);
+						npc.FaceTowards(vecTarget, 250000.0);
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -201,7 +204,7 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 175000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 125.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 175000.0,_, true);
 	}
 }
 

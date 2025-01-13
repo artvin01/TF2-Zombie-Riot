@@ -88,7 +88,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 			npc.m_flAttackHappens = GameTime + 1.3;
 			npc.m_flDoingAnimation = GameTime + 1.3;
 			npc.m_flReloadDelay = GameTime + 1.3;
-			npc.m_flNextMeleeAttack = GameTime + 10.3;
+			npc.m_flNextMeleeAttack = GameTime + 8.3;
 		}
 
 		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MONK_IDLE", "ACT_MONK_WALK", 90000.0);

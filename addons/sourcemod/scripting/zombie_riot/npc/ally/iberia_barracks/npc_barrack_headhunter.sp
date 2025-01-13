@@ -60,6 +60,11 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap Barrack_Iberia_Headhunter < BarrackBody
 {
+	property float m_flPieRapidMelee
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -106,7 +111,7 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 
 	public Barrack_Iberia_Headhunter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(BarrackBody(client, vecPos, vecAng, "900", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(BarrackBody(client, vecPos, vecAng, "800", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -118,10 +123,12 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
+		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
+		npc.m_iAttacksTillReload = 0;
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
@@ -155,23 +162,44 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-
+			
+			if(npc.m_flPieRapidMelee < GameTime) // Checking if the rapid attack is off cooldown, if it is replenish the 4 quick attacks
+			{
+				npc.m_iAttacksTillReload = 4;
+			}
 			//Target close enough to hit
 			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
-					float damage = 5000.0;
-
-					if(!npc.m_flAttackHappenswillhappen)
+					float damage = 7500.0;
+					
+					if(npc.m_iAttacksTillReload >= 1) // A total of 4 rapid melee attacks, after which he takes 20 seconds to reload
 					{
-						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
-						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
-						npc.PlaySwordSound();
-						npc.m_flAttackHappens = GameTime + 0.3;
-						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-						npc.m_flNextMeleeAttack = GameTime + (1.25 * npc.BonusFireRate);
-						npc.m_flAttackHappenswillhappen = true;
+						if(!npc.m_flAttackHappenswillhappen)
+						{
+							npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+							npc.PlaySwordSound();
+							npc.m_flAttackHappens = GameTime + 0.1;
+							npc.m_flAttackHappens_bullshit = GameTime + 0.44;
+							npc.m_flNextMeleeAttack = GameTime + (0.25 * npc.BonusFireRate);
+							npc.m_flAttackHappenswillhappen = true;
+							npc.m_iAttacksTillReload --;
+							npc.m_flPieRapidMelee = GameTime + (20.0 * npc.BonusFireRate);
+						}
+					}
+					else
+					{
+						if(!npc.m_flAttackHappenswillhappen)
+						{
+							npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
+							npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+							npc.PlaySwordSound();
+							npc.m_flAttackHappens = GameTime + 0.3;
+							npc.m_flAttackHappens_bullshit = GameTime + 0.44;
+							npc.m_flNextMeleeAttack = GameTime + (1.25 * npc.BonusFireRate);
+							npc.m_flAttackHappenswillhappen = true;
+						}
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
@@ -180,21 +208,16 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 						if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 						{
 							int target = TR_GetEntityIndex(swingTrace);	
-							
+							int Health = GetEntProp(target, Prop_Data, "m_iHealth");
+							int MaxHealth = ReturnEntityMaxHealth(target);
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
 							if(target > 0) 
 							{
-								
-								if(b_thisNpcIsABoss[target] ||
-								b_thisNpcIsARaid[target] ||
-								b_StaticNPC[target] ||
-								b_thisNpcHasAnOutline[target] ||
-								b_ThisNpcIsImmuneToNuke[target] ||
-								b_IsGiant[target])
+								if((MaxHealth/Health) >= 2) // Target is below 50% hp, the headhunter does more damage
 								{
-									damage *= 2.5;
+									damage *= 1.5;
 								}
 								
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);

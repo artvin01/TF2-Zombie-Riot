@@ -20,9 +20,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3",
 };
 
-static float fl_npc_basespeed;
-
-public void Barrack_Alt_Intermediate_Mage_MapStart()
+public void Barrack_Alt_Basic_Mage_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheSoundArray(g_RangedAttackSounds);
@@ -30,8 +28,8 @@ public void Barrack_Alt_Intermediate_Mage_MapStart()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Intermediate Mage");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_intermediate_mage");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Basic Mage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_alt_basic_mage");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -39,13 +37,14 @@ public void Barrack_Alt_Intermediate_Mage_MapStart()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Alt_Intermediate_Mage(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Basic_Mage(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
+methodmap Barrack_Alt_Basic_Mage < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -68,25 +67,24 @@ methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 		
 
 	}
-	public Barrack_Alt_Intermediate_Mage(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Basic_Mage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Alt_Intermediate_Mage npc = view_as<Barrack_Alt_Intermediate_Mage>(BarrackBody(client, vecPos, vecAng, "165", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Alt_Basic_Mage npc = view_as<Barrack_Alt_Basic_Mage>(BarrackBody(client, vecPos, vecAng, "100", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Alt_Intermediate_Mage_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Alt_Intermediate_Mage_ClotThink;
-
-		npc.m_flSpeed = 200.0;
-		fl_npc_basespeed = 200.0;
+		func_NPCDeath[npc.index] = Barrack_Alt_Basic_Mage_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Basic_Mage_ClotThink;
+		fl_npc_basespeed = 190.0;
+		npc.m_flSpeed = 190.0;
 		
 		
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
+		
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/Xms2013_Medic_Robe/Xms2013_Medic_Robe.mdl");
 		SetVariantString("1.0");
@@ -98,19 +96,12 @@ methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/Xms2013_Medic_Hood/Xms2013_Medic_Hood.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		
 		
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
@@ -118,9 +109,9 @@ methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 	}
 }
 
-public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
+public void Barrack_Alt_Basic_Mage_ClotThink(int iNPC)
 {
-	Barrack_Alt_Intermediate_Mage npc = view_as<Barrack_Alt_Intermediate_Mage>(iNPC);
+	Barrack_Alt_Basic_Mage npc = view_as<Barrack_Alt_Basic_Mage>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -133,7 +124,7 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 400000.0)
+			if(flDistanceToTarget < 100000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -155,8 +146,8 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 						float flAng[3]; // original
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 							
-						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),450.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-						npc.m_flNextMeleeAttack = GameTime + (2.25 * npc.BonusFireRate);
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 200.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
 						npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 					}
 				}
@@ -167,7 +158,7 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 300000.0, _, false);
+		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 100000.0, _,false);
 
 		if(npc.m_flNextMeleeAttack > GameTime)
 		{
@@ -180,8 +171,8 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Alt_Intermediate_Mage_NPCDeath(int entity)
+void Barrack_Alt_Basic_Mage_NPCDeath(int entity)
 {
-	Barrack_Alt_Intermediate_Mage npc = view_as<Barrack_Alt_Intermediate_Mage>(entity);
+	Barrack_Alt_Basic_Mage npc = view_as<Barrack_Alt_Basic_Mage>(entity);
 	BarrackBody_NPCDeath(npc.index);
 }

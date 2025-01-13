@@ -101,7 +101,7 @@ methodmap Barrack_Combine_AR2 < BarrackBody
 
 	public Barrack_Combine_AR2(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_AR2 npc = view_as<Barrack_Combine_AR2>(BarrackBody(client, vecPos, vecAng, "275", "models/combine_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_AR2 npc = view_as<Barrack_Combine_AR2>(BarrackBody(client, vecPos, vecAng, "150", "models/combine_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -141,7 +141,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 300000.0)
+			if(flDistanceToTarget < 185000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -175,7 +175,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (0.12 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 115.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 67.5, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;			
 					}
@@ -191,11 +191,11 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 235.0, "ACT_IDLE", "ACT_WALK_AIM_RIFLE", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 235.0, "ACT_IDLE", "ACT_WALK_AIM_RIFLE", 160000.0,_, true);
 
 		if(npc.m_flNextRangedAttack > GameTime)
 		{
-			npc.m_flSpeed = 0.0;
+			npc.m_flSpeed = 117.5;
 		}
 		else if(npc.m_flNextMeleeAttack > GameTime)
 		{

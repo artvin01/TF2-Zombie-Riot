@@ -34,7 +34,7 @@ public void Barrack_Railgunner_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Railgunner");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_railgunner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_alt_railgunner");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -130,7 +130,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 1562500.0)
+			if(flDistanceToTarget < 450000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -140,7 +140,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						float speed = 750.0;
-						if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
+						if(flDistanceToTarget < 300000)	//Doesn't predict over 750 hu
 						{
 							PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 						}
@@ -151,20 +151,20 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						float flPos[3]; // original
 						float flAng[3]; // original
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-						if(i_overcharge[npc.index]>=5)
+						if(i_overcharge[npc.index]>=4)
 						{
 							i_overcharge[npc.index]=0;
 							npc.PlayMeleeSound();
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1950.0, 1) , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-							npc.m_flNextMeleeAttack = GameTime + (3.5 * npc.BonusFireRate);
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),3000.0, 1) , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.m_flNextMeleeAttack = GameTime + (5.0 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							npc.ALT_Play_Railgunner_Shoot();
 						}
 						else
 						{
 							
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),975.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-							npc.m_flNextMeleeAttack = GameTime + (1.75 * npc.BonusFireRate);
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1750.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.m_flNextMeleeAttack = GameTime + (3.75 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							i_overcharge[npc.index]++;
 						}
@@ -178,7 +178,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 1562500.0, _,false);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 250000.0, _,false);
 
 		if(npc.m_flNextMeleeAttack > GameTime)
 		{
