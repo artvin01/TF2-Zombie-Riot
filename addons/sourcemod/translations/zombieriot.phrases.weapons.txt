@@ -2935,4 +2935,40 @@
 	{
 		"en" "Cheesy Slimy Aid Kit"
 	}
+	"Kit Modernizer I"
+	{
+		"en" "Kit Modernizer I"
+	}
+	"Kit Modernizer II"
+	{
+		"en" "Kit Modernizer II"
+	}
+	"Kit Modernizer III"
+	{
+		"en" "Kit Modernizer III"
+	}
+	"Kit Modernizer IV"
+	{
+		"en" "Kit Modernizer IV"
+	}
+	"Kit Modernizer V"
+	{
+		"en" "Kit Modernizer V"
+	}
+	"Unit Reformator I"
+	{
+		"en" "Unit Reformator I"
+	}
+	"Unit Reformator II"
+	{
+		"en" "Unit Reformator II"
+	}
+	"Unit Reformator III"
+	{
+		"en" "Unit Reformator III"
+	}
+	"Unit Reformator IV"
+	{
+		"en" "Unit Reformator IV"
+	}
 }
