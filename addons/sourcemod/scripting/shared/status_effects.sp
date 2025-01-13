@@ -3091,6 +3091,7 @@ void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage,
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_PostVictim);
 			Call_PushCell(attacker);
 			Call_PushCell(victim);
+			Call_PushFloat(damage);
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
 			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);
@@ -3126,6 +3127,7 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_PostAttacker);
 			Call_PushCell(attacker);
 			Call_PushCell(victim);
+			Call_PushFloat(damage);
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
 			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);

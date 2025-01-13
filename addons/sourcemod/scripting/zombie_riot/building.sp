@@ -130,7 +130,6 @@ static int i_IDependOnThisBuilding[MAXENTITIES];
 static float PlayerWasHoldingProp[MAXTF2PLAYERS];
 float PreventSameFrameActivation[2][MAXPLAYERS + 1];
 int RandomIntSameRequestFrame[MAXPLAYERS + 1];
-Barracks_UpdateEntityUpgrades
 
 bool BuildingIsSupport(int entity)
 {
@@ -1705,10 +1704,10 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			float AdjustValues = f_FreeplayAlteredHealthOld_Barracks[entity] / Attribute;
 
 			if(BarracksUpgrade)
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / Attribute));
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / AdjustValues));
 
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / Attribute));
-			
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / AdjustValues));
+
 			f_FreeplayAlteredHealthOld_Barracks[entity] = Attribute;
 		}
 		
@@ -1719,7 +1718,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			float AdjustValues = f_FreeplayAlteredDamageOld_Barracks[entity] / Attribute;
 
 			view_as<BarrackBody>(entity).BonusDamageBonus /= AdjustValues;
-			f_FreeplayAlteredDamageOld_Barracks[entity] = AdjustValues;
+			f_FreeplayAlteredDamageOld_Barracks[entity] = Attribute;
 		}
 		if(!FinalBuilder[entity] && FinalBuilder[client])
 		{
