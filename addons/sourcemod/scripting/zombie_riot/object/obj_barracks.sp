@@ -1030,7 +1030,7 @@ void Barracks_BuildingThink(int entity)
 					view_as<BarrackBody>(npc2).m_iSupplyCount = GetSData(CivType[client], TrainingIndex[client], SupplyCost);
 					Barracks_UpdateEntityUpgrades(client, npc2, true, true); //make sure upgrades if spawned, happen on full health!
 
-
+					
 					if(TrainingQueue[client] != -1)
 					{
 						TrainingIndex[client] = TrainingQueue[client];

@@ -3902,10 +3902,10 @@ bool IsWalkEvent(int event, int special = 0)
 
 public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 {
-	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
-	CClotBody npc = view_as<CClotBody>(pThis);
 	if(b_NpcHasDied[pThis])
 		return MRES_Ignored;
+	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
+	CClotBody npc = view_as<CClotBody>(pThis);
 		
 	Function func = func_NPCAnimEvent[pThis];
 	if(func && func != INVALID_FUNCTION)

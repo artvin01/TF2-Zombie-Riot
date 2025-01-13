@@ -1586,6 +1586,8 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	ArmorDisplayClient(victim);
+	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
+	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
 	
 #endif
 #if defined RPG

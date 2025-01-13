@@ -602,6 +602,7 @@ bool b_EntityIgnoredByShield[MAXENTITIES];
 int i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
 bool i_IsSupportWeapon[MAXENTITIES]; 
+bool i_IsKitWeapon[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
 bool b_IsVehicle[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
@@ -615,6 +616,9 @@ float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 float f_WeaponVolumeStiller[MAXENTITIES];
 float f_WeaponVolumeSetRange[MAXENTITIES];
+float f_FreeplayAlteredDamageOld_Barracks[MAXENTITIES];
+float f_FreeplayAlteredHealthOld_Barracks[MAXENTITIES];
+
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 

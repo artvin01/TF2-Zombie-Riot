@@ -4861,6 +4861,7 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 	else
 	*/
+
 	map.SetValue("442", 1.0);	// Move Speed
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
@@ -5086,6 +5087,9 @@ void Store_ApplyAttribs(int client)
 	EnableSilvesterCosmetic(client);
 	EnableMagiaCosmetic(client);
 	Building_Check_ValidSupportcount(client);
+	//give all revelant things back
+	int clientid = GetSteamAccountID(client);
+	WeaponSpawn_Reapply(client, client, clientid);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
@@ -5499,6 +5503,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
 				i_IsSupportWeapon[entity] = false;
+				i_IsKitWeapon[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
 				i_WeaponAmmoAdjustable[entity] = 0;
 				
@@ -5594,6 +5599,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_IsSupportWeapon[entity] = true;
 					}
+					if(item.ChildKit)
+					{
+						i_IsKitWeapon[entity] = true;
+					}
+				
 					if(!info.InternalMeleeTrace)
 					{
 						i_InternalMeleeTrace[entity] = false;
@@ -6753,6 +6763,11 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity, int costOfUpgr
 				return false;
 
 			if(i_IsSupportWeapon[entity])
+				return true;
+		}
+		case 12:
+		{
+			if(i_IsKitWeapon[entity])
 				return true;
 		}
 	}

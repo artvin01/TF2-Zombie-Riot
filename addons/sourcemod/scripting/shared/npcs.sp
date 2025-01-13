@@ -1259,6 +1259,8 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		Call_PushCellRef(SlayNpc);
 		Call_Finish();
 	}
+	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
+	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
 
 #if defined ZR 
 	if(inflictor > 0 && inflictor <= MaxClients)
