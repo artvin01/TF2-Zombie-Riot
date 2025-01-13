@@ -2052,6 +2052,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				// Die in Rogue, there's no lastman
 				return Rogue_NoLastman() ? Plugin_Changed : Plugin_Handled;
 			}
+			//this updates it .
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
 			
 			Rogue_PlayerDowned(victim);	
@@ -2157,12 +2158,14 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				}
 
 				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
+				CheckLastMannStanding(victim);
 				return Plugin_Handled;
 			}
 			else
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
+				CheckLastMannStanding(victim);
 				return Plugin_Changed;
 			}
 		}
@@ -2180,16 +2183,10 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeath);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeath);
 	}
-	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
+	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
-		if(!CheckInHud())
-		{
-			i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
-			TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
-		}
 		i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
-		damage *= 1.15;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_Jarated))
 	{

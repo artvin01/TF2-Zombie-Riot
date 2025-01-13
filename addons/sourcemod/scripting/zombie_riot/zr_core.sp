@@ -272,6 +272,10 @@ int CurrentCash;
 int GlobalExtraCash;
 bool LastMann;
 bool LastMannScreenEffect;
+
+//this is to display a hud icon showing that youre the last remaining player, i.e.
+// shows to everyone, showing that, oh shit, dont die.
+bool LastMann_BeforeLastman;
 int LimitNpcs;
 int i_MVMPopulator;
 
@@ -1656,12 +1660,35 @@ void CheckAlivePlayersforward(int killed=0)
 	CheckAlivePlayers(killed, _);
 }
 
+void CheckLastMannStanding(int killed)
+{
+	int PlayersLeftNotDowned = 0;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+		{
+			CurrentPlayers++;
+			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
+			{
+				if(dieingstate[client] == 0)
+				{
+					PlayersLeftNotDowned++;
+				}
+			}
+		}
+	}
+	if(PlayersLeftNotDowned == 1)
+	{
+		LastMann_BeforeLastman = true;
+	}
+}
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
 	bool rogue = Rogue_Mode();
 	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
+		LastMann_BeforeLastman = false;
 		Yakuza_Lastman(0);
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
@@ -1679,8 +1706,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 	bool alive;
 	LastMann = true;
+	LastMann_BeforeLastman = false;
 	CurrentPlayers = 0;
+	int PlayersLeftNotDowned = 0;
 	int GlobalIntencity_Reduntant;
+	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
@@ -1692,6 +1722,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				{
 					GlobalIntencity_Reduntant++;	
 				}
+				else
+				{
+					PlayersLeftNotDowned++;
+				}
 				if(!alive)
 				{
 					alive = true;
@@ -1701,7 +1735,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 					LastMann = false;
 					Yakuza_Lastman(0);
 				}
-				
 			}
 			else
 			{
@@ -1710,15 +1743,30 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			
 			if(Hurtviasdkhook != 0)
 			{
+				LastMann_BeforeLastman = true;
 				LastMann = true;
 				LastMannScreenEffect = false;
 			}
 		}
 	}
+	/*
+		This is so the last person alive, who is not dead, but not downed
+		i.e. last man up
+		PlayersLeftNotDowned
 
+	*/
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
+	{
+		PlayersLeftNotDowned = 99;
+		LastMann_BeforeLastman = false;
 		LastMann = false;
-	
+	}
+
+	if(PlayersLeftNotDowned == 1)
+	{
+		LastMann_BeforeLastman = true;
+	}
+
 	if(TestLastman)
 	{
 		LastMann = true;
