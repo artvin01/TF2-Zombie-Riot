@@ -1198,15 +1198,13 @@ void Barracks_BuildingThink(int entity)
 			}
 			if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))	// lol
 			{
-				ArrowDamage *= 1.75;
-				AttackDelay *= 0.75;
-				ArrowCount += 1;
+				ArrowDamage *= 1.25;
+				AttackDelay *= 0.9;
 			}
 			if(Store_HasNamedItem(client, "Messed Up Cheesy Brain")) // lol
 			{
-				ArrowDamage *= 2.25;
-				AttackDelay *= 0.4;
-				ArrowCount += 2;
+				ArrowDamage *= 1.35;
+				AttackDelay *= 0.75;
 			}
 			//calc upgrades for damage
 			Barracks_UnitExtraDamageCalc(npc.index, client,ArrowDamage, 1);
