@@ -3351,9 +3351,8 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 				{
-					Items_GiveNamedItem(client, "No-lifer Trophy");
 					Items_GiveNamedItem(client, "A Block of Cheese");
-					CPrintToChat(client, "{lime}Your backpack feels heavier. 2 unlocks were added to your inventory....");
+					CPrintToChat(client, "Finally... wave 500. Its been a long trip, but you managed to make it here.\n{lime}As a reward, I am giving you something to fend off a specific someone.\n{white}(Your backpack feels heavier. {gold}Check your unlocks.{white})");
 				}
 			}
 
