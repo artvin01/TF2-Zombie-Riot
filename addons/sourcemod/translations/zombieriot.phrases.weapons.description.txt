@@ -4203,11 +4203,11 @@
 	}
 	"Magical Fontina Aura Desc"
 	{
-		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +75%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%."
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +75%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%, and max mana by 25%%."
 	}
 	"Domain Expansion: Cheese Desc"
 	{
-		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +125%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%."
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +125%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
 	}
 	"Bob's Willpower Desc"
 	{
