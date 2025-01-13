@@ -273,7 +273,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
-    /*
 			case 23:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_atomizer");
@@ -294,7 +293,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
-    */
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -302,8 +300,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 		//raids otherwise have too much damage.
-		enemy.ExtraDamage *= 0.75;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
+		enemy.ExtraDamage *= 0.4;
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 6500.0;
@@ -317,14 +315,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else if(FriendlyDay)
 	{
 		enemy.Team = TFTeam_Red;
-		count = 15;
+		count = 5;
 		FriendlyDay = false;
 
 		if(enemy.Health)
-			enemy.Health /= 5;
+			enemy.Health *= 0.6;
 
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage *= 15.0;
+			enemy.ExtraDamage *= 20.0;
 	}
 	else if(SuperMiniBoss)
 	{
@@ -332,7 +330,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 3;
 
-		switch(GetRandomInt(1, 7))
+		int random = GetURandomInt() % 8;
+		switch(random)
 		{
 			case 1: // Rogue cta doctor
 			{
@@ -365,7 +364,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
 				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 7: // Sawrunner
+			default: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
 				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
@@ -393,7 +392,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		enemy.Index = NPC_GetByPlugin("npc_sentinel");
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
 		enemy.ExtraSpeed = 2.0;
 		enemy.ExtraSize = 0.2; // smol
 		enemy.Credits += 1.0;
@@ -418,7 +417,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 
-		count = RoundToFloor((count * (((postWaves * 2) + 99) * 0.009)) * 0.5);
+		count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 
 		if(count > 45)
 			count = 45;
@@ -492,12 +491,12 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
 
 	if(SquadBuff)
-		ApplyStatusEffect(entity, entity, "Squad Leader", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
 
 	if(Coffee)
 	{
-		ApplyStatusEffect(entity, entity, "Caffinated", 15.0);
-		ApplyStatusEffect(entity, entity, "Caffinated Drain", 15.0);
+		ApplyStatusEffect(entity, entity, "Caffinated", 8.0);
+		ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
 	}
 
 	if(StalkerBuff > 0)
@@ -996,7 +995,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff!");
+			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff for 20 seconds");
 			SquadBuff = true;
 		}
 
@@ -1007,7 +1006,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Caffinated buff for 15 seconds! {yellow}(Includes Caffinated Drain)");
+			CPrintToChatAll("{red}All enemies now gain the Caffinated buff for 8 seconds! {yellow}(Includes Caffinated Drain)");
 			Coffee = true;
 		}
 
@@ -1863,7 +1862,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff for 20 seconds!");
 					SquadBuff = true;
 				}
 			}
@@ -1876,7 +1875,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff for 15 seconds! {yellow}(Includes Caffinated Drain)");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff for 8 seconds! {yellow}(Includes Caffinated Drain)");
 					Coffee = true;
 				}
 			}
