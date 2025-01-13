@@ -577,7 +577,7 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 		case 3:
 		{
-			fl_Extra_Damage[entity] *= 1.35;
+			fl_Extra_Damage[entity] *= 1.15;
 		}
 		case 4:
 		{
