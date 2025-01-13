@@ -4211,15 +4211,15 @@
 	}
 	"Bob's Willpower Desc"
 	{
-		"en"	"Bob the Second lending you his divine willpower.\n+1750 HP, +15%% overall resistance, grants a +10HP/s regen."
+		"en"	"Bob the Second lending you his divine willpower.\n+1750 HP, +17.5%% overall resistance, grants a +5HP/s regen."
 	}
 	"A Wheel of Gouda Desc"
 	{
-		"en"	"Eat up.\n+2000 HP, +12.5%% overall resistance, grants an additional +15HP/s regen."
+		"en"	"Eat up.\n+2000 HP, +20.0%% overall resistance, grants an additional +10HP/s regen."
 	}
 	"THE BIG CHEESE Desc"
 	{
-		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2250 HP, +10%% overall resistance, grants an additional +25HP/s regen."
+		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2250 HP, +22.5%% overall resistance, grants an additional +15HP/s regen."
 	}
 	"Voided Rejuvenator Pack Desc"
 	{
