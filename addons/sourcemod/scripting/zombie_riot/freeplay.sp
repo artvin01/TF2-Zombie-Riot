@@ -225,6 +225,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_whiteflower_boss");
 				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraMeleeRes *= 4.0;
+				enemy.ExtraRangedRes *= 3.0;
 			}
 			case 15:
 			{
