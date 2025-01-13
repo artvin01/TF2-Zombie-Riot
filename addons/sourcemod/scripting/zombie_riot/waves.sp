@@ -3342,7 +3342,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 				}
 			}
 		}
-		else if(CurrentRound == 500)
+		else if(CurrentRound+1 == 500)
 		{
 			InSetup = true;
 			ExcuteRelay("zr_setuptime");
@@ -3356,7 +3356,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 				}
 			}
 
-			Freeplay_SetupStart(true);
+			RequestFrames(StopMapMusicAll, 60);
 			Waves_SetReadyStatus(1);
 			Citizen_SetupStart();
 		}
