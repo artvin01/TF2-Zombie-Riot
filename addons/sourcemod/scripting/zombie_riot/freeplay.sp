@@ -309,7 +309,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.ExtraDamage *= 0.4;
 
 		// Raid health is lower before w150.
-		if(postWaves < 90)
+		if(postWaves+1 < 89)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
 
 		// moni
