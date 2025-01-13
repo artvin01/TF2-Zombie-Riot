@@ -34,6 +34,8 @@ enum struct StatusEffect
 	Function OnTakeDamage_DealFunc;
 	Function Status_SpeedFunc;
 	Function HudDisplay_Func;
+	Function OnTakeDamage_PostVictim;
+	Function OnTakeDamage_PostAttacker;
 }
 
 
@@ -3060,4 +3062,78 @@ void StatusEffects_StatusEffectListOnly()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⸗");
 	data.Positive 					= false;
 	StatusEffect_AddGlobal(data);
+}
+
+
+void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage, int damagetype)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+	
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	//No debuffs or status effects, skip.
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i<length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
+		if(Apply_MasterStatusEffect.OnTakeDamage_PostVictim != INVALID_FUNCTION)
+		{
+			//We have a valid function ignore the original value.
+			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_PostVictim);
+			Call_PushCell(attacker);
+			Call_PushCell(victim);
+			Call_PushFloat(damage);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+			Call_PushCell(damagetype);
+		}
+	}
+
+	if(length < 1)
+		delete E_AL_StatusEffects[victim];
+}
+void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damage, int damagetype)
+{
+	if(!E_AL_StatusEffects[attacker])
+		return;
+	
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	//No debuffs or status effects, skip.
+	int length = E_AL_StatusEffects[attacker].Length;
+	for(int i; i<length; i++)
+	{
+		E_AL_StatusEffects[attacker].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[attacker].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
+		if(Apply_MasterStatusEffect.OnTakeDamage_PostAttacker != INVALID_FUNCTION)
+		{
+			//We have a valid function ignore the original value.
+			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_PostAttacker);
+			Call_PushCell(attacker);
+			Call_PushCell(victim);
+			Call_PushFloat(damage);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+			Call_PushCell(damagetype);
+		}
+	}
+
+	if(length < 1)
+		delete E_AL_StatusEffects[attacker];
 }
