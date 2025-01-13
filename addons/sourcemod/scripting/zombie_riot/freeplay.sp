@@ -296,7 +296,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 27: // WHEN THE DUST SETTLES
 			{
 				enemy.Index = NPC_GetByPlugin("npc_lelouch");
-				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(12500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			default:
 			{
@@ -381,7 +381,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		// Leaving this in here in the case i have to nerf super miniboss health
 		// 22/12/2024 - lesson learned, i went way too overboard
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.3);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.45);
 		enemy.ExtraDamage *= 0.75;
 		enemy.Credits += 125.0;
 		enemy.ExtraSpeed = 1.3;
@@ -1658,7 +1658,7 @@ void Freeplay_SetupStart(bool extra = false)
 					}
 					case 27: // YOUR ATTEMPTS AT DEATH ARE IN VAIN
 					{
-						CPrintToChatAll("{red}Lelouch is approaching next wave...");
+						strcopy(message, sizeof(message), "{red}Lelouch is approaching next wave...");
 					}
 					default:
 					{
