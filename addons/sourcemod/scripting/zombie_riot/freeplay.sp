@@ -293,6 +293,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
+			case 27: // WHEN THE DUST SETTLES
+			{
+				enemy.Index = NPC_GetByPlugin("npc_lelouch");
+				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -562,22 +567,17 @@ void Freeplay_SpawnEnemy(int entity)
 	{
 		case 1:
 		{
-			fl_Extra_MeleeArmor[entity] *= 0.85;
-			fl_Extra_RangedArmor[entity] *= 0.85;
-    SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.1));
+			fl_Extra_MeleeArmor[entity] *= 0.8;
+			fl_Extra_RangedArmor[entity] *= 0.8;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
 		}
 		case 2:
 		{
-			fl_Extra_Damage[entity] *= 1.25;
+			fl_Extra_Damage[entity] *= 1.35;
 		}
 		case 3:
 		{
-			bool camo = true;
-			Building_CamoOrRegrowBlocker(entity, camo);
-			if(camo)
-			{
-				b_IsCamoNPC[entity] = true;
-			}
+			fl_Extra_Damage[entity] *= 1.35;
 		}
 		case 4:
 		{
@@ -899,7 +899,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			CPrintToChatAll("{green}You will gain 15 random friendly units.");
+			CPrintToChatAll("{green}You will gain 5 random friendly units.");
 			FriendlyDay = true;
 		}
 		else
@@ -1080,7 +1080,7 @@ void Freeplay_SetupStart(bool extra = false)
 			RampartBuff++;
 		}
 
-		RaidFight = GetRandomInt(1, 26);
+		RaidFight = GetRandomInt(1, 27);
 		switch(RaidFight)
 		{
 			case 1:
@@ -1171,7 +1171,6 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{darkgreen}Agent Smith will appear in the next wave.");
 			}
-    /*
 			case 23:
 			{
 				CPrintToChatAll("{blue}The Atomizer has spotted your team, get ready next wave!");
@@ -1188,7 +1187,10 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
 			}
-    */
+			case 27: // JUST YOU AND ME REMAIN
+			{
+				CPrintToChatAll("{red}Lelouch is approaching next wave...");
+			}
 		}
 
 		for (int client = 0; client < MaxClients; client++)
@@ -1404,7 +1406,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +15% resist and +10% HP!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
 			case 22:
@@ -1415,10 +1417,10 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain 25% Extra Damage!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
-			case 23:
+			case 23: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
 			{
 				if(PerkMachine == 3)
 				{
@@ -1426,7 +1428,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allies/Sentry-a-likes won't target enemies)");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Deadshot Daiquiri perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
 			case 24:
@@ -1460,7 +1462,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}You will gain 15 random friendly units.");
+				strcopy(message, sizeof(message), "{green}You will gain 5 random friendly units.");
 				FriendlyDay = true;
 			}
 			case 27:
@@ -1540,7 +1542,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				RaidFight = GetRandomInt(1, 22);
+				RaidFight = GetRandomInt(1, 27);
 
 				switch(RaidFight)
 				{
@@ -1628,7 +1630,6 @@ void Freeplay_SetupStart(bool extra = false)
 					{
 						strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
 					}
-      /*
 					case 23:
 					{
 						strcopy(message, sizeof(message), "{blue}The Atomizer has spotted your team, get ready next wave!");
@@ -1645,7 +1646,10 @@ void Freeplay_SetupStart(bool extra = false)
 					{
 						strcopy(message, sizeof(message), "{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
 					}
-      */
+					case 27: // YOUR ATTEMPTS AT DEATH ARE IN VAIN
+					{
+						CPrintToChatAll("{red}Lelouch is approaching next wave...");
+					}
 					default:
 					{
 						strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
