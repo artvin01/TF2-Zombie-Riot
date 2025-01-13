@@ -4187,11 +4187,11 @@
 	}
 	"Dubious Cheesy Ideas Desc"
 	{
-		"en"	"The inhuman thoughts lying behind the cheese.\nIncreases building HP + Damage and repair rate by +75%%, and sentry attackspeed by +25%%."
+		"en"	"The inhuman thoughts lying behind the cheese.\nIncreases building HP by +35%%, and building damage + repair rate by +75%%.\nIncreases sentry attackspeed by +25%%."
 	}
 	"Messed Up Cheesy Brain Desc"
 	{
-		"en"	"How he satisfies his hunger by any means.\nIncreases building HP + Damage and repair rate by +125%%, and sentry attackspeed by +60%%."
+		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +75%%, and building damage + repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
 	}
 	"Waldch's Railgun Rounds Desc"
 	{
@@ -4203,11 +4203,11 @@
 	}
 	"Magical Fontina Aura Desc"
 	{
-		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +80%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%."
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +75%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%."
 	}
 	"Domain Expansion: Cheese Desc"
 	{
-		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +120%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%."
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +100%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%."
 	}
 	"Bob's Willpower Desc"
 	{
@@ -4215,18 +4215,18 @@
 	}
 	"A Wheel of Gouda Desc"
 	{
-		"en"	"Eat up.\n+2000 HP, +12.5%% overall resistance, grants an additional +15HP/s regen.\nIncreases base armor to 4000."
+		"en"	"Eat up.\n+2000 HP, +12.5%% overall resistance, grants an additional +15HP/s regen."
 	}
 	"THE BIG CHEESE Desc"
 	{
-		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2250 HP, +10%% overall resistance, grants an additional +25HP/s regen.\nIncreases base armor to 7500."
+		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2250 HP, +10%% overall resistance, grants an additional +25HP/s regen."
 	}
 	"Voided Rejuvenator Pack Desc"
 	{
-		"en"	"The fastest heals in the void.\nIncreases medigun heal/enemydrain rate by +125%% and uber duration by +2 seconds.\nIncreases melee resistance with support weapons out by +10%%."
+		"en"	"The fastest heals in the void.\nIncreases medigun heal/enemydrain rate by +75%% and uber duration by +2 seconds.\nIncreases melee resistance with support weapons out by +10%%."
 	}
 	"Cheesy Slimy Aid Kit Desc"
 	{
-		"en"	"Some would prefer to die rather than getting treated with this.\nIncreases medigun heal/enemydrain rate by +200%% and uber duration by +3 seconds.\nIncreases melee + ranged resistance with support weapons out by +10%%."
+		"en"	"Some would prefer to die rather than getting treated with this.\nIncreases medigun heal/enemydrain rate by +125%% and uber duration by +3 seconds.\nIncreases melee + ranged resistance with support weapons out by +10%%."
 	}
 }
