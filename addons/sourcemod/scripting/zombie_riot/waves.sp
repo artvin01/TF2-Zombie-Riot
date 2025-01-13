@@ -3330,7 +3330,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			
 			Citizen_SetupStart();
 
-			if(CurrentRound == 150)
+			if(CurrentRound+1 == 150)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
