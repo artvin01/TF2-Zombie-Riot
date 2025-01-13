@@ -1108,9 +1108,9 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 
 	int speech = GetRandomInt(1,10);
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
+	float ReduceEnemyCountLogic = 1.0 / MultiGlobalEnemy;
 	if(!Waves_InFreeplay())
 	{
-		float ReduceEnemyCountLogic = 1.0 / MultiGlobalEnemy;
 		fl_TotalArmor[self] *= (1.0 + (0.005 * ReduceEnemyCountLogic));
 		if(fl_TotalArmor[self] >= 1.0)
 		{
