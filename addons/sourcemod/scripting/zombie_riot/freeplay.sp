@@ -422,11 +422,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			// Basically the same hp formula except HealthBonus is not there
 			if(StrContains(enemy.CustomName, "First ") != -1)
 			{
-				enemy.Health = RoundToCeil(((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.7);
+				enemy.Health = RoundToCeil(((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
 			}
 			else
 			{
-				enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.7);
+				enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
 			}
 		}
 
@@ -436,7 +436,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			count = 45;
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
-			enemy.Is_Boss = 1;
+		{
+			enemy.Health = RoundToCeil(enemy.Health * 1.1);
+			enemy.ExtraDamage *= 1.25;
+			enemy.ExtraMeleeRes *= 0.9;
+			enemy.ExtraRangedRes *= 0.9;
+		}
 
 		if(ImmuneNuke && !(enemy.Index % ImmuneNuke))
 			enemy.Is_Immune_To_Nuke = true;
