@@ -4235,19 +4235,19 @@
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "Increases kit damage by +40%% and reload + attackspeed by +10%%\nGrants +35%% max mana and +50%% healrate, and reduces building cost by 25%%."
+		"en" "Increases kit damage by +40%% and reload + attackspeed by +10%%\nGrants +35%% max mana, +50%% healrate and building HP by +10%%.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "Increases kit damage by +55%% and reload + attackspeed by +15%%\nIncreases repair rate by +150%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +55%% and reload + attackspeed by +15%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "Increases kit damage by +75%% and reload + attackspeed by +20%%\n+35 HP on kill | +20%% Overall Resistance | +50%% Heal Rate | +25%% Max Mana | +200%% Repair Rate | 25%% less Building Cost"
+		"en" "Increases kit damage by +75%% and reload + attackspeed by +20%%\n+35 HP on kill | +20%% Overall Resistance | +50%% Heal Rate | +25%% Max Mana | +100%% Repair Rate | 25%% less Building Cost"
 	}
 	"Kit Modernizer V Desc"
 	{
-		"en" "Increases kit damage by +100%% and reload + attackspeed by +20%%\n+50 HP on kill | +25%% Overall Resistance | +75%% Heal Rate | +35%% Max Mana | +250%% Repair Rate | +50%% Clip size"
+		"en" "Increases kit damage by +100%% and reload + attackspeed by +20%%\n+50 HP on kill | +25%% Overall Resistance | +75%% Heal Rate | +35%% Max Mana | +100%% Repair Rate | +50%% Clip size"
 	}
 	"Unit Reformator I Desc"
 	{
