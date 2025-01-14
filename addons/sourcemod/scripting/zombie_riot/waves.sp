@@ -3250,7 +3250,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		Freeplay_OnEndWave(round.Cash);
 		
-		CurrentCash += round.Cash;
+		CurrentCash += (round.Cash - 500);
 
 		if(round.Cash)
 		{
