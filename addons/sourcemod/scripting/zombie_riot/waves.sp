@@ -130,6 +130,7 @@ static int WaveGiftItem;
 static char LastWaveWas[64];
 
 static int Freeplay_Info;
+static bool Freeplay_w500reached;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -192,6 +193,7 @@ void Waves_MapStart()
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	Freeplay_Info = 0;
+	Freeplay_w500reached = false;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -3317,7 +3319,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			if((CurrentRound + 1) == 500)
+			if(CurrentRound > 500 && !Freeplay_w500reached)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
@@ -3331,6 +3333,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				Waves_SetReadyStatus(1);
+				Freeplay_w500reached = true;
 			}
 			else
 			{
