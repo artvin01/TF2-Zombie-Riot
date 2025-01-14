@@ -338,7 +338,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 3;
 
-		int random = GetURandomInt() % 8;
+		int random = 3;
+		if(random != -1)
+			random = GetURandomInt() % 7;
+		else
+			PrintToChatAll("THE SUPER MINIBOSS SKULL FUCKED ITSELF UP AGAIN, UHHGHHGGHGJ");
+
 		switch(random)
 		{
 			case 1: // Rogue cta doctor
