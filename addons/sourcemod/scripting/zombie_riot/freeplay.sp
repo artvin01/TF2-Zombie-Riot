@@ -441,6 +441,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			enemy.ExtraDamage *= 1.25;
 			enemy.ExtraMeleeRes *= 0.9;
 			enemy.ExtraRangedRes *= 0.9;
+			enemy.ExtraSpeed = 1.1;
 		}
 
 		if(ImmuneNuke && !(enemy.Index % ImmuneNuke))
