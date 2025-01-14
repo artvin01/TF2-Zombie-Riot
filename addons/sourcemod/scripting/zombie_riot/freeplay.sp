@@ -327,7 +327,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		FriendlyDay = false;
 
 		if(enemy.Health)
-			enemy.Health = RoundToCeil(float(enemy.Health) *= 0.6);
+			enemy.Health /= 5; // RAAAHGTJSKODMJTISGMKOET
 
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage *= 20.0;
