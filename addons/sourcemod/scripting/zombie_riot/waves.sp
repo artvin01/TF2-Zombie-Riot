@@ -3250,7 +3250,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		Freeplay_OnEndWave(round.Cash);
 		
-		CurrentCash += (round.Cash - 500);
+		CurrentCash += round.Cash;
 
 		if(round.Cash)
 		{
@@ -3317,7 +3317,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			if(CurrentRound+1 == 500)
+			if((CurrentRound + 1) == 500)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
