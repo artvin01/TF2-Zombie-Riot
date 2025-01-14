@@ -4239,7 +4239,7 @@
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "Increases kit damage by +55%% and reload + attackspeed by +15%%\nIncreases repair rate by +150%%, clipsize by +50%% and healrate by +50%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +55%% and reload + attackspeed by +15%%\nIncreases repair rate by +150%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer IV Desc"
 	{
