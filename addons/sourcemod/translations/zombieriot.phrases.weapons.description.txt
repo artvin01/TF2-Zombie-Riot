@@ -4251,18 +4251,18 @@
 	}
 	"Unit Reformator I Desc"
 	{
-		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +20%%, and barrack unit damage by +10%%"
+		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +25%%, and barrack unit damage by +15%%."
 	}
 	"Unit Reformator II Desc"
 	{
-		"en" "Increases barrack unit HP by +25%%, and barrack unit damage by +25%%"
+		"en" "Increases barrack unit HP by +35%%, and barrack unit damage by +30%%."
 	}
 	"Unit Reformator III Desc"
 	{
-		"en" "Increases barrack unit HP by +30%%, and barrack unit damage by +40%%"
+		"en" "Increases barrack unit HP and damage by +45%%."
 	}
 	"Unit Reformator IV Desc"
 	{
-		"en" "Increases barrack unit HP by +35%%, and barrack unit damage by +75%%"
+		"en" "Increases barrack unit HP by +50%%, and barrack unit damage by +75%%."
 	}
 }
