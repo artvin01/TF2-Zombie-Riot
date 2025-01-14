@@ -4226,12 +4226,11 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 #if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
-	if(entity <= MaxClients)
-	{
-		//if were giving it to a client directly, dont do the below.
-		ApplyTempAttrib_Internal(entity, index, multi, duration);
-		return;
-	}
+#if defined RPG
+	ApplyTempAttrib_Internal(entity, index, multi, duration);
+	return;
+#endif
+#if defined ZR
 	if(Attributes_Has(entity,index))
 	{
 		//We need to get the owner!!
@@ -4240,9 +4239,17 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 		TempStoreAttrib.Attribute = index;
 		TempStoreAttrib.Value = multi;
 		TempStoreAttrib.GameTimeRemoveAt = GetGameTime() + duration;
-		TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
+		if(entity <= MaxClients)
+		{
+			int clientid = GetSteamAccountID(entity);
+			TempStoreAttrib.Weapon_StoreIndex = clientid;
+		}
+		else
+			TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
+		
 		TempStoreAttrib.Apply_TempAttrib(owner, entity);
 	}
+#endif
 }
 
 stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3)

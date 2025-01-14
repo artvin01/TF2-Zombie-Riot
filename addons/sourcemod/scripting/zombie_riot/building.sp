@@ -1696,6 +1696,30 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 	
 	if(!b_NpcHasDied[entity] && !i_IsABuilding[entity])
 	{
+		
+		float Attribute;
+		Attribute = Attributes_GetOnPlayer(client, Attrib_BarracksHealth, true, true);
+		if(f_FreeplayAlteredHealthOld_Barracks[entity] != Attribute)
+		{
+			float AdjustValues = f_FreeplayAlteredHealthOld_Barracks[entity] / Attribute;
+
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / AdjustValues));
+
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / AdjustValues));
+
+			f_FreeplayAlteredHealthOld_Barracks[entity] = Attribute;
+		}
+		
+
+		Attribute = Attributes_GetOnPlayer(client, Attrib_BarracksDamage, true, true);
+		if(f_FreeplayAlteredDamageOld_Barracks[entity] != Attribute)
+		{
+			float AdjustValues = f_FreeplayAlteredDamageOld_Barracks[entity] / Attribute;
+
+			view_as<BarrackBody>(entity).BonusDamageBonus /= AdjustValues;
+			f_FreeplayAlteredDamageOld_Barracks[entity] = Attribute;
+		}
 		if(!FinalBuilder[entity] && FinalBuilder[client])
 		{
 			FinalBuilder[entity] = true;

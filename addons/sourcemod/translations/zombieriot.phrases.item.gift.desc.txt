@@ -2219,14 +2219,24 @@
 		"en"		"A ranged unit that fires 6 shots very rapidly and reloads"
 		"ru"		"юнит дальнего боя который стрелят очередь из 6 выстрелов и перезаряжается"
 	}	
+	"Barracks Iberian Commando Desc"
+	{
+		"en"		"A slow but strong gunner, has an explosive surprise to anybody daring to approach him"
+		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
+	}
 	"Barracks Iberia Headhunter Desc"
 	{
-		"en"		"Melee unit that does more damage to elite, bosses, and raidbosses and applies debuff to them"
+		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50% hp"
+		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
+	}	
+	"Barracks Iberia Inquisitor Lynsen Desc"
+	{
+		"en"		"One of the best inquisitors trained by Irene, able to mark enemies and rain death upon them, works well with other inquisitors"
 		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
 	}	
 	"Barracks Iberian Lighthouse Guardian Desc"
 	{
-		"en"		"Super unit that takes 2 slot. It does melee damage when it has armor. Then, it pulls out a shotgun to deal ranged damage. It will often buff near allies"
+		"en"		"Super unit that takes 2 slot, when he has armor he heals and buff allies, when he loses the armor he uses a shotgun for high dmg at the cost of supporting"
 		"ru"		"Супер юнит который забирает 2 слота.Наносит урон ближнего боя когда есть броня,затем достаёт дробовик что бы наносить дальний урон.Он часто будет баффать союзников поблизости"
 	}
 	"Agent John Desc"

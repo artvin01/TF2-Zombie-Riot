@@ -454,7 +454,7 @@ void Stats_ReskillEverything(int client)
 	FakeClientCommandEx(client, "rpg_stats");
 }
 
-void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
+void Stats_ApplyAttribsPost(int client, TFClassType class)
 {
 	Attributes_SetAdd(client, 26, RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
 	Attributes_Set(client, 252, 0.0/*Stats_KnockbackResist(client)*/);
@@ -462,8 +462,6 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 	//in RPG we will give knockback another way.
 
 	Stats_ApplyMovementSpeedUpdate(client, class);
-	
-	Attributes_SetMulti(client, 442, SpeedExtra);
 
 	static Race race;
 	static Form form;

@@ -44,7 +44,7 @@ public void Barrack_Alt_Shwertkrieg_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks SchwertKrieg");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_schwertkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_alt_schwertkrieg");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -97,7 +97,7 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 	}
 	public Barrack_Alt_Shwertkrieg(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(BarrackBody(client, vecPos, vecAng, "1750", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(BarrackBody(client, vecPos, vecAng, "1250", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 2;
 
@@ -106,11 +106,7 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Alt_Shwertkrieg_ClotThink;
 
 		npc.m_flSpeed = 350.0;
-		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
+				
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -223,7 +219,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 						float target_dist = GetVectorDistance(WorldSpaceVec, vecTarget);
 						if (target_dist < 2500.0)	//target is within range, Murder
 						{
-							teletime = 15.0;
+							teletime = 20.0;
 							teleport = true;
 							teleport_target_vec = vecTarget;
 							//CPrintToChatAll("aggresive tele");
@@ -251,7 +247,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 						if (target_dist < 300.0)	//target is within range, Murder
 						{
 							//CPrintToChatAll("Defensive tele");
-							teletime = 15.0;
+							teletime = 20.0;
 							teleport = true;
 							teleport_target_vec = vecTarget;
 							teleport_target_vec[2] += 200.0;
@@ -309,7 +305,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 						float time = 1.0;
 						WorldSpaceCenter(npc.index, current_loc);
 						spawnRing_Vectors(current_loc, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, time, 4.0, 0.1, 1, 1.0);
-						Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2000.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 325*2.0 ,_,0.8, false);
+						Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),6000.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 325*2.0 ,_,0.8, false);
 						current_loc[2] -= 500.0;
 						float sky_loc[3]; sky_loc = current_loc; sky_loc[2] += 5000.0;
 						TE_SetupBeamPoints(current_loc, sky_loc, Ikunagae_BEAM_Laser, 0, 0, 0, 2.5, 10.0, 10.0, 0, 1.0, {145, 47, 47, 255}, 3);
@@ -344,8 +340,8 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-						npc.m_flAttackHappens = GameTime+0.4 * npc.BonusFireRate;
-						npc.m_flAttackHappens_bullshit = GameTime+0.54 * npc.BonusFireRate;
+						npc.m_flAttackHappens = GameTime + (0.3 * npc.BonusFireRate);
+						npc.m_flAttackHappens_bullshit = GameTime + (0.54 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 						fl_self_heal_timer[npc.index] = GameTime + 1.0;
 					}
@@ -354,7 +350,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+						if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 						{
 							int target = TR_GetEntityIndex(swingTrace);	
 							
@@ -364,7 +360,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),6000.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),7500.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -396,7 +392,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 
 				fl_self_heal_timer[npc.index] = GameTime + 1.0;
 		}
-		BarrackBody_ThinkMove(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 7500.0, _, false);
+		BarrackBody_ThinkMove(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 3000.0, _, false);
 	}
 }
 

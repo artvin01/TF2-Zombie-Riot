@@ -102,7 +102,7 @@ methodmap Barrack_Combine_SMG < BarrackBody
 
 	public Barrack_Combine_SMG(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_SMG npc = view_as<Barrack_Combine_SMG>(BarrackBody(client, vecPos, vecAng, "175", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_SMG npc = view_as<Barrack_Combine_SMG>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -143,7 +143,7 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 250000.0)
+			if(flDistanceToTarget < 65000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -193,11 +193,11 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 235.0, "ACT_IDLE_ANGRY_SMG1", "ACT_RUN_AIM_RIFLE", 225000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 235.0, "ACT_IDLE_ANGRY_SMG1", "ACT_RUN_AIM_RIFLE", 55000.0,_, true);
 
 		if(npc.m_flNextRangedAttack > GameTime)
 		{
-			npc.m_flSpeed = 0.0;
+			npc.m_flSpeed = 117.5;
 		}
 		else if(npc.m_flNextMeleeAttack > GameTime)
 		{

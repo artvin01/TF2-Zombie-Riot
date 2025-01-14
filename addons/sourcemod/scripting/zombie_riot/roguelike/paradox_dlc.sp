@@ -388,6 +388,7 @@ static void BlackTulipDecay(int userid)
 	int client = GetClientOfUserId(userid);
 	if(client && CurrentTulipDamage[client] > 1.0)
 	{
+		CPrintToChat(client, "{black}The Black Tulip lost its power and is recharging...");
 		int i, entity;
 		while(TF2_GetItem(client, entity, i))
 		{

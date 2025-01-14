@@ -160,7 +160,7 @@ static void StartShopVote(bool first)
 			}
 		}	
 	}
-	if(ShopSetting == 1)
+	if(ShopSetting == 1 && !Rogue_HasNamedArtifact("Great Within from Ruina's Great Crystal"))
 	{
 		int ingots = Rogue_GetIngots();
 		strcopy(vote.Name, sizeof(vote.Name), "Ruinian Shop Help Out");
@@ -229,6 +229,9 @@ public void Rogue_Vote_Shop2Encounter_Ruina(const Vote vote)
 
 			CPrintToChatAll("%t", "Shop Ruina Happy");
 			CPrintToChatAll("%t", "Shop Ruina Happy 1");
+			
+			StartShopVote(false);
+			Rogue_SetProgressTime(20.0, false);
 		}
 		default:
 		{

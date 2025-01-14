@@ -214,7 +214,9 @@ enum
 	WEAPON_ZEALOT_MELEE = 132,
 	WEAPON_ZEALOT_GUN = 133,
 	WEAPON_ZEALOT_POTION = 134,
-	WEAPON_KIT_FRACTAL	= 135
+	WEAPON_KIT_FRACTAL	= 135,
+	WEAPON_KIT_PROTOTYPE	= 136,
+	WEAPON_KIT_PROTOTYPE_MELEE	= 137
 }
 
 enum
@@ -270,6 +272,10 @@ int CurrentCash;
 int GlobalExtraCash;
 bool LastMann;
 bool LastMannScreenEffect;
+
+//this is to display a hud icon showing that youre the last remaining player, i.e.
+// shows to everyone, showing that, oh shit, dont die.
+bool LastMann_BeforeLastman;
 int LimitNpcs;
 int i_MVMPopulator;
 
@@ -581,6 +587,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/weapon_walter.sp"
 #include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
 #include "zombie_riot/custom/weapon_castlebreaker.sp"
+#include "zombie_riot/custom/kit_soldine.sp"
 
 void ZR_PluginLoad()
 {
@@ -871,6 +878,7 @@ void ZR_MapStart()
 	Logos_MapStart();
 	ResetMapStartCastleBreakerWeapon();
 	OnMapStartZealot();
+	Wkit_Soldin_OnMapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1652,12 +1660,35 @@ void CheckAlivePlayersforward(int killed=0)
 	CheckAlivePlayers(killed, _);
 }
 
+void CheckLastMannStanding(int killed)
+{
+	int PlayersLeftNotDowned = 0;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+		{
+			CurrentPlayers++;
+			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
+			{
+				if(dieingstate[client] == 0)
+				{
+					PlayersLeftNotDowned++;
+				}
+			}
+		}
+	}
+	if(PlayersLeftNotDowned == 1)
+	{
+		LastMann_BeforeLastman = true;
+	}
+}
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
 	bool rogue = Rogue_Mode();
 	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
+		LastMann_BeforeLastman = false;
 		Yakuza_Lastman(0);
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
@@ -1675,8 +1706,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 	bool alive;
 	LastMann = true;
+	LastMann_BeforeLastman = false;
 	CurrentPlayers = 0;
+	int PlayersLeftNotDowned = 0;
 	int GlobalIntencity_Reduntant;
+	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
@@ -1688,6 +1722,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				{
 					GlobalIntencity_Reduntant++;	
 				}
+				else
+				{
+					PlayersLeftNotDowned++;
+				}
 				if(!alive)
 				{
 					alive = true;
@@ -1697,7 +1735,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 					LastMann = false;
 					Yakuza_Lastman(0);
 				}
-				
 			}
 			else
 			{
@@ -1706,15 +1743,30 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			
 			if(Hurtviasdkhook != 0)
 			{
+				LastMann_BeforeLastman = true;
 				LastMann = true;
 				LastMannScreenEffect = false;
 			}
 		}
 	}
+	/*
+		This is so the last person alive, who is not dead, but not downed
+		i.e. last man up
+		PlayersLeftNotDowned
 
+	*/
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
+	{
+		PlayersLeftNotDowned = 99;
+		LastMann_BeforeLastman = false;
 		LastMann = false;
-	
+	}
+
+	if(PlayersLeftNotDowned == 1)
+	{
+		LastMann_BeforeLastman = true;
+	}
+
 	if(TestLastman)
 	{
 		LastMann = true;
@@ -1805,6 +1857,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							Max_Fractal_Crystals(client);
 							CPrintToChatAll("{purple}Twirl{crimson}'s Essence enters %N...",client);
 							Yakuza_Lastman(3);
+						}
+						if(Wkit_Soldin_LastMann(client))
+						{
+							ChargeSoldineMeleeHit(client,true, 999.9);
+							ChargeSoldineRocketJump(client, true, 999.9);
+							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
+							Yakuza_Lastman(4);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

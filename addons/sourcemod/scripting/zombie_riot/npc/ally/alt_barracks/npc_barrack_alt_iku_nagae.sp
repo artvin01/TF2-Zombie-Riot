@@ -64,7 +64,7 @@ public void Barrack_Alt_Ikunagae_MapStart()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Ikunagae");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_ikunagae");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_alt_ikunagae");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -198,6 +198,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
+		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
 
 		if(PrimaryThreatIndex > 0)
@@ -255,7 +256,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), 3000.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),4000.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -282,7 +283,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						npc.PlayPullSound();
-						npc.m_flNextMeleeAttack = GameTime + 1.5 * npc.BonusFireRate;
+						npc.m_flNextMeleeAttack = GameTime + 2.0 * npc.BonusFireRate;
 						npc.AddGesture("ACT_MP_THROW");
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -309,12 +310,17 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 					float flPos[3]; // original
 					float flAng[3]; // original
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-								
-					npc.FireParticleRocket(vecTarget, 937.5 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					
+					float speed = 750.0;				
+					npc.m_flSpeed = 0.0;
+					npc.FaceTowards(vecTarget, 30000.0);
+					//Play attack anim
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+					npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),3000.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 					if (npc.m_iAmountProjectiles >= 10)
 					{
 						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GameTime + 15.0 * npc.BonusFireRate;
+						npc.m_flNextRangedBarrage_Spam = GameTime + 10.0 * npc.BonusFireRate;
 					}
 				}
 			}
@@ -355,9 +361,9 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_TicksActive[client] = 0;
 
 	Ikunagae_BEAM_CanUse[client] = true;
-	Ikunagae_BEAM_CloseDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9375.0, 1);	//what the fuck
-	Ikunagae_BEAM_FarDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1875.0, 1);
-	Ikunagae_BEAM_MaxDistance[client] = 750;
+	Ikunagae_BEAM_CloseDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),4000.0, 1);	//what the fuck
+	Ikunagae_BEAM_FarDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2000.0, 1);
+	Ikunagae_BEAM_MaxDistance[client] = 800;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
 	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);

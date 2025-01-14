@@ -91,6 +91,10 @@ public void SDKHook_ScoreThink(int entity)
 	static int offset_Cash = -1;
 	static int offset_Healing = -1;
 
+#if defined ZR
+	static int offset_Alive = -1;
+#endif
+
 
 		
 	if(offset == -1) 
@@ -108,11 +112,20 @@ public void SDKHook_ScoreThink(int entity)
 	if(offset_Cash == -1) 
 		offset_Cash = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
 
+#if defined ZR
+	//Alive
+	if(offset_Alive == -1) 
+		offset_Alive = FindSendPropInfo("CTFPlayerResource", "m_bAlive");
+	
+	bool alive[MAXTF2PLAYERS];
+#endif
+
 	int CashCurrentlyOwned[MAXTF2PLAYERS];
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
 		CashCurrentlyOwned[client] = CurrentCash-CashSpent[client];
+		alive[client] = (TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client));
 #else
 		CashCurrentlyOwned[client] = TextStore_Cash(client);
 #endif
@@ -124,6 +137,7 @@ public void SDKHook_ScoreThink(int entity)
 	
 #if defined ZR
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
+	SetEntDataArray(entity, offset_Alive, alive, MaxClients + 1);
 #else
 	SetEntDataArray(entity, offset, Level, MaxClients + 1);
 #endif
@@ -188,14 +202,6 @@ stock void SDKHook_HookClient(int client)
 #endif
 }
 
-#if defined ZR 
-bool WeaponWasGivenInfiniteDelay[MAXENTITIES];
-
-void WeaponWeaponAdditionOnRemoved(int entity)
-{
-	WeaponWasGivenInfiniteDelay[entity] = false;
-}
-
 public void CheckWeaponAmmoLogicExternal(DataPack pack)
 {
 	pack.Reset();
@@ -206,6 +212,13 @@ public void CheckWeaponAmmoLogicExternal(DataPack pack)
 		
 	delete pack;
 }
+bool WeaponWasGivenInfiniteDelay[MAXENTITIES];
+
+void WeaponWeaponAdditionOnRemoved(int entity)
+{
+	WeaponWasGivenInfiniteDelay[entity] = false;
+}
+
 bool IsWeaponEmptyCompletly(int client, int weapon, bool CheckOnly = false)
 {
 	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
@@ -317,7 +330,7 @@ void WeaponSwtichToWarningPostFrame(int ref)
 		SetEntProp(WeaponToForce, Prop_Send, "m_iPrimaryAmmoType", GetAmmoType_WeaponPrimary(WeaponToForce));
 	}
 }
-#endif
+
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
 {
@@ -1587,6 +1600,8 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	ArmorDisplayClient(victim);
+	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
+	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
 	
 #endif
 #if defined RPG
@@ -1660,6 +1675,19 @@ int CheckInHud()
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+#if defined ZR
+	if(IsValidEntity(victim) && CanSelfHurtAndJump(victim) && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
+	{
+		if(CanSelfHurtAndJump(victim))
+		{
+			damage = 1.0;
+			int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+			SetEntProp(victim, Prop_Data, "m_iHealth", flHealth + 1);
+			return Plugin_Changed;
+		}
+		return Plugin_Continue;
+	}
+#endif
 	if(!CheckInHud())
 	{
 		ClientPassAliveCheck[victim] = false;
@@ -1872,12 +1900,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 
 #if defined RPG
-	if(Ability_TrueStrength_Shield_OnTakeDamage(victim))
+	if(!CheckInHud() && Ability_TrueStrength_Shield_OnTakeDamage(victim))
 	{
 		damage = 0.0;
 		return Plugin_Handled;	
 	}
-	f_InBattleDelay[victim] = GetGameTime() + 3.0;
+	if(!CheckInHud())
+		f_InBattleDelay[victim] = GetGameTime() + 3.0;
 #endif
 	float GetCurrentDamage = damage;
 	f_LatestDamageRes[victim] = 1.0;
@@ -2037,6 +2066,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				// Die in Rogue, there's no lastman
 				return Rogue_NoLastman() ? Plugin_Changed : Plugin_Handled;
 			}
+			//this updates it .
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
 			
 			Rogue_PlayerDowned(victim);	
@@ -2142,12 +2172,14 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				}
 
 				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
+				CheckLastMannStanding(victim);
 				return Plugin_Handled;
 			}
 			else
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
+				CheckLastMannStanding(victim);
 				return Plugin_Changed;
 			}
 		}
@@ -2165,16 +2197,10 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeath);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeath);
 	}
-	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
+	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
-		if(!CheckInHud())
-		{
-			i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
-			TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
-		}
 		i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
-		damage *= 1.15;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_Jarated))
 	{

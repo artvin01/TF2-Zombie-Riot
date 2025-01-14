@@ -75,19 +75,23 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 
 stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-//	float GameTime = GetGameTime();
-
 #if defined ZR
-	if(Rogue_Mode() && GetTeam(victim) == TFTeam_Red)
+	if(Rogue_Mode())
 	{
-		int scale = Rogue_GetRoundScale();
-		if(scale < 2)
+		//Has to be here.
+		damage *= RogueBladedance_DamageBonus(attacker, inflictor, victim);
+
+		if(GetTeam(victim) == TFTeam_Red)
 		{
-			damage *= 0.50;
-		}
-		else if(scale < 4)
-		{
-			damage *= 0.75;
+			int scale = Rogue_GetRoundScale();
+			if(scale < 2)
+			{
+				damage *= 0.50;
+			}
+			else if(scale < 4)
+			{
+				damage *= 0.75;
+			}
 		}
 	}
 #endif
@@ -307,6 +311,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	float GameTime = GetGameTime();
 	
 #if defined ZR
+
 	if(Rogue_Mode() && GetTeam(victim) != TFTeam_Red)
 	{
 		if(!CheckInHud())
@@ -573,9 +578,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 {
 	float basedamage = damage;
 	
+#if defined ZR
 	float DamageBuffExtraScaling = 1.0;
 
-#if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
 		//only scale if its a player, and if the attacking npc is red too
@@ -590,10 +595,21 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 #endif
 
 	//This buffs up damage in anyway possible
+#if defined ZR
 	if(CheckInHud() != 2)
 		damage += StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, inflictor, basedamage, damagetype);
+#else
+	if(CheckInHud() != 2)
+		damage += StatusEffect_OnTakeDamage_TakenNegative(victim, attacker, basedamage, damagetype);
+#endif
 
+
+#if defined ZR
 	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker,inflictor, basedamage, damagetype);
+#else
+	damage += StatusEffect_OnTakeDamage_DealPositive(victim, attacker, basedamage, damagetype);
+#endif
+
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
 	if(GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0)
@@ -1137,18 +1153,30 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				WeaponZealot_OnTakeDamage_Gun(attacker, victim, damage);
 		}
+		case WEAPON_KIT_PROTOTYPE_MELEE:
+		{
+			if(!CheckInHud())
+				Wkit_Soldin_NPCTakeDamage_Melee(attacker, victim, damage, weapon, damagetype);
+		}
+		case WEAPON_KIT_PROTOTYPE:
+		{
+			Wkit_Soldin_NPCTakeDamage_Ranged(attacker, victim, damage, weapon, damagetype);
+		}
 	}
 #endif
 
 #if defined RPG
-	switch(i_CustomWeaponEquipLogic[weapon])
+	if(!CheckInHud())
 	{
-		case WEAPON_BIGFRYINGPAN:
+		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			if(b_thisNpcIsABoss[victim])
-				Custom_Knockback(attacker, victim, 330.0);
-			else
-				Custom_Knockback(attacker, victim, 1000.0);
+			case WEAPON_BIGFRYINGPAN:
+			{
+				if(b_thisNpcIsABoss[victim])
+					Custom_Knockback(attacker, victim, 330.0);
+				else
+					Custom_Knockback(attacker, victim, 1000.0);
+			}
 		}
 	}
 #endif
@@ -1885,6 +1913,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 #endif
 
+	char BufferAdd[6];
 #if defined ZR
 	if(Victoria_Support_RechargeTime(victim))
 	{
@@ -1941,8 +1970,8 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	
 	//Display Modifiers here.
-	char BufferAdd[6];
 	ZRModifs_CharBuffToAdd(BufferAdd);
+#endif
 	int Victim_weapon = -1;
 
 	if(victim <= MaxClients)
@@ -1961,5 +1990,4 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			Format(Debuff_Adder_left, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_left);
 		}
 	}
-#endif
 }

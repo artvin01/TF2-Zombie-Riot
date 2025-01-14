@@ -255,6 +255,8 @@ void Music_EndLastmann()
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/zealot_lastman_1.mp3", 2.0);
 					case 3:
 						StopCustomSound(client, SNDCHAN_STATIC, RAIDBOSS_TWIRL_THEME, 2.0);
+					case 4:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3", 2.0);
 				}
 
 				SetMusicTimer(client, 0);
@@ -448,6 +450,14 @@ void Music_Stop_All(int client)
 
 void Music_PostThink(int client)
 {
+	if(LastMann_BeforeLastman && !LastMann)
+	{
+		if(Give_Cond_Timer[client] < GetGameTime())
+		{
+			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 2.0);
+			Give_Cond_Timer[client] = GetGameTime() + 1.0;
+		}
+	}
 	if(LastMann)
 	{
 		if(Give_Cond_Timer[client] < GetGameTime())
@@ -457,13 +467,8 @@ void Music_PostThink(int client)
 				if(TeutonType[client] == TEUTON_NONE)
 				{
 					TF2_AddCondition(client, TFCond_DefenseBuffed, 2.0);
-			//		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, 2.0);
-			//		TF2_AddCondition(client, TFCond_RuneHaste, 2.0);
-			//		if(Attributes_FindOnPlayerZR(client, 232))
-			//			TF2_AddCondition(client, TFCond_CritCanteen, 2.0);
 					
 					Give_Cond_Timer[client] = GetGameTime() + 1.0;
-				//	Attributes_Set(client, 442, 0.7674418604651163);
 				}
 			}
 		}
@@ -709,6 +714,11 @@ void Music_PostThink(int client)
 				{
 					EmitCustomToClient(client, RAIDBOSS_TWIRL_THEME,client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 					SetMusicTimer(client, GetTime() + 285);
+				}
+				case 4:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					SetMusicTimer(client, GetTime() + 187);
 				}
 				default:
 				{	

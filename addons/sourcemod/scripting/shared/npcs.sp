@@ -1259,6 +1259,8 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		Call_PushCellRef(SlayNpc);
 		Call_Finish();
 	}
+	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
+	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
 
 #if defined ZR 
 	if(inflictor > 0 && inflictor <= MaxClients)
@@ -1392,7 +1394,9 @@ stock void RemoveHudCooldown(int client)
 
 #define ZR_DEFAULT_HUD_OFFSET 0.15
 
+#if defined ZR
 float RaidHudOffsetSave[MAXTF2PLAYERS];
+#endif
 
 /*
 	0 is melee
@@ -1542,8 +1546,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		{
 			armor_added = true;
 		}
-#endif
 		float percentageGlobal = 1.0;
+#endif
 		float percentage_melee = 100.0;
 		float percentage_ranged = 100.0;
 		int testvalue = 1;
@@ -1678,6 +1682,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			if(ResAdded)
 				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s]", Debuff_Adder);
 		}
+#if defined ZR
 		if(raidboss_active && raid_entity == victim)
 		{
 			//there is a raid, then this displays a hud below the raid hud.
@@ -1688,6 +1693,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 				RaidHudOffsetSave[attacker] += 0.035;
 			}
 		}
+#endif
 	}
 
 	if(armor_added)

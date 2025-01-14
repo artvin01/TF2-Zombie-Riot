@@ -2285,6 +2285,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		HasMechanic[entity] = false;
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
+		f_FreeplayAlteredHealthOld_Barracks[entity] = 1.0;
+		f_FreeplayAlteredDamageOld_Barracks[entity] = 1.0;
 		WildingenBuilder[entity] = false;
 		WildingenBuilder2[entity] = false;
 		Armor_Charge[entity] = 0;
@@ -2847,9 +2849,7 @@ public void OnEntityDestroyed(int entity)
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
-#if defined ZR
 		WeaponWeaponAdditionOnRemoved(entity);
-#endif
 		CurrentEntities--;
 
 		if(entity > MaxClients)

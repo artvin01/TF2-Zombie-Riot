@@ -16,7 +16,7 @@ public void Barrack_Alt_Holy_Knight_MapStart()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Holy Knight");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_holy_knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_alt_holy_knight");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -39,7 +39,7 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 	}
 	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "1250",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "900",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 2;
 		
@@ -147,7 +147,11 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 				
 				for(int alpha=1 ; alpha<=5 ; alpha++)	//Shoot 5 rockets dependant on the stuff above this
 				{
-							
+					float damage = 3750.0;
+					if(npc.CmdOverride == Command_HoldPos) // Anti-camp for the unit
+					{
+						damage *= 0.33;
+					}
 					float tempAngles[3], endLoc[3], Direction[3];
 					tempAngles[0] = -32.5;
 					tempAngles[1] = Angles[1] + type * alpha;
@@ -157,7 +161,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 					ScaleVector(Direction, distance);
 					AddVectors(UserLoc, Direction, endLoc);
 							
-					npc.FireParticleRocket(endLoc, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2500.0, 1) , 850.0 , 100.0 , "raygun_projectile_blue", _ , false, _,_,_, GetClientOfUserId(npc.OwnerUserId));
+					npc.FireParticleRocket(endLoc, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1) , 850.0 , 100.0 , "raygun_projectile_blue", _ , false, _,_,_, GetClientOfUserId(npc.OwnerUserId));
 					//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 		
 				}
@@ -170,7 +174,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 					SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
 					i_barrage[npc.index] = 0;
-					fl_barragetimer[npc.index] = GameTime + 30.0 * npc.BonusFireRate;
+					fl_barragetimer[npc.index] = GameTime + 10.0 * npc.BonusFireRate;
 					b_barrage[npc.index] = false;
 				}
 			}
@@ -205,7 +209,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 4500.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 6750.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -225,7 +229,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_NEW_WALK", "ACT_TEUTON_NEW_WALK", 9999.0);
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_NEW_WALK", "ACT_TEUTON_NEW_WALK");
 	}
 }
 

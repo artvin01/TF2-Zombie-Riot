@@ -98,7 +98,8 @@ public void Rogue_SoulFreaks_Weapon(int entity, int client)
 		StrContains(buffer, "Fists Of Kahmlstein", false) != -1 ||
 		StrContains(buffer, "Skull Servants", false) != -1 ||
 		StrContains(buffer, "Wightmare", false) != -1 ||
-		StrContains(buffer, "Aresenal's Tripmine Layer", false) != -1)
+		StrContains(buffer, "Aresenal's Tripmine Layer", false) != -1||
+		Wkit_Soldin_BvB(client))
 	{
 		AnnounceSoulBuff(client, entity, 0);
 
