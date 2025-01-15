@@ -147,7 +147,7 @@ int Freeplay_GetDangerLevelCurrent()
 	return DangerLevel;
 }
 
-void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
+void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	if(RaidFight)
 	{
@@ -454,10 +454,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
 		if(StrEqual(npc_classname, "npc_ruina_valiant") || StrEqual(npc_classname, "npc_majorsteam"))
 			count = 1;
+
 	}
 
 	if(count < 1)
 		count = 1;
+
+	if(alaxios && count > 45)
+		count = 45;
 
 	enemy.ExtraSize *= ExtraEnemySize;
 }
