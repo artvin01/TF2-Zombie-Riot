@@ -1177,6 +1177,7 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	else
 	{
 		int postWaves = CurrentRound - Waves_GetMaxRound();
+		count = 15;
 		Freeplay_AddEnemy(postWaves, enemy, count);
 		if(count > 0)
 		{
