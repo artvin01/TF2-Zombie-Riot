@@ -460,8 +460,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(count < 1)
 		count = 1;
 
-	if(alaxios && count > 45)
-		count = 45;
+	if(alaxios && count > 30)
+		count = 30;
 
 	enemy.ExtraSize *= ExtraEnemySize;
 }
