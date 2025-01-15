@@ -4187,7 +4187,7 @@
 	}
 	"Fentanyl Desc"
 	{
-		"en"	"It courses through you.\n+1000 HP, Increases melee damage by +125%% and heal on kill by +50.\nIncreases melee resist and ranged resist with melee weapons by +15%% and +10%% respectively."
+		"en"	"It courses through you.\n+1000 HP, Increases melee damage by +100%% and heal on kill by +50.\nIncreases melee resist and ranged resist with melee weapons by +15%% and +10%% respectively."
 	}
 	"Dubious Cheesy Ideas Desc"
 	{
@@ -4195,7 +4195,7 @@
 	}
 	"Messed Up Cheesy Brain Desc"
 	{
-		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +75%%, and building damage + repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
+		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +75%%, building damage by +100%% and repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
 	}
 	"Waldch's Railgun Rounds Desc"
 	{
@@ -4203,7 +4203,7 @@
 	}
 	"Cheesy Doomsday Pack Desc"
 	{
-		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +125%% and doubles clipsize.\nIncreases accuracy by +35%% and projectile speed by +50%%."
+		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%% and doubles clipsize.\nIncreases accuracy by +35%% and projectile speed by +50%%."
 	}
 	"Magical Fontina Aura Desc"
 	{
@@ -4211,7 +4211,7 @@
 	}
 	"Domain Expansion: Cheese Desc"
 	{
-		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +125%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +100%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
 	}
 	"Bob's Willpower Desc"
 	{
@@ -4231,7 +4231,7 @@
 	}
 	"Cheesy Slimy Aid Kit Desc"
 	{
-		"en"	"Some would prefer to die rather than getting treated with this.\nIncreases medigun heal/enemydrain rate by +125%% and uber duration by +3 seconds.\nIncreases melee + ranged resistance with support weapons out by +10%%."
+		"en"	"Some would prefer to die rather than getting treated with this.\nIncreases medigun heal/enemydrain rate by +100%% and uber duration by +3 seconds.\nIncreases melee + ranged resistance with support weapons out by +10%%."
 	}
 	"Kit Modernizer I Desc"
 	{
