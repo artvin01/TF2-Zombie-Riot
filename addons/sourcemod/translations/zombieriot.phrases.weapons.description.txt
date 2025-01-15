@@ -4235,38 +4235,38 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +25%% and reload + attackspeed by +5%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed."
+		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +25%% and attackspeed by +5%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "Increases kit damage by +40%% and reload + attackspeed by +10%%\nGrants +35%% max mana, +50%% healrate and building HP by +10%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +40%% and reload speed by +5%%\nGrants +35%% max mana, +50%% healrate and building HP by +10%%.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "Increases kit damage by +55%% and reload + attackspeed by +15%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +55%% and reload + attackspeed by +10%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "Increases kit damage by +75%% and reload + attackspeed by +20%%\n+35 HP on kill | +20%% Overall Resistance | +50%% Heal Rate | +25%% Max Mana | +100%% Repair Rate | 25%% less Building Cost"
+		"en" "Increases kit damage by +75%% and reload + attackspeed by +10%%\n+35 HP on kill | +20%% Overall Resistance | +50%% Heal Rate | +25%% Max Mana | +100%% Repair Rate"
 	}
 	"Kit Modernizer V Desc"
 	{
-		"en" "Increases kit damage by +100%% and reload + attackspeed by +20%%\n+50 HP on kill | +25%% Overall Resistance | +75%% Heal Rate | +35%% Max Mana | +100%% Repair Rate | +50%% Clip size"
+		"en" "Increases kit damage by +100%% and reload + attackspeed by +15%%\n+50 HP on kill | +25%% Overall Resistance | +75%% Heal Rate | +35%% Max Mana | +100%% Repair Rate | +50%% Clip size"
 	}
 	"Unit Reformator I Desc"
 	{
-		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +25%%, and barrack unit damage by +15%%."
+		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +50%%, and barrack unit damage by +15%%."
 	}
 	"Unit Reformator II Desc"
 	{
-		"en" "Increases barrack unit HP by +35%%, and barrack unit damage by +30%%."
+		"en" "Increases barrack unit HP by +70%%, and barrack unit damage by +30%%."
 	}
 	"Unit Reformator III Desc"
 	{
-		"en" "Increases barrack unit HP and damage by +45%%."
+		"en" "Increases barrack unit HP by +90%% and damage by +45%%."
 	}
 	"Unit Reformator IV Desc"
 	{
-		"en" "Increases barrack unit HP by +50%%, and barrack unit damage by +75%%."
+		"en" "Doubles barrack unit HP and increases barrack unit damage by +75%%."
 	}
 }
