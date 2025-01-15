@@ -306,7 +306,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		}
 
 		// Raids have too much damage.
-		enemy.ExtraDamage *= 0.4;
+		enemy.ExtraDamage *= 0.5;
 
 		// Raid health is lower before w150.
 		if(postWaves+1 < 89)
@@ -387,9 +387,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		// Leaving this in here in the case i have to nerf super miniboss health
 		// 22/12/2024 - lesson learned, i went way too overboard
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.45);
-		enemy.ExtraDamage *= 0.75;
+		enemy.ExtraDamage *= 0.8;
 		enemy.Credits += 125.0;
-		enemy.ExtraSpeed = 1.3;
+		enemy.ExtraSpeed = 1.35;
 		enemy.ExtraSize = 1.75; // big
 		enemy.Does_Not_Scale = 1;
 
@@ -760,11 +760,11 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 71;
+		rand = GetURandomInt() % 73;
 
 	if(wrathofirln)
 	{
-		int randomhp1 = GetRandomInt(-60000, 60000);
+		int randomhp1 = GetRandomInt(-45000, 75000);
 		HealthBonus += randomhp1;
 		if(randomhp1 > 0)
 		{
@@ -775,7 +775,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemies now have %d less health.", randomhp1);
 		}
 
-		float randomhp2 = GetRandomFloat(0.8, 1.2);
+		float randomhp2 = GetRandomFloat(0.6, 1.2);
 		HealthMulti *= randomhp2;
 		if(randomhp2 > 1.0)
 		{
@@ -940,7 +940,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.2fx.", randommini);
 		}
 
-		float randomspeed = GetRandomFloat(0.75, 1.25);
+		float randomspeed = GetRandomFloat(0.6, 1.15);
 		SpeedMult *= randomspeed;
 		if(randomspeed > 1.0)
 		{
@@ -951,7 +951,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy speed has been multiplied by %.2fx.", randomspeed);
 		}
 
-		float randommelee = GetRandomFloat(0.75, 1.25);
+		float randommelee = GetRandomFloat(0.8, 1.35);
 		MeleeMult *= randommelee;
 		if(randommelee < 1.0)
 		{
@@ -962,7 +962,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy melee vulnerability has been multiplied by %.2fx.", randommelee);
 		}
 
-		float randomranged = GetRandomFloat(0.75, 1.25);
+		float randomranged = GetRandomFloat(0.8, 1.35);
 		RangedMult *= randomranged;
 		if(randomranged < 1.0)
 		{
@@ -1064,7 +1064,7 @@ void Freeplay_SetupStart(bool extra = false)
 			SilenceDebuff = true;
 		}
 
-		float randomsize = GetRandomFloat(0.75, 1.25);
+		float randomsize = GetRandomFloat(0.67, 1.33);
 		ExtraEnemySize *= randomsize;
 		CPrintToChatAll("{yellow}Enemy size has been multiplied by %.2fx!", randomsize);
 
@@ -1556,7 +1556,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// RAID SKULL ///
-			case 33, 34, 35:
+			case 33, 34, 35, 36, 37:
 			{
 				if(RaidFight)
 				{
@@ -1679,29 +1679,19 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// SAMU'S SKULLS (new!) ///
-			case 36:
+			case 38:
+			{
+				strcopy(message, sizeof(message), "{red}Enemies will now move 5% faster!");
+				SpeedMult += 0.05;
+			}
+			case 39:
 			{
 				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
 				SpeedMult += 0.1;
 			}
-			case 37:
+			case 40:
 			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
-				SpeedMult += 0.15;
-			}
-			case 38:
-			{
-				if(SpeedMult < 0.35) // i'll go with a minimum of -65% movement speed since freeplay enemies move way faster than usual, and certain buffs make them faster
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
-				SpeedMult -= 0.1;
-			}
-			case 39:
-			{
-				if(SpeedMult < 0.35)
+				if(SpeedMult < 0.1)
 				{
 					Freeplay_SetupStart();
 					return;
@@ -1709,17 +1699,27 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
 				SpeedMult -= 0.15;
 			}
-			case 40:
+			case 41:
+			{
+				if(SpeedMult < 0.1)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{green}Enemies will now move 20% slower.");
+				SpeedMult -= 0.20;
+			}
+			case 42:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
 				MeleeMult += 0.2;
 			}
-			case 41:
+			case 43:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more melee damage.");
 				MeleeMult += 0.25;
 			}
-			case 42:
+			case 44:
 			{
 				if(MeleeMult < 0.05) // 95% melee res max
 				{
@@ -1733,7 +1733,7 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.05;
 				}
 			}
-			case 43:
+			case 45:
 			{
 				if(MeleeMult < 0.05)
 				{
@@ -1747,17 +1747,17 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.05;
 				}
 			}
-			case 44:
+			case 46:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
 				RangedMult += 0.20;
 			}
-			case 45:
+			case 47:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more ranged damage.");
 				RangedMult += 0.25;
 			}
-			case 46:
+			case 48:
 			{
 				if(RangedMult < 0.05) // 95% ranged res max
 				{
@@ -1771,7 +1771,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 47:
+			case 49:
 			{
 				if(RangedMult < 0.05)
 				{
@@ -1785,7 +1785,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 48:
+			case 50:
 			{
 				if(SuperMiniBoss)
 				{
@@ -1796,7 +1796,7 @@ void Freeplay_SetupStart(bool extra = false)
 				SuperMiniBoss = true;
 				EmitSoundToAll("mvm/mvm_warning.wav");
 			}
-			case 49:
+			case 51:
 			{
 				if(ExplodingNPC)
 				{
@@ -1808,7 +1808,7 @@ void Freeplay_SetupStart(bool extra = false)
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
-			case 50:
+			case 52:
 			{
 				if(EnemyShields >= 15)
 				{
@@ -1819,7 +1819,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
 				EnemyShields += 3;
 			}
-			case 51:
+			case 53:
 			{
 				if(EnemyShields >= 15)
 				{
@@ -1830,7 +1830,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 				EnemyShields += 6;
 			}
-			case 52:
+			case 54:
 			{
 				if(EnemyShields <= 0)
 				{
@@ -1841,7 +1841,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
 				EnemyShields -= 2;
 			}
-			case 53:
+			case 55:
 			{
 				if(EnemyShields <= 0)
 				{
@@ -1852,7 +1852,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
 				EnemyShields -= 4;
 			}
-			case 54:
+			case 56:
 			{
 				if(VoidBuff > 2)
 				{
@@ -1865,7 +1865,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VoidBuff++;
 				}
 			}
-			case 55:
+			case 57:
 			{
 				if(VictoriaBuff)
 				{
@@ -1878,7 +1878,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VictoriaBuff = true;
 				}
 			}
-			case 56:
+			case 58:
 			{
 				if(SquadBuff)
 				{
@@ -1891,7 +1891,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SquadBuff = true;
 				}
 			}
-			case 57:
+			case 59:
 			{
 				if(Coffee)
 				{
@@ -1904,7 +1904,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Coffee = true;
 				}
 			}
-			case 58:
+			case 60:
 			{
 				if(StrangleDebuff > 3)
 				{
@@ -1917,7 +1917,7 @@ void Freeplay_SetupStart(bool extra = false)
 					StrangleDebuff++;
 				}
 			}
-			case 59:
+			case 61:
 			{
 				if(ProsperityDebuff > 3)
 				{
@@ -1930,7 +1930,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ProsperityDebuff++;
 				}
 			}
-			case 60:
+			case 62:
 			{
 				if(SilenceDebuff)
 				{
@@ -1943,7 +1943,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SilenceDebuff = true;
 				}
 			}
-			case 61:
+			case 63:
 			{
 				if(ExtraEnemySize <= 0.35) // 65% less size max
 				{
@@ -1953,7 +1953,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 10%");
 				ExtraEnemySize -= 0.10;
 			}
-			case 62:
+			case 64:
 			{
 				if(ExtraEnemySize <= 0.35) // 65% less size max
 				{
@@ -1963,7 +1963,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 15%");
 				ExtraEnemySize -= 0.15;
 			}
-			case 63:
+			case 65:
 			{
 				if(ExtraEnemySize >= 4.0) // 300% more size max
 				{
@@ -1973,7 +1973,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
 				ExtraEnemySize += 0.10;
 			}
-			case 64:
+			case 66:
 			{
 				if(ExtraEnemySize >= 4.0) // 300% more size max
 				{
@@ -1983,7 +1983,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 15%");
 				ExtraEnemySize += 0.15;
 			}
-			case 65:
+			case 67:
 			{
 				//10% chance, otherwise retry.
 				if(GetRandomFloat(0.0, 1.0) <= 0.1)
@@ -1997,7 +1997,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 			}
-			case 66:
+			case 68:
 			{
 				if(UnlockedSpeed)
 				{
@@ -2008,7 +2008,7 @@ void Freeplay_SetupStart(bool extra = false)
 				Store_DiscountNamedItem("Adrenaline", 999);
 				strcopy(message, sizeof(message), "{green}Adrenaline is now buyable in the passive store!");
 			}
-			case 67:
+			case 69:
 			{
 				if(CheesyPresence)
 				{
@@ -2021,7 +2021,7 @@ void Freeplay_SetupStart(bool extra = false)
 					CheesyPresence = true;
 				}
 			}
-			case 68:
+			case 70:
 			{
 				if(EloquenceBuff > 2)
 				{
@@ -2034,7 +2034,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuff++;
 				}
 			}
-			case 69:
+			case 71:
 			{
 				if(RampartBuff > 2)
 				{
@@ -2047,7 +2047,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuff++;
 				}
 			}
-			case 70:
+			case 72:
 			{
 				if(AntinelNextWave)
 				{
