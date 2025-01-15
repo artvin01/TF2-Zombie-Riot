@@ -273,7 +273,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
-    /*
 			case 23:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_atomizer");
@@ -294,21 +293,28 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
-    */
+			case 27: // WHEN THE DUST SETTLES
+			{
+				enemy.Index = NPC_GetByPlugin("npc_lelouch");
+				enemy.Health = RoundToFloor(12500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
 				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
-		//raids otherwise have too much damage.
-		enemy.ExtraDamage *= 0.75;
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
-		//some raids dont scale with DMG, fix it here
 
+		// Raids have too much damage.
+		enemy.ExtraDamage *= 0.4;
+
+		// Raid health is lower before w150.
+		if(postWaves+1 < 89)
+			enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
+
+		// moni
 		enemy.Credits += 6500.0;
 
-		//money fix
 		enemy.Does_Not_Scale = 1;
 		count = 1;
 		RaidFight = 0;
@@ -317,14 +323,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else if(FriendlyDay)
 	{
 		enemy.Team = TFTeam_Red;
-		count = 15;
+		count = 5;
 		FriendlyDay = false;
 
 		if(enemy.Health)
-			enemy.Health /= 5;
+			enemy.Health /= 5; // RAAAHGTJSKODMJTISGMKOET
 
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage *= 15.0;
+			enemy.ExtraDamage *= 20.0;
 	}
 	else if(SuperMiniBoss)
 	{
@@ -332,7 +338,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 3;
 
-		switch(GetRandomInt(1, 7))
+		int random = 3;
+		if(random != -1)
+			random = GetURandomInt() % 7;
+		else
+			PrintToChatAll("THE SUPER MINIBOSS SKULL FUCKED ITSELF UP AGAIN, UHHGHHGGHGJ");
+
+		switch(random)
 		{
 			case 1: // Rogue cta doctor
 			{
@@ -365,7 +377,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
 				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 7: // Sawrunner
+			default: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
 				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
@@ -374,7 +386,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		// Leaving this in here in the case i have to nerf super miniboss health
 		// 22/12/2024 - lesson learned, i went way too overboard
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.3);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.45);
 		enemy.ExtraDamage *= 0.75;
 		enemy.Credits += 125.0;
 		enemy.ExtraSpeed = 1.3;
@@ -393,7 +405,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		enemy.Index = NPC_GetByPlugin("npc_sentinel");
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.4);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
 		enemy.ExtraSpeed = 2.0;
 		enemy.ExtraSize = 0.2; // smol
 		enemy.Credits += 1.0;
@@ -410,21 +422,27 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			// Basically the same hp formula except HealthBonus is not there
 			if(StrContains(enemy.CustomName, "First ") != -1)
 			{
-				enemy.Health = RoundToCeil(((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.7);
+				enemy.Health = RoundToCeil(((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
 			}
 			else
 			{
-				enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.7);
+				enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
 			}
 		}
 
-		count = RoundToFloor((count * (((postWaves * 2) + 99) * 0.009)) * 0.5);
+		count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 
 		if(count > 45)
 			count = 45;
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
-			enemy.Is_Boss = 1;
+		{
+			enemy.Health = RoundToCeil(enemy.Health * 1.1);
+			enemy.ExtraDamage *= 1.25;
+			enemy.ExtraMeleeRes *= 0.9;
+			enemy.ExtraRangedRes *= 0.9;
+			enemy.ExtraSpeed = 1.1;
+		}
 
 		if(ImmuneNuke && !(enemy.Index % ImmuneNuke))
 			enemy.Is_Immune_To_Nuke = true;
@@ -492,12 +510,12 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
 
 	if(SquadBuff)
-		ApplyStatusEffect(entity, entity, "Squad Leader", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
 
 	if(Coffee)
 	{
-		ApplyStatusEffect(entity, entity, "Caffinated", 15.0);
-		ApplyStatusEffect(entity, entity, "Caffinated Drain", 15.0);
+		ApplyStatusEffect(entity, entity, "Caffinated", 8.0);
+		ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
 	}
 
 	if(StalkerBuff > 0)
@@ -563,22 +581,17 @@ void Freeplay_SpawnEnemy(int entity)
 	{
 		case 1:
 		{
-			fl_Extra_MeleeArmor[entity] *= 0.85;
-			fl_Extra_RangedArmor[entity] *= 0.85;
-    SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.1));
+			fl_Extra_MeleeArmor[entity] *= 0.8;
+			fl_Extra_RangedArmor[entity] *= 0.8;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
 		}
 		case 2:
 		{
-			fl_Extra_Damage[entity] *= 1.25;
+			fl_Extra_Damage[entity] *= 1.35;
 		}
 		case 3:
 		{
-			bool camo = true;
-			Building_CamoOrRegrowBlocker(entity, camo);
-			if(camo)
-			{
-				b_IsCamoNPC[entity] = true;
-			}
+			fl_Extra_Damage[entity] *= 1.15;
 		}
 		case 4:
 		{
@@ -615,7 +628,14 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
 			if(CheesyPresence)
+			{
 				ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+			}
+			else
+			{
+				if(Items_HasNamedItem(client, "A Block of Cheese"))
+					ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+			}
 
 			switch(EloquenceBuff)
 			{
@@ -900,7 +920,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			CPrintToChatAll("{green}You will gain 15 random friendly units.");
+			CPrintToChatAll("{green}You will gain 5 random friendly units.");
 			FriendlyDay = true;
 		}
 		else
@@ -996,7 +1016,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff!");
+			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff for 20 seconds");
 			SquadBuff = true;
 		}
 
@@ -1007,7 +1027,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Caffinated buff for 15 seconds! {yellow}(Includes Caffinated Drain)");
+			CPrintToChatAll("{red}All enemies now gain the Caffinated buff for 8 seconds! {yellow}(Includes Caffinated Drain)");
 			Coffee = true;
 		}
 
@@ -1081,7 +1101,7 @@ void Freeplay_SetupStart(bool extra = false)
 			RampartBuff++;
 		}
 
-		RaidFight = GetRandomInt(1, 26);
+		RaidFight = GetRandomInt(1, 27);
 		switch(RaidFight)
 		{
 			case 1:
@@ -1172,7 +1192,6 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{darkgreen}Agent Smith will appear in the next wave.");
 			}
-    /*
 			case 23:
 			{
 				CPrintToChatAll("{blue}The Atomizer has spotted your team, get ready next wave!");
@@ -1189,7 +1208,10 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
 			}
-    */
+			case 27: // JUST YOU AND ME REMAIN
+			{
+				CPrintToChatAll("{red}Lelouch is approaching next wave...");
+			}
 		}
 
 		for (int client = 0; client < MaxClients; client++)
@@ -1405,7 +1427,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +15% resist and +10% HP!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
 			case 22:
@@ -1416,10 +1438,10 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain 25% Extra Damage!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
-			case 23:
+			case 23: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
 			{
 				if(PerkMachine == 3)
 				{
@@ -1427,7 +1449,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Widows Wine perk, And thus gain camo! {yellow}(Allies/Sentry-a-likes won't target enemies)");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Deadshot Daiquiri perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
 			case 24:
@@ -1461,7 +1483,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}You will gain 15 random friendly units.");
+				strcopy(message, sizeof(message), "{green}You will gain 5 random friendly units.");
 				FriendlyDay = true;
 			}
 			case 27:
@@ -1541,7 +1563,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				RaidFight = GetRandomInt(1, 22);
+				RaidFight = GetRandomInt(1, 27);
 
 				switch(RaidFight)
 				{
@@ -1629,7 +1651,6 @@ void Freeplay_SetupStart(bool extra = false)
 					{
 						strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
 					}
-      /*
 					case 23:
 					{
 						strcopy(message, sizeof(message), "{blue}The Atomizer has spotted your team, get ready next wave!");
@@ -1646,7 +1667,10 @@ void Freeplay_SetupStart(bool extra = false)
 					{
 						strcopy(message, sizeof(message), "{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
 					}
-      */
+					case 27: // YOUR ATTEMPTS AT DEATH ARE IN VAIN
+					{
+						strcopy(message, sizeof(message), "{red}Lelouch is approaching next wave...");
+					}
 					default:
 					{
 						strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
@@ -1863,7 +1887,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff for 20 seconds!");
 					SquadBuff = true;
 				}
 			}
@@ -1876,7 +1900,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff for 15 seconds! {yellow}(Includes Caffinated Drain)");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff for 8 seconds! {yellow}(Includes Caffinated Drain)");
 					Coffee = true;
 				}
 			}

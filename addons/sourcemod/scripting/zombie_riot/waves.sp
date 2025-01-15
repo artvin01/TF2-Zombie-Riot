@@ -130,6 +130,7 @@ static int WaveGiftItem;
 static char LastWaveWas[64];
 
 static int Freeplay_Info;
+static bool Freeplay_w500reached;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -192,6 +193,7 @@ void Waves_MapStart()
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	Freeplay_Info = 0;
+	Freeplay_w500reached = false;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -3317,18 +3319,49 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			Freeplay_SetupStart(true);
+			if(CurrentRound >= 499 && !Freeplay_w500reached)
+			{
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					{
+						Items_GiveNamedItem(client, "A Block of Cheese");
+						CPrintToChat(client, "Finally... after so much time... you've reached wave 500. It was loooong trip, but you got through it all.\n{lime}As a reward for your perseverance, I am giving you something to fend off a specific someone.\n{white}(Your backpack feels heavier. {gold}Check your unlocks.{white})");
+					}
+				}
 
-			Cooldown = GetGameTime() + 15.0;
+				InSetup = true;
+				ExcuteRelay("zr_setuptime");
+				Waves_SetReadyStatus(1);
+				Freeplay_w500reached = true;
+			}
+			else
+			{
+				Freeplay_SetupStart(true);
+
+				Cooldown = GetGameTime() + 15.0;
+				
+				InSetup = true;
+				ExcuteRelay("zr_setuptime");
+				
+				SpawnTimer(15.0);
+				CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			}
 			
-			InSetup = true;
-			ExcuteRelay("zr_setuptime");
-			
-			SpawnTimer(15.0);
-			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			RequestFrames(StopMapMusicAll, 60);
 			
 			Citizen_SetupStart();
+			if(CurrentRound+1 == 150)
+			{
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && !b_IsPlayerABot[client])
+					{
+						SetHudTextParams(-1.0, -1.0, 5.0, 255, 255, 0, 255);
+						ShowHudText(client, -1, "--ALERT--\nWave 150 reached.\nRaids will now have x2 HP.");
+					}
+				}
+			}
 		}
 		else
 		{
