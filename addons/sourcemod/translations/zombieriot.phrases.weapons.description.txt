@@ -4167,11 +4167,11 @@
 	}
 	"Soldine Kit Pap 3"
 	{
-		"en"	"Everything charges faster, Your super melee hit now Maxes your armor!"
+		"en"	"Everything charges faster, Your super melee hit now gives 50%% of your armor back!"
 	}
 	"Soldine Kit Pap 4"
 	{
-		"en"	"Everything charges faster, super hit now gives upto 25%% Over Armmor instantly!"
+		"en"	"Everything charges faster, super hit now gives upto 25%% Over armor!"
 	}
 	"Soldine Kit Pap rest"
 	{

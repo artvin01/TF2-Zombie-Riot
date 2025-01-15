@@ -381,10 +381,11 @@ public void Wkit_Soldin_NPCTakeDamage_Melee(int attacker, int victim, float &dam
 					SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime(attacker)+1.0);
 					damage *= 3.0;
 					if(i_PaPLevel[attacker] >= 3)
-						GiveArmorViaPercentage(attacker, 999.9, 1.0);
+						GiveArmorViaPercentage(attacker, 0.5, 1.0);
 
 					if(i_PaPLevel[attacker] >= 4)
-						GiveArmorViaPercentage(attacker, 999.9, 1.25);
+						GiveArmorViaPercentage(attacker, 0.5, 1.25);
+						
 					i_SoldineMeleeCharge[attacker] = 0.0;
 				}
 				else

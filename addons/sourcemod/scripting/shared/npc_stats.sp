@@ -9562,7 +9562,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		}
 	}
 
-	ResetTouchedentityResolve();
+	ResetTouchedentityResolve(); 	
 }
 
 stock void ResolvePlayerCollisions_Npc_Internal(const float pos[3], const float mins[3], const float maxs[3],int entity=-1)
