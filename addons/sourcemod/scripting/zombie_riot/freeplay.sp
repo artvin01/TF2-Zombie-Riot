@@ -1504,7 +1504,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}Some enemy types now gain boss resistances!");
+				strcopy(message, sizeof(message), "{red}Some enemy types now gain extra stats!");
 				if(EnemyBosses)
 				{
 					EnemyBosses--;

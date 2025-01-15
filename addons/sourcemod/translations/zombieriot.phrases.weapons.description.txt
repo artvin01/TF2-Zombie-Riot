@@ -4159,11 +4159,15 @@
 	}
 	"Soldine Kit Pap 1"
 	{
-		"en"	"Unlock Your Super Melee hit, charges with hurting enemies."
+		"en"	"Unlock Your Super Melee hit, charges with hurting enemies.\nRaids charge faster if hit with rocket launcher."
+	}
+	"Proto Kit Rocket Launcher Desc"
+	{
+		"en"	"Rocket Launcher deals 10%% Extra damage against raidbosses."
 	}
 	"Soldine Kit Pap 2"
 	{
-		"en"	"Unlock Your Robot Jump, Charges with hurting enemies."
+		"en"	"Unlock Your Robot Jump, Charges with hurting enemies.\nRaids charge faster if hit with rocket launcher."
 	}
 	"Soldine Kit Pap 3"
 	{

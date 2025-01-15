@@ -32,7 +32,7 @@ public void Wkit_Soldin_OnMapStart()
 	Zero(Soldine_HudDelay);
 }
 
-void ChargeSoldineMeleeHit(int client, bool Melee, float Multi = 1.0)
+void ChargeSoldineMeleeHit(int client, int victim, bool Melee, float Multi = 1.0)
 {
 	if(i_PaPLevel[client] < 1)
 	{
@@ -43,7 +43,10 @@ void ChargeSoldineMeleeHit(int client, bool Melee, float Multi = 1.0)
 	if(Melee)
 		MeleeChargeDo *= 2.0;
 	else
-		MeleeChargeDo *= 0.75;
+	{
+		if(!b_thisNpcIsARaid[victim])
+			MeleeChargeDo *= 0.75;
+	}
 
 	if(i_PaPLevel[client] >= 3)
 		MeleeChargeDo *= 1.1;
@@ -89,7 +92,7 @@ bool CanSelfHurtAndJump(int client)
 	return false;
 }
 
-void ChargeSoldineRocketJump(int client, bool Melee, float Multi = 1.0)
+void ChargeSoldineRocketJump(int client, int victim, bool Melee, float Multi = 1.0)
 {
 	if(i_PaPLevel[client] < 2)
 	{
@@ -100,7 +103,10 @@ void ChargeSoldineRocketJump(int client, bool Melee, float Multi = 1.0)
 	if(Melee)
 		MeleeChargeDo *= 2.0;
 	else
-		MeleeChargeDo *= 0.75;
+	{
+		if(!b_thisNpcIsARaid[victim])
+			MeleeChargeDo *= 0.75;
+	}
 
 	if(i_PaPLevel[client] >= 3)
 		MeleeChargeDo *= 1.1;
@@ -385,13 +391,13 @@ public void Wkit_Soldin_NPCTakeDamage_Melee(int attacker, int victim, float &dam
 
 					if(i_PaPLevel[attacker] >= 4)
 						GiveArmorViaPercentage(attacker, 0.5, 1.25);
-						
+
 					i_SoldineMeleeCharge[attacker] = 0.0;
 				}
 				else
 				{
-					ChargeSoldineMeleeHit(attacker,true);
-					ChargeSoldineRocketJump(attacker, true);
+					ChargeSoldineMeleeHit(attacker,victim,true);
+					ChargeSoldineRocketJump(attacker,victim, true);
 				}
 			}
 			default:
@@ -411,14 +417,14 @@ public void Wkit_Soldin_NPCTakeDamage_Ranged(int attacker, int victim, float &da
 		if(!CheckInHud())
 			DisplayCritAboveNpc(victim, attacker, true, _, _, true);
 
-		ChargeSoldineMeleeHit(attacker,false);
+		ChargeSoldineMeleeHit(attacker,victim,false);
 	}
 	else
 	{
 		if(!CheckInHud())
 		{
-			ChargeSoldineMeleeHit(attacker,false);
-			ChargeSoldineRocketJump(attacker, false);
+			ChargeSoldineMeleeHit(attacker,victim,false);
+			ChargeSoldineRocketJump(attacker,victim, false);
 		}
 	}
 }

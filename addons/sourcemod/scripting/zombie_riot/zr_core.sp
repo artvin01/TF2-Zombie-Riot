@@ -1860,8 +1860,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						}
 						if(Wkit_Soldin_LastMann(client))
 						{
-							ChargeSoldineMeleeHit(client,true, 999.9);
-							ChargeSoldineRocketJump(client, true, 999.9);
+							ChargeSoldineMeleeHit(client,client,true, 999.9);
+							ChargeSoldineRocketJump(client, client, true, 999.9);
 							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
 							Yakuza_Lastman(4);
 						}
