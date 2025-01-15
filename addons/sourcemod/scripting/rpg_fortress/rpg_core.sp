@@ -162,6 +162,7 @@ void RPG_PluginStart()
 	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_enable_pvp", Command_EnablePVP, ADMFLAG_ROOT, "Enable PVP");
+	RegAdminCmd("sm_resetstats_grant", Command_GiveReset, ADMFLAG_ROOT, "Resets their char and sets Skillpoints (set to 0 to just reset them)");
 	
 	LoadTranslations("rpgfortress.phrases");
 
@@ -645,6 +646,48 @@ public Action Command_GiveXp(int client, int args)
 			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
 			int xp = money;
 			Stats_GiveXP(targets[target], xp);
+		}
+	}
+	
+	return Plugin_Handled;
+}
+public Action Command_GiveReset(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_resetstats_grant <target> <skillpoints> (0 to use default)");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "An admin reset your character and set your skillpoints.", money);
+			Stats_ReskillEverything(targets[target], money);
+		}
+		else
+		{
+			PrintToChat(targets[target], "An admin reset your character, you got awarded back all your skillpoints.", money);
+			Stats_ReskillEverything(targets[target], money);
 		}
 	}
 	

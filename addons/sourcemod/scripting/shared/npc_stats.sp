@@ -5777,11 +5777,11 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if(i_CurrentEquippedPerk[iNPC] == 1 || NpcStats_WeakVoidBuff(iNPC) || NpcStats_StrongVoidBuff(iNPC) && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if((i_CurrentEquippedPerk[iNPC] == 1 || NpcStats_WeakVoidBuff(iNPC) || NpcStats_StrongVoidBuff(iNPC)) && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
-		float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.002;
+		float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
 		
 		float HpScalingDecreace = 1.0;
 
@@ -5798,7 +5798,12 @@ public void NpcBaseThink(int iNPC)
 		}
 		if(NpcStats_StrongVoidBuff(iNPC))
 			HealingAmount *= 1.25;
-
+		
+		//Reduce Healing
+		if(GetTeam(iNPC) == TFTeam_Red)
+		{
+			HealingAmount *= 0.2;
+		}
 		HealingAmount *= HpScalingDecreace;
 
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
@@ -9512,21 +9517,6 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	hullcheckmins[0] -= 0.001;
 	hullcheckmins[1] -= 0.001;
 	hullcheckmins[2] -= 0.001;
-	/*
-	for(int client; client <= MaxClients; client++)
-	{
-		if(IsValidClient(client))
-		{
-			static float m_vecMaxs_2[3];
-			static float m_vecMins_2[3];
-			static float f_pos[3];
-			m_vecMaxs_2 = hullcheckmaxs;
-			m_vecMins_2 = hullcheckmins;	
-			f_pos = vecSwingEnd;
-			TE_DrawBox(client, f_pos, m_vecMins_2, m_vecMaxs_2, 0.1, view_as<int>({255, 0, 0, 255}));
-		}
-	}
-	*/
 
 	ResetTouchedentityResolve();
 	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
