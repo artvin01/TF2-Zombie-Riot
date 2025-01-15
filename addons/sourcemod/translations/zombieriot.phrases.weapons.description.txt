@@ -4175,6 +4175,94 @@
 	}
 	"Soldine Kit Pap rest"
 	{
-		"en"	"Increaces Stats"
+		"en"	"Increases Stats"
+	}
+	"Blue Cheese Desc"
+	{
+		"en"	"It stinks, a lot...\n+800 HP, Increases melee damage by +75%% and heal on kill by +35.\nIncreases melee resist with melee weapons by +10%%."
+	}
+	"Fentanyl Desc"
+	{
+		"en"	"It courses through you.\n+1000 HP, Increases melee damage by +125%% and heal on kill by +50.\nIncreases melee resist and ranged resist with melee weapons by +15%% and +10%% respectively."
+	}
+	"Dubious Cheesy Ideas Desc"
+	{
+		"en"	"The inhuman thoughts lying behind the cheese.\nIncreases building HP by +35%%, and building damage + repair rate by +75%%.\nIncreases sentry attackspeed by +25%%."
+	}
+	"Messed Up Cheesy Brain Desc"
+	{
+		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +75%%, and building damage + repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
+	}
+	"Waldch's Railgun Rounds Desc"
+	{
+		"en"	"How kind of him.\nIncreases ranged damage by +75%% and clipsize by +50%%.\nIncreases accuracy by +20%% and projectile speed by +25%%."
+	}
+	"Cheesy Doomsday Pack Desc"
+	{
+		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +125%% and doubles clipsize.\nIncreases accuracy by +35%% and projectile speed by +50%%."
+	}
+	"Magical Fontina Aura Desc"
+	{
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +75%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%, and max mana by 25%%."
+	}
+	"Domain Expansion: Cheese Desc"
+	{
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +125%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
+	}
+	"Bob's Willpower Desc"
+	{
+		"en"	"Bob the Second lending you his divine willpower.\n+1750 HP, +20%% overall resistance, grants a +5HP/s regen."
+	}
+	"A Wheel of Gouda Desc"
+	{
+		"en"	"Eat up.\n+2000 HP, +22.5%% overall resistance, grants an additional +10HP/s regen."
+	}
+	"THE BIG CHEESE Desc"
+	{
+		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2250 HP, +25%% overall resistance, grants an additional +15HP/s regen."
+	}
+	"Voided Rejuvenator Pack Desc"
+	{
+		"en"	"The fastest heals in the void.\nIncreases medigun heal/enemydrain rate by +75%% and uber duration by +2 seconds.\nIncreases melee resistance with support weapons out by +10%%."
+	}
+	"Cheesy Slimy Aid Kit Desc"
+	{
+		"en"	"Some would prefer to die rather than getting treated with this.\nIncreases medigun heal/enemydrain rate by +125%% and uber duration by +3 seconds.\nIncreases melee + ranged resistance with support weapons out by +10%%."
+	}
+	"Kit Modernizer I Desc"
+	{
+		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +25%% and reload + attackspeed by +5%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed."
+	}
+	"Kit Modernizer II Desc"
+	{
+		"en" "Increases kit damage by +40%% and reload + attackspeed by +10%%\nGrants +35%% max mana, +50%% healrate and building HP by +10%%.\nReduces building cost by 25%%."
+	}
+	"Kit Modernizer III Desc"
+	{
+		"en" "Increases kit damage by +55%% and reload + attackspeed by +15%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%%."
+	}
+	"Kit Modernizer IV Desc"
+	{
+		"en" "Increases kit damage by +75%% and reload + attackspeed by +20%%\n+35 HP on kill | +20%% Overall Resistance | +50%% Heal Rate | +25%% Max Mana | +100%% Repair Rate | 25%% less Building Cost"
+	}
+	"Kit Modernizer V Desc"
+	{
+		"en" "Increases kit damage by +100%% and reload + attackspeed by +20%%\n+50 HP on kill | +25%% Overall Resistance | +75%% Heal Rate | +35%% Max Mana | +100%% Repair Rate | +50%% Clip size"
+	}
+	"Unit Reformator I Desc"
+	{
+		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +25%%, and barrack unit damage by +15%%."
+	}
+	"Unit Reformator II Desc"
+	{
+		"en" "Increases barrack unit HP by +35%%, and barrack unit damage by +30%%."
+	}
+	"Unit Reformator III Desc"
+	{
+		"en" "Increases barrack unit HP and damage by +45%%."
+	}
+	"Unit Reformator IV Desc"
+	{
+		"en" "Increases barrack unit HP by +50%%, and barrack unit damage by +75%%."
 	}
 }
