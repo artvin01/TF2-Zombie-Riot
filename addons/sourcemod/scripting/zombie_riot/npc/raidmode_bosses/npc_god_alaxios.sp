@@ -206,6 +206,10 @@ methodmap GodAlaxios < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9999.0;
 			RaidAllowsBuildings = true;
 		}
+		if(Waves_InFreeplay())
+		{
+			RaidModeTime = 9999.0;
+		}
 		RemoveAllDamageAddition();
 
 		npc.m_iChanged_WalkCycle = 4;
@@ -1177,7 +1181,16 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	else
 	{
 		int postWaves = CurrentRound - Waves_GetMaxRound();
+
 		count = 15;
+		char npc_classname[60];
+		NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
+		if(StrEqual(npc_classname, "npc_medival_achilles") || StrEqual(npc_classname, "npc_medival_monk") || StrEqual(npc_classname, "npc_medival_villager") || StrEqual(npc_classname, "npc_medival_son_of_osiris"))
+		{	
+			count = 5;
+			enemy.Health = RoundToCeil(enemy.Health * 0.6);
+		}
+
 		Freeplay_AddEnemy(postWaves, enemy, count, true);
 		if(count > 0)
 		{
