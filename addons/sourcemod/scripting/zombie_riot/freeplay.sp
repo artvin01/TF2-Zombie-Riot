@@ -932,7 +932,7 @@ void Freeplay_SetupStart(bool extra = false)
 			SuperMiniBoss = true;
 			randomsuper = GetRandomInt(0, 6);
 			if(randomsuper = -1)
-				PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY);
+				PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY");
 		}
 
 		float randommini = GetRandomFloat(0.75, 1.5);
