@@ -437,7 +437,7 @@ void Stats_ApplyAttribsPre(int client)
 	Stats_ClearCustomStats(client);
 }
 
-void Stats_ReskillEverything(int client)
+void Stats_ReskillEverything(int client, int Setstats = 0)
 {
 	int stats = Stats_GetStatCount(client);
 	
@@ -448,9 +448,16 @@ void Stats_ReskillEverything(int client)
 	StatStructure[client] = 0;
 	StatIntelligence[client] = 0;
 	StatCapacity[client] = 0;
-	ReskillPoints[client] += stats;
+
+	if(Setstats == 0)
+		ReskillPoints[client] = stats;
+	else
+		ReskillPoints[client] = Setstats;
+
 
 	Stats_SaveClientStats(client);
+	//Reset em.
+	Store_ApplyAttribs(client);
 	FakeClientCommandEx(client, "rpg_stats");
 }
 

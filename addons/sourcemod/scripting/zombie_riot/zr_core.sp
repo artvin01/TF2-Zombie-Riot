@@ -373,6 +373,7 @@ int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 
 int StoreWeapon[MAXENTITIES];
+int ClientAttribResetCount[MAXTF2PLAYERS];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
 float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
@@ -1860,8 +1861,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						}
 						if(Wkit_Soldin_LastMann(client))
 						{
-							ChargeSoldineMeleeHit(client,true, 999.9);
-							ChargeSoldineRocketJump(client, true, 999.9);
+							ChargeSoldineMeleeHit(client,client,true, 999.9);
+							ChargeSoldineRocketJump(client, client, true, 999.9);
 							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
 							Yakuza_Lastman(4);
 						}
@@ -2055,7 +2056,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 		Armor_Max = 1000;
 										
 	else if(ArmorLevel == 200)
-		Armor_Max = 2000;	
+		Armor_Max = 2000;
 		
 	else
 		Armor_Max = 200;

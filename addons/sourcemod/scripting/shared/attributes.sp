@@ -42,7 +42,11 @@ bool Attribute_ServerSide(int attribute)
 	
 	switch(attribute)
 	{
-		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93: //gibs on hit
+		/*
+
+		Various attributes that are not needed as actual attributes.
+		*/
+		case 526,733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93:
 		{
 			return true;
 		}
@@ -192,6 +196,32 @@ stock void Attributes_SetMulti(int entity, int attrib, float amount)
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
 		Attributes_Set(entity, attrib, value, true);
+
+	if(Attribute_IsMovementSpeed(attrib))
+	{
+		int owner;
+		if(entity <= MaxClients)
+			owner = entity;
+		else
+			owner = GetEntPropEnt(owner, Prop_Send, "m_hOwnerEntity");
+		if(owner <= MaxClients)
+		{
+			SDKCall_SetSpeed(owner);
+		}
+	}
+}
+
+bool Attribute_IsMovementSpeed(int attrib)
+{
+	switch(attrib)
+	{
+		case 442, 107:
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 stock bool Attributes_GetString(int entity, int attrib, char[] value, int length, int &size = 0)

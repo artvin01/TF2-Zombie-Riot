@@ -645,7 +645,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	if(victim <= MaxClients)
 	{
-		if(Items_HasNamedItem(victim, "Matrix's Curse"))
+		if(Items_HasNamedItem(victim, "Matrix's Curse") && !Items_HasNamedItem(victim, "A Block of Cheese"))
 		{
 			damage = RoundToNearest(float(damage) * 1.2);
 		}

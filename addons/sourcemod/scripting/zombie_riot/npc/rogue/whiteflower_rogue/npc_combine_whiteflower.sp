@@ -1109,11 +1109,15 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	int speech = GetRandomInt(1,10);
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
 	float ReduceEnemyCountLogic = 1.0 / MultiGlobalEnemy;
-	fl_TotalArmor[self] *= (1.0 + (0.005 * ReduceEnemyCountLogic));
-	if(fl_TotalArmor[self] >= 1.0)
+	if(!Waves_InFreeplay())
 	{
-		fl_TotalArmor[self] = 1.0;
+		fl_TotalArmor[self] *= (1.0 + (0.005 * ReduceEnemyCountLogic));
+		if(fl_TotalArmor[self] >= 1.0)
+		{
+			fl_TotalArmor[self] = 1.0;
+		}
 	}
+	
 	RaidModeScaling *= (1.0- (0.0025 * ReduceEnemyCountLogic));
 	if(npc.m_flCooldownSay > GetGameTime())
 	{
@@ -1124,7 +1128,7 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");	
+			CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");
 		}
 		case 2:
 		{
@@ -1132,7 +1136,15 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		}
 		case 3:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: First my arm so im alone? Pah!");	
+			if(!Waves_InFreeplay())
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: First my army so im alone? Pah!");
+			}
+			else
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: From one maniac to another huh?");
+			}
+			
 		}
 		case 4:
 		{
@@ -1156,14 +1168,31 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		}
 		case 9:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: They atleast believe in their leader, do you?");	
+			if(!Waves_InFreeplay())
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: They atleast believe in their leader, do you?");	
+			}
+			else
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");
+			}	
 		}
 		case 10:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: I actually care for them, do you care for your own army?");	
+			if(!Waves_InFreeplay())
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: I actually care for them, do you care for your own army?");	
+			}
+			else
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: You are dirty.");
+			}
 		}
 	}
-	CPrintToChatAll("He weakens as you defeat his army.");	
+	if(!Waves_InFreeplay())
+	{
+		CPrintToChatAll("He weakens as you defeat his army.");	
+	}
 }
 
 

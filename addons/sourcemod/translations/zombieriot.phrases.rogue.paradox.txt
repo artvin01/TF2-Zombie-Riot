@@ -1003,7 +1003,7 @@
 	}
 	"Lost Villager Desc 1a"
 	{
-		"en"	"{green}Recover 4 weapons"
+		"en"	"{green}Recover 10 weapons"
 	}
 	"Lost Villager Lore 1a"
 	{
@@ -1016,7 +1016,7 @@
 	}
 	"Lost Villager Desc 1b"
 	{
-		"en"	"{green}Gain 15 Australium Ingots"
+		"en"	"{green}Gain 20 Australium Ingots"
 	}
 	"Lost Villager Lore 1b"
 	{
@@ -1029,7 +1029,7 @@
 	}
 	"Lost Villager Desc 1c"
 	{
-		"en"	"{green}Lose 15 Chaos Infliction"
+		"en"	"{green}Lose 20 Chaos Infliction"
 	}
 	"Lost Villager Lore 1c"
 	{
@@ -1042,7 +1042,7 @@
 	}
 	"Lost Villager Desc 2"
 	{
-		"en"	"{green}Gain 2000 cash"
+		"en"	"{green}Gain 3000 cash"
 	}
 	"Lost Villager Lore 2"
 	{
@@ -1055,7 +1055,7 @@
 	}
 	"Lost Villager Desc 3"
 	{
-		"en"	"{green}Gain 2000 cash, 15 australium ingots, and recover 4 weapons {red}but gain 15 Chaos Infliction"
+		"en"	"{green}Gain 2000 cash, 15 australium ingots, and recover 4 weapons {red}but gain 25 Chaos Infliction"
 	}
 	"Lost Villager Lore 3"
 	{
@@ -1513,7 +1513,7 @@
 	{
 		"en"	"Escapee"
 	}
-	"Escapee 2"
+	"Escapee"
 	{
 		"en"	"Escapee"
 	}

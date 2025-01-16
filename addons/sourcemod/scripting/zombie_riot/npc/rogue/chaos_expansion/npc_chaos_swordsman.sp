@@ -337,11 +337,11 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 				NormalizeVector(vecDir, vecDir);
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				int HitEnemy = FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 300.0, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				int HitEnemy = FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 200.0, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 				if(IsValidEnemy(npc.index, HitEnemy))
 				{
 					//I hit them, time to destroy.
-					Elemental_AddChaosDamage(HitEnemy, npc.index, 200, false, true);
+					Elemental_AddChaosDamage(HitEnemy, npc.index, 125, false, true);
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, HitEnemy,_,_, vPredictedPos);
 					vPredictedPos = GetBehindTarget(HitEnemy, 30.0 ,vPredictedPos);
