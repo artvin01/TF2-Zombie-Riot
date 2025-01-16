@@ -2111,13 +2111,14 @@ enum struct TempAttribStore
 	float Value;
 	float GameTimeRemoveAt;
 	int Weapon_StoreIndex;
+	int ClientOnly_ResetCountSave;
 	/*
 	Function FuncBeforeApply;
 	Function FuncAfterApply;
 	*/
 	void Apply_TempAttrib(int client, int weapon)
 	{
-		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime());
+		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime(), ClientAttribResetCount[client]);
 		if(!List_TempApplyWeaponPer[client])
 			List_TempApplyWeaponPer[client] = new ArrayList(sizeof(TempAttribStore));
 
@@ -2154,7 +2155,7 @@ stock void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
 		}
 		if(storeindex == TempStoreAttrib.Weapon_StoreIndex)
 		{
-			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime());
+			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime(), ClientAttribResetCount[client]);
 			//Give all the things needed to the weapon again.
 		}
 	}

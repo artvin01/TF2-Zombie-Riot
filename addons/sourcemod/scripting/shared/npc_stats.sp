@@ -3904,6 +3904,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 {
 	if(b_NpcHasDied[pThis])
 		return MRES_Ignored;
+		
 	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
 	CClotBody npc = view_as<CClotBody>(pThis);
 		

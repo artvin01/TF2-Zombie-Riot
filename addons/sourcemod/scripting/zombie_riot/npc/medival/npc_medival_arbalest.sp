@@ -182,8 +182,6 @@ methodmap MedivalArbalest < CClotBody
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-
-		SDKHook(npc.index, SDKHook_Think, MedivalArbalest_ClotThink);
 	
 		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
@@ -201,11 +199,6 @@ methodmap MedivalArbalest < CClotBody
 			npc.m_flSpeed = 270.0;
 		}
 
-	/*	
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-	*/
 		npc.StartPathing();
 		
 		

@@ -535,19 +535,19 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 1a");
 
-				int recover = 5;
+				int recover = 10;
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
 				Store_RandomizeNPCStore(0, recover);
 			}
 			case 1:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 1b");
-				Rogue_AddIngots(15);
+				Rogue_AddIngots(20);
 			}
 			case 2:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 1c");
-				Rogue_RemoveChaos(15);
+				Rogue_RemoveChaos(20);
 			}
 		}
 	}
@@ -558,7 +558,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			case 0:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 2");
-				GiveCash(2000);
+				GiveCash(3000);
 			}
 			case 1:
 			{

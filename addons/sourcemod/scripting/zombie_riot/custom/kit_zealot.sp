@@ -369,7 +369,7 @@ void WeaponZealot_OnTakeDamage_Gun(int attacker, int victim, float &damage)
 
 	if(HasSpecificBuff(attacker, "Zealot's Random Drinks"))
 	{
-		if(i_WhatPotionDrink[attacker] == 2 && i_HasBeenHeadShotted[victim])
+		if(i_WhatPotionDrink[attacker] == 3 && i_HasBeenHeadShotted[victim])
 		{
 			damage *= 1.3;
 		}
@@ -427,7 +427,7 @@ void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 	MaxDodgeCount[attacker] = 10;
 	if(HasSpecificBuff(attacker, "Zealot's Random Drinks"))
 	{
-		if(i_WhatPotionDrink[attacker] == 2 && i_HasBeenHeadShotted[victim])
+		if(i_WhatPotionDrink[attacker] == 3 && i_HasBeenHeadShotted[victim])
 		{
 			damage *= 1.3;
 		}
