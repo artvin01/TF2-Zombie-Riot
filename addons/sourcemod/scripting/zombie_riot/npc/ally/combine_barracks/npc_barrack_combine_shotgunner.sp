@@ -144,7 +144,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 20000.0)
+			if(flDistanceToTarget < 25000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -194,7 +194,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN_AIM_SHOTGUN", 19000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN_AIM_SHOTGUN", 20000.0,_, true);
 	}
 }
 
