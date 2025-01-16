@@ -1117,11 +1117,22 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_040, VILLAGE_050:
 						{
-							if(Attributes_Has(entity, 6))
-								Attributes_SetMulti(entity, 6, 0.88);	// Fire Rate
-							
-							if(Attributes_Has(entity, 97))
-								Attributes_SetMulti(entity, 97, 0.88);	// Reload Time
+							if(Waves_InFreeplay())
+							{
+								if(Attributes_Has(entity, 6))
+									Attributes_SetMulti(entity, 6, 0.94);	// Fire Rate
+								
+								if(Attributes_Has(entity, 97))
+									Attributes_SetMulti(entity, 97, 0.94);	// Reload Time
+							}
+							else
+							{
+								if(Attributes_Has(entity, 6))
+									Attributes_SetMulti(entity, 6, 0.88);	// Fire Rate
+								
+								if(Attributes_Has(entity, 97))
+									Attributes_SetMulti(entity, 97, 0.88);	// Reload Time
+							}
 							
 							if(Attributes_Has(entity, 8))
 								Attributes_SetMulti(entity, 8, 1.12);	// Heal Rate
@@ -1173,11 +1184,22 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_040, VILLAGE_050:
 					{
-						if(Attributes_Has(entity, 6))
-							Attributes_SetMulti(entity, 6, 1.0 / 0.88);	// Fire Rate
+						if(Waves_InFreeplay())
+						{
+							if(Attributes_Has(entity, 6))
+								Attributes_SetMulti(entity, 6, 1.0 / 0.94);	// Fire Rate
 						
-						if(Attributes_Has(entity, 97))
-							Attributes_SetMulti(entity, 97, 1.0 / 0.88);	// Reload Time
+							if(Attributes_Has(entity, 97))
+								Attributes_SetMulti(entity, 97, 1.0 / 0.94);	// Reload Time
+						}
+						else
+						{
+							if(Attributes_Has(entity, 6))
+								Attributes_SetMulti(entity, 6, 1.0 / 0.88);	// Fire Rate
+						
+							if(Attributes_Has(entity, 97))
+								Attributes_SetMulti(entity, 97, 1.0 / 0.88);	// Reload Time
+						}
 						
 						if(Attributes_Has(entity, 8))
 							Attributes_SetMulti(entity, 8, 1.0 / 1.12);	// Heal Rate
@@ -1259,8 +1281,16 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_050:
 						{
-							npc.m_fGunFirerate *= 0.85;
-							npc.m_fGunReload *= 0.85;
+							if(Waves_InFreeplay())
+							{
+								npc.m_fGunFirerate *= 0.94;
+								npc.m_fGunReload *= 0.94;
+							}
+							else
+							{
+								npc.m_fGunFirerate *= 0.85;
+								npc.m_fGunReload *= 0.85;
+							}
 						}
 						case VILLAGE_005:
 						{
@@ -1315,8 +1345,16 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_050:
 					{
-						npc.m_fGunFirerate /= 0.85;
-						npc.m_fGunReload /= 0.85;
+						if(Waves_InFreeplay())
+						{
+							npc.m_fGunFirerate /= 0.94;
+							npc.m_fGunReload /= 0.94;
+						}
+						else
+						{
+							npc.m_fGunFirerate /= 0.85;
+							npc.m_fGunReload /= 0.85;
+						}
 					}
 					case VILLAGE_005:
 					{
