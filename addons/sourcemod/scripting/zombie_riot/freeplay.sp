@@ -47,6 +47,7 @@ static int EloquenceBuff;
 static int RampartBuff;
 static int FreeplayBuffTimer;
 static bool AntinelNextWave;
+static int randomsuper;
 
 void Freeplay_OnMapStart()
 {
@@ -104,6 +105,7 @@ void Freeplay_ResetAll()
 	RampartBuff = 0;
 	FreeplayBuffTimer = 0;
 	AntinelNextWave = false;
+	randomsuper = 0;
 }
 
 int Freeplay_EnemyCount()
@@ -338,13 +340,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 3;
 
-		int random = 3;
-		if(random != -1)
-			random = GetURandomInt() % 7;
-		else
+		if(randomsuper = -1)
 			PrintToChatAll("THE SUPER MINIBOSS SKULL FUCKED ITSELF UP AGAIN, UHHGHHGGHGJ");
 
-		switch(random)
+		switch(randomsuper)
 		{
 			case 1: // Rogue cta doctor
 			{
@@ -931,6 +930,9 @@ void Freeplay_SetupStart(bool extra = false)
 		{	
 			CPrintToChatAll("{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
+			randomsuper = GetRandomInt(0, 6);
+			if(randomsuper = -1)
+				PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY);
 		}
 
 		float randommini = GetRandomFloat(0.75, 1.5);
