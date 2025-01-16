@@ -201,15 +201,18 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		float value;
-		
-		// +100% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 2.0);
+		if(BladeDancer == entity)
+		{
+			float value;
+			
+			// +100% max health
+			map.GetValue("26", value);
+			map.SetValue("26", value * 2.0);
 
-		// +100% Heal rate
-		map.GetValue("8", value);
-		map.SetValue("8", value * 2.0);
+			// +100% Heal rate
+			map.GetValue("8", value);
+			map.SetValue("8", value * 2.0);
+		}
 	}
 }
 
