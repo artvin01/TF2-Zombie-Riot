@@ -1741,7 +1741,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
-			if(!rogue && CurrentRound == 4 && !round.NoBarney)
+			if(!rogue && ((!Classic_Mode() && CurrentRound == 4) || (Classic_Mode() && CurrentRound == 1)) && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 				Citizen_SpawnAtPoint();
@@ -2510,7 +2510,15 @@ float Zombie_DelayExtraSpeed()
 void DoGlobalMultiScaling()
 {
 	float playercount = ZRStocks_PlayerScalingDynamic();
-			
+
+	playercount = Pow ((playercount * 0.65), 1.2);
+	//on low player counts it does not scale well.
+	
+	/*
+		at 14 players, it scales fine, at lower, it starts getting really hard, tihs 
+
+	*/
+
 	float multi = Pow(1.08, playercount);
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
@@ -2521,10 +2529,10 @@ void DoGlobalMultiScaling()
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 
-	//Enemy bosses amount
+	//Enemy bosses AMOUNT
 	MultiGlobalEnemyBoss = playercount * 0.3; 
 
-	//certain maps need this.
+	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
 	float cap = zr_enemymulticap.FloatValue;

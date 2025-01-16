@@ -160,7 +160,7 @@ float RogueBladedance_DamageBonus(int attacker, int inflictor, int victim)
 
 static Action Timer_BladedancerTimer(Handle timer)
 {
-	if(BladeDancer >= 0)
+	if(BladeDancer > 0)
 	{
 		//change bladedancer if dead or smth
 		//dont change if they are downed but have a self revive so to speak
