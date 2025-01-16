@@ -3319,14 +3319,17 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			if(CurrentRound >= 499 && !Freeplay_w500reached)
+			if(CurrentRound >= 249 && !Freeplay_w500reached)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 					{
 						Items_GiveNamedItem(client, "A Block of Cheese");
-						CPrintToChat(client, "Finally... after so much time... you've reached wave 500. It was loooong trip, but you got through it all.\n{lime}As a reward for your perseverance, I am giving you something to fend off a specific someone.\n{white}(Your backpack feels heavier. {gold}Check your unlocks.{white})");
+						CPrintToChat(client, "Hmm.... You guys sure are something. Reaching a point this far in Freeplay isn't an easy task.");
+						CPrintToChat(client, "I shall now give you some time to rest, you must be really exhausted after that. And...");
+						CPrintToChat(client, "{lime}As a reward for your perseverance, I am giving you something to fend off a specific someone.");
+						CPrintToChat(client, "{white}(Your backpack feels heavier. {gold}Check your unlocks.{white}");
 					}
 				}
 
