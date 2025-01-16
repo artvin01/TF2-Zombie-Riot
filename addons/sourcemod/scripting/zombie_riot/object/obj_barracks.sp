@@ -287,6 +287,7 @@ methodmap ObjectBarracks < ObjectGeneric
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, 180.0);
 		Building_Summoner(client, npc.index);
+		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
 		{
