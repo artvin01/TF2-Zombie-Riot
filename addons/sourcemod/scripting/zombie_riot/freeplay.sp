@@ -396,6 +396,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_medival_villager");
 				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
+			case 8: // a spitit
+			{
+				enemy.Index = NPC_GetByPlugin("npc_wandering_spirit");
+				enemy.Health = RoundToFloor(500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
 			default: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
@@ -985,7 +990,7 @@ void Freeplay_SetupStart(bool extra = false)
 		{	
 			CPrintToChatAll("{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
-			randomsuper = GetRandomInt(0, 7);
+			randomsuper = GetRandomInt(0, 8);
 			if(randomsuper == -1)
 				PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY");
 		}
@@ -1855,7 +1860,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 				SuperMiniBoss = true;
-				randomsuper = GetRandomInt(0, 7);
+				randomsuper = GetRandomInt(0, 8);
 				if(randomsuper == -1)
 					PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY");
 				EmitSoundToAll("mvm/mvm_warning.wav");
