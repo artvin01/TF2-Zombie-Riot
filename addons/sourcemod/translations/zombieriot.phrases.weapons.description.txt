@@ -4235,7 +4235,7 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +2%% and attackspeed by +5%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%%."
+		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +20%% and attackspeed by +5%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer II Desc"
 	{
