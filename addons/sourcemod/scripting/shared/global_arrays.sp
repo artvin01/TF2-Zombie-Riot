@@ -239,7 +239,7 @@ float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
-int i_PlayerToCustomBuilding[MAXTF2PLAYERS] = {0, ...};
+int i_PlayerToCustomBuilding[MAXENTITIES] = {0, ...};
 float f_BuildingIsNotReady[MAXTF2PLAYERS] = {0.0, ...};
 float f_AmmoConsumeExtra[MAXTF2PLAYERS];
 #endif

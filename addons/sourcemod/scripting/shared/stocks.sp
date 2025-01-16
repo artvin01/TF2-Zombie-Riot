@@ -4303,7 +4303,8 @@ public Action ApplyTempAttrib_Revert(Handle timer, DataPack pack)
 				owner = entity;
 			else
 				owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-			if(owner <= MaxClients)
+				
+			if(owner > 0 && owner <= MaxClients)
 			{
 				SDKCall_SetSpeed(owner);
 			}

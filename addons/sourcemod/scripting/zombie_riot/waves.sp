@@ -1741,7 +1741,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
-			if(!rogue && CurrentRound == 4 && !round.NoBarney)
+			if(!rogue && ((!Classic_Mode() && CurrentRound == 4) || (Classic_Mode() && CurrentRound == 1)) && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 				Citizen_SpawnAtPoint();
@@ -2510,7 +2510,15 @@ float Zombie_DelayExtraSpeed()
 void DoGlobalMultiScaling()
 {
 	float playercount = ZRStocks_PlayerScalingDynamic();
-			
+
+	playercount = Pow ((playercount * 0.65), 1.2);
+	//on low player counts it does not scale well.
+	
+	/*
+		at 14 players, it scales fine, at lower, it starts getting really hard, tihs 
+
+	*/
+
 	float multi = Pow(1.08, playercount);
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
@@ -2521,10 +2529,10 @@ void DoGlobalMultiScaling()
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 
-	//Enemy bosses amount
+	//Enemy bosses AMOUNT
 	MultiGlobalEnemyBoss = playercount * 0.3; 
 
-	//certain maps need this.
+	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
 	float cap = zr_enemymulticap.FloatValue;
@@ -3319,14 +3327,17 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			if(CurrentRound >= 499 && !Freeplay_w500reached)
+			if(CurrentRound >= 249 && !Freeplay_w500reached)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 					{
 						Items_GiveNamedItem(client, "A Block of Cheese");
-						CPrintToChat(client, "Finally... after so much time... you've reached wave 500. It was loooong trip, but you got through it all.\n{lime}As a reward for your perseverance, I am giving you something to fend off a specific someone.\n{white}(Your backpack feels heavier. {gold}Check your unlocks.{white})");
+						CPrintToChat(client, "Hmm.... You guys sure are something. Reaching a point this far in Freeplay isn't an easy task.");
+						CPrintToChat(client, "I shall now give you some time to rest, you must be really exhausted after that. And...");
+						CPrintToChat(client, "{lime}As a reward for your perseverance, I am giving you something to fend off a specific someone.");
+						CPrintToChat(client, "{white}(Your backpack feels heavier. {gold}Check your unlocks.{white}");
 					}
 				}
 
