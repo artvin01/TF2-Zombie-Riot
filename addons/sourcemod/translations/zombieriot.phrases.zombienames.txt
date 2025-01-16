@@ -685,6 +685,10 @@
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
 	}
+	"Silvester's Past Afterimage"
+	{
+		"en" 		"Silvester's Past Afterimage"
+	}
 	"Medic Charger"
 	{
 		"en" 		"Medic Charger"
