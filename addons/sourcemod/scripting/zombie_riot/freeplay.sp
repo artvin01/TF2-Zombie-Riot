@@ -340,7 +340,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 3;
 
-		if(randomsuper = -1)
+		if(randomsuper == -1)
 			PrintToChatAll("THE SUPER MINIBOSS SKULL FUCKED ITSELF UP AGAIN, UHHGHHGGHGJ");
 
 		switch(randomsuper)
@@ -931,7 +931,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
 			randomsuper = GetRandomInt(0, 6);
-			if(randomsuper = -1)
+			if(randomsuper == -1)
 				PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY");
 		}
 
