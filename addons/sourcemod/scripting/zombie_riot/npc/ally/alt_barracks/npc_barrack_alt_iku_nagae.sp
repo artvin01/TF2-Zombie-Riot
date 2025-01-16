@@ -299,7 +299,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			}
 			int Enemy_I_See;		
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			if(flDistanceToTarget < 562500 && IsValidEnemy(npc.index, Enemy_I_See))
+			if(flDistanceToTarget < 300000 && IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 				{	
@@ -327,7 +327,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 		}
 		else
 		{
-			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
+			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 225000.0, _, false);
 			npc.PlayIdleSound();
 		}
 

@@ -173,7 +173,7 @@ public void Barrack_Iberia_Rocketeer_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 100.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 225000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 100.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 185000.0,_, true);
 	}
 }
 

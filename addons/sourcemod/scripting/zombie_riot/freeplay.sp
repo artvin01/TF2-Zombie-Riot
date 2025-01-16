@@ -462,6 +462,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(alaxios && count > 30)
 		count = 30;
 
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
+	if(alaxios && StrEqual(npc_classname, "npc_medival_achilles") || StrEqual(npc_classname, "npc_medival_monk") || StrEqual(npc_classname, "npc_medival_villager") || StrEqual(npc_classname, "npc_medival_son_of_osiris"))
+	{	
+		count = 5;
+	}
+
 	enemy.ExtraSize *= ExtraEnemySize;
 }
 
