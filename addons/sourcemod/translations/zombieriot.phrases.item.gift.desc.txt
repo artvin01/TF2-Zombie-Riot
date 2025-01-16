@@ -2226,7 +2226,7 @@
 	}
 	"Barracks Iberia Headhunter Desc"
 	{
-		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50% hp"
+		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50%% hp"
 		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
 	}	
 	"Barracks Iberia Inquisitor Lynsen Desc"

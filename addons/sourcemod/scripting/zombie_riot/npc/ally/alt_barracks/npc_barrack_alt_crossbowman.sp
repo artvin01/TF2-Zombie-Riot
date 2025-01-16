@@ -173,7 +173,7 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 125.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 300000.0, _,false);
+		BarrackBody_ThinkMove(npc.index, 125.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 190000.0, _,false);
 
 		if(npc.m_flNextMeleeAttack > GameTime)
 		{
