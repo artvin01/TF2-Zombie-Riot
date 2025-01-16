@@ -158,7 +158,7 @@ public void Barrack_Alt_Basic_Mage_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 100000.0, _,false);
+		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 90000.0, _,false);
 
 		if(npc.m_flNextMeleeAttack > GameTime)
 		{
