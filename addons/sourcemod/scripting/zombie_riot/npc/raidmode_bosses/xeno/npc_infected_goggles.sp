@@ -310,6 +310,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 
 	//Raidmode timer runs out, they lost.
+	if(npc.m_flPiggyFor)
+	{
+		SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0}); //keep teleporting just incase.
+	}
 	if(LastMann && !AlreadySaidLastmann)
 	{
 		if(!npc.m_fbGunout)
