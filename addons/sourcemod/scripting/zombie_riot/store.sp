@@ -4821,6 +4821,8 @@ void Store_ApplyAttribs(int client)
 	if(TeutonType[client] || !StoreItems)
 		return;
 
+	//Each time we delete ALL attributes, we increace this amount by one.
+	ClientAttribResetCount[client]++;
 	Attributes_RemoveAll(client);
 	
 	TFClassType ClassForStats = WeaponClass[client];
@@ -5088,6 +5090,7 @@ void Store_ApplyAttribs(int client)
 	EnableMagiaCosmetic(client);
 	Building_Check_ValidSupportcount(client);
 	//give all revelant things back
+	//Get the previous count to get back all their stats.
 	int clientid = GetSteamAccountID(client);
 	WeaponSpawn_Reapply(client, client, clientid);
 }
@@ -6817,13 +6820,14 @@ enum struct TempAttribStore
 	float Value;
 	float GameTimeRemoveAt;
 	int Weapon_StoreIndex;
+	int ClientOnly_ResetCountSave;
 	/*
 	Function FuncBeforeApply;
 	Function FuncAfterApply;
 	*/
 	void Apply_TempAttrib(int client, int weapon)
 	{
-		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime());
+		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime(), ClientAttribResetCount[client]);
 		if(!List_TempApplyWeaponPer[client])
 			List_TempApplyWeaponPer[client] = new ArrayList(sizeof(TempAttribStore));
 
@@ -6860,7 +6864,7 @@ void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
 		}
 		if(storeindex == TempStoreAttrib.Weapon_StoreIndex)
 		{
-			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime());
+			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime(), ClientAttribResetCount[client]);
 			//Give all the things needed to the weapon again.
 		}
 	}

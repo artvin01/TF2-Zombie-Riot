@@ -196,6 +196,32 @@ stock void Attributes_SetMulti(int entity, int attrib, float amount)
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
 		Attributes_Set(entity, attrib, value, true);
+
+	if(Attribute_IsMovementSpeed(attrib))
+	{
+		int owner;
+		if(entity <= MaxClients)
+			owner = entity;
+		else
+			owner = GetEntPropEnt(owner, Prop_Send, "m_hOwnerEntity");
+		if(owner <= MaxClients)
+		{
+			SDKCall_SetSpeed(owner);
+		}
+	}
+}
+
+bool Attribute_IsMovementSpeed(int attrib)
+{
+	switch(attrib)
+	{
+		case 442, 107:
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 stock bool Attributes_GetString(int entity, int attrib, char[] value, int length, int &size = 0)

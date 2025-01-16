@@ -2113,9 +2113,9 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
 				if(b_XenoVial[victim])
-					Attributes_Set(victim, 489, 0.85);
+					Attributes_SetMulti(victim, 442, 0.85);
 				else
-					Attributes_Set(victim, 489, 0.65);
+					Attributes_SetMulti(victim, 442, 0.65);
 
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
