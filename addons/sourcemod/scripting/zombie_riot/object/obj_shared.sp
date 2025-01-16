@@ -791,6 +791,11 @@ int Object_GetSentryBuilding(int owner)
 	{
 		//This is faster and better, all sentry buildings are this only anyways.
 		entity = EntRefToEntIndex(i_PlayerToCustomBuilding[owner]);
+		if(!view_as<ObjectGeneric>(entity).SentryBuilding)
+		{
+			//Not a sentry building somehow, nope out.
+			entity = -1;
+		}
 	}
 	/*
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
