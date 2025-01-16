@@ -440,6 +440,6 @@ static void Ground_Slam(int entity, int victim, float damage, int weapon)
 		else
 			FreezeNpcInTime(victim, 1.0);
 
-		Custom_Knockback(entity, victim, 600.0, true, true, true);
+		SensalCauseKnockback(entity, victim, 0.75, true);
 	}
 }

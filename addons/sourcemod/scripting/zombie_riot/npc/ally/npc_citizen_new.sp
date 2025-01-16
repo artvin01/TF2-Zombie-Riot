@@ -3174,6 +3174,7 @@ public void Citizen_ClotThink(int iNPC)
 									{
 										HealingCooldown[npc.index] = GetGameTime() + 20.0;
 									}
+									i_PlayerToCustomBuilding[npc.index] = EntIndexToEntRef(entity);
 								}
 								else
 								{

@@ -204,7 +204,7 @@ stock void Attributes_SetMulti(int entity, int attrib, float amount)
 			owner = entity;
 		else
 			owner = GetEntPropEnt(owner, Prop_Send, "m_hOwnerEntity");
-		if(owner <= MaxClients)
+		if(owner > 0 && owner <= MaxClients)
 		{
 			SDKCall_SetSpeed(owner);
 		}

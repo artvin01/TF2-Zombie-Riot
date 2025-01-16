@@ -88,7 +88,7 @@ public void BarrackArbelast_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_CUSTOM_IDLE_CROSSBOW", "ACT_CUSTOM_WALK_CROSSBOW", 180000.0);
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_CUSTOM_IDLE_CROSSBOW", "ACT_CUSTOM_WALK_CROSSBOW", 165000.0);
 	}
 }
 
