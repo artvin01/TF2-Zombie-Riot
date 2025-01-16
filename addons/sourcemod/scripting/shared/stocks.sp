@@ -4234,7 +4234,7 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 	if(Attributes_Has(entity,index))
 	{
 		//We need to get the owner!!
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		int owner = entity <= MaxClients ? owner : GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 		TempAttribStore TempStoreAttrib;
 		TempStoreAttrib.Attribute = index;
 		TempStoreAttrib.Value = multi;
@@ -4254,6 +4254,11 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 
 stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3)
 {
+	/*
+	Applying this onto players might cause issues, as player attributes are spread across wearbles
+	TODO: find a fix
+
+	*/
 	if(Attributes_Has(entity,index))
 	{
 		Attributes_SetMulti(entity, index, multi);
