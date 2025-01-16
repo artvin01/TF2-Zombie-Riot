@@ -275,9 +275,12 @@ public void CorruptedBarney_ClotThink(int iNPC)
 			if(IsValidClient(client))
 			{
 				Client_Shake(client, 0, 7.0, 7.0, 0.1, false);
-				FormatEx(Buffer, sizeof(Buffer), "Barney %i", GetRandomInt(1, 2500));
-				SetClientName(client, Buffer);
-				SetEntPropString(client, Prop_Data, "m_szNetname", Buffer);
+				if(i_RaidGrantExtra[npc.index] == 1)
+				{
+					FormatEx(Buffer, sizeof(Buffer), "Barney %i", GetRandomInt(1, 2500));
+					SetClientName(client, Buffer);
+					SetEntPropString(client, Prop_Data, "m_szNetname", Buffer);
+				}
 				IncreaceEntityDamageTakenBy(client, GetRandomFloat(0.05, 0.1), 0.1, true);
 				Attributes_Set(client, 26, GetRandomFloat(2500.0, 5000.0));
 				f_damageAddedTogether[client] = float(GetURandomInt());
