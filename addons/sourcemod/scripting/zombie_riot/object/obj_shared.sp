@@ -787,6 +787,12 @@ int Object_SupportBuildings(int owner)
 int Object_GetSentryBuilding(int owner)
 {
 	int entity = -1;
+	if(IsValidEntity(i_PlayerToCustomBuilding[owner]))
+	{
+		//This is faster and better, all sentry buildings are this only anyways.
+		entity = EntRefToEntIndex(i_PlayerToCustomBuilding[owner]);
+	}
+	/*
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		if(view_as<ObjectGeneric>(entity).SentryBuilding && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
@@ -797,6 +803,7 @@ int Object_GetSentryBuilding(int owner)
 				break;
 		}
 	}
+	*/
 
 	return entity;
 }

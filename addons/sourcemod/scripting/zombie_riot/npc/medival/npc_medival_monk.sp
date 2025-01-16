@@ -595,23 +595,33 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	}
 	else
 	{
-		if(!NpcStats_IsEnemySilenced(Monk))
+		static float pos2[3];
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
+			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close])
 			{
-				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close] && GetTeam(entity_close) != TFTeam_Red)
+				if(!NpcStats_IsEnemySilenced(Monk) && GetTeam(entity_close) != TFTeam_Red && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close])
 				{
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(entity_close, _, regrow);
-					if(regrow)
+					//Insta fullheal enemeis
+					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 					{
-						static float pos2[3];
-						GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+						bool regrow = true;
+						Building_CamoOrRegrowBlocker(entity_close, _, regrow);
+						if(regrow)
 						{
-							SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+							HealEntityGlobal(entity_close, entity_close, 999999.9, 1.0, 1.0, HEAL_ABSOLUTE);
 						}
+					}
+				}
+				if(GetTeam(entity_close) == TFTeam_Red)
+				{
+					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE) )
+					{
+						float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);
+						SDKHooks_TakeDamage(entity_close, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
 					}
 				}
 			}
@@ -620,7 +630,6 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
 			{
-				static float pos2[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 				{
@@ -629,26 +638,11 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				}
 			}
 		}
-		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
-		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-			if(IsValidEntity(entity_close) && GetTeam(entity_close) == TFTeam_Red)
-			{
-				static float pos2[3];
-				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE) )
-				{
-					float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);
-					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
-				}
-			}
-		}
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 			if(IsValidEntity(entity_close))
 			{
-				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 				{
