@@ -2114,7 +2114,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 		}
 		else if(Level[client] < 10)
 		{
-			SPrintToChat(client, "TIP: Press RELOAD (R) to pick up an item");
+			SPrintToChat(client, "TIP: Press [T (spray)] to pick up an item");
 			return true;
 		}
 	}

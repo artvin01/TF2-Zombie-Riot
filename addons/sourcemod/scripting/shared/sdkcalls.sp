@@ -86,7 +86,6 @@ void SDKCall_Setup()
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
 		
 
-
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBasePlayer::CheatImpulseCommands");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain); //Player

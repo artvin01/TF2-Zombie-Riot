@@ -1433,7 +1433,7 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself."
+		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself.\nHold Tab and then press your spray button to actually spray."
 	}
 	"Difficulty Help Explained"
 	{
@@ -1532,7 +1532,7 @@
 	"Ammobox Tooltip"
 	{
 		"#format"	"{1:d}"
-		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
+		"en" 		"Press [T (spray)] on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
 	}
 	"Warn Client Ammo None"
 	{
@@ -1541,32 +1541,15 @@
 	}
 	"Armortable Tooltip"
 	{
-		"en" 		"Press RELOAD on the Armortable to gain Armor."
-		"fr" 		"Appuyez RELOAD sur la table d'armure pour obtenir de l'armure."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на верстаке брони, чтобы получить броню."
-		"de"		"Drücke NACHLADEN an dem Rüstungstisch um Rüstung zubekommen."
-		"pt"		"Pressione o botão de RECARREGAR para pegar mais armadura."
-		"nl"		"Druk de HERLAAD toets op de schild tafel om extra bescherming te krijgen."
-		"chi"       "对着护甲柜按下R键可以补充你的护甲"
+		"en" 		"Press [T (spray)] on the Armortable to gain Armor."
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary perk."
-		"fr" 		"Appuyez RELOAD sur la machine de perks pour obtenir un perk temporaire."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на перк-машине, чтобы получить мощный временный перк."
-//		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
-		"pt"		"Pressione o botão de RECARREGAR para ganhar uma habilidade temporaria."
-		"nl"		"Druk de HERLAAD toets op de perkmachine om een sterke, tijdelijke kracht te krijgen."
-		"chi"       "对着福利箱按下R键可以选择Buff"
+		"en" 		"Press [T (spray)] on the Perkmachine to gain a strong temporary perk."
 	}
 	"PackAPunch Tooltip"
 	{
-		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon."
-		"fr" 		"Appuyez RELOAD pour appliquer une amélioration Pack-a-Punch sur votre arme."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА для улучшения оружия, которое вы держите."
-		"pt"		"Aperte o botão de RECARREGAR com sua arma atual para melhora-lá."
-		"nl"		"Druk de HERLAAD toets om uw huidige wapen te Pack-A-Punchen"
-		"chi"       "对着工作台按下R键可以升级你的武器"
+		"en" 		"Press [T (spray)] To Pack-a-Punch your current holding weapon."
 	}
 	"Packed"
 	{
@@ -1669,12 +1652,7 @@
 	}
 	"Village Upgrade Tooltip"
 	{
-		"en" 		"Press RELOAD to upgrade your village."
-		"fr" 		"Appuyez RELOAD pour améliorer votre village."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА, чтобы улучшить свою деревню."
-		"pt"		"Aperte o botão de RECARREGAR para aprimorar sua vilá."
-		"nl"		"Druk op de HERLAAD toets om uw dorp te upgraden."
-		"chi"       "按下R键升级你的村庄"
+		"en" 		"Press [T (spray)] to upgrade your village."
 	}
 	"Pong"
 	{
@@ -3724,9 +3702,7 @@
 	}
 	"Blacksmith Tooltip"
 	{
-		"en"		"Press RELOAD to apply a tinker effect to your active weapon."
-		"fr"		"Appuyez sur RELOAD pour appliquer un effet de forge sur votre arme"
-		"chi"		"按 装弹键 打开菜单，抽取随机武器属性"
+		"en"		"Press [T (spray)] to apply a tinker effect to your active weapon."
 	}
 	"Blacksmith Used"
 	{
