@@ -3337,7 +3337,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 						CPrintToChat(client, "Hmm.... You guys sure are something. Reaching a point this far in Freeplay isn't an easy task.");
 						CPrintToChat(client, "I shall now give you some time to rest, you must be really exhausted after that. And...");
 						CPrintToChat(client, "{lime}As a reward for your perseverance, I am giving you something to fend off a specific someone.");
-						CPrintToChat(client, "{white}(Your backpack feels heavier. {gold}Check your unlocks.{white}");
+						CPrintToChat(client, "{white}(Your backpack feels heavier. {gold}Check your unlocks.{white})");
 					}
 				}
 
