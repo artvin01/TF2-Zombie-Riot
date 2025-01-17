@@ -322,8 +322,10 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 #endif
 					return Plugin_Handled;
 				}
+				/*
 				//Block medic call.
 				return Plugin_Handled;
+				*/
 			}
 		}
 	}

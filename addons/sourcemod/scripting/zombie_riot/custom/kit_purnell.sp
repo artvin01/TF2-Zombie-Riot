@@ -319,7 +319,7 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 	int TypeOfShove = pack.ReadCell();
 	if(client && weapon != -1/* && IsValidCurrentWeapon(client, weapon)*/)
 	{
-		float damage = 20.0;
+		float damage = 15.0;
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		damage *= Attributes_Get(weapon, 476, 1.0);
@@ -348,6 +348,11 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 		TR_TraceHullFilter(fPos, endPoint, hullMin, hullMax, 1073741824, Purnell_DoSwingTrace, client);	// 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
 		
+		int MaxTargetsHit = PURNELL_MAX_TARGETS;
+		if(TypeOfShove == 0)
+		{
+			MaxTargetsHit = 2;
+		}
 		bool AdditionalBonusRaidHit= false;
 		for(int i; i < PURNELL_MAX_TARGETS; i++)
 		{
