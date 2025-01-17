@@ -1745,16 +1745,17 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// SAMU'S SKULLS (new!) ///
-			case 38:
+			case 38, 39:
 			{
 				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
 				SpeedMult += 0.1;
 			}
-			case 39:
+			case 40, 41:
 			{
 				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
 				SpeedMult += 0.15;
 			}
+			/*
 			case 40:
 			{
 				if(SpeedMult < 0.1)
@@ -1775,6 +1776,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
 				SpeedMult -= 0.10;
 			}
+			*/
 			case 42:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
