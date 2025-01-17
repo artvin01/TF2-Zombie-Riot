@@ -48,6 +48,8 @@ static int RampartBuff;
 static int FreeplayBuffTimer;
 static bool AntinelNextWave;
 static int randomsuper;
+static bool zombiecombine;
+static int moremen;
 
 void Freeplay_OnMapStart()
 {
@@ -106,11 +108,23 @@ void Freeplay_ResetAll()
 	FreeplayBuffTimer = 0;
 	AntinelNextWave = false;
 	randomsuper = 0;
+	zombiecombine = false;
+	moremen = 0;
 }
 
 int Freeplay_EnemyCount()
 {
-	return AntinelNextWave ? 6 : 5;
+	int amount = 5;
+	if(AntinelNextWave)
+		amount++;
+
+	if(zombiecombine)
+		amount++;
+
+	if(moremen)
+		amount += 3;
+
+	return amount;
 }
 
 void Freeplay_OnNPCDeath(int entity)
@@ -239,7 +253,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 16:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vhxis");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 17:
 			{
@@ -260,14 +274,15 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 20:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_twins");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
+				enemy.ExtraDamage = 0.75;
 			}
 			case 21:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage *= 0.6; // thompson gets way too much damage in freeplay, reduce it
+				enemy.ExtraDamage = 0.6; // thompson gets way too much damage in freeplay, reduce it
 			}
 			case 22:
 			{
@@ -332,7 +347,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.Health /= 5; // RAAAHGTJSKODMJTISGMKOET
 
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage *= 20.0;
+			enemy.ExtraDamage = 20.0;
 	}
 	else if(SuperMiniBoss)
 	{
@@ -364,7 +379,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega");
 				enemy.Health = RoundToFloor(750000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage *= 0.35;
+				enemy.ExtraDamage = 0.35;
 			}
 			case 5: // Panzer
 			{
@@ -376,6 +391,16 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
 				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
+			case 7: // ME WHEN I GET THAT FUCKING VILLAGER
+			{
+				enemy.Index = NPC_GetByPlugin("npc_medival_villager");
+				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
+			case 8: // a spitit
+			{
+				enemy.Index = NPC_GetByPlugin("npc_wandering_spirit");
+				enemy.Health = RoundToFloor(500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
 			default: // Sawrunner
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
@@ -386,8 +411,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		// Leaving this in here in the case i have to nerf super miniboss health
 		// 22/12/2024 - lesson learned, i went way too overboard
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.45);
-		enemy.ExtraDamage *= 0.8;
-		enemy.Credits += 125.0;
+		enemy.ExtraDamage = 0.8;
+		enemy.Credits += 250.0;
 		enemy.ExtraSpeed = 1.35;
 		enemy.ExtraSize = 1.75; // big
 		enemy.Does_Not_Scale = 1;
@@ -412,6 +437,34 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		count = 1;
 		AntinelNextWave = false;
+	}
+	else if(zombiecombine)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Index = NPC_GetByPlugin("npc_zombine");
+		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
+		enemy.ExtraSpeed = 2.0;
+		enemy.ExtraSize = 1.5; // smol
+		enemy.Credits += 100.0;
+		enemy.ExtraDamage = 1.5;
+
+		count = 6;
+		zombiecombine = false;
+	}
+	else if(moremen)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Index = NPC_GetByPlugin("npc_seaborn_heavy");
+		enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
+		enemy.Health = RoundToCeil(enemy.Health * 2.0);
+		enemy.ExtraSpeed = 5.0;
+		enemy.ExtraSize = 1.25;
+		enemy.Credits += 125.0;
+		enemy.ExtraDamage = 1.5;
+
+		count = 30;
+		moremen--;
 	}
 	else
 	{
@@ -770,7 +823,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 73;
+		rand = GetURandomInt() % 75;
 
 	if(wrathofirln)
 	{
@@ -937,7 +990,7 @@ void Freeplay_SetupStart(bool extra = false)
 		{	
 			CPrintToChatAll("{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 			SuperMiniBoss = true;
-			randomsuper = GetRandomInt(0, 6);
+			randomsuper = GetRandomInt(0, 8);
 			if(randomsuper == -1)
 				PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY");
 		}
@@ -1163,7 +1216,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 12:
 			{
-				CPrintToChatAll("{green}Mr.X has come to spread the xeno infection on the next wave...");
+				CPrintToChatAll("{green}Mr.X {red}has come to spread the xeno infection on the next wave...");
 			}
 			case 13:
 			{
@@ -1622,7 +1675,7 @@ void Freeplay_SetupStart(bool extra = false)
 					}
 					case 12:
 					{
-						strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
+						strcopy(message, sizeof(message), "{green}Mr.X {red}has come to spread the xeno infection on the next wave...");
 					}
 					case 13:
 					{
@@ -1694,13 +1747,13 @@ void Freeplay_SetupStart(bool extra = false)
 			/// SAMU'S SKULLS (new!) ///
 			case 38:
 			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 5% faster!");
-				SpeedMult += 0.05;
+				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
+				SpeedMult += 0.1;
 			}
 			case 39:
 			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
-				SpeedMult += 0.1;
+				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
+				SpeedMult += 0.15;
 			}
 			case 40:
 			{
@@ -1709,8 +1762,8 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
-				SpeedMult -= 0.15;
+				strcopy(message, sizeof(message), "{green}Enemies will now move 5% slower.");
+				SpeedMult -= 0.5;
 			}
 			case 41:
 			{
@@ -1719,8 +1772,8 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}Enemies will now move 20% slower.");
-				SpeedMult -= 0.20;
+				strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
+				SpeedMult -= 0.10;
 			}
 			case 42:
 			{
@@ -1807,6 +1860,9 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
 				SuperMiniBoss = true;
+				randomsuper = GetRandomInt(0, 8);
+				if(randomsuper == -1)
+					PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY");
 				EmitSoundToAll("mvm/mvm_warning.wav");
 			}
 			case 51:
@@ -2069,6 +2125,26 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}An ant comes out of this skull, and its approaching to the bloody gate!");
 				AntinelNextWave = true;
+			}
+			case 73:
+			{
+				if(zombiecombine)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}Hey, im thinking of something.... What if, a {gold}combine, {red}and a {gold}zombie, {red}were...");
+				zombiecombine = true;
+			}
+			case 74:
+			{
+				if(moremen)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!");
+				moremen = 3;
 			}
 			default:
 			{
