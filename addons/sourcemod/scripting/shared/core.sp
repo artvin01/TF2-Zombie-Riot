@@ -2941,6 +2941,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	}
 	else if(condition == TFCond_Stealthed)
 	{
+		int HealthRemaining = GetEntProp(client, Prop_Send, "m_iHealth");
+		HealthRemaining -= 40;
+		//Heals by 40.
+		SetEntProp(client, Prop_Send, "m_iHealth", HealthRemaining);
 		TF2_RemoveCondition(client, TFCond_Stealthed);
 	}
 	else if(condition == TFCond_SpawnOutline) //this is a hopefully prevention for client crashes, i am unsure why this happens.
