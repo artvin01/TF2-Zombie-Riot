@@ -1875,6 +1875,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}%N gets filled with the unyielding desire to avenge his patients.",client);
 							Yakuza_Lastman(5);
 						}
+						if(Blacksmith_Lastman(client))
+						{
+							CPrintToChatAll("{crimson}%N Seems to be completly and utterly screwed.",client);
+							Yakuza_Lastman(6);
+						}
 						
 						for(int i=1; i<=MaxClients; i++)
 						{

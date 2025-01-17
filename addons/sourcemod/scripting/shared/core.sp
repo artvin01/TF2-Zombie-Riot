@@ -50,7 +50,6 @@
 #define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS		64
 #define ZR_MAX_SPAWNERS		256
-
 #else
 
 #define ZR_MAX_NPCS		256
@@ -559,6 +558,7 @@ int b_OnDeathExtraLogicNpc[MAXENTITIES];
 #define	ZRNPC_DEATH_NOHEALTH		( 1<<0 )	// Do not give health on kill!
 #define	ZRNPC_DEATH_NOGIB		( 1<<1 )	// Do not give health on kill!
 
+float f_MutePlayerTalkShutUp[MAXTF2PLAYERS];
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
 bool b_movedelay_walk[MAXENTITIES];
@@ -1016,6 +1016,7 @@ public void OnMapStart()
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
 	Zero(f_PreventMedigunCrashMaybe);
 	Zero(f_ClientReviveDelayReviveTime);
+	Zero(f_MutePlayerTalkShutUp);
 
 #if defined ZR || defined RPG
 	Core_PrecacheGlobalCustom();
@@ -1600,6 +1601,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		buttons &= ~IN_ATTACK;
 	}
+	/*
+	Instant community feedback that T is very bad.
+	using idk what other button to use.
+	*/
 	if(impulse == 201)
 	{
 		f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
@@ -1609,25 +1614,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		{
 			impulse = 0;
 		}
-		//Interact with buildings!
-		if(angles[0] < -70.0)
-		{
-			int entity = EntRefToEntIndex(Building_Mounted[client]);
-			if(IsValidEntity(entity))
-			{
-				Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), client);
-			}
-		}
-		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		StartPlayerOnlyLagComp(client, true);
-		if(InteractKey(client, weapon_holding, true)) //doesnt matter which one
-		{
-			EndPlayerOnlyLagComp(client);
-			return Plugin_Changed;
-		}
-		EndPlayerOnlyLagComp(client);
+		DoInteractKeyLogic(client);
 	}
-		
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS
@@ -2951,6 +2939,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_RemoveCondition(client, TFCond_Cloaked);
 	}
+	else if(condition == TFCond_Stealthed)
+	{
+		TF2_RemoveCondition(client, TFCond_Stealthed);
+	}
 	else if(condition == TFCond_SpawnOutline) //this is a hopefully prevention for client crashes, i am unsure why this happens.
 	//Idea got from a client dump.
 	{
@@ -3435,6 +3427,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
 		}
 		CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
+		CheckLastMannStanding(target);
 	}
 }
 

@@ -384,8 +384,13 @@ public MRESReturn DHook_PreClientUpdatePost()
 //Thanks to rafradek#0936 on the allied modders discord for pointing this function out!
 //This changes player classes to the correct one.
 #if !defined RTS
-public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle hParams)
+public MRESReturn SpeakConceptIfAllowed_Pre(int client, DHookReturn returnHook, DHookParam param)
 {
+	if(f_MutePlayerTalkShutUp[client] > GetGameTime())
+	{
+		returnHook.Value = false;
+		return MRES_Supercede;
+	}
 	for(int client_2=1; client_2<=MaxClients; client_2++)
 	{
 
