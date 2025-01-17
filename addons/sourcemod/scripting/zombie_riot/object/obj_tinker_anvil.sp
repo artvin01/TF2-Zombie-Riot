@@ -34,6 +34,7 @@ methodmap ObjectTinkerAnvil < ObjectGeneric
 		func_NPCThink[npc.index] = ClotThink;
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, 90.0);
+		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		for(int i = 1; i <= MaxClients; i++)
 		{

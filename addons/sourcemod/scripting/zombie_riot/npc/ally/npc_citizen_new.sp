@@ -3157,6 +3157,10 @@ public void Citizen_ClotThink(int iNPC)
 							{
 								if(Building_AttemptPlace(entity, npc.index))
 								{
+									if(view_as<ObjectGeneric>(entity).SentryBuilding)
+									{
+										i_PlayerToCustomBuilding[npc.index] = EntIndexToEntRef(entity);
+									}
 									if(id == 9)
 									{
 										for(int client = 1; client <= MaxClients; client++)
@@ -3174,7 +3178,6 @@ public void Citizen_ClotThink(int iNPC)
 									{
 										HealingCooldown[npc.index] = GetGameTime() + 20.0;
 									}
-									i_PlayerToCustomBuilding[npc.index] = EntIndexToEntRef(entity);
 								}
 								else
 								{
