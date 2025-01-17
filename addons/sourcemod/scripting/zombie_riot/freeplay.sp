@@ -1757,23 +1757,27 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 40:
 			{
-				if(SpeedMult < 0.1)
+				if(SpeedMult < 0.25)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
 				strcopy(message, sizeof(message), "{green}Enemies will now move 5% slower.");
 				SpeedMult -= 0.05;
+				if(SpeedMult < 0.25)
+					SpeedMult = 0.25;
 			}
 			case 41:
 			{
-				if(SpeedMult < 0.1)
+				if(SpeedMult < 0.25)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
 				strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
 				SpeedMult -= 0.10;
+				if(SpeedMult < 0.25)
+					SpeedMult = 0.25;
 			}
 			case 42:
 			{
