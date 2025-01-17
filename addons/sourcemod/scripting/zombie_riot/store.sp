@@ -1917,10 +1917,11 @@ public void ReShowSettingsHud(int client)
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-86", buffer);
-
+	/*
 	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client] + 2.0);
 	menu2.AddItem("-72", buffer);
-
+	unused.
+	*/
 
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");

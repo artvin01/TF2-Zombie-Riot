@@ -1636,7 +1636,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 	{
 		//arrows ignore inflictor?
 #if defined ZR
-		f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker] + 2.0;
+		//f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker] + 2.0;
 #endif
 		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 		if(damagetype & DMG_CRIT)

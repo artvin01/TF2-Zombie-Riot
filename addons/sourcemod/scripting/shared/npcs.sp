@@ -1100,11 +1100,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 #if defined ZR
 	if(inflictor > 0 && inflictor < MaxClients)
-	{
+	{	
+		/*
 		if(f_Data_InBattleHudDisableDelay[inflictor] + 2.0 != 0.0)
 		{
 			f_InBattleHudDisableDelay[inflictor] = GetGameTime() + f_Data_InBattleHudDisableDelay[inflictor] + 2.0;
 		}
+		*/
 		f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
 	}
 #endif
