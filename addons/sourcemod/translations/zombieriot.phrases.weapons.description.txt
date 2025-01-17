@@ -4187,11 +4187,11 @@
 	}
 	"Hand Desc"
 	{
-		"en"	"Relax, I'm not one of them.\nCure your teammates, or charge the enemies extra money for another therapy session.\nM1: Shove enemies away, and apply a random debuff upon doing so.\nM2: Apply a random buff on an ally."
+		"en"	"Relax, I'm not one of them.\nCure your teammates, or charge the enemies extra money for another therapy session.\nM2: Shove enemies away, and apply a random debuff upon doing so.\nM1: Apply a random buff on an ally."
 	}
 	"Hand Pap 1"
 	{
-		"en"	"Gain the ability to apply one of three buffs on your teammates with M2."
+		"en"	"Gain the ability to apply one of three buffs on your teammates with M1."
 	}
 	"Hand Pap Last"
 	{

@@ -534,8 +534,8 @@ public void RaidbossMrX_ClotThink(int iNPC)
 						Client_Shake(client, 0, 20.0, 20.0, 1.0, false);
 
 					npc.PlaySnapSound();
-					b_NoGravity[client] = true;
-					ApplyStatusEffect(client, client, "Solid Stance", 999999.0);	
+					b_NoGravity[client] = false;
+					RemoveSpecificBuff(client, "Solid Stance");
 					npc.SetVelocity({0.0,0.0,0.0});
 					if(IsValidClient(client))
 					{

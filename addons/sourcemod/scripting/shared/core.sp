@@ -1614,7 +1614,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		{
 			impulse = 0;
 		}
-		DoInteractKeyLogic(client);
+		DoInteractKeyLogic(angles, client);
 	}
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	

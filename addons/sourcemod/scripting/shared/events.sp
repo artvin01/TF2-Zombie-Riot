@@ -215,7 +215,7 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 	event.BroadcastDisabled = true;
 	return Plugin_Changed;
 }
-f
+
 #if defined ZR
 public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {

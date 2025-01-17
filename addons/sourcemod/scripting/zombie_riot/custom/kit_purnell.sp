@@ -172,7 +172,7 @@ void Add_OneClip_Purnell(int entity, int client)
 
 int Purnell_RevolverFull(int weapon)
 {
-	return RoundFloat(6.0 * Attributes_Get(weapon, 4, 0.0));
+	return RoundFloat(6.0 * Attributes_Get(weapon, 4, 1.0));
 }
 
 bool IsAmmoFullPurnellWeapon(int weapon, int ammo)
@@ -189,7 +189,7 @@ public Action Purnell_Timer_Management(Handle timer, DataPack pack)
 	int clientOriginal = pack.ReadCell();
 	int client = GetClientOfUserId(pack.ReadCell());
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidClient(client) && IsValidEntity(weapon))
+	if(IsValidClient(client) && IsValidEntity(weapon) && IsPlayerAlive(client))
 	{
 		Purnell_LastMann_Check();
 		//Purnell_Buff_Loc(client);
@@ -254,7 +254,7 @@ public void Purnell_PrimaryShove(int client, int weapon, bool crit, int slot) //
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Ability_Apply_Cooldown(client, slot, 2.0);
+		Ability_Apply_Cooldown(client, slot, 2.5 * Attributes_Get(weapon, 6, 1.0));
 		DataPack pack = new DataPack();
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
@@ -319,7 +319,7 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 	int TypeOfShove = pack.ReadCell();
 	if(client && weapon != -1/* && IsValidCurrentWeapon(client, weapon)*/)
 	{
-		float damage = 40.0;
+		float damage = 20.0;
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		damage *= Attributes_Get(weapon, 476, 1.0);
@@ -378,7 +378,9 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 					float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
 					SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
 				}
+				//dmg penalty
 			}
+			damage *= 0.75;
 		}
 		
 		
@@ -413,7 +415,7 @@ public void Purnell_MeleeShove(int client, int weapon, bool crit, int slot) // "
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Ability_Apply_Cooldown(client, slot, 10.0);
+		Ability_Apply_Cooldown(client, slot, 10.0 * Attributes_Get(weapon, 6, 1.0));
 		int pap_level = i_Pap_Level[client];
 		float knockback = PURNELL_KNOCKBACK;
 		switch(pap_level)
