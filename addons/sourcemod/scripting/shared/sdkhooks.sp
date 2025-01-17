@@ -753,6 +753,12 @@ public void OnPostThink(int client)
 			
 			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
+		if(HasSpecificBuff(client, "Regenerating Therapy"))
+		{
+			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
+			
+			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
+		}
 
 		Armor_regen_delay[client] = GameTime + 1.0;
 		SDkHooks_Think_TutorialStepsDo(client);

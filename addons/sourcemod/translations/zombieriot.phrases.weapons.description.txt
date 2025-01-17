@@ -4183,7 +4183,7 @@
 	}
 	"Therapy Desc"
 	{
-		"en"	"The pills by itself won't make you feel better. You'll have to do more than that."
+		"en"	"The pills by itself won't make you feel better. You'll have to do more than that.\nKit has no self resistance, you instead have high hp regen as youre a doctor."
 	}
 	"Hand Desc"
 	{

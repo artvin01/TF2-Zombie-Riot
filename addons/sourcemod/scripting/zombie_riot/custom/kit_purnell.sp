@@ -185,7 +185,7 @@ static void Particle_Add(int client)
 		float pos[3]; GetClientAbsOrigin(client, pos);
 		pos[2] += 1.0;
 
-		int entity = ParticleEffectAt(pos, "utaunt_hands_floor2_red", -1.0);
+		int entity = ParticleEffectAt(pos, "utaunt_hands_floor2_purple", -1.0);
 		if(entity > MaxClients)
 		{
 			SetParent(client, entity);
@@ -439,7 +439,8 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	float DurationGive = 4.0;
 	int buff_apply = GetRandomInt(0, 3);
 	Purnell_Configure_Buffs(i_Pap_Level[client], cooldown, DurationGive, buff_apply);
-	
+	DurationGive *= 1.5;
+
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
 	float pos[3];
@@ -540,132 +541,155 @@ static void Purnell_Configure_Buffs(int level, float &cooldown, float &DurationG
 }
 static void Purnell_AllyBuffApply(int client, int target, int overdose, float DurationGive, float cooldown)
 {
-	bool validAlly;
 	char text[255];
 	switch(overdose)
 	{
 		case 0:
 		{
-			ApplyStatusEffect(validAlly, target, "Ancient Banner", DurationGive);
-			if(target > MaxClients)
+			if(target <= MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Ancient Banner!");
+				ApplyStatusEffect(client, target, "Hectic Therapy", DurationGive);
+
+				if(target > MaxClients)
+				{
+					Format(text, sizeof(text), "You buffed an ally with Hectic Therapy!");
+				}
+				else
+				{
+					Format(text, sizeof(text), "You buffed %N with Hectic Therapy!", target);
+				}
+
+				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+				if(entity != -1)
+				{
+					ApplyTempAttrib(entity, 6, 0.8, DurationGive);
+					ApplyTempAttrib(entity, 97, 0.8, DurationGive);
+					ApplyTempAttrib(entity, 733, 0.8, DurationGive);
+				}
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Ancient Banner!", target);
+				ApplyStatusEffect(client, target, "Physical Therapy", DurationGive);
+				if(target > MaxClients)
+				{
+					Format(text, sizeof(text), "You buffed an ally with Physical Therapy!");
+				}
+				else
+				{
+					Format(text, sizeof(text), "You buffed %N with Physical Therapy!", target);
+				}
 			}
 		}
 		case 1:
 		{
-			ApplyStatusEffect(validAlly, target, "Buff Banner", DurationGive);
+			ApplyStatusEffect(client, target, "Physical Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Buff Banner!");
+				Format(text, sizeof(text), "You buffed an ally with Physical Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Buff Banner!", target);
+				Format(text, sizeof(text), "You buffed %N with Physical Therapy!", target);
 			}
 		}
 		case 2:
 		{
-			ApplyStatusEffect(validAlly, target, "Battilons Backup", DurationGive);
+			ApplyStatusEffect(client, target, "Ensuring Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Battalion's Backup!");
+				Format(text, sizeof(text), "You buffed an ally with Ensuring Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Battalion's Backup!", target);
+				Format(text, sizeof(text), "You buffed %N with Ensuring Therapy!", target);
 			}
 		}
 		case 3:
 		{
-			ApplyStatusEffect(validAlly, target, "Combine Command", DurationGive);
+			ApplyStatusEffect(client, target, "Overall Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Combine Command!");
+				Format(text, sizeof(text), "You buffed an ally with Overall Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Combine Command!", target);
+				Format(text, sizeof(text), "You buffed %N with Overall Therapy!", target);
 			}
 		}
 		case 4:
 		{
-			ApplyStatusEffect(validAlly, target, "Self Empowerment", DurationGive);
+			ApplyStatusEffect(client, target, "Powering Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Self Empowerment!");
+				Format(text, sizeof(text), "You buffed an ally with Powering Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Self Empowerment!", target);
+				Format(text, sizeof(text), "You buffed %N with Powering Therapy!", target);
 			}
 		}
 		case 5:
 		{
-			ApplyStatusEffect(validAlly, target, "Call To Victoria", DurationGive);
+			ApplyStatusEffect(client, target, "Calling Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Call To Victoria!");
+				Format(text, sizeof(text), "You buffed an ally with Calling Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Call To Victoria!", target);
+				Format(text, sizeof(text), "You buffed %N with Calling Therapy!", target);
 			}
 		}
 		case 6:
 		{
-			ApplyStatusEffect(validAlly, target, "Caffinated", DurationGive);
+			ApplyStatusEffect(client, target, "Caffinated Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Caffeine!");
+				Format(text, sizeof(text), "You buffed an ally with Caffinated Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Caffeine!", target);
+				Format(text, sizeof(text), "You buffed %N with Caffinated Therapy!", target);
 			}
 		}
 		case 7:
 		{
-			ApplyStatusEffect(validAlly, target, "Void Strength I", DurationGive);
+			ApplyStatusEffect(client, target, "Regenerating Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Void Strength I!");
+				Format(text, sizeof(text), "You buffed an ally with Regenerating Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Void Strength I!", target);
+				Format(text, sizeof(text), "You buffed %N with Regenerating Therapy!", target);
 			}
 		}
 		case 8:
 		{
-			ApplyStatusEffect(validAlly, target, "False Therapy", DurationGive);
+			ApplyStatusEffect(client, target, "False Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with False Therapy!");
+				Format(text, sizeof(text), "You buffed an ally with False Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with False Therapy!", target);
+				Format(text, sizeof(text), "You buffed %N with False Therapy!", target);
 			}
 		}
 		case 9:
 		{
-			ApplyStatusEffect(validAlly, target, "Squad Leader", DurationGive);
+			ApplyStatusEffect(client, target, "Squad Leader", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Squad Leader!");
+				Format(text, sizeof(text), "You buffed an ally with Squad Leader!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Squad Leader!", target);
+				Format(text, sizeof(text), "You buffed %N with Squad Leader!", target);
 			}
 		}
 	}
-	FormatEx(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
+	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
 	PrintHintText(client, "%s", text);
 }
 
@@ -676,6 +700,7 @@ public void Logic_Purnell_Debuff(int client, int victim, float damage, int weapo
 	float DurationGive = 4.0;
 	int debuff_apply = GetRandomInt(0, 3);
 	Purnell_Configure_Debuffs(i_Pap_Level[client], cooldown, DurationGive, debuff_apply);
+	DurationGive *= 1.5;
 	Purnell_DebuffApply(client, victim, debuff_apply, DurationGive, cooldown);
 }
 
@@ -723,91 +748,90 @@ static void Purnell_Configure_Debuffs(int level, float &cooldown, float &Duratio
 }
 static void Purnell_DebuffApply(int client, int target, int overdose, float DurationGive, float cooldown)
 {
-	bool validAlly;
 	char text[255];
 	switch(overdose)
 	{
 		case 0:
 		{
-			ApplyStatusEffect(validAlly, target, "Cryo", DurationGive);
+			ApplyStatusEffect(client, target, "Icy Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Cryo!");
+				Format(text, sizeof(text), "You debuffed an enemy with Icy Dereliction!");
 			}
 		}
 		case 1:
 		{
-			ApplyStatusEffect(validAlly, target, "Iberia's Anti Raid", DurationGive);
+			ApplyStatusEffect(client, target, "Raiding Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Iberia's Anti Raid!");
+				Format(text, sizeof(text), "You debuffed an enemy with Raiding Dereliction!");
 			}
 		}
 		case 2:
 		{
-			ApplyStatusEffect(validAlly, target, "Prosperity II", DurationGive);
+			ApplyStatusEffect(client, target, "Degrading Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Prosperity II!");
+				Format(text, sizeof(text), "You debuffed an enemy with Degrading Dereliction!");
 			}
 		}
 		case 3:
 		{
-			ApplyStatusEffect(validAlly, target, "Near Zero", DurationGive);
+			ApplyStatusEffect(client, target, "Zero Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Near Zero!");
+				Format(text, sizeof(text), "You debuffed an enemy with Zero Therapy!");
 			}
 		}
 		case 4:
 		{
-			ApplyStatusEffect(validAlly, target, "Golden Curse", DurationGive);
+			ApplyStatusEffect(client, target, "Debt Causing Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Golden Curse!");
+				Format(text, sizeof(text), "You debuffed an enemy with Debt Causing Dereliction!");
 			}
 		}
 		case 5:
 		{
-			ApplyStatusEffect(validAlly, target, "Cudgelled", DurationGive);
+			ApplyStatusEffect(client, target, "Headache Incuding Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Cudgelled!");
+				Format(text, sizeof(text), "You debuffed an enemy with Headache Incuding Dereliction!");
 			}
 		}
 		case 6:
 		{
-			ApplyStatusEffect(validAlly, target, "Teslar Shock", DurationGive);
+			ApplyStatusEffect(client, target, "Shocking Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Teslar Shock!");
+				Format(text, sizeof(text), "You debuffed an enemy with Shocking Dereliction!");
 			}
 		}
 		case 7:
 		{
-			ApplyStatusEffect(validAlly, target, "Specter's Aura", DurationGive);
+			ApplyStatusEffect(client, target, "Therapists Aura", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Specter's Aura!");
+				Format(text, sizeof(text), "You debuffed an enemy with Therapists Aura!");
 			}
 		}
 		case 8:
 		{
-			ApplyStatusEffect(validAlly, target, "Teslar Electricution", DurationGive);
+			ApplyStatusEffect(client, target, "Electric Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Teslar Electricution!");
+				Format(text, sizeof(text), "You debuffed an enemy with Electric Dereliction!");
 			}
 		}
 		case 9:
 		{
-			ApplyStatusEffect(validAlly, target, "Caffinated Drain", DurationGive);
+			ApplyStatusEffect(client, target, "Caffinated Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Caffinated Drain!");
+				Format(text, sizeof(text), "You debuffed an enemy with Caffinated Dereliction!");
 			}
 		}
 	}
-	FormatEx(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
+	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
 	PrintHintText(client, "%s", text);
 }
