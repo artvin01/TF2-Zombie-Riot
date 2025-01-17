@@ -4181,6 +4181,34 @@
 	{
 		"en"	"Increases Stats"
 	}
+	"Therapy Desc"
+	{
+		"en"	"The pills by itself won't make you feel better. You'll have to do more than that."
+	}
+	"Hand Desc"
+	{
+		"en"	"Relax, I'm not one of them.\nCure your teammates, or charge the enemies extra money for another therapy session.\nM1: Shove enemies away, and apply a random debuff upon doing so.\nM2: Apply a random buff on an ally."
+	}
+	"Hand Pap 1"
+	{
+		"en"	"Gain the ability to apply one of three buffs on your teammates with M2."
+	}
+	"Hand Pap Last"
+	{
+		"en"	"More buffs.\nMore debuffs.\nLonger duration."
+	}
+	"Taurus Revolver Desc"
+	{
+		"en"	"A very strong revolver that holds 5 bullets per clip.\nExtremely long reload time."
+	}
+	"Taurus Revolver Pap 1"
+	{
+		"en"	"Base damage increased.\nGain an M2 Ability that allows you to Pistol Whip the enemies."
+	}
+	"Taurus Revolver Last Pap"
+	{
+		"en"	"Base damage increased."
+	}
 	"Blue Cheese Desc"
 	{
 		"en"	"It stinks, a lot...\n+800 HP, Increases melee damage by +75%% and heal on kill by +35.\nIncreases melee resist with melee weapons by +10%%."

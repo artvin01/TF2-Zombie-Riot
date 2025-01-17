@@ -216,7 +216,9 @@ enum
 	WEAPON_ZEALOT_POTION = 134,
 	WEAPON_KIT_FRACTAL	= 135,
 	WEAPON_KIT_PROTOTYPE	= 136,
-	WEAPON_KIT_PROTOTYPE_MELEE	= 137
+	WEAPON_KIT_PROTOTYPE_MELEE	= 137,
+	WEAPON_PURNELL_MELEE = 138,
+	WEAPON_PURNELL_PRIMARY = 139
 }
 
 enum
@@ -550,6 +552,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/weapon_class_leper.sp"
 #include "zombie_riot/custom/kit_flagellant.sp"
 #include "zombie_riot/custom/kit_zealot.sp"
+#include "zombie_riot/custom/kit_purnell.sp"
 #include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
@@ -880,6 +883,7 @@ void ZR_MapStart()
 	ResetMapStartCastleBreakerWeapon();
 	OnMapStartZealot();
 	Wkit_Soldin_OnMapStart();
+	Purnell_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1865,6 +1869,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							ChargeSoldineRocketJump(client, client, true, 999.9);
 							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
 							Yakuza_Lastman(4);
+						}
+						if(Purnell_Lastman(client))
+						{
+							CPrintToChatAll("{crimson}%N gets filled with the unyielding desire to avenge his patients.",client);
+							Yakuza_Lastman(5);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

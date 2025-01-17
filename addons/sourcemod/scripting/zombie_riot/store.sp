@@ -6059,6 +6059,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 		Walter_Enable(client, entity);
 		Enable_CastleBreakerWeapon(client, entity);
+		Purnell_Enable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
