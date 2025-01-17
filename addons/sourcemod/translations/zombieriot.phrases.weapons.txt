@@ -2883,6 +2883,14 @@
 		"en"		"Prototype Kit"
 		"ko"		"프로토타입 키트"
 	}
+	"Taurus Revolver"
+	{
+		"en"	"Taurus Revolver"
+	}
+	"Hand"
+	{
+		"en"	"Hand"
+	}
 	"Blue Cheese"
 	{
 		"en" "Blue Cheese"
