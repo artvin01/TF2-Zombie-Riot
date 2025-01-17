@@ -208,7 +208,7 @@ methodmap GodAlaxios < CClotBody
 		}
 		if(Waves_InFreeplay())
 		{
-			RaidModeTime = 9999.0;
+			RaidModeTime = GetGameTime(npc.index) + 9999999.0;
 		}
 		RemoveAllDamageAddition();
 
@@ -999,7 +999,6 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
-			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
@@ -1010,7 +1009,6 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
-			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
@@ -1020,7 +1018,6 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
-			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
@@ -1033,7 +1030,6 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
 			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
-			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
@@ -1849,7 +1845,9 @@ void AlaxiosSayWords()
 
 void AlaxiosSayWordsAngry()
 {
-	RaidModeTime += 30.0;
+	if(!Waves_InFreeplay())
+		RaidModeTime += 30.0;
+
 	switch(GetRandomInt(0,3))
 	{
 		case 0:
