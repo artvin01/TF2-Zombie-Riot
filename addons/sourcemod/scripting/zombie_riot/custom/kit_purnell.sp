@@ -105,7 +105,9 @@ void Purnell_Enable(int client, int weapon)
 			
 			DataPack pack;
 			Timer_Purnell_Management[client] = CreateDataTimer(0.1, Purnell_Timer_Management, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
 			pack.WriteCell(GetClientUserId(client));
+			pack.WriteCell(EntIndexToEntRef(weapon));
 			if(!Precached)
 			{
 				PrecacheSoundCustom("#zombiesurvival/purnell_lastman.mp3", _, 1);
@@ -135,14 +137,15 @@ void Purnell_Enable(int client, int weapon)
 public Action Purnell_Timer_Management(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int clientOriginal = pack.ReadCell();
 	int client = GetClientOfUserId(pack.ReadCell());
-	//int weapon = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidClient(client) && IsValidEntity(weapon))
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon))
+		int weaponActve = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(weaponActve))
 		{
-			switch(i_CustomWeaponEquipLogic[weapon])
+			switch(i_CustomWeaponEquipLogic[weaponActve])
 			{
 				case WEAPON_PURNELL_MELEE, WEAPON_PURNELL_PRIMARY:
 				{
@@ -169,9 +172,9 @@ public Action Purnell_Timer_Management(Handle timer, DataPack pack)
 		return Plugin_Continue;
 	}
 		
-	Particle_Removal(client);
+	Particle_Removal(clientOriginal);
 
-	Timer_Purnell_Management[client] = null;
+	Timer_Purnell_Management[clientOriginal] = null;
 	return Plugin_Stop;
 }
 
@@ -348,7 +351,7 @@ public void Purnell_MeleeShove(int client, int weapon, bool crit, int slot) // "
 void Purnell_Shove_Melee_Kb(int client, int victim, float damage, int weapon)
 {
 	float knockback = fl_Push_Knockback[client];
-	Custom_Knockback(client, victim, knockback, true, true, true);
+	SensalCauseKnockback(client, victim, (knockback / 900.0), false);
 	Logic_Purnell_Debuff(client, victim, damage, weapon);
 	if(!b_PushSound[client])
 		b_PushSound[client] = true;

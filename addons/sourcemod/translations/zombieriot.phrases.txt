@@ -1583,13 +1583,7 @@
 	}
 	"Revive Teammate tooltip"
 	{
-		"en" 		"Hold RELOAD to revive this dying teammate."
-		"fr" 		"Appuyez RELOAD pour resuciter votre coéquipier."
-		"ru" 		"Удерживайте ПЕРЕЗАРЯДКА, чтобы оживить умирающего союзника."
-		"de"		"Halten NACHLADEN, um ihren absterben Kameraden zu beleben."
-		"pt"		"Segure o botão de RECARREGAR para reanimar seu colega de equipe morrendo."
-		"nl"		"Hou uw HERLAAD toets in om uw stervende teamgenoten tot leven te wekken."
-		"chi"       "按住R键扶起队友"
+		"en" 		"Hold [T (spray)] to revive this dying teammate."
 	}
 	"Bored or Dead"
 	{
