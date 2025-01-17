@@ -1216,7 +1216,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 12:
 			{
-				CPrintToChatAll("{green}Mr.X has come to spread the xeno infection on the next wave...");
+				CPrintToChatAll("{green}Mr.X {red}has come to spread the xeno infection on the next wave...");
 			}
 			case 13:
 			{
@@ -1675,7 +1675,7 @@ void Freeplay_SetupStart(bool extra = false)
 					}
 					case 12:
 					{
-						strcopy(message, sizeof(message), "{green}Mr.X has come to spread the xeno infection on the next wave...");
+						strcopy(message, sizeof(message), "{green}Mr.X {red}has come to spread the xeno infection on the next wave...");
 					}
 					case 13:
 					{
@@ -1747,13 +1747,13 @@ void Freeplay_SetupStart(bool extra = false)
 			/// SAMU'S SKULLS (new!) ///
 			case 38:
 			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 5% faster!");
-				SpeedMult += 0.05;
+				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
+				SpeedMult += 0.1;
 			}
 			case 39:
 			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
-				SpeedMult += 0.1;
+				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
+				SpeedMult += 0.15;
 			}
 			case 40:
 			{
@@ -1762,8 +1762,8 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}Enemies will now move 15% slower.");
-				SpeedMult -= 0.15;
+				strcopy(message, sizeof(message), "{green}Enemies will now move 5% slower.");
+				SpeedMult -= 0.5;
 			}
 			case 41:
 			{
@@ -1772,8 +1772,8 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}Enemies will now move 20% slower.");
-				SpeedMult -= 0.20;
+				strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
+				SpeedMult -= 0.10;
 			}
 			case 42:
 			{
