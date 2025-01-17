@@ -374,7 +374,15 @@ public Action Purnell_HealerTimer(Handle timer, DataPack pack)
 	
 	return Plugin_Stop;
 }
-
+bool PurnellDeathsound(int client)
+{
+	if(Timer_Purnell_Management[client] != null)
+	{
+		EmitCustomToAll("cof/purnell/death.mp3", client, _, _, _, 2.0);
+		return true;
+	}
+	return false;
+}
 static void Purnell_Buff_Loc(int client)
 {
 	float pos[3];
