@@ -753,6 +753,12 @@ public void OnPostThink(int client)
 			
 			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
+		if(HasSpecificBuff(client, "Regenerating Therapy"))
+		{
+			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
+			
+			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
+		}
 
 		Armor_regen_delay[client] = GameTime + 1.0;
 		SDkHooks_Think_TutorialStepsDo(client);
@@ -2136,7 +2142,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 
-					entity = SpawnFormattedWorldText("DOWNED [R]", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
+					entity = SpawnFormattedWorldText("DOWNED [T]", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
 					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 					b_DyingTextOff[victim] = false;
 					

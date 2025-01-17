@@ -808,4 +808,148 @@
 	{
 		"en"	"MERLT0N-BUFF"
 	}
+	"Icy Dereliction"
+	{
+		"en" "Icy Dereliction"
+	}
+	"Icy Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 10%%\nSlows NPC'S by 10%%"
+	}
+	"Raiding Dereliction"
+	{
+		"en" "Raiding Dereliction"
+	}
+	"Raiding Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 10%%"
+	}
+	"Degrading Dereliction"
+	{
+		"en" "Degrading Dereliction"
+	}
+	"Degrading Dereliction Desc"
+	{
+		"en"	"Lowers Damage Delt by 10%%"
+	}
+	"Zero Therapy"
+	{
+		"en" "Zero Therapy"
+	}
+	"Zero Therapy Desc"
+	{
+		"en"	"Increases Damage Taken by 15%%\nSlows NPC'S by 15%%"
+	}
+	"Debt Causing Dereliction"
+	{
+		"en" "Debt Causing Dereliction"
+	}
+	"Debt Causing Dereliction Desc"
+	{
+		"en" "Increases Damage Taken by 20%%"
+	}
+	"Headache Incuding Dereliction"
+	{
+		"en" "Headache Incuding Dereliction"
+	}
+	"Headache Incuding Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 30%%"
+	}
+	"Shocking Dereliction"
+	{
+		"en" "Shocking Dereliction"
+	}
+	"Shocking Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 20%%\nSlows NPC'S by 25%%"
+	}
+	"Therapists Aura"
+	{
+		"en" "Therapists Aura"
+	}
+	"Therapists Aura Desc"
+	{
+		"en"	"Slows NPC'S by 60%%"
+	}
+	"Electric Dereliction"
+	{
+		"en" "Electric Dereliction"
+	}
+	"Electric Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 25%%\nSlows NPC'S by 35%%"
+	}
+	"Caffinated Dereliction"
+	{
+		"en" "Caffinated Dereliction"
+	}
+	"Caffinated Dereliction Desc"
+	{
+		"en"	"Increas damage taken by 25%%"
+	}
+	"Hectic Therapy"
+	{
+		"en" "Hectic Therapy"
+	}
+	"Hectic Therapy Desc"
+	{
+		"en" "Increaces player attackspeed and reloadspeed by 20%% (stacks)"
+	}
+	"Physical Therapy"
+	{
+		"en" "Physical Therapy"
+	}
+	"Physical Therapy Desc"
+	{
+		"en" "Deal 20%% More damage."
+	}
+	"Ensuring Therapy"
+	{
+		"en" "Ensuring Therapy"
+	}
+	"Ensuring Therapy Desc"
+	{
+		"en" "Take 15%% less damage."
+	}
+	"Overall Therapy"
+	{
+		"en" "Overall Therapy"
+	}
+	"Overall Therapy Desc"
+	{
+		"en" "Deal 10%% more damage, and take 10%% less damage, NPCS gain 20%% Speed"
+	}
+	"Powering Therapy"
+	{
+		"en" "Powering Therapy"
+	}
+	"Powering Therapy Desc"
+	{
+		"en" "5%% resistance and 15%% damage delt"
+	}
+	"Calling Therapy"
+	{
+		"en" "Calling Therapy"
+	}
+	"Calling Therapy Desc"
+	{
+		"en" "15%% resistance and 5%% damage delt, 10%% more speed for NPCS"
+	}
+	"Caffinated Therapy"
+	{
+		"en" "Caffinated Therapy"
+	}
+	"Caffinated Therapy Desc"
+	{
+		"en" "25%% Resistance, 25%% more damage delt, and gain 20%% Speed for NPCS"
+	}
+	"Regenerating Therapy"
+	{
+		"en" "Regenerating Therapy"
+	}
+	"Regenerating Therapy Desc"
+	{
+		"en" "10%% Resistance, and deal 10%% more damage, gain slow HP regen."
+	}
 }

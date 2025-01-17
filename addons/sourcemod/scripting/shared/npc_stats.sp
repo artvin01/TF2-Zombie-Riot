@@ -5778,7 +5778,7 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if((i_CurrentEquippedPerk[iNPC] == 1 || NpcStats_WeakVoidBuff(iNPC) || NpcStats_StrongVoidBuff(iNPC)) && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if((i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC) || NpcStats_StrongVoidBuff(iNPC)) && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 

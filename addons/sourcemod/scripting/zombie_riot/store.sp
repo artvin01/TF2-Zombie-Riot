@@ -1917,10 +1917,11 @@ public void ReShowSettingsHud(int client)
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-86", buffer);
-
+	/*
 	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client] + 2.0);
 	menu2.AddItem("-72", buffer);
-
+	unused.
+	*/
 
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");
@@ -6059,6 +6060,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 		Walter_Enable(client, entity);
 		Enable_CastleBreakerWeapon(client, entity);
+		Purnell_Enable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);

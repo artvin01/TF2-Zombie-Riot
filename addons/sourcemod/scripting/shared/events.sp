@@ -581,6 +581,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	// Save current uber.
 	ClientSaveUber(client);
 	SDKHooks_UpdateMarkForDeath(client, true);
+	PurnellDeathsound(client);
 #endif
 
 #if defined RPG

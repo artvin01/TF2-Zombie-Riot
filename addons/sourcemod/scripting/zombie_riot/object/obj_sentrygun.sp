@@ -42,6 +42,7 @@ methodmap ObjectSentrygun < ObjectGeneric
 		SetRotateByDefaultReturn(npc.index, 180.0);
 		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPost);
 		SDKHook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPostSentry);
+		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		return npc;
 	}

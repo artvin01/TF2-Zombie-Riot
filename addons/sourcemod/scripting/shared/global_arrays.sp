@@ -286,6 +286,7 @@ const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 
 float f_ClientReviveDelay[MAXENTITIES];
 float f_ClientReviveDelayMax[MAXENTITIES];
+float f_ClientReviveDelayReviveTime[MAXENTITIES];
 float f_ClientBeingReviveDelay[MAXENTITIES];
 
 #define MAXSTICKYCOUNTTONPC 12

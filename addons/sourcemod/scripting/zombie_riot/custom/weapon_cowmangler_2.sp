@@ -58,10 +58,10 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	{
 		int new_ammo = GetAmmo(client, 23);
-		if(new_ammo >= 40)
+		if(new_ammo >= 80)
 		{
 			Rogue_OnAbilityUse(client, entity);
-			new_ammo -= 40;
+			new_ammo -= 80;
 			SetAmmo(client, 23, new_ammo);
 			CurrentAmmo[client][23] = GetAmmo(client, 23);
 			
@@ -77,6 +77,8 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			Strength[client] = 112.0;
 
 			Strength[client] *= 1.3; //tiny penalty.
+
+			Strength[client] *= 2.0; //tiny penalty.
 
 			Strength[client] *= Attributes_Get(entity, 335, 1.0);
 

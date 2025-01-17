@@ -150,6 +150,9 @@ float RogueBladedance_DamageBonus(int attacker, int inflictor, int victim)
 	if(BladeDancer == attacker)
 		CalcsDo = attacker;
 
+	if(CalcsDo <= 0)
+		return 1.0;
+
 	//not same team, give 2x dmg
 	if(GetTeam(CalcsDo) != GetTeam(victim))
 	{
@@ -164,12 +167,13 @@ static Action Timer_BladedancerTimer(Handle timer)
 	{
 		//change bladedancer if dead or smth
 		//dont change if they are downed but have a self revive so to speak
-		if(TeutonType[BladeDancer] != TEUTON_NONE || IsClientInGame(BladeDancer) || IsPlayerAlive(BladeDancer) || (dieingstate[BladeDancer] && !b_LeftForDead[BladeDancer]))
+		if(TeutonType[BladeDancer] != TEUTON_NONE || !IsClientInGame(BladeDancer) || !IsPlayerAlive(BladeDancer) || (dieingstate[BladeDancer] && !b_LeftForDead[BladeDancer]))
 		{
 			//Find new friend!
 			BladedanceChangeOwner = 0.0;
 		}
 	}
+
 	if(BladedanceChangeOwner > GetGameTime())
 		return Plugin_Continue;
 		
