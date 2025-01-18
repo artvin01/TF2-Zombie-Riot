@@ -50,6 +50,9 @@ static bool AntinelNextWave;
 static int randomsuper;
 static bool zombiecombine;
 static int moremen;
+static bool immutable;
+static bool spotteralive;
+static int spotter;
 
 void Freeplay_OnMapStart()
 {
@@ -57,6 +60,11 @@ void Freeplay_OnMapStart()
 	PrecacheSound("passtime/ball_dropped.wav", true);
 	PrecacheSound("ui/mm_medal_silver.wav", true);
 	PrecacheSound("ambient/halloween/thunder_01.wav", true);
+}
+
+void Freeplay_SpotterDeath()
+{
+	spotteralive = false;
 }
 
 void Freeplay_ResetAll()
@@ -110,6 +118,8 @@ void Freeplay_ResetAll()
 	randomsuper = 0;
 	zombiecombine = false;
 	moremen = 0;
+	spotteralive = false;
+	spotter = 0;
 }
 
 int Freeplay_EnemyCount()
@@ -466,8 +476,52 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = 30;
 		moremen--;
 	}
+	else if(immutable)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Boss = 1;
+		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
+		enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
+		enemy.Health = RoundToCeil(enemy.Health * 1.25);
+		enemy.Credits += 100.0;
+
+		count = 5;
+		immutable = false;
+	}
+	else if(spotter)
+	{
+		enemy.Team = TFTeam_Red;
+		enemy.Index = NPC_GetByPlugin("npc_spotter");
+		enemy.Health = RoundToFloor(60000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.ExtraDamage = 9.0; // base damage is 10k
+		count = 1;
+		spotteralive = true;
+		spotter--;
+	}
 	else
 	{
+		float bigchance;
+		if(postWaves+1 < 89)
+			bigchance = 0.925;
+		else
+			bigchance = 0.85;
+
+		if(GetRandomFloat(0.0, 1.0) >= bigchance)
+		{
+			enemy.Is_Immune_To_Nuke = true;
+			if(GetRandomInt(1, 2) == 2)
+				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
+			else
+				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
+
+			enemy.Health = RoundToCeil(enemy.Health * 1.75);
+
+			enemy.Credits += 100.0;
+			CPrintToChatAll("{purple}They're coming...");
+
+			count = RoundToFloor(count * 1.35);
+		}
+
 		if(enemy.Health)
 		{
 			// Nerfing bob the first's army health due to freeplay scaling
@@ -823,7 +877,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 75;
+		rand = GetURandomInt() % 77;
 
 	if(wrathofirln)
 	{
@@ -1165,6 +1219,25 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			CPrintToChatAll("{green}All players and allied npcs now gain a layer of the Rampart buff.");
 			RampartBuff++;
+		}
+
+		switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{red}Hey, im thinking of something.... What if, a {gold}combine, {red}and a {gold}zombie, {red}were...");
+				zombiecombine = true;
+			}
+			case 2:
+			{
+				CPrintToChatAll("{red}III THINK YOU NEED MORE MEN!");
+				moremen = 3;
+			}
+			default:
+			{
+				CPrintToChatAll("{purple}Otherworldly beings approach from a dimensional rip...");
+				immutable = true;
+			}
 		}
 
 		RaidFight = GetRandomInt(1, 27);
@@ -2149,6 +2222,26 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!");
 				moremen = 3;
+			}
+			case 75:
+			{
+				if(immutable)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{purple}Otherworldly beings approach from a dimensional rip...");
+				immutable = true;
+			}
+			case 76:
+			{
+				if(spotter || spotteralive)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{lime}Its time for the {orange}Spotter {lime}to take action!");
+				spotter = 1;
 			}
 			default:
 			{
