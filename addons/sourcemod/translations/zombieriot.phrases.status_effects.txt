@@ -952,4 +952,12 @@
 	{
 		"en" "10%% Resistance, and deal 10%% more damage, gain slow HP regen."
 	}
+	"Spotter's Rally"
+	{
+		"en"	"Spotter's Rally"
+	}
+	"Spotter's Rally Desc"
+	{
+		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%."
+	}
 }

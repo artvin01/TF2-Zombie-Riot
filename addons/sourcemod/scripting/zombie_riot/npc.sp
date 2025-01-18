@@ -873,6 +873,12 @@ void NPC_ConfigSetup()
 	SeabornCombineElite_OnMapStart_NPC();
 	SeabornCombineSoldierAr2_OnMapStart_NPC();
 	SeabornCombineSoldierShotgun_OnMapStart_NPC();
+
+	// Freeplay
+	DimensionalFragment_OnMapStart_NPC();
+	ImmutableHeavy_OnMapStart_NPC();
+	VanishingMatter_OnMapStart_NPC();
+	Spotter_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1942,3 +1948,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/combinehell/void/npc_voided_combine_soldier_shotgun.sp"
 
 #include "zombie_riot/npc/voices/npc_stalker_wisp.sp"
+
+// Freeplay
+#include "zombie_riot/npc/mutations/freeplay/npc_dimensionfrag.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_immutableheavy.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_vanishingmatter.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_spotter.sp"
