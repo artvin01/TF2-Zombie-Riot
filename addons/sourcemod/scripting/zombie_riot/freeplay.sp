@@ -491,8 +491,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Team = TFTeam_Red;
 		enemy.Index = NPC_GetByPlugin("npc_spotter");
-		enemy.Health = RoundToFloor(60000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.ExtraDamage = 9.0; // base damage is 10k
+		enemy.Health = RoundToFloor(75000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		count = 1;
 		spotteralive = true;
 		spotter--;
@@ -845,10 +844,13 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
-		int wrathchance = GetRandomInt(0, 100);
-		if(wrathchance < 2) // 2% chance
+		if(ZR_GetWaveCount() > 99)
 		{
-			wrathofirln = true;
+			int wrathchance = GetRandomInt(0, 100);
+			if(wrathchance < 2) // 2% chance
+			{
+				wrathofirln = true;
+			}
 		}
 
 		if(!wrathofirln)
