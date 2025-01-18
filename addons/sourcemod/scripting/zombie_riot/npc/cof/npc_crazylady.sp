@@ -98,7 +98,7 @@ methodmap Crazylady < CClotBody
 	
 	public Crazylady(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Crazylady npc = view_as<Crazylady>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/runningcrazy.mdl", "1.0", "300", ally));
+		Crazylady npc = view_as<Crazylady>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/runningcrazy.mdl", "1.10", "300", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -239,7 +239,7 @@ public void Crazylady_NPCDeath(int entity)
 
 		DispatchSpawn(entity_death);
 		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.10); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("diesimple");
 		AcceptEntityInput(entity_death, "SetAnimation");
@@ -275,8 +275,8 @@ void CrazyladySelfDefense(Crazylady npc, float gameTime, int target, float dista
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			static float MaxVec[3] = {64.0 ,64.0, 128.0};
-			static float MinVec[3] = {-64.0, -64.0, -128.0};
+			static float MaxVec[3] = {128.0, 128.0, 128.0};
+			static float MinVec[3] = {-128.0, -128.0, -128.0};
 
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, MaxVec, MinVec)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
