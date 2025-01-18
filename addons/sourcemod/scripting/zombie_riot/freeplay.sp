@@ -508,9 +508,15 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		{
 			enemy.Is_Immune_To_Nuke = true;
 			if(GetRandomInt(1, 2) == 2)
+			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
+				enemy.Health = 22500; // enemy hp is getting overriden apparently
+			}
 			else
+			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
+				enemy.Health = 75000; // enemy hp is getting overriden apparently
+			}
 
 			if(enemy.Health)
 				enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01)));
