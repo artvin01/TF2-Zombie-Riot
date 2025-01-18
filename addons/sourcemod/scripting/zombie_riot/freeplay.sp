@@ -500,9 +500,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		float bigchance;
 		if(postWaves+1 < 89)
-			bigchance = 0.94;
+			bigchance = 0.96;
 		else
-			bigchance = 0.88;
+			bigchance = 0.92;
 
 		if(GetRandomFloat(0.0, 1.0) >= bigchance)
 		{
