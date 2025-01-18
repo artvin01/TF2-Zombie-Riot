@@ -4050,7 +4050,7 @@
 	}
 	"freeplay_start_1"
 	{
-		"en"		"You've proved you're worthy.\nWorthy to take on the journey of Freeplay.\nAs you progress, more stronger enemies will come.\nEvery 5 waves, a setup will occur, and a skull will appear.\n"
+		"en"		"Good, it seems like the simulation is working.\nSorry, but this training is neccecary for the future, i dont want to explain it all.\nLelouch exposed some heavy stuff."
 	}
 	"freeplay_start_2"
 	{
@@ -4062,6 +4062,6 @@
 	}
 	"freeplay_start_4"
 	{
-		"en"		"But neeh, pretty sure it'll never happen.\nAnyways, have fun...\nAnd good luck."
+		"en"		"Me and Zeina are both watching you, we'll warn you incase something happens.\nWho i am? Koshi, Expert in these things. Good luck."
 	}
 }
