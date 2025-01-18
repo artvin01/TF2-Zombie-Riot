@@ -3964,4 +3964,20 @@
 	{
 		"en"	"Chaos Evil Demon"
 	}
+	"Dimensional Fragment"
+	{
+		"en" "Dimensional Fragment"
+	}
+	"Immutable Heavy"
+	{
+		"en" "Immutable Heavy"
+	}
+	"Vanishing Matter"
+	{
+		"en" "Vanishing Matter"
+	}
+	"Spotter"
+	{
+		"en" "Spotter"
+	}
 }
