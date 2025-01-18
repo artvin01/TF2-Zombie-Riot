@@ -500,9 +500,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		float bigchance;
 		if(postWaves+1 < 89)
-			bigchance = 0.96;
+			bigchance = 0.985;
 		else
-			bigchance = 0.92;
+			bigchance = 0.97;
 
 		if(GetRandomFloat(0.0, 1.0) >= bigchance)
 		{
@@ -511,6 +511,17 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
 			else
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
+
+			if(enemy.Health)
+				enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01)));
+
+			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
+
+			enemy.ExtraMeleeRes = 1.35;
+			enemy.ExtraRangedRes = 1.0;
+			enemy.ExtraSpeed = 1.0;
+			enemy.ExtraDamage = 1.0;
+			enemy.ExtraSize = 1.0;
 
 			enemy.Credits += 100.0;
 			switch(GetRandomInt(1, 4))
