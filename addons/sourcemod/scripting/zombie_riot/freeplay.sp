@@ -394,7 +394,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 5: // Panzer
 			{
 				enemy.Index = NPC_GetByPlugin("npc_panzer");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 6: // Lucius or lucian or luciaus or whatever the name is  i forgor
 			{
