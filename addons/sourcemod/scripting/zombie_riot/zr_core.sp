@@ -1580,12 +1580,12 @@ public Action Timer_Dieing(Handle timer, int client)
 					if(b_DyingTextOff[client])
 					{
 						b_DyingTextOff[client] = false;
-						SetVariantString("DOWNED [R]");
+						SetVariantString("DOWNED [T]");
 						AcceptEntityInput(TextFormat, "SetText");
 					}
 					else
 					{
-						SetVariantString("REVIVE [R]");
+						SetVariantString("REVIVE [T]");
 						AcceptEntityInput(TextFormat, "SetText");
 						b_DyingTextOff[client] = true;
 					}
@@ -1874,6 +1874,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							CPrintToChatAll("{crimson}%N gets filled with the unyielding desire to avenge his patients.",client);
 							Yakuza_Lastman(5);
+						}
+						if(Blacksmith_Lastman(client))
+						{
+							CPrintToChatAll("{crimson}%N Seems to be completly and utterly screwed.",client);
+							Yakuza_Lastman(6);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

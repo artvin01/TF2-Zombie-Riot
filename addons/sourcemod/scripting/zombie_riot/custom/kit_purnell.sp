@@ -1,5 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
+#define PURNELL_MAX_RANGE		120
+#define PURNELL_MAX_BOUNDS		23.0
 #define PURNELL_MAX_TARGETS		5
 #define PURNELL_KNOCKBACK		200.0
 #define PURNELL_KNOCKBACK_PAP2	300.0
@@ -37,9 +39,18 @@ static bool b_PushSound[MAXTF2PLAYERS];
 static bool b_ShoveSound[MAXTF2PLAYERS];
 static float fl_Push_Knockback[MAXTF2PLAYERS];
 static bool b_PurnellLastMann;
+static int i_SaveWeapon_Revolv[MAXTF2PLAYERS] = {-1, ...};
+static int i_SaveWeapon_Melee[MAXTF2PLAYERS] = {-1, ...};
 
+int Purnell_ReturnRevolver(int client)
+{
+	return i_SaveWeapon_Revolv[client];
+}
 static const char g_MeleeHitSounds[][] = {
 	"cof/purnell/meleehit.mp3",
+};
+static char g_MeleeAttackSounds[][] = {
+	"cof/purnell/shove.mp3",
 };
 
 static int Fantasy_Blade_Get_Pap(int weapon)
@@ -49,11 +60,19 @@ static int Fantasy_Blade_Get_Pap(int weapon)
 	return pap;
 }
 
+public int Purnell_Existant(int client)
+{
+	if(Timer_Purnell_Management[client] != null)
+	{
+		int weapon = EntRefToEntIndex(i_SaveWeapon_Revolv[client]);
+		return weapon;
+	}
+	return -1;
+}
 void Purnell_MapStart()
 {
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Precached = false;
-	PrecacheSoundArray(g_MeleeHitSounds);
 	Zero(i_Current_Pap);
 	Zero(b_PushSound);
 	Zero(b_ShoveSound);
@@ -102,24 +121,19 @@ void Purnell_Enable(int client, int weapon)
 				Timer_Purnell_Management[client] = null;
 			}
 			i_Pap_Level[client] = Fantasy_Blade_Get_Pap(weapon);
+			i_SaveWeapon_Revolv[client] = EntIndexToEntRef(weapon);
 			
 			DataPack pack;
 			Timer_Purnell_Management[client] = CreateDataTimer(0.1, Purnell_Timer_Management, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
 			pack.WriteCell(GetClientUserId(client));
+			pack.WriteCell(EntIndexToEntRef(weapon));
 			if(!Precached)
 			{
 				PrecacheSoundCustom("#zombiesurvival/purnell_lastman.mp3", _, 1);
 				Precached = true;
-			}
-			//pack.WriteCell(EntIndexToEntRef(weapon));
+			} 
 		}
-		/*case WEAPON_PURNELL_BUFF:
-		{
-			DataPack pack;
-			pack.WriteCell(GetClientUserId(client));
-			pack.WriteCell(EntIndexToEntRef(weapon));
-			CreateDataTimer(0.1, Purnell_HealerTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		}*/
 		case WEAPON_PURNELL_MELEE:
 		{
 			i_Pap_Level[client] = Fantasy_Blade_Get_Pap(weapon);
@@ -128,50 +142,65 @@ void Purnell_Enable(int client, int weapon)
 			CreateDataTimer(0.1, Purnell_HealerTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(GetClientUserId(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
+			i_SaveWeapon_Melee[client] = EntIndexToEntRef(weapon);
 		}
 	}
 }
 
+void Add_OneClip_Purnell(int entity, int client)
+{
+	int AmmoType = GetAmmoType_WeaponPrimary(entity);
+	int CurrentReserveAmmo = GetAmmo(client, AmmoType);
+	if(CurrentReserveAmmo < 1)
+		return;
+			
+	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+	int ammo = GetEntData(entity, iAmmoTable, 4);//Get ammo clip
+	if(IsAmmoFullPurnellWeapon(entity, ammo))
+		return;
+	
+	//use to actually subtract one.
+	AddAmmoClient(client, AmmoType ,-1,1.0, true);
+	ammo += 1;
+	SetEntData(entity, iAmmoTable, ammo, 4, true);
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(entity));
+	Update_Ammo(pack);
+	AllowWeaponFireAfterEmpty(client, entity);
+}
+
+int Purnell_RevolverFull(int weapon)
+{
+	return RoundFloat(6.0 * Attributes_Get(weapon, 4, 1.0));
+}
+
+bool IsAmmoFullPurnellWeapon(int weapon, int ammo)
+{
+	if(ammo >= Purnell_RevolverFull(weapon))
+	{
+		return true;
+	}
+	return false;
+}
 public Action Purnell_Timer_Management(Handle timer, DataPack pack)
 {
 	pack.Reset();
+	int clientOriginal = pack.ReadCell();
 	int client = GetClientOfUserId(pack.ReadCell());
-	//int weapon = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidClient(client) && IsValidEntity(weapon) && IsPlayerAlive(client))
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon))
-		{
-			switch(i_CustomWeaponEquipLogic[weapon])
-			{
-				case WEAPON_PURNELL_MELEE, WEAPON_PURNELL_PRIMARY:
-				{
-					Purnell_LastMann_Check();
-					//Purnell_Buff_Loc(client);
-
-					Particle_Add(client);
-					
-					return Plugin_Continue;
-				}
-				/*case WEAPON_PURNELL_PRIMARY:
-				{
-					Purnell_LastMann_Check();
-
-					Particle_Add(client);
-					
-					return Plugin_Continue;
-				}*/
-			}
-		}
+		Purnell_LastMann_Check();
+		//Purnell_Buff_Loc(client);
+		Particle_Add(client);
 		
-		Particle_Removal(client);
-
 		return Plugin_Continue;
 	}
 		
-	Particle_Removal(client);
+	Particle_Removal(clientOriginal);
 
-	Timer_Purnell_Management[client] = null;
+	Timer_Purnell_Management[clientOriginal] = null;
 	return Plugin_Stop;
 }
 
@@ -182,7 +211,7 @@ static void Particle_Add(int client)
 		float pos[3]; GetClientAbsOrigin(client, pos);
 		pos[2] += 1.0;
 
-		int entity = ParticleEffectAt(pos, "utaunt_hands_floor2_red", -1.0);
+		int entity = ParticleEffectAt(pos, "utaunt_hands_floor2_purple", -1.0);
 		if(entity > MaxClients)
 		{
 			SetParent(client, entity);
@@ -207,19 +236,14 @@ static void Particle_Removal(int client)
 
 public bool Purnell_DoSwingTrace(int entity, int contentsMask, int client)
 {
-	static char classname[64];
-	if(IsValidEntity(entity))
+	if(IsValidEnemy(client, entity, true, true))
 	{
-		GetEntityClassname(entity, classname, sizeof(classname));
-		if(((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
+		for(int i; i < sizeof(EnemiesHit); i++)
 		{
-			for(int i; i < sizeof(EnemiesHit); i++)
+			if(!EnemiesHit[i])
 			{
-				if(!EnemiesHit[i])
-				{
-					EnemiesHit[i] = entity;
-					break;
-				}
+				EnemiesHit[i] = entity;
+				break;
 			}
 		}
 	}
@@ -230,23 +254,24 @@ public void Purnell_PrimaryShove(int client, int weapon, bool crit, int slot) //
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Ability_Apply_Cooldown(client, slot, 2.0);
-		float damage = 35.0;
-		damage *= Attributes_Get(weapon, 1, 1.0);
-		damage *= Attributes_Get(weapon, 2, 1.0);
-		damage *= Attributes_Get(weapon, 476, 1.0);
-		Explode_Logic_Custom(damage, client, client, weapon, _, 75.0, _, _, _, 1, _, _, _, Purnell_Shove_Primary);
-		//Explode_Logic_Custom(damage, client, client, weapon, _, 30.0);
-		if(b_ShoveSound[client])
-		{
-			//Add Sound
-			b_ShoveSound[client] = false;
-			EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 0.55, 100);
-		}
-		else
-		{
-			//failed?
-		}
+		Ability_Apply_Cooldown(client, slot, 2.5 * Attributes_Get(weapon, 6, 1.0));
+		DataPack pack = new DataPack();
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteCell(0);
+		RequestFrames(Purnell_Delayed_MeleeAttack, 12, pack);
+		EmitCustomToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], client, SNDCHAN_AUTO, 70, _, 1.85, 100);
+
+		int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
+		Attributes_Set(client, 178, 0.25);
+		FakeClientCommand(client, "use tf_weapon_spellbook");
+		Attributes_Set(client, 698, 1.0);
+		f_MutePlayerTalkShutUp[client] = GetGameTime() + 0.75;
+		
+		SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
+		SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 5);	
+		CreateTimer(0.5, Purnell_RemoveSpell_Primary, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.65, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	else
 	{
@@ -260,13 +285,135 @@ public void Purnell_PrimaryShove(int client, int weapon, bool crit, int slot) //
 			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
 		}
 	}
-	
 }
 
-void Purnell_Shove_Primary(int client, int victim, float damage, int weapon)
+public Action Purnell_RemoveSpell_Primary(Handle Calcium_Remove_SpellHandle, int client)
 {
-	if(!b_ShoveSound[client])
-		b_ShoveSound[client] = true;
+	if (IsValidClient(client))
+	{
+		Attributes_Set(client, 698, 0.0);
+		FakeClientCommand(client, "use tf_weapon_revolver");
+		Attributes_Set(client, 178, 1.0);
+		TF2_RemoveWeaponSlot(client, 5);
+	}	
+	return Plugin_Handled;
+}
+
+public Action Purnell_RemoveSpell_Melee(Handle Calcium_Remove_SpellHandle, int client)
+{
+	if (IsValidClient(client))
+	{
+		Attributes_Set(client, 698, 0.0);
+		FakeClientCommand(client, "use tf_weapon_bonesaw");
+		Attributes_Set(client, 178, 1.0);
+		TF2_RemoveWeaponSlot(client, 5);
+	}	
+	return Plugin_Handled;
+}
+
+public void Purnell_Delayed_MeleeAttack(DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	int TypeOfShove = pack.ReadCell();
+	if(client && weapon != -1/* && IsValidCurrentWeapon(client, weapon)*/)
+	{
+		float damage = 15.0;
+		damage *= Attributes_Get(weapon, 1, 1.0);
+		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= Attributes_Get(weapon, 476, 1.0);
+
+
+		static const float hullMin[3] = {-PURNELL_MAX_BOUNDS, -PURNELL_MAX_BOUNDS, -PURNELL_MAX_BOUNDS};
+		static const float hullMax[3] = {PURNELL_MAX_BOUNDS, PURNELL_MAX_BOUNDS, PURNELL_MAX_BOUNDS};
+
+		float fPos[3];
+		float fAng[3];
+		float endPoint[3];
+		float fPosForward[3];
+		GetClientEyeAngles(client, fAng);
+		GetClientEyePosition(client, fPos);
+		
+		GetAngleVectors(fAng, fPosForward, NULL_VECTOR, NULL_VECTOR);
+		
+		endPoint[0] = fPos[0] + fPosForward[0] * PURNELL_MAX_RANGE;
+		endPoint[1] = fPos[1] + fPosForward[1] * PURNELL_MAX_RANGE;
+		endPoint[2] = fPos[2] + fPosForward[2] * PURNELL_MAX_RANGE;
+
+		Zero(EnemiesHit);
+
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+		TR_TraceHullFilter(fPos, endPoint, hullMin, hullMax, 1073741824, Purnell_DoSwingTrace, client);	// 1073741824 is CONTENTS_LADDER?
+		FinishLagCompensation_Base_boss();
+
+		
+		int MaxTargetsHit = PURNELL_MAX_TARGETS;
+		if(TypeOfShove == 0)
+		{
+			MaxTargetsHit = 2;
+		}
+		
+		bool AdditionalBonusRaidHit= false;
+		for(int i; i < MaxTargetsHit; i++)
+		{
+			int EnemyHit = EnemiesHit[i];
+			if(!EnemyHit)
+			{
+				break;
+			}
+			if(b_thisNpcIsARaid[EnemyHit])
+			{
+				AdditionalBonusRaidHit = true;
+			}
+			b_ShoveSound[client] = true;
+			static float Entity_Position[3];
+			WorldSpaceCenter(EnemyHit, Entity_Position);
+			switch(TypeOfShove)
+			{
+				case 0:
+				{
+					float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
+					SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
+				}
+				case 1:
+				{
+					float knockback = fl_Push_Knockback[client];
+					SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
+					Logic_Purnell_Debuff(client, EnemyHit, damage, weapon);
+					float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
+					SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
+				}
+				//dmg penalty
+			}
+			damage *= 0.75;
+		}
+		
+		
+		//Explode_Logic_Custom(damage, client, client, weapon, _, 30.0);
+		if(b_ShoveSound[client])
+		{
+			//Add Sound
+			b_ShoveSound[client] = false;
+			if(IsValidEntity(i_SaveWeapon_Revolv[client]))
+			{
+				int Reolver = EntRefToEntIndex(i_SaveWeapon_Revolv[client]);
+				Add_OneClip_Purnell(Reolver, client);
+				if(AdditionalBonusRaidHit)
+					Add_OneClip_Purnell(Reolver, client);
+			}
+			if(TypeOfShove == 0 && IsValidEntity(i_SaveWeapon_Melee[client]))
+			{
+				int Reolver = EntRefToEntIndex(i_SaveWeapon_Melee[client]);
+				Saga_ChargeReduction(client, Reolver, 2.0);
+				if(AdditionalBonusRaidHit)
+					Saga_ChargeReduction(client, Reolver, 1.5);
+			}
+			EmitCustomToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 2.0, 100);
+		}
+		
+	}
 }
 
 //Pack-a-Punch 1
@@ -275,10 +422,9 @@ public void Purnell_MeleeShove(int client, int weapon, bool crit, int slot) // "
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Ability_Apply_Cooldown(client, slot, 5.0);
+		Ability_Apply_Cooldown(client, slot, 10.0 * Attributes_Get(weapon, 6, 1.0));
 		int pap_level = i_Pap_Level[client];
 		float knockback = PURNELL_KNOCKBACK;
-		float damage = 25.0;
 		switch(pap_level)
 		{
 			case 2:
@@ -308,28 +454,23 @@ public void Purnell_MeleeShove(int client, int weapon, bool crit, int slot) // "
 		}
 		fl_Push_Knockback[client] = knockback;
 		
-		damage *= Attributes_Get(weapon, 1, 1.0);
-		damage *= Attributes_Get(weapon, 2, 1.0);
-		damage *= Attributes_Get(weapon, 476, 1.0);
-		int amount = 2;
-		float cooldown = b_PurnellLastMann ? 5.0 : 10.0;
-		Explode_Logic_Custom(damage, client, client, weapon, _, 75.0, _, _, _, amount, _, _, _, Purnell_Shove_Melee_Kb);
-		//Explode_Logic_Custom(0.0, client, client, weapon, _, 50.0, _, _, _, amount, _, _, _, Logic_Purnell_Debuff);
-		//Explode_Logic_Custom(25.0, client, client, weapon, _, 50.0, _, _, _, amount, _, _, _, Purnell_DebuffApply);
-		if(b_PushSound[client])
-		{
-			//Add Sound
-			b_PushSound[client] = false;
-			Ability_Apply_Cooldown(client, slot, cooldown);
-			ClientCommand(client, "playgamesound npc/combine_gunship/ping_search.wav");
+		DataPack pack = new DataPack();
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteCell(1);
+		RequestFrames(Purnell_Delayed_MeleeAttack, 12, pack);
+		EmitCustomToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], client, SNDCHAN_AUTO, 70, _, 1.85, 100);
 
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 0.55, 100);
-		}
-		else
-		{
-			//failed?
-		}
+		int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
+		Attributes_Set(client, 178, 0.25);
+		FakeClientCommand(client, "use tf_weapon_spellbook");
+		Attributes_Set(client, 698, 1.0);
+		f_MutePlayerTalkShutUp[client] = GetGameTime() + 0.75;
+		
+		SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
+		SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 5);	
+		CreateTimer(0.5, Purnell_RemoveSpell_Melee, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.65, Fireball_Remove_Spell_Entity, EntIndexToEntRef(spellbook), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	else
 	{
@@ -345,15 +486,6 @@ public void Purnell_MeleeShove(int client, int weapon, bool crit, int slot) // "
 	}
 }
 
-void Purnell_Shove_Melee_Kb(int client, int victim, float damage, int weapon)
-{
-	float knockback = fl_Push_Knockback[client];
-	Custom_Knockback(client, victim, knockback, true, true, true);
-	Logic_Purnell_Debuff(client, victim, damage, weapon);
-	if(!b_PushSound[client])
-		b_PushSound[client] = true;
-}
-
 public Action Purnell_HealerTimer(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -363,7 +495,7 @@ public Action Purnell_HealerTimer(Handle timer, DataPack pack)
 		int weapon = EntRefToEntIndex(pack.ReadCell());
 		if(IsValidEntity(weapon))
 		{
-			if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
+			if(i_Pap_Level[client] >= 1 && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 			{
 				Purnell_Buff_Loc(client);
 			}
@@ -374,7 +506,15 @@ public Action Purnell_HealerTimer(Handle timer, DataPack pack)
 	
 	return Plugin_Stop;
 }
-
+bool PurnellDeathsound(int client)
+{
+	if(Timer_Purnell_Management[client] != null)
+	{
+		EmitCustomToAll("cof/purnell/death.mp3", client, _, _, _, 2.0);
+		return true;
+	}
+	return false;
+}
 static void Purnell_Buff_Loc(int client)
 {
 	float pos[3];
@@ -428,7 +568,8 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	float DurationGive = 4.0;
 	int buff_apply = GetRandomInt(0, 3);
 	Purnell_Configure_Buffs(i_Pap_Level[client], cooldown, DurationGive, buff_apply);
-	
+	DurationGive *= 2.0;
+
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
 	float pos[3];
@@ -529,132 +670,173 @@ static void Purnell_Configure_Buffs(int level, float &cooldown, float &DurationG
 }
 static void Purnell_AllyBuffApply(int client, int target, int overdose, float DurationGive, float cooldown)
 {
-	bool validAlly;
 	char text[255];
 	switch(overdose)
 	{
 		case 0:
 		{
-			ApplyStatusEffect(validAlly, target, "Ancient Banner", DurationGive);
-			if(target > MaxClients)
+			if(target <= MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Ancient Banner!");
+				if(target > MaxClients)
+				{
+					Format(text, sizeof(text), "You buffed an ally with Hectic Therapy!");
+				}
+				else
+				{
+					Format(text, sizeof(text), "You buffed %N with Hectic Therapy!", target);
+				}
+
+				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+				if(entity != -1)
+				{
+					ApplyTempAttrib(entity, 6, 0.8, DurationGive);
+					ApplyTempAttrib(entity, 97, 0.8, DurationGive);
+					ApplyTempAttrib(entity, 733, 0.8, DurationGive);
+					ApplyStatusEffect(client, entity, "Hectic Therapy", DurationGive);
+				}
+				
+				entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(entity != -1)
+				{
+					ApplyTempAttrib(entity, 6, 0.8, DurationGive);
+					ApplyTempAttrib(entity, 97, 0.8, DurationGive);
+					ApplyTempAttrib(entity, 733, 0.8, DurationGive);
+					ApplyStatusEffect(client, entity, "Hectic Therapy", DurationGive);
+				}
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Ancient Banner!", target);
+				ApplyStatusEffect(client, target, "Physical Therapy", DurationGive);
+				ApplyStatusEffect(client, client, "Physical Therapy", DurationGive);
+				if(target > MaxClients)
+				{
+					Format(text, sizeof(text), "You buffed an ally with Physical Therapy!");
+				}
+				else
+				{
+					Format(text, sizeof(text), "You buffed %N with Physical Therapy!", target);
+				}
 			}
 		}
 		case 1:
 		{
-			ApplyStatusEffect(validAlly, target, "Buff Banner", DurationGive);
+			ApplyStatusEffect(client, target, "Physical Therapy", DurationGive);
+			ApplyStatusEffect(client, client, "Physical Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Buff Banner!");
+				Format(text, sizeof(text), "You buffed an ally with Physical Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Buff Banner!", target);
+				Format(text, sizeof(text), "You buffed %N with Physical Therapy!", target);
 			}
 		}
 		case 2:
 		{
-			ApplyStatusEffect(validAlly, target, "Battilons Backup", DurationGive);
+			ApplyStatusEffect(client, target, "Ensuring Therapy", DurationGive);
+			ApplyStatusEffect(client, client, "Ensuring Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Battalion's Backup!");
+				Format(text, sizeof(text), "You buffed an ally with Ensuring Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Battalion's Backup!", target);
+				Format(text, sizeof(text), "You buffed %N with Ensuring Therapy!", target);
 			}
 		}
 		case 3:
 		{
-			ApplyStatusEffect(validAlly, target, "Combine Command", DurationGive);
+			ApplyStatusEffect(client, target, "Overall Therapy", DurationGive);
+			ApplyStatusEffect(client, client, "Overall Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Combine Command!");
+				Format(text, sizeof(text), "You buffed an ally with Overall Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Combine Command!", target);
+				Format(text, sizeof(text), "You buffed %N with Overall Therapy!", target);
 			}
 		}
 		case 4:
 		{
-			ApplyStatusEffect(validAlly, target, "Self Empowerment", DurationGive);
+			ApplyStatusEffect(client, target, "Powering Therapy", DurationGive);
+			ApplyStatusEffect(client, client, "Powering Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Self Empowerment!");
+				Format(text, sizeof(text), "You buffed an ally with Powering Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Self Empowerment!", target);
+				Format(text, sizeof(text), "You buffed %N with Powering Therapy!", target);
 			}
 		}
 		case 5:
 		{
-			ApplyStatusEffect(validAlly, target, "Call To Victoria", DurationGive);
+			ApplyStatusEffect(client, target, "Calling Therapy", DurationGive);
+			ApplyStatusEffect(client, client, "Calling Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Call To Victoria!");
+				Format(text, sizeof(text), "You buffed an ally with Calling Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Call To Victoria!", target);
+				Format(text, sizeof(text), "You buffed %N with Calling Therapy!", target);
 			}
 		}
 		case 6:
 		{
-			ApplyStatusEffect(validAlly, target, "Caffinated", DurationGive);
+			ApplyStatusEffect(client, target, "Caffinated Therapy", DurationGive);
+			ApplyStatusEffect(client, client, "Caffinated Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Caffeine!");
+				Format(text, sizeof(text), "You buffed an ally with Caffinated Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Caffeine!", target);
+				Format(text, sizeof(text), "You buffed %N with Caffinated Therapy!", target);
 			}
 		}
 		case 7:
 		{
-			ApplyStatusEffect(validAlly, target, "Void Strength I", DurationGive);
+			ApplyStatusEffect(client, target, "Regenerating Therapy", DurationGive);
+			ApplyStatusEffect(client, client, "Regenerating Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Void Strength I!");
+				Format(text, sizeof(text), "You buffed an ally with Regenerating Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Void Strength I!", target);
+				Format(text, sizeof(text), "You buffed %N with Regenerating Therapy!", target);
 			}
 		}
 		case 8:
 		{
-			ApplyStatusEffect(validAlly, target, "False Therapy", DurationGive);
+			ApplyStatusEffect(client, target, "False Therapy", DurationGive);
+			ApplyStatusEffect(client, client, "False Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with False Therapy!");
+				Format(text, sizeof(text), "You buffed an ally with False Therapy!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with False Therapy!", target);
+				Format(text, sizeof(text), "You buffed %N with False Therapy!", target);
 			}
 		}
 		case 9:
 		{
-			ApplyStatusEffect(validAlly, target, "Squad Leader", DurationGive);
+			ApplyStatusEffect(client, target, "Squad Leader", DurationGive);
+			ApplyStatusEffect(client, client, "Squad Leader", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You buffed an ally with Squad Leader!");
+				Format(text, sizeof(text), "You buffed an ally with Squad Leader!");
 			}
 			else
 			{
-				FormatEx(text, sizeof(text), "You buffed %N with Squad Leader!", target);
+				Format(text, sizeof(text), "You buffed %N with Squad Leader!", target);
 			}
 		}
 	}
-	FormatEx(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
+	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
 	PrintHintText(client, "%s", text);
 }
 
@@ -665,6 +847,7 @@ public void Logic_Purnell_Debuff(int client, int victim, float damage, int weapo
 	float DurationGive = 4.0;
 	int debuff_apply = GetRandomInt(0, 3);
 	Purnell_Configure_Debuffs(i_Pap_Level[client], cooldown, DurationGive, debuff_apply);
+	DurationGive *= 2.0;
 	Purnell_DebuffApply(client, victim, debuff_apply, DurationGive, cooldown);
 }
 
@@ -712,91 +895,90 @@ static void Purnell_Configure_Debuffs(int level, float &cooldown, float &Duratio
 }
 static void Purnell_DebuffApply(int client, int target, int overdose, float DurationGive, float cooldown)
 {
-	bool validAlly;
 	char text[255];
 	switch(overdose)
 	{
 		case 0:
 		{
-			ApplyStatusEffect(validAlly, target, "Cryo", DurationGive);
+			ApplyStatusEffect(client, target, "Icy Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Cryo!");
+				Format(text, sizeof(text), "You debuffed an enemy with Icy Dereliction!");
 			}
 		}
 		case 1:
 		{
-			ApplyStatusEffect(validAlly, target, "Iberia's Anti Raid", DurationGive);
+			ApplyStatusEffect(client, target, "Raiding Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Iberia's Anti Raid!");
+				Format(text, sizeof(text), "You debuffed an enemy with Raiding Dereliction!");
 			}
 		}
 		case 2:
 		{
-			ApplyStatusEffect(validAlly, target, "Prosperity II", DurationGive);
+			ApplyStatusEffect(client, target, "Degrading Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Prosperity II!");
+				Format(text, sizeof(text), "You debuffed an enemy with Degrading Dereliction!");
 			}
 		}
 		case 3:
 		{
-			ApplyStatusEffect(validAlly, target, "Near Zero", DurationGive);
+			ApplyStatusEffect(client, target, "Zero Therapy", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Near Zero!");
+				Format(text, sizeof(text), "You debuffed an enemy with Zero Therapy!");
 			}
 		}
 		case 4:
 		{
-			ApplyStatusEffect(validAlly, target, "Golden Curse", DurationGive);
+			ApplyStatusEffect(client, target, "Debt Causing Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Golden Curse!");
+				Format(text, sizeof(text), "You debuffed an enemy with Debt Causing Dereliction!");
 			}
 		}
 		case 5:
 		{
-			ApplyStatusEffect(validAlly, target, "Cudgelled", DurationGive);
+			ApplyStatusEffect(client, target, "Headache Incuding Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Cudgelled!");
+				Format(text, sizeof(text), "You debuffed an enemy with Headache Incuding Dereliction!");
 			}
 		}
 		case 6:
 		{
-			ApplyStatusEffect(validAlly, target, "Teslar Shock", DurationGive);
+			ApplyStatusEffect(client, target, "Shocking Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Teslar Shock!");
+				Format(text, sizeof(text), "You debuffed an enemy with Shocking Dereliction!");
 			}
 		}
 		case 7:
 		{
-			ApplyStatusEffect(validAlly, target, "Specter's Aura", DurationGive);
+			ApplyStatusEffect(client, target, "Therapists Aura", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Specter's Aura!");
+				Format(text, sizeof(text), "You debuffed an enemy with Therapists Aura!");
 			}
 		}
 		case 8:
 		{
-			ApplyStatusEffect(validAlly, target, "Teslar Electricution", DurationGive);
+			ApplyStatusEffect(client, target, "Electric Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Teslar Electricution!");
+				Format(text, sizeof(text), "You debuffed an enemy with Electric Dereliction!");
 			}
 		}
 		case 9:
 		{
-			ApplyStatusEffect(validAlly, target, "Caffinated Drain", DurationGive);
+			ApplyStatusEffect(client, target, "Caffinated Dereliction", DurationGive);
 			if(target > MaxClients)
 			{
-				FormatEx(text, sizeof(text), "You debuffed an enemy with Caffinated Drain!");
+				Format(text, sizeof(text), "You debuffed an enemy with Caffinated Dereliction!");
 			}
 		}
 	}
-	FormatEx(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
+	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
 	PrintHintText(client, "%s", text);
 }

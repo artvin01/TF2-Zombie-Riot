@@ -2862,6 +2862,7 @@ static void UpdateMvMStatsFrame()
 	//delete profiler;
 }
 
+
 static int SetupFlags(const Enemy data, bool support)
 {
 	int flags = 0;
@@ -3327,17 +3328,20 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			if(CurrentRound >= 249 && !Freeplay_w500reached)
+			if(CurrentRound >= 299 && !Freeplay_w500reached)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 					{
+						CPrintToChat(client, "After a couple hours of fighting hordes of enemies, Bob orders the team to retreat to a safe spot.");
+						CPrintToChat(client, "He fears that the weird, {purple}Dimensional rips {white}might bring something even stronger...");
+						CPrintToChat(client, "You and your team now lay safe from the Freeplay Journey and its dangers, for now.");
+						CPrintToChat(client, "Looking around, you find something orange in the ground, and it smells... weird...");
+						if(Items_HasNamedItem(client, "Matrix's Curse") && !Items_HasNamedItem(client, "A Block of Cheese"))
+							CPrintToChat(client, "{white}As you pick it up, an orange-ish magic essence surrounds you, and cleanses you off the Matrix!");
+						CPrintToChat(client, "{white}Now, you have {orange}A Block of Cheese {white}in your backpack.");
 						Items_GiveNamedItem(client, "A Block of Cheese");
-						CPrintToChat(client, "Hmm.... You guys sure are something. Reaching a point this far in Freeplay isn't an easy task.");
-						CPrintToChat(client, "I shall now give you some time to rest, you must be really exhausted after that. And...");
-						CPrintToChat(client, "{lime}As a reward for your perseverance, I am giving you something to fend off a specific someone.");
-						CPrintToChat(client, "{white}(Your backpack feels heavier. {gold}Check your unlocks.{white}");
 					}
 				}
 

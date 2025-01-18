@@ -125,6 +125,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
+	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -362,6 +363,11 @@ public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHoo
 	return MRES_Supercede;
 }
 
+public MRESReturn Dhook_StealthCastSpellPre(int entity, DHookReturn returnHook, DHookParam param)
+{
+	returnHook.Value = true;
+	return MRES_Supercede;
+}
 static bool wasMvM;
 public MRESReturn DHook_PreClientUpdatePre()
 {
@@ -384,8 +390,13 @@ public MRESReturn DHook_PreClientUpdatePost()
 //Thanks to rafradek#0936 on the allied modders discord for pointing this function out!
 //This changes player classes to the correct one.
 #if !defined RTS
-public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle hParams)
+public MRESReturn SpeakConceptIfAllowed_Pre(int client, DHookReturn returnHook, DHookParam param)
 {
+	if(f_MutePlayerTalkShutUp[client] > GetGameTime())
+	{
+		returnHook.Value = false;
+		return MRES_Supercede;
+	}
 	for(int client_2=1; client_2<=MaxClients; client_2++)
 	{
 

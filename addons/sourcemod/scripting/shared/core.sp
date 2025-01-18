@@ -50,7 +50,6 @@
 #define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS		64
 #define ZR_MAX_SPAWNERS		256
-
 #else
 
 #define ZR_MAX_NPCS		256
@@ -553,12 +552,14 @@ float fl_GrappleCooldown[MAXENTITIES];
 float fl_HookDamageTaken[MAXENTITIES];
 float fl_ArmorSetting[MAXENTITIES][3];
 int i_ArmorSetting[MAXENTITIES][2];
+bool b_InteractWithReload[MAXENTITIES];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 int b_OnDeathExtraLogicNpc[MAXENTITIES];
 #define	ZRNPC_DEATH_NOHEALTH		( 1<<0 )	// Do not give health on kill!
 #define	ZRNPC_DEATH_NOGIB		( 1<<1 )	// Do not give health on kill!
 
+float f_MutePlayerTalkShutUp[MAXTF2PLAYERS];
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
 bool b_movedelay_walk[MAXENTITIES];
@@ -1015,6 +1016,8 @@ public void OnMapStart()
 	PrecacheSound("mvm/mvm_revive.wav");
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
 	Zero(f_PreventMedigunCrashMaybe);
+	Zero(f_ClientReviveDelayReviveTime);
+	Zero(f_MutePlayerTalkShutUp);
 
 #if defined ZR || defined RPG
 	Core_PrecacheGlobalCustom();
@@ -1599,7 +1602,21 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		buttons &= ~IN_ATTACK;
 	}
-	
+	/*
+	Instant community feedback that T is very bad.
+	using idk what other button to use.
+	*/
+	if(impulse == 201)
+	{
+		f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+		//We want to spray, but spray in ZR means interaction!
+		//do we hold score?
+		if(!(buttons & IN_SCORE))
+		{
+			impulse = 0;
+		}
+		DoInteractKeyLogic(angles, client);
+	}
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS
@@ -1669,19 +1686,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_Finish(action);
 			}
 		}
-
-#if defined RPG
-		if(Level[client] < 100)
-		{
-			StartPlayerOnlyLagComp(client, true);
-			if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
-			{
-				EndPlayerOnlyLagComp(client);
-				return Plugin_Changed;
-			}
-			EndPlayerOnlyLagComp(client);
-		}
-#endif
 	}
 	
 	if(holding[client] & IN_ATTACK2)
@@ -1712,31 +1716,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_PushCell(slot); //This is attack 2 :)
 				Call_Finish(action);
 			}
-
-			/*
-#if defined ZR
-			char classname[36];
-			GetEntityClassname(weapon_holding, classname, sizeof(classname));
-			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
-			{
-				if(EntityFuncAttack2[weapon_holding] == INVALID_FUNCTION && TeutonType[client] == TEUTON_NONE)
-				{
-					b_IgnoreWarningForReloadBuidling[client] = true;
-					Pickup_Building_M2(client, weapon, false);
-				}
-			}
-#endif
-			*/
 		}
-		
-		StartPlayerOnlyLagComp(client, true);
-		if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
-		{
-			buttons &= ~IN_ATTACK2;
-			EndPlayerOnlyLagComp(client);
-			return Plugin_Changed;
-		}
-		EndPlayerOnlyLagComp(client);
 	}
 	
 	if(holding[client] & IN_RELOAD)
@@ -1747,47 +1727,27 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	else if(buttons & IN_RELOAD)
 	{
 		holding[client] |= IN_RELOAD;
-
-#if defined ZR
-	//	CheckAlivePlayers(0, 0, true);
 		
-		if(angles[0] < -70.0)
+		if(b_InteractWithReload[client])
 		{
-			int entity = EntRefToEntIndex(Building_Mounted[client]);
-			if(IsValidEntity(entity))
-			{
-				Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), client);
-			}
+			if(DoInteractKeyLogic(angles, client))
+				return Plugin_Continue;
 		}
-		else
-#endif
 
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding != -1)
 		{
-			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			
-			StartPlayerOnlyLagComp(client, true);
-			if(InteractKey(client, weapon_holding, true))
+			if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
 			{
-				buttons &= ~IN_RELOAD;
-				EndPlayerOnlyLagComp(client);
-				return Plugin_Changed;
-			}
-			EndPlayerOnlyLagComp(client);
-			
-			if(weapon_holding != -1)
-			{
-				if(EntityFuncAttack3[weapon_holding] && EntityFuncAttack3[weapon_holding]!=INVALID_FUNCTION)
-				{
-					bool result = false; //ignore crit.
-					int slot = 3;
-					Action action;
-					Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
-					Call_PushCell(client);
-					Call_PushCell(weapon_holding);
-					Call_PushCellRef(result);
-					Call_PushCell(slot);	//This is R :)
-					Call_Finish(action);
-				}
+				bool result = false; //ignore crit.
+				int slot = 3;
+				Action action;
+				Call_StartFunction(null, EntityFuncAttack3[weapon_holding]);
+				Call_PushCell(client);
+				Call_PushCell(weapon_holding);
+				Call_PushCellRef(result);
+				Call_PushCell(slot);	//This is R :)
+				Call_Finish(action);
 			}
 		}
 	}
@@ -1808,12 +1768,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			{
 				Queue_Menu(client);
 			}
-			/*
-			else if(b_HoldingInspectWeapon[client])
-			{
-				Store_OpenItemPage(client);
-			}
-			*/
 			else
 			{
 				Store_Menu(client);
@@ -1849,7 +1803,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	if(f_ClientReviveDelay[client] < GameTime)
 	{
 		f_ClientReviveDelay[client] = GameTime + 0.1;
-		if((holding[client] & IN_RELOAD) && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+		
+		if((f_ClientReviveDelayReviveTime[client] > GetGameTime()) && dieingstate[client] <= 0 && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 		{
 			int target = GetClientPointVisibleRevive(client);
 			if(target > 0 && target <= MaxClients)
@@ -1862,6 +1817,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Injured);
 				if(GetVectorDistance(Healer, Injured) <= 250.0)
 				{
+					f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
 					ReviveClientFromOrToEntity(target, client);
 				}
 			}
@@ -1875,6 +1831,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Injured);
 				if(GetVectorDistance(Healer, Injured) <= 250.0)
 				{
+					f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
 					int ticks;
 					was_reviving[client] = true;
 					f_DelayLookingAtHud[client] = GameTime + 0.5;
@@ -2989,6 +2946,14 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_RemoveCondition(client, TFCond_Cloaked);
 	}
+	else if(condition == TFCond_Stealthed)
+	{
+		int HealthRemaining = GetEntProp(client, Prop_Send, "m_iHealth");
+		HealthRemaining -= 40;
+		//Heals by 40.
+		SetEntProp(client, Prop_Send, "m_iHealth", HealthRemaining);
+		TF2_RemoveCondition(client, TFCond_Stealthed);
+	}
 	else if(condition == TFCond_SpawnOutline) //this is a hopefully prevention for client crashes, i am unsure why this happens.
 	//Idea got from a client dump.
 	{
@@ -3473,6 +3438,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
 		}
 		CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
+		CheckLastMannStanding(0);
 	}
 }
 

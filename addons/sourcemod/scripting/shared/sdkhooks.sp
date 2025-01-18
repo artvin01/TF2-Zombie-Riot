@@ -753,6 +753,12 @@ public void OnPostThink(int client)
 			
 			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
+		if(HasSpecificBuff(client, "Regenerating Therapy"))
+		{
+			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
+			
+			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
+		}
 
 		Armor_regen_delay[client] = GameTime + 1.0;
 		SDkHooks_Think_TutorialStepsDo(client);
@@ -779,16 +785,7 @@ public void OnPostThink(int client)
 		
 		if(IsValidEntity(weapon))
 		{
-			if(WeaponWasGivenInfiniteDelay[weapon] && !IsWeaponEmptyCompletly(client, weapon, true))
-			{
-				//tiny delay to prevent abuse?
-				if(Attributes_Get(weapon, 4015, 0.0) == 0.0)
-				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
-					SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
-				}
-				WeaponWasGivenInfiniteDelay[weapon] = false;
-			}
+			AllowWeaponFireAfterEmpty(client, weapon);
 			static float cooldown_time;
 			had_An_ability = false;
 			static bool IsReady;
@@ -1063,6 +1060,7 @@ public void OnPostThink(int client)
 			}
 			if(ClientHasUseableGrenadeOrDrink(client))
 			{
+				had_An_ability = true;
 				if(GetGameTime() > GrenadeApplyCooldownReturn(client))
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
@@ -1072,8 +1070,20 @@ public void OnPostThink(int client)
 					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
 				}
 			}
+			if(Purnell_Existant(client))
+			{
+				had_An_ability = true;
+				int Reolver = EntRefToEntIndex(Purnell_ReturnRevolver(client));
+				if(IsValidEntity(Reolver))
+				{
+					int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+					int ammo = GetEntData(Reolver, iAmmoTable, 4);//Get ammo clip
+					FormatEx(buffer, sizeof(buffer), "%s [%i/%i]", buffer,ammo,Purnell_RevolverFull(Reolver));
+				}
+			}
 			if(SuperUbersaw_Existant(client))
 			{
+				had_An_ability = true;
 				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f%%]",buffer, SuperUbersawPercentage(client) * 100.0);
 			}
 #endif
@@ -2136,7 +2146,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 
-					entity = SpawnFormattedWorldText("DOWNED [R]", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
+					entity = SpawnFormattedWorldText("DOWNED [T]", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
 					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 					b_DyingTextOff[victim] = false;
 					
@@ -2317,6 +2327,10 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		return Plugin_Handled;
 	}
 	if(StrContains(sample, "vo/halloween_scream", true) != -1)
+	{
+		return Plugin_Handled;
+	}
+	if(StrContains(sample, "misc/halloween/spell_stealth.wav", true) != -1)
 	{
 		return Plugin_Handled;
 	}
@@ -2505,8 +2519,16 @@ public void OnWeaponSwitchPre(int client, int weapon)
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
-	if(LastMann && Yakuza_Lastman())
-		return;	
+	if(LastMann)
+	{
+		switch(Yakuza_Lastman())
+		{
+			case 1,2,3,4:
+			{
+				return;
+			}
+		}
+	}
 	
 	DoOverlay(client, "debug/yuv");
 	if(LastMann)
@@ -3244,3 +3266,16 @@ void SDkHooks_Think_TutorialStepsDo(int client)
 	DoTutorialStep(client, true);
 }
 #endif
+void AllowWeaponFireAfterEmpty(int client, int weapon)
+{
+	if(WeaponWasGivenInfiniteDelay[weapon] && !IsWeaponEmptyCompletly(client, weapon, true))
+	{
+		//tiny delay to prevent abuse?
+		if(Attributes_Get(weapon, 4015, 0.0) == 0.0)
+		{
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
+		}
+		WeaponWasGivenInfiniteDelay[weapon] = false;
+	}
+}

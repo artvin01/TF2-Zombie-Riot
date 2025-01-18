@@ -121,6 +121,8 @@ void InitStatusEffects()
 	StatusEffects_Ruiania();
 	StatusEffects_WeaponSpecific_VisualiseOnly();
 	StatusEffects_StatusEffectListOnly();
+	StatusEffects_PurnellKitDeBuffs();
+	StatusEffects_PurnellKitBuffs();
 	//freeplay last.
 	StatusEffects_Freeplay1();
 	StatusEffects_Freeplay2();
@@ -1427,11 +1429,24 @@ void StatusEffects_Freeplay1()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Cheesy Presence");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), ":3");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "-w-"); //dont display above head, so empty
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "uwu"); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.85;
 	data.DamageDealMulti			= 0.15;
-	data.MovementspeedModif			= 1.1;
+	data.MovementspeedModif			= 1.25;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Spotter's Rally");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "-S-");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.34;
+	data.DamageDealMulti			= 1.0;
+	data.MovementspeedModif			= 1.25;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -3137,3 +3152,272 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 	if(length < 1)
 		delete E_AL_StatusEffects[attacker];
 }
+
+void StatusEffects_PurnellKitBuffs()
+{
+
+	//20% Faster attackspeed.
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Hectic Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ᵽ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	//20% more Damage
+	strcopy(data.BuffName, sizeof(data.BuffName), "Physical Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₱");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.2;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//15% Resistance
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ensuring Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "℘");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.85;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//10% damage and resistance, and 20% speed for npcs
+	strcopy(data.BuffName, sizeof(data.BuffName), "Overall Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⅌");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.9;
+	data.DamageDealMulti			= 0.1;
+	data.MovementspeedModif			= 0.2;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//5% resistance, 15% damage
+	strcopy(data.BuffName, sizeof(data.BuffName), "Powering Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♇");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.95;
+	data.DamageDealMulti			= 0.15;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	//15% resistance, 5% damage , and 10% speed for npcs
+	strcopy(data.BuffName, sizeof(data.BuffName), "Calling Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꟼ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.85;
+	data.DamageDealMulti			= 0.05;
+	data.MovementspeedModif			= 0.1;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//25% resistance, 25% damage , and 20% speed for npcs
+	strcopy(data.BuffName, sizeof(data.BuffName), "Caffinated Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꟼ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= 0.25;
+	data.MovementspeedModif			= 0.2;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//10% resistance, 10% damage , and slow hp regen
+	strcopy(data.BuffName, sizeof(data.BuffName), "Regenerating Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꟼ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.9;
+	data.DamageDealMulti			= 0.9;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+
+
+
+
+void StatusEffects_PurnellKitDeBuffs()
+{
+	//Same as Cryo
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Icy Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ḟ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.10;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.10;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	//Same as ant raid
+	strcopy(data.BuffName, sizeof(data.BuffName), "Raiding Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₣");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.1;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//Same as ant raid
+	strcopy(data.BuffName, sizeof(data.BuffName), "Degrading Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "℉");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.9;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//Same as Near Zero
+	strcopy(data.BuffName, sizeof(data.BuffName), "Zero Therapy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꟻ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.15;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.15;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//Same as Golden Curse
+	strcopy(data.BuffName, sizeof(data.BuffName), "Debt Causing Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϝ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.2;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//Same as cudgelled
+	strcopy(data.BuffName, sizeof(data.BuffName), "Headache Incuding Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϝ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.3;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//Same as TEslar
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shocking Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "f");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.2;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.25;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//Same as Specter Aura
+	strcopy(data.BuffName, sizeof(data.BuffName), "Therapists Aura");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϝ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.6;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//Same as Teslar Electricution
+	strcopy(data.BuffName, sizeof(data.BuffName), "Electric Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "𐌅");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.25;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.35;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	//Same as Caffinated Drain
+	strcopy(data.BuffName, sizeof(data.BuffName), "Caffinated Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ɸ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.25; //take 25% more damage
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+
