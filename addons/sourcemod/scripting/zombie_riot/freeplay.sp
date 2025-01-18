@@ -513,7 +513,26 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
 
 			enemy.Credits += 100.0;
-			CPrintToChatAll("{purple}They're coming...");
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{purple}They're approaching...");	
+				}
+				case 2:
+				{
+					CPrintToChatAll("{purple}Yet another rip forms...");	
+				}
+				case 3:
+				{
+					CPrintToChatAll("{purple}They recoil and twitch...");	
+				}
+				default:
+				{
+					CPrintToChatAll("{purple}They're coming...");	
+				}
+			}
+			
 		}
 
 		if(enemy.Health)
