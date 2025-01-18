@@ -125,6 +125,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
+	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -362,6 +363,11 @@ public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHoo
 	return MRES_Supercede;
 }
 
+public MRESReturn Dhook_StealthCastSpellPre(int entity, DHookReturn returnHook, DHookParam param)
+{
+	returnHook.Value = true;
+	return MRES_Supercede;
+}
 static bool wasMvM;
 public MRESReturn DHook_PreClientUpdatePre()
 {

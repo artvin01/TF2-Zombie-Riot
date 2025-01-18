@@ -3438,7 +3438,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
 		}
 		CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
-		CheckLastMannStanding(target);
+		CheckLastMannStanding(0);
 	}
 }
 
