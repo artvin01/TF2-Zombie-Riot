@@ -14,6 +14,7 @@ static float i_SoldineMeleeCharge[MAXPLAYERS+1];
 static float i_SoldineRocketjumpCharge[MAXPLAYERS+1];
 static float f_SoldineRocketJumpDuration[MAXPLAYERS+1];
 static int i_ParticleMeleeHit[MAXPLAYERS+1];
+static bool b_DisableSuperJump[MAXPLAYERS+1];
 
 
 /*
@@ -30,6 +31,7 @@ public void Wkit_Soldin_OnMapStart()
 	Zero(i_SoldineRocketjumpCharge);
 	Zero(f_SoldineRocketJumpDuration);
 	Zero(Soldine_HudDelay);
+	Zero(b_DisableSuperJump);
 }
 
 void ChargeSoldineMeleeHit(int client, int victim, bool Melee, float Multi = 1.0)
@@ -85,7 +87,7 @@ bool Wkit_Soldin_BvB(int client)
 
 bool CanSelfHurtAndJump(int client)
 {
-	if(i_SoldineRocketjumpCharge[client] >= SOLDINE_MAX_ROCKETJUMP_CHARGE)
+	if(i_SoldineRocketjumpCharge[client] >= SOLDINE_MAX_ROCKETJUMP_CHARGE && !b_DisableSuperJump[client])
 	{
 		return true;
 	}
@@ -126,7 +128,6 @@ void ChargeSoldineRocketJump(int client, int victim, bool Melee, float Multi = 1
 	if(i_SoldineRocketjumpCharge[client] > SOLDINE_MAX_ROCKETJUMP_CHARGE)
 		i_SoldineRocketjumpCharge[client] = SOLDINE_MAX_ROCKETJUMP_CHARGE;
 }
-
 
 public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
@@ -273,6 +274,10 @@ static void Wkit_Soldin_Effect(int client)
 	{
 		return;
 	}
+	if(b_DisableSuperJump[client])
+	{
+		return;
+	}
 	if(i_SoldineRocketjumpCharge[client] < SOLDINE_MAX_ROCKETJUMP_CHARGE)
 	{
 		return;
@@ -339,7 +344,10 @@ public void Soldine_Hud_Logic(int client, int weapon, bool ignoreCD)
 
 	if(i_PaPLevel[client] >= 2)
 	{
-		Format(SoldineHud, sizeof(SoldineHud), "%s\nRobot Jump[%1.f％]", SoldineHud, (i_SoldineRocketjumpCharge[client] / SOLDINE_MAX_ROCKETJUMP_CHARGE) * 100.0);
+		if(b_DisableSuperJump[client])
+			Format(SoldineHud, sizeof(SoldineHud), "%s\nRobot Jump[%1.f％] (Disabled)", SoldineHud, (i_SoldineRocketjumpCharge[client] / SOLDINE_MAX_ROCKETJUMP_CHARGE) * 100.0);	
+		else
+			Format(SoldineHud, sizeof(SoldineHud), "%s\nRobot Jump[%1.f％]", SoldineHud, (i_SoldineRocketjumpCharge[client] / SOLDINE_MAX_ROCKETJUMP_CHARGE) * 100.0);
 	}
 
 	Soldine_HudDelay[client] = GetGameTime() + 0.5;
@@ -441,5 +449,20 @@ static void Ground_Slam(int entity, int victim, float damage, int weapon)
 			FreezeNpcInTime(victim, 1.0);
 
 		SensalCauseKnockback(entity, victim, 0.75, true);
+	}
+}
+
+
+public void Soldine_ToggleSuperJump(int client, int weapon, bool crit, int slot)
+{
+	if(b_DisableSuperJump[client])
+	{
+		b_DisableSuperJump[client] = false;
+		ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
+ 	}
+	else
+	{
+		b_DisableSuperJump[client] = true;
+		ClientCommand(client, "playgamesound misc/halloween/spelltick_02.wav");
 	}
 }

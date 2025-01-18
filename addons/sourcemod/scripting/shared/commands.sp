@@ -335,8 +335,9 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 
 
 
-void DoInteractKeyLogic(float angles[3], int client)
+bool DoInteractKeyLogic(float angles[3], int client)
 {
+	bool Success = false;
 	f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
 	if(angles[0] < -70.0)
 	{
@@ -348,6 +349,9 @@ void DoInteractKeyLogic(float angles[3], int client)
 	}
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	StartPlayerOnlyLagComp(client, true);
-	InteractKey(client, weapon_holding, true);
+	if(InteractKey(client, weapon_holding, true))
+		Success = true;
+
 	EndPlayerOnlyLagComp(client);
+	return Success;
 }

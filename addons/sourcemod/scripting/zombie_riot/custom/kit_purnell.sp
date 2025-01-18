@@ -354,7 +354,7 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 			MaxTargetsHit = 2;
 		}
 		bool AdditionalBonusRaidHit= false;
-		for(int i; i < PURNELL_MAX_TARGETS; i++)
+		for(int i; i < MaxTargetsHit; i++)
 		{
 			int EnemyHit = EnemiesHit[i];
 			if(!EnemyHit)

@@ -2862,6 +2862,7 @@ static void UpdateMvMStatsFrame()
 	//delete profiler;
 }
 
+
 static int SetupFlags(const Enemy data, bool support)
 {
 	int flags = 0;

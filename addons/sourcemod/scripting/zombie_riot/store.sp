@@ -1914,6 +1914,18 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	if(b_InteractWithReload[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-73", buffer);
+
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-86", buffer);
@@ -1922,6 +1934,7 @@ public void ReShowSettingsHud(int client)
 	menu2.AddItem("-72", buffer);
 	unused.
 	*/
+	
 
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");
@@ -2370,6 +2383,18 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					if(f_Data_InBattleHudDisableDelay[client] > 3.0)
 					{
 						f_Data_InBattleHudDisableDelay[client] = -2.0;
+					}
+					ReShowSettingsHud(client);
+				}
+				case -73: 
+				{
+					if(b_InteractWithReload[client])
+					{
+						b_InteractWithReload[client] = false;
+					}
+					else
+					{
+						b_InteractWithReload[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}

@@ -3442,6 +3442,10 @@
 		"en" 	"Taunt Speed Increace"
 		"fr" 	"Vitesse des Railleries Augmuntée"
 	}
+	"Interact With Reload"
+	{
+		"en" 	"Interact With Reload"
+	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"
