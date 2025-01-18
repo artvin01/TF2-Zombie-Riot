@@ -3,8 +3,8 @@
 /*
     Spotter - A support voidspeaker hired by Bob the Second, tasked to support the Worthy in freeplay.
 
-    Melee Damage: 10000 base.
-    Attack Delay: 3s
+    Melee Damage: 75000 base.
+    Attack Delay: 2.5s
     Melee Effects:
     - Silences the target for 3s
     - Grants Spotter the Void Strength II buff for 1 second.
