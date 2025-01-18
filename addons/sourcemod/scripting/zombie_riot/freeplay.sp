@@ -545,22 +545,24 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 			
 		}
-
-		if(enemy.Health)
+		else
 		{
-			// Nerfing bob the first's army health due to freeplay scaling
-			// Basically the same hp formula except HealthBonus is not there
-			if(StrContains(enemy.CustomName, "First ") != -1)
+			if(enemy.Health)
 			{
-				enemy.Health = RoundToCeil(((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
+				// Nerfing bob the first's army health due to freeplay scaling
+				// Basically the same hp formula except HealthBonus is not there
+				if(StrContains(enemy.CustomName, "First ") != -1)
+				{
+					enemy.Health = RoundToCeil(((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
+				}
+				else
+				{
+					enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
+				}
 			}
-			else
-			{
-				enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
-			}
+	
+			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 		}
-
-		count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 
 		if(count > 45)
 			count = 45;
