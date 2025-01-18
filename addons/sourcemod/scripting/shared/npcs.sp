@@ -266,6 +266,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 				{
 					WaveStart_SubWaveStart(GetGameTime());
 					ReviveAll(true, true);
+					RemoveAllDamageAddition();
 				}
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)

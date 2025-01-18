@@ -785,16 +785,7 @@ public void OnPostThink(int client)
 		
 		if(IsValidEntity(weapon))
 		{
-			if(WeaponWasGivenInfiniteDelay[weapon] && !IsWeaponEmptyCompletly(client, weapon, true))
-			{
-				//tiny delay to prevent abuse?
-				if(Attributes_Get(weapon, 4015, 0.0) == 0.0)
-				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
-					SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
-				}
-				WeaponWasGivenInfiniteDelay[weapon] = false;
-			}
+			AllowWeaponFireAfterEmpty(client, weapon);
 			static float cooldown_time;
 			had_An_ability = false;
 			static bool IsReady;
@@ -1069,6 +1060,7 @@ public void OnPostThink(int client)
 			}
 			if(ClientHasUseableGrenadeOrDrink(client))
 			{
+				had_An_ability = true;
 				if(GetGameTime() > GrenadeApplyCooldownReturn(client))
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
@@ -1078,8 +1070,20 @@ public void OnPostThink(int client)
 					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
 				}
 			}
+			if(Purnell_Existant(client))
+			{
+				had_An_ability = true;
+				int Reolver = EntRefToEntIndex(Purnell_ReturnRevolver(client));
+				if(IsValidEntity(Reolver))
+				{
+					int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+					int ammo = GetEntData(Reolver, iAmmoTable, 4);//Get ammo clip
+					FormatEx(buffer, sizeof(buffer), "%s [%i/%i]", buffer,ammo,Purnell_RevolverFull(Reolver));
+				}
+			}
 			if(SuperUbersaw_Existant(client))
 			{
+				had_An_ability = true;
 				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f%%]",buffer, SuperUbersawPercentage(client) * 100.0);
 			}
 #endif
@@ -2326,6 +2330,10 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	{
 		return Plugin_Handled;
 	}
+	if(StrContains(sample, "misc/halloween/spell_stealth.wav", true) != -1)
+	{
+		return Plugin_Handled;
+	}
 	/*
 	if(StrContains(sample, "sentry_", true) != -1)
 	{
@@ -2511,8 +2519,16 @@ public void OnWeaponSwitchPre(int client, int weapon)
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
-	if(LastMann && Yakuza_Lastman())
-		return;	
+	if(LastMann)
+	{
+		switch(Yakuza_Lastman())
+		{
+			case 1,2,3,4:
+			{
+				return;
+			}
+		}
+	}
 	
 	DoOverlay(client, "debug/yuv");
 	if(LastMann)
@@ -3250,3 +3266,16 @@ void SDkHooks_Think_TutorialStepsDo(int client)
 	DoTutorialStep(client, true);
 }
 #endif
+void AllowWeaponFireAfterEmpty(int client, int weapon)
+{
+	if(WeaponWasGivenInfiniteDelay[weapon] && !IsWeaponEmptyCompletly(client, weapon, true))
+	{
+		//tiny delay to prevent abuse?
+		if(Attributes_Get(weapon, 4015, 0.0) == 0.0)
+		{
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
+		}
+		WeaponWasGivenInfiniteDelay[weapon] = false;
+	}
+}

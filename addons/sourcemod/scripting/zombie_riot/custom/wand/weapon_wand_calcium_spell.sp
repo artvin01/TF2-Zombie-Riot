@@ -95,7 +95,6 @@ public Action Wand_Calcium_Spell(int entity)
 		{
 			RemoveEntity(entity);
 			Delete_Flame[owner] = false;
-	
 		}
 	}
 	return Plugin_Handled;
