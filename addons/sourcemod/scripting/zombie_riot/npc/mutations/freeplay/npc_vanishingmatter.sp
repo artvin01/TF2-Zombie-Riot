@@ -96,7 +96,7 @@ methodmap VanishingMatter < CClotBody
 	
 	public VanishingMatter(float vecPos[3], float vecAng[3], int ally)
 	{
-		VanishingMatter npc = view_as<VanishingMatter>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "100000", ally));
+		VanishingMatter npc = view_as<VanishingMatter>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "75000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
