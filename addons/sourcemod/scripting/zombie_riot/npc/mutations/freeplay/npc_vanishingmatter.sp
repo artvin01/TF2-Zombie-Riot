@@ -324,6 +324,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 						npc.m_flAttackHappens = gameTime + 0.1;
 						npc.m_flDoingAnimation = gameTime + 0.1;
 						npc.m_flNextMeleeAttack = gameTime + 0.3;
+					}
 					else
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,4.0);
