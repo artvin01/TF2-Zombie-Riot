@@ -481,8 +481,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
-		enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.75);
-		enemy.Health = RoundToCeil(enemy.Health * 1.25);
+		enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
 		enemy.Credits += 100.0;
 
 		count = 5;
@@ -502,9 +501,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		float bigchance;
 		if(postWaves+1 < 89)
-			bigchance = 0.925;
+			bigchance = 0.94;
 		else
-			bigchance = 0.85;
+			bigchance = 0.88;
 
 		if(GetRandomFloat(0.0, 1.0) >= bigchance)
 		{
@@ -514,12 +513,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			else
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
 
-			enemy.Health = RoundToCeil(enemy.Health * 1.75);
-
 			enemy.Credits += 100.0;
 			CPrintToChatAll("{purple}They're coming...");
-
-			count = RoundToFloor(count * 1.35);
 		}
 
 		if(enemy.Health)
