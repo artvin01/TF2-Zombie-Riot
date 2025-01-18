@@ -2455,13 +2455,13 @@
 	{
 		"en"	"A taken over giant machine by the Void.\nAble to fire when has enough rounds and can't change target while firing.\nExplodes on death killing all non-bosses."
 	}
-	"Dimensional Fragment Desc"
+	"Disturbed Umbral Desc"
 	{
-		"en"	"A fragment, a vessel filled with uncontrollable dimensional power.\nDeals a random amount of damage on hit, and performs a random effect upon being hit, with a cooldown.\n(Silence) Reduces its attackspeed greatly."
+		"en"	"Alerted by the rips, it comes to stop the ''invasors''...\nDeals a random amount of damage on hit, and performs a random effect upon being hit, with a cooldown.\n(Silence) Reduces its attackspeed greatly."
 	}
 	"Immutable Heavy Desc"
 	{
-		"en"	"Another dimensional vessel, however, it seems to be more controlled...\nShoots projectiles when close enough, red does AOE, blue is single.\nDeals 20%% of its melee damage as Elemental Void/Chaos damage.\nEach melee hit it does, it gains +2%% speed permanently.\nDo NOT allow it to melee anything though, otherwise it'll become immune to all debuffs temporarily (unless silenced)."
+		"en"	"Another dimensional entity, however, it seems to be more controlled...\nShoots projectiles when close enough, red does AOE, blue is single.\nDeals 20%% of its melee damage as Elemental Void/Chaos damage.\nEach melee hit it does, it gains +2%% speed permanently.\nDo NOT allow it to melee anything though, otherwise it'll become immune to all debuffs temporarily (unless silenced)."
 	}
 	"Vanishing Matter Desc"
 	{
