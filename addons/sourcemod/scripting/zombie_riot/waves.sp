@@ -3328,7 +3328,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			if(CurrentRound >= 299 && !Freeplay_w500reached)
+			if(CurrentRound >= 249 && !Freeplay_w500reached)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
