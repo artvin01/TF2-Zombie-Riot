@@ -1668,6 +1668,7 @@ void CheckAlivePlayersforward(int killed=0)
 void CheckLastMannStanding(int killed)
 {
 	int PlayersLeftNotDowned = 0;
+	LastMann_BeforeLastman = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
