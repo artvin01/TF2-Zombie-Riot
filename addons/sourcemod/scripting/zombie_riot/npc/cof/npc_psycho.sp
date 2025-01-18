@@ -69,7 +69,7 @@ methodmap Psycho < CClotBody
 	
 	public Psycho(float vecPos[3], float vecAng[3], int ally)
 	{
-		Psycho npc = view_as<Psycho>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/psycho.mdl", "1.0", "400", ally));
+		Psycho npc = view_as<Psycho>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/psycho.mdl", "1.10", "400", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -198,7 +198,7 @@ public void Psycho_NPCDeath(int entity)
 
 		DispatchSpawn(entity_death);
 		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.10); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("diesimple");
 		AcceptEntityInput(entity_death, "SetAnimation");
@@ -234,8 +234,8 @@ void PsychoSelfDefense(Psycho npc, float gameTime, int target, float distance)
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			static float MaxVec[3] = {64.0 ,64.0, 128.0};
-			static float MinVec[3] = {-64.0 ,-64.0, -128.0};
+			static float MaxVec[3] = {128.0, 128.0, 128.0};
+			static float MinVec[3] = {-128.0, -128.0, -128.0};
 
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, MaxVec, MinVec)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
