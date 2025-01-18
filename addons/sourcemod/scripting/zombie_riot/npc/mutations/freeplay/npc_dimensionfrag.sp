@@ -38,7 +38,7 @@ void DimensionalFragment_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/pyro.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Dimensional Fragment");
+	strcopy(data.Name, sizeof(data.Name), "Disturbed Umbral");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dimensionfrag");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
