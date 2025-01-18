@@ -235,11 +235,11 @@ public Action DimensionalFragment_OnTakeDamage(int victim, int &attacker, int &i
 		{
 			case 1:
 			{
-				npc.FireParticleRocket(endLoc, 1200.0, GetRandomFloat(250.0, 750.0), 125.0, "raygun_projectile_blue");
+				npc.FireParticleRocket(endLoc, 1200.0, GetRandomFloat(100.0, 400.0), 125.0, "raygun_projectile_blue");
 			}
 			case 2:
 			{
-				npc.FireParticleRocket(endLoc, 800.0, GetRandomFloat(100.0, 400.0), 200.0, "raygun_projectile_red", true);
+				npc.FireParticleRocket(endLoc, 800.0, GetRandomFloat(50.0, 200.0), 200.0, "raygun_projectile_red", true);
 			}
 			case 3:
 			{
@@ -247,7 +247,7 @@ public Action DimensionalFragment_OnTakeDamage(int victim, int &attacker, int &i
 			}
 			default:
 			{
-				makeexplosion(victim, victim, startPosition, "", GetRandomInt(50, 150), 150, _, _, true, true, 6.0);
+				makeexplosion(victim, victim, startPosition, "", GetRandomInt(25, 100), 150, _, _, true, true, 6.0);
 			}
 		}
 	}
@@ -296,7 +296,7 @@ void DimensionalFragmentSelfDefense(DimensionalFragment npc, float gameTime, int
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = GetRandomFloat(150.0, 500.0);
+					float damageDealt = GetRandomFloat(100.0, 400.0);
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
