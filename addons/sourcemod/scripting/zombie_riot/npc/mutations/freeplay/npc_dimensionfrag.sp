@@ -38,7 +38,7 @@ void DimensionalFragment_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/pyro.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Dimensional Fragment");
+	strcopy(data.Name, sizeof(data.Name), "Disturbed Umbral");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dimensionfrag");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
@@ -94,7 +94,7 @@ methodmap DimensionalFragment < CClotBody
 	
 	public DimensionalFragment(float vecPos[3], float vecAng[3], int ally)
 	{
-		DimensionalFragment npc = view_as<DimensionalFragment>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "25000", ally));
+		DimensionalFragment npc = view_as<DimensionalFragment>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "22500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -113,7 +113,7 @@ methodmap DimensionalFragment < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(DimensionalFragment_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 375.0;		
+		npc.m_flSpeed = 325.0;		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -235,11 +235,11 @@ public Action DimensionalFragment_OnTakeDamage(int victim, int &attacker, int &i
 		{
 			case 1:
 			{
-				npc.FireParticleRocket(endLoc, 1200.0, GetRandomFloat(250.0, 750.0), 125.0, "raygun_projectile_blue");
+				npc.FireParticleRocket(endLoc, 1200.0, GetRandomFloat(100.0, 400.0), 125.0, "raygun_projectile_blue");
 			}
 			case 2:
 			{
-				npc.FireParticleRocket(endLoc, 800.0, GetRandomFloat(100.0, 400.0), 200.0, "raygun_projectile_red", true);
+				npc.FireParticleRocket(endLoc, 800.0, GetRandomFloat(50.0, 200.0), 200.0, "raygun_projectile_red", true);
 			}
 			case 3:
 			{
@@ -247,7 +247,7 @@ public Action DimensionalFragment_OnTakeDamage(int victim, int &attacker, int &i
 			}
 			default:
 			{
-				makeexplosion(victim, victim, startPosition, "", GetRandomInt(50, 150), 150, _, _, true, true, 6.0);
+				makeexplosion(victim, victim, startPosition, "", GetRandomInt(25, 100), 150, _, _, true, true, 6.0);
 			}
 		}
 	}
@@ -296,7 +296,7 @@ void DimensionalFragmentSelfDefense(DimensionalFragment npc, float gameTime, int
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = GetRandomFloat(150.0, 500.0);
+					float damageDealt = GetRandomFloat(100.0, 400.0);
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound

@@ -3,8 +3,8 @@
 /*
     Spotter - A support voidspeaker hired by Bob the Second, tasked to support the Worthy in freeplay.
 
-    Melee Damage: 10000 base.
-    Attack Delay: 3s
+    Melee Damage: 75000 base.
+    Attack Delay: 2.5s
     Melee Effects:
     - Silences the target for 3s
     - Grants Spotter the Void Strength II buff for 1 second.
@@ -365,15 +365,15 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 10000.0;
+					float damageDealt = 75000.0;
 					
-                    SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-                    ApplyStatusEffect(npc.index, target, "Silenced", 3.0);
-                    ApplyStatusEffect(npc.index, npc.index, "Void Strength II", 1.0);
+                    			SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+                    			ApplyStatusEffect(npc.index, target, "Silenced", 3.0);
+                    			ApplyStatusEffect(npc.index, npc.index, "Void Strength II", 1.0);
 					Custom_Knockback(npc.index, target, 500.0, true); 
 					
 					npc.m_iAttacksTillReload++;
-					if(npc.m_iAttacksTillReload >= 30)
+					if(npc.m_iAttacksTillReload >= 25)
 					{
 						npc.Anger = true;
 					}
@@ -402,7 +402,7 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 3.0;
+				npc.m_flNextMeleeAttack = gameTime + 2.5;
 			}
 		}
 	}

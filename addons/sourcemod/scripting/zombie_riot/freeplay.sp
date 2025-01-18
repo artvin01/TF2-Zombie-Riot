@@ -491,8 +491,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Team = TFTeam_Red;
 		enemy.Index = NPC_GetByPlugin("npc_spotter");
-		enemy.Health = RoundToFloor(60000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.ExtraDamage = 9.0; // base damage is 10k
+		enemy.Health = RoundToFloor(75000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		count = 1;
 		spotteralive = true;
 		spotter--;
@@ -501,9 +500,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		float bigchance;
 		if(postWaves+1 < 89)
-			bigchance = 0.94;
+			bigchance = 0.96;
 		else
-			bigchance = 0.88;
+			bigchance = 0.92;
 
 		if(GetRandomFloat(0.0, 1.0) >= bigchance)
 		{
@@ -514,7 +513,26 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
 
 			enemy.Credits += 100.0;
-			CPrintToChatAll("{purple}They're coming...");
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{gold}U-uh, that's not supposed to happen....");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{gold}Aand this enemy gro- w-wait, what's that!?");	
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}Erm... seems like something's going wrong...");		
+				}
+				default:
+				{
+					CPrintToChatAll("{gold}Oh oh no- BE CAREFUL!!");
+				}
+			}
+			
 		}
 
 		if(enemy.Health)
@@ -845,10 +863,13 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
-		int wrathchance = GetRandomInt(0, 100);
-		if(wrathchance < 2) // 2% chance
+		if(ZR_GetWaveCount() > 99)
 		{
-			wrathofirln = true;
+			int wrathchance = GetRandomInt(0, 100);
+			if(wrathchance < 2) // 2% chance
+			{
+				wrathofirln = true;
+			}
 		}
 
 		if(!wrathofirln)
