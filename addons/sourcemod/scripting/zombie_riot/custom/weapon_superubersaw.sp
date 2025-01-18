@@ -98,7 +98,7 @@ stock void Superubersaw_OnTakeDamage(int victim, int &attacker, float &damage)
 	{
 		damage *= 6.0;
 		DisplayCritAboveNpc(victim, attacker, true);
-		SensalCauseKnockback(attacker, victim);
+		SensalCauseKnockback(attacker, victim, 1.5);
 	}
 	damage *= Attributes_GetOnPlayer(attacker, 8, true, true);
 
