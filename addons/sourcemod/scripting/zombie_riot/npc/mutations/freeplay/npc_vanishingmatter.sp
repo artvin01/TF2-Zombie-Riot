@@ -281,7 +281,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 300.0;
+					float damageDealt = 200.0;
 
 					if(!b_NpcIsInvulnerable[npc.index])
 					{
