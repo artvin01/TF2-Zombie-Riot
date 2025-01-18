@@ -281,11 +281,11 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 200.0;
+					float damageDealt = 100.0;
 
 					if(!b_NpcIsInvulnerable[npc.index])
 					{
-						damageDealt = 65.0;
+						damageDealt = 75.0;
 					}
 						
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
