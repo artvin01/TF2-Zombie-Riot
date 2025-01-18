@@ -517,19 +517,19 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				case 1:
 				{
-					CPrintToChatAll("{purple}They're approaching...");	
+					CPrintToChatAll("{gold}U-uh, that's not supposed to happen....");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{purple}Yet another rip forms...");	
+					CPrintToChatAll("{gold}Aand this enemy gro- w-wait, what's that!?");	
 				}
 				case 3:
 				{
-					CPrintToChatAll("{purple}They recoil and twitch...");	
+					CPrintToChatAll("{gold}Erm... seems like something's going wrong...");		
 				}
 				default:
 				{
-					CPrintToChatAll("{purple}They're coming...");	
+					CPrintToChatAll("{gold}Oh oh no- BE CAREFUL!!");
 				}
 			}
 			
