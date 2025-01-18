@@ -318,10 +318,19 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 
 				if(!b_NpcIsInvulnerable[npc.index])
 				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,4.0);
-					npc.m_flAttackHappens = gameTime + 0.02;
-					npc.m_flDoingAnimation = gameTime + 0.02;
-					npc.m_flNextMeleeAttack = gameTime + 0.1;
+					if(!NpcStats_IsEnemySilenced(npc.index))
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.5);
+						npc.m_flAttackHappens = gameTime + 0.1;
+						npc.m_flDoingAnimation = gameTime + 0.1;
+						npc.m_flNextMeleeAttack = gameTime + 0.3;
+					else
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,4.0);
+						npc.m_flAttackHappens = gameTime + 0.02;
+						npc.m_flDoingAnimation = gameTime + 0.02;
+						npc.m_flNextMeleeAttack = gameTime + 0.1;
+					}
 				}
 				else
 				{
