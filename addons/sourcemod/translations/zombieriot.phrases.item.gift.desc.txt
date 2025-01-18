@@ -2465,7 +2465,7 @@
 	}
 	"Vanishing Matter Desc"
 	{
-		"en"	"It begs for the pain to stop...\nIs invulnerable when it spawns. Each melee hit it deals lowers its health.\nUpon reaching 25%% health, its invulnerability vanishes and it enrages.\nWhile enraged, it will move faster, deal much less damage, and will heal nearby allies.\nOh, and it also attacks at lightspeed."
+		"en"	"It begs for the pain to stop...\nIs invulnerable when it spawns. Each melee hit it lands lowers its health.\nUpon reaching 25%% health, its invulnerability vanishes and it enrages.\nWhile enraged, it will move faster, deal much less damage, and will heal nearby allies.\nOh, and it also attacks at lightspeed.\n(Silence) Reduces its attackspeed greatly."
 	}
 	"Spotter Desc"
 	{
