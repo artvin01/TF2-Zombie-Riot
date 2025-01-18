@@ -94,7 +94,7 @@ methodmap DimensionalFragment < CClotBody
 	
 	public DimensionalFragment(float vecPos[3], float vecAng[3], int ally)
 	{
-		DimensionalFragment npc = view_as<DimensionalFragment>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "25000", ally));
+		DimensionalFragment npc = view_as<DimensionalFragment>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "22500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -113,7 +113,7 @@ methodmap DimensionalFragment < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(DimensionalFragment_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 375.0;		
+		npc.m_flSpeed = 325.0;		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
