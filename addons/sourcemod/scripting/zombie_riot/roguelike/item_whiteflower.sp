@@ -319,6 +319,9 @@ public void Rogue_Exchanger_Collect()
 
 public void Rogue_Exchanger_IngotChanged(int &ingots)
 {
+	if(ingots <= 0)
+		return;
+		
 	CurrentCash += 200 * ingots;
 	GlobalExtraCash += 200 * ingots;
 	CPrintToChatAll("{green}%t","Cash Gained!", 200 * ingots);
