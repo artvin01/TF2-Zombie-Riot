@@ -452,12 +452,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_zombine");
-		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
-		enemy.ExtraSpeed = 2.0;
+		enemy.Health = RoundToFloor(1250000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.8);
+		enemy.ExtraSpeed = 2.5;
 		enemy.ExtraSize = 1.5; // smol
 		enemy.Credits += 100.0;
-		enemy.ExtraDamage = 1.5;
+		enemy.ExtraDamage = 3.5;
 
 		count = 6;
 		zombiecombine = false;
