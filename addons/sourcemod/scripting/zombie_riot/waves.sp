@@ -1414,7 +1414,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			bool ScaleWithHpMore = wave.Count == 0;
 
 			float WaitingTimeGive = wave.EnemyData.WaitingTimeGive;
-			if(!LastMann && WaitingTimeGive >= 0.0)
+			if(!LastMann && WaitingTimeGive > 0.0)
 			{
 				PrintToChatAll("You were given extra %.1f seconds to prepare.",WaitingTimeGive);
 				GiveProgressDelay(WaitingTimeGive);
