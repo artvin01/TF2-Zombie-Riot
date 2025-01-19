@@ -523,7 +523,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			for (int client = 0; client < MaxClients; client++)
 			{
-				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 				{
 					Items_GiveNamedItem(client, "Cured Silvester");
 					CPrintToChat(client,"{default}You gained his favor, you obtained: {yellow}''Cured Silvester''{default}!");
