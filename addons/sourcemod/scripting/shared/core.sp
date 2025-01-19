@@ -3362,6 +3362,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		if(WasClientReviving)
 		{
 			AddHealthToUbersaw(client, 1, 0.065);
+			HealPointToReinforce(client, 1, 0.065);
 			i_Reviving_This_Client[client] = 0;
 			f_Reviving_This_Client[client] = 0.0;
 		}

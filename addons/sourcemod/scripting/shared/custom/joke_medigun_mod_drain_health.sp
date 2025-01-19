@@ -201,6 +201,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						WorldSpaceCenter(healTarget, Entity_Position );
 #if defined ZR
 						AddHealthToUbersaw(owner, 1, 0.0015);
+						HealPointToReinforce(owner, 1, 0.0015);
 #endif		
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime() * 3.0, DMG_PLASMA, medigun, _, Entity_Position);
 					}
@@ -226,6 +227,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						WorldSpaceCenter(healTarget, Entity_Position );
 #if defined ZR
 						AddHealthToUbersaw(owner, 1, 0.0005);
+						HealPointToReinforce(owner, 1, 0.0005);
 #endif		
 						SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 					}
@@ -607,7 +609,7 @@ public void GB_Check_Ball(int owner, int weapon, bool crit)
 
 void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUberDuration = false)
 {
-	if (IsInvuln(owner))
+	if(IsInvuln(owner))
 		return;
 		
 	float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -616,7 +618,12 @@ void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUb
 
 	if(RespectUberDuration)
 		HeatExtra = HeatExtra / MedigunGetUberDuration(owner);
-
+	float UberchargeRate = Attributes_GetOnWeapon(owner, medigun, 9, true);
+	if(UberchargeRate > 0.0 || UberchargeRate == -1.0)
+		HeatExtra *= (UberchargeRate == -1.0 ? 0.0 : UberchargeRate);
+	UberchargeRate = Attributes_GetOnWeapon(owner, medigun, 10, true);
+	if(UberchargeRate > 0.0 || UberchargeRate == -1.0)
+		HeatExtra *= (UberchargeRate == -1.0 ? 0.0 : UberchargeRate);
 	flChargeLevel += (HeatExtra * GetGameFrameTime() * extra_logic);
 	
 	if (flChargeLevel > 1.0)

@@ -3427,6 +3427,11 @@
 		"fr"	"Medigun donne aussi de l'armure."
 		"chi"	"医疗枪现在会回复护甲。"
 	}
+	"Medigun Desc Pap 2"
+	{
+		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, and provides quick mana recovery.\nbut Ubercharge rate decreased."
+		"ko"	"우버 사용시 즉시 아머 포인트를 회복하고 치료대상은 무기성능 향상과, 빠른 마나회복 적용합니다.\b하지만 우버 충전속도가 크게 감소합니다."
+	}
 	"Flash Grenade Desc"
 	{
 		"en"	"Massively decreased damage but silences enemies for 4 seconds."

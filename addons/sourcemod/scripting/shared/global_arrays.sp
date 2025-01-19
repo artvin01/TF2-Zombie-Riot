@@ -495,6 +495,7 @@ float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
 bool b_IsCannibal[MAXTF2PLAYERS];
+bool b_Reinforce[MAXTF2PLAYERS];
 char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard1.wav",
 	"physics/flesh/flesh_squishy_impact_hard2.wav",
