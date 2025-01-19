@@ -625,6 +625,7 @@ public void Magnesis_Logic(DataPack pack)
 			manaPercentage = Magnesis_Grab_Cost_Scaling_Special[Magnesis_Tier[client]];
 		}
 
+		ManaCalculationsBefore(client);
 		Magnesis_GrabCost_Bucket[client] += cost + (max_mana[client] * manaPercentage);
 
 		int realCost = RoundToFloor(Magnesis_GrabCost_Bucket[client]);

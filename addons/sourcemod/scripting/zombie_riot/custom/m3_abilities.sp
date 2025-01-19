@@ -664,9 +664,9 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 			b_ReinforceReady[client]=true;
 		if(!b_ReinforceReady_soundonly[client])
 		{
+			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.8, _, _, _, _, false);
+			CPrintToChat(client, "{green}You can now call in reinforcements.");
 			b_ReinforceReady_soundonly[client]=true;
-			EmitSoundToClient(client, g_ReinforceReadySounds, client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",client);
 		}
 		i_ReinforcePoint[client] = i_ReinforcePointMax[client];
 	}
@@ -727,9 +727,15 @@ public void Reinforce(int client, bool NoCD)
 		bool DeadPlayer;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
-			if(!IsValidClient(client_check))continue;
-			if(TeutonType[client_check] == TEUTON_NONE)continue;
-			if(client==client_check || GetTeam(client_check) != TFTeam_Red)continue;
+			if(!IsValidClient(client_check))
+				continue;
+			if(TeutonType[client_check] == TEUTON_NONE)
+				continue;
+			if(client==client_check || GetTeam(client_check) != TFTeam_Red)
+				continue;
+			if(!b_HasBeenHereSinceStartOfWave[client_check])
+				continue;
+
 			DeadPlayer=true;
 		}
 		if(!DeadPlayer)
@@ -743,13 +749,6 @@ public void Reinforce(int client, bool NoCD)
 		if(!NoCD)
 			i_ReinforcePoint[client]=0;
 
-		for(int all=1; all<=MaxClients; all++)
-		{
-			if(IsValidClient(all) && !IsFakeClient(all))
-			{
-				EmitSoundToClient(all, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.8, _, _, _, _, false);
-			}
-		}
 		CPrintToChatAll("{green}%N Is calling for additonal Mercs for tempomary assistance...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
@@ -1739,8 +1738,10 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 					pack.WriteFloat(position[2]);
 					GiveCompleteInvul(RandomHELLDIVER, 3.5);
 					TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
+					EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",RandomHELLDIVER);
 				}
-			
+				
 				float entitypos[3], distance;
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
@@ -1759,6 +1760,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 						}
 					}
 				}
+				/*
 				for(int target=1; target<=MaxClients; target++)
 				{
 					if(IsValidClient(target) && IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE)
@@ -1772,6 +1774,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 						}
 					}
 				}
+				*/
 				RequestFrame(Timer_Deploy);
 				b_ReinforceReady[HELLDIVER]=false;
 			}

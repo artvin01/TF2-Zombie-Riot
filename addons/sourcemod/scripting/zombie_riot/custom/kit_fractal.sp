@@ -1257,6 +1257,7 @@ static Action Mana_Harvester_Tick(int client)
 		//"effect_hand_l"
 		laser = ConnectWithBeam(client, struct_Harvester_Data[client].Enumerated_Ents[i], color[0], color[1], color[2], 5.0, 3.0, 2.0, BEAM_COMBINE_BLACK, _,_,"effect_hand_l");
 		
+		ManaCalculationsBefore(client);
 		if(Current_Mana[client] < max_mana[client]*1.2)
 			Current_Mana[client] += (raid ? RoundToFloor(mana_cost*2.0) : RoundToFloor(mana_cost*1.5));
 

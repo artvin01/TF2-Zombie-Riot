@@ -270,6 +270,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_nemal");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
+				enemy.ExtraDamage = 0.75;
 			}
 			case 18:
 			{
@@ -280,6 +281,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraDamage = 0.75;
 			}
 			case 20:
 			{

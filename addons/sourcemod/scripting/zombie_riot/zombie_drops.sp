@@ -409,36 +409,16 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 								{
 									if(i_IsWandWeapon[weapon])
 									{
-										float max_mana_temp = 800.0;
-										float mana_regen_temp = 200.0; //abit extra :)
-												
-										if(i_CurrentEquippedPerk[client_Hud] == 4)
-										{
-											mana_regen_temp *= 1.35;
-										}
+										ManaCalculationsBefore(client);
 										
-										if(Mana_Regen_Level[client_Hud])
-										{			
-											mana_regen_temp *= Mana_Regen_Level[client_Hud];
-											max_mana_temp *= Mana_Regen_Level[client_Hud];	
-										}
-										if(b_AggreviatedSilence[client_Hud])
-											mana_regen_temp *= 0.30;
-										/*
-										Current_Mana[client] += RoundToCeil(mana_regen[client]);
-											
-										if(Current_Mana[client] < RoundToCeil(max_mana[client]))
-											Current_Mana[client] = RoundToCeil(max_mana[client]);
-										*/
-										
-										if(Current_Mana[client_Hud] < RoundToCeil(max_mana_temp))
+										if(Current_Mana[client_Hud] < RoundToCeil(max_mana[client] * 2.0))
 										{
-											if(Current_Mana[client_Hud] < RoundToCeil(max_mana_temp))
+											if(Current_Mana[client_Hud] < RoundToCeil(max_mana[client] * 2.0))
 											{
-												Current_Mana[client_Hud] += RoundToCeil(mana_regen_temp);
+												Current_Mana[client_Hud] += RoundToCeil(mana_regen[client] * 2.0);
 												
-												if(Current_Mana[client_Hud] > RoundToCeil(max_mana_temp)) //Should only apply during actual regen
-													Current_Mana[client_Hud] = RoundToCeil(max_mana_temp);
+												if(Current_Mana[client_Hud] > RoundToCeil(max_mana[client] * 2.0)) //Should only apply during actual regen
+													Current_Mana[client_Hud] = RoundToCeil(max_mana[client] * 2.0);
 											}
 											Mana_Hud_Delay[client_Hud] = 0.0;
 										}

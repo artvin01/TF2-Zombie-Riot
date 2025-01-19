@@ -559,72 +559,7 @@ public void OnPostThink(int client)
 		
 		Mana_Regen_Tick = true;
 
-		float ManaRegenExtra = 1.0;
-		float ManaMaxExtra = 1.0;
-		int i, entity;
-		while(TF2_GetItem(client, entity, i))
-		{
-			if(i_IsWandWeapon[entity])
-			{
-				has_mage_weapon[client] = true;
-				ManaMaxExtra *= Attributes_Get(entity, 4019, 1.0);
-				ManaRegenExtra *= Attributes_Get(entity, 4020, 1.0);
-			}
-		}
-
-		max_mana[client] = 400.0;
-		mana_regen[client] = 10.0;
-		max_mana[client] *= ManaMaxExtra;
-		mana_regen[client] *= ManaRegenExtra;
-				
-		if(i_CurrentEquippedPerk[client] == 4)
-		{
-			mana_regen[client] *= 1.35;
-		}
-
-		if(Classic_Mode())
-		{
-			mana_regen[client] *= 0.7;
-		}
-		
-
-		mana_regen[client] *= Mana_Regen_Level[client];
-		max_mana[client] *= Mana_Regen_Level[client];
-		if(b_TwirlHairpins[client])
-		{
-			mana_regen[client] *= 1.05;
-			max_mana[client] *= 1.05;
-		}
-
-		/*int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
-		if(IsValidEntity(weapon))
-		{
-			switch(i_CustomWeaponEquipLogic[weapon])
-			{
-				case WEAPON_KIT_FRACTAL:
-				{
-					Fractal_Kit_Modify_Mana(client, weapon);
-				}
-			}
-		}*/
-
-		if(b_AggreviatedSilence[client])	
-		{
-			mana_regen[client] *= 0.30;
-		}
-		else
-		{
-			float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
-			MultiplyRegen *= 0.5;
-			if(MultiplyRegen < 1.0)
-				MultiplyRegen = 1.0;
-
-			if(MultiplyRegen >= 3.0)
-				MultiplyRegen = 3.0;
-
-			mana_regen[client] *= MultiplyRegen;
-		}
+		ManaCalculationsBefore(client);
 	
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
 		{
@@ -3281,5 +3216,63 @@ void AllowWeaponFireAfterEmpty(int client, int weapon)
 			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
 		}
 		WeaponWasGivenInfiniteDelay[weapon] = false;
+	}
+}
+
+
+
+void ManaCalculationsBefore(int client)
+{
+	has_mage_weapon[client] = false;
+	int i, entity;
+	float ManaRegen = 400.0;
+	float ManaMaxExtra = 10.0;
+	
+	while(TF2_GetItem(client, entity, i))
+	{
+		if(i_IsWandWeapon[entity])
+		{
+			has_mage_weapon[client] = true;
+			ManaMaxExtra *= Attributes_Get(entity, 4019, 1.0);
+			ManaRegen *= Attributes_Get(entity, 4020, 1.0);
+		}
+	}
+	max_mana[client] *= ManaMaxExtra;
+	mana_regen[client] *= ManaRegen;
+			
+	if(i_CurrentEquippedPerk[client] == 4)
+	{
+		mana_regen[client] *= 1.35;
+	}
+
+	if(Classic_Mode())
+	{
+		mana_regen[client] *= 0.7;
+	}
+	
+
+	mana_regen[client] *= Mana_Regen_Level[client];
+	max_mana[client] *= Mana_Regen_Level[client];
+	if(b_TwirlHairpins[client])
+	{
+		mana_regen[client] *= 1.05;
+		max_mana[client] *= 1.05;
+	}
+
+	if(b_AggreviatedSilence[client])	
+	{
+		mana_regen[client] *= 0.30;
+	}
+	else
+	{
+		float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
+		MultiplyRegen *= 0.5;
+		if(MultiplyRegen < 1.0)
+			MultiplyRegen = 1.0;
+
+		if(MultiplyRegen >= 3.0)
+			MultiplyRegen = 3.0;
+
+		mana_regen[client] *= MultiplyRegen;
 	}
 }

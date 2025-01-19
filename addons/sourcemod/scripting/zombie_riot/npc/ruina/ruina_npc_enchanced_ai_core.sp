@@ -1329,7 +1329,7 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 
 	if(GetTeam(victim) != TFTeam_Red)
 		return;
-
+	ManaCalculationsBefore(victim);
 	float GameTime = GetGameTime();
 
 	bool override = b_override_Sickness[entity];
