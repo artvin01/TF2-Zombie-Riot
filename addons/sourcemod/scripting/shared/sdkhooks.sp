@@ -3225,8 +3225,8 @@ void ManaCalculationsBefore(int client)
 {
 	has_mage_weapon[client] = false;
 	int i, entity;
-	float ManaRegen = 400.0;
-	float ManaMaxExtra = 10.0;
+	float ManaRegen = 10.0;
+	float ManaMaxExtra = 400.0;
 	
 	while(TF2_GetItem(client, entity, i))
 	{

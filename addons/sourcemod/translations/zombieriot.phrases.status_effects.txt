@@ -970,4 +970,12 @@
 		"en"	"The weapon's stats are improved and mana is continuously restored."
 		"ko"	"무기의 스텟이 향상되며, 마나가 지속적으로 회복됩니다."
 	}
+	"Weapon Overclock Detect"
+	{
+		"en"	"Ignore"
+	}
+	"Weapon Overclock Detect Desc"
+	{
+		"en"	"Ignore"
+	}
 }

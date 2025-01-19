@@ -10,12 +10,13 @@ bool KritzkriegBuffOnline(int client)
 {
 	if(HasSpecificBuff(client, "Weapon Overclock"))
 	{
-		if(b_EntitiesHasKritzkrieg[client])
+		if(HasSpecificBuff(client, "Weapon Overclock Detect"))
 		{
 			if(IsValidClient(client))
 				ModifyKritzkriegBuff(client, 1, 0.7, true, 5.0, 2.0);
 			else 
 				ModifyKritzkriegBuff(client, 2, 0.7, true, 5.0, 2.0);
+
 			return true;
 		}
 		else
@@ -24,6 +25,7 @@ bool KritzkriegBuffOnline(int client)
 				ModifyKritzkriegBuff(client, 1, 0.7, false, 5.0, 2.0);
 			else 
 				ModifyKritzkriegBuff(client, 2, 0.7, false, 5.0, 2.0);
+
 			return false;
 		}
 	}
@@ -59,37 +61,25 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 	int client = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	int target = GetHealingTarget(client);
 	float charge = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-	for(int NonHealingTarget=1; NonHealingTarget<=MaxClients; NonHealingTarget++)
-	{
-		if(!IsValidClient(NonHealingTarget))
-			continue;
-		b_EntitiesHasKritzkrieg[NonHealingTarget]=false;
-	}
-	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
-		{
-			b_EntitiesHasKritzkrieg[ally]=false;
-		}
-	}
+
 	if((!IsValidClient(client) && !IsPlayerAlive(client)) || charge <= 0.05)
 		return Plugin_Stop;
 	if(IsValidClient(target) && IsPlayerAlive(target))
 	{
+		ApplyStatusEffect(client, target, "Weapon Overclock Detect", 0.5);
 		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
-		b_EntitiesHasKritzkrieg[target]=true;
 		Kritzkrieg_Magical(target, 0.2, true);
 	}
 	else if(target != INVALID_ENT_REFERENCE && IsEntityAlive(target) && GetTeam(client) == GetTeam(target))
 	{
-		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
-		b_EntitiesHasKritzkrieg[target]=true;
+		ApplyStatusEffect(client, target, "Weapon Overclock Detect", 0.3);
+		ApplyStatusEffect(client, target, "Weapon Overclock", 0.5);
+		Kritzkrieg_Magical(target, 0.2, true);
 	}
 	if(IsValidClient(client) && IsPlayerAlive(client))
 	{
-		ApplyStatusEffect(client, client, "Weapon Overclock", 1.0);
-		b_EntitiesHasKritzkrieg[client]=true;
+		ApplyStatusEffect(client, target, "Weapon Overclock Detect", 0.3);
+		ApplyStatusEffect(client, target, "Weapon Overclock", 0.5);
 		Kritzkrieg_Magical(client, 0.2, true);
 	}
 	return Plugin_Continue;
