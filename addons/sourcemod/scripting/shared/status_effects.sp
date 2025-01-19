@@ -2387,6 +2387,31 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Weapon Overclock");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ω");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 1.5;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
+	data.OnTakeDamage_DealFunc 	= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
+	data.Status_SpeedFunc 		= INVALID_FUNCTION;
+	data.HudDisplay_Func 			= OverclockHudDisplay_Func;
+	StatusEffect_AddGlobal(data);
+}
+
+void OverclockHudDisplay_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	if(KritzkriegBuffOnline(victim))
+		Format(HudToDisplay, SizeOfChar, "Ω");
 }
 
 stock bool NpcStats_AncientBanner(int victim)

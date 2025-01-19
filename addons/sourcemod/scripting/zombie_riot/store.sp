@@ -5861,6 +5861,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_ArmorVisualiser[client] = true;
 					}
+					if(info.SpecialAdditionViaNonAttribute == 14)
+					{
+						b_Reinforce[client] = true;
+					}
 
 					int CostDo;
 
