@@ -331,14 +331,6 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 						npc.m_flDoingAnimation = gameTime + 0.1;
 						npc.m_flNextMeleeAttack = gameTime + 0.3;
 					}
-					int passivethreshold = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.01);
-					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > passivethreshold)
-					{
-						int oldhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.001);
-						int newhp = (GetEntProp(npc.index, Prop_Data, "m_iHealth") - oldhp);
-						if(newhp >= passivethreshold)
-							SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - (newhp + 1));
-					}
 				}
 				else
 				{
@@ -346,9 +338,9 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 					npc.m_flAttackHappens = gameTime + 0.25;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 					npc.m_flNextMeleeAttack = gameTime + 0.8;
-					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.5))
+					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.5))
 					{
-						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.03);
+						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.05);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
 					}
 				}		
