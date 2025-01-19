@@ -4046,7 +4046,7 @@
 	}
 	"freeplay_intro"
 	{
-		"en"		"You shall not proceed further.\nProve you're worthy."
+		"en"		"Alright guys...\nProve you're worthy."
 	}
 	"freeplay_start_1"
 	{
