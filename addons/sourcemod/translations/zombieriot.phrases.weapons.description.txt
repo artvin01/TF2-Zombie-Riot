@@ -4307,4 +4307,9 @@
 		"en"	"A device that revives a random dead teammate, recharging through healing.\nThe maximum charge increases with the amount of healing rate"
 		"ko"	"치료를 통해 충전할수있는 무작위 죽은 아군 1명을 되살리는 장치입니다.\n최대 충전량은 늘어난 치료량에 따라 증가됩니다."
 	}
+	"Reconstructive Teleporter Desc"
+	{
+		"en"	"Teleports barrack units to you, granting overheal and high resistance for 1 second."
+		"ko"	"배럭 유닛을 자신에게 텔레포트시키고 과치료및 1초동안 높은 저항을 제공합니다"
+	}
 }

@@ -2999,4 +2999,9 @@
 		"en"	"Reinforce"
 		"ko"	"증원 요청"
 	}
+	"Reconstructive Teleporter"
+	{
+		"en"	"Reconstructive Teleporter"
+		"ko"	"재구성 텔레포터"
+	}
 }
