@@ -4060,10 +4060,15 @@
 		"en"	"Need {1} Healing Point"
 		"ko"	"{1} 치료 포인트가 필요합니다."	
 	}
+	"Use Only Alive"
+	{
+		"en"	"Can only use while alive."
+	}
 	"freeplay_intro"
 	{
 		"en"		"Alright guys...\nProve you're worthy."
 	}
+
 	"freeplay_start_1"
 	{
 		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future..\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."

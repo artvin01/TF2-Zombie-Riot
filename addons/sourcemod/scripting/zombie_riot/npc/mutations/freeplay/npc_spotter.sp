@@ -375,9 +375,8 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 				{
 					float damageDealt = 75000.0;
 					
-                    			SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-                    			ApplyStatusEffect(npc.index, target, "Silenced", 3.0);
-                    			ApplyStatusEffect(npc.index, npc.index, "Void Strength II", 1.0);
+					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					ApplyStatusEffect(npc.index, target, "Silenced", 3.0);
 					Custom_Knockback(npc.index, target, 500.0, true); 
 					
 					npc.m_iAttacksTillReload++;
@@ -428,7 +427,6 @@ void SpotterAllyBuff(Spotter npc)
 			if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 			{
 				HealEntityGlobal(npc.index, entitycount, 750.0, 1.0, 0.0, HEAL_ABSOLUTE);
-				ApplyStatusEffect(npc.index, entitycount, "Void Strength II", 15.0);
 				ApplyStatusEffect(npc.index, entitycount, "Spotter's Rally", 15.0);
 			}
 		}
