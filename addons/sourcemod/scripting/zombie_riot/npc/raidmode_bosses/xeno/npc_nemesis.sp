@@ -1194,7 +1194,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{
-			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
+			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				if(!XenoExtraLogic())
 				{
