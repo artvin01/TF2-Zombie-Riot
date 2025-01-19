@@ -756,7 +756,7 @@ public void Reinforce(int client, bool NoCD)
 		WritePackFloat(Reinforcement, position[0]);
 		WritePackFloat(Reinforcement, position[1]);
 		WritePackFloat(Reinforcement, position[2]);
-		WritePackFloat(Reinforcement, 145.0);
+		WritePackFloat(Reinforcement, 50.0);
 		WritePackCell(Reinforcement, false);
 		WritePackFloat(Reinforcement, 1200.0);
 		WritePackString(Reinforcement, "ZR_ReinforcePOD_");
@@ -1731,6 +1731,8 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 					Music_EndLastmann(true);
 					LastMann = false;
 					applied_lastmann_buffs_once = false;
+					SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, true);
+					SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, false);
 					//More time!!!
 					pack.WriteCell(GetClientUserId(RandomHELLDIVER));
 					pack.WriteFloat(position[0]);
@@ -1740,6 +1742,12 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 					TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
 					EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",RandomHELLDIVER);
+					DataPack pack_boom = new DataPack();
+					pack_boom.WriteFloat(position[0]);
+					pack_boom.WriteFloat(position[1]);
+					pack_boom.WriteFloat(position[2]);
+					pack_boom.WriteCell(1);
+					RequestFrame(MakeExplosionFrameLater, pack_boom);
 				}
 				
 				float entitypos[3], distance;
