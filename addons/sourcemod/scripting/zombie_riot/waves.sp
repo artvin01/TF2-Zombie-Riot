@@ -5,6 +5,7 @@ enum struct Enemy
 {
 	int Health;
 	int Is_Boss;
+	float WaitingTimeGive;
 	float ExtraSize;
 	int Is_Outlined;
 	int Is_Health_Scaled;
@@ -879,6 +880,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
+						enemy.WaitingTimeGive = kv.GetNum("waiting_time_give");
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
 						enemy.ignore_max_cap = kv.GetNum("ignore_max_cap");
 						if(wave.Count <= 0)
@@ -1410,6 +1412,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
+
+			float WaitingTimeGive = wave.EnemyData.WaitingTimeGive;
+			if(!LastMann && WaitingTimeGive >= 0.0)
+			{
+				PrintToChatAll("You were given extra %.1f seconds to prepare.",WaitingTimeGive);
+				GiveProgressDelay(WaitingTimeGive);
+				f_DelaySpawnsForVariousReasons = GetGameTime() + WaitingTimeGive;
+				SpawnTimer(WaitingTimeGive);
+			}
 			
 			if(Is_a_boss >= 2)
 			{
@@ -1422,7 +1433,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 45.0;
 						SpawnTimer(45.0);
 					}
-					else
+					else if(WaitingTimeGive <= 0.0)
 					{
 						PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
 						GiveProgressDelay(30.0);
