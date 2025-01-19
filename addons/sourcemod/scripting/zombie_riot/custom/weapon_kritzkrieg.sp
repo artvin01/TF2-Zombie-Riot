@@ -41,15 +41,32 @@ public void Kritzkrieg_OnMapStart()
 static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(!IsValidClient(client) || !IsPlayerAlive(client))return;
+	if(!IsValidClient(client) || !IsPlayerAlive(client))
+		return;
 	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 	if(!IsValidEntity(medigun))
 		return;
-	if(i_CustomWeaponEquipLogic[medigun]!=WEAPON_KRITZKRIEG)
+
+	bool Continune = false;
+	int ie;
+	int entity;
+	while(TF2_GetItem(client, entity, ie))
+	{
+		if(i_CustomWeaponEquipLogic[entity] == WEAPON_KRITZKRIEG)
+		{
+			medigun = entity;
+			Continune = true;
+		}
+	}
+	if(!Continune)
 		return;
+
 	CreateTimer(0.1, Timer_Kritzkrieg, EntIndexToEntRef(medigun), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	int target = GetHealingTarget(client);
-	if(IsValidClient(target) && IsPlayerAlive(target)) GiveArmorViaPercentage(target, 0.5, 1.0);
+	if(IsValidClient(target) && IsPlayerAlive(target)) 
+	{
+		GiveArmorViaPercentage(target, 0.5, 1.0);
+	}
 	GiveArmorViaPercentage(client, 0.5, 1.0);
 }
 
