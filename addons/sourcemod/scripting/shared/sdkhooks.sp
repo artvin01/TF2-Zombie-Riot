@@ -3237,8 +3237,8 @@ void ManaCalculationsBefore(int client)
 			ManaRegen *= Attributes_Get(entity, 4020, 1.0);
 		}
 	}
-	max_mana[client] *= ManaMaxExtra;
-	mana_regen[client] *= ManaRegen;
+	max_mana[client] = ManaMaxExtra;
+	mana_regen[client] = ManaRegen;
 			
 	if(i_CurrentEquippedPerk[client] == 4)
 	{
