@@ -319,17 +319,17 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				{
 					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.5);
-						npc.m_flAttackHappens = gameTime + 0.1;
-						npc.m_flDoingAnimation = gameTime + 0.1;
-						npc.m_flNextMeleeAttack = gameTime + 0.3;
-					}
-					else
-					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,4.0);
 						npc.m_flAttackHappens = gameTime + 0.02;
 						npc.m_flDoingAnimation = gameTime + 0.02;
 						npc.m_flNextMeleeAttack = gameTime + 0.1;
+					}
+					else
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.5);
+						npc.m_flAttackHappens = gameTime + 0.1;
+						npc.m_flDoingAnimation = gameTime + 0.1;
+						npc.m_flNextMeleeAttack = gameTime + 0.3;
 					}
 					int passivethreshold = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.01);
 					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > passivethreshold)
@@ -346,7 +346,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 					npc.m_flAttackHappens = gameTime + 0.25;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 					npc.m_flNextMeleeAttack = gameTime + 0.8;
-					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.5))
+					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.5))
 					{
 						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.03);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
