@@ -3334,14 +3334,21 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 					{
-						CPrintToChat(client, "After a couple hours of fighting hordes of enemies, Bob orders the team to retreat to a safe spot.");
-						CPrintToChat(client, "He fears that the weird, {purple}Dimensional rips {white}might bring something even stronger...");
-						CPrintToChat(client, "You and your team now lay safe from the Freeplay Journey and its dangers, for now.");
-						CPrintToChat(client, "Looking around, you find something orange in the ground, and it smells... weird...");
-						if(Items_HasNamedItem(client, "Matrix's Curse") && !Items_HasNamedItem(client, "A Block of Cheese"))
-							CPrintToChat(client, "{white}As you pick it up, an orange-ish magic essence surrounds you, and cleanses you off the Matrix!");
-						CPrintToChat(client, "{white}Now, you have {orange}A Block of Cheese {white}in your backpack.");
-						Items_GiveNamedItem(client, "A Block of Cheese");
+						CPrintToChat(client, "{gold}Koshi: {white}Great, really, really great...");
+						CPrintToChat(client, "{white}This training was surely successful, i even think you might be ready.");
+						CPrintToChat(client, "{white}Although, {gold}Zeina {white}wouldn't think the same, so in that case...");
+						CPrintToChat(client, "{white}I'll leave the simulation on, in case you want to continue.");
+						if(!Items_HasNamedItem(client, "A Block of Cheese"))
+						{
+							CPrintToChat(client, "{lime}I'll be also granting you somethin' special from me, for completing this training.");
+							CPrintToChat(client, "{gold}Koshi spawns in an item for you: {orange}''A Block of Cheese''");
+							Items_GiveNamedItem(client, "A Block of Cheese");
+						}
+						else
+						{
+							CPrintToChat(client, "{orange}You seem to have my reward already, interesting...");
+							CPrintToChat(client, "{orange}Guess you really like training in here, then!");
+						}
 					}
 				}
 
