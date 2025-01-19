@@ -325,6 +325,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_lelouch");
 				enemy.Health = RoundToFloor(12500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
+			case 28:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_omega_raid");
+				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -1280,7 +1285,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		RaidFight = GetRandomInt(1, 27);
+		RaidFight = GetRandomInt(1, 28);
 		switch(RaidFight)
 		{
 			case 1:
@@ -1390,6 +1395,10 @@ void Freeplay_SetupStart(bool extra = false)
 			case 27: // JUST YOU AND ME REMAIN
 			{
 				CPrintToChatAll("{red}Lelouch is approaching next wave...");
+			}
+			case 28:
+			{
+				CPrintToChatAll("{gold}Omega is waltzing towards the next wave.");
 			}
 		}
 
@@ -1742,7 +1751,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				RaidFight = GetRandomInt(1, 27);
+				RaidFight = GetRandomInt(1, 28);
 
 				switch(RaidFight)
 				{
@@ -1849,6 +1858,10 @@ void Freeplay_SetupStart(bool extra = false)
 					case 27: // YOUR ATTEMPTS AT DEATH ARE IN VAIN
 					{
 						strcopy(message, sizeof(message), "{red}Lelouch is approaching next wave...");
+					}
+					case 28:
+					{
+						strcopy(message, sizeof(message), "{gold}Omega is waltzing towards the next wave.");
 					}
 					default:
 					{
