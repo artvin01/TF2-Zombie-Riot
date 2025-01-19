@@ -64,6 +64,7 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 
 	if((!IsValidClient(client) && !IsPlayerAlive(client)) || charge <= 0.05)
 		return Plugin_Stop;
+		
 	if(IsValidClient(target) && IsPlayerAlive(target))
 	{
 		ApplyStatusEffect(client, target, "Weapon Overclock Detect", 0.5);
