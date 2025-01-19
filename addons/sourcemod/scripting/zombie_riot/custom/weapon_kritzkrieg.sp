@@ -136,15 +136,15 @@ static void Kritzkrieg_Magical(int client, float Scale, bool apply)
 
 static void ModifyKritzkriegBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2, float buffammount3)
 {
-	float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, PlayerCountBuffAttackspeedScaling);
-	float BuffValueDo2 = MaxNumBuffValue(buffammount2, 1.0, PlayerCountBuffAttackspeedScaling);
-	float BuffValueDo3 = MaxNumBuffValue(buffammount3, 1.0, PlayerCountBuffAttackspeedScaling);
+	float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, 1.0);
+	float BuffValueDo2 = MaxNumBuffValue(buffammount2, 1.0, 1.0);
+	float BuffValueDo3 = MaxNumBuffValue(buffammount3, 1.0, 1.0);
 	if(type == 1)
 	{
 		int i, weapon;
 		while(TF2_GetItem(entity, weapon, i))
 		{
-			if(Kritzkrieg_Buff[weapon] == 0.0 && !i_IsWandWeapon[weapon])
+			if(Kritzkrieg_Buff[weapon] == 0.0)
 			{
 				if(GrantBuff)
 				{
@@ -189,7 +189,7 @@ static void ModifyKritzkriegBuff(int entity, int type, float buffammount, bool G
 			{
 				if(!GrantBuff)
 				{
-					if(Kritzkrieg_Buff[weapon] != 0.0 && !i_IsWandWeapon[weapon])
+					if(Kritzkrieg_Buff[weapon] != 0.0)
 					{
 						if(Attributes_Has(weapon, 6))
 							Attributes_SetMulti(weapon, 6, 1.0 / (Kritzkrieg_Buff[weapon]));	// Fire Rate
