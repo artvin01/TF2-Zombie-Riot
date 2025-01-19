@@ -65,6 +65,10 @@ static const char g_BuffUpReactions[][] = {
 	"vo/sniper_battlecry04.mp3",
 };
 
+static const char g_WarCry[][] = {
+	"items/powerup_pickup_supernova_activate.wav",
+};
+
 void Spotter_OnMapStart_NPC()
 { 	
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -73,6 +77,7 @@ void Spotter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_BuffUpReactions)); i++) { PrecacheSound(g_BuffUpReactions[i]); }
+	for (int i = 0; i < (sizeof(g_WarCry)); i++) { PrecacheSound(g_WarCry[i]); }
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Spotter");
@@ -130,7 +135,10 @@ methodmap Spotter < CClotBody
 	{
 		EmitSoundToAll(g_BuffUpReactions[GetRandomInt(0, sizeof(g_BuffUpReactions) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
+	public void PlayMeleeWarCry() 
+	{
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_STATIC, 110, _, BOSS_ZOMBIE_VOLUME);
+	}
 	
 	public Spotter(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -430,8 +438,8 @@ void SpotterAllyBuff(Spotter npc)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.5);
-			ApplyStatusEffect(npc.index, client, "Battilons Backup", 2.5);
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
+			ApplyStatusEffect(npc.index, client, "Battilons Backup", 5.0);
 			ApplyStatusEffect(npc.index, client, "Spotter's Rally", 7.5);
 		}
 	}
@@ -451,6 +459,7 @@ void SpotterAllyBuff(Spotter npc)
 			CPrintToChatAll("{orange}Spotter: {gold}KEEP ON THE PRESSURE!!!!");
 		}
 	}
-	
+
+	npc.PlayMeleeWarCry();
 	npc.PlayBuffReaction();
 }

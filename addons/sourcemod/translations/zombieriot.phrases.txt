@@ -4046,22 +4046,22 @@
 	}
 	"freeplay_intro"
 	{
-		"en"		"You shall not proceed further.\nProve you're worthy."
+		"en"		"Alright guys...\nProve you're worthy."
 	}
 	"freeplay_start_1"
 	{
-		"en"		"Good, it seems like the simulation is working.\nSorry, but this training is neccecary for the future, i dont want to explain it all.\nLelouch exposed some heavy stuff."
+		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future..\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."
 	}
 	"freeplay_start_2"
 	{
-		"en"		"Skulls are random events or effects that can be temporary or permanent.\nEach setup has a 20%% chance of adding an extra skull,\nand this stacks infinitely as you progress."
+		"en"		"Each setup, i'll throw in a Skull, which is a random event or modifier.\nI'll be sometimes throwing more and multiple skulls in,\nto make the training more intensive."
 	}
 	"freeplay_start_3"
 	{
-		"en"		"There is a 2%% chance for a catastrophic event to occur on on a setup..."
+		"en"		"Be warned,\nI maaay get a little silly and do something catastrophic on a setup..."
 	}
 	"freeplay_start_4"
 	{
-		"en"		"Me and Zeina are both watching you, we'll warn you incase something happens.\nWho i am? Koshi, Expert in these things. Good luck."
+		"en"		"Zeina and I will watch over you, we'll warn you incase something happens.\nWho am i? Koshi, an expert in simulations, and a cheese enthusiast.\nGood luck."
 	}
 }
