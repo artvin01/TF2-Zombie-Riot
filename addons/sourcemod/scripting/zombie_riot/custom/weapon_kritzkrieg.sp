@@ -12,14 +12,18 @@ bool KritzkriegBuffOnline(int client)
 	{
 		if(b_EntitiesHasKritzkrieg[client])
 		{
-			if(IsValidClient(client))ModifyKritzkriegBuff(client, 1, 0.7, true, 5.0, 2.0);
-			else ModifyKritzkriegBuff(client, 2, 0.7, true, 5.0, 2.0);
+			if(IsValidClient(client))
+				ModifyKritzkriegBuff(client, 1, 0.7, true, 5.0, 2.0);
+			else 
+				ModifyKritzkriegBuff(client, 2, 0.7, true, 5.0, 2.0);
 			return true;
 		}
 		else
 		{
-			if(IsValidClient(client)) ModifyKritzkriegBuff(client, 1, 0.7, false, 5.0, 2.0);
-			else ModifyKritzkriegBuff(client, 2, 0.7, false, 5.0, 2.0);
+			if(IsValidClient(client)) 
+				ModifyKritzkriegBuff(client, 1, 0.7, false, 5.0, 2.0);
+			else 
+				ModifyKritzkriegBuff(client, 2, 0.7, false, 5.0, 2.0);
 			return false;
 		}
 	}
@@ -50,7 +54,8 @@ static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadc
 static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 {
 	int medigun = EntRefToEntIndex(medigunid);
-	if(!IsValidEntity(medigun))return Plugin_Stop;
+	if(!IsValidEntity(medigun))
+		return Plugin_Stop;
 	int client = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	int target = GetHealingTarget(client);
 	float charge = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
@@ -68,7 +73,7 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 			b_EntitiesHasKritzkrieg[ally]=false;
 		}
 	}
-	if((!IsValidClient(client) && !IsPlayerAlive(client))||charge <= 0.05)
+	if((!IsValidClient(client) && !IsPlayerAlive(client)) || charge <= 0.05)
 		return Plugin_Stop;
 	if(IsValidClient(target) && IsPlayerAlive(target))
 	{
@@ -173,8 +178,8 @@ static void ModifyKritzkriegBuff(int entity, int type, float buffammount, bool G
 					if(Attributes_Has(weapon, 344))
 						Attributes_SetMulti(weapon, 344, BuffValueDo2);	// Sentry Range
 					
-					if(Attributes_Has(weapon, 287))
-						Attributes_SetMulti(weapon, 287, BuffValueDo2);	// Sentry DMG
+				//	if(Attributes_Has(weapon, 287))
+				//		Attributes_SetMulti(weapon, 287, BuffValueDo2);	// Sentry DMG
 					
 					if(Attributes_Has(weapon, 41))
 						Attributes_SetMulti(weapon, 41, BuffValueDo2);	// Sniper Charge Rate
@@ -185,8 +190,8 @@ static void ModifyKritzkriegBuff(int entity, int type, float buffammount, bool G
 					if(Attributes_Has(weapon, 103))
 						Attributes_SetMulti(weapon, 103, BuffValueDo3);	// SpinUP
 					
-					if(Attributes_Has(weapon, 45))
-						Attributes_SetMulti(weapon, 45, BuffValueDo3);	// PerShot
+				//	if(Attributes_Has(weapon, 45))
+				//		Attributes_SetMulti(weapon, 45, BuffValueDo3);	// PerShot
 				}
 			}
 			else
@@ -213,8 +218,8 @@ static void ModifyKritzkriegBuff(int entity, int type, float buffammount, bool G
 						if(Attributes_Has(weapon, 344))
 							Attributes_SetMulti(weapon, 344, 1.0 / (Kritzkrieg_Buff2[weapon]));	// Sentry Range
 						
-						if(Attributes_Has(weapon, 287))
-							Attributes_SetMulti(weapon, 287, 1.0 / (Kritzkrieg_Buff2[weapon]));	// Sentry DMG
+					//	if(Attributes_Has(weapon, 287))
+					//		Attributes_SetMulti(weapon, 287, 1.0 / (Kritzkrieg_Buff2[weapon]));	// Sentry DMG
 						
 						if(Attributes_Has(weapon, 41))
 							Attributes_SetMulti(weapon, 41, 1.0 / (Kritzkrieg_Buff2[weapon]));	// Sniper Charge Rate
@@ -225,8 +230,8 @@ static void ModifyKritzkriegBuff(int entity, int type, float buffammount, bool G
 						if(Attributes_Has(weapon, 103))
 							Attributes_SetMulti(weapon, 103, 1.0 / (Kritzkrieg_Buff3[weapon]));	// SpinUP
 						
-						if(Attributes_Has(weapon, 45))
-							Attributes_SetMulti(weapon, 45, 1.0 / (Kritzkrieg_Buff3[weapon]));	// PerShot
+					//	if(Attributes_Has(weapon, 45))
+					//		Attributes_SetMulti(weapon, 45, 1.0 / (Kritzkrieg_Buff3[weapon]));	// PerShot
 
 						Kritzkrieg_Buff[weapon] = 0.0;
 					}
