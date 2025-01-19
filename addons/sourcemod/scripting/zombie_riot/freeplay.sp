@@ -526,7 +526,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Team = TFTeam_Red;
 		enemy.Index = NPC_GetByPlugin("npc_spotter");
-		enemy.Health = RoundToFloor(75000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToFloor(35000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Is_Boss = 0;
 		enemy.Is_Health_Scaled = 0;
 		count = 1;
@@ -553,7 +553,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.Is_Immune_To_Nuke = 0;
 			enemy.Is_Static = false;
 			enemy.Team = 3;
-			enemy.Is_Static = 0;
+			enemy.Is_Static = false;
 			enemy.ExtraMeleeRes = 1.0;
 			enemy.ExtraRangedRes = 1.0;
 			enemy.ExtraSpeed = 1.0;
