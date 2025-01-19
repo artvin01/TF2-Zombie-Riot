@@ -240,7 +240,7 @@ bool AlternativeExtraLogic(bool NpcBuffing = false)
 	return false;
 }
 
-void Music_EndLastmann()
+void Music_EndLastmann(bool Reinforce=false)
 {
 	if(LastMann)
 	{
@@ -271,9 +271,13 @@ void Music_EndLastmann()
 				TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 				TF2_RemoveCondition(client, TFCond_RuneHaste);
 				TF2_RemoveCondition(client, TFCond_CritCanteen);
-				Armor_Charge[client] = 0;
-				if(IsPlayerAlive(client))
-					SetEntProp(client, Prop_Send, "m_iHealth", 50);
+				if(!Reinforce)
+				{
+					Armor_Charge[client] = 0;
+					if(IsPlayerAlive(client))
+						SetEntProp(client, Prop_Send, "m_iHealth", 50);
+				}
+				else DoOverlay(client, "", 2);
 				
 				//just incase.
 				Attributes_Set(client, 442, 1.0);

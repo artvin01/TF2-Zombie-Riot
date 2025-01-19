@@ -960,4 +960,14 @@
 	{
 		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%."
 	}
+	"Weapon Overclock"
+	{
+		"en"	"Overclock"
+		"ko"	"과부하"
+	}
+	"Weapon Overclock Desc"
+	{
+		"en"	"The weapon's stats are improved and mana is continuously restored."
+		"ko"	"무기의 스텟이 향상되며, 마나가 지속적으로 회복됩니다."
+	}
 }
