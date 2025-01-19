@@ -2405,6 +2405,7 @@ void StatusEffects_SupportWeapons()
 	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
 	data.Status_SpeedFunc 			= INVALID_FUNCTION;
 	data.HudDisplay_Func 			= OverclockHudDisplay_Func;
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Weapon Overclock Detect");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
