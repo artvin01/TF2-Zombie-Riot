@@ -439,7 +439,7 @@ static void GivePlayerItems(int coolwin = 0)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
 			if(coolwin == 0)

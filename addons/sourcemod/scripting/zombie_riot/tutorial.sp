@@ -138,67 +138,73 @@ void DoTutorialStep(int client, bool obeycooldown)
 				}
 				case 4:
 				{
-					float vecTarget[3];
-					int entity = MaxClients + 1;
-					char buffer[255];
-					while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+					if(TeutonType[client] == TEUTON_NONE)
 					{
-						NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
-						if(!StrContains(buffer, "obj_perkmachine"))
+						float vecTarget[3];
+						int entity = MaxClients + 1;
+						char buffer[255];
+						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 						{
-							GetAbsOrigin(entity, vecTarget);
-							vecTarget[2] += 70.0;
-							
-							SetGlobalTransTarget(client);
-							Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Perk Machine");
-							Event event = CreateEvent("show_annotation");
-							if(event)
+							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+							if(!StrContains(buffer, "obj_perkmachine"))
 							{
-								event.SetFloat("worldPosX", vecTarget[0]);
-								event.SetFloat("worldPosY", vecTarget[1]);
-								event.SetFloat("worldPosZ", vecTarget[2]);
-								event.SetFloat("lifetime", 10.0);
-								event.SetString("text", buffer);
-								event.SetString("play_sound", "vo/null.mp3");
-								event.SetInt("id", UniqueIdDo++);
-								event.FireToClient(client);
+								GetAbsOrigin(entity, vecTarget);
+								vecTarget[2] += 70.0;
+								
+								SetGlobalTransTarget(client);
+								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Perk Machine");
+								Event event = CreateEvent("show_annotation");
+								if(event)
+								{
+									event.SetFloat("worldPosX", vecTarget[0]);
+									event.SetFloat("worldPosY", vecTarget[1]);
+									event.SetFloat("worldPosZ", vecTarget[2]);
+									event.SetFloat("lifetime", 10.0);
+									event.SetString("text", buffer);
+									event.SetString("play_sound", "vo/null.mp3");
+									event.SetInt("id", UniqueIdDo++);
+									event.FireToClient(client);
+								}
+								break;
 							}
-							break;
 						}
+						f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					}
-					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 				}
 				case 5:
 				{
-					float vecTarget[3];
-					int entity = MaxClients + 1;
-					char buffer[255];
-					while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+					if(TeutonType[client] == TEUTON_NONE)
 					{
-						NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
-						if(!StrContains(buffer, "obj_packapunch"))
+						float vecTarget[3];
+						int entity = MaxClients + 1;
+						char buffer[255];
+						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 						{
-							GetAbsOrigin(entity, vecTarget);
-							vecTarget[2] += 70.0;
-
-							SetGlobalTransTarget(client);
-							Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Pack a Punch");
-							Event event = CreateEvent("show_annotation");
-							if(event)
+							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+							if(!StrContains(buffer, "obj_packapunch"))
 							{
-								event.SetFloat("worldPosX", vecTarget[0]);
-								event.SetFloat("worldPosY", vecTarget[1]);
-								event.SetFloat("worldPosZ", vecTarget[2]);
-								event.SetFloat("lifetime", 10.0);
-								event.SetString("text", buffer);
-								event.SetString("play_sound", "vo/null.mp3");
-								event.SetInt("id", UniqueIdDo++);
-								event.FireToClient(client);
+								GetAbsOrigin(entity, vecTarget);
+								vecTarget[2] += 70.0;
+
+								SetGlobalTransTarget(client);
+								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Pack a Punch");
+								Event event = CreateEvent("show_annotation");
+								if(event)
+								{
+									event.SetFloat("worldPosX", vecTarget[0]);
+									event.SetFloat("worldPosY", vecTarget[1]);
+									event.SetFloat("worldPosZ", vecTarget[2]);
+									event.SetFloat("lifetime", 10.0);
+									event.SetString("text", buffer);
+									event.SetString("play_sound", "vo/null.mp3");
+									event.SetInt("id", UniqueIdDo++);
+									event.FireToClient(client);
+								}
+								break;
 							}
-							break;
 						}
+						f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					}
-					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 				}
 			}
 		}

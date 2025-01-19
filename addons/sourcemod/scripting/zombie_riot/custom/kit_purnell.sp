@@ -67,7 +67,7 @@ public int Purnell_Existant(int client)
 		int weapon = EntRefToEntIndex(i_SaveWeapon_Revolv[client]);
 		return weapon;
 	}
-	return -1;
+	return 0;
 }
 void Purnell_MapStart()
 {

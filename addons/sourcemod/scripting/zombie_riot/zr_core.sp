@@ -218,7 +218,8 @@ enum
 	WEAPON_KIT_PROTOTYPE	= 136,
 	WEAPON_KIT_PROTOTYPE_MELEE	= 137,
 	WEAPON_PURNELL_MELEE = 138,
-	WEAPON_PURNELL_PRIMARY = 139
+	WEAPON_PURNELL_PRIMARY = 139,
+	WEAPON_KRITZKRIEG = 140
 }
 
 enum
@@ -592,6 +593,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
 #include "zombie_riot/custom/weapon_castlebreaker.sp"
 #include "zombie_riot/custom/kit_soldine.sp"
+#include "zombie_riot/custom/weapon_kritzkrieg.sp"
 
 void ZR_PluginLoad()
 {
@@ -884,6 +886,7 @@ void ZR_MapStart()
 	OnMapStartZealot();
 	Wkit_Soldin_OnMapStart();
 	Purnell_MapStart();
+	Kritzkrieg_OnMapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1668,6 +1671,7 @@ void CheckAlivePlayersforward(int killed=0)
 void CheckLastMannStanding(int killed)
 {
 	int PlayersLeftNotDowned = 0;
+	LastMann_BeforeLastman = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)

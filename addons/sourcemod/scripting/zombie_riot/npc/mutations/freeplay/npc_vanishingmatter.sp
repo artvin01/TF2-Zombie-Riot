@@ -96,7 +96,7 @@ methodmap VanishingMatter < CClotBody
 	
 	public VanishingMatter(float vecPos[3], float vecAng[3], int ally)
 	{
-		VanishingMatter npc = view_as<VanishingMatter>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "30000", ally));
+		VanishingMatter npc = view_as<VanishingMatter>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "75000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -115,7 +115,7 @@ methodmap VanishingMatter < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VanishingMatter_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 335.0;
+		npc.m_flSpeed = 300.0;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -213,11 +213,10 @@ public void VanishingMatter_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.25))
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.34))
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
-		npc.m_flSpeed = 375.0;
-
+		npc.m_flSpeed = 350.0;
 	}
 
 	npc.PlayIdleAlertSound();
@@ -281,17 +280,17 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 350.0;
+					float damageDealt = 200.0;
 
 					if(!b_NpcIsInvulnerable[npc.index])
 					{
-						damageDealt = 100.0;
+						damageDealt = 75.0;
 					}
 						
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					if(b_NpcIsInvulnerable[npc.index])
 					{
-						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.09);
+						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.05);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
 					}
 
@@ -305,7 +304,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 		{
 			int Enemy_I_See;
 								
@@ -318,10 +317,20 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 
 				if(!b_NpcIsInvulnerable[npc.index])
 				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,4.0);
-					npc.m_flAttackHappens = gameTime + 0.02;
-					npc.m_flDoingAnimation = gameTime + 0.02;
-					npc.m_flNextMeleeAttack = gameTime + 0.1;
+					if(!NpcStats_IsEnemySilenced(npc.index))
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,4.0);
+						npc.m_flAttackHappens = gameTime + 0.02;
+						npc.m_flDoingAnimation = gameTime + 0.02;
+						npc.m_flNextMeleeAttack = gameTime + 0.1;
+					}
+					else
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.5);
+						npc.m_flAttackHappens = gameTime + 0.1;
+						npc.m_flDoingAnimation = gameTime + 0.1;
+						npc.m_flNextMeleeAttack = gameTime + 0.3;
+					}
 				}
 				else
 				{
@@ -329,7 +338,12 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 					npc.m_flAttackHappens = gameTime + 0.25;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 					npc.m_flNextMeleeAttack = gameTime + 0.8;
-				}	
+					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.5))
+					{
+						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.05);
+						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
+					}
+				}		
 			}
 		}
 	}

@@ -1184,7 +1184,14 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 		if(StrEqual(npc_classname, "npc_medival_achilles") || StrEqual(npc_classname, "npc_medival_monk") || StrEqual(npc_classname, "npc_medival_villager") || StrEqual(npc_classname, "npc_medival_son_of_osiris"))
 		{	
 			count = 5;
-			enemy.Health = RoundToCeil(enemy.Health * 0.6);
+			enemy.Health = RoundToCeil(enemy.Health * 0.5);
+		}
+
+		if(StrEqual(npc_classname, "npc_medival_son_of_osiris"))
+		{	
+			count = 5;
+			enemy.Health = RoundToCeil(enemy.Health * 0.25);
+			enemy.ExtraSpeed = 0.67;
 		}
 
 		Freeplay_AddEnemy(postWaves, enemy, count, true);
@@ -1934,7 +1941,7 @@ bool AlaxiosForceTalk()
 				i_TalkDelayCheck = 11;
 				for (int client = 0; client < MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Alaxios's Godly assistance");
 						CPrintToChat(client, "{default}You feel something around you... and gained: {lightblue}''Alaxios's Godly assistance''{default}!");

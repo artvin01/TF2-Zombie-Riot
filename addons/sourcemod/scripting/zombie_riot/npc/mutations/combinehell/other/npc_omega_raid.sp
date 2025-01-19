@@ -1326,7 +1326,7 @@ static void OmegaRaid_GrantItem()
 {
 	for (int client = 0; client < MaxClients; client++)
 	{
-		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Omega's Medallion");
 			CPrintToChat(client,"{white}Bob{default} convinced {gold}Omega{default} that you were protecting him from {crimson}Whiteflower's{default} army, in return, you got {gold}Omega's Medallion{default}!");

@@ -1050,7 +1050,7 @@ static void AgentSmith_GrantItem()
 {
 	for (int client = 0; client < MaxClients; client++)
 	{
-		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Matrix's Curse");
 			CPrintToChat(client,"{default}After all that fighting. {olive}Agent Smith{default} affected you with {green}Matrix's Curse{default}.");

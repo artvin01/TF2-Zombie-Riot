@@ -368,7 +368,7 @@ public void CorruptedBarney_NPCDeath(int entity)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{
-			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
+			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client_repat] > 500)
 			{
 				Items_GiveNamedItem(client_repat, "Corrupted Barney's Chainsaw");
 				CPrintToChat(client_repat, "{default}Corrupted Barney Vanishes and leaves...: {crimson}''Corrupted Barney's Chainsaw''{default}!");

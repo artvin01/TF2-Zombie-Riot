@@ -1768,7 +1768,7 @@ bool NemalTalkPostWin(Nemal npc)
 		BlockLoseSay = true;
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Iberian and Expidonsan Training");
 				CPrintToChat(client,"{default}You feel more skilled and obtain: {gold}''Iberian and Expidonsan Training''{default}!");
