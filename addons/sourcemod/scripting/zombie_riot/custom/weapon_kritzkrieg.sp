@@ -72,18 +72,18 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 		return Plugin_Stop;
 	if(IsValidClient(target) && IsPlayerAlive(target))
 	{
-		ApplyStatusEffect(client, target, "Weapon Overclock", 0.3);
+		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
 		b_EntitiesHasKritzkrieg[target]=true;
 		Kritzkrieg_Magical(target, 0.2, true);
 	}
 	else if(target != INVALID_ENT_REFERENCE && IsEntityAlive(target) && GetTeam(client) == GetTeam(target))
 	{
-		ApplyStatusEffect(client, target, "Weapon Overclock", 0.3);
+		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
 		b_EntitiesHasKritzkrieg[target]=true;
 	}
 	if(IsValidClient(client) && IsPlayerAlive(client))
 	{
-		ApplyStatusEffect(client, client, "Weapon Overclock", 0.3);
+		ApplyStatusEffect(client, client, "Weapon Overclock", 1.0);
 		b_EntitiesHasKritzkrieg[client]=true;
 		Kritzkrieg_Magical(client, 0.2, true);
 	}

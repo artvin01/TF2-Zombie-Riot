@@ -31,7 +31,7 @@ static const char g_ReinforceReadySounds[] = "baka_zr/sa_hellpod_ready.mp3";
 
 static char gExplosive1;
 static char gLaser1;
-
+static char gBluePoint2;
 
 //#define ARROW_TRAIL_GRENADE "effects/arrowtrail_blu.vmt"
 
@@ -1799,4 +1799,25 @@ public Action Timer_DelayTele(Handle timer, DataPack pack)
 		MakePlayerGiveResponseVoice(client, 3);
 	}
 	return Plugin_Stop;
+}
+
+stock int GetRandomDeathPlayer(int client)
+{
+	int Getclient;
+	bool DeadPlayer;
+	for(int client_check=1; client_check<=MaxClients; client_check++)
+	{
+		if(!IsValidClient(client_check))continue;
+		if(TeutonType[client_check] == TEUTON_NONE)continue;
+		if(client==client_check || GetTeam(client_check) != TFTeam_Red)continue;
+		DeadPlayer=true;
+	}
+	if(!DeadPlayer)
+		return -1;
+	do
+	{
+		Getclient = GetRandomInt(1, MaxClients);
+	}
+	while(!IsValidClient(Getclient) || GetTeam(Getclient) != TFTeam_Red || Getclient==client || TeutonType[Getclient] == TEUTON_NONE);
+	return Getclient;
 }

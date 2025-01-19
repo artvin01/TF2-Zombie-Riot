@@ -880,7 +880,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
-						enemy.WaitingTimeGive = kv.GetNum("waiting_time_give");
+						enemy.WaitingTimeGive = kv.GetFloat("waiting_time_give");
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
 						enemy.ignore_max_cap = kv.GetNum("ignore_max_cap");
 						if(wave.Count <= 0)

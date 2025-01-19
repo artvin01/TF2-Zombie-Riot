@@ -1391,8 +1391,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			Healing_done_in_total[healer] += HealingDoneInt;
 			if(healer <= MaxClients)
+			{
 				AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
 				HealPointToReinforce(healer, HealingDoneInt, 0.0);
+			}
 		}
 #endif
 //only apply heal event if its not a passive self heal
@@ -1475,8 +1477,10 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 			Healing_done_in_total[healer] += HealthHealed;
 #if defined ZR
 			if(healer <= MaxClients)
+			{
 				AddHealthToUbersaw(healer, HealthHealed, 0.0);
 				HealPointToReinforce(healer, HealthHealed, 0.0);
+			}
 #endif
 		}
 	}
