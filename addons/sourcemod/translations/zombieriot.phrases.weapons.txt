@@ -2979,4 +2979,29 @@
 	{
 		"en" "Unit Reformator IV"
 	}
+	"Adaptive Medigun"
+	{
+		"en"		"Adaptive Medigun"
+		"ko"		"적응형 메디건"
+	}
+	"Armor Medigun"
+	{
+		"en"		"Armor Medigun"
+		"ko"		"아머 메디건"
+	}
+	"Overclocking Devices"
+	{
+		"en"		"Overclocking Medigun"
+		"ko"		"과부하 메디건"
+	}
+	"Reinforce"
+	{
+		"en"	"Reinforce"
+		"ko"	"증원 요청"
+	}
+	"Reconstructive Teleporter"
+	{
+		"en"	"Reconstructive Teleporter"
+		"ko"	"재구성 텔레포터"
+	}
 }
