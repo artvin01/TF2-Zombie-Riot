@@ -101,15 +101,18 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 	return Plugin_Continue;
 }
 
-static int GetHealingTarget(int client, bool checkgun=false)
+static int GetHealingTarget(int client)
 {
-	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-	if(!checkgun)
+	int medigun;
+	int ie;
+	int entity;
+	int ActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	while(TF2_GetItem(client, entity, ie))
 	{
-		if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
-			return GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
-
-		return -1;
+		if(b_IsAMedigun[entity] && entity == ActiveWeapon)
+		{
+			medigun = entity;
+		}
 	}
 
 	if(IsValidEntity(medigun))
