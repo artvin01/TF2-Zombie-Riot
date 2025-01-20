@@ -13,6 +13,7 @@ int g_BeamIndex_heal = -1;
 static int i_BurstpackUsedThisRound [MAXTF2PLAYERS];
 static float f_ReinforceTillMax[MAXTF2PLAYERS];
 static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
+static int i_MaxRevivesAWave;
 
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -24,6 +25,10 @@ static const char g_ReinforceSounds[][] = {
 	"mvm/mvm_used_powerup.wav",
 };
 
+int MaxRevivesReturn()
+{
+	return i_MaxRevivesAWave;
+}
 static const char g_ReinforceReadySounds[] = "mvm/mvm_bought_in.wav";
 
 static char gExplosive1;
@@ -127,6 +132,7 @@ public void M3_Abilities(int client)
 void M3_AbilitiesWaveEnd()
 {
 	Zero(i_BurstpackUsedThisRound);
+	i_MaxRevivesAWave = 0;
 }
 
 public void WeakDash(int client)
@@ -724,6 +730,14 @@ public void Reinforce(int client, bool NoCD)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Need Healing Point");
 				return;
 			}
+			if(i_MaxRevivesAWave >= 3)
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Too Many Mercs Recruited....");
+				return;
+			}
 		}
 		else
 		{
@@ -755,6 +769,8 @@ public void Reinforce(int client, bool NoCD)
 		if(!NoCD)
 			f_ReinforceTillMax[client]= 0.0;
 
+		
+		i_MaxRevivesAWave++;
 		CPrintToChatAll("{green}%N Is calling for additonal Mercs for tempomary assistance...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
@@ -1765,6 +1781,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 				{
 					CPrintToChat(PreviousOwner, "{black}Bob The Second {default}Wasnt able to get any merc... he refunds the backup call.");
 					HealPointToReinforce(PreviousOwner, 0, 1.0);
+					i_MaxRevivesAWave--;
 				}
 			}
 			

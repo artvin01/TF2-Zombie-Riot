@@ -1024,7 +1024,14 @@ public void OnPostThink(int client)
 			if(b_Reinforce[client])
 			{
 				had_An_ability = true;
-				FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f%%]",buffer, ReinforcePoint(client) * 100.0);
+				if(MaxRevivesReturn() >= 3)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [▼ MAX]",buffer);
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f%%]",buffer, ReinforcePoint(client) * 100.0);
+				}
 			}
 #endif
 
