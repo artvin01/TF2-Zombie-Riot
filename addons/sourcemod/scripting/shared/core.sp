@@ -752,7 +752,7 @@ public void OnPluginStart()
 	Commands_PluginStart();
 	Events_PluginStart();
 #endif
-
+	checkOS();
 	FileNetwork_PluginStart();
 
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
