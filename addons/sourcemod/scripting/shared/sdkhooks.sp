@@ -1023,7 +1023,8 @@ public void OnPostThink(int client)
 			}
 			if(b_Reinforce[client])
 			{
-				FormatEx(buffer, sizeof(buffer), "%s [▼ %i％]",buffer, ReinforcePoint(client));
+				had_An_ability = true;
+				FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f%%]",buffer, ReinforcePoint(client) * 100.0);
 			}
 #endif
 

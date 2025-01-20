@@ -4056,9 +4056,7 @@
 	}
 	"Need Healing Point"
 	{
-		"#format"	"{1:i}"
-		"en"	"Need {1} Healing Point"
-		"ko"	"{1} 치료 포인트가 필요합니다."	
+		"en"	"Need More Healing...."
 	}
 	"Use Only Alive"
 	{
