@@ -12,7 +12,6 @@ static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
 static int i_BurstpackUsedThisRound [MAXTF2PLAYERS];
 static float f_ReinforceTillMax[MAXTF2PLAYERS];
-static bool b_ReinforceReady[MAXTF2PLAYERS];
 static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
 
 static const char g_TeleSounds[][] = {
@@ -75,7 +74,6 @@ public void M3_ClearAll()
 	Zero(f_HealDelay);
 	Zero(f_Duration);
 	Zero(f_ReinforceTillMax);
-	Zero(b_ReinforceReady);
 	Zero(b_ReinforceReady_soundonly);
 }
 
@@ -129,7 +127,6 @@ public void M3_Abilities(int client)
 void M3_AbilitiesWaveEnd()
 {
 	Zero(i_BurstpackUsedThisRound);
-	Zero(b_ReinforceReady);
 }
 
 public void WeakDash(int client)
@@ -622,9 +619,6 @@ public void ReconstructiveTeleporter(int client)
 
 void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 {
-	if(!b_Reinforce[client])
-		return;
-		
 	float Healing_Amount=Attributes_GetOnPlayer(client, 8, true, true)/2.0;
 	if(Healing_Amount<1.0)
 		Healing_Amount=1.0;
@@ -665,11 +659,6 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	if(Base_HealingMaxPoints <= 3000)
 		Base_HealingMaxPoints = 3000;
 		
-	//Not ready.
-	if(f_ReinforceTillMax[client] < 1.0)
-	{
-		b_ReinforceReady[client]=false;
-	}
 
 
 	if(autoscale != 0.0) 
@@ -677,20 +666,11 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	else
 		f_ReinforceTillMax[client] += (float(healthvalue) / float(Base_HealingMaxPoints));
 
-	if(b_ReinforceReady[client]) 
-	{
-		//do nothing.
-		f_ReinforceTillMax[client] = 1.0;
-		return;
-	}
-
 
 	if(f_ReinforceTillMax[client] >= 1.0)
 	{
 		f_ReinforceTillMax[client] = 1.0;
-		if(!b_ReinforceReady[client])
-			b_ReinforceReady[client]=true;
-			
+
 		if(!b_ReinforceReady_soundonly[client])
 		{
 			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.8, _, _, _, _, false);
@@ -706,9 +686,6 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 
 float ReinforcePoint(int client)
 {
-	if(!b_Reinforce[client])
-		return 0.0;
-
 	return f_ReinforceTillMax[client];
 }
 
@@ -751,7 +728,6 @@ public void Reinforce(int client, bool NoCD)
 		else
 		{
 			f_ReinforceTillMax[client] = 1.0;
-			b_ReinforceReady[client]=true;
 		}
 
 		bool DeadPlayer;
@@ -818,7 +794,7 @@ public void Deploy_Drop(Handle data)
 	if(!IsValidClient(client))
 		return;
 
-	if(!b_ReinforceReady[client])
+	if(f_ReinforceTillMax[client] < 1.0)
 		return;
 	
 	if(Delay > 0 && !NoDrawBeam)
@@ -1752,68 +1728,63 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 		position[2]-=10.0;
 		if(IsValidClient(PreviousOwner))
 		{
-			if(b_ReinforceReady[PreviousOwner])
+			int RandomHELLDIVER = GetRandomDeathPlayer(HELLDIVER);
+			if(IsValidClient(RandomHELLDIVER) && GetTeam(RandomHELLDIVER) == TFTeam_Red && TeutonType[RandomHELLDIVER] == TEUTON_DEAD && b_HasBeenHereSinceStartOfWave[RandomHELLDIVER])
 			{
-				int RandomHELLDIVER = GetRandomDeathPlayer(HELLDIVER);
-				if(IsValidClient(RandomHELLDIVER) && GetTeam(RandomHELLDIVER) == TFTeam_Red && TeutonType[RandomHELLDIVER] == TEUTON_DEAD && b_HasBeenHereSinceStartOfWave[RandomHELLDIVER])
+				TeutonType[RandomHELLDIVER] = TEUTON_NONE;
+				dieingstate[RandomHELLDIVER] = 0;
+				//i_AmountDowned[RandomHELLDIVER]--;
+				DHook_RespawnPlayer(RandomHELLDIVER);
+				ForcePlayerCrouch(RandomHELLDIVER, false);
+				DataPack pack;
+				CreateDataTimer(0.5, Timer_DelayTele, pack, TIMER_FLAG_NO_MAPCHANGE);
+				Music_EndLastmann(true);
+				LastMann = false;
+				applied_lastmann_buffs_once = false;
+				SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, true);
+				SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, false);
+				//More time!!!
+				pack.WriteCell(GetClientUserId(RandomHELLDIVER));
+				pack.WriteFloat(position[0]);
+				pack.WriteFloat(position[1]);
+				pack.WriteFloat(position[2]);
+				GiveCompleteInvul(RandomHELLDIVER, 3.5);
+				TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
+				EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",RandomHELLDIVER);
+				DataPack pack_boom = new DataPack();
+				pack_boom.WriteFloat(position[0]);
+				pack_boom.WriteFloat(position[1]);
+				pack_boom.WriteFloat(position[2]);
+				pack_boom.WriteCell(1);
+				RequestFrame(MakeExplosionFrameLater, pack_boom);
+			}
+			else
+			{
+				if(IsValidClient(PreviousOwner))
 				{
-					TeutonType[RandomHELLDIVER] = TEUTON_NONE;
-					dieingstate[RandomHELLDIVER] = 0;
-					//i_AmountDowned[RandomHELLDIVER]--;
-					DHook_RespawnPlayer(RandomHELLDIVER);
-					ForcePlayerCrouch(RandomHELLDIVER, false);
-					DataPack pack;
-					CreateDataTimer(0.5, Timer_DelayTele, pack, TIMER_FLAG_NO_MAPCHANGE);
-					Music_EndLastmann(true);
-					LastMann = false;
-					applied_lastmann_buffs_once = false;
-					SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, true);
-					SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, false);
-					//More time!!!
-					pack.WriteCell(GetClientUserId(RandomHELLDIVER));
-					pack.WriteFloat(position[0]);
-					pack.WriteFloat(position[1]);
-					pack.WriteFloat(position[2]);
-					GiveCompleteInvul(RandomHELLDIVER, 3.5);
-					TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
-					EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-					CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",RandomHELLDIVER);
-					DataPack pack_boom = new DataPack();
-					pack_boom.WriteFloat(position[0]);
-					pack_boom.WriteFloat(position[1]);
-					pack_boom.WriteFloat(position[2]);
-					pack_boom.WriteCell(1);
-					RequestFrame(MakeExplosionFrameLater, pack_boom);
+					CPrintToChat(PreviousOwner, "{black}Bob The Second {default}Wasnt able to get any merc... he refunds the backup call.");
+					HealPointToReinforce(PreviousOwner, 0, 1.0);
 				}
-				else
+			}
+			
+			float entitypos[3], distance;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 				{
-					if(IsValidClient(PreviousOwner))
+					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
+					distance = GetVectorDistance(position, entitypos);
+					if(distance<125.0)
 					{
-						CPrintToChat(PreviousOwner, "{black}Bob The Second {default}Wasnt able to get any merc, you can retry if you want to.");
-						HealPointToReinforce(PreviousOwner, 0, 1.0);
+						float MaxHealth = float(ReturnEntityMaxHealth(entity));
+						float damage=(MaxHealth*2.0);
+						if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_IsGiant[entity])
+							damage=(MaxHealth*0.05)+(Pow(float(CashSpentTotal[HELLDIVER]), 1.18)/10.0);
+						SDKHooks_TakeDamage(entity, HELLDIVER, HELLDIVER, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 					}
 				}
-				
-				float entitypos[3], distance;
-				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
-					{
-						GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
-						distance = GetVectorDistance(position, entitypos);
-						if(distance<125.0)
-						{
-							float MaxHealth = float(ReturnEntityMaxHealth(entity));
-							float damage=(MaxHealth*2.0);
-							if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_IsGiant[entity])
-								damage=(MaxHealth*0.05)+(Pow(float(CashSpentTotal[HELLDIVER]), 1.18)/10.0);
-							SDKHooks_TakeDamage(entity, HELLDIVER, HELLDIVER, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-						}
-					}
-				}
-				
-				b_ReinforceReady[HELLDIVER]=false;
 			}
 		}
 	}
