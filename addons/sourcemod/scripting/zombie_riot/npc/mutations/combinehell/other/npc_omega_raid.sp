@@ -1024,7 +1024,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
-						Format(Text_Lines, sizeof(Text_Lines), "My eye is up here, {gold}%N{default}.",client);
+						Format(Text_Lines, sizeof(Text_Lines), "My eye is up here, {gold}%N{default}.",client);	
 					case 1:
 						Format(Text_Lines, sizeof(Text_Lines), "So you take {white}Bob{default} hostage and then pretend to be reading the news {gold}%N{default}?",client);
 				}
