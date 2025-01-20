@@ -43,10 +43,8 @@ static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadc
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(!IsValidClient(client) || !IsPlayerAlive(client))
 		return;
-	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-	if(!IsValidEntity(medigun))
-		return;
 
+	int medigun;
 	bool Continune = false;
 	int ie;
 	int entity;

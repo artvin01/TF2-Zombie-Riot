@@ -427,7 +427,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 		{
 			case 649: //The Spy-cicle, because it has no hit enemy sound.
 			{
-				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 90, _, 1.0);
+				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 75, _, 1.0);
 				return ZEROSOUND;
 			}
 		}
