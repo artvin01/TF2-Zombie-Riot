@@ -2206,6 +2206,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 #if defined ZR || defined RPG
 		CoinEntityCreated(entity);
 #endif
+		//set it to 0!
+		i_ExplosiveProjectileHexArray[entity] = 0;
 		b_ThisWasAnNpc[entity] = false;
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
