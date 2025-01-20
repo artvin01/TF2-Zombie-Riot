@@ -2462,7 +2462,7 @@ void ApplyLastmanOrDyingOverlay(int client)
 	{
 		switch(Yakuza_Lastman())
 		{
-			case 1,2,3,4:
+			case 1,2,3,4,7:
 			{
 				return;
 			}
