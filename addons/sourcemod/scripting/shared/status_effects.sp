@@ -832,7 +832,7 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 		}
 		if(!Ignore_NormalValue)
 		{
-			ExtraDamageAdd += basedamage * (Apply_MasterStatusEffect.DamageDealMulti * DamageBuffExtraScaling);
+			ExtraDamageAdd += basedamage * (Apply_MasterStatusEffect.DamageDealMulti * DamageBuffScalingDo);
 		}
 	}
 	if(length < 1) 		
