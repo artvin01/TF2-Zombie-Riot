@@ -17,7 +17,6 @@ void AddHealthToUbersaw(int client, int healthvalue, float autoscale = 0.0)
 	if(autoscale != 0.0)
 	{
 		f_PercentageHealTillUbersaw[client] += autoscale;
-		return;
 	}
 	else
 	{
@@ -174,5 +173,7 @@ public void Enable_SuperubersawAlter(int client, int weapon) // Enable managemen
 		h_TimerSuperubersawAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SuperubersawAlter, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+		
+		UbersawSaveDo[client] = EntIndexToEntRef(weapon);
 	}
 }
