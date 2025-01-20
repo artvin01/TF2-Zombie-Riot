@@ -1697,7 +1697,7 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 			AcceptEntityInput(Prop, "SetParent");
 		}
 		AcceptEntityInput(PropMove, "Open");
-		SetEntProp(PropMove, Prop_Data, "m_iHammerID", client+1972);
+		SetEntPropEnt(PropMove, Prop_Data, "m_hOwnerEntity", client);
 		return PropMove;
 	}
 	return -1;
@@ -1709,7 +1709,8 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 	GetEntPropString(caller, Prop_Data, "m_iName", name, sizeof(name));
 	if(StrContains(name, "ZR_ReinforcePOD_", false) != -1)
 	{
-		int HELLDIVER = GetEntProp(caller, Prop_Data, "m_iHammerID")-1972;
+		int HELLDIVER = GetEntPropEnt(caller, Prop_Data, "m_hOwnerEntity");
+		int PreviousOwner = HELLDIVER;
 		float position[3];
 		GetEntPropVector(caller, Prop_Data, "m_vecAbsOrigin", position);
 		AcceptEntityInput(caller, "KillHierarchy");
@@ -1748,6 +1749,16 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 					pack_boom.WriteFloat(position[2]);
 					pack_boom.WriteCell(1);
 					RequestFrame(MakeExplosionFrameLater, pack_boom);
+
+					RequestFrame(Timer_Deploy);
+				}
+				else
+				{
+					if(IsValidClient(PreviousOwner))
+					{
+						CPrintToChat(PreviousOwner, "{black}Bob The Second {default}Wasnt able to get any merc, you can retry if you want to.");
+						HealPointToReinforce(PreviousOwner, 1, 1.0);
+					}
 				}
 				
 				float entitypos[3], distance;
@@ -1768,22 +1779,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 						}
 					}
 				}
-				/*
-				for(int target=1; target<=MaxClients; target++)
-				{
-					if(IsValidClient(target) && IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE)
-					{
-						GetEntPropVector(target, Prop_Send, "m_vecOrigin", entitypos);
-						distance = GetVectorDistance(position, entitypos);
-						if(distance<=125.0)
-						{
-							int health = GetClientHealth(target);
-							SDKHooks_TakeDamage(target, 0, 0, float(health)*3.0, DMG_TRUEDAMAGE|DMG_CRIT);
-						}
-					}
-				}
-				*/
-				RequestFrame(Timer_Deploy);
+				
 				b_ReinforceReady[HELLDIVER]=false;
 			}
 		}
