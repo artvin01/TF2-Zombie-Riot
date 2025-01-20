@@ -73,6 +73,8 @@ enum OSType
 	OS_Unknown
 }
 
+OSType OperationSystem;
+
 enum
 {
 	EDICT_NPC = 0,
@@ -3481,3 +3483,23 @@ void ClientRevivalTickLogic(int client)
 	}
 }
 #endif	// ZR
+
+
+void checkOS()
+{
+	char cmdline[256];
+	GetCommandLine(cmdline, sizeof(cmdline));
+
+	if (StrContains(cmdline, "./srcds_linux ", false) != -1)
+	{
+		OperationSystem = OS_Linux;
+	}
+	else if (StrContains(cmdline, ".exe", false) != -1)
+	{
+		OperationSystem = OS_Windows;
+	}
+	else
+	{
+		OperationSystem = OS_Unknown;
+	}
+}

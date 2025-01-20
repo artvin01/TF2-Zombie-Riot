@@ -176,26 +176,30 @@ void DHook_Setup()
 	
 	delete gamedata_lag_comp;
 	
-	GameData edictgamedata = LoadGameConfigFile("edict_limiter");
-	//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
-	//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
-	//	Patch TF2 not reusing edict slots and crashing with a ton of free slots
+	if(OperationSystem == OS_Windows)
 	{
-		MemoryPatch ED_Alloc_IgnoreFree = MemoryPatch.CreateFromConf(edictgamedata, "ED_Alloc::nop");
-		if (!ED_Alloc_IgnoreFree.Validate())
+		GameData edictgamedata = LoadGameConfigFile("edict_limiter");
+		//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
+		//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
+		//	Patch TF2 not reusing edict slots and crashing with a ton of free slots
 		{
-			SetFailState("Failed to verify ED_Alloc::nop.");
+			MemoryPatch ED_Alloc_IgnoreFree = MemoryPatch.CreateFromConf(edictgamedata, "ED_Alloc::nop");
+			if (!ED_Alloc_IgnoreFree.Validate())
+			{
+				SetFailState("Failed to verify ED_Alloc::nop.");
+			}
+			else if (ED_Alloc_IgnoreFree.Enable())
+			{
+				LogMessage("-> Enabled ED_Alloc::nop.");
+			}
+			else
+			{
+				SetFailState("Failed to enable ED_Alloc::nop.");
+			}
 		}
-		else if (ED_Alloc_IgnoreFree.Enable())
-		{
-			LogMessage("-> Enabled ED_Alloc::nop.");
-		}
-		else
-		{
-			SetFailState("Failed to enable ED_Alloc::nop.");
-		}
+
+		delete edictgamedata;
 	}
-	delete edictgamedata;
 }
 int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
