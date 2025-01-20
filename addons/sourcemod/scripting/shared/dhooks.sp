@@ -71,29 +71,8 @@ void DHook_Setup()
 	{
 		SetFailState("Failed to load gamedata (zombie_riot).");
 	} 
-	/*
-	else if (!ReadDHooksDefinitions("zombie_riot")) 
-	{
-		SetFailState("Failed to read DHooks definitions (zombie_riot).");
-	}
-	*/
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
-
-	//https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
-	/*
-	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
-	{
-		SetFailState("Failed to create detour for BotManager::MaintainBotQuota");
-	}
-
-	if (!DHookSetFromConf(gH_MaintainBotQuota, gamedata, SDKConf_Signature, "BotManager::MaintainBotQuota"))
-	{
-		SetFailState("Failed to get address for BotManager::MaintainBotQuota");
-	}
-
-	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
-	*/
 	
 #if !defined RTS
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
@@ -147,10 +126,6 @@ void DHook_Setup()
 	{
 		SetFailState("Failed to create hook CBaseEntity::UpdateTransmitState() offset from ZR gamedata!");
 	}
-
-//	HookCreateFakeClientStuff			= DHookCreateEx(gamedata, "CVEngineServer::CreateFakeClientEx",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, Create_FakeClientExPre);
-	
-
 	ForceRespawn = DynamicHook.FromConf(gamedata, "CBasePlayer::ForceRespawn");
 	if(!ForceRespawn)
 		LogError("[Gamedata] Could not find CBasePlayer::ForceRespawn");
@@ -165,7 +140,6 @@ void DHook_Setup()
 #endif
 	
 	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
-	
 	if (!(g_CalcPlayerScore = DHookCreateDetour(Address_Null, CallConv_CDECL, ReturnType_Int, ThisPointer_Ignore)))
 	{
 		SetFailState("Failed to create detour for CTFGameRules::CalcPlayerScore");
@@ -201,7 +175,7 @@ void DHook_Setup()
 	}
 	
 	delete gamedata_lag_comp;
-	/*
+	
 	GameData edictgamedata = LoadGameConfigFile("edict_limiter");
 	//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
 	//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
@@ -222,8 +196,6 @@ void DHook_Setup()
 		}
 	}
 	delete edictgamedata;
-	*/
-//	int ED_AllocCommentedOut;
 }
 int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
@@ -2309,7 +2281,7 @@ int SetEntityTransmitState(int entity, int newFlags)
 	int flags = GetEdictFlags(entity);
 	flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
 	flags |= newFlags;
-	SetEdictFlags(entity, flags);
+//	SetEdictFlags(entity, flags);
 
 	return flags;
 }
