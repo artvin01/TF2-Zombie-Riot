@@ -4052,11 +4052,7 @@
 	"Player not detected"
 	{
 		"en"	"Player not detected"
-		"ko"	"플레이어를 감지 할 수 없습니다."	
-	}
-	"Need Healing Point"
-	{
-		"en"	"Need More Healing...."
+		"ko"	"플레이어를 감지 할 수 없습니다."
 	}
 	"Use Only Alive"
 	{
@@ -4065,6 +4061,10 @@
 	"freeplay_intro"
 	{
 		"en"		"Alright guys...\nProve you're worthy."
+	}
+	"Need Healing Point"
+	{
+		"en"	"More Healing Required."
 	}
 
 	"freeplay_start_1"
