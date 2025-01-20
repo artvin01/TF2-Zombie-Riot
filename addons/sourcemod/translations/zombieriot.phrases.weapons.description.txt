@@ -1020,9 +1020,7 @@
 	}
 	"Kunai Desc"
 	{
-		"en"	"Can backstab and bleed, backstab gives health, no matter if it kills or not.\nKills reward 2x heal, Raids heal 2x the hp, against raids backstabs deal 2x dmg overall."
-		"fr"	"Cause du saignement. Le poignardage vous donne de la santé, même si vous ne tuez pas.\nObtenez 2x plus de santé pour tuer et par les Raids. 2x plus de dégats contre les Raids."
-		"chi"   "背刺流血，还会回血。\n背刺击杀回血两倍，对boss造成双倍伤害，收到两倍回血。"
+		"en"	"Backstab gives health, no matter if it kills or not.\nKills reward 2x heal, Raids heal 2x the hp, against raids backstabs deal 2x dmg overall.\nLoses damage for healing."
 	}
 	"Kunai Pap 1"
 	{

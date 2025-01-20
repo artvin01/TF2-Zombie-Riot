@@ -562,7 +562,7 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 		}
 		
 		float DamageToNegate = Apply_MasterStatusEffect.DamageTakenMulti;
-		if(Apply_MasterStatusEffect.OnTakeDamage_TakenFunc != INVALID_FUNCTION)
+		if(Apply_MasterStatusEffect.OnTakeDamage_TakenFunc != INVALID_FUNCTION && Apply_MasterStatusEffect.OnTakeDamage_TakenFunc)
 		{
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_TakenFunc);
@@ -636,7 +636,7 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 			continue;
 		}
 		float DamageToNegate = Apply_MasterStatusEffect.DamageDealMulti;
-		if(Apply_MasterStatusEffect.OnTakeDamage_DealFunc != INVALID_FUNCTION)
+		if(Apply_MasterStatusEffect.OnTakeDamage_DealFunc != INVALID_FUNCTION && Apply_MasterStatusEffect.OnTakeDamage_DealFunc)
 		{
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_DealFunc);
@@ -729,7 +729,7 @@ float StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, float &b
 			}
 		}
 		bool Ignore_NormalValue = false;
-		if(Apply_MasterStatusEffect.OnTakeDamage_TakenFunc != INVALID_FUNCTION)
+		if(Apply_MasterStatusEffect.OnTakeDamage_TakenFunc != INVALID_FUNCTION && Apply_MasterStatusEffect.OnTakeDamage_TakenFunc)
 		{
 			float DamageAdded;
 			//We have a valid function ignore the original value.
@@ -814,7 +814,7 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 				DamageBuffScalingDo = 1.0;
 			}
 		}
-		if(Apply_MasterStatusEffect.OnTakeDamage_DealFunc != INVALID_FUNCTION)
+		if(Apply_MasterStatusEffect.OnTakeDamage_DealFunc != INVALID_FUNCTION && Apply_MasterStatusEffect.OnTakeDamage_DealFunc)
 		{
 			float DamageAdded;
 			//We have a valid function ignore the original value.
@@ -874,7 +874,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		if(!Apply_MasterStatusEffect.HudDisplay[0])
 			continue;
 		
-		if(Apply_MasterStatusEffect.HudDisplay_Func != INVALID_FUNCTION)
+		if(Apply_MasterStatusEffect.HudDisplay_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.HudDisplay_Func)
 		{
 			char HudDisplayCustom[12];
 			//We have a valid function ignore the original value.
@@ -981,7 +981,7 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 			continue;
 		}
 		float SpeedModif = Apply_MasterStatusEffect.MovementspeedModif;
-		if(Apply_MasterStatusEffect.Status_SpeedFunc != INVALID_FUNCTION)
+		if(Apply_MasterStatusEffect.Status_SpeedFunc != INVALID_FUNCTION && Apply_MasterStatusEffect.Status_SpeedFunc)
 		{
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.Status_SpeedFunc);
@@ -2406,6 +2406,25 @@ void StatusEffects_SupportWeapons()
 	data.Status_SpeedFunc 			= INVALID_FUNCTION;
 	data.HudDisplay_Func 			= OverclockHudDisplay_Func;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Weapon Overclock Detect");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
+	data.Status_SpeedFunc 			= INVALID_FUNCTION;
+	data.HudDisplay_Func 			= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 void OverclockHudDisplay_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
@@ -3125,7 +3144,7 @@ void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage,
 			length--;
 			continue;
 		}
-		if(Apply_MasterStatusEffect.OnTakeDamage_PostVictim != INVALID_FUNCTION)
+		if(Apply_MasterStatusEffect.OnTakeDamage_PostVictim != INVALID_FUNCTION && Apply_MasterStatusEffect.OnTakeDamage_PostVictim)
 		{
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_PostVictim);
@@ -3161,7 +3180,7 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 			length--;
 			continue;
 		}
-		if(Apply_MasterStatusEffect.OnTakeDamage_PostAttacker != INVALID_FUNCTION)
+		if(Apply_MasterStatusEffect.OnTakeDamage_PostAttacker != INVALID_FUNCTION && Apply_MasterStatusEffect.OnTakeDamage_PostAttacker)
 		{
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.OnTakeDamage_PostAttacker);

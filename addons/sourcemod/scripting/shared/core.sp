@@ -73,6 +73,8 @@ enum OSType
 	OS_Unknown
 }
 
+OSType OperationSystem;
+
 enum
 {
 	EDICT_NPC = 0,
@@ -750,7 +752,7 @@ public void OnPluginStart()
 	Commands_PluginStart();
 	Events_PluginStart();
 #endif
-
+	checkOS();
 	FileNetwork_PluginStart();
 
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
@@ -2206,6 +2208,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 #if defined ZR || defined RPG
 		CoinEntityCreated(entity);
 #endif
+		//set it to 0!
+		i_ExplosiveProjectileHexArray[entity] = 0;
 		b_ThisWasAnNpc[entity] = false;
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
@@ -3479,3 +3483,23 @@ void ClientRevivalTickLogic(int client)
 	}
 }
 #endif	// ZR
+
+
+void checkOS()
+{
+	char cmdline[256];
+	GetCommandLine(cmdline, sizeof(cmdline));
+
+	if (StrContains(cmdline, "./srcds_linux ", false) != -1)
+	{
+		OperationSystem = OS_Linux;
+	}
+	else if (StrContains(cmdline, ".exe", false) != -1)
+	{
+		OperationSystem = OS_Windows;
+	}
+	else
+	{
+		OperationSystem = OS_Unknown;
+	}
+}

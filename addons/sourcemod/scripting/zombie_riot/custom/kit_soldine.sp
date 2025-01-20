@@ -372,6 +372,9 @@ public void Wkit_Soldin_NPCTakeDamage_Melee(int attacker, int victim, float &dam
 						damage *= 2.0;
 						DisplayCritAboveNpc(victim, attacker, true, _, _, false);
 					}
+					i_SoldineMeleeCharge[attacker] = 0.0;
+					//Set this to 0 first to prevent infinite loops!
+					
 					Rogue_OnAbilityUse(attacker, weapon);
 					float position[3]; WorldSpaceCenter(victim, position);
 					position[2]+=35.0;
@@ -379,7 +382,7 @@ public void Wkit_Soldin_NPCTakeDamage_Melee(int attacker, int victim, float &dam
 					pack_boom.WriteFloat(position[0]);
 					pack_boom.WriteFloat(position[1]);
 					pack_boom.WriteFloat(position[2]);
-					pack_boom.WriteCell(0);
+					pack_boom.WriteCell(1);
 					RequestFrame(MakeExplosionFrameLater, pack_boom);
 
 					//For client only cus too much fancy shit
@@ -400,7 +403,6 @@ public void Wkit_Soldin_NPCTakeDamage_Melee(int attacker, int victim, float &dam
 					if(i_PaPLevel[attacker] >= 4)
 						GiveArmorViaPercentage(attacker, 0.5, 1.25);
 
-					i_SoldineMeleeCharge[attacker] = 0.0;
 				}
 				else
 				{
