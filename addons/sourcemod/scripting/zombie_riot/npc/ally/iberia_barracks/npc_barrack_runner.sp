@@ -112,7 +112,7 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Iberia_Runner_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Iberia_Runner_ClotThink;
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 250.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -196,7 +196,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),250.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),200.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}
@@ -214,7 +214,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE");
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE");
 	}
 }
 

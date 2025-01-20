@@ -1197,6 +1197,7 @@ static Action Mana_Harvester_Tick(int client)
 	if(struct_Harvester_Data[client].throttle > GameTime)
 		return Plugin_Continue;
 
+	ManaCalculationsBefore(client);
 	float Time = 0.25 * Attributes_Get(weapon, 6, 1.0);
 
 	struct_Harvester_Data[client].throttle = GameTime + Time;

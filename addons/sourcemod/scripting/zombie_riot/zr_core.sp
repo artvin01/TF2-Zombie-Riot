@@ -215,7 +215,11 @@ enum
 	WEAPON_ZEALOT_GUN = 133,
 	WEAPON_ZEALOT_POTION = 134,
 	WEAPON_KIT_FRACTAL	= 135,
-	WEAPON_KIT_PROTOTYPE	= 136
+	WEAPON_KIT_PROTOTYPE	= 136,
+	WEAPON_KIT_PROTOTYPE_MELEE	= 137,
+	WEAPON_PURNELL_MELEE = 138,
+	WEAPON_PURNELL_PRIMARY = 139,
+	WEAPON_KRITZKRIEG = 140
 }
 
 enum
@@ -271,6 +275,10 @@ int CurrentCash;
 int GlobalExtraCash;
 bool LastMann;
 bool LastMannScreenEffect;
+
+//this is to display a hud icon showing that youre the last remaining player, i.e.
+// shows to everyone, showing that, oh shit, dont die.
+bool LastMann_BeforeLastman;
 int LimitNpcs;
 int i_MVMPopulator;
 
@@ -368,6 +376,7 @@ int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 
 int StoreWeapon[MAXENTITIES];
+int ClientAttribResetCount[MAXTF2PLAYERS];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
 float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
@@ -544,6 +553,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/weapon_class_leper.sp"
 #include "zombie_riot/custom/kit_flagellant.sp"
 #include "zombie_riot/custom/kit_zealot.sp"
+#include "zombie_riot/custom/kit_purnell.sp"
 #include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
@@ -583,6 +593,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
 #include "zombie_riot/custom/weapon_castlebreaker.sp"
 #include "zombie_riot/custom/kit_soldine.sp"
+#include "zombie_riot/custom/weapon_kritzkrieg.sp"
 
 void ZR_PluginLoad()
 {
@@ -874,6 +885,8 @@ void ZR_MapStart()
 	ResetMapStartCastleBreakerWeapon();
 	OnMapStartZealot();
 	Wkit_Soldin_OnMapStart();
+	Purnell_MapStart();
+	Kritzkrieg_OnMapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1570,12 +1583,12 @@ public Action Timer_Dieing(Handle timer, int client)
 					if(b_DyingTextOff[client])
 					{
 						b_DyingTextOff[client] = false;
-						SetVariantString("DOWNED [R]");
+						SetVariantString("DOWNED [T]");
 						AcceptEntityInput(TextFormat, "SetText");
 					}
 					else
 					{
-						SetVariantString("REVIVE [R]");
+						SetVariantString("REVIVE [T]");
 						AcceptEntityInput(TextFormat, "SetText");
 						b_DyingTextOff[client] = true;
 					}
@@ -1655,12 +1668,36 @@ void CheckAlivePlayersforward(int killed=0)
 	CheckAlivePlayers(killed, _);
 }
 
+void CheckLastMannStanding(int killed)
+{
+	int PlayersLeftNotDowned = 0;
+	LastMann_BeforeLastman = false;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+		{
+			CurrentPlayers++;
+			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
+			{
+				if(dieingstate[client] == 0)
+				{
+					PlayersLeftNotDowned++;
+				}
+			}
+		}
+	}
+	if(PlayersLeftNotDowned == 1)
+	{
+		LastMann_BeforeLastman = true;
+	}
+}
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
 	bool rogue = Rogue_Mode();
 	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
+		LastMann_BeforeLastman = false;
 		Yakuza_Lastman(0);
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
@@ -1678,8 +1715,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 	bool alive;
 	LastMann = true;
+	LastMann_BeforeLastman = false;
 	CurrentPlayers = 0;
+	int PlayersLeftNotDowned = 0;
 	int GlobalIntencity_Reduntant;
+	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
@@ -1691,6 +1731,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				{
 					GlobalIntencity_Reduntant++;	
 				}
+				else
+				{
+					PlayersLeftNotDowned++;
+				}
 				if(!alive)
 				{
 					alive = true;
@@ -1700,7 +1744,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 					LastMann = false;
 					Yakuza_Lastman(0);
 				}
-				
 			}
 			else
 			{
@@ -1709,15 +1752,30 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			
 			if(Hurtviasdkhook != 0)
 			{
+				LastMann_BeforeLastman = true;
 				LastMann = true;
 				LastMannScreenEffect = false;
 			}
 		}
 	}
+	/*
+		This is so the last person alive, who is not dead, but not downed
+		i.e. last man up
+		PlayersLeftNotDowned
 
+	*/
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
+	{
+		PlayersLeftNotDowned = 99;
+		LastMann_BeforeLastman = false;
 		LastMann = false;
-	
+	}
+
+	if(PlayersLeftNotDowned == 1)
+	{
+		LastMann_BeforeLastman = true;
+	}
+
 	if(TestLastman)
 	{
 		LastMann = true;
@@ -1811,9 +1869,20 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						}
 						if(Wkit_Soldin_LastMann(client))
 						{
-							Wkit_Soldin_LastMann_buff(client, true);
+							ChargeSoldineMeleeHit(client,client,true, 999.9);
+							ChargeSoldineRocketJump(client, client, true, 999.9);
 							CPrintToChatAll("{crimson}Expidonsa Activates %N's emergency protocols...",client);
 							Yakuza_Lastman(4);
+						}
+						if(Purnell_Lastman(client))
+						{
+							CPrintToChatAll("{crimson}%N gets filled with the unyielding desire to avenge his patients.",client);
+							Yakuza_Lastman(5);
+						}
+						if(Blacksmith_Lastman(client))
+						{
+							CPrintToChatAll("{crimson}%N Seems to be completly and utterly screwed.",client);
+							Yakuza_Lastman(6);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)
@@ -2005,7 +2074,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 		Armor_Max = 1000;
 										
 	else if(ArmorLevel == 200)
-		Armor_Max = 2000;	
+		Armor_Max = 2000;
 		
 	else
 		Armor_Max = 200;

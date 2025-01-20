@@ -1914,13 +1914,27 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	if(b_InteractWithReload[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-73", buffer);
+
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-86", buffer);
-
+	/*
 	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client] + 2.0);
 	menu2.AddItem("-72", buffer);
-
+	unused.
+	*/
+	
 
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");
@@ -2369,6 +2383,18 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					if(f_Data_InBattleHudDisableDelay[client] > 3.0)
 					{
 						f_Data_InBattleHudDisableDelay[client] = -2.0;
+					}
+					ReShowSettingsHud(client);
+				}
+				case -73: 
+				{
+					if(b_InteractWithReload[client])
+					{
+						b_InteractWithReload[client] = false;
+					}
+					else
+					{
+						b_InteractWithReload[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}
@@ -4821,6 +4847,8 @@ void Store_ApplyAttribs(int client)
 	if(TeutonType[client] || !StoreItems)
 		return;
 
+	//Each time we delete ALL attributes, we increace this amount by one.
+	ClientAttribResetCount[client]++;
 	Attributes_RemoveAll(client);
 	
 	TFClassType ClassForStats = WeaponClass[client];
@@ -4861,6 +4889,7 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 	else
 	*/
+
 	map.SetValue("442", 1.0);	// Move Speed
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
@@ -5071,9 +5100,9 @@ void Store_ApplyAttribs(int client)
 	{
 		ForcePlayerCrouch(client, true);
 		if(b_XenoVial[client])
-			Attributes_Set(client, 489, 0.85);
+			Attributes_SetMulti(client, 442, 0.85);
 		else
-			Attributes_Set(client, 489, 0.65);
+			Attributes_SetMulti(client, 442, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
@@ -5086,6 +5115,10 @@ void Store_ApplyAttribs(int client)
 	EnableSilvesterCosmetic(client);
 	EnableMagiaCosmetic(client);
 	Building_Check_ValidSupportcount(client);
+	//give all revelant things back
+	//Get the previous count to get back all their stats.
+	int clientid = GetSteamAccountID(client);
+	WeaponSpawn_Reapply(client, client, clientid);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
@@ -5499,6 +5532,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
 				i_IsSupportWeapon[entity] = false;
+				i_IsKitWeapon[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
 				i_WeaponAmmoAdjustable[entity] = 0;
 				
@@ -5594,6 +5628,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_IsSupportWeapon[entity] = true;
 					}
+					if(item.ChildKit)
+					{
+						i_IsKitWeapon[entity] = true;
+					}
+				
 					if(!info.InternalMeleeTrace)
 					{
 						i_InternalMeleeTrace[entity] = false;
@@ -5822,6 +5861,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_ArmorVisualiser[client] = true;
 					}
+					if(info.SpecialAdditionViaNonAttribute == 14)
+					{
+						b_Reinforce[client] = true;
+					}
 
 					int CostDo;
 
@@ -6046,6 +6089,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Weapon_Anti_Material_Rifle_Deploy(client, entity);
 		Walter_Enable(client, entity);
 		Enable_CastleBreakerWeapon(client, entity);
+		Purnell_Enable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
@@ -6755,6 +6799,11 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity, int costOfUpgr
 			if(i_IsSupportWeapon[entity])
 				return true;
 		}
+		case 12:
+		{
+			if(i_IsKitWeapon[entity])
+				return true;
+		}
 	}
 
 	return false;
@@ -6802,13 +6851,14 @@ enum struct TempAttribStore
 	float Value;
 	float GameTimeRemoveAt;
 	int Weapon_StoreIndex;
+	int ClientOnly_ResetCountSave;
 	/*
 	Function FuncBeforeApply;
 	Function FuncAfterApply;
 	*/
 	void Apply_TempAttrib(int client, int weapon)
 	{
-		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime());
+		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime(), ClientAttribResetCount[client]);
 		if(!List_TempApplyWeaponPer[client])
 			List_TempApplyWeaponPer[client] = new ArrayList(sizeof(TempAttribStore));
 
@@ -6845,7 +6895,7 @@ void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
 		}
 		if(storeindex == TempStoreAttrib.Weapon_StoreIndex)
 		{
-			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime());
+			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime(), ClientAttribResetCount[client]);
 			//Give all the things needed to the weapon again.
 		}
 	}

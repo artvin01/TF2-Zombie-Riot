@@ -11,6 +11,7 @@ void Natives_PluginLoad()
 	CreateNative("ZR_GetWaveCount", Native_GetWaveCounts);
 	CreateNative("ZR_HasNamedItem", Native_HasNamedItem);
 	CreateNative("ZR_GiveNamedItem", Native_GiveNamedItem);
+	CreateNative("ZR_GetAliveStatus", Native_GetAliveStatus);
 
 	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell, Param_String, Param_Cell);
 	OnClientLoaded = new GlobalForward("ZR_OnClientLoaded", ET_Ignore, Param_Cell);
@@ -68,4 +69,22 @@ public any Native_GiveNamedItem(Handle plugin, int numParams)
 	GetNativeString(2, buffer, length);
 
 	return Items_GiveNamedItem(GetNativeCell(1), buffer);
+}
+
+public any Native_GetAliveStatus(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	if(TeutonType[client] == TEUTON_WAITING || GetClientTeam(client) != 2)
+		return 4;	// *SPEC*
+	
+	if(!IsPlayerAlive(client))
+		return 3;	// *DEAD*
+	
+	if(TeutonType[client] != TEUTON_NONE)
+		return 2;	// *DEAD*
+
+	if(dieingstate[client] != 0)
+		return 1;	// *DOWNED*
+	
+	return 0;	// :)
 }

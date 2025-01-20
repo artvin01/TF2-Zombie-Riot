@@ -91,6 +91,10 @@ public void SDKHook_ScoreThink(int entity)
 	static int offset_Cash = -1;
 	static int offset_Healing = -1;
 
+#if defined ZR
+	static int offset_Alive = -1;
+#endif
+
 
 		
 	if(offset == -1) 
@@ -108,11 +112,20 @@ public void SDKHook_ScoreThink(int entity)
 	if(offset_Cash == -1) 
 		offset_Cash = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
 
+#if defined ZR
+	//Alive
+	if(offset_Alive == -1) 
+		offset_Alive = FindSendPropInfo("CTFPlayerResource", "m_bAlive");
+	
+	bool alive[MAXTF2PLAYERS];
+#endif
+
 	int CashCurrentlyOwned[MAXTF2PLAYERS];
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
 		CashCurrentlyOwned[client] = CurrentCash-CashSpent[client];
+		alive[client] = (TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client));
 #else
 		CashCurrentlyOwned[client] = TextStore_Cash(client);
 #endif
@@ -124,6 +137,7 @@ public void SDKHook_ScoreThink(int entity)
 	
 #if defined ZR
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
+	SetEntDataArray(entity, offset_Alive, alive, MaxClients + 1);
 #else
 	SetEntDataArray(entity, offset, Level, MaxClients + 1);
 #endif
@@ -188,14 +202,6 @@ stock void SDKHook_HookClient(int client)
 #endif
 }
 
-#if defined ZR 
-bool WeaponWasGivenInfiniteDelay[MAXENTITIES];
-
-void WeaponWeaponAdditionOnRemoved(int entity)
-{
-	WeaponWasGivenInfiniteDelay[entity] = false;
-}
-
 public void CheckWeaponAmmoLogicExternal(DataPack pack)
 {
 	pack.Reset();
@@ -206,6 +212,13 @@ public void CheckWeaponAmmoLogicExternal(DataPack pack)
 		
 	delete pack;
 }
+bool WeaponWasGivenInfiniteDelay[MAXENTITIES];
+
+void WeaponWeaponAdditionOnRemoved(int entity)
+{
+	WeaponWasGivenInfiniteDelay[entity] = false;
+}
+
 bool IsWeaponEmptyCompletly(int client, int weapon, bool CheckOnly = false)
 {
 	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
@@ -317,7 +330,7 @@ void WeaponSwtichToWarningPostFrame(int ref)
 		SetEntProp(WeaponToForce, Prop_Send, "m_iPrimaryAmmoType", GetAmmoType_WeaponPrimary(WeaponToForce));
 	}
 }
-#endif
+
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
 {
@@ -546,72 +559,7 @@ public void OnPostThink(int client)
 		
 		Mana_Regen_Tick = true;
 
-		float ManaRegenExtra = 1.0;
-		float ManaMaxExtra = 1.0;
-		int i, entity;
-		while(TF2_GetItem(client, entity, i))
-		{
-			if(i_IsWandWeapon[entity])
-			{
-				has_mage_weapon[client] = true;
-				ManaMaxExtra *= Attributes_Get(entity, 4019, 1.0);
-				ManaRegenExtra *= Attributes_Get(entity, 4020, 1.0);
-			}
-		}
-
-		max_mana[client] = 400.0;
-		mana_regen[client] = 10.0;
-		max_mana[client] *= ManaMaxExtra;
-		mana_regen[client] *= ManaRegenExtra;
-				
-		if(i_CurrentEquippedPerk[client] == 4)
-		{
-			mana_regen[client] *= 1.35;
-		}
-
-		if(Classic_Mode())
-		{
-			mana_regen[client] *= 0.7;
-		}
-		
-
-		mana_regen[client] *= Mana_Regen_Level[client];
-		max_mana[client] *= Mana_Regen_Level[client];
-		if(b_TwirlHairpins[client])
-		{
-			mana_regen[client] *= 1.05;
-			max_mana[client] *= 1.05;
-		}
-
-		/*int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
-		if(IsValidEntity(weapon))
-		{
-			switch(i_CustomWeaponEquipLogic[weapon])
-			{
-				case WEAPON_KIT_FRACTAL:
-				{
-					Fractal_Kit_Modify_Mana(client, weapon);
-				}
-			}
-		}*/
-
-		if(b_AggreviatedSilence[client])	
-		{
-			mana_regen[client] *= 0.30;
-		}
-		else
-		{
-			float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
-			MultiplyRegen *= 0.5;
-			if(MultiplyRegen < 1.0)
-				MultiplyRegen = 1.0;
-
-			if(MultiplyRegen >= 3.0)
-				MultiplyRegen = 3.0;
-
-			mana_regen[client] *= MultiplyRegen;
-		}
+		ManaCalculationsBefore(client);
 	
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
 		{
@@ -740,6 +688,12 @@ public void OnPostThink(int client)
 			
 			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
+		if(HasSpecificBuff(client, "Regenerating Therapy"))
+		{
+			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
+			
+			HealEntityGlobal(client, client, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
+		}
 
 		Armor_regen_delay[client] = GameTime + 1.0;
 		SDkHooks_Think_TutorialStepsDo(client);
@@ -766,16 +720,7 @@ public void OnPostThink(int client)
 		
 		if(IsValidEntity(weapon))
 		{
-			if(WeaponWasGivenInfiniteDelay[weapon] && !IsWeaponEmptyCompletly(client, weapon, true))
-			{
-				//tiny delay to prevent abuse?
-				if(Attributes_Get(weapon, 4015, 0.0) == 0.0)
-				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
-					SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
-				}
-				WeaponWasGivenInfiniteDelay[weapon] = false;
-			}
+			AllowWeaponFireAfterEmpty(client, weapon);
 			static float cooldown_time;
 			had_An_ability = false;
 			static bool IsReady;
@@ -1050,6 +995,7 @@ public void OnPostThink(int client)
 			}
 			if(ClientHasUseableGrenadeOrDrink(client))
 			{
+				had_An_ability = true;
 				if(GetGameTime() > GrenadeApplyCooldownReturn(client))
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
@@ -1059,9 +1005,25 @@ public void OnPostThink(int client)
 					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
 				}
 			}
+			if(Purnell_Existant(client))
+			{
+				had_An_ability = true;
+				int Reolver = EntRefToEntIndex(Purnell_ReturnRevolver(client));
+				if(IsValidEntity(Reolver))
+				{
+					int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+					int ammo = GetEntData(Reolver, iAmmoTable, 4);//Get ammo clip
+					FormatEx(buffer, sizeof(buffer), "%s [%i/%i]", buffer,ammo,Purnell_RevolverFull(Reolver));
+				}
+			}
 			if(SuperUbersaw_Existant(client))
 			{
+				had_An_ability = true;
 				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f%%]",buffer, SuperUbersawPercentage(client) * 100.0);
+			}
+			if(b_Reinforce[client])
+			{
+				FormatEx(buffer, sizeof(buffer), "%s [▼ %i％]",buffer, ReinforcePoint(client));
 			}
 #endif
 
@@ -1587,6 +1549,8 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
 	ArmorDisplayClient(victim);
+	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
+	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
 	
 #endif
 #if defined RPG
@@ -1660,12 +1624,19 @@ int CheckInHud()
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(IsValidEntity(victim) && b_On_Self_Damage[victim] && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
+#if defined ZR
+	if(IsValidEntity(victim) && CanSelfHurtAndJump(victim) && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_KIT_PROTOTYPE && !(GetEntityFlags(victim)&FL_ONGROUND))
-			i_RocketJump_Count[victim]++;
+		if(CanSelfHurtAndJump(victim))
+		{
+			damage = 1.0;
+			int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+			SetEntProp(victim, Prop_Data, "m_iHealth", flHealth + 1);
+			return Plugin_Changed;
+		}
 		return Plugin_Continue;
 	}
+#endif
 	if(!CheckInHud())
 	{
 		ClientPassAliveCheck[victim] = false;
@@ -1878,12 +1849,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 
 #if defined RPG
-	if(Ability_TrueStrength_Shield_OnTakeDamage(victim))
+	if(!CheckInHud() && Ability_TrueStrength_Shield_OnTakeDamage(victim))
 	{
 		damage = 0.0;
 		return Plugin_Handled;	
 	}
-	f_InBattleDelay[victim] = GetGameTime() + 3.0;
+	if(!CheckInHud())
+		f_InBattleDelay[victim] = GetGameTime() + 3.0;
 #endif
 	float GetCurrentDamage = damage;
 	f_LatestDamageRes[victim] = 1.0;
@@ -2043,6 +2015,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				// Die in Rogue, there's no lastman
 				return Rogue_NoLastman() ? Plugin_Changed : Plugin_Handled;
 			}
+			//this updates it .
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
 			
 			Rogue_PlayerDowned(victim);	
@@ -2089,9 +2062,9 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
 				if(b_XenoVial[victim])
-					Attributes_Set(victim, 489, 0.85);
+					Attributes_SetMulti(victim, 442, 0.85);
 				else
-					Attributes_Set(victim, 489, 0.65);
+					Attributes_SetMulti(victim, 442, 0.65);
 
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
@@ -2112,7 +2085,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 
-					entity = SpawnFormattedWorldText("DOWNED [R]", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
+					entity = SpawnFormattedWorldText("DOWNED [T]", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
 					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 					b_DyingTextOff[victim] = false;
 					
@@ -2148,12 +2121,14 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				}
 
 				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
+				CheckLastMannStanding(victim);
 				return Plugin_Handled;
 			}
 			else
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
+				CheckLastMannStanding(victim);
 				return Plugin_Changed;
 			}
 		}
@@ -2171,16 +2146,10 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeath);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeath);
 	}
-	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
+	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
-		if(!CheckInHud())
-		{
-			i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
-			TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
-		}
 		i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
-		damage *= 1.15;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_Jarated))
 	{
@@ -2297,6 +2266,10 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		return Plugin_Handled;
 	}
 	if(StrContains(sample, "vo/halloween_scream", true) != -1)
+	{
+		return Plugin_Handled;
+	}
+	if(StrContains(sample, "misc/halloween/spell_stealth.wav", true) != -1)
 	{
 		return Plugin_Handled;
 	}
@@ -2485,8 +2458,16 @@ public void OnWeaponSwitchPre(int client, int weapon)
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
-	if(LastMann && Yakuza_Lastman())
-		return;	
+	if(LastMann)
+	{
+		switch(Yakuza_Lastman())
+		{
+			case 1,2,3,4:
+			{
+				return;
+			}
+		}
+	}
 	
 	DoOverlay(client, "debug/yuv");
 	if(LastMann)
@@ -3224,3 +3205,74 @@ void SDkHooks_Think_TutorialStepsDo(int client)
 	DoTutorialStep(client, true);
 }
 #endif
+void AllowWeaponFireAfterEmpty(int client, int weapon)
+{
+	if(WeaponWasGivenInfiniteDelay[weapon] && !IsWeaponEmptyCompletly(client, weapon, true))
+	{
+		//tiny delay to prevent abuse?
+		if(Attributes_Get(weapon, 4015, 0.0) == 0.0)
+		{
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
+		}
+		WeaponWasGivenInfiniteDelay[weapon] = false;
+	}
+}
+
+
+
+void ManaCalculationsBefore(int client)
+{
+	has_mage_weapon[client] = false;
+	int i, entity;
+	float ManaRegen = 10.0;
+	float ManaMaxExtra = 400.0;
+	
+	while(TF2_GetItem(client, entity, i))
+	{
+		if(i_IsWandWeapon[entity])
+		{
+			has_mage_weapon[client] = true;
+			ManaMaxExtra *= Attributes_Get(entity, 4019, 1.0);
+			ManaRegen *= Attributes_Get(entity, 4020, 1.0);
+		}
+	}
+	max_mana[client] = ManaMaxExtra;
+	mana_regen[client] = ManaRegen;
+			
+	if(i_CurrentEquippedPerk[client] == 4)
+	{
+		mana_regen[client] *= 1.35;
+	}
+
+	if(Classic_Mode())
+	{
+		mana_regen[client] *= 0.7;
+	}
+	
+
+	mana_regen[client] *= Mana_Regen_Level[client];
+	max_mana[client] *= Mana_Regen_Level[client];
+	if(b_TwirlHairpins[client])
+	{
+		mana_regen[client] *= 1.05;
+		max_mana[client] *= 1.05;
+	}
+
+	if(b_AggreviatedSilence[client])	
+	{
+		mana_regen[client] *= 0.30;
+	}
+	else
+	{
+		float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
+		MultiplyRegen *= 0.5;
+		if(MultiplyRegen < 1.0)
+			MultiplyRegen = 1.0;
+
+		if(MultiplyRegen >= 3.0)
+			MultiplyRegen = 3.0;
+
+		mana_regen[client] *= MultiplyRegen;
+	}
+}

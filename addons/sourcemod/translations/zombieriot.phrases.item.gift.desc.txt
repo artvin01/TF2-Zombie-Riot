@@ -2219,14 +2219,24 @@
 		"en"		"A ranged unit that fires 6 shots very rapidly and reloads"
 		"ru"		"юнит дальнего боя который стрелят очередь из 6 выстрелов и перезаряжается"
 	}	
+	"Barracks Iberian Commando Desc"
+	{
+		"en"		"A slow but strong gunner, has an explosive surprise to anybody daring to approach him"
+		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
+	}
 	"Barracks Iberia Headhunter Desc"
 	{
-		"en"		"Melee unit that does more damage to elite, bosses, and raidbosses and applies debuff to them"
+		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50%% hp"
+		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
+	}	
+	"Barracks Iberia Inquisitor Lynsen Desc"
+	{
+		"en"		"One of the best inquisitors trained by Irene, able to mark enemies and rain death upon them, works well with other inquisitors"
 		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
 	}	
 	"Barracks Iberian Lighthouse Guardian Desc"
 	{
-		"en"		"Super unit that takes 2 slot. It does melee damage when it has armor. Then, it pulls out a shotgun to deal ranged damage. It will often buff near allies"
+		"en"		"Super unit that takes 2 slot, when he has armor he heals and buff allies, when he loses the armor he uses a shotgun for high dmg at the cost of supporting"
 		"ru"		"Супер юнит который забирает 2 слота.Наносит урон ближнего боя когда есть броня,затем достаёт дробовик что бы наносить дальний урон.Он часто будет баффать союзников поблизости"
 	}
 	"Agent John Desc"
@@ -2444,5 +2454,21 @@
 	"Major Voided Desc"
 	{
 		"en"	"A taken over giant machine by the Void.\nAble to fire when has enough rounds and can't change target while firing.\nExplodes on death killing all non-bosses."
+	}
+	"Disturbed Umbral Desc"
+	{
+		"en"	"Alerted by the rips, it comes to stop the ''invasors''...\nDeals a random amount of damage on hit, and performs a random effect upon being hit, with a cooldown.\n(Silence) Reduces its attackspeed greatly."
+	}
+	"Immutable Heavy Desc"
+	{
+		"en"	"Another dimensional entity, however, it seems to be more controlled...\nShoots projectiles when close enough, red does AOE, blue is single.\nDeals 20%% of its melee damage as Elemental Void/Chaos damage.\nEach melee hit it does, it gains +2%% speed permanently.\nDo NOT allow it to melee anything though, otherwise it'll become immune to all debuffs temporarily (unless silenced)."
+	}
+	"Vanishing Matter Desc"
+	{
+		"en"	"It begs for the pain to stop...\nInvulnerable when it spawns, each melee hit it LANDS lowers its health.\nUpon reaching 33%% health, its invulnerability vanishes and it enrages.\nWhile enraged: moves faster, deals less damage, heals nearby allies and attacks at lightspeed.\nCan be kited to an extent, as it loses health when it SWINGS its melee.\n(Silence) Reduces its attackspeed greatly."
+	}
+	"Spotter Desc"
+	{
+		"en"	"A support voidspeaker hired by Bob the Second, tasked to assist in Freeplay.\nDeals high melee dmg, knocks enemies away, gains Void Strength II for 1s on hit.\nCharges his buff after hitting enough enemies:\nGrants speed and defense to players when activating his buff (lasts 7.5s on players)\nGrants Void Strength II to NPCs and a 750HP heal when activating his buff (lasts 15s on NPCs)"
 	}
 }

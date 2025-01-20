@@ -134,19 +134,19 @@ methodmap Barrack_Combine_Super < BarrackBody
 
 	public Barrack_Combine_Super(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "1400", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
+		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		
 		i_NpcWeight[npc.index] = 2;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Super_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Super_ClotThink;
-		func_NPCOnTakeDamage[npc.index] = Barrack_Combine_Super_OnTakeDamage;
 		npc.m_flSpeed = 250.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
+		npc.m_iAttacksTillReload = 0;
 
 		KillFeed_SetKillIcon(npc.index, "fists");
 		
@@ -179,26 +179,41 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
-				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
+				if(npc.m_iAttacksTillReload >= 27)
 				{
-					if(!npc.m_flAttackHappenswillhappen)
-					{
-						switch(GetRandomInt(0,1))
-						{
-							case 0:
-							{
-								npc.AddGesture("ACT_BRAWLER_ATTACK_LEFT");
-							}
-							case 1:
-							{
-								npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT");
-							}
-						}
-						npc.PlaySwordSound();
-						npc.m_flAttackHappens = GameTime + 0.075;
-						npc.m_flAttackHappens_bullshit = GameTime + 0.24;
-						npc.m_flNextMeleeAttack = GameTime + (0.1 * npc.BonusFireRate);
-						npc.m_flAttackHappenswillhappen = true;
+					float damage = 3750.0;
+						if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
+							{					
+								if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 27)
+								{
+									npc.AddGesture("ACT_COMBO1_BOBPRIME");
+									npc.PlaySwordSound();
+									npc.m_flNextRangedSpecialAttack = GameTime + 1.2;
+									npc.m_flAttackHappens = GameTime + 0.5;
+									npc.m_flAttackHappens_bullshit = GameTime + 0.7;
+									npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
+									npc.m_flAttackHappenswillhappen = true;
+								}
+								else if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 28)
+								{
+									npc.AddGesture("ACT_COMBO2_BOBPRIME");
+									npc.PlaySwordSound();
+									npc.m_flNextRangedSpecialAttack = GameTime + 1.2;
+									npc.m_flAttackHappens = GameTime + 0.5;
+									npc.m_flAttackHappens_bullshit = GameTime + 0.7;
+									npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
+									npc.m_flAttackHappenswillhappen = true;
+								}
+								else if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 29)
+								{
+									npc.AddGesture("ACT_COMBO3_BOBPRIME",_,_,_,1.5);
+									npc.PlaySwordSound();
+									npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
+									npc.m_flAttackHappens = GameTime + 1.0;
+									npc.m_flAttackHappens_bullshit = GameTime + 1.2;
+									npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
+									npc.m_flAttackHappenswillhappen = true;
+								}
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
@@ -206,15 +221,29 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						npc.FaceTowards(vecTarget, 20000.0);
 						if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 						{
-							int target = TR_GetEntityIndex(swingTrace);	
+							int target = TR_GetEntityIndex(swingTrace);
 							
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1100.0, 0), DMG_CLUB, -1, _, vecHit);
+								float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+								if(npc.m_iAttacksTillReload == 28)
+								{
+									damage *= 1.25;
+								}
+								else if(npc.m_iAttacksTillReload == 29)
+								{
+									damage *= 1.5;
+								}
+								Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, vecMe, 100*2.0 ,_,0.8, false);
 								npc.PlaySwordHitSound();
+								npc.m_iAttacksTillReload ++;
+								if(npc.m_iAttacksTillReload >=30)
+								{
+									npc.m_iAttacksTillReload = 0;
+								}
 							} 
 						}
 						delete swingTrace;
@@ -225,64 +254,76 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						npc.m_flAttackHappenswillhappen = false;
 					}
 				}
+				else
+				{
+					if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
+					{					
+						if(!npc.m_flAttackHappenswillhappen)
+						{
+							switch(GetRandomInt(0,1))
+							{
+								case 0:
+								{
+									npc.AddGesture("ACT_BRAWLER_ATTACK_LEFT");
+								}
+								case 1:
+								{
+									npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT");
+								}
+							}
+							npc.PlaySwordSound();
+							npc.m_flAttackHappens = GameTime + 0.075;
+							npc.m_flAttackHappens_bullshit = GameTime + 0.24;
+							npc.m_flNextMeleeAttack = GameTime + (0.1 * npc.BonusFireRate);
+							npc.m_flAttackHappenswillhappen = true;
+						}
+						if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
+						{
+							Handle swingTrace;
+							npc.FaceTowards(vecTarget, 20000.0);
+							if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+							{
+								int target = TR_GetEntityIndex(swingTrace);	
+								
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								
+								if(target > 0) 
+								{
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1100.0, 0), DMG_CLUB, -1, _, vecHit);
+									npc.PlaySwordHitSound();
+									npc.m_iAttacksTillReload ++;
+									if(npc.CmdOverride == Command_HoldPos) // If he's in position hold he cannot gain "points" towards the combo to avoid abuse
+									{
+										npc.m_iAttacksTillReload --;
+									}
+								} 
+							}
+							delete swingTrace;
+							npc.m_flAttackHappenswillhappen = false;
+						}
+						else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
+						{
+							npc.m_flAttackHappenswillhappen = false;
+						}
+					}
+				}
 			}
 		}
 		else
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_BRAWLER_IDLE", "ACT_BRAWLER_RUN");
-	}
-}
-
-public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
-	Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(victim);
-	
-	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
-	{
-		npc.m_bLostHalfHealth = true;
-	}
-
-	float TrueArmor = 1.0;
-
-	if(npc.m_bLostHalfHealth)
-	{
-		TrueArmor *= 0.85;
-		switch(GetRandomInt(1, 2))
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_BRAWLER_IDLE", "ACT_BRAWLER_RUN", 17500.0, _, false);
+		if(npc.m_flNextRangedSpecialAttack > GameTime) // Stops moving if he's doing the combo, who do you think you are trying to move around while doing combo, bob?
 		{
-			case 1:
-			{
-
-			}
-			case 2:
-			{
-				damage *= 0.3;
-				npc.PlayDeflectSound();
-				NpcSpeechBubble(npc.index, "Nice Try!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
-			}
+			npc.m_flSpeed = 0.0;
 		}
-		fl_TotalArmor[npc.index] = TrueArmor;
+		else
+		{
+			npc.m_flSpeed = 250.0;
+		}
 	}
-
-	
-	/*
-	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
-		return Plugin_Continue;
-	*/
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-	
-	
-	return Plugin_Changed;
 }
 
 void Barrack_Combine_Super_NPCDeath(int entity)

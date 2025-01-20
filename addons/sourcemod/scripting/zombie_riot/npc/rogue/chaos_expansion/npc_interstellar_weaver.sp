@@ -781,6 +781,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(attacker <= 0)
 		return Plugin_Continue;
 
+	if(b_IsATriggerHurt[attacker])
+	{
+		damage = 0.0;
+		return Plugin_Handled;
+	}
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 	if(!b_storm_weaver_solo && !b_stellar_weaver_true_solo)

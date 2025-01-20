@@ -311,6 +311,9 @@ public void Rogue_CursedRelic_Weapon(int entity, int client)
 public void Rogue_Exchanger_Collect()
 {
 	int ingots = Rogue_GetIngots();
+	if(ingots <= 0)
+		return;
+		
 	Rogue_AddIngots(-ingots, true);
 	
 	CurrentCash += 200 * ingots;
@@ -319,6 +322,9 @@ public void Rogue_Exchanger_Collect()
 
 public void Rogue_Exchanger_IngotChanged(int &ingots)
 {
+	if(ingots <= 0)
+		return;
+
 	CurrentCash += 200 * ingots;
 	GlobalExtraCash += 200 * ingots;
 	CPrintToChatAll("{green}%t","Cash Gained!", 200 * ingots);

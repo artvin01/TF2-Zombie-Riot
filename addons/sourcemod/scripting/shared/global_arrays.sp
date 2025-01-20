@@ -239,7 +239,7 @@ float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
-int i_PlayerToCustomBuilding[MAXTF2PLAYERS] = {0, ...};
+int i_PlayerToCustomBuilding[MAXENTITIES] = {0, ...};
 float f_BuildingIsNotReady[MAXTF2PLAYERS] = {0.0, ...};
 float f_AmmoConsumeExtra[MAXTF2PLAYERS];
 #endif
@@ -254,8 +254,14 @@ Handle SyncHud_ArmorCounter;
 
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
+#if defined ZR
 float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.7, ...};
 float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.7, ...};
+#else
+float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.9, ...};
+float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.9, ...};
+#endif
+
 float f_Client_LostFriction[MAXTF2PLAYERS]={0.1, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
@@ -280,6 +286,7 @@ const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 
 float f_ClientReviveDelay[MAXENTITIES];
 float f_ClientReviveDelayMax[MAXENTITIES];
+float f_ClientReviveDelayReviveTime[MAXENTITIES];
 float f_ClientBeingReviveDelay[MAXENTITIES];
 
 #define MAXSTICKYCOUNTTONPC 12
@@ -348,7 +355,6 @@ float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
-float f_BannerAproxDur[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_DuelStatus[MAXENTITIES];
@@ -404,6 +410,7 @@ int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 //Used for any double arrays like lantean wand or health hose.
 float f_GlobalHitDetectionLogic[MAXENTITIES][MAXENTITIES];
 #if defined ZR
+float f_BannerAproxDur[MAXENTITIES];
 bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
 #endif
 
@@ -442,8 +449,6 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
-int i_RocketJump_Count[MAXTF2PLAYERS];
-int b_On_Self_Damage[MAXTF2PLAYERS];
 int i_SpecialGrigoriReplace;
 float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
@@ -490,6 +495,8 @@ float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
 bool b_IsCannibal[MAXTF2PLAYERS];
+float Kritzkrieg_Buff[MAXENTITIES];
+bool b_Reinforce[MAXTF2PLAYERS];
 char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard1.wav",
 	"physics/flesh/flesh_squishy_impact_hard2.wav",
@@ -598,6 +605,7 @@ bool b_EntityIgnoredByShield[MAXENTITIES];
 int i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
 bool i_IsSupportWeapon[MAXENTITIES]; 
+bool i_IsKitWeapon[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
 bool b_IsVehicle[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
@@ -611,6 +619,9 @@ float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 float f_WeaponVolumeStiller[MAXENTITIES];
 float f_WeaponVolumeSetRange[MAXENTITIES];
+float f_FreeplayAlteredDamageOld_Barracks[MAXENTITIES];
+float f_FreeplayAlteredHealthOld_Barracks[MAXENTITIES];
+
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 

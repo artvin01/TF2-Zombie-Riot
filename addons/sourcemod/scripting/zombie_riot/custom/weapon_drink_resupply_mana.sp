@@ -25,18 +25,16 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 			CurrentAmmo[client][Ammo_Potion_Supply] = 0;
 			Handle_on[client] = true;
 			
-			float max_mana_temp = 400.0;
 			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + 60.0;
 			
-
-			max_mana_temp *= Mana_Regen_Level[client];	
 				
-			if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+			ManaCalculationsBefore(client);
+			if(Current_Mana[client] < RoundToCeil(max_mana[client]))
 			{
-				Current_Mana[client] += RoundToCeil(max_mana_temp);
+				Current_Mana[client] += RoundToCeil(max_mana[client]);
 					
-				if(Current_Mana[client] > RoundToCeil(max_mana_temp)) 	//Dont drink it if youre full already idiot
-					Current_Mana[client] = RoundToCeil(max_mana_temp);
+				if(Current_Mana[client] > RoundToCeil(max_mana[client])) 	//Dont drink it if youre full already idiot
+					Current_Mana[client] = RoundToCeil(max_mana[client]);
 			}
 				
 			EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", client, SNDCHAN_STATIC, 80, _, 1.0);

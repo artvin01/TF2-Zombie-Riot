@@ -1391,7 +1391,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			Healing_done_in_total[healer] += HealingDoneInt;
 			if(healer <= MaxClients)
+			{
 				AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+				HealPointToReinforce(healer, HealingDoneInt, 0.0);
+			}
 		}
 #endif
 //only apply heal event if its not a passive self heal
@@ -1474,7 +1477,10 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 			Healing_done_in_total[healer] += HealthHealed;
 #if defined ZR
 			if(healer <= MaxClients)
+			{
 				AddHealthToUbersaw(healer, HealthHealed, 0.0);
+				HealPointToReinforce(healer, HealthHealed, 0.0);
+			}
 #endif
 		}
 	}
@@ -4226,67 +4232,89 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 #if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
-	if(entity <= MaxClients)
-	{
-		//if were giving it to a client directly, dont do the below.
-		ApplyTempAttrib_Internal(entity, index, multi, duration);
-		return;
-	}
+#if defined RPG
+	ApplyTempAttrib_Internal(entity, index, multi, duration);
+	return;
+#endif
+#if defined ZR
 	if(Attributes_Has(entity,index))
 	{
 		//We need to get the owner!!
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		int owner;
+		if(entity <= MaxClients)
+			owner = entity;
+		else
+			owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+
 		TempAttribStore TempStoreAttrib;
 		TempStoreAttrib.Attribute = index;
 		TempStoreAttrib.Value = multi;
 		TempStoreAttrib.GameTimeRemoveAt = GetGameTime() + duration;
-		TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
+		if(entity <= MaxClients)
+		{
+			int clientid = GetSteamAccountID(entity);
+			TempStoreAttrib.Weapon_StoreIndex = clientid;
+			TempStoreAttrib.ClientOnly_ResetCountSave = ClientAttribResetCount[owner];
+		}
+		else
+			TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
+		
 		TempStoreAttrib.Apply_TempAttrib(owner, entity);
 	}
+#endif
 }
 
-stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3)
+stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3, int ClientResetCount = 0)
 {
+	/*
+	Applying this onto players might cause issues, as player attributes are spread across wearbles
+	TODO: find a fix
+
+	*/
 	if(Attributes_Has(entity,index))
 	{
 		Attributes_SetMulti(entity, index, multi);
 		//Attributes_Get(weapon, 466, 1.0);
 		
 		DataPack pack;
-		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
+		CreateDataTimer(duration, ApplyTempAttrib_Revert, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteCell(index);
 		pack.WriteFloat(multi);
+		pack.WriteCell(ClientResetCount);
 	}
 }
 
-/*
-	float damage = 65.0;
-	
-	damage *= Attributes_Get(weapon, 1, 1.0);
-
-	damage *= Attributes_Get(weapon, 2, 1.0);
-			
-	float speed = 1100.0;
-	speed *= Attributes_Get(weapon, 103, 1.0);
-	
-	speed *= Attributes_Get(weapon, 104, 1.0);
-	
-	speed *= Attributes_Get(weapon, 475, 1.0);
-	
-	float time = 500.0 / speed;
-	time *= Attributes_Get(weapon, 101, 1.0);
-	
-	time *= Attributes_Get(weapon, 102, 1.0);
-	*/
-public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
+public Action ApplyTempAttrib_Revert(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity != INVALID_ENT_REFERENCE)
 	{
 		int index = pack.ReadCell();
-		Attributes_SetMulti(entity, index, 1.0 / pack.ReadFloat());
+		float AttribCount = pack.ReadFloat();
+		if(entity <= MaxClients)
+		{
+			int ClientResetCount = pack.ReadCell();
+			if(ClientAttribResetCount[entity] != ClientResetCount)
+			{
+				return Plugin_Stop;
+			}
+		}
+		Attributes_SetMulti(entity, index, 1.0 / AttribCount);
+		if(Attribute_IsMovementSpeed(index))
+		{
+			int owner;
+			if(entity <= MaxClients)
+				owner = entity;
+			else
+				owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+				
+			if(owner > 0 && owner <= MaxClients)
+			{
+				SDKCall_SetSpeed(owner);
+			}
+		}
 	}
 	return Plugin_Stop;
 }

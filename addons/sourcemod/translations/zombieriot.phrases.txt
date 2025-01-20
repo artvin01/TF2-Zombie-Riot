@@ -1433,7 +1433,7 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself."
+		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself.\nHold Tab and then press your spray button to actually spray."
 	}
 	"Difficulty Help Explained"
 	{
@@ -1532,7 +1532,7 @@
 	"Ammobox Tooltip"
 	{
 		"#format"	"{1:d}"
-		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
+		"en" 		"Press [T (spray)] on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
 	}
 	"Warn Client Ammo None"
 	{
@@ -1541,32 +1541,15 @@
 	}
 	"Armortable Tooltip"
 	{
-		"en" 		"Press RELOAD on the Armortable to gain Armor."
-		"fr" 		"Appuyez RELOAD sur la table d'armure pour obtenir de l'armure."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на верстаке брони, чтобы получить броню."
-		"de"		"Drücke NACHLADEN an dem Rüstungstisch um Rüstung zubekommen."
-		"pt"		"Pressione o botão de RECARREGAR para pegar mais armadura."
-		"nl"		"Druk de HERLAAD toets op de schild tafel om extra bescherming te krijgen."
-		"chi"       "对着护甲柜按下R键可以补充你的护甲"
+		"en" 		"Press [T (spray)] on the Armortable to gain Armor."
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary perk."
-		"fr" 		"Appuyez RELOAD sur la machine de perks pour obtenir un perk temporaire."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на перк-машине, чтобы получить мощный временный перк."
-//		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
-		"pt"		"Pressione o botão de RECARREGAR para ganhar uma habilidade temporaria."
-		"nl"		"Druk de HERLAAD toets op de perkmachine om een sterke, tijdelijke kracht te krijgen."
-		"chi"       "对着福利箱按下R键可以选择Buff"
+		"en" 		"Press [T (spray)] on the Perkmachine to gain a strong temporary perk."
 	}
 	"PackAPunch Tooltip"
 	{
-		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon."
-		"fr" 		"Appuyez RELOAD pour appliquer une amélioration Pack-a-Punch sur votre arme."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА для улучшения оружия, которое вы держите."
-		"pt"		"Aperte o botão de RECARREGAR com sua arma atual para melhora-lá."
-		"nl"		"Druk de HERLAAD toets om uw huidige wapen te Pack-A-Punchen"
-		"chi"       "对着工作台按下R键可以升级你的武器"
+		"en" 		"Press [T (spray)] To Pack-a-Punch your current holding weapon."
 	}
 	"Packed"
 	{
@@ -1600,13 +1583,7 @@
 	}
 	"Revive Teammate tooltip"
 	{
-		"en" 		"Hold RELOAD to revive this dying teammate."
-		"fr" 		"Appuyez RELOAD pour resuciter votre coéquipier."
-		"ru" 		"Удерживайте ПЕРЕЗАРЯДКА, чтобы оживить умирающего союзника."
-		"de"		"Halten NACHLADEN, um ihren absterben Kameraden zu beleben."
-		"pt"		"Segure o botão de RECARREGAR para reanimar seu colega de equipe morrendo."
-		"nl"		"Hou uw HERLAAD toets in om uw stervende teamgenoten tot leven te wekken."
-		"chi"       "按住R键扶起队友"
+		"en" 		"Hold [T (spray)] to revive this dying teammate."
 	}
 	"Bored or Dead"
 	{
@@ -1669,12 +1646,7 @@
 	}
 	"Village Upgrade Tooltip"
 	{
-		"en" 		"Press RELOAD to upgrade your village."
-		"fr" 		"Appuyez RELOAD pour améliorer votre village."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА, чтобы улучшить свою деревню."
-		"pt"		"Aperte o botão de RECARREGAR para aprimorar sua vilá."
-		"nl"		"Druk op de HERLAAD toets om uw dorp te upgraden."
-		"chi"       "按下R键升级你的村庄"
+		"en" 		"Press [T (spray)] to upgrade your village."
 	}
 	"Pong"
 	{
@@ -3470,6 +3442,10 @@
 		"en" 	"Taunt Speed Increace"
 		"fr" 	"Vitesse des Railleries Augmuntée"
 	}
+	"Interact With Reload"
+	{
+		"en" 	"Interact With Reload"
+	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"
@@ -3724,9 +3700,7 @@
 	}
 	"Blacksmith Tooltip"
 	{
-		"en"		"Press RELOAD to apply a tinker effect to your active weapon."
-		"fr"		"Appuyez sur RELOAD pour appliquer un effet de forge sur votre arme"
-		"chi"		"按 装弹键 打开菜单，抽取随机武器属性"
+		"en"		"Press [T (spray)] to apply a tinker effect to your active weapon."
 	}
 	"Blacksmith Used"
 	{
@@ -4070,24 +4044,45 @@
 	{
 		"en"	"Ability already Active"
 	}
+	"Barrack Unit not detected"
+	{
+		"en"	"Barrack Unit not detected"
+		"ko"	"배럭 유닛를 감지 할 수 없습니다."	
+	}
+	"Player not detected"
+	{
+		"en"	"Player not detected"
+		"ko"	"플레이어를 감지 할 수 없습니다."	
+	}
+	"Need Healing Point"
+	{
+		"#format"	"{1:i}"
+		"en"	"Need {1} Healing Point"
+		"ko"	"{1} 치료 포인트가 필요합니다."	
+	}
+	"Use Only Alive"
+	{
+		"en"	"Can only use while alive."
+	}
 	"freeplay_intro"
 	{
-		"en"		"You shall not proceed further.\nProve you're worthy."
+		"en"		"Alright guys...\nProve you're worthy."
 	}
+
 	"freeplay_start_1"
 	{
-		"en"		"You've proved you're worthy.\nWorthy to take on the journey of Freeplay.\nAs you progress, more stronger enemies will come.\nEvery 5 waves, a setup will occur, and a skull will appear.\n"
+		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future..\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."
 	}
 	"freeplay_start_2"
 	{
-		"en"		"Skulls are random events or effects that can be temporary or permanent.\nEach setup has a 20%% chance of adding an extra skull,\nand this stacks infinitely as you progress."
+		"en"		"Each setup, i'll throw in a Skull, which is a random event or modifier.\nI'll be sometimes throwing more and multiple skulls in,\nto make the training more intensive."
 	}
 	"freeplay_start_3"
 	{
-		"en"		"There is a 2%% chance for a catastrophic event to occur on on a setup..."
+		"en"		"Be warned,\nI maaay get a little silly and do something catastrophic on a setup..."
 	}
 	"freeplay_start_4"
 	{
-		"en"		"But neeh, pretty sure it'll never happen.\nAnyways, have fun...\nAnd good luck."
+		"en"		"Zeina and I will watch over you, we'll warn you incase something happens.\nWho am i? Koshi, an expert in simulations, and a cheese enthusiast.\nGood luck."
 	}
 }

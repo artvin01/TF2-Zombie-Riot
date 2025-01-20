@@ -469,7 +469,7 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 	BarrackBody_HealthHud(npc,offsetHealth);
 	if(f_NextHealTime[npc.index] < GameTime && !i_NpcIsABuilding[npc.index])
 	{
-		f_NextHealTime[npc.index] = GameTime + 0.5;
+		f_NextHealTime[npc.index] = GameTime + 0.25;
 		int HealingAmount;
 		int client = GetClientOfUserId(npc.OwnerUserId);
 		if(client > 0)
@@ -484,14 +484,7 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 			}
 			if(HealingAmount > 0)
 			{
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < ReturnEntityMaxHealth(npc.index))
-				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
-					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
-					{
-						SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
-					}
-				}
+				HealEntityGlobal(iNPC, iNPC, float(HealingAmount), 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 		}
 			

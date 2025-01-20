@@ -32,6 +32,7 @@ methodmap ObjectHealingStation < ObjectGeneric
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		return npc;
 	}

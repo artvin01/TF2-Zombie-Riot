@@ -150,6 +150,9 @@ float RogueBladedance_DamageBonus(int attacker, int inflictor, int victim)
 	if(BladeDancer == attacker)
 		CalcsDo = attacker;
 
+	if(CalcsDo <= 0)
+		return 1.0;
+
 	//not same team, give 2x dmg
 	if(GetTeam(CalcsDo) != GetTeam(victim))
 	{
@@ -160,16 +163,17 @@ float RogueBladedance_DamageBonus(int attacker, int inflictor, int victim)
 
 static Action Timer_BladedancerTimer(Handle timer)
 {
-	if(BladeDancer >= 0)
+	if(BladeDancer > 0)
 	{
 		//change bladedancer if dead or smth
 		//dont change if they are downed but have a self revive so to speak
-		if(TeutonType[BladeDancer] != TEUTON_NONE || IsClientInGame(BladeDancer) || IsPlayerAlive(BladeDancer) || (dieingstate[BladeDancer] && !b_LeftForDead[BladeDancer]))
+		if(TeutonType[BladeDancer] != TEUTON_NONE || !IsClientInGame(BladeDancer) || !IsPlayerAlive(BladeDancer) || (dieingstate[BladeDancer] && !b_LeftForDead[BladeDancer]))
 		{
 			//Find new friend!
 			BladedanceChangeOwner = 0.0;
 		}
 	}
+
 	if(BladedanceChangeOwner > GetGameTime())
 		return Plugin_Continue;
 		
@@ -201,15 +205,18 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		float value;
-		
-		// +100% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 2.0);
+		if(BladeDancer == entity)
+		{
+			float value;
+			
+			// +100% max health
+			map.GetValue("26", value);
+			map.SetValue("26", value * 2.0);
 
-		// +100% Heal rate
-		map.GetValue("8", value);
-		map.SetValue("8", value * 2.0);
+			// +100% Heal rate
+			map.GetValue("8", value);
+			map.SetValue("8", value * 2.0);
+		}
 	}
 }
 

@@ -640,11 +640,12 @@ void NPC_ConfigSetup()
 	Barrack_Railgunner_MapStart();
 	Barrack_Alt_Basic_Mage_MapStart();
 	Barrack_Alt_Intermediate_Mage_MapStart();
+	Barrack_Alt_Advanced_Mage_MapStart();
 	Barrack_Alt_Donnerkrieg_MapStart();
 	Barrack_Alt_Holy_Knight_MapStart();
 	Barrack_Alt_Mecha_Barrager_MapStart();
 	Barrack_Alt_Barrager_MapStart();
-	Barrack_Alt_Berserker_MapStart();
+	Barrack_Alt_Mecha_Loader_MapStart();
 	Barrack_Alt_Crossbowmedic_MapStart();
 	Barrack_Alt_Scientific_Witchery_MapStart();
 	VIPBuilding_MapStart();
@@ -662,50 +663,55 @@ void NPC_ConfigSetup()
 	BarrackLastKnightOnMapStart();
 	BarrackCrossbowOnMapStart();
 	BarrackChampionOnMapStart();
+	BarrackHandCannoneerOnMapStart();
 	BarrackArcherOnMapStart();
 	BarrackArbelastOnMapStart();
 	AlliedKahmlAbilityOnMapStart();
 
 	//Combine Barracks
 	Barracks_Combine_Pistol_Precache();
-
 	Barracks_Combine_Smg_Precache();
-	Barracks_Combine_Sword_Precache();
-
-	Barracks_Combine_Ar2_Precache();
-	Barracks_Combine_Ddt_Precache();
 	
+	Barracks_Combine_Sword_Precache();
+	Barracks_Combine_Ar2_Precache();
+	
+	Barracks_Combine_Ddt_Precache();
 	Barracks_Combine_Shotgun_Precache();
+	
 	Barracks_Combine_Collos_Precache();
-
 	Barracks_Combine_Elite_Precache();
-	Barracks_Combine_Parry_Precache();
-
+	
 	Barracks_Combine_Sniper_Precache();
 	Barracks_Combine_Giant_DDT_Precache();
 	
 	Barracks_Combine_Super_Precache();
+	Barracks_Combine_Chaos_Containment_Unit_Precache();
+	
 	Barracks_Combine_Commander_Precache();
 
 	//Iberia Barracks
 	Barracks_Iberia_Runner_Precache();
-
 	Barracks_Iberia_Gunner_Precache();
+
 	Barracks_Iberia_Tanker_Precache();
-
 	Barracks_Iberia_Rocketeer_Precache();
-	Barracks_Iberia_Healer_Precache();
 
-	Barracks_Iberia_Healtanker_Precache();
+	Barracks_Iberia_Healer_Precache();
 	Barracks_Iberia_Boomstick_Precache();
 	
-	Barracks_Iberia_Guards_Precache();
+	Barracks_Iberia_Healtanker_Precache();
 	Barracks_Iberia_Elite_Gunner_Precache();
+	
+	Barracks_Iberia_Guards_Precache();
+	Barracks_Iberia_Commando_Precache();
 
 	Barracks_Iberia_Headhunter_Precache();
-	Barracks_Thorns();
+	Barrack_Iberia_Inquisitor_Lynsen_Precache();
 
 	Barracks_Iberia_Lighthouse_Guardian_Precache();
+	
+	//Iberia Last Hope
+	Barracks_Thorns();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -867,6 +873,12 @@ void NPC_ConfigSetup()
 	SeabornCombineElite_OnMapStart_NPC();
 	SeabornCombineSoldierAr2_OnMapStart_NPC();
 	SeabornCombineSoldierShotgun_OnMapStart_NPC();
+
+	// Freeplay
+	DimensionalFragment_OnMapStart_NPC();
+	ImmutableHeavy_OnMapStart_NPC();
+	VanishingMatter_OnMapStart_NPC();
+	Spotter_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1481,6 +1493,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_barrack_arbelast.sp"
 #include "zombie_riot/npc/ally/npc_barrack_twohanded.sp"
 #include "zombie_riot/npc/ally/npc_barrack_longbow.sp"
+#include "zombie_riot/npc/ally/npc_barrack_handcannoneer.sp"
 #include "zombie_riot/npc/ally/npc_barrack_champion.sp"
 #include "zombie_riot/npc/ally/npc_barrack_monk.sp"
 #include "zombie_riot/npc/ally/npc_barrack_hussar.sp"
@@ -1489,18 +1502,19 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_barrack_villager.sp"
 #include "zombie_riot/npc/ally/npc_barrack_building.sp"
 
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_basic_mage.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_iku_nagae.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_intermediate_mage.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_railgunner.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_schwertkrieg.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_donnerkrieg.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_holy_knight.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_mecha_barrager.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_barrager.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_berserker.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_crossbowman.sp"
-#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_scientific_witchery.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_basic_mage.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_iku_nagae.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_intermediate_mage.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_advanced_mage.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_railgunner.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_schwertkrieg.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_donnerkrieg.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_holy_knight.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_mecha_barrager.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_barrager.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_mecha_loader.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_crossbowman.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_barrack_alt_scientific_witchery.sp"
 
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_pistol.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_swordsman.sp"
@@ -1510,8 +1524,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_shotgunner.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_collos.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_elite.sp"
-#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_parry.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_sniper.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_unit.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_giant_ddt.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_super.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_commander.sp"
@@ -1525,7 +1539,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_healtanker.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_guards.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_elite_gunner.sp"
+#include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_commando.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_headhunter.sp"
+#include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_inquisitor.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_lighthouse_guardian.sp"
 
 
@@ -1932,3 +1948,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/combinehell/void/npc_voided_combine_soldier_shotgun.sp"
 
 #include "zombie_riot/npc/voices/npc_stalker_wisp.sp"
+
+// Freeplay
+#include "zombie_riot/npc/mutations/freeplay/npc_dimensionfrag.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_immutableheavy.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_vanishingmatter.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_spotter.sp"

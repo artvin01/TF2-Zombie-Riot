@@ -1768,7 +1768,7 @@ bool NemalTalkPostWin(Nemal npc)
 		BlockLoseSay = true;
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Iberian and Expidonsan Training");
 				CPrintToChat(client,"{default}You feel more skilled and obtain: {gold}''Iberian and Expidonsan Training''{default}!");
@@ -3007,6 +3007,8 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
+			if(Waves_InFreeplay())
+				fl_Extra_Damage[spawn_index] *= 0.5; // da hell is wrong with you?
 			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
 		}
 	}

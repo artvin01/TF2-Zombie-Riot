@@ -102,7 +102,7 @@ static bool ClotCanUse(ObjectTinkerBrew npc, int client)
 
 static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 {
-	PrintCenterText(client, "Press RELOAD to apply a potion effect to your active weapon.");
+	PrintCenterText(client, "Press [T (spray)] to apply a potion effect to your active weapon.");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectTinkerBrew npc)

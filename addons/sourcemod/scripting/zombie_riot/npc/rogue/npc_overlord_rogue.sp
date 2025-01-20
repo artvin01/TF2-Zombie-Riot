@@ -540,7 +540,7 @@ public void OverlordRogue_NPCDeath(int entity)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Overlords Final Wish");
 				CPrintToChat(client,"{default}You defeated the final overlord and thus he bestows you... {red}''His final wish.''{default}!");

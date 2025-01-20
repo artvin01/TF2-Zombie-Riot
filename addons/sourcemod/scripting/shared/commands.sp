@@ -86,6 +86,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	{
 		//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
 		f_MedicCallIngore[client] = GetGameTime() + 0.5;
+		
 		bool has_been_done = BuildingCustomCommand(client);
 		if(has_been_done)
 		{
@@ -321,9 +322,36 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 #endif
 					return Plugin_Handled;
 				}
+				/*
+				//Block medic call.
+				return Plugin_Handled;
+				*/
 			}
 		}
 	}
 	return Plugin_Continue;
 }
 #endif
+
+
+
+bool DoInteractKeyLogic(float angles[3], int client)
+{
+	bool Success = false;
+	f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+	if(angles[0] < -70.0)
+	{
+		int entity = EntRefToEntIndex(Building_Mounted[client]);
+		if(IsValidEntity(entity))
+		{
+			Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), client);
+		}
+	}
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	StartPlayerOnlyLagComp(client, true);
+	if(InteractKey(client, weapon_holding, true))
+		Success = true;
+
+	EndPlayerOnlyLagComp(client);
+	return Success;
+}

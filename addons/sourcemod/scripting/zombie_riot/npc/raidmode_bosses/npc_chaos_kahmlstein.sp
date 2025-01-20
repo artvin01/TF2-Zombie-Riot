@@ -2034,7 +2034,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 				i_TalkDelayCheck += 1;
 				for (int client = 0; client < MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Kahml's Contained Chaos");
 						CPrintToChat(client,"{default}You get: {red}''Kahml's Contained Chaos''{default}!");

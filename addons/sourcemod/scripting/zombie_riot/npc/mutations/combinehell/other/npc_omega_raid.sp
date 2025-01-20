@@ -31,8 +31,8 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"player/taunt_yeti_standee_demo_swing.wav",
-	"player/taunt_yeti_standee_engineer_kick.wav",
+	"npc/vort/claw_swing1.wav",
+	"npc/vort/claw_swing2.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -296,14 +296,29 @@ methodmap OmegaRaid < CClotBody
 			}
 		}
 		
-		switch(GetRandomInt(0,2))
+		if(Waves_InFreeplay())
 		{
-			case 0:
-				CPrintToChatAll("{gold}Omega{default}: Fuck this, I don't need my weapons to dispose of you.");
-			case 1:
-				CPrintToChatAll("{gold}Omega{default}: We meet once again.");
-			case 2:
-				CPrintToChatAll("{gold}Omega{default}: A lot of dead bodies on the way here.");
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{gold}Omega{default}: Apologies for being late, got held up by this guy called {fullblue}Pablo{default}.");
+				case 1:
+					CPrintToChatAll("{gold}Omega{default}: Time for a friendly skirmish!");
+				case 2:
+					CPrintToChatAll("{gold}Omega{default}: So, you called?");
+			}
+		}
+		else
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{gold}Omega{default}: Fuck this, I don't need my weapons to dispose of you.");
+				case 1:
+					CPrintToChatAll("{gold}Omega{default}: We meet once again.");
+				case 2:
+					CPrintToChatAll("{gold}Omega{default}: A lot of dead bodies on the way here.");
+			}
 		}
 
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
@@ -487,15 +502,33 @@ public void OmegaRaid_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			switch(GetRandomInt(0,1))
+			
+			if(Waves_InFreeplay())
 			{
-				case 0:
+				switch(GetRandomInt(0,1))
 				{
-					CPrintToChatAll("{gold}Omega{default}: One shot, one kill.");
+					case 0:
+					{
+						CPrintToChatAll("{gold}Omega{default}: You've 'beat' me once before, come on, you can do it a second time.");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{gold}Omega{default}: If you can't beat me, the fate of our world is doomed.");
+					}
 				}
-				case 1:
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
 				{
-					CPrintToChatAll("{gold}Omega{default}: Hand him over and I might just let you walk out of here alive.");
+					case 0:
+					{
+						CPrintToChatAll("{gold}Omega{default}: One shot, one kill.");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{gold}Omega{default}: Hand him over and I might just let you walk out of here alive.");
+					}
 				}
 			}
 		}
@@ -777,8 +810,15 @@ static Action OmegaRaid_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	}
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
 	{
+		if(Waves_InFreeplay())
+		{
+			CPrintToChatAll("{gold}Omega{default}: Alright, time to quit playing around.");
+		}
+		else
+		{
+			CPrintToChatAll("{gold}Omega{default}: God damn it! Just die already!");
+		}
 		npc.Anger = true;
-		CPrintToChatAll("{gold}Omega{default}: God damn it! Just die already!");
 		ParticleEffectAt(vecTarget, "hammer_bell_ring_shockwave", 1.0);
 	}
 	OmegaRaid_Weapon_Lines(npc, attacker);
@@ -878,12 +918,25 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 		}
 		case WEAPON_KAHMLFIST:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}Kahmlstein{default} huh...I don't think of him too fondly, but don't judge a book by its cover, as they say.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Well, at least {darkblue}he's{default} in a better place now! Haha... ehhhh",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Y'know, after learning about what happened to Messenger...maybe {darkblue}he{default} deserved it.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Ugh.");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "{darkblue}Kahmlstein{default} huh...I don't think of him too fondly, but don't judge a book by its cover, as they say.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Well, at least {darkblue}he's{default} in a better place now! Haha... ehhhh",client);
+				}	
 			}
 		}  
 		case WEAPON_KIT_BLITZKRIEG_CORE:
@@ -898,22 +951,48 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 		}
 		case WEAPON_RED_BLADE:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Guln{default}...No...");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "And {crimson}Guln's{default}passing is why I'm here. That {crimson}slimy judas Whiteflower{default} will pay.");
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Well, someone's gotta carry on his legacy...wield that blade with respect to Guln.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "If I had a time machine, the first thing I would do is instantly {crimson}murder Whiteflower in cold blood, before he would get the chance to murder Guln{default}.");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "{crimson}Guln{default}...No...");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "And {crimson}Guln's{default}passing is why I'm here. That {crimson}slimy judas Whiteflower{default} will pay.");
+				}
 			}
 		}
 		case WEAPON_SPIKELAYER:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Haven't had a foot massage in a while, thank you {gold}%N{default}.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "You ever tried Firewalking? This is nothing to me.");
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Real question here, does anyone even get hurt by these?");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Whoever made these knock-off Legos is gonna get sued.");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Haven't had a foot massage in a while, thank you {gold}%N{default}.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "You ever tried Firewalking? This is nothing to me.");
+				}
 			}
 		}
 		case WEAPON_BOARD:
@@ -927,45 +1006,97 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 			}
 		}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "YOU CHEATING SON OF A BITCH!");
-		case WEAPON_HHH_AXE:  Format(Text_Lines, sizeof(Text_Lines), "I've seen {darkblue}Abominations{default} before, but you're something else{gold}%N{default}.",client);
+		case WEAPON_HHH_AXE:  Format(Text_Lines, sizeof(Text_Lines), "I've seen {darkblue}Abominations{default} before, but you're something else, {gold}%N{default}.",client);
 		case WEAPON_MLYNAR_PAP_2,WEAPON_MLYNAR_PAP,WEAPON_MLYNAR:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "My eye is up here, {gold}%N{default}.",client);
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "So you take {white}Bob{default} hostage and then pretend to be reading the news {gold}%N{default}?",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "What's the point of that newspaper? You're just standing there, not realizing what's happening.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Come to think of it...who the hell is producing these newspapers?");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "My eye is up here, {gold}%N{default}.",client);	
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "So you take {white}Bob{default} hostage and then pretend to be reading the news {gold}%N{default}?",client);
+				}
 			}
 		}
 		case WEAPON_MESSENGER_LAUNCHER:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Heyyy, {blue}Messenger{default} gave you that? I knew he had good intentions at heart.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "I miss {blue}Messenger{default}. I wonder what he's up to, haven't seen him in a while.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "{white}Bob{default} told me about Messenger...I am not. happy.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "If there's an afterlife, I'm sure Messenger didn't go to hell, he was just... naive, what a poor guy.");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Heyyy, {blue}Messenger{default} gave you that? I knew he had good intentions at heart.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "I miss {blue}Messenger{default}. I wonder what he's up to, haven't seen him in a while.",client);
+				}	
 			}
 		}
 		case WEAPON_FLAMETAIL:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Dodge this.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "You'll probably make better use of that 'weapon' as a torch, {gold}%N{default}.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Gahahaha, sorry, I just remembered what they used to call that weapon...God how immature of me.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "That's an alright weapon, wouldn't be my first pick though.");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Dodge this.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "You'll probably make better use of that 'weapon' as a torch, {gold}%N{default}.",client);
+				}
 			}
 		}
 		case WEAPON_LEPER_MELEE, WEAPON_LEPER_MELEE_PAP:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "I'm surprised your skinny arms are able to hold that thing, {gold}%N{default}.",client);
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "And pose for the fans {gold}%N{default}! Oh wait, you don't have any.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "You've gotten better at your poses since our last fight, {gold}%N{default}.",client);
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "So...have you tried tinkering about with that thing to swing faster?");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "I'm surprised your skinny arms are able to hold that thing, {gold}%N{default}.",client);
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "And pose for the fans {gold}%N{default}! Oh wait, you don't have any.",client);
+				}
 			}
 		}
 		case WEAPON_SKULL_SERVANT:
@@ -980,42 +1111,94 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 		}
 		case WEAPON_SEABORN_MISC:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{white}Bob's{default} dealt with your kind before.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{white}Bob{default} I know you're being held hostage, but you might specifically want to stay away from {gold}%N{default}.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "How the hell are you able to harness its power?");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Well after everything you've went through, it shouldn't surprise me that the Seaborn infection doesn't affect you, {gold}%N{default}.",client);
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "{white}Bob's{default} dealt with your kind before.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "{white}Bob{default} I know you're being held hostage, but you might specifically want to stay away from {gold}%N{default}.",client);
+				}
 			}
 		}
 		case WEAPON_BOOMSTICK:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Ahhh, good ol' boomstick...is what I would say if I was a COWARD, HIT ME LIKE A MAN!");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Yeah use that knockback of yours, {gold}%N{default}, I'm sure that'll benefit your team.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "The Boomstick used to be my go-to weapon. Switched out for my trusty RPG though.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "You do look pretty badass when you're holding that thing, {gold}%N{default}.",client);
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Ahhh, good ol' boomstick...is what I would say if I was a COWARD, HIT ME LIKE A MAN!");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Yeah use that knockback of yours, {gold}%N{default}, I'm sure that'll benefit your team.",client);
+				}
 			}
 		}
 		case WEAPON_FIRE_WAND:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "OH GOD IT BURNS! Nope, forgot that I'm basically fire retardant.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Trust me, that little speck of fire would do a lot more to me if I still had any working pain receptors.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Caveman's magic eh? Pff, I'm just joking around.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "ent_fire !picker ignite. Whoa. What the hell was that. Felt like something possessed me there for a second.");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "OH GOD IT BURNS! Nope, forgot that I'm basically fire retardant.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Trust me, that little speck of fire would do a lot more to me if I still had any working pain receptors.",client);
+				}
 			}
 		}
 		case WEAPON_CASINO:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Have you seen {navy}Bladedance{default} anywhere? That guy owes me.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Oh {gold}%N{default}, you poor soul, I'll put you out of your addiction.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Heard of this guy called {fullblue}Gambler{default}? I figured I'd ask since he's looking for gambling addicts to play Blackjack with.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Saw this {fullblue}guy{default} walk into {navy}Bladedance's{default} casino one time...his luck was immeasurable, and he turned out to be pretty cool too.",client);
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Have you seen {navy}Bladedance{default} anywhere? That guy owes me.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Oh {gold}%N{default}, you poor soul, I'll put you out of your addiction.",client);
+				}
 			}
 		}
 		case WEAPON_DIMENSION_RIPPER:
@@ -1023,29 +1206,55 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Is this some type of sick joke?");
+					Format(Text_Lines, sizeof(Text_Lines), "Is this some kind of sick joke?");
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "Where in the fuck did you get that, {gold}%N{default}.",client);
 			}
 		}
 		case WEAPON_MAGNESIS:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Make sure to not get overwhelmed by holding me for more than 2 seconds.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "The moment you let go of me, I will choke you out, {gold}%N{default}. With my own hands.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "This is exactly what I mean. Magic is utter nonsense.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "I think I played a videogame before that allowed you to do the exact same thing, {gold}%N{default}. Forgot the name of it though.");
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "Make sure to not get overwhelmed by holding me for more than 2 seconds.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "The moment you let go of me, I will choke you out, {gold}%N{default}. With my own hands.",client);
+				}
 			}
 		}
 		case WEAPON_WRATHFUL_BLADE:
 		{
-			switch(GetRandomInt(0,1))
+			if(Waves_InFreeplay())
 			{
-				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "I've had scarier encounters with the paranormal.");
-				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "Ahhh! You *really* scared me with that roar of yours, {gold}%N{default}.",client);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "How do you even spontaneously combust like that?");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "That can't be good for your health, {gold}%N{default}.",client);
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+						Format(Text_Lines, sizeof(Text_Lines), "I've had scarier encounters with the paranormal.");
+					case 1:
+						Format(Text_Lines, sizeof(Text_Lines), "Ahhh! You *really* scared me with that roar of yours, {gold}%N{default}.",client);
+				}
 			}
 		}
 		case WEAPON_CHAINSAW:
@@ -1117,7 +1326,7 @@ static void OmegaRaid_GrantItem()
 {
 	for (int client = 0; client < MaxClients; client++)
 	{
-		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Omega's Medallion");
 			CPrintToChat(client,"{white}Bob{default} convinced {gold}Omega{default} that you were protecting him from {crimson}Whiteflower's{default} army, in return, you got {gold}Omega's Medallion{default}!");
@@ -1238,35 +1447,56 @@ public void RaidMode_OmegaRaid_WinCondition(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	switch(GetRandomInt(0, 6))
+	if(Waves_InFreeplay())
 	{
-		case 0:
+		switch(GetRandomInt(0,2))
 		{
-			OmegaRaid_Reply("{default}Well {white}Bob{default}, I saved you once again, no need to thank me.");
+			case 0:
+			{
+				OmegaRaid_Reply("{default}Aw come on, I was rootin' for you.");
+			}
+			case 1:
+			{
+				OmegaRaid_Reply("{default}I'm sorry for saying this but...you've gone soft, you need to get stronger to be able to defeat {purple}it{default}.");
+			}
+			case 2:
+			{
+				OmegaRaid_Reply("{default}You can't lose! The fate of this world is in your hands, god damn it!");
+			}
 		}
-		case 1:
+	}
+	else
+	{
+		switch(GetRandomInt(0, 6))
 		{
-			OmegaRaid_Reply("{default}Wanna grab some beer after this, {white}Bob{default}?");
-		}
-		case 2:
-		{
-			OmegaRaid_Reply("{default}Survival of the fittest.");
-		}
-		case 3:
-		{
-			OmegaRaid_Reply("{default}You gotta do what you gotta do to survive.");
-		}
-		case 4:
-		{
-			OmegaRaid_Reply("{default}You shouldn't have kept him captive.");
-		}
-		case 5:
-		{
-			OmegaRaid_Reply("{crimson}Whiteflower {default}must've cut his budget huh?");
-		}
-		case 6:
-		{
-			OmegaRaid_Reply("{default}Well, that wasn't nearly as difficult as I was expecting it to be.");
+			case 0:
+			{
+				OmegaRaid_Reply("{default}Well {white}Bob{default}, I saved you once again, no need to thank me.");
+			}
+			case 1:
+			{
+				OmegaRaid_Reply("{default}Wanna grab some beer after this, {white}Bob{default}?");
+			}
+			case 2:
+			{
+				OmegaRaid_Reply("{default}Survival of the fittest.");
+			}
+			case 3:
+			{
+				OmegaRaid_Reply("{default}You gotta do what you gotta do to survive.");
+			}
+			case 4:
+			{
+				OmegaRaid_Reply("{default}You shouldn't have kept him captive.");
+			}
+			case 5:
+			{
+				OmegaRaid_Reply("{crimson}Whiteflower {default}must've cut his budget huh?");
+			}
+			case 6:
+			{
+				OmegaRaid_Reply("{default}Well, that wasn't nearly as difficult as I was expecting it to be.");
+			}
 		}
 	}
 }

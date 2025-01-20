@@ -31,6 +31,14 @@ void Blacksmith_RoundStart()
 	delete Tinkers;
 }
 
+bool Blacksmith_Lastman(int client)
+{
+	bool Purnell_Went_Nuts = false;
+	if(EffectTimer[client] != null)
+		Purnell_Went_Nuts = true;
+	
+	return Purnell_Went_Nuts;
+}
 int Blacksmith_Additional_SupportBuildings(int client)
 {
 	return i_AdditionalSupportBuildings[client];

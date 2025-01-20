@@ -441,6 +441,7 @@ static void TBB_Tick(int client)
 		return;
 	}
 
+	ManaCalculationsBefore(client);
 //	int BossTeam = GetClientTeam(client);
 //	BeamWand_TicksActive[client] = tickCount;
 	float diameter = float(BeamWand_BeamRadius[client] * 2);

@@ -2348,7 +2348,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 					i_TalkDelayCheck = 5;
 					for (int client = 0; client < MaxClients; client++)
 					{
-						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
 							Items_GiveNamedItem(client, "Head Equipped Blue Goggles");
 							CPrintToChat(client, "{default}You gained abit of help and obtained: {blue}''Head Equipped Blue Goggles''{default}!");

@@ -5,6 +5,7 @@ enum struct Enemy
 {
 	int Health;
 	int Is_Boss;
+	float WaitingTimeGive;
 	float ExtraSize;
 	int Is_Outlined;
 	int Is_Health_Scaled;
@@ -130,6 +131,7 @@ static int WaveGiftItem;
 static char LastWaveWas[64];
 
 static int Freeplay_Info;
+static bool Freeplay_w500reached;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -192,6 +194,7 @@ void Waves_MapStart()
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	Freeplay_Info = 0;
+	Freeplay_w500reached = false;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -877,6 +880,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
+						
+						enemy.WaitingTimeGive = kv.GetFloat("waiting_time_give", 0.0);
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
 						enemy.ignore_max_cap = kv.GetNum("ignore_max_cap");
 						if(wave.Count <= 0)
@@ -1408,6 +1413,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
+
+			float WaitingTimeGive = wave.EnemyData.WaitingTimeGive;
+			if(!LastMann && WaitingTimeGive > 0.0)
+			{
+				PrintToChatAll("You were given extra %.1f seconds to prepare.",WaitingTimeGive);
+				GiveProgressDelay(WaitingTimeGive);
+				f_DelaySpawnsForVariousReasons = GetGameTime() + WaitingTimeGive;
+				SpawnTimer(WaitingTimeGive);
+			}
 			
 			if(Is_a_boss >= 2)
 			{
@@ -1420,7 +1434,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 45.0;
 						SpawnTimer(45.0);
 					}
-					else
+					else if(WaitingTimeGive <= 0.0)
 					{
 						PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
 						GiveProgressDelay(30.0);
@@ -1739,7 +1753,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
-			if(!rogue && CurrentRound == 4 && !round.NoBarney)
+			if(!rogue && ((!Classic_Mode() && CurrentRound == 4) || (Classic_Mode() && CurrentRound == 1)) && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 				Citizen_SpawnAtPoint();
@@ -2508,7 +2522,15 @@ float Zombie_DelayExtraSpeed()
 void DoGlobalMultiScaling()
 {
 	float playercount = ZRStocks_PlayerScalingDynamic();
-			
+
+	playercount = Pow ((playercount * 0.65), 1.2);
+	//on low player counts it does not scale well.
+	
+	/*
+		at 14 players, it scales fine, at lower, it starts getting really hard, tihs 
+
+	*/
+
 	float multi = Pow(1.08, playercount);
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
@@ -2519,10 +2541,10 @@ void DoGlobalMultiScaling()
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 
-	//Enemy bosses amount
+	//Enemy bosses AMOUNT
 	MultiGlobalEnemyBoss = playercount * 0.3; 
 
-	//certain maps need this.
+	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
 	float cap = zr_enemymulticap.FloatValue;
@@ -2851,6 +2873,7 @@ static void UpdateMvMStatsFrame()
 	//PrintToChatAll("Profiler: %f", profiler.Time);
 	//delete profiler;
 }
+
 
 static int SetupFlags(const Enemy data, bool support)
 {
@@ -3317,18 +3340,62 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			Freeplay_SetupStart(true);
+			if(CurrentRound >= 249 && !Freeplay_w500reached)
+			{
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					{
+						CPrintToChat(client, "{gold}Koshi: {white}Great, really, really great...");
+						CPrintToChat(client, "{white}This training was surely successful, i even think you might be ready.");
+						CPrintToChat(client, "{white}Although, {gold}Zeina {white}wouldn't think the same, so in that case...");
+						CPrintToChat(client, "{white}I'll leave the simulation on, in case you want to continue.");
+						if(!Items_HasNamedItem(client, "A Block of Cheese"))
+						{
+							CPrintToChat(client, "{lime}I'll be also granting you somethin' special from me, for completing this training.");
+							CPrintToChat(client, "{gold}Koshi spawns in an item for you: {orange}''A Block of Cheese''");
+							Items_GiveNamedItem(client, "A Block of Cheese");
+						}
+						else
+						{
+							CPrintToChat(client, "{orange}You seem to have my reward already, interesting...");
+							CPrintToChat(client, "{orange}Guess you really like training in here, then!");
+						}
+					}
+				}
 
-			Cooldown = GetGameTime() + 15.0;
+				InSetup = true;
+				ExcuteRelay("zr_setuptime");
+				Waves_SetReadyStatus(1);
+				Freeplay_w500reached = true;
+			}
+			else
+			{
+				Freeplay_SetupStart(true);
+
+				Cooldown = GetGameTime() + 15.0;
+				
+				InSetup = true;
+				ExcuteRelay("zr_setuptime");
+				
+				SpawnTimer(15.0);
+				CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			}
 			
-			InSetup = true;
-			ExcuteRelay("zr_setuptime");
-			
-			SpawnTimer(15.0);
-			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			RequestFrames(StopMapMusicAll, 60);
 			
 			Citizen_SetupStart();
+			if(CurrentRound+1 == 150)
+			{
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && !b_IsPlayerABot[client])
+					{
+						SetHudTextParams(-1.0, -1.0, 5.0, 255, 255, 0, 255);
+						ShowHudText(client, -1, "--ALERT--\nWave 150 reached.\nRaids will now have x2 HP.");
+					}
+				}
+			}
 		}
 		else
 		{

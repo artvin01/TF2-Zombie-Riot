@@ -1431,7 +1431,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 
 #if defined RPG
-		if(!Is_Boss && !HasSpecificBuff(this.index, "Fluid Movement")) //Make sure that any slow debuffs dont affect these.
+		if(!b_thisNpcIsABoss[this.index] && !HasSpecificBuff(this.index, "Fluid Movement")) //Make sure that any slow debuffs dont affect these.
 		{
 			switch(BubbleProcStatusLogicCheck(this.index))
 			{
@@ -1497,12 +1497,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		//in freeplay there should be a speed limit, otherwise they will just have infinite speed and youre screwed.
 		
 
+#if defined ZR
 		if(Waves_InFreeplay())
 		{
 			if((this.m_flSpeed * GetPercentageAdjust) > 500.0)
 				return (500.0 * Zombie_DelayExtraSpeed());
 		}
-		
+#endif
 		return (this.m_flSpeed * GetPercentageAdjust);
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -3901,10 +3902,11 @@ bool IsWalkEvent(int event, int special = 0)
 
 public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 {
-	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
-	CClotBody npc = view_as<CClotBody>(pThis);
 	if(b_NpcHasDied[pThis])
 		return MRES_Ignored;
+		
+	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
+	CClotBody npc = view_as<CClotBody>(pThis);
 		
 	Function func = func_NPCAnimEvent[pThis];
 	if(func && func != INVALID_FUNCTION)
@@ -4057,6 +4059,11 @@ stock void WorldSpaceCenter(int entity, float vecPos[3])
 	else
 	{
 		SDKCall(g_hSDKWorldSpaceCenter, entity, vecPos);
+		/*
+		//downwards breaks.
+		if(b_ThisWasAnNpc[entity])
+			vecPos[2] += f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
+			*/
 	}
 }
 
@@ -5776,11 +5783,11 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if(i_CurrentEquippedPerk[iNPC] == 1 || NpcStats_WeakVoidBuff(iNPC) || NpcStats_StrongVoidBuff(iNPC) && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if((i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC) || NpcStats_StrongVoidBuff(iNPC)) && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
-		float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.002;
+		float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
 		
 		float HpScalingDecreace = 1.0;
 
@@ -5797,7 +5804,12 @@ public void NpcBaseThink(int iNPC)
 		}
 		if(NpcStats_StrongVoidBuff(iNPC))
 			HealingAmount *= 1.25;
-
+		
+		//Reduce Healing
+		if(GetTeam(iNPC) == TFTeam_Red)
+		{
+			HealingAmount *= 0.2;
+		}
 		HealingAmount *= HpScalingDecreace;
 
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
@@ -5839,7 +5851,7 @@ public void NpcBaseThink(int iNPC)
 	//is npc somehow outside any nav mesh
 	NpcStuckInSomethingOutOfBonunds(npc, iNPC);
 }
-float NpcDoHealthRegenScaling()
+stock float NpcDoHealthRegenScaling()
 {
 	return (float(CountPlayersOnRed(1)) / float(CountPlayersOnRed(0)));
 }
@@ -8981,7 +8993,9 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 				Duration_Stun_Post *= 0.5;
 		}
 
+#if defined ZR
 		Rogue_ParadoxDLC_StunTime(npc, Duration_Stun_Post);
+#endif
 	}
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
@@ -9464,7 +9478,7 @@ int ConvertTouchedResolve(int index)
 //TODO: teleport entities instead, but this is easier to i sleep :)
 stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockback = true)
 {
-	static float flMyPos[3];
+	float flMyPos[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 	float vecUp[3];
 	float vecForward[3];
@@ -9478,8 +9492,8 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	vecSwingEnd[2] = flMyPos[2];
 				
 
-	static float hullcheckmaxs[3];
-	static float hullcheckmins[3];
+	float hullcheckmaxs[3];
+	float hullcheckmins[3];
 	if(b_IsGiant[iNPC])
 	{
 		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
@@ -9509,21 +9523,6 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	hullcheckmins[0] -= 0.001;
 	hullcheckmins[1] -= 0.001;
 	hullcheckmins[2] -= 0.001;
-	/*
-	for(int client; client <= MaxClients; client++)
-	{
-		if(IsValidClient(client))
-		{
-			static float m_vecMaxs_2[3];
-			static float m_vecMins_2[3];
-			static float f_pos[3];
-			m_vecMaxs_2 = hullcheckmaxs;
-			m_vecMins_2 = hullcheckmins;	
-			f_pos = vecSwingEnd;
-			TE_DrawBox(client, f_pos, m_vecMins_2, m_vecMaxs_2, 0.1, view_as<int>({255, 0, 0, 255}));
-		}
-	}
-	*/
 
 	ResetTouchedentityResolve();
 	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
@@ -9540,42 +9539,41 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 
 	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 	{
-		if(!b_TouchedEntity[entity_traced])
+		int EntityHit = b_TouchedEntity[entity_traced];
+		if(!EntityHit)
 			break;
 
-		if(i_IsABuilding[b_TouchedEntity[entity_traced]])
+		if(i_IsABuilding[EntityHit])
 			continue;
 
-		if(b_TouchedEntity[entity_traced] <= MaxClients)
+		if(EntityHit <= MaxClients)
 		{
-		//	TF2_AddCondition(b_TouchedEntity[entity_traced], TFCond_LostFooting, 0.1);
-		//	TF2_AddCondition(b_TouchedEntity[entity_traced], TFCond_AirCurrent, 0.1);
-			vDirection[0] += GetEntPropFloat(b_TouchedEntity[entity_traced], Prop_Send, "m_vecVelocity[0]");
-			vDirection[1] += GetEntPropFloat(b_TouchedEntity[entity_traced], Prop_Send, "m_vecVelocity[1]");
-			vDirection[2] = GetEntPropFloat(b_TouchedEntity[entity_traced], Prop_Send, "m_vecVelocity[2]");
+			vDirection[0] += GetEntPropFloat(EntityHit, Prop_Send, "m_vecVelocity[0]");
+			vDirection[1] += GetEntPropFloat(EntityHit, Prop_Send, "m_vecVelocity[1]");
+			vDirection[2] = GetEntPropFloat(EntityHit, Prop_Send, "m_vecVelocity[2]");
 		}
 		
-		SDKHooks_TakeDamage(b_TouchedEntity[entity_traced], iNPC, iNPC, damage, DMG_CRUSH, -1, _);
+		SDKHooks_TakeDamage(EntityHit, iNPC, iNPC, damage, DMG_CRUSH, -1, _);
 		if(CauseKnockback && GetTeam(iNPC) != TFTeam_Red)
 		{
-			if(b_NpcHasDied[b_TouchedEntity[entity_traced]])
+			if(b_NpcHasDied[EntityHit])
 			{
-				Custom_SetAbsVelocity(b_TouchedEntity[entity_traced], vDirection);
+				Custom_SetAbsVelocity(EntityHit, vDirection);
 			}
 			else
 			{
-				CClotBody npc = view_as<CClotBody>(b_TouchedEntity[entity_traced]);
+				CClotBody npc = view_as<CClotBody>(EntityHit);
 				npc.SetVelocity(vDirection);
 			}
 		}
 	}
 
-	ResetTouchedentityResolve();
+	ResetTouchedentityResolve(); 	
 }
 
 stock void ResolvePlayerCollisions_Npc_Internal(const float pos[3], const float mins[3], const float maxs[3],int entity=-1)
 {
-	TR_EnumerateEntitiesHull(pos, pos, mins, maxs, false, ResolvePlayerCollisionsTrace, entity);
+	TR_EnumerateEntitiesHull(pos, pos, mins, maxs, PARTITION_SOLID_EDICTS, ResolvePlayerCollisionsTrace, entity);
 }
 
 public bool ResolvePlayerCollisionsTrace(int entity,int filterentity)
@@ -10598,19 +10596,16 @@ stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
 	*/
 //	if(checkextralogic == 0)
 	/*
-	TODO: If they are out of bounds in a non playable area, kill them.
-
-	*/
-	{
+		TODO: If they are out of bounds in a non playable area, kill them.
 		//Did any NPC try to attack us, if not...
-		if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+	*/
+	if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+	{
+		//are we somehow in a battle regardless? if no then...
+		if(f_InBattleDelay[client] < GetGameTime())
 		{
-			//are we somehow in a battle regardless? if no then...
-			if(f_InBattleDelay[client] < GetGameTime())
-			{
-				BadSpotPoints[client] = 0;
-				return;
-			}
+			BadSpotPoints[client] = 0;
+			return;
 		}
 	}
 #endif
