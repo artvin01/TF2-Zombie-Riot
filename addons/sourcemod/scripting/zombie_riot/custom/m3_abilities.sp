@@ -766,14 +766,13 @@ public void Reinforce(int client, bool NoCD)
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Player not detected");
 			return;
 		}
-		if(!NoCD)
-			f_ReinforceTillMax[client]= 0.0;
 
 		
 		i_MaxRevivesAWave++;
 		CPrintToChatAll("{green}%N Is calling for additonal Mercs for tempomary assistance...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
+
 		Handle Reinforcement = CreateDataPack();
 		WritePackFloat(Reinforcement, position[0]);
 		WritePackFloat(Reinforcement, position[1]);
@@ -787,6 +786,9 @@ public void Reinforce(int client, bool NoCD)
 		WritePackCell(Reinforcement, client);
 		ResetPack(Reinforcement);
 		Deploy_Drop(Reinforcement);
+
+		if(!NoCD)
+			f_ReinforceTillMax[client]= 0.0;
 	}
 }
 
@@ -808,9 +810,6 @@ public void Deploy_Drop(Handle data)
 	int client = ReadPackCell(data);
 
 	if(!IsValidClient(client))
-		return;
-
-	if(f_ReinforceTillMax[client] < 1.0)
 		return;
 	
 	if(Delay > 0 && !NoDrawBeam)
@@ -845,7 +844,9 @@ public void Deploy_Drop(Handle data)
 		CreateTimer(0.1, Recycle_DropProp, DDPack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 	else
 	{
-		if(!StrEqual(Sound_Patch, "No_Sound", true))EmitSoundToAll(Sound_Patch, 0, SNDCHAN_AUTO, SNDLEVEL_TRAIN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, position);
+		if(!StrEqual(Sound_Patch, "No_Sound", true))
+			EmitSoundToAll(Sound_Patch, 0, SNDCHAN_AUTO, SNDLEVEL_TRAIN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, position);
+
 		Drop_Prop(client, position, Prop_Speed, PropName, Worldmodel_Patch);
 	}
 }
@@ -1828,9 +1829,12 @@ public Action Timer_DelayTele(Handle timer, DataPack pack)
 
 stock int GetRandomDeathPlayer(int client)
 {
-	int Getclient;
-	bool DeadPlayer;
-	for(int client_check=1; client_check<=MaxClients; client_check++)
+	int Getclient = -1;
+
+	int victims;
+	int[] victim = new int[MaxClients];
+
+	for(int client_check = 1; client_check <= MaxClients; client_check++)
 	{
 		if(!IsValidClient(client_check))
 			continue;
@@ -1843,23 +1847,15 @@ stock int GetRandomDeathPlayer(int client)
 
 		if(!b_HasBeenHereSinceStartOfWave[client_check])
 			continue;
-			
-		DeadPlayer=true;
+
+		victim[victims++] = client_check;
 	}
-	if(!DeadPlayer)
-		return -1;
-	int AntiMaxStuck = 0;
-	do
+	
+	if(victims)
 	{
-		AntiMaxStuck++;
-		if(AntiMaxStuck >= 1000)
-		{
-			//too much tried, fail.
-			return Getclient;
-		}
-		Getclient = GetRandomInt(1, MaxClients);
+		int winner = victim[GetURandomInt() % victims];
+		Getclient = winner;
 	}
-	while(!IsValidClient(Getclient) || GetTeam(Getclient) != TFTeam_Red || Getclient==client || TeutonType[Getclient] == TEUTON_NONE || !b_HasBeenHereSinceStartOfWave[Getclient]);
 
 	return Getclient;
 }
