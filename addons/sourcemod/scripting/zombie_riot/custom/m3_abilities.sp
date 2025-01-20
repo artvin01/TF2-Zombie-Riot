@@ -1822,10 +1822,13 @@ stock int GetRandomDeathPlayer(int client)
 	{
 		if(!IsValidClient(client_check))
 			continue;
+
 		if(TeutonType[client_check] == TEUTON_NONE)
 			continue;
+
 		if(client==client_check || GetTeam(client_check) != TFTeam_Red)
 			continue;
+
 		if(!b_HasBeenHereSinceStartOfWave[client_check])
 			continue;
 			
@@ -1833,10 +1836,18 @@ stock int GetRandomDeathPlayer(int client)
 	}
 	if(!DeadPlayer)
 		return -1;
+	int AntiMaxStuck = 0;
 	do
 	{
+		AntiMaxStuck++
+		if(AntiMaxStuck >= 1000)
+		{
+			//too much tried, fail.
+			return Getclient;
+		}
 		Getclient = GetRandomInt(1, MaxClients);
 	}
-	while(!IsValidClient(Getclient) || GetTeam(Getclient) != TFTeam_Red || Getclient==client || TeutonType[Getclient] == TEUTON_NONE);
+	while(!IsValidClient(Getclient) || GetTeam(Getclient) != TFTeam_Red || Getclient==client || TeutonType[Getclient] == TEUTON_NONE || b_HasBeenHereSinceStartOfWave[Getclient]);
+
 	return Getclient;
 }
