@@ -2091,7 +2091,7 @@ static void Stella_Weapon_Lines(Stella npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg, that thing dared to disobey me, but will you {gold}%N{snow} do the same?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I'll make you {gold}%N{snow} feel the same pain Blitzkrieg inflicted on us.", client);}
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas{snow}'s Old blade, interesting choice {gold}%N", client); 															case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas{snow}'s Old blade, interesting choice {gold}%N", client); 														case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
 		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You're trying to copy me {gold}%N{snow}?", client); 																			case 1: Format(Text_Lines, sizeof(Text_Lines), "I don't approve of this {gold}%N", client);}
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Pointy stick go into enemy, right {gold}%N{snow}?", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You will never become as proficient with the lance as {crimson}Karlas", client);}	
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Laser based spell's are one of Ruina's specialties, {gold}%N{snow} You don't even know the first thing about them..",client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "Oi, {gold}%N{snow} I helped create that spell, you can't just steal it and use it aggainst me", client);}	
@@ -2099,6 +2099,7 @@ static void Stella_Weapon_Lines(Stella npc, int client)
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Gravity is a harness, you {gold} %N{snow} have not harnessed it", client); 													case 1: Format(Text_Lines, sizeof(Text_Lines), "Wonder how you'd react {gold}%N{snow}, if you saw the real one.", client);}
 		case WEAPON_ION_BEAM_FEED: 	Format(Text_Lines, sizeof(Text_Lines), "Here's some interesting information for you {gold}%N{snow} the feedback loop Prisim has been obsolete for AGES", client);
 		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "Oh, bob's gun well might as well go and sleep... I give up {gold}%N", client); 
+		case WEAPON_KIT_FRACTAL:	Format(Text_Lines, sizeof(Text_Lines), "I thought the {aqua}Fractal{snow} was still being developed, how did you {gold}%N{snow} get your hands on it?", client); 
 		default:
 		{
 			valid = false;

@@ -168,6 +168,7 @@ static float BlitzLight_Radius[MAXENTITIES];
 static float BlitzLight_Angle[MAXENTITIES];
 
 static int g_ProjectileModelRocket;
+static bool b_musicprecached;
 
 static bool b_lost;
 
@@ -180,6 +181,8 @@ public void Blitzkrieg_OnMapStart()
 	g_b_angered=false;
 	b_lost=false;
 
+	b_musicprecached = false;
+
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blitzkrieg");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blitzkrieg");
@@ -190,6 +193,15 @@ public void Blitzkrieg_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+void PrecacheBlitzMusic()
+{
+	if(b_musicprecached)
+		return;
+	
+	b_musicprecached = true;
+	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
 }
 
 static void ClotPrecache()
@@ -206,7 +218,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_DeathSounds1));   i++) { PrecacheSound(g_DeathSounds1[i]);   }
-	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+
+	PrecacheBlitzMusic();
+
 	g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_1);
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_2);
