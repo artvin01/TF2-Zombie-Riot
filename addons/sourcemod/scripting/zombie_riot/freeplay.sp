@@ -568,12 +568,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			if(GetRandomInt(1, 2) == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
-				enemy.Health = 22500; // enemy hp is getting overriden apparently
+				enemy.Health = 30000; // enemy hp is getting overriden apparently
 			}
 			else
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = 75000; // enemy hp is getting overriden apparently
+				enemy.Health = 80000; // enemy hp is getting overriden apparently
 			}
 
 			if(enemy.Health)
@@ -582,10 +582,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 
 			enemy.ExtraMeleeRes = 1.35;
-			enemy.ExtraRangedRes = 1.0;
-			enemy.ExtraSpeed = 1.0;
-			enemy.ExtraDamage = 1.0;
-			enemy.ExtraSize = 1.0;
+			enemy.ExtraRangedRes = 0.75;
+			enemy.ExtraSpeed = 1.15;
+			enemy.ExtraDamage = 1.15;
+			enemy.ExtraSize = 1.15;
 
 			enemy.Credits += 100.0;
 			switch(GetRandomInt(1, 4))
