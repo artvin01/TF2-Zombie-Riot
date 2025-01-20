@@ -1392,8 +1392,12 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 			Healing_done_in_total[healer] += HealingDoneInt;
 			if(healer <= MaxClients)
 			{
-				AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
-				HealPointToReinforce(healer, HealingDoneInt, 0.0);
+				//dont get it from healing buildings
+				if(!i_IsABuilding[reciever])
+				{
+					AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+					HealPointToReinforce(healer, HealingDoneInt, 0.0);
+				}
 			}
 		}
 #endif
