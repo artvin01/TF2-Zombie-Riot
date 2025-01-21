@@ -60,7 +60,7 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
-	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float attackspeed = Attributes_Get(weapon, 6, 1.0);
 	if(b_AbilityActivated[client])
 	{
 		b_AbilityDone[client] = false;

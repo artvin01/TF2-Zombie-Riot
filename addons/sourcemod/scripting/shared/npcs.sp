@@ -548,11 +548,11 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 	if(weapon > MaxClients && IsValidEntity(weapon))
 	{
 		validWeapon = true;
-		value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
+		value *= Attributes_Get(weapon, 2, 1.0);	//For normal weapons
 			
-		value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
+		value *= Attributes_Get(weapon, 410, 1.0); //For wand
 					
-		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //overall
+		value *= Attributes_Get(weapon, 71, 1.0); //overall
 	}
 #endif
 
@@ -610,13 +610,13 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 #if !defined RTS
 				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
-					value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
+					value *= Attributes_Get(weapon, 2, 1.0);	  //For normal weapons
 					
-					value *= Attributes_FindOnWeapon(attacker, weapon, 1000, true, 1.0); //For any
+					value *= Attributes_Get(weapon, 1000, 1.0); //For any
 					
-					value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
+					value *= Attributes_Get(weapon, 410, 1.0); //For wand
 					
-					value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
+					value *= Attributes_Get(weapon, 71, 1.0); //For wand
 
 				}
 				else

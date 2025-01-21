@@ -6336,7 +6336,7 @@ stock void Custom_Knockback(int attacker,
 #if !defined RTS
 		if(enemy <= MaxClients && !ignore_attribute && !work_on_entity)
 		{
-			float Attribute_Knockback = Attributes_FindOnPlayerZR(enemy, 252, true, 1.0);	
+			float Attribute_Knockback = Attributes_GetOnPlayer(enemy, 252, true,_, 1.0);	
 			
 			knockback *= Attribute_Knockback;
 		}

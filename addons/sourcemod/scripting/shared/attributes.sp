@@ -46,7 +46,7 @@ bool Attribute_ServerSide(int attribute)
 
 		Various attributes that are not needed as actual attributes.
 		*/
-		case 526,733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93:
+		case 526,733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93,8:
 		{
 			return true;
 		}
@@ -512,27 +512,25 @@ void Attributes_OnKill(int victim, int client, int weapon)
 
 }
 
-float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWeapons = false)
+//override default
+float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWeapons = false, float defaultValue = -1.0)
 {
+	bool AttribWasFound = false;
 	float defaul = multi ? 1.0 : 0.0;
-	float result = Attributes_Get(client, index, defaul);
+
+	float TempFind = Attributes_Get(client, index, -1.0);
+	float result;
+	if(TempFind != -1.0)
+	{
+		AttribWasFound = true;
+		result = TempFind;
+	}
+	else
+	{
+		result = defaul;
+	}
 	
 	int entity = MaxClients + 1;
-	while(TF2_GetWearable(client, entity))
-	{
-		float value = Attributes_Get(entity, index, defaul);
-		if(value != defaul)
-		{
-			if(multi)
-			{
-				result *= value;
-			}
-			else
-			{
-				result += value;
-			}
-		}
-	}
 	
 	if(!noWeapons)
 	{
@@ -550,6 +548,7 @@ float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWe
 			float value = Attributes_Get(entity, index, defaul);
 			if(value != defaul)
 			{
+				AttribWasFound = true;
 				if(multi)
 				{
 					result *= value;
@@ -561,7 +560,17 @@ float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWe
 			}
 		}
 	}
-	
+	if(!AttribWasFound)
+	{
+		if(defaultValue == -1.0)
+		{
+			return defaul;
+		}
+		else
+		{
+			return defaultValue;
+		}
+	}
 	return result;
 }
 
@@ -573,7 +582,8 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 		defaul = defaultstat;
 	}
 	float result = Attributes_Get(client, index, defaul);
-	
+
+	/*
 	int wearable = MaxClients + 1;
 	while(TF2_GetWearable(client, wearable))
 	{
@@ -590,6 +600,7 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 			}
 		}
 	}
+	*/
 	
 	if(entity > MaxClients)
 	{
@@ -610,27 +621,13 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 	return result;
 }
 
-stock float Attributes_FindOnWeapon(int client, int entity, int index, bool multi=false, float defaul=0.0)
-{
-	return Attributes_Get(entity, index, defaul);
-}
-
-stock float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, float defaul=0.0, bool IgnoreWeaponsEquipped = false, bool DoNotIngoreEquippedWeapon = false)
-{
-	if(IgnoreWeaponsEquipped && DoNotIngoreEquippedWeapon)
-		return Attributes_GetOnWeapon(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), index, multi);
-	
-	return Attributes_GetOnPlayer(client, index, multi, IgnoreWeaponsEquipped);
-}
-
 /*
-
 #define MULTIDMG_NONE 		 ( 1<<0 )
 #define MULTIDMG_MAGIC_WAND  ( 1<<1 )
 #define MULTIDMG_BLEED 		 ( 1<<2 )
 #define MULTIDMG_BUILDER 	 ( 1<<3 )
-
 */
+
 float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, int client = 0)
 {
 	float DamageBonusLogic = 1.0;
@@ -639,9 +636,9 @@ float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, in
 		if(client > 0)
 		{
 			float attack_speed;		
-			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+			attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true); //Sentry attack speed bonus
 							
-			DamageBonusLogic = attack_speed * DamageBonusLogic * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			DamageBonusLogic = attack_speed * DamageBonusLogic * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 			return DamageBonusLogic;	
 		}
 	}

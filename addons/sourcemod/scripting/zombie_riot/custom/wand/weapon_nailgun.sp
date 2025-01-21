@@ -21,16 +21,12 @@ void Nailgun_Map_Precache()
 public void Weapon_Nailgun(int client, int weapon, bool crit)
 {
 	float damage = 7.5;
-		
 	float attack_speed;
-		
-	attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true); //Sentry attack speed bonus
+	attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-	damage = attack_speed * damage * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
-		
-	float sentry_range;
-			
-	sentry_range = Attributes_GetOnPlayer(client, 344, true);			//Sentry Range bonus
+	damage = attack_speed * damage * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+	float sentry_range;	
+	sentry_range = Attributes_GetOnPlayer(client, 344, true, true);			//Sentry Range bonus
 			
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
@@ -43,7 +39,6 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 		
 	float time = 10.0; //Pretty much inf.
 	
-
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 7/*Default wand*/, weapon, "furious_flyer_activated",_,false);
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
