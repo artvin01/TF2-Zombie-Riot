@@ -825,8 +825,8 @@ void Stellar_Weaver_Attack(int iNPC, float VecTarget[3], float dmg, float speed,
 		{
 			Initiate_HomingProjectile(Proj,
 			iNPC,
-			90.0,			// float lockonAngleMax,
-			5.4,			// float homingaSec,
+			80.0,			// float lockonAngleMax,
+			4.5,			// float homingaSec,
 			true,			// bool LockOnlyOnce,
 			false,			// bool changeAngles,
 			Ang
