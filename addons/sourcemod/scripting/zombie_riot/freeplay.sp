@@ -294,7 +294,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 18:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_ruina_twirl");
-				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 19:
 			{
@@ -583,7 +583,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 			enemy.ExtraMeleeRes = 1.35;
 			enemy.ExtraRangedRes = 0.75;
-			enemy.ExtraSpeed = 1.15;
+			enemy.ExtraSpeed = 1.05;
 			enemy.ExtraDamage = 1.15;
 			enemy.ExtraSize = 1.15;
 
