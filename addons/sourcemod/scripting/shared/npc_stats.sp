@@ -3359,16 +3359,15 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{
 			if(client <= MaxClients)
 			{
-				
+				if(i_HasBeenHeadShotted[pThis])
+					i_Headshots[client] += 1; //Award 1 headshot point, only once.
+
+				if(i_HasBeenBackstabbed[pThis])
+					i_Backstabs[client] += 1; //Give a backstab count!
+
+				i_KillsMade[client] += 1;
+				RemoveHudCooldown(client);
 			}
-			if(i_HasBeenHeadShotted[pThis])
-				i_Headshots[client] += 1; //Award 1 headshot point, only once.
-
-			if(i_HasBeenBackstabbed[pThis])
-				i_Backstabs[client] += 1; //Give a backstab count!
-
-			i_KillsMade[client] += 1;
-			RemoveHudCooldown(client);
 			Calculate_And_Display_hp(client, pThis, 0.0, true);
 		}
 #endif
