@@ -2887,7 +2887,11 @@ static bool Magia_Overflow(Twirl npc)
 		return false;
 
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure she WILL get the shield.
-	Ruina_Npc_Give_Shield(npc.index, 0.45);				//give the shield to itself.
+	//give the shield to itself.
+	if(Waves_InFreeplay())
+		Ruina_Npc_Give_Shield(npc.index, 0.65);
+	else
+		Ruina_Npc_Give_Shield(npc.index, 0.45);
 	
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
