@@ -3007,8 +3007,6 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
-			if(Waves_InFreeplay())
-				fl_Extra_Damage[spawn_index] *= 0.5; // da hell is wrong with you?
 			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
 		}
 	}

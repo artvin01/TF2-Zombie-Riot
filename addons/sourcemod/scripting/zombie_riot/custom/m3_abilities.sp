@@ -11,10 +11,9 @@ static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
 static int i_BurstpackUsedThisRound [MAXTF2PLAYERS];
-static int i_ReinforcePoint[MAXTF2PLAYERS];
-static int i_ReinforcePointMax[MAXTF2PLAYERS];
-static bool b_ReinforceReady[MAXTF2PLAYERS];
+static float f_ReinforceTillMax[MAXTF2PLAYERS];
 static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
+static int i_MaxRevivesAWave;
 
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -26,6 +25,10 @@ static const char g_ReinforceSounds[][] = {
 	"mvm/mvm_used_powerup.wav",
 };
 
+int MaxRevivesReturn()
+{
+	return i_MaxRevivesAWave;
+}
 static const char g_ReinforceReadySounds[] = "mvm/mvm_bought_in.wav";
 
 static char gExplosive1;
@@ -75,9 +78,7 @@ public void M3_ClearAll()
 	Zero(Attack3AbilitySlotArray);
 	Zero(f_HealDelay);
 	Zero(f_Duration);
-	Zero(i_ReinforcePoint);
-	Zero(i_ReinforcePointMax);
-	Zero(b_ReinforceReady);
+	Zero(f_ReinforceTillMax);
 	Zero(b_ReinforceReady_soundonly);
 }
 
@@ -131,7 +132,7 @@ public void M3_Abilities(int client)
 void M3_AbilitiesWaveEnd()
 {
 	Zero(i_BurstpackUsedThisRound);
-	Zero(b_ReinforceReady);
+	i_MaxRevivesAWave = 0;
 }
 
 public void WeakDash(int client)
@@ -624,11 +625,13 @@ public void ReconstructiveTeleporter(int client)
 
 void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 {
-	if(!b_Reinforce[client])
-		return;
 	float Healing_Amount=Attributes_GetOnPlayer(client, 8, true, true)/2.0;
-	if(Healing_Amount<1.0)Healing_Amount=1.0;
+	if(Healing_Amount<1.0)
+		Healing_Amount=1.0;
+
 	int Base_HealingMaxPoints;
+
+	//This is fine to use 
 	int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 	if(IsValidEntity(weapon))
 	{
@@ -636,51 +639,60 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 		{
 			case WEAPON_FLAGELLANT_HEAL:
 			{
-				Healing_Amount=Attributes_Get(weapon, 868, 0.0)/2.0;
-				if(Healing_Amount<1.0)Healing_Amount=1.0;
-				Base_HealingMaxPoints=RoundToCeil(1500.0 * Healing_Amount);
+				Healing_Amount=Attributes_Get(weapon, 868, 0.0);
+				Healing_Amount += 2.0;
+				//it starts at -1.0, so it should go upto 1.0.
+				if(Healing_Amount<1.0)
+					Healing_Amount=1.0;
+				
+				Base_HealingMaxPoints=RoundToCeil(9000.0 * Healing_Amount);
 			}
 			case WEAPON_SEABORN_MISC:
 			{
 				Healing_Amount=Attributes_Get(weapon, 8, 0.0)/2.0;
-				if(Healing_Amount<1.0)Healing_Amount=1.0;
-				Base_HealingMaxPoints=RoundToCeil(1500.0 * Healing_Amount);
+				if(Healing_Amount<1.0)
+					Healing_Amount=1.0;
+
+				Base_HealingMaxPoints=RoundToCeil(5900.0 * Healing_Amount);
 			}
-			default: Base_HealingMaxPoints=RoundToCeil(1500.0 * Healing_Amount);
+			default:
+				Base_HealingMaxPoints=RoundToCeil(1900.0 * Healing_Amount);
 		}
 	}
-	else Base_HealingMaxPoints=RoundToCeil(1500.0 * Healing_Amount);
-	if(i_ReinforcePointMax[client]!= Base_HealingMaxPoints)
+	else 
+		Base_HealingMaxPoints = RoundToCeil(1900.0 * Healing_Amount);
+	
+	if(Base_HealingMaxPoints <= 3000)
+		Base_HealingMaxPoints = 3000;
+		
+
+
+	if(autoscale != 0.0) 
+		f_ReinforceTillMax[client] += autoscale;
+	else
+		f_ReinforceTillMax[client] += (float(healthvalue) / float(Base_HealingMaxPoints));
+
+
+	if(f_ReinforceTillMax[client] >= 1.0)
 	{
-		i_ReinforcePointMax[client] = Base_HealingMaxPoints;
-		b_ReinforceReady[client]=false;
-	}
-	if(autoscale != 0.0) healthvalue = RoundToCeil(float(i_ReinforcePointMax[client]) * autoscale);
-	if(b_ReinforceReady[client]) healthvalue=0;
-	i_ReinforcePoint[client] += healthvalue;
-	if(i_ReinforcePoint[client] >= i_ReinforcePointMax[client])
-	{
-		if(!b_ReinforceReady[client])
-			b_ReinforceReady[client]=true;
+		f_ReinforceTillMax[client] = 1.0;
+
 		if(!b_ReinforceReady_soundonly[client])
 		{
 			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.8, _, _, _, _, false);
 			CPrintToChat(client, "{green}You can now call in reinforcements.");
 			b_ReinforceReady_soundonly[client]=true;
 		}
-		i_ReinforcePoint[client] = i_ReinforcePointMax[client];
 	}
 	else
+	{
 		b_ReinforceReady_soundonly[client]=false;
+	}
 }
 
-int ReinforcePoint(int client)
+float ReinforcePoint(int client)
 {
-	if(!b_Reinforce[client])
-		return 0;
-	if(i_ReinforcePoint[client]<=0 || i_ReinforcePointMax[client]<=0)
-		return 0;
-	return RoundToFloor((float(i_ReinforcePoint[client])/float(i_ReinforcePointMax[client]))*100.0);
+	return f_ReinforceTillMax[client];
 }
 
 public void Reinforce(int client, bool NoCD)
@@ -710,20 +722,28 @@ public void Reinforce(int client, bool NoCD)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 				return;
 			}
-			if(i_ReinforcePoint[client] < i_ReinforcePointMax[client] || i_ReinforcePointMax[client]==0)
+			if(f_ReinforceTillMax[client] < 1.0)
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Need Healing Point", (i_ReinforcePointMax[client] - i_ReinforcePoint[client]));
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Need Healing Point");
+				return;
+			}
+			if(i_MaxRevivesAWave >= 3)
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Too Many Mercs Recruited....");
 				return;
 			}
 		}
 		else
 		{
-			i_ReinforcePoint[client] = i_ReinforcePointMax[client];
-			b_ReinforceReady[client]=true;
+			f_ReinforceTillMax[client] = 1.0;
 		}
+
 		bool DeadPlayer;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -746,12 +766,13 @@ public void Reinforce(int client, bool NoCD)
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Player not detected");
 			return;
 		}
-		if(!NoCD)
-			i_ReinforcePoint[client]=0;
 
+		
+		i_MaxRevivesAWave++;
 		CPrintToChatAll("{green}%N Is calling for additonal Mercs for tempomary assistance...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
+
 		Handle Reinforcement = CreateDataPack();
 		WritePackFloat(Reinforcement, position[0]);
 		WritePackFloat(Reinforcement, position[1]);
@@ -765,6 +786,9 @@ public void Reinforce(int client, bool NoCD)
 		WritePackCell(Reinforcement, client);
 		ResetPack(Reinforcement);
 		Deploy_Drop(Reinforcement);
+
+		if(!NoCD)
+			f_ReinforceTillMax[client]= 0.0;
 	}
 }
 
@@ -784,8 +808,9 @@ public void Deploy_Drop(Handle data)
 	ReadPackString(data, Worldmodel_Patch, sizeof(Worldmodel_Patch));
 	ReadPackString(data, Sound_Patch, sizeof(Sound_Patch));
 	int client = ReadPackCell(data);
-	if(!IsValidClient(client))return;
-	if(!b_ReinforceReady[client])return;
+
+	if(!IsValidClient(client))
+		return;
 	
 	if(Delay > 0 && !NoDrawBeam)
 	{
@@ -819,7 +844,9 @@ public void Deploy_Drop(Handle data)
 		CreateTimer(0.1, Recycle_DropProp, DDPack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 	else
 	{
-		if(!StrEqual(Sound_Patch, "No_Sound", true))EmitSoundToAll(Sound_Patch, 0, SNDCHAN_AUTO, SNDLEVEL_TRAIN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, position);
+		if(!StrEqual(Sound_Patch, "No_Sound", true))
+			EmitSoundToAll(Sound_Patch, 0, SNDCHAN_AUTO, SNDLEVEL_TRAIN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, position);
+
 		Drop_Prop(client, position, Prop_Speed, PropName, Worldmodel_Patch);
 	}
 }
@@ -1698,6 +1725,7 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 		}
 		AcceptEntityInput(PropMove, "Open");
 		SetEntPropEnt(PropMove, Prop_Data, "m_hOwnerEntity", client);
+		SetEntPropEnt(Prop, Prop_Data, "m_hOwnerEntity", client);
 		return PropMove;
 	}
 	return -1;
@@ -1715,85 +1743,70 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 		GetEntPropVector(caller, Prop_Data, "m_vecAbsOrigin", position);
 		AcceptEntityInput(caller, "KillHierarchy");
 		position[2]-=10.0;
-		if(IsValidClient(HELLDIVER))
+		if(IsValidClient(PreviousOwner))
 		{
-			if(b_ReinforceReady[HELLDIVER])
+			int RandomHELLDIVER = GetRandomDeathPlayer(HELLDIVER);
+			if(IsValidClient(RandomHELLDIVER) && GetTeam(RandomHELLDIVER) == TFTeam_Red && TeutonType[RandomHELLDIVER] == TEUTON_DEAD && b_HasBeenHereSinceStartOfWave[RandomHELLDIVER])
 			{
-				int RandomHELLDIVER = GetRandomDeathPlayer(HELLDIVER);
-				if(IsValidClient(RandomHELLDIVER) && GetTeam(RandomHELLDIVER) == TFTeam_Red && TeutonType[RandomHELLDIVER] == TEUTON_DEAD && b_HasBeenHereSinceStartOfWave[RandomHELLDIVER])
+				TeutonType[RandomHELLDIVER] = TEUTON_NONE;
+				dieingstate[RandomHELLDIVER] = 0;
+				//i_AmountDowned[RandomHELLDIVER]--;
+				DHook_RespawnPlayer(RandomHELLDIVER);
+				ForcePlayerCrouch(RandomHELLDIVER, false);
+				DataPack pack;
+				CreateDataTimer(0.5, Timer_DelayTele, pack, TIMER_FLAG_NO_MAPCHANGE);
+				Music_EndLastmann(true);
+				LastMann = false;
+				applied_lastmann_buffs_once = false;
+				SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, true);
+				SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, false);
+				//More time!!!
+				pack.WriteCell(GetClientUserId(RandomHELLDIVER));
+				pack.WriteFloat(position[0]);
+				pack.WriteFloat(position[1]);
+				pack.WriteFloat(position[2]);
+				GiveCompleteInvul(RandomHELLDIVER, 3.5);
+				TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
+				EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",RandomHELLDIVER);
+				DataPack pack_boom = new DataPack();
+				pack_boom.WriteFloat(position[0]);
+				pack_boom.WriteFloat(position[1]);
+				pack_boom.WriteFloat(position[2]);
+				pack_boom.WriteCell(1);
+				RequestFrame(MakeExplosionFrameLater, pack_boom);
+			}
+			else
+			{
+				if(IsValidClient(PreviousOwner))
 				{
-					TeutonType[RandomHELLDIVER] = TEUTON_NONE;
-					dieingstate[RandomHELLDIVER] = 0;
-					//i_AmountDowned[RandomHELLDIVER]--;
-					DHook_RespawnPlayer(RandomHELLDIVER);
-					ForcePlayerCrouch(RandomHELLDIVER, false);
-					DataPack pack;
-					CreateDataTimer(0.5, Timer_DelayTele, pack, TIMER_FLAG_NO_MAPCHANGE);
-					Music_EndLastmann(true);
-					LastMann = false;
-					applied_lastmann_buffs_once = false;
-					SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, true);
-					SDKHooks_UpdateMarkForDeath(RandomHELLDIVER, false);
-					//More time!!!
-					pack.WriteCell(GetClientUserId(RandomHELLDIVER));
-					pack.WriteFloat(position[0]);
-					pack.WriteFloat(position[1]);
-					pack.WriteFloat(position[2]);
-					GiveCompleteInvul(RandomHELLDIVER, 3.5);
-					TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
-					EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-					CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recuit {yellow}%N!",RandomHELLDIVER);
-					DataPack pack_boom = new DataPack();
-					pack_boom.WriteFloat(position[0]);
-					pack_boom.WriteFloat(position[1]);
-					pack_boom.WriteFloat(position[2]);
-					pack_boom.WriteCell(1);
-					RequestFrame(MakeExplosionFrameLater, pack_boom);
-
-					RequestFrame(Timer_Deploy);
+					CPrintToChat(PreviousOwner, "{black}Bob The Second {default}Wasnt able to get any merc... he refunds the backup call.");
+					HealPointToReinforce(PreviousOwner, 0, 1.0);
+					i_MaxRevivesAWave--;
 				}
-				else
+			}
+			
+			float entitypos[3], distance;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 				{
-					if(IsValidClient(PreviousOwner))
+					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
+					distance = GetVectorDistance(position, entitypos);
+					if(distance<125.0)
 					{
-						CPrintToChat(PreviousOwner, "{black}Bob The Second {default}Wasnt able to get any merc, you can retry if you want to.");
-						HealPointToReinforce(PreviousOwner, 1, 1.0);
+						float MaxHealth = float(ReturnEntityMaxHealth(entity));
+						float damage=(MaxHealth*2.0);
+						if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_IsGiant[entity])
+							damage=(MaxHealth*0.05)+(Pow(float(CashSpentTotal[HELLDIVER]), 1.18)/10.0);
+						SDKHooks_TakeDamage(entity, HELLDIVER, HELLDIVER, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 					}
 				}
-				
-				float entitypos[3], distance;
-				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
-					{
-						GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
-						distance = GetVectorDistance(position, entitypos);
-						if(distance<125.0)
-						{
-							float MaxHealth = float(ReturnEntityMaxHealth(entity));
-							float damage=(MaxHealth*2.0);
-							if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_IsGiant[entity])
-								damage=(MaxHealth*0.05)+(Pow(float(CashSpentTotal[HELLDIVER]), 1.18)/10.0);
-							SDKHooks_TakeDamage(entity, HELLDIVER, HELLDIVER, damage, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-						}
-					}
-				}
-				
-				b_ReinforceReady[HELLDIVER]=false;
 			}
 		}
 	}
 	return Plugin_Continue;
-}
-
-void Timer_Deploy()
-{
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsValidClient(client))
-			ClientCommand(client, "playgamesound \"mvm/mvm_tele_deliver.wav\"");
-	}
 }
 
 public Action Timer_DelayTele(Handle timer, DataPack pack)
@@ -1816,9 +1829,12 @@ public Action Timer_DelayTele(Handle timer, DataPack pack)
 
 stock int GetRandomDeathPlayer(int client)
 {
-	int Getclient;
-	bool DeadPlayer;
-	for(int client_check=1; client_check<=MaxClients; client_check++)
+	int Getclient = -1;
+
+	int victims;
+	int[] victim = new int[MaxClients];
+
+	for(int client_check = 1; client_check <= MaxClients; client_check++)
 	{
 		if(!IsValidClient(client_check))
 			continue;
@@ -1831,23 +1847,15 @@ stock int GetRandomDeathPlayer(int client)
 
 		if(!b_HasBeenHereSinceStartOfWave[client_check])
 			continue;
-			
-		DeadPlayer=true;
+
+		victim[victims++] = client_check;
 	}
-	if(!DeadPlayer)
-		return -1;
-	int AntiMaxStuck = 0;
-	do
+	
+	if(victims)
 	{
-		AntiMaxStuck++;
-		if(AntiMaxStuck >= 1000)
-		{
-			//too much tried, fail.
-			return Getclient;
-		}
-		Getclient = GetRandomInt(1, MaxClients);
+		int winner = victim[GetURandomInt() % victims];
+		Getclient = winner;
 	}
-	while(!IsValidClient(Getclient) || GetTeam(Getclient) != TFTeam_Red || Getclient==client || TeutonType[Getclient] == TEUTON_NONE || !b_HasBeenHereSinceStartOfWave[Getclient]);
 
 	return Getclient;
 }

@@ -182,14 +182,24 @@ static Action Timer_BladedancerTimer(Handle timer)
 
 	int NewDancerFind = -1;
 	//400 is more then enough.
-	for(int LoopTry = 1; LoopTry <= 400; LoopTry++)
+
+	int victims;
+	int[] victim = new int[MaxClients];
+
+	for(int target = 1; target <= MaxClients; target++)
 	{
-		int TryNewClient = GetRandomInt(1, MaxClients);
-		if(BladeDancer != TryNewClient && TeutonType[TryNewClient] == TEUTON_NONE && IsClientInGame(TryNewClient) && IsPlayerAlive(TryNewClient) && !dieingstate[TryNewClient])
+		if(BladeDancer != target && TeutonType[target] == TEUTON_NONE && IsClientInGame(target) && IsPlayerAlive(target) && !dieingstate[target])
 		{
-			NewDancerFind = TryNewClient;
+			victim[victims++] = target;
 		}
 	}
+	
+	if(victims)
+	{
+		int winner = victim[GetURandomInt() % victims];
+		NewDancerFind = winner;
+	}
+
 	//if no one was found, keep.
 	if(NewDancerFind != -1)
 	{

@@ -3416,19 +3416,15 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"You have different medigun modes! use them for certain situations to boost melee, ranged, or both resitances."
-		"fr"	"Appuyez sur R pour faire défiler les types de résistance, dont corps-à-corps, à distance, ou les deux en même temps."
+		"en"	"You have different medigun modes! boost melee, ranged, or both resitances."
 	}
 	"Medigun Desc Pap 2"
 	{
-		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades.,/"
-		"fr"	"Medigun donne aussi de l'armure."
-		"chi"	"医疗枪现在会回复护甲。"
+		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades."
 	}
 	"Medigun Desc Pap 3"
 	{
-		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, and provides quick mana recovery.\nbut Ubercharge rate decreased."
-		"ko"	"우버 사용시 즉시 아머 포인트를 회복하고 치료대상은 무기성능 향상과, 빠른 마나회복 적용합니다.\b하지만 우버 충전속도가 크게 감소합니다."
+		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, and provides quick mana recovery.\nUbercharge rate decreased."
 	}
 	"Flash Grenade Desc"
 	{
