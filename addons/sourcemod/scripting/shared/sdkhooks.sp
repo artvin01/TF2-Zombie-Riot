@@ -1023,7 +1023,15 @@ public void OnPostThink(int client)
 			}
 			if(b_Reinforce[client])
 			{
-				FormatEx(buffer, sizeof(buffer), "%s [▼ %i％]",buffer, ReinforcePoint(client));
+				had_An_ability = true;
+				if(MaxRevivesReturn() >= 3)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [▼ MAX]",buffer);
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f%%]",buffer, ReinforcePoint(client) * 100.0);
+				}
 			}
 #endif
 
@@ -2462,7 +2470,7 @@ void ApplyLastmanOrDyingOverlay(int client)
 	{
 		switch(Yakuza_Lastman())
 		{
-			case 1,2,3,4:
+			case 1,2,3,4,7:
 			{
 				return;
 			}

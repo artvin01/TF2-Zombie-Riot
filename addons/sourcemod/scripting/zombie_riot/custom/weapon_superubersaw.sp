@@ -2,8 +2,8 @@
 
 Handle h_TimerSuperubersawAlterManagement[MAXPLAYERS+1] = {null, ...};
 static float f_SuperubersawAlterhuddelay[MAXPLAYERS+1]={0.0, ...};
-static int i_Superubersaw_HealAquired[MAXPLAYERS+1]={0, ...};
-static int i_Superubersaw_HealAquiredMaxCalc[MAXPLAYERS+1]={0, ...};
+static float f_PercentageHealTillUbersaw[MAXPLAYERS+1]={0.0, ...};
+static int UbersawSaveDo[MAXPLAYERS+1]={0, ...};
 
 #define SUPERUBERSAW_MAXHEALTILLFULL 500.0
 
@@ -16,12 +16,24 @@ void AddHealthToUbersaw(int client, int healthvalue, float autoscale = 0.0)
 
 	if(autoscale != 0.0)
 	{
-		healthvalue = RoundToCeil(float(i_Superubersaw_HealAquiredMaxCalc[client]) * autoscale);
+		f_PercentageHealTillUbersaw[client] += autoscale;
+	}
+	else
+	{
+		int weapon = EntRefToEntIndex(UbersawSaveDo[client]);
+		if(IsValidEntity(weapon))
+		{
+			float Healing_Value = Attributes_GetOnWeapon(client, weapon, 8, true);
+
+			float MaxValue = SUPERUBERSAW_MAXHEALTILLFULL * Healing_Value;
+
+			f_PercentageHealTillUbersaw[client] += (float(healthvalue) / MaxValue);
+		}
 	}
 
-	i_Superubersaw_HealAquired[client] += healthvalue;
-	if(i_Superubersaw_HealAquired[client] >= i_Superubersaw_HealAquiredMaxCalc[client])
-		i_Superubersaw_HealAquired[client] = i_Superubersaw_HealAquiredMaxCalc[client];
+	if(f_PercentageHealTillUbersaw[client] >= 1.0)
+		f_PercentageHealTillUbersaw[client] = 1.0;
+
 }
 
 public bool SuperUbersaw_Existant(int client)
@@ -35,13 +47,7 @@ public bool SuperUbersaw_Existant(int client)
 
 float SuperUbersawPercentage(int client)
 {
-	float RatioMax;
-	RatioMax = float(i_Superubersaw_HealAquired[client]) / float(i_Superubersaw_HealAquiredMaxCalc[client]);
-
-	if(RatioMax >= 1.0)
-		RatioMax = 1.0;
-	
-	return RatioMax;
+	return f_PercentageHealTillUbersaw[client];
 }
 
 void SuperUbersaw_Mapstart()
@@ -49,8 +55,7 @@ void SuperUbersaw_Mapstart()
 	PrecacheSound(SUPERUBERSAW_DAMAGE_1);
 	Zero(h_TimerSuperubersawAlterManagement);
 	Zero(f_SuperubersawAlterhuddelay);
-
-	Zero(i_Superubersaw_HealAquired);
+	Zero(f_PercentageHealTillUbersaw);
 }
 
 bool PlayCustomSoundSuperubersaw(int client)
@@ -68,7 +73,7 @@ bool PlayCustomSoundSuperubersaw(int client)
 }
 void SuperUbersaw_Post(int client)
 {
-	i_Superubersaw_HealAquired[client] = 0;
+	f_PercentageHealTillUbersaw[client] = 0.0;
 }
 
 
@@ -168,8 +173,7 @@ public void Enable_SuperubersawAlter(int client, int weapon) // Enable managemen
 		h_TimerSuperubersawAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SuperubersawAlter, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		float Healing_Value = Attributes_GetOnWeapon(client, weapon, 8, true);
-
-		i_Superubersaw_HealAquiredMaxCalc[client] = RoundToCeil(SUPERUBERSAW_MAXHEALTILLFULL * Healing_Value);
+		
+		UbersawSaveDo[client] = EntIndexToEntRef(weapon);
 	}
 }

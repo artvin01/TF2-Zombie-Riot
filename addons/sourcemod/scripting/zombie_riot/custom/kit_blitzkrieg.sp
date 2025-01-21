@@ -11,6 +11,7 @@ static int i_patten_type[MAXPLAYERS+1];
 static float fl_ammo_efficiency[MAXPLAYERS+1];
 static int i_ion_effects[MAXPLAYERS+1];
 static float fl_ion_timer_recharge[MAXPLAYERS+1];
+static int i_WeaponGotLastmanBuff[MAXENTITIES];
 
 static bool b_was_lastman[MAXPLAYERS+1];
 
@@ -72,6 +73,9 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 
+			i_WeaponGotLastmanBuff[weapon] = false;
+			PrecacheBlitzMusic();
+
 			if(fl_primary_reloading[client]>GetGameTime())
 			{
 				b_primary_lock[client]=true;
@@ -94,6 +98,8 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 		{
 			b_primary_lock[client]=true;
 		}
+		i_WeaponGotLastmanBuff[weapon] = false;
+		PrecacheBlitzMusic();
 		i_patten_type[client]=0;
 		b_was_lastman[client]=false;
 	}
@@ -103,7 +109,29 @@ static int Pap(int weapon)
 {
 	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
 }
-
+bool BlitzKit_LastMann(int client)
+{
+	return h_TimerKitBlitzkriegManagement[client] != null;	
+}
+static void Blitz_Weapon_LastMannHandle(int weapon, int attribute, float value)
+{
+	if(LastMann)
+	{
+		if(!i_WeaponGotLastmanBuff[weapon])
+		{
+			i_WeaponGotLastmanBuff[weapon] = true;
+			Attributes_SetMulti(weapon, attribute, value);
+		}
+	}
+	else
+	{
+		if(i_WeaponGotLastmanBuff[weapon])
+		{
+			i_WeaponGotLastmanBuff[weapon] = false;
+			Attributes_SetMulti(weapon, attribute, 1 / value);
+		}
+	}
+}
 
 public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 {
@@ -170,6 +198,8 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 					b_primary_lock[client]=true;
 				}
 			}
+
+			Blitz_Weapon_LastMannHandle(weapon_holding, 6, 0.7);
 		}
 		case 2: //secondary 1
 		{
@@ -178,6 +208,7 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 		case 3: //melee 1
 		{
 			BlitzHud(client, GameTime, 3);
+			Blitz_Weapon_LastMannHandle(weapon_holding, 6, 0.75);
 		}
 	}
 		
@@ -334,6 +365,10 @@ public void Blitzkrieg_Kit_Primary_Fire_6(int client, int weapon, const char[] c
 public void Blitzkrieg_Kit_Primary_Fire_7(int client, int weapon, const char[] classname, bool &result)
 {
 	Blitzkrieg_Kit_Rocket(client, weapon, 0.375, 7, 10.0, 0.285);
+}
+public void Blitzkrieg_Kit_Primary_Fire_8(int client, int weapon, const char[] classname, bool &result)
+{
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.4, 8, 10.0, 0.285);
 }
 
 
@@ -603,6 +638,10 @@ public void Blitzkrieg_Kit_Seconadry_Ion_7(int client, int weapon, bool &result,
 }
 public void Blitzkrieg_Kit_Seconadry_Ion_8(int client, int weapon, bool &result, int slot)
 {
+	Blitzkrieg_Kit_ion_trace(client, 10, weapon);
+}
+public void Blitzkrieg_Kit_Seconadry_Ion_9(int client, int weapon, bool &result, int slot)
+{
 	Blitzkrieg_Kit_ion_trace(client, 13, weapon);
 }
 
@@ -811,7 +850,7 @@ void Blitzkrieg_Kit_ModifyMeleeDmg(int client, float &damage)
 
 	if(fl_primary_reloading[client]>GameTime)
 	{
-		damage *=1.25;
+		damage *=1.5;
 	}
 }
 

@@ -1884,6 +1884,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}%N Seems to be completly and utterly screwed.",client);
 							Yakuza_Lastman(6);
 						}
+						if(BlitzKit_LastMann(client))
+						{
+							CPrintToChatAll("{crimson}The Machine Within %N screams: FOR VICTORY",client);
+							Yakuza_Lastman(7);
+						}
 						
 						for(int i=1; i<=MaxClients; i++)
 						{

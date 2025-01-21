@@ -90,8 +90,8 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 	{
 		ApplyStatusEffect(client, target, "Weapon Overclock Detect", 0.5);
 		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
-		Kritzkrieg_Magical(target, 0.2, true);
 	}
+	
 	if(IsValidClient(client) && IsPlayerAlive(client))
 	{
 		ApplyStatusEffect(client, client, "Weapon Overclock Detect", 0.5);
@@ -101,15 +101,18 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 	return Plugin_Continue;
 }
 
-static int GetHealingTarget(int client, bool checkgun=false)
+static int GetHealingTarget(int client)
 {
-	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-	if(!checkgun)
+	int medigun;
+	int ie;
+	int entity;
+	int ActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	while(TF2_GetItem(client, entity, ie))
 	{
-		if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
-			return GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
-
-		return -1;
+		if(b_IsAMedigun[entity] && entity == ActiveWeapon)
+		{
+			medigun = entity;
+		}
 	}
 
 	if(IsValidEntity(medigun))
@@ -127,25 +130,31 @@ static int GetHealingTarget(int client, bool checkgun=false)
 
 static void Kritzkrieg_Magical(int client, float Scale, bool apply)
 {
-	int primary = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-	int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-	int melee = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-	bool Magical;
-	if((IsValidEntity(primary) && i_IsWandWeapon[primary])
-	||(IsValidEntity(secondary) && i_IsWandWeapon[secondary])
-	||(IsValidEntity(melee) && i_IsWandWeapon[melee])) Magical=true;
-	if(Magical)
+	int entity, i;
+	bool HasMageWeapon;
+	while(TF2_GetItem(client, entity, i))
 	{
-		int MaxMana = RoundToCeil((800.0*Mana_Regen_Level[client]));
+		if(i_IsWandWeapon[entity])
+		{
+			HasMageWeapon = true;
+			break;
+		}
+	}
+	if(HasMageWeapon)
+	{
 		if(apply)
 		{
-			int AddMana = Current_Mana[client]+RoundToCeil(MaxMana*Scale);
-			if(AddMana>MaxMana)
-				AddMana=MaxMana;
-			Current_Mana[client]=AddMana;
-			return;
+			ManaCalculationsBefore(client);
+			if(Current_Mana[client] < RoundToCeil(max_mana[client]))
+			{
+				Current_Mana[client] += RoundToCeil(mana_regen[client] * 20.0 * Scale);
+					
+				if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
+				{
+					Current_Mana[client] = RoundToCeil(max_mana[client]);
+				}
+			}
 		}
-		Current_Mana[client]=RoundToCeil(MaxMana*Scale);
 	}
 }
 
