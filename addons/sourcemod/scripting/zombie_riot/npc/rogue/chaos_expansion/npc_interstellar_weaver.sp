@@ -656,7 +656,7 @@ static void ClotThink(int iNPC)
 			if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
 			{
 				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
-				Stellar_Weaver_Attack(npc.index, vecTarget, 25.0*RaidModeScaling, 500.0, 15.0, 50*RaidModeScaling, 150.0, 10.0, true);
+				Stellar_Weaver_Attack(npc.index, vecTarget, 3.0*RaidModeScaling, 500.0, 15.0, 15.0*RaidModeScaling, 150.0, 10.0, true);
 				b_stellar_weaver_allow_attack[npc.index] = false;
 			}
 			if(GameTime > npc.m_flNextRangedAttack)
