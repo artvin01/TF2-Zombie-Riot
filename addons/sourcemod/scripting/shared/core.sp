@@ -188,6 +188,9 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define FL_WIDOWS_WINE_DURATION 4.0
 #define FL_WIDOWS_WINE_DURATION_NPC 0.85
 
+#define MELEE_RANGE 64.0
+#define MELEE_BOUNDS 22.0
+
 
 
 #include "shared/global_arrays.sp"
@@ -764,8 +767,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
 	RegConsoleCmd("sm_getpos", GetPos);
 	RegConsoleCmd("sm_me", DoRoleplayTalk);
-//	HookEvent("npc_hurt", OnNpcHurt);
-	
+
 	sv_cheats = FindConVar("sv_cheats");
 	nav_edit = FindConVar("nav_edit");
 

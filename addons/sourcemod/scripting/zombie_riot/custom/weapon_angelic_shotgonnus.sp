@@ -148,20 +148,20 @@ void Angelic_Shotgun_DoSwingTrace(int client, float &CustomMeleeRange, float &Cu
 	{
 		case 3:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+			CustomMeleeRange = MELEE_RANGE * 1.25;
+			CustomMeleeWide = MELEE_BOUNDS * 1.25;
 			enemies_hit_aoe = 3;
 		}
 		case 1,2:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.2;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.2;
+			CustomMeleeRange = MELEE_RANGE * 1.2;
+			CustomMeleeWide = MELEE_BOUNDS * 1.2;
 			enemies_hit_aoe = 3;
 		}
 		default:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.15;
+			CustomMeleeRange = MELEE_RANGE * 1.15;
+			CustomMeleeWide = MELEE_BOUNDS * 1.15;
 			enemies_hit_aoe = 2;
 		}
 	}

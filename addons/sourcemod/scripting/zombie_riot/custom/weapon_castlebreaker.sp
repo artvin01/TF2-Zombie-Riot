@@ -50,8 +50,8 @@ static void CastleBreaker_Map_Precache() //Anything that needs to be precaced li
 
 void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
 {
-	CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15; //shorter than rapier
-	CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.85;
+	CustomMeleeRange = MELEE_RANGE * 1.15; //shorter than rapier
+	CustomMeleeWide = MELEE_BOUNDS * 0.85;
 	if(b_AbilityActivated[client])
 	{
 		enemies_hit_aoe = 2; //hit 2 targets.

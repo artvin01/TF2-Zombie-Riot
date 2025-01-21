@@ -3355,8 +3355,12 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 
 #if defined ZR || defined RPG
-		if(client > 0 && client <= MaxClients)
+		if(client > 0)
 		{
+			if(client <= MaxClients)
+			{
+				
+			}
 			if(i_HasBeenHeadShotted[pThis])
 				i_Headshots[client] += 1; //Award 1 headshot point, only once.
 

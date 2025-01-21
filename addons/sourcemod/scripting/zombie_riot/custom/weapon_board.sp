@@ -33,7 +33,7 @@ void WeaponBoard_Precache()
 void Board_DoSwingTrace(int &enemies_hit_aoe, float &CustomMeleeRange)
 {
 	enemies_hit_aoe = 3;
-	CustomMeleeRange = DEFAULT_MELEE_RANGE * 0.65;
+	CustomMeleeRange = MELEE_RANGE * 0.65;
 }
 
 public void Board_M1_ability(int client, int weapon, int slot)

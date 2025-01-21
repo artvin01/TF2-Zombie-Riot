@@ -177,9 +177,6 @@ public void SepcialBackstabLaughSpy(int attacker)
 #if defined RPG
 #define WEAPON_BOOM_HAMMER 10000
 #endif
-
-#define MELEE_RANGE 64.0
-#define MELEE_BOUNDS 22.0
 stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0,
  bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {

@@ -21,6 +21,7 @@ void Events_PluginStart()
 	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
 	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
 	HookEvent("arrow_impact", EventOverride_ArrowImpact, EventHookMode_Pre);
+	HookEvent("npc_hurt", EventOverride_OnNpcHurt, EventHookMode_Pre);
 
 #endif	
 	
@@ -30,6 +31,16 @@ void Events_PluginStart()
 }
 
 #if defined ZR
+
+public Action EventOverride_OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
+{
+	int HurtNpc = event.GetInt("entindex");
+	if(i_HexCustomDamageTypes[HurtNpc] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		event.BroadcastDisabled = true;
+
+	return Plugin_Changed;
+}
+
 public Action EventOverride_ArrowImpact(Event event, const char[] name, bool dontBroadcast)
 {
 	int AttachedEntity = event.GetInt("attachedEntity");

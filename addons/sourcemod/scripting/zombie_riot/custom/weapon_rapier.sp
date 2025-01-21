@@ -49,13 +49,13 @@ void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 	{
 		case true:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.55;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
+			CustomMeleeRange = MELEE_RANGE * 1.55;
+			CustomMeleeWide = MELEE_BOUNDS * 0.5;
 		}
 		case false:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.35;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
+			CustomMeleeRange = MELEE_RANGE * 1.35;
+			CustomMeleeWide = MELEE_BOUNDS * 0.5;
 		}
 	}
 }
