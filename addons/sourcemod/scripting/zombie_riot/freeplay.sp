@@ -645,12 +645,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		if(KillBonus)
 			enemy.Credits += KillBonus;
-
-		char npc_classname[60];
-		NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
-		if(StrEqual(npc_classname, "npc_ruina_valiant") || StrEqual(npc_classname, "npc_majorsteam"))
-			count = 1;
-
 	}
 
 	if(count < 1)
