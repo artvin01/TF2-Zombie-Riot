@@ -110,7 +110,7 @@ public void BigBones_OnMapStart_NPC()
 	strcopy(data_buffed.Plugin, sizeof(data_buffed.Plugin), "npc_bigbones_buffed");
 	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "pyro");
 	data_buffed.IconCustom = false;
-	data_buffed.Flags = 0;
+	data_buffed.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data_buffed.Category = Type_Necropolain;
 	data_buffed.Func = Summon_Buffed;
 	NPC_Add(data_buffed);

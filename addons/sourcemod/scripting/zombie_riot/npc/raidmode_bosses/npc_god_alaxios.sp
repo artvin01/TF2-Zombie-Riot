@@ -544,6 +544,8 @@ public void GodAlaxios_ClotThink(int iNPC)
 		return;
 	}
 	*/
+
+	//BOOKMARK TODO
 	if(npc.g_TimesSummoned == 4)
 	{
 		bool allyAlive = false;
@@ -824,6 +826,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
+			//BOOKMARK TODO
 			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(6.0 * MultiGlobalEnemy));
 			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_archer",_, RoundToCeil(7.0 * MultiGlobalEnemy));
 		}
@@ -1123,6 +1126,7 @@ public void GodAlaxios_NPCDeath(int entity)
 	Citizen_MiniBossDeath(entity);
 }
 
+//BOOKMARK TODO
 void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
 {
 	if(GetTeam(alaxios) == TFTeam_Red)

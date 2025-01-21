@@ -166,7 +166,7 @@ public void Lordread_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_boss_executioner");
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Necropolain;
 	data.Func = Summon_Lordread;
 	NPC_Add(data);

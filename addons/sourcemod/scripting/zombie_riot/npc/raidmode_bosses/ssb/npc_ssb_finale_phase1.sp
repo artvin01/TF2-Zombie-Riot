@@ -11,13 +11,17 @@ static float SSBChair_RaidTime = 481.0;		//I recommend not changing this, 8:01 i
 static int Chair_Tier[2049] = { 0, ... };	//The current "tier" the raid is on. Starts at 0 and increments by 1 each time SSB's army is defeated.
 static bool Chair_UsingAbility[2049] = { false, ... };	//Whether or not SSB is currently using an ability. Set to TRUE upon ability activation and FALSE once the ability is finished. Otherwise, he can use abilities while using other abilities, which can break animations. Very stinky!
 Function Chair_QueuedSpell[2049];			//The spell which will be cast when SSB's cast animation plays out.
+static float f_DamageSinceLastArmy[2049] = { 0.0, ... };
 
 static bool Chair_ChangeSequence[2049] = { false, ... };
 static bool useHeightOverride[2049] = { false, ... };
+static bool b_SSBChairHasArmy[2049] = { false, ... };
 static char Chair_Sequence[2049][255];
 static char Chair_SpellEffect[2049][255];
 static char Chair_SpellEffectExtra[2049][255];
 static char Chair_SpellEffect_Point[2049][255];
+
+static float SSBCHAIR_ARMY_INTERVAL = 0.25;		//Every X% of max health lost, SSB will summon his next army. When that army is defeated, SSB powers up and Chair_Tier increases by 1.
 
 //DEATH WAVER: If at least X enemies and/or Y allies are within radius, SSB waves his hand, healing all allies within radius while damaging and knocking back all enemies.
 //This is NOT a Spell Card, and is thus unaffected by the casting system. It DOES get stronger based on tier, though.
@@ -164,6 +168,8 @@ static char g_SSBChair_ChairThudSounds[][] = {
 #define PARTICLE_TELEPORT_SLAM_3		"hammer_bones_kickup"
 #define PARTICLE_TELEPORT_HAND			"unusual_robot_time_warp2"
 
+static int NPCId;
+
 public void SSBChair_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -203,10 +209,10 @@ public void SSBChair_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ssb_finale_phase1");
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = Summon_SSBChair;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any Summon_SSBChair(int client, float vecPos[3], float vecAng[3], int ally)
@@ -1139,6 +1145,8 @@ methodmap SSBChair < CClotBody
 		b_NoKnockbackFromSources[npc.index] = true;
 		Chair_ChangeSequence[npc.index] = false;
 		b_NoKnockbackFromSources[npc.index] = false;
+		b_SSBChairHasArmy[npc.index] = false;
+		f_DamageSinceLastArmy[npc.index] = 0.0;
 		Chair_Tier[npc.index] = 0;
 
 		//IDLE
@@ -1347,6 +1355,44 @@ public void SSBChair_ClotThink(int iNPC)
 	if (npc.CanUseWaver())
 		npc.DeathWaver();
 
+	if(b_SSBChairHasArmy[npc.index])
+	{
+		bool allyAlive = false;
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
+		{
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && GetTeam(npc.index) == GetTeam(baseboss_index))
+			{
+				allyAlive = true;
+			}
+		}
+		if(!Waves_IsEmpty())
+			allyAlive = true;
+
+		if(GetTeam(npc.index) == TFTeam_Red)
+			allyAlive = false;
+
+		if(allyAlive)
+		{
+			b_NpcIsInvulnerable[npc.index] = true;
+		}
+		else
+		{
+			b_NpcIsInvulnerable[npc.index] = false;
+			
+			switch(Chair_Tier[npc.index])
+			{
+				case 0:
+				{
+
+				}
+			}
+
+			Chair_Tier[npc.index]++;
+			b_SSBChairHasArmy[npc.index] = false;
+		}
+	}
+
 	npc.PlayIdleSound();
 }
 
@@ -1357,9 +1403,146 @@ public Action SSBChair_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		return Plugin_Continue;
 
 	SSBChair npc = view_as<SSBChair>(victim);
-	//TODO: Fill this out if needed, scrap if not
+	
+	f_DamageSinceLastArmy[npc.index] += damage;
+	if (f_DamageSinceLastArmy[npc.index] >= (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * SSBCHAIR_ARMY_INTERVAL) && !b_SSBChairHasArmy[npc.index])
+	{
+		SSBChair_SummonArmy(npc);
+		f_DamageSinceLastArmy[npc.index] = 0.0;
+	}
 
 	return Plugin_Changed;
+}
+
+public void SSBChair_SummonArmy(SSBChair npc)
+{
+	switch(Chair_Tier[npc.index])
+	{
+		//First army: Common Riff-Raff: 5 Basic Bones, 2 Beefy Bones, 10 Brittle Bones, 1 Big Bones, 1 Buffed Big Bones
+		//TOTAL WITHOUT SCALING: 19
+		case 0:
+		{
+			SSBChair_SummonAlly(npc.index, "npc_basicbones", 50000, RoundToCeil(5.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_beefybones", 100000, RoundToCeil(2.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_brittlebones", 20000, RoundToCeil(10.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_bigbones", 300000, RoundToCeil(1.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_bigbones_buffed", RoundToCeil(300000 * MultiGlobalHighHealthBoss), 1, true);
+		}
+		//Second army: Godfather Grimme and the Cadaver Troupe: 6 Calcium Criminals, 3 Bone Breakers, 1 Spinal Slugger, 3 Rattlers, 1 Hollow Hitman, 3 Mr. Molotovs, 1 Godfather Grimme, Kingpin of Calcium
+		//TOTAL WITHOUT SCALING: 18
+		case 1:
+		{
+			SSBChair_SummonAlly(npc.index, "npc_criminal", 75000, RoundToCeil(6.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_slugger", 125000, RoundToCeil(3.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_slugger_buffed", 175000, RoundToCeil(1.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_rattler", 40000, RoundToCeil(3.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_rattler_buffed", 60000, RoundToCeil(1.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_molotov", 60000, RoundToCeil(3.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_boss_godfather", RoundToCeil(750000 * MultiGlobalHighHealthBoss), 1, true);
+		}
+		//Third army: Captain Faux-Beard and the Dead Sea Scourge: 7 Undead Deckhands, 4 Buccaneer Bones, 2 Calcium Corsairs, 4 Swashbuckler Skelebones, 2 Deadeyes, 4 Brigadier Bones, 1 Boner Bomber, 3 Aleraisers, 1 Captain Faux-Beard, Terror of the Dead Sea
+		//TOTAL WITHOUT SCALING: 28
+		case 2:
+		{
+			SSBChair_SummonAlly(npc.index, "npc_undeaddeckhand", 90000, RoundToCeil(7.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_calciumcorsair", 150000, RoundToCeil(4.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_aleraiser", 200000, RoundToCeil(3.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_calciumcorsair_buffed", 250000, RoundToCeil(2.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_flintlock", 50000, RoundToCeil(4.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_flintlock_buffed", 75000, RoundToCeil(2.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_buccaneerbones", 80000, RoundToCeil(4.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_buccaneerbones_buffed", 200000, RoundToCeil(1.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_boss_captain", RoundToCeil(1000000 * MultiGlobalHighHealthBoss), 1, true);
+		}
+		//Final army: Lordread and the Royal Guard: 8 Unpleasant Peasants, 5 Skeletal Squires, 3 Knightmares, 5 Spelletons, 3 Alakablasters, 5 Fearsome Fools, 1 Servant of Mondo, 4 Bone Brewers, 6 Profaned Priests, 1 Lordread, Royal Executioner of Necropolis, 1 Grim Reaper
+		//TOTAL WITHOUT SCALING: 42
+		case 3:
+		{
+			SSBChair_SummonAlly(npc.index, "npc_peasant", 100000, RoundToCeil(8.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_squire", 175000, RoundToCeil(5.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_squire_buffed", 300000, RoundToCeil(3.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_brewer", 250000, RoundToCeil(4.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_skeletalsaint", 150000, RoundToCeil(6.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_archmage", 60000, RoundToCeil(5.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_archmage_buffed", 120000, RoundToCeil(3.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_jester", 100000, RoundToCeil(5.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_jester_buffed", 250000, RoundToCeil(1.0 * MultiGlobalEnemy));
+			SSBChair_SummonAlly(npc.index, "npc_boss_executioner", RoundToCeil(1500000 * MultiGlobalHighHealthBoss), 1, true);
+			SSBChair_SummonAlly(npc.index, "npc_reaper", RoundToCeil(500000 * MultiGlobalHighHealthBoss), 1, true);
+		}
+	}
+
+	b_NpcIsInvulnerable[npc.index] = true;
+	b_SSBChairHasArmy[npc.index] = true;
+
+	//TODO: Sounds! Also, the bosses need quotes when summoned during this.
+}
+
+void SSBChair_SummonAlly(int ssb, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
+{
+	if(GetTeam(ssb) == TFTeam_Red)
+	{
+		count /= 2;
+		if(count < 1)
+		{
+			count = 1;
+		}
+		for(int Spawns; Spawns <= count; Spawns++)
+		{
+			float pos[3]; GetEntPropVector(ssb, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(ssb, Prop_Data, "m_angRotation", ang);
+			
+			int summon = NPC_CreateByName(plugin_name, -1, pos, ang, GetTeam(ssb));
+			if(summon > MaxClients)
+			{
+				fl_Extra_Damage[summon] = 10.0;
+				if(!health)
+				{
+					health = GetEntProp(summon, Prop_Data, "m_iMaxHealth");
+				}
+				SetEntProp(summon, Prop_Data, "m_iHealth", health / 10);
+				SetEntProp(summon, Prop_Data, "m_iMaxHealth", health / 10);
+			}
+		}
+		return;
+	}
+		
+	Enemy enemy;
+	enemy.Index = NPC_GetByPlugin(plugin_name);
+	if(health != 0)
+	{
+		enemy.Health = health;
+	}
+	enemy.Is_Boss = view_as<int>(is_a_boss);
+	enemy.Is_Immune_To_Nuke = true;
+	//do not bother outlining.
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	enemy.ExtraSpeed = 1.0;
+	enemy.ExtraDamage = 1.0;
+	enemy.ExtraSize = 1.0;		
+	enemy.Team = GetTeam(ssb);
+	if(!Waves_InFreeplay())
+	{
+		for(int i; i<count; i++)
+		{
+			Waves_AddNextEnemy(enemy);
+		}
+	}
+	else
+	{
+		int postWaves = CurrentRound - Waves_GetMaxRound();
+		Freeplay_AddEnemy(postWaves, enemy, count);
+		if(count > 0)
+		{
+			for(int a; a < count; a++)
+			{
+				Waves_AddNextEnemy(enemy);
+			}
+		}
+	}
+
+	Zombies_Currently_Still_Ongoing += count;
 }
 
 public void SSBChair_NPCDeath(int entity)

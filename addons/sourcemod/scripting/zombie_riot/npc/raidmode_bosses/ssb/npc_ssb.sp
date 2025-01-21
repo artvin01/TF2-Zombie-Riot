@@ -408,7 +408,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ssb");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = Summon_SSB;
 	NPC_Add(data);
