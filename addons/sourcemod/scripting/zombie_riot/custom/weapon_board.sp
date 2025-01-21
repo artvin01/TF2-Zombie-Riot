@@ -18,8 +18,6 @@ static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 static bool BlockHealEasy[MAXPLAYERS+1];
 
-#define DEFAULT_MELEE_RANGE 64.0
-
 //this code makes me sad
 
 void WeaponBoard_Precache()
