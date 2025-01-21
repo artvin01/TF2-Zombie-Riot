@@ -584,7 +584,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.ExtraMeleeRes = 1.35;
 			enemy.ExtraRangedRes = 0.75;
 			enemy.ExtraSpeed = 1.05;
-			enemy.ExtraDamage = 1.15;
+			enemy.ExtraDamage = 1.1;
 			enemy.ExtraSize = 1.15;
 
 			enemy.Credits += 100.0;
