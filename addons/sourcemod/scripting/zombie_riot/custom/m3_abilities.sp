@@ -625,6 +625,9 @@ public void ReconstructiveTeleporter(int client)
 
 void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 {
+	if(!b_Reinforce[client])
+		return;
+
 	float Healing_Amount=Attributes_GetOnPlayer(client, 8, true, true)/2.0;
 	if(Healing_Amount<1.0)
 		Healing_Amount=1.0;
