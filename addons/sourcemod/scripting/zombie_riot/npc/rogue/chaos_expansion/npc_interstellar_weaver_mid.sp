@@ -182,7 +182,7 @@ static void ClotThink(int iNPC)
 			if(GameTime > npc.m_flNextRangedAttack)
 			{
 				npc.PlayMeleeHitSound();
-				float DamageDone = 20.0*RaidModeScaling;
+				float DamageDone = 15.0*RaidModeScaling;
 				float projectile_speed = 1250.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 5.0;

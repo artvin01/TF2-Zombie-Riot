@@ -671,7 +671,7 @@ static void ClotThink(int iNPC)
 				{
 					WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				}
-				float DamageDone = 20.0*RaidModeScaling;
+				float DamageDone = 15.0*RaidModeScaling;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 1.1;
 			}
