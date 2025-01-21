@@ -2786,33 +2786,41 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: 10%%"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: 10%%"
 		"fr"	"Un «bouclier» qui absorbe les dégats et bloque les attaques pour faire des dégats.\nVous soigne quand vous êtes hors du combat.\nS'améliore avec les améliorations corps-à-corps.\nRang de défense: 10%%"
 		"chi"	"一个''盾牌''。\n吸收部分伤害并可以盾反，造成伤害。\n自带回血，受伤时或者换武器时暂停。\n''防御评分：10%%''"
 	}
 	"Spike Shield Desc"
 	{
-		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: 5%%"
-		"fr"	"Une arme qui prétend être un bouclier. Amélioration des dégats quand vous bloquez.\nRang de défense: 5%%"
+		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: 10%%"
+		"fr"	"Une arme qui prétend être un bouclier. Amélioration des dégats quand vous bloquez.\nRang de défense: 10%%"
 		"chi"	"刺盾：\n伪装成盾牌的武器 - 盾反伤害提升。\n''防御评分：5%%''"
 	}
 	"Rookie Shield Desc"
 	{
-		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: 10%%"
-		"fr"	"Un bouclier simple. Vous permet de changer d'arme plus rapidement.\nRang de défense: 10%%"
-		"chi"	"平平无奇的盾牌 - 可以盾反，更快的切换。\n''防御评分：10%%''"
+		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: 15%%"
+		"fr"	"Un bouclier simple. Vous permet de changer d'arme plus rapidement.\nRang de défense: 15%%"
+		"chi"	"平平无奇的盾牌 - 可以盾反，更快的切换。\n''防御评分：15%%''"
 	}
 	"Punishment Desc"
 	{
-		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 10%%\nArchetype changes to ''Crusher''"
-		"fr"	"Un bouclier et arme. Bloquer fais des dégats à plusiers ennemis à la fois.\nRang de défense: 10%%\nArchetype devient «Broyeur»"
-		"chi"	"你要矛还是盾？还是矛盾？\n盾反造成aoe。\n''防御评分：10%%''\n类更为''碾压者''"
+		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 15%%\nArchetype changes to ''Crusher''"
+		"fr"	"Un bouclier et arme. Bloquer fais des dégats à plusiers ennemis à la fois.\nRang de défense: 15%%\nArchetype devient «Broyeur»"
+		"chi"	"你要矛还是盾？还是矛盾？\n盾反造成aoe。\n''防御评分：15%%''\n类更为''碾压者''"
 	}
 	"Cudgel Desc"
 	{
-		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: 15%%"
-		"fr"	"Un bouclier standard. Affaiblit les ennemis bloqués.\nRang de défense: 15%%"
-		"chi"	"标配盾牌。\n盾反击晕敌人。\n''防御评分：15%%''"
+		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: 20%%"
+		"fr"	"Un bouclier standard. Affaiblit les ennemis bloqués.\nRang de défense: 20%%"
+		"chi"	"标配盾牌。\n盾反击晕敌人。\n''防御评分：20%%''"
+	}
+	"Purgatory Desc"
+	{
+		"en"	"A shield that was designed to hurt the body.\nYou gain +150 HP but you also move 10%% slower.\nParrying knocks enemies back.\nDefence rating: 25%%"
+	}
+	"Limbo Desc"
+	{
+		"en"	"A shield that was designed to hurt the soul.\nThe cudgelled debuff lasts for longer.\nDefence rating: 20%%"
 	}
 	"The Standchen Desc"
 	{
@@ -3320,7 +3328,7 @@
 	}
 	"Improved Rapier Desc"
 	{
-		"en"	"More experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: Dmg taken penalty reduced from 20%% to 10%%.\nDuel!: You gain a reward for winning duels."
+		"en"	"More experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: Dmg taken penalty reduced from 20%% to 10%%.\nDuel!: You gain a reward for winning duels. (Cash and HP)"
 		"fr"	"Vous souffrez 10%% plus de dégats au lieu de 20%%.\nVous gagnez une rétribution pour gagner un duel.\nPlus d'éxpérience, plus d'améliorations. Plus d'argent dépensé pour arriver ici."
 		"chi"	"为了修复和使用这把剑，你花费了无数个小时，流尽了汗水和眼泪。如同你的信用卡。\n平衡失调：受到的伤害从+20%%将抵至+10%%。\n对决！：\n杀死敌人后获得奖励。"
 	}
