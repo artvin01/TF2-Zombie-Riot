@@ -363,6 +363,8 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	if(b_thisNpcIsARaid[client])
 	{
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
+		if(Waves_InFreeplay())
+			Shield_Power = 0.06;
 	}
 
 	GrantEntityArmor(client, false, Shield_Power, strenght, 1);
