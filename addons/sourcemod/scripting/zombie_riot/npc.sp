@@ -800,6 +800,7 @@ void NPC_ConfigSetup()
 	PetrisBaron_OnMapStart_NPC();
 	Sphynx_OnMapStart_NPC();
 	ZombineSurvival_OnMapStart_NPC();
+	ZMainHeadcrabZombie_OnMapStart_NPC();
 
 	// Matrix
 	AgentAlan_OnMapStart_NPC();
@@ -1765,7 +1766,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/truesurvival/npc_petrisisbaron.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_sphynx.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zombine.sp"
-
+#include "zombie_riot/npc/mutations/truesurvival/npc_zmain_headcrabzombie.sp"
 
 
 

@@ -139,6 +139,11 @@ methodmap ZMainHeadcrabZombie < CClotBody
 	}
 	
 	
+	property float m_flJumpCooldownZmain
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	public ZMainHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -159,16 +164,14 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		//IDLE
-		npc.m_flSpeed = 120.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 200.0;
-		}
+		npc.m_flSpeed = 300.0;
+
 		func_NPCDeath[npc.index] = ZMainHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrabZombie_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		
 		npc.StartPathing();
+		f_MaxAnimationSpeed[npc.index] = 1.0;
 		
 		return npc;
 	}
@@ -206,120 +209,154 @@ public void ZMainHeadcrabZombie_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-		npc.StartPathing();
-		//PluginBot_NormalJump(npc.index);
 	}
 	
-	int closest = npc.m_iTarget;
-	
-	if(IsValidEnemy(npc.index, closest))
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
-			
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-				
-		//Predict their pos.
-		if(flDistanceToTarget < npc.GetLeadRadius())
+		ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		ZMainHeadcrabZombie_SelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		if(i_IsABuilding[npc.m_iTarget])
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
-		}
-		else
-		{
-			NPC_SetGoalEntity(npc.index, closest);
-		}
-		
-		//Target close enough to hit
-		
-		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
-		{
-			//Look at target so we hit.
-		//	npc.FaceTowards(vecTarget, 20000.0);
-			//npc.m_bAllowBackWalking = true;
-			int PrimaryThreatIndex = npc.m_iTarget;
-			if(flDistanceToTarget < 4000.0) //the zmain back-off code
-			{
-				npc.StartPathing();
-				
-				int Enemy_I_See;
-			
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
-				{
-					float vBackoffPos[3];
-					BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex, 300.0, vBackoffPos);
-					NPC_SetGoalVector(npc.index, vBackoffPos, true);
-				}
-			}
-			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-			{
-				//Play attack ani
-				if (!npc.m_flAttackHappenswillhappen)
-				{
-					npc.AddGesture("ACT_MELEE_ATTACK1");
-					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime(npc.index)+0.7;
-					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.83;
-					npc.m_flAttackHappenswillhappen = true;
-				}
-				//Can we attack right now?
-				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					Handle swingTrace;
-					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, closest))
-					{
-						int target = TR_GetEntityIndex(swingTrace);	
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						if(target > 0) 
-						{
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_CLUB, -1, _, vecHit);					
-							}
-							
-							
-								
-							// Hit sound
-							npc.PlayMeleeHitSound();
-						}
-						else
-						{
-							npc.PlayMeleeMissSound();
-						}
-					}
-					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
-					npc.m_flAttackHappenswillhappen = false;
-				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
-				}
-			}
-			
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_iTarget = GetClosestTarget(npc.index);
 		}
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleSound();
+}
+
+void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float gameTime, float distance)
+{
+	npc.m_bAllowBackWalking = false;
+	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+	{
+		if(distance < npc.GetLeadRadius()) 
+		{
+			float vPredictedPos[3];
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+		}
+		//Just walk.
+		return;
+	}
+	
+	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.5))
+	{
+		//relatively close, what do ?
+		//Randomly jump
+		if(npc.m_flJumpCooldownZmain < gameTime)
+		{
+			if (npc.IsOnGround())
+			{
+				npc.m_flJumpCooldownZmain = gameTime + 2.0;
+				npc.GetLocomotionInterface().Jump();
+				float vel[3];
+				npc.GetVelocity(vel);
+				vel[2] = 400.0;
+				npc.SetVelocity(vel);
+			}	
+		}
+		
+		npc.m_bAllowBackWalking = true;
+		float vBackoffPos[3];
+		BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos, 1);
+		NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+		return;
+	}
+
+	//relatively close, what do ?
+	//Randomly jump
+	if(npc.m_flJumpCooldownZmain < gameTime)
+	{
+		if (npc.IsOnGround())
+		{
+			npc.m_flJumpCooldownZmain = gameTime + 2.0;
+			npc.GetLocomotionInterface().Jump();
+			float vel[3];
+			npc.GetVelocity(vel);
+			vel[2] = 400.0;
+			npc.SetVelocity(vel);
+		}	
+	}
+	float vBackoffPos[3];
+	BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos, 2);
+	NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+	npc.m_bAllowBackWalking = true;
+}
+
+void ZMainHeadcrabZombie_SelfDefense(ZMainHeadcrabZombie npc, float gameTime, int target, float distance)
+{
+	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+	npc.FaceTowards(VecEnemy, 500.0);
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < gameTime)
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			Handle swingTrace;
+			WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			{
+				target = TR_GetEntityIndex(swingTrace);	
+				
+				float vecHit[3];
+				TR_GetEndPosition(vecHit, swingTrace);
+				
+				if(IsValidEnemy(npc.index, target))
+				{
+					float damageDealt = 50.0;
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2.5;
+
+					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+
+					// Hit sound
+					npc.PlayMeleeHitSound();
+				} 
+			}
+			delete swingTrace;
+		}
+	}
+
+	if(gameTime > npc.m_flNextMeleeAttack)
+	{
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		{
+			int Enemy_I_See;
+								
+			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+					
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.m_iTarget = Enemy_I_See;
+				npc.PlayMeleeSound();
+				npc.AddGesture("ACT_MELEE_ATTACK1");
+						
+				npc.m_flAttackHappens = gameTime + 0.71;
+				npc.m_flDoingAnimation = gameTime + 0.71;
+				npc.m_flNextMeleeAttack = gameTime + 1.2;
+			}
+		}
+	}
 }
 
 public void ZMainHeadcrabZombie_NPCDeath(int entity)
