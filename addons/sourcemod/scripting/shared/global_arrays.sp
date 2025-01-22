@@ -490,6 +490,7 @@ bool b_VoidPortalOpened[MAXTF2PLAYERS];
 bool b_AvangardCoreB[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
+float f_MaxAnimationSpeed[MAXENTITIES];	
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
