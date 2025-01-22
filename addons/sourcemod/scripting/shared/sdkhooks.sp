@@ -2183,34 +2183,36 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	if(damagetype & DMG_TRUEDAMAGE)
 		return;
 		
+	int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	float value;
 	if(damagetype & (DMG_CLUB))
 	{
-		value = Attributes_GetOnPlayer(victim, 206, true, true, 0.0); //Melee dmg res
-		if(value)
-		{
-			damage *= value;
-		}
+		value = Attributes_GetOnPlayer(victim, 206, true, true, 1.0); //Melee dmg res
+		if(weapon != -1)
+			value *= Attributes_Get(weapon, 206, 1.0);
+		damage *= value;
 	}
 	else if(!(damagetype & DMG_FALL))
 	{
-		value = Attributes_GetOnPlayer(victim, 205, true, true, 0.0);	// RANGED damage resistance
-		if(value)
-		{
-			damage *= value;
-		}
+		value = Attributes_GetOnPlayer(victim, 205, true, true, 1.0);	// RANGED damage resistance
+		if(weapon != -1)
+			value *= Attributes_Get(weapon, 205, 1.0);
+
+		damage *= value;
 		//Everything else should be counted as ranged reistance probably.
 	}
-		
-	value = Attributes_GetOnPlayer(victim, 412, true, true, 0.0);	// Overall damage resistance
-	if(value)
-	{
-		damage *= value;
-	}	
-	//only while active!
-	int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+			
+	value = Attributes_GetOnPlayer(victim, 412, true, true, 1.0);	// Overall damage resistance
+	if(weapon != -1)
+		value *= Attributes_Get(weapon, 412, 1.0);
+
+	damage *= value;
+
 	if(weapon != -1)
 	{
+		//This is mostly used for RPG.
+		//unsure why i made them seperate, though.
+		//only while active!
 		damage *= Attributes_Get(weapon, 4009, 1.0);
 		if(damagetype & (DMG_CLUB))
 		{

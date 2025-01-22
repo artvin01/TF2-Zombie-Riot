@@ -1955,9 +1955,9 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		
 	for (int client = 1; client <= MaxClients; client++)
 	{
-		if(IsValidClient(client))
+		if(f_DisplayHurtHudToSupporter[attacker][client] > GetGameTime())
 		{
-			if(f_DisplayHurtHudToSupporter[attacker][client] > GetGameTime())
+			if(IsValidClient(client))
 			{
 				if(ResetClientCooldown)
 					RemoveHudCooldown(client);
