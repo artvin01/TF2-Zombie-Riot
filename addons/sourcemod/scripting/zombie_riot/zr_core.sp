@@ -2064,7 +2064,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 {
 	if(ArmorLevel == -1)
 	{
-		ArmorLevel = RoundToNearest(Attributes_FindOnPlayerZR(client, 701));
+		ArmorLevel = RoundToNearest(Attributes_GetOnPlayer(client, 701, false));
 	}
 
 	int Armor_Max;

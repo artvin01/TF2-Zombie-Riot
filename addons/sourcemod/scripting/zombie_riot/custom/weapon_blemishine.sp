@@ -45,7 +45,7 @@ public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, 
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit);
 		FinishLagCompensation_Base_boss();
 		i_BlemishineWhichAbility[client] = 1;
-		float value = Attributes_FindOnWeapon(client, weapon, 180);
+		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;
 		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
 		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
@@ -90,7 +90,7 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit2);
 		FinishLagCompensation_Base_boss();
 		i_BlemishineWhichAbility[client] = 2;
-		float value = Attributes_FindOnWeapon(client, weapon, 180);
+		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;
 		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
 		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
@@ -134,7 +134,7 @@ public void Weapon_BlemishineAttackM2Strongest(int client, int weapon, bool &res
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit3);
 		FinishLagCompensation_Base_boss();
 		i_BlemishineWhichAbility[client] = 2;
-		float value = Attributes_FindOnWeapon(client, weapon, 180);
+		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;
 		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
 		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
@@ -259,7 +259,7 @@ public float NPC_OnTakeDamage_Blemishine(int attacker, int victim, float &damage
 			}
 			case 2:
 			{
-				float value = Attributes_FindOnWeapon(attacker, weapon, 180);
+				float value = Attributes_Get(weapon, 180, 0.0);
 				value *= 8.0;
 				DoHealingOcean(attacker, attacker, (150.0 * 150.0), value * 1.35, true);
 				damage *= 2.0;

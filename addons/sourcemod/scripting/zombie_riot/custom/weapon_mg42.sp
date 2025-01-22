@@ -22,7 +22,7 @@ void Reset_stats_MG42_Singular_Weapon(int weapon) //This is on weapon remake. ca
 
 public void Weapon_MG42_DoubleStrike(int client, int weapon, int StandingStill)
 {
-	float Accuracy = Attributes_FindOnWeapon(client, weapon, 106, true, 1.0);
+	float Accuracy = Attributes_Get(weapon, 106, 1.0);
 	if(b_WeaponAccuracyModified[weapon] && StandingStill == 0)
 	{
 		Accuracy = (Accuracy / 0.2);
@@ -36,7 +36,7 @@ public void Weapon_MG42_DoubleStrike(int client, int weapon, int StandingStill)
 		b_WeaponAccuracyModified[weapon] = true;
 	}
 
-	float Reloadspeed = Attributes_FindOnWeapon(client, weapon, 97, true, 1.0);
+	float Reloadspeed = Attributes_Get(weapon, 97, 1.0);
 
 	if(b_WeaponAttackspeedModified[weapon] && StandingStill != 2)
 	{

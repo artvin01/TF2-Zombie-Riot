@@ -10,13 +10,13 @@ static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
 static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
 static float f_BoardReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
 static int ParryCounter = 0;
+static int EnemiesHit[6];
 
 Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
 static Handle HealPurgatory_timer[MAXPLAYERS+1];
 static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 static bool BlockHealEasy[MAXPLAYERS+1];
-
 
 //this code makes me sad
 
@@ -30,12 +30,137 @@ void WeaponBoard_Precache()
 	Zero(f_WeaponBoardhuddelay);
 }
 
+void Board_DoSwingTrace(int &enemies_hit_aoe, float &CustomMeleeRange)
+{
+	enemies_hit_aoe = 3;
+	CustomMeleeRange = MELEE_RANGE * 0.65;
+}
+
+public void Board_M1_ability(int client, int weapon, int slot)
+{
+	ApplyTempAttrib(weapon, 2, 0.25, 1.0);
+	if (Ability_Check_Cooldown(client, 2) < 0.0)
+	{
+		Ability_Apply_Cooldown(client, 2, 1.0);
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, 2);
+		Ability_Apply_Cooldown(client, 2, Ability_CD + 1.0);
+	}
+}
+
+public void Board_M1_ability_Spike(int client, int weapon, int slot)
+{
+	ApplyTempAttrib(weapon, 2, 0.35, 1.0);
+	if (Ability_Check_Cooldown(client, 2) < 0.0)
+	{
+		Ability_Apply_Cooldown(client, 2, 1.0);
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, 2);
+		Ability_Apply_Cooldown(client, 2, Ability_CD + 1.0);
+	}
+}
+
 void Board_EntityCreated(int entity) 
 {
 	for(int i=1; i<=MaxClients; i++)
 	{
 		f_BoardReflectCooldown[i][entity] = 0.0;
 	}
+}
+
+public bool Board_TraceTargets(int entity, int contentsMask, int client)
+{
+	static char classname[64];
+	if(IsValidEntity(entity))
+	{
+		GetEntityClassname(entity, classname, sizeof(classname));
+		if(((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
+		{
+			for(int i; i < sizeof(EnemiesHit); i++)
+			{
+				if(!EnemiesHit[i])
+				{
+					EnemiesHit[i] = entity;
+					break;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+public void PurgKnockback(int victim, int weapon, int client)
+{
+	static const float hullMin[3] = {-45.0, -45.0, -45.0};
+	static const float hullMax[3] = {45.0, 45.0, 45.0};
+
+	float fPos[3];
+	float fAng[3];
+	float endPoint[3];
+	float fPosForward[3];
+	GetClientEyeAngles(client, fAng);
+	GetClientEyePosition(client, fPos);
+		
+	GetAngleVectors(fAng, fPosForward, NULL_VECTOR, NULL_VECTOR);
+		
+	endPoint[0] = fPos[0] + fPosForward[0] * ENFORCER_MAX_RANGE;
+	endPoint[1] = fPos[1] + fPosForward[1] * ENFORCER_MAX_RANGE;
+	endPoint[2] = fPos[2] + fPosForward[2] * ENFORCER_MAX_RANGE;
+
+	Zero(EnemiesHit);
+
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	TR_TraceHullFilter(fPos, endPoint, hullMin, hullMax, 1073741824, Board_TraceTargets, victim);	// 1073741824 is CONTENTS_LADDER?
+	FinishLagCompensation_Base_boss();
+	
+	for(int ammount; ammount < 6; ammount++)
+		{
+			int weight = i_NpcWeight[EnemiesHit[ammount]];
+			if(weight > 5)
+				continue;
+			
+			if(weight < 0)
+				weight = 1;
+			
+			if(HasSpecificBuff(EnemiesHit[ammount], "Solid Stance"))
+				continue;
+
+			float knockback = 500.0;
+			switch(weight)
+			{
+				case 0:
+				{
+					knockback *= 1.25;
+				}
+				case 1:
+				{
+					knockback *= 1.1;
+				}
+				case 2:
+				{
+					knockback *= 0.75;
+				}
+				case 3:
+				{
+					knockback *= 0.35;
+				}
+				default:
+				{
+					knockback *= 0.0;
+				}
+			}
+			if(b_thisNpcIsABoss[EnemiesHit[ammount]])
+			{
+				knockback *= 0.65; //They take half knockback
+			}
+			FreezeNpcInTime(EnemiesHit[ammount], 0.25);	
+			Custom_Knockback(client, EnemiesHit[ammount], knockback, true, true, true);
+		}
 }
 
 public void Punish(int victim, int weapon, int bool) //AOE parry damage that scales with melee upgrades, im a coding maestro SUPREME
@@ -60,7 +185,7 @@ public void Punish(int victim, int weapon, int bool) //AOE parry damage that sca
 	EmitSoundToAll("weapons/air_burster_explode1.wav", victim, SNDCHAN_AUTO, 90, _, 1.0);
 }
 
-public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at once doesnt grant more effects
+public void SwagMeter(int victim, int weapon, int client) //so that parrying 2 enemies at once doesnt grant more effects
 {
 	if (Board_Ability_1[victim] == true)
 	{
@@ -79,6 +204,12 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 		}
 		else if(Board_Level[victim] == 4)
 		{
+			Punish(victim, weapon, true);
+			Board_Ability_1[victim] = false;
+		}
+		else if(Board_Level[victim] == 7)
+		{
+			PurgKnockback(victim, weapon, client);
 			Punish(victim, weapon, true);
 			Board_Ability_1[victim] = false;
 		}
@@ -142,40 +273,6 @@ public void Board_empower_ability_Spike(int client, int weapon, bool crit, int s
 		OnAbilityUseEffect_Board(client, weapon);
 
 		//PrintToChatAll("Spike parry");
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-		
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-			
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
-	}
-}
-
-public void Board_empower_ability_Leaf(int client, int weapon, bool crit, int slot) // Parry for the Leaf shield, level 2
-{
-	if (Ability_Check_Cooldown(client, slot) < 0.0)
-	{
-		Rogue_OnAbilityUse(client, weapon);
-		float Cooldown = 5.0;
-		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
-		Ability_Apply_Cooldown(client, slot, Cooldown);
-
-		Board_Level[client] = 2;
-		
-		Board_Ability_1[client] = true;
-
-		weapon_id[client] = weapon;
-		
-		OnAbilityUseEffect_Board(client, weapon);
-
-		//PrintToChatAll("Leaf parry");
-
 	}
 	else
 	{
@@ -258,19 +355,17 @@ public void Board_empower_ability_Punishment(int client, int weapon, bool crit, 
 	}
 }
 
-public void Board_empower_ability_Rampart(int client, int weapon, bool crit, int slot) // Parry for the Rampart Shield, level 5
+public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int slot) // Parry for the Cudgel Shield, level 6
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		float Cooldown = 5.0;
+		float Cooldown = 3.0;
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
-		Board_Level[client] = 5;
+		Board_Level[client] = 6;
 		
-		Board_Ability_1[client] = true;
-
 		weapon_id[client] = weapon;
 
 		OnAbilityUseEffect_Board(client, weapon);
@@ -292,7 +387,41 @@ public void Board_empower_ability_Rampart(int client, int weapon, bool crit, int
 	}
 }
 
-public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int slot) // Parry for the Cudgel Shield, level 6
+public void Board_empower_ability_Purgatory(int client, int weapon, bool crit, int slot) // Parry for the Purgatory shield, level 7
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Rogue_OnAbilityUse(client, weapon);
+		float Cooldown = 5.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Ability_Apply_Cooldown(client, slot, Cooldown);
+
+		Board_Level[client] = 7;
+		
+		Board_Ability_1[client] = true;
+
+		weapon_id[client] = weapon;
+		
+		OnAbilityUseEffect_Board(client, weapon);
+
+		//PrintToChatAll("Leaf parry");
+
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
+}
+
+public void Board_empower_ability_Limbo(int client, int weapon, bool crit, int slot) // Parry for the Limbo Shield, level 8
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
@@ -301,8 +430,8 @@ public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int 
 		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
-		Board_Level[client] = 6;
-		
+		Board_Level[client] = 8;
+
 		weapon_id[client] = weapon;
 
 		OnAbilityUseEffect_Board(client, weapon);
@@ -341,6 +470,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	}
 	if (!CheckInHud() && f_ParryDuration[victim] > GetGameTime())
 	{
+		int client = victim;
 		if(Board_Level[victim] == 1)
 		{
 			Board_Hits[victim] += 1;
@@ -350,7 +480,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		{
 			Board_Hits[victim] += 1;
 			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
-			SwagMeter(victim, weapon);
+			SwagMeter(victim, weapon, client);
 		}
 		else if(Board_Level[victim] == 3)
 		{
@@ -361,19 +491,31 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		{
 			Board_Hits[victim] += 1;
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-			SwagMeter(victim, weapon);
+			SwagMeter(victim, weapon, client);
 		}
 		else if(Board_Level[victim] == 5)
 		{
 			Board_Hits[victim] += 1;
 			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
-			SwagMeter(victim, weapon);
+			SwagMeter(victim, weapon, client);
 		}
 		else if(Board_Level[victim] == 6)
 		{
 			Board_Hits[victim] += 1;
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 			ApplyStatusEffect(victim, attacker, "Cudgelled", 4.0);
+		}
+		else if(Board_Level[victim] == 7)
+		{
+			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
+			SwagMeter(victim, weapon, client);
+		}
+		else if(Board_Level[victim] == 8)
+		{
+			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+			ApplyStatusEffect(victim, attacker, "Cudgelled", 8.0);
 		}
 		else if(Board_Level[victim] == 0)
 		{
@@ -397,7 +539,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		if(f_BoardReflectCooldown[victim][attacker] < GetGameTime())
 		{
 			ParryCounter += 1;
-			float ParriedDamage = 0.0;
+			float ParriedDamage = 0.0; //why did I let Lucella's code live like this
 			switch (ParryCounter)
 			{
 				case 1:
@@ -406,23 +548,27 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 				}
 				case 2:
 				{
-					ParriedDamage = 65.0;
+					ParriedDamage = 63.0; //90%
 				}
 				case 3:
 				{
-					ParriedDamage = 55.0;
+					ParriedDamage = 52.5; //this needs to be put down like a sad dog, also 75%
 				}
 				case 4:
 				{
-					ParriedDamage = 45.0;
+					ParriedDamage = 35.0; //and i dont mean like a dog that lost its leg, 50%
 				}
 				case 5, 6, 7:
 				{
-					ParriedDamage = 25.0;
+					ParriedDamage = 25.0; //i mean a truly sad dog, one that lost all of its limbs, 35%
+				}
+				case 8, 9, 10, 11, 12, 13, 14, 15:
+				{
+					ParriedDamage = 7.0; //10%
 				}
 				default:
 				{
-					ParriedDamage = 0.0;
+					ParriedDamage = 0.0; //and is actively trying to drink arsenic
 				}
 			}
 			ParriedDamage = CalculateDamageBonus_Board(ParriedDamage, weapon);
@@ -460,15 +606,23 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			{
 				case 1:
 				{
+					return damage * 0.25;
+				}
+				case 2, 3:
+				{
 					return damage * 0.3;
 				}
-				case 2:
+				case 4, 5:
 				{
 					return damage * 0.4;
 				}
-				default:
+				case 6:
 				{
 					return damage * 0.5;
+				}
+				default:
+				{
+					return damage * 0.75;
 				}
 			}
 		}
@@ -493,7 +647,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		if(!(damagetype & DMG_TRUEDAMAGE))
 			return damage;
-		return damage * 0.95;
+		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 2) //leaf
 	{
@@ -511,7 +665,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		if(!(damagetype & DMG_TRUEDAMAGE))
 			return damage;
-		return damage * 0.9;
+		return damage * 0.85;
 	}
 	else if(Board_Level[victim] == 4) //punish
 	{
@@ -520,7 +674,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		if(!(damagetype & DMG_TRUEDAMAGE))
 			return damage;
-		return damage * 0.9;
+		return damage * 0.85;
 	}
 	else if(Board_Level[victim] == 5) //ramp
 	{
@@ -538,7 +692,25 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		if(!(damagetype & DMG_TRUEDAMAGE))
 			return damage;
-		return damage * 0.85;
+		return damage * 0.8;
+	}
+	else if(Board_Level[victim] == 8) //Limbo
+	{
+		//PrintToChatAll("damage resist");
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
+		return damage * 0.8;
+	}
+	else if(Board_Level[victim] == 7) //Purgatory
+	{
+		//PrintToChatAll("damage resist");
+		if(!CheckInHud())
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
+		return damage * 0.75;
 	}
 	else
 	{
@@ -555,25 +727,25 @@ public float Player_OnTakeDamage_Board_Hud(int victim)
 	}
 	else if(Board_Level[victim] == 1) //spike
 	{
-		return 0.95;
-	}
-	else if(Board_Level[victim] == 2) //leaf
-	{
-		return 0.85;
+		return 0.9;
 	}
 	else if(Board_Level[victim] == 3) //rookie
 	{
-		return 0.9;
+		return 0.85;
 	}
 	else if(Board_Level[victim] == 4) //punish
 	{
 		return 0.85;
 	}
-	else if(Board_Level[victim] == 5) //ramp
+	else if(Board_Level[victim] == 6) //cudgel
+	{
+		return 0.8;
+	}	
+	else if(Board_Level[victim] == 7) //Purgatory
 	{
 		return 0.75;
 	}
-	else if(Board_Level[victim] == 6) //the last one cudgel
+	else if(Board_Level[victim] == 8) //Limbo
 	{
 		return 0.8;
 	}
@@ -773,6 +945,8 @@ public void PassiveBoardHeal(int client)
 float ShieldCutOffCooldown_Board(float CooldownCurrent, int weapon)
 {
 	float attackspeed = Attributes_Get(weapon, 6, 1.0);
+
+	CooldownCurrent *= 0.5;
 
 	CooldownCurrent *= attackspeed;
 

@@ -665,10 +665,6 @@ public void OnPostThink(int client)
 		{
 			Rogue_HealingSalve(client, healing_Amount);
 			Rogue_HandSupport_HealTick(client, healing_Amount);
-			if(i_BadHealthRegen[client] == 1)
-			{
-				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
-			}
 			if(b_NemesisHeart[client])
 			{
 				float HealRate = 0.25;
@@ -960,7 +956,7 @@ public void OnPostThink(int client)
 			
 			//Form res
 			float percentage = 1.0;
-			float value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);
+			float value = Attributes_GetOnPlayer(client, Attrib_FormRes, true, true, 0.0);
 			if(value)
 				percentage *= value;
 
@@ -1676,7 +1672,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	float value;
 	if(!CheckInHud())
 	{
-		value = Attributes_FindOnPlayerZR(victim, Attrib_FormRes, true, 0.0, true, true);
+		value = Attributes_GetOnPlayer(victim, Attrib_FormRes, true, true, 0.0);
 		if(value)
 		{
 			damage *= value;
@@ -2060,7 +2056,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					dieingstate[victim] = 500;
 				}
-				dieingstate[victim] -= RoundToNearest(Attributes_FindOnPlayerZR(victim, Attrib_ReviveTimeCut, false, 0.0));
+				dieingstate[victim] -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ReviveTimeCut, false,_, 0.0));
 				ForcePlayerCrouch(victim, true);
 				SDKHooks_UpdateMarkForDeath(victim, true);
 				//cooldown for left for dead.
@@ -2190,7 +2186,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	float value;
 	if(damagetype & (DMG_CLUB))
 	{
-		value = Attributes_FindOnPlayerZR(victim, 206, true, 0.0, true, true);	// MELEE damage resitance
+		value = Attributes_GetOnPlayer(victim, 206, true, true, 0.0); //Melee dmg res
 		if(value)
 		{
 			damage *= value;
@@ -2198,7 +2194,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	}
 	else if(!(damagetype & DMG_FALL))
 	{
-		value = Attributes_FindOnPlayerZR(victim, 205, true, 0.0, true, true);	// RANGED damage resistance
+		value = Attributes_GetOnPlayer(victim, 205, true, true, 0.0);	// RANGED damage resistance
 		if(value)
 		{
 			damage *= value;
@@ -2206,7 +2202,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		//Everything else should be counted as ranged reistance probably.
 	}
 		
-	value = Attributes_FindOnPlayerZR(victim, 412, true);	// Overall damage resistance
+	value = Attributes_GetOnPlayer(victim, 412, true, true, 0.0);	// Overall damage resistance
 	if(value)
 	{
 		damage *= value;
@@ -2684,9 +2680,8 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 		}
 	}
 
-	
 #if defined RPG
-	float value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);
+	float value = Attributes_GetOnPlayer(client, Attrib_FormRes, true, true, 0.0);
 	if(value)
 	{
 		damage *= value;

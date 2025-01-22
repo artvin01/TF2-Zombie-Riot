@@ -233,7 +233,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 	}
 	else
 	{
-		DemonScaling += 0.25;
+		DemonScaling = 0.5;
 	}
 	DemonScaling += 1.0;
 	npc.m_flSpeed = 200.0 * DemonScaling;

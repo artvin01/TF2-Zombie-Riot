@@ -340,7 +340,7 @@ public Action HallamDemonWhisperer_OnTakeDamage(int victim, int &attacker, int &
 		{
 			if(IsValidAlly(npc.index, npc.m_iTargetAlly))
 			{
-				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "False Therapy", 3.0);
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "False Therapy", 2.0);
 				HallamDemonWhisperer npcally = view_as<HallamDemonWhisperer>(npc.m_iTargetAlly);
 				npcally.m_iTarget = attacker;
 				float vecAlly[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecAlly);

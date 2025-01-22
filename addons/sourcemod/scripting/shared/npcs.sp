@@ -548,11 +548,11 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 	if(weapon > MaxClients && IsValidEntity(weapon))
 	{
 		validWeapon = true;
-		value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
+		value *= Attributes_Get(weapon, 2, 1.0);	//For normal weapons
 			
-		value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
+		value *= Attributes_Get(weapon, 410, 1.0); //For wand
 					
-		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //overall
+		value *= Attributes_Get(weapon, 71, 1.0); //overall
 	}
 #endif
 
@@ -610,13 +610,13 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 #if !defined RTS
 				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
-					value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
+					value *= Attributes_Get(weapon, 2, 1.0);	  //For normal weapons
 					
-					value *= Attributes_FindOnWeapon(attacker, weapon, 1000, true, 1.0); //For any
+					value *= Attributes_Get(weapon, 1000, 1.0); //For any
 					
-					value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
+					value *= Attributes_Get(weapon, 410, 1.0); //For wand
 					
-					value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
+					value *= Attributes_Get(weapon, 71, 1.0); //For wand
 
 				}
 				else
@@ -1176,29 +1176,29 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim]) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #endif
 	{
-
 #if !defined RTS
-	if(inflictor > 0 && inflictor <= MaxClients)
-	{
-		GiveRageOnDamage(inflictor, Damageaftercalc);
-		Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
-	}
-	else if(attacker > 0 && attacker <= MaxClients)
-	{
-		GiveRageOnDamage(attacker, Damageaftercalc);
-		Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
-	}
-	else
-	{
-		float damageCalc = Damageaftercalc;
-		int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-		if(Health <= 0)
+		if(inflictor > 0 && inflictor <= MaxClients)
 		{
-			damageCalc += Health;
+			GiveRageOnDamage(inflictor, Damageaftercalc);
+			Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
 		}
-		Damage_dealt_in_total[attacker] += damageCalc;
-	}
-	OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
+		else if(attacker > 0 && attacker <= MaxClients)
+		{
+			GiveRageOnDamage(attacker, Damageaftercalc);
+			Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
+		}
+		else
+		{
+			float damageCalc = Damageaftercalc;
+			int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+			if(Health <= 0)
+			{
+				damageCalc += Health;
+			}
+			Damage_dealt_in_total[attacker] += damageCalc;
+			Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);
+		}
+		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
 
 		Event event = CreateEvent("npc_hurt");
@@ -1410,6 +1410,7 @@ void ResetDamageHuds()
 {
 	Zero2(f_ClientDoDamageHud);
 	Zero2(f_ClientDoDamageHud_Hurt);
+	Zero2(f_DisplayHurtHudToSupporter);
 }
 void HudDamageIndicator(int client,int damagetype, bool wasattacker)
 {
@@ -1907,43 +1908,62 @@ stock void ResetDamageHud(int client)
 	ShowSyncHudText(client, SyncHud, "");
 }
 
-stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore)
+stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, bool DontForward = false, bool ResetClientCooldown = false)
 {
-	b_DisplayDamageHud[attacker] = true;
-	i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
-	float GameTime = GetGameTime();
-	bool raidboss_active = false;
-
-	if(!b_NpcIsInvulnerable[victim])
+	if(attacker <= MaxClients)
 	{
-		if(RaidbossIgnoreBuildingsLogic())
+		b_DisplayDamageHud[attacker] = true;
+		i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
+		float GameTime = GetGameTime();
+		bool raidboss_active = false;
+
+		if(!b_NpcIsInvulnerable[victim])
 		{
-			raidboss_active = true;
-		}
-		if(damage > 0.0)
-		{
-			float damageCalc = damage;
-			int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-			if(Health <= 0)
+			if(RaidbossIgnoreBuildingsLogic())
 			{
-				damageCalc += Health;
+				raidboss_active = true;
 			}
-			Damage_dealt_in_total[attacker] += damageCalc;
-		}
-		if(GameTime > f_damageAddedTogetherGametime[attacker])
-		{
-			if(!raidboss_active)
+			if(damage > 0.0 && !DontForward)
 			{
-				f_damageAddedTogether[attacker] = 0.0; //reset to 0 if raid isnt active.
+				float damageCalc = damage;
+				int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+				if(Health <= 0)
+				{
+					damageCalc += Health;
+				}
+				Damage_dealt_in_total[attacker] += damageCalc;
+			}
+			if(GameTime > f_damageAddedTogetherGametime[attacker])
+			{
+				if(!raidboss_active)
+				{
+					f_damageAddedTogether[attacker] = 0.0; //reset to 0 if raid isnt active.
+				}
+			}
+			if(!ignore) //Cannot be a just show function
+			{
+				f_damageAddedTogether[attacker] += damage;
+			}
+			if(damage > 0.0)
+			{
+				f_damageAddedTogetherGametime[attacker] = GameTime + 0.6;
 			}
 		}
-		if(!ignore) //Cannot be a just show function
+	}
+	if(DontForward)
+		return;
+		
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client))
 		{
-			f_damageAddedTogether[attacker] += damage;
-		}
-		if(damage > 0.0)
-		{
-			f_damageAddedTogetherGametime[attacker] = GameTime + 0.6;
+			if(f_DisplayHurtHudToSupporter[attacker][client] > GetGameTime())
+			{
+				if(ResetClientCooldown)
+					RemoveHudCooldown(client);
+					
+				Calculate_And_Display_hp(client, victim, damage, ignore, true);
+			}
 		}
 	}
 }

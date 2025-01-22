@@ -3355,16 +3355,19 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 
 #if defined ZR || defined RPG
-		if(client > 0 && client <= MaxClients)
+		if(client > 0)
 		{
-			if(i_HasBeenHeadShotted[pThis])
-				i_Headshots[client] += 1; //Award 1 headshot point, only once.
+			if(client <= MaxClients)
+			{
+				if(i_HasBeenHeadShotted[pThis])
+					i_Headshots[client] += 1; //Award 1 headshot point, only once.
 
-			if(i_HasBeenBackstabbed[pThis])
-				i_Backstabs[client] += 1; //Give a backstab count!
+				if(i_HasBeenBackstabbed[pThis])
+					i_Backstabs[client] += 1; //Give a backstab count!
 
-			i_KillsMade[client] += 1;
-			RemoveHudCooldown(client);
+				i_KillsMade[client] += 1;
+				RemoveHudCooldown(client);
+			}
 			Calculate_And_Display_hp(client, pThis, 0.0, true);
 		}
 #endif
@@ -6333,7 +6336,7 @@ stock void Custom_Knockback(int attacker,
 #if !defined RTS
 		if(enemy <= MaxClients && !ignore_attribute && !work_on_entity)
 		{
-			float Attribute_Knockback = Attributes_FindOnPlayerZR(enemy, 252, true, 1.0);	
+			float Attribute_Knockback = Attributes_GetOnPlayer(enemy, 252, true,_, 1.0);	
 			
 			knockback *= Attribute_Knockback;
 		}

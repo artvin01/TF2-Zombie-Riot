@@ -462,6 +462,11 @@ methodmap Lelouch < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
+	property float m_flGiveHyperResistances
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 
 	property int m_iWingSlot
 	{
@@ -528,6 +533,9 @@ methodmap Lelouch < CClotBody
 		if(this.m_flDoingAnimation > GameTime)
 			value *=0.35;
 
+		if(this.m_flGiveHyperResistances > GameTime)
+			value *=0.1;
+
 		if(value <= 0.05)
 			value = 0.05;
 
@@ -542,6 +550,9 @@ methodmap Lelouch < CClotBody
 		float GameTime = GetGameTime(this.index);
 		if(this.m_flDoingAnimation > GameTime)
 			value *=0.35;
+
+		if(this.m_flGiveHyperResistances > GameTime)
+			value *=0.1;
 
 		if(value <= 0.05)
 			value = 0.05;
@@ -595,6 +606,7 @@ methodmap Lelouch < CClotBody
 		npc.m_flRevertAnim = FAR_FUTURE;
 		npc.m_flFreezeAnim = FAR_FUTURE;
 		npc.m_flCrystalRevert = FAR_FUTURE;
+		npc.m_flGiveHyperResistances = 0.0;
 
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
@@ -1013,8 +1025,8 @@ static void OnMeleeSwing(int iNPC)
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Basic(100.0);
 	Laser.Radius = 100.0;
-	Laser.Damage = Modify_Damage(-1, 15.0);
-	Laser.Bonus_Damage = 5 *Modify_Damage(-1, 15.0);
+	Laser.Damage = Modify_Damage(-1, 30.0);
+	Laser.Bonus_Damage = 5 *Modify_Damage(-1, 30.0);
 	Laser.Deal_Damage(OnMeleeLaserTraceHit);
 }
 static void OnMeleeLaserTraceHit(int client, int target, int damagetype, float damage)
@@ -1056,7 +1068,7 @@ enum struct Crystal_Data
 		Manipulation crystal = view_as<Manipulation>(Crystal);
 		crystal.m_flDoingAnimation = FAR_FUTURE;
 
-		this.index = EntRefToEntIndex(Crystal);
+		this.index = EntIndexToEntRef(Crystal);
 
 		return Crystal;
 	}
@@ -1142,7 +1154,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	}
 	
 	int Health = ReturnEntityMaxHealth(npc.index);
-		Health = RoundToFloor(Health*0.05);
+		Health = RoundToFloor(Health*0.1);
 
 	npc.PlayCrystalSounds();
 
@@ -1166,6 +1178,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 
 	float Duration = 7.0;
 	Initiate_Anim(npc, Duration, "disco_fever", _,_, true, true);
+	npc.m_flGiveHyperResistances = GetGameTime(npc.index) + Duration;
 
 	npc.m_flRevertAnim = GetGameTime(npc.index) + Duration;
 
@@ -1206,6 +1219,8 @@ static void Crystal_Passive_Logic(Lelouch npc)
 		
 		float Duration = 4.0;
 		Initiate_Anim(npc, Duration, "taunt_commending_clap_spy", _,_, true);
+
+		npc.m_flGiveHyperResistances = GameTime + Duration;
 
 		if(IsValidEntity(npc.m_iSpecialEntSlot))
 			RemoveEntity(npc.m_iSpecialEntSlot);
@@ -1452,7 +1467,7 @@ static void Crystal_Passive_Logic(Lelouch npc)
 		total_crystals[i].Move(Offset_Loc, Crystal_Angles);
 	}
 
-	npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 120.0;
+	npc.m_flCrystalCoolDownTimer = GetGameTime(npc.index) + 100.0;
 }
 static int i_targets_traced[50];
 static void GetEntitiesForSlicers(int entity, int victim, float damage, int weapon)
@@ -1545,7 +1560,7 @@ static bool Initiate_Crystal_LaserSpin(Lelouch npc)
 	npc.m_flFreezeAnim = GameTime + WindUp;
 	npc.m_flCrystalRevert = GameTime + Duration + WindUp;
 
-	npc.m_flCrystalSpiralLaserCoolDownTimer = GameTime + 120.0;
+	npc.m_flCrystalSpiralLaserCoolDownTimer = GameTime + 100.0;
 
 	return true;
 
@@ -1580,7 +1595,7 @@ static bool Initiate_Crystal_LaserWorks(Lelouch npc)
 	npc.m_flFreezeAnim = GameTime + WindUp;
 	npc.m_flCrystalRevert = GameTime + Duration + WindUp;
 
-	npc.m_flCrystalLaserWorks = GameTime + 120.0;
+	npc.m_flCrystalLaserWorks = GameTime + 80.0;
 
 	return true;
 }
@@ -1971,10 +1986,10 @@ static void Create_Anchors(Lelouch npc)
 	}
 
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(300000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(175000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(352569.0 * MultiGlobalHighHealthBoss),1, true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(300000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(400000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(205000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(652569.0 * MultiGlobalHighHealthBoss),1, true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(600000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
 
 	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",200000, RoundToCeil(4.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(6.0 * MultiGlobalEnemy));
@@ -2641,6 +2656,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		float Duration = 6.0;
 		Initiate_Anim(npc, Duration, "taunt_unleashed_rage_spy", 0.5,_, true, true);
+
+		npc.m_flGiveHyperResistances = GetGameTime(npc.index) + Duration;
 
 		npc.m_flRevertAnim = GetGameTime(npc.index) + Duration;
 

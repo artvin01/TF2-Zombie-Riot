@@ -13,6 +13,7 @@ static Handle DuelState_timer[MAXPLAYERS+1];
 
 static int i_Current_Pap_Rapier[MAXTF2PLAYERS+1];
 static int i_CashLimit[MAXTF2PLAYERS+1];
+static int DuelHit = 0;
 
 static bool b_WonDuel[MAXTF2PLAYERS];
 
@@ -48,13 +49,13 @@ void Rapier_DoSwingTrace(float &CustomMeleeRange, float &CustomMeleeWide)
 	{
 		case true:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.45;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
+			CustomMeleeRange = MELEE_RANGE * 1.55;
+			CustomMeleeWide = MELEE_BOUNDS * 0.5;
 		}
 		case false:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.5;
+			CustomMeleeRange = MELEE_RANGE * 1.35;
+			CustomMeleeWide = MELEE_BOUNDS * 0.5;
 		}
 	}
 }
@@ -75,54 +76,40 @@ void RapierEndDuelOnKill(int client,int victim)
 		{
 			case 4: //second highest pap)) :)
 			{
-				HealEntityGlobal(client, client, MaxHealth * 0.05, _, 0.5,HEAL_SELFHEAL);
+				HealEntityGlobal(client, client, MaxHealth * 0.75, _, 0.5,HEAL_SELFHEAL);
 				i_CashLimit[client]++;
 				if(i_CashLimit[client] < 11)
 				{
-					CashRecievedNonWave[client] += 15;
-					CashSpent[client] -= 15;
+					CashRecievedNonWave[client] += 25;
+					CashSpent[client] -= 25;
 				}
 			}
 			case 5: //highest pap
 			{
-				HealEntityGlobal(client, client, MaxHealth * 0.07, _, 0.5,HEAL_SELFHEAL);
+				HealEntityGlobal(client, client, MaxHealth * 0.125, _, 0.5,HEAL_SELFHEAL);
 				i_CashLimit[client]++;
 				if(i_CashLimit[client] < 11)
 				{
-					CashRecievedNonWave[client] += 30;
-					CashSpent[client] -= 30;
+					CashRecievedNonWave[client] += 50;
+					CashSpent[client] -= 50;
 				}
 			}
 		}
 		delete DuelState_timer[client];
+		DuelHit *= 0;
 	}
 }
 
 public float Player_OnTakeDamage_Rapier(int victim, int attacker, float &damage)
 {
-	int pap = i_Current_Pap_Rapier[victim];
-
-	damage *= 1.15;
 	if(!CheckInHud() && f_DuelStatus[attacker] > 0.0 && DuelState_timer[victim] != INVALID_HANDLE)
 	{
 		Client_Shake(victim, 0, 10.0, 5.0, 0.5);
-		return damage *= 0.9259; // 25% more damage taken
+		return damage *= 1.25; // 25% more damage taken
 	}
-
-	switch(pap)
+	else
 	{
-		case 4:
-		{
-			return damage *= 0.8148; // 10% more damage taken
-		}
-		case 5:
-		{
-			return damage *= 0.7407; // 0% more damage taken
-		}
-		default:
-		{
-			return damage *= 0.8888; // 20% more damage taken
-		}
+		return damage;
 	}
 }
 void Rapier_duel_minicrits(int attacker)
@@ -155,12 +142,13 @@ void Rapier_duel_minicrits(int attacker)
 public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int weapon)
 {
 	int pap = i_Current_Pap_Rapier[attacker];
+	StartBleedingTimer(victim, attacker, damage * 0.03, 4, weapon, DMG_TRUEDAMAGE);
 	if(i_HasBeenHeadShotted[victim] == true)
 	{	
 		damage *= 1.25;
 		//PrintToChatAll("speedbuff from headshot :D");
 		if(pap != 0)
-			StartBleedingTimer(victim, attacker, damage * 0.06, 4, weapon, DMG_TRUEDAMAGE);
+			StartBleedingTimer(victim, attacker, damage * 0.03, 4, weapon, DMG_TRUEDAMAGE);
 	}
 	switch(pap)
 	{
@@ -179,6 +167,18 @@ public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int
 	{
 		Rapier_duel_minicrits(attacker);
 		damage *= 1.25;
+		if(RaidbossIgnoreBuildingsLogic(1))
+		{
+			if(i_HasBeenHeadShotted[victim] == true)
+			{	
+				DuelHit++;
+			}
+			DuelHit++;
+			if(DuelHit == 6)
+			{
+				RapierEndDuelOnKill(attacker, victim);
+			}
+		}
 	}
 }
 

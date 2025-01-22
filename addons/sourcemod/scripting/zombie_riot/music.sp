@@ -743,7 +743,7 @@ void Music_PostThink(int client)
 				}
 				case 7:
 				{
-					EmitSoundToClient(client, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					EmitCustomToClient(client, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 228);
 				}
 				default:
