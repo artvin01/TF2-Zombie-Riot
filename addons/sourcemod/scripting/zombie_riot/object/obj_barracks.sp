@@ -547,7 +547,7 @@ static int SummonerCombine[][] =
 	{ 0, 600, 600, 	30, 30, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
 	{ 0, 600, 200, 20, 20, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 200, 600, 20, 20, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES }, // Contruction Master
+	{ 0, 200, 600, 20, 20, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES }, // Contruction Master
 
 	{ 0, 300, 100, 0, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  }	// Construction Master

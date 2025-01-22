@@ -1392,8 +1392,12 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 			Healing_done_in_total[healer] += HealingDoneInt;
 			if(healer <= MaxClients)
 			{
-				AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
-				HealPointToReinforce(healer, HealingDoneInt, 0.0);
+				//dont get it from healing buildings
+				if(!i_IsABuilding[reciever])
+				{
+					AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+					HealPointToReinforce(healer, HealingDoneInt, 0.0);
+				}
 			}
 		}
 #endif
@@ -3031,7 +3035,7 @@ int inflictor = 0)
 #if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
-		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
+		float value = Attributes_Get(weapon, 99, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 		if(maxtargetshit == 10)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));

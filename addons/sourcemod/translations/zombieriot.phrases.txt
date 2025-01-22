@@ -4052,18 +4052,21 @@
 	"Player not detected"
 	{
 		"en"	"Player not detected"
-		"ko"	"플레이어를 감지 할 수 없습니다."	
+		"ko"	"플레이어를 감지 할 수 없습니다."
 	}
-	"Need Healing Point"
+	"Use Only Alive"
 	{
-		"#format"	"{1:i}"
-		"en"	"Need {1} Healing Point"
-		"ko"	"{1} 치료 포인트가 필요합니다."	
+		"en"	"Can only use while alive."
 	}
 	"freeplay_intro"
 	{
 		"en"		"Alright guys...\nProve you're worthy."
 	}
+	"Need Healing Point"
+	{
+		"en"	"More Healing Required."
+	}
+
 	"freeplay_start_1"
 	{
 		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future..\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."

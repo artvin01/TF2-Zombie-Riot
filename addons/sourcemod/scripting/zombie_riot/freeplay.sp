@@ -175,11 +175,30 @@ int Freeplay_GetDangerLevelCurrent()
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
+	if(RaidFight || FriendlyDay || SuperMiniBoss || AntinelNextWave || zombiecombine || moremen || immutable || spotter)
+	{
+		enemy.Is_Boss = 0;
+		enemy.WaitingTimeGive = 0.0;
+		enemy.ExtraSize = 1.0;
+		enemy.Is_Outlined = 0;
+		enemy.Is_Health_Scaled = 0;
+		enemy.Does_Not_Scale = 0;
+		enemy.ignore_max_cap = 0;
+		enemy.Is_Immune_To_Nuke = 0;
+		enemy.Is_Static = false;
+		enemy.Team = 3;
+		enemy.Is_Static = false;
+		enemy.ExtraMeleeRes = 1.0;
+		enemy.ExtraRangedRes = 1.0;
+		enemy.ExtraSpeed = 1.0;
+		enemy.ExtraDamage = 1.0;
+	}
 	if(RaidFight)
 	{
 		enemy.Is_Outlined = true;
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 2;
+		enemy.ExtraDamage = 1.0;
 
 		switch(RaidFight)
 		{
@@ -270,16 +289,18 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_nemal");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
+				enemy.ExtraDamage = 0.75;
 			}
 			case 18:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_ruina_twirl");
-				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 19:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraDamage = 0.75;
 			}
 			case 20:
 			{
@@ -368,7 +389,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Outlined = true;
 		enemy.Is_Immune_To_Nuke = true;
-		enemy.Is_Boss = 3;
+		enemy.Is_Boss = 1;
 
 		if(randomsuper == -1)
 			PrintToChatAll("THE SUPER MINIBOSS SKULL FUCKED ITSELF UP AGAIN, UHHGHHGGHGJ");
@@ -431,6 +452,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraSpeed = 1.35;
 		enemy.ExtraSize = 1.75; // big
 		enemy.Does_Not_Scale = 1;
+		enemy.Is_Health_Scaled = 0;
 
 		count = GetRandomInt(2, 8);
 		SuperMiniBoss = false;
@@ -448,6 +470,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraSpeed = 2.0;
 		enemy.ExtraSize = 0.2; // smol
 		enemy.Credits += 1.0;
+		enemy.Is_Health_Scaled = 0;
 		strcopy(enemy.CustomName, sizeof(enemy.CustomName), "Antinel");
 
 		count = 1;
@@ -458,25 +481,29 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_zombine");
 		enemy.Health = RoundToFloor(1250000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.8);
-		enemy.ExtraSpeed = 2.5;
-		enemy.ExtraSize = 1.5; // smol
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.1);
+		enemy.ExtraSpeed = 1.5;
+		enemy.ExtraSize = 1.0; // smol
 		enemy.Credits += 100.0;
 		enemy.ExtraDamage = 3.5;
+		enemy.Is_Boss = 0;
+		enemy.Is_Health_Scaled = 0;
 
-		count = 6;
+		count = 25;
 		zombiecombine = false;
 	}
 	else if(moremen)
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_seaborn_heavy");
-		enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 2.0);
+		enemy.Health = RoundToCeil(50000.0);
 		enemy.Health = RoundToCeil(enemy.Health * 2.0);
 		enemy.ExtraSpeed = 5.0;
 		enemy.ExtraSize = 1.25;
 		enemy.Credits += 125.0;
 		enemy.ExtraDamage = 1.5;
+		enemy.Is_Boss = 0;
+		enemy.Is_Health_Scaled = 0;
 
 		count = 30;
 		moremen--;
@@ -486,6 +513,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
+		enemy.Health = RoundToCeil(50000.0);
 		enemy.Health = RoundToCeil((HealthBonus + (300000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
 		enemy.ExtraMeleeRes = 1.35;
 		enemy.ExtraRangedRes = 1.0;
@@ -493,6 +521,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraDamage = 1.0;
 		enemy.ExtraSize = 1.0;
 		enemy.Credits += 100.0;
+		enemy.Is_Boss = 0;
+		enemy.Is_Health_Scaled = 0;
 
 		count = 5;
 		immutable = false;
@@ -501,7 +531,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Team = TFTeam_Red;
 		enemy.Index = NPC_GetByPlugin("npc_spotter");
-		enemy.Health = RoundToFloor(75000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToFloor(35000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Is_Boss = 0;
+		enemy.Is_Health_Scaled = 0;
 		count = 1;
 		spotteralive = true;
 		spotter--;
@@ -516,16 +548,32 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		if(GetRandomFloat(0.0, 1.0) >= bigchance)
 		{
+			enemy.Is_Boss = 0;
+			enemy.WaitingTimeGive = 0.0;
+			enemy.ExtraSize = 1.0;
+			enemy.Is_Outlined = 0;
+			enemy.Is_Health_Scaled = 0;
+			enemy.Does_Not_Scale = 0;
+			enemy.ignore_max_cap = 0;
+			enemy.Is_Immune_To_Nuke = 0;
+			enemy.Is_Static = false;
+			enemy.Team = 3;
+			enemy.Is_Static = false;
+			enemy.ExtraMeleeRes = 1.0;
+			enemy.ExtraRangedRes = 1.0;
+			enemy.ExtraSpeed = 1.0;
+			enemy.ExtraDamage = 1.0;
+
 			enemy.Is_Immune_To_Nuke = true;
 			if(GetRandomInt(1, 2) == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
-				enemy.Health = 22500; // enemy hp is getting overriden apparently
+				enemy.Health = 30000; // enemy hp is getting overriden apparently
 			}
 			else
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = 75000; // enemy hp is getting overriden apparently
+				enemy.Health = 80000; // enemy hp is getting overriden apparently
 			}
 
 			if(enemy.Health)
@@ -534,10 +582,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 
 			enemy.ExtraMeleeRes = 1.35;
-			enemy.ExtraRangedRes = 1.0;
-			enemy.ExtraSpeed = 1.0;
-			enemy.ExtraDamage = 1.0;
-			enemy.ExtraSize = 1.0;
+			enemy.ExtraRangedRes = 0.75;
+			enemy.ExtraSpeed = 1.05;
+			enemy.ExtraDamage = 1.1;
+			enemy.ExtraSize = 1.15;
 
 			enemy.Credits += 100.0;
 			switch(GetRandomInt(1, 4))
@@ -597,12 +645,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		if(KillBonus)
 			enemy.Credits += KillBonus;
-
-		char npc_classname[60];
-		NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
-		if(StrEqual(npc_classname, "npc_ruina_valiant") || StrEqual(npc_classname, "npc_majorsteam"))
-			count = 1;
-
 	}
 
 	if(count < 1)
@@ -615,7 +657,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
 	if(alaxios && StrEqual(npc_classname, "npc_medival_achilles") || StrEqual(npc_classname, "npc_medival_monk") || StrEqual(npc_classname, "npc_medival_villager") || StrEqual(npc_classname, "npc_medival_son_of_osiris"))
 	{	
-		count = 5;
+		count = 2;
 	}
 
 	enemy.ExtraSize *= ExtraEnemySize;

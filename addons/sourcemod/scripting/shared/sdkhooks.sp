@@ -559,72 +559,7 @@ public void OnPostThink(int client)
 		
 		Mana_Regen_Tick = true;
 
-		float ManaRegenExtra = 1.0;
-		float ManaMaxExtra = 1.0;
-		int i, entity;
-		while(TF2_GetItem(client, entity, i))
-		{
-			if(i_IsWandWeapon[entity])
-			{
-				has_mage_weapon[client] = true;
-				ManaMaxExtra *= Attributes_Get(entity, 4019, 1.0);
-				ManaRegenExtra *= Attributes_Get(entity, 4020, 1.0);
-			}
-		}
-
-		max_mana[client] = 400.0;
-		mana_regen[client] = 10.0;
-		max_mana[client] *= ManaMaxExtra;
-		mana_regen[client] *= ManaRegenExtra;
-				
-		if(i_CurrentEquippedPerk[client] == 4)
-		{
-			mana_regen[client] *= 1.35;
-		}
-
-		if(Classic_Mode())
-		{
-			mana_regen[client] *= 0.7;
-		}
-		
-
-		mana_regen[client] *= Mana_Regen_Level[client];
-		max_mana[client] *= Mana_Regen_Level[client];
-		if(b_TwirlHairpins[client])
-		{
-			mana_regen[client] *= 1.05;
-			max_mana[client] *= 1.05;
-		}
-
-		/*int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
-		if(IsValidEntity(weapon))
-		{
-			switch(i_CustomWeaponEquipLogic[weapon])
-			{
-				case WEAPON_KIT_FRACTAL:
-				{
-					Fractal_Kit_Modify_Mana(client, weapon);
-				}
-			}
-		}*/
-
-		if(b_AggreviatedSilence[client])	
-		{
-			mana_regen[client] *= 0.30;
-		}
-		else
-		{
-			float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
-			MultiplyRegen *= 0.5;
-			if(MultiplyRegen < 1.0)
-				MultiplyRegen = 1.0;
-
-			if(MultiplyRegen >= 3.0)
-				MultiplyRegen = 3.0;
-
-			mana_regen[client] *= MultiplyRegen;
-		}
+		ManaCalculationsBefore(client);
 	
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
 		{
@@ -730,10 +665,6 @@ public void OnPostThink(int client)
 		{
 			Rogue_HealingSalve(client, healing_Amount);
 			Rogue_HandSupport_HealTick(client, healing_Amount);
-			if(i_BadHealthRegen[client] == 1)
-			{
-				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
-			}
 			if(b_NemesisHeart[client])
 			{
 				float HealRate = 0.25;
@@ -1025,7 +956,7 @@ public void OnPostThink(int client)
 			
 			//Form res
 			float percentage = 1.0;
-			float value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);
+			float value = Attributes_GetOnPlayer(client, Attrib_FormRes, true, true, 0.0);
 			if(value)
 				percentage *= value;
 
@@ -1088,7 +1019,15 @@ public void OnPostThink(int client)
 			}
 			if(b_Reinforce[client])
 			{
-				FormatEx(buffer, sizeof(buffer), "%s [▼ %i％]",buffer, ReinforcePoint(client));
+				had_An_ability = true;
+				if(MaxRevivesReturn() >= 3)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [▼ MAX]",buffer);
+				}
+				else
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f%%]",buffer, ReinforcePoint(client) * 100.0);
+				}
 			}
 #endif
 
@@ -1733,7 +1672,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	float value;
 	if(!CheckInHud())
 	{
-		value = Attributes_FindOnPlayerZR(victim, Attrib_FormRes, true, 0.0, true, true);
+		value = Attributes_GetOnPlayer(victim, Attrib_FormRes, true, true, 0.0);
 		if(value)
 		{
 			damage *= value;
@@ -2117,7 +2056,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					dieingstate[victim] = 500;
 				}
-				dieingstate[victim] -= RoundToNearest(Attributes_FindOnPlayerZR(victim, Attrib_ReviveTimeCut, false, 0.0));
+				dieingstate[victim] -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ReviveTimeCut, false,_, 0.0));
 				ForcePlayerCrouch(victim, true);
 				SDKHooks_UpdateMarkForDeath(victim, true);
 				//cooldown for left for dead.
@@ -2244,34 +2183,36 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	if(damagetype & DMG_TRUEDAMAGE)
 		return;
 		
+	int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	float value;
 	if(damagetype & (DMG_CLUB))
 	{
-		value = Attributes_FindOnPlayerZR(victim, 206, true, 0.0, true, true);	// MELEE damage resitance
-		if(value)
-		{
-			damage *= value;
-		}
+		value = Attributes_GetOnPlayer(victim, 206, true, true, 1.0); //Melee dmg res
+		if(weapon != -1)
+			value *= Attributes_Get(weapon, 206, 1.0);
+		damage *= value;
 	}
 	else if(!(damagetype & DMG_FALL))
 	{
-		value = Attributes_FindOnPlayerZR(victim, 205, true, 0.0, true, true);	// RANGED damage resistance
-		if(value)
-		{
-			damage *= value;
-		}
+		value = Attributes_GetOnPlayer(victim, 205, true, true, 1.0);	// RANGED damage resistance
+		if(weapon != -1)
+			value *= Attributes_Get(weapon, 205, 1.0);
+
+		damage *= value;
 		//Everything else should be counted as ranged reistance probably.
 	}
-		
-	value = Attributes_FindOnPlayerZR(victim, 412, true);	// Overall damage resistance
-	if(value)
-	{
-		damage *= value;
-	}	
-	//only while active!
-	int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+			
+	value = Attributes_GetOnPlayer(victim, 412, true, true, 1.0);	// Overall damage resistance
+	if(weapon != -1)
+		value *= Attributes_Get(weapon, 412, 1.0);
+
+	damage *= value;
+
 	if(weapon != -1)
 	{
+		//This is mostly used for RPG.
+		//unsure why i made them seperate, though.
+		//only while active!
 		damage *= Attributes_Get(weapon, 4009, 1.0);
 		if(damagetype & (DMG_CLUB))
 		{
@@ -2527,7 +2468,7 @@ void ApplyLastmanOrDyingOverlay(int client)
 	{
 		switch(Yakuza_Lastman())
 		{
-			case 1,2,3,4:
+			case 1,2,3,4,7:
 			{
 				return;
 			}
@@ -2741,9 +2682,8 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 		}
 	}
 
-	
 #if defined RPG
-	float value = Attributes_FindOnPlayerZR(client, Attrib_FormRes, true, 0.0, true, true);
+	float value = Attributes_GetOnPlayer(client, Attrib_FormRes, true, true, 0.0);
 	if(value)
 	{
 		damage *= value;
@@ -3281,5 +3221,63 @@ void AllowWeaponFireAfterEmpty(int client, int weapon)
 			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.5);
 		}
 		WeaponWasGivenInfiniteDelay[weapon] = false;
+	}
+}
+
+
+
+void ManaCalculationsBefore(int client)
+{
+	has_mage_weapon[client] = false;
+	int i, entity;
+	float ManaRegen = 10.0;
+	float ManaMaxExtra = 400.0;
+	
+	while(TF2_GetItem(client, entity, i))
+	{
+		if(i_IsWandWeapon[entity])
+		{
+			has_mage_weapon[client] = true;
+			ManaMaxExtra *= Attributes_Get(entity, 4019, 1.0);
+			ManaRegen *= Attributes_Get(entity, 4020, 1.0);
+		}
+	}
+	max_mana[client] = ManaMaxExtra;
+	mana_regen[client] = ManaRegen;
+			
+	if(i_CurrentEquippedPerk[client] == 4)
+	{
+		mana_regen[client] *= 1.35;
+	}
+
+	if(Classic_Mode())
+	{
+		mana_regen[client] *= 0.7;
+	}
+	
+
+	mana_regen[client] *= Mana_Regen_Level[client];
+	max_mana[client] *= Mana_Regen_Level[client];
+	if(b_TwirlHairpins[client])
+	{
+		mana_regen[client] *= 1.05;
+		max_mana[client] *= 1.05;
+	}
+
+	if(b_AggreviatedSilence[client])	
+	{
+		mana_regen[client] *= 0.30;
+	}
+	else
+	{
+		float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
+		MultiplyRegen *= 0.5;
+		if(MultiplyRegen < 1.0)
+			MultiplyRegen = 1.0;
+
+		if(MultiplyRegen >= 3.0)
+			MultiplyRegen = 3.0;
+
+		mana_regen[client] *= MultiplyRegen;
 	}
 }

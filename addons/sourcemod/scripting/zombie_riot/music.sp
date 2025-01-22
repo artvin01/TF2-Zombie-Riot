@@ -262,6 +262,8 @@ void Music_EndLastmann(bool Reinforce=false)
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman.mp3", 2.0);
 					case 6:
  						StopSound(client, SNDCHAN_STATIC, "#music/hl2_song23_suitsong3.mp3");
+					case 7:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3", 2.0);
 				}
 
 				SetMusicTimer(client, 0);
@@ -738,6 +740,11 @@ void Music_PostThink(int client)
 				{
 					EmitSoundToClient(client, "#music/hl2_song23_suitsong3.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 					SetMusicTimer(client, GetTime() + 150);
+				}
+				case 7:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					SetMusicTimer(client, GetTime() + 228);
 				}
 				default:
 				{	

@@ -29,7 +29,7 @@ void ExplosiveBullets_Precache()
 
 public void Weapon_ExplosiveBullets(int client, int weapon, const char[] classname, bool &result)
 {
-	int NumPellets = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 118));
+	int NumPellets = RoundToNearest(Attributes_Get(weapon, 118, 1.0));
 	if (NumPellets < 1)
 		return;
 		

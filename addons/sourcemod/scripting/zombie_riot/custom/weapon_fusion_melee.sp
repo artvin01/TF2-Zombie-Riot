@@ -1713,7 +1713,7 @@ public void Void_MeleeDoubleTapAbility(int client, int weapon, bool crit, int sl
 
 public void WeaponVoidDoubleStrike(int client, int weapon, bool crit, int slot)
 {
-	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float attackspeed = Attributes_Get(weapon, 6, 1.0);
 	if(!b_WeaponAttackSpeedModified[weapon] && f_VoidDoubleTapAbility[client] >= GetGameTime()) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 	{
 		b_WeaponAttackSpeedModified[weapon] = true;

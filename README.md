@@ -120,6 +120,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
+- [Edict Limiter Fix- GAMEDATA ONLY!!!!!!!!!!!!!!!!!!](https://github.com/sapphonie/tf2-edict-limiter)
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
@@ -134,12 +135,13 @@ Current coders that in anyway actively helped, in order of how much:
 
 - [Artvin](https://github.com/artvin01) (main dev, me)
 - [Batfoxkid](https://github.com/Batfoxkid) (co dev)
+- [JDeivid](https://github.com/jDaivid) (Co Dev)
 - [Mikusch](https://github.com/Mikusch) (Gamedata assistance and more, a savior.)
 - [Kenzzer](https://github.com/Kenzzer) (Got gamedata and make an extention edit for us, plus CBaseNpc!)
+- [Spookmaster](https://github.com/SupremeSpookmaster) (general assitance and debugging too)
 - [Mentrillum](https://github.com/Mentrillum) (Assitance in converting from Pathfollower to CBaseNpc!)
 - [Suza](https://github.com/Zabaniya001/)(gamedata stuffs)
 - [Alex](https://github.com/JustAlex14)(Weapons overall assistance)
-- [Spookmaster](https://github.com/SupremeSpookmaster) (general assitance and debugging too)
 - [Ficool2](https://github.com/ficool2) (helped with the mvm hud logic and some workarounds)
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
 - [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)

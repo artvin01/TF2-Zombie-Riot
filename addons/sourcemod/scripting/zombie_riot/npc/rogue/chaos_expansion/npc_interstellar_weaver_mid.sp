@@ -173,9 +173,8 @@ static void ClotThink(int iNPC)
 
 			if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
 			{
-				float Ratio = (ZR_GetWaveCount()+1)/60.0;
 				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
-				Stellar_Weaver_Attack(npc.index, vecTarget, 50.0*Ratio, 500.0, 15.0, 500.0*Ratio, 150.0, 10.0, true);
+				Stellar_Weaver_Attack(npc.index, vecTarget, 3.0*RaidModeScaling, 500.0, 15.0, 15.0*RaidModeScaling, 150.0, 10.0, true);
 				b_stellar_weaver_allow_attack[npc.index] = false;
 			}
 				
@@ -183,9 +182,9 @@ static void ClotThink(int iNPC)
 			if(GameTime > npc.m_flNextRangedAttack)
 			{
 				npc.PlayMeleeHitSound();
-				float Ratio = (ZR_GetWaveCount()+1)/60.0;
-				float DamageDone = 50.0*Ratio;
-				npc.FireParticleRocket(vecTarget, DamageDone, 1250.0, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+				float DamageDone = 10.0*RaidModeScaling;
+				float projectile_speed = 1250.0;
+				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 5.0;
 			}
 		}

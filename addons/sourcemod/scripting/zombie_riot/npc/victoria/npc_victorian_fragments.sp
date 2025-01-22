@@ -427,14 +427,14 @@ int VictoriaFragmentsAssaultMode(int iNPC, float gameTime, int target, float dis
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
 			Handle swingTrace;
-			if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+			if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }, .vecSwingStartOffset = 10.0))
 			{
 				target = TR_GetEntityIndex(swingTrace);	
 					
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
-				float origin[3], angles[3];
-				view_as<CClotBody>(npc.index).GetAttachment("partyhat", origin, angles);
+				float origin[3];
+				WorldSpaceCenter(npc.index, origin);
 				ShootLaser(npc.index, "bullet_tracer01_red", origin, vecHit, false);
 				npc.m_flNextMeleeAttack = gameTime + 0.3;
 				if(IsValidEnemy(npc.index, target))

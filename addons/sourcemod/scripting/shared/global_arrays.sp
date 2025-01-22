@@ -464,7 +464,6 @@ float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXENTITIES];
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
-int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
@@ -709,6 +708,7 @@ float TickrateModify;
 int TickrateModifyInt;
 float f_ClientDoDamageHud[MAXTF2PLAYERS][2];
 float f_ClientDoDamageHud_Hurt[MAXTF2PLAYERS][2];
+float f_DisplayHurtHudToSupporter[MAXENTITIES][MAXTF2PLAYERS];
 
 enum
 {

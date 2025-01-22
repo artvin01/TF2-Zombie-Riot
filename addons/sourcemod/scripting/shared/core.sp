@@ -61,7 +61,6 @@
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
-
 //#pragma dynamic	131072
 //Allah This plugin has so much we need to do this.
 
@@ -72,6 +71,8 @@ enum OSType
 	OS_Windows,
 	OS_Unknown
 }
+
+OSType OperationSystem;
 
 enum
 {
@@ -106,38 +107,6 @@ ConVar CvarMaxPlayerAlive;
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
-//#define CompensatePlayers
-
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-
-/*
-	THIS CODE IS COMPRISED OF MULTIPLE CODERS JUST ADDING THEIR THINGS!
-	SO HOW THIS CODE WORKS CAN HEAVILY VARY FROM FILE TO FILE!!!
-	
-	Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
-	
-	Current coders that in anyway actively helped, in order of how much:
-	
-	Artvin
-	Batfoxkid
-	Mikusch
-	Suza
-	Alex
-	Spookmaster
-	
-	Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
-	rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
-*/
-
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
 
 #define FAR_FUTURE	100000000.0
 #define MAXENTITIES	2048
@@ -185,6 +154,9 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define FL_WIDOWS_WINE_DURATION 4.0
 #define FL_WIDOWS_WINE_DURATION_NPC 0.85
+
+#define MELEE_RANGE 64.0
+#define MELEE_BOUNDS 22.0
 
 
 
@@ -750,7 +722,7 @@ public void OnPluginStart()
 	Commands_PluginStart();
 	Events_PluginStart();
 #endif
-
+	checkOS();
 	FileNetwork_PluginStart();
 
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
@@ -762,8 +734,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
 	RegConsoleCmd("sm_getpos", GetPos);
 	RegConsoleCmd("sm_me", DoRoleplayTalk);
-//	HookEvent("npc_hurt", OnNpcHurt);
-	
+
 	sv_cheats = FindConVar("sv_cheats");
 	nav_edit = FindConVar("nav_edit");
 
@@ -2026,8 +1997,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 
 			float attack_speed;
 			
-			attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
-			attack_speed *= (1.0 / Attributes_FindOnWeapon(client, weapon, 396, true, 1.0));
+			attack_speed = 1.0 / Attributes_Get(weapon, 6, 1.0);
+			attack_speed *= (1.0 / Attributes_Get(weapon, 396, 1.0));
 
 			if(f_ModifThirdPersonAttackspeed[weapon] != 1.0)
 				attack_speed *= f_ModifThirdPersonAttackspeed[weapon];
@@ -2206,6 +2177,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 #if defined ZR || defined RPG
 		CoinEntityCreated(entity);
 #endif
+		//set it to 0!
+		i_ExplosiveProjectileHexArray[entity] = 0;
 		b_ThisWasAnNpc[entity] = false;
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
@@ -3014,7 +2987,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 						{
 							float attack_speed;
 						
-							attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
+							attack_speed = 1.0 / Attributes_Get(weapon_holding, 6, 1.0);
 							
 							if(attack_speed > 5.0)
 							{
@@ -3479,3 +3452,23 @@ void ClientRevivalTickLogic(int client)
 	}
 }
 #endif	// ZR
+
+
+void checkOS()
+{
+	char cmdline[256];
+	GetCommandLine(cmdline, sizeof(cmdline));
+
+	if (StrContains(cmdline, "./srcds_linux ", false) != -1)
+	{
+		OperationSystem = OS_Linux;
+	}
+	else if (StrContains(cmdline, ".exe", false) != -1)
+	{
+		OperationSystem = OS_Windows;
+	}
+	else
+	{
+		OperationSystem = OS_Unknown;
+	}
+}

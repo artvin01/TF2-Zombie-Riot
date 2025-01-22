@@ -158,8 +158,6 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-#define DEFAULT_MELEE_RANGE 64.0
-#define DEFAULT_MELEE_BOUNDS 22.0
 void SeaMelee_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
 {
 	switch(MeleeLevel[client])
@@ -170,22 +168,22 @@ void SeaMelee_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMel
 		}
 		case 1:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+			CustomMeleeRange = MELEE_RANGE * 1.25;
+			CustomMeleeWide = MELEE_BOUNDS * 1.25;
 			ignore_walls = true;
 			enemies_hit_aoe = 4;
 		}
 		case 2:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+			CustomMeleeRange = MELEE_RANGE * 1.25;
+			CustomMeleeWide = MELEE_BOUNDS * 1.25;
 			ignore_walls = true;
 			enemies_hit_aoe = 5;
 		}
 		default:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.15;
+			CustomMeleeRange = MELEE_RANGE * 1.15;
+			CustomMeleeWide = MELEE_BOUNDS * 1.15;
 			enemies_hit_aoe = 3;
 		}
 	}

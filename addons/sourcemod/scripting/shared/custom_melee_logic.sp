@@ -177,9 +177,6 @@ public void SepcialBackstabLaughSpy(int attacker)
 #if defined RPG
 #define WEAPON_BOOM_HAMMER 10000
 #endif
-
-#define MELEE_RANGE 64.0
-#define MELEE_BOUNDS 22.0
 stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0,
  bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {
@@ -251,6 +248,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_CASTLEBREAKER:
 			{
 				CastleBreaker_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
+			case WEAPON_BOARD:
+			{
+				Board_DoSwingTrace(enemies_hit_aoe, CustomMeleeRange);
 			}
 		}	
 	}
@@ -427,7 +428,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 		{
 			case 649: //The Spy-cicle, because it has no hit enemy sound.
 			{
-				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 90, _, 1.0);
+				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 75, _, 1.0);
 				return ZEROSOUND;
 			}
 		}

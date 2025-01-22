@@ -142,35 +142,21 @@ int AmmoboxUsed(int client, int entity)
 	{
 		if(i_IsWandWeapon[weapon])
 		{
-			float max_mana_temp = 800.0;
-			float mana_regen_temp = 100.0;
-			
-			if(i_CurrentEquippedPerk[client] == 4)
-			{
-				mana_regen_temp *= 1.35;
-			}
-			
-			if(Mana_Regen_Level[client])
-			{			
-				mana_regen_temp *= Mana_Regen_Level[client];
-				max_mana_temp *= Mana_Regen_Level[client];	
-			}
-			if(b_AggreviatedSilence[client])
-				mana_regen_temp *= 0.30;
+			ManaCalculationsBefore(client);
 
 		//	mana_regen_temp *= 0.5;
 			
-			if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+			if(Current_Mana[client] < RoundToCeil(max_mana[client] * 2.0))
 			{
 				Ammo_Count_Used[client] += 2;
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+				if(Current_Mana[client] < RoundToCeil(max_mana[client] * 2.0))
 				{
-					Current_Mana[client] += RoundToCeil(mana_regen_temp);
+					Current_Mana[client] += RoundToCeil(mana_regen[client] * 10.0);
 					
-					if(Current_Mana[client] > RoundToCeil(max_mana_temp)) //Should only apply during actual regen
-						Current_Mana[client] = RoundToCeil(max_mana_temp);
+					if(Current_Mana[client] > RoundToCeil(max_mana[client] * 2.0)) //Should only apply during actual regen
+						Current_Mana[client] = RoundToCeil(max_mana[client] * 2.0);
 				}
 
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);

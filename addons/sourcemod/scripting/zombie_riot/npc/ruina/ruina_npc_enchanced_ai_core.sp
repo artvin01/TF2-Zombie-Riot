@@ -363,6 +363,8 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	if(b_thisNpcIsARaid[client])
 	{
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
+		if(Waves_InFreeplay())
+			Shield_Power = 0.06;
 	}
 
 	GrantEntityArmor(client, false, Shield_Power, strenght, 1);
@@ -1329,7 +1331,7 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 
 	if(GetTeam(victim) != TFTeam_Red)
 		return;
-
+	ManaCalculationsBefore(victim);
 	float GameTime = GetGameTime();
 
 	bool override = b_override_Sickness[entity];
