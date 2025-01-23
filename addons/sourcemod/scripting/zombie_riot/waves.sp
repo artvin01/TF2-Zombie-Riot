@@ -131,7 +131,7 @@ static int WaveGiftItem;
 static char LastWaveWas[64];
 
 static int Freeplay_Info;
-static bool Freeplay_w500reached;
+//static bool Freeplay_w500reached;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
