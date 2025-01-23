@@ -4234,31 +4234,31 @@
 	}
 	"Waldch's Railgun Rounds Desc"
 	{
-		"en"	"How kind of him.\nIncreases ranged damage by +75%% and clipsize by +50%%.\nIncreases accuracy by +20%% and projectile speed by +25%%."
+		"en"	"How kind of him.\nIncreases ranged damage by +75%%, fire rate by +7.5%% and reload speed by +10%%.\nIncreases accuracy by +20%% and projectile speed by +25%%."
 	}
 	"Cheesy Doomsday Pack Desc"
 	{
-		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%% and doubles clipsize.\nIncreases accuracy by +35%% and projectile speed by +50%%."
+		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%%, fire rate by +7.5%% and reload speed by +10%%.\nIncreases accuracy by +35%% and projectile speed by +50%%."
 	}
 	"Magical Fontina Aura Desc"
 	{
-		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +75%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%, and max mana by 25%%."
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +80%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%, and max mana by 25%%."
 	}
 	"Domain Expansion: Cheese Desc"
 	{
-		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +100%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +115%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
 	}
 	"Bob's Willpower Desc"
 	{
-		"en"	"Bob the Second lending you his divine willpower.\n+1750 HP, +20%% overall resistance, grants a +5HP/s regen."
+		"en"	"Bob the Second lending you his divine willpower.\n+2000 HP, +20%% overall resistance, grants a +5HP/s regen."
 	}
 	"A Wheel of Gouda Desc"
 	{
-		"en"	"Eat up.\n+2000 HP, +22.5%% overall resistance, grants an additional +10HP/s regen."
+		"en"	"Eat up.\n+2500 HP, +25%% overall resistance, grants an additional +10HP/s regen."
 	}
 	"THE BIG CHEESE Desc"
 	{
-		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2250 HP, +25%% overall resistance, grants an additional +15HP/s regen."
+		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2750 HP, +30%% overall resistance, grants an additional +15HP/s regen."
 	}
 	"Voided Rejuvenator Pack Desc"
 	{
@@ -4270,11 +4270,11 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +20%% and attackspeed by +5%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%%."
+		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +20%% and attackspeed by +10%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "Increases kit damage by +30%% and reload speed by +5%%\nGrants +35%% max mana, +50%% healrate and building HP by +10%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +30%% and reload speed by +10%%\nGrants +35%% max mana, +50%% healrate and building HP by +10%%.\nReduces building cost by 25%%."
 	}
 	"Kit Modernizer III Desc"
 	{
@@ -4282,7 +4282,7 @@
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "Increases kit damage by +60%% and reload + attackspeed by +5%%\n+35 HP on kill | +20%% Overall Resistance | +50%% Heal Rate | +25%% Max Mana | +100%% Repair Rate"
+		"en" "Increases kit damage by +60%% and reload + attackspeed by +10%%\n+35 HP on kill | +20%% Overall Resistance | +50%% Heal Rate | +25%% Max Mana | +100%% Repair Rate"
 	}
 	"Kit Modernizer V Desc"
 	{
