@@ -371,7 +371,7 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Impact_Lance_StartTouch);
 		Impact_Lance_Effects_Projectile(client, entity);
-		
+		/*
 		if(!Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 		{
 
@@ -380,6 +380,7 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 			pack2.WriteCell(EntIndexToEntRef(client));
 			pack2.WriteCell(EntIndexToEntRef(entity));
 		}
+		*/
 	}
 	return;
 }

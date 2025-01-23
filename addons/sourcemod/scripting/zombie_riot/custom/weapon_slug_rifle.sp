@@ -26,7 +26,7 @@ public void Weapon_Anti_Material_Rifle_Deploy(int client, int weapon)
 {
 	if (i_CustomWeaponEquipLogic[weapon] == WEAPON_URANIUM_RIFLE)	 // 125
 	{
-		if(Items_HasNamedItem(client, "Head Equipped Blue Goggles"))
+	//	if(Items_HasNamedItem(client, "Head Equipped Blue Goggles"))
 		{
 			Attributes_Set(weapon, 304, 1.1);
 		}

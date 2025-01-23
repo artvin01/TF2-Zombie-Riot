@@ -4919,6 +4919,7 @@ void Store_ApplyAttribs(int client)
 	}
 
 	map.SetValue("252", KnockbackResistance);
+	
 	if(Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 	{
 		b_AlaxiosBuffItem[client] = true;
@@ -4927,7 +4928,7 @@ void Store_ApplyAttribs(int client)
 	{
 		b_AlaxiosBuffItem[client] = false;
 	}
-
+	
 	if(i_CurrentEquippedPerk[client] == 4)
 	{
 		map.SetValue("178", 0.65); //Faster Weapon Switch
@@ -5097,10 +5098,10 @@ void Store_ApplyAttribs(int client)
 	if(dieingstate[client] > 0)
 	{
 		ForcePlayerCrouch(client, true);
-		if(b_XenoVial[client])
+	//	if(b_XenoVial[client])
 			Attributes_SetMulti(client, 442, 0.85);
-		else
-			Attributes_SetMulti(client, 442, 0.65);
+	//	else
+	//		Attributes_SetMulti(client, 442, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
@@ -5287,7 +5288,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 	}
-	*/
 
 	if(Items_HasNamedItem(client, "Calmaticus' Heart Piece"))
 	{
@@ -5313,6 +5313,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_OverlordsFinalWish[client] = false;
 	}
+	
 	if(Items_HasNamedItem(client, "Bob's true fear"))
 	{
 		b_BobsTrueFear[client] = true;
@@ -5321,6 +5322,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_BobsTrueFear[client] = false;
 	}
+
 	if(Items_HasNamedItem(client, "Twirl's Hairpins"))
 	{
 		b_TwirlHairpins[client] = true;
@@ -5329,6 +5331,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_TwirlHairpins[client] = false;
 	}
+
 	if(Items_HasNamedItem(client, "Kahmlsteins Last Will"))
 	{
 		b_KahmlLastWish[client] = true;
@@ -5345,6 +5348,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_VoidPortalOpened[client] = false;
 	}
+	
 	if(Items_HasNamedItem(client, "Avangard's Processing Core-B"))
 	{
 		b_AvangardCoreB[client] = true;
@@ -5353,6 +5357,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_AvangardCoreB[client] = false;
 	}
+	*/
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);

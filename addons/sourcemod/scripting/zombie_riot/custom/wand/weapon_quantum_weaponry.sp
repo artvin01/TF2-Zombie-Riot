@@ -18,7 +18,7 @@ public void Quantum_Repeater_Main_Attack(int client, int weapon, bool crit)
 	
 	
 	float time = 5000.0/speed;
-	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
+//	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
 		damage *= 1.1;
 		
 	EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
@@ -71,7 +71,7 @@ public void Quantum_Fists_Main_Attack(int client, int weapon, bool crit)
 	damageMulti = Pow(damageMulti, 1.15);
 	damageMulti = damageMulti / 850.0;
 
-	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
+//	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
 		damageMulti *= 1.1;
 		
 	Attributes_Set(weapon, 2, damageMulti);

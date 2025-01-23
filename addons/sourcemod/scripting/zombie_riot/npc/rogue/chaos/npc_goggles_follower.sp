@@ -764,7 +764,7 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 
-		if(b_BobsCuringHand[ally] && b_BobsCuringHand_Revived[ally] >= 20 && TeutonType[ally] == TEUTON_NONE && dieingstate[ally] > 0 
+		if(/*b_BobsCuringHand[ally] &&*/ b_BobsCuringHand_Revived[ally] >= 20 && TeutonType[ally] == TEUTON_NONE && dieingstate[ally] > 0 
 			&& GetEntPropEnt(ally, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[ally])
 		{
 			//walk to client.

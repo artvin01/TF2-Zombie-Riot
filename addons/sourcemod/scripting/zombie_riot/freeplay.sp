@@ -827,8 +827,10 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			}
 			else
 			{
+				/*
 				if(Items_HasNamedItem(client, "A Block of Cheese"))
 					ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+				*/
 			}
 
 			switch(EloquenceBuff)

@@ -3405,7 +3405,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
 		MakePlayerGiveResponseVoice(target, 3); //Revived response!
 		f_ClientBeingReviveDelay[target] = 0.0;
-		if(b_KahmlLastWish[target])
+	//	if(b_KahmlLastWish[target])
 		{
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
 			GiveArmorViaPercentage(target, 0.1, 1.0, false);
@@ -3430,12 +3430,14 @@ public Action ReviveDisplayMessageDelay(Handle timer, int ref)
 			SetGlobalTransTarget(target);
 			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Last Down Warning");	
 		}
+		/*
 		else if(b_KahmlLastWish[target])
 		{
 			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
 			SetGlobalTransTarget(target);
 			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
 		}
+		*/
 	}
 	return Plugin_Continue;
 }

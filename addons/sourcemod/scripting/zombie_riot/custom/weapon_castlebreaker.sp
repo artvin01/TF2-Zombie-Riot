@@ -192,8 +192,8 @@ void CastleBreakerCashOnKill(int client)
 	if(!Waves_InSetup())
 	{
 		float cashgain = 1.0;
-		if(b_AvangardCoreB[client])//do you have this unlock?
-			cashgain += 1.0;
+	//	if(b_AvangardCoreB[client])//do you have this unlock?
+		cashgain += 1.0;
 		if(CastleBreaker_WeaponPap[client]>=2)
 			cashgain += 1.0;
 		int cash = RoundFloat(cashgain * ResourceRegenMulti);

@@ -376,17 +376,12 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 						AddEntityToThirdPersonTransitMode(client, particle_halo);
 						SetParent(viewmodelModel, particle_halo, "head");
 					}
-					maxhealth = RoundToCeil(float(maxhealth) * 1.05);
-					ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
-					ApplyTempAttrib(weapon, 6, 1.45, 10.0); //slower attack speed
-					ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreaced by 40%
 				}
-				else
-				{
-					ApplyTempAttrib(weapon, 2, 2.5, 10.0); //way higher damage.
-					ApplyTempAttrib(weapon, 6, 1.5, 10.0); //slower attack speed
-					ApplyTempAttrib(weapon, 412, 0.60, 10.0); //Less damage taken from all sources decreaced by 40%
-				}
+
+				maxhealth = RoundToCeil(float(maxhealth) * 1.05);
+				ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
+				ApplyTempAttrib(weapon, 6, 1.45, 10.0); //slower attack speed
+				ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreaced by 40%
 
 				int spawn_index = NPC_CreateByName("npc_nearl_sword", -1, fPos, fAng, GetTeam(client));
 				if(spawn_index > MaxClients)
@@ -1198,22 +1193,7 @@ static Action Siccerino_revert_toNormal(Handle ringTracker, int ref)
 
 float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
-	{
-		if(b_thisNpcIsARaid[victim])
-		{
-			if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX_RAID)
-			{
-				return SICCERINO_BONUS_DAMAGE_MAX_RAID;
-			}
-		}
-		else if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX)
-		{
-			return SICCERINO_BONUS_DAMAGE_MAX;
-		}
-		return f_SiccerinoExtraDamage[attacker][victim];
-	}			
-	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_NOVISUAL || i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_REAL)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO ||i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_NOVISUAL || i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_REAL)
 	{
 		if(b_thisNpcIsARaid[victim])
 		{
@@ -1227,7 +1207,7 @@ float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 			return SICCERINO_BONUS_DAMAGE_MAX_WALDCH;
 		}
 		return f_SiccerinoExtraDamage[attacker][victim];
-	}	
+	}
 	return 1.0;
 }
 

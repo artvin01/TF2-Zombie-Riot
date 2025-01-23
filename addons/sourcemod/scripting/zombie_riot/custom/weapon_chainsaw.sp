@@ -5,7 +5,7 @@ static float f_ChainSawhuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_ChainsawLoopSound[MAXPLAYERS+1]={0.0, ...};
 static bool f_ChainsawPlaySound[MAXPLAYERS+1];
 float f_AttackDelayChainsaw[MAXTF2PLAYERS];
-bool BarneyItem[MAXTF2PLAYERS];
+//bool BarneyItem[MAXTF2PLAYERS];
 bool BarneyItemSave[MAXTF2PLAYERS];
 
 static const char g_MeleeAttack[][] = {
@@ -46,7 +46,7 @@ public void Enable_Chainsaw(int client, int weapon) // Enable management, handle
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHAINSAW)
 		{
-			BarneyItem[client] = Items_HasNamedItem(client, "Corrupted Barney's Chainsaw");
+			//BarneyItem[client] = Items_HasNamedItem(client, "Corrupted Barney's Chainsaw");
 			//Is the weapon it again?
 			//Yes?
 			delete h_TimerChainSawWeaponManagement[client];
@@ -62,7 +62,7 @@ public void Enable_Chainsaw(int client, int weapon) // Enable management, handle
 		
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHAINSAW)
 	{
-		BarneyItem[client] = Items_HasNamedItem(client, "Corrupted Barney's Chainsaw");
+	//	BarneyItem[client] = Items_HasNamedItem(client, "Corrupted Barney's Chainsaw");
 		DataPack pack;
 		h_TimerChainSawWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_ChainSaw, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -129,7 +129,7 @@ public void Chainsaw_SawAttack(int client, int weapon)
 		return;
 	}
 	int AmmoConsumption = 1;
-	if(BarneyItem[client])
+//	if(BarneyItem[client])
 	{
 		if(BarneyItemSave[client])
 		{
