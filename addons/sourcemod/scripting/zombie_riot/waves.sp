@@ -194,7 +194,7 @@ void Waves_MapStart()
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	Freeplay_Info = 0;
-	Freeplay_w500reached = false;
+//	Freeplay_w500reached = false;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
