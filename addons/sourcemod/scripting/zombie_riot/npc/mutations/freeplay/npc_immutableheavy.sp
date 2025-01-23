@@ -259,7 +259,7 @@ void ImmutableHeavySelfDefense(ImmutableHeavy npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 300.0;
+					float damageDealt = 200.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					if(GetRandomInt(1, 2) == 2)
@@ -278,7 +278,7 @@ void ImmutableHeavySelfDefense(ImmutableHeavy npc, float gameTime, int target, f
 						ApplyStatusEffect(npc.index, npc.index, "Rapid Suturing", 10.0);
 						ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 10.0);
 						ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 10.0);
-						npc.m_flSpeed *= 1.02;
+						npc.m_flSpeed *= 1.01;
 					}
 
 					// Hit sound
@@ -313,15 +313,15 @@ void ImmutableHeavySelfDefense(ImmutableHeavy npc, float gameTime, int target, f
 				{
 					case 1:
 					{
-						npc.FireParticleRocket(endLoc, 2500.0, 400.0, 125.0, "raygun_projectile_blue");
+						npc.FireParticleRocket(endLoc, 3000.0, 150.0, 125.0, "raygun_projectile_blue");
 					}
 					case 2:
 					{
-						npc.FireParticleRocket(endLoc, 1500.0, 75.0, 75.0, "raygun_projectile_red", true);
+						npc.FireParticleRocket(endLoc, 3000.0, 75.0, 75.0, "raygun_projectile_red", true);
 					}
 					default:
 					{
-						npc.FireParticleRocket(endLoc, 2500.0, 400.0, 125.0, "raygun_projectile_blue");
+						npc.FireParticleRocket(endLoc, 3000.0, 150.0, 125.0, "raygun_projectile_blue");
 					}
 				}
 			}
