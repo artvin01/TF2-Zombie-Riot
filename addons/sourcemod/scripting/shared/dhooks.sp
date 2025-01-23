@@ -2060,6 +2060,7 @@ stock void DelayEffectOnHorn(int ref)
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
 	}
+	ExtendDuration *= 1.5;
 
 	f_BannerAproxDur[client] = GetGameTime() + ExtendDuration;
 	f_BannerDurationActive[client] = GetGameTime() + 0.35;

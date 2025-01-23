@@ -712,7 +712,7 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
 	}
 
-	if(StalkerBuff > 0)
+	if(StalkerBuff > 0 && !b_thisNpcIsARaid[entity] && !b_thisNpcIsABoss[entity])
 	{
 		b_StaticNPC[entity] = true;
 		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 25);
@@ -827,8 +827,10 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			}
 			else
 			{
+				/*
 				if(Items_HasNamedItem(client, "A Block of Cheese"))
 					ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+				*/
 			}
 
 			switch(EloquenceBuff)

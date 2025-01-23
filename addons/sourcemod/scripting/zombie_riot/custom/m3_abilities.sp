@@ -278,7 +278,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
+			f_Duration[entity] = GetGameTime() + 12.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -434,7 +434,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			Healing_Amount *= Attributes_GetOnPlayer(client, 8, true, true);
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
+			f_Duration[entity] = GetGameTime() + 12.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -1247,7 +1247,7 @@ public void GearTesting(int client)
 			{
 				b_ActivatedDuringLastMann[client] = true;
 			}
-			if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
+		//	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
 				IncreaceEntityDamageTakenBy(client, 0.5, 3.0);
 			
 			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -1308,7 +1308,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			float HealthMulti = float(CashSpentTotal[client]);
 			HealthMulti = Pow(HealthMulti, 1.2);
 			HealthMulti *= 0.025;
-			if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
+		//	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
 				HealthMulti *= 1.1;
 				
 			SetEntityHealth(client, RoundToCeil(HealthMulti));
@@ -1463,7 +1463,7 @@ public void PlaceableTempomaryRepairGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
+			f_Duration[entity] = GetGameTime() + 12.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 

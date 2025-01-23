@@ -660,11 +660,11 @@ public void OnPostThink(int client)
 				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 			}
 		}
-		
 		if(dieingstate[client] == 0)
 		{
 			Rogue_HealingSalve(client, healing_Amount);
 			Rogue_HandSupport_HealTick(client, healing_Amount);
+			/*
 			if(b_NemesisHeart[client])
 			{
 				float HealRate = 0.25;
@@ -673,8 +673,8 @@ public void OnPostThink(int client)
 
 				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
+			*/
 		}
-		
 		if(ClientPossesesVoidBlade(client) >= 2 && (NpcStats_WeakVoidBuff(client) || NpcStats_StrongVoidBuff(client)))
 		{
 			float HealingAmount = float(ReturnEntityMaxHealth(client)) * 0.01;
@@ -2065,10 +2065,10 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
-				if(b_XenoVial[victim])
+			//	if(b_XenoVial[victim])
 					Attributes_SetMulti(victim, 442, 0.85);
-				else
-					Attributes_SetMulti(victim, 442, 0.65);
+			//	else
+			//		Attributes_SetMulti(victim, 442, 0.65);
 
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
@@ -3258,11 +3258,13 @@ void ManaCalculationsBefore(int client)
 
 	mana_regen[client] *= Mana_Regen_Level[client];
 	max_mana[client] *= Mana_Regen_Level[client];
+	/*
 	if(b_TwirlHairpins[client])
 	{
 		mana_regen[client] *= 1.05;
 		max_mana[client] *= 1.05;
 	}
+	*/
 
 	if(b_AggreviatedSilence[client])	
 	{

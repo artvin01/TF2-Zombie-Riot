@@ -199,8 +199,10 @@ void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int 
 	{
 		damage *= 0.75;
 	}
+	/*
 	if(!b_OverlordsFinalWish[attacker])
 		return;
+	*/
 	
 	if(damagetype & DMG_CLUB)
 		NPC_Ignite(victim, attacker, 3.0, weapon);

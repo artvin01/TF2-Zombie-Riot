@@ -144,6 +144,11 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flTryIgnorebuildings
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public ZMainHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -169,6 +174,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		func_NPCDeath[npc.index] = ZMainHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrabZombie_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		b_AvoidBuildingsAtAllCosts[npc.index] = true;
 		
 		npc.StartPathing();
 		f_MaxAnimationSpeed[npc.index] = 1.0;
@@ -215,19 +221,26 @@ public void ZMainHeadcrabZombie_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
+
+	// fldistancelimit isnt working for using vector distance, and checking for can see and only buildings	
+	int IsAbuildingNearMe = GetClosestTarget(npc.index,false,200.0,_,_,_, _,true, _,true,true,0.0, .ExtraValidityFunction = Zmain_TryJumpOverBuildings);
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		if(i_IsABuilding[npc.m_iTarget] && npc.m_flTryIgnorebuildings > GetGameTime(npc.index))
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index, .IgnoreBuildings = true);
+		}
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(npc,GetGameTime(npc.index), flDistanceToTarget, IsAbuildingNearMe); 
 		ZMainHeadcrabZombie_SelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		if(i_IsABuilding[npc.m_iTarget])
 		{
-			npc.m_flGetClosestTargetTime = 0.0;
-			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_iTarget = GetClosestTarget(npc.index, .IgnoreBuildings = true);
+			npc.m_flTryIgnorebuildings = GetGameTime(npc.index) + 1.0;
 		}
 	}
 	else
@@ -238,8 +251,32 @@ public void ZMainHeadcrabZombie_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float gameTime, float distance)
+bool Zmain_TryJumpOverBuildings(int entity, int target)
 {
+	if(i_IsABuilding[target])
+	{
+		return true;
+	}
+	return false;
+}
+
+void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float gameTime, float distance, int IsAbuildingNearMe)
+{
+	if(npc.m_flTryIgnorebuildings > gameTime || IsValidEntity(IsAbuildingNearMe))
+	{
+		if(!npc.m_flAttackHappens && npc.m_flJumpCooldownZmain < gameTime)
+		{
+			if (npc.IsOnGround())
+			{
+				npc.m_flJumpCooldownZmain = gameTime + 2.0;
+				npc.GetLocomotionInterface().Jump();
+				float vel[3];
+				npc.GetVelocity(vel);
+				vel[2] = 400.0;
+				npc.SetVelocity(vel);
+			}	
+		}
+	}
 	npc.m_bAllowBackWalking = false;
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{
@@ -261,7 +298,7 @@ void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float g
 	{
 		//relatively close, what do ?
 		//Randomly jump
-		if(npc.m_flJumpCooldownZmain < gameTime)
+		if(!npc.m_flAttackHappens && npc.m_flJumpCooldownZmain < gameTime)
 		{
 			if (npc.IsOnGround())
 			{
@@ -283,7 +320,7 @@ void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float g
 
 	//relatively close, what do ?
 	//Randomly jump
-	if(npc.m_flJumpCooldownZmain < gameTime)
+	if(!npc.m_flAttackHappens && npc.m_flJumpCooldownZmain < gameTime)
 	{
 		if (npc.IsOnGround())
 		{

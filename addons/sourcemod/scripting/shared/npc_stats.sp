@@ -2936,7 +2936,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
 				if(PlaybackSpeed > f_MaxAnimationSpeed[this.index])
-					PlaybackSpeed > f_MaxAnimationSpeed[this.index];
+					PlaybackSpeed = f_MaxAnimationSpeed[this.index];
+
 				if(PlaybackSpeed <= 0.01)
 					PlaybackSpeed = 0.01;
 					
@@ -4259,6 +4260,9 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 #else
 	if(i_IsABuilding[other_entidx])
 	{
+		if(b_AvoidBuildingsAtAllCosts[bot_entidx])
+			return false;
+
 		return true;
 	}
 
@@ -5318,7 +5322,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				}
 				case 4:
 				{
-					distance_limit = fldistancelimitAllyNPC;
+					distance_limit = fldistancelimit;
 				}
 				default:
 				{
@@ -8229,6 +8233,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #endif
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
+	b_AvoidBuildingsAtAllCosts[entity] = false;
 	f_MaxAnimationSpeed[entity] = 2.0;
 	b_OnDeathExtraLogicNpc[entity] = 0;
 	f_DoNotUnstuckDuration[entity] = 0.0;
