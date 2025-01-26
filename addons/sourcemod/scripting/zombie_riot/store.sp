@@ -4036,6 +4036,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Kleiner");
 						menu2.AddItem("-50", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Fat HHH");
+						menu2.AddItem("-151", buffer);
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Back");
 						menu2.AddItem("-1", buffer);
 						
@@ -4068,6 +4071,12 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -50:
 					{
 						OverridePlayerModel(client, KLEINER, true);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -151:
+					{
+						OverridePlayerModel(client, HHH_SkeletonOverride, true);
 						JoinClassInternal(client, CurrentClass[client]);
 						MenuPage(client, -1);
 					}

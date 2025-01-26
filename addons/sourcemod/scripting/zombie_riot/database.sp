@@ -247,7 +247,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(results[2].FetchRow())
 		{
 			int value = results[2].FetchInt(1);
-			if(value >= 2)
+			if(value >= 1)
 			{
 				OverridePlayerModel(client, value - 1, Viewchanges_PlayerModelsAnims[value - 1]);
 				JoinClassInternal(client, CurrentClass[client]);
