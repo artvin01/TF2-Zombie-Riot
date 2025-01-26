@@ -126,8 +126,8 @@ If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
 
 
-## Optional plugins
-- [Max speed unlocker](https://github.com/FlaminSarge/tf_maxspeed_patch) (Used for zealot, although you dont need it, but i recommend it.)
+## Optional Things
+- [Max speed unlocker](https://github.com/Mikusch/SourceScramble-Patches) (Used for zealot, Just install whats in there.)
 Set this to 720.0
 ## Credits
 
