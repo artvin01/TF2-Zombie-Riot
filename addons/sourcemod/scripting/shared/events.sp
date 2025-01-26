@@ -278,6 +278,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
+		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 #if defined ZR
 		TransferDispenserBackToOtherEntity(client, true);
 #endif

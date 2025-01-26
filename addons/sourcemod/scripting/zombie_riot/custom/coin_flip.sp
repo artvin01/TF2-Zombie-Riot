@@ -257,12 +257,12 @@ public Action flip_extra(Handle timer, int client)
 			
 			if(i_CurrentEquippedPerk[client] == 5)
 			{
-				damage_multiplier[entity] *= 1.35;
+				damage_multiplier[entity] *= 1.25;
 			}
 			
 			if(i_HeadshotAffinity[client] == 1)
 			{
-				damage_multiplier[entity] *= 1.30;
+				damage_multiplier[entity] *= 1.20;
 			}
 			
 			newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
@@ -432,7 +432,7 @@ stock void Do_Coin_calc(int victim)
 	SetTeam(victim, TFTeam_Spectator);
 	if(mf_extra_damage[victim] > GetGameTime()) //You got one second.
 	{
-		damage_multiplier[victim] *= 1.25;
+		damage_multiplier[victim] *= 1.20;
 		float chargerPos2[3];
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos2);
 		if(IsValidClient(Entity_Owner[victim]))
@@ -442,7 +442,6 @@ stock void Do_Coin_calc(int victim)
 	}
 	if (IsValidEntity(Closest_entity))
 	{
-		damage_multiplier[victim] *= 1.6;
 		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		if(f_Thrownrecently[victim] > GetGameTime())
 		{
@@ -473,6 +472,8 @@ stock void Do_Coin_calc(int victim)
 					GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
 					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
 					{
+						//increace damage.
+						damage_multiplier[victim] *= 1.65;
 						SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 					}
 					TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 3.0, 5.0, 1, 1.0, view_as<int>({255, 0, 0, 255}), 30);

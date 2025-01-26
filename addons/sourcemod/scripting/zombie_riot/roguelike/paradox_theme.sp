@@ -87,7 +87,7 @@ void Rogue_Paradox_ReviveSpeed(int &amount)
 		amount = RoundToNearest(float(amount) * 1.25);
 }
 
-bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
+bool Rogue_Paradox_JesusBlessing(int client)
 {
 	if(FrostTimer && dieingstate[client] == 0)
 	{
@@ -106,8 +106,6 @@ bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
 					damage = 1 - health;
 					health = 1;
 				}
-
-				healing_Amount += damage;
 				SetEntityHealth(client, health);
 			}
 		}

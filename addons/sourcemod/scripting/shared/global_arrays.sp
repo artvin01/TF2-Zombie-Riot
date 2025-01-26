@@ -299,8 +299,10 @@ bool b_DisplayDamageHud[MAXTF2PLAYERS];
 bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
-bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
+bool b_HudLowHealthShake_UNSUED[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
+int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
+float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
 
 //This is for going through things via lag comp or other reasons to teleport things away.
@@ -460,7 +462,7 @@ float Mana_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
 float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
 float Mana_Loss_Delay[MAXTF2PLAYERS];
-float RollAngle_Regen_Delay[MAXTF2PLAYERS];
+//float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXENTITIES];
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777

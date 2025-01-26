@@ -120,7 +120,7 @@ static int TriggerDamage(int entity, int type)
 	}
 	else if(b_thisNpcIsABoss[entity])
 	{
-		divide *= (3.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
+		divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
 	}
 	else if (b_IsGiant[entity])
 	{

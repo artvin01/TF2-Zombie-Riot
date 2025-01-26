@@ -3486,7 +3486,7 @@
 	}
 	"Siccerino Pap 2"
 	{
-		"en"	"Your attacks will debuff the enemy so you deal 5% more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
+		"en"	"Your attacks will debuff the enemy so you deal 5%& more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
 		"fr"	"+5%% dégats pour chaque coup, jusqu'a un maximum.\nAbilité devient des attaques corps-à-corps rapides."
 		"chi"	"伤害会使敌人受到+%5伤害，有上限。\nM2更为高攻速近战。"
 	}

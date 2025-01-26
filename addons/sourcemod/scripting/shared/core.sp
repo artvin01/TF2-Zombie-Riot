@@ -20,7 +20,7 @@
 #if !defined UseDownloadTable
 #include <filenetwork>
 #endif
-//#include <profiler>
+#include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
 
@@ -1018,7 +1018,7 @@ public void OnMapStart()
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
 	Zero(Mana_Regen_Delay_Aggreviated);
-	Zero(RollAngle_Regen_Delay);
+//	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
 	Building_MapStart();
@@ -1533,7 +1533,7 @@ public void OnClientDisconnect(int client)
 #endif
 
 	b_HudScreenShake[client] = true;
-	b_HudLowHealthShake[client] = true;
+	b_HudLowHealthShake_UNSUED[client] = true;
 	b_HudHitMarker[client] = true;
 	f_ZombieVolumeSetting[client] = 0.0;
 }
