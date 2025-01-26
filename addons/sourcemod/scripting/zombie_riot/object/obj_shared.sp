@@ -75,6 +75,7 @@ void Object_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
+	Zero2(f_TransmitDelayCheck);
 }
 void Object_PluginStart()
 {
@@ -148,10 +149,6 @@ methodmap ObjectGeneric < CClotBody
 		b_NoKnockbackFromSources[obj] = true;
 		f_DamageTakenFloatObj[obj] = 0.0;
 
-		for(int client_2=1; client_2<=MaxClients; client_2++)
-		{
-			f_TransmitDelayCheck[obj][client_2] = 0.0;
-		}
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());
@@ -421,6 +418,7 @@ public Action SetTransmit_BuildingNotReady(int entity, int client)
 	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, true);
 	return b_TransmitBiasDo[entity][client];
 }
+
 
 public Action SetTransmit_BuildingReady(int entity, int client)
 {
@@ -752,11 +750,17 @@ bool Object_Interact(int client, int weapon, int obj)
 				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
+					ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 					Call_StartFunction(null, func);
 					Call_PushCell(client);
 					Call_PushCell(weapon);
 					Call_PushCell(entity);
 					Call_Finish(result);
+					f_TransmitDelayCheck[entity][client] = 0.0;
+					if(IsValidEntity(objstats.m_iWearable1))
+						f_TransmitDelayCheck[objstats.m_iWearable1][client] = 0.0;
+					if(IsValidEntity(objstats.m_iWearable2))
+						f_TransmitDelayCheck[objstats.m_iWearable2][client] = 0.0;
 				}
 				return true;
 			}

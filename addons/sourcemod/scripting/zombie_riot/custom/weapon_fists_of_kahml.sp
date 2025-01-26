@@ -24,9 +24,10 @@ public void Enable_HHH_Axe_Ability(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_HHH_AXE)
 		return;
-
+	/*
 	if(i_PlayerModelOverrideIndexWearable[client] == -1)
 		OverridePlayerModel(client, HHH_SkeletonOverride, true);
+	*/
 }
 
 public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
