@@ -110,6 +110,9 @@ bool Yakuza_IsNotInJoint(int client)
 
 int Yakuza_Lastman(any toggle = -1)
 {
+	if(CvarFileNetworkDisable.IntValue <= 0)
+		return 0;
+		
 	if(toggle != -1)
 		SpecialLastMan = view_as<bool>(toggle);
 	

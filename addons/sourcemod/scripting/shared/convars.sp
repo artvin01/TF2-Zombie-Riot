@@ -89,6 +89,7 @@ void ConVar_PluginStart()
 	CvarSkillPoints = CreateConVar("zr_skillpoints", "1", "If skill points are enabled");
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
+	CvarFileNetworkDisable = CreateConVar("zr_filenetwork_disable", "0", "0 means as intended, 1 means fast download sounds (itll download any waves present instnatly), 2 means download MVM style matreials too");
 #else
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif

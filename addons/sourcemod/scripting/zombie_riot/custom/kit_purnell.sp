@@ -128,7 +128,7 @@ void Purnell_Enable(int client, int weapon)
 			pack.WriteCell(client);
 			pack.WriteCell(GetClientUserId(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			if(!Precached)
+			if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
 			{
 				PrecacheSoundCustom("#zombiesurvival/purnell_lastman.mp3", _, 1);
 				Precached = true;
