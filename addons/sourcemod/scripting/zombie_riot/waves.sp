@@ -2527,6 +2527,7 @@ void DoGlobalMultiScaling()
 	float playercount = ZRStocks_PlayerScalingDynamic();
 
 	playercount = Pow ((playercount * 0.65), 1.2);
+
 	//on low player counts it does not scale well.
 	
 	/*
@@ -2535,6 +2536,12 @@ void DoGlobalMultiScaling()
 	*/
 
 	float multi = Pow(1.08, playercount);
+	if(multi > 10.0)
+	{
+		//woops, scales too much now.
+		multi = 8.0;
+		multi += (playercount * 0.1);
+	}
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
 	
@@ -2570,11 +2577,21 @@ void DoGlobalMultiScaling()
 	{
 		PlayerCountBuffScaling = 1.2;
 	}
+	//Shouldnt be lower then 0.1
+	if(PlayerCountBuffScaling < 0.1)
+	{
+		PlayerCountBuffScaling = 0.1;
+	}
 
 	PlayerCountBuffAttackspeedScaling = 6.0 / playercount;
 	if(PlayerCountBuffAttackspeedScaling > 1.2)
 	{
 		PlayerCountBuffAttackspeedScaling = 1.2;
+	}
+	//Shouldnt be lower then 0.1
+	if(PlayerCountBuffAttackspeedScaling < 0.1)
+	{
+		PlayerCountBuffAttackspeedScaling = 0.1;
 	}
 
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
