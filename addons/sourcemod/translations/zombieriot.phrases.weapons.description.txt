@@ -4286,7 +4286,7 @@
 	}
 	"Kit Modernizer V Desc"
 	{
-		"en" "Increases kit damage by +80%% and reload + attackspeed by +19%%\n+50 HP on kill | +25%% Overall Resistance | +75%% Heal Rate | +35%% Max Mana | +100%% Repair Rate | +50%% Clip size"
+		"en" "Increases kit damage by +80%% and reload + attackspeed by +10%%\n+50 HP on kill | +25%% Overall Resistance | +75%% Heal Rate | +35%% Max Mana | +100%% Repair Rate | +50%% Clip size"
 	}
 	"Unit Reformator I Desc"
 	{
