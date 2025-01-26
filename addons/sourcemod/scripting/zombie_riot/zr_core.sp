@@ -342,8 +342,8 @@ float ResourceRegenMulti;
 float Armor_regen_delay[MAXTF2PLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
-ConVar CvarSvRollagle; // sv_rollangle
-int i_SvRollAngle[MAXTF2PLAYERS];
+//ConVar CvarSvRollagle; // sv_rollangle
+//int i_SvRollAngle[MAXTF2PLAYERS];
 
 	
 int CashSpent[MAXTF2PLAYERS];
@@ -660,9 +660,9 @@ void ZR_PluginStart()
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
-	CvarSvRollagle = FindConVar("sv_rollangle");
-	if(CvarSvRollagle)
-		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+//	CvarSvRollagle = FindConVar("sv_rollangle");
+//	if(CvarSvRollagle)
+//		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
 	Database_PluginStart();

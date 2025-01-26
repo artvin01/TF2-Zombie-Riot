@@ -1802,8 +1802,8 @@ public void ReShowSettingsHud(int client)
 
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
-
-	if(b_HudLowHealthShake[client])
+/*
+	if(b_HudLowHealthShake_UNSUED[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -1812,7 +1812,7 @@ public void ReShowSettingsHud(int client)
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-40", buffer);
-
+*/
 	FormatEx(buffer, sizeof(buffer), "%t", "Weapon Screen Shake");
 	if(b_HudScreenShake[client])
 	{
@@ -2266,13 +2266,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -40: 
 				{
-					if(b_HudLowHealthShake[client])
+					if(b_HudLowHealthShake_UNSUED[client])
 					{
-						b_HudLowHealthShake[client] = false;
+						b_HudLowHealthShake_UNSUED[client] = false;
 					}
 					else
 					{
-						b_HudLowHealthShake[client] = true;
+						b_HudLowHealthShake_UNSUED[client] = true;
 					}
 					
 					ReShowSettingsHud(client);

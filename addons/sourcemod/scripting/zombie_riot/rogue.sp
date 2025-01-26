@@ -2776,7 +2776,6 @@ bool b_WrathOfItallians; 				//see on_ability_use.sp
 bool b_HandOfElderMages; 				
 bool b_BraceletsOfAgility; 				//shield items
 bool b_ElasticFlyingCape; 				//shield items
-bool b_HealingSalve; 					//see sdkhooks think and item_generic
 bool b_HealthyEssence; 					//see stocks for healing and various other healing methods like medigun
 bool b_FizzyDrink; 			 			//see npc.sp ontakedamage
 bool b_HoverGlider; 			 		//see npc.sp ontakedamage
@@ -2797,7 +2796,6 @@ static void ClearStats()
 	b_HandOfElderMages = false;
 	b_BraceletsOfAgility = false;
 	b_ElasticFlyingCape = false;
-	b_HealingSalve = false;
 	b_HealthyEssence = false;
 	b_FizzyDrink = false;
 	b_HoverGlider = false;
