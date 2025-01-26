@@ -2051,7 +2051,6 @@ stock void DelayEffectOnHorn(int ref)
 		int g = 200;
 		int b = 255;
 		int a = 200;
-		ExtendDuration *= 1.5;
 		EmitSoundToAll("mvm/mvm_tank_horn.wav", client, SNDCHAN_STATIC, 80, _, 0.45);
 		
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);

@@ -301,6 +301,8 @@ bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
 bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
+int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
+float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
 
 //This is for going through things via lag comp or other reasons to teleport things away.
