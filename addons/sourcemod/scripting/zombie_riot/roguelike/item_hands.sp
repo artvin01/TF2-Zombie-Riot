@@ -28,21 +28,14 @@ public void Rogue_HandSupport_Weapon(int weapon)
 	if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24 || i_WeaponArchetype[weapon] == 22)
 	{
 		// +10 hp regen
-		Attributes_SetAdd(entity, 57, Attributes_Get(entity, 57) + 10.0);
+		Attributes_SetAdd(weapon, 57, 10.0);
 	}
 }
-public void Rogue_HandSupport_Weapon(int weapon)
-{
-	if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24 || i_WeaponArchetype[weapon] == 22)
-	{
-		// +10 hp regen
-		Attributes_SetAdd(weapon, 57, Attributes_Get(weapon, 57) + 10.0);
-	}
-}
+
 public void Rogue_Item_HealingSalve(int weapon)
 {
 	// +1 hp regen
-	Attributes_SetAdd(weapon, 57, Attributes_Get(weapon, 57) + 10.0);
+	Attributes_SetAdd(weapon, 57, 1.0);
 }
 public void Rogue_HandFlame_Weapon(int entity)
 {

@@ -2782,7 +2782,6 @@ bool b_HoverGlider; 			 		//see npc.sp ontakedamage
 bool b_NickelInjectedPack; 				 //see store GiveAll
 bool b_SteelRazor; 				 		
 bool b_SpanishSpecialisedGunpowder; 	
-bool b_SupportHealHandPassive; 	
 
 static void ClearStats()
 {
@@ -2802,7 +2801,6 @@ static void ClearStats()
 	b_NickelInjectedPack = false;
 	b_SteelRazor = false;
 	b_SpanishSpecialisedGunpowder = false;
-	b_SupportHealHandPassive = false;
 
 	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();

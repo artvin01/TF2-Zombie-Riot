@@ -583,25 +583,24 @@ public void OnPostThink(int client)
 			}
 		}
 
-		float attrib = Attributes_GetOnPlayer(client, 57, false) +
-				Attributes_GetOnPlayer(client, 190, false) +
-				Attributes_GetOnPlayer(client, 191, false);
-				
+		float attrib;
+		attrib += Attributes_Get(client, 57, 0.0);
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon != -1)
+		{
+			attrib += Attributes_Get(weapon, 57, 0.0);
+		}
 		//Players should always have atleast 1 HP regen!
 		attrib += 1.0;
 		if(Saga_RegenHealth(client))
 			attrib += 10.0;
 
-		if(attrib)
-		{
-			if(dieingstate[client] == 0)
-			{
-				HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
-			}
-		}
-		//This heal will show in the hud.
 		if(dieingstate[client] == 0)
 		{
+			if(attrib)
+				HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
+
+			//This heal will show in the hud.
 			attrib = 0.0;
 			if(ClientPossesesVoidBlade(client) >= 2 && (NpcStats_WeakVoidBuff(client) || NpcStats_StrongVoidBuff(client)))
 			{
