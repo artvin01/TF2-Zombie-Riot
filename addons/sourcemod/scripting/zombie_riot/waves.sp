@@ -1086,7 +1086,15 @@ void Waves_RoundStart()
 		
 		if(time < 20.0)
 			time = 20.0;
-		
+	/*
+		//When theres only 1 difficulty, no voting.
+		Instaskip = false;
+		if(Voting.Length <= 1)
+		{
+			Instaskip = true;
+			time = 1.0;
+		}
+*/		
 		VoteEndTime = GetGameTime() + time;
 		CreateTimer(time, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -1184,12 +1192,21 @@ public Action Waves_EndVote(Handle timer, float time)
 					}
 				}
 			}
-
-			if(CanReVote)
+			int VotesThatHadVotes = 0;
+			for(int i = 0; i < length; i++)
 			{
-				int high1 = 0;
+				if(votes[i] != 0)
+				{
+					VotesThatHadVotes++;
+				}
+			}
+			//do not revote if only 1 difficulty is voted.
+
+			if((VotesThatHadVotes > 1) && CanReVote)
+			{
+				int high1 = 0;	
 				int high2 = -1;
-				for(int i = 1; i < length; i++)
+				for(int i = 0; i < length; i++)
 				{
 					if(votes[i] > votes[high1])
 					{
@@ -1286,7 +1303,10 @@ public Action Waves_EndVote(Handle timer, float time)
 						Zero(VotedFor);
 						VoteEndTime = GetGameTime() + 30.0;
 						CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+						if(Instaskip)
+							CreateTimer(60.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+						else
+							CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
 						PrintHintTextToAll("Vote for the wave modifier!");
 						PrintToChatAll("Vote for the wave modifier!");

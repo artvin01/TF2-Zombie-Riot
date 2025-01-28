@@ -1938,7 +1938,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			if(ConsumeAmmoReserve >= 1)
 			{
 				int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
-				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
+				if(Ammo_type >= 1)
+					SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
 			}
 		}
 	}

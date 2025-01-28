@@ -113,6 +113,7 @@ public const int RenderColors_RPG[][] =
 
 bool ForceNiko;
 Handle g_hImpulse;
+bool b_ExtendModifierVote = false;
 
 Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
