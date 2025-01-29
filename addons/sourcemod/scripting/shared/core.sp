@@ -17,9 +17,7 @@
 #include <morecolors>
 #include <cbasenpc>
 #include <tf2utils>
-#if !defined UseDownloadTable
 #include <filenetwork>
-#endif
 #include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
@@ -854,6 +852,19 @@ public void OnPluginStart()
 
 	TickrateModify = tickrate / 66.0;
 }
+
+public void OnLibraryAdded(const char[] name)
+{
+	FileNetwork_LibraryAdded(name);
+	SteamWorks_LibraryAdded(name);
+}
+
+public void OnLibraryRemoved(const char[] name)
+{
+	FileNetwork_LibraryRemoved(name);
+	SteamWorks_LibraryRemoved(name);
+}
+
 /*
 public void OnAllPluginsLoaded()
 {

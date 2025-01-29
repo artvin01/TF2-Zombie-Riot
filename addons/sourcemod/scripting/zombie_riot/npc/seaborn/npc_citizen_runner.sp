@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 static bool CitizenHasDied;
+static int NPCId;
 
 bool CitizenRunner_WasKilled()
 {
@@ -19,6 +20,11 @@ void CitizenRunner_Precache()
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+int CitizenRunner_Id()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -69,7 +75,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 {
 	CitizenRunner npc = view_as<CitizenRunner>(iNPC);
 
-	float gameTime = GetGameTime(npc.index);
+	float gameTime = GetGameTime();
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
@@ -87,7 +93,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 		npc.Anger = true;
 	}
 	
-	if(Waves_InSetup())
+	if(Waves_InSetup() || (GetWaveSetupCooldown() > (gameTime + 20.0)))
 	{
 		npc.m_bNoKillFeed = true;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC);
@@ -135,7 +141,7 @@ void CitizenRunner_NPCDeath(int entit)
 {
 	CitizenRunner npc = view_as<CitizenRunner>(entit);
 	
-	if(!Waves_InSetup())
+	if(!Waves_InSetup() && !npc.m_bNoKillFeed)
 	{
 		CitizenHasDied = true;
 
