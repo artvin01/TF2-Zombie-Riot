@@ -145,6 +145,13 @@ methodmap Siccerino < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/surgical_stare/surgical_stare.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+
+		
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", WEAPON_CUSTOM_WEAPONRY_1);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetVariantInt(4096);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		
 		return npc;
 	}

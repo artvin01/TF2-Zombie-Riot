@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_37"
+$modelname "zombie_riot/weapons/custom_weaponry_1_42"
 
 $bodygroup "scythe"					//1
 {
@@ -107,8 +107,8 @@ $cdmaterials "models\Weapons\V_shotgun\"
 $cdmaterials "models\items\"
 $cdmaterials ""
 
-$attachment "duelrea_left_spike" 	"weapon_bone" -3.0 0.0 44.0 rotate 0.0 0.0 0.0
-$attachment "duelrea_right_spike" 	"weapon_bone" 3.0 0.0 -44.0 rotate 0.0 0.0 0.0
+$attachment "duelrea_left_spike" 	"weapon_bone" -5.0 0.0 44.0 rotate 0.0 0.0 0.0
+$attachment "duelrea_right_spike" 	"weapon_bone" 5.0 0.0 44.0 rotate 0.0 0.0 0.0
 
 $cbox 0 0 0 0 0 0
 

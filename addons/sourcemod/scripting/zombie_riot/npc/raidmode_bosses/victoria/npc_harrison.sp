@@ -1584,7 +1584,7 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 	{
 		case 1:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_38.mdl");
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			SetVariantInt(32);
@@ -1592,7 +1592,7 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 		}
 		case 2:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_38.mdl");
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			SetVariantInt(32);
