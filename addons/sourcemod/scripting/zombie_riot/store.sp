@@ -5107,10 +5107,7 @@ void Store_ApplyAttribs(int client)
 	if(dieingstate[client] > 0)
 	{
 		ForcePlayerCrouch(client, true);
-	//	if(b_XenoVial[client])
-			Attributes_SetMulti(client, 442, 0.85);
-	//	else
-	//		Attributes_SetMulti(client, 442, 0.65);
+		Attributes_SetMulti(client, 442, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
