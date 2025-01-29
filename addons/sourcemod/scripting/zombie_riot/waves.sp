@@ -1303,10 +1303,7 @@ public Action Waves_EndVote(Handle timer, float time)
 						Zero(VotedFor);
 						VoteEndTime = GetGameTime() + 30.0;
 						CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-						if(Instaskip)
-							CreateTimer(60.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
-						else
-							CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
 						PrintHintTextToAll("Vote for the wave modifier!");
 						PrintToChatAll("Vote for the wave modifier!");
