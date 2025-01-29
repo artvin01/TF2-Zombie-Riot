@@ -103,6 +103,11 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 			//The target was NOT stunned.
 			return false;
 		}
+		//if its not a valid enemy ,ignore.
+		if(!IsValidEnemy(iExclude, entity, true, false))
+		{
+			return false;
+		}
 	}
 #endif
 	if(!b_NpcHasDied[iExclude])

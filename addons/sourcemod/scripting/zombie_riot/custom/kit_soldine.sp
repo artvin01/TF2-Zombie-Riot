@@ -147,7 +147,7 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 
 		Soldine_EyeHandler(client);
 
-		if(!Precached)
+		if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
 		{
 			// MASS REPLACE THIS IN ALL FILES
 			PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3",_,1);

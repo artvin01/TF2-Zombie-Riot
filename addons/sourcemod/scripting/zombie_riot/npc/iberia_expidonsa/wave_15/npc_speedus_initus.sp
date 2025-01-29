@@ -159,7 +159,15 @@ methodmap SpeedusInitus < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		PentalEffects(npc.index);
+
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", WEAPON_CUSTOM_WEAPONRY_1);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetVariantInt(1024);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		
+		//SetEntityRenderFx(npc.index, RENDERFX_HOLOGRAM);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 0);
 		
 		
 		func_NPCDeath[npc.index] = SpeedusInitus_NPCDeath;

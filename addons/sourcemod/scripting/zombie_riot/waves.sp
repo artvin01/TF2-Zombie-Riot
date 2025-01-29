@@ -125,6 +125,7 @@ static int i_ZombieAntiDelaySpeedUp;
 static Handle WaveTimer;
 static float ProgressTimerEndAt;
 static bool ProgressTimerType;
+static bool FirstMapRound;
 
 static bool UpdateFramed;
 static int WaveGiftItem;
@@ -194,6 +195,7 @@ void Waves_MapStart()
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	Freeplay_Info = 0;
+	FirstMapRound = true;
 //	Freeplay_w500reached = false;
 
 	int objective = GetObjectiveResource();
@@ -530,12 +532,7 @@ void Waves_SetupVote(KeyValues map)
 	if(kv)
 	{
 		kv.Rewind();
-		if(kv.JumpToKey("Waves"))
-		{
-			Waves_SetupWaves(kv, true);
-			return;
-		}
-		else if(!kv.JumpToKey("Setup"))
+		if(!kv.JumpToKey("Setup") && !kv.JumpToKey("Waves"))
 		{
 			kv = null;
 		}
@@ -550,7 +547,7 @@ void Waves_SetupVote(KeyValues map)
 		kv.ImportFromFile(buffer);
 	}
 	
-	StartCash = kv.GetNum("cash");
+	StartCash = kv.GetNum("cash", 700);
 
 	// Rogue Gamemode
 	if(map && kv.GetNum("roguemode"))
@@ -566,14 +563,15 @@ void Waves_SetupVote(KeyValues map)
 	// ZS-Classic Gamemode
 	if(kv.GetNum("classicmode"))
 		Classic_Enable();
-
+	
+	// Is a wave cfg itself
 	if(!kv.JumpToKey("Waves"))
 	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves");
-		kv = new KeyValues("Waves");
-		kv.ImportFromFile(buffer);
 		Waves_SetupWaves(kv, true);
-		delete kv;
+
+		if(kv != map)
+			delete kv;
+		
 		return;
 	}
 	
@@ -592,6 +590,16 @@ void Waves_SetupVote(KeyValues map)
 			kv.GetString("unlockdesc", vote.Append, sizeof(vote.Append));
 			vote.Level = kv.GetNum("level");
 			Voting.PushArray(vote);
+
+			if(CvarFileNetworkDisable.IntValue > 0)
+			{
+				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+				KeyValues wavekv = new KeyValues("Waves");
+				wavekv.ImportFromFile(buffer);
+				Waves_CacheWaves(wavekv, CvarFileNetworkDisable.IntValue > 1);
+				delete wavekv;
+			}
+
 		} while(kv.GotoNextKey());
 
 		kv.GoBack();
@@ -638,7 +646,7 @@ void Waves_SetupVote(KeyValues map)
 	if(kv != map)
 		delete kv;
 
-	CanReVote = Voting.Length > 1;
+	CanReVote = Voting.Length > 2;
 
 	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
@@ -759,6 +767,40 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 	return true;
 }
 
+// Cache Music and NPCs
+void Waves_CacheWaves(KeyValues kv, bool npcs)
+{
+	MusicEnum music;
+	kv.GotoFirstSubKey();
+	do
+	{
+		music.SetupKv("music_1", kv);
+		music.SetupKv("music_2", kv);
+		
+		if(kv.GetNum("music_download_outro"))
+		{
+			kv.GetString("music_track_outro", music.Path, sizeof(music.Path));
+			if(music.Path[0])
+				PrecacheSoundCustom(music.Path);
+		}
+
+		if(npcs && kv.GotoFirstSubKey())
+		{
+			do
+			{
+				if(kv.GetSectionName(music.Path, sizeof(music.Path)) && StrContains(music.Path, "music") != 0)
+				{
+					kv.GetString("plugin", music.Path, sizeof(music.Path));
+					if(music.Path[0])
+						NPC_GetByPlugin(music.Path);
+				}
+			} while(kv.GotoNextKey());
+			
+			kv.GoBack();
+		}
+	} while(kv.GotoNextKey());
+}
+
 void Waves_SetupWaves(KeyValues kv, bool start)
 {
 	Round round;
@@ -787,6 +829,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
+	StartCash = kv.GetNum("cash", StartCash);
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -1094,14 +1137,24 @@ void Waves_RoundStart()
 			wait = time;
 
 		//SpawnTimer(wait);
-		CreateTimer(wait, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+		//CreateTimer(wait, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 		
 		Waves_SetReadyStatus(2);
 	}
 	else
 	{
 		delete VotingMods;
-		Waves_SetReadyStatus(1);
+
+		if(FirstMapRound)
+		{
+			FirstMapRound = false;
+			CreateTimer(zr_waitingtime.FloatValue, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+			Waves_SetReadyStatus(2);
+		}
+		else
+		{
+			Waves_SetReadyStatus(1);
+		}
 	}
 
 	//music\mvm_class_menu_bg.wav
@@ -1187,9 +1240,23 @@ public Action Waves_EndVote(Handle timer, float time)
 
 			if(CanReVote)
 			{
-				int high1 = 0;
+				CanReVote = false;
+				for(int i = 0; i < length; i++)
+				{
+					if(votes[i] != 0)
+					{
+						CanReVote = true;
+						break;
+					}
+				}
+				//do not revote if only 1 difficulty is voted.
+			}
+
+			if(CanReVote)
+			{
+				int high1 = 0;	
 				int high2 = -1;
-				for(int i = 1; i < length; i++)
+				for(int i = 0; i < length; i++)
 				{
 					if(votes[i] > votes[high1])
 					{
@@ -1283,10 +1350,12 @@ public Action Waves_EndVote(Handle timer, float time)
 
 					if(VotingMods)
 					{
+						float duration = CanReVote ? 30.0 : 60.0;
+
 						Zero(VotedFor);
-						VoteEndTime = GetGameTime() + 30.0;
+						VoteEndTime = GetGameTime() + duration;
 						CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(duration, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
 						PrintHintTextToAll("Vote for the wave modifier!");
 						PrintToChatAll("Vote for the wave modifier!");
@@ -1356,6 +1425,11 @@ public Action Waves_EndVote(Handle timer, float time)
 			}
 		}
 	}
+	else
+	{
+		Waves_SetReadyStatus(1);
+	}
+
 	return Plugin_Continue;
 }
 
@@ -2664,13 +2738,14 @@ static void UpdateMvMStatsFrame()
 		int count[24];
 		int flags[24];
 		bool active[24];
-		bool forceflags[24];
+		static char icon[24][32];
 
 		if(Classic_Mode() && ProgressTimerEndAt)
 		{
 			id[0] = -1;
 			count[0] = RoundToCeil(ProgressTimerEndAt - GetGameTime());
 			flags[0] = ProgressTimerType ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS;
+			strcopy(icon[0], sizeof(icon), ProgressTimerType ? "classic_defend" : "classic_reinforce");
 			if(count[0] < 31)
 				flags[0] += MVM_CLASS_FLAG_ALWAYSCRIT;
 			
@@ -2678,6 +2753,7 @@ static void UpdateMvMStatsFrame()
 			Waves_UpdateMvMStats(33);
 		}
 		
+		NPCData data;
 		int maxwaves = Rounds ? (Rounds.Length - 1) : 0;
 		bool freeplay = !(maxwaves && CurrentRound >= 0 && CurrentRound < maxwaves);
 		if(!freeplay)
@@ -2742,17 +2818,36 @@ static void UpdateMvMStatsFrame()
 						{
 							if(!id[b])
 							{
-								flags[b] = SetupFlags(wave.EnemyData, false);
+								NPC_GetById(wave.EnemyData.Index, data);
+								if(data.Flags == -1)
+									break;
 
-								if(!Classic_Mode() && ((flags[b] & MVM_CLASS_FLAG_SUPPORT) || (flags[b] & MVM_CLASS_FLAG_MISSION)))
+								if(!data.Flags || wave.EnemyData.ignore_max_cap > 0)
+								{
+									flags[b] = SetupFlags(wave.EnemyData, false);
+								}
+								else
+								{
+									flags[b] = data.Flags;
+								}
+								
+								if((flags[b] & MVM_CLASS_FLAG_SUPPORT) || (flags[b] & MVM_CLASS_FLAG_MISSION) || (flags[b] & MVM_CLASS_FLAG_SUPPORT_LIMITED))
 								{
 									// Only show "Support" when actually active
-									flags[b] = 0;
-									continue;
+									if(!InSetup)
+										break;
 								}
 
 								id[b] = wave.EnemyData.Index;
-								forceflags[b] = wave.EnemyData.ignore_max_cap > 0;
+
+								if(data.Icon[0])
+								{
+									strcopy(icon[b], sizeof(icon[]), data.Icon);
+								}
+								else
+								{
+									strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
+								}
 							}
 
 							count[b] += num;
@@ -2782,8 +2877,29 @@ static void UpdateMvMStatsFrame()
 						
 						if(!id[b])
 						{
+							NPC_GetById(enemy.Index, data);
+							if(data.Flags == -1)
+								break;
+
+							if(!data.Flags || enemy.ignore_max_cap > 0)
+							{
+								flags[b] = SetupFlags(enemy, (!Classic_Mode() && !freeplay));
+							}
+							else
+							{
+								flags[b] = data.Flags;
+							}
+							
 							id[b] = enemy.Index;
-							flags[b] = SetupFlags(enemy, (!Classic_Mode() && !freeplay));
+
+							if(data.Icon[0])
+							{
+								strcopy(icon[b], sizeof(icon[]), data.Icon);
+							}
+							else
+							{
+								strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
+							}
 						}
 						
 						break;
@@ -2809,18 +2925,38 @@ static void UpdateMvMStatsFrame()
 						
 						if(!id[b])
 						{
-							id[b] = i_NpcInternalId[entity];
-							flags[b] = (freeplay || Classic_Mode() || b_thisNpcIsARaid[entity]) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
-
-							if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
-								flags[b] |= MVM_CLASS_FLAG_MINIBOSS;
+							NPC_GetById(i_NpcInternalId[entity], data);
+							if(data.Flags == -1)
+								break;
 							
-							if(fl_Extra_MeleeArmor[entity] < 1.0 || 
-							fl_Extra_RangedArmor[entity] < 1.0 || 
-							fl_Extra_Speed[entity] > 1.0 || 
-							fl_Extra_Damage[entity] > 1.0 ||
-							b_thisNpcIsARaid[entity])
-								flags[b] |= MVM_CLASS_FLAG_ALWAYSCRIT;
+							if(data.Flags)
+							{
+								flags[b] = data.Flags;
+							}
+							else
+							{
+								flags[b] = (freeplay || Classic_Mode() || b_thisNpcIsARaid[entity]) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
+								if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
+									flags[b] |= MVM_CLASS_FLAG_MINIBOSS;
+
+								if(fl_Extra_MeleeArmor[entity] < 1.0 || 
+								fl_Extra_RangedArmor[entity] < 1.0 || 
+								fl_Extra_Speed[entity] > 1.0 || 
+								fl_Extra_Damage[entity] > 1.0 ||
+								b_thisNpcIsARaid[entity])
+									flags[b] |= MVM_CLASS_FLAG_ALWAYSCRIT;
+							}
+							
+							id[b] = i_NpcInternalId[entity];
+
+							if(data.Icon[0])
+							{
+								strcopy(icon[b], sizeof(icon[]), data.Icon);
+							}
+							else
+							{
+								strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
+							}
 						}
 						
 						break;
@@ -2843,30 +2979,12 @@ static void UpdateMvMStatsFrame()
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 
-			NPCData data;
 			for(int i; i < sizeof(id); i++)
 			{
-				if(id[i] == -1)
+				if(id[i])
 				{
-					Waves_SetWaveClass(objective, i, count[i], (flags[i] & MVM_CLASS_FLAG_MINIBOSS) ? "classic_reinforce" : "classic_defend", flags[i], active[i]);
-				}
-				else if(id[i])
-				{
-					NPC_GetById(id[i], data);
-					if(data.Flags == -1)
-					{
-						Waves_SetWaveClass(objective, i);
-						continue;
-					}
-
-					if(!data.Icon[0])
-						strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
-					
-					if(!data.Flags || forceflags[i])
-						data.Flags = flags[i];
-
 					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
-					Waves_SetWaveClass(objective, i, count[i], data.Icon, data.Flags, active[i]);
+					Waves_SetWaveClass(objective, i, count[i], icon[i], flags[i], active[i]);
 				}
 				else
 				{
@@ -2906,9 +3024,6 @@ static int SetupFlags(const Enemy data, bool support)
 	else
 	{
 		flags |= MVM_CLASS_FLAG_NORMAL;
-
-		//if(data.Is_Boss > 1)
-		//	flags |= MVM_CLASS_FLAG_MISSION;
 	}
 
 	if(data.Is_Boss || data.Is_Outlined)

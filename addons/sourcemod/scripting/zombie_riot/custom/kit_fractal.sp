@@ -578,7 +578,8 @@ void Activate_Fractal_Kit(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 
 			Adjust_Crystal_Stats(client, weapon);
-			PrecacheTwirlMusic();
+			if(CvarFileNetworkDisable.IntValue <= 0)
+				PrecacheTwirlMusic();
 			
 		}
 		return;
@@ -590,7 +591,10 @@ void Activate_Fractal_Kit(int client, int weapon)
 			Kill_Cannon(client);
 
 		i_WeaponGotLastmanBuff[weapon] = false;
-		PrecacheTwirlMusic();
+
+		if(CvarFileNetworkDisable.IntValue <= 0)
+			PrecacheTwirlMusic();
+			
 		DataPack pack;
 		h_TimerManagement[client] = CreateDataTimer(0.1, Timer_Weapon_Managment, pack, TIMER_REPEAT);
 		pack.WriteCell(client);

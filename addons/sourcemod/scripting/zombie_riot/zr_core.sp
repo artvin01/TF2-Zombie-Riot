@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//#define UseDownloadTable
-
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
 #define STARTER_WEAPON_LEVEL	5

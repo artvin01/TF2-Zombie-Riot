@@ -162,14 +162,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 			delete dir;
 		}
 	}
-//	FileNetwork_MapEnd();
+	
 	Waves_MapEnd();
-//	FileNetwork_ConfigSetup(kv);
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 	delete kv;
-//	Core_PrecacheGlobalCustom();
-//	PrecacheMusicZr();
 #endif
 
 #if defined RPG

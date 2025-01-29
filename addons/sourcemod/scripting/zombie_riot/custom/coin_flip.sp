@@ -442,11 +442,11 @@ stock void Do_Coin_calc(int victim)
 	}
 	if (IsValidEntity(Closest_entity))
 	{
-		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		if(f_Thrownrecently[victim] > GetGameTime())
 		{
 			damage_multiplier[victim] *= 0.25;
 		}
+		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		
 		static char classname[36];
 		GetEntityClassname(Closest_entity, classname, sizeof(classname));
@@ -460,7 +460,10 @@ stock void Do_Coin_calc(int victim)
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
 			if (GetVectorDistance(chargerPos, targPos) <= 1200.0 && !already_ricocated[victim] && Closest_entity != victim)
 			{
+				//increace damage.
+				damage_multiplier[victim] *= 1.65;
 				already_ricocated[victim] = true;
+				damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 				CreateTimer(0.05, coin_got_rioceted, EntIndexToEntRef(Closest_entity), TIMER_FLAG_NO_MAPCHANGE);
 				mb_coin[Closest_entity] = false;
 				
@@ -472,8 +475,6 @@ stock void Do_Coin_calc(int victim)
 					GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
 					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
 					{
-						//increace damage.
-						damage_multiplier[victim] *= 1.65;
 						SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 					}
 					TE_SetupBeamPoints(chargerPos, targPos, Beam_Laser, Beam_Laser, 0, 30, 1.0, 3.0, 5.0, 1, 1.0, view_as<int>({255, 0, 0, 255}), 30);

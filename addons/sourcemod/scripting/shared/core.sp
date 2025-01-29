@@ -17,9 +17,7 @@
 #include <morecolors>
 #include <cbasenpc>
 #include <tf2utils>
-#if !defined UseDownloadTable
 #include <filenetwork>
-#endif
 #include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
@@ -94,6 +92,8 @@ public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
+ConVar CvarRogueSpecialLogic;
+ConVar CvarFileNetworkDisable;
 ConVar CvarLeveling;
 #endif
 
@@ -852,6 +852,19 @@ public void OnPluginStart()
 
 	TickrateModify = tickrate / 66.0;
 }
+
+public void OnLibraryAdded(const char[] name)
+{
+	FileNetwork_LibraryAdded(name);
+	SteamWorks_LibraryAdded(name);
+}
+
+public void OnLibraryRemoved(const char[] name)
+{
+	FileNetwork_LibraryRemoved(name);
+	SteamWorks_LibraryRemoved(name);
+}
+
 /*
 public void OnAllPluginsLoaded()
 {
@@ -1936,7 +1949,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			if(ConsumeAmmoReserve >= 1)
 			{
 				int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
-				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
+				if(Ammo_type >= 1)
+					SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
 			}
 		}
 	}

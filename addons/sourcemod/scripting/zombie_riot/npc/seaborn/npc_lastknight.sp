@@ -285,7 +285,6 @@ public void LastKnight_ClotThink(int iNPC)
 
 	if(aggressive)
 	{
-		npc.m_flMeleeArmor = 0.4;
 		npc.m_flRangedArmor = 0.4;
 	}
 	
@@ -322,6 +321,12 @@ public void LastKnight_ClotThink(int iNPC)
 						
 						if(target > MaxClients)
 						{
+							if(i_NpcInternalId[target] == CitizenRunner_Id())
+							{
+								damage *= 20.0;
+								view_as<CClotBody>(target).m_bNoKillFeed = true;
+							}
+
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 20.0;
 							
@@ -441,7 +446,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			if(ratio < 1)
 			{
 				npc.m_iPhase = 2;
-				npc.m_flSpeed = 350.0;
+				npc.m_flSpeed = 300.0;
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");

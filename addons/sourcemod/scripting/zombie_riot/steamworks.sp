@@ -14,7 +14,7 @@ void SteamWorks_PluginStart()
 	#endif
 }
 
-public void OnLibraryAdded(const char[] name)
+void SteamWorks_LibraryAdded(const char[] name)
 {
 	#if defined _SteamWorks_Included
 	if(!SteamWorksCompiled && StrEqual(name, STEAMWORKS_LIBRARY))
@@ -25,7 +25,7 @@ public void OnLibraryAdded(const char[] name)
 	#endif
 }
 
-public void OnLibraryRemoved(const char[] name)
+void SteamWorks_LibraryRemoved(const char[] name)
 {
 	#if defined _SteamWorks_Included
 	if(SteamWorksCompiled && StrEqual(name, STEAMWORKS_LIBRARY))

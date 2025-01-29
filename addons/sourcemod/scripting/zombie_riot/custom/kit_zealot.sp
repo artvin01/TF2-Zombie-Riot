@@ -534,7 +534,7 @@ public void Enable_Zealot(int client, int weapon) // Enable management, handle w
 			SetParent(client, entity);
 			ParticleRef[client] = EntIndexToEntRef(entity);
 		}
-		if(!Precached)
+		if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
 		{
 			// MASS REPLACE THIS IN ALL FILES
 			PrecacheSoundCustom("#zombiesurvival/zealot_lastman_1.mp3",_,1);
