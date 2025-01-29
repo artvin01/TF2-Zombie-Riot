@@ -536,7 +536,6 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 
 	objstats.m_flNextDelayTime = gameTime + 0.2;
 	BuildingDisplayRepairLeft(objstats.index);
-	
 
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
@@ -985,15 +984,18 @@ public void ObjBaseThink(int building)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
 	//Fixes some issues when mounted
-	int wearable = objstats.m_iWearable1;
-	if(wearable != -1)
-	{			
-		SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
-	}
-	wearable = objstats.m_iWearable2;
-	if(wearable != -1)
+	if(IsValidEntity(Building_Mounted[building]))
 	{
-		SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		int wearable = objstats.m_iWearable1;
+		if(wearable != -1)
+		{			
+			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		}
+		wearable = objstats.m_iWearable2;
+		if(wearable != -1)
+		{
+			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		}
 	}
 
 	//do not think if you are being carried.
@@ -1009,10 +1011,8 @@ void BuildingDisplayRepairLeft(int entity)
 	char HealthText[64];
 	int HealthColour[4];
 	int Repair = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
-//	int MaxRepair = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
 
 	int Health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
-//	int MaxHealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
 	HealthColour[3] = 255;

@@ -2208,7 +2208,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_FaceStabber[entity] = false;
 		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;
-		Building_Mounted[entity] = 0;
 		BarracksEntityCreated(entity);
 		SetEntitySpike(entity, false);
 		StoreWeapon[entity] = -1;

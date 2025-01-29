@@ -2099,13 +2099,16 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void StartPathing()
 	{
-		this.m_bPathing = true;
+		if(!this.m_bPathing)
+		{
 #if defined ZR
-		if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
-			this.GetPathFollower().SetMinLookAheadDistance(25.0);
-		else
+			if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+				this.GetPathFollower().SetMinLookAheadDistance(25.0);
+			else
 #endif
-			this.GetPathFollower().SetMinLookAheadDistance(100.0);
+				this.GetPathFollower().SetMinLookAheadDistance(100.0);	
+		}
+		this.m_bPathing = true;
 	}
 	public void StopPathing()
 	{
@@ -4924,12 +4927,7 @@ stock int GetClosestTarget(int entity,
 						if(!WasValid)
 							continue;
 					}
-					int vehicle = GetEntPropEnt(i, Prop_Data, "m_hVehicle");
-					if(vehicle != -1)
-					{
-						GetClosestTarget_AddTarget(vehicle, 1);
-					}
-					else if(!npc.m_bCamo || camoDetection)
+					if(!npc.m_bCamo || camoDetection)
 					{
 						GetClosestTarget_AddTarget(i, 1);
 					}			
@@ -5366,7 +5364,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false, int ignore 
 		if (i != ignore && IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
-			if (GetTeam(i)== GetTeam(entity) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (GetTeam(i)== GetTeam(entity) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -5777,7 +5775,8 @@ public void NpcBaseThink(int iNPC)
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
 		//this is just as a temp fix, remove whenver.
-		SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
+		//If it isnt custom, then these npcs ignore triggers
+	//	SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
 		NpcDrawWorldLogic(iNPC);
 		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.25, 0.35);
 		Npc_DebuffWorldTextUpdate(npc);
@@ -5790,7 +5789,11 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if((i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC) || NpcStats_StrongVoidBuff(iNPC)) && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if(f_QuickReviveHealing[iNPC] < GetGameTime()) 
+	&& (i_CurrentEquippedPerk[iNPC] == 1
+	 || HasSpecificBuff(iNPC, "Regenerating Therapy")
+	  ||  NpcStats_WeakVoidBuff(iNPC)
+	   || NpcStats_StrongVoidBuff(iNPC))
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
@@ -10089,14 +10092,13 @@ public void SaveLastValidPositionEntity(int entity)
 	f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + GetRandomFloat(1.5, 2.2);
 	//dont save location too often
 
+	//Am i a player?
 	if(entity <= MaxClients)
 	{
 		if (!IsPlayerAlive(entity))
 			return;
-		
-		/*
-		additional logic, if they are on a slope, make sure they cant slide on it
-		*/
+
+		//am i on the ground? If not, then dont save.
 		bool SavePosition = true;
 		if (!(GetEntityFlags(entity) & FL_ONGROUND))
 		{
@@ -10122,6 +10124,7 @@ public void SaveLastValidPositionEntity(int entity)
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
 		b_AntiSlopeCamp[entity] = false;
+		//Make sure they arent on a slope!
 		if(!SavePosition)
 		{
 			float AbsOrigin_after[3];

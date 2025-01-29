@@ -221,11 +221,6 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(i_HealthBeforeSuit[victim] == 0)
 	{
 		int armorEnt = victim;
-		/*
-		int vehicle = GetEntPropEnt(victim, Prop_Data, "m_hVehicle");
-		if(vehicle != -1)
-			armorEnt = vehicle;
-		*/
 		if(!CheckInHud())
 		{
 			if(Armor_Charge[armorEnt] > 0)

@@ -1372,9 +1372,6 @@ public void OnPostThink(int client)
 				"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
 				);
 			}
-
-			
-			
 		}
 		else if (TeutonType[client] == TEUTON_DEAD)
 		{
