@@ -247,7 +247,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(results[2].FetchRow())
 		{
 			int value = results[2].FetchInt(1);
-			if(value >= 2)
+			if(value >= 1)
 			{
 				OverridePlayerModel(client, value - 1, Viewchanges_PlayerModelsAnims[value - 1]);
 				JoinClassInternal(client, CurrentClass[client]);
@@ -261,7 +261,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			f_NotifHudOffsetX[client] = results[2].FetchFloat(8);
 			f_NotifHudOffsetY[client] = results[2].FetchFloat(9);
 			b_HudScreenShake[client] = view_as<bool>(results[2].FetchInt(10));
-			b_HudLowHealthShake[client] = view_as<bool>(results[2].FetchInt(11));
+			b_HudLowHealthShake_UNSUED[client] = view_as<bool>(results[2].FetchInt(11));
 			b_HudHitMarker[client] = view_as<bool>(results[2].FetchInt(12));
 			thirdperson[client] = view_as<bool>(results[2].FetchInt(13));
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
@@ -372,7 +372,7 @@ void DataBase_ClientDisconnect(int client)
 				f_NotifHudOffsetX[client],
 				f_NotifHudOffsetY[client],
 				b_HudScreenShake[client],
-				b_HudLowHealthShake[client],
+				b_HudLowHealthShake_UNSUED[client],
 				b_HudHitMarker[client],
 				thirdperson[client],
 				f_ZombieVolumeSetting[client],
@@ -410,7 +410,7 @@ void DataBase_ClientDisconnect(int client)
 				f_NotifHudOffsetX[client],
 				f_NotifHudOffsetY[client],
 				b_HudScreenShake[client],
-				b_HudLowHealthShake[client],
+				b_HudLowHealthShake_UNSUED[client],
 				b_HudHitMarker[client],
 				thirdperson[client],
 				f_ZombieVolumeSetting[client],

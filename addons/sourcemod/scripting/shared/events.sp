@@ -21,6 +21,7 @@ void Events_PluginStart()
 	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
 	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
 	HookEvent("arrow_impact", EventOverride_ArrowImpact, EventHookMode_Pre);
+	HookEvent("npc_hurt", EventOverride_OnNpcHurt, EventHookMode_Pre);
 
 #endif	
 	
@@ -30,6 +31,16 @@ void Events_PluginStart()
 }
 
 #if defined ZR
+
+public Action EventOverride_OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
+{
+	int HurtNpc = event.GetInt("entindex");
+	if(i_HexCustomDamageTypes[HurtNpc] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		event.BroadcastDisabled = true;
+
+	return Plugin_Changed;
+}
+
 public Action EventOverride_ArrowImpact(Event event, const char[] name, bool dontBroadcast)
 {
 	int AttachedEntity = event.GetInt("attachedEntity");
@@ -151,14 +162,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 			delete dir;
 		}
 	}
-//	FileNetwork_MapEnd();
+	
 	Waves_MapEnd();
-//	FileNetwork_ConfigSetup(kv);
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 	delete kv;
-//	Core_PrecacheGlobalCustom();
-//	PrecacheMusicZr();
 #endif
 
 #if defined RPG
@@ -267,6 +275,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
+		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 #if defined ZR
 		TransferDispenserBackToOtherEntity(client, true);
 #endif
@@ -373,15 +382,18 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		Attributes_Set(weapon_index, 263, 0.0);
 	   		Attributes_Set(weapon_index, 6, 1.2);
 	   		Attributes_Set(weapon_index, 412, 0.0);
-			if(b_VoidPortalOpened[client])
+			
+		//	if(b_VoidPortalOpened[client])
 			{
 	   			Attributes_Set(weapon_index, 443, 1.25);
 	   			Attributes_Set(weapon_index, 442, 1.25);
 			}
+			/*
 			else
 			{
 	   			Attributes_Set(weapon_index, 442, 1.1);
 			}
+			*/
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
 	   		Attributes_Set(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));

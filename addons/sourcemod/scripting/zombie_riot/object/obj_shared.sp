@@ -36,6 +36,11 @@ int Building_BuildingBeingCarried[MAXENTITIES];
 float f_DamageTakenFloatObj[MAXENTITIES];
 int OwnerOfText[MAXENTITIES];
 
+//Performance improvement, no need to check this littearlly every fucking frame
+//other things DO need it, but not this.
+float f_TransmitDelayCheck[MAXENTITIES][MAXTF2PLAYERS];
+Action b_TransmitBiasDo[MAXENTITIES][MAXTF2PLAYERS];
+
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 
 #define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
@@ -70,6 +75,7 @@ void Object_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
+	Zero2(f_TransmitDelayCheck);
 }
 void Object_PluginStart()
 {
@@ -142,6 +148,7 @@ methodmap ObjectGeneric < CClotBody
 		i_IsABuilding[obj] = true;
 		b_NoKnockbackFromSources[obj] = true;
 		f_DamageTakenFloatObj[obj] = 0.0;
+
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());
@@ -402,16 +409,38 @@ methodmap ObjectGeneric < CClotBody
 
 public Action SetTransmit_BuildingNotReady(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, true);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, true);
+	return b_TransmitBiasDo[entity][client];
 }
+
 
 public Action SetTransmit_BuildingReady(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, false);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, false);
+	return b_TransmitBiasDo[entity][client];
 }
 public Action SetTransmit_BuildingReadyTestThirdPersonIgnore(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, false, true);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, false, true);
+	return b_TransmitBiasDo[entity][client];
 }
 
 static Action SetTransmit_BuildingShared(int entity, int client, bool reverse, bool Ignorethird = false)
@@ -721,11 +750,17 @@ bool Object_Interact(int client, int weapon, int obj)
 				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
+					ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 					Call_StartFunction(null, func);
 					Call_PushCell(client);
 					Call_PushCell(weapon);
 					Call_PushCell(entity);
 					Call_Finish(result);
+					f_TransmitDelayCheck[entity][client] = 0.0;
+					if(IsValidEntity(objstats.m_iWearable1))
+						f_TransmitDelayCheck[objstats.m_iWearable1][client] = 0.0;
+					if(IsValidEntity(objstats.m_iWearable2))
+						f_TransmitDelayCheck[objstats.m_iWearable2][client] = 0.0;
 				}
 				return true;
 			}

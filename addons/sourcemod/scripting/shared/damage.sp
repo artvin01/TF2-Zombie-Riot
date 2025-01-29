@@ -612,7 +612,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
-	if(GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0)
+	if(CheckInHud() != 2 && GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(attacker))
 	{
 		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
 	}
@@ -1518,8 +1518,8 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 
 					attack_speed = 1.0;
 					
-					attack_speed *= Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
-					attack_speed *= Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0); //Extra
+					attack_speed *= Attributes_Get(weapon, 6, 1.0);
+					attack_speed *= Attributes_Get(weapon, 396, 1.0); //Extra
 						
 					EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
 						
@@ -1680,7 +1680,7 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 		DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 	}
 #else
-	float CritChance = Attributes_FindOnPlayerZR(attacker, Attrib_CritChance, false, 0.0);
+	float CritChance = Attributes_GetOnPlayer(attacker, Attrib_CritChance, false,_, 0.0);
 	if(CritChance && GetRandomFloat(0.0, 1.0) < (CritChance))
 	{
 		damage *= 2.0;
@@ -1693,10 +1693,12 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 #if defined ZR
 	if(dieingstate[attacker] > 0 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
 	{
-		if(b_XenoVial[attacker])
-			damage *= 0.45;
+//		if(b_XenoVial[attacker])
+			damage *= 0.35;
+			/*
 		else
 			damage *= 0.25;
+	*/
 	}
 #endif
 	//NPC STUFF FOR RECORD AND ON KILL

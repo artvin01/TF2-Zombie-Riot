@@ -469,10 +469,8 @@ void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, in
 
 public void Fishing_RodM1(int client, int weapon)
 {
-	float ApplyCooldown = 0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float ApplyCooldown = 0.8 * Attributes_Get(weapon, 6, 1.0);
 	Ability_Apply_Cooldown(client, 1, ApplyCooldown);
-//	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-//	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
 	
 	DataPack pack;
 	CreateDataTimer(0.2, Fishing_RodM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -482,8 +480,8 @@ public void Fishing_RodM1(int client, int weapon)
 
 public void FishingRodSetRarity(int client, int weapon, int index)
 {
-	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	FishingTier[client] = RoundToNearest(Attributes_Get(weapon, 2017, 0.0));
+	FishingRate[client] = Attributes_Get(weapon, 2016, 1.0);
 	int totalInt = Stats_Intelligence(client);
 	if(totalInt >= 5000)
 		FishingRate[client] *= 0.75;
@@ -492,8 +490,8 @@ public void FishingRodSetRarity(int client, int weapon, int index)
 
 public void FishingRodCycleRarity(int client, int weapon, int index)
 {
-	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	FishingTier[client] = RoundToNearest(Attributes_Get(weapon, 2017, 0.0));
+	FishingRate[client] = Attributes_Get(weapon, 2016, 1.0);
 	int totalInt = Stats_Intelligence(client);
 	if(totalInt >= 5000)
 		FishingRate[client] *= 0.75;

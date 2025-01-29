@@ -70,6 +70,9 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	
 	if(ClientTutorialStep(client) == 4)
 	{
+		//littel cooldown
+		KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+		f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
 		SetClientTutorialStep(client, 5);
 		DoTutorialStep(client, false);	
 	}

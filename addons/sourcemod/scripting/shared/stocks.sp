@@ -385,6 +385,8 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 
 	//Mask shot here, reasoning being that it should be easiser to interact with buildings and npcs if they are very close to eachother or inside (This wont fully fix it, but i see not other way.)
 	//This is client compensated anyways, and reviving is still via hull and not hitboxes.
+
+	//
 	int flags = CONTENTS_SOLID;
 
 	if(!mask_shot)
@@ -393,7 +395,9 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	}
 	else
 	{
-		flags |= MASK_SHOT;
+		flags |= MASK_SOLID;
+		//Mask shot is entirely unnececarry, as it doesnt work and with the ignore entity method its unnececcary
+	//	flags |= MASK_SHOT;
 	}
 
 	int iReturn = -1;
@@ -3035,7 +3039,7 @@ int inflictor = 0)
 #if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
-		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
+		float value = Attributes_Get(weapon, 99, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 		if(maxtargetshit == 10)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));

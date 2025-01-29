@@ -401,6 +401,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 					}
 				}
+				f_DisplayHurtHudToSupporter[healTarget][owner] = GetGameTime() + 0.25;
 #if defined ZR
 				SetAmmo(owner, 21, new_ammo);
 				CurrentAmmo[owner][21] = GetAmmo(owner, 21);
@@ -619,8 +620,10 @@ void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUb
 	if(RespectUberDuration)
 		HeatExtra = HeatExtra / MedigunGetUberDuration(owner);
 	float UberchargeRate = Attributes_GetOnWeapon(owner, medigun, 9, true);
+
 	if(UberchargeRate > 0.0 || UberchargeRate == -1.0)
 		HeatExtra *= (UberchargeRate == -1.0 ? 0.0 : UberchargeRate);
+		
 	UberchargeRate = Attributes_GetOnWeapon(owner, medigun, 10, true);
 	if(UberchargeRate > 0.0 || UberchargeRate == -1.0)
 		HeatExtra *= (UberchargeRate == -1.0 ? 0.0 : UberchargeRate);

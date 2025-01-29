@@ -91,6 +91,7 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 {
 	if(ClientTutorialStep(client) == 5)
 	{
+		KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
 		SetClientTutorialStep(client, 6);
 		DoTutorialStep(client, false);	
 		TutorialEndFully(client);

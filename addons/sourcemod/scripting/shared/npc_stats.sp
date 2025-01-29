@@ -2935,8 +2935,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(m_flGroundSpeed != 0.0)
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
-				if(PlaybackSpeed > 2.0)
-					PlaybackSpeed = 2.0;
+				if(PlaybackSpeed > f_MaxAnimationSpeed[this.index])
+					PlaybackSpeed = f_MaxAnimationSpeed[this.index];
+
 				if(PlaybackSpeed <= 0.01)
 					PlaybackSpeed = 0.01;
 					
@@ -3355,16 +3356,19 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 
 #if defined ZR || defined RPG
-		if(client > 0 && client <= MaxClients)
+		if(client > 0)
 		{
-			if(i_HasBeenHeadShotted[pThis])
-				i_Headshots[client] += 1; //Award 1 headshot point, only once.
+			if(client <= MaxClients)
+			{
+				if(i_HasBeenHeadShotted[pThis])
+					i_Headshots[client] += 1; //Award 1 headshot point, only once.
 
-			if(i_HasBeenBackstabbed[pThis])
-				i_Backstabs[client] += 1; //Give a backstab count!
+				if(i_HasBeenBackstabbed[pThis])
+					i_Backstabs[client] += 1; //Give a backstab count!
 
-			i_KillsMade[client] += 1;
-			RemoveHudCooldown(client);
+				i_KillsMade[client] += 1;
+				RemoveHudCooldown(client);
+			}
 			Calculate_And_Display_hp(client, pThis, 0.0, true);
 		}
 #endif
@@ -4256,6 +4260,9 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 #else
 	if(i_IsABuilding[other_entidx])
 	{
+		if(b_AvoidBuildingsAtAllCosts[bot_entidx])
+			return false;
+
 		return true;
 	}
 
@@ -5315,7 +5322,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				}
 				case 4:
 				{
-					distance_limit = fldistancelimitAllyNPC;
+					distance_limit = fldistancelimit;
 				}
 				default:
 				{
@@ -6333,7 +6340,7 @@ stock void Custom_Knockback(int attacker,
 #if !defined RTS
 		if(enemy <= MaxClients && !ignore_attribute && !work_on_entity)
 		{
-			float Attribute_Knockback = Attributes_FindOnPlayerZR(enemy, 252, true, 1.0);	
+			float Attribute_Knockback = Attributes_GetOnPlayer(enemy, 252, true,_, 1.0);	
 			
 			knockback *= Attribute_Knockback;
 		}
@@ -7420,7 +7427,7 @@ static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Ext
 static float f_PickThisDirectionForabit[MAXENTITIES];
 static int i_PickThisDirectionForabit[MAXENTITIES];
 
-stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0, float pathTarget[3])
+stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, float extra_backoff = 64.0, float pathTarget[3], int customlogic = -1)
 {
 	float botPos[3];
 	WorldSpaceCenter(npc.index, botPos);
@@ -7462,7 +7469,6 @@ stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, fl
 		
 		
 		//Make sure to actually back off...
-		
 		//I could reuse this code for if npcs get stuck, might actually work out....
 		
 		TR_GetEndPosition(pathTarget, trace);
@@ -7477,7 +7483,10 @@ stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, fl
 	}
 	
 	//Check of on if its too close, if yes, try again, but left or right, randomly chosen!
-	if(flDistanceToTarget < ((extra_backoff * extra_backoff)) / 2.0)
+	/*
+		This means that theyare touching a wall!
+	*/
+	if(customlogic == 1 || customlogic == 2 || flDistanceToTarget < ((extra_backoff * extra_backoff)) / 2.0)
 	{
 		int Direction = GetRandomInt(1, 2);
 		
@@ -7502,6 +7511,9 @@ stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, fl
 			GetVectorAngles(vecForward_2, vecForward_2);
 			
 			ang[1] += 90.0; //try to the left/right.
+			if(customlogic == 1)
+				ang[1] += 45.0; //try to the left/right.
+
 			
 			vecForward_2[1] = ang[1];
 			GetAngleVectors(vecForward_2, vecForward_2, vecRight_2, vecTarget_2);
@@ -7529,6 +7541,8 @@ stock void BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject, fl
 			GetVectorAngles(vecForward_2, vecForward_2);
 			
 			ang[1] -= 90.0; //try to the left/right.
+			if(customlogic == 1)
+				ang[1] -= 45.0; //try to the left/right.
 			
 			vecForward_2[1] = ang[1];
 			GetAngleVectors(vecForward_2, vecForward_2, vecRight_2, vecTarget_2);
@@ -8219,6 +8233,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #endif
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
+	b_AvoidBuildingsAtAllCosts[entity] = false;
+	f_MaxAnimationSpeed[entity] = 2.0;
 	b_OnDeathExtraLogicNpc[entity] = 0;
 	f_DoNotUnstuckDuration[entity] = 0.0;
 	f_UnstuckTimerCheck[entity][0] = 0.0;
@@ -9412,13 +9428,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
 	}
-
-	/*
-	if(IgniteFor[npc.index] > 0)
-	{
-		Format(HealthText, sizeof(HealthText), "%s~",HealthText);
-	}
-	*/
+	
 	if(f_DuelStatus[npc.index] > GetGameTime(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%sVS",HealthText);

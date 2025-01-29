@@ -482,7 +482,7 @@ static void ReShowSettingsHud(int client)
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
 
-	if(b_HudLowHealthShake[client])
+	if(b_HudLowHealthShake_UNSUED[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -904,13 +904,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -40: 
 				{
-					if(b_HudLowHealthShake[client])
+					if(b_HudLowHealthShake_UNSUED[client])
 					{
-						b_HudLowHealthShake[client] = false;
+						b_HudLowHealthShake_UNSUED[client] = false;
 					}
 					else
 					{
-						b_HudLowHealthShake[client] = true;
+						b_HudLowHealthShake_UNSUED[client] = true;
 					}
 					
 					ReShowSettingsHud(client);
@@ -1101,6 +1101,7 @@ void Store_ApplyAttribs(int client)
 	int attribs = 0;
 	for(int i; i < length; i++)
 	{
+		/*
 		if(attribs && !(attribs % 16))
 		{
 			if(!TF2_GetWearable(client, entity))
@@ -1115,6 +1116,7 @@ void Store_ApplyAttribs(int client)
 			Attributes_RemoveAll(entity);
 			attribs++;
 		}
+		*/
 
 		snapshot.GetKey(i, buffer1, sizeof(buffer1));
 		if(map.GetValue(buffer1, value))
@@ -1132,7 +1134,8 @@ void Store_ApplyAttribs(int client)
 	}
 
 	Stats_ApplyAttribsPost(client, ClassForStats);
-
+	
+	/*
 	while(TF2_GetWearable(client, entity))
 	{
 		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
@@ -1140,6 +1143,7 @@ void Store_ApplyAttribs(int client)
 		
 		Attributes_RemoveAll(entity);
 	}
+	*/
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
 	

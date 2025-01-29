@@ -34,7 +34,7 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 		int mana_cost = 140;
 		if(pap == 1)
 		{
-			mana_cost = 200;
+			mana_cost = 180;
 		}
 		if(mana_cost <= Current_Mana[client])
 		{
@@ -54,6 +54,9 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 				damage *= Attributes_Get(weapon, 410, 1.0);
 
 				damage *= 1.1;
+
+				if(pap == 1)
+					damage *= 0.75;
 				
 				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;

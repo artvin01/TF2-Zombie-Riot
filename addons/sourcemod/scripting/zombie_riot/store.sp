@@ -1802,8 +1802,8 @@ public void ReShowSettingsHud(int client)
 
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
-
-	if(b_HudLowHealthShake[client])
+/*
+	if(b_HudLowHealthShake_UNSUED[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -1812,7 +1812,7 @@ public void ReShowSettingsHud(int client)
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-40", buffer);
-
+*/
 	FormatEx(buffer, sizeof(buffer), "%t", "Weapon Screen Shake");
 	if(b_HudScreenShake[client])
 	{
@@ -2266,13 +2266,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -40: 
 				{
-					if(b_HudLowHealthShake[client])
+					if(b_HudLowHealthShake_UNSUED[client])
 					{
-						b_HudLowHealthShake[client] = false;
+						b_HudLowHealthShake_UNSUED[client] = false;
 					}
 					else
 					{
-						b_HudLowHealthShake[client] = true;
+						b_HudLowHealthShake_UNSUED[client] = true;
 					}
 					
 					ReShowSettingsHud(client);
@@ -4036,6 +4036,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Kleiner");
 						menu2.AddItem("-50", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Fat HHH");
+						menu2.AddItem("-151", buffer);
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Back");
 						menu2.AddItem("-1", buffer);
 						
@@ -4068,6 +4071,12 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -50:
 					{
 						OverridePlayerModel(client, KLEINER, true);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -151:
+					{
+						OverridePlayerModel(client, HHH_SkeletonOverride, true);
 						JoinClassInternal(client, CurrentClass[client]);
 						MenuPage(client, -1);
 					}
@@ -4919,6 +4928,7 @@ void Store_ApplyAttribs(int client)
 	}
 
 	map.SetValue("252", KnockbackResistance);
+	
 	if(Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 	{
 		b_AlaxiosBuffItem[client] = true;
@@ -4927,7 +4937,7 @@ void Store_ApplyAttribs(int client)
 	{
 		b_AlaxiosBuffItem[client] = false;
 	}
-
+	
 	if(i_CurrentEquippedPerk[client] == 4)
 	{
 		map.SetValue("178", 0.65); //Faster Weapon Switch
@@ -5017,13 +5027,13 @@ void Store_ApplyAttribs(int client)
 	Jesus_Blessing[client] = 0;
 	i_HeadshotAffinity[client] = 0;
 	i_SoftShoes[client] = 0;
-	i_BadHealthRegen[client] = 0;
 
 	SkillTree_ApplyAttribs(client, map);
 	Rogue_ApplyAttribs(client, map);
 	Waves_ApplyAttribs(client, map);
 	FullMoonDoubleHp(client, map);
 
+	/*
 	int entity = -1;
 	while(TF2_GetWearable(client, entity))
 	{
@@ -5035,13 +5045,16 @@ void Store_ApplyAttribs(int client)
 		
 		Attributes_RemoveAll(entity);
 	}
+	*/
 
 	StringMapSnapshot snapshot = map.Snapshot();
-	entity = client;
+//	entity = client;
 	int length = snapshot.Length;
 	int attribs = 0;
+//	int ClientsideAttribs = 0;
 	for(int i; i < length; i++)
 	{
+		/*
 		if(attribs && !(attribs % 16))
 		{
 			if(!TF2_GetWearable(client, entity))
@@ -5056,6 +5069,7 @@ void Store_ApplyAttribs(int client)
 			//Attributes_RemoveAll(entity);
 			attribs++;
 		}
+		*/
 
 		snapshot.GetKey(i, buffer1, sizeof(buffer1));
 		if(map.GetValue(buffer1, value))
@@ -5083,26 +5097,17 @@ void Store_ApplyAttribs(int client)
 					i_SoftShoes[client] = RoundToNearest(value);
 					continue;
 				}
-				case 805:
-				{
-					i_BadHealthRegen[client] = RoundToNearest(value);
-					continue;
-				}
 			}
 
-			if(Attributes_Set(entity, index, value))
+			if(Attributes_Set(client, index, value))
 				attribs++;
 
 		}
 	}
-
 	if(dieingstate[client] > 0)
 	{
 		ForcePlayerCrouch(client, true);
-		if(b_XenoVial[client])
-			Attributes_SetMulti(client, 442, 0.85);
-		else
-			Attributes_SetMulti(client, 442, 0.65);
+		Attributes_SetMulti(client, 442, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
@@ -5232,6 +5237,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_ExpertTrapper[client] = false;
 	b_RaptureZombie[client] = false;
 	b_ArmorVisualiser[client] = false;
+	b_Reinforce[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
@@ -5288,7 +5294,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 	}
-	*/
 
 	if(Items_HasNamedItem(client, "Calmaticus' Heart Piece"))
 	{
@@ -5314,6 +5319,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_OverlordsFinalWish[client] = false;
 	}
+	
 	if(Items_HasNamedItem(client, "Bob's true fear"))
 	{
 		b_BobsTrueFear[client] = true;
@@ -5322,6 +5328,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_BobsTrueFear[client] = false;
 	}
+
 	if(Items_HasNamedItem(client, "Twirl's Hairpins"))
 	{
 		b_TwirlHairpins[client] = true;
@@ -5330,6 +5337,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_TwirlHairpins[client] = false;
 	}
+
 	if(Items_HasNamedItem(client, "Kahmlsteins Last Will"))
 	{
 		b_KahmlLastWish[client] = true;
@@ -5346,6 +5354,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_VoidPortalOpened[client] = false;
 	}
+	
 	if(Items_HasNamedItem(client, "Avangard's Processing Core-B"))
 	{
 		b_AvangardCoreB[client] = true;
@@ -5354,6 +5363,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_AvangardCoreB[client] = false;
 	}
+	*/
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);

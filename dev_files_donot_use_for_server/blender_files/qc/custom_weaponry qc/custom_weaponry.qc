@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_36"
+$modelname "zombie_riot/weapons/custom_weaponry_1_37"
 
 $bodygroup "scythe"					//1
 {
@@ -60,7 +60,6 @@ $bodygroup "scythe_rotate"			//512
 	blank
 	studio "scythe_model_rotate.smd"
 }
-//the .blend files are located: "blender_files/jdeivid/test models/"
 $bodygroup "fusion_blade1_1"		//1024
 {
 	blank
@@ -72,6 +71,26 @@ $bodygroup "fusion_blade2"			//2048
 	blank
 	studio "fusion_blade2.smd"
 }
+
+$bodygroup "fusion_blade_siccor"			//4096
+{
+	blank
+	studio "fusion_blade_siccor.smd"
+}
+
+$bodygroup "fusion_blade2_erasus"			//8192
+{
+	blank
+	studio "fusion_blade2_erasus.smd"
+}
+$bodygroup "fusion_blade2_dual"			//16384
+{
+	blank
+	studio "fusion_blade2_dual.smd"
+}
+
+//the .blend files are located: "blender_files/jdeivid/test models/"
+
 $surfaceprop "weapon"
 
 $contents "solid"
@@ -86,8 +105,10 @@ $cdmaterials "models\weapons\v_crossbow\"
 $cdmaterials "models\weapons\w_annabelle\"
 $cdmaterials "models\Weapons\V_shotgun\"
 $cdmaterials "models\items\"
-
 $cdmaterials ""
+
+$attachment "duelrea_left_spike" 	"weapon_bone" -3.0 0.0 44.0 rotate 0.0 0.0 0.0
+$attachment "duelrea_right_spike" 	"weapon_bone" 3.0 0.0 -44.0 rotate 0.0 0.0 0.0
 
 $cbox 0 0 0 0 0 0
 

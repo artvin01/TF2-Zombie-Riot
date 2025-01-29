@@ -63,12 +63,6 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_obj_upgrade_per_hit", "0");
 	ConVar_Add("tf_playergib", "0");
 
-	//Used for various things such as zealot dodge,
-	// See https://github.com/FlaminSarge/tf_maxspeed_patch
-	//if it doesnt exist, its ignored.
-	//Set it to 720.0
-//	ConVar_Add("tf_maxspeed_limit", "720.0");
-
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?");
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "0", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
@@ -93,7 +87,9 @@ void ConVar_PluginStart()
 	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	CvarSkillPoints = CreateConVar("zr_skillpoints", "1", "If skill points are enabled");
+	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
+	CvarFileNetworkDisable = CreateConVar("zr_filenetwork_disable", "0", "0 means as intended, 1 means fast download sounds (itll download any waves present instnatly), 2 means download MVM style matreials too");
 #else
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
@@ -109,7 +105,7 @@ void ConVar_PluginStart()
 	//CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 
-#if defined ZR || defined RTS
+#if defined ZR || defined RTS	
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
 

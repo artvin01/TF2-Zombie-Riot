@@ -11,16 +11,18 @@ Handle Timer_AncientBanner = null;
 Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
-float BannerDefaultRange(int client)
+float BannerDefaultRange()
 {
-	if(b_AlaxiosBuffItem[client])
+	//if(b_AlaxiosBuffItem[client])
 	{
 		return 511225.0; //1.1x range
 	}
+	/*
 	else
 	{
 		return 422500.0;
 	}
+	*/
 }
 void BannerOnEntityCreated(int entity)
 {
@@ -92,7 +94,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 		if(IsClientInGame(ally) && IsPlayerAlive(ally))
 		{
 			GetClientAbsOrigin(ally, targPos);
-			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
+			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 			{
 				ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
 				i_ExtraPlayerPoints[client] += 1;
@@ -105,7 +107,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
+			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 			{
 				ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
 				i_ExtraPlayerPoints[client] += 1;
@@ -169,7 +171,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
 				GetClientAbsOrigin(ally, targPos);
-				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
+				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
 					ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
@@ -182,7 +184,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
+				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
 					ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
@@ -249,7 +251,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
 				GetClientAbsOrigin(ally, targPos);
-				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
+				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
 					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
@@ -262,7 +264,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
+				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
 					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
@@ -312,7 +314,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				if(IsClientInGame(ally) && IsPlayerAlive(ally))
 				{
 					GetClientAbsOrigin(ally, targPos);
-					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
+					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 					{
 						ApplyStatusEffect(client, ally, "Ancient Banner", 0.5);
 						i_ExtraPlayerPoints[client] += 1;
@@ -325,7 +327,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 				{
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
+					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 					{
 						ApplyStatusEffect(client, ally, "Ancient Banner", 0.5);
 						i_ExtraPlayerPoints[client] += 1;

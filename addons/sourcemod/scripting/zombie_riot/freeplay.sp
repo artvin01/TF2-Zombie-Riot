@@ -514,7 +514,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
 		enemy.Health = RoundToCeil(50000.0);
-		enemy.Health = RoundToCeil((HealthBonus + (300000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
+		enemy.Health = RoundToCeil((HealthBonus + (225000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
 		enemy.ExtraMeleeRes = 1.35;
 		enemy.ExtraRangedRes = 1.0;
 		enemy.ExtraSpeed = 1.0;
@@ -542,9 +542,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		float bigchance;
 		if(postWaves+1 < 89)
-			bigchance = 0.985;
+			bigchance = 0.98;
 		else
-			bigchance = 0.97;
+			bigchance = 0.96;
 
 		if(GetRandomFloat(0.0, 1.0) >= bigchance)
 		{
@@ -653,13 +653,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(alaxios && count > 30)
 		count = 30;
 
-	char npc_classname[60];
-	NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
-	if(alaxios && StrEqual(npc_classname, "npc_medival_achilles") || StrEqual(npc_classname, "npc_medival_monk") || StrEqual(npc_classname, "npc_medival_villager") || StrEqual(npc_classname, "npc_medival_son_of_osiris"))
-	{	
-		count = 2;
-	}
-
 	enemy.ExtraSize *= ExtraEnemySize;
 }
 
@@ -719,7 +712,7 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
 	}
 
-	if(StalkerBuff > 0)
+	if(StalkerBuff > 0 && !b_thisNpcIsARaid[entity] && !b_thisNpcIsABoss[entity])
 	{
 		b_StaticNPC[entity] = true;
 		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 25);
@@ -834,8 +827,10 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			}
 			else
 			{
+				/*
 				if(Items_HasNamedItem(client, "A Block of Cheese"))
 					ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+				*/
 			}
 
 			switch(EloquenceBuff)

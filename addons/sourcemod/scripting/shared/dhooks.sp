@@ -2051,7 +2051,6 @@ stock void DelayEffectOnHorn(int ref)
 		int g = 200;
 		int b = 255;
 		int a = 200;
-		ExtendDuration *= 1.5;
 		EmitSoundToAll("mvm/mvm_tank_horn.wav", client, SNDCHAN_STATIC, 80, _, 0.45);
 		
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);
@@ -2060,6 +2059,7 @@ stock void DelayEffectOnHorn(int ref)
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
 	}
+	ExtendDuration *= 1.5;
 
 	f_BannerAproxDur[client] = GetGameTime() + ExtendDuration;
 	f_BannerDurationActive[client] = GetGameTime() + 0.35;
@@ -2259,11 +2259,7 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 	}
 #endif
 #if defined ZR
-	else if(b_thisNpcHasAnOutline[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+	else if (b_thisNpcHasAnOutline[entity] || !b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}

@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//#define UseDownloadTable
-
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
 #define STARTER_WEAPON_LEVEL	5
@@ -342,8 +340,8 @@ float ResourceRegenMulti;
 float Armor_regen_delay[MAXTF2PLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
-ConVar CvarSvRollagle; // sv_rollangle
-int i_SvRollAngle[MAXTF2PLAYERS];
+//ConVar CvarSvRollagle; // sv_rollangle
+//int i_SvRollAngle[MAXTF2PLAYERS];
 
 	
 int CashSpent[MAXTF2PLAYERS];
@@ -609,60 +607,60 @@ void ZR_PluginStart()
 	
 
 	//any noob will eventually type these!!
-	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_market", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_zmarket", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_weapons", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_walmart", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_tesco", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_gun", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_givegun", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_giveweapons", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_giveweapon", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_cmd", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_cmds", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_commands", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_help", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_giveweapon", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_info", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_menu", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_givemeall", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_giveall", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_freeitems", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_wear", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_wearme", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_zr", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_lidlnord", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_lidlsüd", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_kaufland", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_ikea", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_zabka", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_penny", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_store", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_shop", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_market", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_zmarket", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_weapons", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_walmart", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_tesco", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_buy", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_guns", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_gun", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_givegun", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_giveweapons", Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_cmd", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_cmds", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_commands", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_wear", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_wearme", 		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_zr", 			Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_lidlnord", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_lidlsüd", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_kaufland", 	Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_ikea",		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_zabka",		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_penny",		Access_StoreViaCommand, "Please Press TAB instead");
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");
+	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
-	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
+	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person"); //old and unused.
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_set_xp", Command_SetXp, ADMFLAG_ROOT, "Set XP to the Person");
 	RegAdminCmd("sm_give_cash_all", Command_GiveCashAll, ADMFLAG_ROOT, "Give Cash to All");
-	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
-	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
-	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");
-	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
-	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
-	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
+	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");			//DEBUG
+	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");			//DEBUG
+	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");	//DEBUG
+	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");	//DEBUG
+	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");						//DEBUG
+	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count"); 	//DEBUG
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
-	CvarSvRollagle = FindConVar("sv_rollangle");
-	if(CvarSvRollagle)
-		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+//	CvarSvRollagle = FindConVar("sv_rollangle");
+//	if(CvarSvRollagle)
+//		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
 	Database_PluginStart();
@@ -2064,7 +2062,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 {
 	if(ArmorLevel == -1)
 	{
-		ArmorLevel = RoundToNearest(Attributes_FindOnPlayerZR(client, 701));
+		ArmorLevel = RoundToNearest(Attributes_GetOnPlayer(client, 701, false));
 	}
 
 	int Armor_Max;

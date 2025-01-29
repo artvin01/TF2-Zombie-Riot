@@ -120,7 +120,7 @@ static int TriggerDamage(int entity, int type)
 	}
 	else if(b_thisNpcIsABoss[entity])
 	{
-		divide *= (3.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
+		divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
 	}
 	else if (b_IsGiant[entity])
 	{
@@ -203,9 +203,9 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 					
 					if(!HasSpecificBuff(victim, "Fluid Movement"))
-						TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+						TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
 
-					DealTruedamageToEnemy(0, victim, b_BobsTrueFear[victim] ? 400.0 : 500.0);
+					DealTruedamageToEnemy(0, victim, 500.0);
 				}
 			}
 			
@@ -469,13 +469,9 @@ static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon
 
 static void SakratanGroupDebuffInternal(int victim)
 {
-	if(victim <= MaxClients && !b_BobsTrueFear[victim])
+	if(victim <= MaxClients)
 	{
 		DealTruedamageToEnemy(0, victim, 250.0);
-	}
-	else
-	{
-		DealTruedamageToEnemy(0, victim, 200.0);
 	}
 	IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
 }
@@ -645,10 +641,12 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	if(victim <= MaxClients)
 	{
+		/*
 		if(Items_HasNamedItem(victim, "Matrix's Curse") && !Items_HasNamedItem(victim, "A Block of Cheese"))
 		{
 			damage = RoundToNearest(float(damage) * 1.2);
 		}
+		*/
 		Armor_DebuffType[victim] = 4;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{

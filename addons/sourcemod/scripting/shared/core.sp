@@ -17,10 +17,8 @@
 #include <morecolors>
 #include <cbasenpc>
 #include <tf2utils>
-#if !defined UseDownloadTable
 #include <filenetwork>
-#endif
-//#include <profiler>
+#include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
 
@@ -61,7 +59,6 @@
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
 
-
 //#pragma dynamic	131072
 //Allah This plugin has so much we need to do this.
 
@@ -95,6 +92,8 @@ public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
+ConVar CvarRogueSpecialLogic;
+ConVar CvarFileNetworkDisable;
 ConVar CvarLeveling;
 #endif
 
@@ -108,38 +107,6 @@ ConVar CvarMaxPlayerAlive;
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
-//#define CompensatePlayers
-
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-
-/*
-	THIS CODE IS COMPRISED OF MULTIPLE CODERS JUST ADDING THEIR THINGS!
-	SO HOW THIS CODE WORKS CAN HEAVILY VARY FROM FILE TO FILE!!!
-	
-	Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
-	
-	Current coders that in anyway actively helped, in order of how much:
-	
-	Artvin
-	Batfoxkid
-	Mikusch
-	Suza
-	Alex
-	Spookmaster
-	
-	Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
-	rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
-*/
-
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
-//ATTENTION PLEASE!!!!!!!!!
 
 #define FAR_FUTURE	100000000.0
 #define MAXENTITIES	2048
@@ -187,6 +154,9 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define FL_WIDOWS_WINE_DURATION 4.0
 #define FL_WIDOWS_WINE_DURATION_NPC 0.85
+
+#define MELEE_RANGE 64.0
+#define MELEE_BOUNDS 22.0
 
 
 
@@ -764,8 +734,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
 	RegConsoleCmd("sm_getpos", GetPos);
 	RegConsoleCmd("sm_me", DoRoleplayTalk);
-//	HookEvent("npc_hurt", OnNpcHurt);
-	
+
 	sv_cheats = FindConVar("sv_cheats");
 	nav_edit = FindConVar("nav_edit");
 
@@ -883,6 +852,19 @@ public void OnPluginStart()
 
 	TickrateModify = tickrate / 66.0;
 }
+
+public void OnLibraryAdded(const char[] name)
+{
+	FileNetwork_LibraryAdded(name);
+	SteamWorks_LibraryAdded(name);
+}
+
+public void OnLibraryRemoved(const char[] name)
+{
+	FileNetwork_LibraryRemoved(name);
+	SteamWorks_LibraryRemoved(name);
+}
+
 /*
 public void OnAllPluginsLoaded()
 {
@@ -1049,7 +1031,7 @@ public void OnMapStart()
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
 	Zero(Mana_Regen_Delay_Aggreviated);
-	Zero(RollAngle_Regen_Delay);
+//	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
 	Building_MapStart();
@@ -1564,7 +1546,7 @@ public void OnClientDisconnect(int client)
 #endif
 
 	b_HudScreenShake[client] = true;
-	b_HudLowHealthShake[client] = true;
+	b_HudLowHealthShake_UNSUED[client] = true;
 	b_HudHitMarker[client] = true;
 	f_ZombieVolumeSetting[client] = 0.0;
 }
@@ -1967,7 +1949,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			if(ConsumeAmmoReserve >= 1)
 			{
 				int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
-				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
+				if(Ammo_type >= 1)
+					SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
 			}
 		}
 	}
@@ -2028,8 +2011,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 
 			float attack_speed;
 			
-			attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
-			attack_speed *= (1.0 / Attributes_FindOnWeapon(client, weapon, 396, true, 1.0));
+			attack_speed = 1.0 / Attributes_Get(weapon, 6, 1.0);
+			attack_speed *= (1.0 / Attributes_Get(weapon, 396, 1.0));
 
 			if(f_ModifThirdPersonAttackspeed[weapon] != 1.0)
 				attack_speed *= f_ModifThirdPersonAttackspeed[weapon];
@@ -3018,7 +3001,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 						{
 							float attack_speed;
 						
-							attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
+							attack_speed = 1.0 / Attributes_Get(weapon_holding, 6, 1.0);
 							
 							if(attack_speed > 5.0)
 							{
@@ -3436,7 +3419,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
 		MakePlayerGiveResponseVoice(target, 3); //Revived response!
 		f_ClientBeingReviveDelay[target] = 0.0;
-		if(b_KahmlLastWish[target])
+	//	if(b_KahmlLastWish[target])
 		{
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
 			GiveArmorViaPercentage(target, 0.1, 1.0, false);
@@ -3461,12 +3444,14 @@ public Action ReviveDisplayMessageDelay(Handle timer, int ref)
 			SetGlobalTransTarget(target);
 			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Last Down Warning");	
 		}
+		/*
 		else if(b_KahmlLastWish[target])
 		{
 			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
 			SetGlobalTransTarget(target);
 			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
 		}
+		*/
 	}
 	return Plugin_Continue;
 }

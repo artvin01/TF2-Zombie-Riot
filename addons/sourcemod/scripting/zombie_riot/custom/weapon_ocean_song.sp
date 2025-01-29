@@ -363,7 +363,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 		}
 		flHealMulti = Attributes_GetOnPlayer(client, 8, true, true);
 		if(weapon > 0)
-			flHealMulti *= Attributes_FindOnWeapon(client, weapon, 8, true, 1.0);
+			flHealMulti *= Attributes_Get(weapon, 8, 1.0);
 	}
 	else
 	{

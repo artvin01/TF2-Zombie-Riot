@@ -299,8 +299,10 @@ bool b_DisplayDamageHud[MAXTF2PLAYERS];
 bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
-bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
+bool b_HudLowHealthShake_UNSUED[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
+int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
+float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
 
 //This is for going through things via lag comp or other reasons to teleport things away.
@@ -460,18 +462,17 @@ float Mana_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
 float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
 float Mana_Loss_Delay[MAXTF2PLAYERS];
-float RollAngle_Regen_Delay[MAXTF2PLAYERS];
+//float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXENTITIES];
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
-int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
 bool b_AggreviatedSilence[MAXTF2PLAYERS];
 bool b_ArmorVisualiser[MAXENTITIES];
-bool b_BobsCuringHand[MAXTF2PLAYERS];
-bool b_XenoVial[MAXTF2PLAYERS];
+//bool b_BobsCuringHand[MAXTF2PLAYERS];
+//bool b_XenoVial[MAXTF2PLAYERS];
 int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
@@ -482,15 +483,17 @@ bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
 float f_ClientArmorRegen[MAXENTITIES];
-bool b_NemesisHeart[MAXTF2PLAYERS];
-bool b_OverlordsFinalWish[MAXTF2PLAYERS];
-bool b_BobsTrueFear[MAXTF2PLAYERS];
-bool b_TwirlHairpins[MAXTF2PLAYERS];
-bool b_KahmlLastWish[MAXTF2PLAYERS];
-bool b_VoidPortalOpened[MAXTF2PLAYERS];
-bool b_AvangardCoreB[MAXTF2PLAYERS];
+//bool b_NemesisHeart[MAXTF2PLAYERS];
+//bool b_OverlordsFinalWish[MAXTF2PLAYERS];
+//bool b_BobsTrueFear[MAXTF2PLAYERS];
+//bool b_TwirlHairpins[MAXTF2PLAYERS];
+//bool b_KahmlLastWish[MAXTF2PLAYERS];
+//bool b_VoidPortalOpened[MAXTF2PLAYERS];
+//bool b_AvangardCoreB[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
+float f_MaxAnimationSpeed[MAXENTITIES];	
+bool b_AvoidBuildingsAtAllCosts[MAXENTITIES];	
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
@@ -709,6 +712,7 @@ float TickrateModify;
 int TickrateModifyInt;
 float f_ClientDoDamageHud[MAXTF2PLAYERS][2];
 float f_ClientDoDamageHud_Hurt[MAXTF2PLAYERS][2];
+float f_DisplayHurtHudToSupporter[MAXENTITIES][MAXTF2PLAYERS];
 
 enum
 {

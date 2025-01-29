@@ -3577,9 +3577,9 @@
 	}
 	"Khaml Desc"
 	{
-		"en"	"The judges of your actions have arrived."
-		"fr"	"Voiçi le juge de vos actions."
-		"chi"	"审判者来了。"
+		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
+		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 	}
 	"Void Desc"
 	{
@@ -3879,6 +3879,10 @@
 		"en"	"Kleiner"
 		"fr"	"Kleiner"
 		"chi"	"克莱恩"
+	}
+	"Fat HHH"
+	{
+		"en"	"Fat HHH"
 	}
 	"Iberia & Nemal"
 	{

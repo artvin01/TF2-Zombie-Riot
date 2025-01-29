@@ -263,8 +263,8 @@ public Action Timer_Management_SensalWeapon(Handle timer, DataPack pack)
 			f_Sensal_MaxCharge_1[client] *= 2.0;
 		}
 	}
-	if(b_ClientPossesBattery[client])
-		f_Sensal_MaxCharge_1[client] *= 2.0;
+	
+	f_Sensal_MaxCharge_1[client] *= 2.0;
 	
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
@@ -305,10 +305,7 @@ void SensalTimerHudShow(int client, int weapon)
 				char SensalHud[255];
 				if(f_SensalAbilityCharge_1[client] >= f_Sensal_MaxCharge_1[client])
 				{
-					if(b_ClientPossesBattery[client])
-						FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [READY x2]",SensalHud);
-					else		
-						FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [READY]",SensalHud);
+					FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [READY]",SensalHud);
 				}
 				else
 				{
@@ -316,23 +313,13 @@ void SensalTimerHudShow(int client, int weapon)
 				}
 
 				
-				if(f_SensalAbilityCharge_2[client] >= (b_ClientPossesBattery[client] ? 2.0 : 1.0))
+				if(f_SensalAbilityCharge_2[client] >= 2.0)
 				{
-					if(b_ClientPossesBattery[client])
-						FormatEx(SensalHud, sizeof(SensalHud), "%s\nLasering Afterimage [READY x2]",SensalHud);
-					else		
-						FormatEx(SensalHud, sizeof(SensalHud), "%s\nLasering Afterimage [READY]",SensalHud);
+					FormatEx(SensalHud, sizeof(SensalHud), "%s\nLasering Afterimage [READY x2]",SensalHud);
 				}
 				else
 				{
-					if(b_ClientPossesBattery[client])
-					{
-						FormatEx(SensalHud, sizeof(SensalHud), "%s\nLasering Afterimage [%.0f％ / 200％]",SensalHud, f_SensalAbilityCharge_2[client] * 100.0);		
-					}
-					else
-					{
-						FormatEx(SensalHud, sizeof(SensalHud), "%s\nLasering Afterimage [%.0f％ / 100％]",SensalHud, f_SensalAbilityCharge_2[client] * 100.0);	
-					}
+					FormatEx(SensalHud, sizeof(SensalHud), "%s\nLasering Afterimage [%.0f％ / 200％]",SensalHud, f_SensalAbilityCharge_2[client] * 100.0);		
 				}
 				PrintHintText(client, "%s", SensalHud);
 				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
@@ -374,9 +361,9 @@ void WeaponSensal_Scythe_OnTakeDamage(int attacker, int victim,int weapon, int z
 		f_SensalAbilityCharge_2[attacker] += SENSAL_MELEE_CHARGE_ON_HIT_2 * 0.5;
 	}
 
-	if(f_SensalAbilityCharge_2[attacker] > (b_ClientPossesBattery[attacker] ? 2.0 : 1.0))
+	if(f_SensalAbilityCharge_2[attacker] > 2.0)
 	{
-		f_SensalAbilityCharge_2[attacker] = (b_ClientPossesBattery[attacker] ? 2.0 : 1.0);
+		f_SensalAbilityCharge_2[attacker] = 2.0;
 	}
 
 	f_Sensalhuddelay[attacker] = 0.0;

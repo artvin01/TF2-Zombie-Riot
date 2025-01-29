@@ -100,12 +100,8 @@ static void Adjust_Crystal_Stats(int client, int weapon)
 			fl_main_laser_distance[client] = 2000.0;
 		}	
 	}
-	if(b_TwirlHairpins[client])
-	{
-		fl_max_crystal_amt[client] += 25.0;
-		fl_main_laser_distance[client] += 250.0;
-	}
-		
+	fl_max_crystal_amt[client] += 25.0;
+	fl_main_laser_distance[client] += 250.0;
 		
 }
 bool Fractal_LastMann(int client)
@@ -582,7 +578,8 @@ void Activate_Fractal_Kit(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 
 			Adjust_Crystal_Stats(client, weapon);
-			PrecacheTwirlMusic();
+			if(CvarFileNetworkDisable.IntValue <= 0)
+				PrecacheTwirlMusic();
 			
 		}
 		return;
@@ -594,7 +591,10 @@ void Activate_Fractal_Kit(int client, int weapon)
 			Kill_Cannon(client);
 
 		i_WeaponGotLastmanBuff[weapon] = false;
-		PrecacheTwirlMusic();
+
+		if(CvarFileNetworkDisable.IntValue <= 0)
+			PrecacheTwirlMusic();
+			
 		DataPack pack;
 		h_TimerManagement[client] = CreateDataTimer(0.1, Timer_Weapon_Managment, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -1495,14 +1495,14 @@ static Action Timer_Weapon_Managment(Handle timer, DataPack pack)
 
 	Hud(client, weapon_holding);
 
-	if(fl_current_crystal_amt[client] < (b_TwirlHairpins[client] ? 25.0 : 10.0))	//10
+	if(fl_current_crystal_amt[client] < 25.0)	//10
 	{
 		fl_current_crystal_amt[client] +=0.1;
 	}
 	else
 	{
 		if(fl_current_crystal_amt[client] < fl_max_crystal_amt[client])
-			fl_current_crystal_amt[client] += (b_TwirlHairpins[client] ? 0.05 : 0.025);
+			fl_current_crystal_amt[client] += 0.05;
 
 		if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
 			fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
@@ -1518,7 +1518,7 @@ static void Hud(int client, int weapon)
 	if(fl_hud_timer[client] > GameTime)
 		return;
 
-	if(b_TwirlHairpins[client])
+//	if(b_TwirlHairpins[client])
 		HaloManagment(client);
 
 	fl_hud_timer[client] = GameTime + 0.5;

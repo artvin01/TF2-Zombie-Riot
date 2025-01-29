@@ -80,7 +80,7 @@ public void Weapon_Health_Hose_Uber_Sprayer(int client, int weapon, bool crit, i
 		Hose_Uber[client] = 0.0;
 		Hose_Charged[client] = true;
 		
-		float dur = Hose_UberTime + Attributes_FindOnPlayerZR(client, 314, true, 0.0, true);
+		float dur = Hose_UberTime + Attributes_GetOnPlayer(client, 314, true, true,0.0);
 		EmitSoundToClient(client, SOUND_HOSE_UBER_ACTIVATE, _, _, 120);
 		
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -106,7 +106,7 @@ public void Weapon_Health_Hose_Uber_Shotgun(int client, int weapon, bool crit, i
 		Hose_Charged[client] = true;
 		Hose_ShotgunCharge[client] = true;
 		
-		float dur = Hose_UberTime + Attributes_FindOnPlayerZR(client, 314, true, 0.0, true);
+		float dur = Hose_UberTime + Attributes_GetOnPlayer(client, 314, true, true,0.0);
 		EmitSoundToClient(client, SOUND_HOSE_UBER_ACTIVATE, _, _, 120);
 		
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);

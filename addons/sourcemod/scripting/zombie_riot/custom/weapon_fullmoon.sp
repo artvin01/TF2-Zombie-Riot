@@ -140,8 +140,8 @@ void FullMoon_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMel
 		//double melee range
 		//only increace wideness atinybit
 		enemies_hit_aoe = 3; //hit 3 targets.
-		CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-		CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+		CustomMeleeRange = MELEE_RANGE * 1.25;
+		CustomMeleeWide = MELEE_BOUNDS * 1.25;
 	}
 }
 

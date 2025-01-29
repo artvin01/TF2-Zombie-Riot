@@ -715,11 +715,14 @@ static void TreeMenu(int client)
 
 	bool upgrade;
 	
+	/*
 	if(skill.Key[0] && !Items_HasNamedItem(client, skill.Key))
 	{
 		Format(buffer, sizeof(buffer), "Requires \"%s\"", skill.Key);
 	}
-	else if(!charge)
+	else 
+	*/
+	if(!charge)
 	{
 		Format(buffer, sizeof(buffer), "%t (%d / %d)", "Unlock Skill", points, skill.Cost);
 		upgrade = points >= skill.Cost;
