@@ -146,7 +146,7 @@ methodmap Malius < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PDA");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		

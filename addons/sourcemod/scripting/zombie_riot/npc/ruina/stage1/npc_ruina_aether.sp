@@ -145,7 +145,7 @@ methodmap Aether < CClotBody
 		
 		*/
 
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
