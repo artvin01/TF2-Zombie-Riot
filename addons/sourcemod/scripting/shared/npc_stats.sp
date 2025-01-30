@@ -5878,10 +5878,13 @@ public void NpcSetGravity(CClotBody npc, int iNPC)
 }
 public void NpcOutOfBounds(CClotBody npc, int iNPC)
 {
+	if(i_NpcIsABuilding[iNPC])
+		return;
+
 #if defined RTS
 	if(!i_NpcIsABuilding[iNPC])
 #else
-	if(!IsEntityTowerDefense(iNPC) && GetTeam(iNPC) != TFTeam_Red && !i_NpcIsABuilding[iNPC])
+	if(!IsEntityTowerDefense(iNPC) && GetTeam(iNPC) != TFTeam_Red)
 #endif
 	{
 		static float flMyPos[3];
@@ -5947,7 +5950,7 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 		}
 	}
 #if defined ZR
-	else if(GetTeam(iNPC) == TFTeam_Red && !i_NpcIsABuilding[iNPC])
+	else if(GetTeam(iNPC) == TFTeam_Red)
 	{
 		float GameTime = GetGameTime();
 		if(f_StuckOutOfBoundsCheck[iNPC] < GameTime)

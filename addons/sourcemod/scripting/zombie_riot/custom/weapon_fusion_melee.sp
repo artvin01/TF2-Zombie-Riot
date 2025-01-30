@@ -663,13 +663,13 @@ void ApplyExtraFusionWeaponEffects(int client, bool remove = false, int weapon)
 	if(FusionWeaponCheckEffects_IfNotAvaiable(client, weapon))
 	{
 		FusionWeaponRemoveEffects(client);
-		FusionWeaponEffects(client, client, viewmodelModel, "effect_hand_r", weapon);
+		FusionWeaponEffects(client, client, viewmodelModel, weapon);
 	}
 }
 
 
 
-void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment = "effect_hand_r", int weapon)
+void FusionWeaponEffects(int owner, int client, int Wearable, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
