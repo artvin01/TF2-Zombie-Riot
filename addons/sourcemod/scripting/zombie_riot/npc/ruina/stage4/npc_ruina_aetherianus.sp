@@ -175,7 +175,7 @@ methodmap Aetherianus < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		npc.m_fbGunout = false;
 
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.m_iChanged_WalkCycle = 1;
@@ -213,9 +213,6 @@ methodmap Aetherianus < CClotBody
 			"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl",
 			RUINA_CUSTOM_MODELS_3
 		};
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
