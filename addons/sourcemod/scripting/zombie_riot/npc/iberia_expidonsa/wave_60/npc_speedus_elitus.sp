@@ -159,7 +159,12 @@ methodmap SpeedusElitus < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		ErasusEffects(npc.index);
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", WEAPON_CUSTOM_WEAPONRY_1);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetVariantInt(8192);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
 		
 		
 		func_NPCDeath[npc.index] = SpeedusElitus_NPCDeath;

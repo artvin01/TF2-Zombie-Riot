@@ -626,11 +626,11 @@ bool FusionWeaponCheckEffects_IfNotAvaiable(int iNpc, int weapon)
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
-			thingsToLoop = 12;
+			thingsToLoop = 0;
 		}
 		case WEAPON_WALDCH_SWORD_REAL:
 		{
-			thingsToLoop = 15;
+			thingsToLoop = 0;
 		}
 	}
 	for(int loop = 0; loop <=thingsToLoop; loop++)
@@ -691,6 +691,7 @@ void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 		{
 			FusionWeaponEffectPap3(owner, client, Wearable);
 		}
+		/*
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
 			FusionWeaponEffectPap_Siccerino(owner, client, Wearable, attachment);
@@ -699,6 +700,7 @@ void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 		{
 			FusionWeaponEffectPap_Siccerino_Waldch(owner, client, Wearable, attachment);
 		}
+		*/
 	}
 }
 
@@ -936,119 +938,6 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable)
 }
 
 
-void FusionWeaponEffectPap_Siccerino(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
-{
-	float flPos[3];
-	float flAng[3];
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
-
-	int particle_3_i = InfoTargetParentAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_i = InfoTargetParentAt({-10.0,50.0,0.0}, "", 0.0); //First offset we go by
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-
-	
-	SetParent(particle_1, particle_3_i, "",_, true);
-	SetParent(particle_1, particle_5_i, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(Wearable, particle_1, attachment,_); 
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 255, 35, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	int Laser_1_i = ConnectWithBeamClient(particle_2, particle_3_i, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3_i = ConnectWithBeamClient(particle_4, particle_5_i, 35, 255, 35, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	
-	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
-	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
-	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
-	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
-	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(particle_3_i);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(particle_5_i);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(Laser_1_i);
-	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(Laser_2_i);
-	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_3_i);
-
-}
-
-static void FusionWeaponEffectPap_Siccerino_Waldch(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
-{
-	float flPos[3];
-	float flAng[3];
-
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({5.0,50.0,0.0}, "", 0.0); //First offset we go by
-
-	
-	int particle_2_i = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3_i = InfoTargetParentAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_i = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_i = InfoTargetParentAt({-5.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	
-	SetParent(particle_1, particle_2_i, "",_, true);
-	SetParent(particle_1, particle_3_i, "",_, true);
-	SetParent(particle_1, particle_4_i, "",_, true);
-	SetParent(particle_1, particle_5_i, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(Wearable, particle_1, attachment,_); 
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	
-	int Laser_1_i = ConnectWithBeamClient(particle_2_i, particle_3_i, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4_i, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3_i = ConnectWithBeamClient(particle_4_i, particle_5_i, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	int Laser_4_i = ConnectWithBeamClient(particle_5, particle_5_i, 15, 15, 125, 0.5, 0.5, 50.0, LASERBEAM, owner);
-	
-
-	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
-	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
-	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
-	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
-	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(particle_2_i);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(particle_3_i);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(particle_4_i);
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(particle_5_i);
-	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(Laser_3);
-	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_i);
-	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_i);
-	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_i);
-	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(Laser_4_i);
-}
-
 public void Enable_FusionWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	Enable_VoidBlade(client, weapon);
@@ -1068,6 +957,8 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 					}
 					else
 					{
+						i_WeaponVMTExtraSetting[weapon] = 1;
+						i_WeaponBodygroup[weapon] 	= 16384;
 						i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 						i_WeaponSoundIndexOverride[weapon] = 30667;
 						strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
@@ -1100,6 +991,8 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 				}
 				else
 				{
+					i_WeaponVMTExtraSetting[weapon] = 1;
+					i_WeaponBodygroup[weapon] 	= 16384;
 					i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 					i_WeaponSoundIndexOverride[weapon] = 30667;
 					strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
