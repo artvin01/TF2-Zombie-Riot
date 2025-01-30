@@ -1893,17 +1893,17 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.05;
 				}
 			}
-			case 46, 47:
+			case 46:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
 				RangedMult += 0.20;
 			}
-			case 48:
+			case 47:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more ranged damage.");
 				RangedMult += 0.25;
 			}
-			case 49:
+			case 48:
 			{
 				if(RangedMult < 0.05) // 95% ranged res max
 				{
@@ -1917,7 +1917,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 50:
+			case 49:
 			{
 				if(RangedMult < 0.05)
 				{
@@ -1931,7 +1931,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 51:
+			case 50, 51:
 			{
 				if(ExplodingNPC)
 				{
