@@ -327,7 +327,7 @@ void DualReaEffects(int iNpc)
 	
 	SetParent(npc.m_iWearable1, particle_1, "duelrea_left_spike",_, true);
 	SetParent(npc.m_iWearable1, particle_2, "duelrea_right_spike",_, true);
-DHook_IterateAttributesPre
+
 	int Laser_4_i = ConnectWithBeamClient(particle_1, particle_2, 125, 125, 15, 1.25, 1.25, 100.0, LASERBEAM);
 	
 
