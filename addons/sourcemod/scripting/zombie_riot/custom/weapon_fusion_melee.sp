@@ -668,7 +668,6 @@ void ApplyExtraFusionWeaponEffects(int client, bool remove = false, int weapon)
 }
 
 
-
 void FusionWeaponEffects(int owner, int client, int Wearable, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
@@ -957,7 +956,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 					}
 					else
 					{
-						i_WeaponVMTExtraSetting[weapon] = 1;
+						i_WeaponVMTExtraSetting[weapon] = 0;
 						i_WeaponBodygroup[weapon] 	= 16384;
 						i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 						i_WeaponSoundIndexOverride[weapon] = 30667;
@@ -991,7 +990,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 				}
 				else
 				{
-					i_WeaponVMTExtraSetting[weapon] = 1;
+					i_WeaponVMTExtraSetting[weapon] = 0;
 					i_WeaponBodygroup[weapon] 	= 16384;
 					i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 					i_WeaponSoundIndexOverride[weapon] = 30667;

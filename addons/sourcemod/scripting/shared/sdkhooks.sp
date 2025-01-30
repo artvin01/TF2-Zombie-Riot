@@ -62,7 +62,6 @@ void SDKHook_PluginStart()
 	AddNormalSoundHook(SDKHook_NormalSHook);
 #endif
 }
-
 void SDKHook_MapStart()
 {
 	Zero(f_EntityIsStairAbusing);
@@ -2324,6 +2323,19 @@ public void OnWeaponSwitchPost(int client, int weapon)
 				Attributes_Set(weapon, 821, 0.0);
 			}
 		}
+		
+		if(IsValidEntity(Cosmetic_WearableExtra[client]))
+		{
+			int entity = EntRefToEntIndex(Cosmetic_WearableExtra[client]);
+			if(GetEntProp(entity, Prop_Send, "m_nBody") == WINGS_FUSION)
+			{
+				if(weapon > 0 && i_WeaponVMTExtraSetting[weapon] != -1)
+				{
+					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon]);
+					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[weapon]; //This makes sure to not reset the alpha.
+				}
+			}
+		}
 #endif
 	}
 
@@ -2767,6 +2779,12 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 				SetEntProp(entity, Prop_Send, "m_nBody", WINGS_FUSION);
 				SetEntityRenderColor(entity, 255, 255, 255, 3);
 				i_WeaponVMTExtraSetting[entity] = 3; //This makes sure to not reset the alpha.
+				int weapon2 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon2 > 0 && i_WeaponVMTExtraSetting[weapon2] != -1)
+				{
+					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon2]);
+					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[weapon2]; //This makes sure to not reset the alpha.
+				}
 			}
 			case WINGS_TWIRL, WINGS_RULIANA, WINGS_LANCELOT, WINGS_STELLA, WINGS_KARLAS:
 			{

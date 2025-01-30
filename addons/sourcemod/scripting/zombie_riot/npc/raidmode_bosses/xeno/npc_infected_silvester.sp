@@ -2551,7 +2551,7 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");	
 	SetVariantString("1.35");
 	AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
-//	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
+	SetEntityRenderColor(npc.m_iWearable8, 255, 255, 255, 3);
 	//possible loop function?
 
 	/*

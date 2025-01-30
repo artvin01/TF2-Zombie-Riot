@@ -330,7 +330,6 @@ void DualReaEffects(int iNpc)
 
 	int Laser_4_i = ConnectWithBeamClient(particle_1, particle_2, 125, 125, 15, 1.25, 1.25, 100.0, LASERBEAM);
 	
-
 	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
 	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(Laser_4_i);

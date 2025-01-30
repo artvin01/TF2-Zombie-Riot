@@ -1640,6 +1640,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 	AcceptEntityInput(npc.m_iWearable9, "SetBodyGroup");	
 	SetVariantString("1.35");
 	AcceptEntityInput(npc.m_iWearable9, "SetModelScale");
+	SetEntityRenderColor(npc.m_iWearable9, 255, 255, 255, 3);
 	
 	if(WeaponSettingDo == 1 || WeaponSettingDo == 2)
 	{
