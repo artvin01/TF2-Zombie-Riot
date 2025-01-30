@@ -1372,9 +1372,6 @@ public void OnPostThink(int client)
 				"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
 				);
 			}
-
-			
-			
 		}
 		else if (TeutonType[client] == TEUTON_DEAD)
 		{
@@ -2761,11 +2758,15 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 		int team = GetClientTeam(client);
 		SetEntProp(entity, Prop_Send, "m_nModelIndex", Wing_WearlbeIndex);
 
+		SetEntityRenderColor(entity, 255, 255, 255, 100);
+		i_WeaponVMTExtraSetting[entity] = 100; //This makes sure to not reset the alpha.
 		switch(SettingDo)
 		{
 			case WINGS_FUSION:
 			{
 				SetEntProp(entity, Prop_Send, "m_nBody", WINGS_FUSION);
+				SetEntityRenderColor(entity, 255, 255, 255, 3);
+				i_WeaponVMTExtraSetting[entity] = 3; //This makes sure to not reset the alpha.
 			}
 			case WINGS_TWIRL, WINGS_RULIANA, WINGS_LANCELOT, WINGS_STELLA, WINGS_KARLAS:
 			{
@@ -2783,14 +2784,12 @@ void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
 		ActivateEntity(entity);
 
 		Cosmetic_WearableExtra[client] = EntIndexToEntRef(entity);
-		i_WeaponVMTExtraSetting[entity] = 100; //This makes sure to not reset the alpha.
 		SDKCall_EquipWearable(client, entity);
 
 		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 		SetVariantString("!activator");
 		AcceptEntityInput(entity, "SetParent", client);
 	//	SetEntityRenderMode(entity, RENDER_NORMAL);
-		SetEntityRenderColor(entity, 255, 255, 255, 100);
 	}	
 }
 

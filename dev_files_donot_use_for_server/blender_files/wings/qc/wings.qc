@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/custom_wings_1_1.mdl"
+$modelname "zombie_riot/weapons/custom_wings_1_2.mdl"
 
 $bodygroup "fusion_wings"			//1
 {
