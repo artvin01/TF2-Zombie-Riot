@@ -3473,9 +3473,8 @@ static void NPC_Death(int entity)
 			}
 			else
 			{
-				switch(GetRandomInt(0, 4))
+				switch(GetRandomInt(1, 4))
 				{
-					case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
 					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
 					case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
 					case 3: Twirl_Lines(npc, "toodles!");
