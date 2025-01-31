@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_4_2.mdl"	//current one on the server: 1
+$modelname "zombie_riot/weapons/ruina_models_4_3.mdl"	//current one on the server: 1
 
 $bodygroup "stella_crest_1"	
 {

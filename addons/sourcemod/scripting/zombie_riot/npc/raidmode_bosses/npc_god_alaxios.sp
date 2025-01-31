@@ -197,19 +197,6 @@ methodmap GodAlaxios < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
-		if(ZR_GetWaveCount()+1 >= 59)
-		{
-			RaidModeTime = GetGameTime(npc.index) + 300.0;
-		}
-		if(ally == TFTeam_Red)
-		{
-			RaidModeTime = GetGameTime(npc.index) + 9999.0;
-			RaidAllowsBuildings = true;
-		}
-		if(Waves_InFreeplay())
-		{
-			RaidModeTime = GetGameTime(npc.index) + 9999999.0;
-		}
 		RemoveAllDamageAddition();
 
 		npc.m_iChanged_WalkCycle = 4;
@@ -233,12 +220,44 @@ methodmap GodAlaxios < CClotBody
 			}
 		}
 
+		i_RaidGrantExtra[npc.index] = 1;
+		if(StrContains(data, "wave_15") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 2;
+		}
+		else if(StrContains(data, "wave_30") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 3;
+		}
+		else if(StrContains(data, "wave_45") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 4;
+		}
+		else if(StrContains(data, "wave_60") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 5;
+		}
+
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
 		{
 			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 6;
+		}
+
+		if(i_RaidGrantExtra[npc.index] >= 5)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 300.0;
+		}
+		if(ally == TFTeam_Red)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 9999.0;
+			RaidAllowsBuildings = true;
+		}
+		if(Waves_InFreeplay())
+		{
+			RaidModeTime = GetGameTime(npc.index) + 9999999.0;
 		}
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -255,7 +274,21 @@ methodmap GodAlaxios < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+		}
+		
 		npc.Anger = false;
 
 		npc.m_flAlaxiosBuffEffect = GetGameTime() + 25.0;
@@ -604,7 +637,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 	
 	if(f_TargetToWalkToDelay[npc.index] < gameTime)
 	{
-		if(npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 30)
+		if(npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && i_RaidGrantExtra[npc.index] >= 4)
 		{
 			npc.m_iTargetWalkTo = GetClosestAlly(npc.index);	
 			if(npc.m_iTargetWalkTo == -1) //there was no alive ally, we will return to finding an enemy and killing them.
@@ -645,14 +678,14 @@ public void GodAlaxios_ClotThink(int iNPC)
 		{
 			ActionToTake = -1;
 		}
-		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo) && !(ZR_GetWaveCount()+1 > 30 && npc.Anger && npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index)))
+		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo) && !(i_RaidGrantExtra[npc.index] >= 4 && npc.Anger && npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index)))
 		{
 			if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (250.0 * 250.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
 				ActionToTake = 1;
 				//first we try to jump to them if close enough.
 			}
-			else if(flDistanceToTarget < (250.0 * 250.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 15)
+			else if(flDistanceToTarget < (250.0 * 250.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index) && i_RaidGrantExtra[npc.index] >= 3)
 			{
 				//We are pretty close, we will do a wirlwind to kick everyone away after a certain amount of delay so they can prepare.
 				ActionToTake = 2;
@@ -660,7 +693,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		}
 		else if(IsValidAlly(npc.index, npc.m_iTargetWalkTo) || npc.Anger)
 		{
-			if((npc.Anger || flDistanceToTarget < (125.0* 125.0)) && npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
+			if((npc.Anger || flDistanceToTarget < (125.0* 125.0)) && npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index) && i_RaidGrantExtra[npc.index] >= 4)
 			{
 				//can only be above wave 15.
 				ActionToTake = -1;
@@ -788,7 +821,7 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			return Plugin_Handled;
 		}
 	}
-	if(GetTeam(npc.index) != TFTeam_Red && ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(GetTeam(npc.index) != TFTeam_Red && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -820,7 +853,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 	float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float Ratio = health / maxhealth;
-	if(ZR_GetWaveCount()+1 <= 15)
+	if(i_RaidGrantExtra[npc.index] <= 2)
 	{
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
@@ -877,7 +910,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 			}
 		}
 	}
-	else if(ZR_GetWaveCount()+1 <= 30)
+	else if(i_RaidGrantExtra[npc.index] == 3)
 	{
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
@@ -935,7 +968,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 			}
 		}
 	}
-	else if(ZR_GetWaveCount()+1 <= 45)
+	else if(i_RaidGrantExtra[npc.index] == 4)
 	{
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
@@ -1243,15 +1276,6 @@ void GodAlaxiosSelfDefense(GodAlaxios npc, float gameTime)
 							WorldSpaceCenter(target, vecHit);
 										
 							float damage = 20.0;
-							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-							{
-								damage = 18.0; //nerf
-							}
-							else if(ZR_GetWaveCount()+1 > 55)
-							{
-								damage = 16.5; //nerf
-							}
-
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 							
 							bool Knocked = false;
@@ -1420,14 +1444,6 @@ void GodAlaxiosJumpSpecial(GodAlaxios npc, float gameTime)
 			TE_SendToAll(0.0);
 			spawnRing_Vectors(ThrowPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.5, 5.0, 0.0, 1,Range * 2.0 * zr_smallmapbalancemulti.FloatValue);	
 			float damage = 600.0;
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-			{
-				damage = 500.0; //nerf
-			}
-			else if(ZR_GetWaveCount()+1 > 55)
-			{
-				damage = 465.5; //nerf
-			}
 				
 			Explode_Logic_Custom(damage * zr_smallmapbalancemulti.FloatValue, 0, npc.index, -1, ThrowPos,Range * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 20);
 			TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
@@ -1641,14 +1657,6 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 						else if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop))
 						{
 							float damage = 50.0;
-							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-							{
-								damage = 45.0; //nerf
-							}
-							else if(ZR_GetWaveCount()+1 > 55)
-							{
-								damage = 40.5; //nerf
-							}
 
 							SDKHooks_TakeDamage(EnemyLoop, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);		
 							//push them away.
@@ -1706,15 +1714,6 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 									npcenemy.SetVelocity({0.0,0.0,0.0});
 									PluginBot_Jump(npcenemy.index, flPos_1);
 									float damage = 50.0;
-									if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-									{
-										damage = 45.0; //nerf
-									}
-									else if(ZR_GetWaveCount()+1 > 55)
-									{
-										damage = 40.5; //nerf
-									}
-
 									SDKHooks_TakeDamage(entity_close, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);	
 								}
 							}

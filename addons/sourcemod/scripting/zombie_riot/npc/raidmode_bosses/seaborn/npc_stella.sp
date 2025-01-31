@@ -757,8 +757,21 @@ methodmap Stella < CClotBody
 		
 		RaidModeTime = GetGameTime() + 250.0;
 		
-		RaidModeScaling = float(wave);
 	
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(wave);
+		}
 
 		if(RaidModeScaling < 55)
 			RaidModeScaling *= 0.19;

@@ -194,7 +194,7 @@ methodmap Astrianis < CClotBody
 
 		npc.m_iChanged_WalkCycle = 1;
 
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		

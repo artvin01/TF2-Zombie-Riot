@@ -26,6 +26,7 @@ void FileNetwork_PluginStart()
 	DownloadList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 
 	FileNetworkLib = LibraryExists("filenetwork");
+	PrintToChatAll("%b FileNetworkLib", FileNetworkLib);
 }
 
 static Action DebugCommand(int args)
@@ -340,7 +341,7 @@ static void FormatFileCheck(const char[] file, int client, char[] output, int le
 
 static void SendNextFile(int client)
 {
-	if(FileNetworkLib)
+	if(!FileNetworkLib)
 		return;
 	
 	// First, request a dummy file to see if they have it downloaded before

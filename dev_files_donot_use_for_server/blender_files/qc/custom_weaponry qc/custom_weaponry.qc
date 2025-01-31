@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_37"
+$modelname "zombie_riot/weapons/custom_weaponry_1_47"
 
 $bodygroup "scythe"					//1
 {
@@ -89,7 +89,41 @@ $bodygroup "fusion_blade2_dual"			//16384
 	studio "fusion_blade2_dual.smd"
 }
 
-//the .blend files are located: "blender_files/jdeivid/test models/"
+$bodygroup "meathook001a"			//32768
+{
+	blank
+	studio "meathook001a.smd"
+}
+$bodygroup "GrenadeAmmo_reference"			//65536
+{
+	blank
+	studio "GrenadeAmmo_reference.smd"
+}
+
+$bodygroup "flask_bottle"			//131072
+{
+	blank
+	studio "flask_bottle.smd"
+}
+$bodygroup "flask_bottle_red"			//262144
+{
+	blank
+	studio "flask_bottle_red.smd"
+}
+
+$bodygroup "flask_bottle_yellow"			//524288
+{
+	blank
+	studio "flask_bottle_yellow.smd"
+}
+
+$bodygroup "flask_erlenmeyer"			//1048576
+{
+	blank
+	studio "flask_erlenmeyer.smd"
+}
+
+//the .blend files are located: "blender_files/...
 
 $surfaceprop "weapon"
 
@@ -105,10 +139,14 @@ $cdmaterials "models\weapons\v_crossbow\"
 $cdmaterials "models\weapons\w_annabelle\"
 $cdmaterials "models\Weapons\V_shotgun\"
 $cdmaterials "models\items\"
+$cdmaterials "models\props_halloween"
+$cdmaterials "models\passtime\flasks"
+$cdmaterials "passtime\flasks\flask_liquid_yellow\"
+$cdmaterials "passtime\flasks\flask_liquid_red\"
 $cdmaterials ""
 
-$attachment "duelrea_left_spike" 	"weapon_bone" -3.0 0.0 44.0 rotate 0.0 0.0 0.0
-$attachment "duelrea_right_spike" 	"weapon_bone" 3.0 0.0 -44.0 rotate 0.0 0.0 0.0
+$attachment "duelrea_left_spike" 	"weapon_bone" -5.0 0.0 44.0 rotate 0.0 0.0 0.0
+$attachment "duelrea_right_spike" 	"weapon_bone" 5.0 0.0 44.0 rotate 0.0 0.0 0.0
 
 $cbox 0 0 0 0 0 0
 

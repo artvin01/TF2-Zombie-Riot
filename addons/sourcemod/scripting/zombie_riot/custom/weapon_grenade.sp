@@ -74,7 +74,7 @@ public void Grenade_Custom_Precache()
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
 	
 	g_ProjectileModel = PrecacheModel("models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
-	g_ProjectileModelPipe = PrecacheModel("models/workshop/weapons/c_models/c_caber/c_caber.mdl");
+	g_ProjectileModelPipe = PrecacheModel("models/weapons/w_grenade.mdl");
 }
 
 public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)

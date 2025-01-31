@@ -484,12 +484,6 @@ void Music_PostThink(int client)
 				}
 			}
 		}
-		/*
-		if(TeutonType[client] == TEUTON_NONE)
-		{
-			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 250.0);
-		}
-		*/
 	}
 
 	if(MusicMapRemove[client] < GetTime())
@@ -654,13 +648,13 @@ void Music_PostThink(int client)
 		float f_intencity;
 		float targPos[3];
 		float chargerPos[3];
+		GetClientAbsOrigin(client, chargerPos);
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
-				GetClientAbsOrigin(client, chargerPos);
 				float distance = GetVectorDistance(chargerPos, targPos, true);
 				CClotBody npcstats = view_as<CClotBody>(entity);
 				if (distance <= RANGE_FIRST_MUSIC) //Give way bigger range.
@@ -687,18 +681,6 @@ void Music_PostThink(int client)
 				}
 			}
 		}
-		/*
-		//TODO: move somewhere else
-		if(RaidbossIgnoreBuildingsLogic())
-		{
-			//if they arent on red, do this.
-			if(GetTeam(EntRefToEntIndex(RaidBossActive)) == TFTeam_Red)
-			{
-				//thes are on red, set this.
-				RaidAllowsBuildings = true;
-			}
-		}
-		*/
 		
 		if(!ZombieMusicPlayed)//once set in a wave, it should stay untill the next mass revive.
 		{

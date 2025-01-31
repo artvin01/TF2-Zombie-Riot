@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_3_1.mdl"	//current one on the server: null
+$modelname "zombie_riot/weapons/ruina_models_3_2.mdl"	//current one on the server: null
 
 
 $bodygroup "wings_4"	

@@ -163,14 +163,14 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #include "shared/global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_36.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_47.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
 */
 //#define ZR_TEST_MODEL	"models/zombie_riot/weapons/test_models9.mdl"
 
-#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_1.mdl"
+#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_2.mdl"
 enum
 {
 	WINGS_FUSION 	= 1,
@@ -182,7 +182,7 @@ enum
 	WINGS_KARLAS	= 64
 }
 
-#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_1.mdl"
+#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_2.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= 1,		//1
@@ -200,7 +200,7 @@ enum	//it appears if I try to make it go above 14 it starts glitching out
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_2.mdl"
+#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_3.mdl"
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
@@ -225,7 +225,7 @@ enum
 	RUINA_LAZER_CANNON_2	= 524288,		//20
 	RUINA_WINGS_2			= 1048576		//21	going beyond this it legit cannot compile anymore, likely due to too many things
 }
-#define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_1.mdl"
+#define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_2.mdl"
 enum
 {
 	RUINA_WINGS_4			= 1,			//1
@@ -244,7 +244,7 @@ enum
 	RUINA_TWIRL_CREST_4		= 8192,			//14
 	RUINA_QUINCY_BOW_3		= 16384			//15
 }
-#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_2.mdl"
+#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_3.mdl"
 enum
 {
 	RUINA_STELLA_CREST			= 1,			//1
@@ -2208,7 +2208,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_FaceStabber[entity] = false;
 		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;
-		Building_Mounted[entity] = 0;
 		BarracksEntityCreated(entity);
 		SetEntitySpike(entity, false);
 		StoreWeapon[entity] = -1;

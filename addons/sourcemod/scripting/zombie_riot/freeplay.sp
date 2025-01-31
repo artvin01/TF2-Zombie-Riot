@@ -25,7 +25,6 @@ static int RaidFight;
 static float SpeedMult;
 static float MeleeMult;
 static float RangedMult;
-static bool SuperMiniBoss;
 static int ExtraSkulls;
 static int SkullTimes;
 static bool ExplodingNPC;
@@ -47,7 +46,6 @@ static int EloquenceBuff;
 static int RampartBuff;
 static int FreeplayBuffTimer;
 static bool AntinelNextWave;
-static int randomsuper;
 static bool zombiecombine;
 static int moremen;
 static bool immutable;
@@ -95,7 +93,6 @@ void Freeplay_ResetAll()
 	ExtraSkulls = 0;
 	SkullTimes = 0;
 	ExplodeNPCDamage = 0;
-	SuperMiniBoss = false;
 	ExplodingNPC = false;
 	IsExplodeWave = false;
 	EscapeModeForNpc = false;
@@ -115,7 +112,6 @@ void Freeplay_ResetAll()
 	RampartBuff = 0;
 	FreeplayBuffTimer = 0;
 	AntinelNextWave = false;
-	randomsuper = 0;
 	zombiecombine = false;
 	moremen = 0;
 	spotteralive = false;
@@ -175,7 +171,7 @@ int Freeplay_GetDangerLevelCurrent()
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
-	if(RaidFight || FriendlyDay || SuperMiniBoss || AntinelNextWave || zombiecombine || moremen || immutable || spotter)
+	if(RaidFight || FriendlyDay || AntinelNextWave || zombiecombine || moremen || immutable || spotter)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -384,78 +380,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage = 20.0;
-	}
-	else if(SuperMiniBoss)
-	{
-		enemy.Is_Outlined = true;
-		enemy.Is_Immune_To_Nuke = true;
-		enemy.Is_Boss = 1;
-
-		if(randomsuper == -1)
-			PrintToChatAll("THE SUPER MINIBOSS SKULL FUCKED ITSELF UP AGAIN, UHHGHHGGHGJ");
-
-		switch(randomsuper)
-		{
-			case 1: // Rogue cta doctor
-			{
-				enemy.Index = NPC_GetByPlugin("npc_doctor");
-				enemy.Health = RoundToFloor(2000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-			}
-			case 2: // Guln
-			{
-				enemy.Index = NPC_GetByPlugin("npc_fallen_warrior");
-				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-			}
-			case 3: // L4D2 Tank
-			{
-				enemy.Index = NPC_GetByPlugin("npc_l4d2_tank");
-				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-			}
-			case 4: // Amogus
-			{
-				enemy.Index = NPC_GetByPlugin("npc_omega");
-				enemy.Health = RoundToFloor(750000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = 0.35;
-			}
-			case 5: // Panzer
-			{
-				enemy.Index = NPC_GetByPlugin("npc_panzer");
-				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-			}
-			case 6: // Lucius or lucian or luciaus or whatever the name is  i forgor
-			{
-				enemy.Index = NPC_GetByPlugin("npc_phantom_knight");
-				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-			}
-			case 7: // ME WHEN I GET THAT FUCKING VILLAGER
-			{
-				enemy.Index = NPC_GetByPlugin("npc_medival_villager");
-				enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-			}
-			case 8: // a spitit
-			{
-				enemy.Index = NPC_GetByPlugin("npc_wandering_spirit");
-				enemy.Health = RoundToFloor(500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-			}
-			default: // Sawrunner
-			{
-				enemy.Index = NPC_GetByPlugin("npc_sawrunner");
-				enemy.Health = RoundToFloor(1500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-			}
-		}
-
-		// Leaving this in here in the case i have to nerf super miniboss health
-		// 22/12/2024 - lesson learned, i went way too overboard
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.45);
-		enemy.ExtraDamage = 0.8;
-		enemy.Credits += 250.0;
-		enemy.ExtraSpeed = 1.35;
-		enemy.ExtraSize = 1.75; // big
-		enemy.Does_Not_Scale = 1;
-		enemy.Is_Health_Scaled = 0;
-
-		count = GetRandomInt(2, 8);
-		SuperMiniBoss = false;
 	}
 	else if(AntinelNextWave)
 	{
@@ -1117,19 +1041,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		if(GetRandomInt(1, 2) > 1)
-		{
-			CPrintToChatAll("{green}You will gain 5 random friendly units.");
-			FriendlyDay = true;
-		}
-		else
-		{	
-			CPrintToChatAll("{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
-			SuperMiniBoss = true;
-			randomsuper = GetRandomInt(0, 8);
-			if(randomsuper == -1)
-				PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY");
-		}
+		CPrintToChatAll("{green}You will gain 5 random friendly units.");
+		FriendlyDay = true;
 
 		float randommini = GetRandomFloat(0.75, 1.5);
 		MiniBossChance *= randommini;
@@ -2018,21 +1931,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.05;
 				}
 			}
-			case 50:
-			{
-				if(SuperMiniBoss)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}A random amount of a set SUPER Miniboss will spawn in the next wave! {green}Each one grants 250 credits on death.");
-				SuperMiniBoss = true;
-				randomsuper = GetRandomInt(0, 8);
-				if(randomsuper == -1)
-					PrintToChatAll("THE SUPERMINIBOSS SKULL FUCKED ITSELF AGAIN, WHYYYY");
-				EmitSoundToAll("mvm/mvm_warning.wav");
-			}
-			case 51:
+			case 50, 51:
 			{
 				if(ExplodingNPC)
 				{

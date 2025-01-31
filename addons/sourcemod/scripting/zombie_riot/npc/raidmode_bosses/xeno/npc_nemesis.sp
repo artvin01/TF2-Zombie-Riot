@@ -107,9 +107,6 @@ float InfectionDelay()
 }
 void RaidbossNemesis_OnMapStart()
 {
-	if(!IsFileInDownloads(NEMESIS_MODEL))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nemesis");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_nemesis");
