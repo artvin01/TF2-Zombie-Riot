@@ -756,7 +756,7 @@ public void OnPostThink(int client)
 					
 			}
 			
-			if(EntRefToEntIndex(i_PlayerToCustomBuilding[client]) != -1)
+			if(IsValidEntity(i_PlayerToCustomBuilding[client]))
 			{
 				cooldown_time = f_BuildingIsNotReady[client] - GameTime;
 					
