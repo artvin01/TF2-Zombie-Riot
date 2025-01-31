@@ -19,7 +19,6 @@ static int FusionBuff;
 static int OceanBuff;
 static int CrippleDebuff;
 static int CudgelDebuff;
-static int StalkerBuff;
 static int PerkMachine;
 static int RaidFight;
 static float SpeedMult;
@@ -84,7 +83,6 @@ void Freeplay_ResetAll()
 	OceanBuff = 0;
 	CrippleDebuff = 0;
 	CudgelDebuff = 0;
-	StalkerBuff = 0;
 	PerkMachine = 0;
 	RaidFight = 0;
 	SpeedMult = 1.0;
@@ -633,22 +631,22 @@ void Freeplay_SpawnEnemy(int entity)
 	//// BUFFS ////
 
 	if(HussarBuff)
-		ApplyStatusEffect(entity, entity, "Hussar's Warscream", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
 
 	if(PernellBuff)
 		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
 
 	if(FusionBuff > 1)
-		ApplyStatusEffect(entity, entity, "Self Empowerment", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Self Empowerment", 30.0);	
 
 	if(FusionBuff == 1 || FusionBuff > 2)
-		ApplyStatusEffect(entity, entity, "Ally Empowerment", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Ally Empowerment", 30.0);	
 
 	if(OceanBuff > 1)
-		ApplyStatusEffect(entity, entity, "Oceanic Scream", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Oceanic Scream", 30.0);	
 
 	if(OceanBuff > 0)
-		ApplyStatusEffect(entity, entity, "Oceanic Singing", 999999.0);	
+		ApplyStatusEffect(entity, entity, "Oceanic Singing", 30.0);	
 
 	if(VoidBuff > 1)
 		ApplyStatusEffect(entity, entity, "Void Strength II", 12.0);
@@ -668,12 +666,9 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
 	}
 
-	if(StalkerBuff > 0 && !b_thisNpcIsARaid[entity] && !b_thisNpcIsABoss[entity])
+	if()
 	{
-		b_StaticNPC[entity] = true;
-		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 25);
-		fl_Extra_Damage[entity] *= 3.0;
-		StalkerBuff--;
+
 	}
 
 	//// DEBUFFS ////
@@ -881,20 +876,29 @@ void Freeplay_OnEndWave(int &cash)
 void Freeplay_SetupStart(bool extra = false)
 {
 	bool wrathofirln = false;
+	bool raidtime = false;
 	if(extra)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+
+		int raidchance = GetRandomInt(0, 100);
+		if(raidchance < 10) // 10% chance
+		{
+			raidtime = true;
+		}
+
 		if(ZR_GetWaveCount() > 99)
 		{
 			int wrathchance = GetRandomInt(0, 100);
 			if(wrathchance < 2) // 2% chance
 			{
+				raidtime = false;
 				wrathofirln = true;
 			}
 		}
 
-		if(!wrathofirln)
+		if(!wrathofirln && !raidtime)
 		{
 			EmitSoundToAll("ui/vote_success.wav");
 			int exskull = GetRandomInt(0, 100);
@@ -1030,9 +1034,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			int randomstalker = GetRandomInt(2, 4);
-			StalkerBuff += randomstalker;
-			CPrintToChatAll("{red}The next %d enemies will become Stalkers! {yellow}(x25 HP, x15 DMG)", randomstalker);
+			
 		}
 
 		if(GetRandomInt(1, 2) > 1)
@@ -1396,6 +1398,125 @@ void Freeplay_SetupStart(bool extra = false)
 		EmitSoundToAll("ambient/halloween/thunder_01.wav");
 		CPrintToChatAll("{orange}Wrath of Irln: {yellow}(almost) {crimson}ALL SKULLS HAVE BEEN ACTIVATED. The effects are described above.");
 	}
+	else if(raidtime)
+	{
+		RaidFight = GetRandomInt(1, 28);
+		switch(RaidFight)
+		{
+			case 2:
+			{
+				strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
+			}
+			case 3:
+			{
+				strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
+			}
+			case 4:
+			{
+				strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
+			}
+			case 5:
+			{
+				strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
+			}
+			case 6:
+			{
+				strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
+			}
+			case 7:
+			{
+				strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
+			}
+			case 8:
+			{
+				strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
+			}
+			case 9:
+			{
+				strcopy(message, sizeof(message), "{white}????????????? is coming...");
+			}
+			case 10:
+			{
+				strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
+			}
+			case 11:
+			{
+				strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
+			}
+			case 12:
+			{
+				strcopy(message, sizeof(message), "{green}Mr.X {red}has come to spread the xeno infection on the next wave...");
+			}
+			case 13:
+			{
+				strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
+			}
+			case 14:
+			{
+				strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
+			}
+			case 15:
+			{
+				strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
+			}
+			case 16:
+			{
+				strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
+			}
+			case 17:
+			{
+				strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
+			}
+			case 18:
+			{
+				strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
+			}
+			case 19:
+			{
+				strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
+			}
+			case 20:
+			{
+				strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
+			}
+			case 21:
+			{
+				strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
+			}
+			case 22:
+			{
+				strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
+			}
+			case 23:
+			{
+				strcopy(message, sizeof(message), "{blue}The Atomizer has spotted your team, get ready next wave!");
+			}
+			case 24:
+			{
+				strcopy(message, sizeof(message), "{lightblue}Huscarls is approaching to erradicate your team next wave!");
+			}
+			case 25:
+			{
+				strcopy(message, sizeof(message), "{skyblue}Harrison and his fully-loaded arsenal will exterminate you next wave!");
+			}
+			case 26:
+			{
+				strcopy(message, sizeof(message), "{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
+			}
+			case 27:
+			{
+				strcopy(message, sizeof(message), "{red}Lelouch is approaching next wave...");
+			}
+			case 28:
+			{
+				strcopy(message, sizeof(message), "{gold}Omega is waltzing towards the next wave.");
+			}
+			default:
+			{
+				strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
+			}
+		}
+	}
 	else
 	{
 		char message[128];
@@ -1408,44 +1529,61 @@ void Freeplay_SetupStart(bool extra = false)
 			/// HEALTH SKULLS ///
 			case 0:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 60000 more health!");
-				HealthBonus += 60000;
+				strcopy(message, sizeof(message), "{red}All enemies now have 22500 more health!");
+				HealthBonus += 22500;
 			}
 			case 1:
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now have 45000 more health!");
+				HealthBonus += 45000;
+			}
+			case 2:
+			{
+				strcopy(message, sizeof(message), "{red}All enemies now have 10% more health!");
+				HealthMulti *= 1.10;
+			}
+			case 3:
 			{
 				strcopy(message, sizeof(message), "{red}All enemies now have 15% more health!");
 				HealthMulti *= 1.15;
 			}
-			case 2:
+			case 4:
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now have 10% less health.");
+				HealthMulti *= 0.9;
+			}
+			case 5:
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now have 15% less health.");
+				HealthMulti *= 0.85;
+			}
+			case 6:
+			{
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {green}30000 less health {yellow}but {red}10% more health.");
+				HealthBonus -= 30000;
+				HealthMulti *= 1.1;
+			}
+			case 7:
 			{
 				strcopy(message, sizeof(message), "{yellow}All enemies now have {green}60000 less health {yellow}but {red}20% more health.");
 				HealthBonus -= 60000;
 				HealthMulti *= 1.2;
 			}
-			case 3:
+			case 8:
+			{
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}30000 more health {yellow}but {green}10% less health.");
+				HealthBonus += 30000;
+				HealthMulti /= 1.1;
+			}
+			case 9:
 			{
 				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}20% less health.");
 				HealthBonus += 60000;
 				HealthMulti /= 1.2;
 			}
-			case 4:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 5% less health.");
-				HealthMulti *= 0.95;
-			}
-			case 5:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 10% less health.");
-				HealthMulti *= 0.9;
-			}
-			case 6:
-			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 20% more health!");
-				HealthMulti *= 1.2;
-			}
 
 			/// BUFF/DEBUFF SKULLS //
-			case 7:
+			case 10:
 			{
 				if(EscapeModeForNpc)
 				{
@@ -1458,7 +1596,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EscapeModeForNpc = true;
 				}
 			}
-			case 8:
+			case 11:
 			{
 				if(HussarBuff)
 				{
@@ -1467,11 +1605,11 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Hussar buff!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Hussar buff! {yellow}(Lasts 45s)");
 					HussarBuff = true;
 				}
 			}
-			case 9:
+			case 12:
 			{
 				if(PernellBuff)
 				{
@@ -1484,7 +1622,7 @@ void Freeplay_SetupStart(bool extra = false)
 					PernellBuff = true;
 				}
 			}
-			case 10:
+			case 13:
 			{
 				if(IceDebuff > 3)
 				{
@@ -1497,7 +1635,7 @@ void Freeplay_SetupStart(bool extra = false)
 					IceDebuff++;
 				}
 			}
-			case 11:
+			case 14:
 			{
 				if(TeslarDebuff > 2)
 				{
@@ -1511,7 +1649,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 	
 			}
-			case 12:
+			case 15:
 			{
 				if(FusionBuff > 2)
 				{
@@ -1520,12 +1658,12 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Fusion buff!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Fusion buff! {yellow}(Lasts 30s)");
 					FusionBuff++;
 				}
 				
 			}
-			case 13:
+			case 16:
 			{
 				if(OceanBuff > 2)
 				{
@@ -1534,33 +1672,37 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Ocean buff!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of Ocean buff! {yellow}(Lasts 30s)");
 					OceanBuff++;
 				}
 			}
-			case 14:
+			case 17:
 			{
 				strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Crippled debuff.");
 				CrippleDebuff += 300;
 			}
-			case 15:
-			{
-				strcopy(message, sizeof(message), "{red}The next 2 enemies will become Stalkers! {yellow}(x25 HP, x15 DMG)");
-				StalkerBuff += 2;
-			}
-			case 16:
+			case 18:
 			{
 				strcopy(message, sizeof(message), "{green}The next 300 enemies will now gain the Cudgel debuff.");
 				CudgelDebuff += 300;
 			}
+			case 19:
+			{
+				
+			}
 	
 			/// CREDIT SKULLS //
-			case 17:
+			case 20:
 			{
 				strcopy(message, sizeof(message), "{green}All enemies now give out 1 extra credits on death.");
 				KillBonus += 1;
 			}
-			case 18:
+			case 21:
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now give out 2 extra credits on death.");
+				KillBonus += 2;
+			}
+			case 22:
 			{
 				if(KillBonus < 1)
 				{
@@ -1571,7 +1713,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Reduced the credit per enemy kill by 1!");
 				KillBonus--;
 			}
-			case 19:
+			case 23:
 			{
 				if(CashBonus < 100)
 				{
@@ -1582,14 +1724,19 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Reduced extra credits gained per wave by 100!");
 				CashBonus -= 100;
 			}
-			case 20:
+			case 24:
 			{
 				strcopy(message, sizeof(message), "{green}You now gain 120 extra credits per wave.");
 				CashBonus += 120;
 			}
+			case 25:
+			{
+				strcopy(message, sizeof(message), "{green}You now gain 180 extra credits per wave.");
+				CashBonus += 180;
+			}
 	
 			/// PERK SKULLS ///
-			case 21:
+			case 26:
 			{
 				if(PerkMachine == 1)
 				{
@@ -1600,7 +1747,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
-			case 22:
+			case 27:
 			{
 				if(PerkMachine == 2)
 				{
@@ -1611,7 +1758,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
-			case 23: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
+			case 28: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
 			{
 				if(PerkMachine == 3)
 				{
@@ -1622,7 +1769,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Deadshot Daiquiri perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
-			case 24:
+			case 29:
 			{
 				if(PerkMachine == 4)
 				{
@@ -1633,7 +1780,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Speed Cola perk, and thus cannot be slowed!");
 				PerkMachine = 4;
 			}
-			case 25:
+			case 30:
 			{
 				if(PerkMachine == 0)
 				{
@@ -1646,7 +1793,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// MISCELANEOUS SKULLS ///
-			case 26:
+			case 31:
 			{
 				if(FriendlyDay)
 				{
@@ -1656,17 +1803,17 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}You will gain 5 random friendly units.");
 				FriendlyDay = true;
 			}
-			case 27:
+			case 32:
 			{
 				strcopy(message, sizeof(message), "{red}Mini-boss spawn rate has been increased by 50%!");
 				MiniBossChance *= 1.5;
 			}
-			case 28:
+			case 33:
 			{
 				strcopy(message, sizeof(message), "{green}Mini-boss spawn rate has been reduced by 25%.");
 				MiniBossChance *= 0.75;
 			}
-			case 29:
+			case 34:
 			{
 				if(EnemyBosses == 1)
 				{
@@ -1684,7 +1831,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EnemyBosses = 6;
 				}
 			}
-			case 30:
+			case 35:
 			{
 				if(ImmuneNuke == 1)
 				{
@@ -1702,7 +1849,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ImmuneNuke = 4;
 				}
 			}
-			case 31:
+			case 36:
 			{
 				//if(EnemyChance > 8)
 				//{
@@ -1713,7 +1860,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Stronger enemy types are now more likely to appear!");
 				EnemyChance++;
 			}
-			case 32:
+			case 37:
 			{
 				if(EnemyChance < 3)
 				{
@@ -1723,133 +1870,6 @@ void Freeplay_SetupStart(bool extra = false)
 	
 				strcopy(message, sizeof(message), "{green}Stronger enemy types are now less likely to appear.");
 				EnemyChance--;
-			}
-	
-			/// RAID SKULL ///
-			case 33, 34, 35, 36, 37:
-			{
-				if(RaidFight)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				RaidFight = GetRandomInt(1, 28);
-
-				switch(RaidFight)
-				{
-					case 2:
-					{
-						strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
-					}
-					case 3:
-					{
-						strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
-					}
-					case 4:
-					{
-						strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
-					}
-					case 5:
-					{
-						strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
-					}
-					case 6:
-					{
-						strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
-					}
-					case 7:
-					{
-						strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
-					}
-					case 8:
-					{
-						strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
-					}
-					case 9:
-					{
-						strcopy(message, sizeof(message), "{white}????????????? is coming...");
-					}
-					case 10:
-					{
-						strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
-					}
-					case 11:
-					{
-						strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
-					}
-					case 12:
-					{
-						strcopy(message, sizeof(message), "{green}Mr.X {red}has come to spread the xeno infection on the next wave...");
-					}
-					case 13:
-					{
-						strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
-					}
-					case 14:
-					{
-						strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
-					}
-					case 15:
-					{
-						strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
-					}
-					case 16:
-					{
-						strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
-					}
-					case 17:
-					{
-						strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
-					}
-					case 18:
-					{
-						strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
-					}
-					case 19:
-					{
-						strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
-					}
-					case 20:
-					{
-						strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
-					}
-					case 21:
-					{
-						strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
-					}
-					case 22:
-					{
-						strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
-					}
-					case 23:
-					{
-						strcopy(message, sizeof(message), "{blue}The Atomizer has spotted your team, get ready next wave!");
-					}
-					case 24:
-					{
-						strcopy(message, sizeof(message), "{lightblue}Huscarls is approaching to erradicate your team next wave!");
-					}
-					case 25:
-					{
-						strcopy(message, sizeof(message), "{skyblue}Harrison and his fully-loaded arsenal will exterminate you next wave!");
-					}
-					case 26:
-					{
-						strcopy(message, sizeof(message), "{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
-					}
-					case 27: // YOUR ATTEMPTS AT DEATH ARE IN VAIN
-					{
-						strcopy(message, sizeof(message), "{red}Lelouch is approaching next wave...");
-					}
-					case 28:
-					{
-						strcopy(message, sizeof(message), "{gold}Omega is waltzing towards the next wave.");
-					}
-					default:
-					{
-						strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
-					}
-				}
 			}
 	
 			/// SAMU'S SKULLS (new!) ///
