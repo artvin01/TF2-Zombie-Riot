@@ -1514,7 +1514,7 @@ public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attack
 				damage *= 0.25;
 		}
 			
-		if(!CheckInHud())
+		if(CheckInHud())
 			return damage;
 		
 		i_VoidCurrentShields[victim]--;
