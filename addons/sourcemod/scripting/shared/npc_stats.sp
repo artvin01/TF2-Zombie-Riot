@@ -5789,38 +5789,40 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if(f_QuickReviveHealing[iNPC] < GetGameTime() && (i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC)))
+	if(f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
-
-		float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
-		
-		float HpScalingDecreace = 1.0;
-
-		if(b_thisNpcIsARaid[iNPC])
+		if(i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
 		{
-			HealingAmount *= 0.025;
-			//this means it uses scaling somehow.
-			HpScalingDecreace = NpcDoHealthRegenScaling();
-		}
-		else if(b_thisNpcIsABoss[iNPC])
-		{
-			HealingAmount *= 0.125;
-			HpScalingDecreace = NpcDoHealthRegenScaling();
-		}
-		if(NpcStats_StrongVoidBuff(iNPC))
-			HealingAmount *= 1.25;
-		
-		//Reduce Healing
-		if(GetTeam(iNPC) == TFTeam_Red)
-		{
-			HealingAmount *= 0.2;
-		}
-		HealingAmount *= HpScalingDecreace;
+			float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
+			
+			float HpScalingDecreace = 1.0;
 
-		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
-		
-		HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
+			if(b_thisNpcIsARaid[iNPC])
+			{
+				HealingAmount *= 0.025;
+				//this means it uses scaling somehow.
+				HpScalingDecreace = NpcDoHealthRegenScaling();
+			}
+			else if(b_thisNpcIsABoss[iNPC])
+			{
+				HealingAmount *= 0.125;
+				HpScalingDecreace = NpcDoHealthRegenScaling();
+			}
+			if(NpcStats_StrongVoidBuff(iNPC))
+				HealingAmount *= 1.25;
+			
+			//Reduce Healing
+			if(GetTeam(iNPC) == TFTeam_Red)
+			{
+				HealingAmount *= 0.2;
+			}
+			HealingAmount *= HpScalingDecreace;
+
+			f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
+			
+			HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
+		}
 	}
 #endif
 #if defined RPG
