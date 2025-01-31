@@ -11,7 +11,6 @@ static bool b_Thirdperson_Before[MAXTF2PLAYERS];
 static int i_NPC_ID[MAXTF2PLAYERS];
 static float fl_magia_angle[MAXTF2PLAYERS];
 static float fl_fractal_laser_dist[MAXTF2PLAYERS];
-static float fl_fractal_last_known_loc[MAXTF2PLAYERS][3];
 static float fl_fractal_laser_trace_throttle[MAXTF2PLAYERS];
 static float fl_fractal_turn_throttle[MAXTF2PLAYERS];
 static float fl_fractal_dmg_throttle[MAXTF2PLAYERS];
@@ -219,10 +218,6 @@ static void Turn_Animation(int client, int weapon)
 	if(fl_fractal_laser_trace_throttle[client] < GetGameTime())
 	{
 		fl_fractal_laser_trace_throttle[client] = GetGameTime() + 0.1;
-		Player_Laser_Logic Laser;
-		Laser.client = client;
-		Laser.DoForwardTrace_Basic(1000.0);
-		fl_fractal_last_known_loc[client] = Laser.End_Point;
 		
 		//weird bug: for some reason the movetype none sticks even though movetype_walk is set.
 		//this bug has only appeard when the player has run out of mana and was forced out of the animation.
@@ -233,7 +228,11 @@ static void Turn_Animation(int client, int weapon)
 		if(Current_Mana[client] > 100)
 			SetEntityMoveType(client, MOVETYPE_NONE);
 	}	
-	
+
+	float LookVec[3]; LookVec = Start_Loc;
+	float Angles[3]; 
+	GetClientEyeAngles(client, Angles);
+	Get_Fake_Forward_Vec(200.0, Angles, LookVec, LookVec);
 
 	float turn_speed = 65.0;
 	float firerate1 = Attributes_Get(weapon, 6, 1.0);
@@ -248,7 +247,7 @@ static void Turn_Animation(int client, int weapon)
 	if(b_overdrive_active[client])
 		turn_speed *=1.2;
 	
-	npc.FaceTowards(fl_fractal_last_known_loc[client], turn_speed);
+	npc.FaceTowards(LookVec, turn_speed);
 	float VecSelfNpc2[3]; 
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecSelfNpc2);
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -262,7 +261,7 @@ static void Turn_Animation(int client, int weapon)
 
 	//Body pitch
 	float v[3], ang[3];
-	SubtractVectors(VecSelfNpc, fl_fractal_last_known_loc[client], v); 
+	SubtractVectors(VecSelfNpc, LookVec, v); 
 	NormalizeVector(v, v);
 	GetVectorAngles(v, ang); 
 							
@@ -1415,6 +1414,7 @@ static void Initiate_Cannon(int client, int weapon)
 	fl_fractal_dmg_throttle[client] = 0.0;
 	fl_fractal_turn_throttle[client] = 0.0;
 	fl_fractal_laser_trace_throttle[client] = 0.0;
+
 	SDKUnhook(client, SDKHook_PreThink, Fractal_Cannon_Tick);
 	SDKHook(client, SDKHook_PreThink, Fractal_Cannon_Tick);
 }

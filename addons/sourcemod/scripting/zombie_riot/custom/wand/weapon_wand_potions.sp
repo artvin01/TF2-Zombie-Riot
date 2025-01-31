@@ -151,7 +151,8 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 		SetEntityGravity(entity, 1.5);
 		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 
-		int model = GetEntProp(weapon, Prop_Send, "m_iWorldModelIndex");
+		int model = i_WeaponModelIndexOverride[weapon];
+		SetEntProp(entity, Prop_Send, "m_nBody", i_WeaponBodygroup[weapon]);
 		for(int i; i < 4; i++)
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", model, _, i);

@@ -744,7 +744,20 @@ methodmap Twirl < CClotBody
 		
 		RaidModeTime = GetGameTime(npc.index) + 250.0;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+		}
 		
 		if(RaidModeScaling < 55)
 		{
@@ -3460,9 +3473,8 @@ static void NPC_Death(int entity)
 			}
 			else
 			{
-				switch(GetRandomInt(0, 4))
+				switch(GetRandomInt(1, 4))
 				{
-					case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
 					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
 					case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
 					case 3: Twirl_Lines(npc, "toodles!");

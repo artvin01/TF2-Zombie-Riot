@@ -221,13 +221,6 @@ methodmap RaidbossBlueGoggles < CClotBody
 		func_NPCDeath[npc.index] = RaidbossBlueGoggles_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = RaidbossBlueGoggles_OnTakeDamage;
 		func_NPCThink[npc.index] = RaidbossBlueGoggles_ClotThink;
-		bool final = StrContains(data, "final_item") != -1;
-		
-		if(final)
-		{
-			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = 1;
-		}
 		/*
 			Cosmetics
 		*/
@@ -876,7 +869,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.25;
 								npc.m_flSwitchCooldown = gameTime + 1.0;
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
-								if(ZR_GetWaveCount()+1 >= 60)
+								if(i_RaidGrantExtra[npc.index] >= 5)
 								{
 									npc.m_flNextMeleeAttack = gameTime + 0.55;
 								}
@@ -904,7 +897,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
 							npc.m_flNextMeleeAttack = gameTime + 1.5;
-							if(ZR_GetWaveCount()+1 >= 60)
+							if(i_RaidGrantExtra[npc.index] >= 5)
 							{
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
 							}
@@ -960,7 +953,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						{
 							damage *= 2.5;
 						}
-						if(ZR_GetWaveCount()+1 >= 60)
+						if(i_RaidGrantExtra[npc.index] >= 5)
 						{
 							damage *= 1.15;
 						}
@@ -1075,7 +1068,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 		
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(victim);
 	
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(!b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{

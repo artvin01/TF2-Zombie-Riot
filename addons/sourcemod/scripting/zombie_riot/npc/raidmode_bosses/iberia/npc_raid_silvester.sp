@@ -359,7 +359,7 @@ methodmap Silvester < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
-		if(!StrContains(data, "wave_30"))
+		if(StrContains(data, "wave_30"))
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 			switch(GetRandomInt(0,3))
@@ -382,7 +382,7 @@ methodmap Silvester < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_45"))
+		if(StrContains(data, "wave_45"))
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 			switch(GetRandomInt(0,3))
@@ -405,7 +405,7 @@ methodmap Silvester < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_60"))
+		if(StrContains(data, "wave_60"))
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 			switch(GetRandomInt(0,3))
@@ -1640,6 +1640,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 	AcceptEntityInput(npc.m_iWearable9, "SetBodyGroup");	
 	SetVariantString("1.35");
 	AcceptEntityInput(npc.m_iWearable9, "SetModelScale");
+	SetEntityRenderColor(npc.m_iWearable9, 255, 255, 255, 3);
 	
 	if(WeaponSettingDo == 1 || WeaponSettingDo == 2)
 	{

@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_2_2.mdl"	//current one on the server: 2_1
+$modelname "zombie_riot/weapons/ruina_models_2_3.mdl"	//current one on the server: 2_1
 
 $bodygroup "ruina_bow_2"	//done
 {
@@ -91,22 +91,22 @@ $bodygroup "sword_v3_1"
 $bodygroup "sword_v4"		
 {
 	blank
-	studio "v3/sword_v4.smd"
+	studio "v2/sword_v4.smd"
 }
 $bodygroup "lan_sword_v3"		
 {
 	blank
-	studio "v3/lan_sword_v3.smd"
+	studio "v2/lan_sword_v3.smd"
 }
 $bodygroup "laser_cannon_v2"		//this was extremely painfull to make due to the normals being ass. likely due to my inexperience, but holy shit this was painfull
 {
 	blank
-	studio "v3/laser_cannon_v2.smd"
+	studio "v2/laser_cannon_v2.smd"
 }
 $bodygroup "wings_2"	
 {
 	blank
-	studio "v3/wings_2.smd"
+	studio "v2/wings_2.smd"
 }
 
 

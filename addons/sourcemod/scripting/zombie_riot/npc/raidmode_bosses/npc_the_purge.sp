@@ -56,9 +56,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/internius/the_purge.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return ThePurge(vecPos, vecAng, team);
+	return ThePurge(vecPos, vecAng, team, data);
 }
 methodmap ThePurge < CClotBody
 {
@@ -136,7 +136,7 @@ methodmap ThePurge < CClotBody
 			this.m_iWearable1 = this.EquipItem("head", model);
 	}
 
-	public ThePurge(float vecPos[3], float vecAng[3], int team)
+	public ThePurge(float vecPos[3], float vecAng[3], int team, const char[] data)
 	{
 		ThePurge npc = view_as<ThePurge>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "25000", team, false, true, true, true));
 		
@@ -218,7 +218,22 @@ methodmap ThePurge < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1) * 0.19;
+		
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+		}
+		RaidModeScaling *= 0.19;
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
