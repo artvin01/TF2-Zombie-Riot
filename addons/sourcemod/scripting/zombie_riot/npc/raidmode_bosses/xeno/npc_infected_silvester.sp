@@ -314,10 +314,29 @@ methodmap RaidbossSilvester < CClotBody
 		
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
+		
+		i_RaidGrantExtra[npc.index] = 1;
+		if(StrContains(data, "wave_15") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 2;
+		}
+		else if(StrContains(data, "wave_30") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 3;
+		}
+		else if(StrContains(data, "wave_45") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 4;
+		}
+		else if(StrContains(data, "wave_60") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 5;
+		}
+
 		if(final)
 		{
 			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 6;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 		
@@ -331,7 +350,21 @@ methodmap RaidbossSilvester < CClotBody
 		
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+		}
+
 		f_TalkDelayCheck = 0.0;
 		i_TalkDelayCheck = 0;
 		
@@ -1178,7 +1211,7 @@ static void Internal_ClotThink(int iNPC)
 				float DelayPillars = 1.5;
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
 				float DelaybewteenPillars = 0.2;
-				if(ZR_GetWaveCount()+1 > 35)
+				if(i_RaidGrantExtra[npc.index] >= 4)
 				{
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
 					DelayPillars = 1.0;
@@ -1193,7 +1226,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 				Silvester_TE_Used = 0;
 				SetSilvesterPillarColour({212, 150, 0, 200});
-				if(ZR_GetWaveCount()+1 >= 60 && i_TimesSummoned[npc.index] >= 3)
+				if(i_RaidGrantExtra[npc.index] >= 5 && i_TimesSummoned[npc.index] >= 3)
 				{
 					i_TimesSummoned[npc.index] = 0;
 					ang_Look[1] -= 30.0;
@@ -1246,7 +1279,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.AddActivityViaSequence("taunt_the_fist_bump");
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 				npc.SetPlaybackRate(0.5);
-				if(ZR_GetWaveCount()+1 > 29)
+				if(i_RaidGrantExtra[npc.index] >= 3)
 				{
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.5;
@@ -1259,7 +1292,7 @@ static void Internal_ClotThink(int iNPC)
 					}
 					npc.SetPlaybackRate(0.6);
 				}
-				if(ZR_GetWaveCount()+1 >= 60)
+				if(i_RaidGrantExtra[npc.index] >= 5)
 				{
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.0;
@@ -1351,7 +1384,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	Internal_Weapon_Lines(npc, attacker);
 
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(!b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -1380,7 +1413,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(victim);
-	if(ZR_GetWaveCount()+1 > 35)
+	if(i_RaidGrantExtra[npc.index] >= 4)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
@@ -1528,16 +1561,6 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 							WorldSpaceCenter(target, vecHit);
 							float damage = 24.0;
 							float damage_rage = 28.0;
-							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-							{
-								damage = 20.0; //nerf
-								damage_rage = 21.0; //nerf
-							}
-							else if(ZR_GetWaveCount()+1 > 55)
-							{
-								damage = 17.5; //nerf
-								damage_rage = 18.5; //nerf
-							}
 
 							if(!npc.Anger)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
@@ -1752,7 +1775,7 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
-			if(i_RaidGrantExtra[spawn_index] == 1)
+			if(i_RaidGrantExtra[spawn_index] == 6)
 			{
 				b_NpcUnableToDie[spawn_index] = true;
 			}

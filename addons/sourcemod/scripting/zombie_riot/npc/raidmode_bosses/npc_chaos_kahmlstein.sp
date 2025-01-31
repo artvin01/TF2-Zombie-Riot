@@ -218,10 +218,7 @@ methodmap ChaosKahmlstein < CClotBody
 			return;
 			
 		this.m_flidle_talk = GetGameTime(this.index) + 0.1;
-		if(ZR_GetWaveCount()+1 <= 15)
-			EmitSoundToAll(g_MessengerThrowFire[GetRandomInt(0, sizeof(g_MessengerThrowFire) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		else
-			EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -420,7 +417,23 @@ methodmap ChaosKahmlstein < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 					
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			float value;
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(ZR_GetWaveCount()+1);
+				value = float(ZR_GetWaveCount()+1);
+			}
+
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -442,11 +455,11 @@ methodmap ChaosKahmlstein < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+			if(value > 40 && value < 55)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(ZR_GetWaveCount()+1 > 55)
+			else if(value > 55)
 			{
 				RaidModeScaling *= 0.7;
 			}

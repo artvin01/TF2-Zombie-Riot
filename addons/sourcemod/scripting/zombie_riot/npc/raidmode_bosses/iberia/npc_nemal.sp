@@ -411,7 +411,7 @@ methodmap Nemal < CClotBody
 		
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
-		if(!StrContains(data, "wave_15"))
+		if(StrContains(data, "wave_15") != -1)
 		{
 			f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
 			i_RaidGrantExtra[npc.index] = 1;
@@ -435,7 +435,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_30"))
+		if(StrContains(data, "wave_30"))
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 			switch(GetRandomInt(0,3))
@@ -458,7 +458,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_45"))
+		if(StrContains(data, "wave_45"))
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 			switch(GetRandomInt(0,3))
@@ -481,7 +481,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_60"))
+		if(StrContains(data, "wave_60"))
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 			switch(GetRandomInt(0,3))
@@ -546,7 +546,22 @@ methodmap Nemal < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		float value;
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			value = float(ZR_GetWaveCount()+1);
+		}
 
 		if(RaidModeScaling < 55)
 		{
@@ -557,7 +572,7 @@ methodmap Nemal < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 
-		if(ZR_GetWaveCount()+1 > 55)
+		if(value > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.7;

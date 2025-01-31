@@ -297,11 +297,28 @@ methodmap TrueFusionWarrior < CClotBody
 			}
 		}
 		
+		i_RaidGrantExtra[npc.index] = 1;
+		if(StrContains(data, "wave_15") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 2;
+		}
+		else if(StrContains(data, "wave_30") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 3;
+		}
+		else if(StrContains(data, "wave_45") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 4;
+		}
+		else if(StrContains(data, "wave_60") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 5;
+		}
+
 		bool final = StrContains(data, "final_item") != -1;
-		
 		if(final)
 		{
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 6;
 			b_NpcUnableToDie[npc.index] = true;
 		}
 		
@@ -315,9 +332,33 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+		}
 		
-		if(RaidModeScaling < 55)
+		/*
+			wave 15 is 15 power here.
+			we need to make sure that with
+			CurrentCash
+			Its the same balance roughly.
+			first is 4100 that should go to power 15, 273.0
+			17800 is wave 30, In theroy it should go down by 593.0 times.
+			42550 wave 45, 945 times.
+			92800 wave 60, 1.546 times.
+			//it is roughly always double.
+		*/
+		if(RaidModeScaling < 55.0)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
 		}
@@ -670,7 +711,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			}
 			
 			
-			if(ZR_GetWaveCount()+1 > 25)
+			if(i_RaidGrantExtra[npc.index] >= 3)
 			{
 				if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index) && !npc.Anger)
 				{
@@ -844,7 +885,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.AddGesture("ACT_MP_THROW");
 					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.15;
 					
-					if(ZR_GetWaveCount()+1 > 55)
+					if(i_RaidGrantExtra[npc.index] >= 5)
 						TrueFusionwarrior_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 						
 					if (npc.m_iAmountProjectiles >= 8)
@@ -863,7 +904,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
 					
-					if(ZR_GetWaveCount()+1 > 55)
+					if(i_RaidGrantExtra[npc.index] >= 5)
 						TrueFusionwarrior_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 						
 					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.15;
@@ -874,7 +915,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					}
 				}
 			}
-			if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0) && !npc.m_bInKame && ZR_GetWaveCount()+1 > 40)
+			if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0) && !npc.m_bInKame && i_RaidGrantExtra[npc.index] >= 4)
 			{
 				static float flVel[3];
 				GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
@@ -987,7 +1028,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		SetVariantColor(view_as<int>({255, 255, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 	}
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(!b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(((ReturnEntityMaxHealth(npc.index)/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
@@ -1655,16 +1696,7 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 
 							float damage = 24.0;
 							float damage_rage = 28.0;
-							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-							{
-								damage = 20.0; //nerf
-								damage_rage = 21.0; //nerf
-							}
-							else if(ZR_GetWaveCount()+1 > 55)
-							{
-								damage = 19.0; //nerf
-								damage_rage = 20.0; //nerf
-							}
+							
 							if(!npc.Anger)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
 									

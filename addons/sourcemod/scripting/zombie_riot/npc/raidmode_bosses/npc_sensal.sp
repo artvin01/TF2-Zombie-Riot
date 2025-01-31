@@ -109,9 +109,6 @@ int SensalNPCID()
 }
 void Sensal_OnMapStart_NPC()
 {
-	if(!IsFileInDownloads(WEAPON_CUSTOM_WEAPONRY_1))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Sensal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal");
@@ -305,9 +302,27 @@ methodmap Sensal < CClotBody
 
 		bool final = StrContains(data, "final_item") != -1;
 		
+		i_RaidGrantExtra[npc.index] = 1;
+		if(StrContains(data, "wave_15") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 2;
+		}
+		else if(StrContains(data, "wave_30") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 3;
+		}
+		else if(StrContains(data, "wave_45") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 4;
+		}
+		else if(StrContains(data, "wave_60") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 5;
+		}
+		
 		if(final)
 		{
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 6;
 			b_NpcUnableToDie[npc.index] = true;
 		}
 		bool cutscene = StrContains(data, "duo_cutscene") != -1;
@@ -340,17 +355,60 @@ methodmap Sensal < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
-		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		b_RageAnimated[npc.index] = false;
-		if(RaidModeScaling < 55)
+
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+
+			if(value > 40.0 && value < 55.0)
+			{
+				RaidModeScaling *= 0.85;
+			}
+			else if(value > 55.0)
+			{
+				RaidModeTime = GetGameTime(npc.index) + 220.0;
+				RaidModeScaling *= 0.65;
+			}
 		}
 		else
-		{
-			RaidModeScaling *= 0.38;
+		{	
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+				
+			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+			{
+				RaidModeScaling *= 0.85;
+			}
+			else if(ZR_GetWaveCount()+1 > 55)
+			{
+				RaidModeTime = GetGameTime(npc.index) + 220.0;
+				RaidModeScaling *= 0.65;
+			}
 		}
+
+		b_RageAnimated[npc.index] = false;
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
@@ -363,16 +421,7 @@ methodmap Sensal < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-		{
-			RaidModeScaling *= 0.85;
-		}
-		else if(ZR_GetWaveCount()+1 > 55)
-		{
-			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.65;
-		}
+
 		if(!cutscene && !cutscene2 && !tripple)
 		{
 			RemoveAllDamageAddition();
@@ -734,7 +783,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_blPlayHurtAnimation = true;
 	}		
 	Sensal_Weapon_Lines(npc, attacker);
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(!b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
@@ -913,7 +962,7 @@ void SensalAnimationChange(Sensal npc)
 int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 {
 	npc.i_GunMode = 0;
-	if(ZR_GetWaveCount()+1 >= 45 && npc.m_flAngerDelay < GetGameTime(npc.index))
+	if(i_RaidGrantExtra[npc.index] >= 4 && npc.m_flAngerDelay < GetGameTime(npc.index))
 	{
 		int Enemy_I_See;
 									
@@ -961,7 +1010,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flAngerDelay = gameTime + 60.0;
 
-			if(ZR_GetWaveCount()+1 >= 60)
+			if(i_RaidGrantExtra[npc.index] >= 5)
 			{
 				npc.m_flReloadIn = gameTime + 1.5;
 				npc.SetPlaybackRate(2.0);
@@ -990,14 +1039,14 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
 			SensalGiveShield(npc.index, CountPlayersOnRed(1));
 
-			if(ZR_GetWaveCount()+1 >= 15)
+			if(i_RaidGrantExtra[npc.index] >= 2)
 				npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
 				
-			if(ZR_GetWaveCount()+1 >= 30)
+			if(i_RaidGrantExtra[npc.index] >= 3)
 				npc.m_flNextRangedSpecialAttackHappens = gameTime + 5.5;
 		}
 	}
-	else if(ZR_GetWaveCount()+1 >= 30 && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+	else if(i_RaidGrantExtra[npc.index] >= 3 && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 	{
 		int Enemy_I_See;
 									
@@ -1021,7 +1070,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 2);
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
-			if(ZR_GetWaveCount()+1 >= 60)
+			if(i_RaidGrantExtra[npc.index] >= 5)
 			{
 				npc.m_flAttackHappens_2 = gameTime + 1.275;
 				npc.SetPlaybackRate(1.25);
@@ -1205,7 +1254,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	Sensal npc = view_as<Sensal>(victim);
-	if(ZR_GetWaveCount()+1 >= 45)
+	if(i_RaidGrantExtra[victim] >= 4)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
@@ -1238,7 +1287,7 @@ void SensalThrowScythes(Sensal npc)
 	float pos[3];
 	WorldSpaceCenter(npc.index, pos);
 	
-	if(ZR_GetWaveCount()+1 >= 60)
+	if(i_RaidGrantExtra[npc.index] >= 5)
 		MaxCount = 2;
 
 	for(int Repeat; Repeat <= 7; Repeat++)
@@ -1808,7 +1857,7 @@ bool SensalMassLaserAttack(Sensal npc)
 			if(foundEnemy)
 			{
 				int Pitch = 100;
-				if(ZR_GetWaveCount()+1 >= 60)
+				if(i_RaidGrantExtra[npc.index] >= 5)
 					Pitch = 125;
 
 				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME, Pitch);
@@ -2122,15 +2171,15 @@ public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
 void SensalGiveShield(int sensal, int shieldcount)
 {
 	Sensal npc = view_as<Sensal>(sensal);
-	if(ZR_GetWaveCount()+1 >= 60)
+	if(i_RaidGrantExtra[sensal] >= 5)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 1.4);
 	}
-	else if(ZR_GetWaveCount()+1 >= 45)
+	else if(i_RaidGrantExtra[sensal] >= 4)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 1.3);
 	}
-	else if(ZR_GetWaveCount()+1 >= 30)
+	else if(i_RaidGrantExtra[sensal] >= 3)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 1.25);
 	}

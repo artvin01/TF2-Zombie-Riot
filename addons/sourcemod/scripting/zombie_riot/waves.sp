@@ -2555,13 +2555,39 @@ void Zombie_Delay_Warning()
 		}
 		case 5:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 150.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + 100.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 6;
 				CPrintToChatAll("{crimson}Die.");
+				if(!Rogue_Mode())
+					AntiDelaySpawnEnemies(999999999, 5, true);
 			}
 		}
 	}
+}
+
+void AntiDelaySpawnEnemies(int health = 0, int count, bool is_a_boss = false)
+{
+	Enemy enemy;
+	enemy.Index = NPC_GetByPlugin("npc_chaos_swordsman");
+	if(health != 0)
+	{
+		enemy.Health = health;
+	}
+	enemy.Is_Boss = view_as<int>(is_a_boss);
+	enemy.Is_Immune_To_Nuke = true;
+	//do not bother outlining.
+	enemy.ExtraMeleeRes = 0.2;
+	enemy.ExtraRangedRes = 0.2;
+	enemy.ExtraSpeed = 3.0;
+	enemy.ExtraDamage = 9999.0;
+	enemy.ExtraSize = 1.0;		
+	enemy.Team = 3;
+	for(int i; i<count; i++)
+	{
+		Waves_AddNextEnemy(enemy);
+	}
+	Zombies_Currently_Still_Ongoing += count;
 }
 
 float Zombie_DelayExtraSpeed()
