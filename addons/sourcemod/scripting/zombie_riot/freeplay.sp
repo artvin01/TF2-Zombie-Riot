@@ -364,6 +364,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		// moni
 		enemy.Credits += 6500.0;
 
+		enemy.WaitingTimeGive = 60.0;
 		enemy.Does_Not_Scale = 1;
 		count = 1;
 		RaidFight = 0;
