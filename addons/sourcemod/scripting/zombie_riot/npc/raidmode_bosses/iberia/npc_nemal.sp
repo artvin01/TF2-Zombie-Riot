@@ -435,7 +435,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(StrContains(data, "wave_30"))
+		if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 			switch(GetRandomInt(0,3))
@@ -458,7 +458,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(StrContains(data, "wave_45"))
+		if(StrContains(data, "wave_45") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 			switch(GetRandomInt(0,3))
@@ -481,7 +481,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(StrContains(data, "wave_60"))
+		if(StrContains(data, "wave_60") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 			switch(GetRandomInt(0,3))

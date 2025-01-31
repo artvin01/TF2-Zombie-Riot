@@ -2664,8 +2664,6 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
-	i_PreviousInteractedEntity[iClient] = 0; //didnt find any
-	
 	if(f_Reviving_This_Client[iClient] < GetGameTime())
 	{
 		i_Reviving_This_Client[iClient] = 0;

@@ -1002,6 +1002,7 @@ public void OnMapStart()
 	Zero(f_PreventMedigunCrashMaybe);
 	Zero(f_ClientReviveDelayReviveTime);
 	Zero(f_MutePlayerTalkShutUp);
+	ResetIgnorePointVisible();
 
 #if defined ZR || defined RPG
 	Core_PrecacheGlobalCustom();
@@ -3024,11 +3025,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
 		static float vecEndOrigin[3];
-#if defined ZR
-		int entity = GetClientPointVisible(client, 70.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
-#else
 		int entity = GetClientPointVisible(client, 100.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
-#endif
 		if(entity > 0)
 		{
 
