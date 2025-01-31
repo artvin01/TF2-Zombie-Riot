@@ -374,7 +374,12 @@ stock Function KvGetFunction(KeyValues kv, const char[] string, Function defaul 
 }
 
 static bool i_PreviousInteractedEntityDo[MAXENTITIES];
+static float f_PreviousInteractedEntityDo[MAXENTITIES];
 
+void ResetIgnorePointVisible()
+{
+	Zero(f_PreviousInteractedEntityDo);
+}
 stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)
 {
 	float vecOrigin[3], vecAngles[3];
@@ -412,6 +417,16 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		i_PreviousInteractedEntityDo[iClient] = true;
 	}
 
+	if(repeatsretry >= 2)
+	{
+		if(f_PreviousInteractedEntityDo[iClient] < GetGameTime())
+		{
+			//Our last interaction was a second ago, dont try to phase throguh the previous ignored one.
+			i_PreviousInteractedEntity[iClient] = -1; //didnt find any
+		}
+		f_PreviousInteractedEntityDo[iClient] = GetGameTime() + 1.0;
+	}
+
 	for(int repeat; repeat < repeatsretry; repeat++)
 	{
 		if(!ignore_allied_npc)
@@ -432,10 +447,15 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		if(repeat == 0)
 		{
 			delete hTrace;
-			i_PreviousInteractedEntity[iClient] = 0; //didnt find any
+			if(repeatsretry >= 2)
+				i_PreviousInteractedEntity[iClient] = -1; //didnt find any
 		}
 	}
-	i_PreviousInteractedEntity[iClient] = iHit;
+
+
+	if(repeatsretry >= 2)
+		i_PreviousInteractedEntity[iClient] = iHit;
+
 	bool DoAlternativeCheck = false;
 	if(IsValidEntity(iHit) && i_IsABuilding[iHit])
 	{
@@ -1724,10 +1744,12 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		return false;
 #endif
 	}	
+	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
 	}
+
 	return entity!=data;
 }
 
