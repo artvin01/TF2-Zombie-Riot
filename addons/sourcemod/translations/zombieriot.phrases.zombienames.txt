@@ -3124,6 +3124,10 @@
 	{
 		"en"		"Antinel"
 	}
+	"SIGMALLER"
+	{
+		"en"		"SIGMALLER"
+	}
 	"Ironborus"
 	{
 		"en"		"Ironborus"

@@ -1,31 +1,5 @@
 // HEAVILY INTENDED AS A RED-SUPPORT ALLY DO NOT USE ON BLU PLEEAAASE
 
-/*
-    Spotter - A support voidspeaker hired by Bob the Second, tasked to support the Worthy in freeplay.
-
-    Melee Damage: 75000 base.
-    Attack Delay: 2.5s
-    Melee Effects:
-    - Silences the target for 3s
-    - Grants Spotter the Void Strength II buff for 1 second.
-    - Knocks the target away.
-    - Charges Spotter's Ally Buff by 1.
-
-    Spotter's Ally Buff:
-    Buffs all allied NPCS and Players in the map. Takes 30 hits to charge, and can be reused.
-    When activated, grants the following:
-
-    NPCS:
-    - Void Strength II for 15s
-    - 750HP instant heal
-    - Spotter's Rally for 15s
-
-    Players:
-    - Speedboost for 1.5s
-    - Battalion's Backup for 2.5s
-    - Spotter's Rally for 7.5s
-*/
-
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -94,16 +68,150 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Spotter(vecPos, vecAng, team);
 }
 
+static Action Spotter_SpeechTimer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity != -1)
+	{
+		char speechtext[128], endingtextscroll[10];
+		pack.ReadString(speechtext, sizeof(speechtext));
+		pack.ReadString(endingtextscroll, sizeof(endingtextscroll));
+		view_as<Spotter>(entity).Speech(speechtext, endingtextscroll);
+	}
+	return Plugin_Stop;
+}
+
 methodmap Spotter < CClotBody
 {
+	public void SpeechDelay(float time, const char[] speechtext, const char[] endingtextscroll = "")
+	{
+		DataPack pack;
+		CreateDataTimer(time, Spotter_SpeechTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(this.index));
+		pack.WriteString(speechtext);
+		pack.WriteString(endingtextscroll);
+	}
+	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
+	{
+		NpcSpeechBubble(this.index, speechtext, 5, {255, 150, 0, 255}, {0.0,0.0,125.0}, endingtextscroll);
+	}
+	public void KillSpeech()
+	{
+		switch(GetURandomInt() % 3)
+		{
+			case 0:
+			{
+				this.Speech("Perish!");
+			}
+			case 1:
+			{
+				this.Speech("BAM!!");
+			}
+			case 2:
+			{
+				this.Speech("Woosh!");
+			}
+			default:
+			{
+				this.Speech("Off you go!");
+			}
+		}
+
+		this.m_flNextIdleSound += 3.0;
+	}
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
+		this.m_flNextIdleSound = GetGameTime(this.index) + 45.0;
+		if(!Waves_InFreeplay())
+		{
+			switch(GetURandomInt() % 4)
+			{
+				case 0:
+				{
+					this.Speech("This isn't the training site...");
+				}
+				case 1:
+				{
+					this.Speech("Out of all places...");
+				}
+				case 2:
+				{
+					this.Speech("...");
+				}
+				case 3:
+				{
+					this.Speech("I fear something bad will occur soon");
+				}
+				default:
+				{
+					this.Speech("I... I don't think I should be here");
+				}
+			}
+		}
+		else
+		{
+			switch(GetURandomInt() % 10)
+			{
+				case 0:
+				{
+					this.Speech("Quite the relaxing training.");
+				}
+				case 1:
+				{
+					this.Speech("Hey, guess what?");
+					this.SpeechDelay(5.0, "CHICKEN BUTT!!");
+					this.SpeechDelay(10.0, "...yeah i think i'll shut up.");
+				}
+				case 2:
+				{
+					this.Speech("I can fold you in the blink of an eye, don't test me.");
+				}
+				case 3:
+				{
+					this.Speech("Wondering what Bob meant with that ''Sigmaller''...");
+				}
+				case 4:
+				{
+					this.Speech("Training with you guys does help me relax a little.");
+				}
+				case 5:
+				{
+					this.Speech("Time to time i have some\nlittle conversations with Koshi.");
+					this.SpeechDelay(10.0, "However, as of lately, he seems a bit off...");
+					this.SpeechDelay(20.0, "He just keeps talking about some\n''Kimori'' or stuff like that.");
+				}
+				case 6:
+				{
+					this.Speech("That Omega guy...");
+					this.SpeechDelay(3.5, "I despise him... I REALLY hate him...");
+					this.SpeechDelay(10.0, "...oh, you heard that? Don't say anything, please.");
+				}
+				case 7:
+				{
+					this.Speech("Hmm, i feel like im forgetting something...");
+				}
+				case 8:
+				{
+					this.Speech("Ameneurosis.");
+				}
+				case 9:
+				{
+					this.Speech("Hey, come to think of it...");
+					this.SpeechDelay(5.0, "Aren't you tired of being nice?");
+					this.SpeechDelay(10.0, "Don't you just want to go apesh-");
+					this.SpeechDelay(12.5, "...sorry, sorry, my head slipped a bit.");
+				}
+				default:
+				{
+					this.Speech("These enemies make me think... Was the world that messed up?");
+				}
+			}
+		}
 	}
 	
 	public void PlayHurtSound() 
@@ -178,44 +286,52 @@ methodmap Spotter < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-        npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec24_snug_sharpshooter/dec24_snug_sharpshooter.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec24_snug_sharpshooter/dec24_snug_sharpshooter.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/hwn2022_headhunters_brim/hwn2022_headhunters_brim.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/invasion_final_frontiersman/invasion_final_frontiersman.mdl");
-        npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
 
-        SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
     
-        SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 75, 0, 145);
-        SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 75, 0, 145);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 135, 0);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 135, 0);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 75, 0, 145);
-        SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 75, 0, 145);
-        SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 75, 0, 145);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 135, 0);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 135, 0);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 135, 0);
 
 
-        switch(GetRandomInt(1, 3))
-	    {
-		    case 1:
-		    {
-		    	CPrintToChatAll("{orange}Spotter: {white}Aaaalright Bob, lets see what you put me into...");
-		    }
-		    case 2:
-		    {
-		    	CPrintToChatAll("{orange}Spotter: {white}Well heello there, hope you have space in here for a lil' bit of the {purple}void...");
-		    }
-		    default:
-		    {
-		    	CPrintToChatAll("{orange}Spotter: {white}Im hoping that little {lightblue}Ant {white}Bob told me about shows up now.");
-		    }
-	    }
+	        switch(GetRandomInt(1, 5))
+		{
+			case 1:
+			{
+			    	CPrintToChatAll("{orange}Spotter: {white}Aaaalright Bob, lets see what you put me into...");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{orange}Spotter: {white}Well heello there, hope you have space in here for me.");
+			}
+			case 3:
+			{
+			    	CPrintToChatAll("{orange}Spotter: {white}I'd say its time to end this, but this is different...");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{orange}Spotter: {white}Apparently Bob told me he saw some sort of ''titan soldier'' that calls himself a sigma.");
+				CPrintToChatAll("{orange}Spotter: {white}Quite {strange}strange{white}, to be honest.");
+			}
+			default:
+			{
+			    	CPrintToChatAll("{orange}Spotter: {white}Im hoping that little {lightblue}Ant {white}Bob told me about shows up now.");
+			}
+		}
 
 		return npc;
 	}
@@ -224,50 +340,75 @@ methodmap Spotter < CClotBody
 public void Spotter_ClotThink(int iNPC)
 {
 	Spotter npc = view_as<Spotter>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
-	{
+
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
 		return;
-	}
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
+	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	
+	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	int target = npc.m_iTarget;
+	int ally = npc.m_iTargetWalkTo;
+
+	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
+		i_Target[npc.index] = -1;
+	
+	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, _, _, _, _, 99999.9);
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+
+		ally = GetClosestAllyPlayer(npc.index);
+		npc.m_iTargetWalkTo = ally;
 	}
-	
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
+
+	if(target > 0)
 	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+		
+		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, target);
 		}
-		SpotterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+
+		npc.StartPathing();
+		SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance); 
 	}
 	else
 	{
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		if(ally > 0)
+		{
+			float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
+			float vecSelf[3]; WorldSpaceCenter(npc.index, vecSelf);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
+
+			if(flDistanceToTarget > 25000.0)
+			{
+				NPC_SetGoalEntity(npc.index, ally);
+				npc.StartPathing();
+				npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+				return;
+			}
+		}
+
+		npc.StopPathing();
+		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 	}
 
-    if(npc.m_blPlayHurtAnimation)
+	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
@@ -376,8 +517,9 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 					float damageDealt = 75000.0;
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					ApplyStatusEffect(npc.index, target, "Silenced", 3.0);
-					Custom_Knockback(npc.index, target, 500.0, true); 
+					ApplyStatusEffect(npc.index, target, "Silenced", 5.0);
+					Custom_Knockback(npc.index, target, 500.0, true);
+					HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
 					
 					npc.m_iAttacksTillReload++;
 					if(npc.m_iAttacksTillReload >= 25)
@@ -387,6 +529,11 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
+
+					if(GetEntProp(target, Prop_Data, "m_iHealth") < 0)
+					{
+						npc.KillSpeech();
+					}
 				} 
 			}
 			delete swingTrace;
@@ -426,8 +573,8 @@ void SpotterAllyBuff(Spotter npc)
 		{
 			if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 			{
-				HealEntityGlobal(npc.index, entitycount, 750.0, 1.0, 0.0, HEAL_ABSOLUTE);
-				ApplyStatusEffect(npc.index, entitycount, "Spotter's Rally", 15.0);
+				HealEntityGlobal(npc.index, entitycount, 2500.0, 1.0, 0.0, HEAL_ABSOLUTE);
+				ApplyStatusEffect(npc.index, entitycount, "Spotter's Rally", 10.0);
 			}
 		}
 	}
@@ -436,28 +583,34 @@ void SpotterAllyBuff(Spotter npc)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
-			ApplyStatusEffect(npc.index, client, "Battilons Backup", 5.0);
-			ApplyStatusEffect(npc.index, client, "Spotter's Rally", 7.5);
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 5.0);
+			ApplyStatusEffect(npc.index, client, "Spotter's Rally", 5.0);
 		}
 	}
+
+	ApplyStatusEffect(npc.index, npc.index, "Spotter's Rally", 1.0);
+	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
 
 	switch(GetRandomInt(1, 3))
 	{
 		case 1:
 		{
-			CPrintToChatAll("{orange}Spotter: {purple}VOID, {gold}GIVE US YOUR BLESSING!!");
+			CPrintToChatAll("{orange}Spotter: {gold}PUSH ON FURTHER!!!!");
+			npc.Speech("PUSH ON FURTHER!!!!");
 		}
 		case 2:
 		{
 			CPrintToChatAll("{orange}Spotter: {gold}COME ON!!!!!");
+			npc.Speech("COME ON!!!!!!");
 		}
 		default:
 		{
 			CPrintToChatAll("{orange}Spotter: {gold}KEEP ON THE PRESSURE!!!!");
+			npc.Speech("KEEP ON THE PRESSURE!!!!");
 		}
 	}
-
+	
+	npc.m_flNextIdleSound += 5.0;
 	npc.PlayMeleeWarCry();
 	npc.PlayBuffReaction();
 }
