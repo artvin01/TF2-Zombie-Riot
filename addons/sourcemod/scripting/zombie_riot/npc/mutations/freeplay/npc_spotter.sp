@@ -405,7 +405,7 @@ public void Spotter_ClotThink(int iNPC)
 		}
 
 		npc.StopPathing();
-		npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
+		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 	}
 
 	if(npc.m_blPlayHurtAnimation)
