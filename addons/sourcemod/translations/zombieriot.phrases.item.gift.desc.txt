@@ -2469,6 +2469,6 @@
 	}
 	"Spotter Desc"
 	{
-		"en"	"Tasked to train with the mercs in Koshi's simulator.\nDeals high melee dmg, knocks enemies away, heals a bit on hit and silences enemies.\nCharges his buff after hitting enough enemies:\nGrants speed+battalions to players when activating his buff (lasts 7.5s on players)\nGrants a 750HP heal when activating his buff (lasts 15s on NPCs)"
+		"en"	"Tasked to train with the mercs in Koshi's simulator.\nDeals high melee dmg, knocks enemies away, heals on hit and silences enemies.\nCharges his buff after hitting enough enemies:\nGrants speed to players and heals npcs, his buff (Spotter's Rally) lasts longer on npcs."
 	}
 }
