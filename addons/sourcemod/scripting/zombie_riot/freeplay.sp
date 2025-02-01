@@ -59,6 +59,9 @@ void Freeplay_OnMapStart()
 	PrecacheSound("passtime/ball_dropped.wav", true);
 	PrecacheSound("ui/mm_medal_silver.wav", true);
 	PrecacheSound("ambient/halloween/thunder_01.wav", true);
+	PrecacheSound("misc/halloween/spelltick_set.wav", true);
+	PrecacheSound("misc/halloween/hwn_bomb_flash.wav", true);
+	PrecacheSound("music/mvm_class_select.wav", true);
 }
 
 void Freeplay_SpotterDeath()
@@ -243,7 +246,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_stella");
 				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				//enemy.Data = "force60";
+				enemy.Data = "force60";
 				CPrintToChatAll("{aqua}STELLA {white}& {crimson}KARLAS! {gold}- {red}Hope you like spinning blades!");
 			}
 			case 7:	
@@ -327,7 +330,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_ruina_twirl");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				//enemy.Data = "force60";
+				enemy.Data = "force60";
 				CPrintToChatAll("{purple}TWIRL! {gold}- {red}Oh so you're strong? Fight her!");
 			}
 			case 19:
@@ -418,6 +421,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Does_Not_Scale = 1;
 		count = 1;
 		RaidFight = 0;
+		EmitSoundToAll("misc/halloween/spelltick_set.wav", _, _, _, _, _, GetRandomInt(70, 135));
 	}
 	else if(FriendlyDay)
 	{
@@ -705,6 +709,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 
 			RandomStats--;
+			EmitSoundToAll("misc/halloween/hwn_bomb_flash.wav");
 		}
 	}
 
@@ -1395,6 +1400,8 @@ void Freeplay_SetupStart(bool extra = false)
 	}
 	else if(raidtime)
 	{
+		EmitSoundToAll("music/mvm_class_select.wav");
+		EmitSoundToAll("items/powerup_pickup_king.wav");
 		RaidFight = GetRandomInt(1, 28);
 		CPrintToChatAll("{strange}--==({gold}RAID ROULETTE!!{strange})==--");
 		CPrintToChatAll("{gold}--==({strange}LET THOU FATE BE RANDOMIZED!{gold})==--");
