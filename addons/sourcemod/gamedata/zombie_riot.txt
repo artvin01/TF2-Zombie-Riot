@@ -283,6 +283,13 @@
 				"linux"		"@_ZN11CBaseObject16FinishedBuildingEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x6C\x56\x57\x6A\x01"
 			}
+			"CTFProjectile_Arrow::StrikeTarget"
+			{
+				"library"	"server"
+				//String "Weapon_Arrow.ImpactFlesh", long function.
+				"linux" "@_ZN19CTFProjectile_Arrow12StrikeTargetEP13mstudiobbox_tP11CBaseEntity"
+				"windows"	"\x55\x8B\xEC\x81\xEC\x0C\x01\x00\x00\x53\x8B\x5D\x0C\x56\x57\x8B\xF9"
+			}
 			"CTFBuffItem::RaiseFlag" 
 			{
 				"library"	"server"
@@ -545,6 +552,25 @@
 				"return"    	"void"
   				"this"        	"entity"
            	}
+			"CTFProjectile_Arrow::StrikeTarget"
+			{
+				"signature" "CTFProjectile_Arrow::StrikeTarget"
+				"callconv" "thiscall"
+				"return" "bool"
+				"this" "entity"
+				"hooktype" "entity"
+				"arguments"
+				{
+					"studio"
+					{
+						"type" "objectptr"
+					}
+					"other"
+					{
+						"type" "cbaseentity"
+					}
+				}
+			}
 			"CBaseGrenade::Explode"
 			{
 				"offset"	"CBaseGrenade::Explode"

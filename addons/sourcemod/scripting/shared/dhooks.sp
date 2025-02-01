@@ -159,6 +159,7 @@ void DHook_Setup()
 	//Fixes mediguns giving extra speed where it was not intended.
 	//gamedata first try!!
 	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
+//	DHook_CreateDetour(gamedata, "CTFProjectile_Arrow::StrikeTarget", DhookStrikeTargetArrow_Pre, _);
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -166,7 +167,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::StartLagCompensation", StartLagCompensationPre, StartLagCompensationPost);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
-
+		
 	g_DhookWantsLagCompensationOnEntity = DHookCreateFromConf(gamedata_lag_comp,
 			"CTFPlayer::WantsLagCompensationOnEntity");
 
@@ -201,6 +202,27 @@ void DHook_Setup()
 		delete edictgamedata;
 	}
 }
+/*
+public MRESReturn DhookStrikeTargetArrow_Pre(int pThis, Handle hReturn, Handle hParams)
+{
+	PrintToChatAll("DhookStrikeTargetArrow_Pre");
+	int projtype = GetEntProp(pThis, Prop_Send, "m_iProjectileType");
+	PrintToChatAll("DhookStrikeTargetArrow_Pre projtype %i",projtype);
+	
+	if(projtype != 8)
+		return MRES_Ignored;
+
+	PrintToChatAll("DhookStrikeTargetArrow_Pre2");
+	int other = DHookGetParam(hParams, 2);
+
+	if(!b_ThisWasAnNpc[other])
+		return MRES_Ignored;
+	PrintToChatAll("DhookStrikeTargetArrow_Pre3");
+
+	DHookSetReturn(hReturn, true);
+	return MRES_Override;
+}
+*/
 int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)

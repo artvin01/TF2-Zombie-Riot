@@ -318,9 +318,9 @@ methodmap BarrackBody < CClotBody
 	public BarrackBody(int client, float vecPos[3], float vecAng[3],
 	 const char[] health, const char[] modelpath = COMBINE_CUSTOM_MODEL,
 	  int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575",
-	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool IsInvuln = false)
+	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool IsInvuln = false, int NpcTypeLogicdo = 0)
 	{
-		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, TFTeam_Red, IsInvuln, .Ally_Collideeachother = !IsInvuln));
+		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, TFTeam_Red, IsInvuln, .Ally_Collideeachother = !IsInvuln, .NpcTypeLogic = NpcTypeLogicdo));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -372,8 +372,9 @@ methodmap BarrackBody < CClotBody
 			int Textentity = BarrackBody_HealthHud(npc, ExtraOffset);
 			BarrackOwner[Textentity] = client > 0 ? client : 0;
 		}
+		if(NpcTypeLogicdo == 0)
+			npc.StartPathing();
 
-		npc.StartPathing();
 		Barracks_UpdateEntityUpgrades(npc.index,client > 0 ? client : 0,true, true);
 		return npc;
 	}
@@ -539,12 +540,6 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
 		}
-		/*
-		else
-		{
-			npc.m_iTarget = -1;
-		}
-		*/
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{

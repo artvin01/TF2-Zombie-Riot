@@ -183,7 +183,7 @@ methodmap MedivalBuilding < CClotBody
 	
 	public MedivalBuilding(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
+		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -239,8 +239,6 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_flRangedArmor = 1.0;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 180.0;
 
-		NPC_StopPathing(npc.index);
-
 		return npc;
 	}
 }
@@ -248,7 +246,7 @@ methodmap MedivalBuilding < CClotBody
 public void MedivalBuilding_ClotThink(int iNPC)
 {
 	MedivalBuilding npc = view_as<MedivalBuilding>(iNPC);
-/*
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -257,7 +255,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-*/
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;

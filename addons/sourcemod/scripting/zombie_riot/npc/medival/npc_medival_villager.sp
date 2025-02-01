@@ -230,8 +230,6 @@ methodmap MedivalVillager < CClotBody
 
 				if(IsPointHazard(vecGoal)) //Retry.
 					continue;
-				if(IsPointHazard(vecGoal)) //Retry.
-					continue;
 
 				static float hullcheckmaxs_Player_Again[3];
 				static float hullcheckmins_Player_Again[3];
@@ -603,7 +601,6 @@ public void MedivalVillager_ClotThink(int iNPC)
 					return;
 
 				
-				AproxRandomSpaceToWalkTo[2] += 18.0;
 				AproxRandomSpaceToWalkTo[2] += 18.0;
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 
