@@ -2469,6 +2469,6 @@
 	}
 	"Spotter Desc"
 	{
-		"en"	"A support voidspeaker hired by Bob the Second, tasked to assist in Freeplay.\nDeals high melee dmg, knocks enemies away, gains Void Strength II for 1s on hit.\nCharges his buff after hitting enough enemies:\nGrants speed and defense to players when activating his buff (lasts 7.5s on players)\nGrants Void Strength II to NPCs and a 750HP heal when activating his buff (lasts 15s on NPCs)"
+		"en"	"Tasked to train with the mercs in Koshi's simulator.\nDeals high melee dmg, knocks enemies away, heals a bit on hit and silences enemies.\nCharges his buff after hitting enough enemies:\nGrants speed+battalions to players when activating his buff (lasts 7.5s on players)\nGrants a 750HP heal when activating his buff (lasts 15s on NPCs)"
 	}
 }
