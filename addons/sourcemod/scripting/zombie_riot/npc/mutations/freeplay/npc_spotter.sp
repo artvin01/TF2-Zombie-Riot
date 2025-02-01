@@ -519,7 +519,7 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					ApplyStatusEffect(npc.index, target, "Silenced", 5.0);
 					Custom_Knockback(npc.index, target, 500.0, true);
-					HealEntityGlobal(npc.index, npc.index, 2000.0, 1.0, 0.0, HEAL_ABSOLUTE);
+					HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
 					
 					npc.m_iAttacksTillReload++;
 					if(npc.m_iAttacksTillReload >= 25)
