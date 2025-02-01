@@ -989,7 +989,7 @@ void Freeplay_SetupStart(bool extra = false)
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 
 		int raidchance = GetRandomInt(0, 100);
-		if(raidchance < 10) // 10% chance
+		if(raidchance < 15) // 15% chance
 		{
 			raidtime = true;
 		}
@@ -1004,7 +1004,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		if(!wrathofirln && !raidtime)
+		if(!wrathofirln)
 		{
 			EmitSoundToAll("ui/vote_success.wav");
 			int exskull = GetRandomInt(0, 100);
