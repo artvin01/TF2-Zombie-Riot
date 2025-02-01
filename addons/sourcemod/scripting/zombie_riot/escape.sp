@@ -9,7 +9,7 @@ void Escape_RoundEnd()
 {
 	//Just delete, dont wanna risk anything staying and that causing the server to lag like in the case of serious sam.
 //	RequestFrames(Remove_All, 300);
-	CreateTimer(DeleteAndRemoveAllNpcs, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(DeleteAndRemoveAllNpcs * 2.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public Action Remove_All(Handle Timer_Handle, any Null)
@@ -26,7 +26,23 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 		}
 	}
 	entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base")) != -1)
+	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(IsValidEntity(entity))
+		{
+			if(entity != 0)
+			{
+				b_DissapearOnDeath[entity] = true;
+				b_DoGibThisNpc[entity] = true;
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+			}
+		}
+	}
+	entity = -1;
+	while((entity=FindEntityByClassname(entity, "zr_base_stationary")) != -1)
 	{
 		if(IsValidEntity(entity))
 		{

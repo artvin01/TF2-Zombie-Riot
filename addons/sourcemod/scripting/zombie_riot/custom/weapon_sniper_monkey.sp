@@ -185,7 +185,6 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		
 		float distance;
 		int target = -1;
-		int i = MaxClients + 1;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
