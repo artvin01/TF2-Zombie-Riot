@@ -30,7 +30,6 @@ static bool ExplodingNPC;
 static bool IsExplodeWave; // to prevent the message from popping up twice
 static int ExplodeNPCDamage;
 static int EnemyShields;
-static bool IsRaidWave; // to prevent the message from popping up twice
 static int VoidBuff;
 static bool VictoriaBuff;
 static bool SquadBuff;
@@ -50,6 +49,9 @@ static int moremen;
 static bool immutable;
 static bool spotteralive;
 static int spotter;
+static int RandomStats;
+static bool merlton;
+static bool Sigmaller;
 
 void Freeplay_OnMapStart()
 {
@@ -94,7 +96,6 @@ void Freeplay_ResetAll()
 	ExplodingNPC = false;
 	IsExplodeWave = false;
 	EscapeModeForNpc = false;
-	IsRaidWave = false;
 	EnemyShields = 0;
 	VoidBuff = 0;
 	VictoriaBuff = false;
@@ -114,6 +115,9 @@ void Freeplay_ResetAll()
 	moremen = 0;
 	spotteralive = false;
 	spotter = 0;
+	RandomStats = 0;
+	merlton = false;
+	Sigmaller = false;
 }
 
 int Freeplay_EnemyCount()
@@ -127,6 +131,9 @@ int Freeplay_EnemyCount()
 	{
 		amount = 5;
 		if(AntinelNextWave)
+			amount++;
+
+		if(Sigmaller)
 			amount++;
 
 		if(zombiecombine)
@@ -177,7 +184,7 @@ int Freeplay_GetDangerLevelCurrent()
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
-	if(RaidFight || FriendlyDay || AntinelNextWave || zombiecombine || moremen || immutable || spotter)
+	if(RaidFight || FriendlyDay || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -208,83 +215,105 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_60";
+				CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}Prepare to fight against the rogue machine!");
 			}
 			case 3:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_silvester");
 				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_60";
+				CPrintToChatAll("{yellow}SILVESTER {white}& {darkblue}WALDCH! {gold}- {red}Enjoy eating rocks!");
 			}
 			case 4:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
 				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_60";
+				CPrintToChatAll("{lightblue}GOD ALAXIOS! {gold}- {red}Face the full power of Atlantis!");
 			}
 			case 5:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sensal");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_60";
+				CPrintToChatAll("{blue}SENSAL! {gold}- {red}He shall reap you, and your resistances!");
 			}
-			case 6:	//don't know how to edit the freeplay spawn thing without being 100% sure I didn't brick anything soo commented out for now.
+			case 6:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_stella");
 				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				//enemy.Data = "force60";
+				CPrintToChatAll("{aqua}STELLA {white}& {crimson}KARLAS! {gold}- {red}Hope you like spinning blades!");
 			}
 			case 7:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_purge");
 				enemy.Health = RoundToFloor(9000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}Annihilation shall be absolute.");
 			}
 			case 8:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_messenger");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				//enemy.Data = "wave_30";
+				CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}He REALLY wants to make Kahmlstein proud!");
 			}
 			case 9:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
+				CPrintToChatAll("{white}BOB THE FIRST! {gold}- {red}Are you a god?");
 			}
 			case 10:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_chaos_kahmlstein");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "sc60";
+				CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}He thinks he's unstoppable, prove him wrong!");
 			}
 			case 11:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
 				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+				CPrintToChatAll("{green}NEMESIS! {gold}- {red}Aah, the good ol' days when the speed module had no limits...");
 			}
 			case 12:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
 				enemy.Health = RoundToFloor(15000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
+				CPrintToChatAll("{green}MR. X! {gold}- {red}MISTER WHAT!?");
 			}
 			case 13:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_corruptedbarney");
 				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+				CPrintToChatAll("{midnightblue}CO0R0RR9R'R4R0#(##()#F92 B '11 A =)$ R 49I N 2G4 E 2#f Y =4,93RW9FW0LRSMUW320$");
 			}
 			case 14:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_whiteflower_boss");
 				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraMeleeRes *= 4.0;
-				enemy.ExtraRangedRes *= 3.0;
+				enemy.ExtraMeleeRes *= 3.0;
+				enemy.ExtraRangedRes *= 2.0;
+				CPrintToChatAll("{crimson}WHITEFLOWER! {gold}- {red}...minus his army, of course.");
 			}
 			case 15:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_void_unspeakable");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "forth";
+				CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Does he actually speak though?");
 			}
 			case 16:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vhxis");
 				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				CPrintToChatAll("{purple}VHXIS! {gold}- {red}Fight against the void gatekeeper once more!");
 			}
 			case 17:
 			{
@@ -292,17 +321,21 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
 				enemy.ExtraDamage = 0.75;
+				CPrintToChatAll("{lightblue}NEMAL! {gold}- {red}and silvester, of course!");
 			}
 			case 18:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_ruina_twirl");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				//enemy.Data = "force60";
+				CPrintToChatAll("{purple}TWIRL! {gold}- {red}Oh so you're strong? Fight her!");
 			}
 			case 19:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75;
+				CPrintToChatAll("{community}Agent... thompson. {crimson}ew.");
 			}
 			case 20:
 			{
@@ -310,54 +343,65 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
 				enemy.ExtraDamage = 0.75;
+				CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
 			}
 			case 21:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage = 0.6; // thompson gets way too much damage in freeplay, reduce it
+				enemy.ExtraDamage = 0.75; // johnson gets way too much damage in freeplay, reduce it
+				CPrintToChatAll("{community}Agent... johnson. {crimson}ew.");
 			}
 			case 22:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_smith");
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
+				CPrintToChatAll("{darkgreen}Agent Smith. {crimson}*stink sound effect*");
 			}
 			case 23:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_atomizer");
 				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}I wonder what that nitro fuel is made of...");
 			}
 			case 24:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_wall");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}Running around in circles just to hit a wall!");
 			}
 			case 25:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_harrison");
 				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}His rockets surely won't miss you!");
 			}
 			case 26:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				CPrintToChatAll("{blue}CASTELLAN! {gold}- {red}In the name of victoria, he won't allow you further in!");
 			}
 			case 27: // WHEN THE DUST SETTLES
 			{
 				enemy.Index = NPC_GetByPlugin("npc_lelouch");
 				enemy.Health = RoundToFloor(12500000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75;
+				CPrintToChatAll("{darkviolet}LELOUCH! {gold}- {red}The chaos-afflicted ruinian i've spoken about before...");
 			}
 			case 28:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega_raid");
 				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				CPrintToChatAll("{gold}OMEGA! - {red}Waltzing straight to you.");
 			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
 				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Data = "wave_60";
+				CPrintToChatAll("{yellow}TRUE FUSION WARRIOR! {gold}- {red}An infected menace!");
 			}
 		}
 
@@ -370,11 +414,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		// moni
 		enemy.Credits += 7500.0;
-		enemy.WaitingTimeGive = 20.0;
+		enemy.WaitingTimeGive = 30.0;
 		enemy.Does_Not_Scale = 1;
 		count = 1;
 		RaidFight = 0;
-		IsRaidWave = false;
 	}
 	else if(FriendlyDay)
 	{
@@ -388,6 +431,25 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage = 20.0;
 	}
+	else if(Sigmaller)
+	{
+		// Spawns a humongous Signaller that does the same thing a normal one does, no matter if its silenced or not.
+		enemy.Is_Outlined = true;
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Boss = 1;
+
+		enemy.Index = NPC_GetByPlugin("npc_signaller");
+		enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
+		enemy.ExtraSpeed = 0.5;
+		enemy.ExtraSize = 3.0; // BIG
+		enemy.Credits += 1.0;
+		enemy.Is_Health_Scaled = 0;
+		strcopy(enemy.CustomName, sizeof(enemy.CustomName), "SIGMALLER");
+
+		count = 1;
+		Sigmaller = false;
+	}
 	else if(AntinelNextWave)
 	{
 		// Spawns an ant-sized Sentinel that has the same health as Stella in freeplay.
@@ -397,8 +459,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		enemy.Index = NPC_GetByPlugin("npc_sentinel");
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.5);
-		enemy.ExtraSpeed = 2.0;
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
+		enemy.ExtraSpeed = 2.5;
 		enemy.ExtraSize = 0.2; // smol
 		enemy.Credits += 1.0;
 		enemy.Is_Health_Scaled = 0;
@@ -608,6 +670,47 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = 30;
 
 	enemy.ExtraSize *= ExtraEnemySize;
+
+	if(RandomStats)
+	{
+		if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare
+		{
+			enemy.Health = RoundToCeil(float(enemy.Health) * GetRandomFloat(0.25, 3.0));
+			enemy.ExtraSize = GetRandomFloat(0.1, 3.0);
+			enemy.Is_Immune_To_Nuke = GetRandomInt(0, 1);
+			enemy.ExtraMeleeRes = GetRandomFloat(0.1, 3.0);
+			enemy.ExtraRangedRes = GetRandomFloat(0.05, 2.0);
+			enemy.ExtraSpeed = GetRandomFloat(0.1, 3.0);
+			enemy.ExtraDamage = GetRandomFloat(0.2, 5.0);
+			enemy.Is_Outlined = 1;
+
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}HAVE AT THEE!!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}FACE THIS!!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}HOW'S THIS FOR A SURPRISE!?");
+				}
+				default:
+				{
+					CPrintToChatAll("{crimson}GET A LOAD OF THIS GUY!!");
+				}
+			}
+
+			RandomStats--;
+		}
+	}
+
+	// 2 billion limit, it is necessary
+	if(enemy.Health > 2000000000)
+		enemy.Health = 2000000000;
 }
 
 bool Freeplay_ShouldMiniBoss()
@@ -666,10 +769,8 @@ void Freeplay_SpawnEnemy(int entity)
 		ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
 	}
 
-	if()
-	{
-
-	}
+	if(merlton)
+		ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 10.0);	
 
 	//// DEBUFFS ////
 
@@ -919,7 +1020,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 77;
+		rand = GetURandomInt() % 79;
 
 	if(wrathofirln)
 	{
@@ -1034,7 +1135,8 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			
+			RandomStats += GetRandomInt(3, 6);
+			CPrintToChatAll("{red}Some enemies may recieve some randomized stats...");
 		}
 
 		if(GetRandomInt(1, 2) > 1)
@@ -1250,7 +1352,7 @@ void Freeplay_SetupStart(bool extra = false)
 			RampartBuff++;
 		}
 
-		switch(GetRandomInt(1, 3))
+		switch(GetRandomInt(1, 5))
 		{
 			case 1:
 			{
@@ -1262,127 +1364,20 @@ void Freeplay_SetupStart(bool extra = false)
 				CPrintToChatAll("{red}III THINK YOU NEED MORE MEN!");
 				moremen = 3;
 			}
+			case 3:
+			{
+				CPrintToChatAll("{red}An ant comes out of this skull, and its approaching to the bloody gate!");
+				AntinelNextWave = true;
+			}
+			case 4:
+			{
+				CPrintToChatAll("{red}I FEEL SO SIGMA!!!!!");
+				Sigmaller = true;
+			}
 			default:
 			{
 				CPrintToChatAll("{purple}Otherworldly beings approach from a dimensional rip...");
 				immutable = true;
-			}
-		}
-
-		RaidFight = GetRandomInt(1, 28);
-		switch(RaidFight)
-		{
-			case 1:
-			{
-				CPrintToChatAll("{yellow}The True Fusion Warrior will appear in the next wave!");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
-			}
-			case 4:
-			{
-				CPrintToChatAll("{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
-			}
-			case 5:
-			{
-				CPrintToChatAll("{blue}Sensal is on his way to arrest you and your team in the next wave!");
-			}
-			case 6:
-			{
-				CPrintToChatAll("{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
-			}
-			case 7:
-			{
-				CPrintToChatAll("{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
-			}
-			case 8:
-			{
-				CPrintToChatAll("{lightblue}The Messenger will deliver you a deadly message next wave.");
-			}
-			case 9:
-			{
-				CPrintToChatAll("{white}????????????? is coming...");
-			}
-			case 10:
-			{
-				CPrintToChatAll("{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
-			}
-			case 11:
-			{
-				CPrintToChatAll("{green}Nemesis has come to spread the xeno infection on the next wave...");
-			}
-			case 12:
-			{
-				CPrintToChatAll("{green}Mr.X {red}has come to spread the xeno infection on the next wave...");
-			}
-			case 13:
-			{
-				CPrintToChatAll("{midnightblue}Corrupted Barney is coming...");
-			}
-			case 14:
-			{
-				CPrintToChatAll("{crimson}Whiteflower, the Traitor, will appear in the next wave.");
-			}
-			case 15:
-			{
-				CPrintToChatAll("{purple}An Unspeakable entity is approaching...");
-			}
-			case 16:
-			{
-				CPrintToChatAll("{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
-			}
-			case 17:
-			{
-				CPrintToChatAll("{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
-			}
-			case 18:
-			{
-				CPrintToChatAll("{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
-			}
-			case 19:
-			{
-				CPrintToChatAll("{community}Agent Thompson will appear in the next wave.");
-			}
-			case 20:
-			{
-				CPrintToChatAll("{forestgreen}The Twins will appear in the next wave.");
-			}
-			case 21:
-			{
-				CPrintToChatAll("{community}Agent Jackson will appear in the next wave.");
-			}
-			case 22:
-			{
-				CPrintToChatAll("{darkgreen}Agent Smith will appear in the next wave.");
-			}
-			case 23:
-			{
-				CPrintToChatAll("{blue}The Atomizer has spotted your team, get ready next wave!");
-			}
-			case 24:
-			{
-				CPrintToChatAll("{lightblue}Huscarls is approaching to erradicate your team next wave!");
-			}
-			case 25:
-			{
-				CPrintToChatAll("{skyblue}Harrison and his fully-loaded arsenal will exterminate you next wave!");
-			}
-			case 26:
-			{
-				CPrintToChatAll("{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
-			}
-			case 27: // JUST YOU AND ME REMAIN
-			{
-				CPrintToChatAll("{red}Lelouch is approaching next wave...");
-			}
-			case 28:
-			{
-				CPrintToChatAll("{gold}Omega is waltzing towards the next wave.");
 			}
 		}
 
@@ -1401,119 +1396,27 @@ void Freeplay_SetupStart(bool extra = false)
 	else if(raidtime)
 	{
 		RaidFight = GetRandomInt(1, 28);
-		switch(RaidFight)
+		CPrintToChatAll("{strange}--==({gold}RAID ROULETTE!!{strange})==--");
+		CPrintToChatAll("{gold}--==({strange}LET THOU FATE BE RANDOMIZED!{gold})==--");
+		CPrintToChatAll("{green}-=({lime}Winning this wave will reward you with 7500 extra credits.{green})=-");
+
+		switch(GetRandomInt(1, 4))
 		{
+			case 1:
+			{
+				CPrintToChatAll("{gold}Koshi{white}: Ooh, this is gonna be {crimson}funny... {white}Now, you'll fight...");
+			}
 			case 2:
 			{
-				strcopy(message, sizeof(message), "{crimson}The Blitzkrieg is ready to cause mayhem in the next wave!");
+				CPrintToChatAll("{gold}Koshi{white}: Aah, perfect! {orange}This was gettin' a little boring. {white}I'll send in...");
 			}
 			case 3:
 			{
-				strcopy(message, sizeof(message), "{yellow}Silvester {white}& {darkblue}Waldch {red}are on their way to stop you on the next wave!");
-			}
-			case 4:
-			{
-				strcopy(message, sizeof(message), "{lightblue}God Alaxios and his army are prepared to fight you in the next wave!");
-			}
-			case 5:
-			{
-				strcopy(message, sizeof(message), "{blue}Sensal is on his way to arrest you and your team in the next wave!");
-			}
-			case 6:
-			{
-				strcopy(message, sizeof(message), "{aqua}Stella {white}and {crimson}Karlas {red}will arrive to render Judgement in the next wave!");
-			}
-			case 7:
-			{
-				strcopy(message, sizeof(message), "{crimson}The Purge has located your team and is ready for annihilation in the next wave.");
-			}
-			case 8:
-			{
-				strcopy(message, sizeof(message), "{lightblue}The Messenger will deliver you a deadly message next wave.");
-			}
-			case 9:
-			{
-				strcopy(message, sizeof(message), "{white}????????????? is coming...");
-			}
-			case 10:
-			{
-				strcopy(message, sizeof(message), "{darkblue}Chaos Kahmlstein is inviting your team to eat FISTS next wave.");
-			}
-			case 11:
-			{
-				strcopy(message, sizeof(message), "{green}Nemesis has come to spread the xeno infection on the next wave...");
-			}
-			case 12:
-			{
-				strcopy(message, sizeof(message), "{green}Mr.X {red}has come to spread the xeno infection on the next wave...");
-			}
-			case 13:
-			{
-				strcopy(message, sizeof(message), "{midnightblue}Corrupted Barney is coming...");
-			}
-			case 14:
-			{
-				strcopy(message, sizeof(message), "{crimson}Whiteflower, the Traitor, will appear in the next wave.");
-			}
-			case 15:
-			{
-				strcopy(message, sizeof(message), "{purple}An Unspeakable entity is approaching...");
-			}
-			case 16:
-			{
-				strcopy(message, sizeof(message), "{purple}Vhxis, the Void Gatekeeper, will appear in the next wave.");
-			}
-			case 17:
-			{
-				strcopy(message, sizeof(message), "{lightblue}Nemal {white}& {yellow}Silvester {red}want to test your strength in the next wave!");
-			}
-			case 18:
-			{
-				strcopy(message, sizeof(message), "{purple}Twirl has heard you're strong, she wants to fight in the next wave!");
-			}
-			case 19:
-			{
-				strcopy(message, sizeof(message), "{community}Agent Thompson will appear in the next wave.");
-			}
-			case 20:
-			{
-				strcopy(message, sizeof(message), "{forestgreen}The Twins will appear in the next wave.");
-			}
-			case 21:
-			{
-				strcopy(message, sizeof(message), "{community}Agent Jackson will appear in the next wave.");
-			}
-			case 22:
-			{
-				strcopy(message, sizeof(message), "{darkgreen}Agent Smith will appear in the next wave.");
-			}
-			case 23:
-			{
-				strcopy(message, sizeof(message), "{blue}The Atomizer has spotted your team, get ready next wave!");
-			}
-			case 24:
-			{
-				strcopy(message, sizeof(message), "{lightblue}Huscarls is approaching to erradicate your team next wave!");
-			}
-			case 25:
-			{
-				strcopy(message, sizeof(message), "{skyblue}Harrison and his fully-loaded arsenal will exterminate you next wave!");
-			}
-			case 26:
-			{
-				strcopy(message, sizeof(message), "{blue}In the Name of Victoria, Castellan won't let you proceed further next wave.");
-			}
-			case 27:
-			{
-				strcopy(message, sizeof(message), "{red}Lelouch is approaching next wave...");
-			}
-			case 28:
-			{
-				strcopy(message, sizeof(message), "{gold}Omega is waltzing towards the next wave.");
+				CPrintToChatAll("{gold}Koshi{white}: Todaaaay's punching bag will be.... {crimson}hehe...");
 			}
 			default:
 			{
-				strcopy(message, sizeof(message), "{yellow}The True Fusion Warrior will appear in the next wave!");
+				CPrintToChatAll("{gold}Koshi{white}: Here's a trade offer! I recieve {orange}a piece of cheese{white} from your findings, and you recieve...");
 			}
 		}
 	}
@@ -1688,7 +1591,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 19:
 			{
-				
+				RandomStats += 2;
+				strcopy(message, sizeof(message), "{red}Some enemies may recieve some randomized stats...");
 			}
 	
 			/// CREDIT SKULLS //
@@ -2284,6 +2188,29 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{lime}Its time for the {orange}Spotter {lime}to take action!");
 				spotter = 1;
 			}
+			case 77:
+			{
+				if(merlton)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Merlton buff.");
+					merlton = false;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Merlton buff for 10 seconds!");
+					merlton = true;
+				}
+			}
+			case 78:
+			{
+				if(Sigmaller)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}This skull... it.. it FEELS SO SIGMA!!!!!");
+				Sigmaller = true;
+			}
 			default:
 			{
 				strcopy(message, sizeof(message), "{yellow}Nothing!");
@@ -2293,13 +2220,6 @@ void Freeplay_SetupStart(bool extra = false)
 
 		RerollTry = 0;
 		CPrintToChatAll("{orange}New Skull{default}: %s", message);
-
-		if(RaidFight && !IsRaidWave)
-		{
-			IsRaidWave = true;
-			CPrintToChatAll("{green}Winning this wave will reward you with 6500 extra credits.");
-			EmitSoundToAll("mvm/mvm_used_powerup.wav", _, _, _, _, 0.67);
-		}
 
 		if(ExplodingNPC && !IsExplodeWave)
 		{
