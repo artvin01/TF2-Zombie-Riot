@@ -615,9 +615,10 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
-	if(CheckInHud() != 2 && GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(attacker))
+	if(GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(attacker))
 	{
-		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
+		if(!CheckInHud() || CheckInHud() == 2)
+			damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
 	}
 #endif
 	return false;

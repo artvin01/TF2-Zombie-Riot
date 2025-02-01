@@ -90,6 +90,10 @@ void ConVar_PluginStart()
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
 	CvarFileNetworkDisable = CreateConVar("zr_filenetwork_disable", "0", "0 means as intended, 1 means fast download sounds (itll download any waves present instnatly), 2 means download MVM style matreials too");
+
+	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
+	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);
+	HookConVarChange(zr_tagwhitehard, StoreCvarChanged);
 #else
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
@@ -217,3 +221,12 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 		}
 	}
 }
+
+
+public void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	//update store if these are updated.
+	Items_SetupConfig();
+	Store_ConfigSetup();
+}
+
