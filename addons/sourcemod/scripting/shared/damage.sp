@@ -248,6 +248,14 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					if(f_Armor_BreakSoundDelay[victim] < GetGameTime())
 					{
 						f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
+						if(IsValidEntity(Victim_weapon))
+						{
+							//Give riotshield speedbonus in shield break
+							if(i_CustomWeaponEquipLogic[Victim_weapon] == WEAPON_RIOT_SHIELD)
+							{
+								TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 1.5);
+							}
+						}
 						EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
 						//\sound\npc\assassin\ball_zap1.wav
 					}
@@ -695,8 +703,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RIOT_SHIELD:
 		{
-			if(!CheckInHud())
-				return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
+			return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
 		case WEAPON_MLYNAR: // weapon_ark
 		{
@@ -755,12 +762,14 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				WeaponRedBlade_OnTakeDamage(attacker, victim, damage);
 		}
+		/*
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				if(!CheckInHud())
 					return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
+		*/
 		case WEAPON_MERCHANT:
 		{
 			if(!CheckInHud())

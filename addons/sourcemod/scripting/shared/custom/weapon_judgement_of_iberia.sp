@@ -23,7 +23,6 @@
 Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
-int i_NextAttackDoubleHit[MAXENTITIES];
 static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
 static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
 static float f_TargetAirtime[MAXENTITIES];

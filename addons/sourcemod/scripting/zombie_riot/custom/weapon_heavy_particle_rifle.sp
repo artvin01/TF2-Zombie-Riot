@@ -125,7 +125,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 	Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_HEAVY_PARTICLE_RIFLE, weapon, "unusual_genplasmos_b_parent", angles);
 
 }
-
+/*
 public float Player_OnTakeDamage_Heavy_Particle_Rifle(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
 	// need position of either the inflictor or the attacker
@@ -186,7 +186,7 @@ public float Player_OnTakeDamage_Heavy_Particle_Rifle(int victim, float &damage,
 	}
 	return damage;
 }
-
+*/
 public void Weapon_Heavy_Particle_Rifle(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
