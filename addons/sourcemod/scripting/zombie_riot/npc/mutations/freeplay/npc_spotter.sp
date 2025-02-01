@@ -1,31 +1,5 @@
 // HEAVILY INTENDED AS A RED-SUPPORT ALLY DO NOT USE ON BLU PLEEAAASE
 
-/*
-    Spotter - A support voidspeaker hired by Bob the Second, tasked to support the Worthy in freeplay.
-
-    Melee Damage: 75000 base.
-    Attack Delay: 2.5s
-    Melee Effects:
-    - Silences the target for 3s
-    - Grants Spotter the Void Strength II buff for 1 second.
-    - Knocks the target away.
-    - Charges Spotter's Ally Buff by 1.
-
-    Spotter's Ally Buff:
-    Buffs all allied NPCS and Players in the map. Takes 30 hits to charge, and can be reused.
-    When activated, grants the following:
-
-    NPCS:
-    - Void Strength II for 15s
-    - 750HP instant heal
-    - Spotter's Rally for 15s
-
-    Players:
-    - Speedboost for 1.5s
-    - Battalion's Backup for 2.5s
-    - Spotter's Rally for 7.5s
-*/
-
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -178,44 +152,52 @@ methodmap Spotter < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-        npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec24_snug_sharpshooter/dec24_snug_sharpshooter.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec24_snug_sharpshooter/dec24_snug_sharpshooter.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/hwn2022_headhunters_brim/hwn2022_headhunters_brim.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/invasion_final_frontiersman/invasion_final_frontiersman.mdl");
-        npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
 
-        SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-        SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
     
-        SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 75, 0, 145);
-        SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 75, 0, 145);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 135, 0);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 135, 0);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 75, 0, 145);
-        SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 75, 0, 145);
-        SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 75, 0, 145);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 135, 0);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 135, 0);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 255, 135, 0);
 
 
-        switch(GetRandomInt(1, 3))
-	    {
-		    case 1:
-		    {
-		    	CPrintToChatAll("{orange}Spotter: {white}Aaaalright Bob, lets see what you put me into...");
-		    }
-		    case 2:
-		    {
-		    	CPrintToChatAll("{orange}Spotter: {white}Well heello there, hope you have space in here for a lil' bit of the {purple}void...");
-		    }
-		    default:
-		    {
-		    	CPrintToChatAll("{orange}Spotter: {white}Im hoping that little {lightblue}Ant {white}Bob told me about shows up now.");
-		    }
-	    }
+	        switch(GetRandomInt(1, 5))
+		{
+			case 1:
+			{
+			    	CPrintToChatAll("{orange}Spotter: {white}Aaaalright Bob, lets see what you put me into...");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{orange}Spotter: {white}Well heello there, hope you have space in here for me.");
+			}
+			case 3:
+			{
+			    	CPrintToChatAll("{orange}Spotter: {white}I'd say its time to end this, but this is different...");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{orange}Spotter: {white}Apparently Bob told me he saw some sort of ''titan soldier'' that calls himself a sigma.");
+				CPrintToChatAll("{orange}Spotter: {white}Quite {strange}strange{white}, to be honest.");
+			}
+			default:
+			{
+			    	CPrintToChatAll("{orange}Spotter: {white}Im hoping that little {lightblue}Ant {white}Bob told me about shows up now.");
+			}
+		}
 
 		return npc;
 	}
@@ -267,7 +249,7 @@ public void Spotter_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-    if(npc.m_blPlayHurtAnimation)
+	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
@@ -376,8 +358,9 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 					float damageDealt = 75000.0;
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					ApplyStatusEffect(npc.index, target, "Silenced", 3.0);
-					Custom_Knockback(npc.index, target, 500.0, true); 
+					ApplyStatusEffect(npc.index, target, "Silenced", 4.0);
+					Custom_Knockback(npc.index, target, 500.0, true);
+					HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
 					
 					npc.m_iAttacksTillReload++;
 					if(npc.m_iAttacksTillReload >= 25)
@@ -446,7 +429,7 @@ void SpotterAllyBuff(Spotter npc)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{orange}Spotter: {purple}VOID, {gold}GIVE US YOUR BLESSING!!");
+			CPrintToChatAll("{orange}Spotter: {purple}PUSH ON FURTHER!!!!");
 		}
 		case 2:
 		{
