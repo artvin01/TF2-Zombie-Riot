@@ -68,7 +68,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Spotter(vecPos, vecAng, team);
 }
 
-static Action SpotterFollower_SpeechTimer(Handle timer, DataPack pack)
+static Action Spotter_SpeechTimer(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
