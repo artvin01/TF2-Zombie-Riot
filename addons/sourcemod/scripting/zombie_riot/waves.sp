@@ -3535,8 +3535,8 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			else
 			*/
 			{
-				float time = Freeplay_SetupStart(true);
-
+				Freeplay_SetupStart(true);
+				float time = Freeplay_SetupValues();
 				Cooldown = GetGameTime() + time;
 				
 				InSetup = true;
