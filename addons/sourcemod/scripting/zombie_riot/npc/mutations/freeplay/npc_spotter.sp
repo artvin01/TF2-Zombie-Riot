@@ -429,7 +429,7 @@ void SpotterAllyBuff(Spotter npc)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{orange}Spotter: {purple}PUSH ON FURTHER!!!!");
+			CPrintToChatAll("{orange}Spotter: {gold}PUSH ON FURTHER!!!!");
 		}
 		case 2:
 		{
