@@ -1014,10 +1014,19 @@ public void Map_BaseBoss_Damage_Post(int victim, int attacker, int inflictor, fl
 		ShowSyncHudText(attacker, SyncHud, "%d", Health);
 	}
 }
-
 float Damageaftercalc = 0.0;
 public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(i_IsNpcType[victim] == 1)
+	{
+		//Dont allow crush from these wierd npcs.
+		if((damagetype & DMG_CRUSH))
+		{
+			damage = 0.0;
+			return Plugin_Handled;
+		}
+	}
+
 	float GameTime = GetGameTime();
 	if(!CheckInHud())
 	{
@@ -1170,6 +1179,11 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	//LogEntryInvicibleTest(victim, attacker, damage, 26);
 #endif
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(i_IsNpcType[victim] == 1)
+	{
+		health -= RoundToNearest(damage);
+		SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	}
 #if defined ZR
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #else

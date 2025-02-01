@@ -983,9 +983,7 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 	
 	if (hit && IsValidEntity(entity))
 	{
-		char entname[255];
-		GetEntityClassname(entity, entname, 255);
-		hit = StrContains(entname, "zr_base_npc") == -1;
+		hit = b_ThisWasAnNpc[entity];
 	}
 	
 	return hit;

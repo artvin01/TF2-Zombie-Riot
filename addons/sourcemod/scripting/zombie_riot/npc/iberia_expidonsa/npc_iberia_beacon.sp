@@ -71,7 +71,7 @@ methodmap IberiaBeacon < CClotBody
 
 	public IberiaBeacon(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaBeacon npc = view_as<IberiaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.15", GetBuildingHealth(), ally));
+		IberiaBeacon npc = view_as<IberiaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.15", GetBuildingHealth(), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -101,7 +101,6 @@ methodmap IberiaBeacon < CClotBody
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
 
 		//counts as a static npc, means it wont count towards NPC limit.
 		AddNpcToAliveList(npc.index, 1);
@@ -120,6 +119,7 @@ public void IberiaBeacon_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
 
 	if(npc.m_blPlayHurtAnimation)
 	{

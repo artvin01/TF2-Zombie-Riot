@@ -358,11 +358,20 @@ methodmap CClotBody < CBaseCombatCharacter
 						bool IsRaidBoss = false,
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
 						bool Ally_Collideeachother = false,
-						const float CustomThreeDimensionsextra[3] = {0.0,0.0,0.0})
+						const float CustomThreeDimensionsextra[3] = {0.0,0.0,0.0},
+						int NpcTypeLogic = 0)
 #endif
 	{
 
-		int npc = CreateEntityByName("zr_base_npc");
+		int npc;
+		switch(NpcTypeLogic)
+		{
+			case 0:
+				npc = CreateEntityByName("zr_base_npc");
+			case 1:
+				npc = CreateEntityByName("zr_base_stationary");
+		}
+		
 		CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
@@ -378,6 +387,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValue(npc, "disableshadowdepth", "1");
 		DispatchKeyValue(npc, "disableselfshadowing", "1");  
 		*/
+		i_IsNpcType[npc] = NpcTypeLogic;
 
 #if defined ZR
 		if(Ally == TFTeam_Red)
@@ -417,7 +427,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #endif
-		AddEntityToLagCompList(npc);
+		if(NpcTypeLogic != 1) //No need for lagcomp on things that dont even move.
+			AddEntityToLagCompList(npc);
 
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc][0] = 0;
@@ -428,45 +439,55 @@ methodmap CClotBody < CBaseCombatCharacter
 		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 		SDKHook(npc, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
-		SetEntProp(npc, Prop_Send, "m_bGlowEnabled", false);
-		SetEntityMoveType(npc, MOVETYPE_CUSTOM);
+
+		if(NpcTypeLogic != 1)
+		{
+			SetEntProp(npc, Prop_Send, "m_bGlowEnabled", false);
+			SetEntityMoveType(npc, MOVETYPE_CUSTOM);
+		}
+		else
+		{
+			SetEntProp(npc, Prop_Data, "m_iHealth", StringToInt(health));
+			SetEntProp(npc, Prop_Data, "m_iMaxHealth", StringToInt(health));
+		}
 
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
 	
-		//FIX: This fixes lookup activity not working.
-		npcstats.StartActivity(0);
-		npcstats.SetSequence(0);
-		npcstats.SetPlaybackRate(1.0);
-		npcstats.SetCycle(0.0);
-		npcstats.ResetSequenceInfo();
 		//FIX: This fixes lookup activity not working.
 
 #if defined RPG
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMinDist", 1600.0);
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMaxDist", 2000.0);
 #endif
-
-		baseNPC.flStepSize = 17.0;
-		baseNPC.flGravity = 800.0; //SEE Npc Base Think Function to change it.
-		baseNPC.flAcceleration = 6000.0;
-		baseNPC.flJumpHeight = 250.0;
-		//baseNPC.flRunSpeed = 300.0; //SEE Update Logic.
-		baseNPC.flFrictionSideways = 5.0;
-		baseNPC.flMaxYawRate = NPC_DEFAULT_YAWRATE;
-		baseNPC.flDeathDropHeight = 999999.0;
-
-#if defined ZR
-		if(Ally != TFTeam_Red && VIPBuilding_Active())
+		if(NpcTypeLogic != 1)
 		{
-			baseNPC.flAcceleration = 9000.0;
-			baseNPC.flFrictionSideways = 7.0;
-		}
+			//FIX: This fixes lookup activity not working.
+			npcstats.StartActivity(0);
+			npcstats.SetSequence(0);
+			npcstats.SetPlaybackRate(1.0);
+			npcstats.SetCycle(0.0);
+			npcstats.ResetSequenceInfo();
+			//FIX: This fixes lookup activity not working.
+
+			baseNPC.flStepSize = 17.0;
+			baseNPC.flGravity = 800.0; //SEE Npc Base Think Function to change it.
+			baseNPC.flAcceleration = 6000.0;
+			baseNPC.flJumpHeight = 250.0;
+			//baseNPC.flRunSpeed = 300.0; //SEE Update Logic.
+			baseNPC.flFrictionSideways = 5.0;
+			baseNPC.flMaxYawRate = NPC_DEFAULT_YAWRATE;
+			baseNPC.flDeathDropHeight = 999999.0;
+#if defined ZR
+			if(Ally != TFTeam_Red && VIPBuilding_Active())
+			{
+				baseNPC.flAcceleration = 9000.0;
+				baseNPC.flFrictionSideways = 7.0;
+			}
 #endif
 
-		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
-
-		SetEntProp(npc, Prop_Data, "m_bSequenceLoops", true);
+			SetEntProp(npc, Prop_Data, "m_bSequenceLoops", true);
+		}
 		//potentially newly added ? or might not get set ?
 		//Just set it to true at all times.
 
@@ -482,18 +503,26 @@ methodmap CClotBody < CBaseCombatCharacter
 		AddNpcToAliveList(npc, 0);
 #endif
 			
-		locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
-		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
-		view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
+		if(NpcTypeLogic != 1)
+		{
+			CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
+			locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
+			locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
+			view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
+			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
+			SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
+		}
+		if(NpcTypeLogic == 1)
+		{
+			//These npcs cant be moved or slowed, so this should be indicated!
+			ApplyStatusEffect(npc, npc, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc, npc, "Fluid Movement", 999999.0);	
+		}
 		
-		h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 
 		SetEntityFlags(npc, FL_NPC);
 		
-		SetEntProp(npc, Prop_Data, "m_nSolidType", 2); 
-
-		//Don't bleed.
-		SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
+		SetEntProp(npc, Prop_Data, "m_nSolidType", 2);
 		
 		b_BoundingBoxVariant[npc] = 0; //This will tell lag compensation what to revert to once the calculations are done.
 		static float m_vecMaxs[3];
@@ -554,8 +583,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		f3_AvoidOverrideMax[npc] = m_vecMaxs_Body;
 		f3_AvoidOverrideMinNorm[npc] = m_vecMins;
 		f3_AvoidOverrideMaxNorm[npc] = m_vecMaxs;
-		baseNPC.SetBodyMaxs(m_vecMaxs);
-		baseNPC.SetBodyMins(m_vecMins);
+		if(NpcTypeLogic != 1)
+		{
+			baseNPC.SetBodyMaxs(m_vecMaxs);
+			baseNPC.SetBodyMins(m_vecMins);
+		}
 		SetEntPropVector(npc, Prop_Data, "m_vecMaxs", m_vecMaxs);
 		SetEntPropVector(npc, Prop_Data, "m_vecMins", m_vecMins);
 		
@@ -583,7 +615,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		SDKHook(npc, SDKHook_Think, NpcBaseThink);
 		SDKHook(npc, SDKHook_ThinkPost, NpcBaseThinkPost);
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
-		
 		b_ThisWasAnNpc[npc] = true;
 
 #if defined ZR
@@ -592,10 +623,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	RemoveAllDamageAddition();
 		}
 #endif
-	
+		//Think once.
+		if(NpcTypeLogic == 1)
+		{
+			CBaseCombatCharacter(npc).SetNextThink(GetGameTime());
+			NpcBaseThink(npc);
+		}
+
 		return view_as<CClotBody>(npc);
 	}
-		property int index 
+	property int index 
 	{ 
 		public get() { return view_as<int>(this); } 
 	}
@@ -1390,6 +1427,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public float GetDebuffPercentage()//For the future incase we want to alter it easier
 	{
+		//Buildings dont have speed...
+		if(i_IsNpcType[this.index] == 1)
+		{
+			return 1.0;
+		}
 		float speed_for_return = 1.0;
 		float Gametime = GetGameTime();
 		float GametimeNpc = GetGameTime(this.index);
@@ -1451,6 +1493,10 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
+		if(i_IsNpcType[this.index] == 1)
+		{
+			return 1.0;
+		}
 #if defined ZR
 		if(i_npcspawnprotection[this.index] == 1)
 		{
@@ -1958,6 +2004,10 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public bool IsOnGround()
 	{
+		if(i_IsNpcType[this.index] == 1)
+		{
+			return true;
+		}
 		return this.GetLocomotionInterface().IsOnGround();
 	}
 	public void AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true, float SetGestureSpeed = 1.0)
@@ -2126,9 +2176,9 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
 #if defined RTS
-		if(IsObject(target) || i_IsABuilding[target] || b_IsVehicle[target])
+		if(IsObject(target) || i_IsABuilding[target] || b_IsVehicle[target] || i_IsNpcType[target] == 1)
 #else
-		if(i_IsABuilding[target] || b_IsVehicle[target])
+		if(i_IsABuilding[target] || b_IsVehicle[target] || i_IsNpcType[target] == 1)
 #endif
 		{
 			//broken on targetting buildings...?
@@ -2205,7 +2255,9 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 		
 	public float GetMaxJumpHeight()	{ return this.GetLocomotionInterface().GetMaxJumpHeight(); }
-	public float GetGroundSpeed()	{ return this.GetLocomotionInterface().GetGroundSpeed(); }
+	public float GetGroundSpeed()	{
+		 return this.GetLocomotionInterface().GetGroundSpeed(); 
+		 }
 	public int SelectWeightedSequence(any activity) { return view_as<CBaseAnimating>(view_as<int>(this)).SelectWeightedSequence(activity); }
 	
 	public bool GetAttachment(const char[] szName, float absOrigin[3], float absAngles[3]) { return view_as<CBaseAnimating>(view_as<int>(this)).GetAttachment(view_as<CBaseAnimating>(view_as<int>(this)).LookupAttachment(szName), absOrigin, absAngles); }
@@ -2214,6 +2266,9 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void GetVelocity(float vecOut[3])											   { this.GetLocomotionInterface().GetVelocity(vecOut);						   }	
 	public void SetVelocity(const float vec[3])	
 	{
+		if(i_IsNpcType[this.index] == 1)
+			return;
+		//dont do anything.
 		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 		locomotion.SetVelocity(vec);							  
@@ -2881,40 +2936,42 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void Update()
 	{
-		if (this.m_iPoseMoveX < 0) {
-			this.m_iPoseMoveX = this.LookupPoseParameter("move_x");
+		float flNextBotGroundSpeed;
+		if(i_IsNpcType[this.index] != 1)
+		{
+			if (this.m_iPoseMoveX < 0) {
+				this.m_iPoseMoveX = this.LookupPoseParameter("move_x");
+			}
+			if (this.m_iPoseMoveY < 0) {
+				this.m_iPoseMoveY = this.LookupPoseParameter("move_y");
+			}
+		
+			flNextBotGroundSpeed = this.GetGroundSpeed();
+			
+			if (flNextBotGroundSpeed < 0.01) {
+				if (this.m_iPoseMoveX >= 0) {
+					this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
+				}
+				if (this.m_iPoseMoveY >= 0) {
+					this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
+				}
+			} else {
+				float vecFwd[3], vecRight[3], vecUp[3];
+				this.GetVectors(vecFwd, vecRight, vecUp);
+				
+				float vecMotion[3]; this.GetGroundMotionVector(vecMotion);
+				
+				if (this.m_iPoseMoveX >= 0) {
+					this.SetPoseParameter(this.m_iPoseMoveX, GetVectorDotProduct(vecMotion, vecFwd));
+				}
+				if (this.m_iPoseMoveY >= 0) {
+					this.SetPoseParameter(this.m_iPoseMoveY, GetVectorDotProduct(vecMotion, vecRight));
+				}
+				
+			}		
+			this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
+			this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
 		}
-		if (this.m_iPoseMoveY < 0) {
-			this.m_iPoseMoveY = this.LookupPoseParameter("move_y");
-		}
-		
-		float flNextBotGroundSpeed = this.GetGroundSpeed();
-		
-		if (flNextBotGroundSpeed < 0.01) {
-			if (this.m_iPoseMoveX >= 0) {
-				this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
-			}
-			if (this.m_iPoseMoveY >= 0) {
-				this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
-			}
-		} else {
-			float vecFwd[3], vecRight[3], vecUp[3];
-			this.GetVectors(vecFwd, vecRight, vecUp);
-			
-			float vecMotion[3]; this.GetGroundMotionVector(vecMotion);
-			
-			if (this.m_iPoseMoveX >= 0) {
-				this.SetPoseParameter(this.m_iPoseMoveX, GetVectorDotProduct(vecMotion, vecFwd));
-			}
-			if (this.m_iPoseMoveY >= 0) {
-				this.SetPoseParameter(this.m_iPoseMoveY, GetVectorDotProduct(vecMotion, vecRight));
-			}
-			
-		}		
-		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
-		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
-		
-
 
 		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
 		{
@@ -2932,7 +2989,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			f_TimeFrozenStill[this.index] = 0.0;
 		}
 		
-		if(this.m_bisWalking) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
+		if(this.m_bisWalking && i_IsNpcType[this.index] != 1) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
 		{
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
 			if(m_flGroundSpeed != 0.0)
@@ -2957,131 +3014,133 @@ methodmap CClotBody < CBaseCombatCharacter
 	//	this.DispatchAnimEvents();
 		
 		//Run and StuckMonitor
-		if(this.m_flNextRunTime < GetGameTime())
+		if(i_IsNpcType[this.index] != 1)
 		{
-			this.m_flNextRunTime = GetGameTime() + 0.15; //Only update every 0.1 seconds, we really dont need more, 
-			this.GetLocomotionInterface().Run();
-		}
-		if(this.m_bAllowBackWalking)
-		{
-			this.GetBaseNPC().flMaxYawRate = 0.0;
-		}
-		else
-		{
-			this.GetBaseNPC().flMaxYawRate = (NPC_DEFAULT_YAWRATE * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]);
-		}
-
-		if(f_AvoidObstacleNavTime[this.index] < GetGameTime()) //add abit of delay for optimisation
-		{
-			CNavArea areaNavget;
-			CNavArea areaNavget2;
-			Segment segment;
-			Segment segment2;
-			segment = this.GetPathFollower().FirstSegment();
-			if(segment != NULL_PATH_SEGMENT)
+			if(this.m_flNextRunTime < GetGameTime())
 			{
-				segment2 = this.GetPathFollower().NextSegment(segment);
-				segment2 = this.GetPathFollower().NextSegment(segment2);
+				this.m_flNextRunTime = GetGameTime() + 0.15; //Only update every 0.1 seconds, we really dont need more, 
+				this.GetLocomotionInterface().Run();
+			}
+			if(this.m_bAllowBackWalking)
+			{
+				this.GetBaseNPC().flMaxYawRate = 0.0;
+			}
+			else
+			{
+				this.GetBaseNPC().flMaxYawRate = (NPC_DEFAULT_YAWRATE * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]);
 			}
 
-			if(segment != NULL_PATH_SEGMENT && segment2 != NULL_PATH_SEGMENT)
+			if(f_AvoidObstacleNavTime[this.index] < GetGameTime()) //add abit of delay for optimisation
 			{
-				areaNavget = segment.area;
-				areaNavget2 = segment2.area;
-			}
-
-			b_AvoidObstacleType[this.index] = false;
-			
-			if(areaNavget != NULL_AREA && areaNavget2 != NULL_AREA)
-			{
-				int NavAttribs = areaNavget.GetAttributes();
-				int NavAttribs2 = areaNavget2.GetAttributes();
-				if(NavAttribs & NAV_MESH_WALK || NavAttribs2 & NAV_MESH_WALK)
+				CNavArea areaNavget;
+				CNavArea areaNavget2;
+				Segment segment;
+				Segment segment2;
+				segment = this.GetPathFollower().FirstSegment();
+				if(segment != NULL_PATH_SEGMENT)
 				{
-					b_AvoidObstacleType[this.index] = true;
+					segment2 = this.GetPathFollower().NextSegment(segment);
+					segment2 = this.GetPathFollower().NextSegment(segment2);
 				}
-				if(NavAttribs & NAV_MESH_JUMP && NavAttribs2 & NAV_MESH_JUMP)
+
+				if(segment != NULL_PATH_SEGMENT && segment2 != NULL_PATH_SEGMENT)
 				{
-					//They are in some position where we need to jump, lets jump.
-					if(this.m_flJumpStartTimeInternal < GetGameTime())
+					areaNavget = segment.area;
+					areaNavget2 = segment2.area;
+				}
+
+				b_AvoidObstacleType[this.index] = false;
+				
+				if(areaNavget != NULL_AREA && areaNavget2 != NULL_AREA)
+				{
+					int NavAttribs = areaNavget.GetAttributes();
+					int NavAttribs2 = areaNavget2.GetAttributes();
+					if(NavAttribs & NAV_MESH_WALK || NavAttribs2 & NAV_MESH_WALK)
 					{
-						this.m_flJumpStartTimeInternal = GetGameTime() + 2.0;
-						float VecPos[3];
-						areaNavget2.GetCenter(VecPos);
-						PluginBot_Jump(this.index,VecPos);
+						b_AvoidObstacleType[this.index] = true;
+					}
+					if(NavAttribs & NAV_MESH_JUMP && NavAttribs2 & NAV_MESH_JUMP)
+					{
+						//They are in some position where we need to jump, lets jump.
+						if(this.m_flJumpStartTimeInternal < GetGameTime())
+						{
+							this.m_flJumpStartTimeInternal = GetGameTime() + 2.0;
+							float VecPos[3];
+							areaNavget2.GetCenter(VecPos);
+							PluginBot_Jump(this.index,VecPos);
+						}
 					}
 				}
+				f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
 			}
-			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
-		}
 
-		//increace the size of the avoid box by 2x
+			//increace the size of the avoid box by 2x
 
-		int IgnoreObstacles = 0;
+			int IgnoreObstacles = 0;
 
-		if(b_AvoidObstacleType_Time[this.index] > GetGameTime())
-			IgnoreObstacles = 1;
+			if(b_AvoidObstacleType_Time[this.index] > GetGameTime())
+				IgnoreObstacles = 1;
 
-		if(b_AvoidObstacleType[this.index])
-			IgnoreObstacles = 2;
-#if defined ZR
-		if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
-			IgnoreObstacles = 2;
-#endif
-		if(IgnoreObstacles == 0)
-		{
-			float ModelSize = GetEntPropFloat(this.index, Prop_Send, "m_flModelScale");
-			//avoid obstacle code scales with modelsize, we dont want that.
-			float f3_AvoidModifMax[3];
-			float f3_AvoidModifMin[3];
-
-			for(int axis; axis < 3; axis++)
+			if(b_AvoidObstacleType[this.index])
+				IgnoreObstacles = 2;
+	#if defined ZR
+			if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+				IgnoreObstacles = 2;
+	#endif
+			if(IgnoreObstacles == 0)
 			{
-				f3_AvoidModifMax[axis] = f3_AvoidOverrideMax[this.index][axis];
-				f3_AvoidModifMin[axis] = f3_AvoidOverrideMin[this.index][axis];
-				f3_AvoidModifMax[axis] /= ModelSize;
-				f3_AvoidModifMin[axis] /= ModelSize;
-				if(this.m_bIsGiant) //giants need abit more space.
+				float ModelSize = GetEntPropFloat(this.index, Prop_Send, "m_flModelScale");
+				//avoid obstacle code scales with modelsize, we dont want that.
+				float f3_AvoidModifMax[3];
+				float f3_AvoidModifMin[3];
+
+				for(int axis; axis < 3; axis++)
 				{
-					f3_AvoidModifMax[axis] *= 1.35;
-					f3_AvoidModifMin[axis] *= 1.35;
+					f3_AvoidModifMax[axis] = f3_AvoidOverrideMax[this.index][axis];
+					f3_AvoidModifMin[axis] = f3_AvoidOverrideMin[this.index][axis];
+					f3_AvoidModifMax[axis] /= ModelSize;
+					f3_AvoidModifMin[axis] /= ModelSize;
+					if(this.m_bIsGiant) //giants need abit more space.
+					{
+						f3_AvoidModifMax[axis] *= 1.35;
+						f3_AvoidModifMin[axis] *= 1.35;
+					}
+				}
+				this.GetBaseNPC().SetBodyMaxs(f3_AvoidModifMax);
+				this.GetBaseNPC().SetBodyMins(f3_AvoidModifMin);	
+			}
+			else
+			{
+				if(IgnoreObstacles == 2)
+				{
+					//was in obstacle avoid before, reuse.
+					//some stairs really dont like navs, so they think they are on no nav and then try to avoid stairs, oof!
+					//this is a good solution, if any stairs are bigger
+
+					//unused.
+					b_AvoidObstacleType_Time[this.index] = GetGameTime() + 0.0;
+				}
+				//if in tower defense, never avoid.
+				this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
+				this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
+			}
+	#if defined ZR
+			if(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red)
+			{
+				if(f_UnstuckSuckMonitor[this.index] < GetGameTime())
+				{
+					this.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
+					f_UnstuckSuckMonitor[this.index] = GetGameTime() + 1.0;
 				}
 			}
-			this.GetBaseNPC().SetBodyMaxs(f3_AvoidModifMax);
-			this.GetBaseNPC().SetBodyMins(f3_AvoidModifMin);	
-		}
-		else
-		{
-			if(IgnoreObstacles == 2)
-			{
-				//was in obstacle avoid before, reuse.
-				//some stairs really dont like navs, so they think they are on no nav and then try to avoid stairs, oof!
-				//this is a good solution, if any stairs are bigger
+	#endif
 
-				//unused.
-				b_AvoidObstacleType_Time[this.index] = GetGameTime() + 0.0;
-			}
-			//if in tower defense, never avoid.
-			this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
-			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
-		}
-#if defined ZR
-		if(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red)
-		{
-			if(f_UnstuckSuckMonitor[this.index] < GetGameTime())
-			{
-				this.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
-				f_UnstuckSuckMonitor[this.index] = GetGameTime() + 1.0;
-			}
-		}
-#endif
+			if(this.m_bPathing)
+				this.GetPathFollower().Update(this.GetBot());	
 
-		if(this.m_bPathing)
-			this.GetPathFollower().Update(this.GetBot());	
-
-		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
-		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
-		
+			this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
+			this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
+		}
 	}
 
 	 	
@@ -3188,16 +3247,15 @@ public void NPC_Base_InitGamedata()
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
-	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+	
+	//Potentially uses less logic?
+	CEntityFactory EntityFactory_Building = new CEntityFactory("zr_base_stationary", OnCreate_Stationary, OnDestroy_Stationary);
+	EntityFactory_Building.DeriveFromClass("prop_dynamic_override");
+	EntityFactory_Building.BeginDataMapDesc()
+	.EndDataMapDesc(); 
+	EntityFactory_Building.Install();
 }
 
-/*
-	GetTeam(i) != TFTeam_Red
-	GetTeam(ally) == TFTeam_Red
-	This is just here for me to quickly copypaste
-	incase i forget to delete
-	delete it for me
-*/
 static void OnCreate(CClotBody body)
 {
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
@@ -3206,6 +3264,18 @@ static void OnCreate(CClotBody body)
 		if(!IsValidEntity(entity))
 		{
 			body.SetProp(Prop_Data, "zr_pPath", view_as<int>(g_NpcPathFollower[entitycount]));
+			i_ObjectsNpcsTotal[entitycount] = EntIndexToEntRef(body.index);
+			break;
+		}
+	}
+}
+static void OnCreate_Stationary(CClotBody body)
+{
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		if(!IsValidEntity(entity))
+		{
 			i_ObjectsNpcsTotal[entitycount] = EntIndexToEntRef(body.index);
 			break;
 		}
@@ -3244,13 +3314,21 @@ void RemoveNpcFromZombiesLeftCounter(int entity)
 	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
 }
 #endif
+static void OnDestroy_Stationary(CClotBody body)
+{
+	OnDestroy_Global(body, 1);
+}
 static void OnDestroy(CClotBody body)
+{
+	OnDestroy_Global(body, 0);
+}
+static void OnDestroy_Global(CClotBody body, int Type)
 {
 	RemoveFromNpcAliveList(body.index);
 #if defined ZR
 		RemoveNpcFromZombiesLeftCounter(body.index);
 #endif
-	if(!b_NpcHasDied[body.index])
+	if(!b_NpcHasDied[body.index] && Type == 0)
 	{
 		RemoveFromNpcPathList(body);
 	}
@@ -3322,7 +3400,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	RemoveFromNpcAliveList(pThis);
 	if(!b_NpcHasDied[pThis])
 	{
-
 		//we push back the entity in time to when lag comp happend, so gibs actually make sense.
 		FinishLagCompensation_Base_boss(pThis);
 		int client;
@@ -3357,7 +3434,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_TraceAttack, NPC_TraceAttack);
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
-
 #if defined ZR || defined RPG
 		if(client > 0)
 		{
@@ -3456,6 +3532,13 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		RemoveNpcFromEnemyList(pThis, true);
 		b_StaticNPC[pThis] = false;
 
+		//If its a building type, force vanish.
+		if(i_IsNpcType[pThis] == 1)
+		{
+			npc.m_bDissapearOnDeath = true;
+			//Need extra, baseboss is very special.
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
+		}
 		if(!npc.m_bDissapearOnDeath)
 		{
 			if((b_OnDeathExtraLogicNpc[pThis] & ZRNPC_DEATH_NOGIB) || !npc.m_bGib)
@@ -5732,7 +5815,7 @@ public void NpcBaseThink(int iNPC)
 //	npc.FaceTowards(FakeRotationFix, 1.0);
 	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
 	//tempfix didnt work
-	if(!TheNPCs.IsValidNPC(npc.GetBaseNPC()))
+	if(i_IsNpcType[npc.index] == 0 && !TheNPCs.IsValidNPC(npc.GetBaseNPC()))
 	{
 		//delete, somehow they arent valid!
 		LogStackTrace("Somehow i was an invalid npc, look into me, my name was: %s, and i was in this dead state: %b, and i was i even an npcs : %b.",c_NpcName[iNPC], b_NpcHasDied[iNPC], b_ThisWasAnNpc[iNPC]);
@@ -5742,35 +5825,41 @@ public void NpcBaseThink(int iNPC)
 	}
 	if(b_NpcHasDied[iNPC])
 	{
-		if(npc.GetPathFollower().IsValid())
+		if(i_IsNpcType[npc.index] == 0)
 		{
-			npc.GetPathFollower().Invalidate(); //Remove its current path
-		}
-		npc.SetProp(Prop_Data, "zr_pPath", -1);
-		RemoveEntityToLagCompList(iNPC);
+			if(npc.GetPathFollower().IsValid())
+			{
+				npc.GetPathFollower().Invalidate(); //Remove its current path
+			}
+			npc.SetProp(Prop_Data, "zr_pPath", -1);
+			RemoveEntityToLagCompList(iNPC);
 
-		if(h_NpcCollissionHookType[iNPC] != 0)
-		{
-			if(!DHookRemoveHookID(h_NpcCollissionHookType[iNPC]))
+			if(h_NpcCollissionHookType[iNPC] != 0)
 			{
-				PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+				if(!DHookRemoveHookID(h_NpcCollissionHookType[iNPC]))
+				{
+					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+				}
 			}
-		}
-		if(h_NpcSolidHookType[iNPC] != 0)
-		{
-			if(!DHookRemoveHookID(h_NpcSolidHookType[iNPC]))
+			if(h_NpcSolidHookType[iNPC] != 0)
 			{
-				PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+				if(!DHookRemoveHookID(h_NpcSolidHookType[iNPC]))
+				{
+					PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+				}
 			}
+			h_NpcCollissionHookType[iNPC] = 0;
+			h_NpcSolidHookType[iNPC] = 0;
+			RemoveFromNpcPathList(npc);
 		}
-		h_NpcCollissionHookType[iNPC] = 0;
-		h_NpcSolidHookType[iNPC] = 0;
-		RemoveFromNpcPathList(npc);
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
-	SaveLastValidPositionEntity(iNPC);
-	NpcSetGravity(npc,iNPC);
+	if(i_IsNpcType[npc.index] == 0)
+	{
+		SaveLastValidPositionEntity(iNPC);
+		NpcSetGravity(npc,iNPC);
+	}
 
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
@@ -5843,9 +5932,16 @@ public void NpcBaseThink(int iNPC)
 	if(CvarDisableThink.BoolValue)
 		return;
 
-	//Is the NPC out of bounds, or inside a player
-	NpcOutOfBounds(npc,iNPC);
+	if(i_IsNpcType[npc.index] == 0)
+	{
+		//Is the NPC out of bounds, or inside a player
+		NpcOutOfBounds(npc,iNPC);
+		//is the NPC inside an object
+		NpcStuckInSomething(npc, iNPC);
 
+		//is npc somehow outside any nav mesh
+		NpcStuckInSomethingOutOfBonunds(npc, iNPC);
+	}
 	Function func = func_NPCThink[iNPC];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -5853,11 +5949,6 @@ public void NpcBaseThink(int iNPC)
 		Call_PushCell(iNPC);
 		Call_Finish();
 	}
-	//is the NPC inside an object
-	NpcStuckInSomething(npc, iNPC);
-
-	//is npc somehow outside any nav mesh
-	NpcStuckInSomethingOutOfBonunds(npc, iNPC);
 }
 stock float NpcDoHealthRegenScaling()
 {
@@ -6259,6 +6350,9 @@ stock void Custom_Knockback(int attacker,
 		if(attacker != enemy)
 			return;
 	}
+	if(i_IsNpcType[enemy] == 1)
+		return;
+
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
 		float vAngles[3], vDirection[3];
@@ -6412,6 +6506,12 @@ stock void Custom_Knockback(int attacker,
 //it needs to be on think, otherwise it wont work sometimes.
 public void NpcJumpThink(int iNPC)
 {	
+	if(i_IsNpcType[iNPC] == 1)
+	{
+		f_PullStrength[iNPC] = 0.0;
+		i_PullTowardsTarget[iNPC] = 0;
+		SDKUnhook(iNPC, SDKHook_Think, NpcJumpThink);
+	}
 	if(IsValidEntity(iNPC) && !b_NpcHasDied[iNPC])
 	{
 		CClotBody npc = view_as<CClotBody>(iNPC);
@@ -6976,7 +7076,7 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 			static char class[12];
 			GetEntityClassname(TR_GetEntityIndex(trace), class, sizeof(class));
 			
-			if(StrContains(class, "zr_base_npc") && StrContains(class, "obj_")) //if its the world, then do this.
+			if(!b_ThisWasAnNpc[TR_GetEntityIndex(trace)] && StrContains(class, "obj_")) //if its the world, then do this.
 			{
 				CreateParticle("impact_concrete", endpos, vecNormal);
 			}

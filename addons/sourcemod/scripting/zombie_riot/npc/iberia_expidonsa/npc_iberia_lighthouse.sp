@@ -108,7 +108,7 @@ methodmap IberiaLighthouse < CClotBody
 	}
 	public IberiaLighthouse(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
+		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
@@ -160,7 +160,6 @@ methodmap IberiaLighthouse < CClotBody
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
 		npc.m_flNemalSummonSilvesterCD = GetGameTime() + 25.0;
 
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);

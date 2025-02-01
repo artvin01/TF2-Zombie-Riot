@@ -516,7 +516,6 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 
 		
 	AproxRandomSpaceToWalkTo[2] += 18.0;
-	AproxRandomSpaceToWalkTo[2] += 18.0;
 	
 	float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, npc_vec, true);

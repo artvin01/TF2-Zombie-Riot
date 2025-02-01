@@ -529,7 +529,7 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
 			*/
 			int entity = -1;
-			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			while((entity=FindEntityByClassname(entity, "zr_base")) != -1)
 			{
 #if defined ZR
 				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
