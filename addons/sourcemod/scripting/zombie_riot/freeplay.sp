@@ -52,6 +52,7 @@ static int spotter;
 static int RandomStats;
 static bool merlton;
 static bool Sigmaller;
+static float gay;
 
 void Freeplay_OnMapStart()
 {
@@ -121,6 +122,7 @@ void Freeplay_ResetAll()
 	RandomStats = 0;
 	merlton = false;
 	Sigmaller = false;
+	gay = 0.0;
 }
 
 int Freeplay_EnemyCount()
@@ -1069,12 +1071,14 @@ void Freeplay_OnEndWave(int &cash)
 
 	cash += CashBonus;
 }
-
-float Freeplay_SetupStart(bool extra = false)
+float Freeplay_SetupValues()
+{
+	return gay;
+}
+void Freeplay_SetupStart(bool extra = false)
 {
 	bool wrathofirln = false;
 	bool raidtime = false;
-	float gay = 0.0;
 	if(extra)
 	{
 		FreeplayBuffTimer = 0;
@@ -1523,6 +1527,7 @@ float Freeplay_SetupStart(bool extra = false)
 	}
 	else
 	{
+		gay = 15.0;
 		char message[128];
 		switch(rand)
 		{
@@ -2333,8 +2338,5 @@ float Freeplay_SetupStart(bool extra = false)
 			SkullTimes--;
 			Freeplay_SetupStart();
 		}
-		gay = 15.0;
 	}
-
-	return gay;
 }
