@@ -2579,7 +2579,7 @@ void AntiDelaySpawnEnemies(int health = 0, int count, bool is_a_boss = false)
 	//do not bother outlining.
 	enemy.ExtraMeleeRes = 0.2;
 	enemy.ExtraRangedRes = 0.2;
-	enemy.ExtraSpeed = 3.0;
+	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 9999.0;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = 3;

@@ -756,7 +756,7 @@ public void OnPostThink(int client)
 					
 			}
 			
-			if(EntRefToEntIndex(i_PlayerToCustomBuilding[client]) != -1)
+			if(IsValidEntity(i_PlayerToCustomBuilding[client]))
 			{
 				cooldown_time = f_BuildingIsNotReady[client] - GameTime;
 					
@@ -1398,7 +1398,7 @@ public void OnPostThink(int client)
 		{
 			int entity = GetClientPointVisible(client,70.0,_,_,_,1); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);	
-			f_DelayLookingAtHud[client] = GameTime + 0.25;	
+			f_DelayLookingAtHud[client] = GameTime + 0.5;	
 		}
 		else
 		{

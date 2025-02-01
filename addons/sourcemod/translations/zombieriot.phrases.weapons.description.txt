@@ -3376,9 +3376,7 @@
 	}
 	"Heavy Particle Rifle Desc 1"
 	{
-		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!\nYou are also 25% slower then normal, but you take 25% less dmg from front attacks!"
-		"fr"	"+25%% résistance, -25%% cadence de tir.\nDégats s'améliorent le plus longtemps que vous tirez.\nCommence avec des dégats réduits."
-		"chi"	"按住M1可以蓄能，造成更多伤害。但是，无蓄能时造成的伤害降低。\n-25%%移速，+25%伤害抗性"
+		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!"
 	}
 	"Heavy Particle Rifle Desc 2"
 	{
@@ -3466,9 +3464,7 @@
 	}
 	"Riot Gun Desc"
 	{
-		"en"	"While you have armor, provides 60%% (from bosses 35%%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown."
-		"fr"	"Donne +60%% (+35%% contre les Boss) résistance contre les attaques d'en face, si vous avez de l'armure.\nAbilité améliore votre cadence des attaques et étonne les ennemis en face de vous.\nLe Speed Cola réduit le temps de rechargement de l'abilité."
-		"chi"	"有护甲时，提供60%（boss 35%）正面伤害抗性。技能加攻速，眩晕面前10个敌人。\n极速可乐可影响冷却。"
+		"en"	"With Armor, 60%% (bosses 35%%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown.\nBe slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
 	}
 	"Riot Gun Pap 1"
 	{

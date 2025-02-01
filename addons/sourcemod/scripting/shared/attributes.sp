@@ -215,7 +215,7 @@ bool Attribute_IsMovementSpeed(int attrib)
 {
 	switch(attrib)
 	{
-		case 442, 107:
+		case 442, 107, 54:
 		{
 			return true;
 		}

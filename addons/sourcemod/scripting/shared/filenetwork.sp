@@ -26,7 +26,6 @@ void FileNetwork_PluginStart()
 	DownloadList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 
 	FileNetworkLib = LibraryExists("filenetwork");
-	PrintToChatAll("%b FileNetworkLib", FileNetworkLib);
 }
 
 static Action DebugCommand(int args)
