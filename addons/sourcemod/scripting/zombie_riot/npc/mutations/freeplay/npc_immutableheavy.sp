@@ -304,7 +304,7 @@ void ImmutableHeavySelfDefense(ImmutableHeavy npc, float gameTime, int target, f
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.15);
 				npc.m_flAttackHappens = gameTime + 0.15;
 				npc.m_flDoingAnimation = gameTime + 0.15;
-				npc.m_flNextMeleeAttack = gameTime + 0.5,
+				npc.m_flNextMeleeAttack = gameTime + 0.5;
 
 				float endLoc[3];
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", endLoc);
