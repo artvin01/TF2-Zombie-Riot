@@ -313,15 +313,15 @@ void ImmutableHeavySelfDefense(ImmutableHeavy npc, float gameTime, int target, f
 				{
 					case 1:
 					{
-						npc.FireParticleRocket(endLoc, 3000.0, 150.0, 125.0, "raygun_projectile_blue");
+						npc.FireParticleRocket(endLoc, 10000.0, 150.0, 125.0, "raygun_projectile_blue");
 					}
 					case 2:
 					{
-						npc.FireParticleRocket(endLoc, 3000.0, 75.0, 75.0, "raygun_projectile_red", true);
+						npc.FireParticleRocket(endLoc, 10000.0, 75.0, 75.0, "raygun_projectile_red", true);
 					}
 					default:
 					{
-						npc.FireParticleRocket(endLoc, 3000.0, 150.0, 125.0, "raygun_projectile_blue");
+						npc.FireParticleRocket(endLoc, 10000.0, 150.0, 125.0, "raygun_projectile_blue");
 					}
 				}
 			}
