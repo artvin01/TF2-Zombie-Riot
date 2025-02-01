@@ -1498,7 +1498,7 @@ float Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{strange}--==({gold}RAID ROULETTE!!{strange})==--");
 		CPrintToChatAll("{gold}--==({strange}LET THOU FATE BE RANDOMIZED!{gold})==--");
 		CPrintToChatAll("{green}-=({lime}Winning this wave will reward you with 7500 extra credits.{green})=-");
-		CreateTimer(15.0, Freeplay_RouletteMessage, _ TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(15.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
 
 		switch(GetRandomInt(1, 4))
 		{
