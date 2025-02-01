@@ -145,7 +145,8 @@ methodmap VictorianSignaller < CClotBody
 public void VictorianSignaller_ClotThink(int iNPC)
 {
 	VictorianSignaller npc = view_as<VictorianSignaller>(iNPC);
-
+	bool freeplay_sigmalone = false;
+	bool isfreeplay = Waves_InFreeplay();
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -173,14 +174,28 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		npc.m_iTargetAlly = GetClosestAlly(npc.index);
 		if(npc.m_iTargetAlly < 1)
 		{
-			LastHitRef[npc.index] = -1;
-			SmiteNpcToDeath(npc.index);
-			return;
+			if(!isfreeplay)
+			{
+				LastHitRef[npc.index] = -1;
+				SmiteNpcToDeath(npc.index);
+				return;
+			}
+			else
+			{
+				freeplay_sigmalone = true;
+			}
+			
 		}
 		
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 		if(!NpcStats_IsEnemySilenced(npc.index))
-			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
+		{
+			if(isfreeplay)
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 60.0);
+			else
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
+		}
+			
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
@@ -192,16 +207,23 @@ public void VictorianSignaller_ClotThink(int iNPC)
 
 	gameTime = GetGameTime() + 0.5;
 
-	if(!NpcStats_IsEnemySilenced(npc.index))
+	if(!NpcStats_IsEnemySilenced(npc.index) && !isfreeplay)
 	{
 		int team = GetTeam(npc.index);
 		if(team == 2)
 		{
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+				if(IsClientInGame(client) && IsEntityAlive(client))
 				{
-					ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
+					if(GetClientTeam(client) != 3)
+						if(isfreeplay)
+							ApplyStatusEffect(npc.index, client, "Call To Victoria", 60.0);
+						else
+							ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
+					else
+						if(isfreeplay && freeplay_sigmalone)
+							SDKHooks_TakeDamage(client, npc.index, npc.index, 500.0, DMG_CLUB, -1);
 				}
 			}
 		}
@@ -209,9 +231,16 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
+			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 			{
-				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+				if(GetTeam(entity) == team)
+					if(isfreeplay)
+						ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+					else
+						ApplyStatusEffect(npc.index, entity, "Call To Victoria", 60.0);
+				else
+					if(isfreeplay && freeplay_sigmalone)
+						SDKHooks_TakeDamage(entity, npc.index, npc.index, 500.0, DMG_CLUB, -1);
 			}
 		}
 	}
