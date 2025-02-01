@@ -3535,15 +3535,15 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			else
 			*/
 			{
-				Freeplay_SetupStart(true);
+				float time = Freeplay_SetupStart(true);
 
-				Cooldown = GetGameTime() + 15.0;
+				Cooldown = GetGameTime() + time;
 				
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				
-				SpawnTimer(15.0);
-				CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				SpawnTimer(time);
+				CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			}
 			
 			RequestFrames(StopMapMusicAll, 60);
