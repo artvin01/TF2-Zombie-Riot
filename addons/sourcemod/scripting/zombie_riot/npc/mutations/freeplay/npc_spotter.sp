@@ -118,7 +118,7 @@ methodmap Spotter < CClotBody
 			}
 		}
 
-		this.m_flNextIdleSound += 2.0;
+		this.m_flNextIdleSound += 3.0;
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -432,6 +432,26 @@ public void Spotter_ClotThink(int iNPC)
 		ParticleEffect1 = ParticleEffectAt(flPos, "powerup_supernova_explode_red", 1.0); //Taken from sensal haha
 		TeleportEntity(ParticleEffect1, NULL_VECTOR, flAng, NULL_VECTOR);
 
+		switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{orange}Spotter: {gold}PUSH ON FURTHER!!!!");
+				npc.Speech("PUSH ON FURTHER!!!!");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{orange}Spotter: {gold}COME ON!!!!!");
+				npc.Speech("COME ON!!!!!!");
+			}
+			default:
+			{
+				CPrintToChatAll("{orange}Spotter: {gold}KEEP ON THE PRESSURE!!!!");
+				npc.Speech("KEEP ON THE PRESSURE!!!!");
+			}
+		}
+	
+		npc.m_flNextIdleSound += 5.0;
 		SpotterAllyBuff(npc);
 
 		npc.Anger = false;
@@ -593,26 +613,7 @@ void SpotterAllyBuff(Spotter npc)
 
 	ApplyStatusEffect(npc.index, npc.index, "Spotter's Rally", 1.0);
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
-	switch(GetRandomInt(1, 3))
-	{
-		case 1:
-		{
-			CPrintToChatAll("{orange}Spotter: {gold}PUSH ON FURTHER!!!!");
-			npc.Speech("PUSH ON FURTHER!!!!");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{orange}Spotter: {gold}COME ON!!!!!");
-			npc.Speech("COME ON!!!!!!");
-		}
-		default:
-		{
-			CPrintToChatAll("{orange}Spotter: {gold}KEEP ON THE PRESSURE!!!!");
-			npc.Speech("KEEP ON THE PRESSURE!!!!");
-		}
-	}
 
-	npc.m_flNextIdleSound += 5.0;
 	npc.PlayMeleeWarCry();
 	npc.PlayBuffReaction();
 }
