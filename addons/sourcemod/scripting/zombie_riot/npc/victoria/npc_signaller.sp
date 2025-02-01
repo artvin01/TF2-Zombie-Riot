@@ -179,7 +179,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		}
 		
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
-		if(!NpcStats_IsEnemySilenced(npc.index))
+		if(!NpcStats_IsEnemySilenced(npc.index) && !Waves_InFreeplay())
 			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
 	}
 
@@ -192,7 +192,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 
 	gameTime = GetGameTime() + 0.5;
 
-	if(!NpcStats_IsEnemySilenced(npc.index))
+	if(!NpcStats_IsEnemySilenced(npc.index) && !Waves_InFreeplay())
 	{
 		int team = GetTeam(npc.index);
 		if(team == 2)
