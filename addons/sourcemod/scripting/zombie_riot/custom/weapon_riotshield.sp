@@ -343,6 +343,34 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 //taken and edited from ff2_sarysapub3
 public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
+	/*
+		Because the hud checks this every so ofte, we can use this as a pseudo Timer,
+
+	*/
+	if(Armor_Charge[victim] <= 0)
+	{
+		if(i_NextAttackDoubleHit[weapon])
+		{
+			Attributes_SetMulti(weapon, 54, (1.0 / 0.95));
+			SDKCall_SetSpeed(victim);
+		}
+
+		i_NextAttackDoubleHit[weapon] = false;
+	}
+	else
+	{
+		if(!i_NextAttackDoubleHit[weapon])
+		{
+			Attributes_SetMulti(weapon, 54, 0.95);
+			SDKCall_SetSpeed(victim);
+		}
+			
+		i_NextAttackDoubleHit[weapon] = true;
+	}
+	if(CheckInHud())
+	{
+		return damage;
+	}
 	// Require armor charge
 	if(Armor_Charge[victim] < 1)
 		return damage;

@@ -295,14 +295,16 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			if(AppearedBefore_Suicide)
 			{
 				CPrintToChatAll("{darkblue}The machine wanders off, it isnt interrested in this place anymore, someone else takes its place instead...");
-				NPC_SpawnNext(true, true); //This will force spawn a panzer.
 				b_NpcForcepowerupspawn[npc.index] = 0;
 			}
-			AppearedBefore_Suicide = true;
 			i_RaidGrantExtra[npc.index] = 0;
 			b_DissapearOnDeath[npc.index] = true;
 			b_DoGibThisNpc[npc.index] = true;
 			SmiteNpcToDeath(npc.index);
+			if(AppearedBefore_Suicide)
+				NPC_SpawnNext(true, true); //This will force spawn a panzer.
+
+			AppearedBefore_Suicide = true;
 			return;
 		}
 	}
@@ -584,7 +586,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
-	if(!Rogue_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
+	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
