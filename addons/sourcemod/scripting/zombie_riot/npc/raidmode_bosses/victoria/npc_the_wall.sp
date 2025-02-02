@@ -671,7 +671,13 @@ static void Internal_ClotThink(int iNPC)
 				i_AttacksTillMegahit[spawn_index] = 600;
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
-				TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+				int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 250.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
 			}
 		}
 		npc.PlayTeleportSound();
@@ -760,7 +766,14 @@ static void Internal_ClotThink(int iNPC)
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
 						LifeSupportDevice[npc.index][I_cant_do_this_all_day[npc.index]-1] = spawn_index;
 						MechanizedProtector[npc.index][I_cant_do_this_all_day[npc.index]-1] = EntIndexToEntRef(ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM));
-						TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
+						int Decicion = TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
+
+						if(Decicion == 2)
+							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1750.0, 500.0);
+
+						if(Decicion == 2)
+							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 500.0, 0.0);
+
 						npc.PlayTeleportSound();
 					}
 					for(int i = 0; i < (sizeof(LifeSupportDevice[])); i++)
@@ -859,8 +872,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.PlayAngerSound();
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, I knew it would broke");
-						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed its performance issues when they were disabled");
+						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, they would break");
+						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed its performance issues beforehand...");
 					}
 					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
 					npc.m_flAttackHappens = 0.0;

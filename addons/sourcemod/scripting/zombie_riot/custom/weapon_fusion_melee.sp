@@ -207,8 +207,8 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 
 public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, int slot)
 {
-	/*
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -216,7 +216,7 @@ public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, in
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
-	*/
+	
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
@@ -1148,8 +1148,8 @@ float f_SuperSliceTimeUntillAttack_CD[MAXTF2PLAYERS];
 
 public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 {
-	/*
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -1157,7 +1157,7 @@ public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
-	*/
+	
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
