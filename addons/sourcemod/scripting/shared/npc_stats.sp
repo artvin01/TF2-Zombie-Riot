@@ -3252,6 +3252,10 @@ public void NPC_Base_InitGamedata()
 	CEntityFactory EntityFactory_Building = new CEntityFactory("zr_base_stationary", OnCreate_Stationary, OnDestroy_Stationary);
 	EntityFactory_Building.DeriveFromClass("prop_dynamic_override");
 	EntityFactory_Building.BeginDataMapDesc()
+	
+		//Sergeant Ideal Shield Netprops
+		.DefineIntField("zr_iRefSergeantProtect")
+		.DefineFloatField("zr_fSergeantProtectTime")
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
@@ -3324,6 +3328,7 @@ static void OnDestroy(CClotBody body)
 }
 static void OnDestroy_Global(CClotBody body, int Type)
 {
+	NPCStats_SetFuncsToZero(body.index);
 	RemoveFromNpcAliveList(body.index);
 #if defined ZR
 		RemoveNpcFromZombiesLeftCounter(body.index);

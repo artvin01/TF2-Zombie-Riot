@@ -166,6 +166,7 @@ public Action Apply_cool_effects_kahml(Handle cut_timer, int client)
 
 public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 {
+	/*
 	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -174,6 +175,7 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
+	*/
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);

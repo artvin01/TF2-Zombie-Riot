@@ -134,6 +134,7 @@ static bool NpcSpecialCommand[MAXENTITIES];
 static bool FreeToSelect[MAXENTITIES];
 static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
+static int i_RalleyTarget[MAXENTITIES];
 
 methodmap BarrackBody < CClotBody
 {
@@ -264,13 +265,25 @@ methodmap BarrackBody < CClotBody
 	}
 	property int m_iTargetRally
 	{
-		public get()
-		{
-			return i_OverlordComboAttack[this.index];
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_RalleyTarget[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+			return returnint;
 		}
-		public set(int value)
+		public set(int iInt) 
 		{
-			i_OverlordComboAttack[this.index] = value;
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_RalleyTarget[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_RalleyTarget[this.index] = EntIndexToEntRef(iInt);
+			}
 		}
 	}
 	property int OwnerUserId
@@ -331,6 +344,7 @@ methodmap BarrackBody < CClotBody
 		CommandOverride[npc.index] = -1;
 		NpcSpecialCommand[npc.index] = false;
 		FreeToSelect[npc.index] = false;
+		npc.m_iTargetRally = 0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -578,6 +592,9 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true, bool sound=true)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
+	if(!IsValidEntity(iNPC))
+		return;
+	//Some error, i really dont know.
 
 	bool pathed;
 	float gameTime = GetGameTime(npc.index);

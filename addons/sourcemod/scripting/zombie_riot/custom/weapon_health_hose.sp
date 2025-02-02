@@ -328,6 +328,7 @@ public void Weapon_Syringe_Gun_Fire_M2(int client, int weapon, bool crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
+	/*
 	if(!(GetClientButtons(client) & IN_DUCK))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -336,6 +337,7 @@ public void Weapon_Syringe_Gun_Fire_M2(int client, int weapon, bool crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
+	*/
 	Handle swingTrace;
 	int MaxTargethit = -1;
 	float vecSwingForward[3];
