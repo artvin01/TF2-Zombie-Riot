@@ -643,19 +643,20 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(alaxios && count > 30)
 		count = 30;
 
-	enemy.ExtraSize *= ExtraEnemySize;
+	if(enemy.Team != TFTeam_Red)
+		enemy.ExtraSize *= ExtraEnemySize;
 
 	if(RandomStats)
 	{
 		if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare
 		{
-			enemy.Health = RoundToCeil(float(enemy.Health) * GetRandomFloat(0.25, 3.0));
+			enemy.Health = RoundToCeil(float(enemy.Health) * GetRandomFloat(0.25, 6.0));
 			enemy.ExtraSize = GetRandomFloat(0.1, 3.0);
 			enemy.Is_Immune_To_Nuke = GetRandomInt(0, 1);
-			enemy.ExtraMeleeRes = GetRandomFloat(0.1, 3.0);
-			enemy.ExtraRangedRes = GetRandomFloat(0.05, 2.0);
+			enemy.ExtraMeleeRes = GetRandomFloat(0.1, 2.0);
+			enemy.ExtraRangedRes = GetRandomFloat(0.05, 1.0);
 			enemy.ExtraSpeed = GetRandomFloat(0.1, 3.0);
-			enemy.ExtraDamage = GetRandomFloat(0.2, 5.0);
+			enemy.ExtraDamage = GetRandomFloat(0.25, 10.0);
 			enemy.Is_Outlined = 1;
 
 			switch(GetRandomInt(1, 4))
@@ -825,128 +826,131 @@ bool Freeplay_ShouldMiniBoss()
 
 void Freeplay_SpawnEnemy(int entity)
 {
-	// arvin's order
-	if(!b_thisNpcIsARaid[entity])
-		fl_Extra_Damage[entity] *= 2.0;
-
-	//// BUFFS ////
-
-	if(HussarBuff)
-		ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
-
-	if(PernellBuff)
-		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
-
-	if(FusionBuff > 1)
-		ApplyStatusEffect(entity, entity, "Self Empowerment", 30.0);	
-
-	if(FusionBuff == 1 || FusionBuff > 2)
-		ApplyStatusEffect(entity, entity, "Ally Empowerment", 30.0);	
-
-	if(OceanBuff > 1)
-		ApplyStatusEffect(entity, entity, "Oceanic Scream", 30.0);	
-
-	if(OceanBuff > 0)
-		ApplyStatusEffect(entity, entity, "Oceanic Singing", 30.0);	
-
-	if(VoidBuff > 1)
-		ApplyStatusEffect(entity, entity, "Void Strength II", 12.0);
-
-	if(VoidBuff > 0)
-		ApplyStatusEffect(entity, entity, "Void Strength I", 6.0);
-
-	if(VictoriaBuff)
-		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
-
-	if(SquadBuff)
-		ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
-
-	if(Coffee)
+	if(GetTeam(entity) == 2)
 	{
-		ApplyStatusEffect(entity, entity, "Caffinated", 8.0);
-		ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
-	}
-
-	if(merlton)
-		ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 10.0);	
-
-	//// DEBUFFS ////
-
-	if(SilenceDebuff)
-		ApplyStatusEffect(entity, entity, "Silenced", 10.0);
-
-	if(ProsperityDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Prosperity III", 999999.0);	
-
-	if(ProsperityDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Prosperity II", 999999.0);	
-
-	if(ProsperityDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Prosperity I", 999999.0);	
-
-	if(StrangleDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Stranglation III", 999999.0);	
-
-	if(StrangleDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Stranglation II", 999999.0);	
-
-	if(StrangleDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Stranglation I", 999999.0);	
-
-	if(IceDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Near Zero", 999999.0);	
-
-	if(IceDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Cryo", 999999.0);	
-
-	if(IceDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Freeze", 999999.0);	
-
-	if(TeslarDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Teslar Electricution", 999999.0);	
-
-	if(TeslarDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Teslar Shock", 999999.0);	
-
-	if(CrippleDebuff > 0)
-	{
-		ApplyStatusEffect(entity, entity, "Cripple", 999999.0);	
-		CrippleDebuff--;
-	}
-
-	if(CudgelDebuff > 0)
-	{
-		ApplyStatusEffect(entity, entity, "Cudgelled", 999999.0);	
-		CudgelDebuff--;
-	}
-
-	// OTHER //
-	switch(PerkMachine)
-	{
-		case 1:
+		// arvin's order
+		if(!b_thisNpcIsARaid[entity])
+			fl_Extra_Damage[entity] *= 2.0;
+	
+		//// BUFFS ////
+	
+		if(HussarBuff)
+			ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
+	
+		if(PernellBuff)
+			ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
+	
+		if(FusionBuff > 1)
+			ApplyStatusEffect(entity, entity, "Self Empowerment", 30.0);	
+	
+		if(FusionBuff == 1 || FusionBuff > 2)
+			ApplyStatusEffect(entity, entity, "Ally Empowerment", 30.0);	
+	
+		if(OceanBuff > 1)
+			ApplyStatusEffect(entity, entity, "Oceanic Scream", 30.0);	
+	
+		if(OceanBuff > 0)
+			ApplyStatusEffect(entity, entity, "Oceanic Singing", 30.0);	
+	
+		if(VoidBuff > 1)
+			ApplyStatusEffect(entity, entity, "Void Strength II", 12.0);
+	
+		if(VoidBuff > 0)
+			ApplyStatusEffect(entity, entity, "Void Strength I", 6.0);
+	
+		if(VictoriaBuff)
+			ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
+	
+		if(SquadBuff)
+			ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
+	
+		if(Coffee)
 		{
-			fl_Extra_MeleeArmor[entity] *= 0.8;
-			fl_Extra_RangedArmor[entity] *= 0.8;
-			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
+			ApplyStatusEffect(entity, entity, "Caffinated", 8.0);
+			ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
 		}
-		case 2:
+	
+		if(merlton)
+			ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 10.0);	
+	
+		//// DEBUFFS ////
+	
+		if(SilenceDebuff)
+			ApplyStatusEffect(entity, entity, "Silenced", 10.0);
+	
+		if(ProsperityDebuff > 2)
+			ApplyStatusEffect(entity, entity, "Prosperity III", 999999.0);	
+	
+		if(ProsperityDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Prosperity II", 999999.0);	
+	
+		if(ProsperityDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Prosperity I", 999999.0);	
+	
+		if(StrangleDebuff > 2)
+			ApplyStatusEffect(entity, entity, "Stranglation III", 999999.0);	
+	
+		if(StrangleDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Stranglation II", 999999.0);	
+	
+		if(StrangleDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Stranglation I", 999999.0);	
+	
+		if(IceDebuff > 2)
+			ApplyStatusEffect(entity, entity, "Near Zero", 999999.0);	
+	
+		if(IceDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Cryo", 999999.0);	
+	
+		if(IceDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Freeze", 999999.0);	
+	
+		if(TeslarDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Teslar Electricution", 999999.0);	
+	
+		if(TeslarDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Teslar Shock", 999999.0);	
+	
+		if(CrippleDebuff > 0)
 		{
-			fl_Extra_Damage[entity] *= 1.35;
+			ApplyStatusEffect(entity, entity, "Cripple", 999999.0);	
+			CrippleDebuff--;
 		}
-		case 3:
+	
+		if(CudgelDebuff > 0)
 		{
-			fl_Extra_Damage[entity] *= 1.15;
+			ApplyStatusEffect(entity, entity, "Cudgelled", 999999.0);	
+			CudgelDebuff--;
 		}
-		case 4:
+	
+		// OTHER //
+		switch(PerkMachine)
 		{
-			ApplyStatusEffect(entity, entity, "Fluid Movement", 999999.0);		
+			case 1:
+			{
+				fl_Extra_MeleeArmor[entity] *= 0.8;
+				fl_Extra_RangedArmor[entity] *= 0.8;
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
+			}
+			case 2:
+			{
+				fl_Extra_Damage[entity] *= 1.35;
+			}
+			case 3:
+			{
+				fl_Extra_Damage[entity] *= 1.15;
+			}
+			case 4:
+			{
+				ApplyStatusEffect(entity, entity, "Fluid Movement", 999999.0);		
+			}
 		}
+		fl_Extra_Speed[entity] *= SpeedMult;
+		fl_Extra_MeleeArmor[entity] *= MeleeMult;
+		fl_Extra_RangedArmor[entity] *= RangedMult;
+		if(EnemyShields > 0)
+			VausMagicaGiveShield(entity, EnemyShields);
 	}
-	fl_Extra_Speed[entity] *= SpeedMult;
-	fl_Extra_MeleeArmor[entity] *= MeleeMult;
-	fl_Extra_RangedArmor[entity] *= RangedMult;
-	if(EnemyShields > 0)
-		VausMagicaGiveShield(entity, EnemyShields);
 }
 
 static Action activatebuffs(Handle timer)
