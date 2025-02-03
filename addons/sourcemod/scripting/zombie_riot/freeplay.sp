@@ -381,11 +381,17 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		}
 
 		// Raids have too much damage.
-		enemy.ExtraDamage *= 0.55;
+		if(postWaves+1 < 109)
+			enemy.ExtraDamage *= 0.55;
 
 		// Raid health is lower before w150.
 		if(postWaves+1 < 89)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
+		else
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.2);
+
+		if(postWaves+1 > 109)
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.35);
 
 		// moni
 		enemy.Credits += 7500.0;
@@ -463,7 +469,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_seaborn_heavy");
-		enemy.Health = RoundToCeil(50000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToCeil(60000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		enemy.ExtraSpeed = 5.0;
 		enemy.ExtraSize = 1.25;
 		enemy.Credits += 125.0;
@@ -499,6 +505,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Health = RoundToFloor(40000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		enemy.ExtraMeleeRes = 0.75;
 		enemy.ExtraRangedRes = 0.75;
+		enemy.ExtraDamage = 1.25;
 		enemy.Is_Boss = 0;
 		enemy.Is_Health_Scaled = 0;
 		count = 1;
@@ -828,9 +835,13 @@ void Freeplay_SpawnEnemy(int entity)
 {
 	if(GetTeam(entity) == 2)
 	{
-		// arvin's order
 		if(!b_thisNpcIsARaid[entity])
-			fl_Extra_Damage[entity] *= 2.0;
+		{
+			if(ZR_GetWaveCount() > 149)
+				fl_Extra_Damage[entity] *= 2.0 + (float(ZR_GetWaveCount() - 149));
+			else
+				fl_Extra_Damage[entity] *= 2.0;
+		}
 	
 		//// BUFFS ////
 	
@@ -871,7 +882,7 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 	
 		if(merlton)
-			ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 10.0);	
+			ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 5.0);	
 	
 		//// DEBUFFS ////
 	
@@ -1087,9 +1098,17 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+		int raidreq = 15;
+		int irlnreq = 2;
+		
+		if(ZR_GetWaveCount() > 174)
+			raidreq = 25;
+
+		if(ZR_GetWaveCount() > 199)
+			irlnreq = 5;
 
 		int raidchance = GetRandomInt(0, 100);
-		if(raidchance < 15) // 15% chance
+		if(raidchance < raidreq)
 		{
 			raidtime = true;
 		}
@@ -1097,28 +1116,29 @@ void Freeplay_SetupStart(bool extra = false)
 		if(ZR_GetWaveCount() > 99)
 		{
 			int wrathchance = GetRandomInt(0, 100);
-			if(wrathchance < 2) // 2% chance
+			if(wrathchance < irlnreq)
 			{
 				raidtime = false;
 				wrathofirln = true;
 			}
 		}
 
-		if(!wrathofirln)
+		if(!wrathofirln && !raidtime)
 		{
 			EmitSoundToAll("ui/vote_success.wav");
-			int exskull = GetRandomInt(0, 100);
-
-			if(exskull < 20) // 20% chance
-			{
-				ExtraSkulls++;
-				CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
-				CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
-				EmitSoundToAll("passtime/ball_dropped.wav", _, _, _, _, 0.67);
-			}
-
-			SkullTimes = ExtraSkulls;
 		}
+		
+		int exskull = GetRandomInt(0, 100);
+
+		if(exskull < 20) // 20% chance
+		{
+			ExtraSkulls++;
+			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
+			CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
+			EmitSoundToAll("passtime/ball_dropped.wav", _, _, _, _, 0.67);
+		}
+
+		SkullTimes = ExtraSkulls;
 	}
 
 	static int RerollTry;
@@ -1129,7 +1149,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	if(wrathofirln)
 	{
-		int randomhp1 = GetRandomInt(-45000, 75000);
+		int randomhp1 = GetRandomInt(-50000, 150000);
 		HealthBonus += randomhp1;
 		if(randomhp1 > 0)
 		{
@@ -1140,7 +1160,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemies now have %d less health.", randomhp1);
 		}
 
-		float randomhp2 = GetRandomFloat(0.6, 1.2);
+		float randomhp2 = GetRandomFloat(0.25, 1.65);
 		HealthMulti *= randomhp2;
 		if(randomhp2 > 1.0)
 		{
@@ -1230,31 +1250,33 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			int randomcripple = GetRandomInt(100, 600);
+			int randomcripple = GetRandomInt(150, 900);
 			CrippleDebuff += randomcripple;
 			CPrintToChatAll("{green}The next %d enemies will now gain the Crippled debuff.", randomcripple);
 
-			int randomcudgel = GetRandomInt(100, 600);
+			int randomcudgel = GetRandomInt(150, 900);
 			CudgelDebuff += randomcudgel;
 			CPrintToChatAll("{green}The next %d enemies will now gain the Cudgel debuff.", randomcudgel);
 		}
 		else
 		{
-			RandomStats += GetRandomInt(3, 6);
+			RandomStats += GetRandomInt(9, 18);
 			CPrintToChatAll("{red}Some enemies may recieve some randomized stats...");
 		}
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			CPrintToChatAll("{green}All enemies now give out 1 extra credit on death.");
-			KillBonus += 1;
+			int randomonkill = GetRandomInt(2, 6);
+			CPrintToChatAll("{green}All enemies now give out %d extra credits on death.", randomonkill);
+			KillBonus += randomonkill;
 		}
 		else
 		{
 			if(KillBonus < 1)
 			{
-				CPrintToChatAll("{green}All enemies now give out 1 extra credit on death.");
-				KillBonus += 1;
+				int randomonkill = GetRandomInt(2, 6);
+				CPrintToChatAll("{green}All enemies now give out %d extra credits on death.", randomonkill);
+				KillBonus += randomonkill;
 			}
 			else
 			{
@@ -1265,15 +1287,17 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			CPrintToChatAll("{green}You now gain 120 extra credits per wave.");
-			CashBonus += 120;
+			int randomcredits = GetRandomInt(120, 360);
+			CPrintToChatAll("{green}You now gain %d extra credits per wave.", randomcredits);
+			CashBonus += randomcredits;
 		}
 		else
 		{
 			if(CashBonus < 100)
 			{
-				CPrintToChatAll("{green}You now gain 120 extra credits per wave.");
-				CashBonus += 120;
+				int randomcredits = GetRandomInt(120, 360);
+				CPrintToChatAll("{green}You now gain %d extra credits per wave.", randomcredits);
+				CashBonus += randomcredits;
 			}
 			else
 			{
@@ -1285,7 +1309,7 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{green}You will gain 5 random friendly units.");
 		FriendlyDay = true;
 
-		float randommini = GetRandomFloat(0.75, 1.5);
+		float randommini = GetRandomFloat(0.5, 2.0);
 		MiniBossChance *= randommini;
 		if(randommini > 1.0)
 		{
@@ -1296,7 +1320,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.2fx.", randommini);
 		}
 
-		float randomspeed = GetRandomFloat(0.6, 1.15);
+		float randomspeed = GetRandomFloat(0.35, 1.5);
 		SpeedMult *= randomspeed;
 		if(randomspeed > 1.0)
 		{
@@ -1307,7 +1331,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy speed has been multiplied by %.2fx.", randomspeed);
 		}
 
-		float randommelee = GetRandomFloat(0.8, 1.35);
+		float randommelee = GetRandomFloat(0.25, 2.0);
 		MeleeMult *= randommelee;
 		if(randommelee < 1.0)
 		{
@@ -1318,7 +1342,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy melee vulnerability has been multiplied by %.2fx.", randommelee);
 		}
 
-		float randomranged = GetRandomFloat(0.8, 1.35);
+		float randomranged = GetRandomFloat(0.25, 2.0);
 		RangedMult *= randomranged;
 		if(randomranged < 1.0)
 		{
@@ -1329,7 +1353,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy ranged vulnerability has been multiplied by %.2fx.", randomranged);
 		}
 
-		int randomshield = GetRandomInt(-4, 4);
+		int randomshield = GetRandomInt(-6, 12);
 		EnemyShields += randomshield;
 		if(EnemyShields > 15)
 			EnemyShields = 15;
@@ -1420,7 +1444,7 @@ void Freeplay_SetupStart(bool extra = false)
 			SilenceDebuff = true;
 		}
 
-		float randomsize = GetRandomFloat(0.67, 1.33);
+		float randomsize = GetRandomFloat(0.2, 2.0);
 		ExtraEnemySize *= randomsize;
 		CPrintToChatAll("{yellow}Enemy size has been multiplied by %.2fx!", randomsize);
 
@@ -1455,6 +1479,64 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			CPrintToChatAll("{green}All players and allied npcs now gain a layer of the Rampart buff.");
 			RampartBuff++;
+		}
+
+		if(merlton)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Merlton buff.");
+			merlton = false;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain the Merlton buff for 5 seconds!");
+			merlton = true;
+		}
+
+		if(GetRandomInt(1, 2) == 1)
+		{
+			CPrintToChatAll("{red}Stronger enemy types are now more likely to appear!");
+			EnemyChance++;
+		}
+		else
+		{
+			if(EnemyChance < 3)
+			{
+				CPrintToChatAll("{red}Stronger enemy types are now more likely to appear!");
+				EnemyChance++;
+			}
+	
+			CPrintToChatAll("{green}Stronger enemy types are now less likely to appear.");
+			EnemyChance--;
+		}
+
+		PerkMachine = GetRandomInt(0, 4);
+		switch(PerkMachine)
+		{
+			case 1:
+			{
+				CPrintToChatAll("{red}All enemies are now using the Juggernog perk, And thus gain +20% resist and +15% HP!");
+				PerkMachine = 1;
+			}
+			case 2:
+			{
+				CPrintToChatAll("{red}All enemies are now using the Double Tap perk, And thus gain 35% Extra Damage!");
+				PerkMachine = 2;
+			}
+			case 3:
+			{
+				CPrintToChatAll("{red}All enemies are now using the Deadshot Daiquiri perk, and thus gain 15% Extra Damage!");
+				PerkMachine = 3;
+			}
+			case 4:
+			{
+				CPrintToChatAll("{red}All enemies are now using the Speed Cola perk, and thus cannot be slowed!");
+				PerkMachine = 4;
+			}
+			default:
+			{
+				CPrintToChatAll("{green}All enemies are now using the Quick Revive perk, this is useless and removes their previous perk.");
+				PerkMachine = 0;
+			}
 		}
 
 		switch(GetRandomInt(1, 5))
@@ -2307,7 +2389,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Merlton buff for 10 seconds!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Merlton buff for 5 seconds!");
 					merlton = true;
 				}
 			}
