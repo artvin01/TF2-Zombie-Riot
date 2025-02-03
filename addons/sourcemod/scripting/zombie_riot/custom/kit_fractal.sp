@@ -1518,8 +1518,7 @@ static void Hud(int client, int weapon)
 	if(fl_hud_timer[client] > GameTime)
 		return;
 
-//	if(b_TwirlHairpins[client])
-		HaloManagment(client);
+	HaloManagment(client);
 
 	fl_hud_timer[client] = GameTime + 0.5;
 

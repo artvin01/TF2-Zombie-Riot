@@ -1247,8 +1247,8 @@ public void GearTesting(int client)
 			{
 				b_ActivatedDuringLastMann[client] = true;
 			}
-		//	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
-				IncreaceEntityDamageTakenBy(client, 0.5, 3.0);
+
+			IncreaceEntityDamageTakenBy(client, 0.5, 3.0);
 			
 			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		//	ClientCommand(client, "playgamesound mvm/mvm_tank_start.wav");
@@ -1308,8 +1308,8 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			float HealthMulti = float(CashSpentTotal[client]);
 			HealthMulti = Pow(HealthMulti, 1.2);
 			HealthMulti *= 0.025;
-		//	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
-				HealthMulti *= 1.1;
+
+			HealthMulti *= 1.1;
 				
 			SetEntityHealth(client, RoundToCeil(HealthMulti));
 

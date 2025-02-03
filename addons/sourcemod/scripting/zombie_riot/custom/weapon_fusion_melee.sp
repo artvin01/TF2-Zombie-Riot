@@ -207,7 +207,8 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 
 public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, int slot)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -215,6 +216,7 @@ public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, in
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
+	
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
@@ -1075,9 +1077,6 @@ static Action Siccerino_revert_toNormal(Handle ringTracker, int ref)
 	return Plugin_Stop;
 }
 
-#define SICCERINO_BONUS_DAMAGE 0.05
-#define SICCERINO_BONUS_DAMAGE_MAX 2.0
-#define SICCERINO_BONUS_DAMAGE_MAX_RAID 1.5
 
 #define SICCERINO_BONUS_DAMAGE_WALDCH 0.06
 #define SICCERINO_BONUS_DAMAGE_MAX_WALDCH 2.2
@@ -1111,10 +1110,7 @@ public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, 
 	float ExtraDamageDo;
 	damage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
-		ExtraDamageDo = SICCERINO_BONUS_DAMAGE;
-	else
-		ExtraDamageDo = SICCERINO_BONUS_DAMAGE_WALDCH;
+	ExtraDamageDo = SICCERINO_BONUS_DAMAGE_WALDCH;
 		
 	if(!CheckInHud())
 	{
@@ -1152,7 +1148,8 @@ float f_SuperSliceTimeUntillAttack_CD[MAXTF2PLAYERS];
 
 public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -1160,6 +1157,7 @@ public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
+	
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
@@ -1271,7 +1269,6 @@ void DrawBigSiccerinoSiccors(int weapon_active, float Angles[3], int client, flo
 
 	if(AngleDeviation == 0.0)
 	{
-		
 		EmitSoundToAll(g_Siccerino_snapSound[GetRandomInt(0, sizeof(g_Siccerino_snapSound) - 1)],
 		 client, SNDCHAN_STATIC, 90, _, 1.0);
 		for (int building = 0; building < MAX_TARGETS_HIT; building++)

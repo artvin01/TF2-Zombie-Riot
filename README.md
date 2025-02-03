@@ -26,7 +26,8 @@ Most of the code is made towards client prediction to make the best experience.
 if you for some ungodly reason need 100 player zr, grab the 100 player version, otherwise use the other version for more performance and less ram usage.
 
 Use THIS compiler version if you dont want any wierd issues when coding yourself:
-1.12.0.7163
+
+1.12.0.7162
 
 ### Where can I see this gamemode in action?
 

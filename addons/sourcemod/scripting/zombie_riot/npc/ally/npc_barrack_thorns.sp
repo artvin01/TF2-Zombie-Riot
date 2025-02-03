@@ -390,7 +390,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 						{
 							damage *= 1.5;
 						}
-					if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
+						if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
 						{
 							damage *= 0.5;
 						}

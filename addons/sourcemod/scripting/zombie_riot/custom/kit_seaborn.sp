@@ -375,11 +375,11 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				{
 					if(Pap == 1)
 					{
-						healing = 60;
+						healing = 50;
 					}
 					else
 					{
-						healing = 80;
+						healing = 100;
 					}
 				}
 
@@ -478,7 +478,7 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 			}
 			else
 			{
-				healing = 30;
+				healing = 40;
 			}
 		}
 

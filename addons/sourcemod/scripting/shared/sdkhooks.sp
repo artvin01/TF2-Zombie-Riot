@@ -1966,10 +1966,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
-			//	if(b_XenoVial[victim])
-					Attributes_SetMulti(victim, 442, 0.85);
-			//	else
-			//		Attributes_SetMulti(victim, 442, 0.65);
+				Attributes_SetMulti(victim, 442, 0.85);
 
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
@@ -2289,7 +2286,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		volume *= 0.75;
 		level = 85;
 		return Plugin_Changed;
-	}		
+	}
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
 		volume *= 0.45;

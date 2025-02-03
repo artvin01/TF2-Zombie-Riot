@@ -738,7 +738,13 @@ static void Internal_ClotThink(int iNPC)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
-				TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+				int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 250.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
 			}
 		}
 		npc.PlayDeathSound();

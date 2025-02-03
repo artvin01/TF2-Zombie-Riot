@@ -81,7 +81,13 @@ methodmap VengefullSpirit < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 0, 125);
 
-		TeleportDiversioToRandLocation(npc.index);
+		int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
+
+		if(Decicion == 2)
+			Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 250.0);
+
+		if(Decicion == 2)
+			Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
 
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
