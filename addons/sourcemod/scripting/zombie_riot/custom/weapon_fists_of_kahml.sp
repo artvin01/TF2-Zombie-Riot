@@ -191,16 +191,8 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		int spawn_index = NPC_CreateByName("npc_allied_kahml_afterimage", client, flPos, fAng, GetTeam(client));
 		f_DurationOfProjectileAttack[client] = GetGameTime() + 10.0;
-		/*
-		if(Items_HasNamedItem(client, "Kahml's Contained Chaos"))
-		{
-			f_DurationOfProjectileAttack[client] += 2.0;
-		}
-		*/
 		if(spawn_index > 0)
 		{
-		//	if(Items_HasNamedItem(client, "Kahml's Contained Chaos"))
-				fl_RangedSpecialDelay[spawn_index] = GetGameTime() + 12.0;
 				
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	

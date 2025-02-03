@@ -182,38 +182,38 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 				if(npc.m_iAttacksTillReload >= 27)
 				{
 					float damage = 3750.0;
-						if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
-							{					
-								if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 27)
-								{
-									npc.AddGesture("ACT_COMBO1_BOBPRIME");
-									npc.PlaySwordSound();
-									npc.m_flNextRangedSpecialAttack = GameTime + 1.2;
-									npc.m_flAttackHappens = GameTime + 0.5;
-									npc.m_flAttackHappens_bullshit = GameTime + 0.7;
-									npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
-									npc.m_flAttackHappenswillhappen = true;
-								}
-								else if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 28)
-								{
-									npc.AddGesture("ACT_COMBO2_BOBPRIME");
-									npc.PlaySwordSound();
-									npc.m_flNextRangedSpecialAttack = GameTime + 1.2;
-									npc.m_flAttackHappens = GameTime + 0.5;
-									npc.m_flAttackHappens_bullshit = GameTime + 0.7;
-									npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
-									npc.m_flAttackHappenswillhappen = true;
-								}
-								else if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 29)
-								{
-									npc.AddGesture("ACT_COMBO3_BOBPRIME",_,_,_,1.5);
-									npc.PlaySwordSound();
-									npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
-									npc.m_flAttackHappens = GameTime + 1.0;
-									npc.m_flAttackHappens_bullshit = GameTime + 1.2;
-									npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
-									npc.m_flAttackHappenswillhappen = true;
-								}
+					if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
+					{					
+						if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 27)
+						{
+							npc.AddGesture("ACT_COMBO1_BOBPRIME");
+							npc.PlaySwordSound();
+							npc.m_flNextRangedSpecialAttack = GameTime + 1.2;
+							npc.m_flAttackHappens = GameTime + 0.5;
+							npc.m_flAttackHappens_bullshit = GameTime + 0.7;
+							npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
+							npc.m_flAttackHappenswillhappen = true;
+						}
+						else if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 28)
+						{
+							npc.AddGesture("ACT_COMBO2_BOBPRIME");
+							npc.PlaySwordSound();
+							npc.m_flNextRangedSpecialAttack = GameTime + 1.2;
+							npc.m_flAttackHappens = GameTime + 0.5;
+							npc.m_flAttackHappens_bullshit = GameTime + 0.7;
+							npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
+							npc.m_flAttackHappenswillhappen = true;
+						}
+						else if(!npc.m_flAttackHappenswillhappen && npc.m_iAttacksTillReload == 29)
+						{
+							npc.AddGesture("ACT_COMBO3_BOBPRIME",_,_,_,1.5);
+							npc.PlaySwordSound();
+							npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
+							npc.m_flAttackHappens = GameTime + 1.0;
+							npc.m_flAttackHappens_bullshit = GameTime + 1.2;
+							npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
+							npc.m_flAttackHappenswillhappen = true;
+						}
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{

@@ -507,8 +507,8 @@ void Interstellar_Weaver_ShareWithLelouch_Damage(int iNPC, int &attacker, int &i
 	i_storm_weaver_damage_instance[attacker]++;
 
 	int Anchor_Id = EntRefToEntIndex(i_Lelouch_Index);
-		if(!IsValidEntity(Anchor_Id))
-			Anchor_Id = i_GetMagiaAnchor(npc);
+	if(!IsValidEntity(Anchor_Id))
+		Anchor_Id = i_GetMagiaAnchor(npc);
 
 	if(IsEntityAlive(Anchor_Id) && !b_NpcIsInvulnerable[Anchor_Id])
 	{

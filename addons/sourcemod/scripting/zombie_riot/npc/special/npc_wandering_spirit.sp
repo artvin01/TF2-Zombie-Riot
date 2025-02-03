@@ -254,7 +254,13 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 							}
 						}
 					}
-					TeleportDiversioToRandLocation(npc.index);
+					int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
+
+					if(Decicion == 2)
+						Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 250.0);
+
+					if(Decicion == 2)
+						Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
 				} 
 			}
 			delete swingTrace;

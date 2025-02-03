@@ -1154,7 +1154,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	}
 	
 	int Health = ReturnEntityMaxHealth(npc.index);
-		Health = RoundToFloor(Health*0.1);
+	Health = RoundToFloor(Health*0.1);
 
 	npc.PlayCrystalSounds();
 

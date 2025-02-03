@@ -306,7 +306,7 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 
-				if(npc.m_flNextRangedBarrage_Singular < GameTime && fl_ruina_battery_timeout[npc.index] < GameTime)
+		if(npc.m_flNextRangedBarrage_Singular < GameTime && fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
 			float Difference = FloatAbs(Npc_Vec[2]-vecTarget[2]);
 			if(Difference < 65.0 && flDistanceToTarget < (800.0*800.0))	//make sure its more or less the same height as the npc
