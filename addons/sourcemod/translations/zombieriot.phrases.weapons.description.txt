@@ -4274,7 +4274,7 @@
 	}
 	"Nanomachines Desc"
 	{
-		"en"	"They harden in response to physical trauma.\nIncreases medigun heal/enemydrain rate by +65%% and uber duration by +1 second.\nIncreases melee resistance with support weapons out by +5%%."
+		"en"	"Nanomachines, they make people harden in response to physical trauma.\nIncreases medigun heal/enemydrain rate by +65%% and uber duration by +1 second.\nIncreases melee resistance with support weapons out by +5%%."
 	}
 	"Voided Rejuvenator Pack Desc"
 	{
