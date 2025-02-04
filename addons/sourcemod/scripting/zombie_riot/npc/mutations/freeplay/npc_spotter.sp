@@ -257,7 +257,7 @@ methodmap Spotter < CClotBody
 	
 	public Spotter(float vecPos[3], float vecAng[3], int ally)
 	{
-		Spotter npc = view_as<Spotter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "100000", ally, false, true));
+		Spotter npc = view_as<Spotter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "50000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 
