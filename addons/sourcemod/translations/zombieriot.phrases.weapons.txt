@@ -2953,7 +2953,7 @@
 	}
 	"Nanomachines"
 	{
-		"en" "Nanomachine Technology"
+		"en" "Nanohealing Technology"
 	}
 	"Voided Rejuvenator Pack"
 	{
