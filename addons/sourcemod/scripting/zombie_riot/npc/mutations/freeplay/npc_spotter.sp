@@ -361,7 +361,7 @@ public void Spotter_ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, _, _, _, _, 99999.9);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, _, _, _, _, 1000.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		ally = GetClosestAllyPlayer(npc.index);
