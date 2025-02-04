@@ -833,7 +833,7 @@ bool Freeplay_ShouldMiniBoss()
 
 void Freeplay_SpawnEnemy(int entity)
 {
-	if(GetTeam(entity) == 2)
+	if(GetTeam(entity) != TFTeam_Red)
 	{
 		if(!b_thisNpcIsARaid[entity])
 		{
