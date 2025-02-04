@@ -43,6 +43,8 @@ static const char g_WarCry[][] = {
 	"items/powerup_pickup_supernova_activate.wav",
 };
 
+static float f_HealCooldown[MAXENTITIES];
+
 void Spotter_OnMapStart_NPC()
 { 	
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -84,6 +86,11 @@ static Action Spotter_SpeechTimer(Handle timer, DataPack pack)
 
 methodmap Spotter < CClotBody
 {
+	property float m_fHealCooldown
+	{
+		public get()							{ return f_HealCooldown[this.index]; }
+		public set(float TempValueForProperty) 	{ f_HealCooldown[this.index] = TempValueForProperty; }
+	}	
 	public void SpeechDelay(float time, const char[] speechtext, const char[] endingtextscroll = "")
 	{
 		DataPack pack;
@@ -126,7 +133,7 @@ methodmap Spotter < CClotBody
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + 45.0;
+		this.m_flNextIdleSound = GetGameTime(this.index) + 40.0;
 		if(!Waves_InFreeplay())
 		{
 			switch(GetURandomInt() % 4)
@@ -164,8 +171,8 @@ methodmap Spotter < CClotBody
 				case 1:
 				{
 					this.Speech("Hey, guess what?");
-					this.SpeechDelay(5.0, "CHICKEN BUTT!!");
-					this.SpeechDelay(10.0, "...yeah i think i'll shut up.");
+					this.SpeechDelay(4.0, "CHICKEN BUTT!!");
+					this.SpeechDelay(8.0, "...yeah i think i'll shut up.");
 				}
 				case 2:
 				{
@@ -182,8 +189,8 @@ methodmap Spotter < CClotBody
 				case 5:
 				{
 					this.Speech("Time to time i have some\nlittle conversations with Koshi.");
-					this.SpeechDelay(10.0, "However, as of lately, he seems a bit off...");
-					this.SpeechDelay(20.0, "He just keeps talking about some\n''Kimori'' or stuff like that.");
+					this.SpeechDelay(7.5, "However, as of lately, he seems a bit off...");
+					this.SpeechDelay(15.0, "He just keeps talking about some\n''Kimori'' or stuff like that.");
 				}
 				case 6:
 				{
@@ -269,6 +276,7 @@ methodmap Spotter < CClotBody
 		npc.Anger = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_iAttacksTillReload = 0;
+		npc.m.fHealCooldown = 0.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Spotter_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Spotter_OnTakeDamage);
@@ -361,7 +369,7 @@ public void Spotter_ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, _, _, _, _, 800.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, _, _, _, _, 600.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		ally = GetClosestAllyPlayer(npc.index);
@@ -408,6 +416,13 @@ public void Spotter_ClotThink(int iNPC)
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 	}
 
+	if(npc.m_fHealCooldown < gameTime)
+	{	
+		ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 2.0);
+		HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
+		npc.m_fHealCooldown = gameTime + 6.0;
+	}
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -448,6 +463,7 @@ public Action Spotter_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		npc.m_fHealCooldown = GetGameTime(npc.index) + 12.0;
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
@@ -573,7 +589,7 @@ void SpotterAllyBuff(Spotter npc)
 		{
 			if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 			{
-				HealEntityGlobal(npc.index, entitycount, 2500.0, 1.0, 0.0, HEAL_ABSOLUTE);
+				HealEntityGlobal(npc.index, entitycount, (float(GetEntProp(entitycount, Prop_Data, "m_iHealth")) * 0.1), 1.0, 0.0, HEAL_ABSOLUTE);
 				ApplyStatusEffect(npc.index, entitycount, "Spotter's Rally", 10.0);
 			}
 		}
