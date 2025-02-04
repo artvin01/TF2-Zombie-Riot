@@ -3028,4 +3028,8 @@
 		"en"	"Reconstructive Teleporter"
 		"ko"	"재구성 텔레포터"
 	}
+	"Koshi's Goods"
+	{
+		"en" "Koshi's Goods"
+	}
 }
