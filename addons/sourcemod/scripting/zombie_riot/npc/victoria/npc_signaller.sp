@@ -207,7 +207,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 
 	gameTime = GetGameTime() + 0.5;
 
-	if(!NpcStats_IsEnemySilenced(npc.index) && !isfreeplay)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		int team = GetTeam(npc.index);
 		if(team == 2)
@@ -216,14 +216,18 @@ public void VictorianSignaller_ClotThink(int iNPC)
 			{
 				if(IsClientInGame(client) && IsEntityAlive(client))
 				{
-					if(GetClientTeam(client) != 3)
-						if(isfreeplay)
-							ApplyStatusEffect(npc.index, client, "Call To Victoria", 60.0);
-						else
-							ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
-					else
-						if(isfreeplay && freeplay_sigmalone)
-							SDKHooks_TakeDamage(client, npc.index, npc.index, 500.0, DMG_CLUB, -1);
+					ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
+				}
+			}
+		}
+		else
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client) && IsEntityAlive(client))
+				{
+					if(freeplay_sigmalone)
+						SDKHooks_TakeDamage(client, npc.index, npc.index, 600.0, DMG_CLUB, -1);
 				}
 			}
 		}
@@ -234,13 +238,28 @@ public void VictorianSignaller_ClotThink(int iNPC)
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 			{
 				if(GetTeam(entity) == team)
-					if(isfreeplay)
+				{
+					if(!isfreeplay)
+					{
 						ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+					}
 					else
+					{
 						ApplyStatusEffect(npc.index, entity, "Call To Victoria", 60.0);
+						fl_Extra_Speed[entity] *= 1.1;
+						fl_Extra_MeleeArmor[entity] *= 0.9;
+						fl_Extra_RangedArmor[entity] *= 0.9;
+						HealEntityGlobal(npc.index, entity, (float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.25), 1.0, 0.0, HEAL_ABSOLUTE);
+					}
+				}
 				else
-					if(isfreeplay && freeplay_sigmalone)
-						SDKHooks_TakeDamage(entity, npc.index, npc.index, 500.0, DMG_CLUB, -1);
+				{
+					if(freeplay_sigmalone)
+					{
+						SDKHooks_TakeDamage(entity, npc.index, npc.index, 750.0, DMG_CLUB, -1);
+						ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
+					}
+				}
 			}
 		}
 	}
