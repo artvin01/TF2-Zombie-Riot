@@ -838,7 +838,7 @@ void Freeplay_SpawnEnemy(int entity)
 		if(!b_thisNpcIsARaid[entity])
 		{
 			if(ZR_GetWaveCount() > 149)
-				fl_Extra_Damage[entity] *= 2.0 + (float(ZR_GetWaveCount() - 149));
+				fl_Extra_Damage[entity] *= 2.0 + ((float(ZR_GetWaveCount() - 149)) * 2.0);
 			else
 				fl_Extra_Damage[entity] *= 2.0;
 		}
