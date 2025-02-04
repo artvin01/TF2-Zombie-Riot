@@ -649,44 +649,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(enemy.Team != TFTeam_Red)
 		enemy.ExtraSize *= ExtraEnemySize;
 
-	if(RandomStats)
-	{
-		if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare
-		{
-			enemy.Health = RoundToCeil(float(enemy.Health) * GetRandomFloat(0.25, 6.0));
-			enemy.ExtraSize = GetRandomFloat(0.1, 3.0);
-			enemy.Is_Immune_To_Nuke = GetRandomInt(0, 1);
-			enemy.ExtraMeleeRes = GetRandomFloat(0.1, 2.0);
-			enemy.ExtraRangedRes = GetRandomFloat(0.05, 1.0);
-			enemy.ExtraSpeed = GetRandomFloat(0.1, 3.0);
-			enemy.ExtraDamage = GetRandomFloat(0.25, 10.0);
-			enemy.Is_Outlined = 1;
-
-			switch(GetRandomInt(1, 4))
-			{
-				case 1:
-				{
-					CPrintToChatAll("{crimson}HAVE AT THEE!!");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{crimson}FACE THIS!!");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{crimson}HOW'S THIS FOR A SURPRISE!?");
-				}
-				default:
-				{
-					CPrintToChatAll("{crimson}GET A LOAD OF THIS GUY!!");
-				}
-			}
-
-			RandomStats--;
-			EmitSoundToAll("misc/halloween/hwn_bomb_flash.wav");
-		}
-	}
-
 	// 2 billion limit, it is necessary
 	if(enemy.Health > 2000000000)
 		enemy.Health = 2000000000;
@@ -831,6 +793,51 @@ void Freeplay_SpawnEnemy(int entity)
 {
 	if(GetTeam(entity) != TFTeam_Red)
 	{
+		if(RandomStats)
+		{
+			if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare but not too rare
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(0.25, 10.0)));
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * GetRandomFloat(0.25, 10.0)));
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(entity, Prop_Send, "m_flModelScale") * GetRandomFloat(0.3, 3.5);
+				fl_Extra_MeleeArmor[entity] *= GetRandomFloat(0.05, 2.0);
+				fl_Extra_RangedArmor[entity] *= GetRandomFloat(0.05, 2.0);
+				fl_Extra_Speed[entity] *= GetRandomFloat(0.35, 5.0);
+				fl_Extra_Damage[entity] *= GetRandomFloat(0.35, 12.5);
+	
+				switch(GetRandomInt(1, 6))
+				{
+					case 1:
+					{
+						CPrintToChatAll("{crimson}HAVE AT THEE!!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{crimson}FACE THIS!!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{crimson}HOW'S THIS FOR A SURPRISE!?");
+					}
+					case 5:
+					{
+						CPrintToChatAll("{crimson}BOO!!!!");
+					}
+					case 6:
+					{
+						CPrintToChatAll("{crimson}ENGAGE!!!");
+					}
+					default:
+					{
+						CPrintToChatAll("{crimson}GET A LOAD OF THIS GUY!!");
+					}
+				}
+	
+				RandomStats--;
+				EmitSoundToAll("misc/halloween/hwn_bomb_flash.wav");
+			}
+		}
+
 		if(!b_thisNpcIsARaid[entity])
 		{
 			if(ZR_GetWaveCount() > 149)
@@ -1256,7 +1263,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			RandomStats += GetRandomInt(9, 18);
+			RandomStats += GetRandomInt(10, 20);
 			CPrintToChatAll("{red}Some enemies may recieve some randomized stats...");
 		}
 
@@ -1779,7 +1786,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 19:
 			{
-				RandomStats += 2;
+				RandomStats += 5;
 				strcopy(message, sizeof(message), "{red}Some enemies may recieve some randomized stats...");
 			}
 	
