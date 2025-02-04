@@ -223,6 +223,45 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
 		npc.m_flNextMeleeAttack = gameTime + 7.50;
 		npc.PlayHornSound();
+
+		if(Waves_InFreeplay())
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client) && IsEntityAlive(client))
+				{
+					if(freeplay_sigmalone)
+					{
+						SDKHooks_TakeDamage(client, npc.index, npc.index, 600.0, DMG_CLUB, -1);
+						ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 8.0);
+					}
+				}
+			}
+	
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+				{
+					if(GetTeam(entity) == GetTeam(npc.index))
+					{
+						ApplyStatusEffect(npc.index, entity, "Call To Victoria", 10.0);
+						fl_Extra_Speed[entity] *= 1.1;
+						fl_Extra_MeleeArmor[entity] *= 0.9;
+						fl_Extra_RangedArmor[entity] *= 0.9;
+						HealEntityGlobal(npc.index, entity, (float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.25), 1.0, 0.0, HEAL_ABSOLUTE);
+					}
+					else
+					{
+						if(freeplay_sigmalone)
+						{
+							SDKHooks_TakeDamage(entity, npc.index, npc.index, 750.0, DMG_CLUB, -1);
+							ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	gameTime = GetGameTime() + 0.5;
@@ -256,45 +295,6 @@ public void VictorianSignaller_ClotThink(int iNPC)
 	if(npc.m_iTargetAlly > 0)
 	{
 		NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
-	}
-
-	if(Waves_InFreeplay())
-	{
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsClientInGame(client) && IsEntityAlive(client))
-			{
-				if(freeplay_sigmalone)
-				{
-					SDKHooks_TakeDamage(client, npc.index, npc.index, 600.0, DMG_CLUB, -1);
-					ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
-				}
-			}
-		}
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-			{
-				if(GetTeam(entity) == GetTeam(npc.index))
-				{
-					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 60.0);
-					fl_Extra_Speed[entity] *= 1.1;
-					fl_Extra_MeleeArmor[entity] *= 0.9;
-					fl_Extra_RangedArmor[entity] *= 0.9;
-					HealEntityGlobal(npc.index, entity, (float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.25), 1.0, 0.0, HEAL_ABSOLUTE);
-				}
-				else
-				{
-					if(freeplay_sigmalone)
-					{
-						SDKHooks_TakeDamage(entity, npc.index, npc.index, 750.0, DMG_CLUB, -1);
-						ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
-					}
-				}
-			}
-		}
 	}
 
 	npc.PlayIdleSound();
