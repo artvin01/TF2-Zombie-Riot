@@ -276,7 +276,7 @@ methodmap Spotter < CClotBody
 		npc.Anger = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_iAttacksTillReload = 0;
-		npc.m.fHealCooldown = 0.0;
+		npc.m_fHealCooldown = 0.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Spotter_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Spotter_OnTakeDamage);
