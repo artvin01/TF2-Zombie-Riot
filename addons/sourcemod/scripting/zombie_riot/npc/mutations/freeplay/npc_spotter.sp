@@ -269,7 +269,8 @@ methodmap Spotter < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_flNextMeleeAttack = 0.0;
-		
+		npc.m_flMeleeArmor = 0.75;
+		npc.m_flRangedArmor = 0.75;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -281,7 +282,6 @@ methodmap Spotter < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Spotter_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Spotter_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Spotter_ClotThink);
-		
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 365.0;
@@ -530,7 +530,7 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 75000.0;
+					float damageDealt = 93750.0;
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					ApplyStatusEffect(npc.index, target, "Silenced", 5.0);
