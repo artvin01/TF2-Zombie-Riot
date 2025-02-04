@@ -107,7 +107,7 @@ methodmap VictorianSignaller < CClotBody
 
 		if(Waves_InFreeplay())
 		{
-			CPrintToChat("{blue}Sigmaller{white}: {blue}I FEEL SO SIGMA!!");
+			CPrintToChatAll("{blue}Sigmaller{white}: {blue}I FEEL SO SIGMA!!");
 			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 			{
 				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
