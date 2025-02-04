@@ -1444,7 +1444,7 @@ void Freeplay_SetupStart(bool extra = false)
 			SilenceDebuff = true;
 		}
 
-		float randomsize = GetRandomFloat(0.2, 2.0);
+		float randomsize = GetRandomFloat(0.4, 1.8);
 		ExtraEnemySize *= randomsize;
 		CPrintToChatAll("{yellow}Enemy size has been multiplied by %.2fx!", randomsize);
 
