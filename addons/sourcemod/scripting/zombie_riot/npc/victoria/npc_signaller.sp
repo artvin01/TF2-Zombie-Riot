@@ -277,7 +277,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 			{
-				if(GetTeam(entity) == team)
+				if(GetTeam(entity) == GetTeam(npc.index))
 				{
 					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 60.0);
 					fl_Extra_Speed[entity] *= 1.1;
