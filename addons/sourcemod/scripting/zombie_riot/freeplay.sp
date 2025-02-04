@@ -65,9 +65,9 @@ void Freeplay_OnMapStart()
 	PrecacheSound("music/mvm_class_select.wav", true);
 }
 
-void Freeplay_SpotterDeath()
+void Freeplay_SpotterStatus(bool status)
 {
-	spotteralive = false;
+	spotteralive = status;
 }
 
 void Freeplay_ResetAll()
@@ -509,7 +509,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Boss = 0;
 		enemy.Is_Health_Scaled = 0;
 		count = 1;
-		spotteralive = true;
 		spotter--;
 	}
 	else
