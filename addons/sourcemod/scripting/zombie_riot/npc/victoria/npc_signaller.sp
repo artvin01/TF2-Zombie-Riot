@@ -104,6 +104,29 @@ methodmap VictorianSignaller < CClotBody
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+
+		if(Waves_InFreeplay())
+		{
+			CPrintToChat("{blue}Sigmaller{white}: {blue}I FEEL SO SIGMA!!");
+			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+			{
+				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+				{
+					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+					{
+						HealEntityGlobal(npc.index, entitycount, float(GetEntProp(entitycount, Prop_Data, "m_iHealth")), 1.0, 0.0, HEAL_ABSOLUTE);
+						ApplyStatusEffect(npc.index, entitycount, "Combine Command", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Buff Banner", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "False Therapy", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Healing Strength", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Self Empowerment", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Ally Empowerment", 2.5);
+					}
+				}
+			}
+		}
 		
 		float flPos[3], flAng[3];
 				
@@ -111,7 +134,7 @@ methodmap VictorianSignaller < CClotBody
 		i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 
-	
+		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_bugle/c_battalion_bugle.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -227,7 +250,10 @@ public void VictorianSignaller_ClotThink(int iNPC)
 				if(IsClientInGame(client) && IsEntityAlive(client))
 				{
 					if(freeplay_sigmalone)
+					{
 						SDKHooks_TakeDamage(client, npc.index, npc.index, 600.0, DMG_CLUB, -1);
+						ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
+					}
 				}
 			}
 		}
