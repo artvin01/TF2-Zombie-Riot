@@ -393,7 +393,8 @@ public void Spotter_ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-		SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance); 
+		SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance);
+		npc.m_flSpeed = 365.0;
 	}
 	else
 	{
@@ -414,6 +415,7 @@ public void Spotter_ClotThink(int iNPC)
 
 		npc.StopPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.m_flSpeed = 420.0;
 	}
 
 	if(npc.m_fHealCooldown < gameTime)
