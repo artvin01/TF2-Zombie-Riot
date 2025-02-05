@@ -376,7 +376,7 @@ public void Spotter_ClotThink(int iNPC)
 		npc.m_iTargetWalkTo = ally;
 	}
 
-	if(target > 0)
+	if(target > 0 && GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) * 0.2))
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
