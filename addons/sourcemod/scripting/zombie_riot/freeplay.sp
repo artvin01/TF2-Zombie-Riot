@@ -1263,8 +1263,8 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			RandomStats += GetRandomInt(10, 20);
-			CPrintToChatAll("{red}Some enemies may recieve some randomized stats...");
+			RandomStats += GetRandomInt(5, 15);
+			CPrintToChatAll("{red}%d random enemies will recieve randomized stats! You'll never know when.", RandomStats);
 		}
 
 		if(GetRandomInt(1, 2) > 1)
@@ -1786,8 +1786,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 19:
 			{
-				RandomStats += 5;
-				strcopy(message, sizeof(message), "{red}Some enemies may recieve some randomized stats...");
+				RandomStats += 3;
+				strcopy(message, sizeof(message), "{red}3 random enemies will recieve randomized stats! You'll never know when.");
 			}
 	
 			/// CREDIT SKULLS //
