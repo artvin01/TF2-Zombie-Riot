@@ -58,7 +58,7 @@ TODO:
 
 //Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
 
-stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntityColour = true, int SetOverride = 0, bool ingore_wearables = true, bool dontchangewearablecolour = true)
+stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntityColour = true, int SetOverride = 0, bool ingore_wearables = true, bool dontchangewearablecolour = true, bool ForceColour = false)
 {
 	if(TrueEntityColour || SetOverride != 0)
 	{
@@ -85,7 +85,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			if(SetOverride == 1)
 			{
@@ -123,7 +123,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity] || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity] || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0) || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			SetEntityRenderMode(entity, mode);
 		}
@@ -134,7 +134,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 
 
 //Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
-stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=255, int a=255, bool TrueEntityColour = true, bool ingore_wearables = true, bool dontchangewearablecolour = true)
+stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=255, int a=255, bool TrueEntityColour = true, bool ingore_wearables = true, bool dontchangewearablecolour = true, bool ForceColour = false)
 {	
 	bool ColorWasSet = false;
 	if(TrueEntityColour)
@@ -157,7 +157,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			i_EntityRenderColour1[entity] = r;
 			i_EntityRenderColour2[entity] = g;
@@ -177,7 +177,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
 				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
 				{	
-					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
+					if(i_EntityRenderColour4[WearableEntityIndex] != 0 || ForceColour)
 					{
 						if(!TrueEntityColour)
 						{
@@ -195,7 +195,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 				}
 			}
 		}
-		if((i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity]) || (ColorWasSet && !i_EntityRenderOverride[entity]) || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
+		if(ForceColour || (i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity]) || (ColorWasSet && !i_EntityRenderOverride[entity]) || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
 		{
 			SetEntityRenderColor(entity, r, g, b, a);
 		}
