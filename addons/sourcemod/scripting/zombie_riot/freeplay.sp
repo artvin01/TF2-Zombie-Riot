@@ -834,7 +834,7 @@ void Freeplay_SpawnEnemy(int entity)
 				}
 	
 				RandomStats--;
-				EmitSoundToAll("misc/halloween/hwn_bomb_flash.wav");
+				EmitSoundToAll("misc/halloween/hwn_bomb_flash.wav", _, _, _, _, _, GetRandomInt(75, 135));
 			}
 		}
 
