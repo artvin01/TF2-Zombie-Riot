@@ -245,10 +245,10 @@ public void VictorianSignaller_ClotThink(int iNPC)
 					if(GetTeam(entity) == GetTeam(npc.index))
 					{
 						ApplyStatusEffect(npc.index, entity, "Call To Victoria", 10.0);
-						fl_Extra_Speed[entity] *= 1.1;
-						fl_Extra_MeleeArmor[entity] *= 0.9;
-						fl_Extra_RangedArmor[entity] *= 0.9;
-						HealEntityGlobal(npc.index, entity, (float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.25), 1.0, 0.0, HEAL_ABSOLUTE);
+						fl_Extra_Speed[entity] *= 1.01;
+						fl_Extra_MeleeArmor[entity] *= 0.99;
+						fl_Extra_RangedArmor[entity] *= 0.99;
+						HealEntityGlobal(npc.index, entity, (float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.1), 1.0, 0.0, HEAL_ABSOLUTE);
 					}
 					else
 					{
@@ -261,7 +261,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 				}
 			}
 
-			npc.m_flNextMeleeAttack = gameTime + 4.25;
+			npc.m_flNextMeleeAttack = gameTime + 5.0;
 		}
 		else
 		{

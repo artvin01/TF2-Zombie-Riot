@@ -911,7 +911,15 @@ static void Agent_CloningAmount(AgentSmith npc)
 			npc.Anger = true;
 		}
 	}
-	Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2);
+
+	if(Waves_InFreeplay())
+	{
+		Agent_Smith_Cloner(npc, 4, ReturnEntityMaxHealth(npc.index)/2, 1.5);
+	}
+	else
+	{
+		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2);
+	}
 }
 
 static void Agent_Smith_Cloner(AgentSmith npc, int amount, int health, float damage_mult = 1.0)
@@ -932,6 +940,11 @@ static void Agent_Smith_Cloner(AgentSmith npc, int amount, int health, float dam
 	enemy.Data = "clone";
     
 	enemy.Team = GetTeam(npc.index);
+	if(Waves_InFreeplay() && !b_thisNpcIsARaid[npc.index])
+	{
+		enemy.ExtraSpeed = 1.1;
+	}
+
 	for(int i; i < amount; i++)
 	{
 		Waves_AddNextEnemy(enemy);
