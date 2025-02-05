@@ -43,6 +43,8 @@ static const char g_WarCry[][] = {
 	"items/powerup_pickup_supernova_activate.wav",
 };
 
+static float f_HealCooldown[MAXENTITIES];
+
 void Spotter_OnMapStart_NPC()
 { 	
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -84,6 +86,11 @@ static Action Spotter_SpeechTimer(Handle timer, DataPack pack)
 
 methodmap Spotter < CClotBody
 {
+	property float m_fHealCooldown
+	{
+		public get()							{ return f_HealCooldown[this.index]; }
+		public set(float TempValueForProperty) 	{ f_HealCooldown[this.index] = TempValueForProperty; }
+	}	
 	public void SpeechDelay(float time, const char[] speechtext, const char[] endingtextscroll = "")
 	{
 		DataPack pack;
@@ -126,7 +133,7 @@ methodmap Spotter < CClotBody
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + 45.0;
+		this.m_flNextIdleSound = GetGameTime(this.index) + 40.0;
 		if(!Waves_InFreeplay())
 		{
 			switch(GetURandomInt() % 4)
@@ -164,8 +171,8 @@ methodmap Spotter < CClotBody
 				case 1:
 				{
 					this.Speech("Hey, guess what?");
-					this.SpeechDelay(5.0, "CHICKEN BUTT!!");
-					this.SpeechDelay(10.0, "...yeah i think i'll shut up.");
+					this.SpeechDelay(4.0, "CHICKEN BUTT!!");
+					this.SpeechDelay(8.0, "...yeah i think i'll shut up.");
 				}
 				case 2:
 				{
@@ -182,8 +189,8 @@ methodmap Spotter < CClotBody
 				case 5:
 				{
 					this.Speech("Time to time i have some\nlittle conversations with Koshi.");
-					this.SpeechDelay(10.0, "However, as of lately, he seems a bit off...");
-					this.SpeechDelay(20.0, "He just keeps talking about some\n''Kimori'' or stuff like that.");
+					this.SpeechDelay(7.5, "However, as of lately, he seems a bit off...");
+					this.SpeechDelay(15.0, "He just keeps talking about some\n''Kimori'' or stuff like that.");
 				}
 				case 6:
 				{
@@ -250,7 +257,7 @@ methodmap Spotter < CClotBody
 	
 	public Spotter(float vecPos[3], float vecAng[3], int ally)
 	{
-		Spotter npc = view_as<Spotter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "100000", ally, false, true));
+		Spotter npc = view_as<Spotter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "50000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 
@@ -262,18 +269,19 @@ methodmap Spotter < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_flNextMeleeAttack = 0.0;
-		
+		npc.m_flMeleeArmor = 0.75;
+		npc.m_flRangedArmor = 0.75;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.Anger = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_iAttacksTillReload = 0;
+		npc.m_fHealCooldown = 0.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(Spotter_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Spotter_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Spotter_ClotThink);
-		
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 365.0;
@@ -307,7 +315,7 @@ methodmap Spotter < CClotBody
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 255, 135, 0);
 
-
+		Freeplay_SpotterStatus(true);
 	        switch(GetRandomInt(1, 5))
 		{
 			case 1:
@@ -361,14 +369,14 @@ public void Spotter_ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, _, _, _, _, 99999.9);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0, _, _, _, _, _, 500.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		ally = GetClosestAllyPlayer(npc.index);
 		npc.m_iTargetWalkTo = ally;
 	}
 
-	if(target > 0)
+	if(target > 0 && GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) * 0.2))
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -385,7 +393,8 @@ public void Spotter_ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-		SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance); 
+		SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance);
+		npc.m_flSpeed = 365.0;
 	}
 	else
 	{
@@ -406,6 +415,14 @@ public void Spotter_ClotThink(int iNPC)
 
 		npc.StopPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.m_flSpeed = 420.0;
+	}
+
+	if(npc.m_fHealCooldown < gameTime)
+	{	
+		ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 2.0);
+		HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
+		npc.m_fHealCooldown = gameTime + 6.0;
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -448,6 +465,7 @@ public Action Spotter_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		npc.m_fHealCooldown = GetGameTime(npc.index) + 12.0;
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
@@ -479,7 +497,7 @@ public void Spotter_NPCDeath(int entity)
 		}
 	}
 	
-	Freeplay_SpotterDeath();
+	Freeplay_SpotterStatus(false);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -514,7 +532,7 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 75000.0;
+					float damageDealt = 93750.0;
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					ApplyStatusEffect(npc.index, target, "Silenced", 5.0);
@@ -573,7 +591,7 @@ void SpotterAllyBuff(Spotter npc)
 		{
 			if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 			{
-				HealEntityGlobal(npc.index, entitycount, 2500.0, 1.0, 0.0, HEAL_ABSOLUTE);
+				HealEntityGlobal(npc.index, entitycount, (float(GetEntProp(entitycount, Prop_Data, "m_iHealth")) * 0.1), 1.0, 0.0, HEAL_ABSOLUTE);
 				ApplyStatusEffect(npc.index, entitycount, "Spotter's Rally", 10.0);
 			}
 		}

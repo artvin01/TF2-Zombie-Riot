@@ -65,9 +65,9 @@ void Freeplay_OnMapStart()
 	PrecacheSound("music/mvm_class_select.wav", true);
 }
 
-void Freeplay_SpotterDeath()
+void Freeplay_SpotterStatus(bool status)
 {
-	spotteralive = false;
+	spotteralive = status;
 }
 
 void Freeplay_ResetAll()
@@ -381,11 +381,17 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		}
 
 		// Raids have too much damage.
-		enemy.ExtraDamage *= 0.55;
+		if(postWaves+1 < 109)
+			enemy.ExtraDamage *= 0.55;
 
 		// Raid health is lower before w150.
 		if(postWaves+1 < 89)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
+		else
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.2);
+
+		if(postWaves+1 > 109)
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.35);
 
 		// moni
 		enemy.Credits += 7500.0;
@@ -463,7 +469,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_seaborn_heavy");
-		enemy.Health = RoundToCeil(50000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToCeil(60000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 		enemy.ExtraSpeed = 5.0;
 		enemy.ExtraSize = 1.25;
 		enemy.Credits += 125.0;
@@ -496,13 +502,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Team = TFTeam_Red;
 		enemy.Index = NPC_GetByPlugin("npc_spotter");
-		enemy.Health = RoundToFloor(40000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-		enemy.ExtraMeleeRes = 0.75;
-		enemy.ExtraRangedRes = 0.75;
-		enemy.Is_Boss = 0;
-		enemy.Is_Health_Scaled = 0;
+		enemy.Health = RoundToFloor(50000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Outlined = 1;
 		count = 1;
-		spotteralive = true;
 		spotter--;
 	}
 	else
@@ -643,45 +646,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(alaxios && count > 30)
 		count = 30;
 
-	enemy.ExtraSize *= ExtraEnemySize;
-
-	if(RandomStats)
-	{
-		if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare
-		{
-			enemy.Health = RoundToCeil(float(enemy.Health) * GetRandomFloat(0.25, 3.0));
-			enemy.ExtraSize = GetRandomFloat(0.1, 3.0);
-			enemy.Is_Immune_To_Nuke = GetRandomInt(0, 1);
-			enemy.ExtraMeleeRes = GetRandomFloat(0.1, 3.0);
-			enemy.ExtraRangedRes = GetRandomFloat(0.05, 2.0);
-			enemy.ExtraSpeed = GetRandomFloat(0.1, 3.0);
-			enemy.ExtraDamage = GetRandomFloat(0.2, 5.0);
-			enemy.Is_Outlined = 1;
-
-			switch(GetRandomInt(1, 4))
-			{
-				case 1:
-				{
-					CPrintToChatAll("{crimson}HAVE AT THEE!!");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{crimson}FACE THIS!!");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{crimson}HOW'S THIS FOR A SURPRISE!?");
-				}
-				default:
-				{
-					CPrintToChatAll("{crimson}GET A LOAD OF THIS GUY!!");
-				}
-			}
-
-			RandomStats--;
-			EmitSoundToAll("misc/halloween/hwn_bomb_flash.wav");
-		}
-	}
+	if(enemy.Team != TFTeam_Red)
+		enemy.ExtraSize *= ExtraEnemySize;
 
 	// 2 billion limit, it is necessary
 	if(enemy.Health > 2000000000)
@@ -825,128 +791,180 @@ bool Freeplay_ShouldMiniBoss()
 
 void Freeplay_SpawnEnemy(int entity)
 {
-	// arvin's order
-	if(!b_thisNpcIsARaid[entity])
-		fl_Extra_Damage[entity] *= 2.0;
-
-	//// BUFFS ////
-
-	if(HussarBuff)
-		ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
-
-	if(PernellBuff)
-		ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
-
-	if(FusionBuff > 1)
-		ApplyStatusEffect(entity, entity, "Self Empowerment", 30.0);	
-
-	if(FusionBuff == 1 || FusionBuff > 2)
-		ApplyStatusEffect(entity, entity, "Ally Empowerment", 30.0);	
-
-	if(OceanBuff > 1)
-		ApplyStatusEffect(entity, entity, "Oceanic Scream", 30.0);	
-
-	if(OceanBuff > 0)
-		ApplyStatusEffect(entity, entity, "Oceanic Singing", 30.0);	
-
-	if(VoidBuff > 1)
-		ApplyStatusEffect(entity, entity, "Void Strength II", 12.0);
-
-	if(VoidBuff > 0)
-		ApplyStatusEffect(entity, entity, "Void Strength I", 6.0);
-
-	if(VictoriaBuff)
-		ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
-
-	if(SquadBuff)
-		ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
-
-	if(Coffee)
+	if(GetTeam(entity) != TFTeam_Red)
 	{
-		ApplyStatusEffect(entity, entity, "Caffinated", 8.0);
-		ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
-	}
-
-	if(merlton)
-		ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 10.0);	
-
-	//// DEBUFFS ////
-
-	if(SilenceDebuff)
-		ApplyStatusEffect(entity, entity, "Silenced", 10.0);
-
-	if(ProsperityDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Prosperity III", 999999.0);	
-
-	if(ProsperityDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Prosperity II", 999999.0);	
-
-	if(ProsperityDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Prosperity I", 999999.0);	
-
-	if(StrangleDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Stranglation III", 999999.0);	
-
-	if(StrangleDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Stranglation II", 999999.0);	
-
-	if(StrangleDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Stranglation I", 999999.0);	
-
-	if(IceDebuff > 2)
-		ApplyStatusEffect(entity, entity, "Near Zero", 999999.0);	
-
-	if(IceDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Cryo", 999999.0);	
-
-	if(IceDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Freeze", 999999.0);	
-
-	if(TeslarDebuff > 1)
-		ApplyStatusEffect(entity, entity, "Teslar Electricution", 999999.0);	
-
-	if(TeslarDebuff > 0)
-		ApplyStatusEffect(entity, entity, "Teslar Shock", 999999.0);	
-
-	if(CrippleDebuff > 0)
-	{
-		ApplyStatusEffect(entity, entity, "Cripple", 999999.0);	
-		CrippleDebuff--;
-	}
-
-	if(CudgelDebuff > 0)
-	{
-		ApplyStatusEffect(entity, entity, "Cudgelled", 999999.0);	
-		CudgelDebuff--;
-	}
-
-	// OTHER //
-	switch(PerkMachine)
-	{
-		case 1:
+		if(RandomStats)
 		{
-			fl_Extra_MeleeArmor[entity] *= 0.8;
-			fl_Extra_RangedArmor[entity] *= 0.8;
-			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
+			if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare but not too rare
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(0.25, 10.0)));
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * GetRandomFloat(0.25, 10.0)));
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(entity, Prop_Send, "m_flModelScale") * GetRandomFloat(0.3, 3.5));
+				fl_Extra_MeleeArmor[entity] *= GetRandomFloat(0.1, 2.35);
+				fl_Extra_RangedArmor[entity] *= GetRandomFloat(0.1, 2.35);
+				fl_Extra_Speed[entity] *= GetRandomFloat(0.25, 3.0);
+				fl_Extra_Damage[entity] *= GetRandomFloat(0.35, 10.0);
+	
+				switch(GetRandomInt(1, 6))
+				{
+					case 1:
+					{
+						CPrintToChatAll("{crimson}HAVE AT THEE!!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{crimson}FACE THIS!!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{crimson}HOW'S THIS FOR A SURPRISE!?");
+					}
+					case 5:
+					{
+						CPrintToChatAll("{crimson}BOO!!!!");
+					}
+					case 6:
+					{
+						CPrintToChatAll("{crimson}ENGAGE!!!");
+					}
+					default:
+					{
+						CPrintToChatAll("{crimson}GET A LOAD OF THIS GUY!!");
+					}
+				}
+	
+				RandomStats--;
+				EmitSoundToAll("misc/halloween/hwn_bomb_flash.wav", _, _, _, _, _, GetRandomInt(75, 135));
+			}
 		}
-		case 2:
+
+		if(!b_thisNpcIsARaid[entity])
 		{
-			fl_Extra_Damage[entity] *= 1.35;
+			if(ZR_GetWaveCount() > 149)
+				fl_Extra_Damage[entity] *= 2.0 + (((float(ZR_GetWaveCount() - 149)) * 0.025));
+			else
+				fl_Extra_Damage[entity] *= 2.0;
 		}
-		case 3:
+	
+		//// BUFFS ////
+	
+		if(HussarBuff)
+			ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
+	
+		if(PernellBuff)
+			ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
+	
+		if(FusionBuff > 1)
+			ApplyStatusEffect(entity, entity, "Self Empowerment", 30.0);	
+	
+		if(FusionBuff == 1 || FusionBuff > 2)
+			ApplyStatusEffect(entity, entity, "Ally Empowerment", 30.0);	
+	
+		if(OceanBuff > 1)
+			ApplyStatusEffect(entity, entity, "Oceanic Scream", 30.0);	
+	
+		if(OceanBuff > 0)
+			ApplyStatusEffect(entity, entity, "Oceanic Singing", 30.0);	
+	
+		if(VoidBuff > 1)
+			ApplyStatusEffect(entity, entity, "Void Strength II", 12.0);
+	
+		if(VoidBuff > 0)
+			ApplyStatusEffect(entity, entity, "Void Strength I", 6.0);
+	
+		if(VictoriaBuff)
+			ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
+	
+		if(SquadBuff)
+			ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
+	
+		if(Coffee)
 		{
-			fl_Extra_Damage[entity] *= 1.15;
+			ApplyStatusEffect(entity, entity, "Caffinated", 8.0);
+			ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
 		}
-		case 4:
+	
+		if(merlton)
+			ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 5.0);	
+	
+		//// DEBUFFS ////
+	
+		if(SilenceDebuff)
+			ApplyStatusEffect(entity, entity, "Silenced", 10.0);
+	
+		if(ProsperityDebuff > 2)
+			ApplyStatusEffect(entity, entity, "Prosperity III", 999999.0);	
+	
+		if(ProsperityDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Prosperity II", 999999.0);	
+	
+		if(ProsperityDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Prosperity I", 999999.0);	
+	
+		if(StrangleDebuff > 2)
+			ApplyStatusEffect(entity, entity, "Stranglation III", 999999.0);	
+	
+		if(StrangleDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Stranglation II", 999999.0);	
+	
+		if(StrangleDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Stranglation I", 999999.0);	
+	
+		if(IceDebuff > 2)
+			ApplyStatusEffect(entity, entity, "Near Zero", 999999.0);	
+	
+		if(IceDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Cryo", 999999.0);	
+	
+		if(IceDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Freeze", 999999.0);	
+	
+		if(TeslarDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Teslar Electricution", 999999.0);	
+	
+		if(TeslarDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Teslar Shock", 999999.0);	
+	
+		if(CrippleDebuff > 0)
 		{
-			ApplyStatusEffect(entity, entity, "Fluid Movement", 999999.0);		
+			ApplyStatusEffect(entity, entity, "Cripple", 999999.0);	
+			CrippleDebuff--;
 		}
+	
+		if(CudgelDebuff > 0)
+		{
+			ApplyStatusEffect(entity, entity, "Cudgelled", 999999.0);	
+			CudgelDebuff--;
+		}
+	
+		// OTHER //
+		switch(PerkMachine)
+		{
+			case 1:
+			{
+				fl_Extra_MeleeArmor[entity] *= 0.8;
+				fl_Extra_RangedArmor[entity] *= 0.8;
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
+			}
+			case 2:
+			{
+				fl_Extra_Damage[entity] *= 1.35;
+			}
+			case 3:
+			{
+				fl_Extra_Damage[entity] *= 1.15;
+			}
+			case 4:
+			{
+				ApplyStatusEffect(entity, entity, "Fluid Movement", 999999.0);		
+			}
+		}
+		fl_Extra_Speed[entity] *= SpeedMult;
+		fl_Extra_MeleeArmor[entity] *= MeleeMult;
+		fl_Extra_RangedArmor[entity] *= RangedMult;
+		if(EnemyShields > 0)
+			VausMagicaGiveShield(entity, EnemyShields);
 	}
-	fl_Extra_Speed[entity] *= SpeedMult;
-	fl_Extra_MeleeArmor[entity] *= MeleeMult;
-	fl_Extra_RangedArmor[entity] *= RangedMult;
-	if(EnemyShields > 0)
-		VausMagicaGiveShield(entity, EnemyShields);
 }
 
 static Action activatebuffs(Handle timer)
@@ -1083,9 +1101,17 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+		int raidreq = 15;
+		int irlnreq = 2;
+		
+		if(ZR_GetWaveCount() > 174)
+			raidreq = 25;
+
+		if(ZR_GetWaveCount() > 199)
+			irlnreq = 5;
 
 		int raidchance = GetRandomInt(0, 100);
-		if(raidchance < 15) // 15% chance
+		if(raidchance < raidreq)
 		{
 			raidtime = true;
 		}
@@ -1093,28 +1119,29 @@ void Freeplay_SetupStart(bool extra = false)
 		if(ZR_GetWaveCount() > 99)
 		{
 			int wrathchance = GetRandomInt(0, 100);
-			if(wrathchance < 2) // 2% chance
+			if(wrathchance < irlnreq)
 			{
 				raidtime = false;
 				wrathofirln = true;
 			}
 		}
 
-		if(!wrathofirln)
+		if(!wrathofirln && !raidtime)
 		{
 			EmitSoundToAll("ui/vote_success.wav");
-			int exskull = GetRandomInt(0, 100);
-
-			if(exskull < 20) // 20% chance
-			{
-				ExtraSkulls++;
-				CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
-				CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
-				EmitSoundToAll("passtime/ball_dropped.wav", _, _, _, _, 0.67);
-			}
-
-			SkullTimes = ExtraSkulls;
 		}
+		
+		int exskull = GetRandomInt(0, 100);
+
+		if(exskull < 20) // 20% chance
+		{
+			ExtraSkulls++;
+			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
+			CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
+			EmitSoundToAll("passtime/ball_dropped.wav", _, _, _, _, 0.67);
+		}
+
+		SkullTimes = ExtraSkulls;
 	}
 
 	static int RerollTry;
@@ -1125,7 +1152,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	if(wrathofirln)
 	{
-		int randomhp1 = GetRandomInt(-45000, 75000);
+		int randomhp1 = GetRandomInt(-50000, 150000);
 		HealthBonus += randomhp1;
 		if(randomhp1 > 0)
 		{
@@ -1136,7 +1163,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemies now have %d less health.", randomhp1);
 		}
 
-		float randomhp2 = GetRandomFloat(0.6, 1.2);
+		float randomhp2 = GetRandomFloat(0.25, 1.65);
 		HealthMulti *= randomhp2;
 		if(randomhp2 > 1.0)
 		{
@@ -1226,31 +1253,33 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			int randomcripple = GetRandomInt(100, 600);
+			int randomcripple = GetRandomInt(150, 900);
 			CrippleDebuff += randomcripple;
 			CPrintToChatAll("{green}The next %d enemies will now gain the Crippled debuff.", randomcripple);
 
-			int randomcudgel = GetRandomInt(100, 600);
+			int randomcudgel = GetRandomInt(150, 900);
 			CudgelDebuff += randomcudgel;
 			CPrintToChatAll("{green}The next %d enemies will now gain the Cudgel debuff.", randomcudgel);
 		}
 		else
 		{
-			RandomStats += GetRandomInt(3, 6);
-			CPrintToChatAll("{red}Some enemies may recieve some randomized stats...");
+			RandomStats += GetRandomInt(5, 15);
+			CPrintToChatAll("{red}%d random enemies will recieve randomized stats! You'll never know when.", RandomStats);
 		}
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			CPrintToChatAll("{green}All enemies now give out 1 extra credit on death.");
-			KillBonus += 1;
+			int randomonkill = GetRandomInt(2, 6);
+			CPrintToChatAll("{green}All enemies now give out %d extra credits on death.", randomonkill);
+			KillBonus += randomonkill;
 		}
 		else
 		{
 			if(KillBonus < 1)
 			{
-				CPrintToChatAll("{green}All enemies now give out 1 extra credit on death.");
-				KillBonus += 1;
+				int randomonkill = GetRandomInt(2, 6);
+				CPrintToChatAll("{green}All enemies now give out %d extra credits on death.", randomonkill);
+				KillBonus += randomonkill;
 			}
 			else
 			{
@@ -1261,15 +1290,17 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			CPrintToChatAll("{green}You now gain 120 extra credits per wave.");
-			CashBonus += 120;
+			int randomcredits = GetRandomInt(120, 360);
+			CPrintToChatAll("{green}You now gain %d extra credits per wave.", randomcredits);
+			CashBonus += randomcredits;
 		}
 		else
 		{
 			if(CashBonus < 100)
 			{
-				CPrintToChatAll("{green}You now gain 120 extra credits per wave.");
-				CashBonus += 120;
+				int randomcredits = GetRandomInt(120, 360);
+				CPrintToChatAll("{green}You now gain %d extra credits per wave.", randomcredits);
+				CashBonus += randomcredits;
 			}
 			else
 			{
@@ -1281,7 +1312,7 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{green}You will gain 5 random friendly units.");
 		FriendlyDay = true;
 
-		float randommini = GetRandomFloat(0.75, 1.5);
+		float randommini = GetRandomFloat(0.5, 2.0);
 		MiniBossChance *= randommini;
 		if(randommini > 1.0)
 		{
@@ -1292,7 +1323,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.2fx.", randommini);
 		}
 
-		float randomspeed = GetRandomFloat(0.6, 1.15);
+		float randomspeed = GetRandomFloat(0.35, 1.5);
 		SpeedMult *= randomspeed;
 		if(randomspeed > 1.0)
 		{
@@ -1303,7 +1334,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy speed has been multiplied by %.2fx.", randomspeed);
 		}
 
-		float randommelee = GetRandomFloat(0.8, 1.35);
+		float randommelee = GetRandomFloat(0.25, 2.0);
 		MeleeMult *= randommelee;
 		if(randommelee < 1.0)
 		{
@@ -1314,7 +1345,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy melee vulnerability has been multiplied by %.2fx.", randommelee);
 		}
 
-		float randomranged = GetRandomFloat(0.8, 1.35);
+		float randomranged = GetRandomFloat(0.25, 2.0);
 		RangedMult *= randomranged;
 		if(randomranged < 1.0)
 		{
@@ -1325,7 +1356,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy ranged vulnerability has been multiplied by %.2fx.", randomranged);
 		}
 
-		int randomshield = GetRandomInt(-4, 4);
+		int randomshield = GetRandomInt(-6, 12);
 		EnemyShields += randomshield;
 		if(EnemyShields > 15)
 			EnemyShields = 15;
@@ -1416,7 +1447,7 @@ void Freeplay_SetupStart(bool extra = false)
 			SilenceDebuff = true;
 		}
 
-		float randomsize = GetRandomFloat(0.67, 1.33);
+		float randomsize = GetRandomFloat(0.4, 1.8);
 		ExtraEnemySize *= randomsize;
 		CPrintToChatAll("{yellow}Enemy size has been multiplied by %.2fx!", randomsize);
 
@@ -1451,6 +1482,64 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			CPrintToChatAll("{green}All players and allied npcs now gain a layer of the Rampart buff.");
 			RampartBuff++;
+		}
+
+		if(merlton)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Merlton buff.");
+			merlton = false;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain the Merlton buff for 5 seconds!");
+			merlton = true;
+		}
+
+		if(GetRandomInt(1, 2) == 1)
+		{
+			CPrintToChatAll("{red}Stronger enemy types are now more likely to appear!");
+			EnemyChance++;
+		}
+		else
+		{
+			if(EnemyChance < 3)
+			{
+				CPrintToChatAll("{red}Stronger enemy types are now more likely to appear!");
+				EnemyChance++;
+			}
+	
+			CPrintToChatAll("{green}Stronger enemy types are now less likely to appear.");
+			EnemyChance--;
+		}
+
+		PerkMachine = GetRandomInt(0, 4);
+		switch(PerkMachine)
+		{
+			case 1:
+			{
+				CPrintToChatAll("{red}All enemies are now using the Juggernog perk, And thus gain +20% resist and +15% HP!");
+				PerkMachine = 1;
+			}
+			case 2:
+			{
+				CPrintToChatAll("{red}All enemies are now using the Double Tap perk, And thus gain 35% Extra Damage!");
+				PerkMachine = 2;
+			}
+			case 3:
+			{
+				CPrintToChatAll("{red}All enemies are now using the Deadshot Daiquiri perk, and thus gain 15% Extra Damage!");
+				PerkMachine = 3;
+			}
+			case 4:
+			{
+				CPrintToChatAll("{red}All enemies are now using the Speed Cola perk, and thus cannot be slowed!");
+				PerkMachine = 4;
+			}
+			default:
+			{
+				CPrintToChatAll("{green}All enemies are now using the Quick Revive perk, this is useless and removes their previous perk.");
+				PerkMachine = 0;
+			}
 		}
 
 		switch(GetRandomInt(1, 5))
@@ -1697,8 +1786,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 19:
 			{
-				RandomStats += 2;
-				strcopy(message, sizeof(message), "{red}Some enemies may recieve some randomized stats...");
+				RandomStats += 3;
+				strcopy(message, sizeof(message), "{red}3 random enemies will recieve randomized stats! You'll never know when.");
 			}
 	
 			/// CREDIT SKULLS //
@@ -2303,7 +2392,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Merlton buff for 10 seconds!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Merlton buff for 5 seconds!");
 					merlton = true;
 				}
 			}
