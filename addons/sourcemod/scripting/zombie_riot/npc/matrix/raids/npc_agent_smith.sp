@@ -914,7 +914,7 @@ static void Agent_CloningAmount(AgentSmith npc)
 
 	if(Waves_InFreeplay())
 	{
-		Agent_Smith_Cloner(npc, 4, ReturnEntityMaxHealth(npc.index)/2);
+		Agent_Smith_Cloner(npc, 4, ReturnEntityMaxHealth(npc.index)/2, 1.5);
 	}
 	else
 	{
@@ -940,6 +940,11 @@ static void Agent_Smith_Cloner(AgentSmith npc, int amount, int health, float dam
 	enemy.Data = "clone";
     
 	enemy.Team = GetTeam(npc.index);
+	if(Waves_InFreeplay() && !b_thisNpcIsARaid[npc.index])
+	{
+		enemy.ExtraSpeed = 1.1;
+	}
+
 	for(int i; i < amount; i++)
 	{
 		Waves_AddNextEnemy(enemy);
