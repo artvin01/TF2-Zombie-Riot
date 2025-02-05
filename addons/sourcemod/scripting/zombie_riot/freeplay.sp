@@ -798,7 +798,7 @@ void Freeplay_SpawnEnemy(int entity)
 			if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare but not too rare
 			{
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(0.25, 10.0)));
-				SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * GetRandomFloat(0.25, 10.0)));
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(entity, Prop_Send, "m_flModelScale") * GetRandomFloat(0.3, 3.5));
 				fl_Extra_MeleeArmor[entity] *= GetRandomFloat(0.1, 2.35);
 				fl_Extra_RangedArmor[entity] *= GetRandomFloat(0.1, 2.35);
