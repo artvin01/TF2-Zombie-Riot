@@ -221,7 +221,6 @@ public void VictorianSignaller_ClotThink(int iNPC)
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
-		npc.m_flNextMeleeAttack = gameTime + 7.50;
 		npc.PlayHornSound();
 
 		if(Waves_InFreeplay())
@@ -261,6 +260,12 @@ public void VictorianSignaller_ClotThink(int iNPC)
 					}
 				}
 			}
+
+			npc.m_flNextMeleeAttack = gameTime + 4.25;
+		}
+		else
+		{
+			npc.m_flNextMeleeAttack = gameTime + 7.50;
 		}
 	}
 
