@@ -3556,7 +3556,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{
 						SetHudTextParams(-1.0, -1.0, 5.0, 255, 255, 0, 255);
-						ShowHudText(client, -1, "--ALERT--\nWave 150 reached.\nRaids will now have x2 HP.");
+						ShowHudText(client, -1, "--!ALERT!--\nRaids will now have x2 HP.\nNon-raid enemy damage will slowly increase.");
 					}
 				}
 			}
