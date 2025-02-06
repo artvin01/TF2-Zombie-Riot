@@ -176,31 +176,6 @@ void DHook_Setup()
 	}
 	
 	delete gamedata_lag_comp;
-	
-	if(OperationSystem == OS_Windows)
-	{
-		GameData edictgamedata = LoadGameConfigFile("edict_limiter");
-		//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
-		//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
-		//	Patch TF2 not reusing edict slots and crashing with a ton of free slots
-		{
-			MemoryPatch ED_Alloc_IgnoreFree = MemoryPatch.CreateFromConf(edictgamedata, "ED_Alloc::nop");
-			if (!ED_Alloc_IgnoreFree.Validate())
-			{
-				SetFailState("Failed to verify ED_Alloc::nop.");
-			}
-			else if (ED_Alloc_IgnoreFree.Enable())
-			{
-				LogMessage("-> Enabled ED_Alloc::nop.");
-			}
-			else
-			{
-				SetFailState("Failed to enable ED_Alloc::nop.");
-			}
-		}
-
-		delete edictgamedata;
-	}
 }
 /*
 public MRESReturn DhookStrikeTargetArrow_Pre(int pThis, Handle hReturn, Handle hParams)
