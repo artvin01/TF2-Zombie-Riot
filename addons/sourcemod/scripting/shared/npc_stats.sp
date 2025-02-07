@@ -335,8 +335,8 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 	}
 	return Plugin_Continue;
 }
-#define NORMAL_NPC
-#define STATIONARY_NPC
+#define NORMAL_NPC 0
+#define STATIONARY_NPC 1
 
 methodmap CClotBody < CBaseCombatCharacter
 {
