@@ -638,7 +638,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(NpcTypeLogic == STATIONARY_NPC)
 		{
 			CBaseCombatCharacter(npc).SetNextThink(GetGameTime());
-			NpcBaseThink(npc);
+		//	NpcBaseThink(npc);
 		}
 
 		return view_as<CClotBody>(npc);
@@ -5243,6 +5243,11 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	int ClosestTarget = -1; 
 
 #if !defined RTS
+	if(i_IsNpcType[entity] == STATIONARY_NPC)
+	{
+		//Stationary npcs never really need vector distance.
+		UseVectorDistance = true;
+	}
 	if(!b_NpcHasDied[entity] && !UseVectorDistance)
 	{
 		f_DelayComputingOfPath[entity] = 0.0;

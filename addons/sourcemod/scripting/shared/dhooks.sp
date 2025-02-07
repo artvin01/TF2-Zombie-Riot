@@ -177,6 +177,7 @@ void DHook_Setup()
 	
 	delete gamedata_lag_comp;
 	
+	/*
 	if(OperationSystem == OS_Windows)
 	{
 		GameData edictgamedata = LoadGameConfigFile("edict_limiter");
@@ -201,6 +202,7 @@ void DHook_Setup()
 
 		delete edictgamedata;
 	}
+	*/
 }
 /*
 public MRESReturn DhookStrikeTargetArrow_Pre(int pThis, Handle hReturn, Handle hParams)

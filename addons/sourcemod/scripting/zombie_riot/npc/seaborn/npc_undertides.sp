@@ -219,7 +219,7 @@ public void UnderTides_ClotThink(int iNPC)
 				}
 			}
 
-			npc.AddGesture("ACT_CHARGE_END");
+		//	npc.AddGesture("ACT_CHARGE_END");
 			npc.PlaySpecialSound();
 			npc.PlaySpecialSound();
 			
@@ -250,7 +250,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 			if(vecTarget[0])
 			{
-				npc.AddGesture("ACT_CHARGE_END");
+			//	npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayRangedSound();
 				npc.m_flNextRangedAttack = gameTime + 12.0;
 				npc.m_flNextMeleeAttack = gameTime + 4.5;
@@ -297,7 +297,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 			if(vecTarget[0])
 			{
-				npc.AddGesture("ACT_CHARGE_END");
+			//	npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayMeleeSound();
 				npc.m_flNextMeleeAttack = gameTime + 3.5;
 			}
