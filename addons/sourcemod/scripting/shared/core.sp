@@ -170,7 +170,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 */
 //#define ZR_TEST_MODEL	"models/zombie_riot/weapons/test_models9.mdl"
 
-#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_3.mdl"
+#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_2.mdl"
 enum
 {
 	WINGS_FUSION 	= 1,
@@ -3467,6 +3467,9 @@ void checkOS()
 	{
 		OperationSystem = OS_Unknown;
 	}
+
+	if(OperationSystem == OS_Linux)
+		PrintToServer("Hi linux!");
 }
 
 
