@@ -2023,6 +2023,10 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true, float SetGestureSpeed = 1.0)
 	{
+		if(i_IsNpcType[this.index] == STATIONARY_NPC)
+			return;
+		//Will crash the server via corruption.
+		
 		int activity = this.LookupActivity(anim);
 		if(activity < 0)
 			return;
