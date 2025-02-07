@@ -386,7 +386,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 		
 #if defined ZR || defined NOG
 		//true damage does NOT Ignore this.
-		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,i_HexCustomDamageTypes[victim], weapon);
+		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
 #endif
 
 #if defined ZR
