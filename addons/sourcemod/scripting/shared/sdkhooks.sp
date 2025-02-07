@@ -2326,7 +2326,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			{
 				if(weapon > 0 && i_WeaponVMTExtraSetting[weapon] != -1)
 				{
-					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon]);
+					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon], .ForceColour = true);
 					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[weapon]; //This makes sure to not reset the alpha.
 				}
 			}

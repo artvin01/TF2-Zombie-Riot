@@ -37,24 +37,31 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 		{
 			b_ClientPossesBattery[client] = Items_HasNamedItem(client, "Expidonsan Battery Device");
 			i_CosmeticScytheThing[client] = 0;
+			if(b_ClientPossesBattery[client])
+				i_WeaponVMTExtraSetting[weapon] = 1;
+				
 			bool DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 1"));
 			if(DoCosmetic)
 			{
+				i_WeaponVMTExtraSetting[weapon] = 2;
 				i_CosmeticScytheThing[client] = 1;
 			}
 			DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 2"));
 			if(DoCosmetic)
 			{
+				i_WeaponVMTExtraSetting[weapon] = 3;
 				i_CosmeticScytheThing[client] = 2;
 			}
 			DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 3"));
 			if(DoCosmetic)
 			{
+				i_WeaponVMTExtraSetting[weapon] = 4;
 				i_CosmeticScytheThing[client] = 4;
 			}
 			DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Expidonsan Battery Device"));
 			if(DoCosmetic)
 			{
+				i_WeaponVMTExtraSetting[weapon] = 0;
 				i_CosmeticScytheThing[client] = 3;
 			}
 			//Is the weapon it again?

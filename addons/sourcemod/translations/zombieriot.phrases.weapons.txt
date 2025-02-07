@@ -2891,13 +2891,21 @@
 	{
 		"en"	"Hand"
 	}
-	"Blue Cheese"
+	"Ketamine"
 	{
-		"en" "Blue Cheese"
+		"en" "Ketamine"
+	}
+	"Cannabis"
+	{
+		"en" "Cannabis"
 	}
 	"Fentanyl"
 	{
 		"en" "Fentanyl"
+	}
+	"Building Dummies"
+	{
+		"en" "Building for Dummies 101"
 	}
 	"Dubious Cheesy Ideas"
 	{
@@ -2907,6 +2915,10 @@
 	{
 		"en" "Messed Up Cheesy Brain"
 	}
+	"Birdeye Ammo"
+	{
+		"en" "Birdeye's Ammo"
+	}
 	"Waldch's Railgun Rounds"
 	{
 		"en" "Waldch's Railgun Rounds"
@@ -2914,6 +2926,10 @@
 	"Cheesy Doomsday Pack"
 	{
 		"en" "Cheesy Doomsday Pack"
+	}
+	"Twirl Magic"
+	{
+		"en" "A Fraction of Twirl's Magic"
 	}
 	"Magical Fontina Aura"
 	{
@@ -2934,6 +2950,10 @@
 	"THE BIG CHEESE!"
 	{
 		"en" "THE BIG CHEESE!"
+	}
+	"Nanomachines"
+	{
+		"en" "Nanohealing Technology"
 	}
 	"Voided Rejuvenator Pack"
 	{
@@ -2979,6 +2999,10 @@
 	{
 		"en" "Unit Reformator IV"
 	}
+	"Unit Reformator V"
+	{
+		"en" "Unit Reformator V"
+	}
 	"Adaptive Medigun"
 	{
 		"en"		"Adaptive Medigun"
@@ -3003,5 +3027,9 @@
 	{
 		"en"	"Reconstructive Teleporter"
 		"ko"	"재구성 텔레포터"
+	}
+	"Koshi's Goods"
+	{
+		"en" "Koshi's Goods"
 	}
 }

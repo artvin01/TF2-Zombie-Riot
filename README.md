@@ -26,7 +26,8 @@ Most of the code is made towards client prediction to make the best experience.
 if you for some ungodly reason need 100 player zr, grab the 100 player version, otherwise use the other version for more performance and less ram usage.
 
 Use THIS compiler version if you dont want any wierd issues when coding yourself:
-1.12.0.7163
+
+1.12.0.7162
 
 ### Where can I see this gamemode in action?
 
@@ -93,14 +94,13 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
-- [Edict Limiter Fix- GAMEDATA ONLY!!!!!!!!!!!!!!!!!!](https://github.com/sapphonie/tf2-edict-limiter)
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
 
 
 ## Optional Things
-- [Max speed unlocker](https://github.com/Mikusch/SourceScramble-Patches) (Used for zealot, Just install whats in there.)
+- [Max speed unlocker/Edict Alloc](https://github.com/Mikusch/SourceScramble-Patches) (install both speed unlocker and Alloc)
 ## Credits
 
 Current coders that in anyway actively helped, in order of how much:
