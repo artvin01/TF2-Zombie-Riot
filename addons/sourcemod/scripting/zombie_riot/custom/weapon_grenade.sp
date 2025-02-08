@@ -7,7 +7,7 @@ static Handle Give_bomb_back[MAXPLAYERS+1];
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 static int g_ProjectileModel;
 static int g_ProjectileModelPipe;
-Handle TimerHudGrenade[MAXPLAYERS+1] = {null, ...};
+Handle TimerHudGrenade[MAXPLAYERS+1] = {null, ...};g
 static float f_GrenadeHudCD[MAXPLAYERS+1];
 static float OriginalSize[MAXENTITIES];
 
@@ -43,7 +43,7 @@ public void Enable_Management_GrenadeHud(int client, int weapon) // Enable manag
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			OriginalSize[weapon] = f_WeaponSizeOverride[weapon];
-			HidePlayerWeaponModel(weapon, client);
+			UpdateWeaponVisibleGrenade(weapon, client);
 			return;
 		}
 	}
@@ -55,7 +55,7 @@ public void Enable_Management_GrenadeHud(int client, int weapon) // Enable manag
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		OriginalSize[weapon] = f_WeaponSizeOverride[weapon];
-		HidePlayerWeaponModel(weapon, client);
+		UpdateWeaponVisibleGrenade(weapon, client);
 	}
 }
 public Action TimerHudGrenade_Manager(Handle timer, DataPack pack)
