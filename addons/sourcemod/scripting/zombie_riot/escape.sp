@@ -25,8 +25,8 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 			}
 		}
 	}
-	entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(IsValidEntity(entity))
 		{

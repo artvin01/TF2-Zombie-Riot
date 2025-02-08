@@ -222,8 +222,8 @@ public void ArkSinger_ClotThink(int iNPC)
 			ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 
 			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-			int entity = -1;
-			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			int a, entity;
+			while((entity = FindEntityByNPC(a)) != -1)
 			{
 				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
 				{
