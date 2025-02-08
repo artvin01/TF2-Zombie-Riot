@@ -110,8 +110,8 @@ static const char g_HurtArmorSounds[][] = {
 
 public Action Command_RemoveAll(int client, int args)
 {
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(IsValidEntity(entity))
 		{

@@ -2132,10 +2132,9 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 	}
 	*/
 
-
-	int entity = MaxClients + 1;
 	char npc_classname[60];
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(GetTeam(entity) == 2)
 		{
@@ -2182,9 +2181,9 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 int ActiveCurrentNpcsBarracksTotal()
 {
 	int CurrentAlive = 0;
-	int entity = MaxClients + 1;
 	char npc_classname[60];
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(GetTeam(entity) == 2)
 		{

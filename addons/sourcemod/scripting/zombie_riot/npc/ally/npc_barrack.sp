@@ -564,8 +564,8 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		{
 			npc.m_iTargetRally = 0;
 
-			int entity = MaxClients + 1;
-			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			int a, entity;
+			while((entity = FindEntityByNPC(a)) != -1)
 			{
 				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetTeam(entity) == 2)
 				{

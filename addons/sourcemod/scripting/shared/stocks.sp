@@ -5460,3 +5460,18 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	returnEnd = particle2;
 }
 #endif
+
+stock int FindEntityByNPC(int &i)
+{
+	for(; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != -1 && !b_NpcHasDied[entity])
+		{
+			i++;
+			return entity;
+		}
+	}
+
+	return -1;
+}
