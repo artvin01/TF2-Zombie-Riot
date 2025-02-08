@@ -1061,6 +1061,7 @@ public void OnMapStart()
 
 #if defined ZR
 	ZR_MapStart();
+	Waves_SetReadyStatus(2);
 #endif
 
 #if defined RPG
@@ -1091,22 +1092,29 @@ public void OnMapStart()
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	PrecacheSound("mvm/mvm_tank_horn.wav");
-
-	//if a shadow controll exists, delete.
-	int entityshadow = -1;
-    if((entityshadow = FindEntityByClassname(entityshadow, "shadow_control")) != -1)
-    {
-        RemoveEntity(entityshadow);
-    }
-	//Create new shadow entity, and make own own rules
-	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
-	entityshadow = CreateEntityByName("shadow_control");
-	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
-	DispatchSpawn(entityshadow);
-	SetVariantInt(1); 
-	AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
+	DeleteShadowsOffZombieRiot();
 }
 
+void DeleteShadowsOffZombieRiot()
+{
+	//found shadow lod
+	int entityshadow = -1;
+	entityshadow = FindEntityByClassname(entityshadow, "shadow_control");
+
+	if(!IsValidEntity(entityshadow))
+	{
+		entityshadow = CreateEntityByName("shadow_control");
+		DispatchSpawn(entityshadow);
+	}
+	//Create new shadow entity, and make own own rules
+	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
+	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
+	if(IsValidEntity(entityshadow))
+	{
+		SetVariantInt(1); 
+		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
+	}
+}
 public void OnMapEnd()
 {
 #if defined ZR

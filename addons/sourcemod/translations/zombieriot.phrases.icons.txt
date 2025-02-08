@@ -444,6 +444,18 @@
 		"chi"		"欧米茄现身了。"
 		"fr"		"3650 apparaît."
 	}
+	"Zmain spawn Text 1"
+	{
+		"en"		"A group of highly intelligent zombies appear."
+	}
+	"Zmain spawn Text 2"
+	{
+		"en"		"The Z-Mains planned something against you."
+	}
+	"Zmain spawn Text 3"
+	{
+		"en"		"Be glad PVP isnt a thing..."
+	}
 	"Victorian Radiomast Is Here!"
 	{
 		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"

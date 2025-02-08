@@ -1287,6 +1287,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 				PrintHintTextToAll("Vote for the top %d options!", list.Length);
 				PrintToChatAll("Vote for the top %d options!", list.Length);
+				Waves_SetReadyStatus(2);
 			}
 			else
 			{
@@ -1347,6 +1348,7 @@ public Action Waves_EndVote(Handle timer, float time)
 					kv.ImportFromFile(buffer);
 					Waves_SetupWaves(kv, false);
 					delete kv;
+					Waves_SetReadyStatus(2);
 
 					if(VotingMods)
 					{
@@ -3140,42 +3142,27 @@ void Waves_SetReadyStatus(int status)
 
 			if(!ReadyUpTimer)
 				ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
-			
-		//	KillFeed_ForceClear();
-			/*
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if(IsClientInGame(client))
-				{
-					if(IsFakeClient(client))
-						KillFeed_SetBotTeam(client, TFTeam_Blue);
-				}
-			}
-			*/
 		}
 		case 2:	// Waiting
 		{
+			SDKCall_ResetPlayerAndTeamReadyState();
+			
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
 			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 			FindConVar("tf_mvm_min_players_to_start").IntValue = 199;
+			GameRules_SetPropFloat("m_flRestartRoundTime", -1.0);
 
 			int objective = GetObjectiveResource();
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
 			KillFeed_ForceClear();
-			SDKCall_ResetPlayerAndTeamReadyState();
-			/*
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if(IsClientInGame(client))
-				{
-					if(IsFakeClient(client))
-						KillFeed_SetBotTeam(client, TFTeam_Blue);
-				}
-			}
-			*/
+
+			if(ReadyUpTimer)
+				delete ReadyUpTimer;
+
+			ReadyUpTimer = null;
 		}
 	}
 }
