@@ -7,7 +7,7 @@ static Handle Give_bomb_back[MAXPLAYERS+1];
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 static int g_ProjectileModel;
 static int g_ProjectileModelPipe;
-Handle TimerHudGrenade[MAXPLAYERS+1] = {null, ...};g
+Handle TimerHudGrenade[MAXPLAYERS+1] = {null, ...};
 static float f_GrenadeHudCD[MAXPLAYERS+1];
 static float OriginalSize[MAXENTITIES];
 
