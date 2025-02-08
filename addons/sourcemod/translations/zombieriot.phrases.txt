@@ -1476,13 +1476,7 @@
 	}
 	"Claim this building"
 	{
-		"en"		"Claim this building with RELOAD while holding a wrench."
-		"fr"		"Prenez contrôle de cette construction en appuyant RELOAD avec une clé equipée."
-		"ru"		"Эта постройка может принадлежать вам - нажмите ПЕРЕЗАРЯДКА, держа в руках гаечный ключ."
-		"de"		"Beanspruchen Sie dieses Gebäude mit NACHLADEN mit einem Schlüsselwerkzeug."
-		"pt"		"Para reivindicar está construção aperte o botão re RECARREGAR enquando segurando sua chave inglesa."
-		"nl"		"Beweer dit gebouw door, tijdens het dragen van een moersleutel, op de HERLAAD toets te drukken."
-		"chi"       "断开连接建筑：拿着建筑扳手的同时按下R键占有建筑"
+		"en"		"Claim this building with (T [spray) while holding a wrench."
 	}
 	"Ammobox Tooltip"
 	{

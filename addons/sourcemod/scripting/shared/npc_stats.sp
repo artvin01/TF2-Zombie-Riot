@@ -463,6 +463,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		CClotBody npcstats = view_as<CClotBody>(npc);
+		SetEntProp(npc, Prop_Send, "m_fEffects", GetEntProp(npc, Prop_Send, "m_fEffects") | EF_NOSHADOW);
 
 	
 		//FIX: This fixes lookup activity not working.
@@ -2394,7 +2395,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValue(item, "disableselfshadowing", "1");  
 		*/
 		DispatchSpawn(item);
-		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
+		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES|EF_NOSHADOW );
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
 	
@@ -2606,7 +2607,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);			
 			DispatchSpawn(entity);
 			TeleportEntity(entity, absorigin, eyePitch, NULL_VECTOR, true);
-			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES| EF_NOSHADOW);
 			SetEntityMoveType(entity, MOVETYPE_NONE);
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1.0);
 			

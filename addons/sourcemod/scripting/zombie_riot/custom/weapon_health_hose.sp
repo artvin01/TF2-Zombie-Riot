@@ -559,8 +559,8 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityCollisionGroup(prop, 27);
 		SDKHook(prop, SDKHook_StartTouch, TouchHealthKit);
+		f_HealMaxPickup_Enable[prop] = GetGameTime();
 		f_HealMaxPickup[prop] = HealAmmount;
-		f_HealMaxPickup_Enable[prop] = GetGameTime() + 2.0;
 		i_WandIdNumber[prop] = 999;
 	//	CreateTimer(0.1, Timer_Detect_Player_Nearby_healthkit, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	}	
@@ -574,6 +574,9 @@ public void TouchHealthKit(int entity, int other)
 		{
 			return;
 		}
+		if(f_HealMaxPickup_Enable[entity] > GetGameTime())
+			return;
+		
 		float maxhealth = 1.0;
 		float health = float(GetEntProp(other, Prop_Data, "m_iHealth"));
 		maxhealth = float(SDKCall_GetMaxHealth(other));
@@ -584,15 +587,16 @@ public void TouchHealthKit(int entity, int other)
 		int Owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 		float GameTime = GetGameTime();
 		float HealingAmount = f_HealMaxPickup[entity];
+		float HealPenalty = 1.0;
 		if(f_TimeUntillNormalHeal[other] > GameTime)
 		{
-			HealingAmount /= 2.0;
+			HealPenalty = 0.5;
 		}
 		if(!IsValidEntity(Owner))
 		{
 			Owner = other; //if there is no invalid owner, just make the one that picks it up the owner
 		}
-		int healing_done = HealEntityGlobal(Owner, other, HealingAmount, 1.0, _, _);
+		int healing_done = HealEntityGlobal(Owner, other, HealingAmount * HealPenalty, 1.0, _, _);
 		if(healing_done <= 0)
 		{
 			return;
@@ -604,6 +608,9 @@ public void TouchHealthKit(int entity, int other)
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");
 		ApplyStatusEffect(Owner, other, "Healing Strength", 15.0);
 		ApplyStatusEffect(Owner, other, "Healing Resolve", 15.0);
-		RemoveEntity(entity);	
+		f_HealMaxPickup_Enable[entity] = GetGameTime() + 0.5;
+		f_HealMaxPickup[entity] -= (healing_done / HealPenalty);
+		if(f_HealMaxPickup[entity] <= 0)
+			RemoveEntity(entity);	
 	}
 }
