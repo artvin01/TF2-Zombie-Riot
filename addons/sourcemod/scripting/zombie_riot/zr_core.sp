@@ -969,7 +969,7 @@ void ZR_ClientPutInServer(int client)
 	i_ClientHasCustomGearEquipped[client] = false;
 	if(CountPlayersOnServer() == 1)
 	{
-		Waves_SetReadyStatus(2);
+//		Waves_SetReadyStatus(2);
 		//fixes teuton issue hopefully?
 		//happens when you loose and instnatly ragequit or something.
 		for(int client_summon=1; client_summon<=MaxClients; client_summon++)
