@@ -209,7 +209,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 	if(IsValidEntity(RaidBossActive) && RaidBossActive == EntIndexToEntRef(npc.index))
 		RaidModeScaling = (InfiniteWave-(npc.m_flNextMeleeAttack - gameTime))/InfiniteWave;
 		
-	if(Waves_IsEmpty())
+	if(Waves_IsEmpty() && npc.m_flNextMeleeAttack < gameTime)
 	{
 		int ISVOLI= 1;
 		ISVOLI = RoundToNearest(4.0); 
