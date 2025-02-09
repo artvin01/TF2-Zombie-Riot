@@ -743,6 +743,11 @@
 		"nl"		"Dit object heeft nog steeds {1} seconden over voor het volgend gebruik!"
 		"chi"       "物品使用已进入冷却时间，你将在 {1} 后可以再次使用。"
 	}
+	"Simulation Time Left"
+	{
+		"#format"	"{1:.0f}"
+		"en" 		"Theres {1} Minutes left in the simulation."
+	}
 	"Cash Gained This Wave"
 	{
 		"#format"	"{1:d}"
@@ -4038,6 +4043,6 @@
 	}
 	"freeplay_start_4"
 	{
-		"en"		"Zeina and I will watch over you, we'll warn you incase something happens.\nWho am i? Koshi, an expert in simulations, and a cheese enthusiast.\nGood luck."
+		"en"		"Zeina and I will watch over you, we'll warn you incase something happens.\nWho am i? Koshi, This Experiment will last an hour, be fast."
 	}
 }

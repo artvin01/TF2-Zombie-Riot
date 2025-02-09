@@ -69,6 +69,7 @@ enum struct ItemInfo
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
 	char WeaponSoundOverrideString[255];
+	char WeaponHudExtra[16];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
@@ -151,6 +152,7 @@ enum struct ItemInfo
 
 		kv.GetString("sound_weapon_override_string", this.WeaponSoundOverrideString, sizeof(this.WeaponSoundOverrideString));
 		kv.GetString("model_weapon_override", this.WeaponModelOverride, sizeof(this.WeaponModelOverride));
+		kv.GetString("weapon_hud_extra", this.WeaponHudExtra, sizeof(this.WeaponHudExtra));
 		
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum("weapon_vmt_setting", -1));
 		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum("weapon_bodygroup", -1));
@@ -1489,6 +1491,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;  //R status to weapon
 					}
+					Format(c_WeaponUseAbilitiesHud[entity],sizeof(c_WeaponUseAbilitiesHud[]),"%s",info.WeaponHudExtra);	
 					
 					i_WeaponArchetype[entity] 				= info.WeaponArchetype;
 					i_WeaponForceClass[entity] 				= info.WeaponForceClass;

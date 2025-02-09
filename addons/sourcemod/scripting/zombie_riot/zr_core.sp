@@ -385,6 +385,7 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 int SpecialLastMan;
 
 bool WaitingInQueue[MAXTF2PLAYERS];
+float FreeplayTimeLimit;
 
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 

@@ -1101,16 +1101,18 @@ void DeleteShadowsOffZombieRiot()
 	int entityshadow = -1;
 	entityshadow = FindEntityByClassname(entityshadow, "shadow_control");
 
-	if(!IsValidEntity(entityshadow))
+	if(IsValidEntity(entityshadow))
 	{
-		entityshadow = CreateEntityByName("shadow_control");
-		DispatchSpawn(entityshadow);
+		RemoveEntity(entityshadow);
 	}
+	entityshadow = CreateEntityByName("shadow_control");
+	
 	//Create new shadow entity, and make own own rules
 	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
 	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
 	if(IsValidEntity(entityshadow))
 	{
+		DispatchSpawn(entityshadow);
 		SetVariantInt(1); 
 		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
 	}

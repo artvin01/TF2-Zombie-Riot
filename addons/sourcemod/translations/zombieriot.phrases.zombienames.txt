@@ -12,6 +12,10 @@
 		"pt"		"Zumbi de Headcrab"
 		"nl"		"Hoofdkrab Zombie"
 	}
+	"Z-Main"
+	{
+		"en"		"Z-Main"
+	}
 	"Fortified Headcrab Zombie"
 	{
 		"en" 		"Fortified Headcrab Zombie"
