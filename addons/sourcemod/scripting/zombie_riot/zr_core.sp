@@ -1467,6 +1467,33 @@ public Action Command_SpawnGrigori(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action Command_PropVehicle(int client, int args)
+{
+	float flPos[3], flAng[3];
+	GetClientAbsAngles(client, flAng);
+	if(!SetTeleportEndPoint(client, flPos))
+	{
+		PrintToChat(client, "Could not find place.");
+		return Plugin_Handled;
+	}
+
+	PrecacheModel("models/buggy.mdl");
+
+	int vehicle = CreateEntityByName("prop_vehicle_driveable");
+	
+	DispatchKeyValue(vehicle, "model", "models/buggy.mdl");
+	DispatchKeyValue(vehicle, "vscripts", "vehicle.nut");
+	DispatchKeyValue(vehicle, "vehiclescript", "scripts/vehicles/jeep_test.txt");
+	DispatchKeyValue(vehicle, "spawnflags", "1"); // SF_PROP_VEHICLE_ALWAYSTHINK
+	DispatchKeyValueVector(vehicle, "origin", flPos);
+	DispatchKeyValueVector(vehicle, "angles", flAng);
+	SetEntProp(vehicle, Prop_Data, "m_nVehicleType", 0);
+
+	DispatchSpawn(vehicle);
+
+	return Plugin_Handled;
+}
+
 public void OnClientAuthorized(int client)
 {
 	Ammo_Count_Used[client] = 0;
