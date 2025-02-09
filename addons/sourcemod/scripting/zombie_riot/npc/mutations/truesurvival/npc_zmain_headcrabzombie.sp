@@ -398,7 +398,7 @@ void ZMainHeadcrabZombie_SelfDefense(ZMainHeadcrabZombie npc, float gameTime, in
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 60.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.5;
 

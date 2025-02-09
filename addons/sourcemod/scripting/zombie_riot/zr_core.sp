@@ -1149,7 +1149,7 @@ public Action Command_RTdFail(int client, int args)
 	if(client)
 	{
 		CPrintToChat(client, "{crimson}[ZR] Looks like the dice broke.");
-		FakeClientCommand(client, "playgamesound vo/k_lab/kl_fiddlesticks.wav");
+		ClientCommand(client, "playgamesound vo/k_lab/kl_fiddlesticks.wav");
 	}
 	return Plugin_Handled;
 }
