@@ -54,6 +54,7 @@ static const char g_TeleportSound[][] = {
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 static int NpcID;
+bool BossrushLogic = false;
 
 int VoidUnspeakableNpcID()
 {
@@ -237,9 +238,10 @@ methodmap VoidUnspeakable < CClotBody
 		{
 			b_NpcUnableToDie[npc.index] = true;
 		}
+		BossrushLogic = false;
 		if(StrContains(data, "bossrush") != -1)
 		{
-			i_RaidGrantExtra[npc.index] = -5;
+			BossrushLogic = true;
 		}
 		RemoveAllDamageAddition();
 		npc.m_flDeathAnimation = 0.0;
@@ -357,7 +359,7 @@ methodmap VoidUnspeakable < CClotBody
 			RaidModeScaling *= 0.85;
 		}
 
-		if(i_RaidGrantExtra[npc.index] != -5)
+		if(!BossrushLogic)
 		{
 			if(FogEntity != INVALID_ENT_REFERENCE)
 			{
@@ -766,7 +768,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		{
 			RaidModeTime = FAR_FUTURE;
 			//its in phase 2.
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 10;
 			npc.m_flDeathAnimation = GetGameTime(npc.index) + 45.0;
 			//emergency slay if it bricks somehow.
 			RequestFrames(KillNpc,3000, EntIndexToEntRef(npc.index));
@@ -1056,7 +1058,7 @@ public void VoidUnspeakable_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	if(i_RaidGrantExtra[npc.index] != -5)
+	if(!BossrushLogic)
 	{
 		if(FogEntity != INVALID_ENT_REFERENCE)
 		{
@@ -1325,19 +1327,19 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 
 		switch(i_RaidGrantExtra[npc.index])
 		{
-			case 2:
+			case 11:
 			{
 				CPrintToChatAll("{purple}FOOLISH MORTALS, YOU THINK YOU CAN STOP US");
 			}
-			case 3:
+			case 12:
 			{
 				CPrintToChatAll("{purple}THERE'S NOTHING YOU CAN DO ANYMORE");
 			}
-			case 4:
+			case 13:
 			{
 				CPrintToChatAll("{purple}WITNESS THE END OF ALL TIMES, RIGHT HERE AND NOW");
 			}
-			case 5:
+			case 14:
 			{
 				CPrintToChatAll("{purple}BECOME ONE WITH THE VOID");
 			}

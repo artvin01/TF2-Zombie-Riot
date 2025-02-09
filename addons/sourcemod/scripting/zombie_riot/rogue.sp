@@ -520,6 +520,7 @@ void Rogue_SetupVote(KeyValues kv)
 			break;
 		}
 	}
+	Waves_SetReadyStatus(2);
 }
 
 void Rogue_RevoteCmd(int client)	// Waves_RevoteCmd
