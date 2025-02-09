@@ -117,7 +117,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	
 	
 	Escape_RoundStart();
-	Waves_RoundStart();
+	Waves_RoundStart(true);
 	Blacksmith_RoundStart();
 	Merchant_RoundStart();
 	Flametail_RoundStart();
