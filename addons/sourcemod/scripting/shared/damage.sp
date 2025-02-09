@@ -1215,6 +1215,9 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 #if defined RPG
 stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime, bool donotset = false)
 {
+	if(attacker == -1)
+		return false;
+	
 	if(attacker > MaxClients && victim <= MaxClients)
 	{
 		int PrevAttack = attacker;

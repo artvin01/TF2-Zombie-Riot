@@ -655,7 +655,8 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");	//DEBUG
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");	//DEBUG
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");						//DEBUG
-	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count"); 	//DEBUG
+	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_ROOT, "Fake Death Count"); 	//DEBUG
+	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
@@ -1465,6 +1466,33 @@ public Action Command_SpawnGrigori(int client, int args)
 {
 	Spawn_Cured_Grigori();
 	Store_RandomizeNPCStore(0);
+	return Plugin_Handled;
+}
+
+public Action Command_PropVehicle(int client, int args)
+{
+	float flPos[3], flAng[3];
+	GetClientAbsAngles(client, flAng);
+	if(!SetTeleportEndPoint(client, flPos))
+	{
+		PrintToChat(client, "Could not find place.");
+		return Plugin_Handled;
+	}
+
+	PrecacheModel("models/buggy.mdl");
+
+	int vehicle = CreateEntityByName("prop_vehicle_driveable");
+	
+	DispatchKeyValue(vehicle, "model", "models/buggy.mdl");
+	DispatchKeyValue(vehicle, "vscripts", "vehicle.nut");
+	DispatchKeyValue(vehicle, "vehiclescript", "scripts/vehicles/jeep_test.txt");
+	DispatchKeyValue(vehicle, "spawnflags", "1"); // SF_PROP_VEHICLE_ALWAYSTHINK
+	DispatchKeyValueVector(vehicle, "origin", flPos);
+	DispatchKeyValueVector(vehicle, "angles", flAng);
+	SetEntProp(vehicle, Prop_Data, "m_nVehicleType", 0);
+
+	DispatchSpawn(vehicle);
+
 	return Plugin_Handled;
 }
 

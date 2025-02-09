@@ -1079,21 +1079,24 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	DoGlobalMultiScaling();
 }
 
-void Waves_RoundStart()
+void Waves_RoundStart(bool event = false)
 {
-	if(SkyNameRestore[0])
+	if(event)
 	{
-		CvarSkyName.SetString(SkyNameRestore, true);
-		SkyNameRestore[0] = 0;
-	}
+		if(SkyNameRestore[0])
+		{
+			CvarSkyName.SetString(SkyNameRestore, true);
+			SkyNameRestore[0] = 0;
+		}
 
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity = EntRefToEntIndex(FogEntity);
-		if(entity != INVALID_ENT_REFERENCE)
-			RemoveEntity(entity);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
+		if(FogEntity != INVALID_ENT_REFERENCE)
+		{
+			int entity = EntRefToEntIndex(FogEntity);
+			if(entity != INVALID_ENT_REFERENCE)
+				RemoveEntity(entity);
+			
+			FogEntity = INVALID_ENT_REFERENCE;
+		}
 	}
 	
 	Waves_ClearWaves();

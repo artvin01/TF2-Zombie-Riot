@@ -17,10 +17,13 @@
 #include <morecolors>
 #include <cbasenpc>
 #include <tf2utils>
-#include <filenetwork>
 #include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
+#undef REQUIRE_EXTENSIONS
+#undef REQUIRE_PLUGIN
+#include <filenetwork>
+#include <loadsoundscript>
 
 #pragma dynamic	131072
 
@@ -1093,6 +1096,18 @@ public void OnMapStart()
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	PrecacheSound("mvm/mvm_tank_horn.wav");
 	DeleteShadowsOffZombieRiot();
+
+	if(LibraryExists("LoadSoundscript"))
+	{
+		char soundname[256];
+		SoundScript soundscript = LoadSoundScript("scripts/game_sounds_vehicles.txt");
+		for(int i = 0; i < soundscript.Count; i++)
+		{
+			SoundEntry entry = soundscript.GetSound(i);
+			entry.GetName(soundname, sizeof(soundname));
+			PrecacheScriptSound(soundname);
+		}
+	}
 }
 
 void DeleteShadowsOffZombieRiot()
@@ -2451,6 +2466,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_OnTakeDamagePost, Func_Breakable_Post);
 		}
+		else if(!StrContains(classname, "prop_vehicle_driveable"))
+		{
+			b_IsVehicle[entity] = true;
+			npc.bCantCollidieAlly = true;
+			b_IsAProjectile[entity] = true;
+			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
+		}
 #if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
@@ -2469,7 +2491,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			b_IsAProjectile[entity] = true;
-			
 		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
