@@ -2449,6 +2449,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_OnTakeDamagePost, Func_Breakable_Post);
 		}
+		else if(!StrContains(classname, "prop_vehicle_driveable"))
+		{
+			b_IsVehicle[entity] = true;
+		}
 #if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
