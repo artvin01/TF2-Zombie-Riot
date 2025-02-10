@@ -3991,4 +3991,12 @@
 	{
 		"en" "Spotter"
 	}
+	"ATV"
+	{
+		"en"	"ATV"
+	}
+	"Airboat"
+	{
+		"en"	"Airboat"
+	}
 }

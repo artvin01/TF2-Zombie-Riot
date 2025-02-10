@@ -5324,15 +5324,25 @@ stock int GetTeam(int entity)
 {
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
+		if(i_IsVehicle[entity])
+		{
+#if defined ZR
+			entity = Vehicle_Driver(entity);
+#else
+			entity = GetEntPropEnt(entity, Prop_Data, "m_hPlayer");
+#endif
+			if(entity == -1)
+				return -1;
+		}
+
 #if !defined RTS
 		if(entity && entity <= MaxClients)
 			return GetClientTeam(entity);
 #endif
 
 		if(TeamNumber[entity] == -1)
-		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
-		}
+		
 		return TeamNumber[entity];
 	}
 	return GetEntProp(entity, Prop_Data, "m_iTeamNum");

@@ -237,6 +237,7 @@ static void ClotThink(int iNPC)
 				SetEntityHealth(target, 50);
 				dieingstate[target] = 250;
 				
+				Vehicle_Exit(target, false);
 				SDKHooks_UpdateMarkForDeath(target, true);
 				ApplyLastmanOrDyingOverlay(target);
 				SetEntityCollisionGroup(target, 1);

@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 #if defined ZR
-bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 static bool BlockNext[MAXTF2PLAYERS];
 #endif
 

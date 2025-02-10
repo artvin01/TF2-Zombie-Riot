@@ -2317,7 +2317,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
-		b_IsVehicle[entity] = false;
+		i_IsVehicle[entity] = 0;
 		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_IsAGib[entity] = false;
@@ -2468,10 +2468,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "prop_vehicle_driveable"))
 		{
-			b_IsVehicle[entity] = true;
+			i_IsVehicle[entity] = 1;
 			npc.bCantCollidieAlly = true;
 			b_IsAProjectile[entity] = true;
-			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
+			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);  // ?????
 		}
 #if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))
@@ -2646,7 +2646,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			OnManglerCreated(entity);
 		}
 #endif
-		else if(!StrContains(classname, "obj_"))
+		else if(!StrContains(classname, "obj_") && !StrEqual(classname, "obj_vehicle"))
 		{
 			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
@@ -3070,12 +3070,15 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #endif
 
 #if defined ZR
+			if(Vehicle_Interact(client, entity))
+				return true;
+			
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
-					
+				
 				if(Object_Interact(client, weapon, entity))
 					return true;
 
@@ -3126,10 +3129,15 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #endif
 		
 		}
-
-#if defined RPG
 		else
 		{
+
+#if defined ZR
+			if(GetEntityMoveType(client) == MOVETYPE_NONE && Vehicle_Interact(client, entity))
+				return true;
+#endif
+			
+#if defined RPG
 			if(Fishing_Interact(client, weapon))
 				return true;
 			
@@ -3138,9 +3146,9 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			
 			if(Garden_Interact(client, vecEndOrigin))
 				return true;
-		}
 #endif
-		
+
+		}
 	}
 	return false;
 }

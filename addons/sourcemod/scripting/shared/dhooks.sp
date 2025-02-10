@@ -27,6 +27,7 @@ static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 DynamicHook g_DhookUpdateTransmitState; 
+//static DynamicHook g_DHookShouldCollide; //from mikusch but edited
 
 static DynamicDetour g_CalcPlayerScore;
 
@@ -119,6 +120,7 @@ void DHook_Setup()
 	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
+	//g_DHookShouldCollide = DHook_CreateVirtual(gamedata, "CGameRules::ShouldCollide");
 
 	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
 	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
@@ -867,8 +869,32 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 	return Plugin_Continue;
 }
 */
-
-
+/*
+public MRESReturn DHook_ShouldCollide(DHookReturn ret, DHookParam params)
+{
+	g_Collision_Group collisionGroup0 = params.Get(1);
+	g_Collision_Group collisionGroup1 = params.Get(2);
+	
+	if (collisionGroup0 > collisionGroup1)
+	{
+		g_Collision_Group temp = collisionGroup0;
+		collisionGroup0 = collisionGroup1;
+		collisionGroup1 = temp;
+	}
+	
+	// Prevent vehicles from entering respawn rooms
+	if (collisionGroup0 == COLLISION_GROUP_VEHICLE)
+	{
+		if (collisionGroup1 == COLLISION_GROUP_NPC || collisionGroup1 == TFCOLLISION_GROUP_RESPAWNROOMS)
+		{
+			ret.Value = true;
+			return MRES_Supercede;
+		}
+	}
+	
+	return MRES_Ignored;
+}
+*/
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
 	
@@ -1163,6 +1189,15 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			
 		}
 #endif
+		else if(i_IsVehicle[entity1])
+		{
+			if(!i_IsVehicle[entity2])
+			{
+				int team = GetTeam(entity1);
+				if(team == -1 || team == GetTeam(entity2))
+					return false;
+			}
+		}
 	}
 	return result;	
 }
@@ -2076,11 +2111,14 @@ stock void DelayEffectOnHorn(int ref)
 
 int BannerWearable[MAXTF2PLAYERS];
 int BannerWearableModelIndex[3];
-void Dhooks_BannerMapstart()
+void DHooks_MapStart()
 {
 	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
 	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
 	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
+	
+	//if(g_DHookShouldCollide)
+	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
 }
 
 public Action TimerGrantBannerDuration(Handle timer, int ref)
