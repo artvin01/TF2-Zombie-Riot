@@ -1840,12 +1840,24 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		else
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t | %t : ", "Superboss", "Power");
 
-		//time show or not
-		if(Timer_Show > 800.0)
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+		//Does it have power? No power also hides timer showing
+		if(RaidModeScaling != 0.0)
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t : ", ExtraHudHurt, "Power");
+			//time show or not
+			if(Timer_Show > 800.0)
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+			else
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+		}
 		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
-			
+		{
+			if(Timer_Show > 800.0)
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s]", ExtraHudHurt);
+			else
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t: %.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
+		}
+		
 		//add name and health
 		char c_Health[255];
 		char c_MaxHealth[255];

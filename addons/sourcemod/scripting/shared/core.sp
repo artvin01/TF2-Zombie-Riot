@@ -888,7 +888,7 @@ public Action Timer_Temp(Handle timer)
 #if defined ZR
 	if(RaidbossIgnoreBuildingsLogic())
 	{
-		if (RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
+		if (RaidModeScaling != 0.0 && RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
 			PlayTickSound(true, false);
 		}

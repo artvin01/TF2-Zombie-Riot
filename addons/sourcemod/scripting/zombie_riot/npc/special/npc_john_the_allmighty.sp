@@ -144,7 +144,14 @@ methodmap JohnTheAllmighty < CClotBody
 		npc.m_iActualHealth = StringToInt(JohnTheAllmightyHealth());
 
 		npc.m_flNextMeleeAttack = 0.0;
-	
+		for(int client1 = 1; client1 <= MaxClients; client1++)
+		{
+			if(!b_IsPlayerABot[client1] && IsClientInGame(client1) && !IsFakeClient(client1))
+			{
+				SetMusicTimer(client1, GetTime() + 1); //This is here beacuse of raid music.
+				Music_Stop_All(client1);
+			}
+		}
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/john_the_allmighty.mp3");
 		music.Time = 43;
@@ -160,7 +167,7 @@ methodmap JohnTheAllmighty < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 43.0;
-			RaidModeScaling = 12.3456;
+			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -538,6 +545,7 @@ public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int infl
 		{
 			if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
 			{
+				SetMusicTimer(client, GetTime() + 1); //This is here beacuse of raid music.
 				Music_Stop_All(client);
 			}
 		}
