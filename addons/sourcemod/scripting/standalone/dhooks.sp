@@ -219,26 +219,6 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 	return MRES_Ignored;
 }
 
-/*
-public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
-{
-	if(IsValidEntity(ent1) && IsValidEntity(ent2))
-	{
-		result = CustomDetectionPassFlter(ent1, ent2, true);
-		if(result)
-		{
-			return Plugin_Continue;
-		}
-		else
-		{
-			return Plugin_Handled;
-		}
-	}
-	return Plugin_Continue;
-}
-*/
-
-
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
 	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)

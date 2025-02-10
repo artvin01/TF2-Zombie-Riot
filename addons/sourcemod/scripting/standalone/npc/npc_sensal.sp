@@ -1928,20 +1928,3 @@ public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-
-
-float[] GetBehindTarget(int target, float Distance, float origin[3])
-{
-	float VecForward[3];
-	float vecRight[3];
-	float vecUp[3];
-	
-	GetVectors(target, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-	
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = origin[0] - VecForward[0] * (Distance);
-	vecSwingEnd[1] = origin[1] - VecForward[1] * (Distance);
-	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
-
-	return vecSwingEnd;
-}

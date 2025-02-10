@@ -348,6 +348,7 @@ bool b_WeaponHasNoClip[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
 int PrevOwnerMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
+int i_IsNpcType[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 int i_npcspawnprotection[MAXENTITIES];
 float f_DomeInsideTest[MAXENTITIES];
@@ -408,6 +409,7 @@ int i_InvincibleParticlePrev[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
+char c_WeaponUseAbilitiesHud[MAXENTITIES][16];
 
 
 //Used for any double arrays like lantean wand or health hose.
@@ -611,7 +613,7 @@ bool i_IsWrench[MAXENTITIES];
 bool i_IsSupportWeapon[MAXENTITIES]; 
 bool i_IsKitWeapon[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
-bool b_IsVehicle[MAXENTITIES]; 
+int i_IsVehicle[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
 int i_WeaponSoundIndexOverride[MAXENTITIES];

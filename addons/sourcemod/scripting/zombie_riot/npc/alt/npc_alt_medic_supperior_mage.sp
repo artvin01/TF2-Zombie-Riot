@@ -661,7 +661,6 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceWallsOnly(int entity, int con
 
 public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	static char classname[64];
 	if (IsEntityAlive(entity))
 	{
 		NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_HitDetected[entity] = true;
@@ -670,9 +669,7 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int content
 	{
 		if(0 < entity)
 		{
-			GetEntityClassname(entity, classname, sizeof(classname));
-			
-			if (!StrContains(classname, "zr_base_npc", true) && (GetTeam(entity) != GetTeam(client)))
+			if (b_ThisWasAnNpc[entity] && (GetTeam(entity) != GetTeam(client)))
 			{
 				for(int i=1; i < MAXENTITIES; i++)
 				{

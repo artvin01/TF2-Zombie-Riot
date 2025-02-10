@@ -569,7 +569,6 @@ static void Venium_Build_Anchor(Valiant npc)
 
 	
 	AproxRandomSpaceToWalkTo[2] += 18.0;
-	AproxRandomSpaceToWalkTo[2] += 18.0;
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 
 	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);

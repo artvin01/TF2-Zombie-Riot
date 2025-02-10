@@ -215,7 +215,7 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								if((MaxHealth/Health) >= 2) // Target is below 50% hp, the headhunter does more damage
+								if(((MaxHealth+ 1)/(Health + 1)) >= 2) // Target is below 50% hp, the headhunter does more damage
 								{
 									damage *= 1.5;
 								}

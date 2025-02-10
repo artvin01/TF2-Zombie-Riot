@@ -27,6 +27,7 @@ static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 DynamicHook g_DhookUpdateTransmitState; 
+//static DynamicHook g_DHookShouldCollide; //from mikusch but edited
 
 static DynamicDetour g_CalcPlayerScore;
 
@@ -119,6 +120,7 @@ void DHook_Setup()
 	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
+	//g_DHookShouldCollide = DHook_CreateVirtual(gamedata, "CGameRules::ShouldCollide");
 
 	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
 	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
@@ -159,6 +161,7 @@ void DHook_Setup()
 	//Fixes mediguns giving extra speed where it was not intended.
 	//gamedata first try!!
 	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
+//	DHook_CreateDetour(gamedata, "CTFProjectile_Arrow::StrikeTarget", DhookStrikeTargetArrow_Pre, _);
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -166,7 +169,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::StartLagCompensation", StartLagCompensationPre, StartLagCompensationPost);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
-
+		
 	g_DhookWantsLagCompensationOnEntity = DHookCreateFromConf(gamedata_lag_comp,
 			"CTFPlayer::WantsLagCompensationOnEntity");
 
@@ -175,32 +178,28 @@ void DHook_Setup()
 	}
 	
 	delete gamedata_lag_comp;
-	
-	if(OperationSystem == OS_Windows)
-	{
-		GameData edictgamedata = LoadGameConfigFile("edict_limiter");
-		//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
-		//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
-		//	Patch TF2 not reusing edict slots and crashing with a ton of free slots
-		{
-			MemoryPatch ED_Alloc_IgnoreFree = MemoryPatch.CreateFromConf(edictgamedata, "ED_Alloc::nop");
-			if (!ED_Alloc_IgnoreFree.Validate())
-			{
-				SetFailState("Failed to verify ED_Alloc::nop.");
-			}
-			else if (ED_Alloc_IgnoreFree.Enable())
-			{
-				LogMessage("-> Enabled ED_Alloc::nop.");
-			}
-			else
-			{
-				SetFailState("Failed to enable ED_Alloc::nop.");
-			}
-		}
-
-		delete edictgamedata;
-	}
 }
+/*
+public MRESReturn DhookStrikeTargetArrow_Pre(int pThis, Handle hReturn, Handle hParams)
+{
+	PrintToChatAll("DhookStrikeTargetArrow_Pre");
+	int projtype = GetEntProp(pThis, Prop_Send, "m_iProjectileType");
+	PrintToChatAll("DhookStrikeTargetArrow_Pre projtype %i",projtype);
+	
+	if(projtype != 8)
+		return MRES_Ignored;
+
+	PrintToChatAll("DhookStrikeTargetArrow_Pre2");
+	int other = DHookGetParam(hParams, 2);
+
+	if(!b_ThisWasAnNpc[other])
+		return MRES_Ignored;
+	PrintToChatAll("DhookStrikeTargetArrow_Pre3");
+
+	DHookSetReturn(hReturn, true);
+	return MRES_Override;
+}
+*/
 int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
@@ -870,8 +869,32 @@ public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
 	return Plugin_Continue;
 }
 */
-
-
+/*
+public MRESReturn DHook_ShouldCollide(DHookReturn ret, DHookParam params)
+{
+	g_Collision_Group collisionGroup0 = params.Get(1);
+	g_Collision_Group collisionGroup1 = params.Get(2);
+	
+	if (collisionGroup0 > collisionGroup1)
+	{
+		g_Collision_Group temp = collisionGroup0;
+		collisionGroup0 = collisionGroup1;
+		collisionGroup1 = temp;
+	}
+	
+	// Prevent vehicles from entering respawn rooms
+	if (collisionGroup0 == COLLISION_GROUP_VEHICLE)
+	{
+		if (collisionGroup1 == COLLISION_GROUP_NPC || collisionGroup1 == TFCOLLISION_GROUP_RESPAWNROOMS)
+		{
+			ret.Value = true;
+			return MRES_Supercede;
+		}
+	}
+	
+	return MRES_Ignored;
+}
+*/
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
 	
@@ -1166,6 +1189,15 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			
 		}
 #endif
+		else if(i_IsVehicle[entity1])
+		{
+			if(!i_IsVehicle[entity2])
+			{
+				int team = GetTeam(entity1);
+				if(team == -1 || team == GetTeam(entity2))
+					return false;
+			}
+		}
 	}
 	return result;	
 }
@@ -2079,11 +2111,14 @@ stock void DelayEffectOnHorn(int ref)
 
 int BannerWearable[MAXTF2PLAYERS];
 int BannerWearableModelIndex[3];
-void Dhooks_BannerMapstart()
+void DHooks_MapStart()
 {
 	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
 	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
 	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
+	
+	//if(g_DHookShouldCollide)
+	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
 }
 
 public Action TimerGrantBannerDuration(Handle timer, int ref)

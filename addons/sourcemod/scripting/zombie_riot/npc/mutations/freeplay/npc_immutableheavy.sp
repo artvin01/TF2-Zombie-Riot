@@ -259,7 +259,7 @@ void ImmutableHeavySelfDefense(ImmutableHeavy npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 200.0;
+					float damageDealt = 300.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					if(GetRandomInt(1, 2) == 2)
@@ -302,9 +302,9 @@ void ImmutableHeavySelfDefense(ImmutableHeavy npc, float gameTime, int target, f
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.15);
-				npc.m_flAttackHappens = gameTime + 0.175;
-				npc.m_flDoingAnimation = gameTime + 0.175;
-				npc.m_flNextMeleeAttack = gameTime + 0.625;
+				npc.m_flAttackHappens = gameTime + 0.15;
+				npc.m_flDoingAnimation = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 0.5;
 
 				float endLoc[3];
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", endLoc);
@@ -313,15 +313,15 @@ void ImmutableHeavySelfDefense(ImmutableHeavy npc, float gameTime, int target, f
 				{
 					case 1:
 					{
-						npc.FireParticleRocket(endLoc, 3000.0, 150.0, 125.0, "raygun_projectile_blue");
+						npc.FireParticleRocket(endLoc, 200.0, 1250.0, 125.0, "raygun_projectile_blue");
 					}
 					case 2:
 					{
-						npc.FireParticleRocket(endLoc, 3000.0, 75.0, 75.0, "raygun_projectile_red", true);
+						npc.FireParticleRocket(endLoc, 100.0, 600.0, 100.0, "raygun_projectile_red", true);
 					}
 					default:
 					{
-						npc.FireParticleRocket(endLoc, 3000.0, 150.0, 125.0, "raygun_projectile_blue");
+						npc.FireParticleRocket(endLoc, 200.0, 1250.0, 125.0, "raygun_projectile_blue");
 					}
 				}
 			}

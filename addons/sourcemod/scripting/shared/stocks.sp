@@ -2181,45 +2181,17 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
-public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude)
-{
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	if(entity <= MaxClients) //just ignore players entirely, there will be no pvp.
-	{
-		return false;
-	}
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
-	{
-		return false;
-	}
-	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
-	{
-		if(GetTeam(iExclude) == GetTeam(entity))
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-		
-	
-	return !(entity == iExclude);
-}
-
 public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 {
 	char class[64];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(!StrEqual(class, "zr_base_npc"))
+	if(!b_ThisWasAnNpc[entity])
 	{
 		return false;
 	}
 	
-	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
+	if(entity != iExclude)
 	{
 		if(GetTeam(iExclude) == GetTeam(entity))
 		{
@@ -2233,39 +2205,6 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 		
 	
 	return !(entity == iExclude);
-}
-
-stock int GetClosestTarget_BaseBoss(int entity)
-{
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
-	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
-	{
-		if (GetTeam(entity)!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
-		{
-			float EntityLocation[3], TargetLocation[3]; 
-			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				
-				
-			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-			if( TargetDistance ) 
-			{
-				if( distance < TargetDistance ) 
-				{
-					ClosestTarget = i; 
-					TargetDistance = distance;		  
-				}
-			} 
-			else 
-			{
-				ClosestTarget = i; 
-				TargetDistance = distance;
-			}				
-		}
-	}
-	return ClosestTarget; 
 }
 
 stock void AnglesToVelocity(const float ang[3], float vel[3], float speed=1.0)
@@ -2625,7 +2564,11 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(StrEqual(class, "zr_base_npc")) return true;
+	if(StrEqual(class, "zr_base_npc"))
+		return true;
+
+	if(StrEqual(class, "zr_base_stationary"))
+		return true;
 	
 	return !(entity == data);
 }
@@ -2691,16 +2634,6 @@ stock void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[
 	tmpVec[1] = endPos[1] - startPos[1];
 	tmpVec[2] = endPos[2] - startPos[2];
 	GetVectorAngles(tmpVec, angles);
-}
-
-
-stock int TracePlayerHulls(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
-{
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_ALL, IngorePlayersAndBuildings, entity);
-	bool bHit = TR_DidHit(hTrace);
-	ref = TR_GetEntityIndex(hTrace);
-	delete hTrace;
-	return bHit;
 }
 
 stock void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
@@ -3061,7 +2994,7 @@ int inflictor = 0)
 #if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
-		float value = Attributes_Get(weapon, 99, 1.0);//increaced blast radius attribute (Check weapon only)
+		float value = Attributes_Get(weapon, 99, 1.0);//increased blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 		if(maxtargetshit == 10)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
@@ -5391,15 +5324,25 @@ stock int GetTeam(int entity)
 {
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
+		if(i_IsVehicle[entity])
+		{
+#if defined ZR
+			entity = Vehicle_Driver(entity);
+#else
+			entity = GetEntPropEnt(entity, Prop_Data, "m_hPlayer");
+#endif
+			if(entity == -1)
+				return -1;
+		}
+
 #if !defined RTS
 		if(entity && entity <= MaxClients)
 			return GetClientTeam(entity);
 #endif
 
 		if(TeamNumber[entity] == -1)
-		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
-		}
+		
 		return TeamNumber[entity];
 	}
 	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
@@ -5527,3 +5470,18 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	returnEnd = particle2;
 }
 #endif
+
+stock int FindEntityByNPC(int &i)
+{
+	for(; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != -1 && !b_NpcHasDied[entity])
+		{
+			i++;
+			return entity;
+		}
+	}
+
+	return -1;
+}

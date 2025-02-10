@@ -437,7 +437,7 @@ public Action Cryo_Unfreeze(Handle Unfreeze, int ref)
 	int zombie = EntRefToEntIndex(ref);
 	
 	if (!IsValidEntity(zombie))
-	return Plugin_Continue;
+		return Plugin_Continue;
 	
 	if (Cryo_Frozen[zombie])
 	{

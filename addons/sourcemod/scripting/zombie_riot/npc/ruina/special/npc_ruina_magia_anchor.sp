@@ -217,7 +217,7 @@ methodmap Magia_Anchor < CClotBody
 	
 	public Magia_Anchor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,350.0}));
+		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,350.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -347,8 +347,6 @@ methodmap Magia_Anchor < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 		npc.m_flAttackHappens = 0.0;
-
-		NPC_StopPathing(npc.index);
 
 		npc.m_flMeleeArmor = 2.5;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 115.0;

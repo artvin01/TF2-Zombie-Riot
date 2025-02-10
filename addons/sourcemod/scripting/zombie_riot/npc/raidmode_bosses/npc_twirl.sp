@@ -1396,7 +1396,14 @@ static void Final_Invocation(Twirl npc)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			}
-			TeleportDiversioToRandLocation(spawn_index, true);
+			int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+
+			if(Decicion == 2)
+				Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 250.0);
+
+			if(Decicion == 2)
+				Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
+				
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health));
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
 		}

@@ -1620,8 +1620,8 @@ void GiveOneRevive(bool ignorelimit = false)
 		}
 	}
 
-	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(Citizen_IsIt(entity))
 		{

@@ -245,11 +245,11 @@ public Action DimensionalFragment_OnTakeDamage(int victim, int &attacker, int &i
 		{
 			case 1:
 			{
-				npc.FireParticleRocket(endLoc, 1500.0, GetRandomFloat(100.0, 400.0), 125.0, "raygun_projectile_blue");
+				npc.FireParticleRocket(endLoc, GetRandomFloat(100.0, 400.0), 1600.0, 125.0, "raygun_projectile_blue");
 			}
 			case 2:
 			{
-				npc.FireParticleRocket(endLoc, 1000.0, GetRandomFloat(50.0, 200.0), 200.0, "raygun_projectile_red", true);
+				npc.FireParticleRocket(endLoc, GetRandomFloat(50.0, 200.0), 800.0, 100.0, "raygun_projectile_red", true);
 			}
 			case 3:
 			{

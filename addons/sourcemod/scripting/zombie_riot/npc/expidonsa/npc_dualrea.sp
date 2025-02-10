@@ -325,8 +325,8 @@ void DualReaEffects(int iNpc)
 	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	int particle_2 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	
-	SetParent(npc.m_iWearable1, particle_1, "duelrea_left_spike",_, true);
-	SetParent(npc.m_iWearable1, particle_2, "duelrea_right_spike",_, true);
+	SetParent(npc.m_iWearable1, particle_1, "duelrea_left_spike");
+	SetParent(npc.m_iWearable1, particle_2, "duelrea_right_spike");
 
 	int Laser_4_i = ConnectWithBeamClient(particle_1, particle_2, 125, 125, 15, 1.25, 1.25, 100.0, LASERBEAM);
 	

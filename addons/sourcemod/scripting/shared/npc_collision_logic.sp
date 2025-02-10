@@ -123,8 +123,12 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		return true;
 	}
 	//always collide with vehicles if on opesite teams.
-	if(b_IsVehicle[otherindex])
+	if(i_IsVehicle[otherindex])
 	{
+		// No one inside the vehicle
+		if(GetTeam(otherindex) == -1)
+			return false;
+		
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
 		

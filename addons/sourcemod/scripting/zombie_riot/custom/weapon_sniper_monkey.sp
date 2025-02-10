@@ -28,38 +28,42 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			
 			int targets[3];
 			int healths[3];
-			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+			int i;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				if(i != victim && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
+				i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEntity(i))
 				{
-					GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos);
-					if(GetVectorDistance(pos, damagePosition, true) < 62500.0) 
+					if(i != victim && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
 					{
-						int hp = GetEntProp(i, Prop_Data, "m_iHealth");
-						if(healths[0] < hp)
+						GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos);
+						if(GetVectorDistance(pos, damagePosition, true) < 62500.0) 
 						{
-							healths[2] = healths[1];
-							targets[2] = targets[1];
-							
-							healths[1] = healths[0];
-							targets[1] = targets[0];
-							
-							healths[0] = hp;
-							targets[0] = i;
-						}
-						else if(healths[1] < hp)
-						{
-							healths[2] = healths[1];
-							targets[2] = targets[1];
-							
-							healths[1] = hp;
-							targets[1] = i;
-						}
-						else if(healths[2] < hp)
-						{
-							healths[2] = hp;
-							targets[2] = i;
+							int hp = GetEntProp(i, Prop_Data, "m_iHealth");
+							if(healths[0] < hp)
+							{
+								healths[2] = healths[1];
+								targets[2] = targets[1];
+								
+								healths[1] = healths[0];
+								targets[1] = targets[0];
+								
+								healths[0] = hp;
+								targets[0] = i;
+							}
+							else if(healths[1] < hp)
+							{
+								healths[2] = healths[1];
+								targets[2] = targets[1];
+								
+								healths[1] = hp;
+								targets[1] = i;
+							}
+							else if(healths[2] < hp)
+							{
+								healths[2] = hp;
+								targets[2] = i;
+							}
 						}
 					}
 				}
@@ -181,17 +185,17 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		
 		float distance;
 		int target = -1;
-		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			if(!b_NpcHasDied[i] && b_NpcForcepowerupspawn[i] != 2 && GetTeam(i) != TFTeam_Red)
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && b_NpcForcepowerupspawn[entity] != 2 && GetTeam(entity) != TFTeam_Red)
 			{
-				GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
 				
 				float dist = GetVectorDistance(pos1, pos2, true);
 				if(distance < dist) 
 				{
-					target = i;
+					target = entity;
 					distance = dist;
 				}
 			}
@@ -228,10 +232,14 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		int target = MaxClients + 1;
-		while((target = FindEntityByClassname(target, "zr_base_npc")) != -1)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			if(!b_NpcHasDied[target] && b_NpcForcepowerupspawn[target] != 2 && GetTeam(target) != 2)
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && b_NpcForcepowerupspawn[entity] != 2 && GetTeam(entity) != TFTeam_Red)
+			{
+				target = entity;
 				break;
+			}
 		}
 		
 		if(target != -1)

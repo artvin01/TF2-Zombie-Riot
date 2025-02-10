@@ -585,7 +585,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			case 2:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 3");
-				Rogue_AddChaos(15);
+				Rogue_AddChaos(25);
 				GiveCash(2000);
 				Rogue_AddIngots(15);
 				int recover = 5;

@@ -1014,10 +1014,19 @@ public void Map_BaseBoss_Damage_Post(int victim, int attacker, int inflictor, fl
 		ShowSyncHudText(attacker, SyncHud, "%d", Health);
 	}
 }
-
 float Damageaftercalc = 0.0;
 public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(i_IsNpcType[victim] == 1)
+	{
+		//Dont allow crush from these wierd npcs.
+		if((damagetype & DMG_CRUSH))
+		{
+			damage = 0.0;
+			return Plugin_Handled;
+		}
+	}
+
 	float GameTime = GetGameTime();
 	if(!CheckInHud())
 	{
@@ -1170,6 +1179,11 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	//LogEntryInvicibleTest(victim, attacker, damage, 26);
 #endif
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(i_IsNpcType[victim] == 1)
+	{
+		health -= RoundToNearest(damage);
+		SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	}
 #if defined ZR
 	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #else
@@ -1826,12 +1840,24 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		else
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t | %t : ", "Superboss", "Power");
 
-		//time show or not
-		if(Timer_Show > 800.0)
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+		//Does it have power? No power also hides timer showing
+		if(RaidModeScaling != 0.0)
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t : ", ExtraHudHurt, "Power");
+			//time show or not
+			if(Timer_Show > 800.0)
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+			else
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+		}
 		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
-			
+		{
+			if(Timer_Show > 800.0)
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s]", ExtraHudHurt);
+			else
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t: %.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
+		}
+		
 		//add name and health
 		char c_Health[255];
 		char c_MaxHealth[255];

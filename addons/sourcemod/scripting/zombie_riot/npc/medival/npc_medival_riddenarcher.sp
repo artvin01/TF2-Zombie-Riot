@@ -160,6 +160,7 @@ methodmap MedivalRiddenArcher < CClotBody
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	

@@ -373,8 +373,8 @@ public void Bloonarius_ClotThink(int iNPC)
 		npc.m_iLivesLost++;
 		npc.m_iMiniLivesLost++;
 		
-		int entity = -1;
-		while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+		int a, entity;
+		while((entity = FindEntityByNPC(a)) != -1)
 		{
 			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[entity] && GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{

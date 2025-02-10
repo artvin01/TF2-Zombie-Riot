@@ -650,6 +650,17 @@ public void OnPostThink(int client)
 
 			had_An_ability = false;
 			
+			if(c_WeaponUseAbilitiesHud[weapon][0])
+			{
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}
+				had_An_ability = true;
+					
+				Format(buffer, sizeof(buffer), "%s %s", c_WeaponUseAbilitiesHud[weapon], buffer);
+				IsReady = false;
+			}
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
 			{
 				cooldown_time = Ability_Check_Cooldown(client, 1);
@@ -1962,14 +1973,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				SDKHooks_UpdateMarkForDeath(victim, true);
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
+				Vehicle_Exit(victim, false);
 				ApplyLastmanOrDyingOverlay(victim);
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
-			//	if(b_XenoVial[victim])
-					Attributes_SetMulti(victim, 442, 0.85);
-			//	else
-			//		Attributes_SetMulti(victim, 442, 0.65);
+				Attributes_SetMulti(victim, 442, 0.85);
 
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
@@ -2103,9 +2112,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		//Everything else should be counted as ranged reistance probably.
 	}
 			
-	value = Attributes_GetOnPlayer(victim, 412, true, true, 1.0);	// Overall damage resistance
-	if(weapon != -1)
-		value *= Attributes_Get(weapon, 412, 1.0);
+	value = Attributes_GetOnPlayer(victim, 412, true, false, 1.0);	// Overall damage resistance
 
 	damage *= value;
 
@@ -2289,7 +2296,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		volume *= 0.75;
 		level = 85;
 		return Plugin_Changed;
-	}		
+	}
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
 		volume *= 0.45;
@@ -2331,7 +2338,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			{
 				if(weapon > 0 && i_WeaponVMTExtraSetting[weapon] != -1)
 				{
-					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon]);
+					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon], .ForceColour = true);
 					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[weapon]; //This makes sure to not reset the alpha.
 				}
 			}

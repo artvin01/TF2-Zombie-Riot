@@ -4,8 +4,8 @@
 //As per usual, I'm using arrays for stats on different pap levels. First entry is pap1, then pap2, etc.
 
 //STANDARD M1 PROJECTILE: The Magnesis Staff's primary fire is nothing special, just a generic projectile.
-static int Magnesis_M1_NumProjectiles[3] = { 6, 8, 10 };			//Number of projectiles fired.
-static float Magnesis_M1_DMG[3] = { 160.0, 260.0, 400.0 };          //M1 projectile damage.
+static int Magnesis_M1_NumProjectiles[3] = { 3, 4, 5 };			//Number of projectiles fired.
+static float Magnesis_M1_DMG[3] = { 320.0, 520.0, 800.0 };          //M1 projectile damage.
 static float Magnesis_M1_Lifespan[3] = { 0.3, 0.3, 0.3 };          	//M1 projectile lifespan.
 static float Magnesis_M1_Velocity[3] = { 1400.0, 1600.0, 1800.0 };  //M1 projectile velocity.
 static float Magnesis_M1_Spread[3] = { 6.0, 5.0, 4.0 };				//M1 projectile deviation.
@@ -55,12 +55,12 @@ static float Newtonian_M1_DMG[3] = { 400.0, 1000.0, 1400.0 };					//M1 damage.
 static float Newtonian_M1_Radius[3] = { 150.0, 165.0, 180.0 };					//M1 explosion radius.
 static float Newtonian_M1_Velocity[3] = { 1400.0, 1800.0, 2200.0 };				//M1 projectile velocity.
 static float Newtonian_M1_Lifespan[3] = { 1.0, 0.5, 0.65 };						//M1 projectile lifespan.
-static float Newtonian_M1_Falloff_MultiHit[3] = { 0.66, 0.75, 0.85 };			//Amount to multiply damage dealt by M1 per target hit.
-static float Newtonian_M1_Falloff_Distance[3] = { 0.66, 0.75, 0.85 };			//Maximum M1 damage falloff, based on distance.
+//static float Newtonian_M1_Falloff_MultiHit[3] = { 0.66, 0.75, 0.85 };			//Amount to multiply damage dealt by M1 per target hit.
+//static float Newtonian_M1_Falloff_Distance[3] = { 0.66, 0.75, 0.85 };			//Maximum M1 damage falloff, based on distance.
 static float Newtonian_M1_ComboMult[3] = { 4.0, 6.0, 8.0 };						//Amount to multiply damage dealt by the M1 to enemies who have been knocked airborne by the M2.
 static float Newtonian_M1_ComboCDR[3] = { 5.0, 5.0, 5.0 };						//Amount to reduce remaining M2 cooldown when airshotting an enemy launched by M2.
 static float Newtonian_M1_ComboCDR_Raids[3] = { 10.0, 10.0, 10.0 };				//Amount to reduce remaining M2 cooldown when airshotting a raid launched by M2 (does not stack with the other cdr). 
-static int Newtonian_M1_MaxTargets[3] = { 4, 5, 6 };							//Max targets hit by the M1 projectile's explosion.
+static int Newtonian_M1_MaxTargets[3] = { 1, 2, 3 };							//Max targets hit by the M1 projectile's explosion.
 static float Newtonian_M2_Cost[3] = { 200.0, 150.0, 200.0 };					//M2 cost.
 static float Newtonian_M2_Cooldown[3] = { 40.0, 25.0, 25.0 };					//M2 cooldown.
 static float Newtonian_M2_DMG[3] = { 1600.0, 2400.0, 3500.0 };					//M2 damage.
@@ -155,6 +155,7 @@ void Magnesis_Precache()
 	PrecacheSound(SND_NEWTONIAN_M2);
 	PrecacheSound(SND_NEWTONIAN_M2_2);
 	PrecacheSound(SND_NEWTONIAN_M2_KNOCKBACK);
+	PrecacheModel("models/weapons/c_models/c_engineer_gunslinger.mdl");
 
 	Beam_Lightning = PrecacheModel("materials/sprites/lgtning.vmt");
 	Beam_Glow = PrecacheModel("materials/sprites/glow02.vmt");
@@ -808,6 +809,13 @@ public void Magnesis_MakeNPCMove(int target, float targVel[3])
 	if(VIPBuilding_Active())
 		return;
 		
+	if(HasSpecificBuff(target, "Solid Stance"))
+	{
+		return;
+	}
+	if(i_IsNpcType[target] == 1)
+		return;
+
 	if(f_NoUnstuckVariousReasons[target] > GetGameTime() + 1.0)
 	{
 		//make the target not stuckable.
@@ -1049,8 +1057,8 @@ public void Newtonian_ProjectileTouch(int entity, float selfPos[3], int owner, i
 		   weapon,
 		    selfPos,
 			 Newtonian_M1_Radius[Magnesis_ProjectileTier[entity]],
-		 Newtonian_M1_Falloff_MultiHit[Magnesis_ProjectileTier[entity]],
-		  Newtonian_M1_Falloff_Distance[Magnesis_ProjectileTier[entity]],
+		_,// Newtonian_M1_Falloff_MultiHit[Magnesis_ProjectileTier[entity]],
+		_,//  Newtonian_M1_Falloff_Distance[Magnesis_ProjectileTier[entity]],
 		   false,
 		   Newtonian_M1_MaxTargets[Magnesis_ProjectileTier[entity]],
 		    _,

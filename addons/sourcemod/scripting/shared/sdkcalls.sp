@@ -428,7 +428,9 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 {
 	int entity = FindEntityByClassname(-1, "tf_gamerules");
 	if(entity == -1)
+	{
 		return;
+	}
 
 	static int Size1;
 	if(!Size1)

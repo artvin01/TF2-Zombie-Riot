@@ -17,10 +17,13 @@
 #include <morecolors>
 #include <cbasenpc>
 #include <tf2utils>
-#include <filenetwork>
 #include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
+#undef REQUIRE_EXTENSIONS
+#undef REQUIRE_PLUGIN
+#include <filenetwork>
+#include <loadsoundscript>
 
 #pragma dynamic	131072
 
@@ -170,7 +173,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 */
 //#define ZR_TEST_MODEL	"models/zombie_riot/weapons/test_models9.mdl"
 
-#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_2.mdl"
+#define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_3.mdl"
 enum
 {
 	WINGS_FUSION 	= 1,
@@ -885,7 +888,7 @@ public Action Timer_Temp(Handle timer)
 #if defined ZR
 	if(RaidbossIgnoreBuildingsLogic())
 	{
-		if (RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
+		if (RaidModeScaling != 0.0 && RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
 			PlayTickSound(true, false);
 		}
@@ -938,24 +941,6 @@ public void OnPluginEnd()
 	Waves_MapEnd();
 	MVMHud_Disable();
 #endif
-
-	/*
-	char classname[256];
-	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
-	{
-		if(IsValidEntity(i))
-		{
-			GetEntityClassname(i, classname, sizeof(classname)); 
-			//prevent crash.
-
-			if(StrContains(classname, "zr_base_npc"))
-			{
-				RemoveEntity(i);
-				continue;
-			}
-		}
-	}
-	*/
 }
 
 void Core_PrecacheGlobalCustom()
@@ -1079,6 +1064,7 @@ public void OnMapStart()
 
 #if defined ZR
 	ZR_MapStart();
+	Waves_SetReadyStatus(2);
 #endif
 
 #if defined RPG
@@ -1109,8 +1095,43 @@ public void OnMapStart()
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	PrecacheSound("mvm/mvm_tank_horn.wav");
+	DeleteShadowsOffZombieRiot();
+
+	if(LibraryExists("LoadSoundscript"))
+	{
+		char soundname[256];
+		SoundScript soundscript = LoadSoundScript("scripts/game_sounds_vehicles.txt");
+		for(int i = 0; i < soundscript.Count; i++)
+		{
+			SoundEntry entry = soundscript.GetSound(i);
+			entry.GetName(soundname, sizeof(soundname));
+			PrecacheScriptSound(soundname);
+		}
+	}
 }
 
+void DeleteShadowsOffZombieRiot()
+{
+	//found shadow lod
+	int entityshadow = -1;
+	entityshadow = FindEntityByClassname(entityshadow, "shadow_control");
+
+	if(IsValidEntity(entityshadow))
+	{
+		RemoveEntity(entityshadow);
+	}
+	entityshadow = CreateEntityByName("shadow_control");
+	
+	//Create new shadow entity, and make own own rules
+	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
+	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
+	if(IsValidEntity(entityshadow))
+	{
+		DispatchSpawn(entityshadow);
+		SetVariantInt(1); 
+		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
+	}
+}
 public void OnMapEnd()
 {
 #if defined ZR
@@ -2054,7 +2075,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				
 				if(Attack_speed <= Panic_Attack[weapon])
 				{
-					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
+					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY increased ATTACK SPEED.
 				}
 				
 				
@@ -2209,6 +2230,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_FaceStabber[entity] = false;
 		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;
+		i_IsNpcType[entity] = 0;
 		BarracksEntityCreated(entity);
 		SetEntitySpike(entity, false);
 		StoreWeapon[entity] = -1;
@@ -2295,7 +2317,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
-		b_IsVehicle[entity] = false;
+		i_IsVehicle[entity] = 0;
 		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_IsAGib[entity] = false;
@@ -2444,6 +2466,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_OnTakeDamagePost, Func_Breakable_Post);
 		}
+		else if(!StrContains(classname, "prop_vehicle_driveable"))
+		{
+			i_IsVehicle[entity] = 1;
+			npc.bCantCollidieAlly = true;
+			b_IsAProjectile[entity] = true;
+			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);  // ?????
+		}
 #if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
@@ -2462,7 +2491,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			b_IsAProjectile[entity] = true;
-			
 		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
@@ -2495,6 +2523,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_Touch, ArrowTouchNonCombatEntity);
 			b_IsAProjectile[entity] = true;
 		}
 #endif
@@ -2617,7 +2646,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			OnManglerCreated(entity);
 		}
 #endif
-		else if(!StrContains(classname, "obj_"))
+		else if(!StrContains(classname, "obj_") && !StrEqual(classname, "obj_vehicle"))
 		{
 			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
@@ -3041,12 +3070,15 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #endif
 
 #if defined ZR
+			if(Vehicle_Interact(client, entity))
+				return true;
+			
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
-					
+				
 				if(Object_Interact(client, weapon, entity))
 					return true;
 
@@ -3097,10 +3129,15 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #endif
 		
 		}
-
-#if defined RPG
 		else
 		{
+
+#if defined ZR
+			if(GetEntityMoveType(client) == MOVETYPE_NONE && Vehicle_Interact(client, entity))
+				return true;
+#endif
+			
+#if defined RPG
 			if(Fishing_Interact(client, weapon))
 				return true;
 			
@@ -3109,9 +3146,9 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			
 			if(Garden_Interact(client, vecEndOrigin))
 				return true;
-		}
 #endif
-		
+
+		}
 	}
 	return false;
 }
@@ -3483,4 +3520,63 @@ void checkOS()
 	{
 		OperationSystem = OS_Unknown;
 	}
+
+	if(OperationSystem == OS_Linux)
+		PrintToServer("Hi linux!");
+}
+
+
+public void ArrowTouchNonCombatEntity(int entity, int other)
+{
+	//This fixes arrows not detecting/intereacting with some entities, in this case its our custom buildings.
+	if(i_IsNpcType[other] != 1)
+		return;
+
+	if(!b_ThisWasAnNpc[other])
+		return;
+
+		
+	float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+	int Weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+	int attacker = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	float chargerPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", chargerPos);
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			if(attacker == client)
+			{
+				switch(GetRandomInt(1,3))
+				{
+					case 1:
+						EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal.wav", attacker, SNDCHAN_STATIC, 70, _, 1.0);
+					
+					case 2:
+						EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal2.wav", attacker, SNDCHAN_STATIC, 70, _, 1.0);
+					
+					case 3:
+						EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal4.wav", attacker, SNDCHAN_STATIC, 70, _, 1.0);
+				}	
+			}
+			else
+			{
+
+				switch(GetRandomInt(1,3))
+				{
+					case 1:
+						EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal.wav", other, SNDCHAN_STATIC, 70, _, 1.0);
+					
+					case 2:
+						EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal2.wav", other, SNDCHAN_STATIC, 70, _, 1.0);
+					
+					case 3:
+						EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal4.wav", other, SNDCHAN_STATIC, 70, _, 1.0);
+				}	
+			}
+		}
+	}
+	SDKHooks_TakeDamage(other, attacker, attacker, original_damage , DMG_BULLET, Weapon, NULL_VECTOR, chargerPos);
+	RemoveEntity(entity);
 }

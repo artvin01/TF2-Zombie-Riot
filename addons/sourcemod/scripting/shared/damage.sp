@@ -16,6 +16,11 @@ void DamageModifMapStart()
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//LogEntryInvicibleTest(victim, attacker, damage, 5);
+
+#if defined ZR
+	if(inflictor > 0 && inflictor < MAXENTITIES && i_IsVehicle[inflictor] == 2)
+		attacker = Vehicle_Driver(inflictor);
+#endif
 	
 	if(Damage_AnyVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
@@ -386,7 +391,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 		
 #if defined ZR || defined NOG
 		//true damage does NOT Ignore this.
-		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,i_HexCustomDamageTypes[victim], weapon);
+		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
 #endif
 
 #if defined ZR
@@ -615,9 +620,10 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
-	if(CheckInHud() != 2 && GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(attacker))
+	if(GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(attacker))
 	{
-		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
+		if(!CheckInHud() || CheckInHud() == 2)
+			damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
 	}
 #endif
 	return false;
@@ -1214,6 +1220,9 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 #if defined RPG
 stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime, bool donotset = false)
 {
+	if(attacker == -1)
+		return false;
+	
 	if(attacker > MaxClients && victim <= MaxClients)
 	{
 		int PrevAttack = attacker;

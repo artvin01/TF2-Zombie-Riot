@@ -876,7 +876,7 @@
 	}
 	"P15t0l Desc 1"
 	{
-		"en"	"Increaced damage."
+		"en"	"increased damage."
 		"fr"	"Dégats améliorés."
 	}
 	"P15t0l Pap 2" 
@@ -1466,10 +1466,7 @@
 	
 	"Wrench Desc"
 	{
-		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench."
-		"fr"	"Répare les constructions."
-		"ru"	"Ремонтирует постройки и турели, имейте при себе для присвоения построек, работает с любым гаечным ключом."
-		"chi"   "修理建筑物和哨兵，用任何扳手工作。"
+		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench.\nHold crouch and M2 to mount buildings on yourself!"
 	}
 	
 	"Texan business Desc"
@@ -2182,7 +2179,7 @@
 	}
 	"Mlynar Sword Desc pap 2"
 	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
+		"en"	"Gain increased Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids.\nVotre charge est plus rapide, et prend moins de temps pour se recharger."
 	}
 	"Mlynar ExtraDesc"
@@ -2593,7 +2590,7 @@
 	}
 	"Mlynar Sword Desc pap"
 	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
+		"en"	"Gain increased Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids."
 		"chi"	"增加抗性，伤害，反甲伤害，更低的杀敌惩罚。"
 	}
@@ -2858,13 +2855,13 @@
 	}
 	"Sensal Desc 2"
 	{
-		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
+		"en"	"increased damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
 		"fr"	"Dégats et résistance améliorés. Abilité lance une faux additionelle.\nAbilité se charge plus rapidement, charge maximale est doublée."
 		"chi"	"更高的伤害和抗性，+1镰刀。\n更快的充能，上限*2。"
 	}
 	"Sensal Desc 3"
 	{
-		"en"	"Increaced damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
+		"en"	"increased damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
 		"fr"	"Dégats et résistance améliorés. Abilité crée des après-images qui tirent des lasers.\nVos après-images priorisent les ennemis que vous regardez."
 		"chi"	"更高的伤害和抗性。\n新技能：\n召唤残影，发射激光。"
 	}
@@ -3276,13 +3273,13 @@
 	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
-		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increaced.\nCrit Chance Increaces."
+		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increased.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique et santé bonus par soins améliorés.\nVous frappez plus d'ennemis à la fois."
 		"chi"	"提高伤害，技能赋予更多双击子弹。\n加强穿透力，更高的超量上限。\n随机暴击概率提高。"
 	}
 	"Half Moon Desc1"
 	{
-		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 2x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
+		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 1.8x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
 	}
 	"Half Moon Desc2"
 	{
@@ -3300,7 +3297,7 @@
 	}
 	"Angelic Shotgonnus Desc Pap 3"
 	{
-		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increaced.\nCrit Chance Increaces."
+		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increased.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique, soins et santé bonus par soins et améliorés.\nDouble-attaque se déclenche 2x plus fréquemment."
 		"chi"	"更多伤害，更多治疗。有效射程更高，双击频率增加一倍。\n随机暴击概率提高。"
 	}
@@ -3995,7 +3992,7 @@
 	}
 	"Super-Uber-Saw Desc 1"
 	{
-		"en"	"Increaced damage and 25%% more range."
+		"en"	"increased damage and 25%% more range."
 	}
 	"The Yakuza Desc"
 	{
@@ -4212,21 +4209,33 @@
 	{
 		"en"	"Base damage increased."
 	}
-	"Blue Cheese Desc"
+	"Ketamine Desc"
 	{
-		"en"	"It stinks, a lot...\n+800 HP, Increases melee damage by +75%% and heal on kill by +35.\nIncreases melee resist with melee weapons by +10%%."
+		"en"	"Makes you as hard as iron.\n+600 HP, Increases melee damage by +65%% and heal on kill by +25.\nIncreases melee resist with melee weapons by +7.5%%."
+	}
+	"Cannabis Desc"
+	{
+		"en"	"Smoke it everyday.\n+800 HP, Increases melee damage by +75%% and heal on kill by +35.\nIncreases melee resist with melee weapons by +10%%."
 	}
 	"Fentanyl Desc"
 	{
 		"en"	"It courses through you.\n+1000 HP, Increases melee damage by +100%% and heal on kill by +50.\nIncreases melee resist and ranged resist with melee weapons by +15%% and +10%% respectively."
 	}
+	"Building Dummies Desc"
+	{
+		"en"	"A book to teach you how to build.\nIncreases building HP by +20%%, building damage by +50%% and repair rate by +50%%.\nIncreases sentry attackspeed by +10%%."
+	}
 	"Dubious Cheesy Ideas Desc"
 	{
-		"en"	"The inhuman thoughts lying behind the cheese.\nIncreases building HP by +35%%, and building damage + repair rate by +75%%.\nIncreases sentry attackspeed by +25%%."
+		"en"	"The inhuman thoughts lying behind the cheese.\nIncreases building HP by +45%%, and building damage + repair rate by +75%%.\nIncreases sentry attackspeed by +25%%."
 	}
 	"Messed Up Cheesy Brain Desc"
 	{
-		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +75%%, building damage by +100%% and repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
+		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +90%%, building damage by +100%% and repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
+	}
+	"Birdeye Ammo Desc"
+	{
+		"en"	"He never misses.\nIncreases ranged damage by +65%%, fire rate and reload speed by +5%%.\nIncreases accuracy by +10%% and projectile speed by +10%%."
 	}
 	"Waldch's Railgun Rounds Desc"
 	{
@@ -4235,6 +4244,10 @@
 	"Cheesy Doomsday Pack Desc"
 	{
 		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%%, fire rate by +7.5%% and reload speed by +10%%.\nIncreases accuracy by +35%% and projectile speed by +50%%."
+	}
+	"Twirl Magic Desc"
+	{
+		"en"	"This is as far as she can get with teaching magic to you.\n+150 HP, Increases mage damage by +70%% and mage projectile speed by +10%%.\nIncreases melee resist with wands out by +5%%, and max mana by 20%%."
 	}
 	"Magical Fontina Aura Desc"
 	{
@@ -4256,6 +4269,10 @@
 	{
 		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2750 HP, +30%% overall resistance, grants an additional +15HP/s regen."
 	}
+	"Nanomachines Desc"
+	{
+		"en"	"Nanomachines, they make people harden in response to physical trauma.\nIncreases medigun heal/enemydrain rate by +65%% and uber duration by +1 second.\nIncreases melee resistance with support weapons out by +5%%."
+	}
 	"Voided Rejuvenator Pack Desc"
 	{
 		"en"	"The fastest heals in the void.\nIncreases medigun heal/enemydrain rate by +75%% and uber duration by +2 seconds.\nIncreases melee resistance with support weapons out by +10%%."
@@ -4266,19 +4283,19 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +25%% and attackspeed by +10%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%%."
+		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +25%% and attackspeed by +10%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%% and increases heal rate by +25%%."
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "Increases kit damage by +35%% and reload speed by +10%%\nGrants +35%% max mana, increases repair rate by +50%% and building HP by +10%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +35%% and reload speed by +10%%\nGrants +35%% max mana, increases repair rate by +50%% and building HP by +10%%.\nReduces building cost by 25%% and increases heal rate by +35%%."
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "Increases kit damage by +50%% and reload + attackspeed by +5%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +50%% and reload + attackspeed by +5%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%% and increases heal rate by +35%%."
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "Increases kit damage by +65%% and reload + attackspeed by +10%%\n+35 HP on kill | +20%% Overall Resistance | +25%% Max Mana | +100%% Repair Rate | +50%% Projectile Speed"
+		"en" "Increases kit damage by +65%% and reload + attackspeed by +10%%\n+35 HP on kill | +20%% Overall Resist | +25%% Max Mana | +100%% Repair Rate | +50%% Proj. Speed | +35%% Heal Rate"
 	}
 	"Kit Modernizer V Desc"
 	{
@@ -4299,6 +4316,10 @@
 	"Unit Reformator IV Desc"
 	{
 		"en" "Doubles barrack unit HP and increases barrack unit damage by +75%%."
+	}
+	"Unit Reformator V Desc"
+	{
+		"en" "Increases barrack unit HP by +125%% and doubles barrack unit damage."
 	}
 	"Reinforce Desc"
 	{

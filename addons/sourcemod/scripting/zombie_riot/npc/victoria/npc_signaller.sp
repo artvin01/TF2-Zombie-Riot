@@ -104,6 +104,26 @@ methodmap VictorianSignaller < CClotBody
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+
+		if(Waves_InFreeplay())
+		{
+			CPrintToChatAll("{blue}Sigmaller{white}: {blue}I FEEL SO SIGMA!!");
+			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+			{
+				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+				{
+					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+					{
+						HealEntityGlobal(npc.index, entitycount, float(GetEntProp(entitycount, Prop_Data, "m_iHealth")), 1.0, 0.0, HEAL_ABSOLUTE);
+						ApplyStatusEffect(npc.index, entitycount, "Combine Command", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Buff Banner", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Healing Strength", 2.5);
+						ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", 2.5);
+					}
+				}
+			}
+		}
 		
 		float flPos[3], flAng[3];
 				
@@ -111,7 +131,7 @@ methodmap VictorianSignaller < CClotBody
 		i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 
-	
+		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_bugle/c_battalion_bugle.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -145,7 +165,8 @@ methodmap VictorianSignaller < CClotBody
 public void VictorianSignaller_ClotThink(int iNPC)
 {
 	VictorianSignaller npc = view_as<VictorianSignaller>(iNPC);
-
+	bool freeplay_sigmalone = false;
+	bool isfreeplay = Waves_InFreeplay();
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -173,21 +194,79 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		npc.m_iTargetAlly = GetClosestAlly(npc.index);
 		if(npc.m_iTargetAlly < 1)
 		{
-			LastHitRef[npc.index] = -1;
-			SmiteNpcToDeath(npc.index);
-			return;
+			if(!isfreeplay)
+			{
+				LastHitRef[npc.index] = -1;
+				SmiteNpcToDeath(npc.index);
+				return;
+			}
+			else
+			{
+				freeplay_sigmalone = true;
+			}
+			
 		}
 		
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 		if(!NpcStats_IsEnemySilenced(npc.index))
-			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
+		{
+			if(isfreeplay)
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 60.0);
+			else
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
+		}
+			
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
-		npc.m_flNextMeleeAttack = gameTime + 7.50;
 		npc.PlayHornSound();
+
+		if(Waves_InFreeplay())
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client) && IsEntityAlive(client))
+				{
+					if(freeplay_sigmalone)
+					{
+						SDKHooks_TakeDamage(client, npc.index, npc.index, 600.0, DMG_CLUB, -1);
+						ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 8.0);
+					}
+				}
+			}
+	
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+				{
+					if(GetTeam(entity) == GetTeam(npc.index))
+					{
+						ApplyStatusEffect(npc.index, entity, "Call To Victoria", 10.0);
+						fl_Extra_Speed[entity] *= 1.01;
+						fl_Extra_MeleeArmor[entity] *= 0.99;
+						fl_Extra_RangedArmor[entity] *= 0.99;
+						HealEntityGlobal(npc.index, entity, (float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.1), 1.0, 0.0, HEAL_ABSOLUTE);
+					}
+					else
+					{
+						if(freeplay_sigmalone)
+						{
+							SDKHooks_TakeDamage(entity, npc.index, npc.index, 750.0, DMG_CLUB, -1);
+							ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
+						}
+					}
+				}
+			}
+
+			npc.m_flNextMeleeAttack = gameTime + 5.0;
+		}
+		else
+		{
+			npc.m_flNextMeleeAttack = gameTime + 7.50;
+		}
 	}
 
 	gameTime = GetGameTime() + 0.5;
@@ -199,7 +278,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		{
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+				if(IsClientInGame(client) && IsEntityAlive(client))
 				{
 					ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
 				}
@@ -209,9 +288,12 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
+			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 			{
-				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+				if(GetTeam(entity) == team)
+				{
+					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+				}
 			}
 		}
 	}

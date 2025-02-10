@@ -77,7 +77,7 @@ methodmap UnderTides < CClotBody
 	
 	public UnderTides(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}));
+		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}, .NpcTypeLogic = 1));
 		// 100,000 x 0.15
 
 		i_NpcWeight[npc.index] = 999;
@@ -216,12 +216,10 @@ public void UnderTides_ClotThink(int iNPC)
 					Elemental_AddNervousDamage(enemy[i], npc.index, 57);
 					// 380 * 0.15
 
-					if(!i)
-						npc.FaceTowards(vecTarget, 99999.0);
 				}
 			}
 
-			npc.AddGesture("ACT_CHARGE_END");
+		//	npc.AddGesture("ACT_CHARGE_END");
 			npc.PlaySpecialSound();
 			npc.PlaySpecialSound();
 			
@@ -247,15 +245,12 @@ public void UnderTides_ClotThink(int iNPC)
 
 					npc.FireArrow(vecTarget, 57.0, 1300.0);
 					// 380 * 0.15
-
-					if(!i)
-						npc.FaceTowards(vecTarget, 200.0);
 				}
 			}
 
 			if(vecTarget[0])
 			{
-				npc.AddGesture("ACT_CHARGE_END");
+			//	npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayRangedSound();
 				npc.m_flNextRangedAttack = gameTime + 12.0;
 				npc.m_flNextMeleeAttack = gameTime + 4.5;
@@ -283,9 +278,6 @@ public void UnderTides_ClotThink(int iNPC)
 
 					i_NervousImpairmentArrowAmount[entity] = 12;
 					// 380 * 0.2 * 0.15
-
-					if(!i)
-						npc.FaceTowards(vecTarget, 100.0);
 					
 					if(entity != -1)
 					{
@@ -305,7 +297,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 			if(vecTarget[0])
 			{
-				npc.AddGesture("ACT_CHARGE_END");
+			//	npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayMeleeSound();
 				npc.m_flNextMeleeAttack = gameTime + 3.5;
 			}

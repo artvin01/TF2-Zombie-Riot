@@ -48,6 +48,10 @@ methodmap ObjectSentrygun < ObjectGeneric
 	}
 }
 
+bool IsEntitySentrygun(int sentry)
+{
+	return func_NPCThink[sentry] == ObjectSentrygun_ClotThink;
+}
 //think every tick.
 public void ObjBaseThinkPostSentry(int building)
 {
