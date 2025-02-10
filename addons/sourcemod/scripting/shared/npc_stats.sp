@@ -2520,6 +2520,12 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 		
+		if(i_IsVehicle[target])
+		{
+			// Vehicle hitboxes
+			return this.DoAimbotTrace(trace, target, vecSwingMaxs, vecSwingMins, vecSwingStartOffset);
+		}
+		
 		float eyePitch[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 		
@@ -2527,15 +2533,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		WorldSpaceCenter(target, vecTarget);
 		if(target <= MaxClients)
-		{
 			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
-		}
-		else if(i_IsVehicle[target])
-		{
-			ScaleVector(vecSwingMins, 2.0);
-			ScaleVector(vecSwingMaxs, 2.0);
-		}
-
+		
 		WorldSpaceCenter(this.index, vecForward);
 		MakeVectorFromPoints(vecForward, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
