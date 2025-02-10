@@ -1260,7 +1260,7 @@ public Action Waves_EndVote(Handle timer, float time)
 					}
 				}
 
-				if(high2 != -1 && votes[high1])
+				if(high2 != -1 && votes[high2])
 				{
 					if(high2 != -1)
 					{
