@@ -75,6 +75,7 @@ void Vehicle_PluginStart()
 	factory.Install();
 
 	RegAdminCmd("sm_remove_vehicles", RemoveVehicleCmd, ADMFLAG_RCON, "Deletes all obj_vehicle entities");
+	RegAdminCmd("sm_seat_offset", SeatOffsetCmd, ADMFLAG_RCON, "Set the offset of your vehicle seat");
 }
 
 static Action RemoveVehicleCmd(int client, int args)
@@ -83,6 +84,38 @@ static Action RemoveVehicleCmd(int client, int args)
 	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
 	{
 		RemoveEntity(entity);
+	}
+
+	return Plugin_Handled;
+}
+
+static Action SeatOffsetCmd(int client, int args)
+{
+	if(args != 3)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_seat_offset <x> <y> <z>");
+	}
+	else
+	{
+		int vehicle = Vehicle_Driver(client);
+		if(vehicle == -1)
+		{
+			ReplyToCommand(client, "[SM] Enter a vehicle first");
+		}
+		else
+		{
+			float pos1[3], pos2[3];
+			GetEntPropVector(vehicle, Prop_Data, "m_vecOrigin", pos1);
+			pos2[0] = GetCmdArgFloat(1);
+			pos2[1] = GetCmdArgFloat(2);
+			pos2[2] = GetCmdArgFloat(3);
+			
+			AcceptEntityInput(client, "ClearParent");
+			TeleportEntity(client, pos1, _, {0.0, 0.0, 0.0});
+			SetParent(vehicle, client, "root", pos2);
+
+			ReplyToCommand(client, "%f %f %f", pos2[0], pos2[1], pos2[2]);
+		}
 	}
 
 	return Plugin_Handled;
@@ -217,7 +250,7 @@ bool Vehicle_Interact(int client, int entity)
 		}
 		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
 		{
-			Vehicle_Exit(vehicle, false);
+			Vehicle_Exit(client, false);
 		}
 		else
 		{
@@ -278,7 +311,7 @@ bool Vehicle_Enter(int vehicle, int target)
 		GetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", pos2, index);
 
 		TeleportEntity(target, pos1, _, {0.0, 0.0, 0.0});
-		SetParent(obj.index, target, _, pos2);
+		SetParent(obj.index, target, "root", pos2);
 
 		SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", target, index);
 	}

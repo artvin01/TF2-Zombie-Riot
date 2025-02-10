@@ -283,7 +283,7 @@ bool Waves_CallVote(int client, int force = 0)
 		}
 		else
 		{
-			menu.AddItem(NULL_STRING, vote.Name, ITEMDRAW_DISABLED);
+			menu.AddItem(NULL_STRING, vote.Name, ITEMDRAW_SPACER);
 		}
 
 		bool levels = CvarLeveling.BoolValue;

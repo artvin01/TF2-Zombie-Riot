@@ -2510,7 +2510,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		WorldSpaceCenter(target, vecTarget);
 		if(target <= MaxClients)
+		{
 			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
+		}
+		else if(i_IsVehicle[target])
+		{
+			// Use TraceHull instead
+			if(countAoe < 1)
+				countAoe = 1;
+		}
 
 		WorldSpaceCenter(this.index, vecForward);
 		MakeVectorFromPoints(vecForward, vecTarget, vecForward);
