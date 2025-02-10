@@ -2515,9 +2515,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else if(i_IsVehicle[target])
 		{
-			// Use TraceHull instead
-			if(countAoe < 1)
-				countAoe = 1;
+			ScaleVector(vecSwingMins, 2.0);
+			ScaleVector(vecSwingMaxs, 2.0);
 		}
 
 		WorldSpaceCenter(this.index, vecForward);
