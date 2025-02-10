@@ -94,6 +94,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
+- [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
