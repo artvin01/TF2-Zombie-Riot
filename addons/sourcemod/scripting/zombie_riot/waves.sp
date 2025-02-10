@@ -2277,6 +2277,8 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_4");
 				}
 			}
+			FreeplayTimeLimit = GetGameTime() + 3600.0; //one hour.
+			DeleteShadowsOffZombieRiot();
 			Freeplay_Info = 0;
 		}
 		default:
@@ -3406,6 +3408,20 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 	}
 	else
 	{
+		if(FreeplayTimeLimit < GetGameTime())
+		{
+			CPrintToChatAll("{gold}Koshi{white}: looks like you survived for an hour, hm.");
+			CPrintToChatAll("{gold}Koshi{white}: You got as far as wave {green}%i!",CurrentRound);
+			CPrintToChatAll("{gold}Koshi{white}: See if you can go higher next time, dont be so lazy and stall so much..!");
+			CPrintToChatAll("{lightcyan}Zeina{white}: Finally done? I'll can go back home, {lightblue}Nemal's {white}waiting on me.");
+
+			int entity = CreateEntityByName("game_round_win"); 
+			DispatchKeyValue(entity, "force_map_reset", "1");
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "RoundWin");
+			return true;
+		}
 		WaveEndLogicExtra();
 
 		Freeplay_OnEndWave(round.Cash);
@@ -3414,6 +3430,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if(round.Cash)
 		{
+			CPrintToChatAll("{gold}%t{default}","Simulation Time Left", ((FreeplayTimeLimit - GetGameTime()) / 60.0));
 			CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
 		}
 		else

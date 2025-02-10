@@ -386,6 +386,7 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 int SpecialLastMan;
 
 bool WaitingInQueue[MAXTF2PLAYERS];
+float FreeplayTimeLimit;
 
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
@@ -971,7 +972,7 @@ void ZR_ClientPutInServer(int client)
 	i_ClientHasCustomGearEquipped[client] = false;
 	if(CountPlayersOnServer() == 1)
 	{
-		Waves_SetReadyStatus(2);
+//		Waves_SetReadyStatus(2);
 		//fixes teuton issue hopefully?
 		//happens when you loose and instnatly ragequit or something.
 		for(int client_summon=1; client_summon<=MaxClients; client_summon++)
@@ -1153,7 +1154,7 @@ public Action Command_RTdFail(int client, int args)
 	if(client)
 	{
 		CPrintToChat(client, "{crimson}[ZR] Looks like the dice broke.");
-		FakeClientCommand(client, "playgamesound vo/k_lab/kl_fiddlesticks.wav");
+		ClientCommand(client, "playgamesound vo/k_lab/kl_fiddlesticks.wav");
 	}
 	return Plugin_Handled;
 }

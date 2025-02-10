@@ -1096,6 +1096,18 @@ public void OnMapStart()
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	PrecacheSound("mvm/mvm_tank_horn.wav");
 	DeleteShadowsOffZombieRiot();
+
+	if(LibraryExists("LoadSoundscript"))
+	{
+		char soundname[256];
+		SoundScript soundscript = LoadSoundScript("scripts/game_sounds_vehicles.txt");
+		for(int i = 0; i < soundscript.Count; i++)
+		{
+			SoundEntry entry = soundscript.GetSound(i);
+			entry.GetName(soundname, sizeof(soundname));
+			PrecacheScriptSound(soundname);
+		}
+	}
 }
 
 void DeleteShadowsOffZombieRiot()
@@ -1104,16 +1116,18 @@ void DeleteShadowsOffZombieRiot()
 	int entityshadow = -1;
 	entityshadow = FindEntityByClassname(entityshadow, "shadow_control");
 
-	if(!IsValidEntity(entityshadow))
+	if(IsValidEntity(entityshadow))
 	{
-		entityshadow = CreateEntityByName("shadow_control");
-		DispatchSpawn(entityshadow);
+		RemoveEntity(entityshadow);
 	}
+	entityshadow = CreateEntityByName("shadow_control");
+	
 	//Create new shadow entity, and make own own rules
 	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
 	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
 	if(IsValidEntity(entityshadow))
 	{
+		DispatchSpawn(entityshadow);
 		SetVariantInt(1); 
 		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
 	}
@@ -2457,7 +2471,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			i_IsVehicle[entity] = 1;
 			npc.bCantCollidieAlly = true;
 			b_IsAProjectile[entity] = true;
-			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
+			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);  // ?????
 		}
 #if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))

@@ -650,6 +650,17 @@ public void OnPostThink(int client)
 
 			had_An_ability = false;
 			
+			if(c_WeaponUseAbilitiesHud[weapon][0])
+			{
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}
+				had_An_ability = true;
+					
+				Format(buffer, sizeof(buffer), "%s %s", c_WeaponUseAbilitiesHud[weapon], buffer);
+				IsReady = false;
+			}
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
 			{
 				cooldown_time = Ability_Check_Cooldown(client, 1);

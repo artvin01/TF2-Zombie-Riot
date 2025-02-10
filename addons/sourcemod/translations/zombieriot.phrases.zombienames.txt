@@ -12,6 +12,10 @@
 		"pt"		"Zumbi de Headcrab"
 		"nl"		"Hoofdkrab Zombie"
 	}
+	"Z-Main"
+	{
+		"en"		"Z-Main"
+	}
 	"Fortified Headcrab Zombie"
 	{
 		"en" 		"Fortified Headcrab Zombie"
@@ -2441,6 +2445,10 @@
 	"Mad Doctor"
 	{
 		"en"	"Mad Doctor"
+	}
+	"John The Allmighty"
+	{
+		"en"	"JØⱧ₦ ₮ⱧɆ ₳ⱠⱠ₥ł₲Ⱨ₮Ɏ"
 	}
 	"Abomination"
 	{
