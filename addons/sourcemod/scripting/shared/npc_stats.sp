@@ -6381,6 +6381,39 @@ stock void Custom_Knockback(int attacker,
 	}
 	if(i_IsNpcType[enemy] == 1)
 		return;
+	
+#if defined ZR
+	bool forceOut = (PullDuration != 0.0 || knockback > 500.0);
+	if(i_IsVehicle[enemy])
+	{
+		// Pull the driver instead of the vehicle
+		if(forceOut && i_IsVehicle[enemy] == 2)
+		{
+			int driver = Vehicle_Driver(enemy);
+			if(driver != -1)
+			{
+				enemy = driver;
+				Vehicle_Exit(enemy, false);
+			}
+		}
+	}
+	else
+	{
+		// Push the vehicle instead of the driver
+		int vehicle = Vehicle_Driver(enemy);
+		if(vehicle != -1)
+		{
+			if(forceOut && i_IsVehicle[vehicle] == 2)
+			{
+				Vehicle_Exit(enemy, false);
+			}
+			else
+			{
+				enemy = vehicle;
+			}
+		}
+	}
+#endif
 
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{

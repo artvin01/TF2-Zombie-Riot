@@ -1842,7 +1842,7 @@
 	}
 	"Australium Printer Desc"
 	{
-		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 credits each"
+		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 Cash each"
 	}
 	"Elite Voucher"
 	{

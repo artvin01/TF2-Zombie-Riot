@@ -1617,7 +1617,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 				{
 					if(i != client && IsClientInGame(i))
 					{
-						if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+						if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0 && Vehicle_Driver(i) == -1) //dont spawn near players who just spawned
 						{
 							target = i;
 							break;

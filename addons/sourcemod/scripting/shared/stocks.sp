@@ -5266,11 +5266,11 @@ stock void Matrix_GetRotationMatrix(float matMatrix[3][3], float fA, float fB, f
 	);
 }
 
-stock void ForcePlayerCrouch(int client, bool enable)
+stock void ForcePlayerCrouch(int client, bool enable, bool thirdpers = true)
 {
 	if(enable)
 	{
-		SetVariantInt(1);
+		SetVariantInt(thirdpers);
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		SetForceButtonState(client, true, IN_DUCK);
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);

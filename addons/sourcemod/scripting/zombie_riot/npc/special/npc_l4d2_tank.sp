@@ -554,7 +554,16 @@ public void L4D2_Tank_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEntity(closest) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					
+					if(i_IsVehicle[Enemy_I_See] == 2)
+					{
+						int driver = Vehicle_Driver(Enemy_I_See);
+						if(driver != -1)
+						{
+							Enemy_I_See = driver;
+							Vehicle_Exit(driver, false);
+						}
+					}
+
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
 					
 					f_TankGrabbedStandStill[Enemy_I_See] = GetGameTime(npc.index) + 1.2;
