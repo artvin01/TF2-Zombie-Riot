@@ -1262,15 +1262,12 @@ public Action Waves_EndVote(Handle timer, float time)
 
 				if(high2 != -1 && votes[high2])
 				{
-					if(high2 != -1)
+					high1 = votes[high2];
+					for(int i = length - 1; i >= 0; i--)
 					{
-						high1 = votes[high2];
-						for(int i = length - 1; i >= 0; i--)
+						if(votes[i] < high1)
 						{
-							if(votes[i] < high1)
-							{
-								list.Erase(i);
-							}
+							list.Erase(i);
 						}
 					}
 
