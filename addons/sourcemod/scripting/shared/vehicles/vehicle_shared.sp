@@ -182,7 +182,7 @@ int Vehicle_Driver(int target, bool &isDriver = false)
 	isDriver = false;
 	for(int entity = MaxClients + 1; entity < sizeof(i_IsVehicle); entity++)
 	{
-		if(i_IsVehicle[entity])
+		if(i_IsVehicle[entity] && IsValidEntity(entity))
 		{
 			int driver = view_as<VehicleGeneric>(entity).m_hDriver;
 			if(driver == target)
@@ -237,13 +237,12 @@ bool Vehicle_ShowInteractHud(int client, int entity)
 
 bool Vehicle_Interact(int client, int entity)
 {
-	bool driver;
-	int vehicle = Vehicle_Driver(client, driver);
+	int vehicle = Vehicle_Driver(client);
 	if(vehicle != -1)
 	{
 		static float forceOutTime[MAXTF2PLAYERS];
 
-		if(!driver && view_as<VehicleGeneric>(vehicle).m_hDriver == -1)
+		if(view_as<VehicleGeneric>(vehicle).m_hDriver == -1)
 		{
 			// Driver is out, I'll take the wheel!
 			AcceptEntityInput(client, "ClearParent");
