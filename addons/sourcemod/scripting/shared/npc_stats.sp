@@ -1663,6 +1663,23 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iHealthBar
+	{
+		public get()		 
+		{ 
+			if(!b_ThisWasAnNpc[this.index])
+				return 0;
+				
+			return this.GetProp(Prop_Data, "m_iHealthBar");
+		}
+		public set(int iInt) 
+		{
+			if(!b_ThisWasAnNpc[this.index])
+				return;
+
+			this.SetProp(Prop_Data, "m_iHealthBar", iInt); 
+		}
+	}
 	property int m_iTeamGlow
 	{
 		public get()		 
@@ -3267,6 +3284,7 @@ public void NPC_Base_InitGamedata()
 		//Sergeant Ideal Shield Netprops
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
+		.DefineIntField("m_iHealthBar")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -3279,6 +3297,7 @@ public void NPC_Base_InitGamedata()
 		//Sergeant Ideal Shield Netprops
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
+		.DefineIntField("m_iHealthBar")
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
