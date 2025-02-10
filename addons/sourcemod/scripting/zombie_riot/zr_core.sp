@@ -391,7 +391,7 @@ float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalEnemyBoss = 0.25;
-//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increaced
+//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
 //isnt affected when selecting Modificators.
 //Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
 float MultiGlobalHealth = 1.0;

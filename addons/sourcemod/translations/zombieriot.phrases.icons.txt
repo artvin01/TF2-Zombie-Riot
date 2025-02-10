@@ -344,7 +344,7 @@
 	}
 	"Spirit Spawns 1"
 	{
-		"en" 		"A spitit appeared... release it before its too late!"
+		"en" 		"A spirit appeared... release it before its too late!"
 		"ru" 		"Появлися Дух... Освободите его пока не поздно!"
 		"fr" 		"Un esprit apparaît... libérez-le avant qu'il soit trop tard!"
 		"chi"		"一个冤魂出现了。赶紧驱掉它！"

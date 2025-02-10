@@ -130,7 +130,7 @@
 	}
 	"Cripple Desc"
 	{
-		"en"	"Increaced damage taken by 30%%"
+		"en"	"increased damage taken by 30%%"
 	}
 	"Stranglation I"
 	{
@@ -602,7 +602,7 @@
 	}
 	"Ulpianus' Seriousness Desc"
 	{
-		"en"	"Attackspeed increaced by 20%%.\nIncreases Max Health by 540."
+		"en"	"Attackspeed increased by 20%%.\nIncreases Max Health by 540."
 	}
 	"Skadi's Skills"
 	{
@@ -770,7 +770,7 @@
 	}
 	"Heavy Laccerations Desc"
 	{
-		"en"	"Uncureable.\nIncreaced damage taken dynamically."
+		"en"	"Uncureable.\nincreased damage taken dynamically."
 	}
 	"Bleed"
 	{

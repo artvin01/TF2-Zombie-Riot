@@ -2994,7 +2994,7 @@ int inflictor = 0)
 #if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
-		float value = Attributes_Get(weapon, 99, 1.0);//increaced blast radius attribute (Check weapon only)
+		float value = Attributes_Get(weapon, 99, 1.0);//increased blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 		if(maxtargetshit == 10)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));

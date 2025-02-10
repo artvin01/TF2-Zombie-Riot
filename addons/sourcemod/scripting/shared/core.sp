@@ -2075,7 +2075,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				
 				if(Attack_speed <= Panic_Attack[weapon])
 				{
-					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
+					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY increased ATTACK SPEED.
 				}
 				
 				

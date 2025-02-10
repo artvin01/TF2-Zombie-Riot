@@ -52,7 +52,7 @@ void JohnTheAllmighty_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackPrepareSounds)); i++) { PrecacheSound(g_RangedAttackPrepareSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "John The Allmighty");
+	strcopy(data.Name, sizeof(data.Name), "John The Almighty");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_john_the_allmighty");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -176,11 +176,11 @@ methodmap JohnTheAllmighty < CClotBody
 		if(entity != -1)
 		{
 			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "15 15 15 250");
-			DispatchKeyValue(entity, "fogcolor2", "15 15 15 250");
+			DispatchKeyValue(entity, "fogcolor", "15 15 15 240");
+			DispatchKeyValue(entity, "fogcolor2", "15 15 15 240");
 			DispatchKeyValueFloat(entity, "fogstart", 125.0);
 			DispatchKeyValueFloat(entity, "fogend", 300.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.998);
+			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.992);
 
 			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
 			DispatchKeyValue(entity, "fogenable", "1");
@@ -204,19 +204,19 @@ methodmap JohnTheAllmighty < CClotBody
 		{
 			case 1:
 			{
-				CPrintToChatAll("{crimson}John The Allmighty{default}: I need some money donations, care to give it?");
+				CPrintToChatAll("{crimson}John The Almighty{default}: I need some money donations, care to give it?");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{crimson}John The Allmighty{crimson}: I will sell your organs.");
+				CPrintToChatAll("{crimson}John The Almighty{crimson}: I will sell your organs.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{crimson}John The Allmighty{default}: You will fund my efforts.");
+				CPrintToChatAll("{crimson}John The Almighty{default}: You will fund my efforts.");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{crimson}John The Allmighty{default}: You look easy to rob.");
+				CPrintToChatAll("{crimson}John The Almighty{default}: You look easy to rob.");
 			}
 		}
 		npc.m_iBleedType = 0;
@@ -285,7 +285,7 @@ public void JohnTheAllmighty_ClotThink(int iNPC)
 
 	if(RaidModeTime < GetGameTime() && i_NpcWeight[npc.index] != 999)
 	{
-		CPrintToChatAll("{crimson}John The Allmighty Ran out of patience and leaves the battle field.");
+		CPrintToChatAll("{crimson}John The Almighty Ran out of patience and leaves the battle field.");
 		SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		RaidMusicSpecial1.Clear();
@@ -404,11 +404,11 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 				float eyePos[3];
 				float eyeAng[3];
 				GetAttachment(npc.index, "eyeglow_L", eyePos, eyeAng);
-				npc.FireParticleRocket(vecTarget, 50.0 * npc.m_flWaveScale, RocketSpeed, 0.0, "raygun_projectile_blue_crit", false,_, true, eyePos);
+				npc.FireParticleRocket(vecTarget, 25.0 * npc.m_flWaveScale, RocketSpeed, 0.0, "raygun_projectile_blue_crit", false,_, true, eyePos);
 				
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, RocketSpeed,_,vecTarget);
 				GetAttachment(npc.index, "eyeglow_R", eyePos, eyeAng);
-				npc.FireParticleRocket(vecTarget, 50.0 * npc.m_flWaveScale, RocketSpeed, 0.0, "raygun_projectile_red_crit", false,_, true,eyePos);
+				npc.FireParticleRocket(vecTarget, 25.0 * npc.m_flWaveScale, RocketSpeed, 0.0, "raygun_projectile_red_crit", false,_, true,eyePos);
 			}	
 		}
 	}
@@ -447,7 +447,7 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 							float vecHit[3];
 							WorldSpaceCenter(target, vecHit);
 
-							float damage = 200.0;
+							float damage = 150.0;
 							damage *= npc.m_flWaveScale;
 							
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);							
@@ -532,7 +532,7 @@ public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int infl
 	if(npc.m_iActualHealth <= 0)
 	{
 		SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
-		CPrintToChatAll("{crimson}John The Allmighty {default}: OH NUTS! I left my oven on! Bye!");
+		CPrintToChatAll("{crimson}John The Almighty {default}: OH NUTS! I left my oven on! Bye!");
 		npc.m_iActualHealth = 9999999;
 		for(int client = 1; client <= MaxClients; client++)
 		{

@@ -876,7 +876,7 @@
 	}
 	"P15t0l Desc 1"
 	{
-		"en"	"Increaced damage."
+		"en"	"increased damage."
 		"fr"	"Dégats améliorés."
 	}
 	"P15t0l Pap 2" 
@@ -2179,7 +2179,7 @@
 	}
 	"Mlynar Sword Desc pap 2"
 	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
+		"en"	"Gain increased Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids.\nVotre charge est plus rapide, et prend moins de temps pour se recharger."
 	}
 	"Mlynar ExtraDesc"
@@ -2590,7 +2590,7 @@
 	}
 	"Mlynar Sword Desc pap"
 	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
+		"en"	"Gain increased Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids."
 		"chi"	"增加抗性，伤害，反甲伤害，更低的杀敌惩罚。"
 	}
@@ -2855,13 +2855,13 @@
 	}
 	"Sensal Desc 2"
 	{
-		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
+		"en"	"increased damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
 		"fr"	"Dégats et résistance améliorés. Abilité lance une faux additionelle.\nAbilité se charge plus rapidement, charge maximale est doublée."
 		"chi"	"更高的伤害和抗性，+1镰刀。\n更快的充能，上限*2。"
 	}
 	"Sensal Desc 3"
 	{
-		"en"	"Increaced damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
+		"en"	"increased damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
 		"fr"	"Dégats et résistance améliorés. Abilité crée des après-images qui tirent des lasers.\nVos après-images priorisent les ennemis que vous regardez."
 		"chi"	"更高的伤害和抗性。\n新技能：\n召唤残影，发射激光。"
 	}
@@ -3273,7 +3273,7 @@
 	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
-		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increaced.\nCrit Chance Increaces."
+		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increased.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique et santé bonus par soins améliorés.\nVous frappez plus d'ennemis à la fois."
 		"chi"	"提高伤害，技能赋予更多双击子弹。\n加强穿透力，更高的超量上限。\n随机暴击概率提高。"
 	}
@@ -3297,7 +3297,7 @@
 	}
 	"Angelic Shotgonnus Desc Pap 3"
 	{
-		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increaced.\nCrit Chance Increaces."
+		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increased.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique, soins et santé bonus par soins et améliorés.\nDouble-attaque se déclenche 2x plus fréquemment."
 		"chi"	"更多伤害，更多治疗。有效射程更高，双击频率增加一倍。\n随机暴击概率提高。"
 	}
@@ -3992,7 +3992,7 @@
 	}
 	"Super-Uber-Saw Desc 1"
 	{
-		"en"	"Increaced damage and 25%% more range."
+		"en"	"increased damage and 25%% more range."
 	}
 	"The Yakuza Desc"
 	{
