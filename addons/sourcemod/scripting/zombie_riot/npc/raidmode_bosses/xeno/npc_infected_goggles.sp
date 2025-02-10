@@ -894,8 +894,12 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();
-							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
-							
+							int BulletHere = npc.FireParticleRocket(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0, 0.0, "raygun_projectile_blue_crit", false);
+			
+							float position[3];
+							GetEntPropVector(BulletHere, Prop_Data, "m_vecAbsOrigin", position); 
+							TE_Particle("mvm_soldier_shockwave", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+							CreateTimer(0.1, WaldchCoolEffectOnProjectile, EntIndexToEntRef(BulletHere), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 							npc.m_flNextMeleeAttack = gameTime + 1.5;
 							if(i_RaidGrantExtra[npc.index] >= 5)
 							{
@@ -1277,4 +1281,18 @@ void WaldchEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
 	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
 	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+
+public Action WaldchCoolEffectOnProjectile(Handle timer, any entid)
+{
+	int Projectile = EntRefToEntIndex(entid);
+	if(IsValidEntity(Projectile))
+	{
+		float position[3];
+		GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", position); 
+		TE_Particle("mvm_soldier_shockwave", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+					
+	}
+	return Plugin_Handled;
 }

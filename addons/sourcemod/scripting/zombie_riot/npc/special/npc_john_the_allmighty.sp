@@ -230,6 +230,7 @@ methodmap JohnTheAllmighty < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 		npc.m_bDissapearOnDeath = true;
+		npc.m_iHealthBar = 10;
 
 		func_NPCDeath[npc.index] = view_as<Function>(JohnTheAllmighty_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(JohnTheAllmighty_OnTakeDamage);
@@ -535,6 +536,7 @@ static char[] JohnTheAllmightyHealth()
 public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	JohnTheAllmighty npc = view_as<JohnTheAllmighty>(victim);
+	return;
 	npc.m_iActualHealth -= RoundToNearest(damage);
 	if(npc.m_iActualHealth <= 0)
 	{
