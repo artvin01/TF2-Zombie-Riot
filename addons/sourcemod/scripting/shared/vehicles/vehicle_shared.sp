@@ -149,15 +149,13 @@ static void OnDestroy(int entity)
 
 // If target is a vehicle, returns the driver or passenger with the higher priority, -1 if none
 // If target is a user, returns the vehicle currently on, -1 if none
-int Vehicle_Driver(int target, bool &isDriver = false)
+int Vehicle_Driver(int target)
 {
 	if(i_IsVehicle[target] == 2)
 	{
 		int driver = view_as<VehicleGeneric>(target).m_hDriver;
 		if(driver == -1)
 		{
-			isDriver = false;
-
 			for(int i; i < VEHICLE_MAX_SEATS; i++)
 			{
 				int passenger = GetEntPropEnt(target, Prop_Data, "m_hSeatEntity", i);
@@ -165,31 +163,20 @@ int Vehicle_Driver(int target, bool &isDriver = false)
 					return passenger;
 			}
 		}
-		else
-		{
-			isDriver = true;
-		}
 
 		return driver;
 	}
 	
 	if(i_IsVehicle[target])
-	{
-		isDriver = true;
 		return GetEntPropEnt(target, Prop_Data, "m_hPlayer");
-	}
 	
-	isDriver = false;
 	for(int entity = MaxClients + 1; entity < sizeof(i_IsVehicle); entity++)
 	{
 		if(i_IsVehicle[entity] && IsValidEntity(entity))
 		{
 			int driver = view_as<VehicleGeneric>(entity).m_hDriver;
 			if(driver == target)
-			{
-				isDriver = true;
 				return entity;
-			}
 			
 			for(int i; i < VEHICLE_MAX_SEATS; i++)
 			{
