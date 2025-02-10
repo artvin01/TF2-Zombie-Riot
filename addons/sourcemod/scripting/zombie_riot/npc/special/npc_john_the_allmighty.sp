@@ -359,6 +359,9 @@ public void JohnTheAllmighty_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 
+	if(EntIndexToEntRef(entity) == RaidBossActive)
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
