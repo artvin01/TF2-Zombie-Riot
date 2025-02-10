@@ -359,6 +359,9 @@ public void JohnTheAllmighty_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 
+	if(EntIndexToEntRef(entity) == RaidBossActive)
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -536,7 +539,6 @@ static char[] JohnTheAllmightyHealth()
 public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	JohnTheAllmighty npc = view_as<JohnTheAllmighty>(victim);
-	return;
 	npc.m_iActualHealth -= RoundToNearest(damage);
 	if(npc.m_iActualHealth <= 0)
 	{
