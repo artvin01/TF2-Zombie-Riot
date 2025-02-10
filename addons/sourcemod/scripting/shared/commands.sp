@@ -62,7 +62,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 			Store_SwapItems(client);
 		}
 #endif
-		return Plugin_Handled;
+		return Plugin_Continue;
 	}
 #if defined ZR
 	else if(!StrContains(buffer, "MvM_UpgradesBegin", false))
