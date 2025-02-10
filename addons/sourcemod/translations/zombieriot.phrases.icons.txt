@@ -456,6 +456,18 @@
 	{
 		"en"		"Be glad PVP isnt a thing..."
 	}
+	"John Spawn Text 1"
+	{
+		"en"		"RUN!"
+	}
+	"John Spawn Text 2"
+	{
+		"en"		"Maybe you can rob him back? Or just run..."
+	}
+	"John Spawn Text 3"
+	{
+		"en"		"I dont know... just run."
+	}
 	"Victorian Radiomast Is Here!"
 	{
 		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"

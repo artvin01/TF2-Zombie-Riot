@@ -2446,6 +2446,10 @@
 	{
 		"en"	"Mad Doctor"
 	}
+	"John The Allmighty"
+	{
+		"en"	"JØⱧ₦ ₮ⱧɆ ₳ⱠⱠ₥ł₲Ⱨ₮Ɏ"
+	}
 	"Abomination"
 	{
 		"en"	"Abomination"

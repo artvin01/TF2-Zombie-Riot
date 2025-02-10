@@ -184,6 +184,7 @@ void NPC_ConfigSetup()
 	CuredFatherGrigori_OnMapStart_NPC();
 	FallenWarrior_OnMapStart();
 	ThirtySixFifty_OnMapStart();
+	JohnTheAllmighty_OnMapStart_NPC();
 	
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
@@ -1277,6 +1278,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_vengefull_spirit.sp"
 #include "zombie_riot/npc/special/npc_fallen_warrior.sp"
 #include "zombie_riot/npc/special/npc_3650.sp"
+#include "zombie_riot/npc/special/npc_john_the_allmighty.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
