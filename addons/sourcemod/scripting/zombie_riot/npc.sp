@@ -86,6 +86,7 @@ void NPC_ConfigSetup()
 
 	// Vehicles
 	VehicleHL2_Setup();
+	VehicleFullJeep_Setup();
 	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -1184,6 +1185,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 // VEHICLES
 #include "shared/vehicles/vehicle_shared.sp"
 #include "shared/vehicles/vehicle_hl2.sp"
+#include "shared/vehicles/vehicle_fulljeep.sp"
 
 //NORMAL
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"

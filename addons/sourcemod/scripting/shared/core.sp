@@ -2469,9 +2469,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "prop_vehicle_driveable"))
 		{
 			i_IsVehicle[entity] = 1;
-			npc.bCantCollidieAlly = true;
-			b_IsAProjectile[entity] = true;
-			SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);  // ?????
+			//npc.bCantCollidieAlly = true;
+			//b_IsAProjectile[entity] = true;
+			//SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);  // ?????
 		}
 #if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))

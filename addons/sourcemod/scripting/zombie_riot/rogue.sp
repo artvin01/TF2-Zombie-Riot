@@ -1725,7 +1725,10 @@ static void StartStage(const Stage stage)
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			Vehicle_Exit(client, false, false);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
+		}
 	}
 	
 	for(int i; i < i_MaxcountNpcTotal; i++)
@@ -1752,12 +1755,6 @@ static void StartStage(const Stage stage)
 			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 			DeleteAndRefundBuilding(builder_owner, entity);
 		}
-	}
-
-	int i = -1;
-	while((i = FindEntityByClassname(i, "obj_vehicle")) != -1)
-	{
-		RemoveEntity(i);
 	}
 
 	if(RogueTheme == BlueParadox)
@@ -1818,6 +1815,7 @@ static void TeleportToSpawn()
 			if(TeutonType[client] == TEUTON_DEAD)
 				TF2_RespawnPlayer(client);
 			
+			Vehicle_Exit(client, false, false);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
 		}
 	}
@@ -1846,12 +1844,6 @@ static void TeleportToSpawn()
 			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 			DeleteAndRefundBuilding(builder_owner, entity);
 		}
-	}
-
-	int i = -1;
-	while((i = FindEntityByClassname(i, "obj_vehicle")) != -1)
-	{
-		RemoveEntity(i);
 	}
 }
 
