@@ -1973,6 +1973,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				SDKHooks_UpdateMarkForDeath(victim, true);
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
+				Vehicle_Exit(victim, false);
 				ApplyLastmanOrDyingOverlay(victim);
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);

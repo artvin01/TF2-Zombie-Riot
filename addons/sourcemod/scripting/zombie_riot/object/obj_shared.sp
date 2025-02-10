@@ -519,7 +519,7 @@ bool Object_CanBuild(Function func, int client, int &count = 0, int &maxcount = 
 	return result;
 }
 
-bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
+static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 {
 	float gameTime = GetGameTime(objstats.index);
 	if(objstats.m_flNextDelayTime > gameTime)

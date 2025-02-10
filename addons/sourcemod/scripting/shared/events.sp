@@ -529,6 +529,7 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		
 #if defined ZR
 		Waves_PlayerSpawn(client);
+		Vehicle_PlayerSpawn(client);
 #endif
 
 #if defined ZR || defined RPG
@@ -559,7 +560,8 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-	
+	// Dead Ringer doesn't exist!!
+
 #if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
@@ -597,6 +599,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	ClientSaveUber(client);
 	SDKHooks_UpdateMarkForDeath(client, true);
 	PurnellDeathsound(client);
+	Vehicle_Exit(client, true);
 #endif
 
 #if defined RPG

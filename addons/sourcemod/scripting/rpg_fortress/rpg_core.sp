@@ -322,8 +322,12 @@ void RPG_SetupMapSpecific(const char[] mapname)
 
 	if(!found)
 		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
-	LoadSoundScript(buffer);
+	
+	if(LibraryExists("LoadSoundscript"))
+	{
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
+		LoadSoundScript(buffer);
+	}
 }
 void RPG_ConfigSetup()
 {

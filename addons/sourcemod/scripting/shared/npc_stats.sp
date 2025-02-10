@@ -2192,9 +2192,9 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
 #if defined RTS
-		if(IsObject(target) || i_IsABuilding[target] || b_IsVehicle[target] || i_IsNpcType[target] == 1)
+		if(IsObject(target) || i_IsABuilding[target] || i_IsVehicle[target] || i_IsNpcType[target] == 1)
 #else
-		if(i_IsABuilding[target] || b_IsVehicle[target] || i_IsNpcType[target] == 1)
+		if(i_IsABuilding[target] || i_IsVehicle[target] || i_IsNpcType[target] == 1)
 #endif
 		{
 			//broken on targetting buildings...?
@@ -2545,10 +2545,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			for(int repeat; repeat < 3; repeat ++)
 			{
-				vecSwingMins[repeat] *= 0.75;
-				vecSwingMins[repeat] *= 0.75;
-				vecSwingMaxs[repeat] *= 0.75;
-				vecSwingMaxs[repeat] *= 0.75;
+				vecSwingMins[repeat] *= 0.5625;
+				vecSwingMaxs[repeat] *= 0.5625;
 			}
 
 			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd,vecSwingMins, vecSwingMaxs, 1073741824, ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
@@ -2557,6 +2555,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
 		}
+
+		//PrintToConsoleAll("DoSwingTrace::%f:%d:%d", TR_GetFraction(trace), TR_DidHit(trace), TR_GetEntityIndex(trace));
 		return (TR_GetFraction(trace) < 1.0);
 	}
 	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
@@ -4127,16 +4127,7 @@ stock void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = 
 
 stock void NPC_SetGoalEntity(int entity, int target)
 {
-	if(i_IsABuilding[target] || b_IsVehicle[target])
-	{
-		//broken on targetting buildings...?
-		float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-		view_as<CClotBody>(entity).SetGoalVector(pos, false);
-	}
-	else
-	{
-		view_as<CClotBody>(entity).SetGoalEntity(target);
-	}
+	view_as<CClotBody>(entity).SetGoalEntity(target);
 }
 #endif
 
@@ -4780,9 +4771,13 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		
 	if(IsValidEntity(enemy))
 	{
-		if(b_IsVehicle[enemy])
+		if(i_IsVehicle[enemy])
 		{
+#if defined ZR
+			enemy = Vehicle_Driver(enemy);
+#else
 			enemy = GetEntPropEnt(enemy, Prop_Data, "m_hPlayer");
+#endif
 			if(enemy == -1)
 				return false;
 		}
@@ -5167,7 +5162,7 @@ stock int GetClosestTarget(int entity,
 			if(entity_close != entity && entity_close != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				if(!i_IsVehicle[entity_close] && GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{
 #if defined RTS
 					if(ExtraValidityFunction == INVALID_FUNCTION)
@@ -5227,7 +5222,7 @@ void GetClosestTarget_AddTarget(int entity, int type)
 		if (GetClosestTarget_EnemiesToCollect[i] == 0)
 		{
 			GetClosestTarget_EnemiesToCollect[i] = entity;
-			GetClosestTarget_Enemy_Type[entity] = type;
+			GetClosestTarget_Enemy_Type[i] = type;
 			break; //same as break;
 		}
 	}	
@@ -5276,6 +5271,14 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		{
 			if(GetClosestTarget_EnemiesToCollect[i] <= 0)
 				break;
+			
+#if defined ZR
+			int vehicle = Vehicle_Driver(GetClosestTarget_EnemiesToCollect[i]);
+#else
+			int vehicle = (GetClosestTarget_EnemiesToCollect[i] > 0 && GetClosestTarget_EnemiesToCollect[i] <= MaxClients) ? GetEntPropEnt(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_hVehicle") : -1;
+#endif
+			if(vehicle != -1)
+				GetClosestTarget_EnemiesToCollect[i] = vehicle;
 
 			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
 			CNavArea NavAreaUnder = TheNavMesh.GetNavArea(targetPos[i], 100.0);
@@ -5316,7 +5319,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 
 				//	PrintToChatAll("%f > %f", dist, fldistancelimit);
-					if(GetClosestTarget_Enemy_Type[GetClosestTarget_EnemiesToCollect[a]] > 2)	// Distance limit
+					if(GetClosestTarget_Enemy_Type[a] > 2)	// Distance limit
 					{
 						if(dist > fldistancelimitAllyNPC)
 						{
@@ -5413,7 +5416,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 #if !defined RTS
 			float distance_limit = fldistancelimit;
-			switch(GetClosestTarget_Enemy_Type[GetClosestTarget_EnemiesToCollect[i]])
+			switch(GetClosestTarget_Enemy_Type[i])
 			{
 				case 1:
 				{
