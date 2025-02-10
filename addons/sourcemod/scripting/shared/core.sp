@@ -1088,6 +1088,7 @@ public void OnMapStart()
 	OnMapStart_NPC_Base();
 	SDKHook_MapStart();
 	MapStartResetNpc();
+	Vehicle_MapStart();
 	Zero(f_AntiStuckPhaseThroughFirstCheck);
 	Zero(f_AntiStuckPhaseThrough);
 	Zero(f_BegPlayerToSetRagdollFade);
@@ -1096,18 +1097,6 @@ public void OnMapStart()
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	PrecacheSound("mvm/mvm_tank_horn.wav");
 	DeleteShadowsOffZombieRiot();
-
-	if(LibraryExists("LoadSoundscript"))
-	{
-		char soundname[256];
-		SoundScript soundscript = LoadSoundScript("scripts/game_sounds_vehicles.txt");
-		for(int i = 0; i < soundscript.Count; i++)
-		{
-			SoundEntry entry = soundscript.GetSound(i);
-			entry.GetName(soundname, sizeof(soundname));
-			PrecacheScriptSound(soundname);
-		}
-	}
 }
 
 void DeleteShadowsOffZombieRiot()
@@ -2315,7 +2304,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
-		b_IsVehicle[entity] = false;
+		i_IsVehicle[entity] = 0;
 		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_IsAGib[entity] = false;
@@ -2466,7 +2455,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "prop_vehicle_driveable"))
 		{
-			b_IsVehicle[entity] = true;
+			i_IsVehicle[entity] = 1;
 		}
 #if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))
