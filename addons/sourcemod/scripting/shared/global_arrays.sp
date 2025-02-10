@@ -612,7 +612,7 @@ bool i_IsWrench[MAXENTITIES];
 bool i_IsSupportWeapon[MAXENTITIES]; 
 bool i_IsKitWeapon[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
-bool b_IsVehicle[MAXENTITIES]; 
+int i_IsVehicle[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
 int i_WeaponSoundIndexOverride[MAXENTITIES];

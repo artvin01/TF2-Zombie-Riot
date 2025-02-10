@@ -83,6 +83,10 @@ void NPC_ConfigSetup()
 	ObjectTinkerBrew_MapStart();
 	ObjectRevenant_Setup();
 	// Buildings
+
+	// Vehicles
+	VehicleHL2_Setup();
+	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
 	CombinePoliceSmg_OnMapStart_NPC();
@@ -1155,7 +1159,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 }
 
 //BASES FOR ENEMIES
-
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp" //ALSO IN RPG!
 #include "zombie_riot/npc/seaborn/npc_nethersea_shared.sp"
 
@@ -1176,8 +1179,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
 #include "zombie_riot/object/obj_revenant.sp"
-//NORMAL
 
+// VEHICLES
+#include "shared/vehicles/vehicle_shared.sp"
+#include "shared/vehicles/vehicle_hl2.sp"
+
+//NORMAL
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
 #include "zombie_riot/npc/normal/npc_headcrabzombie_fortified.sp"
 #include "zombie_riot/npc/normal/npc_fastzombie.sp"

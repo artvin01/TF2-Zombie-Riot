@@ -176,6 +176,13 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -264,6 +271,13 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 
 void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
@@ -365,6 +379,13 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 
 void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool VoidWeaponDo = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
@@ -478,6 +499,13 @@ static void SakratanGroupDebuffInternal(int victim)
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
@@ -516,6 +544,13 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 
 void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
@@ -556,6 +591,13 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 
 void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	
@@ -630,6 +672,13 @@ void OsmosisElementalEffect_Detection(int attacker, int victim)
 }
 void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 

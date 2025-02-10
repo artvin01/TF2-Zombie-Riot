@@ -16,6 +16,11 @@ void DamageModifMapStart()
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//LogEntryInvicibleTest(victim, attacker, damage, 5);
+
+#if defined ZR
+	if(inflictor > 0 && inflictor < MAXENTITIES && i_IsVehicle[inflictor] == 2)
+		attacker = Vehicle_Driver(inflictor);
+#endif
 	
 	if(Damage_AnyVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;

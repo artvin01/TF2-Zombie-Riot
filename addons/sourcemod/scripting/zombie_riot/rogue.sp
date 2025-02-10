@@ -1753,6 +1753,12 @@ static void StartStage(const Stage stage)
 		}
 	}
 
+	int i = -1;
+	while((i = FindEntityByClassname(i, "obj_vehicle")) != -1)
+	{
+		RemoveEntity(i);
+	}
+
 	if(RogueTheme == BlueParadox)
 		Rogue_Dome_WaveStart(pos);
 
@@ -1839,6 +1845,12 @@ static void TeleportToSpawn()
 			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 			DeleteAndRefundBuilding(builder_owner, entity);
 		}
+	}
+
+	int i = -1;
+	while((i = FindEntityByClassname(i, "obj_vehicle")) != -1)
+	{
+		RemoveEntity(i);
 	}
 }
 

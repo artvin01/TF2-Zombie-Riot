@@ -1017,7 +1017,7 @@ public void Map_BaseBoss_Damage_Post(int victim, int attacker, int inflictor, fl
 float Damageaftercalc = 0.0;
 public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(i_IsNpcType[victim] == 1 || b_IsVehicle[victim])
+	if(i_IsNpcType[victim] == 1 || i_IsVehicle[victim])
 	{
 		//Dont allow crush from these wierd npcs.
 		if((damagetype & DMG_CRUSH))

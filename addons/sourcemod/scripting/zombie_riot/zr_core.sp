@@ -328,6 +328,7 @@ float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 float ResourceRegenMulti;
+bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -676,6 +677,7 @@ void ZR_PluginStart()
 	Spawns_PluginStart();
 	Object_PluginStart();
 	SteamWorks_PluginStart();
+	Vehicle_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -702,7 +704,7 @@ void ZR_MapStart()
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
-	Dhooks_BannerMapstart();
+	DHooks_MapStart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
@@ -986,6 +988,7 @@ void ZR_ClientDisconnect(int client)
 	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
+	Vehicle_Exit(client, true, false);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);

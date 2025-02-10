@@ -730,6 +730,15 @@ void Building_ShowInteractionHud(int client, int entity)
 				}
 			}
 		}
+		else if(i_IsVehicle[entity] == 2)
+		{
+			if(Vehicle_Driver(entity) == -1)
+			{
+				Hide_Hud = false;
+				SetGlobalTransTarget(client);
+				PrintCenterText(client, "%t", "Enter this vehicle");
+			}
+		}
 	}
 
 	if(Hide_Hud)
