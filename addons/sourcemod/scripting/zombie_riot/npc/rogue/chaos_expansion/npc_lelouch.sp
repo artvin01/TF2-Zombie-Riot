@@ -1999,7 +1999,7 @@ static void Create_Anchors(Lelouch npc)
 	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(4.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",	150000, RoundToCeil(2.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",75000,  RoundToCeil(20.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy), _,"Elite Rulianius");
 	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",100000, RoundToCeil(4.0 * MultiGlobalEnemy));
 
 	Ruina_Master_Rally(npc.index, false);
@@ -2689,7 +2689,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	return Plugin_Changed;
 }
-static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
+static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false, char data[64] = "")
 {
 	if(GetTeam(alaxios) == TFTeam_Red)
 	{
@@ -2733,6 +2733,8 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	enemy.ExtraDamage = 3.5;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
+	if(data[0])
+		enemy.Data = data;
 	if(Rogue_Mode())
 		Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_5");
 	if(!Waves_InFreeplay())
