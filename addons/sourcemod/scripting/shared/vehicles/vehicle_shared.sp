@@ -246,6 +246,7 @@ bool Vehicle_Interact(int client, int entity)
 		if(!driver && view_as<VehicleGeneric>(vehicle).m_hDriver == -1)
 		{
 			// Driver is out, I'll take the wheel!
+			AcceptEntityInput(client, "ClearParent");
 			SwitchToDriver(view_as<VehicleGeneric>(vehicle), client);
 		}
 		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
@@ -301,8 +302,6 @@ bool Vehicle_Enter(int vehicle, int target)
 	if(index == -1)
 	{
 		SwitchToDriver(obj, target);
-
-		SetParent(obj.index, target);
 	}
 	else
 	{
@@ -336,6 +335,7 @@ static void SwitchToDriver(VehicleGeneric obj, int target)
 	
 	pos[2] -= 36.0;//64.0;
 	TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
+	SetParent(obj.index, target);
 	
 	AcceptEntityInput(obj.index, "TurnOn");
 	obj.m_hDriver = target;
