@@ -149,7 +149,7 @@ methodmap Maliana < CClotBody
 
 		npc.m_iChanged_WalkCycle = 0;
 
-		SetVariantInt(2);
+		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		/*

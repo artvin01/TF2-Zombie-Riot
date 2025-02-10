@@ -181,7 +181,7 @@ methodmap Malianium < CClotBody
 		SetVariantInt(RUINA_STAFF_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 
-		SetVariantInt(2);
+		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
