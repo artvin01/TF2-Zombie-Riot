@@ -536,7 +536,6 @@ static char[] JohnTheAllmightyHealth()
 public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	JohnTheAllmighty npc = view_as<JohnTheAllmighty>(victim);
-	return;
 	npc.m_iActualHealth -= RoundToNearest(damage);
 	if(npc.m_iActualHealth <= 0)
 	{
