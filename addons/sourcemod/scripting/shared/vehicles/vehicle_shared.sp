@@ -4,7 +4,7 @@
 // https://github.com/Mikusch/source-vehicles
 // https://github.com/ficool2/vscript_vehicle
 
-#define VEHICLE_MAX_SEATS	8
+#define VEHICLE_MAX_SEATS	9
 
 enum VehicleType
 {
@@ -30,8 +30,7 @@ methodmap VehicleGeneric < CClotBody
 		DispatchSpawn(obj);
 
 		i_IsVehicle[obj] = 2;
-		//view_as<CClotBody>(obj).bCantCollidieAlly = true;
-		//b_IsAProjectile[obj] = true;
+		NPCStats_SetFuncsToZero(obj);
 
 		SDKHook(obj, SDKHook_Think, VehicleThink);
 		SDKHook(obj, SDKHook_OnTakeDamage, VehicleTakeDamage);
@@ -62,6 +61,8 @@ methodmap VehicleGeneric < CClotBody
 	}
 }
 
+static bool DoneSoundScript;
+
 void Vehicle_PluginStart()
 {
 	CEntityFactory factory = new CEntityFactory("obj_vehicle", _, OnDestroy);
@@ -75,6 +76,31 @@ void Vehicle_PluginStart()
 	factory.Install();
 
 	RegAdminCmd("sm_remove_vehicles", RemoveVehicleCmd, ADMFLAG_RCON, "Deletes all obj_vehicle entities");
+	RegAdminCmd("sm_seat_offset", SeatOffsetCmd, ADMFLAG_RCON, "Set the offset of your vehicle seat");
+}
+
+void Vehicle_MapEnd()
+{
+	DoneSoundScript = false;
+}
+
+void Vehicle_PrecacheSounds()
+{
+	if(DoneSoundScript)
+		return;
+	
+	DoneSoundScript = true;
+	if(LibraryExists("LoadSoundscript"))
+	{
+		char soundname[256];
+		SoundScript soundscript = LoadSoundScript("scripts/game_sounds_vehicles.txt");
+		for(int i = 0; i < soundscript.Count; i++)
+		{
+			SoundEntry entry = soundscript.GetSound(i);
+			entry.GetName(soundname, sizeof(soundname));
+			PrecacheScriptSound(soundname);
+		}
+	}
 }
 
 static Action RemoveVehicleCmd(int client, int args)
@@ -83,6 +109,38 @@ static Action RemoveVehicleCmd(int client, int args)
 	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
 	{
 		RemoveEntity(entity);
+	}
+
+	return Plugin_Handled;
+}
+
+static Action SeatOffsetCmd(int client, int args)
+{
+	if(args != 3)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_seat_offset <x> <y> <z>");
+	}
+	else
+	{
+		int vehicle = Vehicle_Driver(client);
+		if(vehicle == -1)
+		{
+			ReplyToCommand(client, "[SM] Enter a vehicle first");
+		}
+		else
+		{
+			float pos1[3], pos2[3];
+			GetEntPropVector(vehicle, Prop_Data, "m_vecOrigin", pos1);
+			pos2[0] = GetCmdArgFloat(1);
+			pos2[1] = GetCmdArgFloat(2);
+			pos2[2] = GetCmdArgFloat(3);
+			
+			AcceptEntityInput(client, "ClearParent");
+			TeleportEntity(client, pos1, _, {0.0, 0.0, 0.0});
+			SetParent(vehicle, client, "root", pos2);
+
+			ReplyToCommand(client, "%f %f %f", pos2[0], pos2[1], pos2[2]);
+		}
 	}
 
 	return Plugin_Handled;
@@ -116,15 +174,13 @@ static void OnDestroy(int entity)
 
 // If target is a vehicle, returns the driver or passenger with the higher priority, -1 if none
 // If target is a user, returns the vehicle currently on, -1 if none
-int Vehicle_Driver(int target, bool &isDriver = false)
+int Vehicle_Driver(int target)
 {
 	if(i_IsVehicle[target] == 2)
 	{
 		int driver = view_as<VehicleGeneric>(target).m_hDriver;
 		if(driver == -1)
 		{
-			isDriver = false;
-
 			for(int i; i < VEHICLE_MAX_SEATS; i++)
 			{
 				int passenger = GetEntPropEnt(target, Prop_Data, "m_hSeatEntity", i);
@@ -132,31 +188,20 @@ int Vehicle_Driver(int target, bool &isDriver = false)
 					return passenger;
 			}
 		}
-		else
-		{
-			isDriver = true;
-		}
 
 		return driver;
 	}
 	
 	if(i_IsVehicle[target])
-	{
-		isDriver = true;
 		return GetEntPropEnt(target, Prop_Data, "m_hPlayer");
-	}
 	
-	isDriver = false;
 	for(int entity = MaxClients + 1; entity < sizeof(i_IsVehicle); entity++)
 	{
-		if(i_IsVehicle[entity])
+		if(i_IsVehicle[entity] && IsValidEntity(entity))
 		{
 			int driver = view_as<VehicleGeneric>(entity).m_hDriver;
 			if(driver == target)
-			{
-				isDriver = true;
 				return entity;
-			}
 			
 			for(int i; i < VEHICLE_MAX_SEATS; i++)
 			{
@@ -197,27 +242,41 @@ bool Vehicle_ShowInteractHud(int client, int entity)
 	if(!space)
 		return false;
 	
+	Function func = FuncShowInteractHud[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		bool result;
+
+		Call_StartFunction(null, FuncShowInteractHud[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_Finish(result);
+		
+		if(result)
+			return true;
+	}
+
 	SetGlobalTransTarget(client);
 	PrintCenterText(client, "%t", "Enter this vehicle");
 	return space;
 }
 
-bool Vehicle_Interact(int client, int entity)
+bool Vehicle_Interact(int client, int weapon, int entity)
 {
-	bool driver;
-	int vehicle = Vehicle_Driver(client, driver);
+	int vehicle = Vehicle_Driver(client);
 	if(vehicle != -1)
 	{
 		static float forceOutTime[MAXTF2PLAYERS];
 
-		if(!driver && view_as<VehicleGeneric>(vehicle).m_hDriver == -1)
+		if(view_as<VehicleGeneric>(vehicle).m_hDriver == -1)
 		{
 			// Driver is out, I'll take the wheel!
+			AcceptEntityInput(client, "ClearParent");
 			SwitchToDriver(view_as<VehicleGeneric>(vehicle), client);
 		}
 		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
 		{
-			Vehicle_Exit(vehicle, false);
+			Vehicle_Exit(client, false);
 		}
 		else
 		{
@@ -230,6 +289,21 @@ bool Vehicle_Interact(int client, int entity)
 	if(TeutonType[client] != TEUTON_NONE || dieingstate[client] || entity == -1 || i_IsVehicle[entity] != 2)
 		return false;
 	
+	Function func = func_NPCInteract[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		bool result;
+
+		Call_StartFunction(null, func);
+		Call_PushCell(client);
+		Call_PushCell(weapon);
+		Call_PushCell(entity);
+		Call_Finish(result);
+
+		if(result)
+			return true;
+	}
+
 	return Vehicle_Enter(entity, client);
 }
 
@@ -268,8 +342,6 @@ bool Vehicle_Enter(int vehicle, int target)
 	if(index == -1)
 	{
 		SwitchToDriver(obj, target);
-
-		SetParent(obj.index, target);
 	}
 	else
 	{
@@ -278,7 +350,7 @@ bool Vehicle_Enter(int vehicle, int target)
 		GetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", pos2, index);
 
 		TeleportEntity(target, pos1, _, {0.0, 0.0, 0.0});
-		SetParent(obj.index, target, _, pos2);
+		SetParent(obj.index, target, "root", pos2);
 
 		SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", target, index);
 	}
@@ -297,12 +369,10 @@ bool Vehicle_Enter(int vehicle, int target)
 
 static void SwitchToDriver(VehicleGeneric obj, int target)
 {
-	float pos[3], ang[3];
-	if(!obj.GetAttachment("vehicle_driver_eyes", pos, ang))
-		GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
-	
-	pos[2] -= 36.0;//64.0;
+	float pos[3];
+	GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
 	TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
+	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -36.0});
 	
 	AcceptEntityInput(obj.index, "TurnOn");
 	obj.m_hDriver = target;
@@ -468,7 +538,7 @@ static Action VehicleTakeDamage(int victim, int &attacker, int &inflictor, float
 {
 	if(damagetype & DMG_CRUSH)
 		return Plugin_Continue;
-
+	
 	int driver = Vehicle_Driver(victim);
 	if(driver != -1)
 	{
