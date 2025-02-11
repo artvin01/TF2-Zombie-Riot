@@ -206,7 +206,7 @@ int Vehicle_Driver(int target)
 			for(int i; i < VEHICLE_MAX_SEATS; i++)
 			{
 				driver = GetEntPropEnt(entity, Prop_Data, "m_hSeatEntity", i);
-				if(driver != -1)
+				if(driver == target)
 					return entity;
 			}
 		}
