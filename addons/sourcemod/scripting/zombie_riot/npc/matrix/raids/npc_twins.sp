@@ -179,6 +179,44 @@ methodmap Matrix_Twins < CClotBody
 		bool raid = StrContains(data, "Im_The_raid") != -1;
 		if(raid)
 		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				float value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(ZR_GetWaveCount()+1);
+			}
+			
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+			float amount_of_people = float(CountPlayersOnRed());
+			
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			
+			amount_of_people *= 0.12;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
+				
+			RaidModeScaling *= amount_of_people;
+			RaidModeScaling *= 0.85;
+
 			RaidPrepare(npc);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/doubletrouble.mp3");
@@ -750,38 +788,7 @@ static void RaidPrepare(Matrix_Twins npc)
 	
 	b_thisNpcIsARaid[npc.index] = true;
 	npc.m_flMeleeArmor = 1.25;
-
-	RaidModeScaling = float(ZR_GetWaveCount()+1);
-	if(RaidModeScaling < 55)
-	{
-		RaidModeScaling *= 0.19; //abit low, inreacing
-	}
-	else
-	{
-		RaidModeScaling *= 0.38;
-	}
 	
-	float amount_of_people = float(CountPlayersOnRed());
-	if(amount_of_people > 12.0)
-	{
-		amount_of_people = 12.0;
-	}
-	amount_of_people *= 0.12;
-	
-	if(amount_of_people < 1.0)
-		amount_of_people = 1.0;
-
-	RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-	
-	if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-	{
-		RaidModeScaling *= 0.85;
-	}
-	else if(ZR_GetWaveCount()+1 > 55)
-	{
-		RaidModeTime = GetGameTime(npc.index) + 220.0;
-		RaidModeScaling *= 0.85;
-	}
 }
 
 static void Spawn_My_Brother(Matrix_Twins npc)

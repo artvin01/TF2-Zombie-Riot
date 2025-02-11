@@ -49,7 +49,8 @@ static bool ClotCanUse(ObjectPackAPunch npc, int client)
 	if(!Pap_WeaponCheck(client))
 		return false;
 	
-	bool started = Waves_Started();
+	//Just allow.
+	bool started = true;// Waves_Started();
 	if(started || Rogue_Mode() || CvarNoRoundStart.BoolValue)
 	{
 		return true;

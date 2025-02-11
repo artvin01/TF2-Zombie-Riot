@@ -948,6 +948,13 @@ void Barracks_BuildingThink(int entity)
 	
 	if(GetTeam(client) != 2)
 		return;
+
+	if(Barracks_InstaResearchEverything)
+	{
+		//adds all flags except ZR_BARRACKS_TROOP_CLASSES
+		i_NormalBarracks_HexBarracksUpgrades[client] |= ((1 << 31));
+		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 31) - (ZR_BARRACKS_TROOP_CLASSES));
+	}
 		
 	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
 	SummonerRenerateResources(client, 1.0);

@@ -828,6 +828,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
+	Barracks_InstaResearchEverything = view_as<bool>(kv.GetNum("full_research"));
 	StartCash = kv.GetNum("cash", StartCash);
 
 	int objective = GetObjectiveResource();
