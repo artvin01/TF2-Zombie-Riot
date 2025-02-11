@@ -227,9 +227,9 @@ int i_Lelouch_Index;
 #define LELOUCH_CRYSTAL_SHIELD_STRENGTH 0.1	//How much res each crystal gives. eg: 4 crystals alive, each does 0.1, total res is 40%
 
 static float fl_Anchor_Fixed_Spawn_Pos[3][3] ={
-	{8652.121094, 2812.415039, -3187.304199},
-	{11433.128906, -40.339725, -3171.454102},
-	{6109.317871, -2600.679443, -3184.520264}
+	{8731.121094, 2849.591797, -3318.968750},
+	{6070.426270, -2539.363281, -3319.968750},
+	{11448.688477, -64.187515, -3318.968750}
 };
 static int i_AnchorID_Ref[MAXENTITIES][3];
 static bool b_Anchors_Created[MAXENTITIES];
@@ -719,15 +719,19 @@ methodmap Lelouch < CClotBody
 
 		RaidAllowsBuildings = false;
 
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
-	
-		if(RaidModeScaling < 55)
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
 		}
 		else
-		{
-			RaidModeScaling *= 0.38;
+		{	
+			RaidModeScaling = float(ZR_GetWaveCount()+1);
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -1999,7 +2003,7 @@ static void Create_Anchors(Lelouch npc)
 	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(4.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",	150000, RoundToCeil(2.0 * MultiGlobalEnemy));
 	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",75000,  RoundToCeil(20.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy), _,"Elite Rulianius");
 	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",100000, RoundToCeil(4.0 * MultiGlobalEnemy));
 
 	Ruina_Master_Rally(npc.index, false);
@@ -2689,7 +2693,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	return Plugin_Changed;
 }
-static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
+static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false, char data[64] = "")
 {
 	if(GetTeam(alaxios) == TFTeam_Red)
 	{
@@ -2733,6 +2737,8 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	enemy.ExtraDamage = 3.5;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
+	if(data[0])
+		enemy.Data = data;
 	if(Rogue_Mode())
 		Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_5");
 	if(!Waves_InFreeplay())

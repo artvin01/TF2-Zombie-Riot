@@ -85,6 +85,7 @@ Function func_NPCFuncWin[MAXENTITIES];
 Function func_NPCAnimEvent[MAXENTITIES];
 Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
+Function FuncShowInteractHud[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -110,8 +111,8 @@ static const char g_HurtArmorSounds[][] = {
 
 public Action Command_RemoveAll(int client, int args)
 {
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(IsValidEntity(entity))
 		{
@@ -335,7 +336,8 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 	}
 	return Plugin_Continue;
 }
-
+#define NORMAL_NPC 0
+#define STATIONARY_NPC 1
 
 methodmap CClotBody < CBaseCombatCharacter
 {
@@ -359,16 +361,16 @@ methodmap CClotBody < CBaseCombatCharacter
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
 						bool Ally_Collideeachother = false,
 						const float CustomThreeDimensionsextra[3] = {0.0,0.0,0.0},
-						int NpcTypeLogic = 0)
+						int NpcTypeLogic = NORMAL_NPC)
 #endif
 	{
 
 		int npc;
 		switch(NpcTypeLogic)
 		{
-			case 0:
+			case NORMAL_NPC:
 				npc = CreateEntityByName("zr_base_npc");
-			case 1:
+			case STATIONARY_NPC:
 				npc = CreateEntityByName("zr_base_stationary");
 		}
 		
@@ -379,14 +381,17 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValue(npc, "model",	 model);
 		view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
-		DispatchKeyValue(npc,	   "health",	 health);
-		/*
-		DispatchKeyValue(npc, "shadowcastdist", "0");
+		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
+		{
+			DispatchKeyValue(npc,	   "health",	 health);
+		}
+		
+		DispatchKeyValue(npc, "shadowcastdist", "1");
 		DispatchKeyValue(npc, "disablereceiveshadows", "1");
 		DispatchKeyValue(npc, "disableshadows", "1");
 		DispatchKeyValue(npc, "disableshadowdepth", "1");
 		DispatchKeyValue(npc, "disableselfshadowing", "1");  
-		*/
+		
 		i_IsNpcType[npc] = NpcTypeLogic;
 
 #if defined ZR
@@ -427,20 +432,27 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #endif
-		if(NpcTypeLogic != 1) //No need for lagcomp on things that dont even move.
+		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
+		{
 			AddEntityToLagCompList(npc);
+		}
+		else if(NpcTypeLogic == STATIONARY_NPC)
+		{
+			DispatchKeyValue(npc, "solid", "2");
+		}
 
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc][0] = 0;
 		i_FailedTriesUnstuck[npc][1] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
+
 		Hook_DHook_UpdateTransmitState(npc);
 		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 		SDKHook(npc, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 
-		if(NpcTypeLogic != 1)
+		if(NpcTypeLogic != STATIONARY_NPC)
 		{
 			SetEntProp(npc, Prop_Send, "m_bGlowEnabled", false);
 			SetEntityMoveType(npc, MOVETYPE_CUSTOM);
@@ -452,6 +464,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		CClotBody npcstats = view_as<CClotBody>(npc);
+		SetEntProp(npc, Prop_Send, "m_fEffects", GetEntProp(npc, Prop_Send, "m_fEffects") | EF_NOSHADOW);
 
 	
 		//FIX: This fixes lookup activity not working.
@@ -460,15 +473,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMinDist", 1600.0);
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMaxDist", 2000.0);
 #endif
-		if(NpcTypeLogic != 1)
+		//FIX: This fixes lookup activity not working.
+		npcstats.StartActivity(0);
+		npcstats.SetSequence(0);
+		npcstats.SetPlaybackRate(1.0);
+		npcstats.SetCycle(0.0);
+		npcstats.ResetSequenceInfo();
+		//FIX: This fixes lookup activity not working.
+		if(NpcTypeLogic != STATIONARY_NPC)
 		{
-			//FIX: This fixes lookup activity not working.
-			npcstats.StartActivity(0);
-			npcstats.SetSequence(0);
-			npcstats.SetPlaybackRate(1.0);
-			npcstats.SetCycle(0.0);
-			npcstats.ResetSequenceInfo();
-			//FIX: This fixes lookup activity not working.
 
 			baseNPC.flStepSize = 17.0;
 			baseNPC.flGravity = 800.0; //SEE Npc Base Think Function to change it.
@@ -503,7 +516,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		AddNpcToAliveList(npc, 0);
 #endif
 			
-		if(NpcTypeLogic != 1)
+		if(NpcTypeLogic != STATIONARY_NPC)
 		{
 			CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 			locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
@@ -512,7 +525,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 			SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
 		}
-		if(NpcTypeLogic == 1)
+		if(NpcTypeLogic == STATIONARY_NPC)
 		{
 			//These npcs cant be moved or slowed, so this should be indicated!
 			ApplyStatusEffect(npc, npc, "Solid Stance", 999999.0);	
@@ -583,7 +596,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		f3_AvoidOverrideMax[npc] = m_vecMaxs_Body;
 		f3_AvoidOverrideMinNorm[npc] = m_vecMins;
 		f3_AvoidOverrideMaxNorm[npc] = m_vecMaxs;
-		if(NpcTypeLogic != 1)
+		if(NpcTypeLogic != STATIONARY_NPC)
 		{
 			baseNPC.SetBodyMaxs(m_vecMaxs);
 			baseNPC.SetBodyMins(m_vecMins);
@@ -624,10 +637,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 #endif
 		//Think once.
-		if(NpcTypeLogic == 1)
+		if(NpcTypeLogic == STATIONARY_NPC)
 		{
 			CBaseCombatCharacter(npc).SetNextThink(GetGameTime());
-			NpcBaseThink(npc);
+		//	NpcBaseThink(npc);
 		}
 
 		return view_as<CClotBody>(npc);
@@ -1651,6 +1664,23 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iHealthBar
+	{
+		public get()		 
+		{ 
+			if(!b_ThisWasAnNpc[this.index])
+				return 0;
+				
+			return this.GetProp(Prop_Data, "m_iHealthBar");
+		}
+		public set(int iInt) 
+		{
+			if(!b_ThisWasAnNpc[this.index])
+				return;
+
+			this.SetProp(Prop_Data, "m_iHealthBar", iInt); 
+		}
+	}
 	property int m_iTeamGlow
 	{
 		public get()		 
@@ -2012,6 +2042,10 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true, float SetGestureSpeed = 1.0)
 	{
+		if(i_IsNpcType[this.index] == STATIONARY_NPC)
+			return;
+		//Will crash the server via corruption.
+		
 		int activity = this.LookupActivity(anim);
 		if(activity < 0)
 			return;
@@ -2176,9 +2210,9 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
 #if defined RTS
-		if(IsObject(target) || i_IsABuilding[target] || b_IsVehicle[target] || i_IsNpcType[target] == 1)
+		if(IsObject(target) || i_IsABuilding[target] || i_IsVehicle[target] || i_IsNpcType[target] == 1)
 #else
-		if(i_IsABuilding[target] || b_IsVehicle[target] || i_IsNpcType[target] == 1)
+		if(i_IsABuilding[target] || i_IsVehicle[target] || i_IsNpcType[target] == 1)
 #endif
 		{
 			//broken on targetting buildings...?
@@ -2379,7 +2413,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValue(item, "disableselfshadowing", "1");  
 		*/
 		DispatchSpawn(item);
-		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
+		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES|EF_NOSHADOW );
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
 	
@@ -2487,6 +2521,12 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 		
+		if(i_IsVehicle[target])
+		{
+			// Vehicle hitboxes
+			return this.DoAimbotTrace(trace, target, vecSwingMaxs, vecSwingMins, vecSwingStartOffset);
+		}
+		
 		float eyePitch[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 		
@@ -2495,7 +2535,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		WorldSpaceCenter(target, vecTarget);
 		if(target <= MaxClients)
 			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
-
+		
 		WorldSpaceCenter(this.index, vecForward);
 		MakeVectorFromPoints(vecForward, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
@@ -2529,10 +2569,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			for(int repeat; repeat < 3; repeat ++)
 			{
-				vecSwingMins[repeat] *= 0.75;
-				vecSwingMins[repeat] *= 0.75;
-				vecSwingMaxs[repeat] *= 0.75;
-				vecSwingMaxs[repeat] *= 0.75;
+				vecSwingMins[repeat] *= 0.5625;
+				vecSwingMaxs[repeat] *= 0.5625;
 			}
 
 			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd,vecSwingMins, vecSwingMaxs, 1073741824, ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
@@ -2541,6 +2579,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
 		}
+
+		//PrintToConsoleAll("DoSwingTrace::%f:%d:%d", TR_GetFraction(trace), TR_DidHit(trace), TR_GetEntityIndex(trace));
 		return (TR_GetFraction(trace) < 1.0);
 	}
 	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
@@ -2591,7 +2631,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);			
 			DispatchSpawn(entity);
 			TeleportEntity(entity, absorigin, eyePitch, NULL_VECTOR, true);
-			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
+			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES| EF_NOSHADOW);
 			SetEntityMoveType(entity, MOVETYPE_NONE);
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1.0);
 			
@@ -3244,6 +3284,7 @@ public void NPC_Base_InitGamedata()
 		//Sergeant Ideal Shield Netprops
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
+		.DefineIntField("m_iHealthBar")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -3256,6 +3297,7 @@ public void NPC_Base_InitGamedata()
 		//Sergeant Ideal Shield Netprops
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
+		.DefineIntField("m_iHealthBar")
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
@@ -4111,16 +4153,7 @@ stock void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = 
 
 stock void NPC_SetGoalEntity(int entity, int target)
 {
-	if(i_IsABuilding[target] || b_IsVehicle[target])
-	{
-		//broken on targetting buildings...?
-		float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-		view_as<CClotBody>(entity).SetGoalVector(pos, false);
-	}
-	else
-	{
-		view_as<CClotBody>(entity).SetGoalEntity(target);
-	}
+	view_as<CClotBody>(entity).SetGoalEntity(target);
 }
 #endif
 
@@ -4764,9 +4797,13 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		
 	if(IsValidEntity(enemy))
 	{
-		if(b_IsVehicle[enemy])
+		if(i_IsVehicle[enemy])
 		{
+#if defined ZR
+			enemy = Vehicle_Driver(enemy);
+#else
 			enemy = GetEntPropEnt(enemy, Prop_Data, "m_hPlayer");
+#endif
 			if(enemy == -1)
 				return false;
 		}
@@ -5151,7 +5188,7 @@ stock int GetClosestTarget(int entity,
 			if(entity_close != entity && entity_close != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				if(!i_IsVehicle[entity_close] && GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{
 #if defined RTS
 					if(ExtraValidityFunction == INVALID_FUNCTION)
@@ -5211,7 +5248,7 @@ void GetClosestTarget_AddTarget(int entity, int type)
 		if (GetClosestTarget_EnemiesToCollect[i] == 0)
 		{
 			GetClosestTarget_EnemiesToCollect[i] = entity;
-			GetClosestTarget_Enemy_Type[entity] = type;
+			GetClosestTarget_Enemy_Type[i] = type;
 			break; //same as break;
 		}
 	}	
@@ -5232,6 +5269,11 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	int ClosestTarget = -1; 
 
 #if !defined RTS
+	if(i_IsNpcType[entity] == STATIONARY_NPC)
+	{
+		//Stationary npcs never really need vector distance.
+		UseVectorDistance = true;
+	}
 	if(!b_NpcHasDied[entity] && !UseVectorDistance)
 	{
 		f_DelayComputingOfPath[entity] = 0.0;
@@ -5255,6 +5297,14 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		{
 			if(GetClosestTarget_EnemiesToCollect[i] <= 0)
 				break;
+			
+#if defined ZR
+			int vehicle = Vehicle_Driver(GetClosestTarget_EnemiesToCollect[i]);
+#else
+			int vehicle = (GetClosestTarget_EnemiesToCollect[i] > 0 && GetClosestTarget_EnemiesToCollect[i] <= MaxClients) ? GetEntPropEnt(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_hVehicle") : -1;
+#endif
+			if(vehicle != -1)
+				GetClosestTarget_EnemiesToCollect[i] = vehicle;
 
 			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
 			CNavArea NavAreaUnder = TheNavMesh.GetNavArea(targetPos[i], 100.0);
@@ -5295,7 +5345,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 
 				//	PrintToChatAll("%f > %f", dist, fldistancelimit);
-					if(GetClosestTarget_Enemy_Type[GetClosestTarget_EnemiesToCollect[a]] > 2)	// Distance limit
+					if(GetClosestTarget_Enemy_Type[a] > 2)	// Distance limit
 					{
 						if(dist > fldistancelimitAllyNPC)
 						{
@@ -5392,7 +5442,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 #if !defined RTS
 			float distance_limit = fldistancelimit;
-			switch(GetClosestTarget_Enemy_Type[GetClosestTarget_EnemiesToCollect[i]])
+			switch(GetClosestTarget_Enemy_Type[i])
 			{
 				case 1:
 				{
@@ -6357,6 +6407,39 @@ stock void Custom_Knockback(int attacker,
 	}
 	if(i_IsNpcType[enemy] == 1)
 		return;
+	
+#if defined ZR
+	bool forceOut = (PullDuration != 0.0 || knockback > 500.0);
+	if(i_IsVehicle[enemy])
+	{
+		// Pull the driver instead of the vehicle
+		if(forceOut && i_IsVehicle[enemy] == 2)
+		{
+			int driver = Vehicle_Driver(enemy);
+			if(driver != -1)
+			{
+				enemy = driver;
+				Vehicle_Exit(enemy, false);
+			}
+		}
+	}
+	else
+	{
+		// Push the vehicle instead of the driver
+		int vehicle = Vehicle_Driver(enemy);
+		if(vehicle != -1)
+		{
+			if(forceOut && i_IsVehicle[vehicle] == 2)
+			{
+				Vehicle_Exit(enemy, false);
+			}
+			else
+			{
+				enemy = vehicle;
+			}
+		}
+	}
+#endif
 
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
@@ -8310,6 +8393,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCAnimEvent[entity] = INVALID_FUNCTION;
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
+	FuncShowInteractHud[entity] = INVALID_FUNCTION;
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {

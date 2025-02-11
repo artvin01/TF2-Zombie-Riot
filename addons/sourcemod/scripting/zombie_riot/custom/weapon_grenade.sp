@@ -9,6 +9,7 @@ static int g_ProjectileModel;
 static int g_ProjectileModelPipe;
 Handle TimerHudGrenade[MAXPLAYERS+1] = {null, ...};
 static float f_GrenadeHudCD[MAXPLAYERS+1];
+static float OriginalSize[MAXENTITIES];
 
 
 public bool ClientHasUseableGrenadeOrDrink(int client)
@@ -41,6 +42,8 @@ public void Enable_Management_GrenadeHud(int client, int weapon) // Enable manag
 			TimerHudGrenade[client] = CreateDataTimer(0.5, TimerHudGrenade_Manager, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
+			OriginalSize[weapon] = f_WeaponSizeOverride[weapon];
+			UpdateWeaponVisibleGrenade(weapon, client);
 			return;
 		}
 	}
@@ -51,6 +54,8 @@ public void Enable_Management_GrenadeHud(int client, int weapon) // Enable manag
 		TimerHudGrenade[client] = CreateDataTimer(0.5, TimerHudGrenade_Manager, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+		OriginalSize[weapon] = f_WeaponSizeOverride[weapon];
+		UpdateWeaponVisibleGrenade(weapon, client);
 	}
 }
 public Action TimerHudGrenade_Manager(Handle timer, DataPack pack)
@@ -63,9 +68,42 @@ public Action TimerHudGrenade_Manager(Handle timer, DataPack pack)
 		TimerHudGrenade[client] = null;
 		return Plugin_Stop;
 	}	
+	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	UpdateWeaponVisibleGrenade(weapon, client, (weapon_active == weapon));
 	return Plugin_Continue;
 }
 
+void UpdateWeaponVisibleGrenade(int weapon, int client, bool Update = false)
+{
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ZEALOT_POTION)
+	{
+		if (Ability_Check_Cooldown(client, 2, weapon) > 0.0)
+		{
+			f_WeaponSizeOverride[weapon] = 0.0;
+			f_WeaponSizeOverrideViewmodel[weapon] = 0.0;
+		}
+		else
+		{
+			f_WeaponSizeOverride[weapon] = OriginalSize[weapon];
+			f_WeaponSizeOverrideViewmodel[weapon] = OriginalSize[weapon];
+		}
+	}
+	else
+	{
+		if(CurrentAmmo[client][Ammo_Hand_Grenade] == 0)
+		{
+			f_WeaponSizeOverride[weapon] = 0.0;
+			f_WeaponSizeOverrideViewmodel[weapon] = 0.0;
+		}
+		else
+		{
+			f_WeaponSizeOverride[weapon] = OriginalSize[weapon];
+			f_WeaponSizeOverrideViewmodel[weapon] = OriginalSize[weapon];
+		}
+	}
+	if(Update)
+		HidePlayerWeaponModel(client, weapon);
+}
 public void Grenade_Custom_Precache()
 {
 	Zero(Handle_on);
@@ -96,6 +134,7 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 		Handle_on[client] = true;
 		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
+		UpdateWeaponVisibleGrenade(weapon, client, true);
 	}
 }
 
@@ -139,6 +178,7 @@ public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool
 		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
 		Handle_on[client] = true;
+		UpdateWeaponVisibleGrenade(weapon, client, true);
 	}
 }
 

@@ -520,6 +520,7 @@ void Rogue_SetupVote(KeyValues kv)
 			break;
 		}
 	}
+	Waves_SetReadyStatus(2);
 }
 
 void Rogue_RevoteCmd(int client)	// Waves_RevoteCmd
@@ -1724,7 +1725,10 @@ static void StartStage(const Stage stage)
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			Vehicle_Exit(client, false, false);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
+		}
 	}
 	
 	for(int i; i < i_MaxcountNpcTotal; i++)
@@ -1811,6 +1815,7 @@ static void TeleportToSpawn()
 			if(TeutonType[client] == TEUTON_DEAD)
 				TF2_RespawnPlayer(client);
 			
+			Vehicle_Exit(client, false, false);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
 		}
 	}
@@ -2615,7 +2620,7 @@ public void Rogue_Vote_NextStage(const Vote vote)
 	SetNextStage(id, false, stage);
 }
 
-bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWaveStats)
+bool Rogue_UpdateMvMStats()
 {
 	if(!Rogue_Mode() || !Rogue_InSetup())
 		return false;
@@ -2708,15 +2713,8 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 	}
 
 	if(Rogue_GetChaosLevel() < 3)
-	{
-		SetEntData(mvm, m_currentWaveStats + 4, 0, 4, true);	// nCreditsDropped
-		SetEntData(mvm, m_currentWaveStats + 8, 0, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
-
-		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
-		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
-	}
+		Waves_SetCreditAcquired(0);
+	
 	return true;
 }
 

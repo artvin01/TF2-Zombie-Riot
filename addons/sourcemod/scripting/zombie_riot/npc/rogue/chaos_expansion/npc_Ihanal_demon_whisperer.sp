@@ -325,6 +325,10 @@ public Action HallamDemonWhisperer_OnTakeDamage(int victim, int &attacker, int &
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		//dont trigger with invul npcs
+		if(b_ScalesWithWaves[attacker])
+			return Plugin_Changed;
+
 		if(attacker <= MaxClients)
 		{
 			if(TeutonType[attacker] != TEUTON_NONE || dieingstate[attacker] != 0)

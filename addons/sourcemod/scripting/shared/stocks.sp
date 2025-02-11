@@ -2994,7 +2994,7 @@ int inflictor = 0)
 #if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
-		float value = Attributes_Get(weapon, 99, 1.0);//increaced blast radius attribute (Check weapon only)
+		float value = Attributes_Get(weapon, 99, 1.0);//increased blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 		if(maxtargetshit == 10)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
@@ -5266,11 +5266,11 @@ stock void Matrix_GetRotationMatrix(float matMatrix[3][3], float fA, float fB, f
 	);
 }
 
-stock void ForcePlayerCrouch(int client, bool enable)
+stock void ForcePlayerCrouch(int client, bool enable, bool thirdpers = true)
 {
 	if(enable)
 	{
-		SetVariantInt(1);
+		SetVariantInt(thirdpers);
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		SetForceButtonState(client, true, IN_DUCK);
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
@@ -5324,15 +5324,25 @@ stock int GetTeam(int entity)
 {
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
+		if(i_IsVehicle[entity])
+		{
+#if defined ZR
+			entity = Vehicle_Driver(entity);
+#else
+			entity = GetEntPropEnt(entity, Prop_Data, "m_hPlayer");
+#endif
+			if(entity == -1)
+				return -1;
+		}
+
 #if !defined RTS
 		if(entity && entity <= MaxClients)
 			return GetClientTeam(entity);
 #endif
 
 		if(TeamNumber[entity] == -1)
-		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
-		}
+		
 		return TeamNumber[entity];
 	}
 	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
@@ -5460,3 +5470,18 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	returnEnd = particle2;
 }
 #endif
+
+stock int FindEntityByNPC(int &i)
+{
+	for(; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != -1 && !b_NpcHasDied[entity])
+		{
+			i++;
+			return entity;
+		}
+	}
+
+	return -1;
+}

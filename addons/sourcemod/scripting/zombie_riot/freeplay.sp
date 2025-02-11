@@ -1131,9 +1131,10 @@ void Freeplay_SetupStart(bool extra = false)
 			EmitSoundToAll("ui/vote_success.wav");
 		}
 		
-		int exskull = GetRandomInt(0, 100);
+		//one more skull the further you go, its limited time so i tshould be CBT
+	//	int exskull = GetRandomInt(0, 100);
 
-		if(exskull < 20) // 20% chance
+	//	if(exskull < 20) // 20% chance
 		{
 			ExtraSkulls++;
 			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");

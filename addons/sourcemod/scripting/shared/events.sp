@@ -88,6 +88,7 @@ float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
+	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
 	
@@ -116,7 +117,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	
 	
 	Escape_RoundStart();
-	Waves_RoundStart();
+	Waves_RoundStart(true);
 	Blacksmith_RoundStart();
 	Merchant_RoundStart();
 	Flametail_RoundStart();
@@ -126,6 +127,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	if(RoundStartTime > GetGameTime())
 		return;
 	
+	Waves_SetReadyStatus(2);
 	RoundStartTime = FAR_FUTURE;
 	//FOR ZR
 	char mapname[64];
@@ -181,6 +183,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
+	DeleteShadowsOffZombieRiot();
 	for(int client=1; client<=MaxClients; client++)
 	{
 		SetMusicTimer(client, 0);
@@ -526,6 +529,7 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		
 #if defined ZR
 		Waves_PlayerSpawn(client);
+		Vehicle_PlayerSpawn(client);
 #endif
 
 #if defined ZR || defined RPG
@@ -556,7 +560,8 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-	
+	// Dead Ringer doesn't exist!!
+
 #if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
@@ -594,6 +599,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	ClientSaveUber(client);
 	SDKHooks_UpdateMarkForDeath(client, true);
 	PurnellDeathsound(client);
+	Vehicle_Exit(client, true);
 #endif
 
 #if defined RPG

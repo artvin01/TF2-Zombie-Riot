@@ -731,6 +731,16 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
 							npc.PlayRangedSound();
 
+							if(i_IsVehicle[Enemy_I_See] == 2)
+							{
+								int driver = Vehicle_Driver(Enemy_I_See);
+								if(driver != -1)
+								{
+									Enemy_I_See = driver;
+									Vehicle_Exit(driver, false);
+								}
+							}
+
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
 							
 							float flPos[3]; // original

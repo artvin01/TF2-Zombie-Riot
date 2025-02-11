@@ -4,11 +4,12 @@
 static Handle Give_bomb_back[MAXPLAYERS+1];
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
+
 public void Weapon_Magic_Restore(int client, int weapon, const char[] classname, bool &result)
 {
 	if(weapon >= MaxClients)
 	{
-		if(CurrentAmmo[client][Ammo_Potion_Supply] >= 1)
+		if(CurrentAmmo[client][Ammo_Hand_Grenade] >= 1)
 		{
 			Give_bomb_back[client] = CreateTimer(60.0, Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(60.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -21,8 +22,8 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 		//	SetDefaultHudPosition(client);
 		//	SetGlobalTransTarget(client);
 		//	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Drank Mana Regen Potion");
-			SetAmmo(client, Ammo_Potion_Supply, 0); //Give ammo back that they just spend like an idiot
-			CurrentAmmo[client][Ammo_Potion_Supply] = 0;
+			SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
+			CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
 			Handle_on[client] = true;
 			
 			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + 60.0;
@@ -67,7 +68,7 @@ public void Reset_stats_Drink_Singular(int client)
 public Action Give_Back_Magic_Restore_Ammo(Handle cut_timer, int client)
 {
 	if(!IsValidClient(client))
-		CurrentAmmo[client][Ammo_Potion_Supply] = 1;
+		CurrentAmmo[client][Ammo_Hand_Grenade] = 1;
 		
 	return Plugin_Handled;
 }
@@ -78,8 +79,8 @@ public Action Give_Back_Magic_Restore(Handle cut_timer, int ref)
 	{
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-		SetAmmo(client, Ammo_Potion_Supply, 1); //Give ammo back that they just spend like an idiot
-		CurrentAmmo[client][Ammo_Potion_Supply] = 1;
+		SetAmmo(client, Ammo_Hand_Grenade, 1); //Give ammo back that they just spend like an idiot
+		CurrentAmmo[client][Ammo_Hand_Grenade] = 1;
 	//	ClientCommand(client, "playgamesound items/gunpickup2.wav");
 	//	SetDefaultHudPosition(client);
 	//	SetGlobalTransTarg77et(client);

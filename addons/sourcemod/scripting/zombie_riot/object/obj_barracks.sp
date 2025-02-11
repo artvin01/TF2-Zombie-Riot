@@ -948,6 +948,13 @@ void Barracks_BuildingThink(int entity)
 	
 	if(GetTeam(client) != 2)
 		return;
+
+	if(Barracks_InstaResearchEverything)
+	{
+		//adds all flags except ZR_BARRACKS_TROOP_CLASSES
+		i_NormalBarracks_HexBarracksUpgrades[client] |= ((1 << 31));
+		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 31) - (ZR_BARRACKS_TROOP_CLASSES));
+	}
 		
 	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
 	SummonerRenerateResources(client, 1.0);
@@ -2132,10 +2139,9 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 	}
 	*/
 
-
-	int entity = MaxClients + 1;
 	char npc_classname[60];
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(GetTeam(entity) == 2)
 		{
@@ -2182,9 +2188,9 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 int ActiveCurrentNpcsBarracksTotal()
 {
 	int CurrentAlive = 0;
-	int entity = MaxClients + 1;
 	char npc_classname[60];
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(GetTeam(entity) == 2)
 		{

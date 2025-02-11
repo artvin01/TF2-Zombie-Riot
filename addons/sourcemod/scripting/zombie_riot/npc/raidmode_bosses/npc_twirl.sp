@@ -3587,6 +3587,7 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 	Stella stella = view_as<Stella>(Twirl_Index);
 	Karlas karl = view_as<Karlas>(karlas);
 	karl.m_flNextRangedBarrage_Singular -= 15.0;
+	karl.Anger = true;	//he won't transform tho
 	stella.m_bKarlasRetreat = false;
 }
 

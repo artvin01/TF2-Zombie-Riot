@@ -344,7 +344,7 @@
 	}
 	"Spirit Spawns 1"
 	{
-		"en" 		"A spitit appeared... release it before its too late!"
+		"en" 		"A spirit appeared... release it before its too late!"
 		"ru" 		"Появлися Дух... Освободите его пока не поздно!"
 		"fr" 		"Un esprit apparaît... libérez-le avant qu'il soit trop tard!"
 		"chi"		"一个冤魂出现了。赶紧驱掉它！"
@@ -443,6 +443,30 @@
 		"ru" 		"3650 появляется."
 		"chi"		"欧米茄现身了。"
 		"fr"		"3650 apparaît."
+	}
+	"Zmain spawn Text 1"
+	{
+		"en"		"A group of highly intelligent zombies appear."
+	}
+	"Zmain spawn Text 2"
+	{
+		"en"		"The Z-Mains planned something against you."
+	}
+	"Zmain spawn Text 3"
+	{
+		"en"		"Be glad PVP isnt a thing..."
+	}
+	"John Spawn Text 1"
+	{
+		"en"		"RUN!"
+	}
+	"John Spawn Text 2"
+	{
+		"en"		"Maybe you can rob him back? Or just run..."
+	}
+	"John Spawn Text 3"
+	{
+		"en"		"I dont know... just run."
 	}
 	"Victorian Radiomast Is Here!"
 	{

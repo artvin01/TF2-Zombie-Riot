@@ -165,6 +165,9 @@ methodmap Malianius < CClotBody
 			RUINA_CUSTOM_MODELS_1
 		};
 
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iChanged_WalkCycle = 0;
 
 		int skin = 1;	//1=blue, 0=red
@@ -180,9 +183,6 @@ methodmap Malianius < CClotBody
 
 		SetVariantInt(RUINA_STAFF_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
-
-		SetVariantInt(2);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

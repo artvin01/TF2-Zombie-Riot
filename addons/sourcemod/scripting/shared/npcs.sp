@@ -1161,7 +1161,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	//LogEntryInvicibleTest(victim, attacker, damage, 25);
 	Damageaftercalc = damage;
-	
 	return Plugin_Changed;
 }
 
@@ -1246,7 +1245,15 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	f_InBattleDelay[victim] = GetGameTime() + 6.0;
 
 	//LogEntryInvicibleTest(victim, attacker, damage, 27);
+	CClotBody npcBase = view_as<CClotBody>(victim);
 	bool SlayNpc = true;
+	while(health <= 0 && npcBase.m_iHealthBar >= 1)
+	{
+		//has health bars!
+		health += ReturnEntityMaxHealth(victim);
+		SetEntProp(victim, Prop_Data, "m_iHealth", health);
+		npcBase.m_iHealthBar--;
+	}
 	if(health >= 1)
 	{
 		SlayNpc = false;
@@ -1289,7 +1296,6 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		b_RaptureZombie[victim] = b_RaptureZombie[attacker];
 	}
 #endif
-	
 	//LogEntryInvicibleTest(victim, attacker, damage, 29);
 	if(SlayNpc)
 	{
@@ -1790,6 +1796,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		{
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
 		}
+		CClotBody npcstats = view_as<CClotBody>(victim);
+		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0)
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar);
 #endif
 		
 		//add debuff
@@ -1836,16 +1845,28 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 		//what type of boss
 		if(b_thisNpcIsARaid[victim])
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t | %t : ", "Raidboss", "Power");
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t", "Raidboss");
 		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t | %t : ", "Superboss", "Power");
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t", "Superboss");
 
-		//time show or not
-		if(Timer_Show > 800.0)
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+		//Does it have power? No power also hides timer showing
+		if(RaidModeScaling != 0.0)
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t : ", ExtraHudHurt, "Power");
+			//time show or not
+			if(Timer_Show > 800.0)
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+			else
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+		}
 		else
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
-			
+		{
+			if(Timer_Show > 800.0)
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s]", ExtraHudHurt);
+			else
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t: %.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
+		}
+		
 		//add name and health
 		char c_Health[255];
 		char c_MaxHealth[255];
@@ -1877,6 +1898,10 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
 		}
 		
+		CClotBody npcstats = view_as<CClotBody>(victim);
+		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0)
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar);
+
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 

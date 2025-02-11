@@ -624,6 +624,24 @@
 				"return"	"void"
 				"this"		"ignore"
 			}
+			"CGameRules::ShouldCollide"
+			{
+				"offset"	"CGameRules::ShouldCollide"
+				"hooktype"	"gamerules"
+				"return"	"bool"
+				"this"		"ignore"
+				"arguments"
+				{
+					"collisionGroup0"
+					{
+						"type"	"int"
+					}
+					"collisionGroup1"
+					{
+						"type"	"int"
+					}
+				}
+			}
 			"CTFPlayer::CanAirDash"
 			{
 				"signature"	"CTFPlayer::CanAirDash"
@@ -979,6 +997,11 @@
 			{
 				"linux"		"16"
 				"windows"	"15"
+			}
+			"CGameRules::ShouldCollide"
+			{
+				"linux"		"30"
+				"windows"	"29"
 			}
 			"CBaseEntity::GetVectors"
 			{

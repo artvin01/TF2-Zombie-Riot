@@ -89,10 +89,11 @@ public void SDKHook_ScoreThink(int entity)
 	static int offset_Damage_Boss = -1;
 	static int offset_Cash = -1;
 	static int offset_Healing = -1;
+	static int offset_Class = -1;
 
-#if defined ZR
+	#if defined ZR
 	static int offset_Alive = -1;
-#endif
+	#endif
 
 
 		
@@ -111,40 +112,48 @@ public void SDKHook_ScoreThink(int entity)
 	if(offset_Cash == -1) 
 		offset_Cash = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
 
-#if defined ZR
+	//Class
+	if(offset_Class == -1) 
+		offset_Class = FindSendPropInfo("CTFPlayerResource", "m_iPlayerClass");
+
+	#if defined ZR
 	//Alive
 	if(offset_Alive == -1) 
 		offset_Alive = FindSendPropInfo("CTFPlayerResource", "m_bAlive");
 	
-	bool alive[MAXTF2PLAYERS];
-#endif
+	bool[] alive = new bool[MaxClients+1];
+	#endif
 
-	int CashCurrentlyOwned[MAXTF2PLAYERS];
+	int[] CashCurrentlyOwned = new int[MaxClients+1];
+	int[] class = new int[MaxClients+1];
 	for(int client=1; client<=MaxClients; client++)
 	{
-#if defined ZR
+	#if defined ZR
 		CashCurrentlyOwned[client] = CurrentCash-CashSpent[client];
 		alive[client] = (TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client));
-#else
+	#else
 		CashCurrentlyOwned[client] = TextStore_Cash(client);
-#endif
+	#endif
+
+		class[client] = i_PlayerModelOverrideIndexWearable[client] >= 0 ? 0 : view_as<int>(CurrentClass[client]);
 	}
 
 	//healing done
 	if(offset_Healing == -1) 
 		offset_Healing = FindSendPropInfo("CTFPlayerResource", "m_iHealing");
 	
-#if defined ZR
+	#if defined ZR
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
 	SetEntDataArray(entity, offset_Alive, alive, MaxClients + 1);
-#else
+	#else
 	SetEntDataArray(entity, offset, Level, MaxClients + 1);
-#endif
+	#endif
 
 	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
 	SetEntDataArray(entity, offset_Damage_Boss, i_PlayerDamaged, MaxClients + 1);
 	SetEntDataArray(entity, offset_Healing, Healing_done_in_total, MaxClients + 1);
 	SetEntDataArray(entity, offset_Cash, CashCurrentlyOwned, MaxClients + 1);
+	SetEntDataArray(entity, offset_Class, class, MaxClients + 1);
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -155,14 +164,14 @@ public void SDKHook_ScoreThink(int entity)
 			SetEntProp(client, Prop_Send, "m_iBackstabs", i_Backstabs[client]);
 			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
 
-#if defined ZR
+	#if defined ZR
 			SetEntProp(client, Prop_Send, "m_iDefenses", RoundToCeil(float(i_BarricadeHasBeenDamaged[client]) * 0.01));
-#endif
+	#endif
 
 		}
 	}	
 }
-#endif
+#endif	// ZR & RPG
 
 stock void SDKHook_HookClient(int client)
 {
@@ -650,6 +659,17 @@ public void OnPostThink(int client)
 
 			had_An_ability = false;
 			
+			if(c_WeaponUseAbilitiesHud[weapon][0])
+			{
+				if(had_An_ability)
+				{
+					Format(buffer, sizeof(buffer), "| %s", buffer);
+				}
+				had_An_ability = true;
+					
+				Format(buffer, sizeof(buffer), "%s %s", c_WeaponUseAbilitiesHud[weapon], buffer);
+				IsReady = false;
+			}
 			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
 			{
 				cooldown_time = Ability_Check_Cooldown(client, 1);
@@ -1958,6 +1978,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					dieingstate[victim] = 500;
 				}
 				dieingstate[victim] -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ReviveTimeCut, false,_, 0.0));
+				Vehicle_Exit(victim, false);
 				ForcePlayerCrouch(victim, true);
 				SDKHooks_UpdateMarkForDeath(victim, true);
 				//cooldown for left for dead.
@@ -2100,9 +2121,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		//Everything else should be counted as ranged reistance probably.
 	}
 			
-	value = Attributes_GetOnPlayer(victim, 412, true, true, 1.0);	// Overall damage resistance
-	if(weapon != -1)
-		value *= Attributes_Get(weapon, 412, 1.0);
+	value = Attributes_GetOnPlayer(victim, 412, true, false, 1.0);	// Overall damage resistance
 
 	damage *= value;
 

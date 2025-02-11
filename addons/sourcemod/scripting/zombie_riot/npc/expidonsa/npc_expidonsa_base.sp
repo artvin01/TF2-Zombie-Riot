@@ -69,11 +69,18 @@ stock int VausMagicaShieldLeft(int victim)
 {
 	return i_ExpidonsaShieldCapacity[victim];
 }
-void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage, int ZrDamageType, int weapon)
+void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage,int damagetype, int ZrDamageType, int weapon)
 {
-	if(i_ExpidonsaShieldCapacity[victim] > 0 && (!(ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
+	if(i_ExpidonsaShieldCapacity[victim] > 0)
 	{
-		if(!CheckInHud())
+		bool DrainShield = true;
+		if(IsEntitySentrygun(attacker))
+			DrainShield = false;
+		
+		if((ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+			DrainShield = true;
+		
+		if(!CheckInHud() && DrainShield)
 		{
 #if defined ZR
 			if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
@@ -94,7 +101,9 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 			}
 		}
 
-		damage *= 0.25;
+		if(!(damagetype & (DMG_TRUEDAMAGE)))
+			damage *= 0.25;
+			
 		if(!CheckInHud())
 		{
 			if(i_ExpidonsaShieldCapacity[victim] <= 0)

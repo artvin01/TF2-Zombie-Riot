@@ -730,6 +730,11 @@ void Building_ShowInteractionHud(int client, int entity)
 				}
 			}
 		}
+		else if(i_IsVehicle[entity] == 2)
+		{
+			if(Vehicle_ShowInteractHud(client, entity))
+				Hide_Hud = false;
+		}
 	}
 
 	if(Hide_Hud)
@@ -754,6 +759,16 @@ stock void ApplyBuildingCollectCooldown(int building, int client, float Duration
 	{
 		Building_Collect_Cooldown[building][client] = GetGameTime() + Duration;
 	}
+}
+
+public void Pickup_Building_Multi(int client, int weapon, bool crit)
+{
+	if((GetClientButtons(client) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
+	{
+		MountBuildingToBack(client, weapon, crit);
+		return;
+	}
+	Pickup_Building_M2(client, weapon, crit);
 }
 
 public void Pickup_Building_M2(int client, int weapon, bool crit)

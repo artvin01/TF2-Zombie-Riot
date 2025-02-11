@@ -290,6 +290,7 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 		}
 
 		i_RandomCurrentPotion[client] = GetRandomInt(0,3);
+		UpdateWeaponVisibleGrenade(weapon, client, true);
 	}
 	else
 	{

@@ -17,10 +17,13 @@
 #include <morecolors>
 #include <cbasenpc>
 #include <tf2utils>
-#include <filenetwork>
 #include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
+#undef REQUIRE_EXTENSIONS
+#undef REQUIRE_PLUGIN
+#include <filenetwork>
+#include <loadsoundscript>
 
 #pragma dynamic	131072
 
@@ -885,7 +888,7 @@ public Action Timer_Temp(Handle timer)
 #if defined ZR
 	if(RaidbossIgnoreBuildingsLogic())
 	{
-		if (RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
+		if (RaidModeScaling != 0.0 && RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
 			PlayTickSound(true, false);
 		}
@@ -1061,6 +1064,7 @@ public void OnMapStart()
 
 #if defined ZR
 	ZR_MapStart();
+	Waves_SetReadyStatus(2);
 #endif
 
 #if defined RPG
@@ -1091,8 +1095,43 @@ public void OnMapStart()
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	PrecacheSound("mvm/mvm_tank_horn.wav");
+	DeleteShadowsOffZombieRiot();
+
+	if(LibraryExists("LoadSoundscript"))
+	{
+		char soundname[256];
+		SoundScript soundscript = LoadSoundScript("scripts/game_sounds_vehicles.txt");
+		for(int i = 0; i < soundscript.Count; i++)
+		{
+			SoundEntry entry = soundscript.GetSound(i);
+			entry.GetName(soundname, sizeof(soundname));
+			PrecacheScriptSound(soundname);
+		}
+	}
 }
 
+void DeleteShadowsOffZombieRiot()
+{
+	//found shadow lod
+	int entityshadow = -1;
+	entityshadow = FindEntityByClassname(entityshadow, "shadow_control");
+
+	if(IsValidEntity(entityshadow))
+	{
+		RemoveEntity(entityshadow);
+	}
+	entityshadow = CreateEntityByName("shadow_control");
+	
+	//Create new shadow entity, and make own own rules
+	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
+	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
+	if(IsValidEntity(entityshadow))
+	{
+		DispatchSpawn(entityshadow);
+		SetVariantInt(1); 
+		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
+	}
+}
 public void OnMapEnd()
 {
 #if defined ZR
@@ -1107,6 +1146,7 @@ public void OnMapEnd()
 	OnRoundEnd(null, NULL_STRING, false);
 	Waves_MapEnd();
 	Spawns_MapEnd();
+	Vehicle_MapEnd();
 #endif
 
 #if defined RPG
@@ -2036,7 +2076,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				
 				if(Attack_speed <= Panic_Attack[weapon])
 				{
-					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY INCREACED ATTACK SPEED.
+					Attack_speed = Panic_Attack[weapon]; //DONT GO ABOVE THIS, WILL BREAK SOME MELEE'S DUE TO THEIR ALREADY increased ATTACK SPEED.
 				}
 				
 				
@@ -2154,11 +2194,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		StatusEffectReset(entity);
 		f_InBattleDelay[entity] = 0.0;
 		b_AllowCollideWithSelfTeam[entity] = false;
-		func_NPCDeath[entity] = INVALID_FUNCTION;
-		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
-		func_NPCThink[entity] = INVALID_FUNCTION;
-		func_NPCDeathForward[entity] = INVALID_FUNCTION;
-		func_NPCFuncWin[entity] = INVALID_FUNCTION;
+		NPCStats_SetFuncsToZero(entity);
 		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][1] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][2] = 0.0;
@@ -2278,7 +2314,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
-		b_IsVehicle[entity] = false;
+		i_IsVehicle[entity] = 0;
 		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_IsAGib[entity] = false;
@@ -2338,6 +2374,27 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 		else*/
+		if(!StrContains(classname, "tf_logic_arena")
+		 || !StrContains(classname, "team_control_point")
+		  || !StrContains(classname, "trigger_capture_area")
+		  || !StrContains(classname, "item_ammopack_small")
+		  || !StrContains(classname, "item_ammopack_medium")
+		  || !StrContains(classname, "item_ammopack_full")
+		  || !StrContains(classname, "tf_ammo_pack")
+		  || !StrContains(classname, "tf_flame_manager")
+		  || !StrContains(classname, "entity_revive_marker")
+		  || !StrContains(classname, "tf_projectile_energy_ring")
+		  || !StrContains(classname, "entity_medigun_shield")
+		  || !StrContains(classname, "tf_projectile_energy_ball")
+		  || !StrContains(classname, "item_powerup_rune")
+		  || !StrContains(classname, "vgui_screen")
+		  || !StrContains(classname, "vgui_screen")
+		  || !StrContains(classname, "vgui_screen")
+		  || !StrContains(classname, "vgui_screen")
+		  || !StrContains(classname, "vgui_screen"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
 		if(!StrContains(classname, "tf_objective_resource"))
 		{
 			b_ThisEntityIgnored[entity] = true;
@@ -2354,18 +2411,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 #if defined ZR || defined RPG
-		else if(!StrContains(classname, "tf_ammo_pack"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
-		else if(!StrContains(classname, "tf_flame_manager"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, MakeFlamesUseless);
-		}
-		else if(!StrContains(classname, "entity_revive_marker"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
 		else if(!StrContains(classname, "phys_bone_follower"))
 		{
 			//every prop_Dynamic that spawns these  can make upto 16 entities, holy fuck
@@ -2378,22 +2423,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_is_a_brush[entity] = true;
 		}
 #if defined ZR || defined RPG
-		else if(!StrContains(classname, "tf_projectile_energy_ring"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
-		else if(!StrContains(classname, "entity_medigun_shield"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
-		else if(!StrContains(classname, "tf_projectile_energy_ball"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
-		else if(!StrContains(classname, "item_powerup_rune"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
 		else if(!StrContains(classname, "tf_projectile_spellfireball"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Fireball);
@@ -2410,10 +2439,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		//	ApplyExplosionDhook_Rocket(entity);
 			//SDKHook_SpawnPost doesnt work
 		}
-		else if(!StrContains(classname, "vgui_screen")) //Delete dispenser screen cut its really not needed at all, just takes up stuff for no reason
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
 #endif
 		else if(!StrContains(classname, "tf_weapon_compound_bow"))
 		{
@@ -2426,6 +2451,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "func_breakable"))
 		{
 			SDKHook(entity, SDKHook_OnTakeDamagePost, Func_Breakable_Post);
+		}
+		else if(!StrContains(classname, "prop_vehicle_driveable"))
+		{
+			i_IsVehicle[entity] = 1;
+			//npc.bCantCollidieAlly = true;
+			//b_IsAProjectile[entity] = true;
+			//SDKUnhook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);  // ?????
 		}
 #if defined ZR || defined RPG
 		else if(!StrContains(classname, "tf_projectile_syringe"))
@@ -2445,7 +2477,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			b_IsAProjectile[entity] = true;
-			
 		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
@@ -2601,7 +2632,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			OnManglerCreated(entity);
 		}
 #endif
-		else if(!StrContains(classname, "obj_"))
+		else if(!StrContains(classname, "obj_") && !StrEqual(classname, "obj_vehicle"))
 		{
 			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
@@ -3025,12 +3056,15 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #endif
 
 #if defined ZR
+			if(Vehicle_Interact(client, weapon, entity))
+				return true;
+			
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
-					
+				
 				if(Object_Interact(client, weapon, entity))
 					return true;
 
@@ -3081,10 +3115,15 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #endif
 		
 		}
-
-#if defined RPG
 		else
 		{
+
+#if defined ZR
+			if(GetEntityMoveType(client) == MOVETYPE_NONE && Vehicle_Interact(client, weapon, entity))
+				return true;
+#endif
+			
+#if defined RPG
 			if(Fishing_Interact(client, weapon))
 				return true;
 			
@@ -3093,9 +3132,9 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			
 			if(Garden_Interact(client, vecEndOrigin))
 				return true;
-		}
 #endif
-		
+
+		}
 	}
 	return false;
 }
@@ -3467,6 +3506,9 @@ void checkOS()
 	{
 		OperationSystem = OS_Unknown;
 	}
+
+	if(OperationSystem == OS_Linux)
+		PrintToServer("Hi linux!");
 }
 
 

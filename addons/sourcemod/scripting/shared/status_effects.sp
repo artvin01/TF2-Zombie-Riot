@@ -1428,8 +1428,8 @@ void StatusEffects_Freeplay1()
 {
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Cheesy Presence");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), ":3");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "uwu"); //dont display above head, so empty
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "c");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.85;
 	data.DamageDealMulti			= 0.15;
@@ -1441,7 +1441,7 @@ void StatusEffects_Freeplay1()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Spotter's Rally");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "-S-");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "S");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.34;
@@ -1454,7 +1454,7 @@ void StatusEffects_Freeplay1()
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence I");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FE1");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Σ1");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -1467,7 +1467,7 @@ void StatusEffects_Freeplay1()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence II");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FE2");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Σ2");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -1480,7 +1480,7 @@ void StatusEffects_Freeplay1()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence III");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FE3");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Σ3");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -1497,7 +1497,7 @@ void StatusEffects_Freeplay2()
 {
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart I");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FR1");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ξ1");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.9;
@@ -1510,7 +1510,7 @@ void StatusEffects_Freeplay2()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart II");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FR2");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ξ2");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.8;
@@ -1523,7 +1523,7 @@ void StatusEffects_Freeplay2()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart III");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "FR3");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ξ3");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.7;

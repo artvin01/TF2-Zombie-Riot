@@ -423,7 +423,7 @@
 	}
 	"Xeno Engineer Deconstructor Desc"
 	{
-		"en" 		"Their damage towards buildings got increaced by 3x times or more."
+		"en" 		"Their damage towards buildings got increased by 3x times or more."
 		"ru"		"Их урон по постройкам был увеличен в 3 раза или больше."
 	}
 	"Xeno Heavy Brawler Desc"

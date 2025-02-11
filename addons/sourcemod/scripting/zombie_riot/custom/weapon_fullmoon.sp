@@ -52,7 +52,7 @@ void FullMoon_Enable(int client, int weapon)
 			h_TimerFullMoon[client] = CreateDataTimer(0.1, Timer_Management_FullMoon, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			Attributes_SetMulti(weapon, 412, 2.0);
+			Attributes_SetMulti(weapon, 412, 1.8);
 			//force panic attack and vulnerability
 			Panic_Attack[weapon] = 0.175;
 		}
@@ -66,7 +66,7 @@ void FullMoon_Enable(int client, int weapon)
 		h_TimerFullMoon[client] = CreateDataTimer(0.1, Timer_Management_FullMoon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		Attributes_SetMulti(weapon, 412, 2.0);
+		Attributes_SetMulti(weapon, 412, 1.8);
 		Panic_Attack[weapon] = 0.175;
 		if(!Precached)
 		{
