@@ -544,6 +544,7 @@ public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int infl
 	{
 		SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 		CPrintToChatAll("{crimson}John The Almighty {default}: OH NUTS! I left my oven on! Bye!");
+		CPrintToChatAll("{green}He also left behind his wallet and drops you an extra cash.");
 		npc.m_iActualHealth = 9999999;
 		for(int client = 1; client <= MaxClients; client++)
 		{

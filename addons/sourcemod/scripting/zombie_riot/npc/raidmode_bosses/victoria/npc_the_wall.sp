@@ -872,8 +872,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.PlayAngerSound();
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, they would break");
-						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed its performance issues beforehand...");
+						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, knew they'd break apart so easily.");
+						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed their performance issues beforehand...");
 					}
 					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
 					npc.m_flAttackHappens = 0.0;
