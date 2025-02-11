@@ -22,7 +22,7 @@ static DynamicHook g_DHookScoutSecondaryFire;
 #if defined ZR
 static bool IsRespawning;
 #endif
-//static DynamicDetour gH_MaintainBotQuota = null;
+
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
@@ -1980,11 +1980,6 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 			Ability_Apply_Cooldown(client, 2, 4.0);
 		}
 	}
-}
-
-public MRESReturn Detour_MaintainBotQuota(int pThis)
-{
-	return MRES_Supercede;
 }
 
 

@@ -105,8 +105,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_blitzkrieg";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
-			enemy.ExtraDamage *= 1.35;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 2.0); 
+			enemy.ExtraDamage *= 1.4;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.85); 
 		}
 		case 3:
 		{
@@ -114,8 +114,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_xeno_raidboss_silvester";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
-			enemy.ExtraDamage *= 1.15;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
+			enemy.ExtraDamage *= 1.25;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.8); 
 		}
 		case 4:
 		{
@@ -124,7 +124,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
 			enemy.ExtraDamage *= 1.15;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
 		}
 		case 5:
 		{
@@ -133,7 +133,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
 			enemy.ExtraDamage *= 1.05;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.0); 
 		}
 		case 6:
 		{
@@ -141,8 +141,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_stella";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "force60");
 			
-			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.7); 
+			enemy.ExtraDamage *= 0.75;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.5); 
 		}
 		case 7:
 		{
@@ -173,7 +173,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_chaos_kahmlstein";	
 			
 			enemy.ExtraDamage *= 0.9;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.45); 
 		}
 		case 11:
 		{
@@ -195,7 +195,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_whiteflower_boss";	
 			
-			enemy.ExtraDamage *= 1.1;
+			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 			enemy.ExtraMeleeRes *= 3.0;
 			enemy.ExtraRangedRes *= 3.0;
@@ -214,15 +214,15 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_vhxis";	
 			
 			enemy.ExtraDamage *= 0.7;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
 		}
 		case 16:
 		{
 			PluginName = "npc_nemal";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
-			enemy.ExtraDamage *= 0.8;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.8); 
+			enemy.ExtraDamage *= 0.85;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.2); 
 		}
 		case 17:
 		{
