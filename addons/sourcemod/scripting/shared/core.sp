@@ -1146,6 +1146,7 @@ public void OnMapEnd()
 	OnRoundEnd(null, NULL_STRING, false);
 	Waves_MapEnd();
 	Spawns_MapEnd();
+	Vehicle_MapEnd();
 #endif
 
 #if defined RPG
@@ -2193,11 +2194,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		StatusEffectReset(entity);
 		f_InBattleDelay[entity] = 0.0;
 		b_AllowCollideWithSelfTeam[entity] = false;
-		func_NPCDeath[entity] = INVALID_FUNCTION;
-		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
-		func_NPCThink[entity] = INVALID_FUNCTION;
-		func_NPCDeathForward[entity] = INVALID_FUNCTION;
-		func_NPCFuncWin[entity] = INVALID_FUNCTION;
+		NPCStats_SetFuncsToZero(entity);
 		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][1] = 0.0;
 		f3_VecTeleportBackSave_OutOfBounds[entity][2] = 0.0;
@@ -3070,7 +3067,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #endif
 
 #if defined ZR
-			if(Vehicle_Interact(client, entity))
+			if(Vehicle_Interact(client, weapon, entity))
 				return true;
 			
 			static char buffer[64];
@@ -3133,7 +3130,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 		{
 
 #if defined ZR
-			if(GetEntityMoveType(client) == MOVETYPE_NONE && Vehicle_Interact(client, entity))
+			if(GetEntityMoveType(client) == MOVETYPE_NONE && Vehicle_Interact(client, weapon, entity))
 				return true;
 #endif
 			

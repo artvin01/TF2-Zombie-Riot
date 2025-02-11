@@ -26,7 +26,7 @@ static Function FuncCanBuild[MAXENTITIES];
  * @param client	Client
  * @noreturn
  */
-static Function FuncShowInteractHud[MAXENTITIES];
+//static Function FuncShowInteractHud[MAXENTITIES];
 
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 static bool CanUseBuilding[MAXENTITIES][MAXTF2PLAYERS];

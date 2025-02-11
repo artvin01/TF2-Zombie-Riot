@@ -85,6 +85,7 @@ Function func_NPCFuncWin[MAXENTITIES];
 Function func_NPCAnimEvent[MAXENTITIES];
 Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
+Function FuncShowInteractHud[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -8392,6 +8393,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCAnimEvent[entity] = INVALID_FUNCTION;
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
+	FuncShowInteractHud[entity] = INVALID_FUNCTION;
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {

@@ -23,18 +23,7 @@ static void ClotPrecache()
 {
 	PrecacheModel("models/buggy.mdl");
 	PrecacheModel("models/airboat.mdl");
-
-	if(LibraryExists("LoadSoundscript"))
-	{
-		char soundname[256];
-		SoundScript soundscript = LoadSoundScript("scripts/game_sounds_vehicles.txt");
-		for(int i = 0; i < soundscript.Count; i++)
-		{
-			SoundEntry entry = soundscript.GetSound(i);
-			entry.GetName(soundname, sizeof(soundname));
-			PrecacheScriptSound(soundname);
-		}
-	}
+	Vehicle_PrecacheSounds();
 }
 
 static any ClotSummonJeep(int client, float vecPos[3], float vecAng[3])
@@ -46,9 +35,9 @@ methodmap VehicleJeep < VehicleGeneric
 {
 	public VehicleJeep(const float vecPos[3], const float vecAng[3])
 	{
-		VehicleJeep npc = view_as<VehicleJeep>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/buggy.mdl", "scripts/vehicles/jeep_test.txt"));
+		VehicleJeep obj = view_as<VehicleJeep>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/buggy.mdl", "scripts/vehicles/jeep_test.txt"));
 		
-		return npc;
+		return obj;
 	}
 }
 
@@ -61,8 +50,8 @@ methodmap VehicleAirboat < VehicleGeneric
 {
 	public VehicleAirboat(const float vecPos[3], const float vecAng[3])
 	{
-		VehicleAirboat npc = view_as<VehicleAirboat>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_AIRBOAT_RAYCAST, "models/airboat.mdl", "scripts/vehicles/airboat.txt"));
+		VehicleAirboat obj = view_as<VehicleAirboat>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_AIRBOAT_RAYCAST, "models/airboat.mdl", "scripts/vehicles/airboat.txt"));
 		
-		return npc;
+		return obj;
 	}
 }
