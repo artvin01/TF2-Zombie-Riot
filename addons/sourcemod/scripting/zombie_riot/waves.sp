@@ -283,7 +283,7 @@ bool Waves_CallVote(int client, int force = 0)
 		}
 		else
 		{
-			menu.AddItem(NULL_STRING, vote.Name, ITEMDRAW_DISABLED);
+			menu.AddItem(NULL_STRING, vote.Name, ITEMDRAW_SPACER);
 		}
 
 		bool levels = CvarLeveling.BoolValue;
@@ -1261,17 +1261,14 @@ public Action Waves_EndVote(Handle timer, float time)
 					}
 				}
 
-				if(high2 != -1 && votes[high1])
+				if(high2 != -1 && votes[high2])
 				{
-					if(high2 != -1)
+					high1 = votes[high2];
+					for(int i = length - 1; i >= 0; i--)
 					{
-						high1 = votes[high2];
-						for(int i = length - 1; i >= 0; i--)
+						if(votes[i] < high1)
 						{
-							if(votes[i] < high1)
-							{
-								list.Erase(i);
-							}
+							list.Erase(i);
 						}
 					}
 
