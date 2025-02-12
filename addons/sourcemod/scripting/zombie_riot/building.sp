@@ -284,7 +284,7 @@ static void BuildingMenu(int client)
 	else
 	{
 		menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
-		menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
+		menu.AddItem(buffer1, " \n", ITEMDRAW_DISABLED);
 	}
 
 	if(MenuSection[client] == -1)
