@@ -2354,12 +2354,14 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		return Plugin_Stop;
 	}
 
+	/*
+	//uncomment this and the other thing to reenable
 	bool update = false;
 	if(npc.m_flNorm_Attack_Throttle < GameTime)
 	{
 		npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
 		update = true;
-	}
+	}*/
 
 	npc.m_bAllowBackWalking = true;
 
@@ -2418,16 +2420,20 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
 
-	if(update)
+	//if(update)
 	{
-		float Dmg = Modify_Damage(-1, 15.0);
+		//extreme amounts of trolley
+		float Dmg = Modify_Damage(-1, 4.5);
 		Dmg *= (0.75-Logarithm(Ratio));
+		Dmg /= TickrateModify;	//since the damage is dealt every tick, make it so the dmg is modified by tickrate modif.
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;
 		Laser.Bonus_Damage = Dmg*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
+
+		//CPrintToChatAll("Damage: %f", Dmg);
 	}
 
 	float startPoint[3], endPoint[3];
