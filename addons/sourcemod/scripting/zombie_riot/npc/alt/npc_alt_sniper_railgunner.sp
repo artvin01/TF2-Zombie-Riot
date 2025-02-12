@@ -295,7 +295,7 @@ static void Internal_ClotThink(int iNPC)
 								{
 									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
-								if(ZR_GetWaveCount()<40)
+								if(Waves_GetRound()<40)
 								{
 									damage=20.0;
 								}
@@ -309,7 +309,7 @@ static void Internal_ClotThink(int iNPC)
 								{
 									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
-								if(ZR_GetWaveCount()<40)
+								if(Waves_GetRound()<40)
 								{
 									damage=25.0;
 								}

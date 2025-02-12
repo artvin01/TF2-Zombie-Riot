@@ -235,7 +235,7 @@ methodmap TwirlFollower < CClotBody
 	}
 	public int i_weapon_type()
 	{
-		int wave = ZR_GetWaveCount()+1;
+		int wave = Waves_GetRound()+1;
 
 		if(this.m_fbGunout)	//ranged
 		{

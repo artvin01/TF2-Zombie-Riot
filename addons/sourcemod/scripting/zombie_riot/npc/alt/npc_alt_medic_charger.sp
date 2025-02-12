@@ -293,7 +293,7 @@ static void Internal_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float dmg = 30.0;
-								if(ZR_GetWaveCount()>40)
+								if(Waves_GetRound()>40)
 								{
 									dmg=50.0;
 								}

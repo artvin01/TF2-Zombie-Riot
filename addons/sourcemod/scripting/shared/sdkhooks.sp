@@ -1937,6 +1937,9 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				// Trigger lastman
 				CheckAlivePlayers(_, victim);
 
+				if(Construction_Mode())
+					return Plugin_Changed;
+
 				// Die in Rogue, there's no lastman
 				return Rogue_NoLastman() ? Plugin_Changed : Plugin_Handled;
 			}

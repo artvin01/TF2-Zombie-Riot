@@ -286,7 +286,7 @@ methodmap GodAlaxios < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			RaidModeScaling = float(Waves_GetRound()+1);
 		}
 		
 		npc.Anger = false;

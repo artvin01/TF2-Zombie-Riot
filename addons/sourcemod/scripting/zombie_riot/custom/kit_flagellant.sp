@@ -755,7 +755,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	{
 		Rogue_OnAbilityUse(client, weapon);
 
-		int round = Rogue_GetRoundScale();
+		int round = Waves_GetRound();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		if(LastSepsis[client] != round || LastSepsisRaid[client] != raid)
 		{
@@ -813,7 +813,7 @@ public Action Flagellant_CheckSepsisTimer(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		if(LastSepsis[client] == Rogue_GetRoundScale() && LastSepsisRaid[client] == RaidbossIgnoreBuildingsLogic(1))
+		if(LastSepsis[client] == Waves_GetRound() && LastSepsisRaid[client] == RaidbossIgnoreBuildingsLogic(1))
 			return Plugin_Continue;
 
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
@@ -867,7 +867,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityHealth(client, health);
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
 
-		int round = Rogue_GetRoundScale();
+		int round = Waves_GetRound();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		GiveCompleteInvul(client, 1.5);
 		if(LastDeathDoor[client] != round || LastDeathDoorRaid[client] != raid)

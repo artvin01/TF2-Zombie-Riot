@@ -6,9 +6,6 @@
 #define STARTER_WEAPON_LEVEL	5
 #define MAX_TARGETS_HIT 10
 
-//#define ZR_ApplyKillEffects NPC_DeadEffects
-#define ZR_GetWaveCount Rogue_GetRoundScale
-
 #define MVM_CLASS_FLAG_NONE				0
 #define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
 #define MVM_CLASS_FLAG_SUPPORT			(1 << 1)	// Base Support
@@ -459,6 +456,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/mvm_hud.sp"
 #include "zombie_riot/steamworks.sp"
 #include "zombie_riot/zsclassic.sp"
+#include "zombie_riot/construction.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
@@ -512,7 +510,6 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
-#include "zombie_riot/custom/pets.sp"
 #include "zombie_riot/custom/coin_flip.sp"
 #include "zombie_riot/custom/weapon_manual_reload.sp"
 #include "zombie_riot/custom/weapon_super_star_shooter.sp"
@@ -610,38 +607,38 @@ void ZR_PluginStart()
 	
 
 	//any noob will eventually type these!!
-	RegConsoleCmd("sm_store", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_shop", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_market", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_zmarket", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_weapons", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_walmart", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_tesco", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_buy", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_guns", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_gun", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_givegun", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_giveweapons", Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_cmd", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_cmds", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_commands", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_wear", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_wearme", 		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_zr", 			Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_lidlnord", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_lidlsüd", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_kaufland", 	Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_ikea",		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_zabka",		Access_StoreViaCommand, "Please Press TAB instead");
-	RegConsoleCmd("sm_penny",		Access_StoreViaCommand, "Please Press TAB instead");
+	RegConsoleCmd("sm_store", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_shop", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_market", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_zmarket", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_weapons", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_walmart", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_tesco", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_buy", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_guns", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_gun", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_givegun", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_giveweapons", Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_cmd", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_cmds", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_commands", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_wear", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_wearme", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_zr", 			Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_lidlnord", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_lidlsüd", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_kaufland", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_ikea",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_zabka",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_penny",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
@@ -667,6 +664,7 @@ void ZR_PluginStart()
 //		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
+	Construction_PluginStart();
 	Database_PluginStart();
 	Items_PluginStart();
 	Medigun_PluginStart();
@@ -710,6 +708,7 @@ void ZR_MapStart()
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
+	Construction_MapStart();
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
@@ -913,9 +912,8 @@ void ZR_MapStart()
 
 public void OnMapInit()
 {
-#if defined ZR
 	OnMapInit_ZR();
-#endif
+
 	//nerf full health kits
 	char classname[64];
 	int length = EntityLump.Length();
@@ -1020,7 +1018,7 @@ void ZR_ClientDisconnect(int client)
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
 	DataBase_ClientDisconnect(client);
-	Pets_ClientDisconnect(client);
+	Building_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Vehicle_Exit(client, true, false);
 	Reset_stats_Irene_Singular(client);
@@ -1200,6 +1198,7 @@ public Action Command_AFK(int client, int args)
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);
+		Queue_ClientDisconnect(client);
 	}
 	return Plugin_Handled;
 }
@@ -1767,8 +1766,7 @@ void CheckLastMannStanding(int killed)
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
-	bool rogue = Rogue_Mode();
-	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
+	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
 		LastMann_BeforeLastman = false;
@@ -2021,6 +2019,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			Bob_Exists_Index = -1;
 		}
 
+		bool rogue = Rogue_Mode();
 		if(rogue)
 			rogue = !Rogue_BattleLost();
 	

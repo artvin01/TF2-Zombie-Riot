@@ -60,18 +60,11 @@ static const char g_IntroSounds[][] =
 	"misc/rd_spaceship01.wav",
 };
 
-static bool b_ClientHasAncientBanner[MAXENTITIES];
-static bool b_EntityRecievedBuff[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 int GetRandomSeedEachWave;
 
 #define GULN_DEBUFF_RANGE 500.0
 
-void FallenWarriorEntityCreated(int entity)
-{
-	b_ClientHasAncientBanner[entity] = false;
-	b_EntityRecievedBuff[entity] = false;
-}
 
 void FallenWarriorGetRandomSeedEachWave()
 {
@@ -130,17 +123,17 @@ static char[] GetPanzerHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 3;
@@ -293,7 +286,7 @@ methodmap FallenWarrior < CClotBody
 			i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "m_vecAbsOrigin", {50.0,-200.0,0.0}));
 		}
 
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 
@@ -571,7 +564,6 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 	}
 	if(RaidbossIgnoreBuildingsLogic(1))
 	{
-		CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		return Plugin_Stop;
 	}
 	int RandomSeed = pack.ReadCell();
@@ -586,14 +578,12 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 		pack.Position++;				// StayOneMoreWave -> Team
 		if(StayOneMoreWave < 1)
 		{
-			CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 			return Plugin_Stop;	
 		}
 	}
 	int Team = pack.ReadCell();
 	if(Team != TFTeam_Red && Waves_InSetup())
 	{
-		CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		return Plugin_Stop;
 	}
 
@@ -604,11 +594,6 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-public Action Timer_FallenWarrior_ClearDebuffs(Handle timer)
-{
-	FallenWarrior_ApplyDebuffInLocation({0.0,0.0,0.0}, 0);
-	return Plugin_Stop;
-}
 
 void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, float distance)
 {
@@ -699,128 +684,6 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 		}
 	}
 }
-/*
-	type:
-	1: client
-	2: entity
-*/
-
-static void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
-{
-	if(type == 1)
-	{
-		int i, weapon;
-		while(TF2_GetItem(entity, weapon, i))
-		{
-			if(!b_EntityRecievedBuff[weapon])
-			{
-				if(GrantBuff)
-				{
-					b_EntityRecievedBuff[weapon] = true;
-					if(Attributes_Has(weapon, 6))
-						Attributes_SetMulti(weapon, 6, buffammount);	// Fire Rate
-					
-					if(Attributes_Has(weapon, 97))
-						Attributes_SetMulti(weapon, 97, buffammount);	// Reload Time
-					
-					if(Attributes_Has(weapon, 8))
-						Attributes_SetMulti(weapon, 8, buffammount2);	// Heal Rate
-				}
-			}
-			else
-			{
-				if(!GrantBuff)
-				{
-					if(b_EntityRecievedBuff[weapon])
-					{
-						b_EntityRecievedBuff[weapon] = false;
-						if(Attributes_Has(weapon, 6))
-							Attributes_SetMulti(weapon, 6, 1.0 / buffammount);	// Fire Rate
-						
-						if(Attributes_Has(weapon, 97))
-							Attributes_SetMulti(weapon, 97, 1.0 / buffammount);	// Reload Time
-						
-						if(Attributes_Has(weapon, 8))
-							Attributes_SetMulti(weapon, 8, 1.0 / buffammount2);	// Heal Rate
-					}
-				}
-			}
-		}
-	}
-	else if(type == 2)
-	{
-		char npc_classname[60];
-		NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-		if(StrEqual(npc_classname, "npc_citizen"))
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			if(!b_EntityRecievedBuff[entity])
-			{
-				if(GrantBuff)
-				{
-					b_EntityRecievedBuff[entity] = true;
-					npc.m_fGunFirerate *= buffammount;
-					npc.m_fGunReload *= buffammount;
-				}
-			}
-			else
-			{
-				if(!GrantBuff)
-				{
-					b_EntityRecievedBuff[entity] = false;
-					npc.m_fGunFirerate /= buffammount;
-					npc.m_fGunReload /= buffammount;
-				}
-			}
-		}
-		else if(entity > MaxClients)
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)
-			{
-				if(!b_EntityRecievedBuff[entity])
-				{
-					if(GrantBuff)
-					{
-						b_EntityRecievedBuff[entity] = true;
-						npc.BonusFireRate *= buffammount;
-					}
-				}
-				else
-				{
-					if(!GrantBuff)
-					{
-						b_EntityRecievedBuff[entity] = false;
-						npc.BonusFireRate /= buffammount;
-					}
-				}
-			}
-			else
-			{
-				buffammount *= 0.75;
-				buffammount2 *= 1.75;
-				if(!b_EntityRecievedBuff[entity])
-				{
-					if(GrantBuff)
-					{
-						b_EntityRecievedBuff[entity] = true;
-						fl_Extra_Damage[entity] *= buffammount2;
-					}
-				}
-				else
-				{
-					if(!GrantBuff)
-					{
-						b_EntityRecievedBuff[entity] = false;
-						fl_Extra_Damage[entity] /= buffammount2;
-					}
-				}
-			}
-		}
-	}
-}
-
-
 
 void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 {
@@ -832,7 +695,7 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 			GetClientAbsOrigin(ally, targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
 			{
-				ApplyStatusEffect(ally, ally, "Heavy Presence", 0.5);
+				ApplyStatusEffect(ally, ally, "Heavy Presence", 1.0);
 			}
 		}
 	}
@@ -844,37 +707,7 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
 			{
-				ApplyStatusEffect(ally, ally, "Heavy Presence", 0.5);
-			}
-		}
-	}
-	
-	for(int ally=1; ally<=MaxClients; ally++)
-	{
-		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) != Team)
-		{
-			if(HasSpecificBuff(ally, "Heavy Presence"))
-			{
-				ModifyEntityAncientBuff(ally, 1, 1.5, true, 0.5);
-			}
-			else
-			{
-				ModifyEntityAncientBuff(ally, 1, 1.5, false, 0.5);
-			}
-		}
-	}
-	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != Team)
-		{
-			if(HasSpecificBuff(ally, "Heavy Presence"))
-			{
-				ModifyEntityAncientBuff(ally, 2, 1.5, true, 0.5);
-			}
-			else
-			{
-				ModifyEntityAncientBuff(ally, 2, 1.5, false, 0.5);
+				ApplyStatusEffect(ally, ally, "Heavy Presence", 1.0);
 			}
 		}
 	}

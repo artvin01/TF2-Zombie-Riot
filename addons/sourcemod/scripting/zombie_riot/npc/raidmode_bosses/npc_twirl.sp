@@ -653,7 +653,7 @@ methodmap Twirl < CClotBody
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
-		int wave = ZR_GetWaveCount()+1;
+		int wave = Waves_GetRound()+1;
 
 		if(StrContains(data, "force15") != -1)
 			wave = 15;
@@ -756,7 +756,7 @@ methodmap Twirl < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			RaidModeScaling = float(Waves_GetRound()+1);
 		}
 		
 		if(RaidModeScaling < 55)

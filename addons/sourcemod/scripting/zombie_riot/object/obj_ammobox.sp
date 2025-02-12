@@ -14,6 +14,14 @@ void ObjectAmmobox_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_ammobox");
+	build.Cost = 600;
+	build.Health = 50;
+	build.Cooldown = 20.0;
+	build.Func = ObjectGeneric_CanBuild;
+	Building_Add(build);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])

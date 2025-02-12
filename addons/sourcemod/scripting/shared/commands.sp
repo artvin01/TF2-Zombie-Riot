@@ -265,8 +265,6 @@ public Action OnTaunt(int client, const char[] command, int args)
 	{
 		return Plugin_Handled;
 	}
-	
-	Pets_OnTaunt(client);
 #endif
 	return Plugin_Continue;
 }

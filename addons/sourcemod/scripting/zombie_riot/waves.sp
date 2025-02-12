@@ -176,11 +176,14 @@ void Waves_PluginStart()
 
 bool Waves_InFreeplay()
 {
-	return (!Rogue_Mode() && Rounds && CurrentRound >= Rounds.Length);
+	return (!Rogue_Mode() && !Construction_Mode() && Rounds && CurrentRound >= Rounds.Length);
 }
 
 bool Waves_InSetup()
 {
+	if(Construction_Mode())
+		return Construction_InSetup();
+	
 	if(Rogue_Mode())
 		return Rogue_InSetup();
 	
@@ -240,12 +243,12 @@ public Action Waves_SetWaveCmd(int client, int args)
 
 bool Waves_InVote()
 {
-	return (Rogue_Mode() || Voting || VotingMods);
+	return (Rogue_Mode() || Construction_Mode() || Voting || VotingMods);
 }
 
 public Action Waves_RevoteCmd(int client, int args)
 {
-	if(Rogue_Mode())
+	if(Rogue_Mode() || Construction_Mode())
 	{
 		Rogue_RevoteCmd(client);
 	}
@@ -264,7 +267,7 @@ public Action Waves_RevoteCmd(int client, int args)
 
 bool Waves_CallVote(int client, int force = 0)
 {
-	if(Rogue_Mode())
+	if(Rogue_Mode() || Construction_Mode())
 		return Rogue_CallVote(client);
 	
 	if((Voting || VotingMods) && (force || !VotedFor[client]))
@@ -549,6 +552,17 @@ void Waves_SetupVote(KeyValues map)
 	
 	StartCash = kv.GetNum("cash", 700);
 
+	// Construction Gamemode
+	if(map && kv.GetNum("construction"))
+	{
+		Construction_SetupVote(kv);
+
+		if(kv != map)
+			delete kv;
+		
+		return;
+	}
+
 	// Rogue Gamemode
 	if(map && kv.GetNum("roguemode"))
 	{
@@ -668,7 +682,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 		MiniBosses = null;
 	}
 	
-	if(CvarNoSpecialZombieSpawn.BoolValue || Rogue_Mode())
+	if(CvarNoSpecialZombieSpawn.BoolValue || Rogue_Mode() || Construction_Mode())
 		return;
 	
 	KeyValues kv = map;
@@ -1106,7 +1120,7 @@ void Waves_RoundStart(bool event = false)
 
 	Kit_Fractal_ResetRound();
 	
-	if(Rogue_Mode())
+	if(Construction_Mode() || Rogue_Mode())
 	{
 		
 	}
@@ -1174,7 +1188,11 @@ void Waves_RoundStart(bool event = false)
 		}
 	}
 
-	if(Rogue_Mode())
+	if(Construction_Mode())
+	{
+		Construction_StartSetup();
+	}
+	else if(Rogue_Mode())
 	{
 		Rogue_StartSetup();
 	}
@@ -1191,7 +1209,7 @@ void Waves_RoundEnd()
 	CurrentWave = -1;
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
 
-	if(Rogue_Mode())
+	if(Rogue_Mode() || Construction_Mode())
 		delete Rounds;
 }
 
@@ -1457,7 +1475,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	int length = Rounds.Length-1;
 	bool panzer_spawn = false;
 	bool panzer_sound = false;
-	bool rogue = Rogue_Mode();
+	bool subgame = (Rogue_Mode() || Construction_Mode());
 	static int panzer_chance;
 	bool GiveAmmoSupplies = true;
 
@@ -1810,7 +1828,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			
 			//always increace chance of miniboss.
-			if(!rogue && CurrentRound >= 12)
+			if(!subgame && CurrentRound >= 12)
 			{
 				int count;
 				int i = MaxClients + 1;
@@ -1824,7 +1842,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
-			if(!rogue && ((!Classic_Mode() && CurrentRound == 4) || (Classic_Mode() && CurrentRound == 1)) && !round.NoBarney)
+			if(!subgame && ((!Classic_Mode() && CurrentRound == 4) || (Classic_Mode() && CurrentRound == 1)) && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 				Citizen_SpawnAtPoint();
@@ -1861,7 +1879,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				panzer_sound = false;
 			}
 
-			if(rogue) //disable
+			if(subgame) //disable
 			{
 				panzer_spawn = false;
 				panzer_sound = false;
@@ -2008,7 +2026,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ExcuteRelay("zr_setuptime");
 				ExcuteRelay("zr_victory");
 				
-				if(!rogue)
+				if(!subgame)
 				{
 					Cooldown = GetGameTime() + 30.0;
 					
@@ -2024,7 +2042,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
 						Music_Stop_All(i);
-						if(!rogue)
+						if(!subgame)
 						{
 							SendConVarValue(i, sv_cheats, "1");
 						}
@@ -2039,7 +2057,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 
-				if(!rogue)
+				if(!subgame || Construction_FinalBattle())
 				{
 					ResetReplications();
 					cvarTimeScale.SetFloat(0.1);
@@ -2094,9 +2112,16 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				
 				RemoveAllCustomMusic();
 
-				if(rogue)
+				if(subgame)
 				{
-					Rogue_BattleVictory();
+					if(Construction_Mode())
+					{
+						Construction_BattleVictory();
+					}
+					else if(Rogue_Mode())
+					{
+						Rogue_BattleVictory();
+					}
 				}
 
 				Citizen_SetupStart();
@@ -2147,7 +2172,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Store_RandomizeNPCStore(0, _, true);
 		}
 	}
-	else if(Rogue_Mode())
+	else if(subgame)
 	{
 		PrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
 		CurrentRound = 0;
@@ -2169,7 +2194,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			return;
 		}
 	}
-	if(CurrentRound == 0 && !Rogue_Mode())
+	if(CurrentRound == 0 && !subgame)
 	{
 		if(StartCash < 1500)
 		{
@@ -2189,7 +2214,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		CheckIfAloneOnServer();
 		Ammo_Count_Ready += 1;
 
-	//	if(!Classic_Mode())
+		if(!Construction_Mode())
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
@@ -2205,7 +2230,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
 
-	//	if(!Classic_Mode())
+		if(!Construction_Mode())
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
@@ -2389,6 +2414,9 @@ void Waves_ClearWaveCurrentSpawningEnemies()
 
 bool Waves_Started()
 {
+	if(Construction_Mode())
+		return Construction_Started();
+	
 	if(Rogue_Mode())
 		return Rogue_Started();
 	
@@ -2397,23 +2425,28 @@ bool Waves_Started()
 
 int Waves_GetRound()
 {
+	if(Construction_Mode())
+		return Construction_GetRound();
+	
 	if(Rogue_Mode())
 		return Rogue_GetRound();
 	
+	if(Waves_InFreeplay())
+	{
+		int RoundGive = CurrentRound;
+		if(RoundGive < 60)
+		{
+			RoundGive = 60; //should atleast always be treated as round 60.
+		}
+		return RoundGive;
+	}
+
 	return CurrentRound;
 }
 
 int Waves_GetMaxRound()
 {
 	return FakeMaxWaves ? FakeMaxWaves : (Rounds.Length-1);
-}
-
-public int Waves_GetWave()
-{
-	if(Rogue_Mode())
-		return Rogue_GetWave();
-	
-	return CurrentWave;
 }
 
 float GetWaveSetupCooldown()
@@ -2461,7 +2494,6 @@ void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 
 void WaveEndLogicExtra()
 {
-	Building_WaveEnd();
 	SeaFounder_ClearnNethersea();
 	VoidArea_ClearnNethersea();
 	M3_AbilitiesWaveEnd();
@@ -2507,7 +2539,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(!Waves_Started() || InSetup || Classic_Mode())
+	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_Mode())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -2687,10 +2719,10 @@ void DoGlobalMultiScaling()
 	{
 		PlayerCountBuffAttackspeedScaling = 1.2;
 	}
-	//Shouldnt be lower then 0.1
-	if(PlayerCountBuffAttackspeedScaling < 0.1)
+	//Shouldnt be lower then 0.35
+	if(PlayerCountBuffAttackspeedScaling < 0.35)
 	{
-		PlayerCountBuffAttackspeedScaling = 0.1;
+		PlayerCountBuffAttackspeedScaling = 0.35;
 	}
 
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
@@ -2733,6 +2765,9 @@ static void UpdateMvMStatsFrame()
 	//profiler.Start();
 
 	UpdateFramed = false;
+
+	if(Construction_UpdateMvMStats())
+		return;
 
 	if(Rogue_UpdateMvMStats())
 		return;
@@ -3594,7 +3629,7 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 		}
 
 		// Note: Artvin remove this, this is freeplay code
-		if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
+		if(Freeplay_ShouldMiniBoss() && !subgame) //no miniboss during roguelikes.
 		{
 			panzer_spawn = true;
 			NPC_SpawnNext(panzer_spawn, true);

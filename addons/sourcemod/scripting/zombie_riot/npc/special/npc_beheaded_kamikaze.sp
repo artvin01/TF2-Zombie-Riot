@@ -49,29 +49,29 @@ static char[] GetBeheadedKamiKazeHealth()
 	int health = 15;
 	int health_after;
 	
-	if(ZR_GetWaveCount()+1 <= 30)
+	if(Waves_GetRound()+1 <= 30)
 	{
-		health_after = ((ZR_GetWaveCount()+1) * health);
+		health_after = ((Waves_GetRound()+1) * health);
 	}
-	else if(ZR_GetWaveCount()+1 <= 45)
+	else if(Waves_GetRound()+1 <= 45)
 	{
-		health_after = ((ZR_GetWaveCount()+1) * health) * 2;
+		health_after = ((Waves_GetRound()+1) * health) * 2;
 	}
-	else if(ZR_GetWaveCount()+1 <= 50)
+	else if(Waves_GetRound()+1 <= 50)
 	{
-		health_after = ((ZR_GetWaveCount()+1) * health) * 4;
+		health_after = ((Waves_GetRound()+1) * health) * 4;
 	}
-	else if(ZR_GetWaveCount()+1 <= 55)
+	else if(Waves_GetRound()+1 <= 55)
 	{
-		health_after = ((ZR_GetWaveCount()+1) * health) * 8;
+		health_after = ((Waves_GetRound()+1) * health) * 8;
 	}
-	else if(ZR_GetWaveCount()+1 <= 60)
+	else if(Waves_GetRound()+1 <= 60)
 	{
-		health_after = ((ZR_GetWaveCount()+1) * health) * 10;
+		health_after = ((Waves_GetRound()+1) * health) * 10;
 	}
 	else
 	{
-		health_after = ((ZR_GetWaveCount()+1) * health) * 12;
+		health_after = ((Waves_GetRound()+1) * health) * 12;
 	}
 	char buffer[16];
 	IntToString(health_after, buffer, sizeof(buffer));
@@ -134,7 +134,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		float wave = float(ZR_GetWaveCount()+1); //Wave scaling
+		float wave = float(Waves_GetRound()+1); //Wave scaling
 		
 		wave *= 0.1;
 

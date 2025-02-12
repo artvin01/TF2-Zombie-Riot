@@ -382,12 +382,15 @@ void Rogue_MapStart()
 	Rogue_Dome_Mapstart();
 }
 
-void Rogue_SetupVote(KeyValues kv)
+void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
 {
-	PrecacheSound("misc/halloween/gotohell.wav");
-	PrecacheSound("music/stingers/hl1_stinger_song28.mp3");
+	if(!artifactOnly)
+	{
+		PrecacheSound("misc/halloween/gotohell.wav");
+		PrecacheSound("music/stingers/hl1_stinger_song28.mp3");
 
-	InRogueMode = true;
+		InRogueMode = true;
+	}
 
 	Zero(VotedFor);
 
@@ -409,8 +412,11 @@ void Rogue_SetupVote(KeyValues kv)
 	if(!VoteTimer)
 		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
-	kv.Rewind();
-	kv.JumpToKey("Rogue");
+	if(!artifactOnly)
+	{
+		kv.Rewind();
+		kv.JumpToKey("Rogue");
+	}
 
 	RogueTheme = kv.GetNum("roguestyle");
 
@@ -432,11 +438,15 @@ void Rogue_SetupVote(KeyValues kv)
 		delete Floors;
 	}
 
-	Curses = new ArrayList(sizeof(Curse));
-	Artifacts = new ArrayList(sizeof(Artifact));
-	Floors = new ArrayList(sizeof(Floor));
+	if(!artifactOnly)
+	{
+		Curses = new ArrayList(sizeof(Curse));
+		Floors = new ArrayList(sizeof(Floor));
+	}
 
-	if(kv.JumpToKey("Curses"))
+	Artifacts = new ArrayList(sizeof(Artifact));
+
+	if(!artifactOnly && kv.JumpToKey("Curses"))
 	{
 		if(kv.GotoFirstSubKey(false))
 		{
@@ -474,7 +484,7 @@ void Rogue_SetupVote(KeyValues kv)
 		kv.GoBack();
 	}
 
-	if(kv.JumpToKey("Floors"))
+	if(!artifactOnly && kv.JumpToKey("Floors"))
 	{
 		if(kv.GotoFirstSubKey())
 		{
@@ -510,17 +520,21 @@ void Rogue_SetupVote(KeyValues kv)
 		kv.GoBack();
 	}
 
-	SteamWorks_UpdateGameTitle();
-	
-	for(int client=1; client<=MaxClients; client++)
+	if(!artifactOnly)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) > 1)
+		SteamWorks_UpdateGameTitle();
+		
+		for(int client=1; client<=MaxClients; client++)
 		{
-			Waves_RoundStart();
-			break;
+			if(IsClientInGame(client) && GetClientTeam(client) > 1)
+			{
+				Waves_RoundStart();
+				break;
+			}
 		}
+
+		Waves_SetReadyStatus(2);
 	}
-	Waves_SetReadyStatus(2);
 }
 
 void Rogue_RevoteCmd(int client)	// Waves_RevoteCmd
@@ -697,7 +711,6 @@ static void DisplayHintVote()
 	}
 }
 
-
 void Rogue_StartSetup()	// Waves_RoundStart()
 {
 	Rogue_RoundEnd();
@@ -770,7 +783,7 @@ void Rogue_RoundEnd()
 		delete list;
 	}
 	
-	StartingItem[0] = 0;
+	//StartingItem[0] = 0;
 	
 	if(CurseOne != -1)
 	{
@@ -865,7 +878,18 @@ public Action Rogue_RoundStartTimer(Handle timer)
 		{
 			PrintToChatAll("zr_noroundstart is enabled");
 		}
-		else
+		else if(Construction_Mode())
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client) == 2 && !IsFakeClient(client))
+				{
+					Construction_Start();
+					return Plugin_Stop;
+				}
+			}
+		}
+		else if(InRogueMode)
 		{
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -875,6 +899,10 @@ public Action Rogue_RoundStartTimer(Handle timer)
 					return Plugin_Stop;
 				}
 			}
+		}
+		else
+		{
+			PrintToChatAll("ERROR: Unknown custom gametype");
 		}
 	}
 
@@ -952,21 +980,24 @@ void Rogue_BattleVictory()
 		Rogue_AddIngots(BattleIngots);
 	}
 
-	//tiny compensation
-	int chaos = RoundToFloor(BattleChaos);
-	chaos -= 2;
-	if(chaos < 0)
-		chaos = 0;
-
-	if(chaos > 15)
-		chaos = 15;
-		
-	if(chaos > 0)
+	if(RogueTheme == BlueParadox)
 	{
-		BattleChaos -= float(chaos);
-		Rogue_AddChaos(chaos);
+		//tiny compensation
+		int chaos = RoundToFloor(BattleChaos);
+		chaos -= 2;
+		if(chaos < 0)
+			chaos = 0;
+
+		if(chaos > 15)
+			chaos = 15;
+			
+		if(chaos > 0)
+		{
+			BattleChaos -= float(chaos);
+			Rogue_AddChaos(chaos);
+		}
+		Rogue_ParadoxDLC_Flawless(chaos);
 	}
-	Rogue_ParadoxDLC_Flawless(chaos);
 
 	if(CurrentType)
 	{
@@ -2022,6 +2053,11 @@ void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 		SpawnTimer(time);
 }
 
+bool Rogue_ArtifactEnabled()
+{
+	return view_as<bool>(Artifacts);
+}
+
 void Rogue_ArtifactMenu(int client, int page)
 {
 	Menu menu = new Menu(Rogue_ArtifactMenuH);
@@ -2545,43 +2581,12 @@ bool Rogue_Started()	// Waves_Started()
 
 int Rogue_GetRound()	// Waves_GetRound()
 {
-	return ProgressTimer ? CurrentFloor : CurrentRound;
+	return (CurrentFloor * 15) + (CurrentCount * 2);
 }
 
 int Rogue_GetFloor()
 {
 	return CurrentFloor;
-}
-
-int Rogue_GetWave()	// Waves_GetWave()
-{
-	return ProgressTimer ? CurrentCount : CurrentWave;
-}
-/*
-int Rogue_GetCount()
-{
-	return CurrentCount;
-}
-*/
-int Rogue_GetRoundScale()
-{
-	if(Rogue_Started())
-	{
-		return (CurrentFloor * 15) + (CurrentCount * 2);
-	}
-	else if(Waves_InFreeplay())
-	{
-		int RoundGive = CurrentRound;
-		if(RoundGive < 60)
-		{
-			RoundGive = 60; //should atleast always be treated as round 60.
-		}
-		return RoundGive;
-	}
-	else
-	{
-		return CurrentRound;
-	}
 }
 
 void Rogue_AddExtraStage(int count)

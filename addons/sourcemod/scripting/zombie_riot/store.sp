@@ -1611,7 +1611,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = 0;
 					}
 					item.RogueBoughtRecently[client] += 1;
-					item.BuyWave[client] = Rogue_GetRoundScale();
+					item.BuyWave[client] = Waves_GetRound();
 					if(info.NoRefundWanted)
 					{
 						item.BuyWave[client] = -1;
@@ -3597,7 +3597,7 @@ static void MenuPage(int client, int section)
 			menu.AddItem("-22", buffer);
 		}
 
-		if(Rogue_Mode())
+		if(Rogue_ArtifactEnabled())
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Collected Artifacts");
 			menu.AddItem("-24", buffer);
@@ -4276,7 +4276,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 										item.BuyPrice[client] = 0;
 										item.Sell[client] = 0;
 									}
-									item.BuyWave[client] = Rogue_GetRoundScale();
+									item.BuyWave[client] = Waves_GetRound();
 									item.Equipped[client] = false;
 
 									if(item.GregOnlySell == 2)
@@ -4336,7 +4336,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = info.Cost;
 									item.RogueBoughtRecently[client] += 1;
 									item.Sell[client] = ItemSell(base, info.Cost);
-									item.BuyWave[client] = Rogue_GetRoundScale();
+									item.BuyWave[client] = Waves_GetRound();
 									if(item.GregOnlySell == 2)
 									{
 										item.Sell[client] = 0;
@@ -4390,7 +4390,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = Rogue_GetRoundScale();
+								item.BuyWave[client] = Waves_GetRound();
 								if(item.GregOnlySell == 2)
 								{
 									item.Sell[client] = 0;
@@ -4517,7 +4517,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.GetItemInfo(level, info);
 
 								int sell = item.Sell[client];
-								if(item.BuyWave[client] == Rogue_GetRoundScale())
+								if(item.BuyWave[client] == Waves_GetRound())
 									sell = item.BuyPrice[client];
 								
 								if(sell) //make sure it even can be sold.
@@ -5246,7 +5246,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_Reinforce[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
-	BannerOnEntityCreated(client);
 	FullmoonEarlyReset(client);
 
 	if(!i_ClientHasCustomGearEquipped[client])
@@ -6362,7 +6361,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * Rogue_GetRoundScale();
+	cost += item.CostPerWave * Waves_GetRound();
 
 	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 	{

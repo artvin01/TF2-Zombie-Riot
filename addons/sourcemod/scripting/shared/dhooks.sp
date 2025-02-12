@@ -1561,8 +1561,15 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	if(Rogue_BlueParadox_CanTeutonUpdate(client) && Classic_CanTeutonUpdate(client, IsRespawning))
-		TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
+	if(Construction_InSetup())
+	{
+		TeutonType[client] = TEUTON_NONE;
+	}
+	else
+	{
+		if(Rogue_BlueParadox_CanTeutonUpdate(client) && Classic_CanTeutonUpdate(client, IsRespawning))
+			TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
+	}
 #endif
 
 #if !defined RTS
@@ -1595,6 +1602,9 @@ public MRESReturn DHook_ForceRespawn(int client)
 	}
 	
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
+
+	if(Construction_InSetup())
+		return MRES_Ignored;
 #endif
 	
 	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -1870,8 +1880,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			SetGlobalTransTarget(owner);
 			PrintHintText(owner,"%N %t", target, "Is already at full hp");
 			
-			ApplyStatusEffect(owner, owner, 	"Healing Strength", 5.0);
-			ApplyStatusEffect(owner, target, 	"Healing Strength", 15.0);
 			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
 			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 		}
@@ -1894,8 +1902,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 				
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			SetAmmo(owner, 21, new_ammo);
-			ApplyStatusEffect(owner, owner, 	"Healing Strength", 5.0);
-			ApplyStatusEffect(owner, target, 	"Healing Strength", 15.0);
 			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
 			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 			for(int i; i<Ammo_MAX; i++)

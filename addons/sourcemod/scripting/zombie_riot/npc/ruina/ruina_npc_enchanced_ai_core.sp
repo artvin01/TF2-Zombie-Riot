@@ -555,7 +555,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	if(b_is_battery_buffed[npc.index] && fl_ruina_battery_timer[npc.index] > GameTime)
 		return;
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = Waves_GetRound()+1;
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{
@@ -1396,7 +1396,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = Waves_GetRound()+1;
 
 	float 	dmg 		= 250.0,
 			time 		= 2.5,		//how long until it goes boom
@@ -1492,8 +1492,7 @@ static void Apply_Sickness(int iNPC, int Target)
 }
 void Ruina_Color(int color[4], int wave = -1)
 {
-	if(wave == -1)
-		wave = ZR_GetWaveCount()+1;
+	int wave = Waves_GetRound()+1;
 	if(wave<=15)
 	{
 		color 	= {255, 0, 0, 255};

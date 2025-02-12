@@ -112,7 +112,6 @@ bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
 
 #define FAR_FUTURE	100000000.0
-#define MAXENTITIES	2048
 //double for 100 player support????
 
 #define	HIDEHUD_WEAPONSELECTION		( 1<<0 )	// Hide ammo count & weapon selection
@@ -809,7 +808,6 @@ public void OnPluginStart()
 	SyncHud_WandMana = CreateHudSynchronizer();
 #if defined ZR
 	ZR_PluginStart();
-	Building_PluginStart();
 #endif
 	
 #if defined RPG
@@ -1884,7 +1882,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 {
 #if defined ZR
 	SemiAutoWeapon(client, buttons);
-	Pets_PlayerRunCmdPost(client, buttons, angles);
 #endif
 
 #if defined RPG
@@ -2359,8 +2356,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Mlynar_EntityCreated(entity);
 		Board_EntityCreated(entity);
 
-		BannerOnEntityCreated(entity);
-		FallenWarriorEntityCreated(entity);
 		Elemental_ClearDamage(entity);
 #endif
 

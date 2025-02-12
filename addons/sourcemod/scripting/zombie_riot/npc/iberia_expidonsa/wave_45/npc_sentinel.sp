@@ -291,13 +291,13 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	}
 	/*
 	float hittimes = 0;
-	if(ZR_GetWaveCount()+1 >= 15)
+	if(Waves_GetRound()+1 >= 15)
 		hittimes = 25;
-	if(ZR_GetWaveCount()+1 >= 30)
+	if(Waves_GetRound()+1 >= 30)
 		hittimes = 20;
-	if(ZR_GetWaveCount()+1 >= 45)
+	if(Waves_GetRound()+1 >= 45)
 		hittimes = 15;
-	if(ZR_GetWaveCount()+1 >= 55)
+	if(Waves_GetRound()+1 >= 55)
 		hittimes = 10;
 	*/
 	
@@ -421,7 +421,6 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 						ApplyStatusEffect(npc.index, entitycount, "Buff Banner", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "False Therapy", DurationGive);
-						ApplyStatusEffect(npc.index, entitycount, "Healing Strength", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Self Empowerment", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Ally Empowerment", DurationGive);
