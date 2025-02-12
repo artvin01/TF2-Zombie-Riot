@@ -328,6 +328,7 @@ float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 float ResourceRegenMulti;
+bool Barracks_InstaResearchEverything;
 bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
@@ -910,6 +911,38 @@ void ZR_MapStart()
 	//Store_RandomizeNPCStore(1);
 }
 
+public void OnMapInit()
+{
+#if defined ZR
+	OnMapInit_ZR();
+#endif
+	//nerf full health kits
+	char classname[64];
+	int length = EntityLump.Length();
+	for(int i; i < length; i++)
+	{
+		EntityLumpEntry entry = EntityLump.Get(i);
+		
+		int key = entry.FindKey("classname");
+		if(key != -1)
+		{
+			entry.Get(key, _, _, classname, sizeof(classname));
+			if(!StrContains(classname, "item_healthkit_full"))
+			{
+				entry.Update(key, NULL_STRING, "item_healthkit_medium");
+			}
+			else if(!StrContains(classname, "tf_logic_arena")
+			 || !StrContains(classname, "tf_logic_arena")
+			  || !StrContains(classname, "trigger_capture_area"))
+			{
+				EntityLump.Erase(i);
+				i--;
+				length--;
+			}
+		}
+	}
+}
+
 public Action GlobalTimer(Handle timer)
 {
 	for(int client=1; client<=MaxClients; client++)
@@ -1023,7 +1056,7 @@ void ZR_ClientDisconnect(int client)
 	//reeset to 0
 }
 
-public void OnMapInit()
+public void OnMapInit_ZR()
 {
 	bool mvm;
 

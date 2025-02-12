@@ -78,7 +78,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 			DrainShield = false;
 		
 		if((ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
-			DrainShield = true;
+			DrainShield = false;
 		
 		if(!CheckInHud() && DrainShield)
 		{

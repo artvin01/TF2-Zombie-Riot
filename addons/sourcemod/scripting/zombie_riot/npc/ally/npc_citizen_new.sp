@@ -4171,7 +4171,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(!walkStatus || isReviving)
 	{
 		if(npc.m_flidle_talk == 0.0)
-			npc.m_flidle_talk = gameTime + 5.0 + (GetURandomFloat() * 5.0) + (float(npc.m_iSeed) / 214748364.7);
+			npc.m_flidle_talk = gameTime + 10.0 + (GetURandomFloat() * 10.0) + (float(npc.m_iSeed) / 214748364.7);
 		
 		/*
 		if(isReviving)

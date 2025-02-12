@@ -280,6 +280,21 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 			damage *= percentage;
 		}
 	}
+
+	{
+		int vehicle = Vehicle_Driver(victim);
+		if(vehicle != -1)
+		{
+			// Driver
+			damage *= 0.5;
+
+			if(!(damagetype & DMG_TRUEDAMAGE) && Vehicle_Driver(vehicle) != victim)
+			{
+				// Passenger
+				damage *= 0.2;
+			}
+		}
+	}
 #endif	// ZR
 	
 #if defined RPG

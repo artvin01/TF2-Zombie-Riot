@@ -230,6 +230,7 @@ methodmap JohnTheAllmighty < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 		npc.m_bDissapearOnDeath = true;
+		npc.m_iHealthBar = 10;
 
 		func_NPCDeath[npc.index] = view_as<Function>(JohnTheAllmighty_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(JohnTheAllmighty_OnTakeDamage);
@@ -358,6 +359,9 @@ public void JohnTheAllmighty_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 
+	if(EntIndexToEntRef(entity) == RaidBossActive)
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -540,6 +544,7 @@ public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int infl
 	{
 		SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 		CPrintToChatAll("{crimson}John The Almighty {default}: OH NUTS! I left my oven on! Bye!");
+		CPrintToChatAll("{green}He also left behind his wallet and drops you an extra cash.");
 		npc.m_iActualHealth = 9999999;
 		for(int client = 1; client <= MaxClients; client++)
 		{

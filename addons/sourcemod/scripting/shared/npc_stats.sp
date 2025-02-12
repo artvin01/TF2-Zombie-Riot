@@ -85,6 +85,7 @@ Function func_NPCFuncWin[MAXENTITIES];
 Function func_NPCAnimEvent[MAXENTITIES];
 Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
+Function FuncShowInteractHud[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -1663,6 +1664,23 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iHealthBar
+	{
+		public get()		 
+		{ 
+			if(!b_ThisWasAnNpc[this.index])
+				return 0;
+				
+			return this.GetProp(Prop_Data, "m_iHealthBar");
+		}
+		public set(int iInt) 
+		{
+			if(!b_ThisWasAnNpc[this.index])
+				return;
+
+			this.SetProp(Prop_Data, "m_iHealthBar", iInt); 
+		}
+	}
 	property int m_iTeamGlow
 	{
 		public get()		 
@@ -2503,6 +2521,12 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 		
+		if(i_IsVehicle[target])
+		{
+			// Vehicle hitboxes
+			return this.DoAimbotTrace(trace, target, vecSwingMaxs, vecSwingMins, vecSwingStartOffset);
+		}
+		
 		float eyePitch[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 		
@@ -2511,7 +2535,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		WorldSpaceCenter(target, vecTarget);
 		if(target <= MaxClients)
 			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
-
+		
 		WorldSpaceCenter(this.index, vecForward);
 		MakeVectorFromPoints(vecForward, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
@@ -3260,6 +3284,7 @@ public void NPC_Base_InitGamedata()
 		//Sergeant Ideal Shield Netprops
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
+		.DefineIntField("m_iHealthBar")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -3272,6 +3297,7 @@ public void NPC_Base_InitGamedata()
 		//Sergeant Ideal Shield Netprops
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
+		.DefineIntField("m_iHealthBar")
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
@@ -6381,6 +6407,39 @@ stock void Custom_Knockback(int attacker,
 	}
 	if(i_IsNpcType[enemy] == 1)
 		return;
+	
+#if defined ZR
+	bool forceOut = (PullDuration != 0.0 || knockback > 500.0);
+	if(i_IsVehicle[enemy])
+	{
+		// Pull the driver instead of the vehicle
+		if(forceOut && i_IsVehicle[enemy] == 2)
+		{
+			int driver = Vehicle_Driver(enemy);
+			if(driver != -1)
+			{
+				enemy = driver;
+				Vehicle_Exit(enemy, false);
+			}
+		}
+	}
+	else
+	{
+		// Push the vehicle instead of the driver
+		int vehicle = Vehicle_Driver(enemy);
+		if(vehicle != -1)
+		{
+			if(forceOut && i_IsVehicle[vehicle] == 2)
+			{
+				Vehicle_Exit(enemy, false);
+			}
+			else
+			{
+				enemy = vehicle;
+			}
+		}
+	}
+#endif
 
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
@@ -8334,6 +8393,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCAnimEvent[entity] = INVALID_FUNCTION;
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
+	FuncShowInteractHud[entity] = INVALID_FUNCTION;
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {

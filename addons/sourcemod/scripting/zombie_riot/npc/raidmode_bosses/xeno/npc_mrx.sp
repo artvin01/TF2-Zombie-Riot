@@ -591,6 +591,17 @@ public void RaidbossMrX_ClotThink(int iNPC)
 						NPC_StopPathing(npc.index);
 						f_NpcTurnPenalty[npc.index] = 0.0;
 					}
+
+					if(i_IsVehicle[Enemy_I_See] == 2)
+					{
+						int driver = Vehicle_Driver(Enemy_I_See);
+						if(driver != -1)
+						{
+							Enemy_I_See = driver;
+							Vehicle_Exit(driver, false);
+						}
+					}
+					
 					npc.m_flNextRangedAttackHappening = 0.0;
 					npc.m_flDoingAnimation = gameTime + 5.0;
 					npc.flXenoInfectedSpecialHurtTime = gameTime + 5.0;

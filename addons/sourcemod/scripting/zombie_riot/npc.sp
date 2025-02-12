@@ -86,6 +86,13 @@ void NPC_ConfigSetup()
 
 	// Vehicles
 	VehicleHL2_Setup();
+	VehicleFullJeep_Setup();
+	VehicleAmbulance_Setup();
+	VehicleBus_Setup();
+	VehicleCamper_Setup();
+	VehicleDumpTruck_Setup();
+	VehicleLandrover_Setup();
+	VehiclePickup_Setup();
 	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -863,6 +870,8 @@ void NPC_ConfigSetup()
 	Victorian_Tacticalunit_OnMapStart_NPC();
 	Victorian_TacticalProtector_OnMapStart_NPC();
 
+
+	BossSummonRandom_OnMapStart_NPC();
 	//Combine Mutation
 	OmegaRaid_OnMapStart_NPC();
 	LostKnight_OnMapStart_NPC();
@@ -1184,6 +1193,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 // VEHICLES
 #include "shared/vehicles/vehicle_shared.sp"
 #include "shared/vehicles/vehicle_hl2.sp"
+#include "zombie_riot/vehicles/vehicle_fulljeep.sp"
+#include "zombie_riot/vehicles/vehicle_ambulance.sp"
+#include "zombie_riot/vehicles/vehicle_bus.sp"
+#include "zombie_riot/vehicles/vehicle_camper.sp"
+#include "zombie_riot/vehicles/vehicle_dumptruck.sp"
+#include "zombie_riot/vehicles/vehicle_landrover.sp"
+#include "zombie_riot/vehicles/vehicle_pickup.sp"
 
 //NORMAL
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -1776,6 +1792,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/truesurvival/npc_sphynx.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zombine.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zmain_headcrabzombie.sp"
+#include "zombie_riot/npc/mutations/randomboss/npc_boss_battle_only.sp"
 
 
 

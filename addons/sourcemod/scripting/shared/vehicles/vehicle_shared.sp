@@ -4,6 +4,8 @@
 // https://github.com/Mikusch/source-vehicles
 // https://github.com/ficool2/vscript_vehicle
 
+#define VEHICLE_MAX_SEATS	9
+
 enum VehicleType
 {
 	VEHICLE_TYPE_CAR_WHEELS = (1 << 0),	// hl2_jeep
@@ -28,10 +30,7 @@ methodmap VehicleGeneric < CClotBody
 		DispatchSpawn(obj);
 
 		i_IsVehicle[obj] = 2;
-		i_TargetToWalkTo[obj] = -1;
-		fl_NextRunTime[obj] = GetGameTime(obj) + 1.0;
-		view_as<CClotBody>(obj).bCantCollidieAlly = true;
-		b_IsAProjectile[obj] = true;
+		NPCStats_SetFuncsToZero(obj);
 
 		SDKHook(obj, SDKHook_Think, VehicleThink);
 		SDKHook(obj, SDKHook_OnTakeDamage, VehicleTakeDamage);
@@ -49,18 +48,20 @@ methodmap VehicleGeneric < CClotBody
 			SetEntPropEnt(this.index, Prop_Data, "m_hPlayer2", entity);
 		}
 	}
-	property float m_flNextInteractAt
+	property bool m_bNoAttack
 	{
 		public get()
 		{
-			return GetEntPropFloat(this.index, Prop_Data, "m_flNextInteract");
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bNoAttack"));
 		}
-		public set(float time)
+		public set(bool value)
 		{
-			SetEntPropFloat(this.index, Prop_Data, "m_flNextInteract", time);
+			SetEntProp(this.index, Prop_Data, "m_bNoAttack", value);
 		}
 	}
 }
+
+static bool DoneSoundScript;
 
 void Vehicle_PluginStart()
 {
@@ -68,11 +69,38 @@ void Vehicle_PluginStart()
 	factory.DeriveFromClass("prop_vehicle_driveable");
 	factory.BeginDataMapDesc()
 	.DefineEntityField("m_hPlayer2")
-	.DefineFloatField("m_flNextInteract")
+	.DefineBoolField("m_bNoAttack")
+	.DefineEntityField("m_hSeatEntity", VEHICLE_MAX_SEATS)
+	.DefineVectorField("m_vecSeatPos", VEHICLE_MAX_SEATS)
 	.EndDataMapDesc();
 	factory.Install();
 
 	RegAdminCmd("sm_remove_vehicles", RemoveVehicleCmd, ADMFLAG_RCON, "Deletes all obj_vehicle entities");
+	RegAdminCmd("sm_seat_offset", SeatOffsetCmd, ADMFLAG_RCON, "Set the offset of your vehicle seat");
+}
+
+void Vehicle_MapEnd()
+{
+	DoneSoundScript = false;
+}
+
+void Vehicle_PrecacheSounds()
+{
+	if(DoneSoundScript)
+		return;
+	
+	DoneSoundScript = true;
+	if(LibraryExists("LoadSoundscript"))
+	{
+		char soundname[256];
+		SoundScript soundscript = LoadSoundScript("scripts/game_sounds_vehicles.txt");
+		for(int i = 0; i < soundscript.Count; i++)
+		{
+			SoundEntry entry = soundscript.GetSound(i);
+			entry.GetName(soundname, sizeof(soundname));
+			PrecacheScriptSound(soundname);
+		}
+	}
 }
 
 static Action RemoveVehicleCmd(int client, int args)
@@ -81,6 +109,38 @@ static Action RemoveVehicleCmd(int client, int args)
 	while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
 	{
 		RemoveEntity(entity);
+	}
+
+	return Plugin_Handled;
+}
+
+static Action SeatOffsetCmd(int client, int args)
+{
+	if(args != 3)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_seat_offset <x> <y> <z>");
+	}
+	else
+	{
+		int vehicle = Vehicle_Driver(client);
+		if(vehicle == -1)
+		{
+			ReplyToCommand(client, "[SM] Enter a vehicle first");
+		}
+		else
+		{
+			float pos1[3], pos2[3];
+			GetEntPropVector(vehicle, Prop_Data, "m_vecOrigin", pos1);
+			pos2[0] = GetCmdArgFloat(1);
+			pos2[1] = GetCmdArgFloat(2);
+			pos2[2] = GetCmdArgFloat(3);
+			
+			AcceptEntityInput(client, "ClearParent");
+			TeleportEntity(client, pos1, _, {0.0, 0.0, 0.0});
+			SetParent(vehicle, client, "root", pos2);
+
+			ReplyToCommand(client, "%f %f %f", pos2[0], pos2[1], pos2[2]);
+		}
 	}
 
 	return Plugin_Handled;
@@ -112,36 +172,111 @@ static void OnDestroy(int entity)
 		RemoveEntity(obj.m_iWearable5);
 }
 
+// If target is a vehicle, returns the driver or passenger with the higher priority, -1 if none
+// If target is a user, returns the vehicle currently on, -1 if none
 int Vehicle_Driver(int target)
 {
 	if(i_IsVehicle[target] == 2)
-		return view_as<VehicleGeneric>(target).m_hDriver;
+	{
+		int driver = view_as<VehicleGeneric>(target).m_hDriver;
+		if(driver == -1)
+		{
+			for(int i; i < VEHICLE_MAX_SEATS; i++)
+			{
+				int passenger = GetEntPropEnt(target, Prop_Data, "m_hSeatEntity", i);
+				if(passenger != -1)
+					return passenger;
+			}
+		}
+
+		return driver;
+	}
 	
 	if(i_IsVehicle[target])
 		return GetEntPropEnt(target, Prop_Data, "m_hPlayer");
 	
 	for(int entity = MaxClients + 1; entity < sizeof(i_IsVehicle); entity++)
 	{
-		if(i_IsVehicle[entity])
+		if(i_IsVehicle[entity] && IsValidEntity(entity))
 		{
-			if(Vehicle_Driver(entity) == target)
+			int driver = view_as<VehicleGeneric>(entity).m_hDriver;
+			if(driver == target)
 				return entity;
+			
+			for(int i; i < VEHICLE_MAX_SEATS; i++)
+			{
+				driver = GetEntPropEnt(entity, Prop_Data, "m_hSeatEntity", i);
+				if(driver == target)
+					return entity;
+			}
 		}
 	}
 
 	return -1;
 }
 
-bool Vehicle_Interact(int client, int entity)
+bool Vehicle_ShowInteractHud(int client, int entity)
+{
+	VehicleGeneric obj = view_as<VehicleGeneric>(entity);
+
+	bool space;
+	if(obj.m_hDriver == -1)
+	{
+		space = true;
+	}
+	else
+	{
+		// Passenger Seat
+		float pos[3];
+		for(int i; i < VEHICLE_MAX_SEATS; i++)
+		{
+			GetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", pos, i);
+			if(pos[0] && GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i) == -1)
+			{
+				space = true;
+				break;
+			}
+		}
+	}
+
+	if(!space)
+		return false;
+	
+	Function func = FuncShowInteractHud[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		bool result;
+
+		Call_StartFunction(null, FuncShowInteractHud[entity]);
+		Call_PushCell(entity);
+		Call_PushCell(client);
+		Call_Finish(result);
+		
+		if(result)
+			return true;
+	}
+
+	SetGlobalTransTarget(client);
+	PrintCenterText(client, "%t", "Enter this vehicle");
+	return space;
+}
+
+bool Vehicle_Interact(int client, int weapon, int entity)
 {
 	int vehicle = Vehicle_Driver(client);
 	if(vehicle != -1)
 	{
 		static float forceOutTime[MAXTF2PLAYERS];
 
-		if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
+		if(view_as<VehicleGeneric>(vehicle).m_hDriver == -1)
 		{
-			Vehicle_Exit(vehicle, false);
+			// Driver is out, I'll take the wheel!
+			AcceptEntityInput(client, "ClearParent");
+			SwitchToDriver(view_as<VehicleGeneric>(vehicle), client);
+		}
+		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
+		{
+			Vehicle_Exit(client, false);
 		}
 		else
 		{
@@ -154,117 +289,190 @@ bool Vehicle_Interact(int client, int entity)
 	if(TeutonType[client] != TEUTON_NONE || dieingstate[client] || entity == -1 || i_IsVehicle[entity] != 2)
 		return false;
 	
-	VehicleGeneric obj = view_as<VehicleGeneric>(entity);
+	Function func = func_NPCInteract[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		bool result;
 
-	if(obj.m_hDriver != -1 || obj.m_flNextInteractAt > GetGameTime(obj.index))
-		return false;
-	
-	Vehicle_Enter(obj.index, client);
-	return true;
+		Call_StartFunction(null, func);
+		Call_PushCell(client);
+		Call_PushCell(weapon);
+		Call_PushCell(entity);
+		Call_Finish(result);
+
+		if(result)
+			return true;
+	}
+
+	return Vehicle_Enter(entity, client);
 }
 
-void Vehicle_Enter(int vehicle, int target)
+bool Vehicle_Enter(int vehicle, int target)
 {
 	VehicleGeneric obj = view_as<VehicleGeneric>(vehicle);
 
-	int driver = obj.m_hDriver;
-	if(driver == -1)
+	float pos1[3];
+	int index = -2;
+
+	if(obj.m_hDriver == -1)
 	{
-		SetEntityCollisionGroup(target, COLLISION_GROUP_IN_VEHICLE);
-		SetEntityMoveType(target, MOVETYPE_NONE);
-		
-		float pos[3], ang[3];
-		if(!obj.GetAttachment("vehicle_driver_eyes", pos, ang))
-			GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
-		
-		pos[2] -= 64.0;
-		TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
-		
-		SetParent(obj.index, target);
-		
-		if(target > 0 && target <= MaxClients)
-		{
-			SetEntityFlags(target, GetEntityFlags(target) & ~(FL_DUCKING));
-			SetEntProp(target, Prop_Send, "m_nAirDucked", 8);
-			SetEntProp(target, Prop_Data, "deadflag", true);
-			SetVariantString("self.AddCustomAttribute(\"no_duck\", 1, -1)");
-			AcceptEntityInput(target, "RunScriptCode");
-		}
-
-		AcceptEntityInput(obj.index, "TurnOn");
-		obj.m_flNextInteractAt = GetGameTime(obj.index) + 1.0;
-		obj.m_hDriver = target;
-	}
-}
-
-// Should be called in PlayerSpawn, PlayerDeath, and ClientDisconnect
-void Vehicle_Exit(int target, bool killed, bool teleport = true)
-{
-	if(i_IsVehicle[target] == 2)
-	{
-		VehicleGeneric obj = view_as<VehicleGeneric>(target);
-
-		int driver = obj.m_hDriver;
-		if(driver != -1)
-		{
-			AcceptEntityInput(driver, "ClearParent");
-
-			float pos[3], ang[3], vel[3];
-			if(driver > 0 && driver <= MaxClients)
-			{
-				if(!killed)
-					SetEntProp(driver, Prop_Data, "deadflag", false);
-
-				GetEntPropVector(driver, Prop_Send, "m_vecOrigin", pos);
-				pos[2] += 8.0;
-
-				GetClientEyeAngles(driver, ang);
-				ang[2] = 0.0;
-			}
-			else
-			{
-				GetEntPropVector(driver, Prop_Data, "m_vecOrigin", pos);
-				pos[2] += 8.0;
-			}
-			
-			if(driver > 0 && driver <= MaxClients)
-			{
-				SetEntityCollisionGroup(driver, COLLISION_GROUP_PLAYER);
-				SetEntityMoveType(driver, MOVETYPE_WALK);
-				
-				SetVariantString("self.RemoveCustomAttribute(\"no_duck\")");
-				AcceptEntityInput(driver, "RunScriptCode");
-				//SetEntProp(driver, Prop_Send, "m_bDucked", true);
-				//SetEntityFlags(driver, GetEntityFlags(driver)|FL_DUCKING);
-			}
-
-			if(teleport)
-			{
-				CanExit(obj.index, pos, ang);
-				GetEntPropVector(obj.index, Prop_Data, "m_vecVelocity", vel);
-				TeleportEntity(driver, pos, ang, vel);
-			}
-
-			obj.m_hDriver = -1;
-		}
-
-		SetEntPropFloat(obj.index, Prop_Data, "m_controls.steering", 0.0);
-		SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
-		
-		obj.m_flNextInteractAt = GetGameTime(obj.index) + 1.0;
+		// Driver Seat
+		index = -1;
 	}
 	else
 	{
-		int entity = -1;
-		while((entity = FindEntityByClassname(entity, "obj_vehicle")) != -1)
+		// Passenger Seat
+		for(int i; i < VEHICLE_MAX_SEATS; i++)
 		{
-			VehicleGeneric obj = view_as<VehicleGeneric>(entity);
-			if(obj.m_hDriver == target)
+			GetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", pos1, i);
+			if(pos1[0] && GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i) == -1)
 			{
-				Vehicle_Exit(entity, false);
-				return;
+				index = i;
+				break;
 			}
 		}
+	}
+	
+	if(index == -2)
+		return false;
+	
+	SetEntityCollisionGroup(target, COLLISION_GROUP_IN_VEHICLE);
+	SetEntityMoveType(target, MOVETYPE_NONE);
+
+	if(index == -1)
+	{
+		SwitchToDriver(obj, target);
+	}
+	else
+	{
+		float pos2[3];
+		GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos1);
+		GetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", pos2, index);
+
+		TeleportEntity(target, pos1, _, {0.0, 0.0, 0.0});
+		SetParent(obj.index, target, "root", pos2);
+
+		SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", target, index);
+	}
+	
+	if(target > 0 && target <= MaxClients)
+	{
+		/*SetEntityFlags(target, GetEntityFlags(target) & ~(FL_DUCKING));
+		SetEntProp(target, Prop_Send, "m_nAirDucked", 8);
+		SetEntProp(target, Prop_Data, "deadflag", true);
+		SetVariantString("self.AddCustomAttribute(\"no_duck\", 1, -1)");
+		AcceptEntityInput(target, "RunScriptCode");*/
+		ForcePlayerCrouch(target, true, false);
+	}
+	return true;
+}
+
+static void SwitchToDriver(VehicleGeneric obj, int target)
+{
+	float pos[3];
+	GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
+	TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
+	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -36.0});
+	
+	AcceptEntityInput(obj.index, "TurnOn");
+	obj.m_hDriver = target;
+}
+
+// Should be called in PlayerSpawn, PlayerDeath, and ClientDisconnect
+// If target is a vehicle, kicks all players out
+// If target is a user, kicks that player out
+// Returns true if something happened
+bool Vehicle_Exit(int target, bool killed, bool teleport = true)
+{
+	bool found;
+
+	if(i_IsVehicle[target] == 2)
+	{
+		int entity = -1;
+		while((entity = Vehicle_Driver(target)) != -1)
+		{
+			ExitVehicle(target, entity, killed, teleport);
+			found = true;
+		}
+	}
+	else
+	{
+		int entity = Vehicle_Driver(target);
+		if(entity != -1)
+		{
+			ExitVehicle(entity, target, killed, teleport);
+			found = true;
+		}
+	}
+	
+	return found;
+}
+
+static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
+{
+	VehicleGeneric obj = view_as<VehicleGeneric>(vehicle);
+
+	bool wasDriver;
+
+	if(obj.m_hDriver == target)
+	{
+		obj.m_hDriver = -1;
+		wasDriver = true;
+	}
+	else
+	{
+		for(int i; i < VEHICLE_MAX_SEATS; i++)
+		{
+			int passenger = GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i);
+			if(passenger == target)
+			{
+				SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", -1, i);
+				break;
+			}
+		}
+	}
+
+	AcceptEntityInput(target, "ClearParent");
+
+	float pos[3], ang[3], vel[3];
+	if(target > 0 && target <= MaxClients)
+	{
+		if(!killed)
+			SetEntProp(target, Prop_Data, "deadflag", false);
+
+		GetEntPropVector(target, Prop_Send, "m_vecOrigin", pos);
+		pos[2] += 8.0;
+
+		GetClientEyeAngles(target, ang);
+	}
+	else
+	{
+		GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+		pos[2] += 8.0;
+	}
+	
+	if(target > 0 && target <= MaxClients)
+	{
+		SetEntityCollisionGroup(target, COLLISION_GROUP_PLAYER);
+		SetEntityMoveType(target, MOVETYPE_WALK);
+		
+		/*SetVariantString("self.RemoveCustomAttribute(\"no_duck\")");
+		AcceptEntityInput(target, "RunScriptCode");*/
+		ForcePlayerCrouch(target, false);
+	}
+
+	if(teleport)
+	{
+		CanExit(obj.index, pos, ang);
+		GetEntPropVector(obj.index, Prop_Data, "m_vecVelocity", vel);
+		ang[2] = 0.0;
+		TeleportEntity(target, pos, ang, vel);
+	}
+
+	if(wasDriver)
+	{
+		SetEntPropFloat(obj.index, Prop_Data, "m_controls.steering", 0.0);
+		SetEntPropFloat(obj.index, Prop_Data, "m_controls.throttle", 0.0);
 	}
 }
 
@@ -328,12 +536,10 @@ static Action VehicleThink(int entity)
 
 static Action VehicleTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VehicleGeneric obj = view_as<VehicleGeneric>(victim);
-
 	if(damagetype & DMG_CRUSH)
 		return Plugin_Continue;
-
-	int driver = obj.m_hDriver;
+	
+	int driver = Vehicle_Driver(victim);
 	if(driver != -1)
 	{
 		// Redirect damage to the driver
@@ -365,7 +571,7 @@ static bool CheckExitPoint(float yaw, float distance, int vehicle, const float v
 
 static bool CanExit(int vehicle, float origin[3] = NULL_VECTOR, float angles[3] = NULL_VECTOR)
 {
-	static const float maxs[] = { 24.0, 24.0, 82.0 };
+	static const float maxs[] = { 24.0, 24.0, 63.0 };
 	static const float mins[] = { -24.0, -24.0, 0.0 };
 	
 	float vecStart[3];
