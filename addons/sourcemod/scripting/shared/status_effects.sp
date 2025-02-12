@@ -990,7 +990,6 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 	//LinkedStatusEffect
 	if(Apply_MasterStatusEffect.Positive)
 	{	
-		float DamageBuffExtraScaling = 1.0;
 		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[victim])
 		{
 			BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;
@@ -1007,8 +1006,7 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 			}
 			if(ScaleWithCount)
 			{
-				float BuffValueDo = MaxNumBuffValue(Apply_MasterStatusEffect.AttackspeedBuff, 1.0, PlayerCountBuffAttackspeedScaling);
-				BuffValueDo = Apply_MasterStatusEffect.AttackspeedBuff;
+				BuffAmount = MaxNumBuffValue(Apply_MasterStatusEffect.AttackspeedBuff, 1.0, PlayerCountBuffAttackspeedScaling);
 			}
 			else
 				BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;

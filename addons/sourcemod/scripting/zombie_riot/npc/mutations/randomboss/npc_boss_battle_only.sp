@@ -83,10 +83,10 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	char CharData[255];
 	
 	Format(CharData, sizeof(CharData), "sc%i;",i_RaidGrantExtra[bosssummonbase]);
-	int NumberRand = GetRandomInt(1,25);
+	int NumberRand = GetRandomInt(1,26);
 	while(PreviousRaid == NumberRand)
 	{
-		NumberRand = GetRandomInt(1,25);
+		NumberRand = GetRandomInt(1,26);
 	}
 	PreviousRaid = NumberRand;
 	switch(NumberRand)
@@ -288,18 +288,16 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
 		}
-		/*
-		case 25:
+		case 26:
 		{
 			
-			Hes very unbalanced for now, block. , cus of minions.
+			//Hes very unbalanced for now, block. , cus of minions.
 			PluginName = "npc_lelouch";	
 			
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
 			
 		}
-		*/
 		case 25:
 		{
 			PluginName = "npc_omega_raid";	
