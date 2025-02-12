@@ -16,6 +16,15 @@ void ObjectDecorative_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
+
+	BuildingInfo build;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_decorative");
+	build.Cost = 4;
+	build.Health = 50;
+	build.HealthScaleCost = true;
+	build.Cooldown = 10.0;
+	build.Func = ObjectDecorative_CanBuild;
+	Building_Add(build);
 }
 //This is a reclassification of the elevator.
 

@@ -45,6 +45,8 @@ void NPC_ConfigSetup()
 	f_FactionCreditGain = 0.0;
 	Zero(f_FactionCreditGainReduction);
 
+	Building_ConfigSetup();
+
 	delete NPCList;
 	NPCList = new ArrayList(sizeof(NPCData));
 
@@ -806,6 +808,9 @@ void NPC_ConfigSetup()
 	DuckFollower_Setup();
 	BobTheFirstFollower_Setup();
 	TwirlFollower_Setup();
+	
+	// Construction
+	BaseBuilding_MapStart();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -910,7 +915,7 @@ int NPC_Add(NPCData data)
 	return NPCList.PushArray(data);
 }
 
-int NPC_GetCount()
+stock int NPC_GetCount()
 {
 	return NPCList.Length;
 }
@@ -922,31 +927,37 @@ stock int NPC_GetNameById(int id, char[] buffer, int length)
 	return strcopy(buffer, length, data.Name);
 }
 
-int NPC_GetPluginById(int id, char[] buffer, int length)
+stock int NPC_GetNameByPlugin(const char[] name, char[] buffer, int length)
+{
+	int index = NPCList.FindString(name, NPCData::Plugin);
+	if(index == -1)
+		return 0;
+	
+	static NPCData data;
+	NPCList.GetArray(index, data);
+	return strcopy(buffer, length, data.Name);
+}
+
+stock int NPC_GetPluginById(int id, char[] buffer, int length)
 {
 	static NPCData data;
 	NPC_GetById(id, data);
 	return strcopy(buffer, length, data.Plugin);
 }
 
-void NPC_GetById(int id, NPCData data)
+stock void NPC_GetById(int id, NPCData data)
 {
 	NPCList.GetArray(id, data);
 }
 
-int NPC_GetByPlugin(const char[] plugin, NPCData data = {})
+stock int NPC_GetByPlugin(const char[] name, NPCData data = {})
 {
-	int length = NPCList.Length;
-	for(int i; i < length; i++)
-	{
-		NPCList.GetArray(i, data);
-		if(StrEqual(plugin, data.Plugin))
-		{
-			PrecacheNPC(i, data);
-			return i;
-		}
-	}
-	return -1;
+	int index = NPCList.FindString(name, NPCData::Plugin);
+	if(index == -1)
+		return 0;
+	
+	NPCList.GetArray(index, data);
+	return index;
 }
 
 static void PrecacheNPC(int i, NPCData data)
@@ -1981,3 +1992,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/freeplay/npc_immutableheavy.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_vanishingmatter.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_spotter.sp"
+
+#include "zombie_riot/npc/construction/npc_base_building.sp"

@@ -171,9 +171,9 @@ static void ClotThink(int iNPC)
 			RaidModeTime = GetGameTime() + 9000.0;
 			RaidModeScaling = 1.0;
 			RaidAllowsBuildings = true;
+			Waves_Progress();
 
 			CPrintToChatAll("{darkred}Wildingen Hitman{default}: {black}It's inside me");
-
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{

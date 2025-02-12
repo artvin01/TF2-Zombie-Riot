@@ -1561,8 +1561,15 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	if(Rogue_BlueParadox_CanTeutonUpdate(client) && Classic_CanTeutonUpdate(client, IsRespawning))
-		TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
+	if(Construction_InSetup())
+	{
+		TeutonType[client] = TEUTON_NONE;
+	}
+	else
+	{
+		if(Rogue_BlueParadox_CanTeutonUpdate(client) && Classic_CanTeutonUpdate(client, IsRespawning))
+			TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
+	}
 #endif
 
 #if !defined RTS
@@ -1595,6 +1602,9 @@ public MRESReturn DHook_ForceRespawn(int client)
 	}
 	
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
+
+	if(Construction_InSetup())
+		return MRES_Ignored;
 #endif
 	
 	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);

@@ -809,7 +809,6 @@ public void OnPluginStart()
 	SyncHud_WandMana = CreateHudSynchronizer();
 #if defined ZR
 	ZR_PluginStart();
-	Building_PluginStart();
 #endif
 	
 #if defined RPG
@@ -1884,7 +1883,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 {
 #if defined ZR
 	SemiAutoWeapon(client, buttons);
-	Pets_PlayerRunCmdPost(client, buttons, angles);
 #endif
 
 #if defined RPG

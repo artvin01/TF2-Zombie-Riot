@@ -16,6 +16,15 @@ void ObjectBarricade_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
+
+	BuildingInfo build;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_barricade");
+	build.Cost = 538;
+	build.Health = 420;
+	build.HealthScaleCost = true;
+	build.Cooldown = 15.0;
+	build.Func = ObjectBarricade_CanBuild;
+	Building_Add(build);
 }
 
 int ObjectBarricade_ID()

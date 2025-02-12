@@ -400,7 +400,7 @@ static void Internal_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							float damage = 45.0 * (1.0+(1-(Health/MaxHealth))*2);
-							if(ZR_GetWaveCount()<=45)
+							if(Waves_GetRound()<=45)
 							{
 								damage=damage/1.75;
 							}
@@ -476,7 +476,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) && ZR_GetWaveCount()>40 ) //npc.Anger after half hp/400 hp
+	if(((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) && Waves_GetRound()>40 ) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:( <- He is  very angy, but who wouldn't be, they literally lost half of there blood, id say if they weren't angry it would be a real surprise.
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");

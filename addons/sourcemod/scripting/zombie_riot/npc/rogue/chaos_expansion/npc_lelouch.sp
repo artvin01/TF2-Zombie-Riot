@@ -731,7 +731,7 @@ methodmap Lelouch < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			RaidModeScaling = float(Waves_GetRound()+1);
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();

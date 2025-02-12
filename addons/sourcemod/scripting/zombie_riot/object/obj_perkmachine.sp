@@ -15,6 +15,15 @@ void ObjectPerkMachine_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_perkmachine");
+	build.Cost = 1000;
+	build.Health = 50;
+	build.Cooldown = 60.0;
+	build.Func = ObjectGeneric_CanBuild;
+	Building_Add(build);
+
 	Zero(Perk_Machine_Sickness);
 }
 

@@ -169,7 +169,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		}
 	}
 
-	if(!Spawns_CanSpawnNext(Rogue_Mode()))
+	if(!Spawns_CanSpawnNext())
 		return;
 	
 	float pos[3], ang[3];

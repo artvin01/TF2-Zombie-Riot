@@ -387,7 +387,7 @@ methodmap Sensal < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			RaidModeScaling = float(Waves_GetRound()+1);
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -397,11 +397,11 @@ methodmap Sensal < CClotBody
 				RaidModeScaling *= 0.38;
 			}
 				
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+			if(Waves_GetRound()+1 > 40 && Waves_GetRound()+1 < 55)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(ZR_GetWaveCount()+1 > 55)
+			else if(Waves_GetRound()+1 > 55)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.65;

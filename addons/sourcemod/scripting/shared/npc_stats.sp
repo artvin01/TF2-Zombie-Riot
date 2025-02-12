@@ -239,13 +239,13 @@ void OnMapStart_NPC_Base()
 	PrecacheModel(ARROW_TRAIL_RED);
 	PrecacheDecal(ARROW_TRAIL_RED, true);
 
-	HookEntityOutput("trigger_multiple", "OnStartTouch", NPCStats_StartTouch);
-	HookEntityOutput("trigger_multiple", "OnEndTouch", NPCStats_EndTouch);
+	//HookEntityOutput("trigger_multiple", "OnStartTouch", NPCStats_StartTouch);
+	//HookEntityOutput("trigger_multiple", "OnEndTouch", NPCStats_EndTouch);
 
 	Zero(f_TimeSinceLastStunHit);
 //	Zero(b_EntityInCrouchSpot);
 //	Zero(b_NpcResizedForCrouch);
-	Zero(b_PlayerIsInAnotherPart);
+//	Zero(b_PlayerIsInAnotherPart);
 	Zero(b_EntityIsStairAbusing);
 	Zero(f_PredictDuration);
 	Zero(flNpcCreationTime);
@@ -284,6 +284,7 @@ Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType 
 	return DHookCreate(iOffset, hooktype, returntype, thistype, callback);
 }
 
+/*
 public Action NPCStats_StartTouch(const char[] output, int entity, int caller, float delay)
 {
 	if(caller > 0 && caller < MAXENTITIES)
@@ -291,12 +292,10 @@ public Action NPCStats_StartTouch(const char[] output, int entity, int caller, f
 		char name[32];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
-/*
 			if(StrEqual(name, "npc_crouch_simulation"))
 			{
 				b_EntityInCrouchSpot[caller] = true;
 			}
-*/
 			if(StrEqual(name, "zr_spawner_scaler"))
 			{
 				b_PlayerIsInAnotherPart[caller] = true;
@@ -318,12 +317,10 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 		char name[32];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
-/*
 			if(StrEqual(name, "npc_crouch_simulation"))
 			{
 				b_EntityInCrouchSpot[caller] = false;
 			}
-*/
 			if(StrEqual(name, "zr_spawner_scaler"))
 			{
 				b_PlayerIsInAnotherPart[caller] = false;
@@ -336,6 +333,7 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 	}
 	return Plugin_Continue;
 }
+*/
 #define NORMAL_NPC 0
 #define STATIONARY_NPC 1
 

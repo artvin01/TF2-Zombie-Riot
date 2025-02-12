@@ -8,7 +8,7 @@ void Natives_PluginLoad()
 {
 	CreateNative("ZR_ApplyKillEffects", Native_ApplyKillEffects);
 	CreateNative("ZR_GetLevelCount", Native_GetLevelCount);
-	CreateNative("ZR_GetWaveCount", Native_GetWaveCounts);
+	CreateNative("Waves_GetRound", Native_GetWaveCounts);
 	CreateNative("ZR_HasNamedItem", Native_HasNamedItem);
 	CreateNative("ZR_GiveNamedItem", Native_GiveNamedItem);
 	CreateNative("ZR_GetAliveStatus", Native_GetAliveStatus);

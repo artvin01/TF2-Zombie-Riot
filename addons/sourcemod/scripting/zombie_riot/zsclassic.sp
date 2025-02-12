@@ -27,8 +27,6 @@ void Classic_Enable()
 
 void Classic_NewRoundStart(int cash)
 {
-	//todo: Put it in wave CFG instead, too lazy rn
-	cash = RoundToCeil(float(cash) * 1.05);
 	CashTotal = cash;
 	CashLeft = cash;
 }

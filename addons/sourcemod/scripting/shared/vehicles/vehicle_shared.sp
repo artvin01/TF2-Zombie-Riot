@@ -372,7 +372,7 @@ static void SwitchToDriver(VehicleGeneric obj, int target)
 	float pos[3];
 	GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
 	TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
-	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -36.0});
+	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -40.0});
 	
 	AcceptEntityInput(obj.index, "TurnOn");
 	obj.m_hDriver = target;
