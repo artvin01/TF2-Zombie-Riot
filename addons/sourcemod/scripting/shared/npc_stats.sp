@@ -6439,7 +6439,7 @@ stock void Custom_Knockback(int attacker,
 			if(driver != -1)
 			{
 				enemy = driver;
-				Vehicle_Exit(enemy, false);
+				Vehicle_Exit(enemy);
 			}
 		}
 	}
@@ -6451,7 +6451,7 @@ stock void Custom_Knockback(int attacker,
 		{
 			if(forceOut && i_IsVehicle[vehicle] == 2)
 			{
-				Vehicle_Exit(enemy, false);
+				Vehicle_Exit(enemy);
 			}
 			else
 			{
