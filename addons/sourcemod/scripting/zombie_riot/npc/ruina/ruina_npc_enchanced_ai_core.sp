@@ -1490,9 +1490,10 @@ static void Apply_Sickness(int iNPC, int Target)
 
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }
-void Ruina_Color(int color[4])
+void Ruina_Color(int color[4], int wave = -1)
 {
-	int wave = ZR_GetWaveCount()+1;
+	if(wave == -1)
+		wave = ZR_GetWaveCount()+1;
 	if(wave<=15)
 	{
 		color 	= {255, 0, 0, 255};

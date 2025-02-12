@@ -310,7 +310,7 @@ methodmap Twirl < CClotBody
 	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time)
 	{
 		int color[4]; 
-		Ruina_Color(color);
+		Ruina_Color(color, i_current_wave[this.index]);
 
 		float Thickness = 6.0;
 		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
@@ -1513,7 +1513,7 @@ static void lunar_Radiance(Twirl npc)
 		i_lunar_entities[npc.index][0] = EntIndexToEntRef(ent1);
 		i_lunar_entities[npc.index][1] = EntIndexToEntRef(ent2);
 		int color[4];
-		Ruina_Color(color);
+		Ruina_Color(color, i_current_wave[npc.index]);
 		int laser = ConnectWithBeamClient(ent1, ent2, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM);
 		if(IsValidEntity(laser))
 		{
@@ -2008,7 +2008,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);
 	float Thickness = 15.0;
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup-0.75), Thickness, 1.5, color, 1, 0);
 	TE_SendToAll();
 	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_radius*2.0, fl_cosmic_gaze_radius*2.0+0.1, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup-0.75), Thickness, 1.5, color, 1, 0);
@@ -2115,7 +2115,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 			float TE_Duration = 0.1;
 
-			int color[4]; Ruina_Color(color);
+			int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
 			float Offset_Loc[3];
 			Get_Fake_Forward_Vec(100.0, Angles, Offset_Loc, flPos);
@@ -2201,7 +2201,7 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		i_explosion_core[client] = EntIndexToEntRef(create_center);
 	}
 
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[client]);
 
 	float Time = 0.25;
 	float Thickness = 10.0;
@@ -2270,7 +2270,7 @@ static Action Delayed_Explosion(Handle Timer, DataPack data)
 	{
 		int Beam_Index = g_Ruina_BEAM_Diamond;	
 
-		int color[4]; Ruina_Color(color);
+		int color[4]; Ruina_Color(color, i_current_wave[iNPC]);
 
 		int create_center = Ruina_Create_Entity(Loc, 1.0, true);
 
@@ -2408,7 +2408,7 @@ static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed,
 				amp = 0.25;
 	
 		int color[4];
-		Ruina_Color(color);
+		Ruina_Color(color, i_current_wave[iNPC]);
 		Twirl npc = view_as<Twirl>(iNPC);
 		int beam = ConnectWithBeamClient(npc.m_iWearable1, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
 		i_laser_entity[Proj] = EntIndexToEntRef(beam);
@@ -2787,7 +2787,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 	float TE_Duration = 0.1;
 	float EndLoc[3]; EndLoc = Laser.End_Point;
 
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
 	float Offset_Loc[3];
 	Get_Fake_Forward_Vec(100.0, Angles, Offset_Loc, flPos);
@@ -2931,7 +2931,7 @@ static bool Magia_Overflow(Twirl npc)
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	int color[4]; 
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	float Thickness = 6.0;
 	VecSelfNpc[2]-=2.5;
 	//create a ring around twirl showing the radius for her special "if you're near me, my laser turns faster"
@@ -3060,7 +3060,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 	float TE_Duration = TWIRL_TE_DURATION;
 	float EndLoc[3]; EndLoc = Laser.End_Point;
 
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 	if(i_current_wave[npc.index] >=60)
 	{
 		color[0] = 0;
@@ -3258,7 +3258,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 		int color[4]; 
-		Ruina_Color(color);
+		Ruina_Color(color, i_current_wave[npc.index]);
 		float Radius = 350.0;
 		float Thickness = 6.0;
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);

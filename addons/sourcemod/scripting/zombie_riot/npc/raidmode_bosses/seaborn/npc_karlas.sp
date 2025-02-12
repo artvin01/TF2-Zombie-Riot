@@ -1694,7 +1694,7 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 
 			npc_Loc[2]+=10.0;
 			int color[4];
-			Ruina_Color(color);
+			Ruina_Color(color, i_current_wave[npc.index]);
 			TE_SetupBeamRingPoint(npc_Loc, 250.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, 12.0, 0.75, color, 1, 0);
 			TE_SendToAll();
 
@@ -1863,7 +1863,7 @@ static void Karlas_Teleport_Boom(Karlas npc, float Location[3])
 	if(npc.Anger)
 		radius *= 1.25;	
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 
 	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
@@ -1913,7 +1913,7 @@ static Action Karlas_Ring_Loops(Handle Loop, DataPack pack)
 	if(npc.Anger)
 		radius *= 1.25;	
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 
 	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 1.0, 30.0, 0.1, color, 1, 0);
@@ -1950,7 +1950,7 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 	float damage = 200.0*RaidModeScaling;	//very deadly!
 	float radius = KARLAS_TELEPORT_STRIKE_RADIUS;
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 	int loop_for = 15;		//15
 	float height = 1500.0;	//1500
