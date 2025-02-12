@@ -1,40 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool b_EntitiesHasKritzkrieg[MAXENTITIES] = {false};
-static float Kritzkrieg_Buff2[MAXENTITIES];
-static float Kritzkrieg_Buff3[MAXENTITIES];
 //static Handle OC_Timer = null;
-
-bool KritzkriegBuffOnline(int client)
-{
-	if(HasSpecificBuff(client, "Weapon Overclock"))
-	{
-		if(HasSpecificBuff(client, "Weapon Overclock Detect"))
-		{
-			if(IsValidClient(client))
-				ModifyKritzkriegBuff(client, 1, 0.7, true, 5.0, 2.0);
-			else 
-				ModifyKritzkriegBuff(client, 2, 0.7, true, 5.0, 2.0);
-
-			return true;
-		}
-		else
-		{
-			if(IsValidClient(client)) 
-				ModifyKritzkriegBuff(client, 1, 0.7, false, 5.0, 2.0);
-			else 
-				ModifyKritzkriegBuff(client, 2, 0.7, false, 5.0, 2.0);
-
-			return false;
-		}
-	}
-	return false;
-}
 
 public void Kritzkrieg_OnMapStart()
 {
-	Zero(b_EntitiesHasKritzkrieg);
 	HookEvent("player_chargedeployed", OnKritzkriegDeployed);
 }
 
@@ -82,19 +52,16 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 
 	if(IsValidClient(target) && IsPlayerAlive(target))
 	{
-		ApplyStatusEffect(client, target, "Weapon Overclock Detect", 0.5);
 		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
 		Kritzkrieg_Magical(target, 0.2, true);
 	}
 	else if(target != INVALID_ENT_REFERENCE && IsEntityAlive(target) && GetTeam(client) == GetTeam(target))
 	{
-		ApplyStatusEffect(client, target, "Weapon Overclock Detect", 0.5);
 		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
 	}
 	
 	if(IsValidClient(client) && IsPlayerAlive(client))
 	{
-		ApplyStatusEffect(client, client, "Weapon Overclock Detect", 0.5);
 		ApplyStatusEffect(client, client, "Weapon Overclock", 1.0);
 		Kritzkrieg_Magical(client, 0.2, true);
 	}

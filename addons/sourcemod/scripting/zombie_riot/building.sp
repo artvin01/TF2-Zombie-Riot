@@ -273,16 +273,24 @@ static void BuildingMenu(int client)
 
 	char buffer1[196], buffer2[64];
 
-	if(MenuSection[client] == -1)
+	if(MenuSection[client] == -1 || !ducking)
 	{
-		FormatEx(buffer1, sizeof(buffer1), "%t", "Extra Menu");
-		menu.AddItem(buffer1, buffer1);
-
 		FormatEx(buffer1, sizeof(buffer1), "%t [%d] ($%d)", "Scrap Metal", AmmoData[Ammo_Metal][1], AmmoData[Ammo_Metal][0]);
 		menu.AddItem(buffer1, buffer1, cash < AmmoData[Ammo_Metal][0] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
-		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)\n ", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[Ammo_Metal][0] * 10);
+		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)%s", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[Ammo_Metal][0] * 10, MenuSection[client] == -1 ? "" : "\n ");
 		menu.AddItem(buffer1, buffer1, cash < (AmmoData[Ammo_Metal][0] * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+	else
+	{
+		menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
+		menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
+	}
+
+	if(MenuSection[client] == -1)
+	{
+		FormatEx(buffer1, sizeof(buffer1), "%t\n ", "Extra Menu");
+		menu.AddItem(buffer1, buffer1);
 
 		for(int i; i < sizeof(SectionName); i++)
 		{
@@ -366,7 +374,7 @@ static void BuildingMenu(int client)
 			menu.AddItem(buffer2, buffer1, allowed ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		}
 
-		if(menu.ItemCount < 1)
+		if(menu.ItemCount < 3)
 		{
 			delete menu;
 			//retry
@@ -431,11 +439,6 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 					{
 						case 0:
 						{
-							BuilderMenu(client);
-							return 0;
-						}
-						case 1:
-						{
 							CashSpent[client] += AmmoData[Ammo_Metal][0];
 							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -444,7 +447,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 							SetAmmo(client, Ammo_Metal, ammo);
 							CurrentAmmo[client][Ammo_Metal] = ammo;
 						}
-						case 2:
+						case 1:
 						{
 							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
 							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
@@ -453,6 +456,11 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
 							SetAmmo(client, Ammo_Metal, ammo);
 							CurrentAmmo[client][Ammo_Metal] = ammo;
+						}
+						case 2:
+						{
+							BuilderMenu(client);
+							return 0;
 						}
 						default:
 						{
@@ -464,6 +472,26 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 				{
 					switch(choice)
 					{
+						case 0:
+						{
+							CashSpent[client] += AmmoData[Ammo_Metal][0];
+							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
+							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+							
+							int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
+							SetAmmo(client, Ammo_Metal, ammo);
+							CurrentAmmo[client][Ammo_Metal] = ammo;
+						}
+						case 1:
+						{
+							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
+							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
+							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+							
+							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
+							SetAmmo(client, Ammo_Metal, ammo);
+							CurrentAmmo[client][Ammo_Metal] = ammo;
+						}
 						case 7:
 						{
 							if(MenuPage[client] == 0)

@@ -5246,7 +5246,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_Reinforce[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
-	BannerOnEntityCreated(client);
 	FullmoonEarlyReset(client);
 
 	if(!i_ClientHasCustomGearEquipped[client])

@@ -2059,7 +2059,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
-			this.SetLayerPlaybackRate(layer, SetGestureSpeed);
+			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (f_AttackSpeedNpcIncreace[this.index])));
 	}
 	public void RemoveGesture(const char[] anim)
 	{
@@ -5777,6 +5777,15 @@ public void NpcBaseThinkPost(int iNPC)
 {
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
 	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime());
+	if(f_AttackSpeedNpcIncreace[iNPC] == 1.0)
+		return;
+		
+	if(f_TimeFrozenStill[iNPC] > GetGameTime(iNPC))
+		return;
+
+	//It like, speed sup their world time?
+	//Shitty attackspeed increace.
+	f_StunExtraGametimeDuration[iNPC] += ((GetTickInterval() * f_AttackSpeedNpcIncreace[iNPC]) - GetTickInterval());
 }
 void NpcDrawWorldLogic(int entity)
 {
@@ -5916,6 +5925,10 @@ public void NpcBaseThink(int iNPC)
 
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
+		char BufferTest1[64];
+		char BufferTest2[64];
+		StatusEffects_HudHurt(iNPC, iNPC, BufferTest1, BufferTest2, 64, 0);
+		//MAkes some buffs work for npcs
 		//this is just as a temp fix, remove whenver.
 		//If it isnt custom, then these npcs ignore triggers
 	//	SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
@@ -8424,6 +8437,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #endif
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
+	f_AttackSpeedNpcIncreace[entity] = 1.0;
 	b_AvoidBuildingsAtAllCosts[entity] = false;
 	f_MaxAnimationSpeed[entity] = 2.0;
 	b_OnDeathExtraLogicNpc[entity] = 0;

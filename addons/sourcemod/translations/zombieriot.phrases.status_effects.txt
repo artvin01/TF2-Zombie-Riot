@@ -234,7 +234,7 @@
 	}
 	"Prosperity I Desc"
 	{
-		"en"	"Lowers Damage Delt by 5%%"
+		"en"	"Lowers attack speed by 3.5%%"
 	}
 	"Prosperity II"
 	{
@@ -242,7 +242,7 @@
 	}
 	"Prosperity II Desc"
 	{
-		"en"	"Lowers Damage Delt by 10%%"
+		"en"	"Lowers attack speed by 7%%"
 	}
 	"Prosperity III"
 	{
@@ -250,7 +250,7 @@
 	}
 	"Prosperity III Desc"
 	{
-		"en"	"Lowers Damage Delt by 15%%"
+		"en"	"Lowers attack speed by 14%%"
 	}
 	"Aeternam"
 	{
@@ -978,12 +978,13 @@
 		"en"	"The weapon's stats are improved and mana is continuously restored."
 		"ko"	"무기의 스텟이 향상되며, 마나가 지속적으로 회복됩니다."
 	}
-	"Weapon Overclock Detect"
+	"Weapon Clocking"
 	{
-		"en"	"Ignore"
+		"en"	"Weapon Clocking"
+		"ko"	"과부하"
 	}
-	"Weapon Overclock Detect Desc"
+	"Weapon Clocking Desc"
 	{
-		"en"	"Ignore"
+		"en"	"Boosts attackspeed by 10%%"
 	}
 }

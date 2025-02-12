@@ -4,6 +4,7 @@
 #define EXPIDONSA_BASE
 #define RUINA_BASE
 #define MAXTF2PLAYERS	101
+#define MAXENTITIES	2048
 
 #define CONFIG	"configs/zombie_riot"
 

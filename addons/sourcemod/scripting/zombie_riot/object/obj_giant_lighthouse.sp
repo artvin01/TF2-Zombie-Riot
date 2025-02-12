@@ -28,7 +28,7 @@ void ObjectConstruction_LightHouse_MapStart()
 	Building_Add(build);
 }
 
-int ObjectConstruction_LightHouse_ID()
+stock int ObjectConstruction_LightHouse_ID()
 {
 	return NPCId;
 }
@@ -74,7 +74,7 @@ static void ClotThink(ObjectSentrygun npc)
 	{
 		return;
 	}
-	LighthouseGiveBuff(npc.index, GetGameTime(npc.index), false, 500.0);
+	LighthouseGiveBuff(npc.index, 500.0);
 }
 public bool ObjectConstruction_LightHouse_CanBuildCheap(int client, int &count, int &maxcount)
 {
@@ -109,7 +109,7 @@ int ObjectConstruction_LightHouse_Buildings(int owner)
 	return count;
 }
 
-void LighthouseGiveBuff(int iNpc, float gameTime, bool DoSounds = true, float range = 500.0)
+void LighthouseGiveBuff(int iNpc, float range = 500.0)
 {
 	b_NpcIsTeamkiller[iNpc] = true;
 	Explode_Logic_Custom(0.0,
@@ -135,7 +135,6 @@ void LighthouseGiveBuffDo(int entity, int victim, float damage, int weapon)
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
 	{
-		ApplyStatusEffect(entity, victim, "Lighthouse Enlightment Detect", 0.5);
 		ApplyStatusEffect(entity, victim, "Lighthouse Enlightment", 1.0);
 	}
 }

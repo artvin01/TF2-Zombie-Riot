@@ -446,7 +446,6 @@ void NPC_ConfigSetup()
 	Ignitus_OnMapStart_NPC();
 	Helena_OnMapStart_NPC();
 //wave 45-60 there arent as many enemies as im running out of ideas and i want to resuse top enemies
-	Erasus_OnMapStart_NPC();
 	GiantTankus_OnMapStart_NPC();
 	AnfuhrerEisenhard_OnMapStart_NPC();
 	SpeedusAdivus_OnMapStart_NPC();
@@ -901,6 +900,7 @@ void NPC_ConfigSetup()
 	ImmutableHeavy_OnMapStart_NPC();
 	VanishingMatter_OnMapStart_NPC();
 	Spotter_OnMapStart_NPC();
+	Erasus_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -955,10 +955,9 @@ stock void NPC_GetById(int id, NPCData data)
 stock int NPC_GetByPlugin(const char[] name, NPCData data = {})
 {
 	int index = NPCList.FindString(name, NPCData::Plugin);
-	if(index == -1)
-		return 0;
+	if(index != -1)
+		NPCList.GetArray(index, data);
 	
-	NPCList.GetArray(index, data);
 	return index;
 }
 

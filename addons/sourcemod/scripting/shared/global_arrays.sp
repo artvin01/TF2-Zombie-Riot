@@ -305,6 +305,9 @@ float f_ZombieVolumeSetting[MAXTF2PLAYERS];
 int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
 float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
+//Just speeds up their time ig?
+float f_AttackSpeedNpcIncreace[MAXENTITIES];
+
 
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];;

@@ -396,7 +396,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
 						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
-						
+						if(i_CustomWeaponEquipLogic[medigun] == WEAPON_KRITZKRIEG)
+						{
+							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", 1.0);
+							ApplyStatusEffect(owner, owner, "Weapon Clocking", 1.0);
+						}
 					}
 				}
 				f_DisplayHurtHudToSupporter[healTarget][owner] = GetGameTime() + 0.25;

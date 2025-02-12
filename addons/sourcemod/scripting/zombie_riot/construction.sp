@@ -16,12 +16,30 @@ enum struct AttackInfo
 	}
 }
 
+enum struct ResourceInfo
+{
+	char Plugin[64];
+	float Distance;
+	int Common;
+
+	void SetupKv(KeyValues kv)
+	{
+		kv.GetSectionName(this.Plugin, sizeof(this.Plugin));
+
+		this.Distance = kv.GetFloat("distance");
+		this.Distance *= this.Distance;
+		this.Common = kv.GetNum("common") + 1;
+	}
+}
+
 static bool InConstMode;
 static int AttackRisk;
 static int MaxAttacks;
 static int HighestRisk;
 static float AttackTime;
+static int MaxResource;
 static ArrayList RiskList;
+static ArrayList ResourceList;
 
 static Handle GameTimer;
 static int CurrentRisk;
@@ -86,11 +104,33 @@ void Construction_SetupVote(KeyValues kv)
 		delete RiskList;
 	}
 
+	delete ResourceList;
+	ResourceList = new ArrayList(sizeof(ResourceInfo));
 	RiskList = new ArrayList();
 
 	MaxAttacks = kv.GetNum("attackcount");
 	AttackTime = kv.GetFloat("attacktime");
 	AttackRisk = kv.GetNum("attackrisk");
+	MaxResource = kv.GetNum("resourcecount");
+	
+	if(kv.JumpToKey("Resources"))
+	{
+		if(kv.GotoFirstSubKey())
+		{
+			ResourceInfo resource;
+
+			do
+			{
+				resource.SetupKv(kv);
+				ResourceList.PushArray(resource);
+			}
+			while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
+
+		kv.GoBack();
+	}
 	
 	if(kv.JumpToKey("Attacks"))
 	{
@@ -234,23 +274,85 @@ void Construction_Start()
 {
 	delete GameTimer;
 
-	float pos[3], ang[3];
+	float pos1[3], pos2[3];
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
 		if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == TFTeam_Red && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
 		{
-			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
-			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
+			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos1);
+			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", pos2);
 			break;
 		}
 	}
 
-	NPC_CreateByName("npc_base_building", -1, pos, ang, TFTeam_Red);
+	NPC_CreateByName("npc_base_building", -1, pos1, pos2, TFTeam_Red);
 
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(AttackTime, Timer_StartAttackWave);
 
-	// TODO: Spawn resources here
+	ArrayList picked = new ArrayList();
+	ResourceInfo info;
+	for(int i; i < MaxResource; i++)
+	{
+		CNavArea area = PickRandomArea();
+		if(area == NULL_AREA)
+			continue;
+		
+		if(picked.FindValue(area))
+		{
+			if(GetURandomInt() % 2)
+				i--;
+			
+			continue;
+		}
+
+		picked.Push(i);
+		
+		if(area.GetAttributes() & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE))
+		{
+			if(GetURandomInt() % 2)
+				i--;
+			
+			continue;
+		}
+		
+		area.GetCenter(pos2);
+		float distance = GetVectorDistance(pos1, pos2, true);
+		if(GetRandomResourceInfo(distance, info))
+		{
+			pos2[0] = 0.0;
+			pos2[1] = GetRandomFloat(0.0, 360.0);
+			pos2[2] = 0.0;
+			NPC_CreateByName(info.Plugin, -1, pos1, pos2, TFTeam_Blue);
+		}
+	}
+
+	delete picked;
+}
+
+static bool GetRandomResourceInfo(float distance, ResourceInfo info)
+{
+	ArrayList list = new ArrayList();
+
+	int length = ResourceList.Length;
+	for(int a; a < length; a++)
+	{
+		ResourceList.GetArray(a, info);
+		if(info.Distance > distance)
+			continue;
+		
+		for(int b; b < info.Common; b++)
+		{
+			list.Push(a);
+		}
+	}
+
+	length = list.Length;
+	if(length)
+		ResourceList.GetArray(list.Get(GetURandomInt() % length), info);
+
+	delete list;
+	return length != 0;
 }
 
 static Action Timer_StartAttackWave(Handle timer)
@@ -296,6 +398,11 @@ static Action Timer_StartAttackWave(Handle timer)
 		GameTimer = CreateTimer(AttackTime, Timer_StartAttackWave);
 	}
 	return Plugin_Continue;
+}
+
+void Construction_StartResourceAttack(int target)
+{
+
 }
 
 static void GetRandomAttackInfo(int risk, AttackInfo attack)

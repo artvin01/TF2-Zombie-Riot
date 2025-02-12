@@ -23,6 +23,7 @@ enum struct StatusEffect
 	bool ElementalLogic;
 
 	int LinkedStatusEffect; //Which status effect is used for below
+	int LinkedStatusEffectNPC; //Which status effect is used for below
 	float AttackspeedBuff;	//damage buff or nerf
 
 	//IS it elemental? If yes, dont get blocked or removed.
@@ -39,6 +40,13 @@ enum struct StatusEffect
 	Function HudDisplay_Func;
 	Function OnTakeDamage_PostVictim;
 	Function OnTakeDamage_PostAttacker;
+
+	void Blank()
+	{
+		this.DamageTakenMulti = -1.0;
+		this.DamageDealMulti = -1.0;
+		this.MovementspeedModif = -1.0;
+	}
 }
 
 
@@ -276,6 +284,12 @@ public int Items_StatusEffectListMenuH(Menu menu, MenuAction action, int client,
 	return 0;
 }
 
+int StatusEffect_AddBlank()
+{
+	StatusEffect data;
+	data.Blank();
+	return AL_StatusEffects.PushArray(data);
+}
 
 int StatusEffect_AddGlobal(StatusEffect data)
 {
@@ -497,6 +511,12 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	}
 	Apply_StatusEffect.BuffIndex = index;
 	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
+
+	int linked = Apply_MasterStatusEffect.LinkedStatusEffect;
+	if(linked > 0)
+	{
+		ApplyStatusEffect(owner, victim, "", Duration - 0.5, linked);
+	}
 }
 
 //never usually needed
@@ -896,7 +916,8 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		*/
 
 		//We only give this to the client, as itll loop through all their weapaons.
-		if(DisplayWeapon > 0 && Apply_MasterStatusEffect.AttackspeedBuff > 0.0)
+		//0 means npcs
+		if(DisplayWeapon >= 0 && Apply_MasterStatusEffect.AttackspeedBuff > 0.0)
 		{
 			Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 		}
@@ -941,7 +962,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		delete E_AL_StatusEffects[victim];
 }
 
-float Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	bool HasBuff = false;
 	float BuffAmount = 1.0;
@@ -956,12 +977,9 @@ float Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_Master
 		}
 		else
 		{
-			float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, ScalingDo);
 			bool ScaleWithCount = false;
-			char npc_classname[60];
-			NPC_GetPluginById(i_NpcInternalId[victim], npc_classname, sizeof(npc_classname));
 			BarrackBody npc = view_as<BarrackBody>(victim);
-			if(victim <= MaxClients || StrEqual(npc_classname, "npc_citizen") || IsValidEntity(npc.OwnerUserId))
+			if(victim <= MaxClients || Citizen_IsIt(victim) || npc.OwnerUserId)
 			{
 				if(GetTeam(victim) == TFTeam_Red)
 					ScaleWithCount = true;
@@ -983,7 +1001,8 @@ float Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_Master
 	}
 	static StatusEffect link_Apply_MasterStatusEffect;
 	static E_StatusEffect link_Apply_StatusEffect;
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_MasterStatusEffect.LinkedStatusEffect , E_StatusEffect::BuffIndex);
+	int ArrayPosition;
+	ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_MasterStatusEffect.LinkedStatusEffect , E_StatusEffect::BuffIndex);
 //	int SaveLinkId = Apply_MasterStatusEffect.LinkedStatusEffect;
 	if(ArrayPosition != -1)
 	{
@@ -999,22 +1018,24 @@ float Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_Master
 			HasBuff = true;
 		}
 	}
-	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect);
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect, Apply_MasterStatusEffect.LinkedStatusEffectNPC);
 }
 
-bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAmount, int BuffCheckerID)
+bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAmount, int BuffCheckerID, int BuffCheckerIDNPC)
 {
 	//They still have the test buff
 	if(IsValidClient(entity))
-		Status_effects_DoAttackspeedLogic(entity, 1, HasBuff, BuffAmount, BuffCheckerID);
+		Status_effects_DoAttackspeedLogic(entity, 1, HasBuff, BuffAmount, BuffCheckerID, BuffCheckerIDNPC);
 	else 
-		Status_effects_DoAttackspeedLogic(entity, 2, HasBuff, BuffAmount, BuffCheckerID);
+		Status_effects_DoAttackspeedLogic(entity, 2, HasBuff, BuffAmount, BuffCheckerID, BuffCheckerIDNPC);
 
 	return true;
 }
 
 
-static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID)
+static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC)
 {
 	if(type == 1)
 	{
@@ -1036,6 +1057,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+					
+					if(Attributes_Has(weapon, 8))
+						Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
 				}
 			}
 			else
@@ -1051,6 +1075,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, 1.0 / (BuffRevert));	// Reload Time
+
+					if(Attributes_Has(weapon, 8))
+						Attributes_SetMulti(weapon, 8, BuffRevert);	// Heal Rate
 				
 					RemoveSpecificBuff(weapon, "", BuffCheckerID);
 				}
@@ -1065,53 +1092,77 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+
+					if(Attributes_Has(weapon, 8))
+						Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
 				}
 			}
 		}
 	}
 	else if(type == 2)
 	{
-		char npc_classname[60];
-		NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-		if(StrEqual(npc_classname, "npc_citizen"))
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			if(GiantLightHouse_Buff[entity] == 0.0)
+		//They dont even have the buff.
+		if(!HasSpecificBuff(entity, "", BuffCheckerIDNPC))
+		{	
+			//We want to give the buff
+			if(GrantBuff)
 			{
-				if(GrantBuff)
+				//No extra logic needed
+				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
+				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
+				
+				//They have never recieved a buff yet.
+				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
 				{
-					GiantLightHouse_Buff[entity] = BuffValueDo;
-					npc.m_fGunFirerate *= BuffValueDo;
-					npc.m_fGunReload *= BuffValueDo;
+					view_as<Citizen>(entity).m_fGunFirerate *= BuffOriginal;
+					view_as<Citizen>(entity).m_fGunReload *= BuffOriginal;
+					view_as<BarrackBody>(entity).BonusFireRate *= BuffOriginal;
 				}
-			}
-			else
-			{
-				if(!GrantBuff)
+				else
 				{
-					npc.m_fGunFirerate /= (GiantLightHouse_Buff[entity]);
-					npc.m_fGunReload /= (GiantLightHouse_Buff[entity]);
-					GiantLightHouse_Buff[entity] = 0.0;
+					f_AttackSpeedNpcIncreace[entity] *= BuffOriginal;
 				}
+				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
+				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
 			}
 		}
-		else if(entity > MaxClients)
+		else
 		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(GiantLightHouse_Buff[entity] == 0.0)
+			float BuffRevert = Status_Effects_GetCustomValue(entity, BuffCheckerIDNPC);
+			//Is the buff still the same as before?
+			//if it changed, we need to update it.
+			if(BuffRevert != BuffOriginal || !GrantBuff)
 			{
-				if(GrantBuff)
+				
+				//They have never recieved a buff yet.
+				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
 				{
-					GiantLightHouse_Buff[entity] = BuffValueDo;
-					npc.BonusFireRate *= BuffValueDo;
+					view_as<Citizen>(entity).m_fGunFirerate *= 1.0 / (BuffRevert);
+					view_as<Citizen>(entity).m_fGunReload *= 1.0 / (BuffRevert);
+					view_as<BarrackBody>(entity).BonusFireRate *= 1.0 / (BuffRevert);
 				}
-			}
-			else
-			{
-				if(!GrantBuff)
+				else
 				{
-					npc.BonusFireRate /= (GiantLightHouse_Buff[entity]);
-					GiantLightHouse_Buff[entity] = 0.0;
+					f_AttackSpeedNpcIncreace[entity] *= 1.0 / (BuffRevert);
+				}
+				RemoveSpecificBuff(entity, "", BuffCheckerIDNPC);
+			}
+			if(GrantBuff && BuffRevert != BuffOriginal)
+			{
+				//No extra logic needed
+				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
+				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
+				
+				//They have never recieved a buff yet.
+				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
+				{
+					view_as<Citizen>(entity).m_fGunFirerate *= BuffOriginal;
+					view_as<Citizen>(entity).m_fGunReload *= BuffOriginal;
+					view_as<BarrackBody>(entity).BonusFireRate *= BuffOriginal;
+				}
+				else
+				{
+					f_AttackSpeedNpcIncreace[entity] *= BuffOriginal;
 				}
 			}
 		}
@@ -1783,8 +1834,9 @@ void StatusEffects_Prosperity()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.95;
+	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= 1.035;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 4; //0 means ignored
@@ -1796,8 +1848,9 @@ void StatusEffects_Prosperity()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.9;
+	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= 1.07;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 4; //0 means ignored
@@ -1809,8 +1862,9 @@ void StatusEffects_Prosperity()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.85;
+	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= 1.14;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 4; //0 means ignored
@@ -2538,7 +2592,7 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
-
+	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ancient Banner");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "➤");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -2551,7 +2605,13 @@ void StatusEffects_SupportWeapons()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.8;
 	AncientBannerIndex = StatusEffect_AddGlobal(data);
+
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Zealot's Random Drinks");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Z");
@@ -2592,16 +2652,19 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.5;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
 	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
 	data.Status_SpeedFunc 			= INVALID_FUNCTION;
-	data.HudDisplay_Func 			= OverclockHudDisplay_Func;
+	data.HudDisplay_Func 			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Weapon Overclock Detect");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Weapon Clocking");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "o");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -2611,6 +2674,9 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.9;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
@@ -2618,38 +2684,6 @@ void StatusEffects_SupportWeapons()
 	data.Status_SpeedFunc 			= INVALID_FUNCTION;
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
-}
-
-void OverclockHudDisplay_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
-{
-	if(KritzkriegBuffOnline(victim))
-		Format(HudToDisplay, SizeOfChar, "Ω");
-}
-
-stock bool NpcStats_AncientBanner(int victim)
-{
-	if(!IsValidEntity(victim))
-		return true; //they dont exist, pretend as if they are silenced.
-	
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(AncientBannerIndex, E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
 }
 
 	
@@ -2736,7 +2770,6 @@ stock bool NpcStats_ElementalAmp(int victim)
 }
 
 
-int FallenWarriorIndex;
 void StatusEffects_FallenWarrior()
 {
 	StatusEffect data;
@@ -2749,36 +2782,15 @@ void StatusEffects_FallenWarrior()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 1.5;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	FallenWarriorIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 }
 
-stock bool NpcStats_HeavyPresence(int victim)
-{
-	if(!IsValidEntity(victim))
-		return true; //they dont exist, pretend as if they are silenced.
-	
-	if(!E_AL_StatusEffects[victim])
-		return false;
 
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(FallenWarriorIndex , E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
-}
 int CasinoDebuffIndex;
 void StatusEffects_CasinoDebuff()
 {
@@ -3404,10 +3416,17 @@ void StatusEffects_PurnellKitBuffs()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.8;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
+	data.AttackspeedBuff			= 0.0;
+	
 	//20% more Damage
 	strcopy(data.BuffName, sizeof(data.BuffName), "Physical Therapy");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₱");
@@ -3661,21 +3680,6 @@ void StatusEffects_PurnellKitDeBuffs()
 void StatusEffects_Construction()
 {
 	StatusEffect data;
-	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Lighthouse Enlightment Detect");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
-	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = false;
-	data.Slot						= 0;
-	data.SlotPriority				= 0;
-	int BuffIdUse = StatusEffect_AddGlobal(data);
-
-
 	strcopy(data.BuffName, sizeof(data.BuffName), "Lighthouse Enlightment");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "l");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
@@ -3687,7 +3691,9 @@ void StatusEffects_Construction()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
-	data.LinkedStatusEffect 		= BuffIdUse;
+	//-0.5
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.7;
 	StatusEffect_AddGlobal(data);
 }
