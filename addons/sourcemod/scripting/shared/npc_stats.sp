@@ -5773,8 +5773,11 @@ public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 
 float f_CheckIfStuckPlayerDelay[MAXENTITIES];
 float f_QuickReviveHealing[MAXENTITIES];
+float f_LastBaseThinkTime[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
+	float lastThink = f_LastBaseThinkTime[iNPC];
+	f_LastBaseThinkTime[iNPC] = GetGameTime();
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
 	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime());
 	if(f_AttackSpeedNpcIncreace[iNPC] == 1.0)
@@ -5783,9 +5786,15 @@ public void NpcBaseThinkPost(int iNPC)
 	if(f_TimeFrozenStill[iNPC] > GetGameTime(iNPC))
 		return;
 
+	float time = GetGameTime() - lastThink;	// Time since the last time this NPC thought
+
 	//It like, speed sup their world time?
+	//f_StunExtraGametimeDuration[iNPC] += ((GetTickInterval() * f_AttackSpeedNpcIncreace[iNPC]) - GetTickInterval());
 	//Shitty attackspeed increace.
-	f_StunExtraGametimeDuration[iNPC] += ((GetTickInterval() * f_AttackSpeedNpcIncreace[iNPC]) - GetTickInterval());
+	if(f_AttackSpeedNpcIncreace[iNPC] < 1.0)	// Buffs
+		f_StunExtraGametimeDuration[iNPC] += (time - (time / f_AttackSpeedNpcIncreace[iNPC]));
+	else	// Nerfs
+		f_StunExtraGametimeDuration[iNPC] += ((time * f_AttackSpeedNpcIncreace[iNPC]) - time);
 }
 void NpcDrawWorldLogic(int entity)
 {

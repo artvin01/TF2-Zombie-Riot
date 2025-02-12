@@ -46,6 +46,7 @@ static int CurrentRisk;
 static int CurrentAttacks;
 static float NextAttackAt;
 static int AttackType;	// 0 = None, 1 = Resource, 2 = Base, 3 = Final
+static int AttackRef;
 static char CurrentSpawnName[64];
 
 bool Construction_Mode()
@@ -400,9 +401,22 @@ static Action Timer_StartAttackWave(Handle timer)
 	return Plugin_Continue;
 }
 
-void Construction_StartResourceAttack(int target)
+bool Construction_StartResourceAttack(int entity)
 {
+	if(AttackType)
+		return false;
+	
+	float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+	int risk = CurrentRisk + RiskBonusFromDistance(pos);
 
+	AttackInfo attack;
+	GetRandomAttackInfo(risk, attack);
+	if(!StartAttack(attack, 1, entity))
+		return false;
+	
+	// TODO: Set up rewards, etc.
+	return true;
 }
 
 static void GetRandomAttackInfo(int risk, AttackInfo attack)
@@ -429,6 +443,7 @@ static bool StartAttack(const AttackInfo attack, int type, int target)
 		return false;
 
 	AttackType = type;
+	AttackRef = EntIndexToEntRef(target);
 
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, attack.WaveSet);
@@ -438,7 +453,7 @@ static bool StartAttack(const AttackInfo attack, int type, int target)
 	delete kv;
 
 	Rogue_TriggerFunction(Artifact::FuncStageStart);
-	CreateTimer((type * 2.0), Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(float(type * type), Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	return true;
 }
 

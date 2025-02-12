@@ -396,6 +396,7 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		}
 		if(!Apply_MasterStatusEffect.Positive && !RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
 		{
+			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 			E_AL_StatusEffects[victim].Erase(i);
 			i--;
 			length--;
@@ -403,6 +404,7 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		}
 		else if(Apply_MasterStatusEffect.Positive && RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
 		{
+			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 			E_AL_StatusEffects[victim].Erase(i);
 			i--;
 			length--;
@@ -468,6 +470,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 					if(CurrentPriority > Apply_MasterStatusEffect.SlotPriority)
 					{
 						// New buff is high priority, remove this one, stop the loop
+						StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 						E_AL_StatusEffects[victim].Erase(i);
 						break;
 					}
@@ -516,6 +519,19 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	if(linked > 0)
 	{
 		ApplyStatusEffect(owner, victim, "", Duration - 0.5, linked);
+	}
+}
+
+void StatusEffect_UpdateAttackspeedAsap(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_MasterStatusEffect.AttackspeedBuff > 0.0)
+	{
+		//Instatly remove the sub,par buffs they had
+		//do twice due to npc buffs and such.
+		RemoveSpecificBuff(victim, "", Apply_MasterStatusEffect.LinkedStatusEffectNPC);
+		Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+		RemoveSpecificBuff(victim, "", Apply_MasterStatusEffect.LinkedStatusEffect);
+		Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 	}
 }
 
@@ -899,6 +915,13 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 	int length = E_AL_StatusEffects[victim].Length;
 	for(int i; i<length; i++)
 	{
+		if(length != E_AL_StatusEffects[victim].Length)
+		{
+			// Something was changed
+			i -= (length - E_AL_StatusEffects[victim].Length);
+			length = E_AL_StatusEffects[victim].Length
+		}
+
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		//left are debuffs
@@ -906,8 +929,6 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
 			E_AL_StatusEffects[victim].Erase(i);
-			i--;
-			length--;
 			continue;
 		}
 		/*
@@ -1839,8 +1860,10 @@ void StatusEffects_Prosperity()
 	data.AttackspeedBuff			= 1.035;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 4; //0 means ignored
-	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Slot						= 4;
+	data.SlotPriority				= 1;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Prosperity II");
@@ -1853,8 +1876,10 @@ void StatusEffects_Prosperity()
 	data.AttackspeedBuff			= 1.07;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 4; //0 means ignored
-	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Slot						= 4;
+	data.SlotPriority				= 2;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Prosperity III");
@@ -1867,8 +1892,10 @@ void StatusEffects_Prosperity()
 	data.AttackspeedBuff			= 1.14;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 4; //0 means ignored
-	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Slot						= 4;
+	data.SlotPriority				= 3;
 	StatusEffect_AddGlobal(data);
 }
 
@@ -2453,7 +2480,6 @@ float Hussar_Warscream_DamageDealFunc(int attacker, int victim, StatusEffect App
 	return damagereturn;
 }
 
-int AncientBannerIndex;
 void StatusEffects_SupportWeapons()
 {
 	StatusEffect data;
@@ -2608,7 +2634,7 @@ void StatusEffects_SupportWeapons()
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.8;
-	AncientBannerIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect 		= 0;
 	data.LinkedStatusEffectNPC 		= 0;
@@ -3141,33 +3167,60 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.HudDisplay_Func			= INVALID_FUNCTION;
 	KazimierzDodgeIndex = StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Tonic Affliction");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌇");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Tonic Affliction Hide");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= -1.0;
+	data.DamageDealMulti			= 0.44;
 	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
+	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Mystery Beer");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌂");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.BuffName, sizeof(data.BuffName), "Tonic Affliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌇");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "T"); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.333;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
+	data.AttackspeedBuff			= 0.0;
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mystery Beer");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌂");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "B"); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.8;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
+	data.AttackspeedBuff			= 0.0;
+	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Osmosis'ity");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⟁");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -3426,7 +3479,7 @@ void StatusEffects_PurnellKitBuffs()
 	data.LinkedStatusEffect 		= 0;
 	data.LinkedStatusEffectNPC 		= 0;
 	data.AttackspeedBuff			= 0.0;
-	
+
 	//20% more Damage
 	strcopy(data.BuffName, sizeof(data.BuffName), "Physical Therapy");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₱");

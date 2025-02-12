@@ -439,17 +439,17 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 					{
 						case 0:
 						{
-							ApplyStatusEffect(attacker, victim, "Prosperity I", 0.75);
+							ApplyStatusEffect(attacker, victim, "Prosperity I", 1.0);
 							reduce = 0.035;
 						}
 						case 1:
 						{
-							ApplyStatusEffect(attacker, victim, "Prosperity II", 0.75);
+							ApplyStatusEffect(attacker, victim, "Prosperity II", 1.0);
 							reduce = 0.07;
 						}
 						case 2:
 						{
-							ApplyStatusEffect(attacker, victim, "Prosperity III", 0.75);
+							ApplyStatusEffect(attacker, victim, "Prosperity III", 1.0);
 							reduce = 0.14;
 						}
 					}
