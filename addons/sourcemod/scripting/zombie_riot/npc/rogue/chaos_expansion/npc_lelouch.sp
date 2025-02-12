@@ -1989,22 +1989,44 @@ static void Create_Anchors(Lelouch npc)
 			i_AnchorID_Ref[npc.index][i] = EntIndexToEntRef(anchor); 
 	}
 
+	float HP_Scale = 1.0;
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(400000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(205000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(652569.0 * MultiGlobalHighHealthBoss),1, true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(600000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	//we are in NEITHER rouge or freeplay.
+	//allthough, if freeplay lelouch turns out being a bitch consistently, then it can be made to apply to freeplay.
+	if(!Rogue_Mode() && !Waves_InFreeplay())
+	{
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",200000, RoundToCeil(4.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(6.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",500000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	200000, RoundToCeil(8.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(4.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",	150000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",75000,  RoundToCeil(20.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy), _,"Elite Rulianius");
-	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",100000, RoundToCeil(4.0 * MultiGlobalEnemy));
+		HP_Scale = amount_of_people/14.0;
+
+		//for when the server has more then 14 players.
+		if(HP_Scale >1.0)
+			HP_Scale = 1.0;
+
+		//lower limit.
+		if(HP_Scale <=0.1)
+			HP_Scale=0.1;
+
+		HP_Scale *=0.5;	//then nerf it in half completely.
+
+	}
+
+
+	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",	RoundToCeil(HP_Scale * 400000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lex"	,		RoundToCeil(HP_Scale * 205000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",	RoundToCeil(HP_Scale * 652569.0 * MultiGlobalHighHealthBoss),1, true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",	RoundToCeil(HP_Scale * 600000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+
+	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",RoundToCeil(HP_Scale * 200000), RoundToCeil(4.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	RoundToCeil(HP_Scale * 100000), RoundToCeil(6.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",RoundToCeil(HP_Scale * 500000), RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	RoundToCeil(HP_Scale * 100000), RoundToCeil(5.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	RoundToCeil(HP_Scale * 200000), RoundToCeil(8.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	RoundToCeil(HP_Scale * 100000), RoundToCeil(4.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",	RoundToCeil(HP_Scale * 150000), RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",RoundToCeil(HP_Scale * 75000),  RoundToCeil(20.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	RoundToCeil(HP_Scale * 300000), RoundToCeil(2.0 * MultiGlobalEnemy), _,"Elite Rulianius");
+	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",RoundToCeil(HP_Scale * 100000), RoundToCeil(4.0 * MultiGlobalEnemy));
 
 	Ruina_Master_Rally(npc.index, false);
 
@@ -2038,7 +2060,10 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	// do not spawn ontop of lelouches head, although it shouldn't matter for spawning stuff, just incase the teleport SOMEHOW fails
 	AproxRandomSpaceToWalkTo[0]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	AproxRandomSpaceToWalkTo[1]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
-	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), red ? "nospawns;noweaver;full" : "lelouch;noweaver;full");
+	char Data[64]; Data = red ? "lelouch;nospawns;noweaver;full" : "nospawns;noweaver;full";
+	if(ZR_GetWaveCount()+1 < 60)
+		Format(Data, sizeof(Data), "%sforce60", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
+	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)

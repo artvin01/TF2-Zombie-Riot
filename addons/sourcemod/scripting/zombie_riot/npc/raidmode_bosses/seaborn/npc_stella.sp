@@ -1320,7 +1320,7 @@ static bool Lunar_Grace(Stella npc)
 	Laser.DoForwardTrace_Custom(Angles, VecSelfNpc, 200.0);
 	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Laser.End_Point);
 	struct_Lunar_Grace_Data[npc.index].Loc = Laser.End_Point;
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 	TE_SetupBeamRingPoint(Laser.End_Point, fl_lunar_radius*2.0, fl_lunar_radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Windup, 15.0, 0.1, color, 1, 0);
 	TE_SendToAll();
 
@@ -1366,7 +1366,7 @@ static Action Lunar_Grace_Tick(int iNPC)
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 	}
 
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 
@@ -1446,7 +1446,7 @@ static void OnAOEHit(int entity, int victim, float damage, int weapon)
 	float EnemyVec[3], Sky[3];
 	WorldSpaceCenter(victim, EnemyVec);
 	Sky = EnemyVec; Sky[2]+=1500.0;
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[entity]);
 	TE_SetupBeamPoints(EnemyVec, Sky, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 0, 0.1, 2.5, 2.5, 0, 5.0, color, 3);
 	TE_SendToAll();
 }
@@ -2279,7 +2279,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 			Range *=0.95;
 		Laser.client = npc.index;
 		Laser.DoForwardTrace_Basic(Range);
-		int color[4]; Ruina_Color(color);
+		int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 		float flPos[3];
 		npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
 		TE_SetupBeamPoints(flPos, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 2.0, 2.0, 0, 0.01, color, 3);	
@@ -2307,7 +2307,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 
 		npc.m_flNorm_Attack_In = GameTime + Attack_Delay;
 		npc.m_flNextRangedAttack = GameTime + Attack_Speed;
-		/*int color[4]; Ruina_Color(color);
+		/*int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 		float self_Vec[3]; WorldSpaceCenter(npc.index, self_Vec);
 		TE_SetupBeamRingPoint(self_Vec, 300.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Attack_Delay, 15.0, 0.1, color, 1, 0);
 		TE_SendToAll();*/
@@ -2354,12 +2354,14 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		return Plugin_Stop;
 	}
 
+	/*
+	//uncomment this and the other thing to reenable
 	bool update = false;
 	if(npc.m_flNorm_Attack_Throttle < GameTime)
 	{
 		npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
 		update = true;
-	}
+	}*/
 
 	npc.m_bAllowBackWalking = true;
 
@@ -2409,6 +2411,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 			Turn_Speed *= 0.95;
 
 		Turn_Speed /=TickrateModify;
+		Turn_Speed /=f_AttackSpeedNpcIncreace[npc.index];
 
 		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
 		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
@@ -2418,16 +2421,21 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
 
-	if(update)
+	//if(update)
 	{
-		float Dmg = Modify_Damage(-1, 15.0);
+		//extreme amounts of trolley
+		float Dmg = Modify_Damage(-1, 4.5);
 		Dmg *= (0.75-Logarithm(Ratio));
+		Dmg /= TickrateModify;	//since the damage is dealt every tick, make it so the dmg is modified by tickrate modif.
+		Dmg /=f_AttackSpeedNpcIncreace[npc.index];
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;
 		Laser.Bonus_Damage = Dmg*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
+
+		//CPrintToChatAll("Damage: %f", Dmg);
 	}
 
 	float startPoint[3], endPoint[3];
@@ -2437,7 +2445,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	endPoint	= Laser.End_Point;
 	float diameter = radius *1.0;
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 
 	if(i_current_wave[npc.index] >=45)
 	{

@@ -497,7 +497,7 @@ static void ClotThink(int iNPC)
 
 static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryThreatIndex)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	float Swing_Speed = (npc.Anger ? 1.0 : 2.0);
 	float Swing_Delay = (npc.Anger ? 0.1 : 0.2);
 
@@ -581,7 +581,7 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 
 static void Lancelot_Particle_Accelerator(Lancelot npc, float Dist)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(Dist < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*5.0)
 	{
 		float Radius = 250.0;
