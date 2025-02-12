@@ -15,6 +15,16 @@ void ObjectTinkerBrew_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	build.Section = 1;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_brewing_stand");
+	build.Cost = 338;
+	build.Health = 420;
+	build.HealthScaleCost = true;
+	build.Cooldown = 15.0;
+	build.Func = ObjectTinkerBrew_CanBuild;
+	Building_Add(build);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])

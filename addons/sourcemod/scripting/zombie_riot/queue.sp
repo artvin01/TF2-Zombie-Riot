@@ -230,7 +230,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 
 bool Queue_JoinTeam(int client)
 {
-	if(!WaitingInQueue[client] && GetClientTeam(client) == 2)
+	if(Waves_InVote() || (!WaitingInQueue[client] && GetClientTeam(client) == 2))
 		return false;
 	
 	int count;

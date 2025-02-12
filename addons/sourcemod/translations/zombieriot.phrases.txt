@@ -1946,6 +1946,18 @@
 		"pt"		"Você quer melhorar sua arma atual?"
 		"nl"		"Wil je uw huidige wapen Pack-A-Punchen?"
 	}
+	"Support Buildings"
+	{
+		"en"		"Support Buildings"
+	}	
+	"Singular Buildings"
+	{
+		"en"		"Singular Buildings"
+	}	
+	"Construct Buildings"
+	{
+		"en"		"Construct Buildings"
+	}	
 	"Which perk do you desire?"
 	{
 		"en"		"Which Bottle do you wish to drink?\nCrouch and click to see what it does."

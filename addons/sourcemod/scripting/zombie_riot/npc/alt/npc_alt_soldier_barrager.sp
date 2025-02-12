@@ -338,7 +338,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayMeleeSound();
 						float dmg = 12.5;
-						if(ZR_GetWaveCount()>=45)
+						if(Waves_GetRound()>=45)
 						{
 							dmg=17.5;
 						}

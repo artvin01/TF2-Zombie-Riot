@@ -3126,9 +3126,7 @@ public void Citizen_ClotThink(int iNPC)
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
 
-							ApplyStatusEffect(npc.index, ally, "Healing Strength", 5.0);
 							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
-							ApplyStatusEffect(npc.index, ally, "Healing Strength", 5.0);
 							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
 							
 							if(ally <= MaxClients)
@@ -3146,11 +3144,25 @@ public void Citizen_ClotThink(int iNPC)
 							vecAng[0] = 0.0;
 							vecAng[2] = 0.0;
 
+							static const char BuildingPlugin[][] =
+							{
+								"obj_barricade",
+								"obj_decorative",
+								"obj_ammobox",
+								"obj_armortable",
+								"obj_perkmachine",
+								"obj_packapunch",
+								"obj_sentrygun",
+								"obj_mortar",
+								"obj_railgun",
+								"obj_healingstation"
+							};
+
 							int id = npc.m_iSeakingObject - 6;
 							if(id == 1)
 								id = npc.m_iClassRole == Cit_Builder ? 6 : 9;
 
-							int entity = Building_BuildById(id, npc.index, vecPos, vecAng);
+							int entity = Building_BuildByName(BuildingPlugin[id], npc.index, vecPos, vecAng);
 							if(entity != -1)
 							{
 								if(Building_AttemptPlace(entity, npc.index))

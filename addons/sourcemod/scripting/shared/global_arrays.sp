@@ -191,7 +191,7 @@ int i_NextAttackDoubleHit[MAXENTITIES];
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
 float f_NoUnstuckVariousReasons[MAXENTITIES];
-bool b_PlayerIsInAnotherPart[MAXENTITIES];
+//bool b_PlayerIsInAnotherPart[MAXENTITIES];
 bool b_EntityIsStairAbusing[MAXENTITIES];
 bool b_EntityCantBeColoured[MAXENTITIES];
 float f_EntityIsStairAbusing[MAXENTITIES];
@@ -304,6 +304,9 @@ bool b_HudLowHealthShake_UNSUED[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
 int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
 float f_TutorialUpdateStep[MAXTF2PLAYERS];
+
+//Just speeds up their time ig?
+float f_AttackSpeedNpcIncreace[MAXENTITIES];
 
 
 //This is for going through things via lag comp or other reasons to teleport things away.
@@ -501,7 +504,6 @@ float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
 bool b_IsCannibal[MAXTF2PLAYERS];
-float Kritzkrieg_Buff[MAXENTITIES];
 bool b_Reinforce[MAXTF2PLAYERS];
 char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard1.wav",

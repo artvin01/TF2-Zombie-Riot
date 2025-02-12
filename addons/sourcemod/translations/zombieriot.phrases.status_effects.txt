@@ -234,7 +234,7 @@
 	}
 	"Prosperity I Desc"
 	{
-		"en"	"Lowers Damage Delt by 5%%"
+		"en"	"Lowers attack speed by 3.5%%"
 	}
 	"Prosperity II"
 	{
@@ -242,7 +242,7 @@
 	}
 	"Prosperity II Desc"
 	{
-		"en"	"Lowers Damage Delt by 10%%"
+		"en"	"Lowers attack speed by 7%%"
 	}
 	"Prosperity III"
 	{
@@ -250,7 +250,7 @@
 	}
 	"Prosperity III Desc"
 	{
-		"en"	"Lowers Damage Delt by 15%%"
+		"en"	"Lowers attack speed by 14%%"
 	}
 	"Aeternam"
 	{
@@ -460,21 +460,13 @@
 	{
 		"en"	"Decreases damage taken by 15%%"
 	}
-	"Healing Strength"
-	{
-		"en"	"Healing Strength"
-	}
-	"Healing Strength Desc"
-	{
-		"en"	"Increases damage dealt by 25%%"
-	}
 	"Healing Resolve"
 	{
 		"en"	"Healing Resolve"
 	}
 	"Healing Resolve Desc"
 	{
-		"en"	"Decreases damage taken by 5%%"
+		"en"	"Decreases damage taken by 5%%, Increases damage dealt by 25%%"
 	}
 	"Healing Adaptiveness All"
 	{
@@ -658,7 +650,15 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack speed by 67%%\nDecreases damage dealt by 40%%"
+		"en"	"Increases attack speed by 66%%\nDecreases damage dealt by 56%%"
+	}
+	"Tonic Affliction Hidden"
+	{
+		"en"	"Tonic Affliction Hidden"
+	}
+	"Tonic Affliction  Hidden Desc"
+	{
+		"en"	"Ignore."
 	}
 	"Mystery Beer"
 	{
@@ -888,6 +888,22 @@
 	{
 		"en"	"Increas damage taken by 25%%"
 	}
+	"Lighthouse Enlightment"
+	{
+		"en" "Lighthouse Enlightment"
+	}
+	"Lighthouse Enlightment Desc"
+	{
+		"en"	"Increases Attackspeed and reloadspeed by 30%%"
+	}
+	"Lighthouse Enlightment Detect"
+	{
+		"en" "Lighthouse Enlightment Detect"
+	}
+	"Lighthouse Enlightment Detect Desc"
+	{
+		"en"	"Ignore This."
+	}
 	"Hectic Therapy"
 	{
 		"en" "Hectic Therapy"
@@ -970,12 +986,13 @@
 		"en"	"The weapon's stats are improved and mana is continuously restored."
 		"ko"	"무기의 스텟이 향상되며, 마나가 지속적으로 회복됩니다."
 	}
-	"Weapon Overclock Detect"
+	"Weapon Clocking"
 	{
-		"en"	"Ignore"
+		"en"	"Weapon Clocking"
+		"ko"	"과부하"
 	}
-	"Weapon Overclock Detect Desc"
+	"Weapon Clocking Desc"
 	{
-		"en"	"Ignore"
+		"en"	"Boosts attackspeed by 10%%"
 	}
 }

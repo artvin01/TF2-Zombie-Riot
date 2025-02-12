@@ -264,7 +264,7 @@ static void Internal_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 	
-	if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//schwertkrieg handles the timer if its the same index
+	if(Waves_GetRound()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//schwertkrieg handles the timer if its the same index
 	{
 		if(RaidModeTime < GameTime)
 		{
@@ -278,13 +278,13 @@ static void Internal_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(!IsValidEntity(RaidBossActive) && !g_b_schwert_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
+	if(!IsValidEntity(RaidBossActive) && !g_b_schwert_died && Waves_GetRound()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
 	else
 	{
-		if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_schwert_died && i_RaidGrantExtra[npc.index] == 1)
+		if(Waves_GetRound()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_schwert_died && i_RaidGrantExtra[npc.index] == 1)
 		{
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
@@ -706,7 +706,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_blPlayHurtAnimation = true;
 	}
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0 && i_RaidGrantExtra[npc.index] == 1)
+	if(RoundToCeil(damage)>=Health && Waves_GetRound()+1>=60.0 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(g_b_item_allowed)
 		{

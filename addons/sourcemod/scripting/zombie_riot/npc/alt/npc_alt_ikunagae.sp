@@ -1175,7 +1175,7 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 		i_Severity_Barrage[npc.index] = 24;
 	}
 	
-	if((ZR_GetWaveCount()+1)==59)	//Makes it so the spam on wave 59 doesn't absoluetly annihialate the server.
+	if((Waves_GetRound()+1)==59)	//Makes it so the spam on wave 59 doesn't absoluetly annihialate the server.
 	{
 		i_Severity_Barrage[npc.index] = 4;
 	}

@@ -261,6 +261,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundEnd();
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
+	Construction_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
 	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
@@ -442,7 +443,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			ViewChange_PlayerModel(client);
 			ViewChange_Update(client);
 			Store_ApplyAttribs(client);
-			Pets_PlayerResupply(client);
 			
 			if(dieingstate[client])
 			{

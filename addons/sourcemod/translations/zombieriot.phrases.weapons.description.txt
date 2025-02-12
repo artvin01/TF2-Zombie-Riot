@@ -3427,7 +3427,7 @@
 	}
 	"Medigun Desc Pap 3"
 	{
-		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, and provides quick mana recovery.\nUbercharge rate decreased."
+		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, +mana recovery, + overclock buff on heal.\nUbercharge rate decreased."
 	}
 	"Flash Grenade Desc"
 	{
