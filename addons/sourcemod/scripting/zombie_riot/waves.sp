@@ -7,7 +7,6 @@ enum struct Enemy
 	int Is_Boss;
 	float WaitingTimeGive;
 	float ExtraSize;
-	float ExtraThinkSpeed;
 	int Is_Outlined;
 	int Is_Health_Scaled;
 	int Does_Not_Scale;
