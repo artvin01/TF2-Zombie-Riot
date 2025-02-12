@@ -394,9 +394,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							Calculate_And_Display_hp(owner, healTarget, 0.0, true);
 						}
 						
-						ApplyStatusEffect(owner, healTarget, "Healing Strength", 1.0);
 						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
-						ApplyStatusEffect(owner, owner, "Healing Strength", 1.0);
 						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
 						
 					}

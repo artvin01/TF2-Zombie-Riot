@@ -460,21 +460,13 @@
 	{
 		"en"	"Decreases damage taken by 15%%"
 	}
-	"Healing Strength"
-	{
-		"en"	"Healing Strength"
-	}
-	"Healing Strength Desc"
-	{
-		"en"	"Increases damage dealt by 25%%"
-	}
 	"Healing Resolve"
 	{
 		"en"	"Healing Resolve"
 	}
 	"Healing Resolve Desc"
 	{
-		"en"	"Decreases damage taken by 5%%"
+		"en"	"Decreases damage taken by 5%%, Increases damage dealt by 25%%"
 	}
 	"Healing Adaptiveness All"
 	{
@@ -887,6 +879,22 @@
 	"Caffinated Dereliction Desc"
 	{
 		"en"	"Increas damage taken by 25%%"
+	}
+	"Lighthouse Enlightment"
+	{
+		"en" "Lighthouse Enlightment"
+	}
+	"Lighthouse Enlightment Desc"
+	{
+		"en"	"Increases Attackspeed and reloadspeed by 30%%"
+	}
+	"Lighthouse Enlightment Detect"
+	{
+		"en" "Lighthouse Enlightment Detect"
+	}
+	"Lighthouse Enlightment Detect Desc"
+	{
+		"en"	"Ignore This."
 	}
 	"Hectic Therapy"
 	{

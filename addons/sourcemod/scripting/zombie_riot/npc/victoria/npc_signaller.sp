@@ -118,7 +118,6 @@ methodmap VictorianSignaller < CClotBody
 						ApplyStatusEffect(npc.index, entitycount, "Combine Command", 2.5);
 						ApplyStatusEffect(npc.index, entitycount, "Buff Banner", 2.5);
 						ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", 2.5);
-						ApplyStatusEffect(npc.index, entitycount, "Healing Strength", 2.5);
 						ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", 2.5);
 					}
 				}

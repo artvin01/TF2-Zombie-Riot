@@ -21,12 +21,15 @@ enum struct StatusEffect
 	float MovementspeedModif;	//damage buff or nerf
 	bool Positive;//Is it a good buff, if yes, do true
 	bool ElementalLogic;
+
+	int LinkedStatusEffect; //Which status effect is used for below
+	float AttackspeedBuff;	//damage buff or nerf
+
 	//IS it elemental? If yes, dont get blocked or removed.
 	bool ShouldScaleWithPlayerCount; 
 	int Slot; 
 	int SlotPriority; 
 	//If its a buff like the medigun buff where it only affects 1 more person, then it shouldnt do anything.
-
 
 	//Incase more complex stuff is needed.
 	//See Enfeeble
@@ -123,6 +126,7 @@ void InitStatusEffects()
 	StatusEffects_StatusEffectListOnly();
 	StatusEffects_PurnellKitDeBuffs();
 	StatusEffects_PurnellKitBuffs();
+	StatusEffects_Construction();
 	//freeplay last.
 	StatusEffects_Freeplay1();
 	StatusEffects_Freeplay2();
@@ -278,9 +282,14 @@ int StatusEffect_AddGlobal(StatusEffect data)
 	return AL_StatusEffects.PushArray(data);
 }
 
-stock void RemoveSpecificBuff(int victim, const char[] name)
+stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 {
-	int index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+	int index;
+	if(IndexID != -1)
+		index = IndexID;
+	else
+		index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+
 	if(index == -1)
 	{
 		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
@@ -305,13 +314,18 @@ stock void RemoveSpecificBuff(int victim, const char[] name)
 }
 
 //Got lazy, tired of doing so many indexs.
-int HasSpecificBuff(int victim, const char[] name)
+int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 {
 	//doesnt even have abuff...
 	if(!E_AL_StatusEffects[victim])
 		return 0;
 
-	int index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+	int index;
+	if(IndexID != -1)
+		index = IndexID;
+	else
+		index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+
 	if(index == -1)
 	{
 		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
@@ -384,9 +398,14 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 	if(length < 1)
 		delete E_AL_StatusEffects[victim];
 }
-void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration)
+void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration, int IndexID = -1)
 {
-	int index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+	int index;
+	if(IndexID != -1)
+		index = IndexID;
+	else
+		index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+
 	if(index == -1)
 	{
 		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
@@ -871,6 +890,16 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			length--;
 			continue;
 		}
+		/*
+			We want to give attackspeed buffs here
+			Reason being: Its a timer basically.
+		*/
+
+		//We only give this to the client, as itll loop through all their weapaons.
+		if(DisplayWeapon > 0 && Apply_MasterStatusEffect.AttackspeedBuff > 0.0)
+		{
+			Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+		}
 		if(!Apply_MasterStatusEffect.HudDisplay[0])
 			continue;
 		
@@ -910,6 +939,183 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 	}
 	if(length < 1) 		
 		delete E_AL_StatusEffects[victim];
+}
+
+float Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	bool HasBuff = false;
+	float BuffAmount = 1.0;
+	//LinkedStatusEffect
+	if(Apply_MasterStatusEffect.Positive)
+	{	
+		float DamageBuffExtraScaling = 1.0;
+		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[victim])
+		{
+			BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;
+			//We are the owner, get full buff instead.
+		}
+		else
+		{
+			float BuffValueDo = MaxNumBuffValue(buffammount, 1.0, ScalingDo);
+			bool ScaleWithCount = false;
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[victim], npc_classname, sizeof(npc_classname));
+			BarrackBody npc = view_as<BarrackBody>(victim);
+			if(victim <= MaxClients || StrEqual(npc_classname, "npc_citizen") || IsValidEntity(npc.OwnerUserId))
+			{
+				if(GetTeam(victim) == TFTeam_Red)
+					ScaleWithCount = true;
+			}
+			if(ScaleWithCount)
+			{
+				float BuffValueDo = MaxNumBuffValue(Apply_MasterStatusEffect.AttackspeedBuff, 1.0, PlayerCountBuffAttackspeedScaling);
+				BuffValueDo = Apply_MasterStatusEffect.AttackspeedBuff;
+			}
+			else
+				BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;
+		}
+	}
+	else
+	{
+		//For now, attackspeed debuffs dont do anythingfor scaling.
+		//usually above 1.0 tho
+		BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;
+	}
+	static StatusEffect link_Apply_MasterStatusEffect;
+	static E_StatusEffect link_Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_MasterStatusEffect.LinkedStatusEffect , E_StatusEffect::BuffIndex);
+//	int SaveLinkId = Apply_MasterStatusEffect.LinkedStatusEffect;
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, link_Apply_StatusEffect);
+		AL_StatusEffects.GetArray(link_Apply_StatusEffect.BuffIndex, link_Apply_MasterStatusEffect);
+		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			//Ran out, remove buffs?
+		}
+		else
+		{
+			HasBuff = true;
+		}
+	}
+	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect);
+}
+
+bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAmount, int BuffCheckerID)
+{
+	//They still have the test buff
+	if(IsValidClient(entity))
+		Status_effects_DoAttackspeedLogic(entity, 1, HasBuff, BuffAmount, BuffCheckerID);
+	else 
+		Status_effects_DoAttackspeedLogic(entity, 2, HasBuff, BuffAmount, BuffCheckerID);
+
+	return true;
+}
+
+
+static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID)
+{
+	if(type == 1)
+	{
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			//They dont even have the buff.
+			if(!HasSpecificBuff(weapon, "", BuffCheckerID))
+			{	
+				//We want to give the buff
+				if(GrantBuff)
+				{
+					//No extra logic needed
+					ApplyStatusEffect(entity, weapon, "", 9999999.9, BuffCheckerID);
+					StatusEffects_SetCustomValue(weapon, BuffOriginal, BuffCheckerID);
+					//inf
+					if(Attributes_Has(weapon, 6))
+						Attributes_SetMulti(weapon, 6, BuffOriginal);	// Fire Rate
+					
+					if(Attributes_Has(weapon, 97))
+						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+				}
+			}
+			else
+			{
+				float BuffRevert = Status_Effects_GetCustomValue(weapon, BuffCheckerID);
+				//Is the buff still the same as before?
+				//if it changed, we need to update it.
+				if(BuffRevert != BuffOriginal || !GrantBuff)
+				{
+					//Just remove the buff it had.
+					if(Attributes_Has(weapon, 6))
+						Attributes_SetMulti(weapon, 6, 1.0 / (BuffRevert));	// Fire Rate
+					
+					if(Attributes_Has(weapon, 97))
+						Attributes_SetMulti(weapon, 97, 1.0 / (BuffRevert));	// Reload Time
+				
+					RemoveSpecificBuff(weapon, "", BuffCheckerID);
+				}
+				if(GrantBuff && BuffRevert != BuffOriginal)
+				{
+					//No extra logic needed
+					ApplyStatusEffect(entity, weapon, "", 9999999.9, BuffCheckerID);
+					StatusEffects_SetCustomValue(weapon, BuffOriginal, BuffCheckerID);
+					//inf
+					if(Attributes_Has(weapon, 6))
+						Attributes_SetMulti(weapon, 6, BuffOriginal);	// Fire Rate
+					
+					if(Attributes_Has(weapon, 97))
+						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+				}
+			}
+		}
+	}
+	else if(type == 2)
+	{
+		char npc_classname[60];
+		NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+		if(StrEqual(npc_classname, "npc_citizen"))
+		{
+			Citizen npc = view_as<Citizen>(entity);
+			if(GiantLightHouse_Buff[entity] == 0.0)
+			{
+				if(GrantBuff)
+				{
+					GiantLightHouse_Buff[entity] = BuffValueDo;
+					npc.m_fGunFirerate *= BuffValueDo;
+					npc.m_fGunReload *= BuffValueDo;
+				}
+			}
+			else
+			{
+				if(!GrantBuff)
+				{
+					npc.m_fGunFirerate /= (GiantLightHouse_Buff[entity]);
+					npc.m_fGunReload /= (GiantLightHouse_Buff[entity]);
+					GiantLightHouse_Buff[entity] = 0.0;
+				}
+			}
+		}
+		else if(entity > MaxClients)
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(GiantLightHouse_Buff[entity] == 0.0)
+			{
+				if(GrantBuff)
+				{
+					GiantLightHouse_Buff[entity] = BuffValueDo;
+					npc.BonusFireRate *= BuffValueDo;
+				}
+			}
+			else
+			{
+				if(!GrantBuff)
+				{
+					npc.BonusFireRate /= (GiantLightHouse_Buff[entity]);
+					GiantLightHouse_Buff[entity] = 0.0;
+				}
+			}
+		}
+	}
 }
 
 void StatusEffects_HudAbove(int victim, char[] HudAbove, int SizeOfChar)
@@ -2250,25 +2456,12 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Healing Strength");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌃");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.25;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = false;
-	data.Slot						= 0; //0 means ignored
-	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
-
 	strcopy(data.BuffName, sizeof(data.BuffName), "Healing Resolve");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌅");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.95;
-	data.DamageDealMulti			= -1.0;
+	data.DamageDealMulti			= 0.25;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
@@ -3465,3 +3658,99 @@ void StatusEffects_PurnellKitDeBuffs()
 }
 
 
+void StatusEffects_Construction()
+{
+	StatusEffect data;
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Lighthouse Enlightment Detect");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	int BuffIdUse = StatusEffect_AddGlobal(data);
+
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Lighthouse Enlightment");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "l");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.LinkedStatusEffect 		= BuffIdUse;
+	data.AttackspeedBuff			= 0.7;
+	StatusEffect_AddGlobal(data);
+}
+
+
+stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Index)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Index , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+		}
+		else
+		{
+			//We always set it instantly.
+			Apply_StatusEffect.DataForUse = NewBuffValue;
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+}
+
+stock float Status_Effects_GetCustomValue(int victim, int Index)
+{
+	float BuffValuereturn = 1.0;
+	if(!E_AL_StatusEffects[victim])
+		return BuffValuereturn;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Index , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+		}
+		else
+		{
+			BuffValuereturn = Apply_StatusEffect.DataForUse;
+			//add scaling?
+			if(Apply_StatusEffect.TotalOwners[victim])
+			{
+				BuffValuereturn = Apply_StatusEffect.DataForUse;
+				//We are the owner, get full buff instead.
+			}
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
+
+	return BuffValuereturn;
+}

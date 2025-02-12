@@ -3126,9 +3126,7 @@ public void Citizen_ClotThink(int iNPC)
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
 
-							ApplyStatusEffect(npc.index, ally, "Healing Strength", 5.0);
 							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
-							ApplyStatusEffect(npc.index, ally, "Healing Strength", 5.0);
 							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
 							
 							if(ally <= MaxClients)

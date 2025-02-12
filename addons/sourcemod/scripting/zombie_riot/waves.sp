@@ -2719,10 +2719,10 @@ void DoGlobalMultiScaling()
 	{
 		PlayerCountBuffAttackspeedScaling = 1.2;
 	}
-	//Shouldnt be lower then 0.1
-	if(PlayerCountBuffAttackspeedScaling < 0.1)
+	//Shouldnt be lower then 0.35
+	if(PlayerCountBuffAttackspeedScaling < 0.35)
 	{
-		PlayerCountBuffAttackspeedScaling = 0.1;
+		PlayerCountBuffAttackspeedScaling = 0.35;
 	}
 
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;

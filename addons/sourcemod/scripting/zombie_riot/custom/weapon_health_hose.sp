@@ -450,9 +450,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			}
 		}
 		
-		ApplyStatusEffect(client, target, "Healing Strength", 15.0);
 		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);
-		ApplyStatusEffect(client, target, "Healing Strength", 15.0);
 		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);
 		static float belowBossEyes[3];
 		belowBossEyes[0] = 0.0;
@@ -606,7 +604,6 @@ public void TouchHealthKit(int entity, int other)
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");
-		ApplyStatusEffect(Owner, other, "Healing Strength", 15.0);
 		ApplyStatusEffect(Owner, other, "Healing Resolve", 15.0);
 		f_HealMaxPickup_Enable[entity] = GetGameTime() + 0.5;
 		f_HealMaxPickup[entity] -= (healing_done / HealPenalty);

@@ -7,7 +7,7 @@
 static const char SectionName[][] =
 {
 	"Support Buildings",
-	"Sentry Buildings",
+	"Singular Buildings",
 	"Construct Buildings"
 };
 
