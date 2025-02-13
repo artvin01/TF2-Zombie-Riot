@@ -222,16 +222,11 @@ void AnnoyingSpiritWega(AnnoyingSpirit npc, float gameTime, int target, float di
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 1.0;
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
 					if(IsValidClient(target) && !b_IsPlayerABot[target])
 					{
 						SetHudTextParams(-1.0, -1.0, 2.0, 255, 75, 75, 255);
 						ShowHudText(target, -1, "WAAAAAAAAAHHHHHHH");
 					}
-
 
 					// WAAAAAAHHHHG
 					npc.PlaySpookSound(target);
