@@ -22,6 +22,7 @@ enum struct Enemy
 	float ExtraSpeed;
 	float ExtraDamage;
 	char Spawn[64];
+	float ExtraThinkSpeed;
 	char CustomName[64];
 }
 
