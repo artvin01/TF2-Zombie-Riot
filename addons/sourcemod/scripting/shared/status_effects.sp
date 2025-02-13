@@ -2429,8 +2429,9 @@ void StatusEffects_Medieval()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.75;
-	data.DamageDealMulti			= 0.5;
+	data.DamageDealMulti			= 0.125;
 	data.MovementspeedModif			= 1.5;
+	data.AttackspeedBuff			= 0.75;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored

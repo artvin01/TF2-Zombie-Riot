@@ -317,6 +317,14 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 	}
 }
 
+public void MapChooser_OnPreMapEnd()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		DataBase_ClientDisconnect(client);
+	}
+}
+
 void DataBase_ClientDisconnect(int client)
 {
 	if(Cached[client])
