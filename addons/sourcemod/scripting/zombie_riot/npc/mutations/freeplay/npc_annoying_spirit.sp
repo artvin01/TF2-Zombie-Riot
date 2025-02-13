@@ -21,7 +21,7 @@ void AnnoyingSpirit_OnMapStart_NPC()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Annoying Spirit");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Annoying_spirit");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_annoying_spirit");
 	strcopy(data.Icon, sizeof(data.Icon), ""); 				//leaderboard_class_(insert the name)
 	data.IconCustom = false;													//download needed?
 	data.Flags = 0;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
