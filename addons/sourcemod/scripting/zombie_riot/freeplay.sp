@@ -1806,13 +1806,13 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 4:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 10% less health.");
-				HealthMulti *= 0.9;
+				strcopy(message, sizeof(message), "{green}All enemies now have 15% less health.");
+				HealthMulti *= 0.85;
 			}
 			case 5:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 15% less health.");
-				HealthMulti *= 0.85;
+				strcopy(message, sizeof(message), "{green}All enemies now have 20% less health.");
+				HealthMulti *= 0.8;
 			}
 			case 6:
 			{
@@ -1828,15 +1828,15 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 8:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}30000 more health {yellow}but {green}10% less health.");
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}30000 more health {yellow}but {green}15% less health.");
 				HealthBonus += 30000;
-				HealthMulti /= 1.1;
+				HealthMulti /= 1.15;
 			}
 			case 9:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}20% less health.");
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}25% less health.");
 				HealthBonus += 60000;
-				HealthMulti /= 1.2;
+				HealthMulti /= 1.25;
 			}
 
 			/// BUFF/DEBUFF SKULLS //
