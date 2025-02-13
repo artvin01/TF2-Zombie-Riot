@@ -29,6 +29,13 @@ Use THIS compiler version if you dont want any wierd issues when coding yourself
 
 1.12.0.7162
 
+Use this compiler incase you think compiling ZR takes too long, as they changed something
+
+1.12.0.7031
+
+if you do, only get the handles.inc from this.
+
+
 ### Where can I see this gamemode in action?
 
 IF you wish to see the plugin in action/or just are interrested in playing this gamemode rather then coding/messing with it, the main server for the plugin is this one hosted by disc.ff:

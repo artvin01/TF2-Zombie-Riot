@@ -338,7 +338,7 @@ methodmap Lex < CClotBody
 	}
 	public int Get_Target()
 	{
-		float GameTime = GetGameTime(npc.index);
+		float GameTime = GetGameTime(this.index);
 		if(!this.IsAlive())
 		{
 			if(this.m_flGetClosestTargetTime < GameTime)

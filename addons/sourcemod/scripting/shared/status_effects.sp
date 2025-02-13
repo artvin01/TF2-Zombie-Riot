@@ -990,7 +990,6 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 	//LinkedStatusEffect
 	if(Apply_MasterStatusEffect.Positive)
 	{	
-		float DamageBuffExtraScaling = 1.0;
 		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[victim])
 		{
 			BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;
@@ -1007,8 +1006,7 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 			}
 			if(ScaleWithCount)
 			{
-				float BuffValueDo = MaxNumBuffValue(Apply_MasterStatusEffect.AttackspeedBuff, 1.0, PlayerCountBuffAttackspeedScaling);
-				BuffValueDo = Apply_MasterStatusEffect.AttackspeedBuff;
+				BuffAmount = MaxNumBuffValue(Apply_MasterStatusEffect.AttackspeedBuff, 1.0, PlayerCountBuffAttackspeedScaling);
 			}
 			else
 				BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;
@@ -2680,7 +2678,7 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.5;
+	data.AttackspeedBuff			= 0.7;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;

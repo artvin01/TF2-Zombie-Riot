@@ -7,6 +7,7 @@ enum struct Enemy
 	int Is_Boss;
 	float WaitingTimeGive;
 	float ExtraSize;
+	float ExtraThinkSpeed;
 	int Is_Outlined;
 	int Is_Health_Scaled;
 	int Does_Not_Scale;
@@ -956,6 +957,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
 						enemy.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
 						enemy.ExtraSize = kv.GetFloat("extra_size", 1.0);
+						enemy.ExtraThinkSpeed = kv.GetFloat("extra_thinkspeed", 1.0);
 						wave.DangerLevel = kv.GetNum("danger_level");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
@@ -2612,6 +2614,7 @@ void AntiDelaySpawnEnemies(int health = 0, int count, bool is_a_boss = false)
 	enemy.ExtraRangedRes = 0.2;
 	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 9999.0;
+	enemy.ExtraThinkSpeed = 1.0;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = 3;
 	for(int i; i<count; i++)
@@ -3080,6 +3083,7 @@ static int SetupFlags(const Enemy data, bool support)
 	data.ExtraRangedRes < 1.0 || 
 	data.ExtraSpeed > 1.0 || 
 	data.ExtraDamage > 1.0 || 
+	data.ExtraThinkSpeed > 1.0 ||
 	data.Is_Boss > 1)
 		flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
 	
