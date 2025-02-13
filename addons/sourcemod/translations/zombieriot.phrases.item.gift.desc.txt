@@ -2473,6 +2473,6 @@
 	}
 	"SIGMALLER Desc"
 	{
-		"en"	"One of Koshi's weird, crazy antics.\nWhen it spawns, all enemies are fully healed and buffed.\nYou MUS take it down before the other enemies.\nOtherwise, you won't like the sound that his horn makes..."
+		"en"	"One of Koshi's weird, crazy antics.\nWhen it spawns, all enemies are fully healed and buffed.\nYou MUST take it down before the other enemies.\nOtherwise, you won't like the sound that his horn makes..."
 	}
 }
