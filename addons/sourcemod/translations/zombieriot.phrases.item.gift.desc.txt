@@ -2479,4 +2479,8 @@
 	{
 		"en"	"An invincible, annoying spirit.\nPretty much a product of Koshi's weird mind.\nThis spirit is not threatening at all, in fact he doesn't even deal damage.\nHe just... screams."
 	}
+	"Darkened Heavy Desc"
+	{
+		"en"	"Taken by an unknown force, it was converted into an obscure, dark entity.\nDamaging it outside its aura causes it to heal.\n''The darkness is coming. You need to run.''"
+	}
 }
