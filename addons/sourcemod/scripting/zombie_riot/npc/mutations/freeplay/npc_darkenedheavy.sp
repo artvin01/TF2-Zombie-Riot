@@ -295,7 +295,7 @@ public Action FogOrbHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget > (250.0 * 250.0))
 	{
-		HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"), 1.0, 0.0, HEAL_ABSOLUTE);
+		HealEntityGlobal(npc.index, npc.index, float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")), 1.0, 0.0, HEAL_ABSOLUTE);
 		damage *= 0.25;
 		return Plugin_Handled;
 	}
