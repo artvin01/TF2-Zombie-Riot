@@ -57,7 +57,6 @@ static float gay;
 void Freeplay_OnMapStart()
 {
 	PrecacheSound("ui/vote_success.wav", true);
-	PrecacheSound("passtime/ball_dropped.wav", true);
 	PrecacheSound("ui/mm_medal_silver.wav", true);
 	PrecacheSound("ambient/halloween/thunder_01.wav", true);
 	PrecacheSound("misc/halloween/spelltick_set.wav", true);
@@ -489,7 +488,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
-		enemy.Health = RoundToCeil((HealthBonus + (375000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
+		enemy.Health = RoundToCeil((HealthBonus + (450000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
 		enemy.ExtraMeleeRes = 1.35;
 		enemy.ExtraRangedRes = 1.0;
 		enemy.ExtraSpeed = 1.0;
@@ -1146,7 +1145,6 @@ void Freeplay_SetupStart(bool extra = false)
 			ExtraSkulls++;
 			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
 			CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
-			EmitSoundToAll("passtime/ball_dropped.wav", _, _, _, _, 0.67);
 		}
 
 		SkullTimes = ExtraSkulls;
