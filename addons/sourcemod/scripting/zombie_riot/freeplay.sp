@@ -489,15 +489,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
-		enemy.Health = RoundToCeil((HealthBonus + (225000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
+		enemy.Health = RoundToCeil((HealthBonus + (375000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
 		enemy.ExtraMeleeRes = 1.35;
 		enemy.ExtraRangedRes = 1.0;
 		enemy.ExtraSpeed = 1.0;
 		enemy.ExtraDamage = 1.0;
 		enemy.ExtraSize = 1.0;
 		enemy.Credits += 100.0;
-		enemy.Is_Boss = 0;
-		enemy.Is_Health_Scaled = 0;
 
 		count = 5;
 		immutable = false;
@@ -652,6 +650,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 	if(enemy.Team != TFTeam_Red)
 		enemy.ExtraSize *= ExtraEnemySize;
+
+	if(enemy.Is_Boss == 1)
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 
 	// 2 billion limit, it is necessary
 	if(enemy.Health > 2000000000)
