@@ -59,6 +59,7 @@ static int HurtleBuff;
 static int HurtleBuffEnemies;
 static bool LoveNahTonic;
 static bool Schizophrenia;
+static bool NormalSignaller;
 
 void Freeplay_OnMapStart()
 {
@@ -134,6 +135,7 @@ void Freeplay_ResetAll()
 	HurtleBuffEnemies = 0;
 	LoveNahTonic = false;
 	Schizophrenia = false;
+	NormalSignaller = false;
 }
 
 int Freeplay_EnemyCount()
@@ -200,7 +202,7 @@ int Freeplay_GetDangerLevelCurrent()
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
-	if(RaidFight || friendunitamount || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller || Schizophrenia)
+	if(RaidFight || friendunitamount || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller || Schizophrenia || NormalSignaller)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -516,7 +518,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Index = NPC_GetByPlugin("npc_spotter");
 		enemy.Health = RoundToFloor(50000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Is_Immune_To_Nuke = true;
-		enemy.Is_Outlined = 1;
+		enemy.Is_Outlined = 0;
 		count = 1;
 		spotter--;
 	}
@@ -529,6 +531,17 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Credits += 250.0;
 		count = 1;
 		Schizophrenia = false;
+	}
+	else if(NormalSignaller)
+	{
+		enemy.Team = TFTeam_Red;
+		enemy.Index = NPC_GetByPlugin("npc_signaller");
+		enemy.Health = 50000;
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Outlined = 0;
+
+		count = 1;
+		NormalSignaller = false;
 	}
 	else
 	{
@@ -2642,6 +2655,16 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}A weird, yet haunting feeling of Schizophrenia envelops you...");
 				Schizophrenia = true;
+			}
+			case 87:
+			{
+				if(NormalSignaller)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{green}Seems like a common Signaller has decided to help in training.");
+				NormalSignaller = true;
 			}
 			default:
 			{
