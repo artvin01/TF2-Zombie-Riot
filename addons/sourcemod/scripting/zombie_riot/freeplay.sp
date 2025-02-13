@@ -525,7 +525,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	else if(Schizophrenia)
 	{
 		enemy.Index = NPC_GetByPlugin("npc_annoying_spirit");
-		enemy.Health = 100000000;
+		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Outlined = 0;
 		enemy.Credits += 250.0;
