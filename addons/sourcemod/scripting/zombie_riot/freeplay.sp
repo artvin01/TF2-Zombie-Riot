@@ -169,7 +169,7 @@ int Freeplay_EnemyCount()
 			amount++;
 
 		if(NormalSignaller)
-			amoun++;
+			amount++;
 	}
 
 	return amount;
