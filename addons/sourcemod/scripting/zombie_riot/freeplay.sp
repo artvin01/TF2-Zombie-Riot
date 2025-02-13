@@ -41,6 +41,8 @@ static bool UnlockedSpeed;
 static bool CheesyPresence;
 static int EloquenceBuff;
 static int RampartBuff;
+static int EloquenceBuffEnemies;
+static int RampartBuffEnemies;
 static int FreeplayBuffTimer;
 static bool AntinelNextWave;
 static bool zombiecombine;
@@ -53,6 +55,9 @@ static bool merlton;
 static bool Sigmaller;
 static float gay;
 static int friendunitamount;
+static int HurtleBuff;
+static int HurtleBuffEnemies;
+static bool LoveNahTonic;
 
 void Freeplay_OnMapStart()
 {
@@ -111,6 +116,8 @@ void Freeplay_ResetAll()
 	CheesyPresence = false;
 	EloquenceBuff = 0;
 	RampartBuff = 0;
+	EloquenceBuffEnemies = 0;
+	RampartBuffEnemies = 0;
 	FreeplayBuffTimer = 0;
 	AntinelNextWave = false;
 	zombiecombine = false;
@@ -122,6 +129,9 @@ void Freeplay_ResetAll()
 	Sigmaller = false;
 	gay = 0.0;
 	friendunitamount = 0;
+	HurtleBuff = 0;
+	HurtleBuffEnemies = 0;
+	LoveNahTonic = false;
 }
 
 int Freeplay_EnemyCount()
@@ -852,6 +862,33 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 	
 		//// BUFFS ////
+
+		if(EloquenceBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence I", 30.0);
+
+		if(EloquenceBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence II", 20.0);	
+
+		if(EloquenceBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence III", 10.0);	
+
+		if(RampartBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart I", 30.0);
+
+		if(RampartBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart II", 20.0);	
+
+		if(RampartBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart III", 10.0);
+
+		if(HurtleBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle I", 30.0);
+
+		if(HurtleBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle II", 20.0);	
+
+		if(HurtleBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle III", 10.0);
 	
 		if(HussarBuff)
 			ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
@@ -891,6 +928,12 @@ void Freeplay_SpawnEnemy(int entity)
 	
 		if(merlton)
 			ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 5.0);	
+
+		if(LoveNahTonic)
+		{
+			ApplyStatusEffect(entity, entity, "Tonic Affliction", 5.0);
+			ApplyStatusEffect(entity, entity, "Tonic Affliction Hide", 5.0);
+		}
 	
 		//// DEBUFFS ////
 	
@@ -996,13 +1039,13 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		{
 			if(CheesyPresence)
 			{
-				ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+				ApplyStatusEffect(client, client, "Cheesy Presence", 5.0);
 			}
 			else
 			{
 				/*
 				if(Items_HasNamedItem(client, "A Block of Cheese"))
-					ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+					ApplyStatusEffect(client, client, "Cheesy Presence", 5.0);
 				*/
 			}
 
@@ -1037,6 +1080,22 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 					ApplyStatusEffect(client, client, "Freeplay Rampart III", 1.25);
 				}
 			}
+
+			switch(HurtleBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle I", 5.0);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle II", 5.0);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle III", 5.0);
+				}
+			}
 		}
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
@@ -1045,7 +1104,7 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			if(CheesyPresence)
-				ApplyStatusEffect(ally, ally, "Cheesy Presence", 1.25);
+				ApplyStatusEffect(ally, ally, "Cheesy Presence", 5.0);
 
 			switch(EloquenceBuff)
 			{
@@ -1076,6 +1135,22 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 				case 3:
 				{
 					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", 1.25);
+				}
+			}
+
+			switch(HurtleBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle I", 5.0);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle II", 5.0);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle III", 5.0);
 				}
 			}
 		}
@@ -1142,7 +1217,6 @@ void Freeplay_SetupStart(bool extra = false)
 	//	if(exskull < 20) // 20% chance
 		{
 			ExtraSkulls++;
-			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
 			CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
 		}
 
@@ -1153,7 +1227,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 79;
+		rand = GetURandomInt() % 87;
 
 	if(wrathofirln)
 	{
@@ -1546,6 +1620,60 @@ void Freeplay_SetupStart(bool extra = false)
 				CPrintToChatAll("{green}All enemies are now using the Quick Revive perk, this is useless and removes their previous perk.");
 				PerkMachine = 0;
 			}
+		}
+
+		if(EloquenceBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Eloquence Buff.");
+			EloquenceBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Eloquence buff.");
+			EloquenceBuffEnemies++;
+		}
+
+		if(RampartBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Rampart Buff.");
+			RampartBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Rampart buff!");
+			RampartBuffEnemies++;
+		}
+		if(HurtleBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Hurtle Buff.");
+			HurtleBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Hurtle buff!");
+			HurtleBuffEnemies++;
+		}
+
+		if(HurtleBuff > 2)
+		{
+			CPrintToChatAll("{red}Removed the Hurtle buff from everyone!");
+			HurtleBuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{green}All players and allied npcs now gain a layer of the Hurtle buff.");
+			HurtleBuff++;
+		}
+
+		if(LoveNahTonic)
+		{
+			CPrintToChatAll("{green}Ok, that's enough Tonic...");
+			LoveNahTonic = false;
+		}
+		else
+		{
+			CPrintToChatAll("{pink}Love is in the air? {crimson}WRONG! {red}Tonic Affliction in the enemies. {yellow}(Lasts 5s)");
+			LoveNahTonic = true;
 		}
 
 		switch(GetRandomInt(1, 5))
@@ -2412,6 +2540,86 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}This skull... it.. it FEELS SO SIGMA!!!!!");
 				Sigmaller = true;
+			}
+			case 79:
+			{
+				if(EloquenceBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Eloquence Buff.");
+					EloquenceBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Eloquence buff.");
+					EloquenceBuffEnemies++;
+				}
+			}
+			case 80:
+			{
+				if(RampartBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Rampart Buff.");
+					RampartBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Rampart buff!");
+					RampartBuffEnemies++;
+				}
+			}
+			case 81:
+			{
+				if(HurtleBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Hurtle Buff.");
+					HurtleBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Hurtle buff!");
+					HurtleBuffEnemies++;
+				}
+			}
+			case 82:
+			{
+				if(HurtleBuff > 2)
+				{
+					strcopy(message, sizeof(message), "{red}Removed the Hurtle buff from everyone!");
+					HurtleBuff = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{green}All players and allied npcs now gain a layer of the Hurtle buff.");
+					HurtleBuff++;
+				}
+			}
+			case 83:
+			{
+				if(LoveNahTonic)
+				{
+					strcopy(message, sizeof(message), "{green}Ok, that's enough Tonic...");
+					LoveNahTonic = false;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{pink}Love is in the air? {crimson}WRONG! {red}Tonic Affliction in the enemies. {yellow}(Lasts 5s)");
+					LoveNahTonic = true;
+				}
+			}
+			case 84:
+			{
+				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
+				ExtraSkulls++;
+			}
+			case 85:
+			{
+				strcopy(message, sizeof(message), "{yellow}Actually, y'know what? Maybe i'll throw in TWO extra skulls even.");
+				ExtraSkulls += 2;
+			}
+			case 86:
+			{
+				strcopy(message, sizeof(message), "{red}ffffFFFFF-{crimson}FUCK {red}it, THREE EXTRA SKULLS!!!");
+				ExtraSkulls += 3;
 			}
 			default:
 			{
