@@ -239,10 +239,10 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 
 		if(imalone)
 		{
-			HealEntityGlobal(npc.index, npc.index, (float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 0.1), 1.0, 0.0, HEAL_ABSOLUTE);
-			fl_Extra_Damage[entity] *= 1.025;
-			fl_Extra_MeleeArmor[entity] *= 0.95;
-			fl_Extra_RangedArmor[entity] *= 0.95;
+			HealEntityGlobal(npc.index, npc.index, (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.1), 1.0, 0.0, HEAL_ABSOLUTE);
+			fl_Extra_Damage[npc.index] *= 1.025;
+			fl_Extra_MeleeArmor[npc.index] *= 0.95;
+			fl_Extra_RangedArmor[npc.index] *= 0.95;
 		}
 
 		npc.m_flNextMeleeAttack = gameTime + 5.0;
