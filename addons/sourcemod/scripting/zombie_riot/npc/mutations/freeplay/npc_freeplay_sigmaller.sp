@@ -45,7 +45,7 @@ void FreeplaySigmaller_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_signaller");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = Type_Victoria;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);  
 }
