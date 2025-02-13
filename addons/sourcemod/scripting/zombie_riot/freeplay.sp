@@ -416,7 +416,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	}
 	else if(Sigmaller)
 	{
-		// Spawns a humongous Signaller that does the same thing a normal one does, no matter if its silenced or not.
+		// Spawns a humongous Signaller that does multiple stuff.
 		enemy.Is_Outlined = true;
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
@@ -424,11 +424,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Index = NPC_GetByPlugin("npc_freeplay_sigmaller");
 		enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
-		enemy.ExtraSpeed = 1.25;
-		enemy.ExtraSize = 3.0; // BIG
 		enemy.Credits += 1.0;
-		enemy.Is_Health_Scaled = 0;
-		strcopy(enemy.CustomName, sizeof(enemy.CustomName), "SIGMALLER");
 
 		count = 1;
 		Sigmaller = false;
