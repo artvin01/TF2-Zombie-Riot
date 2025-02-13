@@ -53,7 +53,7 @@ methodmap AnnoyingSpirit < CClotBody
 	
 	public AnnoyingSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
-		AnnoyingSpirit npc = view_as<AnnoyingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "50000", ally));
+		AnnoyingSpirit npc = view_as<AnnoyingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "1000000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -79,7 +79,8 @@ methodmap AnnoyingSpirit < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		npc.m_bCamo = true;
-		npc.m_bStaticNPC = true;
+		Is_a_Medic[npc.index] = true;
+
 		npc.m_fTimeBefore = GetGameTime(npc.index) + 150.0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -93,11 +94,13 @@ methodmap AnnoyingSpirit < CClotBody
 		if(Decicion == 2)
 			Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
 
+		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true;
 
-		fl_TotalArmor[npc.index] = 0.05;
+		fl_TotalArmor[npc.index] = 0.1;
 		return npc;
 	}
 }
@@ -161,11 +164,10 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	// have it never die until vulnerable, unsure if true damage works with this
+	// have it heal the damage it takes
 	if(!npc.Anger)
 	{
-		HealEntityGlobal(npc.index, npc.index, 999999.0, 1.0, 0.0, HEAL_ABSOLUTE);
-		damage = 1.0;
+		HealEntityGlobal(npc.index, npc.index, damage, 1.0, 0.0, HEAL_ABSOLUTE);
 		return Plugin_Handled;
 	}
 
