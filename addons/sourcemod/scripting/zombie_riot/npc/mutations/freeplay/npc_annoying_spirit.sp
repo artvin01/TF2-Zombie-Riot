@@ -154,12 +154,12 @@ static void Internal_ClotThink(int iNPC)
 	}
 }
 
-static void Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	AnnoyingSpirit npc = view_as<AnnoyingSpirit>(victim);
 		
 	if(attacker <= 0)
-		return;
+		return Plugin_Continue;
 		
 	// have it never die until vulnerable, unsure if true damage works with this
 	if(!npc.Anger)
@@ -174,6 +174,8 @@ static void Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
+	return Plugin_Continue;
 }
 
 static void Internal_NPCDeath(int entity)
