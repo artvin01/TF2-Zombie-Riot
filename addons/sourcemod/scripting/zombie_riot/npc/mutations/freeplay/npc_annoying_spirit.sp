@@ -167,7 +167,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	// have it heal the damage it takes
 	if(!npc.Anger)
 	{
-		if(damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth"))	
+		if(damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth")))	
 		{
 			damage = 0.0;
 			HealEntityGlobal(npc.index, npc.index, float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")), 1.0, 0.0, HEAL_ABSOLUTE);
