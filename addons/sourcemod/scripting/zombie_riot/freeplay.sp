@@ -8,7 +8,6 @@ static int EnemyChance;
 static int EnemyBosses;
 static int ImmuneNuke;
 static int CashBonus;
-static bool FriendlyDay;
 static float KillBonus;
 static float MiniBossChance;
 static bool HussarBuff;
@@ -53,6 +52,7 @@ static int RandomStats;
 static bool merlton;
 static bool Sigmaller;
 static float gay;
+static int friendunitamount;
 
 void Freeplay_OnMapStart()
 {
@@ -77,7 +77,6 @@ void Freeplay_ResetAll()
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
 	CashBonus = 0;
-	FriendlyDay = false;
 	KillBonus = 0.0;
 	MiniBossChance = 0.2;
 	HussarBuff = false;
@@ -122,6 +121,7 @@ void Freeplay_ResetAll()
 	merlton = false;
 	Sigmaller = false;
 	gay = 0.0;
+	friendunitamount = 0;
 }
 
 int Freeplay_EnemyCount()
@@ -188,7 +188,7 @@ int Freeplay_GetDangerLevelCurrent()
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
-	if(RaidFight || FriendlyDay || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller)
+	if(RaidFight || friendunitamount || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -402,17 +402,20 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = 1;
 		RaidFight = 0;
 	}
-	else if(FriendlyDay)
+	else if(friendunitamount)
 	{
 		enemy.Team = TFTeam_Red;
-		count = 5;
-		FriendlyDay = false;
+		count = friendunitamount;
 
 		if(enemy.Health)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage = 20.0;
+
+		enemy.ExtraSpeed = 1.25;
+
+		friendunitamount = 0;
 	}
 	else if(Sigmaller)
 	{
@@ -1311,8 +1314,9 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		CPrintToChatAll("{green}You will gain 5 random friendly units.");
-		FriendlyDay = true;
+		int guh = GetRandomInt(8, 16);
+		CPrintToChatAll("{green}You will gain %d random friendly units.", guh);
+		friendunitamount = guh;
 
 		float randommini = GetRandomFloat(0.5, 2.0);
 		MiniBossChance *= randommini;
@@ -1896,13 +1900,14 @@ void Freeplay_SetupStart(bool extra = false)
 			/// MISCELANEOUS SKULLS ///
 			case 31:
 			{
-				if(FriendlyDay)
+				if(friendunitamount)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}You will gain 5 random friendly units.");
-				FriendlyDay = true;
+				int guh2 = GetRandomInt(4, 8);
+				strcopy(message, sizeof(message), "{green}You will gain a random amount of friendly units.");
+				friendunitamount = guh2;
 			}
 			case 32:
 			{
