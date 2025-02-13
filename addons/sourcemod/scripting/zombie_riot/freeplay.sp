@@ -60,6 +60,7 @@ static int HurtleBuffEnemies;
 static bool LoveNahTonic;
 static bool Schizophrenia;
 static bool NormalSignaller;
+static bool DarknessComing;
 
 void Freeplay_OnMapStart()
 {
@@ -136,6 +137,7 @@ void Freeplay_ResetAll()
 	LoveNahTonic = false;
 	Schizophrenia = false;
 	NormalSignaller = false;
+	DarknessComing = false;
 }
 
 int Freeplay_EnemyCount()
@@ -159,6 +161,15 @@ int Freeplay_EnemyCount()
 	
 		if(moremen)
 			amount += 3;
+
+		if(Schizophrenia)
+			amount++;
+
+		if(DarknessComing)
+			amount++;
+
+		if(NormalSignaller)
+			amoun++;
 	}
 
 	return amount;
@@ -202,7 +213,7 @@ int Freeplay_GetDangerLevelCurrent()
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
-	if(RaidFight || friendunitamount || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller || Schizophrenia || NormalSignaller)
+	if(RaidFight || friendunitamount || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller || Schizophrenia || NormalSignaller || DarknessComing)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -464,6 +475,19 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		count = 1;
 		AntinelNextWave = false;
+	}
+	else if(DarknessComing)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Index = NPC_GetByPlugin("npc_darkenedheavy");
+		enemy.Health = RoundToCeil(HealthBonus + (3000000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.02)));
+		enemy.Credits += 100.0;
+		enemy.ExtraMeleeRes = 1.25;
+		enemy.ExtraRangedRes = 0.5;
+		enemy.Is_Boss = 1;
+
+		count = 6;
+		DarknessComing = false;
 	}
 	else if(zombiecombine)
 	{
@@ -1221,7 +1245,7 @@ void Freeplay_SetupStart(bool extra = false)
 			raidtime = true;
 		}
 
-		if(Waves_GetRound() > 99)
+		if(Waves_GetRound() > 79)
 		{
 			int wrathchance = GetRandomInt(0, 100);
 			if(wrathchance < irlnreq)
@@ -1252,7 +1276,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 89;
+		rand = GetURandomInt() % 90;
 
 	if(wrathofirln)
 	{
@@ -1701,7 +1725,7 @@ void Freeplay_SetupStart(bool extra = false)
 			LoveNahTonic = true;
 		}
 
-		switch(GetRandomInt(1, 5))
+		switch(GetRandomInt(1, 8))
 		{
 			case 1:
 			{
@@ -1723,10 +1747,25 @@ void Freeplay_SetupStart(bool extra = false)
 				CPrintToChatAll("{red}I FEEL SO SIGMA!!!!!");
 				Sigmaller = true;
 			}
+			case 5:
+			{
+				CPrintToChatAll("{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
+				DarknessComing = true;
+			}
+			case 6:
+			{
+				CPrintToChatAll("{red}You begin to hear voices in your head...");
+				Schizophrenia = true;
+			}
+			case 7:
+			{
+				CPrintToChatAll("{green}Seems like a common Signaller has decided to help in training.");
+				DarknessComing = true;
+			}
 			default:
 			{
 				CPrintToChatAll("{purple}Otherworldly beings approach from a dimensional rip...");
-				immutable = true;
+				NormalSignaller = true;
 			}
 		}
 
@@ -2653,7 +2692,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}A weird, yet haunting feeling of Schizophrenia envelops you...");
+				strcopy(message, sizeof(message), "{red}As you pick this skull, you begin to hear voices in your head...");
 				Schizophrenia = true;
 			}
 			case 88:
@@ -2665,6 +2704,16 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{green}Seems like a common Signaller has decided to help in training.");
 				NormalSignaller = true;
+			}
+			case 89:
+			{
+				if(DarknessComing)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
+				DarknessComing = true;
 			}
 			default:
 			{
