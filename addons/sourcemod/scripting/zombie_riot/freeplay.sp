@@ -1728,7 +1728,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 		EmitSoundToAll("ambient/halloween/thunder_01.wav");
 		CPrintToChatAll("{orange}Wrath of Irln: {yellow}(almost) {crimson}ALL SKULLS HAVE BEEN ACTIVATED. The effects are described above.");
-		gay = 20.0;
+		gay = 8.0;
 	}
 	else if(raidtime)
 	{
@@ -1737,7 +1737,7 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{strange}--==({gold}RAID ROULETTE!!{strange})==--");
 		CPrintToChatAll("{gold}--==({strange}LET THOU FATE BE RANDOMIZED!{gold})==--");
 		CPrintToChatAll("{green}-=({lime}Winning this wave will reward you with 7500 extra credits.{green})=-");
-		CreateTimer(15.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(10.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
 
 		switch(GetRandomInt(1, 4))
 		{
@@ -1758,11 +1758,11 @@ void Freeplay_SetupStart(bool extra = false)
 				CPrintToChatAll("{gold}Koshi{white}: Here's a trade offer! I recieve {orange}a piece of cheese{white} from your findings, and you recieve...");
 			}
 		}
-		gay = 35.0;
+		gay = 20.0;
 	}
 	else
 	{
-		gay = 15.0;
+		gay = 12.0;
 		char message[128];
 		switch(rand)
 		{
