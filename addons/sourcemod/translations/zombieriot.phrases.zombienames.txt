@@ -3995,6 +3995,10 @@
 	{
 		"en" "Spotter"
 	}
+	"Annoying Spirit"
+	{
+		"en" "Annoying Spirit"
+	}
 	"ATV"
 	{
 		"en"	"ATV"
