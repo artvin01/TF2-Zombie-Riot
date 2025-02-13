@@ -8,7 +8,6 @@ static int EnemyChance;
 static int EnemyBosses;
 static int ImmuneNuke;
 static int CashBonus;
-static bool FriendlyDay;
 static float KillBonus;
 static float MiniBossChance;
 static bool HussarBuff;
@@ -42,6 +41,8 @@ static bool UnlockedSpeed;
 static bool CheesyPresence;
 static int EloquenceBuff;
 static int RampartBuff;
+static int EloquenceBuffEnemies;
+static int RampartBuffEnemies;
 static int FreeplayBuffTimer;
 static bool AntinelNextWave;
 static bool zombiecombine;
@@ -53,11 +54,17 @@ static int RandomStats;
 static bool merlton;
 static bool Sigmaller;
 static float gay;
+static int friendunitamount;
+static int HurtleBuff;
+static int HurtleBuffEnemies;
+static bool LoveNahTonic;
+static bool Schizophrenia;
+static bool NormalSignaller;
+static bool DarknessComing;
 
 void Freeplay_OnMapStart()
 {
 	PrecacheSound("ui/vote_success.wav", true);
-	PrecacheSound("passtime/ball_dropped.wav", true);
 	PrecacheSound("ui/mm_medal_silver.wav", true);
 	PrecacheSound("ambient/halloween/thunder_01.wav", true);
 	PrecacheSound("misc/halloween/spelltick_set.wav", true);
@@ -78,7 +85,6 @@ void Freeplay_ResetAll()
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
 	CashBonus = 0;
-	FriendlyDay = false;
 	KillBonus = 0.0;
 	MiniBossChance = 0.2;
 	HussarBuff = false;
@@ -113,6 +119,8 @@ void Freeplay_ResetAll()
 	CheesyPresence = false;
 	EloquenceBuff = 0;
 	RampartBuff = 0;
+	EloquenceBuffEnemies = 0;
+	RampartBuffEnemies = 0;
 	FreeplayBuffTimer = 0;
 	AntinelNextWave = false;
 	zombiecombine = false;
@@ -123,6 +131,13 @@ void Freeplay_ResetAll()
 	merlton = false;
 	Sigmaller = false;
 	gay = 0.0;
+	friendunitamount = 0;
+	HurtleBuff = 0;
+	HurtleBuffEnemies = 0;
+	LoveNahTonic = false;
+	Schizophrenia = false;
+	NormalSignaller = false;
+	DarknessComing = false;
 }
 
 int Freeplay_EnemyCount()
@@ -146,6 +161,15 @@ int Freeplay_EnemyCount()
 	
 		if(moremen)
 			amount += 3;
+
+		if(Schizophrenia)
+			amount++;
+
+		if(DarknessComing)
+			amount++;
+
+		if(NormalSignaller)
+			amount++;
 	}
 
 	return amount;
@@ -189,7 +213,7 @@ int Freeplay_GetDangerLevelCurrent()
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
-	if(RaidFight || FriendlyDay || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller)
+	if(RaidFight || friendunitamount || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller || Schizophrenia || NormalSignaller || DarknessComing)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -403,33 +427,32 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		count = 1;
 		RaidFight = 0;
 	}
-	else if(FriendlyDay)
+	else if(friendunitamount)
 	{
 		enemy.Team = TFTeam_Red;
-		count = 5;
-		FriendlyDay = false;
+		count = friendunitamount;
 
 		if(enemy.Health)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage = 20.0;
+
+		enemy.ExtraSpeed = 1.25;
+
+		friendunitamount = 0;
 	}
 	else if(Sigmaller)
 	{
-		// Spawns a humongous Signaller that does the same thing a normal one does, no matter if its silenced or not.
+		// Spawns a humongous Signaller that does multiple stuff.
 		enemy.Is_Outlined = true;
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 
-		enemy.Index = NPC_GetByPlugin("npc_signaller");
+		enemy.Index = NPC_GetByPlugin("npc_freeplay_sigmaller");
 		enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
-		enemy.ExtraSpeed = 1.25;
-		enemy.ExtraSize = 3.0; // BIG
 		enemy.Credits += 1.0;
-		enemy.Is_Health_Scaled = 0;
-		strcopy(enemy.CustomName, sizeof(enemy.CustomName), "SIGMALLER");
 
 		count = 1;
 		Sigmaller = false;
@@ -452,6 +475,19 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		count = 1;
 		AntinelNextWave = false;
+	}
+	else if(DarknessComing)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Index = NPC_GetByPlugin("npc_darkenedheavy");
+		enemy.Health = RoundToCeil(HealthBonus + (3000000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.02)));
+		enemy.Credits += 100.0;
+		enemy.ExtraMeleeRes = 1.25;
+		enemy.ExtraRangedRes = 0.5;
+		enemy.Is_Boss = 1;
+
+		count = 6;
+		DarknessComing = false;
 	}
 	else if(zombiecombine)
 	{
@@ -489,15 +525,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
-		enemy.Health = RoundToCeil((HealthBonus + (225000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
+		enemy.Health = RoundToCeil((HealthBonus + (450000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
 		enemy.ExtraMeleeRes = 1.35;
 		enemy.ExtraRangedRes = 1.0;
 		enemy.ExtraSpeed = 1.0;
 		enemy.ExtraDamage = 1.0;
 		enemy.ExtraSize = 1.0;
 		enemy.Credits += 100.0;
-		enemy.Is_Boss = 0;
-		enemy.Is_Health_Scaled = 0;
 
 		count = 5;
 		immutable = false;
@@ -508,9 +542,30 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Index = NPC_GetByPlugin("npc_spotter");
 		enemy.Health = RoundToFloor(50000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Is_Immune_To_Nuke = true;
-		enemy.Is_Outlined = 1;
+		enemy.Is_Outlined = 0;
 		count = 1;
 		spotter--;
+	}
+	else if(Schizophrenia)
+	{
+		enemy.Index = NPC_GetByPlugin("npc_annoying_spirit");
+		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Outlined = 0;
+		enemy.Credits += 250.0;
+		count = 1;
+		Schizophrenia = false;
+	}
+	else if(NormalSignaller)
+	{
+		enemy.Team = TFTeam_Red;
+		enemy.Index = NPC_GetByPlugin("npc_signaller");
+		enemy.Health = 50000;
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Outlined = 0;
+
+		count = 1;
+		NormalSignaller = false;
 	}
 	else
 	{
@@ -652,6 +707,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 	if(enemy.Team != TFTeam_Red)
 		enemy.ExtraSize *= ExtraEnemySize;
+
+	if(enemy.Is_Boss == 1)
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 
 	// 2 billion limit, it is necessary
 	if(enemy.Health > 2000000000)
@@ -853,6 +911,33 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 	
 		//// BUFFS ////
+
+		if(EloquenceBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence I", 30.0);
+
+		if(EloquenceBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence II", 20.0);	
+
+		if(EloquenceBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence III", 10.0);	
+
+		if(RampartBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart I", 30.0);
+
+		if(RampartBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart II", 20.0);	
+
+		if(RampartBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart III", 10.0);
+
+		if(HurtleBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle I", 30.0);
+
+		if(HurtleBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle II", 20.0);	
+
+		if(HurtleBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle III", 10.0);
 	
 		if(HussarBuff)
 			ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
@@ -892,6 +977,12 @@ void Freeplay_SpawnEnemy(int entity)
 	
 		if(merlton)
 			ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 5.0);	
+
+		if(LoveNahTonic)
+		{
+			ApplyStatusEffect(entity, entity, "Tonic Affliction", 5.0);
+			ApplyStatusEffect(entity, entity, "Tonic Affliction Hide", 5.0);
+		}
 	
 		//// DEBUFFS ////
 	
@@ -997,13 +1088,13 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		{
 			if(CheesyPresence)
 			{
-				ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+				ApplyStatusEffect(client, client, "Cheesy Presence", 5.0);
 			}
 			else
 			{
 				/*
 				if(Items_HasNamedItem(client, "A Block of Cheese"))
-					ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+					ApplyStatusEffect(client, client, "Cheesy Presence", 5.0);
 				*/
 			}
 
@@ -1038,6 +1129,22 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 					ApplyStatusEffect(client, client, "Freeplay Rampart III", 1.25);
 				}
 			}
+
+			switch(HurtleBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle I", 5.0);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle II", 5.0);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle III", 5.0);
+				}
+			}
 		}
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
@@ -1046,7 +1153,7 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			if(CheesyPresence)
-				ApplyStatusEffect(ally, ally, "Cheesy Presence", 1.25);
+				ApplyStatusEffect(ally, ally, "Cheesy Presence", 5.0);
 
 			switch(EloquenceBuff)
 			{
@@ -1077,6 +1184,22 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 				case 3:
 				{
 					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", 1.25);
+				}
+			}
+
+			switch(HurtleBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle I", 5.0);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle II", 5.0);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle III", 5.0);
 				}
 			}
 		}
@@ -1122,7 +1245,7 @@ void Freeplay_SetupStart(bool extra = false)
 			raidtime = true;
 		}
 
-		if(Waves_GetRound() > 99)
+		if(Waves_GetRound() > 79)
 		{
 			int wrathchance = GetRandomInt(0, 100);
 			if(wrathchance < irlnreq)
@@ -1143,9 +1266,7 @@ void Freeplay_SetupStart(bool extra = false)
 	//	if(exskull < 20) // 20% chance
 		{
 			ExtraSkulls++;
-			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
 			CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
-			EmitSoundToAll("passtime/ball_dropped.wav", _, _, _, _, 0.67);
 		}
 
 		SkullTimes = ExtraSkulls;
@@ -1155,7 +1276,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 79;
+		rand = GetURandomInt() % 90;
 
 	if(wrathofirln)
 	{
@@ -1316,8 +1437,9 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		CPrintToChatAll("{green}You will gain 5 random friendly units.");
-		FriendlyDay = true;
+		int guh = GetRandomInt(8, 16);
+		CPrintToChatAll("{green}You will gain %d random friendly units.", guh);
+		friendunitamount = guh;
 
 		float randommini = GetRandomFloat(0.5, 2.0);
 		MiniBossChance *= randommini;
@@ -1549,7 +1671,61 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		switch(GetRandomInt(1, 5))
+		if(EloquenceBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Eloquence Buff.");
+			EloquenceBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Eloquence buff.");
+			EloquenceBuffEnemies++;
+		}
+
+		if(RampartBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Rampart Buff.");
+			RampartBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Rampart buff!");
+			RampartBuffEnemies++;
+		}
+		if(HurtleBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Hurtle Buff.");
+			HurtleBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Hurtle buff!");
+			HurtleBuffEnemies++;
+		}
+
+		if(HurtleBuff > 2)
+		{
+			CPrintToChatAll("{red}Removed the Hurtle buff from everyone!");
+			HurtleBuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{green}All players and allied npcs now gain a layer of the Hurtle buff.");
+			HurtleBuff++;
+		}
+
+		if(LoveNahTonic)
+		{
+			CPrintToChatAll("{green}Ok, that's enough Tonic...");
+			LoveNahTonic = false;
+		}
+		else
+		{
+			CPrintToChatAll("{pink}Love is in the air? {crimson}WRONG! {red}Tonic Affliction in the enemies. {yellow}(Lasts 5s)");
+			LoveNahTonic = true;
+		}
+
+		switch(GetRandomInt(1, 8))
 		{
 			case 1:
 			{
@@ -1571,10 +1747,25 @@ void Freeplay_SetupStart(bool extra = false)
 				CPrintToChatAll("{red}I FEEL SO SIGMA!!!!!");
 				Sigmaller = true;
 			}
+			case 5:
+			{
+				CPrintToChatAll("{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
+				DarknessComing = true;
+			}
+			case 6:
+			{
+				CPrintToChatAll("{red}You begin to hear voices in your head...");
+				Schizophrenia = true;
+			}
+			case 7:
+			{
+				CPrintToChatAll("{green}Seems like a common Signaller has decided to help in training.");
+				DarknessComing = true;
+			}
 			default:
 			{
 				CPrintToChatAll("{purple}Otherworldly beings approach from a dimensional rip...");
-				immutable = true;
+				NormalSignaller = true;
 			}
 		}
 
@@ -1589,7 +1780,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 		EmitSoundToAll("ambient/halloween/thunder_01.wav");
 		CPrintToChatAll("{orange}Wrath of Irln: {yellow}(almost) {crimson}ALL SKULLS HAVE BEEN ACTIVATED. The effects are described above.");
-		gay = 20.0;
+		gay = 8.0;
 	}
 	else if(raidtime)
 	{
@@ -1598,7 +1789,7 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{strange}--==({gold}RAID ROULETTE!!{strange})==--");
 		CPrintToChatAll("{gold}--==({strange}LET THOU FATE BE RANDOMIZED!{gold})==--");
 		CPrintToChatAll("{green}-=({lime}Winning this wave will reward you with 7500 extra credits.{green})=-");
-		CreateTimer(15.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(10.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
 
 		switch(GetRandomInt(1, 4))
 		{
@@ -1619,11 +1810,11 @@ void Freeplay_SetupStart(bool extra = false)
 				CPrintToChatAll("{gold}Koshi{white}: Here's a trade offer! I recieve {orange}a piece of cheese{white} from your findings, and you recieve...");
 			}
 		}
-		gay = 35.0;
+		gay = 20.0;
 	}
 	else
 	{
-		gay = 15.0;
+		gay = 12.0;
 		char message[128];
 		switch(rand)
 		{
@@ -1654,13 +1845,13 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 4:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 10% less health.");
-				HealthMulti *= 0.9;
+				strcopy(message, sizeof(message), "{green}All enemies now have 15% less health.");
+				HealthMulti *= 0.85;
 			}
 			case 5:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 15% less health.");
-				HealthMulti *= 0.85;
+				strcopy(message, sizeof(message), "{green}All enemies now have 20% less health.");
+				HealthMulti *= 0.8;
 			}
 			case 6:
 			{
@@ -1676,15 +1867,15 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 8:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}30000 more health {yellow}but {green}10% less health.");
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}30000 more health {yellow}but {green}15% less health.");
 				HealthBonus += 30000;
-				HealthMulti /= 1.1;
+				HealthMulti /= 1.15;
 			}
 			case 9:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}20% less health.");
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}25% less health.");
 				HealthBonus += 60000;
-				HealthMulti /= 1.2;
+				HealthMulti /= 1.25;
 			}
 
 			/// BUFF/DEBUFF SKULLS //
@@ -1901,13 +2092,14 @@ void Freeplay_SetupStart(bool extra = false)
 			/// MISCELANEOUS SKULLS ///
 			case 31:
 			{
-				if(FriendlyDay)
+				if(friendunitamount)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}You will gain 5 random friendly units.");
-				FriendlyDay = true;
+				int guh2 = GetRandomInt(4, 8);
+				strcopy(message, sizeof(message), "{green}You will gain a random amount of friendly units.");
+				friendunitamount = guh2;
 			}
 			case 32:
 			{
@@ -2412,6 +2604,116 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}This skull... it.. it FEELS SO SIGMA!!!!!");
 				Sigmaller = true;
+			}
+			case 79:
+			{
+				if(EloquenceBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Eloquence Buff.");
+					EloquenceBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Eloquence buff.");
+					EloquenceBuffEnemies++;
+				}
+			}
+			case 80:
+			{
+				if(RampartBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Rampart Buff.");
+					RampartBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Rampart buff!");
+					RampartBuffEnemies++;
+				}
+			}
+			case 81:
+			{
+				if(HurtleBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Hurtle Buff.");
+					HurtleBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Hurtle buff!");
+					HurtleBuffEnemies++;
+				}
+			}
+			case 82:
+			{
+				if(HurtleBuff > 2)
+				{
+					strcopy(message, sizeof(message), "{red}Removed the Hurtle buff from everyone!");
+					HurtleBuff = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{green}All players and allied npcs now gain a layer of the Hurtle buff.");
+					HurtleBuff++;
+				}
+			}
+			case 83:
+			{
+				if(LoveNahTonic)
+				{
+					strcopy(message, sizeof(message), "{green}Ok, that's enough Tonic...");
+					LoveNahTonic = false;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{pink}Love is in the air? {crimson}WRONG! {red}Tonic Affliction in the enemies. {yellow}(Lasts 5s)");
+					LoveNahTonic = true;
+				}
+			}
+			case 84:
+			{
+				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
+				ExtraSkulls++;
+			}
+			case 85:
+			{
+				strcopy(message, sizeof(message), "{yellow}Actually, y'know what? Maybe i'll throw in TWO extra skulls even.");
+				ExtraSkulls += 2;
+			}
+			case 86:
+			{
+				strcopy(message, sizeof(message), "{red}ffffFFFFF-{crimson}FUCK {red}it, THREE EXTRA SKULLS!!!");
+				ExtraSkulls += 3;
+			}
+			case 87:
+			{
+				if(Schizophrenia)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}As you pick this skull, you begin to hear voices in your head...");
+				Schizophrenia = true;
+			}
+			case 88:
+			{
+				if(NormalSignaller)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{green}Seems like a common Signaller has decided to help in training.");
+				NormalSignaller = true;
+			}
+			case 89:
+			{
+				if(DarknessComing)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
+				DarknessComing = true;
 			}
 			default:
 			{

@@ -3995,6 +3995,14 @@
 	{
 		"en" "Spotter"
 	}
+	"Annoying Spirit"
+	{
+		"en" "Annoying Spirit"
+	}
+	"Darkened Heavy"
+	{
+		"en" "Darkened Heavy"
+	}
 	"ATV"
 	{
 		"en"	"ATV"

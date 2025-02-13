@@ -953,7 +953,8 @@ static void Agent_CloningAmount(AgentSmith npc)
 
 	if(Waves_InFreeplay())
 	{
-		Agent_Smith_Cloner(npc, 4, ReturnEntityMaxHealth(npc.index)/2, 1.5);
+		amount = 4;
+		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2, 1.5);
 	}
 	else
 	{
