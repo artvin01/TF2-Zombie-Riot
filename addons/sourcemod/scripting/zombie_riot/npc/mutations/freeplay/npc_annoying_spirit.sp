@@ -83,7 +83,7 @@ methodmap AnnoyingSpirit < CClotBody
 		npc.m_fTimeBefore = GetGameTime(npc.index) + 180.0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 125, 0, 0, 125);
+		SetEntityRenderColor(npc.index, 50, 50, 50, 65);
 
 		int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
 
