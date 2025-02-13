@@ -1252,7 +1252,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 88;
+		rand = GetURandomInt() % 89;
 
 	if(wrathofirln)
 	{
@@ -2646,7 +2646,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}ffffFFFFF-{crimson}FUCK {red}it, THREE EXTRA SKULLS!!!");
 				ExtraSkulls += 3;
 			}
-			case 86:
+			case 87:
 			{
 				if(Schizophrenia)
 				{
@@ -2656,7 +2656,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}A weird, yet haunting feeling of Schizophrenia envelops you...");
 				Schizophrenia = true;
 			}
-			case 87:
+			case 88:
 			{
 				if(NormalSignaller)
 				{
