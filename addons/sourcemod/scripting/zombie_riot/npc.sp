@@ -902,7 +902,7 @@ void NPC_ConfigSetup()
 	FreeplaySigmaller_OnMapStart_NPC();
 	Spotter_OnMapStart_NPC();
 	Erasus_OnMapStart_NPC();
-	AnnoyingSpirit_OnMapStart_NPC()
+	AnnoyingSpirit_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
