@@ -234,7 +234,7 @@
 	}
 	"Freeplay Hurtle III Desc"
 	{
-		"en"	""Increases attackspeed by +21%%"
+		"en"	"Increases attackspeed by +21%%"
 	}
 	"Cudgelled"
 	{
