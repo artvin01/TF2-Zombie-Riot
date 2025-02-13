@@ -53,7 +53,7 @@ methodmap AnnoyingSpirit < CClotBody
 	
 	public AnnoyingSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
-		AnnoyingSpirit npc = view_as<AnnoyingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "1000000", ally));
+		AnnoyingSpirit npc = view_as<AnnoyingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "100000000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
