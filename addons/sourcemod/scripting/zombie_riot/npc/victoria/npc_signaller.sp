@@ -203,7 +203,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 			{
 				if(IsClientInGame(client) && IsEntityAlive(client))
 				{
-					ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
+					ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
 				}
 			}
 		}
