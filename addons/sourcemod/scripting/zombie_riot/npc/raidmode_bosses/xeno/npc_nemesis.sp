@@ -737,7 +737,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 								if(driver != -1)
 								{
 									Enemy_I_See = driver;
-									Vehicle_Exit(driver, false);
+									Vehicle_Exit(driver);
 								}
 							}
 

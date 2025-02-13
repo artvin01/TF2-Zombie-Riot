@@ -8,6 +8,10 @@ Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 static bool b_ClientHasAncientBanner[MAXENTITIES];
 
+void BannerOnEntityCreated(int entity)
+{
+	b_ClientHasAncientBanner[entity] = false;
+}
 float BannerDefaultRange()
 {
 	//if(b_AlaxiosBuffItem[client])

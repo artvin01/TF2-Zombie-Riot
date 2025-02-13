@@ -276,7 +276,7 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 		}
 		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
 		{
-			Vehicle_Exit(client, false);
+			Vehicle_Exit(client);
 		}
 		else
 		{
@@ -382,7 +382,7 @@ static void SwitchToDriver(VehicleGeneric obj, int target)
 // If target is a vehicle, kicks all players out
 // If target is a user, kicks that player out
 // Returns true if something happened
-bool Vehicle_Exit(int target, bool killed, bool teleport = true)
+bool Vehicle_Exit(int target, bool killed = false, bool teleport = true)
 {
 	bool found;
 

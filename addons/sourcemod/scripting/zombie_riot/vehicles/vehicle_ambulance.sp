@@ -125,12 +125,12 @@ static void ClotThink(VehicleFullJeep obj)
 	GetEntPropVector(obj.index, Prop_Data, "m_vecAbsOrigin", pos1); 
 	for(int target = 1; target <= MaxClients; target++) 
 	{
-		if(IsClientInGame(target) && IsPlayerAlive(target) && TeutonType[target] != TEUTON_NONE && dieingstate[target] && Vehicle_Driver(target) == -1)
+		if(IsClientInGame(target) && IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE && dieingstate[target] && Vehicle_Driver(target) == -1)
 		{
 			GetClientAbsOrigin(target, pos2); 
 			
 			float distance = GetVectorDistance(pos1, pos2, true); 
-			if(distance < 40000.0)	// 200 HU
+			if(distance < 60000.0)
 			{
 				if(Vehicle_Enter(obj.index, target))
 					b_LeftForDead[target] = true;
