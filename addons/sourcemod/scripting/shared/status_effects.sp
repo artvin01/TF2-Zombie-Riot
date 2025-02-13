@@ -2678,7 +2678,7 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.5;
+	data.AttackspeedBuff			= 0.7;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
