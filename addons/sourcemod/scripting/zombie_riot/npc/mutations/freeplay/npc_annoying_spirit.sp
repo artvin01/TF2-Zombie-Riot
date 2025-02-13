@@ -53,7 +53,7 @@ methodmap AnnoyingSpirit < CClotBody
 	
 	public AnnoyingSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
-		AnnoyingSpirit npc = view_as<AnnoyingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "100000000", ally));
+		AnnoyingSpirit npc = view_as<AnnoyingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "1000000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -81,7 +81,7 @@ methodmap AnnoyingSpirit < CClotBody
 		npc.m_bCamo = true;
 		Is_a_Medic[npc.index] = true;
 
-		npc.m_fTimeBefore = GetGameTime(npc.index) + 150.0;
+		npc.m_fTimeBefore = GetGameTime(npc.index) + 120.0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 50, 40);
@@ -167,8 +167,12 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	// have it heal the damage it takes
 	if(!npc.Anger)
 	{
-		HealEntityGlobal(npc.index, npc.index, damage, 1.0, 0.0, HEAL_ABSOLUTE);
-		return Plugin_Handled;
+		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth")	
+		{
+			damage = 0.0;
+			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"), 1.0, 0.0, HEAL_ABSOLUTE);
+			return Plugin_Handled;
+		}	
 	}
 
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -202,8 +206,8 @@ void AnnoyingSpiritWega(AnnoyingSpirit npc, float gameTime, int target, float di
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_iTarget = Enemy_I_See;
-				npc.m_flAttackHappens = 10.0;
-				npc.m_flNextMeleeAttack = 10.0;
+				npc.m_flAttackHappens = 20.0;
+				npc.m_flNextMeleeAttack = 20.0;
 			}
 		}
 	}
@@ -234,13 +238,21 @@ void AnnoyingSpiritWega(AnnoyingSpirit npc, float gameTime, int target, float di
 
 					// WAAAAAAHHHHG
 					npc.PlaySpookSound(target);
-					npc.m_flNextMeleeAttack = gameTime + 10.0;
+					npc.m_flNextMeleeAttack = gameTime + 20.0;
 					
 					if(target <= MaxClients)
 					{
 						Client_Shake(target, 0, 100.0, 100.0, 0.5, false);
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
 					}
+
+					int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
+
+					if(Decicion == 2)
+						Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 250.0);
+
+					if(Decicion == 2)
+						Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
 				} 
 			}
 			delete swingTrace;
