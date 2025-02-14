@@ -1331,7 +1331,9 @@ public Action Waves_EndVote(Handle timer, float time)
 			if(normal)
 			{
 				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
-				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
+				CPrintToChatAll("{crimson}%t: %s","Difficulty set to", vote.Name);
+				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
+				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 
 				char buffer[PLATFORM_MAX_PATH];
 				if(votes[highest] > 3)
@@ -1388,7 +1390,9 @@ public Action Waves_EndVote(Handle timer, float time)
 			}
 			else
 			{
-				PrintToChatAll("%t: %s", "Modifier set to", vote.Name);
+				CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
+				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
+				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 				
 				if(highest > 0)
 				{
@@ -2002,7 +2006,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						if(IsClientInGame(client))
 						{
-							SetMusicTimer(client, GetTime() + 99999);
+							//a little delay.
+							SetMusicTimer(client, GetTime() + 1);
 						}
 					}
 				}
@@ -3163,6 +3168,15 @@ void Waves_SetReadyStatus(int status)
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
 			GameRules_SetProp("m_bInSetup", false);
 			GameRules_SetProp("m_iRoundState", RoundState_ZombieRiot);
+			//stop music once game starts.
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					SetMusicTimer(client, GetTime() + 2); //This is here beacuse of raid music.
+					Music_Stop_All(client);
+				}
+			}	
 		}
 		case 1:	// Ready Up
 		{

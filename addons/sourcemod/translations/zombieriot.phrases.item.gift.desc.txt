@@ -2133,8 +2133,7 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, have 2x HP, +6%% faster.\n1 less down, enemies heal 50%% more."
-		"ru"	"Почувствуйте ЗР какого это быть новичном.\n35%% больше врагов, спанят 25%% быстрее,15%% больше врагов в живых одновременно.\nони наносят 25%% больше урона вам и баррикадам,Имеют в 2 раза больше Здоровья.\nСчётчик падений снижен на 1,враги лечят 50%% больше"
+		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, +60%% HP, +6%% faster, attack 25%% faster.\n1 down, enemies heal 50%% more."
 	}
 	"Secondary Mercs"
 	{

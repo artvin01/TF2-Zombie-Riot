@@ -388,6 +388,14 @@
 	{
 		"en"	"Reduces damage taken by 50%%\nBoosts damage dealt by 50%%"
 	}
+	"Extreme Anxiety"
+	{
+		"en"	"Extreme Anxiety"
+	}
+	"Extreme Anxiety Desc"
+	{
+		"en"	"Attack 25%% faster."
+	}
 	"Combine Command"
 	{
 		"en"	"Combine Command"
