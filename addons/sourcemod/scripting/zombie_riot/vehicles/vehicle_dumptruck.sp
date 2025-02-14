@@ -50,18 +50,18 @@ methodmap VehicleDumpTruck < VehicleGeneric
 		VehicleDumpTruck obj = view_as<VehicleDumpTruck>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, data[0] ? "models/vehicles/dumptruck_empty.mdl" : "models/vehicles/dumptruck.mdl", "scripts/vehicles/tf2_dumptruck.txt"));
 		
 		obj.m_bNoAttack = true;
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {18.0, -26.0, 54.0}, 0);	// Side Seat
+		obj.AddSeat({18.0, -26.0, 54.0}, 0);	// Side Seat
 
 		if(data[0])
 		{
-			SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-32.0, -102.0, 62.0}, 1);	// Left Back
-			SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {26.0, -158.0, 62.0}, 2);	// Right Back
-			SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-32.0, -158.0, 62.0}, 3);	// Left Front
-			SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {26.0, -102.0, 62.0}, 4);	// Right Front
+			obj.AddSeat({-32.0, -102.0, 62.0}, 1);	// Left Back
+			obj.AddSeat({26.0, -158.0, 62.0}, 2);	// Right Back
+			obj.AddSeat({-32.0, -158.0, 62.0}, 3);	// Left Front
+			obj.AddSeat({26.0, -102.0, 62.0}, 4);	// Right Front
 		}
 		else
 		{
-			SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {0.0, -122.0, 108.0}, 1);	// Back
+			obj.AddSeat({0.0, -122.0, 108.0}, 1);	// Back
 		}
 
 		return obj;
