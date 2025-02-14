@@ -504,12 +504,12 @@ void Music_PostThink(int client)
 	if(SkillTree_InMenu(client))
 		return;
 	
-	if(!b_GameOnGoing && !CvarNoRoundStart.BoolValue)
+	if(!b_GameOnGoing/* && !CvarNoRoundStart.BoolValue*/)
 	{
-		PlaySetupMusicCustom(client);
+	//	PlaySetupMusicCustom(client);
 		return;
 	}
-	if(Waves_InSetup() && !Rogue_Mode() && !CvarNoRoundStart.BoolValue)
+	if(Waves_InSetup() && (!Waves_Started() || !Rogue_Mode()) && !CvarNoRoundStart.BoolValue)
 	{
 		PlaySetupMusicCustom(client);
 		return;
