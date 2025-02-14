@@ -70,8 +70,8 @@ void NPC_ConfigSetup()
 
 	// Buildings
 	ObjectBarricade_MapStart();
-	ObjectAmmobox_MapStart();
 	ObjectDecorative_MapStart();
+	ObjectAmmobox_MapStart();
 	ObjectArmorTable_MapStart();
 	ObjectPerkMachine_MapStart();
 	ObjectPackAPunch_MapStart();

@@ -35,15 +35,34 @@ methodmap VehicleBus < VehicleGeneric
 		SetEntProp(obj.index, Prop_Send, "m_nSkin", GetURandomInt() % 2);
 
 		obj.m_bNoAttack = true;
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-44.0, 108.0, 32.0}, 0);	// Front Left
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {44.0, 110.0, 32.0}, 1);		// Front Right
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-44.0, -82.0, 32.0}, 2);	// 1 Left
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {44.0, -82.0, 32.0}, 3);		// 1 Right
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-44.0, -146.0, 32.0}, 4);	// 2 Left
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {44.0, -146.0, 32.0}, 5);	// 2 Right
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-44.0, -196.0, 32.0}, 6);	// 3 Left
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {44.0, -196.0, 32.0}, 7);	// 3 Right
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {0.0, -196.0, 32.0}, 8);		// 3 Center
+
+		// Bottom
+		obj.AddSeat({-44.0, 108.0, 32.0}, 0);	// Front Left
+		obj.AddSeat({44.0, 110.0, 32.0}, 1);		// Front Right
+		obj.AddSeat({-44.0, -82.0, 32.0}, 2);	// 1 Left
+		obj.AddSeat({44.0, -82.0, 32.0}, 3);		// 1 Right
+		obj.AddSeat({-44.0, -146.0, 32.0}, 4);	// 2 Left
+		obj.AddSeat({44.0, -146.0, 32.0}, 5);	// 2 Right
+		obj.AddSeat({-44.0, -196.0, 32.0}, 6);	// 3 Left
+		obj.AddSeat({44.0, -196.0, 32.0}, 7);	// 3 Right
+		obj.AddSeat({0.0, -196.0, 32.0}, 8);		// 3 Center
+
+		// Top
+		obj.AddSeat({26.0, 180.0, 112.0}, 9);
+		obj.AddSeat({-26.0, 180.0, 112.0}, 10);
+		obj.AddSeat({26.0, 130.0, 112.0}, 11);
+		obj.AddSeat({-26.0, 130.0, 112.0}, 12);
+		obj.AddSeat({26.0, 80.0, 112.0}, 13);
+		obj.AddSeat({-26.0, 80.0, 112.0}, 14);
+		obj.AddSeat({-26.0, 30.0, 112.0}, 15);
+		obj.AddSeat({26.0, -20.0, 112.0}, 16);
+		obj.AddSeat({-26.0, -20.0, 112.0}, 17);
+		obj.AddSeat({26.0, -70.0, 112.0}, 18);
+		obj.AddSeat({-26.0, -70.0, 112.0}, 19);
+		obj.AddSeat({26.0, -120.0, 112.0}, 20);
+		obj.AddSeat({-26.0, -120.0, 112.0}, 21);
+		obj.AddSeat({26.0, -170.0, 112.0}, 22);
+		obj.AddSeat({-26.0, -170.0, 112.0}, 23);
 
 		return obj;
 	}
