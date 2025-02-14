@@ -289,7 +289,7 @@ public Action FogOrbHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	float vecTarget[3];
+		float vecTarget[3];
 	WorldSpaceCenter(attacker, vecTarget);
 
 	float VecSelfNpc[3];

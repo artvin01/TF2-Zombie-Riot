@@ -648,7 +648,6 @@ void SpotterAllyBuff(Spotter npc)
 		}
 	}
 
-	ApplyStatusEffect(npc.index, npc.index, "Spotter's Rally", 1.0);
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
 
 	switch(GetRandomInt(1, 4))

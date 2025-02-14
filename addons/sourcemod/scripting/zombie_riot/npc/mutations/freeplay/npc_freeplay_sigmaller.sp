@@ -181,6 +181,10 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	int target = npc.m_iTarget;
+	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
+		i_Target[npc.index] = -1;
+
 	if(npc.m_iTargetAlly && !IsValidAlly(npc.index, npc.m_iTargetAlly))
 		npc.m_iTargetAlly = 0;
 	
@@ -195,6 +199,35 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 		{
 			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 60.0);
 			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Hardened Aura", 60.0);
+		}
+	}
+
+	if(imalone)
+	{
+		if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		}
+	
+		if(target > 0)
+		{
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+			
+			if(distance < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, target);
+			}
+	
+			npc.StartPathing();
+			npc.m_flSpeed = 125.0;
 		}
 	}
 
