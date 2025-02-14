@@ -2068,7 +2068,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					
 
-					if(zr_allowfreeplay.BoolValue && i_WaveHasFreeplay > 0)
+					if(i_WaveHasFreeplay > 0)
 					{
 						if(i_WaveHasFreeplay == 1)
 						{

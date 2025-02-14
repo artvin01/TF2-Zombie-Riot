@@ -258,7 +258,6 @@ ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
-ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
 ConVar zr_raidmultihp;
 ConVar zr_multi_maxcap;
