@@ -1719,6 +1719,10 @@ void StatusEffects_Freeplay1()
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.85;
 	StatusEffect_AddGlobal(data);
+
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
+	data.AttackspeedBuff			= 0.0;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence I");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Σ1");
