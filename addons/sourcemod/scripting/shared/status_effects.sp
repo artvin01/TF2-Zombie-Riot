@@ -1713,14 +1713,12 @@ void StatusEffects_Freeplay1()
 	data.MovementspeedModif			= 1.25;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.AttackspeedBuff			= 0.85;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.85;
 	StatusEffect_AddGlobal(data);
-
-	data.LinkedStatusEffect = 0;
-	data.LinkedStatusEffectNPC = 0;
-	data.AttackspeedBuff = 0.0;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence I");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Σ1");
@@ -1776,6 +1774,8 @@ void StatusEffects_Freeplay2()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.65;
 	StatusEffect_AddGlobal(data);
 
@@ -1837,7 +1837,9 @@ void StatusEffects_Freeplay3()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
-	data.AttackspeedBuff			= 0.94;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.93;
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -1855,6 +1857,8 @@ void StatusEffects_Freeplay3()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.86;
 	StatusEffect_AddGlobal(data);
 
@@ -1873,6 +1877,8 @@ void StatusEffects_Freeplay3()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.79;
 	StatusEffect_AddGlobal(data);
 
