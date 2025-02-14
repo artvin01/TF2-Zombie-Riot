@@ -921,6 +921,11 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			// Something was changed
 			i -= (length - E_AL_StatusEffects[victim].Length);
 			length = E_AL_StatusEffects[victim].Length
+			if(i < 0)
+			{
+				i = -1;
+				continue;
+			}
 		}
 
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
