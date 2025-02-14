@@ -289,7 +289,7 @@ public Action FogOrbHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	float vecTarget[3];
+		float vecTarget[3];
 	WorldSpaceCenter(attacker, vecTarget);
 
 	float VecSelfNpc[3];
@@ -298,16 +298,10 @@ public Action FogOrbHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget > (250.0 * 250.0))
 	{
-		HealEntityGlobal(npc.index, npc.index, float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")), 1.0, 0.0, HEAL_ABSOLUTE);
-		damage *= 0.25;
+		HealEntityGlobal(npc.index, npc.index, damage*1.25, 1.0, 0.0, HEAL_ABSOLUTE);
 		return Plugin_Handled;
 	}
-	else
-	{
-		damage *= 1.25;
-		return Plugin_Handled;
-	}
-		
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
