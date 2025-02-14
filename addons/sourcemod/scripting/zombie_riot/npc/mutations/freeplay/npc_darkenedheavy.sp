@@ -91,7 +91,7 @@ methodmap FogOrbHeavy < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(FogOrbHeavy_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 250.0;		
+		npc.m_flSpeed = 225.0;		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -299,6 +299,11 @@ public Action FogOrbHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor
 		damage *= 0.25;
 		return Plugin_Handled;
 	}
+	else
+	{
+		damage *= 1.25;
+		return Plugin_Handled;
+	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -358,9 +363,9 @@ void FogOrbHeavySelfDefense(FogOrbHeavy npc, float gameTime, int target, float d
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 200.0;
+					float damageDealt = 100.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 6.0;
+						damageDealt *= 3.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
