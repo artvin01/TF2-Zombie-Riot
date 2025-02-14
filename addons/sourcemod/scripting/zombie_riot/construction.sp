@@ -21,6 +21,8 @@ enum struct ResourceInfo
 	char Plugin[64];
 	float Distance;
 	int Common;
+	int Health;
+	int Defense;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -29,17 +31,42 @@ enum struct ResourceInfo
 		this.Distance = kv.GetFloat("distance");
 		this.Distance *= this.Distance;
 		this.Common = kv.GetNum("common") + 1;
+		this.Health = kv.GetNum("health");
+		this.Defense = kv.GetNum("defense");
+	}
+}
+
+enum struct RewardInfo
+{
+	char Name[32];
+	int MinRisk;
+	int Amount;
+
+	void SetupKv(KeyValues kv)
+	{
+		kv.GetSectionName(this.Name, sizeof(this.Name));
+
+		char buffer[64];
+		FormatEx(buffer, sizeof(buffer), "Material %s", this.Name);
+		FailTranslation(buffer);
+		FormatEx(buffer, sizeof(buffer), "material_%s", this.Name);
+		PrecacheMvMIconCustom(buffer);
+
+		this.MinRisk = kv.GetNum("risk");
+		this.Amount = kv.GetNum("amount");
 	}
 }
 
 static bool InConstMode;
-static int AttackRisk;
+static int RiskIncrease;
 static int MaxAttacks;
 static int HighestRisk;
 static float AttackTime;
+static int AttackRiskBonus;
 static int MaxResource;
 static ArrayList RiskList;
 static ArrayList ResourceList;
+static ArrayList RewardList;
 
 static Handle GameTimer;
 static int CurrentRisk;
@@ -48,6 +75,7 @@ static float NextAttackAt;
 static int AttackType;	// 0 = None, 1 = Resource, 2 = Base, 3 = Final
 static int AttackRef;
 static char CurrentSpawnName[64];
+static StringMap CurrentMaterials;
 
 bool Construction_Mode()
 {
@@ -76,7 +104,7 @@ bool Construction_FinalBattle()
 
 void Construction_PluginStart()
 {
-	//LoadTranslations("zombieriot.phrases.construction"); 
+	LoadTranslations("zombieriot.phrases.construction"); 
 }
 
 void Construction_MapStart()
@@ -106,13 +134,35 @@ void Construction_SetupVote(KeyValues kv)
 	}
 
 	delete ResourceList;
+	delete RewardList;
 	ResourceList = new ArrayList(sizeof(ResourceInfo));
+	RewardList = new ArrayList(sizeof(RewardInfo));
 	RiskList = new ArrayList();
 
 	MaxAttacks = kv.GetNum("attackcount");
 	AttackTime = kv.GetFloat("attacktime");
-	AttackRisk = kv.GetNum("attackrisk");
+	AttackRiskBonus = kv.GetNum("attackrisk");
+	RiskIncrease = kv.GetNum("riskincrease");
 	MaxResource = kv.GetNum("resourcecount");
+	
+	if(kv.JumpToKey("AttackDrops"))
+	{
+		if(kv.GotoFirstSubKey())
+		{
+			RewardInfo reward;
+
+			do
+			{
+				reward.SetupKv(kv);
+				RewardList.PushArray(reward);
+			}
+			while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
+
+		kv.GoBack();
+	}
 	
 	if(kv.JumpToKey("Resources"))
 	{
@@ -275,21 +325,22 @@ void Construction_Start()
 {
 	delete GameTimer;
 
-	float pos1[3], pos2[3];
+	float pos[3], ang[3];
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
 		if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == TFTeam_Red && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
 		{
-			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos1);
-			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", pos2);
+			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
 			break;
 		}
 	}
 
-	NPC_CreateByName("npc_base_building", -1, pos1, pos2, TFTeam_Red);
+	NPC_CreateByName("npc_base_building", -1, pos, ang, TFTeam_Red);
 
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(AttackTime, Timer_StartAttackWave);
+	Ammo_Count_Ready = 20;
 
 	ArrayList picked = new ArrayList();
 	ResourceInfo info;
@@ -317,14 +368,26 @@ void Construction_Start()
 			continue;
 		}
 		
-		area.GetCenter(pos2);
-		float distance = GetVectorDistance(pos1, pos2, true);
-		if(GetRandomResourceInfo(distance, info))
+		area.GetCenter(ang);
+		float distance = GetVectorDistance(pos, ang, true);
+
+		if(!GetRandomResourceInfo(distance, info))
 		{
-			pos2[0] = 0.0;
-			pos2[1] = GetRandomFloat(0.0, 360.0);
-			pos2[2] = 0.0;
-			NPC_CreateByName(info.Plugin, -1, pos1, pos2, TFTeam_Blue);
+			if(GetURandomInt() % 2)
+				i--;
+			
+			continue;
+		}
+		
+		ang[0] = 0.0;
+		ang[1] = float(GetURandomInt() % 360);
+		ang[2] = 0.0;
+
+		int entity = NPC_CreateByName(info.Plugin, -1, pos, ang, TFTeam_Blue);
+		if(entity != -1)
+		{
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", info.Health);
+			SetEntProp(entity, Prop_Data, "m_iHealth", info.Health);
 		}
 	}
 
@@ -358,10 +421,7 @@ static bool GetRandomResourceInfo(float distance, ResourceInfo info)
 
 static Action Timer_StartAttackWave(Handle timer)
 {
-	CurrentRisk += AttackRisk;
-	if(CurrentRisk > HighestRisk)
-		CurrentRisk = HighestRisk;
-	
+	CurrentRisk += RiskIncrease;
 	CurrentAttacks++;
 	
 	// Clear out existing enemies
@@ -384,7 +444,7 @@ static Action Timer_StartAttackWave(Handle timer)
 	}
 	else
 	{
-		GetRandomAttackInfo(CurrentRisk + 1, attack);
+		GetRandomAttackInfo(CurrentRisk + AttackRiskBonus, attack);
 	}
 
 	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, GetBaseBuilding());
@@ -401,29 +461,17 @@ static Action Timer_StartAttackWave(Handle timer)
 	return Plugin_Continue;
 }
 
-bool Construction_StartResourceAttack(int entity)
-{
-	if(AttackType)
-		return false;
-	
-	float pos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-	int risk = CurrentRisk + RiskBonusFromDistance(pos);
-
-	AttackInfo attack;
-	GetRandomAttackInfo(risk, attack);
-	if(!StartAttack(attack, 1, entity))
-		return false;
-	
-	// TODO: Set up rewards, etc.
-	return true;
-}
-
 static void GetRandomAttackInfo(int risk, AttackInfo attack)
 {
 	int setRisk = risk;
-	if(setRisk > HighestRisk)
-		setRisk = HighestRisk;
+	if(setRisk < 0)
+	{
+		setRisk = 0;
+	}
+	else if(setRisk >= HighestRisk)
+	{
+		setRisk = HighestRisk - 1;
+	}
 	
 	ArrayList list = RiskList.Get(setRisk);
 	list.GetArray(GetURandomInt() % list.Length, attack);
@@ -462,7 +510,7 @@ void Construction_BattleVictory()
 	int type = AttackType;
 	AttackType = 0;
 
-	if(type == 2)
+	if(type > 1)
 		ReviveAll();
 	
 	Waves_RoundEnd();
@@ -470,7 +518,44 @@ void Construction_BattleVictory()
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 	Store_RogueEndFightReset();
 
-	// TODO: Resource battle rewards
+	int entity = EntRefToEntIndex(AttackRef);
+	if(entity != -1)
+		view_as<CClotBody>(entity).Anger = false;
+	
+	GiveRandomReward(CurrentRisk, type > 1 ? 4 : 2);
+}
+
+static void GiveRandomReward(int risk, int maxDrops)
+{
+	ArrayList list = new ArrayList();
+
+	RewardInfo info;
+	int length = RewardList.Length;
+	for(int a; a < length; a++)
+	{
+		RewardList.GetArray(a, info);
+		if(info.MinRisk > risk)
+			continue;
+		
+		list.Push(a);
+	}
+
+	list.Sort(Sort_Random, Sort_Integer);
+
+	length = list.Length;
+	if(length > maxDrops)
+		length = maxDrops;
+	
+	for(int a; a < length; a++)
+	{
+		RewardList.GetArray(list.Get(a), info);
+
+		int amount = RoundFloat(info.Amount * GetRandomFloat(0.5, 1.5));
+
+		Construction_AddMaterial(info.Name, amount);
+	}
+
+	delete list;
 }
 
 bool Construction_UpdateMvMStats()
@@ -487,6 +572,10 @@ bool Construction_UpdateMvMStats()
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentAttacks);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", MaxAttacks + 1);
 
+		StringMapSnapshot snap = CurrentMaterials ? CurrentMaterials.Snapshot() : null;
+		int snapLength = snap ? snap.Length : 0;
+		int snapPos;
+
 		for(int i; i < 24; i++)
 		{
 			switch(i)
@@ -501,15 +590,36 @@ bool Construction_UpdateMvMStats()
 					Waves_SetWaveClass(objective, i, time, "classic_defend", flags, true);
 					continue;
 				}
-				/*case 1:
+				case 1:
 				{
-					int flags = CurrentRisk < HighestRisk ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS
+					int flags = CurrentRisk < HighestRisk ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS;
 					if(flags == MVM_CLASS_FLAG_NORMAL && CurrentRisk > (HighestRisk * 3 / 4))
 						flags += MVM_CLASS_FLAG_ALWAYSCRIT;
 					
 					Waves_SetWaveClass(objective, i, CurrentRisk + 1, "robo_extremethreat", flags, true);
 					continue;
-				}*/
+				}
+				default:
+				{
+					while(snapPos < snapLength)
+					{
+						static const char prefix[] = "material_";
+
+						int size = snap.KeyBufferSize(snapPos) + sizeof(prefix) + 1;
+						char[] key = new char[size];
+						snap.GetKey(snapPos, key, size);
+						snapPos++;
+
+						int amount;
+						CurrentMaterials.GetValue(key, amount);
+						if(amount > 0)
+						{
+							Format(key, size, "%s%s", prefix, key);
+							Waves_SetWaveClass(objective, i, amount, key, MVM_CLASS_FLAG_NORMAL, true);
+							break;
+						}
+					}
+				}
 			}
 
 			Waves_SetWaveClass(objective, i);
@@ -593,4 +703,180 @@ static bool UpdateValidSpawners(const float pos[3])
 
 	delete list;
 	return false;
+}
+
+void Construction_ClotThink(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	
+	npc.m_flNextDelayTime = gameTime + 2.0;
+
+	if(AttackType && npc.Anger && EntRefToEntIndex(AttackRef) != npc.index)
+	{
+		b_NpcIsInvulnerable[npc.index] = true;
+	}
+	else
+	{
+		b_NpcIsInvulnerable[npc.index] = false;
+	}
+}
+
+bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim, int attacker, float &damage, int damagetype)
+{
+	CClotBody npc = view_as<CClotBody>(victim);
+
+	if(AttackType && npc.Anger && EntRefToEntIndex(AttackRef) != npc.index)
+	{
+		// No cross mining when a fight is happening
+		damage = 0.0;
+		return false;
+	}
+
+	if(npc.Anger && (attacker > MaxClients || !(damagetype & DMG_CLUB)))
+	{
+		// Must provoke it via melee first
+		damage = 0.0;
+		return false;
+	}
+
+	if(!CheckInHud())
+	{
+		if(ResourceList)
+		{
+			char plugin[64];
+			NPC_GetPluginById(i_NpcInternalId[npc.index], plugin, sizeof(plugin));
+
+			int index = ResourceList.FindString(plugin, ResourceInfo::Plugin);
+			if(index != -1)
+			{
+				ResourceInfo info;
+				ResourceList.GetArray(index, info);
+
+				if(!(damagetype & DMG_TRUEDAMAGE))
+				{
+					float minDamage = damage * 0.05;
+					damage -= float(info.Defense);
+					if(damage < minDamage)
+						damage = minDamage;
+				}
+
+				if(npc.Anger && RiskList)
+				{
+					if(AttackType)
+						return false;
+					
+					float pos[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_vecOrigin", pos);
+					int risk = CurrentRisk + RiskBonusFromDistance(pos);
+
+					AttackInfo attack;
+					GetRandomAttackInfo(risk, attack);
+					if(!StartAttack(attack, 1, npc.index))
+						return false;
+					
+					if(attacker > 0 && attacker <= MaxClients)
+					{
+						char buffer[64];
+						FormatEx(buffer, sizeof(buffer), "Material %s", resource);
+						if(TranslationPhraseExists(buffer))
+							CPrintToChatAll("%t", "Resource Attack Started", attacker, buffer);
+					}
+
+					return true;
+				}
+			}
+		}
+	}
+
+	if(CurrentAttacks && MaxAttacks && RiskIncrease)
+	{
+		float multi = Pow(0.5, float(CurrentAttacks) * 5.0 / float(MaxAttacks));
+		
+		damage *= multi;
+	}
+
+	if(Construction_Mode() && maxAmount)
+		ResourceBasedOnHealth(resource, maxAmount, npc, GetEntProp(npc.index, Prop_Data, "m_iHealth") - RoundToCeil(damage), GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+
+	return true;
+}
+
+void Construction_NPCDeath(const char[] resource, int maxAmount, CClotBody npc)
+{
+	ResourceBasedOnHealth(resource, maxAmount, npc, 0, 100);
+}
+
+static void ResourceBasedOnHealth(const char[] resource, int maxAmount, CClotBody npc, int health, int maxhealth)
+{
+	if(Construction_Mode() && maxhealth)
+	{
+		int newAmount = maxAmount - (health * maxAmount / maxhealth) - 1;
+		if(newAmount > maxAmount)
+			newAmount = maxAmount;
+		
+		while(newAmount < npc.g_TimesSummoned)
+		{
+			npc.g_TimesSummoned++;
+			Construction_AddMaterial(resource, 1);
+		}
+	}
+}
+
+float Construction_GetNextAttack()
+{
+	return NextAttackAt;
+}
+
+int Construction_GetMaterial(const char[] short)
+{
+	int amount;
+	if(CurrentMaterials)
+		CurrentMaterials.GetValue(short, amount);
+
+	return amount;
+}
+
+int Construction_AddMaterial(const char[] short, int gain, bool silent = false)
+{
+	if(!CurrentMaterials)
+		CurrentMaterials = new StringMap();
+	
+	int amount;
+	CurrentMaterials.GetValue(short, amount);
+	amount += gain;
+	CurrentMaterials.SetValue(short, amount);
+
+	if(!silent)
+	{
+		char buffer[64];
+		FormatEx(buffer, sizeof(buffer), "Material %s", short);
+		if(TranslationPhraseExists(buffer))
+		{
+			if(gain > 0)
+			{
+				CPrintToChatAll("%t", "Gained Material", gain, buffer);
+			}
+			else
+			{
+				CPrintToChatAll("%t", "Used Material", gain, buffer);
+			}
+		}
+		else
+		{
+			if(gain > 0)
+			{
+				CPrintToChatAll("{green}Gained %d %s", gain, short);
+			}
+			else
+			{
+				CPrintToChatAll("{red}Used %d %s", gain, short);
+			}
+		}
+	}
+
+	return amount;
 }

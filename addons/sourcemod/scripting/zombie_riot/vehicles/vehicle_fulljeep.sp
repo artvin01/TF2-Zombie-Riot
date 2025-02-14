@@ -30,8 +30,8 @@ methodmap VehicleFullJeep < VehicleGeneric
 		VehicleFullJeep obj = view_as<VehicleFullJeep>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/buggy.mdl", "scripts/vehicles/jeep_test.txt"));
 		
 		obj.m_bNoAttack = true;
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {22.0, -42.0, 12.0}, 0);
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {2.0, -90.0, 34.0}, 1);
+		obj.AddSeat({22.0, -42.0, 12.0}, 0);
+		obj.AddSeat({2.0, -90.0, 34.0}, 1);
 
 		FuncShowInteractHud[obj.index] = VehicleFullJeep_ClotShowInteractHud;
 		func_NPCInteract[obj.index] = VehicleFullJeep_ClotInteract;

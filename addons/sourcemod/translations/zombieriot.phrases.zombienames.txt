@@ -4011,28 +4011,4 @@
 	{
 		"en"	"Airboat"
 	}
-	"Ambulance"
-	{
-		"en"	"Ambulance"
-	}
-	"Bus"
-	{
-		"en"	"Bus"
-	}
-	"Camper Van"
-	{
-		"en"	"Camper Van"
-	}
-	"Dump Truck"
-	{
-		"en"	"Dump Truck"
-	}
-	"Landrover"
-	{
-		"en"	"Landrover"
-	}
-	"Pickup Truck"
-	{
-		"en"	"Pickup Truck"
-	}
 }

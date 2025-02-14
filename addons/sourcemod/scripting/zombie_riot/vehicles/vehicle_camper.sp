@@ -33,9 +33,9 @@ methodmap VehicleCamper < VehicleGeneric
 		VehicleCamper obj = view_as<VehicleCamper>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, "models/vehicles/camper.mdl", "scripts/vehicles/tf2_camper.txt"));
 		
 		obj.m_bNoAttack = true;
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {14.0, 0.0, 26.0}, 0);	// Side Seat
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {0.0, -94.0, 118.0}, 1);	// Back Roof
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {0.0, 0.0, 130.0}, 2);	// Front Roof
+		obj.AddSeat({14.0, 0.0, 26.0}, 0);	// Side Seat
+		obj.AddSeat({0.0, -94.0, 118.0}, 1);	// Back Roof
+		obj.AddSeat({0.0, 0.0, 130.0}, 2);	// Front Roof
 
 		FuncShowInteractHud[obj.index] = VehicleFullJeep_ClotShowInteractHud;
 		func_NPCInteract[obj.index] = VehicleFullJeep_ClotInteract;
