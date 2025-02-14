@@ -725,6 +725,16 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 	return 0.0;
 }
 
+float CooldownReductionAmount(int client)
+{
+	float Cooldown = 1.0;
+	if(MazeatItemHas())
+	{
+		Cooldown *= 0.66;
+	}
+	return Cooldown;
+}
+
 void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1)
 {
 	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
@@ -734,6 +744,9 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 		{
 			static Item item;
 			StoreItems.GetArray(StoreWeapon[weapon], item);
+#if defined ZR
+			cooldown *= CooldownReductionAmount(client);
+#endif
 			
 			switch(what_slot)
 			{

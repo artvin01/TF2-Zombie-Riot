@@ -412,7 +412,7 @@
 	}
 	"Mazeat Lost Technology Desc"
 	{
-		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 25%%"
+		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 33%%"
 	}
 	"Peek into the Eternal Night Desc"
 	{

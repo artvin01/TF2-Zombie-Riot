@@ -120,10 +120,10 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 	if(weapon >= MaxClients)
 	{
 		weapon_id[client] = weapon;
-		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(15.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
+		Give_bomb_back[client] = CreateTimer(15.0 * CooldownReductionAmount(client), Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(15.0 * CooldownReductionAmount(client), Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
 	//	CreateTimer(14.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-		GrenadeApplyCooldownHud(client, 15.0);
+		GrenadeApplyCooldownHud(client, 15.0 * CooldownReductionAmount(client));
 		if(Handle_on[client])
 		{
 			delete Give_bomb_back[client];
@@ -165,9 +165,9 @@ public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool
 	if(weapon >= MaxClients)
 	{
 		weapon_id[client] = weapon;
-		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
+		Give_bomb_back[client] = CreateTimer(15.0 * CooldownReductionAmount(client), Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
 	//	CreateTimer(14.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-		GrenadeApplyCooldownHud(client, 15.0);
+		GrenadeApplyCooldownHud(client, 15.0 * CooldownReductionAmount(client));
 		if(Handle_on[client])
 		{
 			delete Give_bomb_back[client];

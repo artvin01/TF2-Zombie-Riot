@@ -1082,6 +1082,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+
+					if(Attributes_Has(weapon, 733))
+						Attributes_SetMulti(weapon, 733, BuffOriginal);	// mana cost
 					
 					if(Attributes_Has(weapon, 8))
 						Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
@@ -1100,6 +1103,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, 1.0 / (BuffRevert));	// Reload Time
+						
+					if(Attributes_Has(weapon, 733))
+						Attributes_SetMulti(weapon, 733, 1.0 / (BuffRevert));	// mana cost
 
 					if(Attributes_Has(weapon, 8))
 						Attributes_SetMulti(weapon, 8, BuffRevert);	// Heal Rate
@@ -1117,6 +1123,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+
+					if(Attributes_Has(weapon, 733))
+						Attributes_SetMulti(weapon, 733, BuffOriginal);	// mana cost
 
 					if(Attributes_Has(weapon, 8))
 						Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate

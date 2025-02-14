@@ -401,7 +401,7 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 #if defined ZR
 			if(MazeatItemHas())
 			{
-				cooldown *= 0.75;
+				cooldown *= 0.5;
 			}
 #endif
 			info.Cooldown[what_slot - 1] = cooldown + GetGameTime();
