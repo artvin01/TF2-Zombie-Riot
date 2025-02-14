@@ -509,7 +509,7 @@ void Music_PostThink(int client)
 		PlaySetupMusicCustom(client);
 		return;
 	}
-	if(Waves_InSetup() && !Rogue_Mode())
+	if(Waves_InSetup() && !Rogue_Mode() && !CvarNoRoundStart.BoolValue)
 	{
 		PlaySetupMusicCustom(client);
 		return;

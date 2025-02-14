@@ -306,7 +306,7 @@ int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
 float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
 //Just speeds up their time ig?
-float f_AttackSpeedNpcIncreace[MAXENTITIES];
+float f_AttackSpeedNpcIncreace[MAXENTITIES] = {1.0, ...};
 
 
 //This is for going through things via lag comp or other reasons to teleport things away.
