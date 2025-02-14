@@ -502,6 +502,19 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Boss = 0;
 		enemy.Is_Health_Scaled = 0;
 
+		/*
+		// test later.
+		float zombinecountscale = ZRStocks_PlayerScalingDynamic();
+		if(zombinecountscale > 12.0)
+			zombinecountscale = 12.0;
+		
+		zombinecountscale *= 0.1;
+		if(zombinecountscale < 0.5)
+			zombinecountscale = 0.5;
+
+		count = RountToCeil(20.0 * zombinecountscale);
+		*/
+
 		count = 20;
 		zombiecombine = false;
 	}
