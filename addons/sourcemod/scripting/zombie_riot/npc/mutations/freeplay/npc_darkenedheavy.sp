@@ -91,7 +91,10 @@ methodmap FogOrbHeavy < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(FogOrbHeavy_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 225.0;		
+		npc.m_flSpeed = 225.0;
+		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
+		GiveNpcOutLineLastOrBoss(npc.index, false);
+		b_thisNpcHasAnOutline[npc.index] = true;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
