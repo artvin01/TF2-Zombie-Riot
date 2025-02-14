@@ -480,7 +480,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_darkenedheavy");
-		enemy.Health = RoundToCeil(HealthBonus + (3000000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.02)));
+		enemy.Health = RoundToCeil(HealthBonus + (1250000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.02)));
 		enemy.Credits += 100.0;
 		enemy.ExtraMeleeRes = 1.25;
 		enemy.ExtraRangedRes = 0.5;
@@ -699,14 +699,37 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.Credits += KillBonus;
 	}
 
+	if(enemy.Team != TFTeam_Red)
+	{
+		// stat related stuff
+		enemy.ExtraSize *= ExtraEnemySize;	
+		
+		// count scaling
+		float countscale = float(CountPlayersOnRed());
+		if(countscale <= 8.0)
+		{
+			countscale *= 0.125; // below or equal to 8 players, scaling should be 0.125 per player
+		}
+		else if(countscale > 8.0 && countscale <= 12.0) 
+		{
+			countscale = 1.0; // above 8 players but below or equal to 12, player scaling should not activate
+		}
+		else
+		{
+			countscale *= 0.0782; // above 12 players, scaling should be 0.0782 per player, for a max of +25% enemies at 16 players assuming there can't be more.
+		}
+
+		if(countscale < 0.5)
+			countscale = 0.5; // below or equal to 4 players, there are 50% less enemies
+
+		count = RoundToCeil(float(count) * countscale);
+	}
+
 	if(count < 1)
 		count = 1;
 
 	if(alaxios && count > 30)
 		count = 30;
-
-	if(enemy.Team != TFTeam_Red)
-		enemy.ExtraSize *= ExtraEnemySize;
 
 	if(enemy.Is_Boss == 1)
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);

@@ -91,7 +91,10 @@ methodmap FogOrbHeavy < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(FogOrbHeavy_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 250.0;		
+		npc.m_flSpeed = 225.0;
+		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
+		GiveNpcOutLineLastOrBoss(npc.index, false);
+		b_thisNpcHasAnOutline[npc.index] = true;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -286,7 +289,7 @@ public Action FogOrbHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	float vecTarget[3];
+		float vecTarget[3];
 	WorldSpaceCenter(attacker, vecTarget);
 
 	float VecSelfNpc[3];
@@ -295,11 +298,10 @@ public Action FogOrbHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget > (250.0 * 250.0))
 	{
-		HealEntityGlobal(npc.index, npc.index, float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")), 1.0, 0.0, HEAL_ABSOLUTE);
-		damage *= 0.25;
+		HealEntityGlobal(npc.index, npc.index, damage*1.25, 1.0, 0.0, HEAL_ABSOLUTE);
 		return Plugin_Handled;
 	}
-		
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -358,9 +360,9 @@ void FogOrbHeavySelfDefense(FogOrbHeavy npc, float gameTime, int target, float d
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 200.0;
+					float damageDealt = 100.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 6.0;
+						damageDealt *= 3.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
