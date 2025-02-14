@@ -170,8 +170,7 @@ public void WeakDash(int client)
 				return;
 			}
 			i_BurstpackUsedThisRound[client] += 1;
-			ability_cooldown[client] = GetGameTime() + 60.0;
-			CreateTimer(60.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			ability_cooldown[client] = GetGameTime() + (60.0 * CooldownReductionAmount(client));
 			WeakDashLogic(client);
 		}
 		else
@@ -220,8 +219,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
-		ability_cooldown[client] = GetGameTime() + 100.0;
-		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
 		int entity;
 
 		if(b_StickyExtraGrenades[client])
@@ -374,9 +372,8 @@ public void PlaceableTempomaryHealingGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
-		ability_cooldown[client] = GetGameTime() + 140.0;
+		ability_cooldown[client] = GetGameTime() + (140.0 * CooldownReductionAmount(client));
 		
-		CreateTimer(140.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		int entity;		
 		if(b_StickyExtraGrenades[client])
 			entity = CreateEntityByName("tf_projectile_pipe_remote");
@@ -602,8 +599,7 @@ public void ReconstructiveTeleporter(int client)
 		}
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			ability_cooldown[client] = GetGameTime() + 70.0;
-			CreateTimer(70.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			ability_cooldown[client] = GetGameTime() + (70.0 * CooldownReductionAmount(client));
 		}
 		WorldSpaceCenter(client, WorldSpaceVec);
 		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
@@ -1234,10 +1230,7 @@ public void GearTesting(int client)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			ability_cooldown[client] = GetGameTime() + 350.0;
-
-
-			CreateTimer(350.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			ability_cooldown[client] = GetGameTime() + (350.0 * CooldownReductionAmount(client));
 
 			SetEntityMoveType(client, MOVETYPE_NONE);
 
@@ -1406,8 +1399,8 @@ public void PlaceableTempomaryRepairGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
-		ability_cooldown[client] = GetGameTime() + 100.0;
-		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
+		
 		int entity;		
 		if(b_StickyExtraGrenades[client])
 			entity = CreateEntityByName("tf_projectile_pipe_remote");

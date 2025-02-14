@@ -74,8 +74,7 @@ public void Weapon_ZealotRCheckCD(int client, int weapon, bool &result, int slot
 
 void Zealot_ApplyGlobalRCooldown(int client, float Duration)
 {
-	if(MazeatItemHas())
-		Duration *= 0.75;
+	Duration *= CooldownReductionAmount(client);
 
 	f_DashCooldownZealot[client] = GetGameTime() + Duration;
 	int weapon1;

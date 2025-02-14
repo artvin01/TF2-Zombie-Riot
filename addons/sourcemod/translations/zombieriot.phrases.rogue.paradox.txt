@@ -76,6 +76,20 @@
 	{
 		"en"	"Everything turns red as you see the bright red moon above."
 	}
+	
+	"Shadowing Darkness"
+	{
+		"en"	"Shadowing Darkness"
+	}
+	"Shadowing Darkness Desc"
+	{
+		"en"	"{red}Everyone gains 25%% attackspeed."
+	}
+	"Shadowing Darkness Lore"
+	{
+		"en"	"They kept talking about him, yet he isnt here... who is this? It fills you with anxiety."
+	}
+
 	"Compass and Map"
 	{
 		"en"	"Compass and Map"
@@ -398,7 +412,7 @@
 	}
 	"Mazeat Lost Technology Desc"
 	{
-		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 25%%"
+		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 33%%"
 	}
 	"Peek into the Eternal Night Desc"
 	{

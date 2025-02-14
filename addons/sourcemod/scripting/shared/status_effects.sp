@@ -921,6 +921,11 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			// Something was changed
 			i -= (length - E_AL_StatusEffects[victim].Length);
 			length = E_AL_StatusEffects[victim].Length
+			if(i < 0)
+			{
+				i = -1;
+				continue;
+			}
 		}
 
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
@@ -1077,6 +1082,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+
+					if(Attributes_Has(weapon, 733))
+						Attributes_SetMulti(weapon, 733, BuffOriginal);	// mana cost
 					
 					if(Attributes_Has(weapon, 8))
 						Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
@@ -1095,6 +1103,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, 1.0 / (BuffRevert));	// Reload Time
+						
+					if(Attributes_Has(weapon, 733))
+						Attributes_SetMulti(weapon, 733, 1.0 / (BuffRevert));	// mana cost
 
 					if(Attributes_Has(weapon, 8))
 						Attributes_SetMulti(weapon, 8, BuffRevert);	// Heal Rate
@@ -1112,6 +1123,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					
 					if(Attributes_Has(weapon, 97))
 						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+
+					if(Attributes_Has(weapon, 733))
+						Attributes_SetMulti(weapon, 733, BuffOriginal);	// mana cost
 
 					if(Attributes_Has(weapon, 8))
 						Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
@@ -2507,6 +2521,8 @@ void StatusEffects_Medieval()
 	data.DamageDealMulti			= 0.125;
 	data.MovementspeedModif			= 1.5;
 	data.AttackspeedBuff			= 0.75;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -2540,6 +2556,23 @@ void StatusEffects_MERLT0N_BUFF()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Extreme Anxiety");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "È");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= 0.75;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);

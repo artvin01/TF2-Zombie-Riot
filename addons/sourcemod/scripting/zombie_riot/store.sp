@@ -454,7 +454,6 @@ enum struct Item
 	int MaxScaled;
 	int Level;
 	int Slot;
-	int Special;
 	bool Starter;
 	bool ParentKit;
 	bool ChildKit;
@@ -726,6 +725,16 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 	return 0.0;
 }
 
+float CooldownReductionAmount(int client)
+{
+	float Cooldown = 1.0;
+	if(MazeatItemHas())
+	{
+		Cooldown *= 0.66;
+	}
+	return Cooldown;
+}
+
 void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1)
 {
 	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
@@ -735,6 +744,9 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 		{
 			static Item item;
 			StoreItems.GetArray(StoreWeapon[weapon], item);
+#if defined ZR
+			cooldown *= CooldownReductionAmount(client);
+#endif
 			
 			switch(what_slot)
 			{
@@ -924,22 +936,6 @@ void Store_SwapItems(int client)
 	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 }
 
-int Store_GetSpecialOfSlot(int client, int slot)
-{
-	if(StoreItems)
-	{
-		Item item;
-		int length = StoreItems.Length;
-		for(int i; i<length; i++)
-		{
-			StoreItems.GetArray(i, item);
-			if(item.Slot == slot && item.Owned[client])
-				return item.Special;
-		}
-	}
-	return -1;
-}
-
 void Store_ConfigSetup()
 {
 	ClearAllTempAttributes();
@@ -1068,7 +1064,6 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		item.MaxBarricadesBuild = view_as<bool>(kv.GetNum("max_barricade_buy_logic"));
 		item.MaxCost = kv.GetNum("maxcost");
 		item.MaxScaled = kv.GetNum("max_times_scale");
-		item.Special = kv.GetNum("special", -1);
 		item.Slot = kv.GetNum("slot", -1);
 		item.GregBlockSell = view_as<bool>(kv.GetNum("greg_block_sell"));
 		item.GregOnlySell = kv.GetNum("greg_only_sell");

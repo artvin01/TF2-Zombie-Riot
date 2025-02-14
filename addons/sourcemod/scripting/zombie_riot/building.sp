@@ -697,9 +697,6 @@ void Building_ShowInteractionHud(int client, int entity)
 				{
 					float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
 					
-					if(Building_Picking_up_cd <= 0.0)
-						Building_Picking_up_cd = 0.0;
-					
 					Hide_Hud = false;
 					SetGlobalTransTarget(client);
 					PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);

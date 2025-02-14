@@ -9,6 +9,7 @@ static bool StartLastman;
 static bool ForceNextHunter;
 
 static Handle FrostTimer;
+static Handle AnxietyTimer;
 static ArrayList WinterTheme;
 
 public float Rogue_Encounter_ForcedHunterBattle()
@@ -179,6 +180,15 @@ public void Rogue_SomethingElse_Enemy(int entity)
 
 public void Rogue_SomethingElse_Collect()
 {
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
 	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
 	{
 		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
@@ -299,6 +309,35 @@ public void Rogue_Curse_DenseFrost(bool enable)
 public void Rogue_Curse_RedMoon(bool enable)
 {
 	RedMoon = enable;
+}
+
+public void Rogue_ShadowingDarkness(bool enable)
+{
+	delete AnxietyTimer;
+
+	if(enable)
+		AnxietyTimer = CreateTimer(0.25, Timer_AnxietyTimer, _, TIMER_REPEAT);
+}
+
+static Action Timer_AnxietyTimer(Handle timer)
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		{
+			ApplyStatusEffect(entity, entity, "Extreme Anxiety", 1.0);
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2)
+		{
+			ApplyStatusEffect(client_summon, client_summon, "Extreme Anxiety", 1.0);
+		}
+	}
+
+	return Plugin_Continue;
 }
 
 static Action Timer_ParadoxFrost(Handle timer)

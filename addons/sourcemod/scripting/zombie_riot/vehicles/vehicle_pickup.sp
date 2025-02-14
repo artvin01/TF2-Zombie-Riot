@@ -35,11 +35,11 @@ methodmap VehiclePickup < VehicleGeneric
 		SetEntProp(obj.index, Prop_Send, "m_nSkin", GetURandomInt() % 2);
 		
 		obj.m_bNoAttack = true;
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {12.0, 12.0, 30.0}, 0);	// Side Seat
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {20.0, -96.0, 40.0}, 1);	// Back Right
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-20.0, -44.0, 40.0}, 2);// Front Left
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {20.0, -44.0, 40.0}, 3);	// Back Left
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-20.0, -96.0, 40.0}, 4);// Front Right
+		obj.AddSeat({20.0, -96.0, 40.0}, 0);	// Back Right
+		obj.AddSeat({-20.0, -44.0, 40.0}, 1);// Front Left
+		obj.AddSeat({20.0, -44.0, 40.0}, 2);	// Back Left
+		obj.AddSeat({-20.0, -96.0, 40.0}, 3);// Front Right
+		obj.AddSeat({12.0, 12.0, 30.0}, 4);	// Side Seat
 
 		return obj;
 	}
