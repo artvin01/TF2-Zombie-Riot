@@ -162,7 +162,7 @@ methodmap Spotter < CClotBody
 		}
 		else
 		{
-			switch(GetURandomInt() % 10)
+			switch(GetURandomInt() % 15)
 			{
 				case 0:
 				{
@@ -210,8 +210,33 @@ methodmap Spotter < CClotBody
 				{
 					this.Speech("Hey, come to think of it...");
 					this.SpeechDelay(5.0, "Aren't you tired of being nice?");
-					this.SpeechDelay(10.0, "Don't you just want to go apesh-");
+					this.SpeechDelay(9.0, "Don't you just want to go apesh-");
 					this.SpeechDelay(12.5, "...sorry, sorry, my head slipped a bit.");
+				}
+				case 10:
+				{
+					this.Speech("In my honest opinion, i dislike brocoli.");
+					this.SpeechDelay(6.0, "It just DOESN'T taste good for me.");
+				}
+				case 11:
+				{
+					this.Speech("Ah, i just remembered something.");
+					this.SpeechDelay(6.0, "But its none of your business.");
+				}
+				case 12:
+				{
+					this.Speech("I wonder if this training will be enough...");
+					this.SpeechDelay(7.0, "...for me to travel with you guys outside.");
+				}
+				case 13:
+				{
+					this.Speech("Sometimes i see a guy named 'Vtuber' say he has no limits.");
+					this.SpeechDelay(10.0, "And that he'll charge at full power, too.");
+					this.SpeechDelay(17.5, "I think that's part of his training....");
+				}
+				case 14:
+				{
+					this.Speech("You stink.");
 				}
 				default:
 				{
@@ -316,7 +341,7 @@ methodmap Spotter < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 255, 135, 0);
 
 		Freeplay_SpotterStatus(true);
-	        switch(GetRandomInt(1, 5))
+	        switch(GetRandomInt(1, 7))
 		{
 			case 1:
 			{
@@ -334,6 +359,14 @@ methodmap Spotter < CClotBody
 			{
 				CPrintToChatAll("{orange}Spotter: {white}Apparently Bob told me he saw some sort of ''titan soldier'' that calls himself a sigma.");
 				CPrintToChatAll("{orange}Spotter: {white}Quite {strange}strange{white}, to be honest.");
+			}
+			case 5:
+			{
+			    	CPrintToChatAll("{orange}Spotter: {white}Another day, another session of training.");
+			}
+			case 6:
+			{
+				CPrintToChatAll("{orange}Spotter: {white}Hello there!");
 			}
 			default:
 			{
@@ -481,7 +514,7 @@ public void Spotter_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();
 
-	switch(GetRandomInt(1, 3))
+	switch(GetRandomInt(1, 5))
 	{
 		case 1:
 		{
@@ -491,12 +524,21 @@ public void Spotter_NPCDeath(int entity)
 		{
 			CPrintToChatAll("{orange}Spotter: {crimson}OOOUUCH!!! {white}Retreating, retreating!");
 		}
+		case 3:
+		{
+			CPrintToChatAll("{orange}Spotter: {white}Yyeeooowwch.... That's gonna leave a mark...");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{orange}Spotter: {crimson}OOW!");
+		}
 		default:
 		{
-			CPrintToChatAll("{orange}Spotter: {white}B-bob, im retreating now, im heavily wounded...");
+			CPrintToChatAll("{orange}Spotter: {white}Ow ow, im retreating now, heavily wounded...");
 		}
 	}
 	
+	CPrintToChatAll("{crimson}The Spotter bails away.");
 	Freeplay_SpotterStatus(false);
 	
 	if(IsValidEntity(npc.m_iWearable1))
@@ -609,7 +651,7 @@ void SpotterAllyBuff(Spotter npc)
 	ApplyStatusEffect(npc.index, npc.index, "Spotter's Rally", 1.0);
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
 
-	switch(GetRandomInt(1, 3))
+	switch(GetRandomInt(1, 4))
 	{
 		case 1:
 		{
@@ -620,6 +662,11 @@ void SpotterAllyBuff(Spotter npc)
 		{
 			CPrintToChatAll("{orange}Spotter: {gold}COME ON!!!!!");
 			npc.Speech("COME ON!!!!!!");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{orange}Spotter: {gold}CHARGE AT FULL POWER!!!!");
+			npc.Speech("CHARGE AT FULL POWER!!!!");
 		}
 		default:
 		{

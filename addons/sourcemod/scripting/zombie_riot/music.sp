@@ -362,6 +362,7 @@ void Music_Stop_All(int client)
 	{
 		//dont spam these
 		DelayStopSoundAll[client] = GetGameTime() + 0.1;
+ 		StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/1.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/2.mp3");
@@ -495,9 +496,6 @@ void Music_PostThink(int client)
 	if(MusicDisabled && !b_IgnoreMapMusic[client])
 		return;
 	
-	if(!b_GameOnGoing)
-		return;
-	
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
 
@@ -505,7 +503,18 @@ void Music_PostThink(int client)
 	//but dont kill old music either.
 	if(SkillTree_InMenu(client))
 		return;
-
+	
+	if(!b_GameOnGoing && !CvarNoRoundStart.BoolValue)
+	{
+		PlaySetupMusicCustom(client);
+		return;
+	}
+	if(Waves_InSetup() && !Rogue_Mode())
+	{
+		PlaySetupMusicCustom(client);
+		return;
+	}
+	
 	if(Music_Timer[client] < GetTime() && Music_Timer_2[client] < GetTime())
 	{
 		bool RoundHasCustomMusic = false;
@@ -916,4 +925,14 @@ void RemoveAllCustomMusic()
 	MusicString1.Clear();
 	MusicString2.Clear();
 	RaidMusicSpecial1.Clear();
+}
+
+
+void PlaySetupMusicCustom(int client)
+{
+	if(Music_Timer[client] < GetTime() && Music_Timer_2[client] < GetTime())
+	{
+		EmitSoundToClient(client, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.4);
+		SetMusicTimer(client, GetTime() + 173);
+	}
 }

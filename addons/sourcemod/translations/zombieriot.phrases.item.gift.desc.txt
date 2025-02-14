@@ -2133,8 +2133,7 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, have 2x HP, +6%% faster.\n1 less down, enemies heal 50%% more."
-		"ru"	"Почувствуйте ЗР какого это быть новичном.\n35%% больше врагов, спанят 25%% быстрее,15%% больше врагов в живых одновременно.\nони наносят 25%% больше урона вам и баррикадам,Имеют в 2 раза больше Здоровья.\nСчётчик падений снижен на 1,враги лечят 50%% больше"
+		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, +60%% HP, +6%% faster, attack 25%% faster.\n1 down, enemies heal 50%% more."
 	}
 	"Secondary Mercs"
 	{
@@ -2457,18 +2456,30 @@
 	}
 	"Disturbed Umbral Desc"
 	{
-		"en"	"Alerted by the rips, it comes to stop the ''invasors''...\nDeals a random amount of damage on hit, and performs a random effect upon being hit, with a cooldown.\n(Silence) Reduces its attackspeed greatly."
+		"en"	"Alerted by the rip in the curtain, they come to stop the ''invasors''...\nThese creatures are completely crazed, doing various things when harmed.\n(Silence) Reduces its attackspeed greatly."
 	}
 	"Immutable Heavy Desc"
 	{
-		"en"	"Another dimensional entity, however, it seems to be more controlled...\nShoots projectiles when close enough, red does AOE, blue is single.\nDeals 20%% of its melee damage as Elemental Void/Chaos damage.\nEach melee hit it does, it gains +2%% speed permanently.\nDo NOT allow it to melee anything though, otherwise it'll become immune to all debuffs temporarily (unless silenced)."
+		"en"	"A bigger, stronger enemy from the Curtain.\nSo far, many encounters with it resulted in catastrophic failures, few chances of survival.\nDon't let it hit anything, and beware of its ranged attacks.\n(Silence) Blocks debuff immunity."
 	}
 	"Vanishing Matter Desc"
 	{
-		"en"	"It begs for the pain to stop...\nInvulnerable when it spawns, each melee hit it LANDS lowers its health.\nUpon reaching 33%% health, its invulnerability vanishes and it enrages.\nWhile enraged: moves faster, deals less damage, heals nearby allies and attacks at lightspeed.\nCan be kited to an extent, as it loses health when it SWINGS its melee.\n(Silence) Reduces its attackspeed greatly."
+		"en"	"It begs for the pain to stop...\nThey seem to be invulnerable when they appear, but as they attack, they slowly begin to vanish.\nMake sure to take them down fast when they become vulnerable.\n(Silence) Reduces its attackspeed greatly."
 	}
 	"Spotter Desc"
 	{
-		"en"	"Tasked to train with the mercs in Koshi's simulator.\nDeals high melee dmg, knocks enemies away, heals on hit and silences enemies.\nCharges his buff after hitting enough enemies:\nGrants speed to players and heals npcs, his buff (Spotter's Rally) lasts longer on npcs."
+		"en"	"Tasked to train with the mercs in Koshi's simulator.\nTry to keep him alive, and he'll reward you with a special buff! (Lasts longer on NPCs than players.)\nHe also silences and knocks enemies away, is capable of sustaining himself to an extent."
+	}
+	"SIGMALLER Desc"
+	{
+		"en"	"One of Koshi's weird, crazy antics.\nWhen it spawns, all enemies are fully healed and buffed.\nYou MUST take it down before the other enemies.\nOtherwise, you won't like the sound that his horn makes..."
+	}
+	"Annoying Spirit Desc"
+	{
+		"en"	"An invincible, annoying spirit.\nPretty much a product of Koshi's weird mind.\nThis spirit is not threatening at all, in fact he doesn't even deal damage.\nHe just... screams."
+	}
+	"Darkened Heavy Desc"
+	{
+		"en"	"Taken by an unknown force, it was converted into an obscure, dark entity.\nDamaging it outside its aura causes it to heal.\n''The darkness is coming. You need to run.''"
 	}
 }

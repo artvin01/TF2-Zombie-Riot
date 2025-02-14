@@ -899,8 +899,11 @@ void NPC_ConfigSetup()
 	DimensionalFragment_OnMapStart_NPC();
 	ImmutableHeavy_OnMapStart_NPC();
 	VanishingMatter_OnMapStart_NPC();
+	FreeplaySigmaller_OnMapStart_NPC();
 	Spotter_OnMapStart_NPC();
 	Erasus_OnMapStart_NPC();
+	AnnoyingSpirit_OnMapStart_NPC();
+	FogOrbHeavy_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1201,7 +1204,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
 #include "zombie_riot/object/obj_revenant.sp"
-#include "zombie_riot/object/obj_giant_lighthouse.sp"
+#include "zombie_riot/object/construction/obj_giant_lighthouse.sp"
+//#include "zombie_riot/object/construction/obj_hospital.sp"
 
 // VEHICLES
 #include "shared/vehicles/vehicle_shared.sp"
@@ -1993,6 +1997,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/freeplay/npc_dimensionfrag.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_immutableheavy.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_vanishingmatter.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_freeplay_sigmaller.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_spotter.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_annoying_spirit.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_darkenedheavy.sp"
 
 #include "zombie_riot/npc/construction/npc_base_building.sp"

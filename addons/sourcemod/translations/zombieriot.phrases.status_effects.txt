@@ -162,11 +162,11 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your Freeplay run be cheesy.\nIncreases damage and resistance by 15%%\nIncreases ALLY (not player) speed by 10%%"
+		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15%%\nIncreases npc speed by +25%%.\nIncreases attackspeed by +15%%."
 	}
 	"Freeplay Eloquence I"
 	{
-		"en"	"Freeplay Eloquence I"
+		"en"	"Eloquence I"
 	}
 	"Freeplay Eloquence I Desc"
 	{
@@ -174,7 +174,7 @@
 	}
 	"Freeplay Eloquence II"
 	{
-		"en"	"Freeplay Eloquence II"
+		"en"	"Eloquence II"
 	}
 	"Freeplay Eloquence II Desc"
 	{
@@ -182,7 +182,7 @@
 	}
 	"Freeplay Eloquence III"
 	{
-		"en"	"Freeplay Eloquence III"
+		"en"	"Eloquence III"
 	}
 	"Freeplay Eloquence III Desc"
 	{
@@ -190,7 +190,7 @@
 	}
 	"Freeplay Rampart I"
 	{
-		"en"	"Freeplay Rampart I"
+		"en"	"Rampart I"
 	}
 	"Freeplay Rampart I Desc"
 	{
@@ -198,7 +198,7 @@
 	}
 	"Freeplay Rampart II"
 	{
-		"en"	"Freeplay Rampart II"
+		"en"	"Rampart II"
 	}
 	"Freeplay Rampart II Desc"
 	{
@@ -206,11 +206,35 @@
 	}
 	"Freeplay Rampart III"
 	{
-		"en"	"Freeplay Rampart III"
+		"en"	"Rampart III"
 	}
 	"Freeplay Rampart III Desc"
 	{
 		"en"	"Reduces damage taken by 30%%"
+	}
+	"Freeplay Hurtle I"
+	{
+		"en"	"Hurtle I"
+	}
+	"Freeplay Hurtle I Desc"
+	{
+		"en"	"Increases attackspeed by +7%%"
+	}
+	"Freeplay Hurtle II"
+	{
+		"en"	"Hurtle II"
+	}
+	"Freeplay Hurtle II Desc"
+	{
+		"en"	"Increases attackspeed by +14%%"
+	}
+	"Freeplay Hurtle III"
+	{
+		"en"	"Hurtle III"
+	}
+	"Freeplay Hurtle III Desc"
+	{
+		"en"	"Increases attackspeed by +21%%"
 	}
 	"Cudgelled"
 	{
@@ -363,6 +387,14 @@
 	"MERLT0N-BUFF Desc"
 	{
 		"en"	"Reduces damage taken by 50%%\nBoosts damage dealt by 50%%"
+	}
+	"Extreme Anxiety"
+	{
+		"en"	"Extreme Anxiety"
+	}
+	"Extreme Anxiety Desc"
+	{
+		"en"	"Attack 25%% faster."
 	}
 	"Combine Command"
 	{
@@ -974,7 +1006,7 @@
 	}
 	"Spotter's Rally Desc"
 	{
-		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%."
+		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%.\nIncreases attackspeed by +35%%."
 	}
 	"Weapon Overclock"
 	{
