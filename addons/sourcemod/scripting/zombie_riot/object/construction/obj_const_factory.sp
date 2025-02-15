@@ -50,7 +50,7 @@ methodmap ObjectFactory < ObjectGeneric
 {
 	public ObjectFactory(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectFactory npc = view_as<ObjectFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", _, "600", {312.0, 280.0, 231.0}, _, false));
+		ObjectFactory npc = view_as<ObjectFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", _, "600", {312.0, 280.0, 231.0}));
 		
  		b_CantCollidie[npc.index] = true;
 	 	b_CantCollidieAlly[npc.index] = true;
@@ -139,17 +139,6 @@ static bool ClotInteract(int client, int weapon, ObjectFactory npc)
 
 static void ThisBuildingMenu(int client)
 {
-	if(!Shuffled)
-	{
-		Zero(Enabled);
-		Shuffled = true;
-
-		for(int i; i < 4; i++)
-		{
-			Enabled[GetURandomInt() % sizeof(Enabled)] = true;
-		}
-	}
-
 	int iron = Construction_GetMaterial("iron");
 	int ossunia = Construction_GetMaterial("ossunia");
 	int ossuniaCost = OssuniaCost();
@@ -160,7 +149,7 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n \nCrouch to see descriptions", "Vehicle Factory", iron, IronCost, "Material iron", ossunia, ossuniaCost, "Material ossunia");
+	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material iron", ossunia, ossuniaCost, "Material ossunia", "Crouch and select to view description");
 
 	char buffer[64];
 	for(int i; i < sizeof(Vehicles); i++)
@@ -229,7 +218,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 						GlobalCooldown = Construction_GetNextAttack() + 450.0;
 						
 						Construction_AddMaterial("iron", -IronCost, true);
-						Construction_AddMaterial("ossunia", -BofaCost, true);
+						Construction_AddMaterial("ossunia", -ossuniaCost, true);
 
 						pos[2] += 10.0;
 						ang[1] += 90.0;

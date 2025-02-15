@@ -19,15 +19,15 @@ static float GlobalCooldown;
 static bool Shuffled;
 static bool Enabled[sizeof(Artifacts)];
 
-void ObjectStove_MapStart()
+void ObjectResearch_MapStart()
 {
 	Shuffled = false;
 	GlobalCooldown = 0.0;
-	PrecacheModel("models/props_c17/furniturestove001a.mdl");
+	PrecacheModel("models/props_combine/masterinterface.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Cooking Stove");
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_const_stove");
+	strcopy(data.Name, sizeof(data.Name), "Research Station");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_const_research");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -37,9 +37,9 @@ void ObjectStove_MapStart()
 
 	BuildingInfo build;
 	build.Section = 2;
-	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_stove");
-	build.Cost = 3000;
-	build.Health = 150;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_research");
+	build.Cost = 1000;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -47,14 +47,14 @@ void ObjectStove_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return ObjectStove(client, vecPos, vecAng);
+	return ObjectResearch(client, vecPos, vecAng);
 }
 
-methodmap ObjectStove < ObjectGeneric
+methodmap ObjectResearch < ObjectGeneric
 {
-	public ObjectStove(int client, const float vecPos[3], const float vecAng[3])
+	public ObjectResearch(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectStove npc = view_as<ObjectStove>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {36.0, 54.0, 41.0}, _, false));
+		ObjectResearch npc = view_as<ObjectResearch>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "600", {110.0, 129.0, 197.0}));
 		
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
@@ -92,7 +92,7 @@ static int CountBuildings()
 	return count;
 }
 
-static bool ClotCanUse(ObjectStove npc, int client)
+static bool ClotCanUse(ObjectResearch npc, int client)
 {
 	if(GlobalCooldown > GetGameTime())
 		return false;
@@ -112,7 +112,7 @@ static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 	}
 }
 
-static bool ClotInteract(int client, int weapon, ObjectStove npc)
+static bool ClotInteract(int client, int weapon, ObjectResearch npc)
 {
 	if(!ClotCanUse(npc, client))
 	{

@@ -624,6 +624,18 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 		//LogError("Failed to delete file \"%s\"", file);
 }
 
+stock bool HasCustomSound(int client, const char[] sound)
+{
+	int soundlevel = SoundList.FindString(sound);
+	if(soundlevel == -1)
+	{
+		LogError("\"%s\" is not precached with PrecacheSoundCustom", sound);
+		return false;
+	}
+
+	return SoundLevel[client] > soundlevel;
+}
+
 stock void StopCustomSound(int entity, int channel, const char[] sound, float volume = SNDVOL_NORMAL)
 {
 	if(entity > 0 && entity <= MaxClients && channel == SNDCHAN_STATIC)
