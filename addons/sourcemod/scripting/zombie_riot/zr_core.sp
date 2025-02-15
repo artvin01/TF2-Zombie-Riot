@@ -591,6 +591,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/weapon_castlebreaker.sp"
 #include "zombie_riot/custom/kit_soldine.sp"
 #include "zombie_riot/custom/weapon_kritzkrieg.sp"
+#include "zombie_riot/custom/wand/weapon_bubble_wand.sp"
 
 void ZR_PluginLoad()
 {
@@ -892,6 +893,7 @@ void ZR_MapStart()
 	Wkit_Soldin_OnMapStart();
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
+	BubbleWand_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
