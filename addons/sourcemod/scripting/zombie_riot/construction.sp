@@ -958,6 +958,9 @@ public float InterMusic_ConstructRisk(int client)
 	if(LastMann)
 		return 1.0;
 	
+	if(!AttackType)
+		return 0.0;
+	
 	float volume = float(CurrentRisk) / float(HighestRisk);
 	return fClamp(volume, 0.0, 1.0);
 }
@@ -977,6 +980,17 @@ public float InterMusic_ConstructBase(int client)
 	float distance = GetVectorDistance(pos1, pos2);
 	distance = distance / 2000.0;
 	return fClamp(1.0 - distance, 0.0, 1.0);
+}
+
+public float InterMusic_ConstructIntencity(int client)
+{
+	if(AttackType > 1)
+		return 1.0;
+	
+	if(!AttackType)
+		return 0.0;
+	
+	return InterMusic_ByIntencity(client);
 }
 
 void Construction_OpenResearch(int client)
