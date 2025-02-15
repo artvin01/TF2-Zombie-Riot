@@ -46,7 +46,7 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 0.0));
 	if(mana_cost <= Current_Mana[client])
 	{
-		SDKhooks_SetManaRegenDelayTime(client, 1.0);
+		SDKhooks_SetManaRegenDelayTime(client, 3.0);
 		Mana_Hud_Delay[client] = 0.0;
 
 		Current_Mana[client] -= mana_cost;
