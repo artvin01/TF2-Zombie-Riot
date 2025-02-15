@@ -953,6 +953,32 @@ int Construction_AddMaterial(const char[] short, int gain, bool silent = false)
 	return amount;
 }
 
+public float InterMusic_ConstructRisk(int client)
+{
+	if(LastMann)
+		return 1.0;
+	
+	float volume = float(CurrentRisk) / float(HighestRisk);
+	return fClamp(volume, 0.0, 1.0);
+}
+
+public float InterMusic_ConstructBase(int client)
+{
+	if(LastMann)
+		return 1.0;
+	
+	int entity = GetBaseBuilding();
+	if(entity == -1)
+		return 0.0;
+	
+	float pos1[3], pos2[3];
+	GetClientEyePosition(client, pos1);
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
+	float distance = GetVectorDistance(pos1, pos2);
+	distance = distance / 2000.0;
+	return fClamp(1.0 - distance, 0.0, 1.0);
+}
+
 void Construction_OpenResearch(int client)
 {
 	SetGlobalTransTarget(client);

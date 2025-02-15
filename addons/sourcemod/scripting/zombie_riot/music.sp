@@ -23,13 +23,13 @@ enum struct InterMusicEnum
 		}
 	}
 
-	float GetVolume(float multi)
+	float GetVolume(int client, float multi)
 	{
 		float volume = 1.0;
 
-		if(part.Func != INVALID_FUNCTION)
+		if(this.Func != INVALID_FUNCTION)
 		{
-			Call_StartFunction(null, part.Func);
+			Call_StartFunction(null, this.Func);
 			Call_PushCell(client);
 			Call_Finish(volume);
 		}
@@ -148,7 +148,7 @@ enum struct MusicEnum
 			for(int i; i < length; i++)
 			{
 				this.Parts.GetArray(i, part);
-				EmitSoundToClient(client, part.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, part.GetVolume(this.Volume));
+				EmitSoundToClient(client, part.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, part.GetVolume(client, this.Volume));
 			}
 		}
 
@@ -226,7 +226,7 @@ enum struct MusicEnum
 			{
 				this.Parts.GetArray(i, part);
 
-				EmitSoundToClient(client, part.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, part.GetVolume(this.Volume));
+				EmitSoundToClient(client, part.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, part.GetVolume(client, this.Volume));
 			}
 		}
 	}
