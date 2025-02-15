@@ -48,7 +48,7 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 	{
 		float thetime;
 		int pap = 0;
-  		pap = RoundFloat(Attributes_Get(sf_BubbleWeapon[projectile], 122, 0.0));
+  		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 		switch(pap)
 		{
 			case 1:
