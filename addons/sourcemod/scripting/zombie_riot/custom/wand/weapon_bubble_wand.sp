@@ -181,7 +181,7 @@ public Action Timer_BubbleWand(Handle timer, int ent)
             if(sf_BubbleRadius[projectile] > sf_BubbleRadiusMax[projectile])
                 sf_BubbleRadius[projectile] = sf_BubbleRadiusMax[projectile];
 
-            PrintToChatAll("Damage: %.2f | Max Damage: %.2f | Radius: %.2f", sf_BubbleDamage[projectile], sf_BubbleDamageMax[projectile] * dmglimit, sf_BubbleRadius[projectile]);
+            //PrintToChatAll("Damage: %.2f | Max Damage: %.2f | Radius: %.2f", sf_BubbleDamage[projectile], sf_BubbleDamageMax[projectile] * dmglimit, sf_BubbleRadius[projectile]);
         }
         else
         {
