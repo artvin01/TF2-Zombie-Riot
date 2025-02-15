@@ -25,6 +25,10 @@
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
 	}
+	"Crouch and select to view description"
+	{
+		"en"	"Crouch and select to view description"
+	}
 	"Broken Server"
 	{
 		"en"	"Broken Server"
@@ -120,5 +124,29 @@
 	"Pickup Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Prioritizes outside seating."
+	}
+	"Research Station"
+	{
+		"en"	"Research Station"
+	}
+	"Research Station Desc"
+	{
+		"en"	"A building that can spend materials to research equippment and buildings."
+	}
+	"Vehicle Factory"
+	{
+		"en"	"Vehicle Factory"
+	}
+	"Vehicle Factory Desc"
+	{
+		"en"	"A building that can spend materials to build vehicles."
+	}
+	"Cooking Stove"
+	{
+		"en"	"Cooking Stove"
+	}
+	"Cooking Stove Desc"
+	{
+		"en"	"A building that can spend materials to cook various meals to buff allies."
 	}
 }

@@ -303,6 +303,7 @@ float Resistance_for_building_High[MAXENTITIES];
 MusicEnum MusicString1;
 MusicEnum MusicString2;
 MusicEnum RaidMusicSpecial1;
+MusicEnum BGMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -655,6 +656,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");						//DEBUG
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_ROOT, "Fake Death Count"); 	//DEBUG
 	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
+	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
