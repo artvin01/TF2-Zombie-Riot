@@ -290,7 +290,7 @@
 	}
 	"Silenced Desc"
 	{
-		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances."
+		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attackspeed by 5%%."
 	}
 	"Hardened Aura"
 	{
