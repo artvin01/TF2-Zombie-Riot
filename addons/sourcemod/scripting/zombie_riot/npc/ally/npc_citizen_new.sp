@@ -2927,7 +2927,6 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
 		// Look for Perk Machines
 		else if(team == TFTeam_Red && (!combat || (target == -1 && npc.m_iClassRole != Cit_Fighter)) && npc.m_iGunType != Cit_None && npc.m_iHasPerk != npc.m_iGunType)
 		{
@@ -2958,9 +2957,8 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
 		// Look for Armor Tables
-		else if(team == TFTeam_Red && Elemental_HasDamage(npc.index) && (!combat || (target == -1 && Elemental_GoingCritical(npc.index))))
+		else if((team == TFTeam_Red && (Elemental_HasDamage(npc.index) || npc.m_flArmorCount <= 0.0)) && (!combat || (target == -1 && Elemental_GoingCritical(npc.index))))
 		{
 			npc.ThinkFriendly("No Free Armor Table...");
 
@@ -3103,7 +3101,9 @@ public void Citizen_ClotThink(int iNPC)
 					case 2:	// Armor Table
 					{
 						HealingCooldown[ally] = gameTime + 45.0;
-
+						
+						GrantEntityArmor(npc.index, false, 0.25, 0.25, 0.0);
+						//Same as medigun giving armor, exact same logic, same amount.
 						Elemental_ClearDamage(npc.index);
 					}
 					case 3:	// Perk Machine

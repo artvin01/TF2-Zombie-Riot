@@ -97,14 +97,9 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 
 		EmitSoundToAll(SOUND_BUBBLE_SHOT, client, _, 65, _, 0.45, GetRandomInt(80, 120));
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, particle);
-		int model = ApplyCustomModelToWandProjectile(projectile, "models/buildables/sentry_shield.mdl", 1.0, "");
-		/*
-		// this code is STUPID just eat it
-		float modposition[3];
-		GetEntPropVector(model, Prop_Data, "m_vecAbsOrigin", modposition);
-		modposition[2] -= 50.0;
-		TeleportEntity(model, modposition, NULL_VECTOR, NULL_VECTOR);
-		*/
+		int model = ApplyCustomModelToWandProjectile(projectile, "models/buildables/sentry_shield.mdl", 0.65, "", -15.0);
+		SetEntProp(model, Prop_Send, "m_nSkin", 1);
+
 		sf_BubbleTime[projectile] = GetGameTime() + time;
 		sf_BubbleSpeed[projectile] = speed;
 		sf_BubbleDamage[projectile] = damage;
@@ -168,7 +163,7 @@ public Action Timer_BubbleWand(Handle timer, int ent)
 			TeleportEntity(projectile, NULL_VECTOR, NULL_VECTOR, f_Velocity);
 
 			VelocityMod *= 0.2;
-			TE_SetupBeamRingPoint(startPosition, VelocityMod, VelocityMod-1.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+			TE_SetupBeamRingPoint(startPosition, VelocityMod, VelocityMod-1.0, LaserIndex, LaserIndex, 0, 1, 0.1, 3.0, 0.1, { 75, 75, 255, 100 }, 1, 0);
 			TE_SendToClient(sf_BubbleOwner[projectile]);
 
 			float dmgmult = 1.0;
@@ -241,16 +236,16 @@ public Action Timer_BubbleWand(Handle timer, int ent)
 public void BubbleWand_ExplodeHere(int projectile, int owner, int weapon, float damage, float position[3], float radius)
 {
 	// more transparent and smaller, so people know that this projectile exploded instead of assuming it just disappeared
-	TE_SetupBeamRingPoint(position, 10.0, radius*0.375, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 125 }, 1, 0);
+	TE_SetupBeamRingPoint(position, 10.0, radius*0.375, LaserIndex, LaserIndex, 0, 1, 0.35, 3.0, 0.1, { 75, 75, 255, 125 }, 1, 0);
 	TE_SendToAll(0.0);
 
-	TE_SetupBeamRingPoint(position, 10.0, radius*0.7, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+	TE_SetupBeamRingPoint(position, 10.0, radius*0.7, LaserIndex, LaserIndex, 0, 1, 0.35, 3.0, 0.1, { 75, 75, 255, 200 }, 1, 0);
 	TE_SendToClient(owner);
 	position[2] += 35.0;
-	TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+	TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 3.0, 0.1, { 75, 75, 255, 200 }, 1, 0);
 	TE_SendToClient(owner);
 	position[2] -= 70.0;
-	TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+	TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 3.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
 	TE_SendToClient(owner);
 
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, 0.65, _, RoundToNearest(Attributes_Get(weapon, 4011, 5.0)), false, _, BubbleWand_Logic);
@@ -282,13 +277,13 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 				float position[3];
 				GetClientAbsOrigin(client, position);
 				position[2] += 36.0;
-				TE_SetupBeamRingPoint(position, 600.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 50, 50, 255, 255 }, 1, 0);
+				TE_SetupBeamRingPoint(position, 600.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 3.0, 0.1, { 50, 50, 255, 200 }, 1, 0);
 				TE_SendToAll(0.0);
 				position[2] -= 12.0;
-				TE_SetupBeamRingPoint(position, 500.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 63, 63, 255, 255 }, 1, 0);
+				TE_SetupBeamRingPoint(position, 500.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 3.0, 0.1, { 63, 63, 255, 200 }, 1, 0);
 				TE_SendToAll(0.0);
 				position[2] -= 12.0;
-				TE_SetupBeamRingPoint(position, 400.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+				TE_SetupBeamRingPoint(position, 400.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 3.0, 0.1, { 75, 75, 255, 200 }, 1, 0);
 				TE_SendToAll(0.0);
 				
 				SDKhooks_SetManaRegenDelayTime(client, 1.0);
