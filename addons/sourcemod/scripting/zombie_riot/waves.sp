@@ -882,7 +882,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.music_round_2.SetupKv("music_2", kv);
 		
 		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
-		round.MusicOutroDuration = kv.GetNum("music_outro_duration", 0);
+		round.MusicOutroDuration = kv.GetNum("music_outro_duration");
 		round.music_custom_outro = view_as<bool>(kv.GetNum("music_download_outro"));
 		round.SpawnGrigori = view_as<bool>(kv.GetNum("spawn_grigori"));
 		round.GrigoriMaxSellsItems = kv.GetNum("grigori_sells_items_max");
@@ -1679,6 +1679,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Waves_ClearWaves();
 
 			bool music_stop = false;
+			//Do we stop the music ?
 			if(round.music_round_outro[0])
 			{
 				music_stop = true;
@@ -1693,6 +1694,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			PrevRoundMusic = round.MusicOutroDuration;
+			PrintToChatAll("%i",PrevRoundMusic);
 			if(round.MusicOutroDuration >= 0.0)
 			{
 				for(int client = 1; client <= MaxClients; client++)
@@ -1764,8 +1766,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			// Below is the new round
 			//add a minimum of 0.5 seconds because of custom spawns.
 			//breaks mininbosses, cant
-		//	GiveProgressDelay(0.5);
-		//	f_DelaySpawnsForVariousReasons = GetGameTime() + 0.5;
 			
 			if(round.MapSetupRelay)
 			{
