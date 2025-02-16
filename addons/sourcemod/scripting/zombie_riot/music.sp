@@ -296,7 +296,7 @@ stock void Music_SetRaidMusicSimple(const char[] MusicPath, int duration, bool i
 		if(IsClientInGame(client))
 		{
 			Music_Stop_All(client); //This is actually more expensive then i thought.
-			SetMusicTimer(client, GetTime() + 3);
+			SetMusicTimer(client, GetTime() + 2);
 		}
 	}
 	RaidMusicSpecial1.Clear();

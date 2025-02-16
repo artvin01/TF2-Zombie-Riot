@@ -3349,7 +3349,7 @@ static void MenuPage(int client, int section)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			TryAndSellOrUnequipItem(i, item, client, false, false);
+			TryAndSellOrUnequipItem(i, item, client, false, false, true);
 		}
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
@@ -6837,9 +6837,15 @@ int GetAmmoType_WeaponPrimary(int weapon)
 
 
 
-void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip, bool PlaySound)
+void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip, bool PlaySound, bool IgnoreRestriction = false)
 {
-	if(ForceUneqip && item.Owned[client] && item.Equipped[client] && item.GregOnlySell != 2)
+	ItemInfo info;
+	int level = item.Owned[client] - 1;
+	if(item.ParentKit)
+		level = 0;
+	
+	item.GetItemInfo(level, info);
+	if((info.Cost <= 0 || ForceUneqip) && (item.Owned[client] && item.Equipped[client] && item.GregOnlySell != 2))
 	{
 		int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 
@@ -6847,7 +6853,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 		{
 			char buffer[64];
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-			if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 			{
 				Store_Unequip(client, index);
 				
@@ -6856,26 +6862,22 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			}
 			else
 			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");	
+				if(PlaySound)
+					ClientCommand(client, "playgamesound items/medshotno1.wav");	
 			}
 		}
+		return;
 	}
 	if(!ForceUneqip && item.Owned[client])
 	{
-		ItemInfo info;
 		int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 
 		if(active_weapon > MaxClients)
 		{
 			char buffer[64];
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-			if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 			{
-				int level = item.Owned[client] - 1;
-				if(item.ParentKit)
-					level = 0;
-				
-				item.GetItemInfo(level, info);
 
 				int sell = item.Sell[client];
 				if(item.BuyWave[client] == Waves_GetRound())

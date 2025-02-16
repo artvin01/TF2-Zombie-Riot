@@ -963,8 +963,8 @@ public Action GlobalTimer(Handle timer)
 		{
 			if(ForceMusicStopAndReset)
 			{
-				SetMusicTimer(client, GetTime() + 1);
 				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 2);
 			}
 			PlayerApplyDefaults(client);
 		}
