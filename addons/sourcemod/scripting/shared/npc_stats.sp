@@ -3555,7 +3555,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		}
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif
-
+	
 #if defined EXPIDONSA_BASE
 		VausMagicaRemoveShield(pThis, true);
 #endif
@@ -10706,7 +10706,7 @@ void ExtinguishTarget(int target, bool dontkillTimer = false)
 
 void IsEntityInvincible_Shield(int entity)
 {
-	bool NpcInvulShieldDisplay;
+	int NpcInvulShieldDisplay;
 #if defined ZR
 //This is not neccecary in RPG.
 	if(i_npcspawnprotection[entity] == 1)
@@ -10714,6 +10714,10 @@ void IsEntityInvincible_Shield(int entity)
 #endif
 	if(b_NpcIsInvulnerable[entity])
 		NpcInvulShieldDisplay = true;
+
+	if(HasSpecificBuff(entity, "UBERCHARGED"))
+		NpcInvulShieldDisplay = 2;
+
 	
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])

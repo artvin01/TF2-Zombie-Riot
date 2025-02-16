@@ -492,6 +492,14 @@
 	{
 		"en"	"Decreases damage taken by 15%%"
 	}
+	"UBERCHARGED"
+	{
+		"en"	"UBERCHARGED"
+	}
+	"UBERCHARGED Desc"
+	{
+		"en"	"Invulnerable to damage\nDuring raids, have 50%% resistance."
+	}
 	"Healing Resolve"
 	{
 		"en"	"Healing Resolve"

@@ -3356,7 +3356,15 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	Rogue_ReviveSpeed(speed);
 	if(WasRevivingEntity)
 	{
-		Citizen_ReviveTicks(target, speed, client);
+		if(Citizen_ReviveTicks(target, speed, client) <= 0)
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+			ang[0] = 0.0;
+			TeleportEntity(target, pos, ang, NULL_VECTOR);
+			//teleport em to me!
+		}
 		return;
 	}
 	dieingstate[target] -= speed;

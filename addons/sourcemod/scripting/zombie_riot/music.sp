@@ -724,7 +724,19 @@ void Music_PostThink(int client)
 		return;
 	
 	if(f_ClientMusicVolume[client] < 0.05)
+	{
+		//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+		if(PrepareMusicVolume[client] == 1.0)
+			PrepareMusicVolume[client] = 0.4;
+
+		if(PrepareMusicVolume[client] != 1.0 && PrepareMusicVolume[client])
+		{
+			PrepareMusicVolume[client] = 0.0;
+			StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+			SetMusicTimer(client, GetTime() + 1);	
+		}		
 		return;
+	}
 
 	//if in menu, dont play new music.
 	//but dont kill old music either.

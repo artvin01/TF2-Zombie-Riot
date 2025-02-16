@@ -347,20 +347,21 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							float Healing_GiveArmor = 0.35;
 
-							if(healTarget <= MaxClients)
-							{
-								Healing_GiveArmor *= Healing_Value;
+							Healing_GiveArmor *= Healing_Value;
 
-								if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
-								{
-									Healing_GiveArmor *= 0.33;
-								}
-								if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
-								{
-									Healing_GiveArmor *= 0.33;
-								}	
-								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+							if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
+							{
+								Healing_GiveArmor *= 0.33;
 							}
+							if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
+							{
+								Healing_GiveArmor *= 0.33;
+							}	
+							if(healTarget <= MaxClients)
+								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+							else
+								GrantEntityArmor(healTarget, false, 0.25, 0.25, 0,
+									flMaxHealth * Healing_GiveArmor);
 
 							
 							Healing_GiveArmor = 0.35;
@@ -396,6 +397,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
 						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
+
+						if(TF2_IsPlayerInCondition(owner, TFCond_Ubercharged))
+							ApplyStatusEffect(owner, healTarget, "UBERCHARGED", 0.25);
+
 						if(i_CustomWeaponEquipLogic[medigun] == WEAPON_KRITZKRIEG)
 						{
 							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", 1.0);
