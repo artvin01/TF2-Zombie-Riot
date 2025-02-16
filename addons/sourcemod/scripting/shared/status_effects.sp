@@ -3867,7 +3867,7 @@ void StatusEffects_BubbleWand1()
 {
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Soggy");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "sg");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ԅ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -3880,13 +3880,13 @@ void StatusEffects_BubbleWand1()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Soggiest");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "SG");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ԇ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.85;
 	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
+	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 10; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
@@ -3897,7 +3897,7 @@ void StatusEffects_BubbleWand2()
 {
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Bubble Frenzy");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "BF");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ꞗ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;

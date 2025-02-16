@@ -936,6 +936,30 @@
 	{
 		"en"	"Ignore This."
 	}
+	"Soggy"
+	{
+		"en" "Soggy"
+	}
+	"Soggy Desc"
+	{
+		"en" "Deal 10%% Less damage."
+	}
+	"Soggiest"
+	{
+		"en" "Soggiest"
+	}
+	"Soggiest Desc"
+	{
+		"en" "Deal 15%% Less damage."
+	}
+	"Bubble Frenzy"
+	{
+		"en" "Bubble Frenzy"
+	}
+	"Bubble Frenzy Desc"
+	{
+		"en" "Attack 2x Faster"
+	}
 	"Hectic Therapy"
 	{
 		"en" "Hectic Therapy"

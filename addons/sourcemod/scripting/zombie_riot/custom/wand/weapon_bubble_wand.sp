@@ -24,20 +24,20 @@ void BubbleWand_MapStart()
 {
 	PrecacheSound(SOUND_BUBBLE_SHOT, true);
 	PrecacheSound(SOUND_BUBBLE_EXPLODE, true);
-    PrecacheSound(SOUND_BUBBLE_ABILITY, true);
+	PrecacheSound(SOUND_BUBBLE_ABILITY, true);
 
-    Zero(sf_Bubble_M2Duration);
+	Zero(sf_Bubble_M2Duration);
 	Zero(sf_BubbleTime);
-    Zero(sf_BubbleSpeed);
-    Zero(sf_BubbleDamage);
+	Zero(sf_BubbleSpeed);
+	Zero(sf_BubbleDamage);
 	Zero(sf_BubbleRadius);
-    Zero(sf_BubbleSpeed);
-    Zero(sf_BubbleWeapon);
+	Zero(sf_BubbleSpeed);
+	Zero(sf_BubbleWeapon);
 	Zero(sf_BubbleTime);
-    Zero(sf_BubbleSpeed);
-    Zero(sf_BubbleDamageMax);
+	Zero(sf_BubbleSpeed);
+	Zero(sf_BubbleDamageMax);
 	Zero(sf_BubbleRadiusMax);
-    LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 }
 
 
@@ -48,7 +48,7 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 	{
 		float thetime;
 		int pap = 0;
-  		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 		switch(pap)
 		{
 			case 1:
@@ -77,8 +77,8 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 
 		Current_Mana[client] -= mana_cost;
 		delay_hud[client] = 0.0;
-        
-        float damage = 400.0;
+		
+		float damage = 400.0;
 
 		damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_MAGIC_WAND);
 		
@@ -98,13 +98,13 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 		EmitSoundToAll(SOUND_BUBBLE_SHOT, client, _, 65, _, 0.45, GetRandomInt(80, 120));
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, particle);
 		sf_BubbleTime[projectile] = GetGameTime() + time;
-        sf_BubbleSpeed[projectile] = speed;
-        sf_BubbleDamage[projectile] = damage;
-        sf_BubbleDamageMax[projectile] = sf_BubbleDamage[projectile];
-        sf_BubbleRadius[projectile] = 150.0;
-        sf_BubbleRadiusMax[projectile] = sf_BubbleRadius[projectile] * 1.35;
-        sf_BubbleOwner[projectile] = client;
-        sf_BubbleWeapon[projectile] = weapon;
+		sf_BubbleSpeed[projectile] = speed;
+		sf_BubbleDamage[projectile] = damage;
+		sf_BubbleDamageMax[projectile] = sf_BubbleDamage[projectile];
+		sf_BubbleRadius[projectile] = 150.0;
+		sf_BubbleRadiusMax[projectile] = sf_BubbleRadius[projectile] * 1.35;
+		sf_BubbleOwner[projectile] = client;
+		sf_BubbleWeapon[projectile] = weapon;
 		WandProjectile_ApplyFunctionToEntity(projectile, Wand_BubbleWandTouch);
 
 		CreateTimer(0.1, Timer_BubbleWand, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
@@ -115,134 +115,134 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-        return;
+		return;
 	}
 }
 
 public Action Timer_BubbleWand(Handle timer, int ent)
 {
-    int projectile = EntRefToEntIndex(ent);
+	int projectile = EntRefToEntIndex(ent);
 	if(!IsValidEntity(projectile))
 	{
 		return Plugin_Stop;
 	}
 
-    if(!IsValidEntity(sf_BubbleWeapon[projectile]) || !IsValidClient(sf_BubbleOwner[projectile]))
-    {
+	if(!IsValidEntity(sf_BubbleWeapon[projectile]) || !IsValidClient(sf_BubbleOwner[projectile]))
+	{
 		RemoveEntity(projectile);
-        return Plugin_Stop;
-    }
+		return Plugin_Stop;
+	}
 
-    float startPosition[3];
+	float startPosition[3];
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", startPosition);
 
-    int pap = 0;
-    pap = RoundFloat(Attributes_Get(sf_BubbleWeapon[projectile], 122, 0.0)); 
-    int particle = EntRefToEntIndex(i_WandParticle[projectile]);
-    if(sf_BubbleTime[projectile] > GetGameTime())
-    {
-        if(sf_BubbleSpeed[projectile] > 10.0)
-        {
-            float f_BubbleAngles[3];
-            GetEntPropVector(projectile, Prop_Send, "m_angRotation", f_BubbleAngles); //set it so it can be used
+	int pap = 0;
+	pap = RoundFloat(Attributes_Get(sf_BubbleWeapon[projectile], 122, 0.0)); 
+	int particle = EntRefToEntIndex(i_WandParticle[projectile]);
+	if(sf_BubbleTime[projectile] > GetGameTime())
+	{
+		if(sf_BubbleSpeed[projectile] > 10.0)
+		{
+			float f_BubbleAngles[3];
+			GetEntPropVector(projectile, Prop_Send, "m_angRotation", f_BubbleAngles); //set it so it can be used
 
-            float f_Buffer[3];
-            GetAngleVectors(f_BubbleAngles, f_Buffer, NULL_VECTOR, NULL_VECTOR);
+			float f_Buffer[3];
+			GetAngleVectors(f_BubbleAngles, f_Buffer, NULL_VECTOR, NULL_VECTOR);
 
-            float VelocityMod = sf_BubbleSpeed[projectile];
-            
-            float f_Velocity[3];
-            f_Velocity[0] = f_Buffer[0] * VelocityMod;
-            f_Velocity[1] = f_Buffer[1] * VelocityMod;
-            f_Velocity[2] = f_Buffer[2] * VelocityMod;
+			float VelocityMod = sf_BubbleSpeed[projectile];
+			
+			float f_Velocity[3];
+			f_Velocity[0] = f_Buffer[0] * VelocityMod;
+			f_Velocity[1] = f_Buffer[1] * VelocityMod;
+			f_Velocity[2] = f_Buffer[2] * VelocityMod;
 
-            sf_BubbleSpeed[projectile] *= 0.81;
-            TeleportEntity(projectile, NULL_VECTOR, NULL_VECTOR, f_Velocity);
+			sf_BubbleSpeed[projectile] *= 0.81;
+			TeleportEntity(projectile, NULL_VECTOR, NULL_VECTOR, f_Velocity);
 
-            VelocityMod *= 0.2;
-            TE_SetupBeamRingPoint(startPosition, VelocityMod, VelocityMod-1.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
-	        TE_SendToClient(sf_BubbleOwner[projectile]);
+			VelocityMod *= 0.2;
+			TE_SetupBeamRingPoint(startPosition, VelocityMod, VelocityMod-1.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+			TE_SendToClient(sf_BubbleOwner[projectile]);
 
-            float dmgmult = 1.0;
-            float dmgmultrate = 1.025;
-            float dmglimit = 1.5;
-            switch(pap)
-            {
-                case 1:
-                {
-                    dmglimit = 1.65;
-                    dmgmultrate = 1.035;
-                }
-                case 2:
-                {
-                    dmglimit = 1.8;
-                    dmgmultrate = 1.035;
-                }
-                case 3:
-                {
-                    dmglimit = 1.95;
-                    dmgmultrate = 1.04;
-                }
-                case 4:
-                {
-                    dmglimit = 2.25;
-                    dmgmultrate = 1.05;
-                }
-                default:
-                {
-                    dmglimit = 1.5;
-                    dmgmultrate = 1.025;
-                }
-            }
+			float dmgmult = 1.0;
+			float dmgmultrate = 1.025;
+			float dmglimit = 1.5;
+			switch(pap)
+			{
+				case 1:
+				{
+					dmglimit = 1.65;
+					dmgmultrate = 1.035;
+				}
+				case 2:
+				{
+					dmglimit = 1.8;
+					dmgmultrate = 1.035;
+				}
+				case 3:
+				{
+					dmglimit = 1.95;
+					dmgmultrate = 1.04;
+				}
+				case 4:
+				{
+					dmglimit = 2.25;
+					dmgmultrate = 1.05;
+				}
+				default:
+				{
+					dmglimit = 1.5;
+					dmgmultrate = 1.025;
+				}
+			}
 
-            dmgmult *= dmgmultrate;
-            if(dmgmult > dmglimit)
-                dmgmult = dmglimit;
+			dmgmult *= dmgmultrate;
+			if(dmgmult > dmglimit)
+				dmgmult = dmglimit;
 
-            sf_BubbleDamage[projectile] *= dmgmult;
-            if(sf_BubbleDamage[projectile] > sf_BubbleDamageMax[projectile] * dmglimit)
-                sf_BubbleDamage[projectile] = sf_BubbleDamageMax[projectile] * dmglimit;
+			sf_BubbleDamage[projectile] *= dmgmult;
+			if(sf_BubbleDamage[projectile] > sf_BubbleDamageMax[projectile] * dmglimit)
+				sf_BubbleDamage[projectile] = sf_BubbleDamageMax[projectile] * dmglimit;
 
-            sf_BubbleRadius[projectile] *= 1.0215;
-            if(sf_BubbleRadius[projectile] > sf_BubbleRadiusMax[projectile])
-                sf_BubbleRadius[projectile] = sf_BubbleRadiusMax[projectile];
+			sf_BubbleRadius[projectile] *= 1.0215;
+			if(sf_BubbleRadius[projectile] > sf_BubbleRadiusMax[projectile])
+				sf_BubbleRadius[projectile] = sf_BubbleRadiusMax[projectile];
 
-            //PrintToChatAll("Damage: %.2f | Max Damage: %.2f | Radius: %.2f", sf_BubbleDamage[projectile], sf_BubbleDamageMax[projectile] * dmglimit, sf_BubbleRadius[projectile]);
-        }
-        else
-        {
-            BubbleWand_ExplodeHere(projectile, sf_BubbleOwner[projectile], sf_BubbleWeapon[projectile], sf_BubbleDamage[projectile], startPosition, sf_BubbleRadius[projectile]);
-            if(IsValidEntity(particle))
-                RemoveEntity(particle);
+			//PrintToChatAll("Damage: %.2f | Max Damage: %.2f | Radius: %.2f", sf_BubbleDamage[projectile], sf_BubbleDamageMax[projectile] * dmglimit, sf_BubbleRadius[projectile]);
+		}
+		else
+		{
+			BubbleWand_ExplodeHere(projectile, sf_BubbleOwner[projectile], sf_BubbleWeapon[projectile], sf_BubbleDamage[projectile], startPosition, sf_BubbleRadius[projectile]);
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
 
-            RemoveEntity(projectile);
-        }
+			RemoveEntity(projectile);
+		}
 	}
-    else
-    {
-        BubbleWand_ExplodeHere(projectile, sf_BubbleOwner[projectile], sf_BubbleWeapon[projectile], sf_BubbleDamage[projectile], startPosition, sf_BubbleRadius[projectile]);
-        if(IsValidEntity(particle))
-            RemoveEntity(particle);
+	else
+	{
+		BubbleWand_ExplodeHere(projectile, sf_BubbleOwner[projectile], sf_BubbleWeapon[projectile], sf_BubbleDamage[projectile], startPosition, sf_BubbleRadius[projectile]);
+		if(IsValidEntity(particle))
+			RemoveEntity(particle);
 
-        RemoveEntity(projectile);
-    }
+		RemoveEntity(projectile);
+	}
 
-    return Plugin_Continue;
+	return Plugin_Continue;
 }
 
 public void BubbleWand_ExplodeHere(int projectile, int owner, int weapon, float damage, float position[3], float radius)
 {
-    TE_SetupBeamRingPoint(position, 10.0, radius*0.7, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+	TE_SetupBeamRingPoint(position, 10.0, radius*0.7, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
 	TE_SendToClient(owner);
-    position[2] += 35.0;
-    TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+	position[2] += 35.0;
+	TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
 	TE_SendToClient(owner);
-    position[2] -= 70.0;
-    TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+	position[2] -= 70.0;
+	TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
 	TE_SendToClient(owner);
 
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, _, RoundToNearest(Attributes_Get(weapon, 4011, 5.0)), false, _, BubbleWand_Logic);
-    EmitSoundToAll(SOUND_BUBBLE_EXPLODE, projectile, _, 75, _, 1.0, GetRandomInt(80, 120));
+	EmitSoundToAll(SOUND_BUBBLE_EXPLODE, projectile, _, 75, _, 1.0, GetRandomInt(80, 120));
 }
 
 public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result, int slot)
@@ -263,20 +263,20 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 30.0);
 				
-                EmitSoundToClient(client, SOUND_BUBBLE_ABILITY);
-                ApplyStatusEffect(client, client, "Bubble Frenzy", 8.0);
+				EmitSoundToClient(client, SOUND_BUBBLE_ABILITY);
+				ApplyStatusEffect(client, client, "Bubble Frenzy", 8.0);
 
-                float position[3];
-                GetClientAbsOrigin(client, position);
-                position[2] += 36.0;
-                TE_SetupBeamRingPoint(position, 500.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 50, 50, 255, 255 }, 1, 0);
-                TE_SendToAll(0.0);
-                position[2] -= 12.0;
-                TE_SetupBeamRingPoint(position, 400.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 63, 63, 255, 255 }, 1, 0);
-                TE_SendToAll(0.0);
-                position[2] -= 12.0;
-                TE_SetupBeamRingPoint(position, 300.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
-	            TE_SendToAll(0.0);
+				float position[3];
+				GetClientAbsOrigin(client, position);
+				position[2] += 36.0;
+				TE_SetupBeamRingPoint(position, 500.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 50, 50, 255, 255 }, 1, 0);
+				TE_SendToAll(0.0);
+				position[2] -= 12.0;
+				TE_SetupBeamRingPoint(position, 400.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 63, 63, 255, 255 }, 1, 0);
+				TE_SendToAll(0.0);
+				position[2] -= 12.0;
+				TE_SetupBeamRingPoint(position, 300.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+				TE_SendToAll(0.0);
 
 				sf_Bubble_M2Duration[client] = GetGameTime() + 8.0;
 				
@@ -296,7 +296,7 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
-                return;
+				return;
 			}
 		}
 		else
@@ -305,7 +305,7 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
-            return;
+			return;
 		}
 	}
 }
@@ -315,7 +315,7 @@ public void BubbleWand_Logic(int entity, int enemy, float damage, int weapon)
 	if (!IsValidEntity(enemy) || !IsValidEntity(entity))
 		return;
 
-    if(enemy)
+	if(enemy)
 	{
 		if(enemy <= MaxClients)
 			return;
@@ -329,43 +329,43 @@ public void BubbleWand_Logic(int entity, int enemy, float damage, int weapon)
 		return;
 	}
 
-    int pap = 0;
+	int pap = 0;
 	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-    float time = 4.0;
-    switch(pap)
-    {
-        case 3:
-        {
-            time = 6.0;
-        }
-        case 4:
-        {
-            time = 8.0;
-        }
-    }
+	float time = 4.0;
+	switch(pap)
+	{
+		case 3:
+		{
+			time = 6.0;
+		}
+		case 4:
+		{
+			time = 8.0;
+		}
+	}
 
 	if(sf_Bubble_M2Duration[entity] > GetGameTime())
 	{
-        if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
-        {
-            time *= 0.5;
-        }
+		if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
+		{
+			time *= 0.5;
+		}
 
-        if(pap <= 3)
-        {
-            ApplyStatusEffect(entity, enemy, "Soggy", time);
-        }
-        else
-        {
-            ApplyStatusEffect(entity, enemy, "Soggiest", time);
-        }
+		if(pap <= 3)
+		{
+			ApplyStatusEffect(entity, enemy, "Soggy", time);
+		}
+		else
+		{
+			ApplyStatusEffect(entity, enemy, "Soggiest", time);
+		}
 	}
 }
 
 public void Wand_BubbleWandTouch(int entity, int target)
 {
 	bool explode = false;
-    int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
 		explode = true;
@@ -375,16 +375,16 @@ public void Wand_BubbleWandTouch(int entity, int target)
 		explode = true;
 	}
 
-    if(explode)
-    {
-        float startPosition[3];
-	    GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition);
-        BubbleWand_ExplodeHere(entity, sf_BubbleOwner[entity], sf_BubbleWeapon[entity], sf_BubbleDamage[entity], startPosition, sf_BubbleRadius[entity]);
+	if(explode)
+	{
+		float startPosition[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition);
+		BubbleWand_ExplodeHere(entity, sf_BubbleOwner[entity], sf_BubbleWeapon[entity], sf_BubbleDamage[entity], startPosition, sf_BubbleRadius[entity]);
 
-        if(IsValidEntity(particle))
+		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
 		}
-        RemoveEntity(entity);
-    }
+		RemoveEntity(entity);
+	}
 }
