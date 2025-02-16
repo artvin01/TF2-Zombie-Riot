@@ -65,6 +65,7 @@ enum struct Round
 	
 	MusicEnum music_round_1;
 	MusicEnum music_round_2;
+	int MusicOutroDuration;
 	char music_round_outro[255];
 	bool music_custom_outro;
 	char Message[255];
@@ -881,6 +882,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.music_round_2.SetupKv("music_2", kv);
 		
 		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
+		round.MusicOutroDuration = kv.GetNum("music_outro_duration", 0);
 		round.music_custom_outro = view_as<bool>(kv.GetNum("music_download_outro"));
 		round.SpawnGrigori = view_as<bool>(kv.GetNum("spawn_grigori"));
 		round.GrigoriMaxSellsItems = kv.GetNum("grigori_sells_items_max");
@@ -1644,6 +1646,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		}
 		else
 		{
+			int PrevRoundMusic = 0;
 			WaveEndLogicExtra();
 
 			if(!Classic_Mode())
@@ -1687,6 +1690,17 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
 					EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
+				}
+			}
+			PrevRoundMusic = round.MusicOutroDuration;
+			if(round.MusicOutroDuration >= 0.0)
+			{
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsClientInGame(client) && !b_IsPlayerABot[client])
+					{
+						SetMusicTimer(client, GetTime() + round.MusicOutroDuration); //This is here beacuse of raid music.
+					}
 				}
 			}
 
@@ -1998,7 +2012,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			MusicString1 = round.music_round_1;
 			MusicString2 = round.music_round_2;
 			
-			if(round.Setup > 1.0)
+			if(round.Setup > 1.0 && !PrevRoundMusic)
 			{
 				if(round.Setup > 59.0)
 				{
@@ -3502,6 +3516,16 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			{
 				EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
 				EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
+			}
+		}
+		if(round.MusicOutroDuration >= 0.0)
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client) && !b_IsPlayerABot[client])
+				{
+					SetMusicTimer(client, GetTime() + round.MusicOutroDuration); //This is here beacuse of raid music.
+				}
 			}
 		}
 		for(int client = 1; client <= MaxClients; client++)

@@ -1822,23 +1822,32 @@ static void CitizenMenu(int client, int page = 0)
 				}
 				case Cit_Builder:
 				{
+					bool DontAllowBuilding = false;
+					if(HealingCooldown[npc.index] > GetGameTime())
+					{
+						DontAllowBuilding = true;
+					}
+					if(Waves_InSetup() || f_AllowInstabuildRegardless > GetGameTime())
+					{
+						DontAllowBuilding = false;
+					}
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Barricade At Me");
-					menu.AddItem("15", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("15", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Sentry At Me");
 					menu.AddItem("16", buffer);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Ammo Box At Me");
-					menu.AddItem("17", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("17", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Armor Table At Me");
-					menu.AddItem("18", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("18", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Perk Machine At Me");
-					menu.AddItem("19", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("19", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Pack-a-Punch At Me");
-					menu.AddItem("20", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("20", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 				}
 			}
 		}

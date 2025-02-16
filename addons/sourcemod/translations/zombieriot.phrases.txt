@@ -306,6 +306,14 @@
 		"nl"		"Gekochte Artikelen"
 		"chi"       "已购买物品"
 	}
+	"Sell Items Confirm"
+	{
+		"en"		"Are you sure you want to sell all your items?"
+	}
+	"Sell All Items"
+	{
+		"en"		"Sell all items"
+	}
 	"Confirm Loadout"
 	{
 		"en"		"Confirm Loadout"

@@ -5077,18 +5077,11 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
+	f_AllowInstabuildRegardless = GetGameTime() + time;
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
-/*
-	GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + time);
-	GameRules_SetProp("m_bAwaitingReadyRestart", false);
-
-	Event event = CreateEvent("teamplay_update_timer", true);
-	event.SetInt("seconds", RoundFloat(time));
-	event.Fire();
-*/
 }
 
 stock int GetOwnerLoop(int entity)

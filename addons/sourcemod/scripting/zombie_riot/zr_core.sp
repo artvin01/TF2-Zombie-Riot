@@ -712,6 +712,7 @@ void ZR_MapStart()
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
+	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
@@ -946,19 +947,21 @@ public void OnMapInit()
 
 public Action GlobalTimer(Handle timer)
 {
+	bool ForceMusicStopAndReset = false;
+	if(f_AllowInstabuildRegardless && f_AllowInstabuildRegardless < GetGameTime())
+	{
+		f_AllowInstabuildRegardless = 0.0;
+		ForceMusicStopAndReset = true;
+	}
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
-			/*
-			if(IsFakeClient(client))
+			if(ForceMusicStopAndReset)
 			{
-				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
-				{
-					MoveBotToSpectator(client);
-				}
+				SetMusicTimer(client, GetTime() + 1);
+				Music_Stop_All(client);
 			}
-			*/
 			PlayerApplyDefaults(client);
 		}
 	}

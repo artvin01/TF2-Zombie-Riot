@@ -1095,7 +1095,9 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				float BuffRevert = Status_Effects_GetCustomValue(weapon, BuffCheckerID);
 				//Is the buff still the same as before?
 				//if it changed, we need to update it.
-				if(BuffRevert != BuffOriginal || !GrantBuff)
+
+				//dont be null either.
+				if((BuffRevert != BuffOriginal || !GrantBuff) && BuffRevert != 0.0)
 				{
 					//Just remove the buff it had.
 					if(Attributes_Has(weapon, 6))
@@ -1165,7 +1167,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 			float BuffRevert = Status_Effects_GetCustomValue(entity, BuffCheckerIDNPC);
 			//Is the buff still the same as before?
 			//if it changed, we need to update it.
-			if(BuffRevert != BuffOriginal || !GrantBuff)
+			if((BuffRevert != BuffOriginal || !GrantBuff) && BuffRevert != 0.0)
 			{
 				
 				//They have never recieved a buff yet.

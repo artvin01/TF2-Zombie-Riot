@@ -56,11 +56,11 @@ static bool MusicDisabled;
 static bool XenoMapExtra;
 static bool AltExtraLogic;
 static int MusicMapRemove[MAXTF2PLAYERS];
-
+static float PrepareMusicVolume[MAXTF2PLAYERS];
 static float DelayStopSoundAll[MAXTF2PLAYERS];
 
-#define RANGE_FIRST_MUSIC 6250000
-#define RANGE_SECOND_MUSIC 1000000
+#define RANGE_FIRST_MUSIC 6250000.0
+#define RANGE_SECOND_MUSIC 1000000.0
 
 /*
 Big thanks to backwards#8236 For pointing me towards GetTime and helping me with this music tgimer,
@@ -362,7 +362,10 @@ void Music_Stop_All(int client)
 	{
 		//dont spam these
 		DelayStopSoundAll[client] = GetGameTime() + 0.1;
- 		StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+ 	//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+		if(PrepareMusicVolume[client] == 1.0)
+			PrepareMusicVolume[client] = 0.4;
+		//stop music slowly.
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/1.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/2.mp3");
@@ -504,6 +507,19 @@ void Music_PostThink(int client)
 	if(SkillTree_InMenu(client))
 		return;
 	
+ 	//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+	if(PrepareMusicVolume[client] != 1.0 && PrepareMusicVolume[client])
+	{
+		PrepareMusicVolume[client] -= 0.005;
+		if(PrepareMusicVolume[client] <= 0.0)
+		{
+ 			StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+		}
+		else
+		{
+			EmitSoundToClient(client, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, PrepareMusicVolume[client]);
+		}
+	}
 	if(!b_GameOnGoing/* && !CvarNoRoundStart.BoolValue*/)
 	{
 	//	PlaySetupMusicCustom(client);
@@ -678,6 +694,14 @@ void Music_PostThink(int client)
 		float targPos[3];
 		float chargerPos[3];
 		GetClientAbsOrigin(client, chargerPos);
+		float RangeFirstMusic = RANGE_FIRST_MUSIC;
+		float RangeSecondMusic = RANGE_SECOND_MUSIC;
+		if(Classic_Mode())
+		{
+			//in classic, it should only play if REALLY close.
+			RangeFirstMusic *= 0.5;
+			RangeSecondMusic *= 0.5;
+		}
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
@@ -686,7 +710,7 @@ void Music_PostThink(int client)
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				float distance = GetVectorDistance(chargerPos, targPos, true);
 				CClotBody npcstats = view_as<CClotBody>(entity);
-				if (distance <= RANGE_FIRST_MUSIC) //Give way bigger range.
+				if (distance <= RangeFirstMusic) //Give way bigger range.
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
@@ -694,10 +718,10 @@ void Music_PostThink(int client)
 					}
 					else
 					{
-						f_intencity += 6.0;
+						f_intencity += 5.0;
 					}
 				}
-				if (distance <= RANGE_SECOND_MUSIC)// If they are very close, cause more havok! more epic music!
+				if (distance <= RangeSecondMusic)// If they are very close, cause more havok! more epic music!
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
@@ -932,7 +956,8 @@ void PlaySetupMusicCustom(int client)
 {
 	if(Music_Timer[client] < GetTime() && Music_Timer_2[client] < GetTime())
 	{
-		EmitSoundToClient(client, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.4);
+		EmitSoundToClient(client, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3", client, SNDCHAN_STATIC, _, _, 0.4);
+		PrepareMusicVolume[client] = 1.0;
 		SetMusicTimer(client, GetTime() + 173);
 	}
 }
