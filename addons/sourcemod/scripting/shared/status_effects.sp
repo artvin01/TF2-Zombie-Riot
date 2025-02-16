@@ -2034,10 +2034,16 @@ void StatusEffects_Silence()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
+	data.AttackspeedBuff			= 1.05;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	SilenceIndex = StatusEffect_AddGlobal(data);
 
+	data.AttackspeedBuff			= 0.0;
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
 	//Immunity to all Negative debuffs.
 	strcopy(data.BuffName, sizeof(data.BuffName), "Hardened Aura");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "֏");
