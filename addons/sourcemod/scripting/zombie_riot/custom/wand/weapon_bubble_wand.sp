@@ -53,23 +53,23 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 		{
 			case 1:
 			{
-				thetime = 2.45;
+				thetime = 2.6;
 			}
 			case 2:
 			{
-				thetime = 2.3;
+				thetime = 2.55;
 			}
 			case 3:
 			{
-				thetime = 2.15;
+				thetime = 2.4;
 			}
 			case 4:
 			{
-				thetime = 2.0;
+				thetime = 2.25;
 			}
 			default:
 			{
-				thetime = 2.6;
+				thetime = 2.75;
 			}
 		}
 		SDKhooks_SetManaRegenDelayTime(client, thetime);
@@ -78,7 +78,7 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 		Current_Mana[client] -= mana_cost;
 		delay_hud[client] = 0.0;
 		
-		float damage = 400.0;
+		float damage = 350.0;
 
 		damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_MAGIC_WAND);
 		
@@ -101,7 +101,7 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 		sf_BubbleSpeed[projectile] = speed;
 		sf_BubbleDamage[projectile] = damage;
 		sf_BubbleDamageMax[projectile] = sf_BubbleDamage[projectile];
-		sf_BubbleRadius[projectile] = 150.0;
+		sf_BubbleRadius[projectile] = 175.0;
 		sf_BubbleRadiusMax[projectile] = sf_BubbleRadius[projectile] * 1.35;
 		sf_BubbleOwner[projectile] = client;
 		sf_BubbleWeapon[projectile] = weapon;
@@ -232,6 +232,10 @@ public Action Timer_BubbleWand(Handle timer, int ent)
 
 public void BubbleWand_ExplodeHere(int projectile, int owner, int weapon, float damage, float position[3], float radius)
 {
+	// more transparent and smaller, so people know that this projectile exploded instead of assuming it just disappeared
+	TE_SetupBeamRingPoint(position, 10.0, radius*0.375, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 125 }, 1, 0);
+	TE_SendToAll(0.0);
+
 	TE_SetupBeamRingPoint(position, 10.0, radius*0.7, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
 	TE_SendToClient(owner);
 	position[2] += 35.0;
@@ -241,7 +245,7 @@ public void BubbleWand_ExplodeHere(int projectile, int owner, int weapon, float 
 	TE_SetupBeamRingPoint(position, 10.0, radius*0.5, LaserIndex, LaserIndex, 0, 1, 0.35, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
 	TE_SendToClient(owner);
 
-	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, _, RoundToNearest(Attributes_Get(weapon, 4011, 5.0)), false, _, BubbleWand_Logic);
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, 0.65, _, RoundToNearest(Attributes_Get(weapon, 4011, 5.0)), false, _, BubbleWand_Logic);
 	EmitSoundToAll(SOUND_BUBBLE_EXPLODE, projectile, _, 75, _, 1.0, GetRandomInt(80, 120));
 }
 
@@ -252,9 +256,9 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 		int pap = 0;
 		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 
-		int mana_cost = 200;
+		int mana_cost = 250;
 		if(pap == 4)
-			mana_cost = 400;
+			mana_cost = 450;
 
 		if(mana_cost <= Current_Mana[client])
 		{
@@ -262,23 +266,22 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 			{
 				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 30.0);
-				
 				EmitSoundToClient(client, SOUND_BUBBLE_ABILITY);
-				ApplyStatusEffect(client, client, "Bubble Frenzy", 8.0);
+
+				ApplyStatusEffect(client, client, "Bubble Frenzy", 10.0);
+				sf_Bubble_M2Duration[client] = GetGameTime() + 10.0;
 
 				float position[3];
 				GetClientAbsOrigin(client, position);
 				position[2] += 36.0;
-				TE_SetupBeamRingPoint(position, 500.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 50, 50, 255, 255 }, 1, 0);
+				TE_SetupBeamRingPoint(position, 600.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 50, 50, 255, 255 }, 1, 0);
 				TE_SendToAll(0.0);
 				position[2] -= 12.0;
-				TE_SetupBeamRingPoint(position, 400.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 63, 63, 255, 255 }, 1, 0);
+				TE_SetupBeamRingPoint(position, 500.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 63, 63, 255, 255 }, 1, 0);
 				TE_SendToAll(0.0);
 				position[2] -= 12.0;
-				TE_SetupBeamRingPoint(position, 300.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
+				TE_SetupBeamRingPoint(position, 400.0, 10.0, LaserIndex, LaserIndex, 0, 1, 0.25, 6.0, 0.1, { 75, 75, 255, 255 }, 1, 0);
 				TE_SendToAll(0.0);
-
-				sf_Bubble_M2Duration[client] = GetGameTime() + 8.0;
 				
 				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
@@ -348,7 +351,7 @@ public void BubbleWand_Logic(int entity, int enemy, float damage, int weapon)
 	{
 		if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
 		{
-			time *= 0.5;
+			time /= 1.5;
 		}
 
 		if(pap <= 3)
@@ -358,6 +361,21 @@ public void BubbleWand_Logic(int entity, int enemy, float damage, int weapon)
 		else
 		{
 			ApplyStatusEffect(entity, enemy, "Soggiest", time);
+		}
+	}
+	else
+	{
+		if(b_thisNpcIsARaid[enemy])
+		{
+			time /= 4.0; // quarter of its duration on raids
+			if(pap <= 3)
+			{
+				ApplyStatusEffect(entity, enemy, "Soggy", time);
+			}
+			else
+			{
+				ApplyStatusEffect(entity, enemy, "Soggiest", time);
+			}
 		}
 	}
 }
