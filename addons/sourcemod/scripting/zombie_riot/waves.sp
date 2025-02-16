@@ -813,6 +813,7 @@ void Waves_CacheWaves(KeyValues kv, bool npcs)
 			kv.GoBack();
 		}
 	} while(kv.GotoNextKey());
+	music.Clear();
 }
 
 void Waves_SetupWaves(KeyValues kv, bool start)
@@ -824,6 +825,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		for(int i; i < length; i++)
 		{
 			Rounds.GetArray(i, round);
+			round.music_round_1.Clear();
+			round.music_round_2.Clear();
 			delete round.Waves;
 		}
 		delete Rounds;
@@ -1024,29 +1027,27 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	}
 	else
 	{
-		bool RoundHadCustomMusic = false;
+		bool RoundHadCustomMusic = BGMusicSpecial1.Valid();
 	
-		if(MusicString1.Path[0])
+		if(MusicString1.Valid())
 			RoundHadCustomMusic = true;
 				
-		if(MusicString2.Path[0])
+		if(MusicString2.Valid())
 			RoundHadCustomMusic = true;
 
-		if(RaidMusicSpecial1.Path[0])
-		{
+		if(RaidMusicSpecial1.Valid())
 			RoundHadCustomMusic = true;
-		}
 
 		Rounds.GetArray(0, round);
 
 		if(RoundHadCustomMusic) //only do it when there was actually custom music previously
 		{	
 			bool ReplaceMusic = false;
-			if(!round.music_round_1.Path[0] && MusicString1.Path[0])
+			if(!round.music_round_1.Valid() && MusicString1.Valid())
 			{
 				ReplaceMusic = true;
 			}
-			if(round.music_round_1.Path[0])
+			if(round.music_round_1.Valid())
 			{
 				if(!StrEqual(MusicString1.Path, round.music_round_1.Path))
 				{
@@ -1054,12 +1055,12 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 				}
 			}
 			//there was music the previous round, but there is none now.
-			if(!round.music_round_2.Path[0] && MusicString2.Path[0])
+			if(!round.music_round_2.Valid() && MusicString2.Valid())
 			{
 				ReplaceMusic = true;
 			}
 			//they are different, cancel out.
-			if(round.music_round_1.Path[0])
+			if(round.music_round_2.Valid())
 			{
 				if(!StrEqual(MusicString2.Path, round.music_round_2.Path))
 				{
@@ -1068,7 +1069,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			}
 
 			//if it had raid music, replace anyways.
-			if(RaidMusicSpecial1.Path[0])
+			if(RaidMusicSpecial1.Valid())
 				ReplaceMusic = true;
 			
 			if(ReplaceMusic)
@@ -1087,8 +1088,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		//This should nullfy anyways if nothings in it
 		RemoveAllCustomMusic();
 
-		MusicString1 = round.music_round_1;
-		MusicString2 = round.music_round_2;
+		round.music_round_1.CopyTo(MusicString1);
+		round.music_round_2.CopyTo(MusicString2);
 	}
 
 	Waves_UpdateMvMStats();
@@ -1934,15 +1935,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//MUSIC LOGIC
 			
-			bool RoundHadCustomMusic = false;
+			bool RoundHadCustomMusic = BGMusicSpecial1.Valid();
 		
-			if(MusicString1.Path[0])
+			if(MusicString1.Valid())
 				RoundHadCustomMusic = true;
 					
-			if(MusicString2.Path[0])
+			if(MusicString2.Valid())
 				RoundHadCustomMusic = true;
 
-			if(RaidMusicSpecial1.Path[0])
+			if(RaidMusicSpecial1.Valid())
 			{
 				RoundHadCustomMusic = true;
 			}
@@ -1950,11 +1951,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(RoundHadCustomMusic) //only do it when there was actually custom music previously
 			{	
 				bool ReplaceMusic = false;
-				if(!round.music_round_1.Path[0] && MusicString1.Path[0])
+				if(!round.music_round_1.Valid() && MusicString1.Valid())
 				{
 					ReplaceMusic = true;
 				}
-				if(round.music_round_1.Path[0])
+				if(round.music_round_1.Valid())
 				{
 					if(!StrEqual(MusicString1.Path, round.music_round_1.Path))
 					{
@@ -1962,12 +1963,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 				//there was music the previous round, but there is none now.
-				if(!round.music_round_2.Path[0] && MusicString2.Path[0])
+				if(!round.music_round_2.Valid() && MusicString2.Valid())
 				{
 					ReplaceMusic = true;
 				}
 				//they are different, cancel out.
-				if(round.music_round_1.Path[0])
+				if(round.music_round_2.Valid())
 				{
 					if(!StrEqual(MusicString2.Path, round.music_round_2.Path))
 					{
@@ -1976,7 +1977,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 
 				//if it had raid music, replace anyways.
-				if(RaidMusicSpecial1.Path[0])
+				if(RaidMusicSpecial1.Valid())
 					ReplaceMusic = true;
 				
 				if(ReplaceMusic)
@@ -1995,8 +1996,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			//This should nullfy anyways if nothings in it
 			RemoveAllCustomMusic();
 
-			MusicString1 = round.music_round_1;
-			MusicString2 = round.music_round_2;
+			round.music_round_1.CopyTo(MusicString1);
+			round.music_round_2.CopyTo(MusicString2);
 			
 			if(round.Setup > 1.0)
 			{
@@ -2011,7 +2012,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 					}
 				}
-				else if(MusicString1.Path[0] || MusicString2.Path[0])
+				else if(MusicString1.Valid() || MusicString2.Valid())
 				{
 					for(int client=1; client<=MaxClients; client++)
 					{
@@ -2114,10 +2115,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 						roundtime.FloatValue = last;
 					}
+					
+					RemoveAllCustomMusic(true);
+				}
+				else
+				{
 					RemoveAllCustomMusic();
 				}
-				
-				RemoveAllCustomMusic();
 
 				if(subgame)
 				{
