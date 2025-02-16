@@ -38,7 +38,7 @@ enum struct ResourceInfo
 
 enum struct RewardInfo
 {
-	char Name[48];
+	char Name[32];
 	int MinRisk;
 	int Amount;
 
@@ -57,45 +57,6 @@ enum struct RewardInfo
 	}
 }
 
-enum struct ResearchInfo
-{
-	char Name[48];
-	char Key[48];
-	float Time;
-	StringMap CostMap;
-
-	void SetupKv(KeyValues kv)
-	{
-		kv.GetSectionName(this.Name, sizeof(this.Name));
-		FailTranslation(this.Name);
-
-		char buffer[64];
-		FormatEx(buffer, sizeof(buffer), "%s Desc", this.Name);
-		FailTranslation(buffer);
-
-		this.Time = kv.GetFloat("time");
-		kv.GetString("key", this.Key, sizeof(this.Key));
-
-		this.CostMap = new StringMap();
-		if(kv.JumpToKey("cost"))
-		{
-			if(kv.GotoFirstSubKey(false))
-			{
-				do
-				{
-					if(kv.GetSectionName(buffer, sizeof(buffer)))
-						this.CostMap.SetValue(buffer, kv.GetNum(NULL_STRING));
-				}
-				while(kv.GotoNextKey(false));
-
-				kv.GoBack();
-			}
-
-			kv.GoBack();
-		}
-	}
-}
-
 static bool InConstMode;
 static int RiskIncrease;
 static int MaxAttacks;
@@ -106,7 +67,6 @@ static int MaxResource;
 static ArrayList RiskList;
 static ArrayList ResourceList;
 static ArrayList RewardList;
-static ArrayList ResearchList;
 
 static Handle GameTimer;
 static int CurrentRisk;
@@ -116,7 +76,6 @@ static int AttackType;	// 0 = None, 1 = Resource, 2 = Base, 3 = Final
 static int AttackRef;
 static char CurrentSpawnName[64];
 static StringMap CurrentMaterials;
-static Handle InResearchMenu[MAXTF2PLAYERS];
 
 bool Construction_Mode()
 {
@@ -174,24 +133,10 @@ void Construction_SetupVote(KeyValues kv)
 		delete RiskList;
 	}
 
-	ResearchInfo research;
-
-	if(ResearchList)
-	{
-		int length = ResearchList.Length;
-		for(int i; i < length; i++)
-		{
-			ResearchList.GetArray(i, research);
-			delete research.CostMap;
-		}
-		delete ResearchList;
-	}
-
 	delete ResourceList;
 	delete RewardList;
 	ResourceList = new ArrayList(sizeof(ResourceInfo));
 	RewardList = new ArrayList(sizeof(RewardInfo));
-	ResearchList = new ArrayList(sizeof(ResearchInfo));
 	RiskList = new ArrayList();
 
 	MaxAttacks = kv.GetNum("attackcount");
@@ -199,23 +144,6 @@ void Construction_SetupVote(KeyValues kv)
 	AttackRiskBonus = kv.GetNum("attackrisk");
 	RiskIncrease = kv.GetNum("riskincrease");
 	MaxResource = kv.GetNum("resourcecount");
-	
-	if(kv.JumpToKey("Research"))
-	{
-		if(kv.GotoFirstSubKey())
-		{
-			do
-			{
-				research.SetupKv(kv);
-				ResearchList.PushArray(research);
-			}
-			while(kv.GotoNextKey());
-
-			kv.GoBack();
-		}
-
-		kv.GoBack();
-	}
 	
 	if(kv.JumpToKey("AttackDrops"))
 	{
@@ -951,93 +879,4 @@ int Construction_AddMaterial(const char[] short, int gain, bool silent = false)
 	}
 
 	return amount;
-}
-
-public float InterMusic_ConstructRisk(int client)
-{
-	if(LastMann)
-		return 1.0;
-	
-	if(!AttackType)
-		return 0.0;
-	
-	float volume = float(CurrentRisk) / float(HighestRisk);
-	return fClamp(volume, 0.0, 1.0);
-}
-
-public float InterMusic_ConstructBase(int client)
-{
-	if(LastMann)
-		return 1.0;
-	
-	int entity = GetBaseBuilding();
-	if(entity == -1)
-		return 0.0;
-	
-	float pos1[3], pos2[3];
-	GetClientEyePosition(client, pos1);
-	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
-	float distance = GetVectorDistance(pos1, pos2);
-	distance = distance / 2000.0;
-	return fClamp(1.0 - distance, 0.0, 1.0);
-}
-
-public float InterMusic_ConstructIntencity(int client)
-{
-	if(AttackType > 1)
-		return 1.0;
-	
-	if(!AttackType)
-		return 0.0;
-	
-	return InterMusic_ByIntencity(client);
-}
-
-void Construction_OpenResearch(int client)
-{
-	SetGlobalTransTarget(client);
-
-	Menu menu = new Menu(ResearchMenuH);
-
-	menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description");
-
-	//char buffer[64];
-	//for(int i; i < Enabled; i++)
-	//{
-	//	FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
-	//	menu.AddItem(Artifacts[i], buffer);
-	//}
-
-	if(menu.Display(client, MENU_TIME_FOREVER))
-		InResearchMenu[client] = CreateTimer(0.5, ResearchTimer, client);
-}
-
-static Action ResearchTimer(Handle timer, int client)
-{
-	InResearchMenu[client] = null;
-	Construction_OpenResearch(client);
-	return Plugin_Continue;
-}
-
-static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
-{
-	switch(action)
-	{
-		case MenuAction_End:
-		{
-			delete menu;
-		}
-		case MenuAction_Cancel:
-		{
-			delete InResearchMenu[client];
-		}
-		case MenuAction_Select:
-		{
-			delete InResearchMenu[client];
-			
-			char buffer[64];
-			menu.GetItem(choice, buffer, sizeof(buffer));
-		}
-	}
-	return 0;
 }

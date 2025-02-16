@@ -427,38 +427,12 @@ void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
 
 	if(Floors)
 	{
-		Stage stage;
-		int length1 = Floors.Length;
-		for(int a; a < length1; a++)
+		int length = Floors.Length;
+		for(int i; i < length; i++)
 		{
-			Floors.GetArray(a, floor);
-
-			if(floor.Encounters)
-			{
-				int length2 = floor.Encounters.Length;
-				for(int b; b < length2; b++)
-				{
-					floor.Encounters.GetArray(b, stage);
-					stage.IntroMusic.Clear();
-				}
-				
-				delete floor.Encounters;
-			}
-
-			if(floor.Finals)
-			{
-				int length2 = floor.Finals.Length;
-				for(int b; b < length2; b++)
-				{
-					floor.Finals.GetArray(b, stage);
-					stage.IntroMusic.Clear();
-				}
-
-				delete floor.Finals;
-			}
-
-			floor.MusicCurse.Clear();
-			floor.MusicNormal.Clear();
+			Floors.GetArray(i, floor);
+			delete floor.Encounters;
+			delete floor.Finals;
 		}
 
 		delete Floors;
@@ -1466,7 +1440,7 @@ void Rogue_NextProgress()
 static void SetFloorMusic(const Floor floor, bool stop)
 {
 	bool curse = CurseOne != -1 || CurseTwo != -1;
-	if(RaidMusicSpecial1.Valid() || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
+	if(RaidMusicSpecial1.Path[0] || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
 	{
 		if(stop)
 		{
@@ -1484,11 +1458,11 @@ static void SetFloorMusic(const Floor floor, bool stop)
 
 		if(curse)
 		{
-			floor.MusicCurse.CopyTo(MusicString1);
+			MusicString1 = floor.MusicCurse;
 		}
 		else
 		{
-			floor.MusicNormal.CopyTo(MusicString1);
+			MusicString1 = floor.MusicNormal;
 		}
 	}
 }
