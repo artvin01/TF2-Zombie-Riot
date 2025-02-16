@@ -135,6 +135,9 @@ void InitStatusEffects()
 	StatusEffects_PurnellKitDeBuffs();
 	StatusEffects_PurnellKitBuffs();
 	StatusEffects_Construction();
+	StatusEffects_BubbleWand1();
+	StatusEffects_BubbleWand2();
+
 	//freeplay last.
 	StatusEffects_Freeplay1();
 	StatusEffects_Freeplay2();
@@ -1733,10 +1736,6 @@ void StatusEffects_Freeplay1()
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.85;
 	StatusEffect_AddGlobal(data);
-
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
-	data.AttackspeedBuff			= 0.0;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence I");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Σ1");
@@ -3859,6 +3858,57 @@ void StatusEffects_Construction()
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.7;
+	StatusEffect_AddGlobal(data);
+}
+
+void StatusEffects_BubbleWand1()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Soggy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "sg");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.9;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 10; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Soggiest");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "SG");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.85;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 10; //0 means ignored
+	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+void StatusEffects_BubbleWand2()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Bubble Frenzy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "BF");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	//-0.5
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.5;
 	StatusEffect_AddGlobal(data);
 }
 

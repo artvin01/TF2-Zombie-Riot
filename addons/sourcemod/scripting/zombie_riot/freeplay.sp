@@ -450,7 +450,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Boss = 1;
 
 		enemy.Index = NPC_GetByPlugin("npc_freeplay_sigmaller");
-		enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
 		enemy.Credits += 1.0;
 
@@ -1092,7 +1092,7 @@ static Action activatebuffs(Handle timer)
 	if(FreeplayBuffTimer <= 0)
 	{
 		FreeplayBuffTimer = 1;
-		CreateTimer(1.0, Freeplay_BuffTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(3.0, Freeplay_BuffTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 	return Plugin_Continue;
@@ -1125,15 +1125,15 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence I", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Eloquence I", 5.0);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence II", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Eloquence II", 5.0);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence III", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Eloquence III", 5.0);
 				}
 			}
 
@@ -1141,15 +1141,15 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart I", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Rampart I", 5.0);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart II", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Rampart II", 5.0);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart III", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Rampart III", 5.0);
 				}
 			}
 
@@ -1182,15 +1182,15 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence I", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence I", 5.0);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence II", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence II", 5.0);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence III", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence III", 5.0);
 				}
 			}
 
@@ -1198,15 +1198,15 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart I", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart I", 5.0);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart II", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart II", 5.0);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", 5.0);
 				}
 			}
 
