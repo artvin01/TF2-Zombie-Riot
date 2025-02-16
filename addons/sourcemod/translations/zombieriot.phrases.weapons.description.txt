@@ -4341,7 +4341,7 @@
 	}
 	"Bubble Wand Pap 2 Desc"
 	{
-		"en" "PAP 2: Increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime, and unlocks Bubble Frenzy:\nPress M2 to double your attackspeed and debuff enemies, making them deal less damage!"
+		"en" "PAP 2: Increases damage + slightly increases swing speed.\nIncreases the damage boost based on lifetime and unlocks Bubble Frenzy:\nPress M2 to double your attackspeed and debuff enemies, making them deal less damage!\nApplies debuffs on raids always, but for 1/4 of its duration."
 	}
 	"Bubble Wand Pap 3 Desc"
 	{
