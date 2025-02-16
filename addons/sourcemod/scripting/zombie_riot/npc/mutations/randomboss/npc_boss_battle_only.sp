@@ -294,8 +294,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			//Hes very unbalanced for now, block. , cus of minions.
 			PluginName = "npc_lelouch";	
 			
-			enemy.ExtraDamage *= 0.9;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
+			enemy.ExtraDamage *= 0.45;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.45); 
 			
 		}
 		case 25:

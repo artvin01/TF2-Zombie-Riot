@@ -154,7 +154,7 @@ methodmap JohnTheAllmighty < CClotBody
 		}
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/john_the_allmighty.mp3");
-		music.Time = 43;
+		music.Time = 50; //no loop usually 43 loop tho
 		music.Volume = 1.8;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Chiromaw Matriarch - The Betweenlands: Eternal Melodies");
@@ -509,7 +509,7 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 
 static char[] JohnTheAllmightyHealth()
 {
-	int health = 220;
+	int health = 160;
 	
 	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
