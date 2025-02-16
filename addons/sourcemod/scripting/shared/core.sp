@@ -2376,7 +2376,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		  || !StrContains(classname, "item_ammopack_medium")
 		  || !StrContains(classname, "item_ammopack_full")
 		  || !StrContains(classname, "tf_ammo_pack")
-		  || !StrContains(classname, "tf_flame_manager")
 		  || !StrContains(classname, "entity_revive_marker")
 		  || !StrContains(classname, "tf_projectile_energy_ring")
 		  || !StrContains(classname, "entity_medigun_shield")
@@ -2394,6 +2393,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
+		}
+		else if(!StrContains(classname, "tf_flame_manager"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, MakeFlamesUseless);
 		}
 		else if(!StrContains(classname, "instanced_scripted_scene"))
 		{

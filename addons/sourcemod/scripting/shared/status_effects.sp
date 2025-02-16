@@ -2036,7 +2036,7 @@ void StatusEffects_Silence()
 	data.ShouldScaleWithPlayerCount = true;
 	data.AttackspeedBuff			= 1.05;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEfbfect_AddBlank();
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	SilenceIndex = StatusEffect_AddGlobal(data);
