@@ -99,13 +99,7 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, particle);
 		int model = ApplyCustomModelToWandProjectile(projectile, "models/buildables/sentry_shield.mdl", 0.65, "", -15.0);
 		SetEntProp(model, Prop_Send, "m_nSkin", 1);
-		/*
-		// this code is STUPID just eat it
-		float modposition[3];
-		GetEntPropVector(model, Prop_Data, "m_vecAbsOrigin", modposition);
-		modposition[2] -= 50.0;
-		TeleportEntity(model, modposition, NULL_VECTOR, NULL_VECTOR);
-		*/
+
 		sf_BubbleTime[projectile] = GetGameTime() + time;
 		sf_BubbleSpeed[projectile] = speed;
 		sf_BubbleDamage[projectile] = damage;
