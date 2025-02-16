@@ -6839,13 +6839,16 @@ int GetAmmoType_WeaponPrimary(int weapon)
 
 void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip, bool PlaySound, bool IgnoreRestriction = false)
 {
+	if(!item.Owned[client])
+		return;
+		
 	ItemInfo info;
 	int level = item.Owned[client] - 1;
 	if(item.ParentKit)
 		level = 0;
 	
 	item.GetItemInfo(level, info);
-	if((info.Cost <= 0 || ForceUneqip) && (item.Owned[client] && item.Equipped[client] && item.GregOnlySell != 2))
+	if((info.Cost <= 0 || ForceUneqip) && (item.Equipped[client] && item.GregOnlySell != 2))
 	{
 		int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 
@@ -6868,7 +6871,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 		}
 		return;
 	}
-	if(!ForceUneqip && item.Owned[client])
+	if(!ForceUneqip)
 	{
 		int active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 

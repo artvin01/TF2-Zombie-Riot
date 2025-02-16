@@ -1045,10 +1045,12 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		if(RoundHadCustomMusic) //only do it when there was actually custom music previously
 		{	
 			bool ReplaceMusic = false;
+			//there was music the previous round, but there is none now.
 			if(!round.music_round_1.Valid() && MusicString1.Valid())
 			{
 				ReplaceMusic = true;
 			}
+			//they are different, cancel out.
 			if(round.music_round_1.Valid())
 			{
 				if(!StrEqual(MusicString1.Path, round.music_round_1.Path))
@@ -1056,7 +1058,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 					ReplaceMusic = true;
 				}
 			}
-			//there was music the previous round, but there is none now.
 			if(!round.music_round_2.Valid() && MusicString2.Valid())
 			{
 				ReplaceMusic = true;
@@ -1070,7 +1071,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 				}
 			}
 
-			//if it had raid music, replace anyways.
+			//if it had raid music, replace anyways!
 			if(RaidMusicSpecial1.Valid())
 				ReplaceMusic = true;
 			
@@ -1681,6 +1682,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			bool music_stop = false;
 			//Do we stop the music ?
+			//If theres an outro track, play it here.
 			if(round.music_round_outro[0])
 			{
 				music_stop = true;
@@ -1695,8 +1697,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			PrevRoundMusic = round.MusicOutroDuration;
-			PrintToChatAll("%i",PrevRoundMusic);
-			if(round.MusicOutroDuration >= 0.0)
+
+			//If there was a music outro, was duration did it have? Set the music timer delay here.
+			if(PrevRoundMusic > 0)
 			{
 				for(int client = 1; client <= MaxClients; client++)
 				{
@@ -1707,6 +1710,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 
+			//was the a leaving round message?
 			if(round.Message[0])
 			{
 				SetHudTextParams(-1.0, -1.0, 8.0, 255, 0, 0, 255);
@@ -1720,6 +1724,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 				CPrintToChatAll("{crimson}%t", round.Message);
 			}
+			//Did we beforehand stop the music, due to playing an outtro track?
+			//if yes, remove it here.
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client) && !b_IsPlayerABot[client])
@@ -1765,8 +1771,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
 			// Below is the new round
-			//add a minimum of 0.5 seconds because of custom spawns.
-			//breaks mininbosses, cant
 			
 			if(round.MapSetupRelay)
 			{
@@ -1775,7 +1779,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
 				RequestFrames(StopMapMusicAll, 60);
 			}
-
+			
 			if(round.Skyname[0])
 				Waves_SetSkyName(round.Skyname);
 
@@ -1836,17 +1840,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
-			
-	//		if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
-	//		{
-	//			CPrintToChatAll("{crimson}%d zombies have been wasted...", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
-	//		}
 			Zombies_Currently_Still_Ongoing = 0;
-			
 			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
-			
-			//Loop through all the still alive enemies that are indexed!
-			
 			
 			//always increace chance of miniboss.
 			if(!subgame && CurrentRound >= 12)
@@ -1937,32 +1932,25 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			if(round.Custom_Refresh_Npc_Store)
 			{
-				//PrintToChatAll("%t", "Grigori Store Refresh");
-				//Store_RandomizeNPCStore(0); // Refresh me !!!
 				refreshNPCStore = true;
 			}
+
 			if(round.medival_difficulty != 0)
 			{
-			//	PrintToChatAll("%t", "Grigori Store Refresh");
 				Medival_Wave_Difficulty_Riser(round.medival_difficulty); // Refresh me !!!
 			}
 			
 			//MUSIC LOGIC
-			
 			bool RoundHadCustomMusic = BGMusicSpecial1.Valid();
-		
 			if(MusicString1.Valid())
-				RoundHadCustomMusic = true;
-					
+				RoundHadCustomMusic = true;	
 			if(MusicString2.Valid())
 				RoundHadCustomMusic = true;
-
 			if(RaidMusicSpecial1.Valid())
-			{
 				RoundHadCustomMusic = true;
-			}
 
-			if(RoundHadCustomMusic) //only do it when there was actually custom music previously
+			//we previously had custom music, what do we do ?
+			if(RoundHadCustomMusic)
 			{	
 				bool ReplaceMusic = false;
 				if(!round.music_round_1.Valid() && MusicString1.Valid())
@@ -2013,7 +2001,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			round.music_round_1.CopyTo(MusicString1);
 			round.music_round_2.CopyTo(MusicString2);
 			
-			if(round.Setup > 1.0 && !PrevRoundMusic)
+			if(round.Setup > 1.0 && PrevRoundMusic <= 0)
 			{
 				if(round.Setup > 59.0)
 				{
@@ -2040,7 +2028,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			SteamWorks_UpdateGameTitle();
 			
-			//MUSIC LOGIC
 			if(CurrentRound == length)
 			{
 				refreshNPCStore = true;
@@ -3522,7 +3509,8 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 				EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
 			}
 		}
-		if(round.MusicOutroDuration >= 0.0)
+		//Incase we had music play during outro, and set a time.
+		if(round.MusicOutroDuration > 0)
 		{
 			for(int client = 1; client <= MaxClients; client++)
 			{
@@ -3532,6 +3520,8 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 				}
 			}
 		}
+
+		//stop music if we had custom ones before.
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(IsClientInGame(client))
@@ -3569,50 +3559,15 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if((CurrentRound % 5) == 4)
 		{
-			/*
-			if(CurrentRound >= 249 && !Freeplay_w500reached)
-			{
-				for (int client = 0; client < MaxClients; client++)
-				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
-					{
-						CPrintToChat(client, "{gold}Koshi: {white}Great, really, really great...");
-						CPrintToChat(client, "{white}This training was surely successful, i even think you might be ready.");
-						CPrintToChat(client, "{white}Although, {gold}Zeina {white}wouldn't think the same, so in that case...");
-						CPrintToChat(client, "{white}I'll leave the simulation on, in case you want to continue.");
-						if(!Items_HasNamedItem(client, "A Block of Cheese"))
-						{
-							CPrintToChat(client, "{lime}I'll be also granting you somethin' special from me, for completing this training.");
-							CPrintToChat(client, "{gold}Koshi spawns in an item for you: {orange}''A Block of Cheese''");
-							Items_GiveNamedItem(client, "A Block of Cheese");
-						}
-						else
-						{
-							CPrintToChat(client, "{orange}You seem to have my reward already, interesting...");
-							CPrintToChat(client, "{orange}Guess you really like training in here, then!");
-						}
-					}
-				}
-
-				InSetup = true;
-				ExcuteRelay("zr_setuptime");
-				Waves_SetReadyStatus(1);
-				Freeplay_w500reached = true;
-				
-			}
-			else
-			*/
-			{
-				Freeplay_SetupStart(true);
-				float time = Freeplay_SetupValues();
-				Cooldown = GetGameTime() + time;
-				
-				InSetup = true;
-				ExcuteRelay("zr_setuptime");
-				
-				SpawnTimer(time);
-				CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-			}
+			Freeplay_SetupStart(true);
+			float time = Freeplay_SetupValues();
+			Cooldown = GetGameTime() + time;
+			
+			InSetup = true;
+			ExcuteRelay("zr_setuptime");
+			
+			SpawnTimer(time);
+			CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			
 			RequestFrames(StopMapMusicAll, 60);
 			
