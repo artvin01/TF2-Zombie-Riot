@@ -4331,4 +4331,24 @@
 		"en"	"Teleports barrack units to you, granting overheal and high resistance for 1 second."
 		"ko"	"배럭 유닛을 자신에게 텔레포트시키고 과치료및 1초동안 높은 저항을 제공합니다"
 	}
+	"Bubble Wand Desc"
+	{
+		"en" "Throws a bubble, which slows down and powers up as it travels.\nThis bubble automatically pops if its speed reaches 0."
+	}
+	"Bubble Wand Pap 1 Desc"
+	{
+		"en" "PAP 1: Increases damage and very slightly increased swing speed.\nIncreased the damage boost based on lifetime."
+	}
+	"Bubble Wand Pap 2 Desc"
+	{
+		"en" "PAP 2: Increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime, and unlocks Bubble Frenzy:\nPress M2 to double your attackspeed and debuff enemies, making them deal less damage!"
+	}
+	"Bubble Wand Pap 3 Desc"
+	{
+		"en" "PAP 3: Increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly increases Bubble Frenzy's debuff duration."
+	}
+	"Bubble Wand Pap 4 Desc"
+	{
+		"en" "PAP 4: Greatly increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly strengthens Bubble Frenzy's debuff penalty, and increases its duration a bit."
+	}
 }
