@@ -1629,6 +1629,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		if(!b_NpcIsInvulnerable[victim])
 		{
 			CheckInHudEnable(2);
+			StatusEffect_OnTakeDamage_DealNegative(attacker, victim, DamagePercDo, testvalue);
 			Damage_NPCAttacker(attacker, victim, victim, DamagePercDo, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
 			Damage_AnyAttacker(attacker, victim, victim, DamagePercDo, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
 			CheckInHudEnable(0);

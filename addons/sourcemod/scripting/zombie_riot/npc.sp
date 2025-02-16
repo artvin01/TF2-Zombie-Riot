@@ -963,7 +963,10 @@ stock int NPC_GetByPlugin(const char[] name, NPCData data = {})
 {
 	int index = NPCList.FindString(name, NPCData::Plugin);
 	if(index != -1)
+	{
 		NPCList.GetArray(index, data);
+		PrecacheNPC(index, data);
+	}
 	
 	return index;
 }

@@ -814,7 +814,6 @@ float StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, float &b
 
 	return ExtraDamageAdd;
 }
-
 //Damage Buffs, when i attack!
 #if defined ZR
 float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, int inflictor, float &basedamage, int damagetype)

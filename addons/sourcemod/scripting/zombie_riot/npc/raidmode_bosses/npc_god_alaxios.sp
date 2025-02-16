@@ -56,6 +56,7 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 #define ALAXIOS_BUFF_MAXRANGE 500.0
 
+int RevertResearchLogic = 0;
 static int NPCId;
 public void GodAlaxios_OnMapStart()
 {
@@ -70,6 +71,7 @@ public void GodAlaxios_OnMapStart()
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
 	for (int i = 0; i < (sizeof(g_RandomGroupScream));   i++) { PrecacheSoundCustom(g_RandomGroupScream[i]);   }
+	RevertResearchLogic = 0;
 }
 
 static void ClotPrecache()
@@ -236,6 +238,22 @@ methodmap GodAlaxios < CClotBody
 		else if(StrContains(data, "wave_60") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
+		}
+		RevertResearchLogic = 0;
+		if(StrContains(data, "res1") != -1)
+		{
+			RevertResearchLogic = 1;
+			Medival_Wave_Difficulty_Riser(1);
+		}
+		else if(StrContains(data, "res2") != -1)
+		{
+			RevertResearchLogic = 2;
+			Medival_Wave_Difficulty_Riser(2);
+		}
+		else if(StrContains(data, "res3") != -1)
+		{
+			RevertResearchLogic = 3;
+			Medival_Wave_Difficulty_Riser(3);
 		}
 
 		bool final = StrContains(data, "final_item") != -1;
@@ -1089,6 +1107,11 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 public void GodAlaxios_NPCDeath(int entity)
 {
 	GodAlaxios npc = view_as<GodAlaxios>(entity);
+	if(RevertResearchLogic >= 1)
+	{
+		RevertResearchLogic = 0;
+		Medival_Wave_Difficulty_Riser(0); // Refresh me !!!
+	}
 	if(!BlockLoseSay)
 	{
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -1291,8 +1314,11 @@ void GodAlaxiosSelfDefense(GodAlaxios npc, float gameTime)
 								}
 								else
 								{
-									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+									if(!HasSpecificBuff(npc.index, "Godly Motivation"))
+									{
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+									}
 								}
 							}
 										
