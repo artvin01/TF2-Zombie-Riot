@@ -381,7 +381,7 @@ methodmap Spotter < CClotBody
 public void Spotter_ClotThink(int iNPC)
 {
 	Spotter npc = view_as<Spotter>(iNPC);
-
+	bool retreat = false;
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -402,7 +402,7 @@ public void Spotter_ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0, _, _, _, _, _, 600.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, 600.0, _, _, _, _, _, 600.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		ally = GetClosestAllyPlayer(npc.index);
@@ -431,8 +431,17 @@ public void Spotter_ClotThink(int iNPC)
 			SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance);
 			npc.m_flSpeed = 365.0;
 		}
+		else
+		{
+			retreat = true;
+		}
 	}
 	else
+	{
+		retreat = true;
+	}
+
+	if(retreat)
 	{
 		if(ally > 0)
 		{
@@ -448,10 +457,10 @@ public void Spotter_ClotThink(int iNPC)
 				return;
 			}
 		}
-
+	
 		npc.StopPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-	}
+	}	
 
 	if(npc.m_fHealCooldown < gameTime)
 	{	
@@ -466,6 +475,7 @@ public void Spotter_ClotThink(int iNPC)
 				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(ally);
 				if(flpercenthpfrommax <= 0.5)
 				{
+					npc.AddGesture("ACT_MP_THROW");
 					HealEntityGlobal(npc.index, ally, 500.0, 1.0, 5.0, HEAL_ABSOLUTE);
 					switch(GetRandomInt(1, 3))
 					{
