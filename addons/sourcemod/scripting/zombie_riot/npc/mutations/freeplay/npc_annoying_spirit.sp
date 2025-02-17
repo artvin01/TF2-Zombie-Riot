@@ -48,7 +48,7 @@ methodmap AnnoyingSpirit < CClotBody
 	}
 	public void PlaySpookSound(int entity) 
 	{
-		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6);
+		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(60, 140));
 	}
 	
 	public AnnoyingSpirit(float vecPos[3], float vecAng[3], int ally)
@@ -77,14 +77,14 @@ methodmap AnnoyingSpirit < CClotBody
 		npc.m_iState = 4;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 275.0;
 		npc.m_bCamo = true;
 		Is_a_Medic[npc.index] = true;
 
-		npc.m_fTimeBefore = GetGameTime(npc.index) + 120.0;
+		npc.m_fTimeBefore = GetGameTime(npc.index) + 240.0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 50, 50, 50, 40);
+		SetEntityRenderColor(npc.index, 50, 50, 50, 30);
 
 		int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
 
@@ -122,7 +122,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, true);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
@@ -147,7 +147,7 @@ static void Internal_ClotThink(int iNPC)
 	else
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, true);
 	}
 
 	if(npc.m_fTimeBefore < GetGameTime(npc.index) && !npc.Anger)
