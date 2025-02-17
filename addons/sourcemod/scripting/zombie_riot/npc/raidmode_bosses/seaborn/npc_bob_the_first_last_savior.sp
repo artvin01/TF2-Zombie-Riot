@@ -1729,7 +1729,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 		}
 	}
 
-	if(i_RaidGrantExtra[npc.index] == 1 && Waves_GetRound() > 55)
+	if(i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{

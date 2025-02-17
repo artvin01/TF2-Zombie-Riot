@@ -3215,7 +3215,18 @@ void Waves_SetReadyStatus(int status)
 			if(!ReadyUpTimer)
 				ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
 
-			AlreadySetWaiting = false;
+			if(!AlreadySetWaiting && !Rogue_Mode())
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + 2); //This is here beacuse of raid music.
+						Music_Stop_All(client);
+					}
+				}	
+			}
+			AlreadySetWaiting = true;
 		}
 		case 2:	// Waiting
 		{
