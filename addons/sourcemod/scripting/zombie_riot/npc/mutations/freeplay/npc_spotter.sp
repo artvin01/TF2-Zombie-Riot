@@ -471,15 +471,15 @@ public void Spotter_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-						    	CPrintToChatAll("{orange}Spotter: {white}Here ya go %N.", ally);
+						    	CPrintToChat(ally, "{orange}Spotter: {white}Here ya go %N.", ally);
 						}
 						case 2:
 						{
-							CPrintToChatAll("{orange}Spotter: {white}Well well, don't get too hurt next time yeah %N?", ally);
+							CPrintToChat(ally, "{orange}Spotter: {white}Well well, don't get too hurt next time yeah %N?", ally);
 						}
 						default:
 						{
-						    	CPrintToChatAll("{orange}Spotter: {white}Have a nice day, %N.", ally);
+						    	CPrintToChat(ally, "{orange}Spotter: {white}Have a nice day, %N.", ally);
 						}
 					}
 				}
