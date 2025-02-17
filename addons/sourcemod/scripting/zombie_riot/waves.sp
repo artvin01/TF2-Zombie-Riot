@@ -3470,7 +3470,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 				CPrintToChatAll("{gold}Koshi{white}: See if you can go higher next time, dont be so lazy and stop stalling!");
 				CPrintToChatAll("{lightcyan}Zeina{white}: Finally done? I can go back home now, {lightblue}Nemal's {white}waiting on me.");
 			}
-			else if(CurrentRount+1 >= 100 && CurrentRount+1 < 150)
+			else if(CurrentRound+1 >= 100 && CurrentRound+1 < 150)
 			{
 				CPrintToChatAll("{gold}Koshi{white}: Quite a great record, i'd say... But you could go {orange}further next time.");
 				CPrintToChatAll("{lightcyan}Zeina{white}: Further!? Are you insane!?!?");
