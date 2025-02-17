@@ -276,7 +276,7 @@ public void Enable_Management_Banner_3(int client, int weapon) // Enable managem
 		b_ClientHasAncientBanner[client] = true;
 		if (Timer_AncientBanner == null)
 		{
-			Timer_AncientBanner = CreateTimer(0.4, Timer_AncientBannerGlobal, _, TIMER_REPEAT);
+			Timer_AncientBanner = CreateTimer(0.1, Timer_AncientBannerGlobal, _, TIMER_REPEAT);
 		}
 	}
 }

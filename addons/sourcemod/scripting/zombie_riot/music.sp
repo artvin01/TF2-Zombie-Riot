@@ -266,8 +266,8 @@ static int MusicMapRemove[MAXTF2PLAYERS];
 static float PrepareMusicVolume[MAXTF2PLAYERS];
 static float DelayStopSoundAll[MAXTF2PLAYERS];
 
-#define RANGE_FIRST_MUSIC 6250000.0
-#define RANGE_SECOND_MUSIC 1000000.0
+#define RANGE_FIRST_MUSIC 1000000.0
+#define RANGE_SECOND_MUSIC 250000.0
 
 /*
 Big thanks to backwards#8236 For pointing me towards GetTime and helping me with this music tgimer,
@@ -885,22 +885,22 @@ void Music_PostThink(int client)
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
-						f_intencity += 0.5;
+						f_intencity += 0.4;
 					}
 					else
 					{
-						f_intencity += 5.0;
+						f_intencity += 4.0;
 					}
 				}
 				if (distance <= RangeSecondMusic)// If they are very close, cause more havok! more epic music!
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
-						f_intencity += 0.9;
+						f_intencity += 0.65;
 					}
 					else
 					{
-						f_intencity += 8.0;
+						f_intencity += 5.0;
 					}
 				}
 			}
@@ -967,7 +967,7 @@ void Music_PostThink(int client)
 		else if(!b_IsAloneOnServer && f_intencity < float(PlayersAliveScaling) * 0.1)
 		{
 			EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/1.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-			SetMusicTimer(client, GetTime() + 6);
+			SetMusicTimer(client, GetTime() + 8);
 			
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.2)
@@ -1036,7 +1036,7 @@ void Music_PostThink(int client)
 			else
 			{
 				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/5.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-				SetMusicTimer(client, GetTime() + 6);
+				SetMusicTimer(client, GetTime() + 7);
 			}
 			
 		}
@@ -1100,7 +1100,7 @@ void Music_PostThink(int client)
 
 public void SetMusicTimer(int client, int time)
 {
-	Music_Timer[client] = time - 1;
+	Music_Timer[client] = time /*- 1*/;
 }
 
 //CHECK SDKHOOKS PRETHINK!!!

@@ -13,8 +13,40 @@ void BossSummonRandom_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = 0; 
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 	PreviousRaid = 0;
+}
+
+static void ClotPrecache()
+{
+	//precaches said npcs.
+	NPC_GetByPlugin("npc_true_fusion_warrior");
+	NPC_GetByPlugin("npc_blitzkrieg");
+	NPC_GetByPlugin("npc_xeno_raidboss_silvester");
+	NPC_GetByPlugin("npc_god_alaxios");
+	NPC_GetByPlugin("npc_sensal");
+	NPC_GetByPlugin("npc_stella");
+	NPC_GetByPlugin("npc_the_purge");
+	NPC_GetByPlugin("npc_the_messenger");
+	NPC_GetByPlugin("npc_bob_the_first_last_savior");
+	NPC_GetByPlugin("npc_chaos_kahmlstein");
+	NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
+	NPC_GetByPlugin("npc_corruptedbarney");
+	NPC_GetByPlugin("npc_whiteflower_boss");
+	NPC_GetByPlugin("npc_void_unspeakable");
+	NPC_GetByPlugin("npc_vhxis");
+	NPC_GetByPlugin("npc_nemal");
+	NPC_GetByPlugin("npc_ruina_twirl");
+	NPC_GetByPlugin("npc_agent_thompson");
+	NPC_GetByPlugin("npc_twins");
+	NPC_GetByPlugin("npc_agent_smith");
+	NPC_GetByPlugin("npc_atomizer");
+	NPC_GetByPlugin("npc_the_wall");
+	NPC_GetByPlugin("npc_harrison");
+	NPC_GetByPlugin("npc_castellan");
+	NPC_GetByPlugin("npc_lelouch");
+	NPC_GetByPlugin("npc_omega_raid");
 }
 
 
@@ -122,7 +154,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			//needs buffs!!
 			PluginName = "npc_god_alaxios";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60;res3");
 			
 			enemy.ExtraDamage *= 1.15;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
@@ -294,8 +326,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			//Hes very unbalanced for now, block. , cus of minions.
 			PluginName = "npc_lelouch";	
 			
-			enemy.ExtraDamage *= 0.9;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
+			enemy.ExtraDamage *= 0.45;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.45); 
 			
 		}
 		case 25:

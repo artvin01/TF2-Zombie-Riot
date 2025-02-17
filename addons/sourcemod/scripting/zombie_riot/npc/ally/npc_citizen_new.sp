@@ -3102,7 +3102,7 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						HealingCooldown[ally] = gameTime + 45.0;
 						
-						GrantEntityArmor(npc.index, false, 0.25, 0.25, 0.0);
+						GrantEntityArmor(npc.index, false, 0.25, 0.25, 0);
 						//Same as medigun giving armor, exact same logic, same amount.
 						Elemental_ClearDamage(npc.index);
 					}

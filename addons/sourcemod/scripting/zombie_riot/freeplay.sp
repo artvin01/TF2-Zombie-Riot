@@ -256,7 +256,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
 				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "wave_60";
+				enemy.Data = "wave_60;res3";
 			}
 			case 5:
 			{

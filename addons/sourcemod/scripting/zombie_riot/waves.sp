@@ -607,6 +607,7 @@ void Waves_SetupVote(KeyValues map)
 			vote.Level = kv.GetNum("level");
 			Voting.PushArray(vote);
 
+			// If we're downloading via downloadstable, add every vote option to that
 			if(CvarFileNetworkDisable.IntValue > 0)
 			{
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
@@ -2322,7 +2323,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
-	PrintToChatAll("%t", "Medival_Difficulty", difficulty);
+	CPrintToChatAll("{darkred}%t", "Medival_Difficulty", difficulty);
 	
 	float difficulty_math = Pow(0.9, float(difficulty));
 	
