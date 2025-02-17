@@ -409,7 +409,7 @@ public void Spotter_ClotThink(int iNPC)
 		npc.m_iTargetWalkTo = ally;
 	}
 
-	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) * 0.25)
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) * 0.25))
 	{
 		if(target > 0)
 		{
