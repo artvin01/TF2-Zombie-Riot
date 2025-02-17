@@ -116,6 +116,9 @@ static int AttackType;	// 0 = None, 1 = Resource, 2 = Base, 3 = Final
 static int AttackRef;
 static char CurrentSpawnName[64];
 static StringMap CurrentMaterials;
+static ArrayList CurrentResearch;
+static int InResearch = -1;
+static float InResearchAt;
 static Handle InResearchMenu[MAXTF2PLAYERS];
 
 bool Construction_Mode()
@@ -361,6 +364,9 @@ void Construction_RoundEnd()
 	CurrentRisk = 0;
 	CurrentAttacks = 0;
 	delete GameTimer;
+	delete CurrentMaterials;
+	delete CurrentResearch;
+	InResearch = -1;
 	AttackType = 0;
 }
 
@@ -999,17 +1005,81 @@ void Construction_OpenResearch(int client)
 
 	Menu menu = new Menu(ResearchMenuH);
 
-	menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description");
+	ResearchInfo info;
+	char index[16], buffer[128];
 
-	//char buffer[64];
-	//for(int i; i < Enabled; i++)
-	//{
-	//	FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
-	//	menu.AddItem(Artifacts[i], buffer);
-	//}
+	if(InResearch == -1)
+	{
+		menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description");
+
+		int amount, items;
+		int length1 = ResearchList.Length;
+		for(int a; a < length1; a++)
+		{
+			ResearchList.GetArray(a, info);
+			if(CurrentResearch && CurrentResearch.FindString(info.Name) != -1)
+				continue;
+
+			if(info.Key[0])
+			{
+				if(!CurrentResearch || CurrentResearch.FindString(info.Key) == -1)
+					continue;
+			}
+
+			FormatEx(buffer, sizeof(buffer), "%t", info.Name);
+
+			bool failed;
+			StringMapSnapshot snap = info.CostMap.Snapshot();
+			int length2 = snap.Length;
+			for(int b; b < length2; b++)
+			{
+				int size = snap.KeyBufferSize(b) + 10;
+				char[] name = new char[size];
+				snap.GetKey(b, name, size);
+				
+				info.CostMap.GetValue(name, amount);
+
+				if(!failed && Construction_GetMaterial(name) < amount)
+					failed = true;
+
+				Format(name, size, "Material %s", name);
+				if(TranslationPhraseExists(name))
+				{
+					Format(buffer, sizeof(buffer), "%s (%d %t)", buffer, amount, name);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s (%d %s)", buffer, amount, name);
+				}
+			}
+			delete snap;
+
+			IntToString(a, index, sizeof(index));
+			menu.AddItem(index, buffer, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			if(++items > 4)
+				break;
+		}
+	}
+	else
+	{
+		ResearchList.GetArray(InResearch, info);
+		menu.SetTitle("%t\n \n%t", "Research Station", info.Name);
+
+		float gameTime = GetGameTime();
+		if(InResearchAt > gameTime)
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "Claim Research Time", RoundToCeil(InResearchAt - gameTime));
+			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "Claim Research");
+			menu.AddItem(NULL_STRING, buffer);
+		}
+	}
 
 	if(menu.Display(client, MENU_TIME_FOREVER))
-		InResearchMenu[client] = CreateTimer(0.5, ResearchTimer, client);
+		InResearchMenu[client] = CreateTimer(1.0, ResearchTimer, client);
 }
 
 static Action ResearchTimer(Handle timer, int client)
@@ -1035,8 +1105,71 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete InResearchMenu[client];
 			
+			ResearchInfo info;
 			char buffer[64];
-			menu.GetItem(choice, buffer, sizeof(buffer));
+
+			if(InResearch == -1)
+			{
+				menu.GetItem(choice, buffer, sizeof(buffer));
+
+				int a = StringToInt(buffer);
+
+				ResearchList.GetArray(a, info);
+
+				if(GetClientButtons(client) & IN_DUCK)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s Desc", info.Name);
+					CPrintToChat(client, "%t", "Artifact Info", info.Name, buffer);
+				}
+				else
+				{
+					int amount;
+
+					StringMapSnapshot snap = info.CostMap.Snapshot();
+					int length2 = snap.Length;
+					for(int b; b < length2; b++)
+					{
+						snap.GetKey(b, buffer, sizeof(buffer));
+						
+						info.CostMap.GetValue(buffer, amount);
+
+						if(Construction_GetMaterial(buffer) < amount)
+						{
+							delete snap;
+							return 0;
+						}
+					}
+
+					for(int b; b < length2; b++)
+					{
+						snap.GetKey(b, buffer, sizeof(buffer));
+						
+						info.CostMap.GetValue(buffer, amount);
+						Construction_AddMaterial(buffer, -amount);
+					}
+					delete snap;
+
+					InResearchAt = GetGameTime() + info.Time;
+					InResearch = a;
+
+					CPrintToChatAll("%t", "Player Start Research", client, info.Name);
+				}
+			}
+			else if(InResearchAt < GetGameTime())
+			{
+				ResearchList.GetArray(InResearch, info);
+
+				if(!CurrentResearch)
+					CurrentResearch = new ArrayList(sizeof(info.Name));
+				
+				CurrentResearch.PushString(info.Name);
+				InResearch = -1;
+
+				FormatEx(buffer, sizeof(buffer), "%s Desc", info.Name);
+				CPrintToChatAll("%t", "Finish Research Desc", info.Name, buffer);
+			}
+
+			Construction_OpenResearch(client);
 		}
 	}
 	return 0;

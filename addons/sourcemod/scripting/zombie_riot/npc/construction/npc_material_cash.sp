@@ -12,7 +12,7 @@ void MaterialCash_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPCId = NPC_Add(data);
+	NPC_Add(data);
 }
 
 static void ClotPrecache()
@@ -61,8 +61,6 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void ClotDeath(int entity)
 {
-	MaterialCash npc = view_as<MaterialCash>(entity);
-	
 	static const int cash = 5000;
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);
 	CurrentCash += cash;

@@ -143,8 +143,6 @@ static void ThisBuildingMenu(int client)
 	int ossunia = Construction_GetMaterial("ossunia");
 	int ossuniaCost = OssuniaCost();
 
-	bool disabled = (iron < IronCost || ossunia < ossuniaCost);
-
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(ThisBuildingMenuH);
