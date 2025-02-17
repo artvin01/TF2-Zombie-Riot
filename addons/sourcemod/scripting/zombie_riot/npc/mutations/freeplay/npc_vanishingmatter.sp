@@ -155,7 +155,6 @@ methodmap VanishingMatter < CClotBody
 		SetEntityRenderFx(npc.index, RENDERFX_HOLOGRAM);
 		SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(65, 255));
 
-		b_NpcIsInvulnerable[npc.index] = true;
 		return npc;
 	}
 }
@@ -213,11 +212,23 @@ public void VanishingMatter_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.34))
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.35))
 	{
-		b_NpcIsInvulnerable[npc.index] = false;
+		npc.Anger = true;
+	}
+	else
+	{
+		npc.Anger = false;
+	}
+
+	if(npc.Anger)
+	{
 		npc.m_flSpeed = 350.0;
 	}
+	else
+	{
+		npc.m_flSpeed = 300.0;
+	}	
 
 	npc.PlayIdleAlertSound();
 }
@@ -228,12 +239,18 @@ public Action VanishingMatter_OnTakeDamage(int victim, int &attacker, int &infli
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	if (!npc.Anger)
+	{
+		damage = 1.0;
+		int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.02);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
+	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-		WinterArcticMageHealRandomAlly(victim, GetRandomFloat(10000.0, 25000.0), 20);
 	}
 	
 	return Plugin_Changed;
@@ -282,15 +299,15 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				{
 					float damageDealt = 200.0;
 
-					if(!b_NpcIsInvulnerable[npc.index])
+					if(!npc.Anger)
 					{
 						damageDealt = 75.0;
 					}
 						
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					if(b_NpcIsInvulnerable[npc.index])
+					if(!npc.Anger)
 					{
-						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.05);
+						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.025);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
 					}
 
@@ -315,7 +332,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 
-				if(!b_NpcIsInvulnerable[npc.index])
+				if(npc.Anger)
 				{
 					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
@@ -340,7 +357,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 					npc.m_flNextMeleeAttack = gameTime + 0.8;
 					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.5))
 					{
-						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.05);
+						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.025);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
 					}
 				}		
