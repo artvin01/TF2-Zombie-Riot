@@ -155,6 +155,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	if(medigun_heal_delay[owner] < GetGameTime())
 	{
+		if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
+		{
+			NPCStats_RemoveAllDebuffs(owner, 0.6);
+		}
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
 		int healTarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
 		
@@ -398,8 +402,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
 						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
 
-						if(TF2_IsPlayerInCondition(owner, TFCond_Ubercharged))
-							ApplyStatusEffect(owner, healTarget, "UBERCHARGED", 0.25);
+						if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
+						{
+							NPCStats_RemoveAllDebuffs(healTarget, 0.6);
+							if(i_CustomWeaponEquipLogic[medigun] != WEAPON_KRITZKRIEG && healTarget > MaxClients)
+								ApplyStatusEffect(owner, healTarget, "UBERCHARGED", 0.25);
+						}
 
 						if(i_CustomWeaponEquipLogic[medigun] == WEAPON_KRITZKRIEG)
 						{
@@ -620,6 +628,9 @@ void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUb
 	if(IsInvuln(owner))
 		return;
 		
+	if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
+		return;
+
 	float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 
 	float HeatExtra = 0.10;

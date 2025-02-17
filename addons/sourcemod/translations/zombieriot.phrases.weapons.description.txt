@@ -804,8 +804,7 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal.\nMedigun allows you to revive people from afar but at half the speed."
-		"fr"	"Bonus d'extra santé est permanent. Soigne vous en même temps que votre patient. Améliore les dégats +25%% et la résistance contre les dégats +10%% pour vous et votre patient.\nPeut ressusciter les coéquipiers à distance, à demi vitesse."
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal.\nMedigun allows you to revive people from afar but slower\nUber gives debuff immunity."
 	}
 	
 	"Battle Medigun Desc"
@@ -888,7 +887,7 @@
 	}
 	"Buff Banner Desc"
 	{
-		"en"	"Extra 25%% damage to all allies after dealing enough damage"
+		"en"	"Extra 25%% damage to all allies after dealing enough damage/Healing allies"
 		"fr"	"Rage donne +25%% de dégats."
 		"chi"	"造成一定伤害后可为所有队友增加25%%伤害"
 	}
@@ -3427,7 +3426,7 @@
 	}
 	"Medigun Desc Pap 3"
 	{
-		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, +mana recovery, + overclock buff on heal.\nUbercharge rate decreased."
+		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, +mana recovery, + overclock buff on heal."
 	}
 	"Flash Grenade Desc"
 	{

@@ -3,7 +3,7 @@
 
 static float Hose_Velocity = 1000.0;
 static float Hose_BaseHeal = 3.0;
-static float Hose_UberGain = 0.0075;
+static float Hose_UberGain = 0.0150;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
 static float SelfHealMult = 0.33;

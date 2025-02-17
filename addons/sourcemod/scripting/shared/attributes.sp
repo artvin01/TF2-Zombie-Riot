@@ -496,6 +496,10 @@ void Attributes_OnKill(int victim, int client, int weapon)
 				{
 					value *= 2.0;
 				}
+				//Grilled!
+				if(HasSpecificBuff(victim, "Burn"))
+					value *= 1.1;
+					
 				HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
 			}
 		}
