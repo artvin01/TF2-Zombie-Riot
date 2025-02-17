@@ -412,12 +412,15 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		if(Waves_GetRound() > 124)
 			enemy.ExtraDamage *= 2.0;
 
+		if(Waves_GetRound() > 174)
+			enemy.ExtraDamage *= 2.0;
+
 		// Raid health is lower before w150.
 		if(Waves_GetRound() > 149)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 2.0);
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.75);
 
 		if(Waves_GetRound() > 174)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 2.0);
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
 
 		// moni
 		enemy.Credits += 10000.0;
@@ -450,7 +453,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Boss = 1;
 
 		enemy.Index = NPC_GetByPlugin("npc_freeplay_sigmaller");
-		enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Credits += 1.0;
 
 		count = 1;
@@ -888,7 +891,7 @@ void Freeplay_SpawnEnemy(int entity)
 	{
 		if(RandomStats)
 		{
-			if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare but not too rare
+			if(GetRandomInt(0, 100) < 1) // 1% chance for this to work, it NEEDS to be extra rare.
 			{
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(0.25, 10.0)));
 				SetEntProp(entity, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
@@ -1299,7 +1302,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 90;
+		rand = GetURandomInt() % 94;
 
 	if(wrathofirln)
 	{
@@ -2015,7 +2018,7 @@ void Freeplay_SetupStart(bool extra = false)
 			case 19:
 			{
 				RandomStats += 4;
-				strcopy(message, sizeof(message), "{red}3 random enemies will recieve randomized stats! You'll never know when.");
+				strcopy(message, sizeof(message), "{red}4 random enemies will recieve randomized stats! You'll never know when.");
 			}
 	
 			/// CREDIT SKULLS //
@@ -2744,6 +2747,26 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
 				DarknessComing = true;
+			}
+			case 90:
+			{
+				strcopy(message, sizeof(message), "{green}Enemies will now take 30% more melee damage.");
+				MeleeMult += 0.3;
+			}
+			case 91:
+			{
+				strcopy(message, sizeof(message), "{green}Enemies will now take 35% more melee damage.");
+				MeleeMult += 0.35;
+			}
+			case 92:
+			{
+				strcopy(message, sizeof(message), "{green}Enemies will now take 30% more ranged damage.");
+				RangedMult += 0.3;
+			}
+			case 93:
+			{
+				strcopy(message, sizeof(message), "{green}Enemies will now take 35% more ranged damage.");
+				RangedMult += 0.35;
 			}
 			default:
 			{
