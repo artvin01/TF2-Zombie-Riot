@@ -1509,7 +1509,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 			{
 				AddHealthToUbersaw(healer, HealthHealed, 0.0);
 				HealPointToReinforce(healer, HealthHealed, 0.0);
-				GiveRageOnDamage(healer, HealingDoneInt);
+				GiveRageOnDamage(healer, HealthHealed);
 			}
 #endif
 		}
