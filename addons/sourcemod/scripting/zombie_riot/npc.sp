@@ -908,6 +908,17 @@ void NPC_ConfigSetup()
 	Erasus_OnMapStart_NPC();
 	AnnoyingSpirit_OnMapStart_NPC();
 	FogOrbHeavy_OnMapStart_NPC();
+
+	// Construction
+	MaterialCash_MapStart();
+	MaterialCopper_MapStart();
+	MaterialCrystal_MapStart();
+	MaterialIron_MapStart();
+	MaterialJalan_MapStart();
+	MaterialOssunia_MapStart();
+	MaterialStone_MapStart();
+	MaterialWizuh_MapStart();
+	MaterialWood_MapStart();
 }
 
 int NPC_Add(NPCData data)
@@ -2012,3 +2023,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/freeplay/npc_darkenedheavy.sp"
 
 #include "zombie_riot/npc/construction/npc_base_building.sp"
+#include "zombie_riot/npc/construction/npc_material_cash.sp"
+#include "zombie_riot/npc/construction/npc_material_copper.sp"
+#include "zombie_riot/npc/construction/npc_material_crystal.sp"
+#include "zombie_riot/npc/construction/npc_material_iron.sp"
+#include "zombie_riot/npc/construction/npc_material_jalan.sp"
+#include "zombie_riot/npc/construction/npc_material_ossunia.sp"
+#include "zombie_riot/npc/construction/npc_material_stone.sp"
+#include "zombie_riot/npc/construction/npc_material_wizuh.sp"
+#include "zombie_riot/npc/construction/npc_material_wood.sp"

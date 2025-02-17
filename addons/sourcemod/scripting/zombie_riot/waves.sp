@@ -1174,6 +1174,15 @@ void Waves_RoundStart(bool event = false)
 			FirstMapRound = false;
 			CreateTimer(zr_waitingtime.FloatValue, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 			Waves_SetReadyStatus(2);
+			//Stop music.
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					SetMusicTimer(client, GetTime() + 2); //This is here beacuse of raid music.
+					Music_Stop_All(client);
+				}
+			}
 		}
 		else
 		{
@@ -2022,6 +2031,18 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						if(IsClientInGame(client))
 						{
 							SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup));
+						}
+					}
+				}
+				else
+				{
+					//Reset and stop music?
+					for(int client=1; client<=MaxClients; client++)
+					{
+						if(IsClientInGame(client))
+						{
+							SetMusicTimer(client, GetTime() + 1); //This is here beacuse of raid music.
+							Music_Stop_All(client);
 						}
 					}
 				}

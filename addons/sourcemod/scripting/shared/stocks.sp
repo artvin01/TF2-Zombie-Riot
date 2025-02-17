@@ -1421,6 +1421,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 				{
 					AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
 					HealPointToReinforce(healer, HealingDoneInt, 0.0);
+					GiveRageOnDamage(healer, float(HealingDoneInt));
 				}
 			}
 		}
@@ -1508,6 +1509,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 			{
 				AddHealthToUbersaw(healer, HealthHealed, 0.0);
 				HealPointToReinforce(healer, HealthHealed, 0.0);
+				GiveRageOnDamage(healer, float(HealthHealed));
 			}
 #endif
 		}
