@@ -444,8 +444,9 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	{
 		if(!Apply_MasterStatusEffect.Positive && !Apply_MasterStatusEffect.ElementalLogic)
 		{
-			//Immunity to all debuffs except elementals.
-			return;
+			//Immunity to all debuffs except elementals, dont ignore buffs with no name, this is due to them having internal logic.
+			if(Apply_MasterStatusEffect.BuffName[0])
+				return;
 		}
 	}
 
