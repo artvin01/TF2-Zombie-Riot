@@ -5,14 +5,6 @@ static const char g_DeathSounds[][] = {
 	"ui/killsound_squasher.wav",
 };
 
-static const char g_HurtSounds[][] = {
-	"ui/hitsound_vortex1.wav",
-	"ui/hitsound_vortex2.wav",
-	"ui/hitsound_vortex3.wav",
-	"ui/hitsound_vortex4.wav",
-	"ui/hitsound_vortex5.wav",
-};
-
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_sf13_magic_reac07.mp3",
 	"vo/medic_sf13_magic_reac02.mp3",
@@ -34,7 +26,6 @@ static const char g_MeleeHitSounds[][] = {
 void VanishingMatter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
@@ -64,17 +55,6 @@ methodmap VanishingMatter < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(60, 135));
 		this.m_flNextIdleSound = GetGameTime(this.index) + 6.0;
-		
-	}
-	
-	public void PlayHurtSound() 
-	{
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.2;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(50, 80));
 		
 	}
 	
@@ -173,7 +153,6 @@ public void VanishingMatter_ClotThink(int iNPC)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
