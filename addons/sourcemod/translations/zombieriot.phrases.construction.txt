@@ -25,9 +25,28 @@
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
 	}
+	"Player Start Research"
+	{
+		"#format"	"{1:N},{2:s}"
+		"en"		"{orange}(Construct) {red}{1} {default}has started to research {orange}{2}"
+	}
+	"Finish Research Desc"
+	{
+		"#format"	"{1:N},{2:s}"
+		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
+	}
 	"Crouch and select to view description"
 	{
 		"en"	"Crouch and select to view description"
+	}
+	"Claim Research"
+	{
+		"en"	"Claim Research"
+	}
+	"Claim Research Time"
+	{
+		"#format"	"{1:d}"
+		"en"	"Claim Research: {1}s"
 	}
 	"Broken Server"
 	{

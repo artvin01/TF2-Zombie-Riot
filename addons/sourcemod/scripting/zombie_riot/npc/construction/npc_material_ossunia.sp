@@ -12,7 +12,7 @@ void MaterialOssunia_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPCId = NPC_Add(data);
+	NPC_Add(data);
 }
 
 static void ClotPrecache()
@@ -58,6 +58,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
+		MaterialOssunia npc = view_as<MaterialOssunia>(victim);
 		bool angery = npc.Anger;
 		if(Construction_OnTakeDamage("ossunia", 20, victim, attacker, damage, damagetype))
 		{
@@ -75,7 +76,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 					
 					WorldSpaceCenter(npc.index, pos);
 					ParticleEffectAt(pos, "teleported_blue", 0.5);
-					view_as<Sensal>(npc).PlayDeathSound();
+					view_as<Sensal>(victim).PlayDeathSound();
 					
 					area.GetCenter(pos);
 					TeleportEntity(victim, pos);

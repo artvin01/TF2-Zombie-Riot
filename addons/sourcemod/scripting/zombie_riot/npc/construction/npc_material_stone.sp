@@ -12,7 +12,7 @@ void MaterialStone_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPCId = NPC_Add(data);
+	NPC_Add(data);
 }
 
 static void ClotPrecache()
