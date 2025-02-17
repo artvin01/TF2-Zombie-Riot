@@ -48,7 +48,7 @@ methodmap AnnoyingSpirit < CClotBody
 	}
 	public void PlaySpookSound(int entity) 
 	{
-		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6);
+		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(60, 140));
 	}
 	
 	public AnnoyingSpirit(float vecPos[3], float vecAng[3], int ally)
