@@ -77,14 +77,14 @@ methodmap AnnoyingSpirit < CClotBody
 		npc.m_iState = 4;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 275.0;
 		npc.m_bCamo = true;
 		Is_a_Medic[npc.index] = true;
 
-		npc.m_fTimeBefore = GetGameTime(npc.index) + 120.0;
+		npc.m_fTimeBefore = GetGameTime(npc.index) + 240.0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 50, 50, 50, 40);
+		SetEntityRenderColor(npc.index, 50, 50, 50, 30);
 
 		int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
 
