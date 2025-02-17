@@ -242,7 +242,7 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 			{
 				if(imalone)
 				{
-					SDKHooks_TakeDamage(client, npc.index, npc.index, 600.0, DMG_CLUB, -1);
+					SDKHooks_TakeDamage(client, npc.index, npc.index, 400.0, DMG_CLUB, -1);
 				}
 			}
 		}
@@ -264,7 +264,7 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 				{
 					if(imalone)
 					{
-						SDKHooks_TakeDamage(entity, npc.index, npc.index, 750.0, DMG_CLUB, -1);
+						SDKHooks_TakeDamage(entity, npc.index, npc.index, 1000.0, DMG_CLUB, -1);
 					}
 				}
 			}
