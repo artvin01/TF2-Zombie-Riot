@@ -413,7 +413,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.ExtraDamage *= 2.0;
 
 		// Raid health is lower before w150.
-		if(pWaves_GetRound() > 149)
+		if(Waves_GetRound() > 149)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 2.0);
 
 		if(Waves_GetRound() > 174)
