@@ -122,7 +122,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, true);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
@@ -147,7 +147,7 @@ static void Internal_ClotThink(int iNPC)
 	else
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, _, true);
 	}
 
 	if(npc.m_fTimeBefore < GetGameTime(npc.index) && !npc.Anger)
