@@ -631,6 +631,11 @@ void Music_Stop_All(int client)
  	//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
 		if(PrepareMusicVolume[client] == 1.0)
 			PrepareMusicVolume[client] = 0.4;
+		else if(PrepareMusicVolume[client]) //i.e. doing it rn
+		{
+			PrepareMusicVolume[client] = 0.0;
+			StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+		}
 		//stop music slowly.
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/1.mp3");
