@@ -266,8 +266,8 @@ static int MusicMapRemove[MAXTF2PLAYERS];
 static float PrepareMusicVolume[MAXTF2PLAYERS];
 static float DelayStopSoundAll[MAXTF2PLAYERS];
 
-#define RANGE_FIRST_MUSIC 1000000.0
-#define RANGE_SECOND_MUSIC 250000.0
+#define RANGE_FIRST_MUSIC 2250000.0
+#define RANGE_SECOND_MUSIC 422500.0
 
 /*
 Big thanks to backwards#8236 For pointing me towards GetTime and helping me with this music tgimer,
@@ -870,8 +870,8 @@ void Music_PostThink(int client)
 		if(Classic_Mode())
 		{
 			//in classic, it should only play if REALLY close.
-			RangeFirstMusic *= 0.5;
-			RangeSecondMusic *= 0.5;
+			RangeFirstMusic *= 0.8;
+			RangeSecondMusic *= 0.8;
 		}
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
@@ -885,7 +885,7 @@ void Music_PostThink(int client)
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
-						f_intencity += 0.4;
+						f_intencity += 0.5;
 					}
 					else
 					{
