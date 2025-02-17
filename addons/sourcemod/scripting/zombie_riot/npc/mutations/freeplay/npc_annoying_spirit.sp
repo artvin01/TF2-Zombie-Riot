@@ -101,6 +101,7 @@ methodmap AnnoyingSpirit < CClotBody
 		b_thisNpcHasAnOutline[npc.index] = true;
 
 		fl_TotalArmor[npc.index] = 0.1;
+		MakeObjectIntangeable(npc.index);
 		return npc;
 	}
 }
@@ -153,7 +154,7 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_fTimeBefore < GetGameTime(npc.index) && !npc.Anger)
 	{
 		npc.Anger = true;
-		fl_TotalArmor[npc.index] = 1.0;
+		fl_TotalArmor[npc.index] = 2.0;
 	}
 }
 
