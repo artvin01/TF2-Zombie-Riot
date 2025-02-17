@@ -707,6 +707,14 @@ void ZR_MapStart()
 	PrecacheSound("ui/chime_rd_2base_neg.wav");
 	PrecacheSound("ui/chime_rd_2base_pos.wav");
 	
+	//Reset and stop music?
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			SetMusicTimer(client, GetTime() + 1); //This is here beacuse of raid music.
+		}
+	}
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();

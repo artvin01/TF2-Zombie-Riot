@@ -398,6 +398,11 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 			length--;
 			continue;
 		}
+		//They do not have a buffname, this means that it can break other things depending on this!
+		if(!Apply_MasterStatusEffect.BuffName[0])
+		{
+			continue;
+		}
 		if(!Apply_MasterStatusEffect.Positive && !RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
 		{
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
@@ -439,8 +444,9 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	{
 		if(!Apply_MasterStatusEffect.Positive && !Apply_MasterStatusEffect.ElementalLogic)
 		{
-			//Immunity to all debuffs except elementals.
-			return;
+			//Immunity to all debuffs except elementals, dont ignore buffs with no name, this is due to them having internal logic.
+			if(Apply_MasterStatusEffect.BuffName[0])
+				return;
 		}
 	}
 
