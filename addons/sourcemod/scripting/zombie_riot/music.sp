@@ -742,15 +742,10 @@ void Music_Update(int client)
 		return;
 	}
 
-	//if in menu, dont play new music.
-	//but dont kill old music either.
-	if(SkillTree_InMenu(client))
-		return;
-	
  	//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
 	if(PrepareMusicVolume[client] != 1.0 && PrepareMusicVolume[client])
 	{
-		PrepareMusicVolume[client] -= 0.005;
+		PrepareMusicVolume[client] -= 0.1;
 		if(PrepareMusicVolume[client] <= 0.0)
 		{
  			StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
@@ -760,6 +755,11 @@ void Music_Update(int client)
 			EmitSoundToClient(client, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, PrepareMusicVolume[client]);
 		}
 	}
+	//if in menu, dont play new music.
+	//but dont kill old music either.
+	if(SkillTree_InMenu(client))
+		return;
+	
 	if(!b_GameOnGoing/* && !CvarNoRoundStart.BoolValue*/)
 	{
 	//	PlaySetupMusicCustom(client);

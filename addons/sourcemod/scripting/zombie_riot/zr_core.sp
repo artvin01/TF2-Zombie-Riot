@@ -2557,7 +2557,10 @@ void GiveXP(int client, int xp)
 				Store_PrintLevelItems(client, Level[client]);
 			}
 			if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
+			{
+				SkillTree_CalcSkillPoints(client);
 				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
+			}
 		}
 	}
 }

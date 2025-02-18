@@ -1175,7 +1175,9 @@ public Action OnReloadBlockNav(int args)
 
 public void OnGameFrame()
 {
+#if defined ZR
 	NPC_SpawnNext(false, false);
+#endif	
 #if defined RPG
 	DoubleJumpGameFrame();
 #endif	

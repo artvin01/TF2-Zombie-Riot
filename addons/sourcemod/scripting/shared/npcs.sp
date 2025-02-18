@@ -1221,34 +1221,38 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		}
 		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
-
-		Event event = CreateEvent("npc_hurt");
-		if(event) 
+		//Do not show this event if they are attacked with DOT. Earls bleedin.
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
-			int display = RoundToFloor(Damageaftercalc);
-			while(display > 32000)
+			Event event = CreateEvent("npc_hurt");
+			if(event) 
 			{
-				display /= 10;
-			}
+				int display = RoundToFloor(Damageaftercalc);
+				while(display > 32000)
+				{
+					display /= 10;
+				}
 
-			event.SetInt("entindex", victim);
-			event.SetInt("health", health);
-			event.SetInt("damageamount", display);
-			event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
+				event.SetInt("entindex", victim);
+				event.SetInt("health", health);
+				event.SetInt("damageamount", display);
+				event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
 
-			if(attacker > 0 && attacker <= MaxClients)
-			{
-				event.SetInt("attacker_player", GetClientUserId(attacker));
-				event.SetInt("weaponid", 0);
-			}
-			else 
-			{
-				event.SetInt("attacker_player", 0);
-				event.SetInt("weaponid", 0);
-			}
+				if(attacker > 0 && attacker <= MaxClients)
+				{
+					event.SetInt("attacker_player", GetClientUserId(attacker));
+					event.SetInt("weaponid", 0);
+				}
+				else 
+				{
+					event.SetInt("attacker_player", 0);
+					event.SetInt("weaponid", 0);
+				}
 
-			event.Fire();
+				event.Fire();
+			}
 		}
+		
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 6.0;
 
@@ -1849,7 +1853,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		SetGlobalTransTarget(attacker);
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		//todo: better showcase of timer.
-		static char ExtraHudHurt[128];
+		static char ExtraHudHurt[168];
 
 
 		//what type of boss
