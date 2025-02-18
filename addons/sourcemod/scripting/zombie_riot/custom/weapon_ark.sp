@@ -746,7 +746,7 @@ public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int sl
 			/*	stun on ability would be funny but arvan would skin me alive so sadly no		
 			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)//cycles through all npcs
 			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+				int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 				if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 				{
 					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", EnemyPos);
@@ -1101,7 +1101,7 @@ void Weapon_Ark_SilenceAOE(int enemyStruck, float duration)
 	GetEntPropVector(enemyStruck, Prop_Data, "m_vecAbsOrigin", VictimPos);
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 		if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EnemyPos);

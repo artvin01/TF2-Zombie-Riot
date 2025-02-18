@@ -658,7 +658,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 	
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
@@ -695,7 +695,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[a]);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
 			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])

@@ -875,7 +875,7 @@ void Music_PostThink(int client)
 		}
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
@@ -1145,7 +1145,7 @@ public float InterMusic_ByIntencity(int client)
 	GetClientAbsOrigin(client, chargerPos);
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);

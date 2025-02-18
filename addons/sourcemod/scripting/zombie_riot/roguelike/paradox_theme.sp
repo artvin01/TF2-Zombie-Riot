@@ -182,7 +182,7 @@ public void Rogue_SomethingElse_Collect()
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
@@ -323,7 +323,7 @@ static Action Timer_AnxietyTimer(Handle timer)
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			ApplyStatusEffect(entity, entity, "Extreme Anxiety", 1.0);
@@ -344,7 +344,7 @@ static Action Timer_ParadoxFrost(Handle timer)
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcIsInvulnerable[entity])
 		{
 			if(WinterTheme && WinterTheme.FindValue(i_NpcInternalId[entity]) != -1)
@@ -374,7 +374,7 @@ public void Rogue_BlueGoggles_Collect()
 	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
@@ -401,7 +401,7 @@ public void Rogue_BlueGoggles_Remove()
 	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
@@ -452,7 +452,7 @@ public void Rogue_Kahmlstein_Remove()
 	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != -1 && i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
@@ -563,7 +563,7 @@ public void Rogue_RuinaGem_StageStart()
 
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && !b_NpcIsInvulnerable[entity] && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
 		{
 			RuniaGemTimers.Push(CreateTimer(1.0, RuniaGem_Timer, EntIndexToEntRef(entity), TIMER_REPEAT));

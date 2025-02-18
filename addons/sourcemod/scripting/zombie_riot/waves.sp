@@ -143,7 +143,7 @@ public Action Waves_ProgressTimer(Handle timer)
 		// Delay progress if a boss is alive
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entity))
 			{
 				if(GetTeam(entity) == TFTeam_Blue)
@@ -1829,7 +1829,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int npc_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int npc_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if (IsValidEntity(npc_index))
 				{
 					if(!b_NpcHasDied[npc_index])

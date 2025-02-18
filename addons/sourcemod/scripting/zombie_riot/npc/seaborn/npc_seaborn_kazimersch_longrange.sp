@@ -345,7 +345,7 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 			{
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 				{
-					int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
 						CClotBody npcenemy = view_as<CClotBody>(entity_close);

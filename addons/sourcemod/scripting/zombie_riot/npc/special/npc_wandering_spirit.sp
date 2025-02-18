@@ -294,7 +294,7 @@ void WanderingSpiritIsEnemyClose(int iNPC)
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity_close))
 			{
 				if(IsValidEnemy(iNPC, entity_close))

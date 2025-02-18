@@ -31,7 +31,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			int i;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				i = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(i))
 				{
 					if(i != victim && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
@@ -187,7 +187,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		int target = -1;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && b_NpcForcepowerupspawn[entity] != 2 && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -234,7 +234,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 		int target = MaxClients + 1;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && b_NpcForcepowerupspawn[entity] != 2 && GetTeam(entity) != TFTeam_Red)
 			{
 				target = entity;

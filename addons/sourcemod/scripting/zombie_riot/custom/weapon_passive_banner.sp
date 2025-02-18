@@ -93,7 +93,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
@@ -171,7 +171,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
@@ -252,7 +252,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
@@ -316,7 +316,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			}
 			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 			{
-				int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+				int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 				if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 				{
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);

@@ -173,7 +173,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
-					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
+					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]));
 					if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 					{
 						WorldSpaceCenter(ally.index, vecTarget);

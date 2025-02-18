@@ -983,7 +983,7 @@ void Barracks_BuildingThink(int entity)
 				{
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 					{
-						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 
 						if(IsValidEntity(entity_close))
 						{
@@ -1276,7 +1276,7 @@ void Barracks_BuildingThink(int entity)
 	{
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
-			int Building_hordings = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			int Building_hordings = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 			if(IsValidEntity(Building_hordings))
 			{
 				if(!i_BuildingRecievedHordings[Building_hordings]) 
@@ -1312,7 +1312,7 @@ void BuildingHordingsRemoval(int entity)
 		{
 			for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 			{
-				int Building_hordings = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+				int Building_hordings = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 				if(IsValidEntity(Building_hordings))
 				{
 					if(i_BuildingRecievedHordings[Building_hordings])
@@ -1735,7 +1735,7 @@ static void SummonerMenu(int client, int viewer)
 					{
 						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
-							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+							int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 
 							if(IsValidEntity(entity_close))
 							{
@@ -1837,7 +1837,7 @@ static void SummonerMenu(int client, int viewer)
 					char npc_classname[60];
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 					{
-						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 
 						if(IsValidEntity(entity_close))
 						{

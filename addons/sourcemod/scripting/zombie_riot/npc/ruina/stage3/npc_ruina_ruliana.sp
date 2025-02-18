@@ -783,7 +783,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 		if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)
 			break;
 
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 
 		if(!IsValidEnemy(npc.index, entity))
 			continue;
@@ -803,7 +803,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 		if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)
 			break;
 
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[a]);
 		if(!IsValidEnemy(npc.index, entity))
 			continue;
 

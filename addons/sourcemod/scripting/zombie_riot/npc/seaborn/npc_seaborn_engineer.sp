@@ -187,7 +187,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountBuilding; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
 			if(entity != INVALID_ENT_REFERENCE)
 			{
 				//CClotBody building = view_as<CClotBody>(entity);

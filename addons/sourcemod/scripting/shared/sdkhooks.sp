@@ -398,7 +398,10 @@ public void OnPostThink(int client)
 			//they are a teuton, or dying, teleport them out of bad places.
 			if(f_EntityHazardCheckDelay[client] < GetGameTime())
 			{
-				EntityIsInHazard_Teleport(client);
+				if(i_InHurtZone[client])
+				{
+					TeleportBackToLastSavePosition(client);
+				}
 				f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
 			}
 		}

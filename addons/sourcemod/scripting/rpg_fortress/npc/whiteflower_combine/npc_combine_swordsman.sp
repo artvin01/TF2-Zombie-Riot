@@ -107,7 +107,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
-					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
+					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]));
 					if(ally.index != -1 && ally.index != npc.index)
 					{
 						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && GetTeam(npc.index) == GetTeam(ally.index))

@@ -229,7 +229,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		bool Docutscene = true;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != INVALID_ENT_REFERENCE && IsValidEnemy(npc.index, entity) && GetTeam(entity) != TFTeam_Red)
 			{
 				Docutscene = false;

@@ -157,7 +157,7 @@ methodmap ObjectGeneric < CClotBody
 		
 		for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 		{
-			if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)
+			if (EntRefToEntIndexFast(i_ObjectsBuilding[i]) <= 0)
 			{
 				i_ObjectsBuilding[i] = EntIndexToEntRef(obj);
 				i = ZR_MAX_BUILDINGS;

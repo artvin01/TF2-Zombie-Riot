@@ -1790,7 +1790,7 @@ static void StartStage(const Stage stage)
 	
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
@@ -1806,7 +1806,7 @@ static void StartStage(const Stage stage)
 
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
-		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
+		entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 		{
 			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -1879,7 +1879,7 @@ static void TeleportToSpawn()
 	
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
@@ -1895,7 +1895,7 @@ static void TeleportToSpawn()
 
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 		{
 			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -2369,7 +2369,7 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 				{
 					for(int a; a < i_MaxcountNpcTotal; a++)
 					{
-						int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
 						{
 							Call_StartFunction(null, artifact.FuncAlly);

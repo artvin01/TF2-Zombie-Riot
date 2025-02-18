@@ -197,7 +197,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 						
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 						if (IsValidEntity(baseboss_index))
 						{
 							if(!b_NpcHasDied[baseboss_index])

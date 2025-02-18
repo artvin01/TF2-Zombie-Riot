@@ -133,7 +133,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		{
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 				{
 					GetAbsOrigin(entity, Vec);
@@ -290,7 +290,7 @@ int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distanc
 			float entitypos[3], dist;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) == GetTeam(npc.index))
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
