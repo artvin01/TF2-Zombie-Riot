@@ -89,17 +89,20 @@ enum struct E_StatusEffect
 	}
 }
 
-
+void DeleteStatusEffectsFromAll()
+{
+	for(int c = 0; c < MAXENTITIES; c++)
+	{
+		delete E_AL_StatusEffects[c];
+	}
+}
 void InitStatusEffects()
 {
 	//First delete everything
 	delete AL_StatusEffects;
 	AL_StatusEffects = new ArrayList(sizeof(StatusEffect));
 
-	for(int c = 0; c < MAXENTITIES; c++)
-	{
-		delete E_AL_StatusEffects[c];
-	}
+	DeleteStatusEffectsFromAll();
 	//clear all existing ones
 	StatusEffects_TeslarStick();
 	StatusEffects_Ludo();
@@ -193,7 +196,7 @@ void Items_StatusEffectListMenu(int client, int page = -1, bool inPage = false)
 		for(int i; i < length; i++)
 		{
 			AL_StatusEffects.GetArray(i, data);
-			if(data.Positive != view_as<bool>(CategoryPage[client]))
+			if(data.BuffName[0] && data.Positive != view_as<bool>(CategoryPage[client]))
 			{
 				IntToString(i, buffer2, sizeof(buffer2));
 				Format(data.BuffName, sizeof(data.BuffName), "%s\n%s", data.HudDisplay, data.BuffName);
