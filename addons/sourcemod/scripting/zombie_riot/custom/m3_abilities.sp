@@ -323,7 +323,7 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 0;
-				color[3] = 50;
+				color[3] = 75;
 		
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
@@ -477,7 +477,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 				color[0] = 0;
 				color[1] = 255;
 				color[2] = 0;
-				color[3] = 50;
+				color[3] = 75;
 		
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
@@ -1503,7 +1503,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 255;
-				color[3] = 50;
+				color[3] = 75;
 		
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
