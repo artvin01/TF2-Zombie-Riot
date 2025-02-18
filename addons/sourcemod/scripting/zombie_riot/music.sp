@@ -727,7 +727,7 @@ void Music_Update(int client)
 	if(MusicDisabled && !b_IgnoreMapMusic[client])
 		return;
 	
-	if(f_ClientMusicVolume[client] < 0.05)
+	if(!b_DisableSetupMusic[client] && f_ClientMusicVolume[client] < 0.05)
 	{
 		//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
 		if(PrepareMusicVolume[client] == 1.0)
@@ -743,7 +743,7 @@ void Music_Update(int client)
 	}
 
  	//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
-	if(PrepareMusicVolume[client] != 1.0 && PrepareMusicVolume[client])
+	if(!b_DisableSetupMusic[client] && PrepareMusicVolume[client] != 1.0 && PrepareMusicVolume[client])
 	{
 		PrepareMusicVolume[client] -= 0.1;
 		if(PrepareMusicVolume[client] <= 0.0)
@@ -767,7 +767,10 @@ void Music_Update(int client)
 	}
 	if(Waves_InSetup() && (!Waves_Started() || (!Rogue_Mode() && !Construction_Mode())) && !CvarNoRoundStart.BoolValue)
 	{
-		PlaySetupMusicCustom(client);
+		if(!b_DisableSetupMusic[client])
+		{
+			PlaySetupMusicCustom(client);
+		}
 		return;
 	}
 	

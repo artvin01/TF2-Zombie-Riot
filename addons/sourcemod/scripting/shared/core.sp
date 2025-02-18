@@ -527,6 +527,7 @@ float fl_HookDamageTaken[MAXENTITIES];
 float fl_ArmorSetting[MAXENTITIES][3];
 int i_ArmorSetting[MAXENTITIES][2];
 bool b_InteractWithReload[MAXENTITIES];
+bool b_DisableSetupMusic[MAXENTITIES];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 int b_OnDeathExtraLogicNpc[MAXENTITIES];
