@@ -48,12 +48,12 @@ methodmap AnnoyingSpirit < CClotBody
 	}
 	public void PlaySpookSound(int entity) 
 	{
-		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 2.1, GetRandomInt(60, 140));
+		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(60, 140));
 	}
 	
 	public AnnoyingSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
-		AnnoyingSpirit npc = view_as<AnnoyingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "1000000", ally));
+		AnnoyingSpirit npc = view_as<AnnoyingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.0", "1000000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -101,7 +101,6 @@ methodmap AnnoyingSpirit < CClotBody
 		b_thisNpcHasAnOutline[npc.index] = true;
 
 		fl_TotalArmor[npc.index] = 0.1;
-		MakeObjectIntangeable(npc.index);
 		return npc;
 	}
 }
@@ -154,7 +153,7 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_fTimeBefore < GetGameTime(npc.index) && !npc.Anger)
 	{
 		npc.Anger = true;
-		fl_TotalArmor[npc.index] = 2.0;
+		fl_TotalArmor[npc.index] = 1.0;
 	}
 }
 
