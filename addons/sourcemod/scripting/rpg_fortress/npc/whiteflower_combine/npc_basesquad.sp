@@ -660,7 +660,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 					// Ask our squad members if they can see them
 					for(int i; i < count; i++)
 					{
-						BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
+						BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]));
 						if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 						{
 							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))

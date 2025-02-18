@@ -126,7 +126,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
 			{
 				ThereWasSeaborn = true;
@@ -312,7 +312,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int target = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int target = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEnemy(client, target, true, false))
 			{
 				WorldSpaceCenter(target, VicLoc);
@@ -431,7 +431,7 @@ public void Npc_Irene_Launch_client(int client)
 
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int enemy = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEnemy(client, enemy, true, false))
 				{
 					WorldSpaceCenter(enemy, VicLoc);

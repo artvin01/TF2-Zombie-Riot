@@ -143,7 +143,7 @@ public Action Waves_ProgressTimer(Handle timer)
 		// Delay progress if a boss is alive
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entity))
 			{
 				if(GetTeam(entity) == TFTeam_Blue)
@@ -1153,6 +1153,9 @@ void Waves_RoundStart(bool event = false)
 		
 		if(time < 20.0)
 			time = 20.0;
+
+		if(VotingMods && Voting.Length < 2)
+			time = 1.0;
 		
 		VoteEndTime = GetGameTime() + time;
 		CreateTimer(time, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -1271,23 +1274,30 @@ public Action Waves_EndVote(Handle timer, float time)
 			{
 				int high1 = 0;	
 				int high2 = -1;
+				int high3 = -1;
 				for(int i = 1; i < length; i++)
 				{
 					if(votes[i])
 					{
 						if(votes[i] > votes[high1])
 						{
+							high3 = high2;
 							high2 = high1;
 							high1 = i;
 						}
 						else if(high2 == -1 || votes[i] > votes[high2])
 						{
+							high3 = high2;
 							high2 = i;
+						}
+						else if(high3 == -1 || votes[i] > votes[high3])
+						{
+							high3 = i;
 						}
 					}
 				}
 
-				if(high2 != -1 && votes[high2])
+				if(high3 != -1 && votes[high3])
 				{
 					high1 = votes[high2];
 					for(int i = length - 1; i >= 0; i--)
@@ -1377,7 +1387,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				if(VotingMods)
 				{
 					float duration = CanReVote ? 30.0 : 60.0;
-
+					
 					Zero(VotedFor);
 					VoteEndTime = GetGameTime() + duration;
 					CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -1830,7 +1840,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int npc_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int npc_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if (IsValidEntity(npc_index))
 				{
 					if(!b_NpcHasDied[npc_index])
@@ -3180,7 +3190,7 @@ static Action ReadyUpHack(Handle timer)
 bool AlreadySetWaiting = false;
 void Waves_SetReadyStatus(int status)
 {
-	LogStackTrace("Hello!");
+	//LogStackTrace("Hello! -> %d", status);
 	switch(status)
 	{
 		case 0:	// Normal

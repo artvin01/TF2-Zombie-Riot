@@ -719,7 +719,7 @@ public int Skull_GetClosestTarget(int ent, float range)
 	
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int i = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if (!IsValidEntity(i))
 			continue;
 			

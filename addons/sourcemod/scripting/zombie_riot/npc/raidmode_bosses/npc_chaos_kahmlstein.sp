@@ -573,7 +573,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			float Pos[3];
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(entity != INVALID_ENT_REFERENCE && (b_thisNpcIsARaid[entity] && IsEntityAlive(entity) && entity != npc.index))
 				{
 					foundEm = true;

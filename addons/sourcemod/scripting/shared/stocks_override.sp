@@ -580,3 +580,17 @@ stock void Stock_RemoveEntity(int entity)
 }
 
 #define RemoveEntity Stock_RemoveEntity
+
+stock int EntRefToEntIndexFast(int &ref)
+{
+	if(ref == -1)
+		return ref;
+	
+	int entity = EntRefToEntIndex(ref);
+	if(entity == -1)
+		ref = -1;
+	
+	return entity;
+}
+
+//#define EntRefToEntIndex EntRefToEntIndexFast

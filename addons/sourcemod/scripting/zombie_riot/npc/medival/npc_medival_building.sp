@@ -284,7 +284,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			int npc_current_count;
 			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 				if(IsValidEntity(entity) && GetTeam(iNPC) == GetTeam(entity))
 				{
 					npc_current_count += 1;
@@ -457,7 +457,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		bool villagerexists = false;
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 			if (IsValidEntity(entity) && (i_NpcInternalId[entity] == MedivalVillager_ID() || (Citizen_IsIt(entity) && view_as<Citizen>(entity).m_iClassRole == 1)) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;

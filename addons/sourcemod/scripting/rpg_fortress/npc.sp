@@ -201,7 +201,7 @@ void NPCDeath(int entity)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int DeathNoticer = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int DeathNoticer = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if(IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
 		{
 			Function func = func_NPCDeathForward[DeathNoticer];

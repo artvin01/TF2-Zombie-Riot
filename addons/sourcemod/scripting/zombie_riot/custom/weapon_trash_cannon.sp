@@ -508,7 +508,7 @@ public MRESReturn Shock_Explode(int entity)
 
 	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int ent = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		
 		if (IsValidEntity(ent) && !b_NpcHasDied[ent])
 		{
@@ -1236,7 +1236,7 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 	
 	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int ent = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		
 		if (IsValidEntity(ent) && GetTeam(ent) != TFTeam_Red && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
 		{

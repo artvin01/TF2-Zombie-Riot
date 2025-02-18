@@ -256,7 +256,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entity))
 			{
 				char npc_classname[60];
@@ -472,7 +472,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -530,7 +530,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		int FellowBobFound = 0;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -1755,7 +1755,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 			
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != INVALID_ENT_REFERENCE && other != npc.index)
 				{
 					if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -1785,7 +1785,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 	WavesUpdateDifficultyName();
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != INVALID_ENT_REFERENCE && other != npc.index)
 		{
 			if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -1807,7 +1807,7 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 	
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int victim = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(victim != INVALID_ENT_REFERENCE && GetTeam(victim) != TFTeam_Red)
 			SmiteNpcToDeath(victim);
 	}

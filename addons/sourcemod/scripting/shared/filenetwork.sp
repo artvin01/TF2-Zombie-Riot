@@ -242,7 +242,7 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 		char buffer[PLATFORM_MAX_PATH];
 		FormatEx(buffer, sizeof(buffer), "sound/%s", sound);
 		ReplaceString(buffer, sizeof(buffer), "#", "");
-		AddToDownloadsTable(buffer);
+		AddToDownloadsTable(buffer, sound);
 		return;
 	}
 
@@ -296,12 +296,14 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 	}
 }
 
-static void AddToDownloadsTable(const char[] file)
+static void AddToDownloadsTable(const char[] file, const char[] original = "")
 {
 	if(DownloadList.FindString(file) == -1)
 	{
 		AddFileToDownloadsTable(file);
 		DownloadList.PushString(file);
+		if(original[0])
+			DownloadList.PushString(original);
 	}
 }
 

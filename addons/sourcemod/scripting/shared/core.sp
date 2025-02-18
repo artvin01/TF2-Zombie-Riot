@@ -567,7 +567,7 @@ bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
 float f_CreditsOnKill[MAXENTITIES];
 
-int i_InSafeZone[MAXENTITIES];
+int i_InHurtZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_TotalArmor[MAXENTITIES] = {1.0, ...};
@@ -649,7 +649,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "shared/events.sp"
 #endif
 
-#if defined ZR || defined RTS
+#if defined RTS
 #include "shared/rtscamera.sp"
 #endif
 
@@ -1175,9 +1175,6 @@ public Action OnReloadBlockNav(int args)
 
 public void OnGameFrame()
 {
-#if defined ZR
-	NPC_SpawnNext(false, false);
-#endif
 #if defined RPG
 	DoubleJumpGameFrame();
 #endif	
@@ -1391,14 +1388,16 @@ public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, C
 {
 	if(result == ConVarQuery_Okay)
 	{
-		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+		if(StringToInt(cvarValue) == 0)
 		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
-			if(StringToInt(cvarValue) == 0)
+			if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
 			{
+				f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
 				SetGlobalTransTarget(client);
 				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
 			}
+
+			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
 		}
 	}
 }
@@ -2304,7 +2303,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ProjectileCollideIgnoreWorld[entity] = false;
 		i_IsABuilding[entity] = false;
 		b_NpcIgnoresbuildings[entity] = false;
-		i_InSafeZone[entity] = 0;
+		i_InHurtZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;
 		h_NpcSolidHookType[entity] = 0;
 		SetDefaultValuesToZeroNPC(entity);
@@ -2545,9 +2544,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "trigger_hurt")) //npcs think they cant go past this sometimes, lol
 		{
+			b_IsATrigger[entity] = true;
 			b_IsATriggerHurt[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_StartTouch, SDKHook_TriggerHurt_StartTouch);
+			SDKHook(entity, SDKHook_EndTouch, SDKHook_TriggerHurt_EndTouch);
 		}
 		else if(!StrContains(classname, "monster_resource")) //npcs think they cant go past this sometimes, lol
 		{
@@ -2639,23 +2641,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
 		}
-		/*
-		else if(!StrContains(classname, "tf_gamerules_data"))
-		{
-			GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		}
-		*/
-		else if(!StrContains(classname, "trigger_hurt"))
-		{
-			b_IsATrigger[entity] = true;
-			SDKHook(entity, SDKHook_StartTouch, SDKHook_SafeSpot_StartTouch);
-			SDKHook(entity, SDKHook_EndTouch, SDKHook_SafeSpot_EndTouch);
-		}
-		else if(!StrContains(classname, "func_respawnroom"))
-		{
-			SDKHook(entity, SDKHook_StartTouch, SDKHook_RespawnRoom_StartTouch);
-			SDKHook(entity, SDKHook_EndTouch, SDKHook_RespawnRoom_EndTouch);
-		}
 		else if(!StrContains(classname, "point_worldtext"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
@@ -2694,33 +2679,20 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 }
 
-
-public void SDKHook_SafeSpot_StartTouch(int entity, int target)
+public void SDKHook_TriggerHurt_StartTouch(int entity, int target)
 {
-	if(target > 0 && target < sizeof(i_InSafeZone))
+	if(target > 0 && target < sizeof(i_InHurtZone))
 	{
-		i_InSafeZone[target]++;
+		i_InHurtZone[target]++;
 	}
 }
 
-public void SDKHook_SafeSpot_EndTouch(int entity, int target)
+public void SDKHook_TriggerHurt_EndTouch(int entity, int target)
 {
-	if(target > 0 && target < sizeof(i_InSafeZone))
+	if(target > 0 && target < sizeof(i_InHurtZone))
 	{
-		i_InSafeZone[target]--;
+		i_InHurtZone[target]--;
 	}
-}
-
-public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
-{
-	if(target > 0 && target < sizeof(i_InSafeZone) && GetTeam(entity) == GetTeam(target))
-		i_InSafeZone[target]++;
-}
-
-public void SDKHook_RespawnRoom_EndTouch(int entity, int target)
-{
-	if(target > 0 && target < sizeof(i_InSafeZone) && GetTeam(entity) == GetTeam(target))
-		i_InSafeZone[target]--;
 }
 
 public Action SDKHook_Regenerate_StartTouch(int entity, int target)
@@ -2929,7 +2901,7 @@ for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 //Looping function for above!
 for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 {
-	int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+	int entity = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 }
 */
 

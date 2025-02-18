@@ -267,7 +267,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(IsValidEntity(entity) && entity != npc.index)
 		{
 			if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && GetTeam(entity) != team && Can_I_See_Enemy_Only(npc.index, entity))
@@ -288,7 +288,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 	{
 		for(int a; a < i_MaxcountBuilding; a++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+			int entity = EntRefToEntIndexFast(i_ObjectsBuilding[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
 				if(IsValidEnemy(npc.index, entity) && Can_I_See_Enemy_Only(npc.index, entity))

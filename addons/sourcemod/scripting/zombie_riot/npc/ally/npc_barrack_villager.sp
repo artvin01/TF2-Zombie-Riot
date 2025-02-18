@@ -749,7 +749,7 @@ stock int GetClosestBuildingVillager(int entity, float EntityLocation[3], float 
 	int ClosestTarget = 0; 
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 	{
-		int building = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		int building = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 		if(IsValidEntity(building) && GetEntProp(building, Prop_Data, "m_iHealth") < GetEntProp(building, Prop_Data, "m_iMaxHealth"))
 		{
 			if(Can_I_See_Enemy_Only(entity, building))

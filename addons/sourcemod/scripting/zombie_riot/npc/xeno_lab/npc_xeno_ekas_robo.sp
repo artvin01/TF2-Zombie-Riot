@@ -201,7 +201,7 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team && !Is_a_Medic[entity])
 			{
 				ApplyStatusEffect(npc.index, entity, "Hussar's Warscream", 0.5);

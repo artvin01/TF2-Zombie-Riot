@@ -692,7 +692,7 @@ void Music_Stop_All(int client)
 	}
 }
 
-void Music_PostThink(int client)
+void Music_Update(int client)
 {
 	if(LastMann_BeforeLastman && !LastMann)
 	{
@@ -863,7 +863,10 @@ void Music_PostThink(int client)
 
 		// Player disabled ZR Music
 		if(b_DisableDynamicMusic[client] && !LastMann)
+		{
+			SetMusicTimer(client, GetTime() + 3);
 			return;
+		}
 
 		float f_intencity;
 		float targPos[3];
@@ -879,7 +882,7 @@ void Music_PostThink(int client)
 		}
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
@@ -1149,7 +1152,7 @@ public float InterMusic_ByIntencity(int client)
 	GetClientAbsOrigin(client, chargerPos);
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);

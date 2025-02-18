@@ -429,7 +429,7 @@ void SpawnBeheadedKamikaze(DataPack pack)
 		int Kamikazies = 0;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int INpc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int INpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if (IsValidEntity(INpc))
 			{
 				if(!b_NpcHasDied[INpc] && i_NpcInternalId[INpc] == NPCId)

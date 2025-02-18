@@ -136,7 +136,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 			if(id == -3)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -146,7 +146,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -4)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -156,7 +156,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -5)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -166,7 +166,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -6)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -176,7 +176,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -7)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -186,7 +186,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -8)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -196,7 +196,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -9)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;

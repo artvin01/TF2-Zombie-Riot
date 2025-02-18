@@ -210,7 +210,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 			{
 				if(GetTeam(entity) == team)

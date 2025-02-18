@@ -289,7 +289,7 @@ stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
 
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 		{
 			float TargetLocation[3]; 
@@ -709,7 +709,7 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 		static int targets[i_MaxcountNpc];
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				static float TargetLocation[3]; 
