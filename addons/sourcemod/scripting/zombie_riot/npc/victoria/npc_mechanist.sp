@@ -808,7 +808,7 @@ static void Internal_ClotThink(int iNPC)
 			GetAbsOrigin(npc.m_iWearable3, npcpos);
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianAvangard_ID()
 				&& !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 				{

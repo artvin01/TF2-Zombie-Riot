@@ -811,7 +811,7 @@ static void Ruina_Ion_Storm(int iNPC)
 	float rng = 1.0;
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && i_NpcInternalId[entity] != TwirlFollower_ID())
 		{
 			rng+=0.1;
@@ -2264,7 +2264,7 @@ static int i_GetTarget_Lazy_Method(float end_point[3], int Team)
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == Team)
@@ -2288,7 +2288,7 @@ static int i_GetTarget_Lazy_Method(float end_point[3], int Team)
 
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[a]);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
 			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
@@ -2993,7 +2993,7 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entity))
 			{
 				if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)

@@ -1924,6 +1924,16 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-73", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Disable Setup Music");
+	if(b_DisableSetupMusic[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-90", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
@@ -2397,6 +2407,25 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					}
 					SetGlobalTransTarget(client);
 					PrintToChat(client,"%t", "Enable Reload Interact Desc");
+					ReShowSettingsHud(client);
+				}
+				case -90: 
+				{
+					if(b_DisableSetupMusic[client])
+					{
+						b_DisableSetupMusic[client] = false;
+					}
+					else
+					{
+						if(PrepareMusicVolume[client] > 0.0)
+						{
+ 							StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+							PrepareMusicVolume[client] = 0.0;
+							SetMusicTimer(client, GetTime() + 1);	
+						}
+						b_DisableSetupMusic[client] = true;
+					}
+					SetGlobalTransTarget(client);
 					ReShowSettingsHud(client);
 				}
 				case -55: //Show Volume Hud

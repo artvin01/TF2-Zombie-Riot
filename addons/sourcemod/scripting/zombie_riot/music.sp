@@ -263,7 +263,6 @@ static bool MusicDisabled;
 static bool XenoMapExtra;
 static bool AltExtraLogic;
 static int MusicMapRemove[MAXTF2PLAYERS];
-static float PrepareMusicVolume[MAXTF2PLAYERS];
 static float DelayStopSoundAll[MAXTF2PLAYERS];
 
 #define RANGE_FIRST_MUSIC 2250000.0
@@ -693,7 +692,7 @@ void Music_Stop_All(int client)
 	}
 }
 
-void Music_PostThink(int client)
+void Music_Update(int client)
 {
 	if(LastMann_BeforeLastman && !LastMann)
 	{
@@ -728,7 +727,7 @@ void Music_PostThink(int client)
 	if(MusicDisabled && !b_IgnoreMapMusic[client])
 		return;
 	
-	if(f_ClientMusicVolume[client] < 0.05)
+	if(!b_DisableSetupMusic[client] && f_ClientMusicVolume[client] < 0.05)
 	{
 		//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
 		if(PrepareMusicVolume[client] == 1.0)
@@ -743,15 +742,10 @@ void Music_PostThink(int client)
 		return;
 	}
 
-	//if in menu, dont play new music.
-	//but dont kill old music either.
-	if(SkillTree_InMenu(client))
-		return;
-	
  	//	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
-	if(PrepareMusicVolume[client] != 1.0 && PrepareMusicVolume[client])
+	if(!b_DisableSetupMusic[client] && PrepareMusicVolume[client] != 1.0 && PrepareMusicVolume[client])
 	{
-		PrepareMusicVolume[client] -= 0.005;
+		PrepareMusicVolume[client] -= 0.1;
 		if(PrepareMusicVolume[client] <= 0.0)
 		{
  			StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
@@ -761,6 +755,11 @@ void Music_PostThink(int client)
 			EmitSoundToClient(client, "#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, SND_CHANGEVOL, PrepareMusicVolume[client]);
 		}
 	}
+	//if in menu, dont play new music.
+	//but dont kill old music either.
+	if(SkillTree_InMenu(client))
+		return;
+	
 	if(!b_GameOnGoing/* && !CvarNoRoundStart.BoolValue*/)
 	{
 	//	PlaySetupMusicCustom(client);
@@ -768,7 +767,10 @@ void Music_PostThink(int client)
 	}
 	if(Waves_InSetup() && (!Waves_Started() || (!Rogue_Mode() && !Construction_Mode())) && !CvarNoRoundStart.BoolValue)
 	{
-		PlaySetupMusicCustom(client);
+		if(!b_DisableSetupMusic[client])
+		{
+			PlaySetupMusicCustom(client);
+		}
 		return;
 	}
 	
@@ -864,7 +866,10 @@ void Music_PostThink(int client)
 
 		// Player disabled ZR Music
 		if(b_DisableDynamicMusic[client] && !LastMann)
+		{
+			SetMusicTimer(client, GetTime() + 3);
 			return;
+		}
 
 		float f_intencity;
 		float targPos[3];
@@ -880,7 +885,7 @@ void Music_PostThink(int client)
 		}
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
@@ -1150,7 +1155,7 @@ public float InterMusic_ByIntencity(int client)
 	GetClientAbsOrigin(client, chargerPos);
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);

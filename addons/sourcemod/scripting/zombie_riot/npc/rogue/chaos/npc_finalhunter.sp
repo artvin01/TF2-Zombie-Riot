@@ -177,7 +177,7 @@ static void ClotThink(int iNPC)
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					view_as<GogglesFollower>(other).Speech("What the fuck!");
@@ -199,7 +199,7 @@ static void ClotThink(int iNPC)
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					target = other;

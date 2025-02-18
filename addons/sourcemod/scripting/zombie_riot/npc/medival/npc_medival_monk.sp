@@ -578,7 +578,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		BarrackBody npc = view_as<BarrackBody>(Monk);
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && GetTeam(entity_close) != TFTeam_Red)
 			{
 				static float pos2[3];
@@ -598,7 +598,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		static float pos2[3];
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close])
 			{
 				if(!NpcStats_IsEnemySilenced(Monk) && GetTeam(entity_close) != TFTeam_Red && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close])
@@ -640,7 +640,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		}
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 			if(IsValidEntity(entity_close))
 			{
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);

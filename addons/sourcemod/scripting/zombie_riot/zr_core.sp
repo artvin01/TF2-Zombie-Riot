@@ -902,8 +902,7 @@ void ZR_MapStart()
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
-	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.1, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	RemoveAllCustomMusic();
 	
@@ -950,6 +949,14 @@ public void OnMapInit()
 
 public Action GlobalTimer(Handle timer)
 {
+	static int frame;
+	frame++;
+// Due to how fast spawns are, it has to be on game frame.
+//	NPC_SpawnNext(false, false);
+
+	if(frame % 5)
+		return Plugin_Continue;
+	
 	bool ForceMusicStopAndReset = false;
 	if(f_AllowInstabuildRegardless && f_AllowInstabuildRegardless < GetGameTime())
 	{
@@ -965,24 +972,20 @@ public Action GlobalTimer(Handle timer)
 				Music_Stop_All(client);
 				SetMusicTimer(client, GetTime() + 2);
 			}
+			else
+			{
+				Music_Update(client);
+			}
+			
 			PlayerApplyDefaults(client);
 		}
 	}
 	
-	static int frame;
-	frame++;
-	if(frame % 4)
+	if(frame % 20)
 		return Plugin_Continue;
-
+	
 	Zombie_Delay_Warning();
 	Spawners_Timer();
-	return Plugin_Continue;
-}
-public Action GetTimerAndNullifyMusicMVM_Timer(Handle timer)
-{
-	if(GameRules_GetRoundState() == RoundState_BetweenRounds)
-		GetTimerAndNullifyMusicMVM();
-		
 	return Plugin_Continue;
 }
 
@@ -1895,7 +1898,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				Zero(delay_hud); //Allow the hud to immedietly update
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 					{
 						FreezeNpcInTime(entity, 3.0, true);
@@ -2554,7 +2557,10 @@ void GiveXP(int client, int xp)
 				Store_PrintLevelItems(client, Level[client]);
 			}
 			if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
+			{
+				SkillTree_CalcSkillPoints(client);
 				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
+			}
 		}
 	}
 }
@@ -2797,28 +2803,6 @@ stock bool isPlayerMad(int client) {
 		return g_isPlayerInDeathMarch_HellHoe[client];
 	}
 	return false;
-}
-
-
-stock void GetTimerAndNullifyMusicMVM()
-{
-	return;
-/*
-	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
-
-	if(!IsValidEntity(EntityTimerWhat))
-		return;
-	
-	int Time = RoundToNearest(GetEntPropFloat(EntityTimerWhat, Prop_Send, "m_flRestartRoundTime") - GetGameTime());
-	if(Time > 8 && Time <= 12)
-	{
-		SetEntPropFloat(EntityTimerWhat ,Prop_Send, "m_flRestartRoundTime", GetGameTime() + 8.0);
-	}
-	else
-	{
-		return;
-	}
-	*/
 }
 
 bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)

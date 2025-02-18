@@ -3424,6 +3424,10 @@
 	{
 		"en" 	"Interact With Reload"
 	}
+	"Disable Setup Music"
+	{
+		"en" 	"Disable Setup Music"
+	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"

@@ -414,7 +414,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		ZR_NpcTauntWinClear();
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				SetTeam(baseboss_index, TFTeam_Red);
@@ -604,7 +604,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		bool allyAlive = false;
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && GetTeam(npc.index) == GetTeam(baseboss_index))
 			{
 				allyAlive = true;
@@ -1568,7 +1568,7 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 		}
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity_close))
 			{
 				if(IsValidEnemy(npc.index, entity_close))
@@ -1719,7 +1719,7 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 			}
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 			{
-				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity_close))
 				{
 					if(IsValidEnemy(npc.index, entity_close))

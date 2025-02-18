@@ -74,8 +74,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
 		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
+		
+		float ScalingEnemies = ZRStocks_PlayerScalingDynamic();
+		if(ScalingEnemies >= 14.0)
+			ScalingEnemies = 14.0;
+			//above 14, dont spawn more, it just is not worth the extra lag it gives.
 
-		float f_limit = Pow(1.115, ZRStocks_PlayerScalingDynamic());
+		float f_limit = Pow(1.115, ScalingEnemies);
 
 		f_limit *= float(limit);
 
@@ -145,7 +150,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		{
 			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 				if(IsValidEntity(entity))
 				{
 					if(GetTeam(entity) != TFTeam_Red)
@@ -1216,34 +1221,38 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		}
 		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
-
-		Event event = CreateEvent("npc_hurt");
-		if(event) 
+		//Do not show this event if they are attacked with DOT. Earls bleedin.
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
-			int display = RoundToFloor(Damageaftercalc);
-			while(display > 32000)
+			Event event = CreateEvent("npc_hurt");
+			if(event) 
 			{
-				display /= 10;
-			}
+				int display = RoundToFloor(Damageaftercalc);
+				while(display > 32000)
+				{
+					display /= 10;
+				}
 
-			event.SetInt("entindex", victim);
-			event.SetInt("health", health);
-			event.SetInt("damageamount", display);
-			event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
+				event.SetInt("entindex", victim);
+				event.SetInt("health", health);
+				event.SetInt("damageamount", display);
+				event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
 
-			if(attacker > 0 && attacker <= MaxClients)
-			{
-				event.SetInt("attacker_player", GetClientUserId(attacker));
-				event.SetInt("weaponid", 0);
-			}
-			else 
-			{
-				event.SetInt("attacker_player", 0);
-				event.SetInt("weaponid", 0);
-			}
+				if(attacker > 0 && attacker <= MaxClients)
+				{
+					event.SetInt("attacker_player", GetClientUserId(attacker));
+					event.SetInt("weaponid", 0);
+				}
+				else 
+				{
+					event.SetInt("attacker_player", 0);
+					event.SetInt("weaponid", 0);
+				}
 
-			event.Fire();
+				event.Fire();
+			}
 		}
+		
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 6.0;
 
@@ -1470,7 +1479,7 @@ void HudDamageIndicator(int client,int damagetype, bool wasattacker)
 }
 stock bool Calculate_And_Display_HP_Hud(int attacker)
 {
-	int victim = EntRefToEntIndex(i_HudVictimToDisplay[attacker]);
+	int victim = EntRefToEntIndexFast(i_HudVictimToDisplay[attacker]);
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 	{
 		if(!IsValidClient(victim))
@@ -1547,10 +1556,10 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			blue = 255;
 		}
 	}
-	char Debuff_Adder_left[64];
-	char Debuff_Adder_right[64];
-	char Debuff_Adder[64];
-	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right);
+
+	static char Debuff_Adder_left[64], Debuff_Adder_right[64], Debuff_Adder[64];
+	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
+	Debuff_Adder[0] = 0;
 	
 #if defined ZR
 	float GameTime = GetGameTime();
@@ -1675,7 +1684,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 		if(percentage_ranged != 100.0 && !b_NpcIsInvulnerable[victim])	
 		{
-			char NumberAdd[32];
+			static char NumberAdd[32];
 			if(ResAdded)
 			{
 				if(percentage_ranged < 10.0)
@@ -1754,7 +1763,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 #endif	// ZR
 
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		char ExtraHudHurt[255];
+		static char ExtraHudHurt[255];
 		
 #if defined ZR
 		if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
@@ -1766,8 +1775,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 		//add name and health
 		//add name and health
-		char c_Health[255];
-		char c_MaxHealth[255];
+		static char c_Health[64];
+		static char c_MaxHealth[64];
 		IntToString(Health,c_Health, sizeof(c_Health));
 		IntToString(MaxHealth,c_MaxHealth, sizeof(c_MaxHealth));
 
@@ -1808,7 +1817,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		char c_DmgDelt[255];
+		static char c_DmgDelt[64];
 		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
 		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
 		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
@@ -1844,7 +1853,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		SetGlobalTransTarget(attacker);
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		//todo: better showcase of timer.
-		char ExtraHudHurt[255];
+		static char ExtraHudHurt[168];
 
 
 		//what type of boss
@@ -1872,8 +1881,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		}
 		
 		//add name and health
-		char c_Health[255];
-		char c_MaxHealth[255];
+		static char c_Health[64];
+		static char c_MaxHealth[64];
 		IntToString(Health,c_Health, sizeof(c_Health));
 		IntToString(MaxHealth,c_MaxHealth, sizeof(c_MaxHealth));
 
@@ -1885,7 +1894,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		if(npc.m_flArmorCount > 0.0)
 		{
 			int ArmorInt = RoundToNearest(npc.m_flArmorCount);
-			char c_Armor[255];
+			static char c_Armor[64];
 			IntToString(ArmorInt,c_Armor, sizeof(c_Armor));
 			//has armor? Add extra.
 			int offsetarm = ArmorInt < 0 ? 1 : 0;
@@ -1909,7 +1918,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		char c_DmgDelt[255];
+		static char c_DmgDelt[64];
 		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
 		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
 		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
@@ -2014,9 +2023,9 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
-	char BufferTest1[64];
-	char BufferTest2[64];
-	EntityBuffHudShow(npc, client, BufferTest1, BufferTest2);
+	static char BufferTest1[1];
+	static char BufferTest2[1];
+	EntityBuffHudShow(npc, client, BufferTest1, BufferTest2, sizeof(BufferTest1));
 	if(BufferTest1[0] || BufferTest2[0])
 		return true;
 

@@ -220,23 +220,45 @@ void ViewChange_PlayerModel(int client)
 		{
 			if(i_HealthBeforeSuit[client] == 0)
 			{
+				int index;
+				int sound = -1;
+				int body = -1;
+				bool anim;
+
 				if(i_PlayerModelOverrideIndexWearable[client] >= 0 && i_PlayerModelOverrideIndexWearable[client] < sizeof(PlayerModelsCustom))
 				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", CustomIndex[i_PlayerModelOverrideIndexWearable[client]]);
-
-					SetVariantString(Viewchanges_PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]] ? PlayerModelsCustom[i_PlayerModelOverrideIndexWearable[client]] : NULL_STRING);
-					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
-					
-					i_CustomModelOverrideIndex[client] = i_PlayerModelOverrideIndexWearable[client];
-					SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
-					SetEntProp(client, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+					index = CustomIndex[i_PlayerModelOverrideIndexWearable[client]];
+					sound = i_PlayerModelOverrideIndexWearable[client];
+					body = PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]];
+					anim = Viewchanges_PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]];
 				}
 				else
 				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+					index = PlayerIndex[CurrentClass[client]];
+				}
 
+				Native_OnClientWorldmodel(client, CurrentClass[client], index, sound, body, anim);
+
+				SetEntProp(entity, Prop_Send, "m_nModelIndex", index);
+
+				if(anim)
+				{
+					static char model[PLATFORM_MAX_PATH];
+					ModelIndexToString(index, model, sizeof(model));
+					SetVariantString(model);
+				}
+				else
+				{
 					SetVariantString(NULL_STRING);
-					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+				}
+
+				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+				i_CustomModelOverrideIndex[client] = sound;
+
+				if(body != -1)
+				{
+					SetEntProp(entity, Prop_Send, "m_nBody", body);
+					SetEntProp(client, Prop_Send, "m_nBody", body);
 				}
 			}
 			else

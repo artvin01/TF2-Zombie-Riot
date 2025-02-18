@@ -1374,7 +1374,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 #if !defined RTS
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		int baseboss_index_allied = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
@@ -1393,7 +1393,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	{
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++)
 		{
-			int baseboss = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			int baseboss = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TFTeam_Red)
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;

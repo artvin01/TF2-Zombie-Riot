@@ -197,7 +197,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 						
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 						if (IsValidEntity(baseboss_index))
 						{
 							if(!b_NpcHasDied[baseboss_index])
@@ -1870,10 +1870,11 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 }
 
 
-void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right)
+void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right, int SizeOfChar = 64)
 {
+	Debuff_Adder_left[0] = 0;
+	Debuff_Adder_right[0] = 0;
 	//This hud is for debuffs thats shared between players and enemies
-	int SizeOfChar = 64;
 	
 	//These buffs/Debuffs stay how they are for the foreseeable future.
 	if(BleedAmountCountStack[victim] > 0)

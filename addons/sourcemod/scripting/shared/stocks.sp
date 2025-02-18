@@ -429,6 +429,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 
 	for(int repeat; repeat < repeatsretry; repeat++)
 	{
+		delete hTrace;
 		if(!ignore_allied_npc)
 		{
 			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
@@ -446,7 +447,6 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 		if(repeat == 0)
 		{
-			delete hTrace;
 			if(repeatsretry >= 2)
 				i_PreviousInteractedEntity[iClient] = -1; //didnt find any
 		}
@@ -4128,8 +4128,7 @@ stock bool IsPointHazard(const float pos1[3])
 }
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
-	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	if(b_IsATrigger[entity])
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -4164,7 +4163,7 @@ stock bool IsPointNoBuild(const float pos1[3],const float mins[3],const float ma
 public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int client)
 {
 	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && (!StrContains(classname, "trigger_hurt") ||!StrContains(classname, "func_nobuild")))
+	if(b_IsATriggerHurt[entity] || (GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "func_nobuild")))
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -5470,7 +5469,7 @@ stock int FindEntityByNPC(int &i)
 {
 	for(; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != -1 && !b_NpcHasDied[entity])
 		{
 			i++;

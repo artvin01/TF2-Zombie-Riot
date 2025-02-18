@@ -153,7 +153,7 @@ static void ClotThink(int iNPC)
 		bool stop_thinking;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != -1 && i_NpcInternalId[other] == OmegaRaidNpcID() && IsEntityAlive(other))
 			{
 					npc.m_iTarget = other;

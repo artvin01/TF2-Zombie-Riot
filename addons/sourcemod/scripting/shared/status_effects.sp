@@ -160,17 +160,20 @@ void Items_StatusEffectListMenu(int client, int page = -1, bool inPage = false)
 		char buffer2[400];
 		char buffer3[400];
 		FormatEx(buffer, sizeof(buffer), "%s Desc", data.BuffName);
-		if(TranslationPhraseExists(buffer))
+		if(data.BuffName[0])
 		{
-			Format(buffer, sizeof(buffer), "%t", buffer);
-			if(data.ElementalLogic)
-				Format(buffer3, sizeof(buffer3), "%t", "Is Elemental");
+			if(TranslationPhraseExists(buffer))
+			{
+				Format(buffer, sizeof(buffer), "%t", buffer);
+				if(data.ElementalLogic)
+					Format(buffer3, sizeof(buffer3), "%t", "Is Elemental");
 
-			menu.SetTitle("%s\n%t\n \n%s\n%s\n", data.HudDisplay, data.BuffName, buffer, buffer3);
-		}
-		else
-		{
-			menu.SetTitle("%s\n%t\n ", data.HudDisplay, data.BuffName);
+				menu.SetTitle("%s\n%t\n \n%s\n%s\n", data.HudDisplay, data.BuffName, buffer, buffer3);
+			}
+			else
+			{
+				menu.SetTitle("%s\n%t\n ", data.HudDisplay, data.BuffName);
+			}
 		}
 		
 		IntToString(page, buffer2, sizeof(buffer2));
@@ -386,8 +389,7 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
 	//No debuffs or status effects, skip.
-	int length = E_AL_StatusEffects[victim].Length;
-	for(int i; i<length; i++)
+	for(int i; i<E_AL_StatusEffects[victim].Length; i++)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
@@ -395,7 +397,6 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		{
 			E_AL_StatusEffects[victim].Erase(i);
 			i--;
-			length--;
 			continue;
 		}
 		//They do not have a buffname, this means that it can break other things depending on this!
@@ -408,7 +409,6 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 			E_AL_StatusEffects[victim].Erase(i);
 			i--;
-			length--;
 			continue;
 		}
 		else if(Apply_MasterStatusEffect.Positive && RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
@@ -416,11 +416,10 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 			E_AL_StatusEffects[victim].Erase(i);
 			i--;
-			length--;
 			continue;
 		}
 	}
-	if(length < 1)
+	if(E_AL_StatusEffects[victim].Length < 1)
 		delete E_AL_StatusEffects[victim];
 }
 void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration, int IndexID = -1)
@@ -3440,7 +3439,7 @@ void PotionHudDisplay_Func(int attacker, int victim, StatusEffect Apply_MasterSt
 }
 void OsmosisHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	if(attacker < 0 && attacker > MaxClients)
+	if(attacker < 0 || attacker > MaxClients)
 		return;
 
 #if defined ZR

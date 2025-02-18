@@ -445,7 +445,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entitynpc = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entitynpc))
 			{
 				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))

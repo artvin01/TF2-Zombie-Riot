@@ -146,7 +146,7 @@ static bool IsClosestRemain(int thisEntity)
 	float dist2 = FAR_FUTURE;
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == RemainsID && IsEntityAlive(entity))
 		{
 			float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);

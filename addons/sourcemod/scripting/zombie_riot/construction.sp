@@ -505,7 +505,7 @@ static Action Timer_StartAttackWave(Handle timer)
 	// Clear out existing enemies
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) != TFTeam_Red)
@@ -720,7 +720,7 @@ static int GetBaseBuilding()
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == BaseBuilding_ID() && IsEntityAlive(entity))
 			return entity;
 	}

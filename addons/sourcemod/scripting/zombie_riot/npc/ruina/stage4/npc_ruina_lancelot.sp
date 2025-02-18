@@ -295,7 +295,7 @@ static void Equalize_HP(Lancelot npc, int &attacker, int &inflictor, float &dama
 	{
 		if(i > 9)
 			break;	//somehow more then 10 lancelot's exist, abort.
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
 			if(baseboss_index == npc.index)
@@ -326,7 +326,7 @@ static bool Lancelot_Leader(Lancelot npc)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
 			if(b_leader[baseboss_index])

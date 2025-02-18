@@ -524,7 +524,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 				}
 				for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 				{
-					int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+					int baseboss_index_allied = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 					if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 					{
 						if(!b_ThisEntityIgnored[baseboss_index_allied])
@@ -572,7 +572,7 @@ public void ReconstructiveTeleporter(int client)
 		bool IsLiveBarrackUnits=false;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(ally) && !b_NpcHasDied[ally] && !i_IsABuilding[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				char npc_classname[60];
@@ -1178,7 +1178,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 						int mountedentity = EntRefToEntIndex(Building_Mounted[client]);
 						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 						{
-							int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+							int entity = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 							if(IsValidEntity(entity) && entity != 0)
 							{
 								if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client && mountedentity != entity)
@@ -1517,7 +1517,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				CurrentMetal *= 5;
 				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 				{
-					int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+					int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
 						GetEntPropVector(entity_close, Prop_Data, "m_vecOrigin", client_pos);
@@ -1785,7 +1785,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 			float entitypos[3], distance;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);

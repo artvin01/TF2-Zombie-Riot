@@ -1428,10 +1428,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_ThisWasAnNpc[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_ThisWasAnNpc[this.index] = TempValueForProperty; }
 	}
-	property bool m_bInSafeZone
-	{
-		public get()							{ return view_as<bool>(i_InSafeZone[this.index]); }
-	}
 	
 	property bool m_bAllowBackWalking
 	{
@@ -3306,7 +3302,7 @@ static void OnCreate(CClotBody body)
 {
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(!IsValidEntity(entity))
 		{
 			body.SetProp(Prop_Data, "zr_pPath", view_as<int>(g_NpcPathFollower[entitycount]));
@@ -3319,7 +3315,7 @@ static void OnCreate_Stationary(CClotBody body)
 {
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(!IsValidEntity(entity))
 		{
 			i_ObjectsNpcsTotal[entitycount] = EntIndexToEntRef(body.index);
@@ -3332,7 +3328,7 @@ void RemoveFromNpcPathList(CClotBody body)
 {
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(entity == body.index)
 		{
 			body.SetProp(Prop_Data, "zr_pPath", 0);
@@ -5074,7 +5070,7 @@ stock int GetClosestTarget(int entity,
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != SearcherNpcTeam)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
@@ -5126,7 +5122,7 @@ stock int GetClosestTarget(int entity,
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != GetTeam(entity))
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
@@ -6130,24 +6126,22 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 		{
 			f_StuckOutOfBoundsCheck[iNPC] = GameTime + 10.0;
 			//If NPCs some how get out of bounds
-			static float flMyPos[3];
-			GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-			static float flMyPos_Bounds[3];
-			flMyPos_Bounds = flMyPos;
-			flMyPos_Bounds[2] += 1.0;
-			static float hullcheckmaxs_Player[3];
-			static float hullcheckmins_Player[3];
-			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
 			bool OutOfBounds = false;
-			if(IsBoxHazard(flMyPos_Bounds, hullcheckmins_Player, hullcheckmaxs_Player))
+			if(i_InHurtZone[iNPC])
 			{
 				OutOfBounds = true;
 			}
-			if(TR_PointOutsideWorld(flMyPos_Bounds))
+			else
 			{
-				OutOfBounds = true;
+				static float flMyPos[3];
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+				flMyPos[2] += 1.0;
+				if(TR_PointOutsideWorld(flMyPos))
+				{
+					OutOfBounds = true;
+				}
 			}
+
 			if(OutOfBounds)
 			{
 				TeleportNpcToRandomPlayer(iNPC);
@@ -9904,7 +9898,7 @@ void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)
 	//set to red just incase!
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(npc))
 		{
 			if(npc == entity_close)
@@ -10247,36 +10241,6 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 	return false;
 }
 
-stock void EntityIsInHazard_Teleport(int entity)
-{
-	float AbsOrigin[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
-	static float hullcheckmaxs_Player[3];
-	static float hullcheckmins_Player[3];
-	hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-	hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );		
-	if(b_IsGiant[entity])
-	{
-		hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
-		hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
-	}
-	else
-	{
-		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
-	}
-	/*
-	if(b_NpcResizedForCrouch[entity])
-	{
-		hullcheckmaxs_Player[2] = 41.0;
-	}	
-	*/	
-	if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
-	{
-		TeleportBackToLastSavePosition(entity);
-	}
-}
-
 public void TeleportBackToLastSavePosition(int entity)
 {
 	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
@@ -10315,7 +10279,7 @@ public void SaveLastValidPositionEntity(int entity)
 			return;
 
 		//am i on the ground? If not, then dont save.
-		bool SavePosition = true;
+		/*bool SavePosition = true;
 		if (!(GetEntityFlags(entity) & FL_ONGROUND))
 		{
 			SavePosition = false;
@@ -10333,16 +10297,20 @@ public void SaveLastValidPositionEntity(int entity)
 			}
 		}
 		
-		float AbsOrigin[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );
+		
 		b_AntiSlopeCamp[entity] = false;
 		//Make sure they arent on a slope!
 		if(!SavePosition)
 		{
+			static float hullcheckmaxs_Player[3];
+			static float hullcheckmins_Player[3];
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+
 			float AbsOrigin_after[3];
 			AbsOrigin_after = AbsOrigin;
 			AbsOrigin_after[2] -= 5.0;
@@ -10361,9 +10329,14 @@ public void SaveLastValidPositionEntity(int entity)
 			}
 			return;
 		}
+		slope camp isnt needed as it checks for valid navs anyways
+		*/
 	
-		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
+		if(i_InHurtZone[entity])
 			return;
+
+		float AbsOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 
 		//This should be a safe space for us to save the location for later teleporting.
 		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;
@@ -10377,23 +10350,11 @@ public void SaveLastValidPositionEntity(int entity)
 		if (!npc.IsOnGround())
 			return;
 			
-		float AbsOrigin[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
-		static float hullcheckmaxs_Player[3];
-		static float hullcheckmins_Player[3];
-		if(b_IsGiant[entity])
-		{
-			hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
-			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
-		}
-		else
-		{
-			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
-		}
-		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
+		if(i_InHurtZone[entity])
 			return;
 
+		float AbsOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 		//This should be a safe space for us to save the location for later teleporting.
 		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;		
 	}

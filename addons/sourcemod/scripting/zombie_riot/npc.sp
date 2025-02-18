@@ -1083,7 +1083,7 @@ void ZR_NpcTauntWinClear()
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
@@ -1095,7 +1095,7 @@ void ZR_NpcTauntWin()
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			Function func = func_NPCFuncWin[baseboss_index];
@@ -1156,7 +1156,7 @@ void NPCDeath(int entity)
 	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int DeathNoticer = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int DeathNoticer = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
 		{
 			Function func = func_NPCDeathForward[DeathNoticer];
