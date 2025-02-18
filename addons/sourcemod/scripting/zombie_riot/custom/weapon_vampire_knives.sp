@@ -156,7 +156,7 @@ public void Vamp_ActivateThrow(int client, int weapon, int pap, bool cleaver)
 		float DMG_Final = 65 * DMGMult;
 		DMG_Final *= Attributes_Get(weapon, 1, 1.0);
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
-		DMG_Final *= Attributes_Get(weapon, 1000, 1.0);
+	//	DMG_Final *= Attributes_Get(weapon, 1000, 1.0);
 
 		if(cleaver)
 			DMG_Final *= 0.85;
@@ -440,7 +440,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	if (IsValidEntity(weapon))
 	{
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
-		DMG_Final *= Attributes_Get(weapon, 1000, 1.0);
+	//	DMG_Final *= Attributes_Get(weapon, 1000, 1.0);
 	}
 	
 	if (DMG_Final > MaxDMG)
