@@ -692,7 +692,7 @@ void Music_Stop_All(int client)
 	}
 }
 
-void Music_PostThink(int client)
+void Music_Update(int client)
 {
 	if(LastMann_BeforeLastman && !LastMann)
 	{
@@ -863,7 +863,10 @@ void Music_PostThink(int client)
 
 		// Player disabled ZR Music
 		if(b_DisableDynamicMusic[client] && !LastMann)
+		{
+			SetMusicTimer(client, GetTime() + 3);
 			return;
+		}
 
 		float f_intencity;
 		float targPos[3];

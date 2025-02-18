@@ -972,6 +972,11 @@ public Action GlobalTimer(Handle timer)
 				Music_Stop_All(client);
 				SetMusicTimer(client, GetTime() + 2);
 			}
+			else
+			{
+				Music_Update(client);
+			}
+			
 			PlayerApplyDefaults(client);
 		}
 	}
