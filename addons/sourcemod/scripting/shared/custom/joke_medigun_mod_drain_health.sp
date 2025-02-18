@@ -252,7 +252,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
 				PrintHintText(owner,"Medigun Fluid Capacity: %iml", new_ammo + 1);
-				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
@@ -510,7 +509,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						PrintHintText(owner,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
 					}
-					StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 					medigun_hud_delay[owner] = GetGameTime() + 0.5;
 				}
 			}

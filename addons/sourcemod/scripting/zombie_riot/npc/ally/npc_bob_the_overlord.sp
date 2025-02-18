@@ -1796,7 +1796,6 @@ public Action Bob_player_killed(Event hEvent, const char[] sEvName, bool bDontBr
 		//	NPCDeath(npc.index);
 			SetGlobalTransTarget(victim);
 			PrintHintText(victim, "%t %t","Bob The Second:", "This can't be...");
-			StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
 			
 		}
 	}
@@ -1828,14 +1827,12 @@ public Action BobTheGod_Owner_Hurt(int victim, int &attacker, int &inflictor, fl
 		npc.m_flHurtie = GetGameTime(npc.index) + 0.50;
 		SetGlobalTransTarget(victim);
 		PrintHintText(victim, "%t %t","Bob The Second:", "I will protect you!");
-		StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	else if(npc.m_flHurtie < GetGameTime(npc.index) && npc.m_bIsFriendly)
 	{
 		npc.m_flHurtie = GetGameTime(npc.index) + 0.50;
 		SetGlobalTransTarget(victim);
 		PrintHintText(victim, "%t %t","Bob The Second:", "You told me to be friendly.");
-		StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	return Plugin_Changed;
 }

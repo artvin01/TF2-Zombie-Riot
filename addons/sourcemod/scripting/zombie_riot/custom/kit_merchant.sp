@@ -550,13 +550,11 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 					{
 						SetGlobalTransTarget(attacker);
 						PrintHintText(attacker, "%t", "You healed for", target, RoundToNearest(healing));
-						StopSound(attacker, SNDCHAN_STATIC, "UI/hint.wav");
 					}
 					else
 					{
 						SetGlobalTransTarget(attacker);
 						PrintHintText(attacker, "%t", "You healed for NpcName", c_NpcName[target], RoundToNearest(healing));
-						StopSound(attacker, SNDCHAN_STATIC, "UI/hint.wav");
 					}
 				}
 
