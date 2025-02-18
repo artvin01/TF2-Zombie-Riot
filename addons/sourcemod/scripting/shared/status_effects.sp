@@ -3440,7 +3440,7 @@ void PotionHudDisplay_Func(int attacker, int victim, StatusEffect Apply_MasterSt
 }
 void OsmosisHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	if(attacker < 0 && attacker > MaxClients)
+	if(attacker < 0 || attacker > MaxClients)
 		return;
 
 #if defined ZR

@@ -10338,7 +10338,8 @@ public void SaveLastValidPositionEntity(int entity)
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );
+		/*
 		b_AntiSlopeCamp[entity] = false;
 		//Make sure they arent on a slope!
 		if(!SavePosition)
@@ -10361,6 +10362,8 @@ public void SaveLastValidPositionEntity(int entity)
 			}
 			return;
 		}
+		slope camp isnt needed as it checks for valid navs anyways
+		*/
 	
 		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
 			return;

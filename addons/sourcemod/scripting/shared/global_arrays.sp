@@ -129,7 +129,7 @@ float i_WasInResPowerup[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
-ConVar CvarAirAcclerate; //sv_airaccelerate
+//ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
 #endif
@@ -175,7 +175,7 @@ int i_HudVictimToDisplay[MAXTF2PLAYERS];
 #endif
 
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
-bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
+//bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_ClientConnectTime[MAXENTITIES];	
 float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
