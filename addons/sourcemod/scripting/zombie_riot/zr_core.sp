@@ -951,8 +951,8 @@ public Action GlobalTimer(Handle timer)
 {
 	static int frame;
 	frame++;
-
-	NPC_SpawnNext(false, false);
+// Due to how fast spawns are, it has to be on game frame.
+//	NPC_SpawnNext(false, false);
 
 	if(frame % 5)
 		return Plugin_Continue;

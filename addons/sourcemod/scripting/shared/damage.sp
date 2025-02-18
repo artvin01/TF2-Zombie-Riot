@@ -1870,12 +1870,11 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 }
 
 
-void EntityBuffHudShow(int victim, int attacker, char Debuff_Adder_left[64], char Debuff_Adder_right[64])
+void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right, int SizeOfChar = 64)
 {
 	Debuff_Adder_left[0] = 0;
 	Debuff_Adder_right[0] = 0;
 	//This hud is for debuffs thats shared between players and enemies
-	int SizeOfChar = 64;
 	
 	//These buffs/Debuffs stay how they are for the foreseeable future.
 	if(BleedAmountCountStack[victim] > 0)

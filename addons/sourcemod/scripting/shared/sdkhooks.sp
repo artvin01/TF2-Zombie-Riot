@@ -1141,7 +1141,7 @@ public void OnPostThink(int client)
 		static char Debuff_Adder_left[64];
 		static char Debuff_Adder_right[64];
 		static char Debuff_Adder[64];
-		EntityBuffHudShow(client, -1, Debuff_Adder_left, Debuff_Adder_right);
+		EntityBuffHudShow(client, -1, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
 
 		if(Debuff_Adder_left[0])
 		{

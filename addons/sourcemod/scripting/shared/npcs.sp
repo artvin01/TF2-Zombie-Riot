@@ -1554,7 +1554,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 	}
 
 	static char Debuff_Adder_left[64], Debuff_Adder_right[64], Debuff_Adder[64];
-	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right);
+	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
 	Debuff_Adder[0] = 0;
 	
 #if defined ZR
@@ -2019,9 +2019,9 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
-	static char BufferTest1[64];
-	static char BufferTest2[64];
-	EntityBuffHudShow(npc, client, BufferTest1, BufferTest2);
+	static char BufferTest1[1];
+	static char BufferTest2[1];
+	EntityBuffHudShow(npc, client, BufferTest1, BufferTest2, sizeof(BufferTest1));
 	if(BufferTest1[0] || BufferTest2[0])
 		return true;
 
