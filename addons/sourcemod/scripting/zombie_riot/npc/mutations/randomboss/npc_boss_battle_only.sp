@@ -156,8 +156,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_god_alaxios";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60;res3");
 			
-			enemy.ExtraDamage *= 1.15;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
+			enemy.ExtraDamage *= 0.9;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
 		}
 		case 5:
 		{
@@ -326,7 +326,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			//Hes very unbalanced for now, block. , cus of minions.
 			PluginName = "npc_lelouch";	
 			
-			enemy.ExtraDamage *= 0.45;
+			enemy.ExtraDamage *= 0.25;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 0.45); 
 			
 		}
