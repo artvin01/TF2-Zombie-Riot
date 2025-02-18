@@ -217,7 +217,7 @@ public Action Timer_Management_Survival(Handle timer, DataPack pack)
 				}							
 			}
 
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_KnifeHudDelay[client] = GetGameTime() + 0.5;
 		}
 	}

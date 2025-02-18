@@ -1438,7 +1438,7 @@ void VoidTimerHudShow(int client)
 		FormatEx(SensalHud, sizeof(SensalHud), "Shield Charge [%.0f％]", f_VoidShieldTillCharge[client] * 100.0);		
 		FormatEx(SensalHud, sizeof(SensalHud), "%s\nShields [%i / %i]",SensalHud, i_VoidCurrentShields[client], MAX_VOID_SHIELD_ALLOW);		
 		PrintHintText(client, "%s", SensalHud);
-		StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+		
 	}
 }
 

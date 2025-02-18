@@ -234,7 +234,7 @@ public Action TimerMercHuman_Transform(Handle timer, DataPack pack)
 			Format(LeperHud, sizeof(LeperHud), "Spirit Stength");
 		}
 		PrintHintText(client,"%s",LeperHud);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 	return Plugin_Continue;
 }

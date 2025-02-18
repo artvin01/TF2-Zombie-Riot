@@ -300,7 +300,7 @@ static void Fantasy_Show_Hud(int client, float GameTime, int pap)
 		
 	}
 	
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 static void Get_Fake_Forward_Vec(int client, float Range, float Vec_Target[3])

@@ -148,7 +148,7 @@ static void Laz_Laser_Tick(int client)
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "The Laser Cannon's Core has overheated!");
 			PrintHintText(client,"CORE OVERHEAT");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			SDKUnhook(client, SDKHook_PreThink, Laz_Laser_Tick);
 
 			fl_overheat_timer[client] = GameTime + 7.5;
@@ -173,7 +173,7 @@ static void Laz_Laser_Tick(int client)
 		{
 			fl_hud_timer[client] = GameTime + 0.5;
 			PrintHintText(client, HUDText);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 	}
 

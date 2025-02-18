@@ -400,7 +400,7 @@ static Action Cosmic_Heat_Tick(int client)
 		{
 			PrintHintText(client,"Cooling: [%i%%%%%%%]", Heat);
 		}
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		int pitch = 25+Heat;
 		EmitSoundToClient(client, SND_CLIENT_COSMIC_TERROR_OVERHEAT_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.5, pitch);
 	}
@@ -469,7 +469,7 @@ static void Cosmic_Terror_Charging(int client, float gametime)
 	if(Cosmic_Terror_Hud_Delay[client]<gametime)
 	{
 		PrintHintText(client,"Cosmic Terror Activating In: [%.1f]", duration);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		Cosmic_Terror_Hud_Delay[client]=gametime+0.5;
 	}
 	
@@ -793,7 +793,7 @@ static void Cosmic_Terror_FullCharge(int client, float speed, float gametime)
 			PrintHintText(client,"Cosmic Heat: [%i%%%%%%%]\nLens Overheating, move the beam.", Heat);
 		}
 		
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		Cosmic_Terror_Hud_Delay[client]=gametime+0.5;
 	}
 
@@ -1352,7 +1352,7 @@ static void Railcannon_Logic(int client, int weapon)
 		}
 		Format_Fancy_Hud(HUDText);
 		PrintHintText(client, HUDText);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 
 	if(fl_recently_added_heat[client] < GameTime)

@@ -313,7 +313,7 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 			if(f_OceanIndicatorHud[client] < GetGameTime())
 			{
 				PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 				f_OceanIndicatorHud[client] = GetGameTime() + 0.75;
 			}
 			return Plugin_Continue;
@@ -325,7 +325,7 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 		if(f_OceanIndicator[client] < GetGameTime())
 		{
 			PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_OceanIndicator[client] = GetGameTime() + 0.25;
 			float UserLoc[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", UserLoc);
@@ -334,7 +334,7 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 			if(f_OceanIndicatorHud[client] < GetGameTime())
 			{
 				PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 				f_OceanIndicatorHud[client] = GetGameTime() + 0.75;
 			}
 		}

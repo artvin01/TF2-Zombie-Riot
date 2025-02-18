@@ -133,7 +133,7 @@ public void MG42_Cooldown_Logic(int client, int weapon)
 
 			Weapon_MG42_DoubleStrike(client, weapon, StandingStill);
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_MG42huddelay[client] = GetGameTime() + 0.45;
 		}
 	}

@@ -202,7 +202,7 @@ public Action Gladiia_TimerS1L4(Handle timer, int client)
 					WeaponCharge[client] = 24;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / 12, 12 - (WeaponCharge[client] % 12));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -227,7 +227,7 @@ public Action Gladiia_TimerS1L7(Handle timer, int client)
 					WeaponCharge[client] = 20;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / 10, 10 - (WeaponCharge[client] % 10));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -252,7 +252,7 @@ public Action Gladiia_TimerS1L8(Handle timer, int client)
 					WeaponCharge[client] = 30;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / 10, 10 - (WeaponCharge[client] % 10));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -277,7 +277,7 @@ public Action Gladiia_TimerS1L10(Handle timer, int client)
 					WeaponCharge[client] = 24;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / 8, 8 - (WeaponCharge[client] % 8));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;

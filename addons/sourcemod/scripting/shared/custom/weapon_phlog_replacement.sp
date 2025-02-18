@@ -215,7 +215,7 @@ public void PHLOG_Cooldown_Logic(int client, int weapon)
 				PrintHintText(client,"Phlog Hit Charge [Cooldown: %.1f]",f_PHLOGabilitydelay[client] - GetGameTime());
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_PHLOGhuddelay[client] = GetGameTime() + 0.5;
 		}
 	}

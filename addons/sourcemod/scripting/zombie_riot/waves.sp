@@ -1928,7 +1928,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 							{
 								SetGlobalTransTarget(client);
 								PrintHintText(client, "%t","Press TAB To open the store");
-								StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+								
 							}
 						}
 					}

@@ -304,7 +304,7 @@ public void Trash_HUD(int client, int weapon, bool forced)
 					PrintHintText(client, "NEXT: Flimsy Rocket");
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 		f_TrashNextHUD[client] = GetGameTime() + 0.5;
 	}

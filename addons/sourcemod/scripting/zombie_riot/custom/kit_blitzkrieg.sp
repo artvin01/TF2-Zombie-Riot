@@ -257,7 +257,7 @@ static void BlitzHud(int client, float GameTime, int wep)
 
 
 	PrintHintText(client, HUDText);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] classname, bool &result)
 {

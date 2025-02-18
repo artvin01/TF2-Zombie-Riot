@@ -54,6 +54,9 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_update_frequency", "0.1"); // default:0
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
+	ConVar_Add("sv_hudhint_sound", "0.0"); 
+	// REmoves the ANNOYIN G AS FUCKING WIND SOUND FROM HINT TEXT HUD
+	//ITS DRIVING ME INSANE ITS ACTUALLY CRAZY HOOOOLY SHIT
 #if defined ZR
 	ConVar_Add("mp_tournament", "1");
 	ConVar_Add("mp_disable_respawn_times", "1.0");

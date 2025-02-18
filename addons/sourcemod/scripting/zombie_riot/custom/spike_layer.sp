@@ -574,7 +574,7 @@ public void SpikeLayer_Cooldown_Logic(int client, int weapon)
 				if(f_SpikeLayerHudDelay[client] < GetGameTime())
 				{
 					PrintHintText(client,"Spikes Layed [%i/%i]\nSpike Global Limit[%i/%i]",Spikes_Alive[client],Spikes_AliveCap[client],Spikes_AliveGlobal,MAXSPIKESALLOWED);	
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 					f_SpikeLayerHudDelay[client] = GetGameTime() + 0.5;
 				}
 			}

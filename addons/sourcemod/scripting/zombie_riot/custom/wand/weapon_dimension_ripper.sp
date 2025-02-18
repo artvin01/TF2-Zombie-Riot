@@ -96,7 +96,7 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 				PrintHintText(client,"Hi ;D");
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_DIMhuddelay[client] = GetGameTime() + 0.5;
 		}
 	}

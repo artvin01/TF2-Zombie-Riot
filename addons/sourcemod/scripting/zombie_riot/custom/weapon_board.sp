@@ -768,7 +768,7 @@ public void WeaponBoard_Cooldown_Logic(int client, int weapon)
 			{
 				PassiveBoardHeal(client);
 			}
-			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			
 		}
 		else
 		{

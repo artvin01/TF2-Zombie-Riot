@@ -339,7 +339,7 @@ public Action Flagellant_MoreMoreTimer(Handle timer, int userid)
 		int healing = MoreMoreHits[client] * MoreMoreHealing[client];
 
 		PrintHintText(client, "More! MORE! | %ds | +%d HP", RoundToCeil(time), healing);
-		StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+		
 
 		if(time >= 0.0)
 			return Plugin_Continue;
