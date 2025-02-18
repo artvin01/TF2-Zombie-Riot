@@ -870,8 +870,7 @@ public void MoveToClosestPlayer(int Gift, int client)
 	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", Jump_1_frame);
 	float Jump_1_frame_Client[3];
 	GetEntPropVector(client, Prop_Data, "m_vecOrigin", Jump_1_frame_Client);
-	Jump_1_frame_Client[2] += 20.0;
-	Jump_1_frame[2] += 20.0;
+	Jump_1_frame_Client[2] += 30.0;
 	
 	float vAngles[3];
 	float vecSwingForward[3];

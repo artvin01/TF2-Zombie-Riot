@@ -620,7 +620,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					value *= Attributes_Get(weapon, 2, 1.0);	  //For normal weapons
 					
-					value *= Attributes_Get(weapon, 1000, 1.0); //For any
+				//	value *= Attributes_Get(weapon, 1000, 1.0); //For any
 					
 					value *= Attributes_Get(weapon, 410, 1.0); //For wand
 					

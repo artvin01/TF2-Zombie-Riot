@@ -164,7 +164,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		damage *= Attributes_Get(weapon, 2, 1.0);
-		damage *= Attributes_Get(weapon, 1000, 1.0);
+	//	damage *= Attributes_Get(weapon, 1000, 1.0);
 
 
 		damage *= f_MlynarDmgMultiPassive[client];
@@ -514,7 +514,7 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		}
 		damageModif *= Attributes_Get(weapon, 1, 1.0);
 		damageModif *= Attributes_Get(weapon, 2, 1.0);
-		damageModif *= Attributes_Get(weapon, 1000, 1.0);
+	//	damageModif *= Attributes_Get(weapon, 1000, 1.0);
 
 		damageModif *= f_MlynarDmgMultiPassive[victim];
 		damageModif *= f_MlynarDmgMultiAgressiveClose[victim];

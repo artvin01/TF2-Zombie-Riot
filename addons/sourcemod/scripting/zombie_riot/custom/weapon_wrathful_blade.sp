@@ -343,7 +343,7 @@ public Action Wrath_MeleeAttack(Handle timelytimer, DataPack pack)
 	float baseDMG = 65.0 * Wrath_Multiplier[client]; 
 	baseDMG *= Attributes_Get(weapon, 2, 1.0);
 	baseDMG *= Attributes_Get(weapon, 1, 1.0);
-	baseDMG *= Attributes_Get(weapon, 1000, 1.0);
+//	baseDMG *= Attributes_Get(weapon, 1000, 1.0);
 			 
 	ArrayList victims = new ArrayList(255);
 
@@ -552,7 +552,7 @@ public Action Fury_Logic(Handle timelytimer, int id)
 		float DMG = Fury_BurnDMG[tier];
 		DMG *= Attributes_Get(weapon, 1, 1.0);
 		DMG *= Attributes_Get(weapon, 2, 1.0);
-		DMG *= Attributes_Get(weapon, 1000, 1.0);
+	//	DMG *= Attributes_Get(weapon, 1000, 1.0);
 
 		float pos[3];
 		WorldSpaceCenter(client, pos);
