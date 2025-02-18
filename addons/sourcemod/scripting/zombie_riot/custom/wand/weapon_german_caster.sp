@@ -212,12 +212,12 @@ public Action Weapon_German_Timer(Handle timer, int client)
 				}
 
 				PrintHintText(client, "Charges: %d", GermanCharges[client]);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 			else
 			{
 				PrintHintText(client, "Charges: %d", GermanCharges[client]);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 
 				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				return Plugin_Continue;

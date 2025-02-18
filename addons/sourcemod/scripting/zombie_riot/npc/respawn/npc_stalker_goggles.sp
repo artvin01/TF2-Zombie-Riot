@@ -135,7 +135,7 @@ methodmap StalkerGoggles < StalkerShared
 			AcceptEntityInput(entity, "LightOn");
 		}
 		
-		i_Wearable[npc.index][0] = entity;
+		npc.m_iWearable1 = entity;
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_antarctic_eyewear/spr18_antarctic_eyewear_scout.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum19_wagga_wagga_wear/sum19_wagga_wagga_wear.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl");

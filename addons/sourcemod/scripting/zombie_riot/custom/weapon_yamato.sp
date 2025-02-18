@@ -715,7 +715,7 @@ public void Yamato_Loop_Logic(int client, int weapon)
 			}
 			Format(HUDText, sizeof(HUDText), "%s Motivation: [%i/%i]", HUDText, RoundToFloor(fl_Yamato_Motivation[client]), RoundToFloor(YAMATO_MAX_MOTIVATION));
 			PrintHintText(client, HUDText);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_Yamatohuddelay[client] = GameTime + 0.5;
 		}
 

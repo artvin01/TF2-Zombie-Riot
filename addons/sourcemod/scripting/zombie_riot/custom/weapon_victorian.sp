@@ -499,7 +499,7 @@ static void CreateVictoriaEffect(int client, int weapon)
 			"%s\n[Aim Assist Online]", wtf_Why_are_there_so_many_point_hints);
 		
 		PrintHintText(client,"%s", wtf_Why_are_there_so_many_point_hints);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		VictoriaLauncher_HUDDelay[client] = GetGameTime() + 0.5;
 	}
 

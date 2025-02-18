@@ -480,7 +480,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 				}				
 			}
 
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_PassangerHudDelay[client] = GetGameTime() + 0.5;
 		}
 	}

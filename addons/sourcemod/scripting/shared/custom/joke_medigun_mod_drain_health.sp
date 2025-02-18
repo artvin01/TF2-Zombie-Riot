@@ -252,7 +252,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
 				PrintHintText(owner,"Medigun Fluid Capacity: %iml", new_ammo + 1);
-				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
@@ -446,7 +445,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 				}
-				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
@@ -511,7 +509,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						PrintHintText(owner,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
 					}
-					StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 					medigun_hud_delay[owner] = GetGameTime() + 0.5;
 				}
 			}
@@ -592,7 +589,7 @@ public void GB_On_Reload(int client, int weapon, bool crit) {
 		return;
 	}
 	PrintHintText(client,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 	SetEntProp(weapon, Prop_Send, "m_bChargeRelease", 1);
 	gb_medigun_on_reload[client] = true;
 }

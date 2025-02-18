@@ -352,7 +352,7 @@ public void Soldine_Hud_Logic(int client, int weapon, bool ignoreCD)
 
 	Soldine_HudDelay[client] = GetGameTime() + 0.5;
 	PrintHintText(client,"%s",SoldineHud);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 

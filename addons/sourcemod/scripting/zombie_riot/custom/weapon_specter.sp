@@ -361,7 +361,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			PrintHintText(client, "Specter Revive [%d / %i]", SpecterCharge[client], SpecterMaxCharge(client));
-			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			
 		}
 	}
 }

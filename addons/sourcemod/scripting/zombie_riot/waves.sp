@@ -5,6 +5,7 @@ enum struct Enemy
 {
 	int Health;
 	int Is_Boss;
+	int ForceScaling;
 	float WaitingTimeGive;
 	float ExtraSize;
 	int Is_Outlined;
@@ -944,7 +945,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
-						
+						enemy.ForceScaling = kv.GetNum("force_scaling"); //0 is nothing, 1 means it forces normal scaling for ammount
+						//good for boss rushes
 						enemy.WaitingTimeGive = kv.GetFloat("waiting_time_give", 0.0);
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
 						enemy.ignore_max_cap = kv.GetNum("ignore_max_cap");
@@ -1564,7 +1566,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			if(wave.EnemyData.Does_Not_Scale == 0 && count > 0)
 			{
-				if(Is_a_boss == 0)
+				if(Is_a_boss == 0 || wave.EnemyData.ForceScaling == 1)
 				{
 					count = RoundToNearest(float(count) * MultiGlobalEnemy);
 					//the scaling on this cant be too high, otherwise rounds drag on forever.
@@ -1928,7 +1930,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 							{
 								SetGlobalTransTarget(client);
 								PrintHintText(client, "%t","Press TAB To open the store");
-								StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+								
 							}
 						}
 					}
@@ -2170,6 +2172,10 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(round.Setup > 59.0)
 				{
+					if(PrevRoundMusic > 0)
+					{
+						AlreadyWaitingSet(true);
+					}
 					Waves_SetReadyStatus(1);
 				}
 				else
@@ -2857,7 +2863,7 @@ static void UpdateMvMStatsFrame()
 				
 				if(wave.EnemyData.Does_Not_Scale == 0)
 				{
-					if(wave.EnemyData.Is_Boss == 0)
+					if(wave.EnemyData.Is_Boss == 0 || wave.EnemyData.ForceScaling == 1)
 					{
 						num = RoundToNearest(float(num) * MultiGlobalEnemy);
 					}
@@ -3188,6 +3194,11 @@ static Action ReadyUpHack(Handle timer)
 }
 
 bool AlreadySetWaiting = false;
+
+void AlreadyWaitingSet(bool set)
+{
+	AlreadySetWaiting = set;
+}
 void Waves_SetReadyStatus(int status)
 {
 	//LogStackTrace("Hello! -> %d", status);

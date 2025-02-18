@@ -2630,13 +2630,13 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 80:
 			{
-				if(Sigmaller)
-				{
+			//	if(Sigmaller)
+			//	{
 					Freeplay_SetupStart();
 					return;
-				}
-				strcopy(message, sizeof(message), "{red}This skull... it.. it FEELS SO SIGMA!!!!!");
-				Sigmaller = true;
+			//	} Shit design, remove for now.
+			//	strcopy(message, sizeof(message), "{red}This skull... it.. it FEELS SO SIGMA!!!!!");
+			//	Sigmaller = true;
 			}
 			case 81:
 			{

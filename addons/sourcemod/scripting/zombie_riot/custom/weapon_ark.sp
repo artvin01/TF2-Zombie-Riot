@@ -634,7 +634,7 @@ public void WeaponArk_Cooldown_Logic(int client, int weapon)
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			PrintHintText(client, "Ark Energy [%d]", Ark_Hits[client]);
-			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			
 		}
 	}
 }
@@ -1035,7 +1035,7 @@ public void LappLand_Cooldown_Logic(int client, int weapon)
 				PrintHintText(client,"Raging Wolf Spirit [%.1f]",TimeLeft);
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_LappLandhuddelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -1182,7 +1182,7 @@ public void Quibai_Cooldown_Logic(int client, int weapon)
 				PrintHintText(client,"Raging Snow [%.1f]",TimeLeft);
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_LappLandhuddelay[client] = GetGameTime() + 0.5;
 		}
 	}

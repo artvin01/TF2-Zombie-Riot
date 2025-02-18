@@ -2011,7 +2011,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		}
 
 		PrintHintText(client, buffer);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 	DataPack pack_WeaponAmmo = new DataPack();
 	pack_WeaponAmmo.WriteCell(EntIndexToEntRef(client));

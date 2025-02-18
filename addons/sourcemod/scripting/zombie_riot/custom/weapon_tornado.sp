@@ -57,7 +57,7 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] class
 			bl_tornado_barrage_mode[client]=true;
 			PrintHintText(client,"Barrage: ON");
 		}
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 }
 

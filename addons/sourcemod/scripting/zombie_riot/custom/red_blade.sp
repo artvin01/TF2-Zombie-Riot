@@ -175,7 +175,7 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 	if (flpercenthpfrommax <= 0.5)
 	{
 		PrintHintText(client,"Rage Activated");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		if(!IsRedBladeEffectSpawned(client))
 		{
 			CreateRedBladeEffect(client);
@@ -185,7 +185,7 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 	else if (HALFORNO[client])
 	{
 		PrintHintText(client,"Rage Deactivated");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		HALFORNO[client]=false;
 		DestroyRedBladeEffect(client);
 		MakeBladeBloddy(client, false, weapon);

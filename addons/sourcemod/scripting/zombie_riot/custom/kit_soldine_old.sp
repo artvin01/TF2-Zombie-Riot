@@ -429,7 +429,7 @@ static void Wkit_Soldin_HUD(int client, bool weapons)
 		if(C_point_hints[0] != '\0')
 		{
 			PrintHintText(client,"%s", C_point_hints);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			MarketHUDDelay[client] = GetGameTime() + 0.5;
 		}
 	}

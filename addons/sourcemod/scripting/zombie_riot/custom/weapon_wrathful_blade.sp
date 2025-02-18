@@ -275,7 +275,7 @@ public void Wrath_HUD(int client, int weapon, bool forced)
 
 			PrintHintText(client, HUDText);
 
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 
 		f_NextWrathHUD[client] = GetGameTime() + 0.5;

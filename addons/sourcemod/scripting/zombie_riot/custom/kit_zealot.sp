@@ -797,7 +797,7 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 	
 	Zealot_HudDelay[client] = GetGameTime() + 0.5;
 	PrintHintText(client,"%s",ZealotHud);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 float Zealot_RegenerateStaminaMAx(int client)

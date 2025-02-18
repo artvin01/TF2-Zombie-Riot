@@ -465,7 +465,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			{
 				PrintHintText(client,"Unbrilliant Glory [READY]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
 			}
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_MlynarHudDelay[client] = GetGameTime() + 0.5;
 		}
 	}
