@@ -1439,8 +1439,6 @@ public void OnPostThink(int client)
 		Store_TryRefreshMenu(client);
 	}
 	
-	Music_PostThink(client);
-	
 //	delete profiler;
 #endif
 }
