@@ -271,7 +271,13 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 				Ability_Apply_Cooldown(client, slot, 30.0);
 				EmitSoundToClient(client, SOUND_BUBBLE_ABILITY);
 
-				ApplyStatusEffect(client, client, "Bubble Frenzy", 10.0);
+				ApplyStatusEffect(weapon, weapon, "Bubble Frenzy", 10.0);
+				ApplyTempAttrib(weapon, 6, 0.5, 10.0);
+				ApplyTempAttrib(weapon, 733, 0.5, 10.0);
+				//dont allow the player to use this and then switch weapons
+				//inacse of tonic and etc, its not a problem as its supposed to be mixed, i.e. group buff
+				//in this case its a free damage buff that can be spammed alot
+				//some buffs just gotta be like this.
 				sf_Bubble_M2Duration[client] = GetGameTime() + 10.0;
 
 				float position[3];

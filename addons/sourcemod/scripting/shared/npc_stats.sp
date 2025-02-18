@@ -3468,6 +3468,10 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{
 			GibEnemyGive *= Attributes_Get(iWeapon, 4012, 1.0);
 		}
+		//oh i was burnin!!
+		//Grilled.
+		if(HasSpecificBuff(pThis, "Burn"))
+			GibEnemyGive *= 1.1;
 #endif
 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
@@ -10295,6 +10299,11 @@ public void SaveLastValidPositionEntity(int entity)
 		
 		float AbsOrigin[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
+		static float hullcheckmaxs_Player[3];
+		static float hullcheckmins_Player[3];
+		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );
+		/*
 		b_AntiSlopeCamp[entity] = false;
 		//Make sure they arent on a slope!
 		if(!SavePosition)
@@ -10322,6 +10331,8 @@ public void SaveLastValidPositionEntity(int entity)
 			}
 			return;
 		}
+		slope camp isnt needed as it checks for valid navs anyways
+		*/
 	
 		if(i_InHurtZone[entity])
 			return;
@@ -10660,17 +10671,17 @@ void ExtinguishTarget(int target, bool dontkillTimer = false)
 void IsEntityInvincible_Shield(int entity)
 {
 	int NpcInvulShieldDisplay;
+
+	if(HasSpecificBuff(entity, "UBERCHARGED"))
+		NpcInvulShieldDisplay = 3;
+
 #if defined ZR
 //This is not neccecary in RPG.
 	if(i_npcspawnprotection[entity] == 1)
-		NpcInvulShieldDisplay = true;
+		NpcInvulShieldDisplay = 2;
 #endif
 	if(b_NpcIsInvulnerable[entity])
-		NpcInvulShieldDisplay = true;
-
-	if(HasSpecificBuff(entity, "UBERCHARGED"))
-		NpcInvulShieldDisplay = 2;
-
+		NpcInvulShieldDisplay = 1;
 	
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])
@@ -10681,20 +10692,31 @@ void IsEntityInvincible_Shield(int entity)
 	if(IsValidEntity(i_InvincibleParticle[entity]))
 	{
 		int Shield = EntRefToEntIndex(i_InvincibleParticle[entity]);
-		if(b_NpcIsInvulnerable[entity])
+		if(NpcInvulShieldDisplay == 1)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 0)
 			{
 				SetEntityRenderColor(Shield, 0, 255, 0, 255);
 				i_InvincibleParticlePrev[Shield] = 0;
+				SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 			}
 		}
-		else if(i_npcspawnprotection[entity] == 1)
+		else if(NpcInvulShieldDisplay == 2)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 1)
 			{
 				SetEntityRenderColor(Shield, 0, 50, 50, 35);
 				i_InvincibleParticlePrev[Shield] = 1;
+				SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+			}
+		}
+		else if(NpcInvulShieldDisplay == 3)
+		{
+			if(i_InvincibleParticlePrev[Shield] != 2)
+			{
+				SetEntityRenderColor(Shield, 255, 255, 255, 255);
+				i_InvincibleParticlePrev[Shield] = 2;
+				SetEntProp(Shield, Prop_Send, "m_nSkin", 4);
 			}
 		}
 		return;
@@ -10710,7 +10732,8 @@ void IsEntityInvincible_Shield(int entity)
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	if(b_NpcIsInvulnerable[entity])
+	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+	if(NpcInvulShieldDisplay == 1)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 0)
 		{
@@ -10718,7 +10741,7 @@ void IsEntityInvincible_Shield(int entity)
 			i_InvincibleParticlePrev[Shield] = 0;
 		}
 	}
-	else if(i_npcspawnprotection[entity] == 1)
+	else if(NpcInvulShieldDisplay == 2)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 1)
 		{
@@ -10726,7 +10749,15 @@ void IsEntityInvincible_Shield(int entity)
 			i_InvincibleParticlePrev[Shield] = 1;
 		}
 	}
-	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+	else if(NpcInvulShieldDisplay == 3)
+	{
+		if(i_InvincibleParticlePrev[Shield] != 2)
+		{
+			SetEntityRenderColor(Shield, 255, 255, 255, 255);
+			i_InvincibleParticlePrev[Shield] = 2;
+			SetEntProp(Shield, Prop_Send, "m_nSkin", 4);
+		}
+	}
 
 	i_InvincibleParticle[entity] = EntIndexToEntRef(Shield);
 }

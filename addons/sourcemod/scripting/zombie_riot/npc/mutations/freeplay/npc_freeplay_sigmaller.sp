@@ -242,7 +242,7 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 			{
 				if(imalone)
 				{
-					SDKHooks_TakeDamage(client, npc.index, npc.index, 600.0, DMG_CLUB, -1);
+					SDKHooks_TakeDamage(client, npc.index, npc.index, 400.0, DMG_CLUB, -1);
 				}
 			}
 		}
@@ -255,16 +255,16 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 				if(GetTeam(entity) == GetTeam(npc.index))
 				{
 					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 60.0);
-					fl_Extra_Speed[entity] *= 1.01;
-					fl_Extra_MeleeArmor[entity] *= 0.99;
-					fl_Extra_RangedArmor[entity] *= 0.99;
-					HealEntityGlobal(npc.index, entity, (float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 0.1), 1.0, 0.0, HEAL_ABSOLUTE);
+					fl_Extra_Speed[entity] *= 1.02;
+					fl_Extra_MeleeArmor[entity] *= 0.98;
+					fl_Extra_RangedArmor[entity] *= 0.98;
+					HealEntityGlobal(npc.index, entity, (float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 0.125), 1.0, 0.0, HEAL_ABSOLUTE);
 				}
 				else
 				{
 					if(imalone)
 					{
-						SDKHooks_TakeDamage(entity, npc.index, npc.index, 750.0, DMG_CLUB, -1);
+						SDKHooks_TakeDamage(entity, npc.index, npc.index, 1000.0, DMG_CLUB, -1);
 					}
 				}
 			}
@@ -272,10 +272,10 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 
 		if(imalone)
 		{
-			HealEntityGlobal(npc.index, npc.index, (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.1), 1.0, 0.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.025), 1.0, 0.0, HEAL_ABSOLUTE);
 			fl_Extra_Damage[npc.index] *= 1.025;
-			fl_Extra_MeleeArmor[npc.index] *= 0.95;
-			fl_Extra_RangedArmor[npc.index] *= 0.95;
+			fl_Extra_MeleeArmor[npc.index] *= 0.975;
+			fl_Extra_RangedArmor[npc.index] *= 0.975;
 		}
 
 		npc.m_flNextMeleeAttack = gameTime + 5.0;

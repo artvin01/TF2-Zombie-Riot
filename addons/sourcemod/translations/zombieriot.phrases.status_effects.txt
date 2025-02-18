@@ -826,7 +826,7 @@
 	}
 	"Burn Desc"
 	{
-		"en"	"Deals True damage overtime, upto a maximum of 20 seconds if not extended.\nEach hit extends its time.\nThe damage and owner depends on the weapon that delt the most fire damage.\nExtending does not weaken the buff."
+		"en"	"Deals True damage overtime, upto a maximum of 20 seconds if not extended.\nEach hit extends its time.\nThe damage and owner depends on the weapon that delt the most fire damage.\nExtending does not weaken the buff.\nEnemies on fire, if killed give 10%% more hp on kill, and gibs give 10%% more hp."
 	}
 	"Zealot's Random Drinks"
 	{
@@ -950,7 +950,7 @@
 	}
 	"Soggy Desc"
 	{
-		"en" "Deal 10%% Less damage."
+		"en" "Deal 5%% Less damage."
 	}
 	"Soggiest"
 	{
@@ -958,7 +958,7 @@
 	}
 	"Soggiest Desc"
 	{
-		"en" "Deal 15%% Less damage."
+		"en" "Deal 7%% Less damage."
 	}
 	"Bubble Frenzy"
 	{
@@ -966,7 +966,7 @@
 	}
 	"Bubble Frenzy Desc"
 	{
-		"en" "Attack 2x Faster"
+		"en" "Attack 2x Faster, only works on bubble wand."
 	}
 	"Hectic Therapy"
 	{

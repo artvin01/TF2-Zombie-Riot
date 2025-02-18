@@ -1174,6 +1174,7 @@ void Waves_RoundStart(bool event = false)
 			FirstMapRound = false;
 			CreateTimer(zr_waitingtime.FloatValue, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 			Waves_SetReadyStatus(2);
+			//Stop music.
 		}
 		else
 		{
@@ -2022,6 +2023,18 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						if(IsClientInGame(client))
 						{
 							SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup));
+						}
+					}
+				}
+				else
+				{
+					//Reset and stop music?
+					for(int client=1; client<=MaxClients; client++)
+					{
+						if(IsClientInGame(client))
+						{
+							SetMusicTimer(client, GetTime() + 1); //This is here beacuse of raid music.
+							Music_Stop_All(client);
 						}
 					}
 				}
@@ -3164,8 +3177,10 @@ static Action ReadyUpHack(Handle timer)
 	return Plugin_Stop;
 }
 
+bool AlreadySetWaiting = false;
 void Waves_SetReadyStatus(int status)
 {
+	LogStackTrace("Hello!");
 	switch(status)
 	{
 		case 0:	// Normal
@@ -3183,6 +3198,7 @@ void Waves_SetReadyStatus(int status)
 					Music_Stop_All(client);
 				}
 			}	
+			AlreadySetWaiting = false;
 		}
 		case 1:	// Ready Up
 		{
@@ -3199,9 +3215,34 @@ void Waves_SetReadyStatus(int status)
 
 			if(!ReadyUpTimer)
 				ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
+
+			if(!AlreadySetWaiting && !Rogue_Mode())
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + 2); //This is here beacuse of raid music.
+						Music_Stop_All(client);
+					}
+				}	
+			}
+			AlreadySetWaiting = true;
 		}
 		case 2:	// Waiting
 		{
+			if(!AlreadySetWaiting && !Rogue_Mode())
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + 2); //This is here beacuse of raid music.
+						Music_Stop_All(client);
+					}
+				}	
+			}
+			AlreadySetWaiting = true;
 			SDKCall_ResetPlayerAndTeamReadyState();
 			
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
@@ -3463,10 +3504,24 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 	{
 		if(FreeplayTimeLimit < GetGameTime())
 		{
-			CPrintToChatAll("{gold}Koshi{white}: looks like you survived for an hour, hm.");
-			CPrintToChatAll("{gold}Koshi{white}: You got as far as wave {green}%i!",CurrentRound);
-			CPrintToChatAll("{gold}Koshi{white}: See if you can go higher next time, dont be so lazy and stall so much..!");
-			CPrintToChatAll("{lightcyan}Zeina{white}: Finally done? I'll can go back home, {lightblue}Nemal's {white}waiting on me.");
+			CPrintToChatAll("{gold}Koshi{white}: looks like you survived for an hour, hm...");
+			CPrintToChatAll("{gold}Koshi{white}: You got as far as wave {green}%i!",CurrentRound+1);
+			if(CurrentRound+1 < 100)
+			{
+				CPrintToChatAll("{gold}Koshi{white}: See if you can go higher next time, dont be so lazy and stop stalling!");
+				CPrintToChatAll("{lightcyan}Zeina{white}: Finally done? I can go back home now, {lightblue}Nemal's {white}waiting on me.");
+			}
+			else if(CurrentRound+1 >= 100 && CurrentRound+1 < 150)
+			{
+				CPrintToChatAll("{gold}Koshi{white}: Quite a great record, i'd say... But you could go {orange}further next time.");
+				CPrintToChatAll("{lightcyan}Zeina{white}: Further!? Are you insane!?!?");
+			}
+			else
+			{
+				CPrintToChatAll("{gold}Koshi{white}: That... was {crimson}MARVELOUS! {white}Truly a spectacular training!");
+				CPrintToChatAll("{lightcyan}Zeina{white}: {red}...sometimes i really question your mental health, {gold}Koshi.");
+			}
+				
 
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");
@@ -3562,25 +3617,29 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		{
 			Freeplay_SetupStart(true);
 			float time = Freeplay_SetupValues();
-			Cooldown = GetGameTime() + time;
 			
-			InSetup = true;
-			ExcuteRelay("zr_setuptime");
+			if(time > 0.0)
+			{
+				Cooldown = GetGameTime() + time;
 			
-			SpawnTimer(time);
-			CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				InSetup = true;
+				ExcuteRelay("zr_setuptime");
+				
+				SpawnTimer(time);
+				CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			}
 			
 			RequestFrames(StopMapMusicAll, 60);
 			
 			Citizen_SetupStart();
-			if(CurrentRound+1 == 150)
+			if(CurrentRound+1 == 200)
 			{
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{
-						SetHudTextParams(-1.0, -1.0, 5.0, 255, 255, 0, 255);
-						ShowHudText(client, -1, "--!ALERT!--\nRaids will now have x2 HP.\nNon-raid enemy damage will slowly increase.");
+						SetHudTextParams(-1.0, -1.0, 5.0, 255, 135, 0, 255);
+						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further? :3");
 					}
 				}
 			}

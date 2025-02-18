@@ -346,7 +346,7 @@ public void OnPreThinkPost(int client)
 	{
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
 	}
-	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
+//	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
 	Cvar_clamp_back_speed.FloatValue = f_Client_BackwardsWalkPenalty[client];
 	Cvar_LoostFooting.FloatValue = f_Client_LostFriction[client];
 }
@@ -428,7 +428,7 @@ public void OnPostThink(int client)
 			b_DisplayDamageHud[client] = false;
 		}
 	}
-
+	/*
 	if(b_AntiSlopeCamp[client])
 	{	
 		//make them slide off stuff.
@@ -446,6 +446,7 @@ public void OnPostThink(int client)
 			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
 		}
 	}
+	*/
 	if(ReplicateClient_BackwardsWalk[client] != f_Client_BackwardsWalkPenalty[client])
 	{
 		char IntToStringDo[4];
@@ -540,6 +541,11 @@ public void OnPostThink(int client)
 		//if they are using a magic weapon, don't take away the overmana. can be both a good and bad thing, good in non ruina situations, possibly bad in ruina situations
 		//the +10 is for rounding errors.
 		//CPrintToChatAll("Overmana decay triggered");
+		if(Current_Mana[client] > RoundToCeil(max_mana[client] * 2.0))
+		{
+			//cant be above max.
+			Current_Mana[client] = RoundToCeil(max_mana[client] * 2.0);
+		}
 		if(Mana_Loss_Delay[client] < GameTime && Mana_Regen_Tick)
 		{
 			Mana_Loss_Delay[client] = GameTime + 0.4;

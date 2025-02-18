@@ -402,32 +402,35 @@ public void Spotter_ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0, _, _, _, _, _, 500.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0, _, _, _, _, _, 600.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		ally = GetClosestAllyPlayer(npc.index);
 		npc.m_iTargetWalkTo = ally;
 	}
 
-	if(target > 0 && GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) * 0.2))
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) * 0.25))
 	{
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-		
-		if(distance < npc.GetLeadRadius())
+		if(target > 0)
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+			
+			if(distance < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, target);
+			}
+	
+			npc.StartPathing();
+			SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance);
+			npc.m_flSpeed = 365.0;
 		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, target);
-		}
-
-		npc.StartPathing();
-		SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance);
-		npc.m_flSpeed = 365.0;
 	}
 	else
 	{
@@ -436,7 +439,7 @@ public void Spotter_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
 			float vecSelf[3]; WorldSpaceCenter(npc.index, vecSelf);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
-
+			npc.m_flSpeed = 420.0;
 			if(flDistanceToTarget > 25000.0)
 			{
 				NPC_SetGoalEntity(npc.index, ally);
@@ -448,13 +451,42 @@ public void Spotter_ClotThink(int iNPC)
 
 		npc.StopPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		npc.m_flSpeed = 420.0;
 	}
 
 	if(npc.m_fHealCooldown < gameTime)
 	{	
-		ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 2.0);
-		HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
+		if(ally > 0)
+		{
+			float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
+			float vecSelf[3]; WorldSpaceCenter(npc.index, vecSelf);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
+			if(flDistanceToTarget < 35000.0)
+			{
+				float flHealth = float(GetEntProp(ally, Prop_Send, "m_iHealth"));
+				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(ally);
+				if(flpercenthpfrommax <= 0.5)
+				{
+					HealEntityGlobal(npc.index, ally, 500.0, 1.0, 5.0, HEAL_ABSOLUTE);
+					switch(GetRandomInt(1, 3))
+					{
+						case 1:
+						{
+						    	CPrintToChat(ally, "{orange}Spotter: {white}Here ya go %N.", ally);
+						}
+						case 2:
+						{
+							CPrintToChat(ally, "{orange}Spotter: {white}Well well, don't get too hurt next time yeah %N?", ally);
+						}
+						default:
+						{
+						    	CPrintToChat(ally, "{orange}Spotter: {white}Have a nice day, %N.", ally);
+						}
+					}
+				}
+			}
+		}
+
+		HealEntityGlobal(npc.index, npc.index, 2500.0, 1.0, 5.0, HEAL_ABSOLUTE);
 		npc.m_fHealCooldown = gameTime + 6.0;
 	}
 
@@ -582,7 +614,7 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 					HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
 					
 					npc.m_iAttacksTillReload++;
-					if(npc.m_iAttacksTillReload >= 25)
+					if(npc.m_iAttacksTillReload >= 50)
 					{
 						npc.Anger = true;
 					}
