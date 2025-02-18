@@ -102,7 +102,7 @@ int ReplaceAttribute_Internally(int attribute)
 	{
 		//replace dmg attrib with another, this is due to the MVM hud on pressing inspect fucking crashing you at high dmges
 		case 2:
-			return 476;
+			return 1000;
 	}
 	return attribute;
 }
@@ -664,7 +664,7 @@ float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, in
 			return DamageBonusLogic;	
 		}
 	}
-	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
+//	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
 #if defined ZR
 	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_TEUTON_DEAD)
 #endif
