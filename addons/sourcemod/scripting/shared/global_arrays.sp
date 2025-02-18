@@ -414,6 +414,7 @@ float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 char c_WeaponUseAbilitiesHud[MAXENTITIES][16];
+float PrepareMusicVolume[MAXTF2PLAYERS];
 
 
 //Used for any double arrays like lantean wand or health hose.

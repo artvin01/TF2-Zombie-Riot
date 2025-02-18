@@ -263,7 +263,6 @@ static bool MusicDisabled;
 static bool XenoMapExtra;
 static bool AltExtraLogic;
 static int MusicMapRemove[MAXTF2PLAYERS];
-static float PrepareMusicVolume[MAXTF2PLAYERS];
 static float DelayStopSoundAll[MAXTF2PLAYERS];
 
 #define RANGE_FIRST_MUSIC 2250000.0

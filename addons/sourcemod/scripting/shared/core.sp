@@ -1461,6 +1461,8 @@ public void OnClientPutInServer(int client)
 	SDKHook_HookClient(client);
 
 #if defined ZR
+	PrepareMusicVolume[client] = 0.0;
+	SetMusicTimer(client, GetTime() + 1);
 	AdjustBotCount();
 	WeaponClass[client] = TFClass_Scout;
 #endif
