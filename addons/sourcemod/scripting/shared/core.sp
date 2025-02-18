@@ -649,7 +649,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "shared/events.sp"
 #endif
 
-#if defined ZR || defined RTS
+#if defined RTS
 #include "shared/rtscamera.sp"
 #endif
 
@@ -1388,14 +1388,16 @@ public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, C
 {
 	if(result == ConVarQuery_Okay)
 	{
-		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+		if(StringToInt(cvarValue) == 0)
 		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
-			if(StringToInt(cvarValue) == 0)
+			if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
 			{
+				f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
 				SetGlobalTransTarget(client);
 				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
 			}
+
+			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
 		}
 	}
 }
