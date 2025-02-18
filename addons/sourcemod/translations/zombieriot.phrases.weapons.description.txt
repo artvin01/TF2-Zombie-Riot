@@ -2230,9 +2230,9 @@
 	}
 	"Crusader Desc Pap 1"
 	{
-		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour m2 ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
-		"fr"	"Devient un fusil de Sniper, la charge améliore les soins.\nLes soins peuvent donner un bonus santé de 15%%.\nAppuyez sur M2 pour placer des medkits.\nVos medkits donne un Buff, mais donne moins de soins aux aliiés dans le combat.\nVous pouvez placer jusqu'a 2 medkits à la fois."
-		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15%%）\nM2技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
+		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour R ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
+		"fr"	"Devient un fusil de Sniper, la charge améliore les soins.\nLes soins peuvent donner un bonus santé de 15%%.\nAppuyez sur R pour placer des medkits.\nVos medkits donne un Buff, mais donne moins de soins aux aliiés dans le combat.\nVous pouvez placer jusqu'a 2 medkits à la fois."
+		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15%%）\nR技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
 	}
 
 	"Barracks Desc"

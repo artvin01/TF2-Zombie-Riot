@@ -556,7 +556,7 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
 		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityCollisionGroup(prop, 27);
-		SDKHook(prop, SDKHook_StartTouch, TouchHealthKit);
+		SDKHook(prop, SDKHook_Touch, TouchHealthKit);
 		f_HealMaxPickup_Enable[prop] = GetGameTime();
 		f_HealMaxPickup[prop] = HealAmmount;
 		i_WandIdNumber[prop] = 999;
