@@ -644,7 +644,8 @@ public void OnPostThink(int client)
 	{
 		OnlyOneAtATime = true;
 		SetGlobalTransTarget(client);
-		char buffer[255];
+		static char buffer[255];
+		buffer[0] = 0;
 		float HudY = 0.95;
 		float HudX = -1.0;
 	
@@ -850,7 +851,7 @@ public void OnPostThink(int client)
 			{
 				if(percentage_melee != 100.0 && percentage_melee > 0.0)
 				{
-					char NumberAdd[32];
+					static char NumberAdd[32];
 					had_An_ability = true;
 					if(percentage_melee < 10.0)
 					{
@@ -869,7 +870,7 @@ public void OnPostThink(int client)
 				
 				if(percentage_ranged != 100.0 && percentage_ranged > 0.0)
 				{
-					char NumberAdd[32];
+					static char NumberAdd[32];
 					if(had_An_ability)
 					{
 						if(percentage_ranged < 10.0)
@@ -1112,7 +1113,7 @@ public void OnPostThink(int client)
 				Alpha = form.Form_RGBA[3];
 			}
 			
-			char c_CurrentMana[255];
+			static char c_CurrentMana[64];
 			IntToString(Current_Mana[client],c_CurrentMana, sizeof(c_CurrentMana));
 
 			int offset = Current_Mana[client] < 0 ? 1 : 0;
@@ -1120,7 +1121,7 @@ public void OnPostThink(int client)
 
 			if(form.Name[0])
 			{
-				char NameOverride[256];
+				static char NameOverride[64];
 				NameOverride = form.Name;
 				if(form.Func_FormNameOverride != INVALID_FUNCTION && form.Func_FormNameOverride) //somehow errors with 0, i dont know, whatever.
 				{
@@ -1137,15 +1138,14 @@ public void OnPostThink(int client)
 #endif
 		}
 		//BUFFS!
-		char Debuff_Adder_left[64];
-		char Debuff_Adder_right[64];
-		char Debuff_Adder[64];
-
+		static char Debuff_Adder_left[64];
+		static char Debuff_Adder_right[64];
+		static char Debuff_Adder[64];
 		EntityBuffHudShow(client, -1, Debuff_Adder_left, Debuff_Adder_right);
 
 		if(Debuff_Adder_left[0])
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder_left, Debuff_Adder);
+			strcopy(Debuff_Adder, sizeof(Debuff_Adder), Debuff_Adder_left);
 
 			if(Debuff_Adder_right[0])
 			{
@@ -1155,7 +1155,7 @@ public void OnPostThink(int client)
 		}
 		else
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, Debuff_Adder_right);
+			strcopy(Debuff_Adder, sizeof(Debuff_Adder), Debuff_Adder_right);
 		}
 
 		if(Debuff_Adder[0])
@@ -1256,7 +1256,7 @@ public void OnPostThink(int client)
 
 		ArmorDisplayClient(client);
 
-		char buffer[64];
+		static char buffer[64];
 		if(IsValidEntity(Building_Mounted[client]))
 		{
 			int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
@@ -1283,7 +1283,7 @@ public void OnPostThink(int client)
 		}
 		else
 		{
-			Format(buffer, sizeof(buffer), "\n\n");	 //so the spacing stays!
+			strcopy(buffer, sizeof(buffer), "\n\n");	 //so the spacing stays!
 		}
 
 		bool Armor_Regenerating = false;
@@ -1334,7 +1334,7 @@ public void OnPostThink(int client)
 		}
 		else
 		{
-			char c_ArmorCurrent[255];
+			static char c_ArmorCurrent[64];
 			if(Armor_Charge[armorEnt] >= 0)
 			{
 				IntToString(armor,c_ArmorCurrent, sizeof(c_ArmorCurrent));
@@ -1374,7 +1374,8 @@ public void OnPostThink(int client)
 		ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 			
 				
-		char HudBuffer[256];
+		static char HudBuffer[256];
+		HudBuffer[0] = 0;
 		
 		if(!TeutonType[client])
 		{
@@ -2338,7 +2339,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 		
-		char buffer[36];
+		static char buffer[36];
 		GetEntityClassname(weapon, buffer, sizeof(buffer));
 
 #if defined ZR
@@ -2431,7 +2432,7 @@ void CauseFadeInAndFadeOut(int client = 0, float duration_in, float duration_hol
 	{
 		SpawnFlags = 4;
 	}
-	char Buffer[32];
+	static char Buffer[32];
 	IntToString(SpawnFlags, Buffer, sizeof(Buffer));
 	int FadeEntity = CreateEntityByName("env_fade");
 	DispatchKeyValue(FadeEntity, "spawnflags", Buffer);
@@ -2554,7 +2555,7 @@ public Action Timer_CauseFadeInAndFadeOut(Handle timer, float duration_out)
 	DispatchKeyValue(FadeEntity, "rendercolor", "0 0 0");
 	DispatchKeyValue(FadeEntity, "renderamt", SetRenderDo[0]);
 	DispatchKeyValue(FadeEntity, "holdtime", "0");
-	char Buffer[32];
+	static char Buffer[32];
 	FloatToString(duration_out, Buffer, sizeof(Buffer));
 	DispatchKeyValue(FadeEntity, "duration", Buffer);
 	DispatchSpawn(FadeEntity);
@@ -3082,7 +3083,8 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 */
 void RPG_Sdkhooks_StaminaBar(int client)
 {
-	char buffer[32];
+	static char buffer[32];
+	buffer[0] = 0;
 	int Stamina = i_CurrentStamina[client];
 	int MaxStamina = i_MaxStamina[client];
 	int MaxBars = 6;

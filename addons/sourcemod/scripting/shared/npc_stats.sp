@@ -10279,7 +10279,7 @@ public void SaveLastValidPositionEntity(int entity)
 			return;
 
 		//am i on the ground? If not, then dont save.
-		bool SavePosition = true;
+		/*bool SavePosition = true;
 		if (!(GetEntityFlags(entity) & FL_ONGROUND))
 		{
 			SavePosition = false;
@@ -10297,13 +10297,11 @@ public void SaveLastValidPositionEntity(int entity)
 			}
 		}
 		
-		float AbsOrigin[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );
-		/*
+		
 		b_AntiSlopeCamp[entity] = false;
 		//Make sure they arent on a slope!
 		if(!SavePosition)
@@ -10336,6 +10334,9 @@ public void SaveLastValidPositionEntity(int entity)
 	
 		if(i_InHurtZone[entity])
 			return;
+
+		float AbsOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 
 		//This should be a safe space for us to save the location for later teleporting.
 		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;
