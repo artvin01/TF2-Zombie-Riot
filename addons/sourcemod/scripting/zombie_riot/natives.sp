@@ -3,6 +3,7 @@
 
 static GlobalForward OnDifficultySet;
 static GlobalForward OnClientLoaded;
+static GlobalForward OnClientWorldmodel;
 
 void Natives_PluginLoad()
 {
@@ -43,10 +44,10 @@ bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, i
 	Call_StartForward(OnClientWorldmodel);
 	Call_PushCell(client);
 	Call_PushCell(class);
-	Call_PushCellEx(worldmodel);
-	Call_PushCellEx(sound);
-	Call_PushCellEx(bodyOverride);
-	Call_PushCellEx(animOverride);
+	Call_PushCellRef(worldmodel);
+	Call_PushCellRef(sound);
+	Call_PushCellRef(bodyOverride);
+	Call_PushCellRef(animOverride);
 	Call_Finish(action);
 
 	return action >= Plugin_Changed;
