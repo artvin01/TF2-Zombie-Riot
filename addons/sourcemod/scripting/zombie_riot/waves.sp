@@ -3190,7 +3190,7 @@ static Action ReadyUpHack(Handle timer)
 bool AlreadySetWaiting = false;
 void Waves_SetReadyStatus(int status)
 {
-	LogStackTrace("Hello!");
+	//LogStackTrace("Hello! -> %d", status);
 	switch(status)
 	{
 		case 0:	// Normal
