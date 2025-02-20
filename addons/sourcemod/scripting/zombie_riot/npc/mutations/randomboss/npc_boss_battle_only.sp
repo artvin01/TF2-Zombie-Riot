@@ -154,8 +154,19 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		case 4:
 		{
 			//needs buffs!!
-			PluginName = "npc_god_alaxios";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60;res3");
+			switch(GetRandomInt(1,4))
+			{
+				case 1:
+				{
+					PluginName = "npc_sea_god_alaxios";
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60;res3;seainfection");
+				}
+				default:
+				{
+					PluginName = "npc_god_alaxios";	
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60;res3");
+				}
+			}
 			
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 

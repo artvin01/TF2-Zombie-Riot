@@ -639,7 +639,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//Think once.
 		if(NpcTypeLogic == STATIONARY_NPC)
 		{
-			CBaseCombatCharacter(npc).SetNextThink(GetGameTime());
+		//	CBaseCombatCharacter(npc).SetNextThink(GetGameTime());
 		//	NpcBaseThink(npc);
 		}
 
@@ -5779,7 +5779,7 @@ public void NpcBaseThinkPost(int iNPC)
 {
 	float lastThink = f_LastBaseThinkTime[iNPC];
 	f_LastBaseThinkTime[iNPC] = GetGameTime();
-	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
+//	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
 	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime());
 	if(f_AttackSpeedNpcIncreace[iNPC] == 1.0)
 		return;
@@ -8126,7 +8126,7 @@ stock void ApplyBeamThinkRemoval(int ref)
 	int EntityBeam = EntRefToEntIndex(ref);
 	if(IsValidEntity(EntityBeam))
 	{
-		CBaseCombatCharacter(EntityBeam).SetNextThink(FAR_FUTURE);
+	//	CBaseCombatCharacter(EntityBeam).SetNextThink(FAR_FUTURE);
 	}
 }
 
