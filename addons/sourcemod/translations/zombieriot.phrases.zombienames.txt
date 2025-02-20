@@ -1789,6 +1789,10 @@
 		"en"		"God Alaxios"
 		"ru"		"Бог Алаксиос"
 	}
+	"Sea-Infected God Alaxios"
+	{
+		"en"		"Sea-Infected God Alaxios"
+	}
 	"Seaborn Scout"
 	{
 		"en"		"Seaborn Scout"

@@ -25,6 +25,7 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_blitzkrieg");
 	NPC_GetByPlugin("npc_xeno_raidboss_silvester");
 	NPC_GetByPlugin("npc_god_alaxios");
+	NPC_GetByPlugin("npc_sea_god_alaxios");
 	NPC_GetByPlugin("npc_sensal");
 	NPC_GetByPlugin("npc_stella");
 	NPC_GetByPlugin("npc_the_purge");

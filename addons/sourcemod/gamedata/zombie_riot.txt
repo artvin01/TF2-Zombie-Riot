@@ -6,22 +6,23 @@
 		{
 			"CWeaponMedigun::CreateMedigunShield"
 			{
-				// find entity_medigun_shield string with more then just 1 block, the main fuction, exit that and there should only be 1 function where its contained
+				// find entity_medigun_shield string with more then just 1 block, the main fuction, 
+				//exit that and there should only be 1 function where its contained
 				//thats it.
 				
 				"windows64"	"\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x30\x8B\x91\x58\x0A\x00\x00"
 				"linux64"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
 				
-				"windows"	"\x55\x8B\xEC\x51\x8B\x15\x2A\x2A\x2A\x2A\x57"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x34\x8B\x15\x2A\x2A\x2A\x2A"
 				"linux"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
 			}
 			"CTFPlayerShared::RecalculatePlayerBodygroups"
 			{
 				// string aPostInventoryA, most top function.
-				"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8B\x89\xC0\x01\x00\x00"
-				"linux64"		"@_ZN15CTFPlayerShared27RecalculatePlayerBodygroupsEv"
+			//	"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8B\x89\xC0\x01\x00\x00"
+			//	"linux64"		"@_ZN15CTFPlayerShared27RecalculatePlayerBodygroupsEv"
 				
-				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\xC7\x45\xFC\x00\x00\x00\x00\x57"
+				"windows"	"\x56\x8B\xF1\x57\x8B\x8E\x8C\x01\x00\x00\x83\xB9\xA0\x03\x00\x00\x00"
 				"linux"		"@_ZN15CTFPlayerShared27RecalculatePlayerBodygroupsEv"
 			}
 			
@@ -46,10 +47,10 @@
 			{
 				// string "TRAIN(%s); Blocked by %s\n"
 				// inside a very tall block, bottom call, this call is modearetly sized and has no strings.
-				"windows64"	"\x48\x89\x5C\x24\x10\x57\x48\x83\xEC\x40\xF3\x0F\x10\x81\x2C\x03\x00\x00"
-				"linux64"		"@_ZN11CBaseEntity14SetAbsVelocityERK6Vector"
+			//	"windows64"	"\x48\x89\x5C\x24\x10\x57\x48\x83\xEC\x40\xF3\x0F\x10\x81\x2C\x03\x00\x00"
+			//	"linux64"		"@_ZN11CBaseEntity14SetAbsVelocityERK6Vector"
 				
-				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x53\x8B\x5D\x08\x57\x8B\xF9\xF3\x0F\x10\x03"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x53\x56\x8B\x75\x08\x8B\xD9\xF3\x0F\x10\x06"
 				"linux"		"@_ZN11CBaseEntity14SetAbsVelocityERK6Vector"
 			}
 			"CTFSpellBook::CastSelfStealth"
@@ -65,7 +66,7 @@
 			"CTFPlayer::TeamFortress_SetSpeed()"
 			{
 				"linux"		"@_ZN9CTFPlayer21TeamFortress_SetSpeedEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x28\xA1\x2A\x2A\x2A\x2A\x56"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x24\xA1\x2A\x2A\x2A\x2A\x56\x8B\xF1\x89\x75\xF0"
 			}
 			"NextBotGroundLocomotion::UpdateGroundConstraint"
 			{
@@ -124,29 +125,29 @@
 			"CBaseEntity::SetLocalOrigin" // String aBadSetlocalori,   Bad SetLocalOrigin(%f,%f,%f) on %s\n
 			{
 				"library"	"server"
-				"linux64"		"@_ZN11CBaseEntity14SetLocalOriginERK6Vector"
-				"windows64"	"\x48\x89\x5C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x50\xF3\x0F\x10\x0D\xE1\x45\xA4\x00"
+			//	"linux64"		"@_ZN11CBaseEntity14SetLocalOriginERK6Vector"
+			//	"windows64"	"\x48\x89\x5C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x50\xF3\x0F\x10\x0D\xE1\x45\xA4\x00"
 				
 				"linux"		"@_ZN11CBaseEntity14SetLocalOriginERK6Vector"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x14\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x56\x8B\x75\x08\x0F\x28\xC1\x0F\x57\x05\x2A\x2A\x2A\x2A\x57\x8B\xF9\xF3\x0F\x10\x16\x0F\x2F\xD0\x89\x7D\xFC\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x56\x04\x0F\x2F\xD0\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x56\x08\x0F\x2F\xD0\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\x8B\x06\x81\xC7\x40\x03\x00\x00"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x08\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x56\x8B\x75\x08\x0F\x28\xC1\x0F\x57\x05\x2A\x2A\x2A\x2A\x57\x8B\xF9\xF3\x0F\x10\x16\x0F\x2F\xD0\x89\x7D\xF8\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x5E\x04\x0F\x2F\xD8\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCB\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x5E\x08\x0F\x2F\xD8\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCB\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2E\x97\x40\x03\x00\x00"
 			}
 			"CBaseEntity::SetAbsOrigin" // String models/airboat.mdl, look up, first call
 			{
 				"library"	"server"
-				"linux64"		"@_ZN11CBaseEntity12SetAbsOriginERK6Vector"
-				"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x70\x48\x8B\xFA"
+			//	"linux64"		"@_ZN11CBaseEntity12SetAbsOriginERK6Vector"
+			//	"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x70\x48\x8B\xFA"
 				
 				"linux"		"@_ZN11CBaseEntity12SetAbsOriginERK6Vector"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x40\x56\x8B\x75\x08\x57\x8B\xF9"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x44\x56\x57\x8B\x7D\x08\x8B\xF1\xE8\x2A\x2A\x2A\x2A"
 			}
 			"CBaseEntity::SetAbsAngles" // String models/airboat.mdl, look up, 2nd call
 			{
 				"library"	"server"
-				"linux64"		"@_ZN11CBaseEntity12SetAbsAnglesERK6QAngle"
-				"windows64"	"\x48\x89\x5C\x24\x18\x56\x48\x81\xEC\xA0\x00\x00\x00\x48\x8B\xF2"
+			//	"linux64"		"@_ZN11CBaseEntity12SetAbsAnglesERK6QAngle"
+			//	"windows64"	"\x48\x89\x5C\x24\x18\x56\x48\x81\xEC\xA0\x00\x00\x00\x48\x8B\xF2"
 				
 				"linux"		"@_ZN11CBaseEntity12SetAbsAnglesERK6QAngle"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x70\x53\x8B\x5D\x08\x56\x8B\xF1"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x74\x53\x8B\x5D\x08\x56\x8B\xF1\xE8\x2A\x2A\x2A\x2A"
 			}
 			"CBaseAnimating::InvalidateBoneCache"// Void CBaseCombatCharacter::Weapon_Drop ("ValveBiped.Weapon_bone"), Big function with 11 calls, the 5th one from top, very small function
 			{
@@ -193,15 +194,6 @@
 				"linux"		"@_ZN12CTFGameRules15CalcPlayerScoreEP12RoundStats_tP9CTFPlayer"
 				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC3\x8B\x57\x38"
 			}
-			"CTFBuffItem::RaiseFlag" 
-			{
-				"library"	"server"
-				"linux64" 	"@_ZN11CTFBuffItem9RaiseFlagEv"
-				"windows64" 	"\x48\x89\x5C\x24\x20\x56\x48\x83\xEC\x30\x8D\x82\x55\xFF\xFF\xFF"
-				
-				"linux" 	"@_ZN11CTFBuffItem9RaiseFlagEv"
-				"windows" 	"\x55\x8B\xEC\x8B\x55\x08\x57\x8B\xF9"
-			}
 			// string "Weapon_BuffBanner.HornBlue" is a func WITHOUT "models/workshop/weapons/c_models/c_para"
 			"CTFBuffItem::BlowHorn" 
 			{
@@ -236,11 +228,11 @@
 			{
 				// semi-unique xref "PlayerLoadoutUpdated"
 				"library"		"server"
-				"linux64"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
-				"windows64"		"\x48\x8B\xC4\x48\x89\x50\x10\x55\x53\x56\x57\x41\x54\x41\x55"
+			//	"linux64"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
+			//	"windows64"		"\x48\x8B\xC4\x48\x89\x50\x10\x55\x53\x56\x57\x41\x54\x41\x55"
 
 				"linux"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
-				"windows"		"\x55\x8B\xEC\x83\xEC\x74\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8D\x8F\xE0\x1A\x00\x00"
+				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
 
 			}
 			"CTFWeaponBaseMelee::GetShootSound"
@@ -258,10 +250,10 @@
 			{
 				"library"	"server"
 				// string "Halloween.EyeballBossStunned" and "Max Eyeball DPS taken = %3.2f\n"
-				"windows64"	"\x41\x56\x48\x83\xEC\x20\x48\x8B\x05\xBB\x38\xB4\x00"
-				"linux64"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
+			//	"windows64"	"\x41\x56\x48\x83\xEC\x20\x48\x8B\x05\xBB\x38\xB4\x00"
+			//	"linux64"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
 				
-				"windows"	"\x55\x8B\xEC\x83\xEC\x10\x56\x8B\xF1\x83\xBE\xD8\x03\x00\x00\xFF"
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x83\xBE\xD8\x03\x00\x00\xFF"
 				"linux"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
 			}			
 			"CTFPlayerShared::PulseRageBuff()"
@@ -393,13 +385,6 @@
 				{
 				
 				}
-			}
-			"CTFBuffItem::RaiseFlag"
-			{
-				"signature"    	"CTFBuffItem::RaiseFlag"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"entity"
 			}
 			"CTFBuffItem::BlowHorn"
 			{

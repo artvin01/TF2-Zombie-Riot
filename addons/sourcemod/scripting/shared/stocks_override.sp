@@ -594,13 +594,12 @@ stock int EntRefToEntIndexFast(int &ref)
 }
 
 //#define EntRefToEntIndex EntRefToEntIndexFast
-
+/*
 int GameruleEntity()
 {
 	int Gamerules = FindEntityByClassname(-1, "tf_gamerules");
 	return Gamerules;
 }
-#define RemoveEntity Stock_RemoveEntity
 
 void GameRules_SetPropFloat_Replace(const char[] prop, any value, int element=0, bool changeState=false)
 {
@@ -618,13 +617,6 @@ int GameRules_GetProp_Replace(const char[] prop, int size = 4, int element=0)
 {
 	return GetEntProp(GameruleEntity(), Prop_Send, prop, size, element);
 }
-#define GameRules_SetPropFloat GameRules_SetPropFloat_Replace
-#define GameRules_SetProp GameRules_SetProp_Replace
-#define GameRules_GetPropFloat GameRules_GetPropFloat_Replace
-#define GameRules_GetProp GameRules_GetProp_Replace
-/*
-
-*/
 	
 RoundState GameRules_GetRoundState_Replace()
 {
@@ -632,3 +624,4 @@ RoundState GameRules_GetRoundState_Replace()
 }
 
 #define GameRules_GetRoundState GameRules_GetRoundState_Replace
+*/
