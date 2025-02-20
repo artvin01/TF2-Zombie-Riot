@@ -705,7 +705,6 @@ public void GodAlaxios_ClotThink(int iNPC)
 					SetEntityCollisionGroup(baseboss_index, 24);
 				}
 			}
-			ForcePlayerLoss();
 			CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are coming, prepare to fight together NOW!!!");
 			RaidBossActive = INVALID_ENT_REFERENCE;
 			for(int i; i<32; i++)
@@ -748,7 +747,48 @@ public void GodAlaxios_ClotThink(int iNPC)
 		}
 		else
 		{
-			CPrintToChatAll("{lightblue}God Alaxios continunes his endless battle against you... as you eventually fall to him...");
+
+			CPrintToChatAll("{green}The Xeno infection sides with you...??!\nSuddenly a battle ensues between Xeno and the Sea infection with alaxios in possession..");
+			for(int i; i<32; i++)
+			{
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				int Spawner_entity = GetRandomActiveSpawner();
+				if(IsValidEntity(Spawner_entity))
+				{
+					GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+				}
+				int spawn_index = NPC_CreateByName("npc_xeno_acclaimed_swordsman", -1, pos, ang, TFTeam_Red);
+				if(spawn_index > MaxClients)
+				{
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+					fl_Extra_Damage[spawn_index] = 25.0;
+					fl_Extra_Speed[spawn_index] = 1.5;
+					TeleportNpcToRandomPlayer(spawn_index);
+				}
+			}
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			int Spawner_entity = GetRandomActiveSpawner();
+			if(IsValidEntity(Spawner_entity))
+			{
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+			}
+			int spawn_index = NPC_CreateByName("npc_xeno_raidboss_nemesis", -1, pos, ang, TFTeam_Red);
+			if(spawn_index > MaxClients)
+			{
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
+				fl_Extra_Damage[spawn_index] = 25.0;
+				fl_Extra_Speed[spawn_index] = 1.5;
+				TeleportNpcToRandomPlayer(spawn_index);
+			}
+			RaidBossActive = EntIndexToEntRef(npc.index);
 		}
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
@@ -1300,6 +1340,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_guard",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_beserker",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_pathshaper", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_tidelinkedarchon", RoundToCeil(200000.0 * MultiGlobalHighHealthBoss), 1);
 			}
 			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 			{
@@ -1403,6 +1444,11 @@ public void GodAlaxios_NPCDeath(int entity)
 					CPrintToChatAll("{lightblue}God Alaxios{default}: We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
 				}
 			}
+		}
+		else
+		{
+			CPrintToChatAll("{lightblue}God Alaxios{default}: Im.. im free..?");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: He IMMEDIETLY leaves the battlefield... you couldnt even trace him.");
 		}
 	}
 	else

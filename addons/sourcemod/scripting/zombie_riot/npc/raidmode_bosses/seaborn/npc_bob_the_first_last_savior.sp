@@ -121,6 +121,19 @@ void RaidbossBobTheFirst_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+
+	
+	//download fixes
+	strcopy(data.Name, sizeof(data.Name), "?????????????");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior_sealogic");
+	data.IconCustom = false;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecacheSea;
+	NPC_Add(data);
+
+	
 }
 
 static void ClotPrecache()
@@ -144,6 +157,12 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	
 	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
+}
+
+static void ClotPrecacheSea()
+{
+	ClotPrecache();
+	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/incomming_boss_wait_scary.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -676,7 +695,16 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					GiveProgressDelay(1.0);
 					SmiteNpcToDeath(npc.index);
-					CPrintToChatAll("{white}Bob the First leaves in a hurry... soemthing is wrong, should you follow him.....? Too late now...");
+					CPrintToChatAll("{white}Bob the First leaves in a hurry... something is wrong, should you follow him.....? Too late now...");
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/incomming_boss_wait_scary.mp3");
+					music.Time = 100;
+					music.Volume = 1.0;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Howilng Emptiness");
+					strcopy(music.Artist, sizeof(music.Artist), "....");
+					Music_SetRaidMusic(music);
+					
 				}
 			}
 		}
@@ -1780,42 +1808,6 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 			}
 		}
 	}
-	
-}
-
-static Action Bob_DeathCutsceneCheck(Handle timer)
-{
-	if(!LastMann)
-		return Plugin_Continue;
-	
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int victim = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(victim != INVALID_ENT_REFERENCE && GetTeam(victim) != TFTeam_Red)
-			SmiteNpcToDeath(victim);
-	}
-	
-	GiveProgressDelay(6.0);
-	Waves_ForceSetup(6.0);
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && !IsFakeClient(client))
-		{
-			if(IsPlayerAlive(client))
-				ForcePlayerSuicide(client);
-			
-			ApplyLastmanOrDyingOverlay(client);
-			SendConVarValue(client, sv_cheats, "1");
-		}
-	}
-	ResetReplications();
-
-	cvarTimeScale.SetFloat(0.1);
-	CreateTimer(0.5, SetTimeBack);
-
-	GivePlayerItems();
-	return Plugin_Stop;
 }
 
 static void GivePlayerItems(int coolwin = 0)
