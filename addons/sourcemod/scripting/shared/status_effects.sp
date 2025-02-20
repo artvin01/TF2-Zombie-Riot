@@ -1014,6 +1014,7 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 		else
 		{
 			bool ScaleWithCount = false;
+#if defined ZR
 			BarrackBody npc = view_as<BarrackBody>(victim);
 			if(victim <= MaxClients || Citizen_IsIt(victim) || npc.OwnerUserId)
 			{
@@ -1025,6 +1026,7 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 				BuffAmount = MaxNumBuffValue(Apply_MasterStatusEffect.AttackspeedBuff, 1.0, PlayerCountBuffAttackspeedScaling);
 			}
 			else
+#endif
 				BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;
 		}
 	}
@@ -1157,6 +1159,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
 				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
 				
+#if defined ZR
 				//They have never recieved a buff yet.
 				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
 				{
@@ -1165,6 +1168,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					view_as<BarrackBody>(entity).BonusFireRate *= BuffOriginal;
 				}
 				else
+#endif
 				{
 					f_AttackSpeedNpcIncreace[entity] *= BuffOriginal;
 				}
@@ -1179,7 +1183,8 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 			//if it changed, we need to update it.
 			if((BuffRevert != BuffOriginal || !GrantBuff) && BuffRevert != 0.0)
 			{
-				
+
+#if defined ZR				
 				//They have never recieved a buff yet.
 				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
 				{
@@ -1188,6 +1193,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					view_as<BarrackBody>(entity).BonusFireRate *= 1.0 / (BuffRevert);
 				}
 				else
+#endif
 				{
 					f_AttackSpeedNpcIncreace[entity] *= 1.0 / (BuffRevert);
 				}
@@ -1199,6 +1205,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
 				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
 				
+#if defined ZR
 				//They have never recieved a buff yet.
 				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
 				{
@@ -1207,6 +1214,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					view_as<BarrackBody>(entity).BonusFireRate *= BuffOriginal;
 				}
 				else
+#endif
 				{
 					f_AttackSpeedNpcIncreace[entity] *= BuffOriginal;
 				}

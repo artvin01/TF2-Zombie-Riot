@@ -11,6 +11,10 @@ enum
 {
 	WEAPON_BIGFRYINGPAN = 1,
 	WEAPON_LANTEAN = 2,
+
+
+	//any that are shared, just stick it here.
+	WEAPON_KRITZKRIEG = 999,
 }
 
 int BaseStrength;

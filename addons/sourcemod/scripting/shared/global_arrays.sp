@@ -308,6 +308,7 @@ float f_TutorialUpdateStep[MAXTF2PLAYERS];
 //Just speeds up their time ig?
 float f_AttackSpeedNpcIncreace[MAXENTITIES] = {1.0, ...};
 float f_AllowInstabuildRegardless = 0.0;
+int ClientAttribResetCount[MAXTF2PLAYERS];
 
 
 //This is for going through things via lag comp or other reasons to teleport things away.
@@ -500,8 +501,6 @@ float f_ClientArmorRegen[MAXENTITIES];
 //bool b_AvangardCoreB[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
-float f_MaxAnimationSpeed[MAXENTITIES];	
-bool b_AvoidBuildingsAtAllCosts[MAXENTITIES];	
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
@@ -515,6 +514,8 @@ char g_GibEating[][] = {
 };
 #endif
 #endif
+bool b_AvoidBuildingsAtAllCosts[MAXENTITIES];	
+float f_MaxAnimationSpeed[MAXENTITIES];	
 Handle g_hRecalculatePlayerBodygroups;
 float f_WandDamage[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //

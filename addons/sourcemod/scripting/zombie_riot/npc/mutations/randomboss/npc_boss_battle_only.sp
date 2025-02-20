@@ -50,7 +50,7 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_omega_raid");
 }
 
-
+bool SameBossDisallow[64];
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return BossSummonRandom(vecPos, vecAng, team, data);
@@ -74,6 +74,11 @@ methodmap BossSummonRandom < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(BossSummonRandom_ClotThink);
 
 		i_RaidGrantExtra[npc.index] = StringToInt(data);
+		if(i_RaidGrantExtra[npc.index] <= 60)
+		{
+			Zero(SameBossDisallow);
+			//Reset
+		}
 
 		if(TeleportDiversioToRandLocation(npc.index,true,1500.0, 700.0) == 2)
 		{
@@ -116,12 +121,13 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	char CharData[255];
 	
 	Format(CharData, sizeof(CharData), "sc%i;",i_RaidGrantExtra[bosssummonbase]);
-	int NumberRand = GetRandomInt(1,26);
-	while(PreviousRaid == NumberRand)
+	int NumberRand;
+	SameBossDisallow[0] = true;
+	while(SameBossDisallow[NumberRand])
 	{
 		NumberRand = GetRandomInt(1,26);
 	}
-	PreviousRaid = NumberRand;
+	SameBossDisallow[NumberRand] = true;
 	switch(NumberRand)
 	{
 		case 1:
@@ -130,7 +136,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_true_fusion_warrior";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
-			enemy.ExtraDamage *= 1.20;
+			enemy.ExtraDamage *= 1.30;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.65); 
 		}
 		case 2:
@@ -140,7 +146,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
 			enemy.ExtraDamage *= 1.4;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.85); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.65); 
 		}
 		case 3:
 		{
@@ -178,7 +184,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
 			enemy.ExtraDamage *= 1.05;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.0); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
 		}
 		case 6:
 		{
@@ -217,23 +223,23 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_chaos_kahmlstein";	
 			
-			enemy.ExtraDamage *= 0.9;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.45); 
+			enemy.ExtraDamage *= 0.95;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.55); 
 		}
 		case 11:
 		{
 			PluginName = "npc_xeno_raidboss_nemesis";	
 			
 			enemy.ExtraDamage *= 0.9;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.2); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
 			//he doesnt really scale? i dont know what to do.
 		}
 		case 12:
 		{
 			PluginName = "npc_corruptedbarney";	
 			
-			enemy.ExtraDamage *= 1.3;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
+			enemy.ExtraDamage *= 1.45;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.7); 
 			//he doesnt really scale? i dont know what to do.
 		}
 		case 13:
@@ -252,14 +258,14 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "forth");
 			
 			enemy.ExtraDamage *= 0.9;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.9); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.15); 
 		}
 		case 15:
 		{
 			PluginName = "npc_vhxis";	
 			
 			enemy.ExtraDamage *= 0.7;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 2.5); 
 		}
 		case 16:
 		{
@@ -267,7 +273,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
 			
 			enemy.ExtraDamage *= 0.85;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.2); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 17:
 		{
@@ -298,15 +304,14 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "raid_time");
 			
 			enemy.ExtraDamage *= 1.0;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.95); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
 		}
 		case 21:
 		{
 			PluginName = "npc_atomizer";	
-		//	Format(CharData, sizeof(CharData), "%s%s",CharData, "raid_time");
 			
 			enemy.ExtraDamage *= 0.8;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.2); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
 		}
 		case 22:
 		{
@@ -314,7 +319,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		//	Format(CharData, sizeof(CharData), "%s%s",CharData, "raid_time");
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.45); 
 		}
 		case 23:
 		{
@@ -322,7 +327,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		//	Format(CharData, sizeof(CharData), "%s%s",CharData, "raid_time");
 			
 			enemy.ExtraDamage *= 1.0;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.6); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.65); 
 		}
 		case 24:
 		{
@@ -334,20 +339,17 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		}
 		case 26:
 		{
-			
-			//Hes very unbalanced for now, block. , cus of minions.
 			PluginName = "npc_lelouch";	
 			
 			enemy.ExtraDamage *= 0.25;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 0.45); 
-			
 		}
 		case 25:
 		{
 			PluginName = "npc_omega_raid";	
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
 		}
 	}
 	Format(enemy.Data, sizeof(enemy.Data), "%s",CharData);

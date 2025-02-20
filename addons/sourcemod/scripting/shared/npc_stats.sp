@@ -9246,7 +9246,6 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	}
 }
 
-#if defined ZR
 void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 {
 	IgniteFor[enemy] = 0;
@@ -9258,8 +9257,6 @@ void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 	ApplyRapidSuturing(enemy);
 	ApplyStatusEffect(enemy, enemy, "Hardened Aura", Duration);
 }
-
-#endif
 
 
 

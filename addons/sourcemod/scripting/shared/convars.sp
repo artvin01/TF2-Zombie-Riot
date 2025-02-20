@@ -91,7 +91,6 @@ void ConVar_PluginStart()
 	CvarSkillPoints = CreateConVar("zr_skillpoints", "1", "If skill points are enabled");
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
-	CvarFileNetworkDisable = CreateConVar("zr_filenetwork_disable", "0", "0 means as intended, 1 means fast download sounds (itll download any waves present instnatly), 2 means download MVM style matreials too");
 
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);
@@ -101,6 +100,7 @@ void ConVar_PluginStart()
 #endif
 
 #if defined ZR || defined RPG
+	CvarFileNetworkDisable = CreateConVar("zr_filenetwork_disable", "0", "0 means as intended, 1 means fast download sounds (itll download any waves present instnatly), 2 means download MVM style matreials too");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
@@ -228,7 +228,9 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 public void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
 	//update store if these are updated.
+#if defined ZR
 	Items_SetupConfig();
 	Store_ConfigSetup();
+#endif
 }
 
