@@ -7,7 +7,7 @@
 			"CLagCompensationManager::FrameUpdatePostEntityThink_OFFSET"
 			{
 				"library"	"server"
-				"linux"		"16"
+				"linux"			"16"
 				"windows"		"15"
 				"linux64"		"16"
 				"windows64"		"15"

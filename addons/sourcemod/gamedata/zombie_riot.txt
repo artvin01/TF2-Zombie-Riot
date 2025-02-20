@@ -391,15 +391,6 @@
 				"linux"      "@_ZN18CTFWeaponBaseMelee20DoSwingTraceInternalER10CGameTracebP10CUtlVectorIS0_10CUtlMemoryIS0_iEE"
 				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x38\x05\x00\x00"
 			}
-			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
-			{
-				// Does not work on Windows!!
-				// "server_changelevel_failed" -> (Large Function) CTeamplayRoundBasedRules::CTeamplayRoundBasedRules
-				// CTeamplayRoundBasedRules calls ResetPlayerAndTeamReadyState
-				"library"	"server"
-				"linux64"	"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
-				"linux"		"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
-			}
 			"CTFGCServerSystem::PreClientUpdate"
 			{
 				// "You must set maxplayers to 32 to host Mann vs. Machine\n"
@@ -617,13 +608,6 @@
 				"return"	"void"
 				"this"		"entity"
 			}
-			"CGameRules::FrameUpdatePostEntityThink"
-			{
-				"offset"	"CGameRules::FrameUpdatePostEntityThink"
-				"hooktype"	"gamerules"
-				"return"	"void"
-				"this"		"ignore"
-			}
 			"CGameRules::ShouldCollide"
 			{
 				"offset"	"CGameRules::ShouldCollide"
@@ -765,20 +749,6 @@
 					}
 				}
 			}
-			"CTFProjectile_Rocket::RocketTouch"
-			{
-				"offset"	"CTFProjectile_Rocket::RocketTouch"
-				"callconv" 	"thiscall"
-				"return"	"void"
-				"this"		"entity"
-				"arguments"
-				{
-					"pEntity"
-					{
-						"type"	"cbaseentity"
-					}
-				}
-			}
 			"CWeaponMedigun::PrimaryAttack()"
 			{
 				"offset"	"CWeaponMedigun::PrimaryAttack()"
@@ -814,13 +784,6 @@
 						"type" "cbaseentity"
 					}
 				}
-			}
-			"CTFWrench::Smack()" 
-			{
-				"offset" 		"CTFWrench::Smack()" 
-				"hooktype" 		"entity"
-				"return" 		"void"
-				"this" 			"entity"
 			}
 			"CBasePlayer::EquipWearable" 
 			{
@@ -908,13 +871,6 @@
 				"return"		"int"
 				"this"			"entity"
 			}
-			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
-			{
-				"signature"		"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"address"
-			}
 		}
 		"Offsets"
 		{
@@ -922,11 +878,6 @@
 			{		
 				"windows"	"155"		
 				"linux"		"156"
-			}
-			"CTFWrench::Smack()" 
-			{
-				"windows" 	"470"
-				"linux" 	"477"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
@@ -993,11 +944,6 @@
 				"linux"		"337"
 				"windows"	"336"
 			}
-			"CGameRules::FrameUpdatePostEntityThink"
-			{
-				"linux"		"16"
-				"windows"	"15"
-			}
 			"CGameRules::ShouldCollide"
 			{
 				"linux"		"30"
@@ -1032,11 +978,6 @@
 			{
 				"linux"		"250"
 				"windows"	"247"
-			}
-			"CTFProjectile_Rocket::RocketTouch"
-			{
-				"linux"		"239"
-				"windows"	"238"
 			}
 			"CBasePlayer::CheatImpulseCommands"
 			{
