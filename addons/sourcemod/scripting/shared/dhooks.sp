@@ -89,7 +89,6 @@ void DHook_Setup()
 #endif
 
 #if !defined RTS
-	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 #endif
 
@@ -161,7 +160,6 @@ void DHook_Setup()
 	//Fixes mediguns giving extra speed where it was not intended.
 	//gamedata first try!!
 	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
-//	DHook_CreateDetour(gamedata, "CTFProjectile_Arrow::StrikeTarget", DhookStrikeTargetArrow_Pre, _);
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -1727,19 +1725,6 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 }
 #endif	// Non-RTS
 
-#if !defined RTS
-static int LastTeam;
-public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookParam param)
-{
-	// Prevent buildings form disappearing
-//	if(!Disconnecting)
-	{
-		LastTeam = GetTeam(client);
-		SetEntProp(client, Prop_Send, "m_iTeamNum", TFTeam_Blue);
-	}
-	return MRES_Ignored;
-}
-#endif
 /*
 public MRESReturn DHookCallback_GameModeUsesUpgrades_Pre(DHookReturn ret)
 {
@@ -1764,16 +1749,6 @@ public MRESReturn DHookCallback_GameModeUsesUpgrades_Post(DHookReturn ret)
 	return MRES_Supercede;	
 }
 */
-#if !defined RTS
-public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPost(int client, DHookParam param)
-{
-//	if(!Disconnecting)
-	{
-		SetEntProp(client, Prop_Send, "m_iTeamNum", LastTeam);
-	}
-	return MRES_Ignored;
-}
-#endif
 
 #if !defined RTS
 /*
