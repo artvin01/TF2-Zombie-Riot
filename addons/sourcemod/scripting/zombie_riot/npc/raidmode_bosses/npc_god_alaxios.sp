@@ -1352,7 +1352,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_longrange",75000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseapredator",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
-				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseaspewer",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseaspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_isharmla", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_specialist",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 			}	

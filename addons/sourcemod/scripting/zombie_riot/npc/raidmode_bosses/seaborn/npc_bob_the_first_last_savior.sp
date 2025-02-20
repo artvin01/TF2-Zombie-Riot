@@ -678,7 +678,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Wait... no... you were fgighting it..! No this.. This cannot be!");
+					CPrintToChatAll("{white}Bob the First{default}: Wait... no... you were fighting it..! No this.. This cannot be!");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 5:
@@ -689,7 +689,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				case 6:
 				{
 					CPrintToChatAll("{white}Bob the First{default}: ...");
-					npc.m_flNextThinkTime = gameTime + 3.0;
+					npc.m_flNextThinkTime = gameTime + 2.0;
 				}
 				case 7:
 				{
@@ -704,7 +704,8 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					strcopy(music.Name, sizeof(music.Name), "Howilng Emptiness");
 					strcopy(music.Artist, sizeof(music.Artist), "....");
 					Music_SetRaidMusic(music);
-					
+					GivePlayerItems();
+					return;
 				}
 			}
 		}
