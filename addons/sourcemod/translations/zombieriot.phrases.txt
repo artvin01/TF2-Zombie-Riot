@@ -2523,6 +2523,10 @@
 		"ru"		"Искорените всех ксенозаражённых\nНайдите причину происходящего."
 		"chi"		"消灭所有被感染的异种人，找出背后的原因。"
 	}
+	"SeaLab_badEnding"
+	{
+		"en"		"You have an uneasy feeling, as if you entered the wrong path... this is BAD."
+	}
 	"Xeno_Wave_2"
 	{
 		"en"		"Silvester and Waldch didnt attack you for no reason."
@@ -3556,6 +3560,10 @@
 	"Schwert Donner Desc"
 	{
 		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this tempomary alliance."
+	}
+	"Schwert Donner Alt Desc"
+	{
+		"en"	"If the sea creatues ever attacked here.... then.. something went MAJORILY wrong. Why are they so.. strong?!"
 	}
 	"Khaml Desc"
 	{

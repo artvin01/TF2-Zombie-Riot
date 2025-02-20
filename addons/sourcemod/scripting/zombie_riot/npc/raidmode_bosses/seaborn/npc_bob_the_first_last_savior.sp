@@ -659,12 +659,12 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: What if you killed Seaborn before Xeno..?");
+					CPrintToChatAll("{white}Bob the First{default}: Wait... no... you were fgighting it..! No this.. This cannot be!");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 5:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Well nothing is holding this one back now...");
+					CPrintToChatAll("{white}Bob the First{default}: Im too hurt, i cant, i have to run... i cant....");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 6:
@@ -676,24 +676,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					GiveProgressDelay(1.0);
 					SmiteNpcToDeath(npc.index);
-
-					Enemy enemy;
-
-					enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-					enemy.Health = 2099999999;
-					enemy.Is_Boss = 2;
-					enemy.ExtraSpeed = 1.5;
-					enemy.ExtraDamage = 3.0;
-					enemy.ExtraMeleeRes = 0.5;
-					enemy.ExtraRangedRes = 0.5;
-					enemy.ExtraSize = 1.0;
-					enemy.Team = 3;
-
-					Waves_AddNextEnemy(enemy);
-
-					Zombies_Currently_Still_Ongoing++;
-
-					CreateTimer(0.9, Bob_DeathCutsceneCheck, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					CPrintToChatAll("{white}Bob the First leaves in a hurry... soemthing is wrong, should you follow him.....? Too late now...");
 				}
 			}
 		}

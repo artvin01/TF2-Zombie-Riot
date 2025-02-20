@@ -79,6 +79,7 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 #define ALAXIOS_SEA_INFECTED 555
 int RevertResearchLogic = 0;
 static int NPCId;
+static int NPCId2;
 public void GodAlaxios_OnMapStart()
 {
 	NPCData data;
@@ -95,13 +96,12 @@ public void GodAlaxios_OnMapStart()
 	//different due to differnt precaches
 	strcopy(data.Name, sizeof(data.Name), "Sea-Infected God Alaxios");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_god_alaxios");
-	strcopy(data.Icon, sizeof(data.Icon), "alaxios");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
+	data.IconCustom = false;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache_SeaAlaxios;
-	NPCId = NPC_Add(data);
+	NPCId2 = NPC_Add(data);
 
 
 	for (int i = 0; i < (sizeof(g_RandomGroupScream));   i++) { PrecacheSoundCustom(g_RandomGroupScream[i]);   }
@@ -357,6 +357,16 @@ methodmap GodAlaxios < CClotBody
 		{
 			RevertResearchLogic = 3;
 			Medival_Wave_Difficulty_Riser(3);
+		}
+		else if(StrContains(data, "res4") != -1)
+		{
+			RevertResearchLogic = 4;
+			Medival_Wave_Difficulty_Riser(4);
+		}
+		else if(StrContains(data, "res5") != -1)
+		{
+			RevertResearchLogic = 5;
+			Medival_Wave_Difficulty_Riser(5);
 		}
 
 		bool final = StrContains(data, "final_item") != -1;
@@ -639,19 +649,40 @@ public void GodAlaxios_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			switch(GetRandomInt(0,2))
+			if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
 			{
-				case 0:
+				switch(GetRandomInt(0,2))
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: You have no chance alone!");
+					case 0:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{crimson}: STOP BEING SO WEAK, HELP ME!!!!!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{crimson}: IM UNDER CONTROLL, HELP ME.....");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{crimson}: THIS THING IS TOO MUCH, HELP!!!!!!!!!");
+					}
 				}
-				case 1:
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comparison to Atlantis!!");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: Consider surrendering?!");
+					case 0:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{default}: You have no chance alone!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comparison to Atlantis!!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{default}: Consider surrendering?!");
+					}
 				}
 			}
 		}
@@ -817,7 +848,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
 			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && GetTeam(npc.index) == GetTeam(baseboss_index))
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && i_NpcInternalId[baseboss_index] != NPCId2 && GetTeam(npc.index) == GetTeam(baseboss_index))
 			{
 				allyAlive = true;
 			}
@@ -2270,23 +2301,33 @@ public void Raidmode_Alaxios_Win(int entity)
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	npc.m_bDissapearOnDeath = true;
 	BlockLoseSay = true;
-	switch(GetRandomInt(0,3))
+	
+	if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
 	{
-		case 0:
+		CPrintToChatAll("{lightblue}... You failed as expected, hopefully the xeno can put an end to the sea-Terror clan.");
+		CPrintToChatAll("{crimson}The enemy of my enemy is my ally as they say.");
+		CPrintToChatAll("{green}You thus offer yourself to the xeno infection to fight it......");
+	}
+	else
+	{
+		switch(GetRandomInt(0,3))
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: Atlantis will never fall!");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: I still have to take care of the {blue}deep sea{default}...");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: Threaten our livelyhood and you pay!");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: I have to inform {blue}Sensal{default} about this.");
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: Atlantis will never fall!");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: I still have to take care of the {blue}deep sea{default}...");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: Threaten our livelyhood and you pay!");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: I have to inform {blue}Sensal{default} about this.");
+			}
 		}
 	}
 }
