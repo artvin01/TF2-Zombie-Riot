@@ -805,11 +805,6 @@
 				"windows"	"21"
 				"linux"		"22"
 			}
-			"CTFWeaponBaseMelee::GetShootSound"
-			{
-				"windows"	"337"
-				"linux"		"343"
-			}
 			"CBaseAnimating::RefreshCollisionBounds"
 			{
 				"windows"	"218"
