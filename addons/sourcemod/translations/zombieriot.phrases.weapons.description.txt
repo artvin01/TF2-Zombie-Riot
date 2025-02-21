@@ -1198,11 +1198,8 @@
 	
 	"Fists Of Kahmlstein Desc"
 	{
-		"en"	"fists from Kahmlstein, His reign over cities and states has no end.\nProve your strength against him to gain a certain item to gain another ability..."
-		"fr"	"Poings de Kahmlstein, son règne sur les villes est sans fin.\nBattez-lui pour obtenir quelque chose qui donne une autre abilité..."
-		"chi"	"卡姆斯坦因的拳套，这个武器曾摧毁过无数个世界。\n打败他，他说不定会教你新招数..."
+		"en"	"fists from Kahmlstein, His reign over cities and states has no end.\neach 3rd hit deals 2.75x damage\nYour R ability summons a clone that attacks what you attack, and you fire only projectiles."
 	}
-
 	"Bad Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."

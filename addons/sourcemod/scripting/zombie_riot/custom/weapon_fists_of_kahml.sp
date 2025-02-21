@@ -109,7 +109,6 @@ public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
 
 	if(how_many_times_fisted[client] >= 3)
 	{
-		Rogue_OnAbilityUse(client, weapon);
 		if(IsValidEntity(viewmodelModel))
 		{
 			GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
