@@ -137,7 +137,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		DataPack pack3 = new DataPack();
 		pack3.WriteCell(GetClientUserId(client));
 		RequestFrames(CancelSoundEarlyMlynar, 40, pack3);
-
+		
 		for(int repeat; repeat <= MaxRepeats; repeat ++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, Speed, 99999.9, 0.0, -1, weapon, "", AngEffect);
@@ -154,6 +154,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 			RequestFrames(Mylnar_DeleteLaserAndParticle, 18, pack2);
 			AngEffect[1] += (180.0 / float(MaxRepeats));
 		}
+		
 
 		float vecSwingForward[3];
 		GetAngleVectors(ang2, vecSwingForward, NULL_VECTOR, NULL_VECTOR);

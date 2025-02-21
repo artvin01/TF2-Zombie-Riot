@@ -2241,7 +2241,7 @@ void StatusEffects_DebuffMarked()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Marked");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "M");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "X"); //dont display above head, so empty
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;

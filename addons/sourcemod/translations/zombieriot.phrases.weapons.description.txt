@@ -1326,9 +1326,7 @@
 
 	"Necromancy Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side.\nNot having your wand in your hand will disencurage your minion and half its damage."
-		"fr"	"Chaque attaque utilise du Mana. M2 convoque un minion.\nLes dégats de votre minion seront diminués à moitié si vous ne tenez pas cet arme."
-		"chi"	"M1消耗蓝，发射光球。M2召唤一个DDT小弟。\n当不手持此武器时小弟造成0.5倍伤害。"
+		"en"	"M2 Summons a minion.\nNot having your wand in your hand will half minion damage.\nMinion will only attack marked enemies\nM1 Marks enemies for 5 seconds"
 	}
 	"Necromancy Staff Pap 1"
 	{
