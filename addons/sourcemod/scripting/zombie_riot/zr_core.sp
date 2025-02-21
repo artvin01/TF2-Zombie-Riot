@@ -373,7 +373,6 @@ int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 
 int StoreWeapon[MAXENTITIES];
-int ClientAttribResetCount[MAXTF2PLAYERS];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
 float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 

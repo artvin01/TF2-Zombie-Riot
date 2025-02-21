@@ -12,6 +12,16 @@ static const char g_HurtSounds[][] = {
 	"zombiesurvival/medieval_raid/arkantos_hurt_2.mp3",
 };
 
+
+static const char g_SeaDeathSounds[][] = {
+	"zombiesurvival/medieval_raid/special_mutation/arkantos_death.mp3",
+};
+
+static const char g_SeaHurtSounds[][] = {
+	"zombiesurvival/medieval_raid/special_mutation/arkantos_hurt_1.mp3",
+	"zombiesurvival/medieval_raid/special_mutation/arkantos_hurt_2.mp3",
+};
+
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
@@ -43,6 +53,9 @@ static char g_SummonSounds[][] = {
 static char g_LastStand[][] = {
 	"zombiesurvival/medieval_raid/arkantos_rage.mp3",
 };
+static char g_SeaLastStand[][] = {
+	"zombiesurvival/medieval_raid/special_mutation/arkantos_rage.mp3",
+};
 
 static char g_RandomGroupScream[][] = {
 	"zombiesurvival/medieval_raid/battlecry1.mp3",
@@ -50,14 +63,23 @@ static char g_RandomGroupScream[][] = {
 	"zombiesurvival/medieval_raid/battlecry3.mp3",
 	"zombiesurvival/medieval_raid/battlecry4.mp3",
 };
+
+static char g_RandomGroupScreamSea[][] = {
+	"zombiesurvival/medieval_raid/special_mutation/battlecry1.mp3",
+	"zombiesurvival/medieval_raid/special_mutation/battlecry2.mp3",
+	"zombiesurvival/medieval_raid/special_mutation/battlecry3.mp3",
+	"zombiesurvival/medieval_raid/special_mutation/battlecry4.mp3",
+};
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 #define SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE	"misc/halloween/spell_mirv_explode_primary.wav"
 
 #define ALAXIOS_BUFF_MAXRANGE 500.0
 
+#define ALAXIOS_SEA_INFECTED 555
 int RevertResearchLogic = 0;
 static int NPCId;
+static int NPCId2;
 public void GodAlaxios_OnMapStart()
 {
 	NPCData data;
@@ -70,6 +92,18 @@ public void GodAlaxios_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
+
+	//different due to differnt precaches
+	strcopy(data.Name, sizeof(data.Name), "Sea-Infected God Alaxios");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_god_alaxios");
+	data.IconCustom = false;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache_SeaAlaxios;
+	NPCId2 = NPC_Add(data);
+
+
 	for (int i = 0; i < (sizeof(g_RandomGroupScream));   i++) { PrecacheSoundCustom(g_RandomGroupScream[i]);   }
 	RevertResearchLogic = 0;
 }
@@ -88,6 +122,22 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	for (int i = 0; i < (sizeof(g_LastStand));   i++) { PrecacheSoundCustom(g_LastStand[i]);   }
+}
+
+static void ClotPrecache_SeaAlaxios()
+{
+	for (int i = 0; i < (sizeof(g_SeaDeathSounds));       i++) { PrecacheSoundCustom(g_SeaDeathSounds[i]);       }
+	for (int i = 0; i < (sizeof(g_SeaHurtSounds));        i++) { PrecacheSoundCustom(g_SeaHurtSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));        i++) { PrecacheSound(g_MeleeHitSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));        i++) { PrecacheSound(g_MeleeAttackSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds));        i++) { PrecacheSound(g_MeleeMissSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
+	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
+	PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
+	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RandomGroupScreamSea));   i++) { PrecacheSoundCustom(g_RandomGroupScreamSea[i]);   }
+	for (int i = 0; i < (sizeof(g_SeaLastStand));   i++) { PrecacheSoundCustom(g_SeaLastStand[i]);   }
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -118,19 +168,38 @@ methodmap GodAlaxios < CClotBody
 	//		return;
 
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
-
-		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		
+		if(i_RaidGrantExtra[this.index] == ALAXIOS_SEA_INFECTED)
+		{
+			EmitCustomToAll(g_SeaHurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_SeaHurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		}
+		else
+		{
+			EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		}
 	//	this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(1.6, 2.5);
 	}
 	public void PlayDeathSound() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
-		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(i_RaidGrantExtra[this.index] == ALAXIOS_SEA_INFECTED)
+		{
+			EmitCustomToAll(g_SeaDeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_SeaDeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_SeaDeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_SeaDeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+
+		}
+		else
+		{
+			EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		}
 	}
 	public void PlayMeleeSound() 
 	{
@@ -142,10 +211,20 @@ methodmap GodAlaxios < CClotBody
 	}
 	public void PlayMeleeWarCry() 
 	{
-		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		if(i_RaidGrantExtra[this.index] == ALAXIOS_SEA_INFECTED)
+		{
+			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		}
+		else
+		{
+			EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+			EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		}
 	}
 	public void PlaySummonSound() 
 	{
@@ -176,11 +255,27 @@ methodmap GodAlaxios < CClotBody
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayRageSound() {
-		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+	public void PlayRageSound() 
+	{
+		if(i_RaidGrantExtra[this.index] == ALAXIOS_SEA_INFECTED)
+		{
+			EmitCustomToAll(g_SeaLastStand[GetRandomInt(0, sizeof(g_SeaLastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_SeaLastStand[GetRandomInt(0, sizeof(g_SeaLastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_SeaLastStand[GetRandomInt(0, sizeof(g_SeaLastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_SeaLastStand[GetRandomInt(0, sizeof(g_SeaLastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		}
+		else
+		{
+			EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		}
+	}
+	property float m_flAlaxiosSeaInfectedStance
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 
 	public GodAlaxios(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -218,7 +313,10 @@ methodmap GodAlaxios < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Alaxios Arrived");
+				if(StrContains(data, "seainfection") != -1)
+					ShowGameText(client_check, "item_armor", 1, "%t", "Sea Alaxios Arrived");
+				else
+					ShowGameText(client_check, "item_armor", 1, "%t", "Alaxios Arrived");
 			}
 		}
 
@@ -239,6 +337,11 @@ methodmap GodAlaxios < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 5;
 		}
+		if(StrContains(data, "seainfection") != -1)
+		{
+			b_NpcUnableToDie[npc.index] = true;
+			i_RaidGrantExtra[npc.index] = ALAXIOS_SEA_INFECTED;
+		}
 		RevertResearchLogic = 0;
 		if(StrContains(data, "res1") != -1)
 		{
@@ -254,6 +357,16 @@ methodmap GodAlaxios < CClotBody
 		{
 			RevertResearchLogic = 3;
 			Medival_Wave_Difficulty_Riser(3);
+		}
+		else if(StrContains(data, "res4") != -1)
+		{
+			RevertResearchLogic = 4;
+			Medival_Wave_Difficulty_Riser(4);
+		}
+		else if(StrContains(data, "res5") != -1)
+		{
+			RevertResearchLogic = 5;
+			Medival_Wave_Difficulty_Riser(5);
 		}
 
 		bool final = StrContains(data, "final_item") != -1;
@@ -278,6 +391,9 @@ methodmap GodAlaxios < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9999999.0;
 		}
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		if(StrContains(data, "seainfection") != -1)
+			npc.m_iBleedType = BLEEDTYPE_SEABORN;
+
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		
@@ -314,7 +430,6 @@ methodmap GodAlaxios < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime() + 15.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
 		npc.g_TimesSummoned = 0;
-		npc.m_bWasSadAlready = false;
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 		
 		if(RaidModeScaling < 55)
@@ -355,16 +470,39 @@ methodmap GodAlaxios < CClotBody
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
+		if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
+			music.Time = 189;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "lobotomy corp - insignia decay");
+			strcopy(music.Artist, sizeof(music.Artist), "???");
+			Music_SetRaidMusic(music);
+		}
+		else
+		{
+			
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
+			music.Time = 189;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights - Putrid");
+			strcopy(music.Artist, sizeof(music.Artist), "Arknights");
+			Music_SetRaidMusic(music);
+		}
 		Citizen_MiniBossSpawn();
 		
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
-		music.Time = 189;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Arknights - Putrid");
-		strcopy(music.Artist, sizeof(music.Artist), "Arknights");
-		Music_SetRaidMusic(music);
+
+		//Sea version: lobotomy corp - insignia decay
 
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
@@ -383,25 +521,168 @@ public void GodAlaxios_ClotThink(int iNPC)
 	GodAlaxios npc = view_as<GodAlaxios>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
+	if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+	{
+		if(i_TalkDelayCheck > 0)
+		{
+			if(npc.m_flAlaxiosSeaInfectedStance < gameTime)
+			{
+				i_TalkDelayCheck--;
+				switch(i_TalkDelayCheck)
+				{
+					case 4:
+					{
+						npc.m_bisWalking = false;
+						npc.AddActivityViaSequence("Lucian_Death_Real");
+						npc.PlayDeathSound();
+						CPrintToChatAll("{lightblue}...");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}...?");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{lightblue}...!?!?!?");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}!");
+					}
+					case 0:
+					{
+						f_AttackSpeedNpcIncreace[npc.index] *= 0.75;
+						fl_Extra_Damage[npc.index] *= 0.75;
+						CPrintToChatAll("{crimson}The infection wont let go. It wants him the most.");
+						RaidBossActive = EntIndexToEntRef(npc.index);
+						RaidAllowsBuildings = false;
+						npc.PlayRageSound();
+						SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
+						static float flPos[3]; 
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+						flPos[2] += 5.0;
+						ParticleEffectAt(flPos, "taunt_yeti_fistslam", 0.25);
+						npc.m_iChanged_WalkCycle = 4;
+						npc.SetActivity("ACT_WALK");
+						npc.m_bisWalking = true;
+						float EnemyPos[3];
+						float Range = 500.0;
+						//Kick everyone away in range, except the one target we hate, make sure to check line of sight too.
+						for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+						{
+							if(IsValidEnemy(npc.index, EnemyLoop))
+							{
+								GetEntPropVector(EnemyLoop, Prop_Send, "m_vecOrigin", EnemyPos);
+								float Distance = GetVectorDistance(flPos, EnemyPos);
+								if(Distance < Range)
+								{
+									//only apply the laser if they are near us.
+									if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop) && EnemyLoop == npc.m_iTargetWalkTo)
+									{
+										//Pull them.
+										static float angles[3];
+										GetVectorAnglesTwoPoints(EnemyPos, flPos, angles);
 
+										if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+											angles[0] = 0.0; // toss out pitch if on ground
+
+										static float velocity[3];
+										GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+										float attraction_intencity = 1.50;
+										ScaleVector(velocity, Distance * attraction_intencity);
+														
+														
+										// min Z if on ground
+										if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+											velocity[2] = fmax(325.0, velocity[2]);
+													
+										// apply velocity
+										TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);   
+									}
+									else if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop))
+									{
+										float damage = 50.0;
+
+										SDKHooks_TakeDamage(EnemyLoop, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);		
+										if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+											Elemental_AddNervousDamage(EnemyLoop, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));
+										//push them away.
+										static float angles[3];
+										GetVectorAnglesTwoPoints(EnemyPos, flPos, angles);
+
+										if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+											angles[0] = 0.0; // toss out pitch if on ground
+
+										static float velocity[3];
+										GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+										float attraction_intencity = 1500.0;
+										ScaleVector(velocity, attraction_intencity);
+														
+														
+										// min Z if on ground
+										if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
+										{
+											velocity[2] = 350.0;
+										}
+										else
+										{
+											velocity[2] = 200.0;
+										}
+													
+										// apply velocity
+										velocity[0] *= -1.0;
+										velocity[1] *= -1.0;
+									//	velocity[2] *= -1.0;
+										TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);    	
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return;
+		}
+	}
 	if(GetTeam(npc.index) != TFTeam_Red && LastMann)
 	{
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			switch(GetRandomInt(0,2))
+			if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
 			{
-				case 0:
+				switch(GetRandomInt(0,2))
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: You have no chance alone!");
+					case 0:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{crimson}: STOP BEING SO WEAK, HELP ME!!!!!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{crimson}: IM UNDER CONTROLL, HELP ME.....");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{crimson}: THIS THING IS TOO MUCH, HELP!!!!!!!!!");
+					}
 				}
-				case 1:
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
 				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comparison to Atlantis!!");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{lightblue}God Alaxios{default}: Consider surrendering?!");
+					case 0:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{default}: You have no chance alone!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comparison to Atlantis!!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}God Alaxios{default}: Consider surrendering?!");
+					}
 				}
 			}
 		}
@@ -412,20 +693,40 @@ public void GodAlaxios_ClotThink(int iNPC)
 		mp_bonusroundtime.IntValue = (9 * 2);
 		
 		ZR_NpcTauntWinClear();
-		for(int targ; targ<i_MaxcountNpcTotal; targ++)
-		{
-			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
-			{
-				SetTeam(baseboss_index, TFTeam_Red);
-				SetEntityCollisionGroup(baseboss_index, 24);
-			}
-		}
 		ForcePlayerLoss();
-		CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are coming, prepare to fight together NOW!!!");
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		for(int i; i<32; i++)
+		if(i_RaidGrantExtra[npc.index] != ALAXIOS_SEA_INFECTED)
 		{
+			for(int targ; targ<i_MaxcountNpcTotal; targ++)
+			{
+				int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
+				if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
+				{
+					SetTeam(baseboss_index, TFTeam_Red);
+					SetEntityCollisionGroup(baseboss_index, 24);
+				}
+			}
+			CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are coming, prepare to fight together NOW!!!");
+			RaidBossActive = INVALID_ENT_REFERENCE;
+			for(int i; i<32; i++)
+			{
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				int Spawner_entity = GetRandomActiveSpawner();
+				if(IsValidEntity(Spawner_entity))
+				{
+					GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+				}
+				int spawn_index = NPC_CreateByName("npc_seaslider", -1, pos, ang, TFTeam_Blue);
+				if(spawn_index > MaxClients)
+				{
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+					fl_Extra_Damage[spawn_index] = 25.0;
+					fl_Extra_Speed[spawn_index] = 1.5;
+				}
+			}
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			int Spawner_entity = GetRandomActiveSpawner();
@@ -434,38 +735,66 @@ public void GodAlaxios_ClotThink(int iNPC)
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			}
-			int spawn_index = NPC_CreateByName("npc_seaslider", -1, pos, ang, TFTeam_Blue);
+			int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
 			if(spawn_index > MaxClients)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
 				fl_Extra_Damage[spawn_index] = 25.0;
 				fl_Extra_Speed[spawn_index] = 1.5;
 			}
 		}
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		int Spawner_entity = GetRandomActiveSpawner();
-		if(IsValidEntity(Spawner_entity))
+		else
 		{
-			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-		}
-		int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
-		if(spawn_index > MaxClients)
-		{
-			NpcAddedToZombiesLeftCurrently(spawn_index, true);
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
-			fl_Extra_Damage[spawn_index] = 25.0;
-			fl_Extra_Speed[spawn_index] = 1.5;
+
+			CPrintToChatAll("{green}The Xeno infection sides with you...??!\nSuddenly a battle ensues between Xeno and the Sea infection with alaxios in possession..");
+			for(int i; i<32; i++)
+			{
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				int Spawner_entity = GetRandomActiveSpawner();
+				if(IsValidEntity(Spawner_entity))
+				{
+					GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+					GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+				}
+				int spawn_index = NPC_CreateByName("npc_xeno_acclaimed_swordsman", -1, pos, ang, TFTeam_Red);
+				if(spawn_index > MaxClients)
+				{
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+					fl_Extra_Damage[spawn_index] = 25.0;
+					fl_Extra_Speed[spawn_index] = 1.5;
+					TeleportNpcToRandomPlayer(spawn_index);
+				}
+			}
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			int Spawner_entity = GetRandomActiveSpawner();
+			if(IsValidEntity(Spawner_entity))
+			{
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+			}
+			int spawn_index = NPC_CreateByName("npc_xeno_raidboss_nemesis", -1, pos, ang, TFTeam_Red);
+			if(spawn_index > MaxClients)
+			{
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
+				fl_Extra_Damage[spawn_index] = 25.0;
+				fl_Extra_Speed[spawn_index] = 1.5;
+				TeleportNpcToRandomPlayer(spawn_index);
+			}
+			RaidBossActive = EntIndexToEntRef(npc.index);
 		}
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
 		return;
 	}
-	if(b_angered_twice[npc.index])
+	if(i_RaidGrantExtra[npc.index] != ALAXIOS_SEA_INFECTED && b_angered_twice[npc.index])
 	{
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
@@ -495,9 +824,18 @@ public void GodAlaxios_ClotThink(int iNPC)
 	if(f_AlaxiosCantDieLimit[npc.index] && f_AlaxiosCantDieLimit[npc.index] < GetGameTime())
 	{
 		int RandSound = GetRandomInt(0, sizeof(g_RandomGroupScream) - 1);
-		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+		{
+			EmitCustomToAll(g_RandomGroupScreamSea[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_RandomGroupScreamSea[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_RandomGroupScreamSea[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		}
+		else
+		{
+			EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToAll(g_RandomGroupScream[RandSound], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		}
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 	}
 	//float point impresicion...
@@ -543,69 +881,14 @@ public void GodAlaxios_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
-	/*
-	if(npc.m_flReviveAlaxiosTime)
-	{
-		if(npc.m_flReviveAlaxiosTime < gameTime)
-		{
-			if(npc.m_iChanged_WalkCycle == 5)
-			{
-				npc.m_flReviveAlaxiosTime = 0.0;
-				npc.AlaxiosFakeDeathState(0);
-			}
-			else
-			{
-				if(npc.m_iChanged_WalkCycle != 4)
-				{
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_WALK");
-					npc.StartPathing();
-					npc.m_flSpeed = 320.0;
-					npc.m_bisWalking = true;
-				}
-				SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.index, RENDER_NORMAL);
-				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
-				npc.m_flReviveAlaxiosTime = 0.0;
-				b_ThisEntityIgnored[npc.index] = false;
-				b_DoNotUnStuck[npc.index] = false;
-			}
-		}
-	}
-	if(b_ThisEntityIgnored[npc.index])
-	{
-		int HealByThis = ReturnEntityMaxHealth(npc.index) / 4000;
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
-		}
-		bool allyAlive = false;
-		for(int targ; targ<i_MaxcountNpc; targ++)
-		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ALAXIOS)
-			{
-				allyAlive = true;
-			}
-		}
-		if(!allyAlive)
-		{
-			npc.AlaxiosFakeDeathState(0);
-		}
-		return;
-	}
-	*/
+
 	if(npc.g_TimesSummoned == 4)
 	{
 		bool allyAlive = false;
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
 			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && GetTeam(npc.index) == GetTeam(baseboss_index))
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != NPCId && i_NpcInternalId[baseboss_index] != NPCId2 && GetTeam(npc.index) == GetTeam(baseboss_index))
 			{
 				allyAlive = true;
 			}
@@ -625,7 +908,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 			if(!npc.Anger)
 			{
 				npc.PlayRageSound();
-				AlaxiosSayWordsAngry();
+				AlaxiosSayWordsAngry(npc.index);
 				npc.Anger = true;
 				b_NpcIsInvulnerable[npc.index] = false;
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) * 6) / 7);
@@ -787,8 +1070,6 @@ public void GodAlaxios_ClotThink(int iNPC)
 					npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 1.5; //1.5 seconds to prepare.
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5; //lets not intiate any new ability for a second.
 				}
-
-				
 			}
 		}
 	}
@@ -838,6 +1119,21 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			damage = 0.0;
 			return Plugin_Handled;
 		}
+	}
+	
+	if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+	{
+		if(GetTeam(npc.index) != TFTeam_Red && !b_angered_twice[npc.index] && b_NpcUnableToDie[npc.index])
+		{
+			GiveProgressDelay(55.0);
+			b_angered_twice[npc.index] = true;
+			RaidModeTime = 9999999.9;
+			RaidBossActive = INVALID_ENT_REFERENCE;
+			CPrintToChatAll("{lightblue}God Alaxios stands down... he is free...");
+			npc.m_flAlaxiosSeaInfectedStance = GetGameTime(npc.index) + 1.0;
+			i_TalkDelayCheck = 5;
+		}
+		return Plugin_Changed;
 	}
 	if(GetTeam(npc.index) != TFTeam_Red && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
@@ -906,26 +1202,15 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-			AlaxiosSayWords();
+			AlaxiosSayWords(npc.index);
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
-			if(npc.m_bWasSadAlready)
-			{
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(2.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(2.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(3.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(5000.0 * MultiGlobalHighHealthBoss), 1, true);		
-			}
-			else
-			{
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(5.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(8.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHighHealthBoss), 1, true);		
-			}
+			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobalEnemy));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(5.0 * MultiGlobalEnemy));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(8.0 * MultiGlobalEnemy));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHighHealthBoss), 1, true);		
 		}
 	}
 	else if(i_RaidGrantExtra[npc.index] == 3)
@@ -964,26 +1249,15 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-			AlaxiosSayWords();
+			AlaxiosSayWords(npc.index);
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
-			if(npc.m_bWasSadAlready)
-			{
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(5.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(1.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalHighHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemyBoss), true);		
-			}
-			else
-			{
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(15.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(2.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(10000.0 * MultiGlobalHighHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemyBoss), true);				
-			}
+			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(15.0 * MultiGlobalEnemy));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(2.0 * MultiGlobalEnemy));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(10000.0 * MultiGlobalHighHealthBoss), 1, true);		
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemyBoss), true);				
 		}
 	}
 	else if(i_RaidGrantExtra[npc.index] == 4)
@@ -1023,83 +1297,110 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-			AlaxiosSayWords();
+			AlaxiosSayWords(npc.index);
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
-			if(npc.m_bWasSadAlready)
-			{
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(1.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(5.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalHighHealthBoss), 1);
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(75000.0 * MultiGlobalHighHealthBoss), 1);
-			}
-			else
-			{
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(2.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(8.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(2500.0 * MultiGlobalHighHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(125000.0 * MultiGlobalHighHealthBoss), 1, true);					
-			}
+			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(2.0 * MultiGlobalEnemy));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(8.0 * MultiGlobalEnemy));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(2500.0 * MultiGlobalHighHealthBoss), 1, true);		
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(125000.0 * MultiGlobalHighHealthBoss), 1, true);		
 		}
 	}
 	else
 	{
-		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
+		if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
 		{
-			npc.g_TimesSummoned = 1;
-			npc.PlaySummonSound();
-			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
+			{
+				npc.g_TimesSummoned = 1;
+				npc.PlaySummonSound();
+				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(6.0 * MultiGlobalEnemy));
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_arbalest",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_longbowmen",50000, RoundToCeil(4.0 * MultiGlobalEnemy));
-		}
-		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
-		{
-			npc.g_TimesSummoned = 2;
-			npc.PlaySummonSound();
-			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-			
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_samurai",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
-		}
-		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
-		{
-			npc.g_TimesSummoned = 3;
-			npc.PlaySummonSound();
-			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_paladin",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
-		}
-		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
-			AlaxiosSayWords();
-			npc.g_TimesSummoned = 4;
-			npc.PlaySummonSound();
-			if(npc.m_bWasSadAlready)
-			{
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(1.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(25000.0 * MultiGlobalHighHealthBoss), 1);
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(750000.0 * MultiGlobalHighHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(150000.0 * MultiGlobalHighHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_knight",100000, RoundToCeil(6.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_archer",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_melee_assasin",75000, RoundToCeil(4.0 * MultiGlobalEnemy));
 			}
-			else
+			else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 			{
+				npc.g_TimesSummoned = 2;
+				npc.PlaySummonSound();
+				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+				
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(12.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_defender",200000, RoundToCeil(12.0 * MultiGlobalEnemy));
+			}
+			else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
+			{
+				npc.g_TimesSummoned = 3;
+				npc.PlaySummonSound();
+				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_medic",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_guard",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_beserker",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_pathshaper", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_tidelinkedarchon", RoundToCeil(200000.0 * MultiGlobalHighHealthBoss), 1);
+			}
+			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
+				AlaxiosSayWords(npc.index);
+				npc.g_TimesSummoned = 4;
+				npc.PlaySummonSound();
+				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_longrange",75000, RoundToCeil(10.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseapredator",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseaspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_isharmla", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_specialist",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
+			}	
+		}
+		else
+		{
+			if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
+			{
+				npc.g_TimesSummoned = 1;
+				npc.PlaySummonSound();
+				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(6.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_arbalest",50000, RoundToCeil(12.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_longbowmen",50000, RoundToCeil(4.0 * MultiGlobalEnemy));
+			}
+			else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
+			{
+				npc.g_TimesSummoned = 2;
+				npc.PlaySummonSound();
+				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+				
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_samurai",75000, RoundToCeil(12.0 * MultiGlobalEnemy));
+			}
+			else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
+			{
+				npc.g_TimesSummoned = 3;
+				npc.PlaySummonSound();
+				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_paladin",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+			}
+			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
+				AlaxiosSayWords(npc.index);
+				npc.g_TimesSummoned = 4;
+				npc.PlaySummonSound();
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);		
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), 1, true);				
-			}
+			}			
 		}
 	}
 }
@@ -1121,25 +1422,33 @@ public void GodAlaxios_NPCDeath(int entity)
 		TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		npc.PlayDeathSound();
-		
-		switch(GetRandomInt(0,3))
+			
+		if(i_RaidGrantExtra[npc.index] != ALAXIOS_SEA_INFECTED)
 		{
-			case 0:
+			switch(GetRandomInt(0,3))
 			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: I have failed Atlantis...");
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}God Alaxios{default}: I have failed Atlantis...");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}God Alaxios{default}: How was my army defeated..?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}God Alaxios{default}: You dont know what you are doing!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}God Alaxios{default}: We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
+				}
 			}
-			case 1:
-			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: How was my army defeated..?");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: You dont know what you are doing!");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{lightblue}God Alaxios{default}: We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
-			}
+		}
+		else
+		{
+			CPrintToChatAll("{lightblue}God Alaxios{default}: Im.. im free..?");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: He IMMEDIETLY leaves the battlefield... you couldnt even trace him.");
 		}
 	}
 	else
@@ -1299,7 +1608,9 @@ void GodAlaxiosSelfDefense(GodAlaxios npc, float gameTime)
 							WorldSpaceCenter(target, vecHit);
 										
 							float damage = 20.0;
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);	
+							if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));							
 							
 							bool Knocked = false;
 							
@@ -1473,6 +1784,8 @@ void GodAlaxiosJumpSpecial(GodAlaxios npc, float gameTime)
 				
 			Explode_Logic_Custom(damage * zr_smallmapbalancemulti.FloatValue, 0, npc.index, -1, ThrowPos,Range * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 20);
 			TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+				SeaFounder_SpawnNethersea(ThrowPos);
 			
 			npc.SetVelocity({0.0,0.0,-1000.0});
 
@@ -1685,6 +1998,8 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 							float damage = 50.0;
 
 							SDKHooks_TakeDamage(EnemyLoop, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);		
+							if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+								Elemental_AddNervousDamage(EnemyLoop, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));
 							//push them away.
 							static float angles[3];
 							GetVectorAnglesTwoPoints(EnemyPos, pos, angles);
@@ -1741,6 +2056,8 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 									PluginBot_Jump(npcenemy.index, flPos_1);
 									float damage = 50.0;
 									SDKHooks_TakeDamage(entity_close, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, _);	
+									if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+										Elemental_AddNervousDamage(entity_close, npc.index, RoundToCeil(damage * RaidModeScaling * 0.1));
 								}
 							}
 						}
@@ -1848,51 +2165,101 @@ void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 }
 
 
-void AlaxiosSayWords()
+void AlaxiosSayWords(int entity)
 {
-	switch(GetRandomInt(0,3))
+	if(i_RaidGrantExtra[entity] == ALAXIOS_SEA_INFECTED)
 	{
-		case 0:
+		switch(GetRandomInt(0,3))
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios calls upon the infected.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios attracts nearby creatures.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios is reviving dead sea creatures.");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios is never alone, infected or not...");
+			}
 		}
-		case 1:
+	}
+	else
+	{
+		switch(GetRandomInt(0,3))
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: My army will always help me back up!");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: Me and my army, as one, will never be defeated!");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: Together for Atlantis! As one and for all!");
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: My army will always help me back up!");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: Me and my army, as one, will never be defeated!");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: Together for Atlantis! As one and for all!");
+			}
 		}
 	}
 }
 
-void AlaxiosSayWordsAngry()
+void AlaxiosSayWordsAngry(int entity)
 {
 	if(!Waves_InFreeplay())
 		RaidModeTime += 30.0;
 
-	switch(GetRandomInt(0,3))
+	if(i_RaidGrantExtra[entity] == ALAXIOS_SEA_INFECTED)
 	{
-		case 0:
+		switch(GetRandomInt(0,3))
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios Screams for help...");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios's head is under full controll, free him.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios, even if strong, cant resist everything.");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}Free him, help him.");
+			}
 		}
-		case 1:
+	}
+	else
+	{
+		switch(GetRandomInt(0,3))
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!!");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR THE FUTURE!!!!!!!");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR ATLANTIS!!!!!!!!!");
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!!");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR THE FUTURE!!!!!!!");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR ATLANTIS!!!!!!!!!");
+			}
 		}
 	}
 }
@@ -1980,23 +2347,33 @@ public void Raidmode_Alaxios_Win(int entity)
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	npc.m_bDissapearOnDeath = true;
 	BlockLoseSay = true;
-	switch(GetRandomInt(0,3))
+	
+	if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
 	{
-		case 0:
+		CPrintToChatAll("{lightblue}... You failed as expected, hopefully the xeno can put an end to the sea-Terror clan.");
+		CPrintToChatAll("{crimson}The enemy of my enemy is my ally as they say.");
+		CPrintToChatAll("{green}You thus offer yourself to the xeno infection to fight it......");
+	}
+	else
+	{
+		switch(GetRandomInt(0,3))
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: Atlantis will never fall!");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: I still have to take care of the {blue}deep sea{default}...");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: Threaten our livelyhood and you pay!");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: I have to inform {blue}Sensal{default} about this.");
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: Atlantis will never fall!");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: I still have to take care of the {blue}deep sea{default}...");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: Threaten our livelyhood and you pay!");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}God Alaxios{default}: I have to inform {blue}Sensal{default} about this.");
+			}
 		}
 	}
 }

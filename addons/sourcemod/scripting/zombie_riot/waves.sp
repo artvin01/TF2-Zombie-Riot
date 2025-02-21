@@ -3137,7 +3137,7 @@ static Action ReadyUpHack(Handle timer)
 	// We can't call ResetPlayerAndTeamReadyState to reset m_bPlayerReadyBefore
 	// So the timer won't go down as players ready up again
 	// Were doing it ourselves here
-
+	
 	if(FindEntityByClassname(-1, "tf_gamerules") != -1 && GameRules_GetRoundState() == RoundState_BetweenRounds)
 	{
 		float time = GameRules_GetPropFloat("m_flRestartRoundTime");

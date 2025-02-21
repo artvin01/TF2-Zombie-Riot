@@ -7,7 +7,7 @@
 			"CLagCompensationManager::FrameUpdatePostEntityThink_OFFSET"
 			{
 				"library"	"server"
-				"linux"		"16"
+				"linux"			"16"
 				"windows"		"15"
 				"linux64"		"16"
 				"windows64"		"15"
@@ -36,11 +36,11 @@
 			{
 				//"FinishLagCompensation"
 				"library"	"server"
-				"linux64"		"@_ZN23CLagCompensationManager21FinishLagCompensationEP11CBasePlayer" 
-				"windows64"		"\x4C\x8B\xDC\x49\x89\x4B\x08\x53\x48\x81\xEC\xC0\x00\x00\x00"
+			//	"linux64"		"@_ZN23CLagCompensationManager21FinishLagCompensationEP11CBasePlayer" 
+			//	"windows64"		"\x4C\x8B\xDC\x49\x89\x4B\x08\x53\x48\x81\xEC\xC0\x00\x00\x00"
 				
 				"linux"		"@_ZN23CLagCompensationManager21FinishLagCompensationEP11CBasePlayer"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x40\x8B\x15\x2A\x2A\x2A\x2A\x53\x56\x33\xF6\x8B\xD9"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x44\x8B\x15\x2A\x2A\x2A\x2A"
 			}
 			"CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE"
 			{

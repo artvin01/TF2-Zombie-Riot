@@ -194,7 +194,6 @@ void NPC_ConfigSetup()
 	XenoOuroborosEkas_OnMapStart_NPC();
 
 	
-	NaziPanzer_OnMapStart_NPC();
 	WanderingSpirit_OnMapStart_NPC();
 	VengefullSpirit_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
@@ -1328,7 +1327,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/xeno_lab/npc_xeno_patient_few.sp"
 #include "zombie_riot/npc/xeno_lab/npc_xeno_ekas_robo.sp"
 
-#include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"

@@ -687,6 +687,13 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			{
 				Blitzkrieg_Kit_ModifyMeleeDmg(client, damage);
 			}
+			case WEAPON_KAHMLFIST:
+			{
+				//recoded, prevent abuse
+				float Attrib = Attributes_Get(weapon, 1, 1.0);
+				if(Attrib >= 2.75)
+					Attributes_Set(weapon, 1, 1.0);
+			}
 		}
 #endif
 		

@@ -6,22 +6,23 @@
 		{
 			"CWeaponMedigun::CreateMedigunShield"
 			{
-				// find entity_medigun_shield string with more then just 1 block, the main fuction, exit that and there should only be 1 function where its contained
+				// find entity_medigun_shield string with more then just 1 block, the main fuction, 
+				//exit that and there should only be 1 function where its contained
 				//thats it.
 				
 				"windows64"	"\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x30\x8B\x91\x58\x0A\x00\x00"
 				"linux64"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
 				
-				"windows"	"\x55\x8B\xEC\x51\x8B\x15\x2A\x2A\x2A\x2A\x57"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x34\x8B\x15\x2A\x2A\x2A\x2A"
 				"linux"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
 			}
 			"CTFPlayerShared::RecalculatePlayerBodygroups"
 			{
 				// string aPostInventoryA, most top function.
-				"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8B\x89\xC0\x01\x00\x00"
-				"linux64"		"@_ZN15CTFPlayerShared27RecalculatePlayerBodygroupsEv"
+			//	"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8B\x89\xC0\x01\x00\x00"
+			//	"linux64"		"@_ZN15CTFPlayerShared27RecalculatePlayerBodygroupsEv"
 				
-				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\xC7\x45\xFC\x00\x00\x00\x00\x57"
+				"windows"	"\x56\x8B\xF1\x57\x8B\x8E\x8C\x01\x00\x00\x83\xB9\xA0\x03\x00\x00\x00"
 				"linux"		"@_ZN15CTFPlayerShared27RecalculatePlayerBodygroupsEv"
 			}
 			
@@ -41,25 +42,15 @@
 				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x00\xD9\x99\x88\x0B\x00\x00"
 				"linux"		"@_ZN11CBasePlayer13SnapEyeAnglesERK6QAngle"
 			}
-			"CBasePlayer::SnapEyeAngles"
-			{
-				// string "Usage:  setang pitch yaw <roll optional"
-				//Very short CALL
-				"windows64"	"\x8B\x02\x89\x81\x6C\x0D\x00\x00"
-				"linux64"		"@_ZN11CBasePlayer13SnapEyeAnglesERK6QAngle"
-				
-				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x00\xD9\x99\x88\x0B\x00\x00"
-				"linux"		"@_ZN11CBasePlayer13SnapEyeAnglesERK6QAngle"
-			}
 			
 			"CBaseEntity::SetAbsVelocity"
 			{
 				// string "TRAIN(%s); Blocked by %s\n"
 				// inside a very tall block, bottom call, this call is modearetly sized and has no strings.
-				"windows64"	"\x48\x89\x5C\x24\x10\x57\x48\x83\xEC\x40\xF3\x0F\x10\x81\x2C\x03\x00\x00"
-				"linux64"		"@_ZN11CBaseEntity14SetAbsVelocityERK6Vector"
+			//	"windows64"	"\x48\x89\x5C\x24\x10\x57\x48\x83\xEC\x40\xF3\x0F\x10\x81\x2C\x03\x00\x00"
+			//	"linux64"		"@_ZN11CBaseEntity14SetAbsVelocityERK6Vector"
 				
-				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x53\x8B\x5D\x08\x57\x8B\xF9\xF3\x0F\x10\x03"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x53\x56\x8B\x75\x08\x8B\xD9\xF3\x0F\x10\x06"
 				"linux"		"@_ZN11CBaseEntity14SetAbsVelocityERK6Vector"
 			}
 			"CTFSpellBook::CastSelfStealth"
@@ -75,26 +66,7 @@
 			"CTFPlayer::TeamFortress_SetSpeed()"
 			{
 				"linux"		"@_ZN9CTFPlayer21TeamFortress_SetSpeedEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x28\xA1\x2A\x2A\x2A\x2A\x56"
-			}
-			"CBaseObject::ShouldQuickBuild"
-			{
-				//string "upgrade_rate_mod" directly it.
-				"linux64"		"@_ZN11CBaseObject16ShouldQuickBuildEv"
-				"windows64"	"\x40\x53\x48\x83\xEC\x20\x48\x83\x3D\x42\x00\x82\x00\x00"
-				
-				"linux"		"@_ZN11CBaseObject16ShouldQuickBuildEv"
-				"windows"	"\x83\x3D\x2A\x2A\x2A\x2A\x00\x56\x8B\xF1\x74\x2A\x8B\x06"
-			}
-			"CTFNavMesh::ComputeBlockedArea"
-			{
-				"library"	"server"
-				"linux64"		"@_ZN10CTFNavMesh19ComputeBlockedAreasEv"
-				"windows64"		"\x40\x55\x53\x41\x54\x41\x57"
-
-				// aFuncDoor_0 is there twice with team filter
-				"linux"		"@_ZN10CTFNavMesh19ComputeBlockedAreasEv"
-				"windows"		"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\xE8\x09\x00\x00"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x24\xA1\x2A\x2A\x2A\x2A\x56\x8B\xF1\x89\x75\xF0"
 			}
 			"NextBotGroundLocomotion::UpdateGroundConstraint"
 			{
@@ -116,26 +88,6 @@
 				
 				"linux"		"@_ZN17CBaseCombatWeapon12FinishReloadEv"
 				"windows"	"\x56\x8B\xF1\x8B\x06\x8B\x80\xEC\x06\x00\x00\xFF\xD0\x84\xC0\x74\x2A\xC6\x86\xD8\x05\x00\x00\x00"
-			}
-			"CObjectSentrygun::Fire"
-			{
-				//string mult_engy_sentry_damage with TF_3rdPersonMuzzleFlash_SentryGun string too
-				"library"	"server"
-				"linux64"		"@_ZN16CObjectSentrygun4FireEv"
-				"windows64"	"\x40\x55\x57\x48\x8D\xAC\x24\x38\xFD\xFF\xFF"	
-				
-				"linux"		"@_ZN16CObjectSentrygun4FireEv"
-				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x88\x02\x00\x00\x56\x57"
-			}
-			"CObjectSentrygun::FindTarget"
-			{
-				//mult_sentry_firerate, small block at the very top, and hope.
-				"library"	"server"
-				"linux64"		"@_ZN16CObjectSentrygun10FindTargetEv"
-				"windows64"	"\x40\x55\x56\x41\x57\x48\x8D\xAC\x24\x10\xFF\xFF\xFF"
-				
-				"linux"		"@_ZN16CObjectSentrygun10FindTargetEv"
-				"windows"	"\x55\x8B\xEC\x81\xEC\xD0\x00\x00\x00\x53\x56\x57"
 			}
 			"CTFPlayer::CanAirDash"
 			{
@@ -170,42 +122,32 @@
 				"linux"		"@_ZN9CTFPlayer10RegenThinkEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x7C\x56\x8B\xF1"
 			}
-			"CTFPlayer::RemoveAllOwnedEntitiesFromWorld"
-			{
-				//String "Halloween.PlayerEscapedUnderworld" and "escaped_loot_island"
-				"library"	"server"
-				"linux64"		"@_ZN9CTFPlayer31RemoveAllOwnedEntitiesFromWorldEb"
-				"windows64"	"\x48\x89\x5C\x24\x10\x56\x48\x83\xEC\x20\x0F\xB6\xF2"
-				
-				"linux"		"@_ZN9CTFPlayer31RemoveAllOwnedEntitiesFromWorldEb"
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\xE8\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A"
-			}
 			"CBaseEntity::SetLocalOrigin" // String aBadSetlocalori,   Bad SetLocalOrigin(%f,%f,%f) on %s\n
 			{
 				"library"	"server"
-				"linux64"		"@_ZN11CBaseEntity14SetLocalOriginERK6Vector"
-				"windows64"	"\x48\x89\x5C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x50\xF3\x0F\x10\x0D\xE1\x45\xA4\x00"
+			//	"linux64"		"@_ZN11CBaseEntity14SetLocalOriginERK6Vector"
+			//	"windows64"	"\x48\x89\x5C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x50\xF3\x0F\x10\x0D\xE1\x45\xA4\x00"
 				
 				"linux"		"@_ZN11CBaseEntity14SetLocalOriginERK6Vector"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x14\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x56\x8B\x75\x08\x0F\x28\xC1\x0F\x57\x05\x2A\x2A\x2A\x2A\x57\x8B\xF9\xF3\x0F\x10\x16\x0F\x2F\xD0\x89\x7D\xFC\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x56\x04\x0F\x2F\xD0\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x56\x08\x0F\x2F\xD0\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\x8B\x06\x81\xC7\x40\x03\x00\x00"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x08\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x56\x8B\x75\x08\x0F\x28\xC1\x0F\x57\x05\x2A\x2A\x2A\x2A\x57\x8B\xF9\xF3\x0F\x10\x16\x0F\x2F\xD0\x89\x7D\xF8\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x5E\x04\x0F\x2F\xD8\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCB\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x5E\x08\x0F\x2F\xD8\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCB\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2E\x97\x40\x03\x00\x00"
 			}
 			"CBaseEntity::SetAbsOrigin" // String models/airboat.mdl, look up, first call
 			{
 				"library"	"server"
-				"linux64"		"@_ZN11CBaseEntity12SetAbsOriginERK6Vector"
-				"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x70\x48\x8B\xFA"
+			//	"linux64"		"@_ZN11CBaseEntity12SetAbsOriginERK6Vector"
+			//	"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x70\x48\x8B\xFA"
 				
 				"linux"		"@_ZN11CBaseEntity12SetAbsOriginERK6Vector"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x40\x56\x8B\x75\x08\x57\x8B\xF9"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x44\x56\x57\x8B\x7D\x08\x8B\xF1\xE8\x2A\x2A\x2A\x2A"
 			}
 			"CBaseEntity::SetAbsAngles" // String models/airboat.mdl, look up, 2nd call
 			{
 				"library"	"server"
-				"linux64"		"@_ZN11CBaseEntity12SetAbsAnglesERK6QAngle"
-				"windows64"	"\x48\x89\x5C\x24\x18\x56\x48\x81\xEC\xA0\x00\x00\x00\x48\x8B\xF2"
+			//	"linux64"		"@_ZN11CBaseEntity12SetAbsAnglesERK6QAngle"
+			//	"windows64"	"\x48\x89\x5C\x24\x18\x56\x48\x81\xEC\xA0\x00\x00\x00\x48\x8B\xF2"
 				
 				"linux"		"@_ZN11CBaseEntity12SetAbsAnglesERK6QAngle"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x70\x53\x8B\x5D\x08\x56\x8B\xF1"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x74\x53\x8B\x5D\x08\x56\x8B\xF1\xE8\x2A\x2A\x2A\x2A"
 			}
 			"CBaseAnimating::InvalidateBoneCache"// Void CBaseCombatCharacter::Weapon_Drop ("ValveBiped.Weapon_bone"), Big function with 11 calls, the 5th one from top, very small function
 			{
@@ -235,28 +177,6 @@
 				"linux"		"@_ZN19CTFProjectile_Arrow6CreateERK6VectorRK6QAngleff16ProjectileType_tP11CBaseEntityS8_"
 				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x18\x57\x83\xFE\x0B"
 			}
-			"CObjectDispenser::MakeCarriedObject" //offset aBuildingDispen ; "Building_Dispenser.Idle"  one with 5 calls
-			{
-				// windows64 may be inaccurate!!!
-				"library"	"server"
-				"linux64"		"@_ZN11CBaseObject17MakeCarriedObjectEP9CTFPlayer"
-				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x48\x8D\x05\x0A\x2A\x4B\x00"
-				
-				
-				"linux"		"@_ZN11CBaseObject17MakeCarriedObjectEP9CTFPlayer"
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8B\x86\x0C\x0B\x00\x00"
-			}
-			"CObjectSentrygun::MakeCarriedObject" // offset aPlayerCarryobj , with "userid" and "object" go up and find Xref, find the one with only 2 calls and no strings.
-			{
-				// , use CBaseObject::MakeCarriedObject possibly, go backwards from it, guess which of the two without a string.
-				// (\x48\x85\xD2\x0F\x84\x2A\x2A\x2A\x2A\x48\x89\x6C\x24\x18\x57\x48\x83\xEC\x20\x80\xB9\x74\x0C\x00\x00\x01)
-				
-				"library"	"server"
-				"linux64"	"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
-				
-				"linux"	"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
-				"windows"	"\x55\x8B\xEC\x51\x56\x57\xFF\x75\x08\x8B\xF1\xE8\x2A\x2A\x2A\x2A\x8B\x86\x04\x0B\x00\x00"
-			}
 			"Studio_FindAttachment"
 			{
 				//sentry_on_go_active -> CBaseAnimating::LookupAttachment -> Studio_FindAttachment
@@ -273,31 +193,6 @@
 				
 				"linux"		"@_ZN12CTFGameRules15CalcPlayerScoreEP12RoundStats_tP9CTFPlayer"
 				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC3\x8B\x57\x38"
-			}
-			"CBaseObject::FinishedBuilding" //CBaseObject::FinishedBuilding(CBaseObject *__hidden this)
-			{
-				//aObjectPoints string, then check XREF from that function, only one exists, thats the one.
-				// It should have no strings at all
-				"linux64"		"@_ZN11CBaseObject16FinishedBuildingEv"
-				"windows64"	"\x48\x89\x5C\x24\x10\x57\x48\x81\xEC\xA0\x00\x00\x00\xB2\x01"
-				"linux"		"@_ZN11CBaseObject16FinishedBuildingEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x6C\x56\x57\x6A\x01"
-			}
-			"CTFProjectile_Arrow::StrikeTarget"
-			{
-				"library"	"server"
-				//String "Weapon_Arrow.ImpactFlesh", long function.
-				"linux" "@_ZN19CTFProjectile_Arrow12StrikeTargetEP13mstudiobbox_tP11CBaseEntity"
-				"windows"	"\x55\x8B\xEC\x81\xEC\x0C\x01\x00\x00\x53\x8B\x5D\x0C\x56\x57\x8B\xF9"
-			}
-			"CTFBuffItem::RaiseFlag" 
-			{
-				"library"	"server"
-				"linux64" 	"@_ZN11CTFBuffItem9RaiseFlagEv"
-				"windows64" 	"\x48\x89\x5C\x24\x20\x56\x48\x83\xEC\x30\x8D\x82\x55\xFF\xFF\xFF"
-				
-				"linux" 	"@_ZN11CTFBuffItem9RaiseFlagEv"
-				"windows" 	"\x55\x8B\xEC\x8B\x55\x08\x57\x8B\xF9"
 			}
 			// string "Weapon_BuffBanner.HornBlue" is a func WITHOUT "models/workshop/weapons/c_models/c_para"
 			"CTFBuffItem::BlowHorn" 
@@ -333,11 +228,11 @@
 			{
 				// semi-unique xref "PlayerLoadoutUpdated"
 				"library"		"server"
-				"linux64"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
-				"windows64"		"\x48\x8B\xC4\x48\x89\x50\x10\x55\x53\x56\x57\x41\x54\x41\x55"
+			//	"linux64"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
+			//	"windows64"		"\x48\x8B\xC4\x48\x89\x50\x10\x55\x53\x56\x57\x41\x54\x41\x55"
 
 				"linux"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
-				"windows"		"\x55\x8B\xEC\x83\xEC\x74\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8D\x8F\xE0\x1A\x00\x00"
+				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
 
 			}
 			"CTFWeaponBaseMelee::GetShootSound"
@@ -351,24 +246,14 @@
 				"windows"			"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x8B\xF9\x83\xFB\x09"
 
 			}
-			"CTFWeaponBaseMelee::Smack"
-			{
-				// string melee_cleave_attack, only once.
-				"library"			"server"
-				"linux64"			"@_ZN18CTFWeaponBaseMelee5SmackEv"
-				"windows64"			"\x40\x57\x41\x57\x48\x81\xEC\xC8\x00\x00\x00"
-				
-				"linux"			"@_ZN18CTFWeaponBaseMelee5SmackEv"
-				"windows"		"\x55\x8B\xEC\x83\xEC\x74\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x89\x45\xF8"
-			}
 			"CBaseAnimating::ResetSequenceInfo" //( )
 			{
 				"library"	"server"
 				// string "Halloween.EyeballBossStunned" and "Max Eyeball DPS taken = %3.2f\n"
-				"windows64"	"\x41\x56\x48\x83\xEC\x20\x48\x8B\x05\xBB\x38\xB4\x00"
-				"linux64"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
+			//	"windows64"	"\x41\x56\x48\x83\xEC\x20\x48\x8B\x05\xBB\x38\xB4\x00"
+			//	"linux64"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
 				
-				"windows"	"\x55\x8B\xEC\x83\xEC\x10\x56\x8B\xF1\x83\xBE\xD8\x03\x00\x00\xFF"
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x83\xBE\xD8\x03\x00\x00\xFF"
 				"linux"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
 			}			
 			"CTFPlayerShared::PulseRageBuff()"
@@ -390,15 +275,6 @@
 				
 				"linux"      "@_ZN18CTFWeaponBaseMelee20DoSwingTraceInternalER10CGameTracebP10CUtlVectorIS0_10CUtlMemoryIS0_iEE"
 				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x38\x05\x00\x00"
-			}
-			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
-			{
-				// Does not work on Windows!!
-				// "server_changelevel_failed" -> (Large Function) CTeamplayRoundBasedRules::CTeamplayRoundBasedRules
-				// CTeamplayRoundBasedRules calls ResetPlayerAndTeamReadyState
-				"library"	"server"
-				"linux64"	"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
-				"linux"		"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
 			}
 			"CTFGCServerSystem::PreClientUpdate"
 			{
@@ -425,13 +301,6 @@
 				"signature"	"CTFPlayer::TeamFortress_SetSpeed()"
 				"callconv"	"thiscall"
 				"return"	"void"
-				"this"		"entity"
-			}
-			"CBaseObject::ShouldQuickBuild"
-			{
-				"signature"	"CBaseObject::ShouldQuickBuild"
-				"callconv"	"thiscall"
-				"return"	"bool"
 				"this"		"entity"
 			}
 			"CEconItemView::IterateAttributes"
@@ -517,13 +386,6 @@
 				
 				}
 			}
-			"CTFBuffItem::RaiseFlag"
-			{
-				"signature"    	"CTFBuffItem::RaiseFlag"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"entity"
-			}
 			"CTFBuffItem::BlowHorn"
 			{
 				"signature"    	"CTFBuffItem::BlowHorn"
@@ -545,32 +407,6 @@
   				"return"    	"void"
  				"this"        	"entity"
            	}
-			"CBaseObject::FinishedBuilding"
-           	{
-				"signature"    	"CBaseObject::FinishedBuilding"
-				"callconv"	"thiscall"
-				"return"    	"void"
-  				"this"        	"entity"
-           	}
-			"CTFProjectile_Arrow::StrikeTarget"
-			{
-				"signature" "CTFProjectile_Arrow::StrikeTarget"
-				"callconv" "thiscall"
-				"return" "bool"
-				"this" "entity"
-				"hooktype" "entity"
-				"arguments"
-				{
-					"studio"
-					{
-						"type" "objectptr"
-					}
-					"other"
-					{
-						"type" "cbaseentity"
-					}
-				}
-			}
 			"CBaseGrenade::Explode"
 			{
 				"offset"	"CBaseGrenade::Explode"
@@ -596,33 +432,12 @@
 				"return"	"void"
 				"this"		"entity"
 			}
-			"CObjectSentrygun::Fire"
-			{
-				"signature"	"CObjectSentrygun::Fire"
-				"callconv"	"thiscall"
-				"return"	"bool"
-				"this"		"entity"
-			}
-			"CObjectSentrygun::FindTarget"
-			{
-				"signature"	"CObjectSentrygun::FindTarget"
-				"callconv"	"thiscall"
-				"return"	"bool"
-				"this"		"entity"
-			}
 			"CBasePlayer::ForceRespawn"
 			{
 				"offset"	"CBasePlayer::ForceRespawn"
 				"hooktype"	"entity"
 				"return"	"void"
 				"this"		"entity"
-			}
-			"CGameRules::FrameUpdatePostEntityThink"
-			{
-				"offset"	"CGameRules::FrameUpdatePostEntityThink"
-				"hooktype"	"gamerules"
-				"return"	"void"
-				"this"		"ignore"
 			}
 			"CGameRules::ShouldCollide"
 			{
@@ -691,20 +506,6 @@
 				"return"	"void"
 				"this"		"entity"
 			}
-			"CTFPlayer::RemoveAllOwnedEntitiesFromWorld"
-			{
-				"signature"	"CTFPlayer::RemoveAllOwnedEntitiesFromWorld"
-				"callconv"	"thiscall"
-				"return"	"void"
-				"this"		"entity"
-				"arguments"
-				{
-					"bExplodeBuildings"
-					{
-						"type"	"bool"
-					}
-				}
-			}
 			"CTFParticleCannon::FireChargedShot"
             {
 				   "offset"    	"CTFParticleCannon::FireChargedShot"
@@ -765,20 +566,6 @@
 					}
 				}
 			}
-			"CTFProjectile_Rocket::RocketTouch"
-			{
-				"offset"	"CTFProjectile_Rocket::RocketTouch"
-				"callconv" 	"thiscall"
-				"return"	"void"
-				"this"		"entity"
-				"arguments"
-				{
-					"pEntity"
-					{
-						"type"	"cbaseentity"
-					}
-				}
-			}
 			"CWeaponMedigun::PrimaryAttack()"
 			{
 				"offset"	"CWeaponMedigun::PrimaryAttack()"
@@ -815,26 +602,12 @@
 					}
 				}
 			}
-			"CTFWrench::Smack()" 
-			{
-				"offset" 		"CTFWrench::Smack()" 
-				"hooktype" 		"entity"
-				"return" 		"void"
-				"this" 			"entity"
-			}
 			"CBasePlayer::EquipWearable" 
 			{
 				"offset" 		"CBasePlayer::EquipWearable"
 				"hooktype" 		"entity"
 				"return" 		"void"
 				"this" 			"entity"
-			}
-			"CTFWeaponBaseMelee::Smack"
-			{
-				"signature"		"CTFWeaponBaseMelee::Smack"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"entity"
 			}
 			"CTFPlayer::SpeakConceptIfAllowed()" 
 			{
@@ -908,13 +681,6 @@
 				"return"		"int"
 				"this"			"entity"
 			}
-			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
-			{
-				"signature"		"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"address"
-			}
 		}
 		"Offsets"
 		{
@@ -922,11 +688,6 @@
 			{		
 				"windows"	"155"		
 				"linux"		"156"
-			}
-			"CTFWrench::Smack()" 
-			{
-				"windows" 	"470"
-				"linux" 	"477"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
@@ -993,11 +754,6 @@
 				"linux"		"337"
 				"windows"	"336"
 			}
-			"CGameRules::FrameUpdatePostEntityThink"
-			{
-				"linux"		"16"
-				"windows"	"15"
-			}
 			"CGameRules::ShouldCollide"
 			{
 				"linux"		"30"
@@ -1033,11 +789,6 @@
 				"linux"		"250"
 				"windows"	"247"
 			}
-			"CTFProjectile_Rocket::RocketTouch"
-			{
-				"linux"		"239"
-				"windows"	"238"
-			}
 			"CBasePlayer::CheatImpulseCommands"
 			{
 				"linux"		"379"
@@ -1053,11 +804,6 @@
 			{
 				"windows"	"21"
 				"linux"		"22"
-			}
-			"CTFWeaponBaseMelee::GetShootSound"
-			{
-				"windows"	"337"
-				"linux"		"343"
 			}
 			"CBaseAnimating::RefreshCollisionBounds"
 			{

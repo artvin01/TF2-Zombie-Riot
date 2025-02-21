@@ -336,6 +336,7 @@ bool DoInteractKeyLogic(float angles[3], int client)
 {
 	bool Success = false;
 	f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+#if defined ZR
 	if(angles[0] < -70.0)
 	{
 		int entity = EntRefToEntIndex(Building_Mounted[client]);
@@ -344,6 +345,7 @@ bool DoInteractKeyLogic(float angles[3], int client)
 			Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), client);
 		}
 	}
+#endif
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	StartPlayerOnlyLagComp(client, true);
 	if(InteractKey(client, weapon_holding, true))

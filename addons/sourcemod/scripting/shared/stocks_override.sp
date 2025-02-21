@@ -594,3 +594,34 @@ stock int EntRefToEntIndexFast(int &ref)
 }
 
 //#define EntRefToEntIndex EntRefToEntIndexFast
+/*
+int GameruleEntity()
+{
+	int Gamerules = FindEntityByClassname(-1, "tf_gamerules");
+	return Gamerules;
+}
+
+void GameRules_SetPropFloat_Replace(const char[] prop, any value, int element=0, bool changeState=false)
+{
+	SetEntPropFloat(GameruleEntity(), Prop_Send, prop, value, element);
+}
+void GameRules_SetProp_Replace(const char[] prop, any value, int size = 4, int element=0, bool changeState=false)
+{
+	SetEntProp(GameruleEntity(), Prop_Send, prop, value, size, element);
+}
+float GameRules_GetPropFloat_Replace(const char[] prop, int element=0)
+{
+	return GetEntPropFloat(GameruleEntity(), Prop_Send, prop, element);
+}
+int GameRules_GetProp_Replace(const char[] prop, int size = 4, int element=0)
+{
+	return GetEntProp(GameruleEntity(), Prop_Send, prop, size, element);
+}
+	
+RoundState GameRules_GetRoundState_Replace()
+{
+	return view_as<RoundState>(GameRules_GetProp("m_iRoundState"));
+}
+
+#define GameRules_GetRoundState GameRules_GetRoundState_Replace
+*/

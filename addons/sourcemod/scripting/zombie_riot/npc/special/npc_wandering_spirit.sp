@@ -94,7 +94,9 @@ methodmap WanderingSpirit < CClotBody
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 400.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 500.0);
 		TeleportDiversioToRandLocation(npc.index);
-
+		
+		//counts as a static npc, means it wont count towards NPC limit.
+		AddNpcToAliveList(npc.index, 1);
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; 

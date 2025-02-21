@@ -39,6 +39,10 @@
 		"pt"		"The Atlantean and great leader Alaxios chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
 	}
+	"Sea Alaxios Arrived"
+	{
+		"en" 		"The Infected Atlantean is screaming for help free him before it can make use of his power."
+	}
 	"Run while you can."
 	{
 		"en" 		"Run while you can."

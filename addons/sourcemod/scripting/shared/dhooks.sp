@@ -66,6 +66,7 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
 
 void DHook_Setup()
 {
+//	return;
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	if (!gamedata) 
@@ -83,24 +84,21 @@ void DHook_Setup()
 	//Borrowed from Mikusch, thanks!
 	//https://github.com/Mikusch/MannVsMann/blob/db821cd173a53aad4cc499babbcbd118f4cea234/addons/sourcemod/scripting/mannvsmann/dhooks.sp#L315
 	//
+
+	//prevents having 200 metal permanently
 	DHook_CreateDetour(gamedata, "CTFGameRules::IsQuickBuildTime", DHookCallback_CTFGameRules_IsQuickBuildTime_Pre);
 #endif
 
 #if !defined RTS
-	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 #endif
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
-//	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", Dhook_RaiseFlag_Pre); 
-//	64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
 
-//	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", DHook_ResetPlayerAndTeamReadyStatePre);
-//  64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
 #endif
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
@@ -120,7 +118,6 @@ void DHook_Setup()
 	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
-	//g_DHookShouldCollide = DHook_CreateVirtual(gamedata, "CGameRules::ShouldCollide");
 
 	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
 	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
@@ -161,7 +158,6 @@ void DHook_Setup()
 	//Fixes mediguns giving extra speed where it was not intended.
 	//gamedata first try!!
 	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
-//	DHook_CreateDetour(gamedata, "CTFProjectile_Arrow::StrikeTarget", DhookStrikeTargetArrow_Pre, _);
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -1727,19 +1723,6 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 }
 #endif	// Non-RTS
 
-#if !defined RTS
-static int LastTeam;
-public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookParam param)
-{
-	// Prevent buildings form disappearing
-//	if(!Disconnecting)
-	{
-		LastTeam = GetTeam(client);
-		SetEntProp(client, Prop_Send, "m_iTeamNum", TFTeam_Blue);
-	}
-	return MRES_Ignored;
-}
-#endif
 /*
 public MRESReturn DHookCallback_GameModeUsesUpgrades_Pre(DHookReturn ret)
 {
@@ -1764,16 +1747,6 @@ public MRESReturn DHookCallback_GameModeUsesUpgrades_Post(DHookReturn ret)
 	return MRES_Supercede;	
 }
 */
-#if !defined RTS
-public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPost(int client, DHookParam param)
-{
-//	if(!Disconnecting)
-	{
-		SetEntProp(client, Prop_Send, "m_iTeamNum", LastTeam);
-	}
-	return MRES_Ignored;
-}
-#endif
 
 #if !defined RTS
 /*

@@ -677,9 +677,7 @@
 	
 	"Grenade Desc"
 	{
-		"en"	"High Dmg Grenade"
-		"fr"	"Grenade qui inflige beaucoup de dégats"
-		"chi"	"高伤害手雷"
+		"en"	"High Dmg Grenade, Cooldown scales with reloadspeed."
 	}
 	"Grenade Pap 1"
 	{
@@ -1200,11 +1198,8 @@
 	
 	"Fists Of Kahmlstein Desc"
 	{
-		"en"	"fists from Kahmlstein, His reign over cities and states has no end.\nProve your strength against him to gain a certain item to gain another ability..."
-		"fr"	"Poings de Kahmlstein, son règne sur les villes est sans fin.\nBattez-lui pour obtenir quelque chose qui donne une autre abilité..."
-		"chi"	"卡姆斯坦因的拳套，这个武器曾摧毁过无数个世界。\n打败他，他说不定会教你新招数..."
+		"en"	"fists from Kahmlstein, His reign over cities and states has no end.\neach 3rd hit deals 2.75x damage\nYour R ability summons a clone that attacks what you attack, and you fire only projectiles."
 	}
-
 	"Bad Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
@@ -1331,9 +1326,7 @@
 
 	"Necromancy Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side.\nNot having your wand in your hand will disencurage your minion and half its damage."
-		"fr"	"Chaque attaque utilise du Mana. M2 convoque un minion.\nLes dégats de votre minion seront diminués à moitié si vous ne tenez pas cet arme."
-		"chi"	"M1消耗蓝，发射光球。M2召唤一个DDT小弟。\n当不手持此武器时小弟造成0.5倍伤害。"
+		"en"	"M2 Summons a minion.\nNot having your wand in your hand will half minion damage.\nMinion will only attack marked enemies\nM1 Marks enemies for 5 seconds"
 	}
 	"Necromancy Staff Pap 1"
 	{
@@ -3716,9 +3709,7 @@
 	}
 	"Chainsaw Pap 0"
 	{
-		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
-		"fr"	"Arme corps-à-corps puissante qui coûte beaucoup de munitions.\nRéduira toujours les ennemis en morceaux, mais vous reçevez seulement 25%% des soins quand vous les mangez."
-		"chi"	"造成极高近战伤害，但消耗大量弹药。\n杀死的敌人必定会掉肉块，但你吃肉块只会受到25%的治疗量。"
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 33% from eating gibs.\nGain overall resistance, increases with paps."
 	}
 	"Chainsaw Pap 1"
 	{

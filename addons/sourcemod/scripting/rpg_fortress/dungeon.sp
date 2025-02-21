@@ -1578,10 +1578,10 @@ public Action Dungeon_Timer(Handle timer)
 				size = dungeon.WaveList.Length;
 				if(size)
 				{
-					for(int a; a < size; a++)
+					for(int loopa; loopa < size; loopa++)
 					{
 						static WaveEnum wave;
-						dungeon.WaveList.GetArray(a, wave);
+						dungeon.WaveList.GetArray(loopa, wave);
 						if(wave.Delay < time)
 						{
 							static float ang[3];
@@ -1659,7 +1659,7 @@ public Action Dungeon_Timer(Handle timer)
 								Apply_Text_Above_Npc(entity, wave.Rarity, ReturnEntityMaxHealth(entity));
 							}
 
-							dungeon.WaveList.Erase(a);
+							dungeon.WaveList.Erase(loopa);
 							break;
 						}
 					}
