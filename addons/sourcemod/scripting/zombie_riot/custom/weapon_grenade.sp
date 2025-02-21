@@ -165,9 +165,12 @@ public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool
 	if(weapon >= MaxClients)
 	{
 		weapon_id[client] = weapon;
-		Give_bomb_back[client] = CreateTimer(15.0 * CooldownReductionAmount(client), Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
+		float DefaultCooldownAlly = 15.0;
+		DefaultCooldownAlly *= CooldownReductionAmount(client);
+		DefaultCooldownAlly *= Attributes_Get(weapon, 97, 1.0);
+		Give_bomb_back[client] = CreateTimer(DefaultCooldownAlly, Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
 	//	CreateTimer(14.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-		GrenadeApplyCooldownHud(client, 15.0 * CooldownReductionAmount(client));
+		GrenadeApplyCooldownHud(client, DefaultCooldownAlly);
 		if(Handle_on[client])
 		{
 			delete Give_bomb_back[client];

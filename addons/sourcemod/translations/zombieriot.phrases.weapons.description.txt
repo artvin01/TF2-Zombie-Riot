@@ -677,9 +677,7 @@
 	
 	"Grenade Desc"
 	{
-		"en"	"High Dmg Grenade"
-		"fr"	"Grenade qui inflige beaucoup de dégats"
-		"chi"	"高伤害手雷"
+		"en"	"High Dmg Grenade, Cooldown scales with reloadspeed."
 	}
 	"Grenade Pap 1"
 	{
@@ -3716,9 +3714,7 @@
 	}
 	"Chainsaw Pap 0"
 	{
-		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
-		"fr"	"Arme corps-à-corps puissante qui coûte beaucoup de munitions.\nRéduira toujours les ennemis en morceaux, mais vous reçevez seulement 25%% des soins quand vous les mangez."
-		"chi"	"造成极高近战伤害，但消耗大量弹药。\n杀死的敌人必定会掉肉块，但你吃肉块只会受到25%的治疗量。"
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 33% from eating gibs.\nGain overall resistance, increases with paps."
 	}
 	"Chainsaw Pap 1"
 	{

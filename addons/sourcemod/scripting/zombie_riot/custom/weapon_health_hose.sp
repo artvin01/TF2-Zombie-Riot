@@ -272,15 +272,33 @@ public bool Hose_Heal(int owner, int entity, float amt)
 		amt *= 0.35;
 	}
 	
+	float flMaxHealth = float(ReturnEntityMaxHealth(entity));
+	float flHealth = float(GetEntProp(entity, Prop_Data, "m_iHealth"));
+	if(flHealth <= flMaxHealth * 0.5)
+	{
+		amt *= 1.65;
+	}
+		
 	int new_ammo = GetAmmo(owner, 21);
 	int ammoSubtract;
 	ammoSubtract = HealEntityGlobal(owner, entity, amt, 1.0, 0.0, _, new_ammo);	
 	
+	ApplyStatusEffect(owner, entity, "Healing Resolve", 2.0);
 	if(ammoSubtract <= 0)
 	{
 		return false;
 	}
 
+	if(flHealth <= flMaxHealth * 0.5)
+	{
+		bool PlaySound = false;
+		if(f_MinicritSoundDelay[owner] < GetGameTime())
+		{
+			PlaySound = true;
+			f_MinicritSoundDelay[owner] = GetGameTime() + 0.01;
+		}
+		DisplayCritAboveNpc(entity, owner, PlaySound, .minicrit = true); //Display crit above head
+	}
 		
 	new_ammo -= ammoSubtract;
 	if(ammoSubtract > 0)

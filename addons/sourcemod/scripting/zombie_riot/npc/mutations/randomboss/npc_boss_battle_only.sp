@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 
-int PreviousRaid = 0;
 void BossSummonRandom_OnMapStart_NPC()
 {
 	NPCData data;
@@ -15,7 +14,6 @@ void BossSummonRandom_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
-	PreviousRaid = 0;
 }
 
 static void ClotPrecache()
