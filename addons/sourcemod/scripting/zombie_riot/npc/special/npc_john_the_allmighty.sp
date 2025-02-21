@@ -417,7 +417,6 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 				GetAttachment(npc.index, "eyeglow_L", eyePos, eyeAng);
 				npc.FireParticleRocket(vecTarget, 25.0 * npc.m_flWaveScale, RocketSpeed, 0.0, "raygun_projectile_blue_crit", false,_, true, eyePos);
 				
-				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, RocketSpeed,_,vecTarget);
 				GetAttachment(npc.index, "eyeglow_R", eyePos, eyeAng);
 				npc.FireParticleRocket(vecTarget, 25.0 * npc.m_flWaveScale, RocketSpeed, 0.0, "raygun_projectile_red_crit", false,_, true,eyePos);
 			}	

@@ -94,7 +94,7 @@ methodmap WanderingSpirit < CClotBody
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 400.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 500.0);
 		TeleportDiversioToRandLocation(npc.index);
-		
+
 		//counts as a static npc, means it wont count towards NPC limit.
 		AddNpcToAliveList(npc.index, 1);
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
@@ -214,17 +214,18 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
 				
+				int maxhealth;
+				maxhealth = ReturnEntityMaxHealth(npc.index);
 				if(IsValidEnemy(npc.index, target))
 				{
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
+					npc.m_iState -= 1;
 					float damageDealt = 400.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 25.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 
-					int maxhealth;
-					maxhealth = ReturnEntityMaxHealth(npc.index);
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 
 					// Hit sound
 					npc.PlaySpookSound(target);
@@ -235,26 +236,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 							TF2_StunPlayer(target, 0.5, 0.9, TF_STUNFLAG_SLOWDOWN);
 							
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
-						npc.m_iState -= 1;
 						maxhealth /= 5;
-						if(npc.m_iState <= 0)
-						{
-							npc.m_iState = 0;
-							SmiteNpcToDeath(npc.index);
-							CPrintToChatAll("{crimson}The spirit is unable to move on and splits apart...");
-							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-							for(int loop=1; loop<=CountPlayersOnRed(); loop++)
-							{
-								int spawn_index = NPC_CreateByName("npc_vengefull_spirit", -1, pos, ang, GetTeam(npc.index));
-								if(spawn_index > MaxClients)
-								{
-									NpcAddedToZombiesLeftCurrently(spawn_index, true);
-									SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-									SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-								}
-							}
-						}
 					}
 					int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
 
@@ -264,6 +246,25 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 					if(Decicion == 2)
 						Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
 				} 
+					
+				if(npc.m_iState <= 0)
+				{
+					npc.m_iState = 0;
+					SmiteNpcToDeath(npc.index);
+					CPrintToChatAll("{crimson}The spirit is unable to move on and splits apart...");
+					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+					for(int loop=1; loop<=CountPlayersOnRed(); loop++)
+					{
+						int spawn_index = NPC_CreateByName("npc_vengefull_spirit", -1, pos, ang, GetTeam(npc.index));
+						if(spawn_index > MaxClients)
+						{
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+						}
+					}
+				}
 			}
 			delete swingTrace;
 		}

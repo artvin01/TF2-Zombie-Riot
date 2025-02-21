@@ -179,6 +179,7 @@ methodmap PhantomKnight < CClotBody
 		wave *= 0.1;
 
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= 2.0;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
