@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define LASERBEAM_PANZER "cable/rope.vmt"
 static Handle HealingTimer[MAXTF2PLAYERS] = {null, ...};
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 
@@ -15,6 +16,7 @@ void Gladiia_MapStart()
 	PrecacheSound("weapons/grappling_hook_reel_stop.wav");
 	PrecacheSound("weapons/grappling_hook_impact_flesh.wav");
 	PrecacheSound("weapons/grappling_hook_shoot.wav");
+	PrecacheModel(LASERBEAM_PANZER);
 }
 
 void Gladiia_Enable(int client, int weapon)
