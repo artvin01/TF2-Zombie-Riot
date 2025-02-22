@@ -211,7 +211,7 @@ methodmap GodAlaxios < CClotBody
 	}
 	public void PlayMeleeWarCry() 
 	{
-		if(i_RaidGrantExtra[this.index] == ALAXIOS_SEA_INFECTED)
+		if(i_RaidGrantExtra[this.index] != ALAXIOS_SEA_INFECTED)
 		{
 			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 			EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
@@ -527,6 +527,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		{
 			if(npc.m_flAlaxiosSeaInfectedStance < gameTime)
 			{
+				npc.m_flAlaxiosSeaInfectedStance = gameTime + 1.0;
 				i_TalkDelayCheck--;
 				switch(i_TalkDelayCheck)
 				{
@@ -534,8 +535,9 @@ public void GodAlaxios_ClotThink(int iNPC)
 					{
 						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("Lucian_Death_Real");
+						npc.SetPlaybackRate(0.75);	
 						npc.PlayDeathSound();
-						CPrintToChatAll("{lightblue}...");
+						CPrintToChatAll("{lightblue}God Alaxios stands down... he is free...");
 					}
 					case 3:
 					{
@@ -554,12 +556,21 @@ public void GodAlaxios_ClotThink(int iNPC)
 						f_AttackSpeedNpcIncreace[npc.index] *= 0.75;
 						fl_Extra_Damage[npc.index] *= 0.75;
 						CPrintToChatAll("{crimson}The infection wont let go. It wants him the most.");
+						b_NpcUnableToDie[npc.index] = false;
+						RaidModeTime = GetGameTime(npc.index) + 150.0;
 						RaidBossActive = EntIndexToEntRef(npc.index);
 						RaidAllowsBuildings = false;
 						npc.PlayRageSound();
-						SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
+						SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 4));
 						static float flPos[3]; 
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+						ApplyStatusEffect(npc.index, npc.index, "Oceanic Scream", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "Caffinated", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "Caffinated Drain", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "Ancient Banner", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "Buff Banner", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "UBERCHARGED", 1.0);
 						flPos[2] += 5.0;
 						ParticleEffectAt(flPos, "taunt_yeti_fistslam", 0.25);
 						npc.m_iChanged_WalkCycle = 4;
@@ -1125,13 +1136,14 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	{
 		if(GetTeam(npc.index) != TFTeam_Red && !b_angered_twice[npc.index] && b_NpcUnableToDie[npc.index])
 		{
-			GiveProgressDelay(55.0);
-			b_angered_twice[npc.index] = true;
-			RaidModeTime = 9999999.9;
-			RaidBossActive = INVALID_ENT_REFERENCE;
-			CPrintToChatAll("{lightblue}God Alaxios stands down... he is free...");
-			npc.m_flAlaxiosSeaInfectedStance = GetGameTime(npc.index) + 1.0;
-			i_TalkDelayCheck = 5;
+			if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+			{
+				GiveProgressDelay(55.0);
+				b_angered_twice[npc.index] = true;
+				RaidModeTime = 9999999.9;
+				RaidBossActive = INVALID_ENT_REFERENCE;
+				i_TalkDelayCheck = 5;
+			}
 		}
 		return Plugin_Changed;
 	}
@@ -2343,7 +2355,6 @@ bool AlaxiosForceTalk()
 public void Raidmode_Alaxios_Win(int entity)
 {
 	GodAlaxios npc = view_as<GodAlaxios>(entity);
-	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	npc.m_bDissapearOnDeath = true;
 	BlockLoseSay = true;
@@ -2376,4 +2387,5 @@ public void Raidmode_Alaxios_Win(int entity)
 			}
 		}
 	}
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }

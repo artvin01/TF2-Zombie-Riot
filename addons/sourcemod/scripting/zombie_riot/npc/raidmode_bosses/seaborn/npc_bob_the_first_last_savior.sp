@@ -693,7 +693,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				}
 				case 7:
 				{
-					GiveProgressDelay(1.0);
+					GiveProgressDelay(30.0);
 					SmiteNpcToDeath(npc.index);
 					CPrintToChatAll("{white}Bob the First leaves in a hurry... something is wrong, should you follow him.....? Too late now...");
 					MusicEnum music;
