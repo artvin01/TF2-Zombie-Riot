@@ -586,7 +586,7 @@
 	}
 	"Heavy Presence Desc"
 	{
-		"en"	"Decreased attack speed by a certain amount."
+		"en"	"Decreased attackspeed & healrate by a 50%%."
 	}
 	"Gambler's Ruin Total"
 	{
