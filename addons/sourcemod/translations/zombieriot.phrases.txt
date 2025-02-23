@@ -316,7 +316,7 @@
 	}
 	"Confirm Loadout"
 	{
-		"en"		"Confirm Loadout & Access to Normal Store"
+		"en"		"Confirm & Access Store"
 	}
 	"N/A"
 	{
