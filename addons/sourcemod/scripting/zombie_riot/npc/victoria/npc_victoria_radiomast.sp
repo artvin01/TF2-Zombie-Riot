@@ -104,7 +104,7 @@ methodmap VictoriaRadiomast < CClotBody
 			RaidModeTime = FAR_FUTURE;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = true;
-			RaidModeScaling = 19.721;
+			RaidModeScaling = 0.0;
 		}
 
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaRadiomast_NPCDeath);
@@ -205,9 +205,6 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 			}
 		}
 	}
-	
-	if(IsValidEntity(RaidBossActive) && RaidBossActive == EntIndexToEntRef(npc.index))
-		RaidModeScaling = (InfiniteWave-(npc.m_flNextMeleeAttack - gameTime))/InfiniteWave;
 		
 	if(Waves_IsEmpty() && npc.m_flNextMeleeAttack < gameTime)
 	{

@@ -191,7 +191,7 @@ public void WFOuroborosEkas_ClotThink(int iNPC)
 				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && !Is_a_Medic[client])
 				{
 					ApplyStatusEffect(npc.index, client, "Hussar's Warscream", 0.5);
-					ApplyStatusEffect(npc.index, client, "Buff Banner", 0.5);
+					ApplyStatusEffect(npc.index, client, "War Cry", 0.5);
 				}
 			}
 		}
@@ -202,7 +202,7 @@ public void WFOuroborosEkas_ClotThink(int iNPC)
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team && !Is_a_Medic[entity])
 			{
 				ApplyStatusEffect(npc.index, entity, "Hussar's Warscream", 0.5);
-				ApplyStatusEffect(npc.index, entity, "Buff Banner", 0.5);
+				ApplyStatusEffect(npc.index, entity, "War Cry", 0.5);
 			}
 		}
 	}

@@ -313,7 +313,7 @@ public void VictorianBooster_ClotThink(int iNPC)
 					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Oceanic Scream", 1.1);
 					if(NpcStats_VictorianCallToArms(npc.index))
 					{
-						ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Buff Banner", 1.1);
+						ApplyStatusEffect(npc.index, PrimaryThreatIndex, "War Cry", 1.1);
 					}
 				}
 				else

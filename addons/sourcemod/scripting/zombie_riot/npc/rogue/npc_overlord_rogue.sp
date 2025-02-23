@@ -239,7 +239,7 @@ methodmap OverlordRogue < CClotBody
 		npc.m_flNextDelayTime = GetGameTime(npc.index) + 30.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
-		RaidModeScaling = 100000.0;
+		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + 999.9;
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);

@@ -713,6 +713,7 @@ void ZR_MapStart()
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
+	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
@@ -730,6 +731,7 @@ void ZR_MapStart()
 	Zero(f_RingDelayGift);
 	Zero(f_HealthBeforeSuittime);
 	Music_ClearAll();
+	BuildingVoteEndResetCD();
 	Medigun_ClearAll();
 	WindStaff_ClearAll();
 	Lighting_Wand_Spell_ClearAll();

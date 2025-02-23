@@ -4042,7 +4042,7 @@
 	}
 	"Wand of Rot Desc"
 	{
-		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles.\nDeal Osmosis Damage, see Extra Desc."
+		"en"	"Fires a slow homing projectile, ability increases all stats & adds another projectile. build up OS fully to reduce allies ability CD on hit on an afflicted enemy."
 	}
 	"Wand of Rot Desc 2"
 	{

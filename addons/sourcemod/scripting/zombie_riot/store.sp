@@ -1935,6 +1935,17 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-90", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Disable Status Effect Hints");
+	if(b_DisableStatusEffectHints[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-91", buffer);
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-86", buffer);
@@ -2424,6 +2435,19 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 							SetMusicTimer(client, GetTime() + 1);	
 						}
 						b_DisableSetupMusic[client] = true;
+					}
+					SetGlobalTransTarget(client);
+					ReShowSettingsHud(client);
+				}
+				case -91: 
+				{
+					if(b_DisableStatusEffectHints[client])
+					{
+						b_DisableStatusEffectHints[client] = false;
+					}
+					else
+					{
+						b_DisableStatusEffectHints[client] = true;
 					}
 					SetGlobalTransTarget(client);
 					ReShowSettingsHud(client);

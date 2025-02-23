@@ -259,7 +259,7 @@ methodmap RaidbossNemesis < CClotBody
 		RemoveAllDamageAddition();
 
 		Music_SetRaidMusicSimple("#zombie_riot/320_now_1.mp3", 200, true, 1.3);
-		RaidModeScaling = 9999999.99;
+		RaidModeScaling = 0.0;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		WavesUpdateDifficultyName();
 		npc.m_bThisNpcIsABoss = true;

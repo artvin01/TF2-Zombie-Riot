@@ -217,7 +217,7 @@ public void AgentPaul_ClotThink(int iNPC)
 		ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 5.0);
 		ApplyStatusEffect(npc.index, npc.index, "Ally Empowerment", 5.0);
 		ApplyStatusEffect(npc.index, npc.index, "Combine Command", 5.0);
-		ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
+		ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 		npc.f_Cooldown = gameTime + 10.0;
 	}
 	if(npc.f_Cooldown >= gameTime)

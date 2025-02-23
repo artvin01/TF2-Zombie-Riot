@@ -402,8 +402,8 @@ void HallamDemonWhispererSelfDefense(HallamDemonWhisperer npc, float gameTime, f
 				npc.m_flDoingAnimation = gameTime + 0.15;
 				npc.m_flNextMeleeAttack = gameTime + 1.3;
 				int maxhealthally = ReturnEntityMaxHealth(npc.m_iTargetAlly);
-				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Buff Banner", 5.0);	
-				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Battilons Backup", 5.0);	
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "War Cry", 5.0);	
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Defensive Backup", 5.0);	
 				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Squad Leader", 5.0);
 				HealEntityGlobal(npc.index, npc.m_iTargetAlly, float(maxhealthally) / 100, 1.0, 0.0, HEAL_SELFHEAL);
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);

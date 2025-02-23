@@ -86,7 +86,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 			GetClientAbsOrigin(ally, targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 			{
-				ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
+				ApplyStatusEffect(client, ally, "War Cry", 0.5);
 				i_ExtraPlayerPoints[client] += 1;
 			}
 		}
@@ -99,7 +99,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 			{
-				ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
+				ApplyStatusEffect(client, ally, "War Cry", 0.5);
 				i_ExtraPlayerPoints[client] += 1;
 			}
 		}
@@ -164,7 +164,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 				GetClientAbsOrigin(ally, targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
-					ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
+					ApplyStatusEffect(client, ally, "War Cry", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -177,7 +177,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
-					ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
+					ApplyStatusEffect(client, ally, "War Cry", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -245,7 +245,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				GetClientAbsOrigin(ally, targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
-					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
+					ApplyStatusEffect(client, ally, "Defensive Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -258,7 +258,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
-					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
+					ApplyStatusEffect(client, ally, "Defensive Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -309,7 +309,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					GetClientAbsOrigin(ally, targPos);
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 					{
-						ApplyStatusEffect(client, ally, "Ancient Banner", 1.0);
+						ApplyStatusEffect(client, ally, "Ancient Melodies", 1.0);
 						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
@@ -322,7 +322,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 					{
-						ApplyStatusEffect(client, ally, "Ancient Banner", 1.0);
+						ApplyStatusEffect(client, ally, "Ancient Melodies", 1.0);
 						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
