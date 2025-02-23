@@ -425,13 +425,15 @@ public void OnPostThink(int client)
 		SaveLastValidPositionEntity(client);
 	
 	}
-	if(b_DisplayDamageHud[client][0])
+	if(b_DisplayDamageHud[client][0] || b_DisplayDamageHud[client][1])
 	{
 		//damage hud
 		if(Calculate_And_Display_HP_Hud(client, b_DisplayDamageHud[client][1]))
 		{
-			b_DisplayDamageHud[client][0] = false;
-			b_DisplayDamageHud[client][1] = false;
+			if(b_DisplayDamageHud[client][1])
+				b_DisplayDamageHud[client][1] = false;
+			else
+				b_DisplayDamageHud[client][0] = false;
 		}
 	}
 	/*
