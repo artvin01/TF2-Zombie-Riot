@@ -458,7 +458,7 @@
 	}
 	"Godly Motivation Desc"
 	{
-		"en"	"Increases damage dealt by 50%%\nDecreases damage taken by 25%%\nIncreases NPC'S movement speed by 50%%"
+		"en"	"Increases damage dealt by 12.5%%\nDecreases damage taken by 25%%\nIncreases NPC'S movement speed by 50%%\nIncreases attack/reload speed & healrate by 25%%"
 	}
 	"Hussar's Warscream"
 	{
