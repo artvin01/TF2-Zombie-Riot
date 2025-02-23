@@ -355,9 +355,10 @@ public void OnPreThinkPost(int client)
 #if defined NOG
 public void OnPostThink_OnlyHurtHud(int client)
 {
-	if(b_DisplayDamageHud[client])
+	if(b_DisplayDamageHud[client][0])
 	{
-		b_DisplayDamageHud[client] = false;
+		b_DisplayDamageHud[client][0] = false;
+		b_DisplayDamageHud[client][1] = false;
 		if(zr_showdamagehud.BoolValue)
 			Calculate_And_Display_HP_Hud(client);
 	}
@@ -424,12 +425,13 @@ public void OnPostThink(int client)
 		SaveLastValidPositionEntity(client);
 	
 	}
-	if(b_DisplayDamageHud[client])
+	if(b_DisplayDamageHud[client][0])
 	{
 		//damage hud
 		if(Calculate_And_Display_HP_Hud(client))
 		{
-			b_DisplayDamageHud[client] = false;
+			b_DisplayDamageHud[client][0] = false;
+			b_DisplayDamageHud[client][1] = false;
 		}
 	}
 	/*

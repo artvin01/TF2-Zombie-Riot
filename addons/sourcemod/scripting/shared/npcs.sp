@@ -1965,12 +1965,19 @@ stock void ResetDamageHud(int client)
 	ShowSyncHudText(client, SyncHud, "");
 }
 
-stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, bool DontForward = false, bool ResetClientCooldown = false)
+stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, bool DontForward = false, bool ResetClientCooldown = false, bool RaidHudForce = false)
 {
 	if(attacker <= MaxClients)
 	{
-		b_DisplayDamageHud[attacker] = true;
-		i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
+		b_DisplayDamageHud[attacker][0] = true;
+
+		if(!b_DisplayDamageHud[attacker][1])
+			i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
+
+		//If a raid hud update happens, it should prefer to update it incase you attack something in the same frame or whaatever.
+		if(RaidHudForce)
+			b_DisplayDamageHud[attacker][1] = true;
+
 		float GameTime = GetGameTime();
 		bool raidboss_active = false;
 

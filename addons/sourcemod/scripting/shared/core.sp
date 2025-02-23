@@ -900,7 +900,7 @@ public Action Timer_Temp(Handle timer)
 		{
 			if(IsClientInGame(client))
 			{
-				Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true);
+				Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true, .RaidHudForce = true);
 			}
 		}
 	}
@@ -1567,7 +1567,8 @@ public void OnClientDisconnect(int client)
 	//Needed to reset attackspeed stuff
 #endif
 
-	b_DisplayDamageHud[client] = false;
+	b_DisplayDamageHud[client][0] = false;
+	b_DisplayDamageHud[client][1] = false;
 
 #if defined ZR
 	WeaponClass[client] = TFClass_Scout;
