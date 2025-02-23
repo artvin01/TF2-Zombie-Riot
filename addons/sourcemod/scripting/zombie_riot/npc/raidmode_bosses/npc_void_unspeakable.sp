@@ -742,7 +742,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		if((health / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
-			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flResistanceBuffs = GetGameTime() + 2.0;
 			float ProjectileLoc[3];	
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);

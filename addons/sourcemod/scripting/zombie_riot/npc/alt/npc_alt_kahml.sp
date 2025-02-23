@@ -248,7 +248,7 @@ methodmap Kahmlstein < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
-			RaidModeScaling = 10.0;
+			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		

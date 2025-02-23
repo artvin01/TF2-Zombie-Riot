@@ -567,9 +567,9 @@ public void GodAlaxios_ClotThink(int iNPC)
 						ApplyStatusEffect(npc.index, npc.index, "Oceanic Scream", 999.0);
 						ApplyStatusEffect(npc.index, npc.index, "Caffinated", 999.0);
 						ApplyStatusEffect(npc.index, npc.index, "Caffinated Drain", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "Ancient Banner", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 999.0);
-						ApplyStatusEffect(npc.index, npc.index, "Buff Banner", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 999.0);
+						ApplyStatusEffect(npc.index, npc.index, "War Cry", 999.0);
 						ApplyStatusEffect(npc.index, npc.index, "UBERCHARGED", 1.0);
 						flPos[2] += 5.0;
 						ParticleEffectAt(flPos, "taunt_yeti_fistslam", 0.25);

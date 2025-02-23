@@ -218,9 +218,9 @@ methodmap Donnerkrieg < CClotBody
 		}
 		else
 		{
-			RaidModeScaling = 10.0;	//just a safety net
 			if(!IsValidEntity(RaidBossActive))
 			{
+				RaidModeScaling = 0.0;
 				RaidBossActive = EntIndexToEntRef(npc.index);
 				RaidModeTime = GetGameTime(npc.index) + 9000.0;
 				RaidAllowsBuildings = true;
@@ -559,11 +559,11 @@ static void Internal_ClotThink(int iNPC)
 				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
 				if(g_b_angered)
 				{
-					npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
+					npc.FireParticleRocket(vecTarget, 1250.0 , 400.0 , 100.0 , "raygun_projectile_blue");
 				}
 				else
 				{
-					npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
+					npc.FireParticleRocket(vecTarget, 250.0 , 400.0 , 100.0 , "raygun_projectile_blue");
 				}
 					
 				//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
@@ -611,7 +611,7 @@ static void Internal_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 22.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 220.0, DMG_CLUB, -1, _, vecHit);						
 								} 
 							}
 							delete swingTrace;
@@ -983,7 +983,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 
 	NightmareCannon_BEAM_CanUse[client] = true;
 
-	float dmg = 20.0*RaidModeScaling;
+	float dmg = 200.0;
 	if(g_b_angered)
 	{
 		dmg *= 1.5;
@@ -1052,7 +1052,7 @@ void NightmareCannon_TBB_Ability(int client)
 	NightmareCannon_BEAM_TicksActive[client] = 0;
 
 	NightmareCannon_BEAM_CanUse[client] = true;
-	float dmg = 500.0*RaidModeScaling;
+	float dmg = 5000.0;
 	if(g_b_angered)
 	{
 		dmg *= 1.5;

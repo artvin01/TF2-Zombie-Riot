@@ -2187,8 +2187,8 @@ public void Dungeon_Spawn_NormalEnemyBuffWF(int entity)
 
 public void Dungeon_Spawn_TempMegaBuff(int entity)
 {
-	ApplyStatusEffect(entity, entity, "Buff Banner", 5.0);
-	ApplyStatusEffect(entity, entity, "Battilons Backup", 5.0);
+	ApplyStatusEffect(entity, entity, "War Cry", 5.0);
+	ApplyStatusEffect(entity, entity, "Defensive Backup", 5.0);
 }
 
 

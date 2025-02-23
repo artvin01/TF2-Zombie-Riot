@@ -528,6 +528,7 @@ float fl_ArmorSetting[MAXENTITIES][3];
 int i_ArmorSetting[MAXENTITIES][2];
 bool b_InteractWithReload[MAXENTITIES];
 bool b_DisableSetupMusic[MAXENTITIES];
+bool b_DisableStatusEffectHints[MAXENTITIES];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 int b_OnDeathExtraLogicNpc[MAXENTITIES];
@@ -1485,6 +1486,7 @@ public void OnClientPutInServer(int client)
 	f_MultiDamageDealt[client] = 1.0;
 	
 #if defined ZR
+	ResetExplainBuffStatus(client);
 	f_TutorialUpdateStep[client] = 0.0;
 	ZR_ClientPutInServer(client);
 #endif
@@ -1620,6 +1622,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Instant community feedback that T is very bad.
 	using idk what other button to use.
 	*/
+#if defined ZR
 	if(impulse == 201)
 	{
 		f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
@@ -1631,6 +1634,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 		DoInteractKeyLogic(angles, client);
 	}
+#endif
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS
@@ -1742,7 +1746,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_RELOAD;
 		
+#if defined ZR
 		if(b_InteractWithReload[client])
+#endif
 		{
 			if(DoInteractKeyLogic(angles, client))
 				return Plugin_Continue;

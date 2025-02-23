@@ -551,6 +551,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 	
 	float value = 8.0;
 	bool validWeapon = false;
+	ApplyStatusEffect(attacker, entity, "Burn", 999999.9);
 
 #if !defined RTS
 	if(weapon > MaxClients && IsValidEntity(weapon))
@@ -664,6 +665,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					IgniteTimer[entity] = null;
 					IgniteFor[entity] = 0;
 					BurnDamage[entity] = 0.0;
+					RemoveSpecificBuff(entity, "Burn");
 					return Plugin_Stop;
 				}
 				if(HasSpecificBuff(entity, "Hardened Aura"))
@@ -672,6 +674,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					IgniteTimer[entity] = null;
 					IgniteFor[entity] = 0;
 					BurnDamage[entity] = 0.0;
+					RemoveSpecificBuff(entity, "Burn");
 					return Plugin_Stop;
 				}
 				return Plugin_Continue;
@@ -682,6 +685,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				IgniteTimer[entity] = null;
 				IgniteFor[entity] = 0;
 				BurnDamage[entity] = 0.0;
+				RemoveSpecificBuff(entity, "Burn");
 				return Plugin_Stop;		
 			}
 		}
@@ -691,6 +695,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			IgniteTimer[entity] = null;
 			IgniteFor[entity] = 0;
 			BurnDamage[entity] = 0.0;
+			RemoveSpecificBuff(entity, "Burn");
 			return Plugin_Stop;		
 		}
 	}

@@ -1458,7 +1458,7 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 			i_NpcWeight[npc.index] = 4;
 			RaidModeScaling *= 1.10;
-			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flDoingAnimation = 0.0;
 
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");

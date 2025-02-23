@@ -114,8 +114,8 @@ methodmap FreeplaySigmaller < CClotBody
 				{
 					HealEntityGlobal(npc.index, entitycount, float(GetEntProp(entitycount, Prop_Data, "m_iMaxHealth")), 1.0, 0.0, HEAL_ABSOLUTE);
 					ApplyStatusEffect(npc.index, entitycount, "Combine Command", 3.5);
-					ApplyStatusEffect(npc.index, entitycount, "Buff Banner", 3.5);
-					ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", 3.5);
+					ApplyStatusEffect(npc.index, entitycount, "War Cry", 3.5);
+					ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", 3.5);
 					ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", 3.5);
 				}
 			}

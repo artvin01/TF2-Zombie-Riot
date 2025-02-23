@@ -4,6 +4,14 @@
 	{
 		"en"	"This is an Elemental status effect."
 	}
+	"Applied Onto Others"
+	{
+		"en"	"{yellow}Applied Onto Others"
+	}
+	"Scale With Player"
+	{
+		"en"	"{yellow}Scales with playercount, unless youre the buff owner or enemies benefit from it."
+	}
 	"Teslar Shock"
 	{
 		"en"	"Teslar Shock"
@@ -82,7 +90,7 @@
 	}
 	"Frozen Desc"
 	{
-		"en"	"Increases Damage Taken by 15%%\nSlows NPC'S by 15%%"
+		"en"	"Increases Damage Taken by 15%%\nStuns for a duration."
 	}
 	"Shrinking"
 	{
@@ -162,7 +170,7 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15%%\nIncreases npc speed by +25%%.\nIncreases attackspeed by +15%%."
+		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15%%\nIncreases npc speed by +25%%.\nIncreases attackspeed & healrate by +15%%."
 	}
 	"Freeplay Eloquence I"
 	{
@@ -218,7 +226,7 @@
 	}
 	"Freeplay Hurtle I Desc"
 	{
-		"en"	"Increases attackspeed by +7%%"
+		"en"	"Increases attackspeed & healrate by +7%%"
 	}
 	"Freeplay Hurtle II"
 	{
@@ -226,7 +234,7 @@
 	}
 	"Freeplay Hurtle II Desc"
 	{
-		"en"	"Increases attackspeed by +14%%"
+		"en"	"Increases attackspeed & healrate by +14%%"
 	}
 	"Freeplay Hurtle III"
 	{
@@ -234,7 +242,7 @@
 	}
 	"Freeplay Hurtle III Desc"
 	{
-		"en"	"Increases attackspeed by +21%%"
+		"en"	"Increases attackspeed & healrate by +21%%"
 	}
 	"Cudgelled"
 	{
@@ -290,7 +298,7 @@
 	}
 	"Silenced Desc"
 	{
-		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attackspeed by 5%%."
+		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attackspeed & healrate by 5%%."
 	}
 	"Hardened Aura"
 	{
@@ -298,7 +306,7 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL that debuffs.\nElemental Is excluded from this.\nStuns and movement displacements are not counted as bebuffs."
+		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as bebuffs."
 	}
 	"Thick Blood"
 	{
@@ -362,7 +370,7 @@
 	}
 	"Void Presence Desc"
 	{
-		"en"	"Shows that youre standing in void creep."
+		"en"	"Shows that youre standing in void creep, void creatures in keep get stronger."
 	}
 	"Void Strength I"
 	{
@@ -370,7 +378,7 @@
 	}
 	"Void Strength I Desc"
 	{
-		"en"	"Slowly Heals dependant on %% of max HP overtime.\nBoosts NPC'S Speed by 5%%\nLess damage taken by 15%%\nBeing a player, or/and being silenced each reduces this by 5%% flat.\nIncreases Damage delt by 20%%, If silenced, this is 10%%"
+		"en"	"Heals dependant on %% of max HP.\nBoosts NPC'S Speed by 5%%\nLess damage taken by 15%%\nBeing a player/silenced each reduces this by 5%% flat.\nIncreases Damage delt by 20%%, If silenced, this is 10%%"
 	}
 	"Void Strength II"
 	{
@@ -378,7 +386,7 @@
 	}
 	"Void Strength II Desc"
 	{
-		"en"	"Slowly Heals dependant on %% of max HP overtime.\nBoosts NPC'S Speed by 15%%\nLess damage taken by 20%%\nBeing a player, or/and being silenced each reduces this by 5%% flat.\nIncreases Damage delt by 30%%, If silenced, this is 15%%"
+		"en"	"Heals dependant on %% of max HP.\nBoosts NPC'S Speed by 15%%\nLess damage taken by 20%%\nBeing a player/silenced each reduces this by 5%% flat.\nIncreases Damage delt by 30%%, If silenced, this is 15%%"
 	}
 	"MERLT0N-BUFF"
 	{
@@ -476,19 +484,19 @@
 	{
 		"en"	"Increases damage dealt by 25%%"
 	}
-	"Buff Banner"
+	"War Cry"
 	{
-		"en"	"Buff Banner"
+		"en"	"War Cry"
 	}
-	"Buff Banner Desc"
+	"War Cry Desc"
 	{
 		"en"	"Increases damage dealt by 25%%"
 	}
-	"Battilons Backup"
+	"Defensive Backup"
 	{
-		"en"	"Battilons Backup"
+		"en"	"Defensive Backup"
 	}
-	"Battilons Backup Desc"
+	"Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 15%%"
 	}
@@ -548,13 +556,13 @@
 	{
 		"en"	"Increases damage dealt by 10%%\nDecreases damage taken by 7%%"
 	}
-	"Ancient Banner"
+	"Ancient Melodies"
 	{
-		"en"	"Ancient Banner"
+		"en"	"Ancient Melodies"
 	}
-	"Ancient Banner Desc"
+	"Ancient Melodies Desc"
 	{
-		"en"	"Increases attack speed by a certain amount."
+		"en"	"Increases attack speed by a 20%%."
 	}
 	"Bobs Duck Dubby"
 	{
@@ -634,11 +642,11 @@
 	}
 	"Ulpianus' Seriousness Desc"
 	{
-		"en"	"Attackspeed increased by 20%%.\nIncreases Max Health by 540."
+		"en"	"attackspeed & healrate increased by 20%%.\nIncreases Max Health by 540."
 	}
-	"Skadi's Skills"
+	"Abyssal Skills"
 	{
-		"en"	"Skadi's Skills"
+		"en"	"Abyssal Skills"
 	}
 	"Skadi's Skills Desc"
 	{
@@ -826,7 +834,7 @@
 	}
 	"Burn Desc"
 	{
-		"en"	"Deals True damage overtime, upto a maximum of 20 seconds if not extended.\nEach hit extends its time.\nThe damage and owner depends on the weapon that delt the most fire damage.\nExtending does not weaken the buff.\nEnemies on fire, if killed give 10%% more hp on kill, and gibs give 10%% more hp."
+		"en"	"Deals True damage DOT.\nThe damage and owner depends on the weapon that delt the most fire damage.\n{green}Enemies on fire, if killed give 10%% more hp on kill, and gibs give 10%% more hp."
 	}
 	"Zealot's Random Drinks"
 	{
@@ -842,7 +850,7 @@
 	}
 	"Zealot's Rush Desc"
 	{
-		"en" "Grants 25%% Attackspeed."
+		"en" "Grants 25%% attackspeed & healrate."
 	}
 	"MERLT0N-BUFF"
 	{
@@ -934,7 +942,7 @@
 	}
 	"Lighthouse Enlightment Desc"
 	{
-		"en"	"Increases Attackspeed and reloadspeed by 30%%"
+		"en"	"Increases attackspeed & healrate and reloadspeed by 30%%"
 	}
 	"Lighthouse Enlightment Detect"
 	{
@@ -974,7 +982,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" "Increaces player attackspeed and reloadspeed by 20%% (stacks)"
+		"en" "Increaces player attackspeed & healrate and reloadspeed by 20%% (stacks)"
 	}
 	"Physical Therapy"
 	{
@@ -1038,7 +1046,7 @@
 	}
 	"Spotter's Rally Desc"
 	{
-		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%.\nIncreases attackspeed by +35%%."
+		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%.\nIncreases attackspeed & healrate by +35%%."
 	}
 	"Weapon Overclock"
 	{
@@ -1047,8 +1055,7 @@
 	}
 	"Weapon Overclock Desc"
 	{
-		"en"	"The weapon's stats are improved and mana is continuously restored."
-		"ko"	"무기의 스텟이 향상되며, 마나가 지속적으로 회복됩니다."
+		"en"	"Boosts attackspeed & healrate by 30%% and mana is continuously restored."
 	}
 	"Weapon Clocking"
 	{
@@ -1057,6 +1064,6 @@
 	}
 	"Weapon Clocking Desc"
 	{
-		"en"	"Boosts attackspeed by 10%%"
+		"en"	"Boosts attackspeed & healrate by 10%%"
 	}
 }

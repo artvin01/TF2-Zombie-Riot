@@ -148,7 +148,12 @@ methodmap ObjectGeneric < CClotBody
 		i_IsABuilding[obj] = true;
 		b_NoKnockbackFromSources[obj] = true;
 		f_DamageTakenFloatObj[obj] = 0.0;
-
+	
+		for(int clients=1; clients<=MaxClients; clients++)
+		{
+			Building_Collect_Cooldown[obj][clients] = 0.0;
+			//reset usage cooldown!
+		}
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());

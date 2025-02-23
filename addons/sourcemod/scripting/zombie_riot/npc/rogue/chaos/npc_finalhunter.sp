@@ -169,7 +169,7 @@ static void ClotThink(int iNPC)
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 1.0;
+			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 			Waves_Progress();
 
@@ -273,7 +273,7 @@ static void ClotThink(int iNPC)
 
 						RaidBossActive = EntIndexToEntRef(npc.index);
 						RaidModeTime = GetGameTime() + 9000.0;
-						RaidModeScaling = 1.0;
+						RaidModeScaling = 0.0;
 						RaidAllowsBuildings = true;
 
 						EmitSoundToAll("mvm/mvm_warning.wav");

@@ -851,7 +851,7 @@ static void Internal_ClotThink(int iNPC)
 			if(flDistanceToAlly < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 && Can_I_See_Enemy_Only(npc.index, Ally))
 			{
 				NPCStats_RemoveAllDebuffs(Ally, 1.0);
-				ApplyStatusEffect(npc.index, Ally, "Battilons Backup", 2.5);
+				ApplyStatusEffect(npc.index, Ally, "Defensive Backup", 2.5);
 			}
 
 			//Karlas_Teleport_Core(npc, PrimaryThreatIndex);

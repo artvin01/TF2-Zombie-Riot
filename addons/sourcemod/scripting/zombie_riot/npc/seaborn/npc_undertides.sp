@@ -118,7 +118,7 @@ methodmap UnderTides < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 1.0;
+			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		
