@@ -1482,9 +1482,14 @@ void HudDamageIndicator(int client,int damagetype, bool wasattacker)
 		}
 	}
 }
-stock bool Calculate_And_Display_HP_Hud(int attacker)
+stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false)
 {
-	int victim = EntRefToEntIndexFast(i_HudVictimToDisplay[attacker]);
+	int victim;
+	if(!ToAlternative)
+		victim = EntRefToEntIndexFast(i_HudVictimToDisplay[attacker]);
+	else
+		victim = EntRefToEntIndexFast(i_HudVictimToDisplay2[attacker]);
+		
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 	{
 		if(!IsValidClient(victim))
@@ -1971,12 +1976,16 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	{
 		b_DisplayDamageHud[attacker][0] = true;
 
-		if(!b_DisplayDamageHud[attacker][1])
-			i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
-
 		//If a raid hud update happens, it should prefer to update it incase you attack something in the same frame or whaatever.
 		if(RaidHudForce)
+		{
+			i_HudVictimToDisplay2[attacker] = EntIndexToEntRef(victim);
 			b_DisplayDamageHud[attacker][1] = true;
+		}
+		else
+		{
+			i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
+		}
 
 		float GameTime = GetGameTime();
 		bool raidboss_active = false;

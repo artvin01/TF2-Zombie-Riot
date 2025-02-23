@@ -172,6 +172,7 @@ int g_particleImpactRubber;
 float f_damageAddedTogether[MAXTF2PLAYERS];
 float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 int i_HudVictimToDisplay[MAXTF2PLAYERS];
+int i_HudVictimToDisplay2[MAXTF2PLAYERS];
 #endif
 
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	

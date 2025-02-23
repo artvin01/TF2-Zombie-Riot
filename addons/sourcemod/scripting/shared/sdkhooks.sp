@@ -428,7 +428,7 @@ public void OnPostThink(int client)
 	if(b_DisplayDamageHud[client][0])
 	{
 		//damage hud
-		if(Calculate_And_Display_HP_Hud(client))
+		if(Calculate_And_Display_HP_Hud(client, b_DisplayDamageHud[client][1]))
 		{
 			b_DisplayDamageHud[client][0] = false;
 			b_DisplayDamageHud[client][1] = false;
