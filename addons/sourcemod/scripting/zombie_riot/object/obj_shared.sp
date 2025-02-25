@@ -488,9 +488,10 @@ public bool ObjectGeneric_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = Object_SupportBuildings(client);
+		int total;
+		count = Object_SupportBuildings(client, total);
 		maxcount = Object_MaxSupportBuildings(client);
-		if(count >= maxcount)
+		if(count >= maxcount || total > 79)
 			return false;
 	}
 	
@@ -788,30 +789,30 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	return count;
 }
 
-int Object_SupportBuildings(int owner)
+int Object_SupportBuildings(int owner, int &all = 0)
 {
 	int count;
 	
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		static char plugin[64];
+		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+		if(StrContains(plugin, "obj_", false) != -1)
 		{
-			static char plugin[64];
-			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
-			if(StrContains(plugin, "obj_", false) != -1)
-			{
-				if(StrContains(plugin, "barricade", false) != -1)
-					continue;
-				if(StrContains(plugin, "obj_decorative", false) != -1)
-					continue;
-
-				ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-				if(objstats.SentryBuilding)
-					continue;
-
+			if(StrContains(plugin, "barricade", false) != -1)
+				continue;
+			
+			if(StrContains(plugin, "obj_decorative", false) != -1)
+				continue;
+			
+			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+			if(objstats.SentryBuilding)
+				continue;
+			
+			all++;
+			if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 				count++;
-			}
 		}
 	}
 

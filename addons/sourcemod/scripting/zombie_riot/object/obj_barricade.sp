@@ -53,44 +53,29 @@ public bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = ObjectBarricade_Buildings(client) + ObjectRevenant_Buildings(client)/* + ActiveCurrentNpcsBarracks(client, true)*/;
+		count = ObjectBarricade_Buildings(client, total) + ObjectRevenant_Buildings(client)/* + ActiveCurrentNpcsBarracks(client, true)*/;
 		maxcount = Merchant_IsAMerchant(client) ? 0 : 4;
 		if(maxcount == 4 && i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 			maxcount = 1;
 
-		if(count >= maxcount)
+		if(count >= maxcount || total > 19)
 			return false;
 	}
 	
 	return true;
 }
 
-public bool ObjectBarricade_CanBuildCheap(int client, int &count, int &maxcount)
-{
-	if(!ObjectBarricade_CanBuild(client, count, maxcount))
-		return false;
-	
-	if(client)
-	{
-		count = 0;
-		maxcount = (Level[client] > 19 || CvarInfiniteCash.BoolValue) ? 1 : 0;
-		if(count >= maxcount)
-			return false;
-	}
-
-	return true;
-}
-
-int ObjectBarricade_Buildings(int owner)
+int ObjectBarricade_Buildings(int owner, int &total = 0)
 {
 	int count;
 	
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		if(NPCId == i_NpcInternalId[entity])
 		{
-			if(NPCId == i_NpcInternalId[entity])
+			total++;
+			if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 				count++;
 		}
 	}
