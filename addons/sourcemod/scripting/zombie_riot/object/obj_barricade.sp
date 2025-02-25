@@ -53,6 +53,7 @@ public bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
+		int total;
 		count = ObjectBarricade_Buildings(client, total) + ObjectRevenant_Buildings(client)/* + ActiveCurrentNpcsBarracks(client, true)*/;
 		maxcount = Merchant_IsAMerchant(client) ? 0 : 4;
 		if(maxcount == 4 && i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
