@@ -86,10 +86,13 @@ methodmap Isharmla < CClotBody
 
 		if(ally != TFTeam_Red)
 		{
-			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 0.0;
-			RaidAllowsBuildings = true;
+			if(!IsValidEntity(RaidBossActive))
+			{
+				RaidBossActive = EntIndexToEntRef(npc.index);
+				RaidModeTime = GetGameTime() + 9000.0;
+				RaidModeScaling = 0.0;
+				RaidAllowsBuildings = true;
+			}
 		}
 
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);

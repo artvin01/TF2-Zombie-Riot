@@ -173,7 +173,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
-					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
+					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]));
 					if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 					{
 						WorldSpaceCenter(ally.index, vecTarget);
@@ -181,7 +181,7 @@ public void Combine_Whiteflower_Master_Mage_ClotThink(int iNPC)
 						{
 							ApplyStatusEffect(npc.index, ally.index, "False Therapy", 10.0);
 							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
-							ApplyStatusEffect(npc.index, ally.index, "Buff Banner", 7.0);
+							ApplyStatusEffect(npc.index, ally.index, "War Cry", 7.0);
 							float flMaxhealth = float(ReturnEntityMaxHealth(ally.index));
 							flMaxhealth *= 0.35;
 							HealEntityGlobal(ally.index, ally.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);

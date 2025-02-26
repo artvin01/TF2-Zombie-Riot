@@ -1319,12 +1319,12 @@ static void Casino_Show_Hud(int client)
 		case INVALID_HANDLE:
 		{
 			PrintHintText(client,"----[%.1i/%.1i/%.1i]----\nDollars: [%.1i$/%.1i$]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Dollars_Ammount[client],100 + (25 * (i_Current_Pap[client] + 1) * (Payday - 1)),i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 		default:
 		{
 			PrintHintText(client,"----[FRENZY ACTIVE]----\nDollars: [SPAM / M2]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 	}
 }

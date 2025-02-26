@@ -35,15 +35,15 @@ methodmap VehicleAmbulance < VehicleGeneric
 		SetEntProp(obj.index, Prop_Send, "m_nSkin", GetURandomInt() % 2);
 
 		obj.m_bNoAttack = true;
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {16.0, 6.0, 12.0}, 0);	// Side Seat
+		obj.AddSeat({16.0, 6.0, 12.0}, 0);	// Side Seat
 
 		// Back Seats
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-25.0, -60.0, 22.0}, 1);	// Left Center
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {25.0, -30.0, 22.0}, 2);		// Right Front
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {25.0, -88.0, 22.0}, 3);		// Right Back
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-25.0, -30.0, 22.0}, 4);	// Left Front
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {-25.0, -88.0, 22.0}, 5);	// Left Back
-		SetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", {25.0, -60.0, 22.0}, 6);		// Right Center
+		obj.AddSeat({-25.0, -60.0, 22.0}, 1);	// Left Center
+		obj.AddSeat({25.0, -30.0, 22.0}, 2);		// Right Front
+		obj.AddSeat({25.0, -88.0, 22.0}, 3);		// Right Back
+		obj.AddSeat({-25.0, -30.0, 22.0}, 4);	// Left Front
+		obj.AddSeat({-25.0, -88.0, 22.0}, 5);	// Left Back
+		obj.AddSeat({25.0, -60.0, 22.0}, 6);		// Right Center
 
 		FuncShowInteractHud[obj.index] = ClotShowInteractHud;
 		func_NPCInteract[obj.index] = ClotInteract;
@@ -125,12 +125,12 @@ static void ClotThink(VehicleFullJeep obj)
 	GetEntPropVector(obj.index, Prop_Data, "m_vecAbsOrigin", pos1); 
 	for(int target = 1; target <= MaxClients; target++) 
 	{
-		if(IsClientInGame(target) && IsPlayerAlive(target) && TeutonType[target] != TEUTON_NONE && dieingstate[target] && Vehicle_Driver(target) == -1)
+		if(IsClientInGame(target) && IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE && dieingstate[target] && Vehicle_Driver(target) == -1)
 		{
 			GetClientAbsOrigin(target, pos2); 
 			
 			float distance = GetVectorDistance(pos1, pos2, true); 
-			if(distance < 40000.0)	// 200 HU
+			if(distance < 60000.0)
 			{
 				if(Vehicle_Enter(obj.index, target))
 					b_LeftForDead[target] = true;

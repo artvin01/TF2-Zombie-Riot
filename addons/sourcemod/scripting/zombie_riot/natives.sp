@@ -3,6 +3,7 @@
 
 static GlobalForward OnDifficultySet;
 static GlobalForward OnClientLoaded;
+static GlobalForward OnClientWorldmodel;
 
 void Natives_PluginLoad()
 {
@@ -15,6 +16,9 @@ void Natives_PluginLoad()
 
 	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell, Param_String, Param_Cell);
 	OnClientLoaded = new GlobalForward("ZR_OnClientLoaded", ET_Ignore, Param_Cell);
+	OnClientWorldmodel = new GlobalForward("ZR_OnClientWorldmodel", ET_Event, Param_Cell, Param_Cell, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef);
+
+	RegPluginLibrary("zombie_riot");
 }
 
 void Native_OnDifficultySet(int index, const char[] name, int level)
@@ -31,6 +35,22 @@ void Native_OnClientLoaded(int client)
 	Call_StartForward(OnClientLoaded);
 	Call_PushCell(client);
 	Call_Finish();
+}
+
+bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &sound, int &bodyOverride, bool &animOverride)
+{
+	Action action;
+
+	Call_StartForward(OnClientWorldmodel);
+	Call_PushCell(client);
+	Call_PushCell(class);
+	Call_PushCellRef(worldmodel);
+	Call_PushCellRef(sound);
+	Call_PushCellRef(bodyOverride);
+	Call_PushCellRef(animOverride);
+	Call_Finish(action);
+
+	return action >= Plugin_Changed;
 }
 
 public any Native_ApplyKillEffects(Handle plugin, int numParams)

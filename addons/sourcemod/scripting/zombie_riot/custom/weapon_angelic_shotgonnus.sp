@@ -289,7 +289,7 @@ public void Angelic_Shotgun_Cooldown_Logic(int client, int weapon)
 				}
 			}
 			PrintHintText(client,"%s",AbilityHud);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_AngelicShotgunHudCD[client] = GetGameTime() + 0.5;
 		}
 	}

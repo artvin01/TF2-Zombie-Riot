@@ -61,7 +61,7 @@ public void Weapon_Star_shooter(int client, int weapon, const char[] classname, 
 		}		
 	}
 	
-	Client_Shake(client, 0, 50.0, 25.0, 1.5);
+	Client_Shake(client, 0, 30.0, 15.0, 0.5);
 	
 	Strength[client] = 50.0;
 			

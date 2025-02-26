@@ -300,8 +300,8 @@ public void LostKnight_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 0.25;
 			npc.m_flRangedArmor = 0.25;
 			ApplyStatusEffect(npc.index, npc.index, "Combine Command", DurationGive);
-			ApplyStatusEffect(npc.index, npc.index, "Buff Banner", DurationGive);
-			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", DurationGive);
+			ApplyStatusEffect(npc.index, npc.index, "War Cry", DurationGive);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "False Therapy", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", DurationGive);
@@ -328,8 +328,8 @@ public void LostKnight_ClotThink(int iNPC)
 			if(GetTeam(npc.index) == GetTeam(entitycount))
 			{
 				ApplyStatusEffect(npc.index, entitycount, "Combine Command", DurationGive);
-				ApplyStatusEffect(npc.index, entitycount, "Buff Banner", DurationGive);
-				ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", DurationGive);
+				ApplyStatusEffect(npc.index, entitycount, "War Cry", DurationGive);
+				ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", DurationGive);
 			}
 		}
 	}

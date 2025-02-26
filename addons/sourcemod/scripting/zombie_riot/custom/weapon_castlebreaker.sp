@@ -366,7 +366,7 @@ static void CreateCastleBreakerEffect(int client)
 		else
 			PrintHintText(client,"Mode: PIERCE / Blast Shells: %i", new_ammo);
 
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		CastleBreaker_HUDDelay[client] = GetGameTime() + 0.5;
 	}
 	if(b_AbilityActivated[client])

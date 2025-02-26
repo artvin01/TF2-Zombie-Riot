@@ -258,7 +258,6 @@ ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
-ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
 ConVar zr_raidmultihp;
 ConVar zr_multi_maxcap;
@@ -304,6 +303,7 @@ float Resistance_for_building_High[MAXENTITIES];
 MusicEnum MusicString1;
 MusicEnum MusicString2;
 MusicEnum RaidMusicSpecial1;
+MusicEnum BGMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -373,7 +373,6 @@ int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 
 int StoreWeapon[MAXENTITIES];
-int ClientAttribResetCount[MAXTF2PLAYERS];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
 float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
@@ -592,6 +591,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/weapon_castlebreaker.sp"
 #include "zombie_riot/custom/kit_soldine.sp"
 #include "zombie_riot/custom/weapon_kritzkrieg.sp"
+#include "zombie_riot/custom/wand/weapon_bubble_wand.sp"
 
 void ZR_PluginLoad()
 {
@@ -656,6 +656,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");						//DEBUG
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_ROOT, "Fake Death Count"); 	//DEBUG
 	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
+	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
@@ -701,6 +702,9 @@ void ZR_MapStart()
 	PrecacheSound("ui/hitsound_electro2.wav");
 	PrecacheSound("ui/hitsound_electro3.wav");
 	PrecacheSound("ui/hitsound_space.wav");
+	PrecacheSound("#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+	PrecacheSound("ui/chime_rd_2base_neg.wav");
+	PrecacheSound("ui/chime_rd_2base_pos.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
@@ -709,6 +713,8 @@ void ZR_MapStart()
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
+	Zero(TeutonType); //Reset teutons on mapchange
+	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
@@ -725,6 +731,7 @@ void ZR_MapStart()
 	Zero(f_RingDelayGift);
 	Zero(f_HealthBeforeSuittime);
 	Music_ClearAll();
+	BuildingVoteEndResetCD();
 	Medigun_ClearAll();
 	WindStaff_ClearAll();
 	Lighting_Wand_Spell_ClearAll();
@@ -889,14 +896,14 @@ void ZR_MapStart()
 	Wkit_Soldin_OnMapStart();
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
+	BubbleWand_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
-	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.1, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	RemoveAllCustomMusic();
 	
@@ -943,37 +950,43 @@ public void OnMapInit()
 
 public Action GlobalTimer(Handle timer)
 {
+	static int frame;
+	frame++;
+// Due to how fast spawns are, it has to be on game frame.
+//	NPC_SpawnNext(false, false);
+
+	if(frame % 5)
+		return Plugin_Continue;
+	
+	bool ForceMusicStopAndReset = false;
+	if(f_AllowInstabuildRegardless && f_AllowInstabuildRegardless < GetGameTime())
+	{
+		f_AllowInstabuildRegardless = 0.0;
+		ForceMusicStopAndReset = true;
+	}
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
-			/*
-			if(IsFakeClient(client))
+			if(ForceMusicStopAndReset)
 			{
-				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
-				{
-					MoveBotToSpectator(client);
-				}
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 2);
 			}
-			*/
+			else
+			{
+				Music_Update(client);
+			}
+			
 			PlayerApplyDefaults(client);
 		}
 	}
 	
-	static int frame;
-	frame++;
-	if(frame % 4)
+	if(frame % 20)
 		return Plugin_Continue;
-
+	
 	Zombie_Delay_Warning();
 	Spawners_Timer();
-	return Plugin_Continue;
-}
-public Action GetTimerAndNullifyMusicMVM_Timer(Handle timer)
-{
-	if(GameRules_GetRoundState() == RoundState_BetweenRounds)
-		GetTimerAndNullifyMusicMVM();
-		
 	return Plugin_Continue;
 }
 
@@ -1021,6 +1034,7 @@ void ZR_ClientDisconnect(int client)
 	Building_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Vehicle_Exit(client, true, false);
+	Citizen_PlayerReplacement(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
@@ -1565,6 +1579,7 @@ public Action Timer_Dieing(Handle timer, int client)
 	
 			if(dieingstate[client] <= 0)
 			{
+				Vehicle_Exit(client);
 				if(dieingstate[client] != -5)
 				{
 					GiveCompleteInvul(client, 2.0);
@@ -1885,7 +1900,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				Zero(delay_hud); //Allow the hud to immedietly update
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 					{
 						FreezeNpcInTime(entity, 3.0, true);
@@ -2544,7 +2559,10 @@ void GiveXP(int client, int xp)
 				Store_PrintLevelItems(client, Level[client]);
 			}
 			if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
+			{
+				SkillTree_CalcSkillPoints(client);
 				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
+			}
 		}
 	}
 }
@@ -2787,28 +2805,6 @@ stock bool isPlayerMad(int client) {
 		return g_isPlayerInDeathMarch_HellHoe[client];
 	}
 	return false;
-}
-
-
-stock void GetTimerAndNullifyMusicMVM()
-{
-	return;
-/*
-	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
-
-	if(!IsValidEntity(EntityTimerWhat))
-		return;
-	
-	int Time = RoundToNearest(GetEntPropFloat(EntityTimerWhat, Prop_Send, "m_flRestartRoundTime") - GetGameTime());
-	if(Time > 8 && Time <= 12)
-	{
-		SetEntPropFloat(EntityTimerWhat ,Prop_Send, "m_flRestartRoundTime", GetGameTime() + 8.0);
-	}
-	else
-	{
-		return;
-	}
-	*/
 }
 
 bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)

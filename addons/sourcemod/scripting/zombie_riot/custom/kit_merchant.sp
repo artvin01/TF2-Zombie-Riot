@@ -404,7 +404,7 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 				bool alone = true;
 				for(int i; i < i_MaxcountNpcTotal; i++)
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 					if(entity != -1 && entity != victim && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 					{
 						GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -518,7 +518,7 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(entity != -1 && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 				{
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -550,13 +550,11 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 					{
 						SetGlobalTransTarget(attacker);
 						PrintHintText(attacker, "%t", "You healed for", target, RoundToNearest(healing));
-						StopSound(attacker, SNDCHAN_STATIC, "UI/hint.wav");
 					}
 					else
 					{
 						SetGlobalTransTarget(attacker);
 						PrintHintText(attacker, "%t", "You healed for NpcName", c_NpcName[target], RoundToNearest(healing));
-						StopSound(attacker, SNDCHAN_STATIC, "UI/hint.wav");
 					}
 				}
 

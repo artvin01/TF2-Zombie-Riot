@@ -863,7 +863,7 @@ static void Beam_Wand_pap_Hud(int client, bool type, int duration)
 		}
 		
 	}
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 static void Beam_Wand_Client_Target_Vec(int client, float vec[3], float gametime)

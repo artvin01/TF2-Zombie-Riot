@@ -265,7 +265,7 @@ public Action TimerRuianian_Transform(Handle timer, DataPack pack)
 				Format(LeperHud, sizeof(LeperHud), "Ruanian Astral Vision");
 			}
 			PrintHintText(client,"%s",LeperHud);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			UpdateLevelAbovePlayerText(client);
 		}
 	}

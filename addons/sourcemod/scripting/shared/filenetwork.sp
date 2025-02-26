@@ -242,7 +242,7 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 		char buffer[PLATFORM_MAX_PATH];
 		FormatEx(buffer, sizeof(buffer), "sound/%s", sound);
 		ReplaceString(buffer, sizeof(buffer), "#", "");
-		AddToDownloadsTable(buffer);
+		AddToDownloadsTable(buffer, sound);
 		return;
 	}
 
@@ -296,12 +296,14 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 	}
 }
 
-static void AddToDownloadsTable(const char[] file)
+static void AddToDownloadsTable(const char[] file, const char[] original = "")
 {
 	if(DownloadList.FindString(file) == -1)
 	{
 		AddFileToDownloadsTable(file);
 		DownloadList.PushString(file);
+		if(original[0])
+			DownloadList.PushString(original);
 	}
 }
 
@@ -622,6 +624,18 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 	
 	DeleteFile(file);
 		//LogError("Failed to delete file \"%s\"", file);
+}
+
+stock bool HasCustomSound(int client, const char[] sound)
+{
+	int soundlevel = SoundList.FindString(sound);
+	if(soundlevel == -1)
+	{
+		LogError("\"%s\" is not precached with PrecacheSoundCustom", sound);
+		return false;
+	}
+
+	return SoundLevel[client] > soundlevel;
 }
 
 stock void StopCustomSound(int entity, int channel, const char[] sound, float volume = SNDVOL_NORMAL)

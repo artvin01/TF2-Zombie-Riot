@@ -1607,7 +1607,7 @@ static void Hud(int client, int weapon)
 	Format_Fancy_Hud(HUDText);
 
 	PrintHintText(client, HUDText);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 static void Fractal_Weapon_LastMannHandle(int weapon, int attribute, float value)
 {

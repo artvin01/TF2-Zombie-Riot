@@ -84,12 +84,12 @@ void CheckMessengerMode(int client)
 	if (Change[client] == true )
 	{
 		PrintHintText(client,"Chaos Blaster");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 	else if (Change[client] == false)
 	{
 		PrintHintText(client,"Fire Blaster");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 }
 

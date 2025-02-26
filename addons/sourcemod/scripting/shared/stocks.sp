@@ -429,6 +429,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 
 	for(int repeat; repeat < repeatsretry; repeat++)
 	{
+		delete hTrace;
 		if(!ignore_allied_npc)
 		{
 			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
@@ -446,7 +447,6 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 		if(repeat == 0)
 		{
-			delete hTrace;
 			if(repeatsretry >= 2)
 				i_PreviousInteractedEntity[iClient] = -1; //didnt find any
 		}
@@ -1421,6 +1421,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 				{
 					AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
 					HealPointToReinforce(healer, HealingDoneInt, 0.0);
+					GiveRageOnDamage(healer, float(HealingDoneInt) * 2.0);
 				}
 			}
 		}
@@ -1508,6 +1509,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 			{
 				AddHealthToUbersaw(healer, HealthHealed, 0.0);
 				HealPointToReinforce(healer, HealthHealed, 0.0);
+				GiveRageOnDamage(healer, float(HealthHealed) * 2.0);
 			}
 #endif
 		}
@@ -4126,8 +4128,7 @@ stock bool IsPointHazard(const float pos1[3])
 }
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
-	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	if(b_IsATrigger[entity])
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -4162,7 +4163,7 @@ stock bool IsPointNoBuild(const float pos1[3],const float mins[3],const float ma
 public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int client)
 {
 	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && (!StrContains(classname, "trigger_hurt") ||!StrContains(classname, "func_nobuild")))
+	if(b_IsATriggerHurt[entity] || (GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "func_nobuild")))
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -5077,18 +5078,11 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
+	f_AllowInstabuildRegardless = GetGameTime() + time;
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
-/*
-	GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + time);
-	GameRules_SetProp("m_bAwaitingReadyRestart", false);
-
-	Event event = CreateEvent("teamplay_update_timer", true);
-	event.SetInt("seconds", RoundFloat(time));
-	event.Fire();
-*/
 }
 
 stock int GetOwnerLoop(int entity)
@@ -5475,7 +5469,7 @@ stock int FindEntityByNPC(int &i)
 {
 	for(; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != -1 && !b_NpcHasDied[entity])
 		{
 			i++;

@@ -3,10 +3,13 @@
 
 static bool SmartBounce;
 static int LastHitTarget;
+static int SupplyUsesThisWave[MAXPLAYERS+1];
+static int SupplyThisWave[MAXPLAYERS+1];
 
 void SniperMonkey_ClearAll()
 {
 	SmartBounce = false;
+	Zero(SupplyThisWave);
 }
 
 float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
@@ -31,7 +34,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			int i;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				i = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(i))
 				{
 					if(i != victim && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
@@ -178,7 +181,13 @@ public void Weapon_EliteDefender(int client, int weapon, bool &result, int slot)
 
 public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0)
+	if(SupplyUsesThisWave[client] > 1 && SupplyThisWave[client] == Waves_GetRound())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
+	}
+	else if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		float pos1[3], pos2[3];
 		GetClientEyePosition(client, pos1);
@@ -187,7 +196,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		int target = -1;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && b_NpcForcepowerupspawn[entity] != 2 && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -206,6 +215,16 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_advanced_friend.wav");
 			Ability_Apply_Cooldown(client, slot, 150.0);
+
+			if(SupplyThisWave[client] == Waves_GetRound())
+			{
+				SupplyUsesThisWave[client]++;
+			}
+			else
+			{
+				SupplyThisWave[client] = Waves_GetRound();
+				SupplyUsesThisWave[client] = 1;
+			}
 		}
 		else
 		{
@@ -234,7 +253,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 		int target = MaxClients + 1;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && b_NpcForcepowerupspawn[entity] != 2 && GetTeam(entity) != TFTeam_Red)
 			{
 				target = entity;

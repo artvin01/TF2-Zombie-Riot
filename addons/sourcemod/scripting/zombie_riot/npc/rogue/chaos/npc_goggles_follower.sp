@@ -648,7 +648,7 @@ methodmap GogglesFollower < CClotBody
 		/*
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
 			{
 				view_as<CClotBody>(other).m_bDissapearOnDeath = true;
@@ -666,7 +666,7 @@ void GogglesFollower_StartStage(const char[] name)
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == NPCId && IsEntityAlive(entity))
 		{
 			view_as<GogglesFollower>(entity).SpeechEncounter(name);
@@ -706,7 +706,7 @@ static void ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				npc.Speech(chaos == 4 ? "..." : "This ends now!");
@@ -937,7 +937,7 @@ static void ClotFinalThink(int iNPC)
 
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				target = other;

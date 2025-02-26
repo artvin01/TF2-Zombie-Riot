@@ -276,6 +276,8 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			b_EnableClutterSetting[client] = view_as<bool>(music & (1 << 4));
 			b_EnableNumeralArmor[client] = view_as<bool>(music & (1 << 5));
 			b_InteractWithReload[client] = view_as<bool>(music & (1 << 6));
+			b_DisableSetupMusic[client] = view_as<bool>(music & (1 << 7));
+			b_DisableStatusEffectHints[client] = view_as<bool>(music & (1 << 8));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -314,6 +316,14 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			
 		if(ForceNiko)
 			OverridePlayerModel(client, NIKO_2, true);
+	}
+}
+
+public void MapChooser_OnPreMapEnd()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		DataBase_ClientDisconnect(client);
 	}
 }
 
@@ -378,7 +388,7 @@ void DataBase_ClientDisconnect(int client)
 				f_ZombieVolumeSetting[client],
 				b_TauntSpeedIncreace[client],
 				f_Data_InBattleHudDisableDelay[client],
-				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0)),
+				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0) + (b_DisableSetupMusic[client] ? 128 : 0) + (b_DisableStatusEffectHints[client] ? 256 : 0)),
 				id);
 			}
 			else

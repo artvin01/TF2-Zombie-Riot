@@ -229,10 +229,7 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 
 		if(camo && !KazimierzMeleeAssasinRange(npc, 500.0))
 		{
-			float SelfPos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
-			SelfPos[2] += 20.0;
-			if(IsPointHazard(SelfPos))
+			if(i_InHurtZone[npc.index])
 			{
 				npc.m_flSpeed = 250.0;
 				npc.m_flExtraDamage += 1.0;
@@ -459,7 +456,7 @@ public bool KazimierzMeleeAssasinRange(KazimierzKnightAssasin npc, float range)
 	}
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(entity_close))
 		{
 			CClotBody npcenemy = view_as<CClotBody>(entity_close);

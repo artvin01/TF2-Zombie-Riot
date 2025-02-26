@@ -3032,4 +3032,8 @@
 	{
 		"en" "Koshi's Goods"
 	}
+	"Bubble Wand"
+	{
+		"en" "Bubble Wand"
+	}
 }

@@ -155,6 +155,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	if(medigun_heal_delay[owner] < GetGameTime())
 	{
+		if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
+		{
+			NPCStats_RemoveAllDebuffs(owner, 0.6);
+		}
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
 		int healTarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
 		
@@ -248,7 +252,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
 				PrintHintText(owner,"Medigun Fluid Capacity: %iml", new_ammo + 1);
-				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
@@ -347,20 +350,21 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							float Healing_GiveArmor = 0.35;
 
-							if(healTarget <= MaxClients)
-							{
-								Healing_GiveArmor *= Healing_Value;
+							Healing_GiveArmor *= Healing_Value;
 
-								if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
-								{
-									Healing_GiveArmor *= 0.33;
-								}
-								if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
-								{
-									Healing_GiveArmor *= 0.33;
-								}	
-								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+							if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
+							{
+								Healing_GiveArmor *= 0.33;
 							}
+							if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
+							{
+								Healing_GiveArmor *= 0.33;
+							}	
+							if(healTarget <= MaxClients)
+								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+							else
+								GrantEntityArmor(healTarget, false, 0.25, 0.25, 0,
+									flMaxHealth * Healing_GiveArmor);
 
 							
 							Healing_GiveArmor = 0.35;
@@ -396,6 +400,14 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
 						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
+
+						if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
+						{
+							NPCStats_RemoveAllDebuffs(healTarget, 0.6);
+							if(i_CustomWeaponEquipLogic[medigun] != WEAPON_KRITZKRIEG && healTarget > MaxClients)
+								ApplyStatusEffect(owner, healTarget, "UBERCHARGED", 0.25);
+						}
+
 						if(i_CustomWeaponEquipLogic[medigun] == WEAPON_KRITZKRIEG)
 						{
 							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", 1.0);
@@ -433,7 +445,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 				}
-				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
@@ -498,7 +509,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						PrintHintText(owner,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
 					}
-					StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 					medigun_hud_delay[owner] = GetGameTime() + 0.5;
 				}
 			}
@@ -579,7 +589,7 @@ public void GB_On_Reload(int client, int weapon, bool crit) {
 		return;
 	}
 	PrintHintText(client,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 	SetEntProp(weapon, Prop_Send, "m_bChargeRelease", 1);
 	gb_medigun_on_reload[client] = true;
 }
@@ -615,6 +625,9 @@ void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUb
 	if(IsInvuln(owner))
 		return;
 		
+	if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
+		return;
+
 	float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 
 	float HeatExtra = 0.10;

@@ -137,7 +137,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		DataPack pack3 = new DataPack();
 		pack3.WriteCell(GetClientUserId(client));
 		RequestFrames(CancelSoundEarlyMlynar, 40, pack3);
-
+		
 		for(int repeat; repeat <= MaxRepeats; repeat ++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, Speed, 99999.9, 0.0, -1, weapon, "", AngEffect);
@@ -154,6 +154,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 			RequestFrames(Mylnar_DeleteLaserAndParticle, 18, pack2);
 			AngEffect[1] += (180.0 / float(MaxRepeats));
 		}
+		
 
 		float vecSwingForward[3];
 		GetAngleVectors(ang2, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
@@ -164,7 +165,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		damage *= Attributes_Get(weapon, 2, 1.0);
-		damage *= Attributes_Get(weapon, 1000, 1.0);
+	//	damage *= Attributes_Get(weapon, 1000, 1.0);
 
 
 		damage *= f_MlynarDmgMultiPassive[client];
@@ -465,7 +466,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			{
 				PrintHintText(client,"Unbrilliant Glory [READY]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
 			}
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_MlynarHudDelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -514,7 +515,7 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		}
 		damageModif *= Attributes_Get(weapon, 1, 1.0);
 		damageModif *= Attributes_Get(weapon, 2, 1.0);
-		damageModif *= Attributes_Get(weapon, 1000, 1.0);
+	//	damageModif *= Attributes_Get(weapon, 1000, 1.0);
 
 		damageModif *= f_MlynarDmgMultiPassive[victim];
 		damageModif *= f_MlynarDmgMultiAgressiveClose[victim];

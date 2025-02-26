@@ -527,7 +527,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 	int npc_current_count;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
 		{
 			npc_current_count += 1;
@@ -583,7 +583,7 @@ static void Spawning_Logic(Magia_Anchor npc)
 	int npc_current_count;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
 		{
 			npc_current_count += 1;
@@ -806,7 +806,7 @@ static int i_find_weaver(Magia_Anchor npc)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
 			char npc_classname[60];
@@ -854,7 +854,7 @@ int i_GetMagiaAnchor(CClotBody npc)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
 			if(b_is_magia_tower[baseboss_index])

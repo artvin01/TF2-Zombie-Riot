@@ -200,7 +200,7 @@ static void ClotThink(int iNPC)
 			float entitypos[3], distance;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) != GetTeam(npc.index))
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
@@ -292,7 +292,7 @@ static void ClotThink(int iNPC)
 			GetAbsOrigin(npc.m_iWearable3, Vec);
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) != GetTeam(npc.index))
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);

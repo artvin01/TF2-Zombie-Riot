@@ -4,7 +4,7 @@
 // https://github.com/Mikusch/source-vehicles
 // https://github.com/ficool2/vscript_vehicle
 
-#define VEHICLE_MAX_SEATS	9
+#define VEHICLE_MAX_SEATS	24
 
 enum VehicleType
 {
@@ -36,6 +36,11 @@ methodmap VehicleGeneric < CClotBody
 		SDKHook(obj, SDKHook_OnTakeDamage, VehicleTakeDamage);
 
 		return view_as<VehicleGeneric>(obj);
+	}
+	public void AddSeat(const float pos[3], int index)
+	{
+		if(index < VEHICLE_MAX_SEATS)
+			SetEntPropVector(this.index, Prop_Data, "m_vecSeatPos", pos, index);
 	}
 	property int m_hDriver
 	{
@@ -276,7 +281,7 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 		}
 		else if(fabs(forceOutTime[client] - GetGameTime()) < 0.4 || CanExit(vehicle))
 		{
-			Vehicle_Exit(client, false);
+			Vehicle_Exit(client);
 		}
 		else
 		{
@@ -382,7 +387,7 @@ static void SwitchToDriver(VehicleGeneric obj, int target)
 // If target is a vehicle, kicks all players out
 // If target is a user, kicks that player out
 // Returns true if something happened
-bool Vehicle_Exit(int target, bool killed, bool teleport = true)
+bool Vehicle_Exit(int target, bool killed = false, bool teleport = true)
 {
 	bool found;
 

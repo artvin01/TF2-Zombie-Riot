@@ -162,7 +162,7 @@ methodmap Spotter < CClotBody
 		}
 		else
 		{
-			switch(GetURandomInt() % 10)
+			switch(GetURandomInt() % 15)
 			{
 				case 0:
 				{
@@ -210,8 +210,33 @@ methodmap Spotter < CClotBody
 				{
 					this.Speech("Hey, come to think of it...");
 					this.SpeechDelay(5.0, "Aren't you tired of being nice?");
-					this.SpeechDelay(10.0, "Don't you just want to go apesh-");
+					this.SpeechDelay(9.0, "Don't you just want to go apesh-");
 					this.SpeechDelay(12.5, "...sorry, sorry, my head slipped a bit.");
+				}
+				case 10:
+				{
+					this.Speech("In my honest opinion, i dislike brocoli.");
+					this.SpeechDelay(6.0, "It just DOESN'T taste good for me.");
+				}
+				case 11:
+				{
+					this.Speech("Ah, i just remembered something.");
+					this.SpeechDelay(6.0, "But its none of your business.");
+				}
+				case 12:
+				{
+					this.Speech("I wonder if this training will be enough...");
+					this.SpeechDelay(7.0, "...for me to travel with you guys outside.");
+				}
+				case 13:
+				{
+					this.Speech("Sometimes i see a guy named 'Vtuber' say he has no limits.");
+					this.SpeechDelay(10.0, "And that he'll charge at full power, too.");
+					this.SpeechDelay(17.5, "I think that's part of his training....");
+				}
+				case 14:
+				{
+					this.Speech("You stink.");
 				}
 				default:
 				{
@@ -316,7 +341,7 @@ methodmap Spotter < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 255, 135, 0);
 
 		Freeplay_SpotterStatus(true);
-	        switch(GetRandomInt(1, 5))
+	        switch(GetRandomInt(1, 7))
 		{
 			case 1:
 			{
@@ -335,6 +360,14 @@ methodmap Spotter < CClotBody
 				CPrintToChatAll("{orange}Spotter: {white}Apparently Bob told me he saw some sort of ''titan soldier'' that calls himself a sigma.");
 				CPrintToChatAll("{orange}Spotter: {white}Quite {strange}strange{white}, to be honest.");
 			}
+			case 5:
+			{
+			    	CPrintToChatAll("{orange}Spotter: {white}Another day, another session of training.");
+			}
+			case 6:
+			{
+				CPrintToChatAll("{orange}Spotter: {white}Hello there!");
+			}
 			default:
 			{
 			    	CPrintToChatAll("{orange}Spotter: {white}Im hoping that little {lightblue}Ant {white}Bob told me about shows up now.");
@@ -348,7 +381,7 @@ methodmap Spotter < CClotBody
 public void Spotter_ClotThink(int iNPC)
 {
 	Spotter npc = view_as<Spotter>(iNPC);
-
+	bool retreat = false;
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -369,41 +402,53 @@ public void Spotter_ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0, _, _, _, _, _, 500.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, 600.0, _, _, _, _, _, 600.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		ally = GetClosestAllyPlayer(npc.index);
 		npc.m_iTargetWalkTo = ally;
 	}
 
-	if(target > 0 && GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) * 0.2))
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) * 0.25))
 	{
-		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
-		
-		if(distance < npc.GetLeadRadius())
+		if(target > 0)
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+			
+			if(distance < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, target);
+			}
+	
+			npc.StartPathing();
+			SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance);
+			npc.m_flSpeed = 365.0;
 		}
-		else 
+		else
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			retreat = true;
 		}
-
-		npc.StartPathing();
-		SpotterSelfDefense(npc, GetGameTime(npc.index), target, distance);
-		npc.m_flSpeed = 365.0;
 	}
 	else
+	{
+		retreat = true;
+	}
+
+	if(retreat)
 	{
 		if(ally > 0)
 		{
 			float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
 			float vecSelf[3]; WorldSpaceCenter(npc.index, vecSelf);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
-
+			npc.m_flSpeed = 420.0;
 			if(flDistanceToTarget > 25000.0)
 			{
 				NPC_SetGoalEntity(npc.index, ally);
@@ -412,16 +457,46 @@ public void Spotter_ClotThink(int iNPC)
 				return;
 			}
 		}
-
+	
 		npc.StopPathing();
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		npc.m_flSpeed = 420.0;
-	}
+	}	
 
 	if(npc.m_fHealCooldown < gameTime)
 	{	
-		ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 2.0);
-		HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
+		if(ally > 0)
+		{
+			float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
+			float vecSelf[3]; WorldSpaceCenter(npc.index, vecSelf);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
+			if(flDistanceToTarget < 35000.0)
+			{
+				float flHealth = float(GetEntProp(ally, Prop_Send, "m_iHealth"));
+				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(ally);
+				if(flpercenthpfrommax <= 0.5)
+				{
+					npc.AddGesture("ACT_MP_THROW");
+					HealEntityGlobal(npc.index, ally, 500.0, 1.0, 5.0, HEAL_ABSOLUTE);
+					switch(GetRandomInt(1, 3))
+					{
+						case 1:
+						{
+						    	CPrintToChat(ally, "{orange}Spotter: {white}Here ya go %N.", ally);
+						}
+						case 2:
+						{
+							CPrintToChat(ally, "{orange}Spotter: {white}Well well, don't get too hurt next time yeah %N?", ally);
+						}
+						default:
+						{
+						    	CPrintToChat(ally, "{orange}Spotter: {white}Have a nice day, %N.", ally);
+						}
+					}
+				}
+			}
+		}
+
+		HealEntityGlobal(npc.index, npc.index, 2500.0, 1.0, 5.0, HEAL_ABSOLUTE);
 		npc.m_fHealCooldown = gameTime + 6.0;
 	}
 
@@ -481,7 +556,7 @@ public void Spotter_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();
 
-	switch(GetRandomInt(1, 3))
+	switch(GetRandomInt(1, 5))
 	{
 		case 1:
 		{
@@ -491,12 +566,21 @@ public void Spotter_NPCDeath(int entity)
 		{
 			CPrintToChatAll("{orange}Spotter: {crimson}OOOUUCH!!! {white}Retreating, retreating!");
 		}
+		case 3:
+		{
+			CPrintToChatAll("{orange}Spotter: {white}Yyeeooowwch.... That's gonna leave a mark...");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{orange}Spotter: {crimson}OOW!");
+		}
 		default:
 		{
-			CPrintToChatAll("{orange}Spotter: {white}B-bob, im retreating now, im heavily wounded...");
+			CPrintToChatAll("{orange}Spotter: {white}Ow ow, im retreating now, heavily wounded...");
 		}
 	}
 	
+	CPrintToChatAll("{crimson}The Spotter bails away.");
 	Freeplay_SpotterStatus(false);
 	
 	if(IsValidEntity(npc.m_iWearable1))
@@ -540,7 +624,7 @@ void SpotterSelfDefense(Spotter npc, float gameTime, int target, float distance)
 					HealEntityGlobal(npc.index, npc.index, 1000.0, 1.0, 0.0, HEAL_ABSOLUTE);
 					
 					npc.m_iAttacksTillReload++;
-					if(npc.m_iAttacksTillReload >= 25)
+					if(npc.m_iAttacksTillReload >= 50)
 					{
 						npc.Anger = true;
 					}
@@ -606,10 +690,9 @@ void SpotterAllyBuff(Spotter npc)
 		}
 	}
 
-	ApplyStatusEffect(npc.index, npc.index, "Spotter's Rally", 1.0);
 	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 5.0);
 
-	switch(GetRandomInt(1, 3))
+	switch(GetRandomInt(1, 4))
 	{
 		case 1:
 		{
@@ -620,6 +703,11 @@ void SpotterAllyBuff(Spotter npc)
 		{
 			CPrintToChatAll("{orange}Spotter: {gold}COME ON!!!!!");
 			npc.Speech("COME ON!!!!!!");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{orange}Spotter: {gold}CHARGE AT FULL POWER!!!!");
+			npc.Speech("CHARGE AT FULL POWER!!!!");
 		}
 		default:
 		{

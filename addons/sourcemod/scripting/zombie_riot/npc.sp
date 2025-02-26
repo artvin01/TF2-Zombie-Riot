@@ -70,8 +70,8 @@ void NPC_ConfigSetup()
 
 	// Buildings
 	ObjectBarricade_MapStart();
-	ObjectAmmobox_MapStart();
 	ObjectDecorative_MapStart();
+	ObjectAmmobox_MapStart();
 	ObjectArmorTable_MapStart();
 	ObjectPerkMachine_MapStart();
 	ObjectPackAPunch_MapStart();
@@ -84,9 +84,13 @@ void NPC_ConfigSetup()
 	ObjectVillage_MapStart();
 	ObjectTinkerBrew_MapStart();
 	ObjectRevenant_Setup();
-
-	ObjectConstruction_LightHouse_MapStart();
 	// Buildings
+
+	// Constructs
+	ObjectConstruction_LightHouse_MapStart();
+	ObjectStove_MapStart();
+	ObjectFactory_MapStart();
+	// Constructs
 
 	// Vehicles
 	VehicleHL2_Setup();
@@ -190,7 +194,6 @@ void NPC_ConfigSetup()
 	XenoOuroborosEkas_OnMapStart_NPC();
 
 	
-	NaziPanzer_OnMapStart_NPC();
 	WanderingSpirit_OnMapStart_NPC();
 	VengefullSpirit_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
@@ -899,8 +902,22 @@ void NPC_ConfigSetup()
 	DimensionalFragment_OnMapStart_NPC();
 	ImmutableHeavy_OnMapStart_NPC();
 	VanishingMatter_OnMapStart_NPC();
+	FreeplaySigmaller_OnMapStart_NPC();
 	Spotter_OnMapStart_NPC();
 	Erasus_OnMapStart_NPC();
+	AnnoyingSpirit_OnMapStart_NPC();
+	FogOrbHeavy_OnMapStart_NPC();
+
+	// Construction
+	MaterialCash_MapStart();
+	MaterialCopper_MapStart();
+	MaterialCrystal_MapStart();
+	MaterialIron_MapStart();
+	MaterialJalan_MapStart();
+	MaterialOssunia_MapStart();
+	MaterialStone_MapStart();
+	MaterialWizuh_MapStart();
+	MaterialWood_MapStart();
 }
 
 int NPC_Add(NPCData data)
@@ -956,7 +973,10 @@ stock int NPC_GetByPlugin(const char[] name, NPCData data = {})
 {
 	int index = NPCList.FindString(name, NPCData::Plugin);
 	if(index != -1)
+	{
 		NPCList.GetArray(index, data);
+		PrecacheNPC(index, data);
+	}
 	
 	return index;
 }
@@ -1062,7 +1082,7 @@ void ZR_NpcTauntWinClear()
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
@@ -1074,7 +1094,7 @@ void ZR_NpcTauntWin()
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			Function func = func_NPCFuncWin[baseboss_index];
@@ -1135,7 +1155,7 @@ void NPCDeath(int entity)
 	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int DeathNoticer = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int DeathNoticer = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
 		{
 			Function func = func_NPCDeathForward[DeathNoticer];
@@ -1201,7 +1221,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
 #include "zombie_riot/object/obj_revenant.sp"
-#include "zombie_riot/object/obj_giant_lighthouse.sp"
+#include "zombie_riot/object/construction/obj_giant_lighthouse.sp"
+#include "zombie_riot/object/construction/obj_const_stove.sp"
+#include "zombie_riot/object/construction/obj_const_factory.sp"
+//#include "zombie_riot/object/construction/obj_hospital.sp"
 
 // VEHICLES
 #include "shared/vehicles/vehicle_shared.sp"
@@ -1304,7 +1327,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/xeno_lab/npc_xeno_patient_few.sp"
 #include "zombie_riot/npc/xeno_lab/npc_xeno_ekas_robo.sp"
 
-#include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
@@ -1993,6 +2015,18 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/freeplay/npc_dimensionfrag.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_immutableheavy.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_vanishingmatter.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_freeplay_sigmaller.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_spotter.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_annoying_spirit.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_darkenedheavy.sp"
 
 #include "zombie_riot/npc/construction/npc_base_building.sp"
+#include "zombie_riot/npc/construction/npc_material_cash.sp"
+#include "zombie_riot/npc/construction/npc_material_copper.sp"
+#include "zombie_riot/npc/construction/npc_material_crystal.sp"
+#include "zombie_riot/npc/construction/npc_material_iron.sp"
+#include "zombie_riot/npc/construction/npc_material_jalan.sp"
+#include "zombie_riot/npc/construction/npc_material_ossunia.sp"
+#include "zombie_riot/npc/construction/npc_material_stone.sp"
+#include "zombie_riot/npc/construction/npc_material_wizuh.sp"
+#include "zombie_riot/npc/construction/npc_material_wood.sp"

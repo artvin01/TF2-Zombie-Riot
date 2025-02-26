@@ -129,7 +129,7 @@ float i_WasInResPowerup[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
-ConVar CvarAirAcclerate; //sv_airaccelerate
+//ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
 #endif
@@ -172,10 +172,11 @@ int g_particleImpactRubber;
 float f_damageAddedTogether[MAXTF2PLAYERS];
 float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 int i_HudVictimToDisplay[MAXTF2PLAYERS];
+int i_HudVictimToDisplay2[MAXTF2PLAYERS];
 #endif
 
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
-bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
+//bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_ClientConnectTime[MAXENTITIES];	
 float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
@@ -296,7 +297,7 @@ int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max
 
 float Resistance_for_building_Low[MAXENTITIES];
 
-bool b_DisplayDamageHud[MAXTF2PLAYERS];
+bool b_DisplayDamageHud[MAXTF2PLAYERS][2];
 bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
@@ -306,7 +307,9 @@ int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
 float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
 //Just speeds up their time ig?
-float f_AttackSpeedNpcIncreace[MAXENTITIES];
+float f_AttackSpeedNpcIncreace[MAXENTITIES] = {1.0, ...};
+float f_AllowInstabuildRegardless = 0.0;
+int ClientAttribResetCount[MAXTF2PLAYERS];
 
 
 //This is for going through things via lag comp or other reasons to teleport things away.
@@ -413,6 +416,7 @@ float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 char c_WeaponUseAbilitiesHud[MAXENTITIES][16];
+float PrepareMusicVolume[MAXTF2PLAYERS];
 
 
 //Used for any double arrays like lantean wand or health hose.
@@ -498,8 +502,6 @@ float f_ClientArmorRegen[MAXENTITIES];
 //bool b_AvangardCoreB[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
-float f_MaxAnimationSpeed[MAXENTITIES];	
-bool b_AvoidBuildingsAtAllCosts[MAXENTITIES];	
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
 int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
@@ -513,6 +515,8 @@ char g_GibEating[][] = {
 };
 #endif
 #endif
+bool b_AvoidBuildingsAtAllCosts[MAXENTITIES];	
+float f_MaxAnimationSpeed[MAXENTITIES];	
 Handle g_hRecalculatePlayerBodygroups;
 float f_WandDamage[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //

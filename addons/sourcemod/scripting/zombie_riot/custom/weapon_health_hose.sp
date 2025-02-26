@@ -3,7 +3,7 @@
 
 static float Hose_Velocity = 1000.0;
 static float Hose_BaseHeal = 3.0;
-static float Hose_UberGain = 0.0075;
+static float Hose_UberGain = 0.0150;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
 static float SelfHealMult = 0.33;
@@ -272,15 +272,33 @@ public bool Hose_Heal(int owner, int entity, float amt)
 		amt *= 0.35;
 	}
 	
+	float flMaxHealth = float(ReturnEntityMaxHealth(entity));
+	float flHealth = float(GetEntProp(entity, Prop_Data, "m_iHealth"));
+	if(flHealth <= flMaxHealth * 0.5)
+	{
+		amt *= 1.65;
+	}
+		
 	int new_ammo = GetAmmo(owner, 21);
 	int ammoSubtract;
 	ammoSubtract = HealEntityGlobal(owner, entity, amt, 1.0, 0.0, _, new_ammo);	
 	
+	ApplyStatusEffect(owner, entity, "Healing Resolve", 2.0);
 	if(ammoSubtract <= 0)
 	{
 		return false;
 	}
 
+	if(flHealth <= flMaxHealth * 0.5)
+	{
+		bool PlaySound = false;
+		if(f_MinicritSoundDelay[owner] < GetGameTime())
+		{
+			PlaySound = true;
+			f_MinicritSoundDelay[owner] = GetGameTime() + 0.01;
+		}
+		DisplayCritAboveNpc(entity, owner, PlaySound, .minicrit = true); //Display crit above head
+	}
 		
 	new_ammo -= ammoSubtract;
 	if(ammoSubtract > 0)
@@ -556,7 +574,7 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
 		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityCollisionGroup(prop, 27);
-		SDKHook(prop, SDKHook_StartTouch, TouchHealthKit);
+		SDKHook(prop, SDKHook_Touch, TouchHealthKit);
 		f_HealMaxPickup_Enable[prop] = GetGameTime();
 		f_HealMaxPickup[prop] = HealAmmount;
 		i_WandIdNumber[prop] = 999;

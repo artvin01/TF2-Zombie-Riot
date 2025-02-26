@@ -83,7 +83,7 @@ public void Enable_SkadiWeapon(int client, int weapon) // Enable management, han
 		{
 			if(h_TimerSkadiWeaponManagement[i])
 			{
-				ApplyStatusEffect(weapon, weapon, "Skadi's Skills", 9999999.0);
+				ApplyStatusEffect(weapon, weapon, "Abyssal Skills", 9999999.0);
 				Attributes_SetMulti(weapon, 2, 1.1);
 			}
 		}

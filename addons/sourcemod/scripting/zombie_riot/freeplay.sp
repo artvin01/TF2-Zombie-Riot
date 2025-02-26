@@ -8,7 +8,6 @@ static int EnemyChance;
 static int EnemyBosses;
 static int ImmuneNuke;
 static int CashBonus;
-static bool FriendlyDay;
 static float KillBonus;
 static float MiniBossChance;
 static bool HussarBuff;
@@ -42,6 +41,8 @@ static bool UnlockedSpeed;
 static bool CheesyPresence;
 static int EloquenceBuff;
 static int RampartBuff;
+static int EloquenceBuffEnemies;
+static int RampartBuffEnemies;
 static int FreeplayBuffTimer;
 static bool AntinelNextWave;
 static bool zombiecombine;
@@ -53,11 +54,17 @@ static int RandomStats;
 static bool merlton;
 static bool Sigmaller;
 static float gay;
+static int friendunitamount;
+static int HurtleBuff;
+static int HurtleBuffEnemies;
+static bool LoveNahTonic;
+static bool Schizophrenia;
+static bool NormalSignaller;
+static bool DarknessComing;
 
 void Freeplay_OnMapStart()
 {
 	PrecacheSound("ui/vote_success.wav", true);
-	PrecacheSound("passtime/ball_dropped.wav", true);
 	PrecacheSound("ui/mm_medal_silver.wav", true);
 	PrecacheSound("ambient/halloween/thunder_01.wav", true);
 	PrecacheSound("misc/halloween/spelltick_set.wav", true);
@@ -78,7 +85,6 @@ void Freeplay_ResetAll()
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
 	CashBonus = 0;
-	FriendlyDay = false;
 	KillBonus = 0.0;
 	MiniBossChance = 0.2;
 	HussarBuff = false;
@@ -94,7 +100,7 @@ void Freeplay_ResetAll()
 	SpeedMult = 1.0;
 	MeleeMult = 1.0;
 	RangedMult = 1.0;
-	ExtraSkulls = 0;
+	ExtraSkulls = -1;
 	SkullTimes = 0;
 	ExplodeNPCDamage = 0;
 	ExplodingNPC = false;
@@ -113,6 +119,8 @@ void Freeplay_ResetAll()
 	CheesyPresence = false;
 	EloquenceBuff = 0;
 	RampartBuff = 0;
+	EloquenceBuffEnemies = 0;
+	RampartBuffEnemies = 0;
 	FreeplayBuffTimer = 0;
 	AntinelNextWave = false;
 	zombiecombine = false;
@@ -123,6 +131,13 @@ void Freeplay_ResetAll()
 	merlton = false;
 	Sigmaller = false;
 	gay = 0.0;
+	friendunitamount = 0;
+	HurtleBuff = 0;
+	HurtleBuffEnemies = 0;
+	LoveNahTonic = false;
+	Schizophrenia = false;
+	NormalSignaller = false;
+	DarknessComing = false;
 }
 
 int Freeplay_EnemyCount()
@@ -146,6 +161,15 @@ int Freeplay_EnemyCount()
 	
 		if(moremen)
 			amount += 3;
+
+		if(Schizophrenia)
+			amount++;
+
+		if(DarknessComing)
+			amount++;
+
+		if(NormalSignaller)
+			amount++;
 	}
 
 	return amount;
@@ -189,7 +213,8 @@ int Freeplay_GetDangerLevelCurrent()
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
-	if(RaidFight || FriendlyDay || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller)
+	bool shouldscale = true;
+	if(RaidFight || friendunitamount || AntinelNextWave || zombiecombine || moremen || immutable || spotter || Sigmaller || Schizophrenia || NormalSignaller || DarknessComing)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -232,7 +257,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
 				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "wave_60";
+				enemy.Data = "wave_60;res3";
 			}
 			case 5:
 			{
@@ -384,55 +409,56 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 		}
 
-		// Raids have too much damage.
-		if(postWaves+1 < 109)
-			enemy.ExtraDamage *= 0.55;
+		if(Waves_GetRound() > 124)
+			enemy.ExtraDamage *= 2.0;
+
+		if(Waves_GetRound() > 174)
+			enemy.ExtraDamage *= 2.0;
 
 		// Raid health is lower before w150.
-		if(postWaves+1 < 89)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
-		else
-			enemy.Health = RoundToCeil(float(enemy.Health) * 1.2);
+		if(Waves_GetRound() > 149)
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.75);
 
-		if(postWaves+1 > 109)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 1.35);
+		if(Waves_GetRound() > 174)
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
 
 		// moni
-		enemy.Credits += 7500.0;
+		enemy.Credits += 10000.0;
 		enemy.Does_Not_Scale = 1;
 		count = 1;
 		RaidFight = 0;
+		shouldscale = false;
 	}
-	else if(FriendlyDay)
+	else if(friendunitamount)
 	{
 		enemy.Team = TFTeam_Red;
-		count = 5;
-		FriendlyDay = false;
+		count = friendunitamount;
 
 		if(enemy.Health)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage = 20.0;
+
+		enemy.ExtraSpeed = 1.25;
+
+		friendunitamount = 0;
+		shouldscale = false;
 	}
 	else if(Sigmaller)
 	{
-		// Spawns a humongous Signaller that does the same thing a normal one does, no matter if its silenced or not.
+		// Spawns a humongous Signaller that does multiple stuff.
 		enemy.Is_Outlined = true;
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 
-		enemy.Index = NPC_GetByPlugin("npc_signaller");
-		enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
-		enemy.ExtraSpeed = 1.25;
-		enemy.ExtraSize = 3.0; // BIG
+		enemy.Index = NPC_GetByPlugin("npc_freeplay_sigmaller");
+		enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Credits += 1.0;
-		enemy.Is_Health_Scaled = 0;
-		strcopy(enemy.CustomName, sizeof(enemy.CustomName), "SIGMALLER");
 
 		count = 1;
 		Sigmaller = false;
+		shouldscale = false;
 	}
 	else if(AntinelNextWave)
 	{
@@ -443,7 +469,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		enemy.Index = NPC_GetByPlugin("npc_sentinel");
 		enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.6);
 		enemy.ExtraSpeed = 2.5;
 		enemy.ExtraSize = 0.2; // smol
 		enemy.Credits += 1.0;
@@ -452,6 +477,19 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		count = 1;
 		AntinelNextWave = false;
+	}
+	else if(DarknessComing)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Index = NPC_GetByPlugin("npc_darkenedheavy");
+		enemy.Health = RoundToCeil(HealthBonus + (1250000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.02)));
+		enemy.Credits += 100.0;
+		enemy.ExtraMeleeRes = 1.25;
+		enemy.ExtraRangedRes = 0.5;
+		enemy.Is_Boss = 1;
+
+		count = 6;
+		DarknessComing = false;
 	}
 	else if(zombiecombine)
 	{
@@ -489,15 +527,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
-		enemy.Health = RoundToCeil((HealthBonus + (225000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
+		enemy.Health = RoundToCeil((HealthBonus + (700000.0 * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.01))) * 1.5);
 		enemy.ExtraMeleeRes = 1.35;
 		enemy.ExtraRangedRes = 1.0;
 		enemy.ExtraSpeed = 1.0;
 		enemy.ExtraDamage = 1.0;
 		enemy.ExtraSize = 1.0;
 		enemy.Credits += 100.0;
-		enemy.Is_Boss = 0;
-		enemy.Is_Health_Scaled = 0;
 
 		count = 5;
 		immutable = false;
@@ -508,9 +544,32 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Index = NPC_GetByPlugin("npc_spotter");
 		enemy.Health = RoundToFloor(50000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 		enemy.Is_Immune_To_Nuke = true;
-		enemy.Is_Outlined = 1;
+		enemy.Is_Outlined = 0;
 		count = 1;
 		spotter--;
+		shouldscale = false;
+	}
+	else if(Schizophrenia)
+	{
+		enemy.Index = NPC_GetByPlugin("npc_annoying_spirit");
+		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Outlined = 0;
+		enemy.Credits += 250.0;
+		count = 1;
+		Schizophrenia = false;
+	}
+	else if(NormalSignaller)
+	{
+		enemy.Team = TFTeam_Red;
+		enemy.Index = NPC_GetByPlugin("npc_signaller");
+		enemy.Health = 50000;
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Outlined = 0;
+
+		count = 1;
+		NormalSignaller = false;
+		shouldscale = false;
 	}
 	else
 	{
@@ -542,12 +601,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			if(GetRandomInt(1, 2) == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
-				enemy.Health = 35000; // enemy hp is getting overriden apparently
+				enemy.Health = 60000; // enemy hp is getting overriden apparently
 			}
 			else
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = 80000; // enemy hp is getting overriden apparently
+				enemy.Health = 150000; // enemy hp is getting overriden apparently
 			}
 
 			if(enemy.Health)
@@ -625,9 +684,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 		}
 
-		if(count > 45)
-			count = 45;
-
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
 		{
 			enemy.Health = RoundToCeil(enemy.Health * 1.1);
@@ -642,20 +698,54 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		if(KillBonus)
 			enemy.Credits += KillBonus;
+
+		shouldscale = true;
+	}
+
+	if(alaxios && count > 30)
+		count = 30;
+
+	if(count > 45)
+		count = 45;
+
+	if(shouldscale)
+	{
+		// stat related stuff
+		enemy.ExtraSize *= ExtraEnemySize;	
+		
+		// count scaling
+		float countscale = float(CountPlayersOnRed());
+		if(countscale <= 8.0)
+		{
+			countscale *= 0.125; // below or equal to 8 players, scaling should be 0.125 per player
+		}
+		else if(countscale > 8.0 && countscale <= 12.0) 
+		{
+			countscale = 1.0; // above 8 players but below or equal to 12, player scaling should not activate
+		}
+		else
+		{
+			countscale *= 0.0782; // above 12 players, scaling should be 0.0782 per player, for a max of +25% enemies at 16 players assuming there can't be more.
+		}
+
+		if(countscale < 0.3)
+			countscale = 0.3; // below or equal to 2 players, there are 70% less enemies
+
+		count = RoundToCeil(float(count) * countscale);
 	}
 
 	if(count < 1)
 		count = 1;
 
-	if(alaxios && count > 30)
-		count = 30;
+	if(enemy.Is_Boss == 1)
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
+
+	// 2 billion limit, it is necessary to prevent them from going bananas
+	if(enemy.Health > 2000000000)
+		enemy.Health = 2000000000;
 
 	if(enemy.Team != TFTeam_Red)
 		enemy.ExtraSize *= ExtraEnemySize;
-
-	// 2 billion limit, it is necessary
-	if(enemy.Health > 2000000000)
-		enemy.Health = 2000000000;
 }
 
 static Action Freeplay_RouletteMessage(Handle timer)
@@ -801,7 +891,7 @@ void Freeplay_SpawnEnemy(int entity)
 	{
 		if(RandomStats)
 		{
-			if(GetRandomInt(0, 100) < 2) // 2% chance for this to work, it has to be rare but not too rare
+			if(GetRandomInt(0, 100) < 1) // 1% chance for this to work, it NEEDS to be extra rare.
 			{
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(0.25, 10.0)));
 				SetEntProp(entity, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
@@ -846,13 +936,37 @@ void Freeplay_SpawnEnemy(int entity)
 
 		if(!b_thisNpcIsARaid[entity])
 		{
-			if(Waves_GetRound() > 149)
-				fl_Extra_Damage[entity] *= 2.0 + (((float(Waves_GetRound() - 149)) * 0.025));
-			else
-				fl_Extra_Damage[entity] *= 2.0;
+				fl_Extra_Damage[entity] *= 2.0 + (((float(Waves_GetRound() - 59)) * 0.025));
 		}
 	
 		//// BUFFS ////
+
+		if(EloquenceBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence I", 30.0);
+
+		if(EloquenceBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence II", 20.0);	
+
+		if(EloquenceBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Eloquence III", 10.0);	
+
+		if(RampartBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart I", 30.0);
+
+		if(RampartBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart II", 20.0);	
+
+		if(RampartBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Rampart III", 10.0);
+
+		if(HurtleBuffEnemies == 1)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle I", 30.0);
+
+		if(HurtleBuffEnemies == 2)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle II", 20.0);	
+
+		if(HurtleBuffEnemies == 3)
+			ApplyStatusEffect(entity, entity, "Freeplay Hurtle III", 10.0);
 	
 		if(HussarBuff)
 			ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
@@ -892,6 +1006,12 @@ void Freeplay_SpawnEnemy(int entity)
 	
 		if(merlton)
 			ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 5.0);	
+
+		if(LoveNahTonic)
+		{
+			ApplyStatusEffect(entity, entity, "Tonic Affliction", 10.0);
+			ApplyStatusEffect(entity, entity, "Tonic Affliction Hide", 10.0);
+		}
 	
 		//// DEBUFFS ////
 	
@@ -978,7 +1098,7 @@ static Action activatebuffs(Handle timer)
 	if(FreeplayBuffTimer <= 0)
 	{
 		FreeplayBuffTimer = 1;
-		CreateTimer(1.0, Freeplay_BuffTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(2.0, Freeplay_BuffTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 	return Plugin_Continue;
@@ -997,13 +1117,13 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		{
 			if(CheesyPresence)
 			{
-				ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+				ApplyStatusEffect(client, client, "Cheesy Presence", 5.0);
 			}
 			else
 			{
 				/*
 				if(Items_HasNamedItem(client, "A Block of Cheese"))
-					ApplyStatusEffect(client, client, "Cheesy Presence", 1.25);
+					ApplyStatusEffect(client, client, "Cheesy Presence", 5.0);
 				*/
 			}
 
@@ -1011,15 +1131,15 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence I", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Eloquence I", 5.0);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence II", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Eloquence II", 5.0);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Eloquence III", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Eloquence III", 5.0);
 				}
 			}
 
@@ -1027,40 +1147,56 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart I", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Rampart I", 5.0);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart II", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Rampart II", 5.0);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(client, client, "Freeplay Rampart III", 1.25);
+					ApplyStatusEffect(client, client, "Freeplay Rampart III", 5.0);
+				}
+			}
+
+			switch(HurtleBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle I", 5.0);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle II", 5.0);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(client, client, "Freeplay Hurtle III", 5.0);
 				}
 			}
 		}
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			if(CheesyPresence)
-				ApplyStatusEffect(ally, ally, "Cheesy Presence", 1.25);
+				ApplyStatusEffect(ally, ally, "Cheesy Presence", 5.0);
 
 			switch(EloquenceBuff)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence I", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence I", 5.0);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence II", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence II", 5.0);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Eloquence III", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Eloquence III", 5.0);
 				}
 			}
 
@@ -1068,15 +1204,31 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 			{
 				case 1:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart I", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart I", 5.0);
 				}
 				case 2:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart II", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart II", 5.0);
 				}
 				case 3:
 				{
-					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", 1.25);
+					ApplyStatusEffect(ally, ally, "Freeplay Rampart III", 5.0);
+				}
+			}
+
+			switch(HurtleBuff)
+			{
+				case 1:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle I", 5.0);
+				}
+				case 2:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle II", 5.0);
+				}
+				case 3:
+				{
+					ApplyStatusEffect(ally, ally, "Freeplay Hurtle III", 5.0);
 				}
 			}
 		}
@@ -1106,14 +1258,14 @@ void Freeplay_SetupStart(bool extra = false)
 	if(extra)
 	{
 		FreeplayBuffTimer = 0;
-		CreateTimer(5.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(4.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		int raidreq = 15;
 		int irlnreq = 2;
 		
-		if(Waves_GetRound() > 174)
+		if(Waves_GetRound() > 150)
 			raidreq = 25;
 
-		if(Waves_GetRound() > 199)
+		if(Waves_GetRound() > 100)
 			irlnreq = 5;
 
 		int raidchance = GetRandomInt(0, 100);
@@ -1122,14 +1274,11 @@ void Freeplay_SetupStart(bool extra = false)
 			raidtime = true;
 		}
 
-		if(Waves_GetRound() > 99)
+		int wrathchance = GetRandomInt(0, 100);
+		if(wrathchance < irlnreq)
 		{
-			int wrathchance = GetRandomInt(0, 100);
-			if(wrathchance < irlnreq)
-			{
-				raidtime = false;
-				wrathofirln = true;
-			}
+			raidtime = false;
+			wrathofirln = true;
 		}
 
 		if(!wrathofirln && !raidtime)
@@ -1143,9 +1292,7 @@ void Freeplay_SetupStart(bool extra = false)
 	//	if(exskull < 20) // 20% chance
 		{
 			ExtraSkulls++;
-			CPrintToChatAll("{yellow}ALERT!!! {orange}An extra skull per setup has been added.");
 			CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
-			EmitSoundToAll("passtime/ball_dropped.wav", _, _, _, _, 0.67);
 		}
 
 		SkullTimes = ExtraSkulls;
@@ -1155,12 +1302,16 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 79;
+		rand = GetURandomInt() % 92;
 
 	if(wrathofirln)
 	{
 		int randomhp1 = GetRandomInt(-50000, 150000);
 		HealthBonus += randomhp1;
+
+		if(HealthBonus < 0)
+			HealthBonus = 1;
+
 		if(randomhp1 > 0)
 		{
 			CPrintToChatAll("{red}Enemies now have %d more health!", randomhp1);
@@ -1170,7 +1321,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemies now have %d less health.", randomhp1);
 		}
 
-		float randomhp2 = GetRandomFloat(0.25, 1.65);
+		float randomhp2 = GetRandomFloat(0.2, 1.5);
 		HealthMulti *= randomhp2;
 		if(randomhp2 > 1.0)
 		{
@@ -1260,11 +1411,11 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			int randomcripple = GetRandomInt(150, 900);
+			int randomcripple = GetRandomInt(400, 1200);
 			CrippleDebuff += randomcripple;
 			CPrintToChatAll("{green}The next %d enemies will now gain the Crippled debuff.", randomcripple);
 
-			int randomcudgel = GetRandomInt(150, 900);
+			int randomcudgel = GetRandomInt(400, 1200);
 			CudgelDebuff += randomcudgel;
 			CPrintToChatAll("{green}The next %d enemies will now gain the Cudgel debuff.", randomcudgel);
 		}
@@ -1276,7 +1427,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			int randomonkill = GetRandomInt(2, 6);
+			int randomonkill = GetRandomInt(4, 12);
 			CPrintToChatAll("{green}All enemies now give out %d extra credits on death.", randomonkill);
 			KillBonus += randomonkill;
 		}
@@ -1284,20 +1435,20 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			if(KillBonus < 1)
 			{
-				int randomonkill = GetRandomInt(2, 6);
+				int randomonkill = GetRandomInt(4, 12);
 				CPrintToChatAll("{green}All enemies now give out %d extra credits on death.", randomonkill);
 				KillBonus += randomonkill;
 			}
 			else
 			{
-				CPrintToChatAll("{red}Reduced the credit per enemy kill by 1!");
-				KillBonus--;
+				CPrintToChatAll("{red}Reduced the credit per enemy kill by 2!");
+				KillBonus -= 2;
 			}
 		}
 
 		if(GetRandomInt(1, 2) > 1)
 		{
-			int randomcredits = GetRandomInt(120, 360);
+			int randomcredits = GetRandomInt(350, 750);
 			CPrintToChatAll("{green}You now gain %d extra credits per wave.", randomcredits);
 			CashBonus += randomcredits;
 		}
@@ -1305,19 +1456,20 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			if(CashBonus < 100)
 			{
-				int randomcredits = GetRandomInt(120, 360);
+				int randomcredits = GetRandomInt(350, 700);
 				CPrintToChatAll("{green}You now gain %d extra credits per wave.", randomcredits);
 				CashBonus += randomcredits;
 			}
 			else
 			{
-				CPrintToChatAll("{red}Reduced extra credits gained per wave by 100!");
-				CashBonus -= 100;
+				CPrintToChatAll("{red}Reduced extra credits gained per wave by 150!");
+				CashBonus -= 150;
 			}
 		}
 
-		CPrintToChatAll("{green}You will gain 5 random friendly units.");
-		FriendlyDay = true;
+		int guh = GetRandomInt(8, 16);
+		CPrintToChatAll("{green}You will gain %d random friendly units.", guh);
+		friendunitamount = guh;
 
 		float randommini = GetRandomFloat(0.5, 2.0);
 		MiniBossChance *= randommini;
@@ -1330,7 +1482,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Mini-boss spawn rate has been multiplied by %.2fx.", randommini);
 		}
 
-		float randomspeed = GetRandomFloat(0.35, 1.5);
+		float randomspeed = GetRandomFloat(0.275, 1.5);
 		SpeedMult *= randomspeed;
 		if(randomspeed > 1.0)
 		{
@@ -1341,7 +1493,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy speed has been multiplied by %.2fx.", randomspeed);
 		}
 
-		float randommelee = GetRandomFloat(0.25, 2.0);
+		float randommelee = GetRandomFloat(0.3, 2.35);
 		MeleeMult *= randommelee;
 		if(randommelee < 1.0)
 		{
@@ -1352,7 +1504,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy melee vulnerability has been multiplied by %.2fx.", randommelee);
 		}
 
-		float randomranged = GetRandomFloat(0.25, 2.0);
+		float randomranged = GetRandomFloat(0.3, 2.35);
 		RangedMult *= randomranged;
 		if(randomranged < 1.0)
 		{
@@ -1363,10 +1515,13 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy ranged vulnerability has been multiplied by %.2fx.", randomranged);
 		}
 
-		int randomshield = GetRandomInt(-6, 12);
+		int randomshield = GetRandomInt(-12, 12);
 		EnemyShields += randomshield;
 		if(EnemyShields > 15)
 			EnemyShields = 15;
+
+		if(EnemyShields < 0)
+			EnemyShields = 0;
 
 		if(randomshield > 0)
 		{
@@ -1549,7 +1704,61 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		switch(GetRandomInt(1, 5))
+		if(EloquenceBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Eloquence Buff.");
+			EloquenceBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Eloquence buff.");
+			EloquenceBuffEnemies++;
+		}
+
+		if(RampartBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Rampart Buff.");
+			RampartBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Rampart buff!");
+			RampartBuffEnemies++;
+		}
+		if(HurtleBuffEnemies > 2)
+		{
+			CPrintToChatAll("{green}All enemies have lost the Hurtle Buff.");
+			HurtleBuffEnemies = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{red}All enemies now gain a layer of the Hurtle buff!");
+			HurtleBuffEnemies++;
+		}
+
+		if(HurtleBuff > 2)
+		{
+			CPrintToChatAll("{red}Removed the Hurtle buff from everyone!");
+			HurtleBuff = 0;
+		}
+		else
+		{
+			CPrintToChatAll("{green}All players and allied npcs now gain a layer of the Hurtle buff.");
+			HurtleBuff++;
+		}
+
+		if(LoveNahTonic)
+		{
+			CPrintToChatAll("{green}Ok, that's enough Tonic...");
+			LoveNahTonic = false;
+		}
+		else
+		{
+			CPrintToChatAll("{pink}Love is in the air? {crimson}WRONG! {red}Tonic Affliction in the enemies. {yellow}(Lasts 10s)");
+			LoveNahTonic = true;
+		}
+
+		switch(GetRandomInt(1, 8))
 		{
 			case 1:
 			{
@@ -1571,10 +1780,25 @@ void Freeplay_SetupStart(bool extra = false)
 				CPrintToChatAll("{red}I FEEL SO SIGMA!!!!!");
 				Sigmaller = true;
 			}
+			case 5:
+			{
+				CPrintToChatAll("{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
+				DarknessComing = true;
+			}
+			case 6:
+			{
+				CPrintToChatAll("{red}You begin to hear voices in your head...");
+				Schizophrenia = true;
+			}
+			case 7:
+			{
+				CPrintToChatAll("{green}Seems like a common Signaller has decided to help in training.");
+				DarknessComing = true;
+			}
 			default:
 			{
 				CPrintToChatAll("{purple}Otherworldly beings approach from a dimensional rip...");
-				immutable = true;
+				NormalSignaller = true;
 			}
 		}
 
@@ -1589,7 +1813,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 		EmitSoundToAll("ambient/halloween/thunder_01.wav");
 		CPrintToChatAll("{orange}Wrath of Irln: {yellow}(almost) {crimson}ALL SKULLS HAVE BEEN ACTIVATED. The effects are described above.");
-		gay = 20.0;
+		gay = 0.0;
 	}
 	else if(raidtime)
 	{
@@ -1597,8 +1821,8 @@ void Freeplay_SetupStart(bool extra = false)
 		EmitSoundToAll("items/powerup_pickup_king.wav");
 		CPrintToChatAll("{strange}--==({gold}RAID ROULETTE!!{strange})==--");
 		CPrintToChatAll("{gold}--==({strange}LET THOU FATE BE RANDOMIZED!{gold})==--");
-		CPrintToChatAll("{green}-=({lime}Winning this wave will reward you with 7500 extra credits.{green})=-");
-		CreateTimer(15.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
+		CPrintToChatAll("{green}-=({lime}Winning this wave will reward you with 10000 extra credits.{green})=-");
+		CreateTimer(5.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
 
 		switch(GetRandomInt(1, 4))
 		{
@@ -1619,11 +1843,11 @@ void Freeplay_SetupStart(bool extra = false)
 				CPrintToChatAll("{gold}Koshi{white}: Here's a trade offer! I recieve {orange}a piece of cheese{white} from your findings, and you recieve...");
 			}
 		}
-		gay = 35.0;
+		gay = 10.0;
 	}
 	else
 	{
-		gay = 15.0;
+		gay = 0.0;
 		char message[128];
 		switch(rand)
 		{
@@ -1644,23 +1868,23 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 2:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 10% more health!");
-				HealthMulti *= 1.10;
-			}
-			case 3:
-			{
 				strcopy(message, sizeof(message), "{red}All enemies now have 15% more health!");
 				HealthMulti *= 1.15;
 			}
-			case 4:
+			case 3:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 10% less health.");
-				HealthMulti *= 0.9;
+				strcopy(message, sizeof(message), "{red}All enemies now have 20% more health!");
+				HealthMulti *= 1.2;
 			}
-			case 5:
+			case 4:
 			{
 				strcopy(message, sizeof(message), "{green}All enemies now have 15% less health.");
 				HealthMulti *= 0.85;
+			}
+			case 5:
+			{
+				strcopy(message, sizeof(message), "{green}All enemies now have 20% less health.");
+				HealthMulti *= 0.8;
 			}
 			case 6:
 			{
@@ -1676,15 +1900,15 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 8:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}30000 more health {yellow}but {green}10% less health.");
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}30000 more health {yellow}but {green}15% less health.");
 				HealthBonus += 30000;
-				HealthMulti /= 1.1;
+				HealthMulti /= 1.15;
 			}
 			case 9:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}20% less health.");
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}25% less health.");
 				HealthBonus += 60000;
-				HealthMulti /= 1.2;
+				HealthMulti /= 1.25;
 			}
 
 			/// BUFF/DEBUFF SKULLS //
@@ -1793,8 +2017,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 19:
 			{
-				RandomStats += 3;
-				strcopy(message, sizeof(message), "{red}3 random enemies will recieve randomized stats! You'll never know when.");
+				RandomStats += 4;
+				strcopy(message, sizeof(message), "{red}4 random enemies will recieve randomized stats! You'll never know when.");
 			}
 	
 			/// CREDIT SKULLS //
@@ -1901,13 +2125,14 @@ void Freeplay_SetupStart(bool extra = false)
 			/// MISCELANEOUS SKULLS ///
 			case 31:
 			{
-				if(FriendlyDay)
+				if(friendunitamount)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{green}You will gain 5 random friendly units.");
-				FriendlyDay = true;
+				int guh2 = GetRandomInt(4, 8);
+				strcopy(message, sizeof(message), "{green}You will gain a random amount of friendly units.");
+				friendunitamount = guh2;
 			}
 			case 32:
 			{
@@ -2018,78 +2243,78 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
 				MeleeMult += 0.2;
 			}
-			case 43:
+			case 43, 44:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more melee damage.");
 				MeleeMult += 0.25;
 			}
-			case 44:
-			{
-				if(MeleeMult < 0.05) // 95% melee res max
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}Enemies will now take 10% less melee damage.");
-				MeleeMult -= 0.10;
-				if(MeleeMult < 0.05)
-				{
-					MeleeMult = 0.05;
-				}
-			}
 			case 45:
 			{
-				if(MeleeMult < 0.05)
+				if(MeleeMult < 0.01) // 95% melee res max
 				{
 					Freeplay_SetupStart();
 					return;
 				}
 				strcopy(message, sizeof(message), "{red}Enemies will now take 15% less melee damage.");
 				MeleeMult -= 0.15;
-				if(MeleeMult < 0.05)
+				if(MeleeMult < 0.01)
 				{
-					MeleeMult = 0.05;
+					MeleeMult = 0.01;
 				}
 			}
 			case 46:
 			{
-				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
-				RangedMult += 0.20;
-			}
-			case 47:
-			{
-				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more ranged damage.");
-				RangedMult += 0.25;
-			}
-			case 48:
-			{
-				if(RangedMult < 0.05) // 95% ranged res max
+				if(MeleeMult < 0.01)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}Enemies will now take 10% less ranged damage.");
-				RangedMult -= 0.10;
-				if(RangedMult < 0.05)
+				strcopy(message, sizeof(message), "{red}Enemies will now take 20% less melee damage.");
+				MeleeMult -= 0.2;
+				if(MeleeMult < 0.01)
 				{
-					RangedMult = 0.05;
+					MeleeMult = 0.01;
 				}
 			}
-			case 49:
+			case 47:
 			{
-				if(RangedMult < 0.05)
+				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
+				RangedMult += 0.20;
+			}
+			case 48, 49:
+			{
+				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more ranged damage.");
+				RangedMult += 0.25;
+			}
+			case 50:
+			{
+				if(RangedMult < 0.01) // 95% ranged res max
 				{
 					Freeplay_SetupStart();
 					return;
 				}
 				strcopy(message, sizeof(message), "{red}Enemies will now take 15% less ranged damage.");
 				RangedMult -= 0.15;
-				if(RangedMult < 0.05)
+				if(RangedMult < 0.01)
 				{
-					RangedMult = 0.05;
+					RangedMult = 0.01;
 				}
 			}
-			case 50, 51:
+			case 51:
+			{
+				if(RangedMult < 0.01)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}Enemies will now take 20% less ranged damage.");
+				RangedMult -= 0.2;
+				if(RangedMult < 0.01)
+				{
+					RangedMult = 0.01;
+				}
+			}
+			case 52, 53:
 			{
 				if(ExplodingNPC)
 				{
@@ -2101,7 +2326,7 @@ void Freeplay_SetupStart(bool extra = false)
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
-			case 52:
+			case 54:
 			{
 				if(EnemyShields >= 15)
 				{
@@ -2112,7 +2337,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
 				EnemyShields += 3;
 			}
-			case 53:
+			case 55:
 			{
 				if(EnemyShields >= 15)
 				{
@@ -2123,7 +2348,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
 				EnemyShields += 6;
 			}
-			case 54:
+			case 56:
 			{
 				if(EnemyShields <= 0)
 				{
@@ -2134,7 +2359,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
 				EnemyShields -= 2;
 			}
-			case 55:
+			case 57:
 			{
 				if(EnemyShields <= 0)
 				{
@@ -2145,7 +2370,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
 				EnemyShields -= 4;
 			}
-			case 56:
+			case 58:
 			{
 				if(VoidBuff > 2)
 				{
@@ -2158,7 +2383,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VoidBuff++;
 				}
 			}
-			case 57:
+			case 59:
 			{
 				if(VictoriaBuff)
 				{
@@ -2171,7 +2396,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VictoriaBuff = true;
 				}
 			}
-			case 58:
+			case 60:
 			{
 				if(SquadBuff)
 				{
@@ -2184,7 +2409,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SquadBuff = true;
 				}
 			}
-			case 59:
+			case 61:
 			{
 				if(Coffee)
 				{
@@ -2197,7 +2422,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Coffee = true;
 				}
 			}
-			case 60:
+			case 62:
 			{
 				if(StrangleDebuff > 3)
 				{
@@ -2210,7 +2435,7 @@ void Freeplay_SetupStart(bool extra = false)
 					StrangleDebuff++;
 				}
 			}
-			case 61:
+			case 63:
 			{
 				if(ProsperityDebuff > 3)
 				{
@@ -2223,7 +2448,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ProsperityDebuff++;
 				}
 			}
-			case 62:
+			case 64:
 			{
 				if(SilenceDebuff)
 				{
@@ -2236,9 +2461,9 @@ void Freeplay_SetupStart(bool extra = false)
 					SilenceDebuff = true;
 				}
 			}
-			case 63:
+			case 65:
 			{
-				if(ExtraEnemySize <= 0.35) // 65% less size max
+				if(ExtraEnemySize <= 0.01) // 99% less size max
 				{
 					Freeplay_SetupStart();
 					return;
@@ -2246,9 +2471,9 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 10%");
 				ExtraEnemySize -= 0.10;
 			}
-			case 64:
+			case 66:
 			{
-				if(ExtraEnemySize <= 0.35) // 65% less size max
+				if(ExtraEnemySize <= 0.01) // 99% less size max
 				{
 					Freeplay_SetupStart();
 					return;
@@ -2256,7 +2481,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes reduced by 15%");
 				ExtraEnemySize -= 0.15;
 			}
-			case 65:
+			case 67:
 			{
 				if(ExtraEnemySize >= 4.0) // 300% more size max
 				{
@@ -2266,7 +2491,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 10%");
 				ExtraEnemySize += 0.10;
 			}
-			case 66:
+			case 68:
 			{
 				if(ExtraEnemySize >= 4.0) // 300% more size max
 				{
@@ -2276,7 +2501,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{yellow}All enemies now have their sizes increased by 15%");
 				ExtraEnemySize += 0.15;
 			}
-			case 67:
+			case 69:
 			{
 				//10% chance, otherwise retry.
 				if(GetRandomFloat(0.0, 1.0) <= 0.1)
@@ -2290,7 +2515,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 			}
-			case 68:
+			case 70:
 			{
 				if(UnlockedSpeed)
 				{
@@ -2301,7 +2526,7 @@ void Freeplay_SetupStart(bool extra = false)
 				Store_DiscountNamedItem("Adrenaline", 999);
 				strcopy(message, sizeof(message), "{green}Adrenaline is now buyable in the passive store!");
 			}
-			case 69:
+			case 71:
 			{
 				if(CheesyPresence)
 				{
@@ -2314,7 +2539,7 @@ void Freeplay_SetupStart(bool extra = false)
 					CheesyPresence = true;
 				}
 			}
-			case 70:
+			case 72:
 			{
 				if(EloquenceBuff > 2)
 				{
@@ -2327,7 +2552,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuff++;
 				}
 			}
-			case 71:
+			case 73:
 			{
 				if(RampartBuff > 2)
 				{
@@ -2340,7 +2565,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuff++;
 				}
 			}
-			case 72:
+			case 74:
 			{
 				if(AntinelNextWave)
 				{
@@ -2350,7 +2575,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}An ant comes out of this skull, and its approaching to the bloody gate!");
 				AntinelNextWave = true;
 			}
-			case 73:
+			case 75:
 			{
 				if(zombiecombine)
 				{
@@ -2360,7 +2585,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Hey, im thinking of something.... What if, a {gold}combine, {red}and a {gold}zombie, {red}were...");
 				zombiecombine = true;
 			}
-			case 74:
+			case 76:
 			{
 				if(moremen)
 				{
@@ -2370,7 +2595,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!");
 				moremen = 3;
 			}
-			case 75:
+			case 77:
 			{
 				if(immutable)
 				{
@@ -2380,7 +2605,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{purple}Otherworldly beings approach from a dimensional rip...");
 				immutable = true;
 			}
-			case 76:
+			case 78:
 			{
 				if(spotter || spotteralive)
 				{
@@ -2390,7 +2615,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{lime}Its time for the {orange}Spotter {lime}to take action!");
 				spotter = 1;
 			}
-			case 77:
+			case 79:
 			{
 				if(merlton)
 				{
@@ -2403,15 +2628,125 @@ void Freeplay_SetupStart(bool extra = false)
 					merlton = true;
 				}
 			}
-			case 78:
+			case 80:
 			{
-				if(Sigmaller)
+			//	if(Sigmaller)
+			//	{
+					Freeplay_SetupStart();
+					return;
+			//	} Shit design, remove for now.
+			//	strcopy(message, sizeof(message), "{red}This skull... it.. it FEELS SO SIGMA!!!!!");
+			//	Sigmaller = true;
+			}
+			case 81:
+			{
+				if(EloquenceBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Eloquence Buff.");
+					EloquenceBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Eloquence buff.");
+					EloquenceBuffEnemies++;
+				}
+			}
+			case 82:
+			{
+				if(RampartBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Rampart Buff.");
+					RampartBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Rampart buff!");
+					RampartBuffEnemies++;
+				}
+			}
+			case 83:
+			{
+				if(HurtleBuffEnemies > 2)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Hurtle Buff.");
+					HurtleBuffEnemies = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Hurtle buff!");
+					HurtleBuffEnemies++;
+				}
+			}
+			case 84:
+			{
+				if(HurtleBuff > 2)
+				{
+					strcopy(message, sizeof(message), "{red}Removed the Hurtle buff from everyone!");
+					HurtleBuff = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{green}All players and allied npcs now gain a layer of the Hurtle buff.");
+					HurtleBuff++;
+				}
+			}
+			case 85:
+			{
+				if(LoveNahTonic)
+				{
+					strcopy(message, sizeof(message), "{green}Ok, that's enough Tonic...");
+					LoveNahTonic = false;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{pink}Love is in the air? {crimson}WRONG! {red}Tonic Affliction in the enemies. {yellow}(Lasts 10s)");
+					LoveNahTonic = true;
+				}
+			}
+			case 86:
+			{
+				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
+				ExtraSkulls++;
+			}
+			case 87:
+			{
+				strcopy(message, sizeof(message), "{yellow}Actually, y'know what? Maybe i'll throw in TWO extra skulls even.");
+				ExtraSkulls += 2;
+			}
+			case 88:
+			{
+				strcopy(message, sizeof(message), "{red}ffffFFFFF-{crimson}FUCK {red}it, THREE EXTRA SKULLS!!!");
+				ExtraSkulls += 3;
+			}
+			case 89:
+			{
+				if(Schizophrenia)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}This skull... it.. it FEELS SO SIGMA!!!!!");
-				Sigmaller = true;
+				strcopy(message, sizeof(message), "{red}As you pick this skull, you begin to hear voices in your head...");
+				Schizophrenia = true;
+			}
+			case 90:
+			{
+				if(NormalSignaller)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{green}Seems like a common Signaller has decided to help in training.");
+				NormalSignaller = true;
+			}
+			case 91:
+			{
+				if(DarknessComing)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
+				DarknessComing = true;
 			}
 			default:
 			{

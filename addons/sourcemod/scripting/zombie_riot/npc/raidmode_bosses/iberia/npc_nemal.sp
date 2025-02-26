@@ -1868,7 +1868,7 @@ bool NemalTransformation(Nemal npc)
 			i_NpcWeight[npc.index] = 4;
 			npc.m_flRangedArmor = 0.35;
 			npc.m_flMeleeArmor = 1.75;		
-			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flNemalSuperRes = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 

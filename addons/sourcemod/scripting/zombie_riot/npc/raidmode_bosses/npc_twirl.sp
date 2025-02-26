@@ -3544,7 +3544,7 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 	int Twirl_Index = -1;
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(IsValidEntity(entity))
 		{
 			char npc_classname[60];

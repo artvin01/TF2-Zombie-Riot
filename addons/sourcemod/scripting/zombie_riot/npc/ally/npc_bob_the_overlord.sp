@@ -692,14 +692,14 @@ public void BobTheGod_ClotThink(int iNPC)
 									//	int client = who_owns_this_bob[npc.index];
 										SetGlobalTransTarget(client);
 										PrintHintText(client, "%t %t","Bob The Second:", "I got them!");
-										StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+										
 									}
 									else
 									{
 									//	int client = who_owns_this_bob[npc.index];
 										SetGlobalTransTarget(client);
 										PrintHintText(client, "%t %t","Bob The Second:", "Take This!");
-										StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+										
 										
 										float vAngles[3], vDirection[3];
 									
@@ -821,13 +821,13 @@ public void BobTheGod_ClotThink(int iNPC)
 					SetGlobalTransTarget(client);
 					PrintHintText(client, "%t %t","Bob The Second:", "I'll stand beside you, sir!");
 										
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				else if(!npc.m_bIsFriendly)
 				{
 					SetGlobalTransTarget(client);
 					PrintHintText(client, "%t %t","Bob The Second:", "I'll guard you, sir!");
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				npc.m_flidle_talk = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 			}
@@ -845,7 +845,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_bReloaded = false;
 				SetGlobalTransTarget(client);
 				PrintHintText(client, "%t %t","Bob The Second:", "Reloading near you, sir!");
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 			else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flReloadDelay < GetGameTime(npc.index) && npc.m_iAttacksTillReload == 24)
 			{
@@ -896,7 +896,7 @@ public void BobTheGod_ClotThink(int iNPC)
 							PrintHintText(client, "%t %t","Bob The Second:", "Pick up that can.");
 						}
 					}
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");	
+						
 					Citizen_LiveCitizenReaction(npc.index);			
 				}
 				/*
@@ -934,7 +934,7 @@ public void BobTheGod_ClotThink(int iNPC)
 							PrintHintText(client, "Bob The Second: I might be a goner soon..");
 						}
 					}	
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				*/
 			}
@@ -1412,7 +1412,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.AddGesture("ACT_MELEE_ATTACK_THRUST");
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "Cheers to you too, like a drink, get it?");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		/*
@@ -1420,7 +1420,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			npc.AddGesture("ACT_PICKUP_GROUND");
 			PrintHintText(client, "Bob The Second: Its more of a jeer, hurt here...");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		*/
@@ -1447,14 +1447,14 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "Ah come on, lighten your mood!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		/*
 		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
 		{
 			PrintHintText(client, "Bob The Second: Yeah agreed...");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		*/
@@ -1480,14 +1480,14 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "Positivity is the way to go!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		/*
 		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
 		{
 			PrintHintText(client, "Bob The Second: Not the time for it...");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		*/
@@ -1513,14 +1513,14 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "Why negative? Nothing to worry about!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		/*
 		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
 		{
 			PrintHintText(client, "Bob The Second: Yeah its not looking great, but lets try to feel better...");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		*/
@@ -1539,7 +1539,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		
 		SetGlobalTransTarget(client);
 		PrintHintText(client, "%t %t","Bob The Second:", "Not Follow? Sure!");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		npc.m_flidle_talk += 2.0;
 		npc.m_b_follow = false;
 		
@@ -1562,7 +1562,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.AddGesture("ACT_DEACTIVATE_BATON");
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I'll hurt no one!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 			npc.m_bIsFriendly = true;
 			return 0;
@@ -1572,7 +1572,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.AddGesture("ACT_ACTIVATE_BATON");
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I'll attack once more!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 			npc.m_bIsFriendly = false;
 			return 0;
@@ -1598,7 +1598,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I try my best to aim well!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		
@@ -1624,7 +1624,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "You are doing a good job aswell!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		
@@ -1654,7 +1654,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.AddGesture("ACT_PUSH_PLAYER");
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "Here, have this medkit!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 			CreateTimer(0.3, BobTheGod_showHud, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -1663,7 +1663,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "Sorry, i dont have a medkit on me...");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		else if (npc.m_iMedkitAnnoyance == 1 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
@@ -1671,7 +1671,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "Sorry, i dont have a medkit on me, please wait.");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		else if (npc.m_iMedkitAnnoyance == 2 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
@@ -1679,7 +1679,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I do not have a medkit.");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		else if (npc.m_iMedkitAnnoyance == 3 && flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
@@ -1687,7 +1687,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I dont have a medkit, have patience.");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		else if (flDistanceToTarget < 100 && npc.m_flheal_cooldown > GetGameTime(npc.index))
@@ -1695,7 +1695,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.m_iMedkitAnnoyance = 0;
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I told you i do not have a medikit!!!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 			npc.FaceTowards(pos, 10000.0);
 			npc.AddGesture("ACT_PUSH_PLAYER");
@@ -1706,7 +1706,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "Youre too far away!");
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			npc.m_flidle_talk += 2.0;
 		}
 		return 0;
@@ -1796,7 +1796,6 @@ public Action Bob_player_killed(Event hEvent, const char[] sEvName, bool bDontBr
 		//	NPCDeath(npc.index);
 			SetGlobalTransTarget(victim);
 			PrintHintText(victim, "%t %t","Bob The Second:", "This can't be...");
-			StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
 			
 		}
 	}
@@ -1828,14 +1827,12 @@ public Action BobTheGod_Owner_Hurt(int victim, int &attacker, int &inflictor, fl
 		npc.m_flHurtie = GetGameTime(npc.index) + 0.50;
 		SetGlobalTransTarget(victim);
 		PrintHintText(victim, "%t %t","Bob The Second:", "I will protect you!");
-		StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	else if(npc.m_flHurtie < GetGameTime(npc.index) && npc.m_bIsFriendly)
 	{
 		npc.m_flHurtie = GetGameTime(npc.index) + 0.50;
 		SetGlobalTransTarget(victim);
 		PrintHintText(victim, "%t %t","Bob The Second:", "You told me to be friendly.");
-		StopSound(victim, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 	return Plugin_Changed;
 }
@@ -1859,7 +1856,7 @@ public void BobTheGod_NPCDeath(int entity)
 	if(IsValidClient(client))
 	{
 	//	PrintHintText(client, "Bob has died :(");
-	//	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	//	
 		SDKUnhook(client, SDKHook_OnTakeDamageAlive, BobTheGod_Owner_Hurt);
 	}
 	

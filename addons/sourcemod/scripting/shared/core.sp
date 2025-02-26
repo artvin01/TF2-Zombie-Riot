@@ -96,9 +96,9 @@ public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
-ConVar CvarFileNetworkDisable;
 ConVar CvarLeveling;
 #endif
+ConVar CvarFileNetworkDisable;
 
 ConVar CvarDisableThink;
 //ConVar CvarMaxBotsForKillfeed;
@@ -527,6 +527,8 @@ float fl_HookDamageTaken[MAXENTITIES];
 float fl_ArmorSetting[MAXENTITIES][3];
 int i_ArmorSetting[MAXENTITIES][2];
 bool b_InteractWithReload[MAXENTITIES];
+bool b_DisableSetupMusic[MAXENTITIES];
+bool b_DisableStatusEffectHints[MAXENTITIES];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 int b_OnDeathExtraLogicNpc[MAXENTITIES];
@@ -567,7 +569,7 @@ bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
 float f_CreditsOnKill[MAXENTITIES];
 
-int i_InSafeZone[MAXENTITIES];
+int i_InHurtZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_TotalArmor[MAXENTITIES] = {1.0, ...};
@@ -649,7 +651,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "shared/events.sp"
 #endif
 
-#if defined ZR || defined RTS
+#if defined RTS
 #include "shared/rtscamera.sp"
 #endif
 
@@ -748,11 +750,11 @@ public void OnPluginStart()
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-
+/*
 	CvarAirAcclerate = FindConVar("sv_airaccelerate");
 	if(CvarAirAcclerate)
 		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-
+*/
 	Cvar_clamp_back_speed = FindConVar("tf_clamp_back_speed");
 	if(Cvar_clamp_back_speed)
 		Cvar_clamp_back_speed.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
@@ -856,14 +858,18 @@ public void OnPluginStart()
 
 public void OnLibraryAdded(const char[] name)
 {
+#if defined ZR
 	FileNetwork_LibraryAdded(name);
 	SteamWorks_LibraryAdded(name);
+#endif
 }
 
 public void OnLibraryRemoved(const char[] name)
 {
+#if defined ZR
 	FileNetwork_LibraryRemoved(name);
 	SteamWorks_LibraryRemoved(name);
+#endif
 }
 
 /*
@@ -894,7 +900,7 @@ public Action Timer_Temp(Handle timer)
 		{
 			if(IsClientInGame(client))
 			{
-				Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true);
+				Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true, .RaidHudForce = true);
 			}
 		}
 	}
@@ -1177,7 +1183,7 @@ public void OnGameFrame()
 {
 #if defined ZR
 	NPC_SpawnNext(false, false);
-#endif
+#endif	
 #if defined RPG
 	DoubleJumpGameFrame();
 #endif	
@@ -1391,14 +1397,16 @@ public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, C
 {
 	if(result == ConVarQuery_Okay)
 	{
-		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+		if(StringToInt(cvarValue) == 0)
 		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
-			if(StringToInt(cvarValue) == 0)
+			if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
 			{
+				f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
 				SetGlobalTransTarget(client);
 				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
 			}
+
+			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
 		}
 	}
 }
@@ -1461,6 +1469,8 @@ public void OnClientPutInServer(int client)
 	SDKHook_HookClient(client);
 
 #if defined ZR
+	PrepareMusicVolume[client] = 0.0;
+	SetMusicTimer(client, GetTime() + 1);
 	AdjustBotCount();
 	WeaponClass[client] = TFClass_Scout;
 #endif
@@ -1476,6 +1486,7 @@ public void OnClientPutInServer(int client)
 	f_MultiDamageDealt[client] = 1.0;
 	
 #if defined ZR
+	ResetExplainBuffStatus(client);
 	f_TutorialUpdateStep[client] = 0.0;
 	ZR_ClientPutInServer(client);
 #endif
@@ -1556,7 +1567,8 @@ public void OnClientDisconnect(int client)
 	//Needed to reset attackspeed stuff
 #endif
 
-	b_DisplayDamageHud[client] = false;
+	b_DisplayDamageHud[client][0] = false;
+	b_DisplayDamageHud[client][1] = false;
 
 #if defined ZR
 	WeaponClass[client] = TFClass_Scout;
@@ -1611,6 +1623,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Instant community feedback that T is very bad.
 	using idk what other button to use.
 	*/
+#if defined ZR
 	if(impulse == 201)
 	{
 		f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
@@ -1622,6 +1635,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 		DoInteractKeyLogic(angles, client);
 	}
+#endif
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS
@@ -1733,7 +1747,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_RELOAD;
 		
+#if defined ZR
 		if(b_InteractWithReload[client])
+#endif
 		{
 			if(DoInteractKeyLogic(angles, client))
 				return Plugin_Continue;
@@ -2006,7 +2022,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		}
 
 		PrintHintText(client, buffer);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 	DataPack pack_WeaponAmmo = new DataPack();
 	pack_WeaponAmmo.WriteCell(EntIndexToEntRef(client));
@@ -2302,7 +2318,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ProjectileCollideIgnoreWorld[entity] = false;
 		i_IsABuilding[entity] = false;
 		b_NpcIgnoresbuildings[entity] = false;
-		i_InSafeZone[entity] = 0;
+		i_InHurtZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;
 		h_NpcSolidHookType[entity] = 0;
 		SetDefaultValuesToZeroNPC(entity);
@@ -2376,7 +2392,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		  || !StrContains(classname, "item_ammopack_medium")
 		  || !StrContains(classname, "item_ammopack_full")
 		  || !StrContains(classname, "tf_ammo_pack")
-		  || !StrContains(classname, "tf_flame_manager")
 		  || !StrContains(classname, "entity_revive_marker")
 		  || !StrContains(classname, "tf_projectile_energy_ring")
 		  || !StrContains(classname, "entity_medigun_shield")
@@ -2394,6 +2409,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
+		}
+		else if(!StrContains(classname, "tf_flame_manager"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, MakeFlamesUseless);
 		}
 		else if(!StrContains(classname, "instanced_scripted_scene"))
 		{
@@ -2540,9 +2559,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "trigger_hurt")) //npcs think they cant go past this sometimes, lol
 		{
+			b_IsATrigger[entity] = true;
 			b_IsATriggerHurt[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_StartTouch, SDKHook_TriggerHurt_StartTouch);
+			SDKHook(entity, SDKHook_EndTouch, SDKHook_TriggerHurt_EndTouch);
 		}
 		else if(!StrContains(classname, "monster_resource")) //npcs think they cant go past this sometimes, lol
 		{
@@ -2634,23 +2656,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
 		}
-		/*
-		else if(!StrContains(classname, "tf_gamerules_data"))
-		{
-			GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		}
-		*/
-		else if(!StrContains(classname, "trigger_hurt"))
-		{
-			b_IsATrigger[entity] = true;
-			SDKHook(entity, SDKHook_StartTouch, SDKHook_SafeSpot_StartTouch);
-			SDKHook(entity, SDKHook_EndTouch, SDKHook_SafeSpot_EndTouch);
-		}
-		else if(!StrContains(classname, "func_respawnroom"))
-		{
-			SDKHook(entity, SDKHook_StartTouch, SDKHook_RespawnRoom_StartTouch);
-			SDKHook(entity, SDKHook_EndTouch, SDKHook_RespawnRoom_EndTouch);
-		}
 		else if(!StrContains(classname, "point_worldtext"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
@@ -2689,33 +2694,20 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 }
 
-
-public void SDKHook_SafeSpot_StartTouch(int entity, int target)
+public void SDKHook_TriggerHurt_StartTouch(int entity, int target)
 {
-	if(target > 0 && target < sizeof(i_InSafeZone))
+	if(target > 0 && target < sizeof(i_InHurtZone))
 	{
-		i_InSafeZone[target]++;
+		i_InHurtZone[target]++;
 	}
 }
 
-public void SDKHook_SafeSpot_EndTouch(int entity, int target)
+public void SDKHook_TriggerHurt_EndTouch(int entity, int target)
 {
-	if(target > 0 && target < sizeof(i_InSafeZone))
+	if(target > 0 && target < sizeof(i_InHurtZone))
 	{
-		i_InSafeZone[target]--;
+		i_InHurtZone[target]--;
 	}
-}
-
-public void SDKHook_RespawnRoom_StartTouch(int entity, int target)
-{
-	if(target > 0 && target < sizeof(i_InSafeZone) && GetTeam(entity) == GetTeam(target))
-		i_InSafeZone[target]++;
-}
-
-public void SDKHook_RespawnRoom_EndTouch(int entity, int target)
-{
-	if(target > 0 && target < sizeof(i_InSafeZone) && GetTeam(entity) == GetTeam(target))
-		i_InSafeZone[target]--;
 }
 
 public Action SDKHook_Regenerate_StartTouch(int entity, int target)
@@ -2924,7 +2916,7 @@ for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 //Looping function for above!
 for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 {
-	int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+	int entity = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 }
 */
 
@@ -3353,7 +3345,15 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	Rogue_ReviveSpeed(speed);
 	if(WasRevivingEntity)
 	{
-		Citizen_ReviveTicks(target, speed, client);
+		if(Citizen_ReviveTicks(target, speed, client) <= 0)
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+			ang[0] = 0.0;
+			TeleportEntity(target, pos, ang, NULL_VECTOR);
+			//teleport em to me!
+		}
 		return;
 	}
 	dieingstate[target] -= speed;

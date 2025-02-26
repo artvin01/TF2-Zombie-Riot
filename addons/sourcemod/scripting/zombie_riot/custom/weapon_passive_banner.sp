@@ -8,18 +8,16 @@ Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 static bool b_ClientHasAncientBanner[MAXENTITIES];
 
-float BannerDefaultRange()
+void BannerOnEntityCreated(int entity)
 {
-	//if(b_AlaxiosBuffItem[client])
-	{
+	b_ClientHasAncientBanner[entity] = false;
+}
+float BannerDefaultRange(bool normal = false)
+{
+	if(!normal)
 		return 511225.0; //1.1x range
-	}
-	/*
 	else
-	{
-		return 422500.0;
-	}
-	*/
+		return 715.0;
 }
 
 enum
@@ -80,6 +78,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 	float BannerPos[3];
 	float targPos[3];
 	GetClientAbsOrigin(client, BannerPos);
+	spawnRing_Vectors(BannerPos, BannerDefaultRange(true) * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 50, 125, 1, 0.11, 5.0, 1.1, 5, _, client);	
 	for(int ally=1; ally<=MaxClients; ally++)
 	{
 		if(IsClientInGame(ally) && IsPlayerAlive(ally))
@@ -87,20 +86,20 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 			GetClientAbsOrigin(ally, targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 			{
-				ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
+				ApplyStatusEffect(client, ally, "War Cry", 0.5);
 				i_ExtraPlayerPoints[client] += 1;
 			}
 		}
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 			{
-				ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
+				ApplyStatusEffect(client, ally, "War Cry", 0.5);
 				i_ExtraPlayerPoints[client] += 1;
 			}
 		}
@@ -157,6 +156,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 		float BannerPos[3];
 		float targPos[3];
 		GetClientAbsOrigin(client, BannerPos);
+		spawnRing_Vectors(BannerPos, BannerDefaultRange(true) * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 50, 125, 1, 0.11, 5.0, 1.1, 5, _, client);	
 		for(int ally=1; ally<=MaxClients; ally++)
 		{
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
@@ -164,20 +164,20 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 				GetClientAbsOrigin(ally, targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
-					ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
+					ApplyStatusEffect(client, ally, "War Cry", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
-					ApplyStatusEffect(client, ally, "Buff Banner", 0.5);
+					ApplyStatusEffect(client, ally, "War Cry", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -237,6 +237,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 		float BannerPos[3];
 		float targPos[3];
 		GetClientAbsOrigin(client, BannerPos);
+		spawnRing_Vectors(BannerPos, BannerDefaultRange(true) * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 50, 125, 1, 0.11, 5.0, 1.1, 5, _, client);	
 		for(int ally=1; ally<=MaxClients; ally++)
 		{
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
@@ -244,20 +245,20 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 				GetClientAbsOrigin(ally, targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
-					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
+					ApplyStatusEffect(client, ally, "Defensive Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+			int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 				{
-					ApplyStatusEffect(client, ally, "Battilons Backup", 0.5);
+					ApplyStatusEffect(client, ally, "Defensive Backup", 0.5);
 					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
@@ -275,7 +276,7 @@ public void Enable_Management_Banner_3(int client, int weapon) // Enable managem
 		b_ClientHasAncientBanner[client] = true;
 		if (Timer_AncientBanner == null)
 		{
-			Timer_AncientBanner = CreateTimer(0.4, Timer_AncientBannerGlobal, _, TIMER_REPEAT);
+			Timer_AncientBanner = CreateTimer(0.1, Timer_AncientBannerGlobal, _, TIMER_REPEAT);
 		}
 	}
 }
@@ -300,6 +301,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			float BannerPos[3];
 			float targPos[3];
 			GetClientAbsOrigin(client, BannerPos);
+			spawnRing_Vectors(BannerPos, BannerDefaultRange(true) * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 50, 125, 1, 0.11, 5.0, 1.1, 5, _, client);	
 			for(int ally=1; ally<=MaxClients; ally++)
 			{
 				if(IsClientInGame(ally) && IsPlayerAlive(ally))
@@ -307,20 +309,20 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 					GetClientAbsOrigin(ally, targPos);
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 					{
-						ApplyStatusEffect(client, ally, "Ancient Banner", 1.0);
+						ApplyStatusEffect(client, ally, "Ancient Melodies", 1.0);
 						i_ExtraPlayerPoints[client] += 1;
 					}
 				}
 			}
 			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 			{
-				int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+				int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 				if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 				{
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange()) // 650.0
 					{
-						ApplyStatusEffect(client, ally, "Ancient Banner", 1.0);
+						ApplyStatusEffect(client, ally, "Ancient Melodies", 1.0);
 						i_ExtraPlayerPoints[client] += 1;
 					}
 				}

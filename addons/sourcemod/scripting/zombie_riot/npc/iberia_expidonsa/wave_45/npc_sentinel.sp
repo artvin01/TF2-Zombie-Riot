@@ -418,8 +418,8 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 						}
 
 						ApplyStatusEffect(npc.index, entitycount, "Combine Command", DurationGive);
-						ApplyStatusEffect(npc.index, entitycount, "Buff Banner", DurationGive);
-						ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", DurationGive);
+						ApplyStatusEffect(npc.index, entitycount, "War Cry", DurationGive);
+						ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "False Therapy", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Self Empowerment", DurationGive);

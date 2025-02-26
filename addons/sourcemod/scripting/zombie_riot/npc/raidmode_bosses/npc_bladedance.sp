@@ -186,7 +186,7 @@ methodmap RaidbossBladedance < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		RaidModeScaling = 9999999.99;
+		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
 
@@ -445,7 +445,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entitynpc = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entitynpc))
 			{
 				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))

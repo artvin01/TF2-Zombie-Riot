@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define LASERBEAM_PANZER "cable/rope.vmt"
 static Handle HealingTimer[MAXTF2PLAYERS] = {null, ...};
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 
@@ -15,6 +16,7 @@ void Gladiia_MapStart()
 	PrecacheSound("weapons/grappling_hook_reel_stop.wav");
 	PrecacheSound("weapons/grappling_hook_impact_flesh.wav");
 	PrecacheSound("weapons/grappling_hook_shoot.wav");
+	PrecacheModel(LASERBEAM_PANZER);
 }
 
 void Gladiia_Enable(int client, int weapon)
@@ -202,7 +204,7 @@ public Action Gladiia_TimerS1L4(Handle timer, int client)
 					WeaponCharge[client] = 24;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / 12, 12 - (WeaponCharge[client] % 12));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -227,7 +229,7 @@ public Action Gladiia_TimerS1L7(Handle timer, int client)
 					WeaponCharge[client] = 20;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / 10, 10 - (WeaponCharge[client] % 10));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -252,7 +254,7 @@ public Action Gladiia_TimerS1L8(Handle timer, int client)
 					WeaponCharge[client] = 30;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / 10, 10 - (WeaponCharge[client] % 10));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -277,7 +279,7 @@ public Action Gladiia_TimerS1L10(Handle timer, int client)
 					WeaponCharge[client] = 24;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / 8, 8 - (WeaponCharge[client] % 8));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;

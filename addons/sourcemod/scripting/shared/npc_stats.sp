@@ -41,6 +41,7 @@ int i_Headshots[MAXTF2PLAYERS];
 #if !defined RTS
 int TeamFreeForAll = 50;
 #endif
+float f_LastBaseThinkTime[MAXENTITIES];
 
 int i_TeamGlow[MAXENTITIES]={-1, ...};
 int Shared_BEAM_Glow;
@@ -391,6 +392,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValue(npc, "disableselfshadowing", "1");  
 		
 		i_IsNpcType[npc] = NpcTypeLogic;
+		f_LastBaseThinkTime[npc] = GetGameTime();
 
 #if defined ZR
 		if(Ally == TFTeam_Red)
@@ -1425,10 +1427,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()							{ return b_ThisWasAnNpc[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_ThisWasAnNpc[this.index] = TempValueForProperty; }
-	}
-	property bool m_bInSafeZone
-	{
-		public get()							{ return view_as<bool>(i_InSafeZone[this.index]); }
 	}
 	
 	property bool m_bAllowBackWalking
@@ -3304,7 +3302,7 @@ static void OnCreate(CClotBody body)
 {
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(!IsValidEntity(entity))
 		{
 			body.SetProp(Prop_Data, "zr_pPath", view_as<int>(g_NpcPathFollower[entitycount]));
@@ -3317,7 +3315,7 @@ static void OnCreate_Stationary(CClotBody body)
 {
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(!IsValidEntity(entity))
 		{
 			i_ObjectsNpcsTotal[entitycount] = EntIndexToEntRef(body.index);
@@ -3330,7 +3328,7 @@ void RemoveFromNpcPathList(CClotBody body)
 {
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(entity == body.index)
 		{
 			body.SetProp(Prop_Data, "zr_pPath", 0);
@@ -3470,6 +3468,10 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{
 			GibEnemyGive *= Attributes_Get(iWeapon, 4012, 1.0);
 		}
+		//oh i was burnin!!
+		//Grilled.
+		if(HasSpecificBuff(pThis, "Burn"))
+			GibEnemyGive *= 1.1;
 #endif
 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
@@ -3553,7 +3555,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		}
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif
-
+	
 #if defined EXPIDONSA_BASE
 		VausMagicaRemoveShield(pThis, true);
 #endif
@@ -5068,7 +5070,7 @@ stock int GetClosestTarget(int entity,
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != SearcherNpcTeam)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
@@ -5120,7 +5122,7 @@ stock int GetClosestTarget(int entity,
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client && GetTeam(entity_close) != GetTeam(entity))
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
@@ -5773,7 +5775,6 @@ public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 
 float f_CheckIfStuckPlayerDelay[MAXENTITIES];
 float f_QuickReviveHealing[MAXENTITIES];
-float f_LastBaseThinkTime[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
 	float lastThink = f_LastBaseThinkTime[iNPC];
@@ -5785,7 +5786,7 @@ public void NpcBaseThinkPost(int iNPC)
 		
 	if(f_TimeFrozenStill[iNPC] > GetGameTime(iNPC))
 		return;
-
+		
 	float time = GetGameTime() - lastThink;	// Time since the last time this NPC thought
 
 	//It like, speed sup their world time?
@@ -6125,24 +6126,22 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 		{
 			f_StuckOutOfBoundsCheck[iNPC] = GameTime + 10.0;
 			//If NPCs some how get out of bounds
-			static float flMyPos[3];
-			GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-			static float flMyPos_Bounds[3];
-			flMyPos_Bounds = flMyPos;
-			flMyPos_Bounds[2] += 1.0;
-			static float hullcheckmaxs_Player[3];
-			static float hullcheckmins_Player[3];
-			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
 			bool OutOfBounds = false;
-			if(IsBoxHazard(flMyPos_Bounds, hullcheckmins_Player, hullcheckmaxs_Player))
+			if(i_InHurtZone[iNPC])
 			{
 				OutOfBounds = true;
 			}
-			if(TR_PointOutsideWorld(flMyPos_Bounds))
+			else
 			{
-				OutOfBounds = true;
+				static float flMyPos[3];
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+				flMyPos[2] += 1.0;
+				if(TR_PointOutsideWorld(flMyPos))
+				{
+					OutOfBounds = true;
+				}
 			}
+
 			if(OutOfBounds)
 			{
 				TeleportNpcToRandomPlayer(iNPC);
@@ -6439,7 +6438,7 @@ stock void Custom_Knockback(int attacker,
 			if(driver != -1)
 			{
 				enemy = driver;
-				Vehicle_Exit(enemy, false);
+				Vehicle_Exit(enemy);
 			}
 		}
 	}
@@ -6451,7 +6450,7 @@ stock void Custom_Knockback(int attacker,
 		{
 			if(forceOut && i_IsVehicle[vehicle] == 2)
 			{
-				Vehicle_Exit(enemy, false);
+				Vehicle_Exit(enemy);
 			}
 			else
 			{
@@ -9247,7 +9246,6 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	}
 }
 
-#if defined ZR
 void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 {
 	IgniteFor[enemy] = 0;
@@ -9259,8 +9257,6 @@ void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 	ApplyRapidSuturing(enemy);
 	ApplyStatusEffect(enemy, enemy, "Hardened Aura", Duration);
 }
-
-#endif
 
 
 
@@ -9899,7 +9895,7 @@ void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)
 	//set to red just incase!
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(npc))
 		{
 			if(npc == entity_close)
@@ -10242,36 +10238,6 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 	return false;
 }
 
-stock void EntityIsInHazard_Teleport(int entity)
-{
-	float AbsOrigin[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
-	static float hullcheckmaxs_Player[3];
-	static float hullcheckmins_Player[3];
-	hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-	hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );		
-	if(b_IsGiant[entity])
-	{
-		hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
-		hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
-	}
-	else
-	{
-		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
-	}
-	/*
-	if(b_NpcResizedForCrouch[entity])
-	{
-		hullcheckmaxs_Player[2] = 41.0;
-	}	
-	*/	
-	if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
-	{
-		TeleportBackToLastSavePosition(entity);
-	}
-}
-
 public void TeleportBackToLastSavePosition(int entity)
 {
 	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
@@ -10310,7 +10276,7 @@ public void SaveLastValidPositionEntity(int entity)
 			return;
 
 		//am i on the ground? If not, then dont save.
-		bool SavePosition = true;
+		/*bool SavePosition = true;
 		if (!(GetEntityFlags(entity) & FL_ONGROUND))
 		{
 			SavePosition = false;
@@ -10328,16 +10294,20 @@ public void SaveLastValidPositionEntity(int entity)
 			}
 		}
 		
-		float AbsOrigin[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );
+		
 		b_AntiSlopeCamp[entity] = false;
 		//Make sure they arent on a slope!
 		if(!SavePosition)
 		{
+			static float hullcheckmaxs_Player[3];
+			static float hullcheckmins_Player[3];
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+
 			float AbsOrigin_after[3];
 			AbsOrigin_after = AbsOrigin;
 			AbsOrigin_after[2] -= 5.0;
@@ -10356,9 +10326,14 @@ public void SaveLastValidPositionEntity(int entity)
 			}
 			return;
 		}
+		slope camp isnt needed as it checks for valid navs anyways
+		*/
 	
-		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
+		if(i_InHurtZone[entity])
 			return;
+
+		float AbsOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 
 		//This should be a safe space for us to save the location for later teleporting.
 		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;
@@ -10372,23 +10347,11 @@ public void SaveLastValidPositionEntity(int entity)
 		if (!npc.IsOnGround())
 			return;
 			
-		float AbsOrigin[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
-		static float hullcheckmaxs_Player[3];
-		static float hullcheckmins_Player[3];
-		if(b_IsGiant[entity])
-		{
-			hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
-			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
-		}
-		else
-		{
-			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
-		}
-		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
+		if(i_InHurtZone[entity])
 			return;
 
+		float AbsOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 		//This should be a safe space for us to save the location for later teleporting.
 		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;		
 	}
@@ -10705,14 +10668,18 @@ void ExtinguishTarget(int target, bool dontkillTimer = false)
 
 void IsEntityInvincible_Shield(int entity)
 {
-	bool NpcInvulShieldDisplay;
+	int NpcInvulShieldDisplay;
+
+	if(HasSpecificBuff(entity, "UBERCHARGED"))
+		NpcInvulShieldDisplay = 3;
+
 #if defined ZR
 //This is not neccecary in RPG.
 	if(i_npcspawnprotection[entity] == 1)
-		NpcInvulShieldDisplay = true;
+		NpcInvulShieldDisplay = 2;
 #endif
 	if(b_NpcIsInvulnerable[entity])
-		NpcInvulShieldDisplay = true;
+		NpcInvulShieldDisplay = 1;
 	
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])
@@ -10723,20 +10690,31 @@ void IsEntityInvincible_Shield(int entity)
 	if(IsValidEntity(i_InvincibleParticle[entity]))
 	{
 		int Shield = EntRefToEntIndex(i_InvincibleParticle[entity]);
-		if(b_NpcIsInvulnerable[entity])
+		if(NpcInvulShieldDisplay == 1)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 0)
 			{
 				SetEntityRenderColor(Shield, 0, 255, 0, 255);
 				i_InvincibleParticlePrev[Shield] = 0;
+				SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 			}
 		}
-		else if(i_npcspawnprotection[entity] == 1)
+		else if(NpcInvulShieldDisplay == 2)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 1)
 			{
 				SetEntityRenderColor(Shield, 0, 50, 50, 35);
 				i_InvincibleParticlePrev[Shield] = 1;
+				SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+			}
+		}
+		else if(NpcInvulShieldDisplay == 3)
+		{
+			if(i_InvincibleParticlePrev[Shield] != 2)
+			{
+				SetEntityRenderColor(Shield, 255, 255, 255, 255);
+				i_InvincibleParticlePrev[Shield] = 2;
+				SetEntProp(Shield, Prop_Send, "m_nSkin", 4);
 			}
 		}
 		return;
@@ -10752,7 +10730,8 @@ void IsEntityInvincible_Shield(int entity)
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	if(b_NpcIsInvulnerable[entity])
+	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+	if(NpcInvulShieldDisplay == 1)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 0)
 		{
@@ -10760,7 +10739,7 @@ void IsEntityInvincible_Shield(int entity)
 			i_InvincibleParticlePrev[Shield] = 0;
 		}
 	}
-	else if(i_npcspawnprotection[entity] == 1)
+	else if(NpcInvulShieldDisplay == 2)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 1)
 		{
@@ -10768,7 +10747,15 @@ void IsEntityInvincible_Shield(int entity)
 			i_InvincibleParticlePrev[Shield] = 1;
 		}
 	}
-	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+	else if(NpcInvulShieldDisplay == 3)
+	{
+		if(i_InvincibleParticlePrev[Shield] != 2)
+		{
+			SetEntityRenderColor(Shield, 255, 255, 255, 255);
+			i_InvincibleParticlePrev[Shield] = 2;
+			SetEntProp(Shield, Prop_Send, "m_nSkin", 4);
+		}
+	}
 
 	i_InvincibleParticle[entity] = EntIndexToEntRef(Shield);
 }

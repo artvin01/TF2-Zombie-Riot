@@ -405,13 +405,13 @@ void ChaosEvilDemonSelfDefense(ChaosEvilDemon npc, float gameTime, int target, f
 
 void ChaosEvilDemonAfterBuff(int entity, int victim)
 {
-	ApplyStatusEffect(entity, victim, "Buff Banner", 0.6);	
-	ApplyStatusEffect(entity, victim, "Battilons Backup", 0.6);	
+	ApplyStatusEffect(entity, victim, "War Cry", 0.6);	
+	ApplyStatusEffect(entity, victim, "Defensive Backup", 0.6);	
 	ApplyStatusEffect(entity, victim, "Squad Leader", 0.6);
 
 	//buff self too
-	ApplyStatusEffect(entity, entity, "Buff Banner", 0.6);	
-	ApplyStatusEffect(entity, entity, "Battilons Backup", 0.6);	
+	ApplyStatusEffect(entity, entity, "War Cry", 0.6);	
+	ApplyStatusEffect(entity, entity, "Defensive Backup", 0.6);	
 	ApplyStatusEffect(entity, entity, "Squad Leader", 0.6);
 
 

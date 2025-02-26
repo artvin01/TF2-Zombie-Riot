@@ -306,9 +306,17 @@
 		"nl"		"Gekochte Artikelen"
 		"chi"       "已购买物品"
 	}
+	"Sell Items Confirm"
+	{
+		"en"		"Are you sure you want to sell all your items?"
+	}
+	"Sell All Items"
+	{
+		"en"		"Sell all items"
+	}
 	"Confirm Loadout"
 	{
-		"en"		"Confirm Loadout"
+		"en"		"Confirm & Access Store"
 	}
 	"N/A"
 	{
@@ -2515,6 +2523,10 @@
 		"ru"		"Искорените всех ксенозаражённых\nНайдите причину происходящего."
 		"chi"		"消灭所有被感染的异种人，找出背后的原因。"
 	}
+	"SeaLab_badEnding"
+	{
+		"en"		"You have an uneasy feeling, as if you entered the wrong path... this is BAD."
+	}
 	"Xeno_Wave_2"
 	{
 		"en"		"Silvester and Waldch didnt attack you for no reason."
@@ -3416,6 +3428,14 @@
 	{
 		"en" 	"Interact With Reload"
 	}
+	"Disable Setup Music"
+	{
+		"en" 	"Disable Setup Music"
+	}
+	"Disable Status Effect Hints"
+	{
+		"en" 	"Disable Status Effect Hints"
+	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"
@@ -3544,6 +3564,10 @@
 	"Schwert Donner Desc"
 	{
 		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this tempomary alliance."
+	}
+	"Schwert Donner Alt Desc"
+	{
+		"en"	"If the sea creatues ever attacked here.... then.. something went MAJORILY wrong. Why are they so.. strong?!"
 	}
 	"Khaml Desc"
 	{
@@ -4047,18 +4071,18 @@
 
 	"freeplay_start_1"
 	{
-		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future..\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."
+		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future.\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."
 	}
 	"freeplay_start_2"
 	{
-		"en"		"Each setup, i'll throw in a Skull, which is a random event or modifier.\nI'll be sometimes throwing more and multiple skulls in,\nto make the training more intensive."
+		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull, which is a random event or modifier.\nAnd i'll be throwing more and more as you progress."
 	}
 	"freeplay_start_3"
 	{
-		"en"		"Be warned,\nI maaay get a little silly and do something catastrophic on a setup..."
+		"en"		"Be warned, this might not be for the light-hearted.\nThings may get out of hand really quick... hehehe..."
 	}
 	"freeplay_start_4"
 	{
-		"en"		"Zeina and I will watch over you, we'll warn you incase something happens.\nWho am i? Koshi, This Experiment will last an hour, be fast."
+		"en"		"Zeina and I will watch over you, we'll warn you if something happens.\nWho am i? Koshi, the one managing this simulation.\nThis will only last an hour, so be fast!"
 	}
 }

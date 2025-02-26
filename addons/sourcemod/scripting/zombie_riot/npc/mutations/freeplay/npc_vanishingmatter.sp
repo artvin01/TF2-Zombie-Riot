@@ -5,14 +5,6 @@ static const char g_DeathSounds[][] = {
 	"ui/killsound_squasher.wav",
 };
 
-static const char g_HurtSounds[][] = {
-	"ui/hitsound_vortex1.wav",
-	"ui/hitsound_vortex2.wav",
-	"ui/hitsound_vortex3.wav",
-	"ui/hitsound_vortex4.wav",
-	"ui/hitsound_vortex5.wav",
-};
-
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_sf13_magic_reac07.mp3",
 	"vo/medic_sf13_magic_reac02.mp3",
@@ -34,7 +26,6 @@ static const char g_MeleeHitSounds[][] = {
 void VanishingMatter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
@@ -64,17 +55,6 @@ methodmap VanishingMatter < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(60, 135));
 		this.m_flNextIdleSound = GetGameTime(this.index) + 6.0;
-		
-	}
-	
-	public void PlayHurtSound() 
-	{
-		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.2;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(50, 80));
 		
 	}
 	
@@ -155,7 +135,6 @@ methodmap VanishingMatter < CClotBody
 		SetEntityRenderFx(npc.index, RENDERFX_HOLOGRAM);
 		SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(65, 255));
 
-		b_NpcIsInvulnerable[npc.index] = true;
 		return npc;
 	}
 }
@@ -174,7 +153,6 @@ public void VanishingMatter_ClotThink(int iNPC)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -213,11 +191,23 @@ public void VanishingMatter_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.34))
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.35))
 	{
-		b_NpcIsInvulnerable[npc.index] = false;
+		npc.Anger = true;
+	}
+	else
+	{
+		npc.Anger = false;
+	}
+
+	if(npc.Anger)
+	{
 		npc.m_flSpeed = 350.0;
 	}
+	else
+	{
+		npc.m_flSpeed = 300.0;
+	}	
 
 	npc.PlayIdleAlertSound();
 }
@@ -228,12 +218,18 @@ public Action VanishingMatter_OnTakeDamage(int victim, int &attacker, int &infli
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	if (!npc.Anger)
+	{
+		damage = 1.0;
+		int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.0075);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
+	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-		WinterArcticMageHealRandomAlly(victim, GetRandomFloat(10000.0, 25000.0), 20);
 	}
 	
 	return Plugin_Changed;
@@ -282,15 +278,15 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				{
 					float damageDealt = 200.0;
 
-					if(!b_NpcIsInvulnerable[npc.index])
+					if(!npc.Anger)
 					{
 						damageDealt = 75.0;
 					}
 						
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					if(b_NpcIsInvulnerable[npc.index])
+					if(!npc.Anger)
 					{
-						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.05);
+						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.02);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
 					}
 
@@ -315,7 +311,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 
-				if(!b_NpcIsInvulnerable[npc.index])
+				if(npc.Anger)
 				{
 					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
@@ -340,7 +336,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 					npc.m_flNextMeleeAttack = gameTime + 0.8;
 					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.5))
 					{
-						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.05);
+						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.01);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
 					}
 				}		

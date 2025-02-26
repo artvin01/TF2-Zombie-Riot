@@ -1789,6 +1789,10 @@
 		"en"		"God Alaxios"
 		"ru"		"Бог Алаксиос"
 	}
+	"Sea-Infected God Alaxios"
+	{
+		"en"		"Sea-Infected God Alaxios"
+	}
 	"Seaborn Scout"
 	{
 		"en"		"Seaborn Scout"
@@ -3995,6 +3999,14 @@
 	{
 		"en" "Spotter"
 	}
+	"Annoying Spirit"
+	{
+		"en" "Annoying Spirit"
+	}
+	"Darkened Heavy"
+	{
+		"en" "Darkened Heavy"
+	}
 	"ATV"
 	{
 		"en"	"ATV"
@@ -4002,29 +4014,5 @@
 	"Airboat"
 	{
 		"en"	"Airboat"
-	}
-	"Ambulance"
-	{
-		"en"	"Ambulance"
-	}
-	"Bus"
-	{
-		"en"	"Bus"
-	}
-	"Camper Van"
-	{
-		"en"	"Camper Van"
-	}
-	"Dump Truck"
-	{
-		"en"	"Dump Truck"
-	}
-	"Landrover"
-	{
-		"en"	"Landrover"
-	}
-	"Pickup Truck"
-	{
-		"en"	"Pickup Truck"
 	}
 }

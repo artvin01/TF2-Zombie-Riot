@@ -401,7 +401,7 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 #if defined ZR
 			if(MazeatItemHas())
 			{
-				cooldown *= 0.75;
+				cooldown *= 0.5;
 			}
 #endif
 			info.Cooldown[what_slot - 1] = cooldown + GetGameTime();
@@ -1346,18 +1346,18 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
 					/*
-					LogMessage("Weapon Spawned!");
-					LogMessage("Name of client %N and index %i",client,client);
-					LogMessage("info.Classname: %s",info.Classname);
-					LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
+				//	LogMessage("Weapon Spawned!");
+				//	LogMessage("Name of client %N and index %i",client,client);
+				//	LogMessage("info.Classname: %s",info.Classname);
+				//	LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
 					char AttributePrint[255];
 					for(int i=0; i<info.Attribs; i++)
 					{
 						Format(AttributePrint,sizeof(AttributePrint),"%s %i ;",AttributePrint, info.Attrib[i]);	
 						Format(AttributePrint,sizeof(AttributePrint),"%s %.1f ;",AttributePrint, info.Value[i]);	
 					}
-					LogMessage("attributes: ''%s''",AttributePrint);
-					LogMessage("info.Attribs: %i",info.Attribs);
+					PrintToChatAll("attributes: ''%s''",AttributePrint);
+				//	LogMessage("info.Attribs: %i",info.Attribs);
 					*/
 				}
 				else

@@ -154,7 +154,7 @@ methodmap JohnTheAllmighty < CClotBody
 		}
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/john_the_allmighty.mp3");
-		music.Time = 43;
+		music.Time = 50; //no loop usually 43 loop tho
 		music.Volume = 1.8;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Chiromaw Matriarch - The Betweenlands: Eternal Melodies");
@@ -417,7 +417,6 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 				GetAttachment(npc.index, "eyeglow_L", eyePos, eyeAng);
 				npc.FireParticleRocket(vecTarget, 25.0 * npc.m_flWaveScale, RocketSpeed, 0.0, "raygun_projectile_blue_crit", false,_, true, eyePos);
 				
-				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, RocketSpeed,_,vecTarget);
 				GetAttachment(npc.index, "eyeglow_R", eyePos, eyeAng);
 				npc.FireParticleRocket(vecTarget, 25.0 * npc.m_flWaveScale, RocketSpeed, 0.0, "raygun_projectile_red_crit", false,_, true,eyePos);
 			}	
@@ -509,7 +508,7 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 
 static char[] JohnTheAllmightyHealth()
 {
-	int health = 220;
+	int health = 160;
 	
 	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	

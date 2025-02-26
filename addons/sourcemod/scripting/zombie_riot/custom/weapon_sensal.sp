@@ -305,7 +305,7 @@ void SensalTimerHudShow(int client, int weapon)
 					FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [%.0f％ / %.0f％]",SensalHud, f_SensalAbilityCharge_1[client] * 100.0, f_Sensal_MaxCharge_1[client] * 100.0);		
 				}
 				PrintHintText(client, "%s", SensalHud);
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+				
 			}
 			case WEAPON_SENSAL_SCYTHE_PAP_3:
 			{
@@ -329,7 +329,7 @@ void SensalTimerHudShow(int client, int weapon)
 					FormatEx(SensalHud, sizeof(SensalHud), "%s\nLasering Afterimage [%.0f％ / 200％]",SensalHud, f_SensalAbilityCharge_2[client] * 100.0);		
 				}
 				PrintHintText(client, "%s", SensalHud);
-				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+				
 			}
 		}
 	}

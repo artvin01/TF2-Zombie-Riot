@@ -849,6 +849,7 @@ static bool IgnorePlayer[MAXTF2PLAYERS];
 static int CanBuild[MAXENTITIES];
 static int PendingGesture[MAXENTITIES];
 static float CommandCooldown[MAXENTITIES];
+static bool TempRebel[MAXENTITIES];
 
 void Citizen_OnMapStart()
 {
@@ -915,6 +916,7 @@ methodmap Citizen < CClotBody
 		bool barney = data[0] == 'b';
 		bool alyx = data[0] == 'a';
 		bool chaos = data[0] == 'c';
+		bool temp = data[0] == 't';
 		
 		int seed = barney ? -160920040 : (alyx ? -50 : GetURandomInt());
 		bool female = !(seed % 2);
@@ -962,6 +964,7 @@ methodmap Citizen < CClotBody
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Alyx");
 		}
+		
 		npc.m_iSeed = seed;
 		
 		npc.m_nDowned = 1;
@@ -988,6 +991,7 @@ methodmap Citizen < CClotBody
 		Resupplies_Supplied[npc.index] = 0;
 		i_BarricadeHasBeenDamaged[npc.index] = 0;
 		i_PlayerDamaged[npc.index] = 0;
+		TempRebel[npc.index] = temp;
 		
 		npc.m_iAttacksTillReload = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -1002,11 +1006,12 @@ methodmap Citizen < CClotBody
 		Zero(IgnorePlayer);
 		Zero(CommandCooldown);
 
-		if(team != TFTeam_Red)
+		if(team != TFTeam_Red || TempRebel[npc.index])
 		{
 			npc.SetDowned(0);
 			npc.m_bStaticNPC = true;
 		}
+
 		if(chaos)
 		{
 			float flPos[3], flAng[3];
@@ -1018,6 +1023,7 @@ methodmap Citizen < CClotBody
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 			npc.m_bRebelAgressive = true;
+			npc.m_bStaticNPC = false;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Chaos Rebel");
 		}
 		
@@ -1341,7 +1347,7 @@ methodmap Citizen < CClotBody
 		}
 		else
 		{
-			if(this.m_bHero || GetTeam(this.index) != TFTeam_Red)
+			if(this.m_bHero || TempRebel[this.index] || GetTeam(this.index) != TFTeam_Red)
 				Citizen_SetRandomRole(this.index);
 			
 			this.m_bThisEntityIgnored = false;
@@ -1496,6 +1502,12 @@ methodmap Citizen < CClotBody
 	{
 		EmitSoundToAll("weapons/rpg/rocketfire1.wav", this.index, _, 80, _, 1.0);
 	}
+}
+
+stock void Citizen_PlayerReplacement(int client)
+{
+	if(Waves_Started() && !Waves_InSetup() && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
+		Citizen_SpawnAtPoint("temp", client);
 }
 
 int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
@@ -1801,7 +1813,7 @@ static void CitizenMenu(int client, int page = 0)
 			FormatEx(buffer, sizeof(buffer), "%t", "Don't Follow Me");
 			menu.AddItem("1", buffer);
 
-			if(!npc.m_bHero)
+			if(!npc.m_bHero && !TempRebel[npc.index])
 			{
 				FormatEx(buffer, sizeof(buffer), "%t", "Switch Class");
 				menu.AddItem("2", buffer, CommandCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -1822,23 +1834,32 @@ static void CitizenMenu(int client, int page = 0)
 				}
 				case Cit_Builder:
 				{
+					bool DontAllowBuilding = false;
+					if(HealingCooldown[npc.index] > GetGameTime())
+					{
+						DontAllowBuilding = true;
+					}
+					if(Waves_InSetup() || f_AllowInstabuildRegardless > GetGameTime())
+					{
+						DontAllowBuilding = false;
+					}
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Barricade At Me");
-					menu.AddItem("15", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("15", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Sentry At Me");
 					menu.AddItem("16", buffer);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Ammo Box At Me");
-					menu.AddItem("17", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("17", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Armor Table At Me");
-					menu.AddItem("18", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("18", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Perk Machine At Me");
-					menu.AddItem("19", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("19", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 					FormatEx(buffer, sizeof(buffer), "%t", "Build Pack-a-Punch At Me");
-					menu.AddItem("20", buffer, HealingCooldown[npc.index] > GetGameTime() ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem("20", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 				}
 			}
 		}
@@ -2273,28 +2294,23 @@ int Citizen_Count()
 
 void Citizen_WaveStart()
 {
-	int i = -1;
-	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
-	{
-		if(i_NpcInternalId[i] == NPCId)
-		{
-			Citizen npc = view_as<Citizen>(i);
-			if(npc.m_iGunType == Cit_None && !npc.m_nDowned)
-			{
-				Citizen_SetRandomRole(npc.index);
-			}
-		}
-	}
-}
-
-void Citizen_SetupStart()
-{
 	int a, i;
 	while((i = FindEntityByNPC(a)) != -1)
 	{
 		if(i_NpcInternalId[i] == NPCId)
 		{
 			Citizen npc = view_as<Citizen>(i);
+
+			if(TempRebel[npc.index])
+			{
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				continue;
+			}
+
+			if(npc.m_iGunType == Cit_None && !npc.m_nDowned)
+			{
+				Citizen_SetRandomRole(npc.index);
+			}
 
 			int team = GetTeam(i);
 			if(team == TFTeam_Red)
@@ -2331,6 +2347,18 @@ void Citizen_SetupStart()
 					}
 				}
 			}
+		}
+	}
+}
+
+void Citizen_SetupStart()
+{
+	int a, i;
+	while((i = FindEntityByNPC(a)) != -1)
+	{
+		if(i_NpcInternalId[i] == NPCId)
+		{
+			Citizen npc = view_as<Citizen>(i);
 
 			if(!npc.m_nDowned)
 			{
@@ -2416,6 +2444,7 @@ public void Citizen_ClotThink(int iNPC)
 
 	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
 	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1) || GetTeam(npc.index) != TFTeam_Red);
+	bool helpAlly;
 
 	// See if our target is still valid
 	int target = npc.m_iTarget;
@@ -2428,7 +2457,13 @@ public void Citizen_ClotThink(int iNPC)
 	// See if our ally is still valid
 	int ally = npc.m_iTargetAlly;
 	if(i_TargetAlly[npc.index] != -1 && (!IsValidEntity(ally) || (ally > MaxClients && b_NpcHasDied[ally] && b_BuildingHasDied[ally]) || (ally <= MaxClients && !IsPlayerAlive(ally))))
+	{
 		i_TargetAlly[npc.index] = -1;
+	}
+	else if((ally <= MaxClients && dieingstate[ally] > 0) || Citizen_ThatIsDowned(ally))
+	{
+		helpAlly = true;
+	}
 	
 	// Cancel any seeking
 	if(i_TargetAlly[npc.index] == -1)
@@ -2623,6 +2658,11 @@ public void Citizen_ClotThink(int iNPC)
 					}
 				}
 			}
+		}
+
+		else if(helpAlly)
+		{
+			// Don't do anything if we're going to revive someone
 		}
 
 		// Repair check
@@ -2918,7 +2958,6 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
 		// Look for Perk Machines
 		else if(team == TFTeam_Red && (!combat || (target == -1 && npc.m_iClassRole != Cit_Fighter)) && npc.m_iGunType != Cit_None && npc.m_iHasPerk != npc.m_iGunType)
 		{
@@ -2949,9 +2988,8 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
 		// Look for Armor Tables
-		else if(team == TFTeam_Red && Elemental_HasDamage(npc.index) && (!combat || (target == -1 && Elemental_GoingCritical(npc.index))))
+		else if((team == TFTeam_Red && (Elemental_HasDamage(npc.index) || npc.m_flArmorCount <= 0.0)) && (!combat || (target == -1 && Elemental_GoingCritical(npc.index))))
 		{
 			npc.ThinkFriendly("No Free Armor Table...");
 
@@ -3094,7 +3132,9 @@ public void Citizen_ClotThink(int iNPC)
 					case 2:	// Armor Table
 					{
 						HealingCooldown[ally] = gameTime + 45.0;
-
+						
+						GrantEntityArmor(npc.index, false, 0.25, 0.25, 0);
+						//Same as medigun giving armor, exact same logic, same amount.
 						Elemental_ClearDamage(npc.index);
 					}
 					case 3:	// Perk Machine
@@ -3282,7 +3322,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(npc.m_iWearable1 > 0)
 							AcceptEntityInput(npc.m_iWearable1, "Enable");
 					}
-					else if(!injured)
+					else if(!injured && !helpAlly)
 					{
 						npc.ThinkCombat("Too far away to fight!");
 
@@ -3327,6 +3367,10 @@ public void Citizen_ClotThink(int iNPC)
 
 							if(npc.m_iWearable1 > 0)
 								AcceptEntityInput(npc.m_iWearable1, "Disable");
+						}
+						else if(helpAlly)
+						{
+							npc.ThinkCombat("Standby");
 						}
 						else if(outOfRange)
 						{
@@ -3439,13 +3483,16 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						npc.ThinkCombat("Too far away to fight!");
 
-						// Too far away, walk up
-						npc.SetActivity("ACT_RUN_RIFLE", 320.0);
-						walkStatus = 1;
+						if(!helpAlly)
+						{
+							// Too far away, walk up
+							npc.SetActivity("ACT_RUN_RIFLE", 320.0);
+							walkStatus = 1;
+						}
 					}
 					else
 					{
-						if(!noSafety && distance < 250000.0)	// Too close, walk backwards
+						if(helpAlly || (!noSafety && distance < 250000.0))	// Too close, walk backwards
 						{
 							npc.ThinkCombat("SMG, moving back!");
 
@@ -3536,13 +3583,16 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						npc.ThinkCombat("Too far away to fight!");
 
-						// Too far away, walk up
-						npc.SetActivity("ACT_RUN_AR2", 320.0);
-						walkStatus = 1;
+						if(!helpAlly)
+						{
+							// Too far away, walk up
+							npc.SetActivity("ACT_RUN_AR2", 320.0);
+							walkStatus = 1;
+						}
 					}
 					else
 					{
-						if(!noSafety && distance < 250000.0)	// Too close, walk backwards
+						if(helpAlly || (!noSafety && distance < 250000.0))	// Too close, walk backwards
 						{
 							npc.ThinkCombat("AR2, moving back!");
 
@@ -3638,10 +3688,14 @@ public void Citizen_ClotThink(int iNPC)
 								walkStatus = 3;	// Back off
 							}
 						}
+						else if(helpAlly)
+						{
+							npc.ThinkCombat("Standby");
+						}
 						else if(outOfRange)
 						{
 							npc.ThinkCombat("Too far away to fight!");
-
+							
 							// Too far away, walk up
 							npc.SetActivity("ACT_RUN_AR2", 320.0);
 							walkStatus = 1;
@@ -3733,6 +3787,10 @@ public void Citizen_ClotThink(int iNPC)
 								npc.SetActivity("ACT_RUN_RPG", 320.0);
 								walkStatus = 3;	// Back off
 							}
+						}
+						else if(helpAlly)
+						{
+							npc.ThinkCombat("Standby");
 						}
 						else if(outOfRange)
 						{
@@ -3981,13 +4039,20 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					// Don't go into other rebels
 					int a, entity;
+					bool allow;
 					while((entity = FindEntityByNPC(a)) != -1)
 					{
-						if(entity != npc.index && i_NpcInternalId[entity] == NPCId)
+						if(entity == npc.index)
+						{
+							allow = true;
+							break;
+						}
+
+						if(!allow && i_NpcInternalId[entity] == NPCId)
 						{
 							WorldSpaceCenter(entity, vecTarget);
 							distance = GetVectorDistance(vecTarget, vecMe, true);
-							if(distance > 4000.0 && distance < 6000.0)
+							if(distance < 6000.0)
 							{
 								walkStatus = 0;
 								break;
