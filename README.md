@@ -26,7 +26,15 @@ Most of the code is made towards client prediction to make the best experience.
 if you for some ungodly reason need 100 player zr, grab the 100 player version, otherwise use the other version for more performance and less ram usage.
 
 Use THIS compiler version if you dont want any wierd issues when coding yourself:
-1.12.0.7163
+
+1.12.0.7162
+
+Use this compiler incase you think compiling ZR takes too long, as they changed something
+
+1.12.0.7031
+
+if you do, only get the handles.inc from this.
+
 
 ### Where can I see this gamemode in action?
 
@@ -47,32 +55,7 @@ Main Servers:
  
 ## cvar's
 
-"zr_infinitecash" = "0" ( def. "0" )
- - Money is infinite and always set to 999999
-  
-"zr_noroundstart" = "0" ( def. "0" )
- - Makes it so waves refuse to start
- 
-"zr_nospecial" = "0" ( def. "0" )
- - No Panzer will spawn or anything alike, good incase you hate this stuff
- 
-"zr_maxbotsforkillfeed" = "6" ( def. "6" )
- - The maximum amount of blue bots allowed for the killfeed
-
-"sv_visiblemaxplayers" = "24" ( def. "24" )
- - This is a default cvar from tf2, but i recomend setting it to 24 on a 32 player server.
- - it sets the max slots to 24 so players wont join, but bots can for killfeed reasons.
-
-"zr_maxplayersplaying" = "14" ( def. "14" )
--Max players allowed to play at once, it should be set lower on linux due to performance drops on it
--You may set it to any value, but i recomment 14-20
-
-"zr_raidmultihp" = "1.0" (def. "1.0)
--Multiplies raid scaling type of HP (good for big maps.)
-
- 
- 
- 
+Check the Cvar File.
  
 ## Commands
 
@@ -105,9 +88,7 @@ global zr can be a shared database across multiple servers, local one should sta
 ### Dependencies
 
 Sourcemod 1.12 Is a Must.
-
 For both linux and Windows, not all linux gamedata might be here.
-
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
 - [Flaming Sarge's TF2Attribute fork](https://github.com/FlaminSarge/tf2attributes)
@@ -120,15 +101,14 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
-- [Edict Limiter Fix- GAMEDATA ONLY!!!!!!!!!!!!!!!!!!](https://github.com/sapphonie/tf2-edict-limiter)
+- [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
 
 
-## Optional plugins
-- [Max speed unlocker](https://github.com/FlaminSarge/tf_maxspeed_patch) (Used for zealot, although you dont need it, but i recommend it.)
-Set this to 720.0
+## Optional Things
+- [Max speed unlocker/Edict Alloc](https://github.com/Mikusch/SourceScramble-Patches) (install both speed unlocker and Alloc)
 ## Credits
 
 Current coders that in anyway actively helped, in order of how much:

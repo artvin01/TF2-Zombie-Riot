@@ -107,7 +107,7 @@ static int Fire_Beacon(CClotBody npc, float vecTarget[3], float Origin[3], float
 {
 	Ruina_Projectiles Projectile;
 
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 
 	Projectile.iNPC = npc.index;
 	Projectile.Start_Loc = Origin;
@@ -338,7 +338,7 @@ methodmap Lex < CClotBody
 	}
 	public int Get_Target()
 	{
-		float GameTime = GetGameTime();
+		float GameTime = GetGameTime(this.index);
 		if(!this.IsAlive())
 		{
 			if(this.m_flGetClosestTargetTime < GameTime)
@@ -873,7 +873,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	float Ratio = (float(Health)/float(MaxHealth));
 
-	if(Ratio < 0.1 && npc.m_flDoingAnimation > GetGameTime())	//tl;dr, can't let him die during laser.
+	if(Ratio < 0.1 && npc.m_flDoingAnimation > GetGameTime(npc.index))	//tl;dr, can't let him die during laser.
 	{
 		damage = 0.0;
 	}
@@ -966,7 +966,7 @@ static void Initiate_Laser(Lex npc)
 	float WindUp = 1.5;
 	float Duration = LEX_LASER_DURATION + WindUp;
 
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 
 	npc.m_flDoingAnimation = GameTime + Duration;
 
@@ -1041,7 +1041,7 @@ static Action Laser_Tick(int client)
 {
 	Lex npc = view_as<Lex>(client);
 
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 
 	if(npc.m_flDoingAnimation < GameTime)
 	{
@@ -1139,7 +1139,7 @@ static void On_LaserHit_Big(int client, int target, int damagetype, float damage
 }
 static void Do_Laser_Effects(Lex npc, float Start[3], float End[3], float diameter)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	float TE_Duration = npc.m_flDoingAnimation - GameTime;
 
 	int color[4];

@@ -9,12 +9,13 @@ static bool StartLastman;
 static bool ForceNextHunter;
 
 static Handle FrostTimer;
+static Handle AnxietyTimer;
 static ArrayList WinterTheme;
 
 public float Rogue_Encounter_ForcedHunterBattle()
 {
 	ForceNextHunter = true;
-	Rogue_SetBattleIngots(4 + (Rogue_GetRound() / 2));
+	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));
 	return 0.0;
 }
 
@@ -87,7 +88,7 @@ void Rogue_Paradox_ReviveSpeed(int &amount)
 		amount = RoundToNearest(float(amount) * 1.25);
 }
 
-bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
+bool Rogue_Paradox_JesusBlessing(int client)
 {
 	if(FrostTimer && dieingstate[client] == 0)
 	{
@@ -106,8 +107,6 @@ bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
 					damage = 1 - health;
 					health = 1;
 				}
-
-				healing_Amount += damage;
 				SetEntityHealth(client, health);
 			}
 		}
@@ -181,6 +180,15 @@ public void Rogue_SomethingElse_Enemy(int entity)
 
 public void Rogue_SomethingElse_Collect()
 {
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
 	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
 	{
 		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
@@ -303,11 +311,40 @@ public void Rogue_Curse_RedMoon(bool enable)
 	RedMoon = enable;
 }
 
+public void Rogue_ShadowingDarkness(bool enable)
+{
+	delete AnxietyTimer;
+
+	if(enable)
+		AnxietyTimer = CreateTimer(0.25, Timer_AnxietyTimer, _, TIMER_REPEAT);
+}
+
+static Action Timer_AnxietyTimer(Handle timer)
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		{
+			ApplyStatusEffect(entity, entity, "Extreme Anxiety", 1.0);
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2)
+		{
+			ApplyStatusEffect(client_summon, client_summon, "Extreme Anxiety", 1.0);
+		}
+	}
+
+	return Plugin_Continue;
+}
+
 static Action Timer_ParadoxFrost(Handle timer)
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcIsInvulnerable[entity])
 		{
 			if(WinterTheme && WinterTheme.FindValue(i_NpcInternalId[entity]) != -1)
@@ -337,7 +374,7 @@ public void Rogue_BlueGoggles_Collect()
 	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
@@ -364,7 +401,7 @@ public void Rogue_BlueGoggles_Remove()
 	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
@@ -415,7 +452,7 @@ public void Rogue_Kahmlstein_Remove()
 	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != -1 && i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
@@ -526,7 +563,7 @@ public void Rogue_RuinaGem_StageStart()
 
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && !b_NpcIsInvulnerable[entity] && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
 		{
 			RuniaGemTimers.Push(CreateTimer(1.0, RuniaGem_Timer, EntIndexToEntRef(entity), TIMER_REPEAT));

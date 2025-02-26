@@ -16,6 +16,11 @@ void DamageModifMapStart()
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//LogEntryInvicibleTest(victim, attacker, damage, 5);
+
+#if defined ZR
+	if(inflictor > 0 && inflictor < MAXENTITIES && i_IsVehicle[inflictor] == 2)
+		attacker = Vehicle_Driver(inflictor);
+#endif
 	
 	if(Damage_AnyVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
@@ -83,7 +88,7 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 
 		if(GetTeam(victim) == TFTeam_Red)
 		{
-			int scale = Rogue_GetRoundScale();
+			int scale = Waves_GetRound();
 			if(scale < 2)
 			{
 				damage *= 0.50;
@@ -192,7 +197,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 						
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 						if (IsValidEntity(baseboss_index))
 						{
 							if(!b_NpcHasDied[baseboss_index])
@@ -221,11 +226,6 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(i_HealthBeforeSuit[victim] == 0)
 	{
 		int armorEnt = victim;
-		/*
-		int vehicle = GetEntPropEnt(victim, Prop_Data, "m_hVehicle");
-		if(vehicle != -1)
-			armorEnt = vehicle;
-		*/
 		if(!CheckInHud())
 		{
 			if(Armor_Charge[armorEnt] > 0)
@@ -253,6 +253,14 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					if(f_Armor_BreakSoundDelay[victim] < GetGameTime())
 					{
 						f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
+						if(IsValidEntity(Victim_weapon))
+						{
+							//Give riotshield speedbonus in shield break
+							if(i_CustomWeaponEquipLogic[Victim_weapon] == WEAPON_RIOT_SHIELD)
+							{
+								TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 1.5);
+							}
+						}
 						EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
 						//\sound\npc\assassin\ball_zap1.wav
 					}
@@ -270,6 +278,21 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		{
 			float percentage = ArmorPlayerReduction(victim);
 			damage *= percentage;
+		}
+	}
+
+	{
+		int vehicle = Vehicle_Driver(victim);
+		if(vehicle != -1)
+		{
+			// Driver
+			damage *= 0.5;
+
+			if(!(damagetype & DMG_TRUEDAMAGE) && Vehicle_Driver(vehicle) != victim)
+			{
+				// Passenger
+				damage *= 0.2;
+			}
 		}
 	}
 #endif	// ZR
@@ -330,7 +353,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			}
 		}
 
-		int scale = Rogue_GetRoundScale();
+		int scale = Waves_GetRound();
 		if(scale < 2)
 		{
 			damage *= 1.6667;
@@ -383,7 +406,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 		
 #if defined ZR || defined NOG
 		//true damage does NOT Ignore this.
-		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,i_HexCustomDamageTypes[victim], weapon);
+		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
 #endif
 
 #if defined ZR
@@ -612,9 +635,10 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float &
 
 #if defined ZR
 	//Medieval buff stacks with any other attack buff.
-	if(CheckInHud() != 2 && GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(attacker))
+	if(GetTeam(attacker) != TFTeam_Red && GetTeam(victim) == TFTeam_Red && Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(attacker))
 	{
-		damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
+		if(!CheckInHud() || CheckInHud() == 2)
+			damage *= 2.0 - Medival_Difficulty_Level; //More damage !! only upto double.
 	}
 #endif
 	return false;
@@ -700,8 +724,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_RIOT_SHIELD:
 		{
-			if(!CheckInHud())
-				return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
+			return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition, damagetype);
 		}
 		case WEAPON_MLYNAR: // weapon_ark
 		{
@@ -760,12 +783,14 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				WeaponRedBlade_OnTakeDamage(attacker, victim, damage);
 		}
+		/*
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				if(!CheckInHud())
 					return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
+		*/
 		case WEAPON_MERCHANT:
 		{
 			if(!CheckInHud())
@@ -1210,6 +1235,9 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 #if defined RPG
 stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime, bool donotset = false)
 {
+	if(attacker == -1)
+		return false;
+	
 	if(attacker > MaxClients && victim <= MaxClients)
 	{
 		int PrevAttack = attacker;
@@ -1693,10 +1721,12 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 #if defined ZR
 	if(dieingstate[attacker] > 0 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
 	{
-		if(b_XenoVial[attacker])
-			damage *= 0.45;
+//		if(b_XenoVial[attacker])
+			damage *= 0.35;
+			/*
 		else
 			damage *= 0.25;
+	*/
 	}
 #endif
 	//NPC STUFF FOR RECORD AND ON KILL
@@ -1840,23 +1870,17 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 }
 
 
-void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right)
+void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right, int SizeOfChar = 64)
 {
+	Debuff_Adder_left[0] = 0;
+	Debuff_Adder_right[0] = 0;
 	//This hud is for debuffs thats shared between players and enemies
-	int SizeOfChar = 64;
 	
 	//These buffs/Debuffs stay how they are for the foreseeable future.
 	if(BleedAmountCountStack[victim] > 0)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s❣(%i)", Debuff_Adder_left, BleedAmountCountStack[victim]);			
 	}
-	if(IgniteFor[victim] > 0)
-	{
-		Format(Debuff_Adder_left, SizeOfChar, "%s~", Debuff_Adder_left);			
-	}
-
-
-
 #if defined RPG
 	if(victim < MaxClients)
 	{

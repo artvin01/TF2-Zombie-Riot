@@ -72,9 +72,10 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			h_TimerKitBlitzkriegManagement[client] = CreateDataTimer(0.1, Timer_Management_KitBlitzkrieg, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-
+			
 			i_WeaponGotLastmanBuff[weapon] = false;
-			PrecacheBlitzMusic();
+			if(CvarFileNetworkDisable.IntValue <= 0)
+				PrecacheBlitzMusic();
 
 			if(fl_primary_reloading[client]>GetGameTime())
 			{
@@ -256,7 +257,7 @@ static void BlitzHud(int client, float GameTime, int wep)
 
 
 	PrintHintText(client, HUDText);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] classname, bool &result)
 {

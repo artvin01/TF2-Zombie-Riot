@@ -126,21 +126,6 @@ public void Rogue_Item_ElasticFlyingCapeRemove()
 	b_ElasticFlyingCape = false;
 }
 
-public void Rogue_Item_HealingSalve()
-{
-	b_HealingSalve = true;
-}
-public void Rogue_Item_HealingSalveRemove()
-{
-	b_HealingSalve = false;
-}
-
-void Rogue_HealingSalve(int client, int &healing_Amount)
-{
-	if(b_HealingSalve)
-		healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
-}
-
 public void Rogue_SteelRazor_Weapon(int entity)
 {
 	// +15% damage bonus for melee's

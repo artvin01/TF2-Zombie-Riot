@@ -55,9 +55,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 		{
-			HasRocketSteam[client] = false;
-			if(Items_HasNamedItem(client, "Major Steam's Rocket"))
-				HasRocketSteam[client] = true;
+			HasRocketSteam[client] = true;
 			delete h_TimerVictorianLauncherManagement[client];
 			h_TimerVictorianLauncherManagement[client] = null;
 			DataPack pack;
@@ -70,9 +68,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 	{
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 		{
-			HasRocketSteam[client] = false;
-			if(Items_HasNamedItem(client, "Major Steam's Rocket"))
-				HasRocketSteam[client] = true;
+			HasRocketSteam[client] = true;
 			DataPack pack;
 			h_TimerVictorianLauncherManagement[client] = CreateDataTimer(0.1, Timer_Management_Victoria, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -503,7 +499,7 @@ static void CreateVictoriaEffect(int client, int weapon)
 			"%s\n[Aim Assist Online]", wtf_Why_are_there_so_many_point_hints);
 		
 		PrintHintText(client,"%s", wtf_Why_are_there_so_many_point_hints);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		VictoriaLauncher_HUDDelay[client] = GetGameTime() + 0.5;
 	}
 

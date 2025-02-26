@@ -927,8 +927,10 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	if(npc.m_iTargetWalkTo > 0)
 	{
 		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
-		b_BobsCuringHand[npc.m_iTargetWalkTo] && b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
-		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[npc.m_iTargetWalkTo])
+		b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 &&
+		 TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE &&
+		  dieingstate[npc.m_iTargetWalkTo] > 0 && 
+		  !b_LeftForDead[npc.m_iTargetWalkTo])
 		{
 			//walk to client.
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);
@@ -999,172 +1001,38 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 						
 	if((BoughtGregHelp || CurrentPlayers <= 4) && IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
 	
-			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 15000 && flDistanceToTarget < 1000000 && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				int Enemy_I_See;
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		
+		//Predict their pos.
+		if(flDistanceToTarget < npc.GetLeadRadius()) {
 			
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				
-				
-				if(!IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					if(npc.m_iChanged_WalkCycle != 4) 	
-					{
-						if(i_SpecialGrigoriReplace == 0)
-						{
-							int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
-							if(iActivity > 0) npc.StartActivity(iActivity);
-							npc.m_flSpeed = 150.0;
-						}
-						else
-						{
-							if(BoughtGregHelp || CurrentPlayers <= 4)
-							{
-								int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
-								if(iActivity > 0) npc.StartActivity(iActivity);
-								npc.m_flSpeed = 200.0;
-							}
-							else
-							{
-								int iActivity = npc.LookupActivity("ACT_HL2MP_WALK");
-								if(iActivity > 0) npc.StartActivity(iActivity);
-								npc.m_flSpeed = 200.0;
-							}
-						}
-						npc.m_iChanged_WalkCycle = 4;
-						npc.m_bisWalking = true;
-					}
-					npc.StartPathing();
-					
-				}
-				else
-				{
-					
-					if(npc.m_iChanged_WalkCycle != 3) 	
-					{
-						if(i_SpecialGrigoriReplace == 0)
-						{
-							int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
-							if(iActivity > 0) npc.StartActivity(iActivity);
-						}
-						else
-						{
-							if(BoughtGregHelp || CurrentPlayers <= 4)
-							{
-								int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
-								if(iActivity > 0) npc.StartActivity(iActivity);
-								npc.m_flSpeed = 300.0;
-							}
-							else
-							{
-								int iActivity = npc.LookupActivity("ACT_HL2MP_RUN");
-								if(iActivity > 0) npc.StartActivity(iActivity);
-								npc.m_flSpeed = 300.0;
-							}
-						}
-						npc.m_iChanged_WalkCycle = 5;
-						npc.m_bisWalking = true;
-						npc.m_flSpeed = 0.0;
-					}
-					if (npc.m_iAttacksTillReload == 0)
-					{
-						if(i_SpecialGrigoriReplace == 0)
-							npc.AddGesture("ACT_RELOAD_shotgun"); //lol no caps
-						else
-							npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY_PRIMARY3", .SetGestureSpeed = 0.35); //lol no caps
-						npc.m_flReloadDelay = GetGameTime(npc.index) + 2.5;
-						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5;
-						npc.m_iAttacksTillReload = 2;
-						npc.PlayRangedReloadSound();
-						return; //bye
-					}
-					
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-					
-					npc.FaceTowards(vecTarget, 10000.0);
-					
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.2;
-					
-					float vecSpread = 0.1;
-				
-					float eyePitch[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-					
-					
-					float x, y;
-				//	x = GetRandomFloat( -0.0, 0.15 ) + GetRandomFloat( -0.15, 0.15 );
-				//	y = GetRandomFloat( -0.0, 0.15 ) + GetRandomFloat( -0.15, 0.15 );
-					
-					float vecDirShooting[3], vecRight[3], vecUp[3];
-					
-					vecTarget[2] += 15.0;
-					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
-					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
-					GetVectorAngles(vecDirShooting, vecDirShooting);
-					vecDirShooting[1] = eyePitch[1];
-					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
-					npc.m_iAttacksTillReload -= 1;
-					
-					if(i_SpecialGrigoriReplace == 0)
-						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-					else
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-
-					float vecDir[3];
-					vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-					vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-					NormalizeVector(vecDir, vecDir);
-					
-					float DamageDelt = 50.0;
-					if(BoughtGregHelp && CurrentPlayers <= 4)
-					{
-						DamageDelt = 75.0;
-					}
-					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, DamageDelt, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
-
-					npc.PlayRangedSound();
-					
-					if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") < 0)
-					{
-						npc.PlayKilledEnemy();
-					}
-				}
-			}
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
-					
-			//Target close enough to hit
-			if((flDistanceToTarget < 15000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		} else {
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+
+		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 15000 && flDistanceToTarget < 1000000 && npc.m_flReloadDelay < GetGameTime(npc.index))
+		{
+			int Enemy_I_See;
+		
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			
+			
+			if(!IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				npc.StartPathing();
-				 //Walk at all times when they are close enough.
-					
-				if(npc.m_iChanged_WalkCycle != 2) 	
+				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					if(i_SpecialGrigoriReplace == 0)
 					{
-						int iActivity = npc.LookupActivity("ACT_RUN_AR2_RELAXED");
+						int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
 						if(iActivity > 0) npc.StartActivity(iActivity);
-						npc.m_flSpeed = 250.0;
+						npc.m_flSpeed = 150.0;
 					}
 					else
 					{
@@ -1176,81 +1044,215 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 						}
 						else
 						{
-							int iActivity = npc.LookupActivity("ACT_HL2MP_RUN");
+							int iActivity = npc.LookupActivity("ACT_HL2MP_WALK");
 							if(iActivity > 0) npc.StartActivity(iActivity);
 							npc.m_flSpeed = 200.0;
 						}
 					}
-					npc.m_iChanged_WalkCycle = 2;
+					npc.m_iChanged_WalkCycle = 4;
 					npc.m_bisWalking = true;
-					//forgot to add walk.
+				}
+				npc.StartPathing();
+				
+			}
+			else
+			{
+				
+				if(npc.m_iChanged_WalkCycle != 3) 	
+				{
+					if(i_SpecialGrigoriReplace == 0)
+					{
+						int iActivity = npc.LookupActivity("ACT_WALK_AIM_RIFLE");
+						if(iActivity > 0) npc.StartActivity(iActivity);
+					}
+					else
+					{
+						if(BoughtGregHelp || CurrentPlayers <= 4)
+						{
+							int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+							npc.m_flSpeed = 300.0;
+						}
+						else
+						{
+							int iActivity = npc.LookupActivity("ACT_HL2MP_RUN");
+							if(iActivity > 0) npc.StartActivity(iActivity);
+							npc.m_flSpeed = 300.0;
+						}
+					}
+					npc.m_iChanged_WalkCycle = 5;
+					npc.m_bisWalking = true;
+					npc.m_flSpeed = 0.0;
+				}
+				if (npc.m_iAttacksTillReload == 0)
+				{
+					if(i_SpecialGrigoriReplace == 0)
+						npc.AddGesture("ACT_RELOAD_shotgun"); //lol no caps
+					else
+						npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY_PRIMARY3", .SetGestureSpeed = 0.35); //lol no caps
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.5;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5;
+					npc.m_iAttacksTillReload = 2;
+					npc.PlayRangedReloadSound();
+					return; //bye
 				}
 				
-				if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
-				{
-				//	npc.FaceTowards(vecTarget, 1000.0);
-					
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flSpeed = 0.0;
-						if (!npc.m_flAttackHappenswillhappen)
-						{
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
-							npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.5;
-							if(i_SpecialGrigoriReplace == 0)
-								npc.AddGesture("ACT_MELEE_ATTACK");
-							else
-								npc.AddGesture("ACT_GMOD_GESTURE_MELEE_SHOVE_2HAND", .SetGestureSpeed = 0.6);
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				
+				npc.FaceTowards(vecTarget, 10000.0);
+				
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.2;
+				
+				float vecSpread = 0.1;
+			
+				float eyePitch[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+				
+				
+				float x, y;
+			//	x = GetRandomFloat( -0.0, 0.15 ) + GetRandomFloat( -0.15, 0.15 );
+			//	y = GetRandomFloat( -0.0, 0.15 ) + GetRandomFloat( -0.15, 0.15 );
+				
+				float vecDirShooting[3], vecRight[3], vecUp[3];
+				
+				vecTarget[2] += 15.0;
+				float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+				MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
+				GetVectorAngles(vecDirShooting, vecDirShooting);
+				vecDirShooting[1] = eyePitch[1];
+				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+				
+				npc.m_iAttacksTillReload -= 1;
+				
+				if(i_SpecialGrigoriReplace == 0)
+					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
+				else
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
-							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
-							npc.m_flAttackHappenswillhappen = true;
-						}
+				float vecDir[3];
+				vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
+				vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
+				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
+				NormalizeVector(vecDir, vecDir);
+				
+				float DamageDelt = 50.0;
+				if(BoughtGregHelp && CurrentPlayers <= 4)
+				{
+					DamageDelt = 75.0;
+				}
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, DamageDelt, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
+
+				npc.PlayRangedSound();
+				
+				if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") < 0)
+				{
+					npc.PlayKilledEnemy();
+				}
+			}
+		}
+		
+				
+		//Target close enough to hit
+		if((flDistanceToTarget < 15000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+		{
+			npc.StartPathing();
+				//Walk at all times when they are close enough.
+				
+			if(npc.m_iChanged_WalkCycle != 2) 	
+			{
+				if(i_SpecialGrigoriReplace == 0)
+				{
+					int iActivity = npc.LookupActivity("ACT_RUN_AR2_RELAXED");
+					if(iActivity > 0) npc.StartActivity(iActivity);
+					npc.m_flSpeed = 250.0;
+				}
+				else
+				{
+					if(BoughtGregHelp || CurrentPlayers <= 4)
+					{
+						int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.m_flSpeed = 200.0;
+					}
+					else
+					{
+						int iActivity = npc.LookupActivity("ACT_HL2MP_RUN");
+						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.m_flSpeed = 200.0;
+					}
+				}
+				npc.m_iChanged_WalkCycle = 2;
+				npc.m_bisWalking = true;
+				//forgot to add walk.
+			}
+			
+			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			{
+			//	npc.FaceTowards(vecTarget, 1000.0);
+				
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
+				{
+					npc.m_flSpeed = 0.0;
+					if (!npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
+						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.5;
+						if(i_SpecialGrigoriReplace == 0)
+							npc.AddGesture("ACT_MELEE_ATTACK");
+						else
+							npc.AddGesture("ACT_GMOD_GESTURE_MELEE_SHOVE_2HAND", .SetGestureSpeed = 0.6);
+
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
+						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
+						npc.m_flAttackHappenswillhappen = true;
+					}
+						
+					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 20000.0);
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,2))
+						{
+								
+							int target = TR_GetEntityIndex(swingTrace);	
 							
-						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-						{
-							Handle swingTrace;
-							npc.FaceTowards(vecTarget, 20000.0);
-							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,2))
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							
+							if(target > 0) 
 							{
-									
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
+								float DamageDelt = 85.0;
+								if(BoughtGregHelp && CurrentPlayers <= 4)
 								{
-									float DamageDelt = 85.0;
-									if(BoughtGregHelp && CurrentPlayers <= 4)
-									{
-										DamageDelt = 100.0;
-									}
-									SDKHooks_TakeDamage(target, npc.index, Owner, DamageDelt, DMG_CLUB, -1, _, vecHit);
-									
-									// Hit particle
-									
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-									
-									if(GetEntProp(target, Prop_Data, "m_iHealth") < 0)
-									{
-										npc.PlayKilledEnemy();
-									}
-								} 
-							}
-							delete swingTrace;
-							npc.m_flAttackHappenswillhappen = false;
+									DamageDelt = 100.0;
+								}
+								SDKHooks_TakeDamage(target, npc.index, Owner, DamageDelt, DMG_CLUB, -1, _, vecHit);
+								
+								// Hit particle
+								
+								
+								// Hit sound
+								npc.PlayMeleeHitSound();
+								
+								if(GetEntProp(target, Prop_Data, "m_iHealth") < 0)
+								{
+									npc.PlayKilledEnemy();
+								}
+							} 
 						}
-						else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-						{
-							npc.m_flAttackHappenswillhappen = false;
-						}
+						delete swingTrace;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
 					}
 				}
 			}
+		}
 	}
 	else
 	{
@@ -1471,7 +1473,7 @@ int GetClosestAllyPlayerGreg(int entity)
 	{
 		if (IsValidClient(i))
 		{
-			if (GetTeam(i) == GetTeam(entity) && b_BobsCuringHand[i] && b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (GetTeam(i) == GetTeam(entity) /*&& b_BobsCuringHand[i] */&& b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

@@ -91,7 +91,7 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		
@@ -135,7 +135,7 @@ methodmap StalkerGoggles < StalkerShared
 			AcceptEntityInput(entity, "LightOn");
 		}
 		
-		i_Wearable[npc.index][0] = entity;
+		npc.m_iWearable1 = entity;
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_antarctic_eyewear/spr18_antarctic_eyewear_scout.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum19_wagga_wagga_wear/sum19_wagga_wagga_wear.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl");
@@ -229,7 +229,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		bool Docutscene = true;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != INVALID_ENT_REFERENCE && IsValidEnemy(npc.index, entity) && GetTeam(entity) != TFTeam_Red)
 			{
 				Docutscene = false;
@@ -295,14 +295,16 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			if(AppearedBefore_Suicide)
 			{
 				CPrintToChatAll("{darkblue}The machine wanders off, it isnt interrested in this place anymore, someone else takes its place instead...");
-				NPC_SpawnNext(true, true); //This will force spawn a panzer.
 				b_NpcForcepowerupspawn[npc.index] = 0;
 			}
-			AppearedBefore_Suicide = true;
 			i_RaidGrantExtra[npc.index] = 0;
 			b_DissapearOnDeath[npc.index] = true;
 			b_DoGibThisNpc[npc.index] = true;
 			SmiteNpcToDeath(npc.index);
+			if(AppearedBefore_Suicide)
+				NPC_SpawnNext(true, true); //This will force spawn a panzer.
+
+			AppearedBefore_Suicide = true;
 			return;
 		}
 	}
@@ -584,7 +586,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
-	if(!Rogue_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
+	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;

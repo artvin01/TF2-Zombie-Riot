@@ -677,9 +677,7 @@
 	
 	"Grenade Desc"
 	{
-		"en"	"High Dmg Grenade"
-		"fr"	"Grenade qui inflige beaucoup de dégats"
-		"chi"	"高伤害手雷"
+		"en"	"High Dmg Grenade, Cooldown scales with reloadspeed."
 	}
 	"Grenade Pap 1"
 	{
@@ -804,8 +802,7 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal.\nMedigun allows you to revive people from afar but at half the speed."
-		"fr"	"Bonus d'extra santé est permanent. Soigne vous en même temps que votre patient. Améliore les dégats +25%% et la résistance contre les dégats +10%% pour vous et votre patient.\nPeut ressusciter les coéquipiers à distance, à demi vitesse."
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal.\nMedigun allows you to revive people from afar but slower\nUber gives debuff immunity."
 	}
 	
 	"Battle Medigun Desc"
@@ -876,7 +873,7 @@
 	}
 	"P15t0l Desc 1"
 	{
-		"en"	"Increaced damage."
+		"en"	"increased damage."
 		"fr"	"Dégats améliorés."
 	}
 	"P15t0l Pap 2" 
@@ -888,7 +885,7 @@
 	}
 	"Buff Banner Desc"
 	{
-		"en"	"Extra 25%% damage to all allies after dealing enough damage"
+		"en"	"Extra 25%% damage to all allies after dealing enough damage/Healing allies"
 		"fr"	"Rage donne +25%% de dégats."
 		"chi"	"造成一定伤害后可为所有队友增加25%%伤害"
 	}
@@ -1201,11 +1198,8 @@
 	
 	"Fists Of Kahmlstein Desc"
 	{
-		"en"	"fists from Kahmlstein, His reign over cities and states has no end.\nProve your strength against him to gain a certain item to gain another ability..."
-		"fr"	"Poings de Kahmlstein, son règne sur les villes est sans fin.\nBattez-lui pour obtenir quelque chose qui donne une autre abilité..."
-		"chi"	"卡姆斯坦因的拳套，这个武器曾摧毁过无数个世界。\n打败他，他说不定会教你新招数..."
+		"en"	"fists from Kahmlstein, His reign over cities and states has no end.\neach 3rd hit deals 2.75x damage\nYour R ability summons a clone that attacks what you attack, and you fire only projectiles."
 	}
-
 	"Bad Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
@@ -1332,9 +1326,7 @@
 
 	"Necromancy Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side.\nNot having your wand in your hand will disencurage your minion and half its damage."
-		"fr"	"Chaque attaque utilise du Mana. M2 convoque un minion.\nLes dégats de votre minion seront diminués à moitié si vous ne tenez pas cet arme."
-		"chi"	"M1消耗蓝，发射光球。M2召唤一个DDT小弟。\n当不手持此武器时小弟造成0.5倍伤害。"
+		"en"	"M2 Summons a minion.\nNot having your wand in your hand will half minion damage.\nMinion will only attack marked enemies\nM1 Marks enemies for 5 seconds"
 	}
 	"Necromancy Staff Pap 1"
 	{
@@ -1466,10 +1458,7 @@
 	
 	"Wrench Desc"
 	{
-		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench."
-		"fr"	"Répare les constructions."
-		"ru"	"Ремонтирует постройки и турели, имейте при себе для присвоения построек, работает с любым гаечным ключом."
-		"chi"   "修理建筑物和哨兵，用任何扳手工作。"
+		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench.\nHold crouch and M2 to mount buildings on yourself!"
 	}
 	
 	"Texan business Desc"
@@ -2182,7 +2171,7 @@
 	}
 	"Mlynar Sword Desc pap 2"
 	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
+		"en"	"Gain increased Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids.\nVotre charge est plus rapide, et prend moins de temps pour se recharger."
 	}
 	"Mlynar ExtraDesc"
@@ -2234,9 +2223,9 @@
 	}
 	"Crusader Desc Pap 1"
 	{
-		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour m2 ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
-		"fr"	"Devient un fusil de Sniper, la charge améliore les soins.\nLes soins peuvent donner un bonus santé de 15%%.\nAppuyez sur M2 pour placer des medkits.\nVos medkits donne un Buff, mais donne moins de soins aux aliiés dans le combat.\nVous pouvez placer jusqu'a 2 medkits à la fois."
-		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15%%）\nM2技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
+		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour R ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
+		"fr"	"Devient un fusil de Sniper, la charge améliore les soins.\nLes soins peuvent donner un bonus santé de 15%%.\nAppuyez sur R pour placer des medkits.\nVos medkits donne un Buff, mais donne moins de soins aux aliiés dans le combat.\nVous pouvez placer jusqu'a 2 medkits à la fois."
+		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15%%）\nR技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
 	}
 
 	"Barracks Desc"
@@ -2593,7 +2582,7 @@
 	}
 	"Mlynar Sword Desc pap"
 	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
+		"en"	"Gain increased Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids."
 		"chi"	"增加抗性，伤害，反甲伤害，更低的杀敌惩罚。"
 	}
@@ -2858,13 +2847,13 @@
 	}
 	"Sensal Desc 2"
 	{
-		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
+		"en"	"increased damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
 		"fr"	"Dégats et résistance améliorés. Abilité lance une faux additionelle.\nAbilité se charge plus rapidement, charge maximale est doublée."
 		"chi"	"更高的伤害和抗性，+1镰刀。\n更快的充能，上限*2。"
 	}
 	"Sensal Desc 3"
 	{
-		"en"	"Increaced damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
+		"en"	"increased damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
 		"fr"	"Dégats et résistance améliorés. Abilité crée des après-images qui tirent des lasers.\nVos après-images priorisent les ennemis que vous regardez."
 		"chi"	"更高的伤害和抗性。\n新技能：\n召唤残影，发射激光。"
 	}
@@ -3276,13 +3265,13 @@
 	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
-		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increaced.\nCrit Chance Increaces."
+		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increased.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique et santé bonus par soins améliorés.\nVous frappez plus d'ennemis à la fois."
 		"chi"	"提高伤害，技能赋予更多双击子弹。\n加强穿透力，更高的超量上限。\n随机暴击概率提高。"
 	}
 	"Half Moon Desc1"
 	{
-		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 2x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
+		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 1.8x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
 	}
 	"Half Moon Desc2"
 	{
@@ -3300,7 +3289,7 @@
 	}
 	"Angelic Shotgonnus Desc Pap 3"
 	{
-		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increaced.\nCrit Chance Increaces."
+		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increased.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique, soins et santé bonus par soins et améliorés.\nDouble-attaque se déclenche 2x plus fréquemment."
 		"chi"	"更多伤害，更多治疗。有效射程更高，双击频率增加一倍。\n随机暴击概率提高。"
 	}
@@ -3376,9 +3365,7 @@
 	}
 	"Heavy Particle Rifle Desc 1"
 	{
-		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!\nYou are also 25% slower then normal, but you take 25% less dmg from front attacks!"
-		"fr"	"+25%% résistance, -25%% cadence de tir.\nDégats s'améliorent le plus longtemps que vous tirez.\nCommence avec des dégats réduits."
-		"chi"	"按住M1可以蓄能，造成更多伤害。但是，无蓄能时造成的伤害降低。\n-25%%移速，+25%伤害抗性"
+		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!"
 	}
 	"Heavy Particle Rifle Desc 2"
 	{
@@ -3432,7 +3419,7 @@
 	}
 	"Medigun Desc Pap 3"
 	{
-		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, and provides quick mana recovery.\nUbercharge rate decreased."
+		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, +mana recovery, + overclock buff on heal."
 	}
 	"Flash Grenade Desc"
 	{
@@ -3466,9 +3453,7 @@
 	}
 	"Riot Gun Desc"
 	{
-		"en"	"While you have armor, provides 60%% (from bosses 35%%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown."
-		"fr"	"Donne +60%% (+35%% contre les Boss) résistance contre les attaques d'en face, si vous avez de l'armure.\nAbilité améliore votre cadence des attaques et étonne les ennemis en face de vous.\nLe Speed Cola réduit le temps de rechargement de l'abilité."
-		"chi"	"有护甲时，提供60%（boss 35%）正面伤害抗性。技能加攻速，眩晕面前10个敌人。\n极速可乐可影响冷却。"
+		"en"	"With Armor, 60%% (bosses 35%%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown.\nBe slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
 	}
 	"Riot Gun Pap 1"
 	{
@@ -3486,7 +3471,7 @@
 	}
 	"Siccerino Pap 2"
 	{
-		"en"	"Your attacks will debuff the enemy so you deal 5% more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
+		"en"	"Your attacks will debuff the enemy so you deal 5%& more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
 		"fr"	"+5%% dégats pour chaque coup, jusqu'a un maximum.\nAbilité devient des attaques corps-à-corps rapides."
 		"chi"	"伤害会使敌人受到+%5伤害，有上限。\nM2更为高攻速近战。"
 	}
@@ -3724,9 +3709,7 @@
 	}
 	"Chainsaw Pap 0"
 	{
-		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
-		"fr"	"Arme corps-à-corps puissante qui coûte beaucoup de munitions.\nRéduira toujours les ennemis en morceaux, mais vous reçevez seulement 25%% des soins quand vous les mangez."
-		"chi"	"造成极高近战伤害，但消耗大量弹药。\n杀死的敌人必定会掉肉块，但你吃肉块只会受到25%的治疗量。"
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 33% from eating gibs.\nGain overall resistance, increases with paps."
 	}
 	"Chainsaw Pap 1"
 	{
@@ -3999,7 +3982,7 @@
 	}
 	"Super-Uber-Saw Desc 1"
 	{
-		"en"	"Increaced damage and 25%% more range."
+		"en"	"increased damage and 25%% more range."
 	}
 	"The Yakuza Desc"
 	{
@@ -4059,7 +4042,7 @@
 	}
 	"Wand of Rot Desc"
 	{
-		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles.\nDeal Osmosis Damage, see Extra Desc."
+		"en"	"Fires a slow homing projectile, ability increases all stats & adds another projectile. build up OS fully to reduce allies ability CD on hit on an afflicted enemy."
 	}
 	"Wand of Rot Desc 2"
 	{
@@ -4216,49 +4199,69 @@
 	{
 		"en"	"Base damage increased."
 	}
-	"Blue Cheese Desc"
+	"Ketamine Desc"
 	{
-		"en"	"It stinks, a lot...\n+800 HP, Increases melee damage by +75%% and heal on kill by +35.\nIncreases melee resist with melee weapons by +10%%."
+		"en"	"Makes you as hard as iron.\n+600 HP, Increases melee damage by +65%% and heal on kill by +25.\nIncreases melee resist with melee weapons by +7.5%%."
+	}
+	"Cannabis Desc"
+	{
+		"en"	"Smoke it everyday.\n+800 HP, Increases melee damage by +75%% and heal on kill by +35.\nIncreases melee resist with melee weapons by +10%%."
 	}
 	"Fentanyl Desc"
 	{
 		"en"	"It courses through you.\n+1000 HP, Increases melee damage by +100%% and heal on kill by +50.\nIncreases melee resist and ranged resist with melee weapons by +15%% and +10%% respectively."
 	}
+	"Building Dummies Desc"
+	{
+		"en"	"A book to teach you how to build.\nIncreases building HP by +20%%, building damage by +50%% and repair rate by +50%%.\nIncreases sentry attackspeed by +10%%."
+	}
 	"Dubious Cheesy Ideas Desc"
 	{
-		"en"	"The inhuman thoughts lying behind the cheese.\nIncreases building HP by +35%%, and building damage + repair rate by +75%%.\nIncreases sentry attackspeed by +25%%."
+		"en"	"The inhuman thoughts lying behind the cheese.\nIncreases building HP by +45%%, and building damage + repair rate by +75%%.\nIncreases sentry attackspeed by +25%%."
 	}
 	"Messed Up Cheesy Brain Desc"
 	{
-		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +75%%, building damage by +100%% and repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
+		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +90%%, building damage by +100%% and repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
+	}
+	"Birdeye Ammo Desc"
+	{
+		"en"	"He never misses.\nIncreases ranged damage by +65%%, fire rate and reload speed by +5%%.\nIncreases accuracy by +10%% and projectile speed by +10%%."
 	}
 	"Waldch's Railgun Rounds Desc"
 	{
-		"en"	"How kind of him.\nIncreases ranged damage by +75%% and clipsize by +50%%.\nIncreases accuracy by +20%% and projectile speed by +25%%."
+		"en"	"How kind of him.\nIncreases ranged damage by +75%%, fire rate by +7.5%% and reload speed by +10%%.\nIncreases accuracy by +20%% and projectile speed by +25%%."
 	}
 	"Cheesy Doomsday Pack Desc"
 	{
-		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%% and doubles clipsize.\nIncreases accuracy by +35%% and projectile speed by +50%%."
+		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%%, fire rate by +7.5%% and reload speed by +10%%.\nIncreases accuracy by +35%% and projectile speed by +50%%."
+	}
+	"Twirl Magic Desc"
+	{
+		"en"	"This is as far as she can get with teaching magic to you.\n+150 HP, Increases mage damage by +70%% and mage projectile speed by +10%%.\nIncreases melee resist with wands out by +5%%, and max mana by 20%%."
 	}
 	"Magical Fontina Aura Desc"
 	{
-		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +75%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%, and max mana by 25%%."
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +80%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%, and max mana by 25%%."
 	}
 	"Domain Expansion: Cheese Desc"
 	{
-		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +100%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +115%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
 	}
 	"Bob's Willpower Desc"
 	{
-		"en"	"Bob the Second lending you his divine willpower.\n+1750 HP, +20%% overall resistance, grants a +5HP/s regen."
+		"en"	"Bob the Second lending you his divine willpower.\n+2000 HP, +20%% overall resistance, grants a +5HP/s regen."
 	}
 	"A Wheel of Gouda Desc"
 	{
-		"en"	"Eat up.\n+2000 HP, +22.5%% overall resistance, grants an additional +10HP/s regen."
+		"en"	"Eat up.\n+2500 HP, +25%% overall resistance, grants an additional +10HP/s regen."
 	}
 	"THE BIG CHEESE Desc"
 	{
-		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2250 HP, +25%% overall resistance, grants an additional +15HP/s regen."
+		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2750 HP, +30%% overall resistance, grants an additional +15HP/s regen."
+	}
+	"Nanomachines Desc"
+	{
+		"en"	"Nanomachines, they make people harden in response to physical trauma.\nIncreases medigun heal/enemydrain rate by +65%% and uber duration by +1 second.\nIncreases melee resistance with support weapons out by +5%%."
 	}
 	"Voided Rejuvenator Pack Desc"
 	{
@@ -4270,23 +4273,23 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +20%% and attackspeed by +5%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%%."
+		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +25%% and attackspeed by +10%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%% and increases heal rate by +25%%."
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "Increases kit damage by +30%% and reload speed by +5%%\nGrants +35%% max mana, +50%% healrate and building HP by +10%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +35%% and reload speed by +10%%\nGrants +35%% max mana, increases repair rate by +50%% and building HP by +10%%.\nReduces building cost by 25%% and increases heal rate by +35%%."
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "Increases kit damage by +45%% and reload + attackspeed by +5%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%%."
+		"en" "Increases kit damage by +50%% and reload + attackspeed by +5%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%% and increases heal rate by +35%%."
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "Increases kit damage by +60%% and reload + attackspeed by +5%%\n+35 HP on kill | +20%% Overall Resistance | +50%% Heal Rate | +25%% Max Mana | +100%% Repair Rate"
+		"en" "Increases kit damage by +65%% and reload + attackspeed by +10%%\n+35 HP on kill | +20%% Overall Resist | +25%% Max Mana | +100%% Repair Rate | +50%% Proj. Speed | +35%% Heal Rate"
 	}
 	"Kit Modernizer V Desc"
 	{
-		"en" "Increases kit damage by +80%% and reload + attackspeed by +19%%\n+50 HP on kill | +25%% Overall Resistance | +75%% Heal Rate | +35%% Max Mana | +100%% Repair Rate | +50%% Clip size"
+		"en" "Increases kit damage by +85%% and reload + attackspeed by +10%%\n+50 HP on kill | +25%% Overall Resistance | +25%% Max Mana | +125%% Repair Rate | +50%% Clip size"
 	}
 	"Unit Reformator I Desc"
 	{
@@ -4304,6 +4307,10 @@
 	{
 		"en" "Doubles barrack unit HP and increases barrack unit damage by +75%%."
 	}
+	"Unit Reformator V Desc"
+	{
+		"en" "Increases barrack unit HP by +125%% and doubles barrack unit damage."
+	}
 	"Reinforce Desc"
 	{
 		"en"	"A device that revives a random dead teammate, recharging through healing.\nThe maximum charge increases with the amount of healing rate"
@@ -4313,5 +4320,25 @@
 	{
 		"en"	"Teleports barrack units to you, granting overheal and high resistance for 1 second."
 		"ko"	"배럭 유닛을 자신에게 텔레포트시키고 과치료및 1초동안 높은 저항을 제공합니다"
+	}
+	"Bubble Wand Desc"
+	{
+		"en" "Throws a bubble, which slows down and powers up as it travels.\nThis bubble automatically pops if its speed reaches 0."
+	}
+	"Bubble Wand Pap 1 Desc"
+	{
+		"en" "PAP 1: Increases damage and very slightly increased swing speed.\nIncreased the damage boost based on lifetime."
+	}
+	"Bubble Wand Pap 2 Desc"
+	{
+		"en" "PAP 2: Increases damage + slightly increases swing speed.\nIncreases the damage boost based on lifetime and unlocks Bubble Frenzy:\nPress M2 to double your attackspeed and debuff enemies, making them deal less damage!\nApplies debuffs on raids always, but for 1/4 of its duration."
+	}
+	"Bubble Wand Pap 3 Desc"
+	{
+		"en" "PAP 3: Increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly increases Bubble Frenzy's debuff duration."
+	}
+	"Bubble Wand Pap 4 Desc"
+	{
+		"en" "PAP 4: Greatly increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly strengthens Bubble Frenzy's debuff penalty, and increases its duration a bit."
 	}
 }

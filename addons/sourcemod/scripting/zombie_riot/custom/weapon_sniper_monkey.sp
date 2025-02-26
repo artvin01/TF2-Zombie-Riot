@@ -3,10 +3,13 @@
 
 static bool SmartBounce;
 static int LastHitTarget;
+static int SupplyUsesThisWave[MAXPLAYERS+1];
+static int SupplyThisWave[MAXPLAYERS+1];
 
 void SniperMonkey_ClearAll()
 {
 	SmartBounce = false;
+	Zero(SupplyThisWave);
 }
 
 float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
@@ -28,38 +31,42 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			
 			int targets[3];
 			int healths[3];
-			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+			int i;
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				if(i != victim && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
+				i = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+				if(IsValidEntity(i))
 				{
-					GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos);
-					if(GetVectorDistance(pos, damagePosition, true) < 62500.0) 
+					if(i != victim && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
 					{
-						int hp = GetEntProp(i, Prop_Data, "m_iHealth");
-						if(healths[0] < hp)
+						GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos);
+						if(GetVectorDistance(pos, damagePosition, true) < 62500.0) 
 						{
-							healths[2] = healths[1];
-							targets[2] = targets[1];
-							
-							healths[1] = healths[0];
-							targets[1] = targets[0];
-							
-							healths[0] = hp;
-							targets[0] = i;
-						}
-						else if(healths[1] < hp)
-						{
-							healths[2] = healths[1];
-							targets[2] = targets[1];
-							
-							healths[1] = hp;
-							targets[1] = i;
-						}
-						else if(healths[2] < hp)
-						{
-							healths[2] = hp;
-							targets[2] = i;
+							int hp = GetEntProp(i, Prop_Data, "m_iHealth");
+							if(healths[0] < hp)
+							{
+								healths[2] = healths[1];
+								targets[2] = targets[1];
+								
+								healths[1] = healths[0];
+								targets[1] = targets[0];
+								
+								healths[0] = hp;
+								targets[0] = i;
+							}
+							else if(healths[1] < hp)
+							{
+								healths[2] = healths[1];
+								targets[2] = targets[1];
+								
+								healths[1] = hp;
+								targets[1] = i;
+							}
+							else if(healths[2] < hp)
+							{
+								healths[2] = hp;
+								targets[2] = i;
+							}
 						}
 					}
 				}
@@ -174,24 +181,30 @@ public void Weapon_EliteDefender(int client, int weapon, bool &result, int slot)
 
 public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0)
+	if(SupplyUsesThisWave[client] > 1 && SupplyThisWave[client] == Waves_GetRound())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
+	}
+	else if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		float pos1[3], pos2[3];
 		GetClientEyePosition(client, pos1);
 		
 		float distance;
 		int target = -1;
-		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			if(!b_NpcHasDied[i] && b_NpcForcepowerupspawn[i] != 2 && GetTeam(i) != TFTeam_Red)
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && b_NpcForcepowerupspawn[entity] != 2 && GetTeam(entity) != TFTeam_Red)
 			{
-				GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
 				
 				float dist = GetVectorDistance(pos1, pos2, true);
 				if(distance < dist) 
 				{
-					target = i;
+					target = entity;
 					distance = dist;
 				}
 			}
@@ -202,6 +215,16 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_advanced_friend.wav");
 			Ability_Apply_Cooldown(client, slot, 150.0);
+
+			if(SupplyThisWave[client] == Waves_GetRound())
+			{
+				SupplyUsesThisWave[client]++;
+			}
+			else
+			{
+				SupplyThisWave[client] = Waves_GetRound();
+				SupplyUsesThisWave[client] = 1;
+			}
 		}
 		else
 		{
@@ -228,10 +251,14 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		int target = MaxClients + 1;
-		while((target = FindEntityByClassname(target, "zr_base_npc")) != -1)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			if(!b_NpcHasDied[target] && b_NpcForcepowerupspawn[target] != 2 && GetTeam(target) != 2)
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && b_NpcForcepowerupspawn[entity] != 2 && GetTeam(entity) != TFTeam_Red)
+			{
+				target = entity;
 				break;
+			}
 		}
 		
 		if(target != -1)

@@ -124,7 +124,7 @@ public void Rusty_HUD(int client, int weapon, bool forced)
 			else
 				PrintHintText(client, "Big Shot is not loaded.");
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 
 		f_NextRustyHUD[client] = GetGameTime() + 0.5;

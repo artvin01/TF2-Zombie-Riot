@@ -45,6 +45,8 @@ void NPC_ConfigSetup()
 	f_FactionCreditGain = 0.0;
 	Zero(f_FactionCreditGainReduction);
 
+	Building_ConfigSetup();
+
 	delete NPCList;
 	NPCList = new ArrayList(sizeof(NPCData));
 
@@ -68,8 +70,8 @@ void NPC_ConfigSetup()
 
 	// Buildings
 	ObjectBarricade_MapStart();
-	ObjectAmmobox_MapStart();
 	ObjectDecorative_MapStart();
+	ObjectAmmobox_MapStart();
 	ObjectArmorTable_MapStart();
 	ObjectPerkMachine_MapStart();
 	ObjectPackAPunch_MapStart();
@@ -83,6 +85,23 @@ void NPC_ConfigSetup()
 	ObjectTinkerBrew_MapStart();
 	ObjectRevenant_Setup();
 	// Buildings
+
+	// Constructs
+	ObjectConstruction_LightHouse_MapStart();
+	ObjectStove_MapStart();
+	ObjectFactory_MapStart();
+	// Constructs
+
+	// Vehicles
+	VehicleHL2_Setup();
+	VehicleFullJeep_Setup();
+	VehicleAmbulance_Setup();
+	VehicleBus_Setup();
+	VehicleCamper_Setup();
+	VehicleDumpTruck_Setup();
+	VehicleLandrover_Setup();
+	VehiclePickup_Setup();
+	// Vehicles
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
 	CombinePoliceSmg_OnMapStart_NPC();
@@ -175,7 +194,6 @@ void NPC_ConfigSetup()
 	XenoOuroborosEkas_OnMapStart_NPC();
 
 	
-	NaziPanzer_OnMapStart_NPC();
 	WanderingSpirit_OnMapStart_NPC();
 	VengefullSpirit_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
@@ -184,6 +202,7 @@ void NPC_ConfigSetup()
 	CuredFatherGrigori_OnMapStart_NPC();
 	FallenWarrior_OnMapStart();
 	ThirtySixFifty_OnMapStart();
+	JohnTheAllmighty_OnMapStart_NPC();
 	
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
@@ -430,7 +449,6 @@ void NPC_ConfigSetup()
 	Ignitus_OnMapStart_NPC();
 	Helena_OnMapStart_NPC();
 //wave 45-60 there arent as many enemies as im running out of ideas and i want to resuse top enemies
-	Erasus_OnMapStart_NPC();
 	GiantTankus_OnMapStart_NPC();
 	AnfuhrerEisenhard_OnMapStart_NPC();
 	SpeedusAdivus_OnMapStart_NPC();
@@ -794,6 +812,9 @@ void NPC_ConfigSetup()
 	DuckFollower_Setup();
 	BobTheFirstFollower_Setup();
 	TwirlFollower_Setup();
+	
+	// Construction
+	BaseBuilding_MapStart();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -858,6 +879,8 @@ void NPC_ConfigSetup()
 	Victorian_Tacticalunit_OnMapStart_NPC();
 	Victorian_TacticalProtector_OnMapStart_NPC();
 
+
+	BossSummonRandom_OnMapStart_NPC();
 	//Combine Mutation
 	OmegaRaid_OnMapStart_NPC();
 	LostKnight_OnMapStart_NPC();
@@ -879,7 +902,22 @@ void NPC_ConfigSetup()
 	DimensionalFragment_OnMapStart_NPC();
 	ImmutableHeavy_OnMapStart_NPC();
 	VanishingMatter_OnMapStart_NPC();
+	FreeplaySigmaller_OnMapStart_NPC();
 	Spotter_OnMapStart_NPC();
+	Erasus_OnMapStart_NPC();
+	AnnoyingSpirit_OnMapStart_NPC();
+	FogOrbHeavy_OnMapStart_NPC();
+
+	// Construction
+	MaterialCash_MapStart();
+	MaterialCopper_MapStart();
+	MaterialCrystal_MapStart();
+	MaterialIron_MapStart();
+	MaterialJalan_MapStart();
+	MaterialOssunia_MapStart();
+	MaterialStone_MapStart();
+	MaterialWizuh_MapStart();
+	MaterialWood_MapStart();
 }
 
 int NPC_Add(NPCData data)
@@ -896,7 +934,7 @@ int NPC_Add(NPCData data)
 	return NPCList.PushArray(data);
 }
 
-int NPC_GetCount()
+stock int NPC_GetCount()
 {
 	return NPCList.Length;
 }
@@ -908,31 +946,39 @@ stock int NPC_GetNameById(int id, char[] buffer, int length)
 	return strcopy(buffer, length, data.Name);
 }
 
-int NPC_GetPluginById(int id, char[] buffer, int length)
+stock int NPC_GetNameByPlugin(const char[] name, char[] buffer, int length)
+{
+	int index = NPCList.FindString(name, NPCData::Plugin);
+	if(index == -1)
+		return 0;
+	
+	static NPCData data;
+	NPCList.GetArray(index, data);
+	return strcopy(buffer, length, data.Name);
+}
+
+stock int NPC_GetPluginById(int id, char[] buffer, int length)
 {
 	static NPCData data;
 	NPC_GetById(id, data);
 	return strcopy(buffer, length, data.Plugin);
 }
 
-void NPC_GetById(int id, NPCData data)
+stock void NPC_GetById(int id, NPCData data)
 {
 	NPCList.GetArray(id, data);
 }
 
-int NPC_GetByPlugin(const char[] plugin, NPCData data = {})
+stock int NPC_GetByPlugin(const char[] name, NPCData data = {})
 {
-	int length = NPCList.Length;
-	for(int i; i < length; i++)
+	int index = NPCList.FindString(name, NPCData::Plugin);
+	if(index != -1)
 	{
-		NPCList.GetArray(i, data);
-		if(StrEqual(plugin, data.Plugin))
-		{
-			PrecacheNPC(i, data);
-			return i;
-		}
+		NPCList.GetArray(index, data);
+		PrecacheNPC(index, data);
 	}
-	return -1;
+	
+	return index;
 }
 
 static void PrecacheNPC(int i, NPCData data)
@@ -1036,7 +1082,7 @@ void ZR_NpcTauntWinClear()
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			func_NPCFuncWin[baseboss_index] = INVALID_FUNCTION;
@@ -1048,7 +1094,7 @@ void ZR_NpcTauntWin()
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			Function func = func_NPCFuncWin[baseboss_index];
@@ -1109,7 +1155,7 @@ void NPCDeath(int entity)
 	}
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int DeathNoticer = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int DeathNoticer = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
 		{
 			Function func = func_NPCDeathForward[DeathNoticer];
@@ -1155,7 +1201,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 }
 
 //BASES FOR ENEMIES
-
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp" //ALSO IN RPG!
 #include "zombie_riot/npc/seaborn/npc_nethersea_shared.sp"
 
@@ -1176,8 +1221,23 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
 #include "zombie_riot/object/obj_revenant.sp"
-//NORMAL
+#include "zombie_riot/object/construction/obj_giant_lighthouse.sp"
+#include "zombie_riot/object/construction/obj_const_stove.sp"
+#include "zombie_riot/object/construction/obj_const_factory.sp"
+//#include "zombie_riot/object/construction/obj_hospital.sp"
 
+// VEHICLES
+#include "shared/vehicles/vehicle_shared.sp"
+#include "shared/vehicles/vehicle_hl2.sp"
+#include "zombie_riot/vehicles/vehicle_fulljeep.sp"
+#include "zombie_riot/vehicles/vehicle_ambulance.sp"
+#include "zombie_riot/vehicles/vehicle_bus.sp"
+#include "zombie_riot/vehicles/vehicle_camper.sp"
+#include "zombie_riot/vehicles/vehicle_dumptruck.sp"
+#include "zombie_riot/vehicles/vehicle_landrover.sp"
+#include "zombie_riot/vehicles/vehicle_pickup.sp"
+
+//NORMAL
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
 #include "zombie_riot/npc/normal/npc_headcrabzombie_fortified.sp"
 #include "zombie_riot/npc/normal/npc_fastzombie.sp"
@@ -1267,7 +1327,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/xeno_lab/npc_xeno_patient_few.sp"
 #include "zombie_riot/npc/xeno_lab/npc_xeno_ekas_robo.sp"
 
-#include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
@@ -1277,6 +1336,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_vengefull_spirit.sp"
 #include "zombie_riot/npc/special/npc_fallen_warrior.sp"
 #include "zombie_riot/npc/special/npc_3650.sp"
+#include "zombie_riot/npc/special/npc_john_the_allmighty.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -1767,6 +1827,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/truesurvival/npc_sphynx.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zombine.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zmain_headcrabzombie.sp"
+#include "zombie_riot/npc/mutations/randomboss/npc_boss_battle_only.sp"
 
 
 
@@ -1954,4 +2015,18 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/freeplay/npc_dimensionfrag.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_immutableheavy.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_vanishingmatter.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_freeplay_sigmaller.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_spotter.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_annoying_spirit.sp"
+#include "zombie_riot/npc/mutations/freeplay/npc_darkenedheavy.sp"
+
+#include "zombie_riot/npc/construction/npc_base_building.sp"
+#include "zombie_riot/npc/construction/npc_material_cash.sp"
+#include "zombie_riot/npc/construction/npc_material_copper.sp"
+#include "zombie_riot/npc/construction/npc_material_crystal.sp"
+#include "zombie_riot/npc/construction/npc_material_iron.sp"
+#include "zombie_riot/npc/construction/npc_material_jalan.sp"
+#include "zombie_riot/npc/construction/npc_material_ossunia.sp"
+#include "zombie_riot/npc/construction/npc_material_stone.sp"
+#include "zombie_riot/npc/construction/npc_material_wizuh.sp"
+#include "zombie_riot/npc/construction/npc_material_wood.sp"

@@ -71,6 +71,7 @@ public void Want_NecroTouch(int entity, int target)
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, false);	// 2048 is DMG_NOGIB?
+		ApplyStatusEffect(owner, target, "Marked", 5.0);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);

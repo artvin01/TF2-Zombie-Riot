@@ -301,7 +301,21 @@ methodmap Whiteflower_Boss < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(Waves_GetRound()+1);
+		}
+
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -322,16 +336,8 @@ methodmap Whiteflower_Boss < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-		{
-			RaidModeScaling *= 0.85;
-		}
-		else if(ZR_GetWaveCount()+1 > 55)
-		{
-			RaidModeScaling *= 0.7;
-		}
 
+		RaidModeScaling *= 0.7;
 		RaidModeScaling *= 1.85;
 
 		RaidBossActive = EntIndexToEntRef(npc.index);

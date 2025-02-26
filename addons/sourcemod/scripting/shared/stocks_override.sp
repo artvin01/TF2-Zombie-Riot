@@ -58,7 +58,7 @@ TODO:
 
 //Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
 
-stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntityColour = true, int SetOverride = 0, bool ingore_wearables = true, bool dontchangewearablecolour = true)
+stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntityColour = true, int SetOverride = 0, bool ingore_wearables = true, bool dontchangewearablecolour = true, bool ForceColour = false)
 {
 	if(TrueEntityColour || SetOverride != 0)
 	{
@@ -85,7 +85,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			if(SetOverride == 1)
 			{
@@ -123,7 +123,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity] || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity] || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0) || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			SetEntityRenderMode(entity, mode);
 		}
@@ -134,7 +134,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 
 
 //Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
-stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=255, int a=255, bool TrueEntityColour = true, bool ingore_wearables = true, bool dontchangewearablecolour = true)
+stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=255, int a=255, bool TrueEntityColour = true, bool ingore_wearables = true, bool dontchangewearablecolour = true, bool ForceColour = false)
 {	
 	bool ColorWasSet = false;
 	if(TrueEntityColour)
@@ -157,7 +157,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			i_EntityRenderColour1[entity] = r;
 			i_EntityRenderColour2[entity] = g;
@@ -177,7 +177,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
 				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
 				{	
-					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
+					if(i_EntityRenderColour4[WearableEntityIndex] != 0 || ForceColour)
 					{
 						if(!TrueEntityColour)
 						{
@@ -195,7 +195,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 				}
 			}
 		}
-		if((i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity]) || (ColorWasSet && !i_EntityRenderOverride[entity]) || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
+		if(ForceColour || (i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity]) || (ColorWasSet && !i_EntityRenderOverride[entity]) || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
 		{
 			SetEntityRenderColor(entity, r, g, b, a);
 		}
@@ -529,7 +529,7 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
 			*/
 			int entity = -1;
-			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			while((entity=FindEntityByClassname(entity, "zr_base_boss")) != -1)
 			{
 #if defined ZR
 				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
@@ -580,3 +580,48 @@ stock void Stock_RemoveEntity(int entity)
 }
 
 #define RemoveEntity Stock_RemoveEntity
+
+stock int EntRefToEntIndexFast(int &ref)
+{
+	if(ref == -1)
+		return ref;
+	
+	int entity = EntRefToEntIndex(ref);
+	if(entity == -1)
+		ref = -1;
+	
+	return entity;
+}
+
+//#define EntRefToEntIndex EntRefToEntIndexFast
+/*
+int GameruleEntity()
+{
+	int Gamerules = FindEntityByClassname(-1, "tf_gamerules");
+	return Gamerules;
+}
+
+void GameRules_SetPropFloat_Replace(const char[] prop, any value, int element=0, bool changeState=false)
+{
+	SetEntPropFloat(GameruleEntity(), Prop_Send, prop, value, element);
+}
+void GameRules_SetProp_Replace(const char[] prop, any value, int size = 4, int element=0, bool changeState=false)
+{
+	SetEntProp(GameruleEntity(), Prop_Send, prop, value, size, element);
+}
+float GameRules_GetPropFloat_Replace(const char[] prop, int element=0)
+{
+	return GetEntPropFloat(GameruleEntity(), Prop_Send, prop, element);
+}
+int GameRules_GetProp_Replace(const char[] prop, int size = 4, int element=0)
+{
+	return GetEntProp(GameruleEntity(), Prop_Send, prop, size, element);
+}
+	
+RoundState GameRules_GetRoundState_Replace()
+{
+	return view_as<RoundState>(GameRules_GetProp("m_iRoundState"));
+}
+
+#define GameRules_GetRoundState GameRules_GetRoundState_Replace
+*/

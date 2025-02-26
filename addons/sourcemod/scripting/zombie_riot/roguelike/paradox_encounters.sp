@@ -288,7 +288,7 @@ public float Rogue_Encounter_Prophecy1()
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM1) &&
-				Items_HasNamedItem(client, "Bob's Curing Hand"))
+				(CvarRogueSpecialLogic.BoolValue || Items_HasNamedItem(client, "Bob's Curing Hand")))
 			{
 				found = true;
 				break;
@@ -319,7 +319,7 @@ public float Rogue_Encounter_Prophecy1()
 			{
 				rogue = true;
 				
-				if(Items_HasNamedItem(client, "Kahmlsteins Last Will") && Items_HasNamedItem(client, "Twirl's Hairpins"))
+				if(CvarRogueSpecialLogic.BoolValue || Items_HasNamedItem(client, "Kahmlsteins Last Will") && Items_HasNamedItem(client, "Twirl's Hairpins"))
 				{
 					runia = true;
 					break;
@@ -400,7 +400,7 @@ public float Rogue_Encounter_Prophecy2()
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM2) &&
-				Items_HasNamedItem(client, "Kahml's Contained Chaos"))
+				(CvarRogueSpecialLogic.BoolValue || Items_HasNamedItem(client, "Kahml's Contained Chaos")))
 			{
 				kalm = true;
 				break;
@@ -585,7 +585,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			case 2:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 3");
-				Rogue_AddChaos(15);
+				Rogue_AddChaos(25);
 				GiveCash(2000);
 				Rogue_AddIngots(15);
 				int recover = 5;

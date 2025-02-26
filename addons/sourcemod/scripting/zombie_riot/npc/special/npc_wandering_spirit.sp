@@ -35,9 +35,9 @@ void WanderingSpirit_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return WanderingSpirit(vecPos, vecAng, team);
+	return WanderingSpirit(vecPos, vecAng, team, data);
 }
 
 methodmap WanderingSpirit < CClotBody
@@ -51,7 +51,7 @@ methodmap WanderingSpirit < CClotBody
 		EmitSoundToAll(g_SpookSound[GetRandomInt(0, sizeof(g_SpookSound) - 1)], entity, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public WanderingSpirit(float vecPos[3], float vecAng[3], int ally)
+	public WanderingSpirit(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		WanderingSpirit npc = view_as<WanderingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", GetSpiritHealth(), ally));
 		
@@ -74,7 +74,7 @@ methodmap WanderingSpirit < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		
@@ -95,6 +95,9 @@ methodmap WanderingSpirit < CClotBody
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 500.0);
 		TeleportDiversioToRandLocation(npc.index);
 
+		//counts as a static npc, means it wont count towards NPC limit.
+		if(StrContains(data, "ghostbusters") == -1)
+			AddNpcToAliveList(npc.index, 1);
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; 
@@ -212,17 +215,18 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
 				
+				int maxhealth;
+				maxhealth = ReturnEntityMaxHealth(npc.index);
 				if(IsValidEnemy(npc.index, target))
 				{
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
+					npc.m_iState -= 1;
 					float damageDealt = 400.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 25.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 
-					int maxhealth;
-					maxhealth = ReturnEntityMaxHealth(npc.index);
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 
 					// Hit sound
 					npc.PlaySpookSound(target);
@@ -233,29 +237,35 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 							TF2_StunPlayer(target, 0.5, 0.9, TF_STUNFLAG_SLOWDOWN);
 							
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
-						npc.m_iState -= 1;
 						maxhealth /= 5;
-						if(npc.m_iState <= 0)
+					}
+					int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
+
+					if(Decicion == 2)
+						Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 250.0);
+
+					if(Decicion == 2)
+						Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
+				} 
+					
+				if(npc.m_iState <= 0)
+				{
+					npc.m_iState = 0;
+					SmiteNpcToDeath(npc.index);
+					CPrintToChatAll("{crimson}The spirit is unable to move on and splits apart...");
+					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+					for(int loop=1; loop<=CountPlayersOnRed(); loop++)
+					{
+						int spawn_index = NPC_CreateByName("npc_vengefull_spirit", -1, pos, ang, GetTeam(npc.index));
+						if(spawn_index > MaxClients)
 						{
-							npc.m_iState = 0;
-							SmiteNpcToDeath(npc.index);
-							CPrintToChatAll("{crimson}The spirit is unable to move on and splits apart...");
-							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-							for(int loop=1; loop<=CountPlayersOnRed(); loop++)
-							{
-								int spawn_index = NPC_CreateByName("npc_vengefull_spirit", -1, pos, ang, GetTeam(npc.index));
-								if(spawn_index > MaxClients)
-								{
-									NpcAddedToZombiesLeftCurrently(spawn_index, true);
-									SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-									SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-								}
-							}
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 						}
 					}
-					TeleportDiversioToRandLocation(npc.index);
-				} 
+				}
 			}
 			delete swingTrace;
 		}
@@ -288,7 +298,7 @@ void WanderingSpiritIsEnemyClose(int iNPC)
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity_close))
 			{
 				if(IsValidEnemy(iNPC, entity_close))
@@ -326,17 +336,17 @@ static char[] GetSpiritHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health = health * 3 / 8;

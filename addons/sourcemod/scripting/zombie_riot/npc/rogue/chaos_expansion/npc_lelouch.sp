@@ -227,9 +227,9 @@ int i_Lelouch_Index;
 #define LELOUCH_CRYSTAL_SHIELD_STRENGTH 0.1	//How much res each crystal gives. eg: 4 crystals alive, each does 0.1, total res is 40%
 
 static float fl_Anchor_Fixed_Spawn_Pos[3][3] ={
-	{8652.121094, 2812.415039, -3187.304199},
-	{11433.128906, -40.339725, -3171.454102},
-	{6109.317871, -2600.679443, -3184.520264}
+	{8731.121094, 2849.591797, -3318.968750},
+	{6070.426270, -2539.363281, -3319.968750},
+	{11448.688477, -64.187515, -3318.968750}
 };
 static int i_AnchorID_Ref[MAXENTITIES][3];
 static bool b_Anchors_Created[MAXENTITIES];
@@ -719,15 +719,19 @@ methodmap Lelouch < CClotBody
 
 		RaidAllowsBuildings = false;
 
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
-	
-		if(RaidModeScaling < 55)
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
 		}
 		else
-		{
-			RaidModeScaling *= 0.38;
+		{	
+			RaidModeScaling = float(Waves_GetRound()+1);
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -807,7 +811,7 @@ static void Ruina_Ion_Storm(int iNPC)
 	float rng = 1.0;
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && i_NpcInternalId[entity] != TwirlFollower_ID())
 		{
 			rng+=0.1;
@@ -1154,7 +1158,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	}
 	
 	int Health = ReturnEntityMaxHealth(npc.index);
-		Health = RoundToFloor(Health*0.1);
+	Health = RoundToFloor(Health*0.1);
 
 	npc.PlayCrystalSounds();
 
@@ -1985,22 +1989,44 @@ static void Create_Anchors(Lelouch npc)
 			i_AnchorID_Ref[npc.index][i] = EntIndexToEntRef(anchor); 
 	}
 
+	float HP_Scale = 1.0;
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",RoundToCeil(400000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lex",RoundToCeil(205000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",RoundToCeil(652569.0 * MultiGlobalHighHealthBoss),1, true);
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",RoundToCeil(600000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	//we are in NEITHER rouge or freeplay.
+	//allthough, if freeplay lelouch turns out being a bitch consistently, then it can be made to apply to freeplay.
+	if(!Rogue_Mode() && !Waves_InFreeplay())
+	{
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 
-	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",200000, RoundToCeil(4.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	100000, RoundToCeil(6.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",500000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	100000, RoundToCeil(5.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	200000, RoundToCeil(8.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	100000, RoundToCeil(4.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",	150000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",75000,  RoundToCeil(20.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	300000, RoundToCeil(2.0 * MultiGlobalEnemy));
-	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",100000, RoundToCeil(4.0 * MultiGlobalEnemy));
+		HP_Scale = amount_of_people/14.0;
+
+		//for when the server has more then 14 players.
+		if(HP_Scale >1.0)
+			HP_Scale = 1.0;
+
+		//lower limit.
+		if(HP_Scale <=0.1)
+			HP_Scale=0.1;
+
+		HP_Scale *=0.5;	//then nerf it in half completely.
+
+	}
+
+
+	LelouchSpawnEnemy(npc.index,"npc_ruina_theocracy",	RoundToCeil(HP_Scale * 400000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lex"	,		RoundToCeil(HP_Scale * 205000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_ruliana",	RoundToCeil(HP_Scale * 652569.0 * MultiGlobalHighHealthBoss),1, true);
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lancelot",	RoundToCeil(HP_Scale * 600000.0 * MultiGlobalHealthBoss), RoundToCeil(1.0 * MultiGlobalEnemy), true);
+
+	LelouchSpawnEnemy(npc.index,"npc_ruina_loonarionus",RoundToCeil(HP_Scale * 200000), RoundToCeil(4.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_magianius",	RoundToCeil(HP_Scale * 100000), RoundToCeil(6.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_heliarionus",RoundToCeil(HP_Scale * 500000), RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_euranionis",	RoundToCeil(HP_Scale * 100000), RoundToCeil(5.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_draconia",	RoundToCeil(HP_Scale * 200000), RoundToCeil(8.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_malianius",	RoundToCeil(HP_Scale * 100000), RoundToCeil(4.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_lazurus",	RoundToCeil(HP_Scale * 150000), RoundToCeil(2.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_aetherianus",RoundToCeil(HP_Scale * 75000),  RoundToCeil(20.0 * MultiGlobalEnemy));
+	LelouchSpawnEnemy(npc.index,"npc_ruina_rulianius",	RoundToCeil(HP_Scale * 300000), RoundToCeil(2.0 * MultiGlobalEnemy), _,"Elite Rulianius");
+	LelouchSpawnEnemy(npc.index,"npc_ruina_astrianious",RoundToCeil(HP_Scale * 100000), RoundToCeil(4.0 * MultiGlobalEnemy));
 
 	Ruina_Master_Rally(npc.index, false);
 
@@ -2034,7 +2060,10 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	// do not spawn ontop of lelouches head, although it shouldn't matter for spawning stuff, just incase the teleport SOMEHOW fails
 	AproxRandomSpaceToWalkTo[0]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	AproxRandomSpaceToWalkTo[1]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
-	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), red ? "nospawns;noweaver;full" : "lelouch;noweaver;full");
+	char Data[64]; Data = red ? "lelouch;nospawns;noweaver;full" : "nospawns;noweaver;full";
+	if(Waves_GetRound()+1 < 60)
+		Format(Data, sizeof(Data), "%sforce60", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
+	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)
@@ -2235,7 +2264,7 @@ static int i_GetTarget_Lazy_Method(float end_point[3], int Team)
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == Team)
@@ -2259,7 +2288,7 @@ static int i_GetTarget_Lazy_Method(float end_point[3], int Team)
 
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[a]);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
 			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
@@ -2689,7 +2718,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	return Plugin_Changed;
 }
-static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false)
+static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool is_a_boss = false, char data[64] = "")
 {
 	if(GetTeam(alaxios) == TFTeam_Red)
 	{
@@ -2733,6 +2762,8 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	enemy.ExtraDamage = 3.5;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
+	if(data[0])
+		enemy.Data = data;
 	if(Rogue_Mode())
 		Format(enemy.Spawn,sizeof(enemy.Spawn), "spawn_9_5");
 	if(!Waves_InFreeplay())
@@ -2962,7 +2993,7 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entity))
 			{
 				if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)

@@ -305,7 +305,7 @@ methodmap Sensal < CClotBody
 			}
 		}
 
-		RaidModeScaling = 60.0;//float(ZR_GetWaveCount()+1);
+		RaidModeScaling = 60.0;//float(Waves_GetRound()+1);
 		b_RageAnimated[npc.index] = false;
 		if(RaidModeScaling < 55)
 		{
@@ -1061,7 +1061,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	Sensal npc = view_as<Sensal>(victim);
-	//if(ZR_GetWaveCount()+1 >= 45)
+	//if(Waves_GetRound()+1 >= 45)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
@@ -1094,7 +1094,7 @@ void SensalThrowScythes(Sensal npc)
 	float pos[3];
 	WorldSpaceCenter(npc.index, pos);
 	
-//	if(ZR_GetWaveCount()+1 >= 60)
+//	if(Waves_GetRound()+1 >= 60)
 	MaxCount = 3;
 
 	for(int Repeat; Repeat <= 7; Repeat++)
@@ -1927,21 +1927,4 @@ public bool Sensal_BEAM_TraceUsers(int entity, int contentsMask, int client)
 public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
-}
-
-
-float[] GetBehindTarget(int target, float Distance, float origin[3])
-{
-	float VecForward[3];
-	float vecRight[3];
-	float vecUp[3];
-	
-	GetVectors(target, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-	
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = origin[0] - VecForward[0] * (Distance);
-	vecSwingEnd[1] = origin[1] - VecForward[1] * (Distance);
-	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
-
-	return vecSwingEnd;
 }

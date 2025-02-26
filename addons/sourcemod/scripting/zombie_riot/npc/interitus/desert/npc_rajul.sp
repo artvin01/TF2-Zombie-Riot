@@ -337,8 +337,8 @@ void DesertRajulAllyHealInternal(int entity, int victim)
 		if(flHealth > flMaxHealth)
 		{
 			//super power!
-			ApplyStatusEffect(entity, victim, "Buff Banner", 999999.0);	
-			ApplyStatusEffect(entity, victim, "Battilons Backup", 999999.0);	
+			ApplyStatusEffect(entity, victim, "War Cry", 999999.0);	
+			ApplyStatusEffect(entity, victim, "Defensive Backup", 999999.0);	
 		}
 	}
 }

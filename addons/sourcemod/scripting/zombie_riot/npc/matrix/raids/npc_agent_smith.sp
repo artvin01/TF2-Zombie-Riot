@@ -195,6 +195,45 @@ methodmap AgentSmith < CClotBody
 		//PrintToChatAll("raid %b | clone %b", raid, clone);
 		if(raid && !clone)
 		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				float value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(Waves_GetRound()+1);
+			}
+			
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+			float amount_of_people = float(CountPlayersOnRed());
+			
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			
+			amount_of_people *= 0.15;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
+				
+			RaidModeScaling *= amount_of_people;
+			RaidModeTime = GetGameTime(npc.index) + 220.0;
+			RaidModeScaling *= 0.85;
+			
 			PrepareSmith_Raid(npc);
 			npc.ArmorSet(1.15);
 			if(StrContains(data, "final_item") != -1)
@@ -911,7 +950,16 @@ static void Agent_CloningAmount(AgentSmith npc)
 			npc.Anger = true;
 		}
 	}
-	Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2);
+
+	if(Waves_InFreeplay())
+	{
+		amount = 4;
+		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2, 1.5);
+	}
+	else
+	{
+		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2);
+	}
 }
 
 static void Agent_Smith_Cloner(AgentSmith npc, int amount, int health, float damage_mult = 1.0)
@@ -932,6 +980,11 @@ static void Agent_Smith_Cloner(AgentSmith npc, int amount, int health, float dam
 	enemy.Data = "clone";
     
 	enemy.Team = GetTeam(npc.index);
+	if(Waves_InFreeplay() && !b_thisNpcIsARaid[npc.index])
+	{
+		enemy.ExtraSpeed = 1.1;
+	}
+
 	for(int i; i < amount; i++)
 	{
 		Waves_AddNextEnemy(enemy);
@@ -974,38 +1027,6 @@ static void PrepareSmith_Raid(AgentSmith npc)
 	RaidModeTime = GetGameTime(npc.index) + 225.0;
 	RaidBossActive = EntIndexToEntRef(npc.index);
 	RaidAllowsBuildings = false;
-	RaidModeScaling = float(ZR_GetWaveCount()+1);
-	
-	if(RaidModeScaling < 55)
-	{
-		RaidModeScaling *= 0.19; //abit low, inreacing
-	}
-	else
-	{
-		RaidModeScaling *= 0.38;
-	}
-	
-	float amount_of_people = float(CountPlayersOnRed());
-	if(amount_of_people > 12.0)
-	{
-		amount_of_people = 12.0;
-	}
-	amount_of_people *= 0.12;
-	
-	if(amount_of_people < 1.0)
-		amount_of_people = 1.0;
-
-	RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-	
-	if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-	{
-		RaidModeScaling *= 0.85;
-	}
-	else if(ZR_GetWaveCount()+1 > 55)
-	{
-		RaidModeTime = GetGameTime(npc.index) + 220.0;
-		RaidModeScaling *= 0.85;
-	}
 
 	MusicEnum music;
 	strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/neodammerung.mp3");

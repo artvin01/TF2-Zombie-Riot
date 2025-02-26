@@ -621,7 +621,7 @@ static void Neuvellete_Hud(int client, int weapon)
 	
 	
 	PrintHintText(client, HUDText);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 static bool b_hexagon_ancored[MAXTF2PLAYERS];
 static bool b_hexagon_created[MAXTF2PLAYERS];

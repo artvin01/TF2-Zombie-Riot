@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 #if defined ZR
-bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 static bool BlockNext[MAXTF2PLAYERS];
 #endif
 
@@ -62,7 +61,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 			Store_SwapItems(client);
 		}
 #endif
-		return Plugin_Handled;
+		return Plugin_Continue;
 	}
 #if defined ZR
 	else if(!StrContains(buffer, "MvM_UpgradesBegin", false))
@@ -266,8 +265,6 @@ public Action OnTaunt(int client, const char[] command, int args)
 	{
 		return Plugin_Handled;
 	}
-	
-	Pets_OnTaunt(client);
 #endif
 	return Plugin_Continue;
 }
@@ -339,6 +336,7 @@ bool DoInteractKeyLogic(float angles[3], int client)
 {
 	bool Success = false;
 	f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+#if defined ZR
 	if(angles[0] < -70.0)
 	{
 		int entity = EntRefToEntIndex(Building_Mounted[client]);
@@ -347,6 +345,7 @@ bool DoInteractKeyLogic(float angles[3], int client)
 			Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), client);
 		}
 	}
+#endif
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	StartPlayerOnlyLagComp(client, true);
 	if(InteractKey(client, weapon_holding, true))

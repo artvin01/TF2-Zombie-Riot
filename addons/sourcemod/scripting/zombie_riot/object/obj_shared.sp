@@ -26,7 +26,7 @@ static Function FuncCanBuild[MAXENTITIES];
  * @param client	Client
  * @noreturn
  */
-static Function FuncShowInteractHud[MAXENTITIES];
+//static Function FuncShowInteractHud[MAXENTITIES];
 
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 static bool CanUseBuilding[MAXENTITIES][MAXTF2PLAYERS];
@@ -35,6 +35,11 @@ static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
 float f_DamageTakenFloatObj[MAXENTITIES];
 int OwnerOfText[MAXENTITIES];
+
+//Performance improvement, no need to check this littearlly every fucking frame
+//other things DO need it, but not this.
+float f_TransmitDelayCheck[MAXENTITIES][MAXTF2PLAYERS];
+Action b_TransmitBiasDo[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 
@@ -70,6 +75,7 @@ void Object_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
+	Zero2(f_TransmitDelayCheck);
 }
 void Object_PluginStart()
 {
@@ -142,6 +148,12 @@ methodmap ObjectGeneric < CClotBody
 		i_IsABuilding[obj] = true;
 		b_NoKnockbackFromSources[obj] = true;
 		f_DamageTakenFloatObj[obj] = 0.0;
+	
+		for(int clients=1; clients<=MaxClients; clients++)
+		{
+			Building_Collect_Cooldown[obj][clients] = 0.0;
+			//reset usage cooldown!
+		}
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());
@@ -150,7 +162,7 @@ methodmap ObjectGeneric < CClotBody
 		
 		for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 		{
-			if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)
+			if (EntRefToEntIndexFast(i_ObjectsBuilding[i]) <= 0)
 			{
 				i_ObjectsBuilding[i] = EntIndexToEntRef(obj);
 				i = ZR_MAX_BUILDINGS;
@@ -402,16 +414,38 @@ methodmap ObjectGeneric < CClotBody
 
 public Action SetTransmit_BuildingNotReady(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, true);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, true);
+	return b_TransmitBiasDo[entity][client];
 }
+
 
 public Action SetTransmit_BuildingReady(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, false);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, false);
+	return b_TransmitBiasDo[entity][client];
 }
 public Action SetTransmit_BuildingReadyTestThirdPersonIgnore(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, false, true);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, false, true);
+	return b_TransmitBiasDo[entity][client];
 }
 
 static Action SetTransmit_BuildingShared(int entity, int client, bool reverse, bool Ignorethird = false)
@@ -459,9 +493,10 @@ public bool ObjectGeneric_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = Object_SupportBuildings(client);
+		int total;
+		count = Object_SupportBuildings(client, total);
 		maxcount = Object_MaxSupportBuildings(client);
-		if(count >= maxcount)
+		if(count >= maxcount || total > 79)
 			return false;
 	}
 	
@@ -490,7 +525,7 @@ bool Object_CanBuild(Function func, int client, int &count = 0, int &maxcount = 
 	return result;
 }
 
-bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
+static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 {
 	float gameTime = GetGameTime(objstats.index);
 	if(objstats.m_flNextDelayTime > gameTime)
@@ -507,7 +542,6 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 
 	objstats.m_flNextDelayTime = gameTime + 0.2;
 	BuildingDisplayRepairLeft(objstats.index);
-	
 
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
@@ -721,11 +755,17 @@ bool Object_Interact(int client, int weapon, int obj)
 				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
+					ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 					Call_StartFunction(null, func);
 					Call_PushCell(client);
 					Call_PushCell(weapon);
 					Call_PushCell(entity);
 					Call_Finish(result);
+					f_TransmitDelayCheck[entity][client] = 0.0;
+					if(IsValidEntity(objstats.m_iWearable1))
+						f_TransmitDelayCheck[objstats.m_iWearable1][client] = 0.0;
+					if(IsValidEntity(objstats.m_iWearable2))
+						f_TransmitDelayCheck[objstats.m_iWearable2][client] = 0.0;
 				}
 				return true;
 			}
@@ -754,30 +794,30 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	return count;
 }
 
-int Object_SupportBuildings(int owner)
+int Object_SupportBuildings(int owner, int &all = 0)
 {
 	int count;
 	
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		static char plugin[64];
+		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+		if(StrContains(plugin, "obj_", false) != -1)
 		{
-			static char plugin[64];
-			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
-			if(StrContains(plugin, "obj_", false) != -1)
-			{
-				if(StrContains(plugin, "barricade", false) != -1)
-					continue;
-				if(StrContains(plugin, "obj_decorative", false) != -1)
-					continue;
-
-				ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-				if(objstats.SentryBuilding)
-					continue;
-
+			if(StrContains(plugin, "barricade", false) != -1)
+				continue;
+			
+			if(StrContains(plugin, "obj_decorative", false) != -1)
+				continue;
+			
+			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+			if(objstats.SentryBuilding)
+				continue;
+			
+			all++;
+			if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 				count++;
-			}
 		}
 	}
 
@@ -878,7 +918,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 	{
-		int scale = Rogue_GetRoundScale();
+		int scale = Waves_GetRound();
 		if(scale < 2)
 		{
 			//damage *= 1.0;
@@ -950,15 +990,18 @@ public void ObjBaseThink(int building)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
 	//Fixes some issues when mounted
-	int wearable = objstats.m_iWearable1;
-	if(wearable != -1)
-	{			
-		SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
-	}
-	wearable = objstats.m_iWearable2;
-	if(wearable != -1)
+	if(IsValidEntity(Building_Mounted[building]))
 	{
-		SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		int wearable = objstats.m_iWearable1;
+		if(wearable != -1)
+		{			
+			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		}
+		wearable = objstats.m_iWearable2;
+		if(wearable != -1)
+		{
+			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		}
 	}
 
 	//do not think if you are being carried.
@@ -974,10 +1017,8 @@ void BuildingDisplayRepairLeft(int entity)
 	char HealthText[64];
 	int HealthColour[4];
 	int Repair = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
-//	int MaxRepair = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
 
 	int Health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
-//	int MaxHealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
 	HealthColour[3] = 255;

@@ -69,6 +69,7 @@ enum struct ItemInfo
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
 	char WeaponSoundOverrideString[255];
+	char WeaponHudExtra[16];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
@@ -151,6 +152,7 @@ enum struct ItemInfo
 
 		kv.GetString("sound_weapon_override_string", this.WeaponSoundOverrideString, sizeof(this.WeaponSoundOverrideString));
 		kv.GetString("model_weapon_override", this.WeaponModelOverride, sizeof(this.WeaponModelOverride));
+		kv.GetString("weapon_hud_extra", this.WeaponHudExtra, sizeof(this.WeaponHudExtra));
 		
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum("weapon_vmt_setting", -1));
 		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum("weapon_bodygroup", -1));
@@ -399,7 +401,7 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 #if defined ZR
 			if(MazeatItemHas())
 			{
-				cooldown *= 0.75;
+				cooldown *= 0.5;
 			}
 #endif
 			info.Cooldown[what_slot - 1] = cooldown + GetGameTime();
@@ -482,7 +484,7 @@ static void ReShowSettingsHud(int client)
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
 
-	if(b_HudLowHealthShake[client])
+	if(b_HudLowHealthShake_UNSUED[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -904,13 +906,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -40: 
 				{
-					if(b_HudLowHealthShake[client])
+					if(b_HudLowHealthShake_UNSUED[client])
 					{
-						b_HudLowHealthShake[client] = false;
+						b_HudLowHealthShake_UNSUED[client] = false;
 					}
 					else
 					{
-						b_HudLowHealthShake[client] = true;
+						b_HudLowHealthShake_UNSUED[client] = true;
 					}
 					
 					ReShowSettingsHud(client);
@@ -1344,18 +1346,18 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
 					/*
-					LogMessage("Weapon Spawned!");
-					LogMessage("Name of client %N and index %i",client,client);
-					LogMessage("info.Classname: %s",info.Classname);
-					LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
+				//	LogMessage("Weapon Spawned!");
+				//	LogMessage("Name of client %N and index %i",client,client);
+				//	LogMessage("info.Classname: %s",info.Classname);
+				//	LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
 					char AttributePrint[255];
 					for(int i=0; i<info.Attribs; i++)
 					{
 						Format(AttributePrint,sizeof(AttributePrint),"%s %i ;",AttributePrint, info.Attrib[i]);	
 						Format(AttributePrint,sizeof(AttributePrint),"%s %.1f ;",AttributePrint, info.Value[i]);	
 					}
-					LogMessage("attributes: ''%s''",AttributePrint);
-					LogMessage("info.Attribs: %i",info.Attribs);
+					PrintToChatAll("attributes: ''%s''",AttributePrint);
+				//	LogMessage("info.Attribs: %i",info.Attribs);
 					*/
 				}
 				else
@@ -1489,6 +1491,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;  //R status to weapon
 					}
+					Format(c_WeaponUseAbilitiesHud[entity],sizeof(c_WeaponUseAbilitiesHud[]),"%s",info.WeaponHudExtra);	
 					
 					i_WeaponArchetype[entity] 				= info.WeaponArchetype;
 					i_WeaponForceClass[entity] 				= info.WeaponForceClass;

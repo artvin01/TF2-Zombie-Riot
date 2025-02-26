@@ -78,7 +78,7 @@ public bool Board_TraceTargets(int entity, int contentsMask, int client)
 	if(IsValidEntity(entity))
 	{
 		GetEntityClassname(entity, classname, sizeof(classname));
-		if(((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
+		if(((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 		{
 			for(int i; i < sizeof(EnemiesHit); i++)
 			{
@@ -768,7 +768,7 @@ public void WeaponBoard_Cooldown_Logic(int client, int weapon)
 			{
 				PassiveBoardHeal(client);
 			}
-			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			
 		}
 		else
 		{
@@ -961,6 +961,6 @@ float CalculateDamageBonus_Board(float damage, int weapon)
 	float damageModif = damage;
 	damageModif *= Attributes_Get(weapon, 1, 1.0);
 	damageModif *= Attributes_Get(weapon, 2, 1.0);
-	damageModif *= Attributes_Get(weapon, 1000, 1.0);
+//	damageModif *= Attributes_Get(weapon, 1000, 1.0);
 	return damageModif;
 }

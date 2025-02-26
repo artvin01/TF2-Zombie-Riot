@@ -170,8 +170,7 @@ public void WeakDash(int client)
 				return;
 			}
 			i_BurstpackUsedThisRound[client] += 1;
-			ability_cooldown[client] = GetGameTime() + 60.0;
-			CreateTimer(60.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			ability_cooldown[client] = GetGameTime() + (60.0 * CooldownReductionAmount(client));
 			WeakDashLogic(client);
 		}
 		else
@@ -220,8 +219,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
-		ability_cooldown[client] = GetGameTime() + 100.0;
-		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
 		int entity;
 
 		if(b_StickyExtraGrenades[client])
@@ -278,7 +276,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
+			f_Duration[entity] = GetGameTime() + 12.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -325,9 +323,9 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 0;
-				color[3] = 255;
+				color[3] = 75;
 		
-				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 1.0, color, 0, 0);
+				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
 	   			for (int target = 1; target <= MaxClients; target++)
 				{
@@ -336,9 +334,9 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 						GetClientAbsOrigin(target, client_pos);
 						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
 						{
-							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
-							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
-							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
+							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
+							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
+						//	EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							//This gives 35% armor
 							if(f_TimeUntillNormalHeal[target] > GetGameTime())
 							{
@@ -374,9 +372,8 @@ public void PlaceableTempomaryHealingGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
-		ability_cooldown[client] = GetGameTime() + 140.0;
+		ability_cooldown[client] = GetGameTime() + (140.0 * CooldownReductionAmount(client));
 		
-		CreateTimer(140.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		int entity;		
 		if(b_StickyExtraGrenades[client])
 			entity = CreateEntityByName("tf_projectile_pipe_remote");
@@ -434,7 +431,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			Healing_Amount *= Attributes_GetOnPlayer(client, 8, true, true);
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
+			f_Duration[entity] = GetGameTime() + 12.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -480,9 +477,9 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 				color[0] = 0;
 				color[1] = 255;
 				color[2] = 0;
-				color[3] = 255;
+				color[3] = 75;
 		
-				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 1.0, color, 0, 0);
+				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
 	   			for (int target = 1; target <= MaxClients; target++)
 				{
@@ -493,7 +490,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 						{
 							if(dieingstate[target] > 0)
 							{
-								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 1.0);
+								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
 								if(i_CurrentEquippedPerk[client] == 1)
 								{
 									SetEntityHealth(target,  GetClientHealth(target) + 12);
@@ -519,7 +516,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 								{
 									Healing_Amount = 10.0;
 								}
-								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 1.0);
+								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
 								HealEntityGlobal(client, target, Healing_Amount, _, 1.0);	
 							}
 						}
@@ -527,7 +524,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 				}
 				for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 				{
-					int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+					int baseboss_index_allied = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 					if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 					{
 						if(!b_ThisEntityIgnored[baseboss_index_allied])
@@ -575,7 +572,7 @@ public void ReconstructiveTeleporter(int client)
 		bool IsLiveBarrackUnits=false;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(ally) && !b_NpcHasDied[ally] && !i_IsABuilding[ally] && GetTeam(ally) == TFTeam_Red)
 			{
 				char npc_classname[60];
@@ -602,8 +599,7 @@ public void ReconstructiveTeleporter(int client)
 		}
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			ability_cooldown[client] = GetGameTime() + 70.0;
-			CreateTimer(70.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			ability_cooldown[client] = GetGameTime() + (70.0 * CooldownReductionAmount(client));
 		}
 		WorldSpaceCenter(client, WorldSpaceVec);
 		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
@@ -1182,7 +1178,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 						int mountedentity = EntRefToEntIndex(Building_Mounted[client]);
 						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 						{
-							int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+							int entity = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 							if(IsValidEntity(entity) && entity != 0)
 							{
 								if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client && mountedentity != entity)
@@ -1234,10 +1230,7 @@ public void GearTesting(int client)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			ability_cooldown[client] = GetGameTime() + 350.0;
-
-
-			CreateTimer(350.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			ability_cooldown[client] = GetGameTime() + (350.0 * CooldownReductionAmount(client));
 
 			SetEntityMoveType(client, MOVETYPE_NONE);
 
@@ -1247,8 +1240,8 @@ public void GearTesting(int client)
 			{
 				b_ActivatedDuringLastMann[client] = true;
 			}
-			if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
-				IncreaceEntityDamageTakenBy(client, 0.5, 3.0);
+
+			IncreaceEntityDamageTakenBy(client, 0.5, 3.0);
 			
 			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		//	ClientCommand(client, "playgamesound mvm/mvm_tank_start.wav");
@@ -1308,8 +1301,8 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			float HealthMulti = float(CashSpentTotal[client]);
 			HealthMulti = Pow(HealthMulti, 1.2);
 			HealthMulti *= 0.025;
-			if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
-				HealthMulti *= 1.1;
+
+			HealthMulti *= 1.1;
 				
 			SetEntityHealth(client, RoundToCeil(HealthMulti));
 
@@ -1406,8 +1399,8 @@ public void PlaceableTempomaryRepairGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
-		ability_cooldown[client] = GetGameTime() + 100.0;
-		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
+		
 		int entity;		
 		if(b_StickyExtraGrenades[client])
 			entity = CreateEntityByName("tf_projectile_pipe_remote");
@@ -1463,7 +1456,7 @@ public void PlaceableTempomaryRepairGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
-			f_Duration[entity] = GetGameTime() + (Items_HasNamedItem(client, "Whiteflower's Elite Grenade") ? 12.0 : 10.0);
+			f_Duration[entity] = GetGameTime() + 12.0;
 			
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
@@ -1510,9 +1503,9 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				color[0] = 255;
 				color[1] = 255;
 				color[2] = 255;
-				color[3] = 255;
+				color[3] = 75;
 		
-				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 1.0, color, 0, 0);
+				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
 				bool Repaired_Building = false;
 
@@ -1524,7 +1517,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				CurrentMetal *= 5;
 				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 				{
-					int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+					int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
 						GetEntPropVector(entity_close, Prop_Data, "m_vecOrigin", client_pos);
@@ -1553,8 +1546,8 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				CurrentAmmo[client][3] = GetAmmo(client, 3);
 				if(Repaired_Building)
 				{
-					EmitSoundToAll(SOUND_REPAIR_BEAM, entity, SNDCHAN_STATIC, 90, _, 1.0);
-					EmitSoundToAll(SOUND_REPAIR_BEAM, entity, SNDCHAN_STATIC, 90, _, 1.0);
+					EmitSoundToAll(SOUND_REPAIR_BEAM, entity, SNDCHAN_STATIC, 90, _, 0.7);
+					EmitSoundToAll(SOUND_REPAIR_BEAM, entity, SNDCHAN_STATIC, 90, _, 0.7);
 				}
    			}
    			if(f_Duration[entity] < GetGameTime())
@@ -1792,7 +1785,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 			float entitypos[3], distance;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);

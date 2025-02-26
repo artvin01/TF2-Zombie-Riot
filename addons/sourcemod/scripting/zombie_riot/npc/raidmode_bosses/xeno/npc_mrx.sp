@@ -298,7 +298,7 @@ methodmap RaidbossMrX < CClotBody
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 
-		RaidModeScaling = 9999999.99;
+		RaidModeScaling = 0.0;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		WavesUpdateDifficultyName();
 		npc.m_bThisNpcIsABoss = true;
@@ -591,6 +591,17 @@ public void RaidbossMrX_ClotThink(int iNPC)
 						NPC_StopPathing(npc.index);
 						f_NpcTurnPenalty[npc.index] = 0.0;
 					}
+
+					if(i_IsVehicle[Enemy_I_See] == 2)
+					{
+						int driver = Vehicle_Driver(Enemy_I_See);
+						if(driver != -1)
+						{
+							Enemy_I_See = driver;
+							Vehicle_Exit(driver);
+						}
+					}
+					
 					npc.m_flNextRangedAttackHappening = 0.0;
 					npc.m_flDoingAnimation = gameTime + 5.0;
 					npc.flXenoInfectedSpecialHurtTime = gameTime + 5.0;
@@ -1016,7 +1027,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))

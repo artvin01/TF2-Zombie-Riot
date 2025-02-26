@@ -207,6 +207,6 @@ void HuntingRifleAmmoDisplay(int client)// ty for code arvan :D
 			buffer[i] = 'I';
 		}
 		PrintHintText(client, buffer);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 }

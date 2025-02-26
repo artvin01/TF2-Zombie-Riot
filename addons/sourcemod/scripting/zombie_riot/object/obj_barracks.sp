@@ -268,6 +268,15 @@ void ObjectBarracks_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	build.Section = 1;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_barracks");
+	build.Cost = 1200;
+	build.Health = 50;
+	build.Cooldown = 15.0;
+	build.Func = ObjectGeneric_CanBuildSentry;
+	Building_Add(build);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -948,6 +957,13 @@ void Barracks_BuildingThink(int entity)
 	
 	if(GetTeam(client) != 2)
 		return;
+
+	if(Barracks_InstaResearchEverything)
+	{
+		//adds all flags except ZR_BARRACKS_TROOP_CLASSES
+		i_NormalBarracks_HexBarracksUpgrades[client] |= ((1 << 31));
+		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 31) - (ZR_BARRACKS_TROOP_CLASSES));
+	}
 		
 	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
 	SummonerRenerateResources(client, 1.0);
@@ -967,7 +983,7 @@ void Barracks_BuildingThink(int entity)
 				{
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 					{
-						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 
 						if(IsValidEntity(entity_close))
 						{
@@ -1260,7 +1276,7 @@ void Barracks_BuildingThink(int entity)
 	{
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
-			int Building_hordings = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			int Building_hordings = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 			if(IsValidEntity(Building_hordings))
 			{
 				if(!i_BuildingRecievedHordings[Building_hordings]) 
@@ -1296,7 +1312,7 @@ void BuildingHordingsRemoval(int entity)
 		{
 			for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 			{
-				int Building_hordings = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+				int Building_hordings = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 				if(IsValidEntity(Building_hordings))
 				{
 					if(i_BuildingRecievedHordings[Building_hordings])
@@ -1376,7 +1392,7 @@ void CheckSummonerUpgrades(int client)
 		SupplyRate[client] += 20;
 
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
-	MedievalUnlock[client] = Items_HasNamedItem(client, "Medieval Crown");
+	MedievalUnlock[client] = true;/*Items_HasNamedItem(client, "Medieval Crown");*/
 
 	if(!MedievalUnlock[client])
 		MedievalUnlock[client] = view_as<bool>(CivType[client]);
@@ -1719,7 +1735,7 @@ static void SummonerMenu(int client, int viewer)
 					{
 						for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 						{
-							int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+							int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 
 							if(IsValidEntity(entity_close))
 							{
@@ -1821,7 +1837,7 @@ static void SummonerMenu(int client, int viewer)
 					char npc_classname[60];
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 					{
-						int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 
 						if(IsValidEntity(entity_close))
 						{
@@ -2132,10 +2148,9 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 	}
 	*/
 
-
-	int entity = MaxClients + 1;
 	char npc_classname[60];
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(GetTeam(entity) == 2)
 		{
@@ -2182,9 +2197,9 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 int ActiveCurrentNpcsBarracksTotal()
 {
 	int CurrentAlive = 0;
-	int entity = MaxClients + 1;
 	char npc_classname[60];
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(GetTeam(entity) == 2)
 		{

@@ -107,13 +107,13 @@ public void DropPowerupChance(int entity)
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
-				SpawnMaxAmmo(entity); //Dont care.)
+				SpawnMaxAmmo(entity, true); //Dont care.)
 
 			case 1:
-				SpawnHealth(entity); //Dont care.)
+				SpawnHealth(entity, true); //Dont care.)
 
 			case 2:
-				SpawnMoney(entity); //Dont care.)
+				SpawnMoney(entity, true); //Dont care.)
 		}
 	}
 	if(Rogue_Mode())
@@ -343,7 +343,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 
 
 
-public void SpawnMaxAmmo(int entity)
+void SpawnMaxAmmo(int entity, bool MenacinglyFlyToPlayer = false)
 {
 	float VecOrigin[3];
 	float VecAngles[3];
@@ -373,8 +373,13 @@ public void SpawnMaxAmmo(int entity)
 		CreateTimer(0.1, Timer_Detect_Player_Near_Ammo, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		CreateTimer(20.0, Timer_Aleart_Despawn, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(30.0, Timer_Despawn_Powerup, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		if(MenacinglyFlyToPlayer)
+		{
+			CreateTimer(0.1, Timer_FlyToClosestPlayer, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		}
 	}	
 }
+
 
 public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 {
@@ -498,7 +503,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 
 
 
-public void SpawnHealth(int entity)
+void SpawnHealth(int entity, bool MenacinglyFlyToPlayer = false)
 {
 	float VecOrigin[3];
 	float VecAngles[3];
@@ -528,6 +533,10 @@ public void SpawnHealth(int entity)
 		CreateTimer(0.1, Timer_Detect_Player_Near_Health, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		CreateTimer(20.0, Timer_Aleart_Despawn, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(30.0, Timer_Despawn_Powerup, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		if(MenacinglyFlyToPlayer)
+		{
+			CreateTimer(0.1, Timer_FlyToClosestPlayer, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		}
 	}	
 }
 
@@ -589,7 +598,7 @@ public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
 
 
 
-public void SpawnMoney(int entity)
+void SpawnMoney(int entity, bool MenacinglyFlyToPlayer = false)
 {
 	float VecOrigin[3];
 	float VecAngles[3];
@@ -619,6 +628,10 @@ public void SpawnMoney(int entity)
 		CreateTimer(0.1, Timer_Detect_Player_Near_Money, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		CreateTimer(20.0, Timer_Aleart_Despawn, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(30.0, Timer_Despawn_Powerup, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		if(MenacinglyFlyToPlayer)
+		{
+			CreateTimer(0.1, Timer_FlyToClosestPlayer, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		}
 	}	
 }
 
@@ -798,3 +811,79 @@ public Action Timer_Detect_Player_Near_Grigori(Handle timer, any entid)
 	}
 	return Plugin_Continue;
 }
+
+
+
+public Action Timer_FlyToClosestPlayer(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		float powerup_pos[3];
+		WorldSpaceCenter(entity, powerup_pos);
+		float TargetDistance = 0.0; 
+		int ClosestTarget = 0; 
+		for( int i = 1; i <= MaxClients; i++ ) 
+		{
+			if (IsValidClient(i))
+			{
+				if (GetTeam(i)== TFTeam_Red && IsEntityAlive(i))
+				{
+					float TargetLocation[3]; 
+					WorldSpaceCenter(i, TargetLocation);
+					
+					
+					float distance = GetVectorDistance( powerup_pos, TargetLocation, true ); 
+					if( TargetDistance ) 
+					{
+						if( distance < TargetDistance ) 
+						{
+							ClosestTarget = i; 
+							TargetDistance = distance;		  
+						}
+					} 
+					else 
+					{
+						ClosestTarget = i; 
+						TargetDistance = distance;
+					}		
+				}
+			}
+		}
+		if(ClosestTarget > 0)
+		{
+			MoveToClosestPlayer(entity, ClosestTarget); //Terror.
+		}	
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+
+
+//This is probably the silliest thing ever.
+public void MoveToClosestPlayer(int Gift, int client)
+{
+	float Jump_1_frame[3];
+	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", Jump_1_frame);
+	float Jump_1_frame_Client[3];
+	GetEntPropVector(client, Prop_Data, "m_vecOrigin", Jump_1_frame_Client);
+	Jump_1_frame_Client[2] += 30.0;
+	
+	float vAngles[3];
+	float vecSwingForward[3];
+	float vecSwingEnd[3];	
+	MakeVectorFromPoints(Jump_1_frame, Jump_1_frame_Client, vAngles);
+	GetVectorAngles(vAngles, vAngles);
+
+	GetAngleVectors(vAngles, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+
+	vecSwingEnd[0] = Jump_1_frame[0] + vecSwingForward[0] * 10.0;
+	vecSwingEnd[1] = Jump_1_frame[1] + vecSwingForward[1] * 10.0;
+	vecSwingEnd[2] = Jump_1_frame[2] + vecSwingForward[2] * 10.0;
+
+	TeleportEntity(Gift, vecSwingEnd, NULL_VECTOR, NULL_VECTOR);
+}
+

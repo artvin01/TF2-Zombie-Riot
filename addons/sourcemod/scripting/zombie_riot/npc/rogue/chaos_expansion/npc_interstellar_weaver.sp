@@ -466,7 +466,7 @@ static int Storm_Weaver_Health(Interstellar_Weaver npc)
 	{	
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 			{
 				if(!b_ignore_npc[baseboss_index])
@@ -507,8 +507,8 @@ void Interstellar_Weaver_ShareWithLelouch_Damage(int iNPC, int &attacker, int &i
 	i_storm_weaver_damage_instance[attacker]++;
 
 	int Anchor_Id = EntRefToEntIndex(i_Lelouch_Index);
-		if(!IsValidEntity(Anchor_Id))
-			Anchor_Id = i_GetMagiaAnchor(npc);
+	if(!IsValidEntity(Anchor_Id))
+		Anchor_Id = i_GetMagiaAnchor(npc);
 
 	if(IsEntityAlive(Anchor_Id) && !b_NpcIsInvulnerable[Anchor_Id])
 	{
@@ -554,7 +554,7 @@ static void ClotThink(int iNPC)
 	f_StuckOutOfBoundsCheck[npc.index] = GetGameTime() + 10.0;
 	float GameTime = GetGameTime(npc.index);
 
-	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 100.0 * ((ZR_GetWaveCount()+1)/60.0));
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 100.0 * ((Waves_GetRound()+1)/60.0));
 
 	if(!IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)) && fl_special_invuln_timer[npc.index] < GameTime)
 	{

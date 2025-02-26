@@ -46,6 +46,15 @@ void ObjectRailgun_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	build.Section = 1;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_railgun");
+	build.Cost = 600;
+	build.Health = 30;
+	build.Cooldown = 30.0;
+	build.Func = ObjectGeneric_CanBuildSentry;
+	Building_Add(build);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -405,7 +414,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
+			if (((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 			{
 				for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 				{

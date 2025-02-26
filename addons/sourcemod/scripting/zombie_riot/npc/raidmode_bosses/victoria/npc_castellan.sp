@@ -362,7 +362,23 @@ methodmap Castellan < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		float value;
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(Waves_GetRound()+1);
+			value = float(Waves_GetRound()+1);
+		}
+
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -384,11 +400,11 @@ methodmap Castellan < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+		if(value > 40 && value < 55)
 		{
 			RaidModeScaling *= 0.85;
 		}
-		else if(ZR_GetWaveCount()+1 > 55)
+		else if(value > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.75;
@@ -722,7 +738,13 @@ static void Internal_ClotThink(int iNPC)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
-				TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+				int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 250.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
 			}
 		}
 		npc.PlayDeathSound();

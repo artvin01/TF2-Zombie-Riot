@@ -133,19 +133,18 @@ public void Barrack_Chaos_Containment_Unit_ClotThink(int iNPC)
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(PrimaryThreatIndex > 0)
-			{			
+		{			
 			npc.PlayIdleAlertSound();
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
-				if(flDistanceToTarget < 250000.0)
+		
+			if(flDistanceToTarget < 250000.0)
+			{
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-					if(IsValidEnemy(npc.index, Enemy_I_See))
-					{
-						//Target close enough to hit
-						
+					//Target close enough to hit
 					if(npc.m_flNextRangedAttack < GameTime)
 					{
 						if(npc.CmdOverride != Command_HoldPos)
@@ -164,46 +163,57 @@ public void Barrack_Chaos_Containment_Unit_ClotThink(int iNPC)
 						KillFeed_SetKillIcon(npc.index, "pistol");
 						npc.FaceTowards(vecTarget, 250000.0); //Snap to the enemy.
 						if(npc.m_flNextMeleeAttack < GameTime)
-							{
+						{
 							NpcSpeechBubble(npc.index, "Commencing Eradication.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 							npc.m_flNextMeleeAttack = GameTime + 30.0;
-							}
+						}
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
 							int target = TR_GetEntityIndex(swingTrace);	
 							
 							float vecHit[3];
-							
-						if(CustomBullet >= 95)
-						{	
-							switch(GetRandomInt(1,4))
-							{
-								case 1:
+								
+							if(CustomBullet >= 95)
+							{	
+								switch(GetRandomInt(1,4))
 								{
-									damage *= 2;	// Heavy bullets (2x dmg)
-								}
-								case 2:
-								{
-									NPC_Ignite(target, npc.index, 3.0, -1); // Burning bullets
-								}
-								case 3:
-								{
-									float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-									npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage*2, 1), speed+100.0, "models/effects/combineball.mdl",0.5, _, _,GetClientOfUserId(npc.OwnerUserId)); // Explosive bullets
-								}
-								case 4:
-								{
-									if(b_thisNpcIsARaid[target])
+									case 1:
 									{
-										damage *= 2.5; // raids are immune to the stun but take more dmg
+										damage *= 2;	// Heavy bullets (2x dmg)
 									}
-									else
+									case 2:
 									{
-										FreezeNpcInTime(target, 0.5); // Concussive bullets
+										NPC_Ignite(target, npc.index, 3.0, -1); // Burning bullets
+									}
+									case 3:
+									{
+										float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
+										npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage*2, 1), speed+100.0, "models/effects/combineball.mdl",0.5, _, _,GetClientOfUserId(npc.OwnerUserId)); // Explosive bullets
+									}
+									case 4:
+									{
+										if(b_thisNpcIsARaid[target])
+										{
+											damage *= 2.5; // raids are immune to the stun but take more dmg
+										}
+										else
+										{
+											FreezeNpcInTime(target, 0.5); // Concussive bullets
+										}
 									}
 								}
+								TR_GetEndPosition(vecHit, swingTrace);
+								float origin[3], angles[3];
+								view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+								ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
+								
+								npc.m_flNextRangedAttack = GameTime + (0.15 * npc.BonusFireRate);
+								
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1), DMG_BULLET, -1, _, vecHit);
+								npc.PlayRangedAttackSound();
 							}
+								
 							TR_GetEndPosition(vecHit, swingTrace);
 							float origin[3], angles[3];
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
@@ -214,30 +224,19 @@ public void Barrack_Chaos_Containment_Unit_ClotThink(int iNPC)
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1), DMG_BULLET, -1, _, vecHit);
 							npc.PlayRangedAttackSound();
 						}
-							
-							TR_GetEndPosition(vecHit, swingTrace);
-							float origin[3], angles[3];
-							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-							ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
-							
-							npc.m_flNextRangedAttack = GameTime + (0.15 * npc.BonusFireRate);
-							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1), DMG_BULLET, -1, _, vecHit);
-							npc.PlayRangedAttackSound();
-						}
-				}
-				else
-				{
-					npc.m_flSpeed = 150.0;
-				}
+					}
+					else
+					{
+						npc.m_flSpeed = 150.0;
+					}
 				}
 			}
 		}
-	else
-	{
-	npc.PlayIdleSound();
-	}
-	BarrackBody_ThinkMove(npc.index, 150.0,"ACT_IDLE_ANGRY_PISTOL", "ACT_RUN_PISTOL", 225000.0,_, true);
+		else
+		{
+			npc.PlayIdleSound();
+		}
+		BarrackBody_ThinkMove(npc.index, 150.0,"ACT_IDLE_ANGRY_PISTOL", "ACT_RUN_PISTOL", 225000.0,_, true);
 	}
 }
 

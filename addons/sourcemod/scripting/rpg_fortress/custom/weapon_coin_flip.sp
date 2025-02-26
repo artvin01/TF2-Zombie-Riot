@@ -387,9 +387,7 @@ stock void Do_Coin_calc(int victim)
 				if(TR_DidHit())
 				{
 					int target = TR_GetEntityIndex();	
-					static char classname_baseboss_extra[36];
-					GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
+					if ( target != Closest_entity && b_ThisWasAnNpc[target] && (GetTeam(target) != GetTeam(victim)))
 					{
 						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1) //You got one second.
 						{
@@ -413,10 +411,7 @@ stock void Do_Coin_calc(int victim)
 			{
 				if (IsValidEntity(Closest_entity))
 				{
-					static char classname_baseboss[36];
-					GetEntityClassname(Closest_entity, classname_baseboss, sizeof(classname_baseboss));
-					
-					if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetTeam(Closest_entity) != GetTeam(victim)))
+					if (b_ThisWasAnNpc[Closest_entity] && (GetTeam(Closest_entity) != GetTeam(victim)))
 					{
 						GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 						targPos[2] += 35;
@@ -428,9 +423,7 @@ stock void Do_Coin_calc(int victim)
 							if(TR_DidHit())
 							{
 								int target = TR_GetEntityIndex();	
-								static char classname_baseboss_extra[36];
-								GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-								if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
+								if ( target != Closest_entity && b_ThisWasAnNpc[target] && (GetTeam(target) != GetTeam(victim)))
 								{
 									if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 									{
@@ -479,7 +472,7 @@ stock void Do_Coin_calc(int victim)
 			{
 				static char classname_baseboss[36];
 				GetEntityClassname(Closest_entity, classname_baseboss, sizeof(classname_baseboss));
-				if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetTeam(Closest_entity) != GetTeam(victim)))
+				if (b_ThisWasAnNpc[Closest_entity] && (GetTeam(Closest_entity) != GetTeam(victim)))
 				{
 					GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 					targPos[2] += 35;
@@ -491,9 +484,7 @@ stock void Do_Coin_calc(int victim)
 						if(TR_DidHit())
 						{
 							int target = TR_GetEntityIndex();	
-							static char classname_baseboss_extra[36];
-							GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-							if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
+							if ( target != Closest_entity && b_ThisWasAnNpc[target] && (GetTeam(target) != GetTeam(victim)))
 							{
 								if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 								{

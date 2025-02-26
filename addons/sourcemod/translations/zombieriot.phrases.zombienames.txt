@@ -12,6 +12,10 @@
 		"pt"		"Zumbi de Headcrab"
 		"nl"		"Hoofdkrab Zombie"
 	}
+	"Z-Main"
+	{
+		"en"		"Z-Main"
+	}
 	"Fortified Headcrab Zombie"
 	{
 		"en" 		"Fortified Headcrab Zombie"
@@ -1785,6 +1789,10 @@
 		"en"		"God Alaxios"
 		"ru"		"Бог Алаксиос"
 	}
+	"Sea-Infected God Alaxios"
+	{
+		"en"		"Sea-Infected God Alaxios"
+	}
 	"Seaborn Scout"
 	{
 		"en"		"Seaborn Scout"
@@ -2442,6 +2450,10 @@
 	{
 		"en"	"Mad Doctor"
 	}
+	"John The Almighty"
+	{
+		"en"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
+	}
 	"Abomination"
 	{
 		"en"	"Abomination"
@@ -2706,8 +2718,7 @@
 	}
 	"Twirl Desc"
 	{
-		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
-		"ru" 	"Лидер Руины\nОна не сражается с вами с полную силу...\nОна только использует силу магического гребеня\nЕсли вы увидете эффекты на её руках,Это озночает что одно из её Комбо готово"
+		"en"	"The ruler of Ruina\nIt is advidsable not to group up aggainst her\nIf 4 or more people are near her, she has the ability to teleport\nIn addition, on wave 60, walk in a circle to avoid her Ion spam attack."
 	}
 	"Lelouch Blade"
 	{
@@ -2964,7 +2975,7 @@
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
+		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
 		"ru" 	"Сердце Бездны...\nПервая способность:Засасывает всех союзников и если слишком близко,Наносит очень много урона.\nМожет ударить несколько раз подряд если долго никого не бил.\nВо время его существования,Распостронение бездны Очень усилено.\nКоллоны бездны появляются под врагами.\nЕсли Уровень здоровья пал до низкого начнёт распостронять бездну там где ходит.\n(заглушение)ослабляет Усиление от бездны"
 	}
 	"Voided Diversionistico"
@@ -3003,6 +3014,10 @@
 	{
 		"en"	"Vhxis"
 		"ru" 	"Всикс"
+	}
+	"Random Boss"
+	{
+		"en"	"Random Boss"
 	}
 	"Vhxis Desc"
 	{
@@ -3124,6 +3139,10 @@
 	"Antinel"
 	{
 		"en"		"Antinel"
+	}
+	"SIGMALLER"
+	{
+		"en"		"SIGMALLER"
 	}
 	"Ironborus"
 	{
@@ -3979,5 +3998,21 @@
 	"Spotter"
 	{
 		"en" "Spotter"
+	}
+	"Annoying Spirit"
+	{
+		"en" "Annoying Spirit"
+	}
+	"Darkened Heavy"
+	{
+		"en" "Darkened Heavy"
+	}
+	"ATV"
+	{
+		"en"	"ATV"
+	}
+	"Airboat"
+	{
+		"en"	"Airboat"
 	}
 }

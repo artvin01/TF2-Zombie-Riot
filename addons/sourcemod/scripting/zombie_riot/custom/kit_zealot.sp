@@ -74,8 +74,7 @@ public void Weapon_ZealotRCheckCD(int client, int weapon, bool &result, int slot
 
 void Zealot_ApplyGlobalRCooldown(int client, float Duration)
 {
-	if(MazeatItemHas())
-		Duration *= 0.75;
+	Duration *= CooldownReductionAmount(client);
 
 	f_DashCooldownZealot[client] = GetGameTime() + Duration;
 	int weapon1;
@@ -290,6 +289,7 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 		}
 
 		i_RandomCurrentPotion[client] = GetRandomInt(0,3);
+		UpdateWeaponVisibleGrenade(weapon, client, true);
 	}
 	else
 	{
@@ -534,7 +534,7 @@ public void Enable_Zealot(int client, int weapon) // Enable management, handle w
 			SetParent(client, entity);
 			ParticleRef[client] = EntIndexToEntRef(entity);
 		}
-		if(!Precached)
+		if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
 		{
 			// MASS REPLACE THIS IN ALL FILES
 			PrecacheSoundCustom("#zombiesurvival/zealot_lastman_1.mp3",_,1);
@@ -797,7 +797,7 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 	
 	Zealot_HudDelay[client] = GetGameTime() + 0.5;
 	PrintHintText(client,"%s",ZealotHud);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 float Zealot_RegenerateStaminaMAx(int client)

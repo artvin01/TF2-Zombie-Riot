@@ -54,6 +54,9 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_update_frequency", "0.1"); // default:0
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
+	ConVar_Add("sv_hudhint_sound", "0.0"); 
+	// REmoves the ANNOYIN G AS FUCKING WIND SOUND FROM HINT TEXT HUD
+	//ITS DRIVING ME INSANE ITS ACTUALLY CRAZY HOOOOLY SHIT
 #if defined ZR
 	ConVar_Add("mp_tournament", "1");
 	ConVar_Add("mp_disable_respawn_times", "1.0");
@@ -62,12 +65,6 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 	ConVar_Add("tf_obj_upgrade_per_hit", "0");
 	ConVar_Add("tf_playergib", "0");
-
-	//Used for various things such as zealot dodge,
-	// See https://github.com/FlaminSarge/tf_maxspeed_patch
-	//if it doesnt exist, its ignored.
-	//Set it to 720.0
-//	ConVar_Add("tf_maxspeed_limit", "720.0");
 
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?");
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
@@ -81,7 +78,6 @@ void ConVar_PluginStart()
 	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.", FCVAR_DONTRECORD);
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
-	zr_allowfreeplay = CreateConVar("zr_allowfreeplay", "1", "Can players vote to continue into freeplay (endless waves).");
 	zr_enemymulticap = CreateConVar("zr_enemymulticap", "5.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
 	zr_multi_multiplier = CreateConVar("zr_multi_enemy", "1.0", "Multiply the current scaling");
 	zr_multi_maxcap = CreateConVar("zr_multi_zr_cap", "1.0", "Multiply the current max enemies allowed");
@@ -93,12 +89,18 @@ void ConVar_PluginStart()
 	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	CvarSkillPoints = CreateConVar("zr_skillpoints", "1", "If skill points are enabled");
+	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
+
+	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
+	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);
+	HookConVarChange(zr_tagwhitehard, StoreCvarChanged);
 #else
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
 
 #if defined ZR || defined RPG
+	CvarFileNetworkDisable = CreateConVar("zr_filenetwork_disable", "0", "0 means as intended, 1 means fast download sounds (itll download any waves present instnatly), 2 means download MVM style matreials too");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
@@ -109,7 +111,7 @@ void ConVar_PluginStart()
 	//CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 
-#if defined ZR || defined RTS
+#if defined ZR || defined RTS	
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
 
@@ -221,3 +223,14 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 		}
 	}
 }
+
+
+public void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	//update store if these are updated.
+#if defined ZR
+	Items_SetupConfig();
+	Store_ConfigSetup();
+#endif
+}
+

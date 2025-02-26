@@ -1,0 +1,171 @@
+"Phrases"
+{
+	"Gained Material"
+	{
+		"#format"	"{1:d},{2:t}"
+		"en"		"{orange}(Construct) {green}Gained {1} {2}!"
+	}
+	"Used Material"
+	{
+		"#format"	"{1:d},{2:t}"
+		"en"		"{orange}(Construct) {red}Used {1} {2}!"
+	}
+	"Resource Attack Started"
+	{
+		"#format"	"{1:N},{2:t}"
+		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
+	}
+	"Player Used 1 to"
+	{
+		"#format"	"{1:N},{2:d},{3:t}"
+		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}to make"
+	}
+	"Player Used 2 to"
+	{
+		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
+		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
+	}
+	"Player Start Research"
+	{
+		"#format"	"{1:N},{2:s}"
+		"en"		"{orange}(Construct) {red}{1} {default}has started to research {orange}{2}"
+	}
+	"Finish Research Desc"
+	{
+		"#format"	"{1:N},{2:s}"
+		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
+	}
+	"Crouch and select to view description"
+	{
+		"en"	"Crouch and select to view description"
+	}
+	"Claim Research"
+	{
+		"en"	"Claim Research"
+	}
+	"Claim Research Time"
+	{
+		"#format"	"{1:d}"
+		"en"	"Claim Research: {1}s"
+	}
+	"Broken Server"
+	{
+		"en"	"Broken Server"
+	}
+	"Material wood"
+	{
+		"en"	"Wood"
+	}
+	"Material stone"
+	{
+		"en"	"Stone"
+	}
+	"Material iron"
+	{
+		"en"	"Iron Ore"
+	}
+	"Material bofazem"
+	{
+		"en"	"Bottled Bofazem"
+	}
+	"Material copper"
+	{
+		"en"	"Copper Ore"
+	}
+	"Material crystal"
+	{
+		"en"	"Gem Crystal"
+	}
+	"Material jalan"
+	{
+		"en"	"Jalan Ore"
+	}
+	"Material ossunia"
+	{
+		"en"	"Ossunia Ore"
+	}
+	"Material water"
+	{
+		"en"	"Fresh Water"
+	}
+	"Material wizuh"
+	{
+		"en"	"Wizuh Ore"
+	}
+	"Cooking Stove"
+	{
+		"en"	"Cooking Stove"
+	}
+	"Ambulance"
+	{
+		"en"	"Ambulance"
+	}
+	"Ambulance Desc"
+	{
+		"en"	"A vehicle that can hold up to 8 players. Able to pick up downed players and revive them. Heals all passengers, scaling with the driver's Medic upgrades."
+	}
+	"Bus"
+	{
+		"en"	"Bus"
+	}
+	"Bus Desc"
+	{
+		"en"	"A vehicle that can hold up to 24 players."
+	}
+	"Camper Van"
+	{
+		"en"	"Camper Van"
+	}
+	"Camper Van Desc"
+	{
+		"en"	"A vehicle that can hold up to 4 players. Able to collect ammo from the an ammo box in the back."
+	}
+	"Dump Truck"
+	{
+		"en"	"Dump Truck"
+	}
+	"Dump Truck Desc"
+	{
+		"en"	"A vehicle that can hold up to 6 players or resources in the back."
+	}
+	"Landrover"
+	{
+		"en"	"Landrover"
+	}
+	"Landrover Desc"
+	{
+		"en"	"A vehicle that can hold up to 3 players. Has increased driving speed."
+	}
+	"Pickup Truck"
+	{
+		"en"	"Pickup Truck"
+	}
+	"Pickup Truck Desc"
+	{
+		"en"	"A vehicle that can hold up to 6 players. Prioritizes outside seating."
+	}
+	"Research Station"
+	{
+		"en"	"Research Station"
+	}
+	"Research Station Desc"
+	{
+		"en"	"A building that can spend materials to research equippment and buildings."
+	}
+	"Vehicle Factory"
+	{
+		"en"	"Vehicle Factory"
+	}
+	"Vehicle Factory Desc"
+	{
+		"en"	"A building that can spend materials to build vehicles."
+	}
+	"Cooking Stove"
+	{
+		"en"	"Cooking Stove"
+	}
+	"Cooking Stove Desc"
+	{
+		"en"	"A building that can spend materials to cook various meals to buff allies."
+	}
+}

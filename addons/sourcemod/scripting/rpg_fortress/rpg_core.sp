@@ -11,6 +11,10 @@ enum
 {
 	WEAPON_BIGFRYINGPAN = 1,
 	WEAPON_LANTEAN = 2,
+
+
+	//any that are shared, just stick it here.
+	WEAPON_KRITZKRIEG = 999,
 }
 
 int BaseStrength;
@@ -322,8 +326,12 @@ void RPG_SetupMapSpecific(const char[] mapname)
 
 	if(!found)
 		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
-	LoadSoundScript(buffer);
+	
+	if(LibraryExists("LoadSoundscript"))
+	{
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
+		LoadSoundScript(buffer);
+	}
 }
 void RPG_ConfigSetup()
 {
@@ -411,7 +419,7 @@ void RPG_ClientDisconnect(int client)
 		FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
 		HudSettings_Cookies.Set(client, buffer);
 
-		FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+		FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake_UNSUED[client], b_HudHitMarker[client]);
 		HudSettingsExtra_Cookies.Set(client, buffer);
 	}
 
@@ -551,14 +559,14 @@ static void HudSettings_ClientCookiesCached(int client)
 		bool buffers[3];
 		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 		b_HudScreenShake[client] = buffers[0];
-		b_HudLowHealthShake[client] = buffers[1];
+		b_HudLowHealthShake_UNSUED[client] = buffers[1];
 		b_HudHitMarker[client] = buffers[2];
 	}
 	else
 	{
 		// Cookie empty, get our own
 		b_HudScreenShake[client] = true;
-		b_HudLowHealthShake[client] = true;
+		b_HudLowHealthShake_UNSUED[client] = true;
 		b_HudHitMarker[client] = true;
 	}
 }

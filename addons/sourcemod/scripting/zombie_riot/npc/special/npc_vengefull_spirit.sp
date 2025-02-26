@@ -21,8 +21,8 @@ void VengefullSpirit_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Vengefull Spirit");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vengefull_spirit");
 	strcopy(data.Icon, sizeof(data.Icon), ""); 				//leaderboard_class_(insert the name)
-	data.IconCustom = false;								//download needed?
-	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.IconCustom = false;													//download needed?
+	data.Flags = 0;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -67,7 +67,7 @@ methodmap VengefullSpirit < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		
@@ -81,7 +81,13 @@ methodmap VengefullSpirit < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 0, 125);
 
-		TeleportDiversioToRandLocation(npc.index);
+		int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
+
+		if(Decicion == 2)
+			Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 250.0);
+
+		if(Decicion == 2)
+			Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
 
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);

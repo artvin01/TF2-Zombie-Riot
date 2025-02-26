@@ -147,7 +147,7 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 
 		Soldine_EyeHandler(client);
 
-		if(!Precached)
+		if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
 		{
 			// MASS REPLACE THIS IN ALL FILES
 			PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3",_,1);
@@ -352,7 +352,7 @@ public void Soldine_Hud_Logic(int client, int weapon, bool ignoreCD)
 
 	Soldine_HudDelay[client] = GetGameTime() + 0.5;
 	PrintHintText(client,"%s",SoldineHud);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 
@@ -397,11 +397,10 @@ public void Wkit_Soldin_NPCTakeDamage_Melee(int attacker, int victim, float &dam
 					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.0);
 					SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GetGameTime(attacker)+1.0);
 					damage *= 3.0;
-					if(i_PaPLevel[attacker] >= 3)
-						GiveArmorViaPercentage(attacker, 0.5, 1.0);
-
 					if(i_PaPLevel[attacker] >= 4)
 						GiveArmorViaPercentage(attacker, 0.5, 1.25);
+					else if(i_PaPLevel[attacker] >= 3)
+						GiveArmorViaPercentage(attacker, 0.5, 1.0);
 
 				}
 				else

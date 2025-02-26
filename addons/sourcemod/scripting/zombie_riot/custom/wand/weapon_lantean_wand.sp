@@ -620,7 +620,7 @@ static void Lantean_Wand_Hud(int client)
 	{
 		PrintHintText(client,"Drone Overcharge: %i", lantean_Wand_Drone_Count[client]);
 	}
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 {

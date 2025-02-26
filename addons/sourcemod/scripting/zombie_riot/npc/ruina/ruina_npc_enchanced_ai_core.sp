@@ -482,7 +482,7 @@ static int GetRandomMaster(int client)
 	int valid = -1;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
 			if(Check_If_I_Am_The_Right_Slave(client, baseboss_index))
@@ -497,7 +497,7 @@ static int GetClosestHealer(int client)
 	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_ruina_npc_healer[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
@@ -520,7 +520,7 @@ static int GetClosestAnchor(int client)
 	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_sniper_anchor_point[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
@@ -555,7 +555,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	if(b_is_battery_buffed[npc.index] && fl_ruina_battery_timer[npc.index] > GameTime)
 		return;
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = Waves_GetRound()+1;
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{
@@ -1396,7 +1396,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = Waves_GetRound()+1;
 
 	float 	dmg 		= 250.0,
 			time 		= 2.5,		//how long until it goes boom
@@ -1490,9 +1490,11 @@ static void Apply_Sickness(int iNPC, int Target)
 
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }
-void Ruina_Color(int color[4])
+void Ruina_Color(int color[4], int wave = -1)
 {
-	int wave = ZR_GetWaveCount()+1;
+	if(wave == -1)
+		wave = Waves_GetRound()+1;
+		
 	if(wave<=15)
 	{
 		color 	= {255, 0, 0, 255};
@@ -1563,7 +1565,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == Team)
@@ -1585,7 +1587,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[a]);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
 			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])

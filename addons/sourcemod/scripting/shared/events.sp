@@ -21,7 +21,6 @@ void Events_PluginStart()
 	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
 	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
 	HookEvent("arrow_impact", EventOverride_ArrowImpact, EventHookMode_Pre);
-	HookEvent("npc_hurt", EventOverride_OnNpcHurt, EventHookMode_Pre);
 
 #endif	
 	
@@ -31,15 +30,6 @@ void Events_PluginStart()
 }
 
 #if defined ZR
-
-public Action EventOverride_OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
-{
-	int HurtNpc = event.GetInt("entindex");
-	if(i_HexCustomDamageTypes[HurtNpc] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
-		event.BroadcastDisabled = true;
-
-	return Plugin_Changed;
-}
 
 public Action EventOverride_ArrowImpact(Event event, const char[] name, bool dontBroadcast)
 {
@@ -88,6 +78,7 @@ float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
+	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
 	
@@ -116,7 +107,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	
 	
 	Escape_RoundStart();
-	Waves_RoundStart();
+	Waves_RoundStart(true);
 	Blacksmith_RoundStart();
 	Merchant_RoundStart();
 	Flametail_RoundStart();
@@ -126,6 +117,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	if(RoundStartTime > GetGameTime())
 		return;
 	
+	Waves_SetReadyStatus(2);
 	RoundStartTime = FAR_FUTURE;
 	//FOR ZR
 	char mapname[64];
@@ -162,14 +154,12 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 			delete dir;
 		}
 	}
-//	FileNetwork_MapEnd();
+	
+	DeleteStatusEffectsFromAll();
 	Waves_MapEnd();
-//	FileNetwork_ConfigSetup(kv);
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 	delete kv;
-//	Core_PrecacheGlobalCustom();
-//	PrecacheMusicZr();
 #endif
 
 #if defined RPG
@@ -184,6 +174,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
+	DeleteShadowsOffZombieRiot();
 	for(int client=1; client<=MaxClients; client++)
 	{
 		SetMusicTimer(client, 0);
@@ -257,10 +248,12 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			TeutonType[client_check] = 0;
 	}
 	
+	DeleteStatusEffectsFromAll();
 	Store_Reset();
 	Waves_RoundEnd();
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
+	Construction_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
 	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
@@ -278,6 +271,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
+		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 #if defined ZR
 		TransferDispenserBackToOtherEntity(client, true);
 #endif
@@ -384,15 +378,18 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		Attributes_Set(weapon_index, 263, 0.0);
 	   		Attributes_Set(weapon_index, 6, 1.2);
 	   		Attributes_Set(weapon_index, 412, 0.0);
-			if(b_VoidPortalOpened[client])
+			
+		//	if(b_VoidPortalOpened[client])
 			{
 	   			Attributes_Set(weapon_index, 443, 1.25);
 	   			Attributes_Set(weapon_index, 442, 1.25);
 			}
+			/*
 			else
 			{
 	   			Attributes_Set(weapon_index, 442, 1.1);
 			}
+			*/
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
 	   		Attributes_Set(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));
@@ -438,7 +435,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			ViewChange_PlayerModel(client);
 			ViewChange_Update(client);
 			Store_ApplyAttribs(client);
-			Pets_PlayerResupply(client);
 			
 			if(dieingstate[client])
 			{
@@ -525,6 +521,7 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		
 #if defined ZR
 		Waves_PlayerSpawn(client);
+		Vehicle_PlayerSpawn(client);
 #endif
 
 #if defined ZR || defined RPG
@@ -555,7 +552,8 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-	
+	// Dead Ringer doesn't exist!!
+
 #if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
@@ -593,6 +591,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	ClientSaveUber(client);
 	SDKHooks_UpdateMarkForDeath(client, true);
 	PurnellDeathsound(client);
+	Vehicle_Exit(client, true);
 #endif
 
 #if defined RPG

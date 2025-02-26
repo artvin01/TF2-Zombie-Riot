@@ -865,7 +865,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 	}
 	
 	PrintHintText(client, HUDText);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 public void Quincy_Touch(int entity, int target)

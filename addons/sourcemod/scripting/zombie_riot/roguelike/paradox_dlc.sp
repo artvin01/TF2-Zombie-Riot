@@ -171,7 +171,7 @@ public void Rogue_MachinaWaldch_StageEnd(bool victory)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != -1 && i_NpcInternalId[other] == StalkerGoggles_ID() && IsEntityAlive(other))
 			{
 				MachinaWaldch = GetEntProp(other, Prop_Data, "m_iHealth");

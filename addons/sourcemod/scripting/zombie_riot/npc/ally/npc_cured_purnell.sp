@@ -240,8 +240,8 @@ public void CuredPurnell_ClotThink(int iNPC)
 	if(npc.m_iTargetWalkTo > 0)
 	{
 		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
-		b_BobsCuringHand[npc.m_iTargetWalkTo] && b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
-		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[npc.m_iTargetWalkTo])
+		/*b_BobsCuringHand[npc.m_iTargetWalkTo] && */b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
+		&& !b_LeftForDead[npc.m_iTargetWalkTo])
 		{
 			//walk to client.
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);

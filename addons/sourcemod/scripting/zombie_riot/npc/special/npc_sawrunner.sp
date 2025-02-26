@@ -67,17 +67,17 @@ static char[] GetSawRunnerHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health = health * 3 / 8;
@@ -155,7 +155,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(float vecPos[3], float vecAng[3], int ally)
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", GetSawRunnerHealth(), ally, false, false, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", GetSawRunnerHealth(), ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 2;
 		

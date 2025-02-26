@@ -108,7 +108,7 @@ methodmap IberiaLighthouse < CClotBody
 	}
 	public IberiaLighthouse(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
+		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
@@ -126,7 +126,7 @@ methodmap IberiaLighthouse < CClotBody
 		
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
@@ -160,7 +160,6 @@ methodmap IberiaLighthouse < CClotBody
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
 		npc.m_flNemalSummonSilvesterCD = GetGameTime() + 25.0;
 
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
@@ -355,17 +354,17 @@ static char[] GetBuildingHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;

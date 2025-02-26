@@ -508,7 +508,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[other] == i_NpcInternalId[npc.index])
@@ -1219,7 +1219,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != INVALID_ENT_REFERENCE && other != npc.index)
 				{
 					if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
@@ -1248,7 +1248,7 @@ static void Internal_NPCDeath(int entity)
 
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != INVALID_ENT_REFERENCE && other != npc.index)
 		{
 			if(GetTeam(npc.index) == GetTeam(other))

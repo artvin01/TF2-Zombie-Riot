@@ -96,8 +96,19 @@ stock bool Attributes_RemoveAll(int entity)
 	return TF2Attrib_RemoveAll(entity);
 }
 
+int ReplaceAttribute_Internally(int attribute)
+{
+	switch(attribute)
+	{
+		//replace dmg attrib with another, this is due to the MVM hud on pressing inspect fucking crashing you at high dmges
+		case 2:
+			return 1000;
+	}
+	return attribute;
+}
 bool Attributes_Has(int entity, int attrib)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	if(!WeaponAttributes[entity])
 		return false;
 	
@@ -108,6 +119,7 @@ bool Attributes_Has(int entity, int attrib)
 
 float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	if(WeaponAttributes[entity])
 	{
 		float value = defaul;
@@ -123,6 +135,7 @@ float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 
 bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = false)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	if(!DoOnlyTf2Side)
 	{
 		if(!WeaponAttributes[entity])
@@ -148,6 +161,7 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 
 stock void Attributes_SetAdd(int entity, int attrib, float amount)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	if(attrib == Attrib_SetArchetype)
 	{
 		i_WeaponArchetype[entity] = RoundFloat(amount);
@@ -177,6 +191,7 @@ stock void Attributes_SetAdd(int entity, int attrib, float amount)
 
 stock void Attributes_SetMulti(int entity, int attrib, float amount)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
 
@@ -215,7 +230,7 @@ bool Attribute_IsMovementSpeed(int attrib)
 {
 	switch(attrib)
 	{
-		case 442, 107:
+		case 442, 107, 54:
 		{
 			return true;
 		}
@@ -229,6 +244,7 @@ stock bool Attributes_GetString(int entity, int attrib, char[] value, int length
 	if(!WeaponAttributes[entity])
 		return false;
 
+	attrib = ReplaceAttribute_Internally(attrib);
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
 	return WeaponAttributes[entity].GetString(buffer, value, length, size);
@@ -238,6 +254,8 @@ stock void Attributes_SetString(int entity, int attrib, const char[] value)
 {
 	if(!WeaponAttributes[entity])
 		WeaponAttributes[entity] = new StringMap();
+	
+	attrib = ReplaceAttribute_Internally(attrib);
 	
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
@@ -496,6 +514,10 @@ void Attributes_OnKill(int victim, int client, int weapon)
 				{
 					value *= 2.0;
 				}
+				//Grilled!
+				if(HasSpecificBuff(victim, "Burn"))
+					value *= 1.1;
+					
 				HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
 			}
 		}
@@ -642,7 +664,7 @@ float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, in
 			return DamageBonusLogic;	
 		}
 	}
-	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
+//	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
 #if defined ZR
 	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_TEUTON_DEAD)
 #endif

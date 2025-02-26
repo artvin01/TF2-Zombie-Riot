@@ -68,7 +68,7 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			SetGlobalTransTarget(client);
 			
 			PrintHintText(client,"%t: %i", "Laser Battery", new_ammo);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			
 			BEAM_Targets_Hit[client] = 0.0;
 			

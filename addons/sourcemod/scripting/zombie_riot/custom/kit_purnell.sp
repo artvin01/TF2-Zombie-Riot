@@ -128,7 +128,7 @@ void Purnell_Enable(int client, int weapon)
 			pack.WriteCell(client);
 			pack.WriteCell(GetClientUserId(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			if(!Precached)
+			if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
 			{
 				PrecacheSoundCustom("#zombiesurvival/purnell_lastman.mp3", _, 1);
 				Precached = true;
@@ -689,18 +689,12 @@ static void Purnell_AllyBuffApply(int client, int target, int overdose, float Du
 				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 				if(entity != -1)
 				{
-					ApplyTempAttrib(entity, 6, 0.8, DurationGive);
-					ApplyTempAttrib(entity, 97, 0.8, DurationGive);
-					ApplyTempAttrib(entity, 733, 0.8, DurationGive);
 					ApplyStatusEffect(client, entity, "Hectic Therapy", DurationGive);
 				}
 				
 				entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				if(entity != -1)
 				{
-					ApplyTempAttrib(entity, 6, 0.8, DurationGive);
-					ApplyTempAttrib(entity, 97, 0.8, DurationGive);
-					ApplyTempAttrib(entity, 733, 0.8, DurationGive);
 					ApplyStatusEffect(client, entity, "Hectic Therapy", DurationGive);
 				}
 			}

@@ -183,7 +183,7 @@ methodmap MedivalBuilding < CClotBody
 	
 	public MedivalBuilding(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
+		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -218,7 +218,7 @@ methodmap MedivalBuilding < CClotBody
 		}
 		i_NpcIsABuilding[npc.index] = true;
 
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
@@ -228,7 +228,7 @@ methodmap MedivalBuilding < CClotBody
 
 		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 
-		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
+		i_currentwave[npc.index] = (Waves_GetRound()+1);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 
@@ -239,8 +239,6 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_flRangedArmor = 1.0;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 180.0;
 
-		NPC_StopPathing(npc.index);
-
 		return npc;
 	}
 }
@@ -248,7 +246,7 @@ methodmap MedivalBuilding < CClotBody
 public void MedivalBuilding_ClotThink(int iNPC)
 {
 	MedivalBuilding npc = view_as<MedivalBuilding>(iNPC);
-/*
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -257,7 +255,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-*/
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
@@ -286,7 +284,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			int npc_current_count;
 			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 				if(IsValidEntity(entity) && GetTeam(iNPC) == GetTeam(entity))
 				{
 					npc_current_count += 1;
@@ -459,7 +457,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		bool villagerexists = false;
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 			if (IsValidEntity(entity) && (i_NpcInternalId[entity] == MedivalVillager_ID() || (Citizen_IsIt(entity) && view_as<Citizen>(entity).m_iClassRole == 1)) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;
@@ -524,17 +522,17 @@ static char[] GetBuildingHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;

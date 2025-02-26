@@ -257,7 +257,7 @@ static void Internal_ClotThink(int iNPC)
 						{
 							
 							float damage = 30.0;
-							if(ZR_GetWaveCount()>30)	//the shit slapper will become the most feard thing on the planet
+							if(Waves_GetRound()>30)	//the shit slapper will become the most feard thing on the planet
 							{
 								damage=175.0;
 							}

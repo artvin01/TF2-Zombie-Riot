@@ -54,6 +54,9 @@ static char g_MeleeMissSounds[][] = {
 	"npc/fast_zombie/claw_miss2.wav",
 };
 
+static int NPCId;
+static int RemainingZmainsSpawn;
+static float fl_KamikazeInitiate;
 public void ZMainHeadcrabZombie_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -67,14 +70,15 @@ public void ZMainHeadcrabZombie_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/zombie/classic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Headcrab Zombie");
+	strcopy(data.Name, sizeof(data.Name), "Z-Main");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zmain_headcrabzombie");
 	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Common;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+	fl_KamikazeInitiate = 0.0;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -144,10 +148,15 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flTryIgnorebuildings
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public ZMainHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
-		ZMainHeadcrabZombie npc = view_as<ZMainHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false));
+		ZMainHeadcrabZombie npc = view_as<ZMainHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", GetBeheadedKamiKazeHealth(), ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -164,14 +173,49 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		//IDLE
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 330.0;
+
+		float wave = float(Waves_GetRound()+1); //Wave scaling
+		
+		wave *= 0.1;
+
+		npc.m_flWaveScale = wave;
+
+		if(ally == TFTeam_Blue)
+		{
+			if(fl_KamikazeInitiate < GetGameTime())
+			{
+				//This is a kamikaze that was newly initiated!
+				//add new kamikazies whenever possible.
+				//this needs to happen every tick!
+				DoGlobalMultiScaling();
+				RemainingZmainsSpawn = 4;
+				RequestFrame(SpawnZmainsAFew, 0);
+			
+				if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
+				{
+					//incase their random spawn code fails, they'll spawn here.
+					int Spawner_entity = GetRandomActiveSpawner();
+					if(IsValidEntity(Spawner_entity))
+					{
+						float pos[3];
+						float ang[3];
+						GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+					}
+				}
+			}
+			fl_KamikazeInitiate = GetGameTime() + 15.0;	
+		}
 
 		func_NPCDeath[npc.index] = ZMainHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrabZombie_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		b_AvoidBuildingsAtAllCosts[npc.index] = true;
 		
 		npc.StartPathing();
-		f_MaxAnimationSpeed[npc.index] = 1.0;
+		f_MaxAnimationSpeed[npc.index] = 1.5;
 		
 		return npc;
 	}
@@ -215,19 +259,26 @@ public void ZMainHeadcrabZombie_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
+
+	// fldistancelimit isnt working for using vector distance, and checking for can see and only buildings	
+	int IsAbuildingNearMe = GetClosestTarget(npc.index,false,200.0,_,_,_, _,true, _,true,true,0.0, .ExtraValidityFunction = Zmain_TryJumpOverBuildings);
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		if(i_IsABuilding[npc.m_iTarget] && npc.m_flTryIgnorebuildings > GetGameTime(npc.index))
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index, .IgnoreBuildings = true);
+		}
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(npc,GetGameTime(npc.index), flDistanceToTarget, IsAbuildingNearMe); 
 		ZMainHeadcrabZombie_SelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		if(i_IsABuilding[npc.m_iTarget])
 		{
-			npc.m_flGetClosestTargetTime = 0.0;
-			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_iTarget = GetClosestTarget(npc.index, .IgnoreBuildings = true);
+			npc.m_flTryIgnorebuildings = GetGameTime(npc.index) + 1.0;
 		}
 	}
 	else
@@ -238,8 +289,32 @@ public void ZMainHeadcrabZombie_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float gameTime, float distance)
+bool Zmain_TryJumpOverBuildings(int entity, int target)
 {
+	if(i_IsABuilding[target])
+	{
+		return true;
+	}
+	return false;
+}
+
+void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float gameTime, float distance, int IsAbuildingNearMe)
+{
+	if(npc.m_flTryIgnorebuildings > gameTime || IsValidEntity(IsAbuildingNearMe))
+	{
+		if(!npc.m_flAttackHappens && npc.m_flJumpCooldownZmain < gameTime)
+		{
+			if (npc.IsOnGround())
+			{
+				npc.m_flJumpCooldownZmain = gameTime + 2.0;
+				npc.GetLocomotionInterface().Jump();
+				float vel[3];
+				npc.GetVelocity(vel);
+				vel[2] = 400.0;
+				npc.SetVelocity(vel);
+			}	
+		}
+	}
 	npc.m_bAllowBackWalking = false;
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{
@@ -261,7 +336,7 @@ void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float g
 	{
 		//relatively close, what do ?
 		//Randomly jump
-		if(npc.m_flJumpCooldownZmain < gameTime)
+		if(!npc.m_flAttackHappens && npc.m_flJumpCooldownZmain < gameTime)
 		{
 			if (npc.IsOnGround())
 			{
@@ -283,7 +358,7 @@ void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float g
 
 	//relatively close, what do ?
 	//Randomly jump
-	if(npc.m_flJumpCooldownZmain < gameTime)
+	if(!npc.m_flAttackHappens && npc.m_flJumpCooldownZmain < gameTime)
 	{
 		if (npc.IsOnGround())
 		{
@@ -323,11 +398,11 @@ void ZMainHeadcrabZombie_SelfDefense(ZMainHeadcrabZombie npc, float gameTime, in
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 60.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.5;
+						damageDealt *= 5.5;
 
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -369,3 +444,78 @@ public void ZMainHeadcrabZombie_NPCDeath(int entity)
 }
 
 
+
+
+void SpawnZmainsAFew(int nulldata)
+{
+	if(Waves_InSetup())
+	{
+		return;
+	}
+
+	if(f_DelaySpawnsForVariousReasons + 0.15 < GetGameTime())
+		f_DelaySpawnsForVariousReasons = GetGameTime() + 0.15;
+
+
+	if(RemainingZmainsSpawn <= 0)
+		return;
+
+	//can we still spawn
+	//spawn a kamikaze here!
+	int Spawner_entity = GetRandomActiveSpawner();
+	float pos[3];
+	float ang[3];
+	if(IsValidEntity(Spawner_entity))
+	{
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+	}
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(i_NpcInternalId[entity] == NPCId)
+		{
+			//spawn inside fellow zobie
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+			break;
+		}
+	}
+	RemainingZmainsSpawn--;
+	int spawn_npc = NPC_CreateById(NPCId, -1, pos, ang, TFTeam_Blue); //can only be enemy
+	NpcAddedToZombiesLeftCurrently(spawn_npc, true);
+	RequestFrame(SpawnZmainsAFew, 0);
+}
+
+
+
+static char[] GetBeheadedKamiKazeHealth()
+{
+	int health = 30;
+	
+	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(Waves_GetRound()+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
+	}
+	else if(Waves_GetRound()+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	
+	
+	health = RoundToCeil(float(health) * 1.2);
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
+}

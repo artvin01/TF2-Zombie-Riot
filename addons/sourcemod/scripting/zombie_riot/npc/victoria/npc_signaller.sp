@@ -111,7 +111,7 @@ methodmap VictorianSignaller < CClotBody
 		i_signaller_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_teamcolor_blue", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
 		npc.GetAttachment("", flPos, flAng);
 
-	
+		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_bugle/c_battalion_bugle.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -145,7 +145,6 @@ methodmap VictorianSignaller < CClotBody
 public void VictorianSignaller_ClotThink(int iNPC)
 {
 	VictorianSignaller npc = view_as<VictorianSignaller>(iNPC);
-
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -180,14 +179,17 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 		if(!NpcStats_IsEnemySilenced(npc.index))
+		{
 			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
+		}
+			
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
-		npc.m_flNextMeleeAttack = gameTime + 7.50;
 		npc.PlayHornSound();
+		npc.m_flNextMeleeAttack = gameTime + 7.50;
 	}
 
 	gameTime = GetGameTime() + 0.5;
@@ -199,19 +201,22 @@ public void VictorianSignaller_ClotThink(int iNPC)
 		{
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+				if(IsClientInGame(client) && IsEntityAlive(client))
 				{
-					ApplyStatusEffect(npc.index, client, "Call To Victoria", 0.5);
+					ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
 				}
 			}
 		}
 
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 			{
-				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+				if(GetTeam(entity) == team)
+				{
+					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
+				}
 			}
 		}
 	}

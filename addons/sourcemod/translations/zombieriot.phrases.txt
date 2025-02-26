@@ -306,9 +306,17 @@
 		"nl"		"Gekochte Artikelen"
 		"chi"       "已购买物品"
 	}
+	"Sell Items Confirm"
+	{
+		"en"		"Are you sure you want to sell all your items?"
+	}
+	"Sell All Items"
+	{
+		"en"		"Sell all items"
+	}
 	"Confirm Loadout"
 	{
-		"en"		"Confirm Loadout"
+		"en"		"Confirm & Access Store"
 	}
 	"N/A"
 	{
@@ -402,16 +410,7 @@
 	}
 	"Pistol Magazines"
 	{
-		"en"		"Pistol Magazines"
-		"it"		"Caricatori Pistola"
-		"ru"		"Обойма пистолета"
-		"pl"		"Magazynek do Pistoletu"
-		"es"		"Cartuchos de Pistola"
-		"fr"		"Munitions de Pistolet"
-		"de"		"Pistolenmagazine"
-		"pt"		"Cartuchos de Pistola"
-		"nl"		"Pistool Magazijn"
-		"chi"       "手枪弹匣"
+		"en"		"Pistol Mag"
 	}
 	"Rockets"
 	{
@@ -428,16 +427,7 @@
 	}
 	"Flamethrower Tank"
 	{
-		"en"		"Flamethrower Tank"
-		"it"		"Serbatoio Lanciafiamme"
-		"ru"		"Топливо огнемёта"
-		"pl"		"Paliwo do miotacza ognia"
-		"es"		"Tanque de Propano"
-		"fr"		"Réservoir de Lance-flammes"
-		"de"		"Flammenwerfer-Tank"
-		"pt"		"Tanque de Propano"
-		"nl"		"Vlammenwerper Tank"
-		"chi"       "燃料"
+		"en"		"Oil"
 	}
 	"Flares"
 	{
@@ -506,29 +496,11 @@
 	}
 	"Medical Syringes"
 	{
-		"en"		"Medical Syringes"
-		"it"		"Siringhe Medicali"
-		"ru"		"Медицинские шприцы"
-		"pl"		"Strzykawki medyczne"
-		"es"		"Jeringuillas medicas"
-		"fr"		"Seringues Médicales"
-		"de"		"Medizinische Spritzen"
-		"pt"		"Seringas Médicas"
-		"nl"		"Medische Spuiten"
-		"chi"       "注射器"
+		"en"		"Syringes"
 	}
 	"Sniper Rifle Rounds"
 	{
-		"en"		"Sniper Rifle Rounds"
-		"it"		"Munizioni per il Cecchino"
-		"ru"		"Патр. снайп. винт."
-		"pl"		"Amunicja do karabinu snajperskiego"
-		"es"		"Balas de Francotirador"
-		"fr"		"Balles de Fusil de Sniper"
-		"de"		"Scharfschützengewehr-Runden"
-		"pt"		"Balas de Sniper"
-		"nl"		"Scherpshuttergeweer Kogels"
-		"chi"       "狙击枪子弹"
+		"en"		"Sniper Rounds"
 	}
 	"Arrows"
 	{
@@ -545,16 +517,7 @@
 	}
 	"SMG Magazines"
 	{
-		"en"		"SMG Magazines"
-		"it"		"Caricatori per l'SMG"
-		"ru"		"Патроны ПП"
-		"pl"		"Magazynek do pistoletu maszynowego"
-		"es"		"Balas de Subfusil"
-		"fr"		"Balles de Mitraillette"
-		"de"		"SMG Magazin"
-		"pt"		"Cartuchos de Sub-Metralhadora"
-		"nl"		"SMG Wapenmagazijnes"
-		"chi"       "小型弹药"
+		"en"		"SMG Mag"
 	}
 	"Revolver Rounds"
 	{
@@ -787,6 +750,11 @@
 		"pt"		"Este objeto ainda está em recarga de {1} segundos antes de outro uso."
 		"nl"		"Dit object heeft nog steeds {1} seconden over voor het volgend gebruik!"
 		"chi"       "物品使用已进入冷却时间，你将在 {1} 后可以再次使用。"
+	}
+	"Simulation Time Left"
+	{
+		"#format"	"{1:.0f}"
+		"en" 		"Theres {1} Minutes left in the simulation."
 	}
 	"Cash Gained This Wave"
 	{
@@ -1521,13 +1489,11 @@
 	}
 	"Claim this building"
 	{
-		"en"		"Claim this building with RELOAD while holding a wrench."
-		"fr"		"Prenez contrôle de cette construction en appuyant RELOAD avec une clé equipée."
-		"ru"		"Эта постройка может принадлежать вам - нажмите ПЕРЕЗАРЯДКА, держа в руках гаечный ключ."
-		"de"		"Beanspruchen Sie dieses Gebäude mit NACHLADEN mit einem Schlüsselwerkzeug."
-		"pt"		"Para reivindicar está construção aperte o botão re RECARREGAR enquando segurando sua chave inglesa."
-		"nl"		"Beweer dit gebouw door, tijdens het dragen van een moersleutel, op de HERLAAD toets te drukken."
-		"chi"       "断开连接建筑：拿着建筑扳手的同时按下R键占有建筑"
+		"en"		"Claim this building with (T [spray) while holding a wrench."
+	}
+	"Enter this vehicle"
+	{
+		"en" 		"Press [T (spray)] to enter and exit this vehicle"
 	}
 	"Ammobox Tooltip"
 	{
@@ -1988,6 +1954,18 @@
 		"pt"		"Você quer melhorar sua arma atual?"
 		"nl"		"Wil je uw huidige wapen Pack-A-Punchen?"
 	}
+	"Support Buildings"
+	{
+		"en"		"Support Buildings"
+	}	
+	"Singular Buildings"
+	{
+		"en"		"Singular Buildings"
+	}	
+	"Construct Buildings"
+	{
+		"en"		"Construct Buildings"
+	}	
 	"Which perk do you desire?"
 	{
 		"en"		"Which Bottle do you wish to drink?\nCrouch and click to see what it does."
@@ -2544,6 +2522,10 @@
 		"fr"		"Éradiquez l'infection Xéno\nTrouvez la cause de ceci."
 		"ru"		"Искорените всех ксенозаражённых\nНайдите причину происходящего."
 		"chi"		"消灭所有被感染的异种人，找出背后的原因。"
+	}
+	"SeaLab_badEnding"
+	{
+		"en"		"You have an uneasy feeling, as if you entered the wrong path... this is BAD."
 	}
 	"Xeno_Wave_2"
 	{
@@ -3446,6 +3428,14 @@
 	{
 		"en" 	"Interact With Reload"
 	}
+	"Disable Setup Music"
+	{
+		"en" 	"Disable Setup Music"
+	}
+	"Disable Status Effect Hints"
+	{
+		"en" 	"Disable Status Effect Hints"
+	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"
@@ -3575,11 +3565,15 @@
 	{
 		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this tempomary alliance."
 	}
+	"Schwert Donner Alt Desc"
+	{
+		"en"	"If the sea creatues ever attacked here.... then.. something went MAJORILY wrong. Why are they so.. strong?!"
+	}
 	"Khaml Desc"
 	{
-		"en"	"The judges of your actions have arrived."
-		"fr"	"Voiçi le juge de vos actions."
-		"chi"	"审判者来了。"
+		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
+		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 	}
 	"Void Desc"
 	{
@@ -3880,6 +3874,10 @@
 		"fr"	"Kleiner"
 		"chi"	"克莱恩"
 	}
+	"Fat HHH"
+	{
+		"en"	"Fat HHH"
+	}
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
@@ -3911,6 +3909,10 @@
 	"Enable Visual Clutter Desc"
 	{
 		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nIf you love it, enable it again."
+	}
+	"Enable Reload Interact Desc"
+	{
+		"en"	"If this is enabled, then some abilities require you to hold crouch to use them to prevent accidental use."
 	}
 	"Enable Numeral Armor"
 	{
@@ -4069,18 +4071,18 @@
 
 	"freeplay_start_1"
 	{
-		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future..\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."
+		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future.\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."
 	}
 	"freeplay_start_2"
 	{
-		"en"		"Each setup, i'll throw in a Skull, which is a random event or modifier.\nI'll be sometimes throwing more and multiple skulls in,\nto make the training more intensive."
+		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull, which is a random event or modifier.\nAnd i'll be throwing more and more as you progress."
 	}
 	"freeplay_start_3"
 	{
-		"en"		"Be warned,\nI maaay get a little silly and do something catastrophic on a setup..."
+		"en"		"Be warned, this might not be for the light-hearted.\nThings may get out of hand really quick... hehehe..."
 	}
 	"freeplay_start_4"
 	{
-		"en"		"Zeina and I will watch over you, we'll warn you incase something happens.\nWho am i? Koshi, an expert in simulations, and a cheese enthusiast.\nGood luck."
+		"en"		"Zeina and I will watch over you, we'll warn you if something happens.\nWho am i? Koshi, the one managing this simulation.\nThis will only last an hour, so be fast!"
 	}
 }

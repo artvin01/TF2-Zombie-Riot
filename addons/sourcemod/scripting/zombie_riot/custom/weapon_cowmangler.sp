@@ -49,7 +49,7 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 			CurrentAmmo[client][23] = GetAmmo(client, 23);
 			
 			PrintHintText(client,"Laser Battery: %i", new_ammo);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			
 			BEAM_Targets_Hit[client] = 0.0;
 			

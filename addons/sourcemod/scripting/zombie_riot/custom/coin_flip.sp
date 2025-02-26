@@ -257,12 +257,12 @@ public Action flip_extra(Handle timer, int client)
 			
 			if(i_CurrentEquippedPerk[client] == 5)
 			{
-				damage_multiplier[entity] *= 1.35;
+				damage_multiplier[entity] *= 1.25;
 			}
 			
 			if(i_HeadshotAffinity[client] == 1)
 			{
-				damage_multiplier[entity] *= 1.30;
+				damage_multiplier[entity] *= 1.20;
 			}
 			
 			newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
@@ -432,7 +432,7 @@ stock void Do_Coin_calc(int victim)
 	SetTeam(victim, TFTeam_Spectator);
 	if(mf_extra_damage[victim] > GetGameTime()) //You got one second.
 	{
-		damage_multiplier[victim] *= 1.25;
+		damage_multiplier[victim] *= 1.20;
 		float chargerPos2[3];
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos2);
 		if(IsValidClient(Entity_Owner[victim]))
@@ -442,12 +442,11 @@ stock void Do_Coin_calc(int victim)
 	}
 	if (IsValidEntity(Closest_entity))
 	{
-		damage_multiplier[victim] *= 1.6;
-		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		if(f_Thrownrecently[victim] > GetGameTime())
 		{
 			damage_multiplier[victim] *= 0.25;
 		}
+		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		
 		static char classname[36];
 		GetEntityClassname(Closest_entity, classname, sizeof(classname));
@@ -461,7 +460,10 @@ stock void Do_Coin_calc(int victim)
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
 			if (GetVectorDistance(chargerPos, targPos) <= 1200.0 && !already_ricocated[victim] && Closest_entity != victim)
 			{
+				//increace damage.
+				damage_multiplier[victim] *= 1.65;
 				already_ricocated[victim] = true;
+				damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 				CreateTimer(0.05, coin_got_rioceted, EntIndexToEntRef(Closest_entity), TIMER_FLAG_NO_MAPCHANGE);
 				mb_coin[Closest_entity] = false;
 				
@@ -469,9 +471,7 @@ stock void Do_Coin_calc(int victim)
 				if(TR_DidHit())
 				{
 					int target = TR_GetEntityIndex();	
-					static char classname_baseboss_extra[36];
-					GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
+					if ( target != Closest_entity && b_ThisWasAnNpc[target] && (GetTeam(target) != GetTeam(victim)))
 					{
 						SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 					}
@@ -488,10 +488,8 @@ stock void Do_Coin_calc(int victim)
 			{
 				if (IsValidEntity(Closest_entity))
 				{
-					static char classname_baseboss[36];
-					GetEntityClassname(Closest_entity, classname_baseboss, sizeof(classname_baseboss));
 					
-					if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetTeam(Closest_entity) != GetTeam(victim)))
+					if (b_ThisWasAnNpc[Closest_entity] && (GetTeam(Closest_entity) != GetTeam(victim)))
 					{
 						GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 						targPos[2] += 35;
@@ -503,9 +501,7 @@ stock void Do_Coin_calc(int victim)
 							if(TR_DidHit())
 							{
 								int target = TR_GetEntityIndex();	
-								static char classname_baseboss_extra[36];
-								GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-								if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
+								if ( target != Closest_entity && b_ThisWasAnNpc[target] && (GetTeam(target) != GetTeam(victim)))
 								{
 									SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 								}
@@ -538,9 +534,7 @@ stock void Do_Coin_calc(int victim)
 		{
 			if (IsValidEntity(Closest_entity))
 			{
-				static char classname_baseboss[36];
-				GetEntityClassname(Closest_entity, classname_baseboss, sizeof(classname_baseboss));
-				if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetTeam(Closest_entity) != GetTeam(victim)))
+				if (b_ThisWasAnNpc[Closest_entity] && (GetTeam(Closest_entity) != GetTeam(victim)))
 				{
 					GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 					targPos[2] += 35;
@@ -552,9 +546,7 @@ stock void Do_Coin_calc(int victim)
 						if(TR_DidHit())
 						{
 							int target = TR_GetEntityIndex();	
-							static char classname_baseboss_extra[36];
-							GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-							if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
+							if ( target != Closest_entity && b_ThisWasAnNpc[target] && (GetTeam(target) != GetTeam(victim)))
 							{
 								SDKHooks_TakeDamage(target, victim, Entity_Owner[victim], damage_multiplier[victim], DMG_BULLET, -1, NULL_VECTOR, chargerPos);
 							}

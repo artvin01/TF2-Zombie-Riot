@@ -110,6 +110,9 @@ bool Yakuza_IsNotInJoint(int client)
 
 int Yakuza_Lastman(any toggle = -1)
 {
+	if(CvarFileNetworkDisable.IntValue > 0)
+		return 0;
+		
 	if(toggle != -1)
 		SpecialLastMan = view_as<bool>(toggle);
 	
@@ -294,7 +297,7 @@ static Action WeaponTimerFunc(Handle timer, int client)
 				}
 
 				PrintHintText(client, "%s - HEAT %d％", StyleName[WeaponStyle[client]], WeaponCharge[client]);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 			else
 			{

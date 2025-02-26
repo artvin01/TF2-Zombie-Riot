@@ -516,7 +516,6 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 
 		
 	AproxRandomSpaceToWalkTo[2] += 18.0;
-	AproxRandomSpaceToWalkTo[2] += 18.0;
 	
 	float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, npc_vec, true);
@@ -553,7 +552,7 @@ static int Storm_Weaver_Health(Storm_Weaver npc)
 	{	
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 			{
 				if(!b_ignore_npc[baseboss_index])
@@ -635,7 +634,7 @@ static void ClotThink(int iNPC)
 	f_StuckOutOfBoundsCheck[npc.index] = GetGameTime() + 10.0;
 	float GameTime = GetGameTime(npc.index);
 
-	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 100.0 * ((ZR_GetWaveCount()+1)/60.0));
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 100.0 * ((Waves_GetRound()+1)/60.0));
 
 	if(!IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)) && fl_special_invuln_timer[npc.index] < GameTime)
 	{
@@ -736,7 +735,7 @@ static void ClotThink(int iNPC)
 
 			if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
 			{
-				float Ratio = (ZR_GetWaveCount()+1)/60.0;
+				float Ratio = (Waves_GetRound()+1)/60.0;
 				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
 				Stellar_Weaver_Attack(npc.index, vecTarget, 50.0*Ratio, 500.0, 15.0, 500.0*Ratio, 150.0, 10.0);
 				b_stellar_weaver_allow_attack[npc.index] = false;
@@ -753,7 +752,7 @@ static void ClotThink(int iNPC)
 				{
 					WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				}
-				float Ratio = (ZR_GetWaveCount()+1)/60.0;
+				float Ratio = (Waves_GetRound()+1)/60.0;
 				float DamageDone = 100.0*Ratio;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 1.1;
@@ -1035,7 +1034,7 @@ void Stellar_Weaver_Share_Damage_With_All(int iNPC, int &attacker, int &inflicto
 
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
 			if(!b_ignore_npc[baseboss_index])

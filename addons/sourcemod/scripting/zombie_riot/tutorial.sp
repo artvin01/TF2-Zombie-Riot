@@ -3,7 +3,6 @@
 
 bool b_IsInTutorialMode[MAXTF2PLAYERS];
 int i_TutorialStep[MAXTF2PLAYERS];
-float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
 static Handle SyncHud;
 
@@ -112,7 +111,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 1:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 1.5, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_1");
 					//"This is the short Tutorial. Open chat and type /store to open the store!"
 					
@@ -121,7 +120,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 2:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 1.5, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_2");
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
 					//"Good! You can also Open the store with TAB when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
@@ -129,7 +128,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 3:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 5.0, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 5.0, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_3");
 					f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
 					SetClientTutorialStep(client, 4);
@@ -140,7 +139,6 @@ void DoTutorialStep(int client, bool obeycooldown)
 				{
 					if(TeutonType[client] == TEUTON_NONE)
 					{
-						float vecTarget[3];
 						int entity = MaxClients + 1;
 						char buffer[255];
 						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
@@ -148,21 +146,25 @@ void DoTutorialStep(int client, bool obeycooldown)
 							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
 							if(!StrContains(buffer, "obj_perkmachine"))
 							{
-								GetAbsOrigin(entity, vecTarget);
-								vecTarget[2] += 70.0;
+								float vecTarget[3];
+								vecTarget[2] += 60.0;
 								
 								SetGlobalTransTarget(client);
 								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Perk Machine");
 								Event event = CreateEvent("show_annotation");
 								if(event)
 								{
-									event.SetFloat("worldPosX", vecTarget[0]);
-									event.SetFloat("worldPosY", vecTarget[1]);
-									event.SetFloat("worldPosZ", vecTarget[2]);
+									event.SetFloat("worldNormalX", vecTarget[0]);
+									event.SetFloat("worldNormalY", vecTarget[1]);
+									event.SetFloat("worldNormalZ", vecTarget[2]);
+									event.SetInt("follow_entindex", entity);
 									event.SetFloat("lifetime", 10.0);
 									event.SetString("text", buffer);
 									event.SetString("play_sound", "vo/null.mp3");
-									event.SetInt("id", UniqueIdDo++);
+									KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+									UniqueIdDo++;
+									event.SetInt("id", UniqueIdDo);
+									i_CurrentIdBeforeAnnoation[client] = UniqueIdDo;
 									event.FireToClient(client);
 								}
 								break;
@@ -175,7 +177,6 @@ void DoTutorialStep(int client, bool obeycooldown)
 				{
 					if(TeutonType[client] == TEUTON_NONE)
 					{
-						float vecTarget[3];
 						int entity = MaxClients + 1;
 						char buffer[255];
 						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
@@ -183,21 +184,25 @@ void DoTutorialStep(int client, bool obeycooldown)
 							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
 							if(!StrContains(buffer, "obj_packapunch"))
 							{
-								GetAbsOrigin(entity, vecTarget);
-								vecTarget[2] += 70.0;
+								float vecTarget[3];
+								vecTarget[2] += 60.0;
 
 								SetGlobalTransTarget(client);
 								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Pack a Punch");
 								Event event = CreateEvent("show_annotation");
 								if(event)
 								{
-									event.SetFloat("worldPosX", vecTarget[0]);
-									event.SetFloat("worldPosY", vecTarget[1]);
-									event.SetFloat("worldPosZ", vecTarget[2]);
+									event.SetFloat("worldNormalX", vecTarget[0]);
+									event.SetFloat("worldNormalY", vecTarget[1]);
+									event.SetFloat("worldNormalZ", vecTarget[2]);
+									event.SetInt("follow_entindex", entity);
 									event.SetFloat("lifetime", 10.0);
 									event.SetString("text", buffer);
 									event.SetString("play_sound", "vo/null.mp3");
-									event.SetInt("id", UniqueIdDo++);
+									KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+									UniqueIdDo++;
+									event.SetInt("id", UniqueIdDo);
+									i_CurrentIdBeforeAnnoation[client] = UniqueIdDo;
 									event.FireToClient(client);
 								}
 								break;
@@ -208,6 +213,16 @@ void DoTutorialStep(int client, bool obeycooldown)
 				}
 			}
 		}
+	}
+}
+
+void KillMostCurrentIDAnnotation(int client, int id)
+{
+	Event event = CreateEvent("hide_annotation");
+	if(event)
+	{
+		event.SetInt("id", id);
+		event.FireToClient(client);
 	}
 }
 

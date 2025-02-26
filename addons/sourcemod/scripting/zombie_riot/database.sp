@@ -247,7 +247,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(results[2].FetchRow())
 		{
 			int value = results[2].FetchInt(1);
-			if(value >= 2)
+			if(value >= 1)
 			{
 				OverridePlayerModel(client, value - 1, Viewchanges_PlayerModelsAnims[value - 1]);
 				JoinClassInternal(client, CurrentClass[client]);
@@ -261,7 +261,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			f_NotifHudOffsetX[client] = results[2].FetchFloat(8);
 			f_NotifHudOffsetY[client] = results[2].FetchFloat(9);
 			b_HudScreenShake[client] = view_as<bool>(results[2].FetchInt(10));
-			b_HudLowHealthShake[client] = view_as<bool>(results[2].FetchInt(11));
+			b_HudLowHealthShake_UNSUED[client] = view_as<bool>(results[2].FetchInt(11));
 			b_HudHitMarker[client] = view_as<bool>(results[2].FetchInt(12));
 			thirdperson[client] = view_as<bool>(results[2].FetchInt(13));
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
@@ -276,6 +276,8 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			b_EnableClutterSetting[client] = view_as<bool>(music & (1 << 4));
 			b_EnableNumeralArmor[client] = view_as<bool>(music & (1 << 5));
 			b_InteractWithReload[client] = view_as<bool>(music & (1 << 6));
+			b_DisableSetupMusic[client] = view_as<bool>(music & (1 << 7));
+			b_DisableStatusEffectHints[client] = view_as<bool>(music & (1 << 8));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -314,6 +316,14 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			
 		if(ForceNiko)
 			OverridePlayerModel(client, NIKO_2, true);
+	}
+}
+
+public void MapChooser_OnPreMapEnd()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		DataBase_ClientDisconnect(client);
 	}
 }
 
@@ -372,13 +382,13 @@ void DataBase_ClientDisconnect(int client)
 				f_NotifHudOffsetX[client],
 				f_NotifHudOffsetY[client],
 				b_HudScreenShake[client],
-				b_HudLowHealthShake[client],
+				b_HudLowHealthShake_UNSUED[client],
 				b_HudHitMarker[client],
 				thirdperson[client],
 				f_ZombieVolumeSetting[client],
 				b_TauntSpeedIncreace[client],
 				f_Data_InBattleHudDisableDelay[client],
-				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0)),
+				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0) + (b_DisableSetupMusic[client] ? 128 : 0) + (b_DisableStatusEffectHints[client] ? 256 : 0)),
 				id);
 			}
 			else
@@ -410,7 +420,7 @@ void DataBase_ClientDisconnect(int client)
 				f_NotifHudOffsetX[client],
 				f_NotifHudOffsetY[client],
 				b_HudScreenShake[client],
-				b_HudLowHealthShake[client],
+				b_HudLowHealthShake_UNSUED[client],
 				b_HudHitMarker[client],
 				thirdperson[client],
 				f_ZombieVolumeSetting[client],

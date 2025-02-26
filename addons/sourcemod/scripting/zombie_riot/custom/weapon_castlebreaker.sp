@@ -192,8 +192,8 @@ void CastleBreakerCashOnKill(int client)
 	if(!Waves_InSetup())
 	{
 		float cashgain = 1.0;
-		if(b_AvangardCoreB[client])//do you have this unlock?
-			cashgain += 1.0;
+	//	if(b_AvangardCoreB[client])//do you have this unlock?
+		cashgain += 1.0;
 		if(CastleBreaker_WeaponPap[client]>=2)
 			cashgain += 1.0;
 		int cash = RoundFloat(cashgain * ResourceRegenMulti);
@@ -366,7 +366,7 @@ static void CreateCastleBreakerEffect(int client)
 		else
 			PrintHintText(client,"Mode: PIERCE / Blast Shells: %i", new_ammo);
 
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		CastleBreaker_HUDDelay[client] = GetGameTime() + 0.5;
 	}
 	if(b_AbilityActivated[client])

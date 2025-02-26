@@ -270,7 +270,7 @@ void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int
 				{
 					Format(desc, 512, "%s\nMining Efficiency: %.0f%%", desc, value[i]);
 				}
-				case 2017:
+				case 5017:
 				{
 					Format(desc, 512, "%s\nMining Level: Tier %d", desc, RoundFloat(value[i]));
 				}
@@ -356,7 +356,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 				static MineEnum mine;
 				MineList.GetArray(index, mine);
 
-				int tier = RoundToNearest(Attributes_Get(client, weapon, 2017));
+				int tier = RoundToNearest(Attributes_Get(weapon, 5017, 0.0));
 				float attackspeed = Attributes_Get(weapon, 6 , 1.0);
 				if(tier < mine.Tier)
 				{

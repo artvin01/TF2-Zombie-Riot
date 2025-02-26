@@ -374,7 +374,12 @@ stock Function KvGetFunction(KeyValues kv, const char[] string, Function defaul 
 }
 
 static bool i_PreviousInteractedEntityDo[MAXENTITIES];
+static float f_PreviousInteractedEntityDo[MAXENTITIES];
 
+void ResetIgnorePointVisible()
+{
+	Zero(f_PreviousInteractedEntityDo);
+}
 stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)
 {
 	float vecOrigin[3], vecAngles[3];
@@ -385,6 +390,8 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 
 	//Mask shot here, reasoning being that it should be easiser to interact with buildings and npcs if they are very close to eachother or inside (This wont fully fix it, but i see not other way.)
 	//This is client compensated anyways, and reviving is still via hull and not hitboxes.
+
+	//
 	int flags = CONTENTS_SOLID;
 
 	if(!mask_shot)
@@ -393,7 +400,9 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	}
 	else
 	{
-		flags |= MASK_SHOT;
+		flags |= MASK_SOLID;
+		//Mask shot is entirely unnececarry, as it doesnt work and with the ignore entity method its unnececcary
+	//	flags |= MASK_SHOT;
 	}
 
 	int iReturn = -1;
@@ -408,8 +417,19 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		i_PreviousInteractedEntityDo[iClient] = true;
 	}
 
+	if(repeatsretry >= 2)
+	{
+		if(f_PreviousInteractedEntityDo[iClient] < GetGameTime())
+		{
+			//Our last interaction was a second ago, dont try to phase throguh the previous ignored one.
+			i_PreviousInteractedEntity[iClient] = -1; //didnt find any
+		}
+		f_PreviousInteractedEntityDo[iClient] = GetGameTime() + 1.0;
+	}
+
 	for(int repeat; repeat < repeatsretry; repeat++)
 	{
+		delete hTrace;
 		if(!ignore_allied_npc)
 		{
 			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
@@ -427,11 +447,15 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 		if(repeat == 0)
 		{
-			delete hTrace;
-			i_PreviousInteractedEntity[iClient] = 0; //didnt find any
+			if(repeatsretry >= 2)
+				i_PreviousInteractedEntity[iClient] = -1; //didnt find any
 		}
 	}
-	i_PreviousInteractedEntity[iClient] = iHit;
+
+
+	if(repeatsretry >= 2)
+		i_PreviousInteractedEntity[iClient] = iHit;
+
 	bool DoAlternativeCheck = false;
 	if(IsValidEntity(iHit) && i_IsABuilding[iHit])
 	{
@@ -1397,6 +1421,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 				{
 					AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
 					HealPointToReinforce(healer, HealingDoneInt, 0.0);
+					GiveRageOnDamage(healer, float(HealingDoneInt) * 2.0);
 				}
 			}
 		}
@@ -1484,6 +1509,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 			{
 				AddHealthToUbersaw(healer, HealthHealed, 0.0);
 				HealPointToReinforce(healer, HealthHealed, 0.0);
+				GiveRageOnDamage(healer, float(HealthHealed) * 2.0);
 			}
 #endif
 		}
@@ -1720,10 +1746,12 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		return false;
 #endif
 	}	
+	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
 	}
+
 	return entity!=data;
 }
 
@@ -2155,45 +2183,17 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
-public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude)
-{
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	if(entity <= MaxClients) //just ignore players entirely, there will be no pvp.
-	{
-		return false;
-	}
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
-	{
-		return false;
-	}
-	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
-	{
-		if(GetTeam(iExclude) == GetTeam(entity))
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-		
-	
-	return !(entity == iExclude);
-}
-
 public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 {
 	char class[64];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(!StrEqual(class, "zr_base_npc"))
+	if(!b_ThisWasAnNpc[entity])
 	{
 		return false;
 	}
 	
-	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
+	if(entity != iExclude)
 	{
 		if(GetTeam(iExclude) == GetTeam(entity))
 		{
@@ -2207,39 +2207,6 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 		
 	
 	return !(entity == iExclude);
-}
-
-stock int GetClosestTarget_BaseBoss(int entity)
-{
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
-	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
-	{
-		if (GetTeam(entity)!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
-		{
-			float EntityLocation[3], TargetLocation[3]; 
-			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				
-				
-			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-			if( TargetDistance ) 
-			{
-				if( distance < TargetDistance ) 
-				{
-					ClosestTarget = i; 
-					TargetDistance = distance;		  
-				}
-			} 
-			else 
-			{
-				ClosestTarget = i; 
-				TargetDistance = distance;
-			}				
-		}
-	}
-	return ClosestTarget; 
 }
 
 stock void AnglesToVelocity(const float ang[3], float vel[3], float speed=1.0)
@@ -2599,7 +2566,11 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(StrEqual(class, "zr_base_npc")) return true;
+	if(StrEqual(class, "zr_base_npc"))
+		return true;
+
+	if(StrEqual(class, "zr_base_stationary"))
+		return true;
 	
 	return !(entity == data);
 }
@@ -2665,16 +2636,6 @@ stock void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[
 	tmpVec[1] = endPos[1] - startPos[1];
 	tmpVec[2] = endPos[2] - startPos[2];
 	GetVectorAngles(tmpVec, angles);
-}
-
-
-stock int TracePlayerHulls(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
-{
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_ALL, IngorePlayersAndBuildings, entity);
-	bool bHit = TR_DidHit(hTrace);
-	ref = TR_GetEntityIndex(hTrace);
-	delete hTrace;
-	return bHit;
 }
 
 stock void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
@@ -3035,7 +2996,7 @@ int inflictor = 0)
 #if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
-		float value = Attributes_Get(weapon, 99, 1.0);//increaced blast radius attribute (Check weapon only)
+		float value = Attributes_Get(weapon, 99, 1.0);//increased blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 		if(maxtargetshit == 10)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
@@ -4167,8 +4128,7 @@ stock bool IsPointHazard(const float pos1[3])
 }
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
-	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	if(b_IsATrigger[entity])
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -4203,7 +4163,7 @@ stock bool IsPointNoBuild(const float pos1[3],const float mins[3],const float ma
 public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int client)
 {
 	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && (!StrContains(classname, "trigger_hurt") ||!StrContains(classname, "func_nobuild")))
+	if(b_IsATriggerHurt[entity] || (GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "func_nobuild")))
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -5118,18 +5078,11 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
+	f_AllowInstabuildRegardless = GetGameTime() + time;
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
-/*
-	GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + time);
-	GameRules_SetProp("m_bAwaitingReadyRestart", false);
-
-	Event event = CreateEvent("teamplay_update_timer", true);
-	event.SetInt("seconds", RoundFloat(time));
-	event.Fire();
-*/
 }
 
 stock int GetOwnerLoop(int entity)
@@ -5307,11 +5260,11 @@ stock void Matrix_GetRotationMatrix(float matMatrix[3][3], float fA, float fB, f
 	);
 }
 
-stock void ForcePlayerCrouch(int client, bool enable)
+stock void ForcePlayerCrouch(int client, bool enable, bool thirdpers = true)
 {
 	if(enable)
 	{
-		SetVariantInt(1);
+		SetVariantInt(thirdpers);
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		SetForceButtonState(client, true, IN_DUCK);
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
@@ -5365,15 +5318,25 @@ stock int GetTeam(int entity)
 {
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
+		if(i_IsVehicle[entity])
+		{
+#if defined ZR
+			entity = Vehicle_Driver(entity);
+#else
+			entity = GetEntPropEnt(entity, Prop_Data, "m_hPlayer");
+#endif
+			if(entity == -1)
+				return -1;
+		}
+
 #if !defined RTS
 		if(entity && entity <= MaxClients)
 			return GetClientTeam(entity);
 #endif
 
 		if(TeamNumber[entity] == -1)
-		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
-		}
+		
 		return TeamNumber[entity];
 	}
 	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
@@ -5501,3 +5464,18 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	returnEnd = particle2;
 }
 #endif
+
+stock int FindEntityByNPC(int &i)
+{
+	for(; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != -1 && !b_NpcHasDied[entity])
+		{
+			i++;
+			return entity;
+		}
+	}
+
+	return -1;
+}

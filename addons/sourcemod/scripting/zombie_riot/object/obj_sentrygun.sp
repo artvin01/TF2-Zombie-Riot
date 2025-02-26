@@ -19,6 +19,15 @@ void ObjectSentrygun_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	build.Section = 1;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_sentrygun");
+	build.Cost = 600;
+	build.Health = 30;
+	build.Cooldown = 30.0;
+	build.Func = ObjectGeneric_CanBuildSentry;
+	Building_Add(build);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -48,6 +57,10 @@ methodmap ObjectSentrygun < ObjectGeneric
 	}
 }
 
+bool IsEntitySentrygun(int sentry)
+{
+	return func_NPCThink[sentry] == ObjectSentrygun_ClotThink;
+}
 //think every tick.
 public void ObjBaseThinkPostSentry(int building)
 {

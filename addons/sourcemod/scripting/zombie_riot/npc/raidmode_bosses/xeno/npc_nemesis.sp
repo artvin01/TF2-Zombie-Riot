@@ -107,9 +107,6 @@ float InfectionDelay()
 }
 void RaidbossNemesis_OnMapStart()
 {
-	if(!IsFileInDownloads(NEMESIS_MODEL))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nemesis");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_nemesis");
@@ -262,7 +259,7 @@ methodmap RaidbossNemesis < CClotBody
 		RemoveAllDamageAddition();
 
 		Music_SetRaidMusicSimple("#zombie_riot/320_now_1.mp3", 200, true, 1.3);
-		RaidModeScaling = 9999999.99;
+		RaidModeScaling = 0.0;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		WavesUpdateDifficultyName();
 		npc.m_bThisNpcIsABoss = true;
@@ -733,6 +730,16 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							npc.m_flNextRangedAttackHappening = gameTime + 3.1;
 							fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
 							npc.PlayRangedSound();
+
+							if(i_IsVehicle[Enemy_I_See] == 2)
+							{
+								int driver = Vehicle_Driver(Enemy_I_See);
+								if(driver != -1)
+								{
+									Enemy_I_See = driver;
+									Vehicle_Exit(driver);
+								}
+							}
 
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
 							
@@ -1205,7 +1212,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
@@ -1596,7 +1603,7 @@ public Action Nemesis_DoInfectionThrowInternal(Handle timer, DataPack DataNem)
 	}
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int enemy = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(enemy) && IsValidEnemy(entity, enemy, false, false))
 		{
 			bool Hit_something = Can_I_See_Enemy_Only(entity, enemy);

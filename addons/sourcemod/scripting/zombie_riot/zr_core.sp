@@ -1,15 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//#define UseDownloadTable
-
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
 #define STARTER_WEAPON_LEVEL	5
 #define MAX_TARGETS_HIT 10
-
-//#define ZR_ApplyKillEffects NPC_DeadEffects
-#define ZR_GetWaveCount Rogue_GetRoundScale
 
 #define MVM_CLASS_FLAG_NONE				0
 #define MVM_CLASS_FLAG_NORMAL			(1 << 0)	// Base Normal
@@ -263,7 +258,6 @@ ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
-ConVar zr_allowfreeplay;
 ConVar zr_enemymulticap;
 ConVar zr_raidmultihp;
 ConVar zr_multi_maxcap;
@@ -309,6 +303,7 @@ float Resistance_for_building_High[MAXENTITIES];
 MusicEnum MusicString1;
 MusicEnum MusicString2;
 MusicEnum RaidMusicSpecial1;
+MusicEnum BGMusicSpecial1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -330,6 +325,8 @@ float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
 float ResourceRegenMulti;
+bool Barracks_InstaResearchEverything;
+bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -342,8 +339,8 @@ float ResourceRegenMulti;
 float Armor_regen_delay[MAXTF2PLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
-ConVar CvarSvRollagle; // sv_rollangle
-int i_SvRollAngle[MAXTF2PLAYERS];
+//ConVar CvarSvRollagle; // sv_rollangle
+//int i_SvRollAngle[MAXTF2PLAYERS];
 
 	
 int CashSpent[MAXTF2PLAYERS];
@@ -376,7 +373,6 @@ int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 
 int StoreWeapon[MAXENTITIES];
-int ClientAttribResetCount[MAXTF2PLAYERS];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
 float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
@@ -387,12 +383,13 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 int SpecialLastMan;
 
 bool WaitingInQueue[MAXTF2PLAYERS];
+float FreeplayTimeLimit;
 
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalEnemyBoss = 0.25;
-//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increaced
+//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
 //isnt affected when selecting Modificators.
 //Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
 float MultiGlobalHealth = 1.0;
@@ -458,6 +455,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/mvm_hud.sp"
 #include "zombie_riot/steamworks.sp"
 #include "zombie_riot/zsclassic.sp"
+#include "zombie_riot/construction.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
@@ -511,7 +509,6 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
 #include "zombie_riot/custom/weapon_passive_banner.sp"
 #include "zombie_riot/custom/weapon_ark.sp"
-#include "zombie_riot/custom/pets.sp"
 #include "zombie_riot/custom/coin_flip.sp"
 #include "zombie_riot/custom/weapon_manual_reload.sp"
 #include "zombie_riot/custom/weapon_super_star_shooter.sp"
@@ -594,6 +591,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/weapon_castlebreaker.sp"
 #include "zombie_riot/custom/kit_soldine.sp"
 #include "zombie_riot/custom/weapon_kritzkrieg.sp"
+#include "zombie_riot/custom/wand/weapon_bubble_wand.sp"
 
 void ZR_PluginLoad()
 {
@@ -609,62 +607,65 @@ void ZR_PluginStart()
 	
 
 	//any noob will eventually type these!!
-	RegConsoleCmd("sm_store", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_market", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_zmarket", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_weapons", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_walmart", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_tesco", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_buy", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_guns", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_gun", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_givegun", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_giveweapons", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_giveweapon", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_cmd", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_cmds", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_commands", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_help", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_giveweapon", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_info", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_menu", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_givemeall", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_giveall", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_freeitems", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_wear", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_wearme", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_zr", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_lidlnord", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_lidlsüd", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_kaufland", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_ikea", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_zabka", Access_StoreViaCommand, "Please Press TAB instad");
-	RegConsoleCmd("sm_penny", Access_StoreViaCommand, "Please Press TAB instad");
+	RegConsoleCmd("sm_store", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_shop", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_market", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_zmarket", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_weapons", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_walmart", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_tesco", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_buy", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_guns", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_gun", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_givegun", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_giveweapons", Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_cmd", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_cmds", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_commands", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_wear", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_wearme", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_zr", 			Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_lidlnord", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_lidlsüd", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_kaufland", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_ikea",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_zabka",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_penny",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");
+	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
-	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
+	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person"); //old and unused.
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_set_xp", Command_SetXp, ADMFLAG_ROOT, "Set XP to the Person");
 	RegAdminCmd("sm_give_cash_all", Command_GiveCashAll, ADMFLAG_ROOT, "Give Cash to All");
-	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
-	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
-	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");
-	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
-	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
-	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
+	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");			//DEBUG
+	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");			//DEBUG
+	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");	//DEBUG
+	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");	//DEBUG
+	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");						//DEBUG
+	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_ROOT, "Fake Death Count"); 	//DEBUG
+	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
+	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
-	CvarSvRollagle = FindConVar("sv_rollangle");
-	if(CvarSvRollagle)
-		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+//	CvarSvRollagle = FindConVar("sv_rollangle");
+//	if(CvarSvRollagle)
+//		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
+	Construction_PluginStart();
 	Database_PluginStart();
 	Items_PluginStart();
 	Medigun_PluginStart();
@@ -677,6 +678,7 @@ void ZR_PluginStart()
 	Spawns_PluginStart();
 	Object_PluginStart();
 	SteamWorks_PluginStart();
+	Vehicle_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -700,13 +702,19 @@ void ZR_MapStart()
 	PrecacheSound("ui/hitsound_electro2.wav");
 	PrecacheSound("ui/hitsound_electro3.wav");
 	PrecacheSound("ui/hitsound_space.wav");
+	PrecacheSound("#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
+	PrecacheSound("ui/chime_rd_2base_neg.wav");
+	PrecacheSound("ui/chime_rd_2base_pos.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
-	Dhooks_BannerMapstart();
+	DHooks_MapStart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
+	Construction_MapStart();
+	Zero(TeutonType); //Reset teutons on mapchange
+	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
@@ -723,6 +731,7 @@ void ZR_MapStart()
 	Zero(f_RingDelayGift);
 	Zero(f_HealthBeforeSuittime);
 	Music_ClearAll();
+	BuildingVoteEndResetCD();
 	Medigun_ClearAll();
 	WindStaff_ClearAll();
 	Lighting_Wand_Spell_ClearAll();
@@ -887,14 +896,14 @@ void ZR_MapStart()
 	Wkit_Soldin_OnMapStart();
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
+	BubbleWand_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
-	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.1, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	RemoveAllCustomMusic();
 	
@@ -908,39 +917,76 @@ void ZR_MapStart()
 	//Store_RandomizeNPCStore(1);
 }
 
+public void OnMapInit()
+{
+	OnMapInit_ZR();
+
+	//nerf full health kits
+	char classname[64];
+	int length = EntityLump.Length();
+	for(int i; i < length; i++)
+	{
+		EntityLumpEntry entry = EntityLump.Get(i);
+		
+		int key = entry.FindKey("classname");
+		if(key != -1)
+		{
+			entry.Get(key, _, _, classname, sizeof(classname));
+			if(!StrContains(classname, "item_healthkit_full"))
+			{
+				entry.Update(key, NULL_STRING, "item_healthkit_medium");
+			}
+			else if(!StrContains(classname, "tf_logic_arena")
+			 || !StrContains(classname, "tf_logic_arena")
+			  || !StrContains(classname, "trigger_capture_area"))
+			{
+				EntityLump.Erase(i);
+				i--;
+				length--;
+			}
+		}
+	}
+}
+
 public Action GlobalTimer(Handle timer)
 {
+	static int frame;
+	frame++;
+// Due to how fast spawns are, it has to be on game frame.
+//	NPC_SpawnNext(false, false);
+
+	if(frame % 5)
+		return Plugin_Continue;
+	
+	bool ForceMusicStopAndReset = false;
+	if(f_AllowInstabuildRegardless && f_AllowInstabuildRegardless < GetGameTime())
+	{
+		f_AllowInstabuildRegardless = 0.0;
+		ForceMusicStopAndReset = true;
+	}
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
-			/*
-			if(IsFakeClient(client))
+			if(ForceMusicStopAndReset)
 			{
-				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
-				{
-					MoveBotToSpectator(client);
-				}
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 2);
 			}
-			*/
+			else
+			{
+				Music_Update(client);
+			}
+			
 			PlayerApplyDefaults(client);
 		}
 	}
 	
-	static int frame;
-	frame++;
-	if(frame % 4)
+	if(frame % 20)
 		return Plugin_Continue;
-
+	
 	Zombie_Delay_Warning();
 	Spawners_Timer();
-	return Plugin_Continue;
-}
-public Action GetTimerAndNullifyMusicMVM_Timer(Handle timer)
-{
-	if(GameRules_GetRoundState() == RoundState_BetweenRounds)
-		GetTimerAndNullifyMusicMVM();
-		
 	return Plugin_Continue;
 }
 
@@ -968,6 +1014,16 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
+	if(CountPlayersOnServer() == 1)
+	{
+//		Waves_SetReadyStatus(2);
+		//fixes teuton issue hopefully?
+		//happens when you loose and instnatly ragequit or something.
+		for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+		{
+			TeutonType[client_summon] = TEUTON_NONE;
+		}
+	}
 }
 
 void ZR_ClientDisconnect(int client)
@@ -975,8 +1031,10 @@ void ZR_ClientDisconnect(int client)
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
 	DataBase_ClientDisconnect(client);
-	Pets_ClientDisconnect(client);
+	Building_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
+	Vehicle_Exit(client, true, false);
+	Citizen_PlayerReplacement(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
@@ -1010,7 +1068,7 @@ void ZR_ClientDisconnect(int client)
 	//reeset to 0
 }
 
-public void OnMapInit()
+public void OnMapInit_ZR()
 {
 	bool mvm;
 
@@ -1140,7 +1198,8 @@ public Action Command_RTdFail(int client, int args)
 {
 	if(client)
 	{
-		PrintToChat(client, "There is no RTD, and RTD isnt supported.");
+		CPrintToChat(client, "{crimson}[ZR] Looks like the dice broke.");
+		ClientCommand(client, "playgamesound vo/k_lab/kl_fiddlesticks.wav");
 	}
 	return Plugin_Handled;
 }
@@ -1153,6 +1212,7 @@ public Action Command_AFK(int client, int args)
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);
+		Queue_ClientDisconnect(client);
 	}
 	return Plugin_Handled;
 }
@@ -1458,6 +1518,33 @@ public Action Command_SpawnGrigori(int client, int args)
 	return Plugin_Handled;
 }
 
+public Action Command_PropVehicle(int client, int args)
+{
+	float flPos[3], flAng[3];
+	GetClientAbsAngles(client, flAng);
+	if(!SetTeleportEndPoint(client, flPos))
+	{
+		PrintToChat(client, "Could not find place.");
+		return Plugin_Handled;
+	}
+
+	PrecacheModel("models/buggy.mdl");
+
+	int vehicle = CreateEntityByName("prop_vehicle_driveable");
+	
+	DispatchKeyValue(vehicle, "model", "models/buggy.mdl");
+	DispatchKeyValue(vehicle, "vscripts", "vehicle.nut");
+	DispatchKeyValue(vehicle, "vehiclescript", "scripts/vehicles/jeep_test.txt");
+	DispatchKeyValue(vehicle, "spawnflags", "1"); // SF_PROP_VEHICLE_ALWAYSTHINK
+	DispatchKeyValueVector(vehicle, "origin", flPos);
+	DispatchKeyValueVector(vehicle, "angles", flAng);
+	SetEntProp(vehicle, Prop_Data, "m_nVehicleType", 0);
+
+	DispatchSpawn(vehicle);
+
+	return Plugin_Handled;
+}
+
 public void OnClientAuthorized(int client)
 {
 	Ammo_Count_Used[client] = 0;
@@ -1492,6 +1579,7 @@ public Action Timer_Dieing(Handle timer, int client)
 	
 			if(dieingstate[client] <= 0)
 			{
+				Vehicle_Exit(client);
 				if(dieingstate[client] != -5)
 				{
 					GiveCompleteInvul(client, 2.0);
@@ -1693,8 +1781,7 @@ void CheckLastMannStanding(int killed)
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
-	bool rogue = Rogue_Mode();
-	if(!Waves_Started() || (!rogue && Waves_InSetup()) || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_ZombieRiot)
+	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
 		LastMann = false;
 		LastMann_BeforeLastman = false;
@@ -1813,7 +1900,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				Zero(delay_hud); //Allow the hud to immedietly update
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 					{
 						FreezeNpcInTime(entity, 3.0, true);
@@ -1947,6 +2034,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			Bob_Exists_Index = -1;
 		}
 
+		bool rogue = Rogue_Mode();
 		if(rogue)
 			rogue = !Rogue_BattleLost();
 	
@@ -2353,8 +2441,8 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 		}
 	}
 	
-	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(!b_NpcHasDied[entity])
 		{
@@ -2471,7 +2559,10 @@ void GiveXP(int client, int xp)
 				Store_PrintLevelItems(client, Level[client]);
 			}
 			if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
+			{
+				SkillTree_CalcSkillPoints(client);
 				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
+			}
 		}
 	}
 }
@@ -2666,8 +2757,6 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
-	i_PreviousInteractedEntity[iClient] = 0; //didnt find any
-	
 	if(f_Reviving_This_Client[iClient] < GetGameTime())
 	{
 		i_Reviving_This_Client[iClient] = 0;
@@ -2716,28 +2805,6 @@ stock bool isPlayerMad(int client) {
 		return g_isPlayerInDeathMarch_HellHoe[client];
 	}
 	return false;
-}
-
-
-stock void GetTimerAndNullifyMusicMVM()
-{
-	return;
-/*
-	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
-
-	if(!IsValidEntity(EntityTimerWhat))
-		return;
-	
-	int Time = RoundToNearest(GetEntPropFloat(EntityTimerWhat, Prop_Send, "m_flRestartRoundTime") - GetGameTime());
-	if(Time > 8 && Time <= 12)
-	{
-		SetEntPropFloat(EntityTimerWhat ,Prop_Send, "m_flRestartRoundTime", GetGameTime() + 8.0);
-	}
-	else
-	{
-		return;
-	}
-	*/
 }
 
 bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)

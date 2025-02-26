@@ -217,7 +217,7 @@ methodmap L4D2_Tank < CClotBody
 		}
 
 		
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
@@ -554,7 +554,16 @@ public void L4D2_Tank_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEntity(closest) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					
+					if(i_IsVehicle[Enemy_I_See] == 2)
+					{
+						int driver = Vehicle_Driver(Enemy_I_See);
+						if(driver != -1)
+						{
+							Enemy_I_See = driver;
+							Vehicle_Exit(driver);
+						}
+					}
+
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
 					
 					f_TankGrabbedStandStill[Enemy_I_See] = GetGameTime(npc.index) + 1.2;
@@ -784,17 +793,17 @@ static char[] GetTankHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;

@@ -246,9 +246,6 @@ methodmap Astrianious < CClotBody
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
-
-		SetVariantInt(0);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;

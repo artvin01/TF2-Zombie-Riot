@@ -41,15 +41,13 @@ int NPC_GetNameById(int id, char[] buffer, int length)
 
 stock int NPC_GetNameByPlugin(const char[] name, char[] buffer, int length)
 {
+	int index = NPCList.FindString(name, NPCData::Plugin);
+	if(index == -1)
+		return 0;
+	
 	static NPCData data;
-	int lengt = NPCList.Length;
-	for(int i; i < lengt; i++)
-	{
-		NPCList.GetArray(i, data);
-		if(StrEqual(name, data.Plugin))
-			return strcopy(buffer, length, data.Name);
-	}
-	return 0;
+	NPCList.GetArray(index, data);
+	return strcopy(buffer, length, data.Name);
 }
 
 void NPC_GetById(int id, NPCData data)
@@ -59,14 +57,12 @@ void NPC_GetById(int id, NPCData data)
 
 int NPC_GetByPlugin(const char[] name, NPCData data = {})
 {
-	int length = NPCList.Length;
-	for(int i; i < length; i++)
-	{
-		NPCList.GetArray(i, data);
-		if(StrEqual(name, data.Plugin))
-			return i;
-	}
-	return -1;
+	int index = NPCList.FindString(name, NPCData::Plugin);
+	if(index == -1)
+		return 0;
+	
+	NPCList.GetArray(index, data);
+	return index;
 }
 
 int NPC_CreateByName(const char[] name, int team, const float vecPos[3], const float vecAng[3], const char[] data = "")

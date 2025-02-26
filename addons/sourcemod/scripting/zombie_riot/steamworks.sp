@@ -14,7 +14,7 @@ void SteamWorks_PluginStart()
 	#endif
 }
 
-public void OnLibraryAdded(const char[] name)
+void SteamWorks_LibraryAdded(const char[] name)
 {
 	#if defined _SteamWorks_Included
 	if(!SteamWorksCompiled && StrEqual(name, STEAMWORKS_LIBRARY))
@@ -25,7 +25,7 @@ public void OnLibraryAdded(const char[] name)
 	#endif
 }
 
-public void OnLibraryRemoved(const char[] name)
+void SteamWorks_LibraryRemoved(const char[] name)
 {
 	#if defined _SteamWorks_Included
 	if(SteamWorksCompiled && StrEqual(name, STEAMWORKS_LIBRARY))
@@ -40,23 +40,27 @@ void SteamWorks_UpdateGameTitle()
 	{
 		char buffer[64];
 		
-		if(Rogue_Mode())
+		if(Construction_Mode())
 		{
-		//	FormatEx(buffer, sizeof(buffer), "ZR Rogue (Floor %d-%d)", Rogue_GetFloor() + 1, Rogue_GetCount() + 1);
-			FormatEx(buffer, sizeof(buffer), "ZR Rogue");
+			strcopy(buffer, sizeof(buffer), "ZR: Construction");
+		}
+		else if(Rogue_Mode())
+		{
+		//	FormatEx(buffer, sizeof(buffer), "ZR: Rogue (Floor %d-%d)", Rogue_GetFloor() + 1, Rogue_GetCount() + 1);
+			strcopy(buffer, sizeof(buffer), "ZR: Rogue");
 		}
 		else if(Waves_InFreeplay() && WhatDifficultySetting_Internal[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "ZR %s (Freeplay)", WhatDifficultySetting_Internal);
+			FormatEx(buffer, sizeof(buffer), "ZR: %s (Freeplay)", WhatDifficultySetting_Internal);
 		}
 		else if(Waves_Started() && WhatDifficultySetting_Internal[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "ZR %s", WhatDifficultySetting_Internal);
-		//	FormatEx(buffer, sizeof(buffer), "ZR %s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRound() + 1, Waves_GetMaxRound());
+			FormatEx(buffer, sizeof(buffer), "ZR: %s", WhatDifficultySetting_Internal);
+		//	FormatEx(buffer, sizeof(buffer), "ZR: %s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRound() + 1, Waves_GetMaxRound());
 		}
 		else
 		{
-			strcopy(buffer, sizeof(buffer), "ZR (Waiting For Players)");
+			strcopy(buffer, sizeof(buffer), "Zombie Riot");
 		}
 
 		SteamWorks_SetGameDescription(buffer);
