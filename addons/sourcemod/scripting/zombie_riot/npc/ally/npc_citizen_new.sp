@@ -2665,6 +2665,55 @@ public void Citizen_ClotThink(int iNPC)
 			// Don't do anything if we're going to revive someone
 		}
 
+		// Forced ally revive check
+		else if(team == TFTeam_Red && !(GetURandomInt() % 19))
+		{
+			npc.ThinkFriendly("Nobody to revive...");
+
+			npc.m_bGetClosestTargetTimeAlly = false;
+
+			float distance = FAR_FUTURE;
+
+			int a, entity;
+			while((entity = FindEntityByNPC(a)) != -1)
+			{
+				if(entity != npc.index && Citizen_ThatIsDowned(entity) && GetTeam(entity) == team)
+				{
+					if(GetClosestTarget(entity, true, 600.0, true, .IgnorePlayers = true) > MaxClients)
+						continue;
+					
+					WorldSpaceCenter(entity, vecTarget);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+					{
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 4;
+					}
+				}
+			}
+
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0 && IsClientInGame(client) && IsPlayerAlive(client))
+				{
+					if(GetClosestTarget(client, true, 600.0, true, .IgnorePlayers = true) > MaxClients)
+						continue;
+
+					WorldSpaceCenter(client, vecTarget);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+					{
+						distance = dist;
+						ally = client;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 4;
+					}
+				}
+			}
+		}
+
 		// Repair check
 		else if(npc.m_iClassRole == Cit_Builder && (GetURandomInt() % 3))
 		{
