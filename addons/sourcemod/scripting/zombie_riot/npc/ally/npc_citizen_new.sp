@@ -1550,21 +1550,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
 		entity = NPC_CreateByName("npc_citizen", client, pos, ang, TFTeam_Red, data);
-		
-		if(IsValidEntity(entity))
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			
-			npc.m_iWearable3 = TF2_CreateGlow(npc.index);
-				
-			SetVariantColor(view_as<int>({0, 255, 0, 255}));
-			AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
-				
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
-
-			return entity;
-		}
+		return entity;
 	}
 
 	return -1;
