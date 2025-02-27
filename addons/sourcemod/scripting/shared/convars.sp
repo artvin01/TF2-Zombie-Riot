@@ -91,6 +91,7 @@ void ConVar_PluginStart()
 	CvarSkillPoints = CreateConVar("zr_skillpoints", "1", "If skill points are enabled");
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
+	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
 
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);

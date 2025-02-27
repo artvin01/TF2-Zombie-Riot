@@ -20,6 +20,12 @@ stock bool HomingProjectile_IsActive(int projectile)
 {
 	return RMR_CurrentHomingTarget[projectile] != -1;
 }
+stock void HomingProjectile_Deactivate(int projectile)
+{
+	//this will kill the homing of a projectile by simply making the target it has invalid / making it "lock only once", aka it won't try to find a new target and instead it will kill the timer
+	RWI_LockOnlyOnce[projectile] = true;
+	RMR_CurrentHomingTarget[projectile] = -1;
+}
 
 //Credits: Me (artvin) for rewriting it abit so its easier to read
 // Sarysa (sarysa pub 1 plugin)

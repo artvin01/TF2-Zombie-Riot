@@ -1550,21 +1550,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
 		entity = NPC_CreateByName("npc_citizen", client, pos, ang, TFTeam_Red, data);
-		
-		if(IsValidEntity(entity))
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			
-			npc.m_iWearable3 = TF2_CreateGlow(npc.index);
-				
-			SetVariantColor(view_as<int>({0, 255, 0, 255}));
-			AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
-				
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
-
-			return entity;
-		}
+		return entity;
 	}
 
 	return -1;
@@ -2663,6 +2649,55 @@ public void Citizen_ClotThink(int iNPC)
 		else if(helpAlly)
 		{
 			// Don't do anything if we're going to revive someone
+		}
+
+		// Forced ally revive check
+		else if(team == TFTeam_Red && !(GetURandomInt() % 19))
+		{
+			npc.ThinkFriendly("Nobody to revive...");
+
+			npc.m_bGetClosestTargetTimeAlly = false;
+
+			float distance = FAR_FUTURE;
+
+			int a, entity;
+			while((entity = FindEntityByNPC(a)) != -1)
+			{
+				if(entity != npc.index && Citizen_ThatIsDowned(entity) && GetTeam(entity) == team)
+				{
+					if(GetClosestTarget(entity, true, 600.0, true, .IgnorePlayers = true) > MaxClients)
+						continue;
+					
+					WorldSpaceCenter(entity, vecTarget);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+					{
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 4;
+					}
+				}
+			}
+
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0 && IsClientInGame(client) && IsPlayerAlive(client))
+				{
+					if(GetClosestTarget(client, true, 600.0, true, .IgnorePlayers = true) > MaxClients)
+						continue;
+
+					WorldSpaceCenter(client, vecTarget);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+					{
+						distance = dist;
+						ally = client;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 4;
+					}
+				}
+			}
 		}
 
 		// Repair check

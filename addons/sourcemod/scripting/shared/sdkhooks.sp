@@ -549,10 +549,10 @@ public void OnPostThink(int client)
 		//if they are using a magic weapon, don't take away the overmana. can be both a good and bad thing, good in non ruina situations, possibly bad in ruina situations
 		//the +10 is for rounding errors.
 		//CPrintToChatAll("Overmana decay triggered");
-		if(Current_Mana[client] > RoundToCeil(max_mana[client] * 2.0))
+		if(Current_Mana[client] > RoundToCeil(max_mana[client] * 2.1))
 		{
 			//cant be above max.
-			Current_Mana[client] = RoundToCeil(max_mana[client] * 2.0);
+			Current_Mana[client] = RoundToCeil(max_mana[client] * 2.1);
 		}
 		if(Mana_Loss_Delay[client] < GameTime && Mana_Regen_Tick)
 		{

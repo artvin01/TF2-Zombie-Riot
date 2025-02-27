@@ -3871,8 +3871,18 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 						menu2.AddItem("-21", buffer);
 
-						FormatEx(buffer, sizeof(buffer), "%t", "Custom Models");
-						menu2.AddItem("-45", buffer);
+						if(CvarCustomModels.BoolValue)
+						{
+							if(IsFileInDownloads("models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"))
+							{
+								FormatEx(buffer, sizeof(buffer), "%t", "Custom Models");
+								menu2.AddItem("-45", buffer);
+							}
+							else
+							{
+								CvarCustomModels.BoolValue = false;
+							}
+						}
 
 						FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
 						menu2.AddItem("-12", buffer);
