@@ -162,33 +162,36 @@ void ViewChange_ClientDisconnect(int client)
 
 void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = false)
 {
-	b_HideCosmeticsPlayer[client] = DontShowCosmetics;
-	i_PlayerModelOverrideIndexWearable[client] = index;
-	if(ForceNiko)
+	if(index == -1 || (CvarCustomModels.BoolValue && IsFileInDownloads("models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl")))
 	{
-		b_HideCosmeticsPlayer[client] = true;
-		i_PlayerModelOverrideIndexWearable[client] = NIKO_2;
-	}
-	ViewChange_Update(client, true);
-	int entity;
-	if(DontShowCosmetics)
-	{
-		while(TF2_GetWearable(client, entity))
+		b_HideCosmeticsPlayer[client] = DontShowCosmetics;
+		i_PlayerModelOverrideIndexWearable[client] = index;
+		if(ForceNiko)
 		{
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-				continue;
-
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			b_HideCosmeticsPlayer[client] = true;
+			i_PlayerModelOverrideIndexWearable[client] = NIKO_2;
 		}
-	}
-	else
-	{
-		while(TF2_GetWearable(client, entity))
+		ViewChange_Update(client, true);
+		int entity;
+		if(DontShowCosmetics)
 		{
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-				continue;
+			while(TF2_GetWearable(client, entity))
+			{
+				if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+					continue;
 
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			}
+		}
+		else
+		{
+			while(TF2_GetWearable(client, entity))
+			{
+				if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+					continue;
+
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+			}
 		}
 	}
 }
