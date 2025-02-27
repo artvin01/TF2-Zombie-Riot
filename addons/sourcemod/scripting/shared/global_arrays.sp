@@ -115,6 +115,7 @@ bool ForceNiko;
 Handle g_hImpulse;
 
 Handle g_hSetLocalOrigin;
+Handle g_hSetLocalAngles;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
 
