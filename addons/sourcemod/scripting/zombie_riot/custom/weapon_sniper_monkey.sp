@@ -3,13 +3,16 @@
 
 static bool SmartBounce;
 static int LastHitTarget;
-static int SupplyUsesThisWave[MAXPLAYERS+1];
-static int SupplyThisWave[MAXPLAYERS+1];
+static int SuppliesUsed;
 
+void SniperMonkey_ResetUses()
+{
+	SuppliesUsed = 0;
+}
 void SniperMonkey_ClearAll()
 {
 	SmartBounce = false;
-	Zero(SupplyThisWave);
+	SuppliesUsed = 0;
 }
 
 float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
@@ -181,7 +184,7 @@ public void Weapon_EliteDefender(int client, int weapon, bool &result, int slot)
 
 public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 {
-	if(SupplyUsesThisWave[client] > 1 && SupplyThisWave[client] == Waves_GetRound())
+	if(SuppliesUsed >= 2)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -216,15 +219,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 			ClientCommand(client, "playgamesound ui/quest_status_tick_advanced_friend.wav");
 			Ability_Apply_Cooldown(client, slot, 150.0);
 
-			if(SupplyThisWave[client] == Waves_GetRound())
-			{
-				SupplyUsesThisWave[client]++;
-			}
-			else
-			{
-				SupplyThisWave[client] = Waves_GetRound();
-				SupplyUsesThisWave[client] = 1;
-			}
+			SuppliesUsed++;
 		}
 		else
 		{

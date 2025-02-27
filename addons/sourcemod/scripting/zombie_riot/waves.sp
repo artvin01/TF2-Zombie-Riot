@@ -2565,6 +2565,7 @@ void WaveEndLogicExtra()
 	Specter_AbilitiesWaveEnd();	
 	Rapier_CashWaveEnd();
 	LeperResetUses();
+	SniperMonkey_ResetUses();
 	ResetFlameTail();
 	Building_ResetRewardValuesWave();
 	FallenWarriorGetRandomSeedEachWave();
