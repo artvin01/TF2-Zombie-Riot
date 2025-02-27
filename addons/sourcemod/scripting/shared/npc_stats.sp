@@ -2059,6 +2059,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(layer != -1)
 			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (f_AttackSpeedNpcIncreace[this.index])));
 	}
+
 	public void RemoveGesture(const char[] anim)
 	{
 		int activity = this.LookupActivity(anim);
@@ -2069,6 +2070,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(layer != -1)
 			this.FastRemoveLayer(layer);
 	}
+	
 	public void AddActivityViaSequence(const char[] anim)
 	{
 		int iSequence = this.LookupSequence(anim);
