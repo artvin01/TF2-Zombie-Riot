@@ -97,6 +97,7 @@ ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
 #endif
+ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;
 
 ConVar CvarDisableThink;
