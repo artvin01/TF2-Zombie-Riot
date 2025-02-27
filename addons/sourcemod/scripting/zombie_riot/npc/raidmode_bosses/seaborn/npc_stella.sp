@@ -1419,8 +1419,8 @@ static Action Lunar_Grace_Tick(int iNPC)
 		Speed *= 1.0 + (flDistanceToTarget-Speed_Radius)/Speed_Radius;
 
 	//upper limit
-	if(Speed > 30.0)
-		Speed = 30.0;
+	if(Speed > 50.0)
+		Speed = 50.0;
 	float Velocity[3]; Velocity[0] = Speed;
 
 	float Ang[3];
