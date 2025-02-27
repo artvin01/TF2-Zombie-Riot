@@ -2379,7 +2379,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		float angleDiff = this.UTIL_AngleDiff( desiredYaw, angles[1] );
 		
 		float deltaYaw = turnrate * deltaT;
-		fixAngle(angleDiff);
+		angleDiff = fixAngle(angleDiff);
 		if ( angleDiff < -deltaYaw )
 		{
 			angles[1] -= deltaYaw;
