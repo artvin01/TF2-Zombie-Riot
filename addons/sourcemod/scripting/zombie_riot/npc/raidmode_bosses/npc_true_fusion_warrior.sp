@@ -919,7 +919,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					if (flVel[0] >= 190.0)
 					{
-					npc.FaceTowards(vecTarget, 500.0);
+						npc.FaceTowards(vecTarget, 500.0);
 						npc.m_flNextTeleport = GetGameTime(npc.index) + 6.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 						
