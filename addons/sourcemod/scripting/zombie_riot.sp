@@ -7,5 +7,5 @@
 #define MAXENTITIES	2048
 
 #define CONFIG	"configs/zombie_riot"
-
+     
 #include "shared/core.sp"

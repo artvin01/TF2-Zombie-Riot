@@ -2059,6 +2059,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(layer != -1)
 			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (f_AttackSpeedNpcIncreace[this.index])));
 	}
+
 	public void RemoveGesture(const char[] anim)
 	{
 		int activity = this.LookupActivity(anim);
@@ -2069,6 +2070,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(layer != -1)
 			this.FastRemoveLayer(layer);
 	}
+	
 	public void AddActivityViaSequence(const char[] anim)
 	{
 		int iSequence = this.LookupSequence(anim);
@@ -2245,6 +2247,56 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	// BUGBUG: Why do we need both of these?
+	public float UTIL_AngleDiff( float destAngle, float srcAngle )
+	{
+		float delta;
+
+		delta = fmodf(destAngle - srcAngle, 360.0);
+		if ( destAngle > srcAngle )
+		{
+			if ( delta >= 180.0 )
+				delta -= 360.0;
+		}
+		else
+		{
+			if ( delta <= -180.0 )
+				delta += 360.0;
+		}
+		return delta;
+	}
+
+	public float UTIL_VecToYaw(const float vec[3])
+	{
+		if (vec[1] == 0 && vec[0] == 0)
+			return 0.0;
+		
+		float yaw = ArcTangent2( vec[1], vec[0] );
+
+		yaw = RAD2DEG(yaw);
+
+		if (yaw < 0)
+			yaw += 360;
+
+		return yaw;
+	}
+	public float UTIL_VecToPitch( const float vec[3])
+	{
+		if (vec[1] == 0 && vec[0] == 0)
+		{
+			if (vec[2] < 0)
+				return 180.0;
+			else
+				return -180.0;
+		}
+
+		float dist = GetVectorLength(vec);
+		float pitch = ArcTangent2( -vec[2], dist );
+
+		pitch = RAD2DEG(pitch);
+
+		return pitch;
+	}
 	public void SetGoalVector(const float vec[3], bool ignoretime = false)
 	{	
 		if(ignoretime || DelayPathing(this.index))
@@ -2274,20 +2326,82 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-	public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
+	public void FaceTowards(float vecGoal[3], float turnrate = 250.0)
 	{
 		//Sad!
-		float flPrevValue = this.GetBaseNPC().flMaxYawRate;
+		//Dont use face towards, why?
+		// It updates UpdateCollisionBounds for some reason, this is entgirely unneccecary beacuse this is ONLY needed for hte tank, anyone else does not need this
+		//This just destroys performance as this is called every.single.frame.
+//		float flPrevValue = this.GetBaseNPC().flMaxYawRate;
 		
-		this.GetBaseNPC().flMaxYawRate = turnrate;
-		this.GetLocomotionInterface().FaceTowards(vecGoal);
-		this.GetBaseNPC().flMaxYawRate = flPrevValue;
+//		this.GetBaseNPC().flMaxYawRate = turnrate;
+//		this.GetLocomotionInterface().ZR_Self_FaceTowards(vecGoal);
+//		this.GetBaseNPC().flMaxYawRate = flPrevValue;
+
+		/*
+			CIRBaseNPCLocomotion*pNpcLoco = GetLocomotionInterface();
+
+			const float deltaT = pNpcLoco->GetUpdateInterval();
+
+			QAngle angles = GetLocalAngles();
+
+			float desiredYaw = UTIL_VecToYaw( target - pNpcLoco->GetFeet() );
+
+			float angleDiff = UTIL_AngleDiff( desiredYaw, angles.y );
+
+			float deltaYaw = TurnRate * deltaT;
+
+			if ( angleDiff < -deltaYaw )
+			{
+				angles.y -= deltaYaw;
+			}
+			else if ( angleDiff > deltaYaw )
+			{
+				angles.y += deltaYaw;
+			}
+			else
+			{
+				angles.y += angleDiff;
+			}
+		*/
+		float deltaT = GetTickInterval();
+
+		float angles[3];
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", angles);
+		float AbsOrigin[3];
+		GetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
+		float SubractedVec[3];
+		AbsOrigin[2] += 1.0;
+		SubractedVec[0] = vecGoal[0] - AbsOrigin[0];
+		SubractedVec[1] = vecGoal[1] - AbsOrigin[1];
+		SubractedVec[2] = vecGoal[2] - AbsOrigin[2];
+		float desiredYaw = this.UTIL_VecToYaw( SubractedVec );
+		float angleDiff = this.UTIL_AngleDiff( desiredYaw, angles[1] );
+		
+		float deltaYaw = turnrate * deltaT;
+		angleDiff = fixAngle(angleDiff);
+		if ( angleDiff < -deltaYaw )
+		{
+			angles[1] -= deltaYaw;
+		}
+		else if ( angleDiff > deltaYaw )
+		{
+			angles[1] += deltaYaw;
+		}
+		else
+		{
+			angles[1] += angleDiff;
+		}
+
+		SDKCall_SetLocalAngles(this.index, angles);
 	}
-		
+
+			
 	public float GetMaxJumpHeight()	{ return this.GetLocomotionInterface().GetMaxJumpHeight(); }
-	public float GetGroundSpeed()	{
+	public float GetGroundSpeed()	
+	{
 		 return this.GetLocomotionInterface().GetGroundSpeed(); 
-		 }
+	}
 	public int SelectWeightedSequence(any activity) { return view_as<CBaseAnimating>(view_as<int>(this)).SelectWeightedSequence(activity); }
 	
 	public bool GetAttachment(const char[] szName, float absOrigin[3], float absAngles[3]) { return view_as<CBaseAnimating>(view_as<int>(this)).GetAttachment(view_as<CBaseAnimating>(view_as<int>(this)).LookupAttachment(szName), absOrigin, absAngles); }
@@ -4451,8 +4565,10 @@ public int Action_CommandApproach(NextBotAction action, int actor, const float p
 
 		//gets called every frame! bad! delay abit.
 		//Default value is 250.
+		float pos2[3];
+		pos2 = pos;
 		if(!npc.m_bAllowBackWalking)
-			npc.FaceTowards(pos, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
+			npc.FaceTowards(pos2, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
 	}
 	else
 	{
