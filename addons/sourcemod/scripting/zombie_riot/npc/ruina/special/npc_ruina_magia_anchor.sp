@@ -128,7 +128,7 @@ static int i_strikes[MAXTF2PLAYERS];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
-
+static float f_PlayerScalingBuilding;
 void Magia_Anchor_OnMapStart_NPC()
 {
 	NPCData data;
@@ -244,6 +244,7 @@ methodmap Magia_Anchor < CClotBody
 			wave = 60;
 
 		i_wave[npc.index] = wave;
+		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 
 		fl_weaver_charge[npc.index] = 0.0;
 		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;
@@ -327,8 +328,6 @@ methodmap Magia_Anchor < CClotBody
 		//npc.m_flWaveScale = wave;
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-
-		//f_PlayerScalingBuilding = float(CountPlayersOnRed());
 
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
@@ -605,9 +604,9 @@ static void Spawning_Logic(Magia_Anchor npc)
 	if(Ratio < -0.5)
 		Ratio=-0.5;
 	float Time = 1.0 + Ratio;
-	fl_ruina_battery_timer[npc.index] = GameTime + Time;
+	
 	float ratio = float(wave)/60.0;
-	int health = RoundToFloor(15000.0*ratio);
+	int health = RoundToFloor(13500.0*ratio);
 	if(wave >=35)
 		health = RoundToFloor(health * 2.0);
 	if(wave >=60)
@@ -619,7 +618,20 @@ static void Spawning_Logic(Magia_Anchor npc)
 		{
 			health = RoundToCeil(health*2.0);
 		}
+		default:
+		{
+			float PlayerMulti = 2.0 - (f_PlayerScalingBuilding/14.0);
+			if(PlayerMulti < 0.8)
+				PlayerMulti = 0.8;
+			
+			if(PlayerMulti > 2.0)
+				PlayerMulti = 2.0;
+
+			Time *= PlayerMulti;
+		}
 	}
+
+	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{

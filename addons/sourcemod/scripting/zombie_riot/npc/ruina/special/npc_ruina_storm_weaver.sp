@@ -166,27 +166,18 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return Storm_Weaver(vecPos, vecAng, team, data);
 }
 
-static float fl_touch_timeout[MAXENTITIES];
-
 methodmap Storm_Weaver < CClotBody
 {
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;	
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
 	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	
 	public void PlayBasicAttackSound() {
@@ -205,10 +196,10 @@ methodmap Storm_Weaver < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
-		if(ally != TFTeam_Red)
-		{
-			//b_thisNpcIsABoss[npc.index] = true;
-		}
+		//if(ally != TFTeam_Red)
+		//{
+		//	//b_thisNpcIsABoss[npc.index] = true;
+		//}
 
 		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
 		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
@@ -222,7 +213,6 @@ methodmap Storm_Weaver < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);
-
 		Ruina_Set_No_Retreat(npc.index);
 
 		fl_trace_timeout[npc.index]=0.0;
@@ -246,9 +236,6 @@ methodmap Storm_Weaver < CClotBody
 		b_IgnoreAllCollisionNPC[npc.index] = true;
 		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
 
-		//if(StrContains(data, "anchor") != -1)
-		//	i_anchor_id[npc.index] = npc.m_iState;
-		
 		if(!IsValidEntity(npc.m_iState))
 			npc.m_iState = INVALID_ENT_REFERENCE;
 
@@ -277,13 +264,7 @@ methodmap Storm_Weaver < CClotBody
 
 		bool solo = StrContains(data, "solo") != -1;
 
-		//if(solo)
-			//CPrintToChatAll("solo");
-
 		bool true_solo = StrContains(data, "solo_true") != -1;
-
-		//if(true_solo)
-			//CPrintToChatAll("solo_true");
 
 		b_stellar_weaver_true_solo=false;
 		if(true_solo)
@@ -330,12 +311,7 @@ methodmap Storm_Weaver < CClotBody
 		b_NoKnockbackFromSources[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
-		SDKHook(npc.index, SDKHook_Touch, Storm_Weaver_Damage_Touch);
-		Zero(fl_touch_timeout);
-
 		fl_ruina_battery[npc.index] = 0.0;
-
-		//b_ForceCollisionWithProjectile[npc.index]=true;
 
 		npc.m_bDissapearOnDeath = true;
 		b_stellar_weaver_allow_attack[npc.index] = false;
@@ -611,22 +587,6 @@ static void Nulify_Instance(int client)
 	i_storm_weaver_damage_instance[client]=0;
 }
 
-static void Storm_Weaver_Damage_Touch(int entity, int other)
-{
-	if(IsValidEnemy(entity, other, true, true)) //Must detect camo.
-	{
-		float GameTime = GetGameTime();
-		if(fl_recently_teleported[entity]<GameTime)
-		{
-			if(fl_touch_timeout[other] < GameTime)
-			{
-				fl_touch_timeout[other] = GameTime+0.1;
-				SDKHooks_TakeDamage(other, entity, entity, 30.0, DMG_CRUSH, -1);
-			}
-		}
-	}
-}
-
 static void ClotThink(int iNPC)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(iNPC);
@@ -634,7 +594,9 @@ static void ClotThink(int iNPC)
 	f_StuckOutOfBoundsCheck[npc.index] = GetGameTime() + 10.0;
 	float GameTime = GetGameTime(npc.index);
 
-	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 100.0 * ((Waves_GetRound()+1)/60.0));
+	//should result in a total of 300 dmg a second.
+	//*should*
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ (4.545/TickrateModify) * ((Waves_GetRound()+1)/60.0), true);
 
 	if(!IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)) && fl_special_invuln_timer[npc.index] < GameTime)
 	{
