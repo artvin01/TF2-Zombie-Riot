@@ -11,9 +11,11 @@ static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
 static int i_BurstpackUsedThisRound [MAXTF2PLAYERS];
+static int i_MaxMorhpinesThisRound [MAXTF2PLAYERS];
 static float f_ReinforceTillMax[MAXTF2PLAYERS];
 static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
 static int i_MaxRevivesAWave;
+static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
 
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -79,6 +81,7 @@ public void M3_ClearAll()
 	Zero(f_HealDelay);
 	Zero(f_Duration);
 	Zero(f_ReinforceTillMax);
+	Zero(MorphineCharge);
 	Zero(b_ReinforceReady_soundonly);
 }
 
@@ -126,13 +129,75 @@ public void M3_Abilities(int client)
 		{
 			ReconstructiveTeleporter(client);
 		}
+		case 8:
+		{
+			MorphineShot(client);
+		}
 	}
 }
 
 void M3_AbilitiesWaveEnd()
 {
 	Zero(i_BurstpackUsedThisRound);
+	Zero(i_MaxMorhpinesThisRound);
 	i_MaxRevivesAWave = 0;
+}
+
+bool MorphineMaxed(int client)
+{
+	return (i_MaxMorhpinesThisRound[client] >= 1);
+}
+
+float MorphineChargeFunc(int client)
+{
+	return MorphineCharge[client];
+}
+
+stock void GiveMorphineOnDamage(int client, float damage, int damagetype)
+{
+	if(!(damagetype & DMG_CLUB))
+		return; //needs to be melee damage!
+
+	if(MorphineMaxed(client))
+	{
+		MorphineCharge[client] = 0.0;
+		return;
+	}
+	int MinCashMaxGain = CurrentCash;
+	if(MinCashMaxGain <= 1000)
+		MinCashMaxGain = 1000;
+
+	MinCashMaxGain -= 250;
+
+	if(MinCashMaxGain >= 200000)
+	{
+		MinCashMaxGain = 200000;
+	}
+	
+	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
+	
+	if(Rogue_Mode())// Rogue op
+		DamageForMaxCharge *= 2.0;
+
+	MorphineCharge[client] += (damage / DamageForMaxCharge);
+	if(MorphineCharge[client] >= 1.0)
+		MorphineCharge[client] = 1.0;
+	//Has to be atleast 3k.
+}
+public void MorphineShot(int client)
+{
+	if(dieingstate[client] > 0 || i_MaxMorhpinesThisRound[client] >= 1)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	if(MorphineCharge[client] < 1.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	i_MaxMorhpinesThisRound[client] += 1;
+	MorphineShotLogic(client);	
 }
 
 public void WeakDash(int client)
@@ -188,6 +253,17 @@ public void WeakDash(int client)
 	}
 }
 
+
+public void MorphineShotLogic(int client)
+{
+	EmitSoundToAll(SOUND_HEAL_BEAM, client, _, 70, _, 1.0, 70);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
+	float MaxHealth = float(SDKCall_GetMaxHealth(client));
+	HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
+	f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0 + 0.5;
+	f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 3.0 + 0.5;
+	ApplyStatusEffect(client, client, "Intangible", 3.0);
+}
 public void WeakDashLogic(int client)
 {
 	EmitSoundToAll(SOUND_DASH, client, _, 70, _, 1.0);

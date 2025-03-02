@@ -306,7 +306,15 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as bebuffs."
+		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as debuffs."
+	}
+	"Intangible"
+	{
+		"en"	"Intangible"
+	}
+	"Intangible Desc"
+	{
+		"en"	"Allows you to phase through enemies."
 	}
 	"Thick Blood"
 	{

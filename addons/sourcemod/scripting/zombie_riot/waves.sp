@@ -1880,7 +1880,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Zombies_Currently_Still_Ongoing = 0;
 			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
 			
-			//always increace chance of miniboss.
+			//always increase chance of miniboss.
 			if(!subgame && CurrentRound >= 12)
 			{
 				int count;

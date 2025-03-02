@@ -3419,9 +3419,9 @@
 		"en" 	"These ''Overclocks'' Will heavily alter your weapon, applying buffs and nerfs"
 		"fr" 	"Les Surcadençages modifient fortement votre arme, ajoutant des bénéfices et défauts."
 	}
-	"Taunt Speed Increace"
+	"Taunt Speed increase"
 	{
-		"en" 	"Taunt Speed Increace"
+		"en" 	"Taunt Speed increase"
 		"fr" 	"Vitesse des Railleries Augmuntée"
 	}
 	"Interact With Reload"

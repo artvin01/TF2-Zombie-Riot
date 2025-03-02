@@ -648,6 +648,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				Yakuza_AddCharge(client, -RequiredHeat);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
+				ApplyStatusEffect(client, client, "Intangible", 3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
 				HeatActionCooldown[client] = GetGameTime() + 0.5;
 				if(WeaponStyle[client] != Style_Dragon)

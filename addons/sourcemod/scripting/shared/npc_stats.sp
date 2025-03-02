@@ -3224,7 +3224,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
 			}
 
-			//increace the size of the avoid box by 2x
+			//increase the size of the avoid box by 2x
 
 			int IgnoreObstacles = 0;
 
@@ -5907,7 +5907,7 @@ public void NpcBaseThinkPost(int iNPC)
 
 	//It like, speed sup their world time?
 	//f_StunExtraGametimeDuration[iNPC] += ((GetTickInterval() * f_AttackSpeedNpcIncreace[iNPC]) - GetTickInterval());
-	//Shitty attackspeed increace.
+	//Shitty attackspeed increase.
 	if(f_AttackSpeedNpcIncreace[iNPC] < 1.0)	// Buffs
 		f_StunExtraGametimeDuration[iNPC] += (time - (time / f_AttackSpeedNpcIncreace[iNPC]));
 	else	// Nerfs
@@ -6228,6 +6228,7 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 				{
 					//if still stuck after 1 second...
 					f_AntiStuckPhaseThrough[Hit_player] = GetGameTime() + 1.0;
+					ApplyStatusEffect(Hit_player, Hit_player, "Intangible", 1.0);
 					//give them 2 seconds to unstuck themselves
 				}
 			}

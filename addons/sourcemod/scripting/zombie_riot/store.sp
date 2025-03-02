@@ -1902,7 +1902,7 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-85", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
+	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed increase");
 	if(b_TauntSpeedIncreace[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
@@ -4816,7 +4816,7 @@ void Store_ApplyAttribs(int client)
 	if(TeutonType[client] || !StoreItems)
 		return;
 
-	//Each time we delete ALL attributes, we increace this amount by one.
+	//Each time we delete ALL attributes, we increase this amount by one.
 	ClientAttribResetCount[client]++;
 	Attributes_RemoveAll(client);
 	
@@ -4888,7 +4888,8 @@ void Store_ApplyAttribs(int client)
 	}
 
 	map.SetValue("252", KnockbackResistance);
-	
+	map.SetValue("4039", 1.0);
+//	Attrib_BlessingBuff
 	if(Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 	{
 		b_AlaxiosBuffItem[client] = true;
@@ -4904,7 +4905,7 @@ void Store_ApplyAttribs(int client)
 	}
 	
 	//DOUBLE TAP!
-	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.
+	if(i_CurrentEquippedPerk[client] == 3) //increase sentry damage! Not attack rate, could end ugly.
 	{		
 		map.SetValue("287", 0.65);
 	}
@@ -6818,7 +6819,7 @@ static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
 	TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[weapon];
 	TempStoreAttrib.Apply_TempAttrib(client, weapon);
 
-	//gives attackspeed for 5 seconds with an increace of 25%!
+	//gives attackspeed for 5 seconds with an increase of 25%!
 
 
 */
