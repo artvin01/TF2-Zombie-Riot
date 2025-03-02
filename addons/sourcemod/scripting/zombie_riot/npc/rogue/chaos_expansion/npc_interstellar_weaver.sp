@@ -70,8 +70,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return Interstellar_Weaver(vecPos, vecAng, team, data);
 }
 
-static float fl_touch_timeout[MAXENTITIES];
-
 methodmap Interstellar_Weaver < CClotBody
 {
 	public void PlayHurtSound() {
@@ -251,9 +249,6 @@ methodmap Interstellar_Weaver < CClotBody
 
 		b_NoKnockbackFromSources[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-
-		SDKHook(npc.index, SDKHook_Touch, Storm_Weaver_Damage_Touch);
-		Zero(fl_touch_timeout);
 
 		fl_ruina_battery[npc.index] = 0.0;
 		b_IgnoreAllCollisionNPC[npc.index]=true;
@@ -526,22 +521,6 @@ static void Nulify_Instance(int client)
 	i_storm_weaver_damage_instance[client]=0;
 }
 
-static void Storm_Weaver_Damage_Touch(int entity, int other)
-{
-	if(IsValidEnemy(entity, other, true, true)) //Must detect camo.
-	{
-		float GameTime = GetGameTime();
-		if(fl_recently_teleported[entity]<GameTime)
-		{
-			if(fl_touch_timeout[other] < GameTime)
-			{
-				fl_touch_timeout[other] = GameTime+0.1;
-				SDKHooks_TakeDamage(other, entity, entity, 30.0*RaidModeScaling, DMG_CRUSH, -1);
-			}
-		}
-	}
-}
-
 /*
 	Issues:
 		Melee's don't work
@@ -554,7 +533,7 @@ static void ClotThink(int iNPC)
 	f_StuckOutOfBoundsCheck[npc.index] = GetGameTime() + 10.0;
 	float GameTime = GetGameTime(npc.index);
 
-	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 100.0 * ((Waves_GetRound()+1)/60.0));
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ (1.25/TickrateModify) * RaidModeScaling, true);
 
 	if(!IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)) && fl_special_invuln_timer[npc.index] < GameTime)
 	{
@@ -625,7 +604,6 @@ static void ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;
 
 	float Battery_Cost = 3500.0;
-	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
 
 	if(fl_ruina_battery[npc.index] > Battery_Cost)
 	{
@@ -633,11 +611,6 @@ static void ClotThink(int iNPC)
 		fl_ruina_battery[npc.index] = 0.0;
 	}
 			
-
-	if(npc.index==EntRefToEntIndex(RaidBossActive))
-	{
-		RaidModeScaling = battery_Ratio;
-	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		Storm_Weaver_Heading_Control(npc, PrimaryThreatIndex);
