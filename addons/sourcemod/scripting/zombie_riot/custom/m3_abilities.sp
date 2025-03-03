@@ -155,6 +155,9 @@ float MorphineChargeFunc(int client)
 
 stock void GiveMorphineOnDamage(int client, float damage, int damagetype)
 {
+	if(GetAbilitySlotCount(client) != 8)
+		return;
+		
 	if(!(damagetype & DMG_CLUB))
 		return; //needs to be melee damage!
 
@@ -176,8 +179,9 @@ stock void GiveMorphineOnDamage(int client, float damage, int damagetype)
 	
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
 	
+	DamageForMaxCharge *= 0.75;
 	if(Rogue_Mode())// Rogue op
-		DamageForMaxCharge *= 2.0;
+		DamageForMaxCharge *= 2.25;
 
 	MorphineCharge[client] += (damage / DamageForMaxCharge);
 	if(MorphineCharge[client] >= 1.0)
