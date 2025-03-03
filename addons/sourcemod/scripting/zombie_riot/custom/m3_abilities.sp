@@ -145,7 +145,7 @@ void M3_AbilitiesWaveEnd()
 
 bool MorphineMaxed(int client)
 {
-	return (i_MaxMorhpinesThisRound[client] >= 1);
+	return (i_MaxMorhpinesThisRound[client] >= 2);
 }
 
 float MorphineChargeFunc(int client)
@@ -153,7 +153,7 @@ float MorphineChargeFunc(int client)
 	return MorphineCharge[client];
 }
 
-stock void GiveMorphineOnDamage(int client, float damage, int damagetype)
+stock void GiveMorphineOnDamage(int client, int victim, float damage, int damagetype)
 {
 	if(GetAbilitySlotCount(client) != 8)
 		return;
@@ -180,8 +180,13 @@ stock void GiveMorphineOnDamage(int client, float damage, int damagetype)
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
 	
 	DamageForMaxCharge *= 0.75;
+	DamageForMaxCharge *= 0.5;
+	
+	if(b_thisNpcIsARaid[victim])
+		DamageForMaxCharge *= 0.75;
+
 	if(Rogue_Mode())// Rogue op
-		DamageForMaxCharge *= 2.25;
+		DamageForMaxCharge *= 1.5;
 
 	MorphineCharge[client] += (damage / DamageForMaxCharge);
 	if(MorphineCharge[client] >= 1.0)
@@ -190,7 +195,7 @@ stock void GiveMorphineOnDamage(int client, float damage, int damagetype)
 }
 public void MorphineShot(int client)
 {
-	if(dieingstate[client] > 0 || i_MaxMorhpinesThisRound[client] >= 1)
+	if(dieingstate[client] > 0 || MorphineMaxed(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;

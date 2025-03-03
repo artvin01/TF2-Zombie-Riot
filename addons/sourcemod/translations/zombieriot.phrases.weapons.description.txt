@@ -2376,9 +2376,7 @@
 	}
 	"Specter Pap 2b"
 	{
-		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
-		"fr"	"Vous donne l'abilité de passer à travers les ennemis, en échange de votre santé. Vous seres étonnés après cet effet.\nLors des Raids, l'abilité vous donne 75%% résistance et ne va pas prendre votre santé."
-		"chi"	"增加技能：激活时变为无形之影，效果结束后眩晕并丧失血量。\nboss战时，反而获得75%抗性，不会丧失血量。"
+		"en"	"Gains the ability to go Invulnerable but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
 	}
 	"Specter Pap 3"
 	{
