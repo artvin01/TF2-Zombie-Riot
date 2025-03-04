@@ -1211,7 +1211,7 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 						Format(buf, sizeof(buf), "%t", "Credits", cash);
 
 					SetGlobalTransTarget(client);
-					menu.SetTitle("%t\n \n%s\n \n%s\n ", "TF2: Zombie Riot", buf, cash, TranslateItemName(client, item.Name, info.Custom_Name));
+					menu.SetTitle("%t\n \n%s\n \n%s\n ", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					
 					int skip = info.PackSkip;
 					count += skip;
