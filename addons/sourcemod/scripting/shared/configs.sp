@@ -288,6 +288,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 	}
 #endif
 
+	/*
 	// Fire Rate
 	if(data.FireRate)
 	{
@@ -300,6 +301,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 		Format(buffer, length, "%s\nFire Rate: %.3fs", buffer, data.FireRate);
 	//	firerate_Calc = data.FireRate;
 	}
+	*/
 	
 	// Clip and Ammo
 	for(i=0; i<attribs; i++)

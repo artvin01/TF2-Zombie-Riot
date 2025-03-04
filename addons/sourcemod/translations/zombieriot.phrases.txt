@@ -68,6 +68,11 @@
 		"nl"		"Geen"
 		"chi"       "无"
 	}
+	"Loadout Credits"
+	{
+		"#format"	"{1:d}"
+		"en"		"---Loadout Store---\nCredit Points: {1}"
+	}
 	"Credits"
 	{
 		"#format"	"{1:d}"
