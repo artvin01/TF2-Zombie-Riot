@@ -71,6 +71,7 @@ public void M3_Abilities_Precache()
 	PrecacheSound("mvm/mvm_tank_start.wav");
 	PrecacheSound("weapons/air_burster_explode3.wav");
 	HookEntityOutput("func_movelinear", "OnFullyOpen", OnBombDrop);
+	PrecacheSound("weapons/slam/throw.wav");
 }
 public void M3_ClearAll()
 {
@@ -179,11 +180,10 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 	
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
 	
-	DamageForMaxCharge *= 0.75;
 	DamageForMaxCharge *= 0.5;
 	
 	if(b_thisNpcIsARaid[victim])
-		DamageForMaxCharge *= 0.75;
+		DamageForMaxCharge *= 0.85;
 
 	if(Rogue_Mode())// Rogue op
 		DamageForMaxCharge *= 1.5;
@@ -272,6 +272,7 @@ public void MorphineShotLogic(int client)
 	f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0 + 0.5;
 	f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 3.0 + 0.5;
 	ApplyStatusEffect(client, client, "Intangible", 3.0);
+	MorphineCharge[client] = 0.0;
 }
 public void WeakDashLogic(int client)
 {
@@ -304,7 +305,8 @@ public void PlaceableTempomaryArmorGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
-		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
+		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
+		ability_cooldown[client] = GetGameTime() + (120.0 * CooldownReductionAmount(client));
 		int entity;
 
 		if(b_StickyExtraGrenades[client])
@@ -386,6 +388,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 	}
 }
 
+#define ARMOR_GRENADE_RANGE 400.0
 
 public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack)
 {
@@ -410,14 +413,14 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 				color[2] = 0;
 				color[3] = 75;
 		
-				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
+				TE_SetupBeamRingPoint(powerup_pos, 10.0, ARMOR_GRENADE_RANGE * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
 	   			for (int target = 1; target <= MaxClients; target++)
 				{
 					if (IsValidClient(target) && IsPlayerAlive(target) && GetClientTeam(target) == view_as<int>(TFTeam_Red) && TeutonType[target] == 0)
 					{
 						GetClientAbsOrigin(target, client_pos);
-						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
+						if (GetVectorDistance(powerup_pos, client_pos, true) <= (ARMOR_GRENADE_RANGE * ARMOR_GRENADE_RANGE))
 						{
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
@@ -457,6 +460,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
+		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
 		ability_cooldown[client] = GetGameTime() + (140.0 * CooldownReductionAmount(client));
 		
 		int entity;		
@@ -1484,6 +1488,7 @@ public void PlaceableTempomaryRepairGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
+		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
 		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
 		
 		int entity;		

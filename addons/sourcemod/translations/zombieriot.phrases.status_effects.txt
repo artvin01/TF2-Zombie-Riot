@@ -538,7 +538,7 @@
 	}
 	"Healing Adaptiveness Melee Desc"
 	{
-		"en"	"Decreases damage taken from melee sources by 5%%"
+		"en"	"Decreases damage taken from melee sources by 15%%"
 	}
 	"Healing Adaptiveness Ranged"
 	{
@@ -546,7 +546,7 @@
 	}
 	"Healing Adaptiveness Ranged Desc"
 	{
-		"en"	"Decreases damage taken from ranged sources by 5%%"
+		"en"	"Decreases damage taken from ranged sources by 15%%"
 	}
 	"Self Empowerment"
 	{
