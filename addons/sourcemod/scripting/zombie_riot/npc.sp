@@ -860,6 +860,12 @@ void NPC_ConfigSetup()
 	AgentSpencer_OnMapStart_NPC();
 	AgentTodd_OnMapStart_NPC();
 
+	//Matrix Giants
+	GiantHaste_OnMapStart_NPC();
+	GiantKnockout_OnMapStart_NPC();
+	GiantReflector_OnMapStart_NPC();
+	GiantRegeneration_OnMapStart_NPC();
+
 	//Matrix Raids
 	AgentJohnson_OnMapStart_NPC();
 	AgentThompson_OnMapStart_NPC();
@@ -1979,6 +1985,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/matrix/60/npc_agentross.sp"
 #include "zombie_riot/npc/matrix/60/npc_agentspencer.sp"
 #include "zombie_riot/npc/matrix/60/npc_agenttodd.sp"
+
+//Matrix Giants
+#include "zombie_riot/npc/matrix/giants/npc_giant_haste.sp"
+#include "zombie_riot/npc/matrix/giants/npc_giant_knockout.sp"
+#include "zombie_riot/npc/matrix/giants/npc_giant_reflector.sp"
+#include "zombie_riot/npc/matrix/giants/npc_giant_regeneration.sp"
 
 //Matrix Raids
 #include "zombie_riot/npc/matrix/raids/npc_agentjohnson.sp"

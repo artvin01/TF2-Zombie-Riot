@@ -3898,6 +3898,10 @@
 	{
 		"en"		"Smith"
 	}
+	"Hijacked Red Pill"
+	{
+		"en"		"Hijacked Red Pill"
+	}
 	"Seaborn Metro Cop"
 	{
 		"en"		"Seaborn Metro Cop"
