@@ -1200,7 +1200,7 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 					if(StarterCashMode[client])
 					{
 						int maxCash = StartCash;
-						maxCash[client] -= CashSpentLoadout[client];
+						maxCash -= CashSpentLoadout[client];
 						cash = maxCash;
 					}
 					char buf[64];
@@ -2977,7 +2977,7 @@ static void MenuPage(int client, int section)
 	if(StarterCashMode[client])
 	{
 		int maxCash = StartCash;
-		maxCash[client] -= CashSpentLoadout[client];
+		maxCash -= CashSpentLoadout[client];
 		cash = maxCash;
 		if(cash < 0)
 		{
