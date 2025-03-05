@@ -22,7 +22,6 @@
 //#include <handledebugger>
 #undef REQUIRE_EXTENSIONS
 #undef REQUIRE_PLUGIN
-#include <filenetwork>
 #include <loadsoundscript>
 
 #pragma dynamic	131072
@@ -98,6 +97,7 @@ ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
 #endif
+ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;
 
 ConVar CvarDisableThink;
@@ -995,6 +995,7 @@ public void OnMapStart()
 
 #if defined ZR || defined RPG
 	Core_PrecacheGlobalCustom();
+	FileNetwork_MapStart();
 #endif
 
 	PrecacheSound("weapons/explode1.wav");

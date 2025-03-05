@@ -574,7 +574,7 @@ public Action Smite_Timer_Neman(Handle Smite_Logic, DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		 
 		CreateEarthquake(spawnLoc, 1.0, NEMAN_FIRST_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, NEMAN_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increace
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, NEMAN_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increase
 	
 		return Plugin_Stop;
 	}

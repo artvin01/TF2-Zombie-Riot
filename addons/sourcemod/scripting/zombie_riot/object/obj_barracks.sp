@@ -202,10 +202,10 @@ enum
 #define ZR_BARRACKS_UPGRADES_GOLDMINERS			(1 << 27) //done :)
 //THIS is only aviable once you have the gold crown.
 //this will allow you to gain gold faster if you have units in your building
-//but it will also give you a 25% increace on gold gain passively.
+//but it will also give you a 25% increase on gold gain passively.
 #define ZR_BARRACKS_UPGRADES_CRENELLATIONS		(1 << 28) //done :)
 //The castle will have a huge boost in range, allowing to snipe at great ranges
-//it will also increace the speed of the arrows by alot.
+//it will also increase the speed of the arrows by alot.
 #define ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER	(1 << 29)
 //This will allow you to make one villager, this villager will try to make a building near you, or whereever you tell it to make one
 //This building will only fire arrows, its max upgrade limit is another donjon, it cannot be a krepost or castle.
@@ -217,7 +217,7 @@ enum
 //meaning if you have a castle and this villager, then you can only make 1 unit and 1 barricade
 //its repair power derives from your repair upgrades.
 //it is also unable to attack at all, its not fragile but it just cant defend itself
-//garrisoning this unit wont increace the damage of the building it hides inside.
+//garrisoning this unit wont increase the damage of the building it hides inside.
 //unless....
 #define ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	(1 << 30)
 //this upgrade will make the villager free and wont consume slots, this means you can have 2 units and 2 barricades when you get this.

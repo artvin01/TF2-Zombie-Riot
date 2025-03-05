@@ -460,7 +460,7 @@ stock void Do_Coin_calc(int victim)
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
 			if (GetVectorDistance(chargerPos, targPos) <= 1200.0 && !already_ricocated[victim] && Closest_entity != victim)
 			{
-				//increace damage.
+				//increase damage.
 				damage_multiplier[victim] *= 1.65;
 				already_ricocated[victim] = true;
 				damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg

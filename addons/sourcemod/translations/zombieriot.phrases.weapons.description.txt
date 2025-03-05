@@ -802,7 +802,7 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal.\nMedigun allows you to revive people from afar but slower\nUber gives debuff immunity."
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing buffs.\nMedigun allows you to revive people from afar but slower\nUber gives debuff immunity."
 	}
 	
 	"Battle Medigun Desc"
@@ -1371,6 +1371,10 @@
 		"ru"	"Бросает гранату, которая со временем даёт броню. Улучшенная, если у цели просто улучшена броня."
 		"chi"   "投掷一枚可以恢复护甲的手榴弹。"
 	}
+	"Morphine Desc"
+	{
+		"en"	"A morphine shot chargeable by dealing Melee damage that turns you intangible for 3 seconds and regenerates 15% of your max health up to a cap of 50%.\nUseable once a wave/Raid."
+	}
 	
 	"Experimental Burst Pack Desc"
 	{
@@ -1771,10 +1775,7 @@
 	
 	"Jesus's Blessing Desc"
 	{
-		"en"	"+300 Health and life regen 1%% of your max hp per second up to half your HP, during bleedout, you also will survive for longer."
-		"fr"	"+300 santé. Regénére 1%% de votre santé tous les 0.5 secondes, jusqu'a la moitié de votre santé. Vous resterez vivant pour plus longtemps quand KO."
-		"ru"	"+300 здоровья и реген. здоровья 1%% от вашего макс. здоровья в секунду до половины вашего здоровья, во время кровотечения вы также будете выживать дольше."
-		"chi"   "+300生命值和获得每秒1%%的生命回复，最多恢复一半的生命值。在倒地期间，你也会活得更长。"
+		"en"	"+300 Health and life regen 1%% of your max hp per second up to half your HP, during bleedout, you also will survive for longer.\nOut of battle, heals extra with more melee upgrades."
 	}
 	
 	"Full Riot Gear Desc"
@@ -2375,9 +2376,7 @@
 	}
 	"Specter Pap 2b"
 	{
-		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
-		"fr"	"Vous donne l'abilité de passer à travers les ennemis, en échange de votre santé. Vous seres étonnés après cet effet.\nLors des Raids, l'abilité vous donne 75%% résistance et ne va pas prendre votre santé."
-		"chi"	"增加技能：激活时变为无形之影，效果结束后眩晕并丧失血量。\nboss战时，反而获得75%抗性，不会丧失血量。"
+		"en"	"Gains the ability to go Invulnerable but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
 	}
 	"Specter Pap 3"
 	{

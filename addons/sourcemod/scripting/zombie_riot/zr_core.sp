@@ -302,6 +302,7 @@ float Resistance_for_building_High[MAXENTITIES];
 //custom wave music.
 MusicEnum MusicString1;
 MusicEnum MusicString2;
+MusicEnum MusicSetup1;
 MusicEnum RaidMusicSpecial1;
 MusicEnum BGMusicSpecial1;
 //custom wave music.
@@ -697,7 +698,7 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
-
+	MusicSetup1.Clear();
 	PrecacheSound("ui/hitsound_electro1.wav");
 	PrecacheSound("ui/hitsound_electro2.wav");
 	PrecacheSound("ui/hitsound_electro3.wav");
@@ -2835,6 +2836,7 @@ void ForcePlayerWin()
 	
 	MusicString1.Clear();
 	MusicString2.Clear();
+	MusicSetup1.Clear();
 	RaidMusicSpecial1.Clear();
 
 	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);

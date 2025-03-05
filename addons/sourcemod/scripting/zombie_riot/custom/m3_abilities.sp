@@ -11,9 +11,11 @@ static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
 static int i_BurstpackUsedThisRound [MAXTF2PLAYERS];
+static int i_MaxMorhpinesThisRound [MAXTF2PLAYERS];
 static float f_ReinforceTillMax[MAXTF2PLAYERS];
 static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
 static int i_MaxRevivesAWave;
+static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
 
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -69,6 +71,7 @@ public void M3_Abilities_Precache()
 	PrecacheSound("mvm/mvm_tank_start.wav");
 	PrecacheSound("weapons/air_burster_explode3.wav");
 	HookEntityOutput("func_movelinear", "OnFullyOpen", OnBombDrop);
+	PrecacheSound("weapons/slam/throw.wav");
 }
 public void M3_ClearAll()
 {
@@ -79,6 +82,7 @@ public void M3_ClearAll()
 	Zero(f_HealDelay);
 	Zero(f_Duration);
 	Zero(f_ReinforceTillMax);
+	Zero(MorphineCharge);
 	Zero(b_ReinforceReady_soundonly);
 }
 
@@ -126,13 +130,83 @@ public void M3_Abilities(int client)
 		{
 			ReconstructiveTeleporter(client);
 		}
+		case 8:
+		{
+			MorphineShot(client);
+		}
 	}
 }
 
 void M3_AbilitiesWaveEnd()
 {
 	Zero(i_BurstpackUsedThisRound);
+	Zero(i_MaxMorhpinesThisRound);
 	i_MaxRevivesAWave = 0;
+}
+
+bool MorphineMaxed(int client)
+{
+	return (i_MaxMorhpinesThisRound[client] >= 2);
+}
+
+float MorphineChargeFunc(int client)
+{
+	return MorphineCharge[client];
+}
+
+stock void GiveMorphineOnDamage(int client, int victim, float damage, int damagetype)
+{
+	if(GetAbilitySlotCount(client) != 8)
+		return;
+		
+	if(!(damagetype & DMG_CLUB))
+		return; //needs to be melee damage!
+
+	if(MorphineMaxed(client))
+	{
+		MorphineCharge[client] = 0.0;
+		return;
+	}
+	int MinCashMaxGain = CurrentCash;
+	if(MinCashMaxGain <= 1000)
+		MinCashMaxGain = 1000;
+
+	MinCashMaxGain -= 250;
+
+	if(MinCashMaxGain >= 200000)
+	{
+		MinCashMaxGain = 200000;
+	}
+	
+	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
+	
+	DamageForMaxCharge *= 0.5;
+	
+	if(b_thisNpcIsARaid[victim])
+		DamageForMaxCharge *= 0.85;
+
+	if(Rogue_Mode())// Rogue op
+		DamageForMaxCharge *= 1.5;
+
+	MorphineCharge[client] += (damage / DamageForMaxCharge);
+	if(MorphineCharge[client] >= 1.0)
+		MorphineCharge[client] = 1.0;
+	//Has to be atleast 3k.
+}
+public void MorphineShot(int client)
+{
+	if(dieingstate[client] > 0 || MorphineMaxed(client))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	if(MorphineCharge[client] < 1.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	i_MaxMorhpinesThisRound[client] += 1;
+	MorphineShotLogic(client);	
 }
 
 public void WeakDash(int client)
@@ -188,6 +262,18 @@ public void WeakDash(int client)
 	}
 }
 
+
+public void MorphineShotLogic(int client)
+{
+	EmitSoundToAll(SOUND_HEAL_BEAM, client, _, 70, _, 1.0, 70);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
+	float MaxHealth = float(SDKCall_GetMaxHealth(client));
+	HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
+	f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0 + 0.5;
+	f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 3.0 + 0.5;
+	ApplyStatusEffect(client, client, "Intangible", 3.0);
+	MorphineCharge[client] = 0.0;
+}
 public void WeakDashLogic(int client)
 {
 	EmitSoundToAll(SOUND_DASH, client, _, 70, _, 1.0);
@@ -219,7 +305,8 @@ public void PlaceableTempomaryArmorGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
-		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
+		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
+		ability_cooldown[client] = GetGameTime() + (120.0 * CooldownReductionAmount(client));
 		int entity;
 
 		if(b_StickyExtraGrenades[client])
@@ -301,6 +388,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 	}
 }
 
+#define ARMOR_GRENADE_RANGE 400.0
 
 public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack)
 {
@@ -325,14 +413,14 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 				color[2] = 0;
 				color[3] = 75;
 		
-				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
+				TE_SetupBeamRingPoint(powerup_pos, 10.0, ARMOR_GRENADE_RANGE * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
 	   			for (int target = 1; target <= MaxClients; target++)
 				{
 					if (IsValidClient(target) && IsPlayerAlive(target) && GetClientTeam(target) == view_as<int>(TFTeam_Red) && TeutonType[target] == 0)
 					{
 						GetClientAbsOrigin(target, client_pos);
-						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
+						if (GetVectorDistance(powerup_pos, client_pos, true) <= (ARMOR_GRENADE_RANGE * ARMOR_GRENADE_RANGE))
 						{
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
@@ -372,6 +460,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
+		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
 		ability_cooldown[client] = GetGameTime() + (140.0 * CooldownReductionAmount(client));
 		
 		int entity;		
@@ -1399,6 +1488,7 @@ public void PlaceableTempomaryRepairGrenade(int client)
 {
 	if (ability_cooldown[client] < GetGameTime())
 	{
+		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
 		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
 		
 		int entity;		

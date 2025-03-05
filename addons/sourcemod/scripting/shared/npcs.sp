@@ -1206,11 +1206,13 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
 			GiveRageOnDamage(inflictor, Damageaftercalc);
+			GiveMorphineOnDamage(inflictor, victim, Damageaftercalc, damagetype);
 			Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
 		}
 		else if(attacker > 0 && attacker <= MaxClients)
 		{
 			GiveRageOnDamage(attacker, Damageaftercalc);
+			GiveMorphineOnDamage(attacker, victim, Damageaftercalc, damagetype);
 			Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
 		}
 		else

@@ -387,19 +387,19 @@ methodmap Karlas < CClotBody
 		{
 			//we are teleporting and also can't move, take a heavily defensive position.	
 			if(b_teleport_strike_active[this.index])
-				fAmt -=0.8;
+				fAmt -=0.5;
 
 			//we are retreating to stella, take a more defensive position.
 			if(this.m_bRetreat)
-				fAmt -=0.25;
+				fAmt -=0.15;
 			
 			//we are doing our "amazon delivery service", we cannot move, give uis armour
 			if(this.m_flSlicerBarrageCD == FAR_FUTURE)
-				fAmt -= 0.6;
+				fAmt -= 0.3;
 
 			//we are being used as a mirror, cannot move, take defensive stance.
 			if(this.m_flNC_LockedOn > GetGameTime(this.index))
-				fAmt -= 0.45;
+				fAmt -= 0.15;
 			
 			if(this.Anger)
 				fAmt -=0.25;
@@ -424,19 +424,19 @@ methodmap Karlas < CClotBody
 		{
 			//we are teleporting and also can't move, take a heavily defensive position.	
 			if(b_teleport_strike_active[this.index])
-				fAmt -=0.5;
+				fAmt -=0.3;
 
 			//we are retreating to stella, take a more defensive position.
 			if(this.m_bRetreat)
-				fAmt -=0.25;
+				fAmt -=0.15;
 			
-			//we are doing our "amazon delivery service", we cannot move, give uis armour
+			//we are doing our "amazon delivery service", we cannot move, give us armour
 			if(this.m_flSlicerBarrageCD == FAR_FUTURE)
-				fAmt -= 0.6;
+				fAmt -= 0.3;
 
 			//we are being used as a mirror, cannot move, take defensive stance.
 			if(this.m_flNC_LockedOn > GetGameTime(this.index))
-				fAmt -= 0.45;
+				fAmt -= 0.15;
 
 			if(this.Anger)
 				fAmt -=0.25;
@@ -1111,7 +1111,7 @@ static void Blade_Logic(Karlas npc)
 		{
 			case 2:	//Aggresive - spin around him while extended
 			{
-				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 10.0*RaidModeScaling);
+				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 8.0*RaidModeScaling);
 			}
 			case 4:	//becomes pseudo wings. neutral state for when the things are "recharging"
 			{
@@ -1220,12 +1220,25 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 	struct_Projectile[Proj].particles[1] = EntIndexToEntRef(left);
 	struct_Projectile[Proj].particles[2] = EntIndexToEntRef(right);
 
-	CreateTimer(Time, Timer_RemoveEntity, EntIndexToEntRef(ParticleOffsetMain), TIMER_FLAG_NO_MAPCHANGE);
+	float Distance = GetVectorDistance(SelfVec, VecTarget);
+	float Timer_Span = Distance/Speed;
+	Timer_Span *=0.5 + 0.25;
+
+	CreateTimer(Timer_Span, KillProjectileHoming, EntIndexToEntRef(Proj), TIMER_FLAG_NO_MAPCHANGE);
 
 	DataPack pack = new DataPack();
 	pack.WriteCell(EntIndexToEntRef(Proj));
 	RequestFrame(Projectile_Detect_Loop, pack);
 	
+}
+static Action KillProjectileHoming(Handle Timer, int iRef)
+{
+	int Projectile = EntRefToEntIndex(iRef);
+	if(!IsValidEntity(Projectile))
+		return Plugin_Stop;
+	
+	HomingProjectile_Deactivate(Projectile);
+	return Plugin_Stop;
 }
 static void Projectile_Detect_Loop(DataPack pack)
 {
@@ -1381,8 +1394,8 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 		if(Karlas_Status(npc, GameTime)==1)
 			return;
 
-		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : 1.0);
-		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.2);
+		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : (npc.Anger ? 1.5 : 2.5));
+		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.3);
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
 
@@ -2307,7 +2320,7 @@ static void Karlas_Lifeloss_Logic(Karlas npc)
 		Loc[2] += 150.0*Ratio;
 		float Loc2[3]; GetAbsOrigin(npc.index, Loc2); Loc2[2]+=25.0;
 		float speed = 30.0 - 25.0*Ratio;
-		Karlas_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, 15.0*RaidModeScaling);
+		Karlas_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, 20.0*RaidModeScaling);	//they are spinning up, so deal lotsa damage
 	}
 }
 static void Karlas_SwordWings_Logic(Karlas npc, float npc_Vec[3])

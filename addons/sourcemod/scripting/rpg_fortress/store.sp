@@ -516,7 +516,7 @@ static void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-42", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
+	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed increase");
 	if(b_TauntSpeedIncreace[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
@@ -2108,7 +2108,7 @@ static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
 	TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[weapon];
 	TempStoreAttrib.Apply_TempAttrib(client, weapon);
 
-	//gives attackspeed for 5 seconds with an increace of 25%!
+	//gives attackspeed for 5 seconds with an increase of 25%!
 
 
 */
