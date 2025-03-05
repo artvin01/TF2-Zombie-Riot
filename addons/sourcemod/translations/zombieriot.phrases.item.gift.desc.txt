@@ -2394,6 +2394,10 @@
 	{
 		"en"		"It is purpose that defines us.\nInitially appears as a normal boss which can multiply for up to 64 times.\nAppears later on once more, with the ability to infect players and turn them into clones, better cure them fast!"
 	}
+	"Hijacked Red Pill Desc"
+	{
+		"en"		"Much more powerful than any regular Agents, humans are stronger than AI after-all..."
+	}
 	"Seaborn Metro Cop Desc"
 	{
 		"en"		"Their combat has been enhanced by the Seaborn infection.\nFires bullets extremely fast."
