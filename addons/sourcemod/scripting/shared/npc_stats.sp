@@ -10393,7 +10393,7 @@ public void SaveLastValidPositionEntity(int entity)
 			return;
 
 		//am i on the ground? If not, then dont save.
-		/*bool SavePosition = true;
+		bool SavePosition = true;
 		if (!(GetEntityFlags(entity) & FL_ONGROUND))
 		{
 			SavePosition = false;
@@ -10410,7 +10410,9 @@ public void SaveLastValidPositionEntity(int entity)
 				}
 			}
 		}
-		
+		if(!SavePosition)
+			return;
+		/*
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
