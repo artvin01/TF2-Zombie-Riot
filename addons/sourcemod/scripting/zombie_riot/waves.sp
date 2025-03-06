@@ -875,7 +875,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	if(round.music_setup.Valid())
 	{
 		round.music_setup.CopyTo(MusicSetup1);
-		PrecacheSoundCustom(round.music_setup.Path);
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
