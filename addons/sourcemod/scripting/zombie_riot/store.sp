@@ -551,7 +551,6 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
 void Store_OnCached(int client)
 {
-	CashSpentLoadout[client] = 0;
 	if(!Store_HasNamedItem(client, "ZR Contest Nominator [???] Cash"))
 	{
 		int amount;
