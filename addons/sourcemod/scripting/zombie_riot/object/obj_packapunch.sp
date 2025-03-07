@@ -94,7 +94,9 @@ bool Pap_WeaponCheck(int client, bool force = false)
 static void ClotShowInteractHud(ObjectPackAPunch npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "PackAPunch Tooltip");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay,"PackAPunch Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)

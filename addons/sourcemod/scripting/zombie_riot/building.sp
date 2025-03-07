@@ -651,7 +651,9 @@ void Building_ShowInteractionHud(int client, int entity)
 			if(dieingstate[entity] > 0 && IsPlayerAlive(client))
 			{
 				SetGlobalTransTarget(client);
-				PrintCenterText(client, "%t", "Revive Teammate tooltip");
+				char ButtonDisplay[255];
+				PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+				PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");
 				return;
 			}
 			entity = EntRefToEntIndex(Building_Mounted[entity]);
@@ -691,7 +693,9 @@ void Building_ShowInteractionHud(int client, int entity)
 				{
 					Hide_Hud = false;
 					SetGlobalTransTarget(client);
-					PrintCenterText(client, "%t", "Claim this building");
+					char ButtonDisplay[255];
+					PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+					PrintCenterText(client, "%s%t", ButtonDisplay,"Claim this building");
 				}
 				else if(Building_Collect_Cooldown[entity][client] > GetGameTime())
 				{

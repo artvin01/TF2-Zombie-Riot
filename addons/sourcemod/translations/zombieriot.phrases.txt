@@ -1494,16 +1494,24 @@
 	}
 	"Claim this building"
 	{
-		"en"		"Claim this building with (T [spray) while holding a wrench."
+		"en"		" while holding a wrench on the building to claim it."
+	}
+	"Interact With R" //KEEP THE SPACE!
+	{
+		"en"		"Press [R/ Use] "
+	}
+	"Interact With T Spray"
+	{
+		"en"		"Press [T(Spray)/ Use] "
 	}
 	"Enter this vehicle"
 	{
-		"en" 		"Press [T (spray)] to enter and exit this vehicle"
+		"en" 		"to enter and exit this vehicle"
 	}
 	"Ammobox Tooltip"
 	{
 		"#format"	"{1:d}"
-		"en" 		"Press [T (spray)] on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
+		"en" 		"on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
 	}
 	"Warn Client Ammo None"
 	{
@@ -1512,15 +1520,15 @@
 	}
 	"Armortable Tooltip"
 	{
-		"en" 		"Press [T (spray)] on the Armortable to gain Armor."
+		"en" 		"on the Armortable to gain Armor."
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press [T (spray)] on the Perkmachine to gain a strong temporary perk."
+		"en" 		"on the Perkmachine to gain a strong temporary perk."
 	}
 	"PackAPunch Tooltip"
 	{
-		"en" 		"Press [T (spray)] To Pack-a-Punch your current holding weapon."
+		"en" 		"To Pack-a-Punch your current holding weapon."
 	}
 	"Packed"
 	{
@@ -1554,7 +1562,7 @@
 	}
 	"Revive Teammate tooltip"
 	{
-		"en" 		"Hold [T (spray)] to revive this dying teammate."
+		"en" 		"to revive this dying teammate."
 	}
 	"Bored or Dead"
 	{
@@ -1995,7 +2003,7 @@
 		"nl"		"Je word tot leven gebracht. [{1}]"
 		"chi"       "队友正在拉起你 [{1}]"
 	}
-	"Medival_Difficulty"
+	"Medieval_Difficulty"
 	{
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
@@ -3699,7 +3707,7 @@
 	}
 	"Blacksmith Tooltip"
 	{
-		"en"		"Press [T (spray)] to apply a tinker effect to your active weapon."
+		"en"		"to apply a tinker effect to your active weapon."
 	}
 	"Blacksmith Used"
 	{

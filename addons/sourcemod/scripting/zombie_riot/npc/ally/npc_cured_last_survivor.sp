@@ -704,6 +704,11 @@ methodmap CuredFatherGrigori < CClotBody
 		PrintToServer("CCuredFatherGrigori::PlayMeleeHitSound()");
 		#endif
 	}
+	property float m_MakeGrigoriGlow
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
 
 	public void PlayMeleeMissSound() 
 	{
@@ -887,7 +892,30 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		}
 		return;
 	}
-	
+	if(IsValidEntity(npc.m_iTeamGlow))
+	{
+		if(Waves_InSetup())
+		{
+			if(npc.m_MakeGrigoriGlow != 3.0)
+			{
+				npc.m_MakeGrigoriGlow = 3.0;
+				SetVariantColor(view_as<int>({255, 255, 255, 255}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			}
+		}
+		else
+		{
+			if(npc.m_MakeGrigoriGlow != 2.0)
+			{
+				npc.m_MakeGrigoriGlow = 2.0;
+				if(i_SpecialGrigoriReplace == 2)
+					SetVariantColor(view_as<int>({150, 0, 150, 255}));
+				else
+					SetVariantColor(view_as<int>({150, 0, 0, 255}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			}
+		}
+	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	if(BoughtGregHelp || CurrentPlayers <= 4)
 	{

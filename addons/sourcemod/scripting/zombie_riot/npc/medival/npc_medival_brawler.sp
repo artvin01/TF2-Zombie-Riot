@@ -90,7 +90,7 @@ void MedivalBrawler_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Medival Brawler");
+	strcopy(data.Name, sizeof(data.Name), "Medieval Brawler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_brawler");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
 	data.IconCustom = false;

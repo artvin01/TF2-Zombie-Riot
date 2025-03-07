@@ -61,7 +61,9 @@ static bool ClotCanUse(ObjectPerkMachine npc, int client)
 static void ClotShowInteractHud(ObjectPerkMachine npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Perkmachine Tooltip");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay,"Perkmachine Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)

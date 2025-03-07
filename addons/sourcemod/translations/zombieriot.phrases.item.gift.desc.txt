@@ -903,12 +903,12 @@
 	{
 		"en"		"Currently WIP"
 	}
-	"Medival Scout Desc"
+	"Medieval Scout Desc"
 	{
 		"en"		"Very quick and ranged reistant."
 		"ru"		"Очень быстр и устойчив к дальним атакам."
 	}
-	"Medival Villager Desc"
+	"Medieval Villager Desc"
 	{
 		"en"		"A villager who somehow made it into modern times, he builds a village that constantly spawns warrior's akin to its own era."
 		"ru"		"Сельский жител который каким-то образом оказался в современном времени,он сторит деревню которая постоянно порождает воинов своей эры."
@@ -918,7 +918,7 @@
 		"en"		"A building built by the villager, somehow this building containts an infinite amount of enemies inside, it also has the ability to shoot anyone near it"
 		"ru"		"Здание построенное сельским житилем,Каким-то образом содержит бесконечное число врагов внутри,так же может стрелять во врагов рядом с ним"
 	}
-	"Medival Construct Desc"
+	"Medieval Construct Desc"
 	{
 		"en"		"A giant Mythical creature, it will consume buildings at rapid paces and heal itself off them."
 		"ru"		"Гигантское Мифическое создание, Оно сохесть постройки с большой скоростью и вылечит себя от них."
@@ -998,27 +998,27 @@
 		"en"		"Launches a high damaging spear that deals immensive damage to buildings\nHe attacks rapidly and can jump aswell."
 		"ru"		"Запускает копьё которое наносит огромный урон по постройкам\nон атакует быстро и может прыгать"
 	}
-	"Medival Arbalest Desc"
+	"Medieval Arbalest Desc"
 	{
 		"en"		"Short range, faster attacking high damage archers."
 		"ru"		"короткий радиус,более быстро атакующий и больно бьющий лучник."
 	}
-	"Medival Brawler Desc"
+	"Medieval Brawler Desc"
 	{
 		"en"		"Shows up shortly, deals high fast melee punches."
 		"ru"		"редко появляются,наносят быстрые и сильные ближние удары."
 	}
-	"Medival Longbowmen Desc"
+	"Medieval Longbowmen Desc"
 	{
 		"en"		"Longrange, high damage archers."
 		"ru"		"Дальнобойные,Сильно бьющие лучники."
 	}
-	"Medival Halberdier Desc"
+	"Medieval Halberdier Desc"
 	{
 		"en"		"Final upgrade line to the spearmen."
 		"ru"		"Финальное улучшение копьеносцу."
 	}
-	"Medival Elite Longbowmen Desc"
+	"Medieval Elite Longbowmen Desc"
 	{
 		"en"		"Upgraded longbowmen."
 		"ru"		"улучшенный дальнолучники."
