@@ -582,7 +582,7 @@ void Store_OnCached(int client)
 			//Building_GiveRewardsUse(0, client, amount);
 			CashRecievedNonWave[client] += amount;
 			CashSpent[client] -= amount;
-			CashSpentTotal[client] -= amount;
+			CashSpentLoadout[client] -= amount;
 		}
 	}
 
@@ -594,7 +594,7 @@ void Store_OnCached(int client)
 			//Building_GiveRewardsUse(0, client, 50);
 			CashRecievedNonWave[client] += 50;
 			CashSpent[client] -= 50;
-			CashSpentTotal[client] -= 50;
+			CashSpentLoadout[client] -= 50;
 		}
 	}
 }
@@ -1198,11 +1198,9 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 					int cash = CurrentCash-CashSpent[client];
 					if(StarterCashMode[client])
 					{
-						int maxCash = CurrentCash;
-						if(maxCash > StartCash)
-							maxCash = StartCash;
-						
-						cash = maxCash - CashSpentTotal[client];
+						int maxCash = StartCash;
+						maxCash -= CashSpentLoadout[client];
+						cash = maxCash;
 					}
 					char buf[64];
 					if(StarterCashMode[client])
@@ -1296,6 +1294,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					{
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
+						CashSpentLoadout[client] += info.Cost;
 						item.Owned[client] = values[1] + 1;
 						item.CurrentClipSaved[client] = -5;
 
@@ -1607,6 +1606,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					{
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
+						CashSpentLoadout[client] += info.Cost;
 						item.BuyPrice[client] = info.Cost;
 
 						item.Sell[client] = ItemSell(base, info.Cost);
@@ -1773,6 +1773,7 @@ void Store_ClientDisconnect(int client)
 	CashSpentGivePostSetup[client] = 0;
 	CashSpentGivePostSetupWarning[client] = false;
 	CashSpentTotal[client] = 0;
+	CashSpentLoadout[client] = 0;
 	StarterCashMode[client] = true;
 	
 	static Item item;
@@ -2974,12 +2975,9 @@ static void MenuPage(int client, int section)
 	
 	if(StarterCashMode[client])
 	{
-		int maxCash = CurrentCash;
-		if(maxCash > StartCash)
-			maxCash = StartCash;
-		
-		cash = maxCash - CashSpentTotal[client];
-		//Dont use cashSpend here. Itll also allow you to get money through other means.
+		int maxCash = StartCash;
+		maxCash -= CashSpentLoadout[client];
+		cash = maxCash;
 		if(cash < 0)
 		{
 			StarterCashMode[client] = false;
@@ -4307,6 +4305,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[info.AmmoBuyMenuOnly][0];
 							CashSpentTotal[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+							CashSpentLoadout[client] += AmmoData[info.AmmoBuyMenuOnly][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1];
@@ -4317,6 +4316,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[info.Ammo][0];
 							CashSpentTotal[client] += AmmoData[info.Ammo][0];
+							CashSpentLoadout[client] += AmmoData[info.AmmoBuyMenuOnly][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1];
@@ -4334,6 +4334,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
+								CashSpentLoadout[client] += info.Cost;
 								Store_BuyClientItem(client, index, item, info);
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
@@ -4399,6 +4400,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
+								CashSpentLoadout[client] += info.Cost;
 								Store_BuyClientItem(client, index, item, info);
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
@@ -4453,6 +4455,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += info.Cost;
 							CashSpentTotal[client] += info.Cost;
+							CashSpentLoadout[client] += info.Cost;
 							Store_BuyClientItem(client, index, item, info);
 							item.BuyPrice[client] = info.Cost;
 							item.RogueBoughtRecently[client] += 1;
@@ -4519,6 +4522,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += cost;
 								CashSpentTotal[client] += cost;
+								CashSpentLoadout[client] += cost;
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1]*10;
 								SetAmmo(client, info.AmmoBuyMenuOnly, ammo);
@@ -4532,6 +4536,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += cost;
 								CashSpentTotal[client] += cost;
+								CashSpentLoadout[client] += cost;
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1]*10;
 								SetAmmo(client, info.Ammo, ammo);
@@ -6987,6 +6992,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 				{
 					CashSpent[client] -= sell;
 					CashSpentTotal[client] -= sell;
+					CashSpentLoadout[client] -= sell;
 					if(PlaySound)
 						ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 				}

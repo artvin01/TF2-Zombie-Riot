@@ -348,6 +348,7 @@ int CashSpent[MAXTF2PLAYERS];
 int CashSpentGivePostSetup[MAXTF2PLAYERS];
 bool CashSpentGivePostSetupWarning[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
+int CashSpentLoadout[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 bool StarterCashMode[MAXTF2PLAYERS] = {true, ...};
 int Scrap[MAXTF2PLAYERS];
