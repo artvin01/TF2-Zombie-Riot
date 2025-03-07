@@ -256,6 +256,7 @@ ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar CvarNoSpecialZombieSpawn;
+ConVar zr_interactforcereload;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_enemymulticap;

@@ -1627,14 +1627,39 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #if defined ZR
 	if(impulse == 201)
 	{
-		f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
-		//We want to spray, but spray in ZR means interaction!
-		//do we hold score?
-		if(!(buttons & IN_SCORE))
+		bool BlockImpulse = false;
+		//if the cvar is on, but we want spray again
+		if(zr_interactforcereload.BoolValue)
 		{
-			impulse = 0;
+			BlockImpulse = true;
 		}
-		DoInteractKeyLogic(angles, client);
+
+		if(BlockImpulse)
+		{
+			if(b_InteractWithReload[client])
+				BlockImpulse = false;
+			else
+				BlockImpulse = true;
+		}
+		else
+		{
+			if(b_InteractWithReload[client])
+				BlockImpulse = true;
+			else
+				BlockImpulse = false;
+		}
+		if(!BlockImpulse)
+		{
+			f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+			//We want to spray, but spray in ZR means interaction!
+			//do we hold score?
+			if(!(buttons & IN_SCORE))
+			{
+				impulse = 0;
+			}
+			DoInteractKeyLogic(angles, client);
+
+		}
 	}
 #endif
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
@@ -1708,6 +1733,20 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
+	//support in_use
+	if(holding[client] & IN_USE)
+	{
+		if(!(buttons & IN_USE))
+			holding[client] &= ~IN_USE;
+	}
+	else if(buttons & IN_USE)
+	{
+		holding[client] |= IN_USE;
+		
+		f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+		DoInteractKeyLogic(angles, client);
+	}
+	
 	if(holding[client] & IN_ATTACK2)
 	{
 		if(!(buttons & IN_ATTACK2))
@@ -1748,10 +1787,33 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_RELOAD;
 		
+		bool AllowImpulse = true;
 #if defined ZR
-		if(b_InteractWithReload[client])
-#endif
+		AllowImpulse = false;
+		//if the cvar is on, but we want spray again
+		if(zr_interactforcereload.BoolValue)
 		{
+			AllowImpulse = true;
+		}
+
+		if(AllowImpulse)
+		{
+			if(b_InteractWithReload[client])
+				AllowImpulse = false;
+			else
+				AllowImpulse = true;
+		}
+		else
+		{
+			if(b_InteractWithReload[client])
+				AllowImpulse = true;
+			else
+				AllowImpulse = false;
+		}
+#endif
+		if(AllowImpulse)
+		{
+			f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
 			if(DoInteractKeyLogic(angles, client))
 				return Plugin_Continue;
 		}
@@ -3561,4 +3623,31 @@ public void ArrowTouchNonCombatEntity(int entity, int other)
 	}
 	SDKHooks_TakeDamage(other, attacker, attacker, original_damage , DMG_BULLET, Weapon, NULL_VECTOR, chargerPos);
 	RemoveEntity(entity);
+}
+
+
+void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
+{
+	if(zr_interactforcereload.BoolValue) //Cvar is on
+	{
+		if(b_InteractWithReload[client]) //If this is enabled, then force T
+		{
+			Format(Buffer, Buffersize, "%t","Interact With T Spray");
+		}
+		else if(!b_InteractWithReload[client])
+		{
+			Format(Buffer, Buffersize, "%t","Interact With R");
+		}
+	}
+	else
+	{
+		if(b_InteractWithReload[client]) //If this is enabled, then force T
+		{
+			Format(Buffer, Buffersize, "%t","Interact With R");
+		}
+		else if(!b_InteractWithReload[client])
+		{
+			Format(Buffer, Buffersize, "%t","Interact With T Spray");
+		}
+	}
 }

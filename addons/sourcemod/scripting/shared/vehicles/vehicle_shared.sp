@@ -262,7 +262,9 @@ bool Vehicle_ShowInteractHud(int client, int entity)
 	}
 
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Enter this vehicle");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay, "Enter this vehicle");
 	return space;
 }
 

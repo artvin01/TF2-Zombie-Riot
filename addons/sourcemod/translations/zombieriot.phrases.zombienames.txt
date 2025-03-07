@@ -1308,13 +1308,13 @@
 		"pt"		"Balão de Ouro"
 		"ru"		"Золотой шар"
 	}
-	"Medival Scout"
+	"Medieval Scout"
 	{
 		"en"		"Ridden Scout"
 		"pt"		"Scout Montado"
 		"ru"		"Ездовой разведчик"
 	}
-	"Medival Villager"
+	"Medieval Villager"
 	{
 		"en"		"Villager"
 		"pt"		"Aldeão"
@@ -1326,7 +1326,7 @@
 		"pt"		"Edifício"
 		"ru"		"Постройка"
 	}
-	"Medival Construct"
+	"Medieval Construct"
 	{
 		"en"		"Construct"
 		"pt"		"Construção"
@@ -1422,31 +1422,31 @@
 		"pt"		"Aquiles"
 		"ru"		"Ахилл"
 	}
-	"Medival Arbalest"
+	"Medieval Arbalest"
 	{
 		"en"		"Medieval Arbalest"
 		"pt"		"Arbalest Medieval"
 		"ru"		"Арбалетчик средневековья"
 	}
-	"Medival Brawler"
+	"Medieval Brawler"
 	{
 		"en"		"Medieval Brawler"
 		"pt"		"Lutador Medieval"
 		"ru"		"Боец средневековья"
 	}
-	"Medival Longbowmen"
+	"Medieval Longbowmen"
 	{
 		"en"		"Medieval Longbowmen"
 		"pt"		"Arqueiro Medieval"
 		"ru"		"Лучник средневековья"
 	}
-	"Medival Halberdier"
+	"Medieval Halberdier"
 	{
 		"en"		"Medieval Halberdier"
 		"pt"		"Alabardeiro Medieval"
 		"ru"		"Алебардист средневековья"
 	}
-	"Medival Elite Longbowmen"
+	"Medieval Elite Longbowmen"
 	{
 		"en"		"Medieval Elite Longbowmen"
 		"pt"		"Arqueiro Elite Medieval"
@@ -2546,9 +2546,9 @@
 	{
 		"en"	"Wandering Spirit"
 	}
-	"Vengefull Spirit"
+	"Vengeful Spirit"
 	{
-		"en"	"Vengefull Spirit"
+		"en"	"Vengeful Spirit"
 	}
 	"Fallen Warrior"
 	{

@@ -82,7 +82,9 @@ static bool ClotCanUse(ObjectAmmobox npc, int client)
 static void ClotShowInteractHud(ObjectAmmobox npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Ammobox Tooltip", Ammo_Count_Ready - Ammo_Count_Used[client]);
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay, "Ammobox Tooltip", Ammo_Count_Ready - Ammo_Count_Used[client]);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)

@@ -898,7 +898,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.Cash = kv.GetNum("cash");
 		round.AmmoBoxExtra = kv.GetNum("ammobox_extra");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
-		round.medival_difficulty = kv.GetNum("medival_research_level");
+		round.medival_difficulty = kv.GetNum("Medieval_research_level");
 		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
@@ -2374,7 +2374,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
-	CPrintToChatAll("{darkred}%t", "Medival_Difficulty", difficulty);
+	CPrintToChatAll("{darkred}%t", "Medieval_Difficulty", difficulty);
 	
 	float difficulty_math = Pow(0.9, float(difficulty));
 	

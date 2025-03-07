@@ -2280,7 +2280,7 @@
 		"ru"	"Модернизированный боец. Секретный совет: если ваш отряд погибнет, пока другой тренируется с полным запасом, он мгновенно появится. :)"
 		"chi"   "升级版的武装人员。秘密提示 - 如果你的单位死亡，而另一个单位正在全力训练，它会立即产卵。 :)"
 	}
-	"Medival Arbalest Desc"
+	"Medieval Arbalest Desc"
 	{
 		"en"	"Upgraded Crossbow Man. You can press R on them to hold position behind barricades so they shoot out of harm's way. But you didn't hear it from me!"
 		"fr"	"Arbalétrier amélioré. Vous pouvez appuyer sur R sur eux pour rester derrière les barricades afin qu'ils tirent hors de danger. Mais je ne vous l'ai pas entendu !"
@@ -2301,7 +2301,7 @@
 		"ru"	"Обновите до Арбалетов. Атакует намного медленнее, но бьет намного сильнее."
 		"chi"   "升级至强弩。攻击速度慢得多，但攻击力却大得多。"
 	}
-	"Medival Longbowmen Desc"
+	"Medieval Longbowmen Desc"
 	{
 		"en"	"Final basic Ranged unit. They can run and fight effectively in the open."
 		"fr"	"Dernière unité de base à distance. Ils peuvent courir et se battre efficacement à découvert."

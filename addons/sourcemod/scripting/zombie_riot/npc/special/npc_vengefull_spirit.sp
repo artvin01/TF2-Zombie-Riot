@@ -18,7 +18,7 @@ void VengefullSpirit_OnMapStart_NPC()
 	PrecacheModel("models/stalker.mdl");
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Vengefull Spirit");
+	strcopy(data.Name, sizeof(data.Name), "Vengeful Spirit");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vengefull_spirit");
 	strcopy(data.Icon, sizeof(data.Icon), ""); 				//leaderboard_class_(insert the name)
 	data.IconCustom = false;													//download needed?

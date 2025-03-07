@@ -61,7 +61,9 @@ static bool ClotCanUse(ObjectArmorTable npc, int client)
 static void ClotShowInteractHud(ObjectArmorTable npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Armortable Tooltip");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay, "Armortable Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
