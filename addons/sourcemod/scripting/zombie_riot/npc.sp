@@ -822,6 +822,10 @@ void NPC_ConfigSetup()
 	Sphynx_OnMapStart_NPC();
 	ZombineSurvival_OnMapStart_NPC();
 	ZMainHeadcrabZombie_OnMapStart_NPC();
+	Headcrab_MapStart();
+	PoisonHeadcrab_MapStart();
+	ZMainPoisonZombie_OnMapStart_NPC();
+	ZMainHeadcrab_OnMapStart_NPC();
 
 	// Matrix
 	AgentAlan_OnMapStart_NPC();
@@ -1833,6 +1837,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/truesurvival/npc_sphynx.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zombine.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zmain_headcrabzombie.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_zmain_poisonzombie.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_zmain_headcrab.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_headcrab.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_poisonheadcrab.sp"
 #include "zombie_riot/npc/mutations/randomboss/npc_boss_battle_only.sp"
 
 

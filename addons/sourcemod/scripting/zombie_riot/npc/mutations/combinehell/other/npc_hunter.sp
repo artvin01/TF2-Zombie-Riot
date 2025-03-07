@@ -189,7 +189,7 @@ public void Hunter_ClotThink(int iNPC)
 				{
 					npc.m_flDead_Ringer_Invis = gameTime + 0.05;
 					//SDKHook(npc.index, SDKHook_Touch, HunterTouchDamageTouch);
-					float radius = 50.0, damage = 25.0;
+					float radius = 50.0, damage = 50.0;
 					Explode_Logic_Custom(damage, npc.index, npc.index, -1, _, radius, _, _, true);
 				}
 			}
@@ -401,6 +401,16 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 						npc.m_flNextMeleeAttack = gameTime + 2.0;
 						npc.PlaySkewerSound();
 						npc.m_iOverlordComboAttack = 0;
+						float maxhealth = float(ReturnEntityMaxHealth(npc.index));
+						maxhealth *= 1.0;
+						HealEntityGlobal(npc.index, npc.index, maxhealth, 50000.0, 0.0, HEAL_SELFHEAL);
+						float ProjLoc[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+						ProjLoc[2] += 70.0;
+						ProjLoc[0] += GetRandomFloat(-40.0, 40.0);
+						ProjLoc[1] += GetRandomFloat(-40.0, 40.0);
+						ProjLoc[2] += GetRandomFloat(-15.0, 15.0);
+						TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 					}
 				}
 				delete swingTrace;
@@ -441,7 +451,7 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 				npc.FaceTowards(vecTarget, 15000.0);
 				KillFeed_SetKillIcon(npc.index, "c.a.p.p.e.r");
 				float predict = 1000.0;
-				float damage = 25.0;
+				float damage = 100.0;
 				WorldSpaceCenter(npc.m_iTarget, vecTarget);
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, predict, _, vecTarget);
 				
