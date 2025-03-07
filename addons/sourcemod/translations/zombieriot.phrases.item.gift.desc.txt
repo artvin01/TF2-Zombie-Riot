@@ -2168,6 +2168,22 @@
 		"en"		"Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person."
 		"ru"		"Сильнее чем любой другой зомби во всём,Кошмар-это сила с которой нужно считатся.1 взмах его когтей может положить почти любого."
 	}
+	"Headcrab Desc"
+	{
+		"en"		"A 'crab' that tries to latch onto your head, very fast and annoying."
+	}
+	"Poison Headcrab Desc"
+	{
+		"en"		"Yet another crab that tries to latch onto your head, inflicts bleed on hit."
+	}
+	"Z-Main Headcrab Desc"
+	{
+		"en"		"Zmaining is full time job now."
+	}
+	"Z-Main Poison Zombie"
+	{
+		"en"		"AOUEGH - Poison Zombie"
+	}
 	"3650 Desc"
 	{
 		"en"		"Possesses an arsenal of weapons, won't trust anyone who gets in his way."

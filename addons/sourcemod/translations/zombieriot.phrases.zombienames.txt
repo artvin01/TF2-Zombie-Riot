@@ -3113,6 +3113,22 @@
 		"en" 		"Zombine"
 		"ru" 		"Зомбайн"
 	}
+	"Headcrab"
+	{
+		"en"		"Headcrab"
+	}
+	"Poison Headcrab"
+	{
+		"en"		"Poison Headcrab"
+	}
+	"Z-Main Headcrab"
+	{
+		"en"		"Z-Main Headcrab"
+	}
+	"Z-Main Poison Zombie"
+	{
+		"en"		"Z-Main Poison Zombie"
+	}
 	"3650"
 	{
 		"en"		"3650"

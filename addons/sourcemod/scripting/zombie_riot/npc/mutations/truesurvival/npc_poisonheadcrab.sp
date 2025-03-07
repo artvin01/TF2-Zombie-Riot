@@ -2,32 +2,31 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/headcrab/die1.wav",
-	"npc/headcrab/die2.wav"
+	"npc/headcrab_poison/ph_pain3.wav"
 };
 
 static const char g_HurtSound[][] = {
-	"npc/headcrab/pain1.wav",
-	"npc/headcrab/pain2.wav",
-	"npc/headcrab/pain3.wav"
+	"npc/headcrab_poison/ph_pain1.wav",
+	"npc/headcrab_poison/ph_pain2.wav"
 };
 
 static const char g_IdleSound[][] = {
-	"npc/headcrab/alert1.wav",
-	"npc/headcrab/idle3.wav"
+	"npc/headcrab_poison/ph_rattle1.wav",
+	"npc/headcrab_poison/ph_rattle2.wav",
+	"npc/headcrab_poison/ph_rattle3.wav"
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"npc/headcrab/headbite.wav"
+	"npc/PoisonHeadcrab/headbite.wav"
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"npc/headcrab/attack1.wav",
-	"npc/headcrab/attack2.wav",
-	"npc/headcrab/attack3.wav"
+	"npc/headcrab_poison/ph_scream1.wav",
+	"npc/headcrab_poison/ph_scream2.wav",
+	"npc/headcrab_poison/ph_scream3.wav"
 };
 
-void Headcrab_MapStart()
+void PoisonHeadcrab_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
@@ -35,11 +34,11 @@ void Headcrab_MapStart()
 	PrecacheSoundArray(g_IdleSound);
 	PrecacheSoundArray(g_HurtSound);
 
-	PrecacheModel("models/headcrabclassic.mdl");
+	PrecacheModel("models/headcrabblack.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Headcrab");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrab");
+	strcopy(data.Name, sizeof(data.Name), "Poison Headcrab");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_poisonheadcrab");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -50,10 +49,10 @@ void Headcrab_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Headcrab(vecPos, vecAng, team, data);
+	return PoisonHeadcrab(vecPos, vecAng, team, data);
 }
 
-methodmap Headcrab < CSeaBody
+methodmap PoisonHeadcrab < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -80,9 +79,9 @@ methodmap Headcrab < CSeaBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public Headcrab(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public PoisonHeadcrab(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Headcrab npc = view_as<Headcrab>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.25", "200", ally, false));
+		PoisonHeadcrab npc = view_as<PoisonHeadcrab>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.25", "200", ally, false));
 		// 3000 x 0.15
 		// 4000 x 0.15
 
@@ -94,11 +93,11 @@ methodmap Headcrab < CSeaBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = Headcrab_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Headcrab_OnTakeDamage;
-		func_NPCThink[npc.index] = Headcrab_ClotThink;
+		func_NPCDeath[npc.index] = PoisonHeadcrab_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = PoisonHeadcrab_OnTakeDamage;
+		func_NPCThink[npc.index] = PoisonHeadcrab_ClotThink;
 		
-		npc.m_flSpeed = 330.0;	// 1.9 x 250
+		npc.m_flSpeed = 250.0;	// 1.9 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -108,9 +107,9 @@ methodmap Headcrab < CSeaBody
 	}
 }
 
-public void Headcrab_ClotThink(int iNPC)
+public void PoisonHeadcrab_ClotThink(int iNPC)
 {
-	Headcrab npc = view_as<Headcrab>(iNPC);
+	PoisonHeadcrab npc = view_as<PoisonHeadcrab>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -177,7 +176,8 @@ public void Headcrab_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
+						StartBleedingTimer_Against_Client(target, npc.index, 50.0, 3);
 					}
 				}
 
@@ -212,26 +212,15 @@ public void Headcrab_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, target))
 				{
 					npc.m_iTarget = target;
-					npc.m_flSpeed = 330.0;
-					npc.AddGesture("ACT_RANGE_ATTACK1");
-					switch(GetRandomInt(0,1))
-					{
-						case 0:
-						{
-							PluginBot_Jump(npc.index, vecTarget);
-						}
-						case 1:
-						{
-
-						}
-					}
+					npc.m_flSpeed = 250.0;
+					npc.AddGesture("ACT_HEADCRAB_THREAT_DISPLAY");
 
 					npc.PlayMeleeSound();
 
-					npc.m_flAttackHappens = gameTime + 0.45;
+					npc.m_flAttackHappens = gameTime + 0.50;
 
 					//npc.m_flDoingAnimation = gameTime + 1.2;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flNextMeleeAttack = gameTime + 2.0;
 					npc.m_flHeadshotCooldown = gameTime + 1.0;
 				}
 			}
@@ -245,12 +234,12 @@ public void Headcrab_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action Headcrab_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action PoisonHeadcrab_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
 		
-	Headcrab npc = view_as<Headcrab>(victim);
+	PoisonHeadcrab npc = view_as<PoisonHeadcrab>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -259,9 +248,9 @@ public Action Headcrab_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-void Headcrab_NPCDeath(int entity)
+void PoisonHeadcrab_NPCDeath(int entity)
 {
-	Headcrab npc = view_as<Headcrab>(entity);
+	PoisonHeadcrab npc = view_as<PoisonHeadcrab>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
