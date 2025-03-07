@@ -3371,7 +3371,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		if(extralogic)
 		{
 			i_AmountDowned[target]--;
-			b_BobsCuringHand_Revived[target] = 0;
+			b_BobsCuringHand_Revived[target] = -9999;
 		}
 		SetEntityMoveType(target, MOVETYPE_WALK);
 		RequestFrame(Movetype_walk, EntRefToEntIndex(target));

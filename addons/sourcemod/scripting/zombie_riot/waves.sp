@@ -2575,7 +2575,7 @@ void WaveEndLogicExtra()
 	{
 		if(IsValidClient(client))
 		{
-			b_BobsCuringHand_Revived[client] += GetRandomInt(1,3);
+			b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
 
 			/*
 			if(Items_HasNamedItem(client, "Bob's Curing Hand"))

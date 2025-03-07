@@ -137,6 +137,7 @@ static char g_KilledEnemy[][] = {
 };
 
 static int NPCId;
+#define GREGPOINTS_REV_NEEDED 40
 
 public void CuredFatherGrigori_OnMapStart_NPC()
 {
@@ -927,7 +928,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	if(npc.m_iTargetWalkTo > 0)
 	{
 		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
-		b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 &&
+		b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= GREGPOINTS_REV_NEEDED &&
 		 TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE &&
 		  dieingstate[npc.m_iTargetWalkTo] > 0 && 
 		  !b_LeftForDead[npc.m_iTargetWalkTo])
@@ -1473,7 +1474,7 @@ int GetClosestAllyPlayerGreg(int entity)
 	{
 		if (IsValidClient(i))
 		{
-			if (GetTeam(i) == GetTeam(entity) /*&& b_BobsCuringHand[i] */&& b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (GetTeam(i) == GetTeam(entity) /*&& b_BobsCuringHand[i] */&& b_BobsCuringHand_Revived[i] >= GREGPOINTS_REV_NEEDED && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
