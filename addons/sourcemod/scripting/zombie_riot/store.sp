@@ -1424,6 +1424,7 @@ void Store_Reset()
 		StarterCashMode[c] = true;
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
+		CashSpentLoadout[c] = 0;
 	}
 	static Item item;
 	int length = StoreItems.Length;
@@ -4322,7 +4323,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[info.Ammo][0];
 							CashSpentTotal[client] += AmmoData[info.Ammo][0];
-							CashSpentLoadout[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+							CashSpentLoadout[client] += AmmoData[info.Ammo][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1];
