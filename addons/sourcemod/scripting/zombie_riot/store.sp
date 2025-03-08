@@ -4265,6 +4265,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				{
 					int cash = CurrentCash - CashSpent[client];
 					
+					if(StarterCashMode[client])
+					{
+						int maxCash = StartCash;
+						maxCash -= CashSpentLoadout[client];
+						cash = maxCash;
+					}
 					if(ClientTutorialStep(client) == 2)
 					{
 						SetClientTutorialStep(client, 3);
@@ -4510,6 +4516,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					if(item.Owned[client])
 					{
 						int cash = CurrentCash - CashSpent[client];
+						if(StarterCashMode[client])
+						{
+							int maxCash = StartCash;
+							maxCash -= CashSpentLoadout[client];
+							cash = maxCash;
+						}
 						int level = item.Owned[client] - 1;
 						if(item.ParentKit || level < 0)
 							level = 0;

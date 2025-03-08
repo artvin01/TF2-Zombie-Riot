@@ -258,6 +258,12 @@ static void BuildingMenu(int client)
 	
 	int metal = GetAmmo(client, Ammo_Metal);
 	int cash = CurrentCash - CashSpent[client];
+	if(StarterCashMode[client])
+	{
+		int maxCash = StartCash;
+		maxCash -= CashSpentLoadout[client];
+		cash = maxCash;
+	}
 	float multi = Object_GetMaxHealthMulti(client);
 	float gameTime = GetGameTime();
 	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
