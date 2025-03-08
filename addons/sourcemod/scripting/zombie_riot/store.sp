@@ -1202,13 +1202,13 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 						maxCash -= CashSpentLoadout[client];
 						cash = maxCash;
 					}
+					SetGlobalTransTarget(client);
 					char buf[64];
 					if(StarterCashMode[client])
 						Format(buf, sizeof(buf), "%t", "Loadout Credits", cash);
 					else
 						Format(buf, sizeof(buf), "%t", "Credits", cash);
 
-					SetGlobalTransTarget(client);
 					menu.SetTitle("%t\n \n%s\n \n%s\n ", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					
 					int skip = info.PackSkip;
