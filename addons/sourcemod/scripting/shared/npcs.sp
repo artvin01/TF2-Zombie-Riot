@@ -75,8 +75,14 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
 		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
 		
-		float ScalingEnemies = ZRStocks_PlayerScalingDynamic();
-			//above 14, dont spawn more, it just is not worth the extra lag it gives.
+		float ScalingEnemies = ZRStocks_PlayerScalingDynamic(_,true);
+		//above 14, dont spawn more, it just is not worth the extra lag it gives.
+		
+		//max is 14 players.
+		if(ScaleReturn >= 14.0)
+			ScaleReturn = 14.0;
+
+		ScaleReturn *= zr_multi_multiplier.FloatValue;
 
 		float f_limit = Pow(1.115, ScalingEnemies);
 
