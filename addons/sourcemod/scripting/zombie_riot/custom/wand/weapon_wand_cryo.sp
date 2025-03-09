@@ -351,7 +351,7 @@ public void Cryo_Touch(int entity, int target)
 	}
 }
 
-public void Cryo_FreezeZombie(int client, int zombie, int type)
+void Cryo_FreezeZombie(int client, int zombie, int type)
 {
 	if (!IsValidEntity(zombie))
 		return;
@@ -378,16 +378,34 @@ public void Cryo_FreezeZombie(int client, int zombie, int type)
 		{
 			FreezeDuration = Cryo_FreezeDuration_Pap2;
 		}
+		case 3:
+		{
+			if(b_thisNpcIsARaid[zombie])
+			{
+				FreezeDuration = 1.0;
+			}
+			else if(b_thisNpcIsABoss[zombie] || b_ThisNpcIsImmuneToNuke[zombie])
+			{
+				FreezeDuration = 2.0;
+			}
+			else
+			{
+				FreezeDuration = 5.0;
+			}
+		}
 	}
 
 	if(b_thisNpcIsARaid[zombie])
 	{
-		FreezeDuration *= 0.75; //Less duration against raids.
+		if(type != 3)
+			FreezeDuration *= 0.75; //Less duration against raids.
 	}
 
 	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	FreezeNpcInTime(zombie, FreezeDuration);
-	ApplyStatusEffect(client, zombie, "Frozen", FreezeDuration);
+	if(type != 3)
+		ApplyStatusEffect(client, zombie, "Frozen", FreezeDuration);
+
 	if (!IsValidEntity(ZNPC.m_iFreezeWearable))
 	{
 		float offsetToHeight = 40.0;

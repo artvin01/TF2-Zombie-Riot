@@ -944,6 +944,7 @@ void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_St
 
 	DisplayChatBuffCD[client] = GetGameTime() + 5.0;
 	
+	SetGlobalTransTarget(client);
  	char buffer[400];
 	DisplayBuffHintToClient[client][Apply_StatusEffect.BuffIndex] = true;
 	FormatEx(buffer, sizeof(buffer), "%s Desc", Apply_MasterStatusEffect.BuffName);

@@ -144,7 +144,7 @@ methodmap IberiaLighthouse < CClotBody
 		b_thisNpcIsABoss[npc.index] = true;
 		if(!IsValidEntity(RaidBossActive))
 		{
-			RaidModeScaling = 10.0;	//just a safety net
+			RaidModeScaling = 0.0;	//just a safety net
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;

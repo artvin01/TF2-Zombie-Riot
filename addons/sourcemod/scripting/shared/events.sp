@@ -113,6 +113,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Flametail_RoundStart();
 	BlacksmithBrew_RoundStart();
 	Zealot_RoundStart();
+	Drops_ResetChances();
 
 	if(RoundStartTime > GetGameTime())
 		return;

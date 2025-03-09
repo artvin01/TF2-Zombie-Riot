@@ -1235,15 +1235,9 @@
 		"pt"		"PÊRA RECICLADA! 1.33x Munição de todas as fontes que não são a loja, e 1.5x mais ganho e armadura máxima\nVocê ganha 2x mais munição de suprimentos"
 		"chi"		"超级回收:所有非商店弹药增加33%%+最大护甲值和护甲增益增加50%%+2倍弹药补给"
 	}
-	"Nuke Activated"
+	"Freeze Bomb Activated"
 	{
-		"en" 		"Nuke!"
-		"fr" 		"Bombe Atomique!"
-		"ru" 		"Ядерная бомба!"
-		"de"		"KERNWAFFENEXPLOSION!"
-		"pt"		"NUKE!"
-		"nl"		"Atoombom!"
-		"chi"       "肃清全场！"
+		"en" 		"Freeze Bomb!"
 	}
 	"Max Ammo Activated"
 	{
