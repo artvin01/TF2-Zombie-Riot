@@ -484,6 +484,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[Ammo_Metal][0];
 							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
@@ -494,6 +495,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
 							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * 10;
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
