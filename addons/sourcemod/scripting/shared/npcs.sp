@@ -79,10 +79,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		//above 14, dont spawn more, it just is not worth the extra lag it gives.
 		
 		//max is 14 players.
-		if(ScaleReturn >= 14.0)
-			ScaleReturn = 14.0;
+		if(ScalingEnemies >= 14.0)
+			ScalingEnemies = 14.0;
 
-		ScaleReturn *= zr_multi_multiplier.FloatValue;
+		ScalingEnemies *= zr_multi_multiplier.FloatValue;
 
 		float f_limit = Pow(1.115, ScalingEnemies);
 
