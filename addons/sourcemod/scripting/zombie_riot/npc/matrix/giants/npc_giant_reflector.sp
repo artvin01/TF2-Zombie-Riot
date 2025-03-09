@@ -73,7 +73,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 
 static char[] GetPanzerHealth()
 {
-	int health = 25;
+	int health = 15;
 	
 	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
@@ -140,7 +140,7 @@ methodmap GiantReflector < CClotBody
 	
 	public GiantReflector(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		GiantReflector npc = view_as<GiantReflector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.50", GetPanzerHealth(), ally));
+		GiantReflector npc = view_as<GiantReflector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.3", GetPanzerHealth(), ally));
 
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
