@@ -314,7 +314,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 					EmitSoundToAll(NUKE_SOUND, _, SNDCHAN_STATIC, 100, _);
 					while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
 					{
-						if(IsValidEntity(base_boss) && base_boss > 0)
+						if(IsValidEntity(base_boss))
 						{
 							if(GetTeam(base_boss) != TFTeam_Red)
 							{

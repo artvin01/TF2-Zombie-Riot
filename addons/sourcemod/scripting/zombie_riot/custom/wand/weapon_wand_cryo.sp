@@ -356,9 +356,13 @@ void Cryo_FreezeZombie(int client, int zombie, int type)
 	if (!IsValidEntity(zombie))
 		return;
 
+	if(!IsEntityAlive(zombie))
+		return;
+		
 	Cryo_SlowType_Zombie[zombie] = type;
 	
-	EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 80);
+	if(type != 3)
+		EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 80);
 	CClotBody ZNPC = view_as<CClotBody>(zombie);
 	Cryo_Frozen[zombie] = true;
 	Cryo_FreezeLevel[zombie] = 0.0;
