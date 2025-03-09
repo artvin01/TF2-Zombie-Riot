@@ -1601,7 +1601,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 
 				//just get highest value
 				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false, 1.0);
-				int healing_Amount = RoundToCeil(40.0 * RepairRateBonus);
+				int healing_Amount = RoundToCeil(30.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 
 				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
@@ -1609,11 +1609,10 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 					int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
-						GetEntPropVector(entity_close, Prop_Data, "m_vecOrigin", client_pos);
+						GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", client_pos);
 						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
 						{
 							Repaired_Building = true;
-							powerup_pos[2] += 45.0;
 							TE_Particle("halloween_boss_axe_hit_sparks", client_pos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 							if(CurrentMetal < healing_Amount)
 							{

@@ -240,13 +240,13 @@ static int GetCost(int client, BuildingInfo info, float multi)
 		{
 			buildCost /= 3;
 		}
+		//only reduce off buildigns that actually cost more to build.
+		ReduceMetalCost(client, buildCost);
 	}
 
 
 	if(Rogue_Mode())
 		buildCost /= 3;
-
-	ReduceMetalCost(client, buildCost);
 
 	return buildCost;
 }

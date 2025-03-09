@@ -749,7 +749,7 @@ public void ReduceMediFluidCost(int client, int &cost)
 
 public void ReduceMetalCost(int client, int &cost)
 {
-	float Attribute = Attributes_GetOnPlayer(client, Attrib_ReduceMetalCost, true, true);
+	float Attribute = Attributes_GetOnPlayer(client, Attrib_ReduceMetalCost, true, false, 1.0); //Tinker needs to check weapons too!
 	if(Attribute == 1.0 || Attribute == 0.0)
 	{
 		return;

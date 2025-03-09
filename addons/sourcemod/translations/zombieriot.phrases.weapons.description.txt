@@ -1620,7 +1620,7 @@
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
+		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20%% (Cant go below 1)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
@@ -1635,7 +1635,7 @@
 	
 	"Cosmic Repair Handling book Desc"
 	{
-		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
+		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20%% (Cant go below 1)"
 	}
 	
 	"Construction Expert Desc"
