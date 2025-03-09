@@ -76,8 +76,6 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
 		
 		float ScalingEnemies = ZRStocks_PlayerScalingDynamic();
-		if(ScalingEnemies >= 14.0)
-			ScalingEnemies = 14.0;
 			//above 14, dont spawn more, it just is not worth the extra lag it gives.
 
 		float f_limit = Pow(1.115, ScalingEnemies);

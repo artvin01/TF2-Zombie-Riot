@@ -2921,6 +2921,10 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5)
 		}
 	}
 
+	//max is 14 players.
+	if(ScaleReturn >= 14.0)
+		ScaleReturn = 14.0;
+		
 	if(rebels)
 		ScaleReturn += Citizen_Count() * rebels;
 	
