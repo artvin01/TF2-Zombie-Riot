@@ -1215,13 +1215,15 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 					count += skip;
 
 					char data[64], buffer[64];
+					/*
 					if(count > 1)
 					{
 						zr_tagwhitelist.GetString(buffer, sizeof(buffer));
 						if(StrContains(buffer, "realtime") != -1)
 							count = 1;
 					}
-					
+					What in the god damn?!
+					*/
 					int userid = (client == owner || owner == -1) ? -1 : GetClientUserId(owner);
 					
 					for(int i = skip; i < count; i++)
