@@ -406,6 +406,11 @@ methodmap ObjectGeneric < CClotBody
 		return true;
 	}
 	
+	property float m_flGlowingLogic
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
@@ -664,6 +669,44 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		
 	}
 
+	if(Resistance_for_building_High[objstats.index] > GetGameTime() && objstats.m_flGlowingLogic != 1.0)
+	{
+		objstats.m_flGlowingLogic = 1.0;
+		if(IsValidEntity(objstats.m_iWearable4))
+		{
+			char sColor[32];
+			char HealthText[64];
+			Format(sColor, sizeof(sColor), " %d %d %d %d ", 0, 255, 255, 255);
+			DispatchKeyValue(objstats.m_iWearable4,     "color", sColor);
+			int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
+			if(IsValidClient(Owner))
+				Format(HealthText, sizeof(HealthText), "[[[%N]]]", Owner);
+			else if(Owner != -1 && Citizen_IsIt(Owner))
+				strcopy(HealthText, sizeof(HealthText), "Rebel");
+			else
+				strcopy(HealthText, sizeof(HealthText), " ");
+			DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
+		}
+	}
+	else if(Resistance_for_building_High[objstats.index] < GetGameTime() && objstats.m_flGlowingLogic == 1.0)
+	{
+		objstats.m_flGlowingLogic = 0.0;
+		if(IsValidEntity(objstats.m_iWearable4))
+		{
+			char sColor[32];
+			char HealthText[64];
+			Format(sColor, sizeof(sColor), " %d %d %d %d ", 0, 255, 0, 255);
+			int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
+			DispatchKeyValue(objstats.m_iWearable4,     "color", sColor);
+			if(IsValidClient(Owner))
+				Format(HealthText, sizeof(HealthText), "%N", Owner);
+			else if(Owner != -1 && Citizen_IsIt(Owner))
+				strcopy(HealthText, sizeof(HealthText), "Rebel");
+			else
+				strcopy(HealthText, sizeof(HealthText), " ");
+			DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
+		}
+	}
 	return true;
 }
 

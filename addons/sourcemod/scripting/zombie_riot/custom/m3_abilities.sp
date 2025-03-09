@@ -1600,11 +1600,10 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				bool Repaired_Building = false;
 
 				//just get highest value
-				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false);
-				int healing_Amount = RoundToCeil(20.0 * RepairRateBonus);
+				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false, 1.0);
+				int healing_Amount = RoundToCeil(40.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 
-				CurrentMetal *= 5;
 				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 				{
 					int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
@@ -1615,14 +1614,14 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 						{
 							Repaired_Building = true;
 							powerup_pos[2] += 45.0;
-							ParticleEffectAt(client_pos, "halloween_boss_axe_hit_sparks", 1.0);
+							TE_Particle("halloween_boss_axe_hit_sparks", client_pos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 							if(CurrentMetal < healing_Amount)
 							{
 								healing_Amount = CurrentMetal;
 							}
 							if(CurrentMetal > 0)
 							{
-								int HealthAfter = HealEntityGlobal(client, entity_close, float(healing_Amount), _, _, _, _);
+								int HealthAfter = HealEntityGlobal(client, entity_close, float(healing_Amount), .MaxHealPermitted = CurrentMetal);
 
 								CurrentMetal -= (HealthAfter) / 5;
 							}
@@ -1631,7 +1630,6 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 					}
 				}
 
-				CurrentMetal /= 5;
 				SetAmmo(client, 3, CurrentMetal);
 				CurrentAmmo[client][3] = GetAmmo(client, 3);
 				if(Repaired_Building)

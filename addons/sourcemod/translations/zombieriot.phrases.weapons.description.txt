@@ -2450,9 +2450,9 @@
 	}
 	"Throwable Repair Grenade Desc"
 	{
-		"en"	"Throw a grenade that repairs buildings near it over time.\nBuilder upgrades affect it.\nMay require wrench to be equipped to fully work.\nGives buildings 25% damage resistance while in range."
+		"en"	"Throw a grenade that repairs buildings near it over time.\nBuilder upgrades affect it.\nMay require wrench to be equipped to fully work.\nGives buildings 25%% damage resistance while in range."
 		"fr"	"Lance un kit de réparation qui répare les construction proches.\n+25%% résistance pour les constructions proches\nAmélioré avec les améliorations pour Constructeur.\nBesoin d'une clé pour fonctionner correctement."
-		"ru"	"Бросает гранату, которая со временем ремонт. постройки рядом с ней.\nУлучш. построек влияют на неё.\nМожет потреб. гаечный ключ в руках для полноценной работы.\nДаёт постройкам 25% сопр. урону, пока они находятся в радиусе действия."
+		"ru"	"Бросает гранату, которая со временем ремонт. постройки рядом с ней.\nУлучш. построек влияют на неё.\nМожет потреб. гаечный ключ в руках для полноценной работы.\nДаёт постройкам 25%% сопр. урону, пока они находятся в радиусе действия."
 		"chi"   "投掷一枚手榴弹，随着时间的推移可以修复附近的建筑物。\n建筑升级会影响它。可能需要配备扳手才能完全工作。在有效射程内给予建筑物25%的伤害抗性。"
 	}
 	"Beam Wand pap Alt 1"

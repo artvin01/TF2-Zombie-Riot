@@ -108,7 +108,7 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	pos[2] += 45.0;
 
-	ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
+	TE_Particle("halloween_boss_axe_hit_sparks", pos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	return true;
 }
