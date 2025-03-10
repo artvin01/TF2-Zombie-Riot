@@ -208,10 +208,10 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						{
 							npc.AddGesture("ACT_COMBO3_BOBPRIME",_,_,_,1.5);
 							npc.PlaySwordSound();
-							npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
+							npc.m_flReloadDelay = GameTime + (2.0 * npc.BonusFireRate);
 							npc.m_flAttackHappens = GameTime + 1.0;
 							npc.m_flAttackHappens_bullshit = GameTime + 1.2;
-							npc.m_flReloadDelay = GameTime + (2.0 * npc.BonusFireRate);
+							npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
 							npc.m_flAttackHappenswillhappen = true;
 						}
 					}
