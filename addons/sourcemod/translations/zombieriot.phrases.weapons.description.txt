@@ -969,8 +969,7 @@
 	}
 	"Hammer Pap 4"
 	{
-		"en"	"Slightly faster swinging speed and increased damage. Your damage, swing speed, and melee resistance will go up the more you hit the enemies"
-		"fr"	"Dégats et cadence des attaques améliorés. Dégats, cadence des attaques améliorés et résistance corps-à-corps s'améliorent avec chaque coup."
+		"en"	"Slightly faster swinging speed and increased damage. Wwing speed will go up the more you hit the enemies"
 	}
 	
 	"Fire Axe Desc"

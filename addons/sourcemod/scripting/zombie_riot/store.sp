@@ -798,7 +798,7 @@ stock void Store_OpenItemThis(int client, int index)
 	}
 }
 
-void Store_SwapToItem(int client, int swap)
+void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 {
 	if(swap == -1)
 		return;
@@ -829,11 +829,11 @@ void Store_SwapToItem(int client, int swap)
 			}
 		}
 	}
-
-	SetPlayerActiveWeapon(client, swap);
+	if(SwitchDo)
+		SetPlayerActiveWeapon(client, swap);
 }
 
-void Store_SwapItems(int client)
+void Store_SwapItems(int client, bool SwitchDo = true)
 {
 	//int suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
 	//if(!suit)
@@ -912,7 +912,8 @@ void Store_SwapItems(int client)
 					
 					//GetEntityClassname(nextE, buffer, sizeof(buffer));
 					//FakeClientCommand(client, "use %s", buffer);
-					SetPlayerActiveWeapon(client, nextE);
+					if(SwitchDo)
+						SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -927,7 +928,8 @@ void Store_SwapItems(int client)
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
 				if(TF2_GetClassnameSlot(buffer) == slot)
 				{
-					SetPlayerActiveWeapon(client, weapon);
+					if(SwitchDo)
+						SetPlayerActiveWeapon(client, weapon);
 					break;
 				}
 			}

@@ -2402,6 +2402,8 @@ public void OnWeaponSwitchPost(int client, int weapon)
 	//Attributes_Set(client, 698, 1.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", true); //Disables weapon switching????
 #endif
+	//Silently switch Primary weapon in slots
+	Store_SwapItems(client, false);
 
 }
 

@@ -2069,7 +2069,7 @@
 	}
 	"tutorial_3"
 	{
-		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+		"en"		"Now that you have a weapon you're prepared.\nOnly have 1 weapon at a time at the start and stick to one weapon class!\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
 		"fr"		"Vous avez maintenant votre arme, vous êtes prêt.\nAchetez des armes meilleures, ainsi que des améliorations, dans des vagues futures,\net survivez jusqu'à la fin!\nDe l'aide additionelle se trove dans la boutique, sous «aide»."
 		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в следующих волнах и выживите!\nПодробности можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
 		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
