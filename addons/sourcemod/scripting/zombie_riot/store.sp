@@ -784,6 +784,11 @@ void Store_OpenItemPage(int client)
 			MenuPage(client, StoreWeapon[weapon]);
 		}
 	}
+	else
+	{
+		SetGlobalTransTarget(client);
+		CPrintToChat(client,"{red}[ZR] {yellow}%t", "Cant Display");
+	}
 }
 
 stock void Store_OpenItemThis(int client, int index)

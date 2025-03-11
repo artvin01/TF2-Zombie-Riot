@@ -2168,3 +2168,47 @@ stock void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
 	}
 	//????
 }
+
+
+// Returns the top most weapon (or -1 for no change)
+int Store_CycleItems(int client, int slot)
+{
+	char buffer[36];
+	
+	int topWeapon = -1;
+	int firstWeapon = -1;
+	int previousIndex = -1;
+
+	int length = GetMaxWeapons(client);
+	for(int i; i < length; i++)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+		if(weapon != -1)
+		{
+			GetEntityClassname(weapon, buffer, sizeof(buffer));
+			if(TF2_GetClassnameSlot(buffer) == slot)
+			{
+				if(firstWeapon == -1)
+					firstWeapon = weapon;
+
+				if(previousIndex != -1)
+				{
+					// Replace this weapon with the previous slot (1 <- 2)
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(topWeapon == -1)
+						topWeapon = weapon;
+				}
+
+				previousIndex = i;
+			}
+		}
+	}
+
+	if(firstWeapon != -1)
+	{
+		// First to Last (7 <- 0)
+		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+	}
+
+	return topWeapon;
+}

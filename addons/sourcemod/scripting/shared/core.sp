@@ -106,6 +106,7 @@ ConVar CvarRerouteToIp;
 ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
+ConVar zr_interactforcereload;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -1460,6 +1461,7 @@ public void OnClientPutInServer(int client)
 		return;
 	}
 #endif
+	b_GivePlayerHint[client] = false;
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
 	f_RoleplayTalkLimit[client] = 0.0;
@@ -1788,7 +1790,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		holding[client] |= IN_RELOAD;
 		
 		bool AllowImpulse = true;
-#if defined ZR
+		
 		AllowImpulse = false;
 		//if the cvar is on, but we want spray again
 		if(zr_interactforcereload.BoolValue)
@@ -1810,7 +1812,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			else
 				AllowImpulse = false;
 		}
-#endif
+
 		if(AllowImpulse)
 		{
 			f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;

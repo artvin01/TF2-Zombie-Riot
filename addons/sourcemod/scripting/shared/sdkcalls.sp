@@ -234,7 +234,7 @@ void SDKCall_InvalidateBoneCache(int index)
 {
 	SDKCall(g_hInvalidateBoneCache, index);
 }
-/*
+
 void SDKCall_SetAbsOrigin(int index, float AbsOrigin[3])
 {
 	if(g_hSetAbsOrigin)
@@ -242,7 +242,7 @@ void SDKCall_SetAbsOrigin(int index, float AbsOrigin[3])
 		SDKCall(g_hSetAbsOrigin, index, AbsOrigin);
 	}
 }
-
+/*
 void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 {
 	if(g_hSetAbsAngle)

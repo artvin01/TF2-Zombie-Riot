@@ -51,7 +51,6 @@ void ConVar_PluginStart()
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?");
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "0", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
-	zr_interactforcereload = CreateConVar("zr_interactforcereload", "0", "force interact with reload, it also blocks spray interacting like before.", FCVAR_DONTRECORD);
 	zr_voteconfig = CreateConVar("zr_voteconfig", "raidmode", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "nominigames", "Tags to blacklist from weapons config", FCVAR_DONTRECORD);
 	zr_tagwhitelist = CreateConVar("zr_tagwhitelist", "", "Tags to whitelist from weapons config", FCVAR_DONTRECORD);
@@ -96,6 +95,7 @@ void ConVar_PluginStart()
 #if defined ZR || defined RTS	
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
+	zr_interactforcereload = CreateConVar("zr_interactforcereload", "0", "force interact with reload, it also blocks spray interacting like before.", FCVAR_DONTRECORD);
 
 #if defined RPG
 	ConVar_Add("mp_friendlyfire", "1.0"); // default: 0.9 Ty to miku for showing me

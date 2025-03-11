@@ -58,7 +58,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		}
 		else if(!TF2_IsPlayerInCondition(client, TFCond_Slowed) && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
 		{
-	//		Store_SwapItems(client);
+			Store_SwapItems(client);
 		}
 #endif
 		return Plugin_Continue;

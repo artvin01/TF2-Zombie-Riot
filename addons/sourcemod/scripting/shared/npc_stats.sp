@@ -3029,8 +3029,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
-	//		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
 		return entity;
@@ -8781,7 +8781,6 @@ public void ArrowStartTouch(int arrow, int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
-		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 		if(ShouldNpcDealBonusDamage(entity))
 		{
 			f_ArrowDamage[arrow] *= 3.0;
@@ -8804,31 +8803,22 @@ public void ArrowStartTouch(int arrow, int entity)
 		Projectile_DealElementalDamage(entity, arrow);
 
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(arrow_particle))
-		{
-		//	DispatchKeyValue(arrow_particle, "parentname", "none");
-			AcceptEntityInput(arrow_particle, "ClearParent");
-			float f3_PositionTemp[3];
-			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
-			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
-		}
+
 	}
 	else
 	{
-		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 		EmitSoundToAll(g_ArrowHitSoundMiss[GetRandomInt(0, sizeof(g_ArrowHitSoundMiss) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(arrow_particle))
-		{
-		//	DispatchKeyValue(arrow_particle, "parentname", "none");
-			AcceptEntityInput(arrow_particle, "ClearParent");
-			float f3_PositionTemp[3];
-			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
-			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
-		}
 	}
-	RemoveEntity(arrow);
+	int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
+	if(IsValidEntity(arrow_particle))
+	{
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	//Delay deletion for particles to not break.
+	SDKUnhook(arrow, SDKHook_StartTouch, ArrowStartTouch);
+	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow), TIMER_FLAG_NO_MAPCHANGE);
+	SetEntityRenderMode(arrow, RENDER_NONE);
+	SetEntityMoveType(arrow, MOVETYPE_NONE);
 }
 
 public void Rocket_Particle_StartTouch(int entity, int target)
@@ -8900,22 +8890,6 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 public MRESReturn Rocket_Particle_DHook_RocketExplodePre(int entity)
 {
 	return MRES_Supercede;	//Don't even think about it mate
-}
-
-public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
-{
-	RemoveEntity(arrow);
-	int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
-	if(IsValidEntity(arrow_particle))
-	{
-		DispatchKeyValue(arrow_particle, "parentname", "none");
-		AcceptEntityInput(arrow_particle, "ClearParent");
-		float f3_PositionTemp[3];
-		GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-		TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
-		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
-	}
-	return MRES_Supercede;
 }
 
 
