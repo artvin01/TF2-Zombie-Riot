@@ -1975,23 +1975,9 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 	}
 
-	if(IsValidEntity(objstats.m_iWearable3))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable3, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable4))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable5))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable5, "SetTextSize");
-		SDKUnhook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-		SDKHook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-	}
+	
+	//update text
+	objstats.m_flNextDelayTime = 0.0;
 	float flPos[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 	SDKCall_SetLocalOrigin(entity, flPos);	
@@ -2135,7 +2121,7 @@ void UnequipDispenser(int client, bool destroy = false)
 {
 	if(destroy)
 	{
-		Building_Mounted[client] = 0;
+		Building_Mounted[client] = -1;
 		if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]))
 		{
 			RemoveEntity(i2_MountedInfoAndBuilding[0][client]);
@@ -2155,7 +2141,7 @@ void UnequipDispenser(int client, bool destroy = false)
 		return;
 	}
 	
-	Building_Mounted[client] = 0;
+	Building_Mounted[client] = -1;
 	int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 	if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 	{
@@ -2174,7 +2160,7 @@ void UnequipDispenser(int client, bool destroy = false)
 	{
 		return;
 	}
-	Building_Mounted[entity] = 0;
+	Building_Mounted[entity] = -1;
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	b_ThisEntityIgnored[entity] = false;
 	b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
@@ -2200,22 +2186,8 @@ void UnequipDispenser(int client, bool destroy = false)
 		SDKHook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);	
 	}
 
-	if(IsValidEntity(objstats.m_iWearable3))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable3, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable4))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable5))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable5, "SetTextSize");
-		SDKUnhook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-	}
+	//update text
+	objstats.m_flNextDelayTime = 0.0;
 
 	Building_PlayerWieldsBuilding(client, entity);
 }
