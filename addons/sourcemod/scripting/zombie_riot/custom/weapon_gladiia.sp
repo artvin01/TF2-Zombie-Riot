@@ -426,7 +426,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			if(force >= 0)
 			{
 				if(module)
-					SDKHooks_TakeDamage(entity, client, client, 3200.0, DMG_PLASMA, weapon);
+					SDKHooks_TakeDamage(entity, client, client, 3200.0, DMG_CLUB, weapon);
 
 				FreezeNpcInTime(entity, 0.3 + (force * 0.1));
 				Custom_Knockback(client, entity, -1500.0, true, true, true, 0.3 + (force * 0.1));
@@ -436,7 +436,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			else if(force == -1)
 			{
 				if(module)
-					SDKHooks_TakeDamage(entity, client, client, 280.0, DMG_PLASMA, weapon);
+					SDKHooks_TakeDamage(entity, client, client, 280.0, DMG_CLUB, weapon);
 
 				FreezeNpcInTime(entity, 0.2);
 				Custom_Knockback(client, entity, -300.0, true, true, true, 0.2);
@@ -446,7 +446,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			else if(force == -2)
 			{
 				if(module)
-					SDKHooks_TakeDamage(entity, client, client, 24.0, DMG_PLASMA, weapon);
+					SDKHooks_TakeDamage(entity, client, client, 24.0, DMG_CLUB, weapon);
 
 				FreezeNpcInTime(entity, 0.5);
 
@@ -456,7 +456,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			float damage = 65.0 * damagemulti;
 			damage *= Attributes_Get(weapon, 2, 1.0);
 			
-			SDKHooks_TakeDamage(entity, client, client, damage, DMG_PLASMA, weapon);
+			SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon);
 
 			EmitSoundToAll("weapons/grappling_hook_impact_flesh.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 			EmitSoundToAll("weapons/grappling_hook_shoot.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -536,7 +536,7 @@ void Gladiia_WandTouch(int entity, int target)
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(particle > MaxClients)

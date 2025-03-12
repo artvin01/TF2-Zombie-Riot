@@ -2346,6 +2346,14 @@
 		"ru"		"Интерф. вверх"
 		"chi"		"向上移动Hud"
 	}
+	"Hint Change Multislot"
+	{
+		"en"		"Hint: press the slot number on your keyboard multiple times to switch multiple weapons in the same slot OR press your (H) button (action key) To switch (incase you use scrollwheel)!"
+	}
+	"Cant Display"
+	{
+		"en"		"Your Holding weapon cant be shown in the shop..."
+	}
 	"Move Hud Down"
 	{
 		"en"		"Move Hud Down"

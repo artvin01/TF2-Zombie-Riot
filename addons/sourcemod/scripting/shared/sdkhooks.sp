@@ -833,6 +833,11 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
+				if(!b_GivePlayerHint[client])
+				{
+					CPrintToChat(client, "{red}[ZR] {yellow}%t","Hint Change Multislot");
+					b_GivePlayerHint[client] = true;
+				}
 				Format(buffer, sizeof(buffer), "[Multi Slot] %s", buffer);
 				IsReady = false;
 				had_An_ability = true;
@@ -2359,8 +2364,8 @@ public void OnWeaponSwitchPost(int client, int weapon)
 {
 	if(weapon != -1)
 	{
-#if defined ZR
 		int PreviousWeapon = EntRefToEntIndex(i_PreviousWeapon[client]);
+#if defined ZR
 		if(PreviousWeapon != weapon)
 			OnWeaponSwitchPre(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 #endif

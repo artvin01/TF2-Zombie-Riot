@@ -3551,7 +3551,7 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 		GetAbsOrigin(entity, f_origin);
 		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
 		SetVariantString(strTargetName);
-		AcceptEntityInput(entIndex, "SetParent");
+		SetParent(entity, entIndex, "FadeTrail", _, false);
 		return entIndex;
 	}	
 	return -1;
@@ -3605,6 +3605,33 @@ public void MakeExplosionFrameLater(DataPack pack)
 	delete pack;
 }
 
+
+public void TeleportEntityLocalPos_FrameDelay(int entity, float VecPos[3])
+{
+	DataPack pack_boom = new DataPack();
+	pack_boom.WriteCell(EntIndexToEntRef(entity));
+	pack_boom.WriteFloat(VecPos[0]);
+	pack_boom.WriteFloat(VecPos[1]);
+	pack_boom.WriteFloat(VecPos[2]);
+	RequestFrames(TeleportEntityLocalPos_FrameDelayDo, 5, pack_boom);
+}
+
+public void TeleportEntityLocalPos_FrameDelayDo(DataPack pack)
+{
+	pack.Reset();
+	int Entity = EntRefToEntIndex(pack.ReadCell());
+	float vec_pos[3];
+	if(IsValidEntity(Entity))
+	{
+		vec_pos[0] = pack.ReadFloat();
+		vec_pos[1] = pack.ReadFloat();
+		vec_pos[2] = pack.ReadFloat();
+		SDKCall_SetAbsOrigin(Entity, vec_pos);
+		SDKCall_SetLocalOrigin(Entity,vec_pos);
+	}
+	
+	delete pack;
+}
 stock void SetPlayerActiveWeapon(int client, int weapon)
 {
 	TF2Util_SetPlayerActiveWeapon(client, weapon);
