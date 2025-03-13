@@ -205,13 +205,11 @@ static void BurnTarget(CombineOverlordCC npc, int entity)
 	}
 	else if(npc.m_hCCFlags & CC_FLAG_BURNDAMAGE)
 	{
-		TF2_AddCondition(entity, TFCond_Gas, 1.5);
-		StartBleedingTimer_Against_Client(entity, npc.index, 6.0, 20);
+		NPC_Ignite(entity, npc.index,8.0, -1, 10.0);
 	}
 	else
 	{
-		TF2_AddCondition(entity, TFCond_Gas, 1.5);
-		StartBleedingTimer_Against_Client(entity, npc.index, 2.0, 20);
+		NPC_Ignite(entity, npc.index,4.0, -1, 10.0);
 	}
 }
 

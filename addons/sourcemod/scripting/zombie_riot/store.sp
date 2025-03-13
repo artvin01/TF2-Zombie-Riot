@@ -836,6 +836,15 @@ void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 	}
 	if(SwitchDo)
 		SetPlayerActiveWeapon(client, swap);
+	int WeaponValidCheck = 0;
+
+	//make sure to fake swap aswell!
+	while(WeaponValidCheck != swap)
+	{
+		WeaponValidCheck = Store_CycleItems(client, slot);
+		if(WeaponValidCheck == -1)
+			break;
+	}
 }
 
 void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride = -1)
@@ -5577,7 +5586,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 					//new item bought, make sure to update the current order and stuff of weapon changing client
 					//TODO bug: Buy 1 melee weapon, then another, you cant switch between the two unless you swsitch once via h
-					OnWeaponSwitchPost(client, entity);
+
 
 					/*
 					LogMessage("Weapon Spawned!");

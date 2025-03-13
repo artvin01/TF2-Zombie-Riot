@@ -630,18 +630,7 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 					if(npc.m_bLostHalfHealth)
 					{
 						damageDealt *= 2.0;
-						if(target > MaxClients)
-						{
-							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 30);
-						}
-						else
-						{
-							if (!IsInvuln(target))
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 30);
-								TF2_IgnitePlayer(target, target, 5.0);
-							}
-						}
+						NPC_Ignite(target, npc.index,12.0, -1, 30.0);
 					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

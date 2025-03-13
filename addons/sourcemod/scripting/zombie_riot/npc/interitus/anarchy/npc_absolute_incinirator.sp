@@ -297,11 +297,10 @@ int AnarchyAbsoluteInciniratorSelfDefense(AnarchyAbsoluteIncinirator npc, float 
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 
-						if(target <= MaxClients)
-							TF2_IgnitePlayer(target, target, 5.0);
+						
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						StartBleedingTimer_Against_Client(target, npc.index, 3.0, 10);
+						NPC_Ignite(target, npc.index, 20.0, -1, 1.5);
 					}
 				}
 				delete swingTrace;
