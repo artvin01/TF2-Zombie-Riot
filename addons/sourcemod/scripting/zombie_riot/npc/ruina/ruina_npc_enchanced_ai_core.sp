@@ -2586,7 +2586,6 @@ enum struct Ruina_Laser_Logic
 			hullMin[0] = -this.Custom_Hull[0];
 			hullMin[1] = -this.Custom_Hull[1];
 			hullMin[2] = -this.Custom_Hull[2];
-			return;
 		}
 		else
 		{
