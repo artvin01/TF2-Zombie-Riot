@@ -1304,6 +1304,9 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			HealTotal *= 0.5;
 		}
+		if(HasSpecificBuff(reciever, "Burn"))
+			HealTotal *= 0.75;
+
 		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
 		{
 			HealTotal *= 1.5;

@@ -572,6 +572,9 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 
 	if(wasBurning)
 	{
+		if(entity <= MaxClients)
+			TF2_IgnitePlayer(entity, entity, 200.0);
+
 		if(value > BurnDamage[entity]) //Dont override if damage is lower.
 		{
 			BurnDamage[entity] = value;
@@ -589,7 +592,11 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 	}
 	else
 	{
-		IgniteTargetEffect(entity);
+		if(entity <= MaxClients)
+			TF2_IgnitePlayer(entity, entity, 200.0);
+		else
+			IgniteTargetEffect(entity);
+
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);
 		if(validWeapon)
@@ -656,6 +663,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			{
 				value *= 1.2;
 			}
+			if((entity <= MaxClients))
+				TF2_IgnitePlayer(entity, entity, 200.0);
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 			SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 			

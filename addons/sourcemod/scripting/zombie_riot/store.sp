@@ -4964,7 +4964,7 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-	
+	map.SetValue("60", 0.0);// Burning is only visual, and shouldnt hurt the client
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
