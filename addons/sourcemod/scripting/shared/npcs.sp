@@ -615,7 +615,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		if((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || (entity <= MaxClients))
+		if((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || i_IsABuilding[entity] || (entity <= MaxClients))
 		{
 			int attacker = EntRefToEntIndex(IgniteId[entity]);
 			if(!IsValidEntity(attacker))
@@ -666,6 +666,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			if((entity <= MaxClients))
 				TF2_IgnitePlayer(entity, entity, 200.0);
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
+			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
+				value *= 5.0;
 			SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 			
 			//Setting burn dmg to slash cus i want it to work with melee!!!
