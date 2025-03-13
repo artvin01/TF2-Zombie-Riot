@@ -177,7 +177,7 @@ public void PoisonHeadcrab_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-						StartBleedingTimer_Against_Client(target, npc.index, 50.0, 3);
+						StartBleedingTimer(target, npc.index,30.0, 3, -1, DMG_TRUEDAMAGE, 0);
 					}
 				}
 

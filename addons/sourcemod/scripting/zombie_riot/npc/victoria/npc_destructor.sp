@@ -203,18 +203,7 @@ public void VictoriaDestructor_ExplodePost(int attacker, int victim, float damag
 {
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
-		if(victim > MaxClients)
-		{
-			StartBleedingTimer_Against_Client(victim, attacker, 4.0, 10);
-		}
-		else
-		{
-			if (!IsInvuln(victim))
-			{
-				StartBleedingTimer_Against_Client(victim, attacker, 4.0, 10);
-				TF2_IgnitePlayer(victim, victim, 5.0);
-			}
-		}
+		NPC_Ignite(victim, attacker,8.0, -1, 5.50);
 	}
 }
 
