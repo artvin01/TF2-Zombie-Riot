@@ -5574,6 +5574,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
 					HidePlayerWeaponModel(client, entity, true);
+
+					//new item bought, make sure to update the current order and stuff of weapon changing client
+					//TODO bug: Buy 1 melee weapon, then another, you cant switch between the two unless you swsitch once via h
+					OnWeaponSwitchPost(client, entity);
+
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);
