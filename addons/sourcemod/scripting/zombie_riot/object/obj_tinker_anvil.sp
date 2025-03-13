@@ -92,7 +92,9 @@ static bool ClotCanUse(ObjectTinkerAnvil npc, int client)
 static void ClotShowInteractHud(ObjectTinkerAnvil npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Blacksmith Tooltip");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay, "Blacksmith Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectTinkerAnvil npc)

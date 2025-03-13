@@ -1604,7 +1604,9 @@ int Citizen_ShowInteractionHud(int entity, int client)
 		else if(npc.m_nDowned == 1)
 		{
 			SetGlobalTransTarget(client);
-			PrintCenterText(client, "%t", "Revive Teammate tooltip");
+			char ButtonDisplay[255];
+			PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+			PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");
 			return -1;
 		}
 	}

@@ -19,52 +19,34 @@ void ConVar_PluginStart()
 
 	CvarList = new ArrayList(sizeof(CvarInfo));
 
-	ConVar_Add("mp_forcecamera", "0.0");
-	ConVar_Add("mp_autoteambalance", "0.0");
-	ConVar_Add("mp_forceautoteam", "1.0");
-	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");
-	ConVar_Add("tf_bot_keep_class_after_death", "1.0");
-	ConVar_Add("mp_humans_must_join_team", "red");
-	ConVar_Add("mp_teams_unbalance_limit", "0.0");
-	ConVar_Add("mp_scrambleteams_auto", "0.0");
-	ConVar_Add("tf_dropped_weapon_lifetime", "0.0");
-	ConVar_Add("tf_spawn_glows_duration", "0.0");
-	ConVar_Add("tf_weapon_criticals_distance_falloff", "1.0");
-	ConVar_Add("tf_weapon_minicrits_distance_falloff", "1.0");
-	ConVar_Add("tf_weapon_criticals", "0.0");
-	ConVar_Add("tf_weapon_criticals_melee", "0.0");
-	ConVar_Add("tf_boost_drain_time", "99999.0"); 			// have our own find logic..?
+	ConVar_Add("mp_forcecamera", "0.0"); //Allow people to roam in spectator
+	ConVar_Add("mp_autoteambalance", "0.0");  //Force red
+	ConVar_Add("mp_forceautoteam", "1.0"); //Force red
+	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");//Bot logic to not break it
+	ConVar_Add("tf_bot_keep_class_after_death", "1.0"); //Bot logic to not break it
+	ConVar_Add("mp_humans_must_join_team", "red"); //Only read
+	ConVar_Add("mp_teams_unbalance_limit", "0.0"); //Dont rebalance
+	ConVar_Add("mp_scrambleteams_auto", "0.0"); //No scramble
+	ConVar_Add("tf_dropped_weapon_lifetime", "0.0"); //Remove dropped weapons
+	ConVar_Add("tf_spawn_glows_duration", "0.0"); //No glow duration
+	ConVar_Add("tf_weapon_criticals_distance_falloff", "1.0"); //Remove crits
+	ConVar_Add("tf_weapon_minicrits_distance_falloff", "1.0"); //Remove crits
+	ConVar_Add("tf_weapon_criticals", "0.0");		//Remove crits
+	ConVar_Add("tf_weapon_criticals_melee", "0.0");		//Remove crits
+	ConVar_Add("tf_boost_drain_time", "99999.0"); //Overheal Logic, make it perma
 	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
-	
-	ConVar_Add("sv_parallel_packentities", "1.0");
-	ConVar_Add("sv_parallel_sendsnapshot", "0.0");
-	ConVar_Add("sv_maxunlag", "1.0");
-	ConVar_Add("tf_scout_air_dash_count", "0");
-	
-	ConVar_Add("nb_blind", "1.0"); //for bot
-	ConVar_Add("tf_bot_quota_mode", "normal"); //for bot
-//	ConVar_Add("tf_bot_quota", "2");
-	
-	ConVar_Add("sv_quota_stringcmdspersecond", "1000"); //IF FOR SOME REASON THE SERVER LAGS MASIVELY, PUT IT BACK TO 40/100 AT MOST! some cunt is abusing.
-	
-	ConVar_Add("nb_allow_climbing", "0.0"); // default:1
-	ConVar_Add("nb_allow_gap_jumping", "0.0"); // default:1
-	
-	ConVar_Add("nb_update_framelimit", "30"); // default:15
-	ConVar_Add("nb_update_frequency", "0.1"); // default:0
-	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
-	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
-	ConVar_Add("sv_hudhint_sound", "0.0"); 
-	// REmoves the ANNOYIN G AS FUCKING WIND SOUND FROM HINT TEXT HUD
-	//ITS DRIVING ME INSANE ITS ACTUALLY CRAZY HOOOOLY SHIT
+
+	ConVar_Add("tf_scout_air_dash_count", "0"); //Remove doublejumps
+	ConVar_Add("tf_allow_player_use", "1"); //Allow use!
+	ConVar_Add("tf_flamethrower_boxsize", "0.0"); //Flamethrower Particles are useless in ZR
+
+	ConVar_Add("sv_hudhint_sound", "0.0"); //Removes the wind sound when calling hint hunds
 #if defined ZR
-	ConVar_Add("mp_tournament", "1");
-	ConVar_Add("mp_disable_respawn_times", "1.0");
+	ConVar_Add("mp_tournament", "1"); //NEEDS to be 1 , or else mvm logic seems to break in ZR.
+	ConVar_Add("mp_disable_respawn_times", "1.0"); 
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
 	//going above this is dumb
 	ConVar_Add("tf_mvm_max_connected_players", "99");
-	ConVar_Add("tf_obj_upgrade_per_hit", "0");
-	ConVar_Add("tf_playergib", "0");
 
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?");
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
@@ -108,13 +90,12 @@ void ConVar_PluginStart()
 #endif
 	//default should be 0.1
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.1", "How long zombie spawn protection lasts for.");
-	
-	//CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 
 #if defined ZR || defined RTS	
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
+	zr_interactforcereload = CreateConVar("zr_interactforcereload", "0", "force interact with reload, it also blocks spray interacting like before.", FCVAR_DONTRECORD);
 
 #if defined RPG
 	ConVar_Add("mp_friendlyfire", "1.0"); // default: 0.9 Ty to miku for showing me

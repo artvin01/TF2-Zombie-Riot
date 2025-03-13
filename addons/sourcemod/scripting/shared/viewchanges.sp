@@ -398,7 +398,6 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 		i_Worldmodel_WeaponModel[client] = -1;
 		TF2_RemoveWearable(client, entity);
 	}
-
 	entity = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(entity != -1)
 	{

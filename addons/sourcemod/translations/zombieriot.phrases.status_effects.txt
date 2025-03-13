@@ -306,7 +306,15 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as bebuffs."
+		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as debuffs."
+	}
+	"Intangible"
+	{
+		"en"	"Intangible"
+	}
+	"Intangible Desc"
+	{
+		"en"	"Allows you to phase through enemies."
 	}
 	"Thick Blood"
 	{
@@ -530,7 +538,7 @@
 	}
 	"Healing Adaptiveness Melee Desc"
 	{
-		"en"	"Decreases damage taken from melee sources by 5%%"
+		"en"	"Decreases damage taken from melee sources by 15%%"
 	}
 	"Healing Adaptiveness Ranged"
 	{
@@ -538,7 +546,7 @@
 	}
 	"Healing Adaptiveness Ranged Desc"
 	{
-		"en"	"Decreases damage taken from ranged sources by 5%%"
+		"en"	"Decreases damage taken from ranged sources by 15%%"
 	}
 	"Self Empowerment"
 	{

@@ -648,6 +648,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				Yakuza_AddCharge(client, -RequiredHeat);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
+				ApplyStatusEffect(client, client, "Intangible", 3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
 				HeatActionCooldown[client] = GetGameTime() + 0.5;
 				if(WeaponStyle[client] != Style_Dragon)
@@ -1134,7 +1135,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 
 	if(i_OverlordComboAttack[npc.index] == 5)
 	{
-		Building_Mounted[client] = 0;
+		Building_Mounted[client] = -1;
 		int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 		if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 		{

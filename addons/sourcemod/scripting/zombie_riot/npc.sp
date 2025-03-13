@@ -822,6 +822,10 @@ void NPC_ConfigSetup()
 	Sphynx_OnMapStart_NPC();
 	ZombineSurvival_OnMapStart_NPC();
 	ZMainHeadcrabZombie_OnMapStart_NPC();
+	Headcrab_MapStart();
+	PoisonHeadcrab_MapStart();
+	ZMainPoisonZombie_OnMapStart_NPC();
+	ZMainHeadcrab_OnMapStart_NPC();
 
 	// Matrix
 	AgentAlan_OnMapStart_NPC();
@@ -859,6 +863,12 @@ void NPC_ConfigSetup()
 	AgentRoss_OnMapStart_NPC();
 	AgentSpencer_OnMapStart_NPC();
 	AgentTodd_OnMapStart_NPC();
+
+	//Matrix Giants
+	GiantHaste_OnMapStart_NPC();
+	GiantKnockout_OnMapStart_NPC();
+	GiantReflector_OnMapStart_NPC();
+	GiantRegeneration_OnMapStart_NPC();
 
 	//Matrix Raids
 	AgentJohnson_OnMapStart_NPC();
@@ -1827,6 +1837,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/truesurvival/npc_sphynx.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zombine.sp"
 #include "zombie_riot/npc/mutations/truesurvival/npc_zmain_headcrabzombie.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_zmain_poisonzombie.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_zmain_headcrab.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_headcrab.sp"
+#include "zombie_riot/npc/mutations/truesurvival/npc_poisonheadcrab.sp"
 #include "zombie_riot/npc/mutations/randomboss/npc_boss_battle_only.sp"
 
 
@@ -1979,6 +1993,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/matrix/60/npc_agentross.sp"
 #include "zombie_riot/npc/matrix/60/npc_agentspencer.sp"
 #include "zombie_riot/npc/matrix/60/npc_agenttodd.sp"
+
+//Matrix Giants
+#include "zombie_riot/npc/matrix/giants/npc_giant_haste.sp"
+#include "zombie_riot/npc/matrix/giants/npc_giant_knockout.sp"
+#include "zombie_riot/npc/matrix/giants/npc_giant_reflector.sp"
+#include "zombie_riot/npc/matrix/giants/npc_giant_regeneration.sp"
 
 //Matrix Raids
 #include "zombie_riot/npc/matrix/raids/npc_agentjohnson.sp"

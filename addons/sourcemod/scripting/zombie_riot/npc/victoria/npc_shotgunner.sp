@@ -285,17 +285,7 @@ int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTime, int 
 							damageDealt *= 3.0;
 						if(NpcStats_VictorianCallToArms(npc.index))
 						{
-							if(target > MaxClients)
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 4);
-							}
-							else
-							{
-								if (!IsInvuln(target))
-								{
-									StartBleedingTimer_Against_Client(target, npc.index, 4.0, 4);
-								}
-							}
+							StartBleedingTimer(target, npc.index, 4.0, 4, -1, DMG_TRUEDAMAGE, 0);
 						}
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);

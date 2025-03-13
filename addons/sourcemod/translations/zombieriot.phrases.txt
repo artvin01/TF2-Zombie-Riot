@@ -68,6 +68,11 @@
 		"nl"		"Geen"
 		"chi"       "无"
 	}
+	"Loadout Credits"
+	{
+		"#format"	"{1:d}"
+		"en"		"---Loadout Store---\nCredit Points: {1}"
+	}
 	"Credits"
 	{
 		"#format"	"{1:d}"
@@ -1230,15 +1235,9 @@
 		"pt"		"PÊRA RECICLADA! 1.33x Munição de todas as fontes que não são a loja, e 1.5x mais ganho e armadura máxima\nVocê ganha 2x mais munição de suprimentos"
 		"chi"		"超级回收:所有非商店弹药增加33%%+最大护甲值和护甲增益增加50%%+2倍弹药补给"
 	}
-	"Nuke Activated"
+	"Freeze Bomb Activated"
 	{
-		"en" 		"Nuke!"
-		"fr" 		"Bombe Atomique!"
-		"ru" 		"Ядерная бомба!"
-		"de"		"KERNWAFFENEXPLOSION!"
-		"pt"		"NUKE!"
-		"nl"		"Atoombom!"
-		"chi"       "肃清全场！"
+		"en" 		"Freeze Bomb!"
 	}
 	"Max Ammo Activated"
 	{
@@ -1489,16 +1488,24 @@
 	}
 	"Claim this building"
 	{
-		"en"		"Claim this building with (T [spray) while holding a wrench."
+		"en"		" while holding a wrench on the building to claim it."
+	}
+	"Interact With R" //KEEP THE SPACE!
+	{
+		"en"		"Press [R/ Use] "
+	}
+	"Interact With T Spray"
+	{
+		"en"		"Press [T(Spray)/ Use] "
 	}
 	"Enter this vehicle"
 	{
-		"en" 		"Press [T (spray)] to enter and exit this vehicle"
+		"en" 		"to enter and exit this vehicle"
 	}
 	"Ammobox Tooltip"
 	{
 		"#format"	"{1:d}"
-		"en" 		"Press [T (spray)] on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
+		"en" 		"on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
 	}
 	"Warn Client Ammo None"
 	{
@@ -1507,15 +1514,15 @@
 	}
 	"Armortable Tooltip"
 	{
-		"en" 		"Press [T (spray)] on the Armortable to gain Armor."
+		"en" 		"on the Armortable to gain Armor."
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press [T (spray)] on the Perkmachine to gain a strong temporary perk."
+		"en" 		"on the Perkmachine to gain a strong temporary perk."
 	}
 	"PackAPunch Tooltip"
 	{
-		"en" 		"Press [T (spray)] To Pack-a-Punch your current holding weapon."
+		"en" 		"To Pack-a-Punch your current holding weapon."
 	}
 	"Packed"
 	{
@@ -1549,7 +1556,7 @@
 	}
 	"Revive Teammate tooltip"
 	{
-		"en" 		"Hold [T (spray)] to revive this dying teammate."
+		"en" 		"to revive this dying teammate."
 	}
 	"Bored or Dead"
 	{
@@ -1990,7 +1997,7 @@
 		"nl"		"Je word tot leven gebracht. [{1}]"
 		"chi"       "队友正在拉起你 [{1}]"
 	}
-	"Medival_Difficulty"
+	"Medieval_Difficulty"
 	{
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
@@ -2062,7 +2069,7 @@
 	}
 	"tutorial_3"
 	{
-		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+		"en"		"Now that you have a weapon you're prepared.\nOnly have 1 weapon at a time at the start and stick to one weapon class!\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
 		"fr"		"Vous avez maintenant votre arme, vous êtes prêt.\nAchetez des armes meilleures, ainsi que des améliorations, dans des vagues futures,\net survivez jusqu'à la fin!\nDe l'aide additionelle se trove dans la boutique, sous «aide»."
 		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в следующих волнах и выживите!\nПодробности можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
 		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
@@ -2338,6 +2345,14 @@
 		"fr"		"Bouger Interface vers le Haut"
 		"ru"		"Интерф. вверх"
 		"chi"		"向上移动Hud"
+	}
+	"Hint Change Multislot"
+	{
+		"en"		"Hint: press the slot number on your keyboard multiple times to switch multiple weapons in the same slot OR press your (H) button (action key) To switch (incase you use scrollwheel)!"
+	}
+	"Cant Display"
+	{
+		"en"		"Your Holding weapon cant be shown in the shop..."
 	}
 	"Move Hud Down"
 	{
@@ -3419,9 +3434,9 @@
 		"en" 	"These ''Overclocks'' Will heavily alter your weapon, applying buffs and nerfs"
 		"fr" 	"Les Surcadençages modifient fortement votre arme, ajoutant des bénéfices et défauts."
 	}
-	"Taunt Speed Increace"
+	"Taunt Speed increase"
 	{
-		"en" 	"Taunt Speed Increace"
+		"en" 	"Taunt Speed increase"
 		"fr" 	"Vitesse des Railleries Augmuntée"
 	}
 	"Interact With Reload"
@@ -3694,7 +3709,7 @@
 	}
 	"Blacksmith Tooltip"
 	{
-		"en"		"Press [T (spray)] to apply a tinker effect to your active weapon."
+		"en"		"to apply a tinker effect to your active weapon."
 	}
 	"Blacksmith Used"
 	{

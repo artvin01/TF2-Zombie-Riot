@@ -40,7 +40,7 @@ void Headcrab_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Headcrab");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrab");
-	strcopy(data.Icon, sizeof(data.Icon), "headcrab");
+	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;

@@ -72,7 +72,7 @@ void MedivalEliteLongbowmen_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Medival Elite Longbowmen");
+	strcopy(data.Name, sizeof(data.Name), "Medieval Elite Longbowmen");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_elite_longbowmen");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow_multi");
 	data.IconCustom = false;

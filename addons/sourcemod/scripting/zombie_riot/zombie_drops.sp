@@ -4,7 +4,7 @@
 bool b_ToggleTransparency[MAXENTITIES];
 
 #define NUKE_MODEL "models/props_trainyard/cart_bomb_separate.mdl"
-#define NUKE_SOUND "ambient/explosions/explode_5.wav"
+#define NUKE_SOUND "weapons/icicle_freeze_victim_01.wav"
 
 #define AMMO_MODEL "models/items/ammopack_large.mdl"
 #define AMMO_SOUND "items/powerup_pickup_regeneration.wav"
@@ -98,6 +98,14 @@ public void BalanceDropMinimum(float multi)
 	i_KillTheseManyMorePowerup_Grigori = RoundToCeil((f_KillTheseManyMorePowerup_base_Grigori + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
 }
 
+void Drops_ResetChances()
+{
+	i_KilledThisMany_Money = 0;
+	i_KilledThisMany_Grigori = 0;
+	i_KilledThisMany_Health = 0;
+	i_KilledThisMany_Maxammo = 0;
+	i_KilledThisMany_Nuke = 0;
+}
 
 public void DropPowerupChance(int entity)
 {
@@ -301,7 +309,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					int base_boss = -1;
-					ParticleEffectAt(powerup_pos, "hightower_explosion", 1.0);
+					ParticleEffectAt(powerup_pos, "utaunt_snowring_space_parent", 1.0);
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(NUKE_SOUND, _, SNDCHAN_STATIC, 100, _);
 					while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
@@ -310,12 +318,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 						{
 							if(GetTeam(base_boss) != TFTeam_Red)
 							{
-								CClotBody npcstats = view_as<CClotBody>(base_boss);
-								if(!npcstats.m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[base_boss] && RaidBossActive != base_boss) //Make sure it doesnt actually kill map base_bosses
-								{
-									SmiteNpcToDeath(base_boss);
-									SmiteNpcToDeath(base_boss);
-								}
+								Cryo_FreezeZombie(entity, base_boss, 3);
 							}
 						}
 					}
@@ -325,7 +328,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 						{
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
-							ShowHudText(client_Hud,  -1, "%t", "Nuke Activated");
+							ShowHudText(client_Hud,  -1, "%t", "Freeze Bomb Activated");
 						}
 					}
 					AcceptEntityInput(entity, "KillHierarchy"); 
