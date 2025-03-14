@@ -867,14 +867,13 @@ methodmap Twirl < CClotBody
 		else if(wave <=60)
 		{	
 			i_ranged_ammo[npc.index] = 12;
-			switch(GetRandomInt(0, 5))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope yoyou're all as excited as I am{snow}!");
-				case 1: Twirl_Lines(npc, "Ah, it was a {purple}brilliant idea to not use my powers {snow}and only use this crest instead.");
-				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
-				case 3: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
-				case 4: Twirl_Lines(npc, "Kuru Kuru~");
-				case 5:
+				case 1: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
+				case 2: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
+				case 3: Twirl_Lines(npc, "Kuru Kuru~");
+				case 4:
 				{
 					switch(GetRandomInt(0, 2))
 					{
@@ -889,11 +888,13 @@ methodmap Twirl < CClotBody
 					}
 				}
 			}
-			RaidModeScaling *=0.9;
+			if(!b_tripple_raid[npc.index])
+				RaidModeScaling *=0.9;
 		}
 		else	//freeplay
 		{
-			RaidModeScaling *=0.9;
+			if(!b_tripple_raid[npc.index])
+				RaidModeScaling *=0.9;
 			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 3))
 			{
@@ -3577,6 +3578,9 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
 		}
 		b_tripple_raid[Twirl_Index] = false;
+		fl_Extra_Damage[Twirl_Index] = 1.0;
+		fl_Extra_Speed[Twirl_Index]  = 1.0;
+		
 		return;
 	}
 	else

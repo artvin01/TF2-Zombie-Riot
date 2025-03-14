@@ -2576,7 +2576,7 @@ static void Internal_NPCDeath(int entity)
 	}
 	ExpidonsaRemoveEffects(entity);
 	RaidModeScaling *= 1.2;
-	RaidModeTime +=50.0;
+	RaidModeTime +=30.0;
 
 	if(b_tripple_raid[npc.index])
 	{
