@@ -1929,7 +1929,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	if(update)	//damage is dealt 10 times a second
 	{
 		//unlike other attacks, this one gets an even larger boost if stella becomes angry.
-		Laser.Damage = Modify_Damage(npc.Anger ? : 60.0 : 35.0);
+		Laser.Damage = Modify_Damage(npc.Anger ? 60.0 : 35.0);
 		Laser.Bonus_Damage = Modify_Damage(npc.Anger ? 60.0 : 35.0)*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();

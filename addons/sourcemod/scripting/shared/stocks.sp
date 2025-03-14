@@ -1166,7 +1166,7 @@ stock void StartBleedingTimer(int entity, int client, float damage, int amount, 
 		if(IsValidEntity(entity))
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		else
-			pack.WriteCell(-969696);
+			pack.WriteCell(-1);
 		pack.WriteCell(EntIndexToEntRef(client));
 		pack.WriteCell(damagetype);
 		pack.WriteCell(customtype);

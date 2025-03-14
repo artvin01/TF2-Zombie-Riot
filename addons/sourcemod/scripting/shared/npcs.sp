@@ -572,9 +572,6 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 
 	if(wasBurning)
 	{
-		if(entity <= MaxClients)
-			TF2_IgnitePlayer(entity, entity, 200.0);
-
 		if(value > BurnDamage[entity]) //Dont override if damage is lower.
 		{
 			BurnDamage[entity] = value;
@@ -592,10 +589,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 	}
 	else
 	{
-		if(entity <= MaxClients)
-			TF2_IgnitePlayer(entity, entity, 200.0);
-		else
-			IgniteTargetEffect(entity);
+		IgniteTargetEffect(entity);
 
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);
