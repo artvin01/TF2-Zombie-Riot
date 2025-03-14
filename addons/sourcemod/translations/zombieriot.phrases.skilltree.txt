@@ -316,7 +316,7 @@
 	}
 	"Extra Cash Building Up Desc"
 	{
-		"en"	"Increace your max cap of building extra cash from 5000 by 100"
+		"en"	"increase your max cap of building extra cash from 5000 by 100"
 	}
 	"Extra Cash Building Up High"
 	{
@@ -324,7 +324,7 @@
 	}
 	"Extra Cash Building Up High Desc"
 	{
-		"en"	"Increace your max cap of building extra cash from 5000 by 500"
+		"en"	"increase your max cap of building extra cash from 5000 by 500"
 	}
 	"Ingot Up 1"
 	{

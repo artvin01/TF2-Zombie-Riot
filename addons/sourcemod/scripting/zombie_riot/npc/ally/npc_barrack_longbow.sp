@@ -6,7 +6,7 @@
 public void BarrackLongbowOnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Medival Longbowmen");
+	strcopy(data.Name, sizeof(data.Name), "Medieval Longbowmen");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_longbow");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

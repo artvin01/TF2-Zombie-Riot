@@ -456,7 +456,7 @@ void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, in
 					if(value[i])
 						Format(desc, 512, "%s\nFishing Attraction: %.0f%%", desc, 1.6 / value[i]);
 				}
-				case 2017:
+				case 5017:
 				{
 					int pos = RoundFloat(value[i]);
 					if(pos < sizeof(FishingLevels))
@@ -480,7 +480,7 @@ public void Fishing_RodM1(int client, int weapon)
 
 public void FishingRodSetRarity(int client, int weapon, int index)
 {
-	FishingTier[client] = RoundToNearest(Attributes_Get(weapon, 2017, 0.0));
+	FishingTier[client] = RoundToNearest(Attributes_Get(weapon, 5017, 0.0));
 	FishingRate[client] = Attributes_Get(weapon, 2016, 1.0);
 	int totalInt = Stats_Intelligence(client);
 	if(totalInt >= 5000)
@@ -490,7 +490,7 @@ public void FishingRodSetRarity(int client, int weapon, int index)
 
 public void FishingRodCycleRarity(int client, int weapon, int index)
 {
-	FishingTier[client] = RoundToNearest(Attributes_Get(weapon, 2017, 0.0));
+	FishingTier[client] = RoundToNearest(Attributes_Get(weapon, 5017, 0.0));
 	FishingRate[client] = Attributes_Get(weapon, 2016, 1.0);
 	int totalInt = Stats_Intelligence(client);
 	if(totalInt >= 5000)

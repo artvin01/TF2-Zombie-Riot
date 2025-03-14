@@ -170,7 +170,7 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15%%\nIncreases npc speed by +25%%.\nIncreases attackspeed & healrate by +15%%."
+		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15%%\nIncreases npc speed by +25%%.\nIncreases attack/reload speed & healrate by +15%%."
 	}
 	"Freeplay Eloquence I"
 	{
@@ -226,7 +226,7 @@
 	}
 	"Freeplay Hurtle I Desc"
 	{
-		"en"	"Increases attackspeed & healrate by +7%%"
+		"en"	"Increases attack/reload speed & healrate by +7%%"
 	}
 	"Freeplay Hurtle II"
 	{
@@ -234,7 +234,7 @@
 	}
 	"Freeplay Hurtle II Desc"
 	{
-		"en"	"Increases attackspeed & healrate by +14%%"
+		"en"	"Increases attack/reload speed & healrate by +14%%"
 	}
 	"Freeplay Hurtle III"
 	{
@@ -242,7 +242,7 @@
 	}
 	"Freeplay Hurtle III Desc"
 	{
-		"en"	"Increases attackspeed & healrate by +21%%"
+		"en"	"Increases attack/reload speed & healrate by +21%%"
 	}
 	"Cudgelled"
 	{
@@ -266,7 +266,7 @@
 	}
 	"Prosperity I Desc"
 	{
-		"en"	"Lowers attack speed by 3.5%%"
+		"en"	"Lowers attack/reload speed & healrate by 3.5%%"
 	}
 	"Prosperity II"
 	{
@@ -274,7 +274,7 @@
 	}
 	"Prosperity II Desc"
 	{
-		"en"	"Lowers attack speed by 7%%"
+		"en"	"Lowers attack/reload speed & healrate by 7%%"
 	}
 	"Prosperity III"
 	{
@@ -282,7 +282,7 @@
 	}
 	"Prosperity III Desc"
 	{
-		"en"	"Lowers attack speed by 14%%"
+		"en"	"Lowers attack/reload speed & healrate by 14%%"
 	}
 	"Aeternam"
 	{
@@ -298,7 +298,7 @@
 	}
 	"Silenced Desc"
 	{
-		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attackspeed & healrate by 5%%."
+		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attack/reload speed & healrate by 5%%."
 	}
 	"Hardened Aura"
 	{
@@ -306,7 +306,15 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as bebuffs."
+		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as debuffs."
+	}
+	"Intangible"
+	{
+		"en"	"Intangible"
+	}
+	"Intangible Desc"
+	{
+		"en"	"Allows you to phase through enemies."
 	}
 	"Thick Blood"
 	{
@@ -458,7 +466,7 @@
 	}
 	"Godly Motivation Desc"
 	{
-		"en"	"Increases damage dealt by 50%%\nDecreases damage taken by 25%%\nIncreases NPC'S movement speed by 50%%"
+		"en"	"Increases damage dealt by 12.5%%\nDecreases damage taken by 25%%\nIncreases NPC'S movement speed by 50%%\nIncreases attack/reload speed & healrate by 25%%"
 	}
 	"Hussar's Warscream"
 	{
@@ -530,7 +538,7 @@
 	}
 	"Healing Adaptiveness Melee Desc"
 	{
-		"en"	"Decreases damage taken from melee sources by 5%%"
+		"en"	"Decreases damage taken from melee sources by 15%%"
 	}
 	"Healing Adaptiveness Ranged"
 	{
@@ -538,7 +546,7 @@
 	}
 	"Healing Adaptiveness Ranged Desc"
 	{
-		"en"	"Decreases damage taken from ranged sources by 5%%"
+		"en"	"Decreases damage taken from ranged sources by 15%%"
 	}
 	"Self Empowerment"
 	{
@@ -562,7 +570,7 @@
 	}
 	"Ancient Melodies Desc"
 	{
-		"en"	"Increases attack speed by a 20%%."
+		"en"	"Increases attack/reload speed & healrate by a 20%%."
 	}
 	"Bobs Duck Dubby"
 	{
@@ -586,7 +594,7 @@
 	}
 	"Heavy Presence Desc"
 	{
-		"en"	"Decreased attackspeed & healrate by a 50%%."
+		"en"	"Decreased attack/reload speed & healrate by a 50%%."
 	}
 	"Gambler's Ruin Total"
 	{
@@ -642,7 +650,7 @@
 	}
 	"Ulpianus' Seriousness Desc"
 	{
-		"en"	"attackspeed & healrate increased by 20%%.\nIncreases Max Health by 540."
+		"en"	"attack/reload speed & healrate increased by 20%%.\nIncreases Max Health by 540."
 	}
 	"Abyssal Skills"
 	{
@@ -698,7 +706,7 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack speed by 66%%\nDecreases damage dealt by 56%%"
+		"en"	"Increases attack/reload speed & healrate by 66%%\nDecreases damage dealt by 56%%"
 	}
 	"Tonic Affliction Hidden"
 	{
@@ -714,7 +722,7 @@
 	}
 	"Mystery Beer Desc"
 	{
-		"en"	"Increases base attack speed based on it's level."
+		"en"	"Increases base attack/reload speed & healrate based on it's level."
 	}
 	"Osmosis'ity"
 	{
@@ -738,7 +746,7 @@
 	}
 	"Jungle Drums Desc"
 	{
-		"en"	"Increases attack speed by 2.5%%"
+		"en"	"Increases attack/reload speed & healrate by 2.5%%"
 	}
 	"Intelligence"
 	{
@@ -754,7 +762,7 @@
 	}
 	"Homeland Defense Desc"
 	{
-		"en"	"Increases attack speed by 12%%"
+		"en"	"Increases attack/reload speed & healrate by 12%%"
 	}
 	"Call To Arms"
 	{
@@ -762,7 +770,7 @@
 	}
 	"Call To Arms Desc"
 	{
-		"en"	"Increases attack speed by 12%%"
+		"en"	"Increases attack/reload speed & healrate by 12%%"
 	}
 	"Iberia Light"
 	{
@@ -770,7 +778,7 @@
 	}
 	"Iberia Light Desc"
 	{
-		"en"	"Increases attack speed by 10%%"
+		"en"	"Increases attack/reload speed & healrate by 10%%"
 	}
 	"Victoria Nuke"
 	{
@@ -850,7 +858,7 @@
 	}
 	"Zealot's Rush Desc"
 	{
-		"en" "Grants 25%% attackspeed & healrate."
+		"en" "Grants 25%% attack/reload speed & healrate."
 	}
 	"MERLT0N-BUFF"
 	{
@@ -942,7 +950,7 @@
 	}
 	"Lighthouse Enlightment Desc"
 	{
-		"en"	"Increases attackspeed & healrate and reloadspeed by 30%%"
+		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30%%"
 	}
 	"Lighthouse Enlightment Detect"
 	{
@@ -982,7 +990,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" "Increaces player attackspeed & healrate and reloadspeed by 20%% (stacks)"
+		"en" "Increaces player attack/reload speed & healrate and reloadspeed by 20%% (stacks)"
 	}
 	"Physical Therapy"
 	{
@@ -1046,7 +1054,7 @@
 	}
 	"Spotter's Rally Desc"
 	{
-		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%.\nIncreases attackspeed & healrate by +35%%."
+		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%.\nIncreases attack/reload speed & healrate by +35%%."
 	}
 	"Weapon Overclock"
 	{
@@ -1055,7 +1063,7 @@
 	}
 	"Weapon Overclock Desc"
 	{
-		"en"	"Boosts attackspeed & healrate by 30%% and mana is continuously restored."
+		"en"	"Increaces damage by 50%%\nBoosts attack/reload speed & healrate by 30%% and mana is continuously restored."
 	}
 	"Weapon Clocking"
 	{
@@ -1064,6 +1072,6 @@
 	}
 	"Weapon Clocking Desc"
 	{
-		"en"	"Boosts attackspeed & healrate by 10%%"
+		"en"	"Boosts attack/reload speed & healrate by 10%%"
 	}
 }

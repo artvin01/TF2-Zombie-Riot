@@ -152,7 +152,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		}
 	}
 
-	i_ExtraPlayerPoints[owner] += 2; //Static low point increace.
+	i_ExtraPlayerPoints[owner] += 2; //Static low point increase.
 	if(entity != INVALID_ENT_REFERENCE)
 		BuildingVillageChangeModel(owner, entity);
 	
@@ -628,14 +628,14 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 			
 			if(Village_Flags[Owner] & VILLAGE_050)
 			{
-				i_ExtraPlayerPoints[Owner] += 100; //Static point increace.
+				i_ExtraPlayerPoints[Owner] += 100; //Static point increase.
 				Village_ReloadBuffFor[Owner] = gameTime + 20.0;
 				EmitSoundToAll("items/powerup_pickup_uber.wav");
 				EmitSoundToAll("items/powerup_pickup_uber.wav");
 			}
 			else
 			{
-				i_ExtraPlayerPoints[Owner] += 50; //Static point increace.
+				i_ExtraPlayerPoints[Owner] += 50; //Static point increase.
 				Village_ReloadBuffFor[Owner] = gameTime + 15.0;
 				EmitSoundToAll("player/mannpower_invulnerable.wav", npc.index);
 				EmitSoundToAll("player/mannpower_invulnerable.wav", npc.index);

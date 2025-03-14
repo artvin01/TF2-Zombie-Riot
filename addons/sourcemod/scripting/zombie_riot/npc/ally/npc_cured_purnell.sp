@@ -240,7 +240,7 @@ public void CuredPurnell_ClotThink(int iNPC)
 	if(npc.m_iTargetWalkTo > 0)
 	{
 		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
-		/*b_BobsCuringHand[npc.m_iTargetWalkTo] && */b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
+		/*b_BobsCuringHand[npc.m_iTargetWalkTo] && */b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= GREGPOINTS_REV_NEEDED && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
 		&& !b_LeftForDead[npc.m_iTargetWalkTo])
 		{
 			//walk to client.

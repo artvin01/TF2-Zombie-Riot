@@ -22,7 +22,6 @@
 //#include <handledebugger>
 #undef REQUIRE_EXTENSIONS
 #undef REQUIRE_PLUGIN
-#include <filenetwork>
 #include <loadsoundscript>
 
 #pragma dynamic	131072
@@ -98,6 +97,7 @@ ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
 #endif
+ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;
 
 ConVar CvarDisableThink;
@@ -106,6 +106,7 @@ ConVar CvarRerouteToIp;
 ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
+ConVar zr_interactforcereload;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -900,7 +901,7 @@ public Action Timer_Temp(Handle timer)
 		{
 			if(IsClientInGame(client))
 			{
-				Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true);
+				Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true, .RaidHudForce = true);
 			}
 		}
 	}
@@ -995,6 +996,7 @@ public void OnMapStart()
 
 #if defined ZR || defined RPG
 	Core_PrecacheGlobalCustom();
+	FileNetwork_MapStart();
 #endif
 
 	PrecacheSound("weapons/explode1.wav");
@@ -1459,6 +1461,7 @@ public void OnClientPutInServer(int client)
 		return;
 	}
 #endif
+	b_GivePlayerHint[client] = false;
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
 	f_RoleplayTalkLimit[client] = 0.0;
@@ -1567,7 +1570,8 @@ public void OnClientDisconnect(int client)
 	//Needed to reset attackspeed stuff
 #endif
 
-	b_DisplayDamageHud[client] = false;
+	b_DisplayDamageHud[client][0] = false;
+	b_DisplayDamageHud[client][1] = false;
 
 #if defined ZR
 	WeaponClass[client] = TFClass_Scout;
@@ -1625,14 +1629,39 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #if defined ZR
 	if(impulse == 201)
 	{
-		f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
-		//We want to spray, but spray in ZR means interaction!
-		//do we hold score?
-		if(!(buttons & IN_SCORE))
+		bool BlockImpulse = false;
+		//if the cvar is on, but we want spray again
+		if(zr_interactforcereload.BoolValue)
 		{
-			impulse = 0;
+			BlockImpulse = true;
 		}
-		DoInteractKeyLogic(angles, client);
+
+		if(BlockImpulse)
+		{
+			if(b_InteractWithReload[client])
+				BlockImpulse = false;
+			else
+				BlockImpulse = true;
+		}
+		else
+		{
+			if(b_InteractWithReload[client])
+				BlockImpulse = true;
+			else
+				BlockImpulse = false;
+		}
+		if(!BlockImpulse)
+		{
+			f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+			//We want to spray, but spray in ZR means interaction!
+			//do we hold score?
+			if(!(buttons & IN_SCORE))
+			{
+				impulse = 0;
+			}
+			DoInteractKeyLogic(angles, client);
+
+		}
 	}
 #endif
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
@@ -1706,6 +1735,20 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
+	//support in_use
+	if(holding[client] & IN_USE)
+	{
+		if(!(buttons & IN_USE))
+			holding[client] &= ~IN_USE;
+	}
+	else if(buttons & IN_USE)
+	{
+		holding[client] |= IN_USE;
+		
+		f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+		DoInteractKeyLogic(angles, client);
+	}
+	
 	if(holding[client] & IN_ATTACK2)
 	{
 		if(!(buttons & IN_ATTACK2))
@@ -1746,10 +1789,33 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		holding[client] |= IN_RELOAD;
 		
-#if defined ZR
-		if(b_InteractWithReload[client])
-#endif
+		bool AllowImpulse = true;
+		
+		AllowImpulse = false;
+		//if the cvar is on, but we want spray again
+		if(zr_interactforcereload.BoolValue)
 		{
+			AllowImpulse = true;
+		}
+
+		if(AllowImpulse)
+		{
+			if(b_InteractWithReload[client])
+				AllowImpulse = false;
+			else
+				AllowImpulse = true;
+		}
+		else
+		{
+			if(b_InteractWithReload[client])
+				AllowImpulse = true;
+			else
+				AllowImpulse = false;
+		}
+
+		if(AllowImpulse)
+		{
+			f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
 			if(DoInteractKeyLogic(angles, client))
 				return Plugin_Continue;
 		}
@@ -3369,7 +3435,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		if(extralogic)
 		{
 			i_AmountDowned[target]--;
-			b_BobsCuringHand_Revived[target] = 0;
+			b_BobsCuringHand_Revived[target] = -9999;
 		}
 		SetEntityMoveType(target, MOVETYPE_WALK);
 		RequestFrame(Movetype_walk, EntRefToEntIndex(target));
@@ -3559,4 +3625,31 @@ public void ArrowTouchNonCombatEntity(int entity, int other)
 	}
 	SDKHooks_TakeDamage(other, attacker, attacker, original_damage , DMG_BULLET, Weapon, NULL_VECTOR, chargerPos);
 	RemoveEntity(entity);
+}
+
+
+void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
+{
+	if(zr_interactforcereload.BoolValue) //Cvar is on
+	{
+		if(b_InteractWithReload[client]) //If this is enabled, then force T
+		{
+			Format(Buffer, Buffersize, "%t","Interact With T Spray");
+		}
+		else if(!b_InteractWithReload[client])
+		{
+			Format(Buffer, Buffersize, "%t","Interact With R");
+		}
+	}
+	else
+	{
+		if(b_InteractWithReload[client]) //If this is enabled, then force T
+		{
+			Format(Buffer, Buffersize, "%t","Interact With R");
+		}
+		else if(!b_InteractWithReload[client])
+		{
+			Format(Buffer, Buffersize, "%t","Interact With T Spray");
+		}
+	}
 }

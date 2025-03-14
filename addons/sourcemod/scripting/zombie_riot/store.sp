@@ -582,6 +582,7 @@ void Store_OnCached(int client)
 			//Building_GiveRewardsUse(0, client, amount);
 			CashRecievedNonWave[client] += amount;
 			CashSpent[client] -= amount;
+			CashSpentLoadout[client] -= amount;
 		}
 	}
 
@@ -593,6 +594,7 @@ void Store_OnCached(int client)
 			//Building_GiveRewardsUse(0, client, 50);
 			CashRecievedNonWave[client] += 50;
 			CashSpent[client] -= 50;
+			CashSpentLoadout[client] -= 50;
 		}
 	}
 }
@@ -782,6 +784,11 @@ void Store_OpenItemPage(int client)
 			MenuPage(client, StoreWeapon[weapon]);
 		}
 	}
+	else
+	{
+		SetGlobalTransTarget(client);
+		CPrintToChat(client,"{red}[ZR] {yellow}%t", "Cant Display");
+	}
 }
 
 stock void Store_OpenItemThis(int client, int index)
@@ -796,7 +803,7 @@ stock void Store_OpenItemThis(int client, int index)
 	}
 }
 
-void Store_SwapToItem(int client, int swap)
+void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 {
 	if(swap == -1)
 		return;
@@ -827,17 +834,30 @@ void Store_SwapToItem(int client, int swap)
 			}
 		}
 	}
+	if(SwitchDo)
+		SetPlayerActiveWeapon(client, swap);
+	int WeaponValidCheck = 0;
 
-	SetPlayerActiveWeapon(client, swap);
+	//make sure to fake swap aswell!
+	while(WeaponValidCheck != swap)
+	{
+		WeaponValidCheck = Store_CycleItems(client, slot);
+		if(WeaponValidCheck == -1)
+			break;
+	}
 }
 
-void Store_SwapItems(int client)
+void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride = -1)
 {
 	//int suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
 	//if(!suit)
 	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 
 	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(activeweaponoverride != -1)
+	{
+		active = activeweaponoverride;
+	}
 	if(active > MaxClients)
 	{
 		char buffer[36];
@@ -910,7 +930,8 @@ void Store_SwapItems(int client)
 					
 					//GetEntityClassname(nextE, buffer, sizeof(buffer));
 					//FakeClientCommand(client, "use %s", buffer);
-					SetPlayerActiveWeapon(client, nextE);
+					if(SwitchDo)
+						SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -925,7 +946,8 @@ void Store_SwapItems(int client)
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
 				if(TF2_GetClassnameSlot(buffer) == slot)
 				{
-					SetPlayerActiveWeapon(client, weapon);
+					if(SwitchDo)
+						SetPlayerActiveWeapon(client, weapon);
 					break;
 				}
 			}
@@ -934,6 +956,49 @@ void Store_SwapItems(int client)
 
 	//if(suit)
 	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
+}
+
+// Returns the top most weapon (or -1 for no change)
+int Store_CycleItems(int client, int slot)
+{
+	char buffer[36];
+	
+	int topWeapon = -1;
+	int firstWeapon = -1;
+	int previousIndex = -1;
+
+	int length = GetMaxWeapons(client);
+	for(int i; i < length; i++)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+		if(weapon != -1)
+		{
+			GetEntityClassname(weapon, buffer, sizeof(buffer));
+			if(TF2_GetClassnameSlot(buffer) == slot)
+			{
+				if(firstWeapon == -1)
+					firstWeapon = weapon;
+
+				if(previousIndex != -1)
+				{
+					// Replace this weapon with the previous slot (1 <- 2)
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(topWeapon == -1)
+						topWeapon = weapon;
+				}
+
+				previousIndex = i;
+			}
+		}
+	}
+
+	if(firstWeapon != -1)
+	{
+		// First to Last (7 <- 0)
+		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+	}
+
+	return topWeapon;
 }
 
 void Store_ConfigSetup()
@@ -1193,21 +1258,35 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 					CancelClientMenu(client);
 					SetStoreMenuLogic(client, false);
 
-					SetGlobalTransTarget(client);
 					int cash = CurrentCash-CashSpent[client];
-					menu.SetTitle("%t\n \n%t\n \n%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+					if(StarterCashMode[client])
+					{
+						int maxCash = StartCash;
+						maxCash -= CashSpentLoadout[client];
+						cash = maxCash;
+					}
+					SetGlobalTransTarget(client);
+					char buf[64];
+					if(StarterCashMode[client])
+						Format(buf, sizeof(buf), "%t", "Loadout Credits", cash);
+					else
+						Format(buf, sizeof(buf), "%t", "Credits", cash);
+
+					menu.SetTitle("%t\n \n%s\n \n%s\n ", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					
 					int skip = info.PackSkip;
 					count += skip;
 
 					char data[64], buffer[64];
+					/*
 					if(count > 1)
 					{
 						zr_tagwhitelist.GetString(buffer, sizeof(buffer));
 						if(StrContains(buffer, "realtime") != -1)
 							count = 1;
 					}
-					
+					What in the god damn?!
+					*/
 					int userid = (client == owner || owner == -1) ? -1 : GetClientUserId(owner);
 					
 					for(int i = skip; i < count; i++)
@@ -1280,6 +1359,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					{
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
+						CashSpentLoadout[client] += info.Cost;
 						item.Owned[client] = values[1] + 1;
 						item.CurrentClipSaved[client] = -5;
 
@@ -1337,7 +1417,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
 						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 250, true, 5.0, true);
+							Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
 					}
 				}
 				
@@ -1409,6 +1489,7 @@ void Store_Reset()
 		StarterCashMode[c] = true;
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
+		CashSpentLoadout[c] = 0;
 	}
 	static Item item;
 	int length = StoreItems.Length;
@@ -1591,6 +1672,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					{
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
+						CashSpentLoadout[client] += info.Cost;
 						item.BuyPrice[client] = info.Cost;
 
 						item.Sell[client] = ItemSell(base, info.Cost);
@@ -1757,6 +1839,7 @@ void Store_ClientDisconnect(int client)
 	CashSpentGivePostSetup[client] = 0;
 	CashSpentGivePostSetupWarning[client] = false;
 	CashSpentTotal[client] = 0;
+	CashSpentLoadout[client] = 0;
 	StarterCashMode[client] = true;
 	
 	static Item item;
@@ -1902,7 +1985,7 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-85", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
+	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed increase");
 	if(b_TauntSpeedIncreace[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
@@ -2958,11 +3041,9 @@ static void MenuPage(int client, int section)
 	
 	if(StarterCashMode[client])
 	{
-		int maxCash = CurrentCash;
-		if(maxCash > StartCash)
-			maxCash = StartCash;
-		
-		cash = maxCash - CashSpent[client];
+		int maxCash = StartCash;
+		maxCash -= CashSpentLoadout[client];
+		cash = maxCash;
 		if(cash < 0)
 		{
 			StarterCashMode[client] = false;
@@ -2992,6 +3073,12 @@ static void MenuPage(int client, int section)
 			if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 				level = 1;
 			
+			char buf[64];
+			if(StarterCashMode[client])
+				Format(buf, sizeof(buf), "%t", "Loadout Credits", cash);
+			else
+				Format(buf, sizeof(buf), "%t", "Credits", cash);
+
 			SetGlobalTransTarget(client);
 			ItemInfo info2;
 			if(item.GetItemInfo(level, info2))
@@ -3002,32 +3089,32 @@ static void MenuPage(int client, int section)
 					{
 						if(Rogue_Mode())
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);	
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");	
 						}
 					}
 					else
 					{
 						if(Rogue_Mode())
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);	
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");	
 						}						
 					}
 				}
 				else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s  \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n%t\n%s  \n<%t>", "TF2: Zombie Riot", buf, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
 				}
 			}
 			else
@@ -3038,32 +3125,32 @@ static void MenuPage(int client, int section)
 					{
 						if(Rogue_Mode())
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 					}
 					else
 					{
 						if(Rogue_Mode())
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 					}
 				}
 				else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n \n%s ", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n%t\n%s ", "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
+					FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n%t\n%s ", "TF2: Zombie Riot", buf, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
 				}				
 			}
 			
@@ -3110,14 +3197,14 @@ static void MenuPage(int client, int section)
 						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
 						{	
 							int cost = AmmoData[info.AmmoBuyMenuOnly][0];
-							FormatEx(buffer, sizeof(buffer), "%t [%d] ($%d)", AmmoNames[info.AmmoBuyMenuOnly], AmmoData[info.AmmoBuyMenuOnly][1], cost);
+							FormatEx(buffer, sizeof(buffer), "%t ($%d)", AmmoNames[info.AmmoBuyMenuOnly], cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 						}
 						else if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 						{	
 							int cost = AmmoData[info.Ammo][0];
-							FormatEx(buffer, sizeof(buffer), "%t [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1], cost);
+							FormatEx(buffer, sizeof(buffer), "%t ($%d)", AmmoNames[info.Ammo], cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 						}
@@ -3178,7 +3265,7 @@ static void MenuPage(int client, int section)
 						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
 						{
 							int cost = AmmoData[info.AmmoBuyMenuOnly][0] * 10;
-							FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.AmmoBuyMenuOnly], AmmoData[info.AmmoBuyMenuOnly][1] * 10, cost);
+							FormatEx(buffer, sizeof(buffer), "%t x10 ($%d)", AmmoNames[info.AmmoBuyMenuOnly], cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 							Repeat_Filler ++;
@@ -3187,7 +3274,7 @@ static void MenuPage(int client, int section)
 						else
 						{
 							int cost = AmmoData[info.Ammo][0] * 10;
-							FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1] * 10, cost);
+							FormatEx(buffer, sizeof(buffer), "%t x10 ($%d)", AmmoNames[info.Ammo], cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 							Repeat_Filler ++;
@@ -3256,31 +3343,36 @@ static void MenuPage(int client, int section)
 			
 			return;
 		}
-
+		
+		char buf[64];
+		if(StarterCashMode[client])
+			Format(buf, sizeof(buf), "%t", "Loadout Credits", cash);
+		else
+			Format(buf, sizeof(buf), "%t", "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client]);
 		item.GetItemInfo(0, info);
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+			menu.SetTitle("%t\n%t\n%t\n \n%ss\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else if(UsingChoosenTags[client])
 		{
 			if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 			{
-				menu.SetTitle("%t\n%t\n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", cash);
+				menu.SetTitle("%t\n%t\n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", buf);
 			}
 			else
 			{
-				menu.SetTitle("%t\n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", cash, "Store Discount");
+				menu.SetTitle("%t\n%t\n%s\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", buf, "Store Discount");
 			}
 		}
 		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info.Custom_Name));
+			menu.SetTitle("%t\n \n%s\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", cash, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
+			menu.SetTitle("%t\n \n%s\n%t\n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", buf, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 	}
 	else
@@ -3288,53 +3380,58 @@ static void MenuPage(int client, int section)
 		int xpLevel = LevelToXp(Level[client]);
 		int xpNext = LevelToXp(Level[client]+1);
 		
+		char buf[64];
+		if(StarterCashMode[client])
+			Format(buf, sizeof(buf), "%t", "Loadout Credits", cash);
+		else
+			Format(buf, sizeof(buf), "%t", "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client]);
 		int nextAt = xpNext-xpLevel;
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
 			if(i_SpecialGrigoriReplace == 0)
-				menu.SetTitle("%t\n%t\n%t\n \n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash);
+				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf);
 			else
 			{
-				menu.SetTitle("%t\n%t\n%t\n \n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", "Credits", cash);
+				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf);
 			}
 		}
 		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 		{
 			if(UsingChoosenTags[client])
 			{
-				menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", cash);
+				menu.SetTitle("%t\n%t\n \n%s\n ", "TF2: Zombie Riot", "Cherrypick Weapon", buf);
 			}
 			else if(!CvarLeveling.BoolValue)
 			{
-				menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client]);
+				menu.SetTitle("%t\n \n%st\n ", "TF2: Zombie Riot", buf);
 			}
 			else if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client]);
+				menu.SetTitle("%t\n \n%t\n%s\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, buf);
 			}
 			else
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "XP Loading", "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client]);
+				menu.SetTitle("%t\n \n%t\n%s\n ", "TF2: Zombie Riot", "XP Loading", buf);
 			}
 		}
 		else
 		{
 			if(UsingChoosenTags[client])
 			{
-				menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", cash, "Store Discount");
+				menu.SetTitle("%t\n%t\n \n%s\n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", buf, "Store Discount");
 			}
 			else if(!CvarLeveling.BoolValue)
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client], "Store Discount");
+				menu.SetTitle("%t\n \n%s\n%t\n ", "TF2: Zombie Riot", buf, "Store Discount");
 			}
 			else if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client], "Store Discount");
+				menu.SetTitle("%t\n \n%t\n%s\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, buf, "Store Discount");
 			}
 			else
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP Loading", "Credits_Menu", cash, GlobalExtraCash + CashRecievedNonWave[client], "Store Discount");
+				menu.SetTitle("%t\n \n%t\n%s\n%t\n ", "TF2: Zombie Riot", "XP Loading", buf, "Store Discount");
 			}
 		}
 		
@@ -3871,8 +3968,18 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 						menu2.AddItem("-21", buffer);
 
-						FormatEx(buffer, sizeof(buffer), "%t", "Custom Models");
-						menu2.AddItem("-45", buffer);
+						if(CvarCustomModels.BoolValue)
+						{
+							if(IsFileInDownloads("models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"))
+							{
+								FormatEx(buffer, sizeof(buffer), "%t", "Custom Models");
+								menu2.AddItem("-45", buffer);
+							}
+							else
+							{
+								CvarCustomModels.BoolValue = false;
+							}
+						}
 
 						FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
 						menu2.AddItem("-12", buffer);
@@ -4224,6 +4331,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				{
 					int cash = CurrentCash - CashSpent[client];
 					
+					if(StarterCashMode[client])
+					{
+						int maxCash = StartCash;
+						maxCash -= CashSpentLoadout[client];
+						cash = maxCash;
+					}
 					if(ClientTutorialStep(client) == 2)
 					{
 						SetClientTutorialStep(client, 3);
@@ -4264,6 +4377,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[info.AmmoBuyMenuOnly][0];
 							CashSpentTotal[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+							CashSpentLoadout[client] += AmmoData[info.AmmoBuyMenuOnly][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1];
@@ -4274,6 +4388,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[info.Ammo][0];
 							CashSpentTotal[client] += AmmoData[info.Ammo][0];
+							CashSpentLoadout[client] += AmmoData[info.Ammo][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1];
@@ -4291,6 +4406,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
+								CashSpentLoadout[client] += info.Cost;
 								Store_BuyClientItem(client, index, item, info);
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
@@ -4356,6 +4472,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
+								CashSpentLoadout[client] += info.Cost;
 								Store_BuyClientItem(client, index, item, info);
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
@@ -4410,6 +4527,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += info.Cost;
 							CashSpentTotal[client] += info.Cost;
+							CashSpentLoadout[client] += info.Cost;
 							Store_BuyClientItem(client, index, item, info);
 							item.BuyPrice[client] = info.Cost;
 							item.RogueBoughtRecently[client] += 1;
@@ -4464,6 +4582,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					if(item.Owned[client])
 					{
 						int cash = CurrentCash - CashSpent[client];
+						if(StarterCashMode[client])
+						{
+							int maxCash = StartCash;
+							maxCash -= CashSpentLoadout[client];
+							cash = maxCash;
+						}
 						int level = item.Owned[client] - 1;
 						if(item.ParentKit || level < 0)
 							level = 0;
@@ -4476,6 +4600,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += cost;
 								CashSpentTotal[client] += cost;
+								CashSpentLoadout[client] += cost;
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1]*10;
 								SetAmmo(client, info.AmmoBuyMenuOnly, ammo);
@@ -4489,6 +4614,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							{
 								CashSpent[client] += cost;
 								CashSpentTotal[client] += cost;
+								CashSpentLoadout[client] += cost;
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1]*10;
 								SetAmmo(client, info.Ammo, ammo);
@@ -4806,7 +4932,7 @@ void Store_ApplyAttribs(int client)
 	if(TeutonType[client] || !StoreItems)
 		return;
 
-	//Each time we delete ALL attributes, we increace this amount by one.
+	//Each time we delete ALL attributes, we increase this amount by one.
 	ClientAttribResetCount[client]++;
 	Attributes_RemoveAll(client);
 	
@@ -4838,7 +4964,7 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-	
+	map.SetValue("60", 0.0);// Burning is only visual, and shouldnt hurt the client
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
@@ -4878,7 +5004,8 @@ void Store_ApplyAttribs(int client)
 	}
 
 	map.SetValue("252", KnockbackResistance);
-	
+	map.SetValue("4039", 1.0);
+//	Attrib_BlessingBuff
 	if(Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 	{
 		b_AlaxiosBuffItem[client] = true;
@@ -4894,7 +5021,7 @@ void Store_ApplyAttribs(int client)
 	}
 	
 	//DOUBLE TAP!
-	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.
+	if(i_CurrentEquippedPerk[client] == 3) //increase sentry damage! Not attack rate, could end ugly.
 	{		
 		map.SetValue("287", 0.65);
 	}
@@ -5456,6 +5583,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
 					HidePlayerWeaponModel(client, entity, true);
+
+					//new item bought, make sure to update the current order and stuff of weapon changing client
+					//TODO bug: Buy 1 melee weapon, then another, you cant switch between the two unless you swsitch once via h
+
+
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);
@@ -6808,7 +6940,7 @@ static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
 	TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[weapon];
 	TempStoreAttrib.Apply_TempAttrib(client, weapon);
 
-	//gives attackspeed for 5 seconds with an increace of 25%!
+	//gives attackspeed for 5 seconds with an increase of 25%!
 
 
 */
@@ -6943,6 +7075,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 				{
 					CashSpent[client] -= sell;
 					CashSpentTotal[client] -= sell;
+					CashSpentLoadout[client] -= sell;
 					if(PlaySound)
 						ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 				}

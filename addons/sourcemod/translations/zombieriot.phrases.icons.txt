@@ -210,7 +210,7 @@
 		"pt"		"Um pedaço de sombra. Nunca saiu, nem nunca existiu verdadeiramente."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 	}
-	"Medival Speech 1"
+	"Medieval Speech 1"
 	{
 		"en" 		"A king wants to Conquer this land!"
 		"fr" 		"Un roi veut conquérir ce pays!"
@@ -218,7 +218,7 @@
 		"pt"		"Um rei quer conquistar esta terra!"
 		"chi" 		"有位国王进军了！"
 	}
-	"Medival Speech 2"
+	"Medieval Speech 2"
 	{
 		"en" 		"A stray villager has appeared, stop them!"
 		"fr" 		"Un villageois errant a apparu, arrêtez-le!"
@@ -226,7 +226,7 @@
 		"pt"		"Um aldeão perdido apareceu, pare-o!"
 		"chi" 		"有村民出现了，快阻止他们！"
 	}
-	"Medival Speech 3"
+	"Medieval Speech 3"
 	{
 		"en" 		"An invasion of the past is accuring!"
 		"fr" 		"Le passé dirige une invasion!"

@@ -382,7 +382,7 @@ int AnarchyEnforcerSelfDefense(AnarchyEnforcer npc, float gameTime)
 					damageDealt *= 5.5;
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				StartBleedingTimer_Against_Client(target, npc.index, 45.0, 5);
+				StartBleedingTimer(target, npc.index,45.0, 5, -1, DMG_TRUEDAMAGE, 0);
 			} 
 		}
 	}

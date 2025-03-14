@@ -3,10 +3,16 @@
 
 static bool SmartBounce;
 static int LastHitTarget;
+static int SuppliesUsed;
 
+void SniperMonkey_ResetUses()
+{
+	SuppliesUsed = 0;
+}
 void SniperMonkey_ClearAll()
 {
 	SmartBounce = false;
+	SuppliesUsed = 0;
 }
 
 float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
@@ -178,7 +184,13 @@ public void Weapon_EliteDefender(int client, int weapon, bool &result, int slot)
 
 public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0)
+	if(SuppliesUsed >= 2)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
+	}
+	else if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		float pos1[3], pos2[3];
 		GetClientEyePosition(client, pos1);
@@ -206,6 +218,8 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_advanced_friend.wav");
 			Ability_Apply_Cooldown(client, slot, 150.0);
+
+			SuppliesUsed++;
 		}
 		else
 		{

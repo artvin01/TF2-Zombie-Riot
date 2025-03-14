@@ -156,7 +156,7 @@ public Action RailgunFire(Handle timer, DataPack pack)
 		GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", flPos);
 		flPos[2] += 50.0;
 	//	flAng[1] += 33.0;
-		ParticleEffectAt(flPos, "halloween_boss_axe_hit_sparks", 1.0);
+		TE_Particle("halloween_boss_axe_hit_sparks", flPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		ParticleEffectAt(flPos, "eotl_pyro_pool_explosion_streaks", 1.0);
 		DataPack pack2;
 		CreateDataTimer(1.5, RailgunFire_ReloadStart, pack2, TIMER_FLAG_NO_MAPCHANGE);

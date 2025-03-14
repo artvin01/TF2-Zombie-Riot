@@ -219,9 +219,9 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 		{
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+			float distance2 = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 			
-			if(distance < npc.GetLeadRadius())
+			if(distance2 < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);

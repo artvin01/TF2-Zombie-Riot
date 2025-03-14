@@ -749,8 +749,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			{
 				if (!npc.Anger)
 				{
-					npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
+					npc.FaceTowards(vecTarget, 500.0);
 					npc.FireRocket(vPredictedPos, 8.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
 					npc.PlayRangedSound();
@@ -758,8 +757,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 				else if (npc.Anger)
 				{
-					npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
+					npc.FaceTowards(vecTarget, 500.0);
 					npc.FireRocket(vPredictedPos, 8.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 					npc.PlayRangedSound();
@@ -877,8 +875,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			{
 				if (!npc.Anger)
 				{
-					npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
+					npc.FaceTowards(vecTarget, 500.0);
 					npc.FireRocket(vPredictedPos, 3.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
@@ -897,8 +894,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				else if (npc.Anger)
 				{
 					
-					npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
+					npc.FaceTowards(vecTarget, 500.0);
 					npc.FireRocket(vPredictedPos, 3.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
@@ -923,8 +919,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					if (flVel[0] >= 190.0)
 					{
-						npc.FaceTowards(vecTarget);
-						npc.FaceTowards(vecTarget);
+						npc.FaceTowards(vecTarget, 500.0);
 						npc.m_flNextTeleport = GetGameTime(npc.index) + 6.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 						
@@ -946,8 +941,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					if (flVel[0] >= 170.0)
 					{
-						npc.FaceTowards(vecTarget);
-						npc.FaceTowards(vecTarget);
+						npc.FaceTowards(vecTarget, 500.0);
 						npc.m_flNextTeleport = GetGameTime(npc.index) + 5.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 						if(Tele_Check > 120.0)
@@ -1106,6 +1100,8 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;

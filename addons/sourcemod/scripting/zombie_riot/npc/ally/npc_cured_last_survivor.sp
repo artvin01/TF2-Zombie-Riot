@@ -137,6 +137,7 @@ static char g_KilledEnemy[][] = {
 };
 
 static int NPCId;
+#define GREGPOINTS_REV_NEEDED 40
 
 public void CuredFatherGrigori_OnMapStart_NPC()
 {
@@ -703,6 +704,11 @@ methodmap CuredFatherGrigori < CClotBody
 		PrintToServer("CCuredFatherGrigori::PlayMeleeHitSound()");
 		#endif
 	}
+	property float m_MakeGrigoriGlow
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
 
 	public void PlayMeleeMissSound() 
 	{
@@ -886,7 +892,30 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		}
 		return;
 	}
-	
+	if(IsValidEntity(npc.m_iTeamGlow))
+	{
+		if(Waves_InSetup())
+		{
+			if(npc.m_MakeGrigoriGlow != 3.0)
+			{
+				npc.m_MakeGrigoriGlow = 3.0;
+				SetVariantColor(view_as<int>({255, 255, 255, 255}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			}
+		}
+		else
+		{
+			if(npc.m_MakeGrigoriGlow != 2.0)
+			{
+				npc.m_MakeGrigoriGlow = 2.0;
+				if(i_SpecialGrigoriReplace == 2)
+					SetVariantColor(view_as<int>({150, 0, 150, 255}));
+				else
+					SetVariantColor(view_as<int>({150, 0, 0, 255}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			}
+		}
+	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	if(BoughtGregHelp || CurrentPlayers <= 4)
 	{
@@ -927,7 +956,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	if(npc.m_iTargetWalkTo > 0)
 	{
 		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
-		b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 &&
+		b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= GREGPOINTS_REV_NEEDED &&
 		 TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE &&
 		  dieingstate[npc.m_iTargetWalkTo] > 0 && 
 		  !b_LeftForDead[npc.m_iTargetWalkTo])
@@ -1473,7 +1502,7 @@ int GetClosestAllyPlayerGreg(int entity)
 	{
 		if (IsValidClient(i))
 		{
-			if (GetTeam(i) == GetTeam(entity) /*&& b_BobsCuringHand[i] */&& b_BobsCuringHand_Revived[i] >= 20 && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (GetTeam(i) == GetTeam(entity) /*&& b_BobsCuringHand[i] */&& b_BobsCuringHand_Revived[i] >= GREGPOINTS_REV_NEEDED && TeutonType[i] == TEUTON_NONE && dieingstate[i] > 0 && !b_LeftForDead[i]) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

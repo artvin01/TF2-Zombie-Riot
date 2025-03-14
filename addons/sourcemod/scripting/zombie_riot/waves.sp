@@ -66,6 +66,7 @@ enum struct Round
 	
 	MusicEnum music_round_1;
 	MusicEnum music_round_2;
+	MusicEnum music_setup;
 	int MusicOutroDuration;
 	char music_round_outro[255];
 	bool music_custom_outro;
@@ -793,6 +794,7 @@ void Waves_CacheWaves(KeyValues kv, bool npcs)
 	{
 		music.SetupKv("music_1", kv);
 		music.SetupKv("music_2", kv);
+		music.SetupKv("music_setup", kv);
 		
 		if(kv.GetNum("music_download_outro"))
 		{
@@ -867,16 +869,36 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GetString("author_raid", buffer, sizeof(buffer));
 	if(buffer[0])
 		CPrintToChatAll("%t", "Raidboss By", buffer);
+		
+	round.music_setup.SetupKv("music_setup", kv);
+	
+	if(round.music_setup.Valid())
+	{
+		round.music_setup.CopyTo(MusicSetup1);
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client); //This is actually more expensive then i thought.
+				SetMusicTimer(client, GetTime() + 5);
+			}
+		}
+	}
 	
 	Enemy enemy;
 	Wave wave;
 	kv.GotoFirstSubKey();
 	do
 	{
+		if(kv.GetSectionName(buffer, sizeof(buffer)) && StrContains(buffer, "music_setup") != -1)
+		{
+			continue;
+		}
+
 		round.Cash = kv.GetNum("cash");
 		round.AmmoBoxExtra = kv.GetNum("ammobox_extra");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
-		round.medival_difficulty = kv.GetNum("medival_research_level");
+		round.medival_difficulty = kv.GetNum("Medieval_research_level");
 		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
@@ -1857,7 +1879,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Zombies_Currently_Still_Ongoing = 0;
 			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
 			
-			//always increace chance of miniboss.
+			//always increase chance of miniboss.
 			if(!subgame && CurrentRound >= 12)
 			{
 				int count;
@@ -2352,7 +2374,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
-	CPrintToChatAll("{darkred}%t", "Medival_Difficulty", difficulty);
+	CPrintToChatAll("{darkred}%t", "Medieval_Difficulty", difficulty);
 	
 	float difficulty_math = Pow(0.9, float(difficulty));
 	
@@ -2542,6 +2564,7 @@ void WaveEndLogicExtra()
 	Specter_AbilitiesWaveEnd();	
 	Rapier_CashWaveEnd();
 	LeperResetUses();
+	SniperMonkey_ResetUses();
 	ResetFlameTail();
 	Building_ResetRewardValuesWave();
 	FallenWarriorGetRandomSeedEachWave();
@@ -2552,7 +2575,7 @@ void WaveEndLogicExtra()
 	{
 		if(IsValidClient(client))
 		{
-			b_BobsCuringHand_Revived[client] += GetRandomInt(1,3);
+			b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
 
 			/*
 			if(Items_HasNamedItem(client, "Bob's Curing Hand"))

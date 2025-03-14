@@ -1955,7 +1955,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⛡%s", Debuff_Adder_right);
 	}
-
+	if(f_TimeFrozenStill[victim] && f_TimeFrozenStill[victim] > GetGameTime(victim))
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "?[%.1f]", f_TimeFrozenStill[victim] - GetGameTime(victim));
+	}
 	if(MoraleBoostLevelAt(victim) > 0) //hussar!
 	{
 		//Display morale!
