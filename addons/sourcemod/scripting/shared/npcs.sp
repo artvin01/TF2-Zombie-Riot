@@ -539,7 +539,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 #endif
 
 
-void NPC_Ignite(int entity, int attacker, float duration, int weapon)
+void NPC_Ignite(int entity, int attacker, float duration, int weapon, float damageoverride = 8.0)
 {
 	if(HasSpecificBuff(entity, "Hardened Aura"))
 		return;
@@ -554,6 +554,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	float value = 8.0;
+	value = damageoverride;
 	bool validWeapon = false;
 	ApplyStatusEffect(attacker, entity, "Burn", 999999.9);
 
@@ -571,6 +572,9 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 
 	if(wasBurning)
 	{
+		if(entity <= MaxClients)
+			TF2_IgnitePlayer(entity, entity, 200.0);
+
 		if(value > BurnDamage[entity]) //Dont override if damage is lower.
 		{
 			BurnDamage[entity] = value;
@@ -588,7 +592,11 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 	}
 	else
 	{
-		IgniteTargetEffect(entity);
+		if(entity <= MaxClients)
+			TF2_IgnitePlayer(entity, entity, 200.0);
+		else
+			IgniteTargetEffect(entity);
+
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);
 		if(validWeapon)
@@ -605,93 +613,86 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 public Action NPC_TimerIgnite(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
-	if(entity > MaxClients)
+	if(IsValidEntity(entity))
 	{
-		if(!b_NpcHasDied[entity])
+		if((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || i_IsABuilding[entity] || (entity <= MaxClients))
 		{
 			int attacker = EntRefToEntIndex(IgniteId[entity]);
-			if(attacker != INVALID_ENT_REFERENCE)
+			if(!IsValidEntity(attacker))
 			{
-				IgniteFor[entity]--;
-				
-				float pos[3], ang[3];
-				if(attacker > 0 && attacker <= MaxClients)
-					GetClientEyeAngles(attacker, ang);
-				
-				int weapon = EntRefToEntIndex(IgniteRef[entity]);
-				float value = 8.0;
+				attacker = 0;
+			}
+			IgniteFor[entity]--;
+			
+			
+			int weapon = EntRefToEntIndex(IgniteRef[entity]);
+			float value = 8.0;
 #if !defined RTS
-				if(weapon > MaxClients && IsValidEntity(weapon))
-				{
-					value *= Attributes_Get(weapon, 2, 1.0);	  //For normal weapons
-					
-				//	value *= Attributes_Get(weapon, 1000, 1.0); //For any
-					
-					value *= Attributes_Get(weapon, 410, 1.0); //For wand
-					
-					value *= Attributes_Get(weapon, 71, 1.0); //For wand
+			if(weapon > MaxClients && IsValidEntity(weapon))
+			{
+				value *= Attributes_Get(weapon, 2, 1.0);	  //For normal weapons
+				
+			//	value *= Attributes_Get(weapon, 1000, 1.0); //For any
+				
+				value *= Attributes_Get(weapon, 410, 1.0); //For wand
+				
+				value *= Attributes_Get(weapon, 71, 1.0); //For wand
 
-				}
-				else
-#endif
-				{
-					weapon = -1;
-				}
-				
-				WorldSpaceCenter(entity, pos);
-				
-				if(value < 0.2)
-				{
-					
-				}
-				else if(value < BurnDamage[entity])
-				{
-					value = BurnDamage[entity];
-				}
-				else
-				{
-					BurnDamage[entity] = value;
-				}
-				if(NpcStats_ElementalAmp(entity))
-				{
-					value *= 1.2;
-				}
-				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
-				SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
-				
-				//Setting burn dmg to slash cus i want it to work with melee!!!
-				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
-				//In this case ill buff it so its 2x as good as bleed! or more in the future
-				//Also now allows hp gain and other stuff for that reason. pretty cool.
-				if(IgniteFor[entity] == 0)
-				{
-					ExtinguishTarget(entity);
-					IgniteTimer[entity] = null;
-					IgniteFor[entity] = 0;
-					BurnDamage[entity] = 0.0;
-					RemoveSpecificBuff(entity, "Burn");
-					return Plugin_Stop;
-				}
-				if(HasSpecificBuff(entity, "Hardened Aura"))
-				{
-					ExtinguishTarget(entity);
-					IgniteTimer[entity] = null;
-					IgniteFor[entity] = 0;
-					BurnDamage[entity] = 0.0;
-					RemoveSpecificBuff(entity, "Burn");
-					return Plugin_Stop;
-				}
-				return Plugin_Continue;
 			}
 			else
+#endif
+			{
+				weapon = -1;
+			}
+			float pos[3];
+			WorldSpaceCenter(entity, pos);
+			
+			if(value < 0.2)
+			{
+				
+			}
+			else if(value < BurnDamage[entity])
+			{
+				value = BurnDamage[entity];
+			}
+			else
+			{
+				BurnDamage[entity] = value;
+			}
+			if(NpcStats_ElementalAmp(entity))
+			{
+				value *= 1.2;
+			}
+			if((entity <= MaxClients))
+				TF2_IgnitePlayer(entity, entity, 200.0);
+			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
+			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
+				value *= 5.0;
+			SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+			
+			//Setting burn dmg to slash cus i want it to work with melee!!!
+			//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
+			//In this case ill buff it so its 2x as good as bleed! or more in the future
+			//Also now allows hp gain and other stuff for that reason. pretty cool.
+			if(IgniteFor[entity] <= 0)
 			{
 				ExtinguishTarget(entity);
 				IgniteTimer[entity] = null;
 				IgniteFor[entity] = 0;
 				BurnDamage[entity] = 0.0;
 				RemoveSpecificBuff(entity, "Burn");
-				return Plugin_Stop;		
+				return Plugin_Stop;
 			}
+			if(HasSpecificBuff(entity, "Hardened Aura"))
+			{
+				ExtinguishTarget(entity);
+				IgniteTimer[entity] = null;
+				IgniteFor[entity] = 0;
+				BurnDamage[entity] = 0.0;
+				RemoveSpecificBuff(entity, "Burn");
+				return Plugin_Stop;
+			}
+			return Plugin_Continue;
 		}
 		else
 		{

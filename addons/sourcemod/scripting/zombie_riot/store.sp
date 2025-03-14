@@ -836,6 +836,15 @@ void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 	}
 	if(SwitchDo)
 		SetPlayerActiveWeapon(client, swap);
+	int WeaponValidCheck = 0;
+
+	//make sure to fake swap aswell!
+	while(WeaponValidCheck != swap)
+	{
+		WeaponValidCheck = Store_CycleItems(client, slot);
+		if(WeaponValidCheck == -1)
+			break;
+	}
 }
 
 void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride = -1)
@@ -4955,7 +4964,7 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-	
+	map.SetValue("60", 0.0);// Burning is only visual, and shouldnt hurt the client
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
@@ -5574,6 +5583,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
 					HidePlayerWeaponModel(client, entity, true);
+
+					//new item bought, make sure to update the current order and stuff of weapon changing client
+					//TODO bug: Buy 1 melee weapon, then another, you cant switch between the two unless you swsitch once via h
+
+
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);

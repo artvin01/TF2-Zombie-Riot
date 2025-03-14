@@ -106,10 +106,6 @@ static void OnDestroy(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
 
 	Building_RotateAllDepencencies(entity);
 }
@@ -546,7 +542,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	}
 
 	objstats.m_flNextDelayTime = gameTime + 0.2;
-	BuildingDisplayRepairLeft(objstats.index);
+	BuildingUpdateTextHud(objstats.index);
 
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
@@ -598,9 +594,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
-
-		if(IsValidEntity(objstats.m_iWearable4))
-			RemoveEntity(objstats.m_iWearable4);
 			
 	}
 	else
@@ -668,45 +661,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		}
 		
 	}
-
-	if(Resistance_for_building_High[objstats.index] > GetGameTime() && objstats.m_flGlowingLogic != 1.0)
-	{
-		objstats.m_flGlowingLogic = 1.0;
-		if(IsValidEntity(objstats.m_iWearable4))
-		{
-			char sColor[32];
-			char HealthText[64];
-			Format(sColor, sizeof(sColor), " %d %d %d %d ", 0, 255, 255, 255);
-			DispatchKeyValue(objstats.m_iWearable4,     "color", sColor);
-			int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-			if(IsValidClient(Owner))
-				Format(HealthText, sizeof(HealthText), "[[[%N]]]", Owner);
-			else if(Owner != -1 && Citizen_IsIt(Owner))
-				strcopy(HealthText, sizeof(HealthText), "Rebel");
-			else
-				strcopy(HealthText, sizeof(HealthText), " ");
-			DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
-		}
-	}
-	else if(Resistance_for_building_High[objstats.index] < GetGameTime() && objstats.m_flGlowingLogic == 1.0)
-	{
-		objstats.m_flGlowingLogic = 0.0;
-		if(IsValidEntity(objstats.m_iWearable4))
-		{
-			char sColor[32];
-			char HealthText[64];
-			Format(sColor, sizeof(sColor), " %d %d %d %d ", 0, 255, 0, 255);
-			int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-			DispatchKeyValue(objstats.m_iWearable4,     "color", sColor);
-			if(IsValidClient(Owner))
-				Format(HealthText, sizeof(HealthText), "%N", Owner);
-			else if(Owner != -1 && Citizen_IsIt(Owner))
-				strcopy(HealthText, sizeof(HealthText), "Rebel");
-			else
-				strcopy(HealthText, sizeof(HealthText), " ");
-			DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
-		}
-	}
 	return true;
 }
 
@@ -767,18 +721,7 @@ bool Object_Interact(int client, int weapon, int obj)
 					if(Object_CanBuild(FuncCanBuild[entity], client))
 					{
 						SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-						ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-						if(IsValidEntity(objstats.m_iWearable4))
-						{
-							char HealthText[32];
-							int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-							if(IsValidClient(Owner))
-								Format(HealthText, sizeof(HealthText), "%N", Owner);
-							else
-								Format(HealthText, sizeof(HealthText), "%s", " ");
-
-							DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
-						}
+						BuildingUpdateTextHud(entity);
 					}
 					else
 					{
@@ -1054,10 +997,20 @@ public void ObjBaseThink(int building)
 	ObjectGeneric_ClotThink(objstats);
 }
 
-void BuildingDisplayRepairLeft(int entity)
+
+void BuildingUpdateTextHud(int building)
 {
-	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-	char HealthText[64];
+	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
+	
+	int entity = EntRefToEntIndex(Building_Mounted[building]);
+	if(entity != -1)
+	{
+		if(IsValidEntity(objstats.m_iWearable3))
+			RemoveEntity(objstats.m_iWearable3);
+
+		return;
+	}
+	char HealthText[128];
 	int HealthColour[4];
 	int Repair = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
 
@@ -1065,80 +1018,75 @@ void BuildingDisplayRepairLeft(int entity)
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
 	HealthColour[3] = 255;
+	char NameTextAllowMax[32];
+	int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
+	if(IsValidClient(Owner))
+		Format(NameTextAllowMax, sizeof(NameTextAllowMax), "%N",Owner);
+	else if(Owner != -1 && Citizen_IsIt(Owner))
+		Format(NameTextAllowMax, sizeof(NameTextAllowMax), "Rebel");
+
+	char sColor[32];
+	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+	int SpacerAdd = 0;
+	SpacerAdd -= (strlen(NameTextAllowMax) / 2);
+	Format(HealthText, sizeof(HealthText), "%s", NameTextAllowMax);
+	if(Resistance_for_building_High[objstats.index] > GetGameTime())
+	{
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", 125, 125, 255, 255);
+		Format(HealthText, sizeof(HealthText), "[[[%s]]]",HealthText);
+		SpacerAdd -= 2;
+	}
 	if(Repair <= 0)
 	{
 		HealthColour[0] = 255;
 		HealthColour[1] = 0;
 		HealthColour[3] = 255;
-		char ThousandBuffer[64];
+		char ThousandBuffer[128];
 		IntToString(Health, ThousandBuffer, sizeof(ThousandBuffer));
 		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
-		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
+		SpacerAdd += (strlen(ThousandBuffer) / 2);
+		SpacerAdd = RoundToNearest(float(SpacerAdd) * 1.5);
+		for(int AddSpacer; AddSpacer <= SpacerAdd; AddSpacer++)
+		{
+			Format(HealthText, sizeof(HealthText), "%s ", HealthText);
+		}
+		Format(HealthText, sizeof(HealthText), "%s\n%s", HealthText, ThousandBuffer);
 	}
 	else
 	{
 		char ThousandBuffer[64];
+		char ThousandBuffer2[64];
 		IntToString(Repair, ThousandBuffer, sizeof(ThousandBuffer));
 		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
-		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
+		IntToString(Health, ThousandBuffer2, sizeof(ThousandBuffer2));
+		ThousandString(ThousandBuffer2, sizeof(ThousandBuffer2));
+		SpacerAdd += (strlen(ThousandBuffer) / 2);
+		SpacerAdd += (strlen(ThousandBuffer2) / 2);
+		SpacerAdd += 2;
+		SpacerAdd = RoundToNearest(float(SpacerAdd) * 1.5);
+		for(int AddSpacer; AddSpacer <= SpacerAdd; AddSpacer++)
+		{
+			Format(HealthText, sizeof(HealthText), " %s", HealthText);
+		}
+		Format(HealthText, sizeof(HealthText), "%s\n%s", HealthText, ThousandBuffer2);
 		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, " -> ");
-		IntToString(Health, ThousandBuffer, sizeof(ThousandBuffer));
-		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
 		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
 	}
 
 
 	if(IsValidEntity(objstats.m_iWearable3))
 	{
-		char sColor[32];
-		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
 		DispatchKeyValue(objstats.m_iWearable3,     "color", sColor);
 		DispatchKeyValue(objstats.m_iWearable3, "message", HealthText);
 	}
 	else
 	{
 		float Offset[3];
-		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
+		Offset[2] = f3_CustomMinMaxBoundingBox[building][2];
+		Offset[2] += 12.0;
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable3 = TextEntity;	
-	}
-	if(!IsValidEntity(objstats.m_iWearable4))
-	{
-		HealthColour[0] = 0;
-		HealthColour[1] = 255;
-		HealthColour[2] = 0;
-		HealthColour[3] = 255;
-		int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-		if(IsValidClient(Owner))
-			Format(HealthText, sizeof(HealthText), "%N", Owner);
-		else if(Owner != -1 && Citizen_IsIt(Owner))
-			strcopy(HealthText, sizeof(HealthText), "Rebel");
-		else
-			strcopy(HealthText, sizeof(HealthText), " ");
-		float Offset[3];
-		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
-		Offset[2] += 6.0;
-		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
-		OwnerOfText[TextEntity] = Owner;
-		DispatchKeyValue(TextEntity, "font", "4");
-		objstats.m_iWearable4 = TextEntity;	
-	}
-	
-	if(!IsValidEntity(objstats.m_iWearable5))
-	{
-		HealthColour[0] = 0;
-		HealthColour[1] = 255;
-		HealthColour[2] = 0;
-		HealthColour[3] = 255;
-		float Offset[3];
-		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2] * 0.4;
-		Offset[2] += 6.0;
-		Format(HealthText, sizeof(HealthText), "%s", "Ready!");
-		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 0, HealthColour, objstats.index);
-		OwnerOfText[TextEntity] = EntIndexToEntRef(objstats.index);
-		DispatchKeyValue(TextEntity, "font", "4");
-		objstats.m_iWearable5 = TextEntity;	
 	}
 }
 /*

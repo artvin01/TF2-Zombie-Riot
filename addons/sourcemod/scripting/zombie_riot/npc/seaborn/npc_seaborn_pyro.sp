@@ -180,14 +180,7 @@ public void SeabornPyro_ClotThink(int iNPC)
 					{
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							if(target > MaxClients)
-							{
-							//	NPC_Ignite(target, npc.index, 5.0, -1);
-							}
-							else
-							{
-								TF2_AddCondition(target, TFCond_Gas, 1.5);
-							}
+							NPC_Ignite(target, npc.index,4.0, -1, 5.0);
 						}
 						
 						npc.PlayMeleeHitSound();

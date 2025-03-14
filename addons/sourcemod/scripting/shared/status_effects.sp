@@ -2248,6 +2248,10 @@ void StatusEffects_Silence()
 	StatusEffect_AddGlobal(data);
 }
 
+stock void ExtinguishTargetDebuff(int victim)
+{
+	IgniteFor[victim] = 0;
+}
 stock void ApplyRapidSuturing(int victim)
 {
 	ApplyStatusEffect(victim, victim, "Rapid Suturing", 1.0);

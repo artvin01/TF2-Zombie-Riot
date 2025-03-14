@@ -476,10 +476,9 @@ public void AnarchyAbomination_Rocket_Particle_StartTouch(int entity, int target
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 
 		Elemental_AddChaosDamage(target, owner, 15, true, true);
-		if(target <= MaxClients)
-			TF2_IgnitePlayer(target, target, 5.0);
 
-		StartBleedingTimer_Against_Client(target, owner, 3.0, 5);
+		NPC_Ignite(target, owner,12.0, -1, 5.0);
+
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{

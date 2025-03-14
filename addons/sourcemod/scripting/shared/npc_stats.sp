@@ -10733,6 +10733,11 @@ void IngiteTargetClientside(int target, int client, bool ingite)
 }
 void ExtinguishTarget(int target, bool dontkillTimer = false)
 {
+	if(target > 0 && target <= MaxClients)
+	{
+		TF2_RemoveCondition(target, TFCond_OnFire);
+		return;
+	}
 	TE_Start("EffectDispatch");
 	
 	if(target > 0)

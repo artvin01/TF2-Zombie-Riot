@@ -1540,17 +1540,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								{
 									if(!NpcStats_IsEnemySilenced(npc.index))
 									{
-										if(target > MaxClients)
-										{
-											StartBleedingTimer_Against_Client(target, npc.index, damage * 0.15, 5);
-										}
-										else
-										{
-											if (!IsInvuln(target))
-											{
-												StartBleedingTimer_Against_Client(target, npc.index, damage * 0.15, 5);
-											}
-										}
+										StartBleedingTimer(target, npc.index, damage * 0.15, 4, -1, DMG_TRUEDAMAGE, 0);
 									}
 								}
 											

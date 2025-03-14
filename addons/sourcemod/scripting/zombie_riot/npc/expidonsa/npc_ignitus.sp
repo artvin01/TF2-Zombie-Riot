@@ -289,18 +289,7 @@ void IgnitusSelfdefense(Ignitus npc, float gameTime, int target, float distance)
 					
 					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						if(target > MaxClients)
-						{
-							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 20);
-						}
-						else
-						{
-							if (!IsInvuln(target))
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 20);
-								TF2_IgnitePlayer(target, target, 5.0);
-							}
-						}
+						NPC_Ignite(target, npc.index, 20.0, -1, 4.0);
 					}
 					if(!ShouldNpcDealBonusDamage(target))
 					{

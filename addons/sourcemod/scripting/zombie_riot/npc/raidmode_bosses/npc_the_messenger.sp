@@ -182,7 +182,7 @@ methodmap TheMessenger < CClotBody
 			return;
 			
 		this.m_flidle_talk = GetGameTime(this.index) + 0.1;
-		if(i_RaidGrantExtra[this.index] >= 3)
+		if(i_RaidGrantExtra[this.index] < 3)
 			EmitSoundToAll(g_MessengerThrowFire[GetRandomInt(0, sizeof(g_MessengerThrowFire) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		else
 			EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -1154,10 +1154,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 										
 							if(i_RaidGrantExtra[npc.index] <= 2)
 							{
-								if(targetTrace <= MaxClients)
-									TF2_IgnitePlayer(targetTrace, targetTrace, 5.0);
-
-								StartBleedingTimer_Against_Client(targetTrace, npc.index, 3.0, 5);
+								NPC_Ignite(targetTrace, npc.index,6.0, -1, 2.5);
 							}
 							else
 							{
@@ -1250,10 +1247,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 
 		if(i_RaidGrantExtra[owner] <= 2)
 		{
-			if(target <= MaxClients)
-				TF2_IgnitePlayer(target, target, 5.0);
-
-			StartBleedingTimer_Against_Client(target, owner, DamageDeal * 0.1, 5);
+			NPC_Ignite(target, owner,DamageDeal * 0.2, -1, 2.5);
 		}
 		else
 		{

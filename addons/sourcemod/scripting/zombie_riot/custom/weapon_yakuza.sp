@@ -1135,7 +1135,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 
 	if(i_OverlordComboAttack[npc.index] == 5)
 	{
-		Building_Mounted[client] = 0;
+		Building_Mounted[client] = -1;
 		int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 		if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 		{

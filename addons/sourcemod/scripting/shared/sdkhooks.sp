@@ -2007,6 +2007,9 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_AmountDowned[victim] = 99;
 				}
 				*/
+				
+				ApplyRapidSuturing(victim);
+				ExtinguishTargetDebuff(victim);
 				i_AmountDowned[victim]++;
 				
 				SetEntityHealth(victim, 200);
