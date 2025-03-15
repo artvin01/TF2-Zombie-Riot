@@ -299,8 +299,8 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 									}
 								}
 							}
-						delete swingTrace;
-						npc.m_flAttackHappenswillhappen = false;
+							delete swingTrace;
+							npc.m_flAttackHappenswillhappen = false;
 						}
 						else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 						{

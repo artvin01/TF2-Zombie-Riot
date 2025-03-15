@@ -552,6 +552,13 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 	
 	if(!IgniteTimer[entity])
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	else
+	{
+		BurnDamage[entity] *= 0.5;
+		//apply burn once for half the damage!
+		TriggerTimer(IgniteTimer[entity]);
+		BurnDamage[entity] *= 2.0;
+	}
 	
 	float value = 8.0;
 	value = damageoverride;
@@ -657,8 +664,6 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			{
 				value *= 1.2;
 			}
-			if((entity <= MaxClients))
-				TF2_IgnitePlayer(entity, entity, 200.0);
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
 				value *= 5.0;

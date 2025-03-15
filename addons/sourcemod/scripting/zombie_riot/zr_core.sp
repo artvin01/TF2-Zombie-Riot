@@ -2587,6 +2587,7 @@ void PlayerApplyDefaults(int client)
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
+		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
 		if(point_difference > 0)

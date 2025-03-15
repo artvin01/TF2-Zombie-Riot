@@ -842,7 +842,7 @@
 	}
 	"Burn Desc"
 	{
-		"en"	"Deals True damage DOT.\nThe damage and owner depends on the weapon that delt the most fire damage.\nHeal 25%% less while on fire.\n{green}Enemies on fire, if killed give 10%% more hp on kill, and gibs give 10%% more hp."
+		"en"	"Deals True damage.\nThe damage and owner depends on the weapon that delt the most fire damage.\nHeal 25%% less while on fire, when applying fire again, tick again for 50%% damage.\n{green}Enemies on fire, give 10%% more hp on kill and gibs."
 	}
 	"Zealot's Random Drinks"
 	{

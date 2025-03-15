@@ -1147,27 +1147,32 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 }
 
 
-stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype, int customtype = 0)
+stock void StartBleedingTimer(int victim, int attacker, float damage, int amount, int weapon, int damagetype, int customtype = 0)
 {
-	if(IsValidEntity(entity) && IsValidEntity(client))
+	if(IsValidEntity(victim) && IsValidEntity(attacker))
 	{
-		if(HasSpecificBuff(entity, "Hardened Aura"))
+		if(HasSpecificBuff(victim, "Hardened Aura"))
 			return;
 
-		if(HasSpecificBuff(entity, "Thick Blood"))
+		if(HasSpecificBuff(victim, "Thick Blood"))
 			return;
 
-		BleedAmountCountStack[entity] += 1;
+		if(attacker > 0 && attacker <= MaxClients)
+			Force_ExplainBuffToClient(attacker, "Bleed");
+		else if(victim > 0 && victim <= MaxClients)
+			Force_ExplainBuffToClient(victim, "Bleed");
+
+		BleedAmountCountStack[victim] += 1;
 		DataPack pack;
 		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(entity));
-		pack.WriteCell(entity);
+		pack.WriteCell(EntIndexToEntRef(victim));
+		pack.WriteCell(victim);
 		pack.WriteFloat(GetGameTime());
-		if(IsValidEntity(entity))
+		if(IsValidEntity(weapon))
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		else
 			pack.WriteCell(-1);
-		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(attacker));
 		pack.WriteCell(damagetype);
 		pack.WriteCell(customtype);
 		pack.WriteFloat(damage);
@@ -1178,10 +1183,10 @@ stock void StartBleedingTimer(int entity, int client, float damage, int amount, 
 public Action Timer_Bleeding(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
+	int victim = EntRefToEntIndex(pack.ReadCell());
 	int OriginalIndex = pack.ReadCell();
 	float GameTimeClense = pack.ReadFloat();
-	if(entity<=MaxClients || !IsValidEntity(entity) || b_NpcHasDied[entity])
+	if(!IsValidEntity(victim))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		if(BleedAmountCountStack[OriginalIndex] < 0)
@@ -1197,10 +1202,10 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 		weapon = -1;
 	}
 
-	int client = EntRefToEntIndex(pack.ReadCell());
-	if(client <= MaxClients)
+	int attacker = EntRefToEntIndex(pack.ReadCell());
+	if(attacker <= MaxClients)
 	{
-		if(!client || !IsClientInGame(client))
+		if(!attacker || !IsClientInGame(attacker))
 		{
 			BleedAmountCountStack[OriginalIndex] -= 1;
 			if(BleedAmountCountStack[OriginalIndex] < 0)
@@ -1210,50 +1215,49 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	}
 	else
 	{
-		if(!IsValidEntity(client))
-			client = 0; //Make it the world that attacks them?
+		if(!IsValidEntity(attacker))
+			attacker = 0; //Make it the world that attacks them?
 	}
 
-	if(StatusEffects_RapidSuturingCheck(entity, GameTimeClense))
+	if(StatusEffects_RapidSuturingCheck(victim, GameTimeClense))
 	{
 		return Plugin_Stop;
 	}
-	if(HasSpecificBuff(entity, "Hardened Aura"))
-	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
-	}
-	if(HasSpecificBuff(entity, "Thick Blood"))
+	if(HasSpecificBuff(victim, "Hardened Aura"))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		if(BleedAmountCountStack[OriginalIndex] < 0)
 			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-	float pos[3], ang[3];
+	if(HasSpecificBuff(victim, "Thick Blood"))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
+		return Plugin_Stop;
+	}
+	float pos[3];
 	
-	WorldSpaceCenter(entity, pos);
+	WorldSpaceCenter(victim, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
 	float DamageDeal = pack.ReadFloat();
-	if(NpcStats_ElementalAmp(entity))
+	if(NpcStats_ElementalAmp(victim))
 	{
 		DamageDeal *= 1.15;
 	}
-	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, DamageDeal, damagetype | DMG_PREVENT_PHYSICS_FORCE, weapon, _, pos, false, customtype);
+	SDKHooks_TakeDamage(victim, attacker, attacker, DamageDeal, damagetype | DMG_PREVENT_PHYSICS_FORCE, weapon, _, pos, false, customtype);
 
-	entity = pack.ReadCell();
-	if(entity < 1)
+	victim = pack.ReadCell();
+	if(victim < 1)
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
 	}
 
 	pack.Position--;
-	pack.WriteCell(entity-1, false);
+	pack.WriteCell(victim-1, false);
 	return Plugin_Continue;
 }
 /*

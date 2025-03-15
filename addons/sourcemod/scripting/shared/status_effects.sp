@@ -924,6 +924,22 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 
 //strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 
+void Force_ExplainBuffToClient(int client, const char[] name)
+{
+	int index;
+	index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+
+	if(index == -1)
+	{
+		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
+		LogError("Force_ExplainBuffToClient A DEV FUCKED UP!!!!!!!!! Name %s",name);
+		return;
+	}
+	StatusEffect Apply_MasterStatusEffect;
+	E_StatusEffect Apply_StatusEffect;
+	AL_StatusEffects.GetArray(index, Apply_MasterStatusEffect);
+	ExplainBuffToClient(client, Apply_MasterStatusEffect, Apply_StatusEffect, false);
+}
 void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool AppliedOntoOthers = false)
 {
 	//Debuff has no icon, so we dont care.

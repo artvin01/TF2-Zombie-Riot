@@ -2899,9 +2899,9 @@
 	}
 	"Casino Desc"
 	{
-		"en"	"Killing and hitting enemies rewards you with dollars.\nPress M2 to spend 20 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\nDamage scales with wealth.\n''Money = Power''."
-		"fr"	"Tuer et frapper les ennemis vous donne des dollars.\nAppuyez M2 pour échanger 20 dollars et rouler la machine à sous.\nLa machine à sous a une chance de vous donner un effet spécial.\nDégats changent avec votre opulence.\n«La fortune est la puissance.»"
-		"chi"	"击中，击杀敌人获得$$$。\nM2花费20$开赌。有几率获得各种buff。\n伤害根据金钱增加。\n''金钱=力量''"
+		"en"	"Killing and hitting enemies rewards you with dollars.\nPress M2 to spend 20 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\nDamage scales with wealth."
+		"fr"	"Tuer et frapper les ennemis vous donne des dollars.\nAppuyez M2 pour échanger 20 dollars et rouler la machine à sous.\nLa machine à sous a une chance de vous donner un effet spécial.\nDégats changent avec votre opulence."
+		"chi"	"击中，击杀敌人获得$$$。\nM2花费20$开赌。有几率获得各种buff。\n伤害根据金钱增加。"
 	}
 	"Walmart Desc"
 	{
@@ -2923,7 +2923,7 @@
 		"fr"	"Arme est amélioré.\nLa machine à sous vous donne des effets meilleurs.\n«ALL IN BABY!»"
 		"chi"	"属性升级。\n加强buff。\n''ALL IN''\n''ALL IN''\n''ALL IN''"
 	}
-	"Homosexual Desc"
+	"Sideways Flush Desc"
 	{
 		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
 	}
