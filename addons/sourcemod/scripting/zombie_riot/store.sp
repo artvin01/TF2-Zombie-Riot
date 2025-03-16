@@ -572,7 +572,7 @@ void Store_OnCached(int client)
 			amount += 50;
 		
 		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
-		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") * 1 / 5;
+		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") / 5;
 		amount += SkillTree_GetByName(client, "Cash Up 1 High") * 20;
 		amount += SkillTree_GetByName(client, "Cash Up Barney 1") * 30;
 

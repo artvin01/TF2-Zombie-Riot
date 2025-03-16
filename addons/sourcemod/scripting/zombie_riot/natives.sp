@@ -4,6 +4,9 @@
 static GlobalForward OnDifficultySet;
 static GlobalForward OnClientLoaded;
 static GlobalForward OnClientWorldmodel;
+static GlobalForward OnGivenItem;
+static GlobalForward OnKilledNPC;
+static GlobalForward OnGivenCash;
 
 void Natives_PluginLoad()
 {
@@ -17,6 +20,9 @@ void Natives_PluginLoad()
 	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell, Param_String, Param_Cell);
 	OnClientLoaded = new GlobalForward("ZR_OnClientLoaded", ET_Ignore, Param_Cell);
 	OnClientWorldmodel = new GlobalForward("ZR_OnClientWorldmodel", ET_Event, Param_Cell, Param_Cell, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef);
+	OnGivenItem = new GlobalForward("ZR_OnGivenItem", ET_Event, Param_Cell, Param_String);
+	OnKilledNPC = new GlobalForward("ZR_OnKilledNPC", ET_Ignore, Param_Cell, Param_String);
+	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 
 	RegPluginLibrary("zombie_riot");
 }
@@ -51,6 +57,47 @@ bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, i
 	Call_Finish(action);
 
 	return action >= Plugin_Changed;
+}
+
+bool Native_OnGivenItem(int client, char item[64])
+{
+	Action action;
+
+	Call_StartForward(OnGivenItem);
+	Call_PushCell(client);
+	Call_PushStringEx(item, sizeof(item), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+	Call_Finish(action);
+
+	if(action >= Plugin_Handled)
+		item[0] = 0;
+
+	return action >= Plugin_Changed;
+}
+
+void Native_OnKilledNPC(int client, const char[] name)
+{
+	Call_StartForward(OnKilledNPC);
+	Call_PushCell(client);
+	Call_PushString(name);
+	Call_Finish();
+}
+
+bool Native_OnGivenCash(int client, int &cash)
+{
+	Action action;
+
+	Call_StartForward(OnGivenCash);
+	Call_PushCell(client);
+	Call_PushCellRef(cash);
+	Call_Finish(action);
+
+	if(action >= Plugin_Handled)
+	{
+		cash = 0;
+		return true;
+	}
+
+	return false;
 }
 
 public any Native_ApplyKillEffects(Handle plugin, int numParams)

@@ -19,9 +19,10 @@ enum struct WeaponData
 static ArrayList WeaponList;
 #endif
 
-void Configs_ConfigsExecuted()
+static bool HasExecuted;
+
+KeyValues Configs_GetMapKv(const char[] mapname)
 {
-	char mapname[64];
 	char buffer[PLATFORM_MAX_PATH];
 	KeyValues kv;
 	
@@ -29,7 +30,6 @@ void Configs_ConfigsExecuted()
 	if(!zr_ignoremapconfig.BoolValue)
 #endif
 	{
-		GetCurrentMap(mapname, sizeof(mapname));
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/maps");
 		DirectoryListing dir = OpenDirectory(buffer);
 		if(dir != INVALID_HANDLE)
@@ -57,6 +57,28 @@ void Configs_ConfigsExecuted()
 			delete dir;
 		}
 	}
+
+	return kv;
+}
+
+bool Configs_HasExecuted()
+{
+	return HasExecuted;
+}
+
+void Configs_MapEnd()
+{
+	HasExecuted = false;
+}
+
+void Configs_ConfigsExecuted()
+{
+	HasExecuted = true;
+
+	char mapname[64];
+	GetCurrentMap(mapname, sizeof(mapname));
+
+	KeyValues kv = Configs_GetMapKv(mapname);
 	
 #if defined RPG
 	RPG_SetupMapSpecific(mapname);
@@ -92,6 +114,7 @@ void Configs_ConfigsExecuted()
 	delete WeaponList;
 	WeaponList = new ArrayList(sizeof(WeaponData));
 	
+	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapondata");
 	kv = new KeyValues("WeaponData");
 	kv.ImportFromFile(buffer);
