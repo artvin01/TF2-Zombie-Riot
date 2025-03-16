@@ -1031,6 +1031,10 @@
 		"fr"	"Dégats et cadence des attaques améliorés. Le poignardage donne plus de santé, et ne retarde plus l'attaque prochaine.\nVouz devenez un professionel en poignardage, qui deviennent plus faciles à effectuer."
 		"chi"   "增加伤害和攻击速度，更多回血，背刺无冷却并且会让给你贱笑。\n你已是trickstab高手，所以你现在可以轻易背刺。"
 	}
+	"Kunai Pap 4"
+	{
+		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy, which explodes.\nIts damage scales with the backstab damgae you did."
+	}
 	
 	"Fractured Ark Desc"
 	{
