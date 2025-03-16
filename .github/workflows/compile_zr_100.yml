@@ -77,7 +77,7 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
-          spcomp -O2 -v2 -i "include" -o zombie_riot.smx zombie_riot.sp
+          spcomp -O2 -v2 -E -i "include" -o zombie_riot.smx zombie_riot.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
       
       - name: Upload Artifacts
