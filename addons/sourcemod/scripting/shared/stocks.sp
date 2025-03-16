@@ -1203,7 +1203,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	}
 
 	int attacker = EntRefToEntIndex(pack.ReadCell());
-	if(attacker <= MaxClients)
+	if(attacker > 0 && attacker <= MaxClients)
 	{
 		if(!attacker || !IsClientInGame(attacker))
 		{
