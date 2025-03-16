@@ -2181,6 +2181,7 @@ void NPC_DeadEffects(int entity)
 				GiveXP(client, 1);
 			
 			Saga_DeadEffects(entity, client, WeaponLastHit);
+			Native_OnKilledNPC(client, c_NpcName[entity]);
 #endif
 			
 #if defined RPG

@@ -78,6 +78,11 @@ void ConVar_PluginStart()
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitehard, StoreCvarChanged);
+	HookConVarChange(zr_voteconfig, WavesCvarChanged);
+	HookConVarChange(zr_minibossconfig, WavesCvarChanged);
+	HookConVarChange(zr_ignoremapconfig, WavesCvarChanged);
+	HookConVarChange(zr_ignoremapconfig, DownloadCvarChanged);
+	HookConVarChange(zr_downloadconfig, DownloadCvarChanged);
 #else
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
@@ -206,13 +211,38 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 	}
 }
 
-
-public void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+#if defined ZR
+static void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
 	//update store if these are updated.
-#if defined ZR
 	Items_SetupConfig();
 	Store_ConfigSetup();
-#endif
 }
 
+static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	if(!Configs_HasExecuted())
+		return;
+	
+	char mapname[64];
+	GetCurrentMap(mapname, sizeof(mapname));
+	KeyValues kv = Configs_GetMapKv(mapname);
+	Waves_SetupVote(kv);
+	Waves_SetupMiniBosses(kv);
+	delete kv;
+}
+
+static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	if(!Configs_HasExecuted())
+		return;
+	
+	char mapname[64];
+	GetCurrentMap(mapname, sizeof(mapname));
+	KeyValues kv = Configs_GetMapKv(mapname);
+	FileNetwork_ConfigSetup(kv);
+	Building_ConfigSetup();
+	NPC_ConfigSetup();
+	delete kv;
+}
+#endif

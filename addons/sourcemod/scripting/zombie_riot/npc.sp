@@ -1160,6 +1160,7 @@ void NPCDeath(int entity)
 				}
 			}
 		}
+		Native_OnGivenCash(0, GiveMoney);
 		CurrentCash += GiveMoney;
 		Waves_AddCashGivenThisWaveViaKills(CurrentCash);
 	}

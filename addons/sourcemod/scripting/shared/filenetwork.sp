@@ -110,7 +110,7 @@ void FileNetwork_MapEnd()
 	delete ExtraList;
 #endif
 
-	delete DownloadList;
+	DownloadList.Clear();
 
 	FileNetwork_PluginStart();
 }
@@ -154,6 +154,12 @@ void FileNetwork_ConfigSetup()
 void FileNetwork_ConfigSetup(KeyValues map)
 #endif
 {
+	if(!InServerSetup)
+	{
+		ThrowError("FileNetwork_ConfigSetup was called outside downloads time");
+		return;
+	}
+
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "downloads");
 
