@@ -1182,10 +1182,7 @@
 	
 	"Medusa Teslar Stick Desc"
 	{
-		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25%% more dmg takes for affected enemies."
-		"fr"	"+5%% résistance contre les dégats corps-à-corps. Fait saigner les ennemis, les ralentis, et les font prendre 25%% plus de dégats."
-		"ru"	"Вызывает кровотечение, 5%% доп. сопр. в ближнем бою. Накладыв. на врага эфф., который замедл. его и заставл. получ. больше урона, на 25%% больше урона получ. поражённые враги."
-		"chi"   "对敌人造成流血，额外获得5%%近战抗性。对敌人造成负面效果，使敌人减速并受到更多伤害"
+		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25%% more dmg takes for affected enemies.\nburn retriggering is 50%% weaker."
 	}
 	"Medusa Teslar Stick Pap 1"
 	{

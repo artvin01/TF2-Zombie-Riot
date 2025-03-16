@@ -18,7 +18,8 @@ enum
 	Attrib_ReduceMetalCost = 4036,
 	Attrib_BarracksHealth = 4037,
 	Attrib_BarracksDamage = 4038,
-	Attrib_BlessingBuff = 4039
+	Attrib_BlessingBuff = 4039,
+	Attrib_PenaltyBurnInitAttack = 4040
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

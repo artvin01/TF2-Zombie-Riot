@@ -554,10 +554,21 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	else
 	{
+		int Saveid = IgniteId[entity];
+		if(IsValidEntity(weapon))
+			BurnDamage[entity] *= Attributes_Get(weapon, 4040, 1.0);
+
+		IgniteId[entity] = EntIndexToEntRef(attacker);
+
 		BurnDamage[entity] *= 0.5;
 		//apply burn once for half the damage!
+		//Also apply damage for ourselves so we get the credit.
 		TriggerTimer(IgniteTimer[entity]);
 		BurnDamage[entity] *= 2.0;
+		if(IsValidEntity(weapon))
+			BurnDamage[entity] *= (1.0 / Attributes_Get(weapon, 4040, 1.0));
+
+		IgniteId[entity] = Saveid;
 	}
 	
 	float value = 8.0;
