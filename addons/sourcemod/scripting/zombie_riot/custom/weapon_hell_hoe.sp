@@ -213,7 +213,8 @@ void HellHoe_AoeDamageLogic(int entity, int victim, float damage, int weapon)
 	TE_SetupBeamPoints(flClientPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 	TE_SendToAll(0.0);
 	
-	HealEntityGlobal(entity, entity, flCorruptedLastHealthGain[entity], 0.5,_,HEAL_SELFHEAL);
+	if(dieingstate[entity] == 0)
+		HealEntityGlobal(entity, entity, flCorruptedLastHealthGain[entity], 0.5,_,HEAL_SELFHEAL);
 	flCorruptedLastHealthTook[entity] *= 1.015;
 }
 
@@ -710,6 +711,7 @@ public void Weapon_DRMad_Reload(int client, int weapon, bool crit, int slot)
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
+							
 						HealEntityGlobal(client, ally, playerMaxHp * 0.2, 1.0, 0.5);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
@@ -721,7 +723,8 @@ public void Weapon_DRMad_Reload(int client, int weapon, bool crit, int slot)
 		else
 		{
 			TF2_StunPlayer(client, 2.0, 100.0, TF_STUNFLAGS_NORMALBONK);
-			HealEntityGlobal(client, client, clientMaxHp * 1.0, 1.0,2.0,HEAL_SELFHEAL);
+			if(dieingstate[client] == 0)
+				HealEntityGlobal(client, client, clientMaxHp * 1.0, 1.0,2.0,HEAL_SELFHEAL);
 			ClientCommand(client, "playgamesound misc/halloween/spell_overheal.wav");
 		}
 		Ability_Apply_Cooldown(client, slot, 15.0);
@@ -754,12 +757,14 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 
 				ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
 				Ability_Apply_Cooldown(client, slot, 1.0);
-				HealEntityGlobal(client, client,-(clientMaxHp * 0.1), 1.0, 0.5);
+				if(dieingstate[client] == 0)
+					ealEntityGlobal(client, client,-(clientMaxHp * 0.1), 1.0, 0.5);
 				int playerMaxHp = SDKCall_GetMaxHealth(HealAlly);
 				if (playerMaxHp<clientMaxHp)
 					playerMaxHp=clientMaxHp;
 
-				HealEntityGlobal(client, HealAlly, playerMaxHp * 0.06, 1.0, 0.5);
+				if(HealAlly >= MaxClients || dieingstate[HealAlly] == 0)
+					HealEntityGlobal(client, HealAlly, playerMaxHp * 0.06, 1.0, 0.5);
 			}
 			else
 			{
@@ -896,7 +901,8 @@ public void Event_Hell_Hoe_OnHatTouch(int entity, int target)
 			{
 				int flMaxHealth = SDKCall_GetMaxHealth(owner);
 			
-				HealEntityGlobal(owner, owner, float(flMaxHealth) * Healing_Projectile[entity], 1.0,_, HEAL_SELFHEAL);
+				if(dieingstate[owner] == 0)
+					HealEntityGlobal(owner, owner, float(flMaxHealth) * Healing_Projectile[entity], 1.0,_, HEAL_SELFHEAL);
 			}
 		}
 		else if (Healing_Projectile[entity] == -2.0) 
