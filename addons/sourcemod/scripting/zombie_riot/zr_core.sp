@@ -2806,9 +2806,11 @@ stock bool isPlayerMad(int client) {
 
 		return true;
 	}
+	/*
 	else if (i_CustomWeaponEquipLogic[weapon_holding] == WEAPON_HELL_HOE_2) {
 		return g_isPlayerInDeathMarch_HellHoe[client];
 	}
+	*/
 	return false;
 }
 

@@ -376,7 +376,8 @@ public Action Weapon_Angel_Sword(int client, int weapon, const char[] classname,
 		time *= Attributes_Get(weapon, 101, 1.0);
 		time *= Attributes_Get(weapon, 102, 1.0);
 			
-		HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "superrare_halo");
+		HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "drg_manmelter_projectile");
+		EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
 		
 		result = isStrikeHorizontal[client];
 		return Plugin_Changed;
@@ -417,7 +418,8 @@ public Action Weapon_Angel_Sword_PAP(int client, int weapon, const char[] classn
 		time *= Attributes_Get(weapon, 101, 1.0);
 		time *= Attributes_Get(weapon, 102, 1.0);
 			
-		HellHoeLaunch(client, weapon, damage, speed, time, 7, 50.0, "superrare_halo", -2.0);
+		HellHoeLaunch(client, weapon, damage, speed, time, 7, 50.0, "drg_manmelter_projectile", -2.0);
+		EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
 		
 		result = isStrikeHorizontal[client];
 		return Plugin_Changed;
