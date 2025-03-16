@@ -1663,7 +1663,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 					if(!b_FaceStabber[attacker] && !i_NpcIsABuilding[victim] && i_CustomWeaponEquipLogic[weapon] == WEAPON_RUINA_DRONE_KNIFE)
 					{
 						//See inside wind staff.
-						RuinaNukeBackstabDo(victim, attacker, weapon, damage);
+						RuinaNukeBackstabDo(victim, attacker, weapon);
 					}
 #endif
 				}

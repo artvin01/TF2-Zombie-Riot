@@ -1033,7 +1033,7 @@
 	}
 	"Kunai Pap 4"
 	{
-		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy, which explodes.\nIts damage scales with the backstab damgae you did."
+		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy, which explodes."
 	}
 	
 	"Fractured Ark Desc"

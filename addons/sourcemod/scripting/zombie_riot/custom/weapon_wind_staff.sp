@@ -451,7 +451,7 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 }
 
 
-void RuinaNukeBackstabDo(int victim, int attacker,int weapon, float damage)
+void RuinaNukeBackstabDo(int victim, int attacker,int weapon)
 {
 	if (Ability_Check_Cooldown(attacker, 1) > 0.0)
 	{
@@ -485,8 +485,9 @@ void RuinaNukeBackstabDo(int victim, int attacker,int weapon, float damage)
 	i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
 	i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
 		
-	float damageSeperate = damage;
-	damageSeperate *= 3.0;
+	float damageSeperate = 65.0;
+	damageSeperate *= WeaponDamageAttributeMultipliers(weapon);
+	damageSeperate *= 2.0;
 	Explode_Logic_Custom(damageSeperate, attacker, weapon, weapon, posEnemySave); //Big fuckoff nuke
 	i_ExplosiveProjectileHexArray[weapon] = 0;
 }
