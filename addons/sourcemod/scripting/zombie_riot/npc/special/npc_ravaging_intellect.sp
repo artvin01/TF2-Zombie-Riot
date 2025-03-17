@@ -325,8 +325,9 @@ methodmap RavagingIntellect < CClotBody
 			b_NoKillFeed[npc.index] = true;
 			b_CantCollidie[npc.index] = true; 
 			b_CantCollidieAlly[npc.index] = true; 
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 			npc.m_bThisNpcIsABoss = false;
-			npc.m_flSpeed = 370.0;
+			npc.m_flSpeed = 350.0;
 			npc.Anger = true;
 			if(final1)
 			{
@@ -362,8 +363,7 @@ methodmap RavagingIntellect < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(RavagingIntellect_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(RavagingIntellect_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(RavagingIntellect_ClotThink);
-	//	npc.m_flTeleportCooldown = GetGameTime() + 20.0;
-		npc.m_flTeleportCooldown = GetGameTime() + 0.0;
+		npc.m_flTeleportCooldown = GetGameTime() + 10.0;
 	
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup"); 
@@ -465,6 +465,7 @@ public void RavagingIntellect_ClotThink(int iNPC)
 			npc.m_flSummonAllyEnd = 0.0;
 			MarkAreaForBuff = vecPos_Npc;
 			npc.DoEffectsSpawnClonePerma();
+			npc.m_flTeleportCooldown = GetGameTime(npc.index) + 2.0; //allow teleporting
 		}
 		return;
 	}
@@ -536,7 +537,7 @@ public void RavagingIntellect_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	if(npc.Anger && !b_NoKillFeed[npc.index])
+	if(!b_NoKillFeed[npc.index])
 	{
 		if(IsValidEntity(npc.m_iTargetAlly) && npc.m_flTeleportCooldown < GetGameTime(npc.index))
 		{
@@ -575,7 +576,7 @@ public void RavagingIntellect_ClotThink(int iNPC)
 								//save pos, do anims.
 								//dont speed up anims
 								npc.m_flTeleportCooldownDo = GetGameTime() + 1.5;
-								npc.m_flTeleportCooldown = GetGameTime(npc.index) + 50.0;
+								npc.m_flTeleportCooldown = GetGameTime(npc.index) + 40.0;
 								ExpidonsaGroupHeal(npc.index, RAVAGING_INTELLECT_RANGE, 10, 0.0, 1.0, false,RavagingIntellectStun);
 								npc.m_flAttackHappens = 0.0;
 								NPC_StopPathing(npc.index);
