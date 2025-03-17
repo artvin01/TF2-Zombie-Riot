@@ -131,7 +131,7 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
 
-						if(HasSpecificBuff(entity, "Battilons Backup"))
+						if(HasSpecificBuff(entity, "Defensive Backup"))
 							defense += 4;
 
 						if(enemy[i] && def[i] < defense)

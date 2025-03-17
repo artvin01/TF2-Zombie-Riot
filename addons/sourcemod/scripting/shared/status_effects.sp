@@ -3085,9 +3085,29 @@ void StatusEffects_FallenWarrior()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Altered Functions");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϡ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnTakeDamage_PostAttacker	= Altered_FunctionsBuffSpread;
+	data.AttackspeedBuff			= 0.66;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
-
-
+void Altered_FunctionsBuffSpread(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	ApplyStatusEffect(attacker, victim, "Altered Functions", 2.5);
+}
 int CasinoDebuffIndex;
 void StatusEffects_CasinoDebuff()
 {
@@ -3685,6 +3705,7 @@ void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage,
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
 			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);
+			Call_Finish();
 		}
 	}
 
@@ -3721,6 +3742,7 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
 			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);
+			Call_Finish();
 		}
 	}
 
