@@ -136,7 +136,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 					
 					float Original_Atackspeed = 1.0;
 					Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
-					Attributes_Set(weapon, 6, Original_Atackspeed / 0.5);
+					Attributes_Set(weapon, 6, Original_Atackspeed / 0.75);
 					
 					nextDeathMarch[client] = GetGameTime() + 20.0;
 					g_isPlayerInDeathMarch_HellHoe[client] = false;
