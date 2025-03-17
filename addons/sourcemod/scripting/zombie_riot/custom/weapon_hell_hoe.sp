@@ -25,7 +25,7 @@ static int Beam_Glow;
 #define SOUND_HELL_HOE 	"weapons/breadmonster/gloves/bm_gloves_attack_04.wav"
 #define SOUND_SOUL_HIT "player/souls_receive2.wav"
 #define NIGHTMARE_RADIUS 300.0
-#define ANGEL_BLESSING_HIT_COUNT 40
+#define ANGEL_BLESSING_HIT_COUNT 80
 
 
 void Hell_Hoe_MapStart()
@@ -286,7 +286,7 @@ public Action Weapon_Junker_Staff_PAP1(int client, int weapon, const char[] clas
 		
 		if (isPlayerMad(client) && i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3) {
 			EmitSoundToAll(SOUND_HELL_HOE, client, 80, _, _, 1.0);
-			HellHoeLaunch(client, weapon, damage, speed/2, time/3, 5, 50.0, "spell_teleport_red", 0.008);
+			HellHoeLaunch(client, weapon, damage, speed/2, time/2, 5, 50.0, "spell_teleport_red", 0.008);
 		}
 		else {
 			EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
@@ -542,9 +542,18 @@ public void Angel_Sword_Transformation(int client, int weapon, bool crit) {
 			return;
 		}
 		
+		int mana_cost = 200;
+		if(mana_cost > Current_Mana[client])
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+			return;
+		}
 		float Original_Atackspeed = 1.0;
 		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
-		Attributes_Set(weapon, 6, Original_Atackspeed * 0.5);
+		Attributes_Set(weapon, 6, Original_Atackspeed * 0.75);
 		
 		g_isPlayerInDeathMarch_HellHoe[client] = true;
 		SetDefaultHudPosition(client);
@@ -556,7 +565,7 @@ public void Angel_Sword_Transformation(int client, int weapon, bool crit) {
 	{
 		float Original_Atackspeed = 1.0;
 		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
-		Attributes_Set(weapon, 6, Original_Atackspeed / 0.5);
+		Attributes_Set(weapon, 6, Original_Atackspeed / 0.75);
 		
 		nextDeathMarch[client] = GetGameTime() + 20.0;
 		g_isPlayerInDeathMarch_HellHoe[client] = false;
@@ -727,7 +736,7 @@ public void Weapon_DRMad_Reload(int client, int weapon, bool crit, int slot)
 				HealEntityGlobal(client, client, clientMaxHp * 1.0, 1.0,2.0,HEAL_SELFHEAL);
 			ClientCommand(client, "playgamesound misc/halloween/spell_overheal.wav");
 		}
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		Ability_Apply_Cooldown(client, slot, 25.0);
 	}
 	else
 	{
@@ -764,7 +773,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 					playerMaxHp=clientMaxHp;
 
 				if(HealAlly >= MaxClients || dieingstate[HealAlly] == 0)
-					HealEntityGlobal(client, HealAlly, playerMaxHp * 0.06, 1.0, 0.5);
+					HealEntityGlobal(client, HealAlly, playerMaxHp * 0.1, 1.0, 0.5);
 			}
 			else
 			{
@@ -805,7 +814,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 				}
 			}
 			ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
-			Ability_Apply_Cooldown(client, slot, 10.0);
+			Ability_Apply_Cooldown(client, slot, 12.0);
 		}
 		
 	}
@@ -901,6 +910,7 @@ public void Event_Hell_Hoe_OnHatTouch(int entity, int target)
 			{
 				int flMaxHealth = SDKCall_GetMaxHealth(owner);
 			
+				Healing_Projectile[entity] = 0.0;//dont gain multiple charges.
 				if(dieingstate[owner] == 0)
 					HealEntityGlobal(owner, owner, float(flMaxHealth) * Healing_Projectile[entity], 1.0,_, HEAL_SELFHEAL);
 			}
@@ -911,6 +921,7 @@ public void Event_Hell_Hoe_OnHatTouch(int entity, int target)
 			{
 				if (iCurrentAngelHit[owner] < ANGEL_BLESSING_HIT_COUNT) 
 				{
+					Healing_Projectile[entity] = 0.0;//dont gain multiple charges.
 					iCurrentAngelHit[owner] += 1;
 					PrintHintText(owner, "Holy Charge: %i/%i", iCurrentAngelHit[owner], ANGEL_BLESSING_HIT_COUNT);
 				}
