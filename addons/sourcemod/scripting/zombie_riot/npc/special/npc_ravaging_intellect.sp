@@ -750,10 +750,10 @@ void RavagingIntellectSelfDefense(RavagingIntellect npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 150.0;
+					float damageDealt = 120.0;
 					damageDealt *= npc.m_flWaveScale;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 4.0;
 
 					ApplyStatusEffect(npc.index, target, "Altered Functions", 2.5);
 
