@@ -596,6 +596,14 @@
 	{
 		"en"	"Decreased attack/reload speed & healrate by a 50%%."
 	}
+	"Altered Functions"
+	{
+		"en"	"Altered Functions"
+	}
+	"Altered Functions Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate by 50%%.\n{crimson}Spreads onto enemies you hit."
+	}
 	"Gambler's Ruin Total"
 	{
 		"en"	"Gambler's Ruin Total"

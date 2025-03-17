@@ -2555,6 +2555,10 @@
 		"en"	"Guln the Fallen One"
 		"ru" 	"Павший Гулн"
 	}
+	"Ravaging Intellectual"
+	{
+		"en"	"Ravaging Intellectual?"
+	}
 	"Lex"
 	{
 		"en"	"Lex"
