@@ -3,6 +3,7 @@
 
 bool b_IsInTutorialMode[MAXTF2PLAYERS];
 int i_TutorialStep[MAXTF2PLAYERS];
+bool b_GrantFreeItemsOnce[MAXTF2PLAYERS];
 
 static Handle SyncHud;
 
@@ -23,12 +24,15 @@ void Tutorial_ClientSetup(int client, int value)
 	if(value != 6)
 	{
 	 	StartTutorial(client);
+		//in tutorial mode, give enough so they can build both at once and enough metal too.
+		b_GrantFreeItemsOnce[client] = true;
 	}
 	else
 	{
 		//reset tutorial to start if they didnt buy anything.
 		if(value <= 3)
 			value = 0;
+		b_GrantFreeItemsOnce[client] = true;
 		SetClientTutorialStep(client, 0);
 		b_IsInTutorialMode[client] = false;
 	}
@@ -128,8 +132,9 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 3:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, 0.4, 5.0, 255, 255, 255, 255);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_3");
+					CPrintToChat(client,"{crimson}[ZR]{white}%t","tutorial_3");
 					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					SetClientTutorialStep(client, 4);
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
@@ -139,8 +144,18 @@ void DoTutorialStep(int client, bool obeycooldown)
 				{
 					if(TeutonType[client] == TEUTON_NONE)
 					{
+						if(b_GrantFreeItemsOnce[client])
+						{
+							b_GrantFreeItemsOnce[client] = false;
+							Store_GiveSpecificItem(client, "Construction Novice");
+							SetAmmo(client, Ammo_Metal, 2500);
+							CurrentAmmo[client][3] = GetAmmo(client, 3);
+						}
+						SetGlobalTransTarget(client);
+
 						int entity = MaxClients + 1;
 						char buffer[255];
+						bool FoundOne = false;
 						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 						{
 							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
@@ -152,6 +167,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 								SetGlobalTransTarget(client);
 								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Perk Machine");
 								Event event = CreateEvent("show_annotation");
+								FoundOne = true;
 								if(event)
 								{
 									event.SetFloat("worldNormalX", vecTarget[0]);
@@ -170,13 +186,23 @@ void DoTutorialStep(int client, bool obeycooldown)
 								break;
 							}
 						}
-						f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
+						if(!FoundOne)
+							CPrintToChat(client,"{crimson}[ZR]{white}%t","Tutorial Show Hint Perk Machine Build One");
+						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
 					}
 				}
 				case 5:
 				{
 					if(TeutonType[client] == TEUTON_NONE)
 					{
+						if(b_GrantFreeItemsOnce[client])
+						{
+							b_GrantFreeItemsOnce[client] = false;
+							Store_GiveSpecificItem(client, "Construction Novice");
+							SetAmmo(client, Ammo_Metal, 2500);
+							CurrentAmmo[client][3] = GetAmmo(client, 3);
+						}
+						bool FoundOne = false;
 						int entity = MaxClients + 1;
 						char buffer[255];
 						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
@@ -190,6 +216,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 								SetGlobalTransTarget(client);
 								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Pack a Punch");
 								Event event = CreateEvent("show_annotation");
+								FoundOne = true;
 								if(event)
 								{
 									event.SetFloat("worldNormalX", vecTarget[0]);
@@ -208,7 +235,10 @@ void DoTutorialStep(int client, bool obeycooldown)
 								break;
 							}
 						}
-						f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
+						if(!FoundOne)
+							CPrintToChat(client,"{crimson}[ZR]{white}%t","Tutorial Show Hint Pack a Punch Build One");
+
+						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
 					}
 				}
 			}

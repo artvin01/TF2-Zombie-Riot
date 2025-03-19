@@ -12,7 +12,7 @@
 	}
 	"Browse Skill Tree Explain"
 	{
-		"en"	"This menu overrides your movement! Close to move again!"
+		"en"	"\n---This menu overrides your movement! Close to move again!---\n"
 	}
 	"Browse Skill Tree"
 	{
