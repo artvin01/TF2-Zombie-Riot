@@ -1,5 +1,9 @@
 "Phrases"
 {
+	"Slot "
+	{
+		"en"		"Slot "
+	}
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
@@ -1373,7 +1377,7 @@
 	}
 	"Morphine Desc"
 	{
-		"en"	"A morphine shot chargeable by dealing Melee damage that turns you intangible for 3 seconds and regenerates 15% of your max health up to a cap of 50%.\nUseable once a wave/Raid."
+		"en"	"A morphine shot chargeable by dealing Melee damage.\nTurns you intangible for 3 seconds and regenerates 15% of your max health up to a cap of 50%.\nUseable twice a wave/Raid."
 	}
 	
 	"Experimental Burst Pack Desc"
@@ -1793,7 +1797,7 @@
 	}
 	"Flamethrower Extra Desc"
 	{
-		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage.\nGain armor per enemy hit."
+		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage.\nGain armor per enemy hit upto half of your armor."
 	}
 	"Doctor Certificate Desc"
 	{

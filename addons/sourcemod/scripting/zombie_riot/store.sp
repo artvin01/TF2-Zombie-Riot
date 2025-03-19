@@ -1725,7 +1725,8 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 			{
 				static ItemInfo info;
 				item.GetItemInfo(0, info);
-				Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
+				Format(buffer, blength, "%s {%t%i}", buffer, "Slot ",item.Slot);
+			//	Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
 				break;
 			}
 		}

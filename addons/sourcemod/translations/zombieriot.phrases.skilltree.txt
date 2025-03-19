@@ -10,6 +10,10 @@
 		"#format"	"{1:d}"
 		"en"	"Skill Points: {1}"
 	}
+	"Browse Skill Tree Explain"
+	{
+		"en"	"This menu overrides your movement! Close to move again!"
+	}
 	"Browse Skill Tree"
 	{
 		"en"	"Browse Skill Tree"

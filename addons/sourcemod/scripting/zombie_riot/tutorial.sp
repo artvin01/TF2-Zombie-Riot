@@ -130,7 +130,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 					SetGlobalTransTarget(client);
 					SetHudTextParams(-1.0, 0.4, 5.0, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_3");
-					f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
+					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					SetClientTutorialStep(client, 4);
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
 					//"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"

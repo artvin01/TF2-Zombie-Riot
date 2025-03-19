@@ -3115,7 +3115,7 @@ void StatusEffects_FallenWarrior()
 	data.ShouldScaleWithPlayerCount = false;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.OnTakeDamage_PostAttacker	= Altered_FunctionsBuffSpread;
+	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
 	data.AttackspeedBuff			= 1.5;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.

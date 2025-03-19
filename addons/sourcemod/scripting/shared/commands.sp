@@ -194,6 +194,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	RemoveInvul(client);
 	RequestFrames(Removeinvul1frame, 10, EntIndexToEntRef(client));
 	PrintToChat(client, "You changed classes immedietly!");
+	f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; //little cooldown to prevent bug
 }
 #endif
 

@@ -19,7 +19,8 @@ enum
 	Attrib_BarracksHealth = 4037,
 	Attrib_BarracksDamage = 4038,
 	Attrib_BlessingBuff = 4039,
-	Attrib_ArmorOnHit = 4040
+	Attrib_ArmorOnHit = 4040,
+	Attrib_ArmorOnHitMax = 4041
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -323,7 +324,8 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				if(b_thisNpcIsARaid[victim])
 					value *= 2.0;
 
-				GiveArmorViaPercentage(client, value, 1.0);
+				float ArmorMax = Attributes_Get(weapon, Attrib_ArmorOnHitMax, 1.0);
+				GiveArmorViaPercentage(client, value / ArmorMax, ArmorMax);
 			}
 			
 	

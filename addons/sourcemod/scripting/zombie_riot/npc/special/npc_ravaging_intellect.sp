@@ -100,7 +100,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 static char[] GetPanzerHealth()
 {
-	int health = 60;
+	int health = 50;
 	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
@@ -212,6 +212,12 @@ methodmap RavagingIntellect < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	
+	property float m_flSpawnCloneUntillSelfDelete
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
 	
 	public RavagingIntellect(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -351,6 +357,7 @@ methodmap RavagingIntellect < CClotBody
 				npc.SetPlaybackRate(1.0);
 				npc.SetCycle(0.05);
 				npc.m_flSpawnClonePrepare = GetGameTime() + 0.7;
+				npc.m_flSpawnCloneUntillSelfDelete = GetGameTime() + 12.0;
 			}
 		}
 		npc.m_flSpawnClone = GetGameTime() + 5.0;
@@ -393,6 +400,15 @@ public void RavagingIntellect_ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
+	}
+	if(npc.m_flSpawnCloneUntillSelfDelete)
+	{
+		if(npc.m_flSpawnCloneUntillSelfDelete < GetGameTime())
+		{
+			npc.m_bDissapearOnDeath = true;
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			return;
+		}
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
@@ -480,14 +496,14 @@ public void RavagingIntellect_ClotThink(int iNPC)
 		npc.SetCycle(0.7);
 		npc.SetPlaybackRate(1.0);
 		npc.m_flSummonAllyEnd = GetGameTime() + 1.0; //nos cale attackspeed
-		fl_TotalArmor[npc.index] = 0.1;
+		fl_TotalArmor[npc.index] = 0.5;
 		npc.PlaySoundPrepareSpawnAlly();
 		return;
 	}
 	fl_TotalArmor[npc.index] = 1.0;
 	if(HasSpecificBuff(npc.index, "Altered Functions"))
 	{
-		fl_TotalArmor[npc.index] = 0.5;
+		fl_TotalArmor[npc.index] = 0.75;
 	}
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -750,10 +766,10 @@ void RavagingIntellectSelfDefense(RavagingIntellect npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 90.0;
+					float damageDealt = 80.0;
 					damageDealt *= npc.m_flWaveScale;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 4.0;
+						damageDealt *= 3.0;
 
 					ApplyStatusEffect(npc.index, target, "Altered Functions", 2.5);
 
