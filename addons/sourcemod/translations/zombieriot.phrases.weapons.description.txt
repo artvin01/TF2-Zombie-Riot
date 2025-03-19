@@ -1793,8 +1793,7 @@
 	}
 	"Flamethrower Extra Desc"
 	{
-		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
-		"fr"	"1.15x dégats contre les Raids.\nDonne une résistance passive quand vous portez cette arme.\nLes dégats par brulûre ne sont pas affectés par les résistances."
+		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage.\nGain armor per enemy hit."
 	}
 	"Doctor Certificate Desc"
 	{
