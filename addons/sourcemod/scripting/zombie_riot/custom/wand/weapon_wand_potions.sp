@@ -9,7 +9,6 @@
 #define SOUND_TRANSFORM2	"ambient/halloween/thunder_01.wav"
 #define SOUND_SHRINK		"items/powerup_pickup_plague_infected.wav"
 
-static Handle BuffTimer[MAXENTITIES];
 static float TonicBuff[MAXTF2PLAYERS];
 static float TonicBuff_CD[MAXTF2PLAYERS];
 static Handle ShrinkTimer[MAXENTITIES];
@@ -18,7 +17,6 @@ static float f_RaidShrinkImmunity[MAXENTITIES];
 
 void Wands_Potions_EntityCreated(int entity)
 {
-	delete BuffTimer[entity];
 	delete ShrinkTimer[entity];
 }
 
@@ -255,7 +253,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 		{
 			i_ExtraPlayerPoints[owner] += 10;
 			
-			ApplyStatusEffect(owner, owner, "Mystery Beer", 5.5);
+			ApplyStatusEffect(owner, owner, "Mystery Beer", 11.0);
 		}
 	}
 	else
@@ -272,7 +270,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 					{
 						i_ExtraPlayerPoints[owner] += 10;
 
-						ApplyStatusEffect(client, client, "Mystery Beer", 5.5);
+						ApplyStatusEffect(client, client, "Mystery Beer", 11.0);
 						break;
 					}
 				}
@@ -288,7 +286,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 				{
 					i_ExtraPlayerPoints[owner] += 10;
 
-					ApplyStatusEffect(entity1, entity1, "Mystery Beer", 5.5);
+					ApplyStatusEffect(entity1, entity1, "Mystery Beer",11.0);
 					break;
 				}
 			}
@@ -323,7 +321,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 			{
 				i_ExtraPlayerPoints[owner] += 12;
-				ApplyStatusEffect(client, client, "Mystery Beer", 7.5);
+				ApplyStatusEffect(client, client, "Mystery Beer", 15.0);
 			}
 		}
 	}
@@ -337,7 +335,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 			{
 				i_ExtraPlayerPoints[owner] += 20;
 
-				ApplyStatusEffect(entity1, entity1, "Mystery Beer", 7.5);
+				ApplyStatusEffect(entity1, entity1, "Mystery Beer", 15.0);
 			}
 		}
 	}
@@ -375,7 +373,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 				{
 					i_ExtraPlayerPoints[owner] += 20;
 
-					ApplyStatusEffect(client, client, "Mystery Beer", 100.0);
+					ApplyStatusEffect(client, client, "Mystery Brew", 300.0);
 				}
 			}
 		}
@@ -390,7 +388,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 			{
 				i_ExtraPlayerPoints[owner] += 20;
 
-				ApplyStatusEffect(entity1, entity1, "Mystery Beer", 100.0);
+				ApplyStatusEffect(entity1, entity1, "Mystery Brew", 300.0);
 			}
 		}
 	}
@@ -398,21 +396,6 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 	RemoveEntity(entity);
 }
 
-public Action Weapon_Wand_PotionBuffRemove(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int entity = pack.ReadCell();
-	if(IsValidEntity(entity))
-	{
-		if(Attributes_Has(entity,6))
-		{
-			Attributes_SetMulti(entity, 6, 1.0 / pack.ReadFloat());
-		}
-	}
-
-	BuffTimer[entity] = null;
-	return Plugin_Continue;
-}
 
 public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 {

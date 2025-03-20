@@ -2403,7 +2403,7 @@ void StatusEffects_VoidLogic()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
-	data.ShouldScaleWithPlayerCount = true;
+	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 5; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -3511,8 +3511,8 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Mystery Beer");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌂");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "B"); //dont display above head, so empty
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "b");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "b"); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
@@ -3522,8 +3522,26 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.8;
-	data.Slot						= 0; //0 means ignored
-	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.Slot						= 11; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+	
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mystery Brew");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "B");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "B"); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.75;
+	data.Slot						= 11; //0 means ignored
+	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 

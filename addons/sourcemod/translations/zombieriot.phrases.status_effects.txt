@@ -739,7 +739,15 @@
 	}
 	"Mystery Beer Desc"
 	{
-		"en"	"Increases base attack/reload speed & healrate based on it's level."
+		"en"	"Increases base attack/reload speed & healrate by 20%%"
+	}
+	"Mystery Brew"
+	{
+		"en"	"Mystery Brew"
+	}
+	"Mystery Brew Desc"
+	{
+		"en"	"Increases base attack/reload speed & healrate by 25%%"
 	}
 	"Osmosis'ity"
 	{

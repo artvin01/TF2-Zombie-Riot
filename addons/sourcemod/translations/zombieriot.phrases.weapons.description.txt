@@ -2198,10 +2198,7 @@
 	}
 	"Alchemist Potion Pap 7"
 	{
-		"en"	"Buffing potions last until the allies gets revived from a wave end or a down or reset or perk cola or shop buy."
-		"fr"	"Effet de la potion dure jusqu'a quand un allié est KO, ressuscité, achète quelque chose de la boutique, ou utilise une machine à Perks"
-		"ru"	"Зелья усиления действуют до тех пор, пока союзники не воскреснут после окончания волны, или выведения из строя, или сброса, или перк-колы, или покупки в магазине."
-		"chi"   "buff药水会持续到盟友从一波结束或低谷、重置或振作可乐或商店购买中恢复。"
+		"en"	"Buffing Potion lasts a MUCH longer time, (300 seconds).\nBuff strenghens to 25%% from 20%%"
 	}
 	"Alchemist Potion Pap 8"
 	{

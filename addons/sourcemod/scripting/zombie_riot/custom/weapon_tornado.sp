@@ -42,7 +42,6 @@ public void Weapon_Tornado_Blitz_Precache()
 	PrecacheSound(SOUND_IMPACT_3);
 	PrecacheSound(SOUND_IMPACT_4);
 	PrecacheSound(SOUND_IMPACT_5);
-	PrecacheSound("weapons/doom_rocket_launcher.wav");
 	PrecacheSound(")weapons/doom_rocket_launcher.wav");
 	Zero(HudCooldown);
 	
@@ -60,7 +59,6 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] class
 			bl_tornado_barrage_mode[client]=false;
 			Attributes_Set(weapon, 4014, -0.5);
 			ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
-			SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", 1104);
 			PrintHintText(client,"Barrage: OFF\nBarrage Ammo [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
 		}
 		else if (i_RocketsSaved[client] >= ROCKET_EFFICIENCY_MULTI)
@@ -68,7 +66,6 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] class
 			bl_tornado_barrage_mode[client]=true;
 			Attributes_Set(weapon, 4014, 0.0);
 			ClientCommand(client, "playgamesound misc/halloween/spelltick_02.wav");
-			SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", 730);
 			PrintHintText(client,"Barrage: ON\nBarrage Ammo [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
 		}
 	}
@@ -141,6 +138,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 		if(bl_tornado_barrage_mode[client] && i_RocketsSaved[client] >= ROCKET_EFFICIENCY_MULTI)
 		{
 			i_RocketsSaved[client] -= ROCKET_EFFICIENCY_MULTI;
+			EmitSoundToAll(")weapons/doom_rocket_launcher.wav", client, SNDCHAN_AUTO, 75, _, 0.9, 100);
 			for(int i=1; i<=i_tornado_pap[client] ;i++)
 			{
 				BlitzRocket(client, speedMult, damage*0.75, weapon);
@@ -152,7 +150,6 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 			{
 				bl_tornado_barrage_mode[client] = false;
 				ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
-				SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", 1104);
 			}
 			BlitzRocket(client, speedMult, damage, weapon);
 		}
