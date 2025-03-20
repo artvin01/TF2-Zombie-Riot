@@ -1597,6 +1597,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			blue = 255;
 		}
 	}
+	if(b_HideHealth[victim])
+	{
+		red = 0;
+		green = 255;
+		blue = 0;
+	}
 
 	static char Debuff_Adder_left[64], Debuff_Adder_right[64], Debuff_Adder[64];
 	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
@@ -1836,6 +1842,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
 			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
 		}
+		if(b_HideHealth[victim])
+		{
+			Format(c_MaxHealth, sizeof(c_MaxHealth), "???");
+			Format(c_Health, sizeof(c_Health), "???");
+		}
 		
 #if defined RPG
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "Level %d", Level[victim]);
@@ -1941,6 +1952,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			int offsetarm = ArmorInt < 0 ? 1 : 0;
 			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
 			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
+		}
+		if(b_HideHealth[victim])
+		{
+			Format(c_MaxHealth, sizeof(c_MaxHealth), "???");
+			Format(c_Health, sizeof(c_Health), "???");
 		}
 		
 		if(!b_NameNoTranslation[victim])

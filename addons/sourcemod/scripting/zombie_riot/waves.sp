@@ -137,6 +137,7 @@ static char LastWaveWas[64];
 
 static int Freeplay_Info;
 //static bool Freeplay_w500reached;
+static float MinibossScalingHandle = 1.0;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -203,6 +204,7 @@ void Waves_MapStart()
 	FakeMaxWaves = 0;
 	Freeplay_Info = 0;
 	FirstMapRound = true;
+	MinibossScalingHandle = 1.0;
 //	Freeplay_w500reached = false;
 
 	int objective = GetObjectiveResource();
@@ -221,6 +223,10 @@ void Waves_PlayerSpawn(int client)
 	}
 }
 
+float MinibossScalingReturn()
+{
+	return MinibossScalingHandle;
+}
 public Action NpcEnemyAliveLimit(int client, int args)
 {
 	PrintToConsoleAll("EnemyNpcAlive %i | EnemyNpcAliveStatic %i",EnemyNpcAlive, EnemyNpcAliveStatic);
@@ -853,6 +859,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 	Barracks_InstaResearchEverything = view_as<bool>(kv.GetNum("full_research"));
 	StartCash = kv.GetNum("cash", StartCash);
+	float OverrideScalingManually = kv.GetFloat("miniboss_scaling", 0.0);
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -869,6 +876,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GetString("author_raid", buffer, sizeof(buffer));
 	if(buffer[0])
 		CPrintToChatAll("%t", "Raidboss By", buffer);
+	
+	kv.GetString("difficulty", buffer, sizeof(buffer));
+	if(buffer[0])
+		Waves_SetDifficultyName(buffer);
 		
 	round.music_setup.SetupKv("music_setup", kv);
 	
@@ -1040,6 +1051,15 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		
 		Rounds.PushArray(round);
 	} while(kv.GotoNextKey());
+
+	// Rounds.Length
+	//if we are above 60 waves, we dont change it from 1.0, i.e. it cant go lower!
+	MinibossScalingHandle = (60.0 / float(Rounds.Length));
+	if(MinibossScalingHandle <= 1.0)
+		MinibossScalingHandle = 1.0;
+
+	if(OverrideScalingManually != 0.0)
+		MinibossScalingHandle = OverrideScalingManually;
 
 	if(start)
 	{
@@ -1880,8 +1900,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Zombies_Currently_Still_Ongoing = 0;
 			Zombies_Currently_Still_Ongoing = Zombies_alive_still;
 			
-			//always increase chance of miniboss.
-			if(!subgame && CurrentRound >= 12)
+			/*
+			if(!subgame && CurrentRound >= RoundToNearest(12.0 * (1.0 / MinibossScalingReturn())))
 			{
 				int count;
 				int i = MaxClients + 1;
@@ -1894,20 +1914,22 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
-			
+			// ?????? Old code, we dont know what it does.
+			*/
+			//always increase chance of miniboss.
 			if(!subgame && ((!Classic_Mode() && CurrentRound == 4) || (Classic_Mode() && CurrentRound == 1)) && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 				Citizen_SpawnAtPoint();
 				CPrintToChatAll("{gray}Barney: {default}Hey! We came late to assist! Got a friend too!");
 			}
-			else if(CurrentRound == 11 && !round.NoMiniboss)
+			else if(CurrentRound == (RoundToNearest(11.0 * (1.0 / MinibossScalingReturn()))) && !round.NoMiniboss)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
 				panzer_chance = 10;
 			}
-			else if((CurrentRound > 11 && round.Setup <= 30.0 && !round.NoMiniboss))
+			else if((CurrentRound > RoundToNearest(11.0 * (1.0 / MinibossScalingReturn())) && round.Setup <= 30.0 && !round.NoMiniboss))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
 				if(panzer_chance != 10)

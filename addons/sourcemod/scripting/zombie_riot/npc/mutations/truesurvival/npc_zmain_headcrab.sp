@@ -96,7 +96,7 @@ methodmap ZMainHeadcrab < CClotBody
 	
 	public ZMainHeadcrab(float vecPos[3], float vecAng[3], int ally)
 	{
-		ZMainHeadcrab npc = view_as<ZMainHeadcrab>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", GetBeheadedKamiKazeHealth(), ally, false));
+		ZMainHeadcrab npc = view_as<ZMainHeadcrab>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", MinibossHealthScaling(20), ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -372,36 +372,4 @@ public void ZMainHeadcrab_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-}
-
-
-static char[] GetBeheadedKamiKazeHealth()
-{
-	int health = 30;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	
-	health = RoundToCeil(float(health) * 1.2);
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
 }

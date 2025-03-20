@@ -1465,6 +1465,7 @@ void Rogue_NextProgress()
 
 static void SetFloorMusic(const Floor floor, bool stop)
 {
+	// TODO: Fix music not matching in the StrEqual
 	bool curse = CurseOne != -1 || CurseTwo != -1;
 	if(RaidMusicSpecial1.Valid() || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
 	{

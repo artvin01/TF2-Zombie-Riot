@@ -142,7 +142,7 @@ methodmap JohnTheAllmighty < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		npc.m_iActualHealth = StringToInt(JohnTheAllmightyHealth());
+		npc.m_iActualHealth = StringToInt(MinibossHealthScaling(160));
 
 		npc.m_flNextMeleeAttack = 0.0;
 		for(int client1 = 1; client1 <= MaxClients; client1++)
@@ -241,6 +241,7 @@ methodmap JohnTheAllmighty < CClotBody
 		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		
 		npc.StartPathing();
@@ -513,33 +514,6 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 	}
 }
 
-static char[] JohnTheAllmightyHealth()
-{
-	int health = 160;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 
 
 public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 

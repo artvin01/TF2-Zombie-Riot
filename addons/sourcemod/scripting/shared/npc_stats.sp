@@ -8560,6 +8560,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	b_HideHealth[entity] = false;
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
 	f_AttackSpeedNpcIncreace[entity] = 1.0;

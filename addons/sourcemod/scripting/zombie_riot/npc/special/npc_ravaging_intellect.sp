@@ -98,32 +98,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return RavagingIntellect(vecPos, vecAng, team, data);
 }
 
-static char[] GetPanzerHealth()
-{
-	int health = 50;
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 methodmap RavagingIntellect < CClotBody
 {
 	public void PlayHurtSound()
@@ -222,7 +196,7 @@ methodmap RavagingIntellect < CClotBody
 	
 	public RavagingIntellect(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		RavagingIntellect npc = view_as<RavagingIntellect>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", GetPanzerHealth(), ally));
+		RavagingIntellect npc = view_as<RavagingIntellect>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", MinibossHealthScaling(40), ally));
 		i_NpcWeight[npc.index] = 3;
 		
 
@@ -259,6 +233,7 @@ methodmap RavagingIntellect < CClotBody
 		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.StartPathing();
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
