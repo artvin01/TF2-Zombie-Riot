@@ -2071,10 +2071,10 @@
 	}
 	"Tornado Blitz Desc Spam1"
 	{
-		"en" 	"We increased the kinetic damage of the Nano-rockets\nWe also increased the Nano-rocket to normal rocket efficiency."
-		"fr" 	"Dégats améliorés.\nNano-roquettes sont remplacés par des roquettes normaux."
-		"ru" 	"Мы увеличили кинетический урон наноракет\nМы также увеличили эффективность наноракет до уровня обычных ракет."
-		"chi"   "我们增加了纳米火箭的动能伤害，我们也将纳米火箭提高到正常火箭效率。"
+		"en" 	"We increased the kinetic damage of the Nano-rockets"
+		"fr" 	"Dégats améliorés."
+		"ru" 	"Мы увеличили кинетический урон наноракет"
+		"chi"   "我们增加了纳米火箭的动能伤害"
 	}
 	"Tornado Blitz Desc Spam2"
 	{
