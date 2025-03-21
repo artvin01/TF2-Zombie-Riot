@@ -41,13 +41,13 @@ enum struct ItemInfo
 	char Custom_Name[64];
 
 	int Index;
-	int Attrib[16];
-	float Value[16];
+	int Attrib[32];
+	float Value[32];
 	int Attribs;
 
 	int Index2;
-	int Attrib2[16];
-	float Value2[16];
+	int Attrib2[32];
+	float Value2[32];
 	int Attribs2;
 
 	int Ammo;
@@ -363,7 +363,7 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sspecial_attribute_info", prefix);
 		this.SpecialAdditionViaNonAttributeInfo			= kv.GetNum(buffer, 0);
 		
-		static char buffers[32][16];
+		static char buffers[64][16];
 		Format(buffer, sizeof(buffer), "%sattributes", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;

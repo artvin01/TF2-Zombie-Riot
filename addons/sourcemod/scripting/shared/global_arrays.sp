@@ -293,7 +293,7 @@ float f_ClientReviveDelayMax[MAXENTITIES];
 float f_ClientReviveDelayReviveTime[MAXENTITIES];
 float f_ClientBeingReviveDelay[MAXENTITIES];
 
-#define MAXSTICKYCOUNTTONPC 12
+#define MAXSTICKYCOUNTTONPC 42
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 

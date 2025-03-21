@@ -674,9 +674,9 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 			}
 			else
 			{
-				static int attrib[16];
-				static float value[16];
-				static char buffers[32][16];
+				static int Attrib[32];
+				static float Value[32];
+				static char buffers[64][16];
 
 				kv.GetString("attributes", buffer, sizeof(buffer));
 				int count = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;

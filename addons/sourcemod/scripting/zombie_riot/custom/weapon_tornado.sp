@@ -138,7 +138,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 		if(bl_tornado_barrage_mode[client] && i_RocketsSaved[client] >= ROCKET_EFFICIENCY_MULTI)
 		{
 			i_RocketsSaved[client] -= ROCKET_EFFICIENCY_MULTI;
-			EmitSoundToAll(")weapons/doom_rocket_launcher.wav", client, SNDCHAN_AUTO, 75, _, 0.9, 100);
+			EmitSoundToAll(")weapons/doom_rocket_launcher.wav", weapon, SNDCHAN_WEAPON, 75, _, 0.9, 100);
 			for(int i=1; i<=i_tornado_pap[client] ;i++)
 			{
 				BlitzRocket(client, speedMult, damage*0.75, weapon);

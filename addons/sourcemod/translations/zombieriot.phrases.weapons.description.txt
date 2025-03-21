@@ -853,12 +853,13 @@
 		"ru"	"Увелич. урон и скорость атаки, позволяет использовать на 6 больше бомб-липучек."
 		"chi"   "增加伤害和攻击速度，增加6个粘性炸弹"
 	}
+	"Sticky Bomb Launcher Desc"
+	{
+		"en "Reloads its entire clip at once!\nEach sticky only can hurt 5 enemies at once as asto normal explosives"
+	}
 	"Stickybomb Launcher Pap 2"
 	{
-		"en"	"Increased damage and massively increased attackspeed and reload speed."
-		"fr"	"Dégats, cadence de tir et vitesse de recharge améliorés."
-		"ru"	"Увеличенный урон и сильное увеличение скорости атаки и скорости перезарядки."
-		"chi"   "增加伤害，大幅提高攻击速度和装填速度。"
+		"en"	"Increased damage and massively increased attackspeed more stickies at once!"
 	}
 	
 	"The Battalion's Backup Desc"
