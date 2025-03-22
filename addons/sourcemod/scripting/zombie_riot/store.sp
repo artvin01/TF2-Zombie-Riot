@@ -4677,8 +4677,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-//anymore then 10 slots iss overkill.
-#define MAX_LOADOUT_SLOTS 10
+//anymore then 20 slots iss overkill.
+#define MAX_LOADOUT_SLOTS 20
 static void LoadoutPage(int client, bool last = false)
 {
 	SetGlobalTransTarget(client);

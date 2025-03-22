@@ -855,7 +855,7 @@
 	}
 	"Sticky Bomb Launcher Desc"
 	{
-		"en"	"Reloads its entire clip at once!\nEach sticky only can hurt 5 enemies at once as asto normal explosives"
+		"en"	"Reloads its entire clip at once!\nEach sticky only can hurt 4 enemies at once as asto normal explosives"
 	}
 	"Stickybomb Launcher Pap 2"
 	{
