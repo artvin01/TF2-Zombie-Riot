@@ -482,7 +482,7 @@ public void Event_Knife_Touch(int entity, int target)
 
 		float PushforceDamage[3];
 		CalculateDamageForce(vecForward, 10000.0, PushforceDamage);
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, PushforceDamage, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, PushforceDamage, Entity_Position, _);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			float f3_PositionTemp[3];

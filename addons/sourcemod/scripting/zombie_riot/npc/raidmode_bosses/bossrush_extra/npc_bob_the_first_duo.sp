@@ -443,7 +443,7 @@ static void GivePlayerItems(int coolwin = 0)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
 			if(coolwin == 0)
-				CPrintToChat(client, "{default}Bob has defeated you, however... you gained: {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}Bob has cured you of the sea, you gained: {yellow}''Bob's Curing Hand''{default}!");
 			else
 				CPrintToChat(client, "{default}You didnt attack bob for no reason and thus he gives you: {yellow}''Bob's Curing Hand''{default}!");
 		}

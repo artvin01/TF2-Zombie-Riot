@@ -53,7 +53,7 @@ methodmap WanderingSpirit < CClotBody
 	
 	public WanderingSpirit(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		WanderingSpirit npc = view_as<WanderingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", GetSpiritHealth(), ally));
+		WanderingSpirit npc = view_as<WanderingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", MinibossHealthScaling(50), ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -77,6 +77,7 @@ methodmap WanderingSpirit < CClotBody
 		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		//IDLE
 		npc.m_iState = 4;
@@ -89,15 +90,16 @@ methodmap WanderingSpirit < CClotBody
 		npc.m_flRangedArmor = 0.5; 	//Takes much less ranged damage
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 125);
+		SetEntityRenderColor(npc.index, 0, 0, 0, 150);
 
-		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 400.0);
-		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 500.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 600.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 700.0);
 		TeleportDiversioToRandLocation(npc.index);
 
 		//counts as a static npc, means it wont count towards NPC limit.
 		if(StrContains(data, "ghostbusters") == -1)
 			AddNpcToAliveList(npc.index, 1);
+
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; 
@@ -287,7 +289,7 @@ void WanderingSpiritIsEnemyClose(int iNPC)
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
 			float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-			if(flDistanceToTarget < (500.0 * 500.0))
+			if(flDistanceToTarget < (700.0 * 700.0))
 			{
 				FoundCloseEnemy = true;
 				break;
@@ -305,7 +307,7 @@ void WanderingSpiritIsEnemyClose(int iNPC)
 				{
 					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", AllyPos);
 					float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-					if(flDistanceToTarget < (500.0 * 500.0))
+					if(flDistanceToTarget < (700.0 * 700.0))
 					{
 						FoundCloseEnemy = true;
 						break;
@@ -324,36 +326,6 @@ void WanderingSpiritIsEnemyClose(int iNPC)
 	{
 		npc.m_flSpeed = 100.0;
 	}
-}
-
-
-
-static char[] GetSpiritHealth()
-{
-	int health = 40;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health = health * 3 / 8;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
 }
 
 

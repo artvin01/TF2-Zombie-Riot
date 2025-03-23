@@ -711,7 +711,7 @@ static void TreeMenu(int client)
 	Format(buffers[0], sizeof(buffers[]), "%s Desc", skill.Name);
 	
 	Menu menu = new Menu(TreeMenuH);
-	menu.SetTitle("%s\n \n%t", buffer, buffers[0]);
+	menu.SetTitle("%s\n \n%t\n%t", buffer, buffers[0], "Browse Skill Tree Explain");
 
 	bool upgrade;
 	

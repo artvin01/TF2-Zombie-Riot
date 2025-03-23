@@ -8560,6 +8560,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	b_HideHealth[entity] = false;
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
 	f_AttackSpeedNpcIncreace[entity] = 1.0;
@@ -9351,14 +9352,14 @@ void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 
 
 
-bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3], bool check_for_Ground_Clerance = false, bool teleport_entity = true)
+bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3], bool check_for_Ground_Clerance = false, bool teleport_entity = true, bool ingoreSafeTrace = false)
 {
 	bool FoundSafeSpot = false;
 	//Try base position.
 	float OriginalPos[3];
 	OriginalPos = endPos;
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance, ingoreSafeTrace))
 		FoundSafeSpot = true;
 
 	for (int x = 0; x < 6; x++)
@@ -9444,14 +9445,14 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 					case 6:
 						endPos[0] -= TELEPORT_STUCK_CHECK_3;
 				}
-				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
+				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance, ingoreSafeTrace))
 					FoundSafeSpot = true;
 			}
 		}
 	}
 				
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance, ingoreSafeTrace))
 		FoundSafeSpot = true;
 
 	if(FoundSafeSpot && teleport_entity)
@@ -9464,7 +9465,7 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 
 //We wish to check if this poisiton is safe or not.
 //This is only for players.
-bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false)
+bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false, bool ingoreSafeTrace = false)
 {
 	int ref;
 	
@@ -9490,16 +9491,19 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
-	float pos_player[3];
-	WorldSpaceCenter(entity, pos_player);
-	float Pos2Test_Higher[3];
-	Pos2Test_Higher = Pos;
-	Pos2Test_Higher[2] += 35.0;
-	hTrace = TR_TraceRayFilterEx( pos_player, Pos2Test_Higher, SolidityFlags, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, entity );
-	if ( TR_GetFraction(hTrace) < 1.0)
+	if(!ingoreSafeTrace)
 	{
-		delete hTrace;
-		return false;
+		float pos_player[3];
+		WorldSpaceCenter(entity, pos_player);
+		float Pos2Test_Higher[3];
+		Pos2Test_Higher = Pos;
+		Pos2Test_Higher[2] += 35.0;
+		hTrace = TR_TraceRayFilterEx( pos_player, Pos2Test_Higher, SolidityFlags, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, entity );
+		if ( TR_GetFraction(hTrace) < 1.0)
+		{
+			delete hTrace;
+			return false;
+		}
 	}
 	if(ref < 0) //It hit nothing, good!
 	{
@@ -10635,6 +10639,7 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 			//extinquish shortly.
 			if(Reapply_BurningCorpse[target] < GetGameTime())
 			{
+				Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 				IngiteTargetClientside(target, client, false);
 			}
 			if(b_FirstPersonUsesWorldModel[client])
@@ -10733,11 +10738,6 @@ void IngiteTargetClientside(int target, int client, bool ingite)
 }
 void ExtinguishTarget(int target, bool dontkillTimer = false)
 {
-	if(target > 0 && target <= MaxClients)
-	{
-		TF2_RemoveCondition(target, TFCond_OnFire);
-		return;
-	}
 	TE_Start("EffectDispatch");
 	
 	if(target > 0)

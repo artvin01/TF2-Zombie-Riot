@@ -589,9 +589,9 @@ public void OnPostThink(int client)
 		Armour_Level_Current[client] = 0;
 
 		
-		if(!Rogue_Paradox_JesusBlessing(client))
+		if(!Rogue_Paradox_GrigoriBlessing(client))
 		{
-			if(Jesus_Blessing[client] == 1)
+			if(Grigori_Blessing[client] == 1)
 			{
 				if(dieingstate[client] > 0)
 				{

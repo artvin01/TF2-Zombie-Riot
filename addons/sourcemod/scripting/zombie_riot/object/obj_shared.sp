@@ -1068,9 +1068,9 @@ void BuildingUpdateTextHud(int building)
 		{
 			Format(HealthText, sizeof(HealthText), " %s", HealthText);
 		}
-		Format(HealthText, sizeof(HealthText), "%s\n%s", HealthText, ThousandBuffer2);
+		Format(HealthText, sizeof(HealthText), "%s\n%s", HealthText, ThousandBuffer);
 		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, " -> ");
-		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
+		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer2);
 	}
 
 

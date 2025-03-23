@@ -128,6 +128,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 
 		if(i_GiveCashBuilding[owner] < MaxBuildingCashAllow)
 		{
+			Native_OnGivenCash(owner, Cash);
 			i_GiveCashBuilding[owner] += Cash;
 			GiveCredits(owner, Cash, true);
 		}
@@ -135,6 +136,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	else
 	{
 		//This building doesnt affect the limit.
+		Native_OnGivenCash(owner, Cash);
 		CashRecievedNonWave[owner] += Cash;
 		CashSpent[owner] -= Cash;
 	}

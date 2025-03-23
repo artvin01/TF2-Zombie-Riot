@@ -2555,6 +2555,14 @@
 		"en"	"Guln the Fallen One"
 		"ru" 	"Павший Гулн"
 	}
+	"Ravaging Intellectual"
+	{
+		"en"	"Ravaging Intellectual?"
+	}
+	"Ravaging Intellectual Desc"
+	{
+		"en"	"A promise is a promise.\nApplies a buff on hit against you.\nHas an aura that gives the buff to allies.\nWhen losing a life, spawns a clone that does the same as him, and always attacks the same target.\nSometimes teleports all allies to a location."
+	}
 	"Lex"
 	{
 		"en"	"Lex"

@@ -18,7 +18,9 @@ enum
 	Attrib_ReduceMetalCost = 4036,
 	Attrib_BarracksHealth = 4037,
 	Attrib_BarracksDamage = 4038,
-	Attrib_BlessingBuff = 4039
+	Attrib_BlessingBuff = 4039,
+	Attrib_ArmorOnHit = 4040,
+	Attrib_ArmorOnHitMax = 4041
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -292,6 +294,7 @@ int Attributes_Airdashes(int client)
 }
 #endif
 
+float PreventSameFrameGivearmor[MAXTF2PLAYERS];
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{
@@ -309,6 +312,20 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			if(value)
 			{
 				HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
+			}
+			
+			value = Attributes_Get(weapon, Attrib_ArmorOnHit, 0.0);
+			if(PreventSameFrameGivearmor[client] == GetGameTime())
+				value = 0.0;
+				
+			if(value)
+			{
+				PreventSameFrameGivearmor[client] = GetGameTime();
+				if(b_thisNpcIsARaid[victim])
+					value *= 2.0;
+
+				float ArmorMax = Attributes_Get(weapon, Attrib_ArmorOnHitMax, 1.0);
+				GiveArmorViaPercentage(client, value / ArmorMax, ArmorMax);
 			}
 			
 	

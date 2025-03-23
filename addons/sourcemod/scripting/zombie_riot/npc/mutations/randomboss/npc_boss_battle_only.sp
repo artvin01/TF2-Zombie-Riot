@@ -317,7 +317,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		//	Format(CharData, sizeof(CharData), "%s%s",CharData, "raid_time");
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.45); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
 		}
 		case 23:
 		{

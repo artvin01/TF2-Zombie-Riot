@@ -258,7 +258,7 @@ public void Barrack_Iberia_Inquisitor_Lynsen_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-	BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 175000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 175000.0,_, true);
 	}
 }
 

@@ -156,7 +156,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 	
 	public ZMainHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
-		ZMainHeadcrabZombie npc = view_as<ZMainHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", GetBeheadedKamiKazeHealth(), ally, false));
+		ZMainHeadcrabZombie npc = view_as<ZMainHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", MinibossHealthScaling(20), ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -171,6 +171,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		b_thisNpcIsABoss[npc.index] = true;
 		
 		//IDLE
 		npc.m_flSpeed = 330.0;
@@ -180,6 +181,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		wave *= 0.1;
 
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		if(ally == TFTeam_Blue)
 		{
@@ -485,37 +487,4 @@ void SpawnZmainsAFew(int nulldata)
 	int spawn_npc = NPC_CreateById(NPCId, -1, pos, ang, TFTeam_Blue); //can only be enemy
 	NpcAddedToZombiesLeftCurrently(spawn_npc, true);
 	RequestFrame(SpawnZmainsAFew, 0);
-}
-
-
-
-static char[] GetBeheadedKamiKazeHealth()
-{
-	int health = 30;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	
-	health = RoundToCeil(float(health) * 1.2);
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
 }

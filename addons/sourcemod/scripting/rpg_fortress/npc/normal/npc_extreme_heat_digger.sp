@@ -210,7 +210,7 @@ public void ExtremeHeatDigger_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						NPC_Ignite(target, owner,12000.0, -1, 2.5);
+						NPC_Ignite(target, npc.index,12000.0, -1, 2.5);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						

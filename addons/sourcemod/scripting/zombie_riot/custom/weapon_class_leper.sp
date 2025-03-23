@@ -142,7 +142,7 @@ public void Weapon_LeperHewCharge(int client, int weapon, bool &result, int slot
 }
 public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 {
-	if (Leper_InAnimation[client] > GetGameTime())
+	if (IsLeperInAnimation(client))
 		return;
 	
 	float cooldown = Ability_Check_Cooldown(client, slot);
@@ -651,21 +651,14 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 }
 public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
-	if(!(damagetype & DMG_TRUEDAMAGE))
+	if(damagetype & DMG_TRUEDAMAGE)
 		return damage;
-	if (Leper_InAnimation[victim] > GetGameTime())
+
+	if (IsLeperInAnimation(victim))
 	{
-		return damage * 0.75; //half damage during animations.
+		return damage * 0.66; //half damage during animations.
 	}
 	return damage; //half damage during animations.
-}
-public float WeaponLeper_OnTakeDamagePlayer_Hud(int victim)
-{
-	if (Leper_InAnimation[victim] > GetGameTime())
-	{
-		return 0.75; //half damage during animations.
-	}
-	return 1.0; //half damage during animations.
 }
 
 void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_damage_custom)

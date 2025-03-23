@@ -1536,7 +1536,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
 				}
 				case 2:
 				{
@@ -1615,7 +1615,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
 				}
 				case 2:
 				{
@@ -1627,7 +1627,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
 				}
 			}
 		}
@@ -1688,7 +1688,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
 				}
 				case 2:
 				{
@@ -1700,7 +1700,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
 				}
 			}
 		}

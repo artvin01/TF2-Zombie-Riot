@@ -1975,7 +1975,7 @@
 	}	
 	"Which perk do you desire?"
 	{
-		"en"		"Which Bottle do you wish to drink?\nCrouch and click to see what it does."
+		"en"		"Which Bottle do you wish to drink?\nCrouch and click the drink to see what it does."
 	}	
 	"Reviving"
 	{
@@ -2009,8 +2009,8 @@
 	}
 	"Victory Menu 2"
 	{		
-		"en"		"The Zombies have been defeated!\nDo you wish to go and do 1 extra wave..?"
-		"fr"		"Les zombies ont été éliminés!\nVoulez-vous faire une vague additionelle..?"
+		"en"		"The Enemies have been defeated!\nDo you wish to go and do 1 extra wave..?"
+		"fr"		"Les Enemies ont été éliminés!\nVoulez-vous faire une vague additionelle..?"
 	}
 	"M3 Ability Is Back"
 	{		
@@ -2051,7 +2051,7 @@
 	}
 	"tutorial_1"
 	{
-		"en"		"This is the short Tutorial. Open the scoreboard (TAB) to open the store."
+		"en"		"This is the short Tutorial. Tap the scoreboard (TAB) to open the store."
 		"fr"		"Bienvenue dans le Tutoriel. Appuyez sur TAB pour ouvrir la boutique."
 		"ru"		"Это краткое руководство. Откройте таблицу очков (TAB), чтобы открыть магазин."
 		"pt"		"Isto é um tutorial curto. Pressione o botão do placar (TAB) para abrir a loja."
@@ -2060,7 +2060,7 @@
 	}
 	"tutorial_2"
 	{
-		"en"		"Good! Now Navigate to ''weapons'' and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
+		"en"		"Good! Now Navigate to ''Weapons'' and buy any weapon you want.\nTap the scoreboard (TAB) to open the store again if it got closed.\n<--------------- The Store!                                                          "
 		"fr"		"Bien fait! Maintenant, naviguez vers «armes» et achetez l'arme que vous voulez.\nAppuyez sur TAB pour re-ouvrir la boutique s'il se ferme."
 		"ru"		"Отлично! Теперь перейдите к «оружию» и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
 		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
@@ -2069,7 +2069,7 @@
 	}
 	"tutorial_3"
 	{
-		"en"		"Now that you have a weapon you're prepared.\nOnly have 1 weapon at a time at the start and stick to one weapon class!\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+		"en"		"Only have 1 weapon at a time at the start!\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
 		"fr"		"Vous avez maintenant votre arme, vous êtes prêt.\nAchetez des armes meilleures, ainsi que des améliorations, dans des vagues futures,\net survivez jusqu'à la fin!\nDe l'aide additionelle se trove dans la boutique, sous «aide»."
 		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в следующих волнах и выживите!\nПодробности можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
 		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
@@ -2080,9 +2080,17 @@
 	{
 		"en"		"Use this machine to get a tempomary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
 	}
+	"Tutorial Show Hint Perk Machine Build One"
+	{
+		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
+	}
 	"Tutorial Show Hint Pack a Punch"
 	{
 		"en"		"Use this machine with your holding weapon to upgrade it with a cost!\nNot all weapons can be upgraded!"
+	}
+	"Tutorial Show Hint Pack a Punch Build One"
+	{
+		"en"		"There's no Pack a Punch!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
 	}
 	"Is already at full hp"
 	{

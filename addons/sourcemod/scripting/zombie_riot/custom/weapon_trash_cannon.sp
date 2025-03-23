@@ -7,9 +7,9 @@
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
 int i_FlimsyMaxTargets[3] = { 4, 5, 6 };				//Max targets hit by the blast.
 
-float f_FlimsyDMG[3] = { 600.0, 1500.0, 2000.0 };		//Flimsy Rocket base damage.
-float f_FlimsyRadius[3] = { 200.0, 150.0, 200.0 };		//Flimsy Rocket explosion radius.
-float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile velocity.
+float f_FlimsyDMG[3] = { 840.0, 2100.0, 2500.0 };		//Flimsy Rocket base damage.
+float f_FlimsyRadius[3] = { 200.0, 200.0, 200.0 };		//Flimsy Rocket explosion radius.
+float f_FlimsyVelocity[3] = { 1200.0, 1200.0, 1200.0 };	//Flimsy Rocket projectile velocity.
 
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
 int i_ShockMaxHits[3] = { 6, 7, 8 };					//Max number of zombies hit by the shock.
@@ -41,7 +41,7 @@ bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled 
 
 //PYRE: A fireball which is affected by gravity.
 float f_PyreChance[3] = { 0.06, 0.1, 0.14 };			//Chance for Pyre to be fired.
-float f_PyreDMG[3] = { 1000.0, 2500.0, 4000.0 };		//Damage dealt by fireballs.
+float f_PyreDMG[3] = { 2000.0, 3500.0, 5500.0 };		//Damage dealt by fireballs.
 float f_PyreVel[3] = { 600.0, 800.0, 1200.0 };			//Fireball velocity.
 float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
 

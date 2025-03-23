@@ -656,7 +656,7 @@ static void Internal_ClotThink(int iNPC)
 			//case 2:CPrintToChatAll("{lightblue}Huscarls{default}: {blue}Harrison{default}? The situation is over. Let's go back.");
 		}
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		for(int i; i<16; i++)
+		for(int i; i<8; i++)
 		{
 			int spawn_index = NPC_CreateByName("npc_avangard", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "only");
 			if(spawn_index > MaxClients)

@@ -360,6 +360,12 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 		return;
 	if(HasSpecificBuff(victim, "Thick Blood"))
 		return;
+
+	if(attacker > 0 && attacker <= MaxClients)
+		Force_ExplainBuffToClient(attacker, "Bleed");
+	else if(victim > 0 && victim <= MaxClients)
+		Force_ExplainBuffToClient(victim, "Bleed");
+		
 	BleedAmountCountStack[victim] += 1;
 	Handle pack;
 	CreateDataTimer(BleedRate, Vamp_BloodlustTick, pack, TIMER_FLAG_NO_MAPCHANGE);
