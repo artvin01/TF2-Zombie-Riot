@@ -188,7 +188,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						{
 							npc.AddGesture("ACT_COMBO1_BOBPRIME");
 							npc.PlaySwordSound();
-							npc.m_flNextRangedSpecialAttack = GameTime + 1.2;
+							npc.m_flReloadDelay = GameTime + (1.2 * npc.BonusFireRate);
 							npc.m_flAttackHappens = GameTime + 0.5;
 							npc.m_flAttackHappens_bullshit = GameTime + 0.7;
 							npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
@@ -198,7 +198,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						{
 							npc.AddGesture("ACT_COMBO2_BOBPRIME");
 							npc.PlaySwordSound();
-							npc.m_flNextRangedSpecialAttack = GameTime + 1.2;
+							npc.m_flReloadDelay = GameTime + (1.2 * npc.BonusFireRate);
 							npc.m_flAttackHappens = GameTime + 0.5;
 							npc.m_flAttackHappens_bullshit = GameTime + 0.7;
 							npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
@@ -208,7 +208,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						{
 							npc.AddGesture("ACT_COMBO3_BOBPRIME",_,_,_,1.5);
 							npc.PlaySwordSound();
-							npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
+							npc.m_flReloadDelay = GameTime + (2.0 * npc.BonusFireRate);
 							npc.m_flAttackHappens = GameTime + 1.0;
 							npc.m_flAttackHappens_bullshit = GameTime + 1.2;
 							npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
@@ -226,7 +226,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
-							if(target > 0) 
+							if(target > 0)
 							{
 								float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 								if(npc.m_iAttacksTillReload == 28)
@@ -244,7 +244,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 								{
 									npc.m_iAttacksTillReload = 0;
 								}
-							} 
+							}
 						}
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
@@ -257,7 +257,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 				else
 				{
 					if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
-					{					
+					{
 						if(!npc.m_flAttackHappenswillhappen)
 						{
 							switch(GetRandomInt(0,1))
@@ -283,12 +283,12 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							npc.FaceTowards(vecTarget, 20000.0);
 							if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 							{
-								int target = TR_GetEntityIndex(swingTrace);	
+								int target = TR_GetEntityIndex(swingTrace);
 								
 								float vecHit[3];
 								TR_GetEndPosition(vecHit, swingTrace);
 								
-								if(target > 0) 
+								if(target > 0)
 								{
 									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1100.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlaySwordHitSound();
@@ -297,7 +297,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 									{
 										npc.m_iAttacksTillReload --;
 									}
-								} 
+								}
 							}
 							delete swingTrace;
 							npc.m_flAttackHappenswillhappen = false;
@@ -315,14 +315,6 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_BRAWLER_IDLE", "ACT_BRAWLER_RUN", 17500.0, _, false);
-		if(npc.m_flNextRangedSpecialAttack > GameTime) // Stops moving if he's doing the combo, who do you think you are trying to move around while doing combo, bob?
-		{
-			npc.m_flSpeed = 0.0;
-		}
-		else
-		{
-			npc.m_flSpeed = 250.0;
-		}
 	}
 }
 

@@ -112,6 +112,36 @@ forward void ZR_OnClientLoaded(int client);
  */
 forward Action ZR_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &soundOverride, int &bodyOverride, bool &animOverride);
 
+/**
+ * Called when a player receives a certain unlock (including duplicates)
+ * 
+ * @param client	Client index
+ * @param item		Item name
+ * 
+ * @return		Plugin_Changed if the item was changed, Plugin_Handled to stop the item from being given
+ */
+forward Action ZR_OnGivenItem(int client, char item[64]);
+
+/**
+ * Called when a player kills a NPC
+ * 
+ * @param client	Client index
+ * @param name		NPC name
+ * 
+ * @noreturn
+ */
+forward void ZR_OnKilledNPC(int client, const char[] name);
+
+/**
+ * Called when cash is earned, either global or one player
+ * 
+ * @param client	Client index, 0 for all players
+ * @param cash		Cash obtained
+ * 
+ * @return		Plugin_Changed if the amount was changed, Plugin_Handled to stop cash being given
+ */
+forward Action ZR_OnGivenCash(int client, int &cash);
+
 public SharedPlugin __pl_zombie_riot =
 {
 	name = "zombie_riot",

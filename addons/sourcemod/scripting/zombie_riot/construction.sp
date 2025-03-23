@@ -117,9 +117,9 @@ static int AttackRef;
 static char CurrentSpawnName[64];
 static StringMap CurrentMaterials;
 static ArrayList CurrentResearch;
-static int InResearch = -1;
-static float InResearchAt;
-static Handle InResearchMenu[MAXTF2PLAYERS];
+//static int InResearch = -1;
+//static float InResearchAt;
+//static Handle InResearchMenu[MAXTF2PLAYERS];
 
 bool Construction_Mode()
 {
@@ -366,7 +366,7 @@ void Construction_RoundEnd()
 	delete GameTimer;
 	delete CurrentMaterials;
 	delete CurrentResearch;
-	InResearch = -1;
+//	InResearch = -1;
 	AttackType = 0;
 }
 
@@ -999,6 +999,7 @@ public float InterMusic_ConstructIntencity(int client)
 	return InterMusic_ByIntencity(client);
 }
 
+/*
 void Construction_OpenResearch(int client)
 {
 	SetGlobalTransTarget(client);
@@ -1174,3 +1175,4 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
+*/

@@ -41,13 +41,13 @@ enum struct ItemInfo
 	char Custom_Name[64];
 
 	int Index;
-	int Attrib[16];
-	float Value[16];
+	int Attrib[32];
+	float Value[32];
 	int Attribs;
 
 	int Index2;
-	int Attrib2[16];
-	float Value2[16];
+	int Attrib2[32];
+	float Value2[32];
 	int Attribs2;
 
 	int Ammo;
@@ -363,7 +363,7 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sspecial_attribute_info", prefix);
 		this.SpecialAdditionViaNonAttributeInfo			= kv.GetNum(buffer, 0);
 		
-		static char buffers[32][16];
+		static char buffers[64][16];
 		Format(buffer, sizeof(buffer), "%sattributes", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
@@ -572,7 +572,7 @@ void Store_OnCached(int client)
 			amount += 50;
 		
 		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
-		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") * 1 / 5;
+		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") / 5;
 		amount += SkillTree_GetByName(client, "Cash Up 1 High") * 20;
 		amount += SkillTree_GetByName(client, "Cash Up Barney 1") * 30;
 
@@ -1725,7 +1725,8 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 			{
 				static ItemInfo info;
 				item.GetItemInfo(0, info);
-				Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
+				Format(buffer, blength, "%s {%t%i}", buffer, "Slot ",item.Slot);
+			//	Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
 				break;
 			}
 		}
@@ -4676,8 +4677,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-//anymore then 10 slots iss overkill.
-#define MAX_LOADOUT_SLOTS 10
+//anymore then 20 slots iss overkill.
+#define MAX_LOADOUT_SLOTS 20
 static void LoadoutPage(int client, bool last = false)
 {
 	SetGlobalTransTarget(client);
@@ -4964,7 +4965,6 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-	map.SetValue("60", 0.0);// Burning is only visual, and shouldnt hurt the client
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
@@ -5101,7 +5101,7 @@ void Store_ApplyAttribs(int client)
 	}
 	
 	Armor_Level[client] = 0;
-	Jesus_Blessing[client] = 0;
+	Grigori_Blessing[client] = 0;
 	i_HeadshotAffinity[client] = 0;
 	i_SoftShoes[client] = 0;
 
@@ -5161,7 +5161,7 @@ void Store_ApplyAttribs(int client)
 				}
 				case 777:
 				{
-					Jesus_Blessing[client] = RoundToNearest(value);
+					Grigori_Blessing[client] = RoundToNearest(value);
 					continue;
 				}
 				case 785:
@@ -6158,6 +6158,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Flagellant_Enable(client, entity);
 		Enable_Impact_Lance(client, entity);
 		Enable_Trash_Cannon(client, entity);
+		Enable_TornadoBlitz(client, entity);
 		Enable_Rusty_Rifle(client, entity);
 		Enable_Blitzkrieg_Kit(client, entity);
 		Activate_Fractal_Kit(client, entity);

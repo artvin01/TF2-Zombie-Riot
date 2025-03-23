@@ -94,6 +94,8 @@ methodmap StalkerGoggles < StalkerShared
 		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
+		
 		
 		func_NPCDeath[npc.index] = StalkerGoggles_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = StalkerGoggles_OnTakeDamage;

@@ -1516,6 +1516,9 @@ static stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &in
 
 static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
+	if(i_ExplosiveProjectileHexArray[weapon] & EP_GIBS_REGARDLESS) //Block explosives ?
+		return false;
+
 	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
 	{
 		if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
@@ -1652,10 +1655,17 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 #if defined ZR
 					if(b_BackstabLaugh[weapon])
 					{
-						SepcialBackstabLaughSpy(attacker);
+						if(i_CustomWeaponEquipLogic[weapon] == WEAPON_X10KNIFE)
+						{
+							SepcialBackstabLaughSpy(attacker);
+						}
+					}
+					if(!b_FaceStabber[attacker] && !i_NpcIsABuilding[victim] && i_CustomWeaponEquipLogic[weapon] == WEAPON_RUINA_DRONE_KNIFE)
+					{
+						//See inside wind staff.
+						RuinaNukeBackstabDo(victim, attacker, weapon);
 					}
 #endif
-
 				}
 			}
 		}

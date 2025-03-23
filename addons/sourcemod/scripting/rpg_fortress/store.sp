@@ -33,13 +33,13 @@ enum struct ItemInfo
 	char Custom_Name[64];
 
 	int Index;
-	int Attrib[16];
-	float Value[16];
+	int Attrib[32];
+	float Value[32];
 	int Attribs;
 
 	int Index2;
-	int Attrib2[16];
-	float Value2[16];
+	int Attrib2[32];
+	float Value2[32];
 	int Attribs2;
 
 	int Ammo;
@@ -207,7 +207,7 @@ enum struct ItemInfo
 		this.Melee_Allows_Headshots 		= view_as<bool>(kv.GetNum("melee_can_headshot", 0));
 		this.Attack3AbilitySlot			= kv.GetNum("attack_3_ability_slot");
 		
-		static char buffers[32][16];
+		static char buffers[64][16];
 		kv.GetString("attributes", buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i < this.Attribs; i++)

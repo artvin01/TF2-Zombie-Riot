@@ -203,6 +203,7 @@ void NPC_ConfigSetup()
 	FallenWarrior_OnMapStart();
 	ThirtySixFifty_OnMapStart();
 	JohnTheAllmighty_OnMapStart_NPC();
+	RavagingIntellect_OnMapStart();
 	
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
@@ -1160,6 +1161,7 @@ void NPCDeath(int entity)
 				}
 			}
 		}
+		Native_OnGivenCash(0, GiveMoney);
 		CurrentCash += GiveMoney;
 		Waves_AddCashGivenThisWaveViaKills(CurrentCash);
 	}
@@ -1347,6 +1349,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_fallen_warrior.sp"
 #include "zombie_riot/npc/special/npc_3650.sp"
 #include "zombie_riot/npc/special/npc_john_the_allmighty.sp"
+#include "zombie_riot/npc/special/npc_ravaging_intellect.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"

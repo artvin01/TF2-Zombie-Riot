@@ -1159,6 +1159,7 @@ public void OnMapEnd()
 	RPG_MapEnd();
 #endif
 
+	Configs_MapEnd();
 	ConVar_Disable();
 	FileNetwork_MapEnd();
 	NpcStats_OnMapEnd();

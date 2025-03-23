@@ -59,33 +59,6 @@ static int i_PlayIdleAlertSound[MAXENTITIES];
 static int i_PlayMusicSound[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
-static char[] GetSawRunnerHealth()
-{
-	int health = 65;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health = health * 3 / 8;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 
 methodmap SawRunner < CClotBody
 {
@@ -155,7 +128,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(float vecPos[3], float vecAng[3], int ally)
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", GetSawRunnerHealth(), ally, false, true, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", MinibossHealthScaling(200), ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 2;
 		
@@ -195,6 +168,10 @@ methodmap SawRunner < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.StartPathing();
+		b_HideHealth[npc.index] = true;
+		b_NoHealthbar[npc.index] = true;
+		//counts as a static npc, means it wont count towards NPC limit.
+		AddNpcToAliveList(npc.index, 1);
 		
 		
 		return npc;

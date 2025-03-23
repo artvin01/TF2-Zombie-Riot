@@ -70,6 +70,7 @@ methodmap VengefullSpirit < CClotBody
 		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		//IDLE
 		npc.m_iState = 4;

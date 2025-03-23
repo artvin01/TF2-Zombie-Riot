@@ -91,7 +91,7 @@ methodmap Barrack_Iberia_Commando < BarrackBody
 	}
 	public Barrack_Iberia_Commando(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Commando npc = view_as<Barrack_Iberia_Commando>(BarrackBody(client, vecPos, vecAng, "500", "models/player/demo.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Iberia_Commando npc = view_as<Barrack_Iberia_Commando>(BarrackBody(client, vecPos, vecAng, "400", "models/player/demo.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		i_NpcWeight[npc.index] = 1;
 
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
@@ -141,6 +141,7 @@ public void Barrack_Iberia_Commando_ClotThink(int iNPC)
 {
 	Barrack_Iberia_Commando npc = view_as<Barrack_Iberia_Commando>(iNPC);
 	float GameTime = GetGameTime(iNPC);
+	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
@@ -152,7 +153,63 @@ public void Barrack_Iberia_Commando_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			
+			if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen) // If there's an enemy nearby and the caber isn't on cooldown, it's caber time
+			{
+				if(npc.m_flNextMeleeAttack < GameTime)
+				{
+					BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 9999.0, _, false);
+					ResetCommandoWeapon(npc, 1);
+					if(!npc.m_flAttackHappenswillhappen)
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.Iberia_Play_Demo_Fuck_You();  // NO!
+						npc.m_flNextRangedAttack = GameTime + 1.0;
+						npc.m_flAttackHappens = GameTime + (0.3 * npc.BonusFireRate);
+						npc.m_flAttackHappens_bullshit = GameTime + (0.54 * npc.BonusFireRate);
+						npc.m_flAttackHappenswillhappen = true;
+					}
+					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
+					{
+						Handle swingTrace;
+						npc.FaceTowards(vecTarget, 20000.0);
+						if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+						{
+							int target = TR_GetEntityIndex(swingTrace);	
+								
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+								
+							float damage = 7500.0;
 
+							if(target > 0) 
+							{			
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);	
+								EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
+								npc.m_flNextMeleeAttack = GameTime + (30.0 * npc.BonusFireRate); // Caber cooldown, can be reduced with atk speed
+								ResetCommandoWeapon(npc, 0);
+								
+								if(b_thisNpcIsARaid[target])
+								{
+									Custom_Knockback(npc.index, target, 450.0, true);  // Raids are less affected from the knockback and won't get stunned
+								}
+								else
+								{
+									Custom_Knockback(npc.index, target, 600.0, true);
+									FreezeNpcInTime(target, 1.0); // Stuns normal enemies
+								}
+							}
+						}
+						delete swingTrace;
+						npc.m_flAttackHappenswillhappen = false;
+					}
+					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						ResetCommandoWeapon(npc, 0);
+					}
+				}
+			}
 			if(flDistanceToTarget < 175000.0)
 			{
 				//Can we attack right now?
@@ -185,63 +242,6 @@ public void Barrack_Iberia_Commando_ClotThink(int iNPC)
 							delete swingTrace;				
 						}
 					}
-					else
-					{
-						npc.m_flSpeed = 150.0;
-					}
-				}
-			}
-			if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen) && npc.m_flNextMeleeAttack < GameTime) // If there's an enemy nearby and the caber isn't on cooldown, it's caber time
-			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 9999.0, _, false);
-				if(!npc.m_flAttackHappenswillhappen)
-				{
-					ResetCommandoWeapon(npc, 1);
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-					npc.Iberia_Play_Demo_Fuck_You();  // NO!
-					npc.m_flNextRangedAttack = GameTime + 1.0;
-					npc.m_flAttackHappens = GameTime + (0.3 * npc.BonusFireRate);
-					npc.m_flAttackHappens_bullshit = GameTime + (0.54 * npc.BonusFireRate);
-					npc.m_flAttackHappenswillhappen = true;
-				}
-				if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
-				{
-					Handle swingTrace;
-					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
-					{
-						int target = TR_GetEntityIndex(swingTrace);	
-							
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-							
-						float damage = 7500.0;
-
-						if(target > 0) 
-						{			
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);	
-							EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
-							if(b_thisNpcIsARaid[target])
-							{
-							Custom_Knockback(npc.index, target, 300.0, true);  // Raids are half effected from the knockback and won't get stunned
-							}
-							else
-							{
-							Custom_Knockback(npc.index, target, 600.0, true);
-							FreezeNpcInTime(target, 1.0); // Stuns normal enemies
-							}
-						}
-					}
-					delete swingTrace;
-					npc.m_flNextMeleeAttack = GameTime + (30.0 * npc.BonusFireRate); // Caber cooldown, can be reduced with atk speed
-					npc.m_flAttackHappenswillhappen = false;
-					ResetCommandoWeapon(npc, 0);
-				}
-				else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
-				{
-					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GameTime + (30.0 * npc.BonusFireRate);
-					ResetCommandoWeapon(npc, 0);
 				}
 			}
 		}
@@ -252,7 +252,7 @@ public void Barrack_Iberia_Commando_ClotThink(int iNPC)
 		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 150000.0,_, true);
 		if(npc.m_flNextRangedAttack > GameTime)
 		{
-			npc.m_flSpeed = 75.0;
+			npc.m_flSpeed = 100.0;
 		}
 		else
 		{

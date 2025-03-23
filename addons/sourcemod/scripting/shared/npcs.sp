@@ -552,6 +552,34 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 	
 	if(!IgniteTimer[entity])
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	else
+	{
+		//Players cannot re-ignite.
+		/*
+		This was blocked for players cus it was too op.
+		free true damage.
+		hell no.
+
+		*/
+		if(attacker > MaxClients)
+		{
+			int Saveid = IgniteId[entity];
+			if(IsValidEntity(weapon))
+				BurnDamage[entity] *= Attributes_Get(weapon, 4040, 1.0);
+
+			IgniteId[entity] = EntIndexToEntRef(attacker);
+
+			BurnDamage[entity] *= 0.5;
+			//apply burn once for half the damage!
+			//Also apply damage for ourselves so we get the credit.
+			TriggerTimer(IgniteTimer[entity]);
+			BurnDamage[entity] *= 2.0;
+			if(IsValidEntity(weapon))
+				BurnDamage[entity] *= (1.0 / Attributes_Get(weapon, 4040, 1.0));
+
+			IgniteId[entity] = Saveid;
+		}
+	}
 	
 	float value = 8.0;
 	value = damageoverride;
@@ -572,9 +600,6 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 
 	if(wasBurning)
 	{
-		if(entity <= MaxClients)
-			TF2_IgnitePlayer(entity, entity, 200.0);
-
 		if(value > BurnDamage[entity]) //Dont override if damage is lower.
 		{
 			BurnDamage[entity] = value;
@@ -592,10 +617,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 	}
 	else
 	{
-		if(entity <= MaxClients)
-			TF2_IgnitePlayer(entity, entity, 200.0);
-		else
-			IgniteTargetEffect(entity);
+		IgniteTargetEffect(entity);
 
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);
@@ -663,8 +685,6 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			{
 				value *= 1.2;
 			}
-			if((entity <= MaxClients))
-				TF2_IgnitePlayer(entity, entity, 200.0);
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
 				value *= 5.0;
@@ -1577,6 +1597,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			blue = 255;
 		}
 	}
+	if(b_HideHealth[victim])
+	{
+		red = 0;
+		green = 255;
+		blue = 0;
+	}
 
 	static char Debuff_Adder_left[64], Debuff_Adder_right[64], Debuff_Adder[64];
 	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
@@ -1816,6 +1842,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
 			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
 		}
+		if(b_HideHealth[victim])
+		{
+			Format(c_MaxHealth, sizeof(c_MaxHealth), "???");
+			Format(c_Health, sizeof(c_Health), "???");
+		}
 		
 #if defined RPG
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "Level %d", Level[victim]);
@@ -1921,6 +1952,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			int offsetarm = ArmorInt < 0 ? 1 : 0;
 			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
 			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
+		}
+		if(b_HideHealth[victim])
+		{
+			Format(c_MaxHealth, sizeof(c_MaxHealth), "???");
+			Format(c_Health, sizeof(c_Health), "???");
 		}
 		
 		if(!b_NameNoTranslation[victim])
@@ -2182,6 +2218,7 @@ void NPC_DeadEffects(int entity)
 				GiveXP(client, 1);
 			
 			Saga_DeadEffects(entity, client, WeaponLastHit);
+			Native_OnKilledNPC(client, c_NpcName[entity]);
 #endif
 			
 #if defined RPG

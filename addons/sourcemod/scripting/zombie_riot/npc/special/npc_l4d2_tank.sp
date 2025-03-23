@@ -155,7 +155,7 @@ methodmap L4D2_Tank < CClotBody
 	
 	public L4D2_Tank(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", GetTankHealth(), ally, false, true));
+		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", MinibossHealthScaling(100), ally, false, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		
@@ -222,6 +222,7 @@ methodmap L4D2_Tank < CClotBody
 		wave *= 0.1;
 	
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 	
 		
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
@@ -643,6 +644,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						fl_ThrowPlayerImmenent[npc.index] = GetGameTime(npc.index) + 1.0;
 						b_ThrowPlayerImmenent[npc.index] = true;
 						npc.m_flStandStill = GetGameTime(npc.index) + 1.5;
+						ApplyStatusEffect(npc.index, npc.index, "UBERCHARGED", 1.5);
 						i_IWantToThrowHim[npc.index] = -1;
 					}
 				}
@@ -784,37 +786,6 @@ public void L4D2_Tank_NPCDeath(int entity)
 	Citizen_MiniBossDeath(entity);
 }
 
-
-static char[] GetTankHealth()
-{
-	int health = 85;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	
-	health = RoundToCeil(float(health) * 1.2);
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 
 void Music_Stop_All_Tank(int entity)
 {
