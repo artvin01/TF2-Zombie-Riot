@@ -1018,8 +1018,8 @@ void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damaget
 			return;
 		}
 	}
-	if(!CheckInHud())
-		Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
+//	if(!CheckInHud()) This was supposed to be removed, as in late waves you kinda instalooe heat.
+//		Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
 }
 
 static int DoSpecialActionYakuza(int client, float DamageBase, const char[] animation, float duration, int target)
