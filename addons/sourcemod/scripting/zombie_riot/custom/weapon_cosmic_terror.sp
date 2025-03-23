@@ -166,7 +166,7 @@ public void Cosmic_Terror_Pap2(int client, int weapon, bool &result, int slot)
 public void Cosmic_Activate(int client, int weapon, float speed)
 {
 	float heat_multi = 1.0; 
-			 
+
 	speed /= Attributes_Get(weapon, 6, 1.0);
 	speed /= Attributes_Get(weapon, 5, 1.0);
 
@@ -380,6 +380,7 @@ static Action Cosmic_Heat_Tick(int client)
 	if(Cosmic_Terror_On[client])
 	{
 		SDKUnhook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
+		return Plugin_Stop;
 	}
 	float GameTime = GetGameTime();
 	if(Cosmic_Terror_Hud_Delay[client] > GameTime)
@@ -425,7 +426,7 @@ static Action Cosmic_Heat_Tick(int client)
 		}
 		else
 		{
-			fl_Cosmic_Heat[client]-=35.0+(Cosmic_Terror_Pap[client]*25.0);
+			fl_Cosmic_Heat[client]-=35.0+(Cosmic_Terror_Pap[client]*18.0);
 		}
 	}
 	return Plugin_Continue;
