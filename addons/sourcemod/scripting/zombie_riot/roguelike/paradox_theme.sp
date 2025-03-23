@@ -88,7 +88,7 @@ void Rogue_Paradox_ReviveSpeed(int &amount)
 		amount = RoundToNearest(float(amount) * 1.25);
 }
 
-bool Rogue_Paradox_JesusBlessing(int client)
+bool Rogue_Paradox_GrigoriBlessing(int client)
 {
 	if(FrostTimer && dieingstate[client] == 0)
 	{
@@ -98,7 +98,7 @@ bool Rogue_Paradox_JesusBlessing(int client)
 			int maxhealth = SDKCall_GetMaxHealth(client);
 
 			// Degen if no blessing or above 50% health
-			if(Jesus_Blessing[client] != 1 || (health > maxhealth / 2))
+			if(Grigori_Blessing[client] != 1 || (health > maxhealth / 2))
 			{
 				int damage = maxhealth / -400;
 				health += damage;
@@ -111,7 +111,7 @@ bool Rogue_Paradox_JesusBlessing(int client)
 			}
 		}
 
-		return true;	// Override Jesus Blessing
+		return true;	// Override Grigori Blessing
 	}
 
 	return false;

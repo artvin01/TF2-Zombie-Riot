@@ -1778,7 +1778,7 @@
 		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
-	"Jesus's Blessing Desc"
+	"Grigori's Blessing Desc"
 	{
 		"en"	"+300 Health and life regen 1%% of your max hp per second up to half your HP, during bleedout, you also will survive for longer.\nOut of battle, heals extra with more melee upgrades."
 	}

@@ -5101,7 +5101,7 @@ void Store_ApplyAttribs(int client)
 	}
 	
 	Armor_Level[client] = 0;
-	Jesus_Blessing[client] = 0;
+	Grigori_Blessing[client] = 0;
 	i_HeadshotAffinity[client] = 0;
 	i_SoftShoes[client] = 0;
 
@@ -5161,7 +5161,7 @@ void Store_ApplyAttribs(int client)
 				}
 				case 777:
 				{
-					Jesus_Blessing[client] = RoundToNearest(value);
+					Grigori_Blessing[client] = RoundToNearest(value);
 					continue;
 				}
 				case 785:
