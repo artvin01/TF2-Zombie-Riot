@@ -67,6 +67,7 @@ void SteamWorks_UpdateGameTitle()
 	}
 	#endif
 }
+/*
 void SteamWorks_UpdateTourToLevel()
 {
 	#if defined _SteamWorks_Included
@@ -76,3 +77,4 @@ void SteamWorks_UpdateTourToLevel()
 	}
 	#endif
 }
+*/
