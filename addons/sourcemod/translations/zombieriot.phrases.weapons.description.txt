@@ -3084,9 +3084,9 @@
 	}
 	"Leper Sword Desc"
 	{
-		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nYou aswell are able to selfheal if you hit enough enemies. (M2)\nDamage is huge but attack is slow, dont's miss...\nDuring animations, you gain 50%% damage resistance."
-		"fr"	"Bonne résistance, cadence des attaques réduites.\nAppuyez R pour trancher jusqu'a 5 ennemis.\nAppuyez sur M2 pour vous soigner après avoir frappé assez d'ennemis.\n+50%% résistance pour la durée de vos abilités."
-		"chi"	"获得抗性，可以劈开5名敌人（R）。\n击中足够敌人可以自疗（M2）\n攻速慢，但是伤害特高，小心别挥空了哦...\n（动画时有50%%伤害抗性）"
+		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nYou aswell are able to selfheal if you hit enough enemies. (M2)\nDamage is huge but attack is slow, dont's miss...\nDuring animations, you gain 33%% damage resistance."
+		"fr"	"Bonne résistance, cadence des attaques réduites.\nAppuyez R pour trancher jusqu'a 5 ennemis.\nAppuyez sur M2 pour vous soigner après avoir frappé assez d'ennemis.\n+33%% résistance pour la durée de vos abilités."
+		"chi"	"获得抗性，可以劈开5名敌人（R）。\n击中足够敌人可以自疗（M2）\n攻速慢，但是伤害特高，小心别挥空了哦...\n（动画时有33%%伤害抗性）"
 	}
 	"Leper Sword Desc Pap 1"
 	{
