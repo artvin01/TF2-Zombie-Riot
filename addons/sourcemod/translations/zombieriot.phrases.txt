@@ -2078,7 +2078,7 @@
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
-		"en"		"Use this machine to get a tempomary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+		"en"		"Use this machine to get a temporary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
 	}
 	"Tutorial Show Hint Perk Machine Build One"
 	{
@@ -3586,7 +3586,7 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this tempomary alliance."
+		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
 	}
 	"Schwert Donner Alt Desc"
 	{

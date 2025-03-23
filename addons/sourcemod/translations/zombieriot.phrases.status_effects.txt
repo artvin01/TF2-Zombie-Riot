@@ -362,7 +362,7 @@
 	}
 	"Rapid Suturing Desc"
 	{
-		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very tempomary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
+		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very temporary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
 	}
 	"Marked"
 	{

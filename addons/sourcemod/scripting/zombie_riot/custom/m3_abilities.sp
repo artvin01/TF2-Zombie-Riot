@@ -857,7 +857,7 @@ public void Reinforce(int client, bool NoCD)
 
 		
 		i_MaxRevivesAWave++;
-		CPrintToChatAll("{green}%N Is calling for additonal Mercs for tempomary assistance...",client);
+		CPrintToChatAll("{green}%N Is calling for additonal Mercs for temporary assistance...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
 
