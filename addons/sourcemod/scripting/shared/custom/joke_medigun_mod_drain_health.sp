@@ -251,7 +251,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				PrintHintText(owner,"Medigun Fluid Capacity: %iml", new_ammo + 1);
+				if(new_ammo > 0)
+					PrintHintText(owner,"Medigun Fluid Capacity: %iml", new_ammo);
+				else
+					PrintHintText(owner,"Medigun Fluid Capacity: NO AMMO!!!", new_ammo);
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
@@ -425,7 +428,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			{
 				if(What_type_Heal != 5.0)
 				{
-					PrintHintText(owner,"Medigun Medicine Fluid: %iml", new_ammo);
+					if(new_ammo > 0)
+						PrintHintText(owner,"Medigun Medicine Fluid: %iml", new_ammo);
+					else
+						PrintHintText(owner,"NO MEDIGUN AMMO!!!");
 				}
 				else
 				{
@@ -433,15 +439,24 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						case 0:
 						{
-							PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: General", new_ammo);
+							if(new_ammo > 0)
+								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: General", new_ammo);
+							else
+								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: General");
 						}
 						case 1:
 						{
-							PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Melee", new_ammo);
+							if(new_ammo > 0)
+								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Melee", new_ammo);
+							else
+								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: Melee");
 						}
 						case 2:
 						{
-							PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Ranged", new_ammo);
+							if(new_ammo > 0)
+								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Ranged", new_ammo);
+							else
+								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: Ranged");
 						}
 					}
 				}
@@ -749,7 +764,7 @@ public void ReduceMediFluidCost(int client, int &cost)
 
 public void ReduceMetalCost(int client, int &cost)
 {
-	float Attribute = Attributes_GetOnPlayer(client, Attrib_ReduceMetalCost, true, true);
+	float Attribute = Attributes_GetOnPlayer(client, Attrib_ReduceMetalCost, true, false, 1.0); //Tinker needs to check weapons too!
 	if(Attribute == 1.0 || Attribute == 0.0)
 	{
 		return;

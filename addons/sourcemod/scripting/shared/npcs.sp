@@ -75,10 +75,14 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
 		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
 		
-		float ScalingEnemies = ZRStocks_PlayerScalingDynamic();
+		float ScalingEnemies = ZRStocks_PlayerScalingDynamic(_,true);
+		//above 14, dont spawn more, it just is not worth the extra lag it gives.
+		
+		//max is 14 players.
 		if(ScalingEnemies >= 14.0)
 			ScalingEnemies = 14.0;
-			//above 14, dont spawn more, it just is not worth the extra lag it gives.
+
+		ScalingEnemies *= zr_multi_multiplier.FloatValue;
 
 		float f_limit = Pow(1.115, ScalingEnemies);
 
@@ -535,7 +539,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 #endif
 
 
-void NPC_Ignite(int entity, int attacker, float duration, int weapon)
+void NPC_Ignite(int entity, int attacker, float duration, int weapon, float damageoverride = 8.0)
 {
 	if(HasSpecificBuff(entity, "Hardened Aura"))
 		return;
@@ -548,8 +552,37 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 	
 	if(!IgniteTimer[entity])
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	else
+	{
+		//Players cannot re-ignite.
+		/*
+		This was blocked for players cus it was too op.
+		free true damage.
+		hell no.
+
+		*/
+		if(attacker > MaxClients)
+		{
+			int Saveid = IgniteId[entity];
+			if(IsValidEntity(weapon))
+				BurnDamage[entity] *= Attributes_Get(weapon, 4040, 1.0);
+
+			IgniteId[entity] = EntIndexToEntRef(attacker);
+
+			BurnDamage[entity] *= 0.5;
+			//apply burn once for half the damage!
+			//Also apply damage for ourselves so we get the credit.
+			TriggerTimer(IgniteTimer[entity]);
+			BurnDamage[entity] *= 2.0;
+			if(IsValidEntity(weapon))
+				BurnDamage[entity] *= (1.0 / Attributes_Get(weapon, 4040, 1.0));
+
+			IgniteId[entity] = Saveid;
+		}
+	}
 	
 	float value = 8.0;
+	value = damageoverride;
 	bool validWeapon = false;
 	ApplyStatusEffect(attacker, entity, "Burn", 999999.9);
 
@@ -585,6 +618,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 	else
 	{
 		IgniteTargetEffect(entity);
+
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);
 		if(validWeapon)
@@ -601,93 +635,84 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 public Action NPC_TimerIgnite(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
-	if(entity > MaxClients)
+	if(IsValidEntity(entity))
 	{
-		if(!b_NpcHasDied[entity])
+		if((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || i_IsABuilding[entity] || (entity <= MaxClients))
 		{
 			int attacker = EntRefToEntIndex(IgniteId[entity]);
-			if(attacker != INVALID_ENT_REFERENCE)
+			if(!IsValidEntity(attacker))
 			{
-				IgniteFor[entity]--;
-				
-				float pos[3], ang[3];
-				if(attacker > 0 && attacker <= MaxClients)
-					GetClientEyeAngles(attacker, ang);
-				
-				int weapon = EntRefToEntIndex(IgniteRef[entity]);
-				float value = 8.0;
+				attacker = 0;
+			}
+			IgniteFor[entity]--;
+			
+			
+			int weapon = EntRefToEntIndex(IgniteRef[entity]);
+			float value = 8.0;
 #if !defined RTS
-				if(weapon > MaxClients && IsValidEntity(weapon))
-				{
-					value *= Attributes_Get(weapon, 2, 1.0);	  //For normal weapons
-					
-				//	value *= Attributes_Get(weapon, 1000, 1.0); //For any
-					
-					value *= Attributes_Get(weapon, 410, 1.0); //For wand
-					
-					value *= Attributes_Get(weapon, 71, 1.0); //For wand
+			if(weapon > MaxClients && IsValidEntity(weapon))
+			{
+				value *= Attributes_Get(weapon, 2, 1.0);	  //For normal weapons
+				
+			//	value *= Attributes_Get(weapon, 1000, 1.0); //For any
+				
+				value *= Attributes_Get(weapon, 410, 1.0); //For wand
+				
+				value *= Attributes_Get(weapon, 71, 1.0); //For wand
 
-				}
-				else
-#endif
-				{
-					weapon = -1;
-				}
-				
-				WorldSpaceCenter(entity, pos);
-				
-				if(value < 0.2)
-				{
-					
-				}
-				else if(value < BurnDamage[entity])
-				{
-					value = BurnDamage[entity];
-				}
-				else
-				{
-					BurnDamage[entity] = value;
-				}
-				if(NpcStats_ElementalAmp(entity))
-				{
-					value *= 1.2;
-				}
-				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
-				SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
-				
-				//Setting burn dmg to slash cus i want it to work with melee!!!
-				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
-				//In this case ill buff it so its 2x as good as bleed! or more in the future
-				//Also now allows hp gain and other stuff for that reason. pretty cool.
-				if(IgniteFor[entity] == 0)
-				{
-					ExtinguishTarget(entity);
-					IgniteTimer[entity] = null;
-					IgniteFor[entity] = 0;
-					BurnDamage[entity] = 0.0;
-					RemoveSpecificBuff(entity, "Burn");
-					return Plugin_Stop;
-				}
-				if(HasSpecificBuff(entity, "Hardened Aura"))
-				{
-					ExtinguishTarget(entity);
-					IgniteTimer[entity] = null;
-					IgniteFor[entity] = 0;
-					BurnDamage[entity] = 0.0;
-					RemoveSpecificBuff(entity, "Burn");
-					return Plugin_Stop;
-				}
-				return Plugin_Continue;
 			}
 			else
+#endif
+			{
+				weapon = -1;
+			}
+			float pos[3];
+			WorldSpaceCenter(entity, pos);
+			
+			if(value < 0.2)
+			{
+				
+			}
+			else if(value < BurnDamage[entity])
+			{
+				value = BurnDamage[entity];
+			}
+			else
+			{
+				BurnDamage[entity] = value;
+			}
+			if(NpcStats_ElementalAmp(entity))
+			{
+				value *= 1.2;
+			}
+			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
+			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
+				value *= 5.0;
+			SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+			
+			//Setting burn dmg to slash cus i want it to work with melee!!!
+			//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
+			//In this case ill buff it so its 2x as good as bleed! or more in the future
+			//Also now allows hp gain and other stuff for that reason. pretty cool.
+			if(IgniteFor[entity] <= 0)
 			{
 				ExtinguishTarget(entity);
 				IgniteTimer[entity] = null;
 				IgniteFor[entity] = 0;
 				BurnDamage[entity] = 0.0;
 				RemoveSpecificBuff(entity, "Burn");
-				return Plugin_Stop;		
+				return Plugin_Stop;
 			}
+			if(HasSpecificBuff(entity, "Hardened Aura"))
+			{
+				ExtinguishTarget(entity);
+				IgniteTimer[entity] = null;
+				IgniteFor[entity] = 0;
+				BurnDamage[entity] = 0.0;
+				RemoveSpecificBuff(entity, "Burn");
+				return Plugin_Stop;
+			}
+			return Plugin_Continue;
 		}
 		else
 		{
@@ -1206,13 +1231,17 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
 			GiveRageOnDamage(inflictor, Damageaftercalc);
+#if defined ZR
 			GiveMorphineOnDamage(inflictor, victim, Damageaftercalc, damagetype);
+#endif
 			Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
 		}
 		else if(attacker > 0 && attacker <= MaxClients)
 		{
 			GiveRageOnDamage(attacker, Damageaftercalc);
+#if defined ZR
 			GiveMorphineOnDamage(attacker, victim, Damageaftercalc, damagetype);
+#endif
 			Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
 		}
 		else
@@ -1568,6 +1597,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			blue = 255;
 		}
 	}
+	if(b_HideHealth[victim])
+	{
+		red = 0;
+		green = 255;
+		blue = 0;
+	}
 
 	static char Debuff_Adder_left[64], Debuff_Adder_right[64], Debuff_Adder[64];
 	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
@@ -1807,6 +1842,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
 			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
 		}
+		if(b_HideHealth[victim])
+		{
+			Format(c_MaxHealth, sizeof(c_MaxHealth), "???");
+			Format(c_Health, sizeof(c_Health), "???");
+		}
 		
 #if defined RPG
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "Level %d", Level[victim]);
@@ -1912,6 +1952,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			int offsetarm = ArmorInt < 0 ? 1 : 0;
 			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
 			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
+		}
+		if(b_HideHealth[victim])
+		{
+			Format(c_MaxHealth, sizeof(c_MaxHealth), "???");
+			Format(c_Health, sizeof(c_Health), "???");
 		}
 		
 		if(!b_NameNoTranslation[victim])
@@ -2173,6 +2218,7 @@ void NPC_DeadEffects(int entity)
 				GiveXP(client, 1);
 			
 			Saga_DeadEffects(entity, client, WeaponLastHit);
+			Native_OnKilledNPC(client, c_NpcName[entity]);
 #endif
 			
 #if defined RPG

@@ -115,33 +115,6 @@ static int i_fallen_eyeparticle[MAXENTITIES] = {-1, ...};
 static int i_fallen_headparticle[MAXENTITIES] = {-1, ...};
 static int i_fallen_bodyparticle[MAXENTITIES] = {-1, ...};
 
-static char[] GetPanzerHealth()
-{
-	int health = 100;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 3;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 methodmap FallenWarrior < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -194,7 +167,7 @@ methodmap FallenWarrior < CClotBody
 
 	public FallenWarrior(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.4", GetPanzerHealth(), ally));
+		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.4", MinibossHealthScaling(100), ally));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup"); 
@@ -289,6 +262,7 @@ methodmap FallenWarrior < CClotBody
 		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.Anger = false;
 
@@ -630,18 +604,7 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 					if(npc.m_bLostHalfHealth)
 					{
 						damageDealt *= 2.0;
-						if(target > MaxClients)
-						{
-							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 30);
-						}
-						else
-						{
-							if (!IsInvuln(target))
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 30);
-								TF2_IgnitePlayer(target, target, 5.0);
-							}
-						}
+						NPC_Ignite(target, npc.index,12.0, -1, 30.0);
 					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

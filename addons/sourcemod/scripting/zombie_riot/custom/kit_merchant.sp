@@ -290,11 +290,6 @@ static int MerchantMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-public void Weapon_MerchantPrimary_M2(int client, int weapon, bool crit, int slot)
-{
-	Store_SwapItems(client);
-}
-
 void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 {
 	if(MerchantWeaponRef[attacker] == -1)

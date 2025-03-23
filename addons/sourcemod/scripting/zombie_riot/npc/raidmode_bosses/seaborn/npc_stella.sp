@@ -111,7 +111,7 @@ static bool b_tripple_raid[MAXENTITIES];
 
 #define STELLA_NC_DURATION 13.0
 #define STELLA_NC_TURNRATE 500.0	//max turnrate.
-#define STELLA_NC_TURNRATE_ANGER 600.0
+#define STELLA_NC_TURNRATE_ANGER 700.0
 #define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
 
 #define STELLA_NORMAL_LASER_DURATION 0.7
@@ -1847,7 +1847,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	{
 		fl_NC_thorttle[npc.index] = GameTime + 0.1;
 		update = true;
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);		//replace stun
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 	}
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);
@@ -1928,8 +1928,9 @@ public Action Stella_Nightmare_Tick(int iNPC)
 
 	if(update)	//damage is dealt 10 times a second
 	{
-		Laser.Damage = Modify_Damage(35.0);
-		Laser.Bonus_Damage = Modify_Damage(35.0)*6.0;
+		//unlike other attacks, this one gets an even larger boost if stella becomes angry.
+		Laser.Damage = Modify_Damage(npc.Anger ? 60.0 : 35.0);
+		Laser.Bonus_Damage = Modify_Damage(npc.Anger ? 60.0 : 35.0)*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 
@@ -2183,7 +2184,7 @@ static void Internal_NPCDeath(int entity)
 			}
 		}
 	}
-	RaidModeTime +=50.0;
+	RaidModeTime +=30.0;
 
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -2389,7 +2390,8 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		float Self_Vec[3]; WorldSpaceCenter(npc.index, Self_Vec);
 		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
 
-		float Turn_Speed = (npc.Anger ? 25.5 : 12.0);
+		//HEVILY buff turnrate when angry
+		float Turn_Speed = (npc.Anger ? 50.0 : 12.0);
 		
 		if(Dist <= 0.0)
 			Dist = 1.0;

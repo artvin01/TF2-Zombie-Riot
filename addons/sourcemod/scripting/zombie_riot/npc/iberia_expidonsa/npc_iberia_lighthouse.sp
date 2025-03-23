@@ -108,7 +108,7 @@ methodmap IberiaLighthouse < CClotBody
 	}
 	public IberiaLighthouse(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
+		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(100), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
@@ -131,6 +131,7 @@ methodmap IberiaLighthouse < CClotBody
 		wave *= 0.1;
 	
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
@@ -144,7 +145,7 @@ methodmap IberiaLighthouse < CClotBody
 		b_thisNpcIsABoss[npc.index] = true;
 		if(!IsValidEntity(RaidBossActive))
 		{
-			RaidModeScaling = 10.0;	//just a safety net
+			RaidModeScaling = 0.0;	//just a safety net
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
@@ -344,38 +345,6 @@ public void IberiaLighthouse_NPCDeath(int entity)
 }
 
 
-
-
-static char[] GetBuildingHealth()
-{
-	int health = 120;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	
-	health = RoundToCeil(float(health) * 1.2);
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 
 int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 {

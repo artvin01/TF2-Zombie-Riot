@@ -396,7 +396,7 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 						float damageDealt = 200.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 10.0;
-						StartBleedingTimer_Against_Client(target, npc.index, 100.0, 5);
+						StartBleedingTimer(target, npc.index,100.0, 3, -1, DMG_TRUEDAMAGE, 0);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 						npc.m_flNextMeleeAttack = gameTime + 2.0;
 						npc.PlaySkewerSound();

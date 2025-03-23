@@ -38,6 +38,7 @@ void ConVar_PluginStart()
 
 	ConVar_Add("tf_scout_air_dash_count", "0"); //Remove doublejumps
 	ConVar_Add("tf_allow_player_use", "1"); //Allow use!
+	ConVar_Add("tf_flamethrower_boxsize", "0.0"); //Flamethrower Particles are useless in ZR
 
 	ConVar_Add("sv_hudhint_sound", "0.0"); //Removes the wind sound when calling hint hunds
 #if defined ZR
@@ -50,7 +51,6 @@ void ConVar_PluginStart()
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?");
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "0", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
-	zr_interactforcereload = CreateConVar("zr_interactforcereload", "0", "force interact with reload, it also blocks spray interacting like before.", FCVAR_DONTRECORD);
 	zr_voteconfig = CreateConVar("zr_voteconfig", "raidmode", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "nominigames", "Tags to blacklist from weapons config", FCVAR_DONTRECORD);
 	zr_tagwhitelist = CreateConVar("zr_tagwhitelist", "", "Tags to whitelist from weapons config", FCVAR_DONTRECORD);
@@ -78,6 +78,11 @@ void ConVar_PluginStart()
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitehard, StoreCvarChanged);
+	HookConVarChange(zr_voteconfig, WavesCvarChanged);
+	HookConVarChange(zr_minibossconfig, WavesCvarChanged);
+	HookConVarChange(zr_ignoremapconfig, WavesCvarChanged);
+	HookConVarChange(zr_ignoremapconfig, DownloadCvarChanged);
+	HookConVarChange(zr_downloadconfig, DownloadCvarChanged);
 #else
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
@@ -95,6 +100,7 @@ void ConVar_PluginStart()
 #if defined ZR || defined RTS	
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
+	zr_interactforcereload = CreateConVar("zr_interactforcereload", "0", "force interact with reload, it also blocks spray interacting like before.", FCVAR_DONTRECORD);
 
 #if defined RPG
 	ConVar_Add("mp_friendlyfire", "1.0"); // default: 0.9 Ty to miku for showing me
@@ -205,13 +211,38 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 	}
 }
 
-
-public void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+#if defined ZR
+static void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
 	//update store if these are updated.
-#if defined ZR
 	Items_SetupConfig();
 	Store_ConfigSetup();
-#endif
 }
 
+static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	if(!Configs_HasExecuted())
+		return;
+	
+	char mapname[64];
+	GetCurrentMap(mapname, sizeof(mapname));
+	KeyValues kv = Configs_GetMapKv(mapname);
+	Waves_SetupVote(kv);
+	Waves_SetupMiniBosses(kv);
+	delete kv;
+}
+
+static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	if(!Configs_HasExecuted())
+		return;
+	
+	char mapname[64];
+	GetCurrentMap(mapname, sizeof(mapname));
+	KeyValues kv = Configs_GetMapKv(mapname);
+	FileNetwork_ConfigSetup(kv);
+	Building_ConfigSetup();
+	NPC_ConfigSetup();
+	delete kv;
+}
+#endif

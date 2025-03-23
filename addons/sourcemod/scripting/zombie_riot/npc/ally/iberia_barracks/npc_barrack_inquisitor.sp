@@ -132,7 +132,7 @@ methodmap Barrack_Iberia_Inquisitor_Lynsen < BarrackBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
-		npc.m_iAttacksTillReload = 6;
+		npc.m_iAttacksTillReload = 0;
 
 		KillFeed_SetKillIcon(npc.index, "revolver");
 		
@@ -159,65 +159,58 @@ public void Barrack_Iberia_Inquisitor_Lynsen_ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(PrimaryThreatIndex > 0)
 		{
+			npc.PlayIdleAlertSound();
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			if(npc.m_iAttacksTillReload >= 1) //	Does the inquisitor have all boolets?
+			if(npc.m_iAttacksTillReload < 30) //	Combo attack not ready
 			{
-				ResetInquisitorWeapon(npc, 0);
-				if(npc.m_iAttacksTillReload > 6)
-				{
-					npc.m_iAttacksTillReload = 6; //	Can't get more than 6 bullets for the gun, would make it too op on the burst attack
-				}
 				if(flDistanceToTarget < 200000.0)	// Ranged mode
 				{
-					//Can we attack right now?
 					int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-					{
 					//Target close enough to hit
-						if(IsValidEnemy(npc.index, Enemy_I_See))
+					if(IsValidEnemy(npc.index, Enemy_I_See))
+					{
+						if(npc.m_flNextRangedAttack < GameTime)
 						{
-							if(npc.m_flNextRangedAttack < GameTime)
+							npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+							npc.m_iTarget = Enemy_I_See;
+							npc.PlayRangedSound();
+							npc.FaceTowards(vecTarget, 150000.0);
+							Handle swingTrace;
+							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 							{
-								npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
-								npc.m_iTarget = Enemy_I_See;
-								npc.PlayRangedSound();
-								npc.FaceTowards(vecTarget, 150000.0);
-								Handle swingTrace;
-								if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
-								{
-									int target = TR_GetEntityIndex(swingTrace);	
-								
-									float vecHit[3];
-									TR_GetEndPosition(vecHit, swingTrace);
-									float origin[3], angles[3];
-									view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-									ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
+								int target = TR_GetEntityIndex(swingTrace);	
 							
-									npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								float origin[3], angles[3];
+								view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+								ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
+						
+								npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
+								npc.m_iAttacksTillReload ++;
+								if(NpcStats_IberiaIsEnemyMarked(target))
+								{
+									npc.m_flNextRangedAttack = GameTime + (0.5 * npc.BonusFireRate);
 									npc.m_iAttacksTillReload --;
-									if(NpcStats_IberiaIsEnemyMarked(target))
-									{
-										npc.m_flNextRangedAttack = GameTime + (0.25 * npc.BonusFireRate);
-									}
-									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 4000.0, 1), DMG_BULLET, -1, _, vecHit);
-								} 		
-								delete swingTrace;				
-							}
+								}
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 4000.0, 1), DMG_BULLET, -1, _, vecHit);
+							} 		
+							delete swingTrace;				
 						}
 					}
 				}
 			}
-			else	// The inquisitor is out of ammo, engage
+			else	// The inquisitor special attack is ready
 			{
+				BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE", 4000.0,_, true); // Run at higher speed and go for melee, "I'm not going to stab you"
 				ResetInquisitorWeapon(npc, 1);
 				if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 				{
 					if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 					{
-						float damage = 7500.0;
-
 						if(!npc.m_flAttackHappenswillhappen)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
@@ -240,47 +233,23 @@ public void Barrack_Iberia_Inquisitor_Lynsen_ClotThink(int iNPC)
 							
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),7500.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
-									npc.m_iAttacksTillReload += 6;
 									
-									bool DoEffect = false;
-									
-									if(npc.m_flDoingAnimation < GameTime)
-									{
-										if(b_thisNpcIsARaid[target]) // Anti-raid attack, knocks them away for less range but very briefly stuns them
-										{
-											FreezeNpcInTime(target, 0.5);
-											Custom_Knockback(npc.index, target, 350.0, true);
-											EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
-											DoEffect = true;
-										}
-										else
-										{
-											Custom_Knockback(npc.index, target, 500.0);
-											EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
-											DoEffect = true;
-										}
-										if(DoEffect)
-										{	
-											npc.m_flDoingAnimation = GameTime + 30.0;
-											float NewPos[3]; 
-											GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", NewPos);
-											spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
-											spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
-											spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
-											ApplyStatusEffect(npc.index, target, "Marked", 2.0);
-										}
-									}
+									npc.m_iAttacksTillReload = 0;
+									ResetInquisitorWeapon(npc, 0);
+									Custom_Knockback(npc.index, target, 500.0, true);
+									EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
+									ApplyStatusEffect(npc.index, target, "Marked", 4.0);
 								}
 							}
 							delete swingTrace;
 							npc.m_flAttackHappenswillhappen = false;							
 						}
-					}
-					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
+						else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
+						{
+							npc.m_flAttackHappenswillhappen = false;
+						}
 					}
 				}
 			}
@@ -289,14 +258,7 @@ public void Barrack_Iberia_Inquisitor_Lynsen_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		if(npc.m_iAttacksTillReload >= 1)
-		{
-			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 175000.0,_, true);
-		}
-		else
-		{
-			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE", 4000.0,_, true); // Run at higher speed and go for melee, "I'm not going to stab you"
-		}
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 175000.0,_, true);
 	}
 }
 

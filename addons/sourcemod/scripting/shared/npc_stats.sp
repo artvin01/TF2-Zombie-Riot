@@ -3029,8 +3029,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
-	//		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
 		return entity;
@@ -8560,6 +8560,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	b_HideHealth[entity] = false;
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
 	f_AttackSpeedNpcIncreace[entity] = 1.0;
@@ -8781,7 +8782,6 @@ public void ArrowStartTouch(int arrow, int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
-		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 		if(ShouldNpcDealBonusDamage(entity))
 		{
 			f_ArrowDamage[arrow] *= 3.0;
@@ -8804,31 +8804,22 @@ public void ArrowStartTouch(int arrow, int entity)
 		Projectile_DealElementalDamage(entity, arrow);
 
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(arrow_particle))
-		{
-		//	DispatchKeyValue(arrow_particle, "parentname", "none");
-			AcceptEntityInput(arrow_particle, "ClearParent");
-			float f3_PositionTemp[3];
-			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
-			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
-		}
+
 	}
 	else
 	{
-		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 		EmitSoundToAll(g_ArrowHitSoundMiss[GetRandomInt(0, sizeof(g_ArrowHitSoundMiss) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(arrow_particle))
-		{
-		//	DispatchKeyValue(arrow_particle, "parentname", "none");
-			AcceptEntityInput(arrow_particle, "ClearParent");
-			float f3_PositionTemp[3];
-			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
-			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
-		}
 	}
-	RemoveEntity(arrow);
+	int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
+	if(IsValidEntity(arrow_particle))
+	{
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	//Delay deletion for particles to not break.
+	SDKUnhook(arrow, SDKHook_StartTouch, ArrowStartTouch);
+	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow), TIMER_FLAG_NO_MAPCHANGE);
+	SetEntityRenderMode(arrow, RENDER_NONE);
+	SetEntityMoveType(arrow, MOVETYPE_NONE);
 }
 
 public void Rocket_Particle_StartTouch(int entity, int target)
@@ -8900,22 +8891,6 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 public MRESReturn Rocket_Particle_DHook_RocketExplodePre(int entity)
 {
 	return MRES_Supercede;	//Don't even think about it mate
-}
-
-public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
-{
-	RemoveEntity(arrow);
-	int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
-	if(IsValidEntity(arrow_particle))
-	{
-		DispatchKeyValue(arrow_particle, "parentname", "none");
-		AcceptEntityInput(arrow_particle, "ClearParent");
-		float f3_PositionTemp[3];
-		GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-		TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
-		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
-	}
-	return MRES_Supercede;
 }
 
 
@@ -9377,14 +9352,14 @@ void NPCStats_RemoveAllDebuffs(int enemy, float Duration = 0.0)
 
 
 
-bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3], bool check_for_Ground_Clerance = false, bool teleport_entity = true)
+bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3], bool check_for_Ground_Clerance = false, bool teleport_entity = true, bool ingoreSafeTrace = false)
 {
 	bool FoundSafeSpot = false;
 	//Try base position.
 	float OriginalPos[3];
 	OriginalPos = endPos;
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance, ingoreSafeTrace))
 		FoundSafeSpot = true;
 
 	for (int x = 0; x < 6; x++)
@@ -9470,14 +9445,14 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 					case 6:
 						endPos[0] -= TELEPORT_STUCK_CHECK_3;
 				}
-				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
+				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance, ingoreSafeTrace))
 					FoundSafeSpot = true;
 			}
 		}
 	}
 				
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance, ingoreSafeTrace))
 		FoundSafeSpot = true;
 
 	if(FoundSafeSpot && teleport_entity)
@@ -9490,7 +9465,7 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 
 //We wish to check if this poisiton is safe or not.
 //This is only for players.
-bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false)
+bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false, bool ingoreSafeTrace = false)
 {
 	int ref;
 	
@@ -9516,16 +9491,19 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
-	float pos_player[3];
-	WorldSpaceCenter(entity, pos_player);
-	float Pos2Test_Higher[3];
-	Pos2Test_Higher = Pos;
-	Pos2Test_Higher[2] += 35.0;
-	hTrace = TR_TraceRayFilterEx( pos_player, Pos2Test_Higher, SolidityFlags, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, entity );
-	if ( TR_GetFraction(hTrace) < 1.0)
+	if(!ingoreSafeTrace)
 	{
-		delete hTrace;
-		return false;
+		float pos_player[3];
+		WorldSpaceCenter(entity, pos_player);
+		float Pos2Test_Higher[3];
+		Pos2Test_Higher = Pos;
+		Pos2Test_Higher[2] += 35.0;
+		hTrace = TR_TraceRayFilterEx( pos_player, Pos2Test_Higher, SolidityFlags, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, entity );
+		if ( TR_GetFraction(hTrace) < 1.0)
+		{
+			delete hTrace;
+			return false;
+		}
 	}
 	if(ref < 0) //It hit nothing, good!
 	{
@@ -10661,6 +10639,7 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 			//extinquish shortly.
 			if(Reapply_BurningCorpse[target] < GetGameTime())
 			{
+				Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 				IngiteTargetClientside(target, client, false);
 			}
 			if(b_FirstPersonUsesWorldModel[client])

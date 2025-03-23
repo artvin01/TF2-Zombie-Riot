@@ -41,13 +41,13 @@ enum struct ItemInfo
 	char Custom_Name[64];
 
 	int Index;
-	int Attrib[16];
-	float Value[16];
+	int Attrib[32];
+	float Value[32];
 	int Attribs;
 
 	int Index2;
-	int Attrib2[16];
-	float Value2[16];
+	int Attrib2[32];
+	float Value2[32];
 	int Attribs2;
 
 	int Ammo;
@@ -363,7 +363,7 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sspecial_attribute_info", prefix);
 		this.SpecialAdditionViaNonAttributeInfo			= kv.GetNum(buffer, 0);
 		
-		static char buffers[32][16];
+		static char buffers[64][16];
 		Format(buffer, sizeof(buffer), "%sattributes", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
@@ -572,7 +572,7 @@ void Store_OnCached(int client)
 			amount += 50;
 		
 		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
-		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") * 1 / 5;
+		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") / 5;
 		amount += SkillTree_GetByName(client, "Cash Up 1 High") * 20;
 		amount += SkillTree_GetByName(client, "Cash Up Barney 1") * 30;
 
@@ -784,6 +784,11 @@ void Store_OpenItemPage(int client)
 			MenuPage(client, StoreWeapon[weapon]);
 		}
 	}
+	else
+	{
+		SetGlobalTransTarget(client);
+		CPrintToChat(client,"{red}[ZR] {yellow}%t", "Cant Display");
+	}
 }
 
 stock void Store_OpenItemThis(int client, int index)
@@ -798,7 +803,7 @@ stock void Store_OpenItemThis(int client, int index)
 	}
 }
 
-void Store_SwapToItem(int client, int swap)
+void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 {
 	if(swap == -1)
 		return;
@@ -829,17 +834,30 @@ void Store_SwapToItem(int client, int swap)
 			}
 		}
 	}
+	if(SwitchDo)
+		SetPlayerActiveWeapon(client, swap);
+	int WeaponValidCheck = 0;
 
-	SetPlayerActiveWeapon(client, swap);
+	//make sure to fake swap aswell!
+	while(WeaponValidCheck != swap)
+	{
+		WeaponValidCheck = Store_CycleItems(client, slot);
+		if(WeaponValidCheck == -1)
+			break;
+	}
 }
 
-void Store_SwapItems(int client)
+void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride = -1)
 {
 	//int suit = GetEntProp(client, Prop_Send, "m_bWearingSuit");
 	//if(!suit)
 	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 
 	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(activeweaponoverride != -1)
+	{
+		active = activeweaponoverride;
+	}
 	if(active > MaxClients)
 	{
 		char buffer[36];
@@ -912,7 +930,8 @@ void Store_SwapItems(int client)
 					
 					//GetEntityClassname(nextE, buffer, sizeof(buffer));
 					//FakeClientCommand(client, "use %s", buffer);
-					SetPlayerActiveWeapon(client, nextE);
+					if(SwitchDo)
+						SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -927,7 +946,8 @@ void Store_SwapItems(int client)
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
 				if(TF2_GetClassnameSlot(buffer) == slot)
 				{
-					SetPlayerActiveWeapon(client, weapon);
+					if(SwitchDo)
+						SetPlayerActiveWeapon(client, weapon);
 					break;
 				}
 			}
@@ -936,6 +956,49 @@ void Store_SwapItems(int client)
 
 	//if(suit)
 	//	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
+}
+
+// Returns the top most weapon (or -1 for no change)
+int Store_CycleItems(int client, int slot)
+{
+	char buffer[36];
+	
+	int topWeapon = -1;
+	int firstWeapon = -1;
+	int previousIndex = -1;
+
+	int length = GetMaxWeapons(client);
+	for(int i; i < length; i++)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+		if(weapon != -1)
+		{
+			GetEntityClassname(weapon, buffer, sizeof(buffer));
+			if(TF2_GetClassnameSlot(buffer) == slot)
+			{
+				if(firstWeapon == -1)
+					firstWeapon = weapon;
+
+				if(previousIndex != -1)
+				{
+					// Replace this weapon with the previous slot (1 <- 2)
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(topWeapon == -1)
+						topWeapon = weapon;
+				}
+
+				previousIndex = i;
+			}
+		}
+	}
+
+	if(firstWeapon != -1)
+	{
+		// First to Last (7 <- 0)
+		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+	}
+
+	return topWeapon;
 }
 
 void Store_ConfigSetup()
@@ -1202,26 +1265,28 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 						maxCash -= CashSpentLoadout[client];
 						cash = maxCash;
 					}
+					SetGlobalTransTarget(client);
 					char buf[64];
 					if(StarterCashMode[client])
 						Format(buf, sizeof(buf), "%t", "Loadout Credits", cash);
 					else
 						Format(buf, sizeof(buf), "%t", "Credits", cash);
 
-					SetGlobalTransTarget(client);
 					menu.SetTitle("%t\n \n%s\n \n%s\n ", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					
 					int skip = info.PackSkip;
 					count += skip;
 
 					char data[64], buffer[64];
+					/*
 					if(count > 1)
 					{
 						zr_tagwhitelist.GetString(buffer, sizeof(buffer));
 						if(StrContains(buffer, "realtime") != -1)
 							count = 1;
 					}
-					
+					What in the god damn?!
+					*/
 					int userid = (client == owner || owner == -1) ? -1 : GetClientUserId(owner);
 					
 					for(int i = skip; i < count; i++)
@@ -1352,7 +1417,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
 						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 250, true, 5.0, true);
+							Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
 					}
 				}
 				
@@ -1424,6 +1489,7 @@ void Store_Reset()
 		StarterCashMode[c] = true;
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
+		CashSpentLoadout[c] = 0;
 	}
 	static Item item;
 	int length = StoreItems.Length;
@@ -1659,7 +1725,8 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 			{
 				static ItemInfo info;
 				item.GetItemInfo(0, info);
-				Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
+				Format(buffer, blength, "%s {%t%i}", buffer, "Slot ",item.Slot);
+			//	Format(buffer, blength, "%s {%s}", buffer, TranslateItemName(client, item.Name, info.Custom_Name));
 				break;
 			}
 		}
@@ -4265,6 +4332,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				{
 					int cash = CurrentCash - CashSpent[client];
 					
+					if(StarterCashMode[client])
+					{
+						int maxCash = StartCash;
+						maxCash -= CashSpentLoadout[client];
+						cash = maxCash;
+					}
 					if(ClientTutorialStep(client) == 2)
 					{
 						SetClientTutorialStep(client, 3);
@@ -4316,7 +4389,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[info.Ammo][0];
 							CashSpentTotal[client] += AmmoData[info.Ammo][0];
-							CashSpentLoadout[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+							CashSpentLoadout[client] += AmmoData[info.Ammo][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1];
@@ -4510,6 +4583,12 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					if(item.Owned[client])
 					{
 						int cash = CurrentCash - CashSpent[client];
+						if(StarterCashMode[client])
+						{
+							int maxCash = StartCash;
+							maxCash -= CashSpentLoadout[client];
+							cash = maxCash;
+						}
 						int level = item.Owned[client] - 1;
 						if(item.ParentKit || level < 0)
 							level = 0;
@@ -4598,8 +4677,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-//anymore then 10 slots iss overkill.
-#define MAX_LOADOUT_SLOTS 10
+//anymore then 20 slots iss overkill.
+#define MAX_LOADOUT_SLOTS 20
 static void LoadoutPage(int client, bool last = false)
 {
 	SetGlobalTransTarget(client);
@@ -4886,7 +4965,6 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-	
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
@@ -5023,7 +5101,7 @@ void Store_ApplyAttribs(int client)
 	}
 	
 	Armor_Level[client] = 0;
-	Jesus_Blessing[client] = 0;
+	Grigori_Blessing[client] = 0;
 	i_HeadshotAffinity[client] = 0;
 	i_SoftShoes[client] = 0;
 
@@ -5083,7 +5161,7 @@ void Store_ApplyAttribs(int client)
 				}
 				case 777:
 				{
-					Jesus_Blessing[client] = RoundToNearest(value);
+					Grigori_Blessing[client] = RoundToNearest(value);
 					continue;
 				}
 				case 785:
@@ -5505,6 +5583,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
 					HidePlayerWeaponModel(client, entity, true);
+
+					//new item bought, make sure to update the current order and stuff of weapon changing client
+					//TODO bug: Buy 1 melee weapon, then another, you cant switch between the two unless you swsitch once via h
+
+
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);
@@ -6075,6 +6158,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Flagellant_Enable(client, entity);
 		Enable_Impact_Lance(client, entity);
 		Enable_Trash_Cannon(client, entity);
+		Enable_TornadoBlitz(client, entity);
 		Enable_Rusty_Rifle(client, entity);
 		Enable_Blitzkrieg_Kit(client, entity);
 		Activate_Fractal_Kit(client, entity);

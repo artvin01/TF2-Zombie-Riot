@@ -212,6 +212,7 @@ ConVar CvarXpMultiplier;
 TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 
+bool b_GivePlayerHint[MAXTF2PLAYERS];
 #if defined ZR
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool b_IgnoreMapMusic[MAXTF2PLAYERS];
@@ -292,7 +293,7 @@ float f_ClientReviveDelayMax[MAXENTITIES];
 float f_ClientReviveDelayReviveTime[MAXENTITIES];
 float f_ClientBeingReviveDelay[MAXENTITIES];
 
-#define MAXSTICKYCOUNTTONPC 12
+#define MAXSTICKYCOUNTTONPC 42
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 
@@ -350,6 +351,7 @@ float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
 
+bool b_HideHealth[MAXENTITIES];
 bool b_IsABow[MAXENTITIES];
 bool b_WeaponHasNoClip[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
@@ -476,7 +478,7 @@ float Mana_Loss_Delay[MAXTF2PLAYERS];
 //float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXENTITIES];
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
-int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
+int Grigori_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];

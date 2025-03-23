@@ -291,20 +291,6 @@ void CrazyladySelfDefense(Crazylady npc, float gameTime, int target, float dista
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.0;
 
-					if(!NpcStats_IsEnemySilenced(npc.index))
-					{
-						if(target > MaxClients)
-						{
-							//StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
-						}
-						else
-						{
-							if (!IsInvuln(target))
-							{
-								//StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
-							}
-						}
-					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					if(npc.b_Nightmare)

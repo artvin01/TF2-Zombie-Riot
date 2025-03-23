@@ -1332,17 +1332,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 								{
 									if(!NpcStats_IsEnemySilenced(npc.index))
 									{
-										if(target > MaxClients)
-										{
-											StartBleedingTimer_Against_Client(target, npc.index, damage * 0.1, 4);
-										}
-										else
-										{
-											if (!IsInvuln(target))
-											{
-												StartBleedingTimer_Against_Client(target, npc.index, damage * 0.1, 4);
-											}
-										}
+										StartBleedingTimer(targetTrace, npc.index, damage * 0.1, 4, -1, DMG_TRUEDAMAGE, 0);
 									}
 								}
 											

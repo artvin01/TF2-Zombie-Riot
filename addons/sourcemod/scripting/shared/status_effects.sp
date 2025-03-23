@@ -924,6 +924,22 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 
 //strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 
+void Force_ExplainBuffToClient(int client, const char[] name)
+{
+	int index;
+	index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+
+	if(index == -1)
+	{
+		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
+		LogError("Force_ExplainBuffToClient A DEV FUCKED UP!!!!!!!!! Name %s",name);
+		return;
+	}
+	StatusEffect Apply_MasterStatusEffect;
+	E_StatusEffect Apply_StatusEffect;
+	AL_StatusEffects.GetArray(index, Apply_MasterStatusEffect);
+	ExplainBuffToClient(client, Apply_MasterStatusEffect, Apply_StatusEffect, false);
+}
 void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool AppliedOntoOthers = false)
 {
 	//Debuff has no icon, so we dont care.
@@ -944,6 +960,7 @@ void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_St
 
 	DisplayChatBuffCD[client] = GetGameTime() + 5.0;
 	
+	SetGlobalTransTarget(client);
  	char buffer[400];
 	DisplayBuffHintToClient[client][Apply_StatusEffect.BuffIndex] = true;
 	FormatEx(buffer, sizeof(buffer), "%s Desc", Apply_MasterStatusEffect.BuffName);
@@ -2247,6 +2264,10 @@ void StatusEffects_Silence()
 	StatusEffect_AddGlobal(data);
 }
 
+stock void ExtinguishTargetDebuff(int victim)
+{
+	IgniteFor[victim] = 0;
+}
 stock void ApplyRapidSuturing(int victim)
 {
 	ApplyStatusEffect(victim, victim, "Rapid Suturing", 1.0);
@@ -2382,7 +2403,7 @@ void StatusEffects_VoidLogic()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
-	data.ShouldScaleWithPlayerCount = true;
+	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 5; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -3064,9 +3085,46 @@ void StatusEffects_FallenWarrior()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Altered Functions");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϡ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnTakeDamage_PostAttacker	= Altered_FunctionsBuffSpread;
+	data.AttackspeedBuff			= 0.66;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "John's Presence");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "J");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.5;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
+	data.AttackspeedBuff			= 1.5;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
-
-
+void Altered_FunctionsBuffSpread(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	ApplyStatusEffect(attacker, victim, "Altered Functions", 2.5);
+}
 int CasinoDebuffIndex;
 void StatusEffects_CasinoDebuff()
 {
@@ -3453,8 +3511,8 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Mystery Beer");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌂");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "B"); //dont display above head, so empty
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "b");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "b"); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
@@ -3464,8 +3522,26 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.8;
-	data.Slot						= 0; //0 means ignored
-	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.Slot						= 11; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+	
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mystery Brew");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "B");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "B"); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.75;
+	data.Slot						= 11; //0 means ignored
+	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
@@ -3664,6 +3740,7 @@ void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage,
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
 			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);
+			Call_Finish();
 		}
 	}
 
@@ -3700,6 +3777,7 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
 			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
 			Call_PushCell(damagetype);
+			Call_Finish();
 		}
 	}
 

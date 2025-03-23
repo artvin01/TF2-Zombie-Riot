@@ -393,17 +393,7 @@ public void Victoria_RadioGuard_Particle_StartTouch(int entity, int target)
 				if(!Knocked)
 					Custom_Knockback(entity, target, 2500.0, true); 
 			}
-			if(target > MaxClients)
-			{
-				StartBleedingTimer_Against_Client(target, owner, 12.0, 5);
-			}
-			else
-			{
-				if (!IsInvuln(target))
-				{
-					StartBleedingTimer_Against_Client(target, owner, 12.0, 5);
-				}
-			}
+			StartBleedingTimer(target, owner, 12.0, 5, -1, DMG_TRUEDAMAGE, 0);
 		}
 
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);

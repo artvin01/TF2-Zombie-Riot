@@ -33,13 +33,13 @@ enum struct ItemInfo
 	char Custom_Name[64];
 
 	int Index;
-	int Attrib[16];
-	float Value[16];
+	int Attrib[32];
+	float Value[32];
 	int Attribs;
 
 	int Index2;
-	int Attrib2[16];
-	float Value2[16];
+	int Attrib2[32];
+	float Value2[32];
 	int Attribs2;
 
 	int Ammo;
@@ -207,7 +207,7 @@ enum struct ItemInfo
 		this.Melee_Allows_Headshots 		= view_as<bool>(kv.GetNum("melee_can_headshot", 0));
 		this.Attack3AbilitySlot			= kv.GetNum("attack_3_ability_slot");
 		
-		static char buffers[32][16];
+		static char buffers[64][16];
 		kv.GetString("attributes", buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i < this.Attribs; i++)
@@ -2167,4 +2167,48 @@ stock void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
 		}
 	}
 	//????
+}
+
+
+// Returns the top most weapon (or -1 for no change)
+int Store_CycleItems(int client, int slot)
+{
+	char buffer[36];
+	
+	int topWeapon = -1;
+	int firstWeapon = -1;
+	int previousIndex = -1;
+
+	int length = GetMaxWeapons(client);
+	for(int i; i < length; i++)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+		if(weapon != -1)
+		{
+			GetEntityClassname(weapon, buffer, sizeof(buffer));
+			if(TF2_GetClassnameSlot(buffer) == slot)
+			{
+				if(firstWeapon == -1)
+					firstWeapon = weapon;
+
+				if(previousIndex != -1)
+				{
+					// Replace this weapon with the previous slot (1 <- 2)
+					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(topWeapon == -1)
+						topWeapon = weapon;
+				}
+
+				previousIndex = i;
+			}
+		}
+	}
+
+	if(firstWeapon != -1)
+	{
+		// First to Last (7 <- 0)
+		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+	}
+
+	return topWeapon;
 }

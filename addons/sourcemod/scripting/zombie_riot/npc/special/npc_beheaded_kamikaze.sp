@@ -44,40 +44,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return BeheadedKamiKaze(vecPos, vecAng, team);
 }
 
-static char[] GetBeheadedKamiKazeHealth()
-{
-	int health = 15;
-	int health_after;
-	
-	if(Waves_GetRound()+1 <= 30)
-	{
-		health_after = ((Waves_GetRound()+1) * health);
-	}
-	else if(Waves_GetRound()+1 <= 45)
-	{
-		health_after = ((Waves_GetRound()+1) * health) * 2;
-	}
-	else if(Waves_GetRound()+1 <= 50)
-	{
-		health_after = ((Waves_GetRound()+1) * health) * 4;
-	}
-	else if(Waves_GetRound()+1 <= 55)
-	{
-		health_after = ((Waves_GetRound()+1) * health) * 8;
-	}
-	else if(Waves_GetRound()+1 <= 60)
-	{
-		health_after = ((Waves_GetRound()+1) * health) * 10;
-	}
-	else
-	{
-		health_after = ((Waves_GetRound()+1) * health) * 12;
-	}
-	char buffer[16];
-	IntToString(health_after, buffer, sizeof(buffer));
-	return buffer;
-}
-
 methodmap BeheadedKamiKaze < CClotBody
 {
 	
@@ -100,7 +66,7 @@ methodmap BeheadedKamiKaze < CClotBody
 	
 	public BeheadedKamiKaze(float vecPos[3], float vecAng[3], int ally)
 	{
-		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
+		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(15, true), ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.m_bisWalking = false;
@@ -139,6 +105,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		wave *= 0.1;
 
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		npc.m_bDissapearOnDeath = true;
 
 		if(ally == TFTeam_Blue)

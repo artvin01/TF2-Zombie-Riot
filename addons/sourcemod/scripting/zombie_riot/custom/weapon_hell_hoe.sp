@@ -13,10 +13,7 @@ bool g_isPlayerInDeathMarch_HellHoe[MAXPLAYERS+1] = {false, ...};
 static float nextDeathMarch[MAXPLAYERS+1] = {0.0, ...};
 static int iCurrentAngelHit[MAXPLAYERS+1] = {1, ...};
 
-static float Damage_Projectile[MAXENTITIES]={0.0, ...};
 static float Healing_Projectile[MAXENTITIES]={0.0, ...};
-static int Projectile_To_Client[MAXENTITIES]={0, ...};
-static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 
 //static int Projectile_To_Last[MAXENTITIES]={0, ...}; // I wanted to link them
 
@@ -28,7 +25,7 @@ static int Beam_Glow;
 #define SOUND_HELL_HOE 	"weapons/breadmonster/gloves/bm_gloves_attack_04.wav"
 #define SOUND_SOUL_HIT "player/souls_receive2.wav"
 #define NIGHTMARE_RADIUS 300.0
-#define ANGEL_BLESSING_HIT_COUNT 40
+#define ANGEL_BLESSING_HIT_COUNT 80
 
 
 void Hell_Hoe_MapStart()
@@ -139,7 +136,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 					
 					float Original_Atackspeed = 1.0;
 					Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
-					Attributes_Set(weapon, 6, Original_Atackspeed / 0.5);
+					Attributes_Set(weapon, 6, Original_Atackspeed / 0.75);
 					
 					nextDeathMarch[client] = GetGameTime() + 20.0;
 					g_isPlayerInDeathMarch_HellHoe[client] = false;
@@ -172,71 +169,12 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 				}
 				health -= healthToLoose;
 				SetEntProp(client, Prop_Data, "m_iHealth", health);
+				float flPos[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
+				spawnRing_Vectors(flPos, /*RANGE*/ NIGHTMARE_RADIUS * 2.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 125, 125, 125, 1, /*DURATION*/ 0.12, 3.0, 2.5, 5);
 				
-				float flHealToGainNotRounded = 0.0;
-				float flClientPos[3];
-				GetEntPropVector(client, Prop_Send, "m_vecOrigin", flClientPos);
-				for(int targ; targ<i_MaxcountNpc; targ++)
-				{
-					int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-					if (IsValidEntity(baseboss_index))
-					{
-						if(!b_NpcHasDied[baseboss_index])
-						{
-							if (GetTeam(client)!=GetTeam(baseboss_index)) 
-							{
-								float targPos[3];
-								WorldSpaceCenter(baseboss_index, targPos);
-								if (GetVectorDistance(flClientPos, targPos) <= NIGHTMARE_RADIUS)
-								{
-									//Code to do damage position and ragdolls
-									static float angles[3];
-									GetEntPropVector(baseboss_index, Prop_Send, "m_angRotation", angles);
-									float vecForward[3];
-									GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-									//Code to do damage position and ragdolls
-									float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
-									SDKHooks_TakeDamage(baseboss_index, client, client, flCorruptedLastDmg[client], DMG_PLASMA, -1, damage_force, targPos, _, ZR_DAMAGE_LASER_NO_BLAST);
-									
-									
-									int r = 255;
-									int g = 125;
-									int b = 125;
-									float diameter = 15.0;
-										
-									int colorLayer4[4];
-									SetColorRGBA(colorLayer4, r, g, b, 60);
-									int colorLayer3[4];
-									SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
-									int colorLayer2[4];
-									SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
-									int colorLayer1[4];
-									SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
-									TE_SetupBeamPoints(flClientPos, targPos, Beam_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-									TE_SendToAll(0.0);
-									TE_SetupBeamPoints(flClientPos, targPos, Beam_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-									TE_SendToAll(0.0);
-									TE_SetupBeamPoints(flClientPos, targPos, Beam_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-									TE_SendToAll(0.0);
-									TE_SetupBeamPoints(flClientPos, targPos, Beam_Laser, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
-									int glowColor[4];
-									SetColorRGBA(glowColor, r, g, b, 200);
-									TE_SetupBeamPoints(flClientPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
-									TE_SendToAll(0.0);
-										
-									flHealToGainNotRounded += flCorruptedLastHealthGain[client];
-								}
-							}
-						}
-					}
-				}
-				flCorruptedLastHealthGain[client] *= 1.05;
-				flCorruptedLastDmg[client] *= 1.05;
-				
-				if (flHealToGainNotRounded > 0.0) {
-					int playerMaxHp = SDKCall_GetMaxHealth(client);
-					HealEntityGlobal(client, client, flHealToGainNotRounded, 1.0,_,HEAL_ABSOLUTE|HEAL_SELFHEAL, playerMaxHp/2);
-				}
+				Explode_Logic_Custom(flCorruptedLastDmg[client], client, client, -1, flPos, NIGHTMARE_RADIUS, _, _, false, 4,_,_,_,HellHoe_AoeDamageLogic);
+
 			}
 		}
 		else {
@@ -253,6 +191,32 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 }
 
 
+void HellHoe_AoeDamageLogic(int entity, int victim, float damage, int weapon)
+{
+
+	float flClientPos[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", flClientPos);
+	flClientPos[2] += 30.0;
+	int r = 255;
+	int g = 125;
+	int b = 125;
+	float diameter = 10.0;
+		
+	float targPos[3];
+	GetEntPropVector(victim, Prop_Send, "m_vecOrigin", targPos);
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, r, g, b, 60);
+	TE_SetupBeamPoints(flClientPos, targPos, Beam_Laser, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
+	TE_SendToAll(0.0);
+	int glowColor[4];
+	SetColorRGBA(glowColor, r, g, b, 200);
+	TE_SetupBeamPoints(flClientPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
+	TE_SendToAll(0.0);
+	
+	if(dieingstate[entity] == 0)
+		HealEntityGlobal(entity, entity, flCorruptedLastHealthGain[entity], 0.5,_,HEAL_SELFHEAL);
+	flCorruptedLastHealthTook[entity] *= 1.015;
+}
 
 public Action Weapon_Junker_Staff(int client, int weapon, const char[] classname, bool &result)
 {
@@ -322,7 +286,7 @@ public Action Weapon_Junker_Staff_PAP1(int client, int weapon, const char[] clas
 		
 		if (isPlayerMad(client) && i_CustomWeaponEquipLogic[weapon] == WEAPON_HELL_HOE_3) {
 			EmitSoundToAll(SOUND_HELL_HOE, client, 80, _, _, 1.0);
-			HellHoeLaunch(client, weapon, damage, speed/2, time/3, 5, 50.0, "spell_teleport_red", 0.008);
+			HellHoeLaunch(client, weapon, damage, speed/2, time/2, 5, 50.0, "spell_teleport_red", 0.008);
 		}
 		else {
 			EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
@@ -413,7 +377,8 @@ public Action Weapon_Angel_Sword(int client, int weapon, const char[] classname,
 		time *= Attributes_Get(weapon, 101, 1.0);
 		time *= Attributes_Get(weapon, 102, 1.0);
 			
-		HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "superrare_halo");
+		HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "drg_manmelter_projectile");
+		EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
 		
 		result = isStrikeHorizontal[client];
 		return Plugin_Changed;
@@ -454,7 +419,8 @@ public Action Weapon_Angel_Sword_PAP(int client, int weapon, const char[] classn
 		time *= Attributes_Get(weapon, 101, 1.0);
 		time *= Attributes_Get(weapon, 102, 1.0);
 			
-		HellHoeLaunch(client, weapon, damage, speed, time, 7, 50.0, "superrare_halo", -2.0);
+		HellHoeLaunch(client, weapon, damage, speed, time, 7, 50.0, "drg_manmelter_projectile", -2.0);
+		EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
 		
 		result = isStrikeHorizontal[client];
 		return Plugin_Changed;
@@ -576,9 +542,18 @@ public void Angel_Sword_Transformation(int client, int weapon, bool crit) {
 			return;
 		}
 		
+		int mana_cost = 200;
+		if(mana_cost > Current_Mana[client])
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+			return;
+		}
 		float Original_Atackspeed = 1.0;
 		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
-		Attributes_Set(weapon, 6, Original_Atackspeed * 0.5);
+		Attributes_Set(weapon, 6, Original_Atackspeed * 0.75);
 		
 		g_isPlayerInDeathMarch_HellHoe[client] = true;
 		SetDefaultHudPosition(client);
@@ -590,7 +565,7 @@ public void Angel_Sword_Transformation(int client, int weapon, bool crit) {
 	{
 		float Original_Atackspeed = 1.0;
 		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
-		Attributes_Set(weapon, 6, Original_Atackspeed / 0.5);
+		Attributes_Set(weapon, 6, Original_Atackspeed / 0.75);
 		
 		nextDeathMarch[client] = GetGameTime() + 20.0;
 		g_isPlayerInDeathMarch_HellHoe[client] = false;
@@ -632,33 +607,43 @@ public void Weapon_Angel_Sword_PAP_M2(int client, int weapon, const char[] class
 			PrintHintText(client, "Weapon Mode: Vertical");
 		}
 	}
-	else {
-		if (iCurrentAngelHit[client] < ANGEL_BLESSING_HIT_COUNT) {
+	else 
+	{
+		if (iCurrentAngelHit[client] < ANGEL_BLESSING_HIT_COUNT)
+		{
+			PrintHintText(client, "Holy Charge: %i/%i", iCurrentAngelHit[client], ANGEL_BLESSING_HIT_COUNT);
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
-		else {
+		else 
+		{
 			float BannerPos[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", BannerPos);
 		
 			int clientMaxHp = SDKCall_GetMaxHealth(client);
 			float targPos[3];
+			spawnRing_Vectors(BannerPos, /*RANGE*/ 300.0 * 2.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 231, 4, 125, 1, /*DURATION*/ 0.5, 3.0, 2.5, 5);
+			spawnRing_Vectors(BannerPos, /*RANGE*/ 1.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 231, 4, 125, 1, /*DURATION*/ 0.5, 3.0, 2.5, 5, 300.0 * 2.0);
+			spawnRing_Vectors(BannerPos, /*RANGE*/ 300.0 * 2.0, 0.0, 0.0, 30.0, EMPOWER_MATERIAL, 231, 231, 4, 125, 1, /*DURATION*/ 0.5, 3.0, 2.5, 5);
+			spawnRing_Vectors(BannerPos, /*RANGE*/ 300.0 * 2.0, 0.0, 0.0, 45.0, EMPOWER_MATERIAL, 231, 231, 4, 125, 1, /*DURATION*/ 0.5, 3.0, 2.5, 5);
 			for(int ally=1; ally<=MaxClients; ally++)
 			{
-				iCurrentAngelHit[client] = 0;
 				if(IsClientInGame(ally) && IsPlayerAlive(ally) && dieingstate[ally] == 0 && TeutonType[ally] == TEUTON_NONE)
 				{
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-					if (GetVectorDistance(BannerPos, targPos, true) <= 500.0)
+					if (GetVectorDistance(BannerPos, targPos) <= 300.0)
 					{
+						iCurrentAngelHit[client] = 0;
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
-						HealEntityGlobal(client, ally, playerMaxHp * 0.3, 10.0,_,HEAL_ABSOLUTE);
+
+						HealEntityGlobal(client, ally, float(playerMaxHp) * 0.3, 1.0, 0.5);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
 				}
 			}
+			PrintHintText(client, "Holy Charge: %i/%i", iCurrentAngelHit[client], ANGEL_BLESSING_HIT_COUNT);
 		}
 	}
 }
@@ -693,8 +678,9 @@ public void Weapon_Hell_Hoe_PAP_M2(int client, int weapon, const char[] classnam
 			ClientCommand(client, "playgamesound misc/halloween/spell_spawn_boss.wav");
 			isCorruptedNightmare[client] = true;
 			
-			int flMaxHealth = SDKCall_GetMaxHealth(client);
+			float flMaxHealth = float(SDKCall_GetMaxHealth(client));
 			flCorruptedLastHealthTook[client] = flMaxHealth * 0.015;
+			flCorruptedLastHealthTook[client] *= 0.5;
 			flCorruptedLastHealthGain[client] = flMaxHealth * 0.01;
 			
 			float damage = 10.0;
@@ -718,20 +704,24 @@ public void Weapon_DRMad_Reload(int client, int weapon, bool crit, int slot)
 			float targPos[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", BannerPos);
 			SetEntProp(client, Prop_Data, "m_iHealth", health-(clientMaxHp/2));
-
 			ApplyTempAttrib(weapon, 205, 0.65, 10.0);
 			ApplyTempAttrib(weapon, 206, 0.65, 10.0);
+			spawnRing_Vectors(BannerPos, /*RANGE*/ 300.0 * 2.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 4, 4, 125, 1, /*DURATION*/ 0.5, 5.0, 7.5, 5);
+			spawnRing_Vectors(BannerPos, /*RANGE*/ 1.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 4, 4, 125, 1, /*DURATION*/ 0.5, 5.0, 7.5, 5, 300.0 * 2.0);
+			spawnRing_Vectors(BannerPos, /*RANGE*/ 300.0 * 2.0, 0.0, 0.0, 30.0, EMPOWER_MATERIAL, 231, 4, 4, 125, 1, /*DURATION*/ 0.5, 5.0, 7.5, 5);
+			spawnRing_Vectors(BannerPos, /*RANGE*/ 300.0 * 2.0, 0.0, 0.0, 45.0, EMPOWER_MATERIAL, 231, 4, 4, 125, 1, /*DURATION*/ 0.5, 5.0, 7.5, 5);
 			for(int ally=1; ally<=MaxClients; ally++)
 			{
 				if(IsClientInGame(ally) && IsPlayerAlive(ally) && dieingstate[ally] == 0 && TeutonType[ally] == TEUTON_NONE && client!=ally)
 				{
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-					if (GetVectorDistance(BannerPos, targPos, true) <= 500.0)
+					if (GetVectorDistance(BannerPos, targPos) <= 300.0)
 					{
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
-						HealEntityGlobal(client, ally, playerMaxHp * 0.5, 10.0,_,HEAL_ABSOLUTE);
+							
+						HealEntityGlobal(client, ally, playerMaxHp * 0.2, 1.0, 0.5);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
@@ -742,10 +732,11 @@ public void Weapon_DRMad_Reload(int client, int weapon, bool crit, int slot)
 		else
 		{
 			TF2_StunPlayer(client, 2.0, 100.0, TF_STUNFLAGS_NORMALBONK);
-			HealEntityGlobal(client, client, clientMaxHp * 1.0, 1.0,2.0,HEAL_ABSOLUTE|HEAL_SELFHEAL);
+			if(dieingstate[client] == 0)
+				HealEntityGlobal(client, client, clientMaxHp * 1.0, 1.0,2.0,HEAL_SELFHEAL);
 			ClientCommand(client, "playgamesound misc/halloween/spell_overheal.wav");
 		}
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		Ability_Apply_Cooldown(client, slot, 25.0);
 	}
 	else
 	{
@@ -765,28 +756,29 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 		
 		if (health > clientMaxHp/2)
 		{
-			float BannerPos[3];
-			float targPos[3];
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", BannerPos);
-			SetEntProp(client, Prop_Data, "m_iHealth", health-RoundFloat(clientMaxHp*0.1));
-			for(int ally=1; ally<=MaxClients; ally++)
+			int HealAlly;
+			HealAlly = GetClosestAlly(client, 200.0 * 200.0, client, DRMad_ChargeValidityFunction);
+			if(IsValidEntity(HealAlly))
 			{
-				if(IsClientInGame(ally) && IsPlayerAlive(ally) && dieingstate[ally] == 0 && TeutonType[ally] == TEUTON_NONE && client!=ally)
-				{
-					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-					if (GetVectorDistance(BannerPos, targPos, true) <= 500.0)
-					{
-						int playerMaxHp = SDKCall_GetMaxHealth(ally);
-						if (playerMaxHp<clientMaxHp)
-							playerMaxHp=clientMaxHp;
-						HealEntityGlobal(client, ally, playerMaxHp * 0.1, 10.0,_,HEAL_ABSOLUTE);
-						
-						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
-					}
-				}
+				int BeamIndex = ConnectWithBeam(client, HealAlly, 250, 50, 50, 2.0, 2.0, 1.35, "sprites/laserbeam.vmt");
+
+				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+
+				ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
+				Ability_Apply_Cooldown(client, slot, 1.0);
+				if(dieingstate[client] == 0)
+					HealEntityGlobal(client, client,-(clientMaxHp * 0.1), 1.0, 0.5);
+				int playerMaxHp = SDKCall_GetMaxHealth(HealAlly);
+				if (playerMaxHp<clientMaxHp)
+					playerMaxHp=clientMaxHp;
+
+				if(HealAlly >= MaxClients || dieingstate[HealAlly] == 0)
+					HealEntityGlobal(client, HealAlly, playerMaxHp * 0.1, 1.0, 0.5);
 			}
-			ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
-			Ability_Apply_Cooldown(client, slot, 1.0);
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+			}
 		}
 		else if (health > clientMaxHp*0.20)
 		{
@@ -822,7 +814,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 				}
 			}
 			ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
-			Ability_Apply_Cooldown(client, slot, 10.0);
+			Ability_Apply_Cooldown(client, slot, 12.0);
 		}
 		
 	}
@@ -835,6 +827,15 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 	}
 }
 
+public bool DRMad_ChargeValidityFunction(int provider, int entity)
+{
+	int playerMaxHp = ReturnEntityMaxHealth(entity);
+	int playerHp = GetEntProp(entity, Prop_Data, "m_iHealth");
+	if(playerHp >= playerMaxHp)
+		return false;
+
+	return true;
+}
 stock void HellHoeLaunch(int client, int weapon, float dmg, float speed, float time, int projectile_number, float spaceBetweenProj, char[] particleName, float healthGain = 0.0) {
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
@@ -876,17 +877,15 @@ stock void HellHoeLaunch(int client, int weapon, float dmg, float speed, float t
 			fPos[2] -= (spaceBetweenProj*2.0)/projectile_number;
 		}
 		
-		int iCarrier = CreateHellHoeProjectile(client, speed, fPos, fAng, time, particleName);	
-		Projectile_To_Client[iCarrier] = client;
-		Damage_Projectile[iCarrier] = dmg;
-		Healing_Projectile[iCarrier] = healthGain;
-		SDKHook(iCarrier, SDKHook_StartTouch, Event_Hell_Hoe_OnHatTouch);
+		int projectile = Wand_Projectile_Spawn(client, speed, time, dmg, -1, weapon, particleName, .CustomPos =fPos);
+		WandProjectile_ApplyFunctionToEntity(projectile, Event_Hell_Hoe_OnHatTouch);
+		Healing_Projectile[projectile] = healthGain;
 	}
 }
 
-public Action Event_Hell_Hoe_OnHatTouch(int entity, int other)
+public void Event_Hell_Hoe_OnHatTouch(int entity, int target)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -896,108 +895,50 @@ public Action Event_Hell_Hoe_OnHatTouch(int entity, int other)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		WorldSpaceCenter(target, Entity_Position);
-		//Code to do damage position and ragdolls
-		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 
-		Damage_Projectile[entity] *= 0.5;
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		float PushforceDamage[3];
+		CalculateDamageForce(vecForward, 10000.0, PushforceDamage);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, PushforceDamage, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		f_WandDamage[entity] *= 0.5;
 		
 		if (Healing_Projectile[entity] > 0.0) 
 		{
-			int client = Projectile_To_Client[entity];
-			int flMaxHealth = SDKCall_GetMaxHealth(client);
+			if(owner >= 0)
+			{
+				int flMaxHealth = SDKCall_GetMaxHealth(owner);
 			
-			HealEntityGlobal(client, client, float(flMaxHealth) * Healing_Projectile[entity], 1.0,_, HEAL_SELFHEAL);
+				Healing_Projectile[entity] = 0.0;//dont gain multiple charges.
+				if(dieingstate[owner] == 0)
+					HealEntityGlobal(owner, owner, float(flMaxHealth) * Healing_Projectile[entity], 1.0,_, HEAL_SELFHEAL);
+			}
 		}
 		else if (Healing_Projectile[entity] == -2.0) 
 		{
-			int client = Projectile_To_Client[entity];
-			if (iCurrentAngelHit[client] < ANGEL_BLESSING_HIT_COUNT) {
-				iCurrentAngelHit[client] += 1;
-				PrintHintText(client, "Holy Charge: %i/%i", iCurrentAngelHit[client], ANGEL_BLESSING_HIT_COUNT);
+			if(owner >= 0)
+			{
+				if (iCurrentAngelHit[owner] < ANGEL_BLESSING_HIT_COUNT) 
+				{
+					Healing_Projectile[entity] = 0.0;//dont gain multiple charges.
+					iCurrentAngelHit[owner] += 1;
+					PrintHintText(owner, "Holy Charge: %i/%i", iCurrentAngelHit[owner], ANGEL_BLESSING_HIT_COUNT);
+				}
 			}
 		}
 	}
 	else if(target == 0)
 	{
-		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
+		if (Healing_Projectile[entity] > 0.0 || Healing_Projectile[entity] == -1.0)
+			EmitSoundToAll(SOUND_SOUL_HIT, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		else
+			EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.3);
 		if(IsValidEntity(particle) && particle != 0)
 		{
-			if (Healing_Projectile[entity] > 0.0 || Healing_Projectile[entity] == -1.0)
-				EmitSoundToAll(SOUND_SOUL_HIT, entity, SNDCHAN_STATIC, 70, _, 0.9);
-			else
-				EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 70, _, 0.3);
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
 }
 
-
-stock int CreateHellHoeProjectile(int client, float flSpeed, float flPos[3], float flAng[3], float flDuration, char[] particleName)
-{
-	int iRot = CreateEntityByName("func_door_rotating");
-	if(iRot == -1) return -1;
-
-	DispatchKeyValueVector(iRot, "origin", flPos);
-	DispatchKeyValue(iRot, "distance", "99999");
-	DispatchKeyValueFloat(iRot, "speed", flSpeed);
-	DispatchKeyValue(iRot, "spawnflags", "12288"); // passable|silent
-	DispatchSpawn(iRot);
-	SetEntityCollisionGroup(iRot, 27);
-
-	SetVariantString("!activator");
-	AcceptEntityInput(iRot, "Open");
-	
-	
-	int iCarrier = CreateEntityByName("prop_physics_override");
-	if(iCarrier == -1) return -1;
-
-	float fVel[3], fBuf[3];
-	GetAngleVectors(flAng, fBuf, NULL_VECTOR, NULL_VECTOR);
-	fVel[0] = fBuf[0]*flSpeed;
-	fVel[1] = fBuf[1]*flSpeed;
-	fVel[2] = fBuf[2]*flSpeed;
-
-	SetEntPropEnt(iCarrier, Prop_Send, "m_hOwnerEntity", client);
-	DispatchKeyValue(iCarrier, "model", ENERGY_BALL_MODEL);
-	DispatchKeyValue(iCarrier, "modelscale", "0");
-	DispatchSpawn(iCarrier);
-
-	TeleportEntity(iCarrier, flPos, NULL_VECTOR, fVel);
-	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
-	
-	SetTeam(iCarrier, GetClientTeam(client));
-	SetTeam(iRot, GetClientTeam(client));
-	
-	SetVariantString("!activator");
-	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
-	SetEntityCollisionGroup(iCarrier, 27);
-	
-	float position[3];
-	GetEntPropVector(iCarrier, Prop_Data, "m_vecAbsOrigin", position);
-	int particle = ParticleEffectAt(position, particleName, flDuration);
-	
-	
-	TeleportEntity(particle, NULL_VECTOR, flAng, NULL_VECTOR);
-	TeleportEntity(iCarrier, NULL_VECTOR, flAng, NULL_VECTOR);
-	TeleportEntity(iRot, NULL_VECTOR, flAng, NULL_VECTOR);	
-	SetParent(iCarrier, particle);	
-	
-	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
-	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
-	SetEntProp(iCarrier, Prop_Send, "m_usSolidFlags", 200);
-	SetEntProp(iCarrier, Prop_Data, "m_nSolidType", 0);
-	SetEntityCollisionGroup(iCarrier, 0);
-	
-	DataPack pack;
-	CreateDataTimer(flDuration, Timer_RemoveEntity_CustomProjectile, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(iCarrier));
-	pack.WriteCell(EntIndexToEntRef(particle));
-	pack.WriteCell(EntIndexToEntRef(iRot));
-	
-	return iCarrier;
-}

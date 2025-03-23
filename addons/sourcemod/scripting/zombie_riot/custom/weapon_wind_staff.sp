@@ -449,3 +449,61 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 	
 	return Plugin_Continue;
 }
+
+
+void RuinaNukeBackstabDo(int victim, int attacker,int weapon)
+{
+	if (Ability_Check_Cooldown(attacker, 1) > 0.0)
+	{
+		return;
+	}
+	Ability_Apply_Cooldown(attacker, 1, 15.0, weapon);
+	Rogue_OnAbilityUse(attacker, weapon);
+	float posEnemy[3];
+	float posEnemyIAm[3];
+	float posEnemySave[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", posEnemyIAm);
+	posEnemyIAm[2] -= 100.0;
+	WorldSpaceCenter(victim, posEnemy);
+	posEnemySave = posEnemy;
+	posEnemy[2] += 5000.0;
+	posEnemy[1] += GetRandomFloat(-2000.0, 2000.0);
+	posEnemy[0] += GetRandomFloat(-2000.0, 2000.0);
+	int particle = ParticleEffectAt(posEnemy, "kartimpacttrail", 0.4);
+	b_IsEntityAlwaysTranmitted[particle] = true;
+	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));
+
+	DataPack pack;
+	CreateDataTimer(0.1, NukeBackstabEffectDo, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(particle));
+	pack.WriteFloat(posEnemyIAm[0]);
+	pack.WriteFloat(posEnemyIAm[1]);
+	pack.WriteFloat(posEnemyIAm[2]);
+	EmitAmbientSound("ambient/explosions/explode_3.wav", posEnemySave, _, 90, _,0.7, GetRandomInt(75, 110));
+	TE_Particle("hightower_explosion", posEnemySave, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
+	i_ExplosiveProjectileHexArray[weapon] = 0;
+	i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
+	i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
+		
+	float damageSeperate = 65.0;
+	damageSeperate *= WeaponDamageAttributeMultipliers(weapon);
+	damageSeperate *= 2.0;
+	Explode_Logic_Custom(damageSeperate, attacker, weapon, weapon, posEnemySave); //Big fuckoff nuke
+	i_ExplosiveProjectileHexArray[weapon] = 0;
+}
+
+static Action NukeBackstabEffectDo(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	float PosTeleport[3];
+	PosTeleport[0] = pack.ReadFloat();
+	PosTeleport[1] = pack.ReadFloat();
+	PosTeleport[2] = pack.ReadFloat();
+	if(entity != -1)
+	{
+		TeleportEntity(entity, PosTeleport, NULL_VECTOR, NULL_VECTOR);
+	}
+	return Plugin_Stop;
+
+}

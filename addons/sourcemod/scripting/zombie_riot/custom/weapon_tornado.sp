@@ -1,14 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float fl_tornados_rockets_eated[MAXPLAYERS+1]={0.0, ...};
 static int i_tornado_index[MAXENTITIES+1];
 static int i_tornado_wep[MAXENTITIES+1];
 static float fl_tornado_dmg[MAXENTITIES+1];
 static int g_ProjectileModel;
 
+
+static int i_RocketsSaved[MAXENTITIES+1];
+static int i_RocketsSavedMax[MAXENTITIES+1];
+
 static bool bl_tornado_barrage_mode[MAXPLAYERS+1]={false,...};
 static int i_tornado_pap[MAXPLAYERS+1]={0, ...};
+static float HudCooldown[MAXPLAYERS+1]={0.0, ...};
 
 
 #define SOUND_IMPACT_1 					"physics/flesh/flesh_impact_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
@@ -22,6 +26,7 @@ static int i_tornado_pap[MAXPLAYERS+1]={0, ...};
 #define SOUND_IMPACT_CONCRETE_3 		"physics/concrete/concrete_impact_bullet3.wav"
 #define SOUND_IMPACT_CONCRETE_4 		"physics/concrete/concrete_impact_bullet4.wav"
 
+#define ROCKET_EFFICIENCY_MULTI 5
 static int g_particleImpactTornado;
 
 public void Weapon_Tornado_Blitz_Precache()
@@ -37,12 +42,21 @@ public void Weapon_Tornado_Blitz_Precache()
 	PrecacheSound(SOUND_IMPACT_3);
 	PrecacheSound(SOUND_IMPACT_4);
 	PrecacheSound(SOUND_IMPACT_5);
+	PrecacheSound(")weapons/doom_rocket_launcher.wav");
+	Zero(HudCooldown);
 	
 	static char model[PLATFORM_MAX_PATH];
 	model = "models/weapons/w_bullet.mdl";
 	g_ProjectileModel = PrecacheModel(model);
 }
-
+float Tornado_WeaponSavedAttribute[MAXPLAYERS+1];
+public void Enable_TornadoBlitz(int client, int weapon)
+{
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TORNADO_BLITZ)
+	{
+		Tornado_WeaponSavedAttribute[client] = Attributes_Get(weapon, 4014, 0.0);
+	}
+}
 public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] classname, bool &result)
 {
 	if(IsValidEntity(client))
@@ -50,102 +64,68 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] class
 		if(bl_tornado_barrage_mode[client])
 		{
 			bl_tornado_barrage_mode[client]=false;
-			PrintHintText(client,"Barrage: OFF");
+			Attributes_Set(weapon, 4014, Tornado_WeaponSavedAttribute[client]);
+			ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
+			PrintHintText(client,"Barrage: OFF\nBarrage Ammo [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
 		}
-		else
+		else if (i_RocketsSaved[client] >= ROCKET_EFFICIENCY_MULTI)
 		{
 			bl_tornado_barrage_mode[client]=true;
-			PrintHintText(client,"Barrage: ON");
+			Attributes_Set(weapon, 4014, 0.0);
+			ClientCommand(client, "playgamesound misc/halloween/spelltick_02.wav");
+			PrintHintText(client,"Barrage: ON\nBarrage Ammo [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
 		}
-		
 	}
 }
 
 public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] classname, bool &result)
 {
+	i_tornado_pap[client] = 0;
 	bl_tornado_barrage_mode[client]=false;
-	if(fl_tornados_rockets_eated[client]>3.0)	//Every 3rd rocket is free. or there abouts.
-	{
-		Add_Back_One_Rocket(weapon);
-		fl_tornados_rockets_eated[client]=-3.0;
-	}
-	else
-	{
-		fl_tornados_rockets_eated[client]+=1.25;
-	}
+	if(!bl_tornado_barrage_mode[client])
+		i_RocketsSaved[client]++;
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
 public void Weapon_tornado_launcher_Spam_Pap1(int client, int weapon, const char[] classname, bool &result)
 {
+	i_tornado_pap[client] = 0;
+	i_RocketsSavedMax[client] = 30;
 	bl_tornado_barrage_mode[client]=false;
-	if(fl_tornados_rockets_eated[client]<0.49)	//2 rockets eated, 1 free.
-	{
-		Add_Back_One_Rocket(weapon);
-		fl_tornados_rockets_eated[client]++;
-	}
-	else
-	{
-		fl_tornados_rockets_eated[client]-=0.5;
-	}
+	if(!bl_tornado_barrage_mode[client])
+		i_RocketsSaved[client]++;
+
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
 public void Weapon_tornado_launcher_Spam_Pap2(int client, int weapon, const char[] classname, bool &result)
 {
+	i_RocketsSavedMax[client] = 15 * ROCKET_EFFICIENCY_MULTI;
 	i_tornado_pap[client]=2;
-	if(fl_tornados_rockets_eated[client]<1.0)	//Half rockets eated, other half free
-	{
-		Add_Back_One_Rocket(weapon);
-		fl_tornados_rockets_eated[client]++;
-	}
-	else
-	{
-		fl_tornados_rockets_eated[client]=0.0;
-	}
+	if(!bl_tornado_barrage_mode[client])
+		i_RocketsSaved[client]++;
+	
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
 public void Weapon_tornado_launcher_Spam_Pap3(int client, int weapon, const char[] classname, bool &result)
 {
+	i_RocketsSavedMax[client] = 20 * ROCKET_EFFICIENCY_MULTI;
 	i_tornado_pap[client]=4;
-	if(fl_tornados_rockets_eated[client]<2.0)	//4x clip size, basically, most of it being free.
-	{
-		Add_Back_One_Rocket(weapon);
-		fl_tornados_rockets_eated[client]++;
-	}
-	else
-	{
-		fl_tornados_rockets_eated[client]=0.0;
-	}
+	if(!bl_tornado_barrage_mode[client])
+		i_RocketsSaved[client]++;
+
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
-void remove_Back_One_Rocket(int entity)
-{
-	if(IsValidEntity(entity))
-	{
-		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-		int ammo = GetEntData(entity, iAmmoTable, 4);
-		ammo -= 1;
-		SetEntData(entity, iAmmoTable, ammo, 4, true);
-	}
-}
-void Add_Back_One_Rocket(int entity)
-{
-	if(IsValidEntity(entity))
-	{
-		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-		int ammo = GetEntData(entity, iAmmoTable, 4);
-		ammo += 1;
-		SetEntData(entity, iAmmoTable, ammo, 4, true);
-	}
-}
 void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 {
+	if(i_RocketsSaved[client] >= i_RocketsSavedMax[client])
+		i_RocketsSaved[client] = i_RocketsSavedMax[client];
+
 	if(weapon >= MaxClients)
 	{
-		
+
 		float speedMult = 1250.0;
 		float dmgProjectile = 90.0;
 		
@@ -162,22 +142,44 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 		speedMult *= Attributes_Get(weapon, 475, 1.0);
 			
 		float damage=dmgProjectile;
-		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-		int ammo = GetEntData(weapon, iAmmoTable, 4);
-		if(bl_tornado_barrage_mode[client] && ammo>i_tornado_pap[client])
+		if(bl_tornado_barrage_mode[client] && i_RocketsSaved[client] >= ROCKET_EFFICIENCY_MULTI)
 		{
+			i_RocketsSaved[client] -= ROCKET_EFFICIENCY_MULTI;
+			EmitSoundToAll(")weapons/doom_rocket_launcher.wav", weapon, SNDCHAN_WEAPON, 75, _, 0.9, 100);
 			for(int i=1; i<=i_tornado_pap[client] ;i++)
 			{
 				BlitzRocket(client, speedMult, damage*0.75, weapon);
 			}
-			for(int j=1; j<=i_tornado_pap[client]-1 ;j++)
-			{
-				remove_Back_One_Rocket(weapon);	//in this case we remove
-			}
 		}
 		else
 		{
+			if(bl_tornado_barrage_mode[client])
+			{
+				bl_tornado_barrage_mode[client] = false;
+				ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
+			}
 			BlitzRocket(client, speedMult, damage, weapon);
+		}
+		if(i_tornado_pap[client] >= 2)
+		{
+			if(bl_tornado_barrage_mode[client])
+			{
+				Attributes_Set(weapon, 4014, 0.0);
+				if(HudCooldown[client] < GetGameTime())
+				{
+					PrintHintText(client,"Barrage: ON\nBarrage Ammo [%i/%i]", i_RocketsSaved[client] /ROCKET_EFFICIENCY_MULTI, i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
+					HudCooldown[client] = GetGameTime() + 0.4;
+				}
+			}
+			else
+			{
+				Attributes_Set(weapon, 4014, Tornado_WeaponSavedAttribute[client]);
+				if(HudCooldown[client] < GetGameTime())
+				{
+					PrintHintText(client,"Barrage: OFF\nBarrage Ammo [%i/%i]", i_RocketsSaved[client] /ROCKET_EFFICIENCY_MULTI, i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
+					HudCooldown[client] = GetGameTime() + 0.4;
+				}
+			}
 		}
 	}
 }

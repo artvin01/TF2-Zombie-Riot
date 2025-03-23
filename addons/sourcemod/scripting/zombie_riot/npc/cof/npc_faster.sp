@@ -304,13 +304,11 @@ void FasterSelfDefense(Faster npc, float gameTime, int target, float distance)
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					if(npc.b_Nightmare)
 					{
-						if(target < MaxClients)
-							StartBleedingTimer_Against_Client(target, npc.index, 5.0, 10);
+						StartBleedingTimer(target, npc.index,5.0, 10, -1, DMG_TRUEDAMAGE, 0);
 					}
 					else
 					{
-						if(target < MaxClients)
-							StartBleedingTimer_Against_Client(target, npc.index, 5.0, 5);
+						StartBleedingTimer(target, npc.index,5.0, 5, -1, DMG_TRUEDAMAGE, 0);
 					}
 
 					// Hit sound

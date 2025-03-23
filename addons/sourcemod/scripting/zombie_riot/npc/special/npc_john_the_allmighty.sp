@@ -62,6 +62,7 @@ void JohnTheAllmighty_OnMapStart_NPC()
 	NPC_Add(data);
 	PrecacheSoundCustom("#zombiesurvival/john_the_allmighty.mp3");
 }
+#define JOHN_SLOWDOWN_RANGE 350.0
 
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -141,7 +142,7 @@ methodmap JohnTheAllmighty < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		npc.m_iActualHealth = StringToInt(JohnTheAllmightyHealth());
+		npc.m_iActualHealth = StringToInt(MinibossHealthScaling(160));
 
 		npc.m_flNextMeleeAttack = 0.0;
 		for(int client1 = 1; client1 <= MaxClients; client1++)
@@ -185,8 +186,8 @@ methodmap JohnTheAllmighty < CClotBody
 			DispatchKeyValue(entity, "fogblend", "2");
 			DispatchKeyValue(entity, "fogcolor", "15 15 15 240");
 			DispatchKeyValue(entity, "fogcolor2", "15 15 15 240");
-			DispatchKeyValueFloat(entity, "fogstart", 125.0);
-			DispatchKeyValueFloat(entity, "fogend", 300.0);
+			DispatchKeyValueFloat(entity, "fogstart", 205.0);
+			DispatchKeyValueFloat(entity, "fogend", 400.0);
 			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.992);
 
 			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
@@ -240,6 +241,7 @@ methodmap JohnTheAllmighty < CClotBody
 		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		
 		npc.StartPathing();
@@ -305,6 +307,12 @@ public void JohnTheAllmighty_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
+	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+	JohnTheAllmighty_ApplyBuffInLocation(VecSelfNpcabs, GetTeam(npc.index), npc.index);
+	float Range = JOHN_SLOWDOWN_RANGE;
+	spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*duration*/ 0.11, 3.0, 5.0, 1);	
+	spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*duration*/ 0.11, 3.0, 5.0, 1);	
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -506,33 +514,6 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 	}
 }
 
-static char[] JohnTheAllmightyHealth()
-{
-	int health = 160;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 
 
 public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
@@ -556,5 +537,34 @@ public void JohnTheAllmighty_OnTakeDamagePost(int victim, int attacker, int infl
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		SpawnMoney(npc.index);
 		RaidMusicSpecial1.Clear();
+	}
+}
+
+
+void JohnTheAllmighty_ApplyBuffInLocation(float BannerPos[3], int Team, int iMe = 0)
+{
+	float targPos[3];
+	for(int ally=1; ally<=MaxClients; ally++)
+	{
+		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) == Team)
+		{
+			GetClientAbsOrigin(ally, targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (JOHN_SLOWDOWN_RANGE * JOHN_SLOWDOWN_RANGE))
+			{
+				ApplyStatusEffect(ally, ally, "John's Presence", 1.0);
+			}
+		}
+	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+	{
+		int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == Team && iMe != ally)
+		{
+			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (JOHN_SLOWDOWN_RANGE * JOHN_SLOWDOWN_RANGE))
+			{
+				ApplyStatusEffect(ally, ally, "John's Presence", 1.0);
+			}
+		}
 	}
 }

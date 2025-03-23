@@ -1340,8 +1340,8 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.PlaySummonSound();
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				
-				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(12.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_defender",200000, RoundToCeil(12.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",25000, RoundToCeil(2.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_defender",60000, RoundToCeil(12.0 * MultiGlobalEnemy));
 			}
 			else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 			{
@@ -1361,7 +1361,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.g_TimesSummoned = 4;
 				npc.PlaySummonSound();
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(1.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_longrange",75000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseapredator",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseaspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	

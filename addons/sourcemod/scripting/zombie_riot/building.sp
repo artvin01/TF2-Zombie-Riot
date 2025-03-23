@@ -128,6 +128,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 
 		if(i_GiveCashBuilding[owner] < MaxBuildingCashAllow)
 		{
+			Native_OnGivenCash(owner, Cash);
 			i_GiveCashBuilding[owner] += Cash;
 			GiveCredits(owner, Cash, true);
 		}
@@ -135,6 +136,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	else
 	{
 		//This building doesnt affect the limit.
+		Native_OnGivenCash(owner, Cash);
 		CashRecievedNonWave[owner] += Cash;
 		CashSpent[owner] -= Cash;
 	}
@@ -240,13 +242,13 @@ static int GetCost(int client, BuildingInfo info, float multi)
 		{
 			buildCost /= 3;
 		}
+		//only reduce off buildigns that actually cost more to build.
+		ReduceMetalCost(client, buildCost);
 	}
 
 
 	if(Rogue_Mode())
 		buildCost /= 3;
-
-	ReduceMetalCost(client, buildCost);
 
 	return buildCost;
 }
@@ -258,6 +260,12 @@ static void BuildingMenu(int client)
 	
 	int metal = GetAmmo(client, Ammo_Metal);
 	int cash = CurrentCash - CashSpent[client];
+	if(StarterCashMode[client])
+	{
+		int maxCash = StartCash;
+		maxCash -= CashSpentLoadout[client];
+		cash = maxCash;
+	}
 	float multi = Object_GetMaxHealthMulti(client);
 	float gameTime = GetGameTime();
 	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
@@ -441,6 +449,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[Ammo_Metal][0];
 							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
@@ -451,6 +460,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
 							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * 10;
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
@@ -476,6 +486,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[Ammo_Metal][0];
 							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0];
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
@@ -486,6 +497,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
 							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * 10;
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
@@ -1965,23 +1977,9 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 	}
 
-	if(IsValidEntity(objstats.m_iWearable3))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable3, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable4))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable5))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable5, "SetTextSize");
-		SDKUnhook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-		SDKHook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-	}
+	
+	//update text
+	objstats.m_flNextDelayTime = 0.0;
 	float flPos[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 	SDKCall_SetLocalOrigin(entity, flPos);	
@@ -2125,7 +2123,7 @@ void UnequipDispenser(int client, bool destroy = false)
 {
 	if(destroy)
 	{
-		Building_Mounted[client] = 0;
+		Building_Mounted[client] = -1;
 		if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]))
 		{
 			RemoveEntity(i2_MountedInfoAndBuilding[0][client]);
@@ -2145,7 +2143,7 @@ void UnequipDispenser(int client, bool destroy = false)
 		return;
 	}
 	
-	Building_Mounted[client] = 0;
+	Building_Mounted[client] = -1;
 	int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 	if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 	{
@@ -2164,7 +2162,7 @@ void UnequipDispenser(int client, bool destroy = false)
 	{
 		return;
 	}
-	Building_Mounted[entity] = 0;
+	Building_Mounted[entity] = -1;
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	b_ThisEntityIgnored[entity] = false;
 	b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
@@ -2190,22 +2188,8 @@ void UnequipDispenser(int client, bool destroy = false)
 		SDKHook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);	
 	}
 
-	if(IsValidEntity(objstats.m_iWearable3))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable3, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable4))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable5))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable5, "SetTextSize");
-		SDKUnhook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-	}
+	//update text
+	objstats.m_flNextDelayTime = 0.0;
 
 	Building_PlayerWieldsBuilding(client, entity);
 }

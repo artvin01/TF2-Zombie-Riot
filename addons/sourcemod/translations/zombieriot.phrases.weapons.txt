@@ -1327,14 +1327,14 @@
 		"nl"		"Zwaar vest"
 		"chi"       	"重型防弹衣"
 	}
-	"Jesus's Blessing"
+	"Grigori's Blessing"
 	{
-		"en"		"Jesus's Blessing"
+		"en"		"Grigori's Blessing"
 		"fr"		"Bénédiction de Jésus"
 		"ru"		"Благословение Иисуса"
 		"de"		"Jesu Segen"
-		"pt"		"Bênção de Jesus"
-		"nl" 		"Jesus's Zegen"
+		"pt"		"Bênção de Grigori"
+		"nl" 		"Grigori's Zegen"
 		"chi"       	"耶稣的祝福"
 	}
 	"Full Riot Gear Set"

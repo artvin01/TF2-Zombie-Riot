@@ -286,7 +286,9 @@ void VoidExpidonsanFortifierSelfDefense(VoidExpidonsanFortifier npc, float gameT
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 35.0;
+					float damageDealt = 45.0;
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 3.5;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
