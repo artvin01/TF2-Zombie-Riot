@@ -128,7 +128,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(float vecPos[3], float vecAng[3], int ally)
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", MinibossHealthScaling(300), ally, false, true, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", MinibossHealthScaling(200), ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 2;
 		
