@@ -32,7 +32,7 @@ public const int AmmoData[][] =
 	{ 10, 10 },			//Stickybombs
 	{ 10, 100 },		//Minigun Barrel
 	{ 10, 10 },			//Custom Bolt
-	{ 10, 100 },		//Meedical Syringes
+	{ 10, 100 },		//Medical Syringes
 	{ 10, 12 },			//Sniper Rifle Rounds
 	{ 10, 12 },			//Arrows
 	{ 10, 60 },			//SMG Magazines
@@ -216,7 +216,8 @@ enum
 	WEAPON_PURNELL_PRIMARY = 139,
 	WEAPON_KRITZKRIEG = 140,
 	WEAPON_X10KNIFE = 141,
-	WEAPON_RUINA_DRONE_KNIFE = 142
+	WEAPON_RUINA_DRONE_KNIFE = 142,
+	WEAPON_TORNADO_BLITZ = 143,
 }
 
 enum

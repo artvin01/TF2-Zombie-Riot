@@ -49,7 +49,14 @@ public void Weapon_Tornado_Blitz_Precache()
 	model = "models/weapons/w_bullet.mdl";
 	g_ProjectileModel = PrecacheModel(model);
 }
-
+float Tornado_WeaponSavedAttribute[MAXPLAYERS+1];
+public void Enable_TornadoBlitz(int client, int weapon)
+{
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TORNADO_BLITZ)
+	{
+		Tornado_WeaponSavedAttribute[client] = Attributes_Get(weapon, 4014, 0.0);
+	}
+}
 public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] classname, bool &result)
 {
 	if(IsValidEntity(client))
@@ -57,7 +64,7 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] class
 		if(bl_tornado_barrage_mode[client])
 		{
 			bl_tornado_barrage_mode[client]=false;
-			Attributes_Set(weapon, 4014, -0.5);
+			Attributes_Set(weapon, 4014, Tornado_WeaponSavedAttribute[client]);
 			ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
 			PrintHintText(client,"Barrage: OFF\nBarrage Ammo [%i/%i]", i_RocketsSaved[client]/ROCKET_EFFICIENCY_MULTI , i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
 		}
@@ -166,7 +173,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 			}
 			else
 			{
-				Attributes_Set(weapon, 4014, -0.5);
+				Attributes_Set(weapon, 4014, Tornado_WeaponSavedAttribute[client]);
 				if(HudCooldown[client] < GetGameTime())
 				{
 					PrintHintText(client,"Barrage: OFF\nBarrage Ammo [%i/%i]", i_RocketsSaved[client] /ROCKET_EFFICIENCY_MULTI, i_RocketsSavedMax[client]/ROCKET_EFFICIENCY_MULTI);
