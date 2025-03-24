@@ -1242,6 +1242,9 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 	if(!IsValidClient(owner))
 		return;
 		
+	if(!IsValidClient(client))
+		return;
+		
 	if(index > 0)
 	{
 		static Item item;
