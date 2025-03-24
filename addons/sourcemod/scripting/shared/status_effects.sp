@@ -942,6 +942,9 @@ void Force_ExplainBuffToClient(int client, const char[] name)
 }
 void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool AppliedOntoOthers = false)
 {
+	//Bad client
+	if(client <= 0)
+		return;
 	//Debuff has no icon, so we dont care.
 	if(!Apply_MasterStatusEffect.HudDisplay[0])
 		return;

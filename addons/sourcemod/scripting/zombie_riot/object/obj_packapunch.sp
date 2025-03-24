@@ -106,7 +106,6 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 		KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
 		SetClientTutorialStep(client, 6);
 		DoTutorialStep(client, false);	
-		TutorialEndFully(client);
 	}
 	f_CheckWeaponDelay[client] = 0.0;
 	if(!ClotCanUse(npc, client))

@@ -373,11 +373,11 @@ void Ark_Lauch_projectile(int client, int weapon, bool multi, float speed, float
 
 	if(multi)
 	{	
-		damage *= 0.20;
+		damage *= 0.40;
 		float Angles[3];
 		GetClientEyeAngles(client, Angles);
 		Format(Particle, sizeof(Particle), "%s", "unusual_robot_radioactive2");
-		for (int i = 1; i <= 4; i++)
+		for (int i = 1; i <= 2; i++)
 		{
 			
 			for (int spread = 0; spread < 3; spread++)

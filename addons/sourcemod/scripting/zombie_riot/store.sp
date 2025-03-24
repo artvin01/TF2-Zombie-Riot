@@ -1242,6 +1242,9 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 	if(!IsValidClient(owner))
 		return;
 		
+	if(!IsValidClient(client))
+		return;
+		
 	if(index > 0)
 	{
 		static Item item;
@@ -2033,6 +2036,10 @@ public void ReShowSettingsHud(int client)
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-86", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "See Tutorial Again");
+	FormatEx(buffer, sizeof(buffer), "%s", buffer);
+	menu2.AddItem("-95", buffer);
 	/*
 	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client] + 2.0);
 	menu2.AddItem("-72", buffer);
@@ -2448,6 +2455,10 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				case -86:
 				{
 					Manual_SoundcacheFixTest(client);
+				}
+				case -95:
+				{
+					StartTutorial(client);
 				}
 				case -64: //Lower Volume
 				{

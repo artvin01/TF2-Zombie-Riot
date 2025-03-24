@@ -698,7 +698,7 @@ void Music_Update(int client)
 	{
 		if(Give_Cond_Timer[client] < GetGameTime())
 		{
-			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 2.0);
+			TF2_AddCondition(client, TFCond_MarkedForDeath, 2.0);
 			Give_Cond_Timer[client] = GetGameTime() + 1.0;
 		}
 	}

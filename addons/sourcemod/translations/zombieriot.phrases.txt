@@ -2076,6 +2076,14 @@
 		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
 		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
 	}
+	"tutorial_4"
+	{
+		"en"		"One last thing! In your hud and enemy huds you will see various symbols.\n☛Means melee damage.➶Means Ranged damage.☖ Means damage bonus (npcs usually)\nPercentage shows what its multiplied by."
+	}
+	"tutorial_5"
+	{
+		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
+	}
 	"Tutorial Show Hint Perk Machine"
 	{
 		"en"		"Use this machine to get a temporary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
@@ -3462,6 +3470,10 @@
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"
+	}
+	"See Tutorial Again"
+	{
+		"en" 	"See Tutorial Again"
 	}
 	"FixSoundManual Fail"
 	{

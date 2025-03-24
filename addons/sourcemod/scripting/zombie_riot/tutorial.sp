@@ -144,7 +144,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				{
 					if(TeutonType[client] == TEUTON_NONE)
 					{
-						if(b_GrantFreeItemsOnce[client])
+						if(b_GrantFreeItemsOnce[client] && Level[client] < 5)
 						{
 							b_GrantFreeItemsOnce[client] = false;
 							Store_GiveSpecificItem(client, "Construction Novice");
@@ -240,6 +240,23 @@ void DoTutorialStep(int client, bool obeycooldown)
 
 						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
 					}
+				}
+				case 6:
+				{
+					
+					SetGlobalTransTarget(client);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_4");
+					f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
+					SetClientTutorialStep(client, 7);
+				}
+				case 7:
+				{
+					
+					SetGlobalTransTarget(client);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_5");
+					TutorialEndFully(client);
 				}
 			}
 		}

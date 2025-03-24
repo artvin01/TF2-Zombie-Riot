@@ -75,10 +75,14 @@ void Configs_ConfigsExecuted()
 {
 	HasExecuted = true;
 
+	ConVar_Enable();
+
 	char mapname[64];
 	GetCurrentMap(mapname, sizeof(mapname));
 
 	KeyValues kv = Configs_GetMapKv(mapname);
+
+	ExecuteMapOverrides(kv);
 	
 #if defined RPG
 	RPG_SetupMapSpecific(mapname);
@@ -139,13 +143,31 @@ void Configs_ConfigsExecuted()
 	} while(kv.GotoNextKey());
 	delete kv;
 #endif
-
-	ConVar_Enable();
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 			OnClientPutInServer(client);
+	}
+}
+
+static void ExecuteMapOverrides(KeyValues kv)
+{
+	if(kv)
+	{
+		kv.Rewind();
+		if(kv.JumpToKey("Overrides") && kv.GotoFirstSubKey(false))
+		{
+			char name[64], value[128];
+
+			do
+			{
+				kv.GetSectionName(name, sizeof(name));
+				kv.GetString(NULL_STRING, value, sizeof(value));
+				ConVar_AddTemp(name, value);
+			}
+			while(kv.GotoNextKey(false));
+		}
 	}
 }
 
