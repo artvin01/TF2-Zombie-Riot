@@ -96,8 +96,9 @@ ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
-#endif
 ConVar CvarCustomModels;
+ConVar CvarAutoSelectWave;
+#endif
 ConVar CvarFileNetworkDisable;
 
 ConVar CvarDisableThink;
@@ -3249,7 +3250,7 @@ public Action AdminCheckKick(Handle timer, int ref)
 		}
 		else
 		{
-			KickAt = CvarMaxPlayerAlive.IntValue;
+			KickAt = CalcMaxPlayers();
 		}
 
 		int playersOnServer = CountPlayersOnServer();

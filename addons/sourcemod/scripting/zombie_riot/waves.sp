@@ -110,6 +110,7 @@ static float Cooldown;
 static bool InSetup;
 static int FakeMaxWaves;
 static int WaveLevel;
+static int MapSeed;
 
 static Function ModFuncRemove = INVALID_FUNCTION;
 static Function ModFuncAlly = INVALID_FUNCTION;
@@ -205,6 +206,7 @@ void Waves_MapStart()
 	Freeplay_Info = 0;
 	FirstMapRound = true;
 	MinibossScalingHandle = 1.0;
+	MapSeed = GetURandomInt();
 //	Freeplay_w500reached = false;
 
 	int objective = GetObjectiveResource();
@@ -598,7 +600,8 @@ void Waves_SetupVote(KeyValues map)
 		
 		return;
 	}
-	
+
+	bool autoSelect = CvarAutoSelectWave.BoolValue;	
 	Voting = new ArrayList(sizeof(Vote));
 	
 	Vote vote;
@@ -616,7 +619,7 @@ void Waves_SetupVote(KeyValues map)
 			Voting.PushArray(vote);
 
 			// If we're downloading via downloadstable, add every vote option to that
-			if(CvarFileNetworkDisable.IntValue > 0)
+			if(!autoSelect && CvarFileNetworkDisable.IntValue > 0)
 			{
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues wavekv = new KeyValues("Waves");
@@ -632,7 +635,7 @@ void Waves_SetupVote(KeyValues map)
 
 	kv.GoBack();
 
-	if(kv.JumpToKey("Modifiers"))
+	if(!autoSelect && kv.JumpToKey("Modifiers"))
 	{
 		if(kv.GotoFirstSubKey())
 		{
@@ -670,10 +673,46 @@ void Waves_SetupVote(KeyValues map)
 
 	if(kv != map)
 		delete kv;
+	
+	if(autoSelect)
+	{
+		int pos = MapSeed % Voting.Length;
+		Voting.GetArray(pos, vote);
+		delete Voting;
+		
+		strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
+		CPrintToChatAll("{crimson}%t: %s","Difficulty set to", vote.Name);
+		EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
+		EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 
-	CanReVote = Voting.Length > 2;
+		vote.Name[0] = CharToUpper(vote.Name[0]);
 
-	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		Queue_DifficultyVoteEnded();
+		Native_OnDifficultySet(pos, vote.Name, vote.Level);
+		
+		if(pos > 3)
+			pos = 3;
+		
+		Waves_SetDifficultyName(vote.Name);
+		WaveLevel = vote.Level;
+		
+		Format(vote.Name, sizeof(vote.Name), "FireUser%d", pos + 1);
+		ExcuteRelay("zr_waveselected", vote.Name);
+		
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+		KeyValues kv2 = new KeyValues("Waves");
+		kv2.ImportFromFile(buffer);
+		Waves_SetupWaves(kv2, false);
+		delete kv2;
+
+		DoGlobalMultiScaling();
+		Waves_UpdateMvMStats();
+	}
+	else
+	{
+		CanReVote = Voting.Length > 2;
+		CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	}
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
