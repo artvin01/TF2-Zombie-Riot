@@ -1979,15 +1979,17 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 	{
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = true;		
-		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
-
+	/*
 	if(IsValidEntity(objstats.m_iWearable2))
 	{
 		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable2] = true;		
 		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 	}
+	*/
 
 	
 	//update text
@@ -2187,10 +2189,12 @@ void UnequipDispenser(int client, bool destroy = false)
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = false;
 	//	SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);		
-		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
-		SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+		SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+	//	SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
-
+	/*
 	if(IsValidEntity(objstats.m_iWearable2))
 	{
 		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
@@ -2199,6 +2203,7 @@ void UnequipDispenser(int client, bool destroy = false)
 		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SDKHook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);	
 	}
+	*/
 
 	//update text
 	objstats.m_flNextDelayTime = 0.0;
