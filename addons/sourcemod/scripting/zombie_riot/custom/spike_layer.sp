@@ -54,7 +54,7 @@ public bool Spike_ShouldCollide(int client, int collisiongroup, int contentsmask
 //static int Spike_Owner[MAXENTITIES]={0, ...};
 
 
-#define MAXSPIKESALLOWED 120
+#define MAXSPIKESALLOWED 60
 
 static int Spike_Health[MAXENTITIES]={0, ...};
 static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
