@@ -1599,6 +1599,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					Citizen_SetupStart();
 				}
 				Music_EndLastmann();
+				RespawnCheckCitizen();
 				ReviveAll(true);
 				CheckAlivePlayers();
 				WaveEndLogicExtra();
@@ -1982,6 +1983,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 				
 				Music_EndLastmann();
+				RespawnCheckCitizen();
 				ReviveAll();
 				CheckAlivePlayers();
 			}
