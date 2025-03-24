@@ -114,8 +114,8 @@ public void Weapon_Shoot_Arrow_Ability(int client, int weapon, bool crit, int sl
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
-		Arrows_Damage[client] = 50.0;
-		Max_Arrows[client] = 10;
+		Arrows_Damage[client] = 100.0;
+		Max_Arrows[client] = 5;
 		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
 			
 		Arrows_Ability_Shot[client] = 0;
@@ -142,8 +142,8 @@ public void Weapon_Shoot_Arrow_Ability_Weaker(int client, int weapon, bool crit,
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
-		Arrows_Damage[client] = 50.0;
-		Max_Arrows[client] = 5;
+		Arrows_Damage[client] = 60.0;
+		Max_Arrows[client] = 4;
 		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
 			
 		Arrows_Ability_Shot[client] = 0;

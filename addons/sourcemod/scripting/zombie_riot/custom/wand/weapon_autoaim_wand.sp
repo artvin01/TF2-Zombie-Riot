@@ -92,7 +92,8 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 				delete swingTrace;
 			
 				float Angles[3];
-				for(int HowOften=0; HowOften<=10; HowOften++)
+				damage *= 2.0; //halved amount, so double damage
+				for(int HowOften=0; HowOften<=5; HowOften++)
 				{
 					GetClientEyeAngles(client, Angles);
 					for (int spread = 0; spread < 3; spread++)
