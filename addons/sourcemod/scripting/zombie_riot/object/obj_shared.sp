@@ -303,6 +303,8 @@ methodmap ObjectGeneric < CClotBody
 	} 
 	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
+		CClotBody npcself = view_as<CClotBody>(this.index);
+		npcself.SetActivity(animation, Is_sequence);
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
@@ -316,6 +318,8 @@ methodmap ObjectGeneric < CClotBody
 	}
 	public void SetPlaybackRate(float flSpeedAnim)
 	{
+		CClotBody npcself = view_as<CClotBody>(this.index);
+		npcself.SetPlaybackRate(flSpeedAnim);
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
