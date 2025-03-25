@@ -2515,16 +2515,16 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 {
 //	if(!b_GaveMarkForDeath[client])
 //		return;
-	/*
+
 	if(!IsValidClient(client))
 	{
+		/*
 		int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
 		if(entity > MaxClients)
 			RemoveEntity(entity);
-			
+		*/	
 		return;
 	}
-	*/
 	if (GetTeam(client) != TFTeam_Red)
 		force_Clear = true;
 

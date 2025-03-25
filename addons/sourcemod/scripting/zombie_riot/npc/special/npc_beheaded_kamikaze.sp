@@ -66,7 +66,7 @@ methodmap BeheadedKamiKaze < CClotBody
 	
 	public BeheadedKamiKaze(float vecPos[3], float vecAng[3], int ally)
 	{
-		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(15, true), ally));
+		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(10, true), ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.m_bisWalking = false;

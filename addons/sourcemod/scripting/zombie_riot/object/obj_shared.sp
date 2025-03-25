@@ -168,18 +168,30 @@ methodmap ObjectGeneric < CClotBody
 		f3_CustomMinMaxBoundingBox[obj][0] = CustomThreeDimensions[0];
 		f3_CustomMinMaxBoundingBox[obj][1] = CustomThreeDimensions[1];
 		f3_CustomMinMaxBoundingBox[obj][2] = CustomThreeDimensions[2];
+		
+		if(FakemodelOffset)
+		{
+			f3_CustomMinMaxBoundingBox[obj][2] -=FakemodelOffset;
+		}
+		
 
-		float VecMin[3];
-		float VecMax[3];
-		VecMin = CustomThreeDimensions;
-		VecMin[0] *= -1.0;
-		VecMin[1] *= -1.0;
-		VecMin[2] = 0.0;
-		VecMax = CustomThreeDimensions;
+		if(FakemodelOffset)
+		{
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] -= FakemodelOffset;
+		}
+		else
+		{
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] = 0.0;
+		}
+
 		SetEntProp(obj, Prop_Data, "m_nSolidType", 2); 
 
-		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", VecMax);
-		SetEntPropVector(obj, Prop_Data, "m_vecMins", VecMin);
+		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", f3_CustomMinMaxBoundingBox[obj]);
+		SetEntPropVector(obj, Prop_Data, "m_vecMins", f3_CustomMinMaxBoundingBoxMinExtra[obj]);
 		//Running UpdateCollisionBox On this entity just makes it calculate its own one, bad.
 	//	objstats.UpdateCollisionBox();
 
@@ -212,7 +224,7 @@ methodmap ObjectGeneric < CClotBody
 		int entity;
 		if(DoFakeModel)
 		{
-			entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
+			entity = objstats.EquipItemSeperate("partyhat", model);
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
@@ -303,6 +315,8 @@ methodmap ObjectGeneric < CClotBody
 	} 
 	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
+		CClotBody npcself = view_as<CClotBody>(this.index);
+		npcself.SetActivity(animation, Is_sequence);
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
@@ -316,6 +330,8 @@ methodmap ObjectGeneric < CClotBody
 	}
 	public void SetPlaybackRate(float flSpeedAnim)
 	{
+		CClotBody npcself = view_as<CClotBody>(this.index);
+		npcself.SetPlaybackRate(flSpeedAnim);
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
@@ -1118,6 +1134,9 @@ void BuildingUpdateTextHud(int building)
 		float Offset[3];
 		Offset[2] = f3_CustomMinMaxBoundingBox[building][2];
 		Offset[2] += 12.0;
+	//	if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
+	//		Offset[2] += f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable3 = TextEntity;	
