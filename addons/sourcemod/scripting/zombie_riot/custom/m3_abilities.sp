@@ -843,6 +843,8 @@ public void Reinforce(int client, bool NoCD)
 				continue;
 			if(!b_HasBeenHereSinceStartOfWave[client_check])
 				continue;
+			if(f_PlayerLastKeyDetected[client] < GetGameTime())
+				continue;
 
 			DeadPlayer=true;
 		}
@@ -857,7 +859,7 @@ public void Reinforce(int client, bool NoCD)
 
 		
 		i_MaxRevivesAWave++;
-		CPrintToChatAll("{green}%N Is calling for additonal Mercs for tempomary assistance...",client);
+		CPrintToChatAll("{green}%N Is calling for additonal Mercs for temporary assistance...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
 
@@ -1929,6 +1931,9 @@ stock int GetRandomDeathPlayer(int client)
 			continue;
 
 		if(!b_HasBeenHereSinceStartOfWave[client_check])
+			continue;
+
+		if(f_PlayerLastKeyDetected[client] < (GetGameTime() - 2.0))
 			continue;
 
 		victim[victims++] = client_check;

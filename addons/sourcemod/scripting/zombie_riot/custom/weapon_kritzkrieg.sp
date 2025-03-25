@@ -44,6 +44,8 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 	if(!IsValidEntity(medigun))
 		return Plugin_Stop;
 	int client = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(client))
+		return Plugin_Stop;
 	int target = GetHealingTarget(client);
 	float charge = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 

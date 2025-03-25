@@ -168,4 +168,12 @@
 	{
 		"en"	"A building that can spend materials to cook various meals to buff allies."
 	}
+	"Giant Lighthouse"
+	{
+		"en" 		"Giant Lighthouse"
+	}
+	"Giant Lighthouse Desc"
+	{
+		"en" 		"TODO"
+	}
 }

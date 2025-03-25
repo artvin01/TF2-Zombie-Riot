@@ -1105,6 +1105,16 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 	}
 	return Plugin_Stop;
 }
+public Action Timer_RemoveEntityFancy(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		SetEntityRenderFx(entity, RENDERFX_FADE_FAST);
+		CreateTimer(1.5, Timer_RemoveEntity, entid, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return Plugin_Stop;
+}
 public Action Timer_RemoveEntityParticle(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);

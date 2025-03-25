@@ -1117,68 +1117,68 @@
 	}
 	"Quick Revive"
 	{
-		"en" 		"Perk: Quick Revive"
-		"fr" 		"Perk: Résurrection Rapide"
-		"ru" 		"Перк: Реаниматор"
-		"de"		"Vorteil: Schnelles Wiederbeleben"
-		"pt"		"Habilidade: Rápida ressureição"
-		"nl"		"Perk: Snel tot leven brengen"
-		"chi" 		"Buff: 快速起身"
+		"en" 		"Quick Revive"
+		"fr" 		"Résurrection Rapide"
+		"ru" 		"Реаниматор"
+		"de"		"Schnelles Wiederbeleben"
+		"pt"		"Rápida ressureição"
+		"nl"		"Snel tot leven brengen"
+		"chi" 		"快速起身"
 	}
 	"Juggernog"
 	{
-		"en" 		"Perk: Juggernog"
-		"fr" 		"Perk: Juggernog"
-		"ru" 		"Перк: Джаггер-фанта"
-		"pt"		"Habilidade: Juggernog"
-		"chi" 		"Buff: 身体强化"
+		"en" 		"Juggernog"
+		"fr" 		"Juggernog"
+		"ru" 		"Джаггер-фанта"
+		"pt"		"Juggernog"
+		"chi" 		"身体强化"
 	}
 	"Double Tap"
 	{
-		"en" 		"Perk: Double Tap"
-		"fr" 		"Perk: Double-Touche"
-		"ru" 		"Перк: Пиф-паф"
-		"de"		"Vorteil: Doppeltippen"
-		"pt"		"Habilidade: Toque Duplo"
-		"nl"		"perk: Dubbeltikken"
-		"chi" 		"Buff: 精神强化"
+		"en" 		"Double Tap"
+		"fr" 		"Double-Touche"
+		"ru" 		"Пиф-паф"
+		"de"		"Doppeltippen"
+		"pt"		"Toque Duplo"
+		"nl"		"Dubbeltikken"
+		"chi" 		"精神强化"
 	}	
 	"Speed Cola"
 	{
-		"en" 		"Perk: Speed Cola"
-		"fr" 		"Perk: Speed Cola"
-		"ru" 		"Перк: Быстрокола"
-		"de"		"Vorteil: Geschwindigkeits Cola"
-		"pt"		"Habilidade: Refri-Veloz"
-		"nl"		"Perk: SnelheidsCola"
-		"chi" 		"Buff: 极速可乐"
+		"en" 		"Speed Cola"
+		"fr" 		"Speed Cola"
+		"ru" 		"Быстрокола"
+		"de"		"Geschwindigkeits Cola"
+		"pt"		"Refri-Veloz"
+		"nl"		"SnelheidsCola"
+		"chi" 		"极速可乐"
 	}
 	"Deadshot Daiquiri"
 	{
-		"en" 		"Perk: Deadshot Daiquiri"
-		"fr" 		"Perk: Tir Mortel de Daiquiri"
-		"ru" 		"Перк: Снайпер-лайм"
-		"de"		"Vorteil: Todesschuss Daiquiri"
-		"pt"		"Habilidade: Tiro morto de Daiquiri"
-		"nl"		"Perk: Dood schot Daiquiri"
-		"chi" 		"Buff: 死亡宣告"
+		"en" 		"Deadshot Daiquiri"
+		"fr" 		"Tir Mortel de Daiquiri"
+		"ru" 		"Снайпер-лайм"
+		"de"		"Todesschuss Daiquiri"
+		"pt"		"Tiro morto de Daiquiri"
+		"nl"		"Dood schot Daiquiri"
+		"chi" 		"死亡宣告"
 	}
 	
 	"Widows Wine"
 	{
-		"en" 		"Perk: Widows Wine"
-		"fr" 		"Perk: Vin des Veuves"
-		"ru" 		"Перк: Вино вдовы"
-		"pt"		"Habilidade: Vinho Viúvo"
-		"nl"		"Perk: Wijn van de weduwe"
-		"chi" 		"Buff: 恶魔领域"
+		"en" 		"Widows Wine"
+		"fr" 		"Vin des Veuves"
+		"ru" 		"Вино вдовы"
+		"pt"		"Vinho Viúvo"
+		"nl"		"Wijn van de weduwe"
+		"chi" 		"恶魔领域"
 	}
 	"Recycle Poire"
 	{
-		"en" 		"Perk: Recycle Poiré"
-		"fr" 		"Perk: Recyclage Poiré"
-		"pt"		"Perk: Pêra Reciclada"
-		"ru" 		"Перк: Переработка пуаре"
+		"en" 		"Recycle Poiré"
+		"fr" 		"Recyclage Poiré"
+		"pt"		"Pêra Reciclada"
+		"ru" 		"Переработка пуаре"
 	}
 
 	"Quick Revive Recieved"
@@ -1975,7 +1975,7 @@
 	}	
 	"Which perk do you desire?"
 	{
-		"en"		"Which Bottle do you wish to drink?\nCrouch and click the drink to see what it does."
+		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead."
 	}	
 	"Reviving"
 	{
@@ -2076,9 +2076,17 @@
 		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
 		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
 	}
+	"tutorial_4"
+	{
+		"en"		"One last thing! In your hud and enemy huds you will see various symbols.\n☛Means melee damage.➶Means Ranged damage.☖ Means damage bonus (npcs usually)\nPercentage shows what its multiplied by."
+	}
+	"tutorial_5"
+	{
+		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
+	}
 	"Tutorial Show Hint Perk Machine"
 	{
-		"en"		"Use this machine to get a tempomary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+		"en"		"Use this machine to get a temporary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
 	}
 	"Tutorial Show Hint Perk Machine Build One"
 	{
@@ -3463,6 +3471,10 @@
 	{
 		"en" 	"Fix First Sound Play Manually"
 	}
+	"See Tutorial Again"
+	{
+		"en" 	"See Tutorial Again"
+	}
 	"FixSoundManual Fail"
 	{
 		"en" 	"Looks like not all sounds have been downloaded yet, try again later.\nIt did try to precache all one before, though."
@@ -3586,7 +3598,7 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this tempomary alliance."
+		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
 	}
 	"Schwert Donner Alt Desc"
 	{

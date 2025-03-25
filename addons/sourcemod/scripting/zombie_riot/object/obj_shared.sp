@@ -195,6 +195,31 @@ methodmap ObjectGeneric < CClotBody
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
 		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
+		//Main prop is always half visible.
+		/*
+			how it works:
+			if a building is on cooldown/can have one, we spawn a 2nd prop, see below under fake model.
+			We made it entirely solid visibly, i.e. not half invisible and make the main prop invisible
+			to save on resources unlike before we just re-use the base model
+			We dont do set transmit on it, beacuse if its always half invisible, then that means we can just hide the fake model, i.e. fully visible to indicate the building
+			can be used
+			Zfighting cant happen beacuse its in the exact same position
+
+			im such a genuis...
+			-Artvin
+
+		*/
+		int entity;
+		if(DoFakeModel)
+		{
+			entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+			objstats.m_iWearable1 = entity;
+		}
+		/*
+		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(obj, 0, 0, 0, 0);
 		int entity;
 		if(DoFakeModel)
@@ -211,6 +236,7 @@ methodmap ObjectGeneric < CClotBody
 		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		objstats.m_iWearable2 = entity;
+		*/
 
 		//think once
 		ObjBaseThink(objstats.index);
@@ -586,7 +612,8 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				b_ThisEntityIgnored[objstats.index] = true;
 			}
 		}
-
+		SetEntityRenderColor(objstats.index, 55, 55, 55, 100);
+		
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
@@ -637,19 +664,25 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
 		{
-			SetEntityRenderColor(wearable, r, g, 0, 100);
-			/*
-			if(b_Anger[wearable])
-			{
-				this.SetSequence(0);	
-			}
-			else
-			{
-				this.SetSequence(0);
-			}
-			*/
+			SetEntityRenderColor(objstats.index, r, g, 0, 100);
+			SetEntityRenderColor(wearable, r, g, 0, 255);
+
 		}
-		
+		else
+		{
+			SetEntityRenderColor(objstats.index, r, g, 0, 255);
+		}
+		/*
+		if(b_Anger[wearable])
+		{
+			this.SetSequence(0);	
+		}
+		else
+		{
+			this.SetSequence(0);
+		}
+		*/
+		/*
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 		{
@@ -659,6 +692,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		{
 			SetEntityRenderColor(objstats.index, r, g, 0, 255);
 		}
+		*/
 		
 	}
 	return true;

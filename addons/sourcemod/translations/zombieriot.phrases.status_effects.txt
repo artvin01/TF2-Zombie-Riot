@@ -362,7 +362,7 @@
 	}
 	"Rapid Suturing Desc"
 	{
-		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very tempomary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
+		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very temporary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
 	}
 	"Marked"
 	{
@@ -612,7 +612,6 @@
 	{
 		"en"	"Reduces attack/reload speed & healrate by 50%%.\nSlows down NPCs by 50%%."
 	}
-	John's Presence
 	"Gambler's Ruin Total"
 	{
 		"en"	"Gambler's Ruin Total"

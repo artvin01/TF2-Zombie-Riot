@@ -2287,7 +2287,8 @@ int Citizen_Count()
 		{
 			Citizen npc = view_as<Citizen>(i);
 			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
-			if(!npc.m_bHero)
+			//and temp rebels!
+			if(!npc.m_bHero && !TempRebel[i])
 				count++;
 		}
 	}
@@ -2295,6 +2296,24 @@ int Citizen_Count()
 	return count;
 }
 
+void RespawnCheckCitizen()
+{
+	
+	int a, i;
+	while((i = FindEntityByNPC(a)) != -1)
+	{
+		if(i_NpcInternalId[i] == NPCId)
+		{
+			Citizen npc = view_as<Citizen>(i);
+
+			if(TempRebel[npc.index])
+			{
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				continue;
+			}
+		}
+	}
+}
 void Citizen_WaveStart()
 {
 	int a, i;

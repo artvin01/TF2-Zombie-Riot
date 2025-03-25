@@ -6190,7 +6190,7 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 		if(!b_DoNotUnStuck[iNPC] && f_CheckIfStuckPlayerDelay[iNPC] < GameTime)
 		{
 			f_CheckIfStuckPlayerDelay[iNPC] = GameTime + 0.5;
-			//This is a tempomary fix. find a better one for players getting stuck.
+			//This is a temporary fix. find a better one for players getting stuck.
 			static float hullcheckmaxs_Player[3];
 			static float hullcheckmins_Player[3];
 			if(b_IsGiant[iNPC])
@@ -6232,7 +6232,7 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 					//give them 2 seconds to unstuck themselves
 				}
 			}
-			//This is a tempomary fix. find a better one for players getting stuck.
+			//This is a temporary fix. find a better one for players getting stuck.
 		}
 	}
 #if defined ZR

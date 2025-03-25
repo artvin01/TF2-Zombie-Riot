@@ -96,8 +96,9 @@ ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
-#endif
 ConVar CvarCustomModels;
+ConVar CvarAutoSelectWave;
+#endif
 ConVar CvarFileNetworkDisable;
 
 ConVar CvarDisableThink;
@@ -989,6 +990,7 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit_mini4.wav");
 	PrecacheSound("mvm/mvm_revive.wav");
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
+	PrecacheSound("weapons/samurai/tf_marked_for_death_indicator.wav");
 	Zero(f_PreventMedigunCrashMaybe);
 	Zero(f_ClientReviveDelayReviveTime);
 	Zero(f_MutePlayerTalkShutUp);
@@ -1665,6 +1667,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 #endif
+//Is player active? atleast somewhat.
+	if(buttons > 0)
+	{
+		f_PlayerLastKeyDetected[client] = GetGameTime() + 5.0;
+	}
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS
@@ -3244,7 +3251,7 @@ public Action AdminCheckKick(Handle timer, int ref)
 		}
 		else
 		{
-			KickAt = CvarMaxPlayerAlive.IntValue;
+			KickAt = CalcMaxPlayers();
 		}
 
 		int playersOnServer = CountPlayersOnServer();

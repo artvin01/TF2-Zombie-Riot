@@ -119,6 +119,7 @@ Handle g_hSetLocalAngles;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
 
+float f_PlayerLastKeyDetected[MAXTF2PLAYERS];
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 float f_PreventMedigunCrashMaybe[MAXTF2PLAYERS];
@@ -429,6 +430,9 @@ float f_BannerAproxDur[MAXENTITIES];
 bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
 #endif
 
+// This is used for stuff like: Youre on fire, or mark for death icon above your head
+//this is needed as when you change classes via our system tf2 just deletes it, screw tf2.
+float f_UpdateModelIssues[MAXTF2PLAYERS];
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE

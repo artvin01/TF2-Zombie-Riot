@@ -788,7 +788,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	Building_PlayerWieldsBuilding(client, entity);
 }
 
-bool Building_AttemptPlace(int buildingindx, int client)
+bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false)
 {
 	float VecPos[3];
 	GetEntPropVector(buildingindx, Prop_Data, "m_vecAbsOrigin", VecPos);
@@ -808,7 +808,8 @@ bool Building_AttemptPlace(int buildingindx, int client)
 		if(client <= MaxClients)
 		{
 			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			if(!TestClient)
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
 		return false;
 	}
@@ -827,40 +828,47 @@ bool Building_AttemptPlace(int buildingindx, int client)
 		endPos2[0] = VecPos[0];
 		endPos2[1] = VecPos[1];
 		endPos2[2] += Delta;
-		i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
+		if(!TestClient)
+			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
 		if(client <= MaxClients)
 			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
 		
-		SDKCall_SetLocalOrigin(buildingindx, endPos2);	
-		SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
-		if(client <= MaxClients)
-			Player_BuildingBeingCarried[client] = 0;
+		if(!TestClient)
+		{
+			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
+			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+			if(client <= MaxClients)
+				Player_BuildingBeingCarried[client] = 0;
 		
-		Building_BuildingBeingCarried[buildingindx] = 0;
-		b_ThisEntityIgnored[buildingindx] = false;
-		b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+			Building_BuildingBeingCarried[buildingindx] = 0;
+			b_ThisEntityIgnored[buildingindx] = false;
+			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
 
-		if(client <= MaxClients)
-			EmitSoundToClient(client, SOUND_TOSS_TF);
-		
+			if(client <= MaxClients)
+				EmitSoundToClient(client, SOUND_TOSS_TF);
+		}
 		return true;
 	}
 	Success = Building_IsValidGroundFloor(client, buildingindx, VecPos);
 	if(!Success)
 	{
-		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+		if(!TestClient)
+			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
 		return false;
 	}
-	SDKCall_SetLocalOrigin(buildingindx, VecPos);	
-	SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
-	Building_BuildingBeingCarried[buildingindx] = 0;
-	b_ThisEntityIgnored[buildingindx] = false;
-	b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
-
-	if(client <= MaxClients)
+	if(!TestClient)
 	{
-		Player_BuildingBeingCarried[client] = 0;
-		EmitSoundToClient(client, SOUND_TOSS_TF);
+		SDKCall_SetLocalOrigin(buildingindx, VecPos);	
+		SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+		Building_BuildingBeingCarried[buildingindx] = 0;
+		b_ThisEntityIgnored[buildingindx] = false;
+		b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+
+		if(client <= MaxClients)
+		{
+			Player_BuildingBeingCarried[client] = 0;
+			EmitSoundToClient(client, SOUND_TOSS_TF);
+		}
 	}
 	return true;
 }
@@ -949,6 +957,7 @@ void BuildingPickUp(int BuildingNPC)
 	delete hTrace;
 	
 	TeleportEntity(BuildingNPC, VecCheckBottom, vecView2, NULL_VECTOR);
+	Building_AttemptPlace(BuildingNPC, client, true);
 }
 
 
@@ -1141,16 +1150,16 @@ void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float 
 	VecLaser = VecBottom;
 	if(Fail)
 	{
-		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.5, view_as<int>({255, 0, 0, 255}));
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({255, 0, 0, 255}));
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client, 255, 0, 0);
+		SetDefaultHudPosition(client, 255, 0, 0, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 	}
 	else
 	{
-		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.5, view_as<int>({0, 255, 0, 255}));
-		SetDefaultHudPosition(client);
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({0, 255, 0, 255}));
+		SetDefaultHudPosition(client,_,_,_, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
 	}
@@ -1340,6 +1349,9 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	RequestFrames(Wrench_Hit_Repair_ReplacementInternal, 12, pack);
+	
+	if(IsPlayerCarringObject(client))
+		Pickup_Building_M2(client, weapon, false);
 }
 public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 {
@@ -1967,15 +1979,17 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 	{
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = true;		
-		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
-
+	/*
 	if(IsValidEntity(objstats.m_iWearable2))
 	{
 		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable2] = true;		
 		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 	}
+	*/
 
 	
 	//update text
@@ -2175,10 +2189,12 @@ void UnequipDispenser(int client, bool destroy = false)
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = false;
 	//	SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);		
-		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
-		SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+		SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+	//	SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
-
+	/*
 	if(IsValidEntity(objstats.m_iWearable2))
 	{
 		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
@@ -2187,6 +2203,7 @@ void UnequipDispenser(int client, bool destroy = false)
 		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SDKHook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);	
 	}
+	*/
 
 	//update text
 	objstats.m_flNextDelayTime = 0.0;
