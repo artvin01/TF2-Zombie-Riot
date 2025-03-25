@@ -227,6 +227,11 @@ void Waves_PlayerSpawn(int client)
 
 float MinibossScalingReturn()
 {
+	if(Rogue_Mode())
+		return 1.0;
+	if(Construction_Mode())
+		return 1.0;
+
 	return MinibossScalingHandle;
 }
 public Action NpcEnemyAliveLimit(int client, int args)
