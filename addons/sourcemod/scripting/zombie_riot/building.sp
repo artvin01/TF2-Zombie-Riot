@@ -792,13 +792,11 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 {
 	float VecPos[3];
 	GetEntPropVector(buildingindx, Prop_Data, "m_vecAbsOrigin", VecPos);
+
 	float VecMin[3];
 	float VecMax[3];
-	VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
-	VecMin[0] *= -1.0;
-	VecMin[1] *= -1.0;
-	VecMin[2] = 0.0;
 	VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
+	VecMin = f3_CustomMinMaxBoundingBoxMinExtra[buildingindx];
 
 	b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 	bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
@@ -823,6 +821,10 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 		GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
 		//We use custom offets for buildings, so we do our own magic here
 		float Delta = f3_CustomMinMaxBoundingBox[buildingHit][2];
+
+	//	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2])
+	//		endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2];
+
 		//Be sure to now set all the things we need.
 		//Set the dependency
 		endPos2[0] = VecPos[0];
@@ -835,6 +837,12 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 		
 		if(!TestClient)
 		{
+		//	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2])	//wierd offset.
+		//		endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2];
+
+			if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+				endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+
 			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			if(client <= MaxClients)
@@ -858,6 +866,9 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 	}
 	if(!TestClient)
 	{
+		if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+			VecPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+
 		SDKCall_SetLocalOrigin(buildingindx, VecPos);	
 		SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 		Building_BuildingBeingCarried[buildingindx] = 0;
@@ -956,6 +967,11 @@ void BuildingPickUp(int BuildingNPC)
 	TR_GetEndPosition(VecCheckBottom, hTrace);
 	delete hTrace;
 	
+	if(f3_CustomMinMaxBoundingBoxMinExtra[BuildingNPC][2])
+	{
+		//wierd offset.
+		VecCheckBottom[2] -= f3_CustomMinMaxBoundingBoxMinExtra[BuildingNPC][2];
+	}
 	TeleportEntity(BuildingNPC, VecCheckBottom, vecView2, NULL_VECTOR);
 	Building_AttemptPlace(BuildingNPC, client, true);
 }
@@ -1141,23 +1157,22 @@ void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float 
 {
 	float VecMin[3];
 	float VecMax[3];
-	VecMin = f3_CustomMinMaxBoundingBox[entity];
-	VecMin[0] *= -1.0;
-	VecMin[1] *= -1.0;
-	VecMin[2] = 0.0;
 	VecMax = f3_CustomMinMaxBoundingBox[entity];
+	VecMin = f3_CustomMinMaxBoundingBoxMinExtra[entity];
 	float VecLaser[3];
 	VecLaser = VecBottom;
 	if(Fail)
 	{
 		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({255, 0, 0, 255}));
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client, 255, 0, 0, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 	}
 	else
 	{
+		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+			VecLaser[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
+
 		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({0, 255, 0, 255}));
 		SetDefaultHudPosition(client,_,_,_, 0.3);
 		SetGlobalTransTarget(client);
@@ -1280,6 +1295,11 @@ void IsBuildingNotFloating(int building)
 				DestroyBuildingDo(building);
 				return;
 			}
+			if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
+			{
+				//wierd offset.
+				endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+			}
 			TeleportEntity(building, endPos2, NULL_VECTOR, NULL_VECTOR);
 			//we hit something
 		}
@@ -1324,6 +1344,11 @@ void BuildingAdjustMe(int building, int DestroyedBuilding)
 //	posMain = posStacked;
 	posMain[2] = posStacked[2];	
 	
+	if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
+	{
+		//wierd offset.
+		posMain[2] -= f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+	}
 	TeleportEntity(building, posMain, NULL_VECTOR, NULL_VECTOR);
 	//make npc's that target the previous building target the stacked one now.
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
@@ -1996,6 +2021,8 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 	objstats.m_flNextDelayTime = 0.0;
 	float flPos[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+	if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+		flPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	RandomIntSameRequestFrame[client] = GetRandomInt(-999999,9999999);
 	DataPack pack = new DataPack();
@@ -2052,6 +2079,8 @@ void ParentDelayFrameForReasons(DataPack pack)
 
 	int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
 	SetParent(Wearable, InfoTarget, WhichAttachmentDo,_);
+	if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+		flPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
 	SetParent(InfoTarget, entity, _, _, _);
@@ -2088,6 +2117,8 @@ void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
 			float posStacked[3]; 
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
 			AcceptEntityInput(entity, "ClearParent");
+			if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+				posStacked[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 			SDKCall_SetLocalOrigin(entity, posStacked);	
 		}
 		return;
@@ -2120,6 +2151,8 @@ void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
 
 	float flPos[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+	if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+		flPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	RandomIntSameRequestFrame[client] = GetRandomInt(-999999,9999999);
 	DataPack pack = new DataPack();
@@ -2164,6 +2197,9 @@ void UnequipDispenser(int client, bool destroy = false)
 		float posStacked[3]; 
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
 		AcceptEntityInput(i2_MountedInfoAndBuilding[1][client], "ClearParent");
+		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+			posStacked[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
+
 		SDKCall_SetLocalOrigin(entity, posStacked);	
 		i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
 	}
