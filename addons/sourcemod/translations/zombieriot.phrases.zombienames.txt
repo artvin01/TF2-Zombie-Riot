@@ -1042,6 +1042,22 @@
 	{
 		"en" 		"Corrupted Barney"
 	}
+	"Baby"
+	{
+		"en"		"Baby"
+	}
+	"Children"
+	{
+		"en"		"Children"
+	}
+	"Stranger"
+	{
+		"en"		"Stranger"
+	}
+	"Taller"
+	{
+		"en"		"Taller"
+	}
 	"Voided Vanguard"
 	{
 		"en" 		"Voided Vanguard"
