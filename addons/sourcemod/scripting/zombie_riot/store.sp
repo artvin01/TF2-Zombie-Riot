@@ -4211,6 +4211,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -44:
 					{
 						XP[client] = LevelToXp(5);
+						Level[client] = 0; //Just incase.
 						GiveXP(client, 0);
 					}
 					case -24:

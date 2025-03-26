@@ -222,16 +222,24 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(results[1].FetchRow())
 		{
 			XP[client] = results[1].FetchInt(1);
+			if(XP[client] < 0) //no infinite back leveling.
+				XP[client] = 0; 
 			PlayStreak[client] = results[1].FetchInt(2);
 			Scrap[client] = results[1].FetchInt(3);
 			tutorial = results[1].FetchInt(4);
 			Level[client] = XpToLevel(XP[client]);
+			if(Level[client] < 0) //no infinite back leveling.
+				Level[client] = 0; 
 		}
 		else if(!results[1].MoreRows)
 		{
 			CookieXP.Get(client, buffer, sizeof(buffer));
 			XP[client] = StringToInt(buffer);
+			if(XP[client] < 0) //no infinite back leveling.
+				XP[client] = 0; 
 			Level[client] = XpToLevel(XP[client]);
+			if(Level[client] < 0) //no infinite back leveling.
+				Level[client] = 0; 
 
 			CookieScrap.Get(client, buffer, sizeof(buffer));
 			Scrap[client] = StringToInt(buffer);
