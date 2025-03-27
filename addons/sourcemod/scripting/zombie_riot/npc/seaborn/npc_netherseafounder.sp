@@ -709,8 +709,8 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				{
 					NervousTouching[entity] = NervousTouching[0];
 					NervousLastTouch[entity] = NULL_AREA;
+					ApplyStatusEffect(entity, entity, "Sea Presence", 1.0);
 				}
-				ApplyStatusEffect(entity, entity, "Sea Presence", 1.0);
 			}
 			else
 			{
