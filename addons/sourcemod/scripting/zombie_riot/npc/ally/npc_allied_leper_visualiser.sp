@@ -24,6 +24,11 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 methodmap AlliedLeperVisualiserAbility < CClotBody
 {
 	
+	property int m_iRenderDoLight
+	{
+		public get()							{ return RoundToNearest(fl_AbilityOrAttack[this.index][3]); }
+		public set(int TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = float(TempValueForProperty); }
+	}
 	public AlliedLeperVisualiserAbility(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", TFTeam_Red, true));
@@ -115,9 +120,9 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 				RemoveEntity(npc.m_iWearable7);
 
 			npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/effects/vol_light256x512.mdl",_,_,_,250.0);
-
 			if(IsValidEntity(npc.m_iWearable6))
 				RemoveEntity(npc.m_iWearable6);
+				
 
 			float flPos[3]; // original
 			float flAng[3]; // original
@@ -173,7 +178,18 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 		return;
-	
+		
+	/*
+	npc.m_iRenderDoLight -= 4;
+
+	if(npc.m_iRenderDoLight <= 0)
+		npc.m_iRenderDoLight = 0;
+
+	if(IsValidEntity(npc.m_iWearable7))
+	{
+		SetEntityRenderColor(npc.m_iWearable7, 255, 165, 0, npc.m_iRenderDoLight);
+	}
+	*/
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	switch(i_AttacksTillReload[npc.index])
@@ -216,6 +232,7 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 						
 					SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSALPHA);
 					SetEntityRenderColor(npc.m_iWearable7, 255, 165, 0, 255);
+					npc.m_iRenderDoLight = 255;
 
 					float flPos[3]; // original
 					float flAng[3]; // original

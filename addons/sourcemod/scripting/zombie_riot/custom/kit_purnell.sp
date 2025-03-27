@@ -621,7 +621,7 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 
 	if(validAlly)
 	{
-		Purnell_AllyBuffApply(client, target, buff_apply, DurationGive, cooldown);
+		Purnell_AllyBuffApply(client, target, buff_apply, DurationGive);
 
 		int BeamIndex = ConnectWithBeam(client, target, 255, 255, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
@@ -692,7 +692,7 @@ static void Purnell_Configure_Buffs(int level, float &cooldown, float &DurationG
 		}
 	}
 }
-static void Purnell_AllyBuffApply(int client, int target, int overdose, float DurationGive, float cooldown)
+static void Purnell_AllyBuffApply(int client, int target, int overdose, float DurationGive)
 {
 	char text[255];
 	switch(overdose)
@@ -866,7 +866,7 @@ public void Logic_Purnell_Debuff(int client, int victim, float damage, int weapo
 	int debuff_apply = GetRandomInt(0, 3);
 	Purnell_Configure_Debuffs(i_Pap_Level[client], cooldown, DurationGive, debuff_apply);
 //	DurationGive *= 2.0;
-	Purnell_DebuffApply(client, victim, debuff_apply, DurationGive, cooldown);
+	Purnell_DebuffApply(client, victim, debuff_apply, DurationGive);
 }
 
 static void Purnell_Configure_Debuffs(int level, float &cooldown, float &DurationGive, int &debuff_apply)
@@ -911,7 +911,7 @@ static void Purnell_Configure_Debuffs(int level, float &cooldown, float &Duratio
 		}
 	}
 }
-static void Purnell_DebuffApply(int client, int target, int overdose, float DurationGive, float cooldown)
+static void Purnell_DebuffApply(int client, int target, int overdose, float DurationGive)
 {
 	char text[255];
 	switch(overdose)
