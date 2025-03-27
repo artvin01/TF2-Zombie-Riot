@@ -750,6 +750,22 @@
 	{
 		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶ M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚"
 	}
+	"Baby Desc"
+	{
+		"en"		"Kills itself upon contact, deals massive amounts of damage upon doing so."
+	}
+	"Children Desc"
+	{
+		"en"		"Just like real life children, it'll surely annoy the hell out of you with its very long duration of bleed."
+	}
+	"Stranger Desc"
+	{
+		"en"		"Attacks you map-wide."
+	}
+	"Taller Desc"
+	{
+		"en"		"Very slow, but packs a punch."
+	}
 	"Xeno Malfunctioning Robot Desc"
 	{
 		"en"		"A Xeno Robot that overheats after hitting enough targets. Overheat releases a shockwave that deals massive AoE damage. Figment of Simon's Mind."
