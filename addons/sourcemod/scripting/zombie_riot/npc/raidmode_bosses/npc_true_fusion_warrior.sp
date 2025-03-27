@@ -93,7 +93,7 @@ static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 public void TrueFusionWarrior_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "True Fusion Warrior");
+	strcopy(data.Name, sizeof(data.Name), "Infected Silvester");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_true_fusion_warrior");
 	strcopy(data.Icon, sizeof(data.Icon), "fusion_warrior");
 	data.IconCustom = true;
@@ -133,7 +133,7 @@ static void ClotPrecache()
 	
 	PrecacheSound("player/flow.wav");
 
-	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
+	PrecacheSoundCustom("#zombiesurvival/fusion_raid/infected_silvester_ostr.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -176,10 +176,6 @@ methodmap TrueFusionWarrior < CClotBody
 		EmitSoundToAll(g_IdleSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_IdleSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	
 	}
 	
@@ -191,11 +187,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_IdleAlertedSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
+
 	}
 	
 	public void PlayHurtSound() {
@@ -205,10 +197,6 @@ methodmap TrueFusionWarrior < CClotBody
 		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_HurtSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayDeathSound() {
@@ -229,10 +217,6 @@ methodmap TrueFusionWarrior < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
 		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_AngerSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayRangedSound() {
@@ -293,7 +277,7 @@ methodmap TrueFusionWarrior < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester? Spawn");
 			}
 		}
 		
@@ -447,12 +431,12 @@ methodmap TrueFusionWarrior < CClotBody
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/fusion_raid/fusion_bgm.mp3");
-		music.Time = 178;
-		music.Volume = 2.0;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/fusion_raid/infected_silvester_ostr.mp3");
+		music.Time = 167;
+		music.Volume = 1.6;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Dragon Ball Z Dokkan Battle - LR Nappa & Vegeta");
-		strcopy(music.Artist, sizeof(music.Artist), "???");
+		strcopy(music.Name, sizeof(music.Name), "Investigation Goes Awry");
+		strcopy(music.Artist, sizeof(music.Artist), "Granpda Bard");
 		Music_SetRaidMusic(music);
 		
 		npc.Anger = false;
@@ -491,15 +475,15 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}True Fusion Warrior{default}: Run... Away...");
+					CPrintToChatAll("{gold}Silvester?{default}: Run... Away...");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}True Fusion Warrior{default}: Help...");
+					CPrintToChatAll("{gold}Silvester?{default}: Help...");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}True Fusion Warrior{crimson}: AGHHRRR!!!");
+					CPrintToChatAll("{gold}Silvester?{crimson}: AGHHRRR!!!");
 				}
 			}
 		}
@@ -508,14 +492,14 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{gold}True Fusion Warrior{default}: New... victims to infect...");
+		CPrintToChatAll("{gold}Silvester?{default}: New... victims to infect...");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{gold}True Fusion Warrior{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
+		CPrintToChatAll("{gold}Silvester?{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -1423,18 +1407,6 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 	return Plugin_Continue;
 }
 
-public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	char sound[128];
-	pack.ReadString(sound, 128);
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(entity) && entity>MaxClients)
-	{
-		EmitSoundToAll(sound, entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	return Plugin_Handled; 
-}
 
 public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 {

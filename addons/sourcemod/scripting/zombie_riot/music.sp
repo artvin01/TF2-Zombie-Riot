@@ -273,17 +273,19 @@ Big thanks to backwards#8236 For pointing me towards GetTime and helping me with
 DO NOT USE GetEngineTime, its not good in this case
 */
 
-stock void Music_SetRaidMusic(const MusicEnum music)
+stock void Music_SetRaidMusic(const MusicEnum music, bool StopMusic = true)
 {
-	for(int client=1; client<=MaxClients; client++)
+	if(StopMusic)
 	{
-		if(IsClientInGame(client))
+		for(int client=1; client<=MaxClients; client++)
 		{
-			Music_Stop_All(client); //This is actually more expensive then i thought.
-			SetMusicTimer(client, GetTime() + 2);
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client); //This is actually more expensive then i thought.
+				SetMusicTimer(client, GetTime() + 2);
+			}
 		}
 	}
-
 	RaidMusicSpecial1.Clear();
 	RaidMusicSpecial1 = music;
 }
@@ -529,7 +531,7 @@ void Music_EndLastmann(bool Reinforce=false)
 					case 6:
  						StopSound(client, SNDCHAN_STATIC, "#music/hl2_song23_suitsong3.mp3");
 					case 7:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3", 2.0);
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3", 2.0);
 				}
 
 				SetMusicTimer(client, 0);
@@ -976,7 +978,7 @@ void Music_Update(int client)
 				}
 				case 7:
 				{
-					EmitCustomToClient(client, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					EmitCustomToClient(client, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 228);
 				}
 				default:

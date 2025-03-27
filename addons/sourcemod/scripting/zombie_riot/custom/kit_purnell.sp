@@ -40,7 +40,6 @@ static bool b_ShoveSound[MAXTF2PLAYERS];
 static float fl_Push_Knockback[MAXTF2PLAYERS];
 static bool b_PurnellLastMann;
 static int i_SaveWeapon_Revolv[MAXTF2PLAYERS] = {-1, ...};
-static int i_SaveWeapon_Melee[MAXTF2PLAYERS] = {-1, ...};
 
 int Purnell_ReturnRevolver(int client)
 {
@@ -134,16 +133,6 @@ void Purnell_Enable(int client, int weapon)
 				Precached = true;
 			} 
 		}
-		case WEAPON_PURNELL_MELEE:
-		{
-			i_Pap_Level[client] = Fantasy_Blade_Get_Pap(weapon);
-			/*i_Purnell_Melee[client] = EntIndexToEntRef(weapon);*/
-			DataPack pack;
-			CreateDataTimer(0.1, Purnell_HealerTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-			pack.WriteCell(GetClientUserId(client));
-			pack.WriteCell(EntIndexToEntRef(weapon));
-			i_SaveWeapon_Melee[client] = EntIndexToEntRef(weapon);
-		}
 	}
 }
 
@@ -195,6 +184,10 @@ public Action Purnell_Timer_Management(Handle timer, DataPack pack)
 		//Purnell_Buff_Loc(client);
 		Particle_Add(client);
 		
+		if(i_Pap_Level[client] >= 1 && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
+		{
+			Purnell_Buff_Loc(client);
+		}
 		return Plugin_Continue;
 	}
 		
@@ -254,11 +247,47 @@ public void Purnell_PrimaryShove(int client, int weapon, bool crit, int slot) //
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		int pap_level = i_Pap_Level[client];
+		bool Giveinto = true;
+		float knockback = PURNELL_KNOCKBACK;
+		switch(pap_level)
+		{
+			case 2:
+			{
+				knockback = PURNELL_KNOCKBACK_PAP2;
+			}
+			case 3:
+			{
+				knockback = PURNELL_KNOCKBACK_PAP3;
+			}
+			case 4:
+			{
+				knockback = PURNELL_KNOCKBACK_PAP4;
+			}
+			case 5:
+			{
+				knockback = PURNELL_KNOCKBACK_PAP5;
+			}
+			case 6:
+			{
+				knockback = PURNELL_KNOCKBACK_PAP6;
+			}
+			case 0:
+			{
+				fl_Push_Knockback[client] = 0.0;
+				Giveinto = false;
+			}
+			default:
+			{
+				knockback = PURNELL_KNOCKBACK;
+			}
+		}
+		fl_Push_Knockback[client] = knockback;
 		Ability_Apply_Cooldown(client, slot, 2.5 * Attributes_Get(weapon, 6, 1.0));
 		DataPack pack = new DataPack();
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		pack.WriteCell(0);
+		pack.WriteCell(Giveinto);
 		RequestFrames(Purnell_Delayed_MeleeAttack, 12, pack);
 		EmitCustomToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], client, SNDCHAN_AUTO, 70, _, 1.85, 100);
 
@@ -402,13 +431,8 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 				Add_OneClip_Purnell(Reolver, client);
 				if(AdditionalBonusRaidHit)
 					Add_OneClip_Purnell(Reolver, client);
-			}
-			if(TypeOfShove == 0 && IsValidEntity(i_SaveWeapon_Melee[client]))
-			{
-				int Reolver = EntRefToEntIndex(i_SaveWeapon_Melee[client]);
-				Saga_ChargeReduction(client, Reolver, 2.0);
-				if(AdditionalBonusRaidHit)
-					Saga_ChargeReduction(client, Reolver, 1.5);
+
+				Saga_ChargeReduction(client, Reolver, 1.5);
 			}
 			EmitCustomToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 2.0, 100);
 		}
@@ -599,7 +623,7 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	{
 		Purnell_AllyBuffApply(client, target, buff_apply, DurationGive, cooldown);
 
-		int BeamIndex = ConnectWithBeam(client, target, 100, 250, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+		int BeamIndex = ConnectWithBeam(client, target, 255, 255, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 		float HealedAlly[3];
 		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", HealedAlly);
@@ -830,8 +854,8 @@ static void Purnell_AllyBuffApply(int client, int target, int overdose, float Du
 			}
 		}
 	}
-	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
-	PrintHintText(client, "%s", text);
+//	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
+	//PrintHintText(client, "%s", text);
 }
 
 //public void Weapon_Purnell_Debuff(int client, int victim, int weapon, bool crit, int slot)
@@ -841,7 +865,7 @@ public void Logic_Purnell_Debuff(int client, int victim, float damage, int weapo
 	float DurationGive = 4.0;
 	int debuff_apply = GetRandomInt(0, 3);
 	Purnell_Configure_Debuffs(i_Pap_Level[client], cooldown, DurationGive, debuff_apply);
-	DurationGive *= 2.0;
+//	DurationGive *= 2.0;
 	Purnell_DebuffApply(client, victim, debuff_apply, DurationGive, cooldown);
 }
 
@@ -973,6 +997,6 @@ static void Purnell_DebuffApply(int client, int target, int overdose, float Dura
 			}
 		}
 	}
-	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
-	PrintHintText(client, "%s", text);
+//	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
+//	PrintHintText(client, "%s", text);
 }

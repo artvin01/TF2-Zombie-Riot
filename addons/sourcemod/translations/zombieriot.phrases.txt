@@ -3529,7 +3529,7 @@
 	}
 	"True Fusion Warrior Wave Desc"
 	{
-		"en"	"(1) ''True fusion warrior'' Is infected with the xeno virus, his gear prevents spreading of it, it even made him forget his name."
+		"en"	"(1) ''Silvester'' Is infected with the xeno virus, his gear prevents spreading of it."
 	}
 	"Alternative Desc"
 	{

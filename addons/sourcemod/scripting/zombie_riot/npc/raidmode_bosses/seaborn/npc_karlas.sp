@@ -2766,3 +2766,17 @@ void KarlasEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
 	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
 }
+
+
+public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	char sound[128];
+	pack.ReadString(sound, 128);
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		EmitSoundToAll(sound, entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	return Plugin_Handled; 
+}
