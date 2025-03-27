@@ -109,9 +109,9 @@ static int i_ally_index[MAXENTITIES];
 static bool b_InKame[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
 
-#define STELLA_NC_DURATION 23.0
-#define STELLA_NC_TURNRATE 300.0	//max turnrate.
-#define STELLA_NC_TURNRATE_ANGER 400.0
+#define STELLA_NC_DURATION 13.0
+#define STELLA_NC_TURNRATE 500.0	//max turnrate.
+#define STELLA_NC_TURNRATE_ANGER 700.0
 #define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
 
 #define STELLA_NORMAL_LASER_DURATION 0.7
@@ -205,28 +205,19 @@ methodmap Stella < CClotBody
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		this.m_flNextIdleSound= GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
+		this.m_flNextIdleSound= GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);	
 	}
 	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;		
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
 	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	
 	public void PlayLaserAttackSound() {
@@ -602,8 +593,7 @@ methodmap Stella < CClotBody
 	}
 	public void Set_Particle(char[] Particle, char[] Attachment, int index = 0)
 	{
-		if(IsValidEntity(this.m_iParticles1))
-			RemoveEntity(this.m_iParticles1);
+		
 
 		float flPos[3], flAng[3];
 
@@ -613,9 +603,24 @@ methodmap Stella < CClotBody
 
 		switch(index)
 		{
-			case 0: this.m_iParticles1 = particle;
-			case 1: this.m_iParticles2 = particle;
-			case 2: this.m_iParticles3 = particle;
+			case 0: 
+			{
+				if(IsValidEntity(this.m_iParticles1))
+					RemoveEntity(this.m_iParticles1);
+				this.m_iParticles1 = particle;
+			}
+			case 1: 
+			{
+				if(IsValidEntity(this.m_iParticles2))
+					RemoveEntity(this.m_iParticles2);
+				this.m_iParticles2 = particle;
+			}
+			case 2: 
+			{
+				if(IsValidEntity(this.m_iParticles3))
+					RemoveEntity(this.m_iParticles3);
+				this.m_iParticles3 = particle;
+			}
 			default: 
 			{
 				//failsafe.
@@ -637,14 +642,14 @@ methodmap Stella < CClotBody
 			float GameTime = GetGameTime(this.index);
 			//we are casting Lunar Grace and also can't move, take a heavily defensive position.	
 			if(this.m_flLunar_Grace_Duration > GameTime)
-				fAmt -=0.7;
+				fAmt -=0.3;
 
+			//don't add that large of a melee res compared to ranged
 			if(this.m_flNC_Duration > GameTime)
-				fAmt -=0.95;
+				fAmt -=0.25;
 
 			if(this.Anger)
 				fAmt -=0.25;
-		
 
 			//hard limit, although unlikely to be hit.
 			if(fAmt < 0.05)
@@ -664,14 +669,14 @@ methodmap Stella < CClotBody
 			float GameTime = GetGameTime(this.index);
 			//we are casting Lunar Grace and also can't move, take a heavily defensive position.	
 			if(this.m_flLunar_Grace_Duration > GameTime)
-				fAmt -=0.7;
+				fAmt -=0.35;
 			
+			//more ranged damage exists on average then melee. make it slightly higher then melee
 			if(this.m_flNC_Duration > GameTime)
-				fAmt -=0.7;
+				fAmt -=0.35;
 
 			if(this.Anger)
 				fAmt -=0.25;
-
 
 			//hard limit, although unlikely to be hit.
 			if(fAmt < 0.05)
@@ -695,7 +700,7 @@ methodmap Stella < CClotBody
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
-		int wave = ZR_GetWaveCount()+1;
+		int wave = Waves_GetRound()+1;
 
 		if(StrContains(data, "force15") != -1)
 			wave = 15;
@@ -718,7 +723,7 @@ methodmap Stella < CClotBody
 		//idk
 		if(wave == -1)
 		{
-			wave = 60 + ZR_GetWaveCount();
+			wave = 60 + Waves_GetRound();
 		}
 		i_current_wave[npc.index] = wave;
 		
@@ -743,8 +748,21 @@ methodmap Stella < CClotBody
 		
 		RaidModeTime = GetGameTime() + 250.0;
 		
-		RaidModeScaling = float(wave);
 	
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(wave);
+		}
 
 		if(RaidModeScaling < 55)
 			RaidModeScaling *= 0.19;
@@ -1164,7 +1182,7 @@ static void Ruina_Ion_Storm(int entity)
 	}
 	
 }
-static Action IonStorm_OffsetTimer(Handle Timer, DataPack data)
+Action IonStorm_OffsetTimer(Handle Timer, DataPack data)
 {
 	data.Reset();
 	int target = EntRefToEntIndex(data.ReadCell());
@@ -1228,7 +1246,7 @@ enum struct Lunar_Grace_Data
 	float Loc[3];
 	bool AnimSet;
 }
-static float fl_lunar_radius = 150.0;
+static float fl_lunar_radius = 200.0;
 static Lunar_Grace_Data struct_Lunar_Grace_Data[MAXENTITIES];
 static void Lunar_Body_Pitch(Stella npc)
 {
@@ -1251,7 +1269,7 @@ static bool Lunar_Grace(Stella npc)
 	
 	npc.m_bKarlasRetreat = true;
 	npc.m_iTarget = -1;
-	float Duration = 12.5;
+	float Duration = 7.5;
 
 	npc.SetCrestState(false);
 	npc.Set_Crest_Charging_Phase(false);
@@ -1293,7 +1311,7 @@ static bool Lunar_Grace(Stella npc)
 	Laser.DoForwardTrace_Custom(Angles, VecSelfNpc, 200.0);
 	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Laser.End_Point);
 	struct_Lunar_Grace_Data[npc.index].Loc = Laser.End_Point;
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 	TE_SetupBeamRingPoint(Laser.End_Point, fl_lunar_radius*2.0, fl_lunar_radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Windup, 15.0, 0.1, color, 1, 0);
 	TE_SendToAll();
 
@@ -1339,7 +1357,7 @@ static Action Lunar_Grace_Tick(int iNPC)
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 	}
 
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 
@@ -1395,10 +1413,14 @@ static Action Lunar_Grace_Tick(int iNPC)
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, struct_Lunar_Grace_Data[npc.index].Loc, true);
 	
-	float Speed = 12.0;
-	float Speed_Radius = 62500.0;
-	if(flDistanceToTarget > Speed_Radius)	//if beyond 250 HU's FROM THE RING to the player, start increasing speed bit by bit
+	float Speed = 25.0;
+	float Speed_Radius = 119025.0;
+	if(flDistanceToTarget > Speed_Radius)	//if beyond 345 HU's FROM THE RING to the player, start increasing speed bit by bit
 		Speed *= 1.0 + (flDistanceToTarget-Speed_Radius)/Speed_Radius;
+
+	//upper limit
+	if(Speed > 50.0)
+		Speed = 50.0;
 	float Velocity[3]; Velocity[0] = Speed;
 
 	float Ang[3];
@@ -1408,7 +1430,7 @@ static Action Lunar_Grace_Tick(int iNPC)
 
 	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, struct_Lunar_Grace_Data[npc.index].Loc);
 
-	Explode_Logic_Custom(Modify_Damage(-1, 20.0), npc.index, npc.index, -1, struct_Lunar_Grace_Data[npc.index].Loc, fl_lunar_radius , _ , _ , true, _, _, 10.0, OnAOEHit);
+	Explode_Logic_Custom(Modify_Damage(25.0), npc.index, npc.index, -1, struct_Lunar_Grace_Data[npc.index].Loc, fl_lunar_radius , _ , _ , true, _, _, 10.0, OnAOEHit);
 
 	return Plugin_Continue;
 }
@@ -1419,7 +1441,7 @@ static void OnAOEHit(int entity, int victim, float damage, int weapon)
 	float EnemyVec[3], Sky[3];
 	WorldSpaceCenter(victim, EnemyVec);
 	Sky = EnemyVec; Sky[2]+=1500.0;
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[entity]);
 	TE_SetupBeamPoints(EnemyVec, Sky, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 0, 0.1, 2.5, 2.5, 0, 5.0, color, 3);
 	TE_SendToAll();
 }
@@ -1716,6 +1738,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		npc.Set_Particle("utaunt_runeprison_yellow_parent", "", 2);
 
 		SDKUnhook(npc.index, SDKHook_Think, Lunar_Grace_Tick);
+		f_NpcTurnPenalty[npc.index] = 1.0;
 		SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
 		CreateTimer(0.75, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -1797,7 +1820,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	if(npc.m_flNC_Duration<GameTime)
 	{
 		npc.m_bInKame=false;
-		npc.m_flNC_Recharge = GameTime + (npc.Anger ? 30.0 : 45.0);
+		npc.m_flNC_Recharge = GameTime + (npc.Anger ? 30.0 : 40.0);
 		npc.m_bKarlasRetreat = false;
 		npc.m_iKarlasNCState = 0;
 		npc.SetCrestState(true);
@@ -1824,7 +1847,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	{
 		fl_NC_thorttle[npc.index] = GameTime + 0.1;
 		update = true;
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);		//replace stun
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
 	}
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);
@@ -1892,8 +1915,8 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			//oh also, karlas's turn rate for the laser is also nerfed by 20%
 			if(update)	//like the main laser, the damage is dealt 10 times a second
 			{
-				Karl_Laser.Damage = Modify_Damage(-1, 25.0);
-				Karl_Laser.Bonus_Damage = Modify_Damage(-1, 25.0)*6.0;
+				Karl_Laser.Damage = Modify_Damage(25.0);
+				Karl_Laser.Bonus_Damage = Modify_Damage(25.0)*6.0;
 				Karl_Laser.damagetype = DMG_PLASMA;
 				Karl_Laser.Deal_Damage();
 			}
@@ -1905,8 +1928,9 @@ public Action Stella_Nightmare_Tick(int iNPC)
 
 	if(update)	//damage is dealt 10 times a second
 	{
-		Laser.Damage = Modify_Damage(-1, 35.0);
-		Laser.Bonus_Damage = Modify_Damage(-1, 35.0)*6.0;
+		//unlike other attacks, this one gets an even larger boost if stella becomes angry.
+		Laser.Damage = Modify_Damage(npc.Anger ? 60.0 : 35.0);
+		Laser.Bonus_Damage = Modify_Damage(npc.Anger ? 60.0 : 35.0)*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 
@@ -2077,7 +2101,7 @@ static void Stella_Weapon_Lines(Stella npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Blitzkrieg, that thing dared to disobey me, but will you {gold}%N{snow} do the same?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I'll make you {gold}%N{snow} feel the same pain Blitzkrieg inflicted on us.", client);}
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas{snow}'s Old blade, interesting choice {gold}%N", client); 															case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{crimson}Karlas{snow}'s Old blade, interesting choice {gold}%N", client); 														case 1: Format(Text_Lines, sizeof(Text_Lines), "So what if I told you {gold}%N{snow} that you're using the failed version..", client);}	
 		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You're trying to copy me {gold}%N{snow}?", client); 																			case 1: Format(Text_Lines, sizeof(Text_Lines), "I don't approve of this {gold}%N", client);}
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Pointy stick go into enemy, right {gold}%N{snow}?", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You will never become as proficient with the lance as {crimson}Karlas", client);}	
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Laser based spell's are one of Ruina's specialties, {gold}%N{snow} You don't even know the first thing about them..",client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "Oi, {gold}%N{snow} I helped create that spell, you can't just steal it and use it aggainst me", client);}	
@@ -2085,6 +2109,7 @@ static void Stella_Weapon_Lines(Stella npc, int client)
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Gravity is a harness, you {gold} %N{snow} have not harnessed it", client); 													case 1: Format(Text_Lines, sizeof(Text_Lines), "Wonder how you'd react {gold}%N{snow}, if you saw the real one.", client);}
 		case WEAPON_ION_BEAM_FEED: 	Format(Text_Lines, sizeof(Text_Lines), "Here's some interesting information for you {gold}%N{snow} the feedback loop Prisim has been obsolete for AGES", client);
 		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "Oh, bob's gun well might as well go and sleep... I give up {gold}%N", client); 
+		case WEAPON_KIT_FRACTAL:	Format(Text_Lines, sizeof(Text_Lines), "I thought the {aqua}Fractal{snow} was still being developed, how did you {gold}%N{snow} get your hands on it?", client); 
 		default:
 		{
 			valid = false;
@@ -2159,7 +2184,7 @@ static void Internal_NPCDeath(int entity)
 			}
 		}
 	}
-	RaidModeTime +=50.0;
+	RaidModeTime +=30.0;
 
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -2225,7 +2250,7 @@ static bool BlockTurn(Stella npc)
 }
 static float fl_Normal_Laser_Range(Stella npc)
 {
-	return (npc.Anger ? 3000.0 : 1000.0);
+	return (npc.Anger ? 3000.0 : 750.0);
 }
 static void Self_Defense(Stella npc, float flDistanceToTarget)
 {
@@ -2251,7 +2276,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 			Range *=0.95;
 		Laser.client = npc.index;
 		Laser.DoForwardTrace_Basic(Range);
-		int color[4]; Ruina_Color(color);
+		int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 		float flPos[3];
 		npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
 		TE_SetupBeamPoints(flPos, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 2.0, 2.0, 0, 0.01, color, 3);	
@@ -2279,7 +2304,7 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 
 		npc.m_flNorm_Attack_In = GameTime + Attack_Delay;
 		npc.m_flNextRangedAttack = GameTime + Attack_Speed;
-		/*int color[4]; Ruina_Color(color);
+		/*int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 		float self_Vec[3]; WorldSpaceCenter(npc.index, self_Vec);
 		TE_SetupBeamRingPoint(self_Vec, 300.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Attack_Delay, 15.0, 0.1, color, 1, 0);
 		TE_SendToAll();*/
@@ -2304,13 +2329,9 @@ static void Fire_Laser(Stella npc)
 	SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
 	SDKHook(npc.index, SDKHook_Think, Normal_Laser_Think);
 }
-static float Modify_Damage(int Target, float damage)
+static float Modify_Damage(float damage)
 {
-	if(ShouldNpcDealBonusDamage(Target))
-		damage*=10.0;
-
 	damage*=RaidModeScaling;
-
 	return damage;
 }
 public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
@@ -2322,16 +2343,19 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	if(npc.m_flNorm_Attack_Duration < GameTime)
 	{
 		npc.Set_Crest_Charging_Phase(false);
+		f_NpcTurnPenalty[npc.index] = 1.0;
 		SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
 		return Plugin_Stop;
 	}
 
+	/*
+	//uncomment this and the other thing to reenable
 	bool update = false;
 	if(npc.m_flNorm_Attack_Throttle < GameTime)
 	{
 		npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
 		update = true;
-	}
+	}*/
 
 	npc.m_bAllowBackWalking = true;
 
@@ -2357,15 +2381,17 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 	if(IsValidEnemy(npc.index, target))
 	{
-		//times these value has been altered: 32.
+		f_NpcTurnPenalty[npc.index] = 0.0;	//:)
+		//times these value has been altered: 45.
+		//:(
 		//warp_turn_speed
 		float Bonus_Speed_Range = 500.0*500.0;
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float Self_Vec[3]; WorldSpaceCenter(npc.index, Self_Vec);
 		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
 
-		float Turn_Rate = (npc.Anger ? 0.09 : 0.07);
-		float Turn_Speed = (RUINA_FACETOWARDS_BASE_TURNSPEED*Turn_Rate);
+		//HEVILY buff turnrate when angry
+		float Turn_Speed = (npc.Anger ? 50.0 : 12.0);
 		
 		if(Dist <= 0.0)
 			Dist = 1.0;
@@ -2378,28 +2404,38 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		}
 
 		if(Silence)
-			Turn_Speed *= 0.95;
+			Turn_Speed *= 0.8;
 
 		Turn_Speed /=TickrateModify;
+		Turn_Speed /=f_AttackSpeedNpcIncreace[npc.index];
 
 		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
 		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
-		//CPrintToChatAll("Turn Extra: %f", Turn_Extra);
+		//CPrintToChatAll("Turn Extra before: %f", Turn_Extra);
+		if(Turn_Extra > 3.25)
+			Turn_Extra = 3.25;
+		//CPrintToChatAll("Turn Extra after: %f", Turn_Extra);
+
 		Turn_Speed *= Turn_Extra;
 
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
 
-	if(update)
+	//if(update)
 	{
-		float Dmg = Modify_Damage(-1, 15.0);
+		//extreme amounts of trolley
+		float Dmg = Modify_Damage(1.1);
 		Dmg *= (0.75-Logarithm(Ratio));
+		Dmg /= TickrateModify;	//since the damage is dealt every tick, make it so the dmg is modified by tickrate modif.
+		Dmg /=f_AttackSpeedNpcIncreace[npc.index];
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;
 		Laser.Bonus_Damage = Dmg*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
+
+		//CPrintToChatAll("Damage: %f", Dmg);
 	}
 
 	float startPoint[3], endPoint[3];
@@ -2409,7 +2445,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	endPoint	= Laser.End_Point;
 	float diameter = radius *1.0;
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 
 	if(i_current_wave[npc.index] >=45)
 	{

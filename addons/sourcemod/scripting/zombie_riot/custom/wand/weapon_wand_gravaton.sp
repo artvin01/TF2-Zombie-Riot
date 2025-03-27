@@ -696,5 +696,5 @@ static void Gravaton_Wand_Hud(int client, float GameTime)
 
 	PrintHintText(client, HUDText);
 
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }

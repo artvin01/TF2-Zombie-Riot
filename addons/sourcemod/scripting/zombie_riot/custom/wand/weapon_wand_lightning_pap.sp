@@ -34,7 +34,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 20.0);
 				
 				float damage = Smite_BaseDMG;

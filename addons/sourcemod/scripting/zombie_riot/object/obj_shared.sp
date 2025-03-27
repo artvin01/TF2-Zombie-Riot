@@ -26,7 +26,7 @@ static Function FuncCanBuild[MAXENTITIES];
  * @param client	Client
  * @noreturn
  */
-static Function FuncShowInteractHud[MAXENTITIES];
+//static Function FuncShowInteractHud[MAXENTITIES];
 
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 static bool CanUseBuilding[MAXENTITIES][MAXTF2PLAYERS];
@@ -35,6 +35,11 @@ static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
 float f_DamageTakenFloatObj[MAXENTITIES];
 int OwnerOfText[MAXENTITIES];
+
+//Performance improvement, no need to check this littearlly every fucking frame
+//other things DO need it, but not this.
+float f_TransmitDelayCheck[MAXENTITIES][MAXTF2PLAYERS];
+Action b_TransmitBiasDo[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 
@@ -70,6 +75,7 @@ void Object_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
+	Zero2(f_TransmitDelayCheck);
 }
 void Object_PluginStart()
 {
@@ -100,10 +106,6 @@ static void OnDestroy(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
 
 	Building_RotateAllDepencencies(entity);
 }
@@ -142,6 +144,12 @@ methodmap ObjectGeneric < CClotBody
 		i_IsABuilding[obj] = true;
 		b_NoKnockbackFromSources[obj] = true;
 		f_DamageTakenFloatObj[obj] = 0.0;
+	
+		for(int clients=1; clients<=MaxClients; clients++)
+		{
+			Building_Collect_Cooldown[obj][clients] = 0.0;
+			//reset usage cooldown!
+		}
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());
@@ -150,7 +158,7 @@ methodmap ObjectGeneric < CClotBody
 		
 		for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 		{
-			if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)
+			if (EntRefToEntIndexFast(i_ObjectsBuilding[i]) <= 0)
 			{
 				i_ObjectsBuilding[i] = EntIndexToEntRef(obj);
 				i = ZR_MAX_BUILDINGS;
@@ -160,18 +168,30 @@ methodmap ObjectGeneric < CClotBody
 		f3_CustomMinMaxBoundingBox[obj][0] = CustomThreeDimensions[0];
 		f3_CustomMinMaxBoundingBox[obj][1] = CustomThreeDimensions[1];
 		f3_CustomMinMaxBoundingBox[obj][2] = CustomThreeDimensions[2];
+		
+		if(FakemodelOffset)
+		{
+			f3_CustomMinMaxBoundingBox[obj][2] -=FakemodelOffset;
+		}
+		
 
-		float VecMin[3];
-		float VecMax[3];
-		VecMin = CustomThreeDimensions;
-		VecMin[0] *= -1.0;
-		VecMin[1] *= -1.0;
-		VecMin[2] = 0.0;
-		VecMax = CustomThreeDimensions;
+		if(FakemodelOffset)
+		{
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] -= FakemodelOffset;
+		}
+		else
+		{
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] = 0.0;
+		}
+
 		SetEntProp(obj, Prop_Data, "m_nSolidType", 2); 
 
-		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", VecMax);
-		SetEntPropVector(obj, Prop_Data, "m_vecMins", VecMin);
+		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", f3_CustomMinMaxBoundingBox[obj]);
+		SetEntPropVector(obj, Prop_Data, "m_vecMins", f3_CustomMinMaxBoundingBoxMinExtra[obj]);
 		//Running UpdateCollisionBox On this entity just makes it calculate its own one, bad.
 	//	objstats.UpdateCollisionBox();
 
@@ -186,6 +206,31 @@ methodmap ObjectGeneric < CClotBody
 		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
+		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
+		//Main prop is always half visible.
+		/*
+			how it works:
+			if a building is on cooldown/can have one, we spawn a 2nd prop, see below under fake model.
+			We made it entirely solid visibly, i.e. not half invisible and make the main prop invisible
+			to save on resources unlike before we just re-use the base model
+			We dont do set transmit on it, beacuse if its always half invisible, then that means we can just hide the fake model, i.e. fully visible to indicate the building
+			can be used
+			Zfighting cant happen beacuse its in the exact same position
+
+			im such a genuis...
+			-Artvin
+
+		*/
+		int entity;
+		if(DoFakeModel)
+		{
+			entity = objstats.EquipItemSeperate("partyhat", model);
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+			objstats.m_iWearable1 = entity;
+		}
+		/*
 		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(obj, 0, 0, 0, 0);
 		int entity;
@@ -203,6 +248,7 @@ methodmap ObjectGeneric < CClotBody
 		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		objstats.m_iWearable2 = entity;
+		*/
 
 		//think once
 		ObjBaseThink(objstats.index);
@@ -269,6 +315,8 @@ methodmap ObjectGeneric < CClotBody
 	} 
 	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
+		CClotBody npcself = view_as<CClotBody>(this.index);
+		npcself.SetActivity(animation, Is_sequence);
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
@@ -282,6 +330,8 @@ methodmap ObjectGeneric < CClotBody
 	}
 	public void SetPlaybackRate(float flSpeedAnim)
 	{
+		CClotBody npcself = view_as<CClotBody>(this.index);
+		npcself.SetPlaybackRate(flSpeedAnim);
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
@@ -394,6 +444,11 @@ methodmap ObjectGeneric < CClotBody
 		return true;
 	}
 	
+	property float m_flGlowingLogic
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
@@ -402,16 +457,38 @@ methodmap ObjectGeneric < CClotBody
 
 public Action SetTransmit_BuildingNotReady(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, true);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, true);
+	return b_TransmitBiasDo[entity][client];
 }
+
 
 public Action SetTransmit_BuildingReady(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, false);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, false);
+	return b_TransmitBiasDo[entity][client];
 }
 public Action SetTransmit_BuildingReadyTestThirdPersonIgnore(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, false, true);
+	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
+	{
+		return b_TransmitBiasDo[entity][client];
+	}
+	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
+
+	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, false, true);
+	return b_TransmitBiasDo[entity][client];
 }
 
 static Action SetTransmit_BuildingShared(int entity, int client, bool reverse, bool Ignorethird = false)
@@ -459,9 +536,10 @@ public bool ObjectGeneric_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = Object_SupportBuildings(client);
+		int total;
+		count = Object_SupportBuildings(client, total);
 		maxcount = Object_MaxSupportBuildings(client);
-		if(count >= maxcount)
+		if(count >= maxcount || total > 79)
 			return false;
 	}
 	
@@ -490,7 +568,7 @@ bool Object_CanBuild(Function func, int client, int &count = 0, int &maxcount = 
 	return result;
 }
 
-bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
+static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 {
 	float gameTime = GetGameTime(objstats.index);
 	if(objstats.m_flNextDelayTime > gameTime)
@@ -506,8 +584,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	}
 
 	objstats.m_flNextDelayTime = gameTime + 0.2;
-	BuildingDisplayRepairLeft(objstats.index);
-	
+	BuildingUpdateTextHud(objstats.index);
 
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
 	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
@@ -551,7 +628,8 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				b_ThisEntityIgnored[objstats.index] = true;
 			}
 		}
-
+		SetEntityRenderColor(objstats.index, 55, 55, 55, 100);
+		
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
@@ -559,9 +637,6 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
-
-		if(IsValidEntity(objstats.m_iWearable4))
-			RemoveEntity(objstats.m_iWearable4);
 			
 	}
 	else
@@ -605,19 +680,25 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
 		{
-			SetEntityRenderColor(wearable, r, g, 0, 100);
-			/*
-			if(b_Anger[wearable])
-			{
-				this.SetSequence(0);	
-			}
-			else
-			{
-				this.SetSequence(0);
-			}
-			*/
+			SetEntityRenderColor(objstats.index, r, g, 0, 100);
+			SetEntityRenderColor(wearable, r, g, 0, 255);
+
 		}
-		
+		else
+		{
+			SetEntityRenderColor(objstats.index, r, g, 0, 255);
+		}
+		/*
+		if(b_Anger[wearable])
+		{
+			this.SetSequence(0);	
+		}
+		else
+		{
+			this.SetSequence(0);
+		}
+		*/
+		/*
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 		{
@@ -627,9 +708,9 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		{
 			SetEntityRenderColor(objstats.index, r, g, 0, 255);
 		}
+		*/
 		
 	}
-
 	return true;
 }
 
@@ -690,18 +771,7 @@ bool Object_Interact(int client, int weapon, int obj)
 					if(Object_CanBuild(FuncCanBuild[entity], client))
 					{
 						SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-						ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-						if(IsValidEntity(objstats.m_iWearable4))
-						{
-							char HealthText[32];
-							int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-							if(IsValidClient(Owner))
-								Format(HealthText, sizeof(HealthText), "%N", Owner);
-							else
-								Format(HealthText, sizeof(HealthText), "%s", " ");
-
-							DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
-						}
+						BuildingUpdateTextHud(entity);
 					}
 					else
 					{
@@ -721,11 +791,17 @@ bool Object_Interact(int client, int weapon, int obj)
 				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
+					ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 					Call_StartFunction(null, func);
 					Call_PushCell(client);
 					Call_PushCell(weapon);
 					Call_PushCell(entity);
 					Call_Finish(result);
+					f_TransmitDelayCheck[entity][client] = 0.0;
+					if(IsValidEntity(objstats.m_iWearable1))
+						f_TransmitDelayCheck[objstats.m_iWearable1][client] = 0.0;
+					if(IsValidEntity(objstats.m_iWearable2))
+						f_TransmitDelayCheck[objstats.m_iWearable2][client] = 0.0;
 				}
 				return true;
 			}
@@ -754,30 +830,30 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	return count;
 }
 
-int Object_SupportBuildings(int owner)
+int Object_SupportBuildings(int owner, int &all = 0)
 {
 	int count;
 	
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		static char plugin[64];
+		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+		if(StrContains(plugin, "obj_", false) != -1)
 		{
-			static char plugin[64];
-			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
-			if(StrContains(plugin, "obj_", false) != -1)
-			{
-				if(StrContains(plugin, "barricade", false) != -1)
-					continue;
-				if(StrContains(plugin, "obj_decorative", false) != -1)
-					continue;
-
-				ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-				if(objstats.SentryBuilding)
-					continue;
-
+			if(StrContains(plugin, "barricade", false) != -1)
+				continue;
+			
+			if(StrContains(plugin, "obj_decorative", false) != -1)
+				continue;
+			
+			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+			if(objstats.SentryBuilding)
+				continue;
+			
+			all++;
+			if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 				count++;
-			}
 		}
 	}
 
@@ -787,6 +863,17 @@ int Object_SupportBuildings(int owner)
 int Object_GetSentryBuilding(int owner)
 {
 	int entity = -1;
+	if(IsValidEntity(i_PlayerToCustomBuilding[owner]))
+	{
+		//This is faster and better, all sentry buildings are this only anyways.
+		entity = EntRefToEntIndex(i_PlayerToCustomBuilding[owner]);
+		if(!view_as<ObjectGeneric>(entity).SentryBuilding)
+		{
+			//Not a sentry building somehow, nope out.
+			entity = -1;
+		}
+	}
+	/*
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		if(view_as<ObjectGeneric>(entity).SentryBuilding && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
@@ -797,6 +884,7 @@ int Object_GetSentryBuilding(int owner)
 				break;
 		}
 	}
+	*/
 
 	return entity;
 }
@@ -866,7 +954,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 	{
-		int scale = Rogue_GetRoundScale();
+		int scale = Waves_GetRound();
 		if(scale < 2)
 		{
 			//damage *= 1.0;
@@ -938,15 +1026,18 @@ public void ObjBaseThink(int building)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
 	//Fixes some issues when mounted
-	int wearable = objstats.m_iWearable1;
-	if(wearable != -1)
-	{			
-		SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
-	}
-	wearable = objstats.m_iWearable2;
-	if(wearable != -1)
+	if(IsValidEntity(Building_Mounted[building]))
 	{
-		SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		int wearable = objstats.m_iWearable1;
+		if(wearable != -1)
+		{			
+			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		}
+		wearable = objstats.m_iWearable2;
+		if(wearable != -1)
+		{
+			SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+		}
 	}
 
 	//do not think if you are being carried.
@@ -956,93 +1047,99 @@ public void ObjBaseThink(int building)
 	ObjectGeneric_ClotThink(objstats);
 }
 
-void BuildingDisplayRepairLeft(int entity)
+
+void BuildingUpdateTextHud(int building)
 {
-	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-	char HealthText[64];
+	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
+	
+	int entity = EntRefToEntIndex(Building_Mounted[building]);
+	if(entity != -1)
+	{
+		if(IsValidEntity(objstats.m_iWearable3))
+			RemoveEntity(objstats.m_iWearable3);
+
+		return;
+	}
+	char HealthText[128];
 	int HealthColour[4];
 	int Repair = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
-//	int MaxRepair = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
 
 	int Health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
-//	int MaxHealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
 	HealthColour[3] = 255;
+	char NameTextAllowMax[32];
+	int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
+	if(IsValidClient(Owner))
+		Format(NameTextAllowMax, sizeof(NameTextAllowMax), "%N",Owner);
+	else if(Owner != -1 && Citizen_IsIt(Owner))
+		Format(NameTextAllowMax, sizeof(NameTextAllowMax), "Rebel");
+
+	char sColor[32];
+	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+	int SpacerAdd = 0;
+	SpacerAdd -= (strlen(NameTextAllowMax) / 2);
+	Format(HealthText, sizeof(HealthText), "%s", NameTextAllowMax);
+	if(Resistance_for_building_High[objstats.index] > GetGameTime())
+	{
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", 125, 125, 255, 255);
+		Format(HealthText, sizeof(HealthText), "[[[%s]]]",HealthText);
+		SpacerAdd -= 2;
+	}
 	if(Repair <= 0)
 	{
 		HealthColour[0] = 255;
 		HealthColour[1] = 0;
 		HealthColour[3] = 255;
-		char ThousandBuffer[64];
+		char ThousandBuffer[128];
 		IntToString(Health, ThousandBuffer, sizeof(ThousandBuffer));
 		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
-		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
+		SpacerAdd += (strlen(ThousandBuffer) / 2);
+		SpacerAdd = RoundToNearest(float(SpacerAdd) * 1.5);
+		for(int AddSpacer; AddSpacer <= SpacerAdd; AddSpacer++)
+		{
+			Format(HealthText, sizeof(HealthText), "%s ", HealthText);
+		}
+		Format(HealthText, sizeof(HealthText), "%s\n%s", HealthText, ThousandBuffer);
 	}
 	else
 	{
 		char ThousandBuffer[64];
+		char ThousandBuffer2[64];
 		IntToString(Repair, ThousandBuffer, sizeof(ThousandBuffer));
 		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
-		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
+		IntToString(Health, ThousandBuffer2, sizeof(ThousandBuffer2));
+		ThousandString(ThousandBuffer2, sizeof(ThousandBuffer2));
+		SpacerAdd += (strlen(ThousandBuffer) / 2);
+		SpacerAdd += (strlen(ThousandBuffer2) / 2);
+		SpacerAdd += 2;
+		SpacerAdd = RoundToNearest(float(SpacerAdd) * 1.5);
+		for(int AddSpacer; AddSpacer <= SpacerAdd; AddSpacer++)
+		{
+			Format(HealthText, sizeof(HealthText), " %s", HealthText);
+		}
+		Format(HealthText, sizeof(HealthText), "%s\n%s", HealthText, ThousandBuffer);
 		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, " -> ");
-		IntToString(Health, ThousandBuffer, sizeof(ThousandBuffer));
-		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
-		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
+		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer2);
 	}
 
 
 	if(IsValidEntity(objstats.m_iWearable3))
 	{
-		char sColor[32];
-		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
 		DispatchKeyValue(objstats.m_iWearable3,     "color", sColor);
 		DispatchKeyValue(objstats.m_iWearable3, "message", HealthText);
 	}
 	else
 	{
 		float Offset[3];
-		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
+		Offset[2] = f3_CustomMinMaxBoundingBox[building][2];
+		Offset[2] += 12.0;
+	//	if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
+	//		Offset[2] += f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable3 = TextEntity;	
-	}
-	if(!IsValidEntity(objstats.m_iWearable4))
-	{
-		HealthColour[0] = 0;
-		HealthColour[1] = 255;
-		HealthColour[2] = 0;
-		HealthColour[3] = 255;
-		int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-		if(IsValidClient(Owner))
-			Format(HealthText, sizeof(HealthText), "%N", Owner);
-		else if(Owner != -1 && Citizen_IsIt(Owner))
-			strcopy(HealthText, sizeof(HealthText), "Rebel");
-		else
-			strcopy(HealthText, sizeof(HealthText), " ");
-		float Offset[3];
-		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
-		Offset[2] += 6.0;
-		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
-		OwnerOfText[TextEntity] = Owner;
-		DispatchKeyValue(TextEntity, "font", "4");
-		objstats.m_iWearable4 = TextEntity;	
-	}
-	
-	if(!IsValidEntity(objstats.m_iWearable5))
-	{
-		HealthColour[0] = 0;
-		HealthColour[1] = 255;
-		HealthColour[2] = 0;
-		HealthColour[3] = 255;
-		float Offset[3];
-		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2] * 0.4;
-		Offset[2] += 6.0;
-		Format(HealthText, sizeof(HealthText), "%s", "Ready!");
-		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 0, HealthColour, objstats.index);
-		OwnerOfText[TextEntity] = EntIndexToEntRef(objstats.index);
-		DispatchKeyValue(TextEntity, "font", "4");
-		objstats.m_iWearable5 = TextEntity;	
 	}
 }
 /*

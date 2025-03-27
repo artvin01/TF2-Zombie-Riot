@@ -70,7 +70,7 @@ methodmap VictoriaDestructor < CSeaBody
 	public VictoriaDestructor(float vecPos[3], float vecAng[3], int ally)
 	{
 
-		VictoriaDestructor npc = view_as<VictoriaDestructor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "4000", ally, false));
+		VictoriaDestructor npc = view_as<VictoriaDestructor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "4000", ally, false, .isGiant = true));
 
 		SetVariantInt(16);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -203,18 +203,7 @@ public void VictoriaDestructor_ExplodePost(int attacker, int victim, float damag
 {
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
-		if(victim > MaxClients)
-		{
-			StartBleedingTimer_Against_Client(victim, attacker, 4.0, 10);
-		}
-		else
-		{
-			if (!IsInvuln(victim))
-			{
-				StartBleedingTimer_Against_Client(victim, attacker, 4.0, 10);
-				TF2_IgnitePlayer(victim, victim, 5.0);
-			}
-		}
+		NPC_Ignite(victim, attacker,8.0, -1, 5.50);
 	}
 }
 

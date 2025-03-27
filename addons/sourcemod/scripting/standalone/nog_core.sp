@@ -108,7 +108,7 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 	{
 		for(int a; a < i_MaxcountNpcTotal; a++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
@@ -131,7 +131,7 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
 
-						if(HasSpecificBuff(entity, "Battilons Backup"))
+						if(HasSpecificBuff(entity, "Defensive Backup"))
 							defense += 4;
 
 						if(enemy[i] && def[i] < defense)

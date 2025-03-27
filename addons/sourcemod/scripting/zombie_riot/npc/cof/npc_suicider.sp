@@ -108,7 +108,7 @@ methodmap Suicider < CClotBody
 	
 	public Suicider(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Suicider npc = view_as<Suicider>(CClotBody(vecPos, vecAng, COF_SUICIDER_MODEL_PATH, "1.0", "400", ally, false));
+		Suicider npc = view_as<Suicider>(CClotBody(vecPos, vecAng, COF_SUICIDER_MODEL_PATH, "1.10", "400", ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -419,7 +419,7 @@ static void Suicider_AfterEffect(float pos[3], float Angles[3], char anim[255] =
 
 		DispatchSpawn(prop);
 		
-		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.0); 
+		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.10); 
 		SetEntityCollisionGroup(prop, 2);
 		SetVariantString(anim);
 		AcceptEntityInput(prop, "SetAnimation");

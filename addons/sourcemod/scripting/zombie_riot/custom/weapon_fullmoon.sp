@@ -52,7 +52,7 @@ void FullMoon_Enable(int client, int weapon)
 			h_TimerFullMoon[client] = CreateDataTimer(0.1, Timer_Management_FullMoon, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			Attributes_SetMulti(weapon, 412, 2.0);
+			Attributes_SetMulti(weapon, 412, 1.8);
 			//force panic attack and vulnerability
 			Panic_Attack[weapon] = 0.175;
 		}
@@ -66,7 +66,7 @@ void FullMoon_Enable(int client, int weapon)
 		h_TimerFullMoon[client] = CreateDataTimer(0.1, Timer_Management_FullMoon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		Attributes_SetMulti(weapon, 412, 2.0);
+		Attributes_SetMulti(weapon, 412, 1.8);
 		Panic_Attack[weapon] = 0.175;
 		if(!Precached)
 		{
@@ -138,10 +138,10 @@ void FullMoon_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMel
 	if(f_FullMoonAbility[client] > GetGameTime())
 	{
 		//double melee range
-		//only increace wideness atinybit
+		//only increase wideness atinybit
 		enemies_hit_aoe = 3; //hit 3 targets.
-		CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-		CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+		CustomMeleeRange = MELEE_RANGE * 1.25;
+		CustomMeleeWide = MELEE_BOUNDS * 1.25;
 	}
 }
 
@@ -334,7 +334,7 @@ public void FullMoonAbilityM2(int client, int weapon, bool crit, int slot)
 		return;	
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 //	MakePlayerGiveResponseVoice(client, 1); //haha!
 //	EmitCustomToAll(GetRandomInt(0,1) ? "zombie_riot/weapons/hellagur_warcry1.mp3" : "zombie_riot/weapons/hellagur_warcry2.mp3", 

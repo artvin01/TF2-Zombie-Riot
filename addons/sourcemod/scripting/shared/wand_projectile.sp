@@ -385,7 +385,7 @@ static void OnDestroy_Proj(CClotBody body)
 	return;
 }
 
-stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation)
+stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation, float OffsetDown = 0.0)
 {
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[rocket]);
 	if(IsValidEntity(extra_index))
@@ -408,7 +408,14 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 		DispatchSpawn(entity);
 		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 		MakeObjectIntangeable(entity);
-		SetParent(rocket, entity);
+		if(OffsetDown == 0.0)
+			SetParent(rocket, entity);
+		else
+		{
+			float Offset3[3];
+			Offset3[2] = OffsetDown;
+			SetParent(rocket, entity, "root", Offset3, false);
+		}
 		iref_PropAppliedToRocket[rocket] = EntIndexToEntRef(entity);
 		
 		if(defaultAnimation[0])

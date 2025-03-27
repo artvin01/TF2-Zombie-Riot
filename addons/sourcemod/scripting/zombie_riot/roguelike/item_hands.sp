@@ -23,32 +23,20 @@ public void Rogue_HandExplosive_Weapon(int entity)
 	}
 }
 
-public void Rogue_HandSupport_HealTick(int client, int &healing_Amount)
+public void Rogue_HandSupport_Weapon(int weapon)
 {
-	if(!b_SupportHealHandPassive)
-		return;
-
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
-	if(IsValidEntity(weapon))
+	if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24 || i_WeaponArchetype[weapon] == 22)
 	{
-		if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24 ||i_WeaponArchetype[weapon] == 22)	// Team Support and vamp knives
-		{
-			// +10 health regen
-			healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);
-		}
+		// +10 hp regen
+		Attributes_SetAdd(weapon, 57, 10.0);
 	}
 }
-public void Rogue_HandSupport_Collect()
-{
-	b_SupportHealHandPassive = true;
-}
 
-public void Rogue_HandSupport_Remove()
+public void Rogue_Item_HealingSalve(int weapon)
 {
-	b_SupportHealHandPassive = false;
+	// +1 hp regen
+	Attributes_SetAdd(weapon, 57, 1.0);
 }
-
 public void Rogue_HandFlame_Weapon(int entity)
 {
 	if(Attributes_Has(entity, 208))

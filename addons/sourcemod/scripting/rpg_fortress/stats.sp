@@ -437,7 +437,7 @@ void Stats_ApplyAttribsPre(int client)
 	Stats_ClearCustomStats(client);
 }
 
-void Stats_ReskillEverything(int client)
+void Stats_ReskillEverything(int client, int Setstats = 0)
 {
 	int stats = Stats_GetStatCount(client);
 	
@@ -448,13 +448,20 @@ void Stats_ReskillEverything(int client)
 	StatStructure[client] = 0;
 	StatIntelligence[client] = 0;
 	StatCapacity[client] = 0;
-	ReskillPoints[client] += stats;
+
+	if(Setstats == 0)
+		ReskillPoints[client] = stats;
+	else
+		ReskillPoints[client] = Setstats;
+
 
 	Stats_SaveClientStats(client);
+	//Reset em.
+	Store_ApplyAttribs(client);
 	FakeClientCommandEx(client, "rpg_stats");
 }
 
-void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
+void Stats_ApplyAttribsPost(int client, TFClassType class)
 {
 	Attributes_SetAdd(client, 26, RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
 	Attributes_Set(client, 252, 0.0/*Stats_KnockbackResist(client)*/);
@@ -462,8 +469,6 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 	//in RPG we will give knockback another way.
 
 	Stats_ApplyMovementSpeedUpdate(client, class);
-	
-	Attributes_SetMulti(client, 442, SpeedExtra);
 
 	static Race race;
 	static Form form;

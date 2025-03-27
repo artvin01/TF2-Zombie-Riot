@@ -48,32 +48,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return SpecialDoctor(vecPos, vecAng, team, data);
 }
 
-static char[] GetPanzerHealth()
-{
-	int health = 110;
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(ZR_GetWaveCount()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
-	}
-	else if(ZR_GetWaveCount()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 methodmap SpecialDoctor < CClotBody
 {
 	public void PlayHurtSound()
@@ -121,7 +95,7 @@ methodmap SpecialDoctor < CClotBody
 
 	public SpecialDoctor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", GetPanzerHealth(), ally));
+		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(70), ally));
 		i_NpcWeight[npc.index] = 3;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -178,9 +152,10 @@ methodmap SpecialDoctor < CClotBody
 		npc.m_iAttacksTillReload = 5;
 		npc.m_flReloadDelay = GetGameTime(npc.index) + 0.8;
 
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 

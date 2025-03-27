@@ -268,8 +268,6 @@ methodmap Twirl < CClotBody
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 
 	public void PlayRangeAttackSound() {
@@ -312,7 +310,7 @@ methodmap Twirl < CClotBody
 	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time)
 	{
 		int color[4]; 
-		Ruina_Color(color);
+		Ruina_Color(color, i_current_wave[this.index]);
 
 		float Thickness = 6.0;
 		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
@@ -655,7 +653,7 @@ methodmap Twirl < CClotBody
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
-		int wave = ZR_GetWaveCount()+1;
+		int wave = Waves_GetRound()+1;
 
 		if(StrContains(data, "force15") != -1)
 			wave = 15;
@@ -746,7 +744,20 @@ methodmap Twirl < CClotBody
 		
 		RaidModeTime = GetGameTime(npc.index) + 250.0;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(Waves_GetRound()+1);
+		}
 		
 		if(RaidModeScaling < 55)
 		{
@@ -800,16 +811,12 @@ methodmap Twirl < CClotBody
 		npc.GetAttachment("head", flPos, flAng);	
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
 		
-
 		SetVariantInt(RUINA_WINGS_4);
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
 		npc.Anger = false;
-
-		
-		
 
 		if(StrContains(data, "triple_enemies") != -1)
 		{
@@ -860,14 +867,13 @@ methodmap Twirl < CClotBody
 		else if(wave <=60)
 		{	
 			i_ranged_ammo[npc.index] = 12;
-			switch(GetRandomInt(0, 5))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope yoyou're all as excited as I am{snow}!");
-				case 1: Twirl_Lines(npc, "Ah, it was a {purple}brilliant idea to not use my powers {snow}and only use this crest instead.");
-				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
-				case 3: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
-				case 4: Twirl_Lines(npc, "Kuru Kuru~");
-				case 5:
+				case 1: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
+				case 2: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
+				case 3: Twirl_Lines(npc, "Kuru Kuru~");
+				case 4:
 				{
 					switch(GetRandomInt(0, 2))
 					{
@@ -882,11 +888,13 @@ methodmap Twirl < CClotBody
 					}
 				}
 			}
-			RaidModeScaling *=0.9;
+			if(!b_tripple_raid[npc.index])
+				RaidModeScaling *=0.9;
 		}
 		else	//freeplay
 		{
-			RaidModeScaling *=0.9;
+			if(!b_tripple_raid[npc.index])
+				RaidModeScaling *=0.9;
 			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 3))
 			{
@@ -1011,7 +1019,7 @@ static void ClotThink(int iNPC)
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 					for (int client = 0; client < MaxClients; client++)
 					{
-						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
 							Items_GiveNamedItem(client, "Twirl's Hairpins");
 							CPrintToChat(client,"You have been given {purple}%s{snow}'s hairpins...", c_NpcName[npc.index]);
@@ -1389,7 +1397,14 @@ static void Final_Invocation(Twirl npc)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			}
-			TeleportDiversioToRandLocation(spawn_index, true);
+			int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+
+			if(Decicion == 2)
+				Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 250.0);
+
+			if(Decicion == 2)
+				Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
+				
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health));
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
 		}
@@ -1499,7 +1514,7 @@ static void lunar_Radiance(Twirl npc)
 		i_lunar_entities[npc.index][0] = EntIndexToEntRef(ent1);
 		i_lunar_entities[npc.index][1] = EntIndexToEntRef(ent2);
 		int color[4];
-		Ruina_Color(color);
+		Ruina_Color(color, i_current_wave[npc.index]);
 		int laser = ConnectWithBeamClient(ent1, ent2, color[0], color[1], color[2], 5.0, 5.0, 1.0, LASERBEAM);
 		if(IsValidEntity(laser))
 		{
@@ -1994,7 +2009,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);
 	float Thickness = 15.0;
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup-0.75), Thickness, 1.5, color, 1, 0);
 	TE_SendToAll();
 	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_radius*2.0, fl_cosmic_gaze_radius*2.0+0.1, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup-0.75), Thickness, 1.5, color, 1, 0);
@@ -2101,7 +2116,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 			float TE_Duration = 0.1;
 
-			int color[4]; Ruina_Color(color);
+			int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
 			float Offset_Loc[3];
 			Get_Fake_Forward_Vec(100.0, Angles, Offset_Loc, flPos);
@@ -2187,7 +2202,7 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		i_explosion_core[client] = EntIndexToEntRef(create_center);
 	}
 
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[client]);
 
 	float Time = 0.25;
 	float Thickness = 10.0;
@@ -2256,7 +2271,7 @@ static Action Delayed_Explosion(Handle Timer, DataPack data)
 	{
 		int Beam_Index = g_Ruina_BEAM_Diamond;	
 
-		int color[4]; Ruina_Color(color);
+		int color[4]; Ruina_Color(color, i_current_wave[iNPC]);
 
 		int create_center = Ruina_Create_Entity(Loc, 1.0, true);
 
@@ -2394,7 +2409,7 @@ static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed,
 				amp = 0.25;
 	
 		int color[4];
-		Ruina_Color(color);
+		Ruina_Color(color, i_current_wave[iNPC]);
 		Twirl npc = view_as<Twirl>(iNPC);
 		int beam = ConnectWithBeamClient(npc.m_iWearable1, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
 		i_laser_entity[Proj] = EntIndexToEntRef(beam);
@@ -2773,7 +2788,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 	float TE_Duration = 0.1;
 	float EndLoc[3]; EndLoc = Laser.End_Point;
 
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
 	float Offset_Loc[3];
 	Get_Fake_Forward_Vec(100.0, Angles, Offset_Loc, flPos);
@@ -2893,7 +2908,11 @@ static bool Magia_Overflow(Twirl npc)
 		return false;
 
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure she WILL get the shield.
-	Ruina_Npc_Give_Shield(npc.index, 0.45);				//give the shield to itself.
+	//give the shield to itself.
+	if(Waves_InFreeplay())
+		Ruina_Npc_Give_Shield(npc.index, 0.65);
+	else
+		Ruina_Npc_Give_Shield(npc.index, 0.45);
 	
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
@@ -2913,7 +2932,7 @@ static bool Magia_Overflow(Twirl npc)
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	int color[4]; 
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	float Thickness = 6.0;
 	VecSelfNpc[2]-=2.5;
 	//create a ring around twirl showing the radius for her special "if you're near me, my laser turns faster"
@@ -3042,7 +3061,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 	float TE_Duration = TWIRL_TE_DURATION;
 	float EndLoc[3]; EndLoc = Laser.End_Point;
 
-	int color[4]; Ruina_Color(color);
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 	if(i_current_wave[npc.index] >=60)
 	{
 		color[0] = 0;
@@ -3240,7 +3259,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 		int color[4]; 
-		Ruina_Color(color);
+		Ruina_Color(color, i_current_wave[npc.index]);
 		float Radius = 350.0;
 		float Thickness = 6.0;
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -3462,9 +3481,8 @@ static void NPC_Death(int entity)
 			}
 			else
 			{
-				switch(GetRandomInt(0, 4))
+				switch(GetRandomInt(1, 4))
 				{
-					case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
 					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
 					case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
 					case 3: Twirl_Lines(npc, "toodles!");
@@ -3527,7 +3545,7 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 	int Twirl_Index = -1;
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(IsValidEntity(entity))
 		{
 			char npc_classname[60];
@@ -3560,6 +3578,9 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
 		}
 		b_tripple_raid[Twirl_Index] = false;
+		fl_Extra_Damage[Twirl_Index] = 1.0;
+		fl_Extra_Speed[Twirl_Index]  = 1.0;
+		
 		return;
 	}
 	else
@@ -3570,6 +3591,7 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 	Stella stella = view_as<Stella>(Twirl_Index);
 	Karlas karl = view_as<Karlas>(karlas);
 	karl.m_flNextRangedBarrage_Singular -= 15.0;
+	karl.Anger = true;	//he won't transform tho
 	stella.m_bKarlasRetreat = false;
 }
 

@@ -158,7 +158,7 @@ methodmap PhantomKnight < CClotBody
 	
 	public PhantomKnight(float vecPos[3], float vecAng[3], int ally)
 	{
-		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetLucianHealth(), ally));
+		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(110), ally));
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		//Normal sized Miniboss!
@@ -174,11 +174,13 @@ methodmap PhantomKnight < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		float wave = float(ZR_GetWaveCount()+1); //Wave scaling
+		float wave = float(Waves_GetRound()+1); //Wave scaling
 		
 		wave *= 0.1;
 
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= 2.0;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -403,8 +405,9 @@ public void PhantomKnight_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (500.0 * 500.0) && npc.m_flNextRangedSpecialAttack < gameTime && !b_IsPhantomFake[npc.index]) //Teleport has first priority, do this!
+		else if(/*flDistanceToTarget < (500.0 * 500.0) */Can_I_See_Enemy(npc.index, npc.m_iTarget) && npc.m_flNextRangedSpecialAttack < gameTime && !b_IsPhantomFake[npc.index]) //Teleport has first priority, do this!
 		{
+			//No distance limit
 			//Fakes cant teleport (would be too much)
 			npc.m_iState = 4; //Do A teleport to behind or atleast close to the enemy! If i get stuck and get teleported back, thats no issue, i will own a clone regardless!
 		}
@@ -578,7 +581,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 					}
 					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 					npc.FaceTowards(VecEnemy, 15000.0);
-					if(i_PhantomsSpawned[npc.index] <= 5 || (ZR_GetWaveCount() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
+					if(i_PhantomsSpawned[npc.index] <= 5 || (Waves_GetRound() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
 					{
 						//If its wave 60 or above, he can spawn
 						int fake_spawned = NPC_CreateByName("npc_phantom_knight", -1, vecPos_Npc, vecAng_Npc,GetTeam(npc.index), "");
@@ -812,33 +815,4 @@ public Action Timer_PhantomParticle(Handle timer, any entid)
 		}
 	}
 	return Plugin_Handled;
-}
-
-
-static char[] GetLucianHealth()
-{
-	int health = 135;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(ZR_GetWaveCount()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
-	}
-	else if(ZR_GetWaveCount()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
 }

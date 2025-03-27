@@ -11,6 +11,10 @@ enum
 {
 	WEAPON_BIGFRYINGPAN = 1,
 	WEAPON_LANTEAN = 2,
+
+
+	//any that are shared, just stick it here.
+	WEAPON_KRITZKRIEG = 999,
 }
 
 int BaseStrength;
@@ -162,6 +166,7 @@ void RPG_PluginStart()
 	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_enable_pvp", Command_EnablePVP, ADMFLAG_ROOT, "Enable PVP");
+	RegAdminCmd("sm_resetstats_grant", Command_GiveReset, ADMFLAG_ROOT, "Resets their char and sets Skillpoints (set to 0 to just reset them)");
 	
 	LoadTranslations("rpgfortress.phrases");
 
@@ -321,8 +326,12 @@ void RPG_SetupMapSpecific(const char[] mapname)
 
 	if(!found)
 		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
-	LoadSoundScript(buffer);
+	
+	if(LibraryExists("LoadSoundscript"))
+	{
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
+		LoadSoundScript(buffer);
+	}
 }
 void RPG_ConfigSetup()
 {
@@ -410,7 +419,7 @@ void RPG_ClientDisconnect(int client)
 		FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
 		HudSettings_Cookies.Set(client, buffer);
 
-		FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+		FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake_UNSUED[client], b_HudHitMarker[client]);
 		HudSettingsExtra_Cookies.Set(client, buffer);
 	}
 
@@ -550,14 +559,14 @@ static void HudSettings_ClientCookiesCached(int client)
 		bool buffers[3];
 		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 		b_HudScreenShake[client] = buffers[0];
-		b_HudLowHealthShake[client] = buffers[1];
+		b_HudLowHealthShake_UNSUED[client] = buffers[1];
 		b_HudHitMarker[client] = buffers[2];
 	}
 	else
 	{
 		// Cookie empty, get our own
 		b_HudScreenShake[client] = true;
-		b_HudLowHealthShake[client] = true;
+		b_HudLowHealthShake_UNSUED[client] = true;
 		b_HudHitMarker[client] = true;
 	}
 }
@@ -645,6 +654,48 @@ public Action Command_GiveXp(int client, int args)
 			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
 			int xp = money;
 			Stats_GiveXP(targets[target], xp);
+		}
+	}
+	
+	return Plugin_Handled;
+}
+public Action Command_GiveReset(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_resetstats_grant <target> <skillpoints> (0 to use default)");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "An admin reset your character and set your skillpoints.", money);
+			Stats_ReskillEverything(targets[target], money);
+		}
+		else
+		{
+			PrintToChat(targets[target], "An admin reset your character, you got awarded back all your skillpoints.", money);
+			Stats_ReskillEverything(targets[target], money);
 		}
 	}
 	

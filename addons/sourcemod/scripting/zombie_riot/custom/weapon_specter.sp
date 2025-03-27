@@ -146,7 +146,7 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		ClientCommand(client, "playgamesound %s", SPECTER_BONEFRACTURE);
 
 		TF2_AddCondition(client, TFCond_MegaHeal, SPECTER_BONE_FRACTURE_DURATION);
@@ -226,7 +226,7 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 		ClientCommand(client, "playgamesound %s", SPECTER_SURVIVEUSE);
 		ClientCommand(client, "playgamesound %s", SPECTER_SURVIVEUSE);
@@ -332,7 +332,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 					float vecTarget[3];
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 						if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 						{
 							WorldSpaceCenter(baseboss_index, vecTarget);
@@ -361,7 +361,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			PrintHintText(client, "Specter Revive [%d / %i]", SpecterCharge[client], SpecterMaxCharge(client));
-			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+			
 		}
 	}
 }

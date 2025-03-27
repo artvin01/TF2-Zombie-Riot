@@ -285,14 +285,14 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 				ResetTEStatusSilvester();
 				SetSilvesterPillarColour({125, 125, 125, 200});
 				Silvester_Damaging_Pillars_Ability(npc.index,
-				450.0,				 	//damage
+				700.0,				 	//damage
 				0, 	//how many
 				1.1,									//Delay untill hit
 				1.0,									//Extra delay between each
 				ang_Look 								/*2 dimensional plane*/,
 				ProjectileLoc,
 				0.25,
-				1.0);									//volume
+				1.5);									//volume
 			}
 		}
 	}

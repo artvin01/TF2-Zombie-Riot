@@ -82,7 +82,7 @@ public void Glitched_Attack(int client, int weapon, bool crit)
 
 public void Glitched_Reload(int client, int weapon, const char[] classname)
 {
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	switch(GetRandomInt(0,10))
 	{
 		// high dmg but slow firerate
@@ -298,7 +298,7 @@ public void Glitched_Attack2(int client, int weapon, bool crit)
 public void Glitched_Reload2(int client, int weapon, const char[] classname)
 {
 	// bool normalBullets = false;
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	
 	switch(GetRandomInt(0,6))
 	{

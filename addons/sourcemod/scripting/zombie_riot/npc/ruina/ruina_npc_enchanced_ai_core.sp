@@ -143,6 +143,8 @@ int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
 int g_Ruina_BEAM_lightning;
+char g_Ruina_Glow_Blue;	//blue
+char g_Ruina_Glow_Red;	//red
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -151,7 +153,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 void Ruina_Ai_Core_Mapstart()
 {
-
 	NPCData data1;
 	strcopy(data1.Name, sizeof(data1.Name), "Mana Overload");
 	strcopy(data1.Plugin, sizeof(data1.Plugin), "npc_donoteveruse_3");
@@ -246,6 +247,9 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
 
 	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
+
+	g_Ruina_Glow_Blue = PrecacheModel("sprites/blueglow2.vmt", true);
+	g_Ruina_Glow_Red = PrecacheModel("sprites/redglow2.vmt", true);
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
@@ -359,6 +363,8 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	if(b_thisNpcIsARaid[client])
 	{
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
+		if(Waves_InFreeplay())
+			Shield_Power = 0.06;
 	}
 
 	GrantEntityArmor(client, false, Shield_Power, strenght, 1);
@@ -476,7 +482,7 @@ static int GetRandomMaster(int client)
 	int valid = -1;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
 			if(Check_If_I_Am_The_Right_Slave(client, baseboss_index))
@@ -491,7 +497,7 @@ static int GetClosestHealer(int client)
 	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_ruina_npc_healer[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
@@ -514,7 +520,7 @@ static int GetClosestAnchor(int client)
 	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_sniper_anchor_point[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
@@ -549,7 +555,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	if(b_is_battery_buffed[npc.index] && fl_ruina_battery_timer[npc.index] > GameTime)
 		return;
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = Waves_GetRound()+1;
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{
@@ -1229,7 +1235,7 @@ enum struct Ruina_Self_Defense
 	float gameTime;
 	int status;
 
-	void Swing_Melee(Function OnAttack = INVALID_FUNCTION)
+	void Swing_Melee(Function OnAttack = INVALID_FUNCTION, Function OnSwing = INVALID_FUNCTION)
 	{
 		CClotBody npc = view_as<CClotBody>(this.iNPC);
 
@@ -1238,6 +1244,13 @@ enum struct Ruina_Self_Defense
 			if(npc.m_flAttackHappens < this.gameTime)
 			{
 				npc.m_flAttackHappens = 0.0;
+
+				if(OnSwing && OnSwing!=INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, OnSwing);
+					Call_PushCell(npc.index);
+					Call_Finish();
+				}
 				
 				Handle swingTrace;
 				float target_vec[3]; WorldSpaceCenter(this.target, target_vec);
@@ -1318,7 +1331,7 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 
 	if(GetTeam(victim) != TFTeam_Red)
 		return;
-
+	ManaCalculationsBefore(victim);
 	float GameTime = GetGameTime();
 
 	bool override = b_override_Sickness[entity];
@@ -1383,7 +1396,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = Waves_GetRound()+1;
 
 	float 	dmg 		= 250.0,
 			time 		= 2.5,		//how long until it goes boom
@@ -1477,9 +1490,11 @@ static void Apply_Sickness(int iNPC, int Target)
 
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }
-void Ruina_Color(int color[4])
+void Ruina_Color(int color[4], int wave = -1)
 {
-	int wave = ZR_GetWaveCount()+1;
+	if(wave == -1)
+		wave = Waves_GetRound()+1;
+		
 	if(wave<=15)
 	{
 		color 	= {255, 0, 0, 255};
@@ -1550,7 +1565,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == Team)
@@ -1572,7 +1587,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[a]);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
 			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
@@ -2490,7 +2505,6 @@ enum struct Ruina_Laser_Logic
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 
-				
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
 			int victim = Ruina_Laser_BEAM_HitDetected[loop];
@@ -2572,7 +2586,6 @@ enum struct Ruina_Laser_Logic
 			hullMin[0] = -this.Custom_Hull[0];
 			hullMin[1] = -this.Custom_Hull[1];
 			hullMin[2] = -this.Custom_Hull[2];
-			return;
 		}
 		else
 		{

@@ -112,7 +112,7 @@ public void ApplyExplosionDhook_Rocket(int entity)
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
 	CreateTimer(1.0, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-//Heavily increace thedelay, this rarely ever happens, and if it does, then it should check every 2 seconds at the most!
+//Heavily increase thedelay, this rarely ever happens, and if it does, then it should check every 2 seconds at the most!
 }
 
 public Action FixVelocityStandStillRocket(Handle Timer, int ref)
@@ -218,26 +218,6 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 	}
 	return MRES_Ignored;
 }
-
-/*
-public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
-{
-	if(IsValidEntity(ent1) && IsValidEntity(ent2))
-	{
-		result = CustomDetectionPassFlter(ent1, ent2, true);
-		if(result)
-		{
-			return Plugin_Continue;
-		}
-		else
-		{
-			return Plugin_Handled;
-		}
-	}
-	return Plugin_Continue;
-}
-*/
-
 
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {

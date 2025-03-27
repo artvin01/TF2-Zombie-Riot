@@ -54,7 +54,7 @@ public bool Spike_ShouldCollide(int client, int collisiongroup, int contentsmask
 //static int Spike_Owner[MAXENTITIES]={0, ...};
 
 
-#define MAXSPIKESALLOWED 120
+#define MAXSPIKESALLOWED 60
 
 static int Spike_Health[MAXENTITIES]={0, ...};
 static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
@@ -126,6 +126,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		
 		float Calculate_HP_Spikes = 45.0; 
 		Calculate_HP_Spikes *= 2.0;
+		Calculate_HP_Spikes *= 0.7;
 		
 		float Bonus_damage;
 			
@@ -224,6 +225,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		
 		float Calculate_HP_Spikes = 55.0; 
 		Calculate_HP_Spikes *= 2.0;
+		Calculate_HP_Spikes *= 0.7;
 		
 		float Bonus_damage;
 			
@@ -361,7 +363,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 				
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 					if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 					{
 						if(!b_NpcHasDied[baseboss_index])
@@ -572,7 +574,7 @@ public void SpikeLayer_Cooldown_Logic(int client, int weapon)
 				if(f_SpikeLayerHudDelay[client] < GetGameTime())
 				{
 					PrintHintText(client,"Spikes Layed [%i/%i]\nSpike Global Limit[%i/%i]",Spikes_Alive[client],Spikes_AliveCap[client],Spikes_AliveGlobal,MAXSPIKESALLOWED);	
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 					f_SpikeLayerHudDelay[client] = GetGameTime() + 0.5;
 				}
 			}

@@ -4,6 +4,14 @@
 	{
 		"en"	"This is an Elemental status effect."
 	}
+	"Applied Onto Others"
+	{
+		"en"	"{yellow}Applied Onto Others"
+	}
+	"Scale With Player"
+	{
+		"en"	"{yellow}Scales with playercount, unless youre the buff owner or enemies benefit from it."
+	}
 	"Teslar Shock"
 	{
 		"en"	"Teslar Shock"
@@ -82,7 +90,7 @@
 	}
 	"Frozen Desc"
 	{
-		"en"	"Increases Damage Taken by 15%%\nSlows NPC'S by 15%%"
+		"en"	"Increases Damage Taken by 15%%\nStuns for a duration."
 	}
 	"Shrinking"
 	{
@@ -130,7 +138,7 @@
 	}
 	"Cripple Desc"
 	{
-		"en"	"Increaced damage taken by 30%%"
+		"en"	"increased damage taken by 30%%"
 	}
 	"Stranglation I"
 	{
@@ -162,11 +170,11 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your Freeplay run be cheesy.\nIncreases damage and resistance by 15%%\nIncreases ALLY (not player) speed by 10%%"
+		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15%%\nIncreases npc speed by +25%%.\nIncreases attack/reload speed & healrate by +15%%."
 	}
 	"Freeplay Eloquence I"
 	{
-		"en"	"Freeplay Eloquence I"
+		"en"	"Eloquence I"
 	}
 	"Freeplay Eloquence I Desc"
 	{
@@ -174,7 +182,7 @@
 	}
 	"Freeplay Eloquence II"
 	{
-		"en"	"Freeplay Eloquence II"
+		"en"	"Eloquence II"
 	}
 	"Freeplay Eloquence II Desc"
 	{
@@ -182,7 +190,7 @@
 	}
 	"Freeplay Eloquence III"
 	{
-		"en"	"Freeplay Eloquence III"
+		"en"	"Eloquence III"
 	}
 	"Freeplay Eloquence III Desc"
 	{
@@ -190,7 +198,7 @@
 	}
 	"Freeplay Rampart I"
 	{
-		"en"	"Freeplay Rampart I"
+		"en"	"Rampart I"
 	}
 	"Freeplay Rampart I Desc"
 	{
@@ -198,7 +206,7 @@
 	}
 	"Freeplay Rampart II"
 	{
-		"en"	"Freeplay Rampart II"
+		"en"	"Rampart II"
 	}
 	"Freeplay Rampart II Desc"
 	{
@@ -206,11 +214,35 @@
 	}
 	"Freeplay Rampart III"
 	{
-		"en"	"Freeplay Rampart III"
+		"en"	"Rampart III"
 	}
 	"Freeplay Rampart III Desc"
 	{
 		"en"	"Reduces damage taken by 30%%"
+	}
+	"Freeplay Hurtle I"
+	{
+		"en"	"Hurtle I"
+	}
+	"Freeplay Hurtle I Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate by +7%%"
+	}
+	"Freeplay Hurtle II"
+	{
+		"en"	"Hurtle II"
+	}
+	"Freeplay Hurtle II Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate by +14%%"
+	}
+	"Freeplay Hurtle III"
+	{
+		"en"	"Hurtle III"
+	}
+	"Freeplay Hurtle III Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate by +21%%"
 	}
 	"Cudgelled"
 	{
@@ -234,7 +266,7 @@
 	}
 	"Prosperity I Desc"
 	{
-		"en"	"Lowers Damage Delt by 5%%"
+		"en"	"Lowers attack/reload speed & healrate by 3.5%%"
 	}
 	"Prosperity II"
 	{
@@ -242,7 +274,7 @@
 	}
 	"Prosperity II Desc"
 	{
-		"en"	"Lowers Damage Delt by 10%%"
+		"en"	"Lowers attack/reload speed & healrate by 7%%"
 	}
 	"Prosperity III"
 	{
@@ -250,7 +282,7 @@
 	}
 	"Prosperity III Desc"
 	{
-		"en"	"Lowers Damage Delt by 15%%"
+		"en"	"Lowers attack/reload speed & healrate by 14%%"
 	}
 	"Aeternam"
 	{
@@ -266,7 +298,7 @@
 	}
 	"Silenced Desc"
 	{
-		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances."
+		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attack/reload speed & healrate by 5%%."
 	}
 	"Hardened Aura"
 	{
@@ -274,7 +306,15 @@
 	}
 	"Hardened Aura Desc"
 	{
-		"en"	"Immune to any and ALL that debuffs.\nElemental Is excluded from this.\nStuns and movement displacements are not counted as bebuffs."
+		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as debuffs."
+	}
+	"Intangible"
+	{
+		"en"	"Intangible"
+	}
+	"Intangible Desc"
+	{
+		"en"	"Allows you to phase through enemies."
 	}
 	"Thick Blood"
 	{
@@ -322,7 +362,7 @@
 	}
 	"Rapid Suturing Desc"
 	{
-		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very tempomary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
+		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very temporary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
 	}
 	"Marked"
 	{
@@ -338,7 +378,7 @@
 	}
 	"Void Presence Desc"
 	{
-		"en"	"Shows that youre standing in void creep."
+		"en"	"Shows that youre standing in void creep, void creatures in keep get stronger."
 	}
 	"Void Strength I"
 	{
@@ -346,7 +386,7 @@
 	}
 	"Void Strength I Desc"
 	{
-		"en"	"Slowly Heals dependant on %% of max HP overtime.\nBoosts NPC'S Speed by 5%%\nLess damage taken by 15%%\nBeing a player, or/and being silenced each reduces this by 5%% flat.\nIncreases Damage delt by 20%%, If silenced, this is 10%%"
+		"en"	"Heals dependant on %% of max HP.\nBoosts NPC'S Speed by 5%%\nLess damage taken by 15%%\nBeing a player/silenced each reduces this by 5%% flat.\nIncreases Damage delt by 20%%, If silenced, this is 10%%"
 	}
 	"Void Strength II"
 	{
@@ -354,7 +394,23 @@
 	}
 	"Void Strength II Desc"
 	{
-		"en"	"Slowly Heals dependant on %% of max HP overtime.\nBoosts NPC'S Speed by 15%%\nLess damage taken by 20%%\nBeing a player, or/and being silenced each reduces this by 5%% flat.\nIncreases Damage delt by 30%%, If silenced, this is 15%%"
+		"en"	"Heals dependant on %% of max HP.\nBoosts NPC'S Speed by 15%%\nLess damage taken by 20%%\nBeing a player/silenced each reduces this by 5%% flat.\nIncreases Damage delt by 30%%, If silenced, this is 15%%"
+	}
+	"MERLT0N-BUFF"
+	{
+		"en"	"MERLT0N-BUFF"
+	}
+	"MERLT0N-BUFF Desc"
+	{
+		"en"	"Reduces damage taken by 50%%\nBoosts damage dealt by 50%%"
+	}
+	"Extreme Anxiety"
+	{
+		"en"	"Extreme Anxiety"
+	}
+	"Extreme Anxiety Desc"
+	{
+		"en"	"Attack 25%% faster."
 	}
 	"Combine Command"
 	{
@@ -410,7 +466,7 @@
 	}
 	"Godly Motivation Desc"
 	{
-		"en"	"Increases damage dealt by 50%%\nDecreases damage taken by 25%%\nIncreases NPC'S movement speed by 50%%"
+		"en"	"Increases damage dealt by 12.5%%\nDecreases damage taken by 25%%\nIncreases NPC'S movement speed by 50%%\nIncreases attack/reload speed & healrate by 25%%"
 	}
 	"Hussar's Warscream"
 	{
@@ -436,29 +492,29 @@
 	{
 		"en"	"Increases damage dealt by 25%%"
 	}
-	"Buff Banner"
+	"War Cry"
 	{
-		"en"	"Buff Banner"
+		"en"	"War Cry"
 	}
-	"Buff Banner Desc"
+	"War Cry Desc"
 	{
 		"en"	"Increases damage dealt by 25%%"
 	}
-	"Battilons Backup"
+	"Defensive Backup"
 	{
-		"en"	"Battilons Backup"
+		"en"	"Defensive Backup"
 	}
-	"Battilons Backup Desc"
+	"Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 15%%"
 	}
-	"Healing Strength"
+	"UBERCHARGED"
 	{
-		"en"	"Healing Strength"
+		"en"	"UBERCHARGED"
 	}
-	"Healing Strength Desc"
+	"UBERCHARGED Desc"
 	{
-		"en"	"Increases damage dealt by 25%%"
+		"en"	"Invulnerable to damage\nDuring raids, have 50%% resistance."
 	}
 	"Healing Resolve"
 	{
@@ -466,7 +522,7 @@
 	}
 	"Healing Resolve Desc"
 	{
-		"en"	"Decreases damage taken by 5%%"
+		"en"	"Decreases damage taken by 5%%, Increases damage dealt by 25%%"
 	}
 	"Healing Adaptiveness All"
 	{
@@ -482,7 +538,7 @@
 	}
 	"Healing Adaptiveness Melee Desc"
 	{
-		"en"	"Decreases damage taken from melee sources by 5%%"
+		"en"	"Decreases damage taken from melee sources by 15%%"
 	}
 	"Healing Adaptiveness Ranged"
 	{
@@ -490,7 +546,7 @@
 	}
 	"Healing Adaptiveness Ranged Desc"
 	{
-		"en"	"Decreases damage taken from ranged sources by 5%%"
+		"en"	"Decreases damage taken from ranged sources by 15%%"
 	}
 	"Self Empowerment"
 	{
@@ -508,13 +564,13 @@
 	{
 		"en"	"Increases damage dealt by 10%%\nDecreases damage taken by 7%%"
 	}
-	"Ancient Banner"
+	"Ancient Melodies"
 	{
-		"en"	"Ancient Banner"
+		"en"	"Ancient Melodies"
 	}
-	"Ancient Banner Desc"
+	"Ancient Melodies Desc"
 	{
-		"en"	"Increases attack speed by a certain amount."
+		"en"	"Increases attack/reload speed & healrate by a 20%%."
 	}
 	"Bobs Duck Dubby"
 	{
@@ -538,7 +594,23 @@
 	}
 	"Heavy Presence Desc"
 	{
-		"en"	"Decreased attack speed by a certain amount."
+		"en"	"Decreased attack/reload speed & healrate by a 50%%."
+	}
+	"Altered Functions"
+	{
+		"en"	"Altered Functions"
+	}
+	"Altered Functions Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate by 50%%.\n{crimson}Spreads onto enemies you hit."
+	}
+	"John's Presence"
+	{
+		"en"	"John's Presence"
+	}
+	"John's Presence Desc"
+	{
+		"en"	"Reduces attack/reload speed & healrate by 50%%.\nSlows down NPCs by 50%%."
 	}
 	"Gambler's Ruin Total"
 	{
@@ -594,11 +666,11 @@
 	}
 	"Ulpianus' Seriousness Desc"
 	{
-		"en"	"Attackspeed increaced by 20%%.\nIncreases Max Health by 540."
+		"en"	"attack/reload speed & healrate increased by 20%%.\nIncreases Max Health by 540."
 	}
-	"Skadi's Skills"
+	"Abyssal Skills"
 	{
-		"en"	"Skadi's Skills"
+		"en"	"Abyssal Skills"
 	}
 	"Skadi's Skills Desc"
 	{
@@ -650,7 +722,15 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack speed by 67%%\nDecreases damage dealt by 40%%"
+		"en"	"Increases attack/reload speed & healrate by 66%%\nDecreases damage dealt by 56%%"
+	}
+	"Tonic Affliction Hidden"
+	{
+		"en"	"Tonic Affliction Hidden"
+	}
+	"Tonic Affliction  Hidden Desc"
+	{
+		"en"	"Ignore."
 	}
 	"Mystery Beer"
 	{
@@ -658,7 +738,15 @@
 	}
 	"Mystery Beer Desc"
 	{
-		"en"	"Increases base attack speed based on it's level."
+		"en"	"Increases base attack/reload speed & healrate by 20%%"
+	}
+	"Mystery Brew"
+	{
+		"en"	"Mystery Brew"
+	}
+	"Mystery Brew Desc"
+	{
+		"en"	"Increases base attack/reload speed & healrate by 25%%"
 	}
 	"Osmosis'ity"
 	{
@@ -682,7 +770,7 @@
 	}
 	"Jungle Drums Desc"
 	{
-		"en"	"Increases attack speed by 2.5%%"
+		"en"	"Increases attack/reload speed & healrate by 2.5%%"
 	}
 	"Intelligence"
 	{
@@ -698,7 +786,7 @@
 	}
 	"Homeland Defense Desc"
 	{
-		"en"	"Increases attack speed by 12%%"
+		"en"	"Increases attack/reload speed & healrate by 12%%"
 	}
 	"Call To Arms"
 	{
@@ -706,7 +794,7 @@
 	}
 	"Call To Arms Desc"
 	{
-		"en"	"Increases attack speed by 12%%"
+		"en"	"Increases attack/reload speed & healrate by 12%%"
 	}
 	"Iberia Light"
 	{
@@ -714,7 +802,7 @@
 	}
 	"Iberia Light Desc"
 	{
-		"en"	"Increases attack speed by 10%%"
+		"en"	"Increases attack/reload speed & healrate by 10%%"
 	}
 	"Victoria Nuke"
 	{
@@ -756,6 +844,14 @@
 	{
 		"en"	"Increaces damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
 	}
+	"Heavy Laccerations"
+	{
+		"en" 	"Heavy Laccerations"
+	}
+	"Heavy Laccerations Desc"
+	{
+		"en"	"Uncureable.\nincreased damage taken dynamically."
+	}
 	"Bleed"
 	{
 		"en"	"Bleed"
@@ -770,7 +866,7 @@
 	}
 	"Burn Desc"
 	{
-		"en"	"Deals True damage overtime, upto a maximum of 20 seconds if not extended.\nEach hit extends its time.\nThe damage and owner depends on the weapon that delt the most fire damage.\nExtending does not weaken the buff."
+		"en"	"True DMG.\nHeal 25%% less while on fire, when applying fire again (npc only), tick again for 50%% damage.\n{green}Enemies on fire, give 10%% more hp on kill and gibs."
 	}
 	"Zealot's Random Drinks"
 	{
@@ -786,10 +882,220 @@
 	}
 	"Zealot's Rush Desc"
 	{
-		"en" "Grants 25%% Attackspeed."
+		"en" "Grants 25%% attack/reload speed & healrate."
 	}
 	"MERLT0N-BUFF"
 	{
 		"en"	"MERLT0N-BUFF"
+	}
+	"Icy Dereliction"
+	{
+		"en" "Icy Dereliction"
+	}
+	"Icy Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 10%%\nSlows NPC'S by 10%%"
+	}
+	"Raiding Dereliction"
+	{
+		"en" "Raiding Dereliction"
+	}
+	"Raiding Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 10%%"
+	}
+	"Degrading Dereliction"
+	{
+		"en" "Degrading Dereliction"
+	}
+	"Degrading Dereliction Desc"
+	{
+		"en"	"Lowers Damage Delt by 10%%"
+	}
+	"Zero Therapy"
+	{
+		"en" "Zero Therapy"
+	}
+	"Zero Therapy Desc"
+	{
+		"en"	"Increases Damage Taken by 15%%\nSlows NPC'S by 15%%"
+	}
+	"Debt Causing Dereliction"
+	{
+		"en" "Debt Causing Dereliction"
+	}
+	"Debt Causing Dereliction Desc"
+	{
+		"en" "Increases Damage Taken by 20%%"
+	}
+	"Headache Incuding Dereliction"
+	{
+		"en" "Headache Incuding Dereliction"
+	}
+	"Headache Incuding Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 30%%"
+	}
+	"Shocking Dereliction"
+	{
+		"en" "Shocking Dereliction"
+	}
+	"Shocking Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 20%%\nSlows NPC'S by 25%%"
+	}
+	"Therapists Aura"
+	{
+		"en" "Therapists Aura"
+	}
+	"Therapists Aura Desc"
+	{
+		"en"	"Slows NPC'S by 60%%"
+	}
+	"Electric Dereliction"
+	{
+		"en" "Electric Dereliction"
+	}
+	"Electric Dereliction Desc"
+	{
+		"en"	"Increases Damage Taken by 25%%\nSlows NPC'S by 35%%"
+	}
+	"Caffinated Dereliction"
+	{
+		"en" "Caffinated Dereliction"
+	}
+	"Caffinated Dereliction Desc"
+	{
+		"en"	"Increas damage taken by 25%%"
+	}
+	"Lighthouse Enlightment"
+	{
+		"en" "Lighthouse Enlightment"
+	}
+	"Lighthouse Enlightment Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30%%"
+	}
+	"Lighthouse Enlightment Detect"
+	{
+		"en" "Lighthouse Enlightment Detect"
+	}
+	"Lighthouse Enlightment Detect Desc"
+	{
+		"en"	"Ignore This."
+	}
+	"Soggy"
+	{
+		"en" "Soggy"
+	}
+	"Soggy Desc"
+	{
+		"en" "Deal 5%% Less damage."
+	}
+	"Soggiest"
+	{
+		"en" "Soggiest"
+	}
+	"Soggiest Desc"
+	{
+		"en" "Deal 7%% Less damage."
+	}
+	"Bubble Frenzy"
+	{
+		"en" "Bubble Frenzy"
+	}
+	"Bubble Frenzy Desc"
+	{
+		"en" "Attack 2x Faster, only works on bubble wand."
+	}
+	"Hectic Therapy"
+	{
+		"en" "Hectic Therapy"
+	}
+	"Hectic Therapy Desc"
+	{
+		"en" "Increaces player attack/reload speed & healrate and reloadspeed by 20%% (stacks)"
+	}
+	"Physical Therapy"
+	{
+		"en" "Physical Therapy"
+	}
+	"Physical Therapy Desc"
+	{
+		"en" "Deal 20%% More damage."
+	}
+	"Ensuring Therapy"
+	{
+		"en" "Ensuring Therapy"
+	}
+	"Ensuring Therapy Desc"
+	{
+		"en" "Take 15%% less damage."
+	}
+	"Overall Therapy"
+	{
+		"en" "Overall Therapy"
+	}
+	"Overall Therapy Desc"
+	{
+		"en" "Deal 10%% more damage, and take 10%% less damage, NPCS gain 20%% Speed"
+	}
+	"Powering Therapy"
+	{
+		"en" "Powering Therapy"
+	}
+	"Powering Therapy Desc"
+	{
+		"en" "5%% resistance and 15%% damage delt"
+	}
+	"Calling Therapy"
+	{
+		"en" "Calling Therapy"
+	}
+	"Calling Therapy Desc"
+	{
+		"en" "15%% resistance and 5%% damage delt, 10%% more speed for NPCS"
+	}
+	"Caffinated Therapy"
+	{
+		"en" "Caffinated Therapy"
+	}
+	"Caffinated Therapy Desc"
+	{
+		"en" "25%% Resistance, 25%% more damage delt, and gain 20%% Speed for NPCS"
+	}
+	"Regenerating Therapy"
+	{
+		"en" "Regenerating Therapy"
+	}
+	"Regenerating Therapy Desc"
+	{
+		"en" "10%% Resistance, and deal 10%% more damage, gain slow HP regen."
+	}
+	"Spotter's Rally"
+	{
+		"en"	"Spotter's Rally"
+	}
+	"Spotter's Rally Desc"
+	{
+		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66%% resistance.\nIncreases allied npc speed by +25%%.\nIncreases attack/reload speed & healrate by +35%%."
+	}
+	"Weapon Overclock"
+	{
+		"en"	"Overclock"
+		"ko"	"과부하"
+	}
+	"Weapon Overclock Desc"
+	{
+		"en"	"Increaces damage by 50%%\nBoosts attack/reload speed & healrate by 30%% and mana is continuously restored."
+	}
+	"Weapon Clocking"
+	{
+		"en"	"Weapon Clocking"
+		"ko"	"과부하"
+	}
+	"Weapon Clocking Desc"
+	{
+		"en"	"Boosts attack/reload speed & healrate by 10%%"
 	}
 }

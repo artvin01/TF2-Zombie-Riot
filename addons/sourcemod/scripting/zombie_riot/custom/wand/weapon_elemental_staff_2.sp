@@ -35,7 +35,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 15.0);
 				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
@@ -289,7 +289,7 @@ stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
 
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 		{
 			float TargetLocation[3]; 
@@ -437,7 +437,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 	{
 		if(f_PassangerAbilityCooldownRegen[client] < GetGameTime())
 		{
-			f_PassangerAbilityCooldownRegen[client] = GetGameTime() + PASSANGER_ABILITY_REGARGE_TIME;
+			f_PassangerAbilityCooldownRegen[client] = GetGameTime() +(PASSANGER_ABILITY_REGARGE_TIME * CooldownReductionAmount(client));
 			i_PassangerAbilityCount[client]++;
 			if(i_PassangerAbilityCount[client] >= 2)
 			{
@@ -480,7 +480,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 				}				
 			}
 
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_PassangerHudDelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -503,7 +503,7 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 		int mana_cost = 350;
 		if(mana_cost <= Current_Mana[client])
 		{		
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 			Mana_Hud_Delay[client] = 0.0;
 			
@@ -512,7 +512,7 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 			delay_hud[client] = 0.0;
 			if(i_PassangerAbilityCount[client] == 2)
 			{
-				f_PassangerAbilityCooldownRegen[client] = GetGameTime() + PASSANGER_ABILITY_REGARGE_TIME;
+				f_PassangerAbilityCooldownRegen[client] = GetGameTime() + (PASSANGER_ABILITY_REGARGE_TIME * CooldownReductionAmount(client));
 			}
 			i_PassangerAbilityCount[client] -= 1;
 
@@ -709,7 +709,7 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 		static int targets[i_MaxcountNpc];
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				static float TargetLocation[3]; 

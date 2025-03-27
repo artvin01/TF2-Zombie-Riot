@@ -36,6 +36,7 @@ static const char Categories[][] =
 	"Whiteflower Specials",
 	"Victoria",
 	"Matrix",
+	"Mutations",,
 	"Necropolains"
 };
 
@@ -364,19 +365,39 @@ bool Items_HasNamedItem(int client, const char[] name)
 			static GiftItem item;
 			GiftItems.GetArray(i, item);
 			if(StrEqual(item.Name, name, false))
-				return view_as<bool>(GetFlagsOfLevel(client, IdToLevel(i)) & IdToFlag(i));
+			{
+				if(client)
+					return view_as<bool>(GetFlagsOfLevel(client, IdToLevel(i)) & IdToFlag(i));
+				
+				for(int target = 1; target <= MaxClients; target++)
+				{
+					if(IsClientInGame(target) && GetClientTeam(target) == 2 && (GetFlagsOfLevel(target, IdToLevel(i)) & IdToFlag(i)))
+						return true;
+				}
+			}
 		}
 	}
 	
 	return false;
 }
 
-bool Items_GiveIdItem(int client, int id)
+bool Items_GiveIdItem(int client, int id, bool noForward = false)
 {
+	if(!noForward && GiftItems && id < GiftItems.Length)
+	{
+		static GiftItem item;
+		GiftItems.GetArray(id, item);
+		if(Native_OnGivenItem(id, item.Name))
+		{
+			Items_GiveNamedItem(client, item.Name, true);
+			return false;
+		}
+	}
+
 	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id));
 }
 
-bool Items_GiveNamedItem(int client, const char[] name)
+bool Items_GiveNamedItem(int client, const char[] name, bool noForward = false)
 {
 	if(name[0] && GiftItems)
 	{
@@ -387,7 +408,7 @@ bool Items_GiveNamedItem(int client, const char[] name)
 			GiftItems.GetArray(i, item);
 			if(StrEqual(item.Name, name, false))
 			{
-				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i));
+				Items_GiveIdItem(client, i, noForward);
 				return true;
 			}
 		}

@@ -48,7 +48,7 @@ void Merlton_Boss_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "tank");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Hidden;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	i_Data = NPC_Add(data);

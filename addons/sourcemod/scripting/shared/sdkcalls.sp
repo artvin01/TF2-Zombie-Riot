@@ -57,6 +57,13 @@ void SDKCall_Setup()
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
 
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalAngles");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	g_hSetLocalAngles = EndPrepSDKCall();
+	if(!g_hSetLocalAngles)
+		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
+
 	//CBasePlayer
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
@@ -85,7 +92,6 @@ void SDKCall_Setup()
 	if(!g_hSetAbsAngle)
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
 		
-
 
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBasePlayer::CheatImpulseCommands");
@@ -216,12 +222,19 @@ void SDKCall_SetLocalOrigin(int index, float localOrigin[3])
 		SDKCall(g_hSetLocalOrigin, index, localOrigin);
 	}
 }
+void SDKCall_SetLocalAngles(int index, float Anglesl[3])
+{
+	if(g_hSetLocalAngles)
+	{
+		SDKCall(g_hSetLocalAngles, index, Anglesl);
+	}
+}
 
 void SDKCall_InvalidateBoneCache(int index)
 {
 	SDKCall(g_hInvalidateBoneCache, index);
 }
-/*
+
 void SDKCall_SetAbsOrigin(int index, float AbsOrigin[3])
 {
 	if(g_hSetAbsOrigin)
@@ -229,7 +242,7 @@ void SDKCall_SetAbsOrigin(int index, float AbsOrigin[3])
 		SDKCall(g_hSetAbsOrigin, index, AbsOrigin);
 	}
 }
-
+/*
 void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 {
 	if(g_hSetAbsAngle)
@@ -429,7 +442,9 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 {
 	int entity = FindEntityByClassname(-1, "tf_gamerules");
 	if(entity == -1)
+	{
 		return;
+	}
 
 	static int Size1;
 	if(!Size1)

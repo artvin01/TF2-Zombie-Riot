@@ -183,7 +183,7 @@ methodmap ChaosSickKnight < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
-			RaidModeScaling = 3.0;
+			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		

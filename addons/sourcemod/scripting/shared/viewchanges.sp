@@ -162,33 +162,36 @@ void ViewChange_ClientDisconnect(int client)
 
 void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = false)
 {
-	b_HideCosmeticsPlayer[client] = DontShowCosmetics;
-	i_PlayerModelOverrideIndexWearable[client] = index;
-	if(ForceNiko)
+	if(index == -1 || (CvarCustomModels.BoolValue && IsFileInDownloads("models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl")))
 	{
-		b_HideCosmeticsPlayer[client] = true;
-		i_PlayerModelOverrideIndexWearable[client] = NIKO_2;
-	}
-	ViewChange_Update(client, true);
-	int entity;
-	if(DontShowCosmetics)
-	{
-		while(TF2_GetWearable(client, entity))
+		b_HideCosmeticsPlayer[client] = DontShowCosmetics;
+		i_PlayerModelOverrideIndexWearable[client] = index;
+		if(ForceNiko)
 		{
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-				continue;
-
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			b_HideCosmeticsPlayer[client] = true;
+			i_PlayerModelOverrideIndexWearable[client] = NIKO_2;
 		}
-	}
-	else
-	{
-		while(TF2_GetWearable(client, entity))
+		ViewChange_Update(client, true);
+		int entity;
+		if(DontShowCosmetics)
 		{
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-				continue;
+			while(TF2_GetWearable(client, entity))
+			{
+				if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+					continue;
 
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			}
+		}
+		else
+		{
+			while(TF2_GetWearable(client, entity))
+			{
+				if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
+					continue;
+
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+			}
 		}
 	}
 }
@@ -220,23 +223,45 @@ void ViewChange_PlayerModel(int client)
 		{
 			if(i_HealthBeforeSuit[client] == 0)
 			{
+				int index;
+				int sound = -1;
+				int body = -1;
+				bool anim;
+
 				if(i_PlayerModelOverrideIndexWearable[client] >= 0 && i_PlayerModelOverrideIndexWearable[client] < sizeof(PlayerModelsCustom))
 				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", CustomIndex[i_PlayerModelOverrideIndexWearable[client]]);
-
-					SetVariantString(Viewchanges_PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]] ? PlayerModelsCustom[i_PlayerModelOverrideIndexWearable[client]] : NULL_STRING);
-					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
-					
-					i_CustomModelOverrideIndex[client] = i_PlayerModelOverrideIndexWearable[client];
-					SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
-					SetEntProp(client, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+					index = CustomIndex[i_PlayerModelOverrideIndexWearable[client]];
+					sound = i_PlayerModelOverrideIndexWearable[client];
+					body = PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]];
+					anim = Viewchanges_PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]];
 				}
 				else
 				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+					index = PlayerIndex[CurrentClass[client]];
+				}
 
+				Native_OnClientWorldmodel(client, CurrentClass[client], index, sound, body, anim);
+
+				SetEntProp(entity, Prop_Send, "m_nModelIndex", index);
+
+				if(anim)
+				{
+					static char model[PLATFORM_MAX_PATH];
+					ModelIndexToString(index, model, sizeof(model));
+					SetVariantString(model);
+				}
+				else
+				{
 					SetVariantString(NULL_STRING);
-					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+				}
+
+				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+				i_CustomModelOverrideIndex[client] = sound;
+
+				if(body != -1)
+				{
+					SetEntProp(entity, Prop_Send, "m_nBody", body);
+					SetEntProp(client, Prop_Send, "m_nBody", body);
 				}
 			}
 			else
@@ -333,9 +358,6 @@ void ViewChange_Update(int client, bool full = true)
 	}
 	
 	ViewChange_Switch(client, weapon, classname);
-#if defined ZR
-	SDKHooks_UpdateMarkForDeath(client);
-#endif
 }
 
 stock bool ViewChange_IsViewmodelRef(int ref)
@@ -373,7 +395,6 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 		i_Worldmodel_WeaponModel[client] = -1;
 		TF2_RemoveWearable(client, entity);
 	}
-
 	entity = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(entity != -1)
 	{
@@ -529,7 +550,8 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				if (weapon != INVALID_ENT_REFERENCE)
 					SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 			}
-
+			SDKHooks_UpdateMarkForDeath(client, true);
+			f_UpdateModelIssues[client] = GetGameTime() + 0.1;
 			return;
 		}
 	}

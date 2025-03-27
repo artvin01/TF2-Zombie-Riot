@@ -64,25 +64,27 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return ThirtySixFifty(vecPos, vecAng, team);
 }
-static char[] GetPanzerHealth()
+
+char[] MinibossHealthScaling(int health = 110, bool ingoreplayers = false)
 {
-	int health = 110;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yeah its high. will need to scale with waves exponentially.
+	if(!ingoreplayers)
+		health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yeah its high. will need to scale with waves exponentially.
+		
 	
 	float temp_float_hp = float(health);
+	temp_float_hp *= MinibossScalingReturn();
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(Waves_GetRound()+1 < RoundToNearest(30.0 * (1.0 / MinibossScalingReturn())))
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(Waves_GetRound()+1 < RoundToNearest(45.0 * (1.0 / MinibossScalingReturn())))
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.40));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.40));
 	}
 	
 	health /= 3;
@@ -163,7 +165,7 @@ methodmap ThirtySixFifty < CClotBody
 
 	public ThirtySixFifty(float vecPos[3], float vecAng[3], int ally)
 	{
-		ThirtySixFifty npc = view_as<ThirtySixFifty>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetPanzerHealth(), ally, .IgnoreBuildings = true));
+		ThirtySixFifty npc = view_as<ThirtySixFifty>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(70), ally, .IgnoreBuildings = true));
 		
 		i_NpcWeight[npc.index] = 4;
 		
@@ -185,9 +187,10 @@ methodmap ThirtySixFifty < CClotBody
 			Variables
 		*/
 
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	

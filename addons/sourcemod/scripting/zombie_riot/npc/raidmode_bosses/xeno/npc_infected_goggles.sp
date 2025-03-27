@@ -221,13 +221,6 @@ methodmap RaidbossBlueGoggles < CClotBody
 		func_NPCDeath[npc.index] = RaidbossBlueGoggles_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = RaidbossBlueGoggles_OnTakeDamage;
 		func_NPCThink[npc.index] = RaidbossBlueGoggles_ClotThink;
-		bool final = StrContains(data, "final_item") != -1;
-		
-		if(final)
-		{
-			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = 1;
-		}
 		/*
 			Cosmetics
 		*/
@@ -310,6 +303,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 
 	//Raidmode timer runs out, they lost.
+	if(npc.m_flPiggyFor)
+	{
+		SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0}); //keep teleporting just incase.
+	}
 	if(LastMann && !AlreadySaidLastmann)
 	{
 		if(!npc.m_fbGunout)
@@ -872,7 +869,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.25;
 								npc.m_flSwitchCooldown = gameTime + 1.0;
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
-								if(ZR_GetWaveCount()+1 >= 60)
+								if(i_RaidGrantExtra[npc.index] >= 5)
 								{
 									npc.m_flNextMeleeAttack = gameTime + 0.55;
 								}
@@ -897,10 +894,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();
-							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
-							
+							int BulletHere = npc.FireParticleRocket(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0, 0.0, "raygun_projectile_blue_crit", false);
+			
+							float position[3];
+							GetEntPropVector(BulletHere, Prop_Data, "m_vecAbsOrigin", position); 
+							TE_Particle("mvm_soldier_shockwave", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+							CreateTimer(0.1, WaldchCoolEffectOnProjectile, EntIndexToEntRef(BulletHere), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 							npc.m_flNextMeleeAttack = gameTime + 1.5;
-							if(ZR_GetWaveCount()+1 >= 60)
+							if(i_RaidGrantExtra[npc.index] >= 5)
 							{
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
 							}
@@ -956,7 +957,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						{
 							damage *= 2.5;
 						}
-						if(ZR_GetWaveCount()+1 >= 60)
+						if(i_RaidGrantExtra[npc.index] >= 5)
 						{
 							damage *= 1.15;
 						}
@@ -1071,7 +1072,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 		
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(victim);
 	
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(!b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -1280,4 +1281,18 @@ void WaldchEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
 	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
 	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+
+public Action WaldchCoolEffectOnProjectile(Handle timer, any entid)
+{
+	int Projectile = EntRefToEntIndex(entid);
+	if(IsValidEntity(Projectile))
+	{
+		float position[3];
+		GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", position); 
+		TE_Particle("mvm_soldier_shockwave", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+					
+	}
+	return Plugin_Handled;
 }

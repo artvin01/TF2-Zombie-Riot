@@ -325,7 +325,7 @@ public void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		
-		StartBleedingTimer_Against_Client(target, owner, 5.0, 5);
+		StartBleedingTimer(target, owner, 5.0, 5, -1, DMG_TRUEDAMAGE, 0);
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{

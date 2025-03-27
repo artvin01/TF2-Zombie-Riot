@@ -626,7 +626,7 @@ public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 
 static void GrantAllPlayersCredits_Rogue(int cash)
 {
-	cash *= (Rogue_GetRound()+1);
+	cash *= (Rogue_GetFloor()+1);
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);
 	CurrentCash += cash;
 }

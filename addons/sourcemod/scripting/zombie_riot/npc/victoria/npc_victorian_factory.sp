@@ -43,17 +43,17 @@ static char[] GetBuildingHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;
@@ -74,7 +74,7 @@ methodmap VictorianFactory < CClotBody
 	
 	public VictorianFactory (int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", GetBuildingHealth(), ally, _, true));
+		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", GetBuildingHealth(), ally, _, true, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -147,8 +147,6 @@ methodmap VictorianFactory < CClotBody
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		TeleportEntity(npc.m_iWearable3, NULL_VECTOR, {0.0, 0.0, 0.0}, NULL_VECTOR);
 
-		NPC_StopPathing(npc.index);
-
 		return npc;
 	}
 }
@@ -202,7 +200,7 @@ static void ClotThink(int iNPC)
 			float entitypos[3], distance;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) != GetTeam(npc.index))
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
@@ -294,7 +292,7 @@ static void ClotThink(int iNPC)
 			GetAbsOrigin(npc.m_iWearable3, Vec);
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) != GetTeam(npc.index))
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);

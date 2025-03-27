@@ -45,6 +45,11 @@ enum struct Artifact
 	Function FuncAlly;
 	Function FuncEnemy;
 	Function FuncWeapon;
+	Function FuncWaveStart;
+	Function FuncStageStart;
+	Function FuncIngotChanged;
+	Function FuncRecoverWeapon;
+	Function FuncStageEnd;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -65,6 +70,21 @@ enum struct Artifact
 		
 		kv.GetString("func_weapon", this.Name, 64);
 		this.FuncWeapon = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_wavestart", this.Name, 64);
+		this.FuncWaveStart = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_stagestart", this.Name, 64);
+		this.FuncStageStart = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_ingotchanged", this.Name, 64);
+		this.FuncIngotChanged = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_recoverweapon", this.Name, 64);
+		this.FuncRecoverWeapon = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_stageend", this.Name, 64);
+		this.FuncStageEnd = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
@@ -96,6 +116,7 @@ enum struct Stage
 	char WaveSet[PLATFORM_MAX_PATH];
 	char ArtifactKey[64];
 	bool InverseKey;
+	MusicEnum IntroMusic;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -111,6 +132,7 @@ enum struct Stage
 		kv.GetString("skyname", this.Skyname, 64);
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		this.Repeat = view_as<bool>(kv.GetNum("repeatable"));
+		this.IntroMusic.SetupKv("intromusic", kv);
 		
 		kv.GetString("func_start", this.WaveSet, PLATFORM_MAX_PATH);
 		this.FuncStart = this.WaveSet[0] ? GetFunctionByName(null, this.WaveSet) : INVALID_FUNCTION;
@@ -360,12 +382,15 @@ void Rogue_MapStart()
 	Rogue_Dome_Mapstart();
 }
 
-void Rogue_SetupVote(KeyValues kv)
+void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
 {
-	PrecacheSound("misc/halloween/gotohell.wav");
-	PrecacheSound("music/stingers/hl1_stinger_song28.mp3");
+	if(!artifactOnly)
+	{
+		PrecacheSound("misc/halloween/gotohell.wav");
+		PrecacheSound("music/stingers/hl1_stinger_song28.mp3");
 
-	InRogueMode = true;
+		InRogueMode = true;
+	}
 
 	Zero(VotedFor);
 
@@ -387,8 +412,11 @@ void Rogue_SetupVote(KeyValues kv)
 	if(!VoteTimer)
 		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
-	kv.Rewind();
-	kv.JumpToKey("Rogue");
+	if(!artifactOnly)
+	{
+		kv.Rewind();
+		kv.JumpToKey("Rogue");
+	}
 
 	RogueTheme = kv.GetNum("roguestyle");
 
@@ -399,22 +427,52 @@ void Rogue_SetupVote(KeyValues kv)
 
 	if(Floors)
 	{
-		int length = Floors.Length;
-		for(int i; i < length; i++)
+		Stage stage;
+		int length1 = Floors.Length;
+		for(int a; a < length1; a++)
 		{
-			Floors.GetArray(i, floor);
-			delete floor.Encounters;
-			delete floor.Finals;
+			Floors.GetArray(a, floor);
+
+			if(floor.Encounters)
+			{
+				int length2 = floor.Encounters.Length;
+				for(int b; b < length2; b++)
+				{
+					floor.Encounters.GetArray(b, stage);
+					stage.IntroMusic.Clear();
+				}
+				
+				delete floor.Encounters;
+			}
+
+			if(floor.Finals)
+			{
+				int length2 = floor.Finals.Length;
+				for(int b; b < length2; b++)
+				{
+					floor.Finals.GetArray(b, stage);
+					stage.IntroMusic.Clear();
+				}
+
+				delete floor.Finals;
+			}
+
+			floor.MusicCurse.Clear();
+			floor.MusicNormal.Clear();
 		}
 
 		delete Floors;
 	}
 
-	Curses = new ArrayList(sizeof(Curse));
-	Artifacts = new ArrayList(sizeof(Artifact));
-	Floors = new ArrayList(sizeof(Floor));
+	if(!artifactOnly)
+	{
+		Curses = new ArrayList(sizeof(Curse));
+		Floors = new ArrayList(sizeof(Floor));
+	}
 
-	if(kv.JumpToKey("Curses"))
+	Artifacts = new ArrayList(sizeof(Artifact));
+
+	if(!artifactOnly && kv.JumpToKey("Curses"))
 	{
 		if(kv.GotoFirstSubKey(false))
 		{
@@ -452,7 +510,7 @@ void Rogue_SetupVote(KeyValues kv)
 		kv.GoBack();
 	}
 
-	if(kv.JumpToKey("Floors"))
+	if(!artifactOnly && kv.JumpToKey("Floors"))
 	{
 		if(kv.GotoFirstSubKey())
 		{
@@ -488,15 +546,20 @@ void Rogue_SetupVote(KeyValues kv)
 		kv.GoBack();
 	}
 
-	SteamWorks_UpdateGameTitle();
-	
-	for(int client=1; client<=MaxClients; client++)
+	if(!artifactOnly)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) > 1)
+		SteamWorks_UpdateGameTitle();
+		
+		for(int client=1; client<=MaxClients; client++)
 		{
-			Waves_RoundStart();
-			break;
+			if(IsClientInGame(client) && GetClientTeam(client) > 1)
+			{
+				Waves_RoundStart();
+				break;
+			}
 		}
+
+		Waves_SetReadyStatus(2);
 	}
 }
 
@@ -511,6 +574,7 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 	{
 		if(VoteFunc == INVALID_FUNCTION)
 		{
+			bool levels = CvarLeveling.BoolValue;
 			Menu menu = new Menu(Rogue_CallVoteH);
 			
 			SetGlobalTransTarget(client);
@@ -525,13 +589,17 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			for(int i; i < length; i++)
 			{
 				Voting.GetArray(i, vote);
-				Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
-				int MenuDo = ITEMDRAW_DISABLED;
-				if(!vote.Level)
-					MenuDo = ITEMDRAW_DEFAULT;
-				if(Level[client] >= 1)
-					MenuDo = ITEMDRAW_DEFAULT;
-				menu.AddItem(vote.Name, vote.Config, MenuDo);
+
+				if(levels)
+				{
+					Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
+				}
+				else
+				{
+					Format(vote.Config, sizeof(vote.Config), "%t", vote.Name);
+				}
+
+				menu.AddItem(vote.Name, vote.Config);
 			}
 			
 			menu.ExitButton = false;
@@ -669,7 +737,6 @@ static void DisplayHintVote()
 	}
 }
 
-
 void Rogue_StartSetup()	// Waves_RoundStart()
 {
 	Rogue_RoundEnd();
@@ -695,6 +762,16 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	}
 
 	Rogue_SetProgressTime(wait, true, true);
+
+	if(RogueTheme == BlueParadox)
+	{
+		CPrintToChatAll("{crimson}[ZR] Resetting found Weapons.....");
+		//prevents when restarting, finding 2 instantly...
+		Store_RandomizeNPCStore(1);
+		//reveal 15
+		Store_RandomizeNPCStore(0, 10);
+		Store_RandomizeNPCStore(0, 5);
+	}
 }
 
 void Rogue_RoundEnd()
@@ -714,25 +791,25 @@ void Rogue_RoundEnd()
 
 	if(CurrentCollection)
 	{
+		ArrayList list = CurrentCollection;
+		CurrentCollection = null;
+
 		Artifact artifact;
-		int length = CurrentCollection.Length;
+		int length = list.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			Artifacts.GetArray(list.Get(i), artifact);
 			if(artifact.FuncRemove != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, artifact.FuncRemove);
 				Call_Finish();
-
-				CurrentCollection.Erase(i);
-				i--;
-				length--;
 			}
 		}
 
-		delete CurrentCollection;
+		delete list;
 	}
-	StartingItem[0] = 0;
+	
+	//StartingItem[0] = 0;
 	
 	if(CurseOne != -1)
 	{
@@ -827,7 +904,18 @@ public Action Rogue_RoundStartTimer(Handle timer)
 		{
 			PrintToChatAll("zr_noroundstart is enabled");
 		}
-		else
+		else if(Construction_Mode())
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client) == 2 && !IsFakeClient(client))
+				{
+					Construction_Start();
+					return Plugin_Stop;
+				}
+			}
+		}
+		else if(InRogueMode)
 		{
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -837,6 +925,10 @@ public Action Rogue_RoundStartTimer(Handle timer)
 					return Plugin_Stop;
 				}
 			}
+		}
+		else
+		{
+			PrintToChatAll("ERROR: Unknown custom gametype");
 		}
 	}
 
@@ -857,6 +949,8 @@ void Rogue_BattleVictory()
 {
 	ReviveAll();
 	Waves_RoundEnd();
+	bool victory = true;
+	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 	Store_RogueEndFightReset();
 	Rogue_ParadoxShop_Victory();
 
@@ -878,14 +972,24 @@ void Rogue_BattleVictory()
 			}
 			case BlueParadox:
 			{
+				int recover = 4;
+
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 4 : 5);
+					recover = CurrentFloor > 1 ? 6 : 8;
 				}
-				else if(BattleIngots > 1)
+				else if(BattleIngots >= 1)
 				{
-					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 3 : 4);
+					recover = CurrentFloor > 1 ? 4 : 6;
 				}
+
+				if(BattleIngots >= 1 && CurrentFloor >= 4)
+					recover += 5;
+
+				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
+
+				if(recover)
+					Store_RandomizeNPCStore(0, recover);
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
 				{
@@ -902,16 +1006,29 @@ void Rogue_BattleVictory()
 		Rogue_AddIngots(BattleIngots);
 	}
 
-	int chaos = RoundToFloor(BattleChaos);
-	if(chaos > 0)
+	if(RogueTheme == BlueParadox)
 	{
-		BattleChaos -= float(chaos);
-		Rogue_AddChaos(chaos);
+		//tiny compensation
+		int chaos = RoundToFloor(BattleChaos);
+		chaos -= 2;
+		if(chaos < 0)
+			chaos = 0;
+
+		if(chaos > 15)
+			chaos = 15;
+			
+		if(chaos > 0)
+		{
+			BattleChaos -= float(chaos);
+			Rogue_AddChaos(chaos);
+		}
+		Rogue_ParadoxDLC_Flawless(chaos);
 	}
 
 	if(CurrentType)
 	{
-		Rogue_NextProgress();
+		Rogue_SetProgressTime(5.0, false);
+		//Rogue_NextProgress();
 	}
 	else
 	{
@@ -930,6 +1047,8 @@ void Rogue_BattleVictory()
 bool Rogue_BattleLost()
 {
 	Rogue_ParadoxShop_Fail();
+	bool victory = false;
+	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 
 	if(RogueTheme == BlueParadox)
 		Rogue_Dome_WaveEnd();
@@ -1346,8 +1465,9 @@ void Rogue_NextProgress()
 
 static void SetFloorMusic(const Floor floor, bool stop)
 {
+	// TODO: Fix music not matching in the StrEqual
 	bool curse = CurseOne != -1 || CurseTwo != -1;
-	if(RaidMusicSpecial1.Path[0] || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
+	if(RaidMusicSpecial1.Valid() || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
 	{
 		if(stop)
 		{
@@ -1365,11 +1485,11 @@ static void SetFloorMusic(const Floor floor, bool stop)
 
 		if(curse)
 		{
-			MusicString1 = floor.MusicCurse;
+			floor.MusicCurse.CopyTo(MusicString1);
 		}
 		else
 		{
-			MusicString1 = floor.MusicNormal;
+			floor.MusicNormal.CopyTo(MusicString1);
 		}
 	}
 }
@@ -1547,12 +1667,16 @@ void Rogue_StartThisBattle(float time = 10.0)
 
 static void StartBattle(const Stage stage, float time = 3.0)
 {
-	for(int client = 1; client <= MaxClients; client++)
+	Rogue_TriggerFunction(Artifact::FuncStageStart);
+	if(!stage.IntroMusic.Path[0])
 	{
-		if(IsClientInGame(client))
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 3);
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 3);
+			}
 		}
 	}
 
@@ -1577,6 +1701,29 @@ static void StartStage(const Stage stage)
 	BattleIngots = CurrentFloor > 1 ? 4 : 3;
 	RequiredBattle = false;
 	SetAllCamera();
+
+	if(stage.IntroMusic.Path[0])
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + stage.IntroMusic.Time);
+				if(stage.IntroMusic.Custom)
+				{
+					EmitCustomToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, stage.IntroMusic.Volume);
+				}
+				else
+				{
+					EmitSoundToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToClient(client, stage.IntroMusic.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				}
+			}
+		}
+
+		RemoveAllCustomMusic();
+	}
 
 	float time = stage.WaveSet[0] ? 0.0 : 5.0;
 	if(stage.FuncStart != INVALID_FUNCTION)
@@ -1636,12 +1783,15 @@ static void StartStage(const Stage stage)
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			Vehicle_Exit(client, false, false);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
+		}
 	}
 	
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
@@ -1657,7 +1807,7 @@ static void StartStage(const Stage stage)
 
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
-		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
+		entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 		{
 			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -1723,13 +1873,14 @@ static void TeleportToSpawn()
 			if(TeutonType[client] == TEUTON_DEAD)
 				TF2_RespawnPlayer(client);
 			
+			Vehicle_Exit(client, false, false);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
 		}
 	}
 	
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
@@ -1745,7 +1896,7 @@ static void TeleportToSpawn()
 
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 		{
 			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -1923,10 +2074,15 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
 	delete ProgressTimer;
-	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_RoundStartTimer : Rogue_ProgressTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_ProgressTimer : Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	if(hud)
 		SpawnTimer(time);
+}
+
+bool Rogue_ArtifactEnabled()
+{
+	return view_as<bool>(Artifacts);
 }
 
 void Rogue_ArtifactMenu(int client, int page)
@@ -2095,7 +2251,9 @@ void Rogue_PlayerDowned(int client)
 	if(!Waves_InSetup() && RogueTheme == BlueParadox)
 	{
 		// Gain 10.0 for the total of all players downing
-		BattleChaos += 10.0 / float(CurrentPlayers);
+		float chaos = 10.0 / float(CurrentPlayers);
+		Rogue_ParadoxDLC_BattleChaos(chaos);
+		BattleChaos += chaos;
 	}
 }
 
@@ -2212,7 +2370,7 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 				{
 					for(int a; a < i_MaxcountNpcTotal; a++)
 					{
-						int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
 						{
 							Call_StartFunction(null, artifact.FuncAlly);
@@ -2250,13 +2408,13 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(StrEqual(artifact.Name, name, false))
 			{
+				CurrentCollection.Erase(i);
 				if(artifact.FuncRemove != INVALID_FUNCTION)
 				{
 					//call remove function.
 					Call_StartFunction(null, artifact.FuncRemove);
 					Call_Finish();
 				}
-				CurrentCollection.Erase(i);
 				return;
 			}
 		}
@@ -2275,6 +2433,26 @@ stock ArrayList Rogue_GetCurrentArtifacts()
 	return Artifacts;
 }
 
+void Rogue_TriggerFunction(int pos, any &data = 0)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = CurrentCollection.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			Function func = GetItemInArray(artifact, pos);
+			if(func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCellRef(data);
+				Call_Finish();
+			}
+		}
+	}
+}
+
 int Rogue_GetIngots()
 {
 	return CurrentIngots;
@@ -2283,20 +2461,23 @@ int Rogue_GetIngots()
 void Rogue_AddIngots(int amount, bool silent = false)
 {
 	int given = amount;
-	Rogue_Whiteflower_IngotGiven(given);
+	Rogue_TriggerFunction(Artifact::FuncIngotChanged, given);
 
-	CurrentIngots += given;
-	Waves_UpdateMvMStats();
-
-	if(!silent)
+	if(given)
 	{
-		if(amount < 0)
+		CurrentIngots += given;
+		Waves_UpdateMvMStats();
+
+		if(!silent)
 		{
-			CPrintToChatAll("%t", "Lost Ingots", -amount);
-		}
-		else
-		{
-			CPrintToChatAll("%t", "Gained Ingots", amount);
+			if(given < 0)
+			{
+				CPrintToChatAll("%t", "Lost Ingots", -given);
+			}
+			else
+			{
+				CPrintToChatAll("%t", "Gained Ingots", given);
+			}
 		}
 	}
 }
@@ -2427,43 +2608,12 @@ bool Rogue_Started()	// Waves_Started()
 
 int Rogue_GetRound()	// Waves_GetRound()
 {
-	return ProgressTimer ? CurrentFloor : CurrentRound;
+	return (CurrentFloor * 15) + (CurrentCount * 2);
 }
 
 int Rogue_GetFloor()
 {
 	return CurrentFloor;
-}
-
-int Rogue_GetWave()	// Waves_GetWave()
-{
-	return ProgressTimer ? CurrentCount : CurrentWave;
-}
-/*
-int Rogue_GetCount()
-{
-	return CurrentCount;
-}
-*/
-int Rogue_GetRoundScale()
-{
-	if(Rogue_Started())
-	{
-		return (CurrentFloor * 15) + (CurrentCount * 2);
-	}
-	else if(Waves_InFreeplay())
-	{
-		int RoundGive = CurrentRound;
-		if(RoundGive < 60)
-		{
-			RoundGive = 60; //should atleast always be treated as round 60.
-		}
-		return RoundGive;
-	}
-	else
-	{
-		return CurrentRound;
-	}
 }
 
 void Rogue_AddExtraStage(int count)
@@ -2502,7 +2652,7 @@ public void Rogue_Vote_NextStage(const Vote vote)
 	SetNextStage(id, false, stage);
 }
 
-bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWaveStats)
+bool Rogue_UpdateMvMStats()
 {
 	if(!Rogue_Mode() || !Rogue_InSetup())
 		return false;
@@ -2595,15 +2745,8 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 	}
 
 	if(Rogue_GetChaosLevel() < 3)
-	{
-		SetEntData(mvm, m_currentWaveStats + 4, 0, 4, true);	// nCreditsDropped
-		SetEntData(mvm, m_currentWaveStats + 8, 0, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
-
-		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
-		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
-	}
+		Waves_SetCreditAcquired(0);
+	
 	return true;
 }
 
@@ -2663,14 +2806,12 @@ bool b_WrathOfItallians; 				//see on_ability_use.sp
 bool b_HandOfElderMages; 				
 bool b_BraceletsOfAgility; 				//shield items
 bool b_ElasticFlyingCape; 				//shield items
-bool b_HealingSalve; 					//see sdkhooks think and item_generic
 bool b_HealthyEssence; 					//see stocks for healing and various other healing methods like medigun
 bool b_FizzyDrink; 			 			//see npc.sp ontakedamage
 bool b_HoverGlider; 			 		//see npc.sp ontakedamage
 bool b_NickelInjectedPack; 				 //see store GiveAll
 bool b_SteelRazor; 				 		
 bool b_SpanishSpecialisedGunpowder; 	
-bool b_SupportHealHandPassive; 	
 
 static void ClearStats()
 {
@@ -2684,14 +2825,12 @@ static void ClearStats()
 	b_HandOfElderMages = false;
 	b_BraceletsOfAgility = false;
 	b_ElasticFlyingCape = false;
-	b_HealingSalve = false;
 	b_HealthyEssence = false;
 	b_FizzyDrink = false;
 	b_HoverGlider = false;
 	b_NickelInjectedPack = false;
 	b_SteelRazor = false;
 	b_SpanishSpecialisedGunpowder = false;
-	b_SupportHealHandPassive = false;
 
 	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
@@ -2726,3 +2865,4 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/paradox_dome.sp"
 
 #include "roguelike/item_whiteflower.sp"
+#include "roguelike/paradox_dlc.sp"

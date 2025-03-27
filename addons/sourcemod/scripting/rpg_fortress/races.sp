@@ -293,7 +293,7 @@ void Races_ConfigSetup()
 		BaseLuck = kv.GetNum("Luck");
 		BaseAgility = kv.GetNum("Agility");
 		BaseUpgradeCost = kv.GetNum("Base Experience Upgrade Cost");
-		BaseUpgradeScale = kv.GetNum("Experience Cost Increace Per Level");
+		BaseUpgradeScale = kv.GetNum("Experience Cost increase Per Level");
 		BaseUpdateStats = kv.GetNum("Stats Into Level Needed", 1);
 		BaseMaxLevel = kv.GetNum("Max Level");
 

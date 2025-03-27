@@ -580,7 +580,7 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 	
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int enemyidx = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int enemyidx = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if(IsValidEnemy(entity, enemyidx))
 		{	
 			if(b_NoKnockbackFromSources[enemyidx])	
@@ -654,7 +654,7 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 	
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int enemyidx = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int enemyidx = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if(IsValidEnemy(entity, enemyidx))
 		{
 			BingBangExplosionInternal(entity, enemyidx, partnerPos, damage, knockup, Radius, damagefalloff);

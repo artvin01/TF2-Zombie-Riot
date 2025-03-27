@@ -94,7 +94,7 @@ void MedivalHalb_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Medival Halberdier");
+	strcopy(data.Name, sizeof(data.Name), "Medieval Halberdier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_halbadeer");
 	strcopy(data.Icon, sizeof(data.Icon), "spearmen");
 	data.IconCustom = true;

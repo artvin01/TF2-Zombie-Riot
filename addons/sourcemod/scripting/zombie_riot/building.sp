@@ -4,132 +4,36 @@
 #define SOUND_GRAB_TF "ui/item_default_pickup.wav"      // grab
 #define SOUND_TOSS_TF "ui/item_default_drop.wav"        // throww
 
-static const char BuildingPlugin[][] =
+static const char SectionName[][] =
 {
-	//"obj_barricade", // Cheap Barricade
-	"obj_barricade", // Normal Barricade
-	"obj_decorative",
-
-	"obj_ammobox",
-	"obj_armortable",
-	"obj_perkmachine",
-	"obj_packapunch",
-
-	"obj_sentrygun",
-	"obj_mortar",
-	"obj_railgun",
-	"obj_healingstation",
-	"obj_village",
-	"obj_barracks",
-
-	"obj_tinker_anvil",
-	"obj_brewing_stand"
+	"Support Buildings",
+	"Singular Buildings",
+	"Construct Buildings"
 };
 
-
-// Base metal cost of building
-static const int BuildingCost[sizeof(BuildingPlugin)] =
+enum struct BuildingInfo
 {
-	//-50,
-	538,
-	4,
+	int Section;
+	char Plugin[64];
+	int Cost;
+	int Health;
+	bool HealthScaleCost;
+	float Cooldown;
+	Function Func;
+	float Cooldowns[MAXTF2PLAYERS];
+}
 
-	600,
-	400,
-	1000,
-	1000,
-
-	600,
-	600,
-	600,
-	600,
-	1200,
-	1200,
-
-	338,
-	1200
-};
-
-// Base health of building
-static const int BuildingHealth[sizeof(BuildingPlugin)] =
-{
-	//150,
-	420,
-	50,
-
-	50,
-	50,
-	50,
-	50,
-
-	30,
-	30,
-	30,
-	30,
-	30,
-	50,
-
-	420,
-	420
-};
-
-// Cooldown between creation (not effected during setup)
-static const float BuildingCooldown[sizeof(BuildingPlugin)] =
-{
-	//99999.9,
-	15.0,
-	10.0,
-
-	20.0,
-	20.0,
-	60.0,
-	60.0,
-
-	30.0,
-	30.0,
-	30.0,
-	30.0,
-	30.0,
-	15.0,
-
-	15.0,
-	60.0
-};
-
-static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
-{
-	//"ObjectBarricade_CanBuildCheap",
-	"ObjectBarricade_CanBuild",
-	"ObjectDecorative_CanBuild",
-
-	"ObjectGeneric_CanBuild",
-	"ObjectGeneric_CanBuild",
-	"ObjectGeneric_CanBuild",
-	"ObjectGeneric_CanBuild",
-
-	"ObjectGeneric_CanBuildSentry",
-	"ObjectGeneric_CanBuildSentry",
-	"ObjectGeneric_CanBuildSentry",
-	"ObjectGeneric_CanBuildSentry",
-	"ObjectGeneric_CanBuildSentry",
-	"ObjectGeneric_CanBuildSentry",
-
-	"ObjectTinkerAnvil_CanBuild",
-	"ObjectTinkerBrew_CanBuild"
-};
-
-static int BuildingId[sizeof(BuildingPlugin)];
-static Function BuildingFunc[sizeof(BuildingPlugin)];
+static ArrayList BuildingList;
 static Function BuildingFuncSave[MAXENTITIES];
-static float Cooldowns[MAXTF2PLAYERS][sizeof(BuildingPlugin)];
 static float GrabThrottle[MAXENTITIES];
+static int MenuSection[MAXTF2PLAYERS] = {-1, ...};
 static int MenuPage[MAXTF2PLAYERS];
 static Handle MenuTimer[MAXTF2PLAYERS];
 static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
 static int i_IDependOnThisBuilding[MAXENTITIES];
 static float PlayerWasHoldingProp[MAXTF2PLAYERS];
-float PreventSameFrameActivation[2][MAXPLAYERS + 1];
-int RandomIntSameRequestFrame[MAXPLAYERS + 1];
+float PreventSameFrameActivation[2][MAXTF2PLAYERS];
+int RandomIntSameRequestFrame[MAXTF2PLAYERS];
 
 bool BuildingIsSupport(int entity)
 {
@@ -182,16 +86,6 @@ static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
 static int i_GiveAmmoSupplyLimit[MAXTF2PLAYERS];
 static int i_GiveCashBuilding[MAXTF2PLAYERS];
 
-void Building_PluginStart()
-{
-	for(int i; i < sizeof(BuildingFuncName); i++)
-	{
-		BuildingFunc[i] = GetFunctionByName(null, BuildingFuncName[i]);
-		if(BuildingFunc[i] == INVALID_FUNCTION)
-			LogError("Function '%s' is missing in building.sp", BuildingFuncName[i]);
-	}
-}
-
 //dont do this on disconnect!
 void Building_ResetRewardValues(int client)
 {
@@ -223,7 +117,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	{
 		//affected by limit.
 		int MaxCashBuildings = MAX_CASH_VIA_BUILDINGS;
-		MaxCashBuildings += RoundToNearest(Attributes_FindOnPlayerZR(owner, Attrib_ExtendExtraCashGain, false, 0.0));
+		MaxCashBuildings += RoundToNearest(Attributes_GetOnPlayer(owner, Attrib_ExtendExtraCashGain, false, _,0.0));
 		//max cash overall should be 50000
 		int MaxBuildingCashAllow = CurrentCash / 7;
 		if(MaxBuildingCashAllow <= 1000)
@@ -234,6 +128,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 
 		if(i_GiveCashBuilding[owner] < MaxBuildingCashAllow)
 		{
+			Native_OnGivenCash(owner, Cash);
 			i_GiveCashBuilding[owner] += Cash;
 			GiveCredits(owner, Cash, true);
 		}
@@ -241,6 +136,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	else
 	{
 		//This building doesnt affect the limit.
+		Native_OnGivenCash(owner, Cash);
 		CashRecievedNonWave[owner] += Cash;
 		CashSpent[owner] -= Cash;
 	}
@@ -294,30 +190,27 @@ void Building_MapStart()
 	Zero(i_IDependOnThisBuilding);
 }
 
-// Called after NPC_ConfigSetup()
-void Building_ConfigSetup()
+void Building_ClientDisconnect(int client)
 {
-	for(int i; i < sizeof(BuildingPlugin); i++)
-	{
-		BuildingId[i] = NPC_GetByPlugin(BuildingPlugin[i]);
-		if(BuildingId[i] == -1)
-			LogError("NPC '%s' is missing in building.sp", BuildingPlugin[i]);
-	}
-
-	Zero2(Cooldowns);
+	MenuSection[client] = -1;
+	MenuPage[client] = 0;
 }
 
-void Building_WaveEnd()
+// Called BEFORE NPC_ConfigSetup()
+void Building_ConfigSetup()
 {
-	//Zero2(Cooldowns);
+	delete BuildingList;
+	BuildingList = new ArrayList(sizeof(BuildingInfo));
+}
+
+int Building_Add(BuildingInfo info)
+{
+	return BuildingList.PushArray(info);
 }
 
 public void Building_OpenMenuWeapon(int client, int weapon, bool crit, int slot)
 {
-	MenuPage[client] = 0;
-	if(MenuTimer[client] != null)
-		delete MenuTimer[client];
-
+	delete MenuTimer[client];
 	BuildingMenu(client);
 }
 
@@ -334,12 +227,12 @@ static bool HasWrench(int client)
 	return true;
 }
 
-static int GetCost(int client, int id, float multi)
+static int GetCost(int client, BuildingInfo info, float multi)
 {
-	int buildCost = BuildingCost[id];
-	if(id <= 1 || id == 12)
+	int buildCost = info.Cost;
+	if(info.HealthScaleCost)//if(id <= 1 || id == 12)
 	{
-		int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
+		int cost_extra = RoundFloat(info.Health * multi / 2.4);
 		if(cost_extra <= 0)
 		{
 			cost_extra = 0;
@@ -349,13 +242,13 @@ static int GetCost(int client, int id, float multi)
 		{
 			buildCost /= 3;
 		}
+		//only reduce off buildigns that actually cost more to build.
+		ReduceMetalCost(client, buildCost);
 	}
 
 
 	if(Rogue_Mode())
 		buildCost /= 3;
-
-	ReduceMetalCost(client, buildCost);
 
 	return buildCost;
 }
@@ -367,6 +260,12 @@ static void BuildingMenu(int client)
 	
 	int metal = GetAmmo(client, Ammo_Metal);
 	int cash = CurrentCash - CashSpent[client];
+	if(StarterCashMode[client])
+	{
+		int maxCash = StartCash;
+		maxCash -= CashSpentLoadout[client];
+		cash = maxCash;
+	}
 	float multi = Object_GetMaxHealthMulti(client);
 	float gameTime = GetGameTime();
 	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
@@ -382,108 +281,139 @@ static void BuildingMenu(int client)
 
 	char buffer1[196], buffer2[64];
 
-	if(ducking)
+	if(MenuSection[client] == -1 || !ducking)
 	{
-		menu.AddItem(buffer1, buffer1, ITEMDRAW_SPACER);
-		menu.AddItem(buffer1, buffer1, ITEMDRAW_SPACER);
+		FormatEx(buffer1, sizeof(buffer1), "%t [%d] ($%d)", "Scrap Metal", AmmoData[Ammo_Metal][1], AmmoData[Ammo_Metal][0]);
+		menu.AddItem(buffer1, buffer1, cash < AmmoData[Ammo_Metal][0] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+
+		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)%s", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[Ammo_Metal][0] * 10, MenuSection[client] == -1 ? "" : "\n ");
+		menu.AddItem(buffer1, buffer1, cash < (AmmoData[Ammo_Metal][0] * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
 	else
 	{
-		FormatEx(buffer1, sizeof(buffer1), "%t", "Extra Menu");
-		menu.AddItem(buffer1, buffer1, ITEMDRAW_DEFAULT);
-
-		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)\n ", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[Ammo_Metal][0] * 10);
-		menu.AddItem(buffer1, buffer1, cash < (AmmoData[Ammo_Metal][0] * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
+		menu.AddItem(buffer1, " \n", ITEMDRAW_DISABLED);
 	}
 
-	int items;
-	for(int i; i < sizeof(BuildingPlugin); i++)
+	if(MenuSection[client] == -1)
 	{
-		int cost = GetCost(client, i, multi);
-		int count;
-		int maxcount = 99;
-		bool allowed;
-		
-		float cooldown = Cooldowns[client][i] - gameTime;
-		if(cooldown > 9999.9)
-			continue;
+		FormatEx(buffer1, sizeof(buffer1), "%t\n ", "Extra Menu");
+		menu.AddItem(buffer1, buffer1);
 
-		if(BuildingFunc[i] != INVALID_FUNCTION)
-			allowed = Object_CanBuild(BuildingFunc[i], client, count, maxcount);
-		
-		// Hide if maxcount is 0
-		if(maxcount < 1)
-			continue;
-		
-		// Add Items if they belong in that page
-		if(items < (MenuPage[client] * ItemsPerPage) || items >= ((MenuPage[client] + 1) * ItemsPerPage))
+		for(int i; i < sizeof(SectionName); i++)
 		{
+			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
+				continue;
+			
+			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
+			menu.AddItem(buffer1, buffer1);
+		}
+	}
+	else
+	{
+		int items;
+
+		BuildingInfo info;
+		int length = BuildingList.Length;
+		for(int i; i < length; i++)
+		{
+			BuildingList.GetArray(i, info);
+			if(info.Section != MenuSection[client])
+				continue;
+			
+			int cost = GetCost(client, info, multi);
+			int count;
+			int maxcount = 99;
+			bool allowed;
+			
+			float cooldown = info.Cooldowns[client] - gameTime;
+			if(cooldown > 9999.9)
+				continue;
+
+			if(info.Func != INVALID_FUNCTION)
+				allowed = Object_CanBuild(info.Func, client, count, maxcount);
+			
+			// Hide if maxcount is 0
+			if(maxcount < 1)
+				continue;
+			
+			// Add Items if they belong in that page
+			if(items < (MenuPage[client] * ItemsPerPage) || items >= ((MenuPage[client] + 1) * ItemsPerPage))
+			{
+				items++;
+				continue;
+			}
+
 			items++;
-			continue;
+
+			if(cost > metal)
+				allowed = false;
+			
+			if(Waves_InSetup() || f_AllowInstabuildRegardless > GetGameTime())
+			{
+				cooldown = 0.0;
+			}
+			else if(cooldown > 0.0)
+			{
+				allowed = false;
+			}
+
+			NPC_GetNameByPlugin(info.Plugin, buffer1, sizeof(buffer1));
+
+			if(ducking)
+			{
+				FormatEx(buffer2, sizeof(buffer2), "%s Desc", buffer1);
+				if(!TranslationPhraseExists(buffer2))
+					strcopy(buffer2, sizeof(buffer2), buffer1);
+
+				int alive = Object_NamedBuildings(_, info.Plugin);
+				Format(buffer1, sizeof(buffer1), "{x%d} %t", alive, buffer2);
+			}
+			else if(cooldown > 0.0)
+			{
+				Format(buffer1, sizeof(buffer1), "%t (%.1fs) [%d/%d]", buffer1, RoundToCeil(cooldown * 2.0) / 2.0, count, maxcount);
+			}
+			else
+			{
+				Format(buffer1, sizeof(buffer1), "%t (%d %t) [%d/%d]", buffer1, cost, "Metal", count, maxcount);
+			}
+
+			IntToString(i, buffer2, sizeof(buffer2));
+			menu.AddItem(buffer2, buffer1, allowed ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		}
 
-		items++;
+		if(menu.ItemCount < 3)
+		{
+			delete menu;
+			//retry
+			if(MenuPage[client] == 0)
+				MenuSection[client] = -1;
+			MenuPage[client] = 0;
+			BuildingMenu(client);
+			return;
+		}
 
-		if(cost > metal)
-			allowed = false;
+		for(int i = menu.ItemCount; i < 7; i++)
+		{
+			menu.AddItem(buffer2, buffer2, ITEMDRAW_SPACER);
+		}
 		
-		if(Waves_InSetup())
+		if(MenuPage[client])
 		{
-			cooldown = 0.0;
-		}
-		else if(cooldown > 0.0)
-		{
-			allowed = false;
-		}
-
-		NPC_GetNameById(BuildingId[i], buffer1, sizeof(buffer1));
-
-		if(ducking)
-		{
-			FormatEx(buffer2, sizeof(buffer2), "%s Desc", buffer1);
-			if(!TranslationPhraseExists(buffer2))
-				strcopy(buffer2, sizeof(buffer2), buffer1);
-
-			int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
-			Format(buffer1, sizeof(buffer1), "{x%d} %t", alive, buffer2);
-		}
-		else if(cooldown > 0.0)
-		{
-			Format(buffer1, sizeof(buffer1), "%t (%.1fs) [%d/%d]", buffer1, RoundToCeil(cooldown * 2.0) / 2.0, count, maxcount);
+			FormatEx(buffer2, sizeof(buffer2), "%t", "Previous");
+			menu.AddItem(buffer2, buffer2);
 		}
 		else
 		{
-			Format(buffer1, sizeof(buffer1), "%t (%d %t) [%d/%d]", buffer1, cost, "Metal", count, maxcount);
+			FormatEx(buffer2, sizeof(buffer2), "%t", "Back");
+			menu.AddItem(buffer2, buffer2);
 		}
-
-		IntToString(i, buffer2, sizeof(buffer2));
-		menu.AddItem(buffer2, buffer1, allowed ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	}
-
-	if(menu.ItemCount <= 2)
-	{
-		delete menu;
-		//retry
-		MenuPage[client] = 0;
-		BuildingMenu(client);
-		return;
-	}
-
-	for(int i = menu.ItemCount; i < (MenuPage[client] ? 7 : 8); i++)
-	{
-		menu.AddItem(buffer2, buffer2, ITEMDRAW_SPACER);
-	}
-	
-	if(MenuPage[client])
-	{
-		FormatEx(buffer2, sizeof(buffer2), "%t", "Previous");
-		menu.AddItem(buffer2, buffer2);
-	}
-	
-	if(sizeof(BuildingPlugin) > ((MenuPage[client] + 1) * ItemsPerPage))
-	{
-		FormatEx(buffer2, sizeof(buffer2), "%t", "Next");
-		menu.AddItem(buffer2, buffer2);
+		
+		if(items > ((MenuPage[client] + 1) * ItemsPerPage))
+		{
+			FormatEx(buffer2, sizeof(buffer2), "%t", "Next");
+			menu.AddItem(buffer2, buffer2);
+		}
 	}
 
 	menu.Pagination = 0;
@@ -503,81 +433,132 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			if(MenuTimer[client] != null)
-				delete MenuTimer[client];
+			delete MenuTimer[client];
 		}
 		case MenuAction_Select:
 		{
-			if(MenuTimer[client] != null)
-				delete MenuTimer[client];
+			delete MenuTimer[client];
 
 			if(HasWrench(client))
 			{
-				switch(choice)
+				if(MenuSection[client] == -1)
 				{
-					case 0:
+					switch(choice)
 					{
-						BuilderMenu(client);
-						return 0;
-					}
-					case 1:
-					{
-						CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
-						CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
-						ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-						
-						int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
-						SetAmmo(client, Ammo_Metal, ammo);
-						CurrentAmmo[client][Ammo_Metal] = ammo;
-					}
-					case 7:
-					{
-						MenuPage[client]--;
-					}
-					case 8:
-					{
-						MenuPage[client]++;
-					}
-					default:
-					{
-						if(CanCreateBuilding(client))
+						case 0:
 						{
-							char buffer[64];
-							menu.GetItem(choice, buffer, sizeof(buffer));
-							int id = StringToInt(buffer);
-							if(id > sizeof(BuildingPlugin))
-							{		
-								BuildingMenu(client);
-								return 0;
-							}
-
-							int metal = GetAmmo(client, Ammo_Metal);
-							int cost = GetCost(client, id, Object_GetMaxHealthMulti(client));
-
-							if(metal >= cost && (BuildingFunc[id] == INVALID_FUNCTION || Object_CanBuild(BuildingFunc[id], client)))
+							CashSpent[client] += AmmoData[Ammo_Metal][0];
+							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0];
+							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+							
+							int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
+							SetAmmo(client, Ammo_Metal, ammo);
+							CurrentAmmo[client][Ammo_Metal] = ammo;
+						}
+						case 1:
+						{
+							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
+							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * 10;
+							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+							
+							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
+							SetAmmo(client, Ammo_Metal, ammo);
+							CurrentAmmo[client][Ammo_Metal] = ammo;
+						}
+						case 2:
+						{
+							BuilderMenu(client);
+							return 0;
+						}
+						default:
+						{
+							MenuSection[client] = choice - 3;
+						}
+					}
+				}
+				else
+				{
+					switch(choice)
+					{
+						case 0:
+						{
+							CashSpent[client] += AmmoData[Ammo_Metal][0];
+							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0];
+							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+							
+							int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
+							SetAmmo(client, Ammo_Metal, ammo);
+							CurrentAmmo[client][Ammo_Metal] = ammo;
+						}
+						case 1:
+						{
+							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
+							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
+							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * 10;
+							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+							
+							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
+							SetAmmo(client, Ammo_Metal, ammo);
+							CurrentAmmo[client][Ammo_Metal] = ammo;
+						}
+						case 7:
+						{
+							if(MenuPage[client] == 0)
 							{
-								float vecPos[3], vecAng[3];
-								GetClientAbsOrigin(client, vecPos);
-								GetClientEyeAngles(client, vecAng);
-								vecAng[0] = 0.0;
-								vecAng[2] = 0.0;
+								MenuSection[client] = -1;
+							}
+							else
+							{
+								MenuPage[client]--;
+							}
+						}
+						case 8:
+						{
+							MenuPage[client]++;
+						}
+						default:
+						{
+							if(CanCreateBuilding(client))
+							{
+								char buffer[64];
+								menu.GetItem(choice, buffer, sizeof(buffer));
+								int id = StringToInt(buffer);
 
-								int entity = Building_BuildById(id, client, vecPos, vecAng);
-								if(entity != -1)
+								BuildingInfo info;
+								BuildingList.GetArray(id, info);
+
+								int metal = GetAmmo(client, Ammo_Metal);
+								int cost = GetCost(client, info, Object_GetMaxHealthMulti(client));
+
+								if(metal >= cost && (info.Func == INVALID_FUNCTION || Object_CanBuild(info.Func, client)))
 								{
-									GiveBuildingMetalCostOnBuy(entity, cost);
+									float vecPos[3], vecAng[3];
+									GetClientAbsOrigin(client, vecPos);
+									GetClientEyeAngles(client, vecAng);
+									vecAng[0] = 0.0;
+									vecAng[2] = 0.0;
 
-									Building_PlayerWieldsBuilding(client, entity);
-									Barracks_UpdateEntityUpgrades(entity, client, true, _);
+									int entity = BuildByInfo(info, client, vecPos, vecAng);
+									if(entity != -1)
+									{
+										GiveBuildingMetalCostOnBuy(entity, cost);
 
-									metal -= cost;
-									SetAmmo(client, Ammo_Metal, metal);
-									CurrentAmmo[client][Ammo_Metal] = metal;
-									float CooldownGive = BuildingCooldown[id];
-									if(Rogue_Mode())
-										CooldownGive *= 0.5;
-										
-									Cooldowns[client][id] = GetGameTime() + CooldownGive;
+										Building_PlayerWieldsBuilding(client, entity);
+										Barracks_UpdateEntityUpgrades(entity, client, true, _);
+
+										metal -= cost;
+										SetAmmo(client, Ammo_Metal, metal);
+										CurrentAmmo[client][Ammo_Metal] = metal;
+										float CooldownGive = info.Cooldown;
+										if(Rogue_Mode())
+											CooldownGive *= 0.5;
+											
+										info.Cooldowns[client] = GetGameTime() + CooldownGive;
+										BuildingList.SetArray(id, info);
+									}
 								}
 							}
 						}
@@ -592,14 +573,25 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-int Building_BuildById(int id, int client, float vecPos[3], float vecAng[3])
+int Building_BuildByName(const char[] plugin, int client, float vecPos[3], float vecAng[3])
 {
-	int entity = NPC_CreateById(BuildingId[id], client, vecPos, vecAng, GetTeam(client));
+	int index = BuildingList.FindString(plugin, BuildingInfo::Plugin);
+	if(index == -1)
+		return index;
+	
+	BuildingInfo info;
+	BuildingList.GetArray(index, info);
+	return BuildByInfo(info, client, vecPos, vecAng);
+}
+
+static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vecAng[3])
+{
+	int entity = NPC_CreateByName(info.Plugin, client, vecPos, vecAng, GetTeam(client));
 	if(entity != -1)
 	{
 		ObjectGeneric obj = view_as<ObjectGeneric>(entity);
-		BuildingFuncSave[entity] = BuildingFunc[id];
-		obj.BaseHealth = BuildingHealth[id];
+		BuildingFuncSave[entity] = info.Func;
+		obj.BaseHealth = info.Health;
 		int health = GetEntProp(obj.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(obj.index, Prop_Data, "m_iMaxHealth");
 		int expected = RoundFloat(obj.BaseHealth * Object_GetMaxHealthMulti(client));
@@ -671,7 +663,9 @@ void Building_ShowInteractionHud(int client, int entity)
 			if(dieingstate[entity] > 0 && IsPlayerAlive(client))
 			{
 				SetGlobalTransTarget(client);
-				PrintCenterText(client, "%t", "Revive Teammate tooltip");
+				char ButtonDisplay[255];
+				PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+				PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");
 				return;
 			}
 			entity = EntRefToEntIndex(Building_Mounted[entity]);
@@ -711,14 +705,13 @@ void Building_ShowInteractionHud(int client, int entity)
 				{
 					Hide_Hud = false;
 					SetGlobalTransTarget(client);
-					PrintCenterText(client, "%t", "Claim this building");
+					char ButtonDisplay[255];
+					PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+					PrintCenterText(client, "%s%t", ButtonDisplay,"Claim this building");
 				}
 				else if(Building_Collect_Cooldown[entity][client] > GetGameTime())
 				{
 					float Building_Picking_up_cd = Building_Collect_Cooldown[entity][client] - GetGameTime();
-					
-					if(Building_Picking_up_cd <= 0.0)
-						Building_Picking_up_cd = 0.0;
 					
 					Hide_Hud = false;
 					SetGlobalTransTarget(client);
@@ -729,6 +722,11 @@ void Building_ShowInteractionHud(int client, int entity)
 					Hide_Hud = false;
 				}
 			}
+		}
+		else if(i_IsVehicle[entity] == 2)
+		{
+			if(Vehicle_ShowInteractHud(client, entity))
+				Hide_Hud = false;
 		}
 	}
 
@@ -756,6 +754,16 @@ stock void ApplyBuildingCollectCooldown(int building, int client, float Duration
 	}
 }
 
+public void Pickup_Building_Multi(int client, int weapon, bool crit)
+{
+	if((GetClientButtons(client) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
+	{
+		MountBuildingToBack(client, weapon, crit);
+		return;
+	}
+	Pickup_Building_M2(client, weapon, crit);
+}
+
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
 	if(IsValidEntity(Player_BuildingBeingCarried[client]))
@@ -780,17 +788,15 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	Building_PlayerWieldsBuilding(client, entity);
 }
 
-bool Building_AttemptPlace(int buildingindx, int client)
+bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false)
 {
 	float VecPos[3];
 	GetEntPropVector(buildingindx, Prop_Data, "m_vecAbsOrigin", VecPos);
+
 	float VecMin[3];
 	float VecMax[3];
-	VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
-	VecMin[0] *= -1.0;
-	VecMin[1] *= -1.0;
-	VecMin[2] = 0.0;
 	VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
+	VecMin = f3_CustomMinMaxBoundingBoxMinExtra[buildingindx];
 
 	b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 	bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
@@ -800,7 +806,8 @@ bool Building_AttemptPlace(int buildingindx, int client)
 		if(client <= MaxClients)
 		{
 			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			if(!TestClient)
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
 		return false;
 	}
@@ -814,45 +821,65 @@ bool Building_AttemptPlace(int buildingindx, int client)
 		GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
 		//We use custom offets for buildings, so we do our own magic here
 		float Delta = f3_CustomMinMaxBoundingBox[buildingHit][2];
+
+	//	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2])
+	//		endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2];
+
 		//Be sure to now set all the things we need.
 		//Set the dependency
 		endPos2[0] = VecPos[0];
 		endPos2[1] = VecPos[1];
 		endPos2[2] += Delta;
-		i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
+		if(!TestClient)
+			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
 		if(client <= MaxClients)
 			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
 		
-		SDKCall_SetLocalOrigin(buildingindx, endPos2);	
-		SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
-		if(client <= MaxClients)
-			Player_BuildingBeingCarried[client] = 0;
-		
-		Building_BuildingBeingCarried[buildingindx] = 0;
-		b_ThisEntityIgnored[buildingindx] = false;
-		b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+		if(!TestClient)
+		{
+		//	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2])	//wierd offset.
+		//		endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2];
 
-		if(client <= MaxClients)
-			EmitSoundToClient(client, SOUND_TOSS_TF);
+			if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+				endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+
+			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
+			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+			if(client <= MaxClients)
+				Player_BuildingBeingCarried[client] = 0;
 		
+			Building_BuildingBeingCarried[buildingindx] = 0;
+			b_ThisEntityIgnored[buildingindx] = false;
+			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+
+			if(client <= MaxClients)
+				EmitSoundToClient(client, SOUND_TOSS_TF);
+		}
 		return true;
 	}
 	Success = Building_IsValidGroundFloor(client, buildingindx, VecPos);
 	if(!Success)
 	{
-		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+		if(!TestClient)
+			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
 		return false;
 	}
-	SDKCall_SetLocalOrigin(buildingindx, VecPos);	
-	SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
-	Building_BuildingBeingCarried[buildingindx] = 0;
-	b_ThisEntityIgnored[buildingindx] = false;
-	b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
-
-	if(client <= MaxClients)
+	if(!TestClient)
 	{
-		Player_BuildingBeingCarried[client] = 0;
-		EmitSoundToClient(client, SOUND_TOSS_TF);
+		if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+			VecPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+
+		SDKCall_SetLocalOrigin(buildingindx, VecPos);	
+		SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+		Building_BuildingBeingCarried[buildingindx] = 0;
+		b_ThisEntityIgnored[buildingindx] = false;
+		b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+
+		if(client <= MaxClients)
+		{
+			Player_BuildingBeingCarried[client] = 0;
+			EmitSoundToClient(client, SOUND_TOSS_TF);
+		}
 	}
 	return true;
 }
@@ -940,7 +967,13 @@ void BuildingPickUp(int BuildingNPC)
 	TR_GetEndPosition(VecCheckBottom, hTrace);
 	delete hTrace;
 	
+	if(f3_CustomMinMaxBoundingBoxMinExtra[BuildingNPC][2])
+	{
+		//wierd offset.
+		VecCheckBottom[2] -= f3_CustomMinMaxBoundingBoxMinExtra[BuildingNPC][2];
+	}
 	TeleportEntity(BuildingNPC, VecCheckBottom, vecView2, NULL_VECTOR);
+	Building_AttemptPlace(BuildingNPC, client, true);
 }
 
 
@@ -1124,25 +1157,24 @@ void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float 
 {
 	float VecMin[3];
 	float VecMax[3];
-	VecMin = f3_CustomMinMaxBoundingBox[entity];
-	VecMin[0] *= -1.0;
-	VecMin[1] *= -1.0;
-	VecMin[2] = 0.0;
 	VecMax = f3_CustomMinMaxBoundingBox[entity];
+	VecMin = f3_CustomMinMaxBoundingBoxMinExtra[entity];
 	float VecLaser[3];
 	VecLaser = VecBottom;
 	if(Fail)
 	{
-		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.5, view_as<int>({255, 0, 0, 255}));
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client, 255, 0, 0);
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({255, 0, 0, 255}));
+		SetDefaultHudPosition(client, 255, 0, 0, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 	}
 	else
 	{
-		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.5, view_as<int>({0, 255, 0, 255}));
-		SetDefaultHudPosition(client);
+		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+			VecLaser[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
+
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({0, 255, 0, 255}));
+		SetDefaultHudPosition(client,_,_,_, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
 	}
@@ -1263,6 +1295,11 @@ void IsBuildingNotFloating(int building)
 				DestroyBuildingDo(building);
 				return;
 			}
+			if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
+			{
+				//wierd offset.
+				endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+			}
 			TeleportEntity(building, endPos2, NULL_VECTOR, NULL_VECTOR);
 			//we hit something
 		}
@@ -1307,11 +1344,16 @@ void BuildingAdjustMe(int building, int DestroyedBuilding)
 //	posMain = posStacked;
 	posMain[2] = posStacked[2];	
 	
+	if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
+	{
+		//wierd offset.
+		posMain[2] -= f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+	}
 	TeleportEntity(building, posMain, NULL_VECTOR, NULL_VECTOR);
 	//make npc's that target the previous building target the stacked one now.
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int INpc = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int INpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(INpc))
 		{
 			CClotBody npc = view_as<CClotBody>(INpc);
@@ -1332,6 +1374,9 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	RequestFrames(Wrench_Hit_Repair_ReplacementInternal, 12, pack);
+	
+	if(IsPlayerCarringObject(client))
+		Pickup_Building_M2(client, weapon, false);
 }
 public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 {
@@ -1696,6 +1741,30 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 	
 	if(!b_NpcHasDied[entity] && !i_IsABuilding[entity])
 	{
+		
+		float Attribute;
+		Attribute = Attributes_GetOnPlayer(client, Attrib_BarracksHealth, true, true);
+		if(f_FreeplayAlteredHealthOld_Barracks[entity] != Attribute)
+		{
+			float AdjustValues = f_FreeplayAlteredHealthOld_Barracks[entity] / Attribute;
+
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / AdjustValues));
+
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / AdjustValues));
+
+			f_FreeplayAlteredHealthOld_Barracks[entity] = Attribute;
+		}
+		
+
+		Attribute = Attributes_GetOnPlayer(client, Attrib_BarracksDamage, true, true);
+		if(f_FreeplayAlteredDamageOld_Barracks[entity] != Attribute)
+		{
+			float AdjustValues = f_FreeplayAlteredDamageOld_Barracks[entity] / Attribute;
+
+			view_as<BarrackBody>(entity).BonusDamageBonus /= AdjustValues;
+			f_FreeplayAlteredDamageOld_Barracks[entity] = Attribute;
+		}
 		if(!FinalBuilder[entity] && FinalBuilder[client])
 		{
 			FinalBuilder[entity] = true;
@@ -1935,35 +2004,25 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 	{
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = true;		
-		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
-
+	/*
 	if(IsValidEntity(objstats.m_iWearable2))
 	{
 		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable2] = true;		
 		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 	}
+	*/
 
-	if(IsValidEntity(objstats.m_iWearable3))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable3, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable4))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable5))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable5, "SetTextSize");
-		SDKUnhook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-		SDKHook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-	}
+	
+	//update text
+	objstats.m_flNextDelayTime = 0.0;
 	float flPos[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+	if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+		flPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	RandomIntSameRequestFrame[client] = GetRandomInt(-999999,9999999);
 	DataPack pack = new DataPack();
@@ -2020,6 +2079,8 @@ void ParentDelayFrameForReasons(DataPack pack)
 
 	int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
 	SetParent(Wearable, InfoTarget, WhichAttachmentDo,_);
+	if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+		flPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
 	SetParent(InfoTarget, entity, _, _, _);
@@ -2056,6 +2117,8 @@ void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
 			float posStacked[3]; 
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
 			AcceptEntityInput(entity, "ClearParent");
+			if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+				posStacked[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 			SDKCall_SetLocalOrigin(entity, posStacked);	
 		}
 		return;
@@ -2088,6 +2151,8 @@ void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
 
 	float flPos[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+	if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+		flPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	RandomIntSameRequestFrame[client] = GetRandomInt(-999999,9999999);
 	DataPack pack = new DataPack();
@@ -2105,7 +2170,7 @@ void UnequipDispenser(int client, bool destroy = false)
 {
 	if(destroy)
 	{
-		Building_Mounted[client] = 0;
+		Building_Mounted[client] = -1;
 		if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]))
 		{
 			RemoveEntity(i2_MountedInfoAndBuilding[0][client]);
@@ -2125,13 +2190,16 @@ void UnequipDispenser(int client, bool destroy = false)
 		return;
 	}
 	
-	Building_Mounted[client] = 0;
+	Building_Mounted[client] = -1;
 	int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 	if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 	{
 		float posStacked[3]; 
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
 		AcceptEntityInput(i2_MountedInfoAndBuilding[1][client], "ClearParent");
+		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
+			posStacked[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
+
 		SDKCall_SetLocalOrigin(entity, posStacked);	
 		i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
 	}
@@ -2144,7 +2212,7 @@ void UnequipDispenser(int client, bool destroy = false)
 	{
 		return;
 	}
-	Building_Mounted[entity] = 0;
+	Building_Mounted[entity] = -1;
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	b_ThisEntityIgnored[entity] = false;
 	b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
@@ -2157,10 +2225,12 @@ void UnequipDispenser(int client, bool destroy = false)
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
 		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = false;
 	//	SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);		
-		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
-		SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+		SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+	//	SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
-
+	/*
 	if(IsValidEntity(objstats.m_iWearable2))
 	{
 		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
@@ -2169,39 +2239,25 @@ void UnequipDispenser(int client, bool destroy = false)
 		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SDKHook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);	
 	}
+	*/
 
-	if(IsValidEntity(objstats.m_iWearable3))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable3, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable4))
-	{
-		SetVariantString("6");
-		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
-	}
-	if(IsValidEntity(objstats.m_iWearable5))
-	{
-		SetVariantString("0");
-		AcceptEntityInput(objstats.m_iWearable5, "SetTextSize");
-		SDKUnhook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
-	}
+	//update text
+	objstats.m_flNextDelayTime = 0.0;
 
 	Building_PlayerWieldsBuilding(client, entity);
 }
 
 bool BuildingValidPositionFinal(float AbsOrigin[3], int entity)
 {
+	//is inside a trigger hurt zone
+	if(i_InHurtZone[entity])
+	{
+		return false;
+	}
 	float VecMax[3];
 	float VecMin[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", VecMax);
 	GetEntPropVector(entity, Prop_Data, "m_vecMins", VecMin);
-
-	//is inside a trigger hurt zone
-	if(IsBoxHazard(AbsOrigin,VecMin,VecMax))
-	{
-		return false;
-	}
 	//is it inside a no build zone
 	if(IsPointNoBuild(AbsOrigin,VecMin,VecMax))
 	{
@@ -2271,7 +2327,7 @@ void Building_Check_ValidSupportcount(int client)
 	int maxcount = Object_MaxSupportBuildings(client);
 	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 		if(IsValidEntity(entity) && BuildingIsSupport(entity))
 		{
 			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");

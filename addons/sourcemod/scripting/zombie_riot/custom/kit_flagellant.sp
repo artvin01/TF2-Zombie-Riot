@@ -309,7 +309,7 @@ public void Weapon_FlagellantMelee_M2(int client, int weapon, bool crit, int slo
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 44.0);
 
 	ClientCommand(client, "playgamesound misc/halloween/spell_skeleton_horde_cast.wav");
@@ -339,7 +339,7 @@ public Action Flagellant_MoreMoreTimer(Handle timer, int userid)
 		int healing = MoreMoreHits[client] * MoreMoreHealing[client];
 
 		PrintHintText(client, "More! MORE! | %ds | +%d HP", RoundToCeil(time), healing);
-		StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+		
 
 		if(time >= 0.0)
 			return Plugin_Continue;
@@ -488,9 +488,10 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 				
 				float cooldown = (healing / multi) / 15.0;
-				if(cooldown < 5.0)
+				cooldown *= 2.0;
+				if(cooldown < 8.0)
 				{
-					cooldown = 5.0;
+					cooldown = 8.0;
 				}
 				else if(cooldown > 15.0)
 				{
@@ -557,7 +558,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 
 	if(validEnemy)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 
 		TriggerSelfDamage(client, 0.025);
 		
@@ -752,9 +753,9 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 
 	if(validEnemy)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 
-		int round = Rogue_GetRoundScale();
+		int round = Waves_GetRound();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		if(LastSepsis[client] != round || LastSepsisRaid[client] != raid)
 		{
@@ -812,7 +813,7 @@ public Action Flagellant_CheckSepsisTimer(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		if(LastSepsis[client] == Rogue_GetRoundScale() && LastSepsisRaid[client] == RaidbossIgnoreBuildingsLogic(1))
+		if(LastSepsis[client] == Waves_GetRound() && LastSepsisRaid[client] == RaidbossIgnoreBuildingsLogic(1))
 			return Plugin_Continue;
 
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
@@ -866,7 +867,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityHealth(client, health);
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
 
-		int round = Rogue_GetRoundScale();
+		int round = Waves_GetRound();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		GiveCompleteInvul(client, 1.5);
 		if(LastDeathDoor[client] != round || LastDeathDoorRaid[client] != raid)

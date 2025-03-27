@@ -202,7 +202,7 @@ public void Weapon_Wand_Beam_Alt_Pap_M2(int client, int weapon, bool crit)
 	{
 		if(i_cannon_charge[client]>=BEAM_WAND_CANNON_ABILITY_COST || CvarInfiniteCash.BoolValue)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			i_cannon_charge[client] = 0;
 			Kill_Sound(client);
 			bl_orbtial_cannon[client] = true;
@@ -224,7 +224,7 @@ public void Weapon_Wand_Beam_Alt_Pap_M2(int client, int weapon, bool crit)
 	{
 		if(fl_beam_overdrive_cost[i_weapon_pap_tier[client]]<=fl_beam_overdrive_charge[client] || CvarInfiniteCash.BoolValue)
 		{		
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			duration = BEAM_WAND_BEAM_OVERDRIVE_DURATION+BEAM_WAND_BEAM_OVERDRIVE_CHARGEUP;
 			
 			Kill_Sound(client);
@@ -863,7 +863,7 @@ static void Beam_Wand_pap_Hud(int client, bool type, int duration)
 		}
 		
 	}
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 static void Beam_Wand_Client_Target_Vec(int client, float vec[3], float gametime)

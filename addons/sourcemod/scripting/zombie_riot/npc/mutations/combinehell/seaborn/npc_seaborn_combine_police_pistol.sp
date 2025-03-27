@@ -83,7 +83,7 @@ public void Seaborn_Combine_Police_Pistol_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "combine_pistol");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Hidden;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

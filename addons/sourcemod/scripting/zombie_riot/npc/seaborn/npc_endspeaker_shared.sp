@@ -217,7 +217,7 @@ methodmap EndSpeaker < CClotBody
 
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == Remain_ID() && IsEntityAlive(entity))
 			{
 				remain[count++] = entity;
@@ -497,7 +497,7 @@ bool EndSpeaker_GetPos(float pos[3])
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE &&
 			i_NpcInternalId[entity] >= EndspeakerLowId &&
 			i_NpcInternalId[entity] <= EndspeakerHighId &&

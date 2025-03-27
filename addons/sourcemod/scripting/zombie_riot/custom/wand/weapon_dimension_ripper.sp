@@ -96,7 +96,7 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 				PrintHintText(client,"Hi ;D");
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_DIMhuddelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -718,7 +718,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 			if(mana_cost <= Current_Mana[client])
 			{
 				how_many_times_swinged[client] = 0;
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Current_Mana[client] -= mana_cost;
 				float pos1[3], ang[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);

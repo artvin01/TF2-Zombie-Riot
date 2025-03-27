@@ -561,7 +561,7 @@ void VictoriaCaffeinatorAOEBuff(VictorianCaffeinator npc, float gameTime)
 						ApplyStatusEffect(npc.index, entitycount, "Caffinated Drain", 1.1);
 						if(NpcStats_VictorianCallToArms(npc.index))
 						{
-							ApplyStatusEffect(npc.index, entitycount, "Buff Banner", 2.6);
+							ApplyStatusEffect(npc.index, entitycount, "War Cry", 2.6);
 						}
 					}
 				}

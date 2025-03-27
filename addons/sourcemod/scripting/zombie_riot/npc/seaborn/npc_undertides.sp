@@ -77,7 +77,7 @@ methodmap UnderTides < CClotBody
 	
 	public UnderTides(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}));
+		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}, .NpcTypeLogic = 1));
 		// 100,000 x 0.15
 
 		i_NpcWeight[npc.index] = 999;
@@ -118,7 +118,7 @@ methodmap UnderTides < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 1.0;
+			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -200,7 +200,7 @@ public void UnderTides_ClotThink(int iNPC)
 			KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 
 			int enemy[16];
-			GetHighDefTargets(npc, enemy, sizeof(enemy));
+			GetHighDefTargets(npc, enemy, sizeof(enemy), Zombie_DelayExtraSpeed() < 1.6);
 
 			for(int i; i < sizeof(enemy); i++)
 			{
@@ -216,15 +216,16 @@ public void UnderTides_ClotThink(int iNPC)
 					Elemental_AddNervousDamage(enemy[i], npc.index, 57);
 					// 380 * 0.15
 
-					if(!i)
-						npc.FaceTowards(vecTarget, 99999.0);
 				}
 			}
 
-			npc.AddGesture("ACT_CHARGE_END");
+		//	npc.AddGesture("ACT_CHARGE_END");
 			npc.PlaySpecialSound();
 			npc.PlaySpecialSound();
-			npc.m_flNextRangedSpecialAttack = gameTime + 30.0;
+			
+			if(Zombie_DelayExtraSpeed() < 2.0)
+				npc.m_flNextRangedSpecialAttack = gameTime + 30.0;
+			
 			npc.m_flNextMeleeAttack = gameTime + 6.0;
 			float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 			ParticleEffectAt(npc_vec, "hammer_bell_ring_shockwave2", 4.0);
@@ -244,15 +245,12 @@ public void UnderTides_ClotThink(int iNPC)
 
 					npc.FireArrow(vecTarget, 57.0, 1300.0);
 					// 380 * 0.15
-
-					if(!i)
-						npc.FaceTowards(vecTarget, 200.0);
 				}
 			}
 
 			if(vecTarget[0])
 			{
-				npc.AddGesture("ACT_CHARGE_END");
+			//	npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayRangedSound();
 				npc.m_flNextRangedAttack = gameTime + 12.0;
 				npc.m_flNextMeleeAttack = gameTime + 4.5;
@@ -280,9 +278,6 @@ public void UnderTides_ClotThink(int iNPC)
 
 					i_NervousImpairmentArrowAmount[entity] = 12;
 					// 380 * 0.2 * 0.15
-
-					if(!i)
-						npc.FaceTowards(vecTarget, 100.0);
 					
 					if(entity != -1)
 					{
@@ -302,7 +297,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 			if(vecTarget[0])
 			{
-				npc.AddGesture("ACT_CHARGE_END");
+			//	npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayMeleeSound();
 				npc.m_flNextMeleeAttack = gameTime + 3.5;
 			}
@@ -314,7 +309,7 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = false, bool player_only = false, int TraceFrom = -1, float RangeLimit = 0.0)
+void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = true, bool player_only = false, int TraceFrom = -1, float RangeLimit = 0.0)
 {
 	// Prio:
 	// 1. Highest Defense Stat
@@ -326,7 +321,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 		TraceEntity = TraceFrom;
 	}
 	int team = GetTeam(npc.index);
-	int[] def = new int[count];
+	float[] def = new float[count];
 	float Pos1[3];
 	if(RangeLimit > 0.0)
 	{
@@ -357,47 +352,27 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 			for(int i; i < count; i++)
 			{
-				int defense = Armour_Level_Current[client];
-				if(i_HealthBeforeSuit[client])
-				{
-					defense = i_HealthBeforeSuit[client];
-				}
-				else
-				{
-					if(Armor_Charge[client] > 0)
-						defense += 10;
-					
-					if(HasSpecificBuff(client, "Ally Empowerment"))
-						defense++;
-					
-					if(HasSpecificBuff(client, "Self Empowerment"))
-						defense++;
-					
-					if(HasSpecificBuff(client, "Hussar's Warscream"))
-						defense++;
-					
-					if(i_CurrentEquippedPerk[client] == 2)
-						defense += 2;
-					
-					if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
-						defense += 4;
-				}
+				float percentage_ranged = 100.0;
+				int i_TheWorld = 0;
+				int testvalue = 1;
+				int testvalue2 = -1;
+				float testvalue1[3];
+				int DmgType = DMG_BULLET;
+
+				CheckInHudEnable(1);
+				Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_ranged, DmgType, testvalue2, testvalue1, testvalue1,testvalue);
+				CheckInHudEnable(0);
 
 				if(enemy[i])
 				{
-					if(def[i] == defense)
-					{
-						if(GetURandomInt() % 2)
-							continue;
-					}
-					else if(def[i] < defense)
+					if(def[i] < percentage_ranged)
 					{
 						continue;
 					}
 				}
 
 				AddToList(client, i, enemy, count);
-				AddToList(defense, i, def, count);
+				AddToList(percentage_ranged, i, def, count);
 				break;
 			}
 		}
@@ -407,7 +382,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	{
 		for(int a; a < i_MaxcountNpcTotal; a++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity))
@@ -425,47 +400,22 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 					for(int i; i < count; i++)
 					{
-						int defense = i_npcspawnprotection[entity] ? 8 : 0;
-						
-						if(fl_RangedArmor[entity] < 1.0)
-							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
-						
-						if(HasSpecificBuff(entity, "Battilons Backup"))
-							defense += 4;
+						float percentage_ranged = 100.0;
+						int testvalue = 1;
+						int testvalue2 = -1;
+						int attackertestDo = npc.index;
+						float testvalue1[3];
+						int DmgType = DMG_BULLET;
 
-						if(Citizen_IsIt(entity))
-						{
-							Citizen cit = view_as<Citizen>(entity);
-							
-							if(cit.m_iGunValue > 10000)
-							{
-								defense += 4;
-							}
-							else if(cit.m_iGunValue > 7500)
-							{
-								defense += 3;
-							}
-							else if(cit.m_iGunValue > 5000)
-							{
-								defense += 2;
-							}
-							else if(cit.m_iGunValue > 2500)
-							{
-								defense++;
-							}
+						CheckInHudEnable(1);
+						NPC_OnTakeDamage(entity, attackertestDo, attackertestDo, percentage_ranged, DmgType, testvalue2, testvalue1, testvalue1,testvalue);
+						CheckInHudEnable(0);
 
-							if(cit.m_iGunType == Cit_Melee)
-								defense += 2;
-
-							if(cit.m_iHasPerk == Cit_Melee)
-								defense++;
-						}
-
-						if(enemy[i] && def[i] < defense)
+						if(enemy[i] && def[i] < percentage_ranged)
 							continue;
 
 						AddToList(entity, i, enemy, count);
-						AddToList(defense, i, def, count);
+						AddToList(percentage_ranged, i, def, count);
 						break;
 					}
 				}
@@ -474,7 +424,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	}
 }
 
-static void AddToList(int data, int pos, int[] list, int count)
+static void AddToList(any data, int pos, any[] list, int count)
 {
 	for(int i = count - 1; i > pos; i--)
 	{

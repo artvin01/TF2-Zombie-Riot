@@ -196,7 +196,7 @@ public void Weapon_Logos_M2(int client, int weapon, bool &result, int slot)
 		}
 		else
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 
 			Attributes_SetMulti(weapon, 6, 0.5);
 

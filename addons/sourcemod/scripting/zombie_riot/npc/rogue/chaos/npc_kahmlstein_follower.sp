@@ -225,8 +225,6 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
-
-		SetEntPropString(npc.index, Prop_Data, "m_iName", "blue_goggles");
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");
 		SetVariantString("1.0");
@@ -276,7 +274,7 @@ methodmap KahmlsteinFollower < CClotBody
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					view_as<CClotBody>(other).m_bDissapearOnDeath = true;
@@ -320,7 +318,7 @@ static void ClotThink(int iNPC)
 		bool stop_thinking;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != -1 && i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other))
 			{
 				if(i_RaidGrantExtra[other] >= 6 && i_RaidGrantExtra[other] < 888)
@@ -680,7 +678,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				}
 				for (int client = 0; client < MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Kahmlsteins Last Will");
 						CPrintToChat(client,"{default}You get: {red}''Kahmlsteins Last Will''{default}.");

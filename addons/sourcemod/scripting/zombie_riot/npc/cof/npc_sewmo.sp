@@ -91,7 +91,7 @@ methodmap Sewmo < CClotBody
 	
 	public Sewmo(float vecPos[3], float vecAng[3], int ally)
 	{
-		Sewmo npc = view_as<Sewmo>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sewmo.mdl", "1.0", "400", ally));
+		Sewmo npc = view_as<Sewmo>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sewmo.mdl", "1.10", "400", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -129,6 +129,14 @@ public void Sewmo_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+
+	GrantEntityArmor(iNPC, true, 0.50, 0.1, 0);
+
+	if(npc.m_flArmorCount < 0.0)
+	{
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+	}
 
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -222,10 +230,13 @@ public void Sewmo_NPCDeath(int entity)
 
 		DispatchSpawn(entity_death);
 		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.10); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("diesimple");
 		AcceptEntityInput(entity_death, "SetAnimation");
+		SetVariantInt(1);
+		AcceptEntityInput(entity_death, "SetBodyGroup");
+		
 		
 		pos[2] += 20.0;
 		
@@ -257,8 +268,8 @@ void SewmoSelfDefense(Sewmo npc, float gameTime, int target, float distance)
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			static float MaxVec[3] = {100.0 ,100.0, 100.0};
-			static float MinVec[3] = {-100.0, -100.0, -100.0};
+			static float MaxVec[3] = {128.0, 128.0, 128.0};
+			static float MinVec[3] = {-128.0, -128.0, -128.0};
 
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, MaxVec, MinVec)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
@@ -295,7 +306,17 @@ void SewmoSelfDefense(Sewmo npc, float gameTime, int target, float distance)
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MELEE_ATTACK1");
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						npc.AddGesture("ACT_MELEE_ATTACK1");
+					}
+					case 1:
+					{
+						npc.AddGesture("ACT_MELEE_ATTACK2");
+					}
+				}
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;

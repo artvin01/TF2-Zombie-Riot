@@ -14,6 +14,16 @@ void ObjectTinkerAnvil_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	build.Section = 1;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_tinker_anvil");
+	build.Cost = 338;
+	build.Health = 420;
+	build.HealthScaleCost = true;
+	build.Cooldown = 15.0;
+	build.Func = ObjectTinkerAnvil_CanBuild;
+	Building_Add(build);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -34,6 +44,7 @@ methodmap ObjectTinkerAnvil < ObjectGeneric
 		func_NPCThink[npc.index] = ClotThink;
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, 90.0);
+		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -81,7 +92,9 @@ static bool ClotCanUse(ObjectTinkerAnvil npc, int client)
 static void ClotShowInteractHud(ObjectTinkerAnvil npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Blacksmith Tooltip");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay, "Blacksmith Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectTinkerAnvil npc)

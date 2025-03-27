@@ -72,7 +72,7 @@ void LostKnight_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "lost_knight");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Hidden;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -195,6 +195,7 @@ methodmap LostKnight < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flMeleeArmor = 0.01;
 		npc.m_flRangedArmor = 0.01;
+		b_thisNpcHasAnOutline[npc.index] = false;
 		
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.8");
@@ -243,11 +244,11 @@ methodmap LostKnight < CClotBody
 		if(entity != -1)
 		{
 			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "15 15 15 255");
-			DispatchKeyValue(entity, "fogcolor2", "15 15 15 255");
+			DispatchKeyValue(entity, "fogcolor", "10 10 10 255");
+			DispatchKeyValue(entity, "fogcolor2", "10 10 10 255");
 			DispatchKeyValueFloat(entity, "fogstart", 10.0);
 			DispatchKeyValueFloat(entity, "fogend", 125.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.998);
+			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.900);
 
 			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
 			DispatchKeyValue(entity, "fogenable", "1");
@@ -299,8 +300,8 @@ public void LostKnight_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 0.25;
 			npc.m_flRangedArmor = 0.25;
 			ApplyStatusEffect(npc.index, npc.index, "Combine Command", DurationGive);
-			ApplyStatusEffect(npc.index, npc.index, "Buff Banner", DurationGive);
-			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", DurationGive);
+			ApplyStatusEffect(npc.index, npc.index, "War Cry", DurationGive);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "False Therapy", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", DurationGive);
@@ -327,8 +328,8 @@ public void LostKnight_ClotThink(int iNPC)
 			if(GetTeam(npc.index) == GetTeam(entitycount))
 			{
 				ApplyStatusEffect(npc.index, entitycount, "Combine Command", DurationGive);
-				ApplyStatusEffect(npc.index, entitycount, "Buff Banner", DurationGive);
-				ApplyStatusEffect(npc.index, entitycount, "Battilons Backup", DurationGive);
+				ApplyStatusEffect(npc.index, entitycount, "War Cry", DurationGive);
+				ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", DurationGive);
 			}
 		}
 	}

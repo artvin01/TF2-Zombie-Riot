@@ -227,7 +227,7 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 			bool NoFactory=true;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 				{
 					NoFactory=false;

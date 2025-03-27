@@ -232,11 +232,12 @@ static void ClotThink(int iNPC)
 
 				MakePlayerGiveResponseVoice(target, 2); //dead!
 				i_CurrentEquippedPerk[target] = 0;
-				Jesus_Blessing[target] = 0;
+				Grigori_Blessing[target] = 0;
 
 				SetEntityHealth(target, 50);
 				dieingstate[target] = 250;
 				
+				Vehicle_Exit(target);
 				SDKHooks_UpdateMarkForDeath(target, true);
 				ApplyLastmanOrDyingOverlay(target);
 				SetEntityCollisionGroup(target, 1);

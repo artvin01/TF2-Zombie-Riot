@@ -60,7 +60,7 @@ void MedivalVillager_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Medival Villager");
+	strcopy(data.Name, sizeof(data.Name), "Medieval Villager");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_villager");
 	strcopy(data.Icon, sizeof(data.Icon), "villager");
 	data.IconCustom = true;
@@ -150,7 +150,7 @@ methodmap MedivalVillager < CClotBody
 	
 	public MedivalVillager(float vecPos[3], float vecAng[3], int ally)
 	{
-		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
+		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(50), ally));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -194,11 +194,12 @@ methodmap MedivalVillager < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
 		SetVariantString("0.5");
@@ -228,8 +229,6 @@ methodmap MedivalVillager < CClotBody
 				float vecGoal[3]; RandomArea.GetCenter(vecGoal);
 				vecGoal[2] += 1.0;
 
-				if(IsPointHazard(vecGoal)) //Retry.
-					continue;
 				if(IsPointHazard(vecGoal)) //Retry.
 					continue;
 
@@ -604,7 +603,6 @@ public void MedivalVillager_ClotThink(int iNPC)
 
 				
 				AproxRandomSpaceToWalkTo[2] += 18.0;
-				AproxRandomSpaceToWalkTo[2] += 18.0;
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 
 				float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);
@@ -871,36 +869,4 @@ public void MedivalVillager_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
-}
-
-
-static char[] GetVillagerHealth()
-{
-	int health = 60;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(ZR_GetWaveCount()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
-	}
-	else if(ZR_GetWaveCount()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	
-	health = RoundToCeil(float(health) * 1.2);
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
 }

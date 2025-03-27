@@ -1,5 +1,9 @@
 "Phrases"
 {
+	"Slot "
+	{
+		"en"		"Slot "
+	}
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
@@ -677,9 +681,7 @@
 	
 	"Grenade Desc"
 	{
-		"en"	"High Dmg Grenade"
-		"fr"	"Grenade qui inflige beaucoup de dégats"
-		"chi"	"高伤害手雷"
+		"en"	"High Dmg Grenade, Cooldown scales with reloadspeed."
 	}
 	"Grenade Pap 1"
 	{
@@ -804,8 +806,7 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal.\nMedigun allows you to revive people from afar but at half the speed."
-		"fr"	"Bonus d'extra santé est permanent. Soigne vous en même temps que votre patient. Améliore les dégats +25%% et la résistance contre les dégats +10%% pour vous et votre patient.\nPeut ressusciter les coéquipiers à distance, à demi vitesse."
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing buffs.\nMedigun allows you to revive people from afar but slower\nUber gives debuff immunity."
 	}
 	
 	"Battle Medigun Desc"
@@ -852,12 +853,13 @@
 		"ru"	"Увелич. урон и скорость атаки, позволяет использовать на 6 больше бомб-липучек."
 		"chi"   "增加伤害和攻击速度，增加6个粘性炸弹"
 	}
+	"Sticky Bomb Launcher Desc"
+	{
+		"en"	"Reloads its entire clip at once!\nEach sticky only can hurt 4 enemies at once as asto normal explosives"
+	}
 	"Stickybomb Launcher Pap 2"
 	{
-		"en"	"Increased damage and massively increased attackspeed and reload speed."
-		"fr"	"Dégats, cadence de tir et vitesse de recharge améliorés."
-		"ru"	"Увеличенный урон и сильное увеличение скорости атаки и скорости перезарядки."
-		"chi"   "增加伤害，大幅提高攻击速度和装填速度。"
+		"en"	"Increased damage and massively increased attackspeed more stickies at once!"
 	}
 	
 	"The Battalion's Backup Desc"
@@ -876,7 +878,7 @@
 	}
 	"P15t0l Desc 1"
 	{
-		"en"	"Increaced damage."
+		"en"	"increased damage."
 		"fr"	"Dégats améliorés."
 	}
 	"P15t0l Pap 2" 
@@ -888,7 +890,7 @@
 	}
 	"Buff Banner Desc"
 	{
-		"en"	"Extra 25%% damage to all allies after dealing enough damage"
+		"en"	"Extra 25%% damage to all allies after dealing enough damage/Healing allies"
 		"fr"	"Rage donne +25%% de dégats."
 		"chi"	"造成一定伤害后可为所有队友增加25%%伤害"
 	}
@@ -972,8 +974,7 @@
 	}
 	"Hammer Pap 4"
 	{
-		"en"	"Slightly faster swinging speed and increased damage. Your damage, swing speed, and melee resistance will go up the more you hit the enemies"
-		"fr"	"Dégats et cadence des attaques améliorés. Dégats, cadence des attaques améliorés et résistance corps-à-corps s'améliorent avec chaque coup."
+		"en"	"Slightly faster swinging speed and increased damage. Wwing speed will go up the more you hit the enemies"
 	}
 	
 	"Fire Axe Desc"
@@ -1020,9 +1021,7 @@
 	}
 	"Kunai Desc"
 	{
-		"en"	"Can backstab and bleed, backstab gives health, no matter if it kills or not.\nKills reward 2x heal, Raids heal 2x the hp, against raids backstabs deal 2x dmg overall."
-		"fr"	"Cause du saignement. Le poignardage vous donne de la santé, même si vous ne tuez pas.\nObtenez 2x plus de santé pour tuer et par les Raids. 2x plus de dégats contre les Raids."
-		"chi"   "背刺流血，还会回血。\n背刺击杀回血两倍，对boss造成双倍伤害，收到两倍回血。"
+		"en"	"Backstab gives health, no matter if it kills or not.\nKills reward 2x heal, Raids heal 2x the hp, against raids backstabs deal 2x dmg overall.\nLoses damage for healing."
 	}
 	"Kunai Pap 1"
 	{
@@ -1036,6 +1035,10 @@
 		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown and make you laugh.\nYou are a professional at backstabbing and such, backstabs are easier to hit."
 		"fr"	"Dégats et cadence des attaques améliorés. Le poignardage donne plus de santé, et ne retarde plus l'attaque prochaine.\nVouz devenez un professionel en poignardage, qui deviennent plus faciles à effectuer."
 		"chi"   "增加伤害和攻击速度，更多回血，背刺无冷却并且会让给你贱笑。\n你已是trickstab高手，所以你现在可以轻易背刺。"
+	}
+	"Kunai Pap 4"
+	{
+		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy, which explodes."
 	}
 	
 	"Fractured Ark Desc"
@@ -1184,10 +1187,7 @@
 	
 	"Medusa Teslar Stick Desc"
 	{
-		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25%% more dmg takes for affected enemies."
-		"fr"	"+5%% résistance contre les dégats corps-à-corps. Fait saigner les ennemis, les ralentis, et les font prendre 25%% plus de dégats."
-		"ru"	"Вызывает кровотечение, 5%% доп. сопр. в ближнем бою. Накладыв. на врага эфф., который замедл. его и заставл. получ. больше урона, на 25%% больше урона получ. поражённые враги."
-		"chi"   "对敌人造成流血，额外获得5%%近战抗性。对敌人造成负面效果，使敌人减速并受到更多伤害"
+		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25%% more dmg takes for affected enemies.\nburn retriggering is 50%% weaker."
 	}
 	"Medusa Teslar Stick Pap 1"
 	{
@@ -1203,11 +1203,8 @@
 	
 	"Fists Of Kahmlstein Desc"
 	{
-		"en"	"fists from Kahmlstein, His reign over cities and states has no end.\nProve your strength against him to gain a certain item to gain another ability..."
-		"fr"	"Poings de Kahmlstein, son règne sur les villes est sans fin.\nBattez-lui pour obtenir quelque chose qui donne une autre abilité..."
-		"chi"	"卡姆斯坦因的拳套，这个武器曾摧毁过无数个世界。\n打败他，他说不定会教你新招数..."
+		"en"	"fists from Kahmlstein, His reign over cities and states has no end.\neach 3rd hit deals 2.75x damage\nYour R ability summons a clone that attacks what you attack, and you fire only projectiles."
 	}
-
 	"Bad Wand Desc"
 	{
 		"en"	"Consumes mana with each shot. M2 Gives extra attackspeed for a short time."
@@ -1334,9 +1331,7 @@
 
 	"Necromancy Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side.\nNot having your wand in your hand will disencurage your minion and half its damage."
-		"fr"	"Chaque attaque utilise du Mana. M2 convoque un minion.\nLes dégats de votre minion seront diminués à moitié si vous ne tenez pas cet arme."
-		"chi"	"M1消耗蓝，发射光球。M2召唤一个DDT小弟。\n当不手持此武器时小弟造成0.5倍伤害。"
+		"en"	"M2 Summons a minion.\nNot having your wand in your hand will half minion damage.\nMinion will only attack marked enemies\nM1 Marks enemies for 5 seconds"
 	}
 	"Necromancy Staff Pap 1"
 	{
@@ -1380,6 +1375,10 @@
 		"fr"	"Lance un dispenseur d'armure automatique. Donne plus d'armure pour les améliorations passives des coéquipiers affectés."
 		"ru"	"Бросает гранату, которая со временем даёт броню. Улучшенная, если у цели просто улучшена броня."
 		"chi"   "投掷一枚可以恢复护甲的手榴弹。"
+	}
+	"Morphine Desc"
+	{
+		"en"	"A morphine shot chargeable by dealing Melee damage.\nTurns you intangible for 3 seconds and regenerates 15% of your max health up to a cap of 50%.\nUseable twice a wave/Raid."
 	}
 	
 	"Experimental Burst Pack Desc"
@@ -1468,10 +1467,7 @@
 	
 	"Wrench Desc"
 	{
-		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench."
-		"fr"	"Répare les constructions."
-		"ru"	"Ремонтирует постройки и турели, имейте при себе для присвоения построек, работает с любым гаечным ключом."
-		"chi"   "修理建筑物和哨兵，用任何扳手工作。"
+		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench.\nHold crouch and M2 to mount buildings on yourself!"
 	}
 	
 	"Texan business Desc"
@@ -1629,7 +1625,7 @@
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
+		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20%% (Cant go below 1)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
@@ -1644,7 +1640,7 @@
 	
 	"Cosmic Repair Handling book Desc"
 	{
-		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25%% (Cant go below 1)"
+		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20%% (Cant go below 1)"
 	}
 	
 	"Construction Expert Desc"
@@ -1782,12 +1778,9 @@
 		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
-	"Jesus's Blessing Desc"
+	"Grigori's Blessing Desc"
 	{
-		"en"	"+300 Health and life regen 1%% of your max hp per second up to half your HP, during bleedout, you also will survive for longer."
-		"fr"	"+300 santé. Regénére 1%% de votre santé tous les 0.5 secondes, jusqu'a la moitié de votre santé. Vous resterez vivant pour plus longtemps quand KO."
-		"ru"	"+300 здоровья и реген. здоровья 1%% от вашего макс. здоровья в секунду до половины вашего здоровья, во время кровотечения вы также будете выживать дольше."
-		"chi"   "+300生命值和获得每秒1%%的生命回复，最多恢复一半的生命值。在倒地期间，你也会活得更长。"
+		"en"	"+300 Health and life regen 1%% of your max hp per second up to half your HP, during bleedout, you also will survive for longer.\nOut of battle, heals extra with more melee upgrades."
 	}
 	
 	"Full Riot Gear Desc"
@@ -1805,8 +1798,7 @@
 	}
 	"Flamethrower Extra Desc"
 	{
-		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
-		"fr"	"1.15x dégats contre les Raids.\nDonne une résistance passive quand vous portez cette arme.\nLes dégats par brulûre ne sont pas affectés par les résistances."
+		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage.\nGain armor per enemy hit upto half of your armor."
 	}
 	"Doctor Certificate Desc"
 	{
@@ -2080,10 +2072,10 @@
 	}
 	"Tornado Blitz Desc Spam1"
 	{
-		"en" 	"We increased the kinetic damage of the Nano-rockets\nWe also increased the Nano-rocket to normal rocket efficiency."
-		"fr" 	"Dégats améliorés.\nNano-roquettes sont remplacés par des roquettes normaux."
-		"ru" 	"Мы увеличили кинетический урон наноракет\nМы также увеличили эффективность наноракет до уровня обычных ракет."
-		"chi"   "我们增加了纳米火箭的动能伤害，我们也将纳米火箭提高到正常火箭效率。"
+		"en" 	"We increased the kinetic damage of the Nano-rockets"
+		"fr" 	"Dégats améliorés."
+		"ru" 	"Мы увеличили кинетический урон наноракет"
+		"chi"   "我们增加了纳米火箭的动能伤害"
 	}
 	"Tornado Blitz Desc Spam2"
 	{
@@ -2184,7 +2176,7 @@
 	}
 	"Mlynar Sword Desc pap 2"
 	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
+		"en"	"Gain increased Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids.\nVotre charge est plus rapide, et prend moins de temps pour se recharger."
 	}
 	"Mlynar ExtraDesc"
@@ -2207,10 +2199,7 @@
 	}
 	"Alchemist Potion Pap 7"
 	{
-		"en"	"Buffing potions last until the allies gets revived from a wave end or a down or reset or perk cola or shop buy."
-		"fr"	"Effet de la potion dure jusqu'a quand un allié est KO, ressuscité, achète quelque chose de la boutique, ou utilise une machine à Perks"
-		"ru"	"Зелья усиления действуют до тех пор, пока союзники не воскреснут после окончания волны, или выведения из строя, или сброса, или перк-колы, или покупки в магазине."
-		"chi"   "buff药水会持续到盟友从一波结束或低谷、重置或振作可乐或商店购买中恢复。"
+		"en"	"Buffing Potion lasts a MUCH longer time, (300 seconds).\nBuff strenghens to 25%% from 20%%"
 	}
 	"Alchemist Potion Pap 8"
 	{
@@ -2236,9 +2225,9 @@
 	}
 	"Crusader Desc Pap 1"
 	{
-		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour m2 ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
-		"fr"	"Devient un fusil de Sniper, la charge améliore les soins.\nLes soins peuvent donner un bonus santé de 15%%.\nAppuyez sur M2 pour placer des medkits.\nVos medkits donne un Buff, mais donne moins de soins aux aliiés dans le combat.\nVous pouvez placer jusqu'a 2 medkits à la fois."
-		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15%%）\nM2技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
+		"en"	"Shots become instant and scope charge.\nYour heals overheal to 15%%.\nYour R ability allows you to spawn healthkits.\nHealkits provide buffs aswell and have small in battle heal penalty.\nThey require a windup of 2 seconds.\nYou can place upto 2 per usage."
+		"fr"	"Devient un fusil de Sniper, la charge améliore les soins.\nLes soins peuvent donner un bonus santé de 15%%.\nAppuyez sur R pour placer des medkits.\nVos medkits donne un Buff, mais donne moins de soins aux aliiés dans le combat.\nVous pouvez placer jusqu'a 2 medkits à la fois."
+		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15%%）\nR技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
 	}
 
 	"Barracks Desc"
@@ -2259,66 +2248,73 @@
 	}
 	"Militia Desc"
 	{
-		"en"	"Basic cheap melee unit"
-		"fr"	"Unité corps-à-corps pas cher"
-		"ru"	"Базовая дешёвая единица ближнего боя"
-		"chi"   "基础近战单位"
+		"en"	"Standard melee unit. Very disposable. Works better when grouped up with more Militia."
+		"fr"	"Unité de mêlée standard. Très jetable. Fonctionne mieux lorsqu'il est regroupé avec plus de milice."
+		"ru"	"Стандартный юнит ближнего боя. Очень одноразовый. Работает лучше, когда объединено с большим количеством ополченцев."
+		"chi"   "标准近战单位。非常一次性。与更多民兵组合时效果更好。"
 	}
 	"Archer Desc"
 	{
-		"en"	"Basic first ranged unit"
-		"fr"	"Unité à portée pas cher"
-		"ru"	"Базовая первая единица дальнего боя"
-		"chi"   "基础远程单位"
+		"en"	"Standard ranged unit. Will keep distance away from threat. Does more damage but attacks slower."
+		"fr"	"Unité à distance standard. Gardera ses distances avec la menace. Fait plus de dégâts mais attaque plus lentement."
+		"ru"	"Стандартный юнит дальнего боя. Будет держаться на расстоянии от угрозы. Наносит больше урона, но атакует медленнее."
+		"chi"   "标准远程单位。会与威胁保持距离。伤害更高，但攻击速度更慢。"
 	}
 	"Man-At-Arms Desc"
 	{
-		"en"	"Upgraded Militia suitable for fortified zombies"
-		"fr"	"Amélioration du Milice bon contre les zombies fortifiés"
-		"ru"	"Улучшенный ополченец подходит для укреплённых зомби"
-		"chi"   "升级过的雇佣兵，适合固化僵尸。"
+		"en"	"Direct upgrade to Militia. More health and damage."
+		"fr"	"Mise à niveau directe vers Milice. Plus de santé et de dégâts."
+		"ru"	"Прямое обновление до Милиции. Больше здоровья и урона."
+		"chi"   "直接升级为民兵。更多的健康和伤害。"
 	}
 	"Crossbow Man Desc"
 	{
-		"en"	"Upgraded Archer suitable for basic combine armor"
-		"fr"	"Amélioration de l'Archer bon contre l'armure Combine"
-		"ru"	"Улучшенный лучник подходит для базовой брони комбайнов"
-		"chi"   "升级过的弓箭手，足以突破联合军盔甲。"
+		"en"	"Upgrade to Archers. Fires slower but does more damage from further away."
+		"fr"	"Passez aux archers. Tire plus lentement mais fait plus de dégâts à distance."
+		"ru"	"Обновитесь до лучников. Стреляет медленнее, но наносит больше урона с большего расстояния."
+		"chi"   "升级为弓箭手。发射速度较慢，但​​距离较远时造成的伤害更大。"
 	}
 	"Long Swordsman Desc"
 	{
-		"en"	"Upgraded Man-At-Arms suitable for warrior combine armor"
-		"fr"	"Amélioration de l'Homme-aux-Armes bon contre l'armure Combine guerrier"
-		"ru"	"Улучшенный гвардеец подходит для брони комбайнов-воинов"
-		"chi"   "升级的武装士兵，主打近战。"
+		"en"	"Upgraded Man-At-Arms. Secret tip - If your unit dies whilst another one is training on full supply, it will spawn in instantly. :)"
+		"fr"	"Homme d'armes amélioré. Astuce secrète - Si votre unité meurt pendant qu'une autre s'entraîne avec un ravitaillement complet, elle apparaîtra instantanément. :)"
+		"ru"	"Модернизированный боец. Секретный совет: если ваш отряд погибнет, пока другой тренируется с полным запасом, он мгновенно появится. :)"
+		"chi"   "升级版的武装人员。秘密提示 - 如果你的单位死亡，而另一个单位正在全力训练，它会立即产卵。 :)"
 	}
-	"Medival Arbalest Desc"
+	"Medieval Arbalest Desc"
 	{
-		"en"	"Upgraded Crossbow Man suitable for takes downs from a safe distance"
-		"fr"	"Amélioration de l'Arbalétrier bon pour les cibles à portée longue"
-		"ru"	"Улучшенный арбалетчик подходит для поражения с безопасного расстояния"
-		"chi"   "升级的弩手，可以远程处理敌人。"
+		"en"	"Upgraded Crossbow Man. You can press R on them to hold position behind barricades so they shoot out of harm's way. But you didn't hear it from me!"
+		"fr"	"Arbalétrier amélioré. Vous pouvez appuyer sur R sur eux pour rester derrière les barricades afin qu'ils tirent hors de danger. Mais je ne vous l'ai pas entendu !"
+		"ru"	"Улучшенный арбалетчик. Вы можете нажать R на них, чтобы удерживать позицию за баррикадами и стрелять подальше от опасности. Но вы этого не от меня услышали!"
+		"chi"   "升级版弩人。你可以按 R 键让他们保持在路障后面的位置，这样他们就可以避开伤害。但你没有听到我的声音！"
 	}
 	"Twohanded Swordsman Desc"
 	{
-		"en"	"Upgraded Long Swordsman suitable for heavy targets"
-		"fr"	"Amélioration de l'Épéiste bon pour les ennemis lourds"
-		"ru"	"Улучшенный мечник с длинным мечом подходит для тяжёлых целей"
-		"chi"   "升级过的长剑手，可以击败重型敌人。"
+		"en"	"Upgraded Long Swordsman. They become quite resilient."
+		"fr"	"Épéiste long amélioré. Ils deviennent assez résistants."
+		"ru"	"Улучшенный Длинный Мечник. Они становятся достаточно выносливыми."
+		"chi"   "升级版长剑士。他们变得非常有弹性。"
 	}
-	"Medival Longbowmen Desc"
+	"Hand Cannoneer Desc"
 	{
-		"en"	"Fire slower than Arbalest but deals much more damage and a longer range"
-		"fr"	"Tire plus lentement que l'Arbalétrier, mais fais plus de dégats à une portée plus longue"
-		"ru"	"Стреляет медленнее, чем арбалетчик, но наносит гораздо больше урона и имеет большую дальность"
-		"chi"   "比重弩慢，但是射程和伤害提高。"
+		"en"	"Upgrade to Arbalests. Attacks a lot slower but hits a lot harder."
+		"fr"	"Passez aux Arbalètes. Attaque beaucoup plus lentement mais frappe beaucoup plus fort."
+		"ru"	"Обновите до Арбалетов. Атакует намного медленнее, но бьет намного сильнее."
+		"chi"   "升级至强弩。攻击速度慢得多，但攻击力却大得多。"
+	}
+	"Medieval Longbowmen Desc"
+	{
+		"en"	"Final basic Ranged unit. They can run and fight effectively in the open."
+		"fr"	"Dernière unité de base à distance. Ils peuvent courir et se battre efficacement à découvert."
+		"ru"	"Последний базовый юнит дальнего боя. Они могут бегать и эффективно сражаться на открытом воздухе."
+		"chi"   "最终的基本远程单位。他们可以在空旷的地方有效地奔跑和战斗。"
 	}
 	"Champion Desc"
 	{
-		"en"	"Has a much more health and damage than Two-Handed Swordsman"
-		"fr"	"Plus de santé et de dégats que l'Épéiste Double."
-		"ru"	"Имеет гораздо больше здоровья и урона, чем двуручный мечник"
-		"chi"   "有比双手剑客更多的生命值和伤害"
+		"en"	"Final basic Melee unit."
+		"fr"	"Dernière unité de base de mêlée."
+		"ru"	"Последний базовый юнит ближнего боя."
+		"chi"   "最终的基本近战单位。"
 	}
 	"Monk Desc"
 	{
@@ -2329,16 +2325,16 @@
 	}
 	"Hussar Desc"
 	{
-		"en"	"High damage and health and provides a buffing aura to nearby allies"
-		"fr"	"Hauts dégats et santé, buff les alliés proches."
-		"ru"	"Высокий урон и здоровье и имеет ауру усиления ближайшим союзникам"
-		"chi"   "高伤害和高生命值，并为附近的盟友提供buff光环"
+		"en"	"Huge health elite. Can buff allies and players alike, with more damage."
+		"fr"	"Immense élite de la santé. Peut améliorer les alliés et les joueurs, avec plus de dégâts."
+		"ru"	"Огромная элита здравоохранения. Может усиливать как союзников, так и игроков, нанося больший урон."
+		"chi"   "庞大的健康精英。可以增强盟友和玩家的能力，造成更多伤害。"
 	}
 	"Thorns Desc"
 	{
-		"en"	"Takes 3 supply, high damage, health, and range."
-		"fr"	"Prend 3 ressources pour former. Bons dégats, santé et portée."
-		"ru"	"Требует 3 ед. припасов, высокий урон, прочность и дальность."
+		"en"	"Takes 2 supply, high damage, health, and range."
+		"fr"	"Prend 2 ressources pour former. Bons dégats, santé et portée."
+		"ru"	"Требует 2 ед. припасов, высокий урон, прочность и дальность."
 		"chi"	"占用三个单位，高伤害，高血量，可远程。"
 	}
 	"Fish Melee Desc"
@@ -2381,9 +2377,7 @@
 	}
 	"Specter Pap 2b"
 	{
-		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
-		"fr"	"Vous donne l'abilité de passer à travers les ennemis, en échange de votre santé. Vous seres étonnés après cet effet.\nLors des Raids, l'abilité vous donne 75%% résistance et ne va pas prendre votre santé."
-		"chi"	"增加技能：激活时变为无形之影，效果结束后眩晕并丧失血量。\nboss战时，反而获得75%抗性，不会丧失血量。"
+		"en"	"Gains the ability to go Invulnerable but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
 	}
 	"Specter Pap 3"
 	{
@@ -2457,9 +2451,9 @@
 	}
 	"Throwable Repair Grenade Desc"
 	{
-		"en"	"Throw a grenade that repairs buildings near it over time.\nBuilder upgrades affect it.\nMay require wrench to be equipped to fully work.\nGives buildings 25% damage resistance while in range."
+		"en"	"Throw a grenade that repairs buildings near it over time.\nBuilder upgrades affect it.\nMay require wrench to be equipped to fully work.\nGives buildings 25%% damage resistance while in range."
 		"fr"	"Lance un kit de réparation qui répare les construction proches.\n+25%% résistance pour les constructions proches\nAmélioré avec les améliorations pour Constructeur.\nBesoin d'une clé pour fonctionner correctement."
-		"ru"	"Бросает гранату, которая со временем ремонт. постройки рядом с ней.\nУлучш. построек влияют на неё.\nМожет потреб. гаечный ключ в руках для полноценной работы.\nДаёт постройкам 25% сопр. урону, пока они находятся в радиусе действия."
+		"ru"	"Бросает гранату, которая со временем ремонт. постройки рядом с ней.\nУлучш. построек влияют на неё.\nМожет потреб. гаечный ключ в руках для полноценной работы.\nДаёт постройкам 25%% сопр. урону, пока они находятся в радиусе действия."
 		"chi"   "投掷一枚手榴弹，随着时间的推移可以修复附近的建筑物。\n建筑升级会影响它。可能需要配备扳手才能完全工作。在有效射程内给予建筑物25%的伤害抗性。"
 	}
 	"Beam Wand pap Alt 1"
@@ -2588,92 +2582,100 @@
 	}
 	"Mlynar Sword Desc pap"
 	{
-		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
+		"en"	"Gain increased Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids."
 		"chi"	"增加抗性，伤害，反甲伤害，更低的杀敌惩罚。"
 	}
 	"Barracks Railgunner Desc"
 	{
-		"en"	"A long ranged Sniper unit, fragile!"
-		"fr"	"Unité Sniper fragile."
-		"ru"	"Дальнобойный снайперский боец, хрупкий!"
-		"chi"	"远程狙击单位，易碎！"
+		"en"	"Direct upgrade to Crossbow Medic. Snipers are a little better than crossbows after all."
+		"fr"	"Mise à niveau directe vers Crossbow Medic. Les tireurs d’élite sont un peu meilleurs que les arbalètes après tout."
+		"ru"	"Прямое обновление до Арбалета Медика. В конце концов, снайперы немного лучше арбалетов."
+		"chi"	"直接升级为弩医生。狙击手毕竟比弩好一点。"
 	}
 	"Barracks Basic Mage Desc"
 	{
-		"en"	"A magic medic, fragile, but deadly!"
-		"fr"	"Unité Medic magique. Fragile mais mortel!"
-		"ru"	"Волшебный медик, хрупкий, но смертоносный!"
-		"chi"	"魔法师，易碎，但高输出！"
+		"en"	"A magic unit, does a lot of damage but is immobile when attacking. Very disposable."
+		"fr"	"Une unité magique, fait beaucoup de dégâts mais reste immobile lorsqu'elle attaque. Très jetable."
+		"ru"	"Магический юнит, наносит большой урон, но при атаке неподвижен. Очень одноразовый."
+		"chi"	"魔法单位，造成大量伤害，但攻击时无法移动。非常一次性。"
 	}
 	"Barracks Intermediate Mage Desc"
 	{
-		"en"	"A stronger variant of the basic mage, just as deadly, but just as fragile!"
-		"fr"	"Un Mage plus puissant. Toujours fragile, mais mortel!"
-		"ru"	"Более сильный вариант базового мага, такой же смертоносный, но такой же хрупкий!"
-		"chi"	"更厉害的魔术师，输出更高，但依旧易碎！"
+		"en"	"A more educated variant of the basic mage. Very funny, I know."
+		"fr"	"Une variante plus instruite du mage de base. Très drôle, je sais."
+		"ru"	"Более образованный вариант базового мага. Очень смешно, я знаю."
+		"chi"	"基本法师的受过更高教育的变体。非常有趣，我知道。"
+	}
+	"Barracks Advanced Mage Desc"
+	{
+		"en"	"This Mage has a university degree. It was as worth it as yours, sadly. If you have one."
+		"fr"	"Ce Mage a un diplôme universitaire. Cela valait autant que le vôtre, malheureusement. Si vous en avez un."
+		"ru"	"Этот Маг имеет высшее образование. К сожалению, оно того стоило, как и ваше. Если он у вас есть."
+		"chi"	"这位法师拥有大学学位。可悲的是，它和你的一样值得。如果你有的话。"
 	}
 	"Barracks Ikunagae Desc"
 	{
-		"en"		"A machine capable of manupulating energy, fragile, but deadly!"
-		"fr"		"Machine qui peut manipuler l'énergie. Fragile mais mortel!"
-		"ru"		"Машина, способная манипулировать энергией, хрупкая, но смертоносная!"
-		"chi"		"能控制能量的机器，很高的输出，易碎！"
+		"en"		"A machine capable of burst fire and laser attacks. Stationary when attacking."
+		"fr"		"Une machine capable de tirs en rafale et d'attaques laser. Stationnaire lors de l’attaque."
+		"ru"		"Машина, способная вести очередной огонь и лазерные атаки. Стационарен при атаке."
+		"chi"		"能够进行连发射击和激光攻击的机器。攻击时保持静止。"
 	}
 	"Barracks SchwertKrieg Desc"
 	{
-		"en"		"A melee medic, can teleport to targets, Heals outside of combat"
-		"fr"		"Un Medic qui peut téléporter aux ennemis. Se soigne hors du combat."
-		"ru"		"Медик ближнего боя, может телепортироваться к цели, лечит вне боя."
-		"chi"		"拥有传送能力的近战单位，战斗外会治疗自己！ "
+		"en"		"Agile Elite melee unit, can teleport to enemies or safety, damaging anyone nearby. Rapidly heals out of combat."
+		"fr"		"Unité de mêlée Agile Elite, peut se téléporter vers les ennemis ou vers un lieu sûr, endommageant toute personne à proximité. Guérit rapidement hors combat."
+		"ru"		"Ловкий элитный отряд ближнего боя может телепортироваться к врагам или в безопасное место, нанося урон всем, кто находится поблизости. Быстро восстанавливается вне боя."
+		"chi"		"敏捷精英近战单位，可以传送到敌人或安全地带，对附近的任何人造成伤害。脱离战斗后迅速痊愈。"
 	}
 	"Barracks Donnerkrieg Desc"
 	{
-		"en"		"Can shoot a powerful Laser, immobile while laser is active, fragile!"
-		"fr"		"Tire un laser puissant, mais est immobile pendant son activaton. Fragile!"
-		"ru"		"Может стрелять мощным лазером, неподвижен, пока действует лазер, хрупкий!"
-		"chi"		"能够发射强力的激光，发射时无法移动。输出极高，但血不多！"
+		"en"		"Iku Nagae but human. Is half-mobile and uses stationary, resistant NIGHTMARE CANNON!!!"
+		"fr"		"Iku Nagae mais humain. Est à moitié mobile et utilise un CANON NIGHTMARE stationnaire et résistant !!!"
+		"ru"		"Ику Нагаэ, но человек. Полумобильен и использует стационарную устойчивую КОШМАРНУЮ ПУШКУ!!!"
+		"chi"		"Iku Nagae 但人类。是半移动的，使用固定的、抗性的噩梦炮！！！"
 	}
 	"Barracks Holy Knight Desc"
 	{
-		"en"		"A combine warrior, has a ranged attack"
-		"fr"		"Un guerrier Combine. À une attaque à distance."
-		"ru"		"Воин-комбайн, имеет дальнобойную атаку."
-		"chi"		"联合军战士，有远程攻击。"
+		"en"		"A human experiment. Less bulky but more deadly Champion with a ranged attack."
+		"fr"		"Une expérience humaine. Champion moins volumineux mais plus mortel avec une attaque à distance."
+		"ru"		"Человеческий эксперимент. Менее громоздкий, но более смертоносный Чемпион с дальней атакой."
+		"chi"		"人体实验。体积较小但更致命的远程攻击冠军。"
 	}
 	"Barracks Mecha Barrager Desc"
 	{
-		"en"		"A mechanical Soldier with an explosive Bison"
-		"fr"		"Un Soldier méchanique avec un Bison Vertueux explosif."
-		"ru"		"Механический солдат со взрывным бизоном."
-		"chi"		"一个具有爆炸性野牛的机械士兵。"
+		"en"		"A suicide runner with a piercing Bison. Immobile when shooting and has a long reload."
+		"fr"		"Un coureur suicide avec un Bison perçant. Immobile lors du tir et dispose d'un long rechargement."
+		"ru"		"Бегун-самоубийца с пронзительным Бизоном. Неподвижен при стрельбе и имеет долгую перезарядку."
+		"chi"		"一名自杀式跑步者带着一头刺穿的野牛。射击时不动，装弹时间长。"
 	}
 	"Barracks Barrager Desc"
 	{
-		"en"		"An upgraded variant of the barrager"
-		"fr"		"Un Soldier Barrageur amélioré."
-		"ru"		"Улучшенный вариант бомбардира."
-		"chi"		"升级过的轰炸机。"
+		"en"		"Stronger Mecha Barrager. Don't ask me why just Barrager is a stronger unit, Ruanians are weird."
+		"fr"		"Mecha Barrager plus fort. Ne me demandez pas pourquoi les Barrager sont une unité plus forte, les Ruaniens sont bizarres."
+		"ru"		"Более сильный Механический Баррагер. Не спрашивайте меня, почему именно Баррагер более сильный юнит, руанцы странные."
+		"chi"		"更强的机甲暴击者。别问我为什么只有弹幕员是更强的单位，阮人很奇怪。"
 	}
-	"Barracks Berserker Desc"
+	"Barracks Mecha Loader Desc"
 	{
-		"en"		"A medic that gets stronger the closer to death it is"
-		"fr"		"Un Medic qui devient plus fort au fur et à mesure qu'il s'approce de la mort."
-		"ru"		"Медик, который становится тем сильнее, чем ближе к смерти."
-		"chi"		"痛苦即是力量之源。"
+		"en"		"A literal suicide bomber. Engine heats up on damage, which increases attack speed. Overheats and explodes on death."
+		"fr"		"Un véritable kamikaze. Le moteur chauffe lors des dégâts, ce qui augmente la vitesse d'attaque. Surchauffe et explose à la mort."
+		"ru"		"Настоящий смертник. Двигатель нагревается при нанесении урона, что увеличивает скорость атаки. Перегревается и взрывается при смерти."
+		"chi"		"名副其实的自杀式炸弹袭击者。引擎在受到伤害时升温，从而提高攻击速度。过热并爆炸死亡。"
 	}
 	"Barracks Crossbow Medic Desc"
 	{
-		"en"		"A medic with a long ranged crusaders crossbow... fragile!"
-		"fr"		"Un Medic avec un Arbalète du Croisé à longue portée. Fragile!"
-		"ru"		"Медик с дальнобойным арбалетом крестоносца... хрупкий!"
-		"chi"		"持有远程十字弩的医生...易碎！"
+		"en"		"Very long range and performs a strong explosive attack every 5 shots. Stationary when attacking."
+		"fr"		"Très longue portée et effectue une puissante attaque explosive tous les 5 tirs. Stationnaire lors de l’attaque."
+		"ru"		"Очень большая дальность и выполняет сильную взрывную атаку каждые 5 выстрелов. Стационарен при атаке."
+		"chi"		"射程很远，每5次射击就会产生强烈的爆炸性攻击。攻击时保持静止。"
 	}
 	"Scientific Witchery Desc"
 	{
-		"en"		"The Ultimate Ranged Unit, combining all known reaserch on magic, and the latest tech, to create the ultimate mage. Costs 2 supply units"
-		"fr"		"Le mage ultime qui combine la magie et la technologie. Côute 2 ressources."
-		"chi"		"究极远程单位。将科学与魔法的精华合为一，造出此物。占用两个单位。"
+		"en"		"The ULTIMATE RANGED UNIT! All Ruanian's knowledge and Expidonsan's tech has been combined into this masterpiece! The downside? It costs 2 supply units."
+		"fr"		"L'UNITÉ À DISTANCE ULTIME ! Toutes les connaissances de Ruanian et la technologie d'Expidonsan ont été combinées dans ce chef-d'œuvre ! L'inconvénient ? Cela coûte 2 unités de ravitaillement."
+		"ru"		"САМЫЙ ЛУЧШИЙ ОТДЕЛЕНИЕ ДАЛЬНЕГО ДИАПАЗОНА! Все знания Руаниана и технологии Экспидонсана были объединены в этом шедевре! Недостаток? Это стоит 2 единицы припасов."
+		"chi"		"终极远程单位！ Ruanian 的所有知识和 Expidonsan 的技术都融合到了这部杰作中！缺点是什么？它需要 2 个供应单位。"
 	}
 	"Steel Dagger Desc"
 	{
@@ -2773,33 +2775,41 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: 10%%"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: 10%%"
 		"fr"	"Un «bouclier» qui absorbe les dégats et bloque les attaques pour faire des dégats.\nVous soigne quand vous êtes hors du combat.\nS'améliore avec les améliorations corps-à-corps.\nRang de défense: 10%%"
 		"chi"	"一个''盾牌''。\n吸收部分伤害并可以盾反，造成伤害。\n自带回血，受伤时或者换武器时暂停。\n''防御评分：10%%''"
 	}
 	"Spike Shield Desc"
 	{
-		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: 5%%"
-		"fr"	"Une arme qui prétend être un bouclier. Amélioration des dégats quand vous bloquez.\nRang de défense: 5%%"
+		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: 10%%"
+		"fr"	"Une arme qui prétend être un bouclier. Amélioration des dégats quand vous bloquez.\nRang de défense: 10%%"
 		"chi"	"刺盾：\n伪装成盾牌的武器 - 盾反伤害提升。\n''防御评分：5%%''"
 	}
 	"Rookie Shield Desc"
 	{
-		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: 10%%"
-		"fr"	"Un bouclier simple. Vous permet de changer d'arme plus rapidement.\nRang de défense: 10%%"
-		"chi"	"平平无奇的盾牌 - 可以盾反，更快的切换。\n''防御评分：10%%''"
+		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: 15%%"
+		"fr"	"Un bouclier simple. Vous permet de changer d'arme plus rapidement.\nRang de défense: 15%%"
+		"chi"	"平平无奇的盾牌 - 可以盾反，更快的切换。\n''防御评分：15%%''"
 	}
 	"Punishment Desc"
 	{
-		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 10%%\nArchetype changes to ''Crusher''"
-		"fr"	"Un bouclier et arme. Bloquer fais des dégats à plusiers ennemis à la fois.\nRang de défense: 10%%\nArchetype devient «Broyeur»"
-		"chi"	"你要矛还是盾？还是矛盾？\n盾反造成aoe。\n''防御评分：10%%''\n类更为''碾压者''"
+		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 15%%\nArchetype changes to ''Crusher''"
+		"fr"	"Un bouclier et arme. Bloquer fais des dégats à plusiers ennemis à la fois.\nRang de défense: 15%%\nArchetype devient «Broyeur»"
+		"chi"	"你要矛还是盾？还是矛盾？\n盾反造成aoe。\n''防御评分：15%%''\n类更为''碾压者''"
 	}
 	"Cudgel Desc"
 	{
-		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: 15%%"
-		"fr"	"Un bouclier standard. Affaiblit les ennemis bloqués.\nRang de défense: 15%%"
-		"chi"	"标配盾牌。\n盾反击晕敌人。\n''防御评分：15%%''"
+		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: 20%%"
+		"fr"	"Un bouclier standard. Affaiblit les ennemis bloqués.\nRang de défense: 20%%"
+		"chi"	"标配盾牌。\n盾反击晕敌人。\n''防御评分：20%%''"
+	}
+	"Purgatory Desc"
+	{
+		"en"	"A shield that was designed to hurt the body.\nYou gain +150 HP but you also move 10%% slower.\nParrying knocks enemies back.\nDefence rating: 25%%"
+	}
+	"Limbo Desc"
+	{
+		"en"	"A shield that was designed to hurt the soul.\nThe cudgelled debuff lasts for longer.\nDefence rating: 20%%"
 	}
 	"The Standchen Desc"
 	{
@@ -2837,13 +2847,13 @@
 	}
 	"Sensal Desc 2"
 	{
-		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
+		"en"	"increased damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
 		"fr"	"Dégats et résistance améliorés. Abilité lance une faux additionelle.\nAbilité se charge plus rapidement, charge maximale est doublée."
 		"chi"	"更高的伤害和抗性，+1镰刀。\n更快的充能，上限*2。"
 	}
 	"Sensal Desc 3"
 	{
-		"en"	"Increaced damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
+		"en"	"increased damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
 		"fr"	"Dégats et résistance améliorés. Abilité crée des après-images qui tirent des lasers.\nVos après-images priorisent les ennemis que vous regardez."
 		"chi"	"更高的伤害和抗性。\n新技能：\n召唤残影，发射激光。"
 	}
@@ -2891,9 +2901,9 @@
 	}
 	"Casino Desc"
 	{
-		"en"	"Killing and hitting enemies rewards you with dollars.\nPress M2 to spend 20 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\nDamage scales with wealth.\n''Money = Power''."
-		"fr"	"Tuer et frapper les ennemis vous donne des dollars.\nAppuyez M2 pour échanger 20 dollars et rouler la machine à sous.\nLa machine à sous a une chance de vous donner un effet spécial.\nDégats changent avec votre opulence.\n«La fortune est la puissance.»"
-		"chi"	"击中，击杀敌人获得$$$。\nM2花费20$开赌。有几率获得各种buff。\n伤害根据金钱增加。\n''金钱=力量''"
+		"en"	"Killing and hitting enemies rewards you with dollars.\nPress M2 to spend 20 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\nDamage scales with wealth."
+		"fr"	"Tuer et frapper les ennemis vous donne des dollars.\nAppuyez M2 pour échanger 20 dollars et rouler la machine à sous.\nLa machine à sous a une chance de vous donner un effet spécial.\nDégats changent avec votre opulence."
+		"chi"	"击中，击杀敌人获得$$$。\nM2花费20$开赌。有几率获得各种buff。\n伤害根据金钱增加。"
 	}
 	"Walmart Desc"
 	{
@@ -2915,7 +2925,7 @@
 		"fr"	"Arme est amélioré.\nLa machine à sous vous donne des effets meilleurs.\n«ALL IN BABY!»"
 		"chi"	"属性升级。\n加强buff。\n''ALL IN''\n''ALL IN''\n''ALL IN''"
 	}
-	"Homosexual Desc"
+	"Sideways Flush Desc"
 	{
 		"en"	"Jackpot has upgraded the base abilities of the weapon, granting it most qualities of the next Pack-A-Punch upgrade.\nUnfortunately, you'll still need to spend money to unlock it's full potential."
 	}
@@ -3074,9 +3084,9 @@
 	}
 	"Leper Sword Desc"
 	{
-		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nYou aswell are able to selfheal if you hit enough enemies. (M2)\nDamage is huge but attack is slow, dont's miss...\nDuring animations, you gain 50%% damage resistance."
-		"fr"	"Bonne résistance, cadence des attaques réduites.\nAppuyez R pour trancher jusqu'a 5 ennemis.\nAppuyez sur M2 pour vous soigner après avoir frappé assez d'ennemis.\n+50%% résistance pour la durée de vos abilités."
-		"chi"	"获得抗性，可以劈开5名敌人（R）。\n击中足够敌人可以自疗（M2）\n攻速慢，但是伤害特高，小心别挥空了哦...\n（动画时有50%%伤害抗性）"
+		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nYou aswell are able to selfheal if you hit enough enemies. (M2)\nDamage is huge but attack is slow, dont's miss...\nDuring animations, you gain 33%% damage resistance."
+		"fr"	"Bonne résistance, cadence des attaques réduites.\nAppuyez R pour trancher jusqu'a 5 ennemis.\nAppuyez sur M2 pour vous soigner après avoir frappé assez d'ennemis.\n+33%% résistance pour la durée de vos abilités."
+		"chi"	"获得抗性，可以劈开5名敌人（R）。\n击中足够敌人可以自疗（M2）\n攻速慢，但是伤害特高，小心别挥空了哦...\n（动画时有33%%伤害抗性）"
 	}
 	"Leper Sword Desc Pap 1"
 	{
@@ -3255,13 +3265,13 @@
 	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
-		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increaced.\nCrit Chance Increaces."
+		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increased.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique et santé bonus par soins améliorés.\nVous frappez plus d'ennemis à la fois."
 		"chi"	"提高伤害，技能赋予更多双击子弹。\n加强穿透力，更高的超量上限。\n随机暴击概率提高。"
 	}
 	"Half Moon Desc1"
 	{
-		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 2x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
+		"en" 	"Weapon changes:\nM2 Ability causes multi 3 hit, with more damage & cooldown\nGain 2.4x max HP and 1.8x Vuln\nHheal on hit, Lower hp = faster atk.\nYou cant gain armor.\nArmor -> Hp."
 	}
 	"Half Moon Desc2"
 	{
@@ -3279,7 +3289,7 @@
 	}
 	"Angelic Shotgonnus Desc Pap 3"
 	{
-		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increaced.\nCrit Chance Increaces."
+		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increased.\nCrit Chance Increaces."
 		"fr"	"Dégats, chance d'attaque critique, soins et santé bonus par soins et améliorés.\nDouble-attaque se déclenche 2x plus fréquemment."
 		"chi"	"更多伤害，更多治疗。有效射程更高，双击频率增加一倍。\n随机暴击概率提高。"
 	}
@@ -3307,7 +3317,7 @@
 	}
 	"Improved Rapier Desc"
 	{
-		"en"	"More experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: Dmg taken penalty reduced from 20%% to 10%%.\nDuel!: You gain a reward for winning duels."
+		"en"	"More experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: Dmg taken penalty reduced from 20%% to 10%%.\nDuel!: You gain a reward for winning duels. (Cash and HP)"
 		"fr"	"Vous souffrez 10%% plus de dégats au lieu de 20%%.\nVous gagnez une rétribution pour gagner un duel.\nPlus d'éxpérience, plus d'améliorations. Plus d'argent dépensé pour arriver ici."
 		"chi"	"为了修复和使用这把剑，你花费了无数个小时，流尽了汗水和眼泪。如同你的信用卡。\n平衡失调：受到的伤害从+20%%将抵至+10%%。\n对决！：\n杀死敌人后获得奖励。"
 	}
@@ -3355,9 +3365,7 @@
 	}
 	"Heavy Particle Rifle Desc 1"
 	{
-		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!\nYou are also 25% slower then normal, but you take 25% less dmg from front attacks!"
-		"fr"	"+25%% résistance, -25%% cadence de tir.\nDégats s'améliorent le plus longtemps que vous tirez.\nCommence avec des dégats réduits."
-		"chi"	"按住M1可以蓄能，造成更多伤害。但是，无蓄能时造成的伤害降低。\n-25%%移速，+25%伤害抗性"
+		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!"
 	}
 	"Heavy Particle Rifle Desc 2"
 	{
@@ -3403,14 +3411,15 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"You have different medigun modes! use them for certain situations to boost melee, ranged, or both resitances."
-		"fr"	"Appuyez sur R pour faire défiler les types de résistance, dont corps-à-corps, à distance, ou les deux en même temps."
+		"en"	"You have different medigun modes! boost melee, ranged, or both resitances."
 	}
 	"Medigun Desc Pap 2"
 	{
-		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades.,/"
-		"fr"	"Medigun donne aussi de l'armure."
-		"chi"	"医疗枪现在会回复护甲。"
+		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades."
+	}
+	"Medigun Desc Pap 3"
+	{
+		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, +mana recovery, + overclock buff on heal."
 	}
 	"Flash Grenade Desc"
 	{
@@ -3444,9 +3453,7 @@
 	}
 	"Riot Gun Desc"
 	{
-		"en"	"While you have armor, provides 60%% (from bosses 35%%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown."
-		"fr"	"Donne +60%% (+35%% contre les Boss) résistance contre les attaques d'en face, si vous avez de l'armure.\nAbilité améliore votre cadence des attaques et étonne les ennemis en face de vous.\nLe Speed Cola réduit le temps de rechargement de l'abilité."
-		"chi"	"有护甲时，提供60%（boss 35%）正面伤害抗性。技能加攻速，眩晕面前10个敌人。\n极速可乐可影响冷却。"
+		"en"	"With Armor, 60%% (bosses 35%%) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown.\nBe slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
 	}
 	"Riot Gun Pap 1"
 	{
@@ -3464,7 +3471,7 @@
 	}
 	"Siccerino Pap 2"
 	{
-		"en"	"Your attacks will debuff the enemy so you deal 5% more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
+		"en"	"Your attacks will debuff the enemy so you deal 5%& more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
 		"fr"	"+5%% dégats pour chaque coup, jusqu'a un maximum.\nAbilité devient des attaques corps-à-corps rapides."
 		"chi"	"伤害会使敌人受到+%5伤害，有上限。\nM2更为高攻速近战。"
 	}
@@ -3702,9 +3709,7 @@
 	}
 	"Chainsaw Pap 0"
 	{
-		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
-		"fr"	"Arme corps-à-corps puissante qui coûte beaucoup de munitions.\nRéduira toujours les ennemis en morceaux, mais vous reçevez seulement 25%% des soins quand vous les mangez."
-		"chi"	"造成极高近战伤害，但消耗大量弹药。\n杀死的敌人必定会掉肉块，但你吃肉块只会受到25%的治疗量。"
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 33% from eating gibs.\nGain overall resistance, increases with paps."
 	}
 	"Chainsaw Pap 1"
 	{
@@ -3756,68 +3761,68 @@
 	}
 	"Barracks Metro Cop Desc"
 	{
-		"en"	"Ranged Basic combine unit. It reloads when his clip is empty"
-		"fr"	"Combine qui fait le combat à distance. Recharge quand son chargeur est vide."
+		"en"	"First Ranged unit of the roster. They can move and reload while attacking."
+		"fr"	"Première unité à distance de la liste. Ils peuvent se déplacer et recharger tout en attaquant."
 	}
 	"Barracks Shotgunner Desc"
 	{
-		"en"	"Ranged unit but it tends to get close to the target"
-		"fr"	"Unité à portée qui s'approche des cibles."
+		"en"	"Close-quarter ranged unit. He has. A SHOTGUN!"
+		"fr"	"Unité à distance rapprochée. Il a. UN FUSIL DE CHASSE !"
 	}
 	"Barracks Swordsman Desc"
 	{
-		"en"	"Melee unit which will regularly gain an armor while attacking"
-		"fr"	"Unité corps-à-corps qui reçoit de l'armure pour ses attaques."
+		"en"	"A melee unit with hit-and-run tactics. His initial attack does a lot more damage with a cooldown."
+		"fr"	"Une unité de mêlée avec des tactiques de délit de fuite. Son attaque initiale fait beaucoup plus de dégâts avec un temps de recharge."
 	}
 	"Barracks Metro Raider Desc"
 	{
-		"en"	"Upgraded unit of Metro Cop. Has better clip and damage"
-		"fr"	"Un Métro-police avec dégats et chargeur amélioré."
+		"en"	"Unlike Metro Cop, has a bigger gun. Also shorter range but more damage and mobility."
+		"fr"	"Contrairement à Metro Cop, il a un pistolet plus gros. Portée également plus courte mais plus de dégâts et de mobilité."
 	}
 	"Barracks Soldier Desc"
 	{
-		"en"	"Upgraded unit of Metro Raider. Has better clip, damage, and armor"
-		"fr"	"Un Métro-Raider avec dégats, chargeur et armure amélioré."
+		"en"	"Upgrade to Metro Raider."
+		"fr"	"Passez à Metro Raider."
 	}
 	"Barracks DDT Desc"
 	{
-		"en"	"Fast and hard hitting robotic Combine Unit"
-		"fr"	"Combine robotique qui va vite et frappe fort."
+		"en"	"Faster and deadlier but more fragile than other Melee counterparts."
+		"fr"	"Plus rapide et plus mortel mais plus fragile que les autres homologues de mêlée."
 	}
 	"Barracks Elite Desc"
 	{
-		"en"	"Ranged Combine unit which will often fire explosive combine energy ball"
-		"fr"	"Combine qui tire des balles énergétiques explosives"
+		"en"	"Straight upgrade to Soldier. Has a grenade launcher attached to his rifle."
+		"fr"	"Mise à niveau directe vers Soldier. A un lance-grenades attaché à son fusil."
 	}
-	"Barracks Deflector Desc"
+	"Barracks Chaos Containment Unit Desc"
 	{
-		"en"	"Armored Combine knight who will regularly parry melee attacks"
-		"fr"	"Chevalier Combine qui bloque les attaques corps-à-corps"
+		"en"	"Developed after Guln's fall and designed to honor his passing, this contraption is capable of infinite fire, with occasional random effects that may occur with each shot."
+		"fr"	"Développé après la chute de Guln et conçu pour honorer son décès, cet engin est capable de tirer à l'infini, avec des effets aléatoires occasionnels pouvant se produire à chaque tir."
 	}
-	"Barracks Sniper Desc"
+	"Barracks Peacekeeper Desc"
 	{
-		"en"	"Super Ranged unit with high damage but slow attack speed"
-		"fr"	"Hauts dégats, cadence d'attaque lente"
+		"en"	"Long-range mobile marksman unit. His weapon is capable of briefly applying Silence effect."
+		"fr"	"Unité de tireur mobile à longue portée. Son arme est capable d'appliquer brièvement l'effet Silence."
 	}
 	"Barracks Collos Desc"
 	{
-		"en"	"Giant Combine swordsman which has better armor and damage"
-		"fr"	"Épéiste Combine avec bons armure et dégats"
+		"en"	"Straight Upgrade to Swordsmen. In size, too."
+		"fr"	"Mise à niveau directe vers Swordsmen. En taille aussi."
 	}
 	"Barracks Giant ddt Desc"
 	{
-		"en"	"Giant robotic unit with fast speed, damage, and armor"
-		"fr"	"Combine robotique géant. Beacoup d'armure, va vite et frappe fort."
+		"en"	"This giant is not as strong, but extremely agile, with great maneuverability."
+		"fr"	"Ce géant n'est pas aussi fort, mais extrêmement agile, avec une grande maniabilité."
 	}
 	"Barracks Super Desc"
 	{
-		"en"	"A melee unit which will gain resistance and chance to evade when below half health."
-		"fr"	"Quand sous moitié santé, reçoit de la résistance et une chance d'éviter les attaques."
+		"en"	"An honoured melee fighter, mentored by Bob himself. His martial art punches and kicks are astonishing."
+		"fr"	"Un combattant de mêlée honoré, encadré par Bob lui-même. Ses coups de poing et de pied en arts martiaux sont étonnants."
 	}
 	"Barracks Commander Desc"
 	{
-		"en"	"A ranged super unit which will buff allies around it regularly."
-		"fr"	"Améliore les alliés qui l'entoure"
+		"en"	"Not the strongest himself, but will increase the movement speed of other allies near him, greatly complimenting their mobility."
+		"fr"	"Ce n'est pas le plus fort lui-même, mais il augmentera la vitesse de déplacement des autres alliés proches de lui, complétant grandement leur mobilité."
 	}
 	"Vows of the Sea Desc"
 	{
@@ -3977,7 +3982,7 @@
 	}
 	"Super-Uber-Saw Desc 1"
 	{
-		"en"	"Increaced damage and 25%% more range."
+		"en"	"increased damage and 25%% more range."
 	}
 	"The Yakuza Desc"
 	{
@@ -4037,7 +4042,7 @@
 	}
 	"Wand of Rot Desc"
 	{
-		"en"	"Fires a slow homing projectile with medium damage. \nDeals an adinational hit of damage to enemies under an elemental debuff. \nAbility increases damage, firarate, projectile speed and passive bonus, also fires 2 projectiles.\nDeal Osmosis Damage, see Extra Desc."
+		"en"	"Fires a slow homing projectile, ability increases all stats & adds another projectile. build up OS fully to reduce allies ability CD on hit on an afflicted enemy."
 	}
 	"Wand of Rot Desc 2"
 	{
@@ -4131,5 +4136,209 @@
 	"Fractal Kit Desc 1"
 	{
 		"en"	"More Damage! And crystal capacity."
+	}
+	"WPrototype Kit Desc"
+	{
+		"en"	"This is an experimental weapon set.\nYou cannot use the ability because you do not have system permission."
+		"ko"	"실험적무기 세트입니다,\n시스템v권한이 없어 능력을 사용할수없습니다."
+	}
+	"Proto Kit Market Gardener Desc"
+	{
+		"en"	"It's a normal melee weapon."
+		"ko"	"평범한 근접 무기 입니다."
+	}
+	"Soldine Kit Pap 1"
+	{
+		"en"	"Unlock Your Super Melee hit, charges with hurting enemies.\nRaids charge faster if hit with rocket launcher."
+	}
+	"Proto Kit Rocket Launcher Desc"
+	{
+		"en"	"Rocket Launcher deals 10%% Extra damage against raidbosses."
+	}
+	"Soldine Kit Pap 2"
+	{
+		"en"	"Unlock Your Robot Jump, Charges with hurting enemies.\nRaids charge faster if hit with rocket launcher."
+	}
+	"Soldine Kit Pap 3"
+	{
+		"en"	"Everything charges faster, Your super melee hit now gives 50%% of your armor back!"
+	}
+	"Soldine Kit Pap 4"
+	{
+		"en"	"Everything charges faster, super hit now gives upto 25%% Over armor!"
+	}
+	"Soldine Kit Pap rest"
+	{
+		"en"	"Increases Stats"
+	}
+	"Therapy Desc"
+	{
+		"en"	"The pills by itself won't make you feel better. You'll have to do more than that.\nKit has no self resistance, you instead have high hp regen as youre a doctor."
+	}
+	"Hand Desc"
+	{
+		"en"	"Relax, I'm not one of them.\nCure your teammates, or charge the enemies extra money for another therapy session.\nM2: Shove enemies away, and apply a random debuff upon doing so.\nM1: Apply a random buff on an ally."
+	}
+	"Hand Pap 1"
+	{
+		"en"	"Gain the ability to apply one of three buffs on your teammates with M1."
+	}
+	"Hand Pap Last"
+	{
+		"en"	"More buffs.\nMore debuffs.\nLonger duration."
+	}
+	"Taurus Revolver Desc"
+	{
+		"en"	"A very strong revolver that holds 5 bullets per clip.\nExtremely long reload time."
+	}
+	"Taurus Revolver Pap 1"
+	{
+		"en"	"Base damage increased.\nGain an M2 Ability that allows you to Pistol Whip the enemies, gives 1 ammo and reduces cooldowns on hit, more against raids."
+	}
+	"Taurus Revolver Last Pap"
+	{
+		"en"	"Base damage increased."
+	}
+	"Ketamine Desc"
+	{
+		"en"	"Makes you as hard as iron.\n+600 HP, Increases melee damage by +65%% and heal on kill by +25.\nIncreases melee resist with melee weapons by +7.5%%."
+	}
+	"Cannabis Desc"
+	{
+		"en"	"Smoke it everyday.\n+800 HP, Increases melee damage by +75%% and heal on kill by +35.\nIncreases melee resist with melee weapons by +10%%."
+	}
+	"Fentanyl Desc"
+	{
+		"en"	"It courses through you.\n+1000 HP, Increases melee damage by +100%% and heal on kill by +50.\nIncreases melee resist and ranged resist with melee weapons by +15%% and +10%% respectively."
+	}
+	"Building Dummies Desc"
+	{
+		"en"	"A book to teach you how to build.\nIncreases building HP by +20%%, building damage by +50%% and repair rate by +50%%.\nIncreases sentry attackspeed by +10%%."
+	}
+	"Dubious Cheesy Ideas Desc"
+	{
+		"en"	"The inhuman thoughts lying behind the cheese.\nIncreases building HP by +45%%, and building damage + repair rate by +75%%.\nIncreases sentry attackspeed by +25%%."
+	}
+	"Messed Up Cheesy Brain Desc"
+	{
+		"en"	"How he satisfies his hunger by any means.\nIncreases building HP by +90%%, building damage by +100%% and repair rate by +125%%.\nIncreases sentry attackspeed by +50%%."
+	}
+	"Birdeye Ammo Desc"
+	{
+		"en"	"He never misses.\nIncreases ranged damage by +65%%, fire rate and reload speed by +5%%.\nIncreases accuracy by +10%% and projectile speed by +10%%."
+	}
+	"Waldch's Railgun Rounds Desc"
+	{
+		"en"	"How kind of him.\nIncreases ranged damage by +75%%, fire rate by +7.5%% and reload speed by +10%%.\nIncreases accuracy by +20%% and projectile speed by +25%%."
+	}
+	"Cheesy Doomsday Pack Desc"
+	{
+		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100%%, fire rate by +7.5%% and reload speed by +10%%.\nIncreases accuracy by +35%% and projectile speed by +50%%."
+	}
+	"Twirl Magic Desc"
+	{
+		"en"	"This is as far as she can get with teaching magic to you.\n+150 HP, Increases mage damage by +70%% and mage projectile speed by +10%%.\nIncreases melee resist with wands out by +5%%, and max mana by 20%%."
+	}
+	"Magical Fontina Aura Desc"
+	{
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +80%% and mage projectile speed by +15%%.\nIncreases melee resist with wands out by +6%%, and max mana by 25%%."
+	}
+	"Domain Expansion: Cheese Desc"
+	{
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +115%% and mage projectile speed by +35%%.\nIncreases melee resist with wands out by +10%%, and max mana by 25%%."
+	}
+	"Bob's Willpower Desc"
+	{
+		"en"	"Bob the Second lending you his divine willpower.\n+2000 HP, +20%% overall resistance, grants a +5HP/s regen."
+	}
+	"A Wheel of Gouda Desc"
+	{
+		"en"	"Eat up.\n+2500 HP, +25%% overall resistance, grants an additional +10HP/s regen."
+	}
+	"THE BIG CHEESE Desc"
+	{
+		"en"	"A tasty cylinder of 1-year aged medium sharp cheddar, weighing around 4500LBS.\nMay god help you eat it all.\n+2750 HP, +30%% overall resistance, grants an additional +15HP/s regen."
+	}
+	"Nanomachines Desc"
+	{
+		"en"	"Nanomachines, they make people harden in response to physical trauma.\nIncreases medigun heal/enemydrain rate by +65%% and uber duration by +1 second.\nIncreases melee resistance with support weapons out by +5%%."
+	}
+	"Voided Rejuvenator Pack Desc"
+	{
+		"en"	"The fastest heals in the void.\nIncreases medigun heal/enemydrain rate by +75%% and uber duration by +2 seconds.\nIncreases melee resistance with support weapons out by +10%%."
+	}
+	"Cheesy Slimy Aid Kit Desc"
+	{
+		"en"	"Some would prefer to die rather than getting treated with this.\nIncreases medigun heal/enemydrain rate by +100%% and uber duration by +3 seconds.\nIncreases melee + ranged resistance with support weapons out by +10%%."
+	}
+	"Kit Modernizer I Desc"
+	{
+		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +25%% and attackspeed by +10%%.\nGrants +25 HP on kill, +15%% overall resistance and +50%% projectile speed.\nReduces building cost by 25%% and increases heal rate by +25%%."
+	}
+	"Kit Modernizer II Desc"
+	{
+		"en" "Increases kit damage by +35%% and reload speed by +10%%\nGrants +35%% max mana, increases repair rate by +50%% and building HP by +10%%.\nReduces building cost by 25%% and increases heal rate by +35%%."
+	}
+	"Kit Modernizer III Desc"
+	{
+		"en" "Increases kit damage by +50%% and reload + attackspeed by +5%%\nIncreases repair rate by +100%%, building HP by +35%% and clipsize by +50%%.\nReduces building cost by 25%% and increases heal rate by +35%%."
+	}
+	"Kit Modernizer IV Desc"
+	{
+		"en" "Increases kit damage by +65%% and reload + attackspeed by +10%%\n+35 HP on kill | +20%% Overall Resist | +25%% Max Mana | +100%% Repair Rate | +50%% Proj. Speed | +35%% Heal Rate"
+	}
+	"Kit Modernizer V Desc"
+	{
+		"en" "Increases kit damage by +85%% and reload + attackspeed by +10%%\n+50 HP on kill | +25%% Overall Resistance | +25%% Max Mana | +125%% Repair Rate | +50%% Clip size"
+	}
+	"Unit Reformator I Desc"
+	{
+		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +50%%, and barrack unit damage by +15%%."
+	}
+	"Unit Reformator II Desc"
+	{
+		"en" "Increases barrack unit HP by +70%%, and barrack unit damage by +30%%."
+	}
+	"Unit Reformator III Desc"
+	{
+		"en" "Increases barrack unit HP by +90%% and damage by +45%%."
+	}
+	"Unit Reformator IV Desc"
+	{
+		"en" "Doubles barrack unit HP and increases barrack unit damage by +75%%."
+	}
+	"Unit Reformator V Desc"
+	{
+		"en" "Increases barrack unit HP by +125%% and doubles barrack unit damage."
+	}
+	"Reinforce Desc"
+	{
+		"en"	"A device that revives a random dead teammate, recharging through healing.\nThe maximum charge increases with the amount of healing rate"
+		"ko"	"치료를 통해 충전할수있는 무작위 죽은 아군 1명을 되살리는 장치입니다.\n최대 충전량은 늘어난 치료량에 따라 증가됩니다."
+	}
+	"Reconstructive Teleporter Desc"
+	{
+		"en"	"Teleports barrack units to you, granting overheal and high resistance for 1 second."
+		"ko"	"배럭 유닛을 자신에게 텔레포트시키고 과치료및 1초동안 높은 저항을 제공합니다"
+	}
+	"Bubble Wand Desc"
+	{
+		"en" "Throws a bubble, which slows down and powers up as it travels.\nThis bubble automatically pops if its speed reaches 0."
+	}
+	"Bubble Wand Pap 1 Desc"
+	{
+		"en" "PAP 1: Increases damage and very slightly increased swing speed.\nIncreased the damage boost based on lifetime."
+	}
+	"Bubble Wand Pap 2 Desc"
+	{
+		"en" "PAP 2: Increases damage + slightly increases swing speed.\nIncreases the damage boost based on lifetime and unlocks Bubble Frenzy:\nPress M2 to double your attackspeed and debuff enemies, making them deal less damage!\nApplies debuffs on raids always, but for 1/4 of its duration."
+	}
+	"Bubble Wand Pap 3 Desc"
+	{
+		"en" "PAP 3: Increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly increases Bubble Frenzy's debuff duration."
+	}
+	"Bubble Wand Pap 4 Desc"
+	{
+		"en" "PAP 4: Greatly increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly strengthens Bubble Frenzy's debuff penalty, and increases its duration a bit."
 	}
 }

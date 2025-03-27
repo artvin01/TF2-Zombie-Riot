@@ -387,19 +387,19 @@ methodmap Karlas < CClotBody
 		{
 			//we are teleporting and also can't move, take a heavily defensive position.	
 			if(b_teleport_strike_active[this.index])
-				fAmt -=0.8;
+				fAmt -=0.5;
 
 			//we are retreating to stella, take a more defensive position.
 			if(this.m_bRetreat)
-				fAmt -=0.25;
+				fAmt -=0.15;
 			
 			//we are doing our "amazon delivery service", we cannot move, give uis armour
 			if(this.m_flSlicerBarrageCD == FAR_FUTURE)
-				fAmt -= 0.6;
+				fAmt -= 0.3;
 
 			//we are being used as a mirror, cannot move, take defensive stance.
 			if(this.m_flNC_LockedOn > GetGameTime(this.index))
-				fAmt -= 0.45;
+				fAmt -= 0.15;
 			
 			if(this.Anger)
 				fAmt -=0.25;
@@ -424,19 +424,19 @@ methodmap Karlas < CClotBody
 		{
 			//we are teleporting and also can't move, take a heavily defensive position.	
 			if(b_teleport_strike_active[this.index])
-				fAmt -=0.5;
+				fAmt -=0.3;
 
 			//we are retreating to stella, take a more defensive position.
 			if(this.m_bRetreat)
-				fAmt -=0.25;
+				fAmt -=0.15;
 			
-			//we are doing our "amazon delivery service", we cannot move, give uis armour
+			//we are doing our "amazon delivery service", we cannot move, give us armour
 			if(this.m_flSlicerBarrageCD == FAR_FUTURE)
-				fAmt -= 0.6;
+				fAmt -= 0.3;
 
 			//we are being used as a mirror, cannot move, take defensive stance.
 			if(this.m_flNC_LockedOn > GetGameTime(this.index))
-				fAmt -= 0.45;
+				fAmt -= 0.15;
 
 			if(this.Anger)
 				fAmt -=0.25;
@@ -617,6 +617,11 @@ methodmap Karlas < CClotBody
 
 		if((StrContains(data, "anger") != -1))
 			npc.Anger = true;
+
+		for (int entity = 0; entity < MAXENTITIES; entity++)
+		{
+			f_GlobalHitDetectionLogic[npc.index][entity] = 0.0;
+		}
 		
 		return npc;
 	}
@@ -642,7 +647,7 @@ static void Win_Line(int entity)
 void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob, bool tripple)
 {	
 	if(wave == -2)
-		wave = ZR_GetWaveCount()+1;
+		wave = Waves_GetRound()+1;
 
 	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);
@@ -846,7 +851,7 @@ static void Internal_ClotThink(int iNPC)
 			if(flDistanceToAlly < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 && Can_I_See_Enemy_Only(npc.index, Ally))
 			{
 				NPCStats_RemoveAllDebuffs(Ally, 1.0);
-				ApplyStatusEffect(npc.index, Ally, "Battilons Backup", 2.5);
+				ApplyStatusEffect(npc.index, Ally, "Defensive Backup", 2.5);
 			}
 
 			//Karlas_Teleport_Core(npc, PrimaryThreatIndex);
@@ -1106,7 +1111,7 @@ static void Blade_Logic(Karlas npc)
 		{
 			case 2:	//Aggresive - spin around him while extended
 			{
-				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 10.0*RaidModeScaling);
+				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 8.0*RaidModeScaling);
 			}
 			case 4:	//becomes pseudo wings. neutral state for when the things are "recharging"
 			{
@@ -1215,12 +1220,25 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 	struct_Projectile[Proj].particles[1] = EntIndexToEntRef(left);
 	struct_Projectile[Proj].particles[2] = EntIndexToEntRef(right);
 
-	CreateTimer(Time, Timer_RemoveEntity, EntIndexToEntRef(ParticleOffsetMain), TIMER_FLAG_NO_MAPCHANGE);
+	float Distance = GetVectorDistance(SelfVec, VecTarget);
+	float Timer_Span = Distance/Speed;
+	Timer_Span *=0.5 + 0.25;
+
+	CreateTimer(Timer_Span, KillProjectileHoming, EntIndexToEntRef(Proj), TIMER_FLAG_NO_MAPCHANGE);
 
 	DataPack pack = new DataPack();
 	pack.WriteCell(EntIndexToEntRef(Proj));
 	RequestFrame(Projectile_Detect_Loop, pack);
 	
+}
+static Action KillProjectileHoming(Handle Timer, int iRef)
+{
+	int Projectile = EntRefToEntIndex(iRef);
+	if(!IsValidEntity(Projectile))
+		return Plugin_Stop;
+	
+	HomingProjectile_Deactivate(Projectile);
+	return Plugin_Stop;
 }
 static void Projectile_Detect_Loop(DataPack pack)
 {
@@ -1272,8 +1290,8 @@ static void Projectile_Detect_Loop(DataPack pack)
 
 	Ruina_Laser_Logic Laser;
 	Laser.client = owner;
-	Laser.Damage = Modify_Damage(-1, 25.0);
-	Laser.Bonus_Damage = Modify_Damage(-1, 25.0) * 6.0;
+	Laser.Damage = Modify_Damage(-1, 17.0);
+	Laser.Bonus_Damage = Modify_Damage(-1, 17.0) * 6.0;
 	Laser.damagetype = DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE;
 	//Laser.Radius = radius;
 	Laser.End_Point = Vec_Points[1];
@@ -1285,7 +1303,7 @@ static void Projectile_Detect_Loop(DataPack pack)
 	DataPack pack2 = new DataPack();
 	pack2.WriteCell(EntIndexToEntRef(projectile));
 	float Throttle = 0.04;	//0.025
-	int frames_offset = RoundToCeil(66.0*Throttle);	//no need to call this every frame if avoidable
+	int frames_offset = RoundToCeil((66.0*TickrateModify)*Throttle);	//no need to call this every frame if avoidable
 	if(frames_offset < 0)
 		frames_offset = 1;
 	RequestFrames(Projectile_Detect_Loop, frames_offset, pack2);
@@ -1294,10 +1312,6 @@ static void Projectile_Detect_Loop(DataPack pack)
 }
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
-	for (int entity = 0; entity < MAXENTITIES; entity++)
-	{
-		f_GlobalHitDetectionLogic[client][entity] = 0.0;
-	}
 	if(f_GlobalHitDetectionLogic[client][target] > GetGameTime())
 		return;
 	
@@ -1380,8 +1394,8 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 		if(Karlas_Status(npc, GameTime)==1)
 			return;
 
-		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : 1.0);
-		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.2);
+		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : (npc.Anger ? 1.5 : 2.5));
+		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.3);
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
 
@@ -1416,35 +1430,18 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 						{
 							fl_karlas_sword_battery[npc.index] +=1.5;
 						}
-						
-						if(IsValidClient(target))
+
+						//clause ae karlas knockback
+						if(!b_lostOVERDRIVE[npc.index])
 						{
-							float Bonus_damage = 1.0;
-							int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-							
-							if(IsValidEntity(weapon))
-							{	
-								char classname[32];
-								GetEntityClassname(weapon, classname, 32);
-							
-								int weapon_slot = TF2_GetClassnameSlot(classname);
-							
-								if(weapon_slot != 2 || i_IsWandWeapon[weapon])
-								{
-									Bonus_damage = 1.5;
-								}
-								meleedmg *= Bonus_damage;
-							}
-							//clause ae karlas knockback
-							if(!b_lostOVERDRIVE[npc.index])
+							bool Silence = NpcStats_IsEnemySilenced(npc.index);
+							if(IsValidClient(target) && !Silence)
 							{
-								Custom_Knockback(npc.index, target, 900.0, true);
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
-							
+							Custom_Knockback(npc.index, target, Silence ? 560.0 : 900.0, true);
 						}
-
 						SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();	
 					
@@ -1694,7 +1691,7 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 
 			npc_Loc[2]+=10.0;
 			int color[4];
-			Ruina_Color(color);
+			Ruina_Color(color, i_current_wave[npc.index]);
 			TE_SetupBeamRingPoint(npc_Loc, 250.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, 12.0, 0.75, color, 1, 0);
 			TE_SendToAll();
 
@@ -1863,7 +1860,7 @@ static void Karlas_Teleport_Boom(Karlas npc, float Location[3])
 	if(npc.Anger)
 		radius *= 1.25;	
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 
 	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
@@ -1913,7 +1910,7 @@ static Action Karlas_Ring_Loops(Handle Loop, DataPack pack)
 	if(npc.Anger)
 		radius *= 1.25;	
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 
 	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 1.0, 30.0, 0.1, color, 1, 0);
@@ -1950,7 +1947,7 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 	float damage = 200.0*RaidModeScaling;	//very deadly!
 	float radius = KARLAS_TELEPORT_STRIKE_RADIUS;
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 	int loop_for = 15;		//15
 	float height = 1500.0;	//1500
@@ -2323,7 +2320,7 @@ static void Karlas_Lifeloss_Logic(Karlas npc)
 		Loc[2] += 150.0*Ratio;
 		float Loc2[3]; GetAbsOrigin(npc.index, Loc2); Loc2[2]+=25.0;
 		float speed = 30.0 - 25.0*Ratio;
-		Karlas_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, 15.0*RaidModeScaling);
+		Karlas_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, 20.0*RaidModeScaling);	//they are spinning up, so deal lotsa damage
 	}
 }
 static void Karlas_SwordWings_Logic(Karlas npc, float npc_Vec[3])
@@ -2579,7 +2576,7 @@ static void Internal_NPCDeath(int entity)
 	}
 	ExpidonsaRemoveEffects(entity);
 	RaidModeScaling *= 1.2;
-	RaidModeTime +=50.0;
+	RaidModeTime +=30.0;
 
 	if(b_tripple_raid[npc.index])
 	{

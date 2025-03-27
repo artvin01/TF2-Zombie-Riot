@@ -218,10 +218,7 @@ methodmap ChaosKahmlstein < CClotBody
 			return;
 			
 		this.m_flidle_talk = GetGameTime(this.index) + 0.1;
-		if(ZR_GetWaveCount()+1 <= 15)
-			EmitSoundToAll(g_MessengerThrowFire[GetRandomInt(0, sizeof(g_MessengerThrowFire) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		else
-			EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -420,7 +417,23 @@ methodmap ChaosKahmlstein < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 					
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			float value;
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(Waves_GetRound()+1);
+				value = float(Waves_GetRound()+1);
+			}
+
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -442,11 +455,11 @@ methodmap ChaosKahmlstein < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+			if(value > 40 && value < 55)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(ZR_GetWaveCount()+1 > 55)
+			else if(value > 55)
 			{
 				RaidModeScaling *= 0.7;
 			}
@@ -560,7 +573,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			float Pos[3];
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(entity != INVALID_ENT_REFERENCE && (b_thisNpcIsARaid[entity] && IsEntityAlive(entity) && entity != npc.index))
 				{
 					foundEm = true;
@@ -2034,7 +2047,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 				i_TalkDelayCheck += 1;
 				for (int client = 0; client < MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Kahml's Contained Chaos");
 						CPrintToChat(client,"{default}You get: {red}''Kahml's Contained Chaos''{default}!");

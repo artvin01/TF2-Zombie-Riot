@@ -120,7 +120,7 @@ static int TriggerDamage(int entity, int type)
 	}
 	else if(b_thisNpcIsABoss[entity])
 	{
-		divide *= (3.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
+		divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
 	}
 	else if (b_IsGiant[entity])
 	{
@@ -176,6 +176,13 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -203,9 +210,9 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 					
 					if(!HasSpecificBuff(victim, "Fluid Movement"))
-						TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+						TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
 
-					DealTruedamageToEnemy(0, victim, b_BobsTrueFear[victim] ? 400.0 : 500.0);
+					DealTruedamageToEnemy(0, victim, 500.0);
 				}
 			}
 			
@@ -264,6 +271,13 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 
 void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
@@ -365,6 +379,13 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 
 void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool VoidWeaponDo = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
@@ -469,19 +490,22 @@ static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon
 
 static void SakratanGroupDebuffInternal(int victim)
 {
-	if(victim <= MaxClients && !b_BobsTrueFear[victim])
+	if(victim <= MaxClients)
 	{
 		DealTruedamageToEnemy(0, victim, 250.0);
-	}
-	else
-	{
-		DealTruedamageToEnemy(0, victim, 200.0);
 	}
 	IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
 }
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
@@ -520,6 +544,13 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 
 void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
@@ -560,6 +591,13 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 
 void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	
@@ -634,6 +672,13 @@ void OsmosisElementalEffect_Detection(int attacker, int victim)
 }
 void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
@@ -645,10 +690,12 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	if(victim <= MaxClients)
 	{
-		if(Items_HasNamedItem(victim, "Matrix's Curse"))
+		/*
+		if(Items_HasNamedItem(victim, "Matrix's Curse") && !Items_HasNamedItem(victim, "A Block of Cheese"))
 		{
 			damage = RoundToNearest(float(damage) * 1.2);
 		}
+		*/
 		Armor_DebuffType[victim] = 4;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
@@ -767,7 +814,7 @@ static char g_Agent_Summons[][] =
 static void Matrix_Spawning(int entity, int count)
 {
 	int summon = GetRandomInt(0, 6);
-	int wave = (ZR_GetWaveCount() + 1);
+	int wave = (Waves_GetRound() + 1);
 	if(wave >= 30)
 	{
 		summon = GetRandomInt(7, 11);

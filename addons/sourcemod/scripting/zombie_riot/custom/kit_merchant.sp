@@ -290,11 +290,6 @@ static int MerchantMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-public void Weapon_MerchantPrimary_M2(int client, int weapon, bool crit, int slot)
-{
-	Store_SwapItems(client);
-}
-
 void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 {
 	if(MerchantWeaponRef[attacker] == -1)
@@ -404,7 +399,7 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 				bool alone = true;
 				for(int i; i < i_MaxcountNpcTotal; i++)
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 					if(entity != -1 && entity != victim && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 					{
 						GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -439,17 +434,17 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 					{
 						case 0:
 						{
-							ApplyStatusEffect(attacker, victim, "Prosperity I", 0.75);
+							ApplyStatusEffect(attacker, victim, "Prosperity I", 1.0);
 							reduce = 0.035;
 						}
 						case 1:
 						{
-							ApplyStatusEffect(attacker, victim, "Prosperity II", 0.75);
+							ApplyStatusEffect(attacker, victim, "Prosperity II", 1.0);
 							reduce = 0.07;
 						}
 						case 2:
 						{
-							ApplyStatusEffect(attacker, victim, "Prosperity III", 0.75);
+							ApplyStatusEffect(attacker, victim, "Prosperity III", 1.0);
 							reduce = 0.14;
 						}
 					}
@@ -518,7 +513,7 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(entity != -1 && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 				{
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -550,13 +545,11 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 					{
 						SetGlobalTransTarget(attacker);
 						PrintHintText(attacker, "%t", "You healed for", target, RoundToNearest(healing));
-						StopSound(attacker, SNDCHAN_STATIC, "UI/hint.wav");
 					}
 					else
 					{
 						SetGlobalTransTarget(attacker);
 						PrintHintText(attacker, "%t", "You healed for NpcName", c_NpcName[target], RoundToNearest(healing));
-						StopSound(attacker, SNDCHAN_STATIC, "UI/hint.wav");
 					}
 				}
 
@@ -796,7 +789,7 @@ static void MerchantStart(int client, int slot)
 	int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 	if(weapon != -1)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 
 		MerchantAbilitySlot[client] = slot;
 		MerchantWeaponRef[client] = EntIndexToEntRef(weapon);

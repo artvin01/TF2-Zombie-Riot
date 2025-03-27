@@ -124,7 +124,7 @@ methodmap Bulldozer < CClotBody
 	
 	public Bulldozer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Bulldozer npc = view_as<Bulldozer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "7000", ally));
+		Bulldozer npc = view_as<Bulldozer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "7000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -352,7 +352,7 @@ void BulldozerSelfDefense(Bulldozer npc, float gameTime, int target, float dista
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								

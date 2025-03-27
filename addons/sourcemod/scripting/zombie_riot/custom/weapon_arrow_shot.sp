@@ -111,11 +111,11 @@ public void Weapon_Shoot_Arrow_Ability(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
-		Arrows_Damage[client] = 50.0;
-		Max_Arrows[client] = 10;
+		Arrows_Damage[client] = 100.0;
+		Max_Arrows[client] = 5;
 		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
 			
 		Arrows_Ability_Shot[client] = 0;
@@ -139,11 +139,11 @@ public void Weapon_Shoot_Arrow_Ability_Weaker(int client, int weapon, bool crit,
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
-		Arrows_Damage[client] = 50.0;
-		Max_Arrows[client] = 5;
+		Arrows_Damage[client] = 60.0;
+		Max_Arrows[client] = 4;
 		Arrows_Damage[client] *= Attributes_Get(weapon, 2, 1.0);
 			
 		Arrows_Ability_Shot[client] = 0;
@@ -167,7 +167,7 @@ public void Weapon_Shoot_Arrow_Ability_Weakest(int client, int weapon, bool crit
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
 		Arrows_Damage[client] = 50.0;
@@ -338,7 +338,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP(int client, int weapon, bool crit, i
 			return;
 		}
 			
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		EmitSoundToAll(SOUND_ARROW_SHOOT, client, SNDCHAN_WEAPON, 75, _, 0.8, 100);
 		Client_To_Weapon[client] = weapon;
@@ -410,7 +410,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP_1(int client, int weapon, bool crit,
 			return;
 		}
 			
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 13.0);
 		EmitSoundToAll(SOUND_ARROW_SHOOT, client, SNDCHAN_WEAPON, 75, _, 0.8, 100);
 		Client_To_Weapon[client] = weapon;
@@ -483,7 +483,7 @@ public void Weapon_Shoot_Arrow_Crossbow_PAP_2(int client, int weapon, bool crit,
 			return;
 		}
 			
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 10.0);
 		EmitSoundToAll(SOUND_ARROW_SHOOT, client, SNDCHAN_WEAPON, 75, _, 0.8, 100);
 		Client_To_Weapon[client] = weapon;

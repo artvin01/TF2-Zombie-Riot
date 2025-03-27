@@ -270,7 +270,7 @@ void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int
 				{
 					Format(desc, 512, "%s\nMining Efficiency: %.0f%%", desc, value[i]);
 				}
-				case 2017:
+				case 5017:
 				{
 					Format(desc, 512, "%s\nMining Level: Tier %d", desc, RoundFloat(value[i]));
 				}
@@ -313,7 +313,7 @@ bool Mining_Interact(int client, int entity, int weapon)
 
 public void Mining_PickaxeM1(int client, int weapon, const char[] classname, bool &result)
 {
-	float ApplyCooldown =  0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float ApplyCooldown =  0.8 * Attributes_Get(weapon, 6, 1.0);
 	Ability_Apply_Cooldown(client, 1,ApplyCooldown);
 
 	DataPack pack;
@@ -356,8 +356,8 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 				static MineEnum mine;
 				MineList.GetArray(index, mine);
 
-				int tier = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-				float attackspeed = Attributes_FindOnWeapon(client, weapon, 6 , true, 1.0);
+				int tier = RoundToNearest(Attributes_Get(weapon, 5017, 0.0));
+				float attackspeed = Attributes_Get(weapon, 6 , 1.0);
 				if(tier < mine.Tier)
 				{
 					ShowGameText(client, "ico_metal", 0, "You need atleast Tier %d to mine this!", mine.Tier);
@@ -475,7 +475,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 						}
 					}
 
-					int damage = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2016, true));
+					int damage = RoundToNearest(Attributes_Get(weapon, 2016, 1.0));
 
 					Tinker_Mining(client, weapon, tier, mine.Tier, damage);
 

@@ -69,13 +69,13 @@ bool Zealot_Sugmar(int client)
 }
 public void Weapon_ZealotRCheckCD(int client, int weapon, bool &result, int slot)
 {
-
-	
 	return;
 }
 
 void Zealot_ApplyGlobalRCooldown(int client, float Duration)
 {
+	Duration *= CooldownReductionAmount(client);
+
 	f_DashCooldownZealot[client] = GetGameTime() + Duration;
 	int weapon1;
 	int ie;
@@ -129,7 +129,7 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				//ignore rest.
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 60.0);
 
 				f_ChargeDuration[client] = GetGameTime() + CHARGE_DURATION;
@@ -147,10 +147,12 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 				IncreaceEntityDamageTakenBy(client, 0.25, CHARGE_DURATION);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + CHARGE_DURATION + 0.5;
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + CHARGE_DURATION + 0.5;
+				ApplyStatusEffect(client, client, "Intangible", 3.0);
 				if(i_PaPLevel[client] >= 4)
 				{
 					f_AntiStuckPhaseThrough[client] = GetGameTime() + 5.0;
 					f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 5.0;
+					ApplyStatusEffect(client, client, "Intangible", 5.0);
 				}
 				//only take 25% damage overall.
 				// knockback is the overall force with which you be pushed, don't touch other stuff
@@ -249,7 +251,7 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float BuffDuration = 5.0;
 		switch(i_PaPLevel[client])
 		{
@@ -289,6 +291,7 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 		}
 
 		i_RandomCurrentPotion[client] = GetRandomInt(0,3);
+		UpdateWeaponVisibleGrenade(weapon, client, true);
 	}
 	else
 	{
@@ -368,7 +371,7 @@ void WeaponZealot_OnTakeDamage_Gun(int attacker, int victim, float &damage)
 
 	if(HasSpecificBuff(attacker, "Zealot's Random Drinks"))
 	{
-		if(i_WhatPotionDrink[attacker] == 2 && i_HasBeenHeadShotted[victim])
+		if(i_WhatPotionDrink[attacker] == 3 && i_HasBeenHeadShotted[victim])
 		{
 			damage *= 1.3;
 		}
@@ -426,7 +429,7 @@ void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 	MaxDodgeCount[attacker] = 10;
 	if(HasSpecificBuff(attacker, "Zealot's Random Drinks"))
 	{
-		if(i_WhatPotionDrink[attacker] == 2 && i_HasBeenHeadShotted[victim])
+		if(i_WhatPotionDrink[attacker] == 3 && i_HasBeenHeadShotted[victim])
 		{
 			damage *= 1.3;
 		}
@@ -533,7 +536,7 @@ public void Enable_Zealot(int client, int weapon) // Enable management, handle w
 			SetParent(client, entity);
 			ParticleRef[client] = EntIndexToEntRef(entity);
 		}
-		if(!Precached)
+		if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
 		{
 			// MASS REPLACE THIS IN ALL FILES
 			PrecacheSoundCustom("#zombiesurvival/zealot_lastman_1.mp3",_,1);
@@ -642,7 +645,7 @@ public void Client_ZealotThink(int client)
 	}
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 
 	MaxDodgeCount[client]--;
 
@@ -796,7 +799,7 @@ public void Zealot_Hud_Logic(int client, int weapon, bool ignoreCD)
 	
 	Zealot_HudDelay[client] = GetGameTime() + 0.5;
 	PrintHintText(client,"%s",ZealotHud);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 float Zealot_RegenerateStaminaMAx(int client)

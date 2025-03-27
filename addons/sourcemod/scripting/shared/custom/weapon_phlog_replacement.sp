@@ -215,7 +215,7 @@ public void PHLOG_Cooldown_Logic(int client, int weapon)
 				PrintHintText(client,"Phlog Hit Charge [Cooldown: %.1f]",f_PHLOGabilitydelay[client] - GetGameTime());
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_PHLOGhuddelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -237,7 +237,7 @@ public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 	//This ability has no cooldown in itself, it just relies on hits you do.
 	if(i_PHLOGHitsDone[client] >= PHLOG_JUDGEMENT_MAX_HITS_NEEDED || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		i_PHLOGHitsDone[client] = 0;
 		f_PHLOGabilitydelay[client] = GetGameTime() + 10.0; //Have a cooldown so they cannot spam it.
 		EmitSoundToAll(PHLOG_ABILITY, client, _, 75, _, 0.60);

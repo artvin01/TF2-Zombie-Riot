@@ -146,7 +146,7 @@ public void Star_Shooter_Meteor_shower_ability(int client, int weapon, bool crit
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 45.0);
 		ClientCommand(client, "playgamesound weapons/cow_mangler_over_charge_shot.wav");
 
@@ -285,7 +285,7 @@ public void Starshooter_Cooldown_Logic(int client, int weapon)
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client]);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 		starshooter_hud_delay[client] = GetGameTime() + 0.5;
 	}

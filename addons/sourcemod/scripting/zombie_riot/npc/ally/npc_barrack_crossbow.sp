@@ -79,14 +79,14 @@ public void BarrackCrossbow_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (3.0 * npc.BonusFireRate);
 						npc.m_flReloadDelay = GameTime + (0.7 * npc.BonusFireRate);
 					}
 				}
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 225.0, "ACT_CUSTOM_IDLE_CROSSBOW", "ACT_CUSTOM_WALK_CROSSBOW", 170000.0);
+		BarrackBody_ThinkMove(npc.index, 225.0, "ACT_CUSTOM_IDLE_CROSSBOW", "ACT_CUSTOM_WALK_CROSSBOW", 155000.0);
 	}
 }
 
@@ -102,7 +102,7 @@ void BarrackCrossbow_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			npc.FireArrow(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),600.0, 1), 1200.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
+			npc.FireArrow(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),800.0, 1), 1200.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
 		}
 	}
 }

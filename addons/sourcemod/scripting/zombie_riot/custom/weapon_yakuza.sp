@@ -110,6 +110,9 @@ bool Yakuza_IsNotInJoint(int client)
 
 int Yakuza_Lastman(any toggle = -1)
 {
+	if(CvarFileNetworkDisable.IntValue > 0)
+		return 0;
+		
 	if(toggle != -1)
 		SpecialLastMan = view_as<bool>(toggle);
 	
@@ -294,7 +297,7 @@ static Action WeaponTimerFunc(Handle timer, int client)
 				}
 
 				PrintHintText(client, "%s - HEAT %d％", StyleName[WeaponStyle[client]], WeaponCharge[client]);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 			else
 			{
@@ -585,7 +588,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		}
 		else if(WeaponStyle[client] == Style_Rush)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.5);
 			ApplyTempAttrib(weapon, 6, 0.85, 1.5);
 			Ability_Apply_Cooldown(client, 2, 8.0);
@@ -641,10 +644,11 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 
 			if(WeaponCharge[client] >= RequiredHeat)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Yakuza_AddCharge(client, -RequiredHeat);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
+				ApplyStatusEffect(client, client, "Intangible", 3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
 				HeatActionCooldown[client] = GetGameTime() + 0.5;
 				if(WeaponStyle[client] != Style_Dragon)
@@ -740,7 +744,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 
 	if(target > 0 && WeaponStyle[client] == Style_Brawler)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		float vecForward[3];
 		static float angles[3];
 		GetClientEyePosition(client, angles);
@@ -756,7 +760,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		spawnRing_Vectors(DistanceCheck, 50.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1);	
 		if(i_NpcWeight[target] < 4)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			
 			bool halved = (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] || i_NpcWeight[target] > 2);
 			
@@ -788,7 +792,7 @@ static void Yakuza_Block(int client, int weapon, int slot)
 		return;
 	}
 	
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 
 	float gameTime = GetGameTime();
 //	float cooldown = 2.0;
@@ -1014,8 +1018,8 @@ void Yakuza_SelfTakeDamage(int victim, int &attacker, float &damage, int damaget
 			return;
 		}
 	}
-	if(!CheckInHud())
-		Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
+//	if(!CheckInHud()) This was supposed to be removed, as in late waves you kinda instalooe heat.
+//		Yakuza_AddCharge(victim, RoundToCeil(damage * -0.01));
 }
 
 static int DoSpecialActionYakuza(int client, float DamageBase, const char[] animation, float duration, int target)
@@ -1131,7 +1135,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 
 	if(i_OverlordComboAttack[npc.index] == 5)
 	{
-		Building_Mounted[client] = 0;
+		Building_Mounted[client] = -1;
 		int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 		if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
 		{

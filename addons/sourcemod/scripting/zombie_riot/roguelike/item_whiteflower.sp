@@ -11,23 +11,12 @@ enum struct SoulBuff
 }
 
 static ArrayList AnnouncedBuff;
-static bool CoinExchanger;
 static int RottenBone;
 static int EmptyPlate;
 
 void Rogue_Whiteflower_Reset()
 {
 	delete AnnouncedBuff;
-}
-
-void Rogue_Whiteflower_IngotGiven(int &ingots)
-{
-	if(CoinExchanger)
-	{
-		CurrentCash += 200 * ingots;
-		GlobalExtraCash += 200 * ingots;
-		ingots = 0;
-	}
 }
 
 bool Rogue_Whiteflower_RemainDrop(int type)
@@ -109,7 +98,8 @@ public void Rogue_SoulFreaks_Weapon(int entity, int client)
 		StrContains(buffer, "Fists Of Kahmlstein", false) != -1 ||
 		StrContains(buffer, "Skull Servants", false) != -1 ||
 		StrContains(buffer, "Wightmare", false) != -1 ||
-		StrContains(buffer, "Aresenal's Tripmine Layer", false) != -1)
+		StrContains(buffer, "Aresenal's Tripmine Layer", false) != -1||
+		Wkit_Soldin_BvB(client))
 	{
 		AnnounceSoulBuff(client, entity, 0);
 
@@ -321,17 +311,24 @@ public void Rogue_CursedRelic_Weapon(int entity, int client)
 public void Rogue_Exchanger_Collect()
 {
 	int ingots = Rogue_GetIngots();
+	if(ingots <= 0)
+		return;
+		
 	Rogue_AddIngots(-ingots, true);
 	
 	CurrentCash += 200 * ingots;
 	GlobalExtraCash += 200 * ingots;
-
-	CoinExchanger = true;
 }
 
-public void Rogue_Exchanger_Remove()
+public void Rogue_Exchanger_IngotChanged(int &ingots)
 {
-	CoinExchanger = false;
+	if(ingots <= 0)
+		return;
+
+	CurrentCash += 200 * ingots;
+	GlobalExtraCash += 200 * ingots;
+	CPrintToChatAll("{green}%t","Cash Gained!", 200 * ingots);
+	ingots = 0;
 }
 
 public void Rogue_RareWeapon_Collect()

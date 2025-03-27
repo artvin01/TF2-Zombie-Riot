@@ -674,9 +674,9 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 			}
 			else
 			{
-				static int attrib[16];
-				static float value[16];
-				static char buffers[32][16];
+				static int Attrib[32];
+				static float Value[32];
+				static char buffers[64][16];
 
 				kv.GetString("attributes", buffer, sizeof(buffer));
 				int count = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
@@ -2114,7 +2114,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 		}
 		else if(Level[client] < 10)
 		{
-			SPrintToChat(client, "TIP: Press RELOAD (R) to pick up an item");
+			SPrintToChat(client, "TIP: Press [T (spray)] to pick up an item");
 			return true;
 		}
 	}

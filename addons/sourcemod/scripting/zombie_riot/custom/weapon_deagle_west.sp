@@ -73,7 +73,7 @@ public void Revolver_Fang(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 30.0);
 			EmitSoundToAll(SOUND_REVOLVER_FANG, client, SNDCHAN_AUTO, 100, _, 0.6);
 			ApplyTempAttrib(weapon, 6, 0.3, 2.0);
@@ -98,7 +98,7 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 25.0);
 			EmitSoundToAll(SOUND_REVOLVER_FANG, client, SNDCHAN_AUTO, 100, _, 0.6);
 			ApplyTempAttrib(weapon, 6, 0.3, 2.5);
@@ -140,7 +140,8 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 {
 	if(IsValidEntity(client))
 	{
-		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+		
+		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
@@ -148,9 +149,10 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 			return;
 		}
+		
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 140, _, 0.6);
 			ApplyTempAttrib(weapon, 6, 0.1, 1.5);

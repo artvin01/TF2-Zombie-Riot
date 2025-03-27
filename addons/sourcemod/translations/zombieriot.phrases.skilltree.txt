@@ -10,6 +10,10 @@
 		"#format"	"{1:d}"
 		"en"	"Skill Points: {1}"
 	}
+	"Browse Skill Tree Explain"
+	{
+		"en"	"\n---This menu overrides your movement! Close to move again!---\n"
+	}
 	"Browse Skill Tree"
 	{
 		"en"	"Browse Skill Tree"
@@ -316,7 +320,7 @@
 	}
 	"Extra Cash Building Up Desc"
 	{
-		"en"	"Increace your max cap of building extra cash from 5000 by 100"
+		"en"	"increase your max cap of building extra cash from 5000 by 100"
 	}
 	"Extra Cash Building Up High"
 	{
@@ -324,7 +328,7 @@
 	}
 	"Extra Cash Building Up High Desc"
 	{
-		"en"	"Increace your max cap of building extra cash from 5000 by 500"
+		"en"	"increase your max cap of building extra cash from 5000 by 500"
 	}
 	"Ingot Up 1"
 	{

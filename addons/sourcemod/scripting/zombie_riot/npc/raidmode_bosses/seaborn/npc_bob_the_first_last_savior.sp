@@ -115,12 +115,25 @@ void RaidbossBobTheFirst_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "?????????????");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+
+	
+	//download fixes
+	strcopy(data.Name, sizeof(data.Name), "?????????????");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior_sealogic");
+	data.IconCustom = false;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecacheSea;
+	NPC_Add(data);
+
+	
 }
 
 static void ClotPrecache()
@@ -144,6 +157,12 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	
 	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
+}
+
+static void ClotPrecacheSea()
+{
+	ClotPrecache();
+	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/incomming_boss_wait_scary.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -256,7 +275,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entity))
 			{
 				char npc_classname[60];
@@ -409,7 +428,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 			RaidModeTime = GetGameTime() + 292.0;
-			RaidModeScaling = 9999999.99;
+			RaidModeScaling = 0.0;
 			Zero(b_EnemyCloseToMainBob);
 		}
 
@@ -472,7 +491,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -530,7 +549,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		int FellowBobFound = 0;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -659,41 +678,34 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: What if you killed Seaborn before Xeno..?");
+					CPrintToChatAll("{white}Bob the First{default}: Wait... no... you were fighting it..! No this.. This cannot be!");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 5:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Well nothing is holding this one back now...");
+					CPrintToChatAll("{white}Bob the First{default}: Im too hurt, i cant, i have to run... i cant....");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 6:
 				{
 					CPrintToChatAll("{white}Bob the First{default}: ...");
-					npc.m_flNextThinkTime = gameTime + 3.0;
+					npc.m_flNextThinkTime = gameTime + 2.0;
 				}
 				case 7:
 				{
-					GiveProgressDelay(1.0);
+					GiveProgressDelay(30.0);
 					SmiteNpcToDeath(npc.index);
-
-					Enemy enemy;
-
-					enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-					enemy.Health = 2099999999;
-					enemy.Is_Boss = 2;
-					enemy.ExtraSpeed = 1.5;
-					enemy.ExtraDamage = 3.0;
-					enemy.ExtraMeleeRes = 0.5;
-					enemy.ExtraRangedRes = 0.5;
-					enemy.ExtraSize = 1.0;
-					enemy.Team = 3;
-
-					Waves_AddNextEnemy(enemy);
-
-					Zombies_Currently_Still_Ongoing++;
-
-					CreateTimer(0.9, Bob_DeathCutsceneCheck, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					CPrintToChatAll("{white}Bob the First leaves in a hurry... something is wrong, should you follow him.....? Too late now...");
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/incomming_boss_wait_scary.mp3");
+					music.Time = 100;
+					music.Volume = 1.0;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Howilng Emptiness");
+					strcopy(music.Artist, sizeof(music.Artist), "....");
+					Music_SetRaidMusic(music);
+					GivePlayerItems();
+					return;
 				}
 			}
 		}
@@ -1620,8 +1632,8 @@ void GiveOneRevive(bool ignorelimit = false)
 		}
 	}
 
-	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(Citizen_IsIt(entity))
 		{
@@ -1641,7 +1653,7 @@ static void SetupMidWave(int entity)
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(15.0 * MultiGlobalEnemy), 1500);
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(7.0 * MultiGlobalEnemy), 5000);
-	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", RoundToCeil(2.0 * MultiGlobalEnemy), RoundToCeil(20000.0 * MultiGlobalHighHealthBoss),1 );
+	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", RoundToCeil(2.0 * MultiGlobalEnemy), RoundToCeil(10000.0 * MultiGlobalHighHealthBoss),1 );
 
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
@@ -1673,8 +1685,8 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 	enemy.Index = NPC_GetByPlugin(plugin);
 	enemy.Is_Boss = boss;
 	enemy.Is_Health_Scaled = 1;
-	enemy.ExtraMeleeRes = 0.02;
-	enemy.ExtraRangedRes = 0.02;
+	enemy.ExtraMeleeRes = 0.03;
+	enemy.ExtraRangedRes = 0.03;
 	enemy.ExtraSpeed = 1.5;
 	enemy.ExtraDamage = 4.0;
 	enemy.ExtraSize = 1.0;
@@ -1729,7 +1741,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 		}
 	}
 
-	if(i_RaidGrantExtra[npc.index] == 1 && Waves_GetRound() > 55)
+	if(i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -1755,7 +1767,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 			
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != INVALID_ENT_REFERENCE && other != npc.index)
 				{
 					if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -1785,7 +1797,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 	WavesUpdateDifficultyName();
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != INVALID_ENT_REFERENCE && other != npc.index)
 		{
 			if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -1797,53 +1809,17 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 			}
 		}
 	}
-	
-}
-
-static Action Bob_DeathCutsceneCheck(Handle timer)
-{
-	if(!LastMann)
-		return Plugin_Continue;
-	
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(victim != INVALID_ENT_REFERENCE && GetTeam(victim) != TFTeam_Red)
-			SmiteNpcToDeath(victim);
-	}
-	
-	GiveProgressDelay(6.0);
-	Waves_ForceSetup(6.0);
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && !IsFakeClient(client))
-		{
-			if(IsPlayerAlive(client))
-				ForcePlayerSuicide(client);
-			
-			ApplyLastmanOrDyingOverlay(client);
-			SendConVarValue(client, sv_cheats, "1");
-		}
-	}
-	ResetReplications();
-
-	cvarTimeScale.SetFloat(0.1);
-	CreateTimer(0.5, SetTimeBack);
-
-	GivePlayerItems();
-	return Plugin_Stop;
 }
 
 static void GivePlayerItems(int coolwin = 0)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
 			if(coolwin == 0)
-				CPrintToChat(client, "{default}Bob has defeated you, however... you gained: {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}Bob has cured you of the sea, you gained: {yellow}''Bob's Curing Hand''{default}!");
 			else
 				CPrintToChat(client, "{default}You didnt attack bob for no reason and thus he gives you: {yellow}''Bob's Curing Hand''{default}!");
 		}
@@ -1900,7 +1876,7 @@ public Action Smite_Timer_Bob(Handle Smite_Logic, DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		 
 		CreateEarthquake(spawnLoc, 1.0, BOB_FIRST_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increace
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increase
 	
 		return Plugin_Stop;
 	}

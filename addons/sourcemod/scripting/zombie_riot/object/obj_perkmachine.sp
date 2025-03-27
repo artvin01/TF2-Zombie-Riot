@@ -15,6 +15,15 @@ void ObjectPerkMachine_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_perkmachine");
+	build.Cost = 1000;
+	build.Health = 50;
+	build.Cooldown = 60.0;
+	build.Func = ObjectGeneric_CanBuild;
+	Building_Add(build);
+
 	Zero(Perk_Machine_Sickness);
 }
 
@@ -52,7 +61,9 @@ static bool ClotCanUse(ObjectPerkMachine npc, int client)
 static void ClotShowInteractHud(ObjectPerkMachine npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Perkmachine Tooltip");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay,"Perkmachine Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
@@ -70,6 +81,9 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	
 	if(ClientTutorialStep(client) == 4)
 	{
+		//littel cooldown
+		KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+		f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
 		SetClientTutorialStep(client, 5);
 		DoTutorialStep(client, false);	
 	}
@@ -124,7 +138,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 			if(id == -3)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -134,7 +148,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -4)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -144,7 +158,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -5)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -154,7 +168,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -6)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -164,7 +178,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -7)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -174,7 +188,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -8)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
@@ -184,7 +198,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			}
 			else if(id == -9)
 			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;

@@ -411,7 +411,7 @@ methodmap Nemal < CClotBody
 		
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
-		if(!StrContains(data, "wave_15"))
+		if(StrContains(data, "wave_15") != -1)
 		{
 			f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
 			i_RaidGrantExtra[npc.index] = 1;
@@ -435,7 +435,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_30"))
+		if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 			switch(GetRandomInt(0,3))
@@ -458,7 +458,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_45"))
+		if(StrContains(data, "wave_45") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 			switch(GetRandomInt(0,3))
@@ -481,7 +481,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_60"))
+		if(StrContains(data, "wave_60") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 			switch(GetRandomInt(0,3))
@@ -546,7 +546,22 @@ methodmap Nemal < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		float value;
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(Waves_GetRound()+1);
+			value = float(Waves_GetRound()+1);
+		}
 
 		if(RaidModeScaling < 55)
 		{
@@ -557,7 +572,7 @@ methodmap Nemal < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 
-		if(ZR_GetWaveCount()+1 > 55)
+		if(value > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.7;
@@ -1223,9 +1238,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					{
 						flMaxhealth *= 0.75;
 					}
-					int CurrentPlayersAlive = CountPlayersOnRed(1);
-					float HpScalingDecreace = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
-					flMaxhealth *= HpScalingDecreace;
+					flMaxhealth *= NpcDoHealthRegenScaling();
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
@@ -1770,7 +1783,7 @@ bool NemalTalkPostWin(Nemal npc)
 		BlockLoseSay = true;
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Iberian and Expidonsan Training");
 				CPrintToChat(client,"{default}You feel more skilled and obtain: {gold}''Iberian and Expidonsan Training''{default}!");
@@ -1855,7 +1868,7 @@ bool NemalTransformation(Nemal npc)
 			i_NpcWeight[npc.index] = 4;
 			npc.m_flRangedArmor = 0.35;
 			npc.m_flMeleeArmor = 1.75;		
-			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flNemalSuperRes = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 

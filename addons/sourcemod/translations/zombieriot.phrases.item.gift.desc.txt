@@ -117,6 +117,10 @@
 	{
 		"en"		"Necropolains"
 	}
+	"Mutations"
+	{
+		"en"		"Mutations"
+	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
@@ -423,7 +427,7 @@
 	}
 	"Xeno Engineer Deconstructor Desc"
 	{
-		"en" 		"Their damage towards buildings got increaced by 3x times or more."
+		"en" 		"Their damage towards buildings got increased by 3x times or more."
 		"ru"		"Их урон по постройкам был увеличен в 3 раза или больше."
 	}
 	"Xeno Heavy Brawler Desc"
@@ -903,12 +907,12 @@
 	{
 		"en"		"Currently WIP"
 	}
-	"Medival Scout Desc"
+	"Medieval Scout Desc"
 	{
 		"en"		"Very quick and ranged reistant."
 		"ru"		"Очень быстр и устойчив к дальним атакам."
 	}
-	"Medival Villager Desc"
+	"Medieval Villager Desc"
 	{
 		"en"		"A villager who somehow made it into modern times, he builds a village that constantly spawns warrior's akin to its own era."
 		"ru"		"Сельский жител который каким-то образом оказался в современном времени,он сторит деревню которая постоянно порождает воинов своей эры."
@@ -918,7 +922,7 @@
 		"en"		"A building built by the villager, somehow this building containts an infinite amount of enemies inside, it also has the ability to shoot anyone near it"
 		"ru"		"Здание построенное сельским житилем,Каким-то образом содержит бесконечное число врагов внутри,так же может стрелять во врагов рядом с ним"
 	}
-	"Medival Construct Desc"
+	"Medieval Construct Desc"
 	{
 		"en"		"A giant Mythical creature, it will consume buildings at rapid paces and heal itself off them."
 		"ru"		"Гигантское Мифическое создание, Оно сохесть постройки с большой скоростью и вылечит себя от них."
@@ -998,27 +1002,27 @@
 		"en"		"Launches a high damaging spear that deals immensive damage to buildings\nHe attacks rapidly and can jump aswell."
 		"ru"		"Запускает копьё которое наносит огромный урон по постройкам\nон атакует быстро и может прыгать"
 	}
-	"Medival Arbalest Desc"
+	"Medieval Arbalest Desc"
 	{
 		"en"		"Short range, faster attacking high damage archers."
 		"ru"		"короткий радиус,более быстро атакующий и больно бьющий лучник."
 	}
-	"Medival Brawler Desc"
+	"Medieval Brawler Desc"
 	{
 		"en"		"Shows up shortly, deals high fast melee punches."
 		"ru"		"редко появляются,наносят быстрые и сильные ближние удары."
 	}
-	"Medival Longbowmen Desc"
+	"Medieval Longbowmen Desc"
 	{
 		"en"		"Longrange, high damage archers."
 		"ru"		"Дальнобойные,Сильно бьющие лучники."
 	}
-	"Medival Halberdier Desc"
+	"Medieval Halberdier Desc"
 	{
 		"en"		"Final upgrade line to the spearmen."
 		"ru"		"Финальное улучшение копьеносцу."
 	}
-	"Medival Elite Longbowmen Desc"
+	"Medieval Elite Longbowmen Desc"
 	{
 		"en"		"Upgraded longbowmen."
 		"ru"		"улучшенный дальнолучники."
@@ -2133,8 +2137,7 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, have 2x HP, +6%% faster.\n1 less down, enemies heal 50%% more."
-		"ru"	"Почувствуйте ЗР какого это быть новичном.\n35%% больше врагов, спанят 25%% быстрее,15%% больше врагов в живых одновременно.\nони наносят 25%% больше урона вам и баррикадам,Имеют в 2 раза больше Здоровья.\nСчётчик падений снижен на 1,враги лечят 50%% больше"
+		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, +60%% HP, +6%% faster, attack 25%% faster.\n1 down, enemies heal 50%% more."
 	}
 	"Secondary Mercs"
 	{
@@ -2168,6 +2171,22 @@
 	{
 		"en"		"Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person."
 		"ru"		"Сильнее чем любой другой зомби во всём,Кошмар-это сила с которой нужно считатся.1 взмах его когтей может положить почти любого."
+	}
+	"Headcrab Desc"
+	{
+		"en"		"A 'crab' that tries to latch onto your head, very fast and annoying."
+	}
+	"Poison Headcrab Desc"
+	{
+		"en"		"Yet another crab that tries to latch onto your head, inflicts bleed on hit."
+	}
+	"Z-Main Headcrab Desc"
+	{
+		"en"		"Zmaining is full time job now."
+	}
+	"Z-Main Poison Zombie"
+	{
+		"en"		"AOUEGH - Poison Zombie"
 	}
 	"3650 Desc"
 	{
@@ -2219,14 +2238,24 @@
 		"en"		"A ranged unit that fires 6 shots very rapidly and reloads"
 		"ru"		"юнит дальнего боя который стрелят очередь из 6 выстрелов и перезаряжается"
 	}	
+	"Barracks Iberian Commando Desc"
+	{
+		"en"		"A slow but strong gunner, has an explosive surprise to anybody daring to approach him"
+		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
+	}
 	"Barracks Iberia Headhunter Desc"
 	{
-		"en"		"Melee unit that does more damage to elite, bosses, and raidbosses and applies debuff to them"
+		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50%% hp"
+		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
+	}	
+	"Barracks Iberia Inquisitor Lynsen Desc"
+	{
+		"en"		"One of the best inquisitors trained by Irene, able to mark enemies and rain death upon them, works well with other inquisitors"
 		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
 	}	
 	"Barracks Iberian Lighthouse Guardian Desc"
 	{
-		"en"		"Super unit that takes 2 slot. It does melee damage when it has armor. Then, it pulls out a shotgun to deal ranged damage. It will often buff near allies"
+		"en"		"Super unit that takes 2 slot, when he has armor he heals and buff allies, when he loses the armor he uses a shotgun for high dmg at the cost of supporting"
 		"ru"		"Супер юнит который забирает 2 слота.Наносит урон ближнего боя когда есть броня,затем достаёт дробовик что бы наносить дальний урон.Он часто будет баффать союзников поблизости"
 	}
 	"Basic Bones Desc"
@@ -2548,5 +2577,97 @@
 	"Agent Smith Desc"
 	{
 		"en"		"It is purpose that defines us.\nInitially appears as a normal boss which can multiply for up to 64 times.\nAppears later on once more, with the ability to infect players and turn them into clones, better cure them fast!"
+	}
+	"Hijacked Red Pill Desc"
+	{
+		"en"		"Much more powerful than any regular Agents, humans are stronger than AI after-all..."
+	}
+	"Seaborn Metro Cop Desc"
+	{
+		"en"		"Their combat has been enhanced by the Seaborn infection.\nFires bullets extremely fast."
+	}
+	"Seaborn Metro Raider Desc"
+	{
+		"en"		"Looks like these guys did not forget their SMG grenades."
+	}
+	"Seaborn W.F. Rifler Desc"
+	{
+		"en"		"Throws a grenade, has increased firing speed."
+	}
+	"Seaborn W.F. Elite Desc"
+	{
+		"en"		"Increased Energy Ball Fire Rate."
+	}
+	"Seaborn W.F. Shotgunner Desc"
+	{
+		"en"		"Will shove you if you get too close."
+	}
+	"Voided Metro Cop Desc"
+	{
+		"en"		"Increased ammo capacity, applies the Cripple debuff with his stunstick."
+	}
+	"Voided Metro Raider Desc"
+	{
+		"en"		"Increased range. Inflicts Void with bullets."
+	}
+	"Voided W.F. Rifler Desc"
+	{
+		"en"		"One reload, and afterwards they keep firing infinitely. Don't ask them where the ammo comes from."
+	}
+	"Voided W.F. Elite Desc"
+	{
+		"en"		"Fires 3 Energy Balls one after another with increased damage."
+	}
+	"Voided W.F. Shotgunner Desc"
+	{
+		"en"		"Lunges at you to close the distance."
+	}
+	"Hunter Desc"
+	{
+		"en"		"A dog-like creature that isn't very friendly to Mercenaries.\nWill occasionally charge, gaining 50 percent resistance while actively charging.\nWill occasionally fire flechettes.\nEvery 5th hit, it'll skewer whatever is in its way, dealing extra damage and inflicting bleed."
+	}
+	"Merlton Desc"
+	{
+		"en"		"A robot that gained powers from the Seaborn infection. Seemingly hasn't been corrupted by it though.\nApplies 'MERLT0N-BUFF' on enemies.\nSummons copies of itself, although in a smaller form.\nWill become enraged if it has no one left to look after."
+	}
+	"Lost Knight Desc"
+	{
+		"en"		"This Knight does not belong here.\nA thick fog enters the room with the Knight.\nThe Knight applies 3 permanent buffs on every enemy.\nBetter not leave him as the last one alive..."
+	}
+	"Omega Desc"
+	{
+		"en"		"He has come to save Bob from Whiteflower's Soldiers.\nThe unfortunate part? He thinks you're a part of them.\nDespite performing hand-to-hand combat, he still keeps his trusty Rocket Launcher with him.\nAfter enough hits, his hands will start generating enough energy to perform a powerful attack."
+	}
+	"Major Voided Desc"
+	{
+		"en"	"A taken over giant machine by the Void.\nAble to fire when has enough rounds and can't change target while firing.\nExplodes on death killing all non-bosses."
+	}
+	"Disturbed Umbral Desc"
+	{
+		"en"	"Alerted by the rip in the curtain, they come to stop the ''invasors''...\nThese creatures are completely crazed, doing various things when harmed.\n(Silence) Reduces its attackspeed greatly."
+	}
+	"Immutable Heavy Desc"
+	{
+		"en"	"A bigger, stronger enemy from the Curtain.\nSo far, many encounters with it resulted in catastrophic failures, few chances of survival.\nDon't let it hit anything, and beware of its ranged attacks.\n(Silence) Blocks debuff immunity."
+	}
+	"Vanishing Matter Desc"
+	{
+		"en"	"It begs for the pain to stop...\nThey seem to be invulnerable when they appear, but as they attack, they slowly begin to vanish.\nMake sure to take them down fast when they become vulnerable.\n(Silence) Reduces its attackspeed greatly."
+	}
+	"Spotter Desc"
+	{
+		"en"	"Tasked to train with the mercs in Koshi's simulator.\nTry to keep him alive, and he'll reward you with a special buff! (Lasts longer on NPCs than players.)\nHe also silences and knocks enemies away, is capable of sustaining himself to an extent."
+	}
+	"SIGMALLER Desc"
+	{
+		"en"	"One of Koshi's weird, crazy antics.\nWhen it spawns, all enemies are fully healed and buffed.\nYou MUST take it down before the other enemies.\nOtherwise, you won't like the sound that his horn makes..."
+	}
+	"Annoying Spirit Desc"
+	{
+		"en"	"An invincible, annoying spirit.\nPretty much a product of Koshi's weird mind.\nThis spirit is not threatening at all, in fact he doesn't even deal damage.\nHe just... screams."
+	}
+	"Darkened Heavy Desc"
+	{
+		"en"	"Taken by an unknown force, it was converted into an obscure, dark entity.\nDamaging it outside its aura causes it to heal.\n''The darkness is coming. You need to run.''"
 	}
 }

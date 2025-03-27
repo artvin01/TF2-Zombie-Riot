@@ -376,7 +376,12 @@ stock Function KvGetFunction(KeyValues kv, const char[] string, Function defaul 
 }
 
 static bool i_PreviousInteractedEntityDo[MAXENTITIES];
+static float f_PreviousInteractedEntityDo[MAXENTITIES];
 
+void ResetIgnorePointVisible()
+{
+	Zero(f_PreviousInteractedEntityDo);
+}
 stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)
 {
 	float vecOrigin[3], vecAngles[3];
@@ -387,6 +392,8 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 
 	//Mask shot here, reasoning being that it should be easiser to interact with buildings and npcs if they are very close to eachother or inside (This wont fully fix it, but i see not other way.)
 	//This is client compensated anyways, and reviving is still via hull and not hitboxes.
+
+	//
 	int flags = CONTENTS_SOLID;
 
 	if(!mask_shot)
@@ -395,7 +402,9 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	}
 	else
 	{
-		flags |= MASK_SHOT;
+		flags |= MASK_SOLID;
+		//Mask shot is entirely unnececarry, as it doesnt work and with the ignore entity method its unnececcary
+	//	flags |= MASK_SHOT;
 	}
 
 	int iReturn = -1;
@@ -410,8 +419,19 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		i_PreviousInteractedEntityDo[iClient] = true;
 	}
 
+	if(repeatsretry >= 2)
+	{
+		if(f_PreviousInteractedEntityDo[iClient] < GetGameTime())
+		{
+			//Our last interaction was a second ago, dont try to phase throguh the previous ignored one.
+			i_PreviousInteractedEntity[iClient] = -1; //didnt find any
+		}
+		f_PreviousInteractedEntityDo[iClient] = GetGameTime() + 1.0;
+	}
+
 	for(int repeat; repeat < repeatsretry; repeat++)
 	{
+		delete hTrace;
 		if(!ignore_allied_npc)
 		{
 			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
@@ -429,11 +449,15 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 		if(repeat == 0)
 		{
-			delete hTrace;
-			i_PreviousInteractedEntity[iClient] = 0; //didnt find any
+			if(repeatsretry >= 2)
+				i_PreviousInteractedEntity[iClient] = -1; //didnt find any
 		}
 	}
-	i_PreviousInteractedEntity[iClient] = iHit;
+
+
+	if(repeatsretry >= 2)
+		i_PreviousInteractedEntity[iClient] = iHit;
+
 	bool DoAlternativeCheck = false;
 	if(IsValidEntity(iHit) && i_IsABuilding[iHit])
 	{
@@ -1083,6 +1107,16 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 	}
 	return Plugin_Stop;
 }
+public Action Timer_RemoveEntityFancy(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		SetEntityRenderFx(entity, RENDERFX_FADE_FAST);
+		CreateTimer(1.5, Timer_RemoveEntity, entid, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return Plugin_Stop;
+}
 public Action Timer_RemoveEntityParticle(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
@@ -1124,107 +1158,33 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 	return Plugin_Stop;
 }
 
-void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
+
+stock void StartBleedingTimer(int victim, int attacker, float damage, int amount, int weapon, int damagetype, int customtype = 0)
 {
-	if(HasSpecificBuff(client, "Hardened Aura"))
-		return;
-	if(HasSpecificBuff(client, "Thick Blood"))
-		return;
-	BleedAmountCountStack[client] += 1;
-	DataPack pack;
-	CreateDataTimer(0.5, Timer_Bleeding_Against_Client, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(client));
-	pack.WriteCell(client);
-	pack.WriteFloat(GetGameTime());
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteFloat(damage);
-	pack.WriteCell(amount);
-}
-
-public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
-	int OriginalIndex = pack.ReadCell();
-	float GameTimeClense = pack.ReadFloat();
-	if(!IsValidEntity(client))
+	if(IsValidEntity(victim) && IsValidEntity(attacker))
 	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
-	}
-	else
-	{
-		if(b_ThisWasAnNpc[client])
-		{
-			if(!b_NpcHasDied[client])
-			{
-				BleedAmountCountStack[OriginalIndex] -= 1;
-				if(BleedAmountCountStack[OriginalIndex] < 0)
-					BleedAmountCountStack[OriginalIndex] = 0;
-				return Plugin_Stop;
-			}
-		}
-	}
-		
-	if(StatusEffects_RapidSuturingCheck(OriginalIndex, GameTimeClense))
-	{
-		return Plugin_Stop;
-	}
-	if(HasSpecificBuff(OriginalIndex, "Hardened Aura"))
-	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
-	}
-	if(HasSpecificBuff(OriginalIndex, "Thick Blood"))
-	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
-	}
-	
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(entity == -1)
-		entity = 0;
-
-	float pos[3];
-	WorldSpaceCenter(client, pos);
-	
-	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
-
-	int bleed_count = pack.ReadCell();
-	if(bleed_count < 1)
-	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		return Plugin_Stop;
-	}
-
-	pack.Position--;
-	pack.WriteCell(bleed_count-1, false);
-	return Plugin_Continue;
-}
-
-stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype, int customtype = 0)
-{
-	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
-	{
-		if(HasSpecificBuff(entity, "Hardened Aura"))
+		if(HasSpecificBuff(victim, "Hardened Aura"))
 			return;
 
-		if(HasSpecificBuff(entity, "Thick Blood"))
+		if(HasSpecificBuff(victim, "Thick Blood"))
 			return;
-		BleedAmountCountStack[entity] += 1;
+
+		if(attacker > 0 && attacker <= MaxClients)
+			Force_ExplainBuffToClient(attacker, "Bleed");
+		else if(victim > 0 && victim <= MaxClients)
+			Force_ExplainBuffToClient(victim, "Bleed");
+
+		BleedAmountCountStack[victim] += 1;
 		DataPack pack;
 		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(entity));
-		pack.WriteCell(entity);
+		pack.WriteCell(EntIndexToEntRef(victim));
+		pack.WriteCell(victim);
 		pack.WriteFloat(GetGameTime());
-		pack.WriteCell(EntIndexToEntRef(weapon));
-		pack.WriteCell(GetClientUserId(client));
+		if(IsValidEntity(weapon))
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		else
+			pack.WriteCell(-1);
+		pack.WriteCell(EntIndexToEntRef(attacker));
 		pack.WriteCell(damagetype);
 		pack.WriteCell(customtype);
 		pack.WriteFloat(damage);
@@ -1235,10 +1195,10 @@ stock void StartBleedingTimer(int entity, int client, float damage, int amount, 
 public Action Timer_Bleeding(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
+	int victim = EntRefToEntIndex(pack.ReadCell());
 	int OriginalIndex = pack.ReadCell();
 	float GameTimeClense = pack.ReadFloat();
-	if(entity<=MaxClients || !IsValidEntity(entity) || b_NpcHasDied[entity])
+	if(!IsValidEntity(victim))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		if(BleedAmountCountStack[OriginalIndex] < 0)
@@ -1249,61 +1209,67 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(weapon<=MaxClients || !IsValidEntity(weapon))
 	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
+		//if weapon isnt valid, just do -1
+		//dont remove the bleed
+		weapon = -1;
 	}
 
-	int client = GetClientOfUserId(pack.ReadCell());
-	if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+	int attacker = EntRefToEntIndex(pack.ReadCell());
+	if(attacker > 0 && attacker <= MaxClients)
+	{
+		if(!attacker || !IsClientInGame(attacker))
+		{
+			BleedAmountCountStack[OriginalIndex] -= 1;
+			if(BleedAmountCountStack[OriginalIndex] < 0)
+				BleedAmountCountStack[OriginalIndex] = 0;
+			return Plugin_Stop;
+		}
+	}
+	else
+	{
+		if(!IsValidEntity(attacker))
+			attacker = 0; //Make it the world that attacks them?
+	}
+
+	if(StatusEffects_RapidSuturingCheck(victim, GameTimeClense))
+	{
+		return Plugin_Stop;
+	}
+	if(HasSpecificBuff(victim, "Hardened Aura"))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		if(BleedAmountCountStack[OriginalIndex] < 0)
 			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
+	if(HasSpecificBuff(victim, "Thick Blood"))
+	{
+		BleedAmountCountStack[OriginalIndex] -= 1;
+		if(BleedAmountCountStack[OriginalIndex] < 0)
+			BleedAmountCountStack[OriginalIndex] = 0;
+		return Plugin_Stop;
+	}
+	float pos[3];
 	
-	if(StatusEffects_RapidSuturingCheck(entity, GameTimeClense))
-	{
-		return Plugin_Stop;
-	}
-	if(HasSpecificBuff(entity, "Hardened Aura"))
-	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
-	}
-	if(HasSpecificBuff(entity, "Thick Blood"))
-	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
-	}
-	float pos[3], ang[3];
-	
-	WorldSpaceCenter(entity, pos);
+	WorldSpaceCenter(victim, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
 	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
 	float DamageDeal = pack.ReadFloat();
-	if(NpcStats_ElementalAmp(entity))
+	if(NpcStats_ElementalAmp(victim))
 	{
 		DamageDeal *= 1.15;
 	}
-	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, DamageDeal, damagetype, weapon, _, pos, false, customtype);
+	SDKHooks_TakeDamage(victim, attacker, attacker, DamageDeal, damagetype | DMG_PREVENT_PHYSICS_FORCE, weapon, _, pos, false, customtype);
 
-	entity = pack.ReadCell();
-	if(entity < 1)
+	victim = pack.ReadCell();
+	if(victim < 1)
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
 	}
 
 	pack.Position--;
-	pack.WriteCell(entity-1, false);
+	pack.WriteCell(victim-1, false);
 	return Plugin_Continue;
 }
 /*
@@ -1354,6 +1320,9 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			HealTotal *= 0.5;
 		}
+		if(HasSpecificBuff(reciever, "Burn"))
+			HealTotal *= 0.75;
+
 		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
 		{
 			HealTotal *= 1.5;
@@ -1393,7 +1362,15 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			Healing_done_in_total[healer] += HealingDoneInt;
 			if(healer <= MaxClients)
-				AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+			{
+				//dont get it from healing buildings
+				if(!i_IsABuilding[reciever])
+				{
+					AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+					HealPointToReinforce(healer, HealingDoneInt, 0.0);
+					GiveRageOnDamage(healer, float(HealingDoneInt) * 2.0);
+				}
+			}
 		}
 #endif
 //only apply heal event if its not a passive self heal
@@ -1476,7 +1453,11 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 			Healing_done_in_total[healer] += HealthHealed;
 #if defined ZR
 			if(healer <= MaxClients)
+			{
 				AddHealthToUbersaw(healer, HealthHealed, 0.0);
+				HealPointToReinforce(healer, HealthHealed, 0.0);
+				GiveRageOnDamage(healer, float(HealthHealed) * 2.0);
+			}
 #endif
 		}
 	}
@@ -1712,10 +1693,12 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		return false;
 #endif
 	}	
+	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
 	}
+
 	return entity!=data;
 }
 
@@ -2147,45 +2130,17 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
-public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude)
-{
-	char class[64];
-	GetEntityClassname(entity, class, sizeof(class));
-	if(entity <= MaxClients) //just ignore players entirely, there will be no pvp.
-	{
-		return false;
-	}
-	if(StrEqual(class, "prop_physics") || StrEqual(class, "prop_physics_multiplayer"))
-	{
-		return false;
-	}
-	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
-	{
-		if(GetTeam(iExclude) == GetTeam(entity))
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-		
-	
-	return !(entity == iExclude);
-}
-
 public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 {
 	char class[64];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(!StrEqual(class, "zr_base_npc"))
+	if(!b_ThisWasAnNpc[entity])
 	{
 		return false;
 	}
 	
-	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
+	if(entity != iExclude)
 	{
 		if(GetTeam(iExclude) == GetTeam(entity))
 		{
@@ -2199,39 +2154,6 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 		
 	
 	return !(entity == iExclude);
-}
-
-stock int GetClosestTarget_BaseBoss(int entity)
-{
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
-	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
-	{
-		if (GetTeam(entity)!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
-		{
-			float EntityLocation[3], TargetLocation[3]; 
-			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				
-				
-			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-			if( TargetDistance ) 
-			{
-				if( distance < TargetDistance ) 
-				{
-					ClosestTarget = i; 
-					TargetDistance = distance;		  
-				}
-			} 
-			else 
-			{
-				ClosestTarget = i; 
-				TargetDistance = distance;
-			}				
-		}
-	}
-	return ClosestTarget; 
 }
 
 stock void AnglesToVelocity(const float ang[3], float vel[3], float speed=1.0)
@@ -2591,7 +2513,11 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(StrEqual(class, "zr_base_npc")) return true;
+	if(StrEqual(class, "zr_base_npc"))
+		return true;
+
+	if(StrEqual(class, "zr_base_stationary"))
+		return true;
 	
 	return !(entity == data);
 }
@@ -2657,16 +2583,6 @@ stock void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[
 	tmpVec[1] = endPos[1] - startPos[1];
 	tmpVec[2] = endPos[2] - startPos[2];
 	GetVectorAngles(tmpVec, angles);
-}
-
-
-stock int TracePlayerHulls(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
-{
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_ALL, IngorePlayersAndBuildings, entity);
-	bool bHit = TR_DidHit(hTrace);
-	ref = TR_GetEntityIndex(hTrace);
-	delete hTrace;
-	return bHit;
 }
 
 stock void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
@@ -2930,7 +2846,7 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 #if defined ZR
 
 //alot is  borrowed from CountPlayersOnRed
-float ZRStocks_PlayerScalingDynamic(float rebels = 0.5)
+float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false)
 {
 	//dont be 0
 	float ScaleReturn = 0.01;
@@ -2954,8 +2870,9 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5)
 
 	if(rebels)
 		ScaleReturn += Citizen_Count() * rebels;
-	
-	ScaleReturn *= zr_multi_multiplier.FloatValue;
+
+	if(!IgnoreMulti)
+		ScaleReturn *= zr_multi_multiplier.FloatValue;
 	
 	return ScaleReturn;
 }
@@ -3027,7 +2944,7 @@ int inflictor = 0)
 #if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
-		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
+		float value = Attributes_Get(weapon, 99, 1.0);//increased blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 		if(maxtargetshit == 10)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
@@ -3241,15 +3158,7 @@ int inflictor = 0)
 			}
 			if(ignite)
 			{
-				if(ClosestTarget > MaxClients)
-				{
-					NPC_Ignite(ClosestTarget, entityToEvaluateFrom, 5.0, weapon);
-				}
-				else
-				{
-					TF2_AddCondition(ClosestTarget, TFCond_Gas, 1.5);
-					StartBleedingTimer_Against_Client(ClosestTarget, entityToEvaluateFrom, 4.0, 20);
-				}
+				NPC_Ignite(ClosestTarget, entityToEvaluateFrom, 5.0, weapon);
 			}
 			static float damage_1;
 			damage_1 = damage;
@@ -3581,7 +3490,7 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 		GetAbsOrigin(entity, f_origin);
 		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
 		SetVariantString(strTargetName);
-		AcceptEntityInput(entIndex, "SetParent");
+		SetParent(entity, entIndex, "FadeTrail", _, false);
 		return entIndex;
 	}	
 	return -1;
@@ -3635,6 +3544,33 @@ public void MakeExplosionFrameLater(DataPack pack)
 	delete pack;
 }
 
+
+public void TeleportEntityLocalPos_FrameDelay(int entity, float VecPos[3])
+{
+	DataPack pack_boom = new DataPack();
+	pack_boom.WriteCell(EntIndexToEntRef(entity));
+	pack_boom.WriteFloat(VecPos[0]);
+	pack_boom.WriteFloat(VecPos[1]);
+	pack_boom.WriteFloat(VecPos[2]);
+	RequestFrames(TeleportEntityLocalPos_FrameDelayDo, 5, pack_boom);
+}
+
+public void TeleportEntityLocalPos_FrameDelayDo(DataPack pack)
+{
+	pack.Reset();
+	int Entity = EntRefToEntIndex(pack.ReadCell());
+	float vec_pos[3];
+	if(IsValidEntity(Entity))
+	{
+		vec_pos[0] = pack.ReadFloat();
+		vec_pos[1] = pack.ReadFloat();
+		vec_pos[2] = pack.ReadFloat();
+		SDKCall_SetAbsOrigin(Entity, vec_pos);
+		SDKCall_SetLocalOrigin(Entity,vec_pos);
+	}
+	
+	delete pack;
+}
 stock void SetPlayerActiveWeapon(int client, int weapon)
 {
 	TF2Util_SetPlayerActiveWeapon(client, weapon);
@@ -4159,8 +4095,7 @@ stock bool IsPointHazard(const float pos1[3])
 }
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
-	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "trigger_hurt"))
+	if(b_IsATrigger[entity])
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -4195,7 +4130,7 @@ stock bool IsPointNoBuild(const float pos1[3],const float mins[3],const float ma
 public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int client)
 {
 	char classname[16];
-	if(GetEntityClassname(entity, classname, sizeof(classname)) && (!StrContains(classname, "trigger_hurt") ||!StrContains(classname, "func_nobuild")))
+	if(b_IsATriggerHurt[entity] || (GetEntityClassname(entity, classname, sizeof(classname)) && !StrContains(classname, "func_nobuild")))
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -4228,67 +4163,89 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 #if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
-	if(entity <= MaxClients)
-	{
-		//if were giving it to a client directly, dont do the below.
-		ApplyTempAttrib_Internal(entity, index, multi, duration);
-		return;
-	}
+#if defined RPG
+	ApplyTempAttrib_Internal(entity, index, multi, duration);
+	return;
+#endif
+#if defined ZR
 	if(Attributes_Has(entity,index))
 	{
 		//We need to get the owner!!
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		int owner;
+		if(entity <= MaxClients)
+			owner = entity;
+		else
+			owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+
 		TempAttribStore TempStoreAttrib;
 		TempStoreAttrib.Attribute = index;
 		TempStoreAttrib.Value = multi;
 		TempStoreAttrib.GameTimeRemoveAt = GetGameTime() + duration;
-		TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
+		if(entity <= MaxClients)
+		{
+			int clientid = GetSteamAccountID(entity);
+			TempStoreAttrib.Weapon_StoreIndex = clientid;
+			TempStoreAttrib.ClientOnly_ResetCountSave = ClientAttribResetCount[owner];
+		}
+		else
+			TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[entity];
+		
 		TempStoreAttrib.Apply_TempAttrib(owner, entity);
 	}
+#endif
 }
 
-stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3)
+stock void ApplyTempAttrib_Internal(int entity, int index, float multi, float duration = 0.3, int ClientResetCount = 0)
 {
+	/*
+	Applying this onto players might cause issues, as player attributes are spread across wearbles
+	TODO: find a fix
+
+	*/
 	if(Attributes_Has(entity,index))
 	{
 		Attributes_SetMulti(entity, index, multi);
 		//Attributes_Get(weapon, 466, 1.0);
 		
 		DataPack pack;
-		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
+		CreateDataTimer(duration, ApplyTempAttrib_Revert, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteCell(index);
 		pack.WriteFloat(multi);
+		pack.WriteCell(ClientResetCount);
 	}
 }
 
-/*
-	float damage = 65.0;
-	
-	damage *= Attributes_Get(weapon, 1, 1.0);
-
-	damage *= Attributes_Get(weapon, 2, 1.0);
-			
-	float speed = 1100.0;
-	speed *= Attributes_Get(weapon, 103, 1.0);
-	
-	speed *= Attributes_Get(weapon, 104, 1.0);
-	
-	speed *= Attributes_Get(weapon, 475, 1.0);
-	
-	float time = 500.0 / speed;
-	time *= Attributes_Get(weapon, 101, 1.0);
-	
-	time *= Attributes_Get(weapon, 102, 1.0);
-	*/
-public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
+public Action ApplyTempAttrib_Revert(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity != INVALID_ENT_REFERENCE)
 	{
 		int index = pack.ReadCell();
-		Attributes_SetMulti(entity, index, 1.0 / pack.ReadFloat());
+		float AttribCount = pack.ReadFloat();
+		if(entity <= MaxClients)
+		{
+			int ClientResetCount = pack.ReadCell();
+			if(ClientAttribResetCount[entity] != ClientResetCount)
+			{
+				return Plugin_Stop;
+			}
+		}
+		Attributes_SetMulti(entity, index, 1.0 / AttribCount);
+		if(Attribute_IsMovementSpeed(index))
+		{
+			int owner;
+			if(entity <= MaxClients)
+				owner = entity;
+			else
+				owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+				
+			if(owner > 0 && owner <= MaxClients)
+			{
+				SDKCall_SetSpeed(owner);
+			}
+		}
 	}
 	return Plugin_Stop;
 }
@@ -5088,18 +5045,11 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
+	f_AllowInstabuildRegardless = GetGameTime() + time;
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
-/*
-	GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + time);
-	GameRules_SetProp("m_bAwaitingReadyRestart", false);
-
-	Event event = CreateEvent("teamplay_update_timer", true);
-	event.SetInt("seconds", RoundFloat(time));
-	event.Fire();
-*/
 }
 
 stock int GetOwnerLoop(int entity)
@@ -5277,11 +5227,11 @@ stock void Matrix_GetRotationMatrix(float matMatrix[3][3], float fA, float fB, f
 	);
 }
 
-stock void ForcePlayerCrouch(int client, bool enable)
+stock void ForcePlayerCrouch(int client, bool enable, bool thirdpers = true)
 {
 	if(enable)
 	{
-		SetVariantInt(1);
+		SetVariantInt(thirdpers);
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		SetForceButtonState(client, true, IN_DUCK);
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
@@ -5335,15 +5285,25 @@ stock int GetTeam(int entity)
 {
 	if(entity > 0 && entity <= MAXENTITIES)
 	{
+		if(i_IsVehicle[entity])
+		{
+#if defined ZR
+			entity = Vehicle_Driver(entity);
+#else
+			entity = GetEntPropEnt(entity, Prop_Data, "m_hPlayer");
+#endif
+			if(entity == -1)
+				return -1;
+		}
+
 #if !defined RTS
 		if(entity && entity <= MaxClients)
 			return GetClientTeam(entity);
 #endif
 
 		if(TeamNumber[entity] == -1)
-		{
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
-		}
+		
 		return TeamNumber[entity];
 	}
 	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
@@ -5567,3 +5527,18 @@ stock ArrayList SpawnParticlesInRing_Return(float startPos[3], float radius, con
 }
 
 #endif
+
+stock int FindEntityByNPC(int &i)
+{
+	for(; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != -1 && !b_NpcHasDied[entity])
+		{
+			i++;
+			return entity;
+		}
+	}
+
+	return -1;
+}

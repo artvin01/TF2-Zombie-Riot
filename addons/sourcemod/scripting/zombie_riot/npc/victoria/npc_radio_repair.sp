@@ -322,7 +322,7 @@ public void VictoriaRepair_ClotThink(int iNPC)
 					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 				}
 				HealEntityGlobal(npc.index, PrimaryThreatIndex, 3000.0, 1.0);
-				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Battilons Backup", 1.1);
+				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Defensive Backup", 1.1);
 			}
 			else
 			{

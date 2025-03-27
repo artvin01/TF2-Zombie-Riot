@@ -20,13 +20,14 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		return true;
 	}
+
 	//Any entity designated as "cant collide" Will be countes not collideable.
 	if(b_CantCollidie[otherindex])
 	{
 		return false;
 	}
-	//it ignores all npc collisions
-	if(b_ThisEntityIgnoredBeingCarried[bot_entidx])
+	//it ignores all npc collisions (But not traces.)
+	if(extrarules == 0 && b_ThisEntityIgnoredBeingCarried[bot_entidx])
 		return false;
 
 #if defined ZR
@@ -123,8 +124,12 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		return true;
 	}
 	//always collide with vehicles if on opesite teams.
-	if(b_IsVehicle[otherindex])
+	if(i_IsVehicle[otherindex])
 	{
+		// No one inside the vehicle
+		if(GetTeam(otherindex) == -1)
+			return false;
+		
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
 		

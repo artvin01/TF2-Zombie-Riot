@@ -67,9 +67,9 @@ void AgentThompson_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return AgentThompson(client, vecPos, vecAng, ally);
+	return AgentThompson(client, vecPos, vecAng, ally, data);
 }
 methodmap AgentThompson < CClotBody
 {
@@ -122,7 +122,7 @@ methodmap AgentThompson < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
 	}
 	
-	public AgentThompson(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentThompson(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		AgentThompson npc = view_as<AgentThompson>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.10", "700", ally));
 		
@@ -156,7 +156,21 @@ methodmap AgentThompson < CClotBody
 			}
 		}
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(Waves_GetRound()+1);
+		}
+		
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing

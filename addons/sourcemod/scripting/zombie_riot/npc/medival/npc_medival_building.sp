@@ -183,7 +183,7 @@ methodmap MedivalBuilding < CClotBody
 	
 	public MedivalBuilding(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
+		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(200), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -218,17 +218,18 @@ methodmap MedivalBuilding < CClotBody
 		}
 		i_NpcIsABuilding[npc.index] = true;
 
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 
-		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
+		i_currentwave[npc.index] = RoundToNearest(npc.m_flWaveScale * 10.0);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 
@@ -239,8 +240,6 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_flRangedArmor = 1.0;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 180.0;
 
-		NPC_StopPathing(npc.index);
-
 		return npc;
 	}
 }
@@ -248,7 +247,7 @@ methodmap MedivalBuilding < CClotBody
 public void MedivalBuilding_ClotThink(int iNPC)
 {
 	MedivalBuilding npc = view_as<MedivalBuilding>(iNPC);
-/*
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -257,7 +256,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-*/
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
@@ -286,7 +285,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			int npc_current_count;
 			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 				if(IsValidEntity(entity) && GetTeam(iNPC) == GetTeam(entity))
 				{
 					npc_current_count += 1;
@@ -297,7 +296,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 			IncreaceSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
 
-			if((GetTeam(iNPC) != TFTeam_Red && npc_current_count < LimitNpcs) || (GetTeam(iNPC) == TFTeam_Red && npc_current_count < 6))
+			if((GetTeam(iNPC) != TFTeam_Red && npc_current_count < MaxEnemiesAllowedSpawnNext(0)) || (GetTeam(iNPC) == TFTeam_Red && npc_current_count < 6))
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
@@ -459,7 +458,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		bool villagerexists = false;
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 			if (IsValidEntity(entity) && (i_NpcInternalId[entity] == MedivalVillager_ID() || (Citizen_IsIt(entity) && view_as<Citizen>(entity).m_iClassRole == 1)) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;
@@ -513,36 +512,4 @@ public void MedivalBuilding_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
-}
-
-
-static char[] GetBuildingHealth()
-{
-	int health = 110;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(ZR_GetWaveCount()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
-	}
-	else if(ZR_GetWaveCount()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	
-	health = RoundToCeil(float(health) * 1.2);
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
 }

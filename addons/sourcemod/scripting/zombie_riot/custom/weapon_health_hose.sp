@@ -3,7 +3,7 @@
 
 static float Hose_Velocity = 1000.0;
 static float Hose_BaseHeal = 3.0;
-static float Hose_UberGain = 0.0075;
+static float Hose_UberGain = 0.0150;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
 static float SelfHealMult = 0.33;
@@ -55,7 +55,7 @@ public void Weapon_Health_Hose(int client, int weapon, bool crit, int slot)
 
 public void Weapon_Health_Hose_Shotgun(int client, int weapon, bool crit, int slot)
 {
-	Weapon_Hose_Shoot(client, weapon, crit, slot, Hose_Velocity, Hose_BaseHeal, Hose_LossPerHit, Hose_Min, 6, 4.0, HOSE_PARTICLE, false);
+	Weapon_Hose_Shoot(client, weapon, crit, slot, Hose_Velocity, Hose_BaseHeal * 2.0, Hose_LossPerHit, Hose_Min, 3, 4.0, HOSE_PARTICLE, false);
 }
 
 public void Weapon_Health_Hose_GiveUber(int client, int weapon, bool crit, int slot)
@@ -65,7 +65,7 @@ public void Weapon_Health_Hose_GiveUber(int client, int weapon, bool crit, int s
 
 public void Weapon_Health_Hose_Shotgun_GiveUber(int client, int weapon, bool crit, int slot)
 {
-	Weapon_Hose_Shoot(client, weapon, crit, slot, Hose_Velocity, Hose_BaseHeal, Hose_LossPerHit, Hose_Min, 6, 4.0, HOSE_PARTICLE, true);
+	Weapon_Hose_Shoot(client, weapon, crit, slot, Hose_Velocity, Hose_BaseHeal * 2.0, Hose_LossPerHit, Hose_Min, 3, 4.0, HOSE_PARTICLE, true);
 }
 
 public void Weapon_Health_Hose_Uber_Sprayer(int client, int weapon, bool crit, int slot)
@@ -80,7 +80,7 @@ public void Weapon_Health_Hose_Uber_Sprayer(int client, int weapon, bool crit, i
 		Hose_Uber[client] = 0.0;
 		Hose_Charged[client] = true;
 		
-		float dur = Hose_UberTime + Attributes_FindOnPlayerZR(client, 314, true, 0.0, true);
+		float dur = Hose_UberTime + Attributes_GetOnPlayer(client, 314, true, true,0.0);
 		EmitSoundToClient(client, SOUND_HOSE_UBER_ACTIVATE, _, _, 120);
 		
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -106,7 +106,7 @@ public void Weapon_Health_Hose_Uber_Shotgun(int client, int weapon, bool crit, i
 		Hose_Charged[client] = true;
 		Hose_ShotgunCharge[client] = true;
 		
-		float dur = Hose_UberTime + Attributes_FindOnPlayerZR(client, 314, true, 0.0, true);
+		float dur = Hose_UberTime + Attributes_GetOnPlayer(client, 314, true, true,0.0);
 		EmitSoundToClient(client, SOUND_HOSE_UBER_ACTIVATE, _, _, 120);
 		
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -272,15 +272,33 @@ public bool Hose_Heal(int owner, int entity, float amt)
 		amt *= 0.35;
 	}
 	
+	float flMaxHealth = float(ReturnEntityMaxHealth(entity));
+	float flHealth = float(GetEntProp(entity, Prop_Data, "m_iHealth"));
+	if(flHealth <= flMaxHealth * 0.5)
+	{
+		amt *= 1.65;
+	}
+		
 	int new_ammo = GetAmmo(owner, 21);
 	int ammoSubtract;
 	ammoSubtract = HealEntityGlobal(owner, entity, amt, 1.0, 0.0, _, new_ammo);	
 	
+	ApplyStatusEffect(owner, entity, "Healing Resolve", 2.0);
 	if(ammoSubtract <= 0)
 	{
 		return false;
 	}
 
+	if(flHealth <= flMaxHealth * 0.5)
+	{
+		bool PlaySound = false;
+		if(f_MinicritSoundDelay[owner] < GetGameTime())
+		{
+			PlaySound = true;
+			f_MinicritSoundDelay[owner] = GetGameTime() + 0.01;
+		}
+		DisplayCritAboveNpc(entity, owner, PlaySound, .minicrit = true); //Display crit above head
+	}
 		
 	new_ammo -= ammoSubtract;
 	if(ammoSubtract > 0)
@@ -328,7 +346,8 @@ public void Weapon_Syringe_Gun_Fire_M2(int client, int weapon, bool crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
-	if(!(GetClientButtons(client) & IN_DUCK))
+	
+	if(!(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -336,6 +355,7 @@ public void Weapon_Syringe_Gun_Fire_M2(int client, int weapon, bool crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
+	
 	Handle swingTrace;
 	int MaxTargethit = -1;
 	float vecSwingForward[3];
@@ -448,9 +468,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			}
 		}
 		
-		ApplyStatusEffect(client, target, "Healing Strength", 15.0);
 		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);
-		ApplyStatusEffect(client, target, "Healing Strength", 15.0);
 		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);
 		static float belowBossEyes[3];
 		belowBossEyes[0] = 0.0;
@@ -556,9 +574,9 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
 		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityCollisionGroup(prop, 27);
-		SDKHook(prop, SDKHook_StartTouch, TouchHealthKit);
+		SDKHook(prop, SDKHook_Touch, TouchHealthKit);
+		f_HealMaxPickup_Enable[prop] = GetGameTime();
 		f_HealMaxPickup[prop] = HealAmmount;
-		f_HealMaxPickup_Enable[prop] = GetGameTime() + 2.0;
 		i_WandIdNumber[prop] = 999;
 	//	CreateTimer(0.1, Timer_Detect_Player_Nearby_healthkit, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	}	
@@ -572,6 +590,9 @@ public void TouchHealthKit(int entity, int other)
 		{
 			return;
 		}
+		if(f_HealMaxPickup_Enable[entity] > GetGameTime())
+			return;
+		
 		float maxhealth = 1.0;
 		float health = float(GetEntProp(other, Prop_Data, "m_iHealth"));
 		maxhealth = float(SDKCall_GetMaxHealth(other));
@@ -582,15 +603,16 @@ public void TouchHealthKit(int entity, int other)
 		int Owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 		float GameTime = GetGameTime();
 		float HealingAmount = f_HealMaxPickup[entity];
+		float HealPenalty = 1.0;
 		if(f_TimeUntillNormalHeal[other] > GameTime)
 		{
-			HealingAmount /= 2.0;
+			HealPenalty = 0.5;
 		}
 		if(!IsValidEntity(Owner))
 		{
 			Owner = other; //if there is no invalid owner, just make the one that picks it up the owner
 		}
-		int healing_done = HealEntityGlobal(Owner, other, HealingAmount, 1.0, _, _);
+		int healing_done = HealEntityGlobal(Owner, other, HealingAmount * HealPenalty, 1.0, _, _);
 		if(healing_done <= 0)
 		{
 			return;
@@ -600,8 +622,10 @@ public void TouchHealthKit(int entity, int other)
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");
-		ApplyStatusEffect(Owner, other, "Healing Strength", 15.0);
 		ApplyStatusEffect(Owner, other, "Healing Resolve", 15.0);
-		RemoveEntity(entity);	
+		f_HealMaxPickup_Enable[entity] = GetGameTime() + 0.5;
+		f_HealMaxPickup[entity] -= (healing_done / HealPenalty);
+		if(f_HealMaxPickup[entity] <= 0)
+			RemoveEntity(entity);	
 	}
 }

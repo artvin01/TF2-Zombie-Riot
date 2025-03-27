@@ -292,7 +292,7 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 99.0;
 			npc.m_flAngerDelay = GetGameTime() + 99.0;
 			npc.PlaySupportSpawnSound();
-			CPrintToChatAll("{blue}Atomizer{default}: Did you really thought we would let you sabotage our Radiotower?");
+			CPrintToChatAll("{blue}Atomizer{default}: Did you really think we would let you sabotage our Radiotower?");
 		}
 		else
 		{
@@ -358,7 +358,20 @@ methodmap Atomizer < CClotBody
 			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let them get out alive!");
 			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 			
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				float value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(Waves_GetRound()+1);
+			}
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -380,16 +393,6 @@ methodmap Atomizer < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-			{
-				RaidModeScaling *= 0.85;
-			}
-			else if(ZR_GetWaveCount()+1 > 55)
-			{
-				FTL[npc.index] = 220.0;
-				RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
-				RaidModeScaling *= 0.65;
-			}
 		}
 		npc.m_iChanged_WalkCycle = -1;
 
@@ -760,7 +763,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
 				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}

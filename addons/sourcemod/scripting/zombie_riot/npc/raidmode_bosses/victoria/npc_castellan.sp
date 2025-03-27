@@ -362,7 +362,23 @@ methodmap Castellan < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		float value;
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(Waves_GetRound()+1);
+			value = float(Waves_GetRound()+1);
+		}
+
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -384,11 +400,11 @@ methodmap Castellan < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+		if(value > 40 && value < 55)
 		{
 			RaidModeScaling *= 0.85;
 		}
-		else if(ZR_GetWaveCount()+1 > 55)
+		else if(value > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.75;
@@ -722,7 +738,13 @@ static void Internal_ClotThink(int iNPC)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
-				TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+				int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 250.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
 			}
 		}
 		npc.PlayDeathSound();
@@ -1258,15 +1280,35 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					ParticleEffectAt(WorldSpaceVec, "smoke_marker", 10.0);
 					npc.PlayDeathSound();
 					Temp_Target[npc.index]=-1;
+					/*
 					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 					int enemy[MAXENTITIES];
+					int EnemiesFound = 0;
 					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 					do
 					{
-						Temp_Target[npc.index] = enemy[GetRandomInt(0, sizeof(enemy) - 1)];
+						if(!enemy[0]) //there wasnt one enemy found.
+							break;
+
+						EnemiesFound = 0;
+						for(int i; i < sizeof(enemy); i++)
+						{
+							if(enemy[i])
+							{
+								EnemiesFound++;
+							}
+						}
+						Temp_Target[npc.index] = enemy[GetRandomInt(0, EnemiesFound)];
 					}
-					while(!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]);
-					if(IsValidClient(Temp_Target[npc.index]))Vs_LockOn[Temp_Target[npc.index]]=true;
+					while(EnemiesFound > 0 && (!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]));
+					{
+						if(IsValidClient(Temp_Target[npc.index]))
+							Vs_LockOn[Temp_Target[npc.index]]=true;
+					}
+					*/
+					Temp_Target[npc.index] = npc.m_iTarget;
+					Vs_LockOn[Temp_Target[npc.index]] = true;
+							
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					TeleportDiversioToRandLocation(npc.index,_,1250.0, 750.0);
@@ -1279,7 +1321,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					npc.m_flNextMeleeAttack = gameTime + 2.0;
-					if(IsValidClient(Temp_Target[npc.index]))Vs_LockOn[Temp_Target[npc.index]]=false;
+					if(IsValidClient(Temp_Target[npc.index]))
+						Vs_LockOn[Temp_Target[npc.index]]=false;
 					Temp_Target[npc.index]=-1;
 					Gone_Stats[npc.index] = false;
 					Gone[npc.index] = true;
@@ -1518,17 +1561,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								{
 									if(!NpcStats_IsEnemySilenced(npc.index))
 									{
-										if(target > MaxClients)
-										{
-											StartBleedingTimer_Against_Client(target, npc.index, damage * 0.15, 5);
-										}
-										else
-										{
-											if (!IsInvuln(target))
-											{
-												StartBleedingTimer_Against_Client(target, npc.index, damage * 0.15, 5);
-											}
-										}
+										StartBleedingTimer(target, npc.index, damage * 0.15, 4, -1, DMG_TRUEDAMAGE, 0);
 									}
 								}
 											

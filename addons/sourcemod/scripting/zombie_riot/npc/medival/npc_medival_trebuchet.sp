@@ -284,7 +284,7 @@ public Action Smite_Timer_Trebuchet(Handle Smite_Logic, DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
 		CreateEarthquake(spawnLoc, 1.0, TREBUCHET_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, TREBUCHET_LIGHTNING_RANGE * 1.4,_,0.8, true, 15, false, 25.0);  //Explosion range increace
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, TREBUCHET_LIGHTNING_RANGE * 1.4,_,0.8, true, 15, false, 25.0);  //Explosion range increase
 	
 		return Plugin_Stop;
 	}

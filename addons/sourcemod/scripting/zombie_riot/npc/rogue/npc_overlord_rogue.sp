@@ -239,7 +239,7 @@ methodmap OverlordRogue < CClotBody
 		npc.m_flNextDelayTime = GetGameTime(npc.index) + 30.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
-		RaidModeScaling = 100000.0;
+		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + 999.9;
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
@@ -405,15 +405,7 @@ public void OverlordRogue_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					if(PrimaryThreatIndex > MaxClients)
-					{
-						//NPC_Ignite(PrimaryThreatIndex, npc.index, 5.0, -1);
-					}
-					else
-					{
-						TF2_AddCondition(PrimaryThreatIndex, TFCond_Gas, 1.5);
-						StartBleedingTimer_Against_Client(PrimaryThreatIndex, npc.index, 20.0, 20);
-					}
+					NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5);
 				}
 			}
 			
@@ -457,16 +449,8 @@ public void OverlordRogue_ClotThink(int iNPC)
 									
 									KillFeed_SetKillIcon(npc.index, "firedeath");
 
-									if(target > MaxClients)
-									{
-										Custom_Knockback(npc.index, target, 450.0);
-										//NPC_Ignite(target, npc.index, 5.0, -1);
-									}
-									else
-									{
-										TF2_AddCondition(target, TFCond_Gas, 1.5);
-										StartBleedingTimer_Against_Client(target, npc.index, 5.0, 20);
-									}
+									Custom_Knockback(npc.index, target, 450.0);
+									StartBleedingTimer(target, npc.index, 5.0, 20, -1, DMG_TRUEDAMAGE, 0);
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
@@ -540,7 +524,7 @@ public void OverlordRogue_NPCDeath(int entity)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Overlords Final Wish");
 				CPrintToChat(client,"{default}You defeated the final overlord and thus he bestows you... {red}''His final wish.''{default}!");

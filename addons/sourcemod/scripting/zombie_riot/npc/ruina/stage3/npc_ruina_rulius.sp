@@ -373,7 +373,7 @@ static void Rulius_Special(CClotBody npc, int PrimaryThreatIndex)
 	ang_Look[1] -= type;
 	
 	float Timer = 1.5;
-	fl_ability_timer[npc.index] = Timer + GetGameTime();
+	fl_ability_timer[npc.index] = Timer + GetGameTime(npc.index);
 	int Last_Proj = -1;
 	for(int i=0 ; i<RUINA_RUIANUS_LOOP_AMT; i++)
 	{
@@ -425,7 +425,7 @@ static void Rulius_Special(CClotBody npc, int PrimaryThreatIndex)
 static Action Rulius_Ability_Think(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 
 	if(fl_ability_timer[npc.index] < GameTime)
 	{

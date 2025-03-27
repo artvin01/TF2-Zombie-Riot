@@ -5,7 +5,7 @@
 
 #define DOME_PROP_RADIUS 10000.0 // Don't change
 
-#define DOME_FADE_START_MULTIPLIER 0.7
+#define DOME_FADE_START_MULTIPLIER 0.85
 #define DOME_FADE_ALPHA_MAX 64
 
 #define DOME_NEARBY_SOUND	"ui/medic_alert.wav"

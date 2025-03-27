@@ -72,6 +72,7 @@ void Venium_OnMapStart_NPC()
 	data.IconCustom = false;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
+	PrecacheSound(VENIUM_SPAWN_SOUND);
 }
 static void ClotPrecache()
 {
@@ -84,7 +85,6 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/engineer.mdl");
-	PrecacheSound(VENIUM_SPAWN_SOUND);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -568,7 +568,6 @@ static void Venium_Build_Anchor(Valiant npc)
 		return;
 
 	
-	AproxRandomSpaceToWalkTo[2] += 18.0;
 	AproxRandomSpaceToWalkTo[2] += 18.0;
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 

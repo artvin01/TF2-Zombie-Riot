@@ -60,6 +60,15 @@ void ObjectVillage_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	build.Section = 1;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_village");
+	build.Cost = 1200;
+	build.Health = 30;
+	build.Cooldown = 30.0;
+	build.Func = ObjectGeneric_CanBuildSentry;
+	Building_Add(build);
 }
 int Building_GetClientVillageFlags(int client)
 {
@@ -143,7 +152,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		}
 	}
 
-	i_ExtraPlayerPoints[owner] += 2; //Static low point increace.
+	i_ExtraPlayerPoints[owner] += 2; //Static low point increase.
 	if(entity != INVALID_ENT_REFERENCE)
 		BuildingVillageChangeModel(owner, entity);
 	
@@ -619,14 +628,14 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 			
 			if(Village_Flags[Owner] & VILLAGE_050)
 			{
-				i_ExtraPlayerPoints[Owner] += 100; //Static point increace.
+				i_ExtraPlayerPoints[Owner] += 100; //Static point increase.
 				Village_ReloadBuffFor[Owner] = gameTime + 20.0;
 				EmitSoundToAll("items/powerup_pickup_uber.wav");
 				EmitSoundToAll("items/powerup_pickup_uber.wav");
 			}
 			else
 			{
-				i_ExtraPlayerPoints[Owner] += 50; //Static point increace.
+				i_ExtraPlayerPoints[Owner] += 50; //Static point increase.
 				Village_ReloadBuffFor[Owner] = gameTime + 15.0;
 				EmitSoundToAll("player/mannpower_invulnerable.wav", npc.index);
 				EmitSoundToAll("player/mannpower_invulnerable.wav", npc.index);
@@ -1117,11 +1126,22 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_040, VILLAGE_050:
 						{
-							if(Attributes_Has(entity, 6))
-								Attributes_SetMulti(entity, 6, 0.88);	// Fire Rate
-							
-							if(Attributes_Has(entity, 97))
-								Attributes_SetMulti(entity, 97, 0.88);	// Reload Time
+							if(Waves_InFreeplay())
+							{
+								if(Attributes_Has(entity, 6))
+									Attributes_SetMulti(entity, 6, 0.94);	// Fire Rate
+								
+								if(Attributes_Has(entity, 97))
+									Attributes_SetMulti(entity, 97, 0.94);	// Reload Time
+							}
+							else
+							{
+								if(Attributes_Has(entity, 6))
+									Attributes_SetMulti(entity, 6, 0.88);	// Fire Rate
+								
+								if(Attributes_Has(entity, 97))
+									Attributes_SetMulti(entity, 97, 0.88);	// Reload Time
+							}
 							
 							if(Attributes_Has(entity, 8))
 								Attributes_SetMulti(entity, 8, 1.12);	// Heal Rate
@@ -1173,11 +1193,22 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_040, VILLAGE_050:
 					{
-						if(Attributes_Has(entity, 6))
-							Attributes_SetMulti(entity, 6, 1.0 / 0.88);	// Fire Rate
+						if(Waves_InFreeplay())
+						{
+							if(Attributes_Has(entity, 6))
+								Attributes_SetMulti(entity, 6, 1.0 / 0.94);	// Fire Rate
 						
-						if(Attributes_Has(entity, 97))
-							Attributes_SetMulti(entity, 97, 1.0 / 0.88);	// Reload Time
+							if(Attributes_Has(entity, 97))
+								Attributes_SetMulti(entity, 97, 1.0 / 0.94);	// Reload Time
+						}
+						else
+						{
+							if(Attributes_Has(entity, 6))
+								Attributes_SetMulti(entity, 6, 1.0 / 0.88);	// Fire Rate
+						
+							if(Attributes_Has(entity, 97))
+								Attributes_SetMulti(entity, 97, 1.0 / 0.88);	// Reload Time
+						}
 						
 						if(Attributes_Has(entity, 8))
 							Attributes_SetMulti(entity, 8, 1.0 / 1.12);	// Heal Rate
@@ -1259,8 +1290,16 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_050:
 						{
-							npc.m_fGunFirerate *= 0.85;
-							npc.m_fGunReload *= 0.85;
+							if(Waves_InFreeplay())
+							{
+								npc.m_fGunFirerate *= 0.94;
+								npc.m_fGunReload *= 0.94;
+							}
+							else
+							{
+								npc.m_fGunFirerate *= 0.85;
+								npc.m_fGunReload *= 0.85;
+							}
 						}
 						case VILLAGE_005:
 						{
@@ -1315,8 +1354,16 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_050:
 					{
-						npc.m_fGunFirerate /= 0.85;
-						npc.m_fGunReload /= 0.85;
+						if(Waves_InFreeplay())
+						{
+							npc.m_fGunFirerate /= 0.94;
+							npc.m_fGunReload /= 0.94;
+						}
+						else
+						{
+							npc.m_fGunFirerate /= 0.85;
+							npc.m_fGunReload /= 0.85;
+						}
 					}
 					case VILLAGE_005:
 					{

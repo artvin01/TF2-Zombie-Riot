@@ -153,7 +153,7 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 
 	if(mana_cost <= Current_Mana[client] && !Skulls_PlayerHasNoSkulls(client))
 	{	
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
@@ -310,7 +310,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 	
 		if(mana_cost <= Current_Mana[client])
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			int prop = CreateEntityByName("prop_physics_override");
 			
 			if (IsValidEntity(prop))
@@ -719,7 +719,7 @@ public int Skull_GetClosestTarget(int ent, float range)
 	
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int i = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if (!IsValidEntity(i))
 			continue;
 			
@@ -983,9 +983,7 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 	
 	if (hit && IsValidEntity(entity))
 	{
-		char entname[255];
-		GetEntityClassname(entity, entname, 255);
-		hit = StrContains(entname, "zr_base_npc") == -1;
+		hit = b_ThisWasAnNpc[entity];
 	}
 	
 	return hit;

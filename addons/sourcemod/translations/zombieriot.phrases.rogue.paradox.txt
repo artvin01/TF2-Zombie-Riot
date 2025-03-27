@@ -76,6 +76,20 @@
 	{
 		"en"	"Everything turns red as you see the bright red moon above."
 	}
+	
+	"Shadowing Darkness"
+	{
+		"en"	"Shadowing Darkness"
+	}
+	"Shadowing Darkness Desc"
+	{
+		"en"	"{red}Everyone gains 25%% attackspeed."
+	}
+	"Shadowing Darkness Lore"
+	{
+		"en"	"They kept talking about him, yet he isnt here... who is this? It fills you with anxiety."
+	}
+
 	"Compass and Map"
 	{
 		"en"	"Compass and Map"
@@ -116,13 +130,13 @@
 	{
 		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 cash and 30 ammo supplies"
 	}
-	"Something Else"
+	"Bob's Assistance"
 	{
-		"en"	"Something Else"
+		"en"	"Bob's Assistance"
 	}
-	"Something Else Desc"
+	"Bob's Assistance Desc"
 	{
-		"en"	"You brought something else with you.\n{red}Gain 30 Chaos Infliction"
+		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1%% health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
 	}
 	"Small Comic Book"
 	{
@@ -392,6 +406,14 @@
 	{
 		"en"	"''Peek into the Eternal Night''"
 	}
+	"Mazeat Lost Technology"
+	{
+		"en"	"''Mazeat Lost Technology''"
+	}
+	"Mazeat Lost Technology Desc"
+	{
+		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 33%%"
+	}
 	"Peek into the Eternal Night Desc"
 	{
 		"en"	"The moment she turns around to head north.\n{green}Players gain +25%% damage, +25%% firing speed {red}but -10 HP a second"
@@ -492,6 +514,14 @@
 	{
 		"en"	"Fight Father Grigori for the chance to take all his items without pay"
 	}
+	"Steal Ruinian"
+	{
+		"en"	"Take them from the Ruinian"
+	}
+	"Steal Ruinian Desc"
+	{
+		"en"	"Steal all their precious items!\n{crimson}But twirl might not like that."
+	}
 	"Mark of a Thief"
 	{
 		"en"	"Mark of a Thief"
@@ -500,13 +530,230 @@
 	{
 		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
 	}
+	"Evil Within from Ruina's Great Crystal"
+	{
+		"en"	"Evil Within from Ruina's Great Crystal"
+	}
+	"Evil Within from Ruina's Great Crystal Desc"
+	{
+		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies have 25%% more HP and 15%% more damage."
+	}
+	"Great Within from Ruina's Great Crystal"
+	{
+		"en"	"Great Within from Ruina's Great Crystal"
+	}
+	"Great Within from Ruina's Great Crystal Desc"
+	{
+		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies have has 15%% Less HP and 10%% less damage."
+	}
+	"Ruinian Shop Help Out"
+	{
+		"en"	"Give Money to the Ruinian"
+	}
+	"Ruinian Shop Help Out Desc"
+	{
+		"en"	"Give the Ruinian a certain amount of cash {green} and obtain Twirls Favor."
+	}
 	"Bob's Duck"
 	{
 		"en"	"Bob's Duck"
 	}
 	"Bob's Duck Desc"
 	{
-		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25%% damage bonus, +25%% max health, +15%% firing speed, +15%% reload speed, +10%% damage resistance, Whoever the duck follows gains insane buffs."
+		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25%% damage bonus, +25%% max health, +15%% firing speed, +15%% reload speed, +10%% damage resistance, Whoever the duck follows gains insane buffs"
+	}
+	"Underground Scorch"
+	{
+		"en"	"Underground Scorch"
+	}
+	"Underground Scorch Desc"
+	{
+		"en"	"The people of the sea are unconcerned with what happens on land...\n{green}Reduce Chaos Infliction by 6 if a stage is completed without gaining more then 5 Chaos Infliction"
+	}
+	"Great Machinations"
+	{
+		"en"	"Great Machinations"
+	}
+	"Great Machinations Desc"
+	{
+		"en"	"Do not envy the sun on the surface. We can do better.\n{green}Reduce Chaos Infliction by 9 if a stage is completed without gaining more then 5 Chaos Infliction."
+	}
+	"Solidified Lamp Oil"
+	{
+		"en"	"Solidified Lamp Oil"
+	}
+	"Solidified Lamp Oil Desc"
+	{
+		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Reduce Chaos Infliction gained from stages by 40%%"
+	}
+	"Sanctified Lamp Oil"
+	{
+		"en"	"Sanctified Lamp Oil"
+	}
+	"Sanctified Lamp Oil Desc"
+	{
+		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Reduce Chaos Infliction gained from stages by 60%%"
+	}
+	"Mercenary Insurance"
+	{
+		"en"	"Mercenary Insurance"
+	}
+	"Mercenary Insurance Desc"
+	{
+		"en"	"Special insurance offered to independent mercenaries.\nPlayers take 10%% less damage, increased to 35%% if Chaos Infliction is at least 60"
+	}
+	"Energy Life Vest"
+	{
+		"en"	"Energy Life Vest"
+	}
+	"Energy Life Vest Desc"
+	{
+		"en"	"A powered life vest to keep you safe, why does it run on power?\n{yellow}1 Australium Ingots are consumed to reduce 1 Chaos Infliction"
+	}
+	"The Scraper"
+	{
+		"en"	"The Scraper"
+	}
+	"The Scraper Desc"
+	{
+		"en"	"Grind the rest for some useful scrap.\n{yellow}Recovered weapon are instead converted into 2 Australium Ingots"
+	}
+	"Suspicious Shrimp Plate"
+	{
+		"en"	"Suspicious Shrimp Plate"
+	}
+	"Suspicious Shrimp Plate Desc"
+	{
+		"en"	"Apparently it applies to copied personalities.\n{red}Machina Waldch appears until defeated"
+	}
+	"Pack of Smokes"
+	{
+		"en"	"Pack of Smokes"
+	}
+	"Pack of Smokes Desc"
+	{
+		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20%% firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
+	}
+	"Silver Seal Letter"
+	{
+		"en"	"Silver Seal Letter"
+	}
+	"Silver Seal Letter Desc"
+	{
+		"en"	"You made a deal with an old man. If the time comes, it's now.\n{green}Recover a random weapon that has no cost to buy or upgrade."
+	}
+	"Ancient Vuntulum Silver Coin"
+	{
+		"en"	"Ancient Vuntulum Silver Coin"
+	}
+	"Ancient Vuntulum Silver Coin Desc"
+	{
+		"en"	"It is in very good shape, making it highly valuable as a collector's item.\n{green}Weapon ability cooldowns are reduced by 6s when a wave starts"
+	}
+	"Bank of Vunt Check"
+	{
+		"en"	"Bank of Vunt Check"
+	}
+	"Bank of Vunt Check Desc"
+	{
+		"en"	"An extravagant checkbook plated in gold and silver.\n{green}Weapon ability cooldowns are reduced by 9s when a wave starts"
+	}
+	"Second Economic Reform Act"
+	{
+		"en"	"Second Economic Reform Act"
+	}
+	"Second Economic Reform Act Desc"
+	{
+		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 12s when a wave starts"
+	}
+	"String Puppet"
+	{
+		"en"	"String Puppet"
+	}
+	"String Puppet Desc"
+	{
+		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take Light mage damage every second while stunned"
+	}
+	"Children's Puppet"
+	{
+		"en"	"Children's Puppet"
+	}
+	"Children's Puppet Desc"
+	{
+		"en"	"A simple puppet made by Iberian children using trinkets found on the seacoast.\n{green}Enemies take Heavy mage damage every second while stunned"
+	}
+	"Garlic Bread"
+	{
+		"en"	"Garlic Bread"
+	}
+	"Garlic Bread Desc"
+	{
+		"en"	"Yummy.\n{green}Enemies are debuffed for twice as long"
+	}
+	"Flash Camera"
+	{
+		"en"	"Flash Camera"
+	}
+	"Flash Camera Desc"
+	{
+		"en"	"Every photo shot by this camera is washed out in white.\n{green}Enemies are stunned for x1.25 longer"
+	}
+	"Therapy Tape"
+	{
+		"en"	"Therapy Tape"
+	}
+	"Therapy Tape Desc"
+	{
+		"en"	"He tried to stop you from listening.\n{green}Enemies are stunned for x1.35 longer"
+	}
+	"Black Tulip"
+	{
+		"en"	"Black Tulip"
+	}
+	"Black Tulip Desc"
+	{
+		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases over 120 seconds, up to +60%%, {red}resets after using a weapon ability"
+	}
+	"Castle Offspring"
+	{
+		"en"	"Castle's Offspring"
+	}
+	"Castle Offspring Desc"
+	{
+		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60%%, {red}resets when knocked down"
+	}
+
+	"Waldch Assistance"
+	{
+		"en"	"Waldch's Assistance"
+	}
+	"Waldch Assistance Desc"
+	{
+		"en"	"Waldch joins you."
+	}
+	"Kahmlstein Guidance"
+	{
+		"en"	"Kahmlstein's Guidance"
+	}
+	"Kahmlstein Guidance Desc"
+	{
+		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
+	}
+	"Twirl Guidance"
+	{
+		"en"	"Twirl's Guidance"
+	}
+	"Twirl Guidance Desc"
+	{
+		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15%% max mana and mana regen"
+	}
+	"Unauthorized Ruina Gem"
+	{
+		"en"	"Unauthorized Ruina Gem"
+	}
+	"Unauthorized Ruina Gem Desc"
+	{
+		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 50 Chaos Affliction."
 	}
 
 	"Missing Mountains"
@@ -658,6 +905,18 @@
 	{
 		"en"	"You seek what he seeks now."
 	}
+	"Prophecy Option 1c"
+	{
+		"en"	"It's Twirl"
+	}
+	"Prophecy Desc 1c"
+	{
+		"en"	"{green}Twirl will acompany you {blue}and the ending is changed."
+	}
+	"Prophecy Lore 1c"
+	{
+		"en"	"You seek what she seeks now."
+	}
 	"Prophecy Lore 2"
 	{
 		"en"	"Chaos still looms over. You feel knowledge in your head."
@@ -722,6 +981,14 @@
 	{
 		"en"	"{blue}Something happens..."
 	}
+	"Prophecy Lore 4"
+	{
+		"en"	"Twirl offers something..."
+	}
+	"Prophecy Lore 4a"
+	{
+		"en"	"{snow}Twirl hands you a gem she made herself, how neat! Probably shouldnt give it away, gift is a gift afterall."
+	}
 	"Lost Villager"
 	{
 		"en"	"Lost Villager"
@@ -750,7 +1017,7 @@
 	}
 	"Lost Villager Desc 1a"
 	{
-		"en"	"{green}Recover 4 weapons"
+		"en"	"{green}Recover 10 weapons"
 	}
 	"Lost Villager Lore 1a"
 	{
@@ -763,7 +1030,7 @@
 	}
 	"Lost Villager Desc 1b"
 	{
-		"en"	"{green}Gain 15 Australium Ingots"
+		"en"	"{green}Gain 20 Australium Ingots"
 	}
 	"Lost Villager Lore 1b"
 	{
@@ -776,7 +1043,7 @@
 	}
 	"Lost Villager Desc 1c"
 	{
-		"en"	"{green}Lose 15 Chaos Infliction"
+		"en"	"{green}Lose 20 Chaos Infliction"
 	}
 	"Lost Villager Lore 1c"
 	{
@@ -789,7 +1056,7 @@
 	}
 	"Lost Villager Desc 2"
 	{
-		"en"	"{green}Gain 2000 cash"
+		"en"	"{green}Gain 3000 cash"
 	}
 	"Lost Villager Lore 2"
 	{
@@ -802,7 +1069,7 @@
 	}
 	"Lost Villager Desc 3"
 	{
-		"en"	"{green}Gain 2000 cash, 15 australium ingots, and recover 4 weapons {red}but gain 15 Chaos Infliction"
+		"en"	"{green}Gain 2000 cash, 15 australium ingots, and recover 4 weapons {red}but gain 25 Chaos Infliction"
 	}
 	"Lost Villager Lore 3"
 	{
@@ -915,9 +1182,17 @@
 	{
 		"en"	"Send"
 	}
+	"Emergency Dispatch Option 1a"
+	{
+		"en"	"Send"
+	}
 	"Emergency Dispatch Desc 1a"
 	{
 		"en"	"{red}Send Bob The Second to help."
+	}
+	"Emergency Dispatch Option 1b"
+	{
+		"en"	"Send "
 	}
 	"Emergency Dispatch Desc 1b"
 	{
@@ -964,22 +1239,6 @@
 		"en"	"Bob The Second returns with some money in hand."
 	}
 
-	"Waldch Assistance"
-	{
-		"en"	"Waldch's Assistance"
-	}
-	"Waldch Assistance Desc"
-	{
-		"en"	"Waldch joins you."
-	}
-	"Kahmlstein Guidance"
-	{
-		"en"	"Kahmlstein's Guidance"
-	}
-	"Kahmlstein Guidance Desc"
-	{
-		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
-	}
 	"Bad Water"
 	{
 		"en"	"Bad Water"
@@ -1011,6 +1270,14 @@
 	"Scout Rush!"
 	{
 		"en"	"Scout Rush ⚠"
+	}
+	"False Information"
+	{
+		"en"	"False Information"
+	}
+	"False Information!"
+	{
+		"en"	"False Information ⚠"
 	}
 	"Jumping Jacks"
 	{
@@ -1068,6 +1335,14 @@
 	{
 		"en"	"Secret Hunter ⚠"
 	}
+	"Whiteflower Avenger's"
+	{
+		"en"	"Whiteflower Avenger's"
+	}
+	"Whiteflower Avenger's!"
+	{
+		"en"	"Whiteflower Avenger's ⚠"
+	}
 	"Barricade"
 	{
 		"en"	"Barricade"
@@ -1124,6 +1399,10 @@
 	{
 		"en"	"Pre-Heated Oven ⚠"
 	}
+	"Pre-Heated Oven?"
+	{
+		"en"	"Pre-Heated Oven ☠"
+	}
 	"Yummer"
 	{
 		"en"	"Yummer"
@@ -1131,6 +1410,10 @@
 	"Yummer!"
 	{
 		"en"	"Yummer ⚠"
+	}
+	"Yummer?"
+	{
+		"en"	"Yummer ☠"
 	}
 	"Heavy Forest"
 	{
@@ -1140,6 +1423,10 @@
 	{
 		"en"	"Heavy Forest ⚠"
 	}
+	"Heavy Forest?"
+	{
+		"en"	"Heavy Forest ☠"
+	}
 	"Frostbite"
 	{
 		"en"	"Frostbite"
@@ -1147,6 +1434,10 @@
 	"Frostbite!"
 	{
 		"en"	"Frostbite ⚠"
+	}
+	"Frostbite?"
+	{
+		"en"	"Frostbite ☠"
 	}
 	"Heavy Jacket"
 	{
@@ -1156,6 +1447,10 @@
 	{
 		"en"	"Heavy Jacket ⚠"
 	}
+	"Heavy Jacket?"
+	{
+		"en"	"Heavy Jacket ☠"
+	}
 	"Freezer Water"
 	{
 		"en"	"Freezer Water"
@@ -1164,6 +1459,10 @@
 	{
 		"en"	"Freezer Water ⚠"
 	}
+	"Freezer Water?"
+	{
+		"en"	"Freezer Water ☠"
+	}
 	"Home of the North"
 	{
 		"en"	"Home of the North"
@@ -1171,6 +1470,10 @@
 	"Home of the North!"
 	{
 		"en"	"Home of the North ⚠"
+	}
+	"Home of the North?"
+	{
+		"en"	"Home of the North ☠"
 	}
 	"Das Concrete"
 	{
@@ -1224,7 +1527,7 @@
 	{
 		"en"	"Escapee"
 	}
-	"Escapee 2"
+	"Escapee"
 	{
 		"en"	"Escapee"
 	}
@@ -1243,5 +1546,117 @@
 	"The Old The New"
 	{
 		"en"	"The Old, The New ⚠"
+	}
+	"Not so Missunderstood"
+	{
+		"en"	"Not so Missunderstood"
+	}
+	"Not so Missunderstood!"
+	{
+		"en"	"Not so Missunderstood ⚠"
+	}
+	"Broken Defenses"
+	{
+		"en"	"Broken Defenses"
+	}
+	"Broken Defenses!"
+	{
+		"en"	"Broken Defenses ⚠"
+	}
+	"Godly army Under Chaos"
+	{
+		"en"	"Godly army Under Chaos"
+	}
+	"Godly army Under Chaos!"
+	{
+		"en"	"Godly army Under Chaos ⚠"
+	}
+	"Forsaken Tribe"
+	{
+		"en"	"Forsaken Tribe"
+	}
+	"Forsaken Tribe!"
+	{
+		"en"	"Forsaken Tribe ⚠"
+	}
+	"Roaming Chaos Demons"
+	{
+		"en"	"Roaming Chaos Demons"
+	}
+	"Roaming Chaos Demons!"
+	{
+		"en"	"Roaming Chaos Demons ⚠"
+	}
+	"Antagonising Iberians"
+	{
+		"en"	"Antagonising Iberians"
+	}
+	"Antagonising Iberians!"
+	{
+		"en"	"Antagonising Iberians ⚠"
+	}
+	"Lost Zombies"
+	{
+		"en"	"Lost Zombies"
+	}
+	"Lost Zombies!"
+	{
+		"en"	"Lost Zombies ⚠"
+	}
+	"Mercs against Mercs"
+	{
+		"en"	"Mercs against Mercs"
+	}
+	"Mercs against Mercs!"
+	{
+		"en"	"Mercs against Mercs ⚠"
+	}
+	"Ruania"
+	{
+		"en"	"Ruania"
+	}
+	"Chaos Ruinian"
+	{
+		"en"	"Chaos Ruinian"
+	}
+	"The Irritated Soldiers"
+	{
+		"en"	"The Irritated Soldiers"
+	}
+	"Hiding Ruinian"
+	{
+		"en"	"Hiding Ruinian"
+	}
+	"The Magic Betrayed"
+	{
+		"en"	"The Magic Betrayed"
+	}
+	"The Courtain"
+	{
+		"en"	"The Courtain"
+	}
+	"The Great Demons Of Hallam"
+	{
+		"en"	"The Great Demons Of Hallam"
+	}
+	"Mazeat Lost Tech Lore"
+	{
+		"en"	"You stumble upon a great artifact guarded by mechanisms..."
+	}
+	"Mazeat Lost Tech Option 1a"
+	{
+		"en"	"Take Something else"
+	}
+	"Mazeat Lost Tech Desc 1a"
+	{
+		"en"	"Take whats inside the closet instead, cant risk it.\n{green}Obtain money and a high value item."
+	}
+	"Mazeat Lost Tech Option 1b"
+	{
+		"en"	"Take The Price"
+	}
+	"Mazeat Lost Tech Desc 1b"
+	{
+		"en"	"{green}Obtain a Grant item, {crimson}but you might get unwanted attention."
 	}
 }

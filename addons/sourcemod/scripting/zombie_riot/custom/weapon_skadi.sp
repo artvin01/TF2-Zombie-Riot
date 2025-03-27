@@ -21,7 +21,7 @@ public void Skadi_Ability_M2(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
 			EmitSoundToAll("ambient/cp_harbor/furnace_1_shot_05.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
 			//PrintToChatAll("Rapid Shot Activated");
@@ -83,7 +83,7 @@ public void Enable_SkadiWeapon(int client, int weapon) // Enable management, han
 		{
 			if(h_TimerSkadiWeaponManagement[i])
 			{
-				ApplyStatusEffect(weapon, weapon, "Skadi's Skills", 9999999.0);
+				ApplyStatusEffect(weapon, weapon, "Abyssal Skills", 9999999.0);
 				Attributes_SetMulti(weapon, 2, 1.1);
 			}
 		}

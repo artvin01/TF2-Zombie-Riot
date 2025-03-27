@@ -130,7 +130,6 @@ methodmap Pental < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		PentalEffects(npc.index);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/dec17_coldfront_commander/dec17_coldfront_commander.mdl");
 		SetVariantString("1.0");
@@ -140,7 +139,16 @@ methodmap Pental < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/dec17_coldfront_carapace/dec17_coldfront_carapace.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", WEAPON_CUSTOM_WEAPONRY_1);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetVariantInt(1024);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		
+		//SetEntityRenderFx(npc.index, RENDERFX_HOLOGRAM);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 0);
+
 		return npc;
 	}
 }
@@ -291,47 +299,4 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 			}
 		}
 	}
-}
-
-
-void PentalEffects(int iNpc)
-{
-	if(AtEdictLimit(EDICT_NPC))
-		return;
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
-
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_3);
 }

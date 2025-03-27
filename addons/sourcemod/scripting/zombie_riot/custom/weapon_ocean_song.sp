@@ -313,7 +313,7 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 			if(f_OceanIndicatorHud[client] < GetGameTime())
 			{
 				PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 				f_OceanIndicatorHud[client] = GetGameTime() + 0.75;
 			}
 			return Plugin_Continue;
@@ -325,7 +325,7 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 		if(f_OceanIndicator[client] < GetGameTime())
 		{
 			PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_OceanIndicator[client] = GetGameTime() + 0.25;
 			float UserLoc[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", UserLoc);
@@ -334,7 +334,7 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 			if(f_OceanIndicatorHud[client] < GetGameTime())
 			{
 				PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 				f_OceanIndicatorHud[client] = GetGameTime() + 0.75;
 			}
 		}
@@ -363,7 +363,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 		}
 		flHealMulti = Attributes_GetOnPlayer(client, 8, true, true);
 		if(weapon > 0)
-			flHealMulti *= Attributes_FindOnWeapon(client, weapon, 8, true, 1.0);
+			flHealMulti *= Attributes_Get(weapon, 8, 1.0);
 	}
 	else
 	{
@@ -432,7 +432,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 	}
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
-		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
@@ -512,7 +512,7 @@ public void Ocean_song_ability(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 75.0);
 		f_OceanBuffAbility[client] = GetGameTime() + 15.0;
 		float UserLoc[3];

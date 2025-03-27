@@ -145,6 +145,7 @@ int i_EntitiesHitAoeSwing[MAXENTITIES]= {-1, ...};	//Who got hit
 int i_EntitiesHitAtOnceMax; //How many do we stack
 bool b_iHitNothing;
 
+int i_CheckWeaponLogic;
 void MapStart_CustomMeleePrecache()
 {
 	for (int i = 0; i < (sizeof(g_KnifeHitFlesh));	   i++) { PrecacheSound(g_KnifeHitFlesh[i]);	   }
@@ -177,9 +178,6 @@ public void SepcialBackstabLaughSpy(int attacker)
 #if defined RPG
 #define WEAPON_BOOM_HAMMER 10000
 #endif
-
-#define MELEE_RANGE 64.0
-#define MELEE_BOUNDS 22.0
 stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0,
  bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {
@@ -251,6 +249,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_CASTLEBREAKER:
 			{
 				CastleBreaker_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
+			case WEAPON_BOARD:
+			{
+				Board_DoSwingTrace(enemies_hit_aoe, CustomMeleeRange);
 			}
 		}	
 	}
@@ -340,6 +342,29 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		} 	
 		delete TempTrace;
 	}
+	//If we can backstab, then we should check if we can backstab ANY target currently in the way. if yes, prioritise
+	if(weapon > 0 && f_BackstabDmgMulti[weapon] != 0.0)
+	{
+		i_CheckWeaponLogic = weapon;
+		Handle TempTrace;
+		TempTrace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace_BackstabCheck, client );
+		if ( TR_GetFraction(TempTrace) >= 1.0)
+		{
+			delete TempTrace;
+			TempTrace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_BackstabCheck, client );
+		}
+		if (TR_DidHit(TempTrace))
+		{
+			int target_temp = TR_GetEntityIndex(TempTrace);
+			//its confirmed to be a headshot.
+			if(target_temp > 0)
+			{
+				HitTargetFilter = target_temp;
+			}
+		} 	
+		delete TempTrace;
+		i_CheckWeaponLogic = 0;
+	}
 	if(enemies_hit_aoe <= 1)
 	{
 		//not a cleave.
@@ -427,7 +452,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 		{
 			case 649: //The Spy-cicle, because it has no hit enemy sound.
 			{
-				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 90, _, 1.0);
+				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 75, _, 1.0);
 				return ZEROSOUND;
 			}
 		}
@@ -686,6 +711,13 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			{
 				Blitzkrieg_Kit_ModifyMeleeDmg(client, damage);
 			}
+			case WEAPON_KAHMLFIST:
+			{
+				//recoded, prevent abuse
+				float Attrib = Attributes_Get(weapon, 1, 1.0);
+				if(Attrib >= 2.75)
+					Attributes_Set(weapon, 1, 1.0);
+			}
 		}
 #endif
 		
@@ -943,4 +975,31 @@ void AOEHammerExtraLogic(int entity, int victim, float damage, int weapon)
 	{
 		damage *= 1.15;
 	}	
+}
+
+
+bool CanBackstabEnemyPreCheck(int attacker, int weapon, int victim)
+{
+	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
+	{
+#if defined ZR
+		return (IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim]);
+#else
+		return (IsBehindAndFacingTarget(attacker, victim, weapon) || i_NpcIsABuilding[victim]);
+#endif
+	}
+	return false;
+}
+
+
+static bool BulletAndMeleeTrace_BackstabCheck(int entity, int contentsMask, any iExclude)
+{
+	bool type = BulletAndMeleeTrace(entity, contentsMask, iExclude);
+	if(!type) //if it collised, return.
+	{
+		return type;
+	}
+
+	
+	return (CanBackstabEnemyPreCheck(iExclude, i_CheckWeaponLogic, entity));
 }

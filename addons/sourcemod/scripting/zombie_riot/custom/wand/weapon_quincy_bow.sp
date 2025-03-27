@@ -9,7 +9,7 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
 #define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 50.0	//what % of charge does the battery need to start firing
-#define QUINCY_BOW_MAX_HYPER_BARRAGE 11			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
+#define QUINCY_BOW_MAX_HYPER_BARRAGE 5			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
 #define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
 
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
@@ -241,7 +241,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		
 		EmitSoundToAll(hyper_arrow_sounds[GetRandomInt(0, sizeof(hyper_arrow_sounds)-1)], client, SNDCHAN_STATIC, 100, _, 0.5, 100);	//very loud!
 
-		float damage = 625.0;
+		float damage = 680.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
 		Quincy_Damage_Trace(client, Origin, vecHit, Radius, damage);
@@ -493,7 +493,7 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 		UserLoc[2] += 12.0*(speed-7);
 	}
 
-	for(int i=1 ; i<speed ; i++)
+	for(int i=0 ; i<speed ; i++)
 	{	
 		if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
 		{
@@ -865,7 +865,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 	}
 	
 	PrintHintText(client, HUDText);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 public void Quincy_Touch(int entity, int target)

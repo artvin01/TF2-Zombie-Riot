@@ -68,6 +68,11 @@
 		"nl"		"Geen"
 		"chi"       "无"
 	}
+	"Loadout Credits"
+	{
+		"#format"	"{1:d}"
+		"en"		"---Loadout Store---\nCredit Points: {1}"
+	}
 	"Credits"
 	{
 		"#format"	"{1:d}"
@@ -306,9 +311,17 @@
 		"nl"		"Gekochte Artikelen"
 		"chi"       "已购买物品"
 	}
+	"Sell Items Confirm"
+	{
+		"en"		"Are you sure you want to sell all your items?"
+	}
+	"Sell All Items"
+	{
+		"en"		"Sell all items"
+	}
 	"Confirm Loadout"
 	{
-		"en"		"Confirm Loadout"
+		"en"		"Confirm & Access Store"
 	}
 	"N/A"
 	{
@@ -402,16 +415,7 @@
 	}
 	"Pistol Magazines"
 	{
-		"en"		"Pistol Magazines"
-		"it"		"Caricatori Pistola"
-		"ru"		"Обойма пистолета"
-		"pl"		"Magazynek do Pistoletu"
-		"es"		"Cartuchos de Pistola"
-		"fr"		"Munitions de Pistolet"
-		"de"		"Pistolenmagazine"
-		"pt"		"Cartuchos de Pistola"
-		"nl"		"Pistool Magazijn"
-		"chi"       "手枪弹匣"
+		"en"		"Pistol Mag"
 	}
 	"Rockets"
 	{
@@ -428,16 +432,7 @@
 	}
 	"Flamethrower Tank"
 	{
-		"en"		"Flamethrower Tank"
-		"it"		"Serbatoio Lanciafiamme"
-		"ru"		"Топливо огнемёта"
-		"pl"		"Paliwo do miotacza ognia"
-		"es"		"Tanque de Propano"
-		"fr"		"Réservoir de Lance-flammes"
-		"de"		"Flammenwerfer-Tank"
-		"pt"		"Tanque de Propano"
-		"nl"		"Vlammenwerper Tank"
-		"chi"       "燃料"
+		"en"		"Oil"
 	}
 	"Flares"
 	{
@@ -506,29 +501,11 @@
 	}
 	"Medical Syringes"
 	{
-		"en"		"Medical Syringes"
-		"it"		"Siringhe Medicali"
-		"ru"		"Медицинские шприцы"
-		"pl"		"Strzykawki medyczne"
-		"es"		"Jeringuillas medicas"
-		"fr"		"Seringues Médicales"
-		"de"		"Medizinische Spritzen"
-		"pt"		"Seringas Médicas"
-		"nl"		"Medische Spuiten"
-		"chi"       "注射器"
+		"en"		"Syringes"
 	}
 	"Sniper Rifle Rounds"
 	{
-		"en"		"Sniper Rifle Rounds"
-		"it"		"Munizioni per il Cecchino"
-		"ru"		"Патр. снайп. винт."
-		"pl"		"Amunicja do karabinu snajperskiego"
-		"es"		"Balas de Francotirador"
-		"fr"		"Balles de Fusil de Sniper"
-		"de"		"Scharfschützengewehr-Runden"
-		"pt"		"Balas de Sniper"
-		"nl"		"Scherpshuttergeweer Kogels"
-		"chi"       "狙击枪子弹"
+		"en"		"Sniper Rounds"
 	}
 	"Arrows"
 	{
@@ -545,16 +522,7 @@
 	}
 	"SMG Magazines"
 	{
-		"en"		"SMG Magazines"
-		"it"		"Caricatori per l'SMG"
-		"ru"		"Патроны ПП"
-		"pl"		"Magazynek do pistoletu maszynowego"
-		"es"		"Balas de Subfusil"
-		"fr"		"Balles de Mitraillette"
-		"de"		"SMG Magazin"
-		"pt"		"Cartuchos de Sub-Metralhadora"
-		"nl"		"SMG Wapenmagazijnes"
-		"chi"       "小型弹药"
+		"en"		"SMG Mag"
 	}
 	"Revolver Rounds"
 	{
@@ -787,6 +755,11 @@
 		"pt"		"Este objeto ainda está em recarga de {1} segundos antes de outro uso."
 		"nl"		"Dit object heeft nog steeds {1} seconden over voor het volgend gebruik!"
 		"chi"       "物品使用已进入冷却时间，你将在 {1} 后可以再次使用。"
+	}
+	"Simulation Time Left"
+	{
+		"#format"	"{1:.0f}"
+		"en" 		"Theres {1} Minutes left in the simulation."
 	}
 	"Cash Gained This Wave"
 	{
@@ -1144,68 +1117,68 @@
 	}
 	"Quick Revive"
 	{
-		"en" 		"Perk: Quick Revive"
-		"fr" 		"Perk: Résurrection Rapide"
-		"ru" 		"Перк: Реаниматор"
-		"de"		"Vorteil: Schnelles Wiederbeleben"
-		"pt"		"Habilidade: Rápida ressureição"
-		"nl"		"Perk: Snel tot leven brengen"
-		"chi" 		"Buff: 快速起身"
+		"en" 		"Quick Revive"
+		"fr" 		"Résurrection Rapide"
+		"ru" 		"Реаниматор"
+		"de"		"Schnelles Wiederbeleben"
+		"pt"		"Rápida ressureição"
+		"nl"		"Snel tot leven brengen"
+		"chi" 		"快速起身"
 	}
 	"Juggernog"
 	{
-		"en" 		"Perk: Juggernog"
-		"fr" 		"Perk: Juggernog"
-		"ru" 		"Перк: Джаггер-фанта"
-		"pt"		"Habilidade: Juggernog"
-		"chi" 		"Buff: 身体强化"
+		"en" 		"Juggernog"
+		"fr" 		"Juggernog"
+		"ru" 		"Джаггер-фанта"
+		"pt"		"Juggernog"
+		"chi" 		"身体强化"
 	}
 	"Double Tap"
 	{
-		"en" 		"Perk: Double Tap"
-		"fr" 		"Perk: Double-Touche"
-		"ru" 		"Перк: Пиф-паф"
-		"de"		"Vorteil: Doppeltippen"
-		"pt"		"Habilidade: Toque Duplo"
-		"nl"		"perk: Dubbeltikken"
-		"chi" 		"Buff: 精神强化"
+		"en" 		"Double Tap"
+		"fr" 		"Double-Touche"
+		"ru" 		"Пиф-паф"
+		"de"		"Doppeltippen"
+		"pt"		"Toque Duplo"
+		"nl"		"Dubbeltikken"
+		"chi" 		"精神强化"
 	}	
 	"Speed Cola"
 	{
-		"en" 		"Perk: Speed Cola"
-		"fr" 		"Perk: Speed Cola"
-		"ru" 		"Перк: Быстрокола"
-		"de"		"Vorteil: Geschwindigkeits Cola"
-		"pt"		"Habilidade: Refri-Veloz"
-		"nl"		"Perk: SnelheidsCola"
-		"chi" 		"Buff: 极速可乐"
+		"en" 		"Speed Cola"
+		"fr" 		"Speed Cola"
+		"ru" 		"Быстрокола"
+		"de"		"Geschwindigkeits Cola"
+		"pt"		"Refri-Veloz"
+		"nl"		"SnelheidsCola"
+		"chi" 		"极速可乐"
 	}
 	"Deadshot Daiquiri"
 	{
-		"en" 		"Perk: Deadshot Daiquiri"
-		"fr" 		"Perk: Tir Mortel de Daiquiri"
-		"ru" 		"Перк: Снайпер-лайм"
-		"de"		"Vorteil: Todesschuss Daiquiri"
-		"pt"		"Habilidade: Tiro morto de Daiquiri"
-		"nl"		"Perk: Dood schot Daiquiri"
-		"chi" 		"Buff: 死亡宣告"
+		"en" 		"Deadshot Daiquiri"
+		"fr" 		"Tir Mortel de Daiquiri"
+		"ru" 		"Снайпер-лайм"
+		"de"		"Todesschuss Daiquiri"
+		"pt"		"Tiro morto de Daiquiri"
+		"nl"		"Dood schot Daiquiri"
+		"chi" 		"死亡宣告"
 	}
 	
 	"Widows Wine"
 	{
-		"en" 		"Perk: Widows Wine"
-		"fr" 		"Perk: Vin des Veuves"
-		"ru" 		"Перк: Вино вдовы"
-		"pt"		"Habilidade: Vinho Viúvo"
-		"nl"		"Perk: Wijn van de weduwe"
-		"chi" 		"Buff: 恶魔领域"
+		"en" 		"Widows Wine"
+		"fr" 		"Vin des Veuves"
+		"ru" 		"Вино вдовы"
+		"pt"		"Vinho Viúvo"
+		"nl"		"Wijn van de weduwe"
+		"chi" 		"恶魔领域"
 	}
 	"Recycle Poire"
 	{
-		"en" 		"Perk: Recycle Poiré"
-		"fr" 		"Perk: Recyclage Poiré"
-		"pt"		"Perk: Pêra Reciclada"
-		"ru" 		"Перк: Переработка пуаре"
+		"en" 		"Recycle Poiré"
+		"fr" 		"Recyclage Poiré"
+		"pt"		"Pêra Reciclada"
+		"ru" 		"Переработка пуаре"
 	}
 
 	"Quick Revive Recieved"
@@ -1262,15 +1235,9 @@
 		"pt"		"PÊRA RECICLADA! 1.33x Munição de todas as fontes que não são a loja, e 1.5x mais ganho e armadura máxima\nVocê ganha 2x mais munição de suprimentos"
 		"chi"		"超级回收:所有非商店弹药增加33%%+最大护甲值和护甲增益增加50%%+2倍弹药补给"
 	}
-	"Nuke Activated"
+	"Freeze Bomb Activated"
 	{
-		"en" 		"Nuke!"
-		"fr" 		"Bombe Atomique!"
-		"ru" 		"Ядерная бомба!"
-		"de"		"KERNWAFFENEXPLOSION!"
-		"pt"		"NUKE!"
-		"nl"		"Atoombom!"
-		"chi"       "肃清全场！"
+		"en" 		"Freeze Bomb!"
 	}
 	"Max Ammo Activated"
 	{
@@ -1433,7 +1400,7 @@
 	}
 	"Command Help Explained"
 	{
-		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself."
+		"en" 		"''/tp'' To toggle thirdperson.\n''/me'' To write something above yourself.\nHold Tab and then press your spray button to actually spray."
 	}
 	"Difficulty Help Explained"
 	{
@@ -1521,18 +1488,24 @@
 	}
 	"Claim this building"
 	{
-		"en"		"Claim this building with RELOAD while holding a wrench."
-		"fr"		"Prenez contrôle de cette construction en appuyant RELOAD avec une clé equipée."
-		"ru"		"Эта постройка может принадлежать вам - нажмите ПЕРЕЗАРЯДКА, держа в руках гаечный ключ."
-		"de"		"Beanspruchen Sie dieses Gebäude mit NACHLADEN mit einem Schlüsselwerkzeug."
-		"pt"		"Para reivindicar está construção aperte o botão re RECARREGAR enquando segurando sua chave inglesa."
-		"nl"		"Beweer dit gebouw door, tijdens het dragen van een moersleutel, op de HERLAAD toets te drukken."
-		"chi"       "断开连接建筑：拿着建筑扳手的同时按下R键占有建筑"
+		"en"		" while holding a wrench on the building to claim it."
+	}
+	"Interact With R" //KEEP THE SPACE!
+	{
+		"en"		"Press [R/ Use] "
+	}
+	"Interact With T Spray"
+	{
+		"en"		"Press [T(Spray)/ Use] "
+	}
+	"Enter this vehicle"
+	{
+		"en" 		"to enter and exit this vehicle"
 	}
 	"Ammobox Tooltip"
 	{
 		"#format"	"{1:d}"
-		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
+		"en" 		"on the Ammobox to gain Ammo for your current holding weapon.\nAmmo Supplies Remaining: {1}"
 	}
 	"Warn Client Ammo None"
 	{
@@ -1541,32 +1514,15 @@
 	}
 	"Armortable Tooltip"
 	{
-		"en" 		"Press RELOAD on the Armortable to gain Armor."
-		"fr" 		"Appuyez RELOAD sur la table d'armure pour obtenir de l'armure."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на верстаке брони, чтобы получить броню."
-		"de"		"Drücke NACHLADEN an dem Rüstungstisch um Rüstung zubekommen."
-		"pt"		"Pressione o botão de RECARREGAR para pegar mais armadura."
-		"nl"		"Druk de HERLAAD toets op de schild tafel om extra bescherming te krijgen."
-		"chi"       "对着护甲柜按下R键可以补充你的护甲"
+		"en" 		"on the Armortable to gain Armor."
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"Press RELOAD on the Perkmachine to gain a strong temporary perk."
-		"fr" 		"Appuyez RELOAD sur la machine de perks pour obtenir un perk temporaire."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на перк-машине, чтобы получить мощный временный перк."
-//		"de"		"Drücke NACHLADEN an der Perkmachine um einen starken temporären zufälligen Perk zubekommen."
-		"pt"		"Pressione o botão de RECARREGAR para ganhar uma habilidade temporaria."
-		"nl"		"Druk de HERLAAD toets op de perkmachine om een sterke, tijdelijke kracht te krijgen."
-		"chi"       "对着福利箱按下R键可以选择Buff"
+		"en" 		"on the Perkmachine to gain a strong temporary perk."
 	}
 	"PackAPunch Tooltip"
 	{
-		"en" 		"Press RELOAD To Pack-a-Punch your current holding weapon."
-		"fr" 		"Appuyez RELOAD pour appliquer une amélioration Pack-a-Punch sur votre arme."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА для улучшения оружия, которое вы держите."
-		"pt"		"Aperte o botão de RECARREGAR com sua arma atual para melhora-lá."
-		"nl"		"Druk de HERLAAD toets om uw huidige wapen te Pack-A-Punchen"
-		"chi"       "对着工作台按下R键可以升级你的武器"
+		"en" 		"To Pack-a-Punch your current holding weapon."
 	}
 	"Packed"
 	{
@@ -1600,13 +1556,7 @@
 	}
 	"Revive Teammate tooltip"
 	{
-		"en" 		"Hold RELOAD to revive this dying teammate."
-		"fr" 		"Appuyez RELOAD pour resuciter votre coéquipier."
-		"ru" 		"Удерживайте ПЕРЕЗАРЯДКА, чтобы оживить умирающего союзника."
-		"de"		"Halten NACHLADEN, um ihren absterben Kameraden zu beleben."
-		"pt"		"Segure o botão de RECARREGAR para reanimar seu colega de equipe morrendo."
-		"nl"		"Hou uw HERLAAD toets in om uw stervende teamgenoten tot leven te wekken."
-		"chi"       "按住R键扶起队友"
+		"en" 		"to revive this dying teammate."
 	}
 	"Bored or Dead"
 	{
@@ -1669,12 +1619,7 @@
 	}
 	"Village Upgrade Tooltip"
 	{
-		"en" 		"Press RELOAD to upgrade your village."
-		"fr" 		"Appuyez RELOAD pour améliorer votre village."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА, чтобы улучшить свою деревню."
-		"pt"		"Aperte o botão de RECARREGAR para aprimorar sua vilá."
-		"nl"		"Druk op de HERLAAD toets om uw dorp te upgraden."
-		"chi"       "按下R键升级你的村庄"
+		"en" 		"Press [T (spray)] to upgrade your village."
 	}
 	"Pong"
 	{
@@ -2016,9 +1961,21 @@
 		"pt"		"Você quer melhorar sua arma atual?"
 		"nl"		"Wil je uw huidige wapen Pack-A-Punchen?"
 	}
+	"Support Buildings"
+	{
+		"en"		"Support Buildings"
+	}	
+	"Singular Buildings"
+	{
+		"en"		"Singular Buildings"
+	}	
+	"Construct Buildings"
+	{
+		"en"		"Construct Buildings"
+	}	
 	"Which perk do you desire?"
 	{
-		"en"		"Which Bottle do you wish to drink?\nCrouch and click to see what it does."
+		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead."
 	}	
 	"Reviving"
 	{
@@ -2040,7 +1997,7 @@
 		"nl"		"Je word tot leven gebracht. [{1}]"
 		"chi"       "队友正在拉起你 [{1}]"
 	}
-	"Medival_Difficulty"
+	"Medieval_Difficulty"
 	{
 		"#format"	"{1:d}"
 		"en"		"The enemy has researched their equipment to lvl. {1}!!!"
@@ -2052,8 +2009,8 @@
 	}
 	"Victory Menu 2"
 	{		
-		"en"		"The Zombies have been defeated!\nDo you wish to go and do 1 extra wave..?"
-		"fr"		"Les zombies ont été éliminés!\nVoulez-vous faire une vague additionelle..?"
+		"en"		"The Enemies have been defeated!\nDo you wish to go and do 1 extra wave..?"
+		"fr"		"Les Enemies ont été éliminés!\nVoulez-vous faire une vague additionelle..?"
 	}
 	"M3 Ability Is Back"
 	{		
@@ -2094,7 +2051,7 @@
 	}
 	"tutorial_1"
 	{
-		"en"		"This is the short Tutorial. Open the scoreboard (TAB) to open the store."
+		"en"		"This is the short Tutorial. Tap the scoreboard (TAB) to open the store."
 		"fr"		"Bienvenue dans le Tutoriel. Appuyez sur TAB pour ouvrir la boutique."
 		"ru"		"Это краткое руководство. Откройте таблицу очков (TAB), чтобы открыть магазин."
 		"pt"		"Isto é um tutorial curto. Pressione o botão do placar (TAB) para abrir a loja."
@@ -2103,7 +2060,7 @@
 	}
 	"tutorial_2"
 	{
-		"en"		"Good! Now Navigate to ''weapons'' and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
+		"en"		"Good! Now Navigate to ''Weapons'' and buy any weapon you want.\nTap the scoreboard (TAB) to open the store again if it got closed.\n<--------------- The Store!                                                          "
 		"fr"		"Bien fait! Maintenant, naviguez vers «armes» et achetez l'arme que vous voulez.\nAppuyez sur TAB pour re-ouvrir la boutique s'il se ferme."
 		"ru"		"Отлично! Теперь перейдите к «оружию» и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
 		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
@@ -2112,20 +2069,36 @@
 	}
 	"tutorial_3"
 	{
-		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+		"en"		"Only have 1 weapon at a time at the start!\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
 		"fr"		"Vous avez maintenant votre arme, vous êtes prêt.\nAchetez des armes meilleures, ainsi que des améliorations, dans des vagues futures,\net survivez jusqu'à la fin!\nDe l'aide additionelle se trove dans la boutique, sous «aide»."
 		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в следующих волнах и выживите!\nПодробности можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
 		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
 		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
 		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
 	}
+	"tutorial_4"
+	{
+		"en"		"One last thing! In your hud and enemy huds you will see various symbols.\n☛Means melee damage.➶Means Ranged damage.☖ Means damage bonus (npcs usually)\nPercentage shows what its multiplied by."
+	}
+	"tutorial_5"
+	{
+		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
+	}
 	"Tutorial Show Hint Perk Machine"
 	{
-		"en"		"Use this machine to get a tempomary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+		"en"		"Use this machine to get a temporary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+	}
+	"Tutorial Show Hint Perk Machine Build One"
+	{
+		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
 	}
 	"Tutorial Show Hint Pack a Punch"
 	{
 		"en"		"Use this machine with your holding weapon to upgrade it with a cost!\nNot all weapons can be upgraded!"
+	}
+	"Tutorial Show Hint Pack a Punch Build One"
+	{
+		"en"		"There's no Pack a Punch!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
 	}
 	"Is already at full hp"
 	{
@@ -2233,15 +2206,11 @@
 	}
 	"Skip Starter Confirm"
 	{
-		"en"		"You will be set to Level 5 and have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
-		"ru"		"Вы получите 5-й уровень и доступ к продвинутому оружию\nВы знакомы с основами покупки и выживания?\n "
-		"chi"       "你将被设置为5级，并可以使用先进的武器\n你熟悉购买和生存的基本知识吗?\n如若你不了解玩法，请误跳过新手教程!"
+		"en"		"You have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
 	}
 	"Skip Starter Yes"
 	{
-		"en"		"Yes, set me to Level 5"
-		"ru"		"Да, дайте мне 5-й уровень"
-		"chi"       "是的，设置到5级(慎重)"
+		"en"		"Yes, unlock advanced weapons"
 	}
 	"nothing"
 	{
@@ -2392,6 +2361,14 @@
 		"fr"		"Bouger Interface vers le Haut"
 		"ru"		"Интерф. вверх"
 		"chi"		"向上移动Hud"
+	}
+	"Hint Change Multislot"
+	{
+		"en"		"Hint: press the slot number on your keyboard multiple times to switch multiple weapons in the same slot OR press your (H) button (action key) To switch (incase you use scrollwheel)!"
+	}
+	"Cant Display"
+	{
+		"en"		"Your Holding weapon cant be shown in the shop..."
 	}
 	"Move Hud Down"
 	{
@@ -2576,6 +2553,10 @@
 		"fr"		"Éradiquez l'infection Xéno\nTrouvez la cause de ceci."
 		"ru"		"Искорените всех ксенозаражённых\nНайдите причину происходящего."
 		"chi"		"消灭所有被感染的异种人，找出背后的原因。"
+	}
+	"SeaLab_badEnding"
+	{
+		"en"		"You have an uneasy feeling, as if you entered the wrong path... this is BAD."
 	}
 	"Xeno_Wave_2"
 	{
@@ -3469,14 +3450,30 @@
 		"en" 	"These ''Overclocks'' Will heavily alter your weapon, applying buffs and nerfs"
 		"fr" 	"Les Surcadençages modifient fortement votre arme, ajoutant des bénéfices et défauts."
 	}
-	"Taunt Speed Increace"
+	"Taunt Speed increase"
 	{
-		"en" 	"Taunt Speed Increace"
+		"en" 	"Taunt Speed increase"
 		"fr" 	"Vitesse des Railleries Augmuntée"
+	}
+	"Interact With Reload"
+	{
+		"en" 	"Interact With Reload"
+	}
+	"Disable Setup Music"
+	{
+		"en" 	"Disable Setup Music"
+	}
+	"Disable Status Effect Hints"
+	{
+		"en" 	"Disable Status Effect Hints"
 	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"
+	}
+	"See Tutorial Again"
+	{
+		"en" 	"See Tutorial Again"
 	}
 	"FixSoundManual Fail"
 	{
@@ -3609,13 +3606,17 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this tempomary alliance."
+		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
+	}
+	"Schwert Donner Alt Desc"
+	{
+		"en"	"If the sea creatues ever attacked here.... then.. something went MAJORILY wrong. Why are they so.. strong?!"
 	}
 	"Khaml Desc"
 	{
-		"en"	"The judges of your actions have arrived."
-		"fr"	"Voiçi le juge de vos actions."
-		"chi"	"审判者来了。"
+		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
+		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 	}
 	"Void Desc"
 	{
@@ -3736,9 +3737,7 @@
 	}
 	"Blacksmith Tooltip"
 	{
-		"en"		"Press RELOAD to apply a tinker effect to your active weapon."
-		"fr"		"Appuyez sur RELOAD pour appliquer un effet de forge sur votre arme"
-		"chi"		"按 装弹键 打开菜单，抽取随机武器属性"
+		"en"		"to apply a tinker effect to your active weapon."
 	}
 	"Blacksmith Used"
 	{
@@ -3918,6 +3917,10 @@
 		"fr"	"Kleiner"
 		"chi"	"克莱恩"
 	}
+	"Fat HHH"
+	{
+		"en"	"Fat HHH"
+	}
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
@@ -3949,6 +3952,10 @@
 	"Enable Visual Clutter Desc"
 	{
 		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nIf you love it, enable it again."
+	}
+	"Enable Reload Interact Desc"
+	{
+		"en"	"If this is enabled, then some abilities require you to hold crouch to use them to prevent accidental use."
 	}
 	"Enable Numeral Armor"
 	{
@@ -4082,24 +4089,43 @@
 	{
 		"en"	"Ability already Active"
 	}
+	"Barrack Unit not detected"
+	{
+		"en"	"Barrack Unit not detected"
+		"ko"	"배럭 유닛를 감지 할 수 없습니다."	
+	}
+	"Player not detected"
+	{
+		"en"	"Player not detected"
+		"ko"	"플레이어를 감지 할 수 없습니다."
+	}
+	"Use Only Alive"
+	{
+		"en"	"Can only use while alive."
+	}
 	"freeplay_intro"
 	{
-		"en"		"You shall not proceed further.\nProve you're worthy."
+		"en"		"Alright guys...\nProve you're worthy."
 	}
+	"Need Healing Point"
+	{
+		"en"	"More Healing Required."
+	}
+
 	"freeplay_start_1"
 	{
-		"en"		"You've proved you're worthy.\nWorthy to take on the journey of Freeplay.\nAs you progress, more stronger enemies will come.\nEvery 5 waves, a setup will occur, and a skull will appear.\n"
+		"en"		"Good... it seems like the simulation is working.\nSorry for the trouble, but this training is necessary for the future.\nLelouch exposed some REALLY heavy stuff, and i don't want to explain it all."
 	}
 	"freeplay_start_2"
 	{
-		"en"		"Skulls are random events or effects that can be temporary or permanent.\nEach setup has a 20%% chance of adding an extra skull,\nand this stacks infinitely as you progress."
+		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull, which is a random event or modifier.\nAnd i'll be throwing more and more as you progress."
 	}
 	"freeplay_start_3"
 	{
-		"en"		"There is a 2%% chance for a catastrophic event to occur on on a setup..."
+		"en"		"Be warned, this might not be for the light-hearted.\nThings may get out of hand really quick... hehehe..."
 	}
 	"freeplay_start_4"
 	{
-		"en"		"But neeh, pretty sure it'll never happen.\nAnyways, have fun...\nAnd good luck."
+		"en"		"Zeina and I will watch over you, we'll warn you if something happens.\nWho am i? Koshi, the one managing this simulation.\nThis will only last an hour, so be fast!"
 	}
 }

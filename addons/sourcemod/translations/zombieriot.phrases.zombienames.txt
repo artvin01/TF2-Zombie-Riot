@@ -12,6 +12,10 @@
 		"pt"		"Zumbi de Headcrab"
 		"nl"		"Hoofdkrab Zombie"
 	}
+	"Z-Main"
+	{
+		"en"		"Z-Main"
+	}
 	"Fortified Headcrab Zombie"
 	{
 		"en" 		"Fortified Headcrab Zombie"
@@ -685,6 +689,10 @@
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
 	}
+	"Silvester's Past Afterimage"
+	{
+		"en" 		"Silvester's Past Afterimage"
+	}
 	"Medic Charger"
 	{
 		"en" 		"Medic Charger"
@@ -746,17 +754,9 @@
 		"ru" 		"Элитный Комбайн"
 		"en" 		"Barracks Elite"
 	}
-	"Barracks Deflector"
+	"Barracks Peacekeeper"
 	{
-		"en" 		"Combine Deflector"
-		"ru" 		"Комбайн Отражатель"
-		"en" 		"Barracks Deflector"
-	}
-	"Barracks Sniper"
-	{
-		"en" 		"Combine Sniper"
-		"ru" 		"Комбайн Снайпер"
-		"en" 		"Barracks Sniper"
+		"en" 		"Combine Peacekeeper"
 	}
 	"Barracks Super"
 	{
@@ -769,6 +769,10 @@
 		"en" 		"Combine Commander"
 		"ru" 		"Комбайн Командир"
 		"en" 		"Barracks Commander"
+	}
+	"Barracks Chaos Containment Unit"
+	{
+		"en" 		"Chaos Containment Unit"
 	}
 	"Barracks Giant ddt"
 	{
@@ -821,6 +825,10 @@
 		"en"		"Iberian Guards"
 		"ru" 		"Стражи Иберии"
 	}
+	"Barracks Iberian Commando"
+	{
+		"en"		"Iberian Commando"
+	}
 	"Barracks Iberian Elite Gunner"
 	{
 		"en"		"Iberian Elite Gunner"
@@ -831,11 +839,15 @@
 		"en"		"Iberian Headhunter"
 		"ru" 		"Охотник за головами Иберии"
 	}	
+	"Barracks Iberia Inquisitor Lynsen"
+	{
+		"en"		"Inquisitor Lynsen"
+	}
 	"Barracks Iberian Lighthouse Guardian"
 	{
 		"en"		"Guardian of the Lighthouse"
 		"ru" 		"Хранитель Маяка"
-	}	
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
@@ -954,6 +966,10 @@
 		"ru" 		"Повстанец"
 		"pt"		"Rebelde"
 		"nl"		"Rebel"
+	}
+	"Chaos Rebel"
+	{
+		"en" 		"Chaos Rebel"
 	}
 	"Barney"
 	{
@@ -1292,13 +1308,13 @@
 		"pt"		"Balão de Ouro"
 		"ru"		"Золотой шар"
 	}
-	"Medival Scout"
+	"Medieval Scout"
 	{
 		"en"		"Ridden Scout"
 		"pt"		"Scout Montado"
 		"ru"		"Ездовой разведчик"
 	}
-	"Medival Villager"
+	"Medieval Villager"
 	{
 		"en"		"Villager"
 		"pt"		"Aldeão"
@@ -1310,7 +1326,7 @@
 		"pt"		"Edifício"
 		"ru"		"Постройка"
 	}
-	"Medival Construct"
+	"Medieval Construct"
 	{
 		"en"		"Construct"
 		"pt"		"Construção"
@@ -1406,31 +1422,31 @@
 		"pt"		"Aquiles"
 		"ru"		"Ахилл"
 	}
-	"Medival Arbalest"
+	"Medieval Arbalest"
 	{
 		"en"		"Medieval Arbalest"
 		"pt"		"Arbalest Medieval"
 		"ru"		"Арбалетчик средневековья"
 	}
-	"Medival Brawler"
+	"Medieval Brawler"
 	{
 		"en"		"Medieval Brawler"
 		"pt"		"Lutador Medieval"
 		"ru"		"Боец средневековья"
 	}
-	"Medival Longbowmen"
+	"Medieval Longbowmen"
 	{
 		"en"		"Medieval Longbowmen"
 		"pt"		"Arqueiro Medieval"
 		"ru"		"Лучник средневековья"
 	}
-	"Medival Halberdier"
+	"Medieval Halberdier"
 	{
 		"en"		"Medieval Halberdier"
 		"pt"		"Alabardeiro Medieval"
 		"ru"		"Алебардист средневековья"
 	}
-	"Medival Elite Longbowmen"
+	"Medieval Elite Longbowmen"
 	{
 		"en"		"Medieval Elite Longbowmen"
 		"pt"		"Arqueiro Elite Medieval"
@@ -1773,6 +1789,10 @@
 		"en"		"God Alaxios"
 		"ru"		"Бог Алаксиос"
 	}
+	"Sea-Infected God Alaxios"
+	{
+		"en"		"Sea-Infected God Alaxios"
+	}
 	"Seaborn Scout"
 	{
 		"en"		"Seaborn Scout"
@@ -1838,6 +1858,10 @@
 		"en"		"Intermediate Medic Mage"
 		"ru"		"Средний маг-медик"
 	}
+	"Barracks Advanced Mage"
+	{
+		"en"		"Advanced Medic Mage"
+	}
 	"Barracks Ikunagae"
 	{
 		"en"		"Iku Nagae"
@@ -1874,10 +1898,9 @@
 		"en"		"Barrager"
 		"ru"		"Бомбардир"
 	}
-	"Barracks Berserker"
+	"Barracks Mecha Loader"
 	{
-		"en"		"Berserker"
-		"ru"		"Берсерк"
+		"en"		"Mecha Loader"
 	}
 	"Barracks Crossbow Medic"
 	{
@@ -1961,30 +1984,60 @@
 		"en"		"Seaborn Guard"
 		"ru" 		"Морерождённый страж"
 	}
+	"Guard"
+	{
+		"en"		"Guard"
+		"ru" 		"страж"
+	}
 	"Seaborn Defender"
 	{
 		"en"		"Seaborn Defender"
 		"ru" 		"Морерождённый Защитник"
+	}
+	"Defender"
+	{
+		"en"		"Defender"
+		"ru" 		"Защитник"
 	}
 	"Seaborn Vanguard"
 	{
 		"en"		"Seaborn Vanguard"
 		"ru" 		"Морерождённый Авангард"
 	}
+	"Vanguard"
+	{
+		"en"		"Vanguard"
+		"ru" 		"Авангард"
+	}
 	"Seaborn Caster"
 	{
 		"en"		"Seaborn Caster"
 		"ru" 		"Морерождённый Маг"
+	}
+	"Caster"
+	{
+		"en"		"Caster"
+		"ru" 		"Маг"
 	}
 	"Seaborn Specialist"
 	{
 		"en"		"Seaborn Specialist"
 		"ru" 		"Морерождённый Специалист"
 	}
+	"Specialist"
+	{
+		"en"		"Specialist"
+		"ru" 		"Специалист"
+	}
 	"Seaborn Supporter"
 	{
 		"en"		"Seaborn Supporter"
 		"ru" 		"Морерождённый Поддерживающий"
+	}
+	"Supporter"
+	{
+		"en"		"Supporter"
+		"ru" 		"Поддерживающий"
 	}
 	"Theocracy"
 	{
@@ -2193,6 +2246,10 @@
 	{
 		"en"	"Stellar Weaver"
 	}
+	"Interstellar Weaver"
+	{
+		"en"	"Interstellar Weaver"
+	}
 	"Daedalus"
 	{
 		"en"	"Daedalus"
@@ -2309,6 +2366,14 @@
 	{
 		"en"	"Ancient Demon"
 	}
+	"Hallam's Great Demon"
+	{
+		"en"	"Hallam's Great Demon"
+	}
+	"Ihanal Demon Whisperer"
+	{
+		"en"	"Ihanal Demon Whisperer"
+	}
 	"Winter Sniper"
 	{
 		"en"	"Winter Sniper"
@@ -2384,6 +2449,10 @@
 	"Mad Doctor"
 	{
 		"en"	"Mad Doctor"
+	}
+	"John The Almighty"
+	{
+		"en"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 	}
 	"Abomination"
 	{
@@ -2477,14 +2546,22 @@
 	{
 		"en"	"Wandering Spirit"
 	}
-	"Vengefull Spirit"
+	"Vengeful Spirit"
 	{
-		"en"	"Vengefull Spirit"
+		"en"	"Vengeful Spirit"
 	}
 	"Fallen Warrior"
 	{
 		"en"	"Guln the Fallen One"
 		"ru" 	"Павший Гулн"
+	}
+	"Ravaging Intellectual"
+	{
+		"en"	"Ravaging Intellectual?"
+	}
+	"Ravaging Intellectual Desc"
+	{
+		"en"	"A promise is a promise.\nApplies a buff on hit against you.\nHas an aura that gives the buff to allies.\nWhen losing a life, spawns a clone that does the same as him, and always attacks the same target.\nSometimes teleports all allies to a location."
 	}
 	"Lex"
 	{
@@ -2622,6 +2699,10 @@
 	{
 		"en"	"A stronger Variant"
 	}
+	"Elite Rulianius"
+	{
+		"en"	"Elite Rulianius"
+	}
 	"Rulianius"
 	{
 		"en"	"Rulianius"
@@ -2645,8 +2726,19 @@
 	}
 	"Twirl Desc"
 	{
-		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
-		"ru" 	"Лидер Руины\nОна не сражается с вами с полную силу...\nОна только использует силу магического гребеня\nЕсли вы увидете эффекты на её руках,Это озночает что одно из её Комбо готово"
+		"en"	"The ruler of Ruina\nIt is advidsable not to group up aggainst her\nIf 4 or more people are near her, she has the ability to teleport\nIn addition, on wave 60, walk in a circle to avoid her Ion spam attack."
+	}
+	"Lelouch Blade"
+	{
+		"en"	"Lelouch's Blade"
+	}
+	"Lelouch Crystal"
+	{
+		"en"	"Lelouch's Crystal"
+	}
+	"Lelouch"
+	{
+		"en"	"Lelouch"
 	}
 	"Fractal Cannon"
 	{
@@ -2891,7 +2983,7 @@
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
+		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
 		"ru" 	"Сердце Бездны...\nПервая способность:Засасывает всех союзников и если слишком близко,Наносит очень много урона.\nМожет ударить несколько раз подряд если долго никого не бил.\nВо время его существования,Распостронение бездны Очень усилено.\nКоллоны бездны появляются под врагами.\nЕсли Уровень здоровья пал до низкого начнёт распостронять бездну там где ходит.\n(заглушение)ослабляет Усиление от бездны"
 	}
 	"Voided Diversionistico"
@@ -2931,6 +3023,10 @@
 		"en"	"Vhxis"
 		"ru" 	"Всикс"
 	}
+	"Random Boss"
+	{
+		"en"	"Random Boss"
+	}
 	"Vhxis Desc"
 	{
 		"en"	"The void keeper, killing him is not a good idea...\n(Silence makes voidbuff weaker)"
@@ -2959,6 +3055,18 @@
 	"Chaos Insane Desc"
 	{
 		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
+	}
+	"Chaos Swordsman"
+	{
+		"en"	"Chaos Swordsman"
+	}
+	"Chaos Swordsman Desc"
+	{
+		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
+	}
+	"Chaos Mercenaries"
+	{
+		"en"	"Chaos Mercenaries"
 	}
 	"Chaos Knight?"
 	{
@@ -3177,6 +3285,22 @@
 		"en" 		"Zombine"
 		"ru" 		"Зомбайн"
 	}
+	"Headcrab"
+	{
+		"en"		"Headcrab"
+	}
+	"Poison Headcrab"
+	{
+		"en"		"Poison Headcrab"
+	}
+	"Z-Main Headcrab"
+	{
+		"en"		"Z-Main Headcrab"
+	}
+	"Z-Main Poison Zombie"
+	{
+		"en"		"Z-Main Poison Zombie"
+	}
 	"3650"
 	{
 		"en"		"3650"
@@ -3199,6 +3323,14 @@
 	"Sentinel Desc"
 	{
 		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
+	}
+	"Antinel"
+	{
+		"en"		"Antinel"
+	}
+	"SIGMALLER"
+	{
+		"en"		"SIGMALLER"
 	}
 	"Ironborus"
 	{
@@ -3562,6 +3694,14 @@
 		"en"	"Victorian Signaller"
 		"ko"	"빅토리아 전령병"
 	}
+	"Chaos Affected Signaller"
+	{
+		"en"	"Chaos Affected Signaller"
+	}
+	"Chaos Affected Eradicator"
+	{
+		"en"	"Chaos Affected Eradicator"
+	}
 	"Humbee"
 	{
 		"en"	"Irongate Humbee"
@@ -3651,6 +3791,10 @@
 	{
 		"en"	"Trooper  Assulter"
 		"ko"	"트루퍼 보병"
+	}
+	"Cyborg Assulter"
+	{
+		"en"	"Cyborg Assulter"
 	}
 	"Anti-Armor Infantry"
 	{
@@ -3942,6 +4086,10 @@
 	{
 		"en"		"Smith"
 	}
+	"Hijacked Red Pill"
+	{
+		"en"		"Hijacked Red Pill"
+	}
 	"Seaborn Metro Cop"
 	{
 		"en"		"Seaborn Metro Cop"
@@ -4007,6 +4155,10 @@
 	{
 		"en"		"Matrix"
 	}
+	"Mutations"
+	{
+		"en"		"Mutations"
+	}
 	"Positive"
 	{
 		"en"		"Positive"
@@ -4014,5 +4166,45 @@
 	"Negative"
 	{
 		"en"		"Negative"
+	}
+	"Major Voided"
+	{
+		"en"	"Major Voided"
+	}
+	"Chaos Evil Demon"
+	{
+		"en"	"Chaos Evil Demon"
+	}
+	"Disturbed Umbral"
+	{
+		"en" "Disturbed Umbral"
+	}
+	"Immutable Heavy"
+	{
+		"en" "Immutable Heavy"
+	}
+	"Vanishing Matter"
+	{
+		"en" "Vanishing Matter"
+	}
+	"Spotter"
+	{
+		"en" "Spotter"
+	}
+	"Annoying Spirit"
+	{
+		"en" "Annoying Spirit"
+	}
+	"Darkened Heavy"
+	{
+		"en" "Darkened Heavy"
+	}
+	"ATV"
+	{
+		"en"	"ATV"
+	}
+	"Airboat"
+	{
+		"en"	"Airboat"
 	}
 }

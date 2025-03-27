@@ -168,6 +168,7 @@ static float BlitzLight_Radius[MAXENTITIES];
 static float BlitzLight_Angle[MAXENTITIES];
 
 static int g_ProjectileModelRocket;
+static bool b_musicprecached;
 
 static bool b_lost;
 
@@ -180,6 +181,8 @@ public void Blitzkrieg_OnMapStart()
 	g_b_angered=false;
 	b_lost=false;
 
+	b_musicprecached = false;
+
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blitzkrieg");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blitzkrieg");
@@ -190,6 +193,15 @@ public void Blitzkrieg_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+void PrecacheBlitzMusic()
+{
+	if(b_musicprecached)
+		return;
+	
+	b_musicprecached = true;
+	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
 }
 
 static void ClotPrecache()
@@ -206,7 +218,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_DeathSounds1));   i++) { PrecacheSound(g_DeathSounds1[i]);   }
-	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+
+	PrecacheBlitzMusic();
+
 	g_ProjectileModelRocket = PrecacheModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_1);
 	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_2);
@@ -398,9 +412,40 @@ methodmap Blitzkrieg < CClotBody
 		//rocket launcher stuff
 		fl_rocket_firerate[npc.index] = 0.4;	//Base firerate of blitz, overriden once npc takes damage
 		fl_rocket_base_dmg[npc.index] = 5.0;	//The base dmg that all scaling is done on
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(Waves_GetRound()+1);
+		}
 		
-		i_currentwave[npc.index]=(ZR_GetWaveCount()+1);
+		i_currentwave[npc.index]=(Waves_GetRound()+1);
+		if(StrContains(data, "wave_15") != -1)
+		{
+			i_currentwave[npc.index] = 15;
+		}
+		else if(StrContains(data, "wave_30") != -1)
+		{
+			i_currentwave[npc.index] = 30;
+		}
+		else if(StrContains(data, "wave_45") != -1)
+		{
+			i_currentwave[npc.index] = 45;
+		}
+		else if(StrContains(data, "wave_60") != -1)
+		{
+			i_currentwave[npc.index] = 60;
+		}
+		
 		b_thisNpcIsARaid[npc.index] = true;
 		
 		//wave control	| at which wave or beyond will the life activate | Now that I think about it, this one might just be useless
@@ -1491,7 +1536,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
 				}
 				case 2:
 				{
@@ -1570,7 +1615,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
 				}
 				case 2:
 				{
@@ -1582,7 +1627,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
 				}
 			}
 		}
@@ -1643,7 +1688,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
 				}
 				case 2:
 				{
@@ -1655,7 +1700,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
 				}
 			}
 		}

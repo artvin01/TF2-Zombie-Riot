@@ -204,7 +204,7 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
 {
 	int botNum;
-	bool priority;
+	bool priority, players;
 	KillFeed feed;
 
 	if(victim <= MaxClients)
@@ -212,6 +212,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		feed.userid = GetClientUserId(victim);
 
 		priority = true;
+		players = true;
 	}
 	else if(!b_NpcHasDied[victim])
 	{
@@ -273,6 +274,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		if(attacker <= MaxClients)
 		{
 			feed.attacker = GetClientUserId(attacker);
+			players = true;
 		}
 		else if(!b_NpcHasDied[attacker])
 		{
@@ -308,6 +310,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		{
 			// Assister
 			feed.assister = GetClientUserId(lasthit);
+			players = true;
 		}
 	}
 	else if(lasthit == -69)
@@ -343,6 +346,10 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		if(!feed.attacker)
 			feed.attacker = feed.userid;
 	}
+
+	// Don't show a kill feed that nobody is going to see
+	if(!priority && !players)
+		return;
 
 	feed.weaponid = weapon;
 	feed.damagebits = damagetype;

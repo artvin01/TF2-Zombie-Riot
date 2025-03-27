@@ -260,8 +260,7 @@ public void NecroCombine_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-	
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true, .ExtraValidityFunction = Necromancy_AttackMarkOnly);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	int owner;
@@ -271,7 +270,7 @@ public void NecroCombine_ClotThink(int iNPC)
 	{
 		int PrimaryThreatIndex = npc.m_iTarget;
 		
-		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
+		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true) && NpcStats_IberiaIsEnemyMarked(PrimaryThreatIndex))
 		{
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				
@@ -376,7 +375,7 @@ public void NecroCombine_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
-			npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, _, true, .ExtraValidityFunction = Necromancy_AttackMarkOnly);
 		}
 		npc.PlayIdleAlertSound();
 	}

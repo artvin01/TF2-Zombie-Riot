@@ -214,7 +214,7 @@ public void SniperAccuracy_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						StartBleedingTimer_Against_Client(target, npc.index, 100000.0, 5);
+						StartBleedingTimer(target, npc.index,100000.0, 5, -1, DMG_TRUEDAMAGE, 0);
 					}
 				}
 				delete swingTrace;

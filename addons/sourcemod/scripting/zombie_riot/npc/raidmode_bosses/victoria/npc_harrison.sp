@@ -414,7 +414,23 @@ methodmap Harrison < CClotBody
 			RaidAllowsBuildings = false;
 			CPrintToChatAll("{skyblue}Harrison{default}: Spotted the Intruders. I guess they leave me no chance but to do it myself");
 			
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			float value;
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(Waves_GetRound()+1);
+				value = float(Waves_GetRound()+1);
+			}
+
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -436,11 +452,11 @@ methodmap Harrison < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+			if(value > 40 && value < 55)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(ZR_GetWaveCount()+1 > 55)
+			else if(value > 55)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.85;
@@ -1316,17 +1332,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 								{
 									if(!NpcStats_IsEnemySilenced(npc.index))
 									{
-										if(target > MaxClients)
-										{
-											StartBleedingTimer_Against_Client(target, npc.index, damage * 0.1, 4);
-										}
-										else
-										{
-											if (!IsInvuln(target))
-											{
-												StartBleedingTimer_Against_Client(target, npc.index, damage * 0.1, 4);
-											}
-										}
+										StartBleedingTimer(targetTrace, npc.index, damage * 0.1, 4, -1, DMG_TRUEDAMAGE, 0);
 									}
 								}
 											
@@ -1584,7 +1590,7 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 	{
 		case 1:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			SetVariantInt(32);
@@ -1592,7 +1598,7 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 		}
 		case 2:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			SetVariantInt(32);
@@ -1690,7 +1696,7 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 			AcceptEntityInput(prop2, "DisableCollision");
 			vAngles[0] += 90.0;
 			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
-			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(2.0, Timer_RemoveEntityFancy, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
 		/*
@@ -1707,7 +1713,7 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
 		CreateEarthquake(spawnLoc, 1.0, BombRange * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombRange * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombRange * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increase
 	
 		return Plugin_Stop;
 	}

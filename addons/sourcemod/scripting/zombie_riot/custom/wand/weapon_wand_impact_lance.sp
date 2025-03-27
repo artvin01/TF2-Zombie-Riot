@@ -151,7 +151,7 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 				return;
 			}
 
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 30.0);
 
 			Current_Mana[client]-=mana_cost;
@@ -271,7 +271,7 @@ public void Impact_Lance_Throw_Lance(int client, int weapon, bool crit, int slot
 		
 		delay_hud[client] = 0.0;
 
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
 
 		float speed = 1250.0;
@@ -371,7 +371,7 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Impact_Lance_StartTouch);
 		Impact_Lance_Effects_Projectile(client, entity);
-		
+		/*
 		if(!Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 		{
 
@@ -380,6 +380,7 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 			pack2.WriteCell(EntIndexToEntRef(client));
 			pack2.WriteCell(EntIndexToEntRef(entity));
 		}
+		*/
 	}
 	return;
 }

@@ -319,7 +319,7 @@ static void Internal_ClotThink(int iNPC)
 			SetEntityRenderColor(npc.m_iWearable3, 1, 1, 1, 1);
 			
 			float  dmg=40.0;
-			if(ZR_GetWaveCount()<40)
+			if(Waves_GetRound()<40)
 			{
 				dmg=20.0;
 			}
@@ -407,7 +407,7 @@ static void Internal_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float damage=150.0;
-								if(ZR_GetWaveCount()<40)
+								if(Waves_GetRound()<40)
 								{
 									damage=75.0;
 								}

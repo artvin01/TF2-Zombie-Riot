@@ -145,7 +145,7 @@ void ShowClientManualAmmoCount(int client, int weapon)
 	}
 
 	PrintHintText(client, buffer);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 /*
 DataPack pack = new DataPack();

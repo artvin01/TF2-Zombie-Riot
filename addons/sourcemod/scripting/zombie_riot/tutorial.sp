@@ -3,7 +3,7 @@
 
 bool b_IsInTutorialMode[MAXTF2PLAYERS];
 int i_TutorialStep[MAXTF2PLAYERS];
-float f_TutorialUpdateStep[MAXTF2PLAYERS];
+bool b_GrantFreeItemsOnce[MAXTF2PLAYERS];
 
 static Handle SyncHud;
 
@@ -24,12 +24,15 @@ void Tutorial_ClientSetup(int client, int value)
 	if(value != 6)
 	{
 	 	StartTutorial(client);
+		//in tutorial mode, give enough so they can build both at once and enough metal too.
+		b_GrantFreeItemsOnce[client] = true;
 	}
 	else
 	{
 		//reset tutorial to start if they didnt buy anything.
 		if(value <= 3)
 			value = 0;
+		b_GrantFreeItemsOnce[client] = true;
 		SetClientTutorialStep(client, 0);
 		b_IsInTutorialMode[client] = false;
 	}
@@ -112,7 +115,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 1:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 1.5, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_1");
 					//"This is the short Tutorial. Open chat and type /store to open the store!"
 					
@@ -121,7 +124,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 2:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 1.5, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_2");
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
 					//"Good! You can also Open the store with TAB when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
@@ -129,79 +132,144 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 3:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 5.0, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_3");
-					f_TutorialUpdateStep[client] = GetGameTime() + 5.0;
+					CPrintToChat(client,"{crimson}[ZR]{white}%t","tutorial_3");
+					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					SetClientTutorialStep(client, 4);
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
 					//"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
 				}
 				case 4:
 				{
-					float vecTarget[3];
-					int entity = MaxClients + 1;
-					char buffer[255];
-					while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+					if(TeutonType[client] == TEUTON_NONE)
 					{
-						NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
-						if(!StrContains(buffer, "obj_perkmachine"))
+						if(b_GrantFreeItemsOnce[client] && Level[client] < 5)
 						{
-							GetAbsOrigin(entity, vecTarget);
-							vecTarget[2] += 70.0;
-							
-							SetGlobalTransTarget(client);
-							Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Perk Machine");
-							Event event = CreateEvent("show_annotation");
-							if(event)
-							{
-								event.SetFloat("worldPosX", vecTarget[0]);
-								event.SetFloat("worldPosY", vecTarget[1]);
-								event.SetFloat("worldPosZ", vecTarget[2]);
-								event.SetFloat("lifetime", 10.0);
-								event.SetString("text", buffer);
-								event.SetString("play_sound", "vo/null.mp3");
-								event.SetInt("id", UniqueIdDo++);
-								event.FireToClient(client);
-							}
-							break;
+							b_GrantFreeItemsOnce[client] = false;
+							Store_GiveSpecificItem(client, "Construction Novice");
+							SetAmmo(client, Ammo_Metal, 2500);
+							CurrentAmmo[client][3] = GetAmmo(client, 3);
 						}
+						SetGlobalTransTarget(client);
+
+						int entity = MaxClients + 1;
+						char buffer[255];
+						bool FoundOne = false;
+						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+						{
+							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+							if(!StrContains(buffer, "obj_perkmachine"))
+							{
+								float vecTarget[3];
+								vecTarget[2] += 60.0;
+								
+								SetGlobalTransTarget(client);
+								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Perk Machine");
+								Event event = CreateEvent("show_annotation");
+								FoundOne = true;
+								if(event)
+								{
+									event.SetFloat("worldNormalX", vecTarget[0]);
+									event.SetFloat("worldNormalY", vecTarget[1]);
+									event.SetFloat("worldNormalZ", vecTarget[2]);
+									event.SetInt("follow_entindex", entity);
+									event.SetFloat("lifetime", 10.0);
+									event.SetString("text", buffer);
+									event.SetString("play_sound", "vo/null.mp3");
+									KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+									UniqueIdDo++;
+									event.SetInt("id", UniqueIdDo);
+									i_CurrentIdBeforeAnnoation[client] = UniqueIdDo;
+									event.FireToClient(client);
+								}
+								break;
+							}
+						}
+						if(!FoundOne)
+							CPrintToChat(client,"{crimson}[ZR]{white}%t","Tutorial Show Hint Perk Machine Build One");
+						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
 					}
-					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 				}
 				case 5:
 				{
-					float vecTarget[3];
-					int entity = MaxClients + 1;
-					char buffer[255];
-					while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+					if(TeutonType[client] == TEUTON_NONE)
 					{
-						NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
-						if(!StrContains(buffer, "obj_packapunch"))
+						if(b_GrantFreeItemsOnce[client])
 						{
-							GetAbsOrigin(entity, vecTarget);
-							vecTarget[2] += 70.0;
-
-							SetGlobalTransTarget(client);
-							Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Pack a Punch");
-							Event event = CreateEvent("show_annotation");
-							if(event)
-							{
-								event.SetFloat("worldPosX", vecTarget[0]);
-								event.SetFloat("worldPosY", vecTarget[1]);
-								event.SetFloat("worldPosZ", vecTarget[2]);
-								event.SetFloat("lifetime", 10.0);
-								event.SetString("text", buffer);
-								event.SetString("play_sound", "vo/null.mp3");
-								event.SetInt("id", UniqueIdDo++);
-								event.FireToClient(client);
-							}
-							break;
+							b_GrantFreeItemsOnce[client] = false;
+							Store_GiveSpecificItem(client, "Construction Novice");
+							SetAmmo(client, Ammo_Metal, 2500);
+							CurrentAmmo[client][3] = GetAmmo(client, 3);
 						}
+						bool FoundOne = false;
+						int entity = MaxClients + 1;
+						char buffer[255];
+						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+						{
+							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+							if(!StrContains(buffer, "obj_packapunch"))
+							{
+								float vecTarget[3];
+								vecTarget[2] += 60.0;
+
+								SetGlobalTransTarget(client);
+								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Pack a Punch");
+								Event event = CreateEvent("show_annotation");
+								FoundOne = true;
+								if(event)
+								{
+									event.SetFloat("worldNormalX", vecTarget[0]);
+									event.SetFloat("worldNormalY", vecTarget[1]);
+									event.SetFloat("worldNormalZ", vecTarget[2]);
+									event.SetInt("follow_entindex", entity);
+									event.SetFloat("lifetime", 10.0);
+									event.SetString("text", buffer);
+									event.SetString("play_sound", "vo/null.mp3");
+									KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+									UniqueIdDo++;
+									event.SetInt("id", UniqueIdDo);
+									i_CurrentIdBeforeAnnoation[client] = UniqueIdDo;
+									event.FireToClient(client);
+								}
+								break;
+							}
+						}
+						if(!FoundOne)
+							CPrintToChat(client,"{crimson}[ZR]{white}%t","Tutorial Show Hint Pack a Punch Build One");
+
+						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
 					}
-					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
+				}
+				case 6:
+				{
+					
+					SetGlobalTransTarget(client);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_4");
+					f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
+					SetClientTutorialStep(client, 7);
+				}
+				case 7:
+				{
+					
+					SetGlobalTransTarget(client);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_5");
+					TutorialEndFully(client);
 				}
 			}
 		}
+	}
+}
+
+void KillMostCurrentIDAnnotation(int client, int id)
+{
+	Event event = CreateEvent("hide_annotation");
+	if(event)
+	{
+		event.SetInt("id", id);
+		event.FireToClient(client);
 	}
 }
 

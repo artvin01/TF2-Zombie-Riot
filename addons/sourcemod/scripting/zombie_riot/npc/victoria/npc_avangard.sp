@@ -298,7 +298,7 @@ static void ClotThink(int iNPC)
 		bool villagerexists = false;
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 			if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianMechanist_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;
