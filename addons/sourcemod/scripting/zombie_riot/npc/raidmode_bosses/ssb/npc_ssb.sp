@@ -4034,7 +4034,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_LastSpell[npc.index] = -1;
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 
-		int wave = ZR_GetWaveCount() + 1;
+		int wave = Waves_GetRound() + 1;
 		if (wave <= 15)
 			SSB_WavePhase = 0;
 		else if (wave <= 30)
