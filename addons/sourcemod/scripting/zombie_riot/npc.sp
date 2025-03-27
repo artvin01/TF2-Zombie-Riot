@@ -773,6 +773,10 @@ void NPC_ConfigSetup()
 	Psycho_OnMapStart_NPC();
 	Suicider_OnMapStart_NPC();
 	Crazylady_OnMapStart_NPC();
+	Children_OnMapStart_NPC();
+	Taller_OnMapStart_NPC();
+	Baby_OnMapStart_NPC();
+	Stranger_OnMapStart_NPC();
 	CuredPurnell_OnMapStart_NPC();
 	CorruptedBarney_OnMapStart_NPC();
 	XenoMalfuncRobot_OnMapStart_NPC();
@@ -1527,6 +1531,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/cof/npc_psycho.sp"
 #include "zombie_riot/npc/cof/npc_suicider.sp"
 #include "zombie_riot/npc/cof/npc_crazylady.sp"
+#include "zombie_riot/npc/cof/npc_children.sp"
+#include "zombie_riot/npc/cof/npc_taller.sp"
+#include "zombie_riot/npc/cof/npc_baby.sp"
+#include "zombie_riot/npc/cof/npc_stranger.sp"
 #include "zombie_riot/npc/ally/npc_cured_purnell.sp"
 #include "zombie_riot/npc/cof/npc_corruptedbarney.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_malfunctioning_robot.sp"
