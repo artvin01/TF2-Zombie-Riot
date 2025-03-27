@@ -109,6 +109,10 @@ static Action TimerEffect(Handle timer, int client)
 							}
 							
 							MerchantThink(client, cost);
+
+							if(LastMann)
+								cost /= 2;
+
 							SetAmmo(client, Ammo_Metal, ammo - cost);
 							CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 						}
@@ -609,6 +613,8 @@ bool Merchant_OnLethalDamage(int attacker, int client)
 	{
 		int ammo = GetAmmo(client, Ammo_Metal);
 		int cost = MERCHANT_METAL_DRAIN * 13 * RoundFloat(Pow(2.0, float(MerchantEffect[client])));
+		if(LastMann)
+			cost /= 2;
 		if(attacker > 0 && b_thisNpcIsARaid[attacker])
 		{
 			cost *= 2;
@@ -775,6 +781,8 @@ static void MerchantStart(int client, int slot)
 	MerchantStyle[client] = MerchantStyleSelect[client];
 	int ammo = GetAmmo(client, Ammo_Metal);
 	int cost = RoundFloat(MERCHANT_METAL_DRAIN * fcost);
+	if(LastMann)
+		cost /= 2;
 	if(ammo < (cost * 2))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");

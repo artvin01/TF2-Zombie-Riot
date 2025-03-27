@@ -401,7 +401,7 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 {
 	if(npc.m_flNextRangedAttack < gameTime)
 	{
-		npc.m_flNextRangedAttack = GetGameTime() + 7.5;
+		npc.m_flNextRangedAttack = gameTime + 7.5;
 		npc.m_flNextRangedAttackHappening = gameTime + 1.0;
 		npc.m_iOverlordComboAttack = 10;
 		npc.PlayRangedPrepareSound();

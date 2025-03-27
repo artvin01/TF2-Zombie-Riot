@@ -2478,9 +2478,14 @@ void ApplyLastmanOrDyingOverlay(int client)
 	{
 		switch(Yakuza_Lastman())
 		{
-			case 1,2,3,4,7:
+			case 1,2,3,4,7,9:
 			{
 				return;
+			}
+			case 8:
+			{
+				if(!HasSpecificBuff(client, "Death is comming."))
+					return;
 			}
 		}
 	}

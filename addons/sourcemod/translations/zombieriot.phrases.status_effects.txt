@@ -324,6 +324,14 @@
 	{
 		"en"	"Your HP cannot drop below 1 no matter what."
 	}
+	"Death is comming."
+	{
+		"en"	"Death is comming."
+	}
+	"Death is comming. Desc"
+	{
+		"en"	"Try what you want, you will die eventually."
+	}
 	"Thick Blood"
 	{
 		"en"	"Thick Blood"
@@ -387,6 +395,22 @@
 	"Void Presence Desc"
 	{
 		"en"	"Shows that youre standing in void creep, void creatures in keep get stronger."
+	}
+	"Sea Presence"
+	{
+		"en"	"Sea Presence"
+	}
+	"Sea Presence Desc"
+	{
+		"en"	"Shows that youre standing in sea creep, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
+	}
+	"Sea Strength"
+	{
+		"en"	"Sea Strength"
+	}
+	"Sea Strength Desc"
+	{
+		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage delt by 10%%, Decreases damage taken by 10%%."
 	}
 	"Void Strength I"
 	{
@@ -483,6 +507,14 @@
 	"Hussar's Warscream Desc"
 	{
 		"en"	"Increases damage dealt by 10%%\nBlocked by Silence."
+	}
+	"Flaggliants Punishment"
+	{
+		"en"	"Flaggliants Punishment"
+	}
+	"Flaggliants Punishment Desc"
+	{
+		"en"	"Increases damage dealt by 35%%\nDecreases damage taken by 20%%\nIncreases attack/reload speed & healrate by 10%%"
 	}
 	"Oceanic Singing"
 	{
@@ -1022,7 +1054,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" "Increaces player attack/reload speed & healrate and reloadspeed by 20%% (stacks)"
+		"en" "Increaces player attack/reload speed & healrate and reloadspeed by 20%%"
 	}
 	"Physical Therapy"
 	{

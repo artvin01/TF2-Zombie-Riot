@@ -36,10 +36,11 @@ static bool LastSepsisRaid[MAXTF2PLAYERS];
 
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 static Handle EffectTimer[MAXTF2PLAYERS];
-
+static bool Precached = false;
 void Flagellant_MapStart()
 {
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	Precached = false;
 }
 
 void Flagellant_Enable(int client, int weapon)
@@ -48,6 +49,12 @@ void Flagellant_Enable(int client, int weapon)
 	{
 		case WEAPON_FLAGELLANT_MELEE:
 		{
+			if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
+			{
+				// MASS REPLACE THIS IN ALL FILES
+				PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
+				Precached = true;
+			}
 			MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
 			delete EffectTimer[client];
@@ -72,6 +79,13 @@ void Flagellant_Enable(int client, int weapon)
 	}
 }
 
+bool IsFlaggilant(int client)
+{
+	if(EffectTimer[client] != null)
+		return true;
+
+	return false;
+}
 void Flagellant_MiniBossChance(int &chance)
 {
 	if(chance > 0)
@@ -141,6 +155,29 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 					}
 					ApplyRapidSuturing(client);
 					ApplyStatusEffect(client, client, "Thick Blood", 0.6);
+					
+					if(LastMann)
+					{
+						float maxhealth = 1.0;
+						float health = float(GetEntProp(client, Prop_Data, "m_iHealth"));
+						maxhealth = float(ReturnEntityMaxHealth(client));
+
+						if(health >= maxhealth * 0.2)
+						{
+							ApplyStatusEffect(client, client, "Infinite Will", 3.0);
+							ApplyStatusEffect(client, client, "Flaggliants Punishment", 10.0);
+						}
+						else
+						{
+							for(int LoopClient = 1; LoopClient <= MaxClients; LoopClient++)
+							{
+								if(IsClientInGame(LoopClient) && IsPlayerAlive(LoopClient))
+								{
+									ApplyStatusEffect(LoopClient, LoopClient, "Death is comming.", 1.0);
+								}
+							}
+						}
+					}
 					
 					return Plugin_Continue;
 				}
@@ -675,7 +712,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
 		Elemental_AddChaosDamage(target, client, 10, _, true);
-		ApplyStatusEffect(client, target, "Hussar's Warscream", 10.0);
+		ApplyStatusEffect(client, target, "Flaggliants Punishment", 10.0);
 
 		if(target > MaxClients)
 		{

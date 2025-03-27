@@ -724,6 +724,7 @@ void ZR_MapStart()
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
+	Seaborn_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	WavesUpdateDifficultyName();
@@ -1980,6 +1981,21 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							CPrintToChatAll("{crimson}The Machine Within %N screams: FOR VICTORY",client);
 							Yakuza_Lastman(7);
+						}
+						if(IsFlaggilant(client))
+						{
+							CPrintToChatAll("{crimson}The undying soul %N refuses to ever die.",client);
+							Yakuza_Lastman(8);
+						}
+						if(SeaMelee_IsSeaborn(client))
+						{
+							CPrintToChatAll("{crimson}The sea entirely corrupts %N.",client);
+							Yakuza_Lastman(9);
+						}
+						if(Merchant_IsAMerchant(client))
+						{
+							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
+							Yakuza_Lastman(10);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)

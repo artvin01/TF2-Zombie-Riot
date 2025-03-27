@@ -8,6 +8,12 @@ static bool SpecialEffect[MAXTF2PLAYERS];
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 static Handle EffectTimer[MAXTF2PLAYERS];
 
+static bool b_musicprecached;
+
+public void Seaborn_OnMapStart()
+{
+	b_musicprecached = false;
+}
 public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 {
 	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
@@ -63,6 +69,15 @@ void SeaMelee_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{
+		if(CvarFileNetworkDisable.IntValue <= 0)
+		{
+			if(!b_musicprecached)
+			{
+				PrecacheSoundCustom("#zombiesurvival/wave_music/bat_rglk2boss1.mp3");
+			}
+			b_musicprecached = true;
+		}
+
 		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
 		delete EffectTimer[client];
@@ -72,7 +87,10 @@ void SeaMelee_Enable(int client, int weapon)
 
 bool SeaMelee_IsSeaborn(int client)
 {
-	return ParticleRef[client] != -1;
+	if(EffectTimer[client] == null)
+		return false;
+
+	return true;
 }
 
 public Action SeaMelee_TimerEffect(Handle timer, int client)
@@ -88,6 +106,12 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 				{
 					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_ULPIANUS:
 					{
+						if(LastMann)
+						{
+							float enemypos[3]; 
+							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", enemypos);
+							SeaFounder_SpawnNethersea(enemypos);
+						}
 						b_IsCannibal[client] = true;
 
 						bool special = SpecialEffectFor[client] > GetGameTime();
@@ -209,13 +233,20 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 
-	int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
-	if(entity > MaxClients)
+	int SpawnMaxEnemies = 2;
+	if(LastMann)
+		SpawnMaxEnemies = 4;
+		
+	for(int i; i < SpawnMaxEnemies; i++)
 	{
-		fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
-		CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-		i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-		b_ShowNpcHealthbar[entity] = true;
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
+		if(entity > MaxClients)
+		{
+			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
+			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+			b_ShowNpcHealthbar[entity] = true;
+		}
 	}
 }
 
@@ -238,8 +269,11 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 	float pos1[3], ang[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-
-	for(int i; i < 2; i++)
+	int SpawnMaxEnemies = 2;
+	if(LastMann)
+		SpawnMaxEnemies = 4;
+		
+	for(int i; i < SpawnMaxEnemies; i++)
 	{
 		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
@@ -276,13 +310,22 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 	float pos1[3], /*pos2[3], */ang[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-
-	for(int i; i < 3; i++)
+	
+	int SpawnMaxEnemies = 3;
+	if(LastMann)
+	{
+		SpawnMaxEnemies = 6;
+		Ability_Apply_Cooldown(client, slot, 30.0);
+	}
+		
+	for(int i; i < SpawnMaxEnemies; i++)
 	{
 		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
 		{
 			int maxhealth = SDKCall_GetMaxHealth(client) / 2; //2x health cus no resistance.
+			if(LastMann)
+				maxhealth *= 2;
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);

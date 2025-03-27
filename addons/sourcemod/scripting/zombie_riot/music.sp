@@ -532,6 +532,10 @@ void Music_EndLastmann(bool Reinforce=false)
  						StopSound(client, SNDCHAN_STATIC, "#music/hl2_song23_suitsong3.mp3");
 					case 7:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3", 2.0);
+					case 8:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/flaggilant_lastman.mp3", 2.0);
+					case 9:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3", 2.0);
 				}
 
 				SetMusicTimer(client, 0);
@@ -980,6 +984,16 @@ void Music_Update(int client)
 				{
 					EmitCustomToClient(client, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 228);
+				}
+				case 8:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/flaggilant_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					SetMusicTimer(client, GetTime() + 121);
+				}
+				case 9:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					SetMusicTimer(client, GetTime() + 113);
 				}
 				default:
 				{	
