@@ -349,6 +349,8 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 }
 
 //Got lazy, tired of doing so many indexs.
+
+
 int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 {
 	//doesnt even have abuff...
@@ -2171,6 +2173,20 @@ void StatusEffects_Silence()
 	*/
 	strcopy(data.BuffName, sizeof(data.BuffName), "Intangible");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ᶅ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Infinite Will");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ⱦ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;

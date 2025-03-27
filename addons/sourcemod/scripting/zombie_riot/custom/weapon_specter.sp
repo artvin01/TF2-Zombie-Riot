@@ -155,11 +155,10 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			ApplyTempAttrib(weapon, 412, 0.35, SPECTER_BONE_FRACTURE_DURATION);
-			CreateTimer(0.5, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		}
 		else
 		{
-			CreateTimer(0.1, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			ApplyStatusEffect(client, client, "Infinite Will", SPECTER_BONE_FRACTURE_DURATION);
 		}
 
 		ApplyTempAttrib(weapon, 6, 0.5,SPECTER_BONE_FRACTURE_DURATION);

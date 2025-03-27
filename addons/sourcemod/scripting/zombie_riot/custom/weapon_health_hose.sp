@@ -55,7 +55,7 @@ public void Weapon_Health_Hose(int client, int weapon, bool crit, int slot)
 
 public void Weapon_Health_Hose_Shotgun(int client, int weapon, bool crit, int slot)
 {
-	Weapon_Hose_Shoot(client, weapon, crit, slot, Hose_Velocity, Hose_BaseHeal * 2.0, Hose_LossPerHit, Hose_Min, 3, 4.0, HOSE_PARTICLE, false);
+	Weapon_Hose_Shoot(client, weapon, crit, slot, Hose_Velocity, Hose_BaseHeal * 2.0, Hose_LossPerHit, Hose_Min, 3, 2.0, HOSE_PARTICLE, false);
 }
 
 public void Weapon_Health_Hose_GiveUber(int client, int weapon, bool crit, int slot)
@@ -65,7 +65,7 @@ public void Weapon_Health_Hose_GiveUber(int client, int weapon, bool crit, int s
 
 public void Weapon_Health_Hose_Shotgun_GiveUber(int client, int weapon, bool crit, int slot)
 {
-	Weapon_Hose_Shoot(client, weapon, crit, slot, Hose_Velocity, Hose_BaseHeal * 2.0, Hose_LossPerHit, Hose_Min, 3, 4.0, HOSE_PARTICLE, true);
+	Weapon_Hose_Shoot(client, weapon, crit, slot, Hose_Velocity, Hose_BaseHeal * 2.0, Hose_LossPerHit, Hose_Min, 3, 2.0, HOSE_PARTICLE, true);
 }
 
 public void Weapon_Health_Hose_Uber_Sprayer(int client, int weapon, bool crit, int slot)

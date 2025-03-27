@@ -2377,7 +2377,7 @@
 	}
 	"Specter Pap 2b"
 	{
-		"en"	"Gains the ability to go Invulnerable but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
+		"en"	"Gains the ability to go Invulnerable but lose all health and become stunned afterwards.\nDuring raids, you instead gain 65%% resistance and your health doesnt drain."
 	}
 	"Specter Pap 3"
 	{

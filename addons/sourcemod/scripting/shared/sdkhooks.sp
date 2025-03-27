@@ -1913,6 +1913,13 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 	{
 		//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 3");
 		//the client has a suit, save them !!
+		if(HasSpecificBuff(victim, "Infinite Will"))
+		{
+			//I AM IMMORTAL!!!!!!!!!!!!!!!!!!
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 		if(i_HealthBeforeSuit[victim] > 0)
 		{
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 4");

@@ -316,6 +316,14 @@
 	{
 		"en"	"Allows you to phase through enemies."
 	}
+	"Infinite Will"
+	{
+		"en"	"Infinite Will"
+	}
+	"Infinite Will Desc"
+	{
+		"en"	"Your HP cannot drop below 1 no matter what."
+	}
 	"Thick Blood"
 	{
 		"en"	"Thick Blood"

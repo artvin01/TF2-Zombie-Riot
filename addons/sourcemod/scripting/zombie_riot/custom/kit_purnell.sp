@@ -282,6 +282,7 @@ public void Purnell_PrimaryShove(int client, int weapon, bool crit, int slot) //
 				knockback = PURNELL_KNOCKBACK;
 			}
 		}
+		knockback *= 0.5;
 		fl_Push_Knockback[client] = knockback;
 		Ability_Apply_Cooldown(client, slot, 2.5 * Attributes_Get(weapon, 6, 1.0));
 		DataPack pack = new DataPack();
@@ -409,7 +410,8 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 				case 1:
 				{
 					float knockback = fl_Push_Knockback[client];
-					SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
+					if(!b_thisNpcIsARaid[EnemyHit])
+						SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
 					Logic_Purnell_Debuff(client, EnemyHit, damage, weapon);
 					float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
 					SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
@@ -432,7 +434,8 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 				if(AdditionalBonusRaidHit)
 					Add_OneClip_Purnell(Reolver, client);
 
-				Saga_ChargeReduction(client, Reolver, 1.5);
+				float CurrentCD = Ability_Check_Cooldown(client, 1, Reolver);
+				Ability_Apply_Cooldown(client, 1, CurrentCD - 1.5, Reolver);
 			}
 			EmitCustomToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 2.0, 100);
 		}
