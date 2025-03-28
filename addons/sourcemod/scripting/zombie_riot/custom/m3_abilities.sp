@@ -733,7 +733,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 				if(Healing_Amount<1.0)
 					Healing_Amount=1.0;
 				
-				Base_HealingMaxPoints=RoundToCeil(9000.0 * Healing_Amount);
+				Base_HealingMaxPoints=RoundToCeil(3500.0 * Healing_Amount);
 			}
 			case WEAPON_SEABORN_MISC:
 			{
@@ -741,7 +741,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 				if(Healing_Amount<1.0)
 					Healing_Amount=1.0;
 
-				Base_HealingMaxPoints=RoundToCeil(5900.0 * Healing_Amount);
+				Base_HealingMaxPoints=RoundToCeil(3000.0 * Healing_Amount);
 			}
 			default:
 				Base_HealingMaxPoints=RoundToCeil(1900.0 * Healing_Amount);
