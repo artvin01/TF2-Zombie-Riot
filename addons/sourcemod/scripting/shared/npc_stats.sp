@@ -5047,8 +5047,8 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(b_ThisEntityIgnoredBeingCarried[enemy])
-				return false;
+		//	if(b_ThisEntityIgnoredBeingCarried[enemy])
+		//		return false;
 				
 			return true;
 		}

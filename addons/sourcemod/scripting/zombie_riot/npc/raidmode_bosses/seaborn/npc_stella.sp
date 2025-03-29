@@ -61,6 +61,8 @@ Spiral laser crystals?
 Give Karlas smth?
 
 */
+#define STELLA_DEBUFF_RANGE 100.0
+bool b_allow_karlas_transform[MAXENTITIES];
 
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 
@@ -230,6 +232,11 @@ methodmap Stella < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flInvulnerability
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
 	property float m_flNorm_Attack_Throttle
 	{
@@ -713,6 +720,8 @@ methodmap Stella < CClotBody
 		else if(StrContains(data, "hell") != -1)
 			wave = -1;
 
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
+		
 		b_NormLaserOnly[npc.index] = (StrContains(data, "normonly") != -1);
 
 		npc.m_bSaidWinLine = false;
@@ -745,6 +754,9 @@ methodmap Stella < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_bDissapearOnDeath = true;
+		ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
+		f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE, //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
+		b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		
 		RaidModeTime = GetGameTime() + 250.0;
 		
@@ -1001,6 +1013,21 @@ static void Internal_ClotThink(int iNPC)
 {
 	Stella npc = view_as<Stella>(iNPC);
 
+	if(npc.m_flInvulnerability)
+	{
+		int ally = npc.Ally;
+		Stella npcally = view_as<Stella>(ally);
+		if(IsValidEntity(ally) && npcally.m_flInvulnerability)
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(ally));
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+		else if(!IsValidEntity(ally))
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+	}
+	
 	if(RaidModeTime < GetGameTime() && !b_IonStormInitiated[npc.index])
 	{
 		if(!npc.m_bSaidWinLine)
@@ -2072,6 +2099,34 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
+	
+	int health;
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToNearest(damage) > health && !npc.m_flInvulnerability)
+	{
+		int chose = GetRandomInt(1, 4);
+		switch(chose)
+		{
+			case 1: Stella_Lines(npc, "{snow}You... You really think thats all i got....?!");	
+			case 2: Stella_Lines(npc, "{snow}Oh lord.. this actually hurts...");
+			case 3: Stella_Lines(npc, "{snow}Karlas...");
+			case 4: Stella_Lines(npc, "{snow}Its kinda cold.");
+		}
+		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
+		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
+		if(npc.Ally)
+		{
+			if(!npc.m_flInvulnerability)
+			{
+				Karlas karl = view_as<Karlas>(npc.Ally);
+				karl.Anger = true;
+				b_allow_karlas_transform[karl.index] = true;
+				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+			}
+		}
+		npc.m_flInvulnerability = 1.0;
+	}
 	
 	return Plugin_Changed;
 }
@@ -2164,14 +2219,17 @@ static void Internal_NPCDeath(int entity)
 		{
 			if(npc.Ally)
 			{
-				Karlas karl = view_as<Karlas>(npc.Ally);
-				karl.Anger = true;
-				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-				switch(GetRandomInt(1,3))
+				if(!npc.m_flInvulnerability)
 				{
-					case 1: Stella_Lines(npc, "Hmph, I'll let {crimson}Karlas{snow} handle this");
-					case 2: Stella_Lines(npc, "You still have {crimson}Karlas{snow} to deal with... heh");
-					case 3: Stella_Lines(npc, "I hope you like spining blades");
+					Karlas karl = view_as<Karlas>(npc.Ally);
+					karl.Anger = true;
+					NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					switch(GetRandomInt(1,3))
+					{
+						case 1: Stella_Lines(npc, "Hmph, I'll let {crimson}Karlas{snow} handle this");
+						case 2: Stella_Lines(npc, "You still have {crimson}Karlas{snow} to deal with... heh");
+						case 3: Stella_Lines(npc, "I hope you like spining blades");
+					}	
 				}
 			}
 			else
@@ -2281,6 +2339,13 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 		npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
 		TE_SetupBeamPoints(flPos, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 2.0, 2.0, 0, 0.01, color, 3);	
 		TE_SendToAll(0.0);
+		//uncomment this and the other thing to reenable
+		if(npc.m_flNorm_Attack_Throttle < GameTime)
+		{
+			npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
+			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+			spawnRing_Vectors(VecSelfNpcabs, STELLA_DEBUFF_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, /*duration*/ 0.11, 1.0, 1.0, 1);	
+		}
 	}
 
 	float Attack_Speed = 3.3;	//how often she attacks.
@@ -2334,6 +2399,7 @@ static float Modify_Damage(float damage)
 	damage*=RaidModeScaling;
 	return damage;
 }
+
 public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 {
 	Stella npc = view_as<Stella>(iNPC);
@@ -2345,18 +2411,9 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		npc.Set_Crest_Charging_Phase(false);
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
+		
 		return Plugin_Stop;
 	}
-
-	/*
-	//uncomment this and the other thing to reenable
-	bool update = false;
-	if(npc.m_flNorm_Attack_Throttle < GameTime)
-	{
-		npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
-		update = true;
-	}*/
-
 	npc.m_bAllowBackWalking = true;
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);
@@ -2424,7 +2481,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	//if(update)
 	{
 		//extreme amounts of trolley
-		float Dmg = Modify_Damage(1.1);
+		float Dmg = Modify_Damage(npc.Anger ? 2.0 : 1.1);
 		Dmg *= (0.75-Logarithm(Ratio));
 		Dmg /= TickrateModify;	//since the damage is dealt every tick, make it so the dmg is modified by tickrate modif.
 		Dmg /=f_AttackSpeedNpcIncreace[npc.index];
@@ -2435,6 +2492,15 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 
+		//uncomment this and the other thing to reenable
+		if(npc.m_flNorm_Attack_Throttle < GameTime)
+		{
+			npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
+			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+			spawnRing_Vectors(VecSelfNpcabs, STELLA_DEBUFF_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, /*duration*/ 0.11, 3.0, 3.0, 1);	
+			
+			Explode_Logic_Custom(0.0, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
+		}
 		//CPrintToChatAll("Damage: %f", Dmg);
 	}
 
@@ -2472,6 +2538,14 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 	return Plugin_Continue;
 }
+
+float StellaDebuffTargetsInRange(int entity, int victim, float damage, int weapon)
+{
+	ApplyStatusEffect(victim, victim, "Teslar Electricution", 8.0);
+	return damage;
+}
+
+
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
 	float Direction[3];
