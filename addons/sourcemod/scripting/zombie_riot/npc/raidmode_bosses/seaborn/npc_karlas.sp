@@ -1396,6 +1396,31 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 
 		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : (npc.Anger ? 1.5 : 2.5));
 		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.3);
+
+		if(!b_lostOVERDRIVE[npc.index])
+		{
+			int Nearby = Nearby_Players(npc, 500.0);
+			if(Nearby < 0)
+				Nearby = 1;
+
+			float amount_of_people = ZRStocks_PlayerScalingDynamic();
+			if(amount_of_people > 14.0)
+				amount_of_people = 14.0;
+
+			float Ratio = 1.0 - (Nearby/amount_of_people)*2.0;
+			if(Ratio <0.1)
+				Ratio = 0.1;
+
+			float MinSpeed = 0.2;
+			float MinDelay = 0.1;
+
+			Swing_Speed = MinSpeed + (Swing_Speed - MinSpeed) * Ratio;
+			Swing_Delay = MinDelay + (Swing_Delay - MinDelay) * Ratio;
+
+			CPrintToChatAll("Swing_Speed: %f",Swing_Speed);
+			CPrintToChatAll("Swing_Delay: %f",Swing_Delay);
+		}
+
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
 
