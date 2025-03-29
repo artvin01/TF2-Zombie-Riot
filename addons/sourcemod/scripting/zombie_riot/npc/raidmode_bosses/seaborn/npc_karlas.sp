@@ -324,6 +324,11 @@ methodmap Karlas < CClotBody
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
+	property float m_flInvulnerability
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
 	property int m_iParticles1
 	{
 		public get()		 
@@ -511,6 +516,8 @@ methodmap Karlas < CClotBody
 		fl_teleport_strike_recharge[npc.index] = GetGameTime()+25.0;
 		b_teleport_strike_active[npc.index]=false;
 
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
+
 		Zero(fl_dance_of_light_sound_spam_timer);
 
 		npc.m_fbGunout = false;
@@ -661,6 +668,21 @@ static void Internal_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 
+	if(npc.m_flInvulnerability)
+	{
+		int ally = npc.Ally;
+		Karlas npcally = view_as<Karlas>(ally);
+		if(IsValidEntity(ally) && npcally.m_flInvulnerability)
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(ally));
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+		else if(!IsValidEntity(ally))
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+	}
+	
 	if(RaidModeTime < GetGameTime() && !npc.Ally && !b_lostOVERDRIVE[npc.index])
 	{
 		CPrintToChatAll("{crimson}Karlas{snow}: >:)");
@@ -2303,6 +2325,21 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	}
+	int health;
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToNearest(damage) > health && !npc.m_flInvulnerability)
+	{
+		CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
+		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
+		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
+		int ally = npc.Ally;
+		if(IsValidEntity(ally))
+		{
+			Stella donner = view_as<Stella>(ally);
+			donner.Anger=true;
+		}
+		npc.m_flInvulnerability = 1.0;
 	}
 	
 	return Plugin_Changed;
