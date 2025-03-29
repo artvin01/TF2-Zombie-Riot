@@ -839,7 +839,7 @@ void Music_Update(int client)
 	}
 	else
 	{
-		if(!LastMann)
+		if(!LastMann || (BlockLastmanMusicRaidboss(client) && LastMann))
 		{
 			if(RaidMusicSpecial1.PlayMusic(client))
 			{
@@ -885,7 +885,7 @@ void Music_Update(int client)
 
 		MusicTypeActive[client] = 0;
 
-		if(XenoExtraLogic() && !LastMann)
+		if((XenoExtraLogic() && !LastMann) || (XenoExtraLogic() && BlockLastmanMusicRaidboss(client) && LastMann))
 		{
 			//This is special code for a map.
 			if(CurrentRound +1 <= 30)
