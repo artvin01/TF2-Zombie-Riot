@@ -62,6 +62,7 @@ Give Karlas smth?
 
 */
 #define STELLA_DEBUFF_RANGE 100.0
+bool b_allow_karlas_transform[MAXENTITIES];
 
 static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 
@@ -2108,7 +2109,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		switch(chose)
 		{
 			case 1: Stella_Lines(npc, "{snow}You... You really think thats all i got....?!");	
-			case 2: Stella_Lines(npc, "{snow}Oh ruina in heavens this actually hurts...");
+			case 2: Stella_Lines(npc, "{snow}Oh lord.. this actually hurts...");
 			case 3: Stella_Lines(npc, "{snow}Karlas...");
 			case 4: Stella_Lines(npc, "{snow}Its kinda cold.");
 		}
@@ -2120,13 +2121,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			{
 				Karlas karl = view_as<Karlas>(npc.Ally);
 				karl.Anger = true;
+				b_allow_karlas_transform[karl.index] = true;
 				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-				switch(GetRandomInt(1,3))
-				{
-					case 1: Stella_Lines(npc, "Hmph, I'll let {crimson}Karlas{snow} handle this");
-					case 2: Stella_Lines(npc, "You still have {crimson}Karlas{snow} to deal with... heh");
-					case 3: Stella_Lines(npc, "I hope you like spining blades");
-				}	
 			}
 		}
 		npc.m_flInvulnerability = 1.0;
@@ -2485,7 +2481,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	//if(update)
 	{
 		//extreme amounts of trolley
-		float Dmg = Modify_Damage(1.1);
+		float Dmg = Modify_Damage(npc.Anger ? 2.0 : 1.1);
 		Dmg *= (0.75-Logarithm(Ratio));
 		Dmg /= TickrateModify;	//since the damage is dealt every tick, make it so the dmg is modified by tickrate modif.
 		Dmg /=f_AttackSpeedNpcIncreace[npc.index];
