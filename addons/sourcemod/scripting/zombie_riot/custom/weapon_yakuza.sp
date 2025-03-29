@@ -883,7 +883,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		}
 	}
 
-	if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+	if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING && LastAttack[attacker] != Attack_Grab)
 	{
 		bool failed = true;
 

@@ -316,7 +316,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 					{
 						if(IsValidEntity(base_boss) && base_boss > 0)
 						{
-							if(GetTeam(base_boss) != TFTeam_Red)
+							if(GetTeam(base_boss) != TFTeam_Red && IsEntityAlive(base_boss, true))
 							{
 								Cryo_FreezeZombie(entity, base_boss, 3);
 							}
