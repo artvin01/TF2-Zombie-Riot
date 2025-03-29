@@ -4703,6 +4703,11 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	{
 		return false;
 	}
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	if(!TheNPCs.IsValidNPC(npc.GetBaseNPC())) //do not allow them to jump.
+	{
+		return false;
+	}
 	float vecNPC[3], vecJumpVel[3];
 	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
 	
@@ -4750,7 +4755,6 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
 	}
 	
-	CClotBody npc = view_as<CClotBody>(bot_entidx);
 	npc.Jump();
 	npc.SetVelocity(vecJumpVel);
 	
