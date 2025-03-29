@@ -531,6 +531,7 @@ int i_ArmorSetting[MAXENTITIES][2];
 bool b_InteractWithReload[MAXENTITIES];
 bool b_DisableSetupMusic[MAXENTITIES];
 bool b_DisableStatusEffectHints[MAXENTITIES];
+bool b_LastManDisable[MAXENTITIES];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 int b_OnDeathExtraLogicNpc[MAXENTITIES];

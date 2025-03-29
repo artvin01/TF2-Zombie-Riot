@@ -128,6 +128,12 @@ methodmap JohnTheAllmighty < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
+	property float m_flBackupDespawnEmergency
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	
 	public JohnTheAllmighty(float vecPos[3], float vecAng[3], int ally)
 	{
 		JohnTheAllmighty npc = view_as<JohnTheAllmighty>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.5", "2000000000", ally, false, true, true));
@@ -171,7 +177,8 @@ methodmap JohnTheAllmighty < CClotBody
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
-		
+		npc.m_flBackupDespawnEmergency = GetGameTime() + 43.0;
+
 		if(FogEntity != INVALID_ENT_REFERENCE)
 		{
 			int entity = EntRefToEntIndex(FogEntity);
@@ -293,7 +300,7 @@ public void JohnTheAllmighty_ClotThink(int iNPC)
 		}
 	}
 
-	if(RaidModeTime < GetGameTime() && i_NpcWeight[npc.index] != 999)
+	if((RaidModeTime < GetGameTime() || npc.m_flBackupDespawnEmergency < GetGameTime()))
 	{
 		CPrintToChatAll("{crimson}John The Almighty Ran out of patience and leaves the battle field.");
 		SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
@@ -507,8 +514,6 @@ void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float dis
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 0.75;
-				if(i_NpcWeight[npc.index] == 999)
-					npc.m_flNextMeleeAttack = gameTime + 0.35;
 			}
 		}
 	}

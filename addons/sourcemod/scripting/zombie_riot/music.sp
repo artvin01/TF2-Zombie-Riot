@@ -508,6 +508,17 @@ bool AlternativeExtraLogic(bool NpcBuffing = false)
 	return false;
 }
 
+bool BlockLastmanMusicRaidboss(int client)
+{
+	if(RaidMusicSpecial1.Valid())
+	{
+		if(b_LastManDisable[client])
+		{
+			return true;
+		}
+	}
+	return false;
+}
 void Music_EndLastmann(bool Reinforce=false)
 {
 	if(LastMann)
@@ -516,30 +527,34 @@ void Music_EndLastmann(bool Reinforce=false)
 		{
 			if(IsClientInGame(client))
 			{
-				switch(Yakuza_Lastman())
+				if(!BlockLastmanMusicRaidboss(client))
 				{
-					case 1:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/yakuza_lastman.mp3", 2.0);
-					case 2:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/zealot_lastman_1.mp3", 2.0);
-					case 3:
-						StopCustomSound(client, SNDCHAN_STATIC, RAIDBOSS_TWIRL_THEME, 2.0);
-					case 4:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3", 2.0);
-					case 5:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman.mp3", 2.0);
-					case 6:
- 						StopSound(client, SNDCHAN_STATIC, "#music/hl2_song23_suitsong3.mp3");
-					case 7:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3", 2.0);
-					case 8:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/flaggilant_lastman.mp3", 2.0);
-					case 9:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3", 2.0);
+					switch(Yakuza_Lastman())
+					{
+						case 1:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/yakuza_lastman.mp3", 2.0);
+						case 2:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/zealot_lastman_1.mp3", 2.0);
+						case 3:
+							StopCustomSound(client, SNDCHAN_STATIC, RAIDBOSS_TWIRL_THEME, 2.0);
+						case 4:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3", 2.0);
+						case 5:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman.mp3", 2.0);
+						case 6:
+							StopSound(client, SNDCHAN_STATIC, "#music/hl2_song23_suitsong3.mp3");
+						case 7:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3", 2.0);
+						case 8:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/flaggilant_lastman.mp3", 2.0);
+						case 9:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3", 2.0);
+					}
+					SetMusicTimer(client, 0);
+					StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
+					
 				}
 
-				SetMusicTimer(client, 0);
-				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
 				SDKCall_SetSpeed(client);
 				TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 				TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
@@ -946,7 +961,7 @@ void Music_Update(int client)
 			}
 		}
 		
-		if(LastMann)
+		if(LastMann && !BlockLastmanMusicRaidboss(client))
 		{
 			switch(Yakuza_Lastman())
 			{

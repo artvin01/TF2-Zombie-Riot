@@ -508,11 +508,11 @@
 	{
 		"en"	"Increases damage dealt by 10%%\nBlocked by Silence."
 	}
-	"Flaggliants Punishment"
+	"Flagellants Punishment"
 	{
-		"en"	"Flaggliants Punishment"
+		"en"	"Flagellants Punishment"
 	}
-	"Flaggliants Punishment Desc"
+	"Flagellants Punishment Desc"
 	{
 		"en"	"Increases damage dealt by 35%%\nDecreases damage taken by 20%%\nIncreases attack/reload speed & healrate by 10%%"
 	}

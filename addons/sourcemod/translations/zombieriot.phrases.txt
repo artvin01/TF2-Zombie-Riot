@@ -3467,6 +3467,14 @@
 	{
 		"en" 	"Disable Status Effect Hints"
 	}
+	"Disable Status Lastmann Music"
+	{
+		"en" 	"Disable Status Lastmann Music"
+	}
+	"Disable Status Lastmann Music Explain"
+	{
+		"en" 	"This will disable lastman music for you during raidbosses music"
+	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"

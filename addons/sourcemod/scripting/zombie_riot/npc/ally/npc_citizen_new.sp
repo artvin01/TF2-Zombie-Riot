@@ -3234,6 +3234,7 @@ public void Citizen_ClotThink(int iNPC)
 								healing *= 0.33;
 							}
 							int BeamIndex = ConnectWithBeam(npc.index, ally, 50, 125, 50, 1.5, 1.5, 1.35, "sprites/laserbeam.vmt");
+							SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
 

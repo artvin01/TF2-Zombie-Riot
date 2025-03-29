@@ -2186,7 +2186,7 @@ void StatusEffects_Silence()
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Infinite Will");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ⱦ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ł");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -2739,7 +2739,7 @@ void StatusEffects_Medieval()
 	StatusEffect_AddGlobal(data);
 
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Flaggliants Punishment");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Flagellants Punishment");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₾");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused

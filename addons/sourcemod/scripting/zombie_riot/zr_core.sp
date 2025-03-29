@@ -2002,8 +2002,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							if(IsClientInGame(i) && !IsFakeClient(i))
 							{
-								Music_Stop_All(i);
-								SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
+								if(!BlockLastmanMusicRaidboss(i))
+								{
+									Music_Stop_All(i);
+									SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
+								}
 								SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 							}
 						}

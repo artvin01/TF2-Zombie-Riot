@@ -97,7 +97,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(!dieingstate[client] && IsPlayerAlive(client))
+		if(IsPlayerAlive(client))
 		{
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(weapon != INVALID_ENT_REFERENCE)
@@ -144,26 +144,11 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 								SpecialEffect[client] = special;
 							}
 						}
-						
-						return Plugin_Continue;
 					}
 				}
+				return Plugin_Continue;
 			}
 		}
-		
-		if(ParticleRef[client] != -1)
-		{
-			int entity = EntRefToEntIndex(ParticleRef[client]);
-			if(entity > MaxClients)
-			{
-				TeleportEntity(entity, OFF_THE_MAP);
-				RemoveEntity(entity);
-			}
-
-			ParticleRef[client] = -1;
-		}
-
-		return Plugin_Continue;
 	}
 		
 	if(ParticleRef[client] != -1)
@@ -475,6 +460,7 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				SetAmmo(client, 21, CurrentAmmo[client][21]);
 
 				int BeamIndex = ConnectWithBeam(client, target, 70, 200, 70, 2.0, 2.0, 1.1, "sprites/laserbeam.vmt");
+				SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
 				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 
 				return;

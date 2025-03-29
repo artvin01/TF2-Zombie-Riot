@@ -627,6 +627,7 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 		Purnell_AllyBuffApply(client, target, buff_apply, DurationGive);
 
 		int BeamIndex = ConnectWithBeam(client, target, 255, 255, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+		SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
 		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 		float HealedAlly[3];
 		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", HealedAlly);

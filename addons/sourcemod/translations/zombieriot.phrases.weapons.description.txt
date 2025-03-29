@@ -993,10 +993,11 @@
 	}
 	"Fire Axe Pap 2"
 	{
-		"en"	"Increased damage and attackspeed"
-		"fr"	"Dégats et cadence des attaques améliorés"
-		"ru"	"Увеличенный урон, скорость атаки."
-		"chi"   "增加伤害和攻击速度。"
+		"en"	"Increased damage and attackspeed\nWith M2 you ignite upto 5 targets around you."
+	}
+	"Fire Axe Pap 3"
+	{
+		"en"	"Increased damage and attackspeed\nYour M2 now also shoots a fireball."
 	}
 	
 	"Survivalist Blade Desc"
@@ -1682,9 +1683,9 @@
 	}
 	"Compacted Rounds Desc"
 	{
-		"en"	"20%% more weapon damage, 15%% faster attackspeed, reload speed and 25%% more max clip."
-		"fr"	"+50%% dégats, +15%% cadence de tir et vitesse de rechargement, +25%% capacité chargeur"
-		"chi"	"+20%%武器伤害，+15%%攻击速度和装弹速度，+25%%弹夹容量。"
+		"en"	"15%% faster attackspeed, reload speed and 25%% more max clip."
+		"fr"	"+15%% cadence de tir et vitesse de rechargement, +25%% capacité chargeur"
+		"chi"	"+15%%攻击速度和装弹速度，+25%%弹夹容量。"
 	}
 	"Ammo Coat Elite Desc"
 	{
@@ -3109,6 +3110,10 @@
 		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract more mini-bosses. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
 		"fr"	"L'abilité de vous soigner peut vous sortir du KO, avec une chance d'ignorer la limite de KO. Cet ensemble pourrait attirer plus de Mini-boss. INSPECT + TAB vous permet de lire l'information des abilités de votre arme."
 		"chi"	"在倒地时使用自疗，复活，另有几率无视复活次数。这个套装更容易拉精英怪的仇恨。检查武器+tab可以读取更多武器信息。"
+	}
+	"The Flagellant Generic Pap"
+	{
+		"en"	"Increased stats overall."
 	}
 	"Acid Rain Desc"
 	{
