@@ -1114,7 +1114,7 @@ static void Blade_Logic(Karlas npc)
 		{
 			case 2:	//Aggresive - spin around him while extended
 			{
-				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 8.0*RaidModeScaling);
+				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 12.0*RaidModeScaling);
 			}
 			case 4:	//becomes pseudo wings. neutral state for when the things are "recharging"
 			{
@@ -1225,7 +1225,8 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 
 	float Distance = GetVectorDistance(SelfVec, VecTarget);
 	float Timer_Span = Distance/Speed;
-	Timer_Span *=0.5 + 0.25;
+	Timer_Span *=(npc.Anger ? 0.75 : 0.5) + 0.25;
+	
 
 	CreateTimer(Timer_Span, KillProjectileHoming, EntIndexToEntRef(Proj), TIMER_FLAG_NO_MAPCHANGE);
 
@@ -1414,7 +1415,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 				if(Ratio <0.0)
 					Ratio = 0.0;
 
-				float MinSpeed = 0.3;
+				float MinSpeed = (npc.Anger ? 0.175 : 0.3);
 				float MinDelay = 0.1;	//must be lower, since uh, otherwise the melee doesn't ever hit
 
 				Swing_Speed = MinSpeed + (Swing_Speed - MinSpeed) * Ratio;
@@ -1553,7 +1554,7 @@ static void Fire_Wave_Barrage(Karlas npc)
 	
 	//taunt_the_fist_bump_fistbump
 
-	int Amt = (npc.Anger ? 9 : 7); 
+	int Amt = (npc.Anger ? 9 : 12); 
 	float Fire_Rate = (npc.Anger ? 0.5 : 1.0);	//how long between slicer bursts
 
 	if(npc.m_iSlicersFired > Amt+1)
