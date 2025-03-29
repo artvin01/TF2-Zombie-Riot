@@ -206,8 +206,11 @@ methodmap Karlas < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		int rng = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound() {
@@ -1364,7 +1367,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 	}
 		
 
-	if(!b_lostOVERDRIVE[npc.index] && (fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime)))
+	if(fl_retreat_timer[npc.index] != -1.0 && !b_lostOVERDRIVE[npc.index] && (fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime)))
 	{
 		npc.m_bAllowBackWalking=true;
 		float vBackoffPos[3];
@@ -1395,35 +1398,30 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 			return;
 
 		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : (npc.Anger ? 1.5 : 2.5));
-		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.3);
+		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.25);
 
-		if(!b_lostOVERDRIVE[npc.index])
-		{
-			int Nearby = Nearby_Players(npc, 500.0);
-			if(Nearby < 0)
-				Nearby = 1;
-
-			float amount_of_people = ZRStocks_PlayerScalingDynamic();
-			if(amount_of_people > 14.0)
-				amount_of_people = 14.0;
-
-			float Ratio = 1.0 - (Nearby/amount_of_people)*2.0;
-			if(Ratio <0.1)
-				Ratio = 0.1;
-
-			float MinSpeed = 0.2;
-			float MinDelay = 0.1;
-
-			Swing_Speed = MinSpeed + (Swing_Speed - MinSpeed) * Ratio;
-			Swing_Delay = MinDelay + (Swing_Delay - MinDelay) * Ratio;
-
-			CPrintToChatAll("Swing_Speed: %f",Swing_Speed);
-			CPrintToChatAll("Swing_Delay: %f",Swing_Delay);
-		}
-
+		bool Silence = NpcStats_IsEnemySilenced(npc.index);
+		float Knockback_Deal = Silence ? 560.0 : 900.0;
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
+			if(!b_lostOVERDRIVE[npc.index])
+			{
+				int Nearby = Nearby_Players(npc, 400.0);
 
+				int amount_of_people = 6;
+
+				float Ratio = 1.0 - (Nearby/float(amount_of_people));
+				if(Ratio <0.0)
+					Ratio = 0.0;
+
+				float MinSpeed = 0.3;
+				float MinDelay = 0.1;	//must be lower, since uh, otherwise the melee doesn't ever hit
+
+				Swing_Speed = MinSpeed + (Swing_Speed - MinSpeed) * Ratio;
+				Swing_Delay = MinDelay + (Swing_Delay - MinDelay) * Ratio;
+
+				Knockback_Deal *=Ratio;
+			}
 			//Play attack ani
 			if (!npc.m_flAttackHappenswillhappen)
 			{
@@ -1436,7 +1434,10 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 				
 			if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 			{
-				fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+				if(Swing_Speed > 0.9)
+					fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+				else
+					fl_retreat_timer[npc.index] = -1.0;
 
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -1459,13 +1460,13 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 						//clause ae karlas knockback
 						if(!b_lostOVERDRIVE[npc.index])
 						{
-							bool Silence = NpcStats_IsEnemySilenced(npc.index);
+							
 							if(IsValidClient(target) && !Silence)
 							{
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
-							Custom_Knockback(npc.index, target, Silence ? 560.0 : 900.0, true);
+							Custom_Knockback(npc.index, target, Knockback_Deal, true);
 						}
 						SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();	
