@@ -32,7 +32,7 @@ public const int AmmoData[][] =
 	{ 10, 10 },			//Stickybombs
 	{ 10, 100 },		//Minigun Barrel
 	{ 10, 10 },			//Custom Bolt
-	{ 10, 100 },		//Medical Syringes
+	{ 10, 75 },		//Medical Syringes
 	{ 10, 12 },			//Sniper Rifle Rounds
 	{ 10, 12 },			//Arrows
 	{ 10, 60 },			//SMG Magazines
@@ -724,6 +724,7 @@ void ZR_MapStart()
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
+	Seaborn_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	WavesUpdateDifficultyName();
@@ -1019,6 +1020,7 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
+	
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);
@@ -1981,13 +1983,31 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}The Machine Within %N screams: FOR VICTORY",client);
 							Yakuza_Lastman(7);
 						}
+						if(IsFlaggilant(client))
+						{
+							CPrintToChatAll("{crimson}The undying soul %N refuses to ever die.",client);
+							Yakuza_Lastman(8);
+						}
+						if(SeaMelee_IsSeaborn(client))
+						{
+							CPrintToChatAll("{crimson}The sea entirely corrupts %N.",client);
+							Yakuza_Lastman(9);
+						}
+						if(Merchant_IsAMerchant(client))
+						{
+							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
+							Yakuza_Lastman(10);
+						}
 						
 						for(int i=1; i<=MaxClients; i++)
 						{
 							if(IsClientInGame(i) && !IsFakeClient(i))
 							{
-								Music_Stop_All(i);
-								SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
+								if(!BlockLastmanMusicRaidboss(i))
+								{
+									Music_Stop_All(i);
+									SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
+								}
 								SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 							}
 						}

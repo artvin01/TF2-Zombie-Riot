@@ -91,11 +91,14 @@ enum
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
+#define MEDIGUN_ATTRIBUTE_EXPONTENT 1.45
+
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
+ConVar CvarAutoSelectWave;
 #endif
 ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;
@@ -530,6 +533,7 @@ int i_ArmorSetting[MAXENTITIES][2];
 bool b_InteractWithReload[MAXENTITIES];
 bool b_DisableSetupMusic[MAXENTITIES];
 bool b_DisableStatusEffectHints[MAXENTITIES];
+bool b_LastManDisable[MAXENTITIES];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 int b_OnDeathExtraLogicNpc[MAXENTITIES];
@@ -989,6 +993,7 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit_mini4.wav");
 	PrecacheSound("mvm/mvm_revive.wav");
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
+	PrecacheSound("weapons/samurai/tf_marked_for_death_indicator.wav");
 	Zero(f_PreventMedigunCrashMaybe);
 	Zero(f_ClientReviveDelayReviveTime);
 	Zero(f_MutePlayerTalkShutUp);
@@ -1513,6 +1518,7 @@ public void OnClientPutInServer(int client)
 	if(ForceNiko)
 		OverridePlayerModel(client, NIKO_2, true);
 #endif
+	MedigunPutInServerclient(client);
 }
 
 public void OnClientCookiesCached(int client)
@@ -1665,6 +1671,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 #endif
+//Is player active? atleast somewhat.
+	if(buttons > 0)
+	{
+		f_PlayerLastKeyDetected[client] = GetGameTime() + 5.0;
+	}
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
 #if defined RTS
@@ -2193,19 +2204,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 			if((!StrContains(classname, "tf_weapon_knife") || i_MeleeAttackFrameDelay[weapon] == 0) && i_InternalMeleeTrace[weapon])
 			{
-				DataPack pack = new DataPack();
-				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(EntIndexToEntRef(weapon));
-				pack.WriteString(classname);
-				Timer_Do_Melee_Attack(pack);
+				Timer_Do_Melee_Attack(weapon, client, 0, classname);
 			}
 			else if(i_InternalMeleeTrace[weapon])
 			{
-				DataPack pack = new DataPack();
-				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(EntIndexToEntRef(weapon));
-				pack.WriteString(classname);
-				RequestFrames(Timer_Do_Melee_Attack, i_MeleeAttackFrameDelay[weapon], pack);
+				Timer_Do_Melee_Attack(weapon, client, i_MeleeAttackFrameDelay[weapon], classname);
 			}
 		}
 	}
@@ -2270,6 +2273,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity);
 		f_InBattleDelay[entity] = 0.0;
 		b_AllowCollideWithSelfTeam[entity] = false;
@@ -3244,7 +3248,7 @@ public Action AdminCheckKick(Handle timer, int ref)
 		}
 		else
 		{
-			KickAt = CvarMaxPlayerAlive.IntValue;
+			KickAt = CalcMaxPlayers();
 		}
 
 		int playersOnServer = CountPlayersOnServer();
@@ -3653,4 +3657,21 @@ void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 			Format(Buffer, Buffersize, "%t","Interact With T Spray");
 		}
 	}
+}
+
+
+
+int CalcMaxPlayers()
+{
+	int playercount = CvarMaxPlayerAlive.IntValue;
+	if(playercount < 1)
+		playercount = MAXTF2PLAYERS - 1;
+	/*
+	if(OperationSystem == OS_Linux)
+	{
+		playercount -= 2; //linux is abit shite
+	}
+	*/
+
+	return playercount;
 }

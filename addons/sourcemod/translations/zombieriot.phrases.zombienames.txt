@@ -682,9 +682,9 @@
 		"pt"		"Corredor de Serras"
 		"nl"		"Zaagloper"
 	}
-	"True Fusion Warrior"
+	"Infected Silvester"
 	{
-		"en" 		"True Fusion Warrior"
+		"en" 		"Infected Silvester"
 		"ru" 		"Истинный Термоядерный Воин"
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
@@ -1041,6 +1041,22 @@
 	"Corrupted Barney"
 	{
 		"en" 		"Corrupted Barney"
+	}
+	"Baby"
+	{
+		"en"		"Baby"
+	}
+	"Children"
+	{
+		"en"		"Children"
+	}
+	"Stranger"
+	{
+		"en"		"Stranger"
+	}
+	"Taller"
+	{
+		"en"		"Taller"
 	}
 	"Voided Vanguard"
 	{

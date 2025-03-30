@@ -205,6 +205,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Damage_dealt_in_total[client] = 0.0;
 			Resupplies_Supplied[client] = 0;
 			i_BarricadeHasBeenDamaged[client] = 0;
+			i_PlayerDamaged[client] = 0;
 			CashRecievedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;

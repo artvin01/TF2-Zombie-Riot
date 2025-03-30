@@ -2287,7 +2287,8 @@ int Citizen_Count()
 		{
 			Citizen npc = view_as<Citizen>(i);
 			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
-			if(!npc.m_bHero)
+			//and temp rebels!
+			if(!npc.m_bHero && !TempRebel[i])
 				count++;
 		}
 	}
@@ -2295,6 +2296,24 @@ int Citizen_Count()
 	return count;
 }
 
+void RespawnCheckCitizen()
+{
+	
+	int a, i;
+	while((i = FindEntityByNPC(a)) != -1)
+	{
+		if(i_NpcInternalId[i] == NPCId)
+		{
+			Citizen npc = view_as<Citizen>(i);
+
+			if(TempRebel[npc.index])
+			{
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				continue;
+			}
+		}
+	}
+}
 void Citizen_WaveStart()
 {
 	int a, i;
@@ -3215,6 +3234,7 @@ public void Citizen_ClotThink(int iNPC)
 								healing *= 0.33;
 							}
 							int BeamIndex = ConnectWithBeam(npc.index, ally, 50, 125, 50, 1.5, 1.5, 1.35, "sprites/laserbeam.vmt");
+							SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
 

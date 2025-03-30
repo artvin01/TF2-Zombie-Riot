@@ -462,6 +462,7 @@ static int i_halo_particles[MAXTF2PLAYERS+1];
 			
 static void Create_Halo_And_Wings(int client)
 {
+	//block
 	//Ty artvin <3
 	
 	int viewmodelModel;
@@ -490,7 +491,7 @@ static void Create_Halo_And_Wings(int client)
 		}
 	}
 	
-	if(pap == 1)
+//	if(pap == 1)
 	{
 		bool do_new = false;
 		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
@@ -501,6 +502,8 @@ static void Create_Halo_And_Wings(int client)
 		if(do_new)
 			Create_Halo(client);
 	}
+	/*
+	Block this, too many effects are bad.
 	if(pap == 2)
 	{
 		bool do_new = false;
@@ -532,6 +535,7 @@ static void Create_Halo_And_Wings(int client)
 			Create_Wings(client,viewmodelModel);
 		}
 	}
+	*/
 }
 
 static void Create_Halo(int client)
@@ -557,6 +561,7 @@ static void Create_Halo(int client)
 	SetParent(viewmodelModel, particle, "head");
 	i_halo_particles[client] = EntIndexToEntRef(particle);
 }
+/*
 static void Create_Wings(int client, int viewmodelModel)
 {
 	float flPos[3];
@@ -622,6 +627,7 @@ static void Create_Wings(int client, int viewmodelModel)
 	i_wing_particles[client][5] = EntIndexToEntRef(particle_0);
 	
 }
+*/
 static void Destroy_Halo_And_Wings(int client)
 {
 	for(int i=0 ; i < 6 ; i++)
@@ -644,6 +650,7 @@ static void Destroy_Halo_And_Wings(int client)
 	if(IsValidEntity(halo_particle))
 		RemoveEntity(halo_particle);
 }
+
 			
 		  ////////////////////
 		 /// Slicer Logic ///

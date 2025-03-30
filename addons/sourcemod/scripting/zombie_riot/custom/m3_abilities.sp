@@ -733,7 +733,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 				if(Healing_Amount<1.0)
 					Healing_Amount=1.0;
 				
-				Base_HealingMaxPoints=RoundToCeil(9000.0 * Healing_Amount);
+				Base_HealingMaxPoints=RoundToCeil(3500.0 * Healing_Amount);
 			}
 			case WEAPON_SEABORN_MISC:
 			{
@@ -741,7 +741,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 				if(Healing_Amount<1.0)
 					Healing_Amount=1.0;
 
-				Base_HealingMaxPoints=RoundToCeil(5900.0 * Healing_Amount);
+				Base_HealingMaxPoints=RoundToCeil(3000.0 * Healing_Amount);
 			}
 			default:
 				Base_HealingMaxPoints=RoundToCeil(1900.0 * Healing_Amount);
@@ -843,6 +843,8 @@ public void Reinforce(int client, bool NoCD)
 				continue;
 			if(!b_HasBeenHereSinceStartOfWave[client_check])
 				continue;
+			if(f_PlayerLastKeyDetected[client] < GetGameTime())
+				continue;
 
 			DeadPlayer=true;
 		}
@@ -857,7 +859,7 @@ public void Reinforce(int client, bool NoCD)
 
 		
 		i_MaxRevivesAWave++;
-		CPrintToChatAll("{green}%N Is calling for additonal Mercs for tempomary assistance...",client);
+		CPrintToChatAll("{green}%N Is calling for additonal Mercs for temporary assistance...",client);
 		float position[3];
 		GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);
 
@@ -1929,6 +1931,9 @@ stock int GetRandomDeathPlayer(int client)
 			continue;
 
 		if(!b_HasBeenHereSinceStartOfWave[client_check])
+			continue;
+
+		if(f_PlayerLastKeyDetected[client] < (GetGameTime() - 2.0))
 			continue;
 
 		victim[victims++] = client_check;

@@ -401,7 +401,7 @@ void Magnesis_AttemptThrow(int client, int weapon, int tier)
 		dmg *= Attributes_Get(weapon, 410, 1.0);
 
 		CalculateDamageForce(buffer, 100000.0 * mult, dmgForce);
-		SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, dmgForce, vicPos);
+		SDKHooks_TakeDamage(target, client, client, dmg, DMG_PLASMA, weapon, dmgForce, vicPos);
 
 		Current_Mana[client] -= cost;
 		Magnesis_TerminateEffects(client, EntRefToEntIndex(Magnesis_StartParticle[client]), EntRefToEntIndex(Magnesis_EndParticle[client]), true);
@@ -666,7 +666,7 @@ public void Magnesis_Logic(DataPack pack)
 				case 3:
 					ApplyStatusEffect(client, target, "Stranglation III", 0.1);
 			}
-			SDKHooks_TakeDamage(target, client, client, dmg, _, weapon, _, _, false);
+			SDKHooks_TakeDamage(target, client, client, dmg, DMG_PLASMA, weapon, _, _, false);
 		}
 	}
 

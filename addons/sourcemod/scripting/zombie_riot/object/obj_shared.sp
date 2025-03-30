@@ -168,18 +168,30 @@ methodmap ObjectGeneric < CClotBody
 		f3_CustomMinMaxBoundingBox[obj][0] = CustomThreeDimensions[0];
 		f3_CustomMinMaxBoundingBox[obj][1] = CustomThreeDimensions[1];
 		f3_CustomMinMaxBoundingBox[obj][2] = CustomThreeDimensions[2];
+		
+		if(FakemodelOffset)
+		{
+			f3_CustomMinMaxBoundingBox[obj][2] -=FakemodelOffset;
+		}
+		
 
-		float VecMin[3];
-		float VecMax[3];
-		VecMin = CustomThreeDimensions;
-		VecMin[0] *= -1.0;
-		VecMin[1] *= -1.0;
-		VecMin[2] = 0.0;
-		VecMax = CustomThreeDimensions;
+		if(FakemodelOffset)
+		{
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] -= FakemodelOffset;
+		}
+		else
+		{
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] = 0.0;
+		}
+
 		SetEntProp(obj, Prop_Data, "m_nSolidType", 2); 
 
-		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", VecMax);
-		SetEntPropVector(obj, Prop_Data, "m_vecMins", VecMin);
+		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", f3_CustomMinMaxBoundingBox[obj]);
+		SetEntPropVector(obj, Prop_Data, "m_vecMins", f3_CustomMinMaxBoundingBoxMinExtra[obj]);
 		//Running UpdateCollisionBox On this entity just makes it calculate its own one, bad.
 	//	objstats.UpdateCollisionBox();
 
@@ -194,6 +206,31 @@ methodmap ObjectGeneric < CClotBody
 		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
+		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
+		//Main prop is always half visible.
+		/*
+			how it works:
+			if a building is on cooldown/can have one, we spawn a 2nd prop, see below under fake model.
+			We made it entirely solid visibly, i.e. not half invisible and make the main prop invisible
+			to save on resources unlike before we just re-use the base model
+			We dont do set transmit on it, beacuse if its always half invisible, then that means we can just hide the fake model, i.e. fully visible to indicate the building
+			can be used
+			Zfighting cant happen beacuse its in the exact same position
+
+			im such a genuis...
+			-Artvin
+
+		*/
+		int entity;
+		if(DoFakeModel)
+		{
+			entity = objstats.EquipItemSeperate("partyhat", model);
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+			objstats.m_iWearable1 = entity;
+		}
+		/*
 		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(obj, 0, 0, 0, 0);
 		int entity;
@@ -211,6 +248,7 @@ methodmap ObjectGeneric < CClotBody
 		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		objstats.m_iWearable2 = entity;
+		*/
 
 		//think once
 		ObjBaseThink(objstats.index);
@@ -277,6 +315,8 @@ methodmap ObjectGeneric < CClotBody
 	} 
 	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
+		CClotBody npcself = view_as<CClotBody>(this.index);
+		npcself.SetActivity(animation, Is_sequence);
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
@@ -290,6 +330,8 @@ methodmap ObjectGeneric < CClotBody
 	}
 	public void SetPlaybackRate(float flSpeedAnim)
 	{
+		CClotBody npcself = view_as<CClotBody>(this.index);
+		npcself.SetPlaybackRate(flSpeedAnim);
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
@@ -586,7 +628,8 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				b_ThisEntityIgnored[objstats.index] = true;
 			}
 		}
-
+		SetEntityRenderColor(objstats.index, 55, 55, 55, 100);
+		
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
@@ -637,19 +680,25 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
 		{
-			SetEntityRenderColor(wearable, r, g, 0, 100);
-			/*
-			if(b_Anger[wearable])
-			{
-				this.SetSequence(0);	
-			}
-			else
-			{
-				this.SetSequence(0);
-			}
-			*/
+			SetEntityRenderColor(objstats.index, r, g, 0, 100);
+			SetEntityRenderColor(wearable, r, g, 0, 255);
+
 		}
-		
+		else
+		{
+			SetEntityRenderColor(objstats.index, r, g, 0, 255);
+		}
+		/*
+		if(b_Anger[wearable])
+		{
+			this.SetSequence(0);	
+		}
+		else
+		{
+			this.SetSequence(0);
+		}
+		*/
+		/*
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 		{
@@ -659,6 +708,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		{
 			SetEntityRenderColor(objstats.index, r, g, 0, 255);
 		}
+		*/
 		
 	}
 	return true;
@@ -1084,6 +1134,9 @@ void BuildingUpdateTextHud(int building)
 		float Offset[3];
 		Offset[2] = f3_CustomMinMaxBoundingBox[building][2];
 		Offset[2] += 12.0;
+	//	if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
+	//		Offset[2] += f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable3 = TextEntity;	

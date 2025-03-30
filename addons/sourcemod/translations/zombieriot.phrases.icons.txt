@@ -1,13 +1,8 @@
 "Phrases"
 {
-	"True Fusion Warrior Spawn"
+	"Silvester? Spawn"
 	{
-		"en" 		"The True Fusion Warrior has arrived."
-		"fr" 		"Le Guerrier Tru Fusion est ici."
-		"ru" 		"Истинный Термоядерный воин прибыл."
-		"pt"		"O Verdadeiro Guerreiro da Fusão chegou."
-		"nl"		"De Ware Fuziekrijger is gearriveerd"
-		"chi"       "真正的融合战士已经到来。"
+		"en" 		"Xeno infected Silvester Pleads for help!"
 	}
 	"Silvester And Waldch Arrived."
 	{

@@ -577,6 +577,8 @@ public void Skulls_Management(int client)
 			}
 		}
 	}
+	if(Skulls_ArrayStack[client].Length <= 0)
+		DeleteAllSkulls(client);
 }
 
 public void Skull_AttemptShoot(int ent, int client)
@@ -705,7 +707,7 @@ void GetAngleToPoint(int ent, float TargetLoc[3], float DummyAngles[3], const fl
 public int Skull_GetClosestTarget(int ent, float range)
 {
 	if (ent < MaxClients + 1 || ent > 2048)
-	return -1;
+		return -1;
 		
 	int Closest = -1;
 	float ShortestDistance = 9999999.0;
@@ -729,11 +731,12 @@ public int Skull_GetClosestTarget(int ent, float range)
 			float dist = GetVectorDistance(DroneLoc, TargetLoc, true);
 			if(dist <= range)
 			{	
-				Handle Trace = TR_TraceRayFilterEx(DroneLoc, TargetLoc, MASK_SHOT, RayType_EndPoint, Skull_DontHitSkulls);
+				Handle Trace = TR_TraceRayFilterEx(DroneLoc, TargetLoc, MASK_ALL, RayType_EndPoint, Skull_DontHitSkulls);
 					
-				if (!TR_DidHit(Trace))
+				if (TR_DidHit(Trace))
 				{
-					if (dist < ShortestDistance)
+					int iHit = TR_GetEntityIndex(Trace);
+					if (b_ThisWasAnNpc[iHit] && dist < ShortestDistance)
 					{
 						Closest = i;
 						ShortestDistance = dist;

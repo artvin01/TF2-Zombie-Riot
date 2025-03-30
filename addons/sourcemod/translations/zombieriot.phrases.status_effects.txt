@@ -316,6 +316,22 @@
 	{
 		"en"	"Allows you to phase through enemies."
 	}
+	"Infinite Will"
+	{
+		"en"	"Infinite Will"
+	}
+	"Infinite Will Desc"
+	{
+		"en"	"Your HP cannot drop below 1 no matter what."
+	}
+	"Death is comming."
+	{
+		"en"	"Death is comming."
+	}
+	"Death is comming. Desc"
+	{
+		"en"	"Try what you want, you will die eventually."
+	}
 	"Thick Blood"
 	{
 		"en"	"Thick Blood"
@@ -362,7 +378,7 @@
 	}
 	"Rapid Suturing Desc"
 	{
-		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very tempomary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
+		"en"	"Cleanses All Current bleed, Doesnt act like a buff or debuff,No icon as its very temporary.\nUsed for Flaggilant, their attack which makes bleedstacks deal more damage on its ability."
 	}
 	"Marked"
 	{
@@ -379,6 +395,22 @@
 	"Void Presence Desc"
 	{
 		"en"	"Shows that youre standing in void creep, void creatures in keep get stronger."
+	}
+	"Sea Presence"
+	{
+		"en"	"Sea Presence"
+	}
+	"Sea Presence Desc"
+	{
+		"en"	"Shows that youre standing in sea creep, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
+	}
+	"Sea Strength"
+	{
+		"en"	"Sea Strength"
+	}
+	"Sea Strength Desc"
+	{
+		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage delt by 10%%, Decreases damage taken by 10%%."
 	}
 	"Void Strength I"
 	{
@@ -475,6 +507,14 @@
 	"Hussar's Warscream Desc"
 	{
 		"en"	"Increases damage dealt by 10%%\nBlocked by Silence."
+	}
+	"Flagellants Punishment"
+	{
+		"en"	"Flagellants Punishment"
+	}
+	"Flagellants Punishment Desc"
+	{
+		"en"	"Increases damage dealt by 35%%\nDecreases damage taken by 20%%\nIncreases attack/reload speed & healrate by 10%%"
 	}
 	"Oceanic Singing"
 	{
@@ -612,7 +652,6 @@
 	{
 		"en"	"Reduces attack/reload speed & healrate by 50%%.\nSlows down NPCs by 50%%."
 	}
-	John's Presence
 	"Gambler's Ruin Total"
 	{
 		"en"	"Gambler's Ruin Total"
@@ -1015,7 +1054,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" "Increaces player attack/reload speed & healrate and reloadspeed by 20%% (stacks)"
+		"en" "Increaces player attack/reload speed & healrate and reloadspeed by 20%%"
 	}
 	"Physical Therapy"
 	{

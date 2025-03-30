@@ -1280,15 +1280,35 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 					ParticleEffectAt(WorldSpaceVec, "smoke_marker", 10.0);
 					npc.PlayDeathSound();
 					Temp_Target[npc.index]=-1;
+					/*
 					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 					int enemy[MAXENTITIES];
+					int EnemiesFound = 0;
 					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 					do
 					{
-						Temp_Target[npc.index] = enemy[GetRandomInt(0, sizeof(enemy) - 1)];
+						if(!enemy[0]) //there wasnt one enemy found.
+							break;
+
+						EnemiesFound = 0;
+						for(int i; i < sizeof(enemy); i++)
+						{
+							if(enemy[i])
+							{
+								EnemiesFound++;
+							}
+						}
+						Temp_Target[npc.index] = enemy[GetRandomInt(0, EnemiesFound)];
 					}
-					while(!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]);
-					if(IsValidClient(Temp_Target[npc.index]))Vs_LockOn[Temp_Target[npc.index]]=true;
+					while(EnemiesFound > 0 && (!IsValidEntity(Temp_Target[npc.index]) || GetTeam(npc.index) == GetTeam(Temp_Target[npc.index]) || npc.index==Temp_Target[npc.index]));
+					{
+						if(IsValidClient(Temp_Target[npc.index]))
+							Vs_LockOn[Temp_Target[npc.index]]=true;
+					}
+					*/
+					Temp_Target[npc.index] = npc.m_iTarget;
+					Vs_LockOn[Temp_Target[npc.index]] = true;
+							
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					TeleportDiversioToRandLocation(npc.index,_,1250.0, 750.0);
@@ -1301,7 +1321,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
 					npc.m_flNextMeleeAttack = gameTime + 2.0;
-					if(IsValidClient(Temp_Target[npc.index]))Vs_LockOn[Temp_Target[npc.index]]=false;
+					if(IsValidClient(Temp_Target[npc.index]))
+						Vs_LockOn[Temp_Target[npc.index]]=false;
 					Temp_Target[npc.index]=-1;
 					Gone_Stats[npc.index] = false;
 					Gone[npc.index] = true;

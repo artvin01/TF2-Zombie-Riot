@@ -1242,6 +1242,9 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 	if(!IsValidClient(owner))
 		return;
 		
+	if(!IsValidClient(client))
+		return;
+		
 	if(index > 0)
 	{
 		static Item item;
@@ -1997,7 +2000,11 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	if(!zr_interactforcereload.BoolValue)
+		FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	else
+		FormatEx(buffer, sizeof(buffer), "%t", "Interact With Spray");
+
 	if(b_InteractWithReload[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
@@ -2028,11 +2035,24 @@ public void ReShowSettingsHud(int client)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
-	menu2.AddItem("-91", buffer);
+	FormatEx(buffer, sizeof(buffer), "%t", "Disable Status Lastmann Music");
+	if(b_LastManDisable[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-96", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-86", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "See Tutorial Again");
+	FormatEx(buffer, sizeof(buffer), "%s", buffer);
+	menu2.AddItem("-95", buffer);
 	/*
 	FormatEx(buffer, sizeof(buffer), "%t", "Zombie In Battle Logic Setting", f_Data_InBattleHudDisableDelay[client] + 2.0);
 	menu2.AddItem("-72", buffer);
@@ -2449,6 +2469,10 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				{
 					Manual_SoundcacheFixTest(client);
 				}
+				case -95:
+				{
+					StartTutorial(client);
+				}
 				case -64: //Lower Volume
 				{
 					f_ZombieVolumeSetting[client] -= 0.05;
@@ -2521,6 +2545,20 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 						b_DisableSetupMusic[client] = true;
 					}
 					SetGlobalTransTarget(client);
+					ReShowSettingsHud(client);
+				}
+				case -96: 
+				{
+					if(b_LastManDisable[client])
+					{
+						b_LastManDisable[client] = false;
+					}
+					else
+					{
+						b_LastManDisable[client] = true;
+					}
+					SetGlobalTransTarget(client);
+					PrintToChat(client,"%t", "Disable Status Lastmann Music Explain");
 					ReShowSettingsHud(client);
 				}
 				case -91: 
@@ -4200,6 +4238,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -44:
 					{
 						XP[client] = LevelToXp(5);
+						Level[client] = 0; //Just incase.
 						GiveXP(client, 0);
 					}
 					case -24:
@@ -6190,6 +6229,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Walter_Enable(client, entity);
 		Enable_CastleBreakerWeapon(client, entity);
 		Purnell_Enable(client, entity);
+		Medigun_SetModeDo(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);

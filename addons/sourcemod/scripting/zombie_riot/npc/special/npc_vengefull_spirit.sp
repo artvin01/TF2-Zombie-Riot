@@ -46,7 +46,7 @@ methodmap VengefullSpirit < CClotBody
 	
 	public VengefullSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
-		VengefullSpirit npc = view_as<VengefullSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "550", ally));
+		VengefullSpirit npc = view_as<VengefullSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", MinibossHealthScaling(45, true), ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

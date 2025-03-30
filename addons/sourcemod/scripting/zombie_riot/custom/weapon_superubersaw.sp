@@ -5,7 +5,7 @@ static float f_SuperubersawAlterhuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_PercentageHealTillUbersaw[MAXPLAYERS+1]={0.0, ...};
 static int UbersawSaveDo[MAXPLAYERS+1]={0, ...};
 
-#define SUPERUBERSAW_MAXHEALTILLFULL 500.0
+#define SUPERUBERSAW_MAXHEALTILLFULL 400.0
 
 
 void AddHealthToUbersaw(int client, int healthvalue, float autoscale = 0.0)
@@ -105,7 +105,9 @@ stock void Superubersaw_OnTakeDamage(int victim, int &attacker, float &damage)
 		DisplayCritAboveNpc(victim, attacker, true);
 		SensalCauseKnockback(attacker, victim, 1.5);
 	}
-	damage *= Attributes_GetOnPlayer(attacker, 8, true, true);
+	float AttributeRate = Attributes_GetOnPlayer(attacker, 8, true, true);
+	AttributeRate = Pow(AttributeRate, MEDIGUN_ATTRIBUTE_EXPONTENT);
+	damage *= AttributeRate; // We have to make it more exponential, damage scales much harder.
 
 }
 

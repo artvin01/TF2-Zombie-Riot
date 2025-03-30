@@ -1482,6 +1482,14 @@ public void OnPostThinkPost(int client)
 	{
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
 	}
+	if(f_UpdateModelIssues[client] && f_UpdateModelIssues[client] < GetGameTime())
+	{
+#if defined ZR
+		SDKHooks_UpdateMarkForDeath(client, true);
+		SDKHooks_UpdateMarkForDeath(client);
+#endif	// ZR & RPG
+		f_UpdateModelIssues[client] = 0.0;
+	}
 }
 #endif	// ZR & RPG
 
@@ -1907,6 +1915,13 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 	{
 		//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 3");
 		//the client has a suit, save them !!
+		if(HasSpecificBuff(victim, "Infinite Will"))
+		{
+			//I AM IMMORTAL!!!!!!!!!!!!!!!!!!
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 		if(i_HealthBeforeSuit[victim] > 0)
 		{
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 4");
@@ -2465,9 +2480,14 @@ void ApplyLastmanOrDyingOverlay(int client)
 	{
 		switch(Yakuza_Lastman())
 		{
-			case 1,2,3,4,7:
+			case 1,2,3,4,7,9:
 			{
 				return;
+			}
+			case 8:
+			{
+				if(!HasSpecificBuff(client, "Death is comming."))
+					return;
 			}
 		}
 	}
@@ -2509,12 +2529,14 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 {
 //	if(!b_GaveMarkForDeath[client])
 //		return;
+
 	if(!IsValidClient(client))
 	{
+		/*
 		int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
 		if(entity > MaxClients)
 			RemoveEntity(entity);
-			
+		*/	
 		return;
 	}
 	if (GetTeam(client) != TFTeam_Red)
@@ -2533,9 +2555,10 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 	{
 		if(!b_GaveMarkForDeath[client])
 		{
-			TF2_AddCondition(client, TFCond_MarkedForDeath, 9999999.9);
+			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 9999999.9);
+		//	StopSound(client, SNDCHAN_WEAPON, "weapons/samurai/tf_marked_for_death_indicator.wav");
 			b_GaveMarkForDeath[client] = true;
-			
+			/*
 			int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
 			//this means i dont exist, spawn a new one!!
 			if(entity < MaxClients)
@@ -2545,18 +2568,25 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 				flPos[2] += 95.0;
 				i_DyingParticleIndication[client][2] = EntIndexToEntRef(SDKHooks_SpawnParticleDeath(flPos, "mark_for_death", client)); //ze healing station
 			}
+				edit: This SUCKS!!!!!!
+
+			*/
 		}
 	}
 	else
 	{
 		if(force_Clear || b_GaveMarkForDeath[client])
 		{
-			TF2_RemoveCondition(client, TFCond_MarkedForDeath);
+			TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
 			b_GaveMarkForDeath[client] = false;
 			//delete me!
+			/*
 			int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
 			if(entity > MaxClients)
 				RemoveEntity(entity);
+
+				edit: This SUCKS!!!!!!
+			*/
 		}
 	}
 }

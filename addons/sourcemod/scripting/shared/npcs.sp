@@ -1345,7 +1345,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	}
 #endif
 	//LogEntryInvicibleTest(victim, attacker, damage, 29);
-	if(SlayNpc)
+	if(SlayNpc && !HasSpecificBuff(victim, "Infinite Will"))
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
 	}

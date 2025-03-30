@@ -164,8 +164,8 @@ methodmap GodAlaxios < CClotBody
 	}
 	public void PlayHurtSound()
 	{
-	//	if(this.m_flNextHurtSound > GetGameTime(this.index))
-	//		return;
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
 
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
 		
@@ -179,7 +179,7 @@ methodmap GodAlaxios < CClotBody
 			EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		}
-	//	this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(1.6, 2.5);
+		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(1.6, 2.5);
 	}
 	public void PlayDeathSound() 
 	{
