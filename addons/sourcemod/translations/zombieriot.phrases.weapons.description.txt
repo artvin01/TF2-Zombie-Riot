@@ -2716,8 +2716,8 @@
 	}
 	"Fantasy Blade pap 2"
 	{
-		"en"	"Fantasy and reality, its all the same\nBy Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\nNote: This ability WILL only work if you are looking at an enemy\nYou gain wings of Fantasy\n(They don't allow you to fly unfortunately)"
-		"fr"	"Acroupissez-vous et appuyez sur M2 pour vous téléporter à un NPC. Coûte 3 Shards pour éxécuter.\nObtenez les Ailes de Fantasie\nFantasie et réatité, c'est tout le même."
+		"en"	"Fantasy and reality, its all the same\nBy Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\nNote: This ability WILL only work if you are looking at an enemy"
+		"fr"	"Acroupissez-vous et appuyez sur M2 pour vous téléporter à un NPC. Coûte 3 Shards pour éxécuter.\nObtenez les Ailes de Fantasie"
 		"chi"	"'幻境即是现实。'\n蹲下按M2可以消耗3个碎片传送到任何敌对npc，穿过的敌人受到伤害。"
 	}
 	"Ancient Banner Desc"

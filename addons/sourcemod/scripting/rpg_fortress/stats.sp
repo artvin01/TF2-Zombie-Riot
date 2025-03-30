@@ -53,7 +53,7 @@ void Stats_EnableCharacter(int client)
 
 	Race race;
 	Races_GetClientInfo(client, race);
-	if(race.StartLevel > 0)
+	if(race.StartLevel > 0 && (Stats_GetStatCount(client) / BaseUpdateStats) <= 0)
 	{
 		int stats = Stats_GetStatCount(client) + ReskillPoints[client];
 		int minStats = race.StartLevel * BaseUpdateStats;

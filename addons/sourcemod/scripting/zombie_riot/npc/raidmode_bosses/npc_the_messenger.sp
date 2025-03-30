@@ -112,7 +112,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_SyctheInitiateSound));   i++) { PrecacheSound(g_SyctheInitiateSound[i]);   }
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/messenger_ost.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -364,12 +364,12 @@ methodmap TheMessenger < CClotBody
 		RaidModeScaling *= 0.5;
 		
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/messenger.mp3");
-		music.Time = 219;
-		music.Volume = 1.25;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/messenger_ost.mp3");
+		music.Time = 230;
+		music.Volume = 1.6;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Brutality -Rebuild-");
-		strcopy(music.Artist, sizeof(music.Artist), "Chihiro Aoki");
+		strcopy(music.Name, sizeof(music.Name), "Ultimatum");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 		
 		npc.m_iChanged_WalkCycle = -1;
