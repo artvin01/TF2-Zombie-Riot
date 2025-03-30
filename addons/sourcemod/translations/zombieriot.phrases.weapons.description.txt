@@ -3111,7 +3111,6 @@
 	{
 		"en"	"Increased stats overall."
 	}
-	"
 	"Acid Rain Desc"
 	{
 		"en"	"When targeting an enemy, cause an explosion that inflicts bleed, consumes 5%% of your max health, Medigun upgrades increases damage."
