@@ -3459,6 +3459,10 @@
 	{
 		"en" 	"Interact With Reload"
 	}
+	"Interact With Spray"
+	{
+		"en" 	"Interact With Spray"
+	}
 	"Disable Setup Music"
 	{
 		"en" 	"Disable Setup Music"

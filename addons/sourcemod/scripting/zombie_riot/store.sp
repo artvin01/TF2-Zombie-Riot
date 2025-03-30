@@ -2000,7 +2000,11 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	if(!zr_interactforcereload.BoolValue)
+		FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	else
+		FormatEx(buffer, sizeof(buffer), "%t", "Interact With Spray");
+
 	if(b_InteractWithReload[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
@@ -6225,6 +6229,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Walter_Enable(client, entity);
 		Enable_CastleBreakerWeapon(client, entity);
 		Purnell_Enable(client, entity);
+		Medigun_SetModeDo(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);

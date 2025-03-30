@@ -1516,6 +1516,7 @@ public void OnClientPutInServer(int client)
 	if(ForceNiko)
 		OverridePlayerModel(client, NIKO_2, true);
 #endif
+	MedigunPutInServerclient(client);
 }
 
 public void OnClientCookiesCached(int client)

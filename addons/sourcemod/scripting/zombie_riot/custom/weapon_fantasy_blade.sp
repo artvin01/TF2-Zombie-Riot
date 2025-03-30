@@ -561,6 +561,7 @@ static void Create_Halo(int client)
 	SetParent(viewmodelModel, particle, "head");
 	i_halo_particles[client] = EntIndexToEntRef(particle);
 }
+/*
 static void Create_Wings(int client, int viewmodelModel)
 {
 	float flPos[3];
@@ -626,7 +627,7 @@ static void Create_Wings(int client, int viewmodelModel)
 	i_wing_particles[client][5] = EntIndexToEntRef(particle_0);
 	
 }
-
+*/
 static void Destroy_Halo_And_Wings(int client)
 {
 	for(int i=0 ; i < 6 ; i++)

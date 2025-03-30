@@ -806,7 +806,7 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing buffs.\nMedigun allows you to revive people from afar but slower\nUber gives debuff immunity."
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing buffs.\nallows revive from afar but slower\nUber gives debuff immunity.\nChange Mode with R (If you interact with R, its Crouch + R)"
 	}
 	
 	"Battle Medigun Desc"
@@ -3416,7 +3416,7 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"You have different medigun modes! boost melee, ranged, or both resitances."
+		"en"	"You have different medigun modes! boost melee, ranged, or both resitances.\nPress Crouch+R to swítch damage modes instead now"
 	}
 	"Medigun Desc Pap 2"
 	{
