@@ -32,7 +32,7 @@ public const int AmmoData[][] =
 	{ 10, 10 },			//Stickybombs
 	{ 10, 100 },		//Minigun Barrel
 	{ 10, 10 },			//Custom Bolt
-	{ 10, 50 },		//Medical Syringes
+	{ 10, 75 },		//Medical Syringes
 	{ 10, 12 },			//Sniper Rifle Rounds
 	{ 10, 12 },			//Arrows
 	{ 10, 60 },			//SMG Magazines
