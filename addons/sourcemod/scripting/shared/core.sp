@@ -91,14 +91,16 @@ enum
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
+#define MEDIGUN_ATTRIBUTE_EXPONTENT 1.45
+
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
-ConVar CvarCustomModels;
 ConVar CvarAutoSelectWave;
 #endif
+ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;
 
 ConVar CvarDisableThink;
@@ -3655,4 +3657,21 @@ void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 			Format(Buffer, Buffersize, "%t","Interact With T Spray");
 		}
 	}
+}
+
+
+
+int CalcMaxPlayers()
+{
+	int playercount = CvarMaxPlayerAlive.IntValue;
+	if(playercount < 1)
+		playercount = MAXTF2PLAYERS - 1;
+	/*
+	if(OperationSystem == OS_Linux)
+	{
+		playercount -= 2; //linux is abit shite
+	}
+	*/
+
+	return playercount;
 }

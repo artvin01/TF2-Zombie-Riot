@@ -1020,6 +1020,7 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
+	
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);

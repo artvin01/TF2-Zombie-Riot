@@ -1484,8 +1484,10 @@ public void OnPostThinkPost(int client)
 	}
 	if(f_UpdateModelIssues[client] && f_UpdateModelIssues[client] < GetGameTime())
 	{
+#if defined ZR
 		SDKHooks_UpdateMarkForDeath(client, true);
 		SDKHooks_UpdateMarkForDeath(client);
+#endif	// ZR & RPG
 		f_UpdateModelIssues[client] = 0.0;
 	}
 }

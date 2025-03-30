@@ -244,7 +244,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 21) > 0 && b_ThisWasAnNpc[healTarget] && !b_NpcHasDied[healTarget] && GetTeam(healTarget) != TFTeam_Red)
 			{
 				bool team = GetTeam(owner)==GetTeam(healTarget);
-				float flDrainRate = 800.0;
+				float flDrainRate = 500.0;
 				if (b_thisNpcIsARaid[healTarget])
 				{
 					flDrainRate *= 0.65;
@@ -256,10 +256,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 					float AttributeRate = Attributes_GetOnWeapon(owner, medigun, 8, true);
-					AttributeRate = Pow(AttributeRate, 1.4);
+					AttributeRate = Pow(AttributeRate, MEDIGUN_ATTRIBUTE_EXPONTENT);
 					flDrainRate *= AttributeRate; // We have to make it more exponential, damage scales much harder.
 					//do the same for super uber mega duper uber saw!
-					target_sucked_long[healTarget] += 0.15;
+					target_sucked_long[healTarget] += 0.10;
 				
 					if(target_sucked_long[healTarget] >= 4.0)
 					{

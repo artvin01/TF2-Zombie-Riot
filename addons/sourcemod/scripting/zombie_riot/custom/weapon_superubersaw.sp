@@ -106,7 +106,7 @@ stock void Superubersaw_OnTakeDamage(int victim, int &attacker, float &damage)
 		SensalCauseKnockback(attacker, victim, 1.5);
 	}
 	float AttributeRate = Attributes_GetOnPlayer(attacker, 8, true, true);
-	AttributeRate = Pow(AttributeRate, 1.4);
+	AttributeRate = Pow(AttributeRate, MEDIGUN_ATTRIBUTE_EXPONTENT);
 	damage *= AttributeRate; // We have to make it more exponential, damage scales much harder.
 
 }
