@@ -136,7 +136,7 @@ methodmap JohnTheAllmighty < CClotBody
 	
 	public JohnTheAllmighty(float vecPos[3], float vecAng[3], int ally)
 	{
-		JohnTheAllmighty npc = view_as<JohnTheAllmighty>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.5", "2000000000", ally, false, true, true));
+		JohnTheAllmighty npc = view_as<JohnTheAllmighty>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.5", "500000000", ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -238,7 +238,7 @@ methodmap JohnTheAllmighty < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 		npc.m_bDissapearOnDeath = true;
-		npc.m_iHealthBar = 10;
+		npc.m_iHealthBar = 40;
 
 		func_NPCDeath[npc.index] = view_as<Function>(JohnTheAllmighty_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(JohnTheAllmighty_OnTakeDamage);

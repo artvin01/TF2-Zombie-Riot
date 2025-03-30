@@ -1154,7 +1154,9 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 										
 							if(i_RaidGrantExtra[npc.index] <= 2)
 							{
-								NPC_Ignite(targetTrace, npc.index,6.0, -1, 2.5);
+								float Proj_Damage = 22.0 * RaidModeScaling;
+								Proj_Damage *= 0.1;
+								NPC_Ignite(targetTrace, npc.index,Proj_Damage, -1, 2.5);
 							}
 							else
 							{
@@ -1247,7 +1249,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 
 		if(i_RaidGrantExtra[owner] <= 2)
 		{
-			NPC_Ignite(target, owner,DamageDeal * 0.2, -1, 2.5);
+			NPC_Ignite(target, owner,DamageDeal * 0.1, -1, 2.5);
 		}
 		else
 		{

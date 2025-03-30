@@ -217,12 +217,8 @@
 	}
 	"Syringe Gun Pap 2 Desc"
 	{
-		"en"		"Increased damage and attackspeed"
-		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度"
+		"en"		"Increased damage and attackspeed\nYour syringes land instantly where you shoot (hitscan) But cannot headshot"
 	}
-	
 	
 	"Sniper Rifle Pap 1"
 	{
@@ -3115,6 +3111,7 @@
 	{
 		"en"	"Increased stats overall."
 	}
+	"
 	"Acid Rain Desc"
 	{
 		"en"	"When targeting an enemy, cause an explosion that inflicts bleed, consumes 5%% of your max health, Medigun upgrades increases damage."
@@ -3148,8 +3145,6 @@
 	"Punish Pap 1"
 	{
 		"en"	"Melee alt-fire ability ''Sepsis'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
-		"fr"	"Abilité arme corps-\-corps «Sepsis» : Absorbez des dégats pour vous soigner avec quand l'abilité finit.\nVos armes principale et secondaire reçoivent aussi une abilité."
-		"chi"	"近战M2技能：''败血''\n激活时存储受到的伤害，技能结束后再受到此伤害。\n主武器和副武器也获得M2技能。"
 	}
 	"The Flagellant Pap 0"
 	{
