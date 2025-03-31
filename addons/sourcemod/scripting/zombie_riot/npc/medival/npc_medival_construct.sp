@@ -324,7 +324,7 @@ public void MedivalConstruct_ClotThink(int iNPC)
 						Elemental_AddBurgerDamage(npc.index, target, RoundFloat(damage));
 					}
 
-					if(f_ArmorCurrosionImmunity[vicnpc.indextim][Element_Burger] > GetGameTime())
+					if(f_ArmorCurrosionImmunity[npc.index][Element_Burger] > GetGameTime())
 					{
 						SDKHooks_TakeDamage(npc.index, target, target, ReturnEntityMaxHealth(npc.index) * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 					}
