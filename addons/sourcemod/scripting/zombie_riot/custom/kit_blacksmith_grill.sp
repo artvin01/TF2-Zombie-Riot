@@ -119,7 +119,7 @@ static void GrillingUse(int client, int entity)
 					int sauce = Selling[owner].Get(0);
 					Selling[owner].Erase(0);
 
-					float healing = 75.0 * Attributes_GetOnPlayer(owner, 8, true);
+					float healing = 120.0 * Attributes_GetOnPlayer(owner, 8, true);
 
 					char buffer[128];
 					FormatEx(buffer, sizeof(buffer), "Healed %d health", RoundFloat(healing));
