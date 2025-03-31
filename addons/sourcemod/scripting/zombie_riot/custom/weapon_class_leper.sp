@@ -21,6 +21,7 @@ int Leper_SolemnyUses[MAXPLAYERS+1];
 int Leper_SolemnyCharge[MAXPLAYERS+1];
 float Leper_SolemnyChargeCD[MAXPLAYERS+1];
 float Leper_InAnimation[MAXPLAYERS+1];
+float Leper_InWrathState[MAXPLAYERS+1];
 
 void OnMapStartLeper()
 {
@@ -31,6 +32,7 @@ void OnMapStartLeper()
 	Zero(LeperSwingType);
 	Zero(Timer_Leper_Management);
 	Zero(Leper_SolemnyChargeCD);
+	Zero(Leper_InWrathState);
 	Zero(Leper_HudDelay);
 	Zero(Leper_InAnimation);
 }
@@ -529,7 +531,7 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 	int spawn_index = NPC_CreateByName("npc_allied_leper_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client));
 	if(spawn_index > 0)
 	{
-		i_AttacksTillReload[spawn_index] = 1;
+		i_AttacksTillReload[spawn_index] = 2;
 		ModelToDelete = spawn_index;
 	}
 
@@ -683,4 +685,123 @@ void LeperResetUses()
 {
 
 	Zero(Leper_SolemnyUses);
+}
+
+
+
+public void Weapon_LeperWrath(int client, int weapon, bool &result, int slot)
+{
+	if (IsLeperInAnimation(client))
+		return;
+	
+	float cooldown = Ability_Check_Cooldown(client, slot);
+	if(cooldown < 0.0)
+	{
+		Leper_Hud_Logic(client, weapon, true);
+		
+		TF2_AddCondition(client, TFCond_FreezeInput, -1.0);
+
+		SetEntityMoveType(client, MOVETYPE_NONE);
+		SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 0);
+		SetEntProp(client, Prop_Send, "m_bSimulatedEveryTick", 0);
+	//	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 0);
+		SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 0);
+		SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 1);
+		SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 1);
+		int entity, i;
+		while(TF2U_GetWearable(client, entity, i))
+		{
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+		}	
+		int ModelToDelete = 0;
+		int CameraDelete = SetCameraEffectLeperWrath(client, ModelToDelete);
+		DataPack pack;
+		Leper_InWrathState[client] = GetGameTime() + 10.0;
+
+		Leper_InAnimation[client] = GetGameTime() + 1.85;
+		CreateDataTimer(1.85, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(client);
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(EntIndexToEntRef(CameraDelete));
+		pack.WriteCell(EntIndexToEntRef(ModelToDelete));
+		pack.WriteCell(0);
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
+	}
+}
+
+
+
+int SetCameraEffectLeperWrath(int client, int &ModelToDelete)
+{
+	int pitch = GetRandomInt(95,100);
+	for(int clientloop=1; clientloop<=MaxClients; clientloop++)
+	{
+		if(clientloop != client && !b_IsPlayerABot[clientloop] && IsClientInGame(clientloop))
+		{
+			EmitSoundToClient(clientloop, LEPER_SOLEMNY, client, SNDCHAN_AUTO, 90,_,0.8,pitch);	
+		}
+	}
+	ClientCommand(client,"playgamesound misc/halloween/spell_overheal.wav");
+
+	float vAngles[3];
+	float vOrigin[3];
+	
+	GetClientEyePosition(client, vOrigin);
+	GetClientEyeAngles(client, vAngles);
+	float vecSwingForward[3];
+	float vecSwingEnd[3];
+
+	//always from upwards somewhere.
+	vAngles[0] = GetRandomFloat(-10.0 , -5.0);
+
+	float LeperViewAnglesMins[3];
+	float LeperViewAnglesMaxs[3];
+	LeperViewAnglesMins = view_as<float>({-LEPER_BOUNDS_VIEW_EFFECT, -LEPER_BOUNDS_VIEW_EFFECT, -LEPER_BOUNDS_VIEW_EFFECT});
+	LeperViewAnglesMaxs = view_as<float>({LEPER_BOUNDS_VIEW_EFFECT, LEPER_BOUNDS_VIEW_EFFECT, LEPER_BOUNDS_VIEW_EFFECT});
+
+	GetAngleVectors(vAngles, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+
+	vecSwingEnd[0] = vOrigin[0] + vecSwingForward[0] * LEPER_MAXRANGE_VIEW_EFFECT * 0.5;
+	vecSwingEnd[1] = vOrigin[1] + vecSwingForward[1] * LEPER_MAXRANGE_VIEW_EFFECT * 0.5;
+	vecSwingEnd[2] = vOrigin[2] + vecSwingForward[2] * LEPER_MAXRANGE_VIEW_EFFECT * 0.5;
+	Handle trace = TR_TraceHullFilterEx( vOrigin, vecSwingEnd, LeperViewAnglesMins, LeperViewAnglesMaxs, ( MASK_SOLID ), TraceRayHitWorldOnly, client );
+	if ( TR_GetFraction(trace) < 1.0)
+	{
+		//we hit nothing something, uh oh!
+		TR_GetEndPosition(vecSwingEnd, trace);
+	}
+	delete trace;
+
+	int viewcontrol = CreateEntityByName("prop_dynamic");
+	if (IsValidEntity(viewcontrol))
+	{
+		float vAngleCamera[3];
+		GetVectorAnglesTwoPoints(vecSwingEnd, vOrigin, vAngleCamera);
+		SetEntityModel(viewcontrol, "models/empty.mdl");
+		DispatchKeyValueVector(viewcontrol, "origin", vecSwingEnd);
+		DispatchKeyValueVector(viewcontrol, "angles", vAngleCamera);
+		DispatchSpawn(viewcontrol);	
+		SetClientViewEntity(client, viewcontrol);
+	}
+	float vabsAngles[3];
+	float vabsOrigin[3];
+	GetClientAbsOrigin(client, vabsOrigin);
+	GetClientEyeAngles(client, vabsAngles);
+	vabsAngles[0] = 0.0;
+	SetVariantInt(0);
+	AcceptEntityInput(client, "SetForcedTauntCam");	
+	int spawn_index = NPC_CreateByName("npc_allied_leper_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client));
+	if(spawn_index > 0)
+	{
+		i_AttacksTillReload[spawn_index] = 1;
+		ModelToDelete = spawn_index;
+	}
+
+	return viewcontrol;
 }
