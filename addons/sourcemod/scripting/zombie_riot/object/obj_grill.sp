@@ -35,7 +35,7 @@ methodmap ObjectTinkerGrill < ObjectGeneric
 {
 	public ObjectTinkerGrill(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectTinkerGrill npc = view_as<ObjectTinkerGrill>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {36.0, 54.0, 41.0}));
+		ObjectTinkerGrill npc = view_as<ObjectTinkerGrill>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {18.0, 27.0, 41.0}, 20.0));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectTinkerGrill_CanBuild;
@@ -136,9 +136,6 @@ void ObjectTinkerGrill_UpdateWearables(int entity, int count)
 				continue;
 			}
 
-			if(i == rand)
-				break;
-			
 			if(!(npc.g_TimesSummoned & (1 << i)))
 			{
 				npc.g_TimesSummoned |= (1 << i);
@@ -149,6 +146,9 @@ void ObjectTinkerGrill_UpdateWearables(int entity, int count)
 				
 				break;
 			}
+
+			if(i == rand)
+				break;
 		}
 
 		current++;
@@ -165,9 +165,6 @@ void ObjectTinkerGrill_UpdateWearables(int entity, int count)
 				i = -1;
 				continue;
 			}
-
-			if(i == rand)
-				break;
 			
 			if((npc.g_TimesSummoned & (1 << i)))
 			{
@@ -179,6 +176,9 @@ void ObjectTinkerGrill_UpdateWearables(int entity, int count)
 				
 				break;
 			}
+
+			if(i == rand)
+				break;
 		}
 
 		current--;

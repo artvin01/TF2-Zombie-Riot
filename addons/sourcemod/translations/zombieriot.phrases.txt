@@ -3763,9 +3763,7 @@
 	}
 	"The Blacksmith Failed!"
 	{
-		"en"		"The blacksmith is no longer alive or a tinker, anvil broke!"
-		"fr"		"Le forgeron n'est plus présent. L'enclume s'est cassé!"
-		"chi"		"铁砧的主人已死或者已不是匠工，导致铁砧被摧毁！"
+		"en"		"The builder is no longer alive or nothing is on this!"
 	}
 	"Blacksmith No Attribs"
 	{
