@@ -765,7 +765,7 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 
 	if(RogueTheme == BlueParadox)
 	{
-		CPrintToChatAll("{crimson}[ZR] Resetting found Weapons.....");
+		SPrintToChatAll("Resetting found Weapons.....");
 		//prevents when restarting, finding 2 instantly...
 		Store_RandomizeNPCStore(1);
 		//reveal 15

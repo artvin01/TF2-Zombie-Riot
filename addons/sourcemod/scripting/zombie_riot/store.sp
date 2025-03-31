@@ -787,7 +787,7 @@ void Store_OpenItemPage(int client)
 	else
 	{
 		SetGlobalTransTarget(client);
-		CPrintToChat(client,"{red}[ZR] {yellow}%t", "Cant Display");
+		SPrintToChat(client,"%t", "Cant Display");
 	}
 }
 

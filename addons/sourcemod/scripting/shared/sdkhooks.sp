@@ -616,7 +616,14 @@ public void OnPostThink(int client)
 		}
 
 		float attrib;
-		attrib += Attributes_Get(client, 57, 0.0);
+		
+		attrib = Attributes_GetOnPlayer(client, Attrib_SlowImmune, false);
+		if(attrib)
+		{
+			ApplyStatusEffect(client, client, "Fluid Movement", 1.0);
+		}
+
+		attrib = Attributes_Get(client, 57, 0.0);
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon != -1)
 		{
@@ -835,7 +842,7 @@ public void OnPostThink(int client)
 				}	
 				if(!b_GivePlayerHint[client])
 				{
-					CPrintToChat(client, "{red}[ZR] {yellow}%t","Hint Change Multislot");
+					SPrintToChat(client, "%t","Hint Change Multislot");
 					b_GivePlayerHint[client] = true;
 				}
 				Format(buffer, sizeof(buffer), "[Multi Slot] %s", buffer);

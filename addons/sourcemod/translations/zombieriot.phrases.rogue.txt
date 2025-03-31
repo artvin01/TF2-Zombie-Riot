@@ -1340,7 +1340,7 @@
 	}
 	"Hand Of The Elder Mages Desc"
 	{
-		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' and ''Summoner'' weapons on hit get 1 seconds of reduced cooldown."
+		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' and ''Summoner'' weapons on hit get 2 seconds of reduced cooldown."
 	}
 	"Bracelets of Agility"
 	{

@@ -1344,6 +1344,9 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		b_RaptureZombie[victim] = b_RaptureZombie[attacker];
 	}
 #endif
+	//was health changed?
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	
 	//LogEntryInvicibleTest(victim, attacker, damage, 29);
 	if(SlayNpc && !HasSpecificBuff(victim, "Infinite Will"))
 	{
@@ -1863,7 +1866,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		}
 		CClotBody npcstats = view_as<CClotBody>(victim);
 		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0)
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar + 1);
 #endif
 		
 		//add debuff

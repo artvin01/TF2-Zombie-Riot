@@ -3,10 +3,6 @@
 #endif
 #define _textstore_included
 
-#define STORE_PREFIX	"{purple}[RPG]{snow} "
-#define STORE_PREFIX2	"{purple}[RPG] "
-#define STORE_COLOR	"{snow}"
-#define STORE_COLOR2	"{purple}"
 
 enum ItemResult
 {
