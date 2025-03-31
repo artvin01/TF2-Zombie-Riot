@@ -101,14 +101,10 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		
 		if(hew)
 		{
-			npc.SetActivity("ACT_MP_RUN_ITEM1");
-			npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
-			int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
-			for(int ilayeri; ilayeri < layerCount; ilayeri++)
-			{
-				view_as<CClotBody>(npc.index).SetLayerPlaybackRate(ilayeri, 0.05);
-				view_as<CClotBody>(npc.index).SetLayerCycle(ilayeri, 0.6);
-			}
+			i_AttacksTillReload[spawn_index] = 0;
+			npc.AddActivityViaSequence("taunt09");
+			npc.SetPlaybackRate(0.01);
+			npc.SetCycle(0.5);
 		}
 		if(solemny)
 		{
@@ -201,6 +197,7 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 				if(npc.m_flAttackHappens < GetGameTime())
 				{
 					npc.m_flAttackHappens = 0.0;
+					/*	
 					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 					int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
 					for(int i; i < layerCount; i++)
@@ -208,6 +205,11 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 						view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 0.05);
 						view_as<CClotBody>(npc.index).SetLayerCycle(i, 0.6);
 					}
+					*/
+					
+					npc.AddActivityViaSequence("taunt09");
+					npc.SetPlaybackRate(0.01);
+					npc.SetCycle(0.5);
 				}
 			}
 		}
@@ -238,6 +240,43 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 					float flAng[3]; // original
 					npc.GetAttachment("head", flPos, flAng);
 					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_leaftaunt_fallingleaves", npc.index, "head", {0.0,0.0,-50.0});
+				}
+			}
+		}
+		case 2:
+		{
+			if(npc.m_flAttackHappens)
+			{
+				if(npc.m_flAttackHappens < GetGameTime())
+				{
+					npc.m_flAttackHappens = 0.0;
+					npc.AddActivityViaSequence("taunt_roar_owar");
+					npc.SetPlaybackRate(0.01);
+					npc.SetCycle(0.95);
+					if(IsValidEntity(npc.m_iWearable7))
+						RemoveEntity(npc.m_iWearable7);
+					npc.AddGesture("ACT_MP_THROW");
+					int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+					for(int i; i < layerCount; i++)
+					{
+						view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 0.01);
+						view_as<CClotBody>(npc.index).SetLayerCycle(i, 0.8);
+					}
+
+				//	npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/effects/vol_light256x512.mdl",_,_,_,150.0);
+
+				//	if(IsValidEntity(npc.m_iWearable6))
+				//		RemoveEntity(npc.m_iWearable6);
+
+						
+				//	SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSALPHA);
+				//	SetEntityRenderColor(npc.m_iWearable7, 255, 165, 0, 255);
+				//	npc.m_iRenderDoLight = 255;
+
+				//	float flPos[3]; // original
+				//	float flAng[3]; // original
+				//	npc.GetAttachment("head", flPos, flAng);
+				//	npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_leaftaunt_fallingleaves", npc.index, "head", {0.0,0.0,-50.0});
 				}
 			}
 		}
