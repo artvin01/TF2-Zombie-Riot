@@ -35,7 +35,7 @@ methodmap ObjectTinkerGrill < ObjectGeneric
 {
 	public ObjectTinkerGrill(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectTinkerGrill npc = view_as<ObjectTinkerGrill>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {18.0, 27.0, 41.0}, 20.0));
+		ObjectTinkerGrill npc = view_as<ObjectTinkerGrill>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {27.0, 27.0, 41.0}, 20.0));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectTinkerGrill_CanBuild;
