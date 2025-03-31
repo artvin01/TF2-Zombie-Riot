@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 // Amount of Sauce (kills) needed for one part of a potion
-#define SAUCE_REQUIRED	13.0
+#define SAUCE_REQUIRED	5.0
 
 /*
 	- Armor Heal
@@ -227,7 +227,6 @@ static void GrillingMenu(int client, const char[] msg = "")
 			precent = 0.0;
 		
 		FormatEx(buffer, sizeof(buffer), "%s (%d%%)", SauceName[SauceSelected[client]], RoundToFloor(precent));
-		menu.AddItem(NULL_STRING, buffer);
 
 		if(precent < 100.0)
 			failed = true;

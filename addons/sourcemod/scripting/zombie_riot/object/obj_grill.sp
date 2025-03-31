@@ -146,6 +146,8 @@ void ObjectTinkerGrill_UpdateWearables(int entity, int count)
 				int wearable = npc.GetWearable(i);
 				if(wearable != -1)
 					AcceptEntityInput(wearable, "Enable");
+				
+				break;
 			}
 		}
 
@@ -174,6 +176,8 @@ void ObjectTinkerGrill_UpdateWearables(int entity, int count)
 				int wearable = npc.GetWearable(i);
 				if(wearable != -1)
 					AcceptEntityInput(wearable, "Disable");
+				
+				break;
 			}
 		}
 
