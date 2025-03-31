@@ -46,12 +46,16 @@ void BlacksmithGrill_RoundStart()
 {
 	Zero(Meats);
 	Zero2(Sauces);
-	Zero(SauceSelected);
 	RandomSeed = GetURandomInt() / 2;
 
 	for(int i; i < sizeof(Selling); i++)
 	{
 		delete Selling[i];
+	}
+
+	for(int i; i < sizeof(SauceSelected); i++)
+	{
+		SauceSelected[i] = -1;
 	}
 }
 
