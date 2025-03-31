@@ -1951,7 +1951,9 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 					}
 					else
 					{
-						int limit = npc.m_iGunValue > 4000 ? 5 : 3;
+						int limit = 3 + (npc.m_iGunValue / 4000);
+						if(limit > 12)
+							limit = 12;
 
 						int obj = MaxClients + 1;
 						while((obj = FindEntityByClassname(obj, "obj_building")) != -1)
@@ -2342,9 +2344,9 @@ void Citizen_WaveStart()
 				
 				if(npc.m_iClassRole == Cit_Builder)
 				{
-					int limit = 3 + (npc.m_iGunValue / 3000);
-					if(limit > 16)
-						limit = 16;
+					int limit = 3 + (npc.m_iGunValue / 4000);
+					if(limit > 12)
+						limit = 12;
 
 					int obj = MaxClients + 1;
 					while((obj = FindEntityByClassname(obj, "obj_building")) != -1)
