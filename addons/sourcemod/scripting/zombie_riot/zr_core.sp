@@ -597,6 +597,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/kit_soldine.sp"
 #include "zombie_riot/custom/weapon_kritzkrieg.sp"
 #include "zombie_riot/custom/wand/weapon_bubble_wand.sp"
+#include "zombie_riot/custom/kit_blacksmith_grill.sp"
 
 void ZR_PluginLoad()
 {

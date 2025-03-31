@@ -47,7 +47,7 @@ void Elemental_ClearDamage(int entity)
 stock bool Elemental_HasDamage(int entity, int type = -1)
 {
 	if(type != -1)
-		return ElementDamage[entity][type];
+		return view_as<bool>(ElementDamage[entity][type]);
 	
 	for(int i; i < Element_MAX; i++)
 	{
@@ -893,7 +893,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 
 				if(func_NPCThink[victim] != MedivalConstruct_ClotThink || EntRefToEntIndex(RaidBossActive) != -1)
 				{
-					SDKHooks_TakeDamage(victim, attacker, attacker, ReturnEntityMaxHealth(victim), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(victim, attacker, attacker, ReturnEntityMaxHealth(victim) * 1.5, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 				}
 			}
 		}
