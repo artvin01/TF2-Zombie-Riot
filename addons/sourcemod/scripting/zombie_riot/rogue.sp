@@ -373,6 +373,9 @@ int Rogue_Theme()
 
 void Rogue_MapStart()
 {
+	delete Voting;
+	delete Curses;
+	delete Artifacts;
 	RogueTheme = 0;
 	InRogueMode = false;
 	Zero(f_ProvokedAngerCD);
