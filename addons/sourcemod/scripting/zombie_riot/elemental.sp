@@ -893,7 +893,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 
 				if(func_NPCThink[victim] != MedivalConstruct_ClotThink || EntRefToEntIndex(RaidBossActive) != -1)
 				{
-					SDKHooks_TakeDamage(victim, attacker, attacker, ReturnEntityMaxHealth(victim) * 1.5, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(victim, attacker, attacker, ReturnEntityMaxHealth(victim) * 5.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_GIB_REGARDLESS);
 				}
 			}
 		}
