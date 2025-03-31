@@ -50,17 +50,17 @@ methodmap ObjectTinkerGrill < ObjectGeneric
 			int entity = npc.EquipItemSeperate("partyhat", "models/player/gibs/gibs_burger.mdl", "idle", .DontParent = true);
 			
 			float VecOrigin[3];
-			GetAbsOrigin(this.index, VecOrigin);
+			GetAbsOrigin(npc.index, VecOrigin);
 
 			VecOrigin[0] += (i % 2) ? 10.0 : -10.0;
 			VecOrigin[1] += (i > 1) ? 10.0 : -10.0;
 			VecOrigin[2] -= 54.0;
 
-			TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
+			TeleportEntity(entity, VecOrigin, NULL_VECTOR, NULL_VECTOR);
 
 			SetVariantString("!activator");
-			AcceptEntityInput(item, "SetParent", this.index);
-			MakeObjectIntangeable(item);
+			AcceptEntityInput(entity, "SetParent", npc.index);
+			MakeObjectIntangeable(entity);
 
 			AcceptEntityInput(entity, "Disable");
 
@@ -77,7 +77,7 @@ methodmap ObjectTinkerGrill < ObjectGeneric
 			}
 		}
 
-		npc.Anger = false;
+		npc.g_TimesSummoned = 0;
 
 		return npc;
 	}
@@ -86,13 +86,13 @@ methodmap ObjectTinkerGrill < ObjectGeneric
 		switch(pos)
 		{
 			case 0:
-				return npc.m_iWearable3;
+				return this.m_iWearable3;
 			case 1:
-				return npc.m_iWearable4;
+				return this.m_iWearable4;
 			case 2:
-				return npc.m_iWearable5;
+				return this.m_iWearable5;
 			case 3:
-				return npc.m_iWearable6;
+				return this.m_iWearable6;
 		}
 		return -1;
 	}
@@ -143,9 +143,9 @@ void ObjectTinkerGrill_UpdateWearables(int entity, int count)
 			{
 				npc.g_TimesSummoned |= (1 << i);
 
-				int entity = GetWearable(i);
-				if(entity != -1)
-					AcceptEntityInput(entity, "Enable");
+				int wearable = npc.GetWearable(i);
+				if(wearable != -1)
+					AcceptEntityInput(wearable, "Enable");
 			}
 		}
 
@@ -171,9 +171,9 @@ void ObjectTinkerGrill_UpdateWearables(int entity, int count)
 			{
 				npc.g_TimesSummoned &= ~(1 << i);
 
-				int entity = GetWearable(i);
-				if(entity != -1)
-					AcceptEntityInput(entity, "Disable");
+				int wearable = npc.GetWearable(i);
+				if(wearable != -1)
+					AcceptEntityInput(wearable, "Disable");
 			}
 		}
 

@@ -60,10 +60,10 @@ void BlacksmithGrill_NPCTakeDamagePost(int victim, int attacker, float damage)
 	if(attacker <= MaxClients && Merchant_IsAMerchant(attacker) && IsValidEntity(i_PlayerToCustomBuilding[attacker]))
 	{
 		int random = RandomSeed + i_NpcInternalId[victim];
-		int sauce = random % Sauce_Special;
+		int sauce = random % S_Special;
 
 		if(!b_thisNpcIsARaid[victim] && b_thisNpcIsABoss[victim] && (random % 4) == 0)
-			sauce = Sauce_Special;
+			sauce = S_Special;
 
 		// Raid x50, Boss x10, Giant x2.5
 		/*
@@ -132,7 +132,7 @@ static void GrillingUse(int client, int entity)
 						}
 						case S_Ketchup:
 						{
-							Armor_Charge[client] += MaxArmorCalculation(Armor_Level[victim], victim, 0.333);
+							Armor_Charge[client] += MaxArmorCalculation(Armor_Level[client], client, 0.333);
 							Format(buffer, sizeof(buffer), "%s and 33%% armor", buffer);
 						}
 						case S_Mustard:
@@ -147,9 +147,9 @@ static void GrillingUse(int client, int entity)
 						}
 						case S_Special:
 						{
-							if(i_AmountDowned[target] > 0)
+							if(i_AmountDowned[client] > 0)
 							{
-								i_AmountDowned[target]--;
+								i_AmountDowned[client]--;
 								Format(buffer, sizeof(buffer), "%s and gained 1 revive", buffer);
 							}
 						}
@@ -240,13 +240,14 @@ static void GrillingMenu(int client, const char[] msg = "")
 	menu.AddItem(NULL_STRING, buffer);
 	menu.AddItem(NULL_STRING, buffer, ITEMDRAW_SPACER);
 
-	if(Meats < SAUCE_REQUIRED)
+	if(Meats[client] < SAUCE_REQUIRED)
 	{
-		FormatEx(buffer, sizeof(buffer), "Grill Burger (%.0f%%)\n ", Meats * 100.0 / SAUCE_REQUIRED);
+		FormatEx(buffer, sizeof(buffer), "Grill Burger (%.0f%%)\n ", Meats[client] * 100.0 / SAUCE_REQUIRED);
+		failed = true;
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "Grill Burger (%d patties)\n ", RoundToFloor(Meats / SAUCE_REQUIRED));
+		FormatEx(buffer, sizeof(buffer), "Grill Burger (%d patties)\n ", RoundToFloor(Meats[client] / SAUCE_REQUIRED));
 	}
 
 	menu.AddItem(NULL_STRING, buffer, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -308,6 +309,10 @@ static int GrillingMenuH(Menu menu, MenuAction action, int client, int choice)
 					
 					Selling[client].Push(SauceSelected[client]);
 
+					Meats[client] -= SAUCE_REQUIRED;
+					if(SauceSelected[client] >= 0 && SauceSelected[client] < Sauce_MAX)
+						Sauces[client][SauceSelected[client]] -= SAUCE_REQUIRED;
+					
 					ObjectTinkerGrill_UpdateWearables(entity, Selling[client].Length);
 
 					ClientCommand(client, "playgamesound player/flame_out.wav");

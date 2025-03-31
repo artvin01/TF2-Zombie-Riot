@@ -1229,6 +1229,7 @@ static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, in
 	}
 
 	BlacksmithBrew_NPCTakeDamagePost(victim, attacker, damage);
+	BlacksmithGrill_NPCTakeDamagePost(victim, attacker, damage);
 #endif
 }
 
