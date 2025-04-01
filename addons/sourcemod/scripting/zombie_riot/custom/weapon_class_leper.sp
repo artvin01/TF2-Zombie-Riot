@@ -760,11 +760,11 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 		{
 			if(MaxStacksWrath[victim] >= 10)
 			{
-				RemoveSpecificBuff(victim, "King's Wrath", BuffCheckerID);
+				RemoveSpecificBuff(victim, "King's Wrath");
 			}
 			MaxStacksWrath[victim]++;
 			Wrath_TinyCooldown[victim] = GetGameTime() + 0.35;
-			
+
 			float GiveDamageBonus = 1.1;
 			if(b_thisNpcIsARaid[attacker])
 				GiveDamageBonus = 1.13;
