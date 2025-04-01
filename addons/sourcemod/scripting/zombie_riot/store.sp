@@ -1059,7 +1059,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	int cost = hiddenType == 2 ? 0 : kv.GetNum("cost", -1);
 	bool isItem = cost >= 0;
 	
-	char buffer[128], buffers[6][32];
+	char buffer[128], buffers[12][32];
 
 	Item item;
 	item.Section = section;
