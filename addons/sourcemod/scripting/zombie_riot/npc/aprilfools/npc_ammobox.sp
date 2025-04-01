@@ -280,7 +280,7 @@ void AmmoBox_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			for(int i; i < 5; i++)
+			for(int i; i < 1; i++)
 			{
 				int other = NPC_CreateByName("npc_netherseaspewer", -1, pos, ang, team);
 				if(other > MaxClients)
@@ -288,8 +288,8 @@ void AmmoBox_NPCDeath(int entity)
 					if(team != TFTeam_Red)
 					Zombies_Currently_Still_Ongoing++;
 			
-					SetEntProp(other, Prop_Data, "m_iHealth", 200000);
-					SetEntProp(other, Prop_Data, "m_iMaxHealth", 200000);
+					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
+					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.30;
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.30;
@@ -302,7 +302,7 @@ void AmmoBox_NPCDeath(int entity)
 		}
 		case 1:
 		{
-			for(int i; i < 5; i++)
+			for(int i; i < 1; i++)
 			{
 				int other = NPC_CreateByName("npc_skin_hunter", -1, pos, ang, team);
 				if(other > MaxClients)
@@ -310,8 +310,8 @@ void AmmoBox_NPCDeath(int entity)
 					if(team != TFTeam_Red)
 					Zombies_Currently_Still_Ongoing++;
 			
-					SetEntProp(other, Prop_Data, "m_iHealth", 200000);
-					SetEntProp(other, Prop_Data, "m_iMaxHealth", 200000);
+					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
+					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.30;
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.30;
@@ -324,7 +324,7 @@ void AmmoBox_NPCDeath(int entity)
 		}
 		case 2:
 		{
-			for(int i; i < 5; i++)
+			for(int i; i < 1; i++)
 			{
 				int other = NPC_CreateByName("npc_medival_crossbow_giant", -1, pos, ang, team);
 				if(other > MaxClients)
@@ -332,8 +332,8 @@ void AmmoBox_NPCDeath(int entity)
 					if(team != TFTeam_Red)
 					Zombies_Currently_Still_Ongoing++;
 			
-					SetEntProp(other, Prop_Data, "m_iHealth", 200000);
-					SetEntProp(other, Prop_Data, "m_iMaxHealth", 200000);
+					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
+					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.30;
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.30;
@@ -346,7 +346,7 @@ void AmmoBox_NPCDeath(int entity)
 		}
 		case 3:
 		{
-			for(int i; i < 3; i++)
+			for(int i; i < 1; i++)
 			{
 				int other = NPC_CreateByName("npc_chaos_mage", -1, pos, ang, team);
 				if(other > MaxClients)
@@ -354,8 +354,8 @@ void AmmoBox_NPCDeath(int entity)
 					if(team != TFTeam_Red)
 					Zombies_Currently_Still_Ongoing++;
 			
-					SetEntProp(other, Prop_Data, "m_iHealth", 200000);
-					SetEntProp(other, Prop_Data, "m_iMaxHealth", 200000);
+					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
+					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.20;
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.20;
@@ -368,7 +368,7 @@ void AmmoBox_NPCDeath(int entity)
 		}
 		case 4:
 		{
-			for(int i; i < 3; i++)
+			for(int i; i < 1; i++)
 			{
 				int other = NPC_CreateByName("npc_abomination", -1, pos, ang, team);
 				if(other > MaxClients)
@@ -376,8 +376,8 @@ void AmmoBox_NPCDeath(int entity)
 					if(team != TFTeam_Red)
 					Zombies_Currently_Still_Ongoing++;
 			
-					SetEntProp(other, Prop_Data, "m_iHealth", 200000);
-					SetEntProp(other, Prop_Data, "m_iMaxHealth", 200000);
+					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
+					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.20;
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.20;
@@ -390,7 +390,7 @@ void AmmoBox_NPCDeath(int entity)
 		}
 		case 5:
 		{
-			for(int i; i < 3; i++)
+			for(int i; i < 1; i++)
 			{
 				int other = NPC_CreateByName("npc_majorsteam", -1, pos, ang, team);
 				if(other > MaxClients)
@@ -398,8 +398,8 @@ void AmmoBox_NPCDeath(int entity)
 					if(team != TFTeam_Red)
 					Zombies_Currently_Still_Ongoing++;
 			
-					SetEntProp(other, Prop_Data, "m_iHealth", 200000);
-					SetEntProp(other, Prop_Data, "m_iMaxHealth", 200000);
+					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
+					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.10;
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.10;
