@@ -84,7 +84,7 @@ void NPC_ConfigSetup()
 	ObjectVillage_MapStart();
 	ObjectTinkerBrew_MapStart();
 	ObjectRevenant_Setup();
-	ObjectTinkerGrill_MapStart();
+	//ObjectTinkerGrill_MapStart();
 	// Buildings
 
 	// Constructs

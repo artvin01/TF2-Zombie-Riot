@@ -431,7 +431,7 @@ static void SendNextFile(int client)
 		
 		static char filecheck[PLATFORM_MAX_PATH];
 		FormatFileCheck(download, client, filecheck, sizeof(filecheck));
-		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
+		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack, 10);
 		if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
 		{
 			Format(filecheck, sizeof(filecheck), "download/%s", filecheck);
@@ -691,7 +691,7 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 					{
 						Call_StartFunction(null, func);
 						Call_PushCell(client);
-						Call_PushString(download);
+						Call_PushString(file);
 						Call_Finish();
 					}
 				}
@@ -927,7 +927,7 @@ stock void SendSingleFileToClient(int client, const char[] download, Function fu
 	
 	static char filecheck[PLATFORM_MAX_PATH];
 	FormatFileCheck(download, client, filecheck, sizeof(filecheck));
-	FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
+	FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack, 10);
 	if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
 	{
 		Format(filecheck, sizeof(filecheck), "download/%s", filecheck);

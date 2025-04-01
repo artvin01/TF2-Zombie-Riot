@@ -594,6 +594,8 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 			Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
+			if(CurrentPapLeper[client] >= 1)
+				Attributes_Set(weapon, 4039, Pow(1.01, CurrentPapLeper[client]));
 		}
 		return;
 	}
@@ -612,6 +614,8 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 			Leper_OverlayDownload[client] = 1;
 			SendSingleFileToClient(client, "materials/zombie_riot/overlays/leper_overlay.vtf", Leper_Overlay1);
 		}
+		if(CurrentPapLeper[client] >= 1)
+			Attributes_Set(weapon, 4039, Pow(1.01, CurrentPapLeper[client]));
 	}
 }
 
@@ -644,6 +648,7 @@ public Action Timer_Management_Leper(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}	
 	Leper_Hud_Logic(client, weapon, false);
+	b_IsCannibal[client] = true;
 		
 	if(LastMann)
 	{
@@ -756,13 +761,19 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 			float GiveDamageBonus = 1.1;
 			if(b_thisNpcIsARaid[attacker])
 				GiveDamageBonus = 1.2;
-
+			if(CurrentPapLeper[victim] >= 6)
+			{
+				GiveDamageBonus *= 1.35;
+			}
 			ApplyTempAttrib(weapon, 2, GiveDamageBonus, 10.0);
 		}
 	}
 	if (IsLeperInAnimation(victim))
 	{
-		return damage * 0.66; //half damage during animations.
+		if(CurrentPapLeper[victim] >= 2)
+			return damage * 0.66; //half damage during animations.
+		else
+			return damage * 0.75; //half damage during animations.
 	}
 	return damage; //half damage during animations.
 }
