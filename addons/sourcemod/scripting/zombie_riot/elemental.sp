@@ -121,19 +121,22 @@ static int TriggerDamage(int entity, int type)
 
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
-
-	//also works against superbosses.
-	if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+	
+	if(type != Element_Burger)
 	{
-		divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
-	}
-	else if(b_thisNpcIsABoss[entity])
-	{
-		divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
-	}
-	else if (b_IsGiant[entity])
-	{
-		divide *= 2.0;
+		//also works against superbosses.
+		if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+		{
+			divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
+		}
+		else if(b_thisNpcIsABoss[entity])
+		{
+			divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
+		}
+		else if (b_IsGiant[entity])
+		{
+			divide *= 2.0;
+		}
 	}
 
 	return RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);

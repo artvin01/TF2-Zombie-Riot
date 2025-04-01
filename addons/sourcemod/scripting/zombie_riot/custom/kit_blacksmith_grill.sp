@@ -80,12 +80,12 @@ void BlacksmithGrill_NPCTakeDamagePost(int victim, int attacker, float damage)
 		float gain = b_thisNpcIsARaid[victim] ? (50.0 * MultiGlobalHighHealthBoss) : (b_thisNpcIsABoss[victim] ? (10.0 * MultiGlobalHealth) : (b_IsGiant[victim] ? 2.5 : 1.0));
 		gain = damage * gain / float(MaxHealth);
 		Sauces[attacker][sauce] += gain;
-		Meats[attacker] += gain * 0.6;
+		Meats[attacker] += gain * 2.0;
 
 		if(InMenu[attacker])
 		{
 			char buffer[64];
-			FormatEx(buffer, sizeof(buffer), "Gained %.2f％ Meat and %.2f％ %s from %s", gain * 60.0 / SAUCE_REQUIRED, gain * 100.0 / SAUCE_REQUIRED, SauceName[sauce], c_NpcName[victim]);
+			FormatEx(buffer, sizeof(buffer), "Gained %.2f％ Meat and %.2f％ %s from %s", gain * 200.0 / SAUCE_REQUIRED, gain * 100.0 / SAUCE_REQUIRED, SauceName[sauce], c_NpcName[victim]);
 			GrillingMenu(attacker, buffer);
 		}
 	}
