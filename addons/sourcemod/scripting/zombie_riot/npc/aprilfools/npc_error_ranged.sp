@@ -147,6 +147,7 @@ methodmap ErrorRanged < CClotBody
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
+		npc.m_bDissapearOnDeath = true;
 
 		npc.StartPathing();
 		
