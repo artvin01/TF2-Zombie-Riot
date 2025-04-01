@@ -197,7 +197,7 @@ public void RedHeavy_ClotThink(int iNPC)
 						music.Custom = true;
 						strcopy(music.Name, sizeof(music.Name), "Finale");
 						strcopy(music.Artist, sizeof(music.Artist), "Toby Fox");
-						Music_SetRaidMusic(music,_,true);
+						Music_SetRaidMusic(music);
 						RaidModeTime = GetGameTime(npc.index) + 999.0;
 						RaidModeTime += 10.0;
 						NoSoundLoop = true;
