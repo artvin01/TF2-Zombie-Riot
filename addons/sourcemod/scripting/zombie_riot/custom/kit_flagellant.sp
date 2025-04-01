@@ -31,17 +31,25 @@ static int MoreMoreHits[MAXTF2PLAYERS];
 static int MoreMoreHealing[MAXTF2PLAYERS];
 static int MoreMoreCap[MAXTF2PLAYERS];
 
-static int LastSepsis[MAXTF2PLAYERS];
-static bool LastSepsisRaid[MAXTF2PLAYERS];
-
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 static Handle EffectTimer[MAXTF2PLAYERS];
-
+static bool Precached = false;
 void Flagellant_MapStart()
 {
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	Precached = false;
 }
 
+void PrecacheSharedDarkestMusic()
+{
+
+	if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
+		Precached = true;
+	}
+}
 void Flagellant_Enable(int client, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
@@ -49,7 +57,7 @@ void Flagellant_Enable(int client, int weapon)
 		case WEAPON_FLAGELLANT_MELEE:
 		{
 			MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
-
+			PrecacheSharedDarkestMusic();
 			delete EffectTimer[client];
 			EffectTimer[client] = CreateTimer(0.5, Flagellant_EffectTimer, client, TIMER_REPEAT);
 		}
@@ -72,6 +80,13 @@ void Flagellant_Enable(int client, int weapon)
 	}
 }
 
+bool IsFlaggilant(int client)
+{
+	if(EffectTimer[client] != null)
+		return true;
+
+	return false;
+}
 void Flagellant_MiniBossChance(int &chance)
 {
 	if(chance > 0)
@@ -141,6 +156,29 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 					}
 					ApplyRapidSuturing(client);
 					ApplyStatusEffect(client, client, "Thick Blood", 0.6);
+					
+					if(LastMann)
+					{
+						float maxhealth = 1.0;
+						float health = float(GetEntProp(client, Prop_Data, "m_iHealth"));
+						maxhealth = float(ReturnEntityMaxHealth(client));
+
+						if(health >= maxhealth * 0.2)
+						{
+							ApplyStatusEffect(client, client, "Infinite Will", 3.0);
+							ApplyStatusEffect(client, client, "Flagellants Punishment", 10.0);
+						}
+						else
+						{
+							for(int LoopClient = 1; LoopClient <= MaxClients; LoopClient++)
+							{
+								if(IsClientInGame(LoopClient) && IsPlayerAlive(LoopClient))
+								{
+									ApplyStatusEffect(LoopClient, LoopClient, "Death is comming.", 1.0);
+								}
+							}
+						}
+					}
 					
 					return Plugin_Continue;
 				}
@@ -315,6 +353,7 @@ public void Weapon_FlagellantMelee_M2(int client, int weapon, bool crit, int slo
 	ClientCommand(client, "playgamesound misc/halloween/spell_skeleton_horde_cast.wav");
 
 	TF2_AddCondition(client, TFCond_MegaHeal, 8.25);
+	ApplyStatusEffect(client, client, "Fluid Movement", 8.25);	
 	MoreMoreFor[client] = GetGameTime() + 8.0;
 	MoreMoreHits[client] = 0;
 	MoreMoreCap[client] = 30 + (MeleeLevel[client] * 10) + (HealLevel[client] * 5);
@@ -463,6 +502,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 			if(healing > 0.0 && healthLost > 0.0)
 			{
 				int BeamIndex = ConnectWithBeam(client, target, 100, 250, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+				SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
 
 				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 				
@@ -667,6 +707,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		ClientCommand(client, "playgamesound misc/halloween/merasmus_stun.wav");
 		
 		int BeamIndex = ConnectWithBeam(client, target, 100, 250, 100, 8.0, 8.0, 1.85, "sprites/laserbeam.vmt");
+		SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
 
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 		float HealedAlly[3];
@@ -675,7 +716,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
 		Elemental_AddChaosDamage(target, client, 10, _, true);
-		ApplyStatusEffect(client, target, "Hussar's Warscream", 10.0);
+		ApplyStatusEffect(client, target, "Flagellants Punishment", 10.0);
 
 		if(target > MaxClients)
 		{
@@ -711,6 +752,9 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 {
 	int health = GetClientHealth(client);
 	int maxhealth = SDKCall_GetMaxHealth(client);
+	if(CvarInfiniteCash.BoolValue)
+		health = 0;
+
 	if(health > maxhealth / 2 && !dieingstate[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -755,34 +799,23 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	{
 		Rogue_OnAbilityUse(client, weapon);
 
-		int round = Waves_GetRound();
-		bool raid = RaidbossIgnoreBuildingsLogic(1);
-		if(LastSepsis[client] != round || LastSepsisRaid[client] != raid)
+		int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.5 : 0.35));
+		TriggerDeathDoor(client, healing);
+		if(healing > 0)
 		{
-			LastSepsis[client] = round;
-			LastSepsisRaid[client] = raid;
-				
-			int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.5 : 0.35));
-			TriggerDeathDoor(client, healing);
-			if(healing > 0)
+			HealEntityGlobal(client, client, float(healing), 1.0, 1.0, _);
+			float HealedAlly[3];
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
+			HealedAlly[2] += 70.0;
+			float HealedAllyRand[3];
+			for(int Repeat; Repeat < 20; Repeat++)
 			{
-				HealEntityGlobal(client, client, float(healing), 1.0, 1.0, _);
-				float HealedAlly[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
-				HealedAlly[2] += 70.0;
-				float HealedAllyRand[3];
-				for(int Repeat; Repeat < 20; Repeat++)
-				{
-					HealedAllyRand = HealedAlly;
-					HealedAllyRand[0] += GetRandomFloat(-10.0, 10.0);
-					HealedAllyRand[1] += GetRandomFloat(-10.0, 10.0);
-					HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
-					TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
-				}
+				HealedAllyRand = HealedAlly;
+				HealedAllyRand[0] += GetRandomFloat(-10.0, 10.0);
+				HealedAllyRand[1] += GetRandomFloat(-10.0, 10.0);
+				HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
+				TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
 			}
-
-			TF2_AddCondition(client, TFCond_FocusBuff);
-			CreateTimer(1.0, Flagellant_CheckSepsisTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -800,25 +833,20 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 			SDKHooks_TakeDamage(target, client, client, extra, DMG_TRUEDAMAGE, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 		ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
-		Ability_Apply_Cooldown(client, slot, 50.0);
+		if(!CvarInfiniteCash.BoolValue)
+			Ability_Apply_Cooldown(client, slot, 50.0);
+
 		ClientCommand(client, "playgamesound misc/halloween/merasmus_spell.wav");
+		
+		int BeamIndex = ConnectWithBeam(target, client, 100, 200, 100, 12.0, 3.0, 1.0, "sprites/physbeam.vmt");
+		SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
+
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+
 		return;
 	}
 
 	ClientCommand(client, "playgamesound items/medshotno1.wav");
-}
-
-public Action Flagellant_CheckSepsisTimer(Handle timer, int userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(client)
-	{
-		if(LastSepsis[client] == Waves_GetRound() && LastSepsisRaid[client] == RaidbossIgnoreBuildingsLogic(1))
-			return Plugin_Continue;
-
-		TF2_RemoveCondition(client, TFCond_FocusBuff);
-	}
-	return Plugin_Stop;
 }
 
 static void TriggerSelfDamage(int client, float multi)

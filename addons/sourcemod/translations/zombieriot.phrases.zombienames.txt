@@ -682,9 +682,9 @@
 		"pt"		"Corredor de Serras"
 		"nl"		"Zaagloper"
 	}
-	"True Fusion Warrior"
+	"Infected Silvester"
 	{
-		"en" 		"True Fusion Warrior"
+		"en" 		"Infected Silvester"
 		"ru" 		"Истинный Термоядерный Воин"
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
@@ -3024,7 +3024,7 @@
 	}
 	"Void Creep Desc"
 	{
-		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15％), regen, damage(20％) and speed(5％)."
 	}
 	"Void Elemental Damage"
 	{
@@ -3214,7 +3214,7 @@
 	}
 	"Beacon Constructor Desc"
 	{
-		"en"		"Places Beacons if close enough, has 50%% resistance and reduced speed while it carries one."
+		"en"		"Places Beacons if close enough, has 50％ resistance and reduced speed while it carries one."
 	}
 	"Iberia Lighthouse"
 	{

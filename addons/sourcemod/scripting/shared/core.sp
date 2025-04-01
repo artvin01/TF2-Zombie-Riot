@@ -91,14 +91,16 @@ enum
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
+#define MEDIGUN_ATTRIBUTE_EXPONTENT 1.45
+
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
-ConVar CvarCustomModels;
 ConVar CvarAutoSelectWave;
 #endif
+ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;
 
 ConVar CvarDisableThink;
@@ -531,6 +533,7 @@ int i_ArmorSetting[MAXENTITIES][2];
 bool b_InteractWithReload[MAXENTITIES];
 bool b_DisableSetupMusic[MAXENTITIES];
 bool b_DisableStatusEffectHints[MAXENTITIES];
+bool b_LastManDisable[MAXENTITIES];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 int b_OnDeathExtraLogicNpc[MAXENTITIES];
@@ -1515,6 +1518,7 @@ public void OnClientPutInServer(int client)
 	if(ForceNiko)
 		OverridePlayerModel(client, NIKO_2, true);
 #endif
+	MedigunPutInServerclient(client);
 }
 
 public void OnClientCookiesCached(int client)
@@ -2200,19 +2204,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 			if((!StrContains(classname, "tf_weapon_knife") || i_MeleeAttackFrameDelay[weapon] == 0) && i_InternalMeleeTrace[weapon])
 			{
-				DataPack pack = new DataPack();
-				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(EntIndexToEntRef(weapon));
-				pack.WriteString(classname);
-				Timer_Do_Melee_Attack(pack);
+				Timer_Do_Melee_Attack(weapon, client, 0, classname);
 			}
 			else if(i_InternalMeleeTrace[weapon])
 			{
-				DataPack pack = new DataPack();
-				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(EntIndexToEntRef(weapon));
-				pack.WriteString(classname);
-				RequestFrames(Timer_Do_Melee_Attack, i_MeleeAttackFrameDelay[weapon], pack);
+				Timer_Do_Melee_Attack(weapon, client, i_MeleeAttackFrameDelay[weapon], classname);
 			}
 		}
 	}
@@ -2277,6 +2273,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity);
 		f_InBattleDelay[entity] = 0.0;
 		b_AllowCollideWithSelfTeam[entity] = false;
@@ -3029,14 +3026,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	}
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
-		if(Attributes_GetOnPlayer(client, Attrib_SlowImmune, false))
-		{
-			TF2_RemoveCondition(client, TFCond_Slowed);
-		}
-		else
-		{
-			SDKCall_SetSpeed(client);
-		}
+		SDKCall_SetSpeed(client);
 	}
 }
 
@@ -3660,4 +3650,21 @@ void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 			Format(Buffer, Buffersize, "%t","Interact With T Spray");
 		}
 	}
+}
+
+
+
+int CalcMaxPlayers()
+{
+	int playercount = CvarMaxPlayerAlive.IntValue;
+	if(playercount < 1)
+		playercount = MAXTF2PLAYERS - 1;
+	/*
+	if(OperationSystem == OS_Linux)
+	{
+		playercount -= 2; //linux is abit shite
+	}
+	*/
+
+	return playercount;
 }

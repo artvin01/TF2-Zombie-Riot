@@ -373,6 +373,9 @@ int Rogue_Theme()
 
 void Rogue_MapStart()
 {
+	delete Voting;
+	delete Curses;
+	delete Artifacts;
 	RogueTheme = 0;
 	InRogueMode = false;
 	Zero(f_ProvokedAngerCD);
@@ -765,7 +768,7 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 
 	if(RogueTheme == BlueParadox)
 	{
-		CPrintToChatAll("{crimson}[ZR] Resetting found Weapons.....");
+		SPrintToChatAll("Resetting found Weapons.....");
 		//prevents when restarting, finding 2 instantly...
 		Store_RandomizeNPCStore(1);
 		//reveal 15

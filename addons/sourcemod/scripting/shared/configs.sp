@@ -297,15 +297,15 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 #if defined RPG
 			if(magic)
 			{
-				Format(buffer, length, "%s\nDamage: Magic %.0f%%", buffer, data.Damage * 100.0);
+				Format(buffer, length, "%s\nDamage: Magic %.0f％", buffer, data.Damage * 100.0);
 			}
 			else if(data.Range)
 			{
-				Format(buffer, length, "%s\nDamage: Melee %.0f%%", buffer, data.Damage * 100.0);
+				Format(buffer, length, "%s\nDamage: Melee %.0f％", buffer, data.Damage * 100.0);
 			}
 			else
 			{
-				Format(buffer, length, "%s\nDamage: Ranged %.0f%%", buffer, data.Damage * 100.0);
+				Format(buffer, length, "%s\nDamage: Ranged %.0f％", buffer, data.Damage * 100.0);
 			}
 #else
 			if(data.Damage < 100.0)
@@ -412,6 +412,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 		}
 	}
 	
+		/*
 	bool medigun;
 	
 	// Healing and Overheal
@@ -430,7 +431,6 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 		}
 		
 		Format(buffer, length, "%s\nHealing: %d", buffer, RoundFloat(data.Healing));
-		
 		medigun = StrEqual(classname, "tf_weapon_medigun");
 		if(medigun)
 		{
@@ -451,6 +451,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 				Format(buffer, length, "%s\nOverheal: x%.2f", buffer, overheal);
 		}
 	}
+	*/
 	
 	// Charge Speed
 	for(i=0; i<attribs; i++)
@@ -488,8 +489,10 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			}
 		}
 		
+		/*
 		if(data.Charge > 0)
 		{
+			
 			if(medigun)
 			{
 				val = 0;
@@ -522,7 +525,9 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			{
 				Format(buffer, length, "%s\nCharge: %.2fs", buffer, data.Charge);
 			}
+			
 		}
+		*/
 	}
 	
 	// Melee Range

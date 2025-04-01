@@ -787,7 +787,7 @@ void Store_OpenItemPage(int client)
 	else
 	{
 		SetGlobalTransTarget(client);
-		CPrintToChat(client,"{red}[ZR] {yellow}%t", "Cant Display");
+		SPrintToChat(client,"%t", "Cant Display");
 	}
 }
 
@@ -2000,7 +2000,11 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	if(!zr_interactforcereload.BoolValue)
+		FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	else
+		FormatEx(buffer, sizeof(buffer), "%t", "Interact With Spray");
+
 	if(b_InteractWithReload[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
@@ -2031,7 +2035,16 @@ public void ReShowSettingsHud(int client)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
-	menu2.AddItem("-91", buffer);
+	FormatEx(buffer, sizeof(buffer), "%t", "Disable Status Lastmann Music");
+	if(b_LastManDisable[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-96", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
@@ -2534,6 +2547,20 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					SetGlobalTransTarget(client);
 					ReShowSettingsHud(client);
 				}
+				case -96: 
+				{
+					if(b_LastManDisable[client])
+					{
+						b_LastManDisable[client] = false;
+					}
+					else
+					{
+						b_LastManDisable[client] = true;
+					}
+					SetGlobalTransTarget(client);
+					PrintToChat(client,"%t", "Disable Status Lastmann Music Explain");
+					ReShowSettingsHud(client);
+				}
 				case -91: 
 				{
 					if(b_DisableStatusEffectHints[client])
@@ -2782,7 +2809,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "{green}Recovered at -%d%% off:{palegreen}", RoundFloat((1.0 - override) * 100.0));
+				Format(buffer, sizeof(buffer), "{green}Recovered at -%d％ off:{palegreen}", RoundFloat((1.0 - override) * 100.0));
 			}
 
 			for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
@@ -3101,22 +3128,22 @@ static void MenuPage(int client, int section)
 					{
 						if(Rogue_Mode())
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");	
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");	
 						}
 					}
 					else
 					{
 						if(Rogue_Mode())
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");	
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");	
 						}						
 					}
 				}
@@ -3137,22 +3164,22 @@ static void MenuPage(int client, int section)
 					{
 						if(Rogue_Mode())
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 					}
 					else
 					{
 						if(Rogue_Mode())
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
+							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 					}
 				}
@@ -3365,7 +3392,7 @@ static void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%ss\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
+			menu.SetTitle("%t\n%t\n%t\n \n%ss\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else if(UsingChoosenTags[client])
 		{
@@ -3402,10 +3429,10 @@ static void MenuPage(int client, int section)
 		if(NPCOnly[client] == 1)
 		{
 			if(i_SpecialGrigoriReplace == 0)
-				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf);
+				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20％ off here!", buf);
 			else
 			{
-				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf);
+				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "The World Machine's Items","All Items are 20％ off here!", buf);
 			}
 		}
 		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
@@ -3698,7 +3725,7 @@ static void MenuPage(int client, int section)
 					}
 					else if(!item.WhiteOut && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
+						FormatEx(buffer, sizeof(buffer), "%s [%.0f％]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 						style = ITEMDRAW_DISABLED;
 					}
 					else
@@ -4211,6 +4238,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -44:
 					{
 						XP[client] = LevelToXp(5);
+						Level[client] = 0; //Just incase.
 						GiveXP(client, 0);
 					}
 					case -24:
@@ -6201,6 +6229,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Walter_Enable(client, entity);
 		Enable_CastleBreakerWeapon(client, entity);
 		Purnell_Enable(client, entity);
+		Medigun_SetModeDo(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);

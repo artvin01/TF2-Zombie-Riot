@@ -206,8 +206,11 @@ methodmap Karlas < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		int rng = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound() {
@@ -323,6 +326,11 @@ methodmap Karlas < CClotBody
 	{
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
+	property float m_flInvulnerability
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
 	property int m_iParticles1
 	{
@@ -511,6 +519,8 @@ methodmap Karlas < CClotBody
 		fl_teleport_strike_recharge[npc.index] = GetGameTime()+25.0;
 		b_teleport_strike_active[npc.index]=false;
 
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
+
 		Zero(fl_dance_of_light_sound_spam_timer);
 
 		npc.m_fbGunout = false;
@@ -622,6 +632,8 @@ methodmap Karlas < CClotBody
 		{
 			f_GlobalHitDetectionLogic[npc.index][entity] = 0.0;
 		}
+
+		b_allow_karlas_transform[npc.index] = false;
 		
 		return npc;
 	}
@@ -661,6 +673,21 @@ static void Internal_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 
+	if(npc.m_flInvulnerability)
+	{
+		int ally = npc.Ally;
+		Karlas npcally = view_as<Karlas>(ally);
+		if(IsValidEntity(ally) && npcally.m_flInvulnerability)
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(ally));
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+		else if(!IsValidEntity(ally))
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+	}
+	
 	if(RaidModeTime < GetGameTime() && !npc.Ally && !b_lostOVERDRIVE[npc.index])
 	{
 		CPrintToChatAll("{crimson}Karlas{snow}: >:)");
@@ -1111,7 +1138,7 @@ static void Blade_Logic(Karlas npc)
 		{
 			case 2:	//Aggresive - spin around him while extended
 			{
-				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 8.0*RaidModeScaling);
+				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 12.0*RaidModeScaling);
 			}
 			case 4:	//becomes pseudo wings. neutral state for when the things are "recharging"
 			{
@@ -1222,7 +1249,8 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 
 	float Distance = GetVectorDistance(SelfVec, VecTarget);
 	float Timer_Span = Distance/Speed;
-	Timer_Span *=0.5 + 0.25;
+	Timer_Span *=(npc.Anger ? 0.75 : 0.5) + 0.25;
+	
 
 	CreateTimer(Timer_Span, KillProjectileHoming, EntIndexToEntRef(Proj), TIMER_FLAG_NO_MAPCHANGE);
 
@@ -1364,7 +1392,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 	}
 		
 
-	if(!b_lostOVERDRIVE[npc.index] && (fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime)))
+	if(fl_retreat_timer[npc.index] != -1.0 && !b_lostOVERDRIVE[npc.index] && (fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime)))
 	{
 		npc.m_bAllowBackWalking=true;
 		float vBackoffPos[3];
@@ -1395,10 +1423,30 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 			return;
 
 		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : (npc.Anger ? 1.5 : 2.5));
-		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.3);
+		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.25);
+
+		bool Silence = NpcStats_IsEnemySilenced(npc.index);
+		float Knockback_Deal = Silence ? 560.0 : 900.0;
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
+			if(!b_lostOVERDRIVE[npc.index])
+			{
+				int Nearby = Nearby_Players(npc, 400.0);
 
+				int amount_of_people = 6;
+
+				float Ratio = 1.0 - (Nearby/float(amount_of_people));
+				if(Ratio <0.0)
+					Ratio = 0.0;
+
+				float MinSpeed = (npc.Anger ? 0.175 : 0.3);
+				float MinDelay = 0.1;	//must be lower, since uh, otherwise the melee doesn't ever hit
+
+				Swing_Speed = MinSpeed + (Swing_Speed - MinSpeed) * Ratio;
+				Swing_Delay = MinDelay + (Swing_Delay - MinDelay) * Ratio;
+
+				Knockback_Deal *=Ratio;
+			}
 			//Play attack ani
 			if (!npc.m_flAttackHappenswillhappen)
 			{
@@ -1411,7 +1459,10 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 				
 			if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 			{
-				fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+				if(Swing_Speed > 0.9)
+					fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+				else
+					fl_retreat_timer[npc.index] = -1.0;
 
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -1434,13 +1485,13 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 						//clause ae karlas knockback
 						if(!b_lostOVERDRIVE[npc.index])
 						{
-							bool Silence = NpcStats_IsEnemySilenced(npc.index);
+							
 							if(IsValidClient(target) && !Silence)
 							{
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
-							Custom_Knockback(npc.index, target, Silence ? 560.0 : 900.0, true);
+							Custom_Knockback(npc.index, target, Knockback_Deal, true);
 						}
 						SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();	
@@ -1527,7 +1578,7 @@ static void Fire_Wave_Barrage(Karlas npc)
 	
 	//taunt_the_fist_bump_fistbump
 
-	int Amt = (npc.Anger ? 9 : 7); 
+	int Amt = (npc.Anger ? 9 : 12); 
 	float Fire_Rate = (npc.Anger ? 0.5 : 1.0);	//how long between slicer bursts
 
 	if(npc.m_iSlicersFired > Amt+1)
@@ -2245,8 +2296,9 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	int wave = i_current_wave[npc.index];
 
 	//stella is dead, its wave 30 or beyond, health is less then 80% we are not teleporting, we are not being lockedon by stella, we are not doing an animation
-	if(!b_angered_twice[npc.index] && wave >=30 && !IsValidAlly(npc.index, npc.Ally) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if(!b_angered_twice[npc.index] && wave >=30 && (!IsValidAlly(npc.index, npc.Ally) || b_allow_karlas_transform[npc.index]) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
+		b_allow_karlas_transform[npc.index] = false;
 		b_angered_twice[npc.index]=true;
 		npc.m_flNextChargeSpecialAttack = GetGameTime()+8.0;
 		npc.m_bisWalking = false;
@@ -2278,6 +2330,26 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	}
+	int health;
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToNearest(damage) > health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	{
+		switch(GetRandomInt(0, 1))
+		{
+			case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
+			case 1: CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
+		}
+			
+		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
+		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
+		int ally = npc.Ally;
+		if(IsValidEntity(ally))
+		{
+			Stella donner = view_as<Stella>(ally);
+			donner.Anger=true;
+		}
+		npc.m_flInvulnerability = 1.0;
 	}
 	
 	return Plugin_Changed;
@@ -2765,4 +2837,18 @@ void KarlasEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
 	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
 	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+
+public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	char sound[128];
+	pack.ReadString(sound, 128);
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		EmitSoundToAll(sound, entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	return Plugin_Handled; 
 }

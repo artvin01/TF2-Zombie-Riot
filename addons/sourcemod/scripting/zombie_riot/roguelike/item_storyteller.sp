@@ -207,7 +207,7 @@ static Action Timer_BladedancerTimer(Handle timer)
 	}
 	if(IsValidClient(BladeDancer))
 	{
-		CPrintToChatAll("{red}%N {crimson}recieved +100%% max health and +100%% damage bonus and +100%% heal rate.", BladeDancer);
+		CPrintToChatAll("{red}%N {crimson}recieved +100％ max health and +100％ damage bonus and +100％ heal rate.", BladeDancer);
 	}
 	return Plugin_Continue;
 }

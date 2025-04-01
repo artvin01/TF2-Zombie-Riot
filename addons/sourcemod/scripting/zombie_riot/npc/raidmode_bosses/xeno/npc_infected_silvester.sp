@@ -153,7 +153,7 @@ void Silvester_TBB_Precahce()
 	
 	
 	
-	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester.mp3");
+	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester_waldch_duo.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -459,12 +459,12 @@ methodmap RaidbossSilvester < CClotBody
 		if(!ingoremusic)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
-			music.Time = 117;
-			music.Volume = 2.0;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester_waldch_duo.mp3");
+			music.Time = 260;
+			music.Volume = 1.6;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
-			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			strcopy(music.Name, sizeof(music.Name), "The Duo that Warns in inconspicuous Ways");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 		else
@@ -659,8 +659,7 @@ static void Internal_ClotThink(int iNPC)
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
+			
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Angeled Silvester");
 			i_NpcWeight[npc.index] = 4;
 

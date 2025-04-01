@@ -550,7 +550,9 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				if (weapon != INVALID_ENT_REFERENCE)
 					SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 			}
+#if defined ZR
 			SDKHooks_UpdateMarkForDeath(client, true);
+#endif
 			f_UpdateModelIssues[client] = GetGameTime() + 0.1;
 			return;
 		}

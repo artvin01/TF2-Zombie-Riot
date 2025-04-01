@@ -339,7 +339,7 @@ public void Weapon_Yakuza_R(int client, int weapon, bool crit, int slot)
 			{
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "Requires 80%% HEAT for Dragon Style!");
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Requires 80％ HEAT for Dragon Style!");
 			}
 		}
 	}
@@ -718,7 +718,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Requires %d%% HEAT for this!", RequiredHeat);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Requires %d％ HEAT for this!", RequiredHeat);
 			FinishLagCompensation_Base_boss();
 			return;
 		}
@@ -883,7 +883,7 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		}
 	}
 
-	if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING)
+	if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == INDEX_BUILDINGHOLDING && LastAttack[attacker] != Attack_Grab)
 	{
 		bool failed = true;
 

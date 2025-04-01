@@ -616,7 +616,14 @@ public void OnPostThink(int client)
 		}
 
 		float attrib;
-		attrib += Attributes_Get(client, 57, 0.0);
+		
+		attrib = Attributes_GetOnPlayer(client, Attrib_SlowImmune, false);
+		if(attrib)
+		{
+			ApplyStatusEffect(client, client, "Fluid Movement", 1.0);
+		}
+
+		attrib = Attributes_Get(client, 57, 0.0);
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon != -1)
 		{
@@ -835,7 +842,7 @@ public void OnPostThink(int client)
 				}	
 				if(!b_GivePlayerHint[client])
 				{
-					CPrintToChat(client, "{red}[ZR] {yellow}%t","Hint Change Multislot");
+					SPrintToChat(client, "%t","Hint Change Multislot");
 					b_GivePlayerHint[client] = true;
 				}
 				Format(buffer, sizeof(buffer), "[Multi Slot] %s", buffer);
@@ -875,11 +882,11 @@ public void OnPostThink(int client)
 					had_An_ability = true;
 					if(percentage_melee < 10.0)
 					{
-						Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f%%", percentage_melee);
+						Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f％", percentage_melee);
 					}
 					else
 					{
-						Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f%%", percentage_melee);
+						Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f％", percentage_melee);
 					}
 					
 					if(f_ClientDoDamageHud_Hurt[client][0] > GetGameTime())
@@ -895,22 +902,22 @@ public void OnPostThink(int client)
 					{
 						if(percentage_ranged < 10.0)
 						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.2f%%", percentage_ranged);
+							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.2f％", percentage_ranged);
 						}
 						else
 						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.0f%%", percentage_ranged);
+							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.0f％", percentage_ranged);
 						}
 					}
 					else
 					{
 						if(percentage_ranged < 10.0)
 						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.2f%%", percentage_ranged);
+							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.2f％", percentage_ranged);
 						}
 						else
 						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.0f%%", percentage_ranged);
+							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.0f％", percentage_ranged);
 						}
 					}
 
@@ -960,7 +967,7 @@ public void OnPostThink(int client)
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f%%]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
+						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f％]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
 					}
 				}
 			}
@@ -990,7 +997,7 @@ public void OnPostThink(int client)
 			if(SuperUbersaw_Existant(client))
 			{
 				had_An_ability = true;
-				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f%%]",buffer, SuperUbersawPercentage(client) * 100.0);
+				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f％]",buffer, SuperUbersawPercentage(client) * 100.0);
 			}
 			if(b_Reinforce[client])
 			{
@@ -1001,7 +1008,7 @@ public void OnPostThink(int client)
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f%%]",buffer, ReinforcePoint(client) * 100.0);
+					FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f％]",buffer, ReinforcePoint(client) * 100.0);
 				}
 			}
 			if(GetAbilitySlotCount(client) == 8)
@@ -1013,7 +1020,7 @@ public void OnPostThink(int client)
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [Ḿ %0.f%%]",buffer, MorphineChargeFunc(client) * 100.0);
+					FormatEx(buffer, sizeof(buffer), "%s [Ḿ %0.f％]",buffer, MorphineChargeFunc(client) * 100.0);
 				}
 			}
 #endif
@@ -1484,8 +1491,10 @@ public void OnPostThinkPost(int client)
 	}
 	if(f_UpdateModelIssues[client] && f_UpdateModelIssues[client] < GetGameTime())
 	{
+#if defined ZR
 		SDKHooks_UpdateMarkForDeath(client, true);
 		SDKHooks_UpdateMarkForDeath(client);
+#endif	// ZR & RPG
 		f_UpdateModelIssues[client] = 0.0;
 	}
 }
@@ -1596,6 +1605,7 @@ int CheckInHud()
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
+
 	if(IsValidEntity(victim) && CanSelfHurtAndJump(victim) && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
 	{
 		if(CanSelfHurtAndJump(victim))
@@ -1743,7 +1753,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		else
 #endif
 		{
-			if(victim == attacker)
+			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ALLOW_SELFHURT) && victim == attacker)
 				return Plugin_Handled;
 		}
 	}
@@ -1775,6 +1785,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined RPG
 		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
 #endif
+
+		if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ALLOW_SELFHURT) && victim == attacker)
+		{
+
+		}
+		else
 			return Plugin_Handled;	
 
 #if defined RPG		
@@ -1913,6 +1929,13 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 	{
 		//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 3");
 		//the client has a suit, save them !!
+		if(HasSpecificBuff(victim, "Infinite Will"))
+		{
+			//I AM IMMORTAL!!!!!!!!!!!!!!!!!!
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 		if(i_HealthBeforeSuit[victim] > 0)
 		{
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 4");
@@ -2471,9 +2494,14 @@ void ApplyLastmanOrDyingOverlay(int client)
 	{
 		switch(Yakuza_Lastman())
 		{
-			case 1,2,3,4,7:
+			case 1,2,3,4,7,9:
 			{
 				return;
+			}
+			case 8:
+			{
+				if(!HasSpecificBuff(client, "Death is comming."))
+					return;
 			}
 		}
 	}

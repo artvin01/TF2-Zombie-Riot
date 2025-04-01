@@ -1951,7 +1951,9 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 					}
 					else
 					{
-						int limit = npc.m_iGunValue > 4000 ? 5 : 3;
+						int limit = 3 + (npc.m_iGunValue / 4000);
+						if(limit > 12)
+							limit = 12;
 
 						int obj = MaxClients + 1;
 						while((obj = FindEntityByClassname(obj, "obj_building")) != -1)
@@ -2342,7 +2344,9 @@ void Citizen_WaveStart()
 				
 				if(npc.m_iClassRole == Cit_Builder)
 				{
-					int limit = npc.m_iGunValue > 4000 ? 5 : 3;
+					int limit = 3 + (npc.m_iGunValue / 4000);
+					if(limit > 12)
+						limit = 12;
 
 					int obj = MaxClients + 1;
 					while((obj = FindEntityByClassname(obj, "obj_building")) != -1)
@@ -2819,13 +2823,13 @@ public void Citizen_ClotThink(int iNPC)
 				if(npc.m_iClassRole == Cit_Builder)
 				{
 					// Sentries on Decorative Objects
-					if(StrContains(buffer, "obj_decorative"))
+					if(StrContains(buffer, "obj_decorative") == -1 && StrContains(buffer, "obj_barricade") == -1)
 						continue;
 				}
 				else
 				{
 					// Healing Station on Healing Stations
-					if(StrContains(buffer, "obj_healingstation"))
+					if(StrContains(buffer, "obj_healingstation") == -1 && StrContains(buffer, "obj_grill") == -1)
 						continue;
 				}
 
@@ -3014,7 +3018,7 @@ public void Citizen_ClotThink(int iNPC)
 				if(HealingCooldown[entity] < gameTime)
 				{
 					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
-					if(!StrContains(buffer, "obj_healingstation"))
+					if(!StrContains(buffer, "obj_healingstation") || (!StrContains(buffer, "obj_grill") && view_as<CClotBody>(entity).g_TimesSummoned))
 					{
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
@@ -3234,6 +3238,7 @@ public void Citizen_ClotThink(int iNPC)
 								healing *= 0.33;
 							}
 							int BeamIndex = ConnectWithBeam(npc.index, ally, 50, 125, 50, 1.5, 1.5, 1.35, "sprites/laserbeam.vmt");
+							SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
 

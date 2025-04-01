@@ -1344,8 +1344,11 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		b_RaptureZombie[victim] = b_RaptureZombie[attacker];
 	}
 #endif
+	//was health changed?
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	
 	//LogEntryInvicibleTest(victim, attacker, damage, 29);
-	if(SlayNpc)
+	if(SlayNpc && !HasSpecificBuff(victim, "Infinite Will"))
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
 	}
@@ -1670,11 +1673,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			armor_added = true;
 			if(percentage_melee < 10.0)
 			{
-				Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f%%", percentage_melee);
+				Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f％", percentage_melee);
 			}
 			else
 			{
-				Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f%%", percentage_melee);
+				Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f％", percentage_melee);
 			}
 			if(f_ClientDoDamageHud[attacker][0] > GetGameTime())
 				Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
@@ -1707,22 +1710,22 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
 				if(DamagePercDo < 10.0)
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s☖%.2f%%", Debuff_Adder, DamagePercDo);
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s☖%.2f％", Debuff_Adder, DamagePercDo);
 				}
 				else
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s☖%.0f%%", Debuff_Adder, DamagePercDo);
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s☖%.0f％", Debuff_Adder, DamagePercDo);
 				}
 			}
 			else
 			{	
 				if(DamagePercDo < 10.0)
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☖%.2f%%", Debuff_Adder, DamagePercDo);
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☖%.2f％", Debuff_Adder, DamagePercDo);
 				}
 				else
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☖%.0f%%", Debuff_Adder, DamagePercDo);
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☖%.0f％", Debuff_Adder, DamagePercDo);
 				}
 			}
 			ResAdded = true;
@@ -1736,22 +1739,22 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			{
 				if(percentage_ranged < 10.0)
 				{
-					Format(NumberAdd, sizeof(NumberAdd), "|➶%.2f%%", percentage_ranged);
+					Format(NumberAdd, sizeof(NumberAdd), "|➶%.2f％", percentage_ranged);
 				}
 				else
 				{
-					Format(NumberAdd, sizeof(NumberAdd), "|➶%.0f%%", percentage_ranged);
+					Format(NumberAdd, sizeof(NumberAdd), "|➶%.0f％", percentage_ranged);
 				}
 			}
 			else
 			{	
 				if(percentage_ranged < 10.0)
 				{
-					Format(NumberAdd, sizeof(NumberAdd), "[➶%.2f%%", percentage_ranged);
+					Format(NumberAdd, sizeof(NumberAdd), "[➶%.2f％", percentage_ranged);
 				}
 				else
 				{
-					Format(NumberAdd, sizeof(NumberAdd), "[➶%.0f%%", percentage_ranged);
+					Format(NumberAdd, sizeof(NumberAdd), "[➶%.0f％", percentage_ranged);
 				}
 			}
 			if(f_ClientDoDamageHud[attacker][1] > GetGameTime())
@@ -1863,7 +1866,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		}
 		CClotBody npcstats = view_as<CClotBody>(victim);
 		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0)
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar + 1);
 #endif
 		
 		//add debuff
@@ -1920,9 +1923,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t : ", ExtraHudHurt, "Power");
 			//time show or not
 			if(Timer_Show > 800.0)
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%%]", ExtraHudHurt, RaidModeScaling * 100.0);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％]", ExtraHudHurt, RaidModeScaling * 100.0);
 			else
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f%% | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％ | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
 		}
 		else
 		{

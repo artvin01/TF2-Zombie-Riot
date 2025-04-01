@@ -219,8 +219,9 @@ static Action Timer_DeathDoor(Handle timer, DataPack pack)
 		if(client && IsPlayerAlive(client))
 		{
 			if(GetClientHealth(client) > 199)
-				TF2_AddCondition(client, TFCond_PreventDeath, 5.0);
-			
+			{
+				ApplyStatusEffect(client, client, "Infinite Will", 5.0);
+			}
 			return Plugin_Continue;
 		}
 	}

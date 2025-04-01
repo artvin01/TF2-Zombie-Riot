@@ -268,7 +268,7 @@ void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int
 			{
 				case 2016:
 				{
-					Format(desc, 512, "%s\nMining Efficiency: %.0f%%", desc, value[i]);
+					Format(desc, 512, "%s\nMining Efficiency: %.0f％", desc, value[i]);
 				}
 				case 5017:
 				{

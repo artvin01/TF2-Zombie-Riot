@@ -213,6 +213,30 @@ void Stock_SetHudTextParams(float x, float y, float holdTime, int r, int g, int 
 
 #define SetHudTextParams Stock_SetHudTextParams
 
+int Stock_ShowSyncHudText(int client, Handle sync, const char[] message, any ...)
+{
+	int ReturnFlags = GetEntProp(client, Prop_Send, "m_iHideHUD");
+	if(ReturnFlags & HIDEHUD_ALL) //hide.
+		return 0;
+
+	char buffer[512];
+	VFormat(buffer, sizeof(buffer), message, 4);
+	return ShowSyncHudText(client, sync, buffer);
+}
+#define ShowSyncHudText Stock_ShowSyncHudText
+
+void Stock_PrintHintText(int client, const char[] format, any ...)
+{
+	int ReturnFlags = GetEntProp(client, Prop_Send, "m_iHideHUD");
+	if(ReturnFlags & HIDEHUD_ALL) //hide.
+		return;
+
+	char buffer[512];
+	VFormat(buffer, sizeof(buffer), format, 3);
+	PrintHintText(client, buffer);
+}
+#define PrintHintText Stock_PrintHintText
+
 stock void ResetToZero(any[] array, int length)
 {
     for(int i; i<length; i++)
