@@ -115,7 +115,7 @@ static int TriggerDamage(int entity, int type)
 		}
 		case Element_Burger:
 		{
-			divide = 2.0;
+			divide = 4.0;
 		}
 	}
 
