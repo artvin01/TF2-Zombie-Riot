@@ -12,6 +12,7 @@ enum
 	Element_Void,
 	Element_Osmosis,
 	Element_Corruption,
+	Element_Burger,
 
 	Element_MAX
 }
@@ -24,7 +25,8 @@ static const char ElementName[][] =
 	"NE",
 	"VO",
 	"OS",
-	"CO"
+	"CO",
+	"FOOD"
 };
 
 static float LastTime[MAXENTITIES];
@@ -42,8 +44,11 @@ void Elemental_ClearDamage(int entity)
 	}
 }
 
-stock bool Elemental_HasDamage(int entity)
+stock bool Elemental_HasDamage(int entity, int type = -1)
 {
+	if(type != -1)
+		return view_as<bool>(ElementDamage[entity][type]);
+	
 	for(int i; i < Element_MAX; i++)
 	{
 		if(ElementDamage[entity][i])
@@ -105,6 +110,10 @@ static int TriggerDamage(int entity, int type)
 			divide = 4.0;
 		}
 		case Element_Void:
+		{
+			divide = 2.0;
+		}
+		case Element_Burger:
 		{
 			divide = 2.0;
 		}
@@ -170,7 +179,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 		return false;
 	
 	// <CY 50%>
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d%%>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
 	return true;
 }
 
@@ -853,4 +862,40 @@ static void Matrix_Spawning(int entity, int count)
 		Waves_AddNextEnemy(enemy);
 	}
 	Zombies_Currently_Still_Ongoing += count;
+}
+
+void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
+{
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
+	if(b_NpcIsInvulnerable[victim])
+		return;
+	
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
+	{
+		if(f_ArmorCurrosionImmunity[victim][Element_Burger] < GetGameTime())
+		{
+			int trigger = TriggerDamage(victim, Element_Burger);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_Burger;
+			ElementDamage[victim][Element_Burger] += damage;
+			if(ElementDamage[victim][Element_Burger] > trigger)
+			{
+				ElementDamage[victim][Element_Burger] = 0;
+				f_ArmorCurrosionImmunity[victim][Element_Burger] = GetGameTime() + 999.0;
+
+				if(func_NPCThink[victim] != MedivalConstruct_ClotThink || EntRefToEntIndex(RaidBossActive) != -1)
+				{
+					SDKHooks_TakeDamage(victim, attacker, attacker, ReturnEntityMaxHealth(victim) * 5.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_GIB_REGARDLESS);
+				}
+			}
+		}
+	}
 }

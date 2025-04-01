@@ -882,11 +882,11 @@ public void OnPostThink(int client)
 					had_An_ability = true;
 					if(percentage_melee < 10.0)
 					{
-						Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f%%", percentage_melee);
+						Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f％", percentage_melee);
 					}
 					else
 					{
-						Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f%%", percentage_melee);
+						Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f％", percentage_melee);
 					}
 					
 					if(f_ClientDoDamageHud_Hurt[client][0] > GetGameTime())
@@ -902,22 +902,22 @@ public void OnPostThink(int client)
 					{
 						if(percentage_ranged < 10.0)
 						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.2f%%", percentage_ranged);
+							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.2f％", percentage_ranged);
 						}
 						else
 						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.0f%%", percentage_ranged);
+							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.0f％", percentage_ranged);
 						}
 					}
 					else
 					{
 						if(percentage_ranged < 10.0)
 						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.2f%%", percentage_ranged);
+							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.2f％", percentage_ranged);
 						}
 						else
 						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.0f%%", percentage_ranged);
+							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.0f％", percentage_ranged);
 						}
 					}
 
@@ -967,7 +967,7 @@ public void OnPostThink(int client)
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f%%]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
+						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f％]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
 					}
 				}
 			}
@@ -997,7 +997,7 @@ public void OnPostThink(int client)
 			if(SuperUbersaw_Existant(client))
 			{
 				had_An_ability = true;
-				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f%%]",buffer, SuperUbersawPercentage(client) * 100.0);
+				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f％]",buffer, SuperUbersawPercentage(client) * 100.0);
 			}
 			if(b_Reinforce[client])
 			{
@@ -1008,7 +1008,7 @@ public void OnPostThink(int client)
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f%%]",buffer, ReinforcePoint(client) * 100.0);
+					FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f％]",buffer, ReinforcePoint(client) * 100.0);
 				}
 			}
 			if(GetAbilitySlotCount(client) == 8)
@@ -1020,7 +1020,7 @@ public void OnPostThink(int client)
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [Ḿ %0.f%%]",buffer, MorphineChargeFunc(client) * 100.0);
+					FormatEx(buffer, sizeof(buffer), "%s [Ḿ %0.f％]",buffer, MorphineChargeFunc(client) * 100.0);
 				}
 			}
 #endif
@@ -1605,6 +1605,7 @@ int CheckInHud()
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
+
 	if(IsValidEntity(victim) && CanSelfHurtAndJump(victim) && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
 	{
 		if(CanSelfHurtAndJump(victim))
@@ -1752,7 +1753,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		else
 #endif
 		{
-			if(victim == attacker)
+			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ALLOW_SELFHURT) && victim == attacker)
 				return Plugin_Handled;
 		}
 	}
@@ -1784,6 +1785,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined RPG
 		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
 #endif
+
+		if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ALLOW_SELFHURT) && victim == attacker)
+		{
+
+		}
+		else
 			return Plugin_Handled;	
 
 #if defined RPG		

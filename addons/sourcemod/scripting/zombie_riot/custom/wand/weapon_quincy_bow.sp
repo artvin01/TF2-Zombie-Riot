@@ -792,7 +792,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 	
 	char HUDText[255] = "";
 	
-	Format(HUDText, sizeof(HUDText), "%sRaishi Concentration: [%.0f%%%%%%%%%]", HUDText, charge_percent);
+	Format(HUDText, sizeof(HUDText), "%sRaishi Concentration: [%.0f％]", HUDText, charge_percent);
 
 
 	if(pap>=2)
@@ -860,7 +860,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 		else
 		{
 			float Charge = 100.0*(fl_hyper_arrow_charge[client]/QUINCY_BOW_HYPER_CHARGE);
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow [%.0f%%%%%%%%%]", HUDText, Charge);
+			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow [%.0f％]", HUDText, Charge);
 		}
 	}
 	

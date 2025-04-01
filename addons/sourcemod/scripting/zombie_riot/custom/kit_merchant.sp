@@ -10,7 +10,8 @@ enum
 	Merchant_Jaye = 0,
 	Merchant_Nothing,
 	Merchant_Lee,
-	Merchant_Swire
+	Merchant_Swire,
+	Merchant_Burger // April Fools 2025
 }
 
 enum
@@ -204,7 +205,14 @@ public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int sl
 
 	menu.SetTitle("Select Merchant Style:\n ");
 
-	switch(MerchantLevel[client])
+	int level = MerchantLevel[client];
+
+	char buffer[128];
+	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
+	if(StrContains(buffer, "fools25", false) != -1)
+		level = 69;
+
+	switch(level)
 	{
 		case -1:
 		{
@@ -229,6 +237,10 @@ public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int sl
 			menu.AddItem("1", "Martial Artist (Retreats, Stuns)");
 			menu.AddItem("2", "The Investigator (Steal Attack Speed)");
 			menu.AddItem("-1", "Wine Market (Upgrade Needed)", ITEMDRAW_DISABLED);
+		}
+		case 69:
+		{
+			menu.AddItem("4", "Grill Master (Tasty)");
 		}
 		default:
 		{
@@ -287,6 +299,10 @@ static int MerchantMenuH(Menu menu, MenuAction action, int client, int choice)
 				case 3:
 				{
 					CPrintToChat(client, "{green}Wine market!{default}: Revive if you would have died at a cost of metal.\nGain weapons on activation in your primary slot!\nLoyalty and Generosity: Healing crossbow\nLavish and Prodigal: Strong heavy shotgun.");
+				}
+				case 4:
+				{
+					CPrintToChat(client, "{green}Get ready to grill.");
 				}
 			}
 		}
@@ -413,10 +429,9 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 							
 							if(elite)
 							{
-								if(i_NpcWeight[entity] < 3 && !b_NoKnockbackFromSources[entity])
+								if(i_NpcWeight[entity] < 2 && !b_NoKnockbackFromSources[entity])
 								{
-									if(i_NpcWeight[entity] != 2)
-										Custom_Knockback(attacker, entity, 250.0, true, true, true);
+									Custom_Knockback(attacker, entity, 250.0, true, true, true);
 								}
 							}
 							else
@@ -456,6 +471,11 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") - reduce);
 				}
 			}
+		}
+		case Merchant_Burger:
+		{
+			Elemental_AddBurgerDamage(victim, attacker, RoundFloat(damage));
+			damage *= 0.1;
 		}
 	}
 }
@@ -771,7 +791,7 @@ static void MerchantStart(int client, int slot)
 					fcost = 15.666667;
 			}
 		}
-		case Merchant_Swire:
+		case Merchant_Swire, Merchant_Burger:
 		{
 			MerchantEffect[client] = 0;
 			fcost = 9.0;
@@ -939,6 +959,16 @@ static void MerchantStart(int client, int slot)
 
 				Store_GiveSpecificItem(client, "Loyalty and Generosity");
 				Store_GiveSpecificItem(client, "Lavish and Prodigal");
+			}
+			case Merchant_Burger:
+			{
+				strcopy(particle, sizeof(particle), "utaunt_gifts_floorglow_brown");
+				
+				ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
+
+				SetAmmo(client, Ammo_Merchant, 1);
+
+				Store_GiveSpecificItem(client, "Loyalty and Generosity");
 			}
 		}
 
@@ -1110,7 +1140,7 @@ static void MerchantThink(int client, int &cost)
 				cost = cost * 2 / 3;
 			}
 		}
-		case Merchant_Swire:
+		case Merchant_Swire, Merchant_Burger:
 		{
 			if(GetAmmo(client, Ammo_Heal) < 300)
 				SetAmmo(client, Ammo_Heal, 300);

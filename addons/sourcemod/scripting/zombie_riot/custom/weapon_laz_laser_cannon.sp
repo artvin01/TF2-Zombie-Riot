@@ -98,7 +98,7 @@ static bool Handle_Heat(int client, char HUDText[255])
 	fl_heat[client] += LAZ_LASER_CANNON_HEATGAIN;
 	float Ratio = fl_heat[client]/LAZ_LASER_CANNON_OVERHEAT*100.0;
 
-	Format(HUDText, sizeof(HUDText), "%sĄHeat:Ę%.0f%%%%%%%%%ĖČ",HUDText, Ratio);
+	Format(HUDText, sizeof(HUDText), "%sĄHeat:Ę%.0f％%ĖČ",HUDText, Ratio);
 	if(Ratio > 75.0)
 		Format(HUDText, sizeof(HUDText), "%s\n<HEAT CRITICAL>",HUDText);
 

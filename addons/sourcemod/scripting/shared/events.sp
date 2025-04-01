@@ -112,6 +112,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Merchant_RoundStart();
 	Flametail_RoundStart();
 	BlacksmithBrew_RoundStart();
+	BlacksmithGrill_RoundStart();
 	Zealot_RoundStart();
 	Drops_ResetChances();
 

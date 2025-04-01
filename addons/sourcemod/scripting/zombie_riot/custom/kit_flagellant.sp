@@ -40,20 +40,24 @@ void Flagellant_MapStart()
 	Precached = false;
 }
 
+void PrecacheSharedDarkestMusic()
+{
+
+	if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
+		Precached = true;
+	}
+}
 void Flagellant_Enable(int client, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_FLAGELLANT_MELEE:
 		{
-			if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
-			{
-				// MASS REPLACE THIS IN ALL FILES
-				PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
-				Precached = true;
-			}
 			MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
-
+			PrecacheSharedDarkestMusic();
 			delete EffectTimer[client];
 			EffectTimer[client] = CreateTimer(0.5, Flagellant_EffectTimer, client, TIMER_REPEAT);
 		}

@@ -84,6 +84,7 @@ void NPC_ConfigSetup()
 	ObjectVillage_MapStart();
 	ObjectTinkerBrew_MapStart();
 	ObjectRevenant_Setup();
+	//ObjectTinkerGrill_MapStart();
 	// Buildings
 
 	// Constructs
@@ -1237,6 +1238,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
 #include "zombie_riot/object/obj_revenant.sp"
+#include "zombie_riot/object/obj_grill.sp"
 #include "zombie_riot/object/construction/obj_giant_lighthouse.sp"
 #include "zombie_riot/object/construction/obj_const_stove.sp"
 #include "zombie_riot/object/construction/obj_const_factory.sp"

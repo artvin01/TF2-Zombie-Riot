@@ -597,6 +597,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/kit_soldine.sp"
 #include "zombie_riot/custom/weapon_kritzkrieg.sp"
 #include "zombie_riot/custom/wand/weapon_bubble_wand.sp"
+#include "zombie_riot/custom/kit_blacksmith_grill.sp"
 
 void ZR_PluginLoad()
 {
@@ -1073,6 +1074,7 @@ void ZR_ClientDisconnect(int client)
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
 	//reeset to 0
+	Leper_ClientDisconnect(client);
 }
 
 public void OnMapInit_ZR()
@@ -1983,9 +1985,18 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}The Machine Within %N screams: FOR VICTORY",client);
 							Yakuza_Lastman(7);
 						}
-						if(IsFlaggilant(client))
+						if(IsFlaggilant(client) || IsClientLeper(client))
 						{
-							CPrintToChatAll("{crimson}The undying soul %N refuses to ever die.",client);
+							if(IsFlaggilant(client))
+								CPrintToChatAll("{crimson}The undying soul %N refuses to ever die.",client);
+							else if(IsClientLeper(client))
+								CPrintToChatAll("{crimson}The King %N cannot stand this any longer..!",client);
+								
+							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+							if(weapon != -1)
+							{
+								Saga_ChargeReduction(client, weapon, 999.9);
+							}
 							Yakuza_Lastman(8);
 						}
 						if(SeaMelee_IsSeaborn(client))

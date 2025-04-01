@@ -1154,7 +1154,7 @@
 	}
 	"Sensitive Desc"
 	{
-		"en"	"{red}Players take +25%% more damage {green}but heal +100%% more."
+		"en"	"{red}Players take +25％ more damage {green}but heal +100％ more."
 	}
 	"Sensitive Lore"
 	{
@@ -1178,7 +1178,7 @@
 	}
 	"Solitary Desc"
 	{
-		"en"	"{red}Store items cost 10%% more {green}but Pack-a-Punch upgrades cost 10%% less."
+		"en"	"{red}Store items cost 10％ more {green}but Pack-a-Punch upgrades cost 10％ less."
 	}
 	"Solitary Lore"
 	{
@@ -1213,8 +1213,8 @@
 	}
 	"Pure Greed Desc"
 	{
-		"en"	"On this floor you will gain +25%% australium ingots, but all enemies will deal +25%% more damage."
-		"ru"	"На этом этаже вы получите +25%% слитков австралия, но все враги будут наносить на +25%% больше урона."
+		"en"	"On this floor you will gain +25％ australium ingots, but all enemies will deal +25％ more damage."
+		"ru"	"На этом этаже вы получите +25％ слитков австралия, но все враги будут наносить на +25％ больше урона."
 	}
 	
 	// Artifacts
@@ -1253,7 +1253,7 @@
 	}
 	"Spearhead Squad Desc"
 	{
-		"en"	"{green}All Allies gain +15%% damage bonus and +50 max health"
+		"en"	"{green}All Allies gain +15％ damage bonus and +50 max health"
 	}
 	"Research Squad"
 	{
@@ -1262,8 +1262,8 @@
 	}
 	"Research Squad Desc"
 	{
-		"en"	"{green}Store items are 10%% off while not in combat"
-		"ru"	"{green}Скидка на товары в магазине 10%% вне боя"
+		"en"	"{green}Store items are 10％ off while not in combat"
+		"ru"	"{green}Скидка на товары в магазине 10％ вне боя"
 	}
 	"First Class Squad"
 	{
@@ -1281,8 +1281,8 @@
 	}
 	"Provoked Anger Desc"
 	{
-		"en"	"Anger is usually provoked, this anger can be useful.\n- Every time you are hurt, gain +5%% extra damage for your holding weapon for 5 seconds."
-		"ru"	"Гнев обычно провоцируется, этот гнев может быть полезен.\n- Каждый раз, когда вас ранят, получайте +5%% доп. урона для вашего оружия в руках на 5 сек."
+		"en"	"Anger is usually provoked, this anger can be useful.\n- Every time you are hurt, gain +5％ extra damage for your holding weapon for 5 seconds."
+		"ru"	"Гнев обычно провоцируется, этот гнев может быть полезен.\n- Каждый раз, когда вас ранят, получайте +5％ доп. урона для вашего оружия в руках на 5 сек."
 	}
 	"Grigori's Coin Purse"
 	{
@@ -1320,8 +1320,8 @@
 	}
 	"Music Releasing Radio Desc"
 	{
-		"en"	"It releases music, it cant be stopped it seems.\n- All enemies will be 10%% slower."
-		"ru"	"Оно выпускает музыку, и его невозможно остановить.\n- Все враги станут медленнее на 10%%."
+		"en"	"It releases music, it cant be stopped it seems.\n- All enemies will be 10％ slower."
+		"ru"	"Оно выпускает музыку, и его невозможно остановить.\n- Все враги станут медленнее на 10％."
 	}
 	"Wrath Of Itallians"
 	{
@@ -1349,8 +1349,8 @@
 	}
 	"Bracelets of Agility Desc"
 	{
-		"en"	"Light and agile, from the far reaches of kazimierz.\n- Gain a 10%% dodge chance."
-		"ru"	"Лёгкие и проворные, из далекого Казимира.\n- Получите 10%% шанс уклонения."
+		"en"	"Light and agile, from the far reaches of kazimierz.\n- Gain a 10％ dodge chance."
+		"ru"	"Лёгкие и проворные, из далекого Казимира.\n- Получите 10％ шанс уклонения."
 	}
 	"Elastic Flying Cape"
 	{
@@ -1359,8 +1359,8 @@
 	}
 	"Elastic Flying Cape Desc"
 	{
-		"en"	"A cape that surrounds you and gives extra senses.\n- Gain a 10%% dodge chance against ranged attacks."
-		"ru"	"Плащ, который окружает вас и даёт дополнительные чувства.\n- Получите 10%% шанс уклонения от атак дальнего боя."
+		"en"	"A cape that surrounds you and gives extra senses.\n- Gain a 10％ dodge chance against ranged attacks."
+		"ru"	"Плащ, который окружает вас и даёт дополнительные чувства.\n- Получите 10％ шанс уклонения от атак дальнего боя."
 	}
 	"Healing Salve"
 	{
@@ -1379,8 +1379,8 @@
 	}
 	"Steel Razor Desc"
 	{
-		"en"	"Sharp and pointy.\n- +15%% more melee damage."
-		"ru"	"Острый, заточенный.\n- +15%% к урону в ближнем бою."
+		"en"	"Sharp and pointy.\n- +15％ more melee damage."
+		"ru"	"Острый, заточенный.\n- +15％ к урону в ближнем бою."
 	}
 	"Healthy Essence"
 	{
@@ -1389,8 +1389,8 @@
 	}
 	"Healthy Essence Desc"
 	{
-		"en"	"Being near it makes you feel better.\n- +25%% more healing from most sources."
-		"ru"	"Находясь рядом с этим, вы чувствуете себя лучше.\n- +25%% к лечению от большинства источников."
+		"en"	"Being near it makes you feel better.\n- +25％ more healing from most sources."
+		"ru"	"Находясь рядом с этим, вы чувствуете себя лучше.\n- +25％ к лечению от большинства источников."
 	}
 	"Chicken Nugget Box"
 	{
@@ -1399,8 +1399,8 @@
 	}
 	"Chicken Nugget Box Desc"
 	{
-		"en"	"Still good and tasty as ever.\n- +15%% more health."
-		"ru"	"Всё так же хорошо и вкусно.\n- +15%% к здоровью."
+		"en"	"Still good and tasty as ever.\n- +15％ more health."
+		"ru"	"Всё так же хорошо и вкусно.\n- +15％ к здоровью."
 	}
 	"Fizzy Drink"
 	{
@@ -1419,8 +1419,8 @@
 	}
 	"Hover Glider Desc"
 	{
-		"en"	"A device from old german technology.\n- You deal 30%% more damage while being in the air or in mid swim."
-		"ru"	"Устройство из старой немецкой технологии.\n- Вы наносите на 30%% больше урона, находясь в воздухе или во время плавания."
+		"en"	"A device from old german technology.\n- You deal 30％ more damage while being in the air or in mid swim."
+		"ru"	"Устройство из старой немецкой технологии.\n- Вы наносите на 30％ больше урона, находясь в воздухе или во время плавания."
 	}
 	"Hand Written Letter"
 	{
@@ -1429,8 +1429,8 @@
 	}
 	"Hand Written Letter Desc"
 	{
-		"en"	"Dropped letter, the language seems to be in french, it wasn't meant for you.\n- +750 Cash, 2%% more damage."
-		"ru"	"Упавшее письмо, кажется, на французском языке, оно предназначалось не вам.\n- +750 кредитов, на 2%% больше урона."
+		"en"	"Dropped letter, the language seems to be in french, it wasn't meant for you.\n- +750 Cash, 2％ more damage."
+		"ru"	"Упавшее письмо, кажется, на французском языке, оно предназначалось не вам.\n- +750 кредитов, на 2％ больше урона."
 	}
 	"Crude Flute"
 	{
@@ -1439,8 +1439,8 @@
 	}
 	"Crude Flute Desc"
 	{
-		"en"	"Music instrument, good for relaxing, needed in situations like these.\n- +500 Cash, +3%% MaxHealth."
-		"ru"	"Музыкальный инструмент, хорошо расслабляет, необходим в подобных ситуациях.\n- +500 кредитов, +3%% макс. запас здоровья."
+		"en"	"Music instrument, good for relaxing, needed in situations like these.\n- +500 Cash, +3％ MaxHealth."
+		"ru"	"Музыкальный инструмент, хорошо расслабляет, необходим в подобных ситуациях.\n- +500 кредитов, +3％ макс. запас здоровья."
 	}
 	"Scrapped Wallet"
 	{
@@ -1449,8 +1449,8 @@
 	}
 	"Scrapped Wallet Desc"
 	{
-		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Cash and 1%% more damage."
-		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1%% больше урона."
+		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Cash and 1％ more damage."
+		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
 	}
 	"Golden Coin"
 	{
@@ -1469,7 +1469,7 @@
 	}
 	"Nickel Injected Pack Desc"
 	{
-		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35%% more damage at max health, the less health you have, the less damage you deal untill the bonus is gone."
+		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35％ more damage at max health, the less health you have, the less damage you deal untill the bonus is gone."
 	}
 	"Spanish Specialised Gunpowder"
 	{
@@ -1478,8 +1478,8 @@
 	}
 	"Spanish Specialised Gunpowder Desc"
 	{
-		"en"	"Gunpower created in spain, and made specifically for spanish troops.\n- +15%% more ranged damage."
-		"ru"	"Оружие, созданное в Испании специально для испанских войск.\n- +15%% к урону в дальнем бою."
+		"en"	"Gunpower created in spain, and made specifically for spanish troops.\n- +15％ more ranged damage."
+		"ru"	"Оружие, созданное в Испании специально для испанских войск.\n- +15％ к урону в дальнем бою."
 	}
 	"Supply Depot"
 	{
@@ -1526,8 +1526,8 @@
 	}
 	"Thumb Ring Desc"
 	{
-		"en"	"Medieval technology that somehow made you 100%% accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 15%% faster."
-		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100%% метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 15%% быстрее."
+		"en"	"Medieval technology that somehow made you 100％ accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 15％ faster."
+		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100％ метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 15％ быстрее."
 	}
 	"Blademace"
 	{
@@ -1536,7 +1536,7 @@
 	}
 	"Blademace Desc"
 	{
-		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +20%% damage bonus, +20%% max health, +2%% damage resistance {red}but -10%% movement speed{yellow}."
+		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +20％ damage bonus, +20％ max health, +2％ damage resistance {red}but -10％ movement speed{yellow}."
 	}
 	"Brokenblade"
 	{
@@ -1545,8 +1545,8 @@
 	}
 	"Brokenblade Desc"
 	{
-		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -20%% max health{yellow}."
-		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -20%% макс. запаса здоровья{yellow}."
+		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -20％ max health{yellow}."
+		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -20％ макс. запаса здоровья{yellow}."
 	}
 	"Bladedance"
 	{
@@ -1555,7 +1555,7 @@
 	}
 	"Bladedance Desc"
 	{
-		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus, and +100%% Healing Rate."
+		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will receive +100％ max health and +100％ damage bonus, and +100％ Healing Rate."
 	}
 	"Whiteflower"
 	{
@@ -1564,7 +1564,7 @@
 	}
 	"Whiteflower Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}Allies gain +25%% max health {yellow}but max health is randomly swapped"
+		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped"
 	}
 	"Shadow"
 	{
@@ -1583,8 +1583,8 @@
 	}
 	"Right Eye of the Natator Desc"
 	{
-		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20%% ranged damage {red}but -5%% melee damage{yellow}."
-		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20%% больше урона в дальнем бою{red}, но -5%% урона в ближнем бою{yellow}."
+		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {red}but -5％ melee damage{yellow}."
+		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{red}, но -5％ урона в ближнем бою{yellow}."
 	}
 	"Left Eye of the Natator"
 	{
@@ -1593,8 +1593,8 @@
 	}
 	"Left Eye of the Natator Desc"
 	{
-		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20%% melee damage {red}but -5%% ranged damage{yellow}."
-		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20%% больше урона в ближнем бою{red}, но -5%% урона в дальнем бою{yellow}."
+		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {red}but -5％ ranged damage{yellow}."
+		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{red}, но -5％ урона в дальнем бою{yellow}."
 	}
 	"End of Times"
 	{
@@ -1622,7 +1622,7 @@
 	}
 	"Broken Combine Crown Desc"
 	{
-		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}All Allies receive -5%% max health {blue}and the ending is changed."
+		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}All Allies receive -5％ max health {blue}and the ending is changed."
 	}
 	"Bob's Reseach Papers"
 	{
@@ -1630,7 +1630,7 @@
 	}
 	"Bob's Reseach Papers Desc"
 	{
-		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10%% movement speed."
+		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10％ movement speed."
 	}
 	"Bob's Final Draft"
 	{
@@ -1638,7 +1638,7 @@
 	}
 	"Bob's Final Draft Desc"
 	{
-		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}All Allies receive +15%% damage bonus and +20%% movement speed {blue}and the ending is changed."
+		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
 	}
 	"Hand of Sticks"
 	{
@@ -1646,7 +1646,7 @@
 	}
 	"Hand of Sticks Desc"
 	{
-		"en"	"Real close and personal.\n{green}''Multi Pellet'' and ''Rapid Fire'' weapons gain +35%% melee damage resistance and gain 0.5 seconds of speed boost on hit."
+		"en"	"Real close and personal.\n{green}''Multi Pellet'' and ''Rapid Fire'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
 	}
 	"Hand of Quake"
 	{
@@ -1654,7 +1654,7 @@
 	}
 	"Hand of Quake Desc"
 	{
-		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' and Hand grenade weapons weapons grant +150%% jump height and 50%% more damage."
+		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' and Hand grenade weapons weapons grant +150％ jump height and 50％ more damage."
 	}
 	"Hand of Travel"
 	{
@@ -1686,7 +1686,7 @@
 	}
 	"Hand of Geek Desc"
 	{
-		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35%% Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
+		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
 	}
 	"Hand of Incredible Speeds"
 	{
@@ -1694,7 +1694,7 @@
 	}
 	"Hand of Incredible Speeds Desc"
 	{
-		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +25%% firing speed and +25%% Faster Reload Speed. \n''Far Range'' Weapons also gain 50%% more clipsize."
+		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +25％ firing speed and +25％ Faster Reload Speed. \n''Far Range'' Weapons also gain 50％ more clipsize."
 	}
 	"Hand of Suprise"
 	{
@@ -1702,7 +1702,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 25%% faster."
+		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 25％ faster."
 	}
 	"Hand of Revenge"
 	{
@@ -1710,7 +1710,7 @@
 	}
 	"Hand of Revenge Desc"
 	{
-		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' and ''Crusher'' weapons gain +150%% damage bonus while below half health."
+		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' and ''Crusher'' weapons gain +150％ damage bonus while below half health."
 	}
 	"Hand of Stock"
 	{
@@ -1718,7 +1718,7 @@
 	}
 	"Hand of Stock Desc"
 	{
-		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100%% max mana and regen and attack +50%% faster."
+		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +50％ faster."
 	}
 	"Hand of the Elite"
 	{
@@ -1726,7 +1726,7 @@
 	}
 	"Hand of the Elite Desc"
 	{
-		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75%% damage bonus while over half health"
+		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75％ damage bonus while over half health"
 	}
 	"Soul of Boss vs Boss"
 	{
@@ -1734,7 +1734,7 @@
 	}
 	"Soul of Boss vs Boss Desc"
 	{
-		"en"	"Every creation starts from somewhere.\n{green}Specific themed weapons gain +100%% jump height"
+		"en"	"Every creation starts from somewhere.\n{green}Specific themed weapons gain +100％ jump height"
 	}
 	"Soul of Arknights"
 	{
@@ -1750,7 +1750,7 @@
 	}
 	"Soul of Bloons Tower Defense Desc"
 	{
-		"en"	"Better build that temple.\n{green}Specific themed weapons grant +20%% damage to each other, stacking"
+		"en"	"Better build that temple.\n{green}Specific themed weapons grant +20％ damage to each other, stacking"
 	}
 	"Soul of Yakuza"
 	{
@@ -1782,7 +1782,7 @@
 	}
 	"Xeno Anti-Vial Desc"
 	{
-		"en"	"Suppresses the effects of Xeno, for a moment.\n{green}Xeno enemies take +75%% damage"
+		"en"	"Suppresses the effects of Xeno, for a moment.\n{green}Xeno enemies take +75％ damage"
 	}
 	"Seaborn Anti-Vial"
 	{
@@ -1790,7 +1790,7 @@
 	}
 	"Seaborn Anti-Vial Desc"
 	{
-		"en"	"A lantern that even Seaborn fear.\n{green}Seaborn enemies take +75%% damage"
+		"en"	"A lantern that even Seaborn fear.\n{green}Seaborn enemies take +75％ damage"
 	}
 	"Revenge Squad"
 	{
@@ -1806,7 +1806,7 @@
 	}
 	"Bob's Orders Desc"
 	{
-		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15%% damage bonus and +20%% movement speed {blue}and the ending is changed."
+		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
 	}
 	"But Nobody Is Here"
 	{
@@ -1834,7 +1834,7 @@
 	}
 	"Cursed Relic Desc"
 	{
-		"en"	"From the back of the bin in the shop.\n{green}Players gain +8%% firing speed {red}most of the time"
+		"en"	"From the back of the bin in the shop.\n{green}Players gain +8％ firing speed {red}most of the time"
 	}
 	"Australium Printer"
 	{
@@ -1874,7 +1874,7 @@
 	}
 	"Copper Ore Desc"
 	{
-		"en"	"Copper.\n{green}Weapons fire +35%% bullets per shot {red}but stops working when Iron Ore is collected"
+		"en"	"Copper.\n{green}Weapons fire +35％ bullets per shot {red}but stops working when Iron Ore is collected"
 	}
 	"Iron Ore"
 	{
@@ -1882,7 +1882,7 @@
 	}
 	"Iron Ore Desc"
 	{
-		"en"	"Iron.\n{green}Weapon projectiles gain +35%% projectile speed and range {red}but stops working when Copper Ore is collected"
+		"en"	"Iron.\n{green}Weapon projectiles gain +35％ projectile speed and range {red}but stops working when Copper Ore is collected"
 	}
 	"Empty Plate"
 	{
@@ -1906,7 +1906,7 @@
 	}
 	"Predator Pancakes Desc"
 	{
-		"en"	"{green}Players gain 10%% dodge chance"
+		"en"	"{green}Players gain 10％ dodge chance"
 	}
 	"Brandguider Brunch"
 	{
@@ -1914,7 +1914,7 @@
 	}
 	"Brandguider Brunch Desc"
 	{
-		"en"	"{green}Players take 50%% less nethersea brand damage"
+		"en"	"{green}Players take 50％ less nethersea brand damage"
 	}
 	"Spewer Spewers"
 	{
@@ -1922,7 +1922,7 @@
 	}
 	"Spewer Spewers Desc"
 	{
-		"en"	"{green}Weapon projectiles gain +50%% range"
+		"en"	"{green}Weapon projectiles gain +50％ range"
 	}
 	"Swarmcaller Sandwich"
 	{
@@ -1938,7 +1938,7 @@
 	}
 	"Reefbreaker Ravioli Desc"
 	{
-		"en"	"{green}Players gain +15%% damage"
+		"en"	"{green}Players gain +15％ damage"
 	}
 	"Whiteflower Final Speech 1"
 	{
