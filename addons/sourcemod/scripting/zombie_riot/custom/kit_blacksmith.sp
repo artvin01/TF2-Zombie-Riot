@@ -704,11 +704,11 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 	}
 	else if(value < 1.0)
 	{
-		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((1.0 - value) * 100.0));
+		FormatEx(buffer, sizeof(buffer), "%d％ ", RoundToCeil((1.0 - value) * 100.0));
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((value - 1.0) * 100.0));
+		FormatEx(buffer, sizeof(buffer), "%d％ ", RoundToCeil((value - 1.0) * 100.0));
 	}
 
 	//inverse the inverse!
@@ -853,7 +853,7 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 
 	}
 	
-	CPrintToChat(client, "%s {yellow}(%d%%)", buffer, RoundToCeil(luck * 100.0));
+	CPrintToChat(client, "%s {yellow}(%d％)", buffer, RoundToCeil(luck * 100.0));
 }
 
 static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)

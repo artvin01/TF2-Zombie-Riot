@@ -13,20 +13,20 @@
 	}
 	"Open Store"
 	{
-		"en"		"Press %%+showscores%% to open the store"
-		"it"		"Premi %%+showscores%% per aprire il negozio"
-		"ru"		"Нажмите %%+showscores%% для открытия магазина"
-		"pl"		"Wciśnij %%+showscores%% aby otworzyć sklep"
-		"es"		"Pulsa %%+showscores%% para abrir la tienda"
-		"fr"		"Appuyez sur %%+showscores%% pour ouvrir la boutique"
-		"de"		"Drücke %%+showscores%% um den Laden zu öffnen"
-		"pt"		"Pressione %%+showscores%% para abrir a loja"
-		"nl"		"Druk %%+showscores%% om de winkel te openen"
-		"chi"		"按下 %%+showscores%% 来打开商店"
+		"en"		"Press ％+showscores％ to open the store"
+		"it"		"Premi ％+showscores％ per aprire il negozio"
+		"ru"		"Нажмите ％+showscores％ для открытия магазина"
+		"pl"		"Wciśnij ％+showscores％ aby otworzyć sklep"
+		"es"		"Pulsa ％+showscores％ para abrir la tienda"
+		"fr"		"Appuyez sur ％+showscores％ pour ouvrir la boutique"
+		"de"		"Drücke ％+showscores％ um den Laden zu öffnen"
+		"pt"		"Pressione ％+showscores％ para abrir a loja"
+		"nl"		"Druk ％+showscores％ om de winkel te openen"
+		"chi"		"按下 ％+showscores％ 来打开商店"
 	}
 	"Press To Open Store"
 	{
-		"en"		"%%+showscores%% OPEN STORE MENU"
+		"en"		"％+showscores％ OPEN STORE MENU"
 	}
 	"Last Alive"
 	{
@@ -207,16 +207,16 @@
 	}
 	"Store Discount"
 	{
-		"en"		"-10%% Off Shipping With No Zombies"
-		"it"		"-10%% meno dal negozio quando non ci sono Zombie"
-		"ru"		"Скидка -10%% при отсутствии зомби"
-		"pl"		"-10%% przeceny na zakupy podczas przerwy pomiędzy rundami"
-		"es"		"10%% de descuento mientras no hay Zombies"
-		"fr"		"Réduction de 10%% Sans les Zombies"
-		"de"		"-10%% verkaufs angebot wenn keine untoten hier sind"
-		"pt"		"10%% de desconto quando não há zumbis vivos"
-		"nl"		"-10%% korting op winkelvoorraden als er geen zombies aanwezig zijn"
-		"chi"       "休息回合商城折扣10%%~"
+		"en"		"-10％ Off Shipping With No Zombies"
+		"it"		"-10％ meno dal negozio quando non ci sono Zombie"
+		"ru"		"Скидка -10％ при отсутствии зомби"
+		"pl"		"-10％ przeceny na zakupy podczas przerwy pomiędzy rundami"
+		"es"		"10％ de descuento mientras no hay Zombies"
+		"fr"		"Réduction de 10％ Sans les Zombies"
+		"de"		"-10％ verkaufs angebot wenn keine untoten hier sind"
+		"pt"		"10％ de desconto quando não há zumbis vivos"
+		"nl"		"-10％ korting op winkelvoorraden als er geen zombies aanwezig zijn"
+		"chi"       "休息回合商城折扣10％~"
 	}
 	"Equip"
 	{
@@ -1183,10 +1183,10 @@
 
 	"Quick Revive Recieved"
 	{
-		"en" 		"QUICK REVIVE! 2x Revive speed and 15%% more healing speed and 2x Health on revive"
-		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15%%, 2x soins pour les resucitations"
-		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15%% a mais e x2 mais vida ao reviver"
-		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15%% быстрее скорость лечения и 2x здоровье при оживлении"
+		"en" 		"QUICK REVIVE! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
+		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
+		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
+		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 	}
 	"Juggernog Recieved"
 	{
@@ -1222,7 +1222,7 @@
 	"Widows Wine Recieved"
 	{
 		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
-		"fr" 		"VIN DES VEUVES! Protection rechargable qui bloque 75%% des dégats et affaiblit les ennemis quand activé.\nLes ennemis affaiblits recoivent 35%% plus de dégats et se ralentissent considérablement."
+		"fr" 		"VIN DES VEUVES! Protection rechargable qui bloque 75％ des dégats et affaiblit les ennemis quand activé.\nLes ennemis affaiblits recoivent 35％ plus de dégats et se ralentissent considérablement."
 		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
 		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
 		"nl"		"WIJN VAN DE WEDUWE! Herlaadbare verdediging dat zombies verzwakt en 75 procent van de schade die je krijgt blokeerd wanneer het activeerd.\nVerzwakte vijanden worden zwaar vertraagd en lopen 35 procent meer schade op."
@@ -1230,10 +1230,10 @@
 	}
 	"Recycle Poire Recieved"
 	{
-		"en" 		"RECYCLE POIRÉ! 33%% More ammo from all non shop sources, and 50%% more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
-		"fr" 		"RECYCLAGE POIRÉ! 33%% plus de munitions provenant hors de la boutique, 50%% plus d'armure.\nVous recevrez 2x plus de Réserves de Munitions."
+		"en" 		"RECYCLE POIRÉ! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+		"fr" 		"RECYCLAGE POIRÉ! 33％ plus de munitions provenant hors de la boutique, 50％ plus d'armure.\nVous recevrez 2x plus de Réserves de Munitions."
 		"pt"		"PÊRA RECICLADA! 1.33x Munição de todas as fontes que não são a loja, e 1.5x mais ganho e armadura máxima\nVocê ganha 2x mais munição de suprimentos"
-		"chi"		"超级回收:所有非商店弹药增加33%%+最大护甲值和护甲增益增加50%%+2倍弹药补给"
+		"chi"		"超级回收:所有非商店弹药增加33％+最大护甲值和护甲增益增加50％+2倍弹药补给"
 	}
 	"Freeze Bomb Activated"
 	{
@@ -1381,8 +1381,8 @@
 	}
 	"Debuff/Buff Explain 1"
 	{
-		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee %% damage taken, arrow means ranged %% damage taken."
-		"fr" 		"À votre gauche sera vous affaiblissements.\nÀ votre droite sera vos buffs.\nChaque symbol sera un buff ou affaiblissement.\nLa main représente le %% des dégats corps à corps reçus, La flèche représente le %% des dégats à portée reçus."
+		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken."
+		"fr" 		"À votre gauche sera vous affaiblissements.\nÀ votre droite sera vos buffs.\nChaque symbol sera un buff ou affaiblissement.\nLa main représente le ％ des dégats corps à corps reçus, La flèche représente le ％ des dégats à portée reçus."
 	}
 	"Debuff/Buff Explain 2"
 	{
@@ -1424,8 +1424,8 @@
 	}
 	"Special Zombies Explained"
 	{
-		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25%% more explosive damage, and usually 25% more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
-		"fr" 		"Après la vague 12, des Miniboss vont apparaître.\nRaids:\nLes boss Raid recoivent 25%% plus de dégats par les explosions,\net habituellement, 25%% plus de dégats par les coups corps à corps.\nCertaines armes deviennent plus forts contre les Raids, vérifiez leur description."
+		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25％ more explosive damage, and usually 25% more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
+		"fr" 		"Après la vague 12, des Miniboss vont apparaître.\nRaids:\nLes boss Raid recoivent 25％ plus de dégats par les explosions,\net habituellement, 25％ plus de dégats par les coups corps à corps.\nCertaines armes deviennent plus forts contre les Raids, vérifiez leur description."
 		// "pt"		"Tem alguns mini-chefes que aparecem aleatoriamente na onda 12.\nRaids:\n
 	}
 	"Revival Zombies Explained"
@@ -1762,13 +1762,13 @@
 	}
 	"Father Grigori Spawn"
 	{
-		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20%% Discount on random items!"
-		"fr"		"Grigori est guéri!\nVous pouvez lui parler lors des temps de préparation pour un rabais de 20%% dans son boutique!"
-		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время таймера подготовки, чтобы получить скидку 20%% на случайные предметы!"
-		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20%% Discount auf zufällige Gegenstände zu bekommen!"
-		"pt"		"Grigori foi curado!\nVocê pode falar com ele durante os intervalos para ter até 20%% de desconto em itens aleatorios!"
-		"nl"		"Grigori werd genezen!\nJe kunt met hem praten tijdens de opstellingstijd om een 20%% korting te krijgen op verschillende items!"
-		"chi"       "格里神父已被救出！\n你可以在休息回合中与他交易，与他交易的商品都会折扣20%%"
+		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20％ Discount on random items!"
+		"fr"		"Grigori est guéri!\nVous pouvez lui parler lors des temps de préparation pour un rabais de 20％ dans son boutique!"
+		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время таймера подготовки, чтобы получить скидку 20％ на случайные предметы!"
+		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20％ Discount auf zufällige Gegenstände zu bekommen!"
+		"pt"		"Grigori foi curado!\nVocê pode falar com ele durante os intervalos para ter até 20％ de desconto em itens aleatorios!"
+		"nl"		"Grigori werd genezen!\nJe kunt met hem praten tijdens de opstellingstijd om een 20％ korting te krijgen op verschillende items!"
+		"chi"       "格里神父已被救出！\n你可以在休息回合中与他交易，与他交易的商品都会折扣20％"
 	}
 	"The World Machine Spawn"
 	{
@@ -1823,24 +1823,24 @@
 		"nl"		"MAXIMALE TOEGELATEN VERSPERRINGEN BERIJKT!"
 		"chi"       "已达到最大路障数"
 	}
-	"All Items are 20%% off here!"
+	"All Items are 20％ off here!"
 	{
-		"en"		"All Items are 20%% off here! {$}\nOne Item is 30%% off! {$$}"
-		"fr"		"Tous achats ont un rabais de 20%%! {$}\nUn achat a un rabais de 30%%! {$$}"
-		"ru"		"На все товары скидка 20%%! {$}\nНа один товар скидка 30%! {$$}"
-//		"de"		"All Gegenstände sind 20%% off hier!"
-		"pt"		"Todos os itens estão com 20%% de desconto aqui! {$}\n1 Item está a 30%% de desconto {$$}"
-		"nl"		"Alle items hier hebben een 20%% korting! {$}\nÉén item heeft een 30%% korting! {$$}"
+		"en"		"All Items are 20％ off here! {$}\nOne Item is 30％ off! {$$}"
+		"fr"		"Tous achats ont un rabais de 20％! {$}\nUn achat a un rabais de 30％! {$$}"
+		"ru"		"На все товары скидка 20％! {$}\nНа один товар скидка 30%! {$$}"
+//		"de"		"All Gegenstände sind 20％ off hier!"
+		"pt"		"Todos os itens estão com 20％ de desconto aqui! {$}\n1 Item está a 30％ de desconto {$$}"
+		"nl"		"Alle items hier hebben een 20％ korting! {$}\nÉén item heeft een 30％ korting! {$$}"
 		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
 	}	
-	"All Items are 10%% off here!"
+	"All Items are 10％ off here!"
 	{
-		"en"		"All Items are 10%% off here! {$}\nOne Item is 15%% off! {$$}"
-		"fr"		"Tous achats ont un rabais de 10%%! {$}\nUn achat a un rabais de 15%%! {$$}"
-		"ru"		"На все товары скидка 10%%! {$}\nНа один товар скидка 15%! {$$}"
-//		"de"		"All Gegenstände sind 20%% off hier!"
-		"pt"		"Todos os itens estão com 10%% de desconto aqui! {$}\n1 Item está a 15%% de desconto {$$}"
-		"nl"		"Alle items hier hebben een 10%% korting! {$}\nÉén item heeft een 15%% korting! {$$}"
+		"en"		"All Items are 10％ off here! {$}\nOne Item is 15％ off! {$$}"
+		"fr"		"Tous achats ont un rabais de 10％! {$}\nUn achat a un rabais de 15％! {$$}"
+		"ru"		"На все товары скидка 10％! {$}\nНа один товар скидка 15%! {$$}"
+//		"de"		"All Gegenstände sind 20％ off hier!"
+		"pt"		"Todos os itens estão com 10％ de desconto aqui! {$}\n1 Item está a 15％ de desconto {$$}"
+		"nl"		"Alle items hier hebben een 10％ korting! {$}\nÉén item heeft een 15％ korting! {$$}"
 		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
 	}	
 	"Can Be Pack-A-Punched"
@@ -1903,25 +1903,25 @@
 		"nl"		"Druk op TAB om de winkel te openen"
 		"chi"       "请按下TAB键打开商城"
 	}
-	"You have only gained 90%% due to not being in-game"
+	"You have only gained 90％ due to not being in-game"
 	{
-		"en"		"You have only gained 90%% due to not being in-game."
-		"fr"		"Vous avez seulement obtenu 90%%, car vous n'êtes pas dans le jeu."
-		"ru"		"Вы получили только 90%% из-за того, что не были в игре."
-		"de"		"Sie haben nur 90%% Verdient, weil sie nicht in spiel, sind."
-		"pt"		"Você ganhou apenas 90%% devido não estar jogando."
-		"nl"		"Je hebt maar 90%% gekregen omdat je niet aan het spelen was."
-		"chi"       "因为你不在游戏中，你只获得了90%%的收益。"
+		"en"		"You have only gained 90％ due to not being in-game."
+		"fr"		"Vous avez seulement obtenu 90％, car vous n'êtes pas dans le jeu."
+		"ru"		"Вы получили только 90％ из-за того, что не были в игре."
+		"de"		"Sie haben nur 90％ Verdient, weil sie nicht in spiel, sind."
+		"pt"		"Você ganhou apenas 90％ devido não estar jogando."
+		"nl"		"Je hebt maar 90％ gekregen omdat je niet aan het spelen was."
+		"chi"       "因为你不在游戏中，你只获得了90％的收益。"
 	}
-	"You have only gained 95 %% due to being a non-player player, but still helping"
+	"You have only gained 95 ％ due to being a non-player player, but still helping"
 	{
-		"en"		"You have only gained 95 %% due to being a non-player player, but still helping. (You are a Teutonic Knight!)"
-		"fr"		"Vous avez seulement obtenu 95%%, car vous n'êtes pas dans le jeu, mais aidez en tant que Chevalier Teutonique."
-		"ru"		"Вы получили только 95%% из-за того, что не являетесь игроком, но всё равно помогали. (Вы - тевтонский рыцарь!)."
-		"de"		"Sie haben nur 95%% verdient, weil sie ein Nicht-Spieler waren, aber trotzdem geholfen haben. (Sie sind ein Teutonic Knight!)"
-		"pt"		"Você ganhou apenas 95%% devido não ser um jogador não-classe, mas ainda ajudou (Você é um Cavaleiro Teutônico)."
-		"nl"		"Je hebt maar 95%% gekregen ommdat je een niet-spelende speler bent maar nogsteeds aan het helpen bent (Je bent een Teutonische Ridder!)"
-		"chi"       "作为一个非玩家，你只获得了95%%的收益，但仍然有帮助。(你是一个日耳曼骑士!)"
+		"en"		"You have only gained 95 ％ due to being a non-player player, but still helping. (You are a Teutonic Knight!)"
+		"fr"		"Vous avez seulement obtenu 95％, car vous n'êtes pas dans le jeu, mais aidez en tant que Chevalier Teutonique."
+		"ru"		"Вы получили только 95％ из-за того, что не являетесь игроком, но всё равно помогали. (Вы - тевтонский рыцарь!)."
+		"de"		"Sie haben nur 95％ verdient, weil sie ein Nicht-Spieler waren, aber trotzdem geholfen haben. (Sie sind ein Teutonic Knight!)"
+		"pt"		"Você ganhou apenas 95％ devido não ser um jogador não-classe, mas ainda ajudou (Você é um Cavaleiro Teutônico)."
+		"nl"		"Je hebt maar 95％ gekregen ommdat je een niet-spelende speler bent maar nogsteeds aan het helpen bent (Je bent een Teutonische Ridder!)"
+		"chi"       "作为一个非玩家，你只获得了95％的收益，但仍然有帮助。(你是一个日耳曼骑士!)"
 	}
 	"Be sure to spend all your starting cash!"
 	{
@@ -2675,7 +2675,7 @@
 	{
 		"en"		"Increased Melee Damage"
 		"fr"		"Amélioration des dégats corps à corps"
-	//	"ru"		"Увеличение урона ближнего боя на 15%%"
+	//	"ru"		"Увеличение урона ближнего боя на 15％"
 		"chi"		"增加近战伤害"
 	}
 	"Barracks Iron Casting"
@@ -2689,7 +2689,7 @@
 	{
 		"en"		"Increased Melee Damage"
 		"fr"		"Amélioration des dégats corps à corps"
-	//	"ru"		"Увеличение урона ближнего боя на 15%%"
+	//	"ru"		"Увеличение урона ближнего боя на 15％"
 		"chi"		"增加近战伤害"
 	}
 	"Barracks Steel Casting"
@@ -2703,7 +2703,7 @@
 	{
 		"en"		"Increased Melee Damage"
 		"fr"		"Amélioration des dégats corps à corps"
-		"ru"		"Увеличение урона ближнего боя на 30%%"
+		"ru"		"Увеличение урона ближнего боя на 30％"
 		"chi"		"增加近战伤害"
 	}
 	"Barracks Refined Steel"
@@ -2717,7 +2717,7 @@
 	{
 		"en"		"Increased Melee Damage"
 		"fr"		"Amélioration des dégats corps à corps"
-	//	"ru"		"Увеличение урона ближнего боя на 50%%"
+	//	"ru"		"Увеличение урона ближнего боя на 50％"
 		"chi"		"增加近战伤害"
 	}
 	"Barracks Requirement Template"
@@ -2738,7 +2738,7 @@
 	{
 		"en"		"Increased Ranged Damage and range"
 		"fr"		"Amélioration des dégats à distance et de la portée de vos unités"
-	//	"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+	//	"ru"		"15％ увелич. урона в дальнем бою и на 10％ увелич. дальности стрельбы"
 		"chi"		"增加远程伤害和范围"
 	}
 	"Barracks Steel Arrows"
@@ -2752,7 +2752,7 @@
 	{
 		"en"		"Increased Ranged Damage and range"
 		"fr"		"Amélioration des dégats à distance et de la portée de vos unités"
-	//	"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+	//	"ru"		"15％ увелич. урона в дальнем бою и на 10％ увелич. дальности стрельбы"
 		"chi"		"增加远程伤害和范围"
 	}
 	"Barracks Bracer"
@@ -2766,7 +2766,7 @@
 	{
 		"en"		"Increased Ranged Damage"
 		"fr"		"Amélioration des dégats à distance et de la portée de vos unités"
-	//	"ru"		"30%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+	//	"ru"		"30％ увелич. урона в дальнем бою и на 10％ увелич. дальности стрельбы"
 		"chi"		"增加远程伤害"
 	}
 	"Barracks Obsidian Refined Tips"
@@ -2780,7 +2780,7 @@
 	{
 		"en"		"Increased Ranged Damage"
 		"fr"		"Amélioration des dégats à distance"
-		//"ru"		"50%% увелич. урона в дальнем бою"
+		//"ru"		"50％ увелич. урона в дальнем бою"
 		"chi"		"增加远程伤害"
 	}
 	"Barracks Copper Armor Plate"
@@ -2795,7 +2795,7 @@
 		"en"		"Increased Damage reduction"
 		"fr"		"Réduction des dégats reçus"
 		"chi"		"增加伤害减免"
-		//"ru"		"3%% снижение урона и 1 плоское снижение урона"
+		//"ru"		"3％ снижение урона и 1 плоское снижение урона"
 	}
 	"Barracks Iron Armor Plate"
 	{
@@ -2808,7 +2808,7 @@
 	{
 		"en"		"Increased Damage reduction"
 		"fr"		"Réduction des dégats reçus"
-		//"ru"		"3%% снижение урона и 1 плоское снижение урона"
+		//"ru"		"3％ снижение урона и 1 плоское снижение урона"
 		"chi"		"增加伤害减免"
 	}
 	"Barracks Chainmail Armor"
@@ -2859,8 +2859,8 @@
 	}
 	"Barracks Refined Medicine Desc"
 	{
-		"en"		"Increased health regen and 10%% more max health"
-		"fr"		"Amélioration des soins passifs, +10%% de santé sur vos unités"
+		"en"		"Increased health regen and 10％ more max health"
+		"fr"		"Amélioration des soins passifs, +10％ de santé sur vos unités"
 		"ru"		"Увелич. восст. здоровья и на 10% больше макс. запас здоровья"
 		"chi"		"增加生命回复，最大生命值提高10%"
 	}
@@ -3047,8 +3047,8 @@
 	}
 	"Barracks Conscription Desc"
 	{
-		"en"		"Train units 25%% faster, Gain resources 25%% faster (gold excluded)."
-		"fr"		"Unités sont formés 25%% plus rapidement. Recevez des ressources 25%% plus rapidement. (L'or n'est pas inclus.)"
+		"en"		"Train units 25％ faster, Gain resources 25％ faster (gold excluded)."
+		"fr"		"Unités sont formés 25％ plus rapidement. Recevez des ressources 25％ plus rapidement. (L'or n'est pas inclus.)"
 		"ru"		"Обучение войск на 25% быстрее, получение ресурсов на 25% быстрее (без учёта золота)."
 		"chi"		"训练单位速度提高25%，获得资源速度提高25%(金币除外)。"
 	}
@@ -3061,9 +3061,9 @@
 	}
 	"Barracks Goldminers Desc"
 	{
-		"en"		"Get gold 25%% faster."
-		"fr"		"Obtenez de l'or 25%% plus rapidement."
-		"ru"		"Получайте золото на 25%% быстрее."
+		"en"		"Get gold 25％ faster."
+		"fr"		"Obtenez de l'or 25％ plus rapidement."
+		"ru"		"Получайте золото на 25％ быстрее."
 		"chi"       "获得黄金的速度提高25%"
 	}
 	"Barracks Assistant Villager"
@@ -3104,7 +3104,7 @@
 	"Barracks Strongholds Desc"
 	{
 		"en"		"Your building attacks 33% faster and heals any melee unit or player around it."
-		"fr"		"Votre construction attaquera 33%% plus rapidement et donnera des soins aux joueurs et unités corps à corps proches."
+		"fr"		"Votre construction attaquera 33％ plus rapidement et donnera des soins aux joueurs et unités corps à corps proches."
 		"ru"		"Ваша постройка атакует на 33% быстрее и лечит любые войска ближнего боя или игрока вокруг него."
 		"chi"       "你的建筑攻击速度提高33%，治疗周围的近战单位或玩家。"
 	}
@@ -3117,10 +3117,10 @@
 	}
 	"Barracks Hoardings Desc"
 	{
-		"en"		"While your building is alive, all your buildings will gain 25%% more health."
-		"fr"		"Pendant que cette construction existe, tous vos autres constructions auront 25%% plus de durabilité."
-		"ru"		"Пока ваша постройка цела, все ваши постройки получают на 25%% больше прочности."
-		"chi"       "当前未被摧毁的建筑生命值提升25%%"
+		"en"		"While your building is alive, all your buildings will gain 25％ more health."
+		"fr"		"Pendant que cette construction existe, tous vos autres constructions auront 25％ plus de durabilité."
+		"ru"		"Пока ваша постройка цела, все ваши постройки получают на 25％ больше прочности."
+		"chi"       "当前未被摧毁的建筑生命值提升25％"
 	}
 	"Barracks Exquisite Housing"
 	{
@@ -3201,8 +3201,8 @@
 	"Zombie Volume Setting"
 	{
 		"#format"	"{1:d}"
-		"en"		"Zombie Volume: [{1}%%]"
-		"chi"       "僵尸音量: [{1}%%]"
+		"en"		"Zombie Volume: [{1}％]"
+		"chi"       "僵尸音量: [{1}％]"
 	}
 	"Zombie In Battle Show"
 	{
@@ -3258,7 +3258,7 @@
 	"Quincy Fast3"
 	{
 		"en"		"Excellent Reishi Collectors\nYou gain a multi shot with 50% or more raishi"
-		"fr"		"Collecteurs Reishi Excellents\nÀ 50%% Reishi, vous tirez des multi-flèches"
+		"fr"		"Collecteurs Reishi Excellents\nÀ 50％ Reishi, vous tirez des multi-flèches"
 	}
 	"Quincy Fast4"
 	{
@@ -3278,7 +3278,7 @@
 	"Quincy Bat3"
 	{
 		"en"		"Excellent Reishi Cappacitor\nYou gain a penetrating laser arrow at 50% charge"
-		"fr"		"Capaciteurs Reishi Excellents\nÀ 50%% charge, vos flèches pénètreront les ennemis."
+		"fr"		"Capaciteurs Reishi Excellents\nÀ 50％ charge, vos flèches pénètreront les ennemis."
 	}
 	"Quincy Bat4"
 	{
