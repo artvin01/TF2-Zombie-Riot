@@ -609,7 +609,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 					if (GetVectorDistance(powerup_pos, client_pos, true) > (500.0 * 500.0))
 						continue;
 
-					if(target <= MaxClients && IsValidClient(target) && IsPlayerAlive(target) && && TeutonType[target] == 0)
+					if(target <= MaxClients && IsValidClient(target) && IsPlayerAlive(target) && TeutonType[target] == 0)
 					{
 						//Is valid Player
 						if(dieingstate[target] > 0)

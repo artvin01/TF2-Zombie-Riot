@@ -182,14 +182,7 @@ public void RedHeavy_ClotThink(int iNPC)
 					npc.m_iTarget = other;
 					if(count > 5)
 					{
-						for(int client1 = 1; client1 <= MaxClients; client1++)
-						{
-							if(!b_IsPlayerABot[client1] && IsClientInGame(client1) && !IsFakeClient(client1))
-							{
-								SetMusicTimer(client1, GetTime() + 1); //This is here beacuse of raid music.
-								Music_Stop_All(client1);
-							}
-						}
+						PrintToChatAll("test");
 						MusicEnum music;
 						strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/finale.mp3");
 						music.Time = 555;
@@ -197,7 +190,7 @@ public void RedHeavy_ClotThink(int iNPC)
 						music.Custom = true;
 						strcopy(music.Name, sizeof(music.Name), "Finale");
 						strcopy(music.Artist, sizeof(music.Artist), "Toby Fox");
-						Music_SetRaidMusic(music);
+						Music_SetRaidMusic(music,_,true);
 						RaidModeTime = GetGameTime(npc.index) + 999.0;
 						RaidModeTime += 10.0;
 						NoSoundLoop = true;
@@ -208,7 +201,7 @@ public void RedHeavy_ClotThink(int iNPC)
 			}
 		}
 		if(stop_thinking)
-		return;
+			return;
 	}
 
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
