@@ -454,7 +454,7 @@ void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, in
 				case 2016:
 				{
 					if(value[i])
-						Format(desc, 512, "%s\nFishing Attraction: %.0f%%", desc, 1.6 / value[i]);
+						Format(desc, 512, "%s\nFishing Attraction: %.0f％", desc, 1.6 / value[i]);
 				}
 				case 5017:
 				{
@@ -601,7 +601,7 @@ public void Fishing_RodM2(int client, int weapon)
 			}
 			
 			if(count)
-				SPrintToChat(client, "%s %d%%", current, count * 100 / length);
+				SPrintToChat(client, "%s %d％", current, count * 100 / length);
 
 			strcopy(current, sizeof(current), buffer);
 			count = 1;
@@ -678,7 +678,7 @@ void Fishing_EditorMenu(int client)
 
 						if(FishList.ContainsKey(buffer1))
 						{
-							FormatEx(buffer2, sizeof(buffer2), "%s x%d (%.2f%%)", buffer1, count, float(count) * 100.0 / float(total));
+							FormatEx(buffer2, sizeof(buffer2), "%s x%d (%.2f％)", buffer1, count, float(count) * 100.0 / float(total));
 						}
 						else
 						{

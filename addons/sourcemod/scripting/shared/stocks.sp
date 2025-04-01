@@ -4028,11 +4028,11 @@ stock char[] CharPercent(float value)
 	static char buffer[16];
 	if(value < 1.0)
 	{
-		Format(buffer, sizeof(buffer), "%d%%", 100 - RoundFloat((1.0 / value) * 100.0));
+		Format(buffer, sizeof(buffer), "%d％", 100 - RoundFloat((1.0 / value) * 100.0));
 	}
 	else
 	{
-		Format(buffer, sizeof(buffer), "+%d%%", RoundFloat((value - 1.0) * 100.0));
+		Format(buffer, sizeof(buffer), "+%d％", RoundFloat((value - 1.0) * 100.0));
 	}
 	return buffer;
 } 

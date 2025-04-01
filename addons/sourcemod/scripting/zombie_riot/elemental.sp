@@ -179,7 +179,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 		return false;
 	
 	// <CY 50%>
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d%%>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
 	return true;
 }
 

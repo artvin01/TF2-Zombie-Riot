@@ -85,7 +85,7 @@ void BlacksmithGrill_NPCTakeDamagePost(int victim, int attacker, float damage)
 		if(InMenu[attacker])
 		{
 			char buffer[64];
-			FormatEx(buffer, sizeof(buffer), "Gained %.2f%% Meat and %.2f%% %s from %s", gain * 60.0 / SAUCE_REQUIRED, gain * 100.0 / SAUCE_REQUIRED, SauceName[sauce], c_NpcName[victim]);
+			FormatEx(buffer, sizeof(buffer), "Gained %.2f％ Meat and %.2f％ %s from %s", gain * 60.0 / SAUCE_REQUIRED, gain * 100.0 / SAUCE_REQUIRED, SauceName[sauce], c_NpcName[victim]);
 			GrillingMenu(attacker, buffer);
 		}
 	}
@@ -137,7 +137,7 @@ static void GrillingUse(int client, int entity)
 						case S_Ketchup:
 						{
 							Armor_Charge[client] += MaxArmorCalculation(Armor_Level[client], client, 0.333);
-							Format(buffer, sizeof(buffer), "%s and 33%% armor", buffer);
+							Format(buffer, sizeof(buffer), "%s and 33％ armor", buffer);
 						}
 						case S_Mustard:
 						{
@@ -231,7 +231,7 @@ static void GrillingMenu(int client, const char[] msg = "")
 		if(precent < 0.0)
 			precent = 0.0;
 		
-		FormatEx(buffer, sizeof(buffer), "%s (%d%%)", SauceName[SauceSelected[client]], RoundToFloor(precent));
+		FormatEx(buffer, sizeof(buffer), "%s (%d％)", SauceName[SauceSelected[client]], RoundToFloor(precent));
 
 		if(precent < 100.0)
 			failed = true;
@@ -246,7 +246,7 @@ static void GrillingMenu(int client, const char[] msg = "")
 
 	if(Meats[client] < SAUCE_REQUIRED)
 	{
-		FormatEx(buffer, sizeof(buffer), "Grill Burger (%.0f%%)\n ", Meats[client] * 100.0 / SAUCE_REQUIRED);
+		FormatEx(buffer, sizeof(buffer), "Grill Burger (%.0f％)\n ", Meats[client] * 100.0 / SAUCE_REQUIRED);
 		failed = true;
 	}
 	else
