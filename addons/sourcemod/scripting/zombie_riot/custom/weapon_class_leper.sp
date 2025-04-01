@@ -25,6 +25,7 @@ float Leper_InWrathState[MAXPLAYERS+1];
 int Leper_OverlayDownload[MAXPLAYERS+1];	// 1/2 = Downloading/Checking, 3 = Ready
 float Wrath_TinyCooldown[MAXPLAYERS+1];
 int CurrentPapLeper[MAXPLAYERS+1];
+int MaxStacksWrath[MAXPLAYERS+1];
 
 void OnMapStartLeper()
 {
@@ -757,13 +758,20 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 	{
 		if(Wrath_TinyCooldown[victim] < GetGameTime() && HasSpecificBuff(victim,"King's Wrath"))
 		{
-			Wrath_TinyCooldown[victim] = GetGameTime() + 0.2;
+			if(MaxStacksWrath[victim] >= 10)
+			{
+				RemoveSpecificBuff(victim, "King's Wrath", BuffCheckerID);
+			}
+			MaxStacksWrath[victim]++;
+			Wrath_TinyCooldown[victim] = GetGameTime() + 0.35;
+			
 			float GiveDamageBonus = 1.1;
 			if(b_thisNpcIsARaid[attacker])
-				GiveDamageBonus = 1.2;
+				GiveDamageBonus = 1.13;
+
 			if(CurrentPapLeper[victim] >= 6)
 			{
-				GiveDamageBonus *= 1.35;
+				GiveDamageBonus *= 1.25;
 			}
 			ApplyTempAttrib(weapon, 2, GiveDamageBonus, 10.0);
 		}
@@ -825,7 +833,8 @@ public void Weapon_LeperWrath(int client, int weapon, bool &result, int slot)
 		SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 1);
 		
 		ApplyStatusEffect(client, client, "King's Wrath", 10.0);
-		StartBleedingTimer(client, client, 1.0, 10, -1, DMG_TRUEDAMAGE, ZR_DAMAGE_ALLOW_SELFHURT);
+		MaxStacksWrath[client] = 0;
+		StartBleedingTimer(client, client, 1.0, 4, -1, DMG_TRUEDAMAGE, ZR_DAMAGE_ALLOW_SELFHURT);
 		Ability_Apply_Cooldown(client, slot, 60.0);
 		//Self apply bleed.
 
