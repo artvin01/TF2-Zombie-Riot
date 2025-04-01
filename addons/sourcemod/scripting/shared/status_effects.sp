@@ -2519,6 +2519,8 @@ float Void_Internal_2_DamageDealFunc(int attacker, int victim, StatusEffect Appl
 
 float Void_Internal_1_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
 	// Enfeeble fades out with time
 	if(NpcStats_IsEnemySilenced(victim))
 		return ((victim <= MaxClients) ? 0.95 : 0.9);
@@ -2528,6 +2530,9 @@ float Void_Internal_1_DamageTakenFunc(int attacker, int victim, StatusEffect App
 
 float Void_Internal_2_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
+
 	// Enfeeble fades out with time
 	if(NpcStats_IsEnemySilenced(victim))
 		return ((victim <= MaxClients) ? 0.9 : 0.85);
@@ -3111,7 +3116,8 @@ float AdaptiveMedigun_RangedFunc(int attacker, int victim, StatusEffect Apply_Ma
 {
 	if(!(damagetype & (DMG_CLUB))) // if not NOT melee
 	{
-		return 0.85;
+		if(!(damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+			return 0.85;
 	}
 	
 	return 1.0;
@@ -3412,6 +3418,8 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 
 float RuinasDefense_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
 	return Apply_StatusEffect.DataForUse;
 }
 
