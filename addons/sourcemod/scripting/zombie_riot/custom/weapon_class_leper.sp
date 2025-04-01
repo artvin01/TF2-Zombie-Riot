@@ -366,7 +366,10 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 			EmitSoundToClient(clientloop, LEPER_AOE_SWING_HIT, client, SNDCHAN_AUTO, 90,_,0.8,pitch);	
 		}
 	}
-	DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
+
+	if(Leper_OverlayDownload[client] == 3)
+		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
+	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 
 	ClientCommand(client,"playgamesound ambient/rottenburg/barrier_smash.wav");
 //	EmitSoundToClient(client, LEPER_AOE_SWING_HIT, SOUND_FROM_WORLD, SNDCHAN_AUTO, 999,_,0.8,pitch);	
@@ -502,7 +505,10 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 			EmitSoundToClient(clientloop, LEPER_SOLEMNY, client, SNDCHAN_AUTO, 90,_,0.8,pitch);	
 		}
 	}
-	DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
+
+	if(Leper_OverlayDownload[client] == 3)
+		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
+	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 
 	ClientCommand(client,"playgamesound misc/halloween/spell_overheal.wav");
 //	EmitSoundToClient(client, LEPER_AOE_SWING_HIT, SOUND_FROM_WORLD, SNDCHAN_AUTO, 999,_,0.8,pitch);	
@@ -850,7 +856,10 @@ int SetCameraEffectLeperWrath(int client, int &ModelToDelete)
 			EmitSoundToClient(clientloop, "items/powerup_pickup_strength.wav", client, SNDCHAN_AUTO, 90,_,0.8,pitch);	
 		}
 	}
-	DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
+
+	if(Leper_OverlayDownload[client] == 3)
+		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
+	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 
 	ClientCommand(client,"playgamesound items/powerup_pickup_strength.wav");
 
