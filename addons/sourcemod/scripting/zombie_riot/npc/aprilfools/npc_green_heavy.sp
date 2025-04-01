@@ -19,9 +19,7 @@ static const char g_HurtSounds[][] =
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/taunts/heavy_taunts16.mp3",
 	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
@@ -74,6 +72,7 @@ methodmap GreenHeavy < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
+		NpcSpeechBubble(this.index, "I think you need more men!", 5, {0,193,0,255}, {0.0,0.0,80.0}, "");
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
