@@ -892,7 +892,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 			if(ElementDamage[victim][Element_Burger] > trigger)
 			{
 				ElementDamage[victim][Element_Burger] = 0;
-				f_ArmorCurrosionImmunity[victim][Element_Burger] = GetGameTime() + 999.0;
+				f_ArmorCurrosionImmunity[victim][Element_Burger] = GetGameTime() + 100.0;
 
 				if(func_NPCThink[victim] != MedivalConstruct_ClotThink || EntRefToEntIndex(RaidBossActive) != -1)
 				{
