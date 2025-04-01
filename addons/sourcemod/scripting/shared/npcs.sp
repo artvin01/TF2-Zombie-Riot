@@ -2497,9 +2497,9 @@ void Npcs_AddUnderscoreToText(char[] buffer, int lengthstring)
 		static char CharTemp[8];
 		//Do the letter
 
-		//Last Letter
+		//Last two Letters
 		//Subtract one as it overflows to the right a bit.
-		if(a == length - 1)
+		if(a >= length - 3)
 		{
 			Format(CharTemp, sizeof(CharTemp), "%c", buffer[a]);
 		}
@@ -2524,7 +2524,7 @@ void Npcs_AddUnderscoreToText(char[] buffer, int lengthstring)
 				Format(CharAdd, sizeof(CharAdd), "%s", buffer[a]);
 				Format(CharTemp, sizeof(CharTemp), "%s%s", CharAdd, AddUnderscore);
 				a++;
-			//	a++;
+				a++;
 				//We cant skip 3 for some reason, idk, it just works, idc.
 			}
 		}
