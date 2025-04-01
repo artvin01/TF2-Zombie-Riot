@@ -272,9 +272,14 @@ static float DelayStopSoundAll[MAXTF2PLAYERS];
 Big thanks to backwards#8236 For pointing me towards GetTime and helping me with this music tgimer,
 DO NOT USE GetEngineTime, its not good in this case
 */
-
-stock void Music_SetRaidMusic(const MusicEnum music, bool StopMusic = true)
+stock void Music_SetRaidMusic(const MusicEnum music, bool StopMusic = true, bool ForceMusicOnly = false)
 {
+	if(BlockOtherRaidMusic)
+		return;
+
+	if(ForceMusicOnly)
+		BlockOtherRaidMusic = true;
+
 	if(StopMusic)
 	{
 		for(int client=1; client<=MaxClients; client++)
@@ -286,12 +291,16 @@ stock void Music_SetRaidMusic(const MusicEnum music, bool StopMusic = true)
 			}
 		}
 	}
+
 	RaidMusicSpecial1.Clear();
 	RaidMusicSpecial1 = music;
 }
 
 stock void Music_SetRaidMusicSimple(const char[] MusicPath, int duration, bool isCustom, float volume = 2.0)
 {
+	if(BlockOtherRaidMusic)
+		return;
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))

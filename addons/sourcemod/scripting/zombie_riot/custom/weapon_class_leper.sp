@@ -595,7 +595,7 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			if(CurrentPapLeper[client] >= 1)
-				Attributes_Set(weapon, 4039, Pow(1.01, CurrentPapLeper[client]));
+				Attributes_Set(client, 4039, Pow(1.01, float(CurrentPapLeper[client])));
 		}
 		return;
 	}
@@ -615,7 +615,7 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 			SendSingleFileToClient(client, "materials/zombie_riot/overlays/leper_overlay.vtf", Leper_Overlay1);
 		}
 		if(CurrentPapLeper[client] >= 1)
-			Attributes_Set(weapon, 4039, Pow(1.01, CurrentPapLeper[client]));
+			Attributes_Set(client, 4039, Pow(1.01, float(CurrentPapLeper[client])));
 	}
 }
 
