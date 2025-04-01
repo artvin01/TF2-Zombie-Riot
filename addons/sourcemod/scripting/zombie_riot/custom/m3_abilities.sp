@@ -415,26 +415,51 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 		
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, ARMOR_GRENADE_RANGE * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
-	   			for (int target = 1; target <= MaxClients; target++)
+				for (int target = 0; target < MAXENTITIES; target++)
 				{
-					if (IsValidClient(target) && IsPlayerAlive(target) && GetClientTeam(target) == view_as<int>(TFTeam_Red) && TeutonType[target] == 0)
+					if(!IsValidEntity(target))
+						continue;
+
+					if(GetTeam(target) != GetTeam(client))
+						continue;
+
+					GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", client_pos);
+					if (GetVectorDistance(powerup_pos, client_pos, true) > (ARMOR_GRENADE_RANGE * ARMOR_GRENADE_RANGE))
+						continue;
+
+					if(target <= MaxClients && IsValidClient(target) && IsPlayerAlive(target) && && TeutonType[target] == 0)
 					{
-						GetClientAbsOrigin(target, client_pos);
-						if (GetVectorDistance(powerup_pos, client_pos, true) <= (ARMOR_GRENADE_RANGE * ARMOR_GRENADE_RANGE))
+						//Is valid Player
+						EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
+						EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
+						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
-							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
-							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
-						//	EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
-							//This gives 35% armor
-							if(f_TimeUntillNormalHeal[target] > GetGameTime())
-							{
-								GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0);
-							}
-							else
-							{
-								GiveArmorViaPercentage(target, 0.075, 1.0);
-							}
+							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0);
 						}
+						else
+						{
+							GiveArmorViaPercentage(target, 0.075, 1.0);
+						}
+						continue;
+					}
+					
+					if(b_ThisWasAnNpc[target] && IsEntityAlive(target, true))
+					{
+						//IsValidnpc
+						float Healing_GiveArmor = 3.0;
+						if(f_TimeUntillNormalHeal[target] > GetGameTime())
+						{
+							//recently hurt, half armor.
+							Healing_GiveArmor *= 0.5;
+							GrantEntityArmor(target, false, 0.25, 0.25, 0,
+								ReturnEntityMaxHealth(target) * Healing_GiveArmor);
+						}
+						else
+						{
+							GrantEntityArmor(target, false, 0.25, 0.25, 0,
+								ReturnEntityMaxHealth(target) * Healing_GiveArmor);
+						}	
+						continue;
 					}
 				}
    			}
@@ -570,68 +595,82 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 		
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0 * 2.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 3.0, color, 0, 0);
 	   			TE_SendToAll();
-	   			for (int target = 1; target <= MaxClients; target++)
+				
+				for (int target = 0; target < MAXENTITIES; target++)
 				{
-					if (IsValidClient(target) && IsPlayerAlive(target) && GetClientTeam(target) == view_as<int>(TFTeam_Red) && TeutonType[target] == 0)
+					if(!IsValidEntity(target))
+						continue;
+
+					if(GetTeam(target) != GetTeam(client))
+						continue;
+
+					GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", client_pos);
+
+					if (GetVectorDistance(powerup_pos, client_pos, true) > (500.0 * 500.0))
+						continue;
+
+					if(target <= MaxClients && IsValidClient(target) && IsPlayerAlive(target) && && TeutonType[target] == 0)
 					{
-						GetClientAbsOrigin(target, client_pos);
-						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
+						//Is valid Player
+						if(dieingstate[target] > 0)
 						{
-							if(dieingstate[target] > 0)
+							EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
+							if(i_CurrentEquippedPerk[client] == 1)
 							{
-								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
-								if(i_CurrentEquippedPerk[client] == 1)
-								{
-									SetEntityHealth(target,  GetClientHealth(target) + 12);
-									dieingstate[target] -= 20;
-								}
-								else
-								{
-									SetEntityHealth(target,  GetClientHealth(target) + 6);
-									dieingstate[target] -= 10;
-								}
-								if(dieingstate[target] < 1)
-								{
-									dieingstate[target] = 1;
-								}
+								SetEntityHealth(target,  GetClientHealth(target) + 12);
+								dieingstate[target] -= 20;
 							}
 							else
 							{
-								if(f_TimeUntillNormalHeal[target] > GetGameTime())
-								{
-									Healing_Amount *= 0.5;
-								}
-								if(Healing_Amount < 10.0)
-								{
-									Healing_Amount = 10.0;
-								}
-								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
-								HealEntityGlobal(client, target, Healing_Amount, _, 1.0);	
+								SetEntityHealth(target,  GetClientHealth(target) + 6);
+								dieingstate[target] -= 10;
 							}
-						}
-					}
-				}
-				for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-				{
-					int baseboss_index_allied = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
-					if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
-					{
-						if(!b_ThisEntityIgnored[baseboss_index_allied])
-						{
-							GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", client_pos);
-							if (GetVectorDistance(powerup_pos, client_pos, true) <= 90000)
+							if(dieingstate[target] < 1)
 							{
-								if(f_TimeUntillNormalHeal[baseboss_index_allied] < GetGameTime())
-								{
-									Healing_Amount *= 0.25;
-								}
-								if(Healing_Amount < 10.0)
-								{
-									Healing_Amount = 10.0;
-								}
-								HealEntityGlobal(client, baseboss_index_allied, Healing_Amount, _, 1.0);
+								dieingstate[target] = 1;
 							}
 						}
+						else
+						{
+							if(f_TimeUntillNormalHeal[target] > GetGameTime())
+							{
+								Healing_Amount *= 0.5;
+							}
+							if(Healing_Amount < 10.0)
+							{
+								Healing_Amount = 10.0;
+							}
+							EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
+							HealEntityGlobal(client, target, Healing_Amount, _, 1.0);	
+						}
+						continue;
+					}
+					
+					if(b_ThisWasAnNpc[target] && IsEntityAlive(target, true))
+					{
+						if(Citizen_IsIt(target) && Citizen_ThatIsDowned(target))
+						{
+							if(i_CurrentEquippedPerk[client] == 1)
+							{
+								Citizen_ReviveTicks(target, 20, client, true);
+							}
+							else
+							{
+								Citizen_ReviveTicks(target, 10, client, true);
+							}
+							continue;
+						}
+						//IsValidnpc
+						if(f_TimeUntillNormalHeal[target] > GetGameTime())
+						{
+							Healing_Amount *= 0.5;
+						}
+						if(Healing_Amount < 10.0)
+						{
+							Healing_Amount = 10.0;
+						}
+						HealEntityGlobal(client, target, Healing_Amount, _, 1.0);	
+						continue;
 					}
 				}
    			}

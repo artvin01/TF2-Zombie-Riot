@@ -241,6 +241,9 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 		{
 			if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 			{
+				if(LastMann)
+					return Plugin_Continue;
+
 				float pos[3];
 				StartPlayerOnlyLagComp(client, true);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
@@ -447,6 +450,10 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 	bool validAlly;
 
+	//in lastman, target self
+	if(LastMann)
+		target = client;
+		
 	if(target < 1)
 	{
 
@@ -659,6 +666,10 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 	EndPlayerOnlyLagComp(client);
+
+	//in lastman, target self
+	if(LastMann)
+		target = client;
 
 	bool validAlly;
 
