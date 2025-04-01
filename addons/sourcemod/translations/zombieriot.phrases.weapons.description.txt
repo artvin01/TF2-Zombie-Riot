@@ -3089,15 +3089,15 @@
 	}
 	"Leper Sword Desc Pap 2"
 	{
-		"en"	"Increase all stats.\nDamage taken during animations is reduced by 33％."
+		"en"	"Increase all stats.\nDamage taken during animations is reduced by 33％.\nUnlocks Solemity, Charge with hits and press (M2) to use it\nHeals 33％ of your max health and armor"
 	}
 	"Leper Sword Desc Pap 3"
 	{
-		"en"	"Increase all stats.\nUnlocks Solemity, Charge with hits and press (M2) to use it\nHeals 33％ of your max health and armor"
+		"en"	"Increase all stats.\nUnlocks King's Wrath, press (R + M2) to use it, When hurt, gain more damage, Applies self bleed aswell"
 	}
 	"Leper Sword Desc Pap 4"
 	{
-		"en"	"Increase all stats.\nUnlocks King's Wrath, press (R + M2) to use it, When hurt, gain more damage, Applies self bleed aswell.\nSolemity heals 50％"
+		"en"	"Increase all stats.\nSolemity heals 50％"
 	}
 	"Leper Sword Desc Pap 5"
 	{

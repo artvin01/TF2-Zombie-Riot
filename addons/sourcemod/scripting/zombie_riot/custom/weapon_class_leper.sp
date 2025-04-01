@@ -156,7 +156,7 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 	if (IsLeperInAnimation(client))
 		return;
 	
-	if(CurrentPapLeper[client] >= 4)
+	if(CurrentPapLeper[client] >= 3)
 	{	
 		if((GetClientButtons(client) & IN_RELOAD))
 		{
@@ -713,7 +713,7 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 			Format(LeperHud, sizeof(LeperHud), "Hew ACTIVE [R]");
 		}
 	}
-	if(CurrentPapLeper[client] >= 3)
+	if(CurrentPapLeper[client] >= 2)
 	{
 		if(Leper_SolemnyCharge[client] >= MaxCurrentHitsNeededSolemnity(client))
 		{
@@ -738,7 +738,7 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 			}
 		}
 	}
-	if(CurrentPapLeper[client] >= 4)
+	if(CurrentPapLeper[client] >= 3)
 	{
 		Format(LeperHud, sizeof(LeperHud), "%s\nKing's Wrath [R + M2]", LeperHud);
 	}
