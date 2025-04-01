@@ -276,7 +276,7 @@ void PerkMachiner_NPCDeath(int entity)
 	
 	int team = GetTeam(npc.index);
 
-	switch(GetRandomInt(0,6))
+	switch(GetRandomInt(0,5))
 	{
 		case 0:
 		{
@@ -393,28 +393,6 @@ void PerkMachiner_NPCDeath(int entity)
 			for(int i; i < 3; i++)
 			{
 				int other = NPC_CreateByName("npc_majorsteam", -1, pos, ang, team);
-				if(other > MaxClients)
-				{
-					if(team != TFTeam_Red)
-					Zombies_Currently_Still_Ongoing++;
-			
-					SetEntProp(other, Prop_Data, "m_iHealth", 200000);
-					SetEntProp(other, Prop_Data, "m_iMaxHealth", 200000);
-			
-					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
-					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 3.0;
-					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-					b_StaticNPC[other] = b_StaticNPC[npc.index];
-				}
-			}
-		}
-		case 6:
-		{
-			for(int i; i < 3; i++)
-			{
-				int other = NPC_CreateByName("npc_chaos_swordsman", -1, pos, ang, team);
 				if(other > MaxClients)
 				{
 					if(team != TFTeam_Red)
