@@ -22,6 +22,7 @@ int Leper_SolemnyCharge[MAXPLAYERS+1];
 float Leper_SolemnyChargeCD[MAXPLAYERS+1];
 float Leper_InAnimation[MAXPLAYERS+1];
 float Leper_InWrathState[MAXPLAYERS+1];
+int Leper_OverlayDownload[MAXPLAYERS+1];	// 1/2 = Downloading/Checking, 3 = Ready
 
 void OnMapStartLeper()
 {
@@ -35,6 +36,11 @@ void OnMapStartLeper()
 	Zero(Leper_InWrathState);
 	Zero(Leper_HudDelay);
 	Zero(Leper_InAnimation);
+}
+
+void Leper_ClientDisconnect(int client)
+{
+	Leper_OverlayDownload[client] = 0;
 }
 
 int LeperEnemyAoeHit(int client)
@@ -566,6 +572,12 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 		Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+
+		if(Leper_OverlayDownload[client] == 0)
+		{
+			Leper_OverlayDownload[client] = 1;
+			SendSingleFileToClient(client, "materials/overlays");
+		}
 	}
 }
 

@@ -1074,6 +1074,7 @@ void ZR_ClientDisconnect(int client)
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
 	//reeset to 0
+	Leper_ClientDisconnect(client);
 }
 
 public void OnMapInit_ZR()

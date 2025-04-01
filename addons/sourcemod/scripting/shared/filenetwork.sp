@@ -412,7 +412,7 @@ static void SendNextFile(int client)
 		ExtraList.GetString(ExtraLevel[client], download, sizeof(download));
 
 		pack = new DataPack();
-		pack.WriteCell(true);	// Is an extra
+		pack.WriteCell(1);	// Is an extra
 	}
 	else if(SoundLevel[client] < SoundList.Length)
 	{
@@ -420,7 +420,7 @@ static void SendNextFile(int client)
 		Format(download, sizeof(download), "sound/%s", download[download[0] == '#' ? 1 : 0]);
 		
 		pack = new DataPack();
-		pack.WriteCell(false);	// Is a sound
+		pack.WriteCell(0);	// Is a sound
 	}
 
 	if(pack)
@@ -467,48 +467,63 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 	{
 		static char download[PLATFORM_MAX_PATH];
 		pack.Reset();
-		bool extra = pack.ReadCell();
+		int type = pack.ReadCell();
 		pack.ReadString(download, sizeof(download));
 
 		if(success)
 		{
-			if(extra)
+			switch(type)
 			{
-				ExtraLevel[client]++;
-			}
-			else
-			{
-				SoundLevel[client]++;
-				if(IsValidClient(client))
+				case 0:
 				{
-					/*
-					char buffer[PLATFORM_MAX_PATH];
-					Format(buffer, sizeof(buffer), "%s", download);
-					ReplaceString(buffer, sizeof(buffer), "#", "");
-					ReplaceString(buffer, sizeof(buffer), "sound/", "");
-
-					PrecacheSound(buffer);
-					EmitSoundToClient(client, buffer, client, SNDCHAN_STATIC, .volume = 0.1);
-
-					PrintToChat(client, "%s",buffer);
-					DataPack pack1;
-					CreateDataTimer(5.0, Timer_FixSoundsCancelThem, pack1, TIMER_FLAG_NO_MAPCHANGE);
-					pack1.WriteString(buffer);
-					pack1.WriteCell(EntIndexToEntRef(client));
-					*/
-					if(!DoingSoundFix[client])
+					SoundLevel[client]++;
+					if(IsValidClient(client))
 					{
-						DataPack pack2;
-						CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
-						pack2.WriteCell(0);
-						pack2.WriteCell(EntIndexToEntRef(client));
-						pack2.WriteCell(0);
-						DoingSoundFix[client] = true;
+						/*
+						char buffer[PLATFORM_MAX_PATH];
+						Format(buffer, sizeof(buffer), "%s", download);
+						ReplaceString(buffer, sizeof(buffer), "#", "");
+						ReplaceString(buffer, sizeof(buffer), "sound/", "");
+
+						PrecacheSound(buffer);
+						EmitSoundToClient(client, buffer, client, SNDCHAN_STATIC, .volume = 0.1);
+
+						PrintToChat(client, "%s",buffer);
+						DataPack pack1;
+						CreateDataTimer(5.0, Timer_FixSoundsCancelThem, pack1, TIMER_FLAG_NO_MAPCHANGE);
+						pack1.WriteString(buffer);
+						pack1.WriteCell(EntIndexToEntRef(client));
+						*/
+						if(!DoingSoundFix[client])
+						{
+							DataPack pack2;
+							CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+							pack2.WriteCell(0);
+							pack2.WriteCell(EntIndexToEntRef(client));
+							pack2.WriteCell(0);
+							DoingSoundFix[client] = true;
+						}
+					}
+
+					SendNextFile(client);
+				}
+				case 1:
+				{
+					ExtraLevel[client]++;
+					SendNextFile(client);
+				}
+				case 2:
+				{
+					Function func = pack.ReadFunction();
+					if(func != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, func);
+						Call_PushCell(client);
+						Call_PushString(download);
+						Call_Finish();
 					}
 				}
 			}
-
-			SendNextFile(client);
 		}
 		else
 		{
@@ -640,30 +655,47 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			}
 
 			pack.Reset();
-			if(pack.ReadCell())
+			int type = pack.ReadCell();
+			switch(type)
 			{
-				ExtraLevel[client]++;
-			}
-			else
-			{
-				//Fix soundcache issues
-				/*
-					//When the sound is first played, it has an ugly ass reverb to it, this fixes it.
-				*/
-				if(!DoingSoundFix[client])
+				case 0:
 				{
-					DataPack pack2;
-					CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
-					pack2.WriteCell(0);
-					pack2.WriteCell(EntIndexToEntRef(client));
-					pack2.WriteCell(0);
-					DoingSoundFix[client] = true;
+					//Fix soundcache issues
+					/*
+						//When the sound is first played, it has an ugly ass reverb to it, this fixes it.
+					*/
+					if(!DoingSoundFix[client])
+					{
+						DataPack pack2;
+						CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+						pack2.WriteCell(0);
+						pack2.WriteCell(EntIndexToEntRef(client));
+						pack2.WriteCell(0);
+						DoingSoundFix[client] = true;
+					}
+
+					SoundLevel[client]++;
+					SendNextFile(client);
 				}
-				SoundLevel[client]++;
+				case 1:
+				{
+					ExtraLevel[client]++;
+					SendNextFile(client);
+				}
+				case 2:
+				{
+					pack.ReadString(filecheck, sizeof(filecheck));
+
+					Function func = pack.ReadFunction();
+					if(func != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, func);
+						Call_PushCell(client);
+						Call_PushString(download);
+						Call_Finish();
+					}
+				}
 			}
-
-
-			SendNextFile(client);
 		}
 		else
 		{
@@ -880,4 +912,26 @@ stock bool IsFileInDownloads(const char[] file)
 	}
 
 	return false;
+}
+
+stock void SendSingleFileToClient(int client, const char[] download, Function func)
+{
+#if defined _filenetwork_included
+	if(!FileNetworkLib)
+		return;
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(2);
+	pack.WriteString(download);
+	pack.WriteFunction(func);
+	
+	static char filecheck[PLATFORM_MAX_PATH];
+	FormatFileCheck(download, client, filecheck, sizeof(filecheck));
+	FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
+	if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
+	{
+		Format(filecheck, sizeof(filecheck), "download/%s", filecheck);
+		DeleteFile(filecheck);
+	}
+#endif
 }
