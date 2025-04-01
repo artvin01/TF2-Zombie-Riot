@@ -115,7 +115,16 @@ static int TriggerDamage(int entity, int type)
 		}
 		case Element_Burger:
 		{
-			divide = 4.0;
+			divide = 2.0;
+
+			if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+			{
+				divide = 3.0;
+			}
+			else if(b_thisNpcIsABoss[entity])
+			{
+				divide = 3.0;
+			}
 		}
 	}
 
