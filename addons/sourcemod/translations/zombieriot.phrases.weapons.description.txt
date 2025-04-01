@@ -1528,8 +1528,8 @@
 	}
 	"Food Fridge Desc"
 	{
-		"en"	"Heals for 30 Health, scales with medigun upgrades."
-		"fr"	"Soigne pour 30 santé. Soins améliorés avec les améliorations Medigun."
+		"en"	"Heals for 40 Health, scales with medigun upgrades."
+		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 	}
 	"Village Desc"
 	{
@@ -4339,5 +4339,14 @@
 	"Bubble Wand Pap 4 Desc"
 	{
 		"en" "PAP 4: Greatly increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly strengthens Bubble Frenzy's debuff penalty, and increases its duration a bit."
+	}
+
+	"Merchant Brewing Stand Desc"
+	{
+		"en"	"Collect ingredients by dealing damage. Use them to make potions that buffs weapons."
+	}
+	"Merchant Grill Desc"
+	{
+		"en"	"Collect ingredients by dealing damage. Use them to make food that heals and buffs allies."
 	}
 }
