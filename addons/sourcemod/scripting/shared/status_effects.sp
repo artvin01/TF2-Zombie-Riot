@@ -2817,10 +2817,12 @@ void StatusEffects_SevenHeavySouls()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.5;
 	data.DamageDealMulti			= 0.5;
-	data.MovementspeedModif			= 0.5;
+	data.MovementspeedModif			= 1.5;
 	data.AttackspeedBuff			= 0.5;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
+	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
