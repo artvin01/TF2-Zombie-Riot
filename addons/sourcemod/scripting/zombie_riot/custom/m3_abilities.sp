@@ -427,7 +427,7 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 					if (GetVectorDistance(powerup_pos, client_pos, true) > (ARMOR_GRENADE_RANGE * ARMOR_GRENADE_RANGE))
 						continue;
 
-					if(target <= MaxClients && IsValidClient(target) && IsPlayerAlive(target) && && TeutonType[target] == 0)
+					if(target <= MaxClients && IsValidClient(target) && IsPlayerAlive(target) && TeutonType[target] == 0)
 					{
 						//Is valid Player
 						EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
