@@ -604,11 +604,21 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 		if(Leper_OverlayDownload[client] == 0)
 		{
 			Leper_OverlayDownload[client] = 1;
-			SendSingleFileToClient(client, "materials/overlays");
+			SendSingleFileToClient(client, "materials/zombie_riot/overlays/leper_overlay.vtf", Leper_Overlay1);
 		}
 	}
 }
 
+static void Leper_Overlay1(int client)
+{
+	Leper_OverlayDownload[client] = 2;
+	SendSingleFileToClient(client, "materials/zombie_riot/overlays/leper_overlay.vmt", Leper_Overlay2);
+}
+
+static void Leper_Overlay2(int client)
+{
+	Leper_OverlayDownload[client] = 3;
+}
 
 bool IsClientLeper(int client)
 {
