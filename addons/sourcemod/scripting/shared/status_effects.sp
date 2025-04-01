@@ -138,6 +138,7 @@ void InitStatusEffects()
 	StatusEffects_Pernell();
 	StatusEffects_Medieval();
 	StatusEffects_MERLT0N_BUFF();
+	StatusEffects_SevenHeavySouls();
 	StatusEffects_SupportWeapons();
 	StatusEffects_BobDuck();
 	StatusEffects_ElementalWand();
@@ -2802,6 +2803,24 @@ void StatusEffects_MERLT0N_BUFF()
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+void StatusEffects_SevenHeavySouls()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "7 Heavy Souls");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♥");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.5;
+	data.DamageDealMulti			= 0.5;
+	data.MovementspeedModif			= 0.5;
+	data.AttackspeedBuff			= 0.5;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);

@@ -4059,4 +4059,72 @@
 	{
 		"en"	"Airboat"
 	}
+	"Male 07"
+	{
+		"en"	"Male 07"
+	}
+	"Spiritrunner"
+	{
+		"en"	"Spiritrunner"
+	}
+	"Todd Howard"
+	{
+		"en"	"Todd Howard"
+	}
+	"Sea-Infected Todd Howard"
+	{
+		"en"	"Sea-Infected Todd Howard"
+	}
+	"kevinmery2009"
+	{
+		"en"	"kevinmery2009"
+	}
+	"Red Heavy"
+	{
+		"en"	"Red Heavy"
+	}
+	"Blue Heavy"
+	{
+		"en"	"Blue Heavy"
+	}
+	"Cyan Heavy"
+	{
+		"en"	"Cyan Heavy"
+	}
+	"Green Heavy"
+	{
+		"en"	"Green Heavy"
+	}
+	"Orange Heavy"
+	{
+		"en"	"Orange Heavy"
+	}
+	"Yellow Heavy"
+	{
+		"en"	"Yellow Heavy"
+	}
+	"Purple Heavy"
+	{
+		"en"	"Purple Heavy"
+	}
+	"Anti-Camp Temperal Buster"
+	{
+		"en"	"Anti-Camp Temperal Buster"
+	}
+	"Troll Rifler"
+	{
+		"en"	"Troll Rifler"
+	}
+	"Troll Cop"
+	{
+		"en"	"Troll Cop"
+	}
+	"Troll RPG Carrier"
+	{
+		"en"	"Troll RPG Carrier"
+	}
+	"Troll Brawler"
+	{
+		"en"	"Troll Brawler"
+	}
 }
