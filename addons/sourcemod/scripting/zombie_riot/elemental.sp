@@ -116,24 +116,36 @@ static int TriggerDamage(int entity, int type)
 		case Element_Burger:
 		{
 			divide = 2.0;
+
+			if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+			{
+				divide = 3.0;
+			}
+			else if(b_thisNpcIsABoss[entity])
+			{
+				divide = 3.0;
+			}
 		}
 	}
 
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
-
-	//also works against superbosses.
-	if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+	
+	if(type != Element_Burger)
 	{
-		divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
-	}
-	else if(b_thisNpcIsABoss[entity])
-	{
-		divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
-	}
-	else if (b_IsGiant[entity])
-	{
-		divide *= 2.0;
+		//also works against superbosses.
+		if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+		{
+			divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
+		}
+		else if(b_thisNpcIsABoss[entity])
+		{
+			divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
+		}
+		else if (b_IsGiant[entity])
+		{
+			divide *= 2.0;
+		}
 	}
 
 	return RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
@@ -889,7 +901,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 			if(ElementDamage[victim][Element_Burger] > trigger)
 			{
 				ElementDamage[victim][Element_Burger] = 0;
-				f_ArmorCurrosionImmunity[victim][Element_Burger] = GetGameTime() + 999.0;
+				f_ArmorCurrosionImmunity[victim][Element_Burger] = GetGameTime() + 100.0;
 
 				if(func_NPCThink[victim] != MedivalConstruct_ClotThink || EntRefToEntIndex(RaidBossActive) != -1)
 				{

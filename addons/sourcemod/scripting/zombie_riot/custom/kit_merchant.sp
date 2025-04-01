@@ -475,7 +475,6 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 		case Merchant_Burger:
 		{
 			Elemental_AddBurgerDamage(victim, attacker, RoundFloat(damage));
-			damage *= 0.1;
 		}
 	}
 }
