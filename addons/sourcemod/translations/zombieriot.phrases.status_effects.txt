@@ -1154,4 +1154,12 @@
 	{
 		"en"	"Boosts attack/reload speed & healrate by 10％"
 	}
+	"7 Heavy Souls"
+	{
+		"en"	"7 Heavy Souls"
+	}
+	"7 Heavy Souls Desc"
+	{
+		"en"	"Increases damage by 50%%\nIncreases resistance by 50%%\nIncreases attack speed by 50%%"
+	}
 }
