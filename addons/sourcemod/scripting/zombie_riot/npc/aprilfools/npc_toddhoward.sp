@@ -103,7 +103,6 @@ public void ToddHoward_OnMapStart()
 	NPCId2 = NPC_Add(data);
 
 
-	for (int i = 0; i < (sizeof(g_RandomGroupScream));   i++) { PrecacheSoundCustom(g_RandomGroupScream[i]);   }
 }
 
 static void ClotPrecache()

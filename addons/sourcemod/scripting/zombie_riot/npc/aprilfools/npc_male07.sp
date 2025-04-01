@@ -26,11 +26,15 @@ void Male07_OnMapStart()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/male07_chase.mp3");
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/male07_chase.mp3");
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return Male07(vecPos, vecAng, team, data);

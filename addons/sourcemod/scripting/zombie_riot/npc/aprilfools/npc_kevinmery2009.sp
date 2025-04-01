@@ -56,8 +56,7 @@ void KevinMery_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "kevinmery2009");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kevinmery2009");
 	strcopy(data.Icon, sizeof(data.Icon), "kevinmery");
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/kevinmery.mp3");
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/plead.mp3");
+	data.Precache = ClotPrecache;
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
@@ -66,6 +65,11 @@ void KevinMery_OnMapStart_NPC()
 }
 
 
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/kevinmery.mp3");
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/plead.mp3");
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return KevinMery(client, vecPos, vecAng, ally);

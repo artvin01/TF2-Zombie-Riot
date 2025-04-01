@@ -32,13 +32,6 @@ static const char g_IdleMusic[][] = {
 
 void SpiritRunner_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSoundCustom(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_IdleChainsaw));   i++) { PrecacheSoundCustom(g_IdleChainsaw[i]);   }
-	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	PrecacheModel("models/zombie_riot/cof/sawrunner_2.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Spiritrunner");
@@ -47,10 +40,21 @@ void SpiritRunner_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSoundCustom(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_IdleChainsaw));   i++) { PrecacheSoundCustom(g_IdleChainsaw[i]);   }
+	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return SpiritRunner(vecPos, vecAng, team);
