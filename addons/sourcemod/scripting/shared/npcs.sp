@@ -2524,7 +2524,7 @@ void Npcs_AddUnderscoreToText(char[] buffer, int lengthstring)
 				Format(CharAdd, sizeof(CharAdd), "%s", buffer[a]);
 				Format(CharTemp, sizeof(CharTemp), "%s%s", CharAdd, AddUnderscore);
 				a++;
-				a++;
+			//	a++;
 				//We cant skip 3 for some reason, idk, it just works, idc.
 			}
 		}
