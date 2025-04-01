@@ -2755,6 +2755,23 @@ void StatusEffects_Medieval()
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "King's Dying Breath");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ʞ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.8;
+	data.DamageDealMulti			= 0.35;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.AttackspeedBuff			= 0.9;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 void StatusEffects_MERLT0N_BUFF()
 {
@@ -3421,6 +3438,19 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Waterless Training");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "G");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "King's Wrath");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ʞ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
