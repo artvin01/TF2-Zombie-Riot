@@ -110,7 +110,7 @@ ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 ConVar zr_interactforcereload;
-bool BlockOtherMusic = false
+bool BlockOtherMusic = false;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
