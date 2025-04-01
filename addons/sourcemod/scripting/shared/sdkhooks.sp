@@ -1605,6 +1605,7 @@ int CheckInHud()
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
+
 	if(IsValidEntity(victim) && CanSelfHurtAndJump(victim) && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
 	{
 		if(CanSelfHurtAndJump(victim))
@@ -1752,7 +1753,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		else
 #endif
 		{
-			if(victim == attacker)
+			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ALLOW_SELFHURT) && victim == attacker)
 				return Plugin_Handled;
 		}
 	}
@@ -1784,6 +1785,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined RPG
 		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
 #endif
+
+		if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ALLOW_SELFHURT) && victim == attacker)
+		{
+
+		}
+		else
 			return Plugin_Handled;	
 
 #if defined RPG		

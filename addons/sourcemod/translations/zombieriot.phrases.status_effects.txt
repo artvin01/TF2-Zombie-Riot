@@ -516,6 +516,14 @@
 	{
 		"en"	"Increases damage dealt by 35%%\nDecreases damage taken by 20%%\nIncreases attack/reload speed & healrate by 10%%"
 	}
+	"King's Dying Breath"
+	{
+		"en"	"King's Dying Breath"
+	}
+	"King's Dying Breath Desc"
+	{
+		"en"	"Increases damage dealt by 35%%\nDecreases damage taken by 20%%\nIncreases attack/reload speed & healrate by 10%%"
+	}
 	"Oceanic Singing"
 	{
 		"en"	"Oceanic Singing"
@@ -683,6 +691,14 @@
 	"Ruina's Damage Desc"
 	{
 		"en"	"Changed damage dealt by a certain amount."
+	}
+	"King's Wrath"
+	{
+		"en"	"King's Wrath"
+	}
+	"King's Wrath Desc"
+	{
+		"en"	"Everytime you are hurt, you deal more damage for a short time."
 	}
 	"Waterless Training"
 	{
