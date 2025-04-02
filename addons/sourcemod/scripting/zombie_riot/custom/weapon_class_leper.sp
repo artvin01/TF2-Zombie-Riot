@@ -368,7 +368,7 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 		}
 	}
 
-	if(Leper_OverlayDownload[client] == 3)
+	if(Leper_OverlayDownload[client] == 3 || CvarFileNetworkDisable.IntValue > 0)
 		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
 	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 
@@ -507,7 +507,7 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 		}
 	}
 
-	if(Leper_OverlayDownload[client] == 3)
+	if(Leper_OverlayDownload[client] == 3 || CvarFileNetworkDisable.IntValue > 0)
 		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
 	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 
@@ -877,7 +877,7 @@ int SetCameraEffectLeperWrath(int client, int &ModelToDelete)
 		}
 	}
 
-	if(Leper_OverlayDownload[client] == 3)
+	if(Leper_OverlayDownload[client] == 3 || CvarFileNetworkDisable.IntValue > 0)
 		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
 	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 
