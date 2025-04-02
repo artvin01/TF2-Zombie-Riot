@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 // Amount of Sauce (kills) needed for one part of a potion
-#define SAUCE_REQUIRED	5.0
+#define SAUCE_REQUIRED	6.0
 
 /*
 	- Armor Heal
@@ -120,6 +120,7 @@ static void GrillingUse(int client, int entity)
 					Selling[owner].Erase(0);
 
 					float healing = 120.0 * Attributes_GetOnPlayer(owner, 8, true);
+					healing *= 0.5; //too op
 
 					char buffer[128];
 					FormatEx(buffer, sizeof(buffer), "Healed %d health", RoundFloat(healing));
