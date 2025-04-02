@@ -2916,3 +2916,22 @@ stock void SPrintToChatAll(const char[] message, any ...)
 	VFormat(buffer, sizeof(buffer), message, 2);
 	CPrintToChatAll("%s%s", STORE_PREFIX, buffer);
 }
+
+
+//IF you disable ingame downloads, it will download all these files nontherless!
+void ZR_FastDownloadForce()
+{
+	//do not download!!
+	if(CvarFileNetworkDisable.IntValue <= 0)
+		return;
+
+	PrecacheSharedDarkestMusic();
+	PrecacheTwirlMusic();
+	SeaBornMusicDo();
+	PurnellMusicOst();
+	PrecacheBlitzMusic();
+	SoldineKitDownload();
+	ZealotMusicDownload();
+	YakuzaMusicDownload();
+	FullmoonDownload();
+}

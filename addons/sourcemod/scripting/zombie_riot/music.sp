@@ -996,7 +996,7 @@ void Music_Update(int client)
 				}
 				case 5:
 				{
-					EmitCustomToClient(client, "#zombiesurvival/purnell_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					EmitCustomToClient(client, "#zombiesurvival/purnell_lastman_1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 192);
 				}
 				case 6:

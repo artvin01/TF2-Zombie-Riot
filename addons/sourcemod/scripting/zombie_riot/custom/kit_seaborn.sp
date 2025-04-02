@@ -65,18 +65,18 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 	}*/
 }
 
+void SeaBornMusicDo()
+{
+	if(!b_musicprecached)
+	{
+		PrecacheSoundCustom("#zombiesurvival/wave_music/bat_rglk2boss1.mp3");
+	}
+	b_musicprecached = true;
+}
 void SeaMelee_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{
-		if(CvarFileNetworkDisable.IntValue <= 0)
-		{
-			if(!b_musicprecached)
-			{
-				PrecacheSoundCustom("#zombiesurvival/wave_music/bat_rglk2boss1.mp3");
-			}
-			b_musicprecached = true;
-		}
 
 		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 

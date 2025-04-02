@@ -149,6 +149,9 @@ void Configs_ConfigsExecuted()
 		if(IsClientInGame(client))
 			OnClientPutInServer(client);
 	}
+#if defined ZR
+	ZR_FastDownloadForce();
+#endif
 }
 
 static void ExecuteMapOverrides(KeyValues kv)

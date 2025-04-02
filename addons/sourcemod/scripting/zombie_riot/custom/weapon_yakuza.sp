@@ -110,8 +110,8 @@ bool Yakuza_IsNotInJoint(int client)
 
 int Yakuza_Lastman(any toggle = -1)
 {
-	if(CvarFileNetworkDisable.IntValue > 0)
-		return 0;
+//	if(CvarFileNetworkDisable.IntValue > 0)
+//		return 0;
 		
 	if(toggle != -1)
 		SpecialLastMan = view_as<bool>(toggle);
@@ -262,17 +262,20 @@ void Yakuza_Enable(int client, int weapon)
 		LastDamage[client] = 1.0;
 		LastSpeed[client] = 1.0;
 
-		if(!Precached)
-		{
-			// MASS REPLACE THIS IN ALL FILES
-			PrecacheSoundCustom("#zombiesurvival/yakuza_lastman.mp3",_,1);
-			Precached = true;
-		}
+		YakuzaMusicDownload();
 
 		UpdateStyle(client);
 	}
 }
-
+void YakuzaMusicDownload()
+{
+	if(!Precached)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("#zombiesurvival/yakuza_lastman.mp3",_,1);
+		Precached = true;
+	}
+}
 static Action WeaponTimerFunc(Handle timer, int client)
 {
 	if(IsClientInGame(client))

@@ -189,9 +189,10 @@ static bool CryoEasy[MAXTF2PLAYERS+1];
 static bool MegaShot[2049] = { false, ... };
 
 #define CASINO_MAX_DOLLARS 100
-#define CASINO_SALARY_GAIN_PER_HIT 1
+#define CASINO_SALARY_GAIN_PER_HIT 2
 #define CASINO_DAMAGE_GAIN_PER_HIT 0.25
 #define CASINO_MAX_DAMAGE 25.0
+#define CAISNO_BUFF_DURATION 10.0
 
 
 public void Casino_MapStart() //idk what to precisely precache so hopefully this is good enough
@@ -373,7 +374,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 	Casino_hud_delay[attacker]  = 0.0; //Reset hud cooldown on shooting
 	return damage;
 }
-
+/*
 void CasinoSalaryPerKill(int client, int weapon) //cash gain on KILL MURDER OBLITERATE ANNIHILATE GRAAAAAAA
 {
 	int MaxCash = 0;
@@ -425,7 +426,7 @@ void CasinoSalaryPerKill(int client, int weapon) //cash gain on KILL MURDER OBLI
 		AddAmmoClient(client, AmmoType ,(pap) + 4,1.0, true);
 	}
 }
-
+*/
 static int Casino_Get_Pap(int weapon) //deivid inspired pap detection system (as in literally a copy-paste from fantasy blade)
 {
 	int pap=0;
@@ -502,7 +503,7 @@ public void Weapon_Casino_M1(int client, int weapon)
 
 			TR_TraceHullFilter(pos, endPos, hullMin, hullMax, 1073741824, MegaShot_Tracer, client);
 
-			float damage = 45.0 * Attributes_Get(weapon, 2, 1.0);
+			float damage = CAISNO_BUFF_DURATION * Attributes_Get(weapon, 2, 1.0);
 			float damageMOD;
 			int pap = i_Current_Pap[client];
 			damageMOD += ((float(ammo) - (float(pap)*3.0)) * (1.0 + (float(ammo)/10))) * 2.5;
@@ -691,7 +692,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 2, 1.5, 45.0); // this but not "temporary"
+						ApplyTempAttrib(weapon, 2, 1.5, CAISNO_BUFF_DURATION); // this but not "temporary"
 						SetDefaultHudPosition(client); // WHAT!!!!!!!!!
 						SetGlobalTransTarget(client); // i was gonna look into that afterwards 
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage+]!");
@@ -699,7 +700,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 2, 1.55, 45.0);
+						ApplyTempAttrib(weapon, 2, 1.55, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage+]!");
@@ -707,7 +708,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 2, 1.6, 45.0);
+						ApplyTempAttrib(weapon, 2, 1.6, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage+]!");
@@ -715,7 +716,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 2, 1.65, 45.0);
+						ApplyTempAttrib(weapon, 2, 1.65, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage+]!");
@@ -723,14 +724,14 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 4:
 					{
-						ApplyTempAttrib(weapon, 2, 1.7, 45.0);
+						ApplyTempAttrib(weapon, 2, 1.7, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage+]!");
 						ClientCommand(client, "playgamesound ui/hitsound_vortex1.wav");
 					}
 				}
-				fl_minor_damage_cooldown[client] = GameTime + 45.0;
+				fl_minor_damage_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 			}
 			else
 			{
@@ -749,7 +750,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 6, 0.85, 45.0);
+						ApplyTempAttrib(weapon, 6, 0.85, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -757,7 +758,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 6, 0.8, 45.0);
+						ApplyTempAttrib(weapon, 6, 0.8, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -765,7 +766,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 6, 0.8, 45.0);
+						ApplyTempAttrib(weapon, 6, 0.8, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -773,7 +774,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 6, 0.75, 45.0);
+						ApplyTempAttrib(weapon, 6, 0.75, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -781,14 +782,14 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 4:
 					{
-						ApplyTempAttrib(weapon, 6, 0.75, 45.0);
+						ApplyTempAttrib(weapon, 6, 0.75, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
 						ClientCommand(client, "playgamesound ui/hitsound_vortex3.wav");
 					}
 				}
-				fl_minor_speed_cooldown[client] = GameTime + 45.0;
+				fl_minor_speed_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 			}
 			else
 			{
@@ -806,47 +807,47 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 97, 0.7, 60.0);
+						ApplyTempAttrib(weapon, 97, 0.7, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Reload+]!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						fl_minor_reload_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 						ClientCommand(client, "playgamesound ui/hitsound_vortex2.wav");
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 97, 0.6, 60.0);
+						ApplyTempAttrib(weapon, 97, 0.6, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Reload+]!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						fl_minor_reload_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 						ClientCommand(client, "playgamesound ui/hitsound_vortex2.wav");
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 97, 0.55, 60.0);
+						ApplyTempAttrib(weapon, 97, 0.55, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Reload+]!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						fl_minor_reload_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 						ClientCommand(client, "playgamesound ui/hitsound_vortex2.wav");
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 97, 0.5, 60.0);
+						ApplyTempAttrib(weapon, 97, 0.5, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Reload+]!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						fl_minor_reload_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 						ClientCommand(client, "playgamesound ui/hitsound_vortex2.wav");
 					}
 					case 4:
 					{
-						ApplyTempAttrib(weapon, 97, 0.4, 60.0);
+						ApplyTempAttrib(weapon, 97, 0.4, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Reload+]!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						fl_minor_reload_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 						ClientCommand(client, "playgamesound ui/hitsound_vortex2.wav");
 					}
 				}
@@ -867,70 +868,70 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
+						ApplyTempAttrib(weapon, 106, 0.1, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						fl_minor_accuracy_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 
 						delete DamageFalloff_timer[client];
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
+						DamageFalloff_timer[client] = CreateTimer(CAISNO_BUFF_DURATION, DamageFalloffCasino, client);
 						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
-						ApplyTempAttrib(weapon, 2, 1.05, 60.0);
+						ApplyTempAttrib(weapon, 106, 0.1, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 2, 1.05, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						fl_minor_accuracy_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 
 						delete DamageFalloff_timer[client];
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
+						DamageFalloff_timer[client] = CreateTimer(CAISNO_BUFF_DURATION, DamageFalloffCasino, client);
 						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
-						ApplyTempAttrib(weapon, 2, 1.10, 60.0);
+						ApplyTempAttrib(weapon, 106, 0.1, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 2, 1.10, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						fl_minor_accuracy_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 
 						delete DamageFalloff_timer[client];
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
+						DamageFalloff_timer[client] = CreateTimer(CAISNO_BUFF_DURATION, DamageFalloffCasino, client);
 						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
-						ApplyTempAttrib(weapon, 2, 1.15, 60.0);
+						ApplyTempAttrib(weapon, 106, 0.1, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 2, 1.15, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						fl_minor_accuracy_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 
 						delete DamageFalloff_timer[client];
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
+						DamageFalloff_timer[client] = CreateTimer(CAISNO_BUFF_DURATION, DamageFalloffCasino, client);
 						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
 					case 4:
 					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
-						ApplyTempAttrib(weapon, 2, 1.2, 60.0);
+						ApplyTempAttrib(weapon, 106, 0.1, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 2, 1.2, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						fl_minor_accuracy_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 
 						delete DamageFalloff_timer[client];
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
+						DamageFalloff_timer[client] = CreateTimer(CAISNO_BUFF_DURATION, DamageFalloffCasino, client);
 						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
@@ -974,6 +975,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					AmmoAdd += GetRandomInt(60,70); 
 				}
 			}
+			AmmoAdd = RoundToNearest(float(AmmoAdd) * 0.45);
 			i_CryoShot[client] += AmmoAdd;
 			switch(pap)
 			{
@@ -1010,10 +1012,10 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "[Blood Ammo]!");
-				fl_ammo_cooldown[client] = GameTime + 60.0;
+				fl_ammo_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 
 				delete AmmoRefill_timer[client];
-				AmmoRefill_timer[client] = CreateTimer(60.0, AmmoRefillCasino, client);
+				AmmoRefill_timer[client] = CreateTimer(CAISNO_BUFF_DURATION, AmmoRefillCasino, client);
 
 				ClientCommand(client, "playgamesound ui/killsound_space.wav");
 			}
@@ -1146,10 +1148,10 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "[Payday]!");
-				fl_payday_cooldown[client] = GameTime + 60.0;
+				fl_payday_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 
 				delete Payday_timer[client];
-				Payday_timer[client] = CreateTimer(60.0, PaydayCasino, client);
+				Payday_timer[client] = CreateTimer(CAISNO_BUFF_DURATION, PaydayCasino, client);
 				Payday = 2;
 
 				ClientCommand(client, "playgamesound ui/killsound_space.wav");

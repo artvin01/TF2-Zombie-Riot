@@ -42,10 +42,8 @@ void Flagellant_MapStart()
 
 void PrecacheSharedDarkestMusic()
 {
-
-	if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
+	if(!Precached)
 	{
-		// MASS REPLACE THIS IN ALL FILES
 		PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
 		Precached = true;
 	}
