@@ -709,7 +709,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 6, 0.85, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 6, 0.9, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -717,7 +717,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 6, 0.8, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 6, 0.85, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -725,7 +725,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 6, 0.8, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 6, 0.85, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -733,7 +733,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 6, 0.75, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 6, 0.8, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -741,7 +741,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 4:
 					{
-						ApplyTempAttrib(weapon, 6, 0.75, CAISNO_BUFF_DURATION);
+						ApplyTempAttrib(weapon, 6, 0.8, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed+]!");
@@ -994,7 +994,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 2, 1.8, 90.0);
+						ApplyTempAttrib(weapon, 2, 1.8, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage++]!");
@@ -1002,7 +1002,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 2, 1.9, 90.0);
+						ApplyTempAttrib(weapon, 2, 1.9, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage++]!");
@@ -1010,7 +1010,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 2, 1.95, 90.0);
+						ApplyTempAttrib(weapon, 2, 1.95, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage++]!");
@@ -1018,7 +1018,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 2, 2.0, 90.0);
+						ApplyTempAttrib(weapon, 2, 2.0, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage++]!");
@@ -1026,14 +1026,14 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 4:
 					{
-						ApplyTempAttrib(weapon, 2, 2.1, 90.0);
+						ApplyTempAttrib(weapon, 2, 2.1, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Damage++]!");
 						ClientCommand(client, "playgamesound ui/killsound_beepo.wav");
 					}
 				}
-				fl_major_damage_cooldown[client] = GameTime + 90.0;
+				fl_major_damage_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 			}
 			else
 			{
@@ -1051,7 +1051,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 6, 0.7, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.8, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed++]!");
@@ -1059,7 +1059,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 6, 0.65, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.7, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed++]!");
@@ -1067,7 +1067,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 6, 0.60, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.65, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed++]!");
@@ -1075,7 +1075,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 6, 0.55, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.6, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed++]!");
@@ -1083,14 +1083,14 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 4:
 					{
-						ApplyTempAttrib(weapon, 6, 0.50, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.55, CAISNO_BUFF_DURATION);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Firing Speed++]!");
 						ClientCommand(client, "playgamesound ui/killsound_vortex.wav");
 					}
 				}
-				fl_major_speed_cooldown[client] = GameTime + 90.0;
+				fl_major_speed_cooldown[client] = GameTime + CAISNO_BUFF_DURATION;
 			}
 			else
 			{
@@ -1260,7 +1260,6 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					SetDefaultHudPosition(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]\nSadly the casino banned you for cheating.\nMoney returned.");
 					ClientCommand(client, "playgamesound ui/itemcrate_smash_ultrarare_short.wav");		
-					i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1000;
 				}
 			}
 		}
@@ -1286,7 +1285,6 @@ static void Casino_Show_Hud(int client)
 		default:
 		{
 			PrintHintText(client,"----[FRENZY ACTIVE]----\nDollars: [SPAM / M2]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
-			
 		}
 	}
 }
