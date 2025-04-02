@@ -189,7 +189,7 @@ bool DevSpawner_Interact(int client, int entity)
 {
 	if(i_NpcInternalId[entity] == DEV_SPAWNER)
 	{
-		if(CheckCommandAccess(client, "sm_spawn_npc", ADMFLAG_SLAY))
+		if(CheckCommandAccess(client, "sm_spawn_npc", ADMFLAG_ROOT))
 		{
 			OpenMenu(client, EntIndexToEntRef(entity));
 			return true;
