@@ -189,10 +189,11 @@ static bool CryoEasy[MAXTF2PLAYERS+1];
 static bool MegaShot[2049] = { false, ... };
 
 #define CASINO_MAX_DOLLARS 100
-#define CASINO_SALARY_GAIN_PER_HIT 2
+#define CASINO_SALARY_GAIN_PER_HIT 1
 #define CASINO_DAMAGE_GAIN_PER_HIT 0.25
 #define CASINO_MAX_DAMAGE 25.0
 #define CAISNO_BUFF_DURATION 10.0
+#define CASINO_CASH_PER_USE 15
 
 
 public void Casino_MapStart() //idk what to precisely precache so hopefully this is good enough
@@ -374,59 +375,17 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 	Casino_hud_delay[attacker]  = 0.0; //Reset hud cooldown on shooting
 	return damage;
 }
-/*
+
 void CasinoSalaryPerKill(int client, int weapon) //cash gain on KILL MURDER OBLITERATE ANNIHILATE GRAAAAAAA
 {
-	int MaxCash = 0;
 	int pap = i_Current_Pap[client];
-	switch(Payday_timer[client])
-	{
-		case INVALID_HANDLE: 
-		{
-			MaxCash = CASINO_MAX_DOLLARS;
-		}
-		default: 
-		{
-			MaxCash = (CASINO_MAX_DOLLARS + (pap + 1) * 25);
-		}
-	}
-	switch(pap)
-	{
-		case 0:
-		{
-			if(i_Dollars_Ammount[client] < MaxCash)
-			{
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 5 * Payday;
-				if(i_Dollars_Ammount[client] >= MaxCash)
-					i_Dollars_Ammount[client] = MaxCash;
-			}
-		}
-		case 1, 2:
-		{
-			if(i_Dollars_Ammount[client] < MaxCash)
-			{
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 6 * Payday;
-				if(i_Dollars_Ammount[client] >= MaxCash)
-					i_Dollars_Ammount[client] = MaxCash;
-			}
-		}
-		case 3,4:
-		{
-			if(i_Dollars_Ammount[client] < MaxCash)
-			{
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 7 * Payday;
-				if(i_Dollars_Ammount[client] >= MaxCash)
-					i_Dollars_Ammount[client] = MaxCash;
-			}
-		}
-	}
 	if(AmmoRefill_timer[client])
 	{
 		int AmmoType = GetAmmoType_WeaponPrimary(weapon);
 		AddAmmoClient(client, AmmoType ,(pap) + 4,1.0, true);
 	}
 }
-*/
+
 static int Casino_Get_Pap(int weapon) //deivid inspired pap detection system (as in literally a copy-paste from fantasy blade)
 {
 	int pap=0;
@@ -601,7 +560,7 @@ public void CasinoWeaponHoldM2_Prethink(int client)
 		{
 			return;
 		}
-		f_AttackDelayKnife[client] = GetGameTime() + 0.5;
+		f_AttackDelayKnife[client] = GetGameTime() + 0.35;
 		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_active < 0)
 		{
@@ -631,9 +590,9 @@ public void Weapon_Casino_M2(int client, int weapon)
 	{
 		case INVALID_HANDLE:
 		{
-			if (i_Dollars_Ammount[client] >= 20) //only go through if you can afford it
+			if (i_Dollars_Ammount[client] >= CASINO_CASH_PER_USE) //only go through if you can afford it
 			{
-				i_Dollars_Ammount[client] -= CASINO_SALARY_GAIN_PER_HIT * 20; //cost of slots
+				i_Dollars_Ammount[client] -= CASINO_CASH_PER_USE; //cost of slots
 				ROLL_THE_SLOTS(client, weapon);
 			}
 			else
@@ -1279,7 +1238,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					SetDefaultHudPosition(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
 					
-					for(int RandomLoop; RandomLoop < 15; RandomLoop++)
+					for(int RandomLoop; RandomLoop < 3; RandomLoop++)
 					{
 						CPrintToChatAll("{%s}%N {%s}HAS GOTTEN THE {%s}BIG WINS!!!!!",g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)], client,g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)],g_RandomColoursDo[GetRandomInt(0, sizeof(g_RandomColoursDo) - 1)]);		
 					}	

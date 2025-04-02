@@ -2313,12 +2313,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			MlynarReduceDamageOnKill(attacker, 2);
 		}
-		/*
 		case WEAPON_CASINO:
 		{
 			CasinoSalaryPerKill(attacker, weapon);
 		}
-		*/
 		case WEAPON_RAPIER:
 		{
 			RapierEndDuelOnKill(attacker, victim);
