@@ -989,7 +989,7 @@
 	}
 	"Fire Axe Pap 2"
 	{
-		"en"	"Increased damage and attackspeed\nWith M2 you ignite upto 5 targets around you."
+		"en"	"Increased damage and attackspeed\nWith M2 you ignite upto 5 targets around you.\nAfterburn damage bonus is now 20％ instead of 50％."
 	}
 	"Fire Axe Pap 3"
 	{
