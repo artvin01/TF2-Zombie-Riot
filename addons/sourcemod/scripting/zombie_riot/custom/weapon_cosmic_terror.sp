@@ -167,9 +167,6 @@ public void Cosmic_Activate(int client, int weapon, float speed)
 {
 	float heat_multi = 1.0; 
 
-	speed /= Attributes_Get(weapon, 6, 1.0);
-	speed /= Attributes_Get(weapon, 5, 1.0);
-
 	heat_multi *= Attributes_Get(weapon, 96, 1.0);
 	heat_multi *= Attributes_Get(weapon, 97, 1.0);
 
@@ -191,6 +188,9 @@ public void Cosmic_Activate(int client, int weapon, float speed)
 	float dmg = 100.0;
 	dmg *= Attributes_Get(weapon, 1, 1.0);
 	dmg *= Attributes_Get(weapon, 2, 1.0);
+
+	dmg *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+
 	
 	Cosmic_DMG[client] = dmg;
 	
