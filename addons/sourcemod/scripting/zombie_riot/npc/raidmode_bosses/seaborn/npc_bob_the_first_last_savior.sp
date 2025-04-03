@@ -156,7 +156,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_BobSuperMeleeCharge);
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	
-	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
+	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob_intro.mp3");
+	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob_loop.mp3");
 }
 
 static void ClotPrecacheSea()
@@ -265,6 +266,11 @@ methodmap RaidbossBobTheFirst < CClotBody
 	property bool m_bFakeClone
 	{
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
+	}
+	property float m_flOverrideMusicNow
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 
 	public RaidbossBobTheFirst(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -416,13 +422,16 @@ methodmap RaidbossBobTheFirst < CClotBody
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
 			WavesUpdateDifficultyName();
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob.mp3");
-			music.Time = 697;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob_intro.mp3");
+			music.Time = 44;
 			music.Volume = 1.99;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Darkest Dungeon - The Final Combat (Added Narrator)");
-			strcopy(music.Artist, sizeof(music.Artist), "Music (Stuart Chatwood) Editor of Narrator (Liruox)");
-			Music_SetRaidMusic(music);
+			strcopy(music.Name, sizeof(music.Name), "Irln Last Stand against the Sea Intro");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			Music_SetRaidMusic(music, true);
+
+		
+			npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
 			npc.StopPathing();
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -467,6 +476,21 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 {
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(iNPC);
 	
+	if(npc.m_flOverrideMusicNow)
+	{
+		if(npc.m_flOverrideMusicNow < GetGameTime())
+		{
+			npc.m_flOverrideMusicNow = 0.0;
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob_loop.mp3");
+			music.Time = 181;
+			music.Volume = 1.85;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Irln Last Stand against the Sea");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			Music_SetRaidMusic(music, false);
+		}
+	}	
 	float gameTime = GetGameTime(npc.index);
 
 	if(npc.Anger || npc.m_bFakeClone || i_RaidGrantExtra[npc.index] > 1)

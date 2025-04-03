@@ -128,7 +128,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(float vecPos[3], float vecAng[3], int ally)
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", MinibossHealthScaling(200), ally, false, true, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", MinibossHealthScaling(90), ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 2;
 		
@@ -156,6 +156,7 @@ methodmap SawRunner < CClotBody
 		func_NPCOnTakeDamage[npc.index] = SawRunner_OnTakeDamage;
 		func_NPCThink[npc.index] = SawRunner_ClotThink;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
+		f_HeadshotDamageMultiNpc[npc.index] = 2.0;
 		
 		
 		npc.m_flSpeed = 200.0;

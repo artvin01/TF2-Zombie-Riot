@@ -20,9 +20,8 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 	if(LastHitTarget == victim)
 		return 0.0;
 	
-	if(LastHitTarget != victim && !(damagetype & DMG_TRUEDAMAGE) && !(damagetype & DMG_BLAST))
+	if(LastHitTarget != victim && !(damagetype & DMG_BLAST))
 	{
-		damagetype |= DMG_TRUEDAMAGE;
 		
 		if(SmartBounce)
 		{
@@ -105,7 +104,7 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 	
 	if(duration)
 	{
-		if((damagetype & DMG_TRUEDAMAGE) || (damagetype & DMG_BLAST))
+		if((damagetype & DMG_BLAST))
 			duration *= 2.0 / 3.0;
 		
 		if(f_ChargeTerroriserSniper[weapon] > 70.0)
@@ -123,7 +122,7 @@ float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float 
 
 	if(duration)
 	{
-		if((damagetype & DMG_TRUEDAMAGE) || (damagetype & DMG_BLAST))
+		if((damagetype & DMG_BLAST))
 			duration *= 2.0 / 3.0;
 		
 		if(f_ChargeTerroriserSniper[weapon] > 70.0)

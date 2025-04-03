@@ -201,7 +201,7 @@ void PrecacheBlitzMusic()
 		return;
 	
 	b_musicprecached = true;
-	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3");
 }
 
 static void ClotPrecache()
@@ -277,7 +277,7 @@ methodmap Blitzkrieg < CClotBody
 		public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(BOSS_ZOMBIE_SOUNDLEVEL, 100));
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(BOSS_ZOMBIE_SOUNDLEVEL, 100));
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -288,7 +288,7 @@ methodmap Blitzkrieg < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(BOSS_ZOMBIE_SOUNDLEVEL, 100));
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(BOSS_ZOMBIE_SOUNDLEVEL, 100));
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		
@@ -299,7 +299,7 @@ methodmap Blitzkrieg < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(BOSS_ZOMBIE_SOUNDLEVEL, 100));
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(BOSS_ZOMBIE_SOUNDLEVEL, 100));
 		
 		
 		
@@ -630,12 +630,12 @@ methodmap Blitzkrieg < CClotBody
 			else
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
-				music.Time = 228;
-				music.Volume = 2.0;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3");
+				music.Time = 209;
+				music.Volume = 1.6;
 				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "Death");
-				strcopy(music.Artist, sizeof(music.Artist), "Occams Laser");
+				strcopy(music.Name, sizeof(music.Name), "Great Machine from the big Three");
+				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 				Music_SetRaidMusic(music);
 			}
 		}
@@ -643,12 +643,12 @@ methodmap Blitzkrieg < CClotBody
 		{
 			
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
-			music.Time = 228;
-			music.Volume = 2.0;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3");
+			music.Time = 209;
+			music.Volume = 1.6;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Death");
-			strcopy(music.Artist, sizeof(music.Artist), "Occams Laser");
+			strcopy(music.Name, sizeof(music.Name), "Great Machine from the big Three");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 

@@ -17,6 +17,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_STAIR_ANTI_ABUSE_DAMAGE				(1 << 9)
 #define ZR_DAMAGE_NPC_REFLECT					(1 << 10)	//this npc reflects damage to another npc that can also reflect damage, use this to filter out the damage.
 #define ZR_DAMAGE_CANNOTGIB_REGARDLESS			(1 << 11)
+#define ZR_DAMAGE_ALLOW_SELFHURT				(1 << 12)
 
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.
@@ -119,6 +120,7 @@ Handle g_hSetLocalAngles;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
 
+float f_PlayerLastKeyDetected[MAXTF2PLAYERS];
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 float f_PreventMedigunCrashMaybe[MAXTF2PLAYERS];
@@ -429,6 +431,9 @@ float f_BannerAproxDur[MAXENTITIES];
 bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
 #endif
 
+// This is used for stuff like: Youre on fire, or mark for death icon above your head
+//this is needed as when you change classes via our system tf2 just deletes it, screw tf2.
+float f_UpdateModelIssues[MAXTF2PLAYERS];
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE

@@ -3324,8 +3324,8 @@ methodmap CClotBody < CBaseCombatCharacter
 
 public void NPC_Base_InitGamedata()
 {
-	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_SLAY);
-	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_SLAY);
+	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
+	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_ROOT);
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
@@ -4703,6 +4703,11 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	{
 		return false;
 	}
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	if(!TheNPCs.IsValidNPC(npc.GetBaseNPC())) //do not allow them to jump.
+	{
+		return false;
+	}
 	float vecNPC[3], vecJumpVel[3];
 	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
 	
@@ -4750,7 +4755,6 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
 	}
 	
-	CClotBody npc = view_as<CClotBody>(bot_entidx);
 	npc.Jump();
 	npc.SetVelocity(vecJumpVel);
 	
@@ -5047,8 +5051,8 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(b_ThisEntityIgnoredBeingCarried[enemy])
-				return false;
+		//	if(b_ThisEntityIgnoredBeingCarried[enemy])
+		//		return false;
 				
 			return true;
 		}
@@ -6190,7 +6194,7 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 		if(!b_DoNotUnStuck[iNPC] && f_CheckIfStuckPlayerDelay[iNPC] < GameTime)
 		{
 			f_CheckIfStuckPlayerDelay[iNPC] = GameTime + 0.5;
-			//This is a tempomary fix. find a better one for players getting stuck.
+			//This is a temporary fix. find a better one for players getting stuck.
 			static float hullcheckmaxs_Player[3];
 			static float hullcheckmins_Player[3];
 			if(b_IsGiant[iNPC])
@@ -6232,7 +6236,7 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 					//give them 2 seconds to unstuck themselves
 				}
 			}
-			//This is a tempomary fix. find a better one for players getting stuck.
+			//This is a temporary fix. find a better one for players getting stuck.
 		}
 	}
 #if defined ZR

@@ -134,7 +134,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 					SetGlobalTransTarget(client);
 					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_3");
-					CPrintToChat(client,"{crimson}[ZR]{white}%t","tutorial_3");
+					SPrintToChat(client,"%t","tutorial_3");
 					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					SetClientTutorialStep(client, 4);
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
@@ -144,7 +144,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				{
 					if(TeutonType[client] == TEUTON_NONE)
 					{
-						if(b_GrantFreeItemsOnce[client])
+						if(b_GrantFreeItemsOnce[client] && Level[client] < 5)
 						{
 							b_GrantFreeItemsOnce[client] = false;
 							Store_GiveSpecificItem(client, "Construction Novice");
@@ -187,7 +187,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 							}
 						}
 						if(!FoundOne)
-							CPrintToChat(client,"{crimson}[ZR]{white}%t","Tutorial Show Hint Perk Machine Build One");
+							SPrintToChat(client,"%t","Tutorial Show Hint Perk Machine Build One");
 						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
 					}
 				}
@@ -236,10 +236,27 @@ void DoTutorialStep(int client, bool obeycooldown)
 							}
 						}
 						if(!FoundOne)
-							CPrintToChat(client,"{crimson}[ZR]{white}%t","Tutorial Show Hint Pack a Punch Build One");
+							SPrintToChat(client,"%t","Tutorial Show Hint Pack a Punch Build One");
 
 						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
 					}
+				}
+				case 6:
+				{
+					
+					SetGlobalTransTarget(client);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_4");
+					f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
+					SetClientTutorialStep(client, 7);
+				}
+				case 7:
+				{
+					
+					SetGlobalTransTarget(client);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_5");
+					TutorialEndFully(client);
 				}
 			}
 		}

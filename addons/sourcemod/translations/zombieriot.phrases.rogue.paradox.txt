@@ -19,8 +19,8 @@
 	}
 	"Heavy Rain Desc"
 	{
-		"en"	"{yellow}All units move 20%% slower, Seaborn units instead move 10%% faster"
-		"ru"	"{yellow}Все юниты двигають медленее на 20%%,Морерождённые двигаются на 10%% быстрее"
+		"en"	"{yellow}All units move 20％ slower, Seaborn units instead move 10％ faster"
+		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
 	}
 	"Heavy Rain Lore"
 	{
@@ -34,7 +34,7 @@
 	}
 	"Extreme Heat Desc"
 	{
-		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x1.25 slower and Al-Hallem units move 20%% faster"
+		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x1.25 slower and Al-Hallem units move 20％ faster"
 	}
 	"Extreme Heat Lore"
 	{
@@ -46,7 +46,7 @@
 	}
 	"Heavy Wind Desc"
 	{
-		"en"	"{yellow}All projectiles move 33%% slower, Expidonsan projectiles instead move 25%% faster"
+		"en"	"{yellow}All projectiles move 33％ slower, Expidonsan projectiles instead move 25％ faster"
 	}
 	"Heavy Wind Lore"
 	{
@@ -83,7 +83,7 @@
 	}
 	"Shadowing Darkness Desc"
 	{
-		"en"	"{red}Everyone gains 25%% attackspeed."
+		"en"	"{red}Everyone gains 25％ attackspeed."
 	}
 	"Shadowing Darkness Lore"
 	{
@@ -96,7 +96,7 @@
 	}
 	"Compass and Map Desc"
 	{
-		"en"	"Go the right way, nothing more.\n{green}Enemies move 20%% slower, take 35%% more damage, and deal 35%% less damage\n{green}Gain 75%% less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
+		"en"	"Go the right way, nothing more.\n{green}Enemies move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{green}Gain 75％ less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
 	}
 	"Healing Supplies"
 	{
@@ -136,7 +136,7 @@
 	}
 	"Bob's Assistance Desc"
 	{
-		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1%% health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
+		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1％ health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
 	}
 	"Small Comic Book"
 	{
@@ -216,7 +216,7 @@
 	}
 	"Fissured Restraints Desc"
 	{
-		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies gain -7%% damage"
+		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies gain -7％ damage"
 	}
 	"Abyssal Wyrdmask"
 	{
@@ -224,7 +224,7 @@
 	}
 	"Abyssal Wyrdmask Desc"
 	{
-		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies gain -12%% damage"
+		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies gain -12％ damage"
 	}
 	"Godmother's Token"
 	{
@@ -232,7 +232,7 @@
 	}
 	"Godmother's Token Desc"
 	{
-		"en"	"A laurel of bones.\n{green}Enemies gain -17%% damage"
+		"en"	"A laurel of bones.\n{green}Enemies gain -17％ damage"
 	}
 	"The Whisperer in Darknight"
 	{
@@ -240,7 +240,7 @@
 	}
 	"The Whisperer in Darknight Desc"
 	{
-		"en"	"A black vinyl. DO. NOT. TOUCH. IT.\n{green}Enemies gain -10%% max health"
+		"en"	"A black vinyl. DO. NOT. TOUCH. IT.\n{green}Enemies gain -10％ max health"
 	}
 	"Gold-Plated Dice"
 	{
@@ -248,7 +248,7 @@
 	}
 	"Gold-Plated Dice Desc"
 	{
-		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -15%% max health"
+		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -15％ max health"
 	}
 	"The Profound Silence"
 	{
@@ -256,7 +256,7 @@
 	}
 	"The Profound Silence Desc"
 	{
-		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -20%% max health"
+		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -20％ max health"
 	}
 	"Emperor's Favor"
 	{
@@ -264,7 +264,7 @@
 	}
 	"Emperor's Favor Desc"
 	{
-		"en"	"A very sharp letter opener.\n{green}Player melee weapons gain +15%% damage"
+		"en"	"A very sharp letter opener.\n{green}Player melee weapons gain +15％ damage"
 	}
 	"Vieux Vanguard's Blade"
 	{
@@ -272,7 +272,7 @@
 	}
 	"Vieux Vanguard's Blade Desc"
 	{
-		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Player melee weapons gain +25%% damage"
+		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Player melee weapons gain +25％ damage"
 	}
 	"Necklace of the Presence"
 	{
@@ -280,7 +280,7 @@
 	}
 	"Necklace of the Presence Desc"
 	{
-		"en"	"Faith hangs ten centimeters above your heart.\n{green}Player ranged weapons gain +15%% damage"
+		"en"	"Faith hangs ten centimeters above your heart.\n{green}Player ranged weapons gain +15％ damage"
 	}
 	"Damaged Revolver Cylinder"
 	{
@@ -288,7 +288,7 @@
 	}
 	"Damaged Revolver Cylinder Desc"
 	{
-		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Player ranged weapons gain +25%% damage"
+		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Player ranged weapons gain +25％ damage"
 	}
 	"Royal Rapier"
 	{
@@ -296,7 +296,7 @@
 	}
 	"Royal Rapier Desc"
 	{
-		"en"	"A highly decorative rapier for nobles.\n{green}Player mage weapons gain +15%% damage"
+		"en"	"A highly decorative rapier for nobles.\n{green}Player mage weapons gain +15％ damage"
 	}
 	"Silver Forks"
 	{
@@ -304,7 +304,7 @@
 	}
 	"Silver Forks Desc"
 	{
-		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Player mage weapons gain +25%% damage"
+		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Player mage weapons gain +25％ damage"
 	}
 	"Noxious Hemostatic Agent"
 	{
@@ -312,7 +312,7 @@
 	}
 	"Noxious Hemostatic Agent Desc"
 	{
-		"en"	"Don't ask what's in it.\n{green}Allies gain +20%% max health"
+		"en"	"Don't ask what's in it.\n{green}Allies gain +20％ max health"
 	}
 	"First Aid Kit"
 	{
@@ -320,7 +320,7 @@
 	}
 	"First Aid Kit Desc"
 	{
-		"en"	"What's different from the held weapon? I don't know.\n{green}Allies gain +35%% max health"
+		"en"	"What's different from the held weapon? I don't know.\n{green}Allies gain +35％ max health"
 	}
 	"Unknown Instrument"
 	{
@@ -328,7 +328,7 @@
 	}
 	"Unknown Instrument Desc"
 	{
-		"en"	"Don't ask. It's for your own good.\n{green}Allies gain +50%% max health"
+		"en"	"Don't ask. It's for your own good.\n{green}Allies gain +50％ max health"
 	}
 	"Rusted Razor"
 	{
@@ -336,7 +336,7 @@
 	}
 	"Rusted Razor Desc"
 	{
-		"en"	"If you cut yourself with this, you know what will happen.\n{green}Enemies gain +15%% melee vulnerability"
+		"en"	"If you cut yourself with this, you know what will happen.\n{green}Enemies gain +15％ melee vulnerability"
 	}
 	"Carriage Driver's Whip"
 	{
@@ -344,7 +344,7 @@
 	}
 	"Carriage Driver's Whip Desc"
 	{
-		"en"	"As the troupe's carriage driver, he has no name and no past.\n{green}Enemies gain +25%% melee vulnerability"
+		"en"	"As the troupe's carriage driver, he has no name and no past.\n{green}Enemies gain +25％ melee vulnerability"
 	}
 	"Avenger"
 	{
@@ -352,7 +352,7 @@
 	}
 	"Avenger Desc"
 	{
-		"en"	"Looks like a pocket knife in a pouch.\n{green}Enemies gain +35%% melee vulnerability"
+		"en"	"Looks like a pocket knife in a pouch.\n{green}Enemies gain +35％ melee vulnerability"
 	}
 	"Standard Anti-Riot Instrument"
 	{
@@ -360,7 +360,7 @@
 	}
 	"Standard Anti-Riot Instrument Desc"
 	{
-		"en"	"For general zombie usage.\n{green}Enemies gain +15%% ranged vulnerability"
+		"en"	"For general zombie usage.\n{green}Enemies gain +15％ ranged vulnerability"
 	}
 	"Emperor's Collection"
 	{
@@ -368,7 +368,7 @@
 	}
 	"Emperor's Collection Desc"
 	{
-		"en"	"A rock collection, what for?\n{green}Enemies gain +25%% ranged vulnerability"
+		"en"	"A rock collection, what for?\n{green}Enemies gain +25％ ranged vulnerability"
 	}
 	"Brilliant Lament"
 	{
@@ -376,7 +376,7 @@
 	}
 	"Brilliant Lament Desc"
 	{
-		"en"	"His blood yet flows. He has never left this place.\n{green}Enemies gain +35%% ranged vulnerability"
+		"en"	"His blood yet flows. He has never left this place.\n{green}Enemies gain +35％ ranged vulnerability"
 	}
 	"Live Rose"
 	{
@@ -384,7 +384,7 @@
 	}
 	"Live Rose Desc"
 	{
-		"en"	"Is it you who nourish her, or is it her who protects you?\n{green}Players receive +20%% more health from healing"
+		"en"	"Is it you who nourish her, or is it her who protects you?\n{green}Players receive +20％ more health from healing"
 	}
 	"White Flower Crown"
 	{
@@ -392,7 +392,7 @@
 	}
 	"White Flower Crown Desc"
 	{
-		"en"	"A floral veil used in Vampire rituals.\n{green}Players receive +30%% more health from healing"
+		"en"	"A floral veil used in Vampire rituals.\n{green}Players receive +30％ more health from healing"
 	}
 	"Dancer's Bracelets"
 	{
@@ -400,7 +400,7 @@
 	}
 	"Dancer's Bracelets Desc"
 	{
-		"en"	"The audience breaks to an applause as the well-trained dancers waltz around the traps on stage.\n{green}Allies gain 10%% dodge chance"
+		"en"	"The audience breaks to an applause as the well-trained dancers waltz around the traps on stage.\n{green}Allies gain 10％ dodge chance"
 	}
 	"Peek into the Eternal Night"
 	{
@@ -412,11 +412,11 @@
 	}
 	"Mazeat Lost Technology Desc"
 	{
-		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 33%%"
+		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 33％"
 	}
 	"Peek into the Eternal Night Desc"
 	{
-		"en"	"The moment she turns around to head north.\n{green}Players gain +25%% damage, +25%% firing speed {red}but -10 HP a second"
+		"en"	"The moment she turns around to head north.\n{green}Players gain +25％ damage, +25％ firing speed {red}but -10 HP a second"
 	}
 	"Dead Tree's Echo"
 	{
@@ -424,7 +424,7 @@
 	}
 	"Dead Tree's Echo Desc"
 	{
-		"en"	"Drum to call their ancestors' souls.\n{green}Players gain +20 HP a second {red}but -25%% max health"
+		"en"	"Drum to call their ancestors' souls.\n{green}Players gain +20 HP a second {red}but -25％ max health"
 	}
 	"Frozen Whetstone"
 	{
@@ -432,7 +432,7 @@
 	}
 	"Frozen Whetstone Desc"
 	{
-		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus"
+		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +100％ max health and +100％ damage bonus"
 	}
 	"Clairvoyant's Reveal"
 	{
@@ -456,7 +456,7 @@
 	}
 	"Empty Fowlbeast Desc"
 	{
-		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30%% max health and +30%% damage, the owner gains +60%% damage for 10 seconds when summoned."
+		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
 	}
 	"Acahuallan Bowl"
 	{
@@ -504,7 +504,7 @@
 	}
 	"Steam Sale Desc"
 	{
-		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Shop encounter prices are 50%% off"
+		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Shop encounter prices are 50％ off"
 	}
 	"Steal Grigori"
 	{
@@ -536,7 +536,7 @@
 	}
 	"Evil Within from Ruina's Great Crystal Desc"
 	{
-		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies have 25%% more HP and 15%% more damage."
+		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies have 25％ more HP and 15％ more damage."
 	}
 	"Great Within from Ruina's Great Crystal"
 	{
@@ -544,7 +544,7 @@
 	}
 	"Great Within from Ruina's Great Crystal Desc"
 	{
-		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies have has 15%% Less HP and 10%% less damage."
+		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies have has 15％ Less HP and 10％ less damage."
 	}
 	"Ruinian Shop Help Out"
 	{
@@ -560,7 +560,7 @@
 	}
 	"Bob's Duck Desc"
 	{
-		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25%% damage bonus, +25%% max health, +15%% firing speed, +15%% reload speed, +10%% damage resistance, Whoever the duck follows gains insane buffs"
+		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ firing speed, +15％ reload speed, +10％ damage resistance, Whoever the duck follows gains insane buffs"
 	}
 	"Underground Scorch"
 	{
@@ -584,7 +584,7 @@
 	}
 	"Solidified Lamp Oil Desc"
 	{
-		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Reduce Chaos Infliction gained from stages by 40%%"
+		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Reduce Chaos Infliction gained from stages by 40％"
 	}
 	"Sanctified Lamp Oil"
 	{
@@ -592,7 +592,7 @@
 	}
 	"Sanctified Lamp Oil Desc"
 	{
-		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Reduce Chaos Infliction gained from stages by 60%%"
+		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Reduce Chaos Infliction gained from stages by 60％"
 	}
 	"Mercenary Insurance"
 	{
@@ -600,7 +600,7 @@
 	}
 	"Mercenary Insurance Desc"
 	{
-		"en"	"Special insurance offered to independent mercenaries.\nPlayers take 10%% less damage, increased to 35%% if Chaos Infliction is at least 60"
+		"en"	"Special insurance offered to independent mercenaries.\nPlayers take 10％ less damage, increased to 35％ if Chaos Infliction is at least 60"
 	}
 	"Energy Life Vest"
 	{
@@ -632,7 +632,7 @@
 	}
 	"Pack of Smokes Desc"
 	{
-		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20%% firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
+		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
 	}
 	"Silver Seal Letter"
 	{
@@ -712,7 +712,7 @@
 	}
 	"Black Tulip Desc"
 	{
-		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases over 120 seconds, up to +60%%, {red}resets after using a weapon ability"
+		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases over 120 seconds, up to +60％, {red}resets after using a weapon ability"
 	}
 	"Castle Offspring"
 	{
@@ -720,7 +720,7 @@
 	}
 	"Castle Offspring Desc"
 	{
-		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60%%, {red}resets when knocked down"
+		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60％, {red}resets when knocked down"
 	}
 
 	"Waldch Assistance"
@@ -745,7 +745,7 @@
 	}
 	"Twirl Guidance Desc"
 	{
-		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15%% max mana and mana regen"
+		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15％ max mana and mana regen"
 	}
 	"Unauthorized Ruina Gem"
 	{

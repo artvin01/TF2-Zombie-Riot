@@ -263,8 +263,8 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						if(spawn_index > MaxClients)
 						{
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);
-							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+						//	SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+						//	SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 						}
 					}
 				}

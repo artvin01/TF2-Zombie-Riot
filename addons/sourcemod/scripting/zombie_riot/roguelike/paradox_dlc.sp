@@ -54,7 +54,7 @@ void Rogue_ParadoxDLC_StunTime(int entity, float &time)
 
 void Rogue_ParadoxDLC_AbilityUsed(int client)
 {
-	if(TulipTimer)
+	if(TulipTimer != null)
 		RequestFrame(BlackTulipDecay, GetClientUserId(client));
 }
 

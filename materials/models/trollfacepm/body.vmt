@@ -1,0 +1,8 @@
+VertexLitGeneric
+{
+	$basetexture 	models\trollfacepm\body.vtf
+	$surfaceprop 	flesh
+	$phong			1
+
+	
+}

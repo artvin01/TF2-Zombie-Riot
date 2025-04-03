@@ -1557,7 +1557,7 @@ static void SummonerMenu(int client, int viewer)
 		if(ResearchIn[client])
 		{
 			float gameTime = GetGameTime();
-			FormatEx(buffer1, sizeof(buffer1), "Researching %t... (%.0f%%)", BuildingUpgrade_Names[GetRData(ResearchIndex[client], UpgradeIndex)],
+			FormatEx(buffer1, sizeof(buffer1), "Researching %t... (%.0f％)", BuildingUpgrade_Names[GetRData(ResearchIndex[client], UpgradeIndex)],
 				100.0 - ((ResearchIn[client] - gameTime) * 100.0 / (ResearchIn[client] - ResearchStartedIn[client])));
 			
 			menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -1780,7 +1780,7 @@ static void SummonerMenu(int client, int viewer)
 			{
 				float gameTime = GetGameTime();
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", buffer2,
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f％)\n ", buffer2,
 					100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
 			}
 

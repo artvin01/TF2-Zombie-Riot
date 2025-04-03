@@ -53,7 +53,7 @@ void Stats_EnableCharacter(int client)
 
 	Race race;
 	Races_GetClientInfo(client, race);
-	if(race.StartLevel > 0)
+	if(race.StartLevel > 0 && (Stats_GetStatCount(client) / BaseUpdateStats) <= 0)
 	{
 		int stats = Stats_GetStatCount(client) + ReskillPoints[client];
 		int minStats = race.StartLevel * BaseUpdateStats;
@@ -924,11 +924,11 @@ public Action Stats_ShowStats(int client, int args)
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			total = Stats_Agility(client, amount, bonus, multirace);
-			FormatEx(buffer, sizeof(buffer), "AGI: [%d x%.2f] + %d = [%d] (%.1f%% Speed)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
+			FormatEx(buffer, sizeof(buffer), "AGI: [%d x%.2f] + %d = [%d] (%.1f％ Speed)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
 			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 			total = Stats_Luck(client, amount, bonus, multirace);
-			FormatEx(buffer, sizeof(buffer), "LUC: [%d x%.2f] + %d = [%d] (%.1f%% Crits)", amount, multirace, bonus, total, (1 + total) * 0.1);
+			FormatEx(buffer, sizeof(buffer), "LUC: [%d x%.2f] + %d = [%d] (%.1f％ Crits)", amount, multirace, bonus, total, (1 + total) * 0.1);
 			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 			menu.AddItem(NULL_STRING, "Increase Input Multi", InputMulti[client] > 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);

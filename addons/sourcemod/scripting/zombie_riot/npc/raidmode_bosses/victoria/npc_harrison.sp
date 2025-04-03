@@ -1696,7 +1696,7 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 			AcceptEntityInput(prop2, "DisableCollision");
 			vAngles[0] += 90.0;
 			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
-			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(2.0, Timer_RemoveEntityFancy, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
 		/*

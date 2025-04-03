@@ -866,7 +866,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		default:
 		{
-			CPrintToChatAll("{yellow}TRUE FUSION WARRIOR! {gold}- {red}An infected menace!");
+			CPrintToChatAll("{yellow}INFECTED SILVESTER! {gold}- {red}An infected menace!");
 		}
 	}
 

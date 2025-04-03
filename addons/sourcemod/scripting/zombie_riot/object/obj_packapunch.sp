@@ -106,7 +106,6 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 		KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
 		SetClientTutorialStep(client, 6);
 		DoTutorialStep(client, false);	
-		TutorialEndFully(client);
 	}
 	f_CheckWeaponDelay[client] = 0.0;
 	if(!ClotCanUse(npc, client))
@@ -134,6 +133,6 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 	if(owner > MaxClients)
 		owner = client;
 
-	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
+	Store_PackMenu(client, StoreWeapon[weapon], -1, owner);
 	return true;
 }

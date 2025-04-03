@@ -189,7 +189,7 @@ bool DevSpawner_Interact(int client, int entity)
 {
 	if(i_NpcInternalId[entity] == DEV_SPAWNER)
 	{
-		if(CheckCommandAccess(client, "sm_spawn_npc", ADMFLAG_SLAY))
+		if(CheckCommandAccess(client, "sm_spawn_npc", ADMFLAG_ROOT))
 		{
 			OpenMenu(client, EntIndexToEntRef(entity));
 			return true;
@@ -237,16 +237,16 @@ static void OpenMenu(int client, int ref)
 		FormatEx(buffer, sizeof(buffer), "Health: %d", npc.m_iSpawnHealth);
 		menu.AddItem(data, buffer, MenuPos[client] == Mode_SpawnHealth ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		
-		FormatEx(buffer, sizeof(buffer), "Melee Vuln: %f%%", fl_Extra_MeleeArmor[npc.index] * 100.0);
+		FormatEx(buffer, sizeof(buffer), "Melee Vuln: %f％", fl_Extra_MeleeArmor[npc.index] * 100.0);
 		menu.AddItem(data, buffer, MenuPos[client] == Mode_MeleeRes ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		
-		FormatEx(buffer, sizeof(buffer), "Ranged Vuln: %f%%", fl_Extra_RangedArmor[npc.index] * 100.0);
+		FormatEx(buffer, sizeof(buffer), "Ranged Vuln: %f％", fl_Extra_RangedArmor[npc.index] * 100.0);
 		menu.AddItem(data, buffer, MenuPos[client] == Mode_RangeRes ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		
-		FormatEx(buffer, sizeof(buffer), "Speed Multi: %f%%", fl_Extra_Speed[npc.index] * 100.0);
+		FormatEx(buffer, sizeof(buffer), "Speed Multi: %f％", fl_Extra_Speed[npc.index] * 100.0);
 		menu.AddItem(data, buffer, MenuPos[client] == Mode_Speed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		
-		FormatEx(buffer, sizeof(buffer), "Damage Multi: %f%%", fl_Extra_Damage[npc.index] * 100.0);
+		FormatEx(buffer, sizeof(buffer), "Damage Multi: %f％", fl_Extra_Damage[npc.index] * 100.0);
 		menu.AddItem(data, buffer, MenuPos[client] == Mode_Damage ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.AddItem(data, npc.m_bWaveSpawn ? "Spawn via Waves: true" : "Spawn via Waves: false");

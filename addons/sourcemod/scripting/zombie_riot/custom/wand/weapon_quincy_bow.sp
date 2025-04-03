@@ -9,7 +9,7 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
 #define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 50.0	//what % of charge does the battery need to start firing
-#define QUINCY_BOW_MAX_HYPER_BARRAGE 10			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
+#define QUINCY_BOW_MAX_HYPER_BARRAGE 5			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
 #define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
 
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
@@ -792,7 +792,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 	
 	char HUDText[255] = "";
 	
-	Format(HUDText, sizeof(HUDText), "%sRaishi Concentration: [%.0f%%%%%%%%%]", HUDText, charge_percent);
+	Format(HUDText, sizeof(HUDText), "%sRaishi Concentration: [%.0f％]", HUDText, charge_percent);
 
 
 	if(pap>=2)
@@ -860,7 +860,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 		else
 		{
 			float Charge = 100.0*(fl_hyper_arrow_charge[client]/QUINCY_BOW_HYPER_CHARGE);
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow [%.0f%%%%%%%%%]", HUDText, Charge);
+			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow [%.0f％]", HUDText, Charge);
 		}
 	}
 	

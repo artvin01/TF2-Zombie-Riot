@@ -32,7 +32,7 @@ public const int AmmoData[][] =
 	{ 10, 10 },			//Stickybombs
 	{ 10, 100 },		//Minigun Barrel
 	{ 10, 10 },			//Custom Bolt
-	{ 10, 100 },		//Medical Syringes
+	{ 10, 75 },		//Medical Syringes
 	{ 10, 12 },			//Sniper Rifle Rounds
 	{ 10, 12 },			//Arrows
 	{ 10, 60 },			//SMG Magazines
@@ -597,6 +597,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/kit_soldine.sp"
 #include "zombie_riot/custom/weapon_kritzkrieg.sp"
 #include "zombie_riot/custom/wand/weapon_bubble_wand.sp"
+#include "zombie_riot/custom/kit_blacksmith_grill.sp"
 
 void ZR_PluginLoad()
 {
@@ -724,6 +725,7 @@ void ZR_MapStart()
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
+	Seaborn_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	WavesUpdateDifficultyName();
@@ -1019,6 +1021,7 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
+	
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);
@@ -1071,6 +1074,7 @@ void ZR_ClientDisconnect(int client)
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
 	//reeset to 0
+	Leper_ClientDisconnect(client);
 }
 
 public void OnMapInit_ZR()
@@ -1203,7 +1207,7 @@ public Action Command_RTdFail(int client, int args)
 {
 	if(client)
 	{
-		CPrintToChat(client, "{crimson}[ZR] Looks like the dice broke.");
+		SPrintToChat(client, "Looks like the dice broke.");
 		ClientCommand(client, "playgamesound vo/k_lab/kl_fiddlesticks.wav");
 	}
 	return Plugin_Handled;
@@ -1981,13 +1985,40 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}The Machine Within %N screams: FOR VICTORY",client);
 							Yakuza_Lastman(7);
 						}
+						if(IsFlaggilant(client) || IsClientLeper(client))
+						{
+							if(IsFlaggilant(client))
+								CPrintToChatAll("{crimson}The undying soul %N refuses to ever die.",client);
+							else if(IsClientLeper(client))
+								CPrintToChatAll("{crimson}The King %N cannot stand this any longer..!",client);
+								
+							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+							if(weapon != -1)
+							{
+								Saga_ChargeReduction(client, weapon, 999.9);
+							}
+							Yakuza_Lastman(8);
+						}
+						if(SeaMelee_IsSeaborn(client))
+						{
+							CPrintToChatAll("{crimson}The sea entirely corrupts %N.",client);
+							Yakuza_Lastman(9);
+						}
+						if(Merchant_IsAMerchant(client))
+						{
+							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
+							Yakuza_Lastman(10);
+						}
 						
 						for(int i=1; i<=MaxClients; i++)
 						{
 							if(IsClientInGame(i) && !IsFakeClient(i))
 							{
-								Music_Stop_All(i);
-								SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
+								if(!BlockLastmanMusicRaidboss(i))
+								{
+									Music_Stop_All(i);
+									SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
+								}
 								SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 							}
 						}
@@ -2868,4 +2899,39 @@ void ForcePlayerLoss()
 	AcceptEntityInput(entity, "RoundWin");
 	Music_RoundEnd(entity);
 	RaidBossActive = INVALID_ENT_REFERENCE;
+}
+
+
+
+stock void SPrintToChat(int client, const char[] message, any ...)
+{
+	SetGlobalTransTarget(client);
+	char buffer[192];
+	VFormat(buffer, sizeof(buffer), message, 3);
+	CPrintToChat(client, "%s%s", STORE_PREFIX, buffer);
+}
+stock void SPrintToChatAll(const char[] message, any ...)
+{
+	char buffer[192];
+	VFormat(buffer, sizeof(buffer), message, 2);
+	CPrintToChatAll("%s%s", STORE_PREFIX, buffer);
+}
+
+
+//IF you disable ingame downloads, it will download all these files nontherless!
+void ZR_FastDownloadForce()
+{
+	//do not download!!
+	if(CvarFileNetworkDisable.IntValue <= 0)
+		return;
+
+	PrecacheSharedDarkestMusic();
+	PrecacheTwirlMusic();
+	SeaBornMusicDo();
+	PurnellMusicOst();
+	PrecacheBlitzMusic();
+	SoldineKitDownload();
+	ZealotMusicDownload();
+	YakuzaMusicDownload();
+	FullmoonDownload();
 }

@@ -85,7 +85,7 @@ If bob is close enough, bob will instead throw a very fast orb, but this orb can
 
 8. Bladedance can do a combo attack where he punches a target 3 times, then shoots a orb at them, doesnt have to hit the same target either
 
-9. If bladedance recives too much damage in a short timeframe, a tempomary bob clone will appear near him which will support bladedance for a 10 seconds or so
+9. If bladedance recives too much damage in a short timeframe, a temporary bob clone will appear near him which will support bladedance for a 10 seconds or so
 */
 methodmap RaidbossBladedance_Duo < CClotBody
 {

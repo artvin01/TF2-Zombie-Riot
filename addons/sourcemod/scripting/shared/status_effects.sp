@@ -138,6 +138,7 @@ void InitStatusEffects()
 	StatusEffects_Pernell();
 	StatusEffects_Medieval();
 	StatusEffects_MERLT0N_BUFF();
+	StatusEffects_SevenHeavySouls();
 	StatusEffects_SupportWeapons();
 	StatusEffects_BobDuck();
 	StatusEffects_ElementalWand();
@@ -349,6 +350,8 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 }
 
 //Got lazy, tired of doing so many indexs.
+
+
 int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 {
 	//doesnt even have abuff...
@@ -942,6 +945,9 @@ void Force_ExplainBuffToClient(int client, const char[] name)
 }
 void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool AppliedOntoOthers = false)
 {
+	//Bad client
+	if(client <= 0)
+		return;
 	//Debuff has no icon, so we dont care.
 	if(!Apply_MasterStatusEffect.HudDisplay[0])
 		return;
@@ -2179,6 +2185,33 @@ void StatusEffects_Silence()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Infinite Will");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ł");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Death is comming.");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Die.");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	//Immunity To Bleed
 	strcopy(data.BuffName, sizeof(data.BuffName), "Thick Blood");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₰");
@@ -2407,6 +2440,32 @@ void StatusEffects_VoidLogic()
 	data.Slot						= 5; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Sea Presence");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ṣ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 12; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Sea Strength");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ṣ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.9;
+	data.DamageDealMulti			= 0.1;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 12; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Void Strength I");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "v");
@@ -2460,6 +2519,8 @@ float Void_Internal_2_DamageDealFunc(int attacker, int victim, StatusEffect Appl
 
 float Void_Internal_1_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
 	// Enfeeble fades out with time
 	if(NpcStats_IsEnemySilenced(victim))
 		return ((victim <= MaxClients) ? 0.95 : 0.9);
@@ -2469,6 +2530,9 @@ float Void_Internal_1_DamageTakenFunc(int attacker, int victim, StatusEffect App
 
 float Void_Internal_2_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
+
 	// Enfeeble fades out with time
 	if(NpcStats_IsEnemySilenced(victim))
 		return ((victim <= MaxClients) ? 0.9 : 0.85);
@@ -2679,6 +2743,41 @@ void StatusEffects_Medieval()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_DealFunc 		= Hussar_Warscream_DamageDealFunc;
 	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Flagellants Punishment");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₾");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.8;
+	data.DamageDealMulti			= 0.35;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.AttackspeedBuff			= 0.9;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "King's Dying Breath");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ʞ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.8;
+	data.DamageDealMulti			= 0.35;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.AttackspeedBuff			= 0.9;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 void StatusEffects_MERLT0N_BUFF()
 {
@@ -2709,6 +2808,26 @@ void StatusEffects_MERLT0N_BUFF()
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+void StatusEffects_SevenHeavySouls()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "7 Heavy Souls");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♥");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.5;
+	data.DamageDealMulti			= 0.5;
+	data.MovementspeedModif			= 1.5;
+	data.AttackspeedBuff			= 0.5;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -2997,7 +3116,8 @@ float AdaptiveMedigun_RangedFunc(int attacker, int victim, StatusEffect Apply_Ma
 {
 	if(!(damagetype & (DMG_CLUB))) // if not NOT melee
 	{
-		return 0.85;
+		if(!(damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+			return 0.85;
 	}
 	
 	return 1.0;
@@ -3298,6 +3418,8 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 
 float RuinasDefense_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
 	return Apply_StatusEffect.DataForUse;
 }
 
@@ -3345,6 +3467,19 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Waterless Training");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "G");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "King's Wrath");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ʞ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -3845,7 +3980,7 @@ void StatusEffects_PurnellKitBuffs()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.9;
 	data.DamageDealMulti			= 0.1;
-	data.MovementspeedModif			= 0.2;
+	data.MovementspeedModif			= 1.2;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3874,7 +4009,7 @@ void StatusEffects_PurnellKitBuffs()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.85;
 	data.DamageDealMulti			= 0.05;
-	data.MovementspeedModif			= 0.1;
+	data.MovementspeedModif			= 1.1;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3888,7 +4023,7 @@ void StatusEffects_PurnellKitBuffs()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.75;
 	data.DamageDealMulti			= 0.25;
-	data.MovementspeedModif			= 0.2;
+	data.MovementspeedModif			= 1.2;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored

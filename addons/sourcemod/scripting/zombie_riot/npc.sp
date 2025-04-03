@@ -84,6 +84,7 @@ void NPC_ConfigSetup()
 	ObjectVillage_MapStart();
 	ObjectTinkerBrew_MapStart();
 	ObjectRevenant_Setup();
+	ObjectTinkerGrill_MapStart();
 	// Buildings
 
 	// Constructs
@@ -773,6 +774,10 @@ void NPC_ConfigSetup()
 	Psycho_OnMapStart_NPC();
 	Suicider_OnMapStart_NPC();
 	Crazylady_OnMapStart_NPC();
+	Children_OnMapStart_NPC();
+	Taller_OnMapStart_NPC();
+	Baby_OnMapStart_NPC();
+	Stranger_OnMapStart_NPC();
 	CuredPurnell_OnMapStart_NPC();
 	CorruptedBarney_OnMapStart_NPC();
 	XenoMalfuncRobot_OnMapStart_NPC();
@@ -929,6 +934,29 @@ void NPC_ConfigSetup()
 	MaterialStone_MapStart();
 	MaterialWizuh_MapStart();
 	MaterialWood_MapStart();
+
+	//April Fools
+	PackaPunch_OnMapStart();
+	PerkMachiner_OnMapStart();
+	AmmoBox_OnMapStart();
+	Male07_OnMapStart();
+	SpiritRunner_OnMapStart_NPC();
+	ErrorMelee_OnMapStart_NPC();
+	ErrorRanged_OnMapStart_NPC();
+	ToddHoward_OnMapStart();
+	KevinMery_OnMapStart_NPC();
+	RedHeavy_OnMapStart_NPC();
+	BlueHeavy_OnMapStart_NPC();
+	CyanHeavy_OnMapStart_NPC();
+	GreenHeavy_OnMapStart_NPC();
+	OrangeHeavy_OnMapStart_NPC();
+	YellowHeavy_OnMapStart_NPC();
+	PurpleHeavy_OnMapStart_NPC();
+	Temperals_Buster_OnMapStart_NPC();
+	TrollAr2_OnMapStart_NPC();
+	TrollPistol_OnMapStart_NPC();
+	TrollRPG_OnMapStart_NPC();
+	TrollBrawler_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1233,6 +1261,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_barracks.sp"
 #include "zombie_riot/object/obj_brewing_stand.sp"
 #include "zombie_riot/object/obj_revenant.sp"
+#include "zombie_riot/object/obj_grill.sp"
 #include "zombie_riot/object/construction/obj_giant_lighthouse.sp"
 #include "zombie_riot/object/construction/obj_const_stove.sp"
 #include "zombie_riot/object/construction/obj_const_factory.sp"
@@ -1527,6 +1556,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/cof/npc_psycho.sp"
 #include "zombie_riot/npc/cof/npc_suicider.sp"
 #include "zombie_riot/npc/cof/npc_crazylady.sp"
+#include "zombie_riot/npc/cof/npc_children.sp"
+#include "zombie_riot/npc/cof/npc_taller.sp"
+#include "zombie_riot/npc/cof/npc_baby.sp"
+#include "zombie_riot/npc/cof/npc_stranger.sp"
 #include "zombie_riot/npc/ally/npc_cured_purnell.sp"
 #include "zombie_riot/npc/cof/npc_corruptedbarney.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_malfunctioning_robot.sp"
@@ -2053,3 +2086,26 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/construction/npc_material_stone.sp"
 #include "zombie_riot/npc/construction/npc_material_wizuh.sp"
 #include "zombie_riot/npc/construction/npc_material_wood.sp"
+
+// April Fools
+#include "zombie_riot/npc/aprilfools/npc_packapunch.sp"
+#include "zombie_riot/npc/aprilfools/npc_perkmachine.sp"
+#include "zombie_riot/npc/aprilfools/npc_ammobox.sp"
+#include "zombie_riot/npc/aprilfools/npc_male07.sp"
+#include "zombie_riot/npc/aprilfools/npc_spiritrunner.sp"
+#include "zombie_riot/npc/aprilfools/npc_error_melee.sp"
+#include "zombie_riot/npc/aprilfools/npc_error_ranged.sp"
+#include "zombie_riot/npc/aprilfools/npc_toddhoward.sp"
+#include "zombie_riot/npc/aprilfools/npc_kevinmery2009.sp"
+#include "zombie_riot/npc/aprilfools/npc_red_heavy.sp"
+#include "zombie_riot/npc/aprilfools/npc_blue_heavy.sp"
+#include "zombie_riot/npc/aprilfools/npc_cyan_heavy.sp"
+#include "zombie_riot/npc/aprilfools/npc_green_heavy.sp"
+#include "zombie_riot/npc/aprilfools/npc_orange_heavy.sp"
+#include "zombie_riot/npc/aprilfools/npc_yellow_heavy.sp"
+#include "zombie_riot/npc/aprilfools/npc_purple_heavy.sp"
+#include "zombie_riot/npc/aprilfools/npc_sentrybuster.sp"
+#include "zombie_riot/npc/aprilfools/npc_troll_ar2.sp"
+#include "zombie_riot/npc/aprilfools/npc_troll_pistol.sp"
+#include "zombie_riot/npc/aprilfools/npc_troll_rpg.sp"
+#include "zombie_riot/npc/aprilfools/npc_troll_melee.sp"

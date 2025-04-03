@@ -708,16 +708,16 @@ public Action Spawns_Command(int client, int args)
 				Format(buffer, sizeof(buffer), "%s\n ", buffer);
 				
 				if(spawn.Item1[0])
-					Format(buffer, sizeof(buffer), "%s%s - %.2f%%\n ", buffer, spawn.Item1, spawn.Chance1 * luck, spawn.Chance1 * luck);
+					Format(buffer, sizeof(buffer), "%s%s - %.2f％\n ", buffer, spawn.Item1, spawn.Chance1 * luck, spawn.Chance1 * luck);
 				
 				if(spawn.Item2[0])
-					Format(buffer, sizeof(buffer), "%s%s - %.2f%%\n ", buffer, spawn.Item2, spawn.Chance2 * luck, spawn.Chance2 * luck);
+					Format(buffer, sizeof(buffer), "%s%s - %.2f％\n ", buffer, spawn.Item2, spawn.Chance2 * luck, spawn.Chance2 * luck);
 				
 				if(spawn.Item3[0])
-					Format(buffer, sizeof(buffer), "%s%s - %.2f%%\n ", buffer, spawn.Item3, spawn.Chance3 * luck, spawn.Chance3 * luck);
+					Format(buffer, sizeof(buffer), "%s%s - %.2f％\n ", buffer, spawn.Item3, spawn.Chance3 * luck, spawn.Chance3 * luck);
 
 				if(spawn.Item4[0])
-					Format(buffer, sizeof(buffer), "%s%s - %.2f%%\n ", buffer, spawn.Item4, spawn.Chance4 * luck, spawn.Chance4 * luck);
+					Format(buffer, sizeof(buffer), "%s%s - %.2f％\n ", buffer, spawn.Item4, spawn.Chance4 * luck, spawn.Chance4 * luck);
 				
 				menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
 			}
