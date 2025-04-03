@@ -73,6 +73,10 @@
 		"#format"	"{1:d}"
 		"en"		"---Loadout Store---\nCredit Points: {1}"
 	}
+	"Preview Mode Pap"
+	{
+		"en"		"Preview Mode"
+	}
 	"Credits"
 	{
 		"#format"	"{1:d}"
@@ -3783,6 +3787,10 @@
 		"fr"	"Voir effets de forge"
 		"de" 	"oha ein deutscher!"
 		"chi"	"查看效果"
+	}
+	"View PAP Upgrades"
+	{
+		"en"	"View PAP Upgrades"
 	}
 	"Bring up Class Change Menu"
 	{

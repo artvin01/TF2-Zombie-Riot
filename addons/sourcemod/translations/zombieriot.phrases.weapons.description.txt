@@ -373,7 +373,7 @@
 	}
 	"Tommygun Desc"
 	{
-		"en"		"While equipped and in your hand, take 20% less ranged damage."
+		"en"		"While equipped and in your hand, take 20％ less ranged damage."
 		"fr"		"20％ de résistance contre les dégats par les sources distantes quand actif"
 	}
 	"Tommygun Pap 1"
@@ -1375,7 +1375,7 @@
 	}
 	"Morphine Desc"
 	{
-		"en"	"A morphine shot chargeable by dealing Melee damage.\nTurns you intangible for 3 seconds and regenerates 15% of your max health up to a cap of 50%.\nUseable twice a wave/Raid."
+		"en"	"A morphine shot chargeable by dealing Melee damage.\nTurns you intangible for 3 seconds and regenerates 15％ of your max health up to a cap of 50%.\nUseable twice a wave/Raid."
 	}
 	
 	"Experimental Burst Pack Desc"
@@ -1887,7 +1887,7 @@
 	{
 		"en"	"30％ more building damage, 75％ less building HP, can only have 1 support buidling/cant build more/claim more.\nAlso works with Barraks, gives units 15％ more damage."
 		"fr"	"2x dégats, -75％ durabilité pour vos constructions. +15％ dégats pour les unités de vos casernes.\nPeut seulement avoir 1 espace pour construction de support."
-		"ru"	"На 30％ больше урона у построек, на 75% меньше ОЗ у построек, можно иметь только 1 здание поддержки/можно строить больше/забрать больше.\nДаёт боевым единицам из казарм на 15% больше урона."
+		"ru"	"На 30％ больше урона у построек, на 75％ меньше ОЗ у построек, можно иметь только 1 здание поддержки/можно строить больше/забрать больше.\nДаёт боевым единицам из казарм на 15％ больше урона."
 		"chi"	"+30%建筑伤害，-75％建筑血量，辅助建筑上限限制为1\n兵营获得+15％伤害。"
 	}
 	
@@ -2178,7 +2178,7 @@
 	}
 	"Mlynar ExtraDesc"
 	{
-		"en"	"Reflect deals 2x dmg against raids, you take 15% more damage from raids."
+		"en"	"Reflect deals 2x dmg against raids, you take 15％ more damage from raids."
 	}
 	"Alchemist Potion Pap 5"
 	{
@@ -2730,7 +2730,7 @@
 	}
 	"quincy pap"
 	{
-		"en"	"More damage!\nAlso if your arrows gain the ability to home onto targets, if you can see one\nHoming power is dependant on how raishi % charge"
+		"en"	"More damage!\nAlso if your arrows gain the ability to home onto targets, if you can see one\nHoming power is dependant on how raishi ％ charge"
 		"fr"	"Dégats améliorés.\nVos flèches cherchent les ennemis que vous regardez. Leur manoeuvrabilité dépend de votre charge Raishi."
 		"chi"	"提高伤害！"
 	}
@@ -3183,7 +3183,7 @@
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n25% melee Resistance"
+		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n25％ melee Resistance"
 		"fr"	"+25％ résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
 		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+25%近战抗性。"
 	}
@@ -3201,7 +3201,7 @@
 	}
 	"Impact Lance Desc 5"
 	{
-		"en"	"Using M2 will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5% Melee resistance"
+		"en"	"Using M2 will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5％ Melee resistance"
 		"fr"	"+5％ résistance contre les dégats corps-à-corps\nAbilité lance votre lance, "
 		"chi"	"M2可以丢出长矛，消耗双倍蓝。\n丢出后两秒无法使用，除非你有某位神的祝福...\n+5%近战抗性"
 	}
@@ -3520,7 +3520,7 @@
 	}
 	"Expidonsan's Black hole Storage Unit Desc"
 	{
-		"en"	"70％ More ranged damage, 15％ faster attackspeed, 15％ faster reload and 25% more clipsize."
+		"en"	"70％ More ranged damage, 15％ faster attackspeed, 15％ faster reload and 25％ more clipsize."
 		"fr"	"+50％ dégats, +15％ cadence de tir et vitesse de rechargement, +25％ capacité chargeur"
 	}
 	"Wildingen's Elite Building Components Desc"
@@ -3535,7 +3535,7 @@
 	}
 	"Helena's Elite Medicine Desc"
 	{
-		"en"	"1.6x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 40% (cant go below 1)"
+		"en"	"1.6x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 40％ (cant go below 1)"
 	}
 	"Messenger Launcher Desc"
 	{
@@ -3588,29 +3588,29 @@
 	}
 	"Tinker Pap 1 Desc"
 	{
-		"en"	"+65％ Building Health, +202% Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
-		"fr"	"+65％ durabilité pour constructions, +202% dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
+		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
+		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
 		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-30s工作台"
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65％ Building Health, +75% Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
+		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70％ Building Health, +181.25% Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40％ Building Health, +181.25% Weapon Damage, +10 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160% Weapon Damage, +15 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70％ Building Health, +250% Weapon Damage, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"West Pap 1 Desc"
 	{
@@ -3692,7 +3692,7 @@
 	}
 	"Merchant Pap 1 Desc"
 	{
-		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20% HP, giving health and speed"
+		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20％ HP, giving health and speed"
 		"fr"	"Améliorations générales.\nAbilité karatéka donne des soins et un bonus vitesse quand vous êtes sous 20％ santé."
 		"chi"	"基础属性提升。\n解锁[武士]，生命值低于20%时撤退，增加移速以及血量。"
 	}
@@ -3722,7 +3722,7 @@
 	}
 	"Chainsaw Pap 0"
 	{
-		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 33% from eating gibs.\nGain overall resistance, increases with paps."
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 33％ from eating gibs.\nGain overall resistance, increases with paps."
 	}
 	"Chainsaw Pap 1"
 	{
@@ -3876,7 +3876,7 @@
 	}
 	"Swift Slicer 2 Desc"
 	{
-		"en"	"Even more damage, a ridiculous number of knives, and more blood than a slasher film.\nYou heal 85% less from most sources, but you heal much more from bleeds."
+		"en"	"Even more damage, a ridiculous number of knives, and more blood than a slasher film.\nYou heal 85％ less from most sources, but you heal much more from bleeds."
 		"chi"	"更更多伤害，超多飞刀，出血量甚比恐怖电影。\n大幅度增加吸血量，但是其他回血手段-85%效率。"
 	}
 	"Swift Slicer 3 Desc"
@@ -4027,11 +4027,11 @@
 	}
 	"Abyssal Greatsword desc"
 	{
-		"en"	"A worn sword covered with blue goo. Once used by a great abyssal hunter\nGain Faster attack speed and higher damage as a cost of aoe attack and Solemny. \n weapon's Archetype changed to Abyssal hunters and all abyssal hunter weapons will receive 10% damage bonus"
+		"en"	"A worn sword covered with blue goo. Once used by a great abyssal hunter\nGain Faster attack speed and higher damage as a cost of aoe attack and Solemny. \n weapon's Archetype changed to Abyssal hunters and all abyssal hunter weapons will receive 10％ damage bonus"
 	}
 	"Abyssal Greatsword Pap 1 desc"
 	{
-		"en"	"She always wished to keep her teams safe and strong. Now, her dream is fulfilled. \n Unlock new ability: When used, gain 10% damage buff every hit that adds up(Max x2.0 dmg) and gain slight resistance"
+		"en"	"She always wished to keep her teams safe and strong. Now, her dream is fulfilled. \n Unlock new ability: When used, gain 10％ damage buff every hit that adds up(Max x2.0 dmg) and gain slight resistance"
 	}
 	"Hunting Rifle desc"
 	{
