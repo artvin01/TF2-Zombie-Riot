@@ -39,7 +39,7 @@ public void Heavy_Particle_Rifle_Mapstart()
 }
 
 
-
+#define BASE_HEAVYRIFLE_CLIPSIZE_NEED (40.0 * 2.0)
 public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classname, bool &result)
 {
 	float speed = 1500.0;
@@ -72,7 +72,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 	}
 	else
 	{
-		int max_shots= RoundToFloor(40.0 * Attributes_Get(weapon, 4, 1.0)*0.75/HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
+		int max_shots= RoundToFloor(BASE_HEAVYRIFLE_CLIPSIZE_NEED * Attributes_Get(weapon, 4, 1.0)*0.75/HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
 
 		float ratio =  float(i_shotsfired[client])/float(max_shots);
 

@@ -217,7 +217,7 @@
 	}
 	"Syringe Gun Pap 2 Desc"
 	{
-		"en"		"Increased damage and attackspeed\nYour syringes land instantly where you shoot (hitscan) But cannot headshot"
+		"en"		"Increased damage and attackspeed\nYour syringes land instantly where you shoot (hitscan) But cannot headshot\nLess ammo usage."
 	}
 	
 	"Sniper Rifle Pap 1"
@@ -2898,7 +2898,7 @@
 	}
 	"Casino Desc"
 	{
-		"en"	"Killing and hitting enemies rewards you with dollars.\nPress M2 to spend 20 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\nDamage scales with wealth."
+		"en"	"hitting enemies rewards you with dollars.\nPress M2 to spend 20 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\nDamage scales with wealth.\nLess ammo usage."
 		"fr"	"Tuer et frapper les ennemis vous donne des dollars.\nAppuyez M2 pour échanger 20 dollars et rouler la machine à sous.\nLa machine à sous a une chance de vous donner un effet spécial.\nDégats changent avec votre opulence."
 		"chi"	"击中，击杀敌人获得$$$。\nM2花费20$开赌。有几率获得各种buff。\n伤害根据金钱增加。"
 	}
