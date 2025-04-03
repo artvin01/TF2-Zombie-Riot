@@ -193,6 +193,8 @@ public Action Purnell_Timer_Management(Handle timer, DataPack pack)
 		{
 			Purnell_Buff_Loc(client);
 		}
+		if(i_Pap_Level[client] >= 1)
+			ApplyStatusEffect(client, client, "Expert's Mind", 0.5);
 		return Plugin_Continue;
 	}
 		
@@ -587,7 +589,7 @@ static void Purnell_Buff_Loc(int client)
 //buff applies, my usual style - fish
 public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 {
-	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/suitchargeno1.wav");
 		SetDefaultHudPosition(client);

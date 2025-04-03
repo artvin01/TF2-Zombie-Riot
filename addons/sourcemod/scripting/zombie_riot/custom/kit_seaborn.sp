@@ -82,6 +82,7 @@ void SeaMelee_Enable(int client, int weapon)
 
 		delete EffectTimer[client];
 		EffectTimer[client] = CreateTimer(0.2, SeaMelee_TimerEffect, client, TIMER_REPEAT);
+		SeaBornMusicDo();
 	}
 }
 

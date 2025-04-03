@@ -492,6 +492,14 @@
 	{
 		"en"	"Reduces damage taken by 40％\nBoosts damage delt by 50％\nBoosts NPC'S Movementspeed by 25％"
 	}
+	"Expert's Mind"
+	{
+		"en"	"Expert's Mind"
+	}
+	"Expert's Mind Desc"
+	{
+		"en"	"Can only take 25％ of their max HP as damage in one hit.\n{crimson}Cannot reduce it to below 50 damage.\n{crimson}Doesn't work against true damage."
+	}
 	"Godly Motivation"
 	{
 		"en"	"Godly Motivation"
