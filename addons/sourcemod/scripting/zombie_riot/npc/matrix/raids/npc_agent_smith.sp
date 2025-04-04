@@ -805,7 +805,7 @@ static void Smith_Infection(AgentSmith npc)
 					fl_Infection_Meter[victim] += 0.102;
 				}
 			}
-			PrintCenterText(victim, "Your Infection is rising - %.0f%%% | Cure %.0f%%%", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
+			PrintCenterText(victim, "Your Infection is rising - %.0f％ | Cure %.0f％", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
 			for(int clients = 1 ; clients <= MaxClients ; clients++)
 			{
 				if(IsValidClient(clients) && TeutonType[victim] != TEUTON_WAITING)
@@ -819,7 +819,7 @@ static void Smith_Infection(AgentSmith npc)
 						{
 							fl_Cure_Meter[victim] += cure_amount;
 						}
-						PrintCenterText(clients, "%N Is being infected. Stay Near him to Remove the Infection!!\n %.0f%%% | Cure %.0f%%%", victim, (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
+						PrintCenterText(clients, "%N Is being infected. Stay Near him to Remove the Infection!!\n %.0f％ | Cure %.0f％", victim, (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
 					}
 				}
 			}

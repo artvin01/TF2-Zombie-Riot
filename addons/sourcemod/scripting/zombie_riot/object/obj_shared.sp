@@ -1088,6 +1088,9 @@ void BuildingUpdateTextHud(int building)
 	}
 	if(Repair <= 0)
 	{
+		if(Resistance_for_building_High[objstats.index] < GetGameTime())
+			Format(sColor, sizeof(sColor), " %d %d %d %d ", 255, 0, 0, 255);
+			
 		HealthColour[0] = 255;
 		HealthColour[1] = 0;
 		HealthColour[3] = 255;

@@ -40,20 +40,27 @@ void Flagellant_MapStart()
 	Precached = false;
 }
 
+void PrecacheSharedDarkestMusic()
+{
+	if(!Precached)
+	{
+		PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
+		if(CvarFileNetworkDisable.IntValue > 0)
+		{
+			AddFileToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vtf");
+			AddFileToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vmt");
+		}
+		Precached = true;
+	}
+}
 void Flagellant_Enable(int client, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_FLAGELLANT_MELEE:
 		{
-			if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
-			{
-				// MASS REPLACE THIS IN ALL FILES
-				PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
-				Precached = true;
-			}
 			MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
-
+			PrecacheSharedDarkestMusic();
 			delete EffectTimer[client];
 			EffectTimer[client] = CreateTimer(0.5, Flagellant_EffectTimer, client, TIMER_REPEAT);
 		}
@@ -237,6 +244,9 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 		{
 			if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 			{
+				if(LastMann)
+					return Plugin_Continue;
+
 				float pos[3];
 				StartPlayerOnlyLagComp(client, true);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
@@ -443,6 +453,10 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 	bool validAlly;
 
+	//in lastman, target self
+	if(LastMann)
+		target = client;
+		
 	if(target < 1)
 	{
 
@@ -655,6 +669,10 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 	EndPlayerOnlyLagComp(client);
+
+	//in lastman, target self
+	if(LastMann)
+		target = client;
 
 	bool validAlly;
 

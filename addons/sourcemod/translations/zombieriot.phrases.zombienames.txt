@@ -3024,7 +3024,7 @@
 	}
 	"Void Creep Desc"
 	{
-		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15％), regen, damage(20％) and speed(5％)."
 	}
 	"Void Elemental Damage"
 	{
@@ -3214,7 +3214,7 @@
 	}
 	"Beacon Constructor Desc"
 	{
-		"en"		"Places Beacons if close enough, has 50%% resistance and reduced speed while it carries one."
+		"en"		"Places Beacons if close enough, has 50％ resistance and reduced speed while it carries one."
 	}
 	"Iberia Lighthouse"
 	{
@@ -4058,5 +4058,73 @@
 	"Airboat"
 	{
 		"en"	"Airboat"
+	}
+	"Male 07"
+	{
+		"en"	"Male 07"
+	}
+	"Spiritrunner"
+	{
+		"en"	"Spiritrunner"
+	}
+	"Todd Howard"
+	{
+		"en"	"Todd Howard"
+	}
+	"Sea-Infected Todd Howard"
+	{
+		"en"	"Sea-Infected Todd Howard"
+	}
+	"kevinmery2009"
+	{
+		"en"	"kevinmery2009"
+	}
+	"Red Heavy"
+	{
+		"en"	"Red Heavy"
+	}
+	"Blue Heavy"
+	{
+		"en"	"Blue Heavy"
+	}
+	"Cyan Heavy"
+	{
+		"en"	"Cyan Heavy"
+	}
+	"Green Heavy"
+	{
+		"en"	"Green Heavy"
+	}
+	"Orange Heavy"
+	{
+		"en"	"Orange Heavy"
+	}
+	"Yellow Heavy"
+	{
+		"en"	"Yellow Heavy"
+	}
+	"Purple Heavy"
+	{
+		"en"	"Purple Heavy"
+	}
+	"Anti-Camp Temperal Buster"
+	{
+		"en"	"Anti-Camp Temperal Buster"
+	}
+	"Troll Rifler"
+	{
+		"en"	"Troll Rifler"
+	}
+	"Troll Cop"
+	{
+		"en"	"Troll Cop"
+	}
+	"Troll RPG Carrier"
+	{
+		"en"	"Troll RPG Carrier"
+	}
+	"Troll Brawler"
+	{
+		"en"	"Troll Brawler"
 	}
 }

@@ -110,6 +110,7 @@ ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 ConVar zr_interactforcereload;
+bool BlockOtherRaidMusic = false;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -3026,14 +3027,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	}
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
-		if(Attributes_GetOnPlayer(client, Attrib_SlowImmune, false))
-		{
-			TF2_RemoveCondition(client, TFCond_Slowed);
-		}
-		else
-		{
-			SDKCall_SetSpeed(client);
-		}
+		SDKCall_SetSpeed(client);
 	}
 }
 

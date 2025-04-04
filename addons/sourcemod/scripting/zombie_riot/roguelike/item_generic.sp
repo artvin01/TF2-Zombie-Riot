@@ -201,7 +201,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 		{
 			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
-				//15%% more melee dmg for all allies
+				//15％ more melee dmg for all allies
 				if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 				{
 					damage *= 1.15;
@@ -215,7 +215,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 		{
 			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
-				//15%% more Ranged dmg for all allies
+				//15％ more Ranged dmg for all allies
 				if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 				{
 

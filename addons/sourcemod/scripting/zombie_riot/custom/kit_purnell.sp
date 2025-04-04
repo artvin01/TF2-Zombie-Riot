@@ -127,13 +127,18 @@ void Purnell_Enable(int client, int weapon)
 			pack.WriteCell(client);
 			pack.WriteCell(GetClientUserId(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
-			{
-				PrecacheSoundCustom("#zombiesurvival/purnell_lastman.mp3", _, 1);
-				Precached = true;
-			} 
+			PurnellMusicOst();
 		}
 	}
+}
+
+void PurnellMusicOst()
+{
+	if(!Precached)
+	{
+		PrecacheSoundCustom("#zombiesurvival/purnell_lastman_1.mp3", _, 1);
+		Precached = true;
+	} 
 }
 
 void Add_OneClip_Purnell(int entity, int client)
@@ -188,6 +193,8 @@ public Action Purnell_Timer_Management(Handle timer, DataPack pack)
 		{
 			Purnell_Buff_Loc(client);
 		}
+		if(i_Pap_Level[client] >= 1)
+			ApplyStatusEffect(client, client, "Expert's Mind", 0.5);
 		return Plugin_Continue;
 	}
 		
@@ -582,7 +589,7 @@ static void Purnell_Buff_Loc(int client)
 //buff applies, my usual style - fish
 public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 {
-	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/suitchargeno1.wav");
 		SetDefaultHudPosition(client);
@@ -593,8 +600,20 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 
 	float cooldown = b_PurnellLastMann ? 5.0 : 15.0;
 	float DurationGive = 4.0;
+	int buff_apply2;
 	int buff_apply = GetRandomInt(0, 3);
 	Purnell_Configure_Buffs(i_Pap_Level[client], cooldown, DurationGive, buff_apply);
+	if(i_Pap_Level[client] >= 3)
+	{
+		buff_apply2 = GetRandomInt(0, 3);
+		Purnell_Configure_Buffs(i_Pap_Level[client], cooldown, DurationGive, buff_apply2);
+
+		while(buff_apply2 == buff_apply)
+		{
+			buff_apply2 = GetRandomInt(0, 3);
+			Purnell_Configure_Buffs(i_Pap_Level[client], cooldown, DurationGive, buff_apply2);
+		}
+	}
 	DurationGive *= 2.0;
 
 	b_LagCompNPC_No_Layers = true;
@@ -602,6 +621,10 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
 	EndPlayerOnlyLagComp(client);	
+
+	//If lastman, heal self.
+	if(LastMann)
+		target = client;
 
 	bool validAlly;
 
@@ -624,7 +647,21 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 
 	if(validAlly)
 	{
+		float MaxHealth = float(ReturnEntityMaxHealth(client));
+		if(MaxHealth >= 10000.0)
+			MaxHealth = 10000.0;
+		MaxHealth *= 0.1;
+		float MaxHealthally = float(ReturnEntityMaxHealth(target));
+		if(MaxHealthally >= 10000.0)
+			MaxHealthally = 10000.0;
+		MaxHealthally *= 0.1;
+		HealEntityGlobal(client, client, MaxHealth, 0.5, 1.0, HEAL_SELFHEAL);
+		if(!LastMann)
+			HealEntityGlobal(client, target, MaxHealthally, 0.5, 1.0);
+
 		Purnell_AllyBuffApply(client, target, buff_apply, DurationGive);
+		if(i_Pap_Level[client] >= 3)
+			Purnell_AllyBuffApply(client, target, buff_apply2, DurationGive);
 
 		int BeamIndex = ConnectWithBeam(client, target, 255, 255, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 		SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
@@ -713,18 +750,8 @@ static void Purnell_AllyBuffApply(int client, int target, int overdose, float Du
 				{
 					Format(text, sizeof(text), "You buffed %N with Hectic Therapy!", target);
 				}
-
-				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-				if(entity != -1)
-				{
-					ApplyStatusEffect(client, entity, "Hectic Therapy", DurationGive);
-				}
-				
-				entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(entity != -1)
-				{
-					ApplyStatusEffect(client, entity, "Hectic Therapy", DurationGive);
-				}
+				ApplyStatusEffect(client, target, "Hectic Therapy", DurationGive);
+				ApplyStatusEffect(client, client, "Hectic Therapy", DurationGive);
 			}
 			else
 			{

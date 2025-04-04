@@ -314,7 +314,7 @@
 	}
 	"X10 Spy Main Desc"
 	{
-		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half health those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
+		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half health those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65％ of the damage.\nDeadringer gives 90％ resistance (resistsance can be silenced)."
 		"ru"		"Спаймейны из альтернативной временной линии.\nУ него есть звон смерти но может атаковать через него.\nСтреляет в вас и когда потеряет половину здоровья пули превращаются в ракеты.\nКаждый 3ий удар наносит дополнительный урон и оталкивает.\nКогда теряет половину здоровья он будет получать только 65% от урона.\nЗвон смерти даёт 90% сопротивлению урону (сопротивление к урону может быть заглушено)."
 	}
 		
@@ -543,7 +543,7 @@
 	}
 	"Cured Father Grigori Desc"
 	{
-		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20%% off."
+		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20％ off."
 		"ru"		"Вы смогли вылечить Григория от вируса.Он будет помогать вам в бою.\nВо время подготовки он будет продовать случайные вещи со скидкой в 20%"
 	}
 	"Cured Purnell Desc"
@@ -703,8 +703,8 @@
 	}
 	"Samurai Desc"
 	{
-		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25%% extra damage to any non, melee player, and get angered if attacked by anything non melee."
-		"ru"		"Комбайн который перенял древний способ ведения боя, очень смертоносный.\nНаносит 25%% больше урона всем кроме врагам ближнего боя,и разозлится если атакован чем нибудь что не является ближним боем."
+		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25％ extra damage to any non, melee player, and get angered if attacked by anything non melee."
+		"ru"		"Комбайн который перенял древний способ ведения боя, очень смертоносный.\nНаносит 25％ больше урона всем кроме врагам ближнего боя,и разозлится если атакован чем нибудь что не является ближним боем."
 	}
 	"The Addiction Desc"
 	{
@@ -804,8 +804,8 @@
 	}
 	"Capped Ram Desc"
 	{
-		"en"		"takes 0.01%% dmg from ranged attacks and does high damage to barricades."
-		"ru"		"Получает 0.01%% урона от далних атак и наносит огормный урон барикадам."
+		"en"		"takes 0.01％ dmg from ranged attacks and does high damage to barricades."
+		"ru"		"Получает 0.01％ урона от далних атак и наносит огормный урон барикадам."
 	}
 	"The Shit Slapper Desc"
 	{
@@ -951,8 +951,8 @@
 	}
 	"Hussar Desc"
 	{
-		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10%% more dmg and resistance (can be silenced)."
-		"ru"		"вдохновляет союзников вокург себя,и защищает их,убить как можно быстрее,\nВдохновление даёт 10%% больше урона и сопротевление урону(можно заглушить)"
+		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10％ more dmg and resistance (can be silenced)."
+		"ru"		"вдохновляет союзников вокург себя,и защищает их,убить как можно быстрее,\nВдохновление даёт 10％ больше урона и сопротевление урону(можно заглушить)"
 	}
 	"Knight Desc"
 	{
@@ -1221,8 +1221,8 @@
 	}
 	"Regressed Predator Desc"
 	{
-		"en"		"Drops remains, when consumed, provides a 50%% dodge chance.\n''A special individual among the Predators.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
-		"ru"		"Выпавшие остатки при употреблении дают 50%%-ный шанс уклониться.\n ''Особенный экземпляр среди хищников.''\n ''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
+		"en"		"Drops remains, when consumed, provides a 50％ dodge chance.\n''A special individual among the Predators.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"ru"		"Выпавшие остатки при употреблении дают 50％-ный шанс уклониться.\n ''Особенный экземпляр среди хищников.''\n ''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
 	}
 	"Nethersea Brandguider Desc"
 	{
@@ -1236,8 +1236,8 @@
 	}
 	"Regressed Brandguider Desc"
 	{
-		"en"		"Drops remains, when consumed and below 40%% health, provides melee resistance and ignore buildings.\n''A special individual among the Brandguiders.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
-		"ru"		"Остатки Капель, когда они употреблены и уровень здоровья составляет менее 40%%, обеспечивают сопротивление в ближнем бою и игнорируют здания.\n ''Особенный персонаж среди Брендгайдеров.''\n ''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
+		"en"		"Drops remains, when consumed and below 40％ health, provides melee resistance and ignore buildings.\n''A special individual among the Brandguiders.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+		"ru"		"Остатки Капель, когда они употреблены и уровень здоровья составляет менее 40％, обеспечивают сопротивление в ближнем бою и игнорируют здания.\n ''Особенный персонаж среди Брендгайдеров.''\n ''Вняв призыву многих из нас, его тело готово к тому, чтобы на него охотились.''"
 	}
 	"Armorless Union Assassin Desc"
 	{
@@ -1656,8 +1656,8 @@
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
-		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health, takes 50%% more dmg from the back, once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 2x as much damage to the armor."
-		"ru"	"Под лидер Разведочной группы.\nИмеет высокий уровень здоровья и большой урон,получает 50%% урона со спины,когда теряет половину здоровья получает огромный бонус к скорости и броне,сломайте броню что бы убрать эффекты.\nБлижний бой наноси двойной урон броне."
+		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health, takes 50％ more dmg from the back, once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 2x as much damage to the armor."
+		"ru"	"Под лидер Разведочной группы.\nИмеет высокий уровень здоровья и большой урон,получает 50％ урона со спины,когда теряет половину здоровья получает огромный бонус к скорости и броне,сломайте броню что бы убрать эффекты.\nБлижний бой наноси двойной урон броне."
 	}
 	"Speedus Adivus Desc"
 	{
@@ -1701,8 +1701,8 @@
 	}
 	"Ruriana Desc"
 	{
-		"en"		"A more powerful Lanius, additionally lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
-		"ru"		"Очень мощный Ланиус,Не имеет способности к телепорту,Так же не имеет способность к ускорению\nНо урон полученный за последние 5 секунд будут переведены в Исцеление по области с ротацией 2 урона к 1 исцилению\nПотолок исцеления является 10%% от здоровья"
+		"en"		"A more powerful Lanius, additionally lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10％ of the npc's health"
+		"ru"		"Очень мощный Ланиус,Не имеет способности к телепорту,Так же не имеет способность к ускорению\nНо урон полученный за последние 5 секунд будут переведены в Исцеление по области с ротацией 2 урона к 1 исцилению\nПотолок исцеления является 10％ от здоровья"
 	}
 	"Valiant Desc"
 	{
@@ -1851,13 +1851,13 @@
 	}
 	"Khazaan Desc" 
 	{
-		"en"	"Each 3rd melee attack that hits will give him 50%% more resistance upto 75%% at max."
-		"ru"	"Каждый третий удар который попадет даст ему 50%% сопротевления до 75%% максимального сопротивления."
+		"en"	"Each 3rd melee attack that hits will give him 50％ more resistance upto 75％ at max."
+		"ru"	"Каждый третий удар который попадет даст ему 50％ сопротевления до 75％ максимального сопротивления."
 	}
 	"Sakratan Desc" 
 	{
-		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to recieve 25%% more damage for 10 seconds."
-		"ru"	"Наносит Хаос коррозию,Который взрывает вас,нанося 250 Чистого урона вам и всем союзинкам вокруг вас.\nЭто также ослабляет всех задетых союзников что они получают 25%% больше урона на 10 секунд."
+		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to recieve 25％ more damage for 10 seconds."
+		"ru"	"Наносит Хаос коррозию,Который взрывает вас,нанося 250 Чистого урона вам и всем союзинкам вокруг вас.\nЭто также ослабляет всех задетых союзников что они получают 25％ больше урона на 10 секунд."
 	}
 	"Yadeam Desc" 
 	{
@@ -1926,8 +1926,8 @@
 	}
 	"Irritated Person Desc" 
 	{
-		"en"	"Each 3rd attack gives a small resistance buff upto 75%%.\nThe more he is hurt, the more damage he takes but he gets faster and deals more damage too.\nJumps at you but if enough health is lost, he will instead do a ground pound which damages all enemeis."
-		"ru"	"Каждая 3-ая атака даёт маленькое сопротивление до 75%%\nЧем меньше у него здоровья,тем больше урона он получает но он становится быстрее и наносит больше урона.\nПрыгает на тебя но если постерял слишком много здоровья,вместо этого ударит о землю который наносит урон всем противникам."
+		"en"	"Each 3rd attack gives a small resistance buff upto 75％.\nThe more he is hurt, the more damage he takes but he gets faster and deals more damage too.\nJumps at you but if enough health is lost, he will instead do a ground pound which damages all enemeis."
+		"ru"	"Каждая 3-ая атака даёт маленькое сопротивление до 75％\nЧем меньше у него здоровья,тем больше урона он получает но он становится быстрее и наносит больше урона.\nПрыгает на тебя но если постерял слишком много здоровья,вместо этого ударит о землю который наносит урон всем противникам."
 	}
 	"Ransacker Desc" 
 	{
@@ -1941,8 +1941,8 @@
 	}
 	"Hitman Desc" 
 	{
-		"en"	"Deals immensive damage to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50%% less ranged damage."
-		"ru"	"Наносит огромный урон всему чему можно.\nОчень быстрые и уклоняются от каждой 2-ой атаки.\nМалое кол-во здоровья получает 2.5 раза больше урона в ближнем бою но 50%% меньше от дальних атак"
+		"en"	"Deals immensive damage to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50％ less ranged damage."
+		"ru"	"Наносит огромный урон всему чему можно.\nОчень быстрые и уклоняются от каждой 2-ой атаки.\nМалое кол-во здоровья получает 2.5 раза больше урона в ближнем бою но 50％ меньше от дальних атак"
 	}
 	"Mad Doctor Desc"
 	{
@@ -2036,8 +2036,8 @@
 	}
 	"Stella Desc"
 	{
-		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10%% slower and lowers the ''corrosion'' index by 1)"
-		"ru"		"Настоящие имя ''Доннеркрига''\nЕё заклинания намного сильнее и ''чище'' по сравнению с её поробащённой формой\nВместе с этим она владеет наиболее современную Руиновскую моду и защитное снаряжение\nТолько смотри, чтобы она не теребила тебя за уши...\n(Заглушение:Делает скорость и скорость поворота 10%% медленее и снижает индекс ''корозии'' на 1)"
+		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10％ slower and lowers the ''corrosion'' index by 1)"
+		"ru"		"Настоящие имя ''Доннеркрига''\nЕё заклинания намного сильнее и ''чище'' по сравнению с её поробащённой формой\nВместе с этим она владеет наиболее современную Руиновскую моду и защитное снаряжение\nТолько смотри, чтобы она не теребила тебя за уши...\n(Заглушение:Делает скорость и скорость поворота 10％ медленее и снижает индекс ''корозии'' на 1)"
 	}
 	"Karlas Desc"
 	{
@@ -2100,7 +2100,7 @@
 	"Ruliana Desc"
 	{
 		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 50% hp, she will start to suck up nearby ally hp to heal herself"
-		"ru"	"Когда Сила достигнет 100% и когда перед ней больше 4 целей в видимости,Она стрельнет несколькими балистическими снарядами\nЭти снаряди наносят как будто вас сбил грузовик\nКогда здоровье ниже 50%% она начнёт высасывать здоровье у ближайших союзников"
+		"ru"	"Когда Сила достигнет 100% и когда перед ней больше 4 целей в видимости,Она стрельнет несколькими балистическими снарядами\nЭти снаряди наносят как будто вас сбил грузовик\nКогда здоровье ниже 50％ она начнёт высасывать здоровье у ближайших союзников"
 	}
 	"Mana Overload"
 	{
@@ -2129,8 +2129,8 @@
 	}
 	"Chaos Intrusion Desc"
 	{
-		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25%% more enemies, spawn 15%% faster, and 10%% more zombies are alive at once.\nEnemeis deal 12%% more damage, have 30%% more HP and are 3%% faster."
-		"ru"	"Вы пришли слишком поздно,Хаос получил полный эффект...\nВолны спавнят 25%% больше врагов,Спанят на 15%% быстрее,10%% больше зомби в живых единовременнл.\nВраги наносят на 12%% больше урона,и имеют 30%% больше здоровья и на 3%% быстрее"
+		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 15％ faster, and 10％ more zombies are alive at once.\nEnemeis deal 12％ more damage, have 30％ more HP and are 3％ faster."
+		"ru"	"Вы пришли слишком поздно,Хаос получил полный эффект...\nВолны спавнят 25％ больше врагов,Спанят на 15％ быстрее,10％ больше зомби в живых единовременнл.\nВраги наносят на 12％ больше урона,и имеют 30％ больше здоровья и на 3％ быстрее"
 	}
 	"Standard"
 	{
@@ -2149,7 +2149,7 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +25%% dmg, +25%% dmg to cades, +60%% HP, +6%% faster, attack 25%% faster.\n1 down, enemies heal 50%% more."
+		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 25％ faster.\n1 down, enemies heal 50％ more."
 	}
 	"Secondary Mercs"
 	{
@@ -2158,8 +2158,8 @@
 	}
 	"Secondary Mercs Desc"
 	{
-		"en"	"First batch of mercs failed already.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\nEnemies heal 50%% more."
-		"ru"	"Первые наёмники уже потерпели крах.\n35%% больше врагов,25%% быстрее спавн,15%% больше живих врагов одновременно\nОни наносят 15%% больше урона и 25%% больше барикадам,имеют 50%% больше хп и на 4%% быстрее\nВраги получают 50%% больше исцеления."
+		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
+		"ru"	"Первые наёмники уже потерпели крах.\n35％ больше врагов,25％ быстрее спавн,15％ больше живих врагов одновременно\nОни наносят 15％ больше урона и 25％ больше барикадам,имеют 50％ больше хп и на 4％ быстрее\nВраги получают 50％ больше исцеления."
 	}
 	"BUSTING"
 	{
@@ -2257,7 +2257,7 @@
 	}
 	"Barracks Iberia Headhunter Desc"
 	{
-		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50%% hp"
+		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50％ hp"
 		"ru"		"Юнит Ближнего боя который наносит больше урона элитным врагам,боссам,и рейдобоссам и ослабляет их"
 	}	
 	"Barracks Iberia Inquisitor Lynsen Desc"

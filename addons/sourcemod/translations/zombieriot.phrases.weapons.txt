@@ -2732,6 +2732,10 @@
 		"en"	"Merchant Brewing Stand"
 		"ru"	"Подставка для заваривания Торговца"
 	}
+	"Merchant Grill"
+	{
+		"en"	"Merchant Grill"
+	}
 	"Tinker Research"
 	{
 		"en"	"Tinker Research"

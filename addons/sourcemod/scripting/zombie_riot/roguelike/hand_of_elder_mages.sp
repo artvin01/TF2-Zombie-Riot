@@ -13,7 +13,7 @@ void OnTakeDamage_HandOfElderMages(int client, int holding_weapon)
 		if(i_WeaponArchetype[holding_weapon] == 19 || i_WeaponArchetype[holding_weapon] == 20 || i_WeaponArchetype[holding_weapon] == 18) //todo: do this only with multi caster and chaincaster items
 		{
 			f_HandOfElderMagesAntiSpam[holding_weapon] = GetGameTime();
-			Saga_ChargeReduction(client, holding_weapon, 1.0);
+			Saga_ChargeReduction(client, holding_weapon, 2.0);
 		}	
 	}
 }

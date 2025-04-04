@@ -3324,8 +3324,8 @@ methodmap CClotBody < CBaseCombatCharacter
 
 public void NPC_Base_InitGamedata()
 {
-	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_SLAY);
-	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_SLAY);
+	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
+	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_ROOT);
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	

@@ -149,6 +149,9 @@ void Configs_ConfigsExecuted()
 		if(IsClientInGame(client))
 			OnClientPutInServer(client);
 	}
+#if defined ZR
+	ZR_FastDownloadForce();
+#endif
 }
 
 static void ExecuteMapOverrides(KeyValues kv)
@@ -297,15 +300,15 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 #if defined RPG
 			if(magic)
 			{
-				Format(buffer, length, "%s\nDamage: Magic %.0f%%", buffer, data.Damage * 100.0);
+				Format(buffer, length, "%s\nDamage: Magic %.0f％", buffer, data.Damage * 100.0);
 			}
 			else if(data.Range)
 			{
-				Format(buffer, length, "%s\nDamage: Melee %.0f%%", buffer, data.Damage * 100.0);
+				Format(buffer, length, "%s\nDamage: Melee %.0f％", buffer, data.Damage * 100.0);
 			}
 			else
 			{
-				Format(buffer, length, "%s\nDamage: Ranged %.0f%%", buffer, data.Damage * 100.0);
+				Format(buffer, length, "%s\nDamage: Ranged %.0f％", buffer, data.Damage * 100.0);
 			}
 #else
 			if(data.Damage < 100.0)

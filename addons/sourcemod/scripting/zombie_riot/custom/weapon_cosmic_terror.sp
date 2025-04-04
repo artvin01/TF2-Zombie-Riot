@@ -167,9 +167,6 @@ public void Cosmic_Activate(int client, int weapon, float speed)
 {
 	float heat_multi = 1.0; 
 
-	speed /= Attributes_Get(weapon, 6, 1.0);
-	speed /= Attributes_Get(weapon, 5, 1.0);
-
 	heat_multi *= Attributes_Get(weapon, 96, 1.0);
 	heat_multi *= Attributes_Get(weapon, 97, 1.0);
 
@@ -191,6 +188,9 @@ public void Cosmic_Activate(int client, int weapon, float speed)
 	float dmg = 100.0;
 	dmg *= Attributes_Get(weapon, 1, 1.0);
 	dmg *= Attributes_Get(weapon, 2, 1.0);
+
+	dmg *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+
 	
 	Cosmic_DMG[client] = dmg;
 	
@@ -395,11 +395,11 @@ static Action Cosmic_Heat_Tick(int client)
 		int Heat = RoundToFloor((fl_Cosmic_Heat[client]*100.0/Cosmic_Heat_Max[client]));
 		if(b_cosmic_overheat[client])
 		{
-			PrintHintText(client,"Overheat: [%i%%%%%%%]", Heat);
+			PrintHintText(client,"Overheat: [%i％]", Heat);
 		}
 		else
 		{
-			PrintHintText(client,"Cooling: [%i%%%%%%%]", Heat);
+			PrintHintText(client,"Cooling: [%i％]", Heat);
 		}
 		
 		int pitch = 25+Heat;
@@ -787,11 +787,11 @@ static void Cosmic_Terror_FullCharge(int client, float speed, float gametime)
 	{
 		if(fl_cosmic_heating_timer[client] > gametime || LastMann)
 		{
-			PrintHintText(client,"Cosmic Heat: [%i%%%%%%%]", Heat);
+			PrintHintText(client,"Cosmic Heat: [%i％]", Heat);
 		}
 		else
 		{
-			PrintHintText(client,"Cosmic Heat: [%i%%%%%%%]\nLens Overheating, move the beam.", Heat);
+			PrintHintText(client,"Cosmic Heat: [%i％]\nLens Overheating, move the beam.", Heat);
 		}
 		
 		
@@ -1316,7 +1316,7 @@ static void Railcannon_Logic(int client, int weapon)
 		char HUDText[255] = "";
 		if(!b_Railgun_Charging[client])
 		{
-			Format(HUDText, sizeof(HUDText), "Railgun Offline | Heat: Ę%.0f%%%%%%%%%Ė", Heat);
+			Format(HUDText, sizeof(HUDText), "Railgun Offline | Heat: Ę%.0f％%Ė", Heat);
 		}
 		else
 		{
@@ -1327,7 +1327,7 @@ static void Railcannon_Logic(int client, int weapon)
 			if(Ratio>100.0)
 				Ratio = 100.0;
 
-			Format(HUDText, sizeof(HUDText), "Railgun Accuracy [%.0f%%%%%%%%%] | Heat: Ę%.0f%%%%%%%%%Ė", Ratio, Heat);
+			Format(HUDText, sizeof(HUDText), "Railgun Accuracy [%.0f％] | Heat: Ę%.0f％Ė", Ratio, Heat);
 			
 		}
 
@@ -1336,7 +1336,7 @@ static void Railcannon_Logic(int client, int weapon)
 			float Ratio = 100.0 - 100.0*((fl_Railcannon_recharge[client] - GameTime)/10.0); 
 			if(Ratio>100.0)
 				Ratio=100.0;
-			Format(HUDText, sizeof(HUDText), "%s\nRailCannon | Power: Ą%.0f%%%%%%%%%%Č", HUDText, Ratio);
+			Format(HUDText, sizeof(HUDText), "%s\nRailCannon | Power: Ą%.0f％Č", HUDText, Ratio);
 			Show_Railcannon_Ammo(client, HUDText);
 
 			if(fl_Ammo_Gain_Timer[client] < GameTime)

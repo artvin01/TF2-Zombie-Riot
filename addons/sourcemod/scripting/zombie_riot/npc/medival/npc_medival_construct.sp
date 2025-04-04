@@ -318,6 +318,16 @@ public void MedivalConstruct_ClotThink(int iNPC)
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
 					
+					// April Fools 2025
+					if(Elemental_HasDamage(npc.index, Element_Burger))
+					{
+						Elemental_AddBurgerDamage(npc.index, target, RoundFloat(damage));
+					}
+					if(f_ArmorCurrosionImmunity[npc.index][Element_Burger] > GetGameTime())
+					{
+						SDKHooks_TakeDamage(npc.index, target, target, ReturnEntityMaxHealth(npc.index) * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+					}
+					
 					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + RoundToCeil(damage * 0.5));
 				}
 				delete swingTrace;

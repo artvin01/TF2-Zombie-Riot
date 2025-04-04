@@ -45,7 +45,15 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
 	//going above this is dumb
 	ConVar_Add("tf_mvm_max_connected_players", "99");
+#endif
+#if defined ZR || defined RPG
+	ConVar_Add("mp_waitingforplayers_time", "0.0");
+#endif
+#if defined RPG
+	ConVar_Add("mp_friendlyfire", "1.0");
+#endif
 
+#if defined ZR
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "-1", "How many players can play at once?");
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "0", "No Panzer will spawn or anything alike");
@@ -81,29 +89,25 @@ void ConVar_PluginStart()
 	HookConVarChange(CvarAutoSelectWave, WavesCvarChanged);
 	HookConVarChange(zr_ignoremapconfig, DownloadCvarChanged);
 	HookConVarChange(zr_downloadconfig, DownloadCvarChanged);
-#else
-	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
-	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
 
 #if defined ZR || defined RPG
 	CvarFileNetworkDisable = CreateConVar("zr_filenetwork_disable", "0", "0 means as intended, 1 means fast download sounds (itll download any waves present instnatly), 2 means download MVM style matreials too");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
-	ConVar_Add("mp_waitingforplayers_time", "0.0");
-#endif
+	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
+	
 	//default should be 0.1
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.1", "How long zombie spawn protection lasts for.");
-	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+#endif
 
 #if defined ZR || defined RTS	
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
+
+	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	zr_interactforcereload = CreateConVar("zr_interactforcereload", "0", "force interact with reload, it also blocks spray interacting like before.");
 
-#if defined RPG
-	ConVar_Add("mp_friendlyfire", "1.0"); // default: 0.9 Ty to miku for showing me
-#endif
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 
@@ -133,8 +137,17 @@ stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=tr
 {
 	CvarInfo info;
 	info.cvar = FindConVar(name);
-	if(info.cvar.Flags & FCVAR_PROTECTED)
+	if(!info.cvar)
+	{
+		LogError("Invalid cvar \"%s\" from being set from config", name);
 		return;
+	}
+	
+	if(info.cvar.Flags & FCVAR_PROTECTED)
+	{
+		LogError("Blocked \"%s\" from being set from config", name);
+		return;
+	}
 	
 	info.cvar.Flags &= ~FCVAR_CHEAT;
 	strcopy(info.value, sizeof(info.value), value);
@@ -178,10 +191,10 @@ void ConVar_Enable()
 {
 	if(!CvarEnabled)
 	{
+		CvarInfo info;
 		int length = CvarList.Length;
 		for(int i; i<length; i++)
 		{
-			CvarInfo info;
 			CvarList.GetArray(i, info);
 			info.cvar.GetString(info.defaul, sizeof(info.defaul));
 			CvarList.SetArray(i, info);
@@ -195,7 +208,6 @@ void ConVar_Enable()
 			length = CvarMapList.Length;
 			for(int i; i<length; i++)
 			{
-				CvarInfo info;
 				CvarMapList.GetArray(i, info);
 				info.cvar.GetString(info.defaul, sizeof(info.defaul));
 				CvarMapList.SetArray(i, info);
@@ -213,10 +225,10 @@ void ConVar_Disable()
 {
 	if(CvarEnabled)
 	{
+		CvarInfo info;
 		int length = CvarList.Length;
 		for(int i; i<length; i++)
 		{
-			CvarInfo info;
 			CvarList.GetArray(i, info);
 
 			info.cvar.RemoveChangeHook(ConVar_OnChanged);
@@ -228,7 +240,6 @@ void ConVar_Disable()
 			length = CvarMapList.Length;
 			for(int i; i<length; i++)
 			{
-				CvarInfo info;
 				CvarMapList.GetArray(i, info);
 
 				info.cvar.RemoveChangeHook(ConVar_OnChanged);

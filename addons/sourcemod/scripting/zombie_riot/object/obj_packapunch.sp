@@ -133,6 +133,6 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 	if(owner > MaxClients)
 		owner = client;
 
-	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
+	Store_PackMenu(client, StoreWeapon[weapon], -1, owner);
 	return true;
 }

@@ -710,7 +710,7 @@ void Cooking_DescItem(int index, KeyValues kv, char[] desc)
 	float healing = MergMult(kv, map, "healing");
 	float overheal = MergMult(kv, map, "overheal");
 
-	Format(desc, 512, "Uses Left: %d | Level: %.0f\nHeals %.0f HP over %.0f seconds (%d%% Overheal)", RoundToCeil(uses), MergAdd(kv, map, "level"), healing, duration, RoundFloat(overheal * 100.0));
+	Format(desc, 512, "Uses Left: %d | Level: %.0f\nHeals %.0f HP over %.0f seconds (%d％ Overheal)", RoundToCeil(uses), MergAdd(kv, map, "level"), healing, duration, RoundFloat(overheal * 100.0));
 
 	float value = MergMult(kv, map, "stamina");
 	if(value)
@@ -722,11 +722,11 @@ void Cooking_DescItem(int index, KeyValues kv, char[] desc)
 	
 	value = MergMult(kv, map, "resist");
 	if(value != 1.0)
-		Format(desc, 512, "%s\n%s%.0f%% Damage Resistance", desc, value < 1.0 ? "+" : "", 100.0 - (value * 100.0));
+		Format(desc, 512, "%s\n%s%.0f％ Damage Resistance", desc, value < 1.0 ? "+" : "", 100.0 - (value * 100.0));
 
 	value = MergMult(kv, map, "damage");
 	if(value != 1.0)
-		Format(desc, 512, "%s\n%s%.0f%% Damage Dealt", desc, value > 1.0 ? "+" : "", value * 100.0);
+		Format(desc, 512, "%s\n%s%.0f％ Damage Dealt", desc, value > 1.0 ? "+" : "", value * 100.0);
 	
 	value = MergAdd(kv, map, "strength");
 	if(value)

@@ -68,19 +68,21 @@ void FullMoon_Enable(int client, int weapon)
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		Attributes_SetMulti(weapon, 412, 1.8);
 		Panic_Attack[weapon] = 0.175;
-		if(!Precached)
-		{
-			// MASS REPLACE THIS IN ALL FILES
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_attack.mp3",_,1);
-			/*
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry1.mp3",_,1);
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry2.mp3",_,1);
-			*/
-			Precached = true;
-		}
 	}
 }
-
+void FullmoonDownload()
+{
+	if(!Precached)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_attack.mp3",_,1);
+		/*
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry1.mp3",_,1);
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry2.mp3",_,1);
+		*/
+		Precached = true;
+	}
+}
 public void FullMoonDoubleHp(int client, StringMap map)
 {
 	if(map)	// Player

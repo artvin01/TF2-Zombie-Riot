@@ -352,7 +352,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			{
 				if(IgniteFor[victim] > 0)
 				{
-					damage *= 1.5;
+					damage *= (1.5 * 638);
 					DisplayCritAboveNpc(victim, client, true);
 				}
 				//dont actually extinquish, just give them more damage.
