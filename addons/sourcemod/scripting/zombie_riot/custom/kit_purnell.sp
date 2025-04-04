@@ -649,9 +649,9 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	{
 		int MaxHealth = ReturnEntityMaxHealth(client);
 		int MaxHealthally = ReturnEntityMaxHealth(target);
-		HealEntityGlobal(client, client, float(MaxHealth) / 0.15, 0.5, 1.0, HEAL_SELFHEAL);
+		HealEntityGlobal(client, client, float(MaxHealth) / 0.1, 0.5, 1.0, HEAL_SELFHEAL);
 		if(!LastMann)
-			HealEntityGlobal(target, target, float(MaxHealthally) / 0.15, 0.5, 1.0);
+			HealEntityGlobal(target, target, float(MaxHealthally) / 0.1, 0.5, 1.0);
 		Purnell_AllyBuffApply(client, target, buff_apply, DurationGive);
 		if(i_Pap_Level[client] >= 3)
 			Purnell_AllyBuffApply(client, target, buff_apply2, DurationGive);

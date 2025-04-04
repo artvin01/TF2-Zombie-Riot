@@ -760,6 +760,10 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 
 	//This is fine to use 
 	int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	if(Purnell_Existant(client))
+	{
+		weapon = Purnell_Existant(client);
+	}
 	if(IsValidEntity(weapon))
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -781,6 +785,16 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 					Healing_Amount=1.0;
 
 				Base_HealingMaxPoints=RoundToCeil(3000.0 * Healing_Amount);
+			}
+			case WEAPON_PURNELL_PRIMARY:
+			{
+				Healing_Amount=Attributes_Get(weapon, 122, 0.0);
+				Healing_Amount += 2.0;
+				//it starts at -1.0, so it should go upto 1.0.
+				if(Healing_Amount<1.0)
+					Healing_Amount=1.0;
+				
+				Base_HealingMaxPoints=RoundToCeil(2200.0 * Healing_Amount);
 			}
 			default:
 				Base_HealingMaxPoints=RoundToCeil(1900.0 * Healing_Amount);
