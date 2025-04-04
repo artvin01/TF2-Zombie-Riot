@@ -55,6 +55,7 @@ void FullMoon_Enable(int client, int weapon)
 			Attributes_SetMulti(weapon, 412, 1.8);
 			//force panic attack and vulnerability
 			Panic_Attack[weapon] = 0.175;
+			FullmoonDownload();
 		}
 		return;
 	}
@@ -68,6 +69,7 @@ void FullMoon_Enable(int client, int weapon)
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		Attributes_SetMulti(weapon, 412, 1.8);
 		Panic_Attack[weapon] = 0.175;
+		FullmoonDownload();
 	}
 }
 void FullmoonDownload()
