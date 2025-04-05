@@ -1724,21 +1724,27 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 
 		npc.m_bKarlasRetreat = true;
-		int chose = GetRandomInt(1, 12);
+		int max_dialogue = i_current_wave[npc.index] >= 30 ? 11 : 9;
+		int chose = GetRandomInt(1, max_dialogue);
 		switch(chose)
 		{
-			case 1: Stella_Lines(npc, "{snow}Thats it {crimson}i'm going to kill you{snow}.");	
+			case 1: Stella_Lines(npc, "{snow}Thats it {crimson}I'm going to kill you{snow}.");	
 			case 2: Stella_Lines(npc, "{crimson}hm, {snow}Wonder how this will end...");
 			case 3: Stella_Lines(npc, "{crimson}PREPARE {snow}Thyself, {aqua}Judgement {crimson}Is near{snow}.");
-			case 4: Stella_Lines(npc, "Oh not again now train's gone and {crimson}Left{snow}.");
-			case 5: Stella_Lines(npc, "Oh not again now cannon's gone and {crimson}recharged{snow}.");
-			case 6: Stella_Lines(npc, "Aiming this thing is actually quite {crimson}complex {snow}ya know.");
-			case 7: Stella_Lines(npc, "Ya know, im getting quite bored of {crimson}this{snow} whole charade");
-			case 8: Stella_Lines(npc, "Oh how {crimson}Tiny{snow} you all look from up here.");
-			case 9: Stella_Lines(npc, "Heh {crimson}This is{snow} gonna be funny.");
-			case 10:Stella_Lines(npc, "This has become quite troublesome.");
-			case 11:Stella_Lines(npc, "Master....");
-			case 12:Stella_Lines(npc, "I've got a question for you, how do you think Holy Water is made?");
+			case 4: Stella_Lines(npc, "Aiming this thing is actually quite {crimson}complex {snow}ya know.");
+			case 5: Stella_Lines(npc, "I'm getting quite bored of {crimson}this{snow} whole charade");
+			case 6: Stella_Lines(npc, "Oh how {crimson}Tiny{snow} you all look from up here.");
+			case 7: Stella_Lines(npc, "This has become quite troublesome.");
+			case 8: Stella_Lines(npc, "Master....");
+			case 9: Stella_Lines(npc, "I, in the name of...");
+
+			case 10:Stella_Lines(npc, "Hey {crimson}Karlas{snow}, you got the new mirror?");
+			case 11:Stella_Lines(npc, "{crimson}Karlas{snow}, you did ask for persmission to use {purple}her{snow} mirror right?");
+
+			//case 4: Stella_Lines(npc, "Oh not again now train's gone and {crimson}Left{snow}.");
+			//case 5: Stella_Lines(npc, "Oh not again now cannon's gone and {crimson}recharged{snow}.");
+			//case 9: Stella_Lines(npc, "Heh {crimson}This is{snow} gonna be funny.");
+			//case 12:Stella_Lines(npc, "I've got a question for you, how do you think Holy Water is made?");
 		}
 		//CPrintToChatAll("Chose %i", chose);
 		npc.m_iNC_Dialogue = chose;
@@ -1774,15 +1780,20 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 			case 1: Stella_Lines(npc, "And I'll Do IT WITH THIS CANNON.");
 			case 2: Stella_Lines(npc, "This is gonna end {crimson}Poorly for you all{snow}.");
 			case 3: Stella_Lines(npc, "{crimson}JUDGEMENT BE UPON THEE{snow}!");
-			case 4: Stella_Lines(npc, "And the city's to far to walk to the end while I...");
-			case 5: Stella_Lines(npc, "And the Cannons's Capacitor's to small..");
-			case 6: Stella_Lines(npc, "However its still{crimson} worth the effort{snow}.");
-			case 7: Stella_Lines(npc, "So to amuse myself,{crimson} I'll commit murder on you all{snow}.");
-			case 8: Stella_Lines(npc, "But your tiny stature won't save you from my Nightmare Cannon");
-			case 9: Stella_Lines(npc, "{crimson}HERE COMES THE FUNNY{snow}.");
-			case 10:Stella_Lines(npc, "So I'll just {crimson}remove{snow} the troublesome component!");
-			case 11:Stella_Lines(npc, "{aqua}SPARK!");
-			case 12:Stella_Lines(npc, "By boiling the hell out of it, {aqua}hehehe....");
+			case 4: Stella_Lines(npc, "However its still{crimson} worth the effort{snow}.");
+			case 5: Stella_Lines(npc, "So I'll use you all as {crimson}tools for my amusement");
+			case 6: Stella_Lines(npc, "But your tiny stature won't save you from my Fractal Beam Emitter");
+			case 7: Stella_Lines(npc, "So I'll just {crimson}remove{snow} the troublesome component!");
+			case 8: Stella_Lines(npc, "{aqua}SPARK!");
+			case 9: Stella_Lines(npc, "Shall {crimson}Eviscerate you all");
+
+			case 10:Stella_Lines(npc, "You all are about to see your own doomed reflections.. heh");
+			case 11:Stella_Lines(npc, "Guess we'll findout once we return");
+
+			//case 4: Stella_Lines(npc, "And the city's to far to walk to the end while I...");
+			//case 5: Stella_Lines(npc, "And the Cannons's Capacitor's to small..");
+			//case 9: Stella_Lines(npc, "{crimson}HERE COMES THE FUNNY{snow}.");
+			//case 12:Stella_Lines(npc, "By boiling the hell out of it, {aqua}hehehe....");
 
 			default: CPrintToChatAll("%s It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
 		}
@@ -2088,9 +2099,56 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 {
 	Stella npc = view_as<Stella>(victim);
 		
+	int health;
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	{
+		
+		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
+		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
+		if(npc.Ally)
+		{
+			//only actually bother saying something if stella will exist during the iron will state.
+			//aka only if karlas is alive.
+			int chose = GetRandomInt(1, 4);
+			switch(chose)
+			{
+				case 1: Stella_Lines(npc, "{snow}You... You really think thats all I have....?!");	
+				case 2: Stella_Lines(npc, "{snow}Oh lord.. this actually hurts...");
+				case 3: Stella_Lines(npc, "{snow}Karlas...");
+				case 4: Stella_Lines(npc, "{snow}Its getting kinda cold..");
+			}
+			
+			if(!npc.m_flInvulnerability)
+			{
+				Karlas karl = view_as<Karlas>(npc.Ally);
+				karl.Anger = true;
+				b_allow_karlas_transform[karl.index] = true;
+				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
+				NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
+				NpcStats_RuinaAgilityStengthen(npc.index, 1.15);//15% speed bonus, going bellow 1.0 will make npc's slower
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
+				NpcStats_RuinaDamageStengthen(npc.index, 0.1);	//10% dmg bonus
+				
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Defense", 999.0);
+				NpcStats_RuinaDefenseStengthen(npc.Ally, 0.8);	//20% resistances
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Agility", 999.0);
+				NpcStats_RuinaAgilityStengthen(npc.Ally, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Damage", 999.0);
+				NpcStats_RuinaDamageStengthen(npc.Ally, 0.1);	//10% dmg bonus
+				
+				ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ancient Melodies", 999.0);
+			}
+		}
+		npc.m_flInvulnerability = 1.0;
+	}
+
 	if(attacker <= 0)
 		return Plugin_Continue;
-
 
 	Stella_Weapon_Lines(npc, attacker);
 	
@@ -2100,33 +2158,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	
-	int health;
-	health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToNearest(damage) > health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
-	{
-		int chose = GetRandomInt(1, 4);
-		switch(chose)
-		{
-			case 1: Stella_Lines(npc, "{snow}You... You really think thats all i got....?!");	
-			case 2: Stella_Lines(npc, "{snow}Oh lord.. this actually hurts...");
-			case 3: Stella_Lines(npc, "{snow}Karlas...");
-			case 4: Stella_Lines(npc, "{snow}Its kinda cold.");
-		}
-		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
-		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
-		if(npc.Ally)
-		{
-			if(!npc.m_flInvulnerability)
-			{
-				Karlas karl = view_as<Karlas>(npc.Ally);
-				karl.Anger = true;
-				b_allow_karlas_transform[karl.index] = true;
-				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-			}
-		}
-		npc.m_flInvulnerability = 1.0;
-	}
 	
 	return Plugin_Changed;
 }
@@ -2498,8 +2529,8 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 			npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
 			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 			spawnRing_Vectors(VecSelfNpcabs, STELLA_DEBUFF_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, /*duration*/ 0.11, 3.0, 3.0, 1);	
-			
-			Explode_Logic_Custom(0.0, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
+
+			Explode_Logic_Custom(Dmg, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
 		}
 		//CPrintToChatAll("Damage: %f", Dmg);
 	}
@@ -2760,6 +2791,10 @@ static int i_Get_Laser_Target(Stella npc, float Range = -1.0)
 void Stella_Lines(Stella npc, const char[] text)
 {
 	if(b_test_mode[npc.index])
+		return;
+	
+	//if in laststand state, don't speak about stuff.
+	if(npc.m_flInvulnerability)
 		return;
 
 	CPrintToChatAll("%s %s", npc.GetName(), text);

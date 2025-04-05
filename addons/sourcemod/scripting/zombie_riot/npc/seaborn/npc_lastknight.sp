@@ -150,7 +150,9 @@ methodmap LastKnight < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 0.5;
+			RaidModeScaling = MultiGlobalHealth;
+			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
+				RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -340,6 +342,8 @@ public void LastKnight_ClotThink(int iNPC)
 						{
 							damage *= 1.75;
 						}
+						
+						damage *= MultiGlobalHealth; //Incase too many enemies, boost damage.
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
@@ -437,8 +441,6 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			if(ratio < 3)
 			{
 				npc.m_iPhase = 1;
-				if(RaidBossActive == EntRefToEntIndex(npc.index))
-					RaidModeScaling = 0.75;
 			}
 		}
 		case 1:
@@ -452,9 +454,6 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
 				npc.m_flNextThinkTime = gameTime + 8.3;
 				npc.StopPathing();
-
-				if(RaidBossActive == EntRefToEntIndex(npc.index))
-					RaidModeScaling = 1.0;
 			}
 		}
 	}
