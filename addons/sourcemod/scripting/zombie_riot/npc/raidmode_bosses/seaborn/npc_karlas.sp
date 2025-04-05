@@ -2280,6 +2280,39 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 {
 	Karlas npc = view_as<Karlas>(victim);
 		
+	int health;
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	{
+		switch(GetRandomInt(0, 1))
+		{
+			case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
+			case 1: CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
+		}
+			
+		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
+		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
+		int ally = npc.Ally;
+		if(IsValidEntity(ally))
+		{
+			Stella donner = view_as<Stella>(ally);
+			donner.Anger=true;
+			ApplyStatusEffect(ally, ally, "Hardened Aura", 15.0);
+			ApplyStatusEffect(ally, ally, "Hardened Aura", 15.0);
+			Master_Apply_Defense_Buff(npc.index, 1.0, 999.0, 0.8);	//20% resistances
+			Master_Apply_Speed_Buff(npc.index, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+			Master_Apply_Attack_Buff(npc.index, 1.0, 999.0, 0.1);	//10% dmg bonus
+
+			Master_Apply_Defense_Buff(ally, 1.0, 999.0, 0.8);	//20% resistances
+			Master_Apply_Speed_Buff(ally, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+			Master_Apply_Attack_Buff(ally, 1.0, 999.0, 0.1);	//10% dmg bonus
+			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
+			ApplyStatusEffect(ally, ally, "Ancient Melodies", 999.0);
+		}
+		npc.m_flInvulnerability = 1.0;
+	}
+	
+
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
@@ -2331,27 +2364,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	int health;
-	health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
-	{
-		switch(GetRandomInt(0, 1))
-		{
-			case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
-			case 1: CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
-		}
-			
-		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
-		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
-		int ally = npc.Ally;
-		if(IsValidEntity(ally))
-		{
-			Stella donner = view_as<Stella>(ally);
-			donner.Anger=true;
-		}
-		npc.m_flInvulnerability = 1.0;
-	}
-	
 	return Plugin_Changed;
 }
 

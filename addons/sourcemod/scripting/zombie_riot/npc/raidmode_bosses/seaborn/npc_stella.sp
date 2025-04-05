@@ -2088,19 +2088,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 {
 	Stella npc = view_as<Stella>(victim);
 		
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-
-	Stella_Weapon_Lines(npc, attacker);
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-
-	
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
@@ -2123,10 +2110,32 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				karl.Anger = true;
 				b_allow_karlas_transform[karl.index] = true;
 				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+				Master_Apply_Defense_Buff(npc.index, 1.0, 999.0, 0.8);	//20% resistances
+				Master_Apply_Speed_Buff(npc.index, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+				Master_Apply_Attack_Buff(npc.index, 1.0, 999.0, 0.1);	//10% dmg bonus
+				
+				Master_Apply_Defense_Buff(ally, 1.0, 999.0, 0.8);	//20% resistances
+				Master_Apply_Speed_Buff(ally, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+				Master_Apply_Attack_Buff(ally, 1.0, 999.0, 0.1);	//10% dmg bonus
+				ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
+				ApplyStatusEffect(ally, ally, "Ancient Melodies", 999.0);
 			}
 		}
 		npc.m_flInvulnerability = 1.0;
 	}
+
+	if(attacker <= 0)
+		return Plugin_Continue;
+
+
+	Stella_Weapon_Lines(npc, attacker);
+	
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
+
 	
 	return Plugin_Changed;
 }
