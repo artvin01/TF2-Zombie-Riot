@@ -2333,7 +2333,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToNearest(damage) > health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
 	{
 		switch(GetRandomInt(0, 1))
 		{
