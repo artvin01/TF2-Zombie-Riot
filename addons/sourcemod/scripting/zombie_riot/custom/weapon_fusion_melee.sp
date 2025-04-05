@@ -383,7 +383,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 				maxhealth = RoundToCeil(float(maxhealth) * 1.05);
 				ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
 				ApplyTempAttrib(weapon, 6, 1.45, 10.0); //slower attack speed
-				ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreaced by 40%
+				ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreased by 40%
 
 				int spawn_index = NPC_CreateByName("npc_nearl_sword", -1, fPos, fAng, GetTeam(client));
 				if(spawn_index > MaxClients)

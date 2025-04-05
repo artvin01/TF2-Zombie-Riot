@@ -1177,7 +1177,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 										float VulnerabilityToGive = 0.10;
 										if(npc.m_bFakeClone)
 											VulnerabilityToGive = 0.05;
-										IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
+										IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 									}	
 	
 								}
@@ -1187,7 +1187,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									if(npc.m_bFakeClone)
 										VulnerabilityToGive = 0.05;
 
-									IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
+									IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 								}	
 								if(!Knocked)
 									Custom_Knockback(npc.index, target, 150.0, true);

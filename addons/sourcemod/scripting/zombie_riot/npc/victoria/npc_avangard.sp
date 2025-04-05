@@ -188,7 +188,7 @@ static void ClotThink(int iNPC)
 			if(!npc.m_bFUCKYOU)
 			{
 				npc.PlayActivationSound();
-				IncreaceEntityDamageTakenBy(npc.index, 0.000001, 1.0);
+				IncreaseEntityDamageTakenBy(npc.index, 0.000001, 1.0);
 			}
 			i_AttacksTillMegahit[iNPC] = 601;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");

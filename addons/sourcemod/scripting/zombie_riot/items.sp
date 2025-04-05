@@ -58,7 +58,7 @@ static int CategoryPage[MAXTF2PLAYERS];
 
 static int g_BeamIndex = -1;
 static int i_RarityType[MAXENTITIES];
-static float f_IncreaceChanceManually = 1.0;
+static float f_IncreaseChanceManually = 1.0;
 static bool b_ForceSpawnNextTime;
 
 void Items_PluginStart()
@@ -597,9 +597,9 @@ void Gift_DropChance(int entity)
 	{
 		if(IsValidEntity(entity))
 		{
-			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobalEnemy + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually))) //Never let it divide by 0
+			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobalEnemy + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaseChanceManually))) //Never let it divide by 0
 			{
-				f_IncreaceChanceManually = 1.0;
+				f_IncreaseChanceManually = 1.0;
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 20.0;
@@ -616,7 +616,7 @@ void Gift_DropChance(int entity)
 			}	
 			else
 			{
-				f_IncreaceChanceManually += 0.0015;
+				f_IncreaseChanceManually += 0.0015;
 			}
 		}
 	}

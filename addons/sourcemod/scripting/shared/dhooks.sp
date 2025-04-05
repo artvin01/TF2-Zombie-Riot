@@ -1761,7 +1761,7 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 	if(weapon <= MaxClients)
 		return MRES_Ignored;
 
-	if(!b_TauntSpeedIncreace[client])
+	if(!b_TauntSpeedIncrease[client])
 	{
 		Attributes_Set(client, 201, 1.0);
 		f_DelayAttackspeedPreivous[client] = 1.0;

@@ -703,7 +703,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
 						f_AntiStuckPhaseThroughFirstCheck[client] = 0.0;
-						IncreaceEntityDamageTakenBy(client, 0.0001, 0.75);
+						IncreaseEntityDamageTakenBy(client, 0.0001, 0.75);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
 						flMaxhealth *= 0.45;
 					}
@@ -1029,7 +1029,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 {
 	//Reduce the damgae they take in half during the animtion, just incase, evne though they are untargetable anyways.
 	//incase of AOE attacks and all.
-	IncreaceEntityDamageTakenBy(client, 0.5, duration);
+	IncreaseEntityDamageTakenBy(client, 0.5, duration);
 	if(!StrContains(animation, "brawler_heat_4"))
 	{
 

@@ -481,7 +481,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/spike_layer.sp"
 #include "zombie_riot/custom/weapon_grenade.sp"
 #include "zombie_riot/custom/wand/weapon_default_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
+#include "zombie_riot/custom/wand/weapon_wand_increase_attack.sp"
 #include "zombie_riot/custom/wand/weapon_fire_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_fire_ball.sp"
 #include "zombie_riot/custom/wand/weapon_lightning_wand.sp"
@@ -1913,7 +1913,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 					{
 						FreezeNpcInTime(entity, 3.0, true);
-						IncreaceEntityDamageTakenBy(entity, 0.000001, 3.0);
+						IncreaseEntityDamageTakenBy(entity, 0.000001, 3.0);
 					}
 				}
 				RaidModeTime += 3.0;

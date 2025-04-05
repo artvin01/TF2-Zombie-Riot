@@ -1263,7 +1263,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				else
 #endif
 				{
-					f_AttackSpeedNpcIncreace[entity] *= BuffOriginal;
+					f_AttackSpeedNpcIncrease[entity] *= BuffOriginal;
 				}
 				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
 				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
@@ -1288,7 +1288,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				else
 #endif
 				{
-					f_AttackSpeedNpcIncreace[entity] *= 1.0 / (BuffRevert);
+					f_AttackSpeedNpcIncrease[entity] *= 1.0 / (BuffRevert);
 				}
 				RemoveSpecificBuff(entity, "", BuffCheckerIDNPC);
 			}
@@ -1309,7 +1309,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				else
 #endif
 				{
-					f_AttackSpeedNpcIncreace[entity] *= BuffOriginal;
+					f_AttackSpeedNpcIncrease[entity] *= BuffOriginal;
 				}
 			}
 		}
