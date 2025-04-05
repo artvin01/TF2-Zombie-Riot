@@ -1479,7 +1479,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 
 						if(fl_karlas_sword_battery[npc.index]> GameTime)
 						{
-							fl_karlas_sword_battery[npc.index] +=1.5;
+							fl_karlas_sword_battery[npc.index] +=2.0;
 						}
 
 						//clause ae karlas knockback
@@ -1630,6 +1630,9 @@ static void Fire_Wave_Barrage(Karlas npc)
 
 	npc.m_iSlicersFired++;
 
+	//get a target right infront of karlas.
+	//or if one is not found, use standard targeting logic.
+	npc.m_iTarget = i_Get_Laser_Target(npc);
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		return;
 
@@ -2284,28 +2287,37 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
 	{
-		switch(GetRandomInt(0, 1))
-		{
-			case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
-			case 1: CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
-		}
-			
+
 		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
 		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
 		int ally = npc.Ally;
 		if(IsValidEntity(ally))
 		{
+			switch(GetRandomInt(0, 1))
+			{
+				case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
+				case 1: CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
+			}
+		
 			Stella donner = view_as<Stella>(ally);
 			donner.Anger=true;
+			ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 15.0);
 			ApplyStatusEffect(ally, ally, "Hardened Aura", 15.0);
-			ApplyStatusEffect(ally, ally, "Hardened Aura", 15.0);
-			Master_Apply_Defense_Buff(npc.index, 1.0, 999.0, 0.8);	//20% resistances
-			Master_Apply_Speed_Buff(npc.index, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
-			Master_Apply_Attack_Buff(npc.index, 1.0, 999.0, 0.1);	//10% dmg bonus
 
-			Master_Apply_Defense_Buff(ally, 1.0, 999.0, 0.8);	//20% resistances
-			Master_Apply_Speed_Buff(ally, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
-			Master_Apply_Attack_Buff(ally, 1.0, 999.0, 0.1);	//10% dmg bonus
+			ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
+			NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+			ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
+			NpcStats_RuinaAgilityStengthen(npc.index, 1.15);//15% speed bonus, going bellow 1.0 will make npc's slower
+			ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
+			NpcStats_RuinaDamageStengthen(npc.index, 0.1);	//10% dmg bonus
+			
+			ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Defense", 999.0);
+			NpcStats_RuinaDefenseStengthen(npc.Ally, 0.8);	//20% resistances
+			ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Agility", 999.0);
+			NpcStats_RuinaAgilityStengthen(npc.Ally, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+			ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Damage", 999.0);
+			NpcStats_RuinaDamageStengthen(npc.Ally, 0.1);	//10% dmg bonus
+
 			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
 			ApplyStatusEffect(ally, ally, "Ancient Melodies", 999.0);
 		}

@@ -3395,7 +3395,7 @@
 	}
 	"Neuvellete PenFallOff"
 	{
-		"en"		"Dmage penalty per target hit reduced"
+		"en"		"Damage penalty per target hit reduced"
 		"fr"		"Réduction des dégats par ennemi frappé diminué"
 	}
 	"Neuvellete Nightmare"
