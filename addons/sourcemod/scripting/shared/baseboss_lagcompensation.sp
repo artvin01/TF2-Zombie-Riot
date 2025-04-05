@@ -57,14 +57,9 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 /* game/server/player_lagcompensation.cpp#L328 */
 void StartLagCompensation_Base_Boss(int client)
 {
-//	if(DoingLagCompensation)
-//	{
-	//	LogError("Tried to lag compensate twice, sorry! no can do.");
-//		return;
-//	}
 	if(DoingLagCompensation)
 	{
-		PrintToChatAll("Was alrady in DoingLagCompensation But tried doing another?");
+		PrintToChatAll("Was already in DoingLagCompensation But tried doing another?");
 		FinishLagCompensation_Base_boss(-1, false);
 	}
 	DoingLagCompensation = true;
