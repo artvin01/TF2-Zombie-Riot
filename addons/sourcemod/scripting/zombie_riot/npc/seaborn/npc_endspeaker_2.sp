@@ -44,6 +44,8 @@ methodmap EndSpeaker2 < EndSpeakerSmall
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
 			RaidModeScaling = MultiGlobalHealth;
+			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
+				RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		return npc;

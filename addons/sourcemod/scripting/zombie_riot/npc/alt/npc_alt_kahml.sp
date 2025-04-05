@@ -135,7 +135,7 @@ public void Kahmlstein_OnMapStart_NPC()
 	PrecacheModel("models/effects/combineball.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Kahmlstein");
+	strcopy(data.Name, sizeof(data.Name), "Kahmlstein?");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_kahml");
 	data.Category = Type_Alt;
 	data.Func = ClotSummon;
@@ -249,6 +249,8 @@ methodmap Kahmlstein < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidModeScaling = MultiGlobalHealth;
+			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
+				RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -384,6 +386,7 @@ static void Internal_ClotThink(int iNPC)
 	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	fl_kahml_galactic_strenght[npc.index] = 1+(1-(Health/MaxHealth))*1.5;
+	fl_kahml_galactic_strenght[npc.index] *= 2.0;
 	
 	float armour_melee;
 	float armour_ranged;

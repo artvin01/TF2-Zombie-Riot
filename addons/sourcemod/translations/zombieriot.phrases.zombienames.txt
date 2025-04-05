@@ -1069,6 +1069,13 @@
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
 	}
+	"Kahmlstein?"
+	{
+		"en"		"Kahmlstein?"
+		"ru"		"Кахмлстайн?"
+		"pt"		"Kahmlstein?" 
+		"nl"		"Kahmlstein?"
+	}
 	"Chaos Kahmlstein"
 	{
 		"en"		"Chaos Kahmlstein"
