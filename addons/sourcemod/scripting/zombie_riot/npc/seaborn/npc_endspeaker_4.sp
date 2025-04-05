@@ -113,6 +113,7 @@ public void EndSpeaker4_ClotThink(int iNPC)
 								attack *= 15.0;
 							
 							KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+							attack*= MultiGlobalHealth; //Incase too many enemies, boost damage.
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 							if(target <= MaxClients)
 								Custom_Knockback(npc.index, target, attack * 2.0);
@@ -129,6 +130,7 @@ public void EndSpeaker4_ClotThink(int iNPC)
 				{
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _, vecTarget);
 					
+					attack *= MultiGlobalHealth; //Incase too many enemies, boost damage.
 					int entity = -1;
 					if(npc.m_hBuffs & BUFF_SPEWER)
 					{
