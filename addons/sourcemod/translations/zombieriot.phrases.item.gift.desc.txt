@@ -844,8 +844,8 @@
 	}
 	"Donnerkrieg Desc"
 	{
-		"en"		"Forced into servitutde by Blitzkrieg\nPosses a powerful ''Nightmare Cannon''\nIt is advised to not touch it.."
-		"ru"		"Заставлена служить Блитзкригу\nИмеет мощную ''кошмарную пушку''\nРекомендованно не дотрагиватся до этого..."
+		"en"		"Forced into servitutde by Blitzkrieg\nPosses a powerful ''Fractal Beam Emitter''\nIt is advised to not touch it.."
+		"ru"		"Заставлена служить Блитзкригу\nИмеет мощную ''Излучатель фрактального луча''\nРекомендованно не дотрагиватся до этого..."
 	}
 	"Schwertkrieg Desc"
 	{
