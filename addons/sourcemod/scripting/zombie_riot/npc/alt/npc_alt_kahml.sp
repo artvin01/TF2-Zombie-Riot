@@ -248,7 +248,7 @@ methodmap Kahmlstein < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
-			RaidModeScaling = 0.0;
+			RaidModeScaling = MultiGlobalHealth;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -814,16 +814,16 @@ static void Internal_ClotThink(int iNPC)
 										}
 									}
 									fl_kahml_main_melee_damage[npc.index] *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
 								}
 								else if(ShouldNpcDealBonusDamage(target))
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0*fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0*fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
 								
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
 								}
 								if(IsValidClient(target))
 								{
@@ -876,7 +876,7 @@ static void Internal_ClotThink(int iNPC)
 						if(fl_attack_timeout[npc.index] < GameTime)
 						{
 							npc.PlayRangedSound();
-							npc.FireRocket(vecTarget, fl_kahml_main_melee_damage[npc.index], 2500.0, "models/effects/combineball.mdl", 1.0, EP_NO_KNOCKBACK);
+							npc.FireRocket(vecTarget, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, 2500.0, "models/effects/combineball.mdl", 1.0, EP_NO_KNOCKBACK);
 						}
 						npc.m_flNextMeleeAttack = GameTime + 0.075 / fl_kahml_galactic_strenght[npc.index];
 						
