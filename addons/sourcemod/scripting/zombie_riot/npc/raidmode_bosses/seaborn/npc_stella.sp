@@ -2125,13 +2125,21 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				karl.Anger = true;
 				b_allow_karlas_transform[karl.index] = true;
 				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-				Master_Apply_Defense_Buff(npc.index, 1.0, 999.0, 0.8);	//20% resistances
-				Master_Apply_Speed_Buff(npc.index, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
-				Master_Apply_Attack_Buff(npc.index, 1.0, 999.0, 0.1);	//10% dmg bonus
+
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
+				NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
+				NpcStats_RuinaAgilityStengthen(npc.index, 1.15);//15% speed bonus, going bellow 1.0 will make npc's slower
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
+				NpcStats_RuinaDamageStengthen(npc.index, 0.1);	//10% dmg bonus
 				
-				Master_Apply_Defense_Buff(npc.Ally, 1.0, 999.0, 0.8);	//20% resistances
-				Master_Apply_Speed_Buff(npc.Ally, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
-				Master_Apply_Attack_Buff(npc.Ally, 1.0, 999.0, 0.1);	//10% dmg bonus
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Defense", 999.0);
+				NpcStats_RuinaDefenseStengthen(npc.Ally, 0.8);	//20% resistances
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Agility", 999.0);
+				NpcStats_RuinaAgilityStengthen(npc.Ally, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Damage", 999.0);
+				NpcStats_RuinaDamageStengthen(npc.Ally, 0.1);	//10% dmg bonus
+				
 				ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
 				ApplyStatusEffect(npc.Ally, npc.Ally, "Ancient Melodies", 999.0);
 			}
