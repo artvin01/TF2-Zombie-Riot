@@ -1783,7 +1783,7 @@ void Store_EquipSlotCheck(int client, Item mainItem)
 		{
 			subItem.GetItemInfo(0, info);
 			
-			if(!subItem.ForceAllowWithKit)
+			if(!subItem.ForceAllowWithKit && !mainItem.ForceAllowWithKit)
 			{
 				if(mainItem.ParentKit)
 				{

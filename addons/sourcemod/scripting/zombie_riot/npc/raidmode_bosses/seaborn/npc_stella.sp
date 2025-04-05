@@ -2088,22 +2088,9 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 {
 	Stella npc = view_as<Stella>(victim);
 		
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-
-	Stella_Weapon_Lines(npc, attacker);
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-
-	
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToNearest(damage) > health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
 	{
 		int chose = GetRandomInt(1, 4);
 		switch(chose)
@@ -2123,10 +2110,32 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				karl.Anger = true;
 				b_allow_karlas_transform[karl.index] = true;
 				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+				Master_Apply_Defense_Buff(npc.index, 1.0, 999.0, 0.8);	//20% resistances
+				Master_Apply_Speed_Buff(npc.index, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+				Master_Apply_Attack_Buff(npc.index, 1.0, 999.0, 0.1);	//10% dmg bonus
+				
+				Master_Apply_Defense_Buff(ally, 1.0, 999.0, 0.8);	//20% resistances
+				Master_Apply_Speed_Buff(ally, 1.0, 999.0, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+				Master_Apply_Attack_Buff(ally, 1.0, 999.0, 0.1);	//10% dmg bonus
+				ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
+				ApplyStatusEffect(ally, ally, "Ancient Melodies", 999.0);
 			}
 		}
 		npc.m_flInvulnerability = 1.0;
 	}
+
+	if(attacker <= 0)
+		return Plugin_Continue;
+
+
+	Stella_Weapon_Lines(npc, attacker);
+	
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
+
 	
 	return Plugin_Changed;
 }
@@ -2498,8 +2507,8 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 			npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
 			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 			spawnRing_Vectors(VecSelfNpcabs, STELLA_DEBUFF_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, /*duration*/ 0.11, 3.0, 3.0, 1);	
-			
-			Explode_Logic_Custom(0.0, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
+
+			Explode_Logic_Custom(Dmg, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
 		}
 		//CPrintToChatAll("Damage: %f", Dmg);
 	}

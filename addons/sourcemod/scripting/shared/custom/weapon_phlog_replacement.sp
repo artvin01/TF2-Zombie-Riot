@@ -89,6 +89,7 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 	BEAM_Targets_Hit[client] = 1.0;
 	float damage = 25.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
+	damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
 	float playerPos[3];
 
 	for (int building = 0; building < MAX_TARGETS_FLAME; building++)
