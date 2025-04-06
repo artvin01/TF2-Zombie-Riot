@@ -11122,6 +11122,11 @@ void FixModelTeethEatingWorld(int entity)
 	if(!TryToFixTeeth)
 		return;
 	*/
+
+	/*
+		Fixed a 64bit update breaking old models teeth eating the world 
+
+	*/	
 	CClotBody npc = view_as<CClotBody>(entity);
 	int PoseParram = npc.LookupPoseParameter("r_teeth");
 	if(PoseParram <= 0)
