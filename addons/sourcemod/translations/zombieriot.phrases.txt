@@ -20,7 +20,7 @@
 		"es"		"Pulsa %+showscores% para abrir la tienda"
 		"fr"		"Appuyez sur %+showscores% pour ouvrir la boutique"
 		"de"		"Drücke %+showscores% um den Laden zu öffnen"
-		"pt"		"Pressione ％%+showscores% para abrir a loja"
+		"pt"		"Pressione %+showscores% para abrir a loja"
 		"nl"		"Druk %+showscores% om de winkel te openen"
 		"chi"		"按下 %+showscores% 来打开商店"
 	}
