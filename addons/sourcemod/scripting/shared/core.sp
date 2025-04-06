@@ -2597,7 +2597,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			FixModelTeethEatingWorld(entity);
+			SDKHook(entity, SDKHook_SpawnPost, FixModelTeethEatingWorld);
 		}
 		else if(!StrContains(classname, "func_respawnroomvisualizer"))
 		{
