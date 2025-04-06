@@ -195,6 +195,7 @@ methodmap Eurainis < CClotBody
 		SetVariantInt(RUINA_EUR_STAFF_2);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
 
+		fl_ruina_battery_max[npc.index] = 4000.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -250,7 +251,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>4000.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{

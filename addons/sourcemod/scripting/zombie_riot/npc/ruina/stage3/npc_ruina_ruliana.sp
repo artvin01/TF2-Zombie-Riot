@@ -321,6 +321,7 @@ methodmap Ruliana < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 				
+		fl_ruina_battery_max[npc.index] = 3500.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -398,7 +399,7 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
 	float Gain = (npc.Anger ? 15.0 : 10.0);
-	float Battery_Cost = 3500.0;
+	float Battery_Cost = fl_ruina_battery_max[npc.index];
 	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
 
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)

@@ -201,6 +201,7 @@ methodmap Maliana < CClotBody
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
+		fl_ruina_battery_max[npc.index] = 500.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -253,7 +254,7 @@ static void ClotThink(int iNPC)
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
 	float radius = 250.0;
-	if(fl_ruina_battery[npc.index]>500.0 && fl_ruina_battery_timer[npc.index] < GameTime)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;

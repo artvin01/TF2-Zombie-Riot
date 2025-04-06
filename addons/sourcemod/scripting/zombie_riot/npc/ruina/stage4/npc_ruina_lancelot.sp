@@ -270,6 +270,7 @@ methodmap Lancelot < CClotBody
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
+		fl_ruina_battery_max[npc.index] = 2500.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -420,7 +421,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>2500.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		if(fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
@@ -468,7 +469,7 @@ static void ClotThink(int iNPC)
 								
 		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 
-		if(fl_ruina_battery[npc.index]>2500.0 && fl_ruina_battery_timeout[npc.index] < GameTime)
+		if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && fl_ruina_battery_timeout[npc.index] < GameTime)
 			Lancelot_Particle_Accelerator(npc,flDistanceToTarget);
 		
 
