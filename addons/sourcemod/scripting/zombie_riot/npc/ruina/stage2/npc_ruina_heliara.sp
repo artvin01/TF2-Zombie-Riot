@@ -296,7 +296,7 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
 		
-		Helia_Healing_Logic(npc.index, 500, 500.0, GameTime, 1.0);
+		Helia_Healing_Logic(npc.index, 600, 500.0, GameTime, 1.0);
 
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -321,13 +321,13 @@ static void ClotThink(int iNPC)
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 
-					Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5);
+					Helia_Healing_Logic(npc.index, 200, 175.0, GameTime, 3.5);
 
 				}
 				else	
 				{
 
-					Helia_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5);
+					Helia_Healing_Logic(npc.index, 400, 250.0, GameTime, 3.5);
 	
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;

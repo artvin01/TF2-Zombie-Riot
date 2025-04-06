@@ -263,12 +263,11 @@ static void ClotThink(int iNPC)
 
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
+			fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 			Eurainis_Spawn_Minnions(npc);
 		}
-		
 	}
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -396,7 +395,7 @@ static void Eurainis_Spawn_Minnions(Eurainis npc)
 	}
 	
 	spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
-	maxhealth = RoundToNearest(maxhealth * 0.45);
+	maxhealth = RoundToNearest(maxhealth * 1.8);
 
 	if(spawn_index > MaxClients)
 	{

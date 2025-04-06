@@ -321,10 +321,10 @@ static void ClotThink(int iNPC)
 
 		npc.m_flNextTeleport = GameTime + 50.0;
 
-		//int color[4];
-		//Ruina_Color(color);
+		int color[4];
+		Ruina_Color(color);
 
-		//Astria_Teleport_Allies(npc.index, 350.0, color);
+		Astria_Teleport_Allies(npc.index, 350.0, color);
 
 		Master_Apply_Defense_Buff(npc.index, 300.0, 20.0, 0.9);	//10% resistances
 

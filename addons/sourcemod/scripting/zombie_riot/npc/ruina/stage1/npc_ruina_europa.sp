@@ -244,12 +244,11 @@ static void ClotThink(int iNPC)
 
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
+			fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 			Europa_Spawn_Minnions(npc);
 		}
-		
 	}
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -372,7 +371,7 @@ static void Europa_Spawn_Minnions(Europa npc)
 	int spawn_index;
 	
 	spawn_index = NPC_CreateByName("npc_ruina_drone", npc.index, pos, ang, GetTeam(npc.index));
-	maxhealth = RoundToNearest(maxhealth * 0.45);
+	maxhealth = RoundToNearest(maxhealth * 1.5);
 
 	if(spawn_index > MaxClients)
 	{

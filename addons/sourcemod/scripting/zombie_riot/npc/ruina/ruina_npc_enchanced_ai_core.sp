@@ -1771,7 +1771,7 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 
 	if(Ratio > 1.0)
 	{//the target npc has overheal, nerf the healing ratio
-		healingammount*=0.2;
+		healingammount*=0.9;
 	}
 	
 	if(fl_npc_healing_duration[npc.index] < GetGameTime(npc.index))
@@ -1783,17 +1783,17 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 		}
 		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
 		{//this npc is a raid/boss healing target
-			healingammount *=0.5;
+			healingammount *=0.8;
 		}
 	}
 	if(b_ruina_npc_healer[healed_target])
 	{//this npc MUST have less healing.
-		healingammount *=0.5;
+		healingammount *=0.8;
 	}
 
 	if(!b_ruina_npc[healed_target])
 	{//ruina is now xenophobic of other races. and people. mostly to nerf minibosses from being healed
-		healingammount *=0.1;
+		healingammount *=0.5;
 	}
 	
 
