@@ -133,8 +133,8 @@ methodmap Male07 < CClotBody
 			AcceptEntityInput(entity, "LightOn");
 		}
 		
-		npc.m_flMeleeArmor = 0.22;
-		npc.m_flRangedArmor = 0.22;
+		npc.m_flMeleeArmor = 0.50;
+		npc.m_flRangedArmor = 0.50;
 		
 		if(Garrison[npc.index])
 		{
