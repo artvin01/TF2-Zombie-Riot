@@ -26,9 +26,9 @@ static float f_AniSoundSpam[MAXTF2PLAYERS];
 
 #define FRACTAL_KIT_PASSIVE_OVERDRIVE_COST 1.0
 #define FRACTAL_KIT_FANTASIA_COST 5.0
-#define FRACTAL_KIT_FANTASIA_GAIN 2.0
+#define FRACTAL_KIT_FANTASIA_GAIN 5.0		//how many crystals the player gains when fantasia does dmg
 #define FRACTAL_KIT_STARFALL_COST 75.0
-#define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8
+#define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8	//how much dmg is reduced every time fantasia does damage
 #define FRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
 #define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.15
 #define FRACTAL_KIT_STARFALL_FALLOFF 0.75	//how much to reduce dmg per bounce/jump
