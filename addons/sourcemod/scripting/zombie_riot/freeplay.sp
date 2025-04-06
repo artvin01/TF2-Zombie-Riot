@@ -530,6 +530,51 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor(125000.0 / 70.0 * float(Waves_GetRound()));
 			}
 
+			if(postWaves+1 < 89)
+			{
+				switch(GetRandomInt(1, 4))
+				{
+					case 1:
+					{
+						CPrintToChatAll("{gold}U-uh, that's not supposed to happen....");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Aand this enemy gro- w-wait, what's that!?");	
+					}
+					case 3:
+					{
+						CPrintToChatAll("{gold}Erm... seems like something's going wrong...");		
+					}
+					default:
+					{
+						CPrintToChatAll("{gold}Oh oh no- BE CAREFUL!!");
+					}
+				}
+			}	
+			else
+			{	
+				switch(GetRandomInt(1, 4))
+				{
+					case 1:
+					{
+						CPrintToChatAll("{gold}Aaah crap... here they come again...");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Uh oh, get ready!");	
+					}
+					case 3:
+					{
+						CPrintToChatAll("{gold}Damnit... They just keep coming and coming!");		
+					}
+					default:
+					{
+						CPrintToChatAll("{gold}Aaaand- oh fudge.");
+					}
+				}
+			}
+
 			count = RoundToFloor((25 * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 
 			enemy.Credits += 100.0;
