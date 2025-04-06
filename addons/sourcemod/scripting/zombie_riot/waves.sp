@@ -139,7 +139,7 @@ static char LastWaveWas[64];
 static int Freeplay_Info;
 //static bool Freeplay_w500reached;
 static float MinibossScalingHandle = 1.0;
-static int Freeplay_TimeCash;
+static float Freeplay_TimeCash;
 static float Freeplay_CashTimeLeft;
 
 public Action Waves_ProgressTimer(Handle timer)
@@ -216,7 +216,7 @@ void Waves_MapStart()
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
 
 	Waves_UpdateMvMStats();
-	Freeplay_TimeCash = 0;
+	Freeplay_TimeCash = 0.0;
 	Freeplay_CashTimeLeft = 0.0;
 }
 
@@ -2457,11 +2457,11 @@ static Action Freeplay_ExtraCashTimer(Handle timer)
 
 	if(Freeplay_CashTimeLeft < GetGameTime())
 	{
-		if(Freeplay_TimeCash > 0)
+		if(Freeplay_TimeCash > 0.0)
 		{
-			Freeplay_TimeCash -= 20;
-			if(Freeplay_TimeCash < 0)
-				Freeplay_TimeCash = 0;
+			Freeplay_TimeCash -= 20.0;
+			if(Freeplay_TimeCash < 0.0)
+				Freeplay_TimeCash = 0.0;
 		}
 	}
 
@@ -2472,11 +2472,11 @@ void Freeplay_SetCashTime(float duration)
 {
 	Freeplay_CashTimeLeft = duration;
 }
-int Freeplay_GetRemainingCash()
+float Freeplay_GetRemainingCash()
 {
 	return Freeplay_TimeCash;
 }
-void Freeplay_SetRemainingCash(int amount)
+void Freeplay_SetRemainingCash(float amount)
 {
 	Freeplay_TimeCash = amount;
 }
