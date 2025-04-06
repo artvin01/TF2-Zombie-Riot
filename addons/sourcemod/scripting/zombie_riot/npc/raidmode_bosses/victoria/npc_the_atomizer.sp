@@ -108,7 +108,7 @@ float Vs_RechargeTimeMax[MAXENTITIES];
 static int Vs_Target[MAXENTITIES];
 static int Vs_ParticleSpawned[MAXENTITIES];
 static float Vs_Temp_Pos[MAXENTITIES][3];
-bool Vs_LockOn[MAXTF2PLAYERS];
+bool Vs_LockOn[MAXENTITIES];
 int Vs_Atomizer_To_Huscarls;
 
 static float FTL[MAXENTITIES];
