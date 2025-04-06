@@ -227,6 +227,7 @@ methodmap Heliaris < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
+		fl_ruina_battery_max[npc.index] = 1200.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -283,7 +284,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>1200.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
@@ -292,7 +293,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{			
-		Helia_Healing_Logic(npc.index, 1000, 500.0, GameTime, 1.0);
+		Helia_Healing_Logic(npc.index, 1200, 500.0, GameTime, 1.0);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -317,7 +318,7 @@ static void ClotThink(int iNPC)
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 					int color[4];
 					Ruina_Color(color);
-					Helia_Healing_Logic(npc.index, 300, 175.0, GameTime, 3.5);
+					Helia_Healing_Logic(npc.index, 600, 175.0, GameTime, 3.5);
 
 				}
 				else	
@@ -325,7 +326,7 @@ static void ClotThink(int iNPC)
 
 					int color[4];
 					Ruina_Color(color);
-					Helia_Healing_Logic(npc.index, 450, 250.0, GameTime, 3.5);
+					Helia_Healing_Logic(npc.index, 900, 250.0, GameTime, 3.5);
 
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;

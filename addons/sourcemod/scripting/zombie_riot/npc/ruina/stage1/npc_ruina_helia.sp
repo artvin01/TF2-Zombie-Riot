@@ -210,6 +210,7 @@ methodmap Helia < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
+		fl_ruina_battery_max[npc.index] = 750.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -268,7 +269,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>750.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
@@ -303,13 +304,13 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (500.0*500.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					Helia_Healing_Logic(npc.index, 75, 150.0, GameTime, 3.5);
+					Helia_Healing_Logic(npc.index, 150, 150.0, GameTime, 3.5);
 					
 				}
 				else	
 				{
 					fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					Helia_Healing_Logic(npc.index, 150, 150.0, GameTime, 3.5);
+					Helia_Healing_Logic(npc.index, 300, 150.0, GameTime, 3.5);
 
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -322,7 +323,7 @@ static void ClotThink(int iNPC)
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 
 				fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-				Helia_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5);
+				Helia_Healing_Logic(npc.index, 100, 175.0, GameTime, 3.5);
 			}	
 		}
 		else
