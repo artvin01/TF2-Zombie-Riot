@@ -48,9 +48,6 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh1.wav",
 	"weapons/bat_draw_swoosh2.wav",
 };
-static char g_TeleportSounds[][] = {
-	"misc/halloween/spell_stealth.wav",
-};
 
 void Magianius_OnMapStart_NPC()
 {
@@ -75,7 +72,6 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
-	PrecacheSoundArray(g_TeleportSounds);
 
 	PrecacheModel("models/player/medic.mdl");
 }
@@ -97,14 +93,6 @@ methodmap Magianius < CClotBody
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
-		#endif
-	}
-	
-	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
 	}
 	

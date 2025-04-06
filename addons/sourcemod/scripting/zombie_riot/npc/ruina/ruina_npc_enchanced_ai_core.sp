@@ -147,6 +147,11 @@ int g_Ruina_BEAM_lightning;
 char g_Ruina_Glow_Blue;	//blue
 char g_Ruina_Glow_Red;	//red
 
+static char g_EnergyChargeSounds[][] = {
+	"weapons/airboat/airboat_gun_energy1.wav",
+	"weapons/airboat/airboat_gun_energy2.wav",
+};
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return -1;
@@ -173,6 +178,8 @@ void Ruina_Ai_Core_Mapstart()
 	data2.IconCustom = false;											//download needed?
 	data2.Flags = 0;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data2);
+
+	PrecacheSoundArray(g_EnergyChargeSounds);
 
 	Zero(b_ruina_npc);
 
@@ -2090,6 +2097,8 @@ void Master_Apply_Shield_Buff(int client, float range, float power, bool overrid
 }
 void Master_Apply_Battery_Buff(int client, float range, float power)
 {
+	EmitSoundToAll(g_EnergyChargeSounds[GetRandomInt(0, sizeof(g_EnergyChargeSounds) - 1)], client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.25, GetRandomInt(RUINA_NPC_PITCH-25, RUINA_NPC_PITCH+25));
+	
 	Apply_Master_Buff(client, RUINA_BATTERY_BUFF, range, 0.0, power);
 }
 void Ruina_Special_Logic(int iNPC, int Target)
