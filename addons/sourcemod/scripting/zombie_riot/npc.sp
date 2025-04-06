@@ -918,8 +918,6 @@ void NPC_ConfigSetup()
 	DimensionalFragment_OnMapStart_NPC();
 	ImmutableHeavy_OnMapStart_NPC();
 	VanishingMatter_OnMapStart_NPC();
-	FreeplaySigmaller_OnMapStart_NPC();
-	Spotter_OnMapStart_NPC();
 	Erasus_OnMapStart_NPC();
 	AnnoyingSpirit_OnMapStart_NPC();
 	FogOrbHeavy_OnMapStart_NPC();
@@ -2071,8 +2069,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/freeplay/npc_dimensionfrag.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_immutableheavy.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_vanishingmatter.sp"
-#include "zombie_riot/npc/mutations/freeplay/npc_freeplay_sigmaller.sp"
-#include "zombie_riot/npc/mutations/freeplay/npc_spotter.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_annoying_spirit.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_darkenedheavy.sp"
 
