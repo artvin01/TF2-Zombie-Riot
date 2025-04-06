@@ -525,12 +525,17 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
 				enemy.Health = RoundToFloor(60000.0 / 70.0 * float(Waves_GetRound()));
 				enemy.ExtraDamage = 0.65;
+				count = 20;
 			}
 			else
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(135000.0 / 70.0 * float(Waves_GetRound()));
+				enemy.Health = RoundToFloor(150000.0 / 70.0 * float(Waves_GetRound()));
+				count = 10;
 			}
+
+			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
+			enemy.Credits += 100.0;
 
 			if(postWaves+1 < 89)
 			{
@@ -576,10 +581,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					}
 				}
 			}
-
-			count = RoundToFloor((25 * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
-
-			enemy.Credits += 100.0;
 		}
 		else
 		{
