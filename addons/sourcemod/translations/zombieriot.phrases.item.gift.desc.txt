@@ -2500,15 +2500,7 @@
 	}
 	"Vanishing Matter Desc"
 	{
-		"en"	"It begs for the pain to stop...\nThey seem to be invulnerable when they appear, but as they attack, they slowly begin to vanish.\nMake sure to take them down fast when they become vulnerable.\n(Silence) Reduces its attackspeed greatly."
-	}
-	"Spotter Desc"
-	{
-		"en"	"Tasked to train with the mercs in Koshi's simulator.\nTry to keep him alive, and he'll reward you with a special buff! (Lasts longer on NPCs than players.)\nHe also silences and knocks enemies away, is capable of sustaining himself to an extent."
-	}
-	"SIGMALLER Desc"
-	{
-		"en"	"One of Koshi's weird, crazy antics.\nWhen it spawns, all enemies are fully healed and buffed.\nYou MUST take it down before the other enemies.\nOtherwise, you won't like the sound that his horn makes..."
+		"en"	"It begs for the pain to stop...\nIt slowly vanishes overtime. As it attacks, it vanishes faster.\nSeems to have some sort of barrier that prevents it from being instantly killed...\n(Silence) Reduces its enraged attackspeed greatly."
 	}
 	"Annoying Spirit Desc"
 	{
