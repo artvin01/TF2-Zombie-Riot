@@ -47,7 +47,6 @@ static int FreeplayBuffTimer;
 static bool zombiecombine;
 static int moremen;
 static bool immutable;
-static bool spotteralive;
 static int RandomStats;
 static bool merlton;
 static float gay;
@@ -66,11 +65,6 @@ void Freeplay_OnMapStart()
 	PrecacheSound("misc/halloween/spelltick_set.wav", true);
 	PrecacheSound("misc/halloween/hwn_bomb_flash.wav", true);
 	PrecacheSound("music/mvm_class_select.wav", true);
-}
-
-void Freeplay_SpotterStatus(bool status)
-{
-	spotteralive = status;
 }
 
 void Freeplay_ResetAll()
@@ -120,7 +114,6 @@ void Freeplay_ResetAll()
 	FreeplayBuffTimer = 0;
 	zombiecombine = false;
 	moremen = 0;
-	spotteralive = false;
 	RandomStats = 0;
 	merlton = false;
 	gay = 0.0;
