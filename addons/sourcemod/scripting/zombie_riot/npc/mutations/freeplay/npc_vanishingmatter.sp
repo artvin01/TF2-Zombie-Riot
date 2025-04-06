@@ -287,7 +287,7 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 						damageDealt *= 2.5;
 						
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.01))
+					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > 2)
 					{
 						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.01);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
