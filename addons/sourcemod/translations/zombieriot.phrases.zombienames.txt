@@ -3183,14 +3183,6 @@
 	{
 		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
 	}
-	"Antinel"
-	{
-		"en"		"Antinel"
-	}
-	"SIGMALLER"
-	{
-		"en"		"SIGMALLER"
-	}
 	"Ironborus"
 	{
 		"en"		"Ironborus"
@@ -4045,10 +4037,6 @@
 	"Vanishing Matter"
 	{
 		"en" "Vanishing Matter"
-	}
-	"Spotter"
-	{
-		"en" "Spotter"
 	}
 	"Annoying Spirit"
 	{
