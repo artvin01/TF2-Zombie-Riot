@@ -887,8 +887,8 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		flMaxhealth *= 0.001;
 		
 		int CurrentPlayersAlive = CountPlayersOnRed(1);
-		float HpScalingDecreace = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
-		flMaxhealth *= HpScalingDecreace;
+		float HpScalingDecrease = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
+		flMaxhealth *= HpScalingDecrease;
 		if(i_RaidGrantExtra[npc.index] >= 4)
 			flMaxhealth *= 1.25;
 

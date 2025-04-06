@@ -917,6 +917,9 @@ stock bool IsFileInDownloads(const char[] file)
 stock void SendSingleFileToClient(int client, const char[] download, Function func)
 {
 #if defined _filenetwork_included
+	if(CvarFileNetworkDisable.IntValue > 0)
+		return;
+		
 	if(!FileNetworkLib)
 		return;
 

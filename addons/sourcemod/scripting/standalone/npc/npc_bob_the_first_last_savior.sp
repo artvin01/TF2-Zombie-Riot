@@ -1379,7 +1379,7 @@ stock void BobPullTarget(int bobnpc, int enemy)
 		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, velocity);
 		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
 		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);	
-		IncreaceEntityDamageTakenBy(enemy, 0.5, 0.5);
+		IncreaseEntityDamageTakenBy(enemy, 0.5, 0.5);
 		//give 50% res for 0.5 seconds
 	}
 	else

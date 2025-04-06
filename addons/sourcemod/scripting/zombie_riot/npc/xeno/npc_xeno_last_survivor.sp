@@ -230,7 +230,7 @@ methodmap XenoFatherGrigori < CClotBody
 	
 	public XenoFatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
-		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
+		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -270,6 +270,7 @@ methodmap XenoFatherGrigori < CClotBody
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
 			
+		FixModelTeethEatingWorld(npc.index);
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_flSpeed = 170.0;

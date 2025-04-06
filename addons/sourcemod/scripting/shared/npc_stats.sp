@@ -636,6 +636,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	RemoveAllDamageAddition();
 		}
 #endif
+		FixModelTeethEatingWorld(npc);
 		//Think once.
 		if(NpcTypeLogic == STATIONARY_NPC)
 		{
@@ -2057,7 +2058,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
-			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (f_AttackSpeedNpcIncreace[this.index])));
+			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (f_AttackSpeedNpcIncrease[this.index])));
 	}
 
 	public void RemoveGesture(const char[] anim)
@@ -3100,7 +3101,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			if (flNextBotGroundSpeed < 0.01) {
 				if (this.m_iPoseMoveX >= 0) {
-					this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
 				}
 				if (this.m_iPoseMoveY >= 0) {
 					this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
@@ -3324,8 +3324,8 @@ methodmap CClotBody < CBaseCombatCharacter
 
 public void NPC_Base_InitGamedata()
 {
-	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_SLAY);
-	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_SLAY);
+	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
+	RegAdminCmd("sm_remove_npc", Command_RemoveAll, ADMFLAG_ROOT);
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
@@ -5901,7 +5901,7 @@ public void NpcBaseThinkPost(int iNPC)
 	f_LastBaseThinkTime[iNPC] = GetGameTime();
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
 	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime());
-	if(f_AttackSpeedNpcIncreace[iNPC] == 1.0)
+	if(f_AttackSpeedNpcIncrease[iNPC] == 1.0)
 		return;
 		
 	if(f_TimeFrozenStill[iNPC] > GetGameTime(iNPC))
@@ -5910,12 +5910,12 @@ public void NpcBaseThinkPost(int iNPC)
 	float time = GetGameTime() - lastThink;	// Time since the last time this NPC thought
 
 	//It like, speed sup their world time?
-	//f_StunExtraGametimeDuration[iNPC] += ((GetTickInterval() * f_AttackSpeedNpcIncreace[iNPC]) - GetTickInterval());
+	//f_StunExtraGametimeDuration[iNPC] += ((GetTickInterval() * f_AttackSpeedNpcIncrease[iNPC]) - GetTickInterval());
 	//Shitty attackspeed increase.
-	if(f_AttackSpeedNpcIncreace[iNPC] < 1.0)	// Buffs
-		f_StunExtraGametimeDuration[iNPC] += (time - (time / f_AttackSpeedNpcIncreace[iNPC]));
+	if(f_AttackSpeedNpcIncrease[iNPC] < 1.0)	// Buffs
+		f_StunExtraGametimeDuration[iNPC] += (time - (time / f_AttackSpeedNpcIncrease[iNPC]));
 	else	// Nerfs
-		f_StunExtraGametimeDuration[iNPC] += ((time * f_AttackSpeedNpcIncreace[iNPC]) - time);
+		f_StunExtraGametimeDuration[iNPC] += ((time * f_AttackSpeedNpcIncrease[iNPC]) - time);
 }
 void NpcDrawWorldLogic(int entity)
 {
@@ -6081,18 +6081,18 @@ public void NpcBaseThink(int iNPC)
 		{
 			float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
 			
-			float HpScalingDecreace = 1.0;
+			float HpScalingDecrease = 1.0;
 
 			if(b_thisNpcIsARaid[iNPC])
 			{
 				HealingAmount *= 0.025;
 				//this means it uses scaling somehow.
-				HpScalingDecreace = NpcDoHealthRegenScaling();
+				HpScalingDecrease = NpcDoHealthRegenScaling();
 			}
 			else if(b_thisNpcIsABoss[iNPC])
 			{
 				HealingAmount *= 0.125;
-				HpScalingDecreace = NpcDoHealthRegenScaling();
+				HpScalingDecrease = NpcDoHealthRegenScaling();
 			}
 			if(NpcStats_StrongVoidBuff(iNPC))
 				HealingAmount *= 1.25;
@@ -6102,7 +6102,7 @@ public void NpcBaseThink(int iNPC)
 			{
 				HealingAmount *= 0.2;
 			}
-			HealingAmount *= HpScalingDecreace;
+			HealingAmount *= HpScalingDecrease;
 
 			f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
 			
@@ -8567,7 +8567,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_HideHealth[entity] = false;
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
-	f_AttackSpeedNpcIncreace[entity] = 1.0;
+	f_AttackSpeedNpcIncrease[entity] = 1.0;
 	b_AvoidBuildingsAtAllCosts[entity] = false;
 	f_MaxAnimationSpeed[entity] = 2.0;
 	b_OnDeathExtraLogicNpc[entity] = 0;
@@ -10359,9 +10359,15 @@ public void TeleportBackToLastSavePosition(int entity)
 	}
 }
 
-public void SaveLastValidPositionEntity(int entity)
+void SaveLastValidPositionEntity(int entity, float vecsaveforce[3] = {0.0,0.0,0.0})
 {
 	//first see if they are on the ground
+	if(vecsaveforce[2] != 0.0)
+	{
+		//Save new point
+		f3_VecTeleportBackSave_OutOfBounds[entity] = vecsaveforce;
+		return;
+	}
 	if(f_GameTimeTeleportBackSave_OutOfBounds[entity] > GetGameTime())
 		return;
 
@@ -11093,4 +11099,39 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 	return vecSwingEnd;
+}
+
+
+void FixModelTeethEatingWorld(int entity)
+{
+	/*
+	//Why did i check for models? if they have r_teeth, set it to 0!
+	iint ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
+	if(ModelIndex < 0)
+		return;
+		
+	char ModelPath[255];
+	ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
+	bool TryToFixTeeth = false;
+	if(!StrContains(classname, "models/humans/group"))
+		TryToFixTeeth = true;
+	else if(!StrContains(classname, "models/humans/group"))
+		TryToFixTeeth = true;
+	else if(!StrContains(classname, "models/humans/group"))
+		TryToFixTeeth = true;
+	if(!TryToFixTeeth)
+		return;
+	*/
+
+	/*
+		Fixed a 64bit update breaking old models teeth eating the world 
+
+	*/	
+	CClotBody npc = view_as<CClotBody>(entity);
+	int PoseParram = npc.LookupPoseParameter("r_teeth");
+	if(PoseParram <= 0)
+		return;
+
+	//fixes Void eating issue
+	npc.SetPoseParameter(PoseParram , 0.0);
 }

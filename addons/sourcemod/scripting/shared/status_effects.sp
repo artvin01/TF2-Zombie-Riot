@@ -946,8 +946,9 @@ void Force_ExplainBuffToClient(int client, const char[] name)
 void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool AppliedOntoOthers = false)
 {
 	//Bad client
-	if(client <= 0)
+	if(client <= 0 && client > MaxClients)
 		return;
+
 	//Debuff has no icon, so we dont care.
 	if(!Apply_MasterStatusEffect.HudDisplay[0])
 		return;
@@ -1048,7 +1049,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			ShowToClient = victim;
 
 		int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
-		if(owner > 0 && owner <= MaxClients)
+		if(!b_ThisWasAnNpc[victim] && owner > 0 && owner <= MaxClients) //Dont display to owner if the victimn was an npc
 			ShowToClient = owner;
 
 		if(ShowToClient > 0 && ShowToClient <= MaxClients)
@@ -1263,7 +1264,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				else
 #endif
 				{
-					f_AttackSpeedNpcIncreace[entity] *= BuffOriginal;
+					f_AttackSpeedNpcIncrease[entity] *= BuffOriginal;
 				}
 				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
 				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
@@ -1288,7 +1289,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				else
 #endif
 				{
-					f_AttackSpeedNpcIncreace[entity] *= 1.0 / (BuffRevert);
+					f_AttackSpeedNpcIncrease[entity] *= 1.0 / (BuffRevert);
 				}
 				RemoveSpecificBuff(entity, "", BuffCheckerIDNPC);
 			}
@@ -1309,7 +1310,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				else
 #endif
 				{
-					f_AttackSpeedNpcIncreace[entity] *= BuffOriginal;
+					f_AttackSpeedNpcIncrease[entity] *= BuffOriginal;
 				}
 			}
 		}
@@ -1890,26 +1891,6 @@ void StatusEffects_Freeplay1()
 void StatusEffects_Freeplay2()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Spotter's Rally");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "S");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.34;
-	data.DamageDealMulti			= 1.0;
-	data.MovementspeedModif			= 1.25;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
-	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.65;
-	StatusEffect_AddGlobal(data);
-
-	data.LinkedStatusEffect = 0;
-	data.LinkedStatusEffectNPC = 0;
-	data.AttackspeedBuff = 0.0;
-
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart I");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ξ1");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -2708,6 +2689,19 @@ void StatusEffects_Pernell()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Expert's Mind");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "м");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
 
 void StatusEffects_Medieval()
@@ -3349,6 +3343,35 @@ void StatusEffects_Ruiania()
 	data.Status_SpeedFunc 			= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= Ruinas_DamageFunc;
 	RuinaBuffDamage = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ruina Battery Charge");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "۞");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= RuinaBatteryHud_Func;
+	StatusEffect_AddGlobal(data);
+}
+void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	//they do not have a valid battery, abort.
+	if(fl_ruina_battery_max[victim] == 0.0)
+	{
+		RemoveSpecificBuff(victim, "Ruina Battery Charge");
+		return;
+	}
+
+	//get the % of how much battery the npc has
+	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
+
+	Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
 }
 
 stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)

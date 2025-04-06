@@ -26,22 +26,16 @@ static float f_AniSoundSpam[MAXTF2PLAYERS];
 
 #define FRACTAL_KIT_PASSIVE_OVERDRIVE_COST 1.0
 #define FRACTAL_KIT_FANTASIA_COST 5.0
-#define FRACTAL_KIT_FANTASIA_GAIN 2.0
+#define FRACTAL_KIT_FANTASIA_GAIN 5.0		//how many crystals the player gains when fantasia does dmg
 #define FRACTAL_KIT_STARFALL_COST 75.0
-#define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8
-#define KRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
+#define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8	//how much dmg is reduced every time fantasia does damage
+#define FRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
 #define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.15
+#define FRACTAL_KIT_STARFALL_FALLOFF 0.75	//how much to reduce dmg per bounce/jump
 static float fl_max_crystal_amt[MAXTF2PLAYERS];
 static float fl_current_crystal_amt[MAXTF2PLAYERS];
 
 /*
-	IDEA: Get the npc' angle vectors, and compare those to incoming damage, basically a directional shield that respects the anim!
-
-	Laser needs a sound start and end
-	Add the shield mentioned above.
-
-	Lower how bright effects are.
-
 
 	//the anim npc has the medic backpack, this annoys me greatly
 */
@@ -645,10 +639,11 @@ static void Delete_Fantasia(int client)
 		i_fantasia_laser_ref[client][i] = INVALID_ENT_REFERENCE;
 	}
 }
-
+static int i_fantasia_hitcount[MAXTF2PLAYERS];
 static float fl_fantasia_targetshit[MAXTF2PLAYERS];
 static float fl_fantasia_damage[MAXTF2PLAYERS];
 static float fl_fantasia_true_duration[MAXTF2PLAYERS];
+
 public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 {
 	if(b_cannon_animation_active[client])
@@ -711,6 +706,7 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 
 	Origin[2]-=17.5;
 
+	i_fantasia_hitcount[client] = 0;
 	fl_fantasia_targetshit[client] = 1.0;
 	fl_fantasia_damage[client] = 100.0;
 	fl_fantasia_damage[client] *= Attributes_Get(weapon, 410, 1.0);
@@ -796,7 +792,7 @@ static Action Fantasia_Tick(int client)
 {
 	float GameTime = GetGameTime();
 
-	if(b_invalid_client(client) || fl_fantasia_duration[client] < GameTime)
+	if(b_invalid_client(client) || fl_fantasia_duration[client] < GameTime || i_fantasia_hitcount[client] >= 10)
 	{
 
 		Delete_Fantasia(client);
@@ -913,6 +909,8 @@ static void OnFantasiaHit(int client, int target, int damagetype, float &damage)
 	
 	fl_current_crystal_amt[client] += ((b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target]) ? FRACTAL_KIT_FANTASIA_GAIN * 4.0 : FRACTAL_KIT_FANTASIA_GAIN);
 
+	i_fantasia_hitcount[client]++;
+
 	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
 		fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
 }
@@ -945,7 +943,7 @@ public void Kit_Fractal_OverDrive(int client, int weapon, bool &result, int slot
 	b_overdrive_active[client] = true;
 }
 
-static int i_targeted_ID[MAXTF2PLAYERS][KRACTAL_KIT_STARFALL_JUMP_AMT];
+static int i_targeted_ID[MAXTF2PLAYERS][FRACTAL_KIT_STARFALL_JUMP_AMT];
 public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 {
 	if(b_cannon_animation_active[client])
@@ -977,7 +975,7 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 
-	for(int i=0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+	for(int i=0 ; i < FRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
 	{
 		i_targeted_ID[client][i] = INVALID_ENT_REFERENCE;
 	}
@@ -996,15 +994,15 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	Laser.DoForwardTrace_Basic(Range);
 	float dps = 150.0;
 	dps *=Attributes_Get(weapon, 410, 1.0);
-	Check_StarfallAOE(client, Laser.End_Point, Radius, KRACTAL_KIT_STARFALL_JUMP_AMT-1, dps, true);
+	Check_StarfallAOE(client, Laser.End_Point, Radius, FRACTAL_KIT_STARFALL_JUMP_AMT-1, dps, true);
 
 }
-static int i_entity_targeted[KRACTAL_KIT_STARFALL_JUMP_AMT];
+static int i_entity_targeted[FRACTAL_KIT_STARFALL_JUMP_AMT];
 static void AoeExplosionCheckCast(int entity, int victim, float damage, int weapon)
 {
 	if(IsValidEnemy(entity, victim))
 	{
-		for(int i=0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+		for(int i=0 ; i < FRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
 		{
 			if(!i_entity_targeted[i])
 			{
@@ -1043,12 +1041,12 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 
 		return;
 	}
-	for (int entitys = 0; entitys < KRACTAL_KIT_STARFALL_JUMP_AMT; entitys++)
+	for (int entitys = 0; entitys < FRACTAL_KIT_STARFALL_JUMP_AMT; entitys++)
 	{
 		if(i_entity_targeted[entitys] > 0)
 		{
 			bool the_same = false;
-			for(int i= 0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+			for(int i= 0 ; i < FRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
 			{
 				if(i_entity_targeted[entitys] == EntRefToEntIndex(i_targeted_ID[client][i]))
 					the_same =true;
@@ -1063,7 +1061,7 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 			DataPack pack;
 			CreateDataTimer(speed, Timer_StarfallIon, pack, TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(client));
-			pack.WriteFloat(damage);
+			pack.WriteFloat(damage*FRACTAL_KIT_STARFALL_FALLOFF);
 			pack.WriteFloat(Radius);
 			pack.WriteCell(cycle);
 			pack.WriteFloatArray(pos1, 3);

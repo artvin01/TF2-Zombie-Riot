@@ -139,6 +139,8 @@ static char LastWaveWas[64];
 static int Freeplay_Info;
 //static bool Freeplay_w500reached;
 static float MinibossScalingHandle = 1.0;
+static float Freeplay_TimeCash;
+static float Freeplay_CashTimeLeft;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -214,6 +216,8 @@ void Waves_MapStart()
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
 
 	Waves_UpdateMvMStats();
+	Freeplay_TimeCash = 0.0;
+	Freeplay_CashTimeLeft = 0.0;
 }
 
 void Waves_PlayerSpawn(int client)
@@ -2429,7 +2433,9 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_4");
 				}
 			}
-			FreeplayTimeLimit = GetGameTime() + 3600.0; //one hour.
+			FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
+			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash you'll get!");
+			CreateTimer(0.1, Freeplay_ExtraCashTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			DeleteShadowsOffZombieRiot();
 			Freeplay_Info = 0;
 		}
@@ -2440,6 +2446,39 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 	}
 
 	return Plugin_Continue;
+}
+
+static Action Freeplay_ExtraCashTimer(Handle timer)
+{
+	if(FreeplayTimeLimit < GetGameTime())
+	{
+		return Plugin_Stop;
+	}
+
+	if(Freeplay_CashTimeLeft < GetGameTime())
+	{
+		if(Freeplay_TimeCash > 0.0)
+		{
+			Freeplay_TimeCash -= 10.0;
+			if(Freeplay_TimeCash < 0.0)
+				Freeplay_TimeCash = 0.0;
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+void Freeplay_SetCashTime(float duration)
+{
+	Freeplay_CashTimeLeft = duration;
+}
+float Freeplay_GetRemainingCash()
+{
+	return Freeplay_TimeCash;
+}
+void Freeplay_SetRemainingCash(float amount)
+{
+	Freeplay_TimeCash = amount;
 }
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
@@ -3753,7 +3792,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{
 						SetHudTextParams(-1.0, -1.0, 5.0, 255, 135, 0, 255);
-						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further? :3");
+						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further?");
 					}
 				}
 			}
@@ -3864,6 +3903,7 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 					GiveXP(client, round.Xp);
 			}
 		}
+		
 		
 		ReviveAll();
 		

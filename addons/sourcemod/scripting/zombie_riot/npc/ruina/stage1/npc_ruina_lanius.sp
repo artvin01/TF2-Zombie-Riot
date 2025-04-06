@@ -191,7 +191,7 @@ methodmap Lanius < CClotBody
 		
 		*/
 
-		SetVariantInt(1);
+		SetVariantInt(2 + 4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -239,6 +239,7 @@ methodmap Lanius < CClotBody
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
+		fl_ruina_battery_max[npc.index] = 750.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -294,7 +295,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>750.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 1.5;

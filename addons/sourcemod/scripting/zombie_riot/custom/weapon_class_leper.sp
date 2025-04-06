@@ -232,9 +232,9 @@ void RemoveSuperSwingLeper(int client)
 	switch(CurrentPapLeper[client])
 	{
 		case 1,2,3,4:
-			CooldownApply *= 0.6;
+			CooldownApply *= 0.75;
 		case 5,6,7:
-			CooldownApply *= 0.45;
+			CooldownApply *= 0.55;
 	}
 	Ability_Apply_Cooldown(client, 3, CooldownApply);
 }
@@ -368,7 +368,7 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 		}
 	}
 
-	if(Leper_OverlayDownload[client] == 3)
+	if(Leper_OverlayDownload[client] == 3 || CvarFileNetworkDisable.IntValue > 0)
 		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
 	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 
@@ -507,7 +507,7 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 		}
 	}
 
-	if(Leper_OverlayDownload[client] == 3)
+	if(Leper_OverlayDownload[client] == 3 || CvarFileNetworkDisable.IntValue > 0)
 		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
 	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 
@@ -765,13 +765,13 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 			MaxStacksWrath[victim]++;
 			Wrath_TinyCooldown[victim] = GetGameTime() + 0.35;
 
-			float GiveDamageBonus = 1.1;
-			if(b_thisNpcIsARaid[attacker])
-				GiveDamageBonus = 1.13;
+			float GiveDamageBonus = 1.09;
+	//		if(b_thisNpcIsARaid[attacker])
+		//		GiveDamageBonus = 1.095;
 
 			if(CurrentPapLeper[victim] >= 6)
 			{
-				GiveDamageBonus *= 1.25;
+				GiveDamageBonus += 0.003;
 			}
 			ApplyTempAttrib(weapon, 2, GiveDamageBonus, 10.0);
 		}
@@ -877,7 +877,7 @@ int SetCameraEffectLeperWrath(int client, int &ModelToDelete)
 		}
 	}
 
-	if(Leper_OverlayDownload[client] == 3)
+	if(Leper_OverlayDownload[client] == 3 || CvarFileNetworkDisable.IntValue > 0)
 		DoOverlay(client, "zombie_riot/overlays/leper_overlay", 0);
 	
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_ALL); 

@@ -1178,7 +1178,6 @@ public void OnConfigsExecuted()
 		ServerCommand("sm plugins reload zombie_riot");
 		return;
 	}
-	
 	Configs_ConfigsExecuted();
 }
 
@@ -2468,10 +2467,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		  || !StrContains(classname, "entity_medigun_shield")
 		  || !StrContains(classname, "tf_projectile_energy_ball")
 		  || !StrContains(classname, "item_powerup_rune")
-		  || !StrContains(classname, "vgui_screen")
-		  || !StrContains(classname, "vgui_screen")
-		  || !StrContains(classname, "vgui_screen")
-		  || !StrContains(classname, "vgui_screen")
 		  || !StrContains(classname, "vgui_screen"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
@@ -2602,6 +2597,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_SpawnPost, FixModelTeethEatingWorld);
 		}
 		else if(!StrContains(classname, "func_respawnroomvisualizer"))
 		{
@@ -3056,7 +3052,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 			{
 				Viewchange_UpdateDelay(client);
 
-				if(!b_TauntSpeedIncreace[client])
+				if(!b_TauntSpeedIncrease[client])
 				{
 					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 					if(weapon_holding != -1)
@@ -3501,7 +3497,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		{
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
 			GiveArmorViaPercentage(target, 0.1, 1.0, false);
-			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
+			IncreaseEntityDamageTakenBy(target, 0.85, 5.0);
 		}
 		CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
 		CheckLastMannStanding(0);

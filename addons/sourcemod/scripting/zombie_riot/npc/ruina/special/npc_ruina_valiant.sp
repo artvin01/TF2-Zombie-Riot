@@ -53,7 +53,7 @@ static int i_anchor_id[MAXENTITIES];
 static int i_failsafe[MAXENTITIES];
 static float fl_spawn_timeout[MAXENTITIES];
 
-#define RUINA_ANCHOR_FAILSAFE_AMMOUNT 33
+#define RUINA_ANCHOR_FAILSAFE_AMMOUNT 66
 
 #define VENIUM_SPAWN_SOUND	"hl1/ambience/particle_suck2.wav"
 static float fl_last_summon;
@@ -286,7 +286,7 @@ methodmap Valiant < CClotBody
 					ShowGameText(client_check, "voice_player", 1, "%t", "Venium Spawn");	
 				}
 			}
-			TeleportDiversioToRandLocation(npc.index);
+			TeleportDiversioToRandLocation(npc.index, false, 3000.0, 1800.0);
 		}
 
 		float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec); float sky_loc[3]; sky_loc = npc_vec; sky_loc[2]+=999.0;
@@ -573,7 +573,7 @@ static void Venium_Build_Anchor(Valiant npc)
 
 	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);
 	
-	if(flDistanceToBuild < (500.0 * 500.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
+	if(flDistanceToBuild < (750.0 * 750.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
 	{
 		i_failsafe[npc.index]++;
 		return; //The building is too close, we want to retry! it is unfair otherwise.

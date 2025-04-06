@@ -924,7 +924,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_fbRangedSpecialOn)
 		{
 			I_cant_do_this_all_day[npc.index]=0;
-			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
+			IncreaseEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;
 			RaidModeTime += 35.0;

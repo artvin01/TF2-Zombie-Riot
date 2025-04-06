@@ -74,10 +74,27 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 			//LogEntryInvicibleTest(victim, attacker, damage, 16);
 		}
 	}
-
+	Damage_AnyVictimPost(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	return false;
 }
 
+stock void Damage_AnyVictimPost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(!HasSpecificBuff(victim, "Expert's Mind"))
+		return;
+
+	if((damagetype & DMG_TRUEDAMAGE))
+		return;
+
+	float MaxHealth = float(ReturnEntityMaxHealth(victim));
+	MaxHealth *= 0.25;
+	if(MaxHealth <= 50.0)
+		MaxHealth = 50.0;
+
+	if(damage >= MaxHealth)
+		damage = MaxHealth;
+		
+}
 stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 #if defined ZR
@@ -1760,7 +1777,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	StatusEffect_OnTakeDamage_TakenPositive(victim, attacker, damage, damagetype);
 	StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage, damagetype);
 	float DamageRes = 1.0;
-	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
+	//Resistance buffs will not count towards this flat decrease, they will be universal!hussar!
 	//these are absolutes
 #if !defined RPG
 	if(victim > MaxClients && i_npcspawnprotection[victim] == 1)

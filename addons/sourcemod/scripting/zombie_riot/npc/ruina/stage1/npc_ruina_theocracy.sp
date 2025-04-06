@@ -228,6 +228,7 @@ methodmap Theocracy < CClotBody
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
+		fl_ruina_battery_max[npc.index] = THEOCRACY_STRING_THEORY_BATTERY_COST;
 		fl_ruina_battery[npc.index] = 0.0;
 		npc.PlayChargeSound();
 		Theocracy_String_Theory(EntIndexToEntRef(npc.index));
@@ -702,7 +703,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		Ruina_Add_Battery(npc.index, damage);
 	}
-	if(fl_ruina_battery[npc.index]>THEOCRACY_STRING_THEORY_BATTERY_COST && !b_ruina_battery_ability_active[npc.index])
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && !b_ruina_battery_ability_active[npc.index])
 	{
 		npc.PlayChargeSound();
 		fl_ruina_battery[npc.index] = 0.0;

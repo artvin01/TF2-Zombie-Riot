@@ -481,7 +481,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/spike_layer.sp"
 #include "zombie_riot/custom/weapon_grenade.sp"
 #include "zombie_riot/custom/wand/weapon_default_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
+#include "zombie_riot/custom/wand/weapon_wand_increase_attack.sp"
 #include "zombie_riot/custom/wand/weapon_fire_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_fire_ball.sp"
 #include "zombie_riot/custom/wand/weapon_lightning_wand.sp"
@@ -1913,7 +1913,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 					{
 						FreezeNpcInTime(entity, 3.0, true);
-						IncreaceEntityDamageTakenBy(entity, 0.000001, 3.0);
+						IncreaseEntityDamageTakenBy(entity, 0.000001, 3.0);
 					}
 				}
 				RaidModeTime += 3.0;
@@ -2379,6 +2379,21 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	if(!setmusicfalse)
 		ZombieMusicPlayed = setmusicfalse;
 
+	float pos2[3];
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	{
+		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
+		int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
+		if(!IsValidEntity(entity_close))
+			continue;
+
+		GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[entity_close], f3_CustomMinMaxBoundingBox[entity_close]))
+			continue;
+			
+		int builder_owner = GetEntPropEnt(entity_close, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, entity_close);
+	}
 //	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	for(int client=1; client<=MaxClients; client++)
@@ -2915,4 +2930,23 @@ stock void SPrintToChatAll(const char[] message, any ...)
 	char buffer[192];
 	VFormat(buffer, sizeof(buffer), message, 2);
 	CPrintToChatAll("%s%s", STORE_PREFIX, buffer);
+}
+
+
+//IF you disable ingame downloads, it will download all these files nontherless!
+void ZR_FastDownloadForce()
+{
+	//do not download!!
+	if(CvarFileNetworkDisable.IntValue <= 0)
+		return;
+
+	PrecacheSharedDarkestMusic();
+	PrecacheTwirlMusic();
+	SeaBornMusicDo();
+	PurnellMusicOst();
+	PrecacheBlitzMusic();
+	SoldineKitDownload();
+	ZealotMusicDownload();
+	YakuzaMusicDownload();
+	FullmoonDownload();
 }

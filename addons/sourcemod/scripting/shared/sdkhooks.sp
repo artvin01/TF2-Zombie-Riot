@@ -1213,6 +1213,7 @@ public void OnPostThink(int client)
 	{
 		OnlyOneAtATime = true;
 		delay_hud[client] = GameTime + 0.4;
+		SetGlobalTransTarget(client);
 
 #if defined RPG
 		RPG_UpdateHud(client);
@@ -2753,7 +2754,7 @@ void UpdatePlayerFakeModel(int client)
 	}
 }
 
-stock void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
+stock void IncreaseEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
 	if(!Flat)
 	{
@@ -2794,7 +2795,7 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 	return Plugin_Continue;
 }
 
-stock void IncreaceEntityDamageDealtBy(int entity, float amount, float duration)
+stock void IncreaseEntityDamageDealtBy(int entity, float amount, float duration)
 {
 	f_MultiDamageDealt[entity] *= amount;
 	

@@ -459,7 +459,7 @@ public Action VictoriaBirdeye_OnTakeDamage(int victim, int &attacker, int &infli
 		if(!npc.Anger)
 		{
 			damage=0.0;
-			IncreaceEntityDamageTakenBy(npc.index, 0.000001, 0.2);
+			IncreaseEntityDamageTakenBy(npc.index, 0.000001, 0.2);
 			if(b_SUPERDUPERRAGE[npc.index])
 			{
 				npc.PlayIdleAlertSound();
@@ -663,7 +663,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
 				if(IsValidClient(target))
-					IncreaceEntityDamageTakenBy(target, 0.5, 5.0, true);
+					IncreaseEntityDamageTakenBy(target, 0.5, 5.0, true);
 				else
 					ApplyStatusEffect(npc.index, target, "Silenced", (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
 			} 

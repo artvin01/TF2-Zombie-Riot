@@ -290,7 +290,7 @@
 	}
 	"Aeternam Desc"
 	{
-		"en"	"Increaces Magic/Laser damage by 10％, And adds an additional 1500 on each hit."
+		"en"	"Increases Magic/Laser damage by 10％, And adds an additional 1500 on each hit."
 	}
 	"Silenced"
 	{
@@ -410,7 +410,7 @@
 	}
 	"Sea Strength Desc"
 	{
-		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage delt by 10％, Decreases damage taken by 10％."
+		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
 	}
 	"Void Strength I"
 	{
@@ -418,7 +418,7 @@
 	}
 	"Void Strength I Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage delt by 20％, If silenced, this is 10％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 20％, If silenced, this is 10％"
 	}
 	"Void Strength II"
 	{
@@ -426,7 +426,7 @@
 	}
 	"Void Strength II Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage delt by 30％, If silenced, this is 15％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 30％, If silenced, this is 15％"
 	}
 	"MERLT0N-BUFF"
 	{
@@ -450,7 +450,7 @@
 	}
 	"Combine Command Desc"
 	{
-		"en"	"Reduces damage taken by 20％\nBoosts damage delt by 25％"
+		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 25％"
 	}
 	"Squad Leader"
 	{
@@ -458,7 +458,7 @@
 	}
 	"Squad Leader Desc"
 	{
-		"en"	"Reduces damage taken by 10％\nBoosts damage delt by 10％\nBoosts NPC'S Movementspeed by 33％"
+		"en"	"Reduces damage taken by 10％\nBoosts damage dealt by 10％\nBoosts NPC'S Movementspeed by 33％"
 	}
 	"Caffinated"
 	{
@@ -466,7 +466,7 @@
 	}
 	"Caffinated Desc"
 	{
-		"en"	"Boosts damage delt by 50％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
+		"en"	"Boosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
 	}
 	"Caffinated Drain"
 	{
@@ -482,7 +482,7 @@
 	}
 	"Call To Victoria Desc"
 	{
-		"en"	"Reduces damage taken by 20％\nBoosts damage delt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
+		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
 	}
 	"False Therapy"
 	{
@@ -490,7 +490,15 @@
 	}
 	"False Therapy Desc"
 	{
-		"en"	"Reduces damage taken by 40％\nBoosts damage delt by 50％\nBoosts NPC'S Movementspeed by 25％"
+		"en"	"Reduces damage taken by 40％\nBoosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 25％"
+	}
+	"Expert's Mind"
+	{
+		"en"	"Expert's Mind"
+	}
+	"Expert's Mind Desc"
+	{
+		"en"	"Can only take 25％ of their max HP as damage in one hit.\n{crimson}Cannot reduce it to below 50 damage.\n{crimson}Doesn't work against true damage."
 	}
 	"Godly Motivation"
 	{
@@ -634,7 +642,7 @@
 	}
 	"Elemental Amplification Desc"
 	{
-		"en"	"Increaces Bleed damage by 15％\nIncreaces Burn damage by 20％\nBoosts all elemental type of damage, on how fast it fills the bar by 30％."
+		"en"	"Increases Bleed damage by 15％\nIncreases Burn damage by 20％\nBoosts all elemental type of damage, on how fast it fills the bar by 30％."
 	}
 	"Heavy Presence"
 	{
@@ -730,7 +738,7 @@
 	}
 	"Skadi's Skills Desc"
 	{
-		"en"	"Increaces Abyssalhunter weapons damage by 10％"
+		"en"	"Increases Abyssalhunter weapons damage by 10％"
 	}
 	"Castle Breaking Power"
 	{
@@ -738,7 +746,7 @@
 	}
 	"Castle Breaking Power Desc"
 	{
-		"en"	"Increaces Victorian weapons damage by 10％"
+		"en"	"Increases Victorian weapons damage by 10％"
 	}
 	"Victorian Launcher's Call"
 	{
@@ -746,7 +754,7 @@
 	}
 	"Victorian Launcher's Call Desc"
 	{
-		"en"	"Increaces Victorian Weapons Explosive Radius by 10％"
+		"en"	"Increases Victorian Weapons Explosive Radius by 10％"
 	}
 	"Tinkering Curiosity"
 	{
@@ -811,6 +819,10 @@
 	"Osmosis'ity Desc"
 	{
 		"en"	"On hit, Reduces ability cooldown by 2 seconds, can only happen once per attacker."
+	}
+	"Ruina Battery Charge"
+	{
+		"en"	"Ruina Battery Charge"
 	}
 	"Village"
 	{
@@ -898,7 +910,7 @@
 	}
 	"Iberia Morale Boost Desc"
 	{
-		"en"	"Increaces damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
+		"en"	"Increases damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
 	}
 	"Heavy Laccerations"
 	{
@@ -1070,7 +1082,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" "Increaces player attack/reload speed & healrate and reloadspeed by 20％"
+		"en" "Increases player attack/reload speed & healrate and reloadspeed by 20％"
 	}
 	"Physical Therapy"
 	{
@@ -1102,7 +1114,7 @@
 	}
 	"Powering Therapy Desc"
 	{
-		"en" "5％ resistance and 15％ damage delt"
+		"en" "5％ resistance and 15％ damage dealt"
 	}
 	"Calling Therapy"
 	{
@@ -1110,7 +1122,7 @@
 	}
 	"Calling Therapy Desc"
 	{
-		"en" "15％ resistance and 5％ damage delt, 10％ more speed for NPCS"
+		"en" "15％ resistance and 5％ damage dealt, 10％ more speed for NPCS"
 	}
 	"Caffinated Therapy"
 	{
@@ -1118,7 +1130,7 @@
 	}
 	"Caffinated Therapy Desc"
 	{
-		"en" "25％ Resistance, 25％ more damage delt, and gain 20％ Speed for NPCS"
+		"en" "25％ Resistance, 25％ more damage dealt, and gain 20％ Speed for NPCS"
 	}
 	"Regenerating Therapy"
 	{
@@ -1128,14 +1140,6 @@
 	{
 		"en" "10％ Resistance, and deal 10％ more damage, gain slow HP regen."
 	}
-	"Spotter's Rally"
-	{
-		"en"	"Spotter's Rally"
-	}
-	"Spotter's Rally Desc"
-	{
-		"en"	"What a Good guy...\nDoubles damage dealt!\nGrants +66％ resistance.\nIncreases allied npc speed by +25％.\nIncreases attack/reload speed & healrate by +35％."
-	}
 	"Weapon Overclock"
 	{
 		"en"	"Overclock"
@@ -1143,7 +1147,7 @@
 	}
 	"Weapon Overclock Desc"
 	{
-		"en"	"Increaces damage by 50％\nBoosts attack/reload speed & healrate by 30％ and mana is continuously restored."
+		"en"	"Increases damage by 50％\nBoosts attack/reload speed & healrate by 30％ and mana is continuously restored."
 	}
 	"Weapon Clocking"
 	{

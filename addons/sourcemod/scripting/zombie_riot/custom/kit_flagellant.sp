@@ -42,11 +42,14 @@ void Flagellant_MapStart()
 
 void PrecacheSharedDarkestMusic()
 {
-
-	if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
+	if(!Precached)
 	{
-		// MASS REPLACE THIS IN ALL FILES
 		PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
+		if(CvarFileNetworkDisable.IntValue > 0)
+		{
+			AddFileToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vtf");
+			AddFileToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vmt");
+		}
 		Precached = true;
 	}
 }

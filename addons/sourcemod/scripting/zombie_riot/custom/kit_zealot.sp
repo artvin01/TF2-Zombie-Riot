@@ -144,7 +144,7 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 				TF2_AddCondition(client, TFCond_LostFooting, CHARGE_DURATION);
 				TF2_AddCondition(client, TFCond_AirCurrent, CHARGE_DURATION);
 				TF2_AddCondition(client, TFCond_FreezeInput, CHARGE_DURATION);
-				IncreaceEntityDamageTakenBy(client, 0.25, CHARGE_DURATION);
+				IncreaseEntityDamageTakenBy(client, 0.25, CHARGE_DURATION);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + CHARGE_DURATION + 0.5;
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + CHARGE_DURATION + 0.5;
 				ApplyStatusEffect(client, client, "Intangible", 3.0);
@@ -536,16 +536,21 @@ public void Enable_Zealot(int client, int weapon) // Enable management, handle w
 			SetParent(client, entity);
 			ParticleRef[client] = EntIndexToEntRef(entity);
 		}
-		if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
-		{
-			// MASS REPLACE THIS IN ALL FILES
-			PrecacheSoundCustom("#zombiesurvival/zealot_lastman_1.mp3",_,1);
-			Precached = true;
-		}
+		ZealotMusicDownload();
 	}
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ZEALOT_GUN) //
 	{
 		f_PistolGet[client] = EntIndexToEntRef(weapon);
+	}
+}
+
+void ZealotMusicDownload()
+{
+	if(!Precached)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("#zombiesurvival/zealot_lastman_1.mp3",_,1);
+		Precached = true;
 	}
 }
 

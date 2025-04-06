@@ -79,7 +79,6 @@ void Configs_ConfigsExecuted()
 
 	char mapname[64];
 	GetCurrentMap(mapname, sizeof(mapname));
-
 	KeyValues kv = Configs_GetMapKv(mapname);
 
 	ExecuteMapOverrides(kv);
@@ -149,6 +148,9 @@ void Configs_ConfigsExecuted()
 		if(IsClientInGame(client))
 			OnClientPutInServer(client);
 	}
+#if defined ZR
+	ZR_FastDownloadForce();
+#endif
 }
 
 static void ExecuteMapOverrides(KeyValues kv)

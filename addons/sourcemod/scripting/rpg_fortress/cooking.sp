@@ -803,11 +803,11 @@ public float Cooking_UseFunction(int client, int index, char name[48])
 
 		value = MergMult(kv, map, "resist");
 		if(value != 1.0)
-			IncreaceEntityDamageTakenBy(client, value, duration);
+			IncreaseEntityDamageTakenBy(client, value, duration);
 
 		value = MergMult(kv, map, "damage");
 		if(value != 1.0)
-			IncreaceEntityDamageDealtBy(client, value, duration);
+			IncreaseEntityDamageDealtBy(client, value, duration);
 		
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon != -1)

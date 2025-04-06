@@ -711,7 +711,7 @@ public void ReconstructiveTeleporter(int client)
 					WorldSpaceCenter(ally, WorldSpaceVec);
 					ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
 					SetEntProp(ally, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(ally)) * 1.5));
-					IncreaceEntityDamageTakenBy(ally, 0.05, 2.0);
+					IncreaseEntityDamageTakenBy(ally, 0.05, 2.0);
 					WorldSpaceCenter(client, WorldSpaceVec);
 					TeleportEntity(ally, WorldSpaceVec, NULL_VECTOR, NULL_VECTOR);
 				}
@@ -760,6 +760,10 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 
 	//This is fine to use 
 	int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	if(Purnell_Existant(client))
+	{
+		weapon = Purnell_Existant(client);
+	}
 	if(IsValidEntity(weapon))
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -781,6 +785,17 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 					Healing_Amount=1.0;
 
 				Base_HealingMaxPoints=RoundToCeil(3000.0 * Healing_Amount);
+			}
+			case WEAPON_PURNELL_PRIMARY:
+			{
+				Healing_Amount=Attributes_Get(weapon, 122, 0.0);
+				//it starts at -1.0, so it should go upto 1.0.
+				if(Healing_Amount<1.0)
+					Healing_Amount=1.0;
+
+				Healing_Amount *= 0.5;
+				
+				Base_HealingMaxPoints=RoundToCeil(800.0 * Healing_Amount);
 			}
 			default:
 				Base_HealingMaxPoints=RoundToCeil(1900.0 * Healing_Amount);
@@ -1371,7 +1386,7 @@ public void GearTesting(int client)
 				b_ActivatedDuringLastMann[client] = true;
 			}
 
-			IncreaceEntityDamageTakenBy(client, 0.5, 3.0);
+			IncreaseEntityDamageTakenBy(client, 0.5, 3.0);
 			
 			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		//	ClientCommand(client, "playgamesound mvm/mvm_tank_start.wav");
