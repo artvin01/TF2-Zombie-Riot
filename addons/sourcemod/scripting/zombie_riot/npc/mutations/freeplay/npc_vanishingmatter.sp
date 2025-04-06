@@ -278,18 +278,19 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 
 					if(!npc.Anger)
 					{
-						damageDealt = 35.0;
+						damageDealt = 100.0;
 					}
+
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2.5;
 						
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.01))
 					{
 						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.01);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
-						if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.01))
-						{
-							SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.01));
-						}
+						if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < 0)
+							SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 					}
 
 					// Hit sound
