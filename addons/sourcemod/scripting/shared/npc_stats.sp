@@ -3101,6 +3101,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			if (flNextBotGroundSpeed < 0.01) {
 				if (this.m_iPoseMoveX >= 0) {
+					this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
 				}
 				if (this.m_iPoseMoveY >= 0) {
 					this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
