@@ -967,6 +967,8 @@ methodmap Citizen < CClotBody
 		
 		npc.m_iSeed = seed;
 		
+		FixModelTeethEatingWorld(npc.index);
+
 		npc.m_nDowned = 1;
 		npc.m_bThisEntityIgnored = true;
 		npc.m_iReviveTicks = 0;

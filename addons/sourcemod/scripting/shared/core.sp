@@ -2467,10 +2467,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		  || !StrContains(classname, "entity_medigun_shield")
 		  || !StrContains(classname, "tf_projectile_energy_ball")
 		  || !StrContains(classname, "item_powerup_rune")
-		  || !StrContains(classname, "vgui_screen")
-		  || !StrContains(classname, "vgui_screen")
-		  || !StrContains(classname, "vgui_screen")
-		  || !StrContains(classname, "vgui_screen")
 		  || !StrContains(classname, "vgui_screen"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
@@ -2601,6 +2597,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
+			FixModelTeethEatingWorld(entity);
 		}
 		else if(!StrContains(classname, "func_respawnroomvisualizer"))
 		{

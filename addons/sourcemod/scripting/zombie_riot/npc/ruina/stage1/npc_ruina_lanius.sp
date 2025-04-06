@@ -191,7 +191,7 @@ methodmap Lanius < CClotBody
 		
 		*/
 
-		SetVariantInt(2 + 4);
+		SetVariantInt(2 + 4w);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;

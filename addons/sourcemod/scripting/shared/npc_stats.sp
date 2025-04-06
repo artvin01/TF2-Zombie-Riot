@@ -636,6 +636,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	RemoveAllDamageAddition();
 		}
 #endif
+		FixModelTeethEatingWorld(npc);
 		//Think once.
 		if(NpcTypeLogic == STATIONARY_NPC)
 		{
@@ -3100,7 +3101,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			if (flNextBotGroundSpeed < 0.01) {
 				if (this.m_iPoseMoveX >= 0) {
-					this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
 				}
 				if (this.m_iPoseMoveY >= 0) {
 					this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
@@ -11099,4 +11099,34 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 	return vecSwingEnd;
+}
+
+
+void FixModelTeethEatingWorld(int entity)
+{
+	/*
+	//Why did i check for models? if they have r_teeth, set it to 0!
+	iint ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
+	if(ModelIndex < 0)
+		return;
+		
+	char ModelPath[255];
+	ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
+	bool TryToFixTeeth = false;
+	if(!StrContains(classname, "models/humans/group"))
+		TryToFixTeeth = true;
+	else if(!StrContains(classname, "models/humans/group"))
+		TryToFixTeeth = true;
+	else if(!StrContains(classname, "models/humans/group"))
+		TryToFixTeeth = true;
+	if(!TryToFixTeeth)
+		return;
+	*/
+	CClotBody npc = view_as<CClotBody>(entity);
+	int PoseParram = npc.LookupPoseParameter("r_teeth");
+	if(PoseParram <= 0)
+		return;
+
+	//fixes Void eating issue
+	npc.SetPoseParameter(PoseParram , 0.0);
 }
