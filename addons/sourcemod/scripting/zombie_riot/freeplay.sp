@@ -1196,6 +1196,7 @@ void Freeplay_SetupStart(bool extra = false)
 		if(setuptimes <= 0)
 		{
 			guaranteedraid = true;
+			setuptimes = 4;
 			wrathofirln = false;
 		}
 
