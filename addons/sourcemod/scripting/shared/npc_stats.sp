@@ -10359,9 +10359,15 @@ public void TeleportBackToLastSavePosition(int entity)
 	}
 }
 
-public void SaveLastValidPositionEntity(int entity)
+void SaveLastValidPositionEntity(int entity, float vecsaveforce[3] = {0.0,0.0,0.0})
 {
 	//first see if they are on the ground
+	if(vecsaveforce[2] != 0.0)
+	{
+		//Save new point
+		f3_VecTeleportBackSave_OutOfBounds[entity] = vecsaveforce;
+		return;
+	}
 	if(f_GameTimeTeleportBackSave_OutOfBounds[entity] > GetGameTime())
 		return;
 

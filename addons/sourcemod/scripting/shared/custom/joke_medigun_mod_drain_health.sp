@@ -85,6 +85,10 @@ public void MedigunChangeModeR(int client, int weapon, bool crit, int slot)
 	{
 		NeedCrouch = !b_InteractWithReload[client];
 	}
+	else
+	{
+		NeedCrouch = b_InteractWithReload[client];
+	}
 	MedigunChangeModeRInternal(client, weapon, crit, slot, NeedCrouch);
 }
 public void MedigunChangeModeRInternal(int client, int weapon, bool crit, int slot, bool checkCrouch)

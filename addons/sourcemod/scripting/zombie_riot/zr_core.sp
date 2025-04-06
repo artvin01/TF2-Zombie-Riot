@@ -2379,6 +2379,21 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	if(!setmusicfalse)
 		ZombieMusicPlayed = setmusicfalse;
 
+	float pos2[3];
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	{
+		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
+		int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
+		if(!IsValidEntity(entity_close))
+			continue;
+
+		GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[entity_close], f3_CustomMinMaxBoundingBox[entity_close]))
+			continue;
+			
+		int builder_owner = GetEntPropEnt(entity_close, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, entity_close);
+	}
 //	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	for(int client=1; client<=MaxClients; client++)

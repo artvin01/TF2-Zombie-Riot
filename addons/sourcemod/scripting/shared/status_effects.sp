@@ -946,8 +946,9 @@ void Force_ExplainBuffToClient(int client, const char[] name)
 void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool AppliedOntoOthers = false)
 {
 	//Bad client
-	if(client <= 0)
+	if(client <= 0 && client > MaxClients)
 		return;
+
 	//Debuff has no icon, so we dont care.
 	if(!Apply_MasterStatusEffect.HudDisplay[0])
 		return;
@@ -1048,7 +1049,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			ShowToClient = victim;
 
 		int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
-		if(owner > 0 && owner <= MaxClients)
+		if(!b_ThisWasAnNpc[victim] && owner > 0 && owner <= MaxClients) //Dont display to owner if the victimn was an npc
 			ShowToClient = owner;
 
 		if(ShowToClient > 0 && ShowToClient <= MaxClients)

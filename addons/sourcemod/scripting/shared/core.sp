@@ -1178,7 +1178,6 @@ public void OnConfigsExecuted()
 		ServerCommand("sm plugins reload zombie_riot");
 		return;
 	}
-	
 	Configs_ConfigsExecuted();
 }
 
