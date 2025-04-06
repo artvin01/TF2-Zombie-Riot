@@ -1581,10 +1581,15 @@ bool Citizen_ThatIsDowned(int entity)
 	return (i_NpcInternalId[entity] == NPCId && view_as<Citizen>(entity).m_nDowned);
 }
 
-int Citizen_ReviveTicks(int entity, int amount, int client)
+int Citizen_ReviveTicks(int entity, int amount, int client, bool NoAutoRevive = false)
 {
 	Citizen npc = view_as<Citizen>(entity);
 	npc.m_iReviveTicks -= amount;
+	if(NoAutoRevive)
+	{
+		if(npc.m_iReviveTicks < 1)
+			npc.m_iReviveTicks = 1;
+	}
 	if(npc.m_iReviveTicks < 1)
 		npc.SetDowned(0, client);
 	

@@ -397,8 +397,8 @@ void AmmoBox_NPCDeath(int entity)
 					if(team != TFTeam_Red)
 					Zombies_Currently_Still_Ongoing++;
 			
-					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
+					SetEntProp(other, Prop_Data, "m_iHealth", 5000);
+					SetEntProp(other, Prop_Data, "m_iMaxHealth", 5000);
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;

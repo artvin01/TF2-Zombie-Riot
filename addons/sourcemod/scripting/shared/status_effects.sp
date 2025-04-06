@@ -2519,6 +2519,8 @@ float Void_Internal_2_DamageDealFunc(int attacker, int victim, StatusEffect Appl
 
 float Void_Internal_1_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
 	// Enfeeble fades out with time
 	if(NpcStats_IsEnemySilenced(victim))
 		return ((victim <= MaxClients) ? 0.95 : 0.9);
@@ -2528,6 +2530,9 @@ float Void_Internal_1_DamageTakenFunc(int attacker, int victim, StatusEffect App
 
 float Void_Internal_2_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
+
 	// Enfeeble fades out with time
 	if(NpcStats_IsEnemySilenced(victim))
 		return ((victim <= MaxClients) ? 0.9 : 0.85);
@@ -2817,10 +2822,12 @@ void StatusEffects_SevenHeavySouls()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.5;
 	data.DamageDealMulti			= 0.5;
-	data.MovementspeedModif			= 0.5;
+	data.MovementspeedModif			= 1.5;
 	data.AttackspeedBuff			= 0.5;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
+	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -3109,7 +3116,8 @@ float AdaptiveMedigun_RangedFunc(int attacker, int victim, StatusEffect Apply_Ma
 {
 	if(!(damagetype & (DMG_CLUB))) // if not NOT melee
 	{
-		return 0.85;
+		if(!(damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+			return 0.85;
 	}
 	
 	return 1.0;
@@ -3410,6 +3418,8 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 
 float RuinasDefense_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+		return 1.0;
 	return Apply_StatusEffect.DataForUse;
 }
 

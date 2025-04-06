@@ -19,9 +19,7 @@ static const char g_HurtSounds[][] =
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/taunts/heavy_taunts16.mp3",
 	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
@@ -51,8 +49,8 @@ void RedHeavy_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
 	data.Precache = ClotPrecache;
+	NPCId = NPC_Add(data);
 	NoSoundLoop = false;
 }
 
@@ -77,6 +75,7 @@ methodmap RedHeavy < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
+		NpcSpeechBubble(this.index, "I think you need more men!", 5, {255,0,0,255}, {0.0,0.0,80.0}, "");
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
@@ -182,14 +181,6 @@ public void RedHeavy_ClotThink(int iNPC)
 					npc.m_iTarget = other;
 					if(count > 5)
 					{
-						for(int client1 = 1; client1 <= MaxClients; client1++)
-						{
-							if(!b_IsPlayerABot[client1] && IsClientInGame(client1) && !IsFakeClient(client1))
-							{
-								SetMusicTimer(client1, GetTime() + 1); //This is here beacuse of raid music.
-								Music_Stop_All(client1);
-							}
-						}
 						MusicEnum music;
 						strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/finale.mp3");
 						music.Time = 555;
@@ -202,13 +193,15 @@ public void RedHeavy_ClotThink(int iNPC)
 						RaidModeTime += 10.0;
 						NoSoundLoop = true;
 						stop_thinking = true;
+						CPrintToChatAll("{snow}We are the 7 heavy souls, we will assist you in your battle against this.");
+						CPrintToChatAll("{crimson}I THINK YOU NEED MORE MEN!!!!!");
 						break;//we found all!
 					}
 				}
 			}
 		}
 		if(stop_thinking)
-		return;
+			return;
 	}
 
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))

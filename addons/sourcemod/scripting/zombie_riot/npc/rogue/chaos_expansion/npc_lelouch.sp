@@ -227,9 +227,9 @@ int i_Lelouch_Index;
 #define LELOUCH_CRYSTAL_SHIELD_STRENGTH 0.1	//How much res each crystal gives. eg: 4 crystals alive, each does 0.1, total res is 40%
 
 static float fl_Anchor_Fixed_Spawn_Pos[3][3] ={
-	{8731.121094, 2849.591797, -3318.968750},
-	{6070.426270, -2539.363281, -3319.968750},
-	{11448.688477, -64.187515, -3318.968750}
+	{8731.121094, 2849.591797, -3378.968750},
+	{6070.426270, -2539.363281, -3378.968750},
+	{11448.688477, -64.187515, -3378.968750}
 };
 static int i_AnchorID_Ref[MAXENTITIES][3];
 static bool b_Anchors_Created[MAXENTITIES];

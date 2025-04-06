@@ -2031,6 +2031,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ReviveAll();
 				CheckAlivePlayers();
 			}
+			BlockOtherRaidMusic = false;
 			if(round.AmmoBoxExtra)
 			{
 				Ammo_Count_Ready += round.AmmoBoxExtra;	

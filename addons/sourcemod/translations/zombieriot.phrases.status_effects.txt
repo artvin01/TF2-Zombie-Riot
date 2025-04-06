@@ -1160,6 +1160,6 @@
 	}
 	"7 Heavy Souls Desc"
 	{
-		"en"	"Increases damage by 50%%\nIncreases resistance by 50%%\nIncreases attack speed by 50%%"
+		"en"	"Increases damage by 50%%\nIncreases resistance by 50%%\nIncreases attack speed by 100%%"
 	}
 }
