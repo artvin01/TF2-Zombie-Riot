@@ -1638,7 +1638,7 @@ void Freeplay_SetupStart(bool extra = false, bool guaranteedraid = false)
 			default:
 			{
 				CPrintToChatAll("{purple}Otherworldly beings approach from a dimensional rip...");
-				NormalSignaller = true;
+				immutable = true;
 			}
 		}
 
