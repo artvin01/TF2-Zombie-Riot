@@ -659,6 +659,8 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 		if(!LastMann)
 			HealEntityGlobal(client, target, MaxHealthally, 0.5, 1.0);
 
+		HealPointToReinforce(client, 1, 0.02);
+
 		Purnell_AllyBuffApply(client, target, buff_apply, DurationGive);
 		if(i_Pap_Level[client] >= 3)
 			Purnell_AllyBuffApply(client, target, buff_apply2, DurationGive);

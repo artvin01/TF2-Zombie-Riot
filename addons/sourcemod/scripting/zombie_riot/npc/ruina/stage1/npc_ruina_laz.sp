@@ -150,7 +150,7 @@ methodmap Laz < CClotBody
 
 		
 		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
+		SetVariantInt(1 + 8);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

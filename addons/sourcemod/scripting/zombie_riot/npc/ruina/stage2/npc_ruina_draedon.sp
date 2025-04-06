@@ -199,7 +199,8 @@ methodmap Draedon < CClotBody
 			"models/player/items/medic/berliners_bucket_helm.mdl",
 			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
 			"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl",
-			RUINA_CUSTOM_MODELS_1
+			RUINA_CUSTOM_MODELS_1,
+			"models/weapons/c_models/c_battalion_buffpack/c_battalion_buffpack.mdl"
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -213,6 +214,7 @@ methodmap Draedon < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, skin);	
+		npc.m_iWearable8 = npc.EquipItem("head", Items[7], _, skin);	
 
 		SetVariantInt(RUINA_MAGI_GUN_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
@@ -224,7 +226,7 @@ methodmap Draedon < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a RANGED npc
 
-		SetVariantInt(1);
+		SetVariantInt(1 + 2 + 4 + 8);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		return npc;

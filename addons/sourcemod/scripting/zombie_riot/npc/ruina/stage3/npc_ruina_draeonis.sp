@@ -198,14 +198,15 @@ methodmap Draeonis < CClotBody
 			"models/workshop_partner/player/items/scout/scout_henchboy/scout_henchboy_belt.mdl",
 			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
 			"models/workshop/player/items/scout/sum24_tankers_top/sum24_tankers_top.mdl",
-			RUINA_CUSTOM_MODELS_1
+			RUINA_CUSTOM_MODELS_1,
+			"models/weapons/c_models/c_battalion_buffpack/c_battalion_buffpack.mdl"
 		};
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		SetVariantInt(1);
+		SetVariantInt(1 + 2 + 4 + 8);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
@@ -215,6 +216,7 @@ methodmap Draeonis < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, skin);	
+		npc.m_iWearable8 = npc.EquipItem("head", Items[7], _, skin);	
 
 		SetVariantInt(RUINA_MAGI_GUN_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	

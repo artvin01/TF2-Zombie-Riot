@@ -156,12 +156,13 @@ methodmap Rulianius < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		bool rogue_Extra = StrContains(data, "rogue") != -1;
 		npc.m_flNextRangedBarrage_Singular = 99999999.9;
-		npc.m_flNextRangedBarrage_Spam = 0.0;
+		npc.m_flNextRangedBarrage_Spam = 99999999.9;
 		fl_npc_basespeed = 300.0;
 		if(rogue_Extra)
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Elite Rulianius");
-			npc.m_flNextRangedBarrage_Singular = GetGameTime() + GetRandomFloat(5.0, 30.0);
+			npc.m_flNextRangedBarrage_Singular = GetGameTime() + GetRandomFloat(5.0, 10.0);
+			npc.m_flNextRangedBarrage_Spam = GetGameTime() + GetRandomFloat(5.0, 10.0);
 			float flPos[3];
 			float flAng[3];
 			npc.GetAttachment("effect_hand_r", flPos, flAng);

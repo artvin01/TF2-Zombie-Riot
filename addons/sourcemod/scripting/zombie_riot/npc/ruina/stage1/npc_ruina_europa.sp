@@ -137,6 +137,8 @@ methodmap Europa < CClotBody
 		
 		*/
 		
+		SetVariantInt(1 + 2 + 4 + 8);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

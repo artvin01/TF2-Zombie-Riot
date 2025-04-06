@@ -201,6 +201,8 @@ methodmap Eurainis < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
+		SetVariantInt(1 + 2 + 4 + 8);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		return npc;
 	}
