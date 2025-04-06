@@ -353,6 +353,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_thisNpcIsARaid[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		}
 		else
 		{

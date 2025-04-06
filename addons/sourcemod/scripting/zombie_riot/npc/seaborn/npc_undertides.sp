@@ -121,6 +121,7 @@ methodmap UnderTides < CClotBody
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
+		npc.m_bisWalking = false;
 		
 		return npc;
 	}

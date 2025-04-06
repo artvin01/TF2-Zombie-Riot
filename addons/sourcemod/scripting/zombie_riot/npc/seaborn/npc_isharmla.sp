@@ -53,6 +53,7 @@ methodmap Isharmla < CClotBody
 		
 		i_NpcWeight[npc.index] = 6;
 		npc.SetActivity("ACT_SKADI_WALK");
+		npc.m_bisWalking = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -77,11 +78,20 @@ methodmap Isharmla < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_demo.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
+		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
+		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 255, 255);
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
 		npc.m_bTeamGlowDefault = true;
 
 		if(ally != TFTeam_Red)
@@ -145,8 +155,12 @@ public void Isharmla_ClotThink(int iNPC)
 		i_TargetAlly[npc.index] = -1;
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 255, 255);
 
 		npc.SetActivity("ACT_SKADI_REVERT");
+		npc.SetCycle(0.95);
+		npc.SetPlaybackRate(-1.0);
+		npc.m_bisWalking = false;
 		npc.m_flNextThinkTime = gameTime + 1.25;
 		npc.m_bTeamGlowDefault = true;
 		b_IsEntityNeverTranmitted[npc.index] = false;
@@ -180,6 +194,7 @@ public void Isharmla_ClotThink(int iNPC)
 		
 		npc.m_iPoints = 0;
 		npc.SetActivity("ACT_SKADI_WALK");
+		npc.m_bisWalking = true;
 		
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -223,6 +238,7 @@ public void Isharmla_ClotThink(int iNPC)
 			b_NpcIsInvulnerable[npc.index] = true;
 			SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+			SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 1);
 			return;
 		}
 	}
@@ -230,6 +246,8 @@ public void Isharmla_ClotThink(int iNPC)
 	{
 		npc.m_iPoints = 99999;
 		npc.SetActivity("ACT_SKADI_TRANSFORM");
+		npc.SetCycle(0.05);
+		npc.m_bisWalking = false;
 		npc.m_flNextThinkTime = gameTime + 1.25;
 
 		npc.m_iTarget = 0;
@@ -358,18 +376,21 @@ public void Isharmla_ClotThink(int iNPC)
 		{
 			npc.StopPathing();
 			npc.SetActivity("ACT_SKADI_WALK");
+			npc.m_bisWalking = true;
 		}
 		else
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			npc.StartPathing();
 			npc.SetActivity("ACT_SKADI_WALK");
+			npc.m_bisWalking = true;
 		}
 	}
 	else
 	{
 		npc.StopPathing();
 		npc.SetActivity("ACT_SKADI_WALK");
+		npc.m_bisWalking = true;
 	}
 }
 
@@ -408,6 +429,9 @@ void Isharmla_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }
 
 static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})

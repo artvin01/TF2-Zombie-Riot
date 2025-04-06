@@ -74,6 +74,7 @@ methodmap Remains < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bThisEntityIgnored = true;
 		npc.m_iBuffType = type;
+		npc.m_bisWalking = false;
 		
 		func_NPCThink[npc.index] = Remains_ClotThink;
 		return npc;
