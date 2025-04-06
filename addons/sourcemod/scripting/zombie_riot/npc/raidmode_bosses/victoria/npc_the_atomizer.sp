@@ -533,7 +533,7 @@ static void Clone_ClotThink(int iNPC)
 				}						
 			}
 		}
-		IncreaceEntityDamageTakenBy(npc.index, 0.7, 0.1);
+		IncreaseEntityDamageTakenBy(npc.index, 0.7, 0.1);
 		spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 		spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 		npc.m_flDoingAnimation = gameTime + 1.1;
@@ -948,7 +948,7 @@ static void Internal_ClotThink(int iNPC)
 					}						
 				}
 			}
-			IncreaceEntityDamageTakenBy(npc.index, 0.7, 0.1);
+			IncreaseEntityDamageTakenBy(npc.index, 0.7, 0.1);
 			spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 			spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 			npc.m_flDoingAnimation = gameTime + 1.1;
@@ -1081,7 +1081,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			I_cant_do_this_all_day[npc.index]=0;
 			npc.m_bFUCKYOU=true;
-			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
+			IncreaseEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			FTL[npc.index] += 5.0;
 			RaidModeTime += 5.0;

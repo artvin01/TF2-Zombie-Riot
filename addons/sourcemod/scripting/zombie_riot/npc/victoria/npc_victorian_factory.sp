@@ -330,7 +330,7 @@ static void ClotThink(int iNPC)
 						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-						IncreaceEntityDamageTakenBy(spawn_index, 0.000001, 1.0);
+						IncreaseEntityDamageTakenBy(spawn_index, 0.000001, 1.0);
 					}
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
 					i_AttacksTillMegahit[npc.index] += 1;

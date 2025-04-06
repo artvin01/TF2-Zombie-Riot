@@ -277,7 +277,7 @@ bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 float f_HealDelayParticle[MAXENTITIES]={1.0, ...};
 
 bool b_IsAloneOnServer = false;
-bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
+bool b_TauntSpeedIncrease[MAXTF2PLAYERS] = {true, ...};
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
@@ -311,7 +311,7 @@ int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
 float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
 //Just speeds up their time ig?
-float f_AttackSpeedNpcIncreace[MAXENTITIES] = {1.0, ...};
+float f_AttackSpeedNpcIncrease[MAXENTITIES] = {1.0, ...};
 float f_AllowInstabuildRegardless = 0.0;
 int ClientAttribResetCount[MAXTF2PLAYERS];
 

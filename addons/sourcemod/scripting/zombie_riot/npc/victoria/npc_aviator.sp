@@ -191,9 +191,9 @@ methodmap Aviator < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/engineer/tw_engineerbot_armor/tw_engineerbot_armor.mdl");
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/engineer/tw_engineerbot_armor/tw_engineerbot_armor.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -443,7 +443,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 	if(npc.m_flAttackHappens)
 	{
 		npc.i_GunMode = 0;
-		if(gameTime > npc.m_flAttackHappens && npc.m_flNextMeleeAttack < gameTime)
+		if(gameTime > npc.m_flAttackHappens)
 		{
 			npc.m_flAttackHappens = 0.0;
 			Handle swingTrace;
@@ -477,7 +477,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 	}
 
 	//This ranged unit is more of an intruder, so we will get whatever enemy its pathing
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
+	if(npc.m_flNextMeleeAttack < gameTime && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
 	{
 		//close enough to concider as a melee range attack.
 		npc.i_GunMode = 0;

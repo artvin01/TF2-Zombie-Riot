@@ -172,13 +172,14 @@ public void Erasus_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-
+	/*
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+	*/
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -228,7 +229,8 @@ public Action Erasus_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
+		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+		npc.PlayHurtSound();
 	}
 	
 	return Plugin_Changed;

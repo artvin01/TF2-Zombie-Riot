@@ -83,7 +83,7 @@ public void ZRModifs_OldTimesNPC(int iNpc)
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.6));
 	fl_GibVulnerablity[iNpc] *= 1.6;
 	fl_Extra_Speed[iNpc] *= 1.06;
-	f_AttackSpeedNpcIncreace[iNpc] *= 0.75;
+	f_AttackSpeedNpcIncrease[iNpc] *= 0.75;
 }
 
 float ZRModifs_MaxSpawnsAlive()

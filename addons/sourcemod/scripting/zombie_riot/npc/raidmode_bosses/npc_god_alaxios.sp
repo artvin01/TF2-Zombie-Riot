@@ -553,7 +553,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 					}
 					case 0:
 					{
-						f_AttackSpeedNpcIncreace[npc.index] *= 0.75;
+						f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
 						fl_Extra_Damage[npc.index] *= 0.75;
 						CPrintToChatAll("{crimson}The infection wont let go. It wants him the most.");
 						b_NpcUnableToDie[npc.index] = false;

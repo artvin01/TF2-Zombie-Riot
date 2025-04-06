@@ -287,7 +287,7 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 				FreezeNpcInTime(spawn_index, 3.0, true);
-				IncreaceEntityDamageTakenBy(spawn_index, 0.000001, 3.0);
+				IncreaseEntityDamageTakenBy(spawn_index, 0.000001, 3.0);
 			}
 			
 			return;

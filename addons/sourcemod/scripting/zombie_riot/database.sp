@@ -273,7 +273,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			b_HudHitMarker[client] = view_as<bool>(results[2].FetchInt(12));
 			thirdperson[client] = view_as<bool>(results[2].FetchInt(13));
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
-			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
+			b_TauntSpeedIncrease[client] = view_as<bool>(results[2].FetchFloat(15));
 			f_Data_InBattleHudDisableDelay[client] = results[2].FetchFloat(16);
 
 			int music = results[2].FetchInt(17);
@@ -395,7 +395,7 @@ void DataBase_ClientDisconnect(int client)
 				b_HudHitMarker[client],
 				thirdperson[client],
 				f_ZombieVolumeSetting[client],
-				b_TauntSpeedIncreace[client],
+				b_TauntSpeedIncrease[client],
 				f_Data_InBattleHudDisableDelay[client],
 				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0) + (b_DisableSetupMusic[client] ? 128 : 0) + (b_DisableStatusEffectHints[client] ? 256 : 0) + (b_LastManDisable[client] ? 512 : 0)),
 				id);
@@ -433,7 +433,7 @@ void DataBase_ClientDisconnect(int client)
 				b_HudHitMarker[client],
 				thirdperson[client],
 				f_ZombieVolumeSetting[client],
-				b_TauntSpeedIncreace[client],
+				b_TauntSpeedIncrease[client],
 				f_Data_InBattleHudDisableDelay[client],
 				view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0),
 				id);				

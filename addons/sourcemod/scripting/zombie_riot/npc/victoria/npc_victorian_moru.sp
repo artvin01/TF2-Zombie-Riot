@@ -297,7 +297,7 @@ int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distanc
 					dist = GetVectorDistance(vecTarget, entitypos);
 					if(dist<(MK2[npc.index] ? 400.0 : 200.0))
 					{
-						IncreaceEntityDamageTakenBy(entity, 0.8, 0.3);
+						IncreaseEntityDamageTakenBy(entity, 0.8, 0.3);
 						HealEntityGlobal(npc.index, entity, 75.0, 1.0);
 					}
 				}

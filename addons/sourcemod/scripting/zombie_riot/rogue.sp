@@ -1789,6 +1789,7 @@ static void StartStage(const Stage stage)
 		{
 			Vehicle_Exit(client, false, false);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
+			SaveLastValidPositionEntity(client, pos);
 		}
 	}
 	
@@ -1800,6 +1801,7 @@ static void StartStage(const Stage stage)
 			if(GetTeam(entity) == TFTeam_Red && i_NpcInternalId[entity] != Remain_ID())
 			{
 				TeleportEntity(entity, pos, ang, NULL_VECTOR);
+				SaveLastValidPositionEntity(entity, pos);
 			}
 			else
 			{
