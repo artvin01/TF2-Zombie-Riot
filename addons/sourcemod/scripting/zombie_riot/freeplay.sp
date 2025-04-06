@@ -521,13 +521,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			if(GetRandomInt(1, 2) == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
-				enemy.Health = RoundToFloor(50000.0 / 70.0 * float(Waves_GetRound()));
+				enemy.Health = RoundToFloor(60000.0 / 70.0 * float(Waves_GetRound()));
 				enemy.ExtraDamage = 0.65;
 			}
 			else
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(125000.0 / 70.0 * float(Waves_GetRound()));
+				enemy.Health = RoundToFloor(135000.0 / 70.0 * float(Waves_GetRound()));
 			}
 
 			if(postWaves+1 < 89)
