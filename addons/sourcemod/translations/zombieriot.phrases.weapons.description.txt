@@ -4001,6 +4001,10 @@
 	{
 		"en"	"After 10 years in the joint youre back, you lost all your fighting abilities, regain them...\nA single melee weapon that does hits multiple times.\nHas a R ability to change fighting styles."
 	}
+	"Kits General Buff"
+	{
+		"en"	"Tiny damage Buff."
+	}
 	"Yakuza Pap 1"
 	{
 		"en"	"Gain a M2 ability which when used while attacking will do a heavy punch."

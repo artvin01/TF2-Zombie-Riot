@@ -809,7 +809,7 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 			SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
 		}
 		ApplyStatusEffect(owner, enemy, "Shrinking", 999999.0);	
-		Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_TRUEDAMAGE, weapon);
+	//	Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_TRUEDAMAGE, weapon);
 	}
 }
 public Action Weapon_Wand_PotionEndShrink(Handle timer, DataPack pack)
