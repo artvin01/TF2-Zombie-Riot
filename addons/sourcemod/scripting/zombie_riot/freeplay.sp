@@ -1205,6 +1205,11 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			EmitSoundToAll("ui/vote_success.wav");
 		}
+
+		ExtraSkulls++;
+		CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
+
+		SkullTimes = ExtraSkulls;
 	}
 
 	static int RerollTry;
