@@ -1596,7 +1596,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 		}
 		float VulnerabilityToGive = 0.065;
-		IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 5.0, true);
+		IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 5.0, true);
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 

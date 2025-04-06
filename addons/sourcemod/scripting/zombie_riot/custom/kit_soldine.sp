@@ -307,11 +307,10 @@ static void Wkit_Soldin_Effect(int client)
 
 	if(IsValidEntity(getweapon))
 	{
-		int RocketLoad = GetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"));
 		int RockeyAmmo=	GetAmmo(client, 8);
 		int RocketAmmoMAX=RoundToCeil(8.0* Attributes_Get(getweapon, 4, 1.0));
 		SetAmmo(client, 8, RockeyAmmo-RocketAmmoMAX);
-		SetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), RocketLoad+RocketAmmoMAX);
+		SetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), RocketAmmoMAX);
 	}
 	int entity;
 	entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);

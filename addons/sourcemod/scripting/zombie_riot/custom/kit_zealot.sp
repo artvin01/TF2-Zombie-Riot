@@ -144,7 +144,7 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 				TF2_AddCondition(client, TFCond_LostFooting, CHARGE_DURATION);
 				TF2_AddCondition(client, TFCond_AirCurrent, CHARGE_DURATION);
 				TF2_AddCondition(client, TFCond_FreezeInput, CHARGE_DURATION);
-				IncreaceEntityDamageTakenBy(client, 0.25, CHARGE_DURATION);
+				IncreaseEntityDamageTakenBy(client, 0.25, CHARGE_DURATION);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + CHARGE_DURATION + 0.5;
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + CHARGE_DURATION + 0.5;
 				ApplyStatusEffect(client, client, "Intangible", 3.0);

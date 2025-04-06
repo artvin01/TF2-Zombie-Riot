@@ -730,7 +730,7 @@ void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false, 
 	
 	if(!b_NpcHasDied[npc]) //Incase it gets called later.
 	{
-		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.
+		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage dealt by by secondary internal combustion too.
 		SDKHooks_TakeDamage(npc, client, client, damage * 0.5, DMG_BLAST | ZR_DAMAGE_IGNORE_DEATH_PENALTY); //extra damage to the target that was hit cus yeah.
 	}
 }

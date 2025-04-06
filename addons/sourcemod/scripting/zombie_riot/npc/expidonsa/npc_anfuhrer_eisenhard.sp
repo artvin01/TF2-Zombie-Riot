@@ -394,7 +394,7 @@ void AnfuhrerEisenhardSelfDefense(AnfuhrerEisenhard npc, float gameTime, int tar
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					IncreaceEntityDamageTakenBy(target, 0.15, 5.0, true);
+					IncreaseEntityDamageTakenBy(target, 0.15, 5.0, true);
 					//give 15% dmg vul with each hit for 5 secs
 
 					// Hit sound

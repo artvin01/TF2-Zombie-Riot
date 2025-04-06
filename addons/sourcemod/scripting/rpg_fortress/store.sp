@@ -517,7 +517,7 @@ static void ReShowSettingsHud(int client)
 	menu2.AddItem("-42", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed increase");
-	if(b_TauntSpeedIncreace[client])
+	if(b_TauntSpeedIncrease[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -961,13 +961,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -71: 
 				{
-					if(b_TauntSpeedIncreace[client])
+					if(b_TauntSpeedIncrease[client])
 					{
-						b_TauntSpeedIncreace[client] = false;
+						b_TauntSpeedIncrease[client] = false;
 					}
 					else
 					{
-						b_TauntSpeedIncreace[client] = true;
+						b_TauntSpeedIncrease[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}

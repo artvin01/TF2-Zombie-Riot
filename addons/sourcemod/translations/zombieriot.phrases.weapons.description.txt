@@ -544,7 +544,7 @@
 	}
 	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
 	{
-		"en"	"Increaces firerare, chargetime, and bombs planted at once"
+		"en"	"Increases firerare, chargetime, and bombs planted at once"
 		"fr"	"Cadence de tir et vitesse de charge améliorés, plante plus de bombes à la fois"
 		"chi"	"加攻速，充能速度，以及炸弹上限"
 	}
@@ -1759,19 +1759,19 @@
 	
 	"Body armor Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +50 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
+		"en"	"Increased How much armour you get per use and max cap. +50 HP\nProvides passive resistance if armor is broken and increases with more armor upgrades."
 		"fr"	"Armure reçu et armure maximalle améliorées. +50 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
 	"Kevlar Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +100 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
+		"en"	"Increased How much armour you get per use and max cap. +100 HP\nProvides passive resistance if armor is broken and increases with more armor upgrades."
 		"fr"	"Armure reçu et armure maximalle améliorées. +100 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
 	"Heavy Vest Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
+		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increases with more armor upgrades."
 		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
@@ -1782,7 +1782,7 @@
 	
 	"Full Riot Gear Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
+		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increases with more armor upgrades."
 		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
@@ -2429,7 +2429,7 @@
 	}
 	"Preaching Sword Pap 3"
 	{
-		"en"	"Increaces damage and resistances."
+		"en"	"Increases damage and resistances."
 		"fr"	"Dégats et résistances améliorés"
 		"chi"	"提高伤害和抗性"
 	}
@@ -3019,7 +3019,7 @@
 	}
 	"Zealot Pap 1 Desc"
 	{
-		"en"	"Boost stats.\nGain a potion that gives a random buff and heals upto half of your max health.\nSee random buff in weapon hud.\nIncreaces cooldown reductions."
+		"en"	"Boost stats.\nGain a potion that gives a random buff and heals upto half of your max health.\nSee random buff in weapon hud.\nIncreases cooldown reductions."
 	}
 	"Zealot Pap 2 Desc"
 	{
@@ -3027,7 +3027,7 @@
 	}
 	"Zealot Pap 3 Desc"
 	{
-		"en"	"Boost stats.\nIncreaces cooldown reductions.\nYour raipier now has an ability when crouching with M2\nDash through targets and gain extra attackspeed for 5 seconds."
+		"en"	"Boost stats.\nIncreases cooldown reductions.\nYour raipier now has an ability when crouching with M2\nDash through targets and gain extra attackspeed for 5 seconds."
 	}
 	"Zealot Pap 4 Desc"
 	{
@@ -3035,7 +3035,7 @@
 	}
 	"Zealot Pap 5 Desc"
 	{
-		"en"	"Boost stats.\nIncreaces cooldown reductions."
+		"en"	"Boost stats.\nIncreases cooldown reductions."
 	}
 	"Zealot Pap 6 Desc"
 	{
@@ -3278,7 +3278,7 @@
 	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
-		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increased.\nCrit Chance Increaces."
+		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increased.\nCrit Chance Increases."
 		"fr"	"Dégats, chance d'attaque critique et santé bonus par soins améliorés.\nVous frappez plus d'ennemis à la fois."
 		"chi"	"提高伤害，技能赋予更多双击子弹。\n加强穿透力，更高的超量上限。\n随机暴击概率提高。"
 	}
@@ -3288,21 +3288,21 @@
 	}
 	"Half Moon Desc2"
 	{
-		"en" 	"Increaces heal on hit\nIf below 30％ HP, you gain 25％ resistance, if you stand near no enemy, you heal."
+		"en" 	"Increases heal on hit\nIf below 30％ HP, you gain 25％ resistance, if you stand near no enemy, you heal."
 	}
 	"Half Moon Desc3"
 	{
-		"en" 	"Increaces heal on hit\nIncreaces threshhold to 35％, if at threshhold, heal regardless."
+		"en" 	"Increases heal on hit\nIncreases threshhold to 35％, if at threshhold, heal regardless."
 	}
 	"Angelic Shotgonnus Desc Pap 2"
 	{
-		"en"	"You deal more damage, you heal more, your range increaces and your ability holds more charge.\nCrit Chance Increaces."
+		"en"	"You deal more damage, you heal more, your range increases and your ability holds more charge.\nCrit Chance Increases."
 		"fr"	"Dégats, chance d'attaque critique, soins et portée améliorés.\nMaximum de charges d'abilité augmunté."
 		"chi"	"更多伤害，更多治疗。有效射程更高，技能给更多子弹。\n随机暴击概率提高。"
 	}
 	"Angelic Shotgonnus Desc Pap 3"
 	{
-		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increased.\nCrit Chance Increaces."
+		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increased.\nCrit Chance Increases."
 		"fr"	"Dégats, chance d'attaque critique, soins et santé bonus par soins et améliorés.\nDouble-attaque se déclenche 2x plus fréquemment."
 		"chi"	"更多伤害，更多治疗。有效射程更高，双击频率增加一倍。\n随机暴击概率提高。"
 	}

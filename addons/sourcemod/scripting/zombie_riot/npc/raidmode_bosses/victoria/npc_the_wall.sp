@@ -782,7 +782,7 @@ static void Internal_ClotThink(int iNPC)
 						&& !b_NpcHasDied[LifeSupportDevice[npc.index][i]] && GetTeam(LifeSupportDevice[npc.index][i]) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(LifeSupportDevice[npc.index][i], 1.6, true);
-							IncreaceEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
+							IncreaseEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
 						}
 					}
 					Delay_Attribute[npc.index] = gameTime + 1.5;
@@ -803,7 +803,7 @@ static void Internal_ClotThink(int iNPC)
 						&& !b_NpcHasDied[LifeSupportDevice[npc.index][i]] && GetTeam(LifeSupportDevice[npc.index][i]) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(LifeSupportDevice[npc.index][i], 1.6, true);
-							IncreaceEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
+							IncreaseEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
 						}
 					}
 				}

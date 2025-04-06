@@ -422,7 +422,7 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						IncreaceEntityDamageTakenBy(target, 0.1, 3.5, true);
+						IncreaseEntityDamageTakenBy(target, 0.1, 3.5, true);
 					}
 				}
 				delete swingTrace;

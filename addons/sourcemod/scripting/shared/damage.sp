@@ -1777,7 +1777,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	StatusEffect_OnTakeDamage_TakenPositive(victim, attacker, damage, damagetype);
 	StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage, damagetype);
 	float DamageRes = 1.0;
-	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
+	//Resistance buffs will not count towards this flat decrease, they will be universal!hussar!
 	//these are absolutes
 #if !defined RPG
 	if(victim > MaxClients && i_npcspawnprotection[victim] == 1)
