@@ -199,7 +199,7 @@ methodmap Draeonis < CClotBody
 			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
 			"models/workshop/player/items/scout/sum24_tankers_top/sum24_tankers_top.mdl",
 			RUINA_CUSTOM_MODELS_1,
-			"models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl"
+			"models/workshop/weapons/c_models/c_battalion_buffpack/c_battalion_buffpack.mdl"
 		};
 
 		int skin = 1;	//1=blue, 0=red
