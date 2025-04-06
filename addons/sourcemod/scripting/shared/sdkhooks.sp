@@ -1213,6 +1213,7 @@ public void OnPostThink(int client)
 	{
 		OnlyOneAtATime = true;
 		delay_hud[client] = GameTime + 0.4;
+		SetGlobalTransTarget(client);
 
 #if defined RPG
 		RPG_UpdateHud(client);
