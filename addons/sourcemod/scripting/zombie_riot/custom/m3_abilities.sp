@@ -792,8 +792,10 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 				//it starts at -1.0, so it should go upto 1.0.
 				if(Healing_Amount<1.0)
 					Healing_Amount=1.0;
+
+				Healing_Amount *= 0.5;
 				
-				Base_HealingMaxPoints=RoundToCeil(1200.0 * Healing_Amount);
+				Base_HealingMaxPoints=RoundToCeil(800.0 * Healing_Amount);
 			}
 			default:
 				Base_HealingMaxPoints=RoundToCeil(1900.0 * Healing_Amount);

@@ -227,7 +227,8 @@ methodmap Aetherianus < CClotBody
 		SetVariantInt(RUINA_QUINCY_BOW_3);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
 			
-		fl_ruina_battery[npc.index] = 0.0;
+		fl_ruina_battery_max[npc.index] = 500.0;
+		fl_ruina_battery[npc.index] = 500.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
@@ -551,7 +552,7 @@ static void Aetherianus_SelfDefense(Aetherianus npc, float gameTime, int Anchor_
 	{	
 		if(npc.m_flNextRangedAttack < gameTime)
 		{
-			if(fl_ruina_battery[npc.index]>500.0)
+			if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 			{
 				int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
 
@@ -592,7 +593,7 @@ static void Aetherianus_SelfDefense(Aetherianus npc, float gameTime, int Anchor_
 
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
-					if(fl_ruina_battery[npc.index]>500.0)
+					if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 					{
 						int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
 

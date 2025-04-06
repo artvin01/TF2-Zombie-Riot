@@ -31,6 +31,7 @@ float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_battery_timeout[MAXENTITIES];
+float fl_ruina_battery_max[MAXENTITIES];
 
 float fl_ruina_helia_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
@@ -146,6 +147,11 @@ int g_Ruina_BEAM_lightning;
 char g_Ruina_Glow_Blue;	//blue
 char g_Ruina_Glow_Red;	//red
 
+static char g_EnergyChargeSounds[][] = {
+	"weapons/airboat/airboat_gun_energy1.wav",
+	"weapons/airboat/airboat_gun_energy2.wav",
+};
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return -1;
@@ -173,6 +179,8 @@ void Ruina_Ai_Core_Mapstart()
 	data2.Flags = 0;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data2);
 
+	PrecacheSoundArray(g_EnergyChargeSounds);
+
 	Zero(b_ruina_npc);
 
 	Zero(b_ruina_nerf_healing);
@@ -193,6 +201,7 @@ void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_battery);
 	Zero(b_ruina_battery_ability_active);
 	Zero(fl_ruina_battery_timer);
+	Zero(fl_ruina_battery_max);
 	
 	Zero(fl_ruina_shield_timer);
 	Zero(i_shield_effect);
@@ -253,6 +262,8 @@ void Ruina_Ai_Core_Mapstart()
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
+	ApplyStatusEffect(client, client, "Ruina Battery Charge", 999.0);
+
 	Ruina_Remove_Shield(client);
 	b_ruina_npc[client] = true;
 	b_ruina_nerf_healing[client] = false;
@@ -446,8 +457,10 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 	i_shield_effect[client] = EntIndexToEntRef(Shield);
 }
 
-public void Ruina_NPCDeath_Override(int entity)
+void Ruina_NPCDeath_Override(int entity)
 {
+	fl_ruina_battery_max[entity] = 0.0;
+
 	b_ruina_npc[entity] = false;
 	b_is_a_master[entity] = false;
 	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[entity]);
@@ -462,7 +475,7 @@ public void Ruina_NPCDeath_Override(int entity)
 	i_npc_type[entity] = 0;
 	b_ruina_nerf_healing[entity] = false;
 }
-public int Ruina_Get_Target(int iNPC, float GameTime)
+int Ruina_Get_Target(int iNPC, float GameTime)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -1752,12 +1765,14 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
 	{	
 		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.3, false, Ruina_NerfHealingOnBossesOrHealers , Ruina_HealVisualEffect);
-		//DesertYadeamDoHealEffect(npc.index, Range);
-		int color[4]; Ruina_Color(color);
-		float Npc_Vec[3];
-		GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=2.5;
-		TE_SetupBeamRingPoint(Npc_Vec, 0.0, Range*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, 10.0, 1.0, color, 1, 0);
-		TE_SendToAll();
+		DesertYadeamDoHealEffect(npc.index, Range);
+
+		//int color[4]; Ruina_Color(color);
+		//float Npc_Vec[3];
+		//GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=2.5;
+		//TE_SetupBeamRingPoint(Npc_Vec, 0.0, Range*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, 10.0, 1.0, color, 1, 0);
+		//TE_SendToAll();
+
 		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
 	}
 }
@@ -1771,7 +1786,7 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 
 	if(Ratio > 1.0)
 	{//the target npc has overheal, nerf the healing ratio
-		healingammount*=0.2;
+		healingammount*=0.9;
 	}
 	
 	if(fl_npc_healing_duration[npc.index] < GetGameTime(npc.index))
@@ -1783,17 +1798,17 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 		}
 		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
 		{//this npc is a raid/boss healing target
-			healingammount *=0.5;
+			healingammount *=0.8;
 		}
 	}
 	if(b_ruina_npc_healer[healed_target])
 	{//this npc MUST have less healing.
-		healingammount *=0.5;
+		healingammount *=0.8;
 	}
 
 	if(!b_ruina_npc[healed_target])
 	{//ruina is now xenophobic of other races. and people. mostly to nerf minibosses from being healed
-		healingammount *=0.1;
+		healingammount *=0.5;
 	}
 	
 
@@ -2082,6 +2097,8 @@ void Master_Apply_Shield_Buff(int client, float range, float power, bool overrid
 }
 void Master_Apply_Battery_Buff(int client, float range, float power)
 {
+	EmitSoundToAll(g_EnergyChargeSounds[GetRandomInt(0, sizeof(g_EnergyChargeSounds) - 1)], client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.25, GetRandomInt(RUINA_NPC_PITCH-25, RUINA_NPC_PITCH+25));
+	
 	Apply_Master_Buff(client, RUINA_BATTERY_BUFF, range, 0.0, power);
 }
 void Ruina_Special_Logic(int iNPC, int Target)

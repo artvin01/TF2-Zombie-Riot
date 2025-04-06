@@ -201,6 +201,7 @@ methodmap Malianius < CClotBody
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
+		fl_ruina_battery_max[npc.index] = 500.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -254,7 +255,7 @@ static void ClotThink(int iNPC)
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
 	float radius = 300.0;
-	if(fl_ruina_battery[npc.index]>500.0 && fl_ruina_battery_timer[npc.index] < GameTime)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
@@ -267,9 +268,6 @@ static void ClotThink(int iNPC)
 		i_NpcWeight[npc.index] = 999;
 
 		npc.m_flSpeed = 0.0;
-
-		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
-		TE_SendToAll();
 
 		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.70);	//30% resistances
 
@@ -286,6 +284,10 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
 		Master_Apply_Battery_Buff(npc.index, radius, 120.0);
+
+		radius = GetRandomFloat(radius*0.9, radius*1.1); 
+		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
+		TE_SendToAll();
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{

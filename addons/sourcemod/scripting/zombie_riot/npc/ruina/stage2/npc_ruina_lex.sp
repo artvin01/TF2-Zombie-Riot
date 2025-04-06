@@ -439,6 +439,7 @@ methodmap Lex < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 				
+		fl_ruina_battery_max[npc.index] = 3000.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -524,10 +525,9 @@ static void ClotThink(int iNPC)
 
 	int PrimaryThreatIndex = npc.Get_Target();
 
-
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>3000.0 && npc.m_flDoingAnimation < GameTime-1.0)	//every 30 seconds.
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && npc.m_flDoingAnimation < GameTime-1.0)	//every 30 seconds.
 	{
 		b_ruina_battery_ability_active[npc.index] = true;
 		Master_Apply_Shield_Buff(npc.index, 100.0, 0.1);	//90% shield to all but itself. tiny radius tho
@@ -667,9 +667,9 @@ static void ClotThink(int iNPC)
 					Laser.Start_Point = Vec1;
 					Laser.End_Point = Vec2;
 
-					Laser.Radius = 5.0;
-					Laser.Damage = 10.0;
-					Laser.Bonus_Damage = 60.0;
+					Laser.Radius = 7.5;
+					Laser.Damage = 25.0;
+					Laser.Bonus_Damage = 80.0;
 					Laser.damagetype = DMG_PLASMA;
 
 					Laser.Deal_Damage(On_LaserHit);
@@ -809,7 +809,7 @@ static void ClotThink(int iNPC)
 }
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
-	Ruina_Add_Mana_Sickness(client, target, 0.01, 10);
+	Ruina_Add_Mana_Sickness(client, target, 0.075, 20);
 }
 static Action Lex_Slow_Projectiles(Handle Timer, int ref)
 {

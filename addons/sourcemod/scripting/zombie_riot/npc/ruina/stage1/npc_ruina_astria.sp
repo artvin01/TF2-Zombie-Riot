@@ -238,6 +238,7 @@ methodmap Astria < CClotBody
 		
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		
+		fl_ruina_battery_max[npc.index] = 1250.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -291,7 +292,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>750 && npc.m_flNextTeleport < GameTime + 10.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index]*0.75 && npc.m_flNextTeleport < GameTime + 10.0)
 	{
 		Ruina_Master_Rally(npc.index, true);
 		Ruina_Master_Accpet_Slaves(npc.index);
@@ -304,7 +305,7 @@ static void ClotThink(int iNPC)
 
 	Astria_SelfDefense(npc, GameTime);	//note: Masters can use this method, but slaves should still use primarythreatindex rather then finding via distance.
 
-	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1250.0)
+	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 

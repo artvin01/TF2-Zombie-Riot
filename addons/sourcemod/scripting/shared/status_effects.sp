@@ -3363,6 +3363,35 @@ void StatusEffects_Ruiania()
 	data.Status_SpeedFunc 			= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= Ruinas_DamageFunc;
 	RuinaBuffDamage = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ruina Battery Charge");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "۞");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= RuinaBatteryHud_Func;
+	StatusEffect_AddGlobal(data);
+}
+void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	//they do not have a valid battery, abort.
+	if(fl_ruina_battery_max[victim] == 0.0)
+	{
+		RemoveSpecificBuff(victim, "Ruina Battery Charge");
+		return;
+	}
+
+	//get the % of how much battery the npc has
+	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
+
+	Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
 }
 
 stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)

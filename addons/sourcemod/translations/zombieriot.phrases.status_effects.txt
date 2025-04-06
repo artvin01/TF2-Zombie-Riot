@@ -820,6 +820,10 @@
 	{
 		"en"	"On hit, Reduces ability cooldown by 2 seconds, can only happen once per attacker."
 	}
+	"Ruina Battery Charge"
+	{
+		"en"	"Ruina Battery Charge"
+	}
 	"Village"
 	{
 		"en"	"Village"

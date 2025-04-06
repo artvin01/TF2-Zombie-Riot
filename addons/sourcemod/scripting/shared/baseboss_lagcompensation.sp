@@ -388,22 +388,20 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	WasBackTracked[index] = true;
 }
 
-void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1, bool DoReset = true)
+void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset = true)
 //public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
 //	if(!DoingLagCompensation)
 //		ThrowError("Not in BaseBoss Lag Comp");
 	
-	if(ForceOptionalEntity == -1)
+	if(ForceOptionalEntity == -2)
 		DoingLagCompensation = false;
 
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity;
-		
-		entity = EntRefToEntIndexFast(i_Objects_Apply_Lagcompensation[index]);
+		int entity = EntRefToEntIndexFast(i_Objects_Apply_Lagcompensation[index]);
 		//if its a selected entity:
-		if(ForceOptionalEntity != -1)
+		if(ForceOptionalEntity != -2)
 		{
 			if(entity != ForceOptionalEntity)
 				continue;
@@ -436,11 +434,9 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1, bool DoReset 
 				static float m_vecMins[3];
 				m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
 				m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
-				
 				SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
-				
 				SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
-				
+
 				CClotBody npc = view_as<CClotBody>(entity);
 				npc.UpdateCollisionBox();
 				
@@ -484,12 +480,7 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1, bool DoReset 
 		SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
 		SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
 		
-#if defined RTS
-		if(!b_LagCompNPC_No_Layers)
-#else
 		if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
-#endif
-
 		{
 			
 			SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
@@ -536,7 +527,7 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1, bool DoReset 
 			return;
 	}
 
-	if(ForceOptionalEntity == -1 && DoReset)
+	if(ForceOptionalEntity == -2 && DoReset)
 		StartLagCompResetValues();
 }
 
