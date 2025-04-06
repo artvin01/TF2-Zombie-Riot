@@ -56,6 +56,7 @@ static int HurtleBuffEnemies;
 static bool LoveNahTonic;
 static bool Schizophrenia;
 static bool DarknessComing;
+static int setuptimes;
 
 void Freeplay_OnMapStart()
 {
@@ -123,6 +124,7 @@ void Freeplay_ResetAll()
 	LoveNahTonic = false;
 	Schizophrenia = false;
 	DarknessComing = false;
+	setuptimes = 4;
 }
 
 int Freeplay_EnemyCount()
@@ -1161,22 +1163,23 @@ void Freeplay_OnEndWave(int &cash)
 	}
 	
 	cash += CashBonus;
-
-	if(Freeplay_GetRemainingCash() > 0)
+	int extracash = RoundToCeil(Freeplay_GetRemainingCash());
+	if(extracash > 0)
 	{
-		cash += Freeplay_GetRemainingCash();
+		cash += extracash;
 	}
 
-	Freeplay_SetRemainingCash(2500);
-	Freeplay_SetCashTime(GetGameTime() + 8.0);
+	Freeplay_SetRemainingCash(2500.0);
+	Freeplay_SetCashTime(GetGameTime() + 10.0);
 }
 float Freeplay_SetupValues()
 {
 	return gay;
 }
-void Freeplay_SetupStart(bool extra = false, bool guaranteedraid = false)
+void Freeplay_SetupStart(bool extra = false)
 {
 	bool wrathofirln = false;
+	bool guaranteedraid = false;
 	if(extra)
 	{
 		FreeplayBuffTimer = 0;
@@ -1189,7 +1192,14 @@ void Freeplay_SetupStart(bool extra = false, bool guaranteedraid = false)
 			wrathofirln = true;
 		}
 
-		if(!wrathofirln)
+		setuptimes--;
+		if(setuptimes <= 0)
+		{
+			guaranteedraid = true;
+			wrathofirln = false;
+		}
+
+		if(!wrathofirln && !guaranteedraid)
 		{
 			EmitSoundToAll("ui/vote_success.wav");
 		}
