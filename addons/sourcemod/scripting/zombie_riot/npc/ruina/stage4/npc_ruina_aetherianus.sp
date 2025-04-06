@@ -227,7 +227,7 @@ methodmap Aetherianus < CClotBody
 		SetVariantInt(RUINA_QUINCY_BOW_3);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
 			
-		fl_ruina_battery_max[npc.index]
+		fl_ruina_battery_max[npc.index] = 500.0;
 		fl_ruina_battery[npc.index] = 500.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;

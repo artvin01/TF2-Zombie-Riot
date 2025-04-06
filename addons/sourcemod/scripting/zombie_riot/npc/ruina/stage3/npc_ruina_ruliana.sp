@@ -340,6 +340,7 @@ methodmap Ruliana < CClotBody
 
 			if(!IsValidEntity(RaidBossActive))
 			{
+				RemoveSpecificBuff(npc.index, "Ruina Battery Charge");
 				RaidBossActive = EntIndexToEntRef(npc.index);
 				RaidModeTime = GetGameTime(npc.index) + 9000.0;
 				RaidModeScaling = 8008.5;

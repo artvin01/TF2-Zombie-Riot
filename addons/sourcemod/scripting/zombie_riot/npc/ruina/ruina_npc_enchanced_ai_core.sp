@@ -255,6 +255,8 @@ void Ruina_Ai_Core_Mapstart()
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
+	ApplyStatusEffect(client, client, "Ruina Battery Charge", 999.0);
+
 	Ruina_Remove_Shield(client);
 	b_ruina_npc[client] = true;
 	b_ruina_nerf_healing[client] = false;

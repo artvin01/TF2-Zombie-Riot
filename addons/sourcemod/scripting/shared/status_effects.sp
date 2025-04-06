@@ -3377,20 +3377,21 @@ void StatusEffects_Ruiania()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= RuinaBatteryHud_Func;
-	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 }
 void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
 	//they do not have a valid battery, abort.
 	if(fl_ruina_battery_max[victim] == 0.0)
+	{
+		RemoveSpecificBuff(victim, "Ruina Battery Charge");
 		return;
+	}
 
 	//get the % of how much battery the npc has
 	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
 
-
-	Format(HudToDisplay, SizeOfChar, "۞ [%.0f]", Ratio);
-
+	Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
 }
 
 stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)

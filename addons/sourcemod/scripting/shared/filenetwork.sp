@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//#tryinclude <filenetwork>
+#tryinclude <filenetwork>
 
 #if defined _filenetwork_included
 static bool StartedQueue[MAXTF2PLAYERS];
