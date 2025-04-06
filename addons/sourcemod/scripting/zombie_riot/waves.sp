@@ -3865,6 +3865,7 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 			}
 		}
 		
+		
 		ReviveAll();
 		
 		Music_EndLastmann();

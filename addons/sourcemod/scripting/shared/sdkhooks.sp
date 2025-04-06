@@ -2753,7 +2753,7 @@ void UpdatePlayerFakeModel(int client)
 	}
 }
 
-stock void IncreaceEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
+stock void IncreaseEntityDamageTakenBy(int entity, float amount, float duration, bool Flat = false)
 {
 	if(!Flat)
 	{
@@ -2794,7 +2794,7 @@ public Action RevertDamageTakenAgain(Handle final, any pack)
 	return Plugin_Continue;
 }
 
-stock void IncreaceEntityDamageDealtBy(int entity, float amount, float duration)
+stock void IncreaseEntityDamageDealtBy(int entity, float amount, float duration)
 {
 	f_MultiDamageDealt[entity] *= amount;
 	

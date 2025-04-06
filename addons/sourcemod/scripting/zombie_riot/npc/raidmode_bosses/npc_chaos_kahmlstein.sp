@@ -269,6 +269,11 @@ methodmap ChaosKahmlstein < CClotBody
 	{
 		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 80, _, 3.0);	
 	}
+	property float m_flFixAttackCanceling
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	public ChaosKahmlstein(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -342,6 +347,7 @@ methodmap ChaosKahmlstein < CClotBody
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			b_NoKillFeed[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 			npc.PlayTeleportSound();
 		}
 		else if(StrContains(data, "fake_3") != -1)
@@ -356,6 +362,7 @@ methodmap ChaosKahmlstein < CClotBody
 			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 10.0;
 			npc.i_GunMode = 1;
 			b_NoKillFeed[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 			npc.PlayTeleportSound();
 		}
 		else if(StrContains(data, "fake_4") != -1)
@@ -369,6 +376,7 @@ methodmap ChaosKahmlstein < CClotBody
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flRangedSpecialDelay = 0.0;
 			b_NoKillFeed[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 			npc.PlayTeleportSound();
 		}
 		else
@@ -961,6 +969,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	}
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
+		npc.m_flFixAttackCanceling = 0.0;
 		ChaosKahmlsteinAnimationChange(npc);
 	}
 }
@@ -969,7 +978,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 {
 	if(i_RaidGrantExtra[npc.index] < 2)
 	{
-		if(!npc.m_flAttackHappens_2 && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
+		if(!npc.m_flAttackHappens_2 && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 		{
 			npc.PlayIdleAlertSound();
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
@@ -984,6 +993,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 			npc.m_iOverlordComboAttack = 555;
 			npc.m_iChanged_WalkCycle = 0;
 			npc.m_flAttackHappens_2 = GetGameTime(npc.index) + (0.7 * (1.0 / f_MessengerSpeedUp[npc.index]));
+			npc.m_flFixAttackCanceling = 1.0;
 		}
 		if(npc.m_flAttackHappens_2 > GetGameTime(npc.index))
 		{
@@ -1087,7 +1097,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 
 bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target)
 {
-	if(!npc.m_flInJump && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+	if(!npc.m_flInJump && npc.m_flRangedSpecialDelay < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 	{
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
@@ -1102,7 +1112,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		}
 		else
 			npc.SetCycle(0.55);
-
+		npc.m_flFixAttackCanceling = 1.0;
 		npc.SetPlaybackRate(1.2 *f_MessengerSpeedUp[npc.index]);
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + (1.85 * (1.0 / f_MessengerSpeedUp[npc.index]));	
 		npc.m_iOverlordComboAttack = 5555;
@@ -1882,7 +1892,7 @@ public bool Sensal_BEAM_TraceUsers_3(int entity, int contentsMask, int client)
 
 bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 {
-	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flJumpCooldown < GetGameTime(npc.index))
+	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flJumpCooldown < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 	{
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
@@ -1898,6 +1908,7 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 		npc.m_iChanged_WalkCycle = 0;
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + (10.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		EmitSoundToAll("mvm/mvm_tank_horn.wav");
+		npc.m_flFixAttackCanceling = 1.0;
 	}
 	if(npc.m_flNextRangedBarrage_Spam)
 	{

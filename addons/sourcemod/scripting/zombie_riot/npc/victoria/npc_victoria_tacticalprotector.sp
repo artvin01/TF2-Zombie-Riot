@@ -243,7 +243,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-						IncreaceEntityDamageTakenBy(spawn_index, 0.05, 1.0);
+						IncreaseEntityDamageTakenBy(spawn_index, 0.05, 1.0);
 					}
 					npc.m_bFUCKYOU=true;
 					npc.m_flNextThinkTime = gameTime + 1.0;
@@ -328,7 +328,7 @@ static Action VictoriaProtector_OnTakeDamage(int victim, int &attacker, int &inf
 		if(!npc.Anger)
 		{
 			damage=0.0;
-			IncreaceEntityDamageTakenBy(npc.index, 0.15, 5.0);
+			IncreaseEntityDamageTakenBy(npc.index, 0.15, 5.0);
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 2;
 			npc.m_flSpeed = 0.0;

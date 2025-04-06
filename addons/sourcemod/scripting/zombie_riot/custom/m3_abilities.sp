@@ -711,7 +711,7 @@ public void ReconstructiveTeleporter(int client)
 					WorldSpaceCenter(ally, WorldSpaceVec);
 					ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
 					SetEntProp(ally, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(ally)) * 1.5));
-					IncreaceEntityDamageTakenBy(ally, 0.05, 2.0);
+					IncreaseEntityDamageTakenBy(ally, 0.05, 2.0);
 					WorldSpaceCenter(client, WorldSpaceVec);
 					TeleportEntity(ally, WorldSpaceVec, NULL_VECTOR, NULL_VECTOR);
 				}
@@ -1384,7 +1384,7 @@ public void GearTesting(int client)
 				b_ActivatedDuringLastMann[client] = true;
 			}
 
-			IncreaceEntityDamageTakenBy(client, 0.5, 3.0);
+			IncreaseEntityDamageTakenBy(client, 0.5, 3.0);
 			
 			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		//	ClientCommand(client, "playgamesound mvm/mvm_tank_start.wav");

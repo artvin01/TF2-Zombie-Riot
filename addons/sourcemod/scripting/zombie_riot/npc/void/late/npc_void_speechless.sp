@@ -147,22 +147,23 @@ methodmap VoidSpeechless < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_medic.mdl");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sum23_medical_emergency/sum23_medical_emergency.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_medic.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
+		
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
 		
 		return npc;
 	}
