@@ -3792,37 +3792,6 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{
 						SetHudTextParams(-1.0, -1.0, 5.0, 255, 135, 0, 255);
-						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further? :3");
-					}
-				}
-			}
-		}
-		else if((CurrentRound % 20) == 19)
-		{
-			Freeplay_SetupStart(false, true);
-			float time = Freeplay_SetupValues();
-			
-			if(time > 0.0)
-			{
-				Cooldown = GetGameTime() + time;
-			
-				InSetup = true;
-				ExcuteRelay("zr_setuptime");
-				
-				SpawnTimer(time);
-				CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-			}
-			
-			RequestFrames(StopMapMusicAll, 60);
-			
-			Citizen_SetupStart();
-			if(CurrentRound+1 == 200)
-			{
-				for (int client = 0; client < MaxClients; client++)
-				{
-					if(IsValidClient(client) && !b_IsPlayerABot[client])
-					{
-						SetHudTextParams(-1.0, -1.0, 5.0, 255, 135, 0, 255);
 						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further?");
 					}
 				}
