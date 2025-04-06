@@ -31,6 +31,7 @@ float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_battery_timeout[MAXENTITIES];
+float fl_ruina_battery_max[MAXENTITIES];
 
 float fl_ruina_helia_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
@@ -193,6 +194,7 @@ void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_battery);
 	Zero(b_ruina_battery_ability_active);
 	Zero(fl_ruina_battery_timer);
+	Zero(fl_ruina_battery_max);
 	
 	Zero(fl_ruina_shield_timer);
 	Zero(i_shield_effect);
@@ -446,8 +448,10 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 	i_shield_effect[client] = EntIndexToEntRef(Shield);
 }
 
-public void Ruina_NPCDeath_Override(int entity)
+void Ruina_NPCDeath_Override(int entity)
 {
+	fl_ruina_battery_max[entity] = 0.0;
+
 	b_ruina_npc[entity] = false;
 	b_is_a_master[entity] = false;
 	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[entity]);
@@ -462,7 +466,7 @@ public void Ruina_NPCDeath_Override(int entity)
 	i_npc_type[entity] = 0;
 	b_ruina_nerf_healing[entity] = false;
 }
-public int Ruina_Get_Target(int iNPC, float GameTime)
+int Ruina_Get_Target(int iNPC, float GameTime)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -1752,12 +1756,14 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
 	{	
 		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.3, false, Ruina_NerfHealingOnBossesOrHealers , Ruina_HealVisualEffect);
-		//DesertYadeamDoHealEffect(npc.index, Range);
-		int color[4]; Ruina_Color(color);
-		float Npc_Vec[3];
-		GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=2.5;
-		TE_SetupBeamRingPoint(Npc_Vec, 0.0, Range*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, 10.0, 1.0, color, 1, 0);
-		TE_SendToAll();
+		DesertYadeamDoHealEffect(npc.index, Range);
+
+		//int color[4]; Ruina_Color(color);
+		//float Npc_Vec[3];
+		//GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=2.5;
+		//TE_SetupBeamRingPoint(Npc_Vec, 0.0, Range*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, 10.0, 1.0, color, 1, 0);
+		//TE_SendToAll();
+
 		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
 	}
 }
