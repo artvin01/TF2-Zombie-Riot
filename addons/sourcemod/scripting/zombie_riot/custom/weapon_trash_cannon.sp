@@ -40,7 +40,7 @@ float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
 bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled on this pap level?
 
 //PYRE: A fireball which is affected by gravity.
-float f_PyreChance[3] = { 0.12, 0.16, 0.2 };			//Chance for Pyre to be fired.
+float f_PyreChance[3] = { 0.12, 0.16, 0.1 };			//Chance for Pyre to be fired.
 float f_PyreDMG[3] = { 2000.0, 3500.0, 5500.0 };		//Damage dealt by fireballs.
 float f_PyreVel[3] = { 600.0, 800.0, 1200.0 };			//Fireball velocity.
 float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
