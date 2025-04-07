@@ -718,6 +718,10 @@ static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 
+	float target_vec[3];
+	GetAbsOrigin(New_Target, target_vec);
+	target_vec[2]+=250.0;
+/*
 	float target_vec[3], flDistanceToTarget; GetAbsOrigin(New_Target, target_vec);
 
 	flDistanceToTarget = GetVectorDistance(target_vec, Npc_Vec, true);
@@ -728,7 +732,7 @@ static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 //	else
 //		target_vec[2]+=75.0;
 
-
+*/
 	Storm_Weaver_Fly(npc, target_vec);
 }
 static void Storm_Weaver_Fly(Interstellar_Weaver npc, float target_vec[3])
