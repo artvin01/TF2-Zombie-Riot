@@ -113,7 +113,7 @@ void Saga_ChargeReduction(int client, int weapon, float time)
 		float cooldown = Ability_Check_Cooldown(client, i, weapon);
 		if(cooldown > 0.0)
 		{
-			Ability_Apply_Cooldown(client, i, cooldown - time, weapon);
+			Ability_Apply_Cooldown(client, i, cooldown - time, weapon, true);
 			break;
 		}
 	}
