@@ -638,6 +638,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 public void Flagellant_AcidHitPost(int attacker, int victim, float damage, int weapon)
 {
 	float multi = Attributes_Get(weapon, 2, 1.0);
+	multi *= 2.0;
 	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
 	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
 }
