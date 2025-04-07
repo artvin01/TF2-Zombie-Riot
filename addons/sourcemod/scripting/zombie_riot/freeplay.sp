@@ -389,20 +389,20 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		}
 
 		if(Waves_GetRound() > 124)
-			enemy.ExtraDamage *= 2.0;
+			enemy.ExtraDamage *= 1.25;
 
 		if(Waves_GetRound() > 174)
-			enemy.ExtraDamage *= 2.0;
+			enemy.ExtraDamage *= 1.5;
 
 		// Raid health is lower before w101.
 		if(Waves_GetRound() < 101)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 0.8);
+			enemy.Health = RoundToCeil(float(enemy.Health) * 0.75);
 
 		if(Waves_GetRound() > 149)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 1.75);
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.25);
 
 		if(Waves_GetRound() > 174)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.25);
 
 		// moni
 		enemy.Credits += 10000.0;
@@ -1188,7 +1188,7 @@ void Freeplay_OnEndWave(int &cash)
 	}
 
 	Freeplay_SetRemainingCash(2500.0);
-	Freeplay_SetCashTime(GetGameTime() + 10.0);
+	Freeplay_SetCashTime(GetGameTime() + 11.5);
 }
 float Freeplay_SetupValues()
 {
