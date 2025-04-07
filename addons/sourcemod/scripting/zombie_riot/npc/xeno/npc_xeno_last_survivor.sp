@@ -270,7 +270,6 @@ methodmap XenoFatherGrigori < CClotBody
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
 			
-		FixModelTeethEatingWorld(npc.index);
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_flSpeed = 170.0;

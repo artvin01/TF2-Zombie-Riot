@@ -588,6 +588,7 @@ Function EntityFuncReload4[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetRagdollFade[MAXTF2PLAYERS];
+float f_BegPlayerR_TeethSet[MAXTF2PLAYERS];
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE

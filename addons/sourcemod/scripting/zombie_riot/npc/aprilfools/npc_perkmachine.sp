@@ -90,7 +90,6 @@ methodmap PerkMachiner < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDissapearOnDeath = true;
-		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		
 		npc.m_flMeleeArmor = 0.42;
 		npc.m_flRangedArmor = 0.42;
@@ -145,7 +144,7 @@ public void PerkMachiner_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
+		npc.m_iTarget = GetClosestTarget(npc.index);
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		if(npc.m_iTarget < 1)
 		{
@@ -293,7 +292,7 @@ void PerkMachiner_NPCDeath(int entity)
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 3.0;
+					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 1.5;
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
@@ -315,7 +314,7 @@ void PerkMachiner_NPCDeath(int entity)
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 3.0;
+					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 1.5;
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
@@ -337,7 +336,7 @@ void PerkMachiner_NPCDeath(int entity)
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 3.0;
+					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 1.5;
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
@@ -359,7 +358,7 @@ void PerkMachiner_NPCDeath(int entity)
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 3.0;
+					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 1.5;
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
@@ -381,7 +380,7 @@ void PerkMachiner_NPCDeath(int entity)
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 3.0;
+					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 1.5;
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
@@ -403,7 +402,7 @@ void PerkMachiner_NPCDeath(int entity)
 			
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
-					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 3.0;
+					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index] * 1.5;
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];

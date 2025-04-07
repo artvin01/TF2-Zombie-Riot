@@ -34,7 +34,7 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_boost_drain_time", "99999.0"); //Overheal Logic, make it perma
 	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
 
-	ConVar_Add("tf_scout_air_dash_count", "0"); //Remove doublejumps
+	ConVar_Add("tf_scout_air_dash_count", "-1"); //Remove doublejumps
 	ConVar_Add("tf_allow_player_use", "1"); //Allow use!
 	ConVar_Add("tf_flamethrower_boxsize", "0.0"); //Flamethrower Particles are useless in ZR
 

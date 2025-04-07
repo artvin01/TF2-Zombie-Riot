@@ -90,7 +90,6 @@ methodmap PackaPunch < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDissapearOnDeath = true;
-		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		
 		npc.m_flMeleeArmor = 0.69;
 		npc.m_flRangedArmor = 0.69;
@@ -145,7 +144,7 @@ public void PackaPunch_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
+		npc.m_iTarget = GetClosestTarget(npc.index);
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		if(npc.m_iTarget < 1)
 		{
@@ -294,7 +293,7 @@ void PackaPunch_NPCDeath(int entity)
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 2.0;
+					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 1.5;
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
 				}
@@ -316,7 +315,7 @@ void PackaPunch_NPCDeath(int entity)
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 2.0;
+					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 1.5;
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
 				}
@@ -338,7 +337,7 @@ void PackaPunch_NPCDeath(int entity)
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 2.0;
+					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 1.5;
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
 				}
@@ -360,7 +359,7 @@ void PackaPunch_NPCDeath(int entity)
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 2.0;
+					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 1.5;
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
 				}
@@ -382,7 +381,7 @@ void PackaPunch_NPCDeath(int entity)
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 2.0;
+					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 1.5;
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
 				}
@@ -404,7 +403,7 @@ void PackaPunch_NPCDeath(int entity)
 					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 2.0;
+					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index] * 1.5;
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
 				}

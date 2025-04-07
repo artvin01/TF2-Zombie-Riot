@@ -1103,6 +1103,7 @@ public void OnMapStart()
 	Zero(f_AntiStuckPhaseThroughFirstCheck);
 	Zero(f_AntiStuckPhaseThrough);
 	Zero(f_BegPlayerToSetRagdollFade);
+	Zero(f_BegPlayerR_TeethSet);
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -1400,21 +1401,36 @@ public void ConVarCallback_FirstPersonViewModel(QueryCookie cookie, int client, 
 		b_FirstPersonUsesWorldModel[client] = view_as<bool>(StringToInt(cvarValue));
 }
 
-
 public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {
 	if(result == ConVarQuery_Okay)
 	{
 		if(StringToInt(cvarValue) == 0)
 		{
-			if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
-			{
-				f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
-				SetGlobalTransTarget(client);
-				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
-			}
+			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
+			SetGlobalTransTarget(client);
+			SPrintToChat(client,"%t", "Show Ragdoll Hint Message");
+		}
+		else
+		{
+			f_BegPlayerToSetRagdollFade[client] = FAR_FUTURE;
+		}
+	}
+}
 
-			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+public void ConVarCallback_r_teeth(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(StringToInt(cvarValue) == 1)
+		{
+			f_BegPlayerR_TeethSet[client] = GetGameTime() + 90.0;
+			SetGlobalTransTarget(client);
+			SPrintToChat(client,"%t", "Show Ragdoll Teeth Message");
+		}
+		else
+		{
+			f_BegPlayerR_TeethSet[client] = FAR_FUTURE;
 		}
 	}
 }
@@ -1482,6 +1498,8 @@ public void OnClientPutInServer(int client)
 	SetMusicTimer(client, GetTime() + 1);
 	AdjustBotCount();
 	WeaponClass[client] = TFClass_Scout;
+	f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 20.0;
+	f_BegPlayerR_TeethSet[client] = GetGameTime() + 40.0;
 #endif
 	
 	f_ClientReviveDelay[client] = 0.0;
@@ -1511,7 +1529,6 @@ public void OnClientPutInServer(int client)
 
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
-	QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
 
 #if defined ZR
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
@@ -2597,7 +2614,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
-			SDKHook(entity, SDKHook_SpawnPost, FixModelTeethEatingWorld);
 		}
 		else if(!StrContains(classname, "func_respawnroomvisualizer"))
 		{
