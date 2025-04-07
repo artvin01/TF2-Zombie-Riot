@@ -16,7 +16,7 @@ int i_ShockMaxHits[3] = { 6, 7, 8 };					//Max number of zombies hit by the shoc
 
 float f_ShockChance[3] = { 0.1, 0.2, 0.25 };			//Chance for Shock Stock to be fired.
 float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
-float f_ShockDMG[3] = { 1200.0, 2600.0, 4000.0 };		//Base damage dealt.
+float f_ShockDMG[3] = { 1200.0, 2600.0, 3500.0 };		//Base damage dealt.
 float f_ShockRadius[3] = { 100.0, 150.0, 200.0 };		//Initial blast radius.
 float f_ShockChainRadius[3] = { 400.0, 600.0, 800.0 };	//Chain lightning radius.
 float f_ShockDMGReductionPerHit[3] = { 0.65, 0.75, 0.85 };	//Amount to multiply damage dealt for each zombie shocked.
