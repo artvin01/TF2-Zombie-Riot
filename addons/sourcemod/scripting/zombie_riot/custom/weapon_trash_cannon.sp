@@ -1,6 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+bool allowMultipleMondos = true;		//Set to false to prevent multiple Mondo Massacres from being rolled in the same wave.
+int i_LastMondoWave = -1;
+
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Weapon_Damage[3] = { 100.0, 250.0, 500.0 }; Default damage is 100, pap1 is 250, pap2 is 500.
 
@@ -221,6 +224,8 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_MONDO_FIRE, true);
 	PrecacheSound(SOUND_MONDO_BREAK_1, true);
 	PrecacheSound(SOUND_MONDO_BREAK_2, true);
+
+	i_LastMondoWave = -1;
 }
 
 static float f_NextShockTime[2049] = { 0.0, ... };
@@ -1076,7 +1081,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 	if (!b_MondoEnabled[tier])
 		return false;
 		
-	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier])
+	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier] || (Waves_GetRound() == i_LastMondoWave && !allowMultipleMondos))
 		return false;
 		
 	int M_O_N_D_O = Trash_LaunchPhysProp(client, MODEL_MONDO, 5.0, f_MondoVelocity[tier], weapon, tier, Mondo_Explode, true, true);
@@ -1086,6 +1091,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 		EmitSoundToAll(SOUND_MONDO_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0, 80);
 	}
 		
+	i_LastMondoWave = Waves_GetRound();
 	return true;
 }
 
