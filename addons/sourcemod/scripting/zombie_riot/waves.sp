@@ -2459,7 +2459,7 @@ static Action Freeplay_ExtraCashTimer(Handle timer)
 	{
 		if(Freeplay_TimeCash > 0.0)
 		{
-			Freeplay_TimeCash -= 10.0;
+			Freeplay_TimeCash -= 7.5;
 			if(Freeplay_TimeCash < 0.0)
 				Freeplay_TimeCash = 0.0;
 		}
