@@ -33,14 +33,14 @@ bool b_MortarEnabled[3] = { false, false, false };
 int i_ArrowsMinArrows[3] = { 6, 8, 12 };		//Minimum number of arrows fired.
 int i_ArrowsMaxArrows[3] = { 8, 12, 16 };		//Maximum number of arrows fired.
 
-float f_ArrowsChance[3] = { 0.04, 0.14, 0.18 };			//Chance for Bundle of Arrows to be fired.
+float f_ArrowsChance[3] = { 0.08, 0.14, 0.18 };			//Chance for Bundle of Arrows to be fired.
 float f_ArrowsDMG[3] = { 600.0, 800.0, 1000.0 };			//Base arrow damage.
 float f_ArrowsVelocity[3] = { 1200.0, 1600.0, 2000.0 }; //Arrow velocity.
 float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
 bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled on this pap level?
 
 //PYRE: A fireball which is affected by gravity.
-float f_PyreChance[3] = { 0.06, 0.1, 0.14 };			//Chance for Pyre to be fired.
+float f_PyreChance[3] = { 0.12, 0.16, 0.2 };			//Chance for Pyre to be fired.
 float f_PyreDMG[3] = { 2000.0, 3500.0, 5500.0 };		//Damage dealt by fireballs.
 float f_PyreVel[3] = { 600.0, 800.0, 1200.0 };			//Fireball velocity.
 float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
@@ -72,7 +72,7 @@ int i_TrashMiniMaxTargets[3] = { 2, 3, 4 };				//Max targets hit by the blast of
 int i_TrashMinExtras[3] = { 6, 8, 12 };					//Minimum number of extra projectiles created when the trash bag explodes.
 int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectiles created when the trash bag explodes.
 
-float f_TrashChance[3] = { 0.04, 0.12, 0.16 };			//Chance for Trash to be fired.
+float f_TrashChance[3] = { 0.08, 0.12, 0.16 };			//Chance for Trash to be fired.
 float f_TrashVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the trash bag.
 float f_TrashMiniVelocity[3] = { 400.0, 450.0, 500.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
 float f_TrashDMG[3] = { 800.0, 1500.0, 2000.0 };			//Base damage for the trash bag.
