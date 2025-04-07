@@ -77,7 +77,7 @@ void Freeplay_ResetAll()
 	ImmuneNuke = 0;
 	CashBonus = 0;
 	KillBonus = 0.0;
-	MiniBossChance = 0.2;
+	MiniBossChance = 0.1;
 	HussarBuff = false;
 	PernellBuff = false;
 	IceDebuff = 0;
@@ -394,7 +394,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		if(Waves_GetRound() > 174)
 			enemy.ExtraDamage *= 2.0;
 
-		// Raid health is lower before w150.
+		// Raid health is lower before w101.
+		if(Waves_GetRound() < 101)
+			enemy.Health = RoundToCeil(float(enemy.Health) * 0.8);
+
 		if(Waves_GetRound() > 149)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 1.75);
 
@@ -629,9 +632,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		
 		// count scaling
 		float countscale = float(CountPlayersOnRed());
-		if(countscale <= 8.0)
+		if(countscale <= 4.0)
+		{'
+			countscale *= 0.07; // below or equal to 4 players, scaling is 0.07 per player, to make low-player freeplay faster
+		}
+		else if(countscale > 4.0 && countscale <= 8.0) 
 		{
-			countscale *= 0.125; // below or equal to 8 players, scaling should be 0.125 per player
+			countscale *= 0.125; // above 4 players but below or equal to 8, scaling is 0.125 per player
 		}
 		else if(countscale > 8.0 && countscale <= 12.0) 
 		{
@@ -642,8 +649,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			countscale *= 0.0782; // above 12 players, scaling should be 0.0782 per player, for a max of +25% enemies at 16 players assuming there can't be more.
 		}
 
-		if(countscale < 0.3)
-			countscale = 0.3; // below or equal to 2 players, there are 70% less enemies
+		if(countscale < 0.1)
+			countscale = 0.1; // minimum is 90% less enemies
 
 		count = RoundToCeil(float(count) * countscale);
 	}
@@ -817,6 +824,16 @@ void Freeplay_SpawnEnemy(int entity)
 				fl_Extra_RangedArmor[entity] *= GetRandomFloat(0.1, 2.35);
 				fl_Extra_Speed[entity] *= GetRandomFloat(0.25, 3.0);
 				fl_Extra_Damage[entity] *= GetRandomFloat(0.35, 10.0);
+
+				// surely this makes them stalkers... trust
+				if(GetRandomInt(0, 1) == 1)
+				{
+					b_StaticNPC[entity] = true;
+					AddNpcToAliveList(entity, 1);
+					b_NoHealthbar[entity] = true; //Makes it so they never have an outline
+					GiveNpcOutLineLastOrBoss(entity, false);
+					b_thisNpcHasAnOutline[entity] = true;
+				}
 	
 				switch(GetRandomInt(1, 6))
 				{
@@ -889,7 +906,7 @@ void Freeplay_SpawnEnemy(int entity)
 			ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
 	
 		if(PernellBuff)
-			ApplyStatusEffect(entity, entity, "False Therapy", 15.0);
+			ApplyStatusEffect(entity, entity, "False Therapy", 9.0);
 	
 		if(FusionBuff > 1)
 			ApplyStatusEffect(entity, entity, "Self Empowerment", 30.0);	
@@ -1275,7 +1292,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Purnell buff for 15 seconds!");
+			CPrintToChatAll("{red}All enemies now gain the Purnell buff!");
 			PernellBuff = true;
 		}
 
@@ -1464,7 +1481,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Call to Victoria buff for 10 seconds!");
+			CPrintToChatAll("{red}All enemies now gain the Call to Victoria buff!");
 			VictoriaBuff = true;
 		}
 
@@ -1475,7 +1492,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff for 20 seconds");
+			CPrintToChatAll("{red}All enemies now gain the Squad Leader buff!");
 			SquadBuff = true;
 		}
 
@@ -1486,7 +1503,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Caffinated buff for 8 seconds! {yellow}(Includes Caffinated Drain)");
+			CPrintToChatAll("{red}All enemies now gain the Caffinated buff! {yellow}(Includes Caffinated Drain)");
 			Coffee = true;
 		}
 
@@ -1563,7 +1580,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Merlton buff for 5 seconds!");
+			CPrintToChatAll("{red}All enemies now gain the Merlton buff!");
 			merlton = true;
 		}
 
@@ -2283,7 +2300,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Victoria buff for 10 seconds!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Victoria buff!");
 					VictoriaBuff = true;
 				}
 			}
@@ -2296,7 +2313,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff for 20 seconds!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff!");
 					SquadBuff = true;
 				}
 			}
@@ -2309,7 +2326,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff for 8 seconds! {yellow}(Includes Caffinated Drain)");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff! {yellow}(Includes Caffinated Drain)");
 					Coffee = true;
 				}
 			}
@@ -2455,7 +2472,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Merlton buff for 5 seconds!");
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Merlton buff!");
 					merlton = true;
 				}
 			}
