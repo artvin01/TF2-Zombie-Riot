@@ -633,7 +633,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		// count scaling
 		float countscale = float(CountPlayersOnRed());
 		if(countscale <= 4.0)
-		{'
+		{
 			countscale *= 0.07; // below or equal to 4 players, scaling is 0.07 per player, to make low-player freeplay faster
 		}
 		else if(countscale > 4.0 && countscale <= 8.0) 
