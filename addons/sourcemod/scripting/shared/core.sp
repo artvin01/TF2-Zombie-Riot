@@ -1424,7 +1424,7 @@ public void ConVarCallback_r_teeth(QueryCookie cookie, int client, ConVarQueryRe
 	{
 		if(StringToInt(cvarValue) == 1)
 		{
-			f_BegPlayerR_TeethSet[client] = GetGameTime() + 90.0;
+			f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
 			SetGlobalTransTarget(client);
 			SPrintToChat(client,"%t", "Show Ragdoll Teeth Message");
 		}
