@@ -135,6 +135,8 @@ methodmap Interstellar_Weaver < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		fl_TotalArmor[npc.index] = 0.5;
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -720,10 +722,11 @@ static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 
 	flDistanceToTarget = GetVectorDistance(target_vec, Npc_Vec, true);
 
-	if(flDistanceToTarget>(200.0*200.0))
-		target_vec[2]+=250.0;
-	else
-		target_vec[2]+=75.0;
+//	if(flDistanceToTarget>(200.0*200.0))
+	target_vec[2]+=250.0;
+	//DONT FLY INTO THE TARGET LIKE AN EAGLE!!!
+//	else
+//		target_vec[2]+=75.0;
 
 
 	Storm_Weaver_Fly(npc, target_vec);

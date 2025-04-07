@@ -2623,6 +2623,10 @@
 		"en"		"Please set, set ''g_ragdoll_fadespeed'' to NOT 0, in the console! any value higher then 0 works (1 is good enough, 600 is default)! If you dont do this, you WILL crash!"
 		"fr"		"S'il vous plaît, fixez la valeur de «g_ragdoll_fadespeed» à une valeur autre que 0, dans la console! N'importe quelle valeur plus grand que 0 fonctionne. ( 1 est le minimum, 600 par défaut. ) Votre jeu va crash si vous ne faites pas ceci!"
 	}
+	"Show Ragdoll Teeth Message"
+	{
+		"en"		"Please set, set ''r_teeth'' to 0, in the console! Due to the 64x bit update some older models will glitch out if this is enabled!"
+	}
 	"Redirect to different ZR server"
 	{
 		"en"		"Redirect to different ZR server"

@@ -252,7 +252,6 @@ methodmap EnemyFatherGrigori < CClotBody
 		npc.m_iAttacksTillReload = 4;
 		npc.m_iOverlordComboAttack = 0;
 		//phases.
-		FixModelTeethEatingWorld(npc.index);
 		
 		func_NPCDeath[npc.index] = EnemyFatherGrigori_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = EnemyFatherGrigori_OnTakeDamage;

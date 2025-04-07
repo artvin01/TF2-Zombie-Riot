@@ -749,6 +749,7 @@ methodmap Lelouch < CClotBody
 		RaidModeScaling *= amount_of_people;
 
 		RaidModeScaling *= 1.1;
+		RaidModeScaling *= 0.25;
 
 		if(b_test_mode[npc.index])
 			RaidModeTime = FAR_FUTURE;
@@ -2859,6 +2860,7 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 }
 static int i_summon_weaver(Lelouch npc)
 {
+	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.2, 1.0, 0.0, HEAL_ABSOLUTE);
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	int maxhealth;
