@@ -87,7 +87,7 @@ int i_MissilesCount[3] = { 2, 3, 4 };						//The number of micro-missiles fired.
 int i_MissilesMaxTargets[3] = { 4, 5, 6 };					//The max number of zombies hit by the blast.
 int i_MissilesNumWaves[3] = { 6, 3, 6 };					//Number of sets of micro-missiles to be fired.
 
-float f_MissilesChance[3] = { 0.00, 0.00, 0.08 };			//The chance for Micro-Missiles to be fired.
+float f_MissilesChance[3] = { 0.00, 0.00, 0.07 };			//The chance for Micro-Missiles to be fired.
 float f_MissilesDMG[3] = { 400.0, 800.0, 1200.0 };			//Base missile damage.
 float f_MissilesVelocity[3] = { 1600.0, 1800.0, 2000.0 };	//Base missile velocity.
 float f_MissilesRadius[3] = { 200.0, 150.0, 200.0 };		//Base blast radius.
