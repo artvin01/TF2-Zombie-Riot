@@ -3371,7 +3371,14 @@ void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 	//get the % of how much battery the npc has
 	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
 
-	Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
+	if(Ratio > 100.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "[۞ 100+％]", Ratio);
+	}
+	else
+	{
+		Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
+	}
 }
 
 stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)

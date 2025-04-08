@@ -79,7 +79,7 @@ static const char g_FractalSound[][] = {
 
 static bool b_InKame[MAXENTITIES];
 #define TWIRL_TE_DURATION 0.1
-#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
+#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3"
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 static float fl_player_weapon_score[MAXTF2PLAYERS];
@@ -603,6 +603,11 @@ methodmap Twirl < CClotBody
 
 		//return type;
 	}
+	property float m_flTempIncreaseCDTeleport
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 
 	public char[] GetName()
 	{
@@ -703,11 +708,11 @@ methodmap Twirl < CClotBody
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
-			music.Time = 285;
-			music.Volume = 2.0;
+			music.Time = 172;
+			music.Volume = 1.65;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Solar Sect of Mystic Wisdom ~ Nuclear Fusion");
-			strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
+			strcopy(music.Name, sizeof(music.Name), "Ruler Of Ruina Decends");
+			strcopy(music.Artist, sizeof(music.Artist), "Granpda Bard");
 			Music_SetRaidMusic(music);	
 		}
 		
@@ -939,11 +944,19 @@ methodmap Twirl < CClotBody
 			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
 
 		Zero(fl_player_weapon_score);
+		Ruina_Set_Battery_Buffer(npc.index, true);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 		
 		return npc;
 	}
 }
 
+void TwirlSetBatteryPercentage(int entity, float percentage)
+{
+	fl_ruina_battery_max[entity] = 1000000.0; //so high itll never be reached.
+	fl_ruina_battery[entity] = ((percentage * 100) * 10000.0);
+}
 
 static void Twirl_WinLine(int entity)
 {
@@ -976,6 +989,7 @@ static void ClotThink(int iNPC)
 	
 	float GameTime = GetGameTime(npc.index);
 
+	CheckChargeTimeTwirl(npc);
 	if(npc.m_flNextThinkTime == FAR_FUTURE && b_allow_final[npc.index])
 	{
 		GameTime = GetGameTime();	//No slowing it down!
@@ -2519,16 +2533,37 @@ static int Nearby_Players(Twirl npc, float Radius)
 	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
 	return i_targets_inrange;
 }
+
+static void CheckChargeTimeTwirl(Twirl npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = npc.m_flNextTeleport - GameTime;
+
+	PercentageCharge = (TimeUntillTeleLeft  / (npc.Anger ? 15.0 : 30.0));
+
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
+}
 static bool Retreat(Twirl npc, bool custom = false)
 {
 	float GameTime = GetGameTime(npc.index);
 	float Radius = 320.0;	//if too many people are next to her, she just teleports in a direction to escape.
 	
-	if(npc.m_flNextTeleport > GameTime && !custom)	//internal teleportation device is still recharging...
+
+	if(npc.m_flNextTeleport > GameTime && npc.m_flTempIncreaseCDTeleport > GameTime && !custom)	//internal teleportation device is still recharging...
 		return false;
 
 	if(!custom)
-		npc.m_flNextTeleport = GameTime + 1.0;
+		npc.m_flTempIncreaseCDTeleport = GameTime + 1.0;
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	

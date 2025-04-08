@@ -189,7 +189,7 @@ methodmap Donnerkrieg < CClotBody
 	
 	public Donnerkrieg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
+		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -292,6 +292,9 @@ methodmap Donnerkrieg < CClotBody
 	//	b_Schwertkrieg_Alive = false;
 		
 		//RaidModeTime = GetGameTime() + 100.0;
+		ApplyStatusEffect(npc.index, npc.index, "Ruina Battery Charge", 9999.0);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 		
 		return npc;
 	}
@@ -304,6 +307,7 @@ static void Internal_ClotThink(int iNPC)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
+	CheckChargeTimeDonnerKrieg(npc);
 	float GameTime = GetGameTime(npc.index);
 	if(Waves_GetRound()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//donnerkrieg handles the timer if its the same index
 	{
@@ -1322,4 +1326,25 @@ public Action NightmareCannon_TBB_Tick(int client)
 		delete trace;
 	}
 	return Plugin_Continue;
+}
+
+
+static void CheckChargeTimeDonnerKrieg(Donnerkrieg npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = fl_cannon_Recharged[npc.index] - GameTime;
+
+	PercentageCharge = (TimeUntillTeleLeft  / (90.0));
+	
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
 }

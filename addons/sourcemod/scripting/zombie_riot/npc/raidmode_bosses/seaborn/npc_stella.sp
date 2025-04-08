@@ -944,6 +944,9 @@ methodmap Stella < CClotBody
 		Zero(b_said_player_weaponline);
 		b_IonStormInitiated[npc.index] = false;
 		b_LastMannLines[npc.index] = false;
+		Ruina_Set_Battery_Buffer(npc.index, true);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 		return npc;
 	}
 }
@@ -960,6 +963,25 @@ static void Do_OnSpawn(int ref)
 	}
 }
 
+static void CheckChargeTimeStella(Stella npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = npc.m_flNC_Recharge - GameTime;
+
+	PercentageCharge = (TimeUntillTeleLeft  / (npc.Anger ? 30.0 : 40.0));
+
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
+}
 static void Win_Line(int entity)
 {	
 	Stella npc = view_as<Stella>(entity);
@@ -1013,6 +1035,7 @@ static void Internal_ClotThink(int iNPC)
 {
 	Stella npc = view_as<Stella>(iNPC);
 
+	CheckChargeTimeStella(npc);
 	if(npc.m_flInvulnerability)
 	{
 		int ally = npc.Ally;
@@ -2118,6 +2141,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				case 3: Stella_Lines(npc, "{snow}Karlas...");
 				case 4: Stella_Lines(npc, "{snow}Its getting kinda cold..");
 			}
+			RaidModeTime +=17.0; //Extra time due to invuln
 			
 			if(!npc.m_flInvulnerability)
 			{

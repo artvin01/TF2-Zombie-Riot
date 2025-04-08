@@ -371,7 +371,7 @@ methodmap Lelouch < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH - 10);
 		
 
 	}
@@ -761,11 +761,12 @@ methodmap Lelouch < CClotBody
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 
 		b_wonviatimer[npc.index] = false;
+		Ruina_Set_Battery_Buffer(npc.index, true);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 
 		return npc;
 	}
-	
-	
 }
 static void Lelouch_WinLine(int entity)
 {
@@ -776,7 +777,7 @@ static void Lelouch_WinLine(int entity)
 	
 	switch(GetRandomInt(0, 1))
 	{
-		case 0: Lelouch_Lines(npc, "Twirl you're all alone");
+		case 0: Lelouch_Lines(npc, "Twirl you're all alone.");
 		case 1: Lelouch_Lines(npc, "They all failed Twirl, now all thats left is you..");
 	}
 
@@ -801,6 +802,24 @@ static void Lelouch_WinLine(int entity)
 	Ruina_Ion_Storm(entity);
 	EmitSoundToAll(BLITZLIGHT_ATTACK);
 
+}
+static void CheckLeLouchShieldCharge(Lelouch npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = npc.m_flCrystalCoolDownTimer - GameTime;
+	PercentageCharge = (TimeUntillTeleLeft  / (100.0));
+
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
 }
 static void Ruina_Ion_Storm(int iNPC)
 {
@@ -834,7 +853,7 @@ static void ClotThink(int iNPC)
 	Lelouch npc = view_as<Lelouch>(iNPC);
 	
 	KeepTimerFrozen();
-
+	CheckLeLouchShieldCharge(npc);
 	if(RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
@@ -846,7 +865,7 @@ static void ClotThink(int iNPC)
 		{
 			switch(GetRandomInt(0, 1))
 			{
-				case 0: Lelouch_Lines(npc, "It is too late, the end has come atlast");
+				case 0: Lelouch_Lines(npc, "It is too late, the end has come atlast...");
 				case 1: Lelouch_Lines(npc, "Twirl tell me, how does it feel to be on the losing side for once?");
 			}
 		}
@@ -1003,7 +1022,7 @@ static void Self_Defense(Lelouch npc, float flDistanceToTarget)
 	Melee.damage = Modify_Damage(-1, 25.0);
 	Melee.bonus_dmg = Modify_Damage(-1, 50.0);
 	Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
-	Melee.swing_speed = 0.9;
+	Melee.swing_speed = 1.2;
 	Melee.swing_delay = 0.37;
 	Melee.turn_speed = 20000.0;
 	Melee.gameTime = GameTime;
@@ -2165,13 +2184,13 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			switch(GetRandomInt(0,1))
 			{
-				case 0: Lelouch_Lines(npc, "You have killed all the anchors within the aloted time");
-				case 1: Lelouch_Lines(npc, "My Anchors, how dare you");
+				case 0: Lelouch_Lines(npc, "You have killed all the anchors within the aloted time...");
+				case 1: Lelouch_Lines(npc, "My Anchors, how dare you!");
 			}
 			
 			switch(GetRandomInt(0,1))
 			{
-				case 0: CPrintToChatAll("{purple}Twirl{snow}: All your Anchors are belong to me now");
+				case 0: CPrintToChatAll("{purple}Twirl{snow}: All your Anchors are belong to me now..!");
 				case 1: CPrintToChatAll("{purple}Twirl{snow}: I'm yoinking your Anchor's now~");
 			}
 			
@@ -2220,11 +2239,11 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			switch(GetRandomInt(0,1))
 			{
-				case 0: Lelouch_Lines(npc, "You managed to avert certain doom for yourself, good for you");
+				case 0: Lelouch_Lines(npc, "You managed to avert certain doom for yourself, good for you.");
 				case 1: Lelouch_Lines(npc, "You almost made, have a complimentary *clap clap*");
 			}
 
-			CPrintToChatAll("{purple}Twirl{snow}: Well on the bright side we don't have to worry about his death ray");
+			CPrintToChatAll("{purple}Twirl{snow}: Well on the bright side we don't have to worry about his death ray.");
 		}
 		RaidModeScaling = fl_RaidModeScaling_Buffer;
 		FreezeTimer(false);
@@ -2693,9 +2712,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		switch(GetRandomInt(0, 2))
 		{
-			case 0:	Lelouch_Lines(npc, "My crystal shield, you will pay for that");
-			case 1: Lelouch_Lines(npc, "AGH, HOW DARE YOU");
-			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me");
+			case 0:	Lelouch_Lines(npc, "My crystal shield, you will pay for that!");
+			case 1: Lelouch_Lines(npc, "AGH, HOW DARE YOU!!!");
+			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me!");
 		}
 		
 		RaidModeScaling *= 1.2;

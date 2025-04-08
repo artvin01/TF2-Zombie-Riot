@@ -355,12 +355,18 @@ public void OnPreThinkPost(int client)
 #if defined NOG
 public void OnPostThink_OnlyHurtHud(int client)
 {
+	//cooldown to prevent hud issues
+	if(f_DisplayDamageHudCooldown[client] > GetGameTime())
+		return;
+
 	if(b_DisplayDamageHud[client][0])
 	{
 		b_DisplayDamageHud[client][0] = false;
 		b_DisplayDamageHud[client][1] = false;
 		if(zr_showdamagehud.BoolValue)
 			Calculate_And_Display_HP_Hud(client);
+
+		f_DisplayDamageHudCooldown[client] = GetGameTime() + 0.2;
 	}
 }
 
