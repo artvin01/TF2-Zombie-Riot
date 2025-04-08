@@ -9,7 +9,42 @@ void CheckAprilFools()
 	char buffer[128];
 	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
 	if(StrContains(buffer, "fools24", false) != -1)
+	{
 		AprilFoolsMode = 1;
+	}
+}
+
+void AprilFoolsSoundDo(int client,
+				 const char[] sample,
+				 int entity = SOUND_FROM_PLAYER,
+				 int channel = SNDCHAN_AUTO,
+				 int level = SNDLEVEL_NORMAL,
+				 int flags = SND_NOFLAGS,
+				 float volume = SNDVOL_NORMAL,
+				 int pitch = SNDPITCH_NORMAL,
+				 int speakerentity = -1,
+				 const float origin[3] = NULL_VECTOR,
+				 const float dir[3] = NULL_VECTOR,
+				 bool updatePos = true,
+				 float soundtime = 0.0)
+{
+	if(AprilFoolsMode <= 0)
+		return false;
+		
+	int team = GetTeam(iNpc);
+
+	//Dont touch red team
+	if(team == 2)
+		return false;
+
+	switch(AprilFoolsMode)
+	{
+		case 1:
+		{
+			EmitSoundToClient(client, "zombie_riot/yippe.mp3",entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
+		}
+	}
+	return true;
 }
 bool ModelReplaceDo(int iNpc)
 {
