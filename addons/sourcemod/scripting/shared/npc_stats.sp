@@ -377,7 +377,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		if(!ModelReplaceDo(npc))
+		if(!ModelReplaceDo(npc, Ally))
 		{
 			DispatchKeyValue(npc, "model",	 model);
 			view_as<CBaseCombatCharacter>(npc).SetModel(model);

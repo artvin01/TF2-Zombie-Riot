@@ -38,12 +38,10 @@ int AprilFoolsIconOverride()
 }
 bool AprilFoolsSoundDo(float volumeedited, 
 				 int client,
-				 const char[] sample,
 				 int entity = SOUND_FROM_PLAYER,
 				 int channel = SNDCHAN_AUTO,
 				 int level = SNDLEVEL_NORMAL,
 				 int flags = SND_NOFLAGS,
-				 float volume = SNDVOL_NORMAL,
 				 int pitch = SNDPITCH_NORMAL,
 				 int speakerentity = -1,
 				 const float origin[3] = NULL_VECTOR,
@@ -75,15 +73,12 @@ bool AprilFoolsSoundDo(float volumeedited,
 	}
 	return true;
 }
-bool ModelReplaceDo(int iNpc)
+bool ModelReplaceDo(int iNpc, int TeamIs)
 {
 	if(AprilFoolsMode <= 0)
 		return false;
-		
-	int team = GetTeam(iNpc);
-
-	//Dont touch red team
-	if(team == 2)
+	//dont touch red
+	if(TeamIs == 2)
 		return false;
 		
 	switch(AprilFoolsMode)

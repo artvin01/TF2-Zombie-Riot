@@ -503,7 +503,7 @@ void Edited_EmitSoundToAll(const char[] sample,
 				{
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
 				}
-				if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime))
+				if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client,entity,channel,level,flags,pitch,speakerentity,origin,dir,updatePos,soundtime))
 					EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
 			}
 		}		
