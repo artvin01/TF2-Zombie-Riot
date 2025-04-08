@@ -11,29 +11,32 @@ void CheckAprilFools()
 	if(StrContains(buffer, "fools24", false) != -1)
 		AprilFoolsMode = 1;
 }
-void ModelReplaceDo(int iNpc)
+bool ModelReplaceDo(int iNpc)
 {
 	if(AprilFoolsMode <= 0)
-		return;
+		return false;
 	int team = GetTeam(iNpc);
 
 	//Dont touch red team
 	if(team == 2)
-		return;
+		return false;
 		
 	switch(AprilFoolsMode)
 	{
 		case 1:
 		{
-
+			DispatchKeyValue(iNpc, "model",	 iNpc);
+			view_as<CBaseCombatCharacter>(iNpc).SetModel(iNpc);
 		}
 	}
+	return true;
 }
 
 void ModelHideWearables(int iNpc)
 {
 	if(AprilFoolsMode <= 0)
 		return;
+		
 	int team = GetTeam(iNpc);
 
 	//Dont touch red team

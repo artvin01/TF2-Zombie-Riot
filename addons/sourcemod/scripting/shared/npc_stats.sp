@@ -377,8 +377,16 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		DispatchKeyValue(npc, "model",	 model);
-		view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		if(ModelReplaceDo(npc))
+		{
+			DispatchKeyValue(npc, "model",	 model);
+			view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		}
+		else
+		{
+			DispatchKeyValue(npc, "model",	 model);
+			view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		}
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
