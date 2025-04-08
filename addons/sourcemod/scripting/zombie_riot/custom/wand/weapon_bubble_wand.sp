@@ -275,13 +275,13 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (Ability_Check_Cooldown(client, slot) < 0.0)
+			if (Ability_Check_Cooldown(client, slot) < 0.0 && !HasSpecificBuff(client, "Bubble Frenzy"))
 			{
 				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 37.5);
 				EmitSoundToClient(client, SOUND_BUBBLE_ABILITY);
 
-				ApplyStatusEffect(weapon, weapon, "Bubble Frenzy", 10.0);
+				ApplyStatusEffect(client, client, "Bubble Frenzy", 10.0);
 				ApplyTempAttrib(weapon, 6, 0.5, 10.0);
 				ApplyTempAttrib(weapon, 733, 0.65, 10.0);
 				//dont allow the player to use this and then switch weapons
