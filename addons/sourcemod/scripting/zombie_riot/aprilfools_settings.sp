@@ -42,6 +42,11 @@ void ModelHideWearables(int iNpc)
 	//Dont touch red team
 	if(team == 2)
 		return;
+
+	if(f_AprilFoolsSetStuff[iNpc])
+		return;
+
+	f_AprilFoolsSetStuff[iNpc] = true;
 	
 	CClotBody npc = view_as<CClotBody>(iNpc);
 	
@@ -85,4 +90,9 @@ void ModelHideWearables(int iNpc)
 		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable8, 0, 0, 0, 0);
 	}
+
+	SetEntProp(iNPC, Prop_Send, "m_nSkin", 1);
+	SetEntityRenderColor(iNPC, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
+	SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", GetRandomFloat(1.2, 2.5));
+	strcopy(c_NpcName[iNPC], sizeof(c_NpcName[]), "Steam Happy");
 }

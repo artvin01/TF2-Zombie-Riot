@@ -414,6 +414,7 @@ bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 bool b_IsEntityNeverTranmitted[MAXENTITIES];
 bool b_NoHealthbar[MAXENTITIES];
 
+float f_AprilFoolsSetStuff[MAXENTITIES];
 //Arrays for npcs!
 int i_NoEntityFoundCount[MAXENTITIES]={0, ...};
 float f3_CustomMinMaxBoundingBox[MAXENTITIES][3];
