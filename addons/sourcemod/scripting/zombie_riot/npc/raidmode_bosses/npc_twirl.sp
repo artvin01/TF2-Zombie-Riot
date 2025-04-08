@@ -2559,7 +2559,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 	float Radius = 320.0;	//if too many people are next to her, she just teleports in a direction to escape.
 	
 
-	if(npc.m_flNextTeleport > GameTime && npc.m_flTempIncreaseCDTeleport > GameTime && !custom)	//internal teleportation device is still recharging...
+	if((npc.m_flNextTeleport > GameTime || npc.m_flTempIncreaseCDTeleport > GameTime) && !custom)	//internal teleportation device is still recharging...
 		return false;
 
 	if(!custom)
