@@ -438,6 +438,7 @@ float fl_MatrixReflect[MAXENTITIES];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
+#include "zombie_riot/aprilfools_settings.sp"
 #include "zombie_riot/building.sp"
 #include "zombie_riot/database.sp"
 #include "zombie_riot/elemental.sp"

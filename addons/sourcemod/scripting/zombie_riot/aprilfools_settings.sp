@@ -6,15 +6,38 @@ int AprilFoolsMode = 0;
 
 void CheckAprilFools()
 {
+	AprilFoolsMode = 0;
 	char buffer[128];
 	zr_tagwhitelist.GetString(buffer, sizeof(buffer));
 	if(StrContains(buffer, "fools24", false) != -1)
 	{
 		AprilFoolsMode = 1;
+		PrecacheSound("zombie_riot/yippe.mp3");
+		PrecacheModel("models/steamhappy.mdl");
+		PrecacheModel("materials/hud/leaderboard_class_steamhappy.vtf");
+		PrecacheModel("materials/hud/leaderboard_class_steamhappy.vmt");
+		AddFileToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vtf");	
+		AddFileToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vmt");		
+		AddFileToDownloadsTable("models/steamhappy.dx80.vtx");			
+		AddFileToDownloadsTable("models/steamhappy.dx90.vtx");			
+		AddFileToDownloadsTable("models/steamhappy.mdl");			
+		AddFileToDownloadsTable("models/steamhappy.vvd");			
+		AddFileToDownloadsTable("models/steamhappy.dx90.vtx");	
+		AddFileToDownloadsTable("materials/steamhappy/happycolors.vmt");		
+		AddFileToDownloadsTable("materials/steamhappy/happycolorable.vmt");		
+		AddFileToDownloadsTable("materials/steamhappy/eye.vmt");		
+		AddFileToDownloadsTable("materials/steamhappy/happycolors.vtf");
+		AddFileToDownloadsTable("materials/steamhappy/happycolorable.vtf");
+		AddFileToDownloadsTable("materials/steamhappy/eye.vtf");
+		AddFileToDownloadsTable("sound/zombie_riot/yippe.mp3");
 	}
 }
-
-void AprilFoolsSoundDo(int client,
+int AprilFoolsIconOverride()
+{
+	return AprilFoolsMode;
+}
+bool AprilFoolsSoundDo(float volumeedited, 
+				 int client,
 				 const char[] sample,
 				 int entity = SOUND_FROM_PLAYER,
 				 int channel = SNDCHAN_AUTO,
@@ -30,8 +53,14 @@ void AprilFoolsSoundDo(int client,
 {
 	if(AprilFoolsMode <= 0)
 		return false;
+
+	if(entity <= 0 || entity > MAXENTITIES)
+		return false;
+
+	if(!b_ThisWasAnNpc[entity])
+		return false;
 		
-	int team = GetTeam(iNpc);
+	int team = GetTeam(entity);
 
 	//Dont touch red team
 	if(team == 2)
@@ -50,6 +79,7 @@ bool ModelReplaceDo(int iNpc)
 {
 	if(AprilFoolsMode <= 0)
 		return false;
+		
 	int team = GetTeam(iNpc);
 
 	//Dont touch red team
@@ -60,15 +90,18 @@ bool ModelReplaceDo(int iNpc)
 	{
 		case 1:
 		{
-			DispatchKeyValue(iNpc, "model",	 iNpc);
-			view_as<CBaseCombatCharacter>(iNpc).SetModel(iNpc);
+			DispatchKeyValue(iNpc, "model",	 "models/steamhappy.mdl");
+			view_as<CBaseCombatCharacter>(iNpc).SetModel("models/steamhappy.mdl");
 		}
 	}
 	return true;
 }
 
-void ModelHideWearables(int iNpc)
+void AprilFoolsModelHideWearables(int iNpc)
 {
+	if(f_AprilFoolsSetStuff[iNpc])
+		return;
+
 	if(AprilFoolsMode <= 0)
 		return;
 		
@@ -78,10 +111,7 @@ void ModelHideWearables(int iNpc)
 	if(team == 2)
 		return;
 
-	if(f_AprilFoolsSetStuff[iNpc])
-		return;
-
-	f_AprilFoolsSetStuff[iNpc] = true;
+	f_AprilFoolsSetStuff[iNpc] = 1.0;
 	
 	CClotBody npc = view_as<CClotBody>(iNpc);
 	
@@ -126,8 +156,10 @@ void ModelHideWearables(int iNpc)
 		SetEntityRenderColor(npc.m_iWearable8, 0, 0, 0, 0);
 	}
 
-	SetEntProp(iNPC, Prop_Send, "m_nSkin", 1);
-	SetEntityRenderColor(iNPC, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
-	SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", GetRandomFloat(1.2, 2.5));
-	strcopy(c_NpcName[iNPC], sizeof(c_NpcName[]), "Steam Happy");
+	SetEntProp(iNpc, Prop_Send, "m_nSkin", 1);
+	SetEntityRenderColor(iNpc, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
+	SetEntPropFloat(iNpc, Prop_Send, "m_flModelScale", GetRandomFloat(1.2, 2.5));
+	strcopy(c_NpcName[iNpc], sizeof(c_NpcName[]), "Steam Happy");
+	b_NameNoTranslation[iNpc] = true;
+	npc.m_bDissapearOnDeath = true;
 }

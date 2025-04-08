@@ -377,12 +377,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		if(ModelReplaceDo(npc))
-		{
-			DispatchKeyValue(npc, "model",	 model);
-			view_as<CBaseCombatCharacter>(npc).SetModel(model);
-		}
-		else
+		if(!ModelReplaceDo(npc))
 		{
 			DispatchKeyValue(npc, "model",	 model);
 			view_as<CBaseCombatCharacter>(npc).SetModel(model);
@@ -6055,6 +6050,7 @@ public void NpcBaseThink(int iNPC)
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
+	AprilFoolsModelHideWearables(iNPC);
 	if(i_IsNpcType[npc.index] == 0)
 	{
 		SaveLastValidPositionEntity(iNPC);
