@@ -148,17 +148,29 @@ methodmap Simon < CClotBody
 	property bool m_bHasKilled
 	{
 		public get()		{ return view_as<bool>(this.m_iOverlordComboAttack); }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 1; }
+		public set(bool value) 	
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 1; 
+		}
 	}
 	property bool m_bRetreating
 	{
 		public get()		{ return this.m_iOverlordComboAttack > 1; }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 2; }
+		public set(bool value)
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 2; 
+		}
 	}
 	property bool m_bRanAway
 	{
 		public get()		{ return this.m_iOverlordComboAttack == 3; }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 3; }
+		public set(bool value) 
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 3; 
+		}
 	}
 }
 
@@ -488,7 +500,7 @@ public void Simon_ClotThink(int iNPC)
 				}
 				else if(npc.m_flRangedSpecialDelay < gameTime)
 				{
-					npc.m_bRanAway = true;
+					npc.m_bRanAway = 3;
 					npc.m_fCreditsOnKill = 0.0;
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
 					ExcuteRelay("zr_simonescaped");

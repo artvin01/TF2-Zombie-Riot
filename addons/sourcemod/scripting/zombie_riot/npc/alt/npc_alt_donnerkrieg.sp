@@ -52,8 +52,6 @@ static float fl_nightmare_end_timer[MAXENTITIES];
 
 static int i_AmountProjectiles[MAXENTITIES];
 
-static bool b_health_stripped[MAXENTITIES];
-
 static bool NightmareCannon_BEAM_CanUse[MAXENTITIES];
 static bool NightmareCannon_BEAM_IsUsing[MAXENTITIES];
 static int NightmareCannon_BEAM_TicksActive[MAXENTITIES];
@@ -236,8 +234,6 @@ methodmap Donnerkrieg < CClotBody
 		g_b_donner_died=false;
 
 		b_enraged=false;
-
-		b_health_stripped[npc.index] = false;
 		//IDLE
 		npc.m_flSpeed = 300.0;
 		
@@ -1247,14 +1243,11 @@ public Action NightmareCannon_TBB_Tick(int client)
 				NightmareCannon_BEAM_HitDetected[i] = false;
 			}
 			
-			if(!b_health_stripped)
+			int PrimaryThreatIndex = npc.m_iTarget;
+			if(IsValidEnemy(npc.index, PrimaryThreatIndex) &&  !b_nightmare_logic[npc.index])
 			{
-				int PrimaryThreatIndex = npc.m_iTarget;
-				if(IsValidEnemy(npc.index, PrimaryThreatIndex) &&  !b_nightmare_logic[npc.index])
-				{
-					float target_vec[3]; GetAbsOrigin(PrimaryThreatIndex, target_vec);
-					endPoint[2] = target_vec[2];
-				}
+				float target_vec[3]; GetAbsOrigin(PrimaryThreatIndex, target_vec);
+				endPoint[2] = target_vec[2];
 			}
 			
 			hullMin[0] = -float(NightmareCannon_BEAM_BeamRadius[client]);

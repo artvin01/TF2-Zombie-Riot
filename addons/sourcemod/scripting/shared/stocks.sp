@@ -2501,12 +2501,12 @@ stock bool IsSpaceOccupiedIgnorePlayersOnlyNpc(const float pos[3], const float m
 	return bHit;
 }
 
-public bool TraceEntityFilterPlayer(int entity, any contentsMask) //Borrowed from Apocalips
+public bool TraceEntityFilterPlayer(int entity, int contentsMask) //Borrowed from Apocalips
 {
 	return entity > MaxClients;
 }
 
-public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
+public bool TraceRayOnlyNpc(int entity, int contentsMask, any data)
 {
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
