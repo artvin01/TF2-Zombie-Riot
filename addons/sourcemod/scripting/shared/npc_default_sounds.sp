@@ -11,3 +11,15 @@
 */
 
 
+REPLACEME_MEDICAAA
+
+const char g_DefaultMedicHurtSounds[][] = {
+	"vo/medic_painsharp01.mp3",
+	"vo/medic_painsharp02.mp3",
+	"vo/medic_painsharp03.mp3",
+	"vo/medic_painsharp04.mp3",
+	"vo/medic_painsharp05.mp3",
+	"vo/medic_painsharp06.mp3",
+	"vo/medic_painsharp07.mp3",
+	"vo/medic_painsharp08.mp3",
+};

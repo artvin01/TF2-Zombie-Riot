@@ -7,14 +7,7 @@ static const char g_DeathSounds[][] = {
 	"vo/medic_negativevocalization03.mp3",
 	"vo/medic_negativevocalization04.mp3",
 };
-
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-};
-
+REPLACEME_MEDICAAA
 static const char g_IdleAlertedSounds[][] = {
 	")vo/medic_specialcompleted01.mp3",
 	")vo/medic_specialcompleted02.mp3",
