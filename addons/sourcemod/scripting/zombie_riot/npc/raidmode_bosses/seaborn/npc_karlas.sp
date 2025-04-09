@@ -1578,7 +1578,7 @@ static void Fire_Wave_Barrage(Karlas npc)
 	
 	//taunt_the_fist_bump_fistbump
 
-	int Amt = (npc.Anger ? 9 : 12); 
+	int Amt = (npc.Anger ? 12 : 8); 
 	float Fire_Rate = (npc.Anger ? 0.5 : 1.0);	//how long between slicer bursts
 
 	if(npc.m_iSlicersFired > Amt+1)
@@ -2298,6 +2298,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
 				case 1: CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
 			}
+			RaidModeTime +=17.0; //Extra time due to invuln
 		
 			Stella donner = view_as<Stella>(ally);
 			donner.Anger=true;

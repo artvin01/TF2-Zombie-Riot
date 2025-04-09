@@ -3351,7 +3351,7 @@ void StatusEffects_Ruiania()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
 	data.Slot						= 0; //0 means ignored
@@ -3371,7 +3371,14 @@ void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 	//get the % of how much battery the npc has
 	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
 
-	Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
+	if(Ratio >= 101.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "[۞ 100+％]", Ratio);
+	}
+	else
+	{
+		Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
+	}
 }
 
 stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)

@@ -438,6 +438,7 @@ float fl_MatrixReflect[MAXENTITIES];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
+#include "zombie_riot/aprilfools_settings.sp"
 #include "zombie_riot/building.sp"
 #include "zombie_riot/database.sp"
 #include "zombie_riot/elemental.sp"
@@ -2636,7 +2637,13 @@ void PlayerApplyDefaults(int client)
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
-		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+
+		if(f_BegPlayerToSetRagdollFade[client] != FAR_FUTURE && f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+
+		if(f_BegPlayerR_TeethSet[client] != FAR_FUTURE && f_BegPlayerR_TeethSet[client] < GetGameTime())
+			QueryClientConVar(client, "r_teeth", ConVarCallback_r_teeth);
+
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
 		if(point_difference > 0)

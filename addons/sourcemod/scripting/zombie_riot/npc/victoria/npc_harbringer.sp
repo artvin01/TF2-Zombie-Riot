@@ -164,7 +164,7 @@ methodmap VictoriaHarbringer < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum24_pathfinder_style2/sum24_pathfinder_style2.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		return npc;
 	}

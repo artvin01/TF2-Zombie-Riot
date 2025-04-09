@@ -283,14 +283,14 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 				npc.AddActivityViaSequence("taunt_cheers_heavy");
 				npc.SetCycle(0.025);
 				npc.SetPlaybackRate(1.0 * (1.0 / npc.f_SpeedAcelerateAnim));
-				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.5 * npc.f_SpeedAcelerateAnim);
+				npc.m_flKiryuTimeUntillDone = GetGameTime() + (2.0 * npc.f_SpeedAcelerateAnim);
 				npc.f_OffsetVertical = -50.0;
 				c_KiyruAttachmentDo[npc.index] = "effect_hand_r";
 				if(!VIPBuilding_Active())
 				{
-					FreezeNpcInTime(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim), true);
+					FreezeNpcInTime(npc.m_iTarget, (1.55 * npc.f_SpeedAcelerateAnim), true);
 					if(!HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
-						SetAirtimeNpc(npc.m_iTarget, (1.75 * npc.f_SpeedAcelerateAnim));
+						SetAirtimeNpc(npc.m_iTarget, (1.55 * npc.f_SpeedAcelerateAnim));
 				}
 			}
 			case 2:
@@ -311,6 +311,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 			}
 			case 3:
 			{
+				npc.f_SpeedAcelerateAnim *= 0.75;
 				npc.AddActivityViaSequence("taunt_unleashed_rage_soldier");
 				npc.SetCycle(0.014);
 				npc.SetPlaybackRate(1.0 * (1.0 / npc.f_SpeedAcelerateAnim));
@@ -372,11 +373,15 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 	{
 		if(npc.m_flKiryuTimeUntillDone < GetGameTime())
 		{
+			int ExtraDo = 0;
+			if(npc.m_iKiryuActionWhich == 3)	
+				ExtraDo = 1;
+			LeperReturnToNormal(owner, npc.m_iWearable9, ExtraDo);
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			return;
 		}
 	}
-	if(IsValidEntity(npc.m_iTargetWalkTo))
+	if(IsValidEntity(npc.m_iWearable9))
 	{
 		if(IsValidEntity(npc.m_iTarget))
 		{
@@ -385,11 +390,11 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 			float ResultStuff[3]; // original
 			float flAngles[3]; // original
 			
-			WorldSpaceCenter(npc.m_iTargetWalkTo, flPosSelf);
+			WorldSpaceCenter(npc.m_iWearable9, flPosSelf);
 			WorldSpaceCenter(npc.m_iTarget, flPosEnemy);
 			MakeVectorFromPoints(flPosSelf, flPosEnemy, ResultStuff); 
 			GetVectorAngles(ResultStuff, flAngles); 
-			TeleportEntity(npc.m_iTargetWalkTo, NULL_VECTOR, flAngles, NULL_VECTOR);
+			TeleportEntity(npc.m_iWearable9, NULL_VECTOR, flAngles, NULL_VECTOR);
 		}
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active() && !HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
@@ -700,6 +705,9 @@ public void AlliedKiryuVisualiserAbility_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 }
 
 

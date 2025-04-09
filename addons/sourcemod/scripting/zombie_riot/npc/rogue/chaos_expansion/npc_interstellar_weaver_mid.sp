@@ -86,6 +86,7 @@ methodmap Interstellar_Weaver_Mid < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
+		fl_TotalArmor[npc.index] = 0.5;
 
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;

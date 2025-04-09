@@ -761,7 +761,6 @@ methodmap CuredFatherGrigori < CClotBody
 			b_NameNoTranslation[npc.index] = true;
 		}
 
-		FixModelTeethEatingWorld(npc.index);
 		
 		i_NpcWeight[npc.index] = 999;
 		

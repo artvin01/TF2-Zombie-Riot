@@ -1607,7 +1607,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		blue = 0;
 	}
 
-	static char Debuff_Adder_left[64], Debuff_Adder_right[64], Debuff_Adder[64];
+	static char Debuff_Adder_left[128], Debuff_Adder_right[128], Debuff_Adder[128];
 	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
 	Debuff_Adder[0] = 0;
 	
@@ -1785,14 +1785,14 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 
 	if(armor_added)
 	{
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s%s\n", Debuff_Adder_left,Debuff_Adder,Debuff_Adder_right);
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s%s", Debuff_Adder_left,Debuff_Adder,Debuff_Adder_right);
 	}
 	else if(Debuff_Adder_left[0] || Debuff_Adder_right[0])
 	{
 		if(Debuff_Adder_left[0] && Debuff_Adder_right[0])
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s | %s\n", Debuff_Adder_left,Debuff_Adder_right);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s | %s", Debuff_Adder_left,Debuff_Adder_right);
 		else
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s\n", Debuff_Adder_left,Debuff_Adder_right);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder_left,Debuff_Adder_right);
 	}
 #if defined ZR
 	if(EntRefToEntIndex(RaidBossActive) != victim)
@@ -1870,7 +1870,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 #endif
 		
 		//add debuff
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
+		if(Debuff_Adder[0])
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
 		static char c_DmgDelt[64];
 		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
@@ -1881,7 +1882,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(!raidboss_active)
 #endif
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
 		}
 		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
@@ -1976,14 +1977,15 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar);
 
 		//add debuff
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
+		if(Debuff_Adder[0])
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
 		static char c_DmgDelt[64];
 		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
 		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
 		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
 			
 		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 

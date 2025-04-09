@@ -377,8 +377,11 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		DispatchKeyValue(npc, "model",	 model);
-		view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		if(!ModelReplaceDo(npc, Ally))
+		{
+			DispatchKeyValue(npc, "model",	 model);
+			view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		}
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
@@ -636,7 +639,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	RemoveAllDamageAddition();
 		}
 #endif
-		FixModelTeethEatingWorld(npc);
 		//Think once.
 		if(NpcTypeLogic == STATIONARY_NPC)
 		{
@@ -2221,7 +2223,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		if(ignoretime || DelayPathing(this.index))
-		{/*
+		{
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2238,7 +2240,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					i_WasPathingToHere[this.index] = 0;
 				}
 			}
-			*/
+			
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
@@ -2302,7 +2304,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{	
 		if(ignoretime || DelayPathing(this.index))
 		{
-			/*
+			
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2319,7 +2321,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					f3_WasPathingToHere[this.index][2] = 0.0;
 				}
 			}
-			*/
+			
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
@@ -3101,6 +3103,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			if (flNextBotGroundSpeed < 0.01) {
 				if (this.m_iPoseMoveX >= 0) {
+					this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
 				}
 				if (this.m_iPoseMoveY >= 0) {
 					this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
@@ -6047,6 +6050,7 @@ public void NpcBaseThink(int iNPC)
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
+	AprilFoolsModelHideWearables(iNPC);
 	if(i_IsNpcType[npc.index] == 0)
 	{
 		SaveLastValidPositionEntity(iNPC);
@@ -8564,6 +8568,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	f_AprilFoolsSetStuff[entity] = 0.0;
 	b_HideHealth[entity] = false;
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
@@ -11099,39 +11104,4 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 	return vecSwingEnd;
-}
-
-
-void FixModelTeethEatingWorld(int entity)
-{
-	/*
-	//Why did i check for models? if they have r_teeth, set it to 0!
-	iint ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
-	if(ModelIndex < 0)
-		return;
-		
-	char ModelPath[255];
-	ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
-	bool TryToFixTeeth = false;
-	if(!StrContains(classname, "models/humans/group"))
-		TryToFixTeeth = true;
-	else if(!StrContains(classname, "models/humans/group"))
-		TryToFixTeeth = true;
-	else if(!StrContains(classname, "models/humans/group"))
-		TryToFixTeeth = true;
-	if(!TryToFixTeeth)
-		return;
-	*/
-
-	/*
-		Fixed a 64bit update breaking old models teeth eating the world 
-
-	*/	
-	CClotBody npc = view_as<CClotBody>(entity);
-	int PoseParram = npc.LookupPoseParameter("r_teeth");
-	if(PoseParram <= 0)
-		return;
-
-	//fixes Void eating issue
-	npc.SetPoseParameter(PoseParram , 0.0);
 }

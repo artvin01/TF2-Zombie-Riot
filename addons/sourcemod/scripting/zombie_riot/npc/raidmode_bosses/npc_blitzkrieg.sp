@@ -411,7 +411,7 @@ methodmap Blitzkrieg < CClotBody
 		fl_move_speed[npc.index] = 250.0;	//base move speed when on life 0, when npc loses a life this number is changed. also while blitz is using his melee he moves 50 hu's less
 		//rocket launcher stuff
 		fl_rocket_firerate[npc.index] = 0.4;	//Base firerate of blitz, overriden once npc takes damage
-		fl_rocket_base_dmg[npc.index] = 5.0;	//The base dmg that all scaling is done on
+		fl_rocket_base_dmg[npc.index] = 7.5;	//The base dmg that all scaling is done on
 
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -782,6 +782,9 @@ methodmap Blitzkrieg < CClotBody
 		
 		b_timer_lose[npc.index] = false;
 		
+		ApplyStatusEffect(npc.index, npc.index, "Ruina Battery Charge", 9999.0);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 		
 		
 		Citizen_MiniBossSpawn();
@@ -797,7 +800,8 @@ methodmap Blitzkrieg < CClotBody
 static void ClotThink(int iNPC)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(iNPC);
-
+	
+	CheckChargeTimeBlitzkrieg(npc);
 	if(LastMann)
 	{
 		if(!npc.m_fbGunout)
@@ -2885,7 +2889,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 							float vecHit[3];
 							WorldSpaceCenter(target, vecHit);
 							float meleedmg;
-							meleedmg = 12.5 * i_HealthScale[npc.index];
+							meleedmg = 15.5 * i_HealthScale[npc.index];
 							SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);	
 							bool Knocked = false;
 								
@@ -3002,4 +3006,30 @@ static void Spawn_Blitz_Army(int blitz, char[] plugin_name, int health = 0, int 
 		Waves_AddNextEnemy(enemy);
 	}
 	Zombies_Currently_Still_Ongoing += count;	// FIXME
+}
+
+
+static void CheckChargeTimeBlitzkrieg(Blitzkrieg npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = npc.m_flReloadIn - GameTime;
+
+	PercentageCharge = (TimeUntillTeleLeft  / (10.0 * fl_LifelossReload[npc.index]));
+	
+	if(!b_Are_we_reloading[npc.index])
+	{
+		PercentageCharge = (float(i_PrimaryRocketsFired[npc.index]) / float(i_maxfirerockets[npc.index]));
+	}
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
 }
