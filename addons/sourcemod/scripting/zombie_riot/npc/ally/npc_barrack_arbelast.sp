@@ -16,14 +16,14 @@ public void BarrackArbelastOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackArbelast(client, vecPos, vecAng, ally);
+	return BarrackArbelast(client, vecPos, vecAng);
 }
 
 methodmap BarrackArbelast < BarrackBody
 {
-	public BarrackArbelast(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackArbelast(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackArbelast npc = view_as<BarrackArbelast>(BarrackBody(client, vecPos, vecAng, "250",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

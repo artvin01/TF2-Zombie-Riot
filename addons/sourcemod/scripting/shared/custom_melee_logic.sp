@@ -697,9 +697,19 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 		if(soundIndex > 0 && !DontPlaySound)
 		{
 			char SoundStringToPlay[256];
-			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])
+			bool OverrideSound = false;
+			switch(i_CustomWeaponEquipLogic[weapon])
 			{
-				EmitSoundToAll(c_WeaponSoundOverrideString[weapon], client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
+				case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
+				{
+					OverrideSound = true;
+					Format(SoundStringToPlay,sizeof(SoundStringToPlay),"replay/snip.wav");	
+				}
+			}
+			if(soundIndex == MELEE_HIT && OverrideSound)
+			{
+				
+				EmitSoundToAll(SoundStringToPlay, client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
 				, _, 1.0 * f_WeaponVolumeStiller[weapon]);
 			}
 			else if(i_WeaponSoundIndexOverride[weapon] != -1)

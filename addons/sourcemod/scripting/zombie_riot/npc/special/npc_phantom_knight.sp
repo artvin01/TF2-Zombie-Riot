@@ -366,7 +366,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 			npc.PlayRangedReloadSound();
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_CLUB_DAMAGE;
 			float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-			makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(damage * npc.m_flWaveScale), 110,_,_,_, false, 4.0);
+			makeexplosion(npc.index, npc_vec, RoundToCeil(damage * npc.m_flWaveScale), 110,_,_, false, 4.0);
 
 			f_StareAtEnemy[npc.index] = GetGameTime(npc.index) + 2.0;
 			f_AttackHappensAoe[npc.index] = 0.0;

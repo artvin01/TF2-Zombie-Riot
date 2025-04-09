@@ -22,12 +22,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialWood(client, vecPos, vecAng, team);
+	return MaterialWood(vecPos, vecAng, team);
 }
 
 methodmap MaterialWood < CClotBody
 {
-	public MaterialWood(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialWood(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialWood npc = view_as<MaterialWood>(CClotBody(vecPos, vecAng, "models/props_forest/sawmill_logs.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		

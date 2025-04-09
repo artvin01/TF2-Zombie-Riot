@@ -67,7 +67,7 @@ void GiantHaste_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return GiantHaste(client, vecPos, vecAng, ally);
+	return GiantHaste(vecPos, vecAng, ally);
 }
 
 static char[] GetPanzerHealth()
@@ -143,7 +143,7 @@ methodmap GiantHaste < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public GiantHaste(int client, float vecPos[3], float vecAng[3], int ally)
+	public GiantHaste(float vecPos[3], float vecAng[3], int ally)
 	{
 		GiantHaste npc = view_as<GiantHaste>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.3", GetPanzerHealth(), ally));
 		

@@ -168,9 +168,11 @@ methodmap TrueFusionWarrior < CClotBody
 		public get()							{ return fl_NextPull[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextPull[this.index] = TempValueForProperty; }
 	}
-	public void PlayIdleSound(bool repeat = false) {
+	public void PlayIdleSound()
+	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
+
 		int sound = GetRandomInt(0, sizeof(g_IdleSounds) - 1);
 		
 		EmitSoundToAll(g_IdleSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);

@@ -177,10 +177,6 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 					SetParent(viewmodelModel, particle);
 				}
 				EmitSoundToAll("items/powerup_pickup_strength.wav", client, SNDCHAN_STATIC,75,_,0.65, GetRandomInt(105,109));
-				for (int entity = 0; entity < MAXENTITIES; entity++)
-				{
-					f_GlobalHitDetectionLogic[client][entity] = 0.0;
-				}
 				SDKUnhook(client, SDKHook_PreThink, Client_ZealotChargeDo);
 				SDKHook(client, SDKHook_PreThink, Client_ZealotChargeDo);
 				f_ZealotDamageSave[client] = CHARGE_DEFAULT_DAMGAE;
@@ -888,16 +884,19 @@ public void Client_ZealotChargeDo(int client)
 
 float ZealotOnlyHitOnce(int attacker, int victim, float &damage, int weapon)
 {
-	if(f_GlobalHitDetectionLogic[attacker][victim])
+	
+	//Zealot will have an offset of 10000, always increment by Maxentities.
+	//Client instead of target, so it gets removed if the target dies
+	if(IsIn_HitDetectionCooldown(attacker + (MAXENTITIES * 2),victim))
 	{
 		damage = 0.0;
 		return 0.0;
 	}
+	Set_HitDetectionCooldown(attacker + (MAXENTITIES * 2),victim, GetGameTime() + 1.0);
 	float targPos[3];
 	WorldSpaceCenter(victim, targPos);
 	EmitSoundToAll("plats/tram_hit4.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 	TE_Particle("skull_island_embers", targPos, NULL_VECTOR, NULL_VECTOR, victim, _, _, _, _, _, _, _, _, _, 0.0);
-	f_GlobalHitDetectionLogic[attacker][victim] = 1.0;
 	return 0.0;
 }
 

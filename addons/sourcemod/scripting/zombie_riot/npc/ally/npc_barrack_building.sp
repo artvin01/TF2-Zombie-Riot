@@ -22,9 +22,9 @@ public void BarrackBuildingOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackBuilding(client, vecPos, vecAng, ally);
+	return BarrackBuilding(client, vecPos, vecAng);
 }
 
 methodmap BarrackBuilding < BarrackBody
@@ -39,10 +39,10 @@ methodmap BarrackBuilding < BarrackBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 	}
-	public BarrackBuilding(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackBuilding(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "4000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0,"models/pickups/pickup_powerup_resistance.mdl", .NpcTypeLogicdo = 1));
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.1");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}

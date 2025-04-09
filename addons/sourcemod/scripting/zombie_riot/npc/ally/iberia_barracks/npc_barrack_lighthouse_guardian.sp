@@ -80,9 +80,9 @@ void Barracks_Iberia_Lighthouse_Guardian_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barracks_Iberia_Lighthouse_Guardian(client, vecPos, vecAng, ally);
+	return Barracks_Iberia_Lighthouse_Guardian(client, vecPos, vecAng);
 }
 
 methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
@@ -161,7 +161,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 	}
 
-	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3])
 	{
 		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "2100", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_resistance.mdl"));
 		

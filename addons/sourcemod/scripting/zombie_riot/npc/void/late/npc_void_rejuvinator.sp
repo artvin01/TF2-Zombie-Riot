@@ -190,7 +190,7 @@ methodmap VoidRejuvinator < CClotBody
 		
 		return npc;
 	}
-	public void StartHealing(int iEnt)
+	public void StartHealing()
 	{
 		int im_iWearable3 = this.m_iWearable3;
 		if(im_iWearable3 != INVALID_ENT_REFERENCE)
@@ -288,7 +288,7 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 			{
 				if(IsValidEntity(npc.m_iWearable4))
 					RemoveEntity(npc.m_iWearable4);
-				npc.StartHealing(PrimaryThreatIndex);
+				npc.StartHealing();
 				npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 125, 0, 125, 3.0, 3.0, 1.35, LASERBEAM);
 				npc.Healing = true;
 				npc.m_bnew_target = true;

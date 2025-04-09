@@ -68,7 +68,7 @@ void GiantRegeneration_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return GiantRegeneration(client, vecPos, vecAng, ally, data);
+	return GiantRegeneration(vecPos, vecAng, ally, data);
 }
 
 static char[] GetPanzerHealth()
@@ -167,7 +167,7 @@ methodmap GiantRegeneration < CClotBody
 	}
 	
 	
-	public GiantRegeneration(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public GiantRegeneration(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		GiantRegeneration npc = view_as<GiantRegeneration>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.3", GetPanzerHealth(), ally));
 		

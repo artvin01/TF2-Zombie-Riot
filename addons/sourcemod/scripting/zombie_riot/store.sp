@@ -79,7 +79,7 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
-	char WeaponSoundOverrideString[255];
+//	char WeaponSoundOverrideString[255];
 	char WeaponHudExtra[16];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
@@ -256,8 +256,8 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sweapon_sound_index_override", prefix);
 		this.WeaponSoundIndexOverride	= view_as<bool>(kv.GetNum(buffer, 0));
 
-		Format(buffer, sizeof(buffer), "%ssound_weapon_override_string", prefix);
-		kv.GetString(buffer, this.WeaponSoundOverrideString, sizeof(buffer));
+	//	Format(buffer, sizeof(buffer), "%ssound_weapon_override_string", prefix);
+	//	kv.GetString(buffer, this.WeaponSoundOverrideString, sizeof(buffer));
 
 		Format(buffer, sizeof(buffer), "%smodel_weapon_override", prefix);
 		kv.GetString(buffer, this.WeaponModelOverride, sizeof(buffer));
@@ -299,12 +299,6 @@ enum struct ItemInfo
 		else
 		{
 			this.WeaponModelIndexOverride = 0;
-		}
-
-		if(this.WeaponSoundOverrideString[0])
-		{
-			//precache the sound!
-			PrecacheSound(this.WeaponSoundOverrideString, true);
 		}
 	
 		
@@ -5825,7 +5819,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] 				= class;
 					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
-					Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
+				//	Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;

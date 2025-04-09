@@ -225,7 +225,7 @@ methodmap Magia_Anchor < CClotBody
 
 		b_is_magia_tower[npc.index]=true;
 
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_CUSTOM_MODELS_3);
+		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 

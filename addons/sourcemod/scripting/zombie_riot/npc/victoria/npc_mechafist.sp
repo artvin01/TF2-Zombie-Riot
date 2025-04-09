@@ -61,7 +61,7 @@ void VictorianMechafist_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianMechafist(client, vecPos, vecAng, ally);
+	return VictorianMechafist(vecPos, vecAng, ally);
 }
 
 methodmap VictorianMechafist < CClotBody
@@ -103,7 +103,7 @@ methodmap VictorianMechafist < CClotBody
 	}
 	
 	
-	public VictorianMechafist(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianMechafist(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianMechafist npc = view_as<VictorianMechafist>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "9000", ally,false));
 		

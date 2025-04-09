@@ -52,9 +52,9 @@ void Barracks_Iberia_Runner_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Runner(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Runner(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Iberia_Runner < BarrackBody
@@ -103,7 +103,7 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Runner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Runner(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(BarrackBody(client, vecPos, vecAng, "130", "models/player/scout.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

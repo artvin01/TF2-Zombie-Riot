@@ -56,7 +56,7 @@ void Victorian_Tacticalunit_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaTacticalunit(client, vecPos, vecAng, ally, data);
+	return VictoriaTacticalunit(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaTacticalunit < CClotBody
@@ -104,7 +104,7 @@ methodmap VictoriaTacticalunit < CClotBody
 			}
 		}
 	}
-	public VictoriaTacticalunit(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaTacticalunit(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaTacticalunit npc = view_as<VictoriaTacticalunit>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "7500", ally));
 		

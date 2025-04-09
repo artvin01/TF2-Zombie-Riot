@@ -2916,7 +2916,7 @@ void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
 	}
 }
 
-int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
+ArrayList HitEntitiesSphereExplosionTrace[MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
 int client, //To get attributes from and to see what is my enemy!
@@ -3091,50 +3091,50 @@ int inflictor = 0)
 	{
 		maxtargetshit = 20; //we do not care.
 	}
-	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+	
+	int length = HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Length;
+	for (int i = 0; i < length; i++)
 	{
-		if(!HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
-			break;
+		int entity_traced = HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Get(i);
 		
-		WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom], VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]]);
-		distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]], spawnLoc, true);
+		WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
+		distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
 		//Save their distances.
 	}
+	
 	//do another check, this time we only need the amount of entities we actually hit.
 	//Im lazy and dumb, i dont know a better way.
-	for (int repeatloop = 0; repeatloop <= maxtargetshit; repeatloop++)
+
+	
+	for (int repeatloop = 0; repeatloop <= maxtargetshit && length > 0; repeatloop++)
 	{
-		int ClosestTarget;
 		float ClosestDistance;
-		int indexTraced;
-		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+		int ClosestIndex;
+		for (int i = 0; i < length; i++)
 		{
-			if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
+			int entity_traced = HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Get(i);
+			
+			if( ClosestDistance ) 
 			{
-				if( ClosestDistance ) 
+				if( distance[entity_traced] < ClosestDistance ) 
 				{
-					if( distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] < ClosestDistance ) 
-					{
-						indexTraced = entity_traced;
-						ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]; 
-						ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];  
-					}
-				} 
-				else 
-				{
-					indexTraced = entity_traced;
-					ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]; 
-					ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];
-				}	
-			}
-			else
+					ClosestIndex = i; 
+					ClosestDistance = distance[entity_traced];  
+				}
+			} 
+			else 
 			{
-				break;
+				ClosestIndex = i; 
+				ClosestDistance = distance[entity_traced];
 			}
 		}
-		/*
-		We will filter out each entity and them damage them accordingly.
-		*/
+
+		int ClosestTarget = HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Get(ClosestIndex);
+		HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Erase(ClosestIndex);
+		length--;
+		
+	//	We will filter out each entity and them damage them accordingly.
+		
 		if(IsValidEntity(ClosestTarget))
 		{	
 			static float vicpos[3];
@@ -3229,21 +3229,11 @@ int inflictor = 0)
 				damage_reduction *= ExplosionDmgMultihitFalloff;
 			}
 		}
-		HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom] = false; //we will need to filter them out entirely now, we did dmg, and thus, its done!
-
-		indexTraced++;
-		for(; indexTraced < MAXENTITIES; indexTraced++)
-		{
-			HitEntitiesSphereExplosionTrace[indexTraced - 1][entityToEvaluateFrom] = HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom];
-			
-			if(!HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom])
-				break;
-		}
-	
+		
 		ClosestTarget = false;
 		ClosestDistance = 0.0;
-		indexTraced = 0;
 	}
+	delete HitEntitiesSphereExplosionTrace[entityToEvaluateFrom];
 }
 
 //#define PARTITION_SOLID_EDICTS        (1 << 1) /**< every edict_t that isn't SOLID_TRIGGER or SOLID_NOT (and static props) */
@@ -3253,10 +3243,11 @@ int inflictor = 0)
 
 void DoExlosionTraceCheck(const float pos1[3], float radius, int entity)
 {
-	for(int i=0; i < MAXENTITIES; i++)
-	{
-		HitEntitiesSphereExplosionTrace[i][entity] = false;
-	}
+	//Delete any previous existing explosion trace array
+	delete HitEntitiesSphereExplosionTrace[entity];
+	//Create a new one thats blank
+	HitEntitiesSphereExplosionTrace[entity] = new ArrayList();
+
 	TR_EnumerateEntitiesSphere(pos1, radius, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_EnumerateEntitiesInRange, entity);
 	//It does all needed logic here.
 }
@@ -3266,14 +3257,9 @@ public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, int filte
 	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
 	{
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
-		for(int i=0; i < MAXENTITIES; i++)
-		{
-			if(!HitEntitiesSphereExplosionTrace[i][filterentity])
-			{
-				HitEntitiesSphereExplosionTrace[i][filterentity] = entity;
-				break;
-			}
-		}
+		//Add a new entity to the arrray list
+		HitEntitiesSphereExplosionTrace[filterentity].Push(entity);
+		
 	}
 	//always keep going!
 	return true;
@@ -5443,4 +5429,99 @@ stock int FindEntityByNPC(int &i)
 	}
 
 	return -1;
+}
+
+enum
+{
+	HitCooldown = 0,
+	SupportDisplayHurtHud = 1,
+	IgniteClientside = 2,
+	Osmosisdebuff = 3,
+	
+}
+
+enum struct HitDetectionEnum
+{
+	int Attacker;
+	int Victim;
+	float Time;
+	int Offset;
+}
+static ArrayList hGlobalHitDetectionLogic;
+
+bool IsIn_HitDetectionCooldown(int attacker, int victim, int offset = 0)
+{
+	// ArrayList is empty currently
+	if(!hGlobalHitDetectionLogic)
+		return false;
+	
+	HitDetectionEnum data;
+	int length = hGlobalHitDetectionLogic.Length;
+	for(int i; i < length; i++)
+	{
+		// Loop through the arraylist to find the right attacker and victim
+		hGlobalHitDetectionLogic.GetArray(i, data);
+		if(data.Attacker == attacker && data.Victim == victim && data.Offset == offset)
+		{
+			// We found our match
+			return data.Time > GetGameTime();
+		}
+	}
+
+	// We found nothing
+	return false;
+}
+
+void Set_HitDetectionCooldown(int attacker, int victim, float time, int offset = 0)
+{
+	// Create if empty
+	if(!hGlobalHitDetectionLogic)
+		hGlobalHitDetectionLogic = new ArrayList(sizeof(HitDetectionEnum));
+	
+	HitDetectionEnum data;
+	int length = hGlobalHitDetectionLogic.Length;
+	for(int i; i < length; i++)
+	{
+		// Loop through the arraylist to find the right attacker and victim
+		hGlobalHitDetectionLogic.GetArray(i, data);
+		if(data.Attacker == attacker && data.Victim == victim && data.Offset == offset)
+		{
+			// We found our match, update the value
+			data.Time = time;
+			hGlobalHitDetectionLogic.SetArray(i, data);
+			return;
+		}
+	}
+
+	// Create a new entry
+	data.Attacker = attacker;
+	data.Victim = victim;
+	data.Offset = offset;
+	data.Time = time;
+	hGlobalHitDetectionLogic.PushArray(data);
+}
+
+// Deletes the entry if a entity died/removed/etc.
+void EntityKilled_HitDetectionCooldown(int entity, int offset = -1)
+{
+	// ArrayList is empty currently
+	if(!hGlobalHitDetectionLogic)
+		return;
+	
+	HitDetectionEnum data;
+	int length = hGlobalHitDetectionLogic.Length;
+	for(int i; i < length; i++)
+	{
+		// Loop through the arraylist to find the right attacker and victim
+		hGlobalHitDetectionLogic.GetArray(i, data);
+		
+		if(offset != -1 && data.Offset != offset)
+			continue;
+
+		if(data.Attacker == entity || data.Victim == entity)
+		{
+			// We found a match
+			hGlobalHitDetectionLogic.Erase(i);
+		}
+	}
 }

@@ -427,10 +427,9 @@ float PrepareMusicVolume[MAXTF2PLAYERS];
 
 
 //Used for any double arrays like lantean wand or health hose.
-float f_GlobalHitDetectionLogic[MAXENTITIES][MAXENTITIES];
 #if defined ZR
 float f_BannerAproxDur[MAXENTITIES];
-bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
+//bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
 #endif
 
 // This is used for stuff like: Youre on fire, or mark for death icon above your head
@@ -563,7 +562,7 @@ float played_headshotsound_already [MAXTF2PLAYERS];
 int i_IsAloneWeapon[MAXENTITIES];
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
-char c_WeaponSoundOverrideString[MAXENTITIES][255];
+//char c_WeaponSoundOverrideString[MAXENTITIES][255];
 int WeaponRef_viewmodel[MAXTF2PLAYERS] = {-1, ...};
 int HandRef[MAXTF2PLAYERS] = {-1, ...};
 int i_Viewmodel_PlayerModel[MAXENTITIES] = {-1, ...};
@@ -732,7 +731,6 @@ float TickrateModify;
 int TickrateModifyInt;
 float f_ClientDoDamageHud[MAXTF2PLAYERS][2];
 float f_ClientDoDamageHud_Hurt[MAXTF2PLAYERS][2];
-float f_DisplayHurtHudToSupporter[MAXENTITIES][MAXTF2PLAYERS];
 
 enum
 {

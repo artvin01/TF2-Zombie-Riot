@@ -34,7 +34,7 @@ methodmap BaseBuilding < BarrackBody
 		
 		BaseBuilding npc = view_as<BaseBuilding>(BarrackBody(client, vecPos, vecAng, "10000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0, "models/pickups/pickup_powerup_resistance.mdl"));
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.1");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		

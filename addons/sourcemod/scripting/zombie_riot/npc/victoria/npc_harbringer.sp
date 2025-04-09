@@ -57,7 +57,7 @@ void VictoriaHarbringer_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaHarbringer(client, vecPos, vecAng, ally, data);
+	return VictoriaHarbringer(vecPos, vecAng, ally, data);
 }
 
 /*
@@ -100,7 +100,7 @@ methodmap VictoriaHarbringer < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.6);
 	}
 
-	public VictoriaHarbringer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaHarbringer(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaHarbringer npc = view_as<VictoriaHarbringer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "1000", ally));
 		

@@ -192,7 +192,7 @@ methodmap MedivalBuilding < CClotBody
 //		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 //		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		if(data[0])

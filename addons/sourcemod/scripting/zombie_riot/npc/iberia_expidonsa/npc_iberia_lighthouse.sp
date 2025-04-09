@@ -115,10 +115,10 @@ methodmap IberiaLighthouse < CClotBody
 		b_NpcUnableToDie[npc.index] = true;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", IBERIA_LIGHTHOUSE_MODEL_1);
+		npc.m_iWearable1 = npc.EquipItemSeperate(IBERIA_LIGHTHOUSE_MODEL_1);
 		SetVariantString("0.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItemSeperate("partyhat", IBERIA_LIGHTHOUSE_MODEL_2,_,_,_,170.0);
+		npc.m_iWearable2 = npc.EquipItemSeperate(IBERIA_LIGHTHOUSE_MODEL_2,_,_,_,170.0);
 		SetVariantString("2.7");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		

@@ -1481,7 +1481,6 @@ void ResetDamageHuds()
 {
 	Zero2(f_ClientDoDamageHud);
 	Zero2(f_ClientDoDamageHud_Hurt);
-	Zero2(f_DisplayHurtHudToSupporter);
 }
 void HudDamageIndicator(int client,int damagetype, bool wasattacker)
 {
@@ -2080,7 +2079,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		
 	for (int client = 1; client <= MaxClients; client++)
 	{
-		if(f_DisplayHurtHudToSupporter[attacker][client] > GetGameTime())
+		if(IsIn_HitDetectionCooldown(attacker, client, SupportDisplayHurtHud)) //if its IN cooldown!
 		{
 			if(IsValidClient(client))
 			{

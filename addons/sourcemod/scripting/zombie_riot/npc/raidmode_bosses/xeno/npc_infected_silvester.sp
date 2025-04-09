@@ -180,7 +180,8 @@ methodmap RaidbossSilvester < CClotBody
 		public set(int TempValueForProperty) 	{ i_InKame[this.index] = TempValueForProperty; }
 	}
 
-	public void PlayIdleSound(bool repeat = false) {
+	public void PlayIdleSound() 
+	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		int sound = GetRandomInt(0, sizeof(g_IdleSounds) - 1);
@@ -1904,7 +1905,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			Range += (float(count -1) * 10.0);
 			Range += 10.0;
 			
-			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
+			makeexplosion(entity, SpawnParticlePos, RoundToCeil(damage), RoundToCeil(Range),_,_,false);
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)
 			{

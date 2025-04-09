@@ -59,7 +59,7 @@ void Victoria_BaseBreaker_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaBaseBreaker(client, vecPos, vecAng, ally);
+	return VictoriaBaseBreaker(vecPos, vecAng, ally);
 }
 methodmap VictoriaBaseBreaker < CClotBody
 {
@@ -100,7 +100,7 @@ methodmap VictoriaBaseBreaker < CClotBody
 	}
 	
 	
-	public VictoriaBaseBreaker(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaBaseBreaker(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaBaseBreaker npc = view_as<VictoriaBaseBreaker>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "4500", ally));
 		

@@ -41,7 +41,7 @@ void VictorianPulverizer_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianPulverizer(client, vecPos, vecAng, ally);
+	return VictorianPulverizer(vecPos, vecAng, ally);
 }
 
 methodmap VictorianPulverizer < CClotBody
@@ -104,7 +104,7 @@ methodmap VictorianPulverizer < CClotBody
 		}
 	}
 	
-	public VictorianPulverizer(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianPulverizer(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianPulverizer npc = view_as<VictorianPulverizer>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "30000", ally));
 		

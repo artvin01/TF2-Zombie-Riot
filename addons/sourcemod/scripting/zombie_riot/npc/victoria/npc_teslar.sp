@@ -56,9 +56,9 @@ void Victorian_Teslar_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(float vecPos[3], float vecAng[3], int ally)
 {
-	return Teslar(client, vecPos, vecAng, ally);
+	return Teslar(vecPos, vecAng, ally);
 }
 
 methodmap Teslar < CClotBody
@@ -100,7 +100,7 @@ methodmap Teslar < CClotBody
 	}
 	
 	
-	public Teslar(int client, float vecPos[3], float vecAng[3], int ally)
+	public Teslar(float vecPos[3], float vecAng[3], int ally)
 	{
 		Teslar npc = view_as<Teslar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1000", ally));
 		

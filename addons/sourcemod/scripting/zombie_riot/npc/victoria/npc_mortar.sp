@@ -60,7 +60,7 @@ void VictoriaMortar_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaMortar(client, vecPos, vecAng, ally);
+	return VictoriaMortar(vecPos, vecAng, ally);
 }
 methodmap VictoriaMortar < CClotBody
 {
@@ -106,7 +106,7 @@ methodmap VictoriaMortar < CClotBody
 	}
 	
 	
-	public VictoriaMortar(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaMortar(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaMortar npc = view_as<VictoriaMortar>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
 		

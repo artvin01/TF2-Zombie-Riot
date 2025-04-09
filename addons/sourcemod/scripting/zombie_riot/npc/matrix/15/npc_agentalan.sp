@@ -69,7 +69,7 @@ void AgentAlan_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentAlan(client, vecPos, vecAng, ally);
+	return AgentAlan(vecPos, vecAng, ally);
 }
 
 static float fl_Cooldown[MAXENTITIES];
@@ -135,7 +135,7 @@ methodmap AgentAlan < CClotBody
 	}
 	
 	
-	public AgentAlan(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentAlan(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentAlan npc = view_as<AgentAlan>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "700", ally));
 		

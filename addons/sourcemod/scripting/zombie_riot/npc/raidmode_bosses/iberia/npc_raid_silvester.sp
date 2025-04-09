@@ -1609,17 +1609,17 @@ void SilvesterEarsApply(int iNpc, char[] attachment = "head")
 	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
 	
 
-	i_ExpidonsaEnergyEffect[iNpc][50] = EntIndexToEntRef(particle_ears1);
-	i_ExpidonsaEnergyEffect[iNpc][51] = EntIndexToEntRef(particle_ears2);
-	i_ExpidonsaEnergyEffect[iNpc][52] = EntIndexToEntRef(particle_ears3);
-	i_ExpidonsaEnergyEffect[iNpc][53] = EntIndexToEntRef(particle_ears4);
-	i_ExpidonsaEnergyEffect[iNpc][54] = EntIndexToEntRef(Laser_ears_1);
-	i_ExpidonsaEnergyEffect[iNpc][55] = EntIndexToEntRef(Laser_ears_2);
-	i_ExpidonsaEnergyEffect[iNpc][56] = EntIndexToEntRef(particle_ears2_r);
-	i_ExpidonsaEnergyEffect[iNpc][57] = EntIndexToEntRef(particle_ears3_r);
-	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
-	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
-	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
+	i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][16] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][17] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][18] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][19] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][20] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][21] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][22] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][23] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][24] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][25] = EntIndexToEntRef(Laser_ears_2_r);
 }
 void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 {

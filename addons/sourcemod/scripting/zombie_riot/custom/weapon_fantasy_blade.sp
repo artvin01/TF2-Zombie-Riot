@@ -960,11 +960,13 @@ static bool Fantasy_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity) && Fantasy_Blade_BEAM_BuildingHit[client]<=FANTASY_BLADE_MAX_PENETRATION)
 	{
-		if(f_GlobalHitDetectionLogic[entity][client]<=GetGameTime())
+		//always increment by Maxentities.
+		//Client instead of target, so it gets removed if the target dies
+		if(!IsIn_HitDetectionCooldown(client + (MAXENTITIES * 3),entity))
 		{
-			f_GlobalHitDetectionLogic[entity][client] = GetGameTime() + 0.25;
 			Fantasy_Blade_BEAM_BuildingHit[client]++;
 			Fantasy_Blade_BEAM_HitDetected[entity] = true;
+			Set_HitDetectionCooldown(client + (MAXENTITIES * 3),entity, GetGameTime() + 0.25);
 		}
 	}
 	return false;

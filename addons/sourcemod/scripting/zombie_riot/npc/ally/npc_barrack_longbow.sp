@@ -16,13 +16,13 @@ public void BarrackLongbowOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackLongbow(client, vecPos, vecAng, ally);
+	return BarrackLongbow(client, vecPos, vecAng);
 }
 methodmap BarrackLongbow < BarrackBody
 {
-	public BarrackLongbow(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackLongbow(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

@@ -594,7 +594,12 @@ float f_StuckOutOfBoundsCheck[MAXENTITIES];
 
 int g_particleImpactMetal;
 
+#if defined ZR
+char c_HeadPlaceAttachmentGibName[MAXENTITIES][5];
+#else
 char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
+#endif
+
 float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #if defined ZR
 float f_DelayNextWaveStartAdvancingDeathNpc;
@@ -1035,7 +1040,11 @@ public void OnMapStart()
 	Zero(f_InBattleDelay);
 	Building_MapStart();
 #endif
-
+	
+	for(int i = 0; i <= MAXENTITIES; i++)
+	{
+		EntityKilled_HitDetectionCooldown(i);
+	}
 	DamageModifMapStart();
 	SDKHooks_ClearAll();
 	InitStatusEffects();
@@ -2291,6 +2300,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		EntityKilled_HitDetectionCooldown(entity);
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity);
 		f_InBattleDelay[entity] = 0.0;

@@ -274,7 +274,7 @@ methodmap Lex < CClotBody
 		
 		return IsValidAlly(this.index, EntRefToEntIndex(this.m_ially));
 	}
-	public void Share_Damage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)	//share the damage taken across both. but it will still do 25%? more dmg to the on being attacked.
+	public void Share_Damage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])	//share the damage taken across both. but it will still do 25%? more dmg to the on being attacked.
 	{
 		if(!this.IsAlive())
 			return;
@@ -412,7 +412,7 @@ methodmap Lex < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,1.25,85.0);
+		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,1.25,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_W30_HAND_CREST);
@@ -864,7 +864,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	npc.Share_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	npc.Share_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		

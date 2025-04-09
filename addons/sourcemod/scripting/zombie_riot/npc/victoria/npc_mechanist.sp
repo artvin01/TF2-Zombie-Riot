@@ -77,7 +77,7 @@ int VictorianMechanist_ID()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianMechanist_as(client, vecPos, vecAng, ally, data);
+	return VictorianMechanist_as(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianMechanist_as < CClotBody
@@ -118,7 +118,7 @@ methodmap VictorianMechanist_as < CClotBody
 	}
 	
 	
-	public VictorianMechanist_as(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictorianMechanist_as(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianMechanist_as npc = view_as<VictorianMechanist_as>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.2", "35000", ally, false));
 		

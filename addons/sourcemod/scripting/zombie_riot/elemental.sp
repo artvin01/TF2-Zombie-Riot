@@ -655,10 +655,7 @@ bool Osmosis_ClientGaveBuff[MAXENTITIES][MAXTF2PLAYERS];
 void OsmosisElementalEffectEnable(int victim, float time)
 {
 	//Reset hit detection on all players
-	for(int i; i < MaxClients; i++)
-	{
-		Osmosis_ClientGaveBuff[victim][i] = false;
-	}
+	EntityKilled_HitDetectionCooldown(victim, Osmosisdebuff);
 	if(time > 0.0)
 		ApplyStatusEffect(victim, victim, "Osmosis'ity", time);
 }
@@ -676,7 +673,7 @@ void OsmosisElementalEffect_Detection(int attacker, int victim)
 	if(!NpcStats_InOsmosis(victim))
 		return;
 	
-	if(Osmosis_ClientGaveBuff[victim][attacker])
+	if(IsIn_HitDetectionCooldown(victim,attacker, Osmosisdebuff))
 		return;
 
 	int weapon_holding = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
@@ -686,7 +683,7 @@ void OsmosisElementalEffect_Detection(int attacker, int victim)
 	if(!Saga_IsChargeWeapon(attacker, weapon_holding))
 		return;
 
-	Osmosis_ClientGaveBuff[victim][attacker] = true;
+	Set_HitDetectionCooldown(victim,attacker, FAR_FUTURE, Osmosisdebuff);
 	//play a little sound!
 	Saga_ChargeReduction(attacker, weapon_holding, 2.0);
 	ClientCommand(attacker, "playgamesound ui/mm_medal_click.wav");

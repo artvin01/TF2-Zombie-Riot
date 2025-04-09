@@ -45,7 +45,7 @@ void VictorianIgniter_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaIgniter(client, vecPos, vecAng, ally);
+	return VictoriaIgniter(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaIgniter < CClotBody
@@ -81,7 +81,7 @@ methodmap VictoriaIgniter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 
-	public VictoriaIgniter(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaIgniter(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaIgniter npc = view_as<VictoriaIgniter>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "3500", ally));
 		

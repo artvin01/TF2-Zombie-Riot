@@ -69,7 +69,7 @@ void AgentWayneFreeplay_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentWayneFreeplay(client, vecPos, vecAng, ally);
+	return AgentWayneFreeplay(vecPos, vecAng, ally);
 }
 methodmap AgentWayneFreeplay < CClotBody
 {
@@ -112,7 +112,7 @@ methodmap AgentWayneFreeplay < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentWayneFreeplay(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentWayneFreeplay(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentWayneFreeplay npc = view_as<AgentWayneFreeplay>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
 		

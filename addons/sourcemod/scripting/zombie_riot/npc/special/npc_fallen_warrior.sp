@@ -107,9 +107,9 @@ void FallenWarrior_OnMapStart()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return FallenWarrior(vecPos, vecAng, team, data);
+	return FallenWarrior(vecPos, vecAng, team);
 }
 static int i_fallen_eyeparticle[MAXENTITIES] = {-1, ...};
 static int i_fallen_headparticle[MAXENTITIES] = {-1, ...};
@@ -165,7 +165,7 @@ methodmap FallenWarrior < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 
-	public FallenWarrior(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public FallenWarrior(float vecPos[3], float vecAng[3], int ally)
 	{
 		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.4", MinibossHealthScaling(100), ally));
 

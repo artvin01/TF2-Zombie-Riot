@@ -69,7 +69,7 @@ void AgentJones_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentJones(client, vecPos, vecAng, ally);
+	return AgentJones(vecPos, vecAng, ally);
 }
 
 methodmap AgentJones < CClotBody
@@ -117,7 +117,7 @@ methodmap AgentJones < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentJones(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentJones(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentJones npc = view_as<AgentJones>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "700", ally));
 		

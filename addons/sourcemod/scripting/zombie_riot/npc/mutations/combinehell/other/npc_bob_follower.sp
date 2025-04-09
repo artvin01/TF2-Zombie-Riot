@@ -51,7 +51,7 @@ stock int BobFollower_ID()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return BobFollower(client, vecPos, vecAng, ally, data);
+	return BobFollower(vecPos, vecAng, ally);
 }
 
 methodmap BobFollower < CClotBody
@@ -79,7 +79,7 @@ methodmap BobFollower < CClotBody
 		EmitSoundToAll(g_BobSuperMeleeCharge_Hit[GetRandomInt(0, sizeof(g_BobSuperMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 	}
 	
-	public BobFollower(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+	public BobFollower(float vecPos[3], float vecAng[3],int ally)
 	{
 		BobFollower npc = view_as<BobFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, true));
 		

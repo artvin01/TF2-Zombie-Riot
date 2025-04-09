@@ -80,7 +80,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Temperals_Buster(vecPos, vecAng, ally, data);
+	return Temperals_Buster(vecPos, vecAng, ally);
 }
 
 methodmap Temperals_Buster < CClotBody
@@ -150,7 +150,7 @@ methodmap Temperals_Buster < CClotBody
 		EmitSoundToAll(g_HeIsAwake[GetRandomInt(0, sizeof(g_HeIsAwake) - 1)], _, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public Temperals_Buster(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Temperals_Buster(float vecPos[3], float vecAng[3], int ally)
 	{
 		Temperals_Buster npc = view_as<Temperals_Buster>(CClotBody(vecPos, vecAng, "models/bots/demo/bot_sentry_buster.mdl", "1.0", "3000", ally, false));
 		

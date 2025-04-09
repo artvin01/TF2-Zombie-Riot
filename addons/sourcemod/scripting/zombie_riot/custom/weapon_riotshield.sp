@@ -87,13 +87,11 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 				{
 					find = true;
 
-					float Duration_ExtraDamage = 2.0;
 					float Duration_Stun = 1.0;
 					float Duration_Stun_Boss = 0.5;
 
 					if(pap == 1)
 					{
-						Duration_ExtraDamage = 3.0;
 						Duration_Stun = 1.5;
 						Duration_Stun_Boss = 0.75;
 					}

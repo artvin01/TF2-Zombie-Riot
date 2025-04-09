@@ -68,7 +68,7 @@ void AgentPaul_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentPaul(client, vecPos, vecAng, ally);
+	return AgentPaul(vecPos, vecAng, ally);
 }
 
 static float fl_Cooldown[MAXENTITIES];
@@ -134,7 +134,7 @@ methodmap AgentPaul < CClotBody
 	}
 	
 	
-	public AgentPaul(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentPaul(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentPaul npc = view_as<AgentPaul>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "700", ally));
 		

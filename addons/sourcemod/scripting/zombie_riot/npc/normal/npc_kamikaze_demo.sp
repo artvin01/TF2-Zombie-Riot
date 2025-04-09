@@ -216,7 +216,7 @@ public void Kamikaze_ClotThink(int iNPC)
 									
 								float startPosition[3];
 								GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", startPosition);
-								makeexplosion(-1, startPosition, 0, 0, 0.0 , 0);
+								makeexplosion(-1, startPosition, 0, 0 , 0);
 								
 								
 								

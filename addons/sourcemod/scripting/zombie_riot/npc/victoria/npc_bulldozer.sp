@@ -71,7 +71,7 @@ void Bulldozer_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Bulldozer(client, vecPos, vecAng, ally);
+	return Bulldozer(vecPos, vecAng, ally);
 }
 
 methodmap Bulldozer < CClotBody
@@ -122,7 +122,7 @@ methodmap Bulldozer < CClotBody
 	}
 	
 	
-	public Bulldozer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Bulldozer(float vecPos[3], float vecAng[3], int ally)
 	{
 		Bulldozer npc = view_as<Bulldozer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "7000", ally, .isGiant = true));
 		
