@@ -100,7 +100,7 @@ static bool ClotCanUse(ObjectStove npc, int client)
 	return true;
 }
 
-static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
+static void ClotShowInteractHud(ObjectStove npc, int client)
 {
 	if(GlobalCooldown > GetGameTime())
 	{
@@ -108,7 +108,9 @@ static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 	}
 	else
 	{
-		PrintCenterText(client, "Press [T (spray)] to cook something using materials.");
+		char button[64];
+		PlayerHasInteract(client, button, sizeof(button));
+		PrintCenterText(client, "%sto cook something using materials.", button);
 	}
 }
 

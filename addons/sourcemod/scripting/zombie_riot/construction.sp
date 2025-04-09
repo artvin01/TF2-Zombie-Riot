@@ -117,9 +117,9 @@ static int AttackRef;
 static char CurrentSpawnName[64];
 static StringMap CurrentMaterials;
 static ArrayList CurrentResearch;
-//static int InResearch = -1;
-//static float InResearchAt;
-//static Handle InResearchMenu[MAXTF2PLAYERS];
+static int InResearch = -1;
+static float InResearchAt;
+static Handle InResearchMenu[MAXTF2PLAYERS];
 
 bool Construction_Mode()
 {
@@ -503,7 +503,7 @@ static Action Timer_StartAttackWave(Handle timer)
 	CurrentAttacks++;
 	
 	// Clear out existing enemies
-	for(int i; i < i_MaxcountNpcTotal; i++)
+	/*for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
@@ -511,7 +511,7 @@ static Action Timer_StartAttackWave(Handle timer)
 			if(GetTeam(entity) != TFTeam_Red)
 				SmiteNpcToDeath(entity);
 		}
-	}
+	}*/
 
 	AttackInfo attack;
 	if(CurrentAttacks > MaxAttacks)
@@ -563,7 +563,7 @@ static bool StartAttack(const AttackInfo attack, int type, int target)
 	
 	float pos[3];
 	GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-	bool failed = !UpdateValidSpawners(pos);
+	bool failed = !UpdateValidSpawners(pos, type);
 
 	if(type < 2 && failed)
 		return false;
@@ -739,7 +739,7 @@ static int RiskBonusFromDistance(const float pos[3])
 	return RoundFloat(GetVectorDistance(pos, pos2, true) / 400000000.0 * float(HighestRisk));
 }
 
-static bool UpdateValidSpawners(const float pos[3])
+static bool UpdateValidSpawners(const float pos[3], int type)
 {
 	CNavArea goalArea = TheNavMesh.GetNavArea(pos, 1000.0);
 	if(goalArea == NULL_AREA)
@@ -754,6 +754,13 @@ static bool UpdateValidSpawners(const float pos[3])
 	{
 		if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") != TFTeam_Red)
 		{
+			if(type > 1)
+			{
+				GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
+				if(StrContains(CurrentSpawnName, "noraid", false) != -1)
+					continue;
+			}
+			
 			list.Push(i_ObjectsSpawners[i]);
 		}
 	}
@@ -999,7 +1006,6 @@ public float InterMusic_ConstructIntencity(int client)
 	return InterMusic_ByIntencity(client);
 }
 
-/*
 void Construction_OpenResearch(int client)
 {
 	SetGlobalTransTarget(client);
@@ -1175,4 +1181,3 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-*/

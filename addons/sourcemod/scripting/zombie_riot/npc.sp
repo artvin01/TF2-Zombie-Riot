@@ -1264,6 +1264,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/construction/obj_const_stove.sp"
 #include "zombie_riot/object/construction/obj_const_factory.sp"
 //#include "zombie_riot/object/construction/obj_hospital.sp"
+#include "zombie_riot/object/construction/obj_const_research.sp"
 
 // VEHICLES
 #include "shared/vehicles/vehicle_shared.sp"

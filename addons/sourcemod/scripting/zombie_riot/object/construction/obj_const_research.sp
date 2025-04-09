@@ -75,7 +75,9 @@ static int CountBuildings()
 
 static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 {
-	PrintCenterText(client, "Press [T (spray)] to research using materials.");
+	char button[64];
+	PlayerHasInteract(client, button, sizeof(button));
+	PrintCenterText(client, "%sto research using materials.", button);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectResearch npc)

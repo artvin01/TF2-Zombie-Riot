@@ -121,7 +121,9 @@ static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 	}
 	else
 	{
-		PrintCenterText(client, "Press [T (spray)] to build a vehicle using materials.");
+		char button[64];
+		PlayerHasInteract(client, button, sizeof(button));
+		PrintCenterText(client, "%sto build a vehicle using materials.", button);
 	}
 }
 
