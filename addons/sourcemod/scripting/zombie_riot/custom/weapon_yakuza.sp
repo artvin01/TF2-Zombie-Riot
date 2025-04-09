@@ -1130,7 +1130,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 
 	fl_AbilityOrAttack[spawn_index][3] = DamageBase;
 	CClotBody npc = view_as<CClotBody>(spawn_index);
-	npc.m_iTargetWalkTo = viewcontrol;
+	npc.m_iWearable9 = viewcontrol;
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
@@ -1170,7 +1170,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 			SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
 		}
 	}
-
+	/*
 	if(LastMann && Yakuza_Lastman())
 	{
 		// Camera for all players yippie
@@ -1186,19 +1186,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 			}
 		}
 	}
-	int ExtraLogic = 0;
-	if(!StrContains(animation, "brawler_heat_3"))
-	{
-		ExtraLogic = 1;
-		//Extra Logic
-	}
-	DataPack pack;
-	CreateDataTimer(duration, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(client);
-	pack.WriteCell(GetClientUserId(client));
-	pack.WriteCell(EntIndexToEntRef(viewcontrol));
-	pack.WriteCell(EntIndexToEntRef(spawn_index));
-	pack.WriteCell(ExtraLogic);
+	*/
 	
 	TF2_AddCondition(client, TFCond_FreezeInput, -1.0);
 
@@ -1216,21 +1204,4 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 	}
 
 	return spawn_index;
-}
-
-static Action Yakuza_ResetCameraOnly(Handle timer, int userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(client)
-	{
-		SetClientViewEntity(client, client);
-
-		if(thirdperson[client])
-		{
-			SetVariantInt(1);
-			AcceptEntityInput(client, "SetForcedTauntCam");
-		}
-	}
-
-	return Plugin_Continue;
 }

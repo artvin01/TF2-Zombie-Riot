@@ -2086,9 +2086,13 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{
-		if(GetTeam(npc.index) != TFTeam_Red)
+		if(GetTeam(spawn_index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		}
+		else
+		{
+			b_ThisEntityIgnored[spawn_index] = true;
 		}
 		if(Rogue_Mode())
 			TeleportEntity(spawn_index, fl_Anchor_Fixed_Spawn_Pos[loop]);
@@ -2972,6 +2976,19 @@ static void NPC_Death(int entity)
 		for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
 		{
 			CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		Waves_ClearWaveCurrentSpawningEnemies();
+		
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
+			{
+				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				{
+					SmiteNpcToDeath(entitynpc);
+				}
+			}
 		}
 		GiveProgressDelay(12.0);
 	}

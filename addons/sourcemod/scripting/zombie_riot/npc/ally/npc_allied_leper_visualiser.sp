@@ -49,6 +49,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 		}
+		npc.m_flRangedSpecialDelay = GetGameTime() + 1.85;
 
 
 		SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
@@ -106,6 +107,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 			npc.AddActivityViaSequence("taunt09");
 			npc.SetPlaybackRate(0.05);
 			npc.SetCycle(0.6);
+			npc.m_flRangedSpecialDelay = GetGameTime() + 0.85;
 		}
 		if(solemny)
 		{
@@ -187,7 +189,6 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		npc.m_flSpeed = 0.0;
 		npc.m_flAttackHappens = GetGameTime() + 0.03;
 		npc.m_flAttackHappens_2 = GetGameTime() + 0.5;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 2.0;
 
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
@@ -304,6 +305,7 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 	{
 		if(npc.m_flRangedSpecialDelay < GetGameTime())
 		{
+			LeperReturnToNormal(GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity"), npc.m_iWearable9);
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		}
 	}
@@ -333,4 +335,10 @@ public void AlliedLeperVisualiserAbility_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
+
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 }
