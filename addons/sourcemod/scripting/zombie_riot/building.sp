@@ -1408,6 +1408,9 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	{
 		return;
 	}
+	if(!i_NpcIsABuilding[target])
+		return;
+	//Cant repair non buildings......
 	int max_health = ReturnEntityMaxHealth(target);
 	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 	
@@ -1521,6 +1524,9 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
 	{
 		return;
 	}
+	if(!i_NpcIsABuilding[target])
+		return;
+	//Cant repair non buildings......
 	int max_health = ReturnEntityMaxHealth(target);
 	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 	

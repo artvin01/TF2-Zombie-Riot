@@ -619,6 +619,7 @@ public void TouchHealthKit(int entity, int other)
 		}
 		if(IsValidClient(Owner))
 		{
+			SetGlobalTransTarget(Owner);
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");

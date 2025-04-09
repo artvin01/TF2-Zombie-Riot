@@ -3373,7 +3373,7 @@ void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 
 	if(Ratio >= 101.0)
 	{
-		Format(HudToDisplay, SizeOfChar, "[۞ 100+％]", Ratio);
+		Format(HudToDisplay, SizeOfChar, "[۞ MAX]", Ratio);
 	}
 	else
 	{
