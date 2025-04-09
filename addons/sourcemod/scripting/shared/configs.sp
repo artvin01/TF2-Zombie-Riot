@@ -110,6 +110,7 @@ void Configs_ConfigsExecuted()
 #if defined RTS
 	RTS_ConfigsSetup();
 #endif
+	CheckAprilFools();
 
 	delete kv;
 

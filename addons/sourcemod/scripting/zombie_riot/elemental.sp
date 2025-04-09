@@ -151,7 +151,7 @@ static int TriggerDamage(int entity, int type)
 	return RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
 }
 
-bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
+bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 {
 	float gameTime = GetGameTime();
 	

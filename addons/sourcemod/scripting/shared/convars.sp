@@ -284,6 +284,7 @@ static void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 	//update store if these are updated.
 	Items_SetupConfig();
 	Store_ConfigSetup();
+	CheckAprilFools();
 }
 
 static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)

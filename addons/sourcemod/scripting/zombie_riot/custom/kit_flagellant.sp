@@ -638,6 +638,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 public void Flagellant_AcidHitPost(int attacker, int victim, float damage, int weapon)
 {
 	float multi = Attributes_Get(weapon, 2, 1.0);
+	multi *= 2.0;
 	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
 	StartBleedingTimer(victim, attacker, multi, HealLevel[attacker] > 1 ? 40 : 30, weapon, DMG_PLASMA);
 }
@@ -838,13 +839,19 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
+		int bleed = BleedAmountCountStack[target];
+		if(bleed > 20)
+			bleed = 20;
 		
-		float extra = BleedAmountCountStack[target] * 200.0 * multi;
-		ApplyRapidSuturing(target);
+		float extra = bleed * 100.0 * multi;
+		//ApplyRapidSuturing(target);
 		
-		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
+		SDKHooks_TakeDamage(target, client, client, (1600.0 * multi), DMG_PLASMA, secondary);
 		if(extra)
 			SDKHooks_TakeDamage(target, client, client, extra, DMG_TRUEDAMAGE, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+
+		if(bleed == 20)
+			DisplayCritAboveNpc(target, client, true);
 
 		ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
 		if(!CvarInfiniteCash.BoolValue)

@@ -193,8 +193,7 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	}	
 	int ModelToDelete = 0;
-	int CameraDelete = SetCameraEffectLeperSolemny(client, ModelToDelete);
-	DataPack pack;
+	SetCameraEffectLeperSolemny(client, ModelToDelete);
 	switch(CurrentPapLeper[client])
 	{
 		case 6,7:
@@ -217,12 +216,6 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 	Grant 50% health and armor.
 	*/
 	Leper_InAnimation[client] = GetGameTime() + 1.85;
-	CreateDataTimer(1.85, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(client);
-	pack.WriteCell(GetClientUserId(client));
-	pack.WriteCell(EntIndexToEntRef(CameraDelete));
-	pack.WriteCell(EntIndexToEntRef(ModelToDelete));
-	pack.WriteCell(0);
 }
 //Freeze in place and cause effect.
 void RemoveSuperSwingLeper(int client)
@@ -248,16 +241,8 @@ void LeperOnSuperHitEffect(int client)
 
 	LeperSwingEffect[client] = true;
 	int ModelToDelete = 0;
-	int CameraDelete = SetCameraEffectLeperHew(client, ModelToDelete);
-	DataPack pack;
+	SetCameraEffectLeperHew(client, ModelToDelete);
 	Leper_InAnimation[client] = GetGameTime() + 0.8;
-	CreateDataTimer(0.8, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(client);
-	pack.WriteCell(GetClientUserId(client));
-	pack.WriteCell(EntIndexToEntRef(CameraDelete));
-	pack.WriteCell(EntIndexToEntRef(ModelToDelete));
-	pack.WriteCell(0);
-
 
 	TF2_AddCondition(client, TFCond_FreezeInput, -1.0);
 
@@ -275,83 +260,73 @@ void LeperOnSuperHitEffect(int client)
 	}
 }
 
-public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
+void LeperReturnToNormal(int client, int propdelete, int ExtraLogic = 0)
 {
-	pack.Reset();
-	int clientindex = pack.ReadCell();
-	int client = GetClientOfUserId(pack.ReadCell());
-	int camreadelete = EntRefToEntIndex(pack.ReadCell());
-	int DeleteKillEntity = EntRefToEntIndex(pack.ReadCell());
-	int ExtraLogic = pack.ReadCell();
-	LeperSwingEffect[clientindex] = false;
-
-	if(camreadelete != -1)
-		RemoveEntity(camreadelete);
-
-	if(DeleteKillEntity != -1)
+	if(IsValidClient(client))
 	{
-		SmiteNpcToDeath(DeleteKillEntity);
-	}
-
-	if(!client)
-		return Plugin_Stop;
+		LeperSwingEffect[client] = false;
+		if(dieingstate[client] == 0)
+			b_ThisEntityIgnored[client] = false;
+			
+		DoOverlay(client, "", 0);
+		SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
+		SetClientViewEntity(client, client);
+		TF2_RemoveCondition(client, TFCond_FreezeInput);
+		SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 1);
+	//	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 1);
+		SetEntProp(client, Prop_Send, "m_bSimulatedEveryTick", 1);
+		SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 1);
+		SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
+		SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
 		
-	if(dieingstate[client] == 0)
-		b_ThisEntityIgnored[client] = false;
-		
-	DoOverlay(client, "", 0);
-	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
-	SetClientViewEntity(client, client);
-	TF2_RemoveCondition(client, TFCond_FreezeInput);
-	SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 1);
-//	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 1);
-	SetEntProp(client, Prop_Send, "m_bSimulatedEveryTick", 1);
-	SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 1);
-	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
-	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
-//its too offset, clientside prediction makes this impossible
-	if(!b_HideCosmeticsPlayer[client])
-	{
-		int entity, i;
-		while(TF2U_GetWearable(client, entity, i))
+		if(!b_HideCosmeticsPlayer[client])
 		{
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-		}
-	}
-	else
-	{
-		int entity, i;
-		while(TF2U_GetWearable(client, entity, i))
-		{
-			if(Viewchanges_NotAWearable(client, entity))
+			int entity, i;
+			while(TF2U_GetWearable(client, entity, i))
+			{
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+			}
+		}
+		else
+		{
+			int entity, i;
+			while(TF2U_GetWearable(client, entity, i))
+			{
+				if(Viewchanges_NotAWearable(client, entity))
+					SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+			}
+		}
+		SetEntityMoveType(client, MOVETYPE_WALK);
+		if (thirdperson[client])
+		{
+			SetVariantInt(1);
+			AcceptEntityInput(client, "SetForcedTauntCam");
+		}
+			
+		if(ExtraLogic == 1)
+		{
+			ClientCommand(client, "playgamesound weapons/air_burster_explode3.wav");
+			static float anglesB[3];
+			GetClientEyeAngles(client, anglesB);
+			static float velocity[3];
+			GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+			float knockback = -325.0;
+			// knockback is the overall force with which you be pushed, don't touch other stuff
+			ScaleVector(velocity, knockback);
+			if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+				velocity[2] = fmax(velocity[2], 300.0);
+			else
+				velocity[2] += 150.0;    // a little boost to alleviate arcing issues
+
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+			//knockback target
 		}
 	}
-	SetEntityMoveType(client, MOVETYPE_WALK);
-	if (thirdperson[client])
+	if(IsValidEntity(propdelete))
 	{
-		SetVariantInt(1);
-		AcceptEntityInput(client, "SetForcedTauntCam");
+		RemoveEntity(propdelete);
 	}
-	if(ExtraLogic == 1)
-	{
-		ClientCommand(client, "playgamesound weapons/air_burster_explode3.wav");
-		static float anglesB[3];
-		GetClientEyeAngles(client, anglesB);
-		static float velocity[3];
-		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -325.0;
-		// knockback is the overall force with which you be pushed, don't touch other stuff
-		ScaleVector(velocity, knockback);
-		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-			velocity[2] = fmax(velocity[2], 300.0);
-		else
-			velocity[2] += 150.0;    // a little boost to alleviate arcing issues
-
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
-		//knockback target
-	}
-	return Plugin_Stop;
+	
 }
 
 #define LEPER_BOUNDS_VIEW_EFFECT 25.0
@@ -467,6 +442,8 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 	if(spawn_index > 0)
 	{
 		ModelToDelete = spawn_index;
+		CClotBody npcstats = view_as<CClotBody>(spawn_index);
+		npcstats.m_iWearable9 = viewcontrol;
 	}
 	GetClientEyeAngles(client, vabsAngles);
 	int PreviousProjectile;
@@ -569,6 +546,8 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 	if(spawn_index > 0)
 	{
 		ModelToDelete = spawn_index;
+		CClotBody npcstats = view_as<CClotBody>(spawn_index);
+		npcstats.m_iWearable9 = viewcontrol;
 	}
 
 	return viewcontrol;
@@ -844,16 +823,9 @@ public void Weapon_LeperWrath(int client, int weapon, bool &result, int slot)
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 		}	
 		int ModelToDelete = 0;
-		int CameraDelete = SetCameraEffectLeperWrath(client, ModelToDelete);
-		DataPack pack;
+		SetCameraEffectLeperWrath(client, ModelToDelete);
 
 		Leper_InAnimation[client] = GetGameTime() + 1.85;
-		CreateDataTimer(1.85, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(client);
-		pack.WriteCell(GetClientUserId(client));
-		pack.WriteCell(EntIndexToEntRef(CameraDelete));
-		pack.WriteCell(EntIndexToEntRef(ModelToDelete));
-		pack.WriteCell(0);
 	}
 	else
 	{
@@ -935,6 +907,8 @@ int SetCameraEffectLeperWrath(int client, int &ModelToDelete)
 	if(spawn_index > 0)
 	{
 		ModelToDelete = spawn_index;
+		CClotBody npcstats = view_as<CClotBody>(spawn_index);
+		npcstats.m_iWearable9 = viewcontrol;
 	}
 
 	return viewcontrol;

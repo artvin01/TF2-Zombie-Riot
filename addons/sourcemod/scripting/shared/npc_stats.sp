@@ -377,8 +377,11 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		DispatchKeyValue(npc, "model",	 model);
-		view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		if(!ModelReplaceDo(npc, Ally))
+		{
+			DispatchKeyValue(npc, "model",	 model);
+			view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		}
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
@@ -6047,6 +6050,7 @@ public void NpcBaseThink(int iNPC)
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
+	AprilFoolsModelHideWearables(iNPC);
 	if(i_IsNpcType[npc.index] == 0)
 	{
 		SaveLastValidPositionEntity(iNPC);
@@ -8564,6 +8568,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	f_AprilFoolsSetStuff[entity] = 0.0;
 	b_HideHealth[entity] = false;
 //	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);

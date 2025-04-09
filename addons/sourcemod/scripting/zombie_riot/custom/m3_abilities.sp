@@ -897,7 +897,7 @@ public void Reinforce(int client, bool NoCD)
 				continue;
 			if(!b_HasBeenHereSinceStartOfWave[client_check])
 				continue;
-			if(f_PlayerLastKeyDetected[client] < GetGameTime())
+			if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
 				continue;
 
 			DeadPlayer=true;
@@ -1987,7 +1987,7 @@ stock int GetRandomDeathPlayer(int client)
 		if(!b_HasBeenHereSinceStartOfWave[client_check])
 			continue;
 
-		if(f_PlayerLastKeyDetected[client] < (GetGameTime() - 2.0))
+		if(f_PlayerLastKeyDetected[client_check] < (GetGameTime() - 2.0))
 			continue;
 
 		victim[victims++] = client_check;

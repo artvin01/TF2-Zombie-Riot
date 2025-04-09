@@ -493,9 +493,9 @@ static void ClotThink(int iNPC)
 
 	if(i_special_tower_logic[npc.index] == 1)
 	{
-		float Radius = 450.0;
-		Master_Apply_Defense_Buff(npc.index, Radius, 5.0, 0.75);	//25% resistances
-		Master_Apply_Attack_Buff(npc.index, Radius, 5.0, 0.25);		//25% dmg bonus
+		float Radius = 650.0;
+		Master_Apply_Defense_Buff(npc.index, Radius, 20.0, 0.75);	//25% resistances
+		Master_Apply_Attack_Buff(npc.index, Radius, 20.0, 0.25);		//25% dmg bonus
 
 		float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=30.0;
 		int color[4]; Ruina_Color(color);

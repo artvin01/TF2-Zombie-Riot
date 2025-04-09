@@ -739,7 +739,7 @@ stock float CooldownReductionAmount(int client)
 	return Cooldown;
 }
 
-void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1)
+void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1, bool ignoreCooldown = false)
 {
 	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
 	if(weapon != -1)
@@ -749,7 +749,8 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 			static Item item;
 			StoreItems.GetArray(StoreWeapon[weapon], item);
 #if defined ZR
-			cooldown *= CooldownReductionAmount(client);
+			if(!ignoreCooldown)
+				cooldown *= CooldownReductionAmount(client);
 #endif
 			
 			switch(what_slot)
@@ -5274,7 +5275,7 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
-	
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
@@ -5297,6 +5298,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 	if(removeWeapons)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 		TF2_RegeneratePlayer(client);
 		Manual_Impulse_101(client, health);
 		return;

@@ -414,6 +414,7 @@ bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 bool b_IsEntityNeverTranmitted[MAXENTITIES];
 bool b_NoHealthbar[MAXENTITIES];
 
+float f_AprilFoolsSetStuff[MAXENTITIES];
 //Arrays for npcs!
 int i_NoEntityFoundCount[MAXENTITIES]={0, ...};
 float f3_CustomMinMaxBoundingBox[MAXENTITIES][3];
@@ -1424,7 +1425,7 @@ public void ConVarCallback_r_teeth(QueryCookie cookie, int client, ConVarQueryRe
 	{
 		if(StringToInt(cvarValue) == 1)
 		{
-			f_BegPlayerR_TeethSet[client] = GetGameTime() + 90.0;
+			f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
 			SetGlobalTransTarget(client);
 			SPrintToChat(client,"%t", "Show Ragdoll Teeth Message");
 		}
@@ -1505,6 +1506,7 @@ public void OnClientPutInServer(int client)
 	f_ClientReviveDelay[client] = 0.0;
 	f_ClientBeingReviveDelay[client] = 0.0;
 	f_ClientReviveDelayMax[client] = 0.0;
+	f_DisplayDamageHudCooldown[client] = 0.0;
 	
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;

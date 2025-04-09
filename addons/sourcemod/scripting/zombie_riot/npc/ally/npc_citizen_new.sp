@@ -1507,7 +1507,7 @@ methodmap Citizen < CClotBody
 
 stock void Citizen_PlayerReplacement(int client)
 {
-	if(Waves_Started() && !Waves_InSetup() && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
+	if(Waves_Started() && !Waves_InSetup() && TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
 		Citizen_SpawnAtPoint("temp", client);
 }
 

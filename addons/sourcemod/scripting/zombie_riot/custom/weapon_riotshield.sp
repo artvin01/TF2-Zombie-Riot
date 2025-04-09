@@ -469,4 +469,3 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	return damage;
 }
 
-
