@@ -2399,6 +2399,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 
 	for(int client=1; client<=MaxClients; client++)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);

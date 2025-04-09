@@ -5275,7 +5275,7 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
-	
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
@@ -5298,6 +5298,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 	if(removeWeapons)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 		TF2_RegeneratePlayer(client);
 		Manual_Impulse_101(client, health);
 		return;
