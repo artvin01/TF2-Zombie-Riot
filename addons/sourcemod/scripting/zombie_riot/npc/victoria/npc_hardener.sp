@@ -1,13 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
+static const char g_DefaultMedic_DeathSounds[][] = {
 	"vo/medic_negativevocalization01.mp3",
 	"vo/medic_negativevocalization02.mp3",
 	"vo/medic_negativevocalization03.mp3",
 	"vo/medic_negativevocalization04.mp3",
 };
-REPLACEME_MEDICAAA
+
 static const char g_IdleAlertedSounds[][] = {
 	")vo/medic_specialcompleted01.mp3",
 	")vo/medic_specialcompleted02.mp3",
@@ -43,7 +43,7 @@ static const char g_FuckyouSounds[][] = {
 
 void VictorianHardener_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
@@ -94,7 +94,7 @@ methodmap VictorianHardener < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		
 	}

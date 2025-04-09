@@ -70,12 +70,7 @@ static const char g_nightmare_cannon_core_sound[][] = {
 	"zombiesurvival/seaborn/loop_laser.mp3",
 };
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
-REPLACEME_MEDICAAA
+
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry01.mp3",
 	"vo/medic_battlecry02.mp3",
@@ -151,8 +146,8 @@ static void ClotPrecache()
 
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_LaserAttackSounds);
 	PrecacheSoundArray(g_LaserChargesounds);
@@ -208,11 +203,11 @@ methodmap Stella < CClotBody
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
 	
 	public void PlayDeathSound() {
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
 	public void PlayLaserAttackSound() {
