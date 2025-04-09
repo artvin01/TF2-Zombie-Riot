@@ -723,7 +723,7 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 	return 0.0;
 }
 
-stock float CooldownReductionAmount(int client)
+stock float CooldownReductionAmount()
 {
 	float Cooldown = 1.0;
 	if(MazeatItemHas())
@@ -744,7 +744,7 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 			StoreItems.GetArray(StoreWeapon[weapon], item);
 #if defined ZR
 			if(!ignoreCooldown)
-				cooldown *= CooldownReductionAmount(client);
+				cooldown *= CooldownReductionAmount();
 #endif
 			
 			switch(what_slot)
@@ -1308,7 +1308,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 					{
 						if(item.GetItemInfo(OwnedItemIndex + i, info) && info.Cost)
 						{
-							ItemCostPap(client, item, info, info.Cost);
+							ItemCostPap(item, info.Cost);
 
 //							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, OwnedItemIndex + i, entity, userid);
 							FormatEx(data, sizeof(data), "%i;%i;%i", index, (OwnedItemIndex + i), userid);
@@ -1374,7 +1374,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 				ItemInfo info;
 				if(item.GetItemInfo(values[1], info) && info.Cost)
 				{ 	
-					ItemCostPap(client, item, info, info.Cost);
+					ItemCostPap(item, info.Cost);
 					if(PapPreviewMode[client])
 					{
 						//If client clicks on anything, view that pap instead.
@@ -6245,7 +6245,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
-		Ulpianus_Enable(client, entity);
+		Ulpianus_Enable(entity);
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
@@ -6597,7 +6597,7 @@ static int ItemSell(int base, int discount)
 	return RoundToCeil(cost * ratio);
 }
 
-static stock void ItemCostPap(int client, const Item item, const ItemInfo info, int &cost)
+static stock void ItemCostPap(const Item item, int &cost)
 {
 	if(Rogue_Mode())
 	{

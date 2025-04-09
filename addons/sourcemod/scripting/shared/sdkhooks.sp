@@ -1591,7 +1591,7 @@ static stock void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 		{
 			case WEAPON_RED_BLADE:
 			{
-				WeaponRedBlade_OnTakeDamage_Post(victim, Victim_weapon);
+				WeaponRedBlade_OnTakeDamage_Post(victim);
 			}
 		}
 	}
@@ -2611,31 +2611,7 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 		}
 	}
 }
-stock int SDKHooks_SpawnParticleDeath(float position[3], char[] effectName, int iParent, const char[] szAttachment = "", float vOffsets[3] = {0.0,0.0,0.0})
-{
-	int particle = CreateEntityByName("info_particle_system");
 
-	if (particle != -1)
-	{
-		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
-		DispatchKeyValue(particle, "targetname", "tf2particle");
-		DispatchKeyValue(particle, "effect_name", effectName);
-		DispatchSpawn(particle);
-
-		SetParent(iParent, particle);
-
-		ActivateEntity(particle);
-
-		AcceptEntityInput(particle, "start");
-
-		Building_particle_Owner[particle] = iParent;
-
-		SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
-		SDKHook(particle, SDKHook_SetTransmit, SDKHooks_TransmitDoDeathMark);
-	}
-
-	return particle;
-}
 public Action SDKHooks_TransmitDoDeathMark(int entity, int client)
 {
 	if(client == Building_particle_Owner[entity])

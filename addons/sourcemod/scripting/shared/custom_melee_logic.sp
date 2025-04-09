@@ -921,7 +921,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 			TR_TraceRayFilter(vecHit, impactEndPos, MASK_SHOT_HULL, RayType_EndPoint, BulletAndMeleeTrace, client);
 			if(TR_DidHit())
 			{
-				UTIL_ImpactTrace(client, pos, DMG_CLUB);
+				UTIL_ImpactTrace(pos, DMG_CLUB);
 			}
 		}
 		delete swingTrace;

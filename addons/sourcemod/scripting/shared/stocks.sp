@@ -1008,7 +1008,7 @@ stock int TF2_CreateGlow(int iEnt)
 	return ent;
 }
 
-stock int TF2_CreateGlow_White(int iEnt, const char[] model, int parentTo, float modelsize)
+stock int TF2_CreateGlow_White(const char[] model, int parentTo, float modelsize)
 {
 	int entity = CreateEntityByName("tf_taunt_prop");
 	if(IsValidEntity(entity))
@@ -2520,7 +2520,7 @@ public bool TraceRayOnlyNpc(int entity, int contentsMask, any data)
 	return !(entity == data);
 }
 
-stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, int team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
+stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, int team=TFTeam_Red) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
 {
 	if (!IsValidClient(client)) //Self-explanatory
 	{
@@ -4264,7 +4264,7 @@ void PlayFakeDeathSound(int client)
 }
 */
 
-stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
+stock bool ShouldNpcDealBonusDamage(int entity)
 {
 	if(entity < 1)
 	{
@@ -4946,7 +4946,7 @@ stock void DoClientHitmarker(int client)
 
 */
 
-stock void UTIL_ImpactTrace(int  client , const float start[3], int iDamageType, const char[] pCustomImpactName = "Impact")
+stock void UTIL_ImpactTrace(const float start[3], int iDamageType, const char[] pCustomImpactName = "Impact")
 {
 	if(TR_GetEntityIndex() == -1 || TR_GetFraction() == 1.0)
 	{ 
@@ -4989,8 +4989,8 @@ stock void TE_SetupEffectDispatch(const float origin[3], const float start[3], c
 	TE_WriteNum("m_nColor", color);
 	TE_WriteFloat("m_flRadius", radius);
 	TE_WriteNum("m_bCustomColors", customColors);
-	//TE_WriteVector("m_CustomColors.m_vecColor1", customColor1);
-	//TE_WriteVector("m_CustomColors.m_vecColor2", customColor2);
+	TE_WriteVector("m_CustomColors.m_vecColor1", customColor1);
+	TE_WriteVector("m_CustomColors.m_vecColor2", customColor2);
 	TE_WriteNum("m_bControlPoint1", controlPoint1);
 	TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", cp1ParticleAttachment);
 	TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", cp1Offset[0]);
@@ -5388,8 +5388,8 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	WorldSpaceCenter(startEnt, startPos);
 	WorldSpaceCenter(endEnt, endPos);
 
-	int particle = ParticleEffectAtOcean(startPos, effect, duration, _, false);
-	int particle2 = ParticleEffectAtOcean(endPos, effect, duration, _, false);
+	int particle = ParticleEffectAtOcean(startPos, effect, duration, false);
+	int particle2 = ParticleEffectAtOcean(endPos, effect, duration, false);
 
 	float offsets[3];
 	offsets[0] = startXOff;

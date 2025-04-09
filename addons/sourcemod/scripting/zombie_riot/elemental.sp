@@ -649,9 +649,6 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 		}
 	}
 }
-
-bool Osmosis_ClientGaveBuff[MAXENTITIES][MAXTF2PLAYERS];
-
 void OsmosisElementalEffectEnable(int victim, float time)
 {
 	//Reset hit detection on all players
