@@ -102,7 +102,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		}
 	}
 	fl_last_summon = 0.1;
-	return Valiant(vecPos, vecAng, team, data);
+	return Valiant(vecPos, vecAng, team);
 }
 
 methodmap Valiant < CClotBody
@@ -174,7 +174,7 @@ methodmap Valiant < CClotBody
 	}
 	
 	
-	public Valiant(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Valiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		

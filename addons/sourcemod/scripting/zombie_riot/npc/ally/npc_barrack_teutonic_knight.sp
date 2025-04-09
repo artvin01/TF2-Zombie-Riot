@@ -18,14 +18,14 @@ public void BarrackTeutonOnMapStart()
 	
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackTeuton(client, vecPos, vecAng, ally);
+	return BarrackTeuton(client, vecPos, vecAng);
 }
 
 methodmap BarrackTeuton < BarrackBody
 {
-	public BarrackTeuton(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackTeuton(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "1300",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

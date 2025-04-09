@@ -41,7 +41,7 @@ int GogglesFollower_ID()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return GogglesFollower(client, vecPos, vecAng);
+	return GogglesFollower(vecPos, vecAng);
 }
 
 static Action GogglesFollower_SpeechTimer(Handle timer, DataPack pack)
@@ -590,7 +590,7 @@ methodmap GogglesFollower < CClotBody
 		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,120.0}, endingtextscroll);
 	}
 	
-	public GogglesFollower(int client, float vecPos[3], float vecAng[3])
+	public GogglesFollower(float vecPos[3], float vecAng[3])
 	{
 		GogglesFollower npc = view_as<GogglesFollower>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "50000", TFTeam_Red, true, false));
 		

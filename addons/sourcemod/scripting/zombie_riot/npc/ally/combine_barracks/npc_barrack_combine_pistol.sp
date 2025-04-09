@@ -55,9 +55,9 @@ void Barracks_Combine_Pistol_Precache()
 }
 static float fl_npc_basespeed;
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Combine_Pistol(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Pistol(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Combine_Pistol < BarrackBody
@@ -100,7 +100,7 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Pistol(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

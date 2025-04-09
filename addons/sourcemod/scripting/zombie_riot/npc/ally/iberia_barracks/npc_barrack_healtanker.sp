@@ -54,9 +54,9 @@ void Barracks_Iberia_Healtanker_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barracks_Iberia_Healtanker(client, vecPos, vecAng, ally);
+	return Barracks_Iberia_Healtanker(client, vecPos, vecAng);
 }
 
 methodmap  Barracks_Iberia_Healtanker < BarrackBody
@@ -105,7 +105,7 @@ methodmap  Barracks_Iberia_Healtanker < BarrackBody
 
 	}
 
-	public Barracks_Iberia_Healtanker(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barracks_Iberia_Healtanker(int client, float vecPos[3], float vecAng[3])
 	{
 		Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(BarrackBody(client, vecPos, vecAng, "500", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

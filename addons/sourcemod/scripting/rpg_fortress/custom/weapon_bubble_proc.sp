@@ -135,7 +135,7 @@ stock void Weapon_BubbleProctectionInit(int client, int weapon, int level)
 			
 		DataPack pack;
 		CreateDataTimer(0.2, TimerBubbleProctection, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		int shieldModel = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,0.0, true);
+		int shieldModel = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,0.0, true);
 		SetVariantString("2.2");
 		AcceptEntityInput(shieldModel, "SetModelScale");
 		SetEntProp(shieldModel, Prop_Send, "m_nSkin", 1);

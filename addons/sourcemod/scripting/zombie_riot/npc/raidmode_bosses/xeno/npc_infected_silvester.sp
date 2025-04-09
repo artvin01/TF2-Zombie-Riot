@@ -180,7 +180,8 @@ methodmap RaidbossSilvester < CClotBody
 		public set(int TempValueForProperty) 	{ i_InKame[this.index] = TempValueForProperty; }
 	}
 
-	public void PlayIdleSound(bool repeat = false) {
+	public void PlayIdleSound() 
+	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		int sound = GetRandomInt(0, sizeof(g_IdleSounds) - 1);
@@ -1050,8 +1051,7 @@ static void Internal_ClotThink(int iNPC)
 							velocity[0] *= -1.0;
 							velocity[1] *= -1.0;
 						//	velocity[2] *= -1.0;
-							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);    
-							RequestFrame(ApplySdkHookSilvesterThrow, EntIndexToEntRef(EnemyLoop));   					
+							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);    				
 						}
 					}
 				}
@@ -1639,124 +1639,6 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 	}
 }
 
-
-static float fl_ThrowDelay[MAXENTITIES];
-public Action contact_throw_Silvester_entity(int client)
-{
-	CClotBody npc = view_as<CClotBody>(client);
-	float targPos[3];
-	float chargerPos[3];
-	float flVel[3];
-	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
-	bool EndThrow = false;
-	if (IsValidClient(client) && IsPlayerAlive(client) && dieingstate[client] == 0 && TeutonType[client] == TEUTON_NONE)
-	{
-		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-		{
-			if (fl_ThrowDelay[client] < GetGameTime())
-			{
-				EndThrow = true;
-			}		
-		}
-	}
-	else if(!b_NpcHasDied[client]) //It died.
-	{
-		if(npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime())
-		{
-			EndThrow = true;
-		}
-	}
-	else
-	{
-		EndThrow = true;
-	}
-	if(EndThrow)
-	{
-		for(int entity=1; entity < MAXENTITIES; entity++)
-		{
-			b_AlreadyHitTankThrow[client][entity] = false;
-		}
-
-		SDKUnhook(client, SDKHook_PreThink, contact_throw_Silvester_entity);	
-		return Plugin_Continue;
-	}
-	else
-	{
-		char classname[60];
-		WorldSpaceCenter(client, chargerPos);
-		for(int entity=1; entity <= MAXENTITIES; entity++)
-		{
-			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
-			{
-				GetEntityClassname(entity, classname, sizeof(classname));
-				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
-				{
-					WorldSpaceCenter(entity, targPos);
-					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetTeam(entity)!=GetTeam(client))
-					{
-						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
-						{		
-							if(!b_NpcHasDied[entity])
-								continue;
-								
-							int damage;
-							if(client <= MaxClients)
-							{
-								damage = ReturnEntityMaxHealth(client) / 3;
-							}
-							if(damage > 2000)
-							{
-								damage = 2000;
-							}
-							
-							if(!ShouldNpcDealBonusDamage(entity))
-							{
-								damage *= 4;
-							}
-							
-							SDKHooks_TakeDamage(entity, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR, targPos);
-							EmitSoundToAll("weapons/physcannon/energy_disintegrate5.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
-							b_AlreadyHitTankThrow[client][entity] = true;
-							if(entity <= MaxClients)
-							{
-								float newVel[3];
-								
-								newVel[0] = GetEntPropFloat(entity, Prop_Send, "m_vecVelocity[0]") * 2.0;
-								newVel[1] = GetEntPropFloat(entity, Prop_Send, "m_vecVelocity[1]") * 2.0;
-								newVel[2] = 500.0;
-												
-								for (int i = 0; i < 3; i++)
-								{
-									flVel[i] += newVel[i];
-								}				
-								TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, flVel); 
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return Plugin_Continue;
-}
-
-
-void ApplySdkHookSilvesterThrow(int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(IsValidEntity(entity))
-	{
-		for(int entity1=1; entity1 < MAXENTITIES; entity1++)
-		{
-			b_AlreadyHitTankThrow[entity][entity1] = false;
-		}
-		fl_ThrowDelay[entity] = GetGameTime(entity) + 0.1;
-		SDKHook(entity, SDKHook_PreThink, contact_throw_Silvester_entity);		
-	}
-}
-
-
-
 void Silvester_SpawnAllyDuoRaid(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -2023,7 +1905,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			Range += (float(count -1) * 10.0);
 			Range += 10.0;
 			
-			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
+			makeexplosion(entity, SpawnParticlePos, RoundToCeil(damage), RoundToCeil(Range),_,_,false);
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)
 			{

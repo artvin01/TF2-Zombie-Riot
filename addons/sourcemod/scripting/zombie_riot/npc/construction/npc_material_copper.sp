@@ -22,12 +22,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialCopper(client, vecPos, vecAng, team);
+	return MaterialCopper(vecPos, vecAng, team);
 }
 
 methodmap MaterialCopper < CClotBody
 {
-	public MaterialCopper(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialCopper(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialCopper npc = view_as<MaterialCopper>(CClotBody(vecPos, vecAng, "models/props_mining/rock001.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		

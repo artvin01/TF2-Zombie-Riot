@@ -89,7 +89,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return AgentSmith(client, vecPos, vecAng, ally, data);
+	return AgentSmith(vecPos, vecAng, ally, data);
 }
 
 methodmap AgentSmith < CClotBody
@@ -165,7 +165,7 @@ methodmap AgentSmith < CClotBody
 		b_NpcIsInvulnerable[this.index] = uber;
 	}
 	
-	public AgentSmith(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public AgentSmith(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool raid = StrContains(data, "raid_time") != -1;
 		AgentSmith npc = view_as<AgentSmith>(CClotBody(vecPos, vecAng, "models/zombie_riot/matrix/smith30.mdl", raid ? "1.15" : "1.0", "30000", ally, false));

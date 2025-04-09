@@ -148,7 +148,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Huscarls(client, vecPos, vecAng, ally, data);
+	return Huscarls(vecPos, vecAng, ally, data);
 }
 
 methodmap Huscarls < CClotBody
@@ -278,7 +278,7 @@ methodmap Huscarls < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
-	public Huscarls(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Huscarls(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Huscarls npc = view_as<Huscarls>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;

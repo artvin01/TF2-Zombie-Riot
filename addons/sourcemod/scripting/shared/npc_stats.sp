@@ -1680,6 +1680,25 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.SetProp(Prop_Data, "m_iHealthBar", iInt); 
 		}
 	}
+	/*
+	property float m_floatHitEnemyDetect
+	{
+		public get()
+		{ 
+			if(!b_ThisWasAnNpc[this.index])
+				return 0;
+				
+			return this.GetPropFloat(Prop_Data, "zr_fEnemyHitCount", EntityAsk);
+		}
+		public set(float iInt) 
+		{
+			if(!b_ThisWasAnNpc[this.index])
+				return;
+
+			this.SetPropFloat(Prop_Data, "zr_fEnemyHitCount", EntityAsk, EntityAsk); 
+		}
+	}
+	*/
 	property int m_iTeamGlow
 	{
 		public get()		 
@@ -2096,7 +2115,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	//	}
 	
 	}
-	public void AddGestureViaSequence(const char[] anim, bool cancel_animation = true)
+	public void AddGestureViaSequence(const char[] anim)
 	{
 		int iSequence = this.LookupSequence(anim);
 		if(iSequence < 0)
@@ -2113,7 +2132,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
 	}
 	public void DispatchParticleEffect(int entity, const char[] strParticle, float flStartPos[3], float vecAngles[3], float flEndPos[3], 
-									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false, float colour[3] = {0.0,0.0,0.0})
+									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false)
 	{
 		int tblidx = FindStringTable("ParticleEffectNames");
 		if (tblidx == INVALID_STRING_TABLE) 
@@ -2557,7 +2576,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 
 	public int EquipItemSeperate(
-	const char[] attachment,
 	const char[] model,
 	const char[] anim = "",
 	int skin = 0,
@@ -2589,6 +2607,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		VecOrigin[2] += offset;
 
 		TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
+		SetEntProp(item, Prop_Send, "m_nSkin", skin);
 		if(DontParent)
 		{
 			return item;
@@ -2637,7 +2656,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(i_IsVehicle[target])
 		{
 			// Vehicle hitboxes
-			return this.DoAimbotTrace(trace, target, vecSwingMaxs, vecSwingMins, vecSwingStartOffset);
+			return this.DoAimbotTrace(trace, target, vecSwingStartOffset);
 		}
 		
 		float eyePitch[3];
@@ -2696,7 +2715,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//PrintToConsoleAll("DoSwingTrace::%f:%d:%d", TR_GetFraction(trace), TR_DidHit(trace), TR_GetEntityIndex(trace));
 		return (TR_GetFraction(trace) < 1.0);
 	}
-	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
+	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingStartOffset = 44.0)
 	{
 		float vecSwingStart[3];
 		GetAbsOrigin(this.index, vecSwingStart);
@@ -3056,7 +3075,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(int TempValueForProperty) 	{ i_PoseMoveY[this.index] = TempValueForProperty; }
 	}
 	//Begin an animation activity, return false if we cant do that right now.
-	public bool StartActivity(int iActivity, int flags = 0, bool Reset_Sequence_Info = true)
+	public bool StartActivity(int iActivity)
 	{
 		int nSequence = this.SelectWeightedSequence(iActivity);
 		if (nSequence == 0) 
@@ -3068,11 +3087,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
 	
-//		Crashes now for buildings, ignore.
-		if(Reset_Sequence_Info)
-		{
-			this.ResetSequenceInfo();
-		}
+		this.ResetSequenceInfo();
 		
 		return true;
 	}
@@ -5616,7 +5631,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	return ClosestTarget;
 }
 
-stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false, int ignore = 0)
+stock int GetClosestAllyPlayer(int entity, int ignore = 0)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
@@ -7390,12 +7405,9 @@ void CalculateBulletDamageForce(const float vecBulletDir[3], float flScale, floa
 
 stock bool makeexplosion(
 	int attacker = 0,
-	 int inflictor = -1,
 	  float attackposition[3],
-		char[] weaponname = "",
 		 int Damage_for_boom = 200,
 		  int Range_for_boom = 200,
-		   float Knockback = 200.0,
 			int flags = 0,
 			 bool FromNpcForced = false,
 			  bool do_explosion_effect = true,
@@ -10469,7 +10481,6 @@ void SaveLastValidPositionEntity(int entity, float vecsaveforce[3] = {0.0,0.0,0.
 	}
 }
 
-char ch_SpeechBubbleTotalText[MAXENTITIES][255];
 int i_SpeechBubbleTotalText_ScrollingPart[MAXENTITIES];
 char ch_SpeechBubbleEndingScroll[MAXENTITIES][10];
 int i_SpeechEndingScroll_ScrollingPart[MAXENTITIES];
@@ -10493,7 +10504,7 @@ stock void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, in
 	f_SpeechDeleteAfter[entity] = 0.0;
 
 	i_SpeechBubbleEntity[entity] = EntIndexToEntRef(Text_Entity);
-	Format(ch_SpeechBubbleTotalText[entity], 255, speechtext);
+	Format(c_NpcName[Text_Entity], 255, speechtext);
 	Format(ch_SpeechBubbleEndingScroll[entity], 10, endingtextscroll);
 	i_SpeechBubbleTotalText_ScrollingPart[entity] = 0;
 	i_SpeechEndingScroll_ScrollingPart[entity] = 0;
@@ -10528,7 +10539,7 @@ void NpcSpeechBubbleTalk(int iNPC)
 		f_SpeechTickDelay[iNPC] = GetGameTime() + 0.05;
 	else
 		f_SpeechTickDelay[iNPC] = GetGameTime() + 0.035;
-	int TotalLength = strlen(ch_SpeechBubbleTotalText[iNPC]);
+	int TotalLength = strlen(c_NpcName[Text_Entity]);
 
 	if(i_SpeechBubbleTotalText_ScrollingPart[iNPC] >= TotalLength)
 	{
@@ -10546,7 +10557,7 @@ void NpcSpeechBubbleTalk(int iNPC)
 				i_SpeechEndingScroll_ScrollingPart[iNPC] = 0;
 			}
 
-			Format(TestMax, sizeof(TestMax), "%s%s",ch_SpeechBubbleTotalText[iNPC],TestMaxEnd);
+			Format(TestMax, sizeof(TestMax), "%s%s",c_NpcName[Text_Entity],TestMaxEnd);
 			DispatchKeyValue(Text_Entity, "message", TestMax);
 
 
@@ -10565,7 +10576,7 @@ void NpcSpeechBubbleTalk(int iNPC)
 	i_SpeechBubbleTotalText_ScrollingPart[iNPC] += 1;
 	char TestMax[255];
 	int MaxTextCutoff = i_SpeechBubbleTotalText_ScrollingPart[iNPC];
-	Format(TestMax, MaxTextCutoff, ch_SpeechBubbleTotalText[iNPC]);
+	Format(TestMax, MaxTextCutoff, c_NpcName[Text_Entity]);
 	DispatchKeyValue(Text_Entity, "message", TestMax);
 }
 
@@ -10578,7 +10589,6 @@ void NpcSpeechBubbleTalk(int iNPC)
 
 Handle Timer_Ingition_Settings[MAXENTITIES] = {INVALID_HANDLE, ...};
 Handle Timer_Ingition_ReApply[MAXENTITIES] = {INVALID_HANDLE, ...};
-bool ClientHasSetFire[MAXENTITIES][MAXTF2PLAYERS];
 float Reapply_BurningCorpse[MAXENTITIES];
 
 void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0)
@@ -10586,10 +10596,7 @@ void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClien
 	Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 	if(ViewmodelSetting > 0)
 	{
-		for( int i = 0; i <= MaxClients; i++ ) 
-		{
-			ClientHasSetFire[target][i] = false;
-		}
+		EntityKilled_HitDetectionCooldown(target, IgniteClientside);
 		if(Timer_Ingition_Settings[target] != null)
 		{
 			delete Timer_Ingition_Settings[target];
@@ -10728,18 +10735,19 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 }
 
 
+
 void IngiteTargetClientside(int target, int client, bool ingite)
 {
-	if(ingite && !ClientHasSetFire[target][client])
+	if(ingite && !IsIn_HitDetectionCooldown(target,client, IgniteClientside))
 	{
-		ClientHasSetFire[target][client] = true;
+		Set_HitDetectionCooldown(target,client, FAR_FUTURE, IgniteClientside);
 		TE_SetupParticleEffect("burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
 		TE_SendToClient(client);
 	}
-	else if(!ingite && ClientHasSetFire[target][client])
+	else if(!ingite && IsIn_HitDetectionCooldown(target,client, IgniteClientside))
 	{
-		ClientHasSetFire[target][client] = false;
+		Set_HitDetectionCooldown(target,client, 0.0, IgniteClientside);
 		TE_Start("EffectDispatch");
 		
 		if(target > 0)
@@ -10892,7 +10900,7 @@ void MakeObjectIntangeable(int entity)
 
 
 static int BadSpotPoints[MAXTF2PLAYERS];
-stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
+stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 {
 #if defined ZR
 	if(CvarInfiniteCash.BoolValue)

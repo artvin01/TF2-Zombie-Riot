@@ -311,7 +311,7 @@ public Action ArkSlugInfused_Timer(Handle timer, DataPack pack)
 	pos[1] = pack.ReadFloat();
 	pos[2] = pack.ReadFloat();
 
-	makeexplosion(IsValidEntity(entity) ? entity : 0, _, pos, "", 520, 100, _, _, true);
+	makeexplosion(IsValidEntity(entity) ? entity : 0, pos, 520, 100, _, true);
 	// Infused Originium Slug boom.atk_scale (50% dmg)
 
 	return Plugin_Continue;

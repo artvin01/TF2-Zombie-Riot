@@ -22,12 +22,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialOssunia(client, vecPos, vecAng, team);
+	return MaterialOssunia(vecPos, vecAng, team);
 }
 
 methodmap MaterialOssunia < CClotBody
 {
-	public MaterialOssunia(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialOssunia(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialOssunia npc = view_as<MaterialOssunia>(CClotBody(vecPos, vecAng, "models/props_mining/rock001.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		

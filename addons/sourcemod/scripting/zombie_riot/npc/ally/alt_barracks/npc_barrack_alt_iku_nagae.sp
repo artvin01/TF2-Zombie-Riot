@@ -73,9 +73,9 @@ public void Barrack_Alt_Ikunagae_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Ikunagae(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Ikunagae(client, vecPos, vecAng);
 }
 
 static float fl_npc_basespeed;
@@ -115,7 +115,7 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 		
 
 	}
-	public Barrack_Alt_Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Ikunagae(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Ikunagae npc = view_as<Barrack_Alt_Ikunagae>(BarrackBody(client, vecPos, vecAng, "450", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

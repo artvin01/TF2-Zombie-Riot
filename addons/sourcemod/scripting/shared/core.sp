@@ -594,7 +594,12 @@ float f_StuckOutOfBoundsCheck[MAXENTITIES];
 
 int g_particleImpactMetal;
 
+#if defined ZR
+char c_HeadPlaceAttachmentGibName[MAXENTITIES][5];
+#else
 char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
+#endif
+
 float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #if defined ZR
 float f_DelayNextWaveStartAdvancingDeathNpc;
@@ -612,6 +617,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 
 #include "shared/stocks_override.sp"
 #include "shared/master_takedamage.sp"
+#include "shared/npc_default_sounds.sp"	// NPC Stats is required here due to important methodmap
 #include "shared/npc_stats.sp"	// NPC Stats is required here due to important methodmap
 #include "shared/npc_collision_logic.sp"	// NPC collisions are sepearted for ease
 #include "shared/npc_trace_filters.sp"	// NPC trace filters are sepearted for ease
@@ -1035,7 +1041,11 @@ public void OnMapStart()
 	Zero(f_InBattleDelay);
 	Building_MapStart();
 #endif
-
+	
+	for(int i = 0; i <= MAXENTITIES; i++)
+	{
+		EntityKilled_HitDetectionCooldown(i);
+	}
 	DamageModifMapStart();
 	SDKHooks_ClearAll();
 	InitStatusEffects();
@@ -1066,7 +1076,6 @@ public void OnMapStart()
 	Zero(i_HasBeenBackstabbed);
 	Zero(i_HasBeenHeadShotted);
 	Zero(f_GibHealingAmount);
-	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
 	Zero(b_NetworkedCrouch);
@@ -2292,6 +2301,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		EntityKilled_HitDetectionCooldown(entity);
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity);
 		f_InBattleDelay[entity] = 0.0;

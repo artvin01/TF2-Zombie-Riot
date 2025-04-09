@@ -674,7 +674,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		else
 		{
 			startPosition[2] += 25.0;
-			makeexplosion(client, client, startPosition, "", 150, 175);
+			makeexplosion(client, startPosition, 150, 175);
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();

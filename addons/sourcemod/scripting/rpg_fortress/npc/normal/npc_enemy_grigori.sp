@@ -1018,7 +1018,7 @@ public void FatherGrigori_IonAttack(Handle &data)
 	else
 	{
 		startPosition[2] += 25.0;
-		makeexplosion(client, client, startPosition, "", 40000/*damage*/, 175/*Range */);
+		makeexplosion(client, startPosition, 40000/*damage*/, 175/*Range */);
 		startPosition[2] -= 25.0;
 		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 		TE_SendToAll();

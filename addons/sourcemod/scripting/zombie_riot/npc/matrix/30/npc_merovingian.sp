@@ -66,7 +66,7 @@ void Merovingian_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Merovingian(client, vecPos, vecAng, ally);
+	return Merovingian(vecPos, vecAng, ally);
 }
 methodmap Merovingian < CClotBody
 {
@@ -125,7 +125,7 @@ methodmap Merovingian < CClotBody
 	}
 	
 	
-	public Merovingian(int client, float vecPos[3], float vecAng[3], int ally)
+	public Merovingian(float vecPos[3], float vecAng[3], int ally)
 	{
 		Merovingian npc = view_as<Merovingian>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "700", ally));
 		

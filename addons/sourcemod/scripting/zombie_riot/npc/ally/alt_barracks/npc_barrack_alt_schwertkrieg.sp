@@ -53,9 +53,9 @@ public void Barrack_Alt_Shwertkrieg_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Shwertkrieg(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Shwertkrieg(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Shwertkrieg < BarrackBody
@@ -95,7 +95,7 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 		
 
 	}
-	public Barrack_Alt_Shwertkrieg(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Shwertkrieg(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(BarrackBody(client, vecPos, vecAng, "1250", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

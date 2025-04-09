@@ -463,7 +463,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 				}
-				f_DisplayHurtHudToSupporter[healTarget][owner] = GetGameTime() + 0.25;
+				Set_HitDetectionCooldown(healTarget,owner, GetGameTime() + 0.25, SupportDisplayHurtHud);
 #if defined ZR
 				SetAmmo(owner, 21, new_ammo);
 				CurrentAmmo[owner][21] = GetAmmo(owner, 21);

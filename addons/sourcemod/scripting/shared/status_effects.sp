@@ -3784,7 +3784,7 @@ void OsmosisHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEf
 		return;
 
 #if defined ZR
-	if(!Osmosis_ClientGaveBuff[victim][attacker])
+	if(!IsIn_HitDetectionCooldown(victim,attacker, Osmosisdebuff))
 		Format(HudToDisplay, SizeOfChar, "⟁");
 #endif
 }

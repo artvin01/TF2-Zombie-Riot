@@ -174,13 +174,13 @@ public void FullMoon_Cooldown_Logic(int client, int weapon)
 {
 	if(f_FullMoonAbility[client] > GetGameTime())
 	{
-		MakeBladeBloddy(client, true, weapon);
+		MakeBladeBloddy(client, true);
 		TF2_AddCondition(client, TFCond_CritOnKill, 0.3);
 		StopSound(client, SNDCHAN_STATIC, "weapons/crit_power.wav");
 	}
 	else
 	{
-		MakeBladeBloddy(client, false, weapon);
+		MakeBladeBloddy(client, false);
 	}
 
 	if(f_FullMoonHudCD[client] < GetGameTime() && i_Current_Pap[client] > 1)

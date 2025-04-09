@@ -52,7 +52,7 @@ void VictorianSignaller_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianSignaller(client, vecPos, vecAng, ally);
+	return VictorianSignaller(vecPos, vecAng, ally);
 }
 
 methodmap VictorianSignaller < CClotBody
@@ -78,7 +78,7 @@ methodmap VictorianSignaller < CClotBody
 		EmitSoundToAll(g_hornsound[GetRandomInt(0, sizeof(g_hornsound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL , _, 0.5, GetRandomInt(80,110));
 	}
 	
-	public VictorianSignaller(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianSignaller(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianSignaller npc = view_as<VictorianSignaller>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "6000", ally));
 		
