@@ -4360,3 +4360,23 @@ stock float Status_Effects_GetCustomValue(int victim, int Index)
 
 	return BuffValuereturn;
 }
+
+
+int 
+void StatusEffects_OnHitDetection()
+{
+	strcopy(data.BuffName, sizeof(data.BuffName), "");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.ElementalLogic =true;
+	StatusEffect_AddGlobal(data);
+
+}

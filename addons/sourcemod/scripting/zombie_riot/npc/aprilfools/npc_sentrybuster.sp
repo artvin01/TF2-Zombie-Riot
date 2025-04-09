@@ -473,7 +473,7 @@ static Action Timer_RemoveEntitySentryBuster_Explosion(Handle timer, any entid)
 	{
 		float pos[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-		makeexplosion(-1, -1, pos, "", 2000, 350);
+		makeexplosion(-1, pos, 2000, 350);
 		EmitSoundToAll(g_ExplosionSound[GetRandomInt(0, sizeof(g_ExplosionSound) - 1)], entity, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		RemoveEntity(entity);
 	}

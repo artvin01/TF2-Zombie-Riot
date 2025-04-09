@@ -167,7 +167,7 @@ void BarrackBuilding_NPCDeath(int entity)
 	BarrackBuilding npc = view_as<BarrackBuilding>(entity);
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 	BarrackBody_NPCDeath(npc.index);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, BarrackBuilding_OnTakeDamagePost);
 	SDKUnhook(npc.index, SDKHook_Think, BarrackBuilding_ClotThink);

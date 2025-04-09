@@ -998,10 +998,10 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		else
 		{
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(75.0), 150);
+				makeexplosion(client, startPosition, RoundToCeil(75.0), 150);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(150.0), 225);
+				makeexplosion(client, startPosition, RoundToCeil(150.0), 225);
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();

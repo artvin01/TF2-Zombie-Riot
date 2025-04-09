@@ -121,7 +121,7 @@ void BaseBuilding_NPCDeath(int entity)
 
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 	BarrackBody_NPCDeath(npc.index);
 	if(Waves_Started())
 	{

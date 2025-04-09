@@ -1066,7 +1066,6 @@ public void OnMapStart()
 	Zero(i_HasBeenBackstabbed);
 	Zero(i_HasBeenHeadShotted);
 	Zero(f_GibHealingAmount);
-	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
 	Zero(b_NetworkedCrouch);

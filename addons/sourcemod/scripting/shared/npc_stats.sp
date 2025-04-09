@@ -1680,6 +1680,23 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.SetProp(Prop_Data, "m_iHealthBar", iInt); 
 		}
 	}
+	property float m_floatHitEnemyDetect
+	{
+		public get(int EntityAsk)		 
+		{ 
+			if(!b_ThisWasAnNpc[this.index])
+				return 0;
+				
+			return this.GetPropFloat(Prop_Data, "zr_fEnemyHitCount", EntityAsk);
+		}
+		public set(float iInt) 
+		{
+			if(!b_ThisWasAnNpc[this.index])
+				return;
+
+			this.SetPropFloat(Prop_Data, "zr_fEnemyHitCount", EntityAsk, EntityAsk); 
+		}
+	}
 	property int m_iTeamGlow
 	{
 		public get()		 
@@ -3398,6 +3415,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
 		.DefineIntField("m_iHealthBar")
+		.DefineFloatField("zr_fEnemyHitCount", MAXENTITIES)
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -7390,12 +7408,9 @@ void CalculateBulletDamageForce(const float vecBulletDir[3], float flScale, floa
 
 stock bool makeexplosion(
 	int attacker = 0,
-	 int inflictor = -1,
 	  float attackposition[3],
-		char[] weaponname = "",
 		 int Damage_for_boom = 200,
 		  int Range_for_boom = 200,
-		   float Knockback = 200.0,
 			int flags = 0,
 			 bool FromNpcForced = false,
 			  bool do_explosion_effect = true,
@@ -10892,7 +10907,7 @@ void MakeObjectIntangeable(int entity)
 
 
 static int BadSpotPoints[MAXTF2PLAYERS];
-stock void Spawns_CheckBadClient(int client, int checkextralogic = 0)
+stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 {
 #if defined ZR
 	if(CvarInfiniteCash.BoolValue)

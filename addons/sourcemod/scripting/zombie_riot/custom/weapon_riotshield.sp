@@ -98,8 +98,6 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 						Duration_Stun_Boss = 0.75;
 					}
 
-					f_TargetWasBlitzedByRiotShield[RIOT_EnemiesHit[enemy_hit]][weapon] = GetGameTime() + Duration_ExtraDamage;
-
 					if(!b_thisNpcIsABoss[RIOT_EnemiesHit[enemy_hit]] && !RaidActive)
 					{
 						FreezeNpcInTime(RIOT_EnemiesHit[enemy_hit],Duration_Stun);

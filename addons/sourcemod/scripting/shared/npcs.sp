@@ -754,7 +754,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			damage *= 1.4;
 
 			bool Blitzed_By_Riot = false;
-			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RIOT_SHIELD && f_TimeFrozenStill[victim] > GetGameTime(victim))
 			{
 				Blitzed_By_Riot = true;
 			}

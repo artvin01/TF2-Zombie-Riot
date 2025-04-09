@@ -161,7 +161,7 @@ void Freeplay_OnNPCDeath(int entity)
 		float startPosition[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 		startPosition[2] += 45;
-		makeexplosion(entity, entity, startPosition, "", ExplodeNPCDamage, 150, _, _, true, true, 6.0);
+		makeexplosion(entity, startPosition, ExplodeNPCDamage, 150, _, true, true, 6.0);
 	}
 }
 

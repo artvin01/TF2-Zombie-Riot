@@ -1470,7 +1470,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			ResetReplications();
 		
 			startPosition[2] += 25.0;
-			makeexplosion(client, client, startPosition, "", 0, 0);
+			makeexplosion(client, startPosition, 0, 0);
 
 			CreateTimer(30.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
