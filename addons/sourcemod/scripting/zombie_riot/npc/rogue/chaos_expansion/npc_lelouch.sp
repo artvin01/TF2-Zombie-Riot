@@ -583,7 +583,7 @@ methodmap Lelouch < CClotBody
 	{
 		Lelouch npc = view_as<Lelouch>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 		
@@ -1178,7 +1178,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	}
 	
 	int Health = ReturnEntityMaxHealth(npc.index);
-	Health = RoundToFloor(Health*0.1);
+	Health = RoundToFloor(float(Health)*0.06);
 
 	npc.PlayCrystalSounds();
 
@@ -2883,7 +2883,7 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 }
 static int i_summon_weaver(Lelouch npc)
 {
-	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.2, 1.0, 0.0, HEAL_ABSOLUTE);
+	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.1, 1.0, 0.0, HEAL_ABSOLUTE);
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	int maxhealth;
