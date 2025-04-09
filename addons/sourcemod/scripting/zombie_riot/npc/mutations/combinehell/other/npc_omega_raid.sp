@@ -115,7 +115,7 @@ void OmegaRaid_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Omega");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_omega_raid");
 	strcopy(data.Icon, sizeof(data.Icon), "omega");
-	PrecacheSound("#zombiesurvival/combinehell/confrontation.mp3");
+	PrecacheSound("#zombiesurvival/combinehell/cauterizer.mp3");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -359,12 +359,12 @@ methodmap OmegaRaid < CClotBody
 		RaidModeScaling *= amount_of_people;
 		
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/combinehell/confrontation.mp3");
-		music.Time = 183;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/combinehell/cauterizer.mp3");
+		music.Time = 190;
 		music.Volume = 2.0;
 		music.Custom = false;
-		strcopy(music.Name, sizeof(music.Name), "Confrontation");
-		strcopy(music.Artist, sizeof(music.Artist), "Spencer Baggett");
+		strcopy(music.Name, sizeof(music.Name), "Cauterizer (+ Gravity Perforation Detail)");
+		strcopy(music.Artist, sizeof(music.Artist), "Valve");
 		Music_SetRaidMusic(music);
 
 		//IDLE
