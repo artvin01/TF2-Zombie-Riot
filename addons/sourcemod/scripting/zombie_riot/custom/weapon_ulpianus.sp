@@ -8,7 +8,7 @@ void Ulpianus_MapStart()
 	Elited = false;
 }
 
-stock void Ulpianus_Enable(int client, int weapon)
+stock void Ulpianus_Enable(int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{

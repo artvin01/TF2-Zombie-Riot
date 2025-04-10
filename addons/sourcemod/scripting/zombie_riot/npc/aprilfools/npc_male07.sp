@@ -270,8 +270,11 @@ public void Male07_ClotThink(int iNPC)
 									
 									// Hit particle
 
-									DoOverlay(target, "zombie_riot/male07/jumpscare_male07", 0);
-									CreateTimer(5.0, Male07_RemoveOverlay, GetClientUserId(target), TIMER_FLAG_NO_MAPCHANGE);
+									if(target <= MaxClients)
+									{
+										DoOverlay(target, "zombie_riot/male07/jumpscare_male07", 0);
+										CreateTimer(5.0, Male07_RemoveOverlay, GetClientUserId(target), TIMER_FLAG_NO_MAPCHANGE);
+									}
 									
 									
 									// Hit sound

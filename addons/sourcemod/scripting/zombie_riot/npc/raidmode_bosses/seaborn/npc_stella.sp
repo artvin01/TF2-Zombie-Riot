@@ -70,18 +70,6 @@ static const char g_nightmare_cannon_core_sound[][] = {
 	"zombiesurvival/seaborn/loop_laser.mp3",
 };
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
-
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-};
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry01.mp3",
@@ -158,8 +146,8 @@ static void ClotPrecache()
 
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_LaserAttackSounds);
 	PrecacheSoundArray(g_LaserChargesounds);
@@ -215,11 +203,11 @@ methodmap Stella < CClotBody
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
 	
 	public void PlayDeathSound() {
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
 	public void PlayLaserAttackSound() {
@@ -944,6 +932,9 @@ methodmap Stella < CClotBody
 		Zero(b_said_player_weaponline);
 		b_IonStormInitiated[npc.index] = false;
 		b_LastMannLines[npc.index] = false;
+		Ruina_Set_Battery_Buffer(npc.index, true);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 		return npc;
 	}
 }
@@ -960,6 +951,25 @@ static void Do_OnSpawn(int ref)
 	}
 }
 
+static void CheckChargeTimeStella(Stella npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = npc.m_flNC_Recharge - GameTime;
+
+	PercentageCharge = (TimeUntillTeleLeft  / (npc.Anger ? 30.0 : 40.0));
+
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
+}
 static void Win_Line(int entity)
 {	
 	Stella npc = view_as<Stella>(entity);
@@ -1013,6 +1023,7 @@ static void Internal_ClotThink(int iNPC)
 {
 	Stella npc = view_as<Stella>(iNPC);
 
+	CheckChargeTimeStella(npc);
 	if(npc.m_flInvulnerability)
 	{
 		int ally = npc.Ally;
@@ -2118,6 +2129,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 				case 3: Stella_Lines(npc, "{snow}Karlas...");
 				case 4: Stella_Lines(npc, "{snow}Its getting kinda cold..");
 			}
+			RaidModeTime +=17.0; //Extra time due to invuln
 			
 			if(!npc.m_flInvulnerability)
 			{

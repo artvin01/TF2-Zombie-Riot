@@ -64,9 +64,9 @@ void Barracks_Combine_Sword_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Combine_Sword(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Sword(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Combine_Sword < BarrackBody
@@ -129,7 +129,7 @@ methodmap Barrack_Combine_Sword < BarrackBody
 		#endif
 	}
 
-	public Barrack_Combine_Sword(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Sword(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(BarrackBody(client, vecPos, vecAng, "225", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

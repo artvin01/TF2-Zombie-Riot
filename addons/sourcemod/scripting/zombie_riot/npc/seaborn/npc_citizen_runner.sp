@@ -29,12 +29,12 @@ int CitizenRunner_Id()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return CitizenRunner(client, vecPos, vecAng, data);
+	return CitizenRunner(vecPos, vecAng, data);
 }
 
 methodmap CitizenRunner < CClotBody
 {
-	public CitizenRunner(int client, float vecPos[3], float vecAng[3], const char[] data)
+	public CitizenRunner(float vecPos[3], float vecAng[3], const char[] data)
 	{
 		if(data[0])
 			CitizenHasDied = false;

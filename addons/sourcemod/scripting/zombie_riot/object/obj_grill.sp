@@ -47,7 +47,7 @@ methodmap ObjectTinkerGrill < ObjectGeneric
 
 		for(int i; i < 4; i++)
 		{
-			int entity = npc.EquipItemSeperate("partyhat", "models/player/gibs/gibs_burger.mdl", "idle", .DontParent = true);
+			int entity = npc.EquipItemSeperate("models/player/gibs/gibs_burger.mdl", "idle", .DontParent = true);
 			
 			float VecOrigin[3];
 			GetAbsOrigin(npc.index, VecOrigin);

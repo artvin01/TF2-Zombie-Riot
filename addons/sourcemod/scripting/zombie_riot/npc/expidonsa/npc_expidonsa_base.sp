@@ -2,7 +2,7 @@
 #pragma newdecls required
 //
 
-#define MAX_EXPI_ENERGY_EFFECTS 71
+#define MAX_EXPI_ENERGY_EFFECTS 26
 
 
 
@@ -337,12 +337,3 @@ float ExpidonsanShieldBroke(int entity)
 	return(f_Expidonsa_ShieldBroke[entity]);
 }
 #endif
-stock bool Expidonsa_DontHealBosses(int entity, int victim, float &healingammount)
-{
-	if(b_thisNpcIsABoss[victim] ||
-		b_thisNpcIsARaid[victim] ||
-		b_StaticNPC[victim])
-		return true;
-
-	return false;
-}

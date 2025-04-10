@@ -25,9 +25,9 @@ public void Barrack_Alt_Holy_Knight_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Holy_Knight(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Holy_Knight(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Holy_Knight < BarrackBody
@@ -37,7 +37,7 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 		
 
 	}
-	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "900",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

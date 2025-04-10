@@ -66,7 +66,7 @@ void AgentTyler_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentTyler(client, vecPos, vecAng, ally);
+	return AgentTyler(vecPos, vecAng, ally);
 }
 methodmap AgentTyler < CClotBody
 {
@@ -115,7 +115,7 @@ methodmap AgentTyler < CClotBody
 	}
 	
 	
-	public AgentTyler(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentTyler(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentTyler npc = view_as<AgentTyler>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "700", ally));
 		

@@ -67,7 +67,7 @@ void AgentSteve_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentSteve(client, vecPos, vecAng, ally);
+	return AgentSteve(vecPos, vecAng, ally);
 }
 
 methodmap AgentSteve < CClotBody
@@ -115,7 +115,7 @@ methodmap AgentSteve < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentSteve(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentSteve(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentSteve npc = view_as<AgentSteve>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
 		

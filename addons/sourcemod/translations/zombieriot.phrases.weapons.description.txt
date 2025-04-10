@@ -3145,7 +3145,7 @@
 	}
 	"Acid Rain Pap 1"
 	{
-		"en"	"Primary alt-fire ability ''More! MORE!'' hits one enemy for massive damage, trigger all bleed at once, heals yourself for 35％ max health (once per wave).\nSecondary and Melee also gain an alt-fire ability."
+		"en"	"Primary alt-fire ability ''Sepsis'' hits one enemy for massive damage, trigger all bleed at once, heals yourself for 35％ max health (once per wave).\nSecondary and Melee also gain an alt-fire ability."
 		"fr"	"Abilité arme principale «Encore! ENCORE!» : Frappez un ennemi pour infliger tous les dégats de saignement à la fois, et vous soigne pour 35％ santé. Peut être utilisé une fois par vague.\nVos armes secondaire et corps-à-corps reçoivent aussi une abilité."
 		"chi"	"主武器M2技能：''多来点！''\n对一名敌人造成大量伤害，激活所有流血，治疗自己35％血量。（每波一次性）\n副武器和近战也获得M2技能。"
 	}
@@ -3157,7 +3157,7 @@
 	}
 	"Punish Pap 1"
 	{
-		"en"	"Melee alt-fire ability ''Sepsis'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
+		"en"	"Melee alt-fire ability ''More! MORE!'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
 	}
 	"The Flagellant Pap 0"
 	{

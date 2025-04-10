@@ -47,9 +47,9 @@ void PoisonHeadcrab_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return PoisonHeadcrab(vecPos, vecAng, team, data);
+	return PoisonHeadcrab(vecPos, vecAng, team);
 }
 
 methodmap PoisonHeadcrab < CSeaBody
@@ -79,7 +79,7 @@ methodmap PoisonHeadcrab < CSeaBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public PoisonHeadcrab(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public PoisonHeadcrab(float vecPos[3], float vecAng[3], int ally)
 	{
 		PoisonHeadcrab npc = view_as<PoisonHeadcrab>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.25", "200", ally, false));
 		// 3000 x 0.15

@@ -75,7 +75,7 @@ static int Specter_GetSpecterFlags(int weapon)
 	return flags;
 }
 
-stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
 
 	int flags = Specter_GetSpecterFlags(weapon);

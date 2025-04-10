@@ -44,9 +44,9 @@ public void Barrack_Railgunner_MapStart()
 }
 
 static float fl_npc_basespeed;
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Raigunner(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Raigunner(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Raigunner < BarrackBody
@@ -71,7 +71,7 @@ methodmap Barrack_Alt_Raigunner < BarrackBody
 	{
 		EmitSoundToAll(g_alt_Sniper_Railgunner_Shoot[GetRandomInt(0, sizeof(g_alt_Sniper_Railgunner_Shoot) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME*0.5, 100);
 	}
-	public Barrack_Alt_Raigunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Raigunner(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Raigunner npc = view_as<Barrack_Alt_Raigunner>(BarrackBody(client, vecPos, vecAng, "175", "models/player/sniper.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		i_NpcWeight[npc.index] = 1;

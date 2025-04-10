@@ -35,7 +35,7 @@ static void ClotPrecache()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Storm_Weaver_Mid(client, vecPos, vecAng, team, StringToFloat(data));
+	return Storm_Weaver_Mid(vecPos, vecAng, team, StringToFloat(data));
 }
 
 methodmap Storm_Weaver_Mid < CClotBody
@@ -54,7 +54,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
-	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], int ally, float in_line_id)
+	public Storm_Weaver_Mid(float vecPos[3], float vecAng[3], int ally, float in_line_id)
 	{
 		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		

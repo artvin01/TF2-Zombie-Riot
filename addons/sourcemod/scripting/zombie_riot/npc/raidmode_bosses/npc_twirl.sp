@@ -1,22 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
 
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-	"vo/medic_painsharp05.mp3",
-	"vo/medic_painsharp06.mp3",
-	"vo/medic_painsharp07.mp3",
-	"vo/medic_painsharp08.mp3",
-};
 
 static const char g_IdleSounds[][] = {
 	"vo/medic_standonthepoint01.mp3",
@@ -79,7 +64,7 @@ static const char g_FractalSound[][] = {
 
 static bool b_InKame[MAXENTITIES];
 #define TWIRL_TE_DURATION 0.1
-#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
+#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3"
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
 static float fl_player_weapon_score[MAXTF2PLAYERS];
@@ -159,8 +144,8 @@ static void ClotPrecache()
 	Zero(fl_force_ranged);
 	Zero(fl_retreat_timer);
 	Zero(fl_comsic_gaze_timer);
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
@@ -252,13 +237,13 @@ methodmap Twirl < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 			
 	}
 
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
 	public void PlayMeleeSound() {
@@ -603,6 +588,11 @@ methodmap Twirl < CClotBody
 
 		//return type;
 	}
+	property float m_flTempIncreaseCDTeleport
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 
 	public char[] GetName()
 	{
@@ -703,11 +693,11 @@ methodmap Twirl < CClotBody
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
-			music.Time = 285;
-			music.Volume = 2.0;
+			music.Time = 172;
+			music.Volume = 1.65;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Solar Sect of Mystic Wisdom ~ Nuclear Fusion");
-			strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
+			strcopy(music.Name, sizeof(music.Name), "Ruler Of Ruina Decends");
+			strcopy(music.Artist, sizeof(music.Artist), "Granpda Bard");
 			Music_SetRaidMusic(music);	
 		}
 		
@@ -939,11 +929,19 @@ methodmap Twirl < CClotBody
 			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
 
 		Zero(fl_player_weapon_score);
+		Ruina_Set_Battery_Buffer(npc.index, true);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 		
 		return npc;
 	}
 }
 
+void TwirlSetBatteryPercentage(int entity, float percentage)
+{
+	fl_ruina_battery_max[entity] = 1000000.0; //so high itll never be reached.
+	fl_ruina_battery[entity] = ((percentage * 100) * 10000.0);
+}
 
 static void Twirl_WinLine(int entity)
 {
@@ -976,6 +974,7 @@ static void ClotThink(int iNPC)
 	
 	float GameTime = GetGameTime(npc.index);
 
+	CheckChargeTimeTwirl(npc);
 	if(npc.m_flNextThinkTime == FAR_FUTURE && b_allow_final[npc.index])
 	{
 		GameTime = GetGameTime();	//No slowing it down!
@@ -2519,16 +2518,37 @@ static int Nearby_Players(Twirl npc, float Radius)
 	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
 	return i_targets_inrange;
 }
+
+static void CheckChargeTimeTwirl(Twirl npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = npc.m_flNextTeleport - GameTime;
+
+	PercentageCharge = (TimeUntillTeleLeft  / (npc.Anger ? 15.0 : 30.0));
+
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
+}
 static bool Retreat(Twirl npc, bool custom = false)
 {
 	float GameTime = GetGameTime(npc.index);
 	float Radius = 320.0;	//if too many people are next to her, she just teleports in a direction to escape.
 	
-	if(npc.m_flNextTeleport > GameTime && !custom)	//internal teleportation device is still recharging...
+
+	if((npc.m_flNextTeleport > GameTime || npc.m_flTempIncreaseCDTeleport > GameTime) && !custom)	//internal teleportation device is still recharging...
 		return false;
 
 	if(!custom)
-		npc.m_flNextTeleport = GameTime + 1.0;
+		npc.m_flTempIncreaseCDTeleport = GameTime + 1.0;
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	
@@ -3658,15 +3678,15 @@ void TwirlEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
 	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
 	
 
-	i_ExpidonsaEnergyEffect[iNpc][50] = EntIndexToEntRef(particle_ears1);
-	i_ExpidonsaEnergyEffect[iNpc][51] = EntIndexToEntRef(particle_ears2);
-	i_ExpidonsaEnergyEffect[iNpc][52] = EntIndexToEntRef(particle_ears3);
-	i_ExpidonsaEnergyEffect[iNpc][53] = EntIndexToEntRef(particle_ears4);
-	i_ExpidonsaEnergyEffect[iNpc][54] = EntIndexToEntRef(Laser_ears_1);
-	i_ExpidonsaEnergyEffect[iNpc][55] = EntIndexToEntRef(Laser_ears_2);
-	i_ExpidonsaEnergyEffect[iNpc][56] = EntIndexToEntRef(particle_ears2_r);
-	i_ExpidonsaEnergyEffect[iNpc][57] = EntIndexToEntRef(particle_ears3_r);
-	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
-	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
-	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
+	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_ears_2_r);
 }

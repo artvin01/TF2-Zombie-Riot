@@ -328,12 +328,17 @@ bool Waves_CallVote(int client, int force = 0)
 				if(length >= 4 && vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
+					if(AprilFoolsIconOverride() == STEAM_HAPPY)
+						Format(vote.Name, sizeof(vote.Name), "Steam Happy (Cooldown)");
 					menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
 				}
 				// Unlocks (atleast one player needs it)
 				else if(vote.Unlock1[0] && (!Items_HasNamedItem(client, vote.Unlock1) || (vote.Unlock2[0] && !Items_HasNamedItem(client, vote.Unlock2))))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (%s)", vote.Name, vote.Append);
+					if(AprilFoolsIconOverride() == STEAM_HAPPY)
+						Format(vote.Name, sizeof(vote.Name), "Steam Happy (%s)", vote.Append);
+						
 					menu.AddItem(vote.Config, vote.Name, (Items_HasNamedItem(0, vote.Unlock1) && (!vote.Unlock2[0] || Items_HasNamedItem(0, vote.Unlock2))) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 				}
 				else
@@ -2924,12 +2929,12 @@ static int GetObjectiveResource()
 {
 	return FindEntityByClassname(-1, "tf_objective_resource");
 }
-
+/*
 static int GetMvMStats()
 {
 	return FindEntityByClassname(-1, "tf_mann_vs_machine_stats");
 }
-
+*/
 void Waves_UpdateMvMStats(int frames = 10)
 {
 	if(!UpdateFramed)
@@ -3069,6 +3074,8 @@ static void UpdateMvMStatsFrame()
 							{
 								strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 							}
+							if(AprilFoolsIconOverride() == STEAM_HAPPY)
+								strcopy(icon[b], sizeof(icon[]), "steamhappy");
 						}
 
 						count[b] += num;
@@ -3121,6 +3128,8 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 						}
+						if(AprilFoolsIconOverride() == STEAM_HAPPY)
+							strcopy(icon[b], sizeof(icon[]), "steamhappy");
 					}
 					
 					break;
@@ -3178,6 +3187,8 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 						}
+						if(AprilFoolsIconOverride() == STEAM_HAPPY)
+							strcopy(icon[b], sizeof(icon[]), "steamhappy");
 					}
 					
 					break;
@@ -3224,6 +3235,10 @@ static void UpdateMvMStatsFrame()
 
 void Waves_SetCreditAcquired(int amount)
 {
+	//No warning, this is unused as of now.
+	amount += 1;
+	amount = amount + 1;
+	/*
 	int mvm = GetMvMStats();
 	if(mvm != -1)
 	{
@@ -3238,6 +3253,7 @@ void Waves_SetCreditAcquired(int amount)
 		SetVariantString(buffer);
 		AcceptEntityInput(mvm, "RunScriptCode");
 	}
+	*/
 }
 
 static int SetupFlags(const Enemy data, bool support)

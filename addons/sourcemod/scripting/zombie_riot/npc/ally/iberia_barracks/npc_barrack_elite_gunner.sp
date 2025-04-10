@@ -60,9 +60,9 @@ void Barracks_Iberia_Elite_Gunner_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Elite_Gunner(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Elite_Gunner(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
@@ -111,7 +111,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Elite_Gunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Elite_Gunner(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Iberia_Elite_Gunner npc = view_as<Barrack_Iberia_Elite_Gunner>(BarrackBody(client, vecPos, vecAng, "350", "models/player/spy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

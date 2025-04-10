@@ -22,12 +22,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialWizuh(client, vecPos, vecAng, team);
+	return MaterialWizuh(vecPos, vecAng, team);
 }
 
 methodmap MaterialWizuh < CClotBody
 {
-	public MaterialWizuh(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialWizuh(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialWizuh npc = view_as<MaterialWizuh>(CClotBody(vecPos, vecAng, "models/props_debris/concrete_debris256pile001a.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		

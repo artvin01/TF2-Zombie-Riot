@@ -70,7 +70,7 @@ void AgentSpencerFreeplay_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentSpencerFreeplay(client, vecPos, vecAng, ally);
+	return AgentSpencerFreeplay(vecPos, vecAng, ally);
 }
 methodmap AgentSpencerFreeplay < CClotBody
 {
@@ -113,7 +113,7 @@ methodmap AgentSpencerFreeplay < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentSpencerFreeplay(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentSpencerFreeplay(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentSpencerFreeplay npc = view_as<AgentSpencerFreeplay>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "700", ally));
 		

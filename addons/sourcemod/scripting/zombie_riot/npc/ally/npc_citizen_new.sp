@@ -1437,8 +1437,11 @@ methodmap Citizen < CClotBody
 	}
 	public void ThinkFriendly(const char[] text)
 	{
-		/*bool DEBUG_REBEL_ON;
+		bool DEBUG_REBEL_ON;
 		
+		if(!DEBUG_REBEL_ON)
+			return;
+
 		int Text_Entity = EntRefToEntIndex(i_SpeechBubbleEntity[this.index]);
 		if(!IsValidEntity(Text_Entity))
 		{
@@ -1447,11 +1450,13 @@ methodmap Citizen < CClotBody
 			i_SpeechBubbleEntity[this.index] = EntIndexToEntRef(Text_Entity);
 		}
 
-		DispatchKeyValue(Text_Entity, "message", text);*/
+		DispatchKeyValue(Text_Entity, "message", text);
 	}
 	public void ThinkCombat(const char[] text)
 	{
-		/*bool DEBUG_REBEL_ON;
+		bool DEBUG_REBEL_ON;
+		if(!DEBUG_REBEL_ON)
+			return;
 		
 		int Text_Entity = this.m_iWearable4;
 		if(!IsValidEntity(Text_Entity))
@@ -1461,7 +1466,7 @@ methodmap Citizen < CClotBody
 			this.m_iWearable4 = Text_Entity;
 		}
 
-		DispatchKeyValue(Text_Entity, "message", text);*/
+		DispatchKeyValue(Text_Entity, "message", text);
 	}
 	public void PlayMeleeSound()
 	{
@@ -1507,7 +1512,7 @@ methodmap Citizen < CClotBody
 
 stock void Citizen_PlayerReplacement(int client)
 {
-	if(Waves_Started() && !Waves_InSetup() && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
+	if(Waves_Started() && !Waves_InSetup() && TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
 		Citizen_SpawnAtPoint("temp", client);
 }
 

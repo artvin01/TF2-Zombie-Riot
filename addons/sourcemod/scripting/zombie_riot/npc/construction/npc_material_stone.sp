@@ -22,12 +22,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialStone(client, vecPos, vecAng, team);
+	return MaterialStone(vecPos, vecAng, team);
 }
 
 methodmap MaterialStone < CClotBody
 {
-	public MaterialStone(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialStone(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialStone npc = view_as<MaterialStone>(CClotBody(vecPos, vecAng, "models/props_wasteland/rockgranite01b.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		

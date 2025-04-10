@@ -22,12 +22,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialCash(client, vecPos, vecAng, team);
+	return MaterialCash(vecPos, vecAng, team);
 }
 
 methodmap MaterialCash < CClotBody
 {
-	public MaterialCash(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialCash(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialCash npc = view_as<MaterialCash>(CClotBody(vecPos, vecAng, "models/props_lab/servers.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		

@@ -257,7 +257,7 @@ public Action DimensionalFragment_OnTakeDamage(int victim, int &attacker, int &i
 			}
 			default:
 			{
-				makeexplosion(victim, victim, startPosition, "", GetRandomInt(25, 100), 150, _, _, true, true, 6.0);
+				makeexplosion(victim, startPosition, GetRandomInt(25, 100), 150, _, true, true, 6.0);
 			}
 		}
 		npc.m_fOnHurtCooldown = GetGameTime(npc.index) + 1.5;

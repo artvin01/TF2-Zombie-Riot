@@ -49,7 +49,7 @@ static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianGrenadier(client, vecPos, vecAng, ally);
+	return VictorianGrenadier(vecPos, vecAng, ally);
 }
 methodmap VictorianGrenadier < CClotBody
 {
@@ -90,7 +90,7 @@ methodmap VictorianGrenadier < CClotBody
 	}
 	
 	
-	public VictorianGrenadier(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianGrenadier(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianGrenadier npc = view_as<VictorianGrenadier>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally,false));
 		

@@ -72,7 +72,7 @@ void VictoriaRepair_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaRepair(client, vecPos, vecAng, ally);
+	return VictoriaRepair(vecPos, vecAng, ally);
 }
 methodmap VictoriaRepair < CClotBody
 {
@@ -134,7 +134,7 @@ methodmap VictoriaRepair < CClotBody
 		
 
 	}
-	public VictoriaRepair(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaRepair(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaRepair npc = view_as<VictoriaRepair>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
 		
@@ -211,7 +211,7 @@ methodmap VictoriaRepair < CClotBody
 		
 		return npc;
 	}
-	public void StartHealing(int iEnt)
+	public void StartHealing()
 	{
 		int im_iWearable3 = this.m_iWearable3;
 		if(im_iWearable3 != INVALID_ENT_REFERENCE)
@@ -308,7 +308,7 @@ public void VictoriaRepair_ClotThink(int iNPC)
 			}
 			if(!npc.m_bnew_target)
 			{
-				npc.StartHealing(PrimaryThreatIndex);
+				npc.StartHealing();
 				npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 255, 255, 255, 3.0, 3.0, 1.35, LASERBEAM);
 				npc.Healing = true;
 				npc.m_bnew_target = true;

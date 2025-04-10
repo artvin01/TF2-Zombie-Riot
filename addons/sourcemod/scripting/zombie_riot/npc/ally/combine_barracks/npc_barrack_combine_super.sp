@@ -66,9 +66,9 @@ void Barracks_Combine_Super_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Combine_Super(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Super(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Combine_Super < BarrackBody
@@ -132,7 +132,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 		
 	}
 
-	public Barrack_Combine_Super(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Super(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		

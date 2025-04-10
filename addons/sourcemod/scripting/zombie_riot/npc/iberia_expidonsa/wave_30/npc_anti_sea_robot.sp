@@ -129,7 +129,7 @@ methodmap Iberia_AntiSeaRobot < CClotBody
 		
 		if(npc.g_TimesSummoned == 0)
 		{
-			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
+			npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
 			SetVariantString("2.5");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		}
@@ -147,7 +147,7 @@ public void Iberia_AntiSeaRobot_ClotThink(int iNPC)
 	{
 		if(!IsValidEntity(npc.m_iWearable6))
 		{
-			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
+			npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
 			SetVariantString("2.5");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 			SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);

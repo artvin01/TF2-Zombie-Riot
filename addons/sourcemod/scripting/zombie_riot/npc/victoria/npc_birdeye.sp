@@ -107,7 +107,7 @@ void VictoriaBirdeye_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBirdeye(client, vecPos, vecAng, ally, data);
+	return VictoriaBirdeye(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaBirdeye < CClotBody
@@ -158,7 +158,7 @@ methodmap VictoriaBirdeye < CClotBody
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public VictoriaBirdeye(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaBirdeye(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaBirdeye npc = view_as<VictoriaBirdeye>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "150000", ally));
 		i_NpcWeight[npc.index] = 1;

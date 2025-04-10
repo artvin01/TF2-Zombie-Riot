@@ -90,7 +90,7 @@ public void Void_Combine_Police_Pistol_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Void_Combine_Police_Pistol(client, vecPos, vecAng, ally);
+	return Void_Combine_Police_Pistol(vecPos, vecAng, ally);
 }
 methodmap Void_Combine_Police_Pistol < CClotBody
 {
@@ -149,7 +149,7 @@ methodmap Void_Combine_Police_Pistol < CClotBody
 	
 	
 	
-	public Void_Combine_Police_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public Void_Combine_Police_Pistol(float vecPos[3], float vecAng[3], int ally)
 	{
 		Void_Combine_Police_Pistol npc = view_as<Void_Combine_Police_Pistol>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "550", ally, false));
 		

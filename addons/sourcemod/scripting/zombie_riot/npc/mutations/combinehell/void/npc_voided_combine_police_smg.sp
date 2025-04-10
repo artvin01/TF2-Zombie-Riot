@@ -88,7 +88,7 @@ public void VoidCombinePoliceSmg_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VoidCombinePoliceSmg(client, vecPos, vecAng, ally);
+	return VoidCombinePoliceSmg(vecPos, vecAng, ally);
 }
 methodmap VoidCombinePoliceSmg < CClotBody
 {
@@ -170,7 +170,7 @@ methodmap VoidCombinePoliceSmg < CClotBody
 	}
 	
 	
-	public VoidCombinePoliceSmg(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidCombinePoliceSmg(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidCombinePoliceSmg npc = view_as<VoidCombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		

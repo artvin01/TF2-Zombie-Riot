@@ -34,7 +34,7 @@ void PackaPunch_OnMapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return PackaPunch(vecPos, vecAng, team, data);
+	return PackaPunch(vecPos, team, data);
 }
 static int Garrison[MAXENTITIES];
 
@@ -55,7 +55,7 @@ methodmap PackaPunch < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public PackaPunch(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public PackaPunch(float vecPos[3], int ally, const char[] data)
 	{
 		PackaPunch npc = view_as<PackaPunch>(CClotBody(vecPos, {0.0, 0.0, 0.0}, NPCModel, "1.0", "30000", ally, false, true));
 		i_NpcWeight[npc.index] = 5;
