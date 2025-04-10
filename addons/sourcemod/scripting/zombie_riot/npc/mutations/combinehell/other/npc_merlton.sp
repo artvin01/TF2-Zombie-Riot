@@ -67,7 +67,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Merlton_Boss(client, vecPos, vecAng, ally, data);
+	return Merlton_Boss(vecPos, vecAng, ally, data);
 }
 
 methodmap Merlton_Boss < CClotBody
@@ -131,7 +131,7 @@ methodmap Merlton_Boss < CClotBody
 		EmitSoundToAll(g_AngerSound[GetRandomInt(0, sizeof(g_AngerSound) - 1)], _, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public Merlton_Boss(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Merlton_Boss(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool clone = StrContains(data, "clone") != -1;
 

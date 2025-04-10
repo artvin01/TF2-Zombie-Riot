@@ -20,9 +20,9 @@ void AlliedKahmlAbilityOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return AlliedKahmlAbility(client, vecPos, vecAng, ally);
+	return AlliedKahmlAbility(client, vecPos, vecAng);
 }
 
 methodmap AlliedKahmlAbility < CClotBody
@@ -32,7 +32,7 @@ methodmap AlliedKahmlAbility < CClotBody
 		EmitSoundToAll(g_RangedSound[GetRandomInt(0, sizeof(g_RangedSound) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.9, 100);
 	}
 	
-	public AlliedKahmlAbility(int client, float vecPos[3], float vecAng[3], int ally)
+	public AlliedKahmlAbility(int client, float vecPos[3], float vecAng[3])
 	{
 		AlliedKahmlAbility npc = view_as<AlliedKahmlAbility>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "100", TFTeam_Red, true));
 		

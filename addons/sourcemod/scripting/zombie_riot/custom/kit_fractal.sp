@@ -715,11 +715,6 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 
 	fl_fantasia_origin[client] = Origin;
 
-	for(int i=0 ; i < MAXENTITIES ; i++)
-	{
-		f_GlobalHitDetectionLogic[client][i] = 0.0;
-	}
-
 	SDKUnhook(client, SDKHook_PreThink, Fantasia_Tick);
 	SDKHook(client, SDKHook_PreThink, Fantasia_Tick);
 }
@@ -898,10 +893,13 @@ void Fractal_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 }
 static void OnFantasiaHit(int client, int target, int damagetype, float &damage)
 {
-	float GameTime = GetGameTime();
-	if(f_GlobalHitDetectionLogic[client][target] > GameTime)
+	//Fantsasy blade will have an offset of (MAXENTITIES 
+	//Client instead of target, so it gets removed if the target dies
+	if(IsIn_HitDetectionCooldown(client + MAXENTITIES,target))
+	{
 		return;
-	f_GlobalHitDetectionLogic[client][target] = GameTime + 1.0;
+	}
+	Set_HitDetectionCooldown(client + MAXENTITIES,target, GetGameTime() + 1.0);
 
 	float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
 	fl_fantasia_targetshit[client] *= FRACTAL_KIT_FANTASIA_ONHIT_LOSS;

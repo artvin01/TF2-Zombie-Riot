@@ -14,9 +14,9 @@ public void BarrackHussarOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackHussar(client, vecPos, vecAng, ally);
+	return BarrackHussar(client, vecPos, vecAng);
 }
 
 methodmap BarrackHussar < BarrackBody
@@ -26,7 +26,7 @@ methodmap BarrackHussar < BarrackBody
 		return;
 //		EmitSoundToAll("mvm/mvm_tank_horn.wav", this.index, _, 60, _, 0.4, 60);
 	}
-	public BarrackHussar(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackHussar(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackHussar npc = view_as<BarrackHussar>(BarrackBody(client, vecPos, vecAng, "2500",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

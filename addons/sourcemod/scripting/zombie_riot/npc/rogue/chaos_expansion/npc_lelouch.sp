@@ -688,7 +688,7 @@ methodmap Lelouch < CClotBody
 		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/spy/spy_spats.mdl", _, skin);
 		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tw2_roman_wreath/tw2_roman_wreath_spy.mdl", _, skin);
 
-		npc.m_iWearable9 = npc.EquipItemSeperate("head", LELOUCH_CRYSTAL_MODEL, _,_, 2.75, 50.0);
+		npc.m_iWearable9 = npc.EquipItemSeperate(LELOUCH_CRYSTAL_MODEL, _,_, 2.75, 50.0);
 
 		if(IsValidEntity(npc.m_iWearable9))
 		{
@@ -1209,7 +1209,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	if(IsValidEntity(npc.m_iSpecialEntSlot))
 		RemoveEntity(npc.m_iSpecialEntSlot);
 
-	npc.m_iSpecialEntSlot = npc.EquipItemSeperate("head", LELOUCH_LIGHT_MODEL ,_,_,_,300.0);
+	npc.m_iSpecialEntSlot = npc.EquipItemSeperate(LELOUCH_LIGHT_MODEL ,_,_,_,300.0);
 
 	return true;
 }

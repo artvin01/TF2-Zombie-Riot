@@ -34,7 +34,7 @@ void AmmoBox_OnMapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return AmmoBox(vecPos, vecAng, team, data);
+	return AmmoBox(vecPos, team, data);
 }
 static int Garrison[MAXENTITIES];
 
@@ -55,7 +55,7 @@ methodmap AmmoBox < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public AmmoBox(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public AmmoBox(float vecPos[3], int ally, const char[] data)
 	{
 		AmmoBox npc = view_as<AmmoBox>(CClotBody(vecPos, {0.0, 0.0, 0.0}, NPCModel, "1.0", "30000", ally, false, true));
 		i_NpcWeight[npc.index] = 5;

@@ -72,7 +72,7 @@ void VictorianBooster_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianBooster(client, vecPos, vecAng, ally);
+	return VictorianBooster(vecPos, vecAng, ally);
 }
 methodmap VictorianBooster < CClotBody
 {
@@ -134,7 +134,7 @@ methodmap VictorianBooster < CClotBody
 		
 
 	}
-	public VictorianBooster(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianBooster(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianBooster npc = view_as<VictorianBooster>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4000", ally));
 		
@@ -204,7 +204,7 @@ methodmap VictorianBooster < CClotBody
 		
 		return npc;
 	}
-	public void StartHealing(int iEnt)
+	public void StartHealing()
 	{
 		int im_iWearable3 = this.m_iWearable3;
 		if(im_iWearable3 != INVALID_ENT_REFERENCE)
@@ -296,7 +296,7 @@ public void VictorianBooster_ClotThink(int iNPC)
 				}
 				if(!npc.m_bnew_target)
 				{
-					npc.StartHealing(PrimaryThreatIndex);
+					npc.StartHealing();
 					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 255, 0, 0, 3.0, 3.0, 1.35, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;

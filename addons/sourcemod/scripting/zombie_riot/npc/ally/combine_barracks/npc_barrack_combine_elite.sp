@@ -58,9 +58,9 @@ void Barracks_Combine_Elite_Precache()
 }
 static float fl_npc_basespeed;
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Combine_Elite(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Elite(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Combine_Elite < BarrackBody
@@ -109,7 +109,7 @@ methodmap Barrack_Combine_Elite < BarrackBody
 
 	}
 
-	public Barrack_Combine_Elite(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Elite(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "300", "models/combine_super_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

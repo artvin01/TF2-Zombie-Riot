@@ -47,9 +47,9 @@ void Iberia_SeabornAnnihilator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberia_SeabornAnnihilator(vecPos, vecAng, team, data);
+	return Iberia_SeabornAnnihilator(vecPos, vecAng, team);
 }
 
 methodmap Iberia_SeabornAnnihilator < CClotBody
@@ -92,7 +92,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 	}
 	
 	
-	public Iberia_SeabornAnnihilator(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Iberia_SeabornAnnihilator(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "50000000", ally, false, true));
 		

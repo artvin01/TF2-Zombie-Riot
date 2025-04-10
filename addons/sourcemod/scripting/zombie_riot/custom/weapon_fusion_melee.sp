@@ -53,6 +53,7 @@ public void Fusion_Melee_OnMapStart()
 	PrecacheSound(NEARL_EXTRA_DAMAGE_SOUND);
 	PrecacheSound("weapons/rescue_ranger_charge_01.wav");
 	PrecacheSound("weapons/rescue_ranger_charge_02.wav");
+	PrecacheSound("replay/snip.wav");
 	Zero(f_NearlDurationCheckApply);
 	Zero(f_NearlThinkDelay);
 	Zero(f_SpeedFistsOfSpeed);
@@ -938,7 +939,6 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable)
 
 }
 
-
 public void Enable_FusionWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	Enable_VoidBlade(client, weapon);
@@ -962,7 +962,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 						i_WeaponBodygroup[weapon] 	= 16384;
 						i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 						i_WeaponSoundIndexOverride[weapon] = 30667;
-						strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
+					//	strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
 					}
 				}
 			}
@@ -996,7 +996,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 					i_WeaponBodygroup[weapon] 	= 16384;
 					i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 					i_WeaponSoundIndexOverride[weapon] = 30667;
-					strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
+				//	strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
 				}
 			}
 		}

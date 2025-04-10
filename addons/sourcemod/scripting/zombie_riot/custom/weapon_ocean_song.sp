@@ -106,11 +106,11 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	int particle;
 	if(ColourOcean[owner][0] != 25)
 	{
-		particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , _, false);
+		particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , false);
 	}
 	else
 	{
-		particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0 , _, false);
+		particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0, false);
 	}
 	
 	SetParent(target, particle, "", _, true);
@@ -124,11 +124,11 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	int particle2;
 	if(ColourOcean[owner][0] != 25)
 	{
-		particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , particle, false);
+		particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0, false);
 	}
 	else
 	{
-		particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0 , particle, false);
+		particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0, false);
 	}
 	SetParent(OldParticle2, particle2, "", _, true);
 
@@ -243,14 +243,14 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	int particle2;
 	if(ColourOcean[client][0] != 25)
 	{
-		particle = ParticleEffectAtOcean({0.0,0.0,20.0}, "player_dripsred", 0.0 , _, false);
-		particle2 = ParticleEffectAtOcean({0.0,0.0,-40.0}, "medicgun_beam_red", 0.0 , particle, false);
+		particle = ParticleEffectAtOcean({0.0,0.0,20.0}, "player_dripsred", 0.0 , false);
+		particle2 = ParticleEffectAtOcean({0.0,0.0,-40.0}, "medicgun_beam_red", 0.0 , false);
 
 	}
 	else
 	{
-		particle = ParticleEffectAtOcean({0.0,0.0,20.0}, "player_drips_blue", 0.0 , _, false);
-		particle2 = ParticleEffectAtOcean({0.0,0.0,-40.0}, "medicgun_beam_blue", 0.0 , particle, false);
+		particle = ParticleEffectAtOcean({0.0,0.0,20.0}, "player_drips_blue", 0.0 , false);
+		particle2 = ParticleEffectAtOcean({0.0,0.0,-40.0}, "medicgun_beam_blue", 0.0 , false);
 	}
 	SetParent(particle_1, particle, "",_, true);
 	SetParent(particle_1, particle2, "",_, true);
@@ -483,7 +483,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 }
 
 
-stock int ParticleEffectAtOcean(float position[3], const char[] effectName, float duration = 0.1, int attach = 0, bool start = true)
+stock int ParticleEffectAtOcean(float position[3], const char[] effectName, float duration = 0.1, bool start = true)
 {
 	int particle = CreateEntityByName("info_particle_system");
 	if (particle != -1)

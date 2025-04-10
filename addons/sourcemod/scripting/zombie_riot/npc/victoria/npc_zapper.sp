@@ -62,7 +62,7 @@ void Zapper_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Zapper(client, vecPos, vecAng, ally);
+	return Zapper(vecPos, vecAng, ally);
 }
 methodmap Zapper < CClotBody
 {
@@ -124,7 +124,7 @@ methodmap Zapper < CClotBody
 	}
 	
 	
-	public Zapper(int client, float vecPos[3], float vecAng[3], int ally)
+	public Zapper(float vecPos[3], float vecAng[3], int ally)
 	{
 		Zapper npc = view_as<Zapper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.00", "1900", ally, false, true));
 		

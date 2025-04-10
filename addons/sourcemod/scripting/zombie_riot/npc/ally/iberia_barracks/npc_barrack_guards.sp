@@ -54,9 +54,9 @@ void Barracks_Iberia_Guards_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barracks_Iberia_Guards(client, vecPos, vecAng, ally);
+	return Barracks_Iberia_Guards(client, vecPos, vecAng);
 }
 
 methodmap  Barracks_Iberia_Guards < BarrackBody
@@ -105,7 +105,7 @@ methodmap  Barracks_Iberia_Guards < BarrackBody
 
 	}
 
-	public Barracks_Iberia_Guards(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barracks_Iberia_Guards(int client, float vecPos[3], float vecAng[3])
 	{
 		Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(BarrackBody(client, vecPos, vecAng, "900", "models/player/demo.mdl", STEPTYPE_COMBINE,"0.55",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

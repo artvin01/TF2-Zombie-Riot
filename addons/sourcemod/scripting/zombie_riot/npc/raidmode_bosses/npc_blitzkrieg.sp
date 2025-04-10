@@ -544,7 +544,7 @@ methodmap Blitzkrieg < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-350.0, true);
+		npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-350.0, true);
 		SetVariantString(BLITZKRIEG_PUNISHMENT_SHIELD_MULTI);
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
@@ -1007,7 +1007,7 @@ static void ClotThink(int iNPC)
 	
 	if(!IsValidEntity(npc.m_iWearable6))
 	{
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-350.0,true);
+		npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-350.0,true);
 		SetVariantString(BLITZKRIEG_PUNISHMENT_SHIELD_MULTI);
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);

@@ -67,7 +67,7 @@ void GiantKnockout_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return GiantKnockout(client, vecPos, vecAng, ally);
+	return GiantKnockout(vecPos, vecAng, ally);
 }
 
 static char[] GetPanzerHealth()
@@ -145,7 +145,7 @@ methodmap GiantKnockout < CClotBody
 	}
 	
 	
-	public GiantKnockout(int client, float vecPos[3], float vecAng[3], int ally)
+	public GiantKnockout(float vecPos[3], float vecAng[3], int ally)
 	{
 		GiantKnockout npc = view_as<GiantKnockout>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", GetPanzerHealth(), ally));
 		

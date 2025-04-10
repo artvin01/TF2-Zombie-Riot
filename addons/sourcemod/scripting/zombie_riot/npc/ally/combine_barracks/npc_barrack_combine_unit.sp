@@ -50,9 +50,9 @@ void Barracks_Combine_Chaos_Containment_Unit_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Chaos_Containment_Unit(client, vecPos, vecAng, ally);
+	return Barrack_Chaos_Containment_Unit(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Chaos_Containment_Unit < BarrackBody
@@ -84,7 +84,7 @@ methodmap Barrack_Chaos_Containment_Unit < BarrackBody
 	}
 	
 	
-	public Barrack_Chaos_Containment_Unit(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Chaos_Containment_Unit(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Chaos_Containment_Unit npc = view_as<Barrack_Chaos_Containment_Unit>(BarrackBody(client, vecPos, vecAng, "800", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE, _, _,"models/pickups/pickup_powerup_precision.mdl"));
 		

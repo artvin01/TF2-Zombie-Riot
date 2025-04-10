@@ -391,20 +391,20 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 						case 0:
 						{
 							SetEntityRenderColor(Drone, 100, 255, 180, 255);
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_1, _, "bloodpoint");
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_1);
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0);
 						}
 						case 1:
 						{
 							SetEntityRenderColor(Drone, 255, 140, 70, 255);
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_2, _, "bloodpoint");
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_2);
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0);
 						}
 						case 2:
 						{
 							SetEntityRenderColor(Drone, 120, 200, 255, 255);
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_3, _, "bloodpoint");
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0, "bloodpoint");
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_3);
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0);
 						}
 					}
 					
@@ -908,7 +908,7 @@ bool Skulls_PlayerHasNoSkulls(int client)
 	return (Skulls_ArrayStack[client] == null || !Skulls_ArrayStack[client].Length);
 }
 
-stock void Skull_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+stock void Skull_AttachParticle(int entity, char type[255], float duration = 0.0, float zTrans = 0.0)
 {
 	if (IsValidEntity(entity))
 	{
@@ -958,7 +958,7 @@ stock void GetViewVector(float fVecAngle[3], float fOutPut[3])
 	fOutPut[2] = -Sine(fVecAngle[0] / (180 / FLOAT_PI));
 }
 
-public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Apocalips
+public bool Skull_DontHitSkulls(int entity, int contentsMask) //Borrowed from Apocalips
 {
 	if (IsValidClient(entity))
 	{

@@ -628,11 +628,6 @@ methodmap Karlas < CClotBody
 		if((StrContains(data, "anger") != -1))
 			npc.Anger = true;
 
-		for (int entity = 0; entity < MAXENTITIES; entity++)
-		{
-			f_GlobalHitDetectionLogic[npc.index][entity] = 0.0;
-		}
-
 		b_allow_karlas_transform[npc.index] = false;
 		
 		return npc;
@@ -1338,16 +1333,17 @@ static void Projectile_Detect_Loop(DataPack pack)
 
 	
 }
-static void On_LaserHit(int client, int target, int damagetype, float damage)
+static void On_LaserHit(int karlas, int target, int damagetype, float damage)
 {
-	if(f_GlobalHitDetectionLogic[client][target] > GetGameTime())
-		return;
 	
-	f_GlobalHitDetectionLogic[client][target] = GetGameTime() + 0.25;	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
+	if(IsIn_HitDetectionCooldown(karlas,target))
+		return;
+			
+	Set_HitDetectionCooldown(karlas,target, GetGameTime() + 0.25);	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
 
 	int pitch = GetRandomInt(125,135);
 	EmitSoundToAll(KARLAS_SLICER_HIT, target, SNDCHAN_AUTO, 75,_,0.8,pitch);
-	SDKHooks_TakeDamage(target, client, client, damage, damagetype, -1); 
+	SDKHooks_TakeDamage(target, karlas, karlas, damage, damagetype, -1); 
 }
 static void Func_On_Proj_Touch(int entity, int other)
 {
@@ -2385,7 +2381,7 @@ static void Karlas_Lifeloss_Initialize(Karlas npc)
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 
-	npc.m_iWearable7 = npc.EquipItemSeperate("head", KARLAS_LIGHT_MODEL ,_,_,_,300.0);
+	npc.m_iWearable7 = npc.EquipItemSeperate(KARLAS_LIGHT_MODEL ,_,_,_,300.0);
 	
 }
 static void Karlas_Lifeloss_Logic(Karlas npc)
@@ -2851,17 +2847,17 @@ void KarlasEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
 	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
 	
 
-	i_ExpidonsaEnergyEffect[iNpc][50] = EntIndexToEntRef(particle_ears1);
-	i_ExpidonsaEnergyEffect[iNpc][51] = EntIndexToEntRef(particle_ears2);
-	i_ExpidonsaEnergyEffect[iNpc][52] = EntIndexToEntRef(particle_ears3);
-	i_ExpidonsaEnergyEffect[iNpc][53] = EntIndexToEntRef(particle_ears4);
-	i_ExpidonsaEnergyEffect[iNpc][54] = EntIndexToEntRef(Laser_ears_1);
-	i_ExpidonsaEnergyEffect[iNpc][55] = EntIndexToEntRef(Laser_ears_2);
-	i_ExpidonsaEnergyEffect[iNpc][56] = EntIndexToEntRef(particle_ears2_r);
-	i_ExpidonsaEnergyEffect[iNpc][57] = EntIndexToEntRef(particle_ears3_r);
-	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
-	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
-	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
+	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_ears_2_r);
 }
 
 

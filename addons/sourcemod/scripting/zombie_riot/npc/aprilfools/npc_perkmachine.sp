@@ -34,7 +34,7 @@ void PerkMachiner_OnMapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return PerkMachiner(vecPos, vecAng, team, data);
+	return PerkMachiner(vecPos, team, data);
 }
 static int Garrison[MAXENTITIES];
 
@@ -55,7 +55,7 @@ methodmap PerkMachiner < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public PerkMachiner(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public PerkMachiner(float vecPos[3], int ally, const char[] data)
 	{
 		PerkMachiner npc = view_as<PerkMachiner>(CClotBody(vecPos, {0.0, 0.0, 0.0}, NPCModel, "1.0", "30000", ally, false, true));
 		i_NpcWeight[npc.index] = 5;

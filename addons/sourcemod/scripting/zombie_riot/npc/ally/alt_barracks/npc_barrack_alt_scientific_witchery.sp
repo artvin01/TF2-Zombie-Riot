@@ -35,7 +35,6 @@ static bool Scientific_Witchery_BEAM_HitDetected[MAXENTITIES];
 static int Scientific_Witchery_BEAM_BuildingHit[MAXENTITIES];
 static float fl_runaway_timer_timeout[MAXENTITIES];
 
-float fl_trace_target_timeout[MAXENTITIES][MAXENTITIES];
 
 
 static int i_AmountProjectiles[MAXENTITIES];
@@ -48,7 +47,6 @@ public void Barrack_Alt_Scientific_Witchery_MapStart()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
 	
 	Zero(fl_self_heal_timer);
-	Zero2(fl_trace_target_timeout);
 	
 	gLaser2 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 
@@ -63,9 +61,9 @@ public void Barrack_Alt_Scientific_Witchery_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
@@ -103,7 +101,7 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 		
 		
 	}
-	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
@@ -550,14 +548,14 @@ static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[
 	
 	
 }
-static bool Scientific_Witchery_BEAM_TraceUsers(int entity, int contentsMask, int client)
+static bool Scientific_Witchery_BEAM_TraceUsers(int entity, int contentsMask, int witchery)
 {
-	if (IsEntityAlive(entity) && Scientific_Witchery_BEAM_BuildingHit[client]<11)
+	if (IsEntityAlive(entity) && Scientific_Witchery_BEAM_BuildingHit[witchery]<11)
 	{
-		if(fl_trace_target_timeout[client][entity]<=GetGameTime())
+		if(!IsIn_HitDetectionCooldown(witchery,entity))
 		{
-			fl_trace_target_timeout[client][entity] = GetGameTime() + 0.25;
-			Scientific_Witchery_BEAM_BuildingHit[client]++;
+			Set_HitDetectionCooldown(witchery,entity, GetGameTime() + 0.25);
+			Scientific_Witchery_BEAM_BuildingHit[witchery]++;
 			Scientific_Witchery_BEAM_HitDetected[entity] = true;
 		}
 	}

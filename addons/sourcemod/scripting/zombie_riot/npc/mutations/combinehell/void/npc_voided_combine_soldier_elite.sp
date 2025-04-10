@@ -84,7 +84,7 @@ void VoidCombineElite_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VoidCombineElite(client, vecPos, vecAng, ally);
+	return VoidCombineElite(vecPos, vecAng, ally);
 }
 methodmap VoidCombineElite < CClotBody
 {
@@ -169,7 +169,7 @@ methodmap VoidCombineElite < CClotBody
 	}
 	
 	
-	public VoidCombineElite(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidCombineElite(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidCombineElite npc = view_as<VoidCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
 		

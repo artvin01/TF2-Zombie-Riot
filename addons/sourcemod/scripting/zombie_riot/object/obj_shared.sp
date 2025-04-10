@@ -261,7 +261,6 @@ methodmap ObjectGeneric < CClotBody
 		public get() { return view_as<int>(this); } 
 	}
 	public int EquipItemSeperate(
-	const char[] attachment,
 	const char[] model,
 	const char[] anim = "",
 	int skin = 0,
@@ -293,6 +292,7 @@ methodmap ObjectGeneric < CClotBody
 		VecOrigin[2] += offset;
 
 		TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
+		SetEntProp(item, Prop_Send, "m_nSkin", skin);
 		if(DontParent)
 		{
 			return item;

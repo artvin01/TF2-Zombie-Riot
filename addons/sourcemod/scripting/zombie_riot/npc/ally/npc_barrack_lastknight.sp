@@ -14,14 +14,14 @@ public void BarrackLastKnightOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackLastKnight(client, vecPos, vecAng, ally);
+	return BarrackLastKnight(client, vecPos, vecAng);
 }
 
 methodmap BarrackLastKnight < BarrackBody
 {
-	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
 		

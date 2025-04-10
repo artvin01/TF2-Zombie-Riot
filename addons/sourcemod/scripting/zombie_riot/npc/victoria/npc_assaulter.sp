@@ -95,7 +95,7 @@ void VictoriaAssulter_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaAssulter(client, vecPos, vecAng, ally);
+	return VictoriaAssulter(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaAssulter < CClotBody
@@ -131,7 +131,7 @@ methodmap VictoriaAssulter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public VictoriaAssulter(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaAssulter(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaAssulter npc = view_as<VictoriaAssulter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "6000", ally));
 		

@@ -45,7 +45,7 @@ void VictoriaRadiomast_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaRadiomast(client, vecPos, vecAng, ally);
+	return VictoriaRadiomast(vecPos, vecAng, ally);
 }
 methodmap VictoriaRadiomast < CClotBody
 {
@@ -65,7 +65,7 @@ methodmap VictoriaRadiomast < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.3);
 	}
 	
-	public VictoriaRadiomast(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaRadiomast(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaRadiomast npc = view_as<VictoriaRadiomast>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE,"1000000", ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
@@ -73,13 +73,13 @@ methodmap VictoriaRadiomast < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", VictoriaRadiomast_MODEL_1,_,1);
+		npc.m_iWearable1 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_1,_,1);
 		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItemSeperate("partyhat", VictoriaRadiomast_MODEL_2,_,_,_,70.0);
+		npc.m_iWearable2 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_2,_,_,_,70.0);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		npc.m_iWearable3 = npc.EquipItemSeperate("partyhat", VictoriaRadiomast_MODEL_3,_,1);
+		npc.m_iWearable3 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_3,_,1);
 		SetVariantString("0.95");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 

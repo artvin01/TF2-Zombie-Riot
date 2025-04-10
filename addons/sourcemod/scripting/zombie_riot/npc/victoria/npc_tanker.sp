@@ -46,7 +46,7 @@ void VIctorianTanker_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VIctorianTanker(client, vecPos, vecAng, ally);
+	return VIctorianTanker(vecPos, vecAng, ally);
 }
 
 
@@ -85,7 +85,7 @@ methodmap VIctorianTanker < CClotBody
 	}
 	
 	
-	public VIctorianTanker(int client, float vecPos[3], float vecAng[3], int ally)
+	public VIctorianTanker(float vecPos[3], float vecAng[3], int ally)
 	{
 		VIctorianTanker npc = view_as<VIctorianTanker>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "22000", ally));
 		
@@ -136,7 +136,7 @@ methodmap VIctorianTanker < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iWearable6 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/buildables/sentry_shield.mdl",_,1,1.1);
+		npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,1,1.1);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 150);
