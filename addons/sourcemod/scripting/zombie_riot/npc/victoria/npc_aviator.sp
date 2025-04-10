@@ -272,6 +272,8 @@ public void Aviator_ClotThink(int iNPC)
 						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
 						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 1.1;
 						b_StaticNPC[entity] = b_StaticNPC[npc.index];
+						if(b_StaticNPC[entity])
+							AddNpcToAliveList(entity, 1);
 						b_thisNpcIsABoss[entity] = b_thisNpcIsABoss[npc.index];
 						b_thisNpcHasAnOutline[entity] = b_thisNpcHasAnOutline[npc.index];
 						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;

@@ -35,6 +35,7 @@ methodmap MaterialWood < CClotBody
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
 		b_StaticNPC[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	

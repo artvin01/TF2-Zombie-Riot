@@ -367,6 +367,9 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				if(spawn_index > MaxClients)
 				{
 					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
+					if(b_StaticNPC[spawn_index])
+						AddNpcToAliveList(spawn_index, 1);
+					
 					npc.PlayMeleeMissSound();
 					npc.PlayMeleeMissSound();
 					if(GetTeam(iNPC) != TFTeam_Red)

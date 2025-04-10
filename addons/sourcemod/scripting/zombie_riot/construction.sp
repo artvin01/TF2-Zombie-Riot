@@ -170,13 +170,13 @@ void Construction_MapStart()
 
 void Construction_SetupVote(KeyValues kv)
 {
+	PrintToChatAll("Construction_SetupVote");
+	
 	PrecacheMvMIconCustom("classic_defend", false);
 
 	InConstMode = true;
 
-	kv.Rewind();
-	kv.JumpToKey("Construction");
-	Rogue_SetupVote(kv, true);
+	Rogue_SetupVote(kv, "Construction");
 
 	if(RiskList)
 	{
@@ -382,10 +382,15 @@ void Construction_SetupVote(KeyValues kv)
 // Waves_RoundStart()
 void Construction_StartSetup()
 {
+	PrintToChatAll("Construction_StartSetup");
+	
 	Rogue_StartSetup();
 	Construction_RoundEnd();
 
-	GameTimer = CreateTimer(1.0, Timer_WaitingPeriod, TIMER_REPEAT);
+	NextAttackAt = 0.0;
+
+	delete GameTimer;
+	GameTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
 
 	ArrayList list = new ArrayList();
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
@@ -449,23 +454,25 @@ static Action Timer_WaitingPeriod(Handle timer)
 // Rogue_RoundStartTimer()
 void Construction_Start()
 {
+	PrintToChatAll("Construction_Start");
+
 	delete GameTimer;
 
-	float pos[3], ang[3];
+	float pos1[3], pos2[3], ang[3];
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
 		if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == TFTeam_Red && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
 		{
-			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos1);
 			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
 			break;
 		}
 	}
 
-	NPC_CreateByName("npc_base_building", -1, pos, ang, TFTeam_Red);
+	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
 
 	NextAttackAt = GetGameTime() + AttackTime;
-	GameTimer = CreateTimer(AttackTime, Timer_StartAttackWave);
+	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 	Ammo_Count_Ready = 20;
 
 	ArrayList resourcePicked = new ArrayList();
@@ -477,7 +484,7 @@ void Construction_Start()
 		if(area == NULL_AREA)
 			continue;
 		
-		if(navPicked.FindValue(area))
+		if(navPicked.FindValue(area) != -1)
 		{
 			if(GetURandomInt() % 2)
 				i--;
@@ -495,8 +502,8 @@ void Construction_Start()
 			continue;
 		}
 		
-		area.GetCenter(ang);
-		float distance = GetVectorDistance(pos, ang, true);
+		area.GetCenter(pos2);
+		float distance = GetVectorDistance(pos1, pos2, true);
 
 		if(!GetRandomResourceInfo(distance, info, resourcePicked))
 		{
@@ -510,7 +517,7 @@ void Construction_Start()
 		ang[1] = float(GetURandomInt() % 360);
 		ang[2] = 0.0;
 
-		int entity = NPC_CreateByName(info.Plugin, -1, pos, ang, TFTeam_Blue);
+		int entity = NPC_CreateByName(info.Plugin, -1, pos2, ang, TFTeam_Blue);
 		if(entity != -1)
 		{
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", info.Health);
@@ -569,6 +576,15 @@ static bool GetRandomResourceInfo(float distance, ResourceInfo info, ArrayList p
 
 static Action Timer_StartAttackWave(Handle timer)
 {
+	if(NextAttackAt > GetGameTime())
+	{
+		GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
+		Waves_UpdateMvMStats();
+		return Plugin_Stop;
+	}
+	
+	PrintToChatAll("Timer_StartAttackWave");
+	
 	CurrentRisk += RiskIncrease;
 	CurrentAttacks++;
 	
@@ -604,14 +620,15 @@ static Action Timer_StartAttackWave(Handle timer)
 
 	if(CurrentAttacks > MaxAttacks)
 	{
+		NextAttackAt = 0.0;
 		GameTimer = null;
 	}
 	else
 	{
 		NextAttackAt = GetGameTime() + AttackTime;
-		GameTimer = CreateTimer(AttackTime, Timer_StartAttackWave);
+		GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 	}
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 static int GetRiskAttackInfo(int risk, AttackInfo attack, bool custom = false)
@@ -708,6 +725,7 @@ static bool StartAttack(const AttackInfo attack, int type, int target, int bonus
 
 	Rogue_TriggerFunction(Artifact::FuncStageStart);
 	CreateTimer(float(type * type), Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	WaveStart_SubWaveStart(GetGameTime());
 	return true;
 }
 
@@ -788,13 +806,16 @@ bool Construction_UpdateMvMStats()
 			{
 				case 0:
 				{
-					int time = RoundToCeil(NextAttackAt - GetGameTime());
-					int flags = CurrentAttacks < MaxAttacks ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS;
-					if(time < 61)
-						flags += MVM_CLASS_FLAG_ALWAYSCRIT;
-					
-					Waves_SetWaveClass(objective, i, time, "classic_defend", flags, true);
-					continue;
+					if(NextAttackAt)
+					{
+						int time = RoundToCeil(NextAttackAt - GetGameTime());
+						int flags = CurrentAttacks < MaxAttacks ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS;
+						if(time < 61)
+							flags += MVM_CLASS_FLAG_ALWAYSCRIT;
+						
+						Waves_SetWaveClass(objective, i, time, "classic_defend", flags, true);
+						continue;
+					}
 				}
 				case 1:
 				{
@@ -905,6 +926,7 @@ static bool UpdateValidSpawners(const float pos[3], int type)
 		if(TheNavMesh.BuildPath(startArea, goalArea, pos))
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
+			PrintToChatAll("UpdateValidSpawners::%s", CurrentSpawnName);
 
 			delete list;
 			return true;

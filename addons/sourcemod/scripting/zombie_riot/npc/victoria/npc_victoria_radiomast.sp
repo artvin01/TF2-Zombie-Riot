@@ -426,6 +426,8 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 				b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 				b_StaticNPC[other] = b_StaticNPC[npc.index];
+				if(b_StaticNPC[other])
+					AddNpcToAliveList(other, 1);
 			}
 			int other1 = NPC_CreateByName("npc_radio_repair", -1, pos, ang, team, "EX");
 			if(other1 > MaxClients)
@@ -442,6 +444,8 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				fl_Extra_Damage[other1] = fl_Extra_Damage[npc.index];
 				b_thisNpcIsABoss[other1] = b_thisNpcIsABoss[npc.index];
 				b_StaticNPC[other1] = b_StaticNPC[npc.index];
+				if(b_StaticNPC[other])
+					AddNpcToAliveList(other, 1);
 			}
 		 }
 		npc.Anger = true;

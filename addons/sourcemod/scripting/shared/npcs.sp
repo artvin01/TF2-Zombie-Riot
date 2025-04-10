@@ -130,6 +130,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	
 	if(!b_GameOnGoing) //no spawn if the round is over
 	{
+		PrintCenterTextAll("NPC_SpawnNext Fail1");
 		return;
 	}
 	
@@ -174,12 +175,16 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		//emercency stop. 
 		if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
 		{
+			PrintCenterTextAll("NPC_SpawnNext Fail2");
 			return;
 		}
 	}
 
 	if(!Spawns_CanSpawnNext())
+	{
+		PrintCenterTextAll("NPC_SpawnNext Fail3");
 		return;
+	}
 	
 	float pos[3], ang[3];
 
@@ -446,6 +451,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			{
 				Waves_Progress(donotprogress);
 			}
+		}
+		else
+		{
+			PrintCenterTextAll("NPC_SpawnNext Fail4");
 		}
 	}
 }

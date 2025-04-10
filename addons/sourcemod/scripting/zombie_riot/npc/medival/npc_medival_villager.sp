@@ -620,6 +620,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 				if(spawn_index > MaxClients)
 				{
 					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
+					if(b_StaticNPC[spawn_index])
+						AddNpcToAliveList(spawn_index, 1);
+					
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
 					if(GetTeam(iNPC) != TFTeam_Red)
 					{

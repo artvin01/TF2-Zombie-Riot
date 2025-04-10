@@ -1010,7 +1010,11 @@ methodmap Citizen < CClotBody
 		if(team != TFTeam_Red || TempRebel[npc.index])
 		{
 			npc.SetDowned(0);
-			npc.m_bStaticNPC = true;
+			if(!chaos)
+			{
+				npc.m_bStaticNPC = true;
+				AddNpcToAliveList(npc.index, 1);
+			}
 		}
 
 		if(chaos)
