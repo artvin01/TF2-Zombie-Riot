@@ -306,10 +306,10 @@ public void Construction_BadExpi_Collect()
 
 	if(Construction_FinalBattle())
 	{
-		CreateTimer(2.0, Timer_DialogueBadEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+		//CreateTimer(2.0, Timer_DialogueBadEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
 	}
 	else
 	{
-		CreateTimer(2.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+		//CreateTimer(2.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
