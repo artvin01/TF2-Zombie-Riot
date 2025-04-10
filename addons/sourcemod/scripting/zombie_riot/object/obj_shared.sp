@@ -224,7 +224,7 @@ methodmap ObjectGeneric < CClotBody
 		int entity;
 		if(DoFakeModel)
 		{
-			entity = objstats.EquipItemSeperate("partyhat", model);
+			entity = objstats.EquipItemSeperate(model);
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);

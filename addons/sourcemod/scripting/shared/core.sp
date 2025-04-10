@@ -2301,7 +2301,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
-		EntityKilled_HitDetectionCooldown(entity);
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity);
 		f_InBattleDelay[entity] = 0.0;
@@ -2890,6 +2889,7 @@ public void OnEntityDestroyed(int entity)
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+		EntityKilled_HitDetectionCooldown(entity);
 		WeaponWeaponAdditionOnRemoved(entity);
 		CurrentEntities--;
 

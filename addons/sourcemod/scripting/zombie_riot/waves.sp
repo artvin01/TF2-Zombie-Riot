@@ -2924,12 +2924,12 @@ static int GetObjectiveResource()
 {
 	return FindEntityByClassname(-1, "tf_objective_resource");
 }
-
+/*
 static int GetMvMStats()
 {
 	return FindEntityByClassname(-1, "tf_mann_vs_machine_stats");
 }
-
+*/
 void Waves_UpdateMvMStats(int frames = 10)
 {
 	if(!UpdateFramed)
@@ -3230,6 +3230,10 @@ static void UpdateMvMStatsFrame()
 
 void Waves_SetCreditAcquired(int amount)
 {
+	//No warning, this is unused as of now.
+	amount += 1;
+	amount = amount + 1;
+	/*
 	int mvm = GetMvMStats();
 	if(mvm != -1)
 	{
@@ -3244,6 +3248,7 @@ void Waves_SetCreditAcquired(int amount)
 		SetVariantString(buffer);
 		AcceptEntityInput(mvm, "RunScriptCode");
 	}
+	*/
 }
 
 static int SetupFlags(const Enemy data, bool support)
