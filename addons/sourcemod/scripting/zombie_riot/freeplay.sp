@@ -823,13 +823,14 @@ void Freeplay_SpawnEnemy(int entity)
 		{
 			if(GetRandomInt(0, 100) < 1) // 1% chance for this to work, it NEEDS to be extra rare.
 			{
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(0.25, 10.0)));
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(2.5, 12.5)));
 				SetEntProp(entity, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(entity, Prop_Send, "m_flModelScale") * GetRandomFloat(0.3, 3.5));
-				fl_Extra_MeleeArmor[entity] *= GetRandomFloat(0.1, 2.35);
-				fl_Extra_RangedArmor[entity] *= GetRandomFloat(0.1, 2.35);
-				fl_Extra_Speed[entity] *= GetRandomFloat(0.25, 3.0);
-				fl_Extra_Damage[entity] *= GetRandomFloat(0.35, 10.0);
+				fl_Extra_MeleeArmor[entity] *= GetRandomFloat(0.075, 2.0);
+				fl_Extra_RangedArmor[entity] *= GetRandomFloat(0.075, 2.0);
+				fl_Extra_Speed[entity] *= GetRandomFloat(0.25, 5.0);
+				fl_Extra_Damage[entity] *= GetRandomFloat(0.5, 12.0);
+				f_AttackSpeedNpcIncrease[entity] *= GetRandomFloat(0.35, 2.15);
 
 				// surely this makes them stalkers... trust
 				if(GetRandomInt(0, 1) == 1)
@@ -871,6 +872,10 @@ void Freeplay_SpawnEnemy(int entity)
 	
 				RandomStats--;
 				EmitSoundToAll("misc/halloween/hwn_bomb_flash.wav", _, _, _, _, _, GetRandomInt(75, 135));
+				if(b_thisNpcIsARaid[entity])
+				{
+					CPrintToChatAll("{orange}Uh oh... you got a raid with randomized stats.");
+				}
 			}
 		}
 
