@@ -394,7 +394,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.ExtraDamage *= 1.25;
 
 		if(Waves_GetRound() > 174)
-			enemy.ExtraDamage *= 1.5;
+			enemy.ExtraDamage *= 2.0;
 
 		// Raid health is lower before w101.
 		if(Waves_GetRound() < 101)
@@ -404,7 +404,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.Health = RoundToCeil(float(enemy.Health) * 1.25);
 
 		if(Waves_GetRound() > 174)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 1.25);
+			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
 
 		// moni
 		enemy.Credits += 10000.0;
@@ -921,7 +921,7 @@ void Freeplay_SpawnEnemy(int entity)
 		if(FusionBuff > 1)
 			ApplyStatusEffect(entity, entity, "Self Empowerment", 30.0);	
 	
-		if(FusionBuff == 1 || FusionBuff > 2)
+		if(FusionBuff > 0)
 			ApplyStatusEffect(entity, entity, "Ally Empowerment", 30.0);	
 	
 		if(OceanBuff > 1)
@@ -1394,7 +1394,7 @@ void Freeplay_SetupStart(bool extra = false)
 		}
 		else
 		{
-			RandomStats += GetRandomInt(5, 15);
+			RandomStats += GetRandomInt(8, 16);
 			CPrintToChatAll("{red}%d random enemies will recieve randomized stats! You'll never know when.", RandomStats);
 		}
 
@@ -1927,7 +1927,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 14:
 			{
-				if(TeslarDebuff > 2)
+				if(TeslarDebuff > 1)
 				{
 					strcopy(message, sizeof(message), "{red}All enemies have lost the Teslar debuff!");
 					TeslarDebuff = 0;
@@ -1955,7 +1955,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 16:
 			{
-				if(OceanBuff > 2)
+				if(OceanBuff > 1)
 				{
 					strcopy(message, sizeof(message), "{green}All enemies have lost the Ocean buff.");
 					OceanBuff = 0;
@@ -1978,8 +1978,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 19:
 			{
-				RandomStats += 4;
-				strcopy(message, sizeof(message), "{red}4 random enemies will recieve randomized stats! You'll never know when.");
+				RandomStats += GetRandomInt(3, 6);
+				strcopy(message, sizeof(message), "{red}A random amount of random enemies will recieve randomized stats randomly!");
 			}
 	
 			/// CREDIT SKULLS //
