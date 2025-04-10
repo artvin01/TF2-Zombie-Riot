@@ -366,11 +366,16 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
+					if(b_StaticNPC[spawn_index])
+						AddNpcToAliveList(spawn_index, 1);
+					
 					npc.PlayMeleeMissSound();
 					npc.PlayMeleeMissSound();
 					if(GetTeam(iNPC) != TFTeam_Red)
 					{
-						NpcAddedToZombiesLeftCurrently(spawn_index, true);
+						if(!b_StaticNPC[spawn_index])
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					}
 					else
 					{

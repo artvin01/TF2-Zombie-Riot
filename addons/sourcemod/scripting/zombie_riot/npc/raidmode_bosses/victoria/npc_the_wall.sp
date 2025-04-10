@@ -412,14 +412,18 @@ methodmap Huscarls < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
-			music.Time = 132;
-			music.Volume = 2.3;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
-			strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
-			Music_SetRaidMusic(music);
+			if(StrContains(data, "nomusic") == -1)
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
+				music.Time = 132;
+				music.Volume = 2.3;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
+				strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
+				Music_SetRaidMusic(music);
+			}
+			
 			npc.m_iChanged_WalkCycle = -1;
 
 			CPrintToChatAll("{lightblue}Huscarls{default}: You will not Pass ''Iron Gate''!");

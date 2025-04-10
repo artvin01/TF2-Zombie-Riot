@@ -179,7 +179,9 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 
 	if(!Spawns_CanSpawnNext())
+	{
 		return;
+	}
 	
 	float pos[3], ang[3];
 
@@ -410,6 +412,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						Rogue_EnemySpawned(entity_Spawner);
 						Waves_EnemySpawned(entity_Spawner);
 						Classic_EnemySpawned(entity_Spawner);
+						Construction_EnemySpawned(entity_Spawner);
 					}
 
 					if(Waves_InFreeplay())
@@ -529,6 +532,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		{
 			Rogue_EnemySpawned(entity);
 			Waves_EnemySpawned(entity);
+			Construction_EnemySpawned(entity);
 		}
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);

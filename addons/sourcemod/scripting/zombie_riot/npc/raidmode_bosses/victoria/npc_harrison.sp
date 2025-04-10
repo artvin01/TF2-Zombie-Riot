@@ -461,14 +461,19 @@ methodmap Harrison < CClotBody
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.85;
 			}
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
-			music.Time = 92;
-			music.Volume = 1.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "RAGE");
-			strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
-			Music_SetRaidMusic(music);
+			
+			if(StrContains(data, "nomusic") == -1)
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
+				music.Time = 92;
+				music.Volume = 1.0;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "RAGE");
+				strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
+				Music_SetRaidMusic(music);
+			}
+			
 			npc.m_iChanged_WalkCycle = -1;
 		}
 		int skin = 1;

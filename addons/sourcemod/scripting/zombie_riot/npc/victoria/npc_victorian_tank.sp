@@ -268,6 +268,8 @@ static void ClotDeath(int entity)
 			fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 			b_StaticNPC[other] = b_StaticNPC[npc.index];
+			if(b_StaticNPC[other])
+				AddNpcToAliveList(other, 1);
 		}
 	}
 	for(int i; i < 2; i++)
@@ -287,6 +289,8 @@ static void ClotDeath(int entity)
 			fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 			b_StaticNPC[other] = b_StaticNPC[npc.index];
+			if(b_StaticNPC[other])
+				AddNpcToAliveList(other, 1);
 		}
 	}
 }

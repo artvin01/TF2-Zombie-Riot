@@ -556,6 +556,9 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 										if(Rogue_Mode())
 											CooldownGive *= 0.5;
 											
+										if(Construction_Mode())
+											CooldownGive *= 3.0;
+										
 										info.Cooldowns[client] = GetGameTime() + CooldownGive;
 										BuildingList.SetArray(id, info);
 									}
