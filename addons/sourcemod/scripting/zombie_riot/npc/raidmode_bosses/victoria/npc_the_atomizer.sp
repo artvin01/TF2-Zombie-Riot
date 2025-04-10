@@ -346,14 +346,17 @@ methodmap Atomizer < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
-			music.Time = 128;
-			music.Volume = 2.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
-			strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
-			Music_SetRaidMusic(music);
+			if(StrContains(data, "nomusic") == -1)
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
+				music.Time = 128;
+				music.Volume = 2.0;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
+				strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
+				Music_SetRaidMusic(music);
+			}
 			
 			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let them get out alive!");
 			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);

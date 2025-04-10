@@ -469,9 +469,9 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 
 
-int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0)
+int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false)
 {
-	if(zr_disablerandomvillagerspawn.BoolValue)
+	if(!forceSpawn && zr_disablerandomvillagerspawn.BoolValue)
 		return 3;
 	
 	Diversionistico npc = view_as<Diversionistico>(iNPC);

@@ -296,6 +296,8 @@ void AmmoBox_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -318,6 +320,8 @@ void AmmoBox_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -340,6 +344,8 @@ void AmmoBox_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -362,6 +368,8 @@ void AmmoBox_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -384,6 +392,8 @@ void AmmoBox_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -406,6 +416,8 @@ void AmmoBox_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}

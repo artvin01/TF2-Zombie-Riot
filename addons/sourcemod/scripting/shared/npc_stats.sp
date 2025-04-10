@@ -2243,6 +2243,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		if(ignoretime || DelayPathing(this.index))
 		{
+			/*
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2259,6 +2260,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					i_WasPathingToHere[this.index] = 0;
 				}
 			}
+			*/
 			
 			if(this.m_bPathing)
 			{
@@ -2323,7 +2325,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{	
 		if(ignoretime || DelayPathing(this.index))
 		{
-			
+			/*
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -2340,6 +2342,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					f3_WasPathingToHere[this.index][2] = 0.0;
 				}
 			}
+			*/
 			
 			if(this.m_bPathing)
 			{
@@ -10230,6 +10233,8 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 		{
 			AddComputingDelay += 0.3 + (Length2 * 0.0005);
 		}
+		if(IsEntityTowerDefense(npcpather))
+			AddComputingDelay += 3.0;
 
 		if(Length1 > 0.0)
 			f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;

@@ -34,10 +34,14 @@ methodmap MaterialWizuh < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
+		b_StaticNPC[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
+
+		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 
 		npc.m_flMeleeArmor = 0.1;
 		npc.m_flRangedArmor = 0.5;

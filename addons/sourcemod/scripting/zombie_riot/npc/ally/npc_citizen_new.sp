@@ -1010,7 +1010,11 @@ methodmap Citizen < CClotBody
 		if(team != TFTeam_Red || TempRebel[npc.index])
 		{
 			npc.SetDowned(0);
-			npc.m_bStaticNPC = true;
+			if(!chaos)
+			{
+				npc.m_bStaticNPC = true;
+				AddNpcToAliveList(npc.index, 1);
+			}
 		}
 
 		if(chaos)
@@ -2164,7 +2168,7 @@ void Citizen_UpdateStats(int entity, int type, int role)
 		case Cit_RPG:
 		{
 			// 0.2 DPS
-			npc.m_fGunDamage = 0.5 * npc.m_iGunValue;
+			npc.m_fGunDamage = 0.38 * npc.m_iGunValue;
 			npc.m_fGunFirerate = 2.0;
 			npc.m_fGunReload = 1.0;
 			npc.m_iGunClip = 2;

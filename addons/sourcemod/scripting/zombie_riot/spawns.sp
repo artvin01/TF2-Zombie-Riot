@@ -428,10 +428,10 @@ void Spawners_Timer()
 		}
 	}
 	
-	if(maxSpawners > length)
-		maxSpawners = length;
+	if(maxSpawners > pointsList.Length)
+		maxSpawners = pointsList.Length;
 	
-	if(length)
+	if(maxSpawners)
 	{
 		// Sort points
 		pointsList.Sort(Sort_Descending, Sort_Float);

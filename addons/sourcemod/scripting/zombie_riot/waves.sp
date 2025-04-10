@@ -224,6 +224,11 @@ void Waves_MapStart()
 	Freeplay_ExpTimeLeft = 0.0;
 }
 
+int Waves_MapSeed()
+{
+	return MapSeed;
+}
+
 void Waves_PlayerSpawn(int client)
 {
 	if(FogEntity != INVALID_ENT_REFERENCE)
@@ -1579,13 +1584,12 @@ void Waves_ClearWaves()
 
 void Waves_Progress(bool donotAdvanceRound = false)
 {
-	/*
-	PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
+	/*PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
 		Rounds ? 1 : 0,
 		CvarNoRoundStart.BoolValue ? 0 : 1,
 		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
-		Cooldown > GetGameTime() ? 0 : 1);
-	*/
+		Cooldown > GetGameTime() ? 0 : 1);*/
+	
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime())
 		return;
 

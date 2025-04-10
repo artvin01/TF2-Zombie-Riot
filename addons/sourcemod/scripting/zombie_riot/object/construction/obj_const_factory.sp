@@ -11,7 +11,7 @@ static const char Vehicles[][] =
 	"vehicle_pickup"
 };
 
-static const int IronCost = 25;
+static const int IronCost = 15;
 
 static int NPCId;
 static float GlobalCooldown;
@@ -35,8 +35,8 @@ void ObjectFactory_MapStart()
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_factory");
 	build.Cost = 5000;
-	build.Health = 250;
-	build.Cooldown = 180.0;
+	build.Health = 150;
+	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
@@ -50,7 +50,7 @@ methodmap ObjectFactory < ObjectGeneric
 {
 	public ObjectFactory(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectFactory npc = view_as<ObjectFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", _, "600", {312.0, 280.0, 231.0}));
+		ObjectFactory npc = view_as<ObjectFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", _, "600", {156.0, 156.0, 16.0}));
 		
  		b_CantCollidie[npc.index] = true;
 	 	b_CantCollidieAlly[npc.index] = true;
@@ -70,6 +70,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = CountBuildings();
+		
+		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Vehicle Factory"))
+		{
+			maxcount = 0;
+			return false;
+		}
+
 		maxcount = 1;
 		if(count >= maxcount)
 			return false;
@@ -113,7 +120,7 @@ static bool ClotCanUse(ObjectFactory npc, int client)
 	return true;
 }
 
-static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
+static void ClotShowInteractHud(ObjectFactory npc, int client)
 {
 	if(GlobalCooldown > GetGameTime())
 	{
@@ -121,7 +128,9 @@ static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 	}
 	else
 	{
-		PrintCenterText(client, "Press [T (spray)] to build a vehicle using materials.");
+		char button[64];
+		PlayerHasInteract(client, button, sizeof(button));
+		PrintCenterText(client, "%sto build a vehicle using materials.", button);
 	}
 }
 
