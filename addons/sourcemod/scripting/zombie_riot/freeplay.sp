@@ -1199,7 +1199,39 @@ void Freeplay_OnEndWave(int &cash)
 
 	Freeplay_SetRemainingCash(1500.0);
 	Freeplay_SetCashTime(GetGameTime() + 11.5);
+
+	if(Freeplay_GetRemainingExp() > 0.0)
+	{
+		for (int client = 0; client < MaxClients; client++)
+		{
+			if(IsValidClient(client) && TeutonType[client] != TEUTON_WAITING)
+			{
+				Freeplay_GiveXP(client, Freeplay_GetRemainingExp());
+			}
+		}
+	}
+
+	Freeplay_SetRemainingExp(3000.0);
+	Freeplay_SetExpTime(GetGameTime() + 10.0);
 }
+void Freeplay_GiveXP(int client, float extraxp)
+{
+	int totalxp;
+	if(Database_IsCached(client) && Level[client] <= 30)
+	{
+		float CurrentLevel = float(Level[client]);
+		CurrentLevel += 30.0;
+		extraxp *= (CurrentLevel / 60.0);
+	}
+	totalxp = RoundToCeil(extraxp);
+
+	if(totalxp > 0)
+	{
+		GiveXP(client, totalxp);
+		CPrintToChat(client, "{lime}You've recieved %d extra XP!", totalxp);
+	}
+}
+
 float Freeplay_SetupValues()
 {
 	return gay;
