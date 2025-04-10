@@ -40,7 +40,7 @@ methodmap StalkerShared < CClotBody
 			}
 		}
 
-		CNavArea startArea = TheNavMesh.GetNavAreaEntity(entity, view_as<GetNavAreaFlags_t>(0), 1000.0);
+		CNavArea startArea = TheNavMesh.GetNavAreaEntity(this.index, view_as<GetNavAreaFlags_t>(0), 1000.0);
 		
 		for(int i; i < 50; i++)
 		{

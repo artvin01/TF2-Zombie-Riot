@@ -292,7 +292,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	//2 waves passed or its a raid.
 	if(npc.i_GunMode <= (Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann || AppearedBefore_Suicide)
 	{
-		if(!Rogue_Mode() && !ConstructioN_Mode() && npc.m_iSurrender == 0)
+		if(!Rogue_Mode() && !Construction_Mode() && npc.m_iSurrender == 0)
 		{
 			if(AppearedBefore_Suicide)
 			{
@@ -588,7 +588,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
-	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !ConstructioN_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
+	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !Construction_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
