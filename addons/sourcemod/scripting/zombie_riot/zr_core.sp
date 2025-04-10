@@ -2550,9 +2550,9 @@ int LevelToXp(int lv)
 
 float XpFloatGive[MAXTF2PLAYERS];
 
-void GiveXP(int client, int xp)
+void GiveXP(int client, int xp, bool freeplay = false)
 {
-	if(Waves_InFreeplay())
+	if(Waves_InFreeplay() && !freeplay)
 	{
 		//no xp in freeplay.
 		return;
