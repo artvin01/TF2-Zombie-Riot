@@ -11,7 +11,6 @@
 */
 
 
-//REPLACEME_MEDICAAA TWO
 char g_DefaultMedic_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
