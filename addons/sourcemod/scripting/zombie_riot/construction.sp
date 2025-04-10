@@ -170,8 +170,6 @@ void Construction_MapStart()
 
 void Construction_SetupVote(KeyValues kv)
 {
-	PrintToChatAll("Construction_SetupVote");
-	
 	PrecacheMvMIconCustom("classic_defend", false);
 
 	InConstMode = true;
@@ -382,8 +380,6 @@ void Construction_SetupVote(KeyValues kv)
 // Waves_RoundStart()
 void Construction_StartSetup()
 {
-	PrintToChatAll("Construction_StartSetup");
-	
 	Rogue_StartSetup();
 	Construction_RoundEnd();
 
@@ -454,8 +450,6 @@ static Action Timer_WaitingPeriod(Handle timer)
 // Rogue_RoundStartTimer()
 void Construction_Start()
 {
-	PrintToChatAll("Construction_Start");
-
 	delete GameTimer;
 
 	float pos1[3], pos2[3], ang[3];
@@ -582,8 +576,6 @@ static Action Timer_StartAttackWave(Handle timer)
 		Waves_UpdateMvMStats();
 		return Plugin_Stop;
 	}
-	
-	PrintToChatAll("Timer_StartAttackWave");
 	
 	CurrentRisk += RiskIncrease;
 	CurrentAttacks++;
@@ -926,7 +918,6 @@ static bool UpdateValidSpawners(const float pos[3], int type)
 		if(TheNavMesh.BuildPath(startArea, goalArea, pos))
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
-			PrintToChatAll("UpdateValidSpawners::%s", CurrentSpawnName);
 
 			delete list;
 			return true;
