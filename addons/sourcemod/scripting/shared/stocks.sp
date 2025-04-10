@@ -5439,6 +5439,7 @@ enum
 	SupportDisplayHurtHud = 1,
 	IgniteClientside = 2,
 	Osmosisdebuff = 3,
+	TankThrowLogic = 4,
 	
 }
 
