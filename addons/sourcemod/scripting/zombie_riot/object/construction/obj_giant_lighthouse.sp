@@ -55,7 +55,18 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = CountBuildings();
-		maxcount = 3;
+		
+		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Giant Lighthouse"))
+		{
+			maxcount = 0;
+			return false;
+		}
+
+		maxcount = 2;
+
+		if(Construction_HasNamedResearch("Base Level III"))
+			maxcount++;
+		
 		if(count >= maxcount)
 			return false;
 	}

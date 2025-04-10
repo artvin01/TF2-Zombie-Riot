@@ -691,7 +691,7 @@ methodmap Twirl < CClotBody
 		}
 		b_tripple_raid[npc.index] = false;
 		bool default_theme = true;
-		if((StrContains(data, "triple_enemies") != -1))
+		if((StrContains(data, "triple_enemi") != -1))
 		{
 			b_tripple_raid[npc.index] = true;
 			default_theme = false;

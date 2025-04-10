@@ -22,7 +22,7 @@ void ObjectResearch_MapStart()
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_research");
 	build.Cost = 1000;
 	build.Health = 50;
-	build.Cooldown = 60.0;
+	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
@@ -36,7 +36,7 @@ methodmap ObjectResearch < ObjectGeneric
 {
 	public ObjectResearch(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectResearch npc = view_as<ObjectResearch>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "600", {110.0, 129.0, 197.0}));
+		ObjectResearch npc = view_as<ObjectResearch>(ObjectGeneric(client, vecPos, vecAng, "models/props_combine/masterinterface.mdl", _, "600", {65.0, 65.0, 197.0},_,false));
 		
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
@@ -73,7 +73,7 @@ static int CountBuildings()
 	return count;
 }
 
-static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
+static void ClotShowInteractHud(ObjectResearch npc, int client)
 {
 	char button[64];
 	PlayerHasInteract(client, button, sizeof(button));

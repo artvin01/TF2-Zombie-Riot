@@ -150,7 +150,7 @@
 	}
 	"Research Station Desc"
 	{
-		"en"	"A building that can spend materials to research equippment and buildings."
+		"en"	"A construct that can spend materials to research equippment and buildings."
 	}
 	"Vehicle Factory"
 	{
@@ -158,7 +158,7 @@
 	}
 	"Vehicle Factory Desc"
 	{
-		"en"	"A building that can spend materials to build vehicles."
+		"en"	"A construct that can spend materials to build vehicles."
 	}
 	"Cooking Stove"
 	{
@@ -166,7 +166,7 @@
 	}
 	"Cooking Stove Desc"
 	{
-		"en"	"A building that can spend materials to cook various meals to buff allies."
+		"en"	"A construct that can spend materials to cook various meals to buff allies."
 	}
 	"Giant Lighthouse"
 	{
@@ -175,5 +175,109 @@
 	"Giant Lighthouse Desc"
 	{
 		"en" 		"TODO"
+	}
+	"Water Pump"
+	{
+		"en"	"Water Pump"
+	}
+	"Water Pump Desc"
+	{
+		"en"	"A construct that generates water but needs to be manually collected when finished."
+	}
+	"Base Level I"
+	{
+		"en"	"Base Level I"
+	}
+	"Base Level I Desc"
+	{
+		"en"	"Unlocks more upgrades and allows building constructs."
+	}
+	"Base Level II"
+	{
+		"en"	"Base Level II"
+	}
+	"Base Level II Desc"
+	{
+		"en"	"Unlocks more upgrades and increases construct traits."
+	}
+	"Base Level III"
+	{
+		"en"	"Base Level III"
+	}
+	"Base Level III Desc"
+	{
+		"en"	"Unlocks more upgrades and increases construct traits."
+	}
+	"Enchanced Water Pump"
+	{
+		"en"	"Enchanced Water Pump"
+	}
+	"Enchanced Water Pump Desc"
+	{
+		"en"	"Increases water gained from Water Pump by x2.0."
+	}
+	"Minting Station"
+	{
+		"en"	"Minting Station"
+	}
+	"Minting Station Desc"
+	{
+		"en"	"A construct that uses crystals to gain cash."
+	}
+	"Sawmill Factory"
+	{
+		"en"	"Sawmill Factory"
+	}
+	"Sawmill Factory Desc"
+	{
+		"en"	"A construct that generates wood but needs to be manually collected when finished."
+	}
+	"Enchanced Sawmill Factory"
+	{
+		"en"	"Enchanced Sawmill Factory"
+	}
+	"Enchanced Sawmill Factory Desc"
+	{
+		"en"	"Increases wood gained from Sawmill Factory by x2.0."
+	}
+	"Stonework Factory"
+	{
+		"en"	"Stonework Factory"
+	}
+	"Stonework Factory Desc"
+	{
+		"en"	"A construct that generates stone but needs to be manually collected when finished."
+	}
+	"Enchanced Stonework Factory"
+	{
+		"en"	"Enchanced Stonework Factory"
+	}
+	"Enchanced Stonework Factory Desc"
+	{
+		"en"	"Increases stone gained from Stonework Factory by x2.0."
+	}
+	"Small Construct Wall"
+	{
+		"en"	"Small Construct Wall"
+	}
+	"Small Construct Wall Desc"
+	{
+		"en"	"A construct that has a large health pool for tanking."
+	}
+	"Large Construct Wall"
+	{
+		"en"	"Large Construct Wall"
+	}
+	"Large Construct Wall Desc"
+	{
+		"en"	"A construct that has an even large health pool but consumes 2 slots."
+	}
+	"Extreme Construct Wall"
+	{
+		"en"	"Extreme Construct Wall"
+	}
+	"Extreme Construct Wall Desc"
+	{
+		"en"	"A construct that has an extremely large health pool but consumes 3 slots."
 	}
 }

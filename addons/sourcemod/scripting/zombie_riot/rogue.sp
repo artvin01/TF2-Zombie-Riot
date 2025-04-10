@@ -2335,7 +2335,7 @@ stock bool Rogue_HasNamedArtifact(const char[] name)
 	return false;
 }
 
-void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
+void Rogue_GiveNamedArtifact(const char[] name, bool silent = false, bool noFail = false)
 {
 	if(!CurrentCollection)
 		CurrentCollection = new ArrayList();
@@ -2399,7 +2399,8 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 		}
 	}
 
-	PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
+	if(!noFail)
+		PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
 }
 
 stock void Rogue_RemoveNamedArtifact(const char[] name)

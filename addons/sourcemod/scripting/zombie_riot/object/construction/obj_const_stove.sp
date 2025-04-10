@@ -54,7 +54,7 @@ methodmap ObjectStove < ObjectGeneric
 {
 	public ObjectStove(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectStove npc = view_as<ObjectStove>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {36.0, 54.0, 41.0}));
+		ObjectStove npc = view_as<ObjectStove>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {27.0, 27.0, 41.0}, 20.0));
 		
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
@@ -70,6 +70,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = CountBuildings();
+		
+		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Cooking Stove"))
+		{
+			maxcount = 0;
+			return false;
+		}
+
 		maxcount = 1;
 		if(count >= maxcount)
 			return false;

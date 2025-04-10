@@ -4,10 +4,12 @@
 enum struct AttackInfo
 {
 	char WaveSet[64];
+	char Key[64];
 
 	void SetupKv(KeyValues kv)
 	{
 		kv.GetSectionName(this.WaveSet, sizeof(this.WaveSet));
+		kv.GetString(NULL_STRING, this.Key, sizeof(this.Key));
 		
 		char buffer[PLATFORM_MAX_PATH];
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, this.WaveSet);
@@ -107,6 +109,7 @@ static ArrayList RiskList;
 static ArrayList ResourceList;
 static ArrayList RewardList;
 static ArrayList ResearchList;
+static MusicEnum BackgroundMusic;
 
 static Handle GameTimer;
 static int CurrentRisk;
@@ -114,6 +117,7 @@ static int CurrentAttacks;
 static float NextAttackAt;
 static int AttackType;	// 0 = None, 1 = Resource, 2 = Base, 3 = Final
 static int AttackRef;
+static int AttackHardcore;
 static char CurrentSpawnName[64];
 static StringMap CurrentMaterials;
 static ArrayList CurrentResearch;
@@ -138,7 +142,11 @@ bool Construction_InSetup()
 
 int Construction_GetRound()
 {
-	return CurrentRisk * 80 / HighestRisk;
+	int round = CurrentRisk * 70 / HighestRisk;
+	if(AttackType > 0 && AttackHardcore > 0)
+		round += AttackHardcore * 3;
+	
+	return round;
 }
 
 bool Construction_FinalBattle()
@@ -155,6 +163,7 @@ void Construction_MapStart()
 {
 	InConstMode = false;
 	Construction_RoundEnd();
+	BackgroundMusic.Clear();
 }
 
 void Construction_SetupVote(KeyValues kv)
@@ -192,6 +201,7 @@ void Construction_SetupVote(KeyValues kv)
 
 	delete ResourceList;
 	delete RewardList;
+	BackgroundMusic.Clear();
 	ResourceList = new ArrayList(sizeof(ResourceInfo));
 	RewardList = new ArrayList(sizeof(RewardInfo));
 	ResearchList = new ArrayList(sizeof(ResearchInfo));
@@ -309,6 +319,42 @@ void Construction_SetupVote(KeyValues kv)
 			kv.GoBack();
 
 			RiskList.Push(list);
+		}
+
+		kv.GoBack();
+	}
+	
+	if(kv.JumpToKey("RandomMusic"))
+	{
+		int count;
+		
+		if(kv.GotoFirstSubKey())
+		{
+			do
+			{
+				count++;
+			}
+			while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
+
+		if(count)
+		{
+			count = Waves_MapSeed() % count;
+
+			if(kv.GotoFirstSubKey())
+			{
+				for(int i = 1; i < count; i++)
+				{
+					kv.GotoNextKey();
+				}
+				
+				kv.GetSectionName(BackgroundMusic.Path, sizeof(BackgroundMusic.Path));
+				BackgroundMusic.SetupKv(BackgroundMusic.Path, kv);
+
+				kv.GoBack();
+			}
 		}
 
 		kv.GoBack();
@@ -470,6 +516,17 @@ void Construction_Start()
 	}
 
 	delete picked;
+	
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 1);
+		}
+	}
+
+	BackgroundMusic.CopyTo(BGMusicSpecial1);
 }
 
 static bool GetRandomResourceInfo(float distance, ResourceInfo info)
@@ -503,15 +560,17 @@ static Action Timer_StartAttackWave(Handle timer)
 	CurrentAttacks++;
 	
 	// Clear out existing enemies
-	/*for(int i; i < i_MaxcountNpcTotal; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(GetTeam(entity) != TFTeam_Red)
+			if(GetTeam(entity) != TFTeam_Red && !i_NpcIsABuilding[entity] && !b_StaticNPC[entity])
 				SmiteNpcToDeath(entity);
 		}
-	}*/
+	}
+
+	int bonusRisk;
 
 	AttackInfo attack;
 	if(CurrentAttacks > MaxAttacks)
@@ -519,13 +578,16 @@ static Action Timer_StartAttackWave(Handle timer)
 		// Final Boss
 		ArrayList list = RiskList.Get(RiskList.Length - 1);
 		list.GetArray(GetURandomInt() % list.Length, attack);
+		bonusRisk = CurrentRisk - HighestRisk;
+		if(bonusRisk < 0)
+			bonusRisk = 0;
 	}
 	else
 	{
-		GetRandomAttackInfo(CurrentRisk + AttackRiskBonus, attack);
+		bonusRisk = GetRiskAttackInfo(CurrentRisk + AttackRiskBonus, attack);
 	}
 
-	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, GetBaseBuilding());
+	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, GetBaseBuilding(), bonusRisk);
 
 	if(CurrentAttacks > MaxAttacks)
 	{
@@ -539,7 +601,7 @@ static Action Timer_StartAttackWave(Handle timer)
 	return Plugin_Continue;
 }
 
-static void GetRandomAttackInfo(int risk, AttackInfo attack)
+static int GetRiskAttackInfo(int risk, AttackInfo attack)
 {
 	int setRisk = risk;
 	if(setRisk < 0)
@@ -551,12 +613,52 @@ static void GetRandomAttackInfo(int risk, AttackInfo attack)
 		setRisk = HighestRisk - 1;
 	}
 	
-	ArrayList list = RiskList.Get(setRisk);
-	list.GetArray(GetURandomInt() % list.Length, attack);
+	GetListAttackInfo(RiskList.Get(setRisk), attack);
+
+	// Risk above Highest
+	setRisk = risk - HighestRisk;
+	if(setRisk < 0)
+		setRisk = 0;
+	
+	return setRisk;
+}
+
+static void GetListAttackInfo(ArrayList list, AttackInfo attack)
+{
+	ArrayList found = new ArrayList();
+
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		list.GetArray(i, attack);
+		if(!attack.Key[0])
+			continue;
+
+		if(Construction_HasNamedResearch(attack.Key) || Rogue_HasNamedArtifact(attack.Key))
+			found.Push(i);
+	}
+
+	if(found.Length == 0)
+	{
+		for(int i; i < length; i++)
+		{
+			list.GetArray(i, attack);
+			if(attack.Key[0])
+				continue;
+
+			found.Push(i);
+		}
+	}
+
+	length = found.Length;
+	if(length)
+		list.GetArray(found.Get(GetURandomInt() % length), attack);
+	
+	delete found;
 }
 
 // Start an attack based on info and the target entity
-static bool StartAttack(const AttackInfo attack, int type, int target)
+static bool StartAttack(const AttackInfo attack, int type, int target, int bonuses = 0)
 {
 	if(target == -1)
 		return false;
@@ -570,6 +672,7 @@ static bool StartAttack(const AttackInfo attack, int type, int target)
 
 	AttackType = type;
 	AttackRef = EntIndexToEntRef(target);
+	AttackHardcore = bonuses;
 
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, attack.WaveSet);
@@ -756,7 +859,7 @@ static bool UpdateValidSpawners(const float pos[3], int type)
 		{
 			if(type > 1)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
+				GetEntPropString(i_ObjectsSpawners[i], Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
 				if(StrContains(CurrentSpawnName, "noraid", false) != -1)
 					continue;
 			}
@@ -788,6 +891,17 @@ static bool UpdateValidSpawners(const float pos[3], int type)
 
 	delete list;
 	return false;
+}
+
+void Construction_EnemySpawned(int entity)
+{
+	if(AttackType > 0 && AttackHardcore > 0)
+	{
+		float stats = Pow(1.05, float(AttackHardcore));
+		fl_Extra_MeleeArmor[entity] /= stats;
+		fl_Extra_RangedArmor[entity] /= stats;
+		fl_Extra_Damage[entity] *= stats;
+	}
 }
 
 void Construction_ClotThink(int entity)
@@ -859,8 +973,7 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 					int risk = CurrentRisk + RiskBonusFromDistance(pos);
 
 					AttackInfo attack;
-					GetRandomAttackInfo(risk, attack);
-					if(!StartAttack(attack, 1, npc.index))
+					if(!StartAttack(attack, 1, npc.index, GetRiskAttackInfo(risk, attack)))
 						return false;
 					
 					if(attacker > 0 && attacker <= MaxClients)
@@ -1006,6 +1119,22 @@ public float InterMusic_ConstructIntencity(int client)
 	return InterMusic_ByIntencity(client);
 }
 
+bool Construction_HasNamedResearch(const char[] name)
+{
+	if(CurrentResearch)
+	{
+		char buffer[64];
+		int length = CurrentResearch.Length;
+		for(int i; i < length; i++)
+		{
+			CurrentResearch.GetString(i, buffer, sizeof(buffer));
+			if(StrEqual(buffer, name, false))
+				return true;
+		}
+	}
+	return false;
+}
+
 void Construction_OpenResearch(int client)
 {
 	SetGlobalTransTarget(client);
@@ -1030,7 +1159,10 @@ void Construction_OpenResearch(int client)
 			if(info.Key[0])
 			{
 				if(!CurrentResearch || CurrentResearch.FindString(info.Key) == -1)
-					continue;
+				{
+					if(!Rogue_HasNamedArtifact(info.Key))
+						continue;
+				}
 			}
 
 			FormatEx(buffer, sizeof(buffer), "%t", info.Name);
@@ -1174,6 +1306,7 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 
 				FormatEx(buffer, sizeof(buffer), "%s Desc", info.Name);
 				CPrintToChatAll("%t", "Finish Research Desc", info.Name, buffer);
+				Rogue_GiveNamedArtifact(info.Name, true, true);
 			}
 
 			Construction_OpenResearch(client);

@@ -220,6 +220,11 @@ void Waves_MapStart()
 	Freeplay_CashTimeLeft = 0.0;
 }
 
+int Waves_MapSeed()
+{
+	return MapSeed;
+}
+
 void Waves_PlayerSpawn(int client)
 {
 	if(FogEntity != INVALID_ENT_REFERENCE)
