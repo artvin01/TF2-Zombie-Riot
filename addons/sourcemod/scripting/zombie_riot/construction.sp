@@ -1419,3 +1419,5 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
+
+#include "roguelike/construction_items.sp"
