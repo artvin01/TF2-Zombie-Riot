@@ -1232,7 +1232,7 @@ void Freeplay_GiveXP(int client, float extraxp)
 
 	if(totalxp > 0)
 	{
-		GiveXP(client, totalxp);
+		GiveXP(client, totalxp, true);
 		CPrintToChat(client, "{lime}You've recieved %d extra XP!", totalxp);
 	}
 }
