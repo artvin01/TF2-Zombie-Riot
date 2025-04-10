@@ -58,6 +58,7 @@ static bool Schizophrenia;
 static bool DarknessComing;
 static int setuptimes;
 static float ExtraAttackspeed;
+static bool thespewer;
 
 void Freeplay_OnMapStart()
 {
@@ -127,6 +128,7 @@ void Freeplay_ResetAll()
 	DarknessComing = false;
 	setuptimes = 4;
 	ExtraAttackspeed = 1.0;
+	thespewer = false;
 }
 
 int Freeplay_EnemyCount()
@@ -150,6 +152,9 @@ int Freeplay_EnemyCount()
 			amount++;
 
 		if(DarknessComing)
+			amount++;
+
+		if(thespewer)
 			amount++;
 	}
 
@@ -195,7 +200,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunitamount || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing)
+	if(RaidFight || friendunitamount || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -496,6 +501,22 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Credits += 100.0;
 		count = 1;
 		Schizophrenia = false;
+	}
+	else if(thespewer)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Boss = 1;
+		enemy.Index = NPC_GetByPlugin("npc_netherseaspewer");
+		enemy.Health = RoundToFloor(1100000.0 / 65.0 * float(Waves_GetRound()));
+		enemy.ExtraMeleeRes = 0.75;
+		enemy.ExtraRangedRes = 0.75;
+		enemy.ExtraDamage = 5.5;
+		enemy.ExtraSpeed = 2.0;
+		enemy.ExtraSize = 2.5;
+		enemy.ExtraThinkSpeed = 0.75;
+		enemy.Credits += 100.0;
+		count = 1;
+		thespewer = false;
 	}
 	else
 	{
@@ -1280,7 +1301,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 84;
+		rand = GetURandomInt() % 85;
 
 	if(wrathofirln)
 	{
@@ -2643,6 +2664,16 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
 				DarknessComing = true;
+			}
+			case 84:
+			{
+				if(thespewer)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}Your final challenge.... a {crimson}Nourished Spewer.");
+				thespewer = true;
 			}
 			default:
 			{
