@@ -5355,7 +5355,6 @@ stock bool FailTranslation(const char[] phrase)
 		return false;
 	
 	LogError("Translation '%s' does not exist", phrase);
-	LogStackTrace("Translation '%s' does not exist", phrase);
 	return true;
 }
 

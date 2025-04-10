@@ -416,14 +416,19 @@ methodmap Castellan < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 			b_NpcUnableToDie[npc.index] = true;
 		}
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
-		music.Time = 154;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
-		strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
-		Music_SetRaidMusic(music);
+
+		if(StrContains(data, "nomusic") == -1)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
+			music.Time = 154;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
+			strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
+			Music_SetRaidMusic(music);
+		}
+
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;

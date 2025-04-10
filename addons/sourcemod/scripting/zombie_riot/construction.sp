@@ -25,6 +25,7 @@ enum struct ResourceInfo
 	int Common;
 	int Health;
 	int Defense;
+	int Limit;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -35,6 +36,7 @@ enum struct ResourceInfo
 		this.Common = kv.GetNum("common") + 1;
 		this.Health = kv.GetNum("health");
 		this.Defense = kv.GetNum("defense");
+		this.Limit = kv.GetNum("limit");
 	}
 }
 
@@ -466,7 +468,8 @@ void Construction_Start()
 	GameTimer = CreateTimer(AttackTime, Timer_StartAttackWave);
 	Ammo_Count_Ready = 20;
 
-	ArrayList picked = new ArrayList();
+	ArrayList resourcePicked = new ArrayList();
+	ArrayList navPicked = new ArrayList();
 	ResourceInfo info;
 	for(int i; i < MaxResource; i++)
 	{
@@ -474,7 +477,7 @@ void Construction_Start()
 		if(area == NULL_AREA)
 			continue;
 		
-		if(picked.FindValue(area))
+		if(navPicked.FindValue(area))
 		{
 			if(GetURandomInt() % 2)
 				i--;
@@ -482,7 +485,7 @@ void Construction_Start()
 			continue;
 		}
 
-		picked.Push(i);
+		navPicked.Push(i);
 		
 		if(area.GetAttributes() & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE))
 		{
@@ -495,7 +498,7 @@ void Construction_Start()
 		area.GetCenter(ang);
 		float distance = GetVectorDistance(pos, ang, true);
 
-		if(!GetRandomResourceInfo(distance, info))
+		if(!GetRandomResourceInfo(distance, info, resourcePicked))
 		{
 			if(GetURandomInt() % 2)
 				i--;
@@ -515,7 +518,8 @@ void Construction_Start()
 		}
 	}
 
-	delete picked;
+	delete resourcePicked;
+	delete navPicked;
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -529,7 +533,7 @@ void Construction_Start()
 	BackgroundMusic.CopyTo(BGMusicSpecial1);
 }
 
-static bool GetRandomResourceInfo(float distance, ResourceInfo info)
+static bool GetRandomResourceInfo(float distance, ResourceInfo info, ArrayList picked = null)
 {
 	ArrayList list = new ArrayList();
 
@@ -540,6 +544,9 @@ static bool GetRandomResourceInfo(float distance, ResourceInfo info)
 		if(info.Distance > distance)
 			continue;
 		
+		if(picked && info.Limit && picked.FindValue(a))
+			continue;
+
 		for(int b; b < info.Common; b++)
 		{
 			list.Push(a);
@@ -548,7 +555,13 @@ static bool GetRandomResourceInfo(float distance, ResourceInfo info)
 
 	length = list.Length;
 	if(length)
-		ResourceList.GetArray(list.Get(GetURandomInt() % length), info);
+	{
+		length = list.Get(GetURandomInt() % length);
+		ResourceList.GetArray(length, info);
+
+		if(picked)
+			picked.Push(length);
+	}
 
 	delete list;
 	return length != 0;
@@ -601,24 +614,36 @@ static Action Timer_StartAttackWave(Handle timer)
 	return Plugin_Continue;
 }
 
-static int GetRiskAttackInfo(int risk, AttackInfo attack)
+static int GetRiskAttackInfo(int risk, AttackInfo attack, bool custom = false)
 {
 	int setRisk = risk;
-	if(setRisk < 0)
+	if(!custom)
 	{
-		setRisk = 0;
-	}
-	else if(setRisk >= HighestRisk)
-	{
-		setRisk = HighestRisk - 1;
+		if(setRisk < 0)
+		{
+			setRisk = 0;
+		}
+		else if(setRisk >= HighestRisk)
+		{
+			setRisk = HighestRisk - 1;
+		}
 	}
 	
 	GetListAttackInfo(RiskList.Get(setRisk), attack);
 
 	// Risk above Highest
-	setRisk = risk - HighestRisk;
-	if(setRisk < 0)
-		setRisk = 0;
+	if(custom)
+	{
+		setRisk = CurrentRisk - HighestRisk;
+		if(setRisk < 0)
+			setRisk = 0;
+	}
+	else
+	{
+		setRisk = risk - HighestRisk;
+		if(setRisk < 0)
+			setRisk = 0;
+	}
 	
 	return setRisk;
 }
@@ -924,6 +949,71 @@ void Construction_ClotThink(int entity)
 	}
 }
 
+bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int attacker, float &damage, int damagetype)
+{
+	CClotBody npc = view_as<CClotBody>(victim);
+
+	if(AttackType && npc.Anger && EntRefToEntIndex(AttackRef) != npc.index)
+	{
+		// No cross mining when a fight is happening
+		damage = 0.0;
+		return false;
+	}
+
+	if(npc.Anger && (attacker > MaxClients || !(damagetype & DMG_CLUB)))
+	{
+		// Must provoke it via melee first
+		damage = 0.0;
+		return false;
+	}
+	
+	if(!CheckInHud())
+	{
+		if(ResourceList)
+		{
+			char plugin[64];
+			NPC_GetPluginById(i_NpcInternalId[npc.index], plugin, sizeof(plugin));
+
+			int index = ResourceList.FindString(plugin, ResourceInfo::Plugin);
+			if(index != -1)
+			{
+				ResourceInfo info;
+				ResourceList.GetArray(index, info);
+
+				if(!(damagetype & DMG_TRUEDAMAGE))
+				{
+					float minDamage = damage * 0.05;
+					damage -= float(info.Defense);
+					if(damage < minDamage)
+						damage = minDamage;
+				}
+
+				if(npc.Anger && RiskList)
+				{
+					if(AttackType)
+						return false;
+					
+					AttackInfo attack;
+					strcopy(attack.WaveSet, sizeof(attack.WaveSet), waveset);
+					if(!StartAttack(attack, 1, npc.index))
+						return false;
+					
+					return true;
+				}
+			}
+		}
+	}
+
+	if(CurrentAttacks && MaxAttacks && RiskIncrease)
+	{
+		float multi = Pow(0.5, float(CurrentAttacks) * 4.0 / float(MaxAttacks));
+		
+		damage *= multi;
+	}
+
+	return true;
+}
+
 bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim, int attacker, float &damage, int damagetype)
 {
 	CClotBody npc = view_as<CClotBody>(victim);
@@ -1117,6 +1207,21 @@ public float InterMusic_ConstructIntencity(int client)
 		return 0.0;
 	
 	return InterMusic_ByIntencity(client);
+}
+
+void Construction_GiveNamedResearch(const char[] name, bool silent = false)
+{
+	if(!CurrentResearch)
+		CurrentResearch = new ArrayList(ByteCountToCells(48));
+
+	CurrentResearch.PushString(name);
+
+	if(!silent)
+	{
+		char buffer[64];
+		FormatEx(buffer, sizeof(buffer), "%s Desc", name);
+		CPrintToChatAll("%t", "Finish Research Desc", name, buffer);
+	}
 }
 
 bool Construction_HasNamedResearch(const char[] name)

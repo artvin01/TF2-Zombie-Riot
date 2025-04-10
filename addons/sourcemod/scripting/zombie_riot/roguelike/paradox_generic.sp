@@ -555,13 +555,13 @@ public void Rogue_RangedDamage2_Weapon(int entity)
 public void Rogue_MageDamage1_Weapon(int entity)
 {
 	if(Store_CheckEntitySlotIndex(8, entity))
-		Attributes_SetMulti(entity, 2, 1.15);
+		Attributes_SetMulti(entity, 410, 1.15);
 }
 
 public void Rogue_MageDamage2_Weapon(int entity)
 {
 	if(Store_CheckEntitySlotIndex(8, entity))
-		Attributes_SetMulti(entity, 2, 1.25);
+		Attributes_SetMulti(entity, 410, 1.25);
 }
 
 public void Rogue_Health1_Ally(int entity, StringMap map)

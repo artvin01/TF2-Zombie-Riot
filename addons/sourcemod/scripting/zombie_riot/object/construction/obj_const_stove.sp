@@ -3,12 +3,21 @@
 
 static const char Artifacts[][] =
 {
-	"Founder Fondue",
-	"Predator Pancakes",
-	"Brandguider Brunch",
-	"Spewer Spewers",
-	"Swarmcaller Sandwich",
-	"Reefbreaker Ravioli"
+	"Atomic Soda",
+	"Critical Water",
+	"Questionable Milk",
+	"Festive Atomic Soda",
+	"Bread in Milk",
+	"Steamed Mackerel",
+	"BBQ Mackerel",
+	"Beer Bottle",
+	"The Sandvich",
+	"The Dalokohs Bar",
+	"The Buffalo Steak Sandvich",
+	"The Fishcake",
+	"The Robo-Sandvich",
+	"The Festive Sandvich",
+	"The Second Banana"
 };
 
 static const int WaterCost = 10;
@@ -188,7 +197,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			}
 			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial("water") >= WaterCost && Construction_GetMaterial("bofazem") >= BofaCost)
 			{
-				GlobalCooldown = Construction_GetNextAttack() + 120.0;
+				GlobalCooldown = Construction_GetNextAttack() + 180.0;
 				Shuffled = false;
 
 				CPrintToChatAll("%t", "Player Used 2 to", client, WaterCost, "Material water", BofaCost, "Material bofazem");
