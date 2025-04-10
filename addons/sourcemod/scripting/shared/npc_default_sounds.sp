@@ -12,7 +12,7 @@
 
 
 //REPLACEME_MEDICAAA TWO
-static const char g_DefaultMedic_DeathSounds[][] = {
+char g_DefaultMedic_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
 	"vo/medic_paincrticialdeath03.mp3",
@@ -20,7 +20,7 @@ static const char g_DefaultMedic_DeathSounds[][] = {
 };
 
 //REPLACEME_MEDICAAA
-const char g_DefaultMedic_HurtSounds[][] = {
+char g_DefaultMedic_HurtSounds[][] = {
 	"vo/medic_painsharp01.mp3",
 	"vo/medic_painsharp02.mp3",
 	"vo/medic_painsharp03.mp3",

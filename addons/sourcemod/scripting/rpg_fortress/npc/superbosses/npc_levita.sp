@@ -1,7 +1,5 @@
 #pragma semicolon 1
 #pragma newdecls required
-REPLACEME_MEDICAAA TWO
-REPLACEME_MEDICAAA
 
 static const char g_IdleSound[][] = {
 	"vo/medic_standonthepoint01.mp3",
