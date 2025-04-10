@@ -263,6 +263,10 @@ static void MultiSpeed(int entity, StringMap map, float amount)
 		map.GetValue("442", value);
 		map.SetValue("442", value * amount);
 	}
+	else
+	{
+		fl_Extra_Speed[entity] *= amount;
+	}
 }
 
 static void MultiHealth(int entity, StringMap map, float amount)
