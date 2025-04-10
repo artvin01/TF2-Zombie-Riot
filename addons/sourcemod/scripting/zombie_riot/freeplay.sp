@@ -1732,7 +1732,7 @@ void Freeplay_SetupStart(bool extra = false)
 			LoveNahTonic = true;
 		}
 
-		float Atkspd = GetRandomInt(0.25, 2.0);
+		float Atkspd = GetRandomFloat(0.25, 2.0);
 		ExtraAttackspeed *= Atkspd;
 		if(Atkspd < 1.0)
 		{
