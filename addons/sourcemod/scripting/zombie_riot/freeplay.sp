@@ -57,6 +57,7 @@ static bool LoveNahTonic;
 static bool Schizophrenia;
 static bool DarknessComing;
 static int setuptimes;
+static float ExtraAttackspeed;
 
 void Freeplay_OnMapStart()
 {
@@ -77,7 +78,7 @@ void Freeplay_ResetAll()
 	ImmuneNuke = 0;
 	CashBonus = 0;
 	KillBonus = 0.0;
-	MiniBossChance = 0.1;
+	MiniBossChance = 0.025;
 	HussarBuff = false;
 	PernellBuff = false;
 	IceDebuff = 0;
@@ -125,6 +126,7 @@ void Freeplay_ResetAll()
 	Schizophrenia = false;
 	DarknessComing = false;
 	setuptimes = 4;
+	ExtraAttackspeed = 1.0;
 }
 
 int Freeplay_EnemyCount()
@@ -235,7 +237,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 4:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
-				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60;res3";
 			}
 			case 5:
@@ -431,7 +433,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_darkenedheavy");
-		enemy.Health = RoundToFloor(500000.0 / 70.0 * float(Waves_GetRound()));
+		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(Waves_GetRound()));
 		enemy.Credits += 100.0;
 		enemy.ExtraMeleeRes = 1.5;
 		enemy.Is_Boss = 1;
@@ -443,12 +445,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_zombine");
-		enemy.Health = RoundToFloor(200000.0 / 70.0 * float(Waves_GetRound()));
-		enemy.Health = RoundToCeil(float(enemy.Health) * 0.1);
+		enemy.Health = RoundToFloor(150000.0 / 70.0 * float(Waves_GetRound()));
 		enemy.ExtraSpeed = 1.5;
-		enemy.ExtraSize = 1.0; // smol
+		enemy.ExtraSize = 1.33;
 		enemy.Credits += 100.0;
-		enemy.ExtraDamage = 3.0;
+		enemy.ExtraDamage = 2.0;
 		enemy.Is_Boss = 0;
 		enemy.Is_Health_Scaled = 0;
 
@@ -475,7 +476,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
-		enemy.Health = RoundToFloor(500000.0 / 70.0 * float(Waves_GetRound()));
+		enemy.Health = RoundToFloor(610000.0 / 70.0 * float(Waves_GetRound()));
 		enemy.ExtraMeleeRes = 1.5;
 		enemy.ExtraRangedRes = 1.0;
 		enemy.ExtraSpeed = 0.9;
@@ -500,9 +501,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		float bigchance;
 		if(postWaves+1 < 89)
-			bigchance = 0.98;
+			bigchance = 0.97;
 		else
-			bigchance = 0.96;
+			bigchance = 0.95;
 
 		if(GetRandomFloat(0.0, 1.0) >= bigchance)
 		{
@@ -526,8 +527,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			if(GetRandomInt(1, 2) == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
-				enemy.Health = RoundToFloor(60000.0 / 70.0 * float(Waves_GetRound()));
-				enemy.ExtraDamage = 0.65;
+				enemy.Health = RoundToFloor(85000.0 / 70.0 * (float(Waves_GetRound()) * 1.25));
+				enemy.ExtraDamage = 0.75;
 				count = 20;
 			}
 			else
@@ -622,14 +623,16 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		shouldscale = true;
 	}
 
-	if(alaxios && count > 30)
-		count = 30;
+	if(alaxios)
+	{
+		enemy.Health = RoundToCeil(enemy.Health * 1.33);
+		enemy.ExtraDamage *= 1.15;
+		if(count > 30)
+			count = 30;
+	}
 
 	if(shouldscale)
 	{
-		// stat related stuff
-		enemy.ExtraSize *= ExtraEnemySize;	
-		
 		// count scaling
 		float countscale = float(CountPlayersOnRed());
 		if(countscale <= 4.0)
@@ -669,7 +672,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Health = 2000000000;
 
 	if(enemy.Team != TFTeam_Red)
+	{
+		enemy.ExtraThinkSpeed *= ExtraAttackspeed;
 		enemy.ExtraSize *= ExtraEnemySize;
+	}
 }
 
 static Action Freeplay_RouletteMessage(Handle timer)
@@ -871,6 +877,10 @@ void Freeplay_SpawnEnemy(int entity)
 		if(!b_thisNpcIsARaid[entity])
 		{
 			fl_Extra_Damage[entity] *= 2.0 + (((float(Waves_GetRound() - 59)) * 0.025));
+		}
+		else
+		{
+			fl_Extra_Damage[entity] *= 1.0 + (((float(Waves_GetRound() - 59)) * 0.0125));
 		}
 	
 		//// BUFFS ////
@@ -1187,7 +1197,7 @@ void Freeplay_OnEndWave(int &cash)
 		cash += extracash;
 	}
 
-	Freeplay_SetRemainingCash(2500.0);
+	Freeplay_SetRemainingCash(1500.0);
 	Freeplay_SetCashTime(GetGameTime() + 11.5);
 }
 float Freeplay_SetupValues()
@@ -1202,7 +1212,7 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(4.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
-		int irlnreq = 2;
+		int irlnreq = 3;
 
 		int wrathchance = GetRandomInt(0, 100);
 		if(wrathchance < irlnreq)
@@ -1685,6 +1695,17 @@ void Freeplay_SetupStart(bool extra = false)
 			LoveNahTonic = true;
 		}
 
+		float Atkspd = GetRandomInt(0.25, 2.0);
+		ExtraAttackspeed *= Atkspd;
+		if(Atkspd < 1.0)
+		{
+			CPrintToChatAll("{red}Enemy attackspeed has been multiplied by %.2fx!", Atkspd);
+		}
+		else
+		{
+			CPrintToChatAll("{green}Enemy attackspeed has been multiplied by %.2fx.", Atkspd);
+		}
+
 		switch(GetRandomInt(1, 8))
 		{
 			case 1:
@@ -2044,13 +2065,13 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 32:
 			{
-				strcopy(message, sizeof(message), "{red}Mini-boss spawn rate has been increased by 50%!");
-				MiniBossChance *= 1.5;
+				strcopy(message, sizeof(message), "{red}Mini-boss spawn rate has been multiplied by 10%!");
+				MiniBossChance *= 1.1;
 			}
 			case 33:
 			{
-				strcopy(message, sizeof(message), "{green}Mini-boss spawn rate has been reduced by 25%.");
-				MiniBossChance *= 0.75;
+				strcopy(message, sizeof(message), "{green}Mini-boss spawn rate has been multiplied by 10%.");
+				MiniBossChance *= 0.9;
 			}
 			case 34:
 			{
@@ -2151,12 +2172,12 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
 				MeleeMult += 0.2;
 			}
-			case 43, 44:
+			case 43:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more melee damage.");
 				MeleeMult += 0.25;
 			}
-			case 45:
+			case 44:
 			{
 				if(MeleeMult < 0.01) // 95% melee res max
 				{
@@ -2170,7 +2191,7 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.01;
 				}
 			}
-			case 46:
+			case 45:
 			{
 				if(MeleeMult < 0.01)
 				{
@@ -2184,15 +2205,25 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.01;
 				}
 			}
-			case 47:
+			case 46:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
 				RangedMult += 0.20;
 			}
-			case 48, 49:
+			case 47:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 25% more ranged damage.");
 				RangedMult += 0.25;
+			}
+			case 48:
+			{
+				strcopy(message, sizeof(message), "{red}Enemy attackspeed has been increased by an additional 5%!");
+				ExtraAttackspeed += 0.05;
+			}
+			case 49:
+			{
+				strcopy(message, sizeof(message), "{green}Enemy attackspeed has been reduced by an additional 5%!");
+				ExtraAttackspeed -= 0.05;
 			}
 			case 50:
 			{
@@ -2371,8 +2402,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 65:
 			{
-				//10% chance, otherwise retry.
-				if(GetRandomFloat(0.0, 1.0) <= 0.1)
+				// 7.5% chance, otherwise retry.
+				if(GetRandomFloat(0.0, 1.0) <= 0.075)
 				{
 					strcopy(message, sizeof(message), "{green}A new special weapon is now available for purchase!");
 					Rogue_RareWeapon_Collect();
