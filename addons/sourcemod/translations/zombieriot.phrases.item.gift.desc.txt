@@ -2516,7 +2516,7 @@
 	}
 	"Intense Training Desc"
 	{
-		"en"	"You decide to push yourself further with this training.\nIncludes all the effects of the Chaos Intrusion modifier!\nSpeeds up enemy health and damage scaling by a low amount each wave.\nIncreases enemy buff durations by 20%% and setups add +1 skull."
+		"en"	"You decide to push yourself further.\nIncludes all the effects of the Chaos Intrusion modifier!\nSpeeds up enemy health and damage scaling by a low amount each wave.\nIncreases enemy buff durations by 20%% and setups add +1 skull."
 	}
 	"Muscle Refiner"
 	{
@@ -2524,7 +2524,7 @@
 	}
 	"Muscle Refiner Desc"
 	{
-		"en"	"You'll give it your all to train as much as possible!\nIncludes all the effects of the Secondary Mercs modifier!\nSpeeds up enemy health and damage scaling by a medium amount each wave.\nIncreases enemy buff durations by 40%% and setups add +2 skulls."
+		"en"	"You'll give it your all!!\nIncludes all the effects of the Secondary Mercs modifier!\nSpeeds up enemy health and damage scaling by a medium amount each wave.\nIncreases enemy buff durations by 40%% and setups add +2 skulls."
 	}
 	"Soul-Squeezer"
 	{
