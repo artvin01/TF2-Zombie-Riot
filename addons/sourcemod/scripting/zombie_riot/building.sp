@@ -311,6 +311,7 @@ static void BuildingMenu(int client)
 	}
 	else
 	{
+		bool corrupt = Rogue_HasNamedArtifact("System Corruption");
 		int items;
 
 		BuildingInfo info;
@@ -345,6 +346,25 @@ static void BuildingMenu(int client)
 			}
 
 			items++;
+
+			if(corrupt)
+			{
+				// Visual glitching
+				while(maxcount > 0 && (GetURandomInt() % 5) == 0)
+				{
+					maxcount--;
+				}
+
+				if((GetURandomInt() % 5) == 0)
+				{
+					cost *= 3;
+				}
+
+				if((GetURandomInt() % 5) == 0)
+				{
+					count = 0;
+				}
+			}
 
 			if(cost > metal)
 				allowed = false;

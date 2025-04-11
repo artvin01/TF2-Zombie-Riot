@@ -349,11 +349,11 @@ void Construction_SetupVote(KeyValues kv)
 				{
 					kv.GotoNextKey();
 				}
-				
-				kv.GetSectionName(BackgroundMusic.Path, sizeof(BackgroundMusic.Path));
-				BackgroundMusic.SetupKv(BackgroundMusic.Path, kv);
 
+				kv.GetSectionName(BackgroundMusic.Path, sizeof(BackgroundMusic.Path));
 				kv.GoBack();
+				
+				BackgroundMusic.SetupKv(BackgroundMusic.Path, kv);
 			}
 		}
 
@@ -439,7 +439,7 @@ static Action Timer_WaitingPeriod(Handle timer)
 			if(GetVectorDistance(pos1, pos2, true) > 900000.0)
 			{
 				Vehicle_Exit(client, false, false);
-				TeleportEntity(client, pos1, NULL_VECTOR, NULL_VECTOR);
+				TeleportEntity(client, pos1, {0.0, 0.0, 0.0}, NULL_VECTOR);
 			}
 		}
 	}
@@ -993,7 +993,7 @@ stock bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int
 				ResourceInfo info;
 				ResourceList.GetArray(index, info);
 
-				if(!(damagetype & DMG_TRUEDAMAGE))
+				//if(!(damagetype & DMG_TRUEDAMAGE))
 				{
 					float minDamage = damage * 0.05;
 					damage -= float(info.Defense);
@@ -1058,7 +1058,7 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 				ResourceInfo info;
 				ResourceList.GetArray(index, info);
 
-				if(!(damagetype & DMG_TRUEDAMAGE))
+				//if(!(damagetype & DMG_TRUEDAMAGE))
 				{
 					float minDamage = damage * 0.05;
 					damage -= float(info.Defense);
