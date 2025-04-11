@@ -78,13 +78,13 @@ public void Freeplay_Modifier_IntenseTraining()
 public void Freeplay_Modifier_MuscleRefiner()
 {
 	FreeplayModifActive = MUSCLE;
-	Modifier_Collect_SecondaryMercs()
+	Modifier_Collect_SecondaryMercs();
 }
 
 public void Freeplay_Modifier_SoulSqueezer()
 {
 	FreeplayModifActive = SQUEEZER;
-	Modifier_Collect_OldTimes()
+	Modifier_Collect_OldTimes();
 }
 
 public void Freeplay_RemoveModif()
@@ -93,15 +93,15 @@ public void Freeplay_RemoveModif()
 	{
 		case INTENSE:
 		{
-			Modifier_Remove_ChaosIntrusion()
+			Modifier_Remove_ChaosIntrusion();
 		}
 		case MUSCLE:
 		{
-			Modifier_Remove_SecondaryMercs()
+			Modifier_Remove_SecondaryMercs();
 		}
 		case SQUEEZER:
 		{
-			Modifier_Remove_OldTimes()
+			Modifier_Remove_OldTimes();
 		}
 	}
 	FreeplayModifActive = 0;
@@ -1057,57 +1057,57 @@ void Freeplay_SpawnEnemy(int entity)
 			Freeplay_ApplyStatusEffect(entity, "Freeplay Rampart III", 10.0);
 
 		if(HurtleBuffEnemies == 1)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Freeplay Hurtle I", 30.0);
+			Freeplay_ApplyStatusEffect( entity, "Freeplay Hurtle I", 30.0);
 
 		if(HurtleBuffEnemies == 2)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Freeplay Hurtle II", 20.0);	
+			Freeplay_ApplyStatusEffect(entity, "Freeplay Hurtle II", 20.0);	
 
 		if(HurtleBuffEnemies == 3)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Freeplay Hurtle III", 10.0);
+			Freeplay_ApplyStatusEffect(entity, "Freeplay Hurtle III", 10.0);
 	
 		if(HussarBuff)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Hussar's Warscream", 45.0);	
+			Freeplay_ApplyStatusEffect(entity, "Hussar's Warscream", 45.0);	
 	
 		if(PernellBuff)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "False Therapy", 9.0);
+			Freeplay_ApplyStatusEffect(entity, "False Therapy", 9.0);
 	
 		if(FusionBuff > 1)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Self Empowerment", 30.0);	
+			Freeplay_ApplyStatusEffect(entity, "Self Empowerment", 30.0);	
 	
 		if(FusionBuff > 0)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Ally Empowerment", 30.0);	
+			Freeplay_ApplyStatusEffect(entity, "Ally Empowerment", 30.0);	
 	
 		if(OceanBuff > 1)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Oceanic Scream", 30.0);	
+			Freeplay_ApplyStatusEffect(entity, "Oceanic Scream", 30.0);	
 	
 		if(OceanBuff > 0)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Oceanic Singing", 30.0);	
+			Freeplay_ApplyStatusEffect(entity, "Oceanic Singing", 30.0);	
 	
 		if(VoidBuff > 1)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Void Strength II", 12.0);
+			Freeplay_ApplyStatusEffect(entity, "Void Strength II", 12.0);
 	
 		if(VoidBuff > 0)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Void Strength I", 6.0);
+			Freeplay_ApplyStatusEffect(entity, "Void Strength I", 6.0);
 	
 		if(VictoriaBuff)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Call To Victoria", 10.0);
+			Freeplay_ApplyStatusEffect(entity, "Call To Victoria", 10.0);
 	
 		if(SquadBuff)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Squad Leader", 20.0);	
+			Freeplay_ApplyStatusEffect(entity, "Squad Leader", 20.0);	
 	
 		if(Coffee)
 		{
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Caffinated", 8.0);
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Caffinated Drain", 8.0);
+			Freeplay_ApplyStatusEffect(entity, "Caffinated", 8.0);
+			Freeplay_ApplyStatusEffect(entity, "Caffinated Drain", 8.0);
 		}
 	
 		if(merlton)
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "MERLT0N-BUFF", 5.0);	
+			Freeplay_ApplyStatusEffect(entity, "MERLT0N-BUFF", 5.0);	
 
 		if(LoveNahTonic)
 		{
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Tonic Affliction", 10.0);
-			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Tonic Affliction Hide", 10.0);
+			Freeplay_ApplyStatusEffect(entity, "Tonic Affliction", 10.0);
+			Freeplay_ApplyStatusEffect(entity, "Tonic Affliction Hide", 10.0);
 		}
 	
 		//// DEBUFFS ////
