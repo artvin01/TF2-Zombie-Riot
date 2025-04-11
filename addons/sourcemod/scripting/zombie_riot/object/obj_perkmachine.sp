@@ -136,7 +136,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
 
-			if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Corruption"))
+			if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
 			{
 				id = GetRandomInt(-9, -4);
 			}

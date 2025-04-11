@@ -311,7 +311,7 @@ static void BuildingMenu(int client)
 	}
 	else
 	{
-		bool corrupt = Rogue_HasNamedArtifact("System Corruption");
+		bool corrupt = Rogue_HasNamedArtifact("System Malfunction");
 		int items;
 
 		BuildingInfo info;

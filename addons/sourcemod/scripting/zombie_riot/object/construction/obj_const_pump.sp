@@ -120,7 +120,7 @@ static bool ClotInteract(int client, int weapon, ObjectPump npc)
 		return true;
 	}
 
-	if((GetURandomInt() % 3) == 0 && Rogue_HasNamedArtifact("System Corruption"))
+	if((GetURandomInt() % 3) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
 	{
 		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 60.0;
 		ClientCommand(client, "playgamesound items/medshotno1.wav");

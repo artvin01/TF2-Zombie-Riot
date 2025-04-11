@@ -338,7 +338,7 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 		}
 		default:
 		{
-			Rogue_GiveNamedArtifact("System Corruption");
+			Rogue_GiveNamedArtifact("System Malfunction");
 			return Plugin_Continue;
 		}
 	}

@@ -464,11 +464,11 @@
 	{
 		"en"	"Should we install the Expidonsa Tech Chip into our system?"
 	}
-	"System Corruption"
+	"System Malfunction"
 	{
-		"en"	"System Corruption"
+		"en"	"System Malfunction"
 	}
-	"System Corruption Desc"
+	"System Malfunction Desc"
 	{
 		"en"	"Oh. dear.\n{red}Construct traits have a chance to fail {blue}and rogue expidonsans are after you."
 	}
