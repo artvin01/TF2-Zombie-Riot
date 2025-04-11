@@ -959,7 +959,7 @@ void Freeplay_SpawnEnemy(int entity)
 				fl_Extra_RangedArmor[entity] *= GetRandomFloat(0.075, 2.0);
 				fl_Extra_Speed[entity] *= GetRandomFloat(0.25, 5.0);
 				fl_Extra_Damage[entity] *= GetRandomFloat(0.5, 12.0);
-				f_AttackSpeedNpcIncrease[entity] *= GetRandomFloat(0.5, 1.0);
+				f_AttackSpeedNpcIncrease[entity] *= GetRandomFloat(0.25, 1.5);
 
 				// surely this makes them stalkers... trust
 				if(GetRandomInt(0, 1) == 1)
@@ -1898,9 +1898,9 @@ void Freeplay_SetupStart(bool extra = false)
 			LoveNahTonic = true;
 		}
 
-		float Atkspd = GetRandomFloat(0.5, 1.0);
+		float Atkspd = GetRandomFloat(0.25, 1.5);
 		ExtraAttackspeed *= Atkspd;
-		if(Atkspd < 0.9)
+		if(Atkspd < 1.0)
 		{
 			CPrintToChatAll("{red}Enemy attackspeed has been multiplied by %.2fx!", Atkspd);
 		}
@@ -2420,12 +2420,11 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 48:
 			{
-				strcopy(message, sizeof(message), "{red}Enemy attackspeed has been multiplied by 5%!");
+				strcopy(message, sizeof(message), "{red}Enemy attackspeed has been multiplied by x0.95!");
 				ExtraAttackspeed *= 0.95;
 			}
 			case 49:
 			{
-				if(ExtraAttackspeed
 				strcopy(message, sizeof(message), "{green}Enemy attackspeed has been reduced by an additional 5%.");
 				ExtraAttackspeed += 0.05;
 			}
