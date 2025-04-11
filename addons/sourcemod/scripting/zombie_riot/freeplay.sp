@@ -753,23 +753,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(enemy.Is_Boss == 1)
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 
-	switch(FreeplayModifActive)
-	{
-		case INTENSE:
-		{
-			FM_Health *= 1.025;
-		}
-		case MUSCLE:
-		{
-			FM_Health *= 1.03;
-		}
-		case SQUEEZER:
-		{
-			FM_Health *= 1.04;
-			if(squeezerplus)
-				FM_Health *= 1.06;
-		}
-	}
 	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
 
 	// 2 billion limit, it is necessary to prevent them from going bananas
@@ -1017,23 +1000,6 @@ void Freeplay_SpawnEnemy(int entity)
 			fl_Extra_Damage[entity] *= 1.0 + (((float(Waves_GetRound() - 59)) * 0.0125));
 		}
 
-		switch(FreeplayModifActive)
-		{
-			case INTENSE:
-			{
-				FM_Damage *= 1.02;
-			}
-			case MUSCLE:
-			{
-				FM_Damage *= 1.025;
-			}
-			case SQUEEZER:
-			{
-				FM_Damage *= 1.035;
-				if(squeezerplus)
-					FM_Damage *= 1.05;
-			}
-		}
 		fl_Extra_Damage[entity] *= FM_Damage;
 	
 		//// BUFFS ////
@@ -1336,6 +1302,42 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 
 void Freeplay_OnEndWave(int &cash)
 {
+	switch(FreeplayModifActive)
+	{
+		case INTENSE:
+		{
+			FM_Damage *= 1.02;
+		}
+		case MUSCLE:
+		{
+			FM_Damage *= 1.025;
+		}
+		case SQUEEZER:
+		{
+			FM_Damage *= 1.035;
+			if(squeezerplus)
+				FM_Damage *= 1.05;
+		}
+	}
+
+	switch(FreeplayModifActive)
+	{
+		case INTENSE:
+		{
+			FM_Health *= 1.025;
+		}
+		case MUSCLE:
+		{
+			FM_Health *= 1.03;
+		}
+		case SQUEEZER:
+		{
+			FM_Health *= 1.04;
+			if(squeezerplus)
+				FM_Health *= 1.06;
+		}
+	}
+
 	if(ExplodingNPC)
 	{
 		CPrintToChatAll("{lime}Enemies will no longer explode.");
