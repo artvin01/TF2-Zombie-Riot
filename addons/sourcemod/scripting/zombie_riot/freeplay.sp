@@ -60,6 +60,75 @@ static int setuptimes;
 static float ExtraAttackspeed;
 static bool thespewer;
 
+static int FreeplayModifActive = 0;
+static float FM_Health;
+static float FM_Damage;
+
+#define INTENSE 1
+#define MUSCLE 2
+#define SQUEEZER 3
+static bool squeezerplus; // soon...
+
+public void Freeplay_Modifier_IntenseTraining()
+{
+	FreeplayModifActive = INTENSE;
+	Modifier_Collect_ChaosIntrusion();
+}
+
+public void Freeplay_Modifier_MuscleRefiner()
+{
+	FreeplayModifActive = MUSCLE;
+	Modifier_Collect_SecondaryMercs()
+}
+
+public void Freeplay_Modifier_SoulSqueezer()
+{
+	FreeplayModifActive = SQUEEZER;
+	Modifier_Collect_OldTimes()
+}
+
+public void Freeplay_RemoveModif()
+{
+	switch(FreeplayModifActive)
+	{
+		case INTENSE:
+		{
+			Modifier_Remove_ChaosIntrusion()
+		}
+		case MUSCLE:
+		{
+			Modifier_Remove_SecondaryMercs()
+		}
+		case SQUEEZER:
+		{
+			Modifier_Remove_OldTimes()
+		}
+	}
+	FreeplayModifActive = 0;
+}
+
+void Freeplay_CharBuffToAdd(char[] data)
+{
+	switch(FreeplayModifActive)
+	{
+		case INTENSE:
+		{
+			FormatEx(data, 6, "⚠︎");
+		}
+		case MUSCLE:
+		{
+			FormatEx(data, 6, "☢︎");
+		}
+		case SQUEEZER:
+		{
+			if(squeezerplus)
+				FormatEx(data, 6, "☠+");
+			else
+				FormatEx(data, 6, "☠");
+		}
+	}
+}
+
 void Freeplay_OnMapStart()
 {
 	PrecacheSound("ui/vote_success.wav", true);
@@ -129,6 +198,9 @@ void Freeplay_ResetAll()
 	setuptimes = 4;
 	ExtraAttackspeed = 1.0;
 	thespewer = false;
+	squeezerplus = false;
+	FM_Health = 1.0;
+	FM_Damage = 1.0;
 }
 
 int Freeplay_EnemyCount()
@@ -681,6 +753,25 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(enemy.Is_Boss == 1)
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 
+	switch(FreeplayModifActive)
+	{
+		case INTENSE:
+		{
+			FM_Health = 1.0275;
+		}
+		case MUSCLE:
+		{
+			FM_Health = 1.035;
+		}
+		case SQUEEZER:
+		{
+			FM_Health = 1.04;
+			if(squeezerplus)
+				FM_Health = 1.06;
+		}
+	}
+	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
+
 	// 2 billion limit, it is necessary to prevent them from going bananas
 	if(enemy.Health > 2000000000)
 		enemy.Health = 2000000000;
@@ -829,6 +920,30 @@ bool Freeplay_ShouldMiniBoss()
 	return (chance > GetURandomFloat());
 }
 
+void Freeplay_ApplyStatusEffect(int entity, const char[] name, float duration)
+{
+	float mult = 1.0;
+	switch(FreeplayModifActive)
+	{
+		case INTENSE:
+		{
+			mult = 1.2;
+		}
+		case MUSCLE:
+		{
+			mult = 1.4;
+		}
+		case SQUEEZER:
+		{
+			mult = 2.0;
+			if(squeezerplus)
+				mult = 3.0;
+		}
+	}
+	duration *= mult;
+	ApplyStatusEffect(entity, entity, name, duration);
+}
+
 void Freeplay_SpawnEnemy(int entity)
 {
 	if(GetTeam(entity) != TFTeam_Red)
@@ -901,79 +1016,98 @@ void Freeplay_SpawnEnemy(int entity)
 		{
 			fl_Extra_Damage[entity] *= 1.0 + (((float(Waves_GetRound() - 59)) * 0.0125));
 		}
+
+		switch(FreeplayModifActive)
+		{
+			case INTENSE:
+			{
+				FM_Damage = 1.02;
+			}
+			case MUSCLE:
+			{
+				FM_Damage = 1.03;
+			}
+			case SQUEEZER:
+			{
+				FM_Damage = 1.04;
+				if(squeezerplus)
+					FM_Damage = 1.06;
+			}
+		}
+		fl_Extra_Damage[entity] *= FM_Damage;
 	
 		//// BUFFS ////
 
 		if(EloquenceBuffEnemies == 1)
-			ApplyStatusEffect(entity, entity, "Freeplay Eloquence I", 30.0);
+			Freeplay_ApplyStatusEffect(entity, "Freeplay Eloquence I", 30.0);
 
 		if(EloquenceBuffEnemies == 2)
-			ApplyStatusEffect(entity, entity, "Freeplay Eloquence II", 20.0);	
+			Freeplay_ApplyStatusEffect(entity, "Freeplay Eloquence II", 20.0);	
 
 		if(EloquenceBuffEnemies == 3)
-			ApplyStatusEffect(entity, entity, "Freeplay Eloquence III", 10.0);	
+			Freeplay_ApplyStatusEffect(entity, "Freeplay Eloquence III", 10.0);	
 
 		if(RampartBuffEnemies == 1)
-			ApplyStatusEffect(entity, entity, "Freeplay Rampart I", 30.0);
+			Freeplay_ApplyStatusEffect(entity, "Freeplay Rampart I", 30.0);
 
 		if(RampartBuffEnemies == 2)
-			ApplyStatusEffect(entity, entity, "Freeplay Rampart II", 20.0);	
+			Freeplay_ApplyStatusEffect(entity, "Freeplay Rampart II", 20.0);	
 
 		if(RampartBuffEnemies == 3)
-			ApplyStatusEffect(entity, entity, "Freeplay Rampart III", 10.0);
+			Freeplay_ApplyStatusEffect(entity, "Freeplay Rampart III", 10.0);
 
 		if(HurtleBuffEnemies == 1)
-			ApplyStatusEffect(entity, entity, "Freeplay Hurtle I", 30.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Freeplay Hurtle I", 30.0);
 
 		if(HurtleBuffEnemies == 2)
-			ApplyStatusEffect(entity, entity, "Freeplay Hurtle II", 20.0);	
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Freeplay Hurtle II", 20.0);	
 
 		if(HurtleBuffEnemies == 3)
-			ApplyStatusEffect(entity, entity, "Freeplay Hurtle III", 10.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Freeplay Hurtle III", 10.0);
 	
 		if(HussarBuff)
-			ApplyStatusEffect(entity, entity, "Hussar's Warscream", 45.0);	
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Hussar's Warscream", 45.0);	
 	
 		if(PernellBuff)
-			ApplyStatusEffect(entity, entity, "False Therapy", 9.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "False Therapy", 9.0);
 	
 		if(FusionBuff > 1)
-			ApplyStatusEffect(entity, entity, "Self Empowerment", 30.0);	
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Self Empowerment", 30.0);	
 	
 		if(FusionBuff > 0)
-			ApplyStatusEffect(entity, entity, "Ally Empowerment", 30.0);	
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Ally Empowerment", 30.0);	
 	
 		if(OceanBuff > 1)
-			ApplyStatusEffect(entity, entity, "Oceanic Scream", 30.0);	
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Oceanic Scream", 30.0);	
 	
 		if(OceanBuff > 0)
-			ApplyStatusEffect(entity, entity, "Oceanic Singing", 30.0);	
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Oceanic Singing", 30.0);	
 	
 		if(VoidBuff > 1)
-			ApplyStatusEffect(entity, entity, "Void Strength II", 12.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Void Strength II", 12.0);
 	
 		if(VoidBuff > 0)
-			ApplyStatusEffect(entity, entity, "Void Strength I", 6.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Void Strength I", 6.0);
 	
 		if(VictoriaBuff)
-			ApplyStatusEffect(entity, entity, "Call To Victoria", 10.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Call To Victoria", 10.0);
 	
 		if(SquadBuff)
-			ApplyStatusEffect(entity, entity, "Squad Leader", 20.0);	
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Squad Leader", 20.0);	
 	
 		if(Coffee)
 		{
-			ApplyStatusEffect(entity, entity, "Caffinated", 8.0);
-			ApplyStatusEffect(entity, entity, "Caffinated Drain", 8.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Caffinated", 8.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Caffinated Drain", 8.0);
 		}
 	
 		if(merlton)
-			ApplyStatusEffect(entity, entity, "MERLT0N-BUFF", 5.0);	
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "MERLT0N-BUFF", 5.0);	
 
 		if(LoveNahTonic)
 		{
-			ApplyStatusEffect(entity, entity, "Tonic Affliction", 10.0);
-			ApplyStatusEffect(entity, entity, "Tonic Affliction Hide", 10.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Tonic Affliction", 10.0);
+			Freeplay_ApplyStatusEffect(entity, (entity, entity, "Tonic Affliction Hide", 10.0);
 		}
 	
 		//// DEBUFFS ////
@@ -1284,7 +1418,25 @@ void Freeplay_SetupStart(bool extra = false)
 			EmitSoundToAll("ui/vote_success.wav");
 		}
 
-		ExtraSkulls++;
+		int skullamount = 1;
+		switch(FreeplayModifActive)
+		{
+			case INTENSE:
+			{
+				skullamount = 2;
+			}
+			case MUSCLE:
+			{
+				skullamount = 3;
+			}
+			case SQUEEZER:
+			{
+				skullamount = 4;
+				if(squeezerplus)
+					skullamount = 6;
+			}
+		}
+		ExtraSkulls += skullamount;
 		CPrintToChatAll("{yellow}Current skull count: {orange}%d", ExtraSkulls+1);
 
 		SkullTimes = ExtraSkulls;
