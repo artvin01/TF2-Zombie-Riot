@@ -4122,4 +4122,8 @@
 	{
 		"en"	"Troll Brawler"
 	}
+	"Crystallized Horror"
+	{
+		"en" 	"Crystallized Horror"
+	}
 }
