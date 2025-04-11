@@ -2023,7 +2023,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	
 	//Display Modifiers here.
-	ZRModifs_CharBuffToAdd(BufferAdd);
+	if(Waves_InFreeplay())
+		Freeplay_CharBuffToAdd(BufferAdd);
+	else
+		ZRModifs_CharBuffToAdd(BufferAdd);
 #endif
 	int Victim_weapon = -1;
 
