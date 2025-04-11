@@ -753,6 +753,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	if(enemy.Is_Boss == 1)
 		enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
 
+
 	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
 
 	// 2 billion limit, it is necessary to prevent them from going bananas
@@ -1369,6 +1370,7 @@ void Freeplay_OnEndWave(int &cash)
 	Freeplay_SetRemainingExp(1500.0);
 	Freeplay_SetExpTime(GetGameTime() + 9.0);
 }
+
 void Freeplay_GiveXP(int client, float extraxp)
 {
 	int totalxp;
