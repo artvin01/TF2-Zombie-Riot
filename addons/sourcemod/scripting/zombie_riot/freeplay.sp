@@ -1364,7 +1364,7 @@ void Freeplay_OnEndWave(int &cash)
 		}
 	}
 
-	Freeplay_SetRemainingExp(3000.0);
+	Freeplay_SetRemainingExp(1500.0);
 	Freeplay_SetExpTime(GetGameTime() + 10.0);
 }
 void Freeplay_GiveXP(int client, float extraxp)
