@@ -5525,6 +5525,8 @@ void EntityKilled_HitDetectionCooldown(int entity, int offset = -1)
 		{
 			// We found a match
 			hGlobalHitDetectionLogic.Erase(i);
+			i--;
+			length--;
 		}
 	}
 }
