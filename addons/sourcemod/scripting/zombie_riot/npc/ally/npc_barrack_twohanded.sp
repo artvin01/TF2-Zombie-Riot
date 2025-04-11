@@ -16,14 +16,14 @@ void BarrackTwoHandedOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackTwoHanded(client, vecPos, vecAng, ally);
+	return BarrackTwoHanded(client, vecPos, vecAng);
 }
 
 methodmap BarrackTwoHanded < BarrackBody
 {
-	public BarrackTwoHanded(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackTwoHanded(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackTwoHanded npc = view_as<BarrackTwoHanded>(BarrackBody(client, vecPos, vecAng, "625",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

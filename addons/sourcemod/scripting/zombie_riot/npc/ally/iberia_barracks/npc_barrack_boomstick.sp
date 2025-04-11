@@ -55,9 +55,9 @@ void Barracks_Iberia_Boomstick_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Boomstick(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Boomstick(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Iberia_Boomstick < BarrackBody
@@ -100,7 +100,7 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Iberia_Boomstick(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Boomstick(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(BarrackBody(client, vecPos, vecAng, "250", "models/player/engineer.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

@@ -165,7 +165,7 @@ methodmap NecroCombine < CClotBody
 	}
 	
 	
-	public NecroCombine(int client, float vecPos[3], float vecAng[3], float damage_multiplier = 1.0)
+	public NecroCombine(int client, float vecPos[3], float vecAng[3])
 	{
 		NecroCombine npc = view_as<NecroCombine>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.8", "1250", TFTeam_Red, true, false));
 		SetVariantInt(1);

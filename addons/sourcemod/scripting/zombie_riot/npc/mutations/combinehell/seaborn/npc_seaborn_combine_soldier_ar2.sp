@@ -96,7 +96,7 @@ public void SeabornCombineSoldierAr2_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SeabornCombineSoldierAr2(client, vecPos, vecAng, ally);
+	return SeabornCombineSoldierAr2(vecPos, vecAng, ally);
 }
 methodmap SeabornCombineSoldierAr2 < CClotBody
 {
@@ -188,7 +188,7 @@ methodmap SeabornCombineSoldierAr2 < CClotBody
 		
 	}
 	
-	public SeabornCombineSoldierAr2(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeabornCombineSoldierAr2(float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornCombineSoldierAr2 npc = view_as<SeabornCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1250", ally));
 		

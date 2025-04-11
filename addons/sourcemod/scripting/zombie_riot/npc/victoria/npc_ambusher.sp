@@ -55,7 +55,7 @@ void VIctorianAmbusher_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VIctorianAmbusher(client, vecPos, vecAng, ally);
+	return VIctorianAmbusher(vecPos, vecAng, ally);
 }
 
 methodmap VIctorianAmbusher < CClotBody
@@ -101,7 +101,7 @@ methodmap VIctorianAmbusher < CClotBody
 
 	}
 
-	public VIctorianAmbusher(int client, float vecPos[3], float vecAng[3], int ally)
+	public VIctorianAmbusher(float vecPos[3], float vecAng[3], int ally)
 	{
 		VIctorianAmbusher npc = view_as<VIctorianAmbusher>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12000", ally));
 		

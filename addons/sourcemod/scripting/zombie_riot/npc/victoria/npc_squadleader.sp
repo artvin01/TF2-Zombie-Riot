@@ -72,7 +72,7 @@ void VictorianSquadleader_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianSquadleader(client, vecPos, vecAng, ally);
+	return VictorianSquadleader(vecPos, vecAng, ally);
 }
 
 #define LEADER_BUFF_MAXRANGE 250.0 		
@@ -128,7 +128,7 @@ methodmap VictorianSquadleader < CClotBody
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 80, _, 0.8, 100);
 	}
 	
-	public VictorianSquadleader(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianSquadleader(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally, false, true));
 		

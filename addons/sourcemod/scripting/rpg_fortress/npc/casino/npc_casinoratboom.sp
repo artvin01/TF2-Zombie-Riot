@@ -153,7 +153,7 @@ static void ClotThink(int iNPC)
 						{
 							KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 
-							makeexplosion(npc.index, _, vecHit, _, RoundFloat(CasinoShared_GetDamage(npc, 0.7)), 100, _, _, true);
+							makeexplosion(npc.index, vecHit, RoundFloat(CasinoShared_GetDamage(npc, 0.7)), 100, _, true);
 						}
 					}
 				}

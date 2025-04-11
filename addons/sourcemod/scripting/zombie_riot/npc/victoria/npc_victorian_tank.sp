@@ -27,9 +27,9 @@ void VictoriaTank_MapStart()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaTank(client, vecPos, vecAng, ally, data);
+	return VictoriaTank(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaTank < CClotBody
@@ -47,7 +47,7 @@ methodmap VictoriaTank < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public VictoriaTank(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaTank(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaTank npc = view_as<VictoriaTank>(CClotBody(vecPos, vecAng, "models/player/items/taunts/tank/tank.mdl", "2.5", "300000", ally, _, true));
 		
@@ -268,6 +268,8 @@ static void ClotDeath(int entity)
 			fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 			b_StaticNPC[other] = b_StaticNPC[npc.index];
+			if(b_StaticNPC[other])
+				AddNpcToAliveList(other, 1);
 		}
 	}
 	for(int i; i < 2; i++)
@@ -287,6 +289,8 @@ static void ClotDeath(int entity)
 			fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 			b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 			b_StaticNPC[other] = b_StaticNPC[npc.index];
+			if(b_StaticNPC[other])
+				AddNpcToAliveList(other, 1);
 		}
 	}
 }

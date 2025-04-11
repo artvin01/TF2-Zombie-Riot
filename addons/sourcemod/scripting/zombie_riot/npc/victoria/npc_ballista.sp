@@ -60,7 +60,7 @@ void VictorianBallista_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianBallista(client, vecPos, vecAng, ally);
+	return VictorianBallista(vecPos, vecAng, ally);
 }
 
 methodmap VictorianBallista < CClotBody
@@ -100,7 +100,7 @@ methodmap VictorianBallista < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.3, 80);
 	}
 
-	public VictorianBallista(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianBallista(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianBallista npc = view_as<VictorianBallista>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
 		

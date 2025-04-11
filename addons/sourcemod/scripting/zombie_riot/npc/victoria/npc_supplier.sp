@@ -65,9 +65,9 @@ void VictorianSupplier_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianSupplier(client, vecPos, vecAng, ally);
+	return VictorianSupplier(vecPos, vecAng, ally);
 }
 methodmap VictorianSupplier < CClotBody
 {
@@ -114,7 +114,7 @@ methodmap VictorianSupplier < CClotBody
 	}
 	
 	
-	public VictorianSupplier(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianSupplier(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianSupplier npc = view_as<VictorianSupplier>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "750", ally));
 		

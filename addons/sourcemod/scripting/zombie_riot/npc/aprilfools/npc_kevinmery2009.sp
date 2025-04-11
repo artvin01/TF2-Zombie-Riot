@@ -72,7 +72,7 @@ static void ClotPrecache()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return KevinMery(client, vecPos, vecAng, ally);
+	return KevinMery(vecPos, vecAng, ally);
 }
 methodmap KevinMery < CClotBody
 {
@@ -126,7 +126,7 @@ methodmap KevinMery < CClotBody
 	}
 	
 	
-	public KevinMery(int client, float vecPos[3], float vecAng[3], int ally)
+	public KevinMery(float vecPos[3], float vecAng[3], int ally)
 	{
 		KevinMery npc = view_as<KevinMery>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.50", "700", ally));
 		

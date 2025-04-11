@@ -69,7 +69,7 @@ void VictorianWelder_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianWelder(client, vecPos, vecAng, ally);
+	return VictorianWelder(vecPos, vecAng, ally);
 }
 
 methodmap VictorianWelder < CClotBody
@@ -116,7 +116,7 @@ methodmap VictorianWelder < CClotBody
 	}
 	
 	
-	public VictorianWelder(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianWelder(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianWelder npc = view_as<VictorianWelder>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.15", "25000", ally,false));
 		

@@ -36,7 +36,7 @@ methodmap VIPBuilding < BarrackBody
 		
 		VIPBuilding npc = view_as<VIPBuilding>(BarrackBody(client, vecPos, vecAng, "10000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0, "models/pickups/pickup_powerup_resistance.mdl"));
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.1");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
@@ -127,7 +127,7 @@ void VIPBuilding_NPCDeath(int entity)
 
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 	BarrackBody_NPCDeath(npc.index);
 	if(Waves_Started())
 	{

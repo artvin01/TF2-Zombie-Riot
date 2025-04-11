@@ -72,7 +72,7 @@ void Twin1_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Matrix_Twins(client, vecPos, vecAng, ally, data);
+	return Matrix_Twins(vecPos, vecAng, ally, data);
 }
 methodmap Matrix_Twins < CClotBody
 {
@@ -142,7 +142,7 @@ methodmap Matrix_Twins < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
-	public Matrix_Twins(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Matrix_Twins(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Matrix_Twins npc = view_as<Matrix_Twins>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "700", ally));
 		

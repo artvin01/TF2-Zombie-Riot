@@ -101,9 +101,9 @@ void NearlSwordAbility_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally)
 {
-	return NearlSwordAbility(client, vecPos, vecAng, ally);
+	return NearlSwordAbility(vecPos, vecAng, ally);
 }
 
 methodmap NearlSwordAbility < CClotBody
@@ -130,7 +130,7 @@ methodmap NearlSwordAbility < CClotBody
 		
 	}
 	
-	public NearlSwordAbility(int client, float vecPos[3], float vecAng[3], int ally)
+	public NearlSwordAbility(float vecPos[3], float vecAng[3], int ally)
 	{
 		NearlSwordAbility npc = view_as<NearlSwordAbility>(CClotBody(vecPos, vecAng, "models/weapons/w_models/w_drg_ball.mdl", "1.0", "100", ally));
 		
@@ -142,7 +142,7 @@ methodmap NearlSwordAbility < CClotBody
 //		if(iActivity > 0) npc.StartActivity(iActivity);
 		SetEntityRenderMode(npc.index, RENDER_GLOW); //cool gold.
 
-		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
@@ -163,7 +163,7 @@ methodmap NearlSwordAbility < CClotBody
 		
 		TeleportEntity(npc.m_iWearable1, fPos, eyePitch, NULL_VECTOR);
 
-		npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/props_debris/concrete_debris128pile001a.mdl");
+		npc.m_iWearable2 = npc.EquipItemSeperate("models/props_debris/concrete_debris128pile001a.mdl");
 		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -304,7 +304,7 @@ public void NearlSwordAbility_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 
 	
 	if(IsValidEntity(npc.m_iWearable1))

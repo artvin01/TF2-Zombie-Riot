@@ -74,6 +74,7 @@ enum struct Yamato_Blades
 			{
 				SetEntPropEnt(ModelApply, Prop_Send, "m_hOwnerEntity", client);
 				float angles[3];
+				Angles = angles; //????
 				GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
 				angles[1]+=180.0;
 				TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);

@@ -84,7 +84,7 @@ void SeabornCombineElite_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SeabornCombineElite(client, vecPos, vecAng, ally);
+	return SeabornCombineElite(vecPos, vecAng, ally);
 }
 methodmap SeabornCombineElite < CClotBody
 {
@@ -169,7 +169,7 @@ methodmap SeabornCombineElite < CClotBody
 	}
 	
 	
-	public SeabornCombineElite(int client, float vecPos[3], float vecAng[3], int ally)
+	public SeabornCombineElite(float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornCombineElite npc = view_as<SeabornCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1500", ally));
 		

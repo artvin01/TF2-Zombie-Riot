@@ -75,9 +75,9 @@ public void Barrack_Alt_Donnerkrieg_MapStart()
 
 static float fl_npc_basespeed;
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Donnerkrieg(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Donnerkrieg(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Donnerkrieg < BarrackBody
@@ -153,7 +153,7 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 		
 
 	}
-	public Barrack_Alt_Donnerkrieg(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Donnerkrieg(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(BarrackBody(client, vecPos, vecAng, "650", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

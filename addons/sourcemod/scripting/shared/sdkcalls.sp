@@ -349,19 +349,19 @@ void UpdateBlockedNavmesh()
 	//This broke and is probably inlined, above is a way easier method.
 //	SDKCall(g_hSDKUpdateBlocked);
 }	
-
-stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
+/*
+stock int SpawnBotCustom()
 {
 	PrintToChatAll("trest");
 	ServerCommand("sv_cheats 1; bot ; sv_cheats 0");
 //	int bot = CreateFakeClient(Name);
-	/*
+	
 	int bot = SDKCall(
 	gH_BotAddCommand,
 	Name, // name
 	false // bReportFakeClient
 	);
-	*/
+	
 //	if (IsValidClient(bot))
 //	{
 //		PrintToChatAll("party!");
@@ -370,7 +370,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 	return -1;
 }
-
+*/
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
 #if defined ZR || defined RPG

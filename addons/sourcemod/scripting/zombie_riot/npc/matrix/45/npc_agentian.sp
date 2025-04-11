@@ -68,7 +68,7 @@ void AgentIan_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentIan(client, vecPos, vecAng, ally);
+	return AgentIan(vecPos, vecAng, ally);
 }
 methodmap AgentIan < CClotBody
 {
@@ -111,7 +111,7 @@ methodmap AgentIan < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentIan(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentIan(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentIan npc = view_as<AgentIan>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "700", ally));
 		

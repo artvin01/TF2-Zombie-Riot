@@ -47,7 +47,7 @@ methodmap ObjectTinkerBrew < ObjectGeneric
 		//SetRotateByDefaultReturn(npc.index, 90.0);
 		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
-		int entity = npc.EquipItemSeperate("partyhat", "models/props_halloween/hwn_flask_vial.mdl", "idle", _, 0.85, 8.0);
+		int entity = npc.EquipItemSeperate("models/props_halloween/hwn_flask_vial.mdl", "idle", _, 0.85, 8.0);
 		//SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		//SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		npc.m_iWearable5 = entity;

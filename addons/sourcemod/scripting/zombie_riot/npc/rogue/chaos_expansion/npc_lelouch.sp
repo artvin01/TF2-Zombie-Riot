@@ -583,7 +583,7 @@ methodmap Lelouch < CClotBody
 	{
 		Lelouch npc = view_as<Lelouch>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 		
@@ -688,7 +688,7 @@ methodmap Lelouch < CClotBody
 		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/spy/spy_spats.mdl", _, skin);
 		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tw2_roman_wreath/tw2_roman_wreath_spy.mdl", _, skin);
 
-		npc.m_iWearable9 = npc.EquipItemSeperate("head", LELOUCH_CRYSTAL_MODEL, _,_, 2.75, 50.0);
+		npc.m_iWearable9 = npc.EquipItemSeperate(LELOUCH_CRYSTAL_MODEL, _,_, 2.75, 50.0);
 
 		if(IsValidEntity(npc.m_iWearable9))
 		{
@@ -1178,7 +1178,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	}
 	
 	int Health = ReturnEntityMaxHealth(npc.index);
-	Health = RoundToFloor(Health*0.1);
+	Health = RoundToFloor(float(Health)*0.06);
 
 	npc.PlayCrystalSounds();
 
@@ -1209,7 +1209,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	if(IsValidEntity(npc.m_iSpecialEntSlot))
 		RemoveEntity(npc.m_iSpecialEntSlot);
 
-	npc.m_iSpecialEntSlot = npc.EquipItemSeperate("head", LELOUCH_LIGHT_MODEL ,_,_,_,300.0);
+	npc.m_iSpecialEntSlot = npc.EquipItemSeperate(LELOUCH_LIGHT_MODEL ,_,_,_,300.0);
 
 	return true;
 }
@@ -2883,7 +2883,7 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 }
 static int i_summon_weaver(Lelouch npc)
 {
-	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.2, 1.0, 0.0, HEAL_ABSOLUTE);
+	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.1, 1.0, 0.0, HEAL_ABSOLUTE);
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	int maxhealth;

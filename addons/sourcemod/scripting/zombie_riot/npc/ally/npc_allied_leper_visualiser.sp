@@ -31,7 +31,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 	}
 	public AlliedLeperVisualiserAbility(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", TFTeam_Red, true));
+		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", ally, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
@@ -119,7 +119,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 			if(IsValidEntity(npc.m_iWearable7))
 				RemoveEntity(npc.m_iWearable7);
 
-			npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/effects/vol_light256x512.mdl",_,_,_,250.0);
+			npc.m_iWearable7 = npc.EquipItemSeperate("models/effects/vol_light256x512.mdl",_,_,_,250.0);
 			if(IsValidEntity(npc.m_iWearable6))
 				RemoveEntity(npc.m_iWearable6);
 				
@@ -155,7 +155,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 			if(IsValidEntity(npc.m_iWearable7))
 				RemoveEntity(npc.m_iWearable7);
 
-			npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/effects/vol_light256x512.mdl",_,_,_,250.0);
+			npc.m_iWearable7 = npc.EquipItemSeperate("models/effects/vol_light256x512.mdl",_,_,_,250.0);
 			SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.m_iWearable7, 128, 0, 0, 255);
 
@@ -263,7 +263,7 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 					if(IsValidEntity(npc.m_iWearable7))
 						RemoveEntity(npc.m_iWearable7);
 
-					npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/effects/vol_light256x512.mdl",_,_,_,150.0);
+					npc.m_iWearable7 = npc.EquipItemSeperate("models/effects/vol_light256x512.mdl",_,_,_,150.0);
 
 					if(IsValidEntity(npc.m_iWearable6))
 						RemoveEntity(npc.m_iWearable6);

@@ -179,7 +179,9 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 
 	if(!Spawns_CanSpawnNext())
+	{
 		return;
+	}
 	
 	float pos[3], ang[3];
 
@@ -410,6 +412,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						Rogue_EnemySpawned(entity_Spawner);
 						Waves_EnemySpawned(entity_Spawner);
 						Classic_EnemySpawned(entity_Spawner);
+						Construction_EnemySpawned(entity_Spawner);
 					}
 
 					if(Waves_InFreeplay())
@@ -529,6 +532,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		{
 			Rogue_EnemySpawned(entity);
 			Waves_EnemySpawned(entity);
+			Construction_EnemySpawned(entity);
 		}
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);
@@ -754,7 +758,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			damage *= 1.4;
 
 			bool Blitzed_By_Riot = false;
-			if(f_TargetWasBlitzedByRiotShield[victim][weapon] > GetGameTime())
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RIOT_SHIELD && f_TimeFrozenStill[victim] > GetGameTime(victim))
 			{
 				Blitzed_By_Riot = true;
 			}
@@ -1481,7 +1485,6 @@ void ResetDamageHuds()
 {
 	Zero2(f_ClientDoDamageHud);
 	Zero2(f_ClientDoDamageHud_Hurt);
-	Zero2(f_DisplayHurtHudToSupporter);
 }
 void HudDamageIndicator(int client,int damagetype, bool wasattacker)
 {
@@ -1689,8 +1692,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		{
 			CheckInHudEnable(2);
 			StatusEffect_OnTakeDamage_DealNegative(attacker, victim, DamagePercDo, testvalue);
-			Damage_NPCAttacker(attacker, victim, victim, DamagePercDo, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
-			Damage_AnyAttacker(attacker, victim, victim, DamagePercDo, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
+			Damage_NPCAttacker(attacker, DamagePercDo, testvalue);
+			Damage_AnyAttacker(attacker, victim, victim, DamagePercDo, testvalue);
 			CheckInHudEnable(0);
 #if defined ZR
 			if(GetTeam(victim) != TFTeam_Red)
@@ -1775,7 +1778,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			//there is a raid, then this displays a hud below the raid hud.
 			RaidHudOffsetSave[attacker] = 0.135;
 
-			if(percentage_melee != 100.0 || percentage_ranged != 100.0 || DamagePercDo != 100.0 || DoesNpcHaveHudDebuffOrBuff(attacker, victim, GameTime))
+			if(percentage_melee != 100.0 || percentage_ranged != 100.0 || DamagePercDo != 100.0 || DoesNpcHaveHudDebuffOrBuff(attacker, victim))
 			{
 				RaidHudOffsetSave[attacker] += 0.035;
 			}
@@ -2080,7 +2083,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		
 	for (int client = 1; client <= MaxClients; client++)
 	{
-		if(f_DisplayHurtHudToSupporter[attacker][client] > GetGameTime())
+		if(IsIn_HitDetectionCooldown(attacker, client, SupportDisplayHurtHud)) //if its IN cooldown!
 		{
 			if(IsValidClient(client))
 			{
@@ -2094,7 +2097,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 }
 #endif
 
-stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
+stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc)
 {
 	static char BufferTest1[1];
 	static char BufferTest2[1];

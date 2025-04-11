@@ -32,7 +32,7 @@ int VictorianFactory_ID()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianFactory(client, vecPos, vecAng, ally);
+	return VictorianFactory(vecPos, vecAng, ally);
 }
 
 static char[] GetBuildingHealth()
@@ -72,7 +72,7 @@ methodmap VictorianFactory < CClotBody
 		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public VictorianFactory (int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianFactory (float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianFactory npc = view_as<VictorianFactory>(CClotBody(vecPos, vecAng, "models/props_skybox/train_building004_skybox.mdl", "2.0", GetBuildingHealth(), ally, _, true, .NpcTypeLogic = 1));
 		
@@ -142,7 +142,7 @@ methodmap VictorianFactory < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 80, 50, 50, 60);
 
-		npc.m_iWearable3 = npc.EquipItemSeperate("partyhat", "models/props_c17/substation_transformer01a.mdl",_,1,1.001,5100.0,true);
+		npc.m_iWearable3 = npc.EquipItemSeperate("models/props_c17/substation_transformer01a.mdl",_,1,1.001,5100.0,true);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		TeleportEntity(npc.m_iWearable3, NULL_VECTOR, {0.0, 0.0, 0.0}, NULL_VECTOR);
@@ -227,7 +227,7 @@ static void ClotThink(int iNPC)
 				}
 			}
 			b_IgnorePlayerCollisionNPC[npc.index] = false;
-			npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
+			npc.m_iWearable1 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
 			GetAbsOrigin(npc.m_iWearable1, Vec);
 			GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
 			Ang[1] = -90.0;
@@ -238,7 +238,7 @@ static void ClotThink(int iNPC)
 			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 			
-			npc.m_iWearable2 = npc.EquipItemSeperate("partyhat", "models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
+			npc.m_iWearable2 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
 			GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
 			GetAbsOrigin(npc.m_iWearable2, Vec);
 			Ang[1] += 90.0;
@@ -385,7 +385,7 @@ static void ClotThink(int iNPC)
 {
 	VictorianFactory npc = view_as<VictorianFactory>(iNPC);
 	float Vec[3], Ang[3];
-	npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
+	npc.m_iWearable1 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
 	GetAbsOrigin(npc.m_iWearable1, Vec);
 	GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
 	Ang[1] += 180.0;
@@ -396,7 +396,7 @@ static void ClotThink(int iNPC)
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 	
-	npc.m_iWearable2 = npc.EquipItemSeperate("partyhat", "models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
+	npc.m_iWearable2 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
 	GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
 	GetAbsOrigin(npc.m_iWearable2, Vec);
 	Ang[1] += 90.0;

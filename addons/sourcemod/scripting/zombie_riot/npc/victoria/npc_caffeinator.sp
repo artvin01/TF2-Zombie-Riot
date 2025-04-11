@@ -63,7 +63,7 @@ void VictorianCaffeinator_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianCaffeinator(client, vecPos, vecAng, ally);
+	return VictorianCaffeinator(vecPos, vecAng, ally);
 }
 methodmap VictorianCaffeinator < CClotBody
 {
@@ -125,7 +125,7 @@ methodmap VictorianCaffeinator < CClotBody
 		
 
 	}
-	public VictorianCaffeinator(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianCaffeinator(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianCaffeinator npc = view_as<VictorianCaffeinator>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "30000", ally));
 		
@@ -212,7 +212,7 @@ methodmap VictorianCaffeinator < CClotBody
 		
 		return npc;
 	}
-	public void StartHealing(int iEnt)
+	public void StartHealing()
 	{
 		int im_iWearable3 = this.m_iWearable3;
 		if(im_iWearable3 != INVALID_ENT_REFERENCE)
@@ -306,7 +306,7 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 				}
 				if(!npc.m_bnew_target)
 				{
-					npc.StartHealing(PrimaryThreatIndex);
+					npc.StartHealing();
 					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 255, 0, 0, 3.0, 3.0, 1.35, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;

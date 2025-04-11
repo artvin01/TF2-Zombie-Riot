@@ -373,7 +373,7 @@ methodmap BarrackBody < CClotBody
 				RemoveEntity(npc.m_iTeamGlow);
 			}
 
-			npc.m_iWearable7 = npc.EquipItemSeperate("partyhat", ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
+			npc.m_iWearable7 = npc.EquipItemSeperate(ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
 			SetVariantString("0.65");
 			AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 			BarrackOwner[npc.m_iWearable7] = client > 0 ? client : 0;

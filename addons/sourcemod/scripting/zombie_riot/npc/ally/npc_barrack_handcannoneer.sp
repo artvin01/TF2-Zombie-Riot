@@ -22,9 +22,9 @@ public void BarrackHandCannoneerOnMapStart()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackHandCannoneer(client, vecPos, vecAng, ally);
+	return BarrackHandCannoneer(client, vecPos, vecAng);
 }
 
 methodmap BarrackHandCannoneer < BarrackBody
@@ -34,7 +34,7 @@ methodmap BarrackHandCannoneer < BarrackBody
 		
 
 	}
-	public BarrackHandCannoneer(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackHandCannoneer(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackHandCannoneer npc = view_as<BarrackHandCannoneer>(BarrackBody(client, vecPos, vecAng, "350",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

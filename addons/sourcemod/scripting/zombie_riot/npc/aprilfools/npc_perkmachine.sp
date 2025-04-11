@@ -34,7 +34,7 @@ void PerkMachiner_OnMapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return PerkMachiner(vecPos, vecAng, team, data);
+	return PerkMachiner(vecPos, team, data);
 }
 static int Garrison[MAXENTITIES];
 
@@ -55,7 +55,7 @@ methodmap PerkMachiner < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public PerkMachiner(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public PerkMachiner(float vecPos[3], int ally, const char[] data)
 	{
 		PerkMachiner npc = view_as<PerkMachiner>(CClotBody(vecPos, {0.0, 0.0, 0.0}, NPCModel, "1.0", "30000", ally, false, true));
 		i_NpcWeight[npc.index] = 5;
@@ -296,6 +296,8 @@ void PerkMachiner_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[npc.index])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -318,6 +320,8 @@ void PerkMachiner_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -340,6 +344,8 @@ void PerkMachiner_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -362,6 +368,8 @@ void PerkMachiner_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -384,6 +392,8 @@ void PerkMachiner_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -395,7 +405,7 @@ void PerkMachiner_NPCDeath(int entity)
 				if(other > MaxClients)
 				{
 					if(team != TFTeam_Red)
-					Zombies_Currently_Still_Ongoing++;
+						Zombies_Currently_Still_Ongoing++;
 			
 					SetEntProp(other, Prop_Data, "m_iHealth", 5000);
 					SetEntProp(other, Prop_Data, "m_iMaxHealth", 5000);
@@ -406,6 +416,8 @@ void PerkMachiner_NPCDeath(int entity)
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[npc.index])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}

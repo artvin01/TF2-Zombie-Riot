@@ -111,7 +111,7 @@ void Blocker_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Blocker(client, vecPos, vecAng, ally);
+	return Blocker(vecPos, vecAng, ally);
 }
 methodmap Blocker < CClotBody
 {
@@ -177,7 +177,7 @@ methodmap Blocker < CClotBody
 		
 	}
 	
-	public Blocker(int client, float vecPos[3], float vecAng[3], int ally)
+	public Blocker(float vecPos[3], float vecAng[3], int ally)
 	{
 		Blocker npc = view_as<Blocker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", "3450", ally, false, true));
 		

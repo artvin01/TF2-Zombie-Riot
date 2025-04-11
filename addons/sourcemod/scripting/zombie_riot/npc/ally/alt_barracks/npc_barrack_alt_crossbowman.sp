@@ -38,9 +38,9 @@ public void Barrack_Alt_Crossbowmedic_MapStart()
 
 
 static float fl_npc_basespeed;
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Crossbowmedic(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Crossbowmedic < BarrackBody
@@ -61,7 +61,7 @@ methodmap Barrack_Alt_Crossbowmedic < BarrackBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	public Barrack_Alt_Crossbowmedic(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Crossbowmedic(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Crossbowmedic npc = view_as<Barrack_Alt_Crossbowmedic>(BarrackBody(client, vecPos, vecAng, "145", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

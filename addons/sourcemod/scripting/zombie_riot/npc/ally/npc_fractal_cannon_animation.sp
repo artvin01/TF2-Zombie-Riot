@@ -27,9 +27,9 @@ void Kit_Fractal_NPC_MapStart()
 	Zero(fl_nightmare_cannon_core_sound_timer);
 	PrecacheSoundArray(g_LaserStart);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Fracatal_Kit_Animation(client, vecPos, vecAng, ally);
+	return Fracatal_Kit_Animation(client, vecPos, vecAng);
 }
 methodmap Fracatal_Kit_Animation < CClotBody
 {
@@ -96,7 +96,7 @@ methodmap Fracatal_Kit_Animation < CClotBody
 	}
 
 	
-	public Fracatal_Kit_Animation(int client, float vecPos[3], float vecAng[3], int ally)
+	public Fracatal_Kit_Animation(int client, float vecPos[3], float vecAng[3])
 	{
 		Fracatal_Kit_Animation npc = view_as<Fracatal_Kit_Animation>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "100", TFTeam_Red, true));
 		

@@ -224,7 +224,7 @@ methodmap ObjectGeneric < CClotBody
 		int entity;
 		if(DoFakeModel)
 		{
-			entity = objstats.EquipItemSeperate("partyhat", model);
+			entity = objstats.EquipItemSeperate(model);
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
@@ -261,7 +261,6 @@ methodmap ObjectGeneric < CClotBody
 		public get() { return view_as<int>(this); } 
 	}
 	public int EquipItemSeperate(
-	const char[] attachment,
 	const char[] model,
 	const char[] anim = "",
 	int skin = 0,
@@ -293,6 +292,7 @@ methodmap ObjectGeneric < CClotBody
 		VecOrigin[2] += offset;
 
 		TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
+		SetEntProp(item, Prop_Send, "m_nSkin", skin);
 		if(DontParent)
 		{
 			return item;

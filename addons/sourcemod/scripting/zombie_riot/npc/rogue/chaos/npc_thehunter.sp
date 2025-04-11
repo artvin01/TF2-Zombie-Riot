@@ -90,6 +90,7 @@ methodmap TheHunter < CClotBody
 		
 		
 		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 

@@ -126,7 +126,7 @@ void OmegaRaid_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return OmegaRaid(client, vecPos, vecAng, ally, data);
+	return OmegaRaid(vecPos, vecAng, ally, data);
 }
 
 methodmap OmegaRaid < CClotBody
@@ -223,7 +223,7 @@ methodmap OmegaRaid < CClotBody
 	}
 	
 	
-	public OmegaRaid(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public OmegaRaid(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		OmegaRaid npc = view_as<OmegaRaid>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1000000", ally));
 

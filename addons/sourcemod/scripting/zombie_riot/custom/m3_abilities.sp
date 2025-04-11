@@ -244,7 +244,7 @@ public void WeakDash(int client)
 				return;
 			}
 			i_BurstpackUsedThisRound[client] += 1;
-			ability_cooldown[client] = GetGameTime() + (60.0 * CooldownReductionAmount(client));
+			ability_cooldown[client] = GetGameTime() + (60.0 * CooldownReductionAmount());
 			WeakDashLogic(client);
 		}
 		else
@@ -306,7 +306,7 @@ public void PlaceableTempomaryArmorGrenade(int client)
 	if (ability_cooldown[client] < GetGameTime())
 	{
 		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
-		ability_cooldown[client] = GetGameTime() + (120.0 * CooldownReductionAmount(client));
+		ability_cooldown[client] = GetGameTime() + (120.0 * CooldownReductionAmount());
 		int entity;
 
 		if(b_StickyExtraGrenades[client])
@@ -486,7 +486,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 	if (ability_cooldown[client] < GetGameTime())
 	{
 		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
-		ability_cooldown[client] = GetGameTime() + (140.0 * CooldownReductionAmount(client));
+		ability_cooldown[client] = GetGameTime() + (140.0 * CooldownReductionAmount());
 		
 		int entity;		
 		if(b_StickyExtraGrenades[client])
@@ -727,7 +727,7 @@ public void ReconstructiveTeleporter(int client)
 		}
 		if(!CvarInfiniteCash.BoolValue)
 		{
-			ability_cooldown[client] = GetGameTime() + (70.0 * CooldownReductionAmount(client));
+			ability_cooldown[client] = GetGameTime() + (70.0 * CooldownReductionAmount());
 		}
 		WorldSpaceCenter(client, WorldSpaceVec);
 		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
@@ -897,7 +897,7 @@ public void Reinforce(int client, bool NoCD)
 				continue;
 			if(!b_HasBeenHereSinceStartOfWave[client_check])
 				continue;
-			if(f_PlayerLastKeyDetected[client] < GetGameTime())
+			if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
 				continue;
 
 			DeadPlayer=true;
@@ -1375,7 +1375,7 @@ public void GearTesting(int client)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			ability_cooldown[client] = GetGameTime() + (350.0 * CooldownReductionAmount(client));
+			ability_cooldown[client] = GetGameTime() + (350.0 * CooldownReductionAmount());
 
 			SetEntityMoveType(client, MOVETYPE_NONE);
 
@@ -1470,7 +1470,7 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			ResetReplications();
 		
 			startPosition[2] += 25.0;
-			makeexplosion(client, client, startPosition, "", 0, 0);
+			makeexplosion(client, startPosition, 0, 0);
 
 			CreateTimer(30.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -1545,7 +1545,7 @@ public void PlaceableTempomaryRepairGrenade(int client)
 	if (ability_cooldown[client] < GetGameTime())
 	{
 		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
-		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
+		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount());
 		
 		int entity;		
 		if(b_StickyExtraGrenades[client])
@@ -1987,7 +1987,7 @@ stock int GetRandomDeathPlayer(int client)
 		if(!b_HasBeenHereSinceStartOfWave[client_check])
 			continue;
 
-		if(f_PlayerLastKeyDetected[client] < (GetGameTime() - 2.0))
+		if(f_PlayerLastKeyDetected[client_check] < (GetGameTime() - 2.0))
 			continue;
 
 		victim[victims++] = client_check;

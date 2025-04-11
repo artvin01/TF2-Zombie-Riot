@@ -511,7 +511,7 @@ public void OnPostThink(int client)
 		if(EntityWearable > 0)
 		{
 			//when they land, check if they are in a bad pos
-			Spawns_CheckBadClient(client, 2);
+			Spawns_CheckBadClient(client/*, 2*/);
 			//no need to recheck when they land
 			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			b_PlayerWasAirbornKnockbackReduction[client] = false;
@@ -1591,7 +1591,7 @@ static stock void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 		{
 			case WEAPON_RED_BLADE:
 			{
-				WeaponRedBlade_OnTakeDamage_Post(victim, Victim_weapon);
+				WeaponRedBlade_OnTakeDamage_Post(victim);
 			}
 		}
 	}
@@ -1952,7 +1952,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			float startPosition[3];
 			GetClientAbsOrigin(victim, startPosition);
 			startPosition[2] += 25.0;
-			makeexplosion(victim, victim, startPosition, "", 0, 0);
+			makeexplosion(victim, startPosition, 0, 0);
 			GiveCompleteInvul(victim, 0.5);
 			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 
@@ -2611,31 +2611,7 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 		}
 	}
 }
-stock int SDKHooks_SpawnParticleDeath(float position[3], char[] effectName, int iParent, const char[] szAttachment = "", float vOffsets[3] = {0.0,0.0,0.0})
-{
-	int particle = CreateEntityByName("info_particle_system");
 
-	if (particle != -1)
-	{
-		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
-		DispatchKeyValue(particle, "targetname", "tf2particle");
-		DispatchKeyValue(particle, "effect_name", effectName);
-		DispatchSpawn(particle);
-
-		SetParent(iParent, particle);
-
-		ActivateEntity(particle);
-
-		AcceptEntityInput(particle, "start");
-
-		Building_particle_Owner[particle] = iParent;
-
-		SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
-		SDKHook(particle, SDKHook_SetTransmit, SDKHooks_TransmitDoDeathMark);
-	}
-
-	return particle;
-}
 public Action SDKHooks_TransmitDoDeathMark(int entity, int client)
 {
 	if(client == Building_particle_Owner[entity])

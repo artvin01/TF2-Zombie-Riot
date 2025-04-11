@@ -157,17 +157,29 @@ methodmap Simon < CClotBody
 	property bool m_bHasKilled
 	{
 		public get()		{ return view_as<bool>(this.m_iOverlordComboAttack); }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 1; }
+		public set(bool value) 	
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 1; 
+		}
 	}
 	property bool m_bRetreating
 	{
 		public get()		{ return this.m_iOverlordComboAttack > 1; }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 2; }
+		public set(bool value)
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 2; 
+		}
 	}
 	property bool m_bRanAway
 	{
 		public get()		{ return this.m_iOverlordComboAttack == 3; }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 3; }
+		public set(bool value) 
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 3; 
+		}
 	}
 }
 

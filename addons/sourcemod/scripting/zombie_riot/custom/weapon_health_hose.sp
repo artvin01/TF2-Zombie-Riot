@@ -166,10 +166,6 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		int projectile = Wand_Projectile_Spawn(client, speed, 1.66, 0.0, 19, weapon, Hose_Charged[client] ? HOSE_PARTICLE_CHARGED : ParticleName, Angles);
 
 		Hose_Owner[projectile] = -1;
-		for (int i2 = 0; i2 < MAXENTITIES; i2++)
-		{
-			f_GlobalHitDetectionLogic[projectile][i2] = 0.0;
-		}
 
 		Hose_Healing[projectile] = FinalHeal;
 		Hose_HealLoss[projectile] = loss;
@@ -221,9 +217,9 @@ public void Hose_Touch(int entity, int other)
 		return;
 
 
-	if (f_GlobalHitDetectionLogic[entity][other])
+	if(IsIn_HitDetectionCooldown(entity, other))
 		return;
-		
+
 	if (IsValidAlly(other, owner))	
 	{	
 		if(!Hose_Heal(owner, other, Hose_Healing[entity]))
@@ -237,7 +233,7 @@ public void Hose_Touch(int entity, int other)
 			Hose_Healing[entity] = Hose_HealMin[entity];
 		}
 		
-		f_GlobalHitDetectionLogic[entity][other] = 1.0;
+		Set_HitDetectionCooldown(entity,other, FAR_FUTURE);
 		
 		if (Hose_GiveUber[entity])
 		{
@@ -619,6 +615,7 @@ public void TouchHealthKit(int entity, int other)
 		}
 		if(IsValidClient(Owner))
 		{
+			SetGlobalTransTarget(Owner);
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");

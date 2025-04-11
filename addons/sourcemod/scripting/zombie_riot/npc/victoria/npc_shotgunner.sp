@@ -48,7 +48,7 @@ void VictorianShotgunner_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianShotgunner(client, vecPos, vecAng, ally);
+	return VictorianShotgunner(vecPos, vecAng, ally);
 }
 
 
@@ -87,7 +87,7 @@ methodmap VictorianShotgunner < CClotBody
 	}
 	
 	
-	public VictorianShotgunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianShotgunner(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianShotgunner npc = view_as<VictorianShotgunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "1750", ally));
 		

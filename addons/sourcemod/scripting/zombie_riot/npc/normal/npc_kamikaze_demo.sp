@@ -216,7 +216,7 @@ public void Kamikaze_ClotThink(int iNPC)
 									
 								float startPosition[3];
 								GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", startPosition);
-								makeexplosion(-1, -1, startPosition, "" , 0, 0, 0.0 , 0);
+								makeexplosion(-1, startPosition, 0, 0 , 0);
 								
 								
 								
@@ -289,7 +289,7 @@ public void Kamikaze_NPCDeath(int entity)
 		pack.WriteCell(100);
 		RequestFrame(DelayExplosiveMakeExplosion, pack);
 		*/
-		makeexplosion(entity, entity, startPosition, "", 50, 100, _, _, true);
+		makeexplosion(entity, startPosition, 50, 100, _, true);
 	}
 	else
 	{

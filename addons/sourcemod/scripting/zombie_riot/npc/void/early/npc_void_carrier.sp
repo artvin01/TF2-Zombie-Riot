@@ -66,9 +66,9 @@ void VoidCarrier_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidCarrier(vecPos, vecAng, team, data);
+	return VoidCarrier(vecPos, vecAng, team);
 }
 methodmap VoidCarrier < CClotBody
 {
@@ -109,7 +109,7 @@ methodmap VoidCarrier < CClotBody
 	}
 	
 	
-	public VoidCarrier(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VoidCarrier(float vecPos[3], float vecAng[3], int ally)
 	{
 		VoidCarrier npc = view_as<VoidCarrier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "2000", ally));
 		

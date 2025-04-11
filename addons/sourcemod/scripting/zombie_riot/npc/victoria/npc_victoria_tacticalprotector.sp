@@ -48,7 +48,7 @@ void Victorian_TacticalProtector_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaProtector(client, vecPos, vecAng, ally, data);
+	return VictoriaProtector(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaProtector < CClotBody
@@ -79,7 +79,7 @@ methodmap VictoriaProtector < CClotBody
 	{
 		EmitSoundToAll(g_DronPingSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public VictoriaProtector(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaProtector(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaProtector npc = view_as<VictoriaProtector>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.45", "15000", ally, false, true));
 		

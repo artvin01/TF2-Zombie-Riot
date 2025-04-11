@@ -56,9 +56,9 @@ void Barrack_Iberia_Inquisitor_Lynsen_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Inquisitor_Lynsen(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Inquisitor_Lynsen(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Iberia_Inquisitor_Lynsen < BarrackBody
@@ -113,7 +113,7 @@ methodmap Barrack_Iberia_Inquisitor_Lynsen < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Inquisitor_Lynsen(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Inquisitor_Lynsen(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Iberia_Inquisitor_Lynsen npc = view_as<Barrack_Iberia_Inquisitor_Lynsen>(BarrackBody(client, vecPos, vecAng, "750", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
