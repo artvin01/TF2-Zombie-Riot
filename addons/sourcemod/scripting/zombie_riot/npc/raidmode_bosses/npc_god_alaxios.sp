@@ -1560,16 +1560,6 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 		int postWaves = CurrentRound - Waves_GetMaxRound();
 		char npc_classname[60];
 		NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
-		if(StrEqual(npc_classname, "npc_medival_achilles") || StrEqual(npc_classname, "npc_medival_monk") || StrEqual(npc_classname, "npc_medival_villager") || StrEqual(npc_classname, "npc_medival_son_of_osiris"))
-		{	
-			enemy.Health = RoundToCeil(enemy.Health * 0.75);
-		}
-
-		if(StrEqual(npc_classname, "npc_medival_son_of_osiris"))
-		{	
-			enemy.Health = RoundToCeil(enemy.Health * 0.5);
-			enemy.ExtraSpeed = 0.5;
-		}
 
 		Freeplay_AddEnemy(postWaves, enemy, count, true);
 		if(count > 0)

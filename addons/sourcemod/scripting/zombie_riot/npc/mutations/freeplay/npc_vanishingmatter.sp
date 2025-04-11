@@ -224,6 +224,7 @@ public Action VanishingMatter_OnTakeDamage(int victim, int &attacker, int &infli
 	if (!npc.Anger && damage > 20000.0)
 	{
 		damage = 20000.0;
+		return Plugin_Handled;
 	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
