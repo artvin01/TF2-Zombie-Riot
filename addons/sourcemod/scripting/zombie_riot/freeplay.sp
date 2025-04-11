@@ -757,17 +757,17 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		case INTENSE:
 		{
-			FM_Health = 1.03;
+			FM_Health *= 1.025;
 		}
 		case MUSCLE:
 		{
-			FM_Health = 1.04;
+			FM_Health *= 1.03;
 		}
 		case SQUEEZER:
 		{
-			FM_Health = 1.05;
+			FM_Health *= 1.04;
 			if(squeezerplus)
-				FM_Health = 1.075;
+				FM_Health *= 1.06;
 		}
 	}
 	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
@@ -1021,17 +1021,17 @@ void Freeplay_SpawnEnemy(int entity)
 		{
 			case INTENSE:
 			{
-				FM_Damage = 1.025;
+				FM_Damage *= 1.02;
 			}
 			case MUSCLE:
 			{
-				FM_Damage = 1.035;
+				FM_Damage *= 1.025;
 			}
 			case SQUEEZER:
 			{
-				FM_Damage = 1.045;
+				FM_Damage *= 1.035;
 				if(squeezerplus)
-					FM_Damage = 1.075;
+					FM_Damage *= 1.05;
 			}
 		}
 		fl_Extra_Damage[entity] *= FM_Damage;
