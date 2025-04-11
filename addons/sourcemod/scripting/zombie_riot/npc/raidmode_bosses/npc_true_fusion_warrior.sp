@@ -438,7 +438,7 @@ methodmap TrueFusionWarrior < CClotBody
 		music.Volume = 1.6;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Investigation Goes Awry");
-		strcopy(music.Artist, sizeof(music.Artist), "Granpda Bard");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 		
 		npc.Anger = false;
