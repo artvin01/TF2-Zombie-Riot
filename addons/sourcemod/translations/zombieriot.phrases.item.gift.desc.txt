@@ -2534,4 +2534,8 @@
 	{
 		"en"	"One must imagine the Simulation being infinite.\nIncludes all the effects of the OLD TIMES modifier!\nSpeeds up enemy health and damage scaling by a big amount each wave.\nDOUBLES enemy buff durations and setups add +3 skulls."
 	}
+	"Crystallized Horror Desc" // WIP
+	{
+		"en" 	"A being made out of chaos and void combined..."
+	}
 }
