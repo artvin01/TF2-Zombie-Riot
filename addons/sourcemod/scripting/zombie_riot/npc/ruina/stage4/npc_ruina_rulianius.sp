@@ -159,6 +159,7 @@ methodmap Rulianius < CClotBody
 		fl_ruina_battery_timeout[npc.index] = FAR_FUTURE;
 
 		npc.m_flNextRangedBarrage_Spam = 0.0;	//for logic, if its above game time the npc won't ever attack. used for the laser punch
+		npc.m_iState = -1;	//if its 0, it will do an annoying thing the moment it spawns. so make it -1 to stop that.
 
 		fl_npc_basespeed = 300.0;
 		if(rogue_Extra)
