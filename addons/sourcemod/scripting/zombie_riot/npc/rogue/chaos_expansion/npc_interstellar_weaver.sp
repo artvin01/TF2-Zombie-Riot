@@ -584,7 +584,7 @@ static void ClotThink(int iNPC)
 		else
 			npc.m_iTarget = GetClosestTarget(npc.index, true);
 
-		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime()*3.0;
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime()*3.0 + 10.0;
 
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))	//a failsafe targeting system thats a LOT more forgiving.
 		{
