@@ -165,7 +165,6 @@ methodmap Rulianius < CClotBody
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Elite Rulianius");
 			npc.m_flNextRangedBarrage_Singular = GetGameTime() + GetRandomFloat(5.0, 10.0);
-			npc.m_flNextRangedBarrage_Spam = GetGameTime() + GetRandomFloat(5.0, 10.0);
 			fl_ruina_battery_timeout[npc.index] = 0.0;
 			float flPos[3];
 			float flAng[3];
