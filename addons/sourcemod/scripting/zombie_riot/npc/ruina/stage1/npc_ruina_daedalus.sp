@@ -213,8 +213,6 @@ methodmap Daedalus < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-
-		//"models/workshop/weapons/c_models/c_battalion_buffpack/c_battalion_buffpack.mdl"
 		
 
 		
