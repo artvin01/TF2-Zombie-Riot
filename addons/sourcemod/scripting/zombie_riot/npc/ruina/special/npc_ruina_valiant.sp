@@ -288,13 +288,13 @@ methodmap Valiant < CClotBody
 			}
 
 			float maxrange = 2500.0;
-			int Decicion = TeleportDiversioToRandLocation(spawn_index,true, maxrange, 500.0);
+			int Decicion = TeleportDiversioToRandLocation(npc.index,true, maxrange, 500.0);
 
 			if(Decicion == 2)
-				Decicion = TeleportDiversioToRandLocation(spawn_index, true, maxrange, 250.0);
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, maxrange, 250.0);
 
 			if(Decicion == 2)
-				Decicion = TeleportDiversioToRandLocation(spawn_index, true, maxrange, 0.0);
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, maxrange, 0.0);
 		}
 
 		float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec); float sky_loc[3]; sky_loc = npc_vec; sky_loc[2]+=999.0;
