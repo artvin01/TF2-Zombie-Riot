@@ -2573,6 +2573,14 @@
 	{
 		"en"	"Vengeful Spirit"
 	}
+	"Wandering Spitit"
+	{
+		"en"	"Wandering Spitit"
+	}
+	"Vengeful Spitit"
+	{
+		"en"	"Vengeful Spitit"
+	}
 	"Fallen Warrior"
 	{
 		"en"	"Guln the Fallen One"
