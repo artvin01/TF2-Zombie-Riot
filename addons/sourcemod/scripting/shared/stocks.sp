@@ -5533,3 +5533,11 @@ void EntityKilled_HitDetectionCooldown(int entity, int offset = -1)
 		}
 	}
 }
+
+
+
+stock void GetMapName(char[] buffer, int size)
+{
+	GetCurrentMap(buffer, size);
+	GetMapDisplayName(buffer, buffer, size);
+}
