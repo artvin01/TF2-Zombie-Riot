@@ -102,9 +102,9 @@ methodmap Taller < CClotBody
 	
 	public Taller(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Taller npc = view_as<Taller>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/taller/taller.mdl", "1.10", "300", ally));
+		Taller npc = view_as<Taller>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/taller/taller.mdl", "1.10", "300", ally, .isGiant = true));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
@@ -284,7 +284,7 @@ void TallerSelfDefense(Taller npc, float gameTime, int target, float distance)
 			static float MaxVec[3] = {128.0, 128.0, 128.0};
 			static float MinVec[3] = {-128.0, -128.0, -128.0};
 
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, MaxVec, MinVec)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, MaxVec, MinVec)) 
 			{
 				target = TR_GetEntityIndex(swingTrace);	
 				
@@ -301,12 +301,12 @@ void TallerSelfDefense(Taller npc, float gameTime, int target, float distance)
 					if(npc.b_Nightmare)
 					{
 						Custom_Knockback(npc.index, target, 500.0, true, true);
-						TF2_AddCondition(target, TFCond_FreezeInput, 2.5);
+						FreezeNpcInTime(target, 2.5);
 					}
 					else
 					{
 						Custom_Knockback(npc.index, target, 500.0, true, true);
-						TF2_AddCondition(target, TFCond_FreezeInput, 1.5);
+						FreezeNpcInTime(target, 1.5);
 					}
 
 					// Hit sound
@@ -319,7 +319,7 @@ void TallerSelfDefense(Taller npc, float gameTime, int target, float distance)
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
