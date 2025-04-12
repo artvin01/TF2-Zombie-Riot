@@ -1310,17 +1310,17 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		case INTENSE:
 		{
-			FM_Damage *= 1.01;
+			FM_Damage *= 1.005;
 		}
 		case MUSCLE:
 		{
-			FM_Damage *= 1.015;
+			FM_Damage *= 1.01;
 		}
 		case SQUEEZER:
 		{
-			FM_Damage *= 1.0225;
+			FM_Damage *= 1.02;
 			if(squeezerplus)
-				FM_Damage *= 1.03;
+				FM_Damage *= 1.04;
 		}
 	}
 
@@ -1328,17 +1328,17 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		case INTENSE:
 		{
-			FM_Health *= 1.01;
+			FM_Health *= 1.005;
 		}
 		case MUSCLE:
 		{
-			FM_Health *= 1.02;
+			FM_Health *= 1.01;
 		}
 		case SQUEEZER:
 		{
-			FM_Health *= 1.03;
+			FM_Health *= 1.0175;
 			if(squeezerplus)
-				FM_Health *= 1.04;
+				FM_Health *= 1.0315;
 		}
 	}
 
