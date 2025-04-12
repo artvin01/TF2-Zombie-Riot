@@ -661,7 +661,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Hold on{lightblue}Nemal{default} i'm coming!");
+						CPrintToChatAll("{gold}Silvester{default}: Hold on {lightblue}Nemal{default} i'm coming!");
 					}
 					case 1:
 					{
