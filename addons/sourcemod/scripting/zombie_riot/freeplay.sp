@@ -1360,7 +1360,7 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && TeutonType[client] != TEUTON_WAITING && GetClientTeam(client) == 2)
 			{
 				Freeplay_GiveXP(client, Freeplay_GetRemainingExp());
 			}
