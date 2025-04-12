@@ -14,8 +14,8 @@ enum struct StatusEffect
 	Texlar Electric Desc
 	*/
 
-	char HudDisplay[4]; //what it should say in the damage or hurt hud
-	char AboveEnemyDisplay[4]; //Should it display above their head, like silence X
+	char HudDisplay[8]; //what it should say in the damage or hurt hud
+	char AboveEnemyDisplay[8]; //Should it display above their head, like silence X
 	float DamageTakenMulti; //Resistance or vuln
 	float DamageDealMulti;	//damage buff or nerf
 	float MovementspeedModif;	//damage buff or nerf
