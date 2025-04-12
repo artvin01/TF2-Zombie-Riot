@@ -1381,32 +1381,35 @@ public void OnPostThink(int client)
 		}
 		else if(vehicle != -1)
 		{
-			for(int i=9; i>0; i--)
+			if(Armor_Charge[armorEnt] < 1)
 			{
-				if(Armor_Charge[armorEnt] == 0)
+				Format(buffer, sizeof(buffer), "%s------\nREPAIR\n------\n", buffer);
+			}
+			else
+			{
+				for(int i=9; i>0; i--)
 				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
-				}
-				else if(armor >= Armor_Max*(i*0.1111))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-				}
-				else if(armor > Armor_Max*(i*0.1111 - 0.037))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-				}
-				else if(armor > Armor_Max*(i*0.1111 - 0.07407))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
-				}
-				
-				if((i % 3) == 1)
-				{
-					Format(buffer, sizeof(buffer), "%s\n", buffer);
+					if(armor >= Armor_Max*(i*0.1111))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+					}
+					else if(armor > Armor_Max*(i*0.1111 - 0.037))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+					}
+					else if(armor > Armor_Max*(i*0.1111 - 0.07407))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					}
+					
+					if((i % 3) == 1)
+					{
+						Format(buffer, sizeof(buffer), "%s\n", buffer);
+					}
 				}
 			}
 		}
