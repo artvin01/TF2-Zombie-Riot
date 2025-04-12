@@ -9309,7 +9309,15 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 
 	//Emergency incase it wasnt an npc.
 	if(!b_ThisWasAnNpc[npc])
-		return;
+	{
+		
+		if(npc <= 0 || npc > MaxClients)
+		{
+			return;
+		}
+		TF2_AddCondition(npc, TFCond_FreezeInput, Duration_Stun);
+		ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun);	
+	}
 
 	float GameTime = GetGameTime();
 	float TimeSinceLastStunSubtract;
@@ -9348,6 +9356,8 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun_Post;
 	if(b_thisNpcIsARaid[npc])
 		ApplyStatusEffect(npc, npc, "Shook Head", Duration_Stun * 3.0);	
+
+	ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun_Post);	
 
 	npcclot.Update();
 
@@ -9748,10 +9758,6 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(i_HowManyBombsHud[npc.index] > 0)
 	{
 		Format(HealthText, sizeof(HealthText), "%s!(%i)",HealthText, i_HowManyBombsHud[npc.index]);
-	}
-	if(f_TimeFrozenStill[npc.index] > GetGameTime(npc.index))
-	{
-		Format(HealthText, sizeof(HealthText), "%s?",HealthText);
 	}
 	if(VausMagicaShieldLeft(npc.index) > 0)
 	{
