@@ -155,14 +155,18 @@ methodmap Rulianius < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		bool rogue_Extra = StrContains(data, "rogue") != -1;
-		npc.m_flNextRangedBarrage_Singular = 99999999.9;
-		npc.m_flNextRangedBarrage_Spam = 99999999.9;
+		npc.m_flNextRangedBarrage_Singular = FAR_FUTURE;
+		fl_ruina_battery_timeout[npc.index] = FAR_FUTURE;
+
+		npc.m_flNextRangedBarrage_Spam = 0.0;	//for logic, if its above game time the npc won't ever attack. used for the laser punch
+		npc.m_iState = -1;	//if its 0, it will do an annoying thing the moment it spawns. so make it -1 to stop that.
+
 		fl_npc_basespeed = 300.0;
 		if(rogue_Extra)
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Elite Rulianius");
 			npc.m_flNextRangedBarrage_Singular = GetGameTime() + GetRandomFloat(5.0, 10.0);
-			npc.m_flNextRangedBarrage_Spam = GetGameTime() + GetRandomFloat(5.0, 10.0);
+			fl_ruina_battery_timeout[npc.index] = 0.0;
 			float flPos[3];
 			float flAng[3];
 			npc.GetAttachment("effect_hand_r", flPos, flAng);

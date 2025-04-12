@@ -3388,6 +3388,13 @@ void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 		return;
 	}
 
+	//so, the npc has a battery timeout, this means that they cannot use their battery ability until its over. so we can show this on the hud!
+	if(fl_ruina_battery_timeout[victim] != FAR_FUTURE && fl_ruina_battery_timeout[victim] > GetGameTime(victim))
+	{
+		Format(HudToDisplay, SizeOfChar, "[۞ %.1fs]", fl_ruina_battery_timeout[victim] - GetGameTime(victim));
+		return;
+	}
+
 	//get the % of how much battery the npc has
 	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
 
