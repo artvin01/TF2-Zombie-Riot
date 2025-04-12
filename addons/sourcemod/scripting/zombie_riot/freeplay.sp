@@ -1370,7 +1370,7 @@ void Freeplay_OnEndWave(int &cash)
 		}
 	}
 
-	Freeplay_SetRemainingExp(3000.0);
+	Freeplay_SetRemainingExp(1500.0); // its half because it apparently triggers twice, resulting in 3000 max
 	Freeplay_SetExpTime(GetGameTime() + 9.0);
 }
 
@@ -1388,7 +1388,7 @@ void Freeplay_GiveXP(int client, float extraxp)
 	if(totalxp > 0)
 	{
 		GiveXP(client, totalxp, true);
-		CPrintToChat(client, "{lime}You've recieved %d extra XP!", totalxp);
+		CPrintToChat(client, "{lime}You've recieved %d extra XP!", totalxp*2);
 	}
 }
 
