@@ -483,6 +483,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		if(Waves_GetRound() > 174)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
 
+		// global health nerfer
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.85);
+
 		// moni
 		enemy.Credits += 10000.0;
 		enemy.Does_Not_Scale = 1;
@@ -1307,17 +1310,17 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		case INTENSE:
 		{
-			FM_Damage *= 1.02;
+			FM_Damage *= 1.01;
 		}
 		case MUSCLE:
 		{
-			FM_Damage *= 1.025;
+			FM_Damage *= 1.015;
 		}
 		case SQUEEZER:
 		{
-			FM_Damage *= 1.035;
+			FM_Damage *= 1.0225;
 			if(squeezerplus)
-				FM_Damage *= 1.05;
+				FM_Damage *= 1.03;
 		}
 	}
 
@@ -1325,17 +1328,17 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		case INTENSE:
 		{
-			FM_Health *= 1.025;
+			FM_Health *= 1.01;
 		}
 		case MUSCLE:
 		{
-			FM_Health *= 1.03;
+			FM_Health *= 1.02;
 		}
 		case SQUEEZER:
 		{
-			FM_Health *= 1.04;
+			FM_Health *= 1.03;
 			if(squeezerplus)
-				FM_Health *= 1.06;
+				FM_Health *= 1.04;
 		}
 	}
 
