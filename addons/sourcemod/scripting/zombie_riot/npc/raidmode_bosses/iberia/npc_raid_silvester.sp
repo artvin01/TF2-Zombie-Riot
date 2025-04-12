@@ -844,8 +844,7 @@ static void Internal_ClotThink(int iNPC)
 				if(!ForceRedo)
 				{
 					npc.m_flInTeleportLogic = GetGameTime(npc.index) + 3.0;
-					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 3.0);
-					ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 3.0);
+					ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.0);
 				}
 				npc.m_flChangeTargetsSilvester += 3.0;
 			}
@@ -867,8 +866,7 @@ static void Internal_ClotThink(int iNPC)
 					if(!ForceRedo)
 					{
 						npc.m_flInTeleportLogic = GetGameTime(npc.index) + 3.0;
-						ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 3.0);
-						ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 3.0);
+						ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.0);
 					}
 					npc.m_flChangeTargetsSilvester += 3.0;
 					npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,_/*allynpc.m_iTarget*/, flPos);
