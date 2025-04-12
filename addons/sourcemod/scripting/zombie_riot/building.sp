@@ -1427,21 +1427,16 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	if(target < 0)
 		return;
 	
-	if(!i_IsABuilding[target])
+	if(i_IsVehicle[target] != 2)
 	{
-		return;
+		if(!i_IsABuilding[target])
+		{
+			return;
+		}
+		if(!i_NpcIsABuilding[target])
+			return;
 	}
-	if(!i_NpcIsABuilding[target])
-		return;
-	//Cant repair non buildings......
-	int max_health = ReturnEntityMaxHealth(target);
-	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
-	
-	if(flHealth >= max_health)
-	{
-		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
-		return;
-	}
+
 	Building_RepairObject(client, target, weapon,vecHit, 1, 1.0);
 }		
 
@@ -1543,29 +1538,50 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
 	if(target < 0)
 		return;
 	
-	if(!i_IsABuilding[target])
+	if(i_IsVehicle[target] != 2)
 	{
-		return;
+		if(!i_IsABuilding[target])
+		{
+			return;
+		}
+		if(!i_NpcIsABuilding[target])
+			return;
 	}
-	if(!i_NpcIsABuilding[target])
-		return;
-	//Cant repair non buildings......
-	int max_health = ReturnEntityMaxHealth(target);
-	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
-	
-	if(flHealth >= max_health)
-	{
-		EmitSoundToAll("player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
-		return;
-	}
+
 	Building_RepairObject(client, target, weapon,vecHit, 2, 0.2);
 }		
 
 void Building_RepairObject(int client, int target, int weapon,float vectorhit[3], int soundDef = 1, float repairspeedModif = 1.0)
 {
+	int iHealth, max_health;
+	if(i_IsVehicle[target])
+	{
+		max_health = 10000;
+		iHealth = Armor_Charge[target];
+	}
+	else
+	{
+		//Cant repair non buildings......
+		max_health = ReturnEntityMaxHealth(target);
+		iHealth = GetEntProp(target, Prop_Data, "m_iHealth");
+	}
+
+	if(iHealth >= max_health)
+	{
+		switch(soundDef)
+		{
+			case 1:
+				EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70,_,1.0);
+			case 2:
+			{
+				EmitSoundToAll("player/taunt_sorcery_fail.wav", target, SNDCHAN_AUTO, 70,_,0.5);
+				EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
+			}
+		}
+		return;
+	}
+	
 	int new_ammo = GetAmmo(client, 3);
-	int max_health = ReturnEntityMaxHealth(target);
-	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
 	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
@@ -1573,15 +1589,18 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	RepairRate *= 10.0;
 	RepairRate *= repairspeedModif;
 
+	if(i_IsVehicle[target])
+		RepairRate *= 5;
+
 	int i_HealingAmount = RoundToCeil(RepairRate);
-	int newHealth = flHealth + i_HealingAmount;
+	int newHealth = iHealth + i_HealingAmount;
 
 	if(newHealth >= max_health)
 	{
 		i_HealingAmount -= newHealth - max_health;
 		newHealth = max_health;
 	}
-	if(GetEntProp(target, Prop_Data, "m_iRepair") < i_HealingAmount)
+	if(!i_IsVehicle[target] && GetEntProp(target, Prop_Data, "m_iRepair") < i_HealingAmount)
 	{
 		i_HealingAmount = GetEntProp(target, Prop_Data, "m_iRepair");
 	}
@@ -1601,7 +1620,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	}
 	int Healing_Value = i_HealingAmount;
 	
-	int Remove_Ammo = i_HealingAmount / 3;
+	int Remove_Ammo = i_HealingAmount / (i_IsVehicle[target] ? 15 : 3);
 	
 	if(Remove_Ammo < 0)
 	{
@@ -1627,10 +1646,13 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 			}
 			return;
 		}
-		SetEntProp(target, Prop_Data, "m_iRepair", GetEntProp(target, Prop_Data, "m_iRepair") - HealGiven);
-		if(GetEntProp(target, Prop_Data, "m_iRepair") < 0)
+		if(!i_IsVehicle[target])
 		{
-			SetEntProp(target, Prop_Data, "m_iRepair", 0);
+			SetEntProp(target, Prop_Data, "m_iRepair", GetEntProp(target, Prop_Data, "m_iRepair") - HealGiven);
+			if(GetEntProp(target, Prop_Data, "m_iRepair") < 0)
+			{
+				SetEntProp(target, Prop_Data, "m_iRepair", 0);
+			}
 		}
 		switch(soundDef)
 		{

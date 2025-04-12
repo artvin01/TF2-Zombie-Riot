@@ -1234,9 +1234,17 @@ public void OnPostThink(int client)
 			ApplyLastmanOrDyingOverlay(client);
 		}
 
-		int Armor_Max = 100000;
+		int Armor_Max = 10000;
+		int vehicle = Vehicle_Driver(client);
 		int armorEnt = client;
-		Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+		if(vehicle != -1)
+		{
+			armorEnt = vehicle;
+		}
+		else
+		{
+			Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+		}
 
 		int red = 255;
 		int green = 255;
@@ -1292,7 +1300,7 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
-		if(FullMoonIs(client))
+		if(client == armorEnt && FullMoonIs(client))
 		{
 			if(Armor_Charge[armorEnt] > 0)
 			{
@@ -1303,7 +1311,11 @@ public void OnPostThink(int client)
 		ArmorDisplayClient(client);
 
 		static char buffer[64];
-		if(IsValidEntity(Building_Mounted[client]))
+		if(vehicle != -1)
+		{
+			Format(buffer, sizeof(buffer), "%s\n", Vehicle_Driver(vehicle) == client ? "DRI" : "PAS");
+		}
+		else if(IsValidEntity(Building_Mounted[client]))
 		{
 			int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
@@ -1347,38 +1359,7 @@ public void OnPostThink(int client)
 			}
 		}
 		int armor = abs(Armor_Charge[armorEnt]);
-		if(!b_EnableNumeralArmor[client])
-		{
-			for(int i=6; i>0; i--)
-			{
-				if(Armor_Charge[armorEnt] == 0)
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
-				}
-				else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-				}
-				else if(armor > Armor_Max*(i*0.1666 - 1.0/15.0))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-				}
-				else if(armor > Armor_Max*(i*0.1666 - 1.0/10.0))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
-				}
-				
-				if((i % 2) == 1)
-				{
-					Format(buffer, sizeof(buffer), "%s\n", buffer);
-				}
-			}
-		}
-		else
+		if(b_EnableNumeralArmor[client])
 		{
 			static char c_ArmorCurrent[64];
 			if(Armor_Charge[armorEnt] >= 0)
@@ -1398,10 +1379,72 @@ public void OnPostThink(int client)
 				Format(buffer, sizeof(buffer), "%s|%s|\n", buffer, c_ArmorCurrent);
 			}
 		}
+		else if(vehicle != -1)
+		{
+			for(int i=9; i>0; i--)
+			{
+				if(Armor_Charge[armorEnt] == 0)
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
+				}
+				else if(armor >= Armor_Max*(i*0.1111))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(armor > Armor_Max*(i*0.1111 - 0.037))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(armor > Armor_Max*(i*0.1111 - 0.07407))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+				
+				if((i % 3) == 1)
+				{
+					Format(buffer, sizeof(buffer), "%s\n", buffer);
+				}
+			}
+		}
+		else
+		{
+			for(int i=6; i>0; i--)
+			{
+				if(Armor_Charge[armorEnt] == 0)
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
+				}
+				else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(armor > Armor_Max*(i*0.1666 - 0.0555))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(armor > Armor_Max*(i*0.1666 - 0.111))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+				
+				if((i % 2) == 1)
+				{
+					Format(buffer, sizeof(buffer), "%s\n", buffer);
+				}
+			}
+		}
+		
 		if(i_CurrentEquippedPerk[client] == 6)
 		{
-			static float slowdown_amount;
-			slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GameTime;
+			float slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GameTime;
 			
 			if(slowdown_amount < 0.0)
 			{
@@ -2046,7 +2089,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				
 				ApplyRapidSuturing(victim);
 				ExtinguishTargetDebuff(victim);
-				i_AmountDowned[victim]++;
+				if(!Waves_InSetup())
+					i_AmountDowned[victim]++;
 				
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])

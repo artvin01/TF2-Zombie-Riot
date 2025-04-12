@@ -32,6 +32,10 @@ methodmap VehicleGeneric < CClotBody
 		i_IsVehicle[obj] = 2;
 		NPCStats_SetFuncsToZero(obj);
 
+#if defined ZR
+		Armor_Charge[obj] = 10000;
+#endif
+
 		SDKHook(obj, SDKHook_Think, VehicleThink);
 		SDKHook(obj, SDKHook_OnTakeDamage, VehicleTakeDamage);
 
@@ -343,8 +347,11 @@ bool Vehicle_Enter(int vehicle, int target)
 	if(index == -2)
 		return false;
 	
-	SetEntityCollisionGroup(target, COLLISION_GROUP_IN_VEHICLE);
-	SetEntityMoveType(target, MOVETYPE_NONE);
+	if(!b_ThisWasAnNpc[target])
+	{
+		SetEntityCollisionGroup(target, COLLISION_GROUP_IN_VEHICLE);
+		SetEntityMoveType(target, MOVETYPE_NONE);
+	}
 
 	if(index == -1)
 	{

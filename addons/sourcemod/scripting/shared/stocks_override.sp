@@ -36,10 +36,16 @@ stock void Stock_SetEntityMoveType(int entity, MoveType mt)
 		ThrowError("Do not dare! Dont set SetEntityMoveType on an NPC that isnt MOVECUSTOM.");
 		return;
 	}
-	else
+
+#if defined ZR
+	if(entity > 0 && entity <= MaxClients && Vehicle_Driver(entity) != -1)
 	{
-		SetEntityMoveType(entity, mt);
+		// Nuh uh, we're driving
+		mt = MOVETYPE_NONE;
 	}
+#endif
+	
+	SetEntityMoveType(entity, mt);
 }
 
 #define SetEntityMoveType Stock_SetEntityMoveType
