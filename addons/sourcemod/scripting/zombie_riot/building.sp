@@ -1630,7 +1630,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	int HealGiven;
 	if(newHealth >= 1 && Healing_Value >= 1) //for some reason its able to set it to 1
 	{
-		HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, new_ammo / 3);
+		HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, new_ammo / (i_IsVehicle[target] ? 15 : 3));
 		if(HealGiven <= 0)
 		{
 			switch(soundDef)
