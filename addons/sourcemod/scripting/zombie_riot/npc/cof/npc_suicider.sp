@@ -318,7 +318,7 @@ static void Suicider_SelfDefense(Suicider npc, float gameTime, int target, float
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.85;
 				npc.m_flSpeed = npc.b_Nightmare ? fl_DefaultSpeed_Suicider_Nightmare: fl_DefaultSpeed_Suicider;
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 			}

@@ -92,9 +92,49 @@
 	{
 		"en"	"Wizuh Ore"
 	}
-	"Cooking Stove"
+	"Material cash"
 	{
-		"en"	"Cooking Stove"
+		"en"	"Cash"
+	}
+	"Pickaxes and a Map"
+	{
+		"en"	"Pickaxes and a Map"
+	}
+	"Pickaxes and a Map Desc"
+	{
+		"en"	"We asked for a guide, all we got this.\n{green}Enemies and Ore Deposits move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{crimson}Prevents gaining alternative endings."
+	}
+	"Loud Firepower"
+	{
+		"en"	"Loud Firepower"
+	}
+	"Loud Firepower Desc"
+	{
+		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}but Stalker enemies roam the area."
+	}
+	"Heavy Equippment"
+	{
+		"en"	"Heavy Equippment"
+	}
+	"Heavy Equippment Desc"
+	{
+		"en"	"Our engineers say we need to follow ''guidelines'' to make our stuff safe.\n{green}Start with 50 Jalan, allies gain +125 max health, {red}but Ore Deposits and enemy buildings gain +15％ max health."
+	}
+	"Vehicle Production"
+	{
+		"en"	"Vehicle Production"
+	}
+	"Vehicle Production Desc"
+	{
+		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but Rogue Expidonsans appear more often."
+	}
+	"Void Blueprints"
+	{
+		"en"	"Void Blueprints"
+	}
+	"Void Blueprints Desc"
+	{
+		"en"	"I don't think we should be following these blueprints.\n{red}Start with +1 Risk"
 	}
 	"Ambulance"
 	{
@@ -150,7 +190,7 @@
 	}
 	"Research Station Desc"
 	{
-		"en"	"A building that can spend materials to research equippment and buildings."
+		"en"	"A construct that can spend materials to research equippment and buildings."
 	}
 	"Vehicle Factory"
 	{
@@ -158,7 +198,7 @@
 	}
 	"Vehicle Factory Desc"
 	{
-		"en"	"A building that can spend materials to build vehicles."
+		"en"	"A construct that can spend materials to build vehicles."
 	}
 	"Cooking Stove"
 	{
@@ -166,7 +206,7 @@
 	}
 	"Cooking Stove Desc"
 	{
-		"en"	"A building that can spend materials to cook various meals to buff allies."
+		"en"	"A construct that can spend materials to cook various meals to buff allies."
 	}
 	"Giant Lighthouse"
 	{
@@ -175,5 +215,253 @@
 	"Giant Lighthouse Desc"
 	{
 		"en" 		"TODO"
+	}
+	"Water Pump"
+	{
+		"en"	"Water Pump"
+	}
+	"Water Pump Desc"
+	{
+		"en"	"A construct that generates water but needs to be manually collected when finished."
+	}
+	"Base Level I"
+	{
+		"en"	"Base Level I"
+	}
+	"Base Level I Desc"
+	{
+		"en"	"Unlocks more upgrades and allows building constructs."
+	}
+	"Base Level II"
+	{
+		"en"	"Base Level II"
+	}
+	"Base Level II Desc"
+	{
+		"en"	"Unlocks more upgrades and increases construct traits."
+	}
+	"Base Level III"
+	{
+		"en"	"Base Level III"
+	}
+	"Base Level III Desc"
+	{
+		"en"	"Unlocks more upgrades and increases construct traits."
+	}
+	"Enchanced Water Pump"
+	{
+		"en"	"Enchanced Water Pump"
+	}
+	"Enchanced Water Pump Desc"
+	{
+		"en"	"Increases water gained from Water Pump by x2.0."
+	}
+	"Minting Station"
+	{
+		"en"	"Minting Station"
+	}
+	"Minting Station Desc"
+	{
+		"en"	"A construct that uses crystals to gain cash."
+	}
+	"Sawmill Factory"
+	{
+		"en"	"Sawmill Factory"
+	}
+	"Sawmill Factory Desc"
+	{
+		"en"	"A construct that generates wood but needs to be manually collected when finished."
+	}
+	"Enchanced Sawmill Factory"
+	{
+		"en"	"Enchanced Sawmill Factory"
+	}
+	"Enchanced Sawmill Factory Desc"
+	{
+		"en"	"Increases wood gained from Sawmill Factory by x2.0."
+	}
+	"Stonework Factory"
+	{
+		"en"	"Stonework Factory"
+	}
+	"Stonework Factory Desc"
+	{
+		"en"	"A construct that generates stone but needs to be manually collected when finished."
+	}
+	"Enchanced Stonework Factory"
+	{
+		"en"	"Enchanced Stonework Factory"
+	}
+	"Enchanced Stonework Factory Desc"
+	{
+		"en"	"Increases stone gained from Stonework Factory by x2.0."
+	}
+	"Small Construct Wall"
+	{
+		"en"	"Small Construct Wall"
+	}
+	"Small Construct Wall Desc"
+	{
+		"en"	"A construct that has a large health pool for tanking."
+	}
+	"Large Construct Wall"
+	{
+		"en"	"Large Construct Wall"
+	}
+	"Large Construct Wall Desc"
+	{
+		"en"	"A construct that has an even large health pool but consumes 2 slots."
+	}
+	"Extreme Construct Wall"
+	{
+		"en"	"Extreme Construct Wall"
+	}
+	"Extreme Construct Wall Desc"
+	{
+		"en"	"A construct that has an extremely large health pool but consumes 3 slots."
+	}
+	"Atomic Soda"
+	{
+		"en"	"Atomic Soda"
+	}
+	"Atomic Soda Desc"
+	{
+		"en"	"Don't ask Scout where it's from.\n{green}Players gain +1% movement speed"
+	}
+	"Critical Water"
+	{
+		"en"	"Critical Water"
+	}
+	"Critical Water Desc"
+	{
+		"en"	"With a new flavor.\n{green}Allies gain +5% damage bonus"
+	}
+	"Questionable Milk"
+	{
+		"en"	"Questionable Milk"
+	}
+	"Questionable Milk Desc"
+	{
+		"en"	"Now tell me, do think cows exist.\n{green}Allies gain +5％ max health"
+	}
+	"Festive Atomic Soda"
+	{
+		"en"	"Festive Atomic Soda"
+	}
+	"Festive Atomic Soda Desc"
+	{
+		"en"	"Extra spicy.\n{green}Players gain +2％ movement speed {red}but -5％ max health"
+	}
+	"Bread in Milk"
+	{
+		"en"	"Bread in Milk"
+	}
+	"Bread in Milk Desc"
+	{
+		"en"	"I guess it makes it soggy?\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
+	}
+	"Steamed Mackerel"
+	{
+		"en"	"Steamed Mackerel"
+	}
+	"Steamed Mackerel Desc"
+	{
+		"en"	"Isn't it just cooked then?\n{green}Allies gain +5％ attack speed"
+	}
+	"BBQ Mackerel"
+	{
+		"en"	"BBQ Mackerel"
+	}
+	"BBQ Mackerel Desc"
+	{
+		"en"	"Ocean to grill to sauce to my mouth.\n{green}Allies gain +10％ attack speed {red}but -5％ max health"
+	}
+	"Beer Bottle"
+	{
+		"en"	"Beer Bottle"
+	}
+	"Beer Bottle Desc"
+	{
+		"en"	"I need beer.\n{green}Allies gain +10％ damage bonus {red}but -1％ movement speed"
+	}
+	"The Sandvich"
+	{
+		"en"	"The Sandvich"
+	}
+	"The Sandvich Desc"
+	{
+		"en"	"A classic heavy snack.\n{green}Allies gain +5％ max health"
+	}
+	"The Dalokohs Bar"
+	{
+		"en"	"The Dalokohs Bar"
+	}
+	"The Dalokohs Bar Desc"
+	{
+		"en"	"A classic heavy desert.\n{green}Allies gain +5％ max health"
+	}
+	"The Buffalo Steak Sandvich"
+	{
+		"en"	"The Buffalo Steak Sandvich"
+	}
+	"The Buffalo Steak Sandvich Desc"
+	{
+		"en"	"A classic heavy, uh...\n{green}Allies gain +5％ damage bonus"
+	}
+	"The Fishcake"
+	{
+		"en"	"The Fishcake"
+	}
+	"The Fishcake Desc"
+	{
+		"en"	"Kind of like fish paste?\n{green}Allies gain +10％ max health {red}but -5％ attack speed"
+	}
+	"The Robo-Sandvich"
+	{
+		"en"	"The Robo-Sandvich"
+	}
+	"The Robo-Sandvich Desc"
+	{
+		"en"	"Ok now this is just silly.\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
+	}
+	"The Festive Sandvich"
+	{
+		"en"	"The Festive Sandvich"
+	}
+	"The Festive Sandvich Desc"
+	{
+		"en"	"Do we unwrap this or?\n{green}Allies gain +10％ max health {red}but -5％ damage bonus"
+	}
+	"The Second Banana"
+	{
+		"en"	"The Second Banana"
+	}
+	"The Second Banana Desc"
+	{
+		"en"	"Don't think of it.\n{green}Allies gain +1％ movement speed"
+	}
+	"Expidonsa Tech Chip"
+	{
+		"en"	"Expidonsa Tech Chip"
+	}
+	"Expidonsa Tech Chip Desc"
+	{
+		"en"	"Expidonsa technology, but something seems rather off about it.\n{yellow}Unlocks research Expidonsa Tech Chip Install"
+	}
+	"Rogue Expi Start 1"
+	{
+		"en"	"These Expidonsans don't seem to be on your side..?"
+	}
+	"Rogue Expi Start 2"
+	{
+		"en"	"These Expidonsans don't seem to be on your side..?"
+	}
+	"Expidonsa Tech Chip Install"
+	{
+		"en"	"Expidonsa Tech Chip Install"
+	}
+	"Expidonsa Tech Chip Install Desc"
+	{
+		"en"	"{blue}Should we install the Expidonsa Tech Chip into our system?"
 	}
 }

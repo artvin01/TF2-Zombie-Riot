@@ -339,8 +339,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_lelouch";	
 			
-			enemy.ExtraDamage *= 0.25;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.45); 
+			enemy.ExtraDamage *= 0.85;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.85); 
 		}
 		case 25:
 		{

@@ -79,7 +79,7 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
-	char WeaponSoundOverrideString[255];
+//	char WeaponSoundOverrideString[255];
 	char WeaponHudExtra[16];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
@@ -256,8 +256,8 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sweapon_sound_index_override", prefix);
 		this.WeaponSoundIndexOverride	= view_as<bool>(kv.GetNum(buffer, 0));
 
-		Format(buffer, sizeof(buffer), "%ssound_weapon_override_string", prefix);
-		kv.GetString(buffer, this.WeaponSoundOverrideString, sizeof(buffer));
+	//	Format(buffer, sizeof(buffer), "%ssound_weapon_override_string", prefix);
+	//	kv.GetString(buffer, this.WeaponSoundOverrideString, sizeof(buffer));
 
 		Format(buffer, sizeof(buffer), "%smodel_weapon_override", prefix);
 		kv.GetString(buffer, this.WeaponModelOverride, sizeof(buffer));
@@ -299,12 +299,6 @@ enum struct ItemInfo
 		else
 		{
 			this.WeaponModelIndexOverride = 0;
-		}
-
-		if(this.WeaponSoundOverrideString[0])
-		{
-			//precache the sound!
-			PrecacheSound(this.WeaponSoundOverrideString, true);
 		}
 	
 		
@@ -729,7 +723,7 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 	return 0.0;
 }
 
-stock float CooldownReductionAmount(int client)
+stock float CooldownReductionAmount()
 {
 	float Cooldown = 1.0;
 	if(MazeatItemHas())
@@ -739,7 +733,7 @@ stock float CooldownReductionAmount(int client)
 	return Cooldown;
 }
 
-void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1)
+void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1, bool ignoreCooldown = false)
 {
 	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
 	if(weapon != -1)
@@ -749,7 +743,8 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 			static Item item;
 			StoreItems.GetArray(StoreWeapon[weapon], item);
 #if defined ZR
-			cooldown *= CooldownReductionAmount(client);
+			if(!ignoreCooldown)
+				cooldown *= CooldownReductionAmount();
 #endif
 			
 			switch(what_slot)
@@ -1313,7 +1308,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 					{
 						if(item.GetItemInfo(OwnedItemIndex + i, info) && info.Cost)
 						{
-							ItemCostPap(client, item, info, info.Cost);
+							ItemCostPap(item, info.Cost);
 
 //							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, OwnedItemIndex + i, entity, userid);
 							FormatEx(data, sizeof(data), "%i;%i;%i", index, (OwnedItemIndex + i), userid);
@@ -1379,7 +1374,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 				ItemInfo info;
 				if(item.GetItemInfo(values[1], info) && info.Cost)
 				{ 	
-					ItemCostPap(client, item, info, info.Cost);
+					ItemCostPap(item, info.Cost);
 					if(PapPreviewMode[client])
 					{
 						//If client clicks on anything, view that pap instead.
@@ -5274,7 +5269,7 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
-	
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
@@ -5297,6 +5292,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 	if(removeWeapons)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 		TF2_RegeneratePlayer(client);
 		Manual_Impulse_101(client, health);
 		return;
@@ -5823,7 +5819,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] 				= class;
 					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
-					Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
+				//	Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;
@@ -6208,6 +6204,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Saga_Enable(client, entity);
 //		Enable_WeaponBoard(client, entity);
 		Enable_Casino(client, entity);
+		Enable_BuffPotion(client, entity);
 		Enable_Ludo(client, entity);
 		Enable_Rapier(client, entity);
 		Enable_Mlynar(client, entity);
@@ -6249,7 +6246,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
-		Ulpianus_Enable(client, entity);
+		Ulpianus_Enable(entity);
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
@@ -6601,7 +6598,7 @@ static int ItemSell(int base, int discount)
 	return RoundToCeil(cost * ratio);
 }
 
-static stock void ItemCostPap(int client, const Item item, const ItemInfo info, int &cost)
+static stock void ItemCostPap(const Item item, int &cost)
 {
 	if(Rogue_Mode())
 	{

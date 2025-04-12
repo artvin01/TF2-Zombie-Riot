@@ -2146,14 +2146,14 @@
 	}
 	"Alchemist Potion Pap 1"
 	{
-		"en"	"M2 now allows to throw an ally current active weapon buffing potions that grants a attackspeed bonus for the duration."
+		"en"	"M2 now allows you to thorw a buffing potion at an ally.\nNon buffed players have an arrow above them."
 		"fr"	"La potion secondaire donne aux coéquipiers un bonus de cadence des attaques pour une courte durée."
 		"ru"	"M2 теперь позволяет бросить союзнику зелье усиления для выбранного оружия, дающее бонус к скорости атаки на время действия."
 		"chi"   "M2现在允许向盟友投掷当前有效的武器强化药水，并在持续时间内获得攻速加成。"
 	}
 	"Alchemist Potion Pap 2"
 	{
-		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed.\nWorks with Terroriser Rifle!"
+		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed." //still works with terorriser, just unneeded to list. let them figure it out.
 		"fr"	"La potion secondaire applique une substance explosive sur les ennemis, causant une explosion quand ils sont tués.\nFonctionne en concert avec le Fusil Implanteur de Bombes Terroriseurs!"
 		"ru"	"Возможность нанести на врага взрывное покрытие, которое при убийстве вызывает взрыв.\nРаботает с винтовкой террориста!"
 		"chi"   "能够在敌人身上涂上一层爆炸衣，如果杀死敌人就会引起爆炸。与恐怖步枪一起工作!"
@@ -3145,7 +3145,7 @@
 	}
 	"Acid Rain Pap 1"
 	{
-		"en"	"Primary alt-fire ability ''More! MORE!'' hits one enemy for massive damage, trigger all bleed at once, heals yourself for 35％ max health (once per wave).\nSecondary and Melee also gain an alt-fire ability."
+		"en"	"Primary alt-fire ability ''Sepsis'' hits one enemy for massive damage, trigger all bleed at once, heals yourself for 35％ max health (once per wave).\nSecondary and Melee also gain an alt-fire ability."
 		"fr"	"Abilité arme principale «Encore! ENCORE!» : Frappez un ennemi pour infliger tous les dégats de saignement à la fois, et vous soigne pour 35％ santé. Peut être utilisé une fois par vague.\nVos armes secondaire et corps-à-corps reçoivent aussi une abilité."
 		"chi"	"主武器M2技能：''多来点！''\n对一名敌人造成大量伤害，激活所有流血，治疗自己35％血量。（每波一次性）\n副武器和近战也获得M2技能。"
 	}
@@ -3157,7 +3157,7 @@
 	}
 	"Punish Pap 1"
 	{
-		"en"	"Melee alt-fire ability ''Sepsis'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
+		"en"	"Melee alt-fire ability ''More! MORE!'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
 	}
 	"The Flagellant Pap 0"
 	{

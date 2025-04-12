@@ -1891,26 +1891,6 @@ void StatusEffects_Freeplay1()
 void StatusEffects_Freeplay2()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Spotter's Rally");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "S");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.34;
-	data.DamageDealMulti			= 1.0;
-	data.MovementspeedModif			= 1.25;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
-	data.Slot						= 0; //0 means ignored
-	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.65;
-	StatusEffect_AddGlobal(data);
-
-	data.LinkedStatusEffect = 0;
-	data.LinkedStatusEffectNPC = 0;
-	data.AttackspeedBuff = 0.0;
-
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Rampart I");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ξ1");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -2241,6 +2221,22 @@ void StatusEffects_Silence()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	RapidSuturingIndex = StatusEffect_AddGlobal(data);
 
+	//Stunned
+	strcopy(data.BuffName, sizeof(data.BuffName), "Stunned");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "?");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "?"); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ElementalLogic				= true; //dont get removed.
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_StunnedHud;
+	StatusEffect_AddGlobal(data);
+
 	//Immunity to stun effects
 	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
@@ -2298,6 +2294,10 @@ void StatusEffects_Silence()
 	StatusEffect_AddGlobal(data);
 }
 
+void Func_StunnedHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "?(%.1f)", Apply_StatusEffect.TimeUntillOver - GetGameTime());
+}
 stock void ExtinguishTargetDebuff(int victim)
 {
 	IgniteFor[victim] = 0;
@@ -3371,7 +3371,7 @@ void StatusEffects_Ruiania()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
 	data.Slot						= 0; //0 means ignored
@@ -3391,7 +3391,14 @@ void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 	//get the % of how much battery the npc has
 	float Ratio = fl_ruina_battery[victim] / fl_ruina_battery_max[victim] * 100.0;
 
-	Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
+	if(Ratio >= 101.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "[۞ MAX]", Ratio);
+	}
+	else
+	{
+		Format(HudToDisplay, SizeOfChar, "[۞ %.0f％]", Ratio);
+	}
 }
 
 stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
@@ -3797,7 +3804,7 @@ void OsmosisHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEf
 		return;
 
 #if defined ZR
-	if(!Osmosis_ClientGaveBuff[victim][attacker])
+	if(!IsIn_HitDetectionCooldown(victim,attacker, Osmosisdebuff))
 		Format(HudToDisplay, SizeOfChar, "⟁");
 #endif
 }

@@ -67,7 +67,7 @@ void AgentZack_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentZack(client, vecPos, vecAng, ally);
+	return AgentZack(vecPos, vecAng, ally);
 }
 methodmap AgentZack < CClotBody
 {
@@ -116,7 +116,7 @@ methodmap AgentZack < CClotBody
 	}
 	
 	
-	public AgentZack(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentZack(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentZack npc = view_as<AgentZack>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "700", ally));
 		

@@ -27,11 +27,9 @@ float fl_rally_timer[MAXENTITIES];
 bool b_rally_active[MAXENTITIES];
 
 static bool b_is_battery_buffed[MAXENTITIES];
-float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_battery_timeout[MAXENTITIES];
-float fl_ruina_battery_max[MAXENTITIES];
 
 float fl_ruina_helia_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
@@ -262,7 +260,7 @@ void Ruina_Ai_Core_Mapstart()
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
-	ApplyStatusEffect(client, client, "Ruina Battery Charge", 999.0);
+	ApplyStatusEffect(client, client, "Ruina Battery Charge", 9999.0);
 
 	Ruina_Remove_Shield(client);
 	b_ruina_npc[client] = true;

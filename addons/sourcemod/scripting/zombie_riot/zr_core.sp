@@ -218,6 +218,7 @@ enum
 	WEAPON_X10KNIFE = 141,
 	WEAPON_RUINA_DRONE_KNIFE = 142,
 	WEAPON_TORNADO_BLITZ = 143,
+	WEAPON_BUFFPOTION = 144,
 }
 
 enum
@@ -438,6 +439,7 @@ float fl_MatrixReflect[MAXENTITIES];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
+#include "zombie_riot/aprilfools_settings.sp"
 #include "zombie_riot/building.sp"
 #include "zombie_riot/database.sp"
 #include "zombie_riot/elemental.sp"
@@ -2398,6 +2400,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 
 	for(int client=1; client<=MaxClients; client++)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
@@ -2547,9 +2550,9 @@ int LevelToXp(int lv)
 
 float XpFloatGive[MAXTF2PLAYERS];
 
-void GiveXP(int client, int xp)
+void GiveXP(int client, int xp, bool freeplay = false)
 {
-	if(Waves_InFreeplay())
+	if(Waves_InFreeplay() && !freeplay)
 	{
 		//no xp in freeplay.
 		return;
@@ -2636,7 +2639,13 @@ void PlayerApplyDefaults(int client)
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
-		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+
+		if(f_BegPlayerToSetRagdollFade[client] != FAR_FUTURE && f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+
+		if(f_BegPlayerR_TeethSet[client] != FAR_FUTURE && f_BegPlayerR_TeethSet[client] < GetGameTime())
+			QueryClientConVar(client, "r_teeth", ConVarCallback_r_teeth);
+
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
 		if(point_difference > 0)

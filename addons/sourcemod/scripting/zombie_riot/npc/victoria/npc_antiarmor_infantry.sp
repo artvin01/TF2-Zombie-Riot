@@ -57,7 +57,7 @@ void VictoriaAntiarmorInfantry_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaAntiarmorInfantry(client, vecPos, vecAng, ally);
+	return VictoriaAntiarmorInfantry(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaAntiarmorInfantry < CClotBody
@@ -102,7 +102,7 @@ methodmap VictoriaAntiarmorInfantry < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public VictoriaAntiarmorInfantry(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaAntiarmorInfantry(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaAntiarmorInfantry npc = view_as<VictoriaAntiarmorInfantry>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.2", "9000", ally));
 		

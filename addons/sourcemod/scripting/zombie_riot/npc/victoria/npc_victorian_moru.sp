@@ -25,7 +25,7 @@ void VictorianDroneAnvil_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianDroneAnvil(client, vecPos, vecAng, ally, data);
+	return VictorianDroneAnvil(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianDroneAnvil < CClotBody
@@ -39,7 +39,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		EmitSoundToAll(g_HealSound, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.1, 110);
 	}
 	
-	public VictorianDroneAnvil(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictorianDroneAnvil(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
@@ -99,7 +99,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl",_,1,1.001,_,true);
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl",_,1,1.001,_,true);
 		Vec[0] += 15.5;
 		Vec[1] += 0.5;
 		Vec[2] -= 61.5;
@@ -108,7 +108,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 		
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/props_teaser/saucer.mdl",_,1,1.001,_,true);
+		npc.m_iWearable2 = npc.EquipItemSeperate("models/props_teaser/saucer.mdl",_,1,1.001,_,true);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 		

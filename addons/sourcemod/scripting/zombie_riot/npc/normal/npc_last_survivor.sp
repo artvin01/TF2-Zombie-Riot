@@ -112,7 +112,7 @@ public void FatherGrigori_OnMapStart_NPC()
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	PrecacheModel("models/zombie_riot/hl2/monk.mdl");
+	PrecacheModel("models/monk.mdl");
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
@@ -227,7 +227,7 @@ methodmap FatherGrigori < CClotBody
 	
 	public FatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
-		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
+		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -674,7 +674,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		else
 		{
 			startPosition[2] += 25.0;
-			makeexplosion(client, client, startPosition, "", 150, 175);
+			makeexplosion(client, startPosition, 150, 175);
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();

@@ -102,7 +102,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		}
 	}
 	fl_last_summon = 0.1;
-	return Valiant(vecPos, vecAng, team, data);
+	return Valiant(vecPos, vecAng, team);
 }
 
 methodmap Valiant < CClotBody
@@ -174,7 +174,7 @@ methodmap Valiant < CClotBody
 	}
 	
 	
-	public Valiant(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Valiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -286,7 +286,7 @@ methodmap Valiant < CClotBody
 					ShowGameText(client_check, "voice_player", 1, "%t", "Venium Spawn");	
 				}
 			}
-			TeleportDiversioToRandLocation(npc.index, 3000.0, 1800.0);
+			TeleportDiversioToRandLocation(npc.index, false, 3000.0, 1800.0);
 		}
 
 		float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec); float sky_loc[3]; sky_loc = npc_vec; sky_loc[2]+=999.0;

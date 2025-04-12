@@ -22,22 +22,26 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialStone(client, vecPos, vecAng, team);
+	return MaterialStone(vecPos, vecAng, team);
 }
 
 methodmap MaterialStone < CClotBody
 {
-	public MaterialStone(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialStone(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialStone npc = view_as<MaterialStone>(CClotBody(vecPos, vecAng, "models/props_wasteland/rockgranite01b.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
+		b_StaticNPC[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
+
+		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 
 		npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;

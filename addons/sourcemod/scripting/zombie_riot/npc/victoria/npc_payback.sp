@@ -52,7 +52,7 @@ void VictorianPayback_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianPayback(client, vecPos, vecAng, ally);
+	return VictorianPayback(vecPos, vecAng, ally);
 }
 
 methodmap VictorianPayback < CClotBody
@@ -104,7 +104,7 @@ methodmap VictorianPayback < CClotBody
 	}
 	
 	
-	public VictorianPayback(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianPayback(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.5", "8000", ally, false, true));
 		

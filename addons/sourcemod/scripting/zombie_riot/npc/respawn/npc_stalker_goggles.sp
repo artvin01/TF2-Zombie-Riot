@@ -148,7 +148,7 @@ methodmap StalkerGoggles < StalkerShared
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
 		npc.i_GunMode = Waves_GetRound();
 
-		TeleportDiversioToRandLocation(npc.index);
+		TeleportDiversioToRandLocation(npc.index, .forceSpawn = Rogue_Mode());
 
 		float flPos[3], flAng[3];
 		npc.GetAttachment("head", flPos, flAng);
@@ -292,7 +292,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	//2 waves passed or its a raid.
 	if(npc.i_GunMode <= (Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann || AppearedBefore_Suicide)
 	{
-		if(!Rogue_Mode() && npc.m_iSurrender == 0)
+		if(!Rogue_Mode() && !Construction_Mode() && npc.m_iSurrender == 0)
 		{
 			if(AppearedBefore_Suicide)
 			{
@@ -588,7 +588,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
-	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
+	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !Construction_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;

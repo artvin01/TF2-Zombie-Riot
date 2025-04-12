@@ -385,9 +385,9 @@ void Rogue_MapStart()
 	Rogue_Dome_Mapstart();
 }
 
-void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
+void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 {
-	if(!artifactOnly)
+	if(!artifactOnly[0])
 	{
 		PrecacheSound("misc/halloween/gotohell.wav");
 		PrecacheSound("music/stingers/hl1_stinger_song28.mp3");
@@ -415,7 +415,12 @@ void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
 	if(!VoteTimer)
 		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
-	if(!artifactOnly)
+	if(artifactOnly[0])
+	{
+		kv.Rewind();
+		kv.JumpToKey(artifactOnly);
+	}
+	else
 	{
 		kv.Rewind();
 		kv.JumpToKey("Rogue");
@@ -467,7 +472,7 @@ void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
 		delete Floors;
 	}
 
-	if(!artifactOnly)
+	if(!artifactOnly[0])
 	{
 		Curses = new ArrayList(sizeof(Curse));
 		Floors = new ArrayList(sizeof(Floor));
@@ -475,7 +480,7 @@ void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
 
 	Artifacts = new ArrayList(sizeof(Artifact));
 
-	if(!artifactOnly && kv.JumpToKey("Curses"))
+	if(!artifactOnly[0] && kv.JumpToKey("Curses"))
 	{
 		if(kv.GotoFirstSubKey(false))
 		{
@@ -513,7 +518,7 @@ void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
 		kv.GoBack();
 	}
 
-	if(!artifactOnly && kv.JumpToKey("Floors"))
+	if(!artifactOnly[0] && kv.JumpToKey("Floors"))
 	{
 		if(kv.GotoFirstSubKey())
 		{
@@ -549,7 +554,7 @@ void Rogue_SetupVote(KeyValues kv, bool artifactOnly = false)
 		kv.GoBack();
 	}
 
-	if(!artifactOnly)
+	if(!artifactOnly[0])
 	{
 		SteamWorks_UpdateGameTitle();
 		
@@ -2079,7 +2084,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
 	delete ProgressTimer;
-	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_ProgressTimer : Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_RoundStartTimer : Rogue_ProgressTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	if(hud)
 		SpawnTimer(time);
@@ -2335,7 +2340,7 @@ stock bool Rogue_HasNamedArtifact(const char[] name)
 	return false;
 }
 
-void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
+void Rogue_GiveNamedArtifact(const char[] name, bool silent = false, bool noFail = false)
 {
 	if(!CurrentCollection)
 		CurrentCollection = new ArrayList();
@@ -2399,7 +2404,8 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 		}
 	}
 
-	PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
+	if(!noFail)
+		PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
 }
 
 stock void Rogue_RemoveNamedArtifact(const char[] name)

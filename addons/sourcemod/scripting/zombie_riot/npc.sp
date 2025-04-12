@@ -88,7 +88,13 @@ void NPC_ConfigSetup()
 	// Buildings
 
 	// Constructs
+	ObjectResearch_MapStart();
+	ObjectWall_MapStart();
+	ObjectPump_MapStart();
+	ObjectWood_MapStart();
+	ObjectStone_MapStart();
 	ObjectConstruction_LightHouse_MapStart();
+	ObjectMinter_MapStart();
 	ObjectStove_MapStart();
 	ObjectFactory_MapStart();
 	// Constructs
@@ -918,8 +924,6 @@ void NPC_ConfigSetup()
 	DimensionalFragment_OnMapStart_NPC();
 	ImmutableHeavy_OnMapStart_NPC();
 	VanishingMatter_OnMapStart_NPC();
-	FreeplaySigmaller_OnMapStart_NPC();
-	Spotter_OnMapStart_NPC();
 	Erasus_OnMapStart_NPC();
 	AnnoyingSpirit_OnMapStart_NPC();
 	FogOrbHeavy_OnMapStart_NPC();
@@ -1109,6 +1113,7 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 			{
 				Rogue_EnemySpawned(entity);
 				Waves_EnemySpawned(entity);
+				Construction_EnemySpawned(entity);
 			}
 			Waves_UpdateMvMStats();
 		}
@@ -1266,6 +1271,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/construction/obj_const_stove.sp"
 #include "zombie_riot/object/construction/obj_const_factory.sp"
 //#include "zombie_riot/object/construction/obj_hospital.sp"
+#include "zombie_riot/object/construction/obj_const_research.sp"
+#include "zombie_riot/object/construction/obj_const_pump.sp"
+#include "zombie_riot/object/construction/obj_const_wood.sp"
+#include "zombie_riot/object/construction/obj_const_stone.sp"
+#include "zombie_riot/object/construction/obj_const_minter.sp"
+#include "zombie_riot/object/construction/obj_const_wall.sp"
 
 // VEHICLES
 #include "shared/vehicles/vehicle_shared.sp"
@@ -2071,8 +2082,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/mutations/freeplay/npc_dimensionfrag.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_immutableheavy.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_vanishingmatter.sp"
-#include "zombie_riot/npc/mutations/freeplay/npc_freeplay_sigmaller.sp"
-#include "zombie_riot/npc/mutations/freeplay/npc_spotter.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_annoying_spirit.sp"
 #include "zombie_riot/npc/mutations/freeplay/npc_darkenedheavy.sp"
 

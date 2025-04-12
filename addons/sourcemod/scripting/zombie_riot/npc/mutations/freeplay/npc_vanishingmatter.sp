@@ -95,7 +95,7 @@ methodmap VanishingMatter < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(VanishingMatter_ClotThink);
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 325.0;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -191,13 +191,15 @@ public void VanishingMatter_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.35))
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > RoundToCeil(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 0.5))
 	{
-		npc.Anger = true;
+		npc.Anger = false;
+		int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.004);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
 	}
 	else
 	{
-		npc.Anger = false;
+		npc.Anger = true;
 	}
 
 	if(npc.Anger)
@@ -219,11 +221,10 @@ public Action VanishingMatter_OnTakeDamage(int victim, int &attacker, int &infli
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	if (!npc.Anger)
+	if (!npc.Anger && damage > 20000.0)
 	{
-		damage = 1.0;
-		int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.0075);
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
+		damage = 20000.0;
+		return Plugin_Handled;
 	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -276,18 +277,23 @@ void VanishingMatterSelfDefense(VanishingMatter npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 200.0;
+					float damageDealt = 150.0;
 
 					if(!npc.Anger)
 					{
-						damageDealt = 75.0;
+						damageDealt = 100.0;
 					}
+
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2.5;
 						
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					if(!npc.Anger)
+					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") > 2)
 					{
-						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.02);
+						int newhp = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.01);
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") - newhp);
+						if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < 0)
+							SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 					}
 
 					// Hit sound

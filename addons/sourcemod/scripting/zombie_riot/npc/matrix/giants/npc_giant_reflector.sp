@@ -66,9 +66,9 @@ void GiantReflector_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return GiantReflector(client, vecPos, vecAng, ally, data);
+	return GiantReflector(vecPos, vecAng, ally);
 }
 
 static char[] GetPanzerHealth()
@@ -138,7 +138,7 @@ methodmap GiantReflector < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public GiantReflector(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public GiantReflector(float vecPos[3], float vecAng[3], int ally)
 	{
 		GiantReflector npc = view_as<GiantReflector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.3", GetPanzerHealth(), ally));
 

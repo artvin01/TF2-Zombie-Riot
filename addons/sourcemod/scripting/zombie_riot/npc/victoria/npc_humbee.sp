@@ -23,7 +23,7 @@ void VictorianHumbee_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianHumbee(client, vecPos, vecAng, ally, data);
+	return VictorianHumbee(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianHumbee < CClotBody
@@ -37,7 +37,7 @@ methodmap VictorianHumbee < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.6, _);
 	}
 	
-	public VictorianHumbee(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictorianHumbee(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianHumbee npc = view_as<VictorianHumbee>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "9000", ally, _, true));
 		
@@ -84,7 +84,7 @@ methodmap VictorianHumbee < CClotBody
 
 		if(npc.g_TimesSummoned == 0)
 		{
-			npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl");
+			npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");
 			SetVariantString("1.5");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		}
@@ -103,7 +103,7 @@ static void ClotThink(int iNPC)
 		{
 			if(!IsValidEntity(npc.m_iWearable2))
 			{
-				npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/workshop/player/items/heavy/road_rager/road_rager.mdl");
+				npc.m_iWearable2 = npc.EquipItemSeperate("models/workshop/player/items/heavy/road_rager/road_rager.mdl");
 				SetVariantString("1.5");
 				AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			}
@@ -221,6 +221,8 @@ static void ClotDeath(int entity)
 		fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 		b_StaticNPC[other] = b_StaticNPC[npc.index];
+		if(b_StaticNPC[other])
+			AddNpcToAliveList(other, 1);
 	}
 
 	if(IsValidEntity(npc.m_iWearable1))

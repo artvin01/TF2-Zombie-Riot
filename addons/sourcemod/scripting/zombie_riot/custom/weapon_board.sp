@@ -837,7 +837,7 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 35)
 	char model[PLATFORM_MAX_PATH];
 	ModelIndexToString(ModelIndex, model, PLATFORM_MAX_PATH);
 
-	int Glow = TF2_CreateGlow_White(WeaponModel, model, client, f_WeaponSizeOverride[active]);
+	int Glow = TF2_CreateGlow_White(model, client, f_WeaponSizeOverride[active]);
 	SetVariantColor(view_as<int>({255, 255, 255, 200}));
 	AcceptEntityInput(Glow, "SetGlowColor");
 	//save for deletion when they switch away too fast

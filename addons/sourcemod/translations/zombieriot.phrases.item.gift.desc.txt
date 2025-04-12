@@ -2500,15 +2500,7 @@
 	}
 	"Vanishing Matter Desc"
 	{
-		"en"	"It begs for the pain to stop...\nThey seem to be invulnerable when they appear, but as they attack, they slowly begin to vanish.\nMake sure to take them down fast when they become vulnerable.\n(Silence) Reduces its attackspeed greatly."
-	}
-	"Spotter Desc"
-	{
-		"en"	"Tasked to train with the mercs in Koshi's simulator.\nTry to keep him alive, and he'll reward you with a special buff! (Lasts longer on NPCs than players.)\nHe also silences and knocks enemies away, is capable of sustaining himself to an extent."
-	}
-	"SIGMALLER Desc"
-	{
-		"en"	"One of Koshi's weird, crazy antics.\nWhen it spawns, all enemies are fully healed and buffed.\nYou MUST take it down before the other enemies.\nOtherwise, you won't like the sound that his horn makes..."
+		"en"	"It begs for the pain to stop...\nIt slowly vanishes overtime. As it attacks, it vanishes faster.\nSeems to have some sort of barrier that prevents it from being instantly killed...\n(Silence) Reduces its enraged attackspeed greatly."
 	}
 	"Annoying Spirit Desc"
 	{
@@ -2517,5 +2509,33 @@
 	"Darkened Heavy Desc"
 	{
 		"en"	"Taken by an unknown force, it was converted into an obscure, dark entity.\nDamaging it outside its aura causes it to heal.\n''The darkness is coming. You need to run.''"
+	}
+	"Intense Training"
+	{
+		"en"	"Intense Training"
+	}
+	"Intense Training Desc"
+	{
+		"en"	"You decide to push yourself further.\nIncludes all the effects of the Chaos Intrusion modifier!\nSpeeds up enemy health and damage scaling by a low amount each wave.\nIncreases enemy buff durations by 20%% and setups add +1 skull."
+	}
+	"Muscle Refiner"
+	{
+		"en"	"Muscle Refiner"
+	}
+	"Muscle Refiner Desc"
+	{
+		"en"	"You'll give it your all!!\nIncludes all the effects of the Secondary Mercs modifier!\nSpeeds up enemy health and damage scaling by a medium amount each wave.\nIncreases enemy buff durations by 40%% and setups add +2 skulls."
+	}
+	"Soul-Squeezer"
+	{
+		"en"	"Soul-Squeezer"
+	}
+	"Soul-Squeezer Desc"
+	{
+		"en"	"One must imagine the Simulation being infinite.\nIncludes all the effects of the OLD TIMES modifier!\nSpeeds up enemy health and damage scaling by a big amount each wave.\nDOUBLES enemy buff durations and setups add +3 skulls."
+	}
+	"Crystallized Horror Desc" // WIP
+	{
+		"en" 	"A being made out of chaos and void combined..."
 	}
 }

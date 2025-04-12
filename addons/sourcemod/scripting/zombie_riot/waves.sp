@@ -139,6 +139,10 @@ static char LastWaveWas[64];
 static int Freeplay_Info;
 //static bool Freeplay_w500reached;
 static float MinibossScalingHandle = 1.0;
+static float Freeplay_TimeCash;
+static float Freeplay_CashTimeLeft;
+static float Freeplay_TimeExp;
+static float Freeplay_ExpTimeLeft;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -214,6 +218,15 @@ void Waves_MapStart()
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
 
 	Waves_UpdateMvMStats();
+	Freeplay_TimeCash = 0.0;
+	Freeplay_CashTimeLeft = 0.0;
+	Freeplay_TimeExp = 0.0;
+	Freeplay_ExpTimeLeft = 0.0;
+}
+
+int Waves_MapSeed()
+{
+	return MapSeed;
 }
 
 void Waves_PlayerSpawn(int client)
@@ -319,12 +332,17 @@ bool Waves_CallVote(int client, int force = 0)
 				if(length >= 4 && vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
+					if(AprilFoolsIconOverride() == STEAM_HAPPY)
+						Format(vote.Name, sizeof(vote.Name), "Steam Happy (Cooldown)");
 					menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
 				}
 				// Unlocks (atleast one player needs it)
 				else if(vote.Unlock1[0] && (!Items_HasNamedItem(client, vote.Unlock1) || (vote.Unlock2[0] && !Items_HasNamedItem(client, vote.Unlock2))))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (%s)", vote.Name, vote.Append);
+					if(AprilFoolsIconOverride() == STEAM_HAPPY)
+						Format(vote.Name, sizeof(vote.Name), "Steam Happy (%s)", vote.Append);
+						
 					menu.AddItem(vote.Config, vote.Name, (Items_HasNamedItem(0, vote.Unlock1) && (!vote.Unlock2[0] || Items_HasNamedItem(0, vote.Unlock2))) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 				}
 				else
@@ -1566,13 +1584,12 @@ void Waves_ClearWaves()
 
 void Waves_Progress(bool donotAdvanceRound = false)
 {
-	/*
-	PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
+	/*PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
 		Rounds ? 1 : 0,
 		CvarNoRoundStart.BoolValue ? 0 : 1,
 		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
-		Cooldown > GetGameTime() ? 0 : 1);
-	*/
+		Cooldown > GetGameTime() ? 0 : 1);*/
+	
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime())
 		return;
 
@@ -2429,7 +2446,9 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_4");
 				}
 			}
-			FreeplayTimeLimit = GetGameTime() + 3600.0; //one hour.
+			FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
+			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash AND experience you'll get!");
+			CreateTimer(0.1, Freeplay_ExtraCashTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			DeleteShadowsOffZombieRiot();
 			Freeplay_Info = 0;
 		}
@@ -2440,6 +2459,62 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 	}
 
 	return Plugin_Continue;
+}
+
+static Action Freeplay_ExtraCashTimer(Handle timer)
+{
+	if(FreeplayTimeLimit < GetGameTime())
+	{
+		return Plugin_Stop;
+	}
+
+	if(Freeplay_CashTimeLeft < GetGameTime())
+	{
+		if(Freeplay_TimeCash > 0.0)
+		{
+			Freeplay_TimeCash -= 7.5;
+			if(Freeplay_TimeCash < 0.0)
+				Freeplay_TimeCash = 0.0;
+		}
+	}
+
+	if(Freeplay_ExpTimeLeft < GetGameTime())
+	{
+		if(Freeplay_TimeExp > 0.0)
+		{
+			Freeplay_TimeExp -= 5.0;
+			if(Freeplay_TimeExp < 0.0)
+				Freeplay_TimeExp = 0.0;
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+void Freeplay_SetCashTime(float duration)
+{
+	Freeplay_CashTimeLeft = duration;
+}
+float Freeplay_GetRemainingCash()
+{
+	return Freeplay_TimeCash;
+}
+void Freeplay_SetRemainingCash(float amount)
+{
+	Freeplay_TimeCash = amount;
+}
+
+void Freeplay_SetExpTime(float duration)
+{
+	Freeplay_ExpTimeLeft = duration;
+}
+float Freeplay_GetRemainingExp()
+{
+	return Freeplay_TimeExp;
+}
+void Freeplay_SetRemainingExp(float amount)
+{
+	Freeplay_TimeExp = amount;
 }
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
@@ -2880,12 +2955,12 @@ static int GetObjectiveResource()
 {
 	return FindEntityByClassname(-1, "tf_objective_resource");
 }
-
+/*
 static int GetMvMStats()
 {
 	return FindEntityByClassname(-1, "tf_mann_vs_machine_stats");
 }
-
+*/
 void Waves_UpdateMvMStats(int frames = 10)
 {
 	if(!UpdateFramed)
@@ -3025,6 +3100,8 @@ static void UpdateMvMStatsFrame()
 							{
 								strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 							}
+							if(AprilFoolsIconOverride() == STEAM_HAPPY)
+								strcopy(icon[b], sizeof(icon[]), "steamhappy");
 						}
 
 						count[b] += num;
@@ -3077,6 +3154,8 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 						}
+						if(AprilFoolsIconOverride() == STEAM_HAPPY)
+							strcopy(icon[b], sizeof(icon[]), "steamhappy");
 					}
 					
 					break;
@@ -3134,6 +3213,8 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 						}
+						if(AprilFoolsIconOverride() == STEAM_HAPPY)
+							strcopy(icon[b], sizeof(icon[]), "steamhappy");
 					}
 					
 					break;
@@ -3180,6 +3261,10 @@ static void UpdateMvMStatsFrame()
 
 void Waves_SetCreditAcquired(int amount)
 {
+	//No warning, this is unused as of now.
+	amount += 1;
+	amount = amount + 1;
+	/*
 	int mvm = GetMvMStats();
 	if(mvm != -1)
 	{
@@ -3194,6 +3279,7 @@ void Waves_SetCreditAcquired(int amount)
 		SetVariantString(buffer);
 		AcceptEntityInput(mvm, "RunScriptCode");
 	}
+	*/
 }
 
 static int SetupFlags(const Enemy data, bool support)
@@ -3753,7 +3839,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{
 						SetHudTextParams(-1.0, -1.0, 5.0, 255, 135, 0, 255);
-						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further? :3");
+						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further?");
 					}
 				}
 			}

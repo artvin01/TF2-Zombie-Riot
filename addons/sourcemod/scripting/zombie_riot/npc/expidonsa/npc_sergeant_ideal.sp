@@ -213,12 +213,12 @@ methodmap SergeantIdeal < CClotBody
 
 		if(npc.g_TimesSummoned == 0)
 		{
-			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
+			npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
 			SetVariantString("2.5");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		}
 
-	//	npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
+	//	npc.m_iWearable7 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
 	//	SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_flModelScale", -2.5);
 
 
@@ -257,7 +257,7 @@ public void SergeantIdeal_ClotThink(int iNPC)
 		{
 			if(!IsValidEntity(npc.m_iWearable6))
 			{
-				npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
+				npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
 				SetVariantString("2.5");
 				AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
@@ -272,7 +272,7 @@ public void SergeantIdeal_ClotThink(int iNPC)
 			/*
 			if(!IsValidEntity(npc.m_iWearable7))
 			{
-				npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
+				npc.m_iWearable7 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
 				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_flModelScale", -2.5);
 			}
 			else

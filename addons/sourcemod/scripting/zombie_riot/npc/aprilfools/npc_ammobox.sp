@@ -34,7 +34,7 @@ void AmmoBox_OnMapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return AmmoBox(vecPos, vecAng, team, data);
+	return AmmoBox(vecPos, team, data);
 }
 static int Garrison[MAXENTITIES];
 
@@ -55,7 +55,7 @@ methodmap AmmoBox < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public AmmoBox(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public AmmoBox(float vecPos[3], int ally, const char[] data)
 	{
 		AmmoBox npc = view_as<AmmoBox>(CClotBody(vecPos, {0.0, 0.0, 0.0}, NPCModel, "1.0", "30000", ally, false, true));
 		i_NpcWeight[npc.index] = 5;
@@ -90,7 +90,6 @@ methodmap AmmoBox < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDissapearOnDeath = true;
-		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		
 		npc.m_flMeleeArmor = 0.69;
 		npc.m_flRangedArmor = 0.69;
@@ -145,7 +144,7 @@ public void AmmoBox_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
+		npc.m_iTarget = GetClosestTarget(npc.index);
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		if(npc.m_iTarget < 1)
 		{
@@ -291,12 +290,14 @@ void AmmoBox_NPCDeath(int entity)
 					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
 					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
-					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.30;
-					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.30;
+					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
+					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -313,12 +314,14 @@ void AmmoBox_NPCDeath(int entity)
 					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
 					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
-					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.30;
-					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.30;
+					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
+					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -335,12 +338,14 @@ void AmmoBox_NPCDeath(int entity)
 					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
 					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
-					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.30;
-					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.30;
+					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
+					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -357,12 +362,14 @@ void AmmoBox_NPCDeath(int entity)
 					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
 					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
-					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.20;
-					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.20;
+					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
+					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -379,12 +386,14 @@ void AmmoBox_NPCDeath(int entity)
 					SetEntProp(other, Prop_Data, "m_iHealth", 10000);
 					SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
 			
-					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.20;
-					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.20;
+					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
+					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}
@@ -401,12 +410,14 @@ void AmmoBox_NPCDeath(int entity)
 					SetEntProp(other, Prop_Data, "m_iHealth", 5000);
 					SetEntProp(other, Prop_Data, "m_iMaxHealth", 5000);
 			
-					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.10;
-					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.10;
+					fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
+					fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
 					fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
 					fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 					b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 					b_StaticNPC[other] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[other])
+						AddNpcToAliveList(other, 1);
 				}
 			}
 		}

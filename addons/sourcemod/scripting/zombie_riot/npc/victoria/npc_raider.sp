@@ -62,7 +62,7 @@ void VictorianRaider_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianRaider(client, vecPos, vecAng, ally);
+	return VictorianRaider(vecPos, vecAng, ally);
 }
 
 methodmap VictorianRaider < CClotBody
@@ -102,7 +102,7 @@ methodmap VictorianRaider < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.2);
 	}
 
-	public VictorianRaider(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianRaider(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianRaider npc = view_as<VictorianRaider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "2250", ally));
 		

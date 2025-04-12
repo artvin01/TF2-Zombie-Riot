@@ -230,7 +230,7 @@ methodmap XenoFatherGrigori < CClotBody
 	
 	public XenoFatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
-		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
+		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -706,7 +706,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		else
 		{
 			startPosition[2] += 25.0;
-			makeexplosion(client, client, startPosition, "", 150, 175);
+			makeexplosion(client, startPosition, 150, 175);
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1_Xeno, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();

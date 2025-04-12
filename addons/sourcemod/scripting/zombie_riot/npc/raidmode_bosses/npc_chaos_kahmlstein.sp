@@ -146,7 +146,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	PrecacheSoundArray(g_BobSuperMeleeCharge);
-	PrecacheSoundCustom("#zombiesurvival/internius/khamlstein.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/chaos_reigns.mp3");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 }
@@ -407,12 +407,12 @@ methodmap ChaosKahmlstein < CClotBody
 				{
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
 					MusicEnum music;
-					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
-					music.Time = 294;
-					music.Volume = 1.5;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns.mp3");
+					music.Time = 280;
+					music.Volume = 1.65;
 					music.Custom = true;
-					strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
-					strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 					Music_SetRaidMusic(music);
 				}
 				else
@@ -608,12 +608,12 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			else
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
-				music.Time = 294;
-				music.Volume = 1.5;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns.mp3");
+				music.Time = 280;
+				music.Volume = 1.65;
 				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
-				strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+				strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 				Music_SetRaidMusic(music);
 				i_khamlCutscene[npc.index] = 0;
 			}
@@ -719,12 +719,12 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
 					MusicEnum music;
-					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
-					music.Time = 294;
-					music.Volume = 1.5;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns.mp3");
+					music.Time = 280;
+					music.Volume = 1.65;
 					music.Custom = true;
-					strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
-					strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 					Music_SetRaidMusic(music);
 				}
 			}

@@ -69,7 +69,7 @@ void AgentWayne_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentWayne(client, vecPos, vecAng, ally);
+	return AgentWayne(vecPos, vecAng, ally);
 }
 methodmap AgentWayne < CClotBody
 {
@@ -112,7 +112,7 @@ methodmap AgentWayne < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentWayne(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentWayne(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentWayne npc = view_as<AgentWayne>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
 		

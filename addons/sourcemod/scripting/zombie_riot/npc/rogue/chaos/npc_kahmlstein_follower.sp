@@ -197,7 +197,7 @@ methodmap KahmlsteinFollower < CClotBody
 	
 	public KahmlsteinFollower(float vecPos[3], float vecAng[3],int ally, const char[] data)
 	{
-		KahmlsteinFollower npc = view_as<KahmlsteinFollower>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "50000", TFTeam_Red, true, true));
+		KahmlsteinFollower npc = view_as<KahmlsteinFollower>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "50000", ally, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");

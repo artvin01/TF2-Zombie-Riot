@@ -35,7 +35,7 @@ static void ClotPrecache()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Interstellar_Weaver_Mid(client, vecPos, vecAng, team, StringToFloat(data));
+	return Interstellar_Weaver_Mid(vecPos, vecAng, team, StringToFloat(data));
 }
 
 methodmap Interstellar_Weaver_Mid < CClotBody
@@ -54,7 +54,7 @@ methodmap Interstellar_Weaver_Mid < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
-	public Interstellar_Weaver_Mid(int client, float vecPos[3], float vecAng[3], int ally, float in_line_id)
+	public Interstellar_Weaver_Mid(float vecPos[3], float vecAng[3], int ally, float in_line_id)
 	{
 		Interstellar_Weaver_Mid npc = view_as<Interstellar_Weaver_Mid>(CClotBody(vecPos, vecAng, INTERSTELLAR_WEAVER_MODEL, INTERSTELLAR_WEAVER_MODEL_SIZE, "1250", ally));
 		
@@ -86,6 +86,7 @@ methodmap Interstellar_Weaver_Mid < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
+		fl_TotalArmor[npc.index] = 0.5;
 
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;

@@ -2573,6 +2573,14 @@
 	{
 		"en"	"Vengeful Spirit"
 	}
+	"Wandering Spitit"
+	{
+		"en"	"Wandering Spitit"
+	}
+	"Vengeful Spitit"
+	{
+		"en"	"Vengeful Spitit"
+	}
 	"Fallen Warrior"
 	{
 		"en"	"Guln the Fallen One"
@@ -3182,14 +3190,6 @@
 	"Sentinel Desc"
 	{
 		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
-	}
-	"Antinel"
-	{
-		"en"		"Antinel"
-	}
-	"SIGMALLER"
-	{
-		"en"		"SIGMALLER"
 	}
 	"Ironborus"
 	{
@@ -4046,10 +4046,6 @@
 	{
 		"en" "Vanishing Matter"
 	}
-	"Spotter"
-	{
-		"en" "Spotter"
-	}
 	"Annoying Spirit"
 	{
 		"en" "Annoying Spirit"
@@ -4133,5 +4129,9 @@
 	"Troll Brawler"
 	{
 		"en"	"Troll Brawler"
+	}
+	"Crystallized Horror"
+	{
+		"en" 	"Crystallized Horror"
 	}
 }

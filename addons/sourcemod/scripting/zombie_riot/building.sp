@@ -556,6 +556,9 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 										if(Rogue_Mode())
 											CooldownGive *= 0.5;
 											
+										if(Construction_Mode())
+											CooldownGive *= 3.0;
+										
 										info.Cooldowns[client] = GetGameTime() + CooldownGive;
 										BuildingList.SetArray(id, info);
 									}
@@ -1408,6 +1411,9 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	{
 		return;
 	}
+	if(!i_NpcIsABuilding[target])
+		return;
+	//Cant repair non buildings......
 	int max_health = ReturnEntityMaxHealth(target);
 	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 	
@@ -1521,6 +1527,9 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
 	{
 		return;
 	}
+	if(!i_NpcIsABuilding[target])
+		return;
+	//Cant repair non buildings......
 	int max_health = ReturnEntityMaxHealth(target);
 	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 	

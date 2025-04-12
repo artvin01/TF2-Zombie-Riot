@@ -36,9 +36,9 @@ int BarrackVillager_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackVillager(client, vecPos, vecAng, ally);
+	return BarrackVillager(client, vecPos, vecAng);
 }
 
 methodmap BarrackVillager < BarrackBody
@@ -94,7 +94,7 @@ methodmap BarrackVillager < BarrackBody
 			}
 		}
 	}
-	public BarrackVillager(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackVillager(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackVillager npc = view_as<BarrackVillager>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_king.mdl"));
 		

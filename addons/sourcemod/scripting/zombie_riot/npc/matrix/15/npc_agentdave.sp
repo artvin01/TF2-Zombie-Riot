@@ -68,7 +68,7 @@ void AgentDave_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentDave(client, vecPos, vecAng, ally);
+	return AgentDave(vecPos, vecAng, ally);
 }
 methodmap AgentDave < CClotBody
 {
@@ -109,7 +109,7 @@ methodmap AgentDave < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentDave(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentDave(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentDave npc = view_as<AgentDave>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "700", ally));
 		

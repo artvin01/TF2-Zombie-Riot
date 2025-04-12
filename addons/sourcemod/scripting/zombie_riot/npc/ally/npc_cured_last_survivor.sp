@@ -744,7 +744,7 @@ methodmap CuredFatherGrigori < CClotBody
 		char SizeDo[256];
 
 		if(i_SpecialGrigoriReplace == 0)
-			FormatEx(ModelDo, sizeof(ModelDo), "models/zombie_riot/hl2/monk.mdl");
+			FormatEx(ModelDo, sizeof(ModelDo), "models/monk.mdl");
 		else
 			FormatEx(ModelDo, sizeof(ModelDo), "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl");
 			
@@ -761,6 +761,7 @@ methodmap CuredFatherGrigori < CClotBody
 			b_NameNoTranslation[npc.index] = true;
 		}
 
+		
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

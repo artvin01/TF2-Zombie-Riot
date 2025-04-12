@@ -500,6 +500,11 @@ methodmap GodAlaxios < CClotBody
 			Music_SetRaidMusic(music);
 		}
 		Citizen_MiniBossSpawn();
+
+		if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
+		{
+			RaidModeTime += 100.0;
+		}
 		
 
 		//Sea version: lobotomy corp - insignia decay
@@ -1350,9 +1355,8 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_medic",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_guard",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_beserker",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_beserker",200000, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_pathshaper", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
-				GodAlaxiosSpawnEnemy(npc.index,"npc_tidelinkedarchon", RoundToCeil(200000.0 * MultiGlobalHighHealthBoss), 1);
 			}
 			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 			{
@@ -1361,12 +1365,12 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.g_TimesSummoned = 4;
 				npc.PlaySummonSound();
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",100000, RoundToCeil(1.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_longrange",75000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseapredator",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_vanguard",50000, RoundToCeil(1.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_longrange",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseapredator",70000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_netherseaspewer",50000, RoundToCeil(20.0 * MultiGlobalEnemy));	
-				GodAlaxiosSpawnEnemy(npc.index,"npc_isharmla", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);	
-				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_specialist",100000, RoundToCeil(20.0 * MultiGlobalEnemy));	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_isharmla", RoundToCeil(1000000.0 * MultiGlobalHighHealthBoss), 1, true);	
+				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_specialist",7000, RoundToCeil(20.0 * MultiGlobalEnemy));	
 			}	
 		}
 		else
@@ -1460,7 +1464,7 @@ public void GodAlaxios_NPCDeath(int entity)
 		else
 		{
 			CPrintToChatAll("{lightblue}God Alaxios{default}: Im.. im free..?");
-			CPrintToChatAll("{lightblue}God Alaxios{default}: He IMMEDIETLY leaves the battlefield... you couldnt even trace him.");
+			CPrintToChatAll("{lightblue}God Alaxios instnatly leaves the battlefield... you couldnt even trace him.");
 		}
 	}
 	else
@@ -1556,16 +1560,6 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 		int postWaves = CurrentRound - Waves_GetMaxRound();
 		char npc_classname[60];
 		NPC_GetPluginById(i_NpcInternalId[enemy.Index], npc_classname, sizeof(npc_classname));
-		if(StrEqual(npc_classname, "npc_medival_achilles") || StrEqual(npc_classname, "npc_medival_monk") || StrEqual(npc_classname, "npc_medival_villager") || StrEqual(npc_classname, "npc_medival_son_of_osiris"))
-		{	
-			enemy.Health = RoundToCeil(enemy.Health * 0.75);
-		}
-
-		if(StrEqual(npc_classname, "npc_medival_son_of_osiris"))
-		{	
-			enemy.Health = RoundToCeil(enemy.Health * 0.5);
-			enemy.ExtraSpeed = 0.5;
-		}
 
 		Freeplay_AddEnemy(postWaves, enemy, count, true);
 		if(count > 0)
