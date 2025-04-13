@@ -95,7 +95,7 @@ methodmap Victorian_Radioguard < CClotBody
 
 	public Victorian_Radioguard(float vecPos[3], float vecAng[3], int ally)
 	{
-		Victorian_Radioguard npc = view_as<Victorian_Radioguard>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "80000", ally));
+		Victorian_Radioguard npc = view_as<Victorian_Radioguard>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "80000", ally, isGiant = true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
