@@ -697,7 +697,7 @@ methodmap Twirl < CClotBody
 			music.Volume = 1.65;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "Ruler Of Ruina Decends");
-			strcopy(music.Artist, sizeof(music.Artist), "Granpda Bard");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);	
 		}
 		

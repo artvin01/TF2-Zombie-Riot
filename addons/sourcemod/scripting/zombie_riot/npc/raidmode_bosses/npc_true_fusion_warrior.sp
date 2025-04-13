@@ -438,7 +438,7 @@ methodmap TrueFusionWarrior < CClotBody
 		music.Volume = 1.6;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Investigation Goes Awry");
-		strcopy(music.Artist, sizeof(music.Artist), "Granpda Bard");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 		
 		npc.Anger = false;
@@ -1477,6 +1477,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+			spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 175, 55, 255, 1, 0.2, 12.0, 4.0, 3);	
 			
 			// Stage 1
 			float s=Sine(nphi/360*6.28)*Iondistance;
@@ -1578,6 +1579,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
+			spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 175, 55, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;

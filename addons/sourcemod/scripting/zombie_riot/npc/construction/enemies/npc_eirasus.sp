@@ -40,7 +40,7 @@ void Eirasus_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Eirasus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_eirasus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Eirasus");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -107,7 +107,6 @@ methodmap Eirasus < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
-	
 	
 	public Eirasus(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -183,7 +182,6 @@ public void Eirasus_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-
 	//If shield breaks, gain powers
 	if(!npc.m_flGainPowerOnce && f_Expidonsa_ShieldBroke[iNPC] > GetGameTime())
 	{
@@ -202,6 +200,7 @@ public void Eirasus_ClotThink(int iNPC)
 		if(IsValidEntity(npc.m_iWearable1))
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
 	}
+
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{

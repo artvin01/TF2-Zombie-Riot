@@ -2146,14 +2146,14 @@
 	}
 	"Alchemist Potion Pap 1"
 	{
-		"en"	"M2 now allows to throw an ally current active weapon buffing potions that grants a attackspeed bonus for the duration."
+		"en"	"M2 now allows you to thorw a buffing potion at an ally.\nNon buffed players have an arrow above them."
 		"fr"	"La potion secondaire donne aux coéquipiers un bonus de cadence des attaques pour une courte durée."
 		"ru"	"M2 теперь позволяет бросить союзнику зелье усиления для выбранного оружия, дающее бонус к скорости атаки на время действия."
 		"chi"   "M2现在允许向盟友投掷当前有效的武器强化药水，并在持续时间内获得攻速加成。"
 	}
 	"Alchemist Potion Pap 2"
 	{
-		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed.\nWorks with Terroriser Rifle!"
+		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed." //still works with terorriser, just unneeded to list. let them figure it out.
 		"fr"	"La potion secondaire applique une substance explosive sur les ennemis, causant une explosion quand ils sont tués.\nFonctionne en concert avec le Fusil Implanteur de Bombes Terroriseurs!"
 		"ru"	"Возможность нанести на врага взрывное покрытие, которое при убийстве вызывает взрыв.\nРаботает с винтовкой террориста!"
 		"chi"   "能够在敌人身上涂上一层爆炸衣，如果杀死敌人就会引起爆炸。与恐怖步枪一起工作!"
@@ -3369,6 +3369,26 @@
 		"en"	"More damage, higher Mana cost."
 		"fr"	"Dégats améliorés. Besoin de plus de Mana pour utiliser."
 		"chi"	"更多伤害，更高蓝耗。"
+	}
+	"Reiuji Desc 0"
+	{
+		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus."
+	}
+	"Reiuji Desc 1"
+	{
+		"en"	"You gain ammo faster when above 50% mana\nAnd if your at 90% mana, your ammo gain is even faster!"
+	}
+	"Reiuji Desc 2"
+	{
+		"en"	"You can now cast a barrage with mouse 2, costs battery, alongside a heafty mana cost."
+	}
+	"Reiuji Desc 3"
+	{
+		"en"	"When barrage is at 50% or more charge, your m1 magic projectiles gain homing"
+	}
+	"Reiuji Desc 4"
+	{
+		"en"	"General stat bonuses."
 	}
 	"Expert Trapper Desc"
 	{

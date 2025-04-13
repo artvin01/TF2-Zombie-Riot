@@ -405,6 +405,9 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
 					{
+						if(!Can_I_See_Ally(npc.index, entitycount))
+							continue;
+							
 						float DurationGive = 20.0;
 						
 						if(b_thisNpcIsABoss[entitycount] ||

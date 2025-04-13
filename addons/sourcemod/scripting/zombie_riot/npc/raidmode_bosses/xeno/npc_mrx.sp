@@ -623,7 +623,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 					{
 						SetEntityMoveType(Enemy_I_See, MOVETYPE_NONE); //Cant move XD
 						SetEntityCollisionGroup(Enemy_I_See, 1);
-						TF2_AddCondition(Enemy_I_See, TFCond_FreezeInput, 5.0);
+						FreezeNpcInTime(Enemy_I_See, 5.0);
 					}
 					else
 					{

@@ -1981,10 +1981,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⛡%s", Debuff_Adder_right);
 	}
-	if(f_TimeFrozenStill[victim] && f_TimeFrozenStill[victim] > GetGameTime(victim))
-	{
-		Format(Debuff_Adder_right, SizeOfChar, "?[%.1f]", f_TimeFrozenStill[victim] - GetGameTime(victim));
-	}
 	if(MoraleBoostLevelAt(victim) > 0) //hussar!
 	{
 		//Display morale!
@@ -2023,7 +2019,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	
 	//Display Modifiers here.
-	ZRModifs_CharBuffToAdd(BufferAdd);
+	if(Waves_InFreeplay())
+		Freeplay_CharBuffToAdd(BufferAdd);
+	else
+		ZRModifs_CharBuffToAdd(BufferAdd);
 #endif
 	int Victim_weapon = -1;
 

@@ -962,7 +962,7 @@ void Construction_ClotThink(int entity)
 	}
 }
 
-bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int attacker, float &damage, int damagetype)
+stock bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int attacker, float &damage, int damagetype)
 {
 	CClotBody npc = view_as<CClotBody>(victim);
 
