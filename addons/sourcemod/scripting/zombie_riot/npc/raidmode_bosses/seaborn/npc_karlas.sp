@@ -1254,7 +1254,7 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 	RequestFrame(Projectile_Detect_Loop, pack);
 	
 }
-static Action KillProjectileHoming(Handle Timer, int iRef)
+Action KillProjectileHoming(Handle Timer, int iRef)
 {
 	int Projectile = EntRefToEntIndex(iRef);
 	if(!IsValidEntity(Projectile))
@@ -1966,6 +1966,9 @@ static Action Karlas_Ring_Loops(Handle Loop, DataPack pack)
 	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 1.0, 30.0, 0.1, color, 1, 0);
 	TE_SendToAll();
 
+	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, (radius*2.0) + 0.1, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
+	TE_SendToAll();
+
 	Handle pack2;
 	CreateDataTimer(1.0, Karlas_Ring_Loops, pack2, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack2, EntRefToEntIndex(entity));
@@ -2024,7 +2027,7 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 
 	TE_SetupBeamRingPoint(spawnLoc, 1.0, radius*2.0, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
 	TE_SendToAll();
-
+	
 	float start = 75.0;
 	float end = 75.0;
 	TE_SetupBeamPoints(spawnLoc, sky_loc, g_Ruina_BEAM_Diamond, 0, 0, 0, 1.0, start, end, 0, 1.0, color, 3);

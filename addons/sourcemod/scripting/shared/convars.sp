@@ -293,7 +293,7 @@ static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 		return;
 	
 	char mapname[64];
-	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapName(mapname, sizeof(mapname));
 	KeyValues kv = Configs_GetMapKv(mapname);
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
@@ -306,7 +306,7 @@ static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char
 		return;
 	
 	char mapname[64];
-	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapName(mapname, sizeof(mapname));
 	KeyValues kv = Configs_GetMapKv(mapname);
 	FileNetwork_ConfigSetup(kv);
 	Building_ConfigSetup();

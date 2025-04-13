@@ -271,7 +271,7 @@ void IberiaVivintuSelfDefense(IberiaVivintu npc, float gameTime, int target, flo
 					//gimic of new wavetype, but silenceable.
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
-					ApplyStatusEffect(npc.index, target, "Marked", 6.0);
+					ApplyStatusEffect(npc.index, target, "Marked", 12.0);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

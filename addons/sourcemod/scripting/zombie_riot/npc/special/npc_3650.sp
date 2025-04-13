@@ -728,7 +728,8 @@ static void ClotDeath(int entity)
 		AcceptEntityInput(entity_death, "SetAnimation");
 		for(int client=1; client<=MaxClients; client++)
 		{
-			Music_Stop_All(client); //It cost 400000$ to stop music...once...
+			if(IsValidClient(client))
+				Music_Stop_All(client); //It cost 400000$ to stop music...once...
 		}
 		pos[2] += 20.0;
 		

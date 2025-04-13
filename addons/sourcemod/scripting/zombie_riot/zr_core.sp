@@ -219,6 +219,7 @@ enum
 	WEAPON_RUINA_DRONE_KNIFE = 142,
 	WEAPON_TORNADO_BLITZ = 143,
 	WEAPON_BUFFPOTION = 144,
+	WEAPON_REIUJI_WAND = 145,
 }
 
 enum
@@ -572,6 +573,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "zombie_riot/custom/red_blade.sp"
 #include "zombie_riot/custom/weapon_rapier.sp"
 #include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
+#include "zombie_riot/custom/wand/weapon_wand_reiuji.sp"
 #include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
 #include "zombie_riot/custom/weapon_railcannon.sp"
 #include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
@@ -885,6 +887,7 @@ void ZR_MapStart()
 	ResetMapStartRedBladeWeapon();
 	Mapstart_Chainsaw();
 	Gravaton_Wand_MapStart();
+	Reiuji_Wand_OnMapStart();
 	Heavy_Particle_Rifle_Mapstart();
 	Precache_Railcannon();
 	ResetMapStartDimWeapon();
@@ -2550,9 +2553,9 @@ int LevelToXp(int lv)
 
 float XpFloatGive[MAXTF2PLAYERS];
 
-void GiveXP(int client, int xp)
+void GiveXP(int client, int xp, bool freeplay = false)
 {
-	if(Waves_InFreeplay())
+	if(Waves_InFreeplay() && !freeplay)
 	{
 		//no xp in freeplay.
 		return;
