@@ -1529,7 +1529,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_flTimeUntillMark < GetGameTime(npc.index))
 							{
 								damage *= 1.35;
-								ApplyStatusEffect(npc.index, targetTrace, "Marked", 5.0);
+								ApplyStatusEffect(npc.index, targetTrace, "Marked", 15.0);
 								MarkCooldown = true;
 							}
 							
@@ -2958,7 +2958,7 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 	else
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
-	ApplyStatusEffect(entity, victim, "Marked", 15.0);
+	ApplyStatusEffect(entity, victim, "Marked", 20.0);
 	
 	//if it was a barracks units, half damage
 	if(victim > MaxClients)

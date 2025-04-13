@@ -2218,6 +2218,7 @@ static void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+			spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.2, 12.0, 4.0, 3);	
 			
 			// Stage 1
 			float s=Sine(nphi/360*6.28)*Iondistance;
@@ -2306,7 +2307,7 @@ static void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		ResetPack(nData);
 		
 		if (Iondistance > -30)
-		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 		else	//Normal Ioc Damge on wave
 		{
 
@@ -2316,6 +2317,7 @@ static void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
+			spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;
@@ -2328,6 +2330,7 @@ static void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 			TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {145, 47, 47, 255}, 3);
 			TE_SendToAll();
+
 	
 			position[2] = startPosition[2] + 50.0;
 			// Sound
