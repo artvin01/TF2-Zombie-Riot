@@ -586,7 +586,7 @@ static Action Timer_StartAttackWave(Handle timer)
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(GetTeam(entity) != TFTeam_Red && !i_NpcIsABuilding[entity] && !b_StaticNPC[entity])
+			if(GetTeam(entity) != TFTeam_Red && !b_StaticNPC[entity])
 				SmiteNpcToDeath(entity);
 		}
 	}
@@ -717,7 +717,7 @@ static bool StartAttack(const AttackInfo attack, int type, int target, int bonus
 
 	Rogue_TriggerFunction(Artifact::FuncStageStart);
 	CreateTimer(float(type * type), Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-	WaveStart_SubWaveStart(GetGameTime());
+	WaveStart_SubWaveStart(GetGameTime() + AttackTime - 523.0);
 	return true;
 }
 
