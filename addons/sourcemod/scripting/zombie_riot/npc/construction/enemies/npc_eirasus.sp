@@ -40,7 +40,7 @@ void Eirasus_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Eirasus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Eirasus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_eirasus");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -190,7 +190,7 @@ public void Eirasus_ClotThink(int iNPC)
 		ApplyStatusEffect(iNPC, iNPC, "Expidonsan Anger", 5.0);
 		npc.PlayAnnoyedSound();
 		if(IsValidEntity(npc.m_iWearable1))
-			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 4);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 6);
 	}
 
 	//when powers run off, return weapon to normal colour
@@ -330,7 +330,7 @@ void EirasusSelfDefense(Eirasus npc, float gameTime, int target, float distance)
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 0.75;
+				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
 		}
 	}
