@@ -4244,6 +4244,25 @@ void StatusEffects_Construction()
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.7;
 	StatusEffect_AddGlobal(data);
+
+	
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Expidonsan Anger");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "á");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.15;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	//-0.5
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.7;
+	StatusEffect_AddGlobal(data);
 }
 
 void StatusEffects_BubbleWand1()
