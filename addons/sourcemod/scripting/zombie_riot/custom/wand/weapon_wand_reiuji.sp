@@ -5,24 +5,63 @@ static Handle h_Reiuji_WeaponHudTimer[MAXTF2PLAYERS] = {null, ...};
 static float fl_hud_timer[MAXTF2PLAYERS];
 static float fl_ammo_timer[MAXTF2PLAYERS];
 static int i_ammo[MAXTF2PLAYERS];
-static int i_max_ammo = 15;
-static float fl_ammogain_timerbase = 1.0;
+static int 		i_max_ammo[5] 				= {10, 15, 20, 25, 30};
+static float 	fl_ammogain_timerbase[5] 	= {1.5, 1.5, 1.3, 1.2, 1.1};
+static float 	fl_firerate_multi[5] 		= {0.5, 0.45, 0.4, 0.3, 0.2};
 
-static int i_max_barage = 7;
-static float fl_barrage_angles = 60.0;
-static float fl_barrage_maxrange = 2500.0;
+static int 		i_max_barage[5] 			= {3, 4, 5, 6, 7};
+static float 	fl_barrage_angles[5] 		= {60.0, 60.0, 60.0, 60.0, 60.0};
+static float 	fl_barrage_maxrange[5] 		= {2500.0, 2500.0, 2500.0, 2500.0, 2500.0};
 
 //charge gained will depend on mana consumed.
 static float fl_barrage_charge[MAXTF2PLAYERS];
-static float fl_barrage_maxcharge = 300.0;
+static float 	fl_barrage_maxcharge[5] 	= {600.0, 750.0, 1000.0, 1250.0, 1500.0};
 
 #define REIUJI_WAND_TOUCH_SOUND "friends/friend_online.wav"
+#define REIUJI_WAND_M2_CAST_SOUND "weapons/cow_mangler_over_charge_shot.wav"
+/*
+	make mana cost on final pap roughly 50 per projectile
+	make max ammo on final pap 30 shots
+	make m2 use up a lot of mana on cast.
+
+	initial:
+		only has the ammo mechanic.
+
+	pap1:
+		gain extra ammo if above 50% mana
+
+	pap2:
+		gain barrage.
+
+	pap3:
+		gain homing if above 50% barrage.
+
+	pap4:
+		damage buff.
+
+	pap5:
+		damage buff
+*/
+
+static char WandAttackSounds[][] = {
+	"ambient/energy/zap1.wav",
+	"ambient/energy/zap2.wav",
+	"ambient/energy/zap3.wav",
+	"ambient/energy/zap5.wav",
+	"ambient/energy/zap6.wav",
+	"ambient/energy/zap7.wav",
+	"ambient/energy/zap8.wav",
+	"ambient/energy/zap9.wav"
+};
 void Reiuji_Wand_OnMapStart()
 {
 	Zero(i_ammo);
 	Zero(fl_hud_timer);
 	PrecacheSound(REIUJI_WAND_TOUCH_SOUND, true);
+	PrecacheSound(REIUJI_WAND_M2_CAST_SOUND, true);
+	PrecacheSoundArray(WandAttackSounds);
 }
+static void PlayWandAttackSound(int client, int soundlevel = 80, float volume = 1.0, int pitch = 100) { EmitSoundToAll(WandAttackSounds[GetRandomInt(0, sizeof(WandAttackSounds) - 1)], client, SNDCHAN_VOICE, soundlevel, _, volume, pitch);}
 
 void Enable_Reiuji_Wand(int client, int weapon)
 {
@@ -54,20 +93,35 @@ static Action Timer_Reiuji_Wand(Handle timer, DataPack pack)
 		h_Reiuji_WeaponHudTimer[client] = null;
 		return Plugin_Stop;
 	}
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
+		return Plugin_Continue;
+
 	float GameTime = GetGameTime();
 	if(fl_ammo_timer[client] < GameTime)
 	{
-		fl_ammo_timer[client] = GameTime + fl_ammogain_timerbase;
+		int pap = i_pap(weapon_holding);
 
-		if(i_ammo[client] < i_max_ammo)
+		if(Current_Mana[client] > max_mana[client]/2 && pap>0)
+		{
+			if(Current_Mana[client] > max_mana[client]*0.9)
+				fl_ammo_timer[client] = GameTime + fl_ammogain_timerbase[pap]*0.25;
+			else
+				fl_ammo_timer[client] = GameTime + fl_ammogain_timerbase[pap]*0.7;
+		}
+		else
+			fl_ammo_timer[client] = GameTime + fl_ammogain_timerbase[pap];
+		
+
+		if(i_ammo[client] < i_max_ammo[pap])
 			i_ammo[client]++;
 	}
 
-	Hud(client);
+	Hud(client, weapon_holding);
 
 	return Plugin_Continue;
 }
-static void Hud(int client)
+static void Hud(int client, int weapon)
 {
 	float GameTime = GetGameTime();
 	if(fl_hud_timer[client] > GameTime)
@@ -78,18 +132,43 @@ static void Hud(int client)
 
 	char HUDText[255] = "";
 
-	if(i_ammo[client] < i_max_ammo)
-		Format(HUDText, sizeof(HUDText), "Ammo: [%i/%i] (%.1fs)", i_ammo[client], i_max_ammo, fl_ammo_timer[client]-GameTime);
-	else
-		Format(HUDText, sizeof(HUDText), "Ammo: [%i/%i]", i_ammo[client], i_max_ammo);
+	int pap = i_pap(weapon);
 
-	Format(HUDText, sizeof(HUDText), "%s\nBarrage: [%.0f％]", HUDText, (fl_barrage_charge[client]/fl_barrage_maxcharge*100.0));
+	if(i_ammo[client] > i_max_ammo[pap])
+		i_ammo[client] = i_max_ammo[pap];
+
+	if(i_ammo[client] < i_max_ammo[pap])
+		Format(HUDText, sizeof(HUDText), "Ammo: [%i/%i] (%.1fs)", i_ammo[client], i_max_ammo[pap], fl_ammo_timer[client]-GameTime);
+	else
+		Format(HUDText, sizeof(HUDText), "Ammo: [%i/%i]", i_ammo[client], i_max_ammo[pap]);
+
+	if(pap>1)
+	{
+		if(fl_barrage_charge[client] > fl_barrage_maxcharge[pap])
+			fl_barrage_charge[client] = fl_barrage_maxcharge[pap];
+
+		Format(HUDText, sizeof(HUDText), "%s\nBarrage: [%.0f％]", HUDText, (fl_barrage_charge[client]/fl_barrage_maxcharge[pap]*100.0));
+	}
+		
 
 	PrintHintText(client, HUDText);
 }
 public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int slot)
 {
-	if(fl_barrage_charge[client] < fl_barrage_maxcharge && !CvarInfiniteCash.BoolValue)
+	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0)*10.0);
+
+	if(Current_Mana[client] < mana_cost)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		return;
+	}
+
+	int pap = i_pap(weapon);
+
+	if(fl_barrage_charge[client] < fl_barrage_maxcharge[pap] && !CvarInfiniteCash.BoolValue)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -98,9 +177,9 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 		return;
 	}
 
-	int loop_for = i_max_barage;
-	float tolerance_angle = fl_barrage_angles;
-	float range = fl_barrage_maxrange;
+	int loop_for = i_max_barage[pap];
+	float tolerance_angle = fl_barrage_angles[pap];
+	float range = fl_barrage_maxrange[pap];
 
 	int[] valid_targets = new int[loop_for];
 	int targets_aquired = 0;
@@ -133,13 +212,9 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "No Targets Detected");
 		return;
 	}
-		
-
+	
 	float Origin[3];
 	WorldSpaceCenter(client, Origin);
-	
-	float HandPos[3]; 
-	GetAttachment(client, "effect_hand_r", HandPos, NULL_VECTOR);
 
 	for(int i=0 ; i < targets_aquired ; i++)
 	{
@@ -159,18 +234,25 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 
 		int color[4];
 		Ruina_Color(color);
-		int laser = ConnectWithBeam(weapon, victim, color[0], color[1], color[2], 5.0, 2.5, 0.25, BEAM_COMBINE_BLUE);
+		int laser = ConnectWithBeam(client, victim, color[0], color[1], color[2], 5.0, 2.5, 0.25, BEAM_COMBINE_BLUE);
 		CreateTimer(0.2, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 
 		i_OwnerEntityEnvLaser[laser] = EntIndexToEntRef(client);
 		SDKHook(laser, SDKHook_SetTransmit, SetTransmitHarvester);
 	}
 
-	fl_barrage_charge[client] -= fl_barrage_maxcharge * (float(targets_aquired)/float(loop_for));
+	fl_barrage_charge[client] -= fl_barrage_maxcharge[pap] * (float(targets_aquired)/float(loop_for));
+	Current_Mana[client] -= RoundToFloor(mana_cost * (float(targets_aquired)/float(loop_for)));
+
+	SDKhooks_SetManaRegenDelayTime(client, 2.0);
+	Mana_Hud_Delay[client] = 0.0;
+	delay_hud[client] = 0.0;
+
+	EmitSoundToAll(REIUJI_WAND_M2_CAST_SOUND, client, _, 65, _, 1.0, SNDPITCH_NORMAL);
 
 	if(fl_barrage_charge[client] < 0.0)
 	{
-		CPrintToChatAll("barrage went beyond 0.0, correcting: %.3f", fl_barrage_charge[client]);
+		//CPrintToChatAll("barrage went beyond 0.0, correcting: %.3f", fl_barrage_charge[client]);
 		fl_barrage_charge[client] = 0.0;
 	}
 
@@ -222,15 +304,13 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 		return;
 	}
+
+	PlayWandAttackSound(client, 60, 0.5, GetRandomInt(120, 150));
+
 	Current_Mana[client] -= mana_cost;
-	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+	SDKhooks_SetManaRegenDelayTime(client, 2.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
-
-	fl_barrage_charge[client]+=mana_cost;
-
-	if(fl_barrage_charge[client] > fl_barrage_maxcharge)
-		fl_barrage_charge[client] = fl_barrage_maxcharge;
 	
 	/*
 		So, what we want is this:
@@ -250,18 +330,21 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 
 			We'll use attribute 5, since its a "static" attribute that nothing should modify. probably...
 	*/
+
+	int pap = i_pap(weapon);
+
 	if(i_ammo[client] > 0)
 	{
 		i_ammo[client]--;
 
 		if(i_ammo[client] > 0)
-			Attributes_Set(weapon, 5, 0.25);
+			Attributes_Set(weapon, 5, fl_firerate_multi[pap]);
 		else
 			Attributes_Set(weapon, 5, 1.0);
 	}
 
 	//rest the ammo gain timer when firing.
-	fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase;
+	fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*2.0;
 
 	float damage = 100.0 * Attributes_Get(weapon, 410, 1.0);
 		
@@ -274,7 +357,7 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
 
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue");
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "drg_manmelter_trail_blue");
 
 	if(!IsValidEntity(projectile))
 		return;
@@ -282,8 +365,9 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 	WandProjectile_ApplyFunctionToEntity(projectile, Projectile_Touch);
 
 	fl_ruina_Projectile_radius[projectile] = 0.0;
+	fl_ruina_Projectile_bonus_dmg[projectile] = float(mana_cost);
 
-	if(fl_barrage_charge[client] < fl_barrage_maxcharge*0.5)
+	if(fl_barrage_charge[client] < fl_barrage_maxcharge[pap]*0.5 || pap <= 2)
 		return;
 
 	float 	Homing_Power = 5.0,
@@ -310,16 +394,17 @@ static void FireBarrageProjectile(int client, int weapon, float Angles[3], int v
 	speed *= Attributes_Get(weapon, 104, 1.0);
 	speed *= Attributes_Get(weapon, 475, 1.0);
 
-	float time = 1500.0/speed;
+	float time = fl_barrage_maxrange[i_pap(weapon)]/speed;
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
 
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue_crit", Angles);
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "drg_manmelter_trail_red", Angles);
 	WandProjectile_ApplyFunctionToEntity(projectile, Projectile_Touch);
 
 	if(!IsValidEntity(projectile))
 		return;
 
+	fl_ruina_Projectile_bonus_dmg[projectile] = 0.0;
 	fl_ruina_Projectile_radius[projectile] = radius;
 	
 	//so since the ICBM model isn't correctly orientated, I need to do this wonky trick
@@ -370,6 +455,8 @@ static void Projectile_Touch(int entity, int target)
 
 	EmitSoundToAll(REIUJI_WAND_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
 
+	fl_barrage_charge[owner]+=fl_ruina_Projectile_bonus_dmg[entity];
+
 	//Code to do damage position and ragdolls
 	float angles[3];
 	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
@@ -380,6 +467,8 @@ static void Projectile_Touch(int entity, int target)
 
 	if(fl_ruina_Projectile_radius[entity] > 0.0)
 	{
+		i_ammo[owner]+=2;	//barrage gives a bit of ammo back
+
 		i_ExplosiveProjectileHexArray[owner] = EP_DEALS_PLASMA_DAMAGE;
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(owner);
