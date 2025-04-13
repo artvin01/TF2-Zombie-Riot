@@ -4286,7 +4286,6 @@ void StatusEffects_Construction()
 	StatusEffect_AddGlobal(data);
 
 	
-	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Expidonsan Anger");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "á");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
