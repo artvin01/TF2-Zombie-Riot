@@ -120,7 +120,13 @@ static bool ClotInteract(int client, int weapon, ObjectPump npc)
 		return true;
 	}
 
-	float time = 120.0;
+	if((GetURandomInt() % 3) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+	{
+		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 60.0;
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+
 	int amount = 10;
 
 	if(Construction_HasNamedResearch("Base Level II"))
@@ -133,6 +139,6 @@ static bool ClotInteract(int client, int weapon, ObjectPump npc)
 		amount *= 2;
 
 	Construction_AddMaterial("water", amount);
-	Building_Collect_Cooldown[npc.index][0] = GetGameTime() + time;
+	Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 120.0;
 	return true;
 }

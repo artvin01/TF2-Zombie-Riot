@@ -240,10 +240,22 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 
+	int vehicle = Vehicle_Driver(victim);
+
 	if(i_HealthBeforeSuit[victim] == 0)
 	{
 		int armorEnt = victim;
-		if(!CheckInHud())
+		if(vehicle != -1)
+			armorEnt = vehicle;
+		
+		if(CheckInHud())
+		{
+			if(vehicle != -1 && Armor_Charge[armorEnt] > 0)
+			{
+				damage *= ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED;
+			}
+		}
+		else
 		{
 			if(Armor_Charge[armorEnt] > 0)
 			{
@@ -298,18 +310,15 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		}
 	}
 
+	if(vehicle != -1)
 	{
-		int vehicle = Vehicle_Driver(victim);
-		if(vehicle != -1)
-		{
-			// Driver
-			damage *= 0.5;
+		// Driver
+		damage *= 0.5;
 
-			if(!(damagetype & DMG_TRUEDAMAGE) && Vehicle_Driver(vehicle) != victim)
-			{
-				// Passenger
-				damage *= 0.2;
-			}
+		if(!(damagetype & DMG_TRUEDAMAGE) && Vehicle_Driver(vehicle) != victim)
+		{
+			// Passenger
+			damage *= 0.2;
 		}
 	}
 #endif	// ZR

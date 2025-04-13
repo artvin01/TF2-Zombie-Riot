@@ -306,14 +306,43 @@ static void MultiHealth(int entity, StringMap map, float amount)
 
 public void Construction_BadExpi_Collect()
 {
-	CPrintToChatAll("{purple}???{default}: Hah, I knew you'll fall for it.");
+	if(!Construction_FinalBattle())
+	{
+		CreateTimer(4.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
 
-	if(Construction_FinalBattle())
+static Action Timer_DialogueNewEnd(Handle timer, int part)
+{
+	switch(part)
 	{
-		//CreateTimer(2.0, Timer_DialogueBadEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+		case 0:
+		{
+			CPrintToChatAll("{purple}???{default}: Hah, I knew you'll fall for it.");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{purple}???{default}: So that's where your located.");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{purple}???{default}: Now stay there and accept your fate.");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{purple}???{default}: Expidonsa was and always should be the only race on Irln.");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{purple}???{default}: So die you damn forerunners.");
+		}
+		default:
+		{
+			Rogue_GiveNamedArtifact("System Malfunction");
+			return Plugin_Continue;
+		}
 	}
-	else
-	{
-		//CreateTimer(2.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
-	}
+
+	CreateTimer(2.0, Timer_DialogueNewEnd, part + 1, TIMER_FLAG_NO_MAPCHANGE);
+	return Plugin_Continue;
 }

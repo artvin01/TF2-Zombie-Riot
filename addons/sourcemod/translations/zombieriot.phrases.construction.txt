@@ -462,6 +462,14 @@
 	}
 	"Expidonsa Tech Chip Install Desc"
 	{
-		"en"	"{blue}Should we install the Expidonsa Tech Chip into our system?"
+		"en"	"Should we install the Expidonsa Tech Chip into our system?"
+	}
+	"System Malfunction"
+	{
+		"en"	"System Malfunction"
+	}
+	"System Malfunction Desc"
+	{
+		"en"	"Oh. dear.\n{red}Construct traits have a chance to fail {blue}and rogue expidonsans are after you."
 	}
 }

@@ -2358,7 +2358,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Ammo_Count_Ready = 8;
 	}
 
-	WaveStart_SubWaveStart();
+	if(!Construction_Mode() || Construction_FinalBattle())	// In Construction: Base raids must be dealt with
+		WaveStart_SubWaveStart();
+	
 	if(CurrentWave == 0 && GiveAmmoSupplies)
 	{
 		Renable_Powerups();
@@ -2749,7 +2751,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_Mode())
+	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -2800,6 +2802,10 @@ void Zombie_Delay_Warning()
 			{
 				i_ZombieAntiDelaySpeedUp = 6;
 				CPrintToChatAll("{crimson}Die.");
+				
+				if(Construction_Mode())
+					ForcePlayerLoss();
+				
 				if(!Rogue_Mode())
 					AntiDelaySpawnEnemies(999999999, 5, true);
 			}

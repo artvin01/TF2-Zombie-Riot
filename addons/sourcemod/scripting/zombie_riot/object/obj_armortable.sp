@@ -74,6 +74,13 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 		return true;
 	}
 
+	if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+	{
+		Building_Collect_Cooldown[npc.index][client] = GetGameTime() + 5.0;
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+
 	int Armor_Max = 300;
 
 	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);

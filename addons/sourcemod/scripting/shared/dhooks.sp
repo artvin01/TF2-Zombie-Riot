@@ -1599,7 +1599,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
-	if(Construction_InSetup())
+	if(Construction_Mode())
 		return MRES_Ignored;
 #endif
 	
