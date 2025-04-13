@@ -2913,7 +2913,7 @@ void StatusEffects_SupportWeapons()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Very Defensive Backup");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "[⛨]");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛨⛨");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.5;
