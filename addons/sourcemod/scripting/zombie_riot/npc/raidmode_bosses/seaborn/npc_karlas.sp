@@ -1254,7 +1254,7 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 	RequestFrame(Projectile_Detect_Loop, pack);
 	
 }
-static Action KillProjectileHoming(Handle Timer, int iRef)
+Action KillProjectileHoming(Handle Timer, int iRef)
 {
 	int Projectile = EntRefToEntIndex(iRef);
 	if(!IsValidEntity(Projectile))
