@@ -9357,6 +9357,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	if(b_thisNpcIsARaid[npc])
 		ApplyStatusEffect(npc, npc, "Shook Head", Duration_Stun * 3.0);	
 
+	//PrintToChatAll("%f",Duration_Stun_Post);
 	ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun_Post);	
 
 	npcclot.Update();

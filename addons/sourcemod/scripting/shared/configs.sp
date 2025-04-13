@@ -78,7 +78,8 @@ void Configs_ConfigsExecuted()
 	ConVar_Enable();
 
 	char mapname[64];
-	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapName(mapname, sizeof(mapname));
+
 	KeyValues kv = Configs_GetMapKv(mapname);
 
 	ExecuteMapOverrides(kv);

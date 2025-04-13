@@ -483,6 +483,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		if(Waves_GetRound() > 174)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
 
+		// global health nerfer
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.85);
+
 		// moni
 		enemy.Credits += 10000.0;
 		enemy.Does_Not_Scale = 1;
@@ -1307,17 +1310,17 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		case INTENSE:
 		{
-			FM_Damage *= 1.02;
+			FM_Damage *= 1.005;
 		}
 		case MUSCLE:
 		{
-			FM_Damage *= 1.025;
+			FM_Damage *= 1.01;
 		}
 		case SQUEEZER:
 		{
-			FM_Damage *= 1.035;
+			FM_Damage *= 1.02;
 			if(squeezerplus)
-				FM_Damage *= 1.05;
+				FM_Damage *= 1.04;
 		}
 	}
 
@@ -1325,17 +1328,17 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		case INTENSE:
 		{
-			FM_Health *= 1.025;
+			FM_Health *= 1.005;
 		}
 		case MUSCLE:
 		{
-			FM_Health *= 1.03;
+			FM_Health *= 1.01;
 		}
 		case SQUEEZER:
 		{
-			FM_Health *= 1.04;
+			FM_Health *= 1.0175;
 			if(squeezerplus)
-				FM_Health *= 1.06;
+				FM_Health *= 1.0315;
 		}
 	}
 
@@ -1360,14 +1363,14 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && TeutonType[client] != TEUTON_WAITING && GetClientTeam(client) == 2)
 			{
 				Freeplay_GiveXP(client, Freeplay_GetRemainingExp());
 			}
 		}
 	}
 
-	Freeplay_SetRemainingExp(1500.0);
+	Freeplay_SetRemainingExp(1500.0); // its half because it apparently triggers twice, resulting in 3000 max
 	Freeplay_SetExpTime(GetGameTime() + 9.0);
 }
 
@@ -1385,7 +1388,7 @@ void Freeplay_GiveXP(int client, float extraxp)
 	if(totalxp > 0)
 	{
 		GiveXP(client, totalxp, true);
-		CPrintToChat(client, "{lime}You've recieved %d extra XP!", totalxp);
+		CPrintToChat(client, "{lime}You've recieved %d extra XP!", totalxp*2);
 	}
 }
 

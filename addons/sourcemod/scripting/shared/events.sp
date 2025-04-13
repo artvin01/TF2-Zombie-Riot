@@ -123,7 +123,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	RoundStartTime = FAR_FUTURE;
 	//FOR ZR
 	char mapname[64];
-	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapName(mapname, sizeof(mapname));
 	
 	KeyValues kv = Configs_GetMapKv(mapname);
 	
