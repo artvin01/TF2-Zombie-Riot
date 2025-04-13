@@ -229,6 +229,11 @@ int Waves_MapSeed()
 	return MapSeed;
 }
 
+int Waves_MapSeed()
+{
+	return MapSeed;
+}
+
 void Waves_PlayerSpawn(int client)
 {
 	if(FogEntity != INVALID_ENT_REFERENCE)

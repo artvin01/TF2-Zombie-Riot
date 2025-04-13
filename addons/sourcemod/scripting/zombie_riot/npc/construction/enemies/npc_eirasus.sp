@@ -22,6 +22,12 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/neon_sign_hit_03.wav",
 	"weapons/neon_sign_hit_04.wav"
 };
+static const char g_PlayAnnoyedSound[][] = {
+	"vo/medic_jeers01.mp3",
+	"vo/medic_jeers04.mp3",
+	"vo/medic_jeers05.mp3",
+	"vo/medic_jeers06.mp3",
+};
 
 void Eirasus_OnMapStart_NPC()
 {
@@ -30,6 +36,7 @@ void Eirasus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_PlayAnnoyedSound)); i++) { PrecacheSound(g_PlayAnnoyedSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Eirasus");
@@ -84,7 +91,22 @@ methodmap Eirasus < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
-	
+	public void PlayAnnoyedSound() 
+	{
+		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
+		EmitSoundToAll(g_PlayAnnoyedSound[GetRandomInt(0, sizeof(g_PlayAnnoyedSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+
+	}
+	property float m_flGainPowerOnce
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flGainPowerOnceAngerOver
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public Eirasus(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -110,6 +132,7 @@ methodmap Eirasus < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		VausMagicaGiveShield(npc.index, 3);
+		npc.m_flGainPowerOnceAngerOver = 1.0;
 		
 		
 		
@@ -121,7 +144,7 @@ methodmap Eirasus < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/fall2013_medic_wc_hair/fall2013_medic_wc_hair.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -132,7 +155,7 @@ methodmap Eirasus < CClotBody
 
 		
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem/dec15_medic_winter_jacket2_emblem.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec24_consiglieres_coverup/dec24_consiglieres_coverup.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -159,14 +182,25 @@ public void Eirasus_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	/*
-	if(npc.m_blPlayHurtAnimation)
+	//If shield breaks, gain powers
+	if(!npc.m_flGainPowerOnce && f_Expidonsa_ShieldBroke[iNPC] > GetGameTime())
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
-		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();
+		npc.m_flGainPowerOnce = 1.0;
+		npc.m_flGainPowerOnceAngerOver = 1.0;
+		ApplyStatusEffect(iNPC, iNPC, "Expidonsan Anger", 5.0);
+		npc.PlayAnnoyedSound();
+		if(IsValidEntity(npc.m_iWearable1))
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 4);
 	}
-	*/
+
+	//when powers run off, return weapon to normal colour
+	if(npc.m_flGainPowerOnceAngerOver && !HasSpecificBuff(iNPC, "Expidonsan Anger"))
+	{
+		npc.m_flGainPowerOnceAngerOver = 0.0;
+		if(IsValidEntity(npc.m_iWearable1))
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
+	}
+
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -296,7 +330,7 @@ void EirasusSelfDefense(Eirasus npc, float gameTime, int target, float distance)
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 0.75;
 			}
 		}
 	}
