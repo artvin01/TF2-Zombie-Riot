@@ -4912,6 +4912,13 @@ void CitizenVoteResults(int entity, int VoteFor[4])
 			length--;
 			continue;
 		}
+		if(!IsValidEntity(data.RebelVoted))
+		{
+			CitizenVoteRole.Erase(i);
+			i--;
+			length--;
+			continue;
+		}
 		
 		if(data.RebelVoted == entity)
 		{
