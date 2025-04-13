@@ -2671,6 +2671,10 @@
 		"fr"	"Sortilège du Gravaton"
 		"chi"	"引力法术"
 	}
+	"Reiuji Wand"
+	{
+		"en"	"Reiuji Wand"
+	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"

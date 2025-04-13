@@ -3370,6 +3370,26 @@
 		"fr"	"Dégats améliorés. Besoin de plus de Mana pour utiliser."
 		"chi"	"更多伤害，更高蓝耗。"
 	}
+	"Reiuji Desc 0"
+	{
+		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus."
+	}
+	"Reiuji Desc 1"
+	{
+		"en"	"You gain ammo faster when above 50% mana\nAnd if your at 90% mana, your ammo gain is even faster!"
+	}
+	"Reiuji Desc 2"
+	{
+		"en"	"You can now cast a barrage with mouse 2, costs battery, alongside a heafty mana cost."
+	}
+	"Reiuji Desc 3"
+	{
+		"en"	"When barrage is at 50% or more charge, your m1 magic projectiles gain homing"
+	}
+	"Reiuji Desc 4"
+	{
+		"en"	"General stat bonuses."
+	}
 	"Expert Trapper Desc"
 	{
 		"en"	"Your building weapons deal 75％ less damage except for trap weapons, but your traps deal 50％ more damage in total."
