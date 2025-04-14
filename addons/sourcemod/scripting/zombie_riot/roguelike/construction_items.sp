@@ -395,7 +395,7 @@ static void SpawnRebel(const char[] data = "")
 		ang[1] = float(GetURandomInt() % 360);
 		ang[2] = 0.0;
 
-		NPC_CreateByName("npc_citizen", 0, pos, ang, TFTeam_Red);
+		NPC_CreateByName("npc_citizen", 0, pos, ang, TFTeam_Red, data);
 		break;
 	}
 }
