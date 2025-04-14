@@ -2033,9 +2033,10 @@ bool Rebel_Rename(int client)
 
 	if(!buffer[0])
 		return true;
-		
+	
 	b_NameNoTranslation[EntityName] = true;
-	FormatEx(c_NpcName[EntityName], sizeof(c_NpcName[]), "%s",buffer);
+	CPrintToChatAll("[SM] %N renamed \"%s\" to \"%s\"", client, c_NpcName[EntityName], buffer);
+	strcopy(c_NpcName[EntityName], sizeof(c_NpcName[]), buffer);
 	return true;
 }
 
@@ -2662,6 +2663,23 @@ public void Citizen_ClotThink(int iNPC)
 		else if(npc.m_iAttacksTillReload != npc.m_iGunClip)
 		{
 			reloadStatus = 1;	// Reload when free
+		}
+	}
+
+	// Additional check to see if we're surrounded
+	if(!noSafety && target > 0 && (ally > 0 || npc.m_iSeakingObject || seakAlly))
+	{
+		WorldSpaceCenter(target, vecTarget);
+		if(GetVectorDistance(vecMe, vecTarget, true) < 20000.0)
+		{
+			seakAlly = false;
+			helpAlly = false;
+			
+			ally = -1;
+			i_TargetAlly[npc.index] = -1;
+
+			npc.m_iSeakingObject = 0;
+			npc.m_bGetClosestTargetTimeAlly = false;
 		}
 	}
 

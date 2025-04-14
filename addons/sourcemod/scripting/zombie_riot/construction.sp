@@ -464,6 +464,7 @@ void Construction_Start()
 	}
 
 	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
+	Citizen_SpawnAtPoint("b");
 
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
@@ -736,7 +737,10 @@ void Construction_BattleVictory()
 
 	int entity = EntRefToEntIndex(AttackRef);
 	if(entity != -1)
+	{
 		view_as<CClotBody>(entity).Anger = false;
+		view_as<CClotBody>(entity).m_bCamo = false;
+	}
 	
 	GiveRandomReward(CurrentRisk, type > 1 ? 4 : 2);
 }
