@@ -2405,14 +2405,15 @@ void Citizen_WaveStart()
 			int team = GetTeam(i);
 			if(team == TFTeam_Red)
 			{
-				npc.m_iCanBuild = BuildingLimitRebelLeft(npc.index, 1) ? 1 : 0;
+				int DummyValue = 0;
+				npc.m_iCanBuild = BuildingLimitRebelLeft(npc.index, 1, DummyValue) ? 1 : 0;
 				
 				if(npc.m_iClassRole == Cit_Builder)
 				{
-					if(BuildingLimitRebelLeft(npc.index, 2))
+					if(BuildingLimitRebelLeft(npc.index, 2, DummyValue))
 						npc.m_iCanBuild += 2;
 					
-					if(BuildingLimitRebelLeft(npc.index, 3))
+					if(BuildingLimitRebelLeft(npc.index, 3, DummyValue))
 						npc.m_iCanBuild += 4;
 				}
 			}
