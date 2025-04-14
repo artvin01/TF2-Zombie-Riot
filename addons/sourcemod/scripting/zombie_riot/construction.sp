@@ -1021,10 +1021,12 @@ stock bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int
 		}
 	}
 
-	if(CurrentAttacks && MaxAttacks && RiskIncrease)
+	if(MultiGlobalHighHealthBoss)
+		damage /= MultiGlobalHighHealthBoss;
+
+	if(CurrentAttacks && RiskIncrease)
 	{
-		float multi = Pow(0.5, float(CurrentAttacks) * 4.0 / float(MaxAttacks));
-		
+		float multi = Pow(0.5, float(CurrentAttacks));
 		damage *= multi;
 	}
 
@@ -1097,10 +1099,12 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 		}
 	}
 
-	if(CurrentAttacks && MaxAttacks && RiskIncrease)
+	if(MultiGlobalHighHealthBoss)
+		damage /= MultiGlobalHighHealthBoss;
+
+	if(CurrentAttacks && RiskIncrease)
 	{
-		float multi = Pow(0.5, float(CurrentAttacks) * 5.0 / float(MaxAttacks));
-		
+		float multi = Pow(0.5, float(CurrentAttacks));
 		damage *= multi;
 	}
 
