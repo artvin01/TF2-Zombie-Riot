@@ -4867,7 +4867,7 @@ int BuildingLimitRebelLeft(int rebel, int buildingType, int &buildingmax)
 				ActiveLimit++;
 		} 
 		case 2:
-			ObjectBarricade_Buildings(rebel, ActiveLimit);
+			ActiveLimit = ObjectBarricade_Buildings(rebel);
 		case 3:
 			ActiveLimit = Object_SupportBuildings(rebel);
 	}

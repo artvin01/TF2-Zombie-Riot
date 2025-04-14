@@ -579,10 +579,10 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			return;
 		}
 		
+		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 150, 255, 255, 1, 0.2, 12.0, 4.0, 3);	
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-			spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 150, 255, 255, 1, 0.2, 12.0, 4.0, 3);	
 			
 			// Stage 1
 			float s=Sine(nphi/360*6.28)*Iondistance;
