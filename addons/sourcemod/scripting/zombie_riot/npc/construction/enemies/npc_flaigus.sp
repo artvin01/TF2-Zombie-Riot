@@ -2,13 +2,12 @@
 #pragma newdecls required
 
 
-
 /*
-	STronger erasus
-	spawns with 3 shields max
-	When shield breaks, gains temp attackspeed
-
+	Once close enough and it sees an enemy, slightly hovers up and then launches at the enemy
+	When colliding with an enemy it deals damage once
+	after which they behave like an erasus
 */
+
 
 static const char g_IdleAlertedSounds[][] = {
 	")vo/medic_battlecry01.mp3",
@@ -27,7 +26,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/neon_sign_hit_03.wav",
 	"weapons/neon_sign_hit_04.wav"
 };
-void Eirasus_OnMapStart_NPC()
+void Flaigus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
@@ -37,8 +36,8 @@ void Eirasus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_DefaultMedic_PlayAnnoyedSound)); i++) { PrecacheSound(g_DefaultMedic_PlayAnnoyedSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Eirasus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_eirasus");
+	strcopy(data.Name, sizeof(data.Name), "Flaigus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_flaigus");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -49,10 +48,10 @@ void Eirasus_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Eirasus(vecPos, vecAng, team);
+	return Flaigus(vecPos, vecAng, team);
 }
 
-methodmap Eirasus < CClotBody
+methodmap Flaigus < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -95,20 +94,14 @@ methodmap Eirasus < CClotBody
 		EmitSoundToAll(g_DefaultMedic_PlayAnnoyedSound[GetRandomInt(0, sizeof(g_DefaultMedic_PlayAnnoyedSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
-	property float m_flGainPowerOnce
+	property float m_flPrepareFlyAtEnemy
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	property float m_flGainPowerOnceAngerOver
+	public Flaigus(float vecPos[3], float vecAng[3], int ally)
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
-	}
-	
-	public Eirasus(float vecPos[3], float vecAng[3], int ally)
-	{
-		Eirasus npc = view_as<Eirasus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "10000", ally));
+		Flaigus npc = view_as<Flaigus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -120,9 +113,9 @@ methodmap Eirasus < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		func_NPCDeath[npc.index] = Eirasus_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Eirasus_OnTakeDamage;
-		func_NPCThink[npc.index] = Eirasus_ClotThink;
+		func_NPCDeath[npc.index] = Flaigus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Flaigus_OnTakeDamage;
+		func_NPCThink[npc.index] = Flaigus_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -142,38 +135,33 @@ methodmap Eirasus < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/fall2013_medic_wc_hair/fall2013_medic_wc_hair.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_misc1.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec24_consiglieres_coverup/dec24_consiglieres_coverup.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2024_duality_mantle/hwn2024_duality_mantle_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", WEAPON_CUSTOM_WEAPONRY_1);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetVariantInt(8192);
-		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
+		DualReaEffects(npc.index);
 		
 		return npc;
 	}
 }
 
-public void Eirasus_ClotThink(int iNPC)
+public void Flaigus_ClotThink(int iNPC)
 {
-	Eirasus npc = view_as<Eirasus>(iNPC);
+	Flaigus npc = view_as<Flaigus>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -181,23 +169,7 @@ public void Eirasus_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	//If shield breaks, gain powers
-	if(!npc.m_flGainPowerOnce && f_Expidonsa_ShieldBroke[iNPC] > GetGameTime())
-	{
-		npc.m_flGainPowerOnce = 1.0;
-		npc.m_flGainPowerOnceAngerOver = 1.0;
-		ApplyStatusEffect(iNPC, iNPC, "Expidonsan Anger", 5.0);
-		npc.PlayAnnoyedSound();
-		if(IsValidEntity(npc.m_iWearable1))
-			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 6);
-	}
-
-	//when powers run off, return weapon to normal colour
-	if(npc.m_flGainPowerOnceAngerOver && !HasSpecificBuff(iNPC, "Expidonsan Anger"))
-	{
-		npc.m_flGainPowerOnceAngerOver = 0.0;
-		if(IsValidEntity(npc.m_iWearable1))
-			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
-	}
+	
 
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -228,7 +200,7 @@ public void Eirasus_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		EirasusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		FlaigusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -238,9 +210,9 @@ public void Eirasus_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Eirasus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Flaigus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Eirasus npc = view_as<Eirasus>(victim);
+	Flaigus npc = view_as<Flaigus>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -255,9 +227,9 @@ public Action Eirasus_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Eirasus_NPCDeath(int entity)
+public void Flaigus_NPCDeath(int entity)
 {
-	Eirasus npc = view_as<Eirasus>(entity);
+	Flaigus npc = view_as<Flaigus>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -276,7 +248,7 @@ public void Eirasus_NPCDeath(int entity)
 
 }
 
-void EirasusSelfDefense(Eirasus npc, float gameTime, int target, float distance)
+void FlaigusSelfDefense(Flaigus npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
