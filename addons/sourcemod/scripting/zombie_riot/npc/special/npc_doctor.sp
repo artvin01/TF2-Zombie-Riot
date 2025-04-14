@@ -16,7 +16,7 @@ static char g_KillSounds[][] =
 	"cof/purnell/kill3.mp3",
 	"cof/purnell/kill4.mp3"
 };
-static float i_ClosestAllyCDTarget[MAXENTITIES];
+
 
 
 void SpecialDoctor_OnMapStart()

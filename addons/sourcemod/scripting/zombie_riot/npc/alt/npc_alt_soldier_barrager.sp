@@ -75,9 +75,9 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Soldier_Barrager(vecPos, vecAng, team);
 }
 
-static int i_ammo_count[MAXENTITIES];
+
 static bool b_target_close[MAXENTITIES];
-static bool b_we_are_reloading[MAXENTITIES];
+
 static float fl_idle_timer[MAXENTITIES];
 
 methodmap Soldier_Barrager < CClotBody

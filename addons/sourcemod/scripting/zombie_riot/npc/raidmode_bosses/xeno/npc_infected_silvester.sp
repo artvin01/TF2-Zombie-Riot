@@ -133,8 +133,8 @@ public void RaidbossSilvester_OnMapStart()
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 void Silvester_TBB_Precahce()
 {

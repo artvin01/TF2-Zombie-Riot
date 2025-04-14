@@ -89,7 +89,7 @@ static float fl_npc_basespeed;
 
 //Logic for duo raidboss
 
-static int i_current_wave[MAXENTITIES];
+int i_current_wave[MAXENTITIES];
 static int i_ally_index[MAXENTITIES];
 static bool b_bobwave[MAXENTITIES];
 
@@ -108,7 +108,7 @@ static float fl_karlas_sword_battery[MAXENTITIES];
 static int i_dance_of_light_sword_id[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sword_throttle[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sound_spam_timer[MAXENTITIES];
-static int i_wingslot[MAXENTITIES];
+
 static bool b_lostOVERDRIVE[MAXENTITIES];
 
 

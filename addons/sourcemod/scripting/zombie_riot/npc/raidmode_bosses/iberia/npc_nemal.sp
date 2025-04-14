@@ -9,10 +9,10 @@
 
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 static bool TripleLol;
 static float NemalAntiLaserDo[MAXENTITIES];
 

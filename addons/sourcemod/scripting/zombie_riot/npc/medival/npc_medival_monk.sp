@@ -112,10 +112,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return MedivalMonk(vecPos, vecAng, team);
 }
 
-static int i_ClosestAlly[MAXENTITIES];
-static float i_ClosestAllyCD[MAXENTITIES];
-static int i_ClosestAllyTarget[MAXENTITIES];
-static float i_ClosestAllyCDTarget[MAXENTITIES];
+
+
+
+
 
 #define MONK_MAXRANGE 250.0 	
 #define MONK_MAXRANGE_ALLY 350.0 		

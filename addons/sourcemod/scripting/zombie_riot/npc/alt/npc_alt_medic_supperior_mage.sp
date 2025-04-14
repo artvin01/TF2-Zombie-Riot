@@ -51,7 +51,7 @@ static bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_UseWeapon[MAXENTITIES];
 
 static float fl_TimebeforeIOC[MAXENTITIES];
 static float fl_Timebeforekamehameha[MAXENTITIES];
-static bool b_InKame[MAXENTITIES];
+
 
 void NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC()
 {

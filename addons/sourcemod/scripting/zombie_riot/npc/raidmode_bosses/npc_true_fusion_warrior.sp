@@ -78,11 +78,11 @@ static float FusionWarrior_BEAM_BeamOffset[MAXENTITIES][3];
 static float FusionWarrior_BEAM_ZOffset[MAXENTITIES];
 static bool FusionWarrior_BEAM_HitDetected[MAXENTITIES];
 static bool FusionWarrior_BEAM_UseWeapon[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 
 
 static float fl_Timebeforekamehameha[MAXENTITIES];
-static bool b_InKame[MAXENTITIES];
+
 static float fl_NextPull[MAXENTITIES];
 static int i_AmountProjectiles[MAXENTITIES];
 

@@ -10,10 +10,10 @@ static bool BlockLoseSay;
 
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",

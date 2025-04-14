@@ -760,3 +760,49 @@ enum
 	BLEEDTYPE_SEABORN = 6,
 	BLEEDTYPE_VOID = 7
 }
+
+
+
+int i_TankAntiStuck[MAXENTITIES];
+int i_PlayMusicSound[MAXENTITIES];
+float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+float fl_ThrowPlayerCooldown[MAXENTITIES];
+float fl_ThrowPlayerImmenent[MAXENTITIES];
+bool b_ThrowPlayerImmenent[MAXENTITIES];
+int i_GrabbedThis[MAXENTITIES];
+float fl_ThrowDelay[MAXENTITIES];
+int i_TankThrewThis[MAXENTITIES];
+bool i_ThrowAlly[MAXENTITIES];
+int i_IWantToThrowHim[MAXENTITIES];
+float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
+int i_PlayIdleAlertSound[MAXENTITIES];
+int i_ammo_count[MAXENTITIES];
+bool b_we_are_reloading[MAXENTITIES];
+float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+int i_wingslot[MAXENTITIES];
+int i_haloslot[MAXENTITIES];
+int i_ClosestAlly[MAXENTITIES];
+float i_ClosestAllyCD[MAXENTITIES];
+int i_ClosestAllyTarget[MAXENTITIES];
+float i_ClosestAllyCDTarget[MAXENTITIES];
+
+int i_NemesisEntitiesHitAoeSwing[MAXENTITIES];	//Who got hit
+float f_NemesisEnemyHitCooldown[MAXENTITIES];
+
+float f_NemesisCauseInfectionBox[MAXENTITIES];
+float f_NemesisHitBoxStart[MAXENTITIES];
+float f_NemesisHitBoxEnd[MAXENTITIES];
+float fl_RegainWalkAnim[MAXENTITIES];
+float fl_OverrideWalkDest[MAXENTITIES];
+float fl_StopDodge[MAXENTITIES];
+float fl_StopDodgeCD[MAXENTITIES];
+
+int i_GunMode[MAXENTITIES];
+int i_GunAmmo[MAXENTITIES];
+float f_NemesisImmuneToInfection[MAXENTITIES];
+float f_NemesisSpecialDeathAnimation[MAXENTITIES];
+float f_NemesisRandomInfectionCycle[MAXENTITIES];
+bool b_InKame[MAXENTITIES];
+bool b_said_player_weaponline[MAXTF2PLAYERS]; //Yes, i know, itll break if multiple raids spawn, but it doesnt really matter....
+float fl_said_player_weaponline_time[MAXENTITIES];
+int i_current_wave[MAXENTITIES];

@@ -60,14 +60,13 @@ static bool NightmareCannon_BEAM_HitDetected[MAXENTITIES];
 static int NightmareCannon_BEAM_BuildingHit[MAXENTITIES];
 static bool NightmareCannon_BEAM_UseWeapon[MAXENTITIES];
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 
 
 static int i_SaidLineAlready[MAXENTITIES];
 
 
-static bool b_InKame[MAXENTITIES];
+
 static bool b_enraged=false;
 
 void Donnerkrieg_OnMapStart_NPC()

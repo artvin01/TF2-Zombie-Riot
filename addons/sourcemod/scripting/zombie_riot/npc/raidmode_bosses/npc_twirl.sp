@@ -62,7 +62,7 @@ static const char g_FractalSound[][] = {
 	"weapons/capper_shoot.wav"
 };
 
-static bool b_InKame[MAXENTITIES];
+
 #define TWIRL_TE_DURATION 0.1
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3"
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
@@ -178,7 +178,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 {
 	return Twirl(vecPos, vecAng, team, data);
 }
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
 static const char NameColour[] = "{purple}";
 static const char TextColour[] = "{snow}";
 

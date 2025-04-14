@@ -105,9 +105,9 @@ static bool YaWeFxxked[MAXENTITIES];
 static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AirRaidStart[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
+
 static int i_AmountProjectiles[MAXENTITIES];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
 
 static float Vs_DelayTime[MAXENTITIES];
 static int Vs_Stats[MAXENTITIES];

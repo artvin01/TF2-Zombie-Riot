@@ -64,7 +64,7 @@ Give Karlas smth?
 #define STELLA_DEBUFF_RANGE 100.0
 bool b_allow_karlas_transform[MAXENTITIES];
 
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
 
 static const char g_nightmare_cannon_core_sound[][] = {
 	"zombiesurvival/seaborn/loop_laser.mp3",
@@ -90,13 +90,13 @@ static const char g_OnLunarGraceHitSounds[][] = {
 };
 
 static int i_particle_effects[MAXENTITIES][3];
-static int i_wingslot[MAXENTITIES];
+
 
 #define STELLA_TE_DURATION 0.07
 
 static char gExplosive1;
 static int i_ally_index[MAXENTITIES];
-static bool b_InKame[MAXENTITIES];
+
 static bool b_tripple_raid[MAXENTITIES];
 
 #define STELLA_NC_DURATION 13.0
@@ -108,7 +108,7 @@ static bool b_tripple_raid[MAXENTITIES];
 
 static float fl_npc_basespeed;
 static bool b_test_mode[MAXENTITIES];
-static int i_current_wave[MAXENTITIES];
+int i_current_wave[MAXENTITIES];
 static bool b_bobwave[MAXENTITIES];
 static bool b_IonStormInitiated[MAXENTITIES];
 static bool b_LastMannLines[MAXENTITIES];
@@ -120,8 +120,8 @@ static const char TextColour[] = "{snow}";
 
 static char gGlow1;	//blue
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 void Stella_OnMapStart_NPC()
 {

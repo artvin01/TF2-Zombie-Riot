@@ -206,8 +206,8 @@ static const char g_LaserLoop[][] = {
 
 */
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 int i_Lelouch_Index;
 #define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
@@ -242,12 +242,12 @@ static bool b_Standard_Anchor;
 static bool b_crystals_active[MAXENTITIES];
 static bool b_animation_set[MAXENTITIES];
 static bool b_test_mode[MAXENTITIES];
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
 
 static const char NameColour[] = "{black}";
 static const char TextColour[] = "{snow}";
 
-static int i_wingslot[MAXENTITIES];
+
 static int i_specialentslot[MAXENTITIES];
 
 void Lelouch_OnMapStart_NPC()

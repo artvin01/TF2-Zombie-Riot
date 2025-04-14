@@ -113,10 +113,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return MedivalHussar(vecPos, vecAng, team);
 }
-static int i_ClosestAlly[MAXENTITIES];
-static float i_ClosestAllyCD[MAXENTITIES];
-static int i_ClosestAllyTarget[MAXENTITIES];
-static float i_ClosestAllyCDTarget[MAXENTITIES];
+
+
+
+
 
 
 #define HUSSAR_BUFF_MAXRANGE 350.0 		
