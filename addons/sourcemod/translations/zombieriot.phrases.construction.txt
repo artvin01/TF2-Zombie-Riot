@@ -472,4 +472,44 @@
 	{
 		"en"	"Oh. dear.\n{red}Construct traits have a chance to fail {blue}and rogue expidonsans are after you."
 	}
+	"Rebel Calling I"
+	{
+		"en"	"Rebel Calling I"
+	}
+	"Rebel Calling I Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Rebel Calling II"
+	{
+		"en"	"Rebel Calling II"
+	}
+	"Rebel Calling II Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Rebel Calling III"
+	{
+		"en"	"Rebel Calling III"
+	}
+	"Rebel Calling III Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Rebel Calling IV"
+	{
+		"en"	"Rebel Calling IV"
+	}
+	"Rebel Calling IV Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Rebel Calling V"
+	{
+		"en"	"Rebel Calling V"
+	}
+	"Rebel Calling V Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
 }
