@@ -89,8 +89,7 @@ static float fl_npc_basespeed;
 
 //Logic for duo raidboss
 
-int i_current_wave[MAXENTITIES];
-static int i_ally_index[MAXENTITIES];
+
 static bool b_bobwave[MAXENTITIES];
 
 static bool b_swords_created[MAXENTITIES];

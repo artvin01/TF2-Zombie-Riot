@@ -95,7 +95,7 @@ static int i_particle_effects[MAXENTITIES][3];
 #define STELLA_TE_DURATION 0.07
 
 static char gExplosive1;
-static int i_ally_index[MAXENTITIES];
+
 
 static bool b_tripple_raid[MAXENTITIES];
 
@@ -108,7 +108,6 @@ static bool b_tripple_raid[MAXENTITIES];
 
 static float fl_npc_basespeed;
 static bool b_test_mode[MAXENTITIES];
-int i_current_wave[MAXENTITIES];
 static bool b_bobwave[MAXENTITIES];
 static bool b_IonStormInitiated[MAXENTITIES];
 static bool b_LastMannLines[MAXENTITIES];

@@ -806,3 +806,8 @@ bool b_InKame[MAXENTITIES];
 bool b_said_player_weaponline[MAXTF2PLAYERS]; //Yes, i know, itll break if multiple raids spawn, but it doesnt really matter....
 float fl_said_player_weaponline_time[MAXENTITIES];
 int i_current_wave[MAXENTITIES];
+bool FactorySpawn[MAXENTITIES];
+bool MK2[MAXENTITIES];
+bool Limit[MAXENTITIES];
+bool Anvil[MAXENTITIES];
+int i_ally_index[MAXENTITIES];
