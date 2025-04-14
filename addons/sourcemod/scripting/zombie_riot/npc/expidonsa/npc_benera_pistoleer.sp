@@ -312,8 +312,6 @@ void PistoleerSelfDefense(Pistoleer npc, float gameTime)
 	}
 }
 
-int PistoleerHitDetected[MAXENTITIES];
-
 void PistoleerInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
 
@@ -372,7 +370,7 @@ void PistoleerInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		PistoleerHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -423,7 +421,7 @@ void PistoleerInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (PistoleerHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -447,7 +445,7 @@ public bool Pistoleer_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		PistoleerHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

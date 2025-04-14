@@ -2008,9 +2008,6 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 
 
 
-
-int SensalHitDetected[MAXENTITIES];
-
 void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
 
@@ -2073,7 +2070,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -2132,7 +2129,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -2156,7 +2153,7 @@ public bool Sensal_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

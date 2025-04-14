@@ -811,3 +811,6 @@ bool MK2[MAXENTITIES];
 bool Limit[MAXENTITIES];
 bool Anvil[MAXENTITIES];
 int i_ally_index[MAXENTITIES];
+
+//some lasers had some variation of this, i just condeced it down to 1
+int LaserVarious_HitDetection[MAXENTITIES];
