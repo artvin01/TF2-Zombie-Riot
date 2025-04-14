@@ -349,6 +349,16 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 
 public void Construction_Rebel_Collect()
 {
+	SpawnRebel();
+}
+
+public void Construction_Alyx_Collect()
+{
+	SpawnRebel("a");
+}
+
+static void SpawnRebel(const char[] data = "")
+{
 	float pos[3], ang[3];
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{

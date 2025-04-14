@@ -5,7 +5,6 @@
 #define ALYX_MODEL	"models/alyx.mdl"
 #define CAMO_REBEL_DMG_PENALTY 0.65
 
-
 enum
 {
 	Cit_Custom = -1,
@@ -2050,55 +2049,59 @@ void Citizen_SetRandomRole(int entity)
 	int longCount;
 	int shortCount;
 	int totalCount;
+	int seed = npc.m_bHero ? GetURandomInt() : npc.m_iSeed;
 
-	int i = -1;
-	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+	if(!npc.m_bAlyx)
 	{
-		if(i_NpcInternalId[i] == NPCId && GetTeam(i) == team)
+		int i = -1;
+		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
-			totalCount++;
-
-			switch(npc.m_iClassRole)
-			{
-				case Cit_Builder:
-					hasBuilder = true;
-				
-				case Cit_Medic:
-					medicCount++;
-			}
-
-			switch(npc.m_iGunType)
-			{
-				case Cit_Melee, Cit_Shotgun, Cit_SMG, Cit_AR:
-					shortCount++;
-				
-				case Cit_Pistol, Cit_RPG:
-					longCount++;
-			}
-		}
-	}
-	
-	if(team != TFTeam_Red)
-	{
-		i = -1;
-		while((i = FindEntityByClassname(i, "obj_building")) != -1)
-		{
-			if(i_NpcInternalId[i] == ObjectBarricade_ID())
-			{
-				hasBuilder = true;
-				break;
-			}
-		}
-
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client) == TFTeam_Red)
+			if(i_NpcInternalId[i] == NPCId && GetTeam(i) == team)
 			{
 				totalCount++;
 
-				if(Store_HasNamedItem(client, "Doctor Certificate"))
+				switch(npc.m_iClassRole)
 				{
-					medicCount++;
+					case Cit_Builder:
+						hasBuilder = true;
+					
+					case Cit_Medic:
+						medicCount++;
+				}
+
+				switch(npc.m_iGunType)
+				{
+					case Cit_Melee, Cit_Shotgun, Cit_SMG, Cit_AR:
+						shortCount++;
+					
+					case Cit_Pistol, Cit_RPG:
+						longCount++;
+				}
+			}
+		}
+		
+		if(team != TFTeam_Red)
+		{
+			i = -1;
+			while((i = FindEntityByClassname(i, "obj_building")) != -1)
+			{
+				if(i_NpcInternalId[i] == ObjectBarricade_ID())
+				{
+					hasBuilder = true;
+					break;
+				}
+			}
+
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client) == TFTeam_Red)
+				{
+					totalCount++;
+
+					if(Store_HasNamedItem(client, "Doctor Certificate"))
+					{
+						medicCount++;
+					}
 				}
 			}
 		}
@@ -2107,25 +2110,28 @@ void Citizen_SetRandomRole(int entity)
 	int type = Cit_Pistol;
 	int role = Cit_Fighter;
 
-	if((npc.m_iSeed % 4) && medicCount < (totalCount / 6))
+	if(!npc.m_bAlyx)
 	{
-		type = (npc.m_iSeed % 6) ? Cit_SMG : Cit_AR;
-		role = Cit_Medic;
-	}
-	else if((npc.m_iSeed % 3) == 0 && totalCount > 2 && !hasBuilder)
-	{
-		type = Cit_AR;
-		role = Cit_Builder;
-	}
-	else if(shortCount < longCount)
-	{
-		type = (npc.m_iSeed % 8) > 2 ? Cit_SMG : Cit_Shotgun;
-		if((npc.m_iSeed % 8) == 0)
-			type = Cit_Melee;
-	}
-	else
-	{
-		type = (npc.m_iSeed % 8) > 2 ? Cit_Pistol : Cit_RPG;
+		if((seed % 4) && medicCount < (totalCount / 6))
+		{
+			type = (seed % 6) ? Cit_SMG : Cit_AR;
+			role = Cit_Medic;
+		}
+		else if((seed % 3) == 0 && totalCount > 2 && !hasBuilder)
+		{
+			type = Cit_AR;
+			role = Cit_Builder;
+		}
+		else if(shortCount < longCount)
+		{
+			type = (seed % 8) > 6 ? Cit_Shotgun : Cit_SMG;
+			if((seed % 8) < (Construction_Mode() ? 3 : 1))
+				type = Cit_Melee;
+		}
+		else
+		{
+			type = (seed % 8) > 2 ? Cit_Pistol : Cit_RPG;
+		}
 	}
 
 	Citizen_UpdateStats(entity, type, role);
@@ -2399,29 +2405,15 @@ void Citizen_WaveStart()
 			int team = GetTeam(i);
 			if(team == TFTeam_Red)
 			{
-				int sentry = Object_GetSentryBuilding(npc.index);
-				npc.m_iCanBuild = sentry == -1 ? 1 : 0;
+				npc.m_iCanBuild = BuildingLimitRebelLeft(npc.index, 1) ? 1 : 0;
 				
 				if(npc.m_iClassRole == Cit_Builder)
 				{
-					/*
-					int limit = 3 + (npc.m_iGunValue / 4000);
-					if(limit > 12)
-						limit = 12;
-
-
-					*/
-					int limit = 4;
-
-					int obj = MaxClients + 1;
-					while((obj = FindEntityByClassname(obj, "obj_building")) != -1)
-					{
-						if(sentry != obj && GetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity") == npc.index)
-							limit--;
-					}
-
-					if(limit > 0)
+					if(BuildingLimitRebelLeft(npc.index, 2))
 						npc.m_iCanBuild += 2;
+					
+					if(BuildingLimitRebelLeft(npc.index, 3))
+						npc.m_iCanBuild += 4;
 				}
 			}
 			else if(npc.m_iClassRole == Cit_Builder)
@@ -2537,6 +2529,9 @@ public void Citizen_ClotThink(int iNPC)
 	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1) || GetTeam(npc.index) != TFTeam_Red);
 	bool helpAlly;
 
+	if(Construction_Mode() && Construction_InSetup())
+		autoSeek = true;
+
 	// See if our target is still valid
 	int target = npc.m_iTarget;
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target, true, true))
@@ -2564,7 +2559,7 @@ public void Citizen_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		autoSeek = true;
-		int newTarget = GetClosestTarget(npc.index, _, autoSeek ? FAR_FUTURE : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, autoSeek);
+		int newTarget = GetClosestTarget(npc.index, false, autoSeek ? FAR_FUTURE : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, .CanSee = !autoSeek);
 		if(newTarget > 0)
 		{
 			target = newTarget;
@@ -2667,7 +2662,7 @@ public void Citizen_ClotThink(int iNPC)
 	}
 
 	// Additional check to see if we're surrounded
-	if(!noSafety && target > 0 && (ally > 0 || npc.m_iSeakingObject || seakAlly))
+	if(!noSafety && target > 0 && (injured || npc.m_iClassRole != Cit_Melee) && (ally > 0 || npc.m_iSeakingObject || seakAlly))
 	{
 		WorldSpaceCenter(target, vecTarget);
 		if(GetVectorDistance(vecMe, vecTarget, true) < 20000.0)
@@ -2884,7 +2879,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 
 		// Sentry Buildings
-		else if(team == TFTeam_Red && (npc.m_iCanBuild == 1 || npc.m_iCanBuild == 3) && (npc.m_iClassRole == Cit_Medic || npc.m_iClassRole == Cit_Builder) && (GetURandomInt() % 2))
+		else if(team == TFTeam_Red && (npc.m_iCanBuild & 1) && (npc.m_iClassRole == Cit_Medic || npc.m_iClassRole == Cit_Builder) && (GetURandomInt() % 2))
 		{
 			npc.ThinkFriendly("Nowhere to build my sentry...");
 
@@ -3048,6 +3043,17 @@ public void Citizen_ClotThink(int iNPC)
 
 				if(!type)
 					continue;
+
+				if(type == 6)
+				{
+					if(!(npc.m_iCanBuild & 2))
+						continue;
+				}
+				else
+				{
+					if(!(npc.m_iCanBuild & 4))
+						continue;
+				}
 
 				// Ignore if someone else planned to build on it
 				int other = -1;
@@ -5004,7 +5010,7 @@ void CitizenVoteFor(int entity, int client, int VoteFor)
 		{
 			if(npc.m_iClassRole == Cit_Fighter)
 			{
-				if(npc.m_iHasPerk != Cit_Melee)
+				if(npc.m_iGunType != Cit_Melee)
 					return;
 			}
 
@@ -5013,7 +5019,7 @@ void CitizenVoteFor(int entity, int client, int VoteFor)
 		}
 		case 1:
 		{
-			if(npc.m_iHasPerk == Cit_Melee)
+			if(npc.m_iGunType == Cit_Melee)
 				return;
 
 			Citizen_UpdateStats(entity, Cit_Melee, Cit_Fighter);
