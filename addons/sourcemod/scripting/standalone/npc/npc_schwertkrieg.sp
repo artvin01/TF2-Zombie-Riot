@@ -251,9 +251,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		pack.WriteString(g_TeleportSounds[sound]);
 		pack.WriteCell(EntIndexToEntRef(this.index));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	public void PlayBuffSound()
 	{

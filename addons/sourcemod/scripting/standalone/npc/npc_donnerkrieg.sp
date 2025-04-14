@@ -233,9 +233,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		EmitSoundToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, SNDPITCH_NORMAL);
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayNightmareSound()");
-		#endif
+
 	}*/
 
 	public void PlayIdleAlertSound() {
