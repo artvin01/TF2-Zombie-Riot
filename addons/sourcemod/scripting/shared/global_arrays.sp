@@ -814,3 +814,4 @@ int i_ally_index[MAXENTITIES];
 
 //some lasers had some variation of this, i just condeced it down to 1
 int LaserVarious_HitDetection[MAXENTITIES];
+int i_SaidLineAlready[MAXENTITIES];

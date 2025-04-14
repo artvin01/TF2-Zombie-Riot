@@ -87,7 +87,7 @@ static float fl_NextPull[MAXENTITIES];
 static int i_AmountProjectiles[MAXENTITIES];
 
 
-static int i_SaidLineAlready[MAXENTITIES];
+
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 
 public void TrueFusionWarrior_OnMapStart()

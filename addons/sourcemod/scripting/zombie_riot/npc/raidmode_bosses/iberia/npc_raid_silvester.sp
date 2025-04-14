@@ -6,7 +6,7 @@
 #define Silvester_LASER_THICKNESS 25
 
 
-static int i_SaidLineAlready[MAXENTITIES];
+
 
 
 static bool b_SilvLine[MAXENTITIES];

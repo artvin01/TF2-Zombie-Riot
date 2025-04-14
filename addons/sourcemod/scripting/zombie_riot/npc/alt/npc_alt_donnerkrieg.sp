@@ -63,8 +63,6 @@ static bool NightmareCannon_BEAM_UseWeapon[MAXENTITIES];
 
 
 
-static int i_SaidLineAlready[MAXENTITIES];
-
 
 
 static bool b_enraged=false;

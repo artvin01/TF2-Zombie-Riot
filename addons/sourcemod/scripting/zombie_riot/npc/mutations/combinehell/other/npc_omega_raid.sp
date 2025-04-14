@@ -84,7 +84,7 @@ static char g_RangedReloadSound[][] = {
 };
 
 static int LastEnemyTargeted[MAXENTITIES];
-static int i_SaidLineAlready[MAXENTITIES];
+
 
 
 static float f_TalkDelayCheck;

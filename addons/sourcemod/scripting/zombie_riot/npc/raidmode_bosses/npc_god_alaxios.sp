@@ -149,7 +149,6 @@ static float f_AlaxiosCantDieLimit[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
-int Alaxiosspeedint[MAXENTITIES];
 methodmap GodAlaxios < CClotBody
 {
 	property float m_flAlaxiosBuffEffect
@@ -299,7 +298,6 @@ methodmap GodAlaxios < CClotBody
 		npc.m_iChanged_WalkCycle = 4;
 		npc.SetActivity("ACT_WALK");
 		npc.m_flSpeed = 320.0;
-		Alaxiosspeedint[npc.index] = 320;
 	
 		npc.m_flMeleeArmor = 1.25;
 		
@@ -854,22 +852,16 @@ public void GodAlaxios_ClotThink(int iNPC)
 		}
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 	}
-	//float point impresicion...
-	if(Alaxiosspeedint[npc.index] == 320)
+	if(npc.m_flSpeed >= 1.0)
 	{
 		if(HasSpecificBuff(npc.index, "Godly Motivation"))
 		{
 			npc.m_flSpeed = 220.0;
-			Alaxiosspeedint[npc.index] = 220;
 		}
-	}
-	else if(Alaxiosspeedint[npc.index] == 220)
-	{
-		if(!HasSpecificBuff(npc.index, "Godly Motivation"))
+		else if(!HasSpecificBuff(npc.index, "Godly Motivation"))
 		{
-			Alaxiosspeedint[npc.index] = 320;
 			npc.m_flSpeed = 320.0;
-		}		
+		}	
 	}
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -1035,7 +1027,6 @@ public void GodAlaxios_ClotThink(int iNPC)
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
 				
-				Alaxiosspeedint[npc.index] = 0;
 				npc.m_flSpeed = 0.0;
 				if(npc.m_bPathing)
 				{
@@ -1800,7 +1791,6 @@ void GodAlaxiosJumpSpecial(GodAlaxios npc, float gameTime)
 				npc.m_iChanged_WalkCycle = 4;
 				npc.SetActivity("ACT_WALK");
 				npc.StartPathing();
-				Alaxiosspeedint[npc.index] = 320;
 				npc.m_flSpeed = 320.0;
 				npc.m_bisWalking = true;
 			}

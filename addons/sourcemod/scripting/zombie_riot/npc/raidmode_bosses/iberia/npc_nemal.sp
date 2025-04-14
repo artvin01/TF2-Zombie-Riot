@@ -7,7 +7,7 @@
 
 
 
-static int i_SaidLineAlready[MAXENTITIES];
+
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
