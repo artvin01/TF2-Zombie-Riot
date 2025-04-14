@@ -5462,6 +5462,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		
 		CNavArea closeNav = NULL_AREA;
 		float closeDist = maxDistance;
+		bool closeNpc;
+		bool construction = Construction_Mode();	// Buildings/NPCs don't use allydist, focus buildings
 		
 		int length = iterator.Count();
 		for(int i; i < length; i++)
@@ -5488,20 +5490,34 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				//	PrintToChatAll("%f > %f", dist, fldistancelimit);
 					if(GetClosestTarget_Enemy_Type[a] > 2)	// Distance limit
 					{
-						if(dist > fldistancelimitAllyNPC)
+						if(!construction || dist < fldistancelimit)
+						{
+							if(dist > fldistancelimitAllyNPC)
+							{
+								continue;
+							}
+						}
+					}
+					else
+					{
+						if(construction && closeNpc)
+						{
+							if(dist > fldistancelimitAllyNPC)
+							{
+								continue;
+							}
+						}
+						else if(dist > fldistancelimit)
 						{
 							continue;
 						}
-					}
-					else if(dist > fldistancelimit)
-					{
-						continue;
 					}
 
 					if(dist < closeDist)
 					{
 						closeNav = area2;
 						closeDist = dist;
+						closeNpc = GetClosestTarget_Enemy_Type[a] > 2;
 					}
 					break;
 				}
@@ -9357,6 +9373,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	if(b_thisNpcIsARaid[npc])
 		ApplyStatusEffect(npc, npc, "Shook Head", Duration_Stun * 3.0);	
 
+	//PrintToChatAll("%f",Duration_Stun_Post);
 	ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun_Post);	
 
 	npcclot.Update();

@@ -845,6 +845,7 @@ public Action TELEPORT_STRIKE_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		{
 			radius *= 1.25;
 		}
+		TELEPORT_STRIKE_spawnRing_Vectors(spawnLoc, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.7, 6.0, 0.4, 1);
 		
 		TELEPORT_STRIKE_spawnRing_Vectors(spawnLoc, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.33, 6.0, 0.1, 1, 1.0);
 		EmitAmbientSound(TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));

@@ -6233,6 +6233,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		FullMoon_Enable(client, entity);
 		Enable_RedBladeWeapon(client, entity);
 		Enable_Gravaton_Wand(client, entity);
+		Enable_Reiuji_Wand(client, entity);
 		Enable_Dimension_Wand(client, entity);
 		Enable_Management_Hell_Hoe(client, entity);
 		Enable_Management_GrenadeHud(client, entity);

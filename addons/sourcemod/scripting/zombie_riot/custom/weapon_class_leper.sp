@@ -157,6 +157,9 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 	if (IsLeperInAnimation(client))
 		return;
 	
+	if(dieingstate[client] != 0)
+		return;
+
 	if(CurrentPapLeper[client] >= 3)
 	{	
 		if((GetClientButtons(client) & IN_RELOAD))
@@ -278,6 +281,7 @@ void LeperReturnToNormal(int client, int propdelete, int ExtraLogic = 0)
 		SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 1);
 		SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
 		SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0}); //reset speed to 0 so they dont fly to america
 		
 		if(!b_HideCosmeticsPlayer[client])
 		{
@@ -794,6 +798,8 @@ void LeperResetUses()
 public void Weapon_LeperWrath(int client, int weapon, bool &result, int slot)
 {
 	if (IsLeperInAnimation(client))
+		return;
+	if(dieingstate[client] != 0)
 		return;
 	
 	float cooldown = Ability_Check_Cooldown(client, slot);

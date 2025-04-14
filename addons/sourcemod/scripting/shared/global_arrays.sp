@@ -463,7 +463,7 @@ bool b_JunalSpecialGear100k[MAXENTITIES];
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 bool IsInsideManageRegularWeapons;
 bool b_ProximityAmmo[MAXTF2PLAYERS];
-int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
+int i_HeadshotAffinity[MAXTF2PLAYERS]={0, ...}; 
 int i_nm_body_client[MAXTF2PLAYERS];
 int i_CurrentEquippedPerk[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
@@ -483,8 +483,8 @@ float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
 float Mana_Loss_Delay[MAXTF2PLAYERS];
 //float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXENTITIES];
-int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
-int Grigori_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
+int Armor_Level[MAXTF2PLAYERS]={0, ...}; 				//701
+int Grigori_Blessing[MAXTF2PLAYERS]={0, ...}; 				//777
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
@@ -510,10 +510,10 @@ float f_ClientArmorRegen[MAXENTITIES];
 //bool b_VoidPortalOpened[MAXTF2PLAYERS];
 //bool b_AvangardCoreB[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
-float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
+float f_CooldownForHurtHud_Ally[MAXTF2PLAYERS];	
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
-int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
+int i_SoftShoes[MAXTF2PLAYERS]={0, ...}; 				//527
 bool b_IsCannibal[MAXTF2PLAYERS];
 bool b_Reinforce[MAXTF2PLAYERS];
 char g_GibEating[][] = {
@@ -548,7 +548,7 @@ int g_particleMissText;
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
-float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
+float Mana_Regen_Level[MAXTF2PLAYERS]={0.0, ...};				//405
 int i_SurvivalKnifeCount[MAXENTITIES]={0, ...}; 				//33
 int i_GlitchedGun[MAXENTITIES]={0, ...}; 				//731
 int i_AresenalTrap[MAXENTITIES]={0, ...}; 				//719
@@ -619,8 +619,8 @@ int h_NpcSolidHookType[MAXENTITIES];
 #define EP_DEALS_TRUE_DAMAGE			 	(1 << 5)
 #define EP_IS_ICE_DAMAGE			  		(1 << 6)   				// Even if its anything then blast, it will still gib.
 
-float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
-float f_DelayLookingAtHud[MAXPLAYERS+1];
+float f_TempCooldownForVisualManaPotions[MAXTF2PLAYERS+1];
+float f_DelayLookingAtHud[MAXTF2PLAYERS+1];
 bool b_EntityIsArrow[MAXENTITIES];
 bool b_EntityIsWandProjectile[MAXENTITIES];
 bool b_EntityIgnoredByShield[MAXENTITIES];
@@ -682,8 +682,8 @@ bool b_ThisEntityIgnoredBeingCarried[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
-bool b_IsPlayerABot[MAXPLAYERS+1];
-float f_CooldownForHurtHud[MAXPLAYERS];
+bool b_IsPlayerABot[MAXTF2PLAYERS+1];
+float f_CooldownForHurtHud[MAXTF2PLAYERS];
 int i_PreviousInteractedEntity[MAXENTITIES];
 //Otherwise we get kicks if there is too much hurting going on.
 

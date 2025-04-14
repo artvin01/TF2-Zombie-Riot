@@ -2916,7 +2916,6 @@ void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
 	}
 }
 
-ArrayList HitEntitiesSphereExplosionTrace[MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
 int client, //To get attributes from and to see what is my enemy!
@@ -3075,7 +3074,8 @@ int inflictor = 0)
 			where did i explode
 		*/
 	}
-	DoExlosionTraceCheck(spawnLoc, explosionRadius, entityToEvaluateFrom);
+	ArrayList HitEntitiesSphereExplosionTrace = new ArrayList();
+	DoExlosionTraceCheck(spawnLoc, explosionRadius, entityToEvaluateFrom, HitEntitiesSphereExplosionTrace);
 	/*
 	This trace does not filter on what is hit first, thats kinda bad, it filters by what entity number is smaller.
 	solution: Trace all entities, get all their distances, and do a rating, with this we get what entity is the closest
@@ -3092,10 +3092,10 @@ int inflictor = 0)
 		maxtargetshit = 20; //we do not care.
 	}
 	
-	int length = HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Length;
+	int length = HitEntitiesSphereExplosionTrace.Length;
 	for (int i = 0; i < length; i++)
 	{
-		int entity_traced = HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Get(i);
+		int entity_traced = HitEntitiesSphereExplosionTrace.Get(i);
 		
 		WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
 		distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
@@ -3112,7 +3112,7 @@ int inflictor = 0)
 		int ClosestIndex;
 		for (int i = 0; i < length; i++)
 		{
-			int entity_traced = HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Get(i);
+			int entity_traced = HitEntitiesSphereExplosionTrace.Get(i);
 			
 			if( ClosestDistance ) 
 			{
@@ -3129,8 +3129,8 @@ int inflictor = 0)
 			}
 		}
 
-		int ClosestTarget = HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Get(ClosestIndex);
-		HitEntitiesSphereExplosionTrace[entityToEvaluateFrom].Erase(ClosestIndex);
+		int ClosestTarget = HitEntitiesSphereExplosionTrace.Get(ClosestIndex);
+		HitEntitiesSphereExplosionTrace.Erase(ClosestIndex);
 		length--;
 		
 	//	We will filter out each entity and them damage them accordingly.
@@ -3151,7 +3151,7 @@ int inflictor = 0)
 									
 				if(Traced_Target != ClosestTarget)
 				{	
-					return;
+					continue;
 				}
 			}
 			if(ignite)
@@ -3233,7 +3233,7 @@ int inflictor = 0)
 		ClosestTarget = false;
 		ClosestDistance = 0.0;
 	}
-	delete HitEntitiesSphereExplosionTrace[entityToEvaluateFrom];
+	delete HitEntitiesSphereExplosionTrace;
 }
 
 //#define PARTITION_SOLID_EDICTS        (1 << 1) /**< every edict_t that isn't SOLID_TRIGGER or SOLID_NOT (and static props) */
@@ -3241,24 +3241,27 @@ int inflictor = 0)
 //#define PARTITION_NON_STATIC_EDICTS   (1 << 5) /**< everything in solid & trigger except the static props, includes SOLID_NOTs */
 //#define PARTITION_STATIC_PROPS        (1 << 7)
 
-void DoExlosionTraceCheck(const float pos1[3], float radius, int entity)
+void DoExlosionTraceCheck(const float pos1[3], float radius, int entity, ArrayList HitEntitiesSphereExplosionTrace)
 {
-	//Delete any previous existing explosion trace array
-	delete HitEntitiesSphereExplosionTrace[entity];
-	//Create a new one thats blank
-	HitEntitiesSphereExplosionTrace[entity] = new ArrayList();
+	DataPack packFilter = new DataPack();
+	packFilter.WriteCell(HitEntitiesSphereExplosionTrace);
+	packFilter.WriteCell(entity);
+	TR_EnumerateEntitiesSphere(pos1, radius, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_EnumerateEntitiesInRange, packFilter);
 
-	TR_EnumerateEntitiesSphere(pos1, radius, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_EnumerateEntitiesInRange, entity);
+	delete packFilter;
 	//It does all needed logic here.
 }
 
-public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, int filterentity)
+public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, DataPack packFilter)
 {
+	packFilter.Reset();
+	ArrayList HitEntitiesSphereExplosionTrace = packFilter.ReadCell();
+	int filterentity = packFilter.ReadCell();
 	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
 	{
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
 		//Add a new entity to the arrray list
-		HitEntitiesSphereExplosionTrace[filterentity].Push(entity);
+		HitEntitiesSphereExplosionTrace.Push(entity);
 		
 	}
 	//always keep going!
@@ -4366,16 +4369,20 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0, int MaxHealingPermitted = 9999999)
 {
 //	bool isNotClient = false;
-		
-	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
-	int flMaxHealth;
-	if(entity > MaxClients)
+	
+	int flHealth, flMaxHealth;
+
+	#if defined ZR
+	if(i_IsVehicle[entity])
 	{
-		flMaxHealth = ReturnEntityMaxHealth(entity);
+		flHealth = Armor_Charge[entity];
+		flMaxHealth = 10000;
 	}
 	else
+	#endif
 	{
-		flMaxHealth = SDKCall_GetMaxHealth(entity);
+		flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
+		flMaxHealth = ReturnEntityMaxHealth(entity);
 	}
 
 	int i_TargetHealAmount; //Health to actaully apply
@@ -4422,17 +4429,36 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	int MaxHeal = RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti);
 	if(flHealth < MaxHeal)
 	{
-
 		if(newHealth >= MaxHeal) //allow 1 tick of overheal.
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
+			#if defined ZR
+			if(i_IsVehicle[entity])
+			{
+				Armor_Charge[entity] = MaxHeal;
+			}
+			else
+			#endif
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
+			}
+			
 			newHealth = MaxHeal;
 
 			HealAmount = newHealth - flHealth;
 		}
 		else
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			#if defined ZR
+			if(i_IsVehicle[entity])
+			{
+				Armor_Charge[entity] = newHealth;
+			}
+			else
+			#endif
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			}
+
 			HealAmount = newHealth - flHealth;
 		}
 	}
@@ -5529,4 +5555,12 @@ void EntityKilled_HitDetectionCooldown(int entity, int offset = -1)
 			length--;
 		}
 	}
+}
+
+
+
+stock void GetMapName(char[] buffer, int size)
+{
+	GetCurrentMap(buffer, size);
+	GetMapDisplayName(buffer, buffer, size);
 }

@@ -104,6 +104,14 @@ static bool ClotInteract(int client, int weapon, ObjectTinkerAnvil npc)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
+
+	if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+	{
+		Building_Collect_Cooldown[npc.index][client] = GetGameTime() + 5.0;
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+	
 	Blacksmith_BuildingUsed(npc.index, client);
 //	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
 	

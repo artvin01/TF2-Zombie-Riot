@@ -349,11 +349,11 @@ void Construction_SetupVote(KeyValues kv)
 				{
 					kv.GotoNextKey();
 				}
-				
-				kv.GetSectionName(BackgroundMusic.Path, sizeof(BackgroundMusic.Path));
-				BackgroundMusic.SetupKv(BackgroundMusic.Path, kv);
 
+				kv.GetSectionName(BackgroundMusic.Path, sizeof(BackgroundMusic.Path));
 				kv.GoBack();
+				
+				BackgroundMusic.SetupKv(BackgroundMusic.Path, kv);
 			}
 		}
 
@@ -439,7 +439,7 @@ static Action Timer_WaitingPeriod(Handle timer)
 			if(GetVectorDistance(pos1, pos2, true) > 900000.0)
 			{
 				Vehicle_Exit(client, false, false);
-				TeleportEntity(client, pos1, NULL_VECTOR, NULL_VECTOR);
+				TeleportEntity(client, pos1, {0.0, 0.0, 0.0}, NULL_VECTOR);
 			}
 		}
 	}
@@ -464,6 +464,7 @@ void Construction_Start()
 	}
 
 	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
+	Citizen_SpawnAtPoint("b");
 
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
@@ -586,7 +587,7 @@ static Action Timer_StartAttackWave(Handle timer)
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(GetTeam(entity) != TFTeam_Red && !i_NpcIsABuilding[entity] && !b_StaticNPC[entity])
+			if(GetTeam(entity) != TFTeam_Red && !b_StaticNPC[entity])
 				SmiteNpcToDeath(entity);
 		}
 	}
@@ -717,7 +718,7 @@ static bool StartAttack(const AttackInfo attack, int type, int target, int bonus
 
 	Rogue_TriggerFunction(Artifact::FuncStageStart);
 	CreateTimer(float(type * type), Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-	WaveStart_SubWaveStart(GetGameTime());
+	WaveStart_SubWaveStart(GetGameTime() + AttackTime - 523.0);
 	return true;
 }
 
@@ -736,7 +737,10 @@ void Construction_BattleVictory()
 
 	int entity = EntRefToEntIndex(AttackRef);
 	if(entity != -1)
+	{
 		view_as<CClotBody>(entity).Anger = false;
+		view_as<CClotBody>(entity).m_bCamo = false;
+	}
 	
 	GiveRandomReward(CurrentRisk, type > 1 ? 4 : 2);
 }
@@ -993,7 +997,7 @@ stock bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int
 				ResourceInfo info;
 				ResourceList.GetArray(index, info);
 
-				if(!(damagetype & DMG_TRUEDAMAGE))
+				//if(!(damagetype & DMG_TRUEDAMAGE))
 				{
 					float minDamage = damage * 0.05;
 					damage -= float(info.Defense);
@@ -1017,10 +1021,12 @@ stock bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int
 		}
 	}
 
-	if(CurrentAttacks && MaxAttacks && RiskIncrease)
+	if(MultiGlobalHighHealthBoss)
+		damage /= MultiGlobalHighHealthBoss;
+
+	if(CurrentAttacks && RiskIncrease)
 	{
-		float multi = Pow(0.5, float(CurrentAttacks) * 4.0 / float(MaxAttacks));
-		
+		float multi = Pow(0.5, float(CurrentAttacks));
 		damage *= multi;
 	}
 
@@ -1058,7 +1064,7 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 				ResourceInfo info;
 				ResourceList.GetArray(index, info);
 
-				if(!(damagetype & DMG_TRUEDAMAGE))
+				//if(!(damagetype & DMG_TRUEDAMAGE))
 				{
 					float minDamage = damage * 0.05;
 					damage -= float(info.Defense);
@@ -1093,10 +1099,12 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 		}
 	}
 
-	if(CurrentAttacks && MaxAttacks && RiskIncrease)
+	if(MultiGlobalHighHealthBoss)
+		damage /= MultiGlobalHighHealthBoss;
+
+	if(CurrentAttacks && RiskIncrease)
 	{
-		float multi = Pow(0.5, float(CurrentAttacks) * 5.0 / float(MaxAttacks));
-		
+		float multi = Pow(0.5, float(CurrentAttacks));
 		damage *= multi;
 	}
 
