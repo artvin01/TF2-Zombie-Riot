@@ -4869,7 +4869,7 @@ int BuildingLimitRebelLeft(int rebel, int buildingType, int &buildingmax)
 		case 2:
 			ObjectBarricade_Buildings(rebel, ActiveLimit);
 		case 3:
-			Object_SupportBuildings(rebel, ActiveLimit);
+			ActiveLimit = Object_SupportBuildings(rebel);
 	}
 	buildingmax = limit;
 	return ActiveLimit;
@@ -4906,6 +4906,13 @@ void CitizenVoteResults(int entity, int VoteFor[4])
 			continue;
 		}
 		if (TeutonType[client] == TEUTON_WAITING)
+		{
+			CitizenVoteRole.Erase(i);
+			i--;
+			length--;
+			continue;
+		}
+		if(!IsValidEntity(data.RebelVoted))
 		{
 			CitizenVoteRole.Erase(i);
 			i--;
