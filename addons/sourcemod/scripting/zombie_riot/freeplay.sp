@@ -113,18 +113,18 @@ void Freeplay_CharBuffToAdd(char[] data)
 	{
 		case INTENSE:
 		{
-			FormatEx(data, 6, "ữ");
+			FormatEx(data, 6, "IT");
 		}
 		case MUSCLE:
 		{
-			FormatEx(data, 6, "ὒ");
+			FormatEx(data, 6, "MR");
 		}
 		case SQUEEZER:
 		{
 			if(squeezerplus)
-				FormatEx(data, 6, "ᾣ+");
+				FormatEx(data, 6, "SS+");
 			else
-				FormatEx(data, 6, "ᾣ");
+				FormatEx(data, 6, "SS");
 		}
 	}
 }
