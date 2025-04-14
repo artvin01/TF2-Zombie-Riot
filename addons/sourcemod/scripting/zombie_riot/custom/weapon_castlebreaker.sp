@@ -101,7 +101,7 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 				DataPack pack;
 				CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(weapon);
+				pack.WriteCell(EntIndexToEntRef(weapon));
 				pack.WriteCell(Change[client]);
 			}
 			return;
@@ -179,7 +179,7 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(GetClientUserId(client));
-		pack.WriteCell(weapon);
+		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(Change[client]);
 	}
 }
@@ -402,7 +402,13 @@ static Action Timer_ChangeSound(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
-	int weapon = pack.ReadCell();
+	if(!IsValidClient(client))
+		return Plugin_Stop;
+
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(weapon))
+		return Plugin_Stop;
+
 	bool GetMode = pack.ReadCell();
 	if(CastleBreaker_SoundsDelay[client] > GetGameTime())
 		return Plugin_Continue;
@@ -449,7 +455,7 @@ static Action Timer_ChangeSound(Handle timer, DataPack pack)
 			}
 		}
 	}
-	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.0);
-	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime(client)+1.0);
+	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+1.0);
+	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime()+1.0);
 	return Plugin_Continue;
 }
