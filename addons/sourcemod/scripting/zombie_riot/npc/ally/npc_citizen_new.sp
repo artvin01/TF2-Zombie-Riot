@@ -2663,7 +2663,7 @@ public void Citizen_ClotThink(int iNPC)
 	}
 
 	// Additional check to see if we're surrounded
-	if(!noSafety && target > 0 && (injured || npc.m_iClassRole != Cit_Melee) && (ally > 0 || npc.m_iSeakingObject || seakAlly))
+	if(!noSafety && target > 0 && (injured || npc.m_iGunType != Cit_Melee) && (ally > 0 || npc.m_iSeakingObject || seakAlly))
 	{
 		WorldSpaceCenter(target, vecTarget);
 		if(GetVectorDistance(vecMe, vecTarget, true) < 20000.0)
