@@ -94,17 +94,11 @@ methodmap Flaigus < CClotBody
 		EmitSoundToAll(g_DefaultMedic_PlayAnnoyedSound[GetRandomInt(0, sizeof(g_DefaultMedic_PlayAnnoyedSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
-	property float m_flGainPowerOnce
+	property float m_flPrepareFlyAtEnemy
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	property float m_flGainPowerOnceAngerOver
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
-	}
-	
 	public Flaigus(float vecPos[3], float vecAng[3], int ally)
 	{
 		Flaigus npc = view_as<Flaigus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "10000", ally));
@@ -141,30 +135,25 @@ methodmap Flaigus < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/fall2013_medic_wc_hair/fall2013_medic_wc_hair.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_misc1.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec24_consiglieres_coverup/dec24_consiglieres_coverup.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2024_duality_mantle/hwn2024_duality_mantle_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", WEAPON_CUSTOM_WEAPONRY_1);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetVariantInt(8192);
-		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
+		DualReaEffects(npc.index);
 		
 		return npc;
 	}
@@ -180,23 +169,7 @@ public void Flaigus_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	//If shield breaks, gain powers
-	if(!npc.m_flGainPowerOnce && f_Expidonsa_ShieldBroke[iNPC] > GetGameTime())
-	{
-		npc.m_flGainPowerOnce = 1.0;
-		npc.m_flGainPowerOnceAngerOver = 1.0;
-		ApplyStatusEffect(iNPC, iNPC, "Expidonsan Anger", 5.0);
-		npc.PlayAnnoyedSound();
-		if(IsValidEntity(npc.m_iWearable1))
-			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 6);
-	}
-
-	//when powers run off, return weapon to normal colour
-	if(npc.m_flGainPowerOnceAngerOver && !HasSpecificBuff(iNPC, "Expidonsan Anger"))
-	{
-		npc.m_flGainPowerOnceAngerOver = 0.0;
-		if(IsValidEntity(npc.m_iWearable1))
-			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 2);
-	}
+	
 
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
