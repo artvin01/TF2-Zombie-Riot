@@ -46,6 +46,7 @@ methodmap MaterialStone < CClotBody
 		npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = view_as<bool>(GetURandomInt() % 2);	// If true, summons an attack wave when mining
+		npc.m_bCamo = true;	// For AI attacking resources
 		
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
@@ -59,7 +60,10 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
+		MaterialStone npc = view_as<MaterialStone>(victim);
 		Construction_OnTakeDamage("stone", 30, victim, attacker, damage, damagetype);
+		if(!npc.Anger)
+			npc.m_bCamo = false;
 	}
 }
 

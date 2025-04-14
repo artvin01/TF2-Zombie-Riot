@@ -464,6 +464,7 @@ void Construction_Start()
 	}
 
 	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
+	Citizen_SpawnAtPoint("b");
 
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
@@ -736,7 +737,10 @@ void Construction_BattleVictory()
 
 	int entity = EntRefToEntIndex(AttackRef);
 	if(entity != -1)
+	{
 		view_as<CClotBody>(entity).Anger = false;
+		view_as<CClotBody>(entity).m_bCamo = false;
+	}
 	
 	GiveRandomReward(CurrentRisk, type > 1 ? 4 : 2);
 }
@@ -1017,10 +1021,12 @@ stock bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int
 		}
 	}
 
-	if(CurrentAttacks && MaxAttacks && RiskIncrease)
+	if(MultiGlobalHighHealthBoss)
+		damage /= MultiGlobalHighHealthBoss;
+
+	if(CurrentAttacks && RiskIncrease)
 	{
-		float multi = Pow(0.5, float(CurrentAttacks) * 4.0 / float(MaxAttacks));
-		
+		float multi = Pow(0.5, float(CurrentAttacks));
 		damage *= multi;
 	}
 
@@ -1093,10 +1099,12 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 		}
 	}
 
-	if(CurrentAttacks && MaxAttacks && RiskIncrease)
+	if(MultiGlobalHighHealthBoss)
+		damage /= MultiGlobalHighHealthBoss;
+
+	if(CurrentAttacks && RiskIncrease)
 	{
-		float multi = Pow(0.5, float(CurrentAttacks) * 5.0 / float(MaxAttacks));
-		
+		float multi = Pow(0.5, float(CurrentAttacks));
 		damage *= multi;
 	}
 

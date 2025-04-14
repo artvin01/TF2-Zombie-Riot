@@ -46,6 +46,7 @@ methodmap MaterialOssunia < CClotBody
 		npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = true;	// If true, summons an attack wave when mining
+		npc.m_bCamo = true;	// For AI attacking resources
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 125);
