@@ -85,7 +85,6 @@ static char gGlow1;
 static char gExplosive1;
 static char gLaser1;
 
-static int i_AmountProjectiles[MAXENTITIES];
 static int i_NpcCurrentLives[MAXENTITIES];
 static float i_HealthScale[MAXENTITIES];
 static float fl_LifelossReload[MAXENTITIES];

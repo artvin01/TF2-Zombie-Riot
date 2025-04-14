@@ -2457,20 +2457,6 @@ static int[] Lelouch_Colors()
 	int color[4] = {255,255,255,255};
 	return color;
 }
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
-}
 
 static void Handle_Animations(Lelouch npc)
 {

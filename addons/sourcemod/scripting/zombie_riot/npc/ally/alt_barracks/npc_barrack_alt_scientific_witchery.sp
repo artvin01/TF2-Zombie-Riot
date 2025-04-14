@@ -36,9 +36,6 @@ static int Scientific_Witchery_BEAM_BuildingHit[MAXENTITIES];
 static float fl_runaway_timer_timeout[MAXENTITIES];
 
 
-
-static int i_AmountProjectiles[MAXENTITIES];
-
 public void Barrack_Alt_Scientific_Witchery_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");

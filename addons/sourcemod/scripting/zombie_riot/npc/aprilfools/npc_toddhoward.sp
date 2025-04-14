@@ -1709,7 +1709,7 @@ void ToddHowardJumpSpecial(ToddHoward npc, float gameTime)
 			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 200);
 
 			npc.GetAttachment("weapon_bone", selfpos, flAng);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
 			TE_SendToAll(0.0);
 			spawnRing_Vectors(ThrowPos, Range * 2.0 * zr_smallmapbalancemulti.FloatValue, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.15, 5.0, 0.0, 1);	
 		}
@@ -1745,17 +1745,17 @@ void ToddHowardJumpSpecial(ToddHoward npc, float gameTime)
 			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
 			int colorLayer1[4];
 			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 1.0, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
 			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.9, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.9, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
 			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.8, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.8, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
 			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
 			TE_SendToAll(0.0);
 			int glowColor[4];
 			SetColorRGBA(glowColor, r, g, b, 150);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Glow, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Glow, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 			TE_SendToAll(0.0);
 			spawnRing_Vectors(ThrowPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.5, 5.0, 0.0, 1,Range * 2.0 * zr_smallmapbalancemulti.FloatValue);	
 			float damage = 600.0;

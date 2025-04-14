@@ -90,8 +90,6 @@ static bool Gone_Stats[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AlreadySpawned[MAXENTITIES];
 
-static int i_AmountProjectiles[MAXENTITIES];
-
 
 static int Temp_Target[MAXENTITIES];
 

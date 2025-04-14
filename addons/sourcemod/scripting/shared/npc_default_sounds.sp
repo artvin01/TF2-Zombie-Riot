@@ -9,6 +9,15 @@
 
 	i got work tomorrow fuck
 */
+char g_DefaultCapperShootSound[][] = {
+	"weapons/capper_shoot.wav",
+};
+char g_DefaultLaserLaunchSound[][] = {
+	"weapons/physcannon/superphys_launch1.wav",
+	"weapons/physcannon/superphys_launch2.wav",
+	"weapons/physcannon/superphys_launch3.wav",
+	"weapons/physcannon/superphys_launch4.wav"
+}
 
 
 char g_DefaultMedic_DeathSounds[][] = {
@@ -29,3 +38,4 @@ char g_DefaultMedic_HurtSounds[][] = {
 	"vo/medic_painsharp07.mp3",
 	"vo/medic_painsharp08.mp3",
 };
+

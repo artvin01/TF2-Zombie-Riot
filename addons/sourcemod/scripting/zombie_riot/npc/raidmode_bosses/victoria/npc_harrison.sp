@@ -106,8 +106,6 @@ static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AirRaidStart[MAXENTITIES];
 
-static int i_AmountProjectiles[MAXENTITIES];
-
 
 static float Vs_DelayTime[MAXENTITIES];
 static int Vs_Stats[MAXENTITIES];

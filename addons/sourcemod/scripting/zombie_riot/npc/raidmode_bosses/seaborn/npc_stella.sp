@@ -1482,20 +1482,6 @@ static void OnAOEHit(int entity, int victim, float damage, int weapon)
 	TE_SetupBeamPoints(EnemyVec, Sky, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 0, 0.1, 2.5, 2.5, 0, 5.0, color, 3);
 	TE_SendToAll();
 }
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
-}
 static void Body_Pitch(Stella npc, float VecSelfNpc[3], float vecTarget[3])
 {
 	int iPitch = npc.LookupPoseParameter("body_pitch");

@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define LASERBEAM "sprites/laserbeam.vmt"
-
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry01.mp3",

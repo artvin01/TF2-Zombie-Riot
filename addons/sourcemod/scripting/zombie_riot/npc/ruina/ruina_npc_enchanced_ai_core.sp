@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define LASERBEAM "sprites/laserbeam.vmt"
+
 static int i_master_target_id[MAXENTITIES];
 static int i_master_id_ref[MAXENTITIES];
 static int i_npc_type[MAXENTITIES];
@@ -138,6 +140,7 @@ enum
 int g_Ruina_Laser_BEAM;
 int g_Ruina_BEAM_Diamond;
 int g_Ruina_BEAM_Laser;
+int g_Ruina_BEAM_Glow;
 int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
@@ -258,6 +261,8 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 	g_Ruina_BEAM_Combine_Black 	= PrecacheModel("materials/sprites/combineball_trail_black_1.vmt", true);
 	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
+
+	g_Ruina_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 
 	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
 
@@ -2436,9 +2441,20 @@ int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 		return -1;
 	}
 }
+stock void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
+{
+	float tmp[3];
+	float actualBeamOffset[3];
 
-static int Ruina_Laser_BEAM_HitDetected[MAXENTITIES];
-static int i_targets_hit;
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	Result_Vec[0] += actualBeamOffset[0];
+	Result_Vec[1] += actualBeamOffset[1];
+	Result_Vec[2] += actualBeamOffset[2];
+}
 enum struct Ruina_Laser_Logic
 {
 	int client;
@@ -2512,13 +2528,9 @@ enum struct Ruina_Laser_Logic
 		}
 		delete trace;
 	}
-	bool Any_entities;
-	//in this case, no default func since this things entire point is to find entities
-	void Detect_Entities(Function Attack_Function)
+	void Enumerate_Simple()
 	{
-		Zero(Ruina_Laser_BEAM_HitDetected);
-
-		i_targets_hit = 0;
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		float hullMin[3], hullMax[3];
 		this.SetHull(hullMin, hullMax);
@@ -2526,9 +2538,25 @@ enum struct Ruina_Laser_Logic
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		//the idea for this one is to then use
+		//for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+		//to loop throught the stuff. inside the specific npc that needs to use this
+	}
+	bool Any_entities;
+	//in this case, no default func since this things entire point is to find entities
+	void Detect_Entities(Function Attack_Function)
+	{
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
+
+		float hullMin[3], hullMax[3];
+		this.SetHull(hullMin, hullMax);
+
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
 			if (victim && (this.Any_entities || IsValidEnemy(this.client, victim)))
 			{
 				this.trace_hit_enemy=true;
@@ -2556,21 +2584,17 @@ enum struct Ruina_Laser_Logic
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
 	{
-
-		Zero(Ruina_Laser_BEAM_HitDetected);
-
-		i_targets_hit = 0;
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		float hullMin[3], hullMax[3];
 		this.SetHull(hullMin, hullMax);
 
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-
-				
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
 			if (victim && IsValidEnemy(this.client, victim))
 			{
 				this.trace_hit_enemy=true;
@@ -2620,7 +2644,7 @@ enum struct Ruina_Laser_Logic
 	}
 }
 
-static bool Ruina_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
+bool Ruina_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
@@ -2628,12 +2652,11 @@ static bool Ruina_Laser_BEAM_TraceUsers(int entity, int contentsMask)
 {
 	if (IsEntityAlive(entity))
 	{
-		for(int i=0 ; i < MAXENTITIES ; i++)
+		for(int i=0 ; i < sizeof(i_Ruina_Laser_BEAM_HitDetected) ; i++)
 		{
-			if(!Ruina_Laser_BEAM_HitDetected[i])
+			if(!i_Ruina_Laser_BEAM_HitDetected[i])
 			{
-				i_targets_hit++;
-				Ruina_Laser_BEAM_HitDetected[i] = entity;
+				i_Ruina_Laser_BEAM_HitDetected[i] = entity;
 				break;
 			}
 		}
