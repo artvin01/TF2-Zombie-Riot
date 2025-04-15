@@ -1,3 +1,4 @@
+// grr twink
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -2011,9 +2012,9 @@ static void Create_Anchors(Lelouch npc)
 
 	float HP_Scale = 1.0;
 
-	//we are in NEITHER rouge or freeplay.
-	//allthough, if freeplay lelouch turns out being a bitch consistently, then it can be made to apply to freeplay.
-	if(!Rogue_Mode() && !Waves_InFreeplay())
+	// we aren't in rogue, nerf summon health
+	// freeplay lelouch is lolmao
+	if(!Rogue_Mode())
 	{
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 
