@@ -2569,9 +2569,17 @@
 	{
 		"en"	"Wandering Spirit"
 	}
-	"Vengeful Spirit"
+	"Vengefull Spirit"
 	{
-		"en"	"Vengeful Spirit"
+		"en"	"Vengefull Spirit"
+	}
+	"Wandering Spitit"
+	{
+		"en"	"Wandering Spitit"
+	}
+	"Vengefull Spitit"
+	{
+		"en"	"Vengefull Spitit"
 	}
 	"Fallen Warrior"
 	{
@@ -4121,5 +4129,9 @@
 	"Troll Brawler"
 	{
 		"en"	"Troll Brawler"
+	}
+	"Crystallized Horror"
+	{
+		"en" 	"Crystallized Horror"
 	}
 }

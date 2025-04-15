@@ -102,17 +102,13 @@ methodmap Ruliana < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -146,8 +142,6 @@ methodmap Ruliana < CClotBody
 	
 	public void PlayPrimaryFireSound() {
 		EmitSoundToAll(g_PrimaryFireSounds[GetRandomInt(0, sizeof(g_PrimaryFireSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -174,9 +168,6 @@ methodmap Ruliana < CClotBody
 		EmitSoundToAll("hl1/fvox/morphine_shot.wav", _, _, SNDLEVEL_ROCKET);	//EXTREME MORPHINE ADMINISTERED
 		EmitSoundToAll("hl1/fvox/morphine_shot.wav", _, _, SNDLEVEL_ROCKET);	//EXTREME MORPHINE ADMINISTERED
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::Playnpc.AngerSound()");
-		#endif
 	}
 
 	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time)

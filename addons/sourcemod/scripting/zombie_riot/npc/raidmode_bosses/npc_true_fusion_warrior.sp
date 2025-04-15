@@ -230,18 +230,13 @@ methodmap TrueFusionWarrior < CClotBody
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayPullSound()");
-		#endif
 	}
 	
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -438,7 +433,7 @@ methodmap TrueFusionWarrior < CClotBody
 		music.Volume = 1.6;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Investigation Goes Awry");
-		strcopy(music.Artist, sizeof(music.Artist), "Granpda Bard");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 		
 		npc.Anger = false;
@@ -1473,6 +1468,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			delete data;
 			return;
 		}
+		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 175, 55, 255, 1, 0.2, 12.0, 4.0, 3);	
 		
 		if (Iondistance > 0)
 		{
@@ -1578,6 +1574,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
+			spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 175, 55, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;

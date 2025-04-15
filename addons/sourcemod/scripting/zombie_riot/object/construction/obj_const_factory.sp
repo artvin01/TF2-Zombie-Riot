@@ -78,6 +78,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 		}
 
 		maxcount = 1;
+
+		if(Construction_HasNamedResearch("Base Level II"))
+			maxcount++;
+		
+		if(Construction_HasNamedResearch("Base Level III"))
+			maxcount++;
+		
 		if(count >= maxcount)
 			return false;
 	}
@@ -222,7 +229,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 
 					if(pos[0])
 					{
-						GlobalCooldown = Construction_GetNextAttack() + 450.0;
+						GlobalCooldown = Construction_GetNextAttack();
 						
 						Construction_AddMaterial("iron", -IronCost, true);
 						Construction_AddMaterial("ossunia", -ossuniaCost, true);

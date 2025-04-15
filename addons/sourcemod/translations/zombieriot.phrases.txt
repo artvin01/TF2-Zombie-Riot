@@ -3979,6 +3979,10 @@
 	{
 		"en"	"Enable Ammobox Count Perma"
 	}
+	"Class Vote Citizen Do"
+	{
+		"en"	"The rebel will pick whatever has the most player votes, from the top down."
+	}
 	"DPS Class"
 	{
 		"en"	"DPS Class\nFocus on damage and get Speed Cola perk"
@@ -4070,6 +4074,10 @@
 	"Build Pack-a-Punch At Me"
 	{
 		"en"	"Build Pack-a-Punch At Me"
+	}
+	"Name Rebel"
+	{
+		"en"	"Name Rebel"
 	}
 	"Pistol"
 	{

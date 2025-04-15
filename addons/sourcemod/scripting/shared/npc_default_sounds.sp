@@ -29,3 +29,10 @@ char g_DefaultMedic_HurtSounds[][] = {
 	"vo/medic_painsharp07.mp3",
 	"vo/medic_painsharp08.mp3",
 };
+
+char g_DefaultMedic_PlayAnnoyedSound[][] = {
+	"vo/medic_jeers01.mp3",
+	"vo/medic_jeers04.mp3",
+	"vo/medic_jeers05.mp3",
+	"vo/medic_jeers06.mp3",
+};

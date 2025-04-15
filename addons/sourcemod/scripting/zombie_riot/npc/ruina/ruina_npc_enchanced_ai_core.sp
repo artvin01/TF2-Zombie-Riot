@@ -149,6 +149,12 @@ static char g_EnergyChargeSounds[][] = {
 	"weapons/airboat/airboat_gun_energy1.wav",
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
+char g_Ruina_MagicAttackSounds[][] = {
+	"ambient/energy/zap3.wav",
+	"ambient/energy/zap7.wav",
+	"ambient/energy/zap8.wav",
+	"ambient/energy/zap9.wav"
+};
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {

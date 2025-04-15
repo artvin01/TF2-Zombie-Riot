@@ -14,8 +14,8 @@ enum struct StatusEffect
 	Texlar Electric Desc
 	*/
 
-	char HudDisplay[4]; //what it should say in the damage or hurt hud
-	char AboveEnemyDisplay[4]; //Should it display above their head, like silence X
+	char HudDisplay[8]; //what it should say in the damage or hurt hud
+	char AboveEnemyDisplay[8]; //Should it display above their head, like silence X
 	float DamageTakenMulti; //Resistance or vuln
 	float DamageDealMulti;	//damage buff or nerf
 	float MovementspeedModif;	//damage buff or nerf
@@ -2221,6 +2221,23 @@ void StatusEffects_Silence()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	RapidSuturingIndex = StatusEffect_AddGlobal(data);
 
+	//Stunned
+	strcopy(data.BuffName, sizeof(data.BuffName), "Stunned");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "?");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "?"); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ElementalLogic				= true; //dont get removed.
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_StunnedHud;
+	StatusEffect_AddGlobal(data);
+
+	data.HudDisplay_Func 			= INVALID_FUNCTION;
 	//Immunity to stun effects
 	strcopy(data.BuffName, sizeof(data.BuffName), "Clear Head");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ֆ");
@@ -2277,7 +2294,10 @@ void StatusEffects_Silence()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
-
+void Func_StunnedHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "?(%.1f)", Apply_StatusEffect.TimeUntillOver - GetGameTime());
+}
 stock void ExtinguishTargetDebuff(int victim)
 {
 	IgniteFor[victim] = 0;
@@ -2892,6 +2912,19 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Very Defensive Backup");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛨⛨");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.5;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Healing Resolve");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌅");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -2922,7 +2955,7 @@ void StatusEffects_SupportWeapons()
 	StatusEffect_AddGlobal(data);
 
 	data.OnTakeDamage_TakenFunc = INVALID_FUNCTION;
-	
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Healing Adaptiveness All");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍫");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -3365,6 +3398,13 @@ void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 	if(fl_ruina_battery_max[victim] == 0.0)
 	{
 		RemoveSpecificBuff(victim, "Ruina Battery Charge");
+		return;
+	}
+
+	//so, the npc has a battery timeout, this means that they cannot use their battery ability until its over. so we can show this on the hud!
+	if(fl_ruina_battery_timeout[victim] != FAR_FUTURE && fl_ruina_battery_timeout[victim] > GetGameTime(victim))
+	{
+		Format(HudToDisplay, SizeOfChar, "[۞ %.1fs]", fl_ruina_battery_timeout[victim] - GetGameTime(victim));
 		return;
 	}
 
@@ -4235,6 +4275,24 @@ void StatusEffects_Construction()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	//-0.5
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.7;
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Expidonsan Anger");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "á");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.15;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;

@@ -961,6 +961,10 @@ void NPC_ConfigSetup()
 	TrollPistol_OnMapStart_NPC();
 	TrollRPG_OnMapStart_NPC();
 	TrollBrawler_OnMapStart_NPC();
+
+	//Expidonsa Rogue forces in Construction
+	Eirasus_OnMapStart_NPC();
+	Haltera_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2118,3 +2122,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/aprilfools/npc_troll_pistol.sp"
 #include "zombie_riot/npc/aprilfools/npc_troll_rpg.sp"
 #include "zombie_riot/npc/aprilfools/npc_troll_melee.sp"
+
+
+
+#include "zombie_riot/npc/construction/enemies/npc_eirasus.sp"
+#include "zombie_riot/npc/construction/enemies/npc_haltera.sp"

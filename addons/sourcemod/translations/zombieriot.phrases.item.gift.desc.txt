@@ -2510,4 +2510,32 @@
 	{
 		"en"	"Taken by an unknown force, it was converted into an obscure, dark entity.\nDamaging it outside its aura causes it to heal.\n''The darkness is coming. You need to run.''"
 	}
+	"Intense Training"
+	{
+		"en"	"Intense Training"
+	}
+	"Intense Training Desc"
+	{
+		"en"	"You decide to push yourself further.\nIncludes all the effects of the Chaos Intrusion modifier!\nSpeeds up enemy health and damage scaling by a low amount each wave.\nIncreases enemy buff durations by 20%% and setups add +1 skull."
+	}
+	"Muscle Refiner"
+	{
+		"en"	"Muscle Refiner"
+	}
+	"Muscle Refiner Desc"
+	{
+		"en"	"You'll give it your all!!\nIncludes all the effects of the Secondary Mercs modifier!\nSpeeds up enemy health and damage scaling by a medium amount each wave.\nIncreases enemy buff durations by 40%% and setups add +2 skulls."
+	}
+	"Soul-Squeezer"
+	{
+		"en"	"Soul-Squeezer"
+	}
+	"Soul-Squeezer Desc"
+	{
+		"en"	"One must imagine the Simulation being infinite.\nIncludes all the effects of the OLD TIMES modifier!\nSpeeds up enemy health and damage scaling by a big amount each wave.\nDOUBLES enemy buff durations and setups add +3 skulls."
+	}
+	"Crystallized Horror Desc" // WIP
+	{
+		"en" 	"A being made out of chaos and void combined..."
+	}
 }

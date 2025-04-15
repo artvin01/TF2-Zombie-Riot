@@ -117,9 +117,7 @@ methodmap FastZombie < CClotBody
 		
 		EmitSoundToAll(g_leap_prepare[GetRandomInt(0, sizeof(g_leap_prepare) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeJumpPrepare()");
-		#endif
+
 	}
 	
 	public void PlayLeapDone() {

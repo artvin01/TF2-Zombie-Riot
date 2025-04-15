@@ -892,6 +892,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 			delete data;
 			return;
 		}
+		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 175, 55, 255, 1, 0.2, 12.0, 4.0, 3);	
 		
 		if (Iondistance > 0)
 		{
@@ -995,6 +996,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
+			spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 175, 55, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;

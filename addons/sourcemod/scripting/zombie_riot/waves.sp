@@ -141,6 +141,8 @@ static int Freeplay_Info;
 static float MinibossScalingHandle = 1.0;
 static float Freeplay_TimeCash;
 static float Freeplay_CashTimeLeft;
+static float Freeplay_TimeExp;
+static float Freeplay_ExpTimeLeft;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -218,6 +220,8 @@ void Waves_MapStart()
 	Waves_UpdateMvMStats();
 	Freeplay_TimeCash = 0.0;
 	Freeplay_CashTimeLeft = 0.0;
+	Freeplay_TimeExp = 0.0;
+	Freeplay_ExpTimeLeft = 0.0;
 }
 
 int Waves_MapSeed()
@@ -2354,7 +2358,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Ammo_Count_Ready = 8;
 	}
 
-	WaveStart_SubWaveStart();
+	if(!Construction_Mode() || Construction_FinalBattle())	// In Construction: Base raids must be dealt with
+		WaveStart_SubWaveStart();
+	
 	if(CurrentWave == 0 && GiveAmmoSupplies)
 	{
 		Renable_Powerups();
@@ -2443,7 +2449,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 				}
 			}
 			FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
-			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash you'll get!");
+			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash AND experience you'll get!");
 			CreateTimer(0.1, Freeplay_ExtraCashTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			DeleteShadowsOffZombieRiot();
 			Freeplay_Info = 0;
@@ -2474,6 +2480,16 @@ static Action Freeplay_ExtraCashTimer(Handle timer)
 		}
 	}
 
+	if(Freeplay_ExpTimeLeft < GetGameTime())
+	{
+		if(Freeplay_TimeExp > 0.0)
+		{
+			Freeplay_TimeExp -= 5.0;
+			if(Freeplay_TimeExp < 0.0)
+				Freeplay_TimeExp = 0.0;
+		}
+	}
+
 	return Plugin_Continue;
 }
 
@@ -2488,6 +2504,19 @@ float Freeplay_GetRemainingCash()
 void Freeplay_SetRemainingCash(float amount)
 {
 	Freeplay_TimeCash = amount;
+}
+
+void Freeplay_SetExpTime(float duration)
+{
+	Freeplay_ExpTimeLeft = duration;
+}
+float Freeplay_GetRemainingExp()
+{
+	return Freeplay_TimeExp;
+}
+void Freeplay_SetRemainingExp(float amount)
+{
+	Freeplay_TimeExp = amount;
 }
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
@@ -2722,7 +2751,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_Mode())
+	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -2773,6 +2802,10 @@ void Zombie_Delay_Warning()
 			{
 				i_ZombieAntiDelaySpeedUp = 6;
 				CPrintToChatAll("{crimson}Die.");
+				
+				if(Construction_Mode())
+					ForcePlayerLoss();
+				
 				if(!Rogue_Mode())
 					AntiDelaySpawnEnemies(999999999, 5, true);
 			}

@@ -564,6 +564,14 @@
 	{
 		"en"	"Decreases damage taken by 15％"
 	}
+	"Very Defensive Backup"
+	{
+		"en"	"Very Defensive Backup"
+	}
+	"Very Defensive Backup Desc"
+	{
+		"en"	"Decreases damage taken by 50％"
+	}
 	"UBERCHARGED"
 	{
 		"en"	"UBERCHARGED"
@@ -1044,13 +1052,13 @@
 	{
 		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％"
 	}
-	"Lighthouse Enlightment Detect"
+	"Expidonsan Anger"
 	{
-		"en" "Lighthouse Enlightment Detect"
+		"en" "Expidonsan Anger"
 	}
-	"Lighthouse Enlightment Detect Desc"
+	"Expidonsan Anger Desc"
 	{
-		"en"	"Ignore This."
+		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％\nIncreases NPC movementspeed by 15％"
 	}
 	"Soggy"
 	{

@@ -5462,6 +5462,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		
 		CNavArea closeNav = NULL_AREA;
 		float closeDist = maxDistance;
+		bool closeNpc;
+		bool construction = Construction_Mode();	// Buildings/NPCs don't use allydist, focus buildings
 		
 		int length = iterator.Count();
 		for(int i; i < length; i++)
@@ -5488,20 +5490,34 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				//	PrintToChatAll("%f > %f", dist, fldistancelimit);
 					if(GetClosestTarget_Enemy_Type[a] > 2)	// Distance limit
 					{
-						if(dist > fldistancelimitAllyNPC)
+						if(!construction || dist < fldistancelimit)
+						{
+							if(dist > fldistancelimitAllyNPC)
+							{
+								continue;
+							}
+						}
+					}
+					else
+					{
+						if(construction && closeNpc)
+						{
+							if(dist > fldistancelimitAllyNPC)
+							{
+								continue;
+							}
+						}
+						else if(dist > fldistancelimit)
 						{
 							continue;
 						}
-					}
-					else if(dist > fldistancelimit)
-					{
-						continue;
 					}
 
 					if(dist < closeDist)
 					{
 						closeNav = area2;
 						closeDist = dist;
+						closeNpc = GetClosestTarget_Enemy_Type[a] > 2;
 					}
 					break;
 				}
@@ -9309,7 +9325,15 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 
 	//Emergency incase it wasnt an npc.
 	if(!b_ThisWasAnNpc[npc])
-		return;
+	{
+		
+		if(npc <= 0 || npc > MaxClients)
+		{
+			return;
+		}
+		TF2_AddCondition(npc, TFCond_FreezeInput, Duration_Stun);
+		ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun);	
+	}
 
 	float GameTime = GetGameTime();
 	float TimeSinceLastStunSubtract;
@@ -9348,6 +9372,9 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun_Post;
 	if(b_thisNpcIsARaid[npc])
 		ApplyStatusEffect(npc, npc, "Shook Head", Duration_Stun * 3.0);	
+
+	//PrintToChatAll("%f",Duration_Stun_Post);
+	ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun_Post);	
 
 	npcclot.Update();
 
@@ -9748,10 +9775,6 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(i_HowManyBombsHud[npc.index] > 0)
 	{
 		Format(HealthText, sizeof(HealthText), "%s!(%i)",HealthText, i_HowManyBombsHud[npc.index]);
-	}
-	if(f_TimeFrozenStill[npc.index] > GetGameTime(npc.index))
-	{
-		Format(HealthText, sizeof(HealthText), "%s?",HealthText);
 	}
 	if(VausMagicaShieldLeft(npc.index) > 0)
 	{

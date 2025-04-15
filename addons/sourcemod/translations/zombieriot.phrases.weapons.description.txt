@@ -3370,6 +3370,26 @@
 		"fr"	"Dégats améliorés. Besoin de plus de Mana pour utiliser."
 		"chi"	"更多伤害，更高蓝耗。"
 	}
+	"Reiuji Desc 0"
+	{
+		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus."
+	}
+	"Reiuji Desc 1"
+	{
+		"en"	"You gain ammo faster when above 50% mana\nAnd if your at 90% mana, your ammo gain is even faster!"
+	}
+	"Reiuji Desc 2"
+	{
+		"en"	"You can now cast a barrage with mouse 2, costs battery, alongside a heafty mana cost."
+	}
+	"Reiuji Desc 3"
+	{
+		"en"	"When barrage is at 50% or more charge, your m1 magic projectiles gain homing"
+	}
+	"Reiuji Desc 4"
+	{
+		"en"	"General stat bonuses."
+	}
 	"Expert Trapper Desc"
 	{
 		"en"	"Your building weapons deal 75％ less damage except for trap weapons, but your traps deal 50％ more damage in total."
@@ -4222,15 +4242,15 @@
 	}
 	"Ketamine Desc"
 	{
-		"en"	"Makes you as hard as iron.\n+600 HP, Increases melee damage by +65％ and heal on kill by +25.\nIncreases melee resist with melee weapons by +7.5％."
+		"en"	"Makes you as hard as iron.\n+800 HP, Increases melee damage by +75％ and heal on kill by +30.\nIncreases melee resist with melee weapons by +10％.\nIncreases melee attackspeed by 10%."
 	}
 	"Cannabis Desc"
 	{
-		"en"	"Smoke it everyday.\n+800 HP, Increases melee damage by +75％ and heal on kill by +35.\nIncreases melee resist with melee weapons by +10％."
+		"en"	"Smoke it everyday.\n+1000 HP, Increases melee damage by +75％ and heal on kill by +50.\nIncreases melee resist with melee weapons by +10％.\nIncreases melee attackspeed by 10%."
 	}
 	"Fentanyl Desc"
 	{
-		"en"	"It courses through you.\n+1000 HP, Increases melee damage by +100％ and heal on kill by +50.\nIncreases melee resist and ranged resist with melee weapons by +15％ and +10％ respectively."
+		"en"	"It courses through you.\n+1250 HP, Increases melee damage by +100％ and heal on kill by +50.\nIncreases overall resist with melee weapons by +15％.\nIncreases melee attackspeed by 10%."
 	}
 	"Building Dummies Desc"
 	{
@@ -4246,7 +4266,7 @@
 	}
 	"Birdeye Ammo Desc"
 	{
-		"en"	"He never misses.\nIncreases ranged damage by +65％, fire rate and reload speed by +5％.\nIncreases accuracy by +10％ and projectile speed by +10％."
+		"en"	"He never misses.\nIncreases ranged damage by +75％, fire rate and reload speed by +5％.\nIncreases accuracy by +10％ and projectile speed by +10％."
 	}
 	"Waldch's Railgun Rounds Desc"
 	{
@@ -4254,19 +4274,19 @@
 	}
 	"Cheesy Doomsday Pack Desc"
 	{
-		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100％, fire rate by +7.5％ and reload speed by +10％.\nIncreases accuracy by +35％ and projectile speed by +50％."
+		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100％, fire rate and reload speed by +15％.\nIncreases accuracy by +35％ and projectile speed by +50％."
 	}
 	"Twirl Magic Desc"
 	{
-		"en"	"This is as far as she can get with teaching magic to you.\n+150 HP, Increases mage damage by +70％ and mage projectile speed by +10％.\nIncreases melee resist with wands out by +5％, and max mana by 20％."
+		"en"	"This is as far as she can get with teaching magic to you.\n+200 HP, Increases mage damage by +75％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +5％, and max mana by 25％."
 	}
 	"Magical Fontina Aura Desc"
 	{
-		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +80％ and mage projectile speed by +15％.\nIncreases melee resist with wands out by +6％, and max mana by 25％."
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +85％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +6％, and max mana by 25％."
 	}
 	"Domain Expansion: Cheese Desc"
 	{
-		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +115％ and mage projectile speed by +35％.\nIncreases melee resist with wands out by +10％, and max mana by 25％."
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +120％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +10％, and max mana by 25％."
 	}
 	"Bob's Willpower Desc"
 	{
@@ -4282,47 +4302,47 @@
 	}
 	"Nanomachines Desc"
 	{
-		"en"	"Nanomachines, they make people harden in response to physical trauma.\nIncreases medigun heal/enemydrain rate by +65％ and uber duration by +1 second.\nIncreases melee resistance with support weapons out by +5％."
+		"en"	"Nanomachines, they make people harden in response to physical trauma.\nIncreases medigun heal/enemydrain rate by +75％ and uber duration by +1 second.\nIncreases melee resistance with support weapons out by +5％."
 	}
 	"Voided Rejuvenator Pack Desc"
 	{
-		"en"	"The fastest heals in the void.\nIncreases medigun heal/enemydrain rate by +75％ and uber duration by +2 seconds.\nIncreases melee resistance with support weapons out by +10％."
+		"en"	"The fastest heals in the void.\nIncreases medigun heal/enemydrain rate by +85％ and uber duration by +2 seconds.\nIncreases melee resistance with support weapons out by +10％."
 	}
 	"Cheesy Slimy Aid Kit Desc"
 	{
-		"en"	"Some would prefer to die rather than getting treated with this.\nIncreases medigun heal/enemydrain rate by +100％ and uber duration by +3 seconds.\nIncreases melee + ranged resistance with support weapons out by +10％."
+		"en"	"Some would prefer to die rather than getting treated with this.\nIncreases medigun heal/enemydrain rate by +125％ and uber duration by +3 seconds.\nIncreases melee + ranged resistance with support weapons out by +15％."
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +25％ and attackspeed by +10％.\nGrants +25 HP on kill, +15％ overall resistance and +50％ projectile speed.\nReduces building cost by 25％ and increases heal rate by +25％."
+		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +35％ and attackspeed by +10％.\nGrants +25 HP on kill, +15％ overall resistance and +50％ projectile speed.\nReduces building cost by 25％ and increases heal rate by +25％."
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "Increases kit damage by +35％ and reload speed by +10％\nGrants +35％ max mana, increases repair rate by +50％ and building HP by +10％.\nReduces building cost by 25％ and increases heal rate by +35％."
+		"en" "Increases kit damage by +45％ and reload speed by +10％\nGrants +35％ max mana, increases repair rate by +50％ and building HP by +10％.\nReduces building cost by 25％ and increases heal rate by +35％."
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "Increases kit damage by +50％ and reload + attackspeed by +5％\nIncreases repair rate by +100％, building HP by +35％ and clipsize by +50％.\nReduces building cost by 25％ and increases heal rate by +35％."
+		"en" "Increases kit damage by +65％ and reload + attackspeed by +10％\nIncreases repair rate by +100％, building HP by +35％ and clipsize by +50％.\nReduces building cost by 25％ and increases heal rate by +35％."
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "Increases kit damage by +65％ and reload + attackspeed by +10％\n+35 HP on kill | +20％ Overall Resist | +25％ Max Mana | +100％ Repair Rate | +50％ Proj. Speed | +35％ Heal Rate"
+		"en" "Increases kit damage by +75％ and reload + attackspeed by +10％\n+35 HP on kill | +20％ Overall Resist | +25％ Max Mana | +100％ Repair Rate | +50％ Proj. Speed | +35％ Heal Rate"
 	}
 	"Kit Modernizer V Desc"
 	{
-		"en" "Increases kit damage by +85％ and reload + attackspeed by +10％\n+50 HP on kill | +25％ Overall Resistance | +25％ Max Mana | +125％ Repair Rate | +50％ Clip size"
+		"en" "Increases kit damage by +100％ and reload + attackspeed by +10％\n+50 HP on kill | +25％ Overall Resistance | +25％ Max Mana | +125％ Repair Rate | +50％ Clip size"
 	}
 	"Unit Reformator I Desc"
 	{
-		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +50％, and barrack unit damage by +15％."
+		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +75％, and barrack unit damage by +30％."
 	}
 	"Unit Reformator II Desc"
 	{
-		"en" "Increases barrack unit HP by +70％, and barrack unit damage by +30％."
+		"en" "Increases barrack unit HP by +75％, and barrack unit damage by +30％."
 	}
 	"Unit Reformator III Desc"
 	{
-		"en" "Increases barrack unit HP by +90％ and damage by +45％."
+		"en" "Doubles barrack unit HP and damage by +45％."
 	}
 	"Unit Reformator IV Desc"
 	{
@@ -4330,7 +4350,7 @@
 	}
 	"Unit Reformator V Desc"
 	{
-		"en" "Increases barrack unit HP by +125％ and doubles barrack unit damage."
+		"en" "TRIPLES barrack unit and doubles barrack unit damage."
 	}
 	"Reinforce Desc"
 	{

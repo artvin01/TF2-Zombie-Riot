@@ -47,6 +47,7 @@ methodmap MaterialWizuh < CClotBody
 		npc.m_flRangedArmor = 0.5;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = true;	// If true, summons an attack wave when mining
+		npc.m_bCamo = true;	// For AI attacking resources
 		
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;

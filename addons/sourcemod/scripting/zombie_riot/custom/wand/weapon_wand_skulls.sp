@@ -447,7 +447,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					Current_Mana[client] -= mana_cost;
 					Ability_Apply_Cooldown(client, 2, 5.0);
 					SetDefaultHudPosition(client);
-					//SetGlobalTransTarget(client);
+					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Skull Servant Summoned", Skulls_ArrayStack[client].Length, Skulls_MaxSkulls[tier]);
 				}
 			}
