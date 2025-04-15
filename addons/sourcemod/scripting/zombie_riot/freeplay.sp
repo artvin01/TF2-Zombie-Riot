@@ -997,11 +997,11 @@ void Freeplay_SpawnEnemy(int entity)
 
 		if(!b_thisNpcIsARaid[entity])
 		{
-			fl_Extra_Damage[entity] *= 2.0 + (((float(Waves_GetRound() - 59)) * 0.025));
+			fl_Extra_Damage[entity] *= ((float(Waves_GetRound() - 59)) * 0.0125);
 		}
 		else
 		{
-			fl_Extra_Damage[entity] *= 1.0 + (((float(Waves_GetRound() - 59)) * 0.0125));
+			fl_Extra_Damage[entity] *= ((float(Waves_GetRound() - 59)) * 0.005);
 		}
 
 		fl_Extra_Damage[entity] *= FM_Damage;
