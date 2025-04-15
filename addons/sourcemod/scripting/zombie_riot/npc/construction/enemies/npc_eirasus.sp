@@ -3,7 +3,12 @@
 
 
 
+/*
+	STronger erasus
+	spawns with 3 shields max
+	When shield breaks, gains temp attackspeed
 
+*/
 
 static const char g_IdleAlertedSounds[][] = {
 	")vo/medic_battlecry01.mp3",
@@ -22,13 +27,6 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/neon_sign_hit_03.wav",
 	"weapons/neon_sign_hit_04.wav"
 };
-static const char g_PlayAnnoyedSound[][] = {
-	"vo/medic_jeers01.mp3",
-	"vo/medic_jeers04.mp3",
-	"vo/medic_jeers05.mp3",
-	"vo/medic_jeers06.mp3",
-};
-
 void Eirasus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
@@ -36,7 +34,7 @@ void Eirasus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_PlayAnnoyedSound)); i++) { PrecacheSound(g_PlayAnnoyedSound[i]); }
+	for (int i = 0; i < (sizeof(g_DefaultMedic_PlayAnnoyedSound)); i++) { PrecacheSound(g_DefaultMedic_PlayAnnoyedSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Eirasus");
@@ -94,7 +92,7 @@ methodmap Eirasus < CClotBody
 	public void PlayAnnoyedSound() 
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitSoundToAll(g_PlayAnnoyedSound[GetRandomInt(0, sizeof(g_PlayAnnoyedSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_PlayAnnoyedSound[GetRandomInt(0, sizeof(g_DefaultMedic_PlayAnnoyedSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
 	property float m_flGainPowerOnce
