@@ -141,9 +141,7 @@ methodmap FatherGrigori < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -186,9 +184,6 @@ methodmap FatherGrigori < CClotBody
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::Playnpc.AngerSound()");
-		#endif
 	}
 	
 	public void PlayRangedSound() {
@@ -200,18 +195,13 @@ methodmap FatherGrigori < CClotBody
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayPullSound()");
-		#endif
 	}
 	
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -579,10 +569,10 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			return;
 		}
 		
+		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 150, 255, 255, 1, 0.2, 12.0, 4.0, 3);	
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-			spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 150, 255, 255, 1, 0.2, 12.0, 4.0, 3);	
 			
 			// Stage 1
 			float s=Sine(nphi/360*6.28)*Iondistance;

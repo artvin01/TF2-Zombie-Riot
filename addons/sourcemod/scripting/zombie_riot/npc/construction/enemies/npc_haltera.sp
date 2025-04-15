@@ -152,7 +152,7 @@ methodmap Haltera < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_second_opinion/hw2013_second_opinion.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-
+    
 		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_misc2.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
@@ -253,7 +253,6 @@ public Action Haltera_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		RemoveEntity(npc.m_iWearable2);
 
 	npc.PlayAnnoyedSound();
-
 	return Plugin_Changed;
 }
 
@@ -311,7 +310,6 @@ void HalteraSelfDefense(Haltera npc, float gameTime, int target, float distance)
 
 					if(npc.Anger)
 						damageDealt *= 0.5;
-
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					// Hit sound
 					npc.PlayMeleeHitSound();

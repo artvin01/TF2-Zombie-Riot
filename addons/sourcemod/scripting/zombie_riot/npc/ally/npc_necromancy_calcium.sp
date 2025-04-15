@@ -98,9 +98,7 @@ methodmap NecroCalcium < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {

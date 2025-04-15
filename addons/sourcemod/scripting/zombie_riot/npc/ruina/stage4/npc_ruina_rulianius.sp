@@ -126,10 +126,6 @@ methodmap Rulianius < CClotBody
 
 	public void PlayFantasiaSound() {
 		EmitSoundToAll(g_FantasiaSound[GetRandomInt(0, sizeof(g_FantasiaSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayFantasiaSound()");
-		#endif
 	}
 	
 	

@@ -67,7 +67,7 @@ void Victorian_Charger_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return VictorianCharger(vecPos, vecAng, ally);
 }

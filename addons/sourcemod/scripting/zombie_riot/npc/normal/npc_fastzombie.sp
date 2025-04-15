@@ -88,9 +88,6 @@ methodmap FastZombie < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayIdleSound()");
-		#endif
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -100,9 +97,6 @@ methodmap FastZombie < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayIdleAlertSound()");
-		#endif
 	}
 	
 	
@@ -110,28 +104,19 @@ methodmap FastZombie < CClotBody
 		
 		EmitSoundToAll(g_leap_prepare[GetRandomInt(0, sizeof(g_leap_prepare) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayMeleeJumpPrepare()");
-		#endif
 	}
 	
 	public void PlayLeapDone() {
 		
 		EmitSoundToAll(g_leap_scream[GetRandomInt(0, sizeof(g_leap_scream) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayMeleeJumpPrepare()");
-		#endif
 	}
 	public void PlayMeleeJumpPrepare() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_PlayMeleeJumpPrepare[GetRandomInt(0, sizeof(g_PlayMeleeJumpPrepare) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayMeleeJumpPrepare()");
-		#endif
+
 	}
 	
 	public void PlayMeleeJumpSound() {
@@ -140,9 +125,6 @@ methodmap FastZombie < CClotBody
 		
 		EmitSoundToAll(g_PlayMeleeJumpSound[GetRandomInt(0, sizeof(g_PlayMeleeJumpSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayMeleeJumpSound()");
-		#endif
 	}
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -152,33 +134,21 @@ methodmap FastZombie < CClotBody
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayHurtSound()");
-		#endif
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayDeathSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayMeleeHitSound()");
-		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CFastZombie::PlayMeleeHitSound()");
-		#endif
 	}
 
 	public void PlayMeleeMissSound() {
