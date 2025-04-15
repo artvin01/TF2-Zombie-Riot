@@ -1746,6 +1746,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		npc.m_iNC_Dialogue = chose;
 
 		npc.m_flNC_Grace = GameTime + GetRandomFloat(6.0, 12.0);
+		fl_ruina_battery_timeout[npc.index] = npc.m_flNC_Grace;	//make it show on the hud!
 	}
 	else if(npc.m_flNC_Grace < GameTime && b_Valid_NC_Initialistaion(npc, 1))
 	{

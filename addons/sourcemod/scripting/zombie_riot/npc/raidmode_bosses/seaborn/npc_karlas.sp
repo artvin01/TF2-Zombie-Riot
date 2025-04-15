@@ -836,7 +836,7 @@ static void Internal_ClotThink(int iNPC)
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		GetTarget(npc);
 		return;
 	}
 	

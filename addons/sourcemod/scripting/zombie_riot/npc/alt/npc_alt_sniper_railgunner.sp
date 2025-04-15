@@ -69,8 +69,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Sniper_railgunner(vecPos, vecAng, team);
 }
 
-static int i_overcharge[MAXENTITIES];
-
 methodmap Sniper_railgunner < CClotBody
 {
 	
@@ -165,7 +163,7 @@ methodmap Sniper_railgunner < CClotBody
 		
 		npc.Anger = false;
 		
-		i_overcharge[npc.index] = 0;
+		i_ammo_count[npc.index] = 0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/sniper/sniper_zombie.mdl");
 		SetVariantString("1.0");
@@ -284,11 +282,11 @@ static void Internal_ClotThink(int iNPC)
 							speed = 1250.0;
 							damage = 50.0;
 							
-							if(i_overcharge[npc.index] > 5 && !NpcStats_IsEnemySilenced(npc.index))	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
+							if(i_ammo_count[npc.index] > 5 && !NpcStats_IsEnemySilenced(npc.index))	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
 							{
 								speed = 2000.0;
 								damage = 50.0;
-								i_overcharge[npc.index] = 0;
+								i_ammo_count[npc.index] = 0;
 								npc.m_flNextMeleeAttack = GameTime + 7.0;	//long reload, the gun overheated from the charge shot.
 								npc.PlayMeleeSound();
 								if(flDistanceToTarget < 1000000)	//doesn't predict over 1000 hu
@@ -315,7 +313,7 @@ static void Internal_ClotThink(int iNPC)
 								}
 								npc.FireArrow(vecTarget, damage, speed);
 								npc.m_flNextMeleeAttack = GameTime + 1.75;
-								i_overcharge[npc.index]++;
+								i_ammo_count[npc.index]++;
 								npc.PlayRangedSound();
 							}	
 							npc.m_flJumpStartTime = GameTime + 0.9;
