@@ -2663,6 +2663,106 @@ static bool Ruina_Laser_BEAM_TraceUsers(int entity, int contentsMask)
 	}
 	return false;
 }
+//A far more "simplified" version of the ruina laser that comes pre packaged with laser effects, falloff, and the like.
+enum struct Basic_NPC_Laser
+{
+	CClotBody npc;
+	float Radius;
+	float Range;
+	float Close_Dps;
+	float Long_Dps;
+	int Color[4];
+
+	float EffectsStartLoc[3];
+	bool DoEffects;
+	bool RelativeOffset;
+}
+void Basic_NPC_Laser_Logic(Basic_NPC_Laser Data)
+{
+	CClotBody npc = Data.npc;
+	float Radius = Data.Radius;
+	float diameter = Radius*2.0;
+	float Range = Data.Range;
+	float Close_Dps =  Data.Close_Dps;
+	float Long_Dps =  Data.Long_Dps;
+	float Max_Dist = Range*Range;
+	
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	
+	GetOffsetLaserStartLoc(Data, Laser);
+
+	if(Data.DoEffects)
+		BeamEffects(Laser.Start_Point, Laser.End_Point, Data.Color, diameter);
+	
+	Laser.Radius = Radius;
+	Laser.Enumerate_Simple();
+	for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+	{
+		//get victims from the "Enumerate_Simple"
+		int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
+		if(!victim)
+			break;	//no more targets are left, break the loop!
+
+		float playerPos[3];
+		GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+		float Dist = GetVectorDistance(Laser.Start_Point, playerPos, true);	//make is squared for optimisation sake
+
+		float Ratio = Dist / Max_Dist;
+		float damage = Close_Dps + (Long_Dps-Close_Dps) * Ratio;
+
+		//somehow negative damage. invert.
+		if (damage < 0)
+			damage *= -1.0;
+		
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_PLASMA);	// 2048 is DMG_NOGIB?
+	}
+}
+//this basically makes the offset actually affect the traces's start pos. annoying, but its needed.
+static void GetOffsetLaserStartLoc(Basic_NPC_Laser Data, Ruina_Laser_Logic Laser)	//:(
+{
+	CClotBody npc = Data.npc;
+	float Angles[3], startPoint[3];
+	WorldSpaceCenter(npc.index, startPoint);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+			
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	Angles[0] = flPitch;
+
+	if(Data.RelativeOffset)
+		Offset_Vector(Data.EffectsStartLoc, Angles, startPoint);
+	else if(Data.EffectsStartLoc[0] != 0.0 || Data.EffectsStartLoc[1] != 0.0 || Data.EffectsStartLoc[2] != 0.0)
+		startPoint = Data.EffectsStartLoc;
+
+	Laser.DoForwardTrace_Custom(Angles, startPoint, Data.Range);
+}
+
+static void BeamEffects(float startPoint[3], float endPoint[3], int color[4], float diameter)
+{
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+	int colorLayer2[4];
+	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, color[3]);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
+	TE_SendToAll(0.0);
+	int glowColor[4];
+	SetColorRGBA(glowColor, color[0], color[1], color[2], color[3]);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
+	TE_SendToAll(0.0);
+}
 /*
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {

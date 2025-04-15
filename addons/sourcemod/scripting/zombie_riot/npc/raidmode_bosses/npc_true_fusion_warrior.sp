@@ -57,8 +57,6 @@ static char g_PullSounds[][] = {
 };
 
 static int gExplosive1;
-static float fl_NextPull[MAXENTITIES];
-static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 
 public void TrueFusionWarrior_OnMapStart()
 {
@@ -125,9 +123,15 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 	property float m_flNextPull
 	{
-		public get()							{ return fl_NextPull[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextPull[this.index] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flTimeSinceHasBeenHurt
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -403,7 +407,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		npc.Anger = false;
 		b_angered_twice[npc.index] = false;
-		f_TimeSinceHasBeenHurt[npc.index] = 0.0;
+		npc.m_flTimeSinceHasBeenHurt = 0.0;
 		//IDLE
 		npc.m_flSpeed = 330.0;
 		
@@ -503,7 +507,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
-		if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
+		if(GetGameTime() > npc.m_flTimeSinceHasBeenHurt)
 		{
 			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, I thank you, though beware of the rogue machine... {red}Blitzkrieg.");
 			npc.m_bDissapearOnDeath = true;
@@ -517,22 +521,22 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 		}
-		else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
+		else if(GetGameTime() + 5.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 4)
 		{
 			i_SaidLineAlready[npc.index] = 4;
 			CPrintToChatAll("{gold}Silvester{default}: Help the world, retain the chaos!");
 		}
-		else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
+		else if(GetGameTime() + 10.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 3)
 		{
 			i_SaidLineAlready[npc.index] = 3;
 			CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and I will warn you of dangers.");
 		}
-		else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
+		else if(GetGameTime() + 13.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 2)
 		{
 			i_SaidLineAlready[npc.index] = 2;
 			CPrintToChatAll("{gold}Silvester{default}: A huge chaos is breaking out, you were able to knock some sense into me..!");
 		}
-		else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
+		else if(GetGameTime() + 16.5 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 1)
 		{
 			i_SaidLineAlready[npc.index] = 1;
 			CPrintToChatAll("{gold}Silvester{default}: Listen to me, please!");
@@ -934,7 +938,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
+	npc.m_flTimeSinceHasBeenHurt = GetGameTime() + 20.0;
 
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{

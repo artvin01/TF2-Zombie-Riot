@@ -1,14 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-};
-
 static const char g_MeleeHitSounds[][] = {
 	"weapons/ubersaw_hit1.wav",
 	"weapons/ubersaw_hit2.wav",
@@ -19,115 +11,8 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
 //static j1
-
-
-enum struct Basic_NPC_Laser
-{
-	CClotBody npc;
-	float Radius;
-	float Range;
-	float Close_Dps;
-	float Long_Dps;
-	int Color[4];
-
-	float EffectsStartLoc[3];
-	bool DoEffects;
-	bool RelativeOffset;
-}
-void Basic_NPC_Laser_Logic(Basic_NPC_Laser Data)
-{
-	CClotBody npc = Data.npc;
-	float Radius = Data.Radius;
-	float diameter = Radius*2.0;
-	float Range = Data.Range;
-	float Close_Dps =  Data.Close_Dps;
-	float Long_Dps =  Data.Long_Dps;
-	float Max_Dist = Range*Range;
-	
-	Ruina_Laser_Logic Laser;
-	Laser.client = npc.index;
-	
-	GetOffsetLaserStartLoc(Data, Laser);
-
-	if(Data.DoEffects)
-		BeamEffects(Laser.Start_Point, Laser.End_Point, Data.Color, diameter);
-	
-	Laser.Radius = Radius;
-	Laser.Enumerate_Simple();
-	for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
-	{
-		//get victims from the "Enumerate_Simple"
-		int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
-		if(!victim)
-			break;	//no more targets are left, break the loop!
-
-		float playerPos[3];
-		GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-		float Dist = GetVectorDistance(Laser.Start_Point, playerPos, true);	//make is squared for optimisation sake
-
-		float Ratio = Dist / Max_Dist;
-		float damage = Close_Dps + (Long_Dps-Close_Dps) * Ratio;
-
-		//somehow negative damage. invert.
-		if (damage < 0)
-			damage *= -1.0;
-		
-		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_PLASMA);	// 2048 is DMG_NOGIB?
-	}
-}
-//this basically makes the offset actually affect the traces's start pos. annoying, but its needed.
-static void GetOffsetLaserStartLoc(Basic_NPC_Laser Data, Ruina_Laser_Logic Laser)	//:(
-{
-	CClotBody npc = Data.npc;
-	float Angles[3], startPoint[3];
-	WorldSpaceCenter(npc.index, startPoint);
-	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-	
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-			
-	float flPitch = npc.GetPoseParameter(iPitch);
-	flPitch *= -1.0;
-	Angles[0] = flPitch;
-
-	if(Data.RelativeOffset)
-		Offset_Vector(Data.EffectsStartLoc, Angles, startPoint);
-	else if(Data.EffectsStartLoc[0] != 0.0 || Data.EffectsStartLoc[1] != 0.0 || Data.EffectsStartLoc[2] != 0.0)
-		startPoint = Data.EffectsStartLoc;
-
-	Laser.DoForwardTrace_Custom(Angles, startPoint, Data.Range);
-}
-
-static void BeamEffects(float startPoint[3], float endPoint[3], int color[4], float diameter)
-{
-	int colorLayer4[4];
-	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
-	int colorLayer3[4];
-	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
-	int colorLayer2[4];
-	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
-	int colorLayer1[4];
-	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, color[3]);
-	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-	TE_SendToAll(0.0);
-	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
-	TE_SendToAll(0.0);
-	int glowColor[4];
-	SetColorRGBA(glowColor, color[0], color[1], color[2], color[3]);
-	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
-	TE_SendToAll(0.0);
-}
-
-
-
 
 static bool b_enraged=false;
 
@@ -135,10 +20,10 @@ void Donnerkrieg_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
 	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_DefaultMedic_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_DefaultCapperShootSound);
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 	
@@ -198,7 +83,7 @@ methodmap Donnerkrieg < CClotBody
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMedic_IdleAlertedSounds[GetRandomInt(0, sizeof(g_DefaultMedic_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayHurtSound() {
@@ -217,7 +102,7 @@ methodmap Donnerkrieg < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
