@@ -359,6 +359,7 @@ static Action Barracks_Donner_NC_Tick(int client)
 	Data.Close_Dps = 3000.0;
 	Data.Long_Dps = 2000.0;
 	Data.Color = {194, 43, 43, 30};
+	Data.DoEffects = true;
 	Basic_Barracks_Laser_Logic(Data);
 
 	return Plugin_Continue;
@@ -373,5 +374,6 @@ static void DonnerKrieg_Normal_Attack(Barrack_Alt_Donnerkrieg npc)
 	Data.Close_Dps = 3000.0 / 6.0 / TickrateModify;
 	Data.Long_Dps = 1500.0 / 6.0 / TickrateModify;
 	Data.Color = {171, 218, 247, 30};
+	Data.DoEffects = true;
 	Basic_Barracks_Laser_Logic(Data);
 }

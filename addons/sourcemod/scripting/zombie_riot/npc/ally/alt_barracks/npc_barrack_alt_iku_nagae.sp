@@ -29,6 +29,7 @@ enum struct Basic_Barracks_Laser
 	float Range;
 	float Close_Dps;
 	float Long_Dps;
+	bool DoEffects;
 	int Color[4];
 }
 void Basic_Barracks_Laser_Logic(Basic_Barracks_Laser Data)
@@ -74,6 +75,9 @@ void Basic_Barracks_Laser_Logic(Basic_Barracks_Laser Data)
 		TargetsHitFallOff *= LASER_AOE_DAMAGE_FALLOFF;
 	}
 
+	if(!Data.DoEffects)
+		return;
+
 	if(IsValidEntity(npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
@@ -85,7 +89,7 @@ void Basic_Barracks_Laser_Logic(Basic_Barracks_Laser Data)
 			npc.FaceTowards(vecTarget, 20000.0);
 		}
 	}
-
+	
 	GetAttachment(npc.index, "effect_hand_r", Laser.Start_Point, NULL_VECTOR);
 	
 	BeamEffects(Laser.Start_Point, Laser.End_Point,  Data.Color, diameter);
@@ -420,5 +424,6 @@ static void IkuNormAttackTick(Barrack_Alt_Ikunagae npc)
 	Data.Close_Dps = 3000.0 / 6.0 / TickrateModify;
 	Data.Long_Dps = 1500.0 / 6.0 / TickrateModify;
 	Data.Color = {171, 218, 247, 30};
+	Data.DoEffects = true;
 	Basic_Barracks_Laser_Logic(Data);
 }
