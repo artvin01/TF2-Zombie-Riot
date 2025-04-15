@@ -22,14 +22,15 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeAttackShortSounds[][] = {
 	"weapons/sniper_rifle_classic_shoot.wav",
 };
-/*
+
 int LighthouseID;
 
 int LighthouseGlobaID()
 {
 	return LighthouseID;
 }
-*/
+
+
 void Iberia_Lighthouse_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -44,7 +45,7 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	LighthouseID = NPC_Add(data);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_1);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_2);
 }
@@ -293,6 +294,13 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 			}
 		}
 		return;
+	}
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidModeScaling = 0.0;	//just a safety net
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidModeTime = GetGameTime(npc.index) + 9000.0;
+		RaidAllowsBuildings = true;
 	}
 	//global range.
 	npc.m_flNextRangedSpecialAttack = 0.0;
