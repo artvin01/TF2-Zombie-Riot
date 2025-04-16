@@ -4,6 +4,10 @@
 	{
 		"en"		"Slot "
 	}
+	"Describe This Weapon"
+	{
+		"en"	"Describe This Weapon"
+	}
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
@@ -429,10 +433,7 @@
 	}
 	"Double Barrel Shotgun Pap 2"
 	{
-		"en"		"Increased damage and attackspeed, reload speed and 4 clip, meaning you can shoot twice."
-		"fr"		"Dégats, cadence de tir et vitesse de rechargement améliorés. Capacité chargeur doublé."
-		"ru"		"Увелич. урон и скорость атаки, скорости перез. и обойма на 4-е патрона, что означает, что вы можете стрелять дважды."
-		"chi"       "增加伤害、攻击速度、装填速度和4发弹夹，这意味着你可以射击两次。"
+		"en"		"Increased damage and attackspeed, reload speed and 2 clip, meaning you can shoot twice."
 	}
 	
 	"RPG Pap 1"
@@ -455,10 +456,7 @@
 	
 	"The Pomson 7000 Desc"
 	{
-		"en"		"Rapid fire laser gun!\nTurns to Primary!"
-		"fr"		"Fusil à rayon laser avec cadence de tir rapide!\nDevient une arme principale!"
-		"ru"		"Скорострельная лазерная пушка!\nПревращается в основное!"
-		"chi"       "快速激光枪!"
+		"en"		"Massively increased clipsize, slower reload, faster attackspeed and more damage."
 	}
 	"The Pomson 7000 Pap 1"
 	{
@@ -559,10 +557,7 @@
 	
 	"Star Shooter Desc"
 	{
-		"en"	"Sure, Brain, but where are you going to get enough stars for this?\nYour M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage."
-		"fr"	"Tant pis, cerveau, mais oû allez-vous trouver des étoîles pour ça?\nCet arme se chauffe graduellement, qui réduit les dégats.\nLa minuterie M1 vous donnera le temps de refroidissement."
-		"ru"	"Конечно, Мозг, но где ты достанешь достаточно звёзд для этого?\nВремя восст. M1 покажет вам, через какое время она снова будет восстанавливаться.\nБольше перегрев означает меньший урон."
-		"chi"   "当然，兄弟，但你要去哪里弄到足够的星星呢?你射击时，冷却时间会告诉你它多久才会再次冷却。更高的过热意味着更少的伤害。"
+		"en"	"Your M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage."
 	}
 
 	"Star Shooter Pap 1"
@@ -631,17 +626,11 @@
 	
 	"The Cow Mangler 6000 Desc"
 	{
-		"en"	"Recharge your weapon slowly before every shot."
-		"fr"	"Recharge l'arme lentement avant chaque tir."
-		"ru"	"Медленно перезаряжайте оружие перед каждым выстрелом."
-		"chi"   "每次射击前需要缓慢的给你的武器充电。"
+		"en"	"Changes weapon:\nSlower attackspeed, reloads singularly\nMassive damage boost\nM2 fires a shot that consumes all shots, scales with damage and attackspeed."
 	}
 	"The Cow Mangler 6000 Pap 1"
 	{
 		"en"	"Increased damage and attackspeed and max ammo"
-		"fr"	"Dégats, cadence de tir et capacité de munitions améliorés."
-		"ru"	"Увеличенный урон и скорость атаки и боезапас."
-		"chi"   "增加伤害和攻击速度。"
 	}
 	
 	"Infected Rampager Assult Rifle Desc"
@@ -654,10 +643,7 @@
 	
 	"Neutronstar Burst Cannon Desc"
 	{
-		"en"	"Strong for both single and multi target, more targets hit = less damage though.\nDoes more dmg the farther you are, cannot charge."
-		"fr"	"Dégats s'améliorent en fonction de la distance de la cible.\nDégats réduissent pour chaque ennemi frappé."
-		"ru"	"Сильна как для одной, так и для нескольких целей, больше поражённых целей = меньше урона.\nУрон зависит от дальности, не может заряжаться."
-		"chi"   "对单目标和多目标都很强大，击中的目标越多=伤害越少\n距离越远=伤害越高，不能给超量充能。"
+		"en"	"Weapon changes:\nMassively more damage, better pierce\nNo clip, cannot charge its shots\nThe further away you are, the more damage it does."
 	}
 	
 	"USP tactical Desc"
@@ -749,17 +735,11 @@
 	}
 	"SMG Pap 2"
 	{
-		"en"	"Increased damage and attackspeed"
-		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"    "增加伤害和攻击速度。"
+		"en"	"Increased damage and attackspeed clip Size"
 	}
 	"SMG Pap 3"
 	{
-		"en"	"Increased damage and attackspeed"
-		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"   "增加伤害和攻击速度。"
+		"en"	"Increased damage and attackspeed clip Size"
 	}
 	"SMG Pap 4"
 	{
@@ -780,10 +760,7 @@
 	
 	"People Popper Desc"
 	{
-		"en"	"A fast but inaccurate SMG that fires explosive rounds. Can be Pack-a-Punched twice to increase damage and clip size."
-		"fr"	"Mitraillette imprécis qui tire des balles explosives."
-		"ru"	"Быстрый, но неточный пистолет-пулемёт, стреляющий взрывными патронами. Может быть улучшен дважды, чтобы увеличить урон и размер обоймы."
-		"chi"   "一种可以快速发射火箭弹但不准确的SMG。可以升级两次，以增加伤害和子弹大小。"
+		"en"	"A fast but inaccurate SMG that fires explosive rounds."
 	}
 	"People Popper Pap 1"
 	{
@@ -879,10 +856,7 @@
 	}
 	"P15t0l Pap 2" 
 	{
-		"en"	"Weapon does whatever the fuck it wants now."
-		"fr"	"L'arme fait ostie n'importe quoi maintenant."
-		"ru"	"Оружие теперь делает, чёрт возьми всё, что ему вздумается."
-		"chi"   "武器现在想干啥就干啥。"
+		"en"	"Weapon does whatever the fuck it wants now.\nBoosted all stats (?)"
 	}
 	"Buff Banner Desc"
 	{
@@ -900,10 +874,7 @@
 	
 	"PhlogStorms Detonator Desc"
 	{
-		"en"	"I don't think you want to ask much about this one and where the shopkeep got it....."
-		"fr"	"Ne vous demandez pas ce que c'est, ni d'ou le marchand l'a eu....."
-		"ru"	"Я не думаю, что вы хотите знать этом и о том, где продавец раздобыл его....."
-		"chi"   "最好别问太多关于这把枪的"
+		"en"	"Causes burn in an AOE explosion."
 	}
 	"PhlogStorms Detonator Pap 1"
 	{
@@ -947,6 +918,10 @@
 		"fr"	"Recevez 10％ Über pour chaque coup.\nLe Über reçu est partagé entre vos Mediguns si vous possédez plus q'un."
 		"chi"	"每次击中获得10％uber能量，超量uber会自动给到其他医疗枪（如果有的话）。"
 	}
+	"Hammer Desc"
+	{
+		"en"	"Attacks very slow, but deals heavy damage, easier to gib enemies due to this."
+	}
 	
 	"Hammer Pap 1"
 	{
@@ -963,14 +938,11 @@
 	}
 	"Hammer Pap 3"
 	{
-		"en"	"Massivly Increased damage"
-		"fr"	"Dégats améliorés considérablement"
-		"ru"	"Увеличенный урон."
-		"chi"	"增加伤害"
+		"en"	"Massively Increased damage"
 	}
 	"Hammer Pap 4"
 	{
-		"en"	"Slightly faster swinging speed and increased damage. Wwing speed will go up the more you hit the enemies"
+		"en"	"Slightly faster swinging speed and increased damage.\nSwing speed will go up the more you hit the enemies"
 	}
 	
 	"Fire Axe Desc"
@@ -1029,13 +1001,11 @@
 	}
 	"Kunai Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown and make you laugh.\nYou are a professional at backstabbing and such, backstabs are easier to hit."
-		"fr"	"Dégats et cadence des attaques améliorés. Le poignardage donne plus de santé, et ne retarde plus l'attaque prochaine.\nVouz devenez un professionel en poignardage, qui deviennent plus faciles à effectuer."
-		"chi"   "增加伤害和攻击速度，更多回血，背刺无冷却并且会让给你贱笑。\n你已是trickstab高手，所以你现在可以轻易背刺。"
+		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown.\nBackstabs are easier to hit."
 	}
 	"Kunai Pap 4"
 	{
-		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy, which explodes."
+		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy."
 	}
 	
 	"Fractured Ark Desc"
@@ -1054,21 +1024,15 @@
 	}
 	"Fractured Ark Pap 2"
 	{
-		"en"	"Increased damage, attackspeed, and ability power.\nYour empowered swings now also fire small homing projectiles with lower damage"
-		"fr"	"Dégats, cadence de tir et bloquage améliorés"
-		"chi"   "增加伤害，攻击速度，和技能效果。"
+		"en"	"Increased damage and firerated, ability is boosted:\nYour empowered swings now also fire small homing projectiles with lower damage"
 	}
 	"Fractured Ark Pap 3"
 	{
-		"en"	"Abilities change.\nEach attack silences enemies, fires ranged attacks.\nAbility 2x dmg and ability duration and AOE silence.\nArchetype changes to ''Lord''"
-		"fr"	"Chaque attaque silence les ennemis, et tire des projectiles.\nAbilité double en dégats et durée, et silence les ennemis proches.\nArchetype devient «Roi»"
-		"chi"	"技能更改：\n攻击会造成“沉默”效果，可发射远程攻击。\n技能伤害和时长*2，aoe造成沉默。\n类型更为''王''"
+		"en"	"Increased damage and firerate\nAbilities change.\nSilences enemies, fires ranged attacks.\nAbility: 2x dmg + AOE silence.\nAbility gets charges on hit, Melee hits give 2x charge.\nProjectiles deal ranged damage, and less damage.\nArchetype changes to ''Lord''"
 	}
 	"Fractured Ark Pap 4"
 	{
-		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull, dealing 150％ of damage.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
-		"fr"	"Cadence des attaques plus lente, mais tous les attaques lance des projectiles.\nAbilité devient une attraction, et inflige 150％ des dégats.\nVous êtes un Seaborn alors que vous portez cet arme.\nArchetype devient «Chasseur des Abîmes»"
-		"chi"	"所有攻击变为远程，但攻速降低。\n技能改为拉扯敌人，造成150％伤害。\n装备此武器时你会被视为海嗣。\n类型更为''深海猎人''。"
+		"en"	"Increased damage\nAbilities change.\nRanged Attack and slower firerate.\nAbility changes to pull, dealing high dmg.\nYou count as a seaborn while wielding this weapon.\nRanged projectile deals less damage then melee and deals ranged damage.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Fractured Ark Pap 5"
 	{
@@ -1184,7 +1148,7 @@
 	
 	"Medusa Teslar Stick Desc"
 	{
-		"en"	"Causes bleed, 5％ extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25％ more dmg takes for affected enemies.\nburn retriggering is 50％ weaker."
+		"en"	"Causes bleed, 5％ extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25％ more dmg takes for affected enemies."
 	}
 	"Medusa Teslar Stick Pap 1"
 	{
@@ -1299,14 +1263,12 @@
 
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Massively increased Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !! and 10％ more dmg and faster ability charge.\nArchetype changes to ''Chain Caster''"
-		"fr"	"Dégats améliorés.\nConvoque 2 coups de foudre, qui frappent directement les ennemis.\nArchetype devient «Sortilèges Successifs»"
-		"chi"	"大幅度增加伤害。\n技能改为*2充能，随机定位的连发连锁闪电。\n攻击会连锁攻击并且对敌人造成减速。攻速慢3倍。\n无敌人时，获得 !! ，+10％伤害。充能速度增加。\n类型更为''连锁法师''"
+		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nArchetype changes to ''Chain Caster''"
 	}
 	
 	"Beam Wand Desc"
 	{
-		"en"	"Hold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
+		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
 		"fr"	"Laser constant qui épuise le Mana. M2 pompe plus de Mana dans l'attaque pour améliorer les dégats."
 		"ru"	"Удерживайте М1 для постоянного луча уничтожения. М2 - усиление магии, больше маны = сильнее, но выше восстановление."
 		"chi"   "按住M1发出一个恒定的光束来清除你的敌人。M2:魔法超速。更多的法力值=更强更快的CD"
@@ -2015,18 +1977,12 @@
 	
 	"Fusion Blade Desc"
 	{
-		"en"	"Weak but gets more powerful the more you upgrade it."
-		"fr"	"Faible, mais se renforce avec des améliorations."
-		"ru"	"Слабый, но становится более мощным, чем больше вы его улучшаете."
-		"chi"   "很弱，但升级得越多，它就越强大。"
+		"en"	"Rapid attacking Expidonsan Blade."
 	}
 	
 	"Fusion Blade Pap 1"
 	{
-		"en"	"Active a long cooldown m2 ability.\nWhich buffs your damage and abit less resistance by 15％, and allies by 10％ this stacks with 2 on eachother.."
-		"fr"	"Appuyez M2 pour une abilité qui améliore vos dégats.\nAbilité vous donne 15％ résistance, et donne à vos alliés 10％ résistance.\nJusqu'a 2 utilisateurs de cet abilité peuvent fonctionner en même temps."
-		"ru"	"Активирует способность на M2 с длительным временем восст.\nКоторая увелич. ваш урон и сопр. на 15％, а союзников на 10％, при этом эфф. накаплив. по 2 на каждого.\nТакже действует на дружественных NPC."
-		"chi"   "按右键可以激活技能，但却时间较长。\n可以提高你的一点伤害和增大15％的伤害抗性，队友可以获得10％的增益(可叠加)。\n这也适用于友方npc。"
+		"en"	"M2 buffs your damage and abit less resistance by 15％, and allies by 10％ this stacks with 2 on eachother.."
 	}
 	"Fusion Blade Pap 1.5"
 	{
@@ -2037,7 +1993,7 @@
 	}
 	"Expidonsan Explorer Pap 1"
 	{
-		"en"	"Harness the void power!\nYou now inflict the void elemental debuff onto enemies, void entities cannot void eachother, you are immune to void and so are they to yours, rest explained in void wavetype."
+		"en"	"You now inflict the void elemental debuff onto enemies, void entities cannot void eachother\n you are immune to void and so are they to yours, rest explained in void wavetype."
 	}
 	"Expidonsan Explorer Pap 2"
 	{
@@ -2056,7 +2012,6 @@
 	"Fusion Blade Pap 3"
 	{
 		"en"	"M2 ability changes.\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration'' AND ''Kazimierz''.\nSilvester must have been there..."
-		"fr"	"Abilité place un épée en face de vous, qui fait des dégats aux ennemis et les étonne.\nRecevez des grandes améliorations en général.\nLes ennemis qui ciblent l'épée recoivent 1x plus de dégats.\nArchetype devient «Aberration» et «Kazimierz».\nSilvester aurait été ici..."
 	}
 
 	
@@ -2146,14 +2101,14 @@
 	}
 	"Alchemist Potion Pap 1"
 	{
-		"en"	"M2 now allows you to thorw a buffing potion at an ally.\nNon buffed players have an arrow above them."
+		"en"	"Increased Damage\nM2 now allows you to thorw a buffing potion at an ally.\nNon buffed players have an arrow above them."
 		"fr"	"La potion secondaire donne aux coéquipiers un bonus de cadence des attaques pour une courte durée."
 		"ru"	"M2 теперь позволяет бросить союзнику зелье усиления для выбранного оружия, дающее бонус к скорости атаки на время действия."
 		"chi"   "M2现在允许向盟友投掷当前有效的武器强化药水，并在持续时间内获得攻速加成。"
 	}
 	"Alchemist Potion Pap 2"
 	{
-		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed." //still works with terorriser, just unneeded to list. let them figure it out.
+		"en"	"Increased Damage\nAble to apply an explosive coat over an enemy which causes an explosion if killed." //still works with terorriser, just unneeded to list. let them figure it out.
 		"fr"	"La potion secondaire applique une substance explosive sur les ennemis, causant une explosion quand ils sont tués.\nFonctionne en concert avec le Fusil Implanteur de Bombes Terroriseurs!"
 		"ru"	"Возможность нанести на врага взрывное покрытие, которое при убийстве вызывает взрыв.\nРаботает с винтовкой террориста!"
 		"chi"   "能够在敌人身上涂上一层爆炸衣，如果杀死敌人就会引起爆炸。与恐怖步枪一起工作!"
@@ -2166,7 +2121,7 @@
 	}
 	"Alchemist Potion Pap 4"
 	{
-		"en"	"Buffing potions last longer and is able to buff multiple allies current active weapon at once."
+		"en"	"Increased Damage\nBuffing potions last longer and is able to buff multiple allies current active weapon at once."
 		"fr"	"Effet de la potion dure pour plus longtemps. Plusieurs alliés peuvent être affectés en même temps."
 		"ru"	"Зелья с усилениями действуют дольше и могут усилить сразу несколько союзников с им выбранным оружием."
 		"chi"   "buff药水持续时间更长，并且可以同时buff多个盟友当前的有效武器。"
@@ -2182,32 +2137,32 @@
 	}
 	"Alchemist Potion Pap 5"
 	{
-		"en"	"M2 will now increase your fire rate heavily but lower your damage and prevent mana gain for the duration."
+		"en"	"Increased Damage\nM2 will now increase your fire rate heavily but lower your damage and prevent mana gain for the duration."
 		"fr"	"M2 accélère la cadence des attaques, mais réduit vos dégats et arrête la regénération de Mana pour une courte période."
 		"ru"	"M2 теперь сильно повышает вашу скорострельность, но снижает урон и препятствует получению маны на время действия."
 		"chi"   "M2现在会大大提高你的射速，但会降低你的伤害，并在持续时间内阻止你获得法力值。"
 	}
 	"Alchemist Potion Pap 6"
 	{
-		"en"	"Coated enemies now take extra damage from all sources for a few seconds."
+		"en"	"Increased Damage\nCoated enemies now take extra damage from all sources for a few seconds."
 		"fr"	"Les ennemis couverts prennent plus de dégats pour quelques secondes."
 		"ru"	"Враги с покрытием теперь получают дополнительный урон от всех источников в течение нескольких секунд."
 		"chi"   "被涂层的敌人现在会在几秒钟内受到来自所有来源的额外伤害。"
 	}
 	"Alchemist Potion Pap 7"
 	{
-		"en"	"Buffing Potion lasts a MUCH longer time, (300 seconds).\nBuff strenghens to 25％ from 20％"
+		"en"	"Increased Damage\nBuffing Potion lasts a MUCH longer time, (300 seconds).\nBuff strenghens to 25％ from 20％"
 	}
 	"Alchemist Potion Pap 8"
 	{
-		"en"	"M2 now affects some nearby allies, granting increased fire rate but lower damage."
+		"en"	"Increased Damage\nM2 now affects some nearby allies, granting increased fire rate but lower damage."
 		"fr"	"La potion secondaire donne aux coéquipiers un bonus de cadence des attaques, mais réduit leus dégats, pour une courte durée."
 		"ru"	"M2 теперь действует на некоторых ближайших союзников, увеличивая скорострельность, но снижая урон."
 		"chi"   "M2现在影响附近的一些盟友，增加射速，但降低伤害。"
 	}
 	"Alchemist Potion Pap 9"
 	{
-		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
+		"en"	"Increased Damage\nM2 now is able to shrink enemies, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
 		"fr"	"Potion secondaire fait rétrécir les ennemis, les faisant plus long et réduit leurs dégats.\nLes boss retourneront à normal après quelques secondes. Les Raids deviennent plus vites."
 		"ru"	"M2 теперь может уменьшать врагов, накладывая на них постоянный негат. эфф. и замедление и заставляя наносить меньше урона.\nБоссы будут снимать этот эффект через несколько секунд, а рейды ещё быстрее."
 		"chi"	"M2现可缩小敌人，造成永久debuff - 减速及低伤害。\n精英怪和boss可以在一定时间内移除效果。"
@@ -2354,27 +2309,25 @@
 	}
 	"Lantean Staff Desc pap"
 	{
-		"en"	"Your drones can now penetrate more enemies\nLess damage loss on overcharge"
+		"en"	"Increased Damage\nYour drones can now penetrate more enemies\nLess damage loss on overcharge"
 		"fr"	"Vos drones peuvent pénétrer plus d'ennemis.\nMoins de perte de dégats pour la surcharge."
 		"ru"	"Теперь ваши дроны могут пробивать больше врагов\nМеньше потери урона при перегрузке."
 		"chi"   "你的无人机现在可以穿透更多的敌人，但在过度充能时伤害损失更少"
 	}
 	"Specter Pap 1"
 	{
-		"en"	"Attacks slower but hits two targets at once.\nDeals 25％ more damage againts raids.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
-		"fr"	"Frappe deux ennemis à la fois.\n+25％ dégats contre les Raids.\nVous êtes un Seaborn pendant que vous tenez cet arme.\nArchetype devient «Chasseur des Abîmes»"
-		"chi"	"超低攻速，可同时攻击两个敌人。\n对boss造成25％额外伤害。\n手持武器时，判定为海嗣。\n类更为''深海猎人''"
+		"en"	"Attacks slower but hits two targets at once.\nDamage Increased.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Specter Pap 2a"
 	{
-		"en"	"Attacks a third target"
+		"en"	"Attacks a third target\nDamage Increased"
 		"fr"	"Frappe un troisième ennemi."
 		"ru"	"Атакует третью цель."
 		"chi"   "可以同时攻击三个目标"
 	}
 	"Specter Pap 2b"
 	{
-		"en"	"Gains the ability to go Invulnerable but lose all health and become stunned afterwards.\nDuring raids, you instead gain 65％ resistance and your health doesnt drain."
+		"en"	"Gains the ability to go Invulnerable but lose all health and become stunned afterwards.\nDuring raids, you instead gain 65％ resistance and your health doesnt drain.\nDamage Increased"
 	}
 	"Specter Pap 3"
 	{
@@ -2392,7 +2345,7 @@
 	}
 	"Specter Pap 5"
 	{
-		"en"	"Replaces ability. Use old ability with same button and crouching. \nDeal bonus damage if the enemy has enough lower ％ hp then you otherwise deal bonus damage\nYou do more dmg, and take less damage."
+		"en"	"Replaces ability. Use old ability with same button and crouching. \nDeal bonus damage if the enemy has enough lower ％ hp then you otherwise deal bonus damage\nYou do more dmg, and take less damage.\nDamage Increased"
 	}
 	"Lantean Staff Desc pap2"
 	{
@@ -2410,7 +2363,7 @@
 	}
 	"Preaching Sword Desc"
 	{
-		"en"	"A quick attacking sword with increased sell back value.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
+		"en"	"A quick attacking sword.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
 		"fr"	"Épée rapide qui se revend à bon prix.\nFaire des dégats létales à un ennemi lui infligera une Plaie Critique.\nTuer un ennemi avec une Plaie Critique redonne une recharge d'une seconde."
 	}
 	"Preaching Sword Pap 1"
@@ -2455,14 +2408,14 @@
 	}
 	"Beam Wand pap Alt 1"
 	{
-		"en"	"Have you ever wondered what it would be like to fire 2 laser beams?\nWell, wonder-no-more!\nHold Mouse1 to attack\nOnce charge is full press Mouse2 to use it!"
+		"en"	"Increased damage\Have you ever wondered what it would be like to fire 2 laser beams?\nWell, wonder-no-more!\nHold Mouse1 to attack\nOnce charge is full press Mouse2 to use it!"
 		"fr"	"Chargez une attaque avec M1, utilisez la charge avec M2.\nTire 2 rayons laser."
 		"ru"	"Вы когда-нибудь задумывались, каково это - стрелять двумя лазерными лучами?\nНу, теперь это реальность!\nУдерж. ЛКМ для атаки\n, при полном заряде нажмите ПКМ для использования!"
 		"chi"   "你有没有想过发射两束激光会是什么样子?\n 左键攻击\n一旦充能完毕，按右键使用它!"
 	}
 	"Beam Wand pap Alt 2"
 	{
-		"en"	"So, you want more power?\nIntroducing the ''Particle Cannon''tm\nPress RELOAD to switch between the particle Beam/Cannon\nThe particle cannon also has its own Mouse2 ability\nParticle cannon cannot pierce multiple targets!"
+		"en"	"Increased damage\So, you want more power?\nIntroducing the ''Particle Cannon''tm\nPress RELOAD to switch between the particle Beam/Cannon\nThe particle cannon also has its own Mouse2 ability\nParticle cannon cannot pierce multiple targets!"
 		"fr"	"Appuyez sur RELOAD pour changer entre le rayon laser et le cannon à particules.\nAbilité change avec l'utilisation du cannon.\nCannon à particules ne peut pas perçer les ennemis."
 		"ru"	"Итак, вы хотите больше мощности?\nПредставляем «Нейтронная пушка»tm\nНажмите ПЕРЕЗАРЯДКУ для перекл. между нейтронным лучом/пушкой\nНейтронная пушка также имеет свою собственную способность на ПКМ\nНейтронная пушка не может пробить несколько целей!"
 		"chi"   "所以，你想要更大的力量?\n介绍“粒子炮”\n按R在粒子束/炮之间切换\n粒子炮也有自己的鼠标右键技能\n粒子炮不能拼接多个目标!"
@@ -2573,9 +2526,7 @@
 	}
 	"Mlynar Sword Desc"
 	{
-		"en"	"Gain 30％ damage & 50％ less knockback, 10％ slower\nCant Attack, reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
-		"fr"	"Retournez les dégats aux ennemis qui vous attaquent.\n+30％ dégats, +50％ réstance contre le recul, -10％ vitesse.\nVous ne pouvez pas attaquer avec cet arme."
-		"chi"	"+30％伤害，-50％受到的击退，-10％移速。\n无法攻击，但有真伤反甲。\n三个能量条：自动增加，受伤增加，敌人附近增加。右键消耗能量获得一把aoe剑。无伤害衰减，无敌人上限。"
+		"en"	"Gain 30％ damage & 50％ less knockback, 10％ slower\nCant Attack, reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies & being hurt.\nWeapon has no damage."
 	}
 	"Mlynar Sword Desc pap"
 	{
@@ -2694,7 +2645,7 @@
 	}
 	"Steel Dagger Desc 3"
 	{
-		"en"		"increased resistances and damage, m2 ability gains extra damage and stun duration, provides extra heal on hit for all your surrounding allies during ability usage."
+		"en"		"increased resistances and damage, m2 ability gains extra damage and stun duration\nProvides extra heal on hit for all your surrounding allies during ability usage."
 		"fr"		"Dégats et résistance améliorés. Dégats, durée, et soins de votre abilité améliorés."
 		"chi"		"提高抗性与伤害。提高技能持续时间，加强队友buff效果。"
 	}
@@ -2712,9 +2663,7 @@
 	}
 	"Fantasy Blade pap 2"
 	{
-		"en"	"Fantasy and reality, its all the same\nBy Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\nNote: This ability WILL only work if you are looking at an enemy"
-		"fr"	"Acroupissez-vous et appuyez sur M2 pour vous téléporter à un NPC. Coûte 3 Shards pour éxécuter.\nObtenez les Ailes de Fantasie"
-		"chi"	"'幻境即是现实。'\n蹲下按M2可以消耗3个碎片传送到任何敌对npc，穿过的敌人受到伤害。"
+		"en"	"By Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\nNote: This ability WILL only work if you are looking at an enemy"
 	}
 	"Ancient Banner Desc"
 	{
@@ -2816,31 +2765,27 @@
 	}
 	"The Standchen Desc Pap"
 	{
-		"en"	"Saves up to 4 attacks."
+		"en"	"Increased Damage\nSaves up to 4 attacks."
 		"fr"	"Accumule jusqu'a 4 attaques."
 		"chi"	"存储上限加到4."
 	}
 	"The Standchen Desc AltPap"
 	{
-		"en"	"Attacks deal Necrosis elemental damage."
+		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage."
 		"fr"	"Attaques ont un effet élémental Necrôse"
 	}
 	"The Standchen Desc AltPap 2"
 	{
-		"en"	"Deals an additional 30％ pure damage if an enemy is under an elemental effect."
+		"en"	"Increased Damage\nDeals an additional 30％ pure damage if an enemy is under an elemental effect."
 		"fr"	"+30％ dégats sur les ennemis sous un effet élémental."
 	}
 	"Sensal Scythe Wep Desc"
 	{
-		"en"	"Borrowed from sensal straight out of expidonsa."
-		"fr"	"Emprunté de Sensal, directement de Expidonsa."
-		"chi"	"感谢Sensal友情赞助"
+		"en"	"Slow attacking scythe."
 	}
 	"Sensal Desc 1"
 	{
-		"en"	"Gain the ability to shoot projetiles with R, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits\nA certain battery will double its capacity..."
-		"fr"	"Lance des faux avec R.\nLes faux cherchent l'ennemi que vous regardez.\nObtenez des faux en frappant des ennemis.\nUne certaine batterie doublera sa capacité..."
-		"chi"	"R键发射跟踪镰刀。会跟随你离你鼠标最近的敌人。\n近战攻击获得镰刀。\n某个电池会提高上限..."
+		"en"	"Gain the ability to shoot projetiles with R, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits"
 	}
 	"Sensal Desc 2"
 	{
@@ -2946,37 +2891,37 @@
 	// todo: translate prismatic wand properly
 	"Neuv pap0"
 	{
-		"en"	"''Prismatic Beam Singularity Generator'', such is the full name of this spell\nCreated long ago before contact with the Ruanians...\nThe Witch who created the spell is unknown..."
+		"en"	"Incrases damage.\n''Prismatic Beam Singularity Generator'', such is the full name of this spell\nCreated long ago before contact with the Ruanians...\nThe Witch who created the spell is unknown..."
 		"fr"	""
 		"chi"	"这个法术名为''棱形奇点光柱''，它的来源早已丢失..."
 	}
 	"Neuv pap1"
 	{
-		"en"	"Your Understanding of the spell improves\nImages of a city flood your mind...\nOne things for certain though, this spell has become far more powerfull"
+		"en"	"Incrases damage.\nYour Understanding of the spell improves\nImages of a city flood your mind...\nOne things for certain though, this spell has become far more powerfull"
 		"fr"	""
 		"chi"	"你逐渐开始熟练这个法术。\n你脑海中浮现出了一个城市的画面...\n虽然不明原因，但能肯定的是，光柱的力量大幅度提升了。"
 	}
 	"Neuv pap2"
 	{
-		"en"	"Science And Witches\nHow could something so contradictory to one another be so intertwined with a spell"
+		"en"	"Incrases damage.\nScience And Witches\nHow could something so contradictory to one another be so intertwined with a spell"
 		"fr"	""
 		"chi"	"''科学''    ''巫术''\n明明是两个相对的东西，在这个法术中却缺一不可。"
 	}
 	"Neuv pap3"
 	{
-		"en"	"A new spell manifests into your mind\nHold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
+		"en"	"Incrases damage.\nA new spell manifests into your mind\nHold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
 		"fr"	"Appuyez M2 pour charger un Hexa-Cannon."
 		"chi"	"你发现了新的法术。\n长按M2招出一个六边形的巨炮。\n虽然你还不熟练，它依旧十分强力。"
 	}
 	"Neuv pap4"
 	{
-		"en"	"Truth or false, it’s the logic that dictates it all\nRising edge,\nTicks the clock\nStimulates your flip flop\nGenerate, Oscillate\nLet your blood fill the gates\nMultiplex, process registration"
+		"en"	"Incrases damage.\nTruth or false, it’s the logic that dictates it all\nRising edge,\nTicks the clock\nStimulates your flip flop\nGenerate, Oscillate\nLet your blood fill the gates\nMultiplex, process registration"
 		"fr"	""
 		"chi"	"是与否：这是个被伦理所支配的世界。\n上升沿驱动着时钟频率\n激励着你的双稳态触发器\n生成，摆动\n让你的血液充棉逻辑门\n多路化，程序注册。"
 	}
 	"Neuv pap5"
 	{
-		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all that she knows..."
+		"en"	"Incrases damage.\nAnd thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all that she knows..."
 		"fr"	""
 		"chi"	"终于，你看到了女巫的样貌。\n貌似，''Donnerkrieg''的技巧也是从她这学的..."
 	}
@@ -3177,43 +3122,43 @@
 	}
 	"Impact Lance Desc 1"
 	{
-		"en"	"A Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width"
+		"en"	"Increased damage\nA Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width"
 		"fr"	"Une lance magique qui est manié comme une arme corps-à-corps.\nUtilise du Mana pour attaquer, cause aucun dégat si votre Mana est épuisé.\nPortée longue,\ngrandeur et cadence des attaques réduites."
 		"chi"	"魔法所造的长矛。和近战无区别。\攻击消耗蓝，稍慢的攻击速度。\n蓝耗尽时，不会造成任何伤害。\n更长的距离，更细的判定。"
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n25％ melee Resistance"
+		"en"	"Increased damage\nYou have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n25％ melee Resistance"
 		"fr"	"+25％ résistance contre les dégats corps-à-corps\nAbilité accélère un particule vers l'ennemi que vous visez.\nAbilité vous inflige du recul."
 		"chi"	"你现在可以加速能量，发射出去。只能面对敌人时使用，会对你造成击退。\+25%近战抗性。"
 	}
 	"Impact Lance Desc 3"
 	{
-		"en"	"Larger range\nSlightly more melee width\nHigher Mana Cost"
+		"en"	"Increased damage\nLarger range\nSlightly more melee width\nHigher Mana Cost"
 		"fr"	"Portée et grandeur de l'attaque améliorées.\nCoût de Mana plus haut."
 		"chi"	"扩大范围，增加判定宽度。\n增加蓝耗。"
 	}
 	"Impact Lance Desc 4"
 	{
-		"en"	"The Impact Lance, a true work of Magical engineering, with it at full power\nIts power can nearly pierce the heavens!"
+		"en"	"Increased damage\nThe Impact Lance, a true work of Magical engineering, with it at full power\nIts power can nearly pierce the heavens!"
 		"fr"	"La lance a atteint son potentiel maximum.\nSa puissance peut percer les cieux!"
 		"chi"	"能量纯度达到巅峰，足以刺穿天国！"
 	}
 	"Impact Lance Desc 5"
 	{
-		"en"	"Using M2 will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5％ Melee resistance"
+		"en"	"very slightly reduced damage, massively increased attackspeed\nUsing M2 will allow you to throw your lance, Costs 2x primary attack in mana\n5％ Melee resistance"
 		"fr"	"+5％ résistance contre les dégats corps-à-corps\nAbilité lance votre lance, "
 		"chi"	"M2可以丢出长矛，消耗双倍蓝。\n丢出后两秒无法使用，除非你有某位神的祝福...\n+5%近战抗性"
 	}
 	"Impact Lance Desc 6"
 	{
-		"en"	"Larger range\nSlightly more melee width"
+		"en"	"Increased damage\Larger range\nSlightly more melee width"
 		"fr"	"Portée et grandeur de l'attaque améliorées."
 		"chi"	"全面增加范围"
 	}
 	"Impact Lance Desc 7"
 	{
-		"en"	"The Impact Lance, a true work of Magical engineering, Fast, agile, and deadly!\nIt can almost scratch the heavens"
+		"en"	"Increased damage\nThe Impact Lance, a true work of Magical engineering, Fast, agile, and deadly!\nIt can almost scratch the heavens"
 		"fr"	"La lance a atteint son potentiel maximum.\nSon agilité peut percer les cieux!"
 		"chi"	"灵活又致命，神都畏惧的武器。"
 	}
@@ -3308,37 +3253,31 @@
 	}
 	"Broken Rapier Desc"
 	{
-		"en"	"A rapier that has been degraded to a state of hopelessness.\nYou permanently take 20％ more damage.\nPin-Point Weakness: This weapon can headshot.\nHitting speed you up\nYou have no backwards walking penalty."
+		"en"	"A rapier that has been degraded to a state of hopelessness.\nPin-Point Weakness: This weapon can headshot.\nHitting speed you up\nYou have no backwards walking penalty."
 	}
 	"Bent Rapier Desc"
 	{
-		"en"	"Dios mio, this is an insult to the blacksmith that conceived this weapon.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Headshots now inflict bleed and always speed you up."
-		"fr"	"Les coups en pleine tête font saigner et vous donnent un bonus de vitesse.\nDios mio, c'est une insulte au forgeron qui a concevé cette arme.\nAu moins son autre moitié n'est plus manquant..."
-		"chi"	"老天啊...这个武器的状态简直就是在侮辱他的创造者...\n至少它的另一半找回来了...\n精准攻击：现在爆头会造成流血，并且给你加速。"
+		"en"	"Increased Stats.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Headshots now inflict bleed and always speed you up."
 	}
 	"Shoddy Rapier Desc"
 	{
-		"en"	"It seems that time itself hates this weapon, and yet it endures.\nDestreza: Buff lasts for a while longer."
+		"en"	"Increased Stats.\nIt seems that time itself hates this weapon, and yet it endures.\nDestreza: Buff lasts for a while longer."
 		"fr"	"Bonus de vitesse dure pour plus longtemps.\nCet arme endure, malgré le temps lui-même semble le détester."
 		"chi"	"这把剑承受着毫不留情的时间的潮水。\nDestreza：buff时间更长。"
 	}
 	"Restored Rapier Desc"
 	{
-		"en"	"And so, it has been restored to it's former glory.\nGains a new ability - Duel!\nDuel!: Only usable when facing an enemy. When used, dashes you back and \nmarks both you and the target.\nMarked entities take more damage from each other."
+		"en"	"Increased Stats.\nAnd so, it has been restored to it's former glory.\nGains a new ability - Duel!\nDuel!: Only usable when facing an enemy. When used, dashes you back and \nmarks both you and the target.\nMarked entities take more damage from each other."
 		"fr"	"Abilité vous permet d'entrer en duel avec un ennemi\nLes deux participants du duel s'infligent plus de dégats.\nIl semble que cet arme a été restauré à son gloire."
 		"chi"	"这把剑回到了它昔日的辉煌。\n新技能：对决！\n只能面对敌人激活。\n使用时，向后闪避，标记自己和敌人。\n对彼此的伤害加倍。"
 	}
 	"Improved Rapier Desc"
 	{
-		"en"	"More experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: Dmg taken penalty reduced from 20％ to 10％.\nDuel!: You gain a reward for winning duels. (Cash and HP)"
-		"fr"	"Vous souffrez 10％ plus de dégats au lieu de 20％.\nVous gagnez une rétribution pour gagner un duel.\nPlus d'éxpérience, plus d'améliorations. Plus d'argent dépensé pour arriver ici."
-		"chi"	"为了修复和使用这把剑，你花费了无数个小时，流尽了汗水和眼泪。如同你的信用卡。\n平衡失调：受到的伤害从+20％将抵至+10％。\n对决！：\n杀死敌人后获得奖励。"
+		"en"	"Increased Stats.\nMore experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: Dmg taken penalty reduced from 20％ to 10％.\nDuel!: You gain a reward for winning duels. (Cash and HP)"
 	}
 	"Rapier Desc"
 	{
-		"en"	"A pinnacle of blacksmithing. Best of the best of the best. You've earned this, amigo.\nUnpredictable footing: Dmg taken penalty removed.\nDuel!: Reward is improved."
-		"fr"	"Vous ne souffrez plus de dégats additionels.\nRétribution pour gagner un duel amélioré.\nUn pinnacle de la forgerie. Le meilleur des meilleurs. Vous le méritez, amigo."
-		"chi"	"这真的简直是剑中之宝中宝中宝。拿着吧，应该的。\n平衡失调：\n移除效果。\n决斗！：\n更好的奖励。"
+		"en"	"Increased Stats.\nA pinnacle of blacksmithing. Best of the best of the best. You've earned this, amigo.\nUnpredictable footing: Dmg taken penalty removed.\nDuel!: Reward is improved."
 	}
 	"Gravton Wand desc0"
 	{
@@ -3402,15 +3341,11 @@
 	}
 	"Heavy Particle Rifle Desc 2"
 	{
-		"en"	"More damage, bigger clip, faster firing, slower reload"
-		"fr"	"Dégats, capacité de chargeur et cadence de tir améliorés.\nVitesse de rechargement plus lente."
-		"chi"	"更多伤害，更大的弹夹，更快的射速，更慢的装弹。"
+		"en"	"More damage, bigger clip, faster firing"
 	}
 	"Heavy Particle Rifle Desc 3"
 	{
-		"en"	"More damage, even bigger clip, faster firing, even slower reload!"
-		"fr"	"Dégats, capacité de chargeur et cadence de tir améliorés.\nVitesse de rechargement plus lente."
-		"chi"	"更多伤害，更更大的弹夹，更快的射速，更更慢的装弹。"
+		"en"	"More damage, even bigger clip, faster firing"
 	}
 	"Autoshotgun Pap 1"
 	{
@@ -3486,15 +3421,15 @@
 	}
 	"Riot Gun Desc"
 	{
-		"en"	"With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\nAbility stuns up to 10 enemies in front of you and greatly increases attack speed.\nSpeed-Cola reduces ability cooldown.\nBe slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
+		"en"	"With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\nAbility stuns enemies in front of you and increases attack speed.\nSpeed-Cola reduces ability cooldown.\nBe slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
 	}
 	"Riot Gun Pap 1"
 	{
-		"en"	"+10％ melee resistance. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown.\nR ability -> M2\nM2 Pushes enemies."
+		"en"	"+10％ melee resistance. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown.\nR -> M2\nM2 Pushes enemies."
 	}
 	"Energized Riot Gun Desc"
 	{
-		"en"	"+10％ ranged resistance. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nHurt with shield on reduces CD by 0.5 Sec of you and ally.\nR ability -> M2\nM2 Pushes enemies."
+		"en"	"+10％ ranged resistance. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nHurt with shield on reduces CD by 0.5 Sec of you and ally.\nR -> M2\nM2 Pushes enemies."
 	}
 	"Armor Visualiser Desc"
 	{
@@ -3504,9 +3439,7 @@
 	}
 	"Siccerino Pap 2"
 	{
-		"en"	"Your attacks will debuff the enemy so you deal 5%& more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
-		"fr"	"+5％ dégats pour chaque coup, jusqu'a un maximum.\nAbilité devient des attaques corps-à-corps rapides."
-		"chi"	"伤害会使敌人受到+%5伤害，有上限。\nM2更为高攻速近战。"
+		"en"	"Your attacks will debuff the enemy so you deal 5％ more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
 	}
 	"Siccerino Pap 3"
 	{
@@ -3758,33 +3691,23 @@
 	}
 	"Pinus Knight Desc"
 	{
-		"en"	"Fast attacking melee with increased sell back value."
-		"fr"	"Arme rapide qui se revend à bon prix."
-		"chi"	"高攻速近战，更高的退款价值。"
+		"en"	"Fast attacking Melee"
 	}
 	"Pinus Knight Pap 1"
 	{
-		"en"	"Adds an ability, when used allows you to dodge one melee hit (does not stack)."
-		"fr"	"Abilité vous permet d'éviter une attaque corps-à-corps."
-		"chi"	"新技能：阻挡一次近战伤害。不可叠加。"
+		"en"	"Increased Stats.\nAdds an ability, when used allows you to dodge one melee hit (does not stack).\nGenerates money on ability use."
 	}
 	"Pinus Knight Pap 2"
 	{
-		"en"	"Ability now also grants 4 seconds of a 40％ (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
-		"fr"	"Abilité vous donne une chance de 40％ (x0.5 contre les Raids) d'éviter les attaques corps-à-corps.\nSi vous évitez une attaque, le prochain coup inflige double de dégats."
-		"chi"	"技能改为4秒的40％近战闪避几率。（boss闪避几率*0.5）。\n闪避后的下一次攻击造成2*伤害。"
+		"en"	"Increased Stats.\nAbility now also grants 4 seconds of a 40％ (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
 	}
 	"Pinus Knight Pap 3"
 	{
-		"en"	"Allied Kazimierz weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while your alive.\nAbility instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
-		"fr"	"Alliés avec une arme Kazimierz ont une chance de 40％ (x0.5 contre les Raids) d'éviter les attaques corps-à-corps quand vous êtes vivant.\nAbilité vous donne une chance de 60％ (x0.5 contre les Raids) d'éviter les attaquecorps-à-corps.\nSi vous évitez une attaque, le prochain coup frappera plusieurs ennemis." 
-		"chi"	"当你存活时，在场所有持有卡齐米日武器的队友获得11％闪避概率。（boss闪避几率*0.5）（自身闪避几率*2.0）。\n技能赐予60％闪避概率。(boss闪避几率*0.5)。闪避后第一次攻击将会带有AOE效果。"
+		"en"	"Increased Stats.\nAllied Kazimierz weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while youre alive.\nAbility instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
 	}
 	"Pinus Knight Pap 4"
 	{
-		"en"	"Ability instead grants 80％ (x0.5 vs Raids) chance to dodge any attack."
-		"fr"	"Abilité vous donne une chance de 40％ (x0.5 contre les Raids) d'éviter les attaques corps-à-corps."
-		"chi"	"技能赐予80％闪避概率。（boss闪避几率*0.5）。闪避不再限于近战攻击。"
+		"en"	"Increased Stats.\nAbility instead grants 80％ (x0.5 vs Raids) chance to dodge any attack."
 	}
 	"Pinus Knight Pap 5"
 	{
@@ -3964,9 +3887,9 @@
 		"en"	"''Carbon foot on the pedal, I AM TRASH METAL!''\nUnlocks two more projectiles and improves base stats further.\nAn object of unspeakable danger lurks in this trash can..."
 		"chi"	"''Carbon foot on the pedal, I AM TRASH METAL!''\n获得两个新的发射物，加强基础属性。\n垃圾桶里出现一个不可名状之物……"
 	}
-		"Telekinesis Desc"
+	"Telekinesis Desc"
 	{
-		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles, which home in on the target you were aiming at.\nM2: Grab and hold a zombie, rapidly draining your mana.\nPress M2 again to throw the zombie."
+		"en"	"Increases Damage\n''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles, which home in on the target you were aiming at.\nM2: Grab and hold a zombie, rapidly draining your mana.\nPress M2 again to throw the zombie."
 		"chi"	"''一管试验性药剂，可增强服用者的精神力。''\n M1高速发射低射程的攻击。\n[M2]抓住一名敌人，持续消耗大量MP。被抓住的敌人会被眩晕。\n再次M2可将敌人抛出。"
 	}
 	"Telekinesis PaP 1"
@@ -3981,7 +3904,7 @@
 	}
 	"Newtonian Knuckles Desc"
 	{
-		"en"	"''You traded your experimental drugs for an experimental weapon.''\nM2: A magnetic shockwave, launches zombies into the air.\nM1 fires a heavy explosive projectile which deals bonus damage and reduces M2 CD when airshotting zombies launched by M2."
+		"en"	"Increases Damage\n''You traded your experimental drugs for an experimental weapon.''\nM2: A magnetic shockwave, launches zombies into the air.\nM1 fires a heavy explosive projectile which deals bonus damage and reduces M2 CD when airshotting zombies launched by M2."
 		"chi"	"''一款武器取代了药剂。''\nM2释放磁场冲击波，将敌人击飞。\nM1发射高压粒子飞弹，空摘M2击飞的敌人时降低cd并且造成额外伤害。"
 	}
 	"Newtonian PaP 1"
@@ -4051,7 +3974,7 @@
 	}
 	"Abyssal Greatsword desc"
 	{
-		"en"	"A worn sword covered with blue goo. Once used by a great abyssal hunter\nGain Faster attack speed and higher damage as a cost of aoe attack and Solemny. \n weapon's Archetype changed to Abyssal hunters and all abyssal hunter weapons will receive 10％ damage bonus"
+		"en"	"Verys slow attacking weapon\nAll abyssal hunter weapons will receive 10％ damage bonus"
 	}
 	"Abyssal Greatsword Pap 1 desc"
 	{
@@ -4091,13 +4014,12 @@
 	}
 	"CastleBreaker Desc"
 	{
-		"en"	"A Spear that Victoria's trained vanguards use.\nThis weapon has long reach but short width.\nCan gain cost per kill\nDeals extra damage to building enemies\n Some processing core may enhance this weapon..."
-		"ko"	"훈련된 빅토리아의 선봉대가 사용하는 창입니다.\n무기의 길이가 길지만 범위가 좁습니다.\n처치시, 자금 +1 회수\n구조물 대상에게 추가 피해\n특정 논리회로가 이무기를 강화시킬수도..."
+		"en"	"A Spear that Victoria's trained vanguards use.\nThis weapon has long reach but short width.\nCan gain cost per kill\nDeals extra damage to building enemies"
+		"ko"	"훈련된 빅토리아의 선봉대가 사용하는 창입니다.\n무기의 길이가 길지만 범위가 좁습니다.\n처치시, 자금 +1 회수\n구조물 대상에게 추가 피해"
 	}
 	"CastleBreaker Pap 1"
 	{
-		"en"	"Added new R ability that will allow you to switch weapon's playstyle.\nYou will do 50％ less damage but will create a small explosion when it hits the enemy.\nAttack speed is Reduced and Attack costs ammo."
-		"ko"	"무기 변경(R키) 해금\n블라스트 모드는 근접무기 피해량이 50％ 감소하지만 때릴때마다 폭발이 일어납니다!\n휘두를때마다 탄약을 소모하며 공격속도가 감소합니다."
+		"en"	"Increased Stats.\nAdded new R ability that will allow you to switch weapon's playstyle.\nYou will do 50％ less damage but will create a small explosion when it hits the enemy.\nAttack speed is Reduced and Attack costs ammo."
 	}
 	"CastleBreaker Pap 2"
 	{
@@ -4106,8 +4028,7 @@
 	}
 	"CastleBreaker Pap 3"
 	{
-		"en"	"A giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\nUnlocks new ability(M2)\nAttack 2 targets at once and attack twice."
-		"ko"	"거대 빅토리아 엘리트 로봇이 사용하는 거대한 창. 강력하면서도 무겁습니다.\n새로운 능력(M2)해금\n한 번에 두 대상을 공격하고 두 번 공격합니다."
+		"en"	"Increased Stats.\nA giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\nUnlocks new ability(M2)\nAttack 2 targets at once and attack twice."
 	}
 	"CastleBreaker Desc Extra"
 	{
@@ -4368,19 +4289,19 @@
 	}
 	"Bubble Wand Pap 1 Desc"
 	{
-		"en" "PAP 1: Increases damage and very slightly increased swing speed.\nIncreased the damage boost based on lifetime."
+		"en" "Increases damage and very slightly increased swing speed.\nIncreased the damage boost based on lifetime."
 	}
 	"Bubble Wand Pap 2 Desc"
 	{
-		"en" "PAP 2: Increases damage + slightly increases swing speed.\nIncreases the damage boost based on lifetime and unlocks Bubble Frenzy:\nPress M2 to double your attackspeed and debuff enemies, making them deal less damage!\nApplies debuffs on raids always, but for 1/4 of its duration."
+		"en" "Increases damage + slightly increases swing speed.\nIncreases the damage boost based on lifetime\nBubble Frenzy:\nPress M2 to double your attackspeed and debuff enemies\nApplies debuffs on raids always, but for 1/4 of its duration."
 	}
 	"Bubble Wand Pap 3 Desc"
 	{
-		"en" "PAP 3: Increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly increases Bubble Frenzy's debuff duration."
+		"en" "Increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly increases Bubble Frenzy's debuff duration."
 	}
 	"Bubble Wand Pap 4 Desc"
 	{
-		"en" "PAP 4: Greatly increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly strengthens Bubble Frenzy's debuff penalty, and increases its duration a bit."
+		"en" "Greatly increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly strengthens Bubble Frenzy's debuff penalty, and increases its duration a bit."
 	}
 
 	"Merchant Brewing Stand Desc"
