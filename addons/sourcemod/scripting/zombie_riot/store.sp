@@ -1303,6 +1303,8 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 					{
 						userid = EntIndexToEntRef(owner);
 					}
+					char dataFirst[64];
+					FormatEx(dataFirst, sizeof(dataFirst), "%i;%i;%i", index, (OwnedItemIndex), userid);
 					
 					for(int i = skip; i < count; i++)
 					{
@@ -1317,9 +1319,13 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 
 							if(info.Desc[0])
 							{
-								info.Desc = TranslateItemDescription(client, info.Desc, info.Rogue_Desc);
-								StrCat(info.Desc, sizeof(info.Desc), "\n ");
-								menu.AddItem("", info.Desc, ITEMDRAW_DISABLED);
+							//	info.Desc = TranslateItemDescription(client, info.Desc, info.Rogue_Desc);
+							//	StrCat(info.Desc, sizeof(info.Desc), "\n ");
+								char DescWeapon[64];
+								char DescWeaponFuse[128];
+								Format(DescWeaponFuse, sizeof(DescWeaponFuse), "%s-explain-%s", dataFirst,data);
+								FormatEx(DescWeapon, sizeof(DescWeapon), "%t\n ", "Describe This Weapon");
+								menu.AddItem(DescWeaponFuse, DescWeapon, ITEMDRAW_DEFAULT);
 							}
 						}
 					}
@@ -1356,7 +1362,56 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			ResetStoreMenuLogic(client);
 			char buffer[64];
+
 			menu.GetItem(choice, buffer, sizeof(buffer));
+			if(StrContains(buffer, "-explain-", false) != -1)
+			{
+				char valuesChar[2][64];
+				ExplodeString(buffer, "-explain-", valuesChar, sizeof(valuesChar), sizeof(valuesChar[]));
+				//remove explain from text.
+
+				int values[3];
+				ExplodeStringInt(valuesChar[0], ";", values, sizeof(values));
+
+				int ValuesDisplay[3];
+				ExplodeStringInt(valuesChar[1], ";", ValuesDisplay, sizeof(ValuesDisplay));
+				
+				static Item item;
+				StoreItems.GetArray(values[0], item);
+				int OwnedItemIndex = ValuesDisplay[1];
+
+				if(OwnedItemIndex)
+				{
+					ItemInfo info;
+					if(item.GetItemInfo(ValuesDisplay[1], info) && info.Cost)
+					{ 	
+						//This code is ass
+						SPrintToChat(client, "%s:",TranslateItemName(client, item.Name, info.Custom_Name));
+						char bufferSizeSplit[512];
+						char DescDo[256];
+						Format(DescDo, sizeof(DescDo), "%s", info.Desc);
+						char DescDo2[256];
+						Format(DescDo2, sizeof(DescDo2), "%s", info.Rogue_Desc);
+						bufferSizeSplit = TranslateItemDescription_Long(client, DescDo, DescDo2);
+						char Display1[240];
+						char Display2[240];
+						Format(Display1, sizeof(Display1), "%s", bufferSizeSplit);
+						if(strlen(bufferSizeSplit) > 240) //If 240 exists, split.
+						{
+							Format(Display2, sizeof(Display2), "%s", bufferSizeSplit[239]);
+							CPrintToChat(client, "%s%s-", STORE_COLOR ,Display1);
+						}
+						else
+							CPrintToChat(client, "%s%s", STORE_COLOR ,Display1);
+
+						if(Display2[0])
+							CPrintToChat(client, "%s%s", STORE_COLOR ,Display2);
+					}
+				}
+
+				Store_PackMenu(client, values[0], values[1], EntRefToEntIndex(values[2]), PapPreviewMode[client]);
+				return 0;
+			}
 			
 			int values[3];
 			ExplodeStringInt(buffer, ";", values, sizeof(values));
@@ -5647,6 +5702,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
+					if(!StrContains(info.Classname, "tf_weapon_crossbow") && !info.IsSupport)
+					{
+						//Fix crossbow infinite reload issue
+						//it messes up Zr balance heavily and causes other bugs.
+						//Shouldnt apply to support ones.
+						CrossbowGiveDhook(entity);
+					}
 					HidePlayerWeaponModel(client, entity, true);
 
 					//new item bought, make sure to update the current order and stuff of weapon changing client
@@ -6469,6 +6531,40 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 		ServerLang = GetServerLanguage();
 	
 	char buffer[256]; 
+
+	if(Rogue_Mode() && Rogue_Desc[0])
+	{
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Rogue_Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Rogue_Desc, client);
+		}
+	}
+	else
+	{
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+		}
+	}
+
+	return buffer;
+}
+
+char[] TranslateItemDescription_Long(int client, const char Desc[256], const char Rogue_Desc[256])
+{
+	static int ServerLang = -1;
+	if(ServerLang == -1)
+		ServerLang = GetServerLanguage();
+	
+	char buffer[512]; 
 
 	if(Rogue_Mode() && Rogue_Desc[0])
 	{

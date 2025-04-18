@@ -873,18 +873,15 @@ int Object_GetSentryBuilding(int owner)
 			entity = -1;
 		}
 	}
-	/*
-	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
+	
+	if(entity == -1)
 	{
-		if(view_as<ObjectGeneric>(entity).SentryBuilding && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 		{
-			static char plugin[64];
-			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
-			if(StrContains(plugin, "obj_", false) != -1)
+			if(view_as<ObjectGeneric>(entity).SentryBuilding && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 				break;
 		}
 	}
-	*/
 
 	return entity;
 }

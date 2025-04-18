@@ -16,6 +16,7 @@
 				"windows"	"\x55\x8B\xEC\x83\xEC\x34\x8B\x15\x2A\x2A\x2A\x2A"
 				"linux"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
 			}
+
 			"CTFPlayerShared::RecalculatePlayerBodygroups"
 			{
 				// string aPostInventoryA, most top function.
@@ -333,6 +334,20 @@
 				"callconv"  "thiscall"
 				"return"	"void"
 				"this"		"entity"
+			}
+			"CTFCrossbow::Holster"
+			{
+				"offset"	"CTFCrossbow::Holster"
+				"hooktype"  "entity"
+				"return"	"bool"
+				"this"		"entity"
+				"arguments"
+				{
+					"pSwitchingTo"
+					{
+						"type"	"cbaseentity"
+					}
+				}
 			}
 			
 			"CTFSpellBook::CastSelfStealth"
@@ -803,6 +818,11 @@
 			{
 				"linux"		"379"
 				"windows"	"378"
+			}
+			"CTFCrossbow::Holster"
+			{
+				"linux"		"268"
+				"windows"	"262"
 			}
 			"CBaseCombatWeapon::ItemPostFrame()"
 			{

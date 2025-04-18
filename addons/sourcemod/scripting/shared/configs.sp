@@ -262,8 +262,10 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			break;
 	}
 	
+#if defined RPG
 	if(i == val)
 		return;
+#endif
 	
 	// Damage and Pellets
 #if defined RPG
