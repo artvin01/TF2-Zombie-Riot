@@ -5702,6 +5702,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
+					if(!StrContains(info.Classname, "tf_weapon_crossbow") && !info.IsSupport)
+					{
+						//Fix crossbow infinite reload issue
+						//it messes up Zr balance heavily and causes other bugs.
+						//Shouldnt apply to support ones.
+						CrossbowGiveDhook(entity);
+					}
 					HidePlayerWeaponModel(client, entity, true);
 
 					//new item bought, make sure to update the current order and stuff of weapon changing client
