@@ -2414,7 +2414,7 @@ void Citizen_WaveStart()
 					if(amount < maxValue)
 						npc.m_iCanBuild += 2;
 					
-					int amount = BuildingAmountRebel(npc.index, 3, maxValue);
+					amount = BuildingAmountRebel(npc.index, 3, maxValue);
 					if(amount < maxValue)
 						npc.m_iCanBuild += 4;
 				}
