@@ -1938,7 +1938,7 @@ void Freeplay_SetupStart(bool extra = false)
 			case 5:
 			{
 				CPrintToChatAll("{red}Your final challenge... a {crimson}Nourished Spewer.");
-				spewer = true;
+				thespewer = true;
 			}
 			default:
 			{
