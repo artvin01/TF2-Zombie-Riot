@@ -2484,7 +2484,7 @@ static Action Freeplay_ExtraCashTimer(Handle timer)
 	{
 		if(Freeplay_TimeExp > 0.0)
 		{
-			Freeplay_TimeExp -= 5.0;
+			Freeplay_TimeExp -= 2.5;
 			if(Freeplay_TimeExp < 0.0)
 				Freeplay_TimeExp = 0.0;
 		}
