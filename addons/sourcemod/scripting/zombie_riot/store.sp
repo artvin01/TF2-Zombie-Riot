@@ -3127,7 +3127,7 @@ static void MenuPage(int client, int section)
 	
 	if(Waves_Started())
 	{
-		if(CDDisplayHint_LoadoutStore[client] < GetGameTime())
+		if(CDDisplayHint_LoadoutStore[client] < GetGameTime() && StarterCashMode[client])
 		{
 			SetGlobalTransTarget(client);
 			SPrintToChat(client, "%t", "Loadout In Store");
