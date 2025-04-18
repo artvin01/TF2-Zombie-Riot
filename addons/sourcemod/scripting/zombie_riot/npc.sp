@@ -971,6 +971,7 @@ void NPC_ConfigSetup()
 	CuttusSiccino_OnMapStart_NPC();
 	ArmsaManu_OnMapStart_NPC();
 	SpeedusAbsolutos_OnMapStart_NPC();
+	VausShaldus_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2139,3 +2140,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/construction/enemies/npc_cuttus_siccino.sp"
 #include "zombie_riot/npc/construction/enemies/npc_armsa_manu.sp"
 #include "zombie_riot/npc/construction/enemies/npc_speedus_absolutos.sp"
+#include "zombie_riot/npc/construction/enemies/npc_vaus_shaldus.sp"
