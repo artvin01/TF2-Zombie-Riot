@@ -30,7 +30,7 @@ void CuttusSiccino_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Cuttus Siccino");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cuttussiccino");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cuttus_siccino");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
