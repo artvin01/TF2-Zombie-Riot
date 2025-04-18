@@ -1877,15 +1877,15 @@ static void CitizenMenu(int client, int page = 0)
 					}
 					int MaxBuildingsSee = 0;
 					int BuildingsSee = 0;
-					BuildingsSee = BuildingLimitRebelLeft(npc.index, 2, MaxBuildingsSee);
+					BuildingsSee = BuildingAmountRebel(npc.index, 2, MaxBuildingsSee);
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Barricade At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("15", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
-					BuildingsSee = BuildingLimitRebelLeft(npc.index, 1, MaxBuildingsSee);
+					BuildingsSee = BuildingAmountRebel(npc.index, 1, MaxBuildingsSee);
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Sentry At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("16", buffer);
 
-					BuildingsSee = BuildingLimitRebelLeft(npc.index, 3, MaxBuildingsSee);
+					BuildingsSee = BuildingAmountRebel(npc.index, 3, MaxBuildingsSee);
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Ammo Box At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("17", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
@@ -1992,7 +1992,7 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 					}
 					int MaxBuildingsSee = 0;
 					int BuildingsSee = 0;
-					BuildingsSee = BuildingLimitRebelLeft(npc.index, CheckWhich, MaxBuildingsSee);
+					BuildingsSee = BuildingAmountRebel(npc.index, CheckWhich, MaxBuildingsSee);
 
 					if((MaxBuildingsSee - BuildingsSee) <= 0)
 					{
@@ -2405,15 +2405,17 @@ void Citizen_WaveStart()
 			int team = GetTeam(i);
 			if(team == TFTeam_Red)
 			{
-				int DummyValue = 0;
-				npc.m_iCanBuild = (BuildingLimitRebelLeft(npc.index, 1, DummyValue)  > 0) ? 1 : 0;
+				int maxValue = 0;
+				npc.m_iCanBuild = (BuildingAmountRebel(npc.index, 1, maxValue) > 0) ? 0 : 1;
 				
 				if(npc.m_iClassRole == Cit_Builder)
 				{
-					if(BuildingLimitRebelLeft(npc.index, 2, DummyValue) > 0)
+					int amount = BuildingAmountRebel(npc.index, 2, maxValue);
+					if(amount < maxValue)
 						npc.m_iCanBuild += 2;
 					
-					if(BuildingLimitRebelLeft(npc.index, 3, DummyValue) > 0)
+					int amount = BuildingAmountRebel(npc.index, 3, maxValue);
+					if(amount < maxValue)
 						npc.m_iCanBuild += 4;
 				}
 			}
@@ -4869,7 +4871,7 @@ public void Citizen_NPCDeath(int entity)
 // 1 is sentry
 // 2 is barricade
 // 3 is Support buildings
-int BuildingLimitRebelLeft(int rebel, int buildingType, int &buildingmax)
+int BuildingAmountRebel(int rebel, int buildingType, int &buildingmax)
 {
 	Citizen npc = view_as<Citizen>(rebel);
 	int limit = 2 + (npc.m_iGunValue / 4000);

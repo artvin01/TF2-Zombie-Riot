@@ -348,7 +348,7 @@ void HalteraSelfDefense(Haltera npc, float gameTime, int target, float distance)
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS",_,_,_, npc.Anger ? 2.0 : 1.0);
-						
+
 				npc.m_flAttackHappens = gameTime + (npc.Anger ? 0.125 : 0.25);
 				npc.m_flDoingAnimation = gameTime + (npc.Anger ? 0.125 : 0.25);
 				npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.425 : 0.85);
