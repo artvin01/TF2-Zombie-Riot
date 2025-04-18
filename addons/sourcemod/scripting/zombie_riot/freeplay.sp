@@ -1357,7 +1357,7 @@ void Freeplay_OnEndWave(int &cash)
 	}
 
 	Freeplay_SetRemainingCash(1500.0);
-	Freeplay_SetCashTime(GetGameTime() + 11.5);
+	Freeplay_SetCashTime(GetGameTime() + 12.5);
 
 	if(Freeplay_GetRemainingExp() > 0.0)
 	{
@@ -1370,8 +1370,8 @@ void Freeplay_OnEndWave(int &cash)
 		}
 	}
 
-	Freeplay_SetRemainingExp(1500.0); // its half because it apparently triggers twice, resulting in 3000 max
-	Freeplay_SetExpTime(GetGameTime() + 9.0);
+	Freeplay_SetRemainingExp(750.0); // its half because it apparently triggers twice, resulting in 3000 max
+	Freeplay_SetExpTime(GetGameTime() + 10.0);
 }
 
 void Freeplay_GiveXP(int client, float extraxp)
