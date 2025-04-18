@@ -50,7 +50,7 @@ static bool immutable;
 static int RandomStats;
 static bool merlton;
 static float gay;
-static int friendunitamount;
+static bool friendunit;
 static int HurtleBuff;
 static int HurtleBuffEnemies;
 static bool LoveNahTonic;
@@ -189,7 +189,7 @@ void Freeplay_ResetAll()
 	RandomStats = 0;
 	merlton = false;
 	gay = 0.0;
-	friendunitamount = 0;
+	friendunit = false;
 	HurtleBuff = 0;
 	HurtleBuffEnemies = 0;
 	LoveNahTonic = false;
@@ -272,7 +272,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunitamount || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -493,21 +493,22 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		RaidFight = 0;
 		shouldscale = false;
 	}
-	else if(friendunitamount)
+	else if(friendunit)
 	{
 		enemy.Team = TFTeam_Red;
-		count = friendunitamount;
-
-		if(enemy.Health)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
+		count = 1;
 
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage = 20.0;
+			enemy.ExtraDamage = 25.0;
 
 		enemy.ExtraSpeed = 1.25;
+		enemy.ExtraSize = 1.25;
 
-		friendunitamount = 0;
+		friendunit = false;
 		shouldscale = false;
+		char thename[128];
+		NPC_GetNameByPlugin(enemy.Index, thename, sizeof(thename));
+		CPrintToChatAll("{gold}Friendly Unit: {orange}%s", thename);
 	}
 	else if(DarknessComing)
 	{
@@ -1618,10 +1619,6 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		int guh = GetRandomInt(8, 16);
-		CPrintToChatAll("{green}You will gain %d random friendly units.", guh);
-		friendunitamount = guh;
-
 		float randommini = GetRandomFloat(0.5, 2.0);
 		MiniBossChance *= randommini;
 		if(randommini > 1.0)
@@ -1916,7 +1913,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy attackspeed has been multiplied by %.2fx.", Atkspd);
 		}
 
-		switch(GetRandomInt(1, 8))
+		switch(GetRandomInt(1, 6))
 		{
 			case 1:
 			{
@@ -1937,6 +1934,11 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{red}You begin to hear voices in your head...");
 				Schizophrenia = true;
+			}
+			case 5:
+			{
+				CPrintToChatAll("{red}Your final challenge... a {crimson}Nourished Spewer.");
+				spewer = true;
 			}
 			default:
 			{
@@ -2264,14 +2266,13 @@ void Freeplay_SetupStart(bool extra = false)
 			/// MISCELANEOUS SKULLS ///
 			case 31:
 			{
-				if(friendunitamount)
+				if(friendunit)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				int guh2 = GetRandomInt(4, 8);
-				strcopy(message, sizeof(message), "{green}You will gain a random amount of friendly units.");
-				friendunitamount = guh2;
+				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
+				friendunit = true;
 			}
 			case 32:
 			{
