@@ -25,18 +25,22 @@ static const char g_IdleAlertedSounds[][] = {
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/doom_sniper_smg.wav"
 };
+static const char g_MeleeAttackSoundsCrit[][] = {
+	"weapons/doom_sniper_smg_crit.wav"
+};
 
 
-void RifalManu_OnMapStart_NPC()
+void ArmsaManu_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSoundsCrit)); i++) { PrecacheSound(g_MeleeAttackSoundsCrit[i]); }
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Rifal Manu");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rifal_manu");
+	strcopy(data.Name, sizeof(data.Name), "Armsa Manu");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_armsa_manu");
 	strcopy(data.Icon, sizeof(data.Icon), "rifler");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -47,10 +51,10 @@ void RifalManu_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RifalManu(vecPos, vecAng, team);
+	return ArmsaManu(vecPos, vecAng, team);
 }
 
-methodmap RifalManu < CClotBody
+methodmap ArmsaManu < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -78,14 +82,22 @@ methodmap RifalManu < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public void PlayMeleeSound()
+	public void PlayMeleeSound(bool critsound)
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if(!critsound)
+			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		else
+			EmitSoundToAll(g_MeleeAttackSoundsCrit[GetRandomInt(0, sizeof(g_MeleeAttackSoundsCrit) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public RifalManu(float vecPos[3], float vecAng[3], int ally)
+	property int i_Shotsuntill
 	{
-		RifalManu npc = view_as<RifalManu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1000", ally));
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	public ArmsaManu(float vecPos[3], float vecAng[3], int ally)
+	{
+		ArmsaManu npc = view_as<ArmsaManu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -104,9 +116,9 @@ methodmap RifalManu < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = RifalManu_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = RifalManu_OnTakeDamage;
-		func_NPCThink[npc.index] = RifalManu_ClotThink;
+		func_NPCDeath[npc.index] = ArmsaManu_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = ArmsaManu_OnTakeDamage;
+		func_NPCThink[npc.index] = ArmsaManu_ClotThink;
 		
 		
 		npc.StartPathing();
@@ -120,19 +132,24 @@ methodmap RifalManu < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/invasion_starduster/invasion_starduster.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/hwn2023_sharpshooters_shroud/hwn2023_sharpshooters_shroud.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_kriegsmaschine_9000/sf14_medic_kriegsmaschine_9000.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		return npc;
 	}
 }
 
-public void RifalManu_ClotThink(int iNPC)
+public void ArmsaManu_ClotThink(int iNPC)
 {
-	RifalManu npc = view_as<RifalManu>(iNPC);
+	ArmsaManu npc = view_as<ArmsaManu>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -175,7 +192,7 @@ public void RifalManu_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		RifalManuSelfDefense(npc,GetGameTime(npc.index)); 
+		ArmsaManuSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
@@ -185,9 +202,9 @@ public void RifalManu_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action RifalManu_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action ArmsaManu_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	RifalManu npc = view_as<RifalManu>(victim);
+	ArmsaManu npc = view_as<ArmsaManu>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -201,9 +218,9 @@ public Action RifalManu_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	return Plugin_Changed;
 }
 
-public void RifalManu_NPCDeath(int entity)
+public void ArmsaManu_NPCDeath(int entity)
 {
-	RifalManu npc = view_as<RifalManu>(entity);
+	ArmsaManu npc = view_as<ArmsaManu>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -221,7 +238,7 @@ public void RifalManu_NPCDeath(int entity)
 
 }
 
-void RifalManuSelfDefense(RifalManu npc, float gameTime)
+void ArmsaManuSelfDefense(ArmsaManu npc, float gameTime)
 {
 	int target;
 	//some Ranged units will behave differently.
@@ -262,7 +279,10 @@ void RifalManuSelfDefense(RifalManu npc, float gameTime)
 				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
 				{	
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
-					npc.PlayMeleeSound();
+					if(npc.i_Shotsuntill >= 10)
+						npc.PlayMeleeSound(true);
+					else
+						npc.PlayMeleeSound(false);
 					npc.FaceTowards(vecTarget, 20000.0);
 					Handle swingTrace;
 					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
@@ -273,18 +293,29 @@ void RifalManuSelfDefense(RifalManu npc, float gameTime)
 						TR_GetEndPosition(vecHit, swingTrace);
 						float origin[3], angles[3];
 						view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-						ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
+						if(npc.i_Shotsuntill >= 10)
+							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red_crit", origin, vecHit, false );
+						else
+							ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
+							
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.25;
 
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 7.0;
+							float damageDealt = 10.0;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 
 
+
+							if(npc.i_Shotsuntill >= 10)
+							{
+								npc.i_Shotsuntill = 0;
+								damageDealt *= 10.0;
+							}
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						}
+						npc.i_Shotsuntill++;
 					}
 					delete swingTrace;
 				}

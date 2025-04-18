@@ -1060,6 +1060,30 @@
 	{
 		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％\nIncreases NPC movementspeed by 15％"
 	}
+	"Rejuvinator's Medizine"
+	{
+		"en" "Rejuvinator's Medizine"
+	}
+	"Rejuvinator's Medizine Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％"
+	}
+	"Cut Hair"
+	{
+		"en" "Cut Hair"
+	}
+	"Cut Hair Desc"
+	{
+		"en"	"You got a new fade, expidonsans despite being cats are really good at cutting hair huh?"
+	}
+	"We gotta go bald"
+	{
+		"en" "We gotta go bald"
+	}
+	"We gotta go bald Desc"
+	{
+		"en"	"They messed up your hair, welp."
+	}
 	"Soggy"
 	{
 		"en" "Soggy"
