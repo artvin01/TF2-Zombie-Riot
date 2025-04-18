@@ -2569,7 +2569,7 @@
 	{
 		"en"	"Wandering Spirit"
 	}
-	"Vengefull Spirit"
+	"Vengeful Spirit"
 	{
 		"en"	"Vengefull Spirit"
 	}
@@ -2577,9 +2577,9 @@
 	{
 		"en"	"Wandering Spitit"
 	}
-	"Vengefull Spitit"
+	"Vengeful Spitit"
 	{
-		"en"	"Vengefull Spitit"
+		"en"	"Vengeful Spitit"
 	}
 	"Fallen Warrior"
 	{
