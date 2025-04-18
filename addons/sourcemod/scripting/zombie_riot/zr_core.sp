@@ -976,6 +976,10 @@ public Action GlobalTimer(Handle timer)
 		f_AllowInstabuildRegardless = 0.0;
 		ForceMusicStopAndReset = true;
 	}
+	if(Rogue_Mode() || Construction_Mode())
+	{
+		ForceMusicStopAndReset = false;
+	}
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
