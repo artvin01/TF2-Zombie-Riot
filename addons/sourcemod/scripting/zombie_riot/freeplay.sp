@@ -507,7 +507,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		friendunit = false;
 		shouldscale = false;
 		char thename[128];
-		NPC_GetNameByPlugin(enemy.Index, thename, sizeof(thename));
+		NPC_GetNameById(enemy.Index, thename, sizeof(thename));
 		CPrintToChatAll("{gold}Friendly Unit: {orange}%s", thename);
 	}
 	else if(DarknessComing)
