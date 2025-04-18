@@ -266,7 +266,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						if(spawn_index > MaxClients)
 						{
 							if(StrEqual(c_NpcName[npc.index], "Wandering Spitit"))
-								strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Vengefull Spitit");
+								strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Vengeful Spitit");
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						//	SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 						//	SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

@@ -26,6 +26,7 @@ static bool IsRespawning;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
+static DynamicHook g_DhookCrossbowHolster;
 DynamicHook g_DhookUpdateTransmitState; 
 //static DynamicHook g_DHookShouldCollide; //from mikusch but edited
 
@@ -118,6 +119,7 @@ void DHook_Setup()
 	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
+	g_DhookCrossbowHolster = DHook_CreateVirtual(gamedata, "CTFCrossbow::Holster");
 
 	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
 	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
@@ -2299,4 +2301,31 @@ static MRESReturn DHookCallback_CTFGameRules_IsQuickBuildTime_Pre(DHookReturn re
 {
 	ret.Value = false;
 	return MRES_Supercede;
+}
+
+bool SetBackAmmoCrossbow = false;
+void CrossbowGiveDhook(int entity)
+{
+	g_DhookCrossbowHolster.HookEntity(Hook_Pre, entity, DhookBlockCrossbowPre);
+	g_DhookCrossbowHolster.HookEntity(Hook_Post, entity, DhookBlockCrossbowPost);
+}
+public MRESReturn DhookBlockCrossbowPre(int entity)
+{
+	int GetAmmoCrossbow = GetEntProp(entity, Prop_Data, "m_iClip1");
+	if(GetAmmoCrossbow <= 0)
+	{
+		SetEntProp(entity, Prop_Data, "m_iClip1", 1);
+		SetBackAmmoCrossbow = true;
+	}
+	return MRES_Ignored;
+}
+
+public MRESReturn DhookBlockCrossbowPost(int entity)
+{
+	if(SetBackAmmoCrossbow)
+	{
+		SetEntProp(entity, Prop_Data, "m_iClip1", 0);
+		SetBackAmmoCrossbow = true;
+	}
+	return MRES_Ignored;
 }
