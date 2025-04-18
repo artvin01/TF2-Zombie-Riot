@@ -2,7 +2,8 @@
 #pragma newdecls required
 
 #define SELL_AMOUNT 0.9
-bool PapPreviewMode[MAXPLAYERS];
+bool PapPreviewMode[MAXTF2PLAYERS];
+float CDDisplayHint_LoadoutStore[MAXTF2PLAYERS];
 
 enum struct ItemInfo
 {
@@ -1001,6 +1002,7 @@ int Store_CycleItems(int client, int slot)
 void Store_ConfigSetup()
 {
 	ClearAllTempAttributes();
+	Zero(CDDisplayHint_LoadoutStore);
 	delete StoreTags;
 	StoreTags = new ArrayList(ByteCountToCells(32));
 
@@ -3123,6 +3125,15 @@ static void MenuPage(int client, int section)
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 		return;
 	
+	if(Waves_Started())
+	{
+		if(CDDisplayHint_LoadoutStore[client] < GetGameTime())
+		{
+			SetGlobalTransTarget(client);
+			SPrintToChat(client, "%t", "Loadout In Store");
+			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 30.0;
+		}
+	}
 	SetGlobalTransTarget(client);
 	
 	Menu menu;

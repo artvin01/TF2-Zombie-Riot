@@ -1181,6 +1181,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.StartPathing();
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
+					npc.AddGesture("ACT_MP_JUMP_LAND_ALLCLASS");
 				}	
 			}
 			else
@@ -1208,6 +1209,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.StartPathing();
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
+					npc.AddGesture("ACT_MP_JUMP_LAND_MELEE");
 				}	
 			}
 			else
@@ -1224,7 +1226,6 @@ void SilvesterAnimationChange(Silvester npc)
 			}
 		}
 	}
-
 }
 int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distance, bool NemalAssistance)
 {

@@ -266,6 +266,8 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	SDKCall_SetLocalOrigin(entity, org);
+	EntityRestoreSave[index].m_vecOrigin = ang;
+	EntityRestoreSave[index].m_vecAngles = org;
 	
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
@@ -477,8 +479,11 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 			}
 		}
 
-		SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
-		SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
+		if(EntityRestoreSave[index].m_vecAngles[0] == EntityRestore[index].m_vecAngles[0] && EntityRestoreSave[index].m_vecAngles[1] == EntityRestore[index].m_vecAngles[1] && EntityRestoreSave[index].m_vecAngles[2] == EntityRestore[index].m_vecAngles[2])
+			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
+		
+		if(EntityRestoreSave[index].m_vecOrigin[0] == EntityRestore[index].m_vecOrigin[0] && EntityRestoreSave[index].m_vecOrigin[1] == EntityRestore[index].m_vecOrigin[1] && EntityRestoreSave[index].m_vecOrigin[2] == EntityRestore[index].m_vecOrigin[2])
+			SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
 		
 		if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 		{
