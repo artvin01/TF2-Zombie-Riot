@@ -71,7 +71,7 @@ void SoldinusIlus_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Soldinus ilus");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_soldinus_ilus");
-	strcopy(data.Icon, sizeof(data.Icon), "SoldinusIlus");
+	strcopy(data.Icon, sizeof(data.Icon), "Soldine");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Expidonsa;
@@ -143,7 +143,6 @@ methodmap SoldinusIlus < CClotBody
 	}
 	public void PlaySuperJumpSound()
 	{
-		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
