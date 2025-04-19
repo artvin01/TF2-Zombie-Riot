@@ -117,7 +117,6 @@ methodmap HiaRejuvinator < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
-		EnemyShieldCantBreak[npc.index] = true;
 		VausMagicaGiveShield(npc.index, 20);
 		
 
@@ -247,7 +246,7 @@ public void HiaRejuvinator_ClotThink(int iNPC)
 
 		if(OldAlly != npc.m_iTargetAlly)
 			npc.m_bnew_target = false;	
-			
+
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
