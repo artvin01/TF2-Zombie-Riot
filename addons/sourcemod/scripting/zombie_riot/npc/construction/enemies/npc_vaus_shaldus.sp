@@ -95,6 +95,11 @@ methodmap VausShaldus < CClotBody
 	{
 		EmitSoundToAll(g_ShieldAttackSounds[GetRandomInt(0, sizeof(g_ShieldAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	property float m_flGoAfterAlly
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 
 	public VausShaldus(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -187,6 +192,8 @@ public void VausShaldus_ClotThink(int iNPC)
 			{
 				CClotBody npcally = view_as<CClotBody>(npc.m_iTargetWalkTo);
 				npc.m_flSpeed = npcally.m_flSpeed * 1.1;
+				if(npc.m_flSpeed >= 600.0)
+					npc.m_flSpeed = 600.0;
 			}
 			npc.StartPathing();
 		}
@@ -198,7 +205,10 @@ public void VausShaldus_ClotThink(int iNPC)
 		{
 			CClotBody npcally = view_as<CClotBody>(npc.m_iTargetWalkTo);
 			npc.m_flSpeed = npcally.m_flSpeed * 1.1;
+			if(npc.m_flSpeed >= 600.0)
+				npc.m_flSpeed = 600.0;
 		}
+		npc.StartPathing();
 	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
@@ -213,9 +223,8 @@ public void VausShaldus_ClotThink(int iNPC)
 	}
 	VausShaldusShieldGiving(npc,GetGameTime(npc.index)); 
 
-
 	bool GoAfterEnemy = true;
-	if(GetGameTime(npc.index) < npc.m_flNextRangedSpecialAttack)
+	if(npc.m_flGoAfterAlly > GetGameTime(npc.index))
 	{
 		if(!IsValidAlly(npc.index,npc.m_iTargetWalkTo))
 		{
@@ -226,6 +235,22 @@ public void VausShaldus_ClotThink(int iNPC)
 	}
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	if(!GoAfterEnemy)
+	{
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		{
+			float vPredictedPos[3];
+			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+		}
+	}
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -306,6 +331,7 @@ void VausShaldusShieldGiving(VausShaldus npc, float gameTime)
 	}
 	if(npc.m_flNextRangedSpecialAttack == FAR_FUTURE)
 	{
+		npc.m_flGoAfterAlly = 0.0;
 		npc.m_flNextRangedSpecialAttack = gameTime + 15.0;
 		float flPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
@@ -317,6 +343,7 @@ void VausShaldusShieldGiving(VausShaldus npc, float gameTime)
 
 	if(gameTime > npc.m_flNextRangedSpecialAttack)
 	{
+		npc.m_flGoAfterAlly  = gameTime + 2.0; //Retry in 1 second.
 		npc.m_flNextRangedSpecialAttack = gameTime + 1.0; //Retry in 1 second.
 		b_NpcIsTeamkiller[npc.index] = true;
 		Explode_Logic_Custom(0.0,

@@ -240,9 +240,14 @@ public void HiaRejuvinator_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
+		int OldAlly = npc.m_iTargetAlly;
 		npc.m_iTargetAlly = GetClosestAlly(npc.index,_,_,HiaRejuvinator_HealCheck);
 		if(!IsValidAlly(npc.index, npc.m_iTargetAlly))
 			npc.m_iTargetAlly = GetClosestAlly(npc.index);
+
+		if(OldAlly != npc.m_iTargetAlly)
+			npc.m_bnew_target = false;	
+			
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
@@ -295,11 +300,6 @@ public void HiaRejuvinator_ClotThink(int iNPC)
 			npc.StartPathing();
 
 			npc.m_bnew_target = false;					
-		}
-
-		if(!HiaRejuvinator_HealCheck(npc.index, PrimaryThreatIndex))
-		{
-			npc.m_flGetClosestTargetTime = 0.0;
 		}
 	}
 	else
