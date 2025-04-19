@@ -3497,13 +3497,13 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		}
 		if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
 		{
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0);
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
 		}
 		else
 		{
 			if(WasClientReviving)
-				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
+				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0);
 			if(extralogic)
 			{
 				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 1.0, 1.0, 1.0, HEAL_ABSOLUTE);

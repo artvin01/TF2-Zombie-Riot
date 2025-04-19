@@ -1076,6 +1076,14 @@
 	{
 		"en"	"You got a new fade, expidonsans despite being cats are really good at cutting hair huh?"
 	}
+	"Anti-Waves"
+	{
+		"en" "Anti-Waves"
+	}
+	"Anti-Waves Desc"
+	{
+		"en"	"Prevents any healing.\n{green}Doesnt prevent absolute healing."
+	}
 	"We gotta go bald"
 	{
 		"en" "We gotta go bald"

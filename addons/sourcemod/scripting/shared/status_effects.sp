@@ -351,7 +351,6 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 
 //Got lazy, tired of doing so many indexs.
 
-
 int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 {
 	//doesnt even have abuff...
@@ -4323,6 +4322,20 @@ void StatusEffects_Construction()
 	data.LinkedStatusEffect 		= 0;
 	data.LinkedStatusEffectNPC 		= 0;
 	data.AttackspeedBuff			= 0.0;
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Anti-Waves");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ם");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Cut Hair");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "H");
