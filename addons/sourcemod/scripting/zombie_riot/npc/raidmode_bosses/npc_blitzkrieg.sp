@@ -512,7 +512,7 @@ methodmap Blitzkrieg < CClotBody
 			b_buffed_blitz = StrContains(data, "blitzmayhem") != -1;
 			if(b_buffed_blitz)
 			{
-				strcopy(NpcStats_ReturnNpcName(npc.index), sizeof(c_NpcName[]), "TRUE BLITZKRIEG");
+				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "TRUE BLITZKRIEG");
 				b_pureblitz = true;
 				switch(GetRandomInt(0,7))
 				{
@@ -584,7 +584,7 @@ methodmap Blitzkrieg < CClotBody
 
 		if(b_buffed_blitz && !b_pureblitz)
 		{
-			strcopy(NpcStats_ReturnNpcName(npc.index), sizeof(c_NpcName[]), "Hyper Blitzkrieg");
+			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Hyper Blitzkrieg");
 			if(i_current_wave[npc.index] <=15)
 			{
 				RaidModeScaling *=1.5;
