@@ -1146,21 +1146,6 @@ static void ClotThink(int iNPC)
 								start_offset[2] += 12.5;
 								end_offset[2] += 12.5;
 							}
-							EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-							if(b_buffed_blitz)
-							{
-								switch(GetRandomInt(1, 2))
-								{
-									case 1:
-									{
-										CPrintToChatAll("{crimson}%s{default}: I have a little gift for you {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
-									}
-									case 2:
-									{
-										CPrintToChatAll("{crimson}%s{default}: Lookout above {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
-									}
-								}
-							}
 						}
 						else
 						{
