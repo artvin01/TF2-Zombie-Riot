@@ -2785,7 +2785,7 @@
 	}
 	"Sensal Desc 1"
 	{
-		"en"	"Gain the ability to shoot projetiles with R, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits"
+		"en"	"Increased damage\nGain the ability to shoot projetiles with R, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits"
 	}
 	"Sensal Desc 2"
 	{

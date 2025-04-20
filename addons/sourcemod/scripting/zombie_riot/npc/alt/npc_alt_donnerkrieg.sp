@@ -1170,7 +1170,7 @@ static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3
 public Action NightmareCannon_TBB_Tick(int client)
 {
 	static int tickCountClient[MAXENTITIES];
-	if(!IsValidEntity(client) || !NightmareCannon_BEAM_IsUsing[client])
+	if(!IsValidEntity(client) || !NightmareCannon_BEAM_IsUsing[client] || fl_nightmare_end_timer[client] < GetGameTime(client))
 	{
 		tickCountClient[client] = 0;
 		SDKUnhook(client, SDKHook_Think, NightmareCannon_TBB_Tick);
