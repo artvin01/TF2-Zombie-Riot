@@ -338,7 +338,8 @@ static Action Barracks_Donner_NC_Tick(int client)
 		npc.m_flMeleeArmor = 1.0;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-			if(iActivity > 0) npc.StartActivity(iActivity);
+		if(iActivity > 0)
+			npc.StartActivity(iActivity);
 
 		SDKUnhook(npc.index, SDKHook_Think, Barracks_Donner_NC_Tick);
 		return Plugin_Stop;
