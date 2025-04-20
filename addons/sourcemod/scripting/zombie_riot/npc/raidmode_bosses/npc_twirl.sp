@@ -590,7 +590,7 @@ methodmap Twirl < CClotBody
 	public char[] GetName()
 	{
 		char Name[255];
-		Format(Name, sizeof(Name), "%s%s%s:", NameColour, c_NpcName[this.index], TextColour);
+		Format(Name, sizeof(Name), "%s%s%s:", NameColour, NpcStats_ReturnNpcName(this.index), TextColour);
 		return Name;
 	}
 

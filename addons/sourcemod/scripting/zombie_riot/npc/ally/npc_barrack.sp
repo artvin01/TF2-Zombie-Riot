@@ -882,7 +882,7 @@ static void ShowMenu(int client, int entity)
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(BarrackBody_MenuH);
-	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", c_NpcName[entity]);
+	menu.SetTitle("%s\n \n%t\n ", "TF2: Zombie Riot", NpcStats_ReturnNpcName(entity));
 
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));

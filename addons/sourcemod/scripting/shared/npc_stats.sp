@@ -11164,3 +11164,13 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 
 	return vecSwingEnd;
 }
+
+char[] NpcStats_ReturnNpcName(int entity, bool NoTrans = false)
+{
+	char NameReturn[255];
+	if(!b_NameNoTranslation[entity] && !NoTrans)
+		Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
+	else
+		Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
+	return NameReturn;
+}

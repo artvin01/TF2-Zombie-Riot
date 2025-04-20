@@ -85,7 +85,7 @@ void BlacksmithGrill_NPCTakeDamagePost(int victim, int attacker, float damage)
 		if(InMenu[attacker])
 		{
 			char buffer[64];
-			FormatEx(buffer, sizeof(buffer), "Gained %.2f％ Meat and %.2f％ %s from %s", gain * 200.0 / SAUCE_REQUIRED, gain * 100.0 / SAUCE_REQUIRED, SauceName[sauce], c_NpcName[victim]);
+			FormatEx(buffer, sizeof(buffer), "Gained %.2f％ Meat and %.2f％ %s from %s", gain * 200.0 / SAUCE_REQUIRED, gain * 100.0 / SAUCE_REQUIRED, SauceName[sauce], NpcStats_ReturnNpcName(victim));
 			GrillingMenu(attacker, buffer);
 		}
 	}

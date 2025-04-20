@@ -1438,9 +1438,7 @@
 	}
 	"There Can Be Only One Desc"
 	{
-		"en"	"Buy grigori some ammo and ontop of that, refesh the store!"
-		"fr"	"Achetez des munitions pour Grigori, il rafraîchira sa boutique!"
-		"chi"	"给神父买点弹药！（同时刷新商店）"
+		"en"	"Buy grigori some ammo."
 	}
 	
 	"Decorative Object Desc"
