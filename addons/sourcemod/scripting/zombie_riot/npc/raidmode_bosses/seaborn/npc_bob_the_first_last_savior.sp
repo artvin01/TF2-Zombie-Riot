@@ -447,7 +447,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			if(CurrentModifOn() == 1)
 			{
-				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", NpcStats_ReturnNpcName(npc.index));
+				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			else
 			{
@@ -455,15 +455,15 @@ methodmap RaidbossBobTheFirst < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", NpcStats_ReturnNpcName(npc.index));
+						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", NpcStats_ReturnNpcName(npc.index));
+						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", NpcStats_ReturnNpcName(npc.index));
+						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -546,20 +546,20 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		{
 			if(!b_BobPistolPhaseSaid[npc.index])
 			{
-				CPrintToChatAll("{crimson}%s uses his immensive willpower to regain some strength...", NpcStats_ReturnNpcName(npc.index));
+				CPrintToChatAll("{crimson}%s uses his immensive willpower to regain some strength...", NpcStats_ReturnNpcName(npc.index, true));
 				switch(GetRandomInt(0,2))
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: Hope my sharp shooting skills will miss your brain, curing is still an option.", NpcStats_ReturnNpcName(npc.index));
+						CPrintToChatAll("{white}%s{default}: Hope my sharp shooting skills will miss your brain, curing is still an option.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: If only i could cure it off you with this handgun, have to take lives to save lives.", NpcStats_ReturnNpcName(npc.index));
+						CPrintToChatAll("{white}%s{default}: If only i could cure it off you with this handgun, have to take lives to save lives.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: Im starting to reach my limit...", NpcStats_ReturnNpcName(npc.index));
+						CPrintToChatAll("{white}%s{default}: Im starting to reach my limit...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 				int MaxHealth = ReturnEntityMaxHealth(npc.index);
@@ -608,15 +608,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{white}%s{default}: One infected left.", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{white}%s{default}: One infected left.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}
@@ -640,13 +640,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 3)
 			{
 				case 0:
-					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", NpcStats_ReturnNpcName(npc.index, true));
 				
 				case 1:
-					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", NpcStats_ReturnNpcName(npc.index, true));
 				
 				case 2:
-					CPrintToChatAll("{white}%s{default}: Nobody wins.", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{white}%s{default}: Nobody wins.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			
 			// Play funny animation intro
@@ -658,7 +658,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", NpcStats_ReturnNpcName(npc.index));
+			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", NpcStats_ReturnNpcName(npc.index, true));
 			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) -1);
 			fl_Extra_Damage[npc.index] = 999.9;
@@ -938,7 +938,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 				if(CurrentModifOn() == 1 && i_RaidGrantExtra[npc.index] == 1)
-					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 		}
 		int summon;
