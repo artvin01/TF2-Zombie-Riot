@@ -1673,7 +1673,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	if(i_current_wave[npc.index]==45)
 	{
-		CPrintToChatAll("{crimson}%s{default}: The minions have joined the battle.", NpcStats_ReturnNpcName(npc.index));
+		CPrintToChatAll("{crimson}%s{default}: The minions have joined the battle.", NpcStats_ReturnNpcName(npc.index, true));
 	}
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int heck;
@@ -1700,7 +1700,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	}
 	if(i_current_wave[npc.index]>=60)	//Only spawns if the wave is 60 or beyond.
 	{
-		CPrintToChatAll("{crimson}%s{default}: And now its those two's turn", NpcStats_ReturnNpcName(npc.index));
+		CPrintToChatAll("{crimson}%s{default}: And now its those two's turn", NpcStats_ReturnNpcName(npc.index, true));
 		maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
 
 		spawn_index = NPC_CreateByName("npc_alt_donnerkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");
