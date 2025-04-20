@@ -512,45 +512,45 @@ methodmap Blitzkrieg < CClotBody
 			b_buffed_blitz = StrContains(data, "blitzmayhem") != -1;
 			if(b_buffed_blitz)
 			{
-				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "TRUE BLITZKRIEG");
+				strcopy(NpcStats_ReturnNpcName(npc.index), sizeof(c_NpcName[]), "TRUE BLITZKRIEG");
 				b_pureblitz = true;
 				switch(GetRandomInt(0,7))
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: NAHAHAHAHAHAHAHAHAHAHAHA!!!!!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: NAHAHAHAHAHAHAHAHAHAHAHA!!!!!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: ICH WERD EUCH ALLE UMBRINGEN!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: ICH WERD EUCH ALLE UMBRINGEN!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DAS IS PURE KRAFT!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: DAS IS PURE KRAFT!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DENKSTE DAS WAR ALLES!!?!?!?!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: DENKSTE DAS WAR ALLES!!?!?!?!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 4:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DUUUUUUUUUUUUUUU KLEINE RATTE!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: DUUUUUUUUUUUUUUU KLEINE RATTE!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 5:
 					{
-						CPrintToChatAll("{crimson}%s{default}: KOMMT HER IHR KLEINEN VIECHER!!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: KOMMT HER IHR KLEINEN VIECHER!!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 6:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DIE WAHRE POWER VON RUIANIAN UND EXPIDONSANS!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: DIE WAHRE POWER VON RUIANIAN UND EXPIDONSANS!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 7:
 					{
-						CPrintToChatAll("{crimson}%s{default}: VERPISS DICH!!!!!!!!!!!!!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: VERPISS DICH!!!!!!!!!!!!!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 8:
 					{
-						CPrintToChatAll("{crimson}%s{default}: BLITZKRIEG GEGEN BLITZKRIEG, KOMMT HER!!!!!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: BLITZKRIEG GEGEN BLITZKRIEG, KOMMT HER!!!!!", NpcStats_ReturnNpcName(npc.index));
 					}
 				}
 			}
@@ -584,7 +584,7 @@ methodmap Blitzkrieg < CClotBody
 
 		if(b_buffed_blitz && !b_pureblitz)
 		{
-			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Hyper Blitzkrieg");
+			strcopy(NpcStats_ReturnNpcName(npc.index), sizeof(c_NpcName[]), "Hyper Blitzkrieg");
 			if(i_current_wave[npc.index] <=15)
 			{
 				RaidModeScaling *=1.5;
@@ -592,11 +592,11 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Hehehe..", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: Hehehe..", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Shall we begin?", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: Shall we begin?", NpcStats_ReturnNpcName(npc.index));
 					}
 				}
 			}
@@ -607,11 +607,11 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Hehehe, it seems I get another chance to destroy you", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: Hehehe, it seems I get another chance to destroy you", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You lived last time, but will you live again?", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You lived last time, but will you live again?", NpcStats_ReturnNpcName(npc.index));
 					}
 				}
 			}
@@ -622,11 +622,11 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: It appears im going to have to introduce you to someone I know... the Moon...", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: It appears im going to have to introduce you to someone I know... the Moon...", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You're quite the tenacious one aren't you", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You're quite the tenacious one aren't you", NpcStats_ReturnNpcName(npc.index));
 					}
 				}
 			}
@@ -636,15 +636,15 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: This ends here, {crimson}now, {default}there is nowhere else for you to go!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: This ends here, {crimson}now, {default}there is nowhere else for you to go!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You've all become quite the annoying little merc's haven't you", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You've all become quite the annoying little merc's haven't you", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: My limiter's been turned off{crimson} good luck{default}.", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: My limiter's been turned off{crimson} good luck{default}.", NpcStats_ReturnNpcName(npc.index));
 					}
 				}
 			}
@@ -735,23 +735,23 @@ static void ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: BISTE AUßER PUSTE? VERRECK!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: BISTE AUßER PUSTE? VERRECK!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: NA WIE GEHTS DIE ALEINE {crimson}HMMMMMMMMMM?", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: NA WIE GEHTS DIE ALEINE {crimson}HMMMMMMMMMM?", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DU BIST EIN DRECKES FAKE, {crimson}GIB AUF!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: DU BIST EIN DRECKES FAKE, {crimson}GIB AUF!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DIE WAHRE KRAFT DER ALLIANCE!!!{crimson} IST HIIIIIIIIIIIERRRR!!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: DIE WAHRE KRAFT DER ALLIANCE!!!{crimson} IST HIIIIIIIIIIIERRRR!!", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 4:
 					{
-						CPrintToChatAll("{crimson}%s{crimson}: KOMM HER!!! HAU NICHT AB DU WEICHEI!", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{crimson}: KOMM HER!!! HAU NICHT AB DU WEICHEI!", NpcStats_ReturnNpcName(npc.index));
 					}
 				}
 			}
@@ -761,23 +761,23 @@ static void ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You organic's require oxygen to live, we do not. We are not the same", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You organic's require oxygen to live, we do not. We are not the same", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: How does it feel to be {crimson}alone?", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: How does it feel to be {crimson}alone?", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You are out gunned and out matched, {crimson}surrender.", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You are out gunned and out matched, {crimson}surrender.", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Death{crimson} Aproaches", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: Death{crimson} Aproaches", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 4:
 					{
-						CPrintToChatAll("{crimson}%s{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next in line..", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next in line..", NpcStats_ReturnNpcName(npc.index));
 					}
 				}
 			}
@@ -787,23 +787,23 @@ static void ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You alone? How amusing.", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You alone? How amusing.", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Machines win once more... You're the last...", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: Machines win once more... You're the last...", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You are hopeless.", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: You are hopeless.", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Death is{crimson} Inevitable", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: Death is{crimson} Inevitable", NpcStats_ReturnNpcName(npc.index));
 					}
 					case 4:
 					{
-						CPrintToChatAll("{crimson}%s{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next..", c_NpcName[npc.index]);
+						CPrintToChatAll("{crimson}%s{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next..", NpcStats_ReturnNpcName(npc.index));
 					}
 				}
 			}
@@ -822,11 +822,11 @@ static void ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Willste NOCHMAL versuchen?  HMMMMM????", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: Willste NOCHMAL versuchen?  HMMMMM????", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: GIBSTE SCHON AUF? TRAURIG.", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: GIBSTE SCHON AUF? TRAURIG.", NpcStats_ReturnNpcName(npc.index));
 				}
 			}
 		}
@@ -836,11 +836,11 @@ static void ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Now then, to deal with the rest of the {crimson}planet", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: Now then, to deal with the rest of the {crimson}planet", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Breathing is optional, {crimson}but not for you", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: Breathing is optional, {crimson}but not for you", NpcStats_ReturnNpcName(npc.index));
 				}
 			}
 		}
@@ -850,19 +850,19 @@ static void ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}Annhilated{default}.", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: {crimson}Annhilated{default}.", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Hopeless scrap", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: Hopeless scrap", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Such lackluster {crimson}weapons{default}.", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: Such lackluster {crimson}weapons{default}.", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Death is{crimson} Inevitable{default}.", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: Death is{crimson} Inevitable{default}.", NpcStats_ReturnNpcName(npc.index));
 				}
 			}
 		}
@@ -908,15 +908,15 @@ static void ClotThink(int iNPC)
 		{
 			case 1:
 			{
-				CPrintToChatAll("{crimson}%s{default}: It is already {crimson}too late,{default} my army has arrived...", c_NpcName[npc.index]);
+				CPrintToChatAll("{crimson}%s{default}: It is already {crimson}too late,{default} my army has arrived...", NpcStats_ReturnNpcName(npc.index));
 			}
 			case 2:
 			{
-				CPrintToChatAll("{crimson}%s{default}: My army has completely secured the area{crimson} surrender now{default} or perish", c_NpcName[npc.index]);
+				CPrintToChatAll("{crimson}%s{default}: My army has completely secured the area{crimson} surrender now{default} or perish", NpcStats_ReturnNpcName(npc.index));
 			}
 			case 3:
 			{
-				CPrintToChatAll("{crimson}%s{default}: You all will make {crimson}excellent{default} additions to my army...", c_NpcName[npc.index]);
+				CPrintToChatAll("{crimson}%s{default}: You all will make {crimson}excellent{default} additions to my army...", NpcStats_ReturnNpcName(npc.index));
 			}
 		}
 	}
@@ -1146,6 +1146,21 @@ static void ClotThink(int iNPC)
 								start_offset[2] += 12.5;
 								end_offset[2] += 12.5;
 							}
+							EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+							if(b_buffed_blitz)
+							{
+								switch(GetRandomInt(1, 2))
+								{
+									case 1:
+									{
+										CPrintToChatAll("{crimson}%s{default}: I have a little gift for you {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
+									}
+									case 2:
+									{
+										CPrintToChatAll("{crimson}%s{default}: Lookout above {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
+									}
+								}
+							}
 						}
 						else
 						{
@@ -1211,11 +1226,11 @@ static void ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								CPrintToChatAll("{crimson}%s{default}: I have a little gift for you {yellow}%N{default}!", c_NpcName[npc.index], Enemy_I_See);
+								CPrintToChatAll("{crimson}%s{default}: I have a little gift for you {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
 							}
 							case 2:
 							{
-								CPrintToChatAll("{crimson}%s{default}: Lookout above {yellow}%N{default}!", c_NpcName[npc.index], Enemy_I_See);
+								CPrintToChatAll("{crimson}%s{default}: Lookout above {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
 							}
 						}
 					}
@@ -1387,19 +1402,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", NpcStats_ReturnNpcName(npc.index));
 				}
 			}
 		}
@@ -1409,19 +1424,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: This is only just the beginning {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: This is only just the beginning {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: You think this is the end {yellow}%N{default}?", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: You think this is the end {yellow}%N{default}?", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: You fool {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: You fool {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: There's plenty more to come {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: There's plenty more to come {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 			}
 		}
@@ -1441,19 +1456,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 			}
 		}
@@ -1463,19 +1478,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Don't get too cocky {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: Don't get too cocky {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Thy end is near {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: Thy end is near {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {yellow}%N {default}are you sure you want to proceed further?", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: {yellow}%N {default}are you sure you want to proceed further?", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: This is getting interesting, {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: This is getting interesting, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 			}
 		}
@@ -1495,19 +1510,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 			}
 		}
@@ -1517,19 +1532,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Your own foolishness lead you to this {yellow}%N{default} prepare for complete {red}BLITZKRIEG", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: Your own foolishness lead you to this {yellow}%N{default} prepare for complete {red}BLITZKRIEG", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Thy end is {red} Now {yellow}%N{default} Thou shall feel true {red}BLITZKRIEG", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: Thy end is {red} Now {yellow}%N{default} Thou shall feel true {red}BLITZKRIEG", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N {red}PREPARE FOR FULL BLITZKRIEG", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N {red}PREPARE FOR FULL BLITZKRIEG", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: You cannot stop the {crimson}Blitzkrieg{default} with such lackluster weapons {yellow}%N{default}!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: You cannot stop the {crimson}Blitzkrieg{default} with such lackluster weapons {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 			}
 		}
@@ -1556,15 +1571,15 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}FRISS DAS!!!", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}FRISS DAS!!!", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}KOMMSTE NOCH KLAR DIGGA???", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}KOMMSTE NOCH KLAR DIGGA???", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}DIE TECHNOLOGIE DER EXPIDONSANS IST DIE BESTE!!!!!", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}DIE TECHNOLOGIE DER EXPIDONSANS IST DIE BESTE!!!!!", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 			}
 		}
@@ -1574,15 +1589,15 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}Here's a fun fact, the atmosphere drastically lowers the potential of this attack... Guess what space lacks", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}Here's a fun fact, the atmosphere drastically lowers the potential of this attack... Guess what space lacks", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}MUHAHAHAHAHAH", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}MUHAHAHAHAHAH", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}THE {aqua}TRUE{default} POWER OF THE MOON, IN THE PALMS OF MY HANDS", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}THE {aqua}TRUE{default} POWER OF THE MOON, IN THE PALMS OF MY HANDS", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 			}
 		}
@@ -1592,15 +1607,15 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}I AM A GOD", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}I AM A GOD", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}THY PUNISHMENT IS DEATH", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}THY PUNISHMENT IS DEATH", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}THE POWER OF THE MOON, IN THE PALMS OF MY HANDS", c_NpcName[npc.index]);	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}THE POWER OF THE MOON, IN THE PALMS OF MY HANDS", NpcStats_ReturnNpcName(npc.index));	//Ego boost 9000%
 				}
 			}
 		}
@@ -1673,7 +1688,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	if(i_current_wave[npc.index]==45)
 	{
-		CPrintToChatAll("{crimson}%s{default}: The minions have joined the battle.", c_NpcName[npc.index]);
+		CPrintToChatAll("{crimson}%s{default}: The minions have joined the battle.", NpcStats_ReturnNpcName(npc.index));
 	}
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int heck;
@@ -1700,7 +1715,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	}
 	if(i_current_wave[npc.index]>=60)	//Only spawns if the wave is 60 or beyond.
 	{
-		CPrintToChatAll("{crimson}%s{default}: And now its those two's turn", c_NpcName[npc.index]);
+		CPrintToChatAll("{crimson}%s{default}: And now its those two's turn", NpcStats_ReturnNpcName(npc.index));
 		maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
 
 		spawn_index = NPC_CreateByName("npc_alt_donnerkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");
@@ -1771,11 +1786,11 @@ static void NPC_Death(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: MISST!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: MISST!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH KRIEG DICH NOCH!", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: ICH KRIEG DICH NOCH!", NpcStats_ReturnNpcName(npc.index));
 				}
 			}
 		}
@@ -1785,11 +1800,11 @@ static void NPC_Death(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: error", c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%s{default}: error", NpcStats_ReturnNpcName(npc.index));
 				}
 			}
 		}
@@ -1799,19 +1814,19 @@ static void NPC_Death(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: next time {yellow}%N{default} you wont be this lucky, {red}next time", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: next time {yellow}%N{default} you wont be this lucky, {red}next time", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Will you be this lucky again {yellow}%N{default}, will{red} you?", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: Will you be this lucky again {yellow}%N{default}, will{red} you?", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Until next time {yellow}%N{red} until next time...", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: Until next time {yellow}%N{red} until next time...", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: hehe, {yellow}%N{default} I pity you, {crimson}because next time{default} I'll be stronger.", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: hehe, {yellow}%N{default} I pity you, {crimson}because next time{default} I'll be stronger.", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 			}
 		}
@@ -1821,19 +1836,19 @@ static void NPC_Death(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Nooo, this cannot be {yellow}%N{default} you won, {red}this time", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: Nooo, this cannot be {yellow}%N{default} you won, {red}this time", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: It seems I have failed {yellow}%N{default} you survived {red}this time", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: It seems I have failed {yellow}%N{default} you survived {red}this time", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Until next time {yellow}%N{red} until next time...", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: Until next time {yellow}%N{red} until next time...", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: What, HOW, {yellow}%N{default} How did you beat me before my army arrived, {crimson}no matter{default} theres always next time...", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: What, HOW, {yellow}%N{default} How did you beat me before my army arrived, {crimson}no matter{default} theres always next time...", NpcStats_ReturnNpcName(npc.index), closest);
 				}
 			}
 		}
