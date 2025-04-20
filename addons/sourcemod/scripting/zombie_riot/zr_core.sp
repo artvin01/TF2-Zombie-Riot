@@ -976,6 +976,10 @@ public Action GlobalTimer(Handle timer)
 		f_AllowInstabuildRegardless = 0.0;
 		ForceMusicStopAndReset = true;
 	}
+	if(Rogue_Mode() || Construction_Mode())
+	{
+		ForceMusicStopAndReset = false;
+	}
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -2644,10 +2648,16 @@ void PlayerApplyDefaults(int client)
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 
 		if(f_BegPlayerToSetRagdollFade[client] != FAR_FUTURE && f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+		{
+			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
 			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+		}
 
 		if(f_BegPlayerR_TeethSet[client] != FAR_FUTURE && f_BegPlayerR_TeethSet[client] < GetGameTime())
+		{
+			f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
 			QueryClientConVar(client, "r_teeth", ConVarCallback_r_teeth);
+		}
 
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		

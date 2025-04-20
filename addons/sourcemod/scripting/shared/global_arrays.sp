@@ -731,6 +731,8 @@ float TickrateModify;
 int TickrateModifyInt;
 float f_ClientDoDamageHud[MAXTF2PLAYERS][2];
 float f_ClientDoDamageHud_Hurt[MAXTF2PLAYERS][2];
+float f3_NpcSavePos[MAXENTITIES][3];  
+float f_DelayComputingOfPath[MAXENTITIES];
 
 enum
 {

@@ -13,6 +13,10 @@ static float f_TimeSinceLastRegenStop[MAXTF2PLAYERS];
 static bool b_GaveMarkForDeath[MAXTF2PLAYERS];
 static float f_RecievedTruedamageHit[MAXTF2PLAYERS];
 
+//With high ping our method to change weapons with a click of a button or whtaever breaks.
+//This will be used as a timer to fix this issue
+static float f_CheckWeaponDouble[MAXTF2PLAYERS];
+
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
 #if defined ZR
@@ -46,6 +50,7 @@ void SDKHooks_ClearAll()
 	Zero(Client_Had_ArmorDebuff);
 	Zero(f_TimeSinceLastRegenStop);
 	Zero(b_GaveMarkForDeath);
+	Zero(f_CheckWeaponDouble);
 }
 
 void SDKHook_PluginStart()
@@ -476,6 +481,7 @@ public void OnPostThink(int client)
 		ReplicateClient_LostFooting[client] = f_Client_LostFriction[client];
 	}
 
+	CorrectClientsideMultiweapon(client, 2);
 	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!
 	bool WasAirborn = false;
 	if (!(GetEntityFlags(client) & FL_ONGROUND))
@@ -2476,6 +2482,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 				}
 			}
 			Store_CycleItems(client, CurrentSlot);
+			CorrectClientsideMultiweapon(client, 1);
 		}
 		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 		
@@ -3365,3 +3372,57 @@ void ManaCalculationsBefore(int client)
 	}
 }
 #endif
+
+
+
+void CorrectClientsideMultiweapon(int client, int Mode)
+{
+	switch(Mode)
+	{
+		//We just switched, we want to check if they have the correct weapon after htier ping plus more
+		case 1:
+		{
+			// correct is the amout of time we have to correct game time
+			float correct = GetClientLatency(client, NetFlow_Outgoing);
+
+			correct = clamp(correct, 0.0, 1.0);
+
+			f_CheckWeaponDouble[client] = GetGameTime() + (correct * 2.0);
+			//Give abit of extra leeway.
+			//double beacuse of information being send back and forth.
+		}
+		case 2:
+		{
+			if(!f_CheckWeaponDouble[client])
+				return;
+
+			if(f_CheckWeaponDouble[client] > GetGameTime())
+				return;
+
+
+			//Compare active weapon to weapon that in "myweapons"
+
+			
+		//	f_CheckWeaponDouble[client] = GetGameTime () + 0.5; 
+			//check every 0.5 seconds.
+
+			int weaponAm = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(!IsValidEntity(weaponAm))
+				return;
+			
+			char buffer[36];
+			GetEntityClassname(weaponAm, buffer, sizeof(buffer));
+			int CurrentSlot = TF2_GetClassnameSlot(buffer);
+
+			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, true);
+
+			while(WeaponValidCheck == weaponAm) //dont be on same weapon!
+			{
+				WeaponValidCheck = Store_CycleItems(client, CurrentSlot);
+				if(WeaponValidCheck == -1)
+					break;
+			}
+		}
+	}
+
+}

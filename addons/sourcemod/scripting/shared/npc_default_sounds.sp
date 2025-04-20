@@ -50,4 +50,9 @@ char g_DefaultMedic_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry03.mp3",
 	"vo/medic_battlecry04.mp3",
 };
-
+char g_DefaultMedic_PlayAnnoyedSound[][] = {
+	"vo/medic_jeers01.mp3",
+	"vo/medic_jeers04.mp3",
+	"vo/medic_jeers05.mp3",
+	"vo/medic_jeers06.mp3",
+};

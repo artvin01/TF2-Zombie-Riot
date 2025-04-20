@@ -158,6 +158,13 @@ methodmap Iberiainqusitor_irene < CClotBody
 		npc.m_flSpeed = 345.0;
 		npc.m_iAttacksTillReload = 0;
 		npc.m_flAirTimeAbilityCD = GetGameTime() + 15.0;
+		if(!IsValidEntity(RaidBossActive) || (IsValidEntity(RaidBossActive) && LighthouseGlobaID() == i_NpcInternalId[EntRefToEntIndex(RaidBossActive)]))
+		{
+			RaidModeScaling = 0.0;	//just a safety net
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+		}
 		
 		
 		int skin = 1;

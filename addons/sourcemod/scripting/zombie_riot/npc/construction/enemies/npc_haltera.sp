@@ -3,6 +3,12 @@
 
 
 
+/*
+	STronger Guardus
+	When below half health, gains 2x attackspeed but looses half damage
+	heal stays
+
+*/
 
 
 static const char g_IdleAlertedSounds[][] = {
@@ -88,6 +94,12 @@ methodmap Haltera < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	public void PlayAnnoyedSound() 
+	{
+		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
+		EmitSoundToAll(g_DefaultMedic_PlayAnnoyedSound[GetRandomInt(0, sizeof(g_DefaultMedic_PlayAnnoyedSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+
+	}
 	
 	
 	public Haltera(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -105,9 +117,6 @@ methodmap Haltera < CClotBody
 		{
 			npc.m_flHealMulti = StringToFloat(data);
 		}
-		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -129,21 +138,26 @@ methodmap Haltera < CClotBody
 		
 		HalteraEffects(npc.index);
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/medic_wintercoat_s01/medic_wintercoat_s01.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/coh_medichat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/cardiologists_camo/cardiologists_camo.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_second_opinion/hw2013_second_opinion.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+    
+		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_misc2.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 
 		
 		return npc;
@@ -217,7 +231,25 @@ public Action Haltera_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	if(npc.Anger)
+		return Plugin_Changed;
+
 	
+	int HealthLeft = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	HealthLeft -= RoundToCeil(damage);
+
+	//Still have above half hp
+	if(HealthLeft > (ReturnEntityMaxHealth(npc.index) / 2))
+		return Plugin_Changed;
+
+	npc.Anger = true;
+	//anger!
+
+	//loose hat when hurt too much!
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+
+	npc.PlayAnnoyedSound();
 	return Plugin_Changed;
 }
 
@@ -237,6 +269,9 @@ public void Haltera_NPCDeath(int entity)
 	ExpidonsaRemoveEffects(entity);
 		
 	
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -273,7 +308,8 @@ void HalteraSelfDefense(Haltera npc, float gameTime, int target, float distance)
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 
-
+					if(npc.Anger)
+						damageDealt *= 0.5;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -311,11 +347,11 @@ void HalteraSelfDefense(Haltera npc, float gameTime, int target, float distance)
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 0.85;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS",_,_,_, npc.Anger ? 2.0 : 1.0);
+
+				npc.m_flAttackHappens = gameTime + (npc.Anger ? 0.125 : 0.25);
+				npc.m_flDoingAnimation = gameTime + (npc.Anger ? 0.125 : 0.25);
+				npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.425 : 0.85);
 			}
 		}
 	}

@@ -50,7 +50,7 @@ static bool immutable;
 static int RandomStats;
 static bool merlton;
 static float gay;
-static int friendunitamount;
+static bool friendunit;
 static int HurtleBuff;
 static int HurtleBuffEnemies;
 static bool LoveNahTonic;
@@ -113,18 +113,18 @@ void Freeplay_CharBuffToAdd(char[] data)
 	{
 		case INTENSE:
 		{
-			FormatEx(data, 6, "ữ");
+			FormatEx(data, 6, "IT");
 		}
 		case MUSCLE:
 		{
-			FormatEx(data, 6, "ὒ");
+			FormatEx(data, 6, "MR");
 		}
 		case SQUEEZER:
 		{
 			if(squeezerplus)
-				FormatEx(data, 6, "ᾣ+");
+				FormatEx(data, 6, "SS+");
 			else
-				FormatEx(data, 6, "ᾣ");
+				FormatEx(data, 6, "SS");
 		}
 	}
 }
@@ -189,7 +189,7 @@ void Freeplay_ResetAll()
 	RandomStats = 0;
 	merlton = false;
 	gay = 0.0;
-	friendunitamount = 0;
+	friendunit = false;
 	HurtleBuff = 0;
 	HurtleBuffEnemies = 0;
 	LoveNahTonic = false;
@@ -272,7 +272,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunitamount || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -493,21 +493,22 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		RaidFight = 0;
 		shouldscale = false;
 	}
-	else if(friendunitamount)
+	else if(friendunit)
 	{
 		enemy.Team = TFTeam_Red;
-		count = friendunitamount;
-
-		if(enemy.Health)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
+		count = 1;
 
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage = 20.0;
+			enemy.ExtraDamage = 25.0;
 
 		enemy.ExtraSpeed = 1.25;
+		enemy.ExtraSize = 1.25;
 
-		friendunitamount = 0;
+		friendunit = false;
 		shouldscale = false;
+		char thename[128];
+		NPC_GetNameById(enemy.Index, thename, sizeof(thename));
+		CPrintToChatAll("{gold}Friendly Unit: {orange}%s", thename);
 	}
 	else if(DarknessComing)
 	{
@@ -997,11 +998,11 @@ void Freeplay_SpawnEnemy(int entity)
 
 		if(!b_thisNpcIsARaid[entity])
 		{
-			fl_Extra_Damage[entity] *= 2.0 + (((float(Waves_GetRound() - 59)) * 0.025));
+			fl_Extra_Damage[entity] *= ((float(Waves_GetRound() - 59)) * 0.0125);
 		}
 		else
 		{
-			fl_Extra_Damage[entity] *= 1.0 + (((float(Waves_GetRound() - 59)) * 0.0125));
+			fl_Extra_Damage[entity] *= ((float(Waves_GetRound() - 59)) * 0.005);
 		}
 
 		fl_Extra_Damage[entity] *= FM_Damage;
@@ -1357,7 +1358,7 @@ void Freeplay_OnEndWave(int &cash)
 	}
 
 	Freeplay_SetRemainingCash(1500.0);
-	Freeplay_SetCashTime(GetGameTime() + 11.5);
+	Freeplay_SetCashTime(GetGameTime() + 12.5);
 
 	if(Freeplay_GetRemainingExp() > 0.0)
 	{
@@ -1370,8 +1371,8 @@ void Freeplay_OnEndWave(int &cash)
 		}
 	}
 
-	Freeplay_SetRemainingExp(1500.0); // its half because it apparently triggers twice, resulting in 3000 max
-	Freeplay_SetExpTime(GetGameTime() + 9.0);
+	Freeplay_SetRemainingExp(750.0); // its half because it apparently triggers twice, resulting in 3000 max
+	Freeplay_SetExpTime(GetGameTime() + 10.0);
 }
 
 void Freeplay_GiveXP(int client, float extraxp)
@@ -1617,10 +1618,6 @@ void Freeplay_SetupStart(bool extra = false)
 				CashBonus -= 150;
 			}
 		}
-
-		int guh = GetRandomInt(8, 16);
-		CPrintToChatAll("{green}You will gain %d random friendly units.", guh);
-		friendunitamount = guh;
 
 		float randommini = GetRandomFloat(0.5, 2.0);
 		MiniBossChance *= randommini;
@@ -1916,7 +1913,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy attackspeed has been multiplied by %.2fx.", Atkspd);
 		}
 
-		switch(GetRandomInt(1, 8))
+		switch(GetRandomInt(1, 6))
 		{
 			case 1:
 			{
@@ -1937,6 +1934,11 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{red}You begin to hear voices in your head...");
 				Schizophrenia = true;
+			}
+			case 5:
+			{
+				CPrintToChatAll("{red}Your final challenge... a {crimson}Nourished Spewer.");
+				thespewer = true;
 			}
 			default:
 			{
@@ -2264,14 +2266,13 @@ void Freeplay_SetupStart(bool extra = false)
 			/// MISCELANEOUS SKULLS ///
 			case 31:
 			{
-				if(friendunitamount)
+				if(friendunit)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				int guh2 = GetRandomInt(4, 8);
-				strcopy(message, sizeof(message), "{green}You will gain a random amount of friendly units.");
-				friendunitamount = guh2;
+				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
+				friendunit = true;
 			}
 			case 32:
 			{

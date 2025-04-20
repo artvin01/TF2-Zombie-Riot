@@ -962,8 +962,16 @@ void NPC_ConfigSetup()
 	TrollRPG_OnMapStart_NPC();
 	TrollBrawler_OnMapStart_NPC();
 
-	
+	//Expidonsa Rogue forces in Construction
 	Eirasus_OnMapStart_NPC();
+	Haltera_OnMapStart_NPC();
+	Flaigus_OnMapStart_NPC();
+	BigGunAssisa_OnMapStart_NPC();
+	HiaRejuvinator_OnMapStart_NPC();
+	CuttusSiccino_OnMapStart_NPC();
+	ArmsaManu_OnMapStart_NPC();
+	SpeedusAbsolutos_OnMapStart_NPC();
+	VausShaldus_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2125,3 +2133,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
 #include "zombie_riot/npc/construction/enemies/npc_eirasus.sp"
+#include "zombie_riot/npc/construction/enemies/npc_haltera.sp"
+#include "zombie_riot/npc/construction/enemies/npc_flaigus.sp"
+#include "zombie_riot/npc/construction/enemies/npc_biggun_assisa.sp"
+#include "zombie_riot/npc/construction/enemies/npc_hia_rejuvinator.sp"
+#include "zombie_riot/npc/construction/enemies/npc_cuttus_siccino.sp"
+#include "zombie_riot/npc/construction/enemies/npc_armsa_manu.sp"
+#include "zombie_riot/npc/construction/enemies/npc_speedus_absolutos.sp"
+#include "zombie_riot/npc/construction/enemies/npc_vaus_shaldus.sp"

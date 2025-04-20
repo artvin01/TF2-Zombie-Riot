@@ -1385,11 +1385,11 @@ void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
 		SupplyRate[client] += 10;
 
-	if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))	// lol
-		SupplyRate[client] += 15;
+	if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))	// does this even work?
+		SupplyRate[client] += 35;
 
-	if(Store_HasNamedItem(client, "Messed Up Cheesy Brain"))	// lol
-		SupplyRate[client] += 20;
+	if(Store_HasNamedItem(client, "Messed Up Cheesy Brain")) // and this even?
+		SupplyRate[client] += 35;
 
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = true;/*Items_HasNamedItem(client, "Medieval Crown");*/
