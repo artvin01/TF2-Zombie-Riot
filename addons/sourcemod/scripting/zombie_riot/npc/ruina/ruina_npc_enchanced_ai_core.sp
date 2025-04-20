@@ -1193,6 +1193,8 @@ void Ruina_Projectile_Touch(int entity, int target)
 		Ruina_Remove_Projectile(entity);
 		return;
 	}
+	if(!IsValidEnemy(owner, target) && target != 0)
+		return;
 
 	if(func==INVALID_FUNCTION)
 	{	
@@ -1201,7 +1203,7 @@ void Ruina_Projectile_Touch(int entity, int target)
 
 		if(fl_ruina_Projectile_radius[entity]>0.0)
 			Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
-		else
+		else if(target != 0)
 			SDKHooks_TakeDamage(target, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
 		Ruina_Remove_Projectile(entity);

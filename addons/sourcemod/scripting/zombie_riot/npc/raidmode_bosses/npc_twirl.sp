@@ -2617,11 +2617,11 @@ static bool Retreat(Twirl npc, bool custom = false)
 	float effect_duration = 0.25;
 	
 	WorldSpaceCenter(npc.index, end_offset);
-					
+	
 	for(int help=1 ; help<=8 ; help++)
 	{	
 		Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-						
+		
 		start_offset[2] += 12.5;
 		end_offset[2] += 12.5;
 	}
