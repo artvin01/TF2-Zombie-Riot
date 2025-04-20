@@ -1259,6 +1259,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //BASES FOR ENEMIES
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp" //ALSO IN RPG!
 #include "zombie_riot/npc/seaborn/npc_nethersea_shared.sp"
+#include "zombie_riot/npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
 
 //BUILDINGS
 #include "zombie_riot/object/obj_shared.sp"
@@ -1427,7 +1428,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined RUINA_BASE
 //Ruina
 
-#include "zombie_riot/npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
 //stage 1
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_theocracy.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_adiantum.sp"

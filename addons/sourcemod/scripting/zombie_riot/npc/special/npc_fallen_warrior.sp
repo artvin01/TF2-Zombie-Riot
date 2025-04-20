@@ -60,7 +60,6 @@ static const char g_IntroSounds[][] =
 	"misc/rd_spaceship01.wav",
 };
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 int GetRandomSeedEachWave;
 
 #define GULN_DEBUFF_RANGE 500.0

@@ -62,15 +62,12 @@ static const char g_FractalSound[][] = {
 	"weapons/capper_shoot.wav"
 };
 
-static bool b_InKame[MAXENTITIES];
+
 #define TWIRL_TE_DURATION 0.1
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3"
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
 static float fl_player_weapon_score[MAXTF2PLAYERS];
 
 static int i_melee_combo[MAXENTITIES];
-static int i_current_wave[MAXENTITIES];
 static float fl_retreat_timer[MAXENTITIES];
 static int i_ranged_ammo[MAXENTITIES];
 static int i_hand_particles[MAXENTITIES];
@@ -83,9 +80,9 @@ static float fl_npc_basespeed;
 static int i_barrage_ammo[MAXENTITIES];
 static int i_lunar_ammo[MAXENTITIES];
 static float fl_lunar_timer[MAXENTITIES];
-static bool b_lastman[MAXENTITIES];
-static bool b_wonviatimer[MAXENTITIES];
-static bool b_wonviakill[MAXENTITIES];
+static bool b_lastman;
+static bool b_wonviatimer;
+static bool b_wonviakill;
 static bool b_allow_final[MAXENTITIES];
 static float fl_next_textline[MAXENTITIES];
 static float fl_raidmode_freeze[MAXENTITIES];
@@ -178,7 +175,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 {
 	return Twirl(vecPos, vecAng, team, data);
 }
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
 static const char NameColour[] = "{purple}";
 static const char TextColour[] = "{snow}";
 
@@ -625,9 +622,9 @@ methodmap Twirl < CClotBody
 		i_barrage_ammo[npc.index] = 0;
 		i_melee_combo[npc.index] = 0;
 		i_lunar_ammo[npc.index] = 0;
-		b_lastman[npc.index] = false;
-		b_wonviatimer[npc.index] = false;
-		b_wonviakill[npc.index] = false;
+		b_lastman = false;
+		b_wonviatimer = false;
+		b_wonviakill = false;
 
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -938,9 +935,9 @@ void TwirlSetBatteryPercentage(int entity, float percentage)
 
 static void Twirl_WinLine(int entity)
 {
-	b_wonviakill[entity] = true;
+	b_wonviakill = true;
 	Twirl npc = view_as<Twirl>(entity);
-	if(b_wonviatimer[npc.index])
+	if(b_wonviatimer)
 		return;
 
 	switch(GetRandomInt(0, 10))
@@ -1026,9 +1023,9 @@ static void ClotThink(int iNPC)
 		return;
 	}
 
-	if(LastMann && !b_lastman[npc.index])
+	if(LastMann && !b_lastman)
 	{
-		b_lastman[npc.index] = true;
+		b_lastman = true;
 		switch(GetRandomInt(0, 7))
 		{
 			case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
@@ -1048,7 +1045,7 @@ static void ClotThink(int iNPC)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		int wave = i_current_wave[npc.index];
-		b_wonviatimer[npc.index] = true;
+		b_wonviatimer = true;
 		if(wave <=60)
 		{
 			switch(GetRandomInt(0, 9))
@@ -2620,11 +2617,11 @@ static bool Retreat(Twirl npc, bool custom = false)
 	float effect_duration = 0.25;
 	
 	WorldSpaceCenter(npc.index, end_offset);
-					
+	
 	for(int help=1 ; help<=8 ; help++)
 	{	
 		Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-						
+		
 		start_offset[2] += 12.5;
 		end_offset[2] += 12.5;
 	}
@@ -3445,7 +3442,7 @@ static void NPC_Death(int entity)
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 
-	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index] && !b_allow_final[npc.index])
+	if(!b_wonviakill && !b_wonviatimer && !b_allow_final[npc.index])
 	{	
 		int wave = i_current_wave[npc.index];
 		if(wave <=15)

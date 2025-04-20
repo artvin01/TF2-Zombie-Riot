@@ -6,9 +6,9 @@
 #define Silvester_LASER_THICKNESS 25
 
 
-static int i_SaidLineAlready[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
+
 static bool b_SilvLine[MAXENTITIES];
 static bool b_SilvesterAttackSame[MAXENTITIES];
 

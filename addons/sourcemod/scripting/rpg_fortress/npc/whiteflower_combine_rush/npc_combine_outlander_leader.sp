@@ -550,7 +550,6 @@ public void Whiteflower_OutlanderLeader_NPCDeath(int entity)
 }
 
 
-int WF_Outlander_LeaderHitDetected[MAXENTITIES];
 //copied code.
 
 void WF_Outlander_LeaderInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
@@ -608,7 +607,7 @@ void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		WF_Outlander_LeaderHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -662,7 +661,7 @@ void WF_Outlander_LeaderInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (WF_Outlander_LeaderHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -682,7 +681,7 @@ public bool WF_Outlander_Leader_BEAM_TraceUsers(int entity, int contentsMask, in
 {
 	if (IsEntityAlive(entity))
 	{
-		WF_Outlander_LeaderHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

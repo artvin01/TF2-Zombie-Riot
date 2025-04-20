@@ -1,8 +1,7 @@
 #pragma semicolon 1				//a lot of shitcode, beware, be very aware
 #pragma newdecls required
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_PlayMusicSound;
+
 
 static const char g_DeathSounds[][] =
 {
@@ -231,12 +230,12 @@ static void ClotThink(int iNPC)
 	}
 
 	int time = GetTime();
-	if(i_PlayMusicSound < time)
+	if(i_PlayMusicSound[npc.index] < time)
 	{
 		// This doesn't auto loop
 		EmitCustomToAll("#zombie_riot/omega/calculated.mp3", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100); //song that plays duh
 
-		i_PlayMusicSound = GetTime() + 43; //loops the song perfectly
+		i_PlayMusicSound[npc.index] = GetTime() + 43; //loops the song perfectly
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -694,7 +693,7 @@ static void ClotDeath(int entity)
 
 	for(int i; i < 9; i++)
 	{
-		i_PlayMusicSound = 0;
+		i_PlayMusicSound[npc.index] = 0;
 		StopCustomSound(entity, SNDCHAN_STATIC, "#zombie_riot/omega/calculated.mp3", 5.0);
 	}
 

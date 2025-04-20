@@ -45,8 +45,8 @@ static bool b_WantTobuild[MAXENTITIES];
 static bool b_AlreadyReparing[MAXENTITIES];
 static float f_RandomTolerance[MAXENTITIES];
 static int i_BuildingRef[MAXENTITIES];
-static int i_ClosestAlly[MAXENTITIES];
-static float i_ClosestAllyCD[MAXENTITIES];
+
+
 static int NPCId;
 
 void VictorianMechanist_as_OnMapStart_NPC()
