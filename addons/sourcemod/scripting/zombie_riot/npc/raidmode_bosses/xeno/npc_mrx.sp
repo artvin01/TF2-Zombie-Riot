@@ -75,14 +75,13 @@ static char g_NeckSnap[][] =
 	"player/taunt_knuckle_crack.wav",
 };
 
-static int i_GrabbedThis[MAXENTITIES];
-static float fl_RegainWalkAnim[MAXENTITIES];
 
-static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
+
+
 static int i_SideHurtWhich[MAXENTITIES];
-static float f_NemesisImmuneToInfection[MAXENTITIES];
-static float f_NemesisSpecialDeathAnimation[MAXENTITIES];
-static float f_NemesisRandomInfectionCycle[MAXENTITIES];
+
+
+
 
 static float f_MassRushHitAttack[MAXENTITIES];
 static float f_MassRushHitAttackCD[MAXENTITIES];

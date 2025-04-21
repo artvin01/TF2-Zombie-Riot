@@ -1700,7 +1700,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 //Is player active? atleast somewhat.
 	if(buttons > 0)
 	{
-		f_PlayerLastKeyDetected[client] = GetGameTime() + 5.0;
+		f_PlayerLastKeyDetected[client] = GetGameTime() + 2.0;
 	}
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	

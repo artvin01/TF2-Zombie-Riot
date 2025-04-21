@@ -132,7 +132,7 @@ public Action Command_PetMenu(int client, int args)
 	
 	if(args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size] [Think Speed]");
 		return Plugin_Handled;
 	}
 	
@@ -198,6 +198,11 @@ public Action Command_PetMenu(int client, int args)
 		{
 			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(9));
+		}
+
+		if(args > 9)
+		{
+			f_AttackSpeedNpcIncrease[entity] = GetCmdArgFloat(10);
 		}
 	}
 
@@ -11158,4 +11163,14 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 	return vecSwingEnd;
+}
+
+char[] NpcStats_ReturnNpcName(int entity, bool NoTrans = false)
+{
+	char NameReturn[255];
+	if(!b_NameNoTranslation[entity] && !NoTrans)
+		Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
+	else
+		Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
+	return NameReturn;
 }

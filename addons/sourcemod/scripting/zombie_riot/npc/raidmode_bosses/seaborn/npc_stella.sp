@@ -64,19 +64,12 @@ Give Karlas smth?
 #define STELLA_DEBUFF_RANGE 100.0
 bool b_allow_karlas_transform[MAXENTITIES];
 
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
 
 static const char g_nightmare_cannon_core_sound[][] = {
 	"zombiesurvival/seaborn/loop_laser.mp3",
 };
 
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-};
 static const char g_LaserAttackSounds[][] = {
 	"weapons/physcannon/energy_sing_flyby1.wav",
 	"weapons/physcannon/energy_sing_flyby2.wav",
@@ -90,13 +83,13 @@ static const char g_OnLunarGraceHitSounds[][] = {
 };
 
 static int i_particle_effects[MAXENTITIES][3];
-static int i_wingslot[MAXENTITIES];
+
 
 #define STELLA_TE_DURATION 0.07
 
 static char gExplosive1;
-static int i_ally_index[MAXENTITIES];
-static bool b_InKame[MAXENTITIES];
+
+
 static bool b_tripple_raid[MAXENTITIES];
 
 #define STELLA_NC_DURATION 13.0
@@ -108,7 +101,6 @@ static bool b_tripple_raid[MAXENTITIES];
 
 static float fl_npc_basespeed;
 static bool b_test_mode[MAXENTITIES];
-static int i_current_wave[MAXENTITIES];
 static bool b_bobwave[MAXENTITIES];
 static bool b_IonStormInitiated[MAXENTITIES];
 static bool b_LastMannLines[MAXENTITIES];
@@ -120,8 +112,8 @@ static const char TextColour[] = "{snow}";
 
 static char gGlow1;	//blue
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 void Stella_OnMapStart_NPC()
 {
@@ -148,7 +140,7 @@ static void ClotPrecache()
 
 	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
 	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_DefaultMedic_IdleAlertedSounds);
 	PrecacheSoundArray(g_LaserAttackSounds);
 	PrecacheSoundArray(g_LaserChargesounds);
 	PrecacheSoundArray(g_OnLunarGraceHitSounds);
@@ -194,7 +186,7 @@ methodmap Stella < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_IdleAlertedSounds[GetRandomInt(0, sizeof(g_DefaultMedic_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound= GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);	
 	}
 	
@@ -1483,20 +1475,6 @@ static void OnAOEHit(int entity, int victim, float damage, int weapon)
 	TE_SetupBeamPoints(EnemyVec, Sky, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 0, 0.1, 2.5, 2.5, 0, 5.0, color, 3);
 	TE_SendToAll();
 }
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
-}
 static void Body_Pitch(Stella npc, float VecSelfNpc[3], float vecTarget[3])
 {
 	int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -1761,6 +1739,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		npc.m_iNC_Dialogue = chose;
 
 		npc.m_flNC_Grace = GameTime + GetRandomFloat(6.0, 12.0);
+		fl_ruina_battery_timeout[npc.index] = npc.m_flNC_Grace;	//make it show on the hud!
 	}
 	else if(npc.m_flNC_Grace < GameTime && b_Valid_NC_Initialistaion(npc, 1))
 	{

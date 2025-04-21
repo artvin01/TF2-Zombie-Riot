@@ -90,8 +90,8 @@ static bool Frozen_Player[MAXTF2PLAYERS];
 static int MechanizedProtector[MAXENTITIES][3];
 static int LifeSupportDevice[MAXENTITIES][3];
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static int OverrideOwner[MAXENTITIES];
 

@@ -310,7 +310,6 @@ void SniponeerSelfDefense(Sniponeer npc, float gameTime)
 	}
 }
 
-int SniponeerHitDetected[MAXENTITIES];
 
 void SniponeerInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
@@ -369,7 +368,7 @@ void SniponeerInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SniponeerHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -420,7 +419,7 @@ void SniponeerInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SniponeerHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -444,7 +443,7 @@ public bool Sniponeer_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SniponeerHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

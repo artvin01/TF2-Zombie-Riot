@@ -48,8 +48,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 	return Barrack_Alt_Barrager(client, vecPos, vecAng);
 }
 
-static int i_ammo_count[MAXENTITIES];
-static bool b_we_are_reloading[MAXENTITIES];
+
+
 static float fl_npc_basespeed;
 
 methodmap Barrack_Alt_Barrager < BarrackBody

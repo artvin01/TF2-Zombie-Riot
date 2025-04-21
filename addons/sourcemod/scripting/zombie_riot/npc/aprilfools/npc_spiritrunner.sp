@@ -59,9 +59,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return SpiritRunner(vecPos, vecAng, team);
 }
-static int i_PlayIdleAlertSound[MAXENTITIES];
-static int i_PlayMusicSound[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 static char[] GetSpiritRunnerHealth()
 {

@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_PlayMusicSound;
 
 static char g_MeleeAttackSounds[][] = {
 	"weapons/blade_slice_2.wav",
@@ -117,7 +115,7 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iChaseVisable = 0;
 		npc.m_iSurrender = 0;
 		npc.m_bPlayingSniper = false;
-		i_PlayMusicSound = 0;
+		i_PlayMusicSound[npc.index] = 0;
 		
 		int entity = CreateEntityByName("light_dynamic");
 		if(entity != -1)
@@ -541,7 +539,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			}
 
 			npc.m_bPlayingSniper = true;
-			i_PlayMusicSound = 0;
+			i_PlayMusicSound[npc.index] = 0;
 
 			// This does auto loop
 			EmitCustomToAll("#music/bluerange.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100);
@@ -562,12 +560,12 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 
 		int time = GetTime();
-		if(i_PlayMusicSound < time)
+		if(i_PlayMusicSound[npc.index] < time)
 		{
 			// This doesn't auto loop
 			EmitCustomToAll("#music/bluemelee.mp3", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100);
 
-			i_PlayMusicSound = GetTime() + 18;
+			i_PlayMusicSound[npc.index] = GetTime() + 18;
 		}
 	}
 }

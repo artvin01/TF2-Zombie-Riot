@@ -68,20 +68,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return L4D2_Tank(vecPos, vecAng, team, data);
 }
 
-static int i_TankAntiStuck[MAXENTITIES];
-static int i_PlayMusicSound[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static float fl_ThrowPlayerCooldown[MAXENTITIES];
-static float fl_ThrowPlayerImmenent[MAXENTITIES];
-static bool b_ThrowPlayerImmenent[MAXENTITIES];
-static int i_GrabbedThis[MAXENTITIES];
-static float fl_ThrowDelay[MAXENTITIES];
-static int i_TankThrewThis[MAXENTITIES];
-static bool i_ThrowAlly[MAXENTITIES];
-static int i_IWantToThrowHim[MAXENTITIES];
-
-static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
-
 methodmap L4D2_Tank < CClotBody
 {
 	public void PlayHurtSound() {

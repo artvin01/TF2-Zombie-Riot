@@ -50,8 +50,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 	return Barrack_Alt_Mecha_Barrager(client, vecPos, vecAng);
 }
 
-static int i_ammo_count[MAXENTITIES];
-static bool b_we_are_reloading[MAXENTITIES];
+
+
 
 methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 {

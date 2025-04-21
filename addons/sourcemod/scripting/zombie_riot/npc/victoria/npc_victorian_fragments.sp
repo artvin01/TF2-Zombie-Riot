@@ -5,8 +5,8 @@ static const char g_DeathSounds[] = "npc/scanner/scanner_explode_crash2.wav";
 static const char g_AttackReadySounds[] = "weapons/sentry_spot_client.wav";
 static const char g_AttackRocketSounds[] = "weapons/sentry_shoot3.wav";
 static float SET_XZY_POS[MAXENTITIES][3];
-static bool MK2[MAXENTITIES];
-static bool Limit[MAXENTITIES];
+
+
 static bool ISVOLI[MAXENTITIES];
 static int OverrideTarget[MAXENTITIES];
 static int OverrideAlly[MAXENTITIES];
@@ -70,13 +70,13 @@ methodmap VictorianDroneFragments < CClotBody
 		OverrideTarget[npc.index] = -1;
 		OverrideAlly[npc.index] = -1;
 		
-		bool FactorySpawn;
+		bool FactorySpawndo;
 		static char countext[20][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
-			else if(!StrContains(countext[i], "factory"))FactorySpawn=true;
+			else if(!StrContains(countext[i], "factory"))FactorySpawndo=true;
 			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Fragments MK2");}
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
 			else if(!StrContains(countext[i], "isvoli"))ISVOLI[npc.index]=true;
@@ -179,7 +179,7 @@ methodmap VictorianDroneFragments < CClotBody
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		GetAbsOrigin(npc.index, Vec);
-		if(FactorySpawn)
+		if(FactorySpawndo)
 		{
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{

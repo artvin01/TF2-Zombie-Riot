@@ -207,8 +207,8 @@ static const char g_LaserLoop[][] = {
 
 */
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 int i_Lelouch_Index;
 #define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
@@ -243,12 +243,12 @@ static bool b_Standard_Anchor;
 static bool b_crystals_active[MAXENTITIES];
 static bool b_animation_set[MAXENTITIES];
 static bool b_test_mode[MAXENTITIES];
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
 
 static const char NameColour[] = "{black}";
 static const char TextColour[] = "{snow}";
 
-static int i_wingslot[MAXENTITIES];
+
 static int i_specialentslot[MAXENTITIES];
 
 void Lelouch_OnMapStart_NPC()
@@ -2457,20 +2457,6 @@ static int[] Lelouch_Colors()
 {
 	int color[4] = {255,255,255,255};
 	return color;
-}
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
 }
 
 static void Handle_Animations(Lelouch npc)
