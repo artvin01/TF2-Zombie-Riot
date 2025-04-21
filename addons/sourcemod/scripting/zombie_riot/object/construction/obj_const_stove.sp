@@ -20,8 +20,8 @@ static const char Artifacts[][] =
 	"The Second Banana"
 };
 
-static const int WaterCost = 10;
-static const int BofaCost = 30;
+static const int WaterCost = 30;
+static const int BofaCost = 10;
 
 static int NPCId;
 static float GlobalCooldown;

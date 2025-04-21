@@ -1058,6 +1058,7 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 		return false;
 	}
 
+
 	if(!CheckInHud())
 	{
 		if(ResourceList)
@@ -1077,6 +1078,14 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 					damage -= float(info.Defense);
 					if(damage < minDamage)
 						damage = minDamage;
+
+						
+					float MaxDamage = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+
+					MaxDamage /= 25.0;
+					if(damage > MaxDamage)
+						damage = MaxDamage;
+
 				}
 
 				if(npc.Anger && RiskList)
