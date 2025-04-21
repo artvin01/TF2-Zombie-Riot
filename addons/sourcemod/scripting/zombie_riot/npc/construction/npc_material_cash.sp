@@ -42,8 +42,9 @@ methodmap MaterialCash < CClotBody
 		npc.m_iNpcStepVariation = 0;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
-		npc.m_flRangedArmor = 0.1;
+	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = true;	// If true, summons an attack wave when mining
 		npc.m_bCamo = true;	// For AI attacking resources
@@ -66,12 +67,10 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void ClotDeath(int entity)
 {
-	int cash = 1500;
+	int cash = 1000;
 
-	int GetRound = Construction_GetRound();
-	if(GetRound <= 2)
-		GetRound = 2;
-
+	int GetRound = Construction_GetRisk() + 3;
+	
 	cash *= GetRound;
 
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);

@@ -42,8 +42,9 @@ methodmap MaterialJalan < CClotBody
 		npc.m_iNpcStepVariation = 0;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
-		npc.m_flRangedArmor = 0.1;
+	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = true;	// If true, summons an attack wave when mining
 		npc.m_bCamo = true;	// For AI attacking resources
@@ -63,7 +64,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		Construction_OnTakeDamage("jalan", 30, victim, attacker, damage, damagetype);
+		Construction_OnTakeDamage("jalan", 0, victim, attacker, damage, damagetype);
 	}
 }
 

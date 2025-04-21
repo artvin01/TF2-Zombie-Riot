@@ -2185,7 +2185,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
-						Music_Stop_All(i);
+						if(!Construction_Mode() || Construction_FinalBattle())
+							Music_Stop_All(i);
+
 						if(!subgame)
 						{
 							SendConVarValue(i, sv_cheats, "1");

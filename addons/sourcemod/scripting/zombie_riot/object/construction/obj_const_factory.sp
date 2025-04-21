@@ -55,6 +55,7 @@ methodmap ObjectFactory < ObjectGeneric
  		b_CantCollidie[npc.index] = true;
 	 	b_CantCollidieAlly[npc.index] = true;
 		npc.m_bThisEntityIgnored = true;
+		npc.m_bConstructBuilding = true;
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;

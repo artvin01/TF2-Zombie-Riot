@@ -86,6 +86,7 @@ void Object_PluginStart()
 	.DefineIntField("m_iRepairMax")
 	.DefineIntField("m_iMaxHealth")
 	.DefineBoolField("m_bSentryBuilding")
+	.DefineBoolField("m_bConstructBuilding")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -424,6 +425,17 @@ methodmap ObjectGeneric < CClotBody
 		public get()
 		{
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bSentryBuilding"));
+		}
+	}
+	property bool m_bConstructBuilding
+	{
+		public set(bool value)
+		{
+			SetEntProp(this.index, Prop_Data, "m_bConstructBuilding", value);
+		}
+		public get()
+		{
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bConstructBuilding"));
 		}
 	}
 	property bool m_bBurning
@@ -848,7 +860,7 @@ int Object_SupportBuildings(int owner, int &all = 0)
 				continue;
 			
 			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-			if(objstats.SentryBuilding)
+			if(objstats.SentryBuilding || objstats.m_bConstructBuilding)
 				continue;
 			
 			all++;

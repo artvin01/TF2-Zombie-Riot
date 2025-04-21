@@ -45,6 +45,7 @@ methodmap ObjectConstruction_LightHouse < ObjectGeneric
 		
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCThink[npc.index] = ClotThink;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}

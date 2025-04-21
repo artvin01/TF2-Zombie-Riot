@@ -41,6 +41,7 @@ methodmap ObjectResearch < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}

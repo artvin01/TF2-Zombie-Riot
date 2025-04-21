@@ -155,6 +155,11 @@ int Construction_GetRound()
 	return round;
 }
 
+int Construction_GetRisk()
+{
+	return CurrentRisk;
+}
+
 bool Construction_FinalBattle()
 {
 	return CurrentAttacks > MaxAttacks;
@@ -216,6 +221,8 @@ void Construction_SetupVote(KeyValues kv)
 	AttackRiskBonus = kv.GetNum("attackrisk");
 	RiskIncrease = kv.GetNum("riskincrease");
 	MaxResource = kv.GetNum("resourcecount");
+
+	char buffer[64];
 	
 	if(kv.JumpToKey("Research"))
 	{
@@ -343,9 +350,12 @@ void Construction_SetupVote(KeyValues kv)
 			kv.GoBack();
 		}
 
+		PrintToChatAll("RandomMusic: Found %d themes", count);
+
 		if(count)
 		{
 			count = Waves_MapSeed() % count;
+			PrintToChatAll("RandomMusic: Selected #%d", count);
 
 			if(kv.GotoFirstSubKey())
 			{
@@ -354,10 +364,12 @@ void Construction_SetupVote(KeyValues kv)
 					kv.GotoNextKey();
 				}
 
-				kv.GetSectionName(BackgroundMusic.Path, sizeof(BackgroundMusic.Path));
+				kv.GetSectionName(buffer, sizeof(buffer));
 				kv.GoBack();
-				
-				BackgroundMusic.SetupKv(BackgroundMusic.Path, kv);
+
+				PrintToChatAll("RandomMusic: '%s'", buffer);
+				BackgroundMusic.SetupKv(buffer, kv);
+				PrintToChatAll("RandomMusic: '%s'", BackgroundMusic.Path);
 			}
 		}
 
@@ -895,13 +907,13 @@ static int RiskBonusFromDistance(const float pos[3])
 	return RoundFloat(GetVectorDistance(pos, pos2, true) / 400000000.0 * float(HighestRisk));
 }
 
-static bool UpdateValidSpawners(const float pos[3], int type)
+static bool UpdateValidSpawners(const float pos1[3], int type)
 {
-	CNavArea goalArea = TheNavMesh.GetNavArea(pos, 1000.0);
+	CNavArea goalArea = TheNavMesh.GetNavArea(pos1, 1000.0);
 	if(goalArea == NULL_AREA)
 	{
 		CurrentSpawnName[0] = 0;
-		PrintToChatAll("ERROR: Could not find valid nav area for location (%f %f %f)", pos[0], pos[1], pos[2]);
+		PrintToChatAll("ERROR: Could not find valid nav area for location (%f %f %f)", pos1[0], pos1[1], pos1[2]);
 		return false;
 	}
 
@@ -921,30 +933,45 @@ static bool UpdateValidSpawners(const float pos[3], int type)
 		}
 	}
 
+	float pos2[3];
+	float distance = FAR_FUTURE;
 	int length = list.Length;
 	for(int i; i < length; i++)
 	{
 		int entity = list.Get(i);
 
+		float dist = 0.0;
+
+		if(type < 2)
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
+			dist = GetVectorDistance(pos1, pos2, true);
+			if(dist > distance)
+				continue;
+		}
+
 		CNavArea startArea = TheNavMesh.GetNavAreaEntity(entity, view_as<GetNavAreaFlags_t>(0), 1000.0);
 		if(startArea == NULL_AREA)
 			continue;
 		
-		if(TheNavMesh.BuildPath(startArea, goalArea, pos))
+		if(TheNavMesh.BuildPath(startArea, goalArea, pos1))
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
-
-			delete list;
-
-			Spawners_Timer();
-			return true;
+			distance = dist;
 		}
 	}
 
-	CurrentSpawnName[0] = 0;
-	PrintToChatAll("ERROR: Could not find valid spawner to path to location (%f %f %f)", pos[0], pos[1], pos[2]);
-
 	delete list;
+
+	if(distance != FAR_FUTURE)
+	{
+		Spawners_Timer();
+		return true;
+	}
+
+	CurrentSpawnName[0] = 0;
+	PrintToChatAll("ERROR: Could not find valid spawner to path to location (%f %f %f)", pos1[0], pos1[1], pos1[2]);
+
 	Spawners_Timer();
 	return false;
 }

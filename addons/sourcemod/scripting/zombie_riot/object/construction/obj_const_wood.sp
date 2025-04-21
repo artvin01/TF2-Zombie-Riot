@@ -42,6 +42,7 @@ methodmap ObjectWood < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.m_bConstructBuilding = true;
 
 		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 130.0;
 

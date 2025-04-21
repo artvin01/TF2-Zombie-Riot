@@ -653,6 +653,7 @@ public Action SetTimeBack(Handle timer)
 
 void Music_Stop_All(int client)
 {
+//	LogStackTrace("stoppedmusic");
 	if(DelayStopSoundAll[client] < GetGameTime())
 	{
 		//dont spam these
@@ -938,7 +939,7 @@ void Music_Update(int client)
 					continue;
 				//if its a stationary static npc, then it by default means no harm.
 
-				
+
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				float distance = GetVectorDistance(chargerPos, targPos, true);
 				CClotBody npcstats = view_as<CClotBody>(entity);

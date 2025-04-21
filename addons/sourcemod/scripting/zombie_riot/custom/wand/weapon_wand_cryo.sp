@@ -408,7 +408,7 @@ void Cryo_FreezeZombie(int client, int zombie, int type)
 	if(type != 3)
 		ApplyStatusEffect(client, zombie, "Frozen", FreezeDuration);
 
-	if (!IsValidEntity(ZNPC.m_iFreezeWearable))
+	if (!IsValidEntity(ZNPC.m_iFreezeWearable) && !HasSpecificBuff(zombie, "Clear Head"))
 	{
 		float offsetToHeight = 40.0;
 		if(b_IsGiant[zombie])

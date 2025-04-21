@@ -70,6 +70,7 @@ methodmap ObjectWall1 < ObjectGeneric
 		ObjectWall1 npc = view_as<ObjectWall1>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier01.mdl", _, "600", {49.0, 49.0, 177.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild1;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}
@@ -114,6 +115,7 @@ methodmap ObjectWall2 < ObjectGeneric
 		ObjectWall2 npc = view_as<ObjectWall2>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier02.mdl", _, "600", {98.0, 98.0, 177.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild2;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}
@@ -155,6 +157,7 @@ methodmap ObjectWall3 < ObjectGeneric
 		ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier03.mdl", _, "600", {192.0, 192.0, 177.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild3;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}
