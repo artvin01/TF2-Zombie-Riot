@@ -61,12 +61,12 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		Construction_OnTakeDamage("wizuh", 20, victim, attacker, damage, damagetype);
+		Construction_OnTakeDamage("wizuh", 30, victim, attacker, damage, damagetype);
 	}
 }
 
 static void ClotDeath(int entity)
 {
 	MaterialWizuh npc = view_as<MaterialWizuh>(entity);
-	Construction_NPCDeath("wizuh", 20, npc);
+	Construction_NPCDeath("wizuh", 30, npc);
 }

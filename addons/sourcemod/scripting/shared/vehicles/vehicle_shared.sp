@@ -371,12 +371,12 @@ bool Vehicle_Enter(int vehicle, int target)
 	
 	if(target > 0 && target <= MaxClients)
 	{
-		/*SetEntityFlags(target, GetEntityFlags(target) & ~(FL_DUCKING));
+		SetEntityFlags(target, GetEntityFlags(target) & ~(FL_DUCKING));
 		SetEntProp(target, Prop_Send, "m_nAirDucked", 8);
 		SetEntProp(target, Prop_Data, "deadflag", true);
 		SetVariantString("self.AddCustomAttribute(\"no_duck\", 1, -1)");
-		AcceptEntityInput(target, "RunScriptCode");*/
-		ForcePlayerCrouch(target, true, false);
+		AcceptEntityInput(target, "RunScriptCode");
+		/*ForcePlayerCrouch(target, true, false);*/
 	}
 	return true;
 }
@@ -432,6 +432,7 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 	{
 		obj.m_hDriver = -1;
 		wasDriver = true;
+		PrintToChatAll("ExitVehicle %d: %N exit as driver", vehicle, target);
 	}
 	else
 	{
@@ -441,10 +442,15 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 			if(passenger == target)
 			{
 				SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", -1, i);
+				PrintToChatAll("ExitVehicle %d: %N exit as passenger %d", vehicle, target, i);
 				break;
 			}
 		}
 	}
+
+	int entity = Vehicle_Driver(target);
+	if(entity != -1)
+		PrintToChatAll("ExitVehicle %d: %N still in a seat somehow???", vehicle, target);
 
 	AcceptEntityInput(target, "ClearParent");
 
@@ -470,9 +476,9 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 		SetEntityCollisionGroup(target, COLLISION_GROUP_PLAYER);
 		SetEntityMoveType(target, MOVETYPE_WALK);
 		
-		/*SetVariantString("self.RemoveCustomAttribute(\"no_duck\")");
-		AcceptEntityInput(target, "RunScriptCode");*/
-		ForcePlayerCrouch(target, false);
+		SetVariantString("self.RemoveCustomAttribute(\"no_duck\")");
+		AcceptEntityInput(target, "RunScriptCode");
+		/*ForcePlayerCrouch(target, false);*/
 	}
 
 	if(teleport)

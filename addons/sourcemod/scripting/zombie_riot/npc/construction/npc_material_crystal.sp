@@ -60,12 +60,12 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		Construction_OnTakeDamage("crystal", 20, victim, attacker, damage, damagetype);
+		Construction_OnTakeDamage("crystal", 30, victim, attacker, damage, damagetype);
 	}
 }
 
 static void ClotDeath(int entity)
 {
 	MaterialCrystal npc = view_as<MaterialCrystal>(entity);
-	Construction_NPCDeath("crystal", 20, npc);
+	Construction_NPCDeath("crystal", 30, npc);
 }

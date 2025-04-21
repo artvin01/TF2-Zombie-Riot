@@ -61,7 +61,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(attacker > 0)
 	{
 		MaterialCopper npc = view_as<MaterialCopper>(victim);
-		Construction_OnTakeDamage("copper", 25, victim, attacker, damage, damagetype);
+		Construction_OnTakeDamage("copper", 35, victim, attacker, damage, damagetype);
 		if(!npc.Anger)
 			npc.m_bCamo = false;
 	}
@@ -70,5 +70,5 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 static void ClotDeath(int entity)
 {
 	MaterialCopper npc = view_as<MaterialCopper>(entity);
-	Construction_NPCDeath("copper", 25, npc);
+	Construction_NPCDeath("copper", 35, npc);
 }

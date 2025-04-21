@@ -77,7 +77,7 @@ static void ClotThink(ObjectSentrygun npc)
 	{
 		return;
 	}
-	LighthouseGiveBuff(npc.index, 500.0);
+	LighthouseGiveBuff(npc.index, 1000.0);
 }
 
 static int CountBuildings()
@@ -94,7 +94,7 @@ static int CountBuildings()
 	return count;
 }
 
-static void LighthouseGiveBuff(int iNpc, float range = 500.0)
+static void LighthouseGiveBuff(int iNpc, float range = 1000.0)
 {
 	b_NpcIsTeamkiller[iNpc] = true;
 	Explode_Logic_Custom(0.0,

@@ -824,11 +824,12 @@ bool Construction_UpdateMvMStats()
 				}
 				default:
 				{
+					bool found;
 					while(snapPos < snapLength)
 					{
 						static const char prefix[] = "material_";
 
-						int size = snap.KeyBufferSize(snapPos) + sizeof(prefix) + 1;
+						int size = snap.KeyBufferSize(snapPos) + strlen(prefix) + 1;
 						char[] key = new char[size];
 						snap.GetKey(snapPos, key, size);
 						snapPos++;
@@ -839,14 +840,20 @@ bool Construction_UpdateMvMStats()
 						{
 							Format(key, size, "%s%s", prefix, key);
 							Waves_SetWaveClass(objective, i, amount, key, MVM_CLASS_FLAG_NORMAL, true);
+							found = true;
 							break;
 						}
 					}
+
+					if(found)
+						continue;
 				}
 			}
 
 			Waves_SetWaveClass(objective, i);
 		}
+
+		delete snap;
 	}
 
 	return true;
@@ -924,6 +931,8 @@ static bool UpdateValidSpawners(const float pos[3], int type)
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
 
 			delete list;
+
+			Spawners_Timer();
 			return true;
 		}
 	}
@@ -932,6 +941,7 @@ static bool UpdateValidSpawners(const float pos[3], int type)
 	PrintToChatAll("ERROR: Could not find valid spawner to path to location (%f %f %f)", pos[0], pos[1], pos[2]);
 
 	delete list;
+	Spawners_Timer();
 	return false;
 }
 

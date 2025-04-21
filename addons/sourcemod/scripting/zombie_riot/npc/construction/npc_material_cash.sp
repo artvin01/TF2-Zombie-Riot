@@ -66,13 +66,12 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void ClotDeath(int entity)
 {
-	int cash = 500;
+	int cash = 1500;
 
 	int GetRound = Construction_GetRound();
-	if(GetRound <= 4)
-		GetRound = 4;
-		
-	GetRound /= 2;
+	if(GetRound <= 2)
+		GetRound = 2;
+
 	cash *= GetRound;
 
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);

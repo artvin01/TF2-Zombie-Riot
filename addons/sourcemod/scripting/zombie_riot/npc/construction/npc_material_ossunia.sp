@@ -65,7 +65,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		MaterialOssunia npc = view_as<MaterialOssunia>(victim);
 		bool angery = npc.Anger;
-		if(Construction_OnTakeDamage("ossunia", 20, victim, attacker, damage, damagetype))
+		if(Construction_OnTakeDamage("ossunia", 30, victim, attacker, damage, damagetype))
 		{
 			if(angery)
 			{
@@ -95,5 +95,5 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 static void ClotDeath(int entity)
 {
 	MaterialOssunia npc = view_as<MaterialOssunia>(entity);
-	Construction_NPCDeath("ossunia", 20, npc);
+	Construction_NPCDeath("ossunia", 30, npc);
 }

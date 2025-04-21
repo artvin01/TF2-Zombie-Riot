@@ -52,7 +52,7 @@
 	{
 		"en"	"Broken Server"
 	}
-	"Material Wood"
+	"Material wood"
 	{
 		"en"	"Wood"
 	}
@@ -60,7 +60,7 @@
 	{
 		"en"	"Stone"
 	}
-	"Material Iron"
+	"Material iron"
 	{
 		"en"	"Iron Ore"
 	}
@@ -84,7 +84,7 @@
 	{
 		"en"	"Ossunia Ore"
 	}
-	"Material Water"
+	"Material water"
 	{
 		"en"	"Fresh Water"
 	}
@@ -92,7 +92,7 @@
 	{
 		"en"	"Wizuh Ore"
 	}
-	"Material Cash"
+	"Material cash"
 	{
 		"en"	"Cash"
 	}

@@ -63,7 +63,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		Construction_OnTakeDamage("jalan", 20, victim, attacker, damage, damagetype);
+		Construction_OnTakeDamage("jalan", 30, victim, attacker, damage, damagetype);
 	}
 }
 
@@ -71,5 +71,5 @@ static void ClotDeath(int entity)
 {
 	MaterialJalan npc = view_as<MaterialJalan>(entity);
 	npc.Anger = true;
-	Construction_NPCDeath("jalan", 20, npc);
+	Construction_NPCDeath("jalan", 30, npc);
 }
