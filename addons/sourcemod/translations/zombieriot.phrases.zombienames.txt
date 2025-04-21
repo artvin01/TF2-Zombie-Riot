@@ -2134,6 +2134,14 @@
 	{
 		"en"	"Soldine"
 	}
+	"Soldinus ilus"
+	{
+		"en"	"Soldinus ilus"
+	}
+	"Selfam Scythus"
+	{
+		"en"	"Selfam Scythus"
+	}
 	"Protecta"
 	{
 		"en"	"Protecta"
