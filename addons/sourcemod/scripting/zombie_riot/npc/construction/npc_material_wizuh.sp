@@ -4,7 +4,7 @@
 void MaterialWizuh_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Material wizuh");
+	strcopy(data.Name, sizeof(data.Name), "Material Wizuh");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_material_wizuh");
 	strcopy(data.Icon, sizeof(data.Icon), "material_wizuh");
 	data.IconCustom = true;

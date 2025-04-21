@@ -52,47 +52,47 @@
 	{
 		"en"	"Broken Server"
 	}
-	"Material wood"
+	"Material Wood"
 	{
 		"en"	"Wood"
 	}
-	"Material stone"
+	"Material Stone"
 	{
 		"en"	"Stone"
 	}
-	"Material iron"
+	"Material Iron"
 	{
 		"en"	"Iron Ore"
 	}
-	"Material bofazem"
+	"Material Bofazem"
 	{
 		"en"	"Bottled Bofazem"
 	}
-	"Material copper"
+	"Material Copper"
 	{
 		"en"	"Copper Ore"
 	}
-	"Material crystal"
+	"Material Crystal"
 	{
 		"en"	"Gem Crystal"
 	}
-	"Material jalan"
+	"Material Jalan"
 	{
 		"en"	"Jalan Ore"
 	}
-	"Material ossunia"
+	"Material Ossunia"
 	{
 		"en"	"Ossunia Ore"
 	}
-	"Material water"
+	"Material Water"
 	{
 		"en"	"Fresh Water"
 	}
-	"Material wizuh"
+	"Material Wizuh"
 	{
 		"en"	"Wizuh Ore"
 	}
-	"Material cash"
+	"Material Cash"
 	{
 		"en"	"Cash"
 	}

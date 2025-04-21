@@ -4,7 +4,7 @@
 void MaterialStone_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Material stone");
+	strcopy(data.Name, sizeof(data.Name), "Material Stone");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_material_stone");
 	strcopy(data.Icon, sizeof(data.Icon), "material_stone");
 	data.IconCustom = true;

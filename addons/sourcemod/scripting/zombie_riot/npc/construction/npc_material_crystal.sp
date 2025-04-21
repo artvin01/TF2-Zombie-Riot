@@ -4,7 +4,7 @@
 void MaterialCrystal_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Material crystal");
+	strcopy(data.Name, sizeof(data.Name), "Material Crystal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_material_crystal");
 	strcopy(data.Icon, sizeof(data.Icon), "material_crystal");
 	data.IconCustom = true;

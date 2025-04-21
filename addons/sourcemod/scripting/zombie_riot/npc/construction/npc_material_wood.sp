@@ -4,7 +4,7 @@
 void MaterialWood_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Material wood");
+	strcopy(data.Name, sizeof(data.Name), "Material Wood");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_material_wood");
 	strcopy(data.Icon, sizeof(data.Icon), "material_wood");
 	data.IconCustom = true;
