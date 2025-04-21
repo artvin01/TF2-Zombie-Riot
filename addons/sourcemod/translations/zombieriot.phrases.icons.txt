@@ -293,6 +293,10 @@
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
 	}
+	"Diversionistico_Elitus Spawn"
+	{
+		"en"	"Diversionistico Elitus Spawn."
+	}
 	"Voided Diversionistico Spawn"
 	{
 		"en"	"Voided Diversionistico Spawn"
