@@ -44,10 +44,18 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 			if(!Rogue_Paradox_IgnoreOdds())
 			{
-				float rand = GetURandomFloat() * ConstructionItems_OddIncrease();
+				float rand = GetURandomFloat();
 				float value = StringToFloat(buffers[0]);
 				if(value >= 1.0)
 					rand *= 100.0;
+				
+				if(Construction_Mode())
+				{
+					if(!Construction_InSetup())
+						value *= 5.0;
+					
+					value *= ConstructionItems_OddIncrease();
+				}
 				
 				value += (Rogue_GetChaosLevel() * 0.1);
 				if(value < rand)
