@@ -347,6 +347,8 @@ bool Vehicle_Enter(int vehicle, int target)
 	if(index == -2)
 		return false;
 	
+//	PrintToChatAll("Vehicle_Enter %d: %N entered in slot %d", vehicle, target, index);
+	
 	if(!b_ThisWasAnNpc[target])
 	{
 		SetEntityCollisionGroup(target, COLLISION_GROUP_IN_VEHICLE);
@@ -362,6 +364,9 @@ bool Vehicle_Enter(int vehicle, int target)
 		float pos2[3];
 		GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos1);
 		GetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", pos2, index);
+
+		// Offset for not being ducked
+		pos2[2] -= 18.0;
 
 		TeleportEntity(target, pos1, _, {0.0, 0.0, 0.0});
 		SetParent(obj.index, target, "root", pos2);
@@ -383,10 +388,20 @@ bool Vehicle_Enter(int vehicle, int target)
 
 static void SwitchToDriver(VehicleGeneric obj, int target)
 {
+	for(int i; i < VEHICLE_MAX_SEATS; i++)
+	{
+		int passenger = GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i);
+		if(passenger == target)
+		{
+			SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", -1, i);
+			break;
+		}
+	}
+
 	float pos[3];
 	GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
 	TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
-	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -40.0});
+	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -68.0});	// Was -40 when being ducked
 	
 	AcceptEntityInput(obj.index, "TurnOn");
 	obj.m_hDriver = target;
@@ -432,7 +447,7 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 	{
 		obj.m_hDriver = -1;
 		wasDriver = true;
-		PrintToChatAll("ExitVehicle %d: %N exit as driver", vehicle, target);
+//		PrintToChatAll("ExitVehicle %d: %N exit as driver", vehicle, target);
 	}
 	else
 	{
@@ -442,15 +457,15 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 			if(passenger == target)
 			{
 				SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", -1, i);
-				PrintToChatAll("ExitVehicle %d: %N exit as passenger %d", vehicle, target, i);
+	//			PrintToChatAll("ExitVehicle %d: %N exit as passenger %d", vehicle, target, i);
 				break;
 			}
 		}
 	}
 
-	int entity = Vehicle_Driver(target);
-	if(entity != -1)
-		PrintToChatAll("ExitVehicle %d: %N still in a seat somehow???", vehicle, target);
+//	int entity = Vehicle_Driver(target);
+//	if(entity != -1)
+//		PrintToChatAll("ExitVehicle %d: %N still in a seat somehow???", vehicle, target);
 
 	AcceptEntityInput(target, "ClearParent");
 
@@ -485,6 +500,7 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 	{
 		CanExit(obj.index, pos, ang);
 		GetEntPropVector(obj.index, Prop_Data, "m_vecVelocity", vel);
+		pos[2] += 8.0;
 		ang[2] = 0.0;
 		TeleportEntity(target, pos, ang, vel);
 	}
