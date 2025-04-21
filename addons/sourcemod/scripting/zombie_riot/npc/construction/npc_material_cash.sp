@@ -69,6 +69,9 @@ static void ClotDeath(int entity)
 	int cash = 500;
 
 	int GetRound = Construction_GetRound();
+	if(GetRound <= 4)
+		GetRound = 4;
+		
 	GetRound /= 2;
 	cash *= GetRound;
 
