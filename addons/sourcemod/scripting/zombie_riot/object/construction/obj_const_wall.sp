@@ -112,7 +112,7 @@ methodmap ObjectWall2 < ObjectGeneric
 {
 	public ObjectWall2(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectWall2 npc = view_as<ObjectWall2>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier02.mdl", "0.7", "600", {40.0, 40.0, 70.0},_,false));
+		ObjectWall2 npc = view_as<ObjectWall2>(ObjectGeneric(client, vecPos, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.7", "600", {40.0, 40.0, 70.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild2;
 		npc.m_bConstructBuilding = true;
