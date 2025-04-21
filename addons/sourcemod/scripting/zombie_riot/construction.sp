@@ -1044,6 +1044,13 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 		return false;
 	}
 
+	if(b_NpcIsInvulnerable[victim])
+	{
+		// cant hurt if invincibke..
+		damage = 0.0;
+		return false;
+	}
+
 	if(npc.Anger && (attacker > MaxClients || !(damagetype & DMG_CLUB)))
 	{
 		// Must provoke it via melee first
@@ -1123,15 +1130,21 @@ static void ResourceBasedOnHealth(const char[] resource, int maxAmount, CClotBod
 {
 	if(Construction_Mode() && maxhealth)
 	{
+//		PrintToChatAll("maxAmount %i",maxAmount);
 		int newAmount = maxAmount - (health * maxAmount / maxhealth) - 1;
+//		PrintToChatAll("newAmount1 %i",newAmount);
 		if(newAmount > maxAmount)
 			newAmount = maxAmount;
 		
-		while(newAmount < npc.g_TimesSummoned)
+//		PrintToChatAll("newAmount2 %i",newAmount);
+		int AmountOfTimesToWarn = 0;
+		while(newAmount > npc.g_TimesSummoned)
 		{
 			npc.g_TimesSummoned++;
-			Construction_AddMaterial(resource, 1);
+			AmountOfTimesToWarn++;
 		}
+		if(AmountOfTimesToWarn != 0)
+			Construction_AddMaterial(resource, AmountOfTimesToWarn);
 	}
 }
 
@@ -1158,7 +1171,7 @@ int Construction_AddMaterial(const char[] short, int gain, bool silent = false)
 	CurrentMaterials.GetValue(short, amount);
 	amount += gain;
 	CurrentMaterials.SetValue(short, amount);
-
+//	PrintToChatAll("short %s gain %i silent %b",short, gain, silent);
 	if(!silent)
 	{
 		char buffer[64];

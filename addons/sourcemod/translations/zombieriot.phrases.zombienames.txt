@@ -2094,6 +2094,10 @@
 	{
 		"en" 		"Diversionistico"
 	}
+	"Diversionistico Elitus"
+	{
+		"en" 		"Diversionistico Elitus"
+	}
 	"Adiantum"
 	{
 		"en"	"Adiantum"

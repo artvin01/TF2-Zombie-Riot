@@ -163,7 +163,9 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material Iron", ossunia, ossuniaCost, "Material Ossunia", "Crouch and select to view description");
+	char buffer2[512];
+	Format(buffer2, sizeof(buffer2), "%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material Iron", ossunia, ossuniaCost, "Material ossunia", "Crouch and select to view description");
+	menu.SetTitle(buffer2);
 
 	char buffer[64];
 	for(int i; i < sizeof(Vehicles); i++)
@@ -239,7 +241,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 						NPC_CreateByName(buffer, -1, pos, ang, TFTeam_Red);
 
 						NPC_GetNameByPlugin(buffer, buffer, sizeof(buffer));
-						CPrintToChatAll("%t {orange}%t", "Player Used 2 to", client, IronCost, "Material Iron", ossuniaCost, "Material Ossunia", buffer);
+						CPrintToChatAll("%t {orange}%t", "Player Used 2 to", client, IronCost, "Material Iron", ossuniaCost, "Material ossunia", buffer);
 					}
 				}
 			}

@@ -162,7 +162,7 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n \n%t", "Cooking Stove", water, WaterCost, "Material Water", bofazem, BofaCost, "Material Bofazem", "Crouch and select to view description");
+	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n \n%t", "Cooking Stove", water, WaterCost, "Material Water", bofazem, BofaCost, "Material bofazem", "Crouch and select to view description");
 
 	char buffer[64];
 	for(int i; i < sizeof(Enabled); i++)
@@ -200,7 +200,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 				GlobalCooldown = 300.0;
 				Shuffled = false;
 
-				CPrintToChatAll("%t", "Player Used 2 to", client, WaterCost, "Material Water", BofaCost, "Material Bofazem");
+				CPrintToChatAll("%t", "Player Used 2 to", client, WaterCost, "Material Water", BofaCost, "Material bofazem");
 				
 				Construction_AddMaterial("water", -WaterCost, true);
 				Construction_AddMaterial("bofazem", -BofaCost, true);

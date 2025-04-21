@@ -4,7 +4,7 @@
 void MaterialOssunia_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Material Ossunia");
+	strcopy(data.Name, sizeof(data.Name), "Material ossunia");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_material_ossunia");
 	strcopy(data.Icon, sizeof(data.Icon), "material_ossunia");
 	data.IconCustom = true;

@@ -32,7 +32,7 @@
 	}
 	"Finish Research Desc"
 	{
-		"#format"	"{1:N},{2:s}"
+		"#format"	"{1:s},{2:t}"
 		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
 	}
 	"Crouch and select to view description"
@@ -56,7 +56,7 @@
 	{
 		"en"	"Wood"
 	}
-	"Material Stone"
+	"Material stone"
 	{
 		"en"	"Stone"
 	}
@@ -64,23 +64,23 @@
 	{
 		"en"	"Iron Ore"
 	}
-	"Material Bofazem"
+	"Material bofazem"
 	{
 		"en"	"Bottled Bofazem"
 	}
-	"Material Copper"
+	"Material copper"
 	{
 		"en"	"Copper Ore"
 	}
-	"Material Crystal"
+	"Material crystal"
 	{
 		"en"	"Gem Crystal"
 	}
-	"Material Jalan"
+	"Material jalan"
 	{
 		"en"	"Jalan Ore"
 	}
-	"Material Ossunia"
+	"Material ossunia"
 	{
 		"en"	"Ossunia Ore"
 	}
@@ -88,7 +88,7 @@
 	{
 		"en"	"Fresh Water"
 	}
-	"Material Wizuh"
+	"Material wizuh"
 	{
 		"en"	"Wizuh Ore"
 	}

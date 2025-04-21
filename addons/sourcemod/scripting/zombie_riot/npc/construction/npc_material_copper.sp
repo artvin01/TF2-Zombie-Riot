@@ -4,7 +4,7 @@
 void MaterialCopper_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Material Copper");
+	strcopy(data.Name, sizeof(data.Name), "Material copper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_material_copper");
 	strcopy(data.Icon, sizeof(data.Icon), "material_copper");
 	data.IconCustom = true;

@@ -4,7 +4,7 @@
 void MaterialJalan_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Material Jalan");
+	strcopy(data.Name, sizeof(data.Name), "Material jalan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_material_jalan");
 	strcopy(data.Icon, sizeof(data.Icon), "material_jalan");
 	data.IconCustom = true;

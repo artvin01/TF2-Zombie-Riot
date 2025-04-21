@@ -116,7 +116,7 @@ static bool ClotInteract(int client, int weapon, ObjectMinter npc)
 
 	if(Construction_GetMaterial("crystal") > 4)
 	{
-		CPrintToChatAll("%t 1000 Cash", "Player Used 1 to", client, 5, "Material Crystal");
+		CPrintToChatAll("%t 1000 Cash", "Player Used 1 to", client, 5, "Material crystal");
 
 		CurrentCash += 1000;
 		GlobalExtraCash += 1000;	
