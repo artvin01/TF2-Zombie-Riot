@@ -578,6 +578,8 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 											
 										if(Construction_Mode())
 											CooldownGive *= 3.0;
+											
+										UpdateDoublebuilding(entity);
 										
 										info.Cooldowns[client] = GetGameTime() + CooldownGive;
 										BuildingList.SetArray(id, info);
@@ -807,7 +809,11 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
 		return;
-
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(IsValidEntity(objstats.m_iMasterBuilding))
+	{
+		entity = objstats.m_iMasterBuilding;
+	}
 	Building_PlayerWieldsBuilding(client, entity);
 }
 
@@ -1269,6 +1275,15 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask, any iEx
 	if(b_ThisEntityIgnored[entity])
 		return false;
 
+	if(i_IsABuilding[iExclude])
+	{
+		ObjectGeneric objstats = view_as<ObjectGeneric>(iExclude);
+		if(objstats.m_iExtrabuilding1 == entity)
+			return false;
+		else if(objstats.m_iExtrabuilding2 == entity)
+			return false;
+	}
+
 	if(i_IsABuilding[entity]) // Only buildings should be allowed
 	{
 		return true;
@@ -1697,6 +1712,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 		}
 		
 	}
+	UpdateDoublebuilding(target);
 	int HealDo;
 	HealDo = HealGiven / 3;
 	if(HealDo <= 1)
@@ -1707,6 +1723,53 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	CurrentAmmo[client][3] = GetAmmo(client, 3);
 }
 
+
+void UpdateDoublebuilding(int entity)
+{
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(IsValidEntity(objstats.m_iMasterBuilding))
+	{
+		SetEntProp(objstats.m_iMasterBuilding, Prop_Data, "m_iRepair", GetEntProp(entity, Prop_Data, "m_iRepair"));
+		SetEntProp(objstats.m_iMasterBuilding, Prop_Data, "m_iRepairMax", GetEntProp(entity, Prop_Data, "m_iRepairMax"));
+		SetEntProp(objstats.m_iMasterBuilding, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
+		SetEntProp(objstats.m_iMasterBuilding, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		ObjectGeneric objstats2 = view_as<ObjectGeneric>(objstats.m_iMasterBuilding);
+
+		if(IsValidEntity(objstats2.m_iExtrabuilding1))
+		{
+			SetEntProp(objstats2.m_iExtrabuilding1, Prop_Data, "m_iRepair", GetEntProp(entity, Prop_Data, "m_iRepair"));
+			SetEntProp(objstats2.m_iExtrabuilding1, Prop_Data, "m_iRepairMax", GetEntProp(entity, Prop_Data, "m_iRepairMax"));
+			SetEntProp(objstats2.m_iExtrabuilding1, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
+			SetEntProp(objstats2.m_iExtrabuilding1, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		}
+
+		if(IsValidEntity(objstats2.m_iExtrabuilding2))
+		{
+			SetEntProp(objstats2.m_iExtrabuilding2, Prop_Data, "m_iRepair", GetEntProp(entity, Prop_Data, "m_iRepair"));
+			SetEntProp(objstats2.m_iExtrabuilding2, Prop_Data, "m_iRepairMax", GetEntProp(entity, Prop_Data, "m_iRepairMax"));
+			SetEntProp(objstats2.m_iExtrabuilding2, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
+			SetEntProp(objstats2.m_iExtrabuilding2, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		}
+	}
+	else
+	{
+		if(IsValidEntity(objstats.m_iExtrabuilding1))
+		{
+			SetEntProp(objstats.m_iExtrabuilding1, Prop_Data, "m_iRepair", GetEntProp(entity, Prop_Data, "m_iRepair"));
+			SetEntProp(objstats.m_iExtrabuilding1, Prop_Data, "m_iRepairMax", GetEntProp(entity, Prop_Data, "m_iRepairMax"));
+			SetEntProp(objstats.m_iExtrabuilding1, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
+			SetEntProp(objstats.m_iExtrabuilding2, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		}
+
+		if(IsValidEntity(objstats.m_iExtrabuilding2))
+		{
+			SetEntProp(objstats.m_iExtrabuilding2, Prop_Data, "m_iRepair", GetEntProp(entity, Prop_Data, "m_iRepair"));
+			SetEntProp(objstats.m_iExtrabuilding2, Prop_Data, "m_iRepairMax", GetEntProp(entity, Prop_Data, "m_iRepairMax"));
+			SetEntProp(objstats.m_iExtrabuilding2, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
+			SetEntProp(objstats.m_iExtrabuilding2, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		}
+	}
+}
 
 void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = false, bool BarracksUpgrade = false)
 {
@@ -2042,8 +2105,11 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		}
 	}
 
-	Building_RotateAllDepencencies(entity);
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(objstats.m_bConstructBuilding)
+		return false;	// Too fat
+
+	Building_RotateAllDepencencies(entity);
 	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 	ModelScale *= 0.33;
 

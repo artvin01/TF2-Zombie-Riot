@@ -48,6 +48,11 @@
 		"#format"	"{1:d}"
 		"en"	"Claim Research: {1}s"
 	}
+	"Start Mining"
+	{
+		"#format"	"{1:s}"
+		"en"	"Start mining {1}? A raid might spawn nearby."
+	}
 	"Broken Server"
 	{
 		"en"	"Broken Server"

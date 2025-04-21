@@ -64,8 +64,6 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		MaterialCopper npc = view_as<MaterialCopper>(victim);
 		Construction_OnTakeDamage("copper", 0, victim, attacker, damage, damagetype);
-		if(!npc.Anger)
-			npc.m_bCamo = false;
 	}
 }
 

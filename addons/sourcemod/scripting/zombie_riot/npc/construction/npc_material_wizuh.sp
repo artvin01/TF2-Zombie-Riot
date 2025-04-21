@@ -44,7 +44,7 @@ methodmap MaterialWizuh < CClotBody
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
-	//	npc.m_flMeleeArmor = 0.1;
+		npc.m_flMeleeArmor = 0.5;
 		npc.m_flRangedArmor = 2.0;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = true;	// If true, summons an attack wave when mining

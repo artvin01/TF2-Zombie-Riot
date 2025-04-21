@@ -907,6 +907,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Rounds = new ArrayList(sizeof(Round));
 	
+	CurrentRound = 0;
+	CurrentWave = -1;
+	
 	Waves_ClearWaves();
 	Waves_ResetCashGiveWaveEnd();
 	

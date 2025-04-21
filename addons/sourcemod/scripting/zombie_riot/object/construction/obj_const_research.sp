@@ -20,7 +20,7 @@ void ObjectResearch_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_research");
-	build.Cost = 1000;
+	build.Cost = 400;
 	build.Health = 50;
 	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;

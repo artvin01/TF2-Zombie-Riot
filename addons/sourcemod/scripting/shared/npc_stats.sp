@@ -2561,6 +2561,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
 		}
+		b_ThisEntityIgnored[item] = true;
 
 #if defined RPG
 		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
@@ -2626,6 +2627,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
 		}
+		b_ThisEntityIgnored[item] = true;
 
 #if defined RPG
 		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
@@ -2667,7 +2669,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		
 		float eyePitch[3];
-		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
+		if(Npc_type != 3)
+			GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
@@ -2676,9 +2679,12 @@ methodmap CClotBody < CBaseCombatCharacter
 			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
 		
 		WorldSpaceCenter(this.index, vecForward);
+	//	GetAbsOrigin(this.index, vecForward);
+	//	vecForward[2] += 45.0;
 		MakeVectorFromPoints(vecForward, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
-		vecForward[1] = eyePitch[1];
+		if(Npc_type != 3)
+			vecForward[1] = eyePitch[1];
 		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
 		
 		float vecSwingStart[3];
@@ -2690,6 +2696,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * vecSwingMaxs[0];
 		vecSwingEnd[1] = vecSwingStart[1] + vecForward[1] * vecSwingMaxs[1];
 		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * vecSwingMaxs[2];
+	//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	//	TE_SendToAll();
 		
 #if defined ZR
 		bool ingore_buildings = false;

@@ -4362,6 +4362,19 @@ void StatusEffects_Construction()
 	data.Slot						= 14;
 	data.SlotPriority				= 1;
 	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Medusa's Teslar");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "T");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= 0.25;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.35;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0;
+	data.SlotPriority				= 20;
+	HighTeslarIndex = StatusEffect_AddGlobal(data);
 }
 
 void StatusEffects_BubbleWand1()

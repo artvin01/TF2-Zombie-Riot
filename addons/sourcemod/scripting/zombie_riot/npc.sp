@@ -97,6 +97,9 @@ void NPC_ConfigSetup()
 	ObjectMinter_MapStart();
 	ObjectStove_MapStart();
 	ObjectFactory_MapStart();
+	ObjectHeavyCaliberTurret_MapStart();
+	Object_MinigunTurret_MapStart();
+	Object_TeslarsMedusa_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -938,6 +941,7 @@ void NPC_ConfigSetup()
 	MaterialStone_MapStart();
 	MaterialWizuh_MapStart();
 	MaterialWood_MapStart();
+	MaterialEvilExpi_MapStart();
 
 	//April Fools
 	PackaPunch_OnMapStart();
@@ -1292,6 +1296,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/construction/obj_const_stone.sp"
 #include "zombie_riot/object/construction/obj_const_minter.sp"
 #include "zombie_riot/object/construction/obj_const_wall.sp"
+#include "zombie_riot/object/construction/obj_supergun.sp"
+#include "zombie_riot/object/construction/obj_minigun_turret.sp"
+#include "zombie_riot/object/construction/obj_teslars_medusa.sp"
 
 // VEHICLES
 #include "shared/vehicles/vehicle_shared.sp"
@@ -2109,6 +2116,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/construction/npc_material_stone.sp"
 #include "zombie_riot/npc/construction/npc_material_wizuh.sp"
 #include "zombie_riot/npc/construction/npc_material_wood.sp"
+#include "zombie_riot/npc/construction/npc_rogue_expi_building.sp"
 
 // April Fools
 #include "zombie_riot/npc/aprilfools/npc_packapunch.sp"

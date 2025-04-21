@@ -66,6 +66,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		}
 		else
 		{
+			MaterialStone npc = view_as<MaterialStone>(victim);
 			bool angery = npc.Anger;
 			bool attack = Construction_OnTakeDamageCustom("construction/ending1_fight", victim, attacker, damage, damagetype);
 			if(attack && angery && attacker > 0 && attacker <= MaxClients)

@@ -34,8 +34,8 @@ void ObjectFactory_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_factory");
-	build.Cost = 5000;
-	build.Health = 150;
+	build.Cost = 2000;
+	build.Health = 250;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);

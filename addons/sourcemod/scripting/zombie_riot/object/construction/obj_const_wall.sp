@@ -112,10 +112,28 @@ methodmap ObjectWall2 < ObjectGeneric
 {
 	public ObjectWall2(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectWall2 npc = view_as<ObjectWall2>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier02.mdl", _, "600", {98.0, 98.0, 177.0},_,false));
+		ObjectWall2 npc = view_as<ObjectWall2>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier02.mdl", "0.7", "600", {40.0, 40.0, 70.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild2;
 		npc.m_bConstructBuilding = true;
+
+		float VecLeft[3];
+		VecLeft = vecPos;
+
+		VecLeft[1] += 40.0;
+		ObjectWall2 npc_left = view_as<ObjectWall2>(ObjectGeneric(client, VecLeft, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {40.0, 40.0, 70.0},_,false));
+		npc.m_iExtrabuilding1 = npc_left.index;
+		npc_left.m_iMasterBuilding = npc.index;
+		SetParent(npc.index, npc_left.index, "root",{0.0, 40.0, 0.0}, true);
+		
+		float Vecright[3];
+		Vecright = vecPos;
+
+		Vecright[1] -= 40.0;
+		ObjectWall2 npc_right = view_as<ObjectWall2>(ObjectGeneric(client, Vecright, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {40.0, 40.0, 70.0},_,false));
+		npc.m_iExtrabuilding2 = npc_right.index;
+		npc_right.m_iMasterBuilding = npc.index;
+		SetParent(npc.index, npc_right.index, "root",{0.0, -40.0, 0.0}, true);
 
 		return npc;
 	}
@@ -154,10 +172,29 @@ methodmap ObjectWall3 < ObjectGeneric
 {
 	public ObjectWall3(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier03.mdl", _, "600", {192.0, 192.0, 177.0},_,false));
+	//	ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier03.mdl", "0.9", "600", {192.0, 192.0, 177.0},_,false));
+		ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild3;
 		npc.m_bConstructBuilding = true;
+		
+		float VecLeft[3];
+		VecLeft = vecPos;
+
+		VecLeft[1] += 50.0;
+		ObjectWall3 npc_left = view_as<ObjectWall3>(ObjectGeneric(client, VecLeft, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));
+		npc.m_iExtrabuilding1 = npc_left.index;
+		npc_left.m_iMasterBuilding = npc.index;
+		SetParent(npc.index, npc_left.index, "root",{0.0, 50.0, 0.0}, true);
+		
+		float Vecright[3];
+		Vecright = vecPos;
+
+		Vecright[1] -= 50.0;
+		ObjectWall3 npc_right = view_as<ObjectWall3>(ObjectGeneric(client, Vecright, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));
+		npc.m_iExtrabuilding2 = npc_right.index;
+		npc_right.m_iMasterBuilding = npc.index;
+		SetParent(npc.index, npc_right.index, "root",{0.0, -50.0, 0.0}, true);
 
 		return npc;
 	}
@@ -193,6 +230,10 @@ static int CountBuildings()
 	{
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		{
+			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+			if(IsValidEntity(objstats.m_iMasterBuilding))
+				continue;
+
 			if(NPCId1 == i_NpcInternalId[entity])
 				count++;
 			

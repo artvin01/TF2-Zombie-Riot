@@ -20,8 +20,8 @@ void ObjectConstruction_LightHouse_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_lighthouse");
-	build.Cost = 3000;
-	build.Health = 150;
+	build.Cost = 1000;
+	build.Health = 125;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -82,7 +82,7 @@ static void ClotThink(ObjectSentrygun npc)
 	{
 		return;
 	}
-	LighthouseGiveBuff(npc.index, 500.0);
+	LighthouseGiveBuff(npc.index, 2000.0);
 }
 
 static int CountBuildings()
@@ -99,7 +99,7 @@ static int CountBuildings()
 	return count;
 }
 
-static void LighthouseGiveBuff(int iNpc, float range = 500.0)
+static void LighthouseGiveBuff(int iNpc, float range = 2000.0)
 {
 	b_NpcIsTeamkiller[iNpc] = true;
 	Explode_Logic_Custom(0.0,

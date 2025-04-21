@@ -47,8 +47,8 @@ void ObjectStove_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_stove");
-	build.Cost = 3000;
-	build.Health = 150;
+	build.Cost = 1000;
+	build.Health = 125;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -168,8 +168,11 @@ static void ThisBuildingMenu(int client)
 	char buffer[64];
 	for(int i; i < sizeof(Enabled); i++)
 	{
-		FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
-		menu.AddItem(Artifacts[i], buffer);
+		if(Enabled[i])
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
+			menu.AddItem(Artifacts[i], buffer);
+		}
 	}
 
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -198,7 +201,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			}
 			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial("water") >= WaterCost && Construction_GetMaterial("bofazem") >= BofaCost)
 			{
-				GlobalCooldown = 300.0;
+				GlobalCooldown = GetGameTime() + 120.0;
 				Shuffled = false;
 
 				CPrintToChatAll("%t", "Player Used 2 to", client, WaterCost, "Material water", BofaCost, "Material bofazem");
