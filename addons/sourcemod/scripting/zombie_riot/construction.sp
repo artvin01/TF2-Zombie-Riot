@@ -49,6 +49,7 @@ enum struct RewardInfo
 	void SetupKv(KeyValues kv)
 	{
 		kv.GetSectionName(this.Name, sizeof(this.Name));
+		this.Name[0] = CharToLower(this.Name[0]);
 
 		char buffer[64];
 		FormatEx(buffer, sizeof(buffer), "Material %s", this.Name);
@@ -88,7 +89,10 @@ enum struct ResearchInfo
 				do
 				{
 					if(kv.GetSectionName(buffer, sizeof(buffer)))
+					{
+						buffer[0] = CharToLower(buffer[0]);
 						this.CostMap.SetValue(buffer, kv.GetNum(NULL_STRING));
+					}
 				}
 				while(kv.GotoNextKey(false));
 
