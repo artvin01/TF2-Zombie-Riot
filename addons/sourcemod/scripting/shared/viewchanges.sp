@@ -89,7 +89,7 @@ static int RobotIndex[10];
 static int CustomIndex[sizeof(PlayerModelsCustom)];
 static int CustomHandIndex[sizeof(PlayerCustomHands)];
 
-static bool b_AntiSameFrameUpdate[MAXTF2PLAYERS][32];
+static bool b_AntiSameFrameUpdate[MAXTF2PLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;
@@ -121,7 +121,7 @@ void ViewChange_MapStart()
 	{
 		CustomHandIndex[i] = PlayerCustomHands[i][0] ? PrecacheModel(PlayerCustomHands[i], true) : 0;
 	}
-	Zero2(b_AntiSameFrameUpdate);
+	Zero(b_AntiSameFrameUpdate);
 
 #if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
@@ -320,7 +320,7 @@ void ViewChange_PlayerModel(int client)
 #if defined ZR || defined RPG
 public void AntiSameFrameUpdateRemove0(int client)
 {
-	b_AntiSameFrameUpdate[client][0] = false;
+	b_AntiSameFrameUpdate[client] = false;
 }
 
 
@@ -343,12 +343,14 @@ void ViewChange_Update(int client, bool full = true)
 		ViewChange_DeleteHands(client);
 	
 
-	if(b_AntiSameFrameUpdate[client][0])
+	//Some weapons or things call it in the same frame, lets prevent this!
+	//If people somehow spam switch, or multiple things call it, lets wait a frame before updating, it allows for easy use iwthout breaking everything
+	if(b_AntiSameFrameUpdate[client])
 		return;
 		
 	RequestFrame(AntiSameFrameUpdateRemove0, client);
 
-	b_AntiSameFrameUpdate[client][0] = true;
+	b_AntiSameFrameUpdate[client] = true;
 	char classname[36];
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)

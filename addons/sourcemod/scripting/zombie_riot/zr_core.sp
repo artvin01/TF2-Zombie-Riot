@@ -1689,12 +1689,12 @@ public Action Timer_Dieing(Handle timer, int client)
 					if(b_DyingTextOff[client])
 					{
 						b_DyingTextOff[client] = false;
-						SetVariantString("DOWNED [T]");
+						SetVariantString("DOWNED");
 						AcceptEntityInput(TextFormat, "SetText");
 					}
 					else
 					{
-						SetVariantString("REVIVE [T]");
+						SetVariantString("REVIVE");
 						AcceptEntityInput(TextFormat, "SetText");
 						b_DyingTextOff[client] = true;
 					}
