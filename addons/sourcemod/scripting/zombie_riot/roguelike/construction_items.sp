@@ -399,3 +399,34 @@ static void SpawnRebel(const char[] data = "")
 		break;
 	}
 }
+
+public void Construction_RareWeapon_Collect()
+{
+	char name[64];
+	float discount = 0.7;
+
+	switch(GetURandomInt() % 7)
+	{
+		case 0, 1:
+		{
+			strcopy(name, sizeof(name), "Vows of the Sea");
+			discount = 0.5;
+		}
+		case 2:
+		{
+			strcopy(name, sizeof(name), "Infinity Blade");
+			discount = 0.5;
+		}
+		case 3, 4:
+		{
+			strcopy(name, sizeof(name), "Whistle Stop");
+		}
+		case 5, 6:
+		{
+			strcopy(name, sizeof(name), "Ancestor Launcher");
+		}
+	}
+
+	Store_DiscountNamedItem(name, 999, discount);
+	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
+}

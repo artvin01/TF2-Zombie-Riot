@@ -12,7 +12,7 @@ void ObjectHeavyCaliberTurret_MapStart()
 	PrecacheModel("models/buildables/sentry1_heavy.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sentrygun");
+	strcopy(data.Name, sizeof(data.Name), "Heavy Calliber");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_heavycalliber");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -25,7 +25,7 @@ void ObjectHeavyCaliberTurret_MapStart()
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_heavycalliber");
 	build.Cost = 600;
-	build.Health = 30;
+	build.Health = 50;
 	build.Cooldown = 30.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -67,7 +67,7 @@ void ObjectHeavyCaliberTurret_ClotThink(ObjectHeavyCaliberTurret npc)
 	npc.m_flNextDelayTime = gameTime + 0.1;
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		float DistanceLimit = 1000.0;
+		float DistanceLimit = 1500.0;
 
 		npc.m_iTarget = GetClosestTarget(npc.index,_,DistanceLimit,.CanSee = true, .UseVectorDistance = true);
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
@@ -112,7 +112,7 @@ void ObjectHeavyCaliberTurret_ClotThink(ObjectHeavyCaliberTurret npc)
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
-			float damageDealt = 1000.0;
+			float damageDealt = 2250.0;
 		//	damageDealt = view_as<Citizen>(Owner).GetDamage();
 
 			if(ShouldNpcDealBonusDamage(target))
@@ -133,13 +133,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	{
 		count = CountBuildings();
 		
-		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Giant Lighthouse"))
+		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Heavy Calliber"))
 		{
 			maxcount = 0;
 			return false;
 		}
 
-		maxcount = 2;
+		maxcount = 1;
 
 		if(Construction_HasNamedResearch("Base Level III"))
 			maxcount++;
@@ -159,7 +159,7 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}
 

@@ -77,11 +77,6 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 
 static void ClotThink(ObjectSentrygun npc)
 {
-	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidEntity(Owner))
-	{
-		return;
-	}
 	LighthouseGiveBuff(npc.index, 2000.0);
 }
 
@@ -92,7 +87,7 @@ static int CountBuildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+		if(NPCId == i_NpcInternalId[entity])
 			count++;
 	}
 

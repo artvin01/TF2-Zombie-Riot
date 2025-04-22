@@ -1475,7 +1475,7 @@ void Construction_OpenResearch(int client)
 
 			IntToString(a, index, sizeof(index));
 			menu.AddItem(index, buffer, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			if(++items > 4)
+			if(++items > 6)
 				break;
 		}
 	}
@@ -1497,6 +1497,8 @@ void Construction_OpenResearch(int client)
 		}
 	}
 
+	menu.Pagination = 0;
+	menu.ExitButton = true;
 	if(menu.Display(client, MENU_TIME_FOREVER))
 		InResearchMenu[client] = CreateTimer(1.0, ResearchTimer, client);
 }

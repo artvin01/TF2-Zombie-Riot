@@ -243,7 +243,7 @@
 	}
 	"Base Level II Desc"
 	{
-		"en"	"Unlocks more upgrades and increases construct traits."
+		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
 	}
 	"Base Level III"
 	{
@@ -251,7 +251,7 @@
 	}
 	"Base Level III Desc"
 	{
-		"en"	"Unlocks more upgrades and increases construct traits."
+		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
 	}
 	"Enchanced Water Pump"
 	{
@@ -331,7 +331,7 @@
 	}
 	"Atomic Soda Desc"
 	{
-		"en"	"Don't ask Scout where it's from.\n{green}Players gain +1% movement speed"
+		"en"	"Don't ask Scout where it's from.\n{green}Players gain +1％ movement speed"
 	}
 	"Critical Water"
 	{
@@ -339,7 +339,7 @@
 	}
 	"Critical Water Desc"
 	{
-		"en"	"With a new flavor.\n{green}Allies gain +5% damage bonus"
+		"en"	"With a new flavor.\n{green}Allies gain +5％ damage bonus"
 	}
 	"Questionable Milk"
 	{
@@ -516,5 +516,101 @@
 	"Rebel Calling V Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+	}
+	"Heavy Calliber"
+	{
+		"en"	"Heavy Calliber"
+	}
+	"Heavy Calliber Desc"
+	{
+		"en"	"A construct that attacks using long-range high-damage rounds."
+	}
+	"Minigun Turret"
+	{
+		"en"	"Minigun Turret"
+	}
+	"Minigun Turret Desc"
+	{
+		"en"	"A construct that attacks using short-range rapid firing rounds."
+	}
+	"Teslar's Medusa"
+	{
+		"en"	"Teslar's Medusa"
+	}
+	"Teslar's Medusa Desc"
+	{
+		"en"	"A construct that attacks using short-range lightning that chains, slows, and debuffs enemies."
+	}
+	"Flagship Calling"
+	{
+		"en"	"Flagship Calling"
+	}
+	"Flagship Calling Desc"
+	{
+		"en"	"Recover a high-grade weapon in the store at a discount."
+	}
+	"Tranquilizer Turret"
+	{
+		"en"	"Tranquilizer Turret"
+	}
+	"Tranquilizer Turret Desc"
+	{
+		"en"	"A construct that attacks using non-damaging stunning rounds."
+	}
+	"The Dispenser"
+	{
+		"en"	"The Dispenser"
+	}
+	"The Dispenser Desc"
+	{
+		"en"	"A construct that heals nearby allies."
+	}
+	"Decorative Furniture"
+	{
+		"en"	"Decorative Furniture"
+	}
+	"Decorative Furniture Desc"
+	{
+		"en"	"Unlocks a set of decorative furniture, for morale."
+	}
+	"Decorative Lamp"
+	{
+		"en"	"Decorative Lamp"
+	}
+	"Decorative Lamp Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Decorative Shelf"
+	{
+		"en"	"Decorative Shelf"
+	}
+	"Decorative Shelf Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Decorative Desk"
+	{
+		"en"	"Decorative Desk"
+	}
+	"Decorative Desk Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Decorative Couch"
+	{
+		"en"	"Decorative Couch"
+	}
+	"Decorative Couch Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Decorative Chair"
+	{
+		"en"	"Decorative Chair"
+	}
+	"Decorative Chair Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
 	}
 }

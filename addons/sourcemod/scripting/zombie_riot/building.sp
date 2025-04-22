@@ -369,7 +369,7 @@ static void BuildingMenu(int client)
 			if(cost > metal)
 				allowed = false;
 			
-			if(Waves_InSetup() || f_AllowInstabuildRegardless > GetGameTime())
+			if((Waves_InSetup() && !Construction_Mode()) || f_AllowInstabuildRegardless > GetGameTime())
 			{
 				cooldown = 0.0;
 			}

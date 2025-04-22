@@ -20,7 +20,7 @@ static const char Artifacts[][] =
 	"The Second Banana"
 };
 
-static const int WaterCost = 30;
+static const int WaterCost = 50;
 static const int BofaCost = 10;
 
 static int NPCId;
@@ -201,7 +201,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			}
 			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial("water") >= WaterCost && Construction_GetMaterial("bofazem") >= BofaCost)
 			{
-				GlobalCooldown = GetGameTime() + 120.0;
+				GlobalCooldown = GetGameTime() + 250.0;
 				Shuffled = false;
 
 				CPrintToChatAll("%t", "Player Used 2 to", client, WaterCost, "Material water", BofaCost, "Material bofazem");

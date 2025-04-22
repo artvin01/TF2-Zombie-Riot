@@ -2754,9 +2754,9 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!unlock || !item.Hidden) && (!unlock || !item.RogueAlwaysSell)))
+		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!unlock || ResetStore || !item.Hidden) && (!unlock || ResetStore || !item.RogueAlwaysSell)))
 		{
-			if(item.GregOnlySell == 2)	// We always sell this if unbought
+			if(item.GregOnlySell == 2 && ResetStore != 1)	// We always sell this if unbought
 			{
 				float ApplySale = 0.7;
 				if(override >= 0.0)
@@ -3233,7 +3233,7 @@ static void MenuPage(int client, int section)
 					}
 				}
 			}
-			else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
+			else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
 			{
 				FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n \n%s ", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 			}
@@ -3473,7 +3473,7 @@ static void MenuPage(int client, int section)
 		}
 		else if(UsingChoosenTags[client])
 		{
-			if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
+			if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
 			{
 				menu.SetTitle("%t\n%t\n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", buf);
 			}
@@ -3482,7 +3482,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%t\n%t\n%s\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", buf, "Store Discount");
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
+		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%s\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 		}
@@ -3512,7 +3512,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "The World Machine's Items","All Items are 20％ off here!", buf);
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
+		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
 		{
 			if(UsingChoosenTags[client])
 			{
@@ -6607,7 +6607,7 @@ char[] TranslateItemDescription_Long(int client, const char Desc[256], const cha
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && Waves_InSetup());
+	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && !Construction_Mode() && Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.

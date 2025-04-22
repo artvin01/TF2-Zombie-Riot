@@ -181,13 +181,22 @@ static void ThisBuildingMenu(int client)
 
 static int OssuniaCost()
 {
-	int ossuniaCost = CountVehicles();
-	if(ossuniaCost)
+	switch(CountVehicles())
 	{
-		ossuniaCost *= 2;
-		ossuniaCost *= ossuniaCost;
+		case 0:
+			return 0;
+		
+		case 1:
+			return 10;
+		
+		case 2:
+			return 35;
+		
+		case 3:
+			return 100;
 	}
-	return ossuniaCost;
+
+	return 999;
 }
 
 static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choice)

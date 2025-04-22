@@ -100,6 +100,9 @@ void NPC_ConfigSetup()
 	ObjectHeavyCaliberTurret_MapStart();
 	Object_MinigunTurret_MapStart();
 	Object_TeslarsMedusa_MapStart();
+	ObjectStunGun_MapStart();
+	ObjectDispenser_MapStart();
+	ObjectFurniture_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -1299,6 +1302,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/construction/obj_supergun.sp"
 #include "zombie_riot/object/construction/obj_minigun_turret.sp"
 #include "zombie_riot/object/construction/obj_teslars_medusa.sp"
+#include "zombie_riot/object/construction/obj_const_stungun.sp"
+#include "zombie_riot/object/construction/obj_const_dispenser.sp"
+#include "zombie_riot/object/construction/obj_const_furniture.sp"
 
 // VEHICLES
 #include "shared/vehicles/vehicle_shared.sp"

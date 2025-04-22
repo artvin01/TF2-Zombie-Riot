@@ -61,7 +61,6 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		MaterialIron npc = view_as<MaterialIron>(victim);
 		Construction_OnTakeDamage("iron", 0, victim, attacker, damage, damagetype);
 	}
 }
