@@ -5959,14 +5959,46 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
 		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench" };
-		static const int Indexes[] = { 196, 0, 3, 196, 1, 8, 5, 2, 194, 30758 };
-		int ClassIndex = view_as<int>(CurrentClass[client]);
-
-		entity = SpawnWeapon(client, Classnames[ClassIndex], Indexes[ClassIndex], 5, 6, {2 ,263,264}, { 0.623, 0.0, 0.0}, 3, view_as<int>(ClassIndex));	
+		entity = CreateEntityByName(Classnames[CurrentClass[client]]);
 
 		if(entity > MaxClients)
 		{
+			static const int Indexes[] = { 196, 0, 3, 196, 1, 8, 5, 2, 194, 30758 };
+			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
+
+			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
+			
+			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
+			SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
+			
+			GetEntityNetClass(entity, Classnames[0], sizeof(Classnames[]));
+			int offset = FindSendPropInfo(Classnames[0], "m_iItemIDHigh");
+
+			SetEntData(entity, offset - 8, 0);	// m_iItemID
+			SetEntData(entity, offset - 4, 0);	// m_iItemID
+			SetEntData(entity, offset, 0);		// m_iItemIDHigh
+			SetEntData(entity, offset + 4, 0);	// m_iItemIDLow
+			
+			DispatchSpawn(entity);
+			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 			i_InternalMeleeTrace[entity] = true;
+
+			Attributes_Set(entity, 1, 0.623);
+		//	Attributes_Set(entity, 124, 1.0); //Mini sentry
+			
+			if(CurrentClass[client] != TFClass_Spy)
+				Attributes_Set(entity, 15, 0.0);
+			
+			if(CurrentClass[client] == TFClass_Engineer)
+			{
+				Attributes_Set(entity, 93, 0.0);
+				Attributes_Set(entity, 95, 0.0);
+			}
+
+			Attributes_Set(entity, 263, 0.0);
+			Attributes_Set(entity, 264, 0.0);
+
 			EquipPlayerWeapon(client, entity);
 
 			if(use)

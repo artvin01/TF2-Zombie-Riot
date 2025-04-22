@@ -90,6 +90,7 @@ static int CustomIndex[sizeof(PlayerModelsCustom)];
 static int CustomHandIndex[sizeof(PlayerCustomHands)];
 
 static bool b_AntiSameFrameUpdate[MAXTF2PLAYERS];
+static Handle CustomModelTimer[MAXTF2PLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;

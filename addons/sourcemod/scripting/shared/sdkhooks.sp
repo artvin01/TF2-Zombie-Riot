@@ -2480,9 +2480,10 @@ public void OnWeaponSwitchPost(int client, int weapon)
 					if(WeaponValidCheck == -1)
 						break;
 				}
+				//only if switching to different slot.
+				CorrectClientsideMultiweapon(client, 1);
 			}
 			Store_CycleItems(client, CurrentSlot);
-			CorrectClientsideMultiweapon(client, 1);
 		}
 		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 		
