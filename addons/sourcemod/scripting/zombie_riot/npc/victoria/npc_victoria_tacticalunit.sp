@@ -29,10 +29,6 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit4.wav"
 };
 
-static bool FactorySpawn[MAXENTITIES];
-static bool MK2[MAXENTITIES];
-static bool Limit[MAXENTITIES];
-static bool Anvil[MAXENTITIES];
 
 void Victorian_Tacticalunit_OnMapStart_NPC()
 {

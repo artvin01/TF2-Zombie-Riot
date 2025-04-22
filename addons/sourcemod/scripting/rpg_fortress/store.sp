@@ -2171,7 +2171,7 @@ stock void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
 
 
 // Returns the top most weapon (or -1 for no change)
-int Store_CycleItems(int client, int slot)
+int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 {
 	char buffer[36];
 	
@@ -2194,7 +2194,8 @@ int Store_CycleItems(int client, int slot)
 				if(previousIndex != -1)
 				{
 					// Replace this weapon with the previous slot (1 <- 2)
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(ChangeWeapon)
+						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
 					if(topWeapon == -1)
 						topWeapon = weapon;
 				}
@@ -2207,7 +2208,8 @@ int Store_CycleItems(int client, int slot)
 	if(firstWeapon != -1)
 	{
 		// First to Last (7 <- 0)
-		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+		if(ChangeWeapon)
+			SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
 	}
 
 	return topWeapon;

@@ -11,7 +11,7 @@ static const char g_Spawn[][] = {
 };
 
 static int NPCId;
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static float fl_KamikazeInitiate;
 static float fl_KamikazeSpawnDelay;
 static float fl_KamikazeSpawnRateDelay;

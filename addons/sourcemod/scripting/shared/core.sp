@@ -1417,7 +1417,6 @@ public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, C
 	{
 		if(StringToInt(cvarValue) == 0)
 		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
 			SetGlobalTransTarget(client);
 			SPrintToChat(client,"%t", "Show Ragdoll Hint Message");
 		}
@@ -1434,7 +1433,6 @@ public void ConVarCallback_r_teeth(QueryCookie cookie, int client, ConVarQueryRe
 	{
 		if(StringToInt(cvarValue) == 1)
 		{
-			f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
 			SetGlobalTransTarget(client);
 			SPrintToChat(client,"%t", "Show Ragdoll Teeth Message");
 		}
@@ -1702,7 +1700,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 //Is player active? atleast somewhat.
 	if(buttons > 0)
 	{
-		f_PlayerLastKeyDetected[client] = GetGameTime() + 5.0;
+		f_PlayerLastKeyDetected[client] = GetGameTime() + 2.0;
 	}
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	

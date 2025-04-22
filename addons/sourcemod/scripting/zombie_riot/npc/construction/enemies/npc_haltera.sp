@@ -118,9 +118,6 @@ methodmap Haltera < CClotBody
 			npc.m_flHealMulti = StringToFloat(data);
 		}
 		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -272,6 +269,9 @@ public void Haltera_NPCDeath(int entity)
 	ExpidonsaRemoveEffects(entity);
 		
 	
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))

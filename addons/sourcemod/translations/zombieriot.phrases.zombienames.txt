@@ -4134,4 +4134,76 @@
 	{
 		"en" 	"Crystallized Horror"
 	}
+	"Eirasus"
+	{
+		"en"	"Eirasus"
+	}
+	"Eirasus Desc"
+	{
+		"en"	"Simular to an Erasus.\nSpawns with shields.\nGains the 'Angered expidonsan' buff once its shield breaks."
+	}
+	"Haltera"
+	{
+		"en"	"Haltera"
+	}
+	"Haltera Desc"
+	{
+		"en"	"Simular to a Guardus\nOnce below half HP, loses their hat and gains 2x attackspeed but loses half their damage\nTheir healing is unchanged..."
+	}
+	"Flaigus"
+	{
+		"en"	"Flaigus"
+	}
+	"Flaigus Desc"
+	{
+		"en"	"Simular to an Dual-Rea.\nSpawns with shields.\nWill Fly towards you once every so often."
+	}
+	"Biggun Assisa"
+	{
+		"en"	"Biggun Assisa"
+	}
+	"Biggun Assisa Desc"
+	{
+		"en"	"Simular to a Minigun Assisa\nOnce armor is broken once, their lose their hat and will gain double damage."
+	}
+	"Hia Expidonsan Rejuvinator"
+	{
+		"en"	"Hia Expidonsan Rejuvinator"
+	}
+	"Hia Expidonsan Rejuvinator Desc"
+	{
+		"en"	"Very fast medic that spawns with shields.\nWhen shield is broken, their lose alot of their speed.\nWhen they heal an ally they give the 'Rejuvinator' Buff."
+	}
+	"Cuttus Siccino"
+	{
+		"en"	"Cuttus Siccino"
+	}
+	"Cuttus Siccino Desc"
+	{
+		"en"	"Very fast attacking, very low damage dealing enemy.\nGives infinite stacking vulnerability."
+	}
+	"Armsa Manu"
+	{
+		"en"	"Armsa Manu"
+	}
+	"Armsa Manu Desc"
+	{
+		"en"	"Simular to Rifal manu.\nEvery 10th shot deals 10x the damage."
+	}
+	"Speedus Absolutos"
+	{
+		"en"	"Speedus Absolutos"
+	}
+	"Speedus Absolutos Desc"
+	{
+		"en"	"Will survive certain death for 0.5 seconds.\nOnce it Reaches 1 hp, it will teleport behind the attacker."
+	}
+	"Vaus Shaldus"
+	{
+		"en"	"Vaus Shaldus"
+	}
+	"Vaus Shaldus Desc"
+	{
+		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
+	}
 }

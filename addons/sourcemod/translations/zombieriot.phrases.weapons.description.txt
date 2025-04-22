@@ -1438,9 +1438,7 @@
 	}
 	"There Can Be Only One Desc"
 	{
-		"en"	"Buy grigori some ammo and ontop of that, refesh the store!"
-		"fr"	"Achetez des munitions pour Grigori, il rafraîchira sa boutique!"
-		"chi"	"给神父买点弹药！（同时刷新商店）"
+		"en"	"Buy grigori some ammo."
 	}
 	
 	"Decorative Object Desc"
@@ -2785,7 +2783,7 @@
 	}
 	"Sensal Desc 1"
 	{
-		"en"	"Gain the ability to shoot projetiles with R, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits"
+		"en"	"Increased damage\nGain the ability to shoot projetiles with R, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits"
 	}
 	"Sensal Desc 2"
 	{

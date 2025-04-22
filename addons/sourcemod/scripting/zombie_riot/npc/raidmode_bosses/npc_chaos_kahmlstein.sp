@@ -146,7 +146,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	PrecacheSoundArray(g_BobSuperMeleeCharge);
-	PrecacheSoundCustom("#zombiesurvival/internius/chaos_reigns.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/chaos_reigns_intro.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/chaos_reigns_loop.mp3");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 }
@@ -407,9 +408,9 @@ methodmap ChaosKahmlstein < CClotBody
 				{
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
 					MusicEnum music;
-					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns.mp3");
-					music.Time = 280;
-					music.Volume = 1.65;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
+					music.Time = 240;
+					music.Volume = 1.2;
 					music.Custom = true;
 					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
 					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
@@ -604,13 +605,28 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				npc.m_bPathing = false;
 				i_khamlCutscene[npc.index] = 13;
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have seen enough.. I knew I should've stepped in from the start. {crimson} You made a mistake of sending him out alone.");
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_intro.mp3");
+				music.Time = 42;
+				music.Volume = 1.65;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+				Music_SetRaidMusic(music);
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + 3);
+					}
+				}
 			}
 			else
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns.mp3");
-				music.Time = 280;
-				music.Volume = 1.65;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
+				music.Time = 240;
+				music.Volume = 1.2;
 				music.Custom = true;
 				strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
 				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
@@ -626,6 +642,15 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 41.0)
 				{
+					
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
+					music.Time = 240;
+					music.Volume = 1.2;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+					Music_SetRaidMusic(music, false);
 					i_khamlCutscene[npc.index] = 12;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: You. Come closer and look me in the face... {crimson} Or are you too scared?");
 				}
@@ -718,15 +743,8 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's begin.");
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
-					MusicEnum music;
-					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns.mp3");
-					music.Time = 280;
-					music.Volume = 1.65;
-					music.Custom = true;
-					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
-					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
-					Music_SetRaidMusic(music);
 				}
+				
 			}
 		}
 		return;
@@ -1684,7 +1702,6 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 #define KAHML_MELEE_SIZE 50
 #define KAHML_MELEE_SIZE_F 50.0
 
-static int SensalHitDetected_2[MAXENTITIES];
 
 void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], float TimeUntillHit, float damage, bool kick, float RangeOfPunch)
 {
@@ -1789,7 +1806,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected_2[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	float VectorTarget[3];
 	float VectorStart[3];
@@ -1843,7 +1860,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected_2[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float damage = damagedata;
@@ -1883,7 +1900,7 @@ public bool Sensal_BEAM_TraceUsers_3(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected_2[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

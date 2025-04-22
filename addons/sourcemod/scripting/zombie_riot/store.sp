@@ -2,7 +2,8 @@
 #pragma newdecls required
 
 #define SELL_AMOUNT 0.9
-bool PapPreviewMode[MAXPLAYERS];
+bool PapPreviewMode[MAXTF2PLAYERS];
+float CDDisplayHint_LoadoutStore[MAXTF2PLAYERS];
 
 enum struct ItemInfo
 {
@@ -956,7 +957,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 }
 
 // Returns the top most weapon (or -1 for no change)
-int Store_CycleItems(int client, int slot)
+int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 {
 	char buffer[36];
 	
@@ -979,7 +980,8 @@ int Store_CycleItems(int client, int slot)
 				if(previousIndex != -1)
 				{
 					// Replace this weapon with the previous slot (1 <- 2)
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(ChangeWeapon)
+						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
 					if(topWeapon == -1)
 						topWeapon = weapon;
 				}
@@ -992,7 +994,8 @@ int Store_CycleItems(int client, int slot)
 	if(firstWeapon != -1)
 	{
 		// First to Last (7 <- 0)
-		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+		if(ChangeWeapon)
+			SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
 	}
 
 	return topWeapon;
@@ -1001,6 +1004,7 @@ int Store_CycleItems(int client, int slot)
 void Store_ConfigSetup()
 {
 	ClearAllTempAttributes();
+	Zero(CDDisplayHint_LoadoutStore);
 	delete StoreTags;
 	StoreTags = new ArrayList(ByteCountToCells(32));
 
@@ -3123,6 +3127,15 @@ static void MenuPage(int client, int section)
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 		return;
 	
+	if(Waves_Started())
+	{
+		if(CDDisplayHint_LoadoutStore[client] < GetGameTime() && StarterCashMode[client])
+		{
+			SetGlobalTransTarget(client);
+			SPrintToChat(client, "%t", "Loadout In Store");
+			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 30.0;
+		}
+	}
 	SetGlobalTransTarget(client);
 	
 	Menu menu;

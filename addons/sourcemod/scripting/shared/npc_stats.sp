@@ -68,7 +68,6 @@ static int g_rocket_particle;
 int i_rocket_particle[MAXENTITIES];
 float fl_rocket_particle_dmg[MAXENTITIES];
 float fl_rocket_particle_radius[MAXENTITIES];
-static float f_DelayComputingOfPath[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
 static float f_PredictDuration[MAXENTITIES];
 static float f_UnstuckSuckMonitor[MAXENTITIES];
@@ -133,7 +132,7 @@ public Action Command_PetMenu(int client, int args)
 	
 	if(args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size] [Think Speed]");
 		return Plugin_Handled;
 	}
 	
@@ -199,6 +198,11 @@ public Action Command_PetMenu(int client, int args)
 		{
 			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(9));
+		}
+
+		if(args > 9)
+		{
+			f_AttackSpeedNpcIncrease[entity] = GetCmdArgFloat(10);
 		}
 	}
 
@@ -4718,7 +4722,7 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	return from_area.GetCostSoFar() + cost;
 }
 
-public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
+bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, bool DirectLaunch = false)
 {
 	if(IsEntityTowerDefense(bot_entidx)) //do not allow them to jump.
 	{
@@ -4731,11 +4735,28 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	}
 	float vecNPC[3], vecJumpVel[3];
 	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
+	if(DirectLaunch)
+	{
+		float vecAngles[3];
+
+		MakeVectorFromPoints(vecNPC, vecPos, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+
+		float speed = flMaxSpeed;
+		
+		vecJumpVel[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+		vecJumpVel[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+		vecJumpVel[2] = Sine(DegToRad(vecAngles[0]))*-speed;
+
+		npc.Jump();
+		npc.SetVelocity(vecJumpVel);
+		return true;
+	}
 	
 	float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
-	
+
 	// How fast does the headcrab need to travel to reach the position given gravity?
 	float flActualHeight = vecPos[2] - vecNPC[2];
 	float height = flActualHeight;
@@ -4750,6 +4771,9 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		additionalHeight = 25.0;
 	}
 	
+	if(DirectLaunch)
+		additionalHeight = 0.1;
+
 	height += additionalHeight;
 	
 	float speed = SquareRoot( 2 * gravity * height );
@@ -4768,7 +4792,6 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	
 	// Don't jump too far/fast.
 	float flJumpSpeed = GetVectorLength(vecJumpVel);
-	float flMaxSpeed = 1250.0;
 	if ( flJumpSpeed > flMaxSpeed )
 	{
 		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
@@ -11140,4 +11163,14 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 	return vecSwingEnd;
+}
+
+char[] NpcStats_ReturnNpcName(int entity, bool NoTrans = false)
+{
+	char NameReturn[255];
+	if(!b_NameNoTranslation[entity] && !NoTrans)
+		Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
+	else
+		Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
+	return NameReturn;
 }

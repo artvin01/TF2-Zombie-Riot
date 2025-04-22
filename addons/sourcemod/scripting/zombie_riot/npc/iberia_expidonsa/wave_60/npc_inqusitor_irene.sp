@@ -5,8 +5,8 @@
 #define IRENE_EXPLOSIVES 150.0
 bool Irene_CurrentEnemyVictimised[MAXENTITIES];
 bool Irene_TargetsFound;
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",

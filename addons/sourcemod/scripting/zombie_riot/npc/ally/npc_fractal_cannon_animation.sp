@@ -9,9 +9,9 @@ static const char g_LaserStart[][] = {
 	"npc/combine_gunship/attack_start2.wav"
 };
 
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
-static int i_wingslot[MAXENTITIES];
-static int i_haloslot[MAXENTITIES];
+
+
+
 
 void Kit_Fractal_NPC_MapStart()
 {
