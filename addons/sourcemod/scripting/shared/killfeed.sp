@@ -96,20 +96,20 @@ void KillFeed_ClientPutInServer(int client)
 	}
 	else
 	{
-		int CurrentPlayers = 0;
+		int CurrentPlayersActive = 0;
 		//We are a real player
 		for(int clientl = 1; clientl <= MaxClients; clientl++)
 		{
 			if(IsClientInGame(clientl) && !IsClientSourceTV(clientl))
-				CurrentPlayers++; //includes bot, doesnt include sourcetv
+				CurrentPlayersActive++; //includes bot, doesnt include sourcetv
 		}
-		if((MaxClients - 2) >= CurrentPlayers)
+		if((MaxClients - 2) <= CurrentPlayersActive)
 		{
 			for(int botcheck = 1; botcheck <= MaxClients; botcheck++)
 			{
 				if(IsClientInGame(botcheck) && IsFakeClient(botcheck) && !IsClientSourceTV(botcheck))
 				{
-					//Kick all bots
+					//Kick all bots	
 					KickClient(botcheck);
 				}
 			}

@@ -107,10 +107,11 @@ forward void ZR_OnClientLoaded(int client);
  * @param soundOverride	Voiceline override (-1 for normal class)
  * @param bodyOverride	Model bodygroup override (-1 for no change)
  * @param animOverride	Override animations to the model index
+ * @param noCosmetic	If to render all econ cosmetics as nodraw
  * 
  * @return		Plugin_Changed if changed
  */
-forward Action ZR_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &soundOverride, int &bodyOverride, bool &animOverride);
+forward Action ZR_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &soundOverride, int &bodyOverride, bool &animOverride, bool &noCosmetic);
 
 /**
  * Called when a player receives a certain unlock (including duplicates)

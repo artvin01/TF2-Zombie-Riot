@@ -43,7 +43,7 @@ void Native_OnClientLoaded(int client)
 	Call_Finish();
 }
 
-bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &sound, int &bodyOverride, bool &animOverride)
+bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &sound, int &bodyOverride, bool &animOverride, bool &noCosmetic)
 {
 	Action action;
 
@@ -54,6 +54,7 @@ bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, i
 	Call_PushCellRef(sound);
 	Call_PushCellRef(bodyOverride);
 	Call_PushCellRef(animOverride);
+	Call_PushCellRef(noCosmetic);
 	Call_Finish(action);
 
 	return action >= Plugin_Changed;

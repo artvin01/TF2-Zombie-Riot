@@ -90,7 +90,6 @@ static int CustomIndex[sizeof(PlayerModelsCustom)];
 static int CustomHandIndex[sizeof(PlayerCustomHands)];
 
 static bool b_AntiSameFrameUpdate[MAXTF2PLAYERS];
-static Handle CustomModelTimer[MAXTF2PLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;
@@ -227,7 +226,7 @@ void ViewChange_PlayerModel(int client)
 				int index;
 				int sound = -1;
 				int body = -1;
-				bool anim;
+				bool anim, noCosmetic;
 
 				if(i_PlayerModelOverrideIndexWearable[client] >= 0 && i_PlayerModelOverrideIndexWearable[client] < sizeof(PlayerModelsCustom))
 				{
@@ -235,13 +234,15 @@ void ViewChange_PlayerModel(int client)
 					sound = i_PlayerModelOverrideIndexWearable[client];
 					body = PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]];
 					anim = Viewchanges_PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]];
+					noCosmetic = true;
 				}
 				else
 				{
 					index = PlayerIndex[CurrentClass[client]];
 				}
 
-				Native_OnClientWorldmodel(client, CurrentClass[client], index, sound, body, anim);
+				if(Native_OnClientWorldmodel(client, CurrentClass[client], index, sound, body, anim, noCosmetic))
+					OverridePlayerModel(client, -1, noCosmetic);
 
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", index);
 
