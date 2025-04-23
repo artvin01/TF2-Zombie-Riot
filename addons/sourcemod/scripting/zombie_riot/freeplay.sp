@@ -425,7 +425,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 21:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_smith");
-				enemy.Health = RoundToFloor(8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
 			case 22:
@@ -516,7 +516,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_darkenedheavy");
-		enemy.Health = RoundToFloor(((1000000.0 + HealthBonus / 70.0 * float(Waves_GetRound())) * HealthMulti);
+		enemy.Health = RoundToFloor(((1000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
 		enemy.Credits += 100.0;
 		enemy.ExtraMeleeRes = 1.5;
 		enemy.Is_Boss = 1;
