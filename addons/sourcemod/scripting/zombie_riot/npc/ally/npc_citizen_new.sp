@@ -1430,6 +1430,23 @@ methodmap Citizen < CClotBody
 	{
 		float damage = this.m_fGunDamage * this.m_fGunBonusDamage;
 
+		switch(CurrentPlayers)
+		{
+			case 0:
+				CheckAlivePlayers(); //???? what
+			
+			case 1:
+				damage *= 0.4;
+			
+			case 2:
+				damage *= 0.55;
+			
+			case 3:
+				damage *= 0.65;
+
+			case 4:
+				damage *= 0.8;
+		}
 		if(this.m_bCamo)
 		{
 			damage *= CAMO_REBEL_DMG_PENALTY;
