@@ -1406,7 +1406,7 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(4.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
-		int irlnreq = 3;
+		int irlnreq = 4;
 
 		int wrathchance = GetRandomInt(0, 100);
 		if(wrathchance < irlnreq)
@@ -1459,7 +1459,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	if(wrathofirln)
 	{
-		int randomhp1 = GetRandomInt(-50000, 150000);
+		int randomhp1 = GetRandomInt(-60000, 120000);
 		HealthBonus += randomhp1;
 
 		if(HealthBonus < 0)
@@ -1474,7 +1474,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemies now have %d less health.", randomhp1);
 		}
 
-		float randomhp2 = GetRandomFloat(0.2, 1.5);
+		float randomhp2 = GetRandomFloat(0.5, 2.0);
 		HealthMulti *= randomhp2;
 		if(randomhp2 > 1.0)
 		{
@@ -2000,57 +2000,57 @@ void Freeplay_SetupStart(bool extra = false)
 			/// HEALTH SKULLS ///
 			case 0:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 22500 more health!");
-				HealthBonus += 22500;
+				strcopy(message, sizeof(message), "{red}All enemies now have 10000 more health!");
+				HealthBonus += 10000;
 			}
 			case 1:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 45000 more health!");
-				HealthBonus += 45000;
+				strcopy(message, sizeof(message), "{red}All enemies now have 25000 more health!");
+				HealthBonus += 25000;
 			}
 			case 2:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 15% more health!");
-				HealthMulti *= 1.15;
+				strcopy(message, sizeof(message), "{red}All enemies now have 8% more health!");
+				HealthMulti *= 1.08;
 			}
 			case 3:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 20% more health!");
-				HealthMulti *= 1.2;
+				strcopy(message, sizeof(message), "{red}All enemies now have 4% more health!");
+				HealthMulti *= 1.04;
 			}
 			case 4:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 15% less health.");
-				HealthMulti *= 0.85;
+				strcopy(message, sizeof(message), "{green}All enemies now have 8% less health.");
+				HealthMulti *= 0.92;
 			}
 			case 5:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 20% less health.");
-				HealthMulti *= 0.8;
+				strcopy(message, sizeof(message), "{green}All enemies now have 4% less health.");
+				HealthMulti *= 0.96;
 			}
 			case 6:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {green}30000 less health {yellow}but {red}10% more health.");
-				HealthBonus -= 30000;
-				HealthMulti *= 1.1;
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {green}20000 less health {yellow}but {red}7% more health.");
+				HealthBonus -= 20000;
+				HealthMulti *= 1.07;
 			}
 			case 7:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {green}60000 less health {yellow}but {red}20% more health.");
-				HealthBonus -= 60000;
-				HealthMulti *= 1.2;
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {green}35000 less health {yellow}but {red}10% more health.");
+				HealthBonus -= 35000;
+				HealthMulti *= 1.1;
 			}
 			case 8:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}30000 more health {yellow}but {green}15% less health.");
-				HealthBonus += 30000;
-				HealthMulti /= 1.15;
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}20000 more health {yellow}but {green}7% less health.");
+				HealthBonus += 20000;
+				HealthMulti /= 1.07;
 			}
 			case 9:
 			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}60000 more health {yellow}but {green}25% less health.");
-				HealthBonus += 60000;
-				HealthMulti /= 1.25;
+				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}35000 more health {yellow}but {green}10% less health.");
+				HealthBonus += 35000;
+				HealthMulti /= 1.1;
 			}
 
 			/// BUFF/DEBUFF SKULLS //
