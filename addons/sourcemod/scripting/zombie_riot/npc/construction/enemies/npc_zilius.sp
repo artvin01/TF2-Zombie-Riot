@@ -65,6 +65,13 @@ static const char g_SuperJumpSound[][] = {
 static const char g_SuperJumpSoundLaunch[][] = {
 	"misc/halloween/spell_mirv_explode_primary.wav",
 };
+static const char g_PlayRegenShield[][] = {
+	"mvm/mvm_tele_activate.wav",
+};
+
+static const char g_PlayRegenShieldInit[][] = {
+	"weapons/cow_mangler_over_charge_shot.wav",
+};
 
 #define LINKBEAM "sprites/glow01.vmt"
 #define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
@@ -103,6 +110,8 @@ void Zilius_TBB_Precahce()
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
 	for (int i = 0; i < (sizeof(g_SuperJumpSoundLaunch)); i++) { PrecacheSound(g_SuperJumpSoundLaunch[i]); }
+	for (int i = 0; i < (sizeof(g_PlayRegenShield)); i++) { PrecacheSound(g_PlayRegenShield[i]); }
+	for (int i = 0; i < (sizeof(g_PlayRegenShieldInit)); i++) { PrecacheSound(g_PlayRegenShieldInit[i]); }
 	
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 }
@@ -211,11 +220,19 @@ methodmap Construction_Raid_Zilius < CClotBody
 	}
 	public void PlaySuperJumpSound()
 	{
-		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlaySuperJumpLaunch()
 	{
-		EmitSoundToAll(g_SuperJumpSoundLaunch[GetRandomInt(0, sizeof(g_SuperJumpSoundLaunch) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SuperJumpSoundLaunch[GetRandomInt(0, sizeof(g_SuperJumpSoundLaunch) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayShieldRegenSoundInit()
+	{
+		EmitSoundToAll(g_PlayRegenShieldInit[GetRandomInt(0, sizeof(g_PlayRegenShieldInit) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 130);
+	}
+	public void PlayShieldRegenSound()
+	{
+		EmitSoundToAll(g_PlayRegenShield[GetRandomInt(0, sizeof(g_PlayRegenShield) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 	}
 	public void PlayLaserLaunchSound() {
 		int chose = GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound)-1);
@@ -231,6 +248,11 @@ methodmap Construction_Raid_Zilius < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flShieldRegenCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 	public Construction_Raid_Zilius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -343,6 +365,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 		npc.m_flPrepareFlyAtEnemyCD = GetGameTime() + 1.0;
+		npc.m_flShieldRegenCD = GetGameTime() + 5.0;
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
@@ -532,6 +555,10 @@ static void Internal_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
+
+	if(ZiliusRegenShieldDo(npc))
+		return;
+
 
 	if(IsEntityAlive(npc.m_iTargetWalkTo))
 	{
@@ -736,7 +763,7 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 				Handle swingTrace;
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
 				npc.FaceTowards(WorldSpaceVec, 20000.0);
-				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,_,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
 				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -995,4 +1022,53 @@ void ZiliusEarsApply(int iNpc, char[] attachment = "head")
 	i_ExpidonsaEnergyEffect[iNpc][23] = EntIndexToEntRef(particle_ears4_r);
 	i_ExpidonsaEnergyEffect[iNpc][24] = EntIndexToEntRef(Laser_ears_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][25] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
+{
+	if(!npc.m_flShieldRegenCD)
+	{
+		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
+		{
+			//We are done
+			if(IsValidEntity(npc.m_iWearable7))
+				RemoveEntity(npc.m_iWearable7);
+			float flPos[3]; // original
+			float flAng[3]; // original
+		
+			npc.GetAttachment("effect_hand_l", flPos, flAng);
+			spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*DURATION*/ 0.5, 6.0, 0.1, 1,  /*RANGE END*/350 * 2.0);
+			ZiliusApplyEffects(npc.index, true);
+			npc.m_flShieldRegenCD = GetGameTime(npc.index) + 30.0;
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+			npc.m_flSpeed = 330.0;
+			npc.StartPathing();
+			npc.m_bisWalking = true;
+			//big shield
+			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 10);
+			npc.PlayShieldRegenSound();
+		}
+		return true;
+	}
+	if(npc.m_flShieldRegenCD < GetGameTime(npc.index))
+	{
+			
+		float flPos[3]; // original
+		float flAng[3]; // original
+	
+		npc.GetAttachment("effect_hand_l", flPos, flAng);
+		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+
+		npc.PlayShieldRegenSoundInit();
+		npc.m_bisWalking = false;
+		npc.AddActivityViaSequence("taunt_unleashed_rage_medic");
+		npc.SetPlaybackRate(0.9);
+		npc.SetCycle(0.2);
+		npc.StopPathing();
+		npc.m_flSpeed = 0.0;
+		npc.m_flShieldRegenCD = 0.0;
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
+		return true;
+	}
+	return false;
 }

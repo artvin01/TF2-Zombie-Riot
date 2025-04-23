@@ -939,7 +939,8 @@ public void OnPluginEnd()
 			DHook_UnhookClient(i);
 #endif
 			OnClientDisconnect(i);
-			ForcePlayerSuicide(i);
+			if(!CvarInfiniteCash.BoolValue) //if on, assume were on a test server, dont slay.
+				ForcePlayerSuicide(i);
 		}
 	}
 
