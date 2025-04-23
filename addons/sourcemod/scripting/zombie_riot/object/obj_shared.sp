@@ -1069,9 +1069,16 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 void DestroyBuildingDo(int entity, bool DontCheckAgain = false)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-	if(IsValidEntity(objstats.m_iMasterBuilding))
+	if(IsValidEntity(objstats.m_iMasterBuilding) && !DontCheckAgain)
 	{
-		DestroyBuildingDo(objstats.m_iMasterBuilding);
+		DestroyBuildingDo(objstats.m_iMasterBuilding, true);
+
+		ObjectGeneric objstats2 = view_as<ObjectGeneric>(objstats.m_iMasterBuilding);
+		if(IsValidEntity(objstats2.m_iExtrabuilding1))
+			DestroyBuildingDo(objstats2.m_iExtrabuilding1, true);
+
+		if(IsValidEntity(objstats2.m_iExtrabuilding2))
+			DestroyBuildingDo(objstats2.m_iExtrabuilding2, true);
 	}
 	else if(!DontCheckAgain)
 	{

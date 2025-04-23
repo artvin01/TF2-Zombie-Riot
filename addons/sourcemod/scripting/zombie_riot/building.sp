@@ -2085,6 +2085,11 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 	{
 		return false;
 	}
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(IsValidEntity(objstats.m_iMasterBuilding))
+	{
+		entity = objstats.m_iMasterBuilding;
+	}
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 	{
 		if(!AllowAnyBuilding)
@@ -2105,8 +2110,8 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		}
 	}
 
-	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-	if(objstats.m_bConstructBuilding)
+	ObjectGeneric objstats1 = view_as<ObjectGeneric>(entity);
+	if(objstats1.m_bConstructBuilding)
 		return false;	// Too fat
 
 	Building_RotateAllDepencencies(entity);

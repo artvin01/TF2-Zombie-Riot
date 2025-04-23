@@ -158,7 +158,6 @@ methodmap VausShaldus < CClotBody
 		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "eyeboss_projectile", npc.index, "effect_hand_l", {0.0,0.0,0.0});
 
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		return npc;
 	}
 }

@@ -1875,6 +1875,16 @@ static void CitizenMenu(int client, int page = 0)
 					{
 						DontAllowBuilding = false;
 					}
+					if(Construction_Mode())
+					{
+						DontAllowBuilding = false;
+						if(HealingCooldown[npc.index] > GetGameTime())
+							DontAllowBuilding = true;
+
+						if(!Waves_Started())
+							DontAllowBuilding = false;
+					}
+					
 					int MaxBuildingsSee = 0;
 					int BuildingsSee = 0;
 					BuildingsSee = BuildingAmountRebel(npc.index, 2, MaxBuildingsSee);

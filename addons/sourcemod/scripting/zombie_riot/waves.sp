@@ -2712,17 +2712,8 @@ void WaveEndLogicExtra()
 {
 	SeaFounder_ClearnNethersea();
 	VoidArea_ClearnNethersea();
-	M3_AbilitiesWaveEnd();
-	Specter_AbilitiesWaveEnd();	
-	Rapier_CashWaveEnd();
-	LeperResetUses();
-	SniperMonkey_ResetUses();
-	ResetFlameTail();
-	Building_ResetRewardValuesWave();
 	FallenWarriorGetRandomSeedEachWave();
-	CastleBreaker_ResetCashGain();
-	ZombieDrops_AllowExtraCash();
-	Zero(i_MaxArmorTableUsed);
+	ResetAbilitiesWaveEnd();
 	for(int client; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client))
@@ -2741,6 +2732,20 @@ void WaveEndLogicExtra()
 			*/
 		}
 	}
+}
+
+void ResetAbilitiesWaveEnd()
+{
+	M3_AbilitiesWaveEnd();
+	Specter_AbilitiesWaveEnd();	
+	Rapier_CashWaveEnd();
+	LeperResetUses();
+	SniperMonkey_ResetUses();
+	ResetFlameTail();
+	Building_ResetRewardValuesWave();
+	CastleBreaker_ResetCashGain();
+	ZombieDrops_AllowExtraCash();
+	Zero(i_MaxArmorTableUsed);
 }
 
 void WaveStart_SubWaveStart(float time = 0.0)
