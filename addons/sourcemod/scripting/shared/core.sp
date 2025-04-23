@@ -960,9 +960,10 @@ public void OnPluginEnd()
 	MVMHud_Disable();
 	GameRules_SetProp("m_iRoundState", 0);
 
+	//disable all ZR logic.
 	SetVariantString("ForceEnableUpgrades(0)");
 	AcceptEntityInput(0, "RunScriptCode");
-	
+
 	int populator = FindEntityByClassname(-1, "info_populator");
 	if (populator != -1)
 	{
