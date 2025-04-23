@@ -959,6 +959,10 @@ public void OnPluginEnd()
 	Waves_MapEnd();
 	MVMHud_Disable();
 	GameRules_SetProp("m_iRoundState", 0);
+
+	SetVariantString("ForceEnableUpgrades(0)");
+	AcceptEntityInput(0, "RunScriptCode");
+	
 	int populator = FindEntityByClassname(-1, "info_populator");
 	if (populator != -1)
 	{
