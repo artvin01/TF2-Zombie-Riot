@@ -939,6 +939,7 @@ public void OnPluginEnd()
 			DHook_UnhookClient(i);
 #endif
 			OnClientDisconnect(i);
+			ForcePlayerSuicide(i);
 		}
 	}
 
@@ -957,6 +958,32 @@ public void OnPluginEnd()
 #if defined ZR
 	Waves_MapEnd();
 	MVMHud_Disable();
+	GameRules_SetProp("m_iRoundState", 0);
+	int populator = FindEntityByClassname(-1, "info_populator");
+	if (populator != -1)
+	{
+		//find populator
+		// Using RemoveImmediate is required because RemoveEntity deletes the populator a few frames later.
+		// This may cause the global populator pointer to be set to NULL even if a new populator was created.
+		SDKCall_RemoveImmediate(populator);
+	}
+	char path[256];
+	for(int i=MAXENTITIES; i>MaxClients; i--)
+	{
+		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
+		{
+			if(!StrContains(path, "zr_base_npc"))
+				RemoveEntity(i);
+
+			if(!StrContains(path, "zr_base_stationary"))
+				RemoveEntity(i);
+
+			if(!StrContains(path, "obj_building"))
+				RemoveEntity(i);
+
+			//prevent crash ?
+		}
+	}
 #endif
 }
 
