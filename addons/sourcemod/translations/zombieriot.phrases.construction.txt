@@ -519,7 +519,7 @@
 	}
 	"Heavy Calliber"
 	{
-		"en"	"Heavy Calliber"
+		"en"	"Heavy Caliber"
 	}
 	"Heavy Calliber Desc"
 	{

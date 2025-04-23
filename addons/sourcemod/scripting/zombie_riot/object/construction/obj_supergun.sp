@@ -12,7 +12,7 @@ void ObjectHeavyCaliberTurret_MapStart()
 	PrecacheModel("models/buildables/sentry1_heavy.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Heavy Calliber");
+	strcopy(data.Name, sizeof(data.Name), "Heavy Caliber");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_heavycalliber");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

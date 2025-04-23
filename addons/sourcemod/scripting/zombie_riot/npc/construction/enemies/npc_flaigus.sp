@@ -41,6 +41,7 @@ void Flaigus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_DefaultMedic_PlayAnnoyedSound)); i++) { PrecacheSound(g_DefaultMedic_PlayAnnoyedSound[i]); }
 	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
+	for (int i = 0; i < (sizeof(g_SuperJumpSoundLaunch)); i++) { PrecacheSound(g_SuperJumpSoundLaunch[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Flaigus");

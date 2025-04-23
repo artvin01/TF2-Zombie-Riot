@@ -59,6 +59,12 @@ static char g_AngerSoundsPassed[][] = {
 static char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
+static const char g_SuperJumpSound[][] = {
+	"weapons/physcannon/energy_sing_explosion2.wav"
+};
+static const char g_SuperJumpSoundLaunch[][] = {
+	"misc/halloween/spell_mirv_explode_primary.wav",
+};
 
 #define LINKBEAM "sprites/glow01.vmt"
 #define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
@@ -77,14 +83,6 @@ public void Construction_Raid_Zilius_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = Zilius_TBB_Precahce;
 	NPC_Add(data);
-	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
-	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
-	PrecacheSound("player/flow.wav");
-	PrecacheModel(LINKBEAM);
-	PrecacheModel(PILLAR_MODEL);
-	
-	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
-	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
 
 
@@ -103,6 +101,8 @@ void Zilius_TBB_Precahce()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_AngerSoundsPassed));   i++) { PrecacheSound(g_AngerSoundsPassed[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
+	for (int i = 0; i < (sizeof(g_SuperJumpSoundLaunch)); i++) { PrecacheSound(g_SuperJumpSoundLaunch[i]); }
 	
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 }
@@ -111,25 +111,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 {
 	return Construction_Raid_Zilius(vecPos, vecAng, team, data);
 }
-#define EMPOWER_SOUND "items/powerup_pickup_king.wav"
-#define EMPOWER_MATERIAL "materials/sprites/laserbeam.vmt"
-#define EMPOWER_WIDTH 5.0
-#define EMPOWER_HIGHT_OFFSET 20.0
-static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static int i_RaidDuoAllyIndex;
+
+static float f_TalkDelayCheck;
+static int i_TalkDelayCheck;
 
 methodmap Construction_Raid_Zilius < CClotBody
 {
-	property float m_flTimebeforekamehameha
-	{
-		public get()							{ return fl_BEAM_RechargeTime[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_BEAM_RechargeTime[this.index] = TempValueForProperty; }
-	}
-	property int m_iInKame
-	{
-		public get()							{ return i_InKame[this.index]; }
-		public set(int TempValueForProperty) 	{ i_InKame[this.index] = TempValueForProperty; }
-	}
 
 	public void PlayIdleSound() 
 	{
@@ -222,14 +209,32 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		
 	}
+	public void PlaySuperJumpSound()
+	{
+		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlaySuperJumpLaunch()
+	{
+		EmitSoundToAll(g_SuperJumpSoundLaunch[GetRandomInt(0, sizeof(g_SuperJumpSoundLaunch) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
 	public void PlayLaserLaunchSound() {
 		int chose = GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound)-1);
 		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	property float m_flPrepareFlyAtEnemyCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flPrepareFlyAtEnemy
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	public Construction_Raid_Zilius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
+		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally, false, false, true,true)); //giant!
 		
 		i_NpcWeight[npc.index] = 4;
 		
@@ -258,7 +263,22 @@ methodmap Construction_Raid_Zilius < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Zilius And Waldch Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Zilius Arrived Arrived.");
+			}
+		}
+		switch(GetRandomInt(1,3))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{black}Zilius{default}: No other races even help us, we will wipe you out ourselves.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Extreme intelligence comes from foresight, dont you think?");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Sensal and the other expidonsans are too nice, we do lack that weakness.");
 			}
 		}
 		RemoveAllDamageAddition();
@@ -278,7 +298,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
-		i_SadText = false;
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_bThisNpcIsABoss = true;
@@ -323,6 +342,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+		npc.m_flPrepareFlyAtEnemyCD = GetGameTime() + 1.0;
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
@@ -408,9 +428,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
-		
-		npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 20.0;
-		npc.m_iInKame = 0;
 
 
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
@@ -496,7 +513,6 @@ static void Internal_ClotThink(int iNPC)
 		mp_bonusroundtime.IntValue = (10 * 2);
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SharedTimeLossZiliusDuo(npc.index);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 	}
 
@@ -519,7 +535,7 @@ static void Internal_ClotThink(int iNPC)
 
 	if(IsEntityAlive(npc.m_iTargetWalkTo))
 	{
-		int ActionToTake = -1;
+	//	int ActionToTake = -1;
 
 		//Predict their pos.
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
@@ -577,51 +593,24 @@ public void Construction_Raid_Zilius_OnTakeDamagePost(int victim, int attacker, 
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
 			ZiliusApplyEffects(npc.index, true);
-			if(IsValidEntity(i_LaserEntityIndex[npc.index]))
-			{
-				RemoveEntity(i_LaserEntityIndex[npc.index]);
-			}
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 6.0;
 			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
-			b_RageAnimated[npc.index] = false;
 			RaidModeTime += 60.0;
-			int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
-			if(IsEntityAlive(AllyEntity) && !IsPartnerGivingUpGoggles(AllyEntity))
+			switch(GetRandomInt(1,3))
 			{
-				switch(GetRandomInt(1,3))
+				case 1:
 				{
-					case 1:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: You think this was all?");
-					}
-					case 2:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: You have no idea...");
-					}
-					case 3:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: You think this is it?");
-					}
+					CPrintToChatAll("{gold}Zilius{default}: You're blind to your own arrogance!");
 				}
-			}
-			else
-			{
-				switch(GetRandomInt(1,3))
+				case 2:
 				{
-					case 1:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: You're blind to your own arrogance!");
-					}
-					case 2:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: You think im weak alone?!");
-					}
-					case 3:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: You refuse to listen and thus, pay the price!");
-					}
+					CPrintToChatAll("{gold}Zilius{default}: You think im weak alone?!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}Zilius{default}: You refuse to listen and thus, pay the price!");
 				}
 			}
 			
@@ -671,10 +660,6 @@ static void Internal_NPCDeath(int entity)
 //	npc.Anger = false;
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 	{
-		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-		{
-			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-		}		
 		if(IsValidClient(EnemyLoop))
 		{
 			ResetDamageHud(EnemyLoop);//show nothing so the damage hud goes away so the other raid can take priority faster.
@@ -690,9 +675,55 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
-	//This code is only here so they defend themselves incase any enemy is too close to them. otherwise it is completly disconnected from any other logic.
+	if(IsValidEntity(npc.m_iTarget))
+	{
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		//This code is only here so they defend themselves incase any enemy is too close to them. otherwise it is completly disconnected from any other logic.
+		if(npc.m_flPrepareFlyAtEnemyCD < GetGameTime(npc.index) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 13.0))
+		{	
+			if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+			{
+				//steal alaxios jump :D
+				static float flPos[3]; 
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+				static float flPosEnemy[3]; 
+				GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", flPosEnemy);
+				flDistanceToTarget = GetVectorDistance(flPos, flPosEnemy);
+				float SpeedToPredict = flDistanceToTarget * 1.0;
+				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, SpeedToPredict, _,f3_NpcSavePos[npc.index]);
+				flPos[2] += 5.0;
+				ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
+				npc.PlaySuperJumpSound();
+				flPos[2] += 400.0;
+				npc.SetVelocity({0.0,0.0,0.0});
+				PluginBot_Jump(npc.index, flPos);
+				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 1.0);	
+				npc.m_flPrepareFlyAtEnemy = GetGameTime(npc.index) + 0.6;
+
+				float cooldownDo = 20.0;
+				npc.m_flPrepareFlyAtEnemyCD = GetGameTime(npc.index) + cooldownDo;
+
+				npc.m_iChanged_WalkCycle = 0;
+				npc.FaceTowards(f3_NpcSavePos[npc.index], 15000.0);
+			}
+		}
+
+	}
+	if(npc.m_flPrepareFlyAtEnemy)
+	{
+		static float Size = 75.0;
+		spawnRing_Vectors(f3_NpcSavePos[npc.index], Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 100, 200, 1, 0.15, 6.0, 6.0, 2);
+		
+		if(npc.m_flPrepareFlyAtEnemy < GetGameTime(npc.index))
+		{
+			npc.PlaySuperJumpLaunch();
+			npc.m_flPrepareFlyAtEnemy = 0.0;
+			PluginBot_Jump(npc.index, f3_NpcSavePos[npc.index], 2500.0, true);
+		}
+	}
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
@@ -787,7 +818,7 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 					npc.m_flAttackHappens = gameTime + 0.25;
 
 					npc.m_flDoingAnimation = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 1.2;
+					npc.m_flNextMeleeAttack = gameTime + 0.85 	;
 				}
 			}
 		}
@@ -812,11 +843,11 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 			
 		maxhealth -= (maxhealth / 4);
 
-		int spawn_index = NPC_CreateByName("npc_infected_goggles", -1, pos, ang, GetTeam(entity));
-		if(spawn_index > MaxClients)
-		{
-			//Spawn Zeina
-		}
+	//	int spawn_index = NPC_CreateByName("npc_infected_goggles", -1, pos, ang, GetTeam(entity));
+	//	if(spawn_index > MaxClients)
+	//	{
+	//		//Spawn Zeina
+	//	}
 	}
 }
 
@@ -833,6 +864,7 @@ void ZiliusApplyEffects(int entity, bool withoutweapon = false)
 		ExpidonsaRemoveEffects(entity);
 		
 		ZiliusEarsApply(npc.index);
+		ZiliusApplyEffectsForm1(npc.index);	
 	}
 	else
 	{
@@ -841,7 +873,8 @@ void ZiliusApplyEffects(int entity, bool withoutweapon = false)
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
 		ExpidonsaRemoveEffects(entity);
-		ZiliusEarsApply(npc.index);	
+		ZiliusEarsApply(npc.index);
+		ZiliusApplyEffectsForm1(npc.index);	
 	}
 }
 
@@ -856,7 +889,7 @@ void ZiliusApplyEffectsForm1(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	}
 	npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
-	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 8);
+	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 7);
 	SetVariantInt(8192);
 	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
 
@@ -909,4 +942,57 @@ static void Internal_Weapon_Lines(Construction_Raid_Zilius npc, int client)
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
+}
+
+
+
+void ZiliusEarsApply(int iNpc, char[] attachment = "head")
+{
+	
+	int red = 255;
+	int green = 255;
+	int blue = 255;
+	float flPos[3];
+	float flAng[3];
+	int particle_ears1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	//fist ear
+	int particle_ears2 = InfoTargetParentAt({0.0,-1.85,0.0}, "", 0.0); //First offset we go by
+	int particle_ears3 = InfoTargetParentAt({0.0,-4.44,-3.7}, "", 0.0); //First offset we go by
+	int particle_ears4 = InfoTargetParentAt({0.0,-5.9,2.2}, "", 0.0); //First offset we go by
+	
+	//fist ear
+	int particle_ears2_r = InfoTargetParentAt({0.0,1.85,0.0}, "", 0.0); //First offset we go by
+	int particle_ears3_r = InfoTargetParentAt({0.0,4.44,-3.7}, "", 0.0); //First offset we go by
+	int particle_ears4_r = InfoTargetParentAt({0.0,5.9,2.2}, "", 0.0); //First offset we go by
+
+	SetParent(particle_ears1, particle_ears2, "",_, true);
+	SetParent(particle_ears1, particle_ears3, "",_, true);
+	SetParent(particle_ears1, particle_ears4, "",_, true);
+	SetParent(particle_ears1, particle_ears2_r, "",_, true);
+	SetParent(particle_ears1, particle_ears3_r, "",_, true);
+	SetParent(particle_ears1, particle_ears4_r, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_ears1, flPos);
+	SetEntPropVector(particle_ears1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_ears1, attachment,_);
+
+
+	int Laser_ears_1 = ConnectWithBeamClient(particle_ears4, particle_ears2, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_ears_2 = ConnectWithBeamClient(particle_ears4, particle_ears3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+
+	int Laser_ears_1_r = ConnectWithBeamClient(particle_ears4_r, particle_ears2_r, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][16] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][17] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][18] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][19] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][20] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][21] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][22] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][23] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][24] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][25] = EntIndexToEntRef(Laser_ears_2_r);
 }

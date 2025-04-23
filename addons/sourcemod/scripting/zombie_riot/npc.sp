@@ -982,6 +982,7 @@ void NPC_ConfigSetup()
 	SoldinusIlus_OnMapStart_NPC();
 	SelfamScythus_OnMapStart_NPC();
 	Diversionistico_Elitus_OnMapStart_NPC();
+	Construction_Raid_Zilius_OnMapStart();
 }
 
 int NPC_Add(NPCData data)
@@ -2161,3 +2162,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/construction/enemies/npc_soldinus_ilus.sp"
 #include "zombie_riot/npc/construction/enemies/npc_selfam_scythus.sp"
 #include "zombie_riot/npc/construction/enemies/npc_diversionistico_elitus.sp"
+#include "zombie_riot/npc/construction/enemies/npc_zilius.sp"
