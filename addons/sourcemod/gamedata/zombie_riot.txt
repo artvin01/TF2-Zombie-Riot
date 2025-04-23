@@ -64,6 +64,12 @@
 				"windows"		"\x55\x8B\xEC\xD9\x05\x2A\x2A\x2A\x2A\x56\x8B\x75\x08\x6A\x00"
 				"linux"			"@_ZN12CTFSpellBook15CastSelfStealthEP9CTFPlayer"
 			}
+			// "AI node graph corrupt\n" -> last function call
+			"UTIL_RemoveImmediate"
+			{
+				"linux"		"@_Z20UTIL_RemoveImmediateP11CBaseEntity"
+				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\xF6\x86\x3C\x01\x00\x00\x01"
+			}
 			"CTFPlayer::TeamFortress_SetSpeed()"
 			{
 				"linux"		"@_ZN9CTFPlayer21TeamFortress_SetSpeedEv"
