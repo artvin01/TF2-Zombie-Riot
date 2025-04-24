@@ -1443,6 +1443,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()				{ return b_AllowBackWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
 	}
+	public void SetPoseParameter_Easy(char[] PoseParam = "", float Value)//For the future incase we want to alter it easier
+	{
+		int iPitch = this.LookupPoseParameter(PoseParam);
+		if(iPitch < 0)
+			return;		
+
+		this.SetPoseParameter(iPitch, Value);
+	}
 	public float GetDebuffPercentage()//For the future incase we want to alter it easier
 	{
 		//Buildings dont have speed...

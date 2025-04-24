@@ -254,6 +254,61 @@ methodmap Construction_Raid_Zilius < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flFrontSlicerCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	public void SayStuffZilius()
+	{
+		//one in 3 chance.
+		if(GetRandomInt(1,3) != 3)
+			return;
+
+		switch(GetRandomInt(1,10))
+		{
+			case 1:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Chaos? There's stuff about it that only i and {black}''Bob the second''{default}, oh sorry, i mean {black}''Izan''{default} know about.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Ever think about what endless violence causes? Look at yourselves.");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Our planet, ruined, you all are worse then the {violet}courtain{default} or the {violet}void{default}.");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Expidonsa wasnt just an underground city, it was the very planet you live on, Parasites.");
+			}
+			case 5:
+			{
+				CPrintToChatAll("{black}Zilius{default}: If only the other higherups and {black}''Izan''{default} agreed to not save those others.");
+			}
+			case 6:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Whatever you think expidonsa doesnt have, it does.");
+			}
+			case 7:
+			{
+				CPrintToChatAll("{black}Zilius{default}: {blue}Sensal{default} {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
+			}
+			case 8:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Iberians are the only ones i respect, Mazeat is an amalgam of failures.");
+			}
+			case 9:
+			{
+				CPrintToChatAll("{black}Zilius{default}: Kahmlstein is such a wasted person, sadly he wasnt apart of the {gold}Prime race{default}.");
+			}
+			case 10:
+			{
+				CPrintToChatAll("{black}Zilius{default}: If you think very logically, Extermination for all of you is the only endgoal to end {violet}Them{default}.");
+			}
+		}
+	}
 	public Construction_Raid_Zilius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally, false, false, true,true)); //giant!
@@ -366,11 +421,13 @@ methodmap Construction_Raid_Zilius < CClotBody
 			amount_of_people = 1.0;
 		npc.m_flPrepareFlyAtEnemyCD = GetGameTime() + 1.0;
 		npc.m_flShieldRegenCD = GetGameTime() + 5.0;
+		npc.m_flFrontSlicerCD = GetGameTime() + 5.0;
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-	
+		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
+		//cannot be healed ever
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Construction_Raid_Zilius_OnTakeDamagePost);
 		b_angered_twice[npc.index] = false;
@@ -457,24 +514,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		RequestFrame(Zilius_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
 		npc.m_flNextDelayTime = GetGameTime() + 0.2;
-		if(XenoExtraLogic())
-		{
-			switch(GetRandomInt(1,3))
-			{
-				case 1:
-				{
-					CPrintToChatAll("{gold}Zilius{default}: Is... Is this really where we must change your mind?");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{gold}Zilius{default}: Please just turn away!");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{gold}Zilius{default}: This is already too close, this is too much risk!");
-				}
-			}
-		}
 		ZiliusApplyEffects(npc.index, false);
 		return npc;
 	}
@@ -492,41 +531,12 @@ static void Internal_ClotThink(int iNPC)
 		{
 			AlreadySaidLastmann = true;
 			npc.m_fbGunout = true;
-			if(!XenoExtraLogic())
+			switch(GetRandomInt(0,0))
 			{
-				switch(GetRandomInt(0,2))
+				case 0:
 				{
-					case 0:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: Give up and turn yourself in.");
-					}
-					case 1:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: Ready to listen?");
-					}
-					case 2:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: Maybe you just hate us?");
-					}
+					CPrintToChatAll("{black}Zilius{default}: If only we kept your gene modification tech to make you into something greater.");
 				}
-			}
-			else
-			{
-				switch(GetRandomInt(0,2))
-				{
-					case 0:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: Death may be your only choice from here on out!");
-					}
-					case 1:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: You're probably already infected, should kill you instead!");
-					}
-					case 2:
-					{
-						CPrintToChatAll("{gold}Zilius{default}: Listening is too hard for you ******* isnt it?");
-					}
-				}				
 			}
 		}
 	}
@@ -559,6 +569,9 @@ static void Internal_ClotThink(int iNPC)
 	if(ZiliusRegenShieldDo(npc))
 		return;
 
+	bool CancelEarly = false;
+	CancelEarly = ZiliusFrontSlicer(npc);
+
 
 	if(IsEntityAlive(npc.m_iTargetWalkTo))
 	{
@@ -584,6 +597,8 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
 	}
+	if(CancelEarly)
+		return;
 	//This is for self defense, incase an enemy is too close, This exists beacuse
 	//Zilius's main walking target might not be the closest target he has.
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
@@ -845,7 +860,7 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 					npc.m_flAttackHappens = gameTime + 0.25;
 
 					npc.m_flDoingAnimation = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 0.85 	;
+					npc.m_flNextMeleeAttack = gameTime + 0.85 ;
 				}
 			}
 		}
@@ -949,13 +964,20 @@ static void Internal_Weapon_Lines(Construction_Raid_Zilius npc, int client)
 	{
 		
 		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
-		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You have his weapon yet none of his strength.");
-		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "{blue}Sensal{default} gave you this {gold}%N{default}? cant be.", client);}	//IT ACTUALLY WORKS, LMFAO
-		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2, WEAPON_NEARL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You little stealers arent you?");
-		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon!");}
-		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "Oh you beat him up? Thats good.");
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "that gun aint got ANYTHING ON ME!!!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "{lightblue}Her{default} gun...? uh...");
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Be lucky {blue}Sensal{default} didnt kill you for it.");
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "Scythes are a farming tool {gold}%N{default}, Not a weapon.", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2, WEAPON_NEARL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "One of many, huh.");
+		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "My blade is a eons ahead.");}
+		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "Truly upsetting that {crimson} He {default} failed..");
+		case WEAPON_BOBS_GUN:
+		{
+			Format(Text_Lines, sizeof(Text_Lines), "{crimson}You think you have a chance with that against me?");
+			fl_Extra_Speed[npc.index] = 3.0;
+			fl_Extra_MeleeArmor[npc.index] = 0.01;
+			fl_Extra_RangedArmor[npc.index] = 0.01;
+			f_AttackSpeedNpcIncrease[npc.index] = 0.25;
+		} 
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "{lightblue}she{default} is a disgrace for being with others.");
 
 		default:
 		{
@@ -965,7 +987,7 @@ static void Internal_Weapon_Lines(Construction_Raid_Zilius npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{gold}Zilius{default}: %s", Text_Lines);
+		CPrintToChatAll("{black}Zilius{default}: %s", Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
@@ -1046,6 +1068,7 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 			npc.m_bisWalking = true;
 			//big shield
 			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 10);
+			ApplyStatusEffect(npc.index, npc.index, "Expidonsan Anger", 8.0);
 			npc.PlayShieldRegenSound();
 		}
 		return true;
@@ -1068,6 +1091,71 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 		npc.m_flSpeed = 0.0;
 		npc.m_flShieldRegenCD = 0.0;
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
+		npc.SayStuffZilius();
+		return true;
+	}
+	return false;
+}
+
+
+bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
+{
+	if(!npc.m_flFrontSlicerCD)
+	{
+		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
+		{
+			//We are done
+			if(IsValidEntity(npc.m_iWearable7))
+				RemoveEntity(npc.m_iWearable7);
+			float flPos[3]; // original
+			float flAng[3]; // original
+			npc.SetPoseParameter_Easy("body_pitch", 0.0);
+			npc.SetPoseParameter_Easy("body_yaw", 0.0);
+			npc.SetPoseParameter_Easy("move_x", 0.0);
+		
+			npc.GetAttachment("effect_hand_l", flPos, flAng);
+			spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*DURATION*/ 0.5, 6.0, 0.1, 1,  /*RANGE END*/350 * 2.0);
+			ZiliusApplyEffects(npc.index, true);
+			npc.m_flFrontSlicerCD = GetGameTime(npc.index) + 30.0;
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+			npc.m_flSpeed = 330.0;
+			npc.StartPathing();
+			npc.m_bisWalking = true;
+			//big shield
+			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 10);
+			ApplyStatusEffect(npc.index, npc.index, "Expidonsan Anger", 8.0);
+		}
+		return true;
+	}
+	if(npc.m_flFrontSlicerCD < GetGameTime(npc.index))
+	{
+			
+		float flPos[3]; // original
+		float flAng[3]; // original
+	
+		npc.GetAttachment("effect_hand_l", flPos, flAng);
+		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+		npc.SayStuffZilius();
+
+		npc.PlayShieldRegenSoundInit();
+		npc.m_bisWalking = false;
+		npc.SetActivity("ACT_MP_SWIM_MELEE");
+		npc.PlayShieldRegenSound();
+		npc.SetPlaybackRate(0.5); //slow "swim"
+		npc.SetCycle(0.0);
+		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+		int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+		for(int loopi; loopi < layerCount; loopi++)
+		{
+			view_as<CClotBody>(npc.index).SetLayerPlaybackRate(loopi, 0.01);
+			view_as<CClotBody>(npc.index).SetLayerCycle(loopi, 0.35);
+		}
+		npc.SetPoseParameter_Easy("body_pitch", -21.2);
+		npc.SetPoseParameter_Easy("body_yaw", 11.2);
+		npc.SetPoseParameter_Easy("move_x", 1.0);
+		npc.m_flSpeed = 330.0;
+		npc.m_flFrontSlicerCD = 0.0;
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + 3.0;
 		return true;
 	}
 	return false;

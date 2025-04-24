@@ -132,6 +132,10 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	if(b_thisNpcIsARaid[entity])
 	{
 		MaxShieldCapacity = 250;
+		if(amount >= 250)
+			MaxShieldCapacity = amount;
+		if(Construction_Mode())
+			MaxShieldCapacity = 99999999; //no limit.
 	}
 	if(MaxShieldCapacity < 1)
 		MaxShieldCapacity = 1;
