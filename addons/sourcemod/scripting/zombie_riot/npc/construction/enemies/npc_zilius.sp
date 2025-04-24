@@ -73,6 +73,12 @@ static const char g_PlayRegenShieldInit[][] = {
 	"weapons/cow_mangler_over_charge_shot.wav",
 };
 
+static const char g_SlicerHitSound[][] = {
+	"ambient/machines/slicer1.wav",
+	"ambient/machines/slicer2.wav",
+	"ambient/machines/slicer3.wav",
+	"ambient/machines/slicer4.wav",
+};
 #define LINKBEAM "sprites/glow01.vmt"
 #define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
 #define PILLAR_SPACING 170.0
@@ -112,6 +118,10 @@ void Zilius_TBB_Precahce()
 	for (int i = 0; i < (sizeof(g_SuperJumpSoundLaunch)); i++) { PrecacheSound(g_SuperJumpSoundLaunch[i]); }
 	for (int i = 0; i < (sizeof(g_PlayRegenShield)); i++) { PrecacheSound(g_PlayRegenShield[i]); }
 	for (int i = 0; i < (sizeof(g_PlayRegenShieldInit)); i++) { PrecacheSound(g_PlayRegenShieldInit[i]); }
+	for (int i = 0; i < (sizeof(g_SlicerHitSound)); i++) { PrecacheSound(g_SlicerHitSound[i]); }
+	PrecacheSound("weapons/cow_mangler_explosion_normal_04.wav");
+	PrecacheSound("weapons/cow_mangler_explosion_normal_05.wav");
+	PrecacheSound("weapons/cow_mangler_explosion_normal_06.wav");
 	
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 }
@@ -120,7 +130,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 {
 	return Construction_Raid_Zilius(vecPos, vecAng, team, data);
 }
-
+#define ZILIUS_BUFF_RANGE 500.0
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
@@ -234,6 +244,10 @@ methodmap Construction_Raid_Zilius < CClotBody
 	{
 		EmitSoundToAll(g_PlayRegenShield[GetRandomInt(0, sizeof(g_PlayRegenShield) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 	}
+	public void PlaySlicerSound()
+	{
+		EmitSoundToAll(g_SlicerHitSound[GetRandomInt(0, sizeof(g_SlicerHitSound) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 130);
+	}
 	public void PlayLaserLaunchSound() {
 		int chose = GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound)-1);
 		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -259,6 +273,26 @@ methodmap Construction_Raid_Zilius < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
+	property float m_flFrontSlicerInit
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flSpawnPortal
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property int m_iPortalsStateSummoned
+	{
+		public get()		{	return this.m_iOverlordComboAttack;	}
+		public set(int value) 	{	this.m_iOverlordComboAttack = value;	}
+	}
+	property int m_iDontMultiAbility
+	{
+		public get()		{	return this.m_iMedkitAnnoyance;	}
+		public set(int value) 	{	this.m_iMedkitAnnoyance = value;	}
+	}
 	public void SayStuffZilius()
 	{
 		//one in 3 chance.
@@ -277,7 +311,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 3:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Our planet, ruined, you all are worse then the {violet}courtain{default} or the {violet}void{default}.");
+				CPrintToChatAll("{black}Zilius{default}: Our planet, ruined, you all are useless to help against the {violet}curtain{default} or the {violet}void{default}.");
 			}
 			case 4:
 			{
@@ -293,7 +327,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 7:
 			{
-				CPrintToChatAll("{black}Zilius{default}: {blue}Sensal{default} {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
+				CPrintToChatAll("{black}Zilius{default}: {blue}Zilius{default} {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
 			}
 			case 8:
 			{
@@ -355,7 +389,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 3:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Sensal and the other expidonsans are too nice, we do lack that weakness.");
+				CPrintToChatAll("{black}Zilius{default}: Zilius and the other expidonsans are too nice, we do lack that weakness.");
 			}
 		}
 		RemoveAllDamageAddition();
@@ -421,7 +455,9 @@ methodmap Construction_Raid_Zilius < CClotBody
 			amount_of_people = 1.0;
 		npc.m_flPrepareFlyAtEnemyCD = GetGameTime() + 1.0;
 		npc.m_flShieldRegenCD = GetGameTime() + 5.0;
-		npc.m_flFrontSlicerCD = GetGameTime() + 5.0;
+		npc.m_flFrontSlicerCD = GetGameTime() + 15.0;
+		npc.m_flSpawnPortal = GetGameTime() + 25.0;
+		
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
@@ -566,12 +602,23 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 
+	if(npc.m_flNextThinkTime < GetGameTime(npc.index))
+	{
+		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+		Zillius_ApplyBuffInLocation(VecSelfNpcabs, GetTeam(npc.index), npc.index);
+		float Range = ZILIUS_BUFF_RANGE;
+		spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, /*duration*/ 0.11, 3.0, 5.0, 1);	
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	}
+
 	if(ZiliusRegenShieldDo(npc))
+		return;
+
+	if(ZiliusSpawnPortal(npc))
 		return;
 
 	bool CancelEarly = false;
 	CancelEarly = ZiliusFrontSlicer(npc);
-
 
 	if(IsEntityAlive(npc.m_iTargetWalkTo))
 	{
@@ -597,6 +644,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
 		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
 	}
+
 	if(CancelEarly)
 		return;
 	//This is for self defense, incase an enemy is too close, This exists beacuse
@@ -750,6 +798,7 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 
 				npc.m_iChanged_WalkCycle = 0;
 				npc.FaceTowards(f3_NpcSavePos[npc.index], 15000.0);
+				ApplyStatusEffect(npc.index, npc.index, "Expidonsan War Cry", 5.0);
 			}
 		}
 
@@ -757,7 +806,7 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 	if(npc.m_flPrepareFlyAtEnemy)
 	{
 		static float Size = 75.0;
-		spawnRing_Vectors(f3_NpcSavePos[npc.index], Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 100, 200, 1, 0.15, 6.0, 6.0, 2);
+		spawnRing_Vectors(f3_NpcSavePos[npc.index], Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.15, 6.0, 6.0, 2);
 		
 		if(npc.m_flPrepareFlyAtEnemy < GetGameTime(npc.index))
 		{
@@ -791,34 +840,20 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
 							WorldSpaceCenter(target, vecHit);
-							float damage = 24.0;
-							float damage_rage = 28.0;
+							float damage = 30.0;
 
-							if(!npc.Anger)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
-									
-							if(npc.Anger)
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);									
-								
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 							
 							// Hit particle
 							
 							bool Knocked = false;
 										
-							if(IsValidClient(target))
+							if(IsValidClient(target) && IsInvuln(target))
 							{
-								if (IsInvuln(target))
-								{
-									Knocked = true;
-									Custom_Knockback(npc.index, target, 900.0, true);
-									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-								}
-								else
-								{
-									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-								}
+								Knocked = true;
+								Custom_Knockback(npc.index, target, 900.0, true);
+								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 										
 							if(!Knocked)
@@ -883,13 +918,17 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 
 		maxhealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 			
-		maxhealth -= (maxhealth / 4);
+		maxhealth /= 8;
 
-	//	int spawn_index = NPC_CreateByName("npc_infected_goggles", -1, pos, ang, GetTeam(entity));
-	//	if(spawn_index > MaxClients)
-	//	{
-	//		//Spawn Zeina
-	//	}
+		int spawn_index = NPC_CreateByName("npc_zeina_prisoner", -1, pos, ang, GetTeam(entity));
+		if(spawn_index > MaxClients)
+		{
+			Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(spawn_index);
+			npc.m_iTargetAlly = entity;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+		}
 	}
 }
 
@@ -1048,6 +1087,9 @@ void ZiliusEarsApply(int iNpc, char[] attachment = "head")
 
 bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 {
+	if(npc.m_iDontMultiAbility && npc.m_iDontMultiAbility != 2)
+		return false;
+
 	if(!npc.m_flShieldRegenCD)
 	{
 		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
@@ -1067,9 +1109,11 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 			npc.StartPathing();
 			npc.m_bisWalking = true;
 			//big shield
-			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 10);
+			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 50);
 			ApplyStatusEffect(npc.index, npc.index, "Expidonsan Anger", 8.0);
 			npc.PlayShieldRegenSound();
+			npc.m_iDontMultiAbility = 0;
+			npc.m_flDoingAnimation = 0.0;
 		}
 		return true;
 	}
@@ -1092,6 +1136,7 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 		npc.m_flShieldRegenCD = 0.0;
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
 		npc.SayStuffZilius();
+		npc.m_iDontMultiAbility = 2;
 		return true;
 	}
 	return false;
@@ -1100,7 +1145,227 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 
 bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 {
+	if(npc.m_iDontMultiAbility && npc.m_iDontMultiAbility != 1)
+		return false;
+	if(npc.m_flFrontSlicerInit)
+	{
+
+		if(npc.m_flFrontSlicerInit < GetGameTime(npc.index))
+		{
+			float flPos[3]; // original
+			float flAng[3]; // original
+		
+			if(IsValidEntity(npc.m_iWearable7))
+				RemoveEntity(npc.m_iWearable7);
+			npc.GetAttachment("foot_L", flPos, flAng);
+			npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "foot_L", {0.0,0.0,0.0});
+			npc.GetAttachment("foot_R", flPos, flAng);
+			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "foot_R", {0.0,0.0,0.0});
+			npc.GetAttachment("effect_hand_l", flPos, flAng);
+			npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
+			
+			npc.SetActivity("ACT_MP_SWIM_MELEE");
+			npc.SetPlaybackRate(0.5); //slow "swim"
+			npc.SetCycle(0.0);
+			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+			int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+			for(int loopi; loopi < layerCount; loopi++)
+			{
+				view_as<CClotBody>(npc.index).SetLayerPlaybackRate(loopi, 0.01);
+				view_as<CClotBody>(npc.index).SetLayerCycle(loopi, 0.35);
+			}
+			npc.SetPoseParameter_Easy("body_pitch", -21.2);
+			npc.SetPoseParameter_Easy("body_yaw", 11.2);
+			npc.SetPoseParameter_Easy("move_x", 1.0);
+			npc.m_flSpeed = 600.0;
+			npc.StartPathing();
+			npc.m_bisWalking = false;
+			npc.m_flFrontSlicerInit = 0.0;
+			f_NpcAdjustFriction[npc.index] = 0.3;
+			npc.m_flDoingAnimation = GetGameTime(npc.index) + 7.0;
+			ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
+			f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE; //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
+		}
+		return true;
+	}
 	if(!npc.m_flFrontSlicerCD)
+	{
+		npc.SetPoseParameter_Easy("move_x", 1.0);
+		npc.SetPoseParameter_Easy("move_y", 0.0);
+		Zilius_KickLogic(npc.index);
+		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
+		{
+			if(IsValidEntity(npc.m_iWearable7))
+				RemoveEntity(npc.m_iWearable7);
+			if(IsValidEntity(npc.m_iWearable8))
+				RemoveEntity(npc.m_iWearable8);
+			if(IsValidEntity(npc.m_iWearable9))
+				RemoveEntity(npc.m_iWearable9);
+
+			npc.SetPoseParameter_Easy("body_pitch", 0.0);
+			npc.SetPoseParameter_Easy("body_yaw", 0.0);
+			npc.SetPoseParameter_Easy("move_x", 0.0);
+		
+			ZiliusApplyEffects(npc.index, true);
+
+			npc.m_flFrontSlicerCD = GetGameTime(npc.index) + 30.0;
+			npc.RemoveGesture("ACT_MP_GESTURE_VC_FISTPUMP_PRIMARY");
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+			npc.StartPathing();
+			npc.m_flSpeed = 330.0;
+			npc.m_bisWalking = true;
+			f_NpcAdjustFriction[npc.index] = 1.0;
+			npc.m_iDontMultiAbility = 0;	
+			npc.m_flDoingAnimation = 0.0;
+			RemoveSpecificBuff(npc.index, "Intangible");
+			f_CheckIfStuckPlayerDelay[npc.index] = 1.0; //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
+			b_ThisEntityIgnoredBeingCarried[npc.index] = false; //cant be targeted AND wont do npc collsiions
+
+		}
+		return true;
+	}
+	if(npc.m_flFrontSlicerCD < GetGameTime(npc.index))
+	{
+			
+		npc.m_flFrontSlicerCD = 0.0;
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + 3.0;
+		npc.m_flFrontSlicerInit = GetGameTime(npc.index) + 2.0;
+
+		float flPos[3]; // original
+		float flAng[3]; // original
+	
+		npc.GetAttachment("effect_hand_r", flPos, flAng);
+		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+
+		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_PRIMARY");
+		int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+		for(int loopi; loopi < layerCount; loopi++)
+		{
+			view_as<CClotBody>(npc.index).SetLayerPlaybackRate(loopi, 0.5);
+			view_as<CClotBody>(npc.index).SetLayerCycle(loopi, 0.45);
+		}
+		npc.PlayShieldRegenSoundInit();
+		npc.m_bisWalking = false;
+		npc.AddActivityViaSequence("layer_taunt_the_fist_bump");
+		npc.SetPlaybackRate(0.3);
+		npc.SetCycle(0.1);
+		npc.StopPathing();
+		npc.m_flSpeed = 0.0;
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
+		npc.SayStuffZilius();
+		npc.m_iDontMultiAbility = 1;
+		return true;
+	}
+	return false;
+}
+
+
+static void Zilius_KickTouched(int entity, int enemy)
+{
+	if(!IsValidEnemy(entity, enemy))
+		return;
+
+	if(IsIn_HitDetectionCooldown(entity ,enemy, 5))
+		return;
+
+	Set_HitDetectionCooldown(entity,enemy, GetGameTime() + 0.15, 5);
+
+	Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(entity);
+	
+	float targPos[3];
+	WorldSpaceCenter(enemy, targPos);
+	float damagedeal = 100.0;
+	if(ShouldNpcDealBonusDamage(enemy))
+		damagedeal *= 10.0;
+
+	damagedeal *= RaidModeScaling;
+	SDKHooks_TakeDamage(enemy, entity, entity, damagedeal, DMG_CLUB, -1, NULL_VECTOR, targPos);
+	npc.PlaySlicerSound();
+
+	ApplyStatusEffect(enemy, enemy, "Anti-Waves", 3.0);
+	Custom_Knockback(enemy, enemy, 500.0, true, false);
+}
+
+void Zilius_KickLogic(int iNPC)
+{
+	static float flMyPos[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	float vecUp[3];
+	float vecForward[3];
+	float vecRight[3];
+
+	GetVectors(iNPC, vecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
+
+	float vecSwingEnd[3];
+	vecSwingEnd[0] = flMyPos[0] + vecForward[0] * (40.0);
+	vecSwingEnd[1] = flMyPos[1] + vecForward[1] * (40.0);
+	vecSwingEnd[2] = flMyPos[2];
+				
+
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
+	hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+	hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
+		
+	//Fat kick!
+	hullcheckmaxs[0] *= 1.5;
+	hullcheckmaxs[1] *= 1.5;
+	hullcheckmaxs[2] *= 1.5;
+
+	hullcheckmins[0] *= 1.5;
+	hullcheckmins[1] *= 1.5;
+	hullcheckmins[2] *= 1.5;
+	
+	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
+
+	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+	{
+		if(!TouchedNpcResolve(entity_traced))
+			break;
+
+		if(i_IsABuilding[ConvertTouchedResolve(entity_traced)])
+			continue;
+		
+		Zilius_KickTouched(iNPC,ConvertTouchedResolve(entity_traced));
+	}
+	ResetTouchedentityResolve();
+}
+
+void Zillius_ApplyBuffInLocation(float BannerPos[3], int Team, int iMe = 0)
+{
+	float targPos[3];
+	for(int ally=1; ally<=MaxClients; ally++)
+	{
+		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) == Team)
+		{
+			GetClientAbsOrigin(ally, targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (ZILIUS_BUFF_RANGE * ZILIUS_BUFF_RANGE))
+			{
+				ApplyStatusEffect(ally, ally, "Zilius Prime Technology", 1.0);
+			}
+		}
+	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+	{
+		int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == Team && iMe != ally)
+		{
+			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (ZILIUS_BUFF_RANGE * ZILIUS_BUFF_RANGE))
+			{
+				ApplyStatusEffect(ally, ally, "Zilius Prime Technology", 1.0);
+			}
+		}
+	}
+}
+
+
+bool ZiliusSpawnPortal(Construction_Raid_Zilius npc)
+{
+	if(npc.m_iDontMultiAbility && npc.m_iDontMultiAbility != 3)
+		return false;
+	if(!npc.m_flSpawnPortal)
 	{
 		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 		{
@@ -1109,25 +1374,69 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 				RemoveEntity(npc.m_iWearable7);
 			float flPos[3]; // original
 			float flAng[3]; // original
-			npc.SetPoseParameter_Easy("body_pitch", 0.0);
-			npc.SetPoseParameter_Easy("body_yaw", 0.0);
-			npc.SetPoseParameter_Easy("move_x", 0.0);
 		
 			npc.GetAttachment("effect_hand_l", flPos, flAng);
 			spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*DURATION*/ 0.5, 6.0, 0.1, 1,  /*RANGE END*/350 * 2.0);
 			ZiliusApplyEffects(npc.index, true);
-			npc.m_flFrontSlicerCD = GetGameTime(npc.index) + 30.0;
+			npc.m_flSpawnPortal = GetGameTime(npc.index) + 60.0;
 			npc.SetActivity("ACT_MP_RUN_MELEE");
 			npc.m_flSpeed = 330.0;
 			npc.StartPathing();
 			npc.m_bisWalking = true;
-			//big shield
-			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 10);
-			ApplyStatusEffect(npc.index, npc.index, "Expidonsan Anger", 8.0);
+
+			
+			static float flMyPos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+			static float hullcheckmaxs[3];
+			static float hullcheckmins[3];
+
+			//Defaults:
+			//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
+			//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
+
+			hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
+			hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
+			
+			if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
+			{
+				npc.m_flDead_Ringer_Invis_bool = true;
+			}
+			else
+			{
+				npc.m_flDead_Ringer_Invis_bool = false;
+			}
+
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+
+			if(npc.m_flDead_Ringer_Invis_bool)
+			{
+				flMyPos[2] += 400.0;
+			}
+			else
+			{
+				flMyPos[2] += 120.0; //spawn at headhight instead.
+			}
+			
+			//every 5 seconds, summon blades onto all enemeis in view
+			int PortalParticle = ParticleEffectAt(flMyPos, "eyeboss_tp_vortex", 0.0);
+			npc.m_iPortalsStateSummoned++;
+			DataPack pack;
+			CreateDataTimer(8.5, Zilius_TimerRepeatPortalGate, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(EntIndexToEntRef(npc.index));
+			pack.WriteCell(EntIndexToEntRef(PortalParticle));
+			pack.WriteCell(npc.m_iPortalsStateSummoned);
+
+			GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+			EmitSoundToAll("mvm/mvm_tele_deliver.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, flMyPos);	
+			
+			ParticleEffectAt(flPos, "hammer_bell_ring_shockwave", 1.0); //This is the root bone basically
+			npc.m_iDontMultiAbility = 0;
+			npc.m_flDoingAnimation = 0.0;
+
 		}
 		return true;
 	}
-	if(npc.m_flFrontSlicerCD < GetGameTime(npc.index))
+	if(npc.m_flSpawnPortal < GetGameTime(npc.index))
 	{
 			
 		float flPos[3]; // original
@@ -1135,28 +1444,259 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 	
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
 		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.SayStuffZilius();
 
-		npc.PlayShieldRegenSoundInit();
 		npc.m_bisWalking = false;
-		npc.SetActivity("ACT_MP_SWIM_MELEE");
-		npc.PlayShieldRegenSound();
-		npc.SetPlaybackRate(0.5); //slow "swim"
-		npc.SetCycle(0.0);
-		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+		npc.AddActivityViaSequence("layer_taunt_02");
+		npc.SetPlaybackRate(0.01);
+		npc.SetCycle(0.2);
+		npc.StopPathing();
+		npc.m_flSpeed = 0.0;
+		npc.m_flSpawnPortal = 0.0;
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
+		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 		int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
 		for(int loopi; loopi < layerCount; loopi++)
 		{
-			view_as<CClotBody>(npc.index).SetLayerPlaybackRate(loopi, 0.01);
-			view_as<CClotBody>(npc.index).SetLayerCycle(loopi, 0.35);
+			view_as<CClotBody>(npc.index).SetLayerPlaybackRate(loopi, 0.5);
+			view_as<CClotBody>(npc.index).SetLayerCycle(loopi, 0.1);
 		}
-		npc.SetPoseParameter_Easy("body_pitch", -21.2);
-		npc.SetPoseParameter_Easy("body_yaw", 11.2);
-		npc.SetPoseParameter_Easy("move_x", 1.0);
-		npc.m_flSpeed = 330.0;
-		npc.m_flFrontSlicerCD = 0.0;
-		npc.m_flDoingAnimation = GetGameTime(npc.index) + 3.0;
+		npc.m_iDontMultiAbility = 3;
+		npc.SayStuffZilius();
 		return true;
 	}
 	return false;
+}
+
+#define Zilius_LASER_THICKNESS 25
+
+public Action Zilius_TimerRepeatPortalGate(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int Originator = EntRefToEntIndex(pack.ReadCell());
+	int Particle = EntRefToEntIndex(pack.ReadCell());
+	int Currentat = pack.ReadCell();
+	if(IsValidEntity(Originator) && IsValidEntity(Particle))
+	{
+		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(Originator);
+		if(npc.m_iPortalsStateSummoned >= Currentat + 3)
+		{
+			if(IsValidEntity(Particle))
+			{
+				RemoveEntity(Particle);
+			}
+			return Plugin_Stop;
+		}
+
+
+		static float flMyPos[3];
+		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
+		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
+		int enemy[MAXENTITIES];
+		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, Particle, (2800.0 * 2800.0));
+		bool Foundenemies = false;
+
+		int totalEnemies = 0;
+		for(int i; i < sizeof(enemy); i++)
+		{
+			if(enemy[i])
+			{
+				totalEnemies++;
+			}
+		}
+		totalEnemies /= 3;
+
+		if(totalEnemies <= 2)
+			totalEnemies = 2;
+
+		for(int i; i < sizeof(enemy); i++)
+		{
+			if(enemy[i] && totalEnemies > 0)
+			{	
+				totalEnemies--;
+				Foundenemies = true;
+				float WorldSpaceVec[3]; WorldSpaceCenter(enemy[i], WorldSpaceVec);
+				ZiliusInitiateLaserAttack(npc.index, WorldSpaceVec, flMyPos);
+			}
+		}
+
+		if(Foundenemies)
+			EmitSoundToAll("weapons/bumper_car_speed_boost_start.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 90);
+
+		return Plugin_Continue;
+	}
+	else
+	{
+		if(IsValidEntity(Particle))
+		{
+			RemoveEntity(Particle);
+		}
+		return Plugin_Stop;
+	}
+}
+
+
+void ZiliusInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
+{
+
+	float vecForward[3], vecRight[3], Angles[3];
+
+	MakeVectorFromPoints(VectorStart, VectorTarget, vecForward);
+	GetVectorAngles(vecForward, Angles);
+	GetAngleVectors(vecForward, vecForward, vecRight, VectorTarget);
+
+	Handle trace = TR_TraceRayFilterEx(VectorStart, Angles, 11, RayType_Infinite, Zilius_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(VectorTarget, trace);
+		
+		float lineReduce = 10.0 * 2.0 / 3.0;
+		float curDist = GetVectorDistance(VectorStart, VectorTarget, false);
+		if (curDist > lineReduce)
+		{
+			ConformLineDistance(VectorTarget, VectorStart, VectorTarget, curDist - lineReduce);
+		}
+	}
+	delete trace;
+
+	Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(entity);
+	int red = 255;
+	int green = 255;
+	int blue = 255;
+	int Alpha = 255;
+
+	if(npc.Anger)
+	{
+		red = 255;
+		green = 255;
+		blue = 255;
+	}
+
+	int colorLayer4[4];
+	float diameter = float(Zilius_LASER_THICKNESS * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+	int glowColor[4];
+	SetColorRGBA(glowColor, red, green, blue, Alpha);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
+	TE_SendToAll(0.0);
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(VectorTarget[0]);
+	pack.WriteFloat(VectorTarget[1]);
+	pack.WriteFloat(VectorTarget[2]);
+	pack.WriteFloat(VectorStart[0]);
+	pack.WriteFloat(VectorStart[1]);
+	pack.WriteFloat(VectorStart[2]);
+	RequestFrames(ZiliusInitiateLaserAttack_DamagePart, 50, pack);
+}
+
+void ZiliusInitiateLaserAttack_DamagePart(DataPack pack)
+{
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		LaserVarious_HitDetection[i] = false;
+	}
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+		entity = 0;
+
+	float VectorTarget[3];
+	float VectorStart[3];
+	VectorTarget[0] = pack.ReadFloat();
+	VectorTarget[1] = pack.ReadFloat();
+	VectorTarget[2] = pack.ReadFloat();
+	VectorStart[0] = pack.ReadFloat();
+	VectorStart[1] = pack.ReadFloat();
+	VectorStart[2] = pack.ReadFloat();
+
+	Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(entity);
+	int red = 50;
+	int green = 50;
+	int blue = 255;
+	int Alpha = 222;
+	if(npc.Anger)
+	{
+		red = 255;
+		green = 50;
+		blue = 50;
+	}
+	int colorLayer4[4];
+	float diameter = float(Zilius_LASER_THICKNESS * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(VectorStart, VectorTarget, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+
+	float hullMin[3];
+	float hullMax[3];
+	hullMin[0] = -float(Zilius_LASER_THICKNESS);
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Zilius_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+
+	switch(GetRandomInt(1,3))
+	{
+		case 1:
+			EmitSoundToAll("weapons/cow_mangler_explosion_normal_04.wav", 0, SNDCHAN_STATIC, 120, _, 1.0, 110,_,VectorStart);
+		case 2:
+			EmitSoundToAll("weapons/cow_mangler_explosion_normal_05.wav", 0, SNDCHAN_STATIC, 120, _, 1.0, 110,_,VectorStart);
+		case 3:
+			EmitSoundToAll("weapons/cow_mangler_explosion_normal_06.wav", 0, SNDCHAN_STATIC, 120, _, 1.0, 110,_,VectorStart);
+	}
+
+	float CloseDamage = 100.0 * RaidModeScaling;
+	float FarDamage = 70.0 * RaidModeScaling;
+	float MaxDistance = 5000.0;
+	float playerPos[3];
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
+		{
+			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+			float distance = GetVectorDistance(VectorStart, playerPos, false);
+			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
+			if (damage < 0)
+				damage *= -1.0;
+
+			
+			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
+				damage *= 0.25;
+
+			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+				
+		}
+	}
+	delete pack;
+}
+
+
+public bool Zilius_BEAM_TraceUsers(int entity, int contentsMask, int client)
+{
+	if (IsEntityAlive(entity))
+	{
+		LaserVarious_HitDetection[entity] = true;
+	}
+	return false;
+}
+
+public bool Zilius_TraceWallsOnly(int entity, int contentsMask)
+{
+	return !entity;
 }

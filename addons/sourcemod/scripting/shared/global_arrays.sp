@@ -643,6 +643,7 @@ float f_WeaponVolumeStiller[MAXENTITIES];
 float f_WeaponVolumeSetRange[MAXENTITIES];
 float f_FreeplayAlteredDamageOld_Barracks[MAXENTITIES];
 float f_FreeplayAlteredHealthOld_Barracks[MAXENTITIES];
+float f_NpcAdjustFriction[MAXENTITIES];
 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;

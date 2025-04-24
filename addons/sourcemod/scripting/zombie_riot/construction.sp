@@ -447,6 +447,9 @@ static Action Timer_WaitingPeriod(Handle timer)
 		}
 	}
 
+	if(CvarInfiniteCash.BoolValue)
+		return Plugin_Continue;
+		
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))

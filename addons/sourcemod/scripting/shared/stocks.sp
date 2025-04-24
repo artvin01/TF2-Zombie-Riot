@@ -1294,7 +1294,6 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
-		
 	if(HasSpecificBuff(reciever, "Anti-Waves"))
 	{
 		//Ignore all healing that isnt absolute

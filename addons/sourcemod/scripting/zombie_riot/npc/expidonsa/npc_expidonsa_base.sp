@@ -83,7 +83,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 		if(!CheckInHud() && DrainShield)
 		{
 #if defined ZR
-			if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
+			if(HasSpecificBuff(victim, "Zilius Prime Technology") || attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
 #else
 			if(attacker <=MaxClients)
 #endif
@@ -136,6 +136,10 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 			MaxShieldCapacity = amount;
 		if(Construction_Mode())
 			MaxShieldCapacity = 99999999; //no limit.
+	}
+	if(HasSpecificBuff(entity, "Zilius Prime Technology"))
+	{
+		MaxShieldCapacity *= 2;
 	}
 	if(MaxShieldCapacity < 1)
 		MaxShieldCapacity = 1;

@@ -1552,19 +1552,19 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(VIPBuilding_Active())
 			{
 				GetPercentageAdjust *= 2.0;
-				baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
-				baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
+				baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
+				baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
 			}
 		}
 
 		if(!VIPBuilding_Active())
 		{
-			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
-			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
+			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
+			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
 		}
 #else
-		baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
-		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
+		baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
+		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
 #endif
 		//in freeplay there should be a speed limit, otherwise they will just have infinite speed and youre screwed.
 		
@@ -8646,6 +8646,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	f_NpcAdjustFriction[entity] = 1.0;
 	f_AprilFoolsSetStuff[entity] = 0.0;
 	b_HideHealth[entity] = false;
 //	i_MasterSequenceNpc[entity] = -1;

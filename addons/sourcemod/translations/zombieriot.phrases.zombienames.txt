@@ -1521,6 +1521,14 @@
 		"pt"		"Silvester"
 		"ru"		"Сильвестр"
 	}
+	"Zeina"
+	{
+		"en"		"Zeina"
+	}
+	"Zilius"
+	{
+		"en"		"Zilius"
+	}
 	"Waldch"
 	{
 		"en"		"Waldch"

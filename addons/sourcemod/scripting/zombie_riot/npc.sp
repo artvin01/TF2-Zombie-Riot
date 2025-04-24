@@ -834,6 +834,7 @@ void NPC_ConfigSetup()
 	
 	// Construction
 	BaseBuilding_MapStart();
+	ZeinaFreeFollower_Setup();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -984,6 +985,7 @@ void NPC_ConfigSetup()
 	SelfamScythus_OnMapStart_NPC();
 	Diversionistico_Elitus_OnMapStart_NPC();
 	Construction_Raid_Zilius_OnMapStart();
+	ZeinaPrisoner_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2163,3 +2165,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/enemies/npc_selfam_scythus.sp"
 #include "npc/construction/enemies/npc_diversionistico_elitus.sp"
 #include "npc/construction/enemies/npc_zilius.sp"
+#include "npc/construction/enemies/npc_zeina_prison.sp"
+#include "npc/construction/enemies/npc_zeina_freed.sp"
