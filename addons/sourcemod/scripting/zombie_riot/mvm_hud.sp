@@ -3,6 +3,8 @@
 
 void CreateMVMPopulator()
 {
+	//do not.
+	return;
 	//find populator
 	int populator = FindEntityByClassname(-1, "info_populator");
 	if(populator == -1 || populator != i_MVMPopulator)
