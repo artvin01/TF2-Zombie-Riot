@@ -4025,4 +4025,4 @@ int Waves_CashGainedTotalThisWave()
 	return CashGainedTotal;
 }
 
-#include "zombie_riot/modifiers.sp"
+#include "modifiers.sp"

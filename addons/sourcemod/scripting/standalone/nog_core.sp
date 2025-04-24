@@ -14,11 +14,11 @@
 
 ConVar zr_showdamagehud;
 
-#include "standalone/convars.sp"
-#include "standalone/dhooks.sp"
-#include "standalone/natives.sp"
-#include "standalone/npc.sp"
-#include "zombie_riot/custom/homing_projectile_logic.sp"
+#include "convars.sp"
+#include "dhooks.sp"
+#include "natives.sp"
+#include "npc.sp"
+#include "../zombie_riot/custom/homing_projectile_logic.sp"
 
 void NOG_PluginLoad()
 {
