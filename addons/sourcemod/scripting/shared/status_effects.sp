@@ -144,7 +144,9 @@ void InitStatusEffects()
 	StatusEffects_ElementalWand();
 	StatusEffects_FallenWarrior();
 	StatusEffects_CasinoDebuff();
+#if defined ZR
 	StatusEffects_Ruiania();
+#endif
 	StatusEffects_WeaponSpecific_VisualiseOnly();
 	StatusEffects_StatusEffectListOnly();
 	StatusEffects_PurnellKitDeBuffs();
@@ -3325,6 +3327,8 @@ float GamblersRuin_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_
 {
 	return (basedamage * (Apply_StatusEffect.DataForUse * DamageBuffExtraScaling));
 }
+
+#if defined ZR
 int RuinaBuffSpeed;
 int RuinaBuffDefense;
 int RuinaBuffDamage;
@@ -3392,6 +3396,7 @@ void StatusEffects_Ruiania()
 	data.HudDisplay_Func			= RuinaBatteryHud_Func;
 	StatusEffect_AddGlobal(data);
 }
+
 void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
 	//they do not have a valid battery, abort.
@@ -3527,7 +3532,7 @@ float Ruinas_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatu
 	return (basedamage * (Apply_StatusEffect.DataForUse * DamageBuffExtraScaling));
 
 }
-
+#endif	// ZR
 
 
 int KazimierzDodgeIndex;

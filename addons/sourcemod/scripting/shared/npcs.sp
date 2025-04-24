@@ -757,11 +757,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			//Buff bodyshot damage.
 			damage *= 1.4;
 
+#if defined ZR
 			bool Blitzed_By_Riot = false;
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RIOT_SHIELD && f_TimeFrozenStill[victim] > GetGameTime(victim))
 			{
 				Blitzed_By_Riot = true;
 			}
+#endif
+
 			if(f_HeadshotDamageMultiNpc[victim] <= 0.0 && hitgroup == HITGROUP_HEAD)
 			{
 				damage = 0.0;
@@ -780,7 +783,12 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				EmitSoundToClient(attacker, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(95, 105));
 				return Plugin_Handled;
 			}
+
+#if defined ZR
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
+#else
+			if(hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim])
+#endif
 			{
 				damage *= f_HeadshotDamageMultiNpc[victim];
 
@@ -792,11 +800,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				else
 					damage *= 1.185;
 
+#if defined ZR
 				if(Blitzed_By_Riot) //Extra damage.
 				{
 					damage *= 1.35;
 				}
 				else
+#endif
 				{
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
@@ -818,7 +828,11 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				else
 				{
+#if defined ZR
 					DisplayCritAboveNpc(victim, attacker, Blitzed_By_Riot);
+#else
+					DisplayCritAboveNpc(victim, attacker);
+#endif
 					played_headshotsound_already_Case[attacker] = random_case;
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
@@ -853,7 +867,9 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #endif	// ZR
 				played_headshotsound_already[attacker] = GetGameTime();
 
+#if defined ZR
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
+#endif
 				{
 					switch(random_case)
 					{

@@ -445,6 +445,14 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 #if !defined RTS
 		OnTakeDamageDamageBuffs(attacker, inflictor, damage, damagetype, weapon);
 
+#if defined RPG	
+		if(!CheckInHud() && damagePosition[2] != 6969420.0)
+		{
+			//There is crit damage from this item.
+			damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
+		}
+#endif
+
 		OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 		
 		if(!CheckInHud() && attacker <= MaxClients && attacker > 0)
@@ -1893,13 +1901,6 @@ stock void OnTakeDamageDamageBuffs(int &attacker, int &inflictor, float &damage,
 				}
 			}
 		}
-	}
-#endif
-#if defined RPG	
-	if(!CheckInHud() && damagePosition[2] != 6969420.0)
-	{
-		//There is crit damage from this item.
-		damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
 	}
 #endif
 }

@@ -381,11 +381,13 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
+#if defined ZR
 		if(!ModelReplaceDo(npc, Ally))
 		{
 			DispatchKeyValue(npc, "model",	 model);
 			view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		}
+#endif
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
@@ -5486,8 +5488,11 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		CNavArea closeNav = NULL_AREA;
 		float closeDist = maxDistance;
 		bool closeNpc;
+#if defined ZR
 		bool construction = Construction_Mode();	// Buildings/NPCs don't use allydist, focus buildings
-		
+#else
+		bool construction = false;
+#endif
 		int length = iterator.Count();
 		for(int i; i < length; i++)
 		{
@@ -6107,7 +6112,9 @@ public void NpcBaseThink(int iNPC)
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
+#if defined ZR
 	AprilFoolsModelHideWearables(iNPC);
+#endif
 	if(i_IsNpcType[npc.index] == 0)
 	{
 		SaveLastValidPositionEntity(iNPC);
@@ -11165,12 +11172,20 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 	return vecSwingEnd;
 }
 
+#if defined RPG
+char[] NpcStats_ReturnNpcName(int entity)
+#else
 char[] NpcStats_ReturnNpcName(int entity, bool NoTrans = false)
+#endif
 {
+#if defined RPG
+	return c_NpcName[entity];
+#else
 	char NameReturn[255];
 	if(!b_NameNoTranslation[entity] && !NoTrans)
 		Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
 	else
 		Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
 	return NameReturn;
+#endif
 }

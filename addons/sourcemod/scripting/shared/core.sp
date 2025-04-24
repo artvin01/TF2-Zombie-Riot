@@ -167,7 +167,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 
 
-#include "shared/global_arrays.sp"
+#include "global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_47.mdl"
@@ -615,31 +615,31 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 	Below Are Shared Overrides
 */
 
-#include "shared/stocks_override.sp"
-#include "shared/master_takedamage.sp"
-#include "shared/npc_default_sounds.sp"	// NPC Stats is required here due to important methodmap
-#include "shared/npc_stats.sp"	// NPC Stats is required here due to important methodmap
-#include "shared/npc_collision_logic.sp"	// NPC collisions are sepearted for ease
-#include "shared/npc_trace_filters.sp"	// NPC trace filters are sepearted for ease
+#include "stocks_override.sp"
+#include "master_takedamage.sp"
+#include "npc_default_sounds.sp"	// NPC Stats is required here due to important methodmap
+#include "npc_stats.sp"	// NPC Stats is required here due to important methodmap
+#include "npc_collision_logic.sp"	// NPC collisions are sepearted for ease
+#include "npc_trace_filters.sp"	// NPC trace filters are sepearted for ease
 
 /*
 	Below Are Variables/Defines That Are Per Gamemode
 */
 
 #if defined ZR
-#include "zombie_riot/zr_core.sp"
+#include "../zombie_riot/zr_core.sp"
 #endif
 
 #if defined RPG
-#include "rpg_fortress/rpg_core.sp"
+#include "../rpg_fortress/rpg_core.sp"
 #endif
 
 #if defined RTS
-#include "fortress_wars/rts_core.sp"
+#include "../fortress_wars/rts_core.sp"
 #endif
 
 #if defined NOG
-#include "standalone/nog_core.sp"
+#include "../standalone/nog_core.sp"
 #endif
 
 /*
@@ -647,41 +647,41 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 */
 
 #if defined ZR || defined RPG
-#include "shared/custom_melee_logic.sp"
-#include "shared/killfeed.sp"
-#include "shared/thirdperson.sp"
-#include "shared/viewchanges.sp"
+#include "custom_melee_logic.sp"
+#include "killfeed.sp"
+#include "thirdperson.sp"
+#include "viewchanges.sp"
 #endif
 
 #if !defined RTS
-#include "shared/attributes.sp"
+#include "attributes.sp"
 #endif
 
 #if !defined NOG
-#include "shared/commands.sp"
-#include "shared/convars.sp"
-#include "shared/dhooks.sp"
-#include "shared/events.sp"
+#include "commands.sp"
+#include "convars.sp"
+#include "dhooks.sp"
+#include "events.sp"
 #endif
 
 #if defined RTS
-#include "shared/rtscamera.sp"
+#include "rtscamera.sp"
 #endif
 
 #if defined ZR || defined NOG
-#include "shared/npccamera.sp"
+#include "npccamera.sp"
 #endif
 
-#include "shared/baseboss_lagcompensation.sp"
-#include "shared/configs.sp"
-#include "shared/damage.sp"
-#include "shared/status_effects.sp"
-#include "shared/filenetwork.sp"
-#include "shared/npcs.sp"
-#include "shared/sdkcalls.sp"
-#include "shared/sdkhooks.sp"
-#include "shared/stocks.sp"
-#include "shared/wand_projectile.sp"
+#include "baseboss_lagcompensation.sp"
+#include "configs.sp"
+#include "damage.sp"
+#include "status_effects.sp"
+#include "filenetwork.sp"
+#include "npcs.sp"
+#include "sdkcalls.sp"
+#include "sdkhooks.sp"
+#include "stocks.sp"
+#include "wand_projectile.sp"
 
 public Plugin myinfo =
 {
