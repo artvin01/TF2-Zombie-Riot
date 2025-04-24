@@ -3,19 +3,12 @@
 
 static Handle SDKEquipWearable;
 static Handle SDKGetMaxHealth;
-//static Handle g_hStudio_FindAttachment;
 
 static Handle g_hSetAbsOrigin;
 static Handle g_hSetAbsAngle;
 static Handle g_hInvalidateBoneCache;
 
 static Handle g_hCTFCreateArrow;
-//static Handle g_hCTFCreatePipe;
-//Handle g_hSDKMakeCarriedObject;
-//static Handle g_hGetVectors;
-//static Handle g_hWeaponSound;
-//static Handle g_hSDKPlaySpecificSequence;
-//static Handle g_hDoAnimationEvent;
 
 #if defined ZR || defined RPG
 static Handle g_hSDKStartLagComp;
@@ -194,31 +187,6 @@ stock int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const f
 }
 #endif
 
-/*		
-( const Vector &position, const QAngle &angles, 
-																	const Vector &velocity, const AngularImpulse &angVelocity, 
-																	CBaseCombatCharacter *pOwner, const CTFWeaponInfo &weaponInfo, 
-																	int iPipeBombType, float flMultDmg )
-*/
-/*
-void SDKCall_CallCorrectWeaponSound(int WeaponIndex, int WeaponType, float duration = 1.0)
-{
-	if(g_hWeaponSound)
-	{
-		PrintToChatAll("testSound");
-		SDKCall(g_hWeaponSound, WeaponIndex, WeaponType, duration);
-	}
-}
-*/
-/*
-int SDKCall_CTFCreatePipe(float VecOrigin[3], const float VecAngles[3], const float fSpeed, const float angVelocity, int owner, int weaponinfo, int projectileType, float damage)
-{
-	if(g_hCTFCreatePipe)
-		return SDKCall(g_hCTFCreatePipe, VecOrigin, VecAngles, fSpeed, angVelocity, owner, weaponinfo, projectileType, damage);
-	
-	return -1;
-}
-*/
 void SDKCall_SetLocalOrigin(int index, float localOrigin[3])
 {
 	if(g_hSetLocalOrigin)
@@ -345,37 +313,8 @@ void EndPlayerOnlyLagComp(int client)
 
 void UpdateBlockedNavmesh()
 {
-//	sv_cheats.IntValue = 1;
-	//this updates the nav.
 	ServerCommand("sv_cheats 1; nav_load ; sv_cheats 0");
-//	sv_cheats.IntValue = 0;
-	
-	//This broke and is probably inlined, above is a way easier method.
-//	SDKCall(g_hSDKUpdateBlocked);
 }	
-/*
-stock int SpawnBotCustom()
-{
-	PrintToChatAll("trest");
-	ServerCommand("sv_cheats 1; bot ; sv_cheats 0");
-//	int bot = CreateFakeClient(Name);
-	
-	int bot = SDKCall(
-	gH_BotAddCommand,
-	Name, // name
-	false // bReportFakeClient
-	);
-	
-//	if (IsValidClient(bot))
-//	{
-//		PrintToChatAll("party!");
-//		SetFakeClientConVar(bot, "name", Name);
-//	}
-
-	return -1;
-}
-*/
-//BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
 #if defined ZR || defined RPG
 void Sdkcall_Load_Lagcomp()
