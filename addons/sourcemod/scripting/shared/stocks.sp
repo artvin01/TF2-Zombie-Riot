@@ -5046,7 +5046,7 @@ stock void SpawnTimer(float time)
 		SetVariantInt(0);
 		AcceptEntityInput(timer, "ShowInHUD");
 	}
-
+	
 	timer = CreateEntityByName("team_round_timer");
 	DispatchKeyValue(timer, "show_in_hud", "1");
 	DispatchSpawn(timer);

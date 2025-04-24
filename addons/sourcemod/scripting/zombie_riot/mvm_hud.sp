@@ -1,11 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static int i_MVMPopulator;
 void CreateMVMPopulator()
 {
+	if(i_MVMPopulator == 99999)
+		return;
 	//find populator
 	int populator = FindEntityByClassname(-1, "info_populator");
-	static int i_MVMPopulator;
+	
 	if(populator == -1 || populator != i_MVMPopulator)
 	{
 		if(!IsValidEntity(populator))
@@ -26,6 +29,7 @@ void CreateMVMPopulator()
 
 void MVMHud_Disable()
 {
+	i_MVMPopulator = 99999;
 	GameRules_SetProp("m_bPlayingMannVsMachine", false);
 	GameRules_SetProp("m_bPlayingSpecialDeliveryMode", false);
 	mp_tournament.IntValue = 0;
