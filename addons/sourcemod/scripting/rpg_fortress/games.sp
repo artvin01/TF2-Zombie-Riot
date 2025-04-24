@@ -81,11 +81,11 @@ public const char RankNames[][] =
 	"Straight Flush"
 };
 
-#include "rpg_fortress/games/poker.sp"
-#include "rpg_fortress/games/blackjack.sp"
-#include "rpg_fortress/games/texas.sp"
-#include "rpg_fortress/games/roulette.sp"
-#include "rpg_fortress/games/crimson.sp"
+#include "games/poker.sp"
+#include "games/blackjack.sp"
+#include "games/texas.sp"
+#include "games/roulette.sp"
+#include "games/crimson.sp"
 
 static StringMap GameList;
 
