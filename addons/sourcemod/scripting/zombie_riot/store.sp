@@ -5715,7 +5715,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
-					if(!StrContains(info.Classname, "tf_weapon_crossbow") && !info.IsSupport)
+					if(!StrContains(info.Classname, "tf_weapon_crossbow") && !info.IsSupport && !info.IsAlone)
 					{
 						//Fix crossbow infinite reload issue
 						//it messes up Zr balance heavily and causes other bugs.

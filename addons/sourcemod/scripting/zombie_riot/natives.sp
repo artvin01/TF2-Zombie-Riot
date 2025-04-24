@@ -7,6 +7,7 @@ static GlobalForward OnClientWorldmodel;
 static GlobalForward OnGivenItem;
 static GlobalForward OnKilledNPC;
 static GlobalForward OnGivenCash;
+static GlobalForward OnTeamWin;
 
 void Natives_PluginLoad()
 {
@@ -23,6 +24,7 @@ void Natives_PluginLoad()
 	OnGivenItem = new GlobalForward("ZR_OnGivenItem", ET_Event, Param_Cell, Param_String);
 	OnKilledNPC = new GlobalForward("ZR_OnKilledNPC", ET_Ignore, Param_Cell, Param_String);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
+	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
 
 	RegPluginLibrary("zombie_riot");
 }
@@ -39,6 +41,13 @@ void Native_OnDifficultySet(int index, const char[] name, int level)
 void Native_OnClientLoaded(int client)
 {
 	Call_StartForward(OnClientLoaded);
+	Call_PushCell(client);
+	Call_Finish();
+}
+
+void Native_ZR_OnWinTeam(int team)
+{
+	Call_StartForward(OnTeamWin);
 	Call_PushCell(client);
 	Call_Finish();
 }
@@ -116,7 +125,6 @@ public any Native_GetWaveCounts(Handle plugin, int numParams)
 {
 	return CurrentRound;
 }
-
 public any Native_HasNamedItem(Handle plugin, int numParams)
 {
 	int length;
@@ -156,3 +164,4 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 	
 	return 0;	// :)
 }
+

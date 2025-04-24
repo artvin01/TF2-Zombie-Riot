@@ -2085,11 +2085,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 		if(!rogue)
 		{
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
+			ForcePlayerLoss();
 		}
 
 		if(killed)
@@ -2913,6 +2909,7 @@ void ForcePlayerWin()
 	MusicString2.Clear();
 	MusicSetup1.Clear();
 	RaidMusicSpecial1.Clear();
+	Native_ZR_OnWinTeam(TFTEAM_RED);
 
 	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
@@ -2936,6 +2933,7 @@ void ForcePlayerLoss()
 	AcceptEntityInput(entity, "RoundWin");
 	Music_RoundEnd(entity);
 	RaidBossActive = INVALID_ENT_REFERENCE;
+	Native_ZR_OnWinTeam(TFTeam_Blue);
 }
 
 

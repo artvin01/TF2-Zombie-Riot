@@ -143,6 +143,16 @@ forward void ZR_OnKilledNPC(int client, const char[] name);
  */
 forward Action ZR_OnGivenCash(int client, int &cash);
 
+/**
+ * Whenever any team won in ZR
+ * 
+ * @param client	Client index, 0 for all players
+ * @param cash		Cash obtained
+ * 
+ * @return		Plugin_Changed if the amount was changed, Plugin_Handled to stop cash being given
+ */
+forward Action ZR_OnWinTeam(int Team);
+
 public SharedPlugin __pl_zombie_riot =
 {
 	name = "zombie_riot",
@@ -163,5 +173,6 @@ public void __pl_zombie_riot_SetNTVOptional()
 	MarkNativeAsOptional("ZR_HasNamedItem");
 	MarkNativeAsOptional("ZR_GiveNamedItem");
 	MarkNativeAsOptional("ZR_GetAliveStatus");
+	MarkNativeAsOptional("ZR_OnWinTeam");
 }
 #endif
