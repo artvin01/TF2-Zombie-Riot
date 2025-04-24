@@ -131,8 +131,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return Construction_Raid_Zilius(vecPos, vecAng, team, data);
 }
 #define ZILIUS_BUFF_RANGE 500.0
-static float f_TalkDelayCheck;
-static int i_TalkDelayCheck;
 
 methodmap Construction_Raid_Zilius < CClotBody
 {
@@ -352,7 +350,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = false;
+		RaidAllowsBuildings = true;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -398,11 +396,9 @@ methodmap Construction_Raid_Zilius < CClotBody
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
-		i_RaidGrantExtra[npc.index] = 1;
 		if(final)
 		{
-			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = 6;
+			i_RaidGrantExtra[npc.index] = 1;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 		
@@ -429,9 +425,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		{	
 			RaidModeScaling = float(Waves_GetRound()+1);
 		}
-
-		f_TalkDelayCheck = 0.0;
-		i_TalkDelayCheck = 0;
 		
 		if(RaidModeScaling < 55)
 		{
@@ -453,6 +446,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+			
 		npc.m_flPrepareFlyAtEnemyCD = GetGameTime() + 1.0;
 		npc.m_flShieldRegenCD = GetGameTime() + 5.0;
 		npc.m_flFrontSlicerCD = GetGameTime() + 15.0;
@@ -465,7 +459,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
 		//cannot be healed ever
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Construction_Raid_Zilius_OnTakeDamagePost);
 		b_angered_twice[npc.index] = false;
 		
 		int skin = 1;
@@ -548,6 +541,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
+		SensalGiveShield(npc.index,CountPlayersOnRed(1) * 150);
 		RequestFrame(Zilius_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
 		npc.m_flNextDelayTime = GetGameTime() + 0.2;
 		ZiliusApplyEffects(npc.index, false);
@@ -675,41 +669,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 }
 
 
-public void Construction_Raid_Zilius_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
-{
-	Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(victim);
-	if(i_RaidGrantExtra[npc.index] >= 4)
-	{
-		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
-		{
-			ZiliusApplyEffects(npc.index, true);
-			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 6.0;
-			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-			npc.PlayAngerSound();
-			npc.Anger = true; //	>:(
-			RaidModeTime += 60.0;
-			switch(GetRandomInt(1,3))
-			{
-				case 1:
-				{
-					CPrintToChatAll("{gold}Zilius{default}: You're blind to your own arrogance!");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{gold}Zilius{default}: You think im weak alone?!");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{gold}Zilius{default}: You refuse to listen and thus, pay the price!");
-				}
-			}
-			
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			pos[2] += 5.0;
-			ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 5.5);
-		}
-	}
-}
 
 static void Internal_NPCDeath(int entity)
 {
@@ -719,7 +678,6 @@ static void Internal_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Construction_Raid_Zilius_OnTakeDamagePost);
 	StopSound(entity, SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
@@ -745,6 +703,32 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
+	{
+		CPrintToChatAll("{black}Zilius{default}: Guess you lot are more then worthy. ill let you be, be usefull against the {purple}void{default}.");
+		CPrintToChatAll("{black}Zilius{default}: For Zeina, stop being such a coward.");
+	//	for (int client = 0; client < MaxClients; client++)
+	//	{
+	//		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
+	//		{
+	//			Items_GiveNamedItem(client, "Bob's true fear");
+	//			CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
+	//		}
+	//	}
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
+			{
+				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				{
+					SmiteNpcToDeath(entitynpc);
+				}
+			}
+		}
+		ForcePlayerWin();
+	}
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;

@@ -640,6 +640,7 @@ static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vec
 			SetEntProp(obj.index, Prop_Data, "m_iRepairMax", maxrepair);
 			SetEntProp(obj.index, Prop_Data, "m_iRepair", repair);
 		}
+		SetTeam(obj.index, GetTeam(client));
 
 		GiveBuildingMetalCostOnBuy(entity, 0);
 	}

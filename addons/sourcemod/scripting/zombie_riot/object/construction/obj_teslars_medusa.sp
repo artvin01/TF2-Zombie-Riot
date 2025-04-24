@@ -99,8 +99,10 @@ void Object_TeslarsMedusa_ClotThink(Object_TeslarsMedusa npc)
 		if(IsValidEnemy(npc.index, target))
 		{
 			npc.PlayShootSound();
-			float damagedeal = 10000.0;
+			float damagedeal = 30000.0;
 
+			if(Construction_GetRisk() >= 6)
+				damagedeal *= 2.0;
 			static float AbsOrigin[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 			AbsOrigin[2] += 80.0;

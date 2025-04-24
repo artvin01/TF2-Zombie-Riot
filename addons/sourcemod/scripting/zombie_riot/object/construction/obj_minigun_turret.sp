@@ -166,7 +166,10 @@ void Object_MinigunTurret_ClotThink(Object_MinigunTurret npc)
 		if(IsValidEnemy(npc.index, target))
 		{
 			float damageDealt = 1000.0;
-		//	damageDealt = view_as<Citizen>(Owner).GetDamage();
+			if(Construction_HasNamedResearch("Base Level III"))
+				damageDealt *= 3.0;
+			if(Construction_GetRisk() >= 6)
+				damageDealt *= 2.0;
 
 			if(ShouldNpcDealBonusDamage(target))
 				damageDealt *= 3.0;

@@ -12,7 +12,7 @@ void ObjectHeavyCaliberTurret_MapStart()
 	PrecacheModel("models/buildables/sentry1_heavy.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Heavy Caliber");
+	strcopy(data.Name, sizeof(data.Name), "Heavy Calliber");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_heavycalliber");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -112,7 +112,11 @@ void ObjectHeavyCaliberTurret_ClotThink(ObjectHeavyCaliberTurret npc)
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
-			float damageDealt = 2250.0;
+			float damageDealt = 5000.0;
+			if(Construction_HasNamedResearch("Base Level III"))
+				damageDealt *= 3.0;
+			if(Construction_GetRisk() >= 6)
+				damageDealt *= 2.0;
 		//	damageDealt = view_as<Citizen>(Owner).GetDamage();
 
 			if(ShouldNpcDealBonusDamage(target))

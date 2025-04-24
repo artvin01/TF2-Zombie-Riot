@@ -76,8 +76,17 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 #if defined ZR
 	if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 	{
-		if(!b_AllowCollideWithSelfTeam[iExclude] || !b_AllowCollideWithSelfTeam[entity])
+		//buildings MUST pass through this if interacting with eacother.
+		int Wasbuilding = 0;
+		if(i_IsABuilding[iExclude])
+			Wasbuilding++;
+
+		if(i_IsABuilding[entity])
+			Wasbuilding++;
+		if(Wasbuilding == 2 || !b_AllowCollideWithSelfTeam[iExclude] || !b_AllowCollideWithSelfTeam[entity])
+		{
 			return false;
+		}
 	}
 
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
