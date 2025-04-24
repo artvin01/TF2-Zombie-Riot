@@ -2909,7 +2909,6 @@ void ForcePlayerWin()
 	MusicString2.Clear();
 	MusicSetup1.Clear();
 	RaidMusicSpecial1.Clear();
-	Native_ZR_OnWinTeam(TFTeam_Red);
 
 	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
@@ -2920,6 +2919,7 @@ void ForcePlayerWin()
 	DispatchSpawn(entity);
 	AcceptEntityInput(entity, "RoundWin");
 	RemoveAllCustomMusic();
+	Native_ZR_OnWinTeam(TFTeam_Red);
 }
 
 void ForcePlayerLoss()
