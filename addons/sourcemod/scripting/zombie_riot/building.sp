@@ -620,6 +620,12 @@ static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vec
 		int health = GetEntProp(obj.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(obj.index, Prop_Data, "m_iMaxHealth");
 		int expected = RoundFloat(obj.BaseHealth * Object_GetMaxHealthMulti(client));
+
+		if(obj.m_bConstructBuilding && !info.HealthScaleCost)
+		{
+			expected = RoundFloat(obj.BaseHealth * Construction_GetMaxHealthMulti());
+		}
+
 		if(maxhealth && expected && maxhealth != expected)
 		{
 			float change = float(expected) / float(maxhealth);

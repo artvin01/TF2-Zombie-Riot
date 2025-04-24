@@ -613,4 +613,20 @@
 	{
 		"en"	"A construct that improves morale and the desire to defend."
 	}
+	"Command Center"
+	{
+		"en"	"Command Center"
+	}
+	"Command Center Desc"
+	{
+		"en"	"Unlocks constructs used for the Barracks."
+	}
+	"Barracks House"
+	{
+		"en"	"Barracks House"
+	}
+	"Barracks House Desc"
+	{
+		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies, can not block enemies."
+	}
 }

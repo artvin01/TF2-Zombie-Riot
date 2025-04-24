@@ -21,7 +21,7 @@ void ObjectMinter_MapStart()
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_minter");
 	build.Cost = 600;
-	build.Health = 75;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);

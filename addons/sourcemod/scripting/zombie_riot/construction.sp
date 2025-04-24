@@ -1597,4 +1597,35 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
+float Construction_GetMaxHealthMulti()
+{
+	float multi = 5.0;	// Construction Novice
+
+	if(Construction_HasNamedResearch("Base Level I"))
+	{
+		multi *= 3.1;	// Construction Apprentice
+		multi *= 1.15;	// Engineering Repair Handling book
+	}
+
+	if(Construction_HasNamedResearch("Base Level II"))
+	{
+		multi *= 1.4;	// Construction Worker
+		multi *= 1.15;	// Alien Repair Handling book
+		multi *= 2.25;	// Construction Expert
+	}
+
+	if(Construction_HasNamedResearch("Base Level III"))
+	{
+		multi *= 1.15;	// Cosmic Repair Handling book
+		multi *= 2.6;	// Construction Master
+	}
+
+	if(Construction_HasNamedResearch("Base Level IV"))
+	{
+		multi *= 1.7;	// Wildingen's Elite Building Components
+	}
+
+	return multi;
+}
+
 #include "roguelike/construction_items.sp"

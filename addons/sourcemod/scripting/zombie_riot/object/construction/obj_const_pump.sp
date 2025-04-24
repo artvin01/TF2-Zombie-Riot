@@ -21,7 +21,7 @@ void ObjectPump_MapStart()
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_pump");
 	build.Cost = 500;
-	build.Health = 62;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);

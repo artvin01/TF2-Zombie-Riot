@@ -93,10 +93,11 @@ void NPC_ConfigSetup()
 	ObjectPump_MapStart();
 	ObjectWood_MapStart();
 	ObjectStone_MapStart();
-	ObjectConstruction_LightHouse_MapStart();
-	ObjectMinter_MapStart();
+	ObjectSupply_MapStart();
 	ObjectStove_MapStart();
 	ObjectFactory_MapStart();
+	ObjectMinter_MapStart();
+	ObjectConstruction_LightHouse_MapStart();
 	ObjectHeavyCaliberTurret_MapStart();
 	Object_MinigunTurret_MapStart();
 	Object_TeslarsMedusa_MapStart();
@@ -1306,6 +1307,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_stungun.sp"
 #include "object/construction/obj_const_dispenser.sp"
 #include "object/construction/obj_const_furniture.sp"
+#include "object/construction/obj_const_supply.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"
