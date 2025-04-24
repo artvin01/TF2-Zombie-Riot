@@ -278,7 +278,7 @@ bool LastMannScreenEffect;
 // shows to everyone, showing that, oh shit, dont die.
 bool LastMann_BeforeLastman;
 int LimitNpcs;
-//int i_MVMPopulator;
+
 
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;

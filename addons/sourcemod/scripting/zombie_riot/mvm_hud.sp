@@ -5,6 +5,7 @@ void CreateMVMPopulator()
 {
 	//find populator
 	int populator = FindEntityByClassname(-1, "info_populator");
+	static int i_MVMPopulator;
 	if(populator == -1 || populator != i_MVMPopulator)
 	{
 		if(!IsValidEntity(populator))

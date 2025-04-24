@@ -755,7 +755,6 @@ public void OnPluginStart()
 	sv_cheats = FindConVar("sv_cheats");
 	mp_tournament = FindConVar("mp_tournament");
 	
-				SendConVarValue(i, mp_tournament, "1");
 	nav_edit = FindConVar("nav_edit");
 
 #if defined ZR
