@@ -698,6 +698,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 		{
 			char SoundStringToPlay[256];
 			bool OverrideSound = false;
+#if defined ZR
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
 				case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
@@ -706,6 +707,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 					Format(SoundStringToPlay,sizeof(SoundStringToPlay),"replay/snip.wav");	
 				}
 			}
+#endif
 			if(soundIndex == MELEE_HIT && OverrideSound)
 			{
 				

@@ -144,7 +144,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "custom/ground_pound_melee.sp"
 #include "custom/ranged_mortar_strike.sp"
 #include "custom/weapon_wand_fire_ball.sp"
-#include "shared/custom/joke_medigun_mod_drain_health.sp"
+#include "../shared/custom/joke_medigun_mod_drain_health.sp"
 #include "custom/weapon_short_teleport.sp"
 #include "custom/ground_aircutter.sp"	
 #include "custom/ranged_quick_reflex.sp"
