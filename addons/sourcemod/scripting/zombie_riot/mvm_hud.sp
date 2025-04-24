@@ -3,9 +3,6 @@
 
 void CreateMVMPopulator()
 {
-	//do not.
-	return;
-	/*
 	//find populator
 	int populator = FindEntityByClassname(-1, "info_populator");
 	if(populator == -1 || populator != i_MVMPopulator)
@@ -22,11 +19,13 @@ void CreateMVMPopulator()
 	GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
 	GameRules_SetProp("m_bPlayingMannVsMachine", true);
 	GameRules_SetProp("m_bPlayingSpecialDeliveryMode", true);
-	*/
+	mp_tournament.IntValue = 1;
+	
 }
 
 void MVMHud_Disable()
 {
 	GameRules_SetProp("m_bPlayingMannVsMachine", false);
 	GameRules_SetProp("m_bPlayingSpecialDeliveryMode", false);
+	mp_tournament.IntValue = 0;
 }
