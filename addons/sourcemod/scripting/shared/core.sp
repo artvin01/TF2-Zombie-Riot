@@ -978,13 +978,13 @@ public void OnPluginEnd()
 		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
 		{
 			if(!StrContains(path, "zr_base_npc"))
-				SDKCall_RemoveImmediate(i);
+				RemoveEntity(i);
 
 			if(!StrContains(path, "zr_base_stationary"))
-				SDKCall_RemoveImmediate(i);
+				RemoveEntity(i);
 
 			if(!StrContains(path, "obj_building"))
-				SDKCall_RemoveImmediate(i);
+				RemoveEntity(i);
 
 			//prevent crash, needs to be instant.
 		}
