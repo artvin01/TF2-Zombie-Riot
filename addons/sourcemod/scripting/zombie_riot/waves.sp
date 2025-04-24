@@ -2247,12 +2247,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						float last = roundtime.FloatValue;
 						roundtime.FloatValue = 20.0;
 
-						MVMHud_Disable();
-						int entity = CreateEntityByName("game_round_win"); 
-						DispatchKeyValue(entity, "force_map_reset", "1");
-						SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-						DispatchSpawn(entity);
-						AcceptEntityInput(entity, "RoundWin");
+						ForcePlayerWin();
 
 						roundtime.FloatValue = last;
 					}
@@ -2552,11 +2547,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 		{
 			if(item)
 			{
-				int entity = CreateEntityByName("game_round_win"); 
-				DispatchKeyValue(entity, "force_map_reset", "1");
-				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-				DispatchSpawn(entity);
-				AcceptEntityInput(entity, "RoundWin");
+				ForcePlayerWin();
 			}
 		}
 	}
@@ -3739,11 +3730,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			}
 				
 
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
+			ForcePlayerWin();
 			return true;
 		}
 		WaveEndLogicExtra();

@@ -2325,7 +2325,7 @@ public MRESReturn DhookBlockCrossbowPost(int entity)
 	if(SetBackAmmoCrossbow)
 	{
 		SetEntProp(entity, Prop_Data, "m_iClip1", 0);
-		SetBackAmmoCrossbow = true;
+		SetBackAmmoCrossbow = false;
 	}
 	return MRES_Ignored;
 }
