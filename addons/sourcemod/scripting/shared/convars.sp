@@ -111,7 +111,7 @@ void ConVar_PluginStart()
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 
-	AutoExecConfig(true, "zombie_riot");
+	//AutoExecConfig(true, "zombie_riot");
 	
 }
 

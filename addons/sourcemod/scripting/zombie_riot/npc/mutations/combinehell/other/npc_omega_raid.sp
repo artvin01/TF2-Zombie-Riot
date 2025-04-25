@@ -741,7 +741,15 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 							{
 								damage *= RaidModeScaling + 100.0;
 								npc.AddGesture("ACT_PUSH_PLAYER");
-								FreezeNpcInTime(target, 1.0);
+								float duration = 1.0;
+								if(target <= MaxClients && target > 0)
+								{
+								    TF2_AddCondition(target, TFCond_FreezeInput, duration);  
+								}
+								else
+								{
+								    FreezeNpcInTime(target, duration);
+								}
 								Custom_Knockback(npc.index, targetTrace, 1000.0, true, true);
 								Explode_Logic_Custom(50.0, -1, npc.index, -1, vecTarget, 100.0, _, _, true, _, false);
 								ParticleEffectAt(vecTarget, "hightower_explosion", 1.0);

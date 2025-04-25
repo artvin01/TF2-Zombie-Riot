@@ -4,6 +4,7 @@
 #define SELL_AMOUNT 0.9
 bool PapPreviewMode[MAXTF2PLAYERS];
 float CDDisplayHint_LoadoutStore[MAXTF2PLAYERS];
+float CDDisplayHint_LoadoutConfirmAuto[MAXTF2PLAYERS];
 
 enum struct ItemInfo
 {
@@ -3129,12 +3130,25 @@ static void MenuPage(int client, int section)
 	
 	if(Waves_Started())
 	{
+		if(CashSpentTotal[client] <= 0)
+		{
+			CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
+		}
+		else if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
+		{
+			StarterCashMode[client] = false; //confirm automatically.
+		}
 		if(CDDisplayHint_LoadoutStore[client] < GetGameTime() && StarterCashMode[client])
 		{
 			SetGlobalTransTarget(client);
 			SPrintToChat(client, "%t", "Loadout In Store");
 			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 30.0;
 		}
+	}
+	else
+	{
+		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
+		//this is done because new players are confused often.
 	}
 	SetGlobalTransTarget(client);
 	
@@ -5715,12 +5729,17 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
-					if(!StrContains(info.Classname, "tf_weapon_crossbow") && !info.IsSupport && !info.IsAlone)
+					if(!StrContains(info.Classname, "tf_weapon_crossbow"))
 					{
 						//Fix crossbow infinite reload issue
 						//it messes up Zr balance heavily and causes other bugs.
 						//Shouldnt apply to support ones.
-						CrossbowGiveDhook(entity);
+						if(!info.IsSupport && !info.IsAlone)
+						{
+							CrossbowGiveDhook(entity, false);
+						}
+						else
+							CrossbowGiveDhook(entity, true);
 					}
 					HidePlayerWeaponModel(client, entity, true);
 

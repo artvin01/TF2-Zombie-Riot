@@ -9374,13 +9374,13 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	//Emergency incase it wasnt an npc.
 	if(!b_ThisWasAnNpc[npc])
 	{
-		
 		if(npc <= 0 || npc > MaxClients)
 		{
 			return;
 		}
 		TF2_AddCondition(npc, TFCond_FreezeInput, Duration_Stun);
 		ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun);	
+		return;
 	}
 
 	float GameTime = GetGameTime();
