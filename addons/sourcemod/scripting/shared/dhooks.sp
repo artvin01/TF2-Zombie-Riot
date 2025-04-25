@@ -877,6 +877,20 @@ public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHo
 	if(passer == -1)
 		return MRES_Ignored;
 	
+	if(b_ThisWasAnNpc[toucher])
+	{
+		if(passer <= MaxClients)
+		{
+			PrintToConsoleAll("Collision1");
+		}
+	}
+	if(b_ThisWasAnNpc[passer])
+	{
+		if(toucher <= MaxClients)
+		{
+			PrintToConsoleAll("Collision2");
+		}
+	}
 	// TODO: In RPG, PvP has collisions
 	if(PassfilterGlobal(toucher, passer, true))
 		return MRES_Ignored;
@@ -2276,7 +2290,7 @@ static MRESReturn DHookCallback_CTFGameRules_IsQuickBuildTime_Pre(DHookReturn re
 	return MRES_Supercede;
 }
 
-bool b_FixInfiniteAmmoBugOnly[MAXTF2ENITIES];
+bool b_FixInfiniteAmmoBugOnly[MAXENTITIES];
 bool SetBackAmmoCrossbow = false;
 void CrossbowGiveDhook(int entity, bool GiveBackammo)
 {
@@ -2290,7 +2304,7 @@ public MRESReturn DhookBlockCrossbowPre(int entity)
 	if(b_FixInfiniteAmmoBugOnly[entity])
 	{
 		int AmmoType = GetAmmoType_WeaponPrimary(entity);
-		if(Ammo_type >= 1)
+		if(AmmoType >= 1)
 			return MRES_Ignored;
 			//they have more then 1 ammo? Allow reloading.
 	}
