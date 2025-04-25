@@ -343,7 +343,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 	}
 	public Construction_Raid_Zilius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally, false, false, true,true)); //giant!
+		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally, false, false, false,true)); //giant!
 		
 		i_NpcWeight[npc.index] = 4;
 		
@@ -522,7 +522,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		npc.Anger = false;
 		//IDLE
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 300.0;
 
 
 		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 5.0;
@@ -537,10 +537,10 @@ methodmap Construction_Raid_Zilius < CClotBody
 
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
-		SensalGiveShield(npc.index,CountPlayersOnRed(1) * 150);
+		SensalGiveShield(npc.index,CountPlayersOnRed(1) * 50);
 		RequestFrame(Zilius_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
 		npc.m_flNextDelayTime = GetGameTime() + 0.2;
-		ZiliusApplyEffects(npc.index, false);
+		ZiliusApplyEffects(npc.index);
 		return npc;
 	}
 }
@@ -912,7 +912,7 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 	}
 }
 
-void ZiliusApplyEffects(int entity, bool withoutweapon = false)
+void ZiliusApplyEffects(int entity)
 {
 	Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(entity);
 	if(!npc.Anger)
@@ -1082,14 +1082,14 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 		
 			npc.GetAttachment("effect_hand_l", flPos, flAng);
 			spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*DURATION*/ 0.5, 6.0, 0.1, 1,  /*RANGE END*/350 * 2.0);
-			ZiliusApplyEffects(npc.index, true);
+			ZiliusApplyEffects(npc.index);
 			npc.m_flShieldRegenCD = GetGameTime(npc.index) + 30.0;
 			npc.SetActivity("ACT_MP_RUN_MELEE");
 			npc.m_flSpeed = 330.0;
 			npc.StartPathing();
 			npc.m_bisWalking = true;
 			//big shield
-			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 50);
+			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 25);
 			ApplyStatusEffect(npc.index, npc.index, "Expidonsan Anger", 8.0);
 			npc.PlayShieldRegenSound();
 			npc.m_iDontMultiAbility = 0;
@@ -1187,7 +1187,7 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 			npc.SetPoseParameter_Easy("body_yaw", 0.0);
 			npc.SetPoseParameter_Easy("move_x", 0.0);
 		
-			ZiliusApplyEffects(npc.index, true);
+			ZiliusApplyEffects(npc.index);
 
 			npc.m_flFrontSlicerCD = GetGameTime(npc.index) + 30.0;
 			npc.RemoveGesture("ACT_MP_GESTURE_VC_FISTPUMP_PRIMARY");
@@ -1357,7 +1357,7 @@ bool ZiliusSpawnPortal(Construction_Raid_Zilius npc)
 		
 			npc.GetAttachment("effect_hand_l", flPos, flAng);
 			spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*DURATION*/ 0.5, 6.0, 0.1, 1,  /*RANGE END*/350 * 2.0);
-			ZiliusApplyEffects(npc.index, true);
+			ZiliusApplyEffects(npc.index);
 			npc.m_flSpawnPortal = GetGameTime(npc.index) + 60.0;
 			npc.SetActivity("ACT_MP_RUN_MELEE");
 			npc.m_flSpeed = 330.0;

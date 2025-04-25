@@ -51,7 +51,7 @@
 	"Start Mining"
 	{
 		"#format"	"{1:s}"
-		"en"	"Start mining {1}? A raid might spawn nearby."
+		"en"	"Start mining {1}?\n A raid might spawn nearby."
 	}
 	"Broken Server"
 	{

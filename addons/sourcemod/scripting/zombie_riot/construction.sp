@@ -755,7 +755,16 @@ void Construction_BattleVictory()
 	AttackType = 0;
 
 	if(type > 1)
+	{
+		
+		int cash = 1000;
+		int GetRound = Construction_GetRisk() + 3;
+		cash *= GetRound;
+		CPrintToChatAll("{green}%t","Cash Gained!", cash);
+		CurrentCash += cash;
+		//Extra money.
 		ReviveAll();
+	}
 	
 	Waves_RoundEnd();
 	bool victory = true;
@@ -1026,15 +1035,24 @@ void Construction_ClotThink(int entity)
 
 	if(AttackType && npc.m_bCamo && EntRefToEntIndex(AttackRef) != npc.index)
 	{
-		b_NpcIsInvulnerable[npc.index] = true;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR, false, 1, false, true);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 128, false, false, true);
+		if(!b_NpcIsInvulnerable[npc.index])
+		{
+			b_ThisEntityIgnored[npc.index] = true;
+			b_NpcIsInvulnerable[npc.index] = true;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR, false, 1, false, true);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 150, false, false, true);
+		}
 	}
 	else
 	{
-		b_NpcIsInvulnerable[npc.index] = false;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR, false, 1, false, true);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 255, false, false, true);
+		if(b_NpcIsInvulnerable[npc.index])
+		{
+			b_ThisEntityIgnored[npc.index] = false;
+			b_NpcIsInvulnerable[npc.index] = false;
+			SetEntityRenderMode(npc.index, i_EntityRenderMode[npc.index], true, 2, false, true);
+			SetEntityRenderColor(npc.index, i_EntityRenderColour1[npc.index], i_EntityRenderColour2[npc.index],
+			 i_EntityRenderColour3[npc.index], i_EntityRenderColour4[npc.index], true, false, true);
+		}
 	}
 }
 
@@ -1158,10 +1176,10 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 			SetGlobalTransTarget(attacker);
 			
 			Menu menu = new Menu(ConstructionProvokeH);
-			menu.SetTitle("%t", "Start Mining\n ", NpcStats_ReturnNpcName(victim));
+			menu.SetTitle("%t", "Start Mining", NpcStats_ReturnNpcName(victim));
 
 			char num[16], buffer[16];
-			IntToString(EntIndexToEntRef(attacker), num, sizeof(num));
+			IntToString(EntIndexToEntRef(victim), num, sizeof(num));
 
 			FormatEx(buffer, sizeof(buffer), "%t", "Yes");
 			menu.AddItem(num, buffer);

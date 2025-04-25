@@ -1137,7 +1137,7 @@ void Rogue_NextProgress()
 				}
 			}
 
-			//CurrentCash = 0;
+			//Currentfunc_stagestart = 0;
 			
 			CurrentFloor = 0;
 			CurrentCount = -1;
