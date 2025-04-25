@@ -3,7 +3,6 @@
 
 #include <tf2_stocks>
 #include <sdkhooks>
-#include <collisionhook>
 #include <clientprefs>
 #include <dhooks>
 #if defined ZR || defined RPG
