@@ -741,6 +741,7 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 							{
 								damage *= RaidModeScaling + 100.0;
 								npc.AddGesture("ACT_PUSH_PLAYER");
+								float duration = 1.0;
 								if(target <= MaxClients && target > 0)
 								{
 								    TF2_AddCondition(target, TFCond_FreezeInput, duration);  
