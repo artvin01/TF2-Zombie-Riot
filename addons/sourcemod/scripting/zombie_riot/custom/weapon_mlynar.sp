@@ -241,6 +241,7 @@ public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 		int weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword");
 		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
+		SetPlayerActiveWeapon(client, weapon_new);
 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
 		ViewChange_Switch(client, weapon_new, "tf_weapon_sword");
 		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
@@ -294,6 +295,7 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 			weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword Pap");
 		}
 		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
+		SetPlayerActiveWeapon(client, weapon_new);
 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
 		ViewChange_Switch(client, weapon_new, "tf_weapon_sword");
 		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);

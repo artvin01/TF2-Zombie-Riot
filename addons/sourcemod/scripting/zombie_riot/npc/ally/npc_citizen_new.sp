@@ -2051,7 +2051,8 @@ bool Rebel_Rename(int client)
 		return true;
 	
 	b_NameNoTranslation[EntityName] = true;
-	CPrintToChatAll("[SM] %N renamed \"%s\" to \"%s\"", client, c_NpcName[EntityName], buffer);
+	//This REALLY shouldnt say [SM].
+	SPrintToChatAll("%N renamed \"%s\" to \"%s\"", client, c_NpcName[EntityName], buffer);
 	strcopy(c_NpcName[EntityName], sizeof(c_NpcName[]), buffer);
 	return true;
 }

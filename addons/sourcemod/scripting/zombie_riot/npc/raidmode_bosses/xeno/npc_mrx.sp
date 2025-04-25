@@ -528,8 +528,8 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				if(IsValidEntity(client))
 				{
 					SDKHooks_TakeDamage(client, npc.index, npc.index, 7000.0, DMG_CRUSH, -1);
-					f_AntiStuckPhaseThrough[client] = GetGameTime() + 2.0;
-					ApplyStatusEffect(client, client, "Intangible", 2.0);
+					f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0;
+					ApplyStatusEffect(client, client, "Intangible", 3.0);
 					if(client <= MaxClients)
 						Client_Shake(client, 0, 20.0, 20.0, 1.0, false);
 
