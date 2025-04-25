@@ -106,6 +106,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
 	DHook_CreateDetour(gamedata, "CTraceFilterSimple::ShouldHitEntity", DHook_ShouldHitEntityPre);	// From SCP:SF
+	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);	// From SCP:SF
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -851,32 +852,28 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 	return MRES_Ignored;
 }
 
-/*
-public Action CH_PassFilter(int ent1, int ent2, bool &result)
+
+public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params) 
 {
-	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)
-	{
-		result = PassfilterGlobal(ent1, ent2, true);
-		if(result)
-		{
-			return Plugin_Continue;
-		}
-		else
-		{
-			return Plugin_Handled;
-		}
-	}
+	int toucher = DHookGetParam(params, 1);
+	int passer  = DHookGetParam(params, 2);
+	if(passer == -1)
+		return MRES_Ignored;
+		
+	if(PassfilterGlobal(toucher, passer, true))
+		return MRES_Ignored;
 	
-	return Plugin_Continue;
+	ret.Value = false;
+	return MRES_Supercede;
 }
-*/
 public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHookParam param)
 {
 	int toucher = param.Get(1);
 	int passer = GetEntityFromAddress(LoadFromAddress(address + view_as<Address>(4), NumberType_Int32));	// +4 from CTraceFilterSimple::m_pPassEnt
 	if(passer == -1)
 		return MRES_Ignored;
-	
+	/*
+	PrintToConsoleAll("try test 1");
 	if(b_ThisWasAnNpc[toucher])
 	{
 		if(passer <= MaxClients)
@@ -891,6 +888,8 @@ public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHo
 			PrintToConsoleAll("Collision2");
 		}
 	}
+	Never gets called???
+	*/
 	// TODO: In RPG, PvP has collisions
 	if(PassfilterGlobal(toucher, passer, true))
 		return MRES_Ignored;
