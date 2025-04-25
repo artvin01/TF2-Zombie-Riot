@@ -2276,14 +2276,24 @@ static MRESReturn DHookCallback_CTFGameRules_IsQuickBuildTime_Pre(DHookReturn re
 	return MRES_Supercede;
 }
 
+bool b_FixInfiniteAmmoBugOnly[MAXTF2ENITIES];
 bool SetBackAmmoCrossbow = false;
-void CrossbowGiveDhook(int entity)
+void CrossbowGiveDhook(int entity, bool GiveBackammo)
 {
 	g_DhookCrossbowHolster.HookEntity(Hook_Pre, entity, DhookBlockCrossbowPre);
 	g_DhookCrossbowHolster.HookEntity(Hook_Post, entity, DhookBlockCrossbowPost);
+	b_FixInfiniteAmmoBugOnly[entity] = GiveBackammo;
 }
+
 public MRESReturn DhookBlockCrossbowPre(int entity)
 {
+	if(b_FixInfiniteAmmoBugOnly[entity])
+	{
+		int AmmoType = GetAmmoType_WeaponPrimary(entity);
+		if(Ammo_type >= 1)
+			return MRES_Ignored;
+			//they have more then 1 ammo? Allow reloading.
+	}
 	int GetAmmoCrossbow = GetEntProp(entity, Prop_Data, "m_iClip1");
 	if(GetAmmoCrossbow <= 0)
 	{

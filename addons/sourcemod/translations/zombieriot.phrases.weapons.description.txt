@@ -2434,90 +2434,90 @@
 	}
 	"The Enforcer Desc"
 	{
-		"en"	"Doubles damage falloff but grants an ability that stuns and knockbacks 2 targets, consumes one clip per target hit."
+		"en"	"Increases damage.\nDoubles damage falloff but grants an ability that stuns and knockbacks 2 targets, consumes one clip per target hit."
 		"fr"	"Double la perte de dégats avec distance. Abilité étonne et recule 2 ennemis. Abilité utilise un chargeur par victime."
 		"ru"	"Удваивает уменьш. урона на расстоянии, но даёт способность, которая оглушает и отбрасывает 2 цели, расходует одну обойму на каждую поражённую цель."
 	}
 	"The Enforcer Pap 1"
 	{
-		"en"	"Increased ability knockback by +5％ and can hit up to 3 targets"
+		"en"	"Increases damage.\nIncreased ability knockback by +5％ and can hit up to 3 targets"
 		"fr"	"+5％ recul pour abilité. Abilité frappe 3 ennemis."
 		"ru"	"Увеличение отдачи способности на +5％ и может поразить до 3 целей."
 		"chi"	"技能击退+5％，可击中3个敌人。"
 	}
 	"The Enforcer Pap 2"
 	{
-		"en"	"Increased ability knockback by +5％ and can hit up to 5 targets"
+		"en"	"Increases damage.\nIncreased ability knockback by +5％ and can hit up to 5 targets"
 		"fr"	"+5％ recul pour abilité. Abilité frappe 5 ennemis."
 		"ru"	"Увеличение отдачи способности на +5％ и может поразить до 5 целей."
 		"chi"	"技能击退+5％，可击中5个敌人。"
 	}
 	"The Enforcer Pap 3"
 	{
-		"en"	"Increased ability knockback by +10％ and can hit up to 8 targets"
+		"en"	"Increases damage.\nIncreased ability knockback by +10％ and can hit up to 8 targets"
 		"fr"	"+10％ recul pour abilité. Abilité frappe 8 ennemis."
 		"ru"	"Увеличение отдачи способности на +10％ и может поразить до 8 целей."
 		"chi"	"技能击退+10％，可击中8个敌人。"
 	}
 	"The Enforcer Pap 4"
 	{
-		"en"	"Increased ability knockback by +10％ and can hit up to 10 targets"
+		"en"	"Increases damage.\nIncreased ability knockback by +10％ and can hit up to 10 targets"
 		"fr"	"+10％ recul pour abilité. Abilité frappe 10 ennemis."
 		"ru"	"Увеличение отдачи способности на +10％ и может поразить до 10 целей."
 		"chi"	"技能击退+10％，可击中10个敌人。"
 	}
 	"The Enforcer Pap 5"
 	{
-		"en"	"Increased ability knockback by +20％"
+		"en"	"Increases damage.\nIncreased ability knockback by +20％"
 		"fr"	"+20％ recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +20％."
 		"chi"	"技能击退+20％。"
 	}
 	"The Enforcer Pap 6"
 	{
-		"en"	"Increased ability knockback by +25％"
+		"en"	"Increases damage.\nIncreased ability knockback by +25％"
 		"fr"	"+25％ recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +25％."
 		"chi"	"技能击退+25％。"
 	}
 	"The Enforcer Pap 7"
 	{
-		"en"	"Increased ability knockback by +25％"
+		"en"	"Increases damage.\nIncreased ability knockback by +25％"
 		"fr"	"+25％ recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +25％."
 		"chi"	"技能击退+25％。"
 	}
 	"The Enforcer Pap 8"
 	{
-		"en"	"Increased ability knockback by +50％"
+		"en"	"Increases damage.\nIncreased ability knockback by +50％"
 		"fr"	"+50％ recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +50％."
 		"chi"	"技能击退+50％。"
 	}
 	"The Enforcer Pap 9"
 	{
-		"en"	"Increased ability knockback by +50％"
+		"en"	"Increases damage.\nIncreased ability knockback by +50％"
 		"fr"	"+50％ recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +50％."
 		"chi"	"技能击退+50％。"
 	}
 	"The Enforcer Pap 10"
 	{
-		"en"	"Increased ability knockback by +50％"
+		"en"	"Increases damage.\nIncreased ability knockback by +50％"
 		"fr"	"+50％ recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +50％."
 		"chi"	"技能击退+50％。"
 	}
 	"The Enforcer Pap 11"
 	{
-		"en"	"Increased ability knockback by +50％"
+		"en"	"Increases damage.\nIncreased ability knockback by +50％"
 		"fr"	"+50％ recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +50％."
 		"chi"	"技能击退+50％。"
 	}
 	"The Enforcer Pap 12"
 	{
-		"en"	"Increased ability knockback by +100％"
+		"en"	"Increases damage.\nIncreased ability knockback by +100％"
 		"fr"	"+100％ recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +100％."
 		"chi"	"技能击退+100％。"
