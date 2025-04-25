@@ -105,7 +105,6 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
-	DHook_CreateDetour(gamedata, "CTraceFilterSimple::ShouldHitEntity", DHook_ShouldHitEntityPre);	// From SCP:SF
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -850,10 +849,53 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 	
 	return MRES_Ignored;
 }
-
 /*
+public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
+{
+	if(IsValidEntity(ent1) && IsValidEntity(ent2))
+	{
+		result = CustomDetectionPassFlter(ent1, ent2, true);
+		if(result)
+		{
+			return Plugin_Continue;
+		}
+		else
+		{
+			return Plugin_Handled;
+		}
+	}
+	return Plugin_Continue;
+}
+*/
+/*
+public MRESReturn DHook_ShouldCollide(DHookReturn ret, DHookParam params)
+{
+	g_Collision_Group collisionGroup0 = params.Get(1);
+	g_Collision_Group collisionGroup1 = params.Get(2);
+	
+	if (collisionGroup0 > collisionGroup1)
+	{
+		g_Collision_Group temp = collisionGroup0;
+		collisionGroup0 = collisionGroup1;
+		collisionGroup1 = temp;
+	}
+	
+	// Prevent vehicles from entering respawn rooms
+	if (collisionGroup0 == COLLISION_GROUP_VEHICLE)
+	{
+		if (collisionGroup1 == COLLISION_GROUP_NPC || collisionGroup1 == TFCOLLISION_GROUP_RESPAWNROOMS)
+		{
+			ret.Value = true;
+			return MRES_Supercede;
+		}
+	}
+	
+	return MRES_Ignored;
+}
+*/
 public Action CH_PassFilter(int ent1, int ent2, bool &result)
 {
+	
 	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)
 	{
 		result = PassfilterGlobal(ent1, ent2, true);
@@ -869,36 +911,6 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 	
 	return Plugin_Continue;
 }
-*/
-public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHookParam param)
-{
-	int toucher = param.Get(1);
-	int passer = GetEntityFromAddress(LoadFromAddress(address + view_as<Address>(4), NumberType_Int32));	// +4 from CTraceFilterSimple::m_pPassEnt
-	if(passer == -1)
-		return MRES_Ignored;
-	
-	if(b_ThisWasAnNpc[toucher])
-	{
-		if(passer <= MaxClients)
-		{
-			PrintToConsoleAll("Collision1");
-		}
-	}
-	if(b_ThisWasAnNpc[passer])
-	{
-		if(toucher <= MaxClients)
-		{
-			PrintToConsoleAll("Collision2");
-		}
-	}
-	// TODO: In RPG, PvP has collisions
-	if(PassfilterGlobal(toucher, passer, true))
-		return MRES_Ignored;
-	
-	ret.Value = false;
-	return MRES_Supercede;
-}
-
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)

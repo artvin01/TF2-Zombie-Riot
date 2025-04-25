@@ -5557,25 +5557,10 @@ void EntityKilled_HitDetectionCooldown(int entity, int offset = -1)
 	}
 }
 
+
+
 stock void GetMapName(char[] buffer, int size)
 {
 	GetCurrentMap(buffer, size);
 	GetMapDisplayName(buffer, buffer, size);
-}
-
-int GetEntityFromHandle(any handle)
-{
-	int ent = handle & 0xFFF;
-	if (ent == 0xFFF)
-		ent = -1;
-
-	return ent;
-}
-
-int GetEntityFromAddress(Address entity)
-{
-	if (entity == Address_Null)
-		return -1;
-
-	return GetEntityFromHandle(LoadFromAddress(entity + view_as<Address>(FindDataMapInfo(0, "m_angRotation") + 12), NumberType_Int32));
 }
