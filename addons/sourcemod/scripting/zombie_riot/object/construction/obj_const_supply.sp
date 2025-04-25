@@ -20,8 +20,8 @@ void ObjectSupply_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_supply");
-	build.Cost = 1000;
-	build.Health = 100;
+	build.Cost = 800;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -36,23 +36,13 @@ methodmap ObjectSupply < ObjectGeneric
 {
 	public ObjectSupply(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectSupply npc = view_as<ObjectSupply>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/barn_loft001a.mdl", "1.0", "50", {177.0, 177.0, 167.0}, _, false));
+		ObjectSupply npc = view_as<ObjectSupply>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/barn_loft001a.mdl", "0.5", "50", {89.0, 89.0, 84.0}, _, false));
 
- 		b_CantCollidie[npc.index] = true;
-	 	b_CantCollidieAlly[npc.index] = true;
-		npc.m_bThisEntityIgnored = true;
 		npc.m_bConstructBuilding = true;
-
 		npc.FuncCanBuild = ClotCanBuild;
-		func_NPCThink[npc.index] = ClotThink;
 
 		return npc;
 	}
-}
-
-static void ClotThink(ObjectSupply npc)
-{
-	SetEntityRenderColor(npc.index, 0, 0, 0, 100, false, false, true);
 }
 
 static bool ClotCanBuild(int client, int &count, int &maxcount)

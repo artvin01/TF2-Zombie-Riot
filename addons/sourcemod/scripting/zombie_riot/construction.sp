@@ -109,7 +109,7 @@ static int RiskIncrease;
 static int MaxAttacks;
 static int HighestRisk;
 static float AttackTime;
-static int AttackRiskBonus;
+static float AttackRiskBonus;
 static int MaxResource;
 static ArrayList RiskList;
 static ArrayList ResourceList;
@@ -218,7 +218,7 @@ void Construction_SetupVote(KeyValues kv)
 
 	MaxAttacks = kv.GetNum("attackcount");
 	AttackTime = kv.GetFloat("attacktime");
-	AttackRiskBonus = kv.GetNum("attackrisk");
+	AttackRiskBonus = kv.GetFloat("attackbonus");
 	RiskIncrease = kv.GetNum("riskincrease");
 	MaxResource = kv.GetNum("resourcecount");
 
@@ -633,7 +633,7 @@ static Action Timer_StartAttackWave(Handle timer)
 	}
 	else
 	{
-		bonusRisk = GetRiskAttackInfo(CurrentRisk + AttackRiskBonus, attack);
+		bonusRisk = GetRiskAttackInfo(CurrentRisk, attack);
 	}
 
 	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, GetBaseBuilding(), bonusRisk);
@@ -995,12 +995,22 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 
 void Construction_EnemySpawned(int entity)
 {
+	if(AttackType == 2 && AttackRiskBonus > 0 && CurrentRisk > 0)
+	{
+		float stats = Pow(AttackRiskBonus, float(CurrentRisk));
+		fl_Extra_Damage[entity] *= stats;
+		
+		SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * stats));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * stats));
+	}
+	
 	if(AttackType > 0 && AttackHardcore > 0)
 	{
 		float stats = Pow(1.05, float(AttackHardcore));
-		fl_Extra_MeleeArmor[entity] /= stats;
-		fl_Extra_RangedArmor[entity] /= stats;
 		fl_Extra_Damage[entity] *= stats;
+		
+		SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * stats));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * stats));
 	}
 }
 
@@ -1372,7 +1382,7 @@ public float InterMusic_ConstructBase(int client)
 	GetClientEyePosition(client, pos1);
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
 	float distance = GetVectorDistance(pos1, pos2);
-	distance = distance / 2000.0;
+	distance = distance / 3000.0;
 	return fClamp(1.0 - distance, 0.0, 1.0);
 }
 

@@ -409,7 +409,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
+		RaidModeTime = GetGameTime(npc.index) + 450.0;
 		
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -511,17 +511,13 @@ methodmap Construction_Raid_Zilius < CClotBody
 		if(!ingoremusic)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/Zilius_raid/Zilius_waldch_duo.mp3");
-			music.Time = 260;
-			music.Volume = 1.6;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/construct/bat_prtsstage1.mp3");
+			music.Time = 148;
+			music.Volume = 1.0;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "The Duo that Warns in inconspicuous Ways");
-			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			strcopy(music.Name, sizeof(music.Name), "bat_prtsstage1");
+			strcopy(music.Artist, sizeof(music.Artist), "Arknights OST");
 			Music_SetRaidMusic(music);
-		}
-		else
-		{
-			RaidModeTime = GetGameTime(npc.index) + 450.0;
 		}
 		
 		npc.Anger = false;

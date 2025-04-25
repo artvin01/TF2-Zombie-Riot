@@ -459,7 +459,7 @@
 	}
 	"Rogue Expi Start 2"
 	{
-		"en"	"These Expidonsans don't seem to be on your side..?"
+		"en"	"I don't think this is a test anymore..."
 	}
 	"Expidonsa Tech Chip Install"
 	{
@@ -627,6 +627,6 @@
 	}
 	"Barracks House Desc"
 	{
-		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies, can not block enemies."
+		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies."
 	}
 }
