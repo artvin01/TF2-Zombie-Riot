@@ -36,7 +36,7 @@ methodmap ObjectStone < ObjectGeneric
 {
 	public ObjectStone(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectStone npc = view_as<ObjectStone>(ObjectGeneric(client, vecPos, vecAng, "models/props_mining/generator_machine01.mdl", _, "600", {118.0, 118.0, 118.0}));
+		ObjectStone npc = view_as<ObjectStone>(ObjectGeneric(client, vecPos, vecAng, "models/props_mining/generator_machine01.mdl", "0.7", "600", {80.0, 80.0, 80.0}));
 		
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;

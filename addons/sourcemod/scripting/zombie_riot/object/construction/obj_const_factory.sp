@@ -50,7 +50,7 @@ methodmap ObjectFactory < ObjectGeneric
 {
 	public ObjectFactory(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectFactory npc = view_as<ObjectFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", _, "600", {156.0, 156.0, 16.0}));
+		ObjectFactory npc = view_as<ObjectFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", "0.5", "600", {80.0, 80.0, 16.0}));
 		
  		b_CantCollidie[npc.index] = true;
 	 	b_CantCollidieAlly[npc.index] = true;
@@ -61,7 +61,7 @@ methodmap ObjectFactory < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
-
+		
 		return npc;
 	}
 }

@@ -318,23 +318,23 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{purple}???{default}: Hah, I knew you'll fall for it.");
+			CPrintToChatAll("{black}???{default}: Hah, I knew you'll fall for it.");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{purple}???{default}: So that's where your located.");
+			CPrintToChatAll("{black}???{default}: So that's where your located.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{purple}???{default}: Now stay there and accept your fate.");
+			CPrintToChatAll("{black}???{default}: Now stay there and accept your fate.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{purple}???{default}: Expidonsa was and always should be the only race on Irln.");
+			CPrintToChatAll("{black}???{default}: Expidonsa was and always should be the only race on Irln.");
 		}
 		case 4:
 		{
-			CPrintToChatAll("{purple}???{default}: So die you damn forerunners.");
+			CPrintToChatAll("{black}???{default}: So die you damn forerunners.");
 		}
 		default:
 		{
@@ -357,6 +357,24 @@ public void Construction_Alyx_Collect()
 	SpawnRebel("a");
 }
 
+public void GiveCash_Base1()
+{
+	CurrentCash += 1000;
+	GlobalExtraCash += 1000;
+	CPrintToChatAll("{green}%t","Cash Gained!", 1000);
+}
+public void GiveCash_Base2()
+{
+	CurrentCash += 2500;
+	GlobalExtraCash += 2500;
+	CPrintToChatAll("{green}%t","Cash Gained!", 2500);
+}
+public void GiveCash_Base3()
+{
+	CurrentCash += 4000;
+	GlobalExtraCash += 4000;
+	CPrintToChatAll("{green}%t","Cash Gained!", 4000);
+}
 static void SpawnRebel(const char[] data = "")
 {
 	float pos[3], ang[3];

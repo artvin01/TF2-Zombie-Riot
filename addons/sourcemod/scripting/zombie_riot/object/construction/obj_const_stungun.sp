@@ -101,7 +101,10 @@ static void ClotThink(ObjectStunGun npc)
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
-			FreezeNpcInTime(target, 2.0);
+			if(b_thisNpcIsARaid[target])
+				FreezeNpcInTime(target, 0.4);
+			else
+				FreezeNpcInTime(target, 2.0);
 		}
 	}
 

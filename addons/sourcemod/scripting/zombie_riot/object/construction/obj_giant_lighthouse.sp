@@ -41,7 +41,7 @@ methodmap ObjectConstruction_LightHouse < ObjectGeneric
 {
 	public ObjectConstruction_LightHouse(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectConstruction_LightHouse npc = view_as<ObjectConstruction_LightHouse>(ObjectGeneric(client, vecPos, vecAng, "models/props_sunshine/lighthouse_blu_bottom.mdl", "0.3", "600",{40.0, 40.0, 350.0},_,false));
+		ObjectConstruction_LightHouse npc = view_as<ObjectConstruction_LightHouse>(ObjectGeneric(client, vecPos, vecAng, "models/props_sunshine/lighthouse_blu_bottom.mdl", "0.3", "600",{30.0, 30.0, 80.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCThink[npc.index] = ClotThink;

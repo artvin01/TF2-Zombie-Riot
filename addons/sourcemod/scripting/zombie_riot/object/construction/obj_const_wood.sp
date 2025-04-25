@@ -36,7 +36,7 @@ methodmap ObjectWood < ObjectGeneric
 {
 	public ObjectWood(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectWood npc = view_as<ObjectWood>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/tractor_01.mdl", _, "600", {114.0, 114.0, 150.0}));
+		ObjectWood npc = view_as<ObjectWood>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/tractor_01.mdl", "0.8", "600", {80.0, 80.0, 80.0}));
 		
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;

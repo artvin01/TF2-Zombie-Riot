@@ -6,9 +6,12 @@ static ArrayList NPCIds;
 void ObjectFurniture_MapStart()
 {
 	delete NPCIds;
+	if(!NPCIds)
+		return;
+		//for now block.
 	NPCIds = new ArrayList();
 
-	PrecacheModel("models/props_interiors/furniture_lamp01a.mdl");
+	PrecacheModel("models/props_c17/lamppost03a_off.mdl");
 	AddFurniture("Decorative Lamp", "obj_const_furniture1", ClotSummonLamp);
 
 	PrecacheModel("models/props_interiors/furniture_shelf01a.mdl");
@@ -91,7 +94,7 @@ methodmap ObjectFurnitureLamp < ObjectGeneric
 {
 	public ObjectFurnitureLamp(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectFurnitureLamp npc = view_as<ObjectFurnitureLamp>(ObjectGeneric(client, vecPos, vecAng, "models/props_interiors/furniture_lamp01a.mdl", "1.0", "50", {10.0, 10.0, 68.0}, 33.0, false));
+		ObjectFurnitureLamp npc = view_as<ObjectFurnitureLamp>(ObjectGeneric(client, vecPos, vecAng, "models/props_swamp/lamp_post001.mdl", "1.0", "50", {10.0, 10.0, 40.0}, _, false));
 
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;
@@ -127,7 +130,7 @@ methodmap ObjectFurnitureDesk < ObjectGeneric
 {
 	public ObjectFurnitureDesk(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectFurnitureDesk npc = view_as<ObjectFurnitureDesk>(ObjectGeneric(client, vecPos, vecAng, "models/props_interiors/furniture_desk01a.mdl", "1.0", "50", {34.0, 34.0, 40.0}, 19.0, false));
+		ObjectFurnitureDesk npc = view_as<ObjectFurnitureDesk>(ObjectGeneric(client, vecPos, vecAng, "models/props_spytech/work_table001.mdl", "1.0", "50", {34.0, 34.0, 40.0}, 0.0, false));
 
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;
@@ -145,7 +148,7 @@ methodmap ObjectFurnitureCouch < ObjectGeneric
 {
 	public ObjectFurnitureCouch(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectFurnitureCouch npc = view_as<ObjectFurnitureCouch>(ObjectGeneric(client, vecPos, vecAng, "models/props_interiors/furniture_couch01a.mdl", "1.0", "50", {40.0, 40.0, 44.0}, 21.0, false));
+		ObjectFurnitureCouch npc = view_as<ObjectFurnitureCouch>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/couch_01.mdl", "1.0", "50", {40.0, 40.0, 44.0}, 0.0, false));
 
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;

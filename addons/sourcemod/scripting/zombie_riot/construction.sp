@@ -414,6 +414,7 @@ void Construction_StartSetup()
 	}
 
 	int length = list.Length;
+	PrintToChatAll("%i length",length);
 	int choosen = GetURandomInt() % length;
 	for(int i; i < length; i++)
 	{
@@ -757,7 +758,7 @@ void Construction_BattleVictory()
 	if(type > 1)
 	{
 		
-		int cash = 1000;
+		int cash = 500;
 		int GetRound = Construction_GetRisk() + 3;
 		cash *= GetRound;
 		CPrintToChatAll("{green}%t","Cash Gained!", cash);

@@ -355,25 +355,6 @@ public void Rogue_RareWeapon_Collect()
 	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
 }
 
-public void GiveCash_3000()
-{
-	CurrentCash += 3000;
-	GlobalExtraCash += 3000;
-	CPrintToChatAll("{green}%t","Cash Gained!", 3000);
-}
-public void GiveCash_6000()
-{
-	CurrentCash += 6000;
-	GlobalExtraCash += 6000;
-	CPrintToChatAll("{green}%t","Cash Gained!", 6000);
-}
-public void GiveCash_12000()
-{
-	CurrentCash += 12000;
-	GlobalExtraCash += 12000;
-	CPrintToChatAll("{green}%t","Cash Gained!", 12000);
-}
-
 public void Rogue_RottenBone_Collect()
 {
 	RottenBone = 1;
