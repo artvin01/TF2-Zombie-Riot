@@ -134,12 +134,9 @@ int SpawnRandomGiftRemain()
 		static float hullcheckmins[3];
 		hullcheckmaxs = view_as<float>( { 40.0, 40.0, 120.0 } );
 		hullcheckmins = view_as<float>( { -40.0, -40.0, 0.0 } );	
-		Handle hTrace;
-		hTrace = TR_TraceHullFilterEx(pos2, pos2, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, DontSpawnInsideOthers_TraceFilter);
-		bool bHit = TR_DidHit(hTrace);
-		if(bHit)
+		if(Construction_IsBuildingInWay(pos2, hullcheckmins, hullcheckmaxs))
 		{
-			delete hTrace;
+			i--;
 			continue;
 		}
 		
@@ -152,24 +149,4 @@ int SpawnRandomGiftRemain()
 		return entity; 
 	}
 	return 0;
-}
-public bool DontSpawnInsideOthers_TraceFilter(int entity,int mask,any data)
-{
-	if(entity == 0)
-	{
-		return false;
-	}
-	if(i_IsABuilding[entity])
-	{
-		return true;
-	}
-	if(b_ThisWasAnNpc[entity])
-	{
-		return true;
-	}
-	if(IsValidClient(entity))
-	{
-		return true;
-	}
-	return false;
 }

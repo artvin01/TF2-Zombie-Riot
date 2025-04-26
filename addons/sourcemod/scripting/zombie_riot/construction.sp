@@ -350,12 +350,10 @@ void Construction_SetupVote(KeyValues kv)
 			kv.GoBack();
 		}
 
-		PrintToChatAll("RandomMusic: Found %d themes", count);
 
 		if(count)
 		{
 			count = Waves_MapSeed() % count;
-			PrintToChatAll("RandomMusic: Selected #%d", count);
 
 			if(kv.GotoFirstSubKey())
 			{
@@ -367,9 +365,7 @@ void Construction_SetupVote(KeyValues kv)
 				kv.GetSectionName(buffer, sizeof(buffer));
 				kv.GoBack();
 
-				PrintToChatAll("RandomMusic: '%s'", buffer);
 				BackgroundMusic.SetupKv(buffer, kv);
-				PrintToChatAll("RandomMusic: '%s'", BackgroundMusic.Path);
 			}
 		}
 
@@ -403,6 +399,12 @@ void Construction_StartSetup()
 
 	delete GameTimer;
 	GameTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
+	
+	//Just incase, reget spawnsers
+	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
+	{
+		SDKHook_TeamSpawn_SpawnPostInternal(ent, _, _, _);
+	}
 
 	ArrayList list = new ArrayList();
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
@@ -531,12 +533,8 @@ void Construction_Start()
 			static float hullcheckmins[3];
 			hullcheckmaxs = view_as<float>( { 40.0, 40.0, 120.0 } );
 			hullcheckmins = view_as<float>( { -40.0, -40.0, 0.0 } );	
-			Handle hTrace;
-			hTrace = TR_TraceHullFilterEx(pos2, pos2, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, DontSpawnInsideOthers_TraceFilter);
-			bool bHit = TR_DidHit(hTrace);
-			if(bHit)
+			if(Construction_IsBuildingInWay(pos2, hullcheckmins, hullcheckmaxs))
 			{
-				delete hTrace;
 				i--;
 				continue;
 			}
@@ -1708,4 +1706,22 @@ float Construction_GetMaxHealthMulti()
 	return multi;
 }
 
+static bool BuildingDetected;
+stock bool Construction_IsBuildingInWay(const float pos1[3],const float mins[3],const float maxs[3])
+{
+	BuildingDetected = false;
+	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, BuildingDetected_Enumerate, _);
+	return BuildingDetected;
+}
+public bool BuildingDetected_Enumerate(int entity, int client)
+{
+	if(IsValidEntity(entity) && (i_IsABuilding[entity] || b_ThisWasAnNpc[entity] || IsValidClient(entity)))
+	{
+		BuildingDetected = true;
+	}
+	return false;
+}
+
 #include "roguelike/construction_items.sp"
+
+
