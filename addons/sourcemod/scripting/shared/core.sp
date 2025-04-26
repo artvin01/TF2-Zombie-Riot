@@ -1104,6 +1104,7 @@ public void OnMapStart()
 	CleanAllNpcArray();
 	Zero(h_NpcCollissionHookType);
 	Zero(h_NpcSolidHookType);
+	Zero(h_NpcHandleEventHook);
 	Zero2(i_StickyToNpcCount);
 	Zero(f_DelayBuildNotif);
 	Zero(f_ClientInvul);

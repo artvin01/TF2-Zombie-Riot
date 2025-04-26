@@ -530,7 +530,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 			locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 			locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
-			view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
+			npcstats.ZRHook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 			SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
 		}
@@ -653,6 +653,18 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		return view_as<CClotBody>(npc);
+	}
+	
+	public void ZRHook_HandleAnimEvent(DHookCallback callback)
+	{
+		static DynamicHook hHook = null;
+		if (hHook == null)
+		{
+			hHook = new DynamicHook(CBaseAnimating.iHandleAnimEvent(), HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity);
+			if (hHook == null) return;
+			hHook.AddParam(HookParamType_ObjectPtr);
+		}
+		h_NpcHandleEventHook[this.index] = hHook.HookEntity(Hook_Pre, this.index, callback);
 	}
 	property int index 
 	{ 
@@ -4211,7 +4223,35 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		Call_PushCell(event);
 		Call_Finish();
 	}
-	
+	else
+	{
+		if(!b_thisNpcIsARaid[pThis] && EnemyNpcAlive >= 20) //Theres too many npcs, kill off the sounds.
+		{
+			switch(npc.m_iNpcStepVariation)
+			{
+				case STEPTYPE_TANK:
+				{
+					
+				}
+				default:
+				{
+					//Remove this entire logic if theres no hooked handle event!
+					
+					if(h_NpcHandleEventHook[pThis] != 0)
+					{
+						DHookRemoveHookID(h_NpcHandleEventHook[pThis]);
+					}
+					h_NpcHandleEventHook[pThis] = 0;
+				}
+			}
+		}
+	}
+	if(!b_thisNpcIsARaid[pThis] && EnemyNpcAlive >= 20)
+	{
+		//kill off sound.
+		//even if they had an anim event
+		return MRES_Ignored;
+	}
 	switch(npc.m_iNpcStepVariation)
 	{
 		case STEPTYPE_NORMAL:

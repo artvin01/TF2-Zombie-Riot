@@ -2098,6 +2098,10 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	if(DontForward)
 		return;
 		
+	if(!HasSpecificBuff(attacker, "Healing Resolve"))
+		return;
+	//Dont bother with the calcs if he isnt even being healed.
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsIn_HitDetectionCooldown(attacker, client, SupportDisplayHurtHud)) //if its IN cooldown!
