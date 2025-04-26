@@ -28,7 +28,7 @@ void Natives_PluginLoad()
 	OnKilledNPC = new GlobalForward("ZR_OnKilledNPC", ET_Ignore, Param_Cell, Param_String);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
-	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Event, Param_Cell, Param_Cell, Param_Cell);
+	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 
 	RegPluginLibrary("zombie_riot");
 }

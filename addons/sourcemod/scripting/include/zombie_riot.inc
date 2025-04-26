@@ -162,7 +162,7 @@ forward Action ZR_OnWinTeam(int Team);
  * 
  * @return	
  */
-forward Action ZR_OnGetXP(int client, int Xp, int Mode);
+forward void ZR_OnGetXP(int client, int Xp, int Mode);
 
 
 /**
@@ -173,7 +173,7 @@ forward Action ZR_OnGetXP(int client, int Xp, int Mode);
  * 
  * @return
  */
-forward Action ZR_SetXpAndLevel(int client, int Xp);
+native void ZR_SetXpAndLevel(int client, int Xp);
 
 /**
  * Get The XP of the client Now, usefull on disconnect
@@ -183,7 +183,7 @@ forward Action ZR_SetXpAndLevel(int client, int Xp);
  * 
  * @return
  */
-forward int ZR_GetXp(int client);
+native int ZR_GetXp(int client);
 
 
 //Basic natives to share.
