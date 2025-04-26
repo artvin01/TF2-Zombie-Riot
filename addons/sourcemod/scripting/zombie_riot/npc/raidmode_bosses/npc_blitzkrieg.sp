@@ -369,10 +369,10 @@ methodmap Blitzkrieg < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
-		i_current_wave[npc.index]=(Waves_GetRound()+1);
+		i_current_wave[npc.index]=(ZR_Waves_GetRound()+1);
 		if(StrContains(data, "wave_15") != -1)
 		{
 			i_current_wave[npc.index] = 15;

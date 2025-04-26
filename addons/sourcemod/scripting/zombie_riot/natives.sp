@@ -8,6 +8,7 @@ static GlobalForward OnGivenItem;
 static GlobalForward OnKilledNPC;
 static GlobalForward OnGivenCash;
 static GlobalForward OnTeamWin;
+static GlobalForward OnXpChanged;
 
 void Natives_PluginLoad()
 {
@@ -17,6 +18,8 @@ void Natives_PluginLoad()
 	CreateNative("ZR_HasNamedItem", Native_HasNamedItem);
 	CreateNative("ZR_GiveNamedItem", Native_GiveNamedItem);
 	CreateNative("ZR_GetAliveStatus", Native_GetAliveStatus);
+	CreateNative("ZR_SetXpAndLevel", Native_ZR_SetXpAndLevel);
+	CreateNative("ZR_GetXp", Native_ZR_GetXp);
 
 	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell, Param_String, Param_Cell);
 	OnClientLoaded = new GlobalForward("ZR_OnClientLoaded", ET_Ignore, Param_Cell);
@@ -25,6 +28,7 @@ void Natives_PluginLoad()
 	OnKilledNPC = new GlobalForward("ZR_OnKilledNPC", ET_Ignore, Param_Cell, Param_String);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
+	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Event, Param_Cell, Param_Cell, Param_Cell);
 
 	RegPluginLibrary("zombie_riot");
 }
@@ -49,6 +53,15 @@ void Native_ZR_OnWinTeam(int team)
 {
 	Call_StartForward(OnTeamWin);
 	Call_PushCell(team);
+	Call_Finish();
+}
+
+void Native_ZR_OnGetXP(int client, int XPGET, int Mode)
+{
+	Call_StartForward(OnXpChanged);
+	Call_PushCell(client);
+	Call_PushCell(XPGET);
+	Call_PushCell(Mode);
 	Call_Finish();
 }
 
@@ -164,4 +177,19 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 	
 	return 0;	// :)
 }
+public any Native_ZR_GetXp(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	
+	return XP[client];	// :)
+}
 
+public void Native_ZR_SetXpAndLevel(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	int XPSet = GetNativeCell(2);
+	Level[client] = 0; 
+	XP[client] = 0; 
+	//Reset!
+	GiveXP(client, XPSet, false, true);
+}

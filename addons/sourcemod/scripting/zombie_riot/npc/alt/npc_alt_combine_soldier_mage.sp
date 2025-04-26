@@ -332,7 +332,7 @@ static void Internal_ClotThink(int iNPC)
 									npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 									npc.PlayMeleeSound();
 									float damage = 60.0;
-									if(Waves_GetRound()>30)
+									if(ZR_Waves_GetRound()>30)
 									{
 										damage=125.0;
 									}

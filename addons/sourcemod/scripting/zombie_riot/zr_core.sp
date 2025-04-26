@@ -438,6 +438,8 @@ int i_WaveHasFreeplay = 0;
 float fl_MatrixReflect[MAXENTITIES];
 
 
+#include "include/zombie_riot.inc"
+
 #include "npc.sp"	// Global NPC List
 
 #include "aprilfools_settings.sp"
@@ -1047,6 +1049,7 @@ void ZR_ClientPutInServer(int client)
 
 void ZR_ClientDisconnect(int client)
 {
+	Native_ZR_OnGetXP(client, XP[client], 1);
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
 	DataBase_ClientDisconnect(client);
@@ -1424,6 +1427,7 @@ public Action Command_SetXp(int client, int args)
 		if(money > 0)
 		{
 			PrintToChat(targets[target], "Your XP got set to %i from the admin %N!", money, client);
+			Native_ZR_OnGetXP(client, money, 1);
 			XP[targets[target]] = money;
 		}
 	}
@@ -1461,11 +1465,13 @@ public Action Command_GiveXp(int client, int args)
 		if(money > 0)
 		{
 			PrintToChat(targets[target], "You got %i XP from the admin %N!", money, client);
+			Native_ZR_OnGetXP(client, money, 0);
 			XP[targets[target]] += money;
 		}
 		else
 		{
 			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
+			Native_ZR_OnGetXP(client, money, 0);
 			XP[targets[target]] += money;			
 		}
 	}
@@ -2544,18 +2550,9 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	CheckAlivePlayers();
 }
 
-int XpToLevel(int xp)
-{
-	return RoundToFloor(Pow(xp / 200.0, 0.5));
-}
-int LevelToXp(int lv)
-{
-	return lv * lv * 200;
-}
-
 float XpFloatGive[MAXTF2PLAYERS];
 
-void GiveXP(int client, int xp, bool freeplay = false)
+void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilently = false)
 {
 	if(Waves_InFreeplay() && !freeplay)
 	{
@@ -2565,12 +2562,15 @@ void GiveXP(int client, int xp, bool freeplay = false)
 
 	float DecimalXp = float(xp);
 
-	DecimalXp *= CvarXpMultiplier.FloatValue;
-	
-	if(DecimalXp >= 10000.0)
+	if(!SetXpAndLevelSilently)
 	{
-		//looks like someone got a bullshit amount of points somehow, ignore!
-		return;
+		DecimalXp *= CvarXpMultiplier.FloatValue;
+		
+		if(DecimalXp >= 10000.0)
+		{
+			//looks like someone got a bullshit amount of points somehow, ignore!
+			return;
+		}
 	}
 	
 	XpFloatGive[client] += DecimalXp;
@@ -2587,13 +2587,14 @@ void GiveXP(int client, int xp, bool freeplay = false)
 	}
 
 	XP[client] += XpGive;
+	Native_ZR_OnGetXP(client, XpGive, 0);
 
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
 		if(CvarLeveling.BoolValue)
 		{
-			if(Level[client] < STARTER_WEAPON_LEVEL)
+			if(!SetXpAndLevelSilently && Level[client] < STARTER_WEAPON_LEVEL)
 			{
 				static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 				ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
@@ -2610,14 +2611,17 @@ void GiveXP(int client, int xp, bool freeplay = false)
 			{
 				Level[client]++;
 
-				if(Level[client] == STARTER_WEAPON_LEVEL)
+				if(!SetXpAndLevelSilently)
 				{
-					CPrintToChat(client, "%t", "All Weapons Unlocked");
+					if(Level[client] == STARTER_WEAPON_LEVEL)
+					{
+						CPrintToChat(client, "%t", "All Weapons Unlocked");
+					}
+					
+					Store_PrintLevelItems(client, Level[client]);
 				}
-				
-				Store_PrintLevelItems(client, Level[client]);
 			}
-			if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
+			if(!SetXpAndLevelSilently && CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
 			{
 				SkillTree_CalcSkillPoints(client);
 				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
@@ -2661,7 +2665,7 @@ void PlayerApplyDefaults(int client)
 		
 		if(point_difference > 0)
 		{
-			if(Classic_Mode() || Waves_GetRound() > 59)
+			if(Classic_Mode() || ZR_Waves_GetRound() > 59)
 			{
 				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
 			}

@@ -387,7 +387,7 @@ methodmap ToddHoward < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
 		npc.Anger = false;

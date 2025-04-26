@@ -414,7 +414,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 			else
 			{
-				Store_GiveAll(client, Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
+				Store_GiveAll(client, ZR_Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
 			SetAmmo(client, 1, 9999);
