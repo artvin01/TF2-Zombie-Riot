@@ -479,8 +479,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		npc.m_flFrontSlicerCD = GetGameTime() + 15.0;
 		npc.m_flSpawnPortal = GetGameTime() + 25.0;
 		
-
-		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
@@ -559,10 +557,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
-
-
-
-		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
 		SensalGiveShield(npc.index,CountPlayersOnRed(1) * 50);
 		RequestFrame(Zilius_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
@@ -705,32 +699,38 @@ static void Internal_ClotThink(int iNPC)
 	if(ZiliusSpawnPortal(npc))
 		return;
 
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+
 	bool CancelEarly = false;
 	CancelEarly = ZiliusFrontSlicer(npc);
 
-	if(IsEntityAlive(npc.m_iTargetWalkTo))
+	if(IsEntityAlive(npc.m_iTarget))
 	{
 	//	int ActionToTake = -1;
 
 		//Predict their pos.
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
 	}
 	else
 	{
-		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
-		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
 	if(CancelEarly)
@@ -837,11 +837,6 @@ static void Internal_NPCDeath(int entity)
 
 void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gameTime)
 {
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
 	if(IsValidEntity(npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -1405,7 +1400,7 @@ static void Zilius_KickTouched(int entity, int enemy)
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
-	float damagedeal = 100.0;
+	float damagedeal = 50.0;
 	if(ShouldNpcDealBonusDamage(enemy))
 		damagedeal *= 10.0;
 
