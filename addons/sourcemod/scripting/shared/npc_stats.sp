@@ -5982,7 +5982,13 @@ public void NpcBaseThinkPost(int iNPC)
 	float lastThink = f_LastBaseThinkTime[iNPC];
 	f_LastBaseThinkTime[iNPC] = GetGameTime();
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
-	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime());
+	static float SimulationTimeDelay;
+	if(!SimulationTimeDelay)
+	{
+		SimulationTimeDelay = (0.05 * TickrateModify);
+		//calc once
+	}
+	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime() + SimulationTimeDelay);
 	if(f_AttackSpeedNpcIncrease[iNPC] == 1.0)
 		return;
 		
