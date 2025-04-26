@@ -136,7 +136,6 @@ int SpawnRandomGiftRemain()
 		hullcheckmins = view_as<float>( { -40.0, -40.0, 0.0 } );	
 		if(Construction_IsBuildingInWay(pos2, hullcheckmins, hullcheckmaxs))
 		{
-			i--;
 			continue;
 		}
 		
