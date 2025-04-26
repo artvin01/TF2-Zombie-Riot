@@ -462,10 +462,18 @@
 					"toucher" 
 					{
 						"type" "cbaseentity"
+						"linux"
+						{
+							"register"	"eax"
+						}
 					}
 					"passer" 
 					{
 						"type" "cbaseentity"
+						"linux"
+						{
+							"register"	"edx"
+						}
 					}
 				}
 			}
