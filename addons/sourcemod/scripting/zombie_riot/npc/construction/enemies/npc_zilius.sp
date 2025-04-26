@@ -79,9 +79,6 @@ static const char g_SlicerHitSound[][] = {
 	"ambient/machines/slicer3.wav",
 	"ambient/machines/slicer4.wav",
 };
-#define LINKBEAM "sprites/glow01.vmt"
-#define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
-#define PILLAR_SPACING 170.0
 
 
 public void Construction_Raid_Zilius_OnMapStart()
