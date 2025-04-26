@@ -70,6 +70,7 @@ bool Native_CanRenameNpc(int client)
 {
 	bool WhatReturn = false;
 	Call_StartForward(CanRenameNpc);
+	Call_PushCell(client);
 	Call_Finish(WhatReturn);
 	return WhatReturn;
 }
