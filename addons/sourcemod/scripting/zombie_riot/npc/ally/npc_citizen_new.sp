@@ -2034,6 +2034,13 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 25:
 				{
+					if(!ZR_CanRenameNPCs(client))
+					{
+						CPrintToChat(client, "Youre muted buddy.");
+						ClientCommand(client, "playgamesound items/medshotno1.wav");
+						CitizenMenu(client, page);
+						return 0;
+					}
 					PlayerRenameWho[client] = EntIndexToEntRef(npc.index);
 					CPrintToChat(client, "Type the name in chat for the rebel!");
 				}

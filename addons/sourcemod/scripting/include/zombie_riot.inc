@@ -99,6 +99,15 @@ forward void ZR_OnDifficultySet(int index, const char[] name, int level);
 forward void ZR_OnClientLoaded(int client);
 
 /**
+ * Called when a player wants to rename the rebel or use any renaming
+ * 
+ * @param client	Client index
+ * 
+ * @return  yes can or not cannot
+ */
+forward bool ZR_CanRenameNPCs(int client);
+
+/**
  * Called when a player model is being set
  * 
  * @param client	Client index
