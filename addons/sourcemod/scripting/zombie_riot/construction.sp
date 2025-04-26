@@ -414,7 +414,12 @@ void Construction_StartSetup()
 	}
 
 	int length = list.Length;
-	PrintToChatAll("%i length",length);
+	if(length <= 0)
+	{
+		PrintToChatAll("%i Construction_StartSetup() SOMEHOW HAD 0 SPAWNERS????????",length);
+		delete list;
+		return;
+	}
 	int choosen = GetURandomInt() % length;
 	for(int i; i < length; i++)
 	{
@@ -521,6 +526,20 @@ void Construction_Start()
 			}
 			
 			area.GetCenter(pos2);
+			//Try to not spawn inside other ores?
+			static float hullcheckmaxs[3];
+			static float hullcheckmins[3];
+			hullcheckmaxs = view_as<float>( { 40.0, 40.0, 120.0 } );
+			hullcheckmins = view_as<float>( { -40.0, -40.0, 0.0 } );	
+			Handle hTrace;
+			hTrace = TR_TraceHullFilterEx(pos2, pos2, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, DontSpawnInsideOthers_TraceFilter);
+			bool bHit = TR_DidHit(hTrace);
+			if(bHit)
+			{
+				delete hTrace;
+				i--;
+				continue;
+			}
 			float distance = GetVectorDistance(pos1, pos2, true);
 
 			if(!GetRandomResourceInfo(distance, info, resourcePicked))
@@ -765,6 +784,35 @@ void Construction_BattleVictory()
 		CurrentCash += cash;
 		//Extra money.
 		ReviveAll();
+		int SpawnGiftRemains = 3;
+		SpawnGiftRemains -= RemainsRaidsLeftOnMap();
+		
+		int Amountspawned = 0;
+		for(;SpawnGiftRemains > 0; SpawnGiftRemains--)
+		{
+			
+			int EntitySpawned;
+			EntitySpawned = SpawnRandomGiftRemain();
+			if(IsValidEntity(EntitySpawned))
+			{
+				MaterialGift npc = view_as<MaterialGift>(EntitySpawned);	
+				npc.m_iMyRisk = Construction_GetRisk();
+				Amountspawned++;
+			}
+			else
+			{
+				SpawnGiftRemains++;
+				//Failed to spawn, retry. go go!
+			}
+		}
+		if(Amountspawned > 0)
+		{
+			CPrintToChatAll("%t","Gifts Spawned", Amountspawned);
+		}
+		else
+		{
+			CPrintToChatAll("%t","No Gifts Spawn");
+		}
 	}
 	
 	Waves_RoundEnd();
@@ -783,7 +831,7 @@ void Construction_BattleVictory()
 	GiveRandomReward(CurrentRisk, type > 1 ? 4 : 2);
 }
 
-static void GiveRandomReward(int risk, int maxDrops)
+void GiveRandomReward(int risk, int maxDrops)
 {
 	ArrayList list = new ArrayList();
 

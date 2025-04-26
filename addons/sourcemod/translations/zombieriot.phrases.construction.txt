@@ -15,6 +15,24 @@
 		"#format"	"{1:N},{2:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
 	}
+	"Gifts Spawned"
+	{
+		"#format"	"{1:d}"
+		"en"		"{orange}(Construct) {green}{1} {default}Raid remains have appeared!"
+	}
+	"No Gifts Spawn"
+	{
+		"en"		"{orange}(Construct) {red}No Raid remains appeared, too many exist already..."
+	}
+	"Found a gift remain"
+	{
+		"#format"	"{1:N}"
+		"en"		"{orange}(Construct) {red}{1} {green}Found and obtained raid remains!"
+	}
+	"Found a gift remain No Attacker"
+	{
+		"en"		"{orange}(Construct) {green}Someone found and obtained raid remains!"
+	}
 	"Player Used 1 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t}"
@@ -56,6 +74,10 @@
 	"Broken Server"
 	{
 		"en"	"Broken Server"
+	}
+	"Left Remains Of Raids"
+	{
+		"en"	"Left Remains Of Raids"
 	}
 	"Material wood"
 	{

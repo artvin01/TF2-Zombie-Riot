@@ -972,6 +972,7 @@ public void OnPluginEnd()
 		// This may cause the global populator pointer to be set to NULL even if a new populator was created.
 		SDKCall_RemoveImmediate(populator);
 	}
+	/*
 	char path[256];
 	for(int i=MAXENTITIES; i>MaxClients; i--)
 	{
@@ -989,6 +990,7 @@ public void OnPluginEnd()
 			//prevent crash, needs to be instant.
 		}
 	}
+	*/
 #endif
 }
 

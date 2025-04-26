@@ -190,15 +190,6 @@ methodmap ZeinaPrisoner < CClotBody
 		int iBeam = this.m_iWearable5;
 		if(iBeam != INVALID_ENT_REFERENCE)
 		{
-			int iBeamTarget = GetEntPropEnt(iBeam, Prop_Send, "m_hOwnerEntity");
-			if(IsValidEntity(iBeamTarget))
-			{
-				AcceptEntityInput(iBeamTarget, "ClearParent");
-				RemoveEntity(iBeamTarget);
-			}
-			
-			AcceptEntityInput(iBeam, "ClearParent");
-			RemoveEntity(iBeam);
 			
 			EmitSoundToAll("weapons/medigun_no_target.wav", this.index, SNDCHAN_WEAPON);
 			
