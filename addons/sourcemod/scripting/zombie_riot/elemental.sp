@@ -829,7 +829,7 @@ static char g_Agent_Summons[][] =
 static void Matrix_Spawning(int entity, int count)
 {
 	int summon = GetRandomInt(0, 6);
-	int wave = (Waves_GetRound() + 1);
+	int wave = (ZR_Waves_GetRound() + 1);
 	if(wave >= 30)
 	{
 		summon = GetRandomInt(7, 11);
