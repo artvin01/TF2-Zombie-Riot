@@ -400,7 +400,7 @@ void Construction_StartSetup()
 	delete GameTimer;
 	GameTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
 	
-	//Just incase, reget spawnsers
+	//Just incase, reget spawnsers, beacuse its way too fast and needs a frame, start setup is too fast!
 	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
 	{
 		SDKHook_TeamSpawn_SpawnPostInternal(ent, _, _, _);
