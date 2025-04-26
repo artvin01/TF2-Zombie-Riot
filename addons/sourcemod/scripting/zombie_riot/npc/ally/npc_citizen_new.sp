@@ -2034,7 +2034,7 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 25:
 				{
-					if(!ZR_CanRenameNPCs(client))
+					if(!Native_CanRenameNpc(client))
 					{
 						CPrintToChat(client, "Youre muted buddy.");
 						ClientCommand(client, "playgamesound items/medshotno1.wav");

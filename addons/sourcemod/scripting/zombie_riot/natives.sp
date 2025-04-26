@@ -66,6 +66,13 @@ void Native_ZR_OnGetXP(int client, int XPGET, int Mode)
 	Call_PushCell(Mode);
 	Call_Finish();
 }
+bool Native_CanRenameNpc(int client)
+{
+	bool WhatReturn = false;
+	Call_StartForward(CanRenameNpc);
+	Call_Finish(WhatReturn);
+	return WhatReturn;
+}
 
 bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &sound, int &bodyOverride, bool &animOverride, bool &noCosmetic)
 {
