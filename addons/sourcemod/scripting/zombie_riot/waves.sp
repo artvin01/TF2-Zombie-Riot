@@ -907,6 +907,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Rounds = new ArrayList(sizeof(Round));
 	
+	CurrentRound = 0;
+	CurrentWave = -1;
+	
 	Waves_ClearWaves();
 	Waves_ResetCashGiveWaveEnd();
 	
@@ -2185,7 +2188,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
-						Music_Stop_All(i);
+						if(!Construction_Mode() || Construction_FinalBattle())
+							Music_Stop_All(i);
+
 						if(!subgame)
 						{
 							SendConVarValue(i, sv_cheats, "1");
@@ -2698,17 +2703,8 @@ void WaveEndLogicExtra()
 {
 	SeaFounder_ClearnNethersea();
 	VoidArea_ClearnNethersea();
-	M3_AbilitiesWaveEnd();
-	Specter_AbilitiesWaveEnd();	
-	Rapier_CashWaveEnd();
-	LeperResetUses();
-	SniperMonkey_ResetUses();
-	ResetFlameTail();
-	Building_ResetRewardValuesWave();
 	FallenWarriorGetRandomSeedEachWave();
-	CastleBreaker_ResetCashGain();
-	ZombieDrops_AllowExtraCash();
-	Zero(i_MaxArmorTableUsed);
+	ResetAbilitiesWaveEnd();
 	for(int client; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client))
@@ -2727,6 +2723,20 @@ void WaveEndLogicExtra()
 			*/
 		}
 	}
+}
+
+void ResetAbilitiesWaveEnd()
+{
+	M3_AbilitiesWaveEnd();
+	Specter_AbilitiesWaveEnd();	
+	Rapier_CashWaveEnd();
+	LeperResetUses();
+	SniperMonkey_ResetUses();
+	ResetFlameTail();
+	Building_ResetRewardValuesWave();
+	CastleBreaker_ResetCashGain();
+	ZombieDrops_AllowExtraCash();
+	Zero(i_MaxArmorTableUsed);
 }
 
 void WaveStart_SubWaveStart(float time = 0.0)

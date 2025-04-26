@@ -1256,6 +1256,11 @@ public void DeleteBuildingLookedAt(int client)
 				{
 					if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") > MaxClients)
 					{
+						ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+						if(IsValidEntity(objstats.m_iMasterBuilding))
+							entity = objstats.m_iMasterBuilding;
+							
+							//change to master entity.
 						i_BuildingSelectedToBeDeleted[client] = EntIndexToEntRef(entity);
 						DataPack pack;
 						CreateDataTimer(0.1, DeleteBuildingTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);

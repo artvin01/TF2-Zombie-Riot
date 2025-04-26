@@ -653,6 +653,7 @@ public Action SetTimeBack(Handle timer)
 
 void Music_Stop_All(int client)
 {
+//	LogStackTrace("stoppedmusic");
 	if(DelayStopSoundAll[client] < GetGameTime())
 	{
 		//dont spam these
@@ -934,6 +935,11 @@ void Music_Update(int client)
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
+				if(i_IsNpcType[entity] == STATIONARY_NPC && b_StaticNPC[entity])
+					continue;
+				//if its a stationary static npc, then it by default means no harm.
+
+
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				float distance = GetVectorDistance(chargerPos, targPos, true);
 				CClotBody npcstats = view_as<CClotBody>(entity);

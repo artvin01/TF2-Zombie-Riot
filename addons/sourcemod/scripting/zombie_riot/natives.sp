@@ -9,6 +9,7 @@ static GlobalForward OnKilledNPC;
 static GlobalForward OnGivenCash;
 static GlobalForward OnTeamWin;
 static GlobalForward OnXpChanged;
+static GlobalForward CanRenameNpc;
 
 void Natives_PluginLoad()
 {
@@ -29,6 +30,7 @@ void Natives_PluginLoad()
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
 	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
+	CanRenameNpc = new GlobalForward("ZR_CanRenameNPCs", ET_Single, Param_Cell);
 
 	RegPluginLibrary("zombie_riot");
 }
@@ -63,6 +65,14 @@ void Native_ZR_OnGetXP(int client, int XPGET, int Mode)
 	Call_PushCell(XPGET);
 	Call_PushCell(Mode);
 	Call_Finish();
+}
+bool Native_CanRenameNpc(int client)
+{
+	bool WhatReturn = false;
+	Call_StartForward(CanRenameNpc);
+	Call_PushCell(client);
+	Call_Finish(WhatReturn);
+	return WhatReturn;
 }
 
 bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &sound, int &bodyOverride, bool &animOverride, bool &noCosmetic)

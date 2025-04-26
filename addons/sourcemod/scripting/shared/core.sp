@@ -938,7 +938,8 @@ public void OnPluginEnd()
 			DHook_UnhookClient(i);
 #endif
 			OnClientDisconnect(i);
-			ForcePlayerSuicide(i);
+			if(!CvarInfiniteCash.BoolValue) //if on, assume were on a test server, dont slay.
+				ForcePlayerSuicide(i);
 		}
 	}
 
@@ -971,6 +972,7 @@ public void OnPluginEnd()
 		// This may cause the global populator pointer to be set to NULL even if a new populator was created.
 		SDKCall_RemoveImmediate(populator);
 	}
+	/*
 	char path[256];
 	for(int i=MAXENTITIES; i>MaxClients; i--)
 	{
@@ -988,6 +990,7 @@ public void OnPluginEnd()
 			//prevent crash, needs to be instant.
 		}
 	}
+	*/
 #endif
 }
 
@@ -1101,6 +1104,7 @@ public void OnMapStart()
 	CleanAllNpcArray();
 	Zero(h_NpcCollissionHookType);
 	Zero(h_NpcSolidHookType);
+	Zero(h_NpcHandleEventHook);
 	Zero2(i_StickyToNpcCount);
 	Zero(f_DelayBuildNotif);
 	Zero(f_ClientInvul);
@@ -3528,13 +3532,13 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		}
 		if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
 		{
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0);
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
 		}
 		else
 		{
 			if(WasClientReviving)
-				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
+				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0);
 			if(extralogic)
 			{
 				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 1.0, 1.0, 1.0, HEAL_ABSOLUTE);

@@ -22,12 +22,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialEvilExpi(client, vecPos, vecAng, team);
+	return MaterialEvilExpi(vecPos, vecAng, team);
 }
 
 methodmap MaterialEvilExpi < CClotBody
 {
-	public MaterialEvilExpi(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialEvilExpi(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialEvilExpi npc = view_as<MaterialEvilExpi>(CClotBody(vecPos, vecAng, "models/props_combine/masterinterface.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		
@@ -42,6 +42,7 @@ methodmap MaterialEvilExpi < CClotBody
 		npc.m_iNpcStepVariation = 0;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
 		npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
@@ -50,6 +51,7 @@ methodmap MaterialEvilExpi < CClotBody
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
+		b_NoHealthbar[npc.index] = true;
 
 		return npc;
 	}
@@ -65,10 +67,10 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		}
 		else
 		{
-			bool angery = npc.Anger;
-			bool attack = Construction_OnTakeDamageCustom("construction/ending1_fight", victim, attacker, damage, damagetype);
-			if(attack && angery && attacker > 0 && attacker <= MaxClients)
+			MaterialStone npc = view_as<MaterialStone>(victim);
+			if(npc.Anger)
 				CPrintToChatAll("%t", "Resource Attack Started", attacker, "?????????????");
+			npc.Anger = false;
 		}
 	}
 }

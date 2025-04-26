@@ -11,6 +11,10 @@
 		"fr" 		"Silvester et Waldch sont ici."
 		"chi"		"西尔韦斯特和瓦德奇到来。"
 	}
+	"Zilius Arrived Arrived."
+	{
+		"en" 		"Zilius Arrived the leader of the exlusionary Expidonsans."
+	}
 	"Nemesis Arrived."
 	{
 		"en" 		"Nemesis, the original Xeno infector arrived."
@@ -292,6 +296,10 @@
 		"fr"	"Diversionistico Apparaît"
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
+	}
+	"Diversionistico_Elitus Spawn"
+	{
+		"en"	"Diversionistico Elitus Spawn."
 	}
 	"Voided Diversionistico Spawn"
 	{

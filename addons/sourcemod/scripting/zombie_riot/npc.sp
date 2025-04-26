@@ -93,10 +93,17 @@ void NPC_ConfigSetup()
 	ObjectPump_MapStart();
 	ObjectWood_MapStart();
 	ObjectStone_MapStart();
-	ObjectConstruction_LightHouse_MapStart();
-	ObjectMinter_MapStart();
+	ObjectSupply_MapStart();
 	ObjectStove_MapStart();
 	ObjectFactory_MapStart();
+	ObjectMinter_MapStart();
+	ObjectConstruction_LightHouse_MapStart();
+	ObjectHeavyCaliberTurret_MapStart();
+	Object_MinigunTurret_MapStart();
+	Object_TeslarsMedusa_MapStart();
+	ObjectStunGun_MapStart();
+	ObjectDispenser_MapStart();
+	ObjectFurniture_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -827,6 +834,7 @@ void NPC_ConfigSetup()
 	
 	// Construction
 	BaseBuilding_MapStart();
+	ZeinaFreeFollower_Setup();
 
 	// Survival
 	Nightmare_OnMapStart_NPC();
@@ -938,6 +946,8 @@ void NPC_ConfigSetup()
 	MaterialStone_MapStart();
 	MaterialWizuh_MapStart();
 	MaterialWood_MapStart();
+	MaterialEvilExpi_MapStart();
+	MaterialGift_MapStart();
 
 	//April Fools
 	PackaPunch_OnMapStart();
@@ -972,6 +982,11 @@ void NPC_ConfigSetup()
 	ArmsaManu_OnMapStart_NPC();
 	SpeedusAbsolutos_OnMapStart_NPC();
 	VausShaldus_OnMapStart_NPC();
+	SoldinusIlus_OnMapStart_NPC();
+	SelfamScythus_OnMapStart_NPC();
+	Diversionistico_Elitus_OnMapStart_NPC();
+	Construction_Raid_Zilius_OnMapStart();
+	ZeinaPrisoner_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1289,6 +1304,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_stone.sp"
 #include "object/construction/obj_const_minter.sp"
 #include "object/construction/obj_const_wall.sp"
+#include "object/construction/obj_supergun.sp"
+#include "object/construction/obj_minigun_turret.sp"
+#include "object/construction/obj_teslars_medusa.sp"
+#include "object/construction/obj_const_stungun.sp"
+#include "object/construction/obj_const_dispenser.sp"
+#include "object/construction/obj_const_furniture.sp"
+#include "object/construction/obj_const_supply.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"
@@ -2106,6 +2128,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/npc_material_stone.sp"
 #include "npc/construction/npc_material_wizuh.sp"
 #include "npc/construction/npc_material_wood.sp"
+#include "npc/construction/npc_rogue_expi_building.sp"
+#include "npc/construction/npc_material_gift.sp"
 
 // April Fools
 #include "npc/aprilfools/npc_packapunch.sp"
@@ -2130,8 +2154,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aprilfools/npc_troll_rpg.sp"
 #include "npc/aprilfools/npc_troll_melee.sp"
 
-
-
 #include "npc/construction/enemies/npc_eirasus.sp"
 #include "npc/construction/enemies/npc_haltera.sp"
 #include "npc/construction/enemies/npc_flaigus.sp"
@@ -2141,3 +2163,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/enemies/npc_armsa_manu.sp"
 #include "npc/construction/enemies/npc_speedus_absolutos.sp"
 #include "npc/construction/enemies/npc_vaus_shaldus.sp"
+#include "npc/construction/enemies/npc_soldinus_ilus.sp"
+#include "npc/construction/enemies/npc_selfam_scythus.sp"
+#include "npc/construction/enemies/npc_diversionistico_elitus.sp"
+#include "npc/construction/enemies/npc_zilius.sp"
+#include "npc/construction/enemies/npc_zeina_prison.sp"
+#include "npc/construction/enemies/npc_zeina_freed.sp"

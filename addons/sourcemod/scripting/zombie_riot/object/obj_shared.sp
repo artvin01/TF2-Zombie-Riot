@@ -86,6 +86,7 @@ void Object_PluginStart()
 	.DefineIntField("m_iRepairMax")
 	.DefineIntField("m_iMaxHealth")
 	.DefineBoolField("m_bSentryBuilding")
+	.DefineBoolField("m_bConstructBuilding")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -252,6 +253,7 @@ methodmap ObjectGeneric < CClotBody
 
 		//think once
 		ObjBaseThink(objstats.index);
+		UpdateDoublebuilding(objstats.index);
 
 		return objstats;
 	}
@@ -297,7 +299,7 @@ methodmap ObjectGeneric < CClotBody
 		{
 			return item;
 		}
-		
+		b_ThisEntityIgnored[item] = true;
 
 		if(!StrEqual(anim, ""))
 		{
@@ -379,6 +381,60 @@ methodmap ObjectGeneric < CClotBody
 			}
 		}
 	}
+	property int m_iMasterBuilding
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][6]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][6] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][6] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iExtrabuilding1
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][7]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][7] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][7] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iExtrabuilding2
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][8]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][8] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][8] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property Function FuncCanUse
 	{
 		public set(Function func)
@@ -424,6 +480,17 @@ methodmap ObjectGeneric < CClotBody
 		public get()
 		{
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bSentryBuilding"));
+		}
+	}
+	property bool m_bConstructBuilding
+	{
+		public set(bool value)
+		{
+			SetEntProp(this.index, Prop_Data, "m_bConstructBuilding", value);
+		}
+		public get()
+		{
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bConstructBuilding"));
 		}
 	}
 	property bool m_bBurning
@@ -574,6 +641,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	if(objstats.m_flNextDelayTime > gameTime)
 		return false;
 
+	objstats.m_flNextDelayTime = gameTime + 0.2;
 
 	Function func = func_NPCThink[objstats.index];
 	if(func && func != INVALID_FUNCTION)
@@ -583,7 +651,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		Call_Finish();
 	}
 
-	objstats.m_flNextDelayTime = gameTime + 0.2;
 	BuildingUpdateTextHud(objstats.index);
 
 	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
@@ -848,7 +915,7 @@ int Object_SupportBuildings(int owner, int &all = 0)
 				continue;
 			
 			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-			if(objstats.SentryBuilding)
+			if(objstats.SentryBuilding || objstats.m_bConstructBuilding)
 				continue;
 			
 			all++;
@@ -993,14 +1060,41 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 		TE_ParticleInt(g_particleImpactMetal, damagePosition);
 		TE_SendToAll();
 	}
-
+	
 	SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	UpdateDoublebuilding(victim);
 	return Plugin_Handled;
 }
 
-void DestroyBuildingDo(int entity)
+void DestroyBuildingDo(int entity, bool DontCheckAgain = false)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(IsValidEntity(objstats.m_iMasterBuilding) && !DontCheckAgain)
+	{
+		DestroyBuildingDo(objstats.m_iMasterBuilding, true);
+
+		ObjectGeneric objstats2 = view_as<ObjectGeneric>(objstats.m_iMasterBuilding);
+		if(IsValidEntity(objstats2.m_iExtrabuilding1))
+			DestroyBuildingDo(objstats2.m_iExtrabuilding1, true);
+
+		if(IsValidEntity(objstats2.m_iExtrabuilding2))
+			DestroyBuildingDo(objstats2.m_iExtrabuilding2, true);
+	}
+	else if(!DontCheckAgain)
+	{
+		if(IsValidEntity(objstats.m_iExtrabuilding1))
+			DestroyBuildingDo(objstats.m_iExtrabuilding1, true);
+
+		if(IsValidEntity(objstats.m_iExtrabuilding2))
+			DestroyBuildingDo(objstats.m_iExtrabuilding2, true);
+	}
+	Function func = func_NPCDeath[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_Finish();
+	}
 	objstats.PlayDeathSound();
 	float VecOrigin[3];
 	GetAbsOrigin(entity, VecOrigin);
@@ -1055,6 +1149,14 @@ void BuildingUpdateTextHud(int building)
 		if(IsValidEntity(objstats.m_iWearable3))
 			RemoveEntity(objstats.m_iWearable3);
 
+		return;
+	}
+
+	//nope.
+	if(IsValidEntity(objstats.m_iMasterBuilding))
+	{
+		if(IsValidEntity(objstats.m_iWearable3))
+			RemoveEntity(objstats.m_iWearable3);
 		return;
 	}
 	char HealthText[128];

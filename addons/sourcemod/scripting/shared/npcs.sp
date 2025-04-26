@@ -1081,7 +1081,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if((damagetype & DMG_CRUSH))
 		{
 			damage = 0.0;
-			return Plugin_Handled;
+			return Plugin_Changed;
 		}
 	}
 
@@ -1108,7 +1108,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;
-		return Plugin_Handled;
+		return Plugin_Changed;
+	//	return Plugin_Handled;
 	}
 	//a triggerhurt can never deal more then 10% of a raids health as damage.
 	if(b_IsATriggerHurt[attacker] && b_thisNpcIsARaid[victim])
@@ -2097,6 +2098,10 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	if(DontForward)
 		return;
 		
+	if(!HasSpecificBuff(attacker, "Healing Resolve"))
+		return;
+	//Dont bother with the calcs if he isnt even being healed.
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsIn_HitDetectionCooldown(attacker, client, SupportDisplayHurtHud)) //if its IN cooldown!

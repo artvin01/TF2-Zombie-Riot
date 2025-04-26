@@ -1892,6 +1892,16 @@ static void CitizenMenu(int client, int page = 0)
 					{
 						DontAllowBuilding = false;
 					}
+					if(Construction_Mode())
+					{
+						DontAllowBuilding = false;
+						if(HealingCooldown[npc.index] > GetGameTime())
+							DontAllowBuilding = true;
+
+						if(!Waves_Started())
+							DontAllowBuilding = false;
+					}
+					
 					int MaxBuildingsSee = 0;
 					int BuildingsSee = 0;
 					BuildingsSee = BuildingAmountRebel(npc.index, 2, MaxBuildingsSee);
@@ -2024,6 +2034,13 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 25:
 				{
+					if(!Native_CanRenameNpc(client))
+					{
+						CPrintToChat(client, "Youre muted buddy.");
+						ClientCommand(client, "playgamesound items/medshotno1.wav");
+						CitizenMenu(client, page);
+						return 0;
+					}
 					PlayerRenameWho[client] = EntIndexToEntRef(npc.index);
 					CPrintToChat(client, "Type the name in chat for the rebel!");
 				}
