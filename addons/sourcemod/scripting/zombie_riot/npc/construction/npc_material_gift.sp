@@ -157,7 +157,7 @@ public bool DontSpawnInsideOthers_TraceFilter(int entity,int mask,any data)
 {
 	if(entity == 0)
 	{
-		return true;
+		return false;
 	}
 	if(i_IsABuilding[entity])
 	{
