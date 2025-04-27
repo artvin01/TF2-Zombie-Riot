@@ -124,6 +124,8 @@ void Zilius_TBB_Precahce()
 	if(Construction_Mode())
 		PrecacheModel("models/zombie_riot/special_boss/zilius_1.mdl");
 
+	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
+	PrecacheSound("mvm/mvm_tank_start.wav");
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 }
 
@@ -1304,7 +1306,7 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 			npc.StartPathing();
 			npc.m_bisWalking = false;
 			npc.m_flFrontSlicerInit = 0.0;
-			f_NpcAdjustFriction[npc.index] = 0.3;
+			f_NpcAdjustFriction[npc.index] = 0.15;
 			npc.m_flDoingAnimation = GetGameTime(npc.index) + 7.0;
 			ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
 			f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE; //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
@@ -1386,6 +1388,8 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
 		npc.SayStuffZilius();
 		npc.m_iDontMultiAbility = 1;
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 110);
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 110);
 		return true;
 	}
 	return false;
@@ -1597,6 +1601,8 @@ bool ZiliusSpawnPortal(Construction_Raid_Zilius npc)
 		}
 		npc.m_iDontMultiAbility = 3;
 		npc.SayStuffZilius();
+		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0, 90);
+		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0, 90);
 		return true;
 	}
 	return false;
