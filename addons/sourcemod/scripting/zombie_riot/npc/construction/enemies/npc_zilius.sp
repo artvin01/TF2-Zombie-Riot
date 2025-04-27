@@ -930,8 +930,8 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 							float damage = 30.0;
 
 							if(ShouldNpcDealBonusDamage(target))
-								target *= 10.0;
-								
+								damage *= 10.0;
+
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 							
 							// Hit particle
