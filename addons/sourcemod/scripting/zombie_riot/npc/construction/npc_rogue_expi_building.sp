@@ -22,12 +22,12 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return MaterialEvilExpi(client, vecPos, vecAng, team);
+	return MaterialEvilExpi(vecPos, vecAng, team);
 }
 
 methodmap MaterialEvilExpi < CClotBody
 {
-	public MaterialEvilExpi(int client, float vecPos[3], float vecAng[3], int team)
+	public MaterialEvilExpi(float vecPos[3], float vecAng[3], int team)
 	{
 		MaterialEvilExpi npc = view_as<MaterialEvilExpi>(CClotBody(vecPos, vecAng, "models/props_combine/masterinterface.mdl", "1.0", "10000", team, .isGiant = true, /*.CustomThreeDimensions = {30.0, 30.0, 200.0}, */.NpcTypeLogic = 1));
 		

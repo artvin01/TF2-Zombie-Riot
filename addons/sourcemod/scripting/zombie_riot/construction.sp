@@ -350,12 +350,10 @@ void Construction_SetupVote(KeyValues kv)
 			kv.GoBack();
 		}
 
-		PrintToChatAll("RandomMusic: Found %d themes", count);
 
 		if(count)
 		{
 			count = Waves_MapSeed() % count;
-			PrintToChatAll("RandomMusic: Selected #%d", count);
 
 			if(kv.GotoFirstSubKey())
 			{
@@ -367,9 +365,7 @@ void Construction_SetupVote(KeyValues kv)
 				kv.GetSectionName(buffer, sizeof(buffer));
 				kv.GoBack();
 
-				PrintToChatAll("RandomMusic: '%s'", buffer);
 				BackgroundMusic.SetupKv(buffer, kv);
-				PrintToChatAll("RandomMusic: '%s'", BackgroundMusic.Path);
 			}
 		}
 
@@ -403,6 +399,12 @@ void Construction_StartSetup()
 
 	delete GameTimer;
 	GameTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
+	
+	//Just incase, reget spawnsers, beacuse its way too fast and needs a frame, start setup is too fast!
+	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
+	{
+		SDKHook_TeamSpawn_SpawnPostInternal(ent, _, _, _);
+	}
 
 	ArrayList list = new ArrayList();
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
@@ -414,7 +416,12 @@ void Construction_StartSetup()
 	}
 
 	int length = list.Length;
-	PrintToChatAll("%i length",length);
+	if(length <= 0)
+	{
+		PrintToChatAll("%i Construction_StartSetup() SOMEHOW HAD 0 SPAWNERS????????",length);
+		delete list;
+		return;
+	}
 	int choosen = GetURandomInt() % length;
 	for(int i; i < length; i++)
 	{
@@ -521,6 +528,16 @@ void Construction_Start()
 			}
 			
 			area.GetCenter(pos2);
+			//Try to not spawn inside other ores?
+			static float hullcheckmaxs[3];
+			static float hullcheckmins[3];
+			hullcheckmaxs = view_as<float>( { 40.0, 40.0, 120.0 } );
+			hullcheckmins = view_as<float>( { -40.0, -40.0, 0.0 } );	
+			if(Construction_IsBuildingInWay(pos2, hullcheckmins, hullcheckmaxs))
+			{
+				i--;
+				continue;
+			}
 			float distance = GetVectorDistance(pos1, pos2, true);
 
 			if(!GetRandomResourceInfo(distance, info, resourcePicked))
@@ -765,6 +782,35 @@ void Construction_BattleVictory()
 		CurrentCash += cash;
 		//Extra money.
 		ReviveAll();
+		int SpawnGiftRemains = 3;
+		SpawnGiftRemains -= RemainsRaidsLeftOnMap();
+		
+		int Amountspawned = 0;
+		for(;SpawnGiftRemains > 0; SpawnGiftRemains--)
+		{
+			
+			int EntitySpawned;
+			EntitySpawned = SpawnRandomGiftRemain();
+			if(IsValidEntity(EntitySpawned))
+			{
+				MaterialGift npc = view_as<MaterialGift>(EntitySpawned);	
+				npc.m_iMyRisk = Construction_GetRisk();
+				Amountspawned++;
+			}
+			else
+			{
+				SpawnGiftRemains++;
+				//Failed to spawn, retry. go go!
+			}
+		}
+		if(Amountspawned > 0)
+		{
+			CPrintToChatAll("%t","Gifts Spawned", Amountspawned);
+		}
+		else
+		{
+			CPrintToChatAll("%t","No Gifts Spawn");
+		}
 	}
 	
 	Waves_RoundEnd();
@@ -783,7 +829,7 @@ void Construction_BattleVictory()
 	GiveRandomReward(CurrentRisk, type > 1 ? 4 : 2);
 }
 
-static void GiveRandomReward(int risk, int maxDrops)
+void GiveRandomReward(int risk, int maxDrops)
 {
 	ArrayList list = new ArrayList();
 
@@ -1660,4 +1706,22 @@ float Construction_GetMaxHealthMulti()
 	return multi;
 }
 
+static bool BuildingDetected;
+stock bool Construction_IsBuildingInWay(const float pos1[3],const float mins[3],const float maxs[3])
+{
+	BuildingDetected = false;
+	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, BuildingDetected_Enumerate, _);
+	return BuildingDetected;
+}
+public bool BuildingDetected_Enumerate(int entity, int client)
+{
+	if(IsValidEntity(entity) && (i_IsABuilding[entity] || b_ThisWasAnNpc[entity] || IsValidClient(entity)))
+	{
+		BuildingDetected = true;
+	}
+	return false;
+}
+
 #include "roguelike/construction_items.sp"
+
+

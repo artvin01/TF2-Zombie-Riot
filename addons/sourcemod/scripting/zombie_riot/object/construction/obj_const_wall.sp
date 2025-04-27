@@ -103,14 +103,14 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 	return true;
 }
 
-static any ClotSummon2(int client, float vecPos[3], float vecAng[3])
+static any ClotSummon2(int client, float vecPos[3])
 {
-	return ObjectWall2(client, vecPos, vecAng);
+	return ObjectWall2(client, vecPos);
 }
 
 methodmap ObjectWall2 < ObjectGeneric
 {
-	public ObjectWall2(int client, const float vecPos[3], const float vecAng[3])
+	public ObjectWall2(int client, const float vecPos[3])
 	{
 		ObjectWall2 npc = view_as<ObjectWall2>(ObjectGeneric(client, vecPos, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.7", "600", {40.0, 40.0, 70.0},_,false));
 		
@@ -163,14 +163,14 @@ static bool ClotCanBuild2(int client, int &count, int &maxcount)
 	return true;
 }
 
-static any ClotSummon3(int client, float vecPos[3], float vecAng[3])
+static any ClotSummon3(int client, float vecPos[3])
 {
-	return ObjectWall3(client, vecPos, vecAng);
+	return ObjectWall3(client, vecPos);
 }
 
 methodmap ObjectWall3 < ObjectGeneric
 {
-	public ObjectWall3(int client, const float vecPos[3], const float vecAng[3])
+	public ObjectWall3(int client, const float vecPos[3])
 	{
 	//	ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier03.mdl", "0.9", "600", {192.0, 192.0, 177.0},_,false));
 		ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));

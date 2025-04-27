@@ -610,6 +610,7 @@ bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
+int h_NpcHandleEventHook[MAXENTITIES];
 #define EP_GENERIC				  		0		  					// Nothing special.
 #define EP_NO_KNOCKBACK			  		(1 << 0)   					// No knockback
 #define EP_DEALS_UNUSED_1			  	(1 << 1)   				// Slash Damage (For no npc scaling, or ignoring resistances.)

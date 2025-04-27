@@ -745,6 +745,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						int XpToGive = TempCalc * MultiExtra;
 						CPrintToChat(i,"%t", "Pickup Gift", NameOfTheHero, XpToGive);
 						XP[i] += XpToGive;
+						Native_ZR_OnGetXP(i, XpToGive, 0);
 						GiveXP(i, 0);
 					}
 				}

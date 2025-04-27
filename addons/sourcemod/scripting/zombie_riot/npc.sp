@@ -947,6 +947,7 @@ void NPC_ConfigSetup()
 	MaterialWizuh_MapStart();
 	MaterialWood_MapStart();
 	MaterialEvilExpi_MapStart();
+	MaterialGift_MapStart();
 
 	//April Fools
 	PackaPunch_OnMapStart();
@@ -2128,6 +2129,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/npc_material_wizuh.sp"
 #include "npc/construction/npc_material_wood.sp"
 #include "npc/construction/npc_rogue_expi_building.sp"
+#include "npc/construction/npc_material_gift.sp"
 
 // April Fools
 #include "npc/aprilfools/npc_packapunch.sp"

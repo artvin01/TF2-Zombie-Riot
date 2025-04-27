@@ -304,9 +304,13 @@ static void BuildingMenu(int client)
 		{
 			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
 				continue;
+
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
-			menu.AddItem(buffer1, buffer1);
+			if(i == 2 && !Waves_Started())
+				menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
+			else
+				menu.AddItem(buffer1, buffer1);
 		}
 	}
 	else

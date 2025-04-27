@@ -536,7 +536,7 @@ static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 //static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
-static KeyValues StoreBalanceLog;
+//static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
 static ArrayList ChoosenTags[MAXTF2PLAYERS];
 static bool UsingChoosenTags[MAXTF2PLAYERS];
@@ -1022,7 +1022,7 @@ void Store_ConfigSetup()
 		delete StoreItems;
 	}
 	
-	delete StoreBalanceLog;
+//	delete StoreBalanceLog;
 	StoreItems = new ArrayList(sizeof(Item));
 	
 	char buffer[PLATFORM_MAX_PATH];
@@ -1051,9 +1051,9 @@ void Store_ConfigSetup()
 
 	delete kv;
 
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
-	StoreBalanceLog = new KeyValues("UsageLog");
-	StoreBalanceLog.ImportFromFile(buffer);
+//	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
+//	StoreBalanceLog = new KeyValues("UsageLog");
+//	StoreBalanceLog.ImportFromFile(buffer);
 }
 
 static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, bool rogueSell, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
@@ -1600,12 +1600,12 @@ void Store_Reset()
 		CashSpentGivePostSetup[c] = 0;
 		CashSpentGivePostSetupWarning[c] = false;
 	}
-	if(StoreBalanceLog)
-	{
-		char buffer[PLATFORM_MAX_PATH];
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
-		StoreBalanceLog.ExportToFile(buffer);
-	}
+//	if(StoreBalanceLog)
+//	{
+//		char buffer[PLATFORM_MAX_PATH];
+//		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
+//		StoreBalanceLog.ExportToFile(buffer);
+//	}
 }
 
 /*bool Store_HasAnyItem(int client)
@@ -1773,7 +1773,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = 0;
 					}
 					item.RogueBoughtRecently[client] += 1;
-					item.BuyWave[client] = Waves_GetRound();
+					item.BuyWave[client] = ZR_Waves_GetRound();
 					if(info.NoRefundWanted)
 					{
 						item.BuyWave[client] = -1;
@@ -1782,8 +1782,8 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					if(!item.BoughtBefore[client])
 					{
 						item.BoughtBefore[client] = true;
-						StoreBalanceLog.Rewind();
-						StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+					//	StoreBalanceLog.Rewind();
+					//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 					}
 					StoreItems.SetArray(a, item);
 					return;
@@ -3356,7 +3356,7 @@ static void MenuPage(int client, int section)
 					menu.AddItem(buffer2, buffer, style);	// 0
 					Repeat_Filler ++;
 					
-					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
+					bool fullSell = (item.BuyWave[client] == ZR_Waves_GetRound());
 					bool canSell = (!item.ChildKit && item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
 					if(item.GregOnlySell == 2)
 					{
@@ -4330,6 +4330,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					{
 						XP[client] = LevelToXp(5);
 						Level[client] = 0; //Just incase.
+						Native_ZR_OnGetXP(client, XP[client], 1);
 						GiveXP(client, 0);
 					}
 					case -24:
@@ -4547,7 +4548,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = 0;
 									item.Sell[client] = 0;
 								}
-								item.BuyWave[client] = Waves_GetRound();
+								item.BuyWave[client] = ZR_Waves_GetRound();
 								item.Equipped[client] = false;
 
 								if(item.GregOnlySell == 2)
@@ -4557,8 +4558,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(!item.BoughtBefore[client])
 								{
 									item.BoughtBefore[client] = true;
-									StoreBalanceLog.Rewind();
-									StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+								//	StoreBalanceLog.Rewind();
+								//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 								}
 								
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -4608,7 +4609,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = Waves_GetRound();
+								item.BuyWave[client] = ZR_Waves_GetRound();
 								if(item.GregOnlySell == 2)
 								{
 									item.Sell[client] = 0;
@@ -4623,8 +4624,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(!item.BoughtBefore[client])
 								{
 									item.BoughtBefore[client] = true;
-									StoreBalanceLog.Rewind();
-									StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+								//	StoreBalanceLog.Rewind();
+								//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 								}
 								
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -4663,7 +4664,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							item.BuyPrice[client] = info.Cost;
 							item.RogueBoughtRecently[client] += 1;
 							item.Sell[client] = ItemSell(base, info.Cost);
-							item.BuyWave[client] = Waves_GetRound();
+							item.BuyWave[client] = ZR_Waves_GetRound();
 							if(item.GregOnlySell == 2)
 							{
 								item.Sell[client] = 0;
@@ -4676,8 +4677,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							if(!item.BoughtBefore[client])
 							{
 								item.BoughtBefore[client] = true;
-								StoreBalanceLog.Rewind();
-								StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+							//	StoreBalanceLog.Rewind();
+							//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 							}
 							
 							StoreItems.SetArray(index, item);
@@ -6634,7 +6635,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * Waves_GetRound();
+	cost += item.CostPerWave * ZR_Waves_GetRound();
 
 	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 	{
@@ -7264,7 +7265,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			{
 
 				int sell = item.Sell[client];
-				if(item.BuyWave[client] == Waves_GetRound())
+				if(item.BuyWave[client] == ZR_Waves_GetRound())
 					sell = item.BuyPrice[client];
 				
 				if(sell) //make sure it even can be sold.

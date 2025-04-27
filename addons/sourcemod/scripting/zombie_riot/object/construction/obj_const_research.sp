@@ -68,7 +68,9 @@ static int CountBuildings()
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+		{
 			count++;
+		}
 	}
 
 	return count;

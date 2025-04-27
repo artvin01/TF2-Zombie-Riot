@@ -79,9 +79,6 @@ static const char g_SlicerHitSound[][] = {
 	"ambient/machines/slicer3.wav",
 	"ambient/machines/slicer4.wav",
 };
-#define LINKBEAM "sprites/glow01.vmt"
-#define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
-#define PILLAR_SPACING 170.0
 
 
 public void Construction_Raid_Zilius_OnMapStart()
@@ -123,6 +120,8 @@ void Zilius_TBB_Precahce()
 	PrecacheSound("weapons/cow_mangler_explosion_normal_05.wav");
 	PrecacheSound("weapons/cow_mangler_explosion_normal_06.wav");
 	
+	if(Construction_Mode())
+		PrecacheModel("models/zombie_riot/special_boss/zilius_1.mdl");
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 }
 
@@ -132,6 +131,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 }
 #define ZILIUS_BUFF_RANGE 500.0
 
+static int TalkAtWhatAm = 0;
 methodmap Construction_Raid_Zilius < CClotBody
 {
 
@@ -281,6 +281,21 @@ methodmap Construction_Raid_Zilius < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
+	property float m_flLandAnimationdo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property float m_flWinAnimation
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+	property float m_flWinAnimationSay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
 	property int m_iPortalsStateSummoned
 	{
 		public get()		{	return this.m_iOverlordComboAttack;	}
@@ -343,8 +358,11 @@ methodmap Construction_Raid_Zilius < CClotBody
 	}
 	public Construction_Raid_Zilius(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally, false, false, false,true)); //giant!
-		
+		Construction_Raid_Zilius npc;
+		if(!Construction_Mode())
+			npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally, false, false, false,true)); //giant!
+		else
+			npc = view_as<Construction_Raid_Zilius>(CClotBody(vecPos, vecAng, "models/zombie_riot/special_boss/zilius_1.mdl", "1.0", "25000", ally, false, false, false,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -352,8 +370,14 @@ methodmap Construction_Raid_Zilius < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		if(Construction_Mode())
+		{
+			npc.SetActivity("ACT_BOSS_RUN");
+		}
+		else
+		{
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+		}
 		AlreadySaidWin = false;
 		AlreadySaidLastmann = false;
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Shared_Xeno_Duo);
@@ -365,6 +389,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		i_TimesSummoned[npc.index] = 0;
+		TalkAtWhatAm = 0;
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -398,6 +423,8 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		if(final)
 		{
+			PrintToChatAll("test1");
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
@@ -452,8 +479,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		npc.m_flFrontSlicerCD = GetGameTime() + 15.0;
 		npc.m_flSpawnPortal = GetGameTime() + 25.0;
 		
-
-		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
@@ -532,10 +557,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
-
-
-
-		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
 		SensalGiveShield(npc.index,CountPlayersOnRed(1) * 50);
 		RequestFrame(Zilius_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
@@ -549,7 +570,78 @@ methodmap Construction_Raid_Zilius < CClotBody
 static void Internal_ClotThink(int iNPC)
 {
 	Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(iNPC);
-	
+	if(npc.m_flWinAnimation)
+	{
+		if(npc.m_flWinAnimationSay < GetGameTime())
+		{
+			npc.m_flWinAnimationSay = GetGameTime() + 4.0;
+			switch(TalkAtWhatAm)
+			{
+				case 0:
+				{
+					CPrintToChatAll("{black}Zilius{default}: {black}''Bob the second''{default} is still such an ass, but whatever.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{black}Zilius{default}: We both suffered losses, so take it as a truce now.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{black}Zilius{default}: You proved to me that other races have the chance to not be useless... but most are regardless.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{black}Zilius{default}: Whenever the {purple}void or curtain{default} surfaces we'll land a hand, dont you think sensal or whoever are the only ones.");
+				} 
+				case 4:
+				{
+					CPrintToChatAll("{snow}Zeina{default}: ... Why did you im-");
+					npc.m_flWinAnimationSay = GetGameTime() + 2.0;
+				} 
+				case 5:
+				{
+					CPrintToChatAll("{black}Zilius{default}: Because you created a simulation thats just pathetic, Dont mess with reality or even a fake of it.");
+					npc.m_flWinAnimationSay = GetGameTime() + 1.0;
+				} 
+				case 6:
+				{
+					CPrintToChatAll("{snow}Zeina{default}: ... wasnt even my.. ide-");
+					npc.m_flWinAnimationSay = GetGameTime() + 1.0;
+				} 
+				case 7:
+				{
+					CPrintToChatAll("{black}Zilius{default}: Whatever, Theres many more expidonsans to convince, you earned our respect, but not our trust yet.");
+				} 
+				case 8:
+				{
+					CPrintToChatAll("{black}Zilius{default}: for one, {black}''Bob the second''{default}, stop being so inactive and finally help against the chaos with your fellow expidonsans... {black}''Izan''{default}.");
+				} 
+				case 9:
+				{
+					CPrintToChatAll("{black}Izan{default}: ... Nobody can know, theyll have my head on a stick...");
+				} 
+				case 10:
+				{
+					CPrintToChatAll("{black}Zilius{default}: Sure, just tell your Mercs to not spill the beans.");
+				} 
+				case 11:
+				{
+					CPrintToChatAll("{black}Izan{default}: ... Nobody can know, theyll have my head on a stick...");
+				} 
+			
+			}
+			TalkAtWhatAm++;
+		}
+		npc.Update();
+
+		if(npc.m_flWinAnimation < GetGameTime())
+		{
+
+			
+			return;
+		}
+		return;
+	}
 	//Raidmode timer runs out, they lost.
 	if(LastMann && !AlreadySaidLastmann)
 	{
@@ -607,32 +699,38 @@ static void Internal_ClotThink(int iNPC)
 	if(ZiliusSpawnPortal(npc))
 		return;
 
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+
 	bool CancelEarly = false;
 	CancelEarly = ZiliusFrontSlicer(npc);
 
-	if(IsEntityAlive(npc.m_iTargetWalkTo))
+	if(IsEntityAlive(npc.m_iTarget))
 	{
 	//	int ActionToTake = -1;
 
 		//Predict their pos.
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
 	}
 	else
 	{
-		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
-		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
 	if(CancelEarly)
@@ -659,6 +757,33 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToCeil(damage) >= health && i_RaidGrantExtra[npc.index] == 1)
+	{
+		CPrintToChatAll("{black}Zilius{default}: Guess you lot are more then worthy. ill let you be, be usefull against the {purple}void{default}.");
+		npc.m_flWinAnimation = GetGameTime() + 50.0;
+		npc.m_flWinAnimationSay = GetGameTime() + 4.0;
+		i_RaidGrantExtra[npc.index] = 1111;
+		if(Construction_Mode())
+			npc.SetActivity("ACT_BOSS_RUN");
+		else
+			npc.SetActivity("ACT_MP_STAND_MELEE");
+		RaidModeTime += 9999.0;
+		npc.m_bisWalking = false;
+		npc.StopPathing();
+		npc.m_flSpeed = 0.0;
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
+		{
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
+			{
+				SetTeam(baseboss_index, TFTeam_Red);
+				SetEntityCollisionGroup(baseboss_index, 24);
+			}
+		}
+		Waves_ClearWaves();
+		GiveProgressDelay(50.0);
+	}
 	Internal_Weapon_Lines(npc, attacker);
 
 	return Plugin_Changed;
@@ -680,8 +805,6 @@ static void Internal_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	ExpidonsaRemoveEffects(entity);
 	
-	RaidModeTime += 2.0; //cant afford to delete it, since duo.
-	//add 2 seconds so if its close, they dont lose to timer.
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -699,32 +822,6 @@ static void Internal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
-
-	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
-	{
-		CPrintToChatAll("{black}Zilius{default}: Guess you lot are more then worthy. ill let you be, be usefull against the {purple}void{default}.");
-		CPrintToChatAll("{black}Zilius{default}: For Zeina, stop being such a coward.");
-	//	for (int client = 0; client < MaxClients; client++)
-	//	{
-	//		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
-	//		{
-	//			Items_GiveNamedItem(client, "Bob's true fear");
-	//			CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
-	//		}
-	//	}
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(IsValidEntity(entitynpc))
-			{
-				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
-				{
-					SmiteNpcToDeath(entitynpc);
-				}
-			}
-		}
-		ForcePlayerWin();
-	}
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;
@@ -740,11 +837,6 @@ static void Internal_NPCDeath(int entity)
 
 void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gameTime)
 {
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
 	if(IsValidEntity(npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -773,6 +865,9 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 1.0);	
 				npc.m_flPrepareFlyAtEnemy = GetGameTime(npc.index) + 0.6;
 
+				if(Construction_Mode())
+					npc.AddGesture("ACT_BOSS_JUMP");
+
 				float cooldownDo = 20.0;
 				npc.m_flPrepareFlyAtEnemyCD = GetGameTime(npc.index) + cooldownDo;
 
@@ -783,6 +878,15 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 		}
 
 	}
+	if(npc.m_flLandAnimationdo)
+	{
+		if(npc.IsOnGround())
+		{
+			npc.m_flLandAnimationdo = 0.0;
+			if(Construction_Mode())
+				npc.AddGesture("ACT_BOSS_LAND", _,_,_, 2.0);
+		}
+	}
 	if(npc.m_flPrepareFlyAtEnemy)
 	{
 		static float Size = 75.0;
@@ -790,6 +894,8 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 		
 		if(npc.m_flPrepareFlyAtEnemy < GetGameTime(npc.index))
 		{
+			npc.m_flLandAnimationdo = 1.0;
+				
 			npc.PlaySuperJumpLaunch();
 			npc.m_flPrepareFlyAtEnemy = 0.0;
 			PluginBot_Jump(npc.index, f3_NpcSavePos[npc.index], 2500.0, true);
@@ -869,8 +975,19 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 					npc.m_iTarget = Enemy_I_See;
 
 					npc.PlayMeleeSound();
-
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					
+					if(Construction_Mode())
+					{
+						switch(GetRandomInt(1,2))
+						{
+							case 1:
+								npc.AddGesture("ACT_BOSS_ATTACK_1");
+							case 2:
+								npc.AddGesture("ACT_BOSS_ATTACK_2");
+						}
+					}
+					else
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							
 					npc.m_flAttackHappens = gameTime + 0.25;
 
@@ -1084,7 +1201,12 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 			spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*DURATION*/ 0.5, 6.0, 0.1, 1,  /*RANGE END*/350 * 2.0);
 			ZiliusApplyEffects(npc.index);
 			npc.m_flShieldRegenCD = GetGameTime(npc.index) + 30.0;
-			npc.SetActivity("ACT_MP_RUN_MELEE");
+
+			if(Construction_Mode())
+				npc.SetActivity("ACT_BOSS_RUN");
+			else
+				npc.SetActivity("ACT_MP_RUN_MELEE");
+
 			npc.m_flSpeed = 330.0;
 			npc.StartPathing();
 			npc.m_bisWalking = true;
@@ -1108,9 +1230,17 @@ bool ZiliusRegenShieldDo(Construction_Raid_Zilius npc)
 
 		npc.PlayShieldRegenSoundInit();
 		npc.m_bisWalking = false;
-		npc.AddActivityViaSequence("taunt_unleashed_rage_medic");
-		npc.SetPlaybackRate(0.9);
-		npc.SetCycle(0.2);
+		if(Construction_Mode())
+		{
+			npc.AddActivityViaSequence("boss_shield");
+			npc.SetPlaybackRate(0.5);
+		}
+		else
+		{
+			npc.AddActivityViaSequence("taunt_unleashed_rage_medic");
+			npc.SetPlaybackRate(0.9);
+			npc.SetCycle(0.2);
+		}
 		npc.StopPathing();
 		npc.m_flSpeed = 0.0;
 		npc.m_flShieldRegenCD = 0.0;
@@ -1144,19 +1274,26 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 			npc.GetAttachment("effect_hand_l", flPos, flAng);
 			npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
 			
-			npc.SetActivity("ACT_MP_SWIM_MELEE");
-			npc.SetPlaybackRate(0.5); //slow "swim"
-			npc.SetCycle(0.0);
-			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-			int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
-			for(int loopi; loopi < layerCount; loopi++)
+			if(Construction_Mode())
 			{
-				view_as<CClotBody>(npc.index).SetLayerPlaybackRate(loopi, 0.01);
-				view_as<CClotBody>(npc.index).SetLayerCycle(loopi, 0.35);
+				npc.AddActivityViaSequence("boss_dash");
 			}
-			npc.SetPoseParameter_Easy("body_pitch", -21.2);
-			npc.SetPoseParameter_Easy("body_yaw", 11.2);
-			npc.SetPoseParameter_Easy("move_x", 1.0);
+			else
+			{
+				npc.SetActivity("ACT_MP_SWIM_MELEE");
+				npc.SetPlaybackRate(0.5); //slow "swim"
+				npc.SetCycle(0.0);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+				for(int loopi; loopi < layerCount; loopi++)
+				{
+					view_as<CClotBody>(npc.index).SetLayerPlaybackRate(loopi, 0.01);
+					view_as<CClotBody>(npc.index).SetLayerCycle(loopi, 0.35);
+				}
+				npc.SetPoseParameter_Easy("body_pitch", -21.2);
+				npc.SetPoseParameter_Easy("body_yaw", 11.2);
+				npc.SetPoseParameter_Easy("move_x", 1.0);
+			}
 			npc.m_flSpeed = 600.0;
 			npc.StartPathing();
 			npc.m_bisWalking = false;
@@ -1171,8 +1308,11 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 	}
 	if(!npc.m_flFrontSlicerCD)
 	{
-		npc.SetPoseParameter_Easy("move_x", 1.0);
-		npc.SetPoseParameter_Easy("move_y", 0.0);
+		if(!Construction_Mode())
+		{
+			npc.SetPoseParameter_Easy("move_x", 1.0);
+			npc.SetPoseParameter_Easy("move_y", 0.0);
+		}
 		Zilius_KickLogic(npc.index);
 		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 		{
@@ -1191,7 +1331,12 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 
 			npc.m_flFrontSlicerCD = GetGameTime(npc.index) + 30.0;
 			npc.RemoveGesture("ACT_MP_GESTURE_VC_FISTPUMP_PRIMARY");
-			npc.SetActivity("ACT_MP_RUN_MELEE");
+			
+			if(Construction_Mode())
+				npc.SetActivity("ACT_BOSS_RUN");
+			else
+				npc.SetActivity("ACT_MP_RUN_MELEE");
+
 			npc.StartPathing();
 			npc.m_flSpeed = 330.0;
 			npc.m_bisWalking = true;
@@ -1255,7 +1400,7 @@ static void Zilius_KickTouched(int entity, int enemy)
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
-	float damagedeal = 100.0;
+	float damagedeal = 50.0;
 	if(ShouldNpcDealBonusDamage(enemy))
 		damagedeal *= 10.0;
 
@@ -1359,7 +1504,11 @@ bool ZiliusSpawnPortal(Construction_Raid_Zilius npc)
 			spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*DURATION*/ 0.5, 6.0, 0.1, 1,  /*RANGE END*/350 * 2.0);
 			ZiliusApplyEffects(npc.index);
 			npc.m_flSpawnPortal = GetGameTime(npc.index) + 60.0;
-			npc.SetActivity("ACT_MP_RUN_MELEE");
+			
+			if(Construction_Mode())
+				npc.SetActivity("ACT_BOSS_RUN");
+			else
+				npc.SetActivity("ACT_MP_RUN_MELEE");
 			npc.m_flSpeed = 330.0;
 			npc.StartPathing();
 			npc.m_bisWalking = true;

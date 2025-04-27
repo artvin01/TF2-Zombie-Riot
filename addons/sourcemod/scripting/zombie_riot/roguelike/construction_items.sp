@@ -359,21 +359,21 @@ public void Construction_Alyx_Collect()
 
 public void GiveCash_Base1()
 {
-	CurrentCash += 1000;
-	GlobalExtraCash += 1000;
-	CPrintToChatAll("{green}%t","Cash Gained!", 1000);
+	CurrentCash += 500;
+	GlobalExtraCash += 500;
+	CPrintToChatAll("{green}%t","Cash Gained!", 500);
 }
 public void GiveCash_Base2()
 {
-	CurrentCash += 2500;
-	GlobalExtraCash += 2500;
-	CPrintToChatAll("{green}%t","Cash Gained!", 2500);
+	CurrentCash += 1500;
+	GlobalExtraCash += 1500;
+	CPrintToChatAll("{green}%t","Cash Gained!", 1500);
 }
 public void GiveCash_Base3()
 {
-	CurrentCash += 4000;
-	GlobalExtraCash += 4000;
-	CPrintToChatAll("{green}%t","Cash Gained!", 4000);
+	CurrentCash += 3000;
+	GlobalExtraCash += 3000;
+	CPrintToChatAll("{green}%t","Cash Gained!", 3000);
 }
 static void SpawnRebel(const char[] data = "")
 {
