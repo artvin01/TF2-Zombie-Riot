@@ -68,7 +68,7 @@ void Native_ZR_OnGetXP(int client, int XPGET, int Mode)
 }
 bool Native_CanRenameNpc(int client)
 {
-	bool WhatReturn = false;
+	bool WhatReturn = true;
 	Call_StartForward(CanRenameNpc);
 	Call_PushCell(client);
 	Call_Finish(WhatReturn);

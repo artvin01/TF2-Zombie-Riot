@@ -119,6 +119,7 @@ void Zilius_TBB_Precahce()
 	PrecacheSound("weapons/cow_mangler_explosion_normal_04.wav");
 	PrecacheSound("weapons/cow_mangler_explosion_normal_05.wav");
 	PrecacheSound("weapons/cow_mangler_explosion_normal_06.wav");
+	PrecacheSoundCustom("#zombiesurvival/construct/bat_prtsstage1.mp3");
 	
 	if(Construction_Mode())
 		PrecacheModel("models/zombie_riot/special_boss/zilius_1.mdl");
@@ -341,7 +342,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 7:
 			{
-				CPrintToChatAll("{black}Zilius{default}: {blue}Zilius{default} {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
+				CPrintToChatAll("{black}Zilius{default}: {blue}Sensal{default}, {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
 			}
 			case 8:
 			{
@@ -701,7 +702,7 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_flLandAnimationdo = 0.0;
 			if(Construction_Mode())
 				npc.AddGesture("ACT_BOSS_LAND", _,_,_, 2.0);
-		}
+		}	
 	}
 	if(npc.m_flPrepareFlyAtEnemy)
 	{
@@ -717,7 +718,7 @@ static void Internal_ClotThink(int iNPC)
 			PluginBot_Jump(npc.index, f3_NpcSavePos[npc.index], 2500.0, true);
 		}
 	}
-	
+
 	if(ZiliusRegenShieldDo(npc))
 		return;
 
