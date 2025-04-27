@@ -4310,4 +4310,56 @@
 	{
 		"en"	"Collect ingredients by dealing damage. Use them to make food that heals and buffs allies."
 	}
+	"Cheesy Kit Desc"
+	{
+		"en"	"A special type of weaponry designed by Koshi, if that wasn't obvious.\n[CHEESY ELEMENTAL STATUS]: Upon filled, deals massive damage to the target and inflicts the Cheesed II debuff.\nIf triggered via Melee, immunity cooldown is reduced and deals more dmg."
+	}
+	"Cheese Inject Desc"
+	{
+		"en" 	"A big syringe, filled to the brim with Gouda.\nDamage is below average, but builds the Cheesy Elemental status faster.\nHas a high 'health on kill' stat, deals +15%% extra dmg to raids."
+	}
+	"Cheese Inject Pap 1 Desc"
+	{
+		"en" 	"Overall stat increase, grants a bunch of health.\nYou now heal upon hitting Cheesed targets!"
+	}
+	"Cheese Inject Pap 2 Desc"
+	{
+		"en" 	"Now grants slight ranged resistance. Unlocks Lethal Injection [M2]:\nTemporarily increases attackspeed, and your injections build the Cheesy Elemental status WAY faster."
+	}
+	"Cheese Inject Pap 3 Desc"
+	{
+		"en" 	"Ever wanted to feel cheesy? Now's your chance!\nUnlocks Mocha Inoculation [R]:\nInject yourself with Gouda to gain a huge stat increase (dmg, res, cheese buildup and atkspd)\nand heal 15%% HP overtime up to 50%%."
+	}
+	"Cheese Inject Pap 4 Desc"
+	{
+		"en" 	"Increases overall stats.\nLethal Injection now lasts slightly longer and inflicts slight bleed while active.\nMocha Inoculation's buffs and healing are now stronger."
+	}
+	"Cheese Inject Pap 5 Desc"
+	{
+		"en" 	"Increases overall stats.\nLethal Injection's bleed is now stronger and lasts longer.\nMocha Inoculation's buffs and healing are now slightly stronger."
+	}
+	"Cheese Kit Pap Rest Desc"
+	{
+		"en" 	"Increases overall stats."
+	}
+	"Cheddinator Desc"
+	{
+		"en"	"Koshi's own weapon - an Expidonsan clockwork assault rifle, that shoots... slimy cheeseballs.\nBuilds the Cheesy Elemental status slower than the melee."
+	}
+	"Cheddinator Pap 2 Desc"
+	{
+		"en"	"Unlocks Cheddar Burst, which shoots a short-ranged barrage of... yeah, you guessed it- Cheddar.\nCheddar Burst deals great damage and inflicts Cheesed I temporarily."
+	}
+	"Cheddinator Pap 3 Desc"
+	{
+		"en"	"Increases overall stats.\nSlightly increases Cheddar Burst's range and debuff duration."
+	}
+	"Cheddinator Pap 4 Desc"
+	{
+		"en"	"Increases overall stats.\nSlightly increases Cheddar Burst's range and reduces its cooldown."
+	}
+	"Cheddinator Pap 5 Desc"
+	{
+		"en"	"Increases overall stats.\nCheddar Burst now inflicts Cheesed II instead of I, and for a slightly longer duration."
+	}
 }
