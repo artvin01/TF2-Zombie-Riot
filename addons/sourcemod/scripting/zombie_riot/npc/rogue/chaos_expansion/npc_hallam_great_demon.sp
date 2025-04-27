@@ -247,7 +247,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 
 	if(npc.m_flHealCooldownDo < GetGameTime(npc.index))
 	{
-		if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+		if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 		{
 			npc.PlayDemonSpawnSound();
 			//spawn little fucks every so often

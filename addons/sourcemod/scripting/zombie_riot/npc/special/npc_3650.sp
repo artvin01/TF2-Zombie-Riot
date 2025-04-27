@@ -73,17 +73,17 @@ char[] MinibossHealthScaling(int health = 110, bool ingoreplayers = false)
 	float temp_float_hp = float(health);
 	temp_float_hp *= MinibossScalingReturn();
 	
-	if(Waves_GetRound()+1 < RoundToNearest(30.0 * (1.0 / MinibossScalingReturn())))
+	if(ZR_Waves_GetRound()+1 < RoundToNearest(30.0 * (1.0 / MinibossScalingReturn())))
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
 	}
-	else if(Waves_GetRound()+1 < RoundToNearest(45.0 * (1.0 / MinibossScalingReturn())))
+	else if(ZR_Waves_GetRound()+1 < RoundToNearest(45.0 * (1.0 / MinibossScalingReturn())))
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.40));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.40));
 	}
 	
 	health /= 3;
@@ -186,7 +186,7 @@ methodmap ThirtySixFifty < CClotBody
 			Variables
 		*/
 
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();

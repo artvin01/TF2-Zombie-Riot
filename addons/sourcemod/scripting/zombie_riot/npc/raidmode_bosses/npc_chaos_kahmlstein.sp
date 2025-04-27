@@ -439,8 +439,8 @@ methodmap ChaosKahmlstein < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(Waves_GetRound()+1);
-				value = float(Waves_GetRound()+1);
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+				value = float(ZR_Waves_GetRound()+1);
 			}
 
 			if(RaidModeScaling < 55)

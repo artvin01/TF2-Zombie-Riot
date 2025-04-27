@@ -89,7 +89,7 @@ methodmap Huirgrajo < CClotBody
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flWaveScale = (Waves_GetRound() + 1) * 0.1;
+		npc.m_flWaveScale = (ZR_Waves_GetRound() + 1) * 0.1;
 		npc.m_flExtraDamage *= npc.m_flWaveScale;
 		
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	

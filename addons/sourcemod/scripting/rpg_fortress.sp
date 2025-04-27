@@ -1,7 +1,5 @@
 #include <sourcemod>
 #include <morecolors>
-#include <textstore>
-
 
 #define RPG
 #define CONFIG	"configs/rpg_fortress"
@@ -12,5 +10,7 @@
 #define STORE_PREFIX2	"{purple}[RPG] "
 #define STORE_COLOR	"{snow}"
 #define STORE_COLOR2	"{purple}"
+
+#include <textstore>
 
 #include "shared/core.sp"

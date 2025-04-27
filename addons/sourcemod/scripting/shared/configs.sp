@@ -103,6 +103,7 @@ void Configs_ConfigsExecuted()
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
+	CheckAprilFools();
 #endif
 #if defined RPG
 	RPG_ConfigSetup();
@@ -111,7 +112,6 @@ void Configs_ConfigsExecuted()
 #if defined RTS
 	RTS_ConfigsSetup();
 #endif
-	CheckAprilFools();
 
 	delete kv;
 

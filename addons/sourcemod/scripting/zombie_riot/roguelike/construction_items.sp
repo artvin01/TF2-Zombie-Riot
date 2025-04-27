@@ -318,23 +318,23 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{purple}???{default}: Hah, I knew you'll fall for it.");
+			CPrintToChatAll("{black}???{default}: Hah, I knew you'll fall for it.");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{purple}???{default}: So that's where your located.");
+			CPrintToChatAll("{black}???{default}: So that's where your located.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{purple}???{default}: Now stay there and accept your fate.");
+			CPrintToChatAll("{black}???{default}: Now stay there and accept your fate.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{purple}???{default}: Expidonsa was and always should be the only race on Irln.");
+			CPrintToChatAll("{black}???{default}: Expidonsa was and always should be the only race on Irln.");
 		}
 		case 4:
 		{
-			CPrintToChatAll("{purple}???{default}: So die you damn forerunners.");
+			CPrintToChatAll("{black}???{default}: So die you damn forerunners.");
 		}
 		default:
 		{
@@ -357,6 +357,24 @@ public void Construction_Alyx_Collect()
 	SpawnRebel("a");
 }
 
+public void GiveCash_Base1()
+{
+	CurrentCash += 500;
+	GlobalExtraCash += 500;
+	CPrintToChatAll("{green}%t","Cash Gained!", 500);
+}
+public void GiveCash_Base2()
+{
+	CurrentCash += 1500;
+	GlobalExtraCash += 1500;
+	CPrintToChatAll("{green}%t","Cash Gained!", 1500);
+}
+public void GiveCash_Base3()
+{
+	CurrentCash += 3000;
+	GlobalExtraCash += 3000;
+	CPrintToChatAll("{green}%t","Cash Gained!", 3000);
+}
 static void SpawnRebel(const char[] data = "")
 {
 	float pos[3], ang[3];
@@ -398,4 +416,35 @@ static void SpawnRebel(const char[] data = "")
 		NPC_CreateByName("npc_citizen", 0, pos, ang, TFTeam_Red, data);
 		break;
 	}
+}
+
+public void Construction_RareWeapon_Collect()
+{
+	char name[64];
+	float discount = 0.7;
+
+	switch(GetURandomInt() % 7)
+	{
+		case 0, 1:
+		{
+			strcopy(name, sizeof(name), "Vows of the Sea");
+			discount = 0.5;
+		}
+		case 2:
+		{
+			strcopy(name, sizeof(name), "Infinity Blade");
+			discount = 0.5;
+		}
+		case 3, 4:
+		{
+			strcopy(name, sizeof(name), "Whistle Stop");
+		}
+		case 5, 6:
+		{
+			strcopy(name, sizeof(name), "Ancestor Launcher");
+		}
+	}
+
+	Store_DiscountNamedItem(name, 999, discount);
+	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
 }

@@ -2143,7 +2143,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 
-					entity = SpawnFormattedWorldText("DOWNED [T]", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
+					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
 					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 					b_DyingTextOff[victim] = false;
 					
@@ -2480,9 +2480,10 @@ public void OnWeaponSwitchPost(int client, int weapon)
 					if(WeaponValidCheck == -1)
 						break;
 				}
+				//only if switching to different slot.
+				CorrectClientsideMultiweapon(client, 1);
 			}
 			Store_CycleItems(client, CurrentSlot);
-			CorrectClientsideMultiweapon(client, 1);
 		}
 		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 		
@@ -3416,8 +3417,11 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 
 			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, true);
 
-			while(WeaponValidCheck == weaponAm) //dont be on same weapon!
+			int Maxloop = 1;
+			while(WeaponValidCheck == weaponAm && Maxloop < 10) //dont be on same weapon!
 			{
+				//Prevent inf loop.
+				Maxloop++;
 				WeaponValidCheck = Store_CycleItems(client, CurrentSlot);
 				if(WeaponValidCheck == -1)
 					break;

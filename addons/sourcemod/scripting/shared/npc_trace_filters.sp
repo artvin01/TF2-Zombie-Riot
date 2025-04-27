@@ -16,6 +16,15 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 		
 #if defined ZR
+
+	if(i_IsABuilding[iExclude])
+	{
+		ObjectGeneric objstats = view_as<ObjectGeneric>(iExclude);
+		if(objstats.m_iExtrabuilding1 == entity)
+			return false;
+		else if(objstats.m_iExtrabuilding2 == entity)
+			return false;
+	}
 	if(entity > 0 && entity <= MaxClients) 
 	{
 		if(TeutonType[entity])
@@ -67,8 +76,17 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 #if defined ZR
 	if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 	{
-		if(!b_AllowCollideWithSelfTeam[iExclude] || !b_AllowCollideWithSelfTeam[entity])
+		//buildings MUST pass through this if interacting with eacother.
+		int Wasbuilding = 0;
+		if(i_IsABuilding[iExclude])
+			Wasbuilding++;
+
+		if(i_IsABuilding[entity])
+			Wasbuilding++;
+		if(Wasbuilding == 2 || !b_AllowCollideWithSelfTeam[iExclude] || !b_AllowCollideWithSelfTeam[entity])
+		{
 			return false;
+		}
 	}
 
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
@@ -202,6 +220,14 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	if(entity == Entity_to_Respect)
 	{
 		return false;
+	}
+	if(i_IsABuilding[data])
+	{
+		ObjectGeneric objstats = view_as<ObjectGeneric>(data);
+		if(objstats.m_iExtrabuilding1 == entity)
+			return false;
+		else if(objstats.m_iExtrabuilding2 == entity)
+			return false;
 	}
 	return true;
 }

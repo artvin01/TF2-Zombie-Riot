@@ -198,7 +198,7 @@ methodmap L4D2_Tank < CClotBody
 		}
 
 		
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	

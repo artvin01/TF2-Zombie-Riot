@@ -757,11 +757,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			//Buff bodyshot damage.
 			damage *= 1.4;
 
+#if defined ZR
 			bool Blitzed_By_Riot = false;
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RIOT_SHIELD && f_TimeFrozenStill[victim] > GetGameTime(victim))
 			{
 				Blitzed_By_Riot = true;
 			}
+#endif
+
 			if(f_HeadshotDamageMultiNpc[victim] <= 0.0 && hitgroup == HITGROUP_HEAD)
 			{
 				damage = 0.0;
@@ -780,7 +783,12 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				EmitSoundToClient(attacker, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(95, 105));
 				return Plugin_Handled;
 			}
+
+#if defined ZR
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
+#else
+			if(hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim])
+#endif
 			{
 				damage *= f_HeadshotDamageMultiNpc[victim];
 
@@ -792,11 +800,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				else
 					damage *= 1.185;
 
+#if defined ZR
 				if(Blitzed_By_Riot) //Extra damage.
 				{
 					damage *= 1.35;
 				}
 				else
+#endif
 				{
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
@@ -818,7 +828,11 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				else
 				{
+#if defined ZR
 					DisplayCritAboveNpc(victim, attacker, Blitzed_By_Riot);
+#else
+					DisplayCritAboveNpc(victim, attacker);
+#endif
 					played_headshotsound_already_Case[attacker] = random_case;
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
@@ -853,7 +867,9 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #endif	// ZR
 				played_headshotsound_already[attacker] = GetGameTime();
 
+#if defined ZR
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
+#endif
 				{
 					switch(random_case)
 					{
@@ -1065,7 +1081,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if((damagetype & DMG_CRUSH))
 		{
 			damage = 0.0;
-			return Plugin_Handled;
+			return Plugin_Changed;
 		}
 	}
 
@@ -1092,7 +1108,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;
-		return Plugin_Handled;
+		return Plugin_Changed;
+	//	return Plugin_Handled;
 	}
 	//a triggerhurt can never deal more then 10% of a raids health as damage.
 	if(b_IsATriggerHurt[attacker] && b_thisNpcIsARaid[victim])
@@ -2081,6 +2098,10 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	if(DontForward)
 		return;
 		
+	if(!HasSpecificBuff(attacker, "Healing Resolve"))
+		return;
+	//Dont bother with the calcs if he isnt even being healed.
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsIn_HitDetectionCooldown(attacker, client, SupportDisplayHurtHud)) //if its IN cooldown!

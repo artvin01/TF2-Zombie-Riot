@@ -27,9 +27,9 @@ void NPC_ConfigSetup()
 	MyNPCs();
 }
 
-#include "standalone/npc/npc_headcrabzombie.sp"
-#include "standalone/npc/npc_combine_police_pistol.sp"
-#include "standalone/mynpcs.sp"
+#include "npc/npc_headcrabzombie.sp"
+#include "npc/npc_combine_police_pistol.sp"
+#include "mynpcs.sp"
 
 int NPC_Add(NPCData data)
 {
