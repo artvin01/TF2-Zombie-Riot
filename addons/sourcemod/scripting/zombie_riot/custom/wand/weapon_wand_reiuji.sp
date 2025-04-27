@@ -5,17 +5,18 @@ static Handle h_Reiuji_WeaponHudTimer[MAXTF2PLAYERS] = {null, ...};
 static float fl_hud_timer[MAXTF2PLAYERS];
 static float fl_ammo_timer[MAXTF2PLAYERS];
 static int i_ammo[MAXTF2PLAYERS];
-static int 		i_max_ammo[5] 				= {10, 15, 20, 25, 30};
-static float 	fl_ammogain_timerbase[5] 	= {1.5, 1.5, 1.3, 1.2, 1.1};
-static float 	fl_firerate_multi[5] 		= {0.5, 0.45, 0.4, 0.3, 0.2};
+static int 		i_max_ammo				[6] = {10, 15, 20, 25, 30, 40};
+static float 	fl_ammogain_timerbase	[6] = {1.5, 1.5, 1.3, 1.2, 1.1, 0.9};
+static float 	fl_firerate_multi		[6] = {0.5, 0.45, 0.4, 0.3, 0.2, 0.2};
 
-static int 		i_max_barage[5] 			= {3, 4, 5, 6, 7};
-static float 	fl_barrage_angles[5] 		= {60.0, 60.0, 60.0, 60.0, 60.0};
-static float 	fl_barrage_maxrange[5] 		= {2500.0, 2500.0, 2500.0, 2500.0, 2500.0};
+static int 		i_max_barage			[6] = {3, 4, 5, 6, 7, 9};
+static float 	fl_barrage_angles		[6] = {45.0, 45.0, 45.0, 45.0, 45.0, 45.0};
+static float 	fl_barrage_maxrange		[6] = {1250.0, 1250.0, 1250.0, 1250.0, 1250.0, 1250.0};
+static float 	fl_barrage_maxcharge	[6] = {600.0, 750.0, 1000.0, 1250.0, 1500.0, 1500.0};
 
 //charge gained will depend on mana consumed.
 static float fl_barrage_charge[MAXTF2PLAYERS];
-static float 	fl_barrage_maxcharge[5] 	= {600.0, 750.0, 1000.0, 1250.0, 1500.0};
+
 
 #define REIUJI_WAND_TOUCH_SOUND "friends/friend_online.wav"
 #define REIUJI_WAND_M2_CAST_SOUND "weapons/cow_mangler_over_charge_shot.wav"
@@ -371,7 +372,7 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 	if(fl_barrage_charge[client] < fl_barrage_maxcharge[pap]*0.5 || pap <= 2)
 		return;
 
-	float 	Homing_Power = 5.0,
+	float 	Homing_Power = 1.75 * pap,
 			Homing_Lockon = 45.0,
 			AttackAngles[3];
 

@@ -105,8 +105,6 @@ static void OnDestroy(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
 
 	Building_RotateAllDepencencies(entity);
 }
@@ -231,25 +229,6 @@ methodmap ObjectGeneric < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 			objstats.m_iWearable1 = entity;
 		}
-		/*
-		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(obj, 0, 0, 0, 0);
-		int entity;
-		if(DoFakeModel)
-		{
-			entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
-			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
-			objstats.m_iWearable1 = entity;
-		}
-		
-		entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
-		objstats.m_iWearable2 = entity;
-		*/
 
 		//think once
 		ObjBaseThink(objstats.index);
@@ -324,11 +303,6 @@ methodmap ObjectGeneric < CClotBody
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
 			npcstats.SetActivity(animation, Is_sequence);
 		}
-		if(IsValidEntity(this.m_iWearable2))
-		{
-			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable2);
-			npcstats.SetActivity(animation, Is_sequence);
-		}
 	}
 	public void SetPlaybackRate(float flSpeedAnim)
 	{
@@ -337,11 +311,6 @@ methodmap ObjectGeneric < CClotBody
 		if(IsValidEntity(this.m_iWearable1))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
-			npcstats.SetPlaybackRate(flSpeedAnim);
-		}
-		if(IsValidEntity(this.m_iWearable2))
-		{
-			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable2);
 			npcstats.SetPlaybackRate(flSpeedAnim);
 		}
 	}
@@ -1146,8 +1115,8 @@ void BuildingUpdateTextHud(int building)
 	int entity = EntRefToEntIndex(Building_Mounted[building]);
 	if(entity != -1)
 	{
-		if(IsValidEntity(objstats.m_iWearable3))
-			RemoveEntity(objstats.m_iWearable3);
+		if(IsValidEntity(objstats.m_iWearable2))
+			RemoveEntity(objstats.m_iWearable2);
 
 		return;
 	}
@@ -1155,8 +1124,8 @@ void BuildingUpdateTextHud(int building)
 	//nope.
 	if(IsValidEntity(objstats.m_iMasterBuilding))
 	{
-		if(IsValidEntity(objstats.m_iWearable3))
-			RemoveEntity(objstats.m_iWearable3);
+		if(IsValidEntity(objstats.m_iWearable2))
+			RemoveEntity(objstats.m_iWearable2);
 		return;
 	}
 	char HealthText[128];
@@ -1226,10 +1195,10 @@ void BuildingUpdateTextHud(int building)
 	}
 
 
-	if(IsValidEntity(objstats.m_iWearable3))
+	if(IsValidEntity(objstats.m_iWearable2))
 	{
-		DispatchKeyValue(objstats.m_iWearable3,     "color", sColor);
-		DispatchKeyValue(objstats.m_iWearable3, "message", HealthText);
+		DispatchKeyValue(objstats.m_iWearable2,     "color", sColor);
+		DispatchKeyValue(objstats.m_iWearable2, "message", HealthText);
 	}
 	else
 	{
@@ -1241,7 +1210,7 @@ void BuildingUpdateTextHud(int building)
 
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
 		DispatchKeyValue(TextEntity, "font", "4");
-		objstats.m_iWearable3 = TextEntity;	
+		objstats.m_iWearable2 = TextEntity;	
 	}
 }
 /*
