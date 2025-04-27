@@ -170,7 +170,7 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15％\nIncreases npc speed by +25％.\nIncreases attack/reload speed & healrate by +15％."
+		"en"	"{orange}Oh how cheesed you are...\n{green}Increases damage and resistance by +15％\nIncreases npc speed by +25％.\nIncreases attack/reload speed & healrate by +15％."
 	}
 	"Freeplay Eloquence I"
 	{
