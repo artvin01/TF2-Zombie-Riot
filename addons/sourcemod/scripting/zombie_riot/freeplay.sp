@@ -762,8 +762,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
 
 	// 2 billion limit, it is necessary to prevent them from going bananas
-	if(enemy.Health > 2147483640)
-		enemy.Health = 2147483640;
+	if(enemy.Health < 0 || enemy.Health > 2000000000)
+		enemy.Health = 2000000000;
 
 	if(enemy.Team != TFTeam_Red)
 	{
@@ -941,7 +941,9 @@ void Freeplay_SpawnEnemy(int entity)
 		{
 			if(GetRandomInt(0, 100) < 1) // 1% chance for this to work, it NEEDS to be extra rare.
 			{
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(2.5, 12.5)));
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * GetRandomFloat(4.0, 16.0)));
+				if(GetEntProp(entity, Prop_Data, "m_iHealth") < 0 || GetEntProp(entity, Prop_Data, "m_iHealth") > 2000000000)
+					SetEntProp(entity, Prop_Data, "m_iHealth", 2000000000);
 				SetEntProp(entity, Prop_Data, "m_iMaxHealth", GetEntProp(entity, Prop_Data, "m_iHealth"));
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(entity, Prop_Send, "m_flModelScale") * GetRandomFloat(0.3, 3.5));
 				fl_Extra_MeleeArmor[entity] *= GetRandomFloat(0.075, 2.0);
@@ -999,11 +1001,11 @@ void Freeplay_SpawnEnemy(int entity)
 
 		if(!b_thisNpcIsARaid[entity])
 		{
-			fl_Extra_Damage[entity] *= ((float(ZR_Waves_GetRound() - 59)) * 0.0125);
+			fl_Extra_Damage[entity] *= ((float(ZR_Waves_GetRound() - 59)) * 0.016);
 		}
 		else
 		{
-			fl_Extra_Damage[entity] *= ((float(ZR_Waves_GetRound() - 59)) * 0.005);
+			fl_Extra_Damage[entity] *= ((float(ZR_Waves_GetRound() - 59)) * 0.008);
 		}
 
 		fl_Extra_Damage[entity] *= FM_Damage;
@@ -1078,8 +1080,8 @@ void Freeplay_SpawnEnemy(int entity)
 
 		if(LoveNahTonic)
 		{
-			Freeplay_ApplyStatusEffect(entity, "Tonic Affliction", 10.0);
-			Freeplay_ApplyStatusEffect(entity, "Tonic Affliction Hide", 10.0);
+			Freeplay_ApplyStatusEffect(entity, "Tonic Affliction", 8.0);
+			Freeplay_ApplyStatusEffect(entity, "Tonic Affliction Hide", 8.0);
 		}
 	
 		//// DEBUFFS ////
