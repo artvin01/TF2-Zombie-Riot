@@ -604,6 +604,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_kritzkrieg.sp"
 #include "custom/wand/weapon_bubble_wand.sp"
 #include "custom/kit_blacksmith_grill.sp"
+#include "custom/kit_cheese.sp"
 
 void ZR_PluginLoad()
 {
@@ -911,6 +912,7 @@ void ZR_MapStart()
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
+	Cheese_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -2025,6 +2027,12 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						{
 							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
 							Yakuza_Lastman(10);
+						}
+						if(Is_Cheesed_Up(client))
+						{
+							CPrintToChatAll("{crimson}A sudden feeling of dread runs through %N's body...", client);
+							CPrintToChatAll("{orange}...but Koshi becomes aware of it.", client);
+							Yakuza_Lastman(11);
 						}
 						
 						for(int i=1; i<=MaxClients; i++)
