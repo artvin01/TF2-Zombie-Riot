@@ -1222,4 +1222,20 @@
 	{
 		"en"	"Increases damage by 50%%\nIncreases resistance by 50%%\nIncreases attack speed by 100%%"
 	}
+	"Cheesed I"
+	{
+		"en" 	"Cheesed I"
+	}
+	"Cheesed I Desc"
+	{
+		"en"	"Slows NPCs by 5%%.\nReduces attackspeed by 7%%."
+	}
+	"Cheesed II"
+	{
+		"en"	"Cheesed II"
+	}
+	"Cheesed II Desc"
+	{
+		"en" 	"Slows NPCs by 7%%.\nReduces attackspeed by 10%%."
+	}
 }
