@@ -762,7 +762,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
 
 	// 2 billion limit, it is necessary to prevent them from going bananas
-	if(enemy.Health < 0 || enemy.Health > 2000000000)
+	if(enemy.Health > 2000000000) // apparently doing health < 0 causes bob's army to go bananas
 		enemy.Health = 2000000000;
 
 	if(enemy.Team != TFTeam_Red)
