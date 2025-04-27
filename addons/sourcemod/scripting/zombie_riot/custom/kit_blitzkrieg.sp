@@ -266,7 +266,18 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 	if(fl_primary_reloading[client]>GameTime)
 		return;
 
-	int max_clip = RoundFloat(Attributes_Get(weapon, 868, 40.0));
+	int max_clip = RoundFloat(16.0 * Attributes_Get(weapon, 4, 1.0));
+	/*
+		16	1.0
+		16	1.0
+		18	1.125
+		20	1.25
+		22	1.375
+		24	1.5
+		26	1.625
+		28	1.75
+		30	1.875
+	*/
 
 	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
 	int Ammo_type = GetAmmoType_WeaponPrimary(weapon);	//ammo type
