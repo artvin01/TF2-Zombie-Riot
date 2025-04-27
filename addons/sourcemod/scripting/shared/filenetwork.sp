@@ -776,7 +776,7 @@ stock void StopCustomSound(int entity, int channel, const char[] sound, float vo
 
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	if(DownloadList.FindString(sound) != -1)
+	if(!FileNetwork_Enabled() || DownloadList.FindString(sound) != -1)
 	{
 		float volume2 = volume;
 		int count = RoundToCeil(volume);
@@ -850,7 +850,7 @@ stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, i
 
 stock void EmitCustom(const int[] clients, int numClients, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	if(DownloadList.FindString(sound) != -1)
+	if(!FileNetwork_Enabled() || DownloadList.FindString(sound) != -1)
 	{
 		float volume2 = volume;
 		int count = RoundToCeil(volume);
