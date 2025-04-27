@@ -185,7 +185,9 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	{
 		map.Rewind();
 		if(map.JumpToKey("Packages"))
+		{
 			enabled = map;
+		}
 	}
 
 	if(!enabled)
@@ -212,6 +214,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	enabled.GotoFirstSubKey(false);
 	do
 	{
+		PrintToServer("GetSectionName? %s", buffer);
 		enabled.GetSectionName(buffer, sizeof(buffer));
 		list.PushString(buffer);
 	}
@@ -240,6 +243,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 					}
 					else if(FileExists(buffer, true))
 					{
+						PrintToServer("FileExists GetSectionName? %s", buffer);
 						AddToStringTable(table, buffer);
 					}
 					else
@@ -314,7 +318,6 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 {
 	char buffer[PLATFORM_MAX_PATH];
-
 	if(vtf)
 	{
 		FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
@@ -371,7 +374,6 @@ stock void AddToDownloadsTable(const char[] file, const char[] original = "")
 		
 		return;
 	}
-
 	if(DownloadList.FindString(file) == -1)
 	{
 		AddFileToDownloadsTable(file);
@@ -850,7 +852,7 @@ stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, i
 
 stock void EmitCustom(const int[] clients, int numClients, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	if(!FileNetwork_Enabled() || DownloadList.FindString(sound) != -1)
+	if(DownloadList.FindString(sound) != -1)
 	{
 		float volume2 = volume;
 		int count = RoundToCeil(volume);

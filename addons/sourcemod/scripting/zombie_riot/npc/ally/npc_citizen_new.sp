@@ -2057,8 +2057,7 @@ bool Rebel_Rename(int client)
 	{
 		CPrintToChat(client, "Youre muted buddy.");
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		CitizenMenu(client, page);
-		return 0;
+		return false;
 	}
 	char buffer[32];
 	GetCmdArgString(buffer, sizeof(buffer));
