@@ -384,7 +384,7 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 		if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 		{
-			if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+			if(MaxEnemiesAllowedSpawnNext(1) <= (EnemyNpcAlive - EnemyNpcAliveStatic))
 			{
 				fl_TotalArmor[npc.index] = 0.5;
 				//grrr i cant spawn!!!!

@@ -45,10 +45,10 @@ void PrecacheSharedDarkestMusic()
 	if(!Precached)
 	{
 		PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
-		if(CvarFileNetworkDisable.IntValue > 0)
+		if(!FileNetwork_Enabled())
 		{
-			AddFileToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vtf");
-			AddFileToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vmt");
+			AddToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vtf");
+			AddToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vmt");
 		}
 		Precached = true;
 	}
@@ -916,7 +916,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityHealth(client, health);
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
 
-		int round = Waves_GetRound();
+		int round = ZR_Waves_GetRound();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		GiveCompleteInvul(client, 1.5);
 		if(LastDeathDoor[client] != round || LastDeathDoorRaid[client] != raid)

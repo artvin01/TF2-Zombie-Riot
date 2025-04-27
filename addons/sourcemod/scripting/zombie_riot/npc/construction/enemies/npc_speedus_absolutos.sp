@@ -338,6 +338,10 @@ public Action SpeedusAbsolutos_OnTakeDamage(int victim, int &attacker, int &infl
 				npc.m_iTarget = Inflictordo;
 				npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 				f_DelayComputingOfPath[npc.index] = 0.0;
+				npc.m_flAttackHappens = 0.0;
+				npc.m_flDoingAnimation = 0.0;
+				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.65;
+				//Give time to react!
 			}
 		}
 	}

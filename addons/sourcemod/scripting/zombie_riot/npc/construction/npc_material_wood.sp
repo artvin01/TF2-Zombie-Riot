@@ -42,14 +42,16 @@ methodmap MaterialWood < CClotBody
 		npc.m_iNpcStepVariation = 0;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
-		npc.m_flRangedArmor = 0.1;
+	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = false;	// If true, summons an attack wave when mining
 		
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
+		b_NoHealthbar[npc.index] = true;
 
 		return npc;
 	}
@@ -59,12 +61,12 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		Construction_OnTakeDamage("wood", 30, victim, attacker, damage, damagetype);
+		Construction_OnTakeDamage("wood", 0, victim, attacker, damage, damagetype);
 	}
 }
 
 static void ClotDeath(int entity)
 {
 	MaterialWood npc = view_as<MaterialWood>(entity);
-	Construction_NPCDeath("wood", 30, npc);
+	Construction_NPCDeath("wood", 45, npc);
 }

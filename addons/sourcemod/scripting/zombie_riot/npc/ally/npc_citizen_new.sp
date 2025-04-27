@@ -1430,6 +1430,23 @@ methodmap Citizen < CClotBody
 	{
 		float damage = this.m_fGunDamage * this.m_fGunBonusDamage;
 
+		switch(CurrentPlayers)
+		{
+			case 0:
+				CheckAlivePlayers(); //???? what
+			
+			case 1:
+				damage *= 0.4;
+			
+			case 2:
+				damage *= 0.55;
+			
+			case 3:
+				damage *= 0.65;
+
+			case 4:
+				damage *= 0.8;
+		}
 		if(this.m_bCamo)
 		{
 			damage *= CAMO_REBEL_DMG_PENALTY;
@@ -1875,6 +1892,16 @@ static void CitizenMenu(int client, int page = 0)
 					{
 						DontAllowBuilding = false;
 					}
+					if(Construction_Mode())
+					{
+						DontAllowBuilding = false;
+						if(HealingCooldown[npc.index] > GetGameTime())
+							DontAllowBuilding = true;
+
+						if(!Waves_Started())
+							DontAllowBuilding = false;
+					}
+					
 					int MaxBuildingsSee = 0;
 					int BuildingsSee = 0;
 					BuildingsSee = BuildingAmountRebel(npc.index, 2, MaxBuildingsSee);
@@ -2007,6 +2034,13 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 25:
 				{
+					if(!Native_CanRenameNpc(client))
+					{
+						CPrintToChat(client, "Youre muted buddy.");
+						ClientCommand(client, "playgamesound items/medshotno1.wav");
+						CitizenMenu(client, page);
+						return 0;
+					}
 					PlayerRenameWho[client] = EntIndexToEntRef(npc.index);
 					CPrintToChat(client, "Type the name in chat for the rebel!");
 				}
@@ -2034,7 +2068,8 @@ bool Rebel_Rename(int client)
 		return true;
 	
 	b_NameNoTranslation[EntityName] = true;
-	CPrintToChatAll("[SM] %N renamed \"%s\" to \"%s\"", client, c_NpcName[EntityName], buffer);
+	//This REALLY shouldnt say [SM].
+	SPrintToChatAll("%N renamed \"%s\" to \"%s\"", client, c_NpcName[EntityName], buffer);
 	strcopy(c_NpcName[EntityName], sizeof(c_NpcName[]), buffer);
 	return true;
 }
@@ -4598,7 +4633,13 @@ public void Citizen_ClotThink(int iNPC)
 
 static bool CanOutRun(int target)
 {
-	return (target <= MaxClients || (300.0 > view_as<CClotBody>(target).GetRunSpeed()));
+	if(target <= MaxClients)
+		return true;
+	if(b_ThisWasAnNpc[target])
+	{
+		return (300.0 > view_as<CClotBody>(target).GetRunSpeed());
+	}
+	return true;
 }
 
 void Citizen_MiniBossSpawn()

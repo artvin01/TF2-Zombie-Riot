@@ -352,7 +352,7 @@ public Action GiantReflector_OnTakeDamage(int victim, int &attacker, int &inflic
 //did this for you so it's simpler to learn
 static void GiantReflector_Reflect_Enable(GiantReflector npc)
 {
-	float wave = float(Waves_GetRound()+1);
+	float wave = float(ZR_Waves_GetRound()+1);
 	wave *= 0.05;
 	npc.m_flWaveScale = wave;
 

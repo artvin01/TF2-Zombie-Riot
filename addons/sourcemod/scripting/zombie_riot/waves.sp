@@ -642,7 +642,7 @@ void Waves_SetupVote(KeyValues map)
 			Voting.PushArray(vote);
 
 			// If we're downloading via downloadstable, add every vote option to that
-			if(!autoSelect && CvarFileNetworkDisable.IntValue > 0)
+			if(!autoSelect && !FileNetwork_Enabled())
 			{
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues wavekv = new KeyValues("Waves");
@@ -906,6 +906,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	}
 	
 	Rounds = new ArrayList(sizeof(Round));
+	
+	CurrentRound = 0;
+	CurrentWave = -1;
 	
 	Waves_ClearWaves();
 	Waves_ResetCashGiveWaveEnd();
@@ -2185,7 +2188,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
-						Music_Stop_All(i);
+						if(!Construction_Mode() || Construction_FinalBattle())
+							Music_Stop_All(i);
+
 						if(!subgame)
 						{
 							SendConVarValue(i, sv_cheats, "1");
@@ -2242,12 +2247,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						float last = roundtime.FloatValue;
 						roundtime.FloatValue = 20.0;
 
-						MVMHud_Disable();
-						int entity = CreateEntityByName("game_round_win"); 
-						DispatchKeyValue(entity, "force_map_reset", "1");
-						SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-						DispatchSpawn(entity);
-						AcceptEntityInput(entity, "RoundWin");
+						ForcePlayerWin();
 
 						roundtime.FloatValue = last;
 					}
@@ -2547,11 +2547,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 		{
 			if(item)
 			{
-				int entity = CreateEntityByName("game_round_win"); 
-				DispatchKeyValue(entity, "force_map_reset", "1");
-				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-				DispatchSpawn(entity);
-				AcceptEntityInput(entity, "RoundWin");
+				ForcePlayerWin();
 			}
 		}
 	}
@@ -2634,7 +2630,7 @@ bool Waves_Started()
 	return (CurrentRound || CurrentWave != -1);
 }
 
-int Waves_GetRound()
+int ZR_Waves_GetRound()
 {
 	if(Construction_Mode())
 		return Construction_GetRound();
@@ -2707,17 +2703,8 @@ void WaveEndLogicExtra()
 {
 	SeaFounder_ClearnNethersea();
 	VoidArea_ClearnNethersea();
-	M3_AbilitiesWaveEnd();
-	Specter_AbilitiesWaveEnd();	
-	Rapier_CashWaveEnd();
-	LeperResetUses();
-	SniperMonkey_ResetUses();
-	ResetFlameTail();
-	Building_ResetRewardValuesWave();
 	FallenWarriorGetRandomSeedEachWave();
-	CastleBreaker_ResetCashGain();
-	ZombieDrops_AllowExtraCash();
-	Zero(i_MaxArmorTableUsed);
+	ResetAbilitiesWaveEnd();
 	for(int client; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client))
@@ -2736,6 +2723,20 @@ void WaveEndLogicExtra()
 			*/
 		}
 	}
+}
+
+void ResetAbilitiesWaveEnd()
+{
+	M3_AbilitiesWaveEnd();
+	Specter_AbilitiesWaveEnd();	
+	Rapier_CashWaveEnd();
+	LeperResetUses();
+	SniperMonkey_ResetUses();
+	ResetFlameTail();
+	Building_ResetRewardValuesWave();
+	CastleBreaker_ResetCashGain();
+	ZombieDrops_AllowExtraCash();
+	Zero(i_MaxArmorTableUsed);
 }
 
 void WaveStart_SubWaveStart(float time = 0.0)
@@ -2879,22 +2880,26 @@ void DoGlobalMultiScaling()
 	//on low player counts it does not scale well.
 	
 	/*
-		at 14 players, it scales fine, at lower, it starts getting really hard, tihs 
+		at 14 players, it scales fine, at lower, it starts getting really hard 
 
 	*/
-
+	bool SaclingTooHigh = false;
 	float multi = Pow(1.08, playercount);
 	if(multi > 10.0)
 	{
 		//woops, scales too much now.
 		multi = 8.0;
 		multi += (playercount * 0.1);
+		SaclingTooHigh = true;
 	}
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
 	
 	//normal bosses health
-	MultiGlobalHealthBoss = playercount * 0.2;
+	if(!SaclingTooHigh)
+		MultiGlobalHealthBoss = playercount * 0.2;
+	else //too many people. scale HP lower.
+		MultiGlobalHealthBoss = playercount * 0.15;
 
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
@@ -3729,11 +3734,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			}
 				
 
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
+			ForcePlayerWin();
 			return true;
 		}
 		WaveEndLogicExtra();
@@ -4015,4 +4016,4 @@ int Waves_CashGainedTotalThisWave()
 	return CashGainedTotal;
 }
 
-#include "zombie_riot/modifiers.sp"
+#include "modifiers.sp"

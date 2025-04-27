@@ -478,7 +478,6 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 				SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 			}
 		}
-
 		static float OriginGet[3];
 		static float AngGet[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", OriginGet);

@@ -593,11 +593,16 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 void Passanger_Lightning_Strike(int client, int target, int weapon, float damage, float StartLightningPos[3], bool Firstlightning = true)
 {
 	static float vecHit[3];
-	GetBeamDrawStartPoint_Stock(client, StartLightningPos);
+	if(weapon != -2)
+		GetBeamDrawStartPoint_Stock(client, StartLightningPos);
+		
 	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
+	vecHit[2] += 40.0;
+
+	//weapon = -1 means its a building that caused it, i guess.
 
 	//deal more damage during raids, otherwise its really weak in most cases.
-	if(b_PassangerExtraCharge[client])
+	if(client <= MaxClients && b_PassangerExtraCharge[client])
 	{
 		damage *= 1.1;
 	}
@@ -609,7 +614,11 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	WorldSpaceCenter(target, StartLightningPos);
 	ApplyStatusEffect(client, target, "Electric Impairability", 0.3);
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
-	f_CooldownForHurtHud[client] = 0.0;
+	if(weapon == -2)
+		ApplyStatusEffect(client, target, "Medusa's Teslar", 5.0);
+
+	if(client <= MaxClients)
+		f_CooldownForHurtHud[client] = 0.0;
 	b_EntityHitByLightning[target] = true;
 	float original_damage = damage;
 	for (int loop = 6; loop > 2; loop--)
@@ -626,8 +635,12 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 					damage /= 0.5;
 			}
 			ApplyStatusEffect(client, enemy, "Electric Impairability", 0.3);
-			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
-			f_CooldownForHurtHud[client] = 0.0;
+			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	
+			if(weapon == -2)
+				ApplyStatusEffect(client, target, "Medusa's Teslar", 5.0);
+
+			if(client <= MaxClients)	
+				f_CooldownForHurtHud[client] = 0.0;
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecHit);
 			float EnemyVecPos[3]; WorldSpaceCenter(enemy, EnemyVecPos);
 			Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 3);

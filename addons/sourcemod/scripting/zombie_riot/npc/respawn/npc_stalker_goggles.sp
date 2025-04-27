@@ -89,7 +89,7 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -144,7 +144,7 @@ methodmap StalkerGoggles < StalkerShared
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
-		npc.i_GunMode = Waves_GetRound();
+		npc.i_GunMode = ZR_Waves_GetRound();
 
 		TeleportDiversioToRandLocation(npc.index, .forceSpawn = Rogue_Mode());
 
@@ -288,7 +288,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		return;
 	}
 	//2 waves passed or its a raid.
-	if(npc.i_GunMode <= (Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann || AppearedBefore_Suicide)
+	if(npc.i_GunMode <= (ZR_Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann || AppearedBefore_Suicide)
 	{
 		if(!Rogue_Mode() && !Construction_Mode() && npc.m_iSurrender == 0)
 		{
@@ -309,7 +309,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 	}
 
-	bool sniper = view_as<bool>((npc.i_GunMode + 1) == Waves_GetRound());
+	bool sniper = view_as<bool>((npc.i_GunMode + 1) == ZR_Waves_GetRound());
 
 	static float LastKnownPos[3];
 	if(npc.m_flGetClosestTargetTime < gameTime)
@@ -586,7 +586,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
-	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !Construction_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
+	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !Construction_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && ZR_Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
@@ -655,7 +655,7 @@ void StalkerGoggles_NPCDeath(int entity)
 
 int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 {
-	bool sniper = view_as<bool>((npc.i_GunMode + 1) == Waves_GetRound());
+	bool sniper = view_as<bool>((npc.i_GunMode + 1) == ZR_Waves_GetRound());
 	if(!npc.m_flAttackHappens)
 	{
 		if(IsValidEnemy(npc.index,npc.m_iTarget))

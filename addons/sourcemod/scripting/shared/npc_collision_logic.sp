@@ -29,6 +29,15 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	//it ignores all npc collisions (But not traces.)
 	if(extrarules == 0 && b_ThisEntityIgnoredBeingCarried[bot_entidx])
 		return false;
+	/*
+
+	This was added when we tried to go away from the extention
+	//it ignores all npc collisions (But not traces.)
+	if(extrarules == 0 && otherindex <= MaxClients && f_AntiStuckPhaseThrough[otherindex] > GetGameTime())
+	{
+			return false;
+	}
+	*/
 
 #if defined ZR
 	//if the bots team is player team, then they cant collide with any entities that have this flag.

@@ -3,8 +3,8 @@
 
 void VehicleLandrover_Setup()
 {
-	if(!IsFileInDownloads("models/vehicles/landrover.mdl"))
-		return;
+//	if(!IsFileInDownloads("models/vehicles/landrover.mdl"))
+//		return;
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Landrover");

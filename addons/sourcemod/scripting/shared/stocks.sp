@@ -1294,6 +1294,12 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
+	if(HasSpecificBuff(reciever, "Anti-Waves"))
+	{
+		//Ignore all healing that isnt absolute
+		if(!(flag_extrarules & (HEAL_ABSOLUTE)))
+			return 0;
+	}
 	if(HealTotal < 0)
 	{
 		if(healer > 0)
@@ -5557,10 +5563,25 @@ void EntityKilled_HitDetectionCooldown(int entity, int offset = -1)
 	}
 }
 
-
-
 stock void GetMapName(char[] buffer, int size)
 {
 	GetCurrentMap(buffer, size);
 	GetMapDisplayName(buffer, buffer, size);
+}
+
+int GetEntityFromHandle(any handle)
+{
+	int ent = handle & 0xFFF;
+	if (ent == 0xFFF)
+		ent = -1;
+
+	return ent;
+}
+
+int GetEntityFromAddress(Address entity)
+{
+	if (entity == Address_Null)
+		return -1;
+
+	return GetEntityFromHandle(LoadFromAddress(entity + view_as<Address>(FindDataMapInfo(0, "m_angRotation") + 12), NumberType_Int32));
 }

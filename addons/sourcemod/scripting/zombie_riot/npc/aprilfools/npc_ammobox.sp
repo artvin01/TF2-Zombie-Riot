@@ -409,7 +409,7 @@ public Action Ammo_Spawner_Delay(Handle timer, DataPack pack)
 {
 	GiveProgressDelay(1.0);
 	//Keep waiting.
-	if(MaxEnemiesAllowedSpawnNext(1) < EnemyNpcAlive)
+	if(MaxEnemiesAllowedSpawnNext(1) < (EnemyNpcAlive - EnemyNpcAliveStatic))
 		return Plugin_Continue;
 
 	pack.Reset();

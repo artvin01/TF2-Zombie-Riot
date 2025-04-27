@@ -105,7 +105,7 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 
 		if(GetTeam(victim) == TFTeam_Red)
 		{
-			int scale = Waves_GetRound();
+			int scale = ZR_Waves_GetRound();
 			if(scale < 2)
 			{
 				damage *= 0.50;
@@ -379,7 +379,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			}
 		}
 
-		int scale = Waves_GetRound();
+		int scale = ZR_Waves_GetRound();
 		if(scale < 2)
 		{
 			damage *= 1.6667;
@@ -444,6 +444,14 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 		
 #if !defined RTS
 		OnTakeDamageDamageBuffs(attacker, inflictor, damage, damagetype, weapon);
+
+#if defined RPG	
+		if(!CheckInHud() && damagePosition[2] != 6969420.0)
+		{
+			//There is crit damage from this item.
+			damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
+		}
+#endif
 
 		OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 		
@@ -1893,13 +1901,6 @@ stock void OnTakeDamageDamageBuffs(int &attacker, int &inflictor, float &damage,
 				}
 			}
 		}
-	}
-#endif
-#if defined RPG	
-	if(!CheckInHud() && damagePosition[2] != 6969420.0)
-	{
-		//There is crit damage from this item.
-		damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
 	}
 #endif
 }

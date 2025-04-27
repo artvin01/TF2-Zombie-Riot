@@ -588,7 +588,7 @@ void BarracksVillager_MenuSpecial(int client, int entity)
 	BarrackVillager npc = view_as<BarrackVillager>(entity);
 
 	Menu menu = new Menu(BarrackVillager_MenuH);
-	menu.SetTitle("%s\n \n%t\n ", "TF2: Zombie Riot", NpcStats_ReturnNpcName(entity));
+	menu.SetTitle("%t\n \n%s\n ", "TF2: Zombie Riot", NpcStats_ReturnNpcName(entity));
 	BarrackVillager player = view_as<BarrackVillager>(client);
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));

@@ -1007,7 +1007,7 @@ void Barracks_BuildingThink(int entity)
 		{
 			subtractVillager = 1;
 		}
-		if((ActiveCurrentNpcsBarracksTotal() < (9 + (Rogue_Barracks_BonusSupply() * 2))) && (subtractVillager || ((GetSupplyLeft(client)) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))))
+		if((GetGlobalSupplyLeft() > 0) && (subtractVillager || ((GetSupplyLeft(client)) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))))
 		{
 			float gameTime = GetGameTime();
 			if(TrainingIn[client] < gameTime)
@@ -1406,7 +1406,7 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 {
 	bool AllowResoruceGen = false;
 
-	if(Rogue_Mode())
+	if(Rogue_Mode() || Construction_Mode())
 	{
 		AllowResoruceGen = Waves_Started();
 	}
@@ -1759,7 +1759,7 @@ static void SummonerMenu(int client, int viewer)
 			{
 				subtractVillager = 1;
 			}
-			if(ActiveCurrentNpcsBarracksTotal() >= (9 + (Rogue_Barracks_BonusSupply() * 2)))
+			if(GetGlobalSupplyLeft() < 1)
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
@@ -1939,7 +1939,9 @@ static void SummonerMenu(int client, int viewer)
 static int GetSupplyLeft(int client)
 {
 	int personal = ActiveCurrentNpcsBarracks(client);
-	return 3 + Rogue_Barracks_BonusSupply() - personal;
+	personal -= Rogue_Barracks_BonusSupply();
+	personal -= ObjectSupply_CountBuildings();
+	return 3 - personal;
 }
 
 //void AddItemToTrainingList(char item, )
@@ -2216,12 +2218,17 @@ int ActiveCurrentNpcsBarracksTotal()
 			}
 		}
 	}
+
 	return CurrentAlive;
 }
 
-
-
-
+int GetGlobalSupplyLeft()
+{
+	int CurrentAlive = ActiveCurrentNpcsBarracksTotal();
+	CurrentAlive -= Rogue_Barracks_BonusSupply() * 2;
+	CurrentAlive -= ObjectSupply_CountBuildings();
+	return 9 - CurrentAlive;
+}
 
 void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage, int damagetype)
 {

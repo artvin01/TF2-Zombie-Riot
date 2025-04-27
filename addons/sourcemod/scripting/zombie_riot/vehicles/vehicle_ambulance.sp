@@ -3,8 +3,10 @@
 
 void VehicleAmbulance_Setup()
 {
-	if(!IsFileInDownloads("models/vehicles/ambulance.mdl"))
-		return;
+//	PrintToChatAll("test VehicleAmbulance_Setup test");
+//	if(!IsFileInDownloads("models/vehicles/ambulance.mdl"))
+//		return;
+//	PrintToChatAll("test VehicleAmbulance_Setup yes");
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ambulance");

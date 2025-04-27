@@ -410,7 +410,7 @@ methodmap ChaosKahmlstein < CClotBody
 					MusicEnum music;
 					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
 					music.Time = 240;
-					music.Volume = 1.45;
+					music.Volume = 1.2;
 					music.Custom = true;
 					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
 					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
@@ -439,8 +439,8 @@ methodmap ChaosKahmlstein < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(Waves_GetRound()+1);
-				value = float(Waves_GetRound()+1);
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+				value = float(ZR_Waves_GetRound()+1);
 			}
 
 			if(RaidModeScaling < 55)
@@ -626,7 +626,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				MusicEnum music;
 				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
 				music.Time = 240;
-				music.Volume = 1.45;
+				music.Volume = 1.2;
 				music.Custom = true;
 				strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
 				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
@@ -646,7 +646,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					MusicEnum music;
 					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
 					music.Time = 240;
-					music.Volume = 1.45;
+					music.Volume = 1.2;
 					music.Custom = true;
 					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
 					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");

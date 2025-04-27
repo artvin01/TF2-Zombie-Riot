@@ -99,6 +99,15 @@ forward void ZR_OnDifficultySet(int index, const char[] name, int level);
 forward void ZR_OnClientLoaded(int client);
 
 /**
+ * Called when a player wants to rename the rebel or use any renaming
+ * 
+ * @param client	Client index
+ * 
+ * @return  yes can or not cannot
+ */
+forward bool ZR_CanRenameNPCs(int client);
+
+/**
  * Called when a player model is being set
  * 
  * @param client	Client index
@@ -107,10 +116,11 @@ forward void ZR_OnClientLoaded(int client);
  * @param soundOverride	Voiceline override (-1 for normal class)
  * @param bodyOverride	Model bodygroup override (-1 for no change)
  * @param animOverride	Override animations to the model index
+ * @param noCosmetic	If to render all econ cosmetics as nodraw
  * 
  * @return		Plugin_Changed if changed
  */
-forward Action ZR_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &soundOverride, int &bodyOverride, bool &animOverride);
+forward Action ZR_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, int &soundOverride, int &bodyOverride, bool &animOverride, bool &noCosmetic);
 
 /**
  * Called when a player receives a certain unlock (including duplicates)
@@ -142,6 +152,59 @@ forward void ZR_OnKilledNPC(int client, const char[] name);
  */
 forward Action ZR_OnGivenCash(int client, int &cash);
 
+/**
+ * Whenever any team won in ZR
+ * 
+ * @param Team	What Team
+ * 
+ * @return		Plugin_Changed if the amount was changed, Plugin_Handled to stop cash being given
+ */
+forward Action ZR_OnWinTeam(int Team);
+
+/**
+ * Whenever any client gets XP, this is spammed! Be Warned!
+ * 
+ * @param client	Client index
+ * @param XP		XP obtained or lost
+ * @param Mode		0= Xp added or lost, 1= XP On disconnect or an admin sets it.
+ * 					2 is internal database if you want it.
+ * 
+ * @return	
+ */
+forward void ZR_OnGetXP(int client, int Xp, int Mode);
+
+
+/**
+ * Set Client XP Yourself
+ * 
+ * @param client	Client index
+ * @param XP		XP obtained or lost, level is set silently automatically with this
+ * 
+ * @return
+ */
+native void ZR_SetXpAndLevel(int client, int Xp);
+
+/**
+ * Get The XP of the client Now, usefull on disconnect
+ * 
+ * @param client	Client index
+ *  To calculate levels and all, please use this formular.
+ * 
+ * @return
+ */
+native int ZR_GetXp(int client);
+
+
+//Basic natives to share.
+public int XpToLevel(int xp)
+{
+	return RoundToFloor(Pow(xp / 200.0, 0.5));
+}
+
+public int LevelToXp(int lv)
+{
+	return lv * lv * 200;
+}
 public SharedPlugin __pl_zombie_riot =
 {
 	name = "zombie_riot",
@@ -162,5 +225,9 @@ public void __pl_zombie_riot_SetNTVOptional()
 	MarkNativeAsOptional("ZR_HasNamedItem");
 	MarkNativeAsOptional("ZR_GiveNamedItem");
 	MarkNativeAsOptional("ZR_GetAliveStatus");
+	MarkNativeAsOptional("ZR_OnWinTeam");
+	MarkNativeAsOptional("ZR_OnGetXP");
+	MarkNativeAsOptional("ZR_SetXpAndLevel");
+	MarkNativeAsOptional("ZR_GetXp");
 }
 #endif

@@ -22,6 +22,7 @@ static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 #endif
 
+static Handle g_SDKCallRemoveImmediate;
 
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
@@ -91,6 +92,9 @@ void SDKCall_Setup()
 	g_hSetAbsAngle = EndPrepSDKCall();
 	if(!g_hSetAbsAngle)
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
+
+	//From mikusch!
+	g_SDKCallRemoveImmediate = PrepSDKCall_RemoveImmediate(gamedata);
 		
 
 	StartPrepSDKCall(SDKCall_Player);
@@ -479,5 +483,30 @@ void SDKCall_SetSpeed(int client)
 	else
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.001);
+	}
+}
+
+
+
+static Handle PrepSDKCall_RemoveImmediate(GameData gamedata)
+{
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "UTIL_RemoveImmediate");
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+	
+	Handle call = EndPrepSDKCall();
+	if (!call)
+	{
+		LogMessage("Failed to create SDKCall: UTIL_RemoveImmediate");
+	}
+	
+	return call;
+}
+
+void SDKCall_RemoveImmediate(int entity)
+{
+	if (g_SDKCallRemoveImmediate)
+	{
+		SDKCall(g_SDKCallRemoveImmediate, entity);
 	}
 }

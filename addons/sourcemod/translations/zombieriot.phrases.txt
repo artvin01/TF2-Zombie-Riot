@@ -11,22 +11,9 @@
 		"nl"		"Artvin: NPC en Spelmodus Ontwikkeling\nBatfoxkid: Spelmodus Ontwikkeling\nPelipoika: Originele NPC Base en hulp\nAlex: Algemene Plugin en Wapen Plugin Assistentie\nSuza: Wapens en Basis Stock hulp\nMikusch: Vroege SpelData hulp\nKenzzer: Npc hulp en bug fixing hulp\nAlex Turtle & Stranger & Syko: Map assistentie\nCrusty: Modellen/Animaties\njDeivid: Alternatieve Golven\nGMOD Zombie Survival Devs: Muziek en basis concepten van hun"
 		"chi" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them\n中文汉化:蔡徐坤，Snacks"
 	}
-	"Open Store"
-	{
-		"en"		"Press %+showscores% to open the store"
-		"it"		"Premi %+showscores% per aprire il negozio"
-		"ru"		"Нажмите %+showscores% для открытия магазина"
-		"pl"		"Wciśnij %+showscores% aby otworzyć sklep"
-		"es"		"Pulsa %+showscores% para abrir la tienda"
-		"fr"		"Appuyez sur %+showscores% pour ouvrir la boutique"
-		"de"		"Drücke %+showscores% um den Laden zu öffnen"
-		"pt"		"Pressione %+showscores% para abrir a loja"
-		"nl"		"Druk %+showscores% om de winkel te openen"
-		"chi"		"按下 %+showscores% 来打开商店"
-	}
 	"Press To Open Store"
 	{
-		"en"		"%+showscores% OPEN STORE MENU"
+		"en"		"TAB OPEN STORE MENU"
 	}
 	"Last Alive"
 	{
@@ -2214,7 +2201,7 @@
 	}
 	"Skip Starter Yes"
 	{
-		"en"		"Yes, unlock advanced weapons"
+		"en"		"Yes, I am."
 	}
 	"nothing"
 	{

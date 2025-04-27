@@ -70,6 +70,7 @@ methodmap ObjectWall1 < ObjectGeneric
 		ObjectWall1 npc = view_as<ObjectWall1>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier01.mdl", _, "600", {49.0, 49.0, 177.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild1;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}
@@ -102,18 +103,37 @@ static bool ClotCanBuild1(int client, int &count, int &maxcount)
 	return true;
 }
 
-static any ClotSummon2(int client, float vecPos[3], float vecAng[3])
+static any ClotSummon2(int client, float vecPos[3])
 {
-	return ObjectWall2(client, vecPos, vecAng);
+	return ObjectWall2(client, vecPos);
 }
 
 methodmap ObjectWall2 < ObjectGeneric
 {
-	public ObjectWall2(int client, const float vecPos[3], const float vecAng[3])
+	public ObjectWall2(int client, const float vecPos[3])
 	{
-		ObjectWall2 npc = view_as<ObjectWall2>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier02.mdl", _, "600", {98.0, 98.0, 177.0},_,false));
+		ObjectWall2 npc = view_as<ObjectWall2>(ObjectGeneric(client, vecPos, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.7", "600", {40.0, 40.0, 70.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild2;
+		npc.m_bConstructBuilding = true;
+
+		float VecLeft[3];
+		VecLeft = vecPos;
+
+		VecLeft[1] += 40.0;
+		ObjectWall2 npc_left = view_as<ObjectWall2>(ObjectGeneric(client, VecLeft, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {40.0, 40.0, 70.0},_,false));
+		npc.m_iExtrabuilding1 = npc_left.index;
+		npc_left.m_iMasterBuilding = npc.index;
+		SetParent(npc.index, npc_left.index, "root",{0.0, 40.0, 0.0}, true);
+		
+		float Vecright[3];
+		Vecright = vecPos;
+
+		Vecright[1] -= 40.0;
+		ObjectWall2 npc_right = view_as<ObjectWall2>(ObjectGeneric(client, Vecright, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {40.0, 40.0, 70.0},_,false));
+		npc.m_iExtrabuilding2 = npc_right.index;
+		npc_right.m_iMasterBuilding = npc.index;
+		SetParent(npc.index, npc_right.index, "root",{0.0, -40.0, 0.0}, true);
 
 		return npc;
 	}
@@ -143,18 +163,38 @@ static bool ClotCanBuild2(int client, int &count, int &maxcount)
 	return true;
 }
 
-static any ClotSummon3(int client, float vecPos[3], float vecAng[3])
+static any ClotSummon3(int client, float vecPos[3])
 {
-	return ObjectWall3(client, vecPos, vecAng);
+	return ObjectWall3(client, vecPos);
 }
 
 methodmap ObjectWall3 < ObjectGeneric
 {
-	public ObjectWall3(int client, const float vecPos[3], const float vecAng[3])
+	public ObjectWall3(int client, const float vecPos[3])
 	{
-		ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier03.mdl", _, "600", {192.0, 192.0, 177.0},_,false));
+	//	ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier03.mdl", "0.9", "600", {192.0, 192.0, 177.0},_,false));
+		ObjectWall3 npc = view_as<ObjectWall3>(ObjectGeneric(client, vecPos, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild3;
+		npc.m_bConstructBuilding = true;
+		
+		float VecLeft[3];
+		VecLeft = vecPos;
+
+		VecLeft[1] += 50.0;
+		ObjectWall3 npc_left = view_as<ObjectWall3>(ObjectGeneric(client, VecLeft, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));
+		npc.m_iExtrabuilding1 = npc_left.index;
+		npc_left.m_iMasterBuilding = npc.index;
+		SetParent(npc.index, npc_left.index, "root",{0.0, 50.0, 0.0}, true);
+		
+		float Vecright[3];
+		Vecright = vecPos;
+
+		Vecright[1] -= 50.0;
+		ObjectWall3 npc_right = view_as<ObjectWall3>(ObjectGeneric(client, Vecright, {0.0,0.0,0.0}, "models/props_hydro/metal_barrier02.mdl", "0.8", "600", {50.0, 50.0, 80.0},_,false));
+		npc.m_iExtrabuilding2 = npc_right.index;
+		npc_right.m_iMasterBuilding = npc.index;
+		SetParent(npc.index, npc_right.index, "root",{0.0, -50.0, 0.0}, true);
 
 		return npc;
 	}
@@ -190,6 +230,10 @@ static int CountBuildings()
 	{
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		{
+			ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+			if(IsValidEntity(objstats.m_iMasterBuilding))
+				continue;
+
 			if(NPCId1 == i_NpcInternalId[entity])
 				count++;
 			
