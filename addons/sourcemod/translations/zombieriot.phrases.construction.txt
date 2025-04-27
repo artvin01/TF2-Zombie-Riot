@@ -18,16 +18,16 @@
 	"Gifts Spawned"
 	{
 		"#format"	"{1:d}"
-		"en"		"{orange}(Construct) {green}{1} {default}Raid remains have appeared!"
+		"en"		"{orange}(Construct) {green}{1} {default}raid remains have appeared!"
 	}
 	"No Gifts Spawn"
 	{
-		"en"		"{orange}(Construct) {red}No Raid remains appeared, too many exist already..."
+		"en"		"{orange}(Construct) {red}No raid remains appeared, too many exist already..."
 	}
 	"Found a gift remain"
 	{
 		"#format"	"{1:N}"
-		"en"		"{orange}(Construct) {red}{1} {green}Found and obtained raid remains!"
+		"en"		"{orange}(Construct) {red}{1} {green}found and obtained raid remains!"
 	}
 	"Found a gift remain No Attacker"
 	{
@@ -153,7 +153,7 @@
 	}
 	"Vehicle Production Desc"
 	{
-		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but Rogue Expidonsans appear more often."
+		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
 	}
 	"Void Blueprints"
 	{
@@ -193,7 +193,7 @@
 	}
 	"Dump Truck Desc"
 	{
-		"en"	"A vehicle that can hold up to 6 players or resources in the back."
+		"en"	"A vehicle that can hold up to 6 players. Has increased max armor."
 	}
 	"Landrover"
 	{
