@@ -2883,14 +2883,16 @@ void DoGlobalMultiScaling()
 		at 14 players, it scales fine, at lower, it starts getting really hard 
 
 	*/
+	EnableSilentMode = false;
 	bool SaclingTooHigh = false;
 	float multi = Pow(1.08, playercount);
-	if(multi > 10.0)
+	if(multi > 8.0)
 	{
 		//woops, scales too much now.
 		multi = 8.0;
-		multi += (playercount * 0.1);
+		multi += (playercount * 0.075);
 		SaclingTooHigh = true;
+		EnableSilentMode = true;
 	}
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
