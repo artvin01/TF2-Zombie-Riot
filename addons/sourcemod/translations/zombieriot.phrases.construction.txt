@@ -241,7 +241,7 @@
 	}
 	"Giant Lighthouse Desc"
 	{
-		"en" 		"TODO"
+		"en" 		"Allies gain +30％ attack speed in its radius."
 	}
 	"Water Pump"
 	{
