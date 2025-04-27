@@ -68,7 +68,7 @@ void Native_ZR_OnGetXP(int client, int XPGET, int Mode)
 }
 bool Native_CanRenameNpc(int client)
 {
-	bool WhatReturn = false;
+	bool WhatReturn = true;
 	Call_StartForward(CanRenameNpc);
 	Call_PushCell(client);
 	Call_Finish(WhatReturn);
@@ -194,7 +194,7 @@ public any Native_ZR_GetXp(Handle plugin, int numParams)
 	return XP[client];	// :)
 }
 
-public void Native_ZR_SetXpAndLevel(Handle plugin, int numParams)
+public any Native_ZR_SetXpAndLevel(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 	int XPSet = GetNativeCell(2);
@@ -202,4 +202,5 @@ public void Native_ZR_SetXpAndLevel(Handle plugin, int numParams)
 	XP[client] = 0; 
 	//Reset!
 	GiveXP(client, XPSet, false, true);
+	return 0;
 }

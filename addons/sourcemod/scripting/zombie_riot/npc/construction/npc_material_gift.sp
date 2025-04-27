@@ -53,7 +53,7 @@ methodmap MaterialGift < CClotBody
 	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = false;	// If true, summons an attack wave when mining
-		npc.m_bCamo = true;	// For AI attacking resources
+		npc.m_bCamo = false;	// For AI attacking resources
 		
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
@@ -118,9 +118,6 @@ int SpawnRandomGiftRemain()
 		if(area == NULL_AREA)
 			continue;
 		
-		if(GetRandomFloat(0.0,1.0) >= 0.1)
-			continue;
-
 		if(area.GetAttributes() & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE))
 		{
 			continue;

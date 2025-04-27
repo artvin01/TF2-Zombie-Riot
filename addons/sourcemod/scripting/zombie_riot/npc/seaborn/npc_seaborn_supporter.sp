@@ -220,7 +220,7 @@ public void SeabornSupporter_ClotThink(int iNPC)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+			if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 			{
 				int entity;
 				if(npc.m_iBleedType == BLEEDTYPE_NORMAL) 

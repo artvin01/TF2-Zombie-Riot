@@ -642,7 +642,7 @@ void Waves_SetupVote(KeyValues map)
 			Voting.PushArray(vote);
 
 			// If we're downloading via downloadstable, add every vote option to that
-			if(!autoSelect && CvarFileNetworkDisable.IntValue > 0)
+			if(!autoSelect && !FileNetwork_Enabled())
 			{
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues wavekv = new KeyValues("Waves");
@@ -2880,22 +2880,26 @@ void DoGlobalMultiScaling()
 	//on low player counts it does not scale well.
 	
 	/*
-		at 14 players, it scales fine, at lower, it starts getting really hard, tihs 
+		at 14 players, it scales fine, at lower, it starts getting really hard 
 
 	*/
-
+	bool SaclingTooHigh = false;
 	float multi = Pow(1.08, playercount);
 	if(multi > 10.0)
 	{
 		//woops, scales too much now.
 		multi = 8.0;
 		multi += (playercount * 0.1);
+		SaclingTooHigh = true;
 	}
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
 	
 	//normal bosses health
-	MultiGlobalHealthBoss = playercount * 0.2;
+	if(!SaclingTooHigh)
+		MultiGlobalHealthBoss = playercount * 0.2;
+	else //too many people. scale HP lower.
+		MultiGlobalHealthBoss = playercount * 0.15;
 
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;

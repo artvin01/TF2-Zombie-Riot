@@ -277,7 +277,7 @@ void MedivalRam_NPCDeath(int entity)
 			PosTemp = pos;
 			PosTemp[0] += GetRandomFloat(-5.0, 5.0);
 			PosTemp[1] += GetRandomFloat(-5.0, 5.0);
-			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+			if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 			{
 				NPC_CreateById(Garrison[entity], -1, PosTemp, ang, Team);
 			}
@@ -302,7 +302,7 @@ public Action Medival_Ram_Spawner_Delay(Handle timer, DataPack pack)
 {
 	GiveProgressDelay(1.0);
 	//Keep waiting.
-	if(MaxEnemiesAllowedSpawnNext(1) < EnemyNpcAlive)
+	if(MaxEnemiesAllowedSpawnNext(1) < (EnemyNpcAlive - EnemyNpcAliveStatic))
 		return Plugin_Continue;
 
 	pack.Reset();

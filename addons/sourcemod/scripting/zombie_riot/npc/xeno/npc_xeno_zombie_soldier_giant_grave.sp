@@ -390,7 +390,7 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 			maxhealth /= 7;
 			for(int i; i<1; i++)
 			{
-				if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+				if(MaxEnemiesAllowedSpawnNext(1) <= (EnemyNpcAlive - EnemyNpcAliveStatic))
 				{
 					fl_TotalArmor[npc.index] = 0.5;
 					//grrr i cant spawn!!!!
