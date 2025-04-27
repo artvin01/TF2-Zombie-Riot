@@ -2959,7 +2959,7 @@ stock void SPrintToChatAll(const char[] message, any ...)
 void ZR_FastDownloadForce()
 {
 	//do not download!!
-	if(CvarFileNetworkDisable.IntValue <= 0)
+	if(FileNetwork_Enabled())
 		return;
 
 	PrecacheSharedDarkestMusic();

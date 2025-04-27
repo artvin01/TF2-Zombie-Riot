@@ -571,7 +571,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 
 			Adjust_Crystal_Stats(client, weapon);
-			if(CvarFileNetworkDisable.IntValue <= 0)
+			if(FileNetwork_Enabled())
 				PrecacheTwirlMusic();
 			
 		}
@@ -585,7 +585,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 
 		i_WeaponGotLastmanBuff[weapon] = false;
 
-		if(CvarFileNetworkDisable.IntValue <= 0)
+		if(FileNetwork_Enabled())
 			PrecacheTwirlMusic();
 			
 		DataPack pack;

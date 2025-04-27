@@ -45,10 +45,10 @@ void PrecacheSharedDarkestMusic()
 	if(!Precached)
 	{
 		PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
-		if(CvarFileNetworkDisable.IntValue > 0)
+		if(!FileNetwork_Enabled())
 		{
-			AddFileToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vtf");
-			AddFileToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vmt");
+			AddToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vtf");
+			AddToDownloadsTable("materials/zombie_riot/overlays/leper_overlay.vmt");
 		}
 		Precached = true;
 	}
