@@ -122,7 +122,7 @@ void Zilius_TBB_Precahce()
 	
 	if(Construction_Mode())
 		PrecacheModel("models/zombie_riot/special_boss/zilius_1.mdl");
-		
+
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 }
 
@@ -929,6 +929,9 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 							WorldSpaceCenter(target, vecHit);
 							float damage = 30.0;
 
+							if(ShouldNpcDealBonusDamage(target))
+								target *= 10.0;
+								
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 							
 							// Hit particle
@@ -1804,10 +1807,6 @@ void ZiliusInitiateLaserAttack_DamagePart(DataPack pack)
 			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
 			if (damage < 0)
 				damage *= -1.0;
-
-			
-			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
-				damage *= 0.25;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				
