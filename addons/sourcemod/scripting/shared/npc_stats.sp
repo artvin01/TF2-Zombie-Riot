@@ -4236,12 +4236,8 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				default:
 				{
 					//Remove this entire logic if theres no hooked handle event!
-					
-					if(h_NpcHandleEventHook[pThis] != 0)
-					{
-						DHookRemoveHookID(h_NpcHandleEventHook[pThis]);
-					}
-					h_NpcHandleEventHook[pThis] = 0;
+					b_KillHookHandleEvent[pThis] = true;
+					//dont delete hook INSIDE hook
 				}
 			}
 		}
@@ -6174,6 +6170,16 @@ public void NpcBaseThink(int iNPC)
 		}
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
+	}
+	
+	if(b_KillHookHandleEvent[iNPC])
+	{
+		if(h_NpcHandleEventHook[iNPC] != 0)
+		{
+			DHookRemoveHookID(h_NpcHandleEventHook[iNPC]);
+		}
+		h_NpcHandleEventHook[iNPC] = 0;
+		b_KillHookHandleEvent[iNPC] = false;
 	}
 #if defined ZR
 	AprilFoolsModelHideWearables(iNPC);
@@ -8692,6 +8698,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	b_KillHookHandleEvent[entity] = false;
 	f_NpcAdjustFriction[entity] = 1.0;
 	f_AprilFoolsSetStuff[entity] = 0.0;
 	b_HideHealth[entity] = false;
