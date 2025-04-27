@@ -571,7 +571,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 
 			Adjust_Crystal_Stats(client, weapon);
-			if(CvarFileNetworkDisable.IntValue <= 0)
+			if(FileNetwork_Enabled())
 				PrecacheTwirlMusic();
 			
 		}
@@ -585,7 +585,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 
 		i_WeaponGotLastmanBuff[weapon] = false;
 
-		if(CvarFileNetworkDisable.IntValue <= 0)
+		if(FileNetwork_Enabled())
 			PrecacheTwirlMusic();
 			
 		DataPack pack;
@@ -1734,20 +1734,6 @@ void Kit_Fractal_ResetRound()
 
 //stuff that im probably gonna use a lot in other future weapons.
 
-void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
-}
 void Send_Te_Client_ZR(int client)
 {
 	if(LastMann)

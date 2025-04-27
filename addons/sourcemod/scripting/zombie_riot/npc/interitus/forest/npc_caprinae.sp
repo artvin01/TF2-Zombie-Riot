@@ -194,7 +194,7 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 
-				if(npc.Anger && EnemyNpcAlive > (MaxEnemiesAllowedSpawnNext(1) - 3))
+				if(npc.Anger && (EnemyNpcAlive - EnemyNpcAliveStatic) > (MaxEnemiesAllowedSpawnNext(1) - 3))
 				{
 					// Too many alive: Clone explodes now
 					fl_Extra_Damage[npc.index] *= 3.0;

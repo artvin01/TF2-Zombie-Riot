@@ -556,6 +556,14 @@
 	{
 		"en"	"Increases damage dealt by 25％"
 	}
+	"Expidonsan War Cry"
+	{
+		"en"	"Expidonsan War Cry"
+	}
+	"Expidonsan War Cry Desc"
+	{
+		"en"	"Increases damage dealt by 50％"
+	}
 	"Defensive Backup"
 	{
 		"en"	"Defensive Backup"
@@ -1060,6 +1068,46 @@
 	{
 		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％\nIncreases NPC movementspeed by 15％"
 	}
+	"Rejuvinator's Medizine"
+	{
+		"en" "Rejuvinator's Medizine"
+	}
+	"Rejuvinator's Medizine Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％"
+	}
+	"Cut Hair"
+	{
+		"en" "Cut Hair"
+	}
+	"Cut Hair Desc"
+	{
+		"en"	"You got a new fade, expidonsans despite being cats are really good at cutting hair huh?"
+	}
+	"Anti-Waves"
+	{
+		"en" "Anti-Waves"
+	}
+	"Anti-Waves Desc"
+	{
+		"en"	"Prevents any healing.\n{green}Doesnt prevent absolute healing."
+	}
+	"Zilius Prime Technology"
+	{
+		"en" "Zilius Prime Technology"
+	}
+	"Zilius Prime Technology Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate by 20％\nExpidonsan shield's take half duration damage, and have 2x the capacity"
+	}
+	"We gotta go bald"
+	{
+		"en" "We gotta go bald"
+	}
+	"We gotta go bald Desc"
+	{
+		"en"	"They messed up your hair, welp."
+	}
 	"Soggy"
 	{
 		"en" "Soggy"
@@ -1090,7 +1138,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" "Increases player attack/reload speed & healrate and reloadspeed by 20％"
+		"en" "Increases attack/reload speed & healrate and reloadspeed by 20％"
 	}
 	"Physical Therapy"
 	{

@@ -87,9 +87,7 @@ methodmap SoldierGiant < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -386,7 +384,7 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 		if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 		{
-			if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+			if(MaxEnemiesAllowedSpawnNext(1) <= (EnemyNpcAlive - EnemyNpcAliveStatic))
 			{
 				fl_TotalArmor[npc.index] = 0.5;
 				//grrr i cant spawn!!!!

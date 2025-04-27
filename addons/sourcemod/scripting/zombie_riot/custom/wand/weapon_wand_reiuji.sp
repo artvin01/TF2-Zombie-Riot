@@ -57,6 +57,7 @@ void Reiuji_Wand_OnMapStart()
 {
 	Zero(i_ammo);
 	Zero(fl_hud_timer);
+	Zero(fl_ammo_timer);
 	PrecacheSound(REIUJI_WAND_TOUCH_SOUND, true);
 	PrecacheSound(REIUJI_WAND_M2_CAST_SOUND, true);
 	PrecacheSoundArray(WandAttackSounds);

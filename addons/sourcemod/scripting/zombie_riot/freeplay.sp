@@ -50,7 +50,7 @@ static bool immutable;
 static int RandomStats;
 static bool merlton;
 static float gay;
-static int friendunitamount;
+static bool friendunit;
 static int HurtleBuff;
 static int HurtleBuffEnemies;
 static bool LoveNahTonic;
@@ -113,18 +113,18 @@ void Freeplay_CharBuffToAdd(char[] data)
 	{
 		case INTENSE:
 		{
-			FormatEx(data, 6, "ữ");
+			FormatEx(data, 6, "IT");
 		}
 		case MUSCLE:
 		{
-			FormatEx(data, 6, "ὒ");
+			FormatEx(data, 6, "MR");
 		}
 		case SQUEEZER:
 		{
 			if(squeezerplus)
-				FormatEx(data, 6, "ᾣ+");
+				FormatEx(data, 6, "SS+");
 			else
-				FormatEx(data, 6, "ᾣ");
+				FormatEx(data, 6, "SS");
 		}
 	}
 }
@@ -189,7 +189,7 @@ void Freeplay_ResetAll()
 	RandomStats = 0;
 	merlton = false;
 	gay = 0.0;
-	friendunitamount = 0;
+	friendunit = false;
 	HurtleBuff = 0;
 	HurtleBuffEnemies = 0;
 	LoveNahTonic = false;
@@ -272,7 +272,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunitamount || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -302,113 +302,113 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 2:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
 			}
 			case 3:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_silvester");
-				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
 			}
 			case 4:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
-				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60;res3";
 			}
 			case 5:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sensal");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
 			}
 			case 6:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_stella");
-				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 7:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_purge");
-				enemy.Health = RoundToFloor(9000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(9000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 8:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_messenger");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_30";
 			}
 			case 9:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
 			}
 			case 10:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_chaos_kahmlstein");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "sc60";
 			}
 			case 11:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 			}
 			case 12:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-				enemy.Health = RoundToFloor(15000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(15000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
 			}
 			case 13:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_corruptedbarney");
-				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 			}
 			case 14:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_whiteflower_boss");
-				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraMeleeRes *= 3.0;
 				enemy.ExtraRangedRes *= 2.0;
 			}
 			case 15:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_void_unspeakable");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "forth";
 			}
 			case 16:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vhxis");
-				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 17:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_nemal");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
 				enemy.ExtraDamage = 0.75;
 			}
 			case 18:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_ruina_twirl");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 19:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75;
 			}
 			case 20:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_twins");
-				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
 				enemy.ExtraDamage = 0.75;
 			}
@@ -416,7 +416,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case -1:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
-				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75; // johnson gets way too much damage in freeplay, reduce it
 			}
 
@@ -425,62 +425,62 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 21:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_smith");
-				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
 			case 22:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_atomizer");
-				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 23:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_wall");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 24:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_harrison");
-				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 25:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
-				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 26: // WHEN THE DUST SETTLES
 			{
 				enemy.Index = NPC_GetByPlugin("npc_lelouch");
-				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(5000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75;
 			}
 			case 27:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega_raid");
-				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(8000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
-				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_60";
 			}
 		}
 
-		if(Waves_GetRound() > 124)
+		if(ZR_Waves_GetRound() > 124)
 			enemy.ExtraDamage *= 1.25;
 
-		if(Waves_GetRound() > 174)
+		if(ZR_Waves_GetRound() > 174)
 			enemy.ExtraDamage *= 2.0;
 
 		// Raid health is lower before w101.
-		if(Waves_GetRound() < 101)
+		if(ZR_Waves_GetRound() < 101)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.75);
 
-		if(Waves_GetRound() > 149)
+		if(ZR_Waves_GetRound() > 149)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 1.25);
 
-		if(Waves_GetRound() > 174)
+		if(ZR_Waves_GetRound() > 174)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
 
 		// global health nerfer
@@ -493,27 +493,28 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		RaidFight = 0;
 		shouldscale = false;
 	}
-	else if(friendunitamount)
+	else if(friendunit)
 	{
 		enemy.Team = TFTeam_Red;
-		count = friendunitamount;
-
-		if(enemy.Health)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 0.65);
+		count = 1;
 
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage = 20.0;
+			enemy.ExtraDamage = 25.0;
 
 		enemy.ExtraSpeed = 1.25;
+		enemy.ExtraSize = 1.25;
 
-		friendunitamount = 0;
+		friendunit = false;
 		shouldscale = false;
+		char thename[128];
+		NPC_GetNameById(enemy.Index, thename, sizeof(thename));
+		CPrintToChatAll("{gold}Friendly Unit: {orange}%s", thename);
 	}
 	else if(DarknessComing)
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_darkenedheavy");
-		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(Waves_GetRound()));
+		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_Waves_GetRound()));
 		enemy.Credits += 100.0;
 		enemy.ExtraMeleeRes = 1.5;
 		enemy.Is_Boss = 1;
@@ -525,7 +526,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_zombine");
-		enemy.Health = RoundToFloor(150000.0 / 70.0 * float(Waves_GetRound()));
+		enemy.Health = RoundToFloor(150000.0 / 70.0 * float(ZR_Waves_GetRound()));
 		enemy.ExtraSpeed = 1.5;
 		enemy.ExtraSize = 1.33;
 		enemy.Credits += 100.0;
@@ -540,7 +541,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Index = NPC_GetByPlugin("npc_seaborn_heavy");
-		enemy.Health = RoundToCeil(80000.0 / 70.0 * float(Waves_GetRound()));
+		enemy.Health = RoundToCeil(80000.0 / 70.0 * float(ZR_Waves_GetRound()));
 		enemy.ExtraSpeed = 1.5;
 		enemy.ExtraSize = 1.25;
 		enemy.Credits += 100.0;
@@ -556,7 +557,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_immutableheavy");
-		enemy.Health = RoundToFloor(610000.0 / 70.0 * float(Waves_GetRound()));
+		enemy.Health = RoundToFloor(610000.0 / 70.0 * float(ZR_Waves_GetRound()));
 		enemy.ExtraMeleeRes = 1.5;
 		enemy.ExtraRangedRes = 1.0;
 		enemy.ExtraSpeed = 0.9;
@@ -570,7 +571,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	else if(Schizophrenia)
 	{
 		enemy.Index = NPC_GetByPlugin("npc_annoying_spirit");
-		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(Waves_GetRound()));
+		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_Waves_GetRound()));
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Outlined = 0;
 		enemy.Credits += 100.0;
@@ -582,7 +583,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_netherseaspewer");
-		enemy.Health = RoundToFloor(1100000.0 / 65.0 * float(Waves_GetRound()));
+		enemy.Health = RoundToFloor(1100000.0 / 65.0 * float(ZR_Waves_GetRound()));
 		enemy.ExtraMeleeRes = 0.75;
 		enemy.ExtraRangedRes = 0.75;
 		enemy.ExtraDamage = 5.5;
@@ -623,14 +624,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			if(GetRandomInt(1, 2) == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
-				enemy.Health = RoundToFloor(85000.0 / 70.0 * (float(Waves_GetRound()) * 1.25));
+				enemy.Health = RoundToFloor(85000.0 / 70.0 * (float(ZR_Waves_GetRound()) * 1.25));
 				enemy.ExtraDamage = 0.75;
 				count = 20;
 			}
 			else
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(150000.0 / 70.0 * float(Waves_GetRound()));
+				enemy.Health = RoundToFloor(150000.0 / 70.0 * float(ZR_Waves_GetRound()));
 				count = 10;
 			}
 
@@ -997,11 +998,11 @@ void Freeplay_SpawnEnemy(int entity)
 
 		if(!b_thisNpcIsARaid[entity])
 		{
-			fl_Extra_Damage[entity] *= 2.0 + (((float(Waves_GetRound() - 59)) * 0.025));
+			fl_Extra_Damage[entity] *= ((float(ZR_Waves_GetRound() - 59)) * 0.0125);
 		}
 		else
 		{
-			fl_Extra_Damage[entity] *= 1.0 + (((float(Waves_GetRound() - 59)) * 0.0125));
+			fl_Extra_Damage[entity] *= ((float(ZR_Waves_GetRound() - 59)) * 0.005);
 		}
 
 		fl_Extra_Damage[entity] *= FM_Damage;
@@ -1357,7 +1358,7 @@ void Freeplay_OnEndWave(int &cash)
 	}
 
 	Freeplay_SetRemainingCash(1500.0);
-	Freeplay_SetCashTime(GetGameTime() + 11.5);
+	Freeplay_SetCashTime(GetGameTime() + 12.5);
 
 	if(Freeplay_GetRemainingExp() > 0.0)
 	{
@@ -1370,8 +1371,8 @@ void Freeplay_OnEndWave(int &cash)
 		}
 	}
 
-	Freeplay_SetRemainingExp(1500.0); // its half because it apparently triggers twice, resulting in 3000 max
-	Freeplay_SetExpTime(GetGameTime() + 9.0);
+	Freeplay_SetRemainingExp(750.0); // its half because it apparently triggers twice, resulting in 3000 max
+	Freeplay_SetExpTime(GetGameTime() + 10.0);
 }
 
 void Freeplay_GiveXP(int client, float extraxp)
@@ -1617,10 +1618,6 @@ void Freeplay_SetupStart(bool extra = false)
 				CashBonus -= 150;
 			}
 		}
-
-		int guh = GetRandomInt(8, 16);
-		CPrintToChatAll("{green}You will gain %d random friendly units.", guh);
-		friendunitamount = guh;
 
 		float randommini = GetRandomFloat(0.5, 2.0);
 		MiniBossChance *= randommini;
@@ -1916,7 +1913,7 @@ void Freeplay_SetupStart(bool extra = false)
 			CPrintToChatAll("{green}Enemy attackspeed has been multiplied by %.2fx.", Atkspd);
 		}
 
-		switch(GetRandomInt(1, 8))
+		switch(GetRandomInt(1, 6))
 		{
 			case 1:
 			{
@@ -1937,6 +1934,11 @@ void Freeplay_SetupStart(bool extra = false)
 			{
 				CPrintToChatAll("{red}You begin to hear voices in your head...");
 				Schizophrenia = true;
+			}
+			case 5:
+			{
+				CPrintToChatAll("{red}Your final challenge... a {crimson}Nourished Spewer.");
+				thespewer = true;
 			}
 			default:
 			{
@@ -2264,14 +2266,13 @@ void Freeplay_SetupStart(bool extra = false)
 			/// MISCELANEOUS SKULLS ///
 			case 31:
 			{
-				if(friendunitamount)
+				if(friendunit)
 				{
 					Freeplay_SetupStart();
 					return;
 				}
-				int guh2 = GetRandomInt(4, 8);
-				strcopy(message, sizeof(message), "{green}You will gain a random amount of friendly units.");
-				friendunitamount = guh2;
+				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
+				friendunit = true;
 			}
 			case 32:
 			{

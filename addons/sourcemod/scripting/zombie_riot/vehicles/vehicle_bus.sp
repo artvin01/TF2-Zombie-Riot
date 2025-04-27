@@ -3,8 +3,8 @@
 
 void VehicleBus_Setup()
 {
-	if(!IsFileInDownloads("models/vehicles/bus001.mdl"))
-		return;
+//	if(!IsFileInDownloads("models/vehicles/bus001.mdl"))
+//		return;
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bus");

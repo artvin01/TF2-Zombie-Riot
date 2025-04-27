@@ -1294,6 +1294,12 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
+	if(HasSpecificBuff(reciever, "Anti-Waves"))
+	{
+		//Ignore all healing that isnt absolute
+		if(!(flag_extrarules & (HEAL_ABSOLUTE)))
+			return 0;
+	}
 	if(HealTotal < 0)
 	{
 		if(healer > 0)
@@ -4369,16 +4375,20 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0, int MaxHealingPermitted = 9999999)
 {
 //	bool isNotClient = false;
-		
-	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
-	int flMaxHealth;
-	if(entity > MaxClients)
+	
+	int flHealth, flMaxHealth;
+
+	#if defined ZR
+	if(i_IsVehicle[entity])
 	{
-		flMaxHealth = ReturnEntityMaxHealth(entity);
+		flHealth = Armor_Charge[entity];
+		flMaxHealth = 10000;
 	}
 	else
+	#endif
 	{
-		flMaxHealth = SDKCall_GetMaxHealth(entity);
+		flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
+		flMaxHealth = ReturnEntityMaxHealth(entity);
 	}
 
 	int i_TargetHealAmount; //Health to actaully apply
@@ -4425,17 +4435,36 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	int MaxHeal = RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti);
 	if(flHealth < MaxHeal)
 	{
-
 		if(newHealth >= MaxHeal) //allow 1 tick of overheal.
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
+			#if defined ZR
+			if(i_IsVehicle[entity])
+			{
+				Armor_Charge[entity] = MaxHeal;
+			}
+			else
+			#endif
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
+			}
+			
 			newHealth = MaxHeal;
 
 			HealAmount = newHealth - flHealth;
 		}
 		else
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			#if defined ZR
+			if(i_IsVehicle[entity])
+			{
+				Armor_Charge[entity] = newHealth;
+			}
+			else
+			#endif
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			}
+
 			HealAmount = newHealth - flHealth;
 		}
 	}
@@ -5534,10 +5563,25 @@ void EntityKilled_HitDetectionCooldown(int entity, int offset = -1)
 	}
 }
 
-
-
 stock void GetMapName(char[] buffer, int size)
 {
 	GetCurrentMap(buffer, size);
 	GetMapDisplayName(buffer, buffer, size);
+}
+
+int GetEntityFromHandle(any handle)
+{
+	int ent = handle & 0xFFF;
+	if (ent == 0xFFF)
+		ent = -1;
+
+	return ent;
+}
+
+int GetEntityFromAddress(Address entity)
+{
+	if (entity == Address_Null)
+		return -1;
+
+	return GetEntityFromHandle(LoadFromAddress(entity + view_as<Address>(FindDataMapInfo(0, "m_angRotation") + 12), NumberType_Int32));
 }

@@ -1,8 +1,7 @@
 #pragma semicolon 1				//a lot of shitcode, beware, be very aware
 #pragma newdecls required
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_PlayMusicSound;
+
 
 static const char g_DeathSounds[][] =
 {
@@ -74,17 +73,17 @@ char[] MinibossHealthScaling(int health = 110, bool ingoreplayers = false)
 	float temp_float_hp = float(health);
 	temp_float_hp *= MinibossScalingReturn();
 	
-	if(Waves_GetRound()+1 < RoundToNearest(30.0 * (1.0 / MinibossScalingReturn())))
+	if(ZR_Waves_GetRound()+1 < RoundToNearest(30.0 * (1.0 / MinibossScalingReturn())))
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
 	}
-	else if(Waves_GetRound()+1 < RoundToNearest(45.0 * (1.0 / MinibossScalingReturn())))
+	else if(ZR_Waves_GetRound()+1 < RoundToNearest(45.0 * (1.0 / MinibossScalingReturn())))
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.40));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.40));
 	}
 	
 	health /= 3;
@@ -187,7 +186,7 @@ methodmap ThirtySixFifty < CClotBody
 			Variables
 		*/
 
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -231,12 +230,12 @@ static void ClotThink(int iNPC)
 	}
 
 	int time = GetTime();
-	if(i_PlayMusicSound < time)
+	if(i_PlayMusicSound[npc.index] < time)
 	{
 		// This doesn't auto loop
 		EmitCustomToAll("#zombie_riot/omega/calculated.mp3", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100); //song that plays duh
 
-		i_PlayMusicSound = GetTime() + 43; //loops the song perfectly
+		i_PlayMusicSound[npc.index] = GetTime() + 43; //loops the song perfectly
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -694,7 +693,7 @@ static void ClotDeath(int entity)
 
 	for(int i; i < 9; i++)
 	{
-		i_PlayMusicSound = 0;
+		i_PlayMusicSound[npc.index] = 0;
 		StopCustomSound(entity, SNDCHAN_STATIC, "#zombie_riot/omega/calculated.mp3", 5.0);
 	}
 

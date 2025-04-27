@@ -75,10 +75,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/shovel_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-
 static const char g_WarCry[][] = {
 	"mvm/mvm_tank_horn.wav",
 };
@@ -94,7 +90,7 @@ void MedivalHussar_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));   i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_WarCry));   i++) { PrecacheSound(g_WarCry[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	f_GlobalSoundCD = 0.0;
@@ -113,10 +109,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return MedivalHussar(vecPos, vecAng, team);
 }
-static int i_ClosestAlly[MAXENTITIES];
-static float i_ClosestAllyCD[MAXENTITIES];
-static int i_ClosestAllyTarget[MAXENTITIES];
-static float i_ClosestAllyCDTarget[MAXENTITIES];
+
+
+
+
 
 
 #define HUSSAR_BUFF_MAXRANGE 350.0 		
@@ -167,7 +163,7 @@ methodmap MedivalHussar < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}	
 	public void PlayMeleeWarCry() 
 	{

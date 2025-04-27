@@ -291,13 +291,13 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	}
 	/*
 	float hittimes = 0;
-	if(Waves_GetRound()+1 >= 15)
+	if(ZR_Waves_GetRound()+1 >= 15)
 		hittimes = 25;
-	if(Waves_GetRound()+1 >= 30)
+	if(ZR_Waves_GetRound()+1 >= 30)
 		hittimes = 20;
-	if(Waves_GetRound()+1 >= 45)
+	if(ZR_Waves_GetRound()+1 >= 45)
 		hittimes = 15;
-	if(Waves_GetRound()+1 >= 55)
+	if(ZR_Waves_GetRound()+1 >= 55)
 		hittimes = 10;
 	*/
 	

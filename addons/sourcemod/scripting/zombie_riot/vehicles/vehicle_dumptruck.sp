@@ -3,7 +3,7 @@
 
 void VehicleDumpTruck_Setup()
 {
-	if(IsFileInDownloads("models/vehicles/dumptruck.mdl"))
+//	if(IsFileInDownloads("models/vehicles/dumptruck.mdl"))
 	{
 		NPCData data;
 		strcopy(data.Name, sizeof(data.Name), "Dump Truck");
@@ -14,7 +14,7 @@ void VehicleDumpTruck_Setup()
 		NPC_Add(data);
 	}
 	
-	if(IsFileInDownloads("models/vehicles/dumptruck_empty.mdl"))
+//	if(IsFileInDownloads("models/vehicles/dumptruck_empty.mdl"))
 	{
 		NPCData data;
 		strcopy(data.Name, sizeof(data.Name), "Dump Truck");

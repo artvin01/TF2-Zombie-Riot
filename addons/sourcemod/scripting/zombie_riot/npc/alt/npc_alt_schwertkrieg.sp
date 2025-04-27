@@ -2,13 +2,6 @@
 #pragma newdecls required
 
 
-static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-};
-
 static const char g_MeleeHitSounds[][] = {
 	"weapons/ubersaw_hit1.wav",
 	"weapons/ubersaw_hit2.wav",
@@ -19,15 +12,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-
-static float fl_teleport_timer[MAXENTITIES];
-static bool b_teleport_recharging[MAXENTITIES];
-static bool b_schwert_is_ally[MAXENTITIES];
-
-
 static float TELEPORT_STRIKE_Smite_BaseDMG = 1500.0; //Base damage of the effect
 static float TELEPORT_STRIKE_Smite_Radius = 500.0;//Radius of the effect
 static float TELEPORT_STRIKE_Smite_ChargeTime = 1.33;
@@ -36,7 +20,7 @@ static float TELEPORT_STRIKE_Timer = 1.0; //How long it takes to teleport
 static float TELEPORT_STRIKE_Reuseable = 30.0; //How long it should be reuseable again
 
 
-static float Schwertkrieg_Speed = 330.0;
+static float fl_npc_basespeed = 330.0;
 
 #define TELEPORT_STRIKE_ACTIVATE		"misc/halloween/gotohell.wav"
 #define TELEPORT_STRIKE_TELEPORT		"weapons/bison_main_shot.wav"
@@ -48,10 +32,10 @@ void Schwertkrieg_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
 	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_DefaultMedic_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	
 	
 	PrecacheSound(TELEPORT_STRIKE_ACTIVATE, true);
@@ -82,55 +66,41 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 methodmap Schwertkrieg < CClotBody
 {
-	
+	property float m_flTeleportTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property bool m_bTeleportRecharging
+	{
+		public get()							{ return this.m_bFUCKYOU; }
+		public set(bool TempValueForProperty) 	{ this.m_bFUCKYOU = TempValueForProperty; }
+	}
+
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
+		EmitSoundToAll(g_DefaultMedic_IdleAlertedSounds[GetRandomInt(0, sizeof(g_DefaultMedic_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);	
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
+			return;	
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
 	}
-
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	
-	
-	
 	public Schwertkrieg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Schwertkrieg npc = view_as<Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
@@ -147,11 +117,6 @@ methodmap Schwertkrieg < CClotBody
 			g_b_schwert_died=false;	
 
 			g_b_angered=false;
-			b_schwert_is_ally[npc.index] = false;	//if schwert is blue do normal stuff
-		}
-		else
-		{
-			b_schwert_is_ally[npc.index] = true;	//if schwert is red, block all the raidboss angered logic!
 		}
 		
 		
@@ -165,7 +130,7 @@ methodmap Schwertkrieg < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
 		//IDLE
-		npc.m_flSpeed = Schwertkrieg_Speed;
+		npc.m_flSpeed = fl_npc_basespeed;
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -231,8 +196,8 @@ methodmap Schwertkrieg < CClotBody
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 
-		fl_teleport_timer[npc.index]=GetGameTime(npc.index)+5.0;
-		b_teleport_recharging[npc.index]=true;
+		npc.m_flTeleportTimer=GetGameTime(npc.index)+5.0;
+		npc.m_bTeleportRecharging=true;
 		
 		TELEPORT_STRIKE_Smite_ChargeTime = 1.33;
 		TELEPORT_STRIKE_Smite_ChargeSpan = 0.66;
@@ -252,7 +217,7 @@ static void Internal_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 	
-	if(Waves_GetRound()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//schwertkrieg handles the timer if its the same index
+	if(ZR_Waves_GetRound()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//schwertkrieg handles the timer if its the same index
 	{
 		if(RaidModeTime < GameTime)
 		{
@@ -266,13 +231,13 @@ static void Internal_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(!IsValidEntity(RaidBossActive) && !g_b_schwert_died && Waves_GetRound()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
+	if(!IsValidEntity(RaidBossActive) && !g_b_schwert_died && ZR_Waves_GetRound()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
 	else
 	{
-		if(Waves_GetRound()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_schwert_died && i_RaidGrantExtra[npc.index] == 1)
+		if(ZR_Waves_GetRound()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_schwert_died && i_RaidGrantExtra[npc.index] == 1)
 		{
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
@@ -385,7 +350,7 @@ static void Internal_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg= 175.0;
-								if(g_b_angered && !b_schwert_is_ally[npc.index])
+								if(g_b_angered && GetTeam(npc.index) != 2)
 								{
 									meleedmg = 325.0;
 								}	
@@ -456,18 +421,18 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
 
-	if(fl_teleport_timer[npc.index]<=GameTime)
+	if(npc.m_flTeleportTimer<=GameTime)
 	{
 		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 		if(IsValidEnemy(npc.index, enemy))
 		{
 			npc.m_flDoingAnimation = GameTime+TELEPORT_STRIKE_Timer;
-			fl_teleport_timer[npc.index]= GameTime+9999.0;
+			npc.m_flTeleportTimer= GameTime+9999.0;
 
 			npc.SetPlaybackRate(0.75);	
 			npc.SetCycle(0.0);
 							
-			b_teleport_recharging[npc.index]=false;
+			npc.m_bTeleportRecharging=false;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
@@ -491,7 +456,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 				RemoveEntity(npc.m_iWearable3);
 		}
 	}
-	if(npc.m_flDoingAnimation < GameTime && fl_teleport_timer[npc.index] > GameTime && !b_teleport_recharging[npc.index])
+	if(npc.m_flDoingAnimation < GameTime && npc.m_flTeleportTimer > GameTime && !npc.m_bTeleportRecharging)
 	{
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -501,7 +466,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		b_teleport_recharging[npc.index]=true;
+		npc.m_bTeleportRecharging=true;
 		float VecForward[3];
 		float vecRight[3];
 		float vecUp[3];
@@ -530,15 +495,15 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			{
 				
 				
-				if(g_b_angered && !b_schwert_is_ally[npc.index])
+				if(g_b_angered && GetTeam(npc.index) != 2)
 				{
 					npc.m_flMeleeArmor = 1.0;
-					fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
+					npc.m_flTeleportTimer= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
 				}
 				else
 				{
 					npc.m_flMeleeArmor = 1.5;
-					fl_teleport_timer[npc.index]= GameTime+TELEPORT_STRIKE_Reuseable;
+					npc.m_flTeleportTimer= GameTime+TELEPORT_STRIKE_Reuseable;
 				}
 					
 				
@@ -568,15 +533,15 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 				if(Succeed)
 				{
 				
-					if(g_b_angered && !b_schwert_is_ally[npc.index])
+					if(g_b_angered && GetTeam(npc.index) != 2)
 					{
 						npc.m_flMeleeArmor = 1.0;
-						fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
+						npc.m_flTeleportTimer= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
 					}
 					else
 					{
 						npc.m_flMeleeArmor = 1.5;
-						fl_teleport_timer[npc.index]= GameTime+TELEPORT_STRIKE_Reuseable;
+						npc.m_flTeleportTimer= GameTime+TELEPORT_STRIKE_Reuseable;
 					}
 						
 					
@@ -598,8 +563,8 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 				}
 				else
 				{
-					fl_teleport_timer[npc.index]= GameTime+5.0;	//retry in 5 seconds
-					if(g_b_angered && !b_schwert_is_ally[npc.index])
+					npc.m_flTeleportTimer= GameTime+5.0;	//retry in 5 seconds
+					if(g_b_angered && GetTeam(npc.index) != 2)
 					{
 						npc.m_flMeleeArmor = 1.0;
 					}
@@ -612,8 +577,8 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 		}
 		else
 		{
-			fl_teleport_timer[npc.index]= GameTime+1.0;	//retry in 1 second
-			if(g_b_angered && !b_schwert_is_ally[npc.index])
+			npc.m_flTeleportTimer= GameTime+1.0;	//retry in 1 second
+			if(g_b_angered && GetTeam(npc.index) != 2)
 			{
 				npc.m_flMeleeArmor = 1.0;
 			}
@@ -629,10 +594,10 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 	}
 	else
 	{
-		if(g_b_angered && !b_schwert_is_ally[npc.index])
-			npc.m_flSpeed = Schwertkrieg_Speed*1.35;
+		if(g_b_angered && GetTeam(npc.index) != 2)
+			npc.m_flSpeed = fl_npc_basespeed*1.35;
 		else
-			npc.m_flSpeed = Schwertkrieg_Speed;
+			npc.m_flSpeed = fl_npc_basespeed;
 	}
 }
 static void Schwertkrieg_Teleport_Boom(int iNPC, float vecTarget[3], float pos[3])
@@ -672,7 +637,7 @@ static void Schwertkrieg_Teleport_Boom(int iNPC, float vecTarget[3], float pos[3
 	TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, pos, vecTarget);
 	//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 	float radius = TELEPORT_STRIKE_Smite_Radius;
-	if(g_b_angered && !b_schwert_is_ally[npc.index])
+	if(g_b_angered && GetTeam(npc.index) != 2)
 	{
 		radius *= 1.25;
 	}
@@ -694,7 +659,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_blPlayHurtAnimation = true;
 	}
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health && Waves_GetRound()+1>=60.0 && i_RaidGrantExtra[npc.index] == 1)
+	if(RoundToCeil(damage)>=Health && ZR_Waves_GetRound()+1>=60.0 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(g_b_item_allowed)
 		{

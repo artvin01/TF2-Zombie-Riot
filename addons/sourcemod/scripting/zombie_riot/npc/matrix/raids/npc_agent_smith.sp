@@ -51,8 +51,8 @@ static float fl_Infection_Meter[MAXTF2PLAYERS];
 static float fl_Default_Speed = 300.0;
 static int smith_id = -1;
 static int i_RedAmount;
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static float f_TalkDelayCheck;//apparently exist in silvester xeno, however idk where it's suppose to be put in the .sp so it's this
 static int i_TalkDelayCheck;
@@ -207,7 +207,7 @@ methodmap AgentSmith < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(Waves_GetRound()+1);
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
 			}
 			
 			if(RaidModeScaling < 55)

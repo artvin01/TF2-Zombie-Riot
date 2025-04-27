@@ -7,12 +7,12 @@
 
 
 
-static int i_SaidLineAlready[MAXENTITIES];
+
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 static bool TripleLol;
 static float NemalAntiLaserDo[MAXENTITIES];
 
@@ -139,7 +139,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MineLayed));   i++) { PrecacheSound(g_MineLayed[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
-	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/expidonsa_training_montage.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
@@ -550,8 +550,8 @@ methodmap Nemal < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
-			value = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			value = float(ZR_Waves_GetRound()+1);
 		}
 
 		if(RaidModeScaling < 55)
@@ -2130,12 +2130,12 @@ bool NemalSummonSilvester(Nemal npc)
 		if(i_RaidGrantExtra[npc.index] >= 3 && !TripleLol)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
-			music.Time = 227;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/expidonsa_training_montage.mp3");
+			music.Time = 300;
 			music.Volume = 2.0;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "06 Flirt With Bomb");
-			strcopy(music.Artist, sizeof(music.Artist), "???");
+			strcopy(music.Name, sizeof(music.Name), "Expidonsa Training Montage");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 		npc.m_iChanged_WalkCycle = 0;

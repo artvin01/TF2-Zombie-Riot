@@ -3,8 +3,8 @@
 
 static const char g_DeathSounds[] = "npc/scanner/scanner_explode_crash2.wav";
 static const char g_HealSound[] = "physics/metal/metal_box_strain1.wav";
-static bool MK2[MAXENTITIES];
-static bool Limit[MAXENTITIES];
+
+
 static int OverrideAlly[MAXENTITIES];
 
 void VictorianDroneAnvil_MapStart()
@@ -58,13 +58,13 @@ methodmap VictorianDroneAnvil < CClotBody
 		Limit[npc.index]=false;
 		OverrideAlly[npc.index]=-1;
 		
-		bool FactorySpawn;
+		bool FactorySpawndo;
 		static char countext[20][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
-			if(!StrContains(countext[i], "factory"))FactorySpawn=true;
+			if(!StrContains(countext[i], "factory"))FactorySpawndo=true;
 			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Anvil MK2");}
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
 			int targetdata = StringToInt(countext[i]);
@@ -129,7 +129,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		GetAbsOrigin(npc.index, Vec);
-		if(FactorySpawn)
+		if(FactorySpawndo)
 		{
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{

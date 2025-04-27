@@ -284,7 +284,12 @@ static void ClotThink(int iNPC)
 		{
 			float vecTarget[3]; GetEntPropVector(spawn, Prop_Data, "m_vecAbsOrigin", vecTarget); 
 			float vecMe[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
+
+			float zpos = vecTarget[2];
+			
+			vecTarget[2] = vecMe[2];
 			float distance = GetVectorDistance(vecTarget, vecMe, true);
+			vecTarget[2] = zpos;
 
 			if(distance > 5000.0)
 			{

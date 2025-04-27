@@ -231,7 +231,7 @@ methodmap JohnTheAllmighty < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(JohnTheAllmighty_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 		
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();

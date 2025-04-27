@@ -68,7 +68,6 @@ static int g_rocket_particle;
 int i_rocket_particle[MAXENTITIES];
 float fl_rocket_particle_dmg[MAXENTITIES];
 float fl_rocket_particle_radius[MAXENTITIES];
-static float f_DelayComputingOfPath[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
 static float f_PredictDuration[MAXENTITIES];
 static float f_UnstuckSuckMonitor[MAXENTITIES];
@@ -133,7 +132,7 @@ public Action Command_PetMenu(int client, int args)
 	
 	if(args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <plugin> [health] [data] [team] [damage multi] [speed multi] [ranged armour] [melee armour] [Extra Size] [Think Speed]");
 		return Plugin_Handled;
 	}
 	
@@ -199,6 +198,11 @@ public Action Command_PetMenu(int client, int args)
 		{
 			float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * GetCmdArgFloat(9));
+		}
+
+		if(args > 9)
+		{
+			f_AttackSpeedNpcIncrease[entity] = GetCmdArgFloat(10);
 		}
 	}
 
@@ -377,11 +381,13 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
+#if defined ZR
 		if(!ModelReplaceDo(npc, Ally))
 		{
 			DispatchKeyValue(npc, "model",	 model);
 			view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		}
+#endif
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
@@ -524,7 +530,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 			locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 			locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
-			view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
+			npcstats.ZRHook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 			SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
 		}
@@ -647,6 +653,18 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		return view_as<CClotBody>(npc);
+	}
+	
+	public void ZRHook_HandleAnimEvent(DHookCallback callback)
+	{
+		static DynamicHook hHook = null;
+		if (hHook == null)
+		{
+			hHook = new DynamicHook(CBaseAnimating.iHandleAnimEvent(), HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity);
+			if (hHook == null) return;
+			hHook.AddParam(HookParamType_ObjectPtr);
+		}
+		h_NpcHandleEventHook[this.index] = hHook.HookEntity(Hook_Pre, this.index, callback);
 	}
 	property int index 
 	{ 
@@ -1437,6 +1455,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()				{ return b_AllowBackWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
 	}
+	public void SetPoseParameter_Easy(char[] PoseParam = "", float Value)//For the future incase we want to alter it easier
+	{
+		int iPitch = this.LookupPoseParameter(PoseParam);
+		if(iPitch < 0)
+			return;		
+
+		this.SetPoseParameter(iPitch, Value);
+	}
 	public float GetDebuffPercentage()//For the future incase we want to alter it easier
 	{
 		//Buildings dont have speed...
@@ -1538,19 +1564,19 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(VIPBuilding_Active())
 			{
 				GetPercentageAdjust *= 2.0;
-				baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
-				baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
+				baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
+				baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
 			}
 		}
 
 		if(!VIPBuilding_Active())
 		{
-			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
-			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
+			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
+			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
 		}
 #else
-		baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
-		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
+		baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
+		baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust * f_NpcAdjustFriction[this.index]);
 #endif
 		//in freeplay there should be a speed limit, otherwise they will just have infinite speed and youre screwed.
 		
@@ -2557,6 +2583,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
 		}
+		b_ThisEntityIgnored[item] = true;
 
 #if defined RPG
 		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
@@ -2622,6 +2649,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
 		}
+		b_ThisEntityIgnored[item] = true;
 
 #if defined RPG
 		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
@@ -2663,7 +2691,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		
 		float eyePitch[3];
-		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
+		if(Npc_type != 3)
+			GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
@@ -2672,9 +2701,12 @@ methodmap CClotBody < CBaseCombatCharacter
 			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
 		
 		WorldSpaceCenter(this.index, vecForward);
+	//	GetAbsOrigin(this.index, vecForward);
+	//	vecForward[2] += 45.0;
 		MakeVectorFromPoints(vecForward, vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
-		vecForward[1] = eyePitch[1];
+		if(Npc_type != 3)
+			vecForward[1] = eyePitch[1];
 		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
 		
 		float vecSwingStart[3];
@@ -2686,6 +2718,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * vecSwingMaxs[0];
 		vecSwingEnd[1] = vecSwingStart[1] + vecForward[1] * vecSwingMaxs[1];
 		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * vecSwingMaxs[2];
+	//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	//	TE_SendToAll();
 		
 #if defined ZR
 		bool ingore_buildings = false;
@@ -4188,7 +4223,35 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		Call_PushCell(event);
 		Call_Finish();
 	}
-	
+	else
+	{
+		if(!b_thisNpcIsARaid[pThis] && EnemyNpcAlive >= 20) //Theres too many npcs, kill off the sounds.
+		{
+			switch(npc.m_iNpcStepVariation)
+			{
+				case STEPTYPE_TANK:
+				{
+					
+				}
+				default:
+				{
+					//Remove this entire logic if theres no hooked handle event!
+					
+					if(h_NpcHandleEventHook[pThis] != 0)
+					{
+						DHookRemoveHookID(h_NpcHandleEventHook[pThis]);
+					}
+					h_NpcHandleEventHook[pThis] = 0;
+				}
+			}
+		}
+	}
+	if(!b_thisNpcIsARaid[pThis] && EnemyNpcAlive >= 20)
+	{
+		//kill off sound.
+		//even if they had an anim event
+		return MRES_Ignored;
+	}
 	switch(npc.m_iNpcStepVariation)
 	{
 		case STEPTYPE_NORMAL:
@@ -4718,7 +4781,7 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	return from_area.GetCostSoFar() + cost;
 }
 
-public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
+bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, bool DirectLaunch = false)
 {
 	if(IsEntityTowerDefense(bot_entidx)) //do not allow them to jump.
 	{
@@ -4731,11 +4794,28 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	}
 	float vecNPC[3], vecJumpVel[3];
 	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
+	if(DirectLaunch)
+	{
+		float vecAngles[3];
+
+		MakeVectorFromPoints(vecNPC, vecPos, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+
+		float speed = flMaxSpeed;
+		
+		vecJumpVel[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*speed;
+		vecJumpVel[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*speed;
+		vecJumpVel[2] = Sine(DegToRad(vecAngles[0]))*-speed;
+
+		npc.Jump();
+		npc.SetVelocity(vecJumpVel);
+		return true;
+	}
 	
 	float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
-	
+
 	// How fast does the headcrab need to travel to reach the position given gravity?
 	float flActualHeight = vecPos[2] - vecNPC[2];
 	float height = flActualHeight;
@@ -4750,6 +4830,9 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		additionalHeight = 25.0;
 	}
 	
+	if(DirectLaunch)
+		additionalHeight = 0.1;
+
 	height += additionalHeight;
 	
 	float speed = SquareRoot( 2 * gravity * height );
@@ -4768,7 +4851,6 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	
 	// Don't jump too far/fast.
 	float flJumpSpeed = GetVectorLength(vecJumpVel);
-	float flMaxSpeed = 1250.0;
 	if ( flJumpSpeed > flMaxSpeed )
 	{
 		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
@@ -5462,7 +5544,12 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		
 		CNavArea closeNav = NULL_AREA;
 		float closeDist = maxDistance;
-		
+		bool closeNpc;
+#if defined ZR
+		bool construction = Construction_Mode();	// Buildings/NPCs don't use allydist, focus buildings
+#else
+		bool construction = false;
+#endif
 		int length = iterator.Count();
 		for(int i; i < length; i++)
 		{
@@ -5488,20 +5575,34 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				//	PrintToChatAll("%f > %f", dist, fldistancelimit);
 					if(GetClosestTarget_Enemy_Type[a] > 2)	// Distance limit
 					{
-						if(dist > fldistancelimitAllyNPC)
+						if(!construction || dist < fldistancelimit)
+						{
+							if(dist > fldistancelimitAllyNPC)
+							{
+								continue;
+							}
+						}
+					}
+					else
+					{
+						if(construction && closeNpc)
+						{
+							if(dist > fldistancelimitAllyNPC)
+							{
+								continue;
+							}
+						}
+						else if(dist > fldistancelimit)
 						{
 							continue;
 						}
-					}
-					else if(dist > fldistancelimit)
-					{
-						continue;
 					}
 
 					if(dist < closeDist)
 					{
 						closeNav = area2;
 						closeDist = dist;
+						closeNpc = GetClosestTarget_Enemy_Type[a] > 2;
 					}
 					break;
 				}
@@ -5921,7 +6022,13 @@ public void NpcBaseThinkPost(int iNPC)
 	float lastThink = f_LastBaseThinkTime[iNPC];
 	f_LastBaseThinkTime[iNPC] = GetGameTime();
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
-	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime());
+	static float SimulationTimeDelay;
+	if(!SimulationTimeDelay)
+	{
+		SimulationTimeDelay = (0.05 * TickrateModify);
+		//calc once
+	}
+	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime() + SimulationTimeDelay);
 	if(f_AttackSpeedNpcIncrease[iNPC] == 1.0)
 		return;
 		
@@ -6068,7 +6175,9 @@ public void NpcBaseThink(int iNPC)
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
+#if defined ZR
 	AprilFoolsModelHideWearables(iNPC);
+#endif
 	if(i_IsNpcType[npc.index] == 0)
 	{
 		SaveLastValidPositionEntity(iNPC);
@@ -8583,6 +8692,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	f_NpcAdjustFriction[entity] = 1.0;
 	f_AprilFoolsSetStuff[entity] = 0.0;
 	b_HideHealth[entity] = false;
 //	i_MasterSequenceNpc[entity] = -1;
@@ -9310,13 +9420,13 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	//Emergency incase it wasnt an npc.
 	if(!b_ThisWasAnNpc[npc])
 	{
-		
 		if(npc <= 0 || npc > MaxClients)
 		{
 			return;
 		}
 		TF2_AddCondition(npc, TFCond_FreezeInput, Duration_Stun);
 		ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun);	
+		return;
 	}
 
 	float GameTime = GetGameTime();
@@ -11124,4 +11234,22 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 	return vecSwingEnd;
+}
+
+#if defined RPG
+char[] NpcStats_ReturnNpcName(int entity)
+#else
+char[] NpcStats_ReturnNpcName(int entity, bool NoTrans = false)
+#endif
+{
+#if defined RPG
+	return c_NpcName[entity];
+#else
+	char NameReturn[255];
+	if(!b_NameNoTranslation[entity] && !NoTrans)
+		Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
+	else
+		Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
+	return NameReturn;
+#endif
 }

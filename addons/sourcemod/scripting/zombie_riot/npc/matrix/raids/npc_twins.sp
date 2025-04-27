@@ -191,7 +191,7 @@ methodmap Matrix_Twins < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(Waves_GetRound()+1);
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
 			}
 			
 			if(RaidModeScaling < 55)
@@ -717,7 +717,7 @@ static void Matrix_Twins_Apply_Healing(Matrix_Twins npc, float gameTime)
 
 static void Matrix_Twins_healspeak(Matrix_Twins npc)
 {
-	CPrintToChatAll("{forestgreen}%s{default}: %s", c_NpcName[npc.index], npc.b_Twin_On ? "My Healing Glasses are now Ready." : "My Self Regeneration is now Ready.");
+	CPrintToChatAll("{forestgreen}%s{default}: %s", NpcStats_ReturnNpcName(npc.index), npc.b_Twin_On ? "My Healing Glasses are now Ready." : "My Self Regeneration is now Ready.");
 }
 
 static void Matrix_Twins_Reset_Healing(Matrix_Twins npc, float gameTime)

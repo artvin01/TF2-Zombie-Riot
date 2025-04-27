@@ -96,6 +96,11 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 {
 	if(IsValidEntity(client))
 	{
+		if(f_West_Aim_Duration[client] > GetGameTime())
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			Rogue_OnAbilityUse(client, weapon);
@@ -120,6 +125,7 @@ public void Revolver_Fang_PAP1(int client, int weapon, bool crit, int slot)
 				velocity[2] += 90.0;	// a little boost to alleviate arcing issues
 			}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+			f_West_Aim_Duration[client] = GetGameTime() + 2.5;
 		}
 		else
 		{
@@ -140,7 +146,11 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 {
 	if(IsValidEntity(client))
 	{
-		
+		if(f_West_Aim_Duration[client] > GetGameTime())
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
 		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");

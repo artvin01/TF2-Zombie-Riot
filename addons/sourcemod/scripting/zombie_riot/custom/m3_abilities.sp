@@ -886,6 +886,10 @@ public void Reinforce(int client, bool NoCD)
 			f_ReinforceTillMax[client] = 1.0;
 		}
 
+		int MaxCashScale = CurrentCash;
+		if(MaxCashScale > 60000)
+			MaxCashScale = 60000;
+			
 		bool DeadPlayer;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -898,6 +902,14 @@ public void Reinforce(int client, bool NoCD)
 			if(!b_HasBeenHereSinceStartOfWave[client_check])
 				continue;
 			if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
+				continue;
+
+			int CashSpendScale = CashSpentTotal[client_check];
+
+			if(CashSpendScale <= 500)
+				CashSpendScale = 500;
+
+			if((CashSpendScale * 3) < (MaxCashScale))
 				continue;
 
 			DeadPlayer=true;
@@ -1244,6 +1256,11 @@ public void DeleteBuildingLookedAt(int client)
 				{
 					if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") > MaxClients)
 					{
+						ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+						if(IsValidEntity(objstats.m_iMasterBuilding))
+							entity = objstats.m_iMasterBuilding;
+							
+							//change to master entity.
 						i_BuildingSelectedToBeDeleted[client] = EntIndexToEntRef(entity);
 						DataPack pack;
 						CreateDataTimer(0.1, DeleteBuildingTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -1973,6 +1990,10 @@ stock int GetRandomDeathPlayer(int client)
 	int victims;
 	int[] victim = new int[MaxClients];
 
+	int MaxCashScale = CurrentCash;
+	if(MaxCashScale > 60000)
+		MaxCashScale = 60000;
+
 	for(int client_check = 1; client_check <= MaxClients; client_check++)
 	{
 		if(!IsValidClient(client_check))
@@ -1987,7 +2008,15 @@ stock int GetRandomDeathPlayer(int client)
 		if(!b_HasBeenHereSinceStartOfWave[client_check])
 			continue;
 
-		if(f_PlayerLastKeyDetected[client_check] < (GetGameTime() - 2.0))
+		if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
+			continue;
+
+		int CashSpendScale = CashSpentTotal[client_check];
+
+		if(CashSpendScale <= 500)
+			CashSpendScale = 500;
+
+		if((CashSpendScale * 3) < (MaxCashScale))
 			continue;
 
 		victim[victims++] = client_check;

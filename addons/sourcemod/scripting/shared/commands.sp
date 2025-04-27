@@ -276,6 +276,9 @@ public Action OnSayCommand(int client, const char[] command, int args)
 #if defined ZR
 	if(Store_SayCommand(client))
 		return Plugin_Handled;
+		
+	if(Rebel_Rename(client))
+		return Plugin_Handled;
 #endif
 	
 #if defined RPG

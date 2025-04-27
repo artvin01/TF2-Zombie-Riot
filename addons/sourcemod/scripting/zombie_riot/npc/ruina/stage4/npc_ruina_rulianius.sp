@@ -36,9 +36,6 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/samurai/tf_katana_slice_03.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static const char g_FantasiaSound[][] = {
 	"ambient/machines/thumper_hit.wav",
 };
@@ -65,7 +62,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_FantasiaSound);
 	Zero(i_damage_taken);
 	PrecacheModel("models/player/soldier.mdl");
@@ -119,17 +116,13 @@ methodmap Rulianius < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
 
 	public void PlayFantasiaSound() {
 		EmitSoundToAll(g_FantasiaSound[GetRandomInt(0, sizeof(g_FantasiaSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayFantasiaSound()");
-		#endif
 	}
 	
 	

@@ -55,9 +55,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return SawRunner(vecPos, vecAng, team);
 }
-static int i_PlayIdleAlertSound[MAXENTITIES];
-static int i_PlayMusicSound[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
+
 
 
 methodmap SawRunner < CClotBody
@@ -80,9 +79,7 @@ methodmap SawRunner < CClotBody
 		EmitCustomToAll(g_IdleChainsaw[GetRandomInt(0, sizeof(g_IdleChainsaw) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetEngineTime() + 2.5;
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {

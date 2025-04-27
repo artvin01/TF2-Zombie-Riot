@@ -38,10 +38,6 @@ static const char g_RangedAttackSounds[][] =
 	"npc/zombie_poison/pz_throw3.wav"
 };
 
-static int i_GrabbedThis[MAXENTITIES];
-static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
-static int i_TankAntiStuck[MAXENTITIES];
-
 void RiverSeaTank_Setup()
 {
 	PrecacheSoundArray(g_DeathSounds);

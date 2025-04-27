@@ -8,7 +8,6 @@ static const char g_RangedAttackSounds[][] = {
 static int i_barrage[MAXENTITIES];
 static float fl_barragetimer[MAXENTITIES];
 static float fl_singularbarrage[MAXENTITIES];
-static int i_AmountProjectiles[MAXENTITIES];
 
 static const char g_IdleSounds[][] =
 {

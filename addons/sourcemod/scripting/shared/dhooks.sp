@@ -26,6 +26,7 @@ static bool IsRespawning;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
+static DynamicHook g_DhookCrossbowHolster;
 DynamicHook g_DhookUpdateTransmitState; 
 //static DynamicHook g_DHookShouldCollide; //from mikusch but edited
 
@@ -104,6 +105,8 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
+	DHook_CreateDetour(gamedata, "CTraceFilterSimple::ShouldHitEntity", DHook_ShouldHitEntityPre);	// From SCP:SF
+	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);	// From SCP:SF
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -118,6 +121,7 @@ void DHook_Setup()
 	
 	g_DHookRocketExplode = DHook_CreateVirtual(gamedata, "CTFBaseRocket::Explode");
 	g_DHookFireballExplode = DHook_CreateVirtual(gamedata, "CTFProjectile_SpellFireball::Explode");
+	g_DhookCrossbowHolster = DHook_CreateVirtual(gamedata, "CTFCrossbow::Holster");
 
 	int offset = gamedata.GetOffset("CBaseEntity::UpdateTransmitState()");
 	g_DhookUpdateTransmitState = new DynamicHook(offset, HookType_Entity, ReturnType_Int, ThisPointer_CBaseEntity);
@@ -847,67 +851,51 @@ public MRESReturn DHook_RocketExplodePre(int entity)
 	
 	return MRES_Ignored;
 }
-/*
-public Action CH_ShouldCollide(int ent1, int ent2, bool &result)
+
+
+public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params) 
 {
-	if(IsValidEntity(ent1) && IsValidEntity(ent2))
-	{
-		result = CustomDetectionPassFlter(ent1, ent2, true);
-		if(result)
-		{
-			return Plugin_Continue;
-		}
-		else
-		{
-			return Plugin_Handled;
-		}
-	}
-	return Plugin_Continue;
+	int toucher = DHookGetParam(params, 1);
+	int passer  = DHookGetParam(params, 2);
+	if(passer == -1)
+		return MRES_Ignored;
+		
+	if(PassfilterGlobal(toucher, passer, true))
+		return MRES_Ignored;
+	
+	ret.Value = false;
+	return MRES_Supercede;
 }
-*/
-/*
-public MRESReturn DHook_ShouldCollide(DHookReturn ret, DHookParam params)
+public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHookParam param)
 {
-	g_Collision_Group collisionGroup0 = params.Get(1);
-	g_Collision_Group collisionGroup1 = params.Get(2);
-	
-	if (collisionGroup0 > collisionGroup1)
+	int toucher = param.Get(1);
+	int passer = GetEntityFromAddress(LoadFromAddress(address + view_as<Address>(4), NumberType_Int32));	// +4 from CTraceFilterSimple::m_pPassEnt
+	if(passer == -1)
+		return MRES_Ignored;
+	/*
+	PrintToConsoleAll("try test 1");
+	if(b_ThisWasAnNpc[toucher])
 	{
-		g_Collision_Group temp = collisionGroup0;
-		collisionGroup0 = collisionGroup1;
-		collisionGroup1 = temp;
-	}
-	
-	// Prevent vehicles from entering respawn rooms
-	if (collisionGroup0 == COLLISION_GROUP_VEHICLE)
-	{
-		if (collisionGroup1 == COLLISION_GROUP_NPC || collisionGroup1 == TFCOLLISION_GROUP_RESPAWNROOMS)
+		if(passer <= MaxClients)
 		{
-			ret.Value = true;
-			return MRES_Supercede;
+			PrintToConsoleAll("Collision1");
 		}
 	}
-	
-	return MRES_Ignored;
-}
-*/
-public Action CH_PassFilter(int ent1, int ent2, bool &result)
-{
-	
-	if(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES)
+	if(b_ThisWasAnNpc[passer])
 	{
-		result = PassfilterGlobal(ent1, ent2, true);
-		if(result)
+		if(toucher <= MaxClients)
 		{
-			return Plugin_Continue;
-		}
-		else
-		{
-			return Plugin_Handled;
+			PrintToConsoleAll("Collision2");
 		}
 	}
+	Never gets called???
+	*/
+	// TODO: In RPG, PvP has collisions
+	if(PassfilterGlobal(toucher, passer, true))
+		return MRES_Ignored;
 	
-	return Plugin_Continue;
+	ret.Value = false;
+	return MRES_Supercede;
 }
 
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
@@ -1599,7 +1587,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
-	if(Construction_InSetup())
+	if(Construction_Mode())
 		return MRES_Ignored;
 #endif
 	
@@ -2299,4 +2287,41 @@ static MRESReturn DHookCallback_CTFGameRules_IsQuickBuildTime_Pre(DHookReturn re
 {
 	ret.Value = false;
 	return MRES_Supercede;
+}
+
+bool b_FixInfiniteAmmoBugOnly[MAXENTITIES];
+bool SetBackAmmoCrossbow = false;
+void CrossbowGiveDhook(int entity, bool GiveBackammo)
+{
+	g_DhookCrossbowHolster.HookEntity(Hook_Pre, entity, DhookBlockCrossbowPre);
+	g_DhookCrossbowHolster.HookEntity(Hook_Post, entity, DhookBlockCrossbowPost);
+	b_FixInfiniteAmmoBugOnly[entity] = GiveBackammo;
+}
+
+public MRESReturn DhookBlockCrossbowPre(int entity)
+{
+	if(b_FixInfiniteAmmoBugOnly[entity])
+	{
+		int AmmoType = GetAmmoType_WeaponPrimary(entity);
+		if(AmmoType >= 1)
+			return MRES_Ignored;
+			//they have more then 1 ammo? Allow reloading.
+	}
+	int GetAmmoCrossbow = GetEntProp(entity, Prop_Data, "m_iClip1");
+	if(GetAmmoCrossbow <= 0)
+	{
+		SetEntProp(entity, Prop_Data, "m_iClip1", 1);
+		SetBackAmmoCrossbow = true;
+	}
+	return MRES_Ignored;
+}
+
+public MRESReturn DhookBlockCrossbowPost(int entity)
+{
+	if(SetBackAmmoCrossbow)
+	{
+		SetEntProp(entity, Prop_Data, "m_iClip1", 0);
+		SetBackAmmoCrossbow = false;
+	}
+	return MRES_Ignored;
 }

@@ -57,7 +57,7 @@ void Victoria_Batter_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return VictoriaBatter(vecPos, vecAng, ally);
 }

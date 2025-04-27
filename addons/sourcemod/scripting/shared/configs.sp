@@ -103,6 +103,7 @@ void Configs_ConfigsExecuted()
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
+	CheckAprilFools();
 #endif
 #if defined RPG
 	RPG_ConfigSetup();
@@ -111,7 +112,6 @@ void Configs_ConfigsExecuted()
 #if defined RTS
 	RTS_ConfigsSetup();
 #endif
-	CheckAprilFools();
 
 	delete kv;
 
@@ -262,8 +262,10 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			break;
 	}
 	
+#if defined RPG
 	if(i == val)
 		return;
+#endif
 	
 	// Damage and Pellets
 #if defined RPG

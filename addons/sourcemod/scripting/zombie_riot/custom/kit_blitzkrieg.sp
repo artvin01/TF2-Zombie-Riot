@@ -74,7 +74,7 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			
 			i_WeaponGotLastmanBuff[weapon] = false;
-			if(CvarFileNetworkDisable.IntValue <= 0)
+			if(FileNetwork_Enabled())
 				PrecacheBlitzMusic();
 
 			if(fl_primary_reloading[client]>GetGameTime())

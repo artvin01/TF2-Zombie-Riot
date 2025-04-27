@@ -55,9 +55,6 @@ static const char g_RangedReloadSound[][] = {
 	"misc/halloween/spell_mirv_cast.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
 void PhantomKnight_OnMapStart_NPC()
 {
@@ -67,7 +64,7 @@ void PhantomKnight_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));   i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
@@ -152,7 +149,7 @@ methodmap PhantomKnight < CClotBody
 
 	public void PlayMeleeMissSound() 
 	{
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	
@@ -174,7 +171,7 @@ methodmap PhantomKnight < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		float wave = float(Waves_GetRound()+1); //Wave scaling
+		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
 		
 		wave *= 0.1;
 
@@ -581,7 +578,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 					}
 					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 					npc.FaceTowards(VecEnemy, 15000.0);
-					if(i_PhantomsSpawned[npc.index] <= 5 || (Waves_GetRound() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
+					if(i_PhantomsSpawned[npc.index] <= 5 || (ZR_Waves_GetRound() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
 					{
 						//If its wave 60 or above, he can spawn
 						int fake_spawned = NPC_CreateByName("npc_phantom_knight", -1, vecPos_Npc, vecAng_Npc,GetTeam(npc.index), "");
