@@ -694,6 +694,30 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	}
 
+	if(npc.m_flLandAnimationdo)
+	{
+		if(npc.IsOnGround())
+		{
+			npc.m_flLandAnimationdo = 0.0;
+			if(Construction_Mode())
+				npc.AddGesture("ACT_BOSS_LAND", _,_,_, 2.0);
+		}
+	}
+	if(npc.m_flPrepareFlyAtEnemy)
+	{
+		static float Size = 75.0;
+		spawnRing_Vectors(f3_NpcSavePos[npc.index], Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.15, 6.0, 6.0, 2);
+		
+		if(npc.m_flPrepareFlyAtEnemy < GetGameTime(npc.index))
+		{
+			npc.m_flLandAnimationdo = 1.0;
+				
+			npc.PlaySuperJumpLaunch();
+			npc.m_flPrepareFlyAtEnemy = 0.0;
+			PluginBot_Jump(npc.index, f3_NpcSavePos[npc.index], 2500.0, true);
+		}
+	}
+	
 	if(ZiliusRegenShieldDo(npc))
 		return;
 
@@ -878,29 +902,6 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 			}
 		}
 
-	}
-	if(npc.m_flLandAnimationdo)
-	{
-		if(npc.IsOnGround())
-		{
-			npc.m_flLandAnimationdo = 0.0;
-			if(Construction_Mode())
-				npc.AddGesture("ACT_BOSS_LAND", _,_,_, 2.0);
-		}
-	}
-	if(npc.m_flPrepareFlyAtEnemy)
-	{
-		static float Size = 75.0;
-		spawnRing_Vectors(f3_NpcSavePos[npc.index], Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.15, 6.0, 6.0, 2);
-		
-		if(npc.m_flPrepareFlyAtEnemy < GetGameTime(npc.index))
-		{
-			npc.m_flLandAnimationdo = 1.0;
-				
-			npc.PlaySuperJumpLaunch();
-			npc.m_flPrepareFlyAtEnemy = 0.0;
-			PluginBot_Jump(npc.index, f3_NpcSavePos[npc.index], 2500.0, true);
-		}
 	}
 	if(npc.m_flAttackHappens)
 	{
