@@ -100,6 +100,15 @@ stock bool FileNetwork_Enabled()
 	return false;
 }
 
+stock bool FileNetworkLib_Installed()
+{
+#if defined _filenetwork_included
+	if(FileNetworkLib)
+		return true;
+#endif
+
+	return false;
+}
 void FileNetwork_MapStart()
 {
 	InServerSetup = true;
@@ -214,7 +223,6 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	enabled.GotoFirstSubKey(false);
 	do
 	{
-		PrintToServer("GetSectionName? %s", buffer);
 		enabled.GetSectionName(buffer, sizeof(buffer));
 		list.PushString(buffer);
 	}
@@ -233,17 +241,19 @@ void FileNetwork_ConfigSetup(KeyValues map)
 			if(kv.GotoFirstSubKey(false))
 			{
 				bool extra = list.FindString(buffer) == -1;
+				PrintToServer("FindString %s",buffer);
 				
 				do
 				{
 					kv.GetSectionName(buffer, sizeof(buffer));
 					if(extra)
 					{
+						PrintToServer("if(extra) %s",buffer);
 						//ExtraList.PushString(buffer);
 					}
 					else if(FileExists(buffer, true))
 					{
-						PrintToServer("FileExists GetSectionName? %s", buffer);
+						PrintToServer("FileExists %s",buffer);
 						AddToStringTable(table, buffer);
 					}
 					else
@@ -317,6 +327,7 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 
 stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 {
+	PrintToServer("PrecacheMvMIconCustom? %s", icon);
 	char buffer[PLATFORM_MAX_PATH];
 	if(vtf)
 	{

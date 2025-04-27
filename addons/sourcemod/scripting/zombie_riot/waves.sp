@@ -647,7 +647,12 @@ void Waves_SetupVote(KeyValues map)
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues wavekv = new KeyValues("Waves");
 				wavekv.ImportFromFile(buffer);
-				Waves_CacheWaves(wavekv, CvarFileNetworkDisable.IntValue > 1);
+				bool CacheNpcs = false;
+				if(!FileNetworkLib_Installed())
+					CacheNpcs = true;
+				if(CvarFileNetworkDisable.IntValue > 1)
+					CacheNpcs = true;
+				Waves_CacheWaves(wavekv, CacheNpcs);
 				delete wavekv;
 			}
 
