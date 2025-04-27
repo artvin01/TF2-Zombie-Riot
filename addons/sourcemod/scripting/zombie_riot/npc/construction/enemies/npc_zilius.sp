@@ -122,6 +122,7 @@ void Zilius_TBB_Precahce()
 	
 	if(Construction_Mode())
 		PrecacheModel("models/zombie_riot/special_boss/zilius_1.mdl");
+		
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 }
 
