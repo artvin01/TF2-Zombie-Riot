@@ -3044,4 +3044,16 @@
 	{
 		"en" "Bubble Wand"
 	}
+	"Cheesy Surprise"
+	{
+		"en" "Cheesy Surprise"
+	}
+	"Cheesy Dosage"
+	{
+		"en" "Cheesy Dosage"
+	}
+	"Koshi's Chedd-inator"
+	{
+		"en" "Koshi's Chedd-inator"
+	}
 }
