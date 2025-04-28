@@ -2875,24 +2875,10 @@ void DoGlobalMultiScaling()
 {
 	float playercount = ZRStocks_PlayerScalingDynamic();
 
-	playercount = Pow ((playercount * 0.65), 1.2);
-
-	//on low player counts it does not scale well.
+	if(playercount < 2.0)
+		playercount = 2.0;
 	
-	/*
-		at 14 players, it scales fine, at lower, it starts getting really hard, tihs 
-
-	*/
-
-	float multi = Pow(1.08, playercount);
-	if(multi > 10.0)
-	{
-		//woops, scales too much now.
-		multi = 8.0;
-		multi += (playercount * 0.1);
-	}
-
-	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
+	float multi = playercount / 4.0;
 	
 	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
