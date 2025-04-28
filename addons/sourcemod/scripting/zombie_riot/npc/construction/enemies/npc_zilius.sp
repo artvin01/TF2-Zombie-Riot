@@ -542,7 +542,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/construct/bat_prtsstage1.mp3");
 			music.Time = 148;
-			music.Volume = 1.0;
+			music.Volume = 1.6;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "bat_prtsstage1");
 			strcopy(music.Artist, sizeof(music.Artist), "Arknights OST");
