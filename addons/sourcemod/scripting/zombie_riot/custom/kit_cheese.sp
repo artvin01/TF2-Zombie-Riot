@@ -4,7 +4,7 @@
 /*
 was meant to be cheese, but its plasma instead smh. 
 
-This kit introduces the Plasmic Elemental status. Yes, cheese as an elemental status.
+This kit introduces the Plasmic Elemental status.
 Upon reaching 100%, the target recieves massive damage based on the attacker's 
 pap level and applier weapon, and is debuffed with Plasm II for 8s (bosses for 4s, raids get I for 4s instead).
 Plasmic Elemental buildup is reduced by 50% on bosses and raids 
@@ -105,8 +105,9 @@ void Cheese_BeamEffect(float position[3], float startrad = 1.0, float endrad = 1
 }
 void Cheese_PlaySplat(int entity)
 {
-    EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity);
-    EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity);
+    	int pitch = GetRandomInt(75, 125);
+	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
+    	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
 }
 
 void Cheese_Enable(int client, int weapon)
