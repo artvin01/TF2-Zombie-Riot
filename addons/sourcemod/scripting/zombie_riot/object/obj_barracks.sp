@@ -303,19 +303,19 @@ methodmap ObjectBarracks < ObjectGeneric
 			if(CivType[client] == Combine)
 			{
 				SetEntityModel(npc.index, SUMMONER_MODEL_3);
-				if(IsValidEntity(npc.m_iWearable2))
+				if(IsValidEntity(npc.m_iWearable1))
 				{
-					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
-					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_3);
+					SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale") * 0.75);
+					SetEntityModel(npc.m_iWearable1, SUMMONER_MODEL_3);
 				}
 			}
 			else if(CivType[client] != Combine)
 			{
 				SetEntityModel(npc.index, SUMMONER_MODEL_2);
-				if(IsValidEntity(npc.m_iWearable2))
+				if(IsValidEntity(npc.m_iWearable1))
 				{
-					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
-					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+					SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale") * 0.75);
+					SetEntityModel(npc.m_iWearable1, SUMMONER_MODEL_2);
 				}
 			}
 			SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale") * 0.75);
@@ -1125,10 +1125,10 @@ void Barracks_BuildingThink(int entity)
 	if(!b_Anger[npc.index])
 	{
 		SetEntityModel(npc.index, SUMMONER_MODEL_2);
-		if(IsValidEntity(npc.m_iWearable2))
+		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
-			SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale") * 0.75);
+			SetEntityModel(npc.m_iWearable1, SUMMONER_MODEL_2);
 		}
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale") * 0.75);
 		float minbounds[3] = {-18.0, -18.0, 0.0};
