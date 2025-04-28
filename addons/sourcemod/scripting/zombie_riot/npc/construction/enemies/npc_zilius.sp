@@ -119,9 +119,13 @@ void Zilius_TBB_Precahce()
 	PrecacheSound("weapons/cow_mangler_explosion_normal_04.wav");
 	PrecacheSound("weapons/cow_mangler_explosion_normal_05.wav");
 	PrecacheSound("weapons/cow_mangler_explosion_normal_06.wav");
+	PrecacheSoundCustom("#zombiesurvival/construct/bat_prtsstage1.mp3");
 	
 	if(Construction_Mode())
 		PrecacheModel("models/zombie_riot/special_boss/zilius_1.mdl");
+
+	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
+	PrecacheSound("mvm/mvm_tank_start.wav");
 	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 }
 
@@ -340,7 +344,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 7:
 			{
-				CPrintToChatAll("{black}Zilius{default}: {blue}Zilius{default} {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
+				CPrintToChatAll("{black}Zilius{default}: {blue}Sensal{default}, {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
 			}
 			case 8:
 			{
@@ -479,8 +483,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		npc.m_flFrontSlicerCD = GetGameTime() + 15.0;
 		npc.m_flSpawnPortal = GetGameTime() + 25.0;
 		
-
-		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
@@ -559,10 +561,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
-
-
-
-		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
 		SensalGiveShield(npc.index,CountPlayersOnRed(1) * 50);
 		RequestFrame(Zilius_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
@@ -699,38 +697,68 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	}
 
+	if(npc.m_flLandAnimationdo)
+	{
+		if(npc.IsOnGround())
+		{
+			npc.m_flLandAnimationdo = 0.0;
+			if(Construction_Mode())
+				npc.AddGesture("ACT_BOSS_LAND", _,_,_, 2.0);
+		}	
+	}
+	if(npc.m_flPrepareFlyAtEnemy)
+	{
+		static float Size = 75.0;
+		spawnRing_Vectors(f3_NpcSavePos[npc.index], Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.15, 6.0, 6.0, 2);
+		
+		if(npc.m_flPrepareFlyAtEnemy < GetGameTime(npc.index))
+		{
+			npc.m_flLandAnimationdo = 1.0;
+				
+			npc.PlaySuperJumpLaunch();
+			npc.m_flPrepareFlyAtEnemy = 0.0;
+			PluginBot_Jump(npc.index, f3_NpcSavePos[npc.index], 2500.0, true);
+		}
+	}
+
 	if(ZiliusRegenShieldDo(npc))
 		return;
 
 	if(ZiliusSpawnPortal(npc))
 		return;
 
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+
 	bool CancelEarly = false;
 	CancelEarly = ZiliusFrontSlicer(npc);
 
-	if(IsEntityAlive(npc.m_iTargetWalkTo))
+	if(IsEntityAlive(npc.m_iTarget))
 	{
 	//	int ActionToTake = -1;
 
 		//Predict their pos.
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
 	}
 	else
 	{
-		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
-		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
 	if(CancelEarly)
@@ -837,11 +865,6 @@ static void Internal_NPCDeath(int entity)
 
 void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gameTime)
 {
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
 	if(IsValidEntity(npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -883,29 +906,6 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 		}
 
 	}
-	if(npc.m_flLandAnimationdo)
-	{
-		if(npc.IsOnGround())
-		{
-			npc.m_flLandAnimationdo = 0.0;
-			if(Construction_Mode())
-				npc.AddGesture("ACT_BOSS_LAND", _,_,_, 2.0);
-		}
-	}
-	if(npc.m_flPrepareFlyAtEnemy)
-	{
-		static float Size = 75.0;
-		spawnRing_Vectors(f3_NpcSavePos[npc.index], Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.15, 6.0, 6.0, 2);
-		
-		if(npc.m_flPrepareFlyAtEnemy < GetGameTime(npc.index))
-		{
-			npc.m_flLandAnimationdo = 1.0;
-				
-			npc.PlaySuperJumpLaunch();
-			npc.m_flPrepareFlyAtEnemy = 0.0;
-			PluginBot_Jump(npc.index, f3_NpcSavePos[npc.index], 2500.0, true);
-		}
-	}
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
@@ -932,6 +932,9 @@ void Construction_Raid_ZiliusSelfDefense(Construction_Raid_Zilius npc, float gam
 							float vecHit[3];
 							WorldSpaceCenter(target, vecHit);
 							float damage = 30.0;
+
+							if(ShouldNpcDealBonusDamage(target))
+								damage *= 10.0;
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 							
@@ -1303,7 +1306,7 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 			npc.StartPathing();
 			npc.m_bisWalking = false;
 			npc.m_flFrontSlicerInit = 0.0;
-			f_NpcAdjustFriction[npc.index] = 0.3;
+			f_NpcAdjustFriction[npc.index] = 0.15;
 			npc.m_flDoingAnimation = GetGameTime(npc.index) + 7.0;
 			ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
 			f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE; //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
@@ -1385,6 +1388,8 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
 		npc.SayStuffZilius();
 		npc.m_iDontMultiAbility = 1;
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 110);
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 110);
 		return true;
 	}
 	return false;
@@ -1405,7 +1410,7 @@ static void Zilius_KickTouched(int entity, int enemy)
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
-	float damagedeal = 100.0;
+	float damagedeal = 50.0;
 	if(ShouldNpcDealBonusDamage(enemy))
 		damagedeal *= 10.0;
 
@@ -1596,6 +1601,8 @@ bool ZiliusSpawnPortal(Construction_Raid_Zilius npc)
 		}
 		npc.m_iDontMultiAbility = 3;
 		npc.SayStuffZilius();
+		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0, 90);
+		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0, 90);
 		return true;
 	}
 	return false;
@@ -1808,10 +1815,6 @@ void ZiliusInitiateLaserAttack_DamagePart(DataPack pack)
 			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
 			if (damage < 0)
 				damage *= -1.0;
-
-			
-			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
-				damage *= 0.25;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				

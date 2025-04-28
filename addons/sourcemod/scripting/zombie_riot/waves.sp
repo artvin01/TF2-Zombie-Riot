@@ -642,7 +642,7 @@ void Waves_SetupVote(KeyValues map)
 			Voting.PushArray(vote);
 
 			// If we're downloading via downloadstable, add every vote option to that
-			if(!autoSelect && CvarFileNetworkDisable.IntValue > 0)
+			if(!autoSelect && !FileNetwork_Enabled())
 			{
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues wavekv = new KeyValues("Waves");
@@ -2882,7 +2882,7 @@ void DoGlobalMultiScaling()
 	
 	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
-
+	
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 

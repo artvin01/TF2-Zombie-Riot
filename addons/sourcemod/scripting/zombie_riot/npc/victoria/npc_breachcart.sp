@@ -256,7 +256,7 @@ static void ClotThink(int iNPC)
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
 			bool Deploy=false;
-			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+			if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 			{
 				int entity = NPC_CreateByName("npc_bombcart", -1, pos, ang, GetTeam(npc.index), "EX");
 				if(entity > MaxClients)

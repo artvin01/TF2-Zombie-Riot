@@ -91,6 +91,15 @@ stock void FileNetwork_LibraryRemoved(const char[] name)
 #endif
 }
 
+stock bool FileNetwork_Enabled()
+{
+#if defined _filenetwork_included
+	if(FileNetworkLib)
+		return CvarFileNetworkDisable.IntValue < 1;
+#endif
+	return false;
+}
+
 void FileNetwork_MapStart()
 {
 	InServerSetup = true;
@@ -274,7 +283,7 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 	PrecacheSound(sound);
 
 #if defined _filenetwork_included
-	if(InServerSetup && CvarFileNetworkDisable.IntValue > 0)
+	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 0))
 #else
 	if(InServerSetup)
 #endif
@@ -311,7 +320,7 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 		FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
 
 #if defined _filenetwork_included
-		if(InServerSetup && CvarFileNetworkDisable.IntValue > 1)
+		if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 1))
 #else
 		if(InServerSetup)
 #endif
@@ -329,7 +338,7 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
 
 #if defined _filenetwork_included
-	if(InServerSetup && CvarFileNetworkDisable.IntValue > 1)
+	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 1))
 #else
 	if(InServerSetup)
 #endif
@@ -350,8 +359,19 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 #endif
 }
 
-static void AddToDownloadsTable(const char[] file, const char[] original = "")
+stock void AddToDownloadsTable(const char[] file, const char[] original = "")
 {
+	if(!InServerSetup)
+	{
+		LogStackTrace("Tried to add '%s' to downloads, but too late", file);
+
+		// Kill the plugin, we don't want client cache issues
+		if(StrContains(file, "sound", false) != -1)
+			SetFailState("Tried to add '%s' to downloads, but too late", file);
+		
+		return;
+	}
+
 	if(DownloadList.FindString(file) == -1)
 	{
 		AddFileToDownloadsTable(file);
@@ -756,7 +776,7 @@ stock void StopCustomSound(int entity, int channel, const char[] sound, float vo
 
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	if(DownloadList.FindString(sound) != -1)
+	if(!FileNetwork_Enabled() || DownloadList.FindString(sound) != -1)
 	{
 		float volume2 = volume;
 		int count = RoundToCeil(volume);
@@ -830,7 +850,7 @@ stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, i
 
 stock void EmitCustom(const int[] clients, int numClients, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	if(DownloadList.FindString(sound) != -1)
+	if(!FileNetwork_Enabled() || DownloadList.FindString(sound) != -1)
 	{
 		float volume2 = volume;
 		int count = RoundToCeil(volume);
@@ -917,12 +937,9 @@ stock bool IsFileInDownloads(const char[] file)
 stock void SendSingleFileToClient(int client, const char[] download, Function func)
 {
 #if defined _filenetwork_included
-	if(CvarFileNetworkDisable.IntValue > 0)
+	if(!FileNetworkLib || CvarFileNetworkDisable.IntValue > 0)
 		return;
-		
-	if(!FileNetworkLib)
-		return;
-
+	
 	DataPack pack = new DataPack();
 	pack.WriteCell(2);
 	pack.WriteString(download);

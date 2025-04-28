@@ -304,9 +304,13 @@ static void BuildingMenu(int client)
 		{
 			if(i == 2 && !Construction_Mode() && !CvarInfiniteCash.BoolValue)
 				continue;
+
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
-			menu.AddItem(buffer1, buffer1);
+			if(i == 2 && !Waves_Started())
+				menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
+			else
+				menu.AddItem(buffer1, buffer1);
 		}
 	}
 	else
@@ -2136,14 +2140,6 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
-	/*
-	if(IsValidEntity(objstats.m_iWearable2))
-	{
-		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
-		b_IsEntityAlwaysTranmitted[objstats.m_iWearable2] = true;		
-		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
-	}
-	*/
 
 	
 	//update text
@@ -2359,16 +2355,6 @@ void UnequipDispenser(int client, bool destroy = false)
 	//	SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	//	SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
-	/*
-	if(IsValidEntity(objstats.m_iWearable2))
-	{
-		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
-		b_IsEntityAlwaysTranmitted[objstats.m_iWearable2] = false;
-	//	SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_fadeMaxDist", 0.0);		
-		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
-		SDKHook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);	
-	}
-	*/
 
 	//update text
 	objstats.m_flNextDelayTime = 0.0;

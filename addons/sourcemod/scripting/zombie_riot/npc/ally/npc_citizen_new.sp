@@ -4633,7 +4633,13 @@ public void Citizen_ClotThink(int iNPC)
 
 static bool CanOutRun(int target)
 {
-	return (target <= MaxClients || (300.0 > view_as<CClotBody>(target).GetRunSpeed()));
+	if(target <= MaxClients)
+		return true;
+	if(b_ThisWasAnNpc[target])
+	{
+		return (300.0 > view_as<CClotBody>(target).GetRunSpeed());
+	}
+	return true;
 }
 
 void Citizen_MiniBossSpawn()
