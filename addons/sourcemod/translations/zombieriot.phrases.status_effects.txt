@@ -1238,4 +1238,12 @@
 	{
 		"en" 	"Slows NPCs by 7%%.\nReduces attackspeed by 10%%."
 	}
+	"Plasmatic Rampage"
+	{
+		"en"	"Plasmatic Rampage"
+	}
+	"Plasmatic Rampage Desc"
+	{
+		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Increases damage dealt by 15%%.\nDecreases damage taken by 15%%.\nIncreases attackspeed by 15%%.\n(PLASMA KIT ONLY) Ability cooldowns are reduced."
+	}
 }
