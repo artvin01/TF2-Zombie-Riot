@@ -1682,7 +1682,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			// Stage 2
 			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
@@ -1698,7 +1698,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -1714,7 +1714,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			// Stage 3
 			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
@@ -1730,7 +1730,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;

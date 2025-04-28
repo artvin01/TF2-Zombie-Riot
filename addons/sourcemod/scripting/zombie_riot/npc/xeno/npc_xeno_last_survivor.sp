@@ -623,7 +623,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 			
 			// Stage 2
 			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
@@ -639,7 +639,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -655,7 +655,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
 			
 			// Stage 3
 			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
@@ -671,7 +671,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;
