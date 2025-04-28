@@ -141,7 +141,7 @@ public Action Cheese_EffectTimer(Handle timer, int client)
 				pos[2] += 5.0;
 				if(LastMann)
 				{
-					ApplyStatusEffect(client, client, "Cheesy Presence", 1.0);
+					ApplyStatusEffect(client, client, "Plasmatic Rampage", 1.0);
 			                Cheese_BeamEffect(pos, 1.0, 150.0, 0.125, 12.0);
                     
 					return Plugin_Continue;
