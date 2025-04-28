@@ -1566,12 +1566,12 @@ void Construction_OpenResearch(int client)
 		if(InResearchAt > gameTime)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Claim Research Time", RoundToCeil(InResearchAt - gameTime));
-			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+			menu.AddItem("-1", buffer, ITEMDRAW_DISABLED);
 		}
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Claim Research");
-			menu.AddItem(NULL_STRING, buffer);
+			menu.AddItem("-1", buffer);
 		}
 	}
 
@@ -1612,6 +1612,8 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 				menu.GetItem(choice, buffer, sizeof(buffer));
 
 				int a = StringToInt(buffer);
+				if(a < 0)
+					return 0;
 
 				ResearchList.GetArray(a, info);
 

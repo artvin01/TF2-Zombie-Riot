@@ -84,7 +84,7 @@ enum
 
 //edit: No, makes you miss more often.
 
-
+bool EnableSilentMode = false;
 //Comment this out, and reload the plugin once ingame if you wish to have infinite cash.
 
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
@@ -3610,7 +3610,7 @@ void checkOS()
 {
 	char cmdline[256];
 	GetCommandLine(cmdline, sizeof(cmdline));
-
+	//Todo , this is bad but we dont even use this.
 	if (StrContains(cmdline, "./srcds_linux ", false) != -1)
 	{
 		OperationSystem = OS_Linux;

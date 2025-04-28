@@ -50,6 +50,7 @@ char c_NpcName[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
+//static int g_iResolveOffset;
 
 float f3_AvoidOverrideMin[MAXENTITIES][3];
 float f3_AvoidOverrideMax[MAXENTITIES][3];
@@ -449,12 +450,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			DispatchKeyValue(npc, "solid", "2");
 		}
-
+		
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc][0] = 0;
 		i_FailedTriesUnstuck[npc][1] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
+
+	//	if(NpcTypeLogic == NORMAL_NPC)
+	//Crashes
+	//		SetEntData(npc, FindSendPropInfo("CTFBaseBoss", "m_lastHealthPercentage") + g_iResolveOffset, false, 1, true);
 
 		Hook_DHook_UpdateTransmitState(npc);
 		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
@@ -674,14 +679,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		int sound = GetRandomInt(0, sizeof(g_GibSound) - 1);
 	
 		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+	//	EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+	//	EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 	}
 	public void PlayGibSoundMetal() { //ehehee this sound is funny 
 		int sound = GetRandomInt(0, sizeof(g_GibSoundMetal) - 1);
 	
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+	//	EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 	}
 	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1, bool custom = false)
 	{
@@ -2130,6 +2135,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	//	this.SetSequence(iSequence);
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
+		//Its like setcycle, but itdoes it for us so it worsk clientside	
+	//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 		this.ResetSequenceInfo();
 		this.m_iAnimationState = iSequence;
 	//	int layer = this.FindGestureLayerBySequence(iSequence);
@@ -2214,6 +2221,8 @@ methodmap CClotBody < CBaseCombatCharacter
 				this.SetSequence(sequence);
 				this.SetPlaybackRate(1.0);
 				this.SetCycle(0.0);
+			//Its like setcycle, but itdoes it for us so it worsk clientside	
+			//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 				this.ResetSequenceInfo();
 			}
 		}
@@ -2477,7 +2486,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void SetSequence(int iSequence)	{ SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); }
 	public float GetPlaybackRate() { return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); }
 	public void SetPlaybackRate(float flRate) { SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate); }
-	public void SetCycle(float flCycle)	   { SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); }
+	public void SetCycle(float flCycle)	   
+	{
+		//We are chacning cycles, we must disable this.
+	//	SetEntProp(this.index, Prop_Send, "m_bClientSideAnimation", 0);
+		SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); 
+	}
 	/*
 	public void SetSequence(int iSequence)
 	{
@@ -3124,6 +3138,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.SetSequence(nSequence);
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
+	//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 	
 		this.ResetSequenceInfo();
 		
@@ -3436,6 +3451,8 @@ public void NPC_Base_InitGamedata()
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 
+
+//	g_iResolveOffset = gamedata.GetOffset("CBaseBoss::m_bResolvePlayerCollisions");
 	delete gamedata;
 
 	NextBotActionFactory ActionFactory = new NextBotActionFactory("ZRMainAction");
@@ -4225,7 +4242,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	}
 	else
 	{
-		if(!b_thisNpcIsARaid[pThis] && EnemyNpcAlive >= 20) //Theres too many npcs, kill off the sounds.
+		if(!b_thisNpcIsARaid[pThis] && (EnemyNpcAlive >= 20 || EnableSilentMode)) //Theres too many npcs, kill off the sounds.
 		{
 			switch(npc.m_iNpcStepVariation)
 			{
@@ -4242,7 +4259,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			}
 		}
 	}
-	if(!b_thisNpcIsARaid[pThis] && EnemyNpcAlive >= 20)
+	if(!b_thisNpcIsARaid[pThis] && (EnemyNpcAlive >= 20 || EnableSilentMode))
 	{
 		//kill off sound.
 		//even if they had an anim event

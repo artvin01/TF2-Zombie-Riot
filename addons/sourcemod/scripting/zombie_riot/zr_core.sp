@@ -989,8 +989,6 @@ public Action GlobalTimer(Handle timer)
 			{
 				Music_Update(client);
 			}
-			
-			PlayerApplyDefaults(client);
 		}
 	}
 	
@@ -999,6 +997,16 @@ public Action GlobalTimer(Handle timer)
 	
 	Zombie_Delay_Warning();
 	Spawners_Timer();
+	if(frame % 100)
+		return Plugin_Continue;
+
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			PlayerApplyDefaults(client);
+		}
+	}
 	return Plugin_Continue;
 }
 
@@ -2659,14 +2667,8 @@ void PlayerApplyDefaults(int client)
 		
 		if(point_difference > 0)
 		{
-			if(Classic_Mode() || ZR_Waves_GetRound() > 59)
-			{
-				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
-			}
-			else
-			{
-				GiveXP(client, point_difference);
-			}
+			//Too much xp given, we have to reduce it by 10x
+			GiveXP(client, point_difference / 5);
 		}
 		
 		i_PreviousPointAmount[client] = PlayerPoints[client];

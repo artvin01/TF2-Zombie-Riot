@@ -23,9 +23,9 @@ static ArrayList DownloadList;
 
 void FileNetwork_PluginStart()
 {
-#if defined _filenetwork_included
 	RegServerCmd("zr_showfilenetlist", DebugCommand);
 
+#if defined _filenetwork_included
 	SoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	SoundAlts = new StringMap();
 	ExtraList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
@@ -38,11 +38,11 @@ void FileNetwork_PluginStart()
 #endif
 }
 
-#if defined _filenetwork_included
 static Action DebugCommand(int args)
 {
 	char buffer[PLATFORM_MAX_PATH];
 
+#if defined _filenetwork_included
 	if(SoundList)
 	{
 		int length = SoundList.Length;
@@ -62,10 +62,20 @@ static Action DebugCommand(int args)
 			PrintToServer("\"%s\"", buffer);
 		}
 	}
+#endif
+
+	if(DownloadList)
+	{
+		int length = DownloadList.Length;
+		for(int i; i < length; i++)
+		{
+			DownloadList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("(DL) \"%s\"", buffer);
+		}
+	}
 
 	return Plugin_Handled;
 }
-#endif
 
 stock void FileNetwork_LibraryAdded(const char[] name)
 {
@@ -100,6 +110,15 @@ stock bool FileNetwork_Enabled()
 	return false;
 }
 
+stock bool FileNetworkLib_Installed()
+{
+#if defined _filenetwork_included
+	if(FileNetworkLib)
+		return true;
+#endif
+
+	return false;
+}
 void FileNetwork_MapStart()
 {
 	InServerSetup = true;
@@ -185,7 +204,9 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	{
 		map.Rewind();
 		if(map.JumpToKey("Packages"))
+		{
 			enabled = map;
+		}
 	}
 
 	if(!enabled)
@@ -201,7 +222,8 @@ void FileNetwork_ConfigSetup(KeyValues map)
 		else
 		{
 			enabled = kv;
-			enabled.JumpToKey("Default");
+			if(!enabled.JumpToKey("Default"))
+				LogError("No default download packages in downloads.cfg");
 		}
 
 	}
@@ -213,6 +235,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	do
 	{
 		enabled.GetSectionName(buffer, sizeof(buffer));
+		PrintToServer("FileNetwork_ConfigSetup::AddPackage '%s'", buffer);
 		list.PushString(buffer);
 	}
 	while(enabled.GotoNextKey(false));
@@ -230,6 +253,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 			if(kv.GotoFirstSubKey(false))
 			{
 				bool extra = list.FindString(buffer) == -1;
+				PrintToServer("FileNetwork_ConfigSetup::CheckPackage '%s' (%s)", buffer, extra ? "Disabled" : "Enabled");
 				
 				do
 				{
@@ -282,6 +306,9 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 	
 	PrecacheSound(sound);
 
+	if(!InServerSetup)
+		PrintToServer("PrecacheSoundCustom::TooLate '%s'", sound);
+
 #if defined _filenetwork_included
 	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 0))
 #else
@@ -313,8 +340,10 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 
 stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 {
-	char buffer[PLATFORM_MAX_PATH];
+	if(!InServerSetup)
+		PrintToServer("PrecacheSoundCustom::TooLate '%s'", icon);
 
+	char buffer[PLATFORM_MAX_PATH];
 	if(vtf)
 	{
 		FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
@@ -371,7 +400,7 @@ stock void AddToDownloadsTable(const char[] file, const char[] original = "")
 		
 		return;
 	}
-
+	
 	if(DownloadList.FindString(file) == -1)
 	{
 		AddFileToDownloadsTable(file);
@@ -850,7 +879,7 @@ stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, i
 
 stock void EmitCustom(const int[] clients, int numClients, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	if(!FileNetwork_Enabled() || DownloadList.FindString(sound) != -1)
+	if(DownloadList.FindString(sound) != -1)
 	{
 		float volume2 = volume;
 		int count = RoundToCeil(volume);
