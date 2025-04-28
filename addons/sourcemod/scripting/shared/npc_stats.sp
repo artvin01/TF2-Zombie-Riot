@@ -457,6 +457,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		i_FailedTriesUnstuck[npc][1] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
+	//	RunScriptCode(npc, -1, -1, "self.SetResolvePlayerCollisions(false)");
 
 		Hook_DHook_UpdateTransmitState(npc);
 		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
