@@ -22,7 +22,7 @@ bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 #if defined ZR
 int Armor_WearableModelIndex;
 int Wing_WearlbeIndex;
-
+static ArrayList RecentSoundList;
 #endif
 
 bool ClientPassAliveCheck[MAXTF2PLAYERS];
@@ -63,6 +63,10 @@ void SDKHook_PluginStart()
 	SyncHud_ArmorCounter = CreateHudSynchronizer();
 #endif
 	
+#if defined ZR
+	RecentSoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
+#endif
+
 #if !defined NOG
 	AddNormalSoundHook(SDKHook_NormalSHook);
 #endif
@@ -2286,6 +2290,14 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 }
 #endif	// ZR & RPG
 
+#if defined ZR
+static Action Timer_RecentSoundRemove(Handle timer)
+{
+	RecentSoundList.Erase(0);
+	return Plugin_Continue;
+}
+#endif
+
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
 	/*
@@ -2314,6 +2326,20 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		}
 	}
 	*/
+
+#if defined ZR
+	if(EnableSilentMode && entity > MaxClients && entity < MAXENTITIES && !b_NpcHasDied[entity])
+	{
+		if(!b_thisNpcIsARaid[entity])
+		{
+			if(RecentSoundList.FindString(sample) != -1)
+				return Plugin_Handled;
+			
+			RecentSoundList.PushString(sample);
+			CreateTimer(0.1, Timer_RecentSoundRemove);
+		}
+	}
+#endif
 
 	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
 	{
