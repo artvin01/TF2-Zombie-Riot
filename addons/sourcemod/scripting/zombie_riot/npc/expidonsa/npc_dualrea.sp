@@ -301,7 +301,7 @@ void DualReaEffects(int iNpc)
 
 	DualRea npc = view_as<DualRea>(iNpc);
 
-	npc.m_iWearable1 = npc.EquipItem("weapon_bone", WEAPON_CUSTOM_WEAPONRY_1);
+	npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
 	SetVariantString("1.0");
 	AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 	SetVariantInt(16384);

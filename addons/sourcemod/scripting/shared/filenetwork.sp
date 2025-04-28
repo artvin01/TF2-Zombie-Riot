@@ -235,7 +235,6 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	do
 	{
 		enabled.GetSectionName(buffer, sizeof(buffer));
-		PrintToServer("FileNetwork_ConfigSetup::AddPackage '%s'", buffer);
 		list.PushString(buffer);
 	}
 	while(enabled.GotoNextKey(false));
@@ -253,7 +252,6 @@ void FileNetwork_ConfigSetup(KeyValues map)
 			if(kv.GotoFirstSubKey(false))
 			{
 				bool extra = list.FindString(buffer) == -1;
-				PrintToServer("FileNetwork_ConfigSetup::CheckPackage '%s' (%s)", buffer, extra ? "Disabled" : "Enabled");
 				
 				do
 				{

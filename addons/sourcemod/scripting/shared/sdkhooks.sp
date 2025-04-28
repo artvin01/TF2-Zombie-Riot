@@ -22,7 +22,7 @@ bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 #if defined ZR
 int Armor_WearableModelIndex;
 int Wing_WearlbeIndex;
-
+static ArrayList RecentSoundList;
 #endif
 
 bool ClientPassAliveCheck[MAXTF2PLAYERS];
@@ -63,6 +63,10 @@ void SDKHook_PluginStart()
 	SyncHud_ArmorCounter = CreateHudSynchronizer();
 #endif
 	
+#if defined ZR
+	RecentSoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
+#endif
+
 #if !defined NOG
 	AddNormalSoundHook(SDKHook_NormalSHook);
 #endif
@@ -2286,6 +2290,14 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 }
 #endif	// ZR & RPG
 
+#if defined ZR
+static Action Timer_RecentSoundRemove(Handle timer)
+{
+	RecentSoundList.Erase(0);
+	return Plugin_Continue;
+}
+#endif
+
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
 	/*
@@ -2315,6 +2327,20 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	*/
 
+#if defined ZR
+	if(EnableSilentMode && entity > MaxClients && entity < MAXENTITIES && !b_NpcHasDied[entity] && !(flags & SND_STOP))
+	{
+		if(!b_thisNpcIsARaid[entity])
+		{
+			if(RecentSoundList.FindString(sample) != -1)
+				return Plugin_Handled;
+			
+			RecentSoundList.PushString(sample);
+			CreateTimer(0.1, Timer_RecentSoundRemove);
+		}
+	}
+#endif
+
 	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
 	{
 		return Plugin_Handled;
@@ -2338,7 +2364,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		if(EnableSilentMode)
 		{
 			volume *= 0.6;
-			level = 65;
+			level = 70;
 		}
 
 		//Very loud. 
@@ -2348,8 +2374,9 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	else if(EnableSilentMode && StrContains(sample, "explode", true) != -1)
 	{
 		volume *= 0.6;
-		level = level - 10;
+		level = level - 5;
 		//Explosions are too loud, silence them.
+		return Plugin_Changed;
 	}
 
 	if(StrContains(sample, "vo/", true) != -1)
@@ -2433,8 +2460,8 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			if(EnableSilentMode)
 			{
 				ChangedSound = true;
-				volume *= 0.6;
-				level = RoundToNearest(float(level) * 0.6);	
+				volume *= 0.4;
+				level = RoundToNearest(float(level) * 0.85);	
 			}
 			if(ChangedSound)
 				return Plugin_Changed;

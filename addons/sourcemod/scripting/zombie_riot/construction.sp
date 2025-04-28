@@ -643,11 +643,7 @@ static Action Timer_StartAttackWave(Handle timer)
 	if(CurrentAttacks > MaxAttacks)
 	{
 		// Final Boss
-		ArrayList list = RiskList.Get(RiskList.Length - 1);
-		list.GetArray(GetURandomInt() % list.Length, attack);
-		bonusRisk = CurrentRisk - HighestRisk;
-		if(bonusRisk < 0)
-			bonusRisk = 0;
+		bonusRisk = GetRiskAttackInfo(RiskList.Length - 1, attack, true);
 	}
 	else
 	{
@@ -1679,25 +1675,22 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 
 float Construction_GetMaxHealthMulti()
 {
-	float multi = 5.0;	// Construction Novice
+	float multi = 1.5;	// Construction Novice
+	multi *= 1.65;	// Construction Apprentice
 
 	if(Construction_HasNamedResearch("Base Level I"))
 	{
-		multi *= 3.1;	// Construction Apprentice
-		multi *= 1.15;	// Engineering Repair Handling book
+		multi *= 1.65;	// Construction Worker
 	}
 
 	if(Construction_HasNamedResearch("Base Level II"))
 	{
-		multi *= 1.4;	// Construction Worker
-		multi *= 1.15;	// Alien Repair Handling book
-		multi *= 2.25;	// Construction Expert
+		multi *= 1.7;	// Construction Expert
 	}
 
 	if(Construction_HasNamedResearch("Base Level III"))
 	{
-		multi *= 1.15;	// Cosmic Repair Handling book
-		multi *= 2.6;	// Construction Master
+		multi *= 1.4;	// Construction Master
 	}
 
 	if(Construction_HasNamedResearch("Base Level IV"))

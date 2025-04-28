@@ -847,7 +847,7 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 		}
 	}
 
-	level /= 10;
+	level /= 4;
 	if(level < 1)
 		return false;
 
@@ -2887,6 +2887,8 @@ void DoGlobalMultiScaling()
 		EnableSilentMode = true;
 	else
 		EnableSilentMode = false;
+
+	EnableSilentMode = true;
 	
 	playercount *= 0.88;
 

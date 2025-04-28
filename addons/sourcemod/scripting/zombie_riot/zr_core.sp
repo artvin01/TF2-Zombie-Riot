@@ -260,6 +260,7 @@ ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
+ConVar Cvar_VshMapFix;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
@@ -927,6 +928,9 @@ void ZR_MapStart()
 
 public void OnMapInit()
 {
+	if(!Cvar_VshMapFix.BoolValue)
+		return;
+		//skip
 	OnMapInit_ZR();
 
 	//nerf full health kits

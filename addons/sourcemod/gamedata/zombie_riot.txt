@@ -16,6 +16,16 @@
 				"windows"	"\x55\x8B\xEC\x83\xEC\x34\x8B\x15\x2A\x2A\x2A\x2A"
 				"linux"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
 			}
+			"CTFBaseBoss::ResolvePlayerCollision"
+			{
+				// Announcer.MVM_Tank_Planted, very bottom
+				//Long tthink function where you are in right now,  very bottom again, has a  LOC_ and a sub_, if its long, thats probably it.
+			//	"windows64"	"\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x30\x8B\x91\x58\x0A\x00\x00"
+			//	"linux64"		"@_ZN11CTFBaseBoss22ResolvePlayerCollisionEP9CTFPlayer"
+				
+				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x68\x01\x00\x00\x56\x57"
+				"linux"		"@_ZN11CTFBaseBoss22ResolvePlayerCollisionEP9CTFPlayer"
+			}
 
 			"CTFPlayerShared::RecalculatePlayerBodygroups"
 			{
@@ -354,6 +364,20 @@
 				"callconv"  "thiscall"
 				"return"	"void"
 				"this"		"entity"
+			}
+			"CTFBaseBoss::ResolvePlayerCollision"
+			{
+				"signature"	"CTFBaseBoss::ResolvePlayerCollision"
+				"callconv"  "thiscall"
+				"return"	"void"
+				"this"		"entity"
+				"arguments"
+				{
+					"pPlayer"
+					{
+						"type"	"cbaseentity"
+					}
+				}
 			}
 			"CTFCrossbow::Holster"
 			{
