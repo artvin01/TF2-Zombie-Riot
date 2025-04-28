@@ -13,7 +13,7 @@ enum
 	Element_Osmosis,
 	Element_Corruption,
 	Element_Burger,
-	Element_Cheese, // lets goo
+	Element_Plasma,
 
 	Element_MAX
 }
@@ -28,7 +28,7 @@ static const char ElementName[][] =
 	"OS",
 	"CO",
 	"FOOD",
-	"CE"
+	"PL"
 };
 
 static float LastTime[MAXENTITIES];
@@ -111,7 +111,7 @@ static int TriggerDamage(int entity, int type)
 		{
 			divide = 4.0;
 		}
-		case Element_Void, Element_Cheese:
+		case Element_Void, Element_Plasma:
 		{
 			divide = 2.0;
 		}
@@ -908,7 +908,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	}
 }
 
-void Elemental_AddCheeseDamage(int victim, int attacker, int damagebase, int weapon)
+void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int weapon)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -937,18 +937,18 @@ void Elemental_AddCheeseDamage(int victim, int attacker, int damagebase, int wea
 	}
 	else if(!b_NpcHasDied[victim])	// VS NPCs
 	{
-		if(f_ArmorCurrosionImmunity[victim][Element_Cheese] < GetGameTime())
+		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
 		{
-			int trigger = TriggerDamage(victim, Element_Cheese);
+			int trigger = TriggerDamage(victim, Element_Plasma);
 
 			LastTime[victim] = GetGameTime();
-			LastElement[victim] = Element_Cheese;
-			ElementDamage[victim][Element_Cheese] += damage;
-			if(ElementDamage[victim][Element_Cheese] > trigger)
+			LastElement[victim] = Element_Plasma;
+			ElementDamage[victim][Element_Plasma] += damage;
+			if(ElementDamage[victim][Element_Plasma] > trigger)
 			{
-				ElementDamage[victim][Element_Cheese] = 0;
+				ElementDamage[victim][Element_Plasma] = 0;
 				float immunitycd = melee ? 10.0 : 15.0;
-				f_ArmorCurrosionImmunity[victim][Element_Cheese] = GetGameTime() + immunitycd;
+				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + immunitycd;
 
 				// i am pap
 				int paplvl = RoundFloat(Attributes_Get(weapon, 122, 0.0));
@@ -972,18 +972,18 @@ void Elemental_AddCheeseDamage(int victim, int attacker, int damagebase, int wea
 				if(b_thisNpcIsARaid[victim])
 				{
 					cheesedmg *= 2.75;
-					ApplyStatusEffect(attacker, victim, "Cheesed I", 4.0);
+					ApplyStatusEffect(attacker, victim, "Plasm I", 4.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 20.0);
 				}
 				else if(b_thisNpcIsABoss[victim])
 				{
 					cheesedmg *= 1.85;
-					ApplyStatusEffect(attacker, victim, "Cheesed II", 4.0);
+					ApplyStatusEffect(attacker, victim, "Plasm II", 4.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 10.0);
 				}
 				else
 				{
-					ApplyStatusEffect(attacker, victim, "Cheesed II", 8.0);
+					ApplyStatusEffect(attacker, victim, "Plasm II", 8.0);
 				}
 				
 				// fun fact: this used to deal true damage. Uh oh!
