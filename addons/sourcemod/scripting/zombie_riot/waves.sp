@@ -2880,34 +2880,16 @@ void DoGlobalMultiScaling()
 {
 	float playercount = ZRStocks_PlayerScalingDynamic();
 
-	playercount = Pow ((playercount * 0.65), 1.2);
-
-	//on low player counts it does not scale well.
+	if(playercount < 2.0)
+		playercount = 2.0;
 	
-	/*
-		at 14 players, it scales fine, at lower, it starts getting really hard 
+	EnableSilentMode = playercount > 19.0;
 
-	*/
-	EnableSilentMode = false;
-	bool SaclingTooHigh = false;
-	float multi = Pow(1.08, playercount);
-	if(multi > 8.0)
-	{
-		//woops, scales too much now.
-		multi = 8.0;
-		multi += (playercount * 0.075);
-		SaclingTooHigh = true;
-		EnableSilentMode = true;
-	}
-
-	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
+	float multi = playercount / 4.0;
 	
 	//normal bosses health
-	if(!SaclingTooHigh)
-		MultiGlobalHealthBoss = playercount * 0.2;
-	else //too many people. scale HP lower.
-		MultiGlobalHealthBoss = playercount * 0.15;
-
+	MultiGlobalHealthBoss = playercount * 0.2;
+	
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 
