@@ -106,7 +106,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBaseBoss::ResolvePlayerCollision", DHook_ResolvePlayerCollisionPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
-	DHook_CreateDetour(gamedata, "CTraceFilterSimple::ShouldHitEntity", DHook_ShouldHitEntityPre);	// From SCP:SF
+//	DHook_CreateDetour(gamedata, "CTraceFilterSimple::ShouldHitEntity", DHook_ShouldHitEntityPre);	// From SCP:SF
 	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);	// From SCP:SF
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
@@ -873,30 +873,13 @@ public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params)
 	ret.Value = false;
 	return MRES_Supercede;
 }
+/*
 public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHookParam param)
 {
 	int toucher = param.Get(1);
 	int passer = GetEntityFromAddress(LoadFromAddress(address + view_as<Address>(4), NumberType_Int32));	// +4 from CTraceFilterSimple::m_pPassEnt
 	if(passer == -1)
 		return MRES_Ignored;
-	/*
-	PrintToConsoleAll("try test 1");
-	if(b_ThisWasAnNpc[toucher])
-	{
-		if(passer <= MaxClients)
-		{
-			PrintToConsoleAll("Collision1");
-		}
-	}
-	if(b_ThisWasAnNpc[passer])
-	{
-		if(toucher <= MaxClients)
-		{
-			PrintToConsoleAll("Collision2");
-		}
-	}
-	Never gets called???
-	*/
 	// TODO: In RPG, PvP has collisions
 	if(PassfilterGlobal(toucher, passer, true))
 		return MRES_Ignored;
@@ -904,7 +887,7 @@ public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHo
 	ret.Value = false;
 	return MRES_Supercede;
 }
-
+*/
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)

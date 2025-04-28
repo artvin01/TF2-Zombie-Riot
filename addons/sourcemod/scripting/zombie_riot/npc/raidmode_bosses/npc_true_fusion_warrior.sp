@@ -1187,13 +1187,13 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			
 			position[0] += s;
 			position[1] += c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			// Stage 2
 			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
@@ -1219,13 +1219,13 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			// Stage 3
 			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
@@ -1286,8 +1286,8 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {212, 175, 55, 200}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {212, 175, 55, 120}, 3);
-			TE_SendToAll();
+		//	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {212, 175, 55, 120}, 3);
+		//	TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {212, 175, 55, 75}, 3);
 			TE_SendToAll();
 	

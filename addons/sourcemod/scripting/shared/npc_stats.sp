@@ -7105,7 +7105,7 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	
 	b_IsAGib[prop] = true;
 	
-	if (!nobleed)
+	if (!nobleed && !EnableSilentMode)
 	{
 		if(!metal_colour)
 		{
