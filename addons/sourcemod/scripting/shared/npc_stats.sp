@@ -449,7 +449,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			DispatchKeyValue(npc, "solid", "2");
 		}
-
+		
+		//Animate clientside...
+	//	SetEntProp(npc, Prop_Send, "m_bClientSideAnimation", 1);
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc][0] = 0;
 		i_FailedTriesUnstuck[npc][1] = 0;
@@ -487,6 +489,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		npcstats.SetSequence(0);
 		npcstats.SetPlaybackRate(1.0);
 		npcstats.SetCycle(0.0);
+		//Its like setcycle, but itdoes it for us so it worsk clientside	
+	//	SetEntProp(npcstats.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(npcstats.index, Prop_Send, "m_bClientSideFrameReset"));	
 		npcstats.ResetSequenceInfo();
 		//FIX: This fixes lookup activity not working.
 		if(NpcTypeLogic != STATIONARY_NPC)
@@ -674,14 +678,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		int sound = GetRandomInt(0, sizeof(g_GibSound) - 1);
 	
 		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+	//	EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+	//	EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 	}
 	public void PlayGibSoundMetal() { //ehehee this sound is funny 
 		int sound = GetRandomInt(0, sizeof(g_GibSoundMetal) - 1);
 	
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+	//	EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 	}
 	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1, bool custom = false)
 	{
@@ -2130,6 +2134,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	//	this.SetSequence(iSequence);
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
+		//Its like setcycle, but itdoes it for us so it worsk clientside	
+	//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 		this.ResetSequenceInfo();
 		this.m_iAnimationState = iSequence;
 	//	int layer = this.FindGestureLayerBySequence(iSequence);
@@ -2214,6 +2220,8 @@ methodmap CClotBody < CBaseCombatCharacter
 				this.SetSequence(sequence);
 				this.SetPlaybackRate(1.0);
 				this.SetCycle(0.0);
+			//Its like setcycle, but itdoes it for us so it worsk clientside	
+			//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 				this.ResetSequenceInfo();
 			}
 		}
@@ -2477,7 +2485,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void SetSequence(int iSequence)	{ SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); }
 	public float GetPlaybackRate() { return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); }
 	public void SetPlaybackRate(float flRate) { SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate); }
-	public void SetCycle(float flCycle)	   { SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); }
+	public void SetCycle(float flCycle)	   
+	{
+		//We are chacning cycles, we must disable this.
+	//	SetEntProp(this.index, Prop_Send, "m_bClientSideAnimation", 0);
+		SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); 
+	}
 	/*
 	public void SetSequence(int iSequence)
 	{
@@ -3124,6 +3137,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.SetSequence(nSequence);
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
+	//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 	
 		this.ResetSequenceInfo();
 		
@@ -4225,7 +4239,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	}
 	else
 	{
-		if(!b_thisNpcIsARaid[pThis] && EnemyNpcAlive >= 20) //Theres too many npcs, kill off the sounds.
+		if(!b_thisNpcIsARaid[pThis] && (EnemyNpcAlive >= 20 || EnableSilentMode)) //Theres too many npcs, kill off the sounds.
 		{
 			switch(npc.m_iNpcStepVariation)
 			{
@@ -4242,7 +4256,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			}
 		}
 	}
-	if(!b_thisNpcIsARaid[pThis] && EnemyNpcAlive >= 20)
+	if(!b_thisNpcIsARaid[pThis] && (EnemyNpcAlive >= 20 || EnableSilentMode))
 	{
 		//kill off sound.
 		//even if they had an anim event
