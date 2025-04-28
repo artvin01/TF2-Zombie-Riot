@@ -50,7 +50,7 @@ char c_NpcName[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
-static int g_iResolveOffset;
+//static int g_iResolveOffset;
 
 float f3_AvoidOverrideMin[MAXENTITIES][3];
 float f3_AvoidOverrideMax[MAXENTITIES][3];
@@ -457,8 +457,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
 
-		if(NpcTypeLogic == NORMAL_NPC)
-			SetEntData(npc, FindSendPropInfo("CTFBaseBoss", "m_lastHealthPercentage") + g_iResolveOffset, false, 1, true);
+	//	if(NpcTypeLogic == NORMAL_NPC)
+	//Crashes
+	//		SetEntData(npc, FindSendPropInfo("CTFBaseBoss", "m_lastHealthPercentage") + g_iResolveOffset, false, 1, true);
 
 		Hook_DHook_UpdateTransmitState(npc);
 		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
@@ -3451,7 +3452,7 @@ public void NPC_Base_InitGamedata()
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 
 
-	g_iResolveOffset = gamedata.GetOffset("CBaseBoss::m_bResolvePlayerCollisions");
+//	g_iResolveOffset = gamedata.GetOffset("CBaseBoss::m_bResolvePlayerCollisions");
 	delete gamedata;
 
 	NextBotActionFactory ActionFactory = new NextBotActionFactory("ZRMainAction");
