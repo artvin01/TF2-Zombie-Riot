@@ -1222,19 +1222,19 @@
 	{
 		"en"	"Increases damage by 50%%\nIncreases resistance by 50%%\nIncreases attack speed by 100%%"
 	}
-	"Cheesed I"
+	"Plasm I"
 	{
-		"en" 	"Cheesed I"
+		"en" 	"Plasm I"
 	}
-	"Cheesed I Desc"
+	"Plasm I Desc"
 	{
 		"en"	"Slows NPCs by 5%%.\nReduces attackspeed by 7%%."
 	}
-	"Cheesed II"
+	"Plasm II"
 	{
-		"en"	"Cheesed II"
+		"en"	"Plasm II"
 	}
-	"Cheesed II Desc"
+	"Plasm II Desc"
 	{
 		"en" 	"Slows NPCs by 7%%.\nReduces attackspeed by 10%%."
 	}
