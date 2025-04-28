@@ -50,6 +50,7 @@ char c_NpcName[MAXENTITIES][255];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
+//static int g_iResolveOffset;
 
 float f3_AvoidOverrideMin[MAXENTITIES][3];
 float f3_AvoidOverrideMax[MAXENTITIES][3];
@@ -450,13 +451,15 @@ methodmap CClotBody < CBaseCombatCharacter
 			DispatchKeyValue(npc, "solid", "2");
 		}
 		
-		//Animate clientside...
-	//	SetEntProp(npc, Prop_Send, "m_bClientSideAnimation", 1);
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc][0] = 0;
 		i_FailedTriesUnstuck[npc][1] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
+
+	//	if(NpcTypeLogic == NORMAL_NPC)
+	//Crashes
+	//		SetEntData(npc, FindSendPropInfo("CTFBaseBoss", "m_lastHealthPercentage") + g_iResolveOffset, false, 1, true);
 
 		Hook_DHook_UpdateTransmitState(npc);
 		SDKHook(npc, SDKHook_TraceAttack, NPC_TraceAttack);
@@ -489,8 +492,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		npcstats.SetSequence(0);
 		npcstats.SetPlaybackRate(1.0);
 		npcstats.SetCycle(0.0);
-		//Its like setcycle, but itdoes it for us so it worsk clientside	
-	//	SetEntProp(npcstats.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(npcstats.index, Prop_Send, "m_bClientSideFrameReset"));	
 		npcstats.ResetSequenceInfo();
 		//FIX: This fixes lookup activity not working.
 		if(NpcTypeLogic != STATIONARY_NPC)
@@ -3450,6 +3451,8 @@ public void NPC_Base_InitGamedata()
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 
+
+//	g_iResolveOffset = gamedata.GetOffset("CBaseBoss::m_bResolvePlayerCollisions");
 	delete gamedata;
 
 	NextBotActionFactory ActionFactory = new NextBotActionFactory("ZRMainAction");

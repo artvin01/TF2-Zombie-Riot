@@ -2885,7 +2885,7 @@ void DoGlobalMultiScaling()
 	
 	EnableSilentMode = playercount > 19.0;
 
-	float multi = playercount / 4.0;
+	float multi = playercount / 5.5;
 	
 	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
