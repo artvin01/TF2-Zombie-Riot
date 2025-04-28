@@ -154,7 +154,7 @@ void InitStatusEffects()
 	StatusEffects_Construction();
 	StatusEffects_BubbleWand1();
 	StatusEffects_BubbleWand2();
-	StatusEffects_Cheese();
+	StatusEffects_Plasm();
 
 	//freeplay last.
 	StatusEffects_Freeplay1();
@@ -4478,11 +4478,11 @@ void StatusEffects_BubbleWand2()
 	StatusEffect_AddGlobal(data);
 }
 
-void StatusEffects_Cheese()
+void StatusEffects_Plasm()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Cheesed I");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ҁ");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasm I");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϥ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -4501,8 +4501,8 @@ void StatusEffects_Cheese()
 	data.LinkedStatusEffectNPC = 0;
 	data.AttackspeedBuff = 0.0;
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Cheesed II");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ҁ");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasm II");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϥ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
