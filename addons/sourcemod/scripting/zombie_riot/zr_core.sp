@@ -2678,7 +2678,7 @@ void PlayerApplyDefaults(int client)
 		if(point_difference > 0)
 		{
 			//Too much xp given, we have to reduce it by 10x
-			GiveXP(client, point_difference / 10);
+			GiveXP(client, point_difference / 5);
 		}
 		
 		i_PreviousPointAmount[client] = PlayerPoints[client];
