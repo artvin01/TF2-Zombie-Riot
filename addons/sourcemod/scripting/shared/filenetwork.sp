@@ -23,9 +23,9 @@ static ArrayList DownloadList;
 
 void FileNetwork_PluginStart()
 {
-#if defined _filenetwork_included
 	RegServerCmd("zr_showfilenetlist", DebugCommand);
 
+#if defined _filenetwork_included
 	SoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	SoundAlts = new StringMap();
 	ExtraList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
@@ -38,11 +38,11 @@ void FileNetwork_PluginStart()
 #endif
 }
 
-#if defined _filenetwork_included
 static Action DebugCommand(int args)
 {
 	char buffer[PLATFORM_MAX_PATH];
 
+#if defined _filenetwork_included
 	if(SoundList)
 	{
 		int length = SoundList.Length;
@@ -62,10 +62,20 @@ static Action DebugCommand(int args)
 			PrintToServer("\"%s\"", buffer);
 		}
 	}
+#endif
+
+	if(DownloadList)
+	{
+		int length = DownloadList.Length;
+		for(int i; i < length; i++)
+		{
+			DownloadList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("(DL) \"%s\"", buffer);
+		}
+	}
 
 	return Plugin_Handled;
 }
-#endif
 
 stock void FileNetwork_LibraryAdded(const char[] name)
 {
@@ -212,7 +222,8 @@ void FileNetwork_ConfigSetup(KeyValues map)
 		else
 		{
 			enabled = kv;
-			enabled.JumpToKey("Default");
+			if(!enabled.JumpToKey("Default"))
+				LogError("No default download packages in downloads.cfg");
 		}
 
 	}
@@ -224,6 +235,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	do
 	{
 		enabled.GetSectionName(buffer, sizeof(buffer));
+		PrintToServer("FileNetwork_ConfigSetup::AddPackage '%s'", buffer);
 		list.PushString(buffer);
 	}
 	while(enabled.GotoNextKey(false));
@@ -241,19 +253,17 @@ void FileNetwork_ConfigSetup(KeyValues map)
 			if(kv.GotoFirstSubKey(false))
 			{
 				bool extra = list.FindString(buffer) == -1;
-				PrintToServer("FindString %s",buffer);
+				PrintToServer("FileNetwork_ConfigSetup::CheckPackage '%s' (%s)", buffer, extra ? "Disabled" : "Enabled");
 				
 				do
 				{
 					kv.GetSectionName(buffer, sizeof(buffer));
 					if(extra)
 					{
-						PrintToServer("if(extra) %s",buffer);
 						//ExtraList.PushString(buffer);
 					}
 					else if(FileExists(buffer, true))
 					{
-						PrintToServer("FileExists %s",buffer);
 						AddToStringTable(table, buffer);
 					}
 					else
@@ -296,6 +306,9 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 	
 	PrecacheSound(sound);
 
+	if(!InServerSetup)
+		PrintToServer("PrecacheSoundCustom::TooLate '%s'", sound);
+
 #if defined _filenetwork_included
 	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 0))
 #else
@@ -327,7 +340,9 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 
 stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 {
-	PrintToServer("PrecacheMvMIconCustom? %s", icon);
+	if(!InServerSetup)
+		PrintToServer("PrecacheSoundCustom::TooLate '%s'", icon);
+
 	char buffer[PLATFORM_MAX_PATH];
 	if(vtf)
 	{
@@ -385,6 +400,7 @@ stock void AddToDownloadsTable(const char[] file, const char[] original = "")
 		
 		return;
 	}
+	
 	if(DownloadList.FindString(file) == -1)
 	{
 		AddFileToDownloadsTable(file);
