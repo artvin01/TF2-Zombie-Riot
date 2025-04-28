@@ -2878,7 +2878,7 @@ void DoGlobalMultiScaling()
 	if(playercount < 2.0)
 		playercount = 2.0;
 	
-	EnableSilentMode = playercount > 15.0;
+	EnableSilentMode = playercount > 19.0;
 
 	float multi = playercount / 4.0;
 	
