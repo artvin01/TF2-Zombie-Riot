@@ -461,7 +461,7 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 		
 	char particle[32];
 		
-	Format(particle, sizeof(particle), "%s", "drg_manmelter_projectile");
+	Format(particle, sizeof(particle), "%s", "eyeboss_projectile");
 
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, particle);
 	WandProjectile_ApplyFunctionToEntity(projectile, Cheese_ProjectileTouch);
