@@ -810,10 +810,6 @@ void ZR_MapStart()
 	Waves_MapStart();
 	Freeplay_OnMapStart();
 	Music_MapStart();
-	Star_Shooter_MapStart();
-	Bison_MapStart();
-	Pomson_MapStart();
-	Mangler_MapStart();
 	Wand_Map_Precache();
 	Wand_Skulls_Precache();
 	Wand_Attackspeed_Map_Precache();
@@ -848,8 +844,6 @@ void ZR_MapStart()
 	BoomStick_MapPrecache();
 	MG42_Map_Precache();
 	Charged_Handgun_Map_Precache();
-	TBB_Precahce_Mangler_2();
-	BeamWand_MapStart();
 	M3_Abilities_Precache();
 	Ark_autoaim_Map_Precache();
 	Wand_LightningPap_Map_Precache();
