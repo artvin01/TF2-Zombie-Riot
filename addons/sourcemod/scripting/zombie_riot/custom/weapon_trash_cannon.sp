@@ -53,7 +53,7 @@ bool b_PyreEnabled[3] = { true, true, true };			//Is Pyre enabled on this pap le
 //SKELETON: Fires a shotgun blast of skeleton gibs which deal huge damage, but have a small radius and can only hit one zombie each.
 float f_SkeletonChance[3] = { 0.00, 0.15, 0.22 };		//Chance for Skeleton to be fired.
 float f_SkeletonVel[3] = { 800.0, 1000.0, 1200.0 };		//Skeleton projectile velocity.
-float f_SkeletonDMG[3] = { 1000.0, 1200.0, 1600.0 };	//Skeleton damage.
+float f_SkeletonDMG[3] = { 1500.0, 2000.0, 2400.0 };	//Skeleton damage.
 float f_SkeletonRadius[3] = { 90.0, 95.0, 100.0 };		//Skeleton radius.
 float f_SkeletonSpread[3] = { 8.0, 8.0, 8.0 };			//Skeleton projectile deviation.
 
@@ -146,10 +146,10 @@ Handle Timer_Trash[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 public const char s_SkeletonGibs[][] =
 {
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_arm_l.mdl",
-	"models/bots/skeleton_sniper/skeleton_sniper_gib_arm_r.mdl",
+//	"models/bots/skeleton_sniper/skeleton_sniper_gib_arm_r.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
-	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_r.mdl",
+//	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_r.mdl", dont spawn so many.... cuauses massive lag.
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl"
 };
 

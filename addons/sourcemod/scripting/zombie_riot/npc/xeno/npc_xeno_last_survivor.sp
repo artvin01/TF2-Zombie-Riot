@@ -617,13 +617,13 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			
 			position[0] += s;
 			position[1] += c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-		//	XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
+			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 			
 			// Stage 2
 			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
@@ -649,13 +649,13 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-		//	XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
+			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
 			
 			// Stage 3
 			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
@@ -711,8 +711,8 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {150, 255, 150, 255}, 3);
-			TE_SendToAll();
+		//	TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {150, 255, 150, 255}, 3);
+		//	TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
 	

@@ -5569,7 +5569,7 @@ stock void GetMapName(char[] buffer, int size)
 	GetMapDisplayName(buffer, buffer, size);
 }
 
-int GetEntityFromHandle(any handle)
+stock int GetEntityFromHandle(any handle)
 {
 	int ent = handle & 0xFFF;
 	if (ent == 0xFFF)
@@ -5578,7 +5578,7 @@ int GetEntityFromHandle(any handle)
 	return ent;
 }
 
-int GetEntityFromAddress(Address entity)
+stock int GetEntityFromAddress(Address entity)
 {
 	if (entity == Address_Null)
 		return -1;
