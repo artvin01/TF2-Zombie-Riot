@@ -2338,7 +2338,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		if(EnableSilentMode)
 		{
 			volume *= 0.6;
-			level = 65;
+			level = 70;
 		}
 
 		//Very loud. 
@@ -2348,8 +2348,9 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	else if(EnableSilentMode && StrContains(sample, "explode", true) != -1)
 	{
 		volume *= 0.6;
-		level = level - 10;
+		level = level - 5;
 		//Explosions are too loud, silence them.
+		return Plugin_Changed;
 	}
 
 	if(StrContains(sample, "vo/", true) != -1)
@@ -2433,8 +2434,8 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			if(EnableSilentMode)
 			{
 				ChangedSound = true;
-				volume *= 0.6;
-				level = RoundToNearest(float(level) * 0.6);	
+				volume *= 0.4;
+				level = RoundToNearest(float(level) * 0.85);	
 			}
 			if(ChangedSound)
 				return Plugin_Changed;
