@@ -2034,8 +2034,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						}
 						if(Is_Cheesed_Up(client))
 						{
-							CPrintToChatAll("{crimson}A sudden feeling of dread runs through %N's body...", client);
-							CPrintToChatAll("{orange}...but Koshi becomes aware of it.", client);
+							CPrintToChatAll("{darkviolet}%N decides to Plasmify himself as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
 						
