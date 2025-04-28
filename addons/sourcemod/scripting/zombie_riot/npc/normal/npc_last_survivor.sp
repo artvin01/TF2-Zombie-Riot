@@ -590,7 +590,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 			
 			// Stage 2
 			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
@@ -606,7 +606,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -622,7 +622,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			FatherGrigori_DrawIonBeam(position,{0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position,{0, 150, 255, 255});
 			
 			// Stage 3
 			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
@@ -638,7 +638,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;

@@ -33,11 +33,11 @@ float f_MortarChance[3] = { 0.04, 0.06, 0.08 };
 bool b_MortarEnabled[3] = { false, false, false };
 
 //BUNDLE OF ARROWS: A giant shotgun blast of Huntsman arrows.
-int i_ArrowsMinArrows[3] = { 6, 8, 12 };		//Minimum number of arrows fired.
-int i_ArrowsMaxArrows[3] = { 8, 12, 16 };		//Maximum number of arrows fired.
+int i_ArrowsMinArrows[3] = { 3, 5, 6 };		//Minimum number of arrows fired.
+int i_ArrowsMaxArrows[3] = { 4, 6, 7 };		//Maximum number of arrows fired.
 
 float f_ArrowsChance[3] = { 0.08, 0.14, 0.18 };			//Chance for Bundle of Arrows to be fired.
-float f_ArrowsDMG[3] = { 600.0, 800.0, 1000.0 };			//Base arrow damage.
+float f_ArrowsDMG[3] = { 1200.0, 1600.0, 2000.0 };			//Base arrow damage.
 float f_ArrowsVelocity[3] = { 1200.0, 1600.0, 2000.0 }; //Arrow velocity.
 float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
 bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled on this pap level?
@@ -72,13 +72,13 @@ bool b_IceEnabled[3] = { false, true, true };
 //TRASH: Fires a garbage bag which explodes on impact, releasing a cluster of smaller projectiles.
 int i_TrashMaxTargets[3] = { 4, 5, 6 };				//Max targets hit by the blast.
 int i_TrashMiniMaxTargets[3] = { 2, 3, 4 };				//Max targets hit by the blast of extra projectiles.
-int i_TrashMinExtras[3] = { 6, 8, 12 };					//Minimum number of extra projectiles created when the trash bag explodes.
-int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectiles created when the trash bag explodes.
+int i_TrashMinExtras[3] = { 3, 4, 5 };					//Minimum number of extra projectiles created when the trash bag explodes.
+int i_TrashMaxExtras[3] = { 4, 5, 6 };				//Maximum number of extra projectiles created when the trash bag explodes.
 
 float f_TrashChance[3] = { 0.08, 0.12, 0.16 };			//Chance for Trash to be fired.
 float f_TrashVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the trash bag.
 float f_TrashMiniVelocity[3] = { 400.0, 450.0, 500.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
-float f_TrashDMG[3] = { 800.0, 1500.0, 2000.0 };			//Base damage for the trash bag.
+float f_TrashDMG[3] = { 1600.0, 3000.0, 4000.0 };			//Base damage for the trash bag.
 float f_TrashMiniDMG[3] = { 400.0, 750.0, 1000.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
 float f_TrashRadius[3] = { 400.0, 250.0, 350.0 };			//Blast radius for the trash bag.
 float f_TrashMiniRadius[3] = { 200.0, 150.0, 175.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
@@ -86,12 +86,12 @@ float f_TrashMiniRadius[3] = { 200.0, 150.0, 175.0 };		//Blast radius for the ex
 bool b_TrashEnabled[3] = { true, true, true };			//Is Trash enabled on this pap tier?
 
 //MICRO-MISSILES: Fires a burst of X micro-missiles which aggressively home in on the nearest enemy after a short delay and explode.
-int i_MissilesCount[3] = { 2, 3, 4 };						//The number of micro-missiles fired.
+int i_MissilesCount[3] = { 2, 3, 3 };						//The number of micro-missiles fired.
 int i_MissilesMaxTargets[3] = { 4, 5, 6 };					//The max number of zombies hit by the blast.
-int i_MissilesNumWaves[3] = { 6, 3, 6 };					//Number of sets of micro-missiles to be fired.
+int i_MissilesNumWaves[3] = { 2, 2, 2 };					//Number of sets of micro-missiles to be fired.
 
 float f_MissilesChance[3] = { 0.00, 0.00, 0.07 };			//The chance for Micro-Missiles to be fired.
-float f_MissilesDMG[3] = { 400.0, 800.0, 1200.0 };			//Base missile damage.
+float f_MissilesDMG[3] = { 800.0, 1600.0, 2400.0 };			//Base missile damage.
 float f_MissilesVelocity[3] = { 1600.0, 1800.0, 2000.0 };	//Base missile velocity.
 float f_MissilesRadius[3] = { 200.0, 150.0, 200.0 };		//Base blast radius.
 float f_MissilesSpread[3] = { 6.0, 6.0, 6.0 };				//Micro-Missile initial projectile spread.

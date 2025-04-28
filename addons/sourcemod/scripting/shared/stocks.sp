@@ -3483,7 +3483,7 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 		GetAbsOrigin(entity, f_origin);
 		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
 		SetVariantString(strTargetName);
-		SetParent(entity, entIndex, "FadeTrail", _, false);
+		SetParent(entity, entIndex, "", _, false);
 		return entIndex;
 	}	
 	return -1;

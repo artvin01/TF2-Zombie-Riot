@@ -7182,7 +7182,7 @@ void GibCollidePlayerInteraction(int gib, int player)
 							}
 							HealEntityGlobal(player, player, Heal_Amount_calc, 1.0, 1.0, _);
 							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
-							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+							EmitSoundToClient(player, g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 							RemoveEntity(gib);
 							CurrentGibCount -= 1;
 						}
