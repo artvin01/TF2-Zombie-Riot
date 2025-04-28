@@ -5586,7 +5586,7 @@ int GetEntityFromAddress(Address entity)
 	return GetEntityFromHandle(LoadFromAddress(entity + view_as<Address>(FindDataMapInfo(0, "m_angRotation") + 12), NumberType_Int32));
 }
 
-void RunScriptCode(int entity, int activator, int caller, const char[] format, any...)
+stock void RunScriptCode(int entity, int activator, int caller, const char[] format, any...)
 {
     if (!IsValidEntity(entity))
         return;

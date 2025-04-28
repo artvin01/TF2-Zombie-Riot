@@ -3610,7 +3610,7 @@ void checkOS()
 {
 	char cmdline[256];
 	GetCommandLine(cmdline, sizeof(cmdline));
-
+	//Todo , this is bad but we dont even use this.
 	if (StrContains(cmdline, "./srcds_linux ", false) != -1)
 	{
 		OperationSystem = OS_Linux;

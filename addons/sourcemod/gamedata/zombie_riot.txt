@@ -913,6 +913,12 @@
 				"windows"	"205"
 				"linux"		"206"
 			}
+			"CBaseBoss::m_bResolvePlayerCollisions"
+			{
+				// Offset from m_lastHealthPercentage
+				"windows"	"28"
+				"linux"		"28"
+			}
 		}
 	}
 }
