@@ -1078,7 +1078,7 @@ static void ClotThink(int iNPC)
 	
 	if(fl_BEAM_DurationTime[npc.index] <= GetGameTime(npc.index) && i_GunAmmo[npc.index] == 1)	//moved the reset due to the funny clot damaged only being called when damaged
 	{	//Resets the npc to a base state after blitzlight is used.
-		i_GunAmmo[npc.index] = 1;
+		i_GunAmmo[npc.index] = 2;
 		
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
@@ -1087,15 +1087,15 @@ static void ClotThink(int iNPC)
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		npc.m_bPrimaryReloading=false;	
-		npc.m_flReloadIn = GetGameTime(npc.index) + 1.0;
+		npc.m_flReloadIn = GetGameTime(npc.index);
 		fl_npc_basespeed = 300.0;
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		
 		npc.m_iMaxRockets = (b_buffed_blitz ? 200 : 100);
-		
+
 		npc.m_flRocketTimeOutTimer = GetGameTime(npc.index)+1.0;
 		
-		npc.m_flLifeLossReloadMulti= 0.3;
+		npc.m_flLifeLossReloadMulti = 0.3;
 		
 		npc.m_flRangedArmor = 1.0;
 		
@@ -1654,7 +1654,7 @@ static void BlitzLifeLossBase(Blitzkrieg npc, char[] item)
 	AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 	npc.m_flReloadIn = GetGameTime(npc.index);	//Forces immediate reload.
-		
+	
 	npc.m_bPrimaryReloading=false;	//Forces immediate reload.
 	
 	npc.PlayAngerSound();
