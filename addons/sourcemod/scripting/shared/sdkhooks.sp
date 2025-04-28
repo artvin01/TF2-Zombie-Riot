@@ -2331,26 +2331,25 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	{
 		return Plugin_Handled;
 	}
-	/*
-	if(StrContains(sample, "sentry_", true) != -1)
-	{
-		volume *= 0.4;
-		level = SNDLEVEL_NORMAL;
-		
-		if(StrContains(sample, "sentry_spot", true) != -1)
-			volume *= 0.35;
-			
-		return Plugin_Changed;
-	}
-	*/
 	if(StrContains(sample, "weapons/quake_explosion_remastered.wav", true) != -1)
 	{
 		volume *= 0.8;
 		level = 80;
+		if(EnableSilentMode)
+		{
+			volume *= 0.6;
+			level = 65;
+		}
 
 		//Very loud. 
 		//need to reduce.
 		return Plugin_Changed;
+	}
+	else if(EnableSilentMode && StrContains(sample, "explode", true) != -1)
+	{
+		volume *= 0.6;
+		level = level - 10;
+		//Explosions are too loud, silence them.
 	}
 
 	if(StrContains(sample, "vo/", true) != -1)
@@ -2430,6 +2429,12 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			{
 				ChangedSound = true;
 				level = RoundToNearest(float(level) * f_WeaponVolumeSetRange[entity]);	
+			}
+			if(EnableSilentMode)
+			{
+				ChangedSound = true;
+				volume *= 0.6;
+				level = RoundToNearest(float(level) * 0.6);	
 			}
 			if(ChangedSound)
 				return Plugin_Changed;

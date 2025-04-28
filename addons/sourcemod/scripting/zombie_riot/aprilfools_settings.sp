@@ -95,7 +95,21 @@ bool ModelReplaceDo(int iNpc, int TeamIs)
 void AprilFoolsModelHideWearables(int iNpc)
 {
 	if(f_AprilFoolsSetStuff[iNpc])
-		return;
+	{
+		//Reuse....
+		/*
+		if(!b_thisNpcIsARaid[iNpc])
+		{
+			//If its not a raidboss,then dont send over animation data, it really doesnt make a big difference.
+			//Lets hope it wont break.
+			SetEntProp(iNpc, Prop_Send, "m_bClientSideAnimation", 1);
+		}
+		else
+			SetEntProp(iNpc, Prop_Send, "m_bClientSideAnimation", 0);
+		*/
+
+		f_AprilFoolsSetStuff[iNpc] = 1.0;
+	}
 
 	if(AprilFoolsMode <= 0)
 		return;

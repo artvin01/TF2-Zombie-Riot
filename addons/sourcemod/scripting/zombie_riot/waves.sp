@@ -647,7 +647,12 @@ void Waves_SetupVote(KeyValues map)
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues wavekv = new KeyValues("Waves");
 				wavekv.ImportFromFile(buffer);
-				Waves_CacheWaves(wavekv, CvarFileNetworkDisable.IntValue > 1);
+				bool CacheNpcs = false;
+				if(!FileNetworkLib_Installed())
+					CacheNpcs = true;
+				if(CvarFileNetworkDisable.IntValue > 1)
+					CacheNpcs = true;
+				Waves_CacheWaves(wavekv, CacheNpcs);
 				delete wavekv;
 			}
 
@@ -2035,7 +2040,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						DoOverlay(client, "", 2);
 						if(GetClientTeam(client)==2 && IsPlayerAlive(client))
 						{
-							GiveXP(client, round.Xp);
+							GiveXP(client, round.Xp * 10);
 							if(round.Setup > 0.0)
 							{
 								SetGlobalTransTarget(client);
@@ -2875,32 +2880,16 @@ void DoGlobalMultiScaling()
 {
 	float playercount = ZRStocks_PlayerScalingDynamic();
 
-	playercount = Pow ((playercount * 0.65), 1.2);
-
-	//on low player counts it does not scale well.
+	if(playercount < 2.0)
+		playercount = 2.0;
 	
-	/*
-		at 14 players, it scales fine, at lower, it starts getting really hard 
+	EnableSilentMode = playercount > 19.0;
 
-	*/
-	bool SaclingTooHigh = false;
-	float multi = Pow(1.08, playercount);
-	if(multi > 10.0)
-	{
-		//woops, scales too much now.
-		multi = 8.0;
-		multi += (playercount * 0.1);
-		SaclingTooHigh = true;
-	}
-
-	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
+	float multi = playercount / 4.0;
 	
 	//normal bosses health
-	if(!SaclingTooHigh)
-		MultiGlobalHealthBoss = playercount * 0.2;
-	else //too many people. scale HP lower.
-		MultiGlobalHealthBoss = playercount * 0.15;
-
+	MultiGlobalHealthBoss = playercount * 0.2;
+	
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 

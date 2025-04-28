@@ -542,8 +542,8 @@ float Mana_Hud_Delay[MAXTF2PLAYERS];
 int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
 
 
-int played_headshotsound_already_Case [MAXTF2PLAYERS];
-int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
+//int played_headshotsound_already_Case [MAXTF2PLAYERS];
+//int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
 int g_particleMissText;
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
@@ -558,7 +558,7 @@ int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
 int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
 int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
 bool b_BackstabLaugh[MAXENTITIES];
-float played_headshotsound_already [MAXTF2PLAYERS];
+//float played_headshotsound_already [MAXTF2PLAYERS];
 int i_IsAloneWeapon[MAXENTITIES];
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"

@@ -813,10 +813,6 @@ void ZR_MapStart()
 	Waves_MapStart();
 	Freeplay_OnMapStart();
 	Music_MapStart();
-	Star_Shooter_MapStart();
-	Bison_MapStart();
-	Pomson_MapStart();
-	Mangler_MapStart();
 	Wand_Map_Precache();
 	Wand_Skulls_Precache();
 	Wand_Attackspeed_Map_Precache();
@@ -851,8 +847,6 @@ void ZR_MapStart()
 	BoomStick_MapPrecache();
 	MG42_Map_Precache();
 	Charged_Handgun_Map_Precache();
-	TBB_Precahce_Mangler_2();
-	BeamWand_MapStart();
 	M3_Abilities_Precache();
 	Ark_autoaim_Map_Precache();
 	Wand_LightningPap_Map_Precache();
@@ -999,8 +993,6 @@ public Action GlobalTimer(Handle timer)
 			{
 				Music_Update(client);
 			}
-			
-			PlayerApplyDefaults(client);
 		}
 	}
 	
@@ -1009,6 +1001,16 @@ public Action GlobalTimer(Handle timer)
 	
 	Zombie_Delay_Warning();
 	Spawners_Timer();
+	if(frame % 100)
+		return Plugin_Continue;
+
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			PlayerApplyDefaults(client);
+		}
+	}
 	return Plugin_Continue;
 }
 
@@ -2675,14 +2677,8 @@ void PlayerApplyDefaults(int client)
 		
 		if(point_difference > 0)
 		{
-			if(Classic_Mode() || ZR_Waves_GetRound() > 59)
-			{
-				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
-			}
-			else
-			{
-				GiveXP(client, point_difference);
-			}
+			//Too much xp given, we have to reduce it by 10x
+			GiveXP(client, point_difference / 10);
 		}
 		
 		i_PreviousPointAmount[client] = PlayerPoints[client];

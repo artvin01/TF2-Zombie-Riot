@@ -507,6 +507,11 @@ void Edited_EmitSoundToAll(const char[] sample,
 				float volumeedited = volume;
 				if(entity > 0 && b_ThisWasAnNpc[entity])
 				{
+					if(EnableSilentMode && !b_thisNpcIsARaid[entity])
+					{
+						volumeedited *= 0.7; //Silent-er.
+						level = RoundToCeil(float(level) * 0.7);
+					}
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
 				}
 				if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client,entity,channel,level,flags,pitch,speakerentity,origin,dir,updatePos,soundtime))

@@ -1742,7 +1742,6 @@ void Send_Te_Client_ZR(int client)
 		TE_SendToClient(client);
 }
 
-static int Player_Laser_BEAM_HitDetected[MAXENTITIES];
 static int i_targets_hit;
 static int i_maxtargets_hit;
 enum struct Player_Laser_Logic
@@ -1760,6 +1759,9 @@ enum struct Player_Laser_Logic
 
 	bool trace_hit;
 	bool trace_hit_enemy;
+	float MaxDist;
+
+	float Custom_Hull[3];
 
 	/*
 
@@ -1770,6 +1772,9 @@ enum struct Player_Laser_Logic
 		float Angles[3], startPoint[3], Loc[3];
 		GetClientEyePosition(this.client, startPoint);
 		GetClientEyeAngles(this.client, Angles);
+
+		if(Dist != -1.0)
+			this.MaxDist = Dist;
 
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(this.client);
@@ -1798,6 +1803,9 @@ enum struct Player_Laser_Logic
 	}
 	void DoForwardTrace_Custom(float Angles[3], float startPoint[3], float Dist=-1.0)
 	{
+		if(Dist != -1.0)
+			this.MaxDist = Dist;
+
 		float Loc[3];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(this.client);
@@ -1831,17 +1839,12 @@ enum struct Player_Laser_Logic
 		else
 			i_maxtargets_hit = MAX_TARGETS_HIT;
 
-		Zero(Player_Laser_BEAM_HitDetected);
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
-		hullMin[0] = -this.Radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
+		this.SetHull(hullMin, hullMax);
 
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(this.client);
@@ -1851,29 +1854,51 @@ enum struct Player_Laser_Logic
 
 		float Dmg = this.Damage;
 				
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Player_Laser_BEAM_HitDetected[loop];
-			if (victim)
-			{
-				this.trace_hit_enemy=true;
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
+			if (!victim)
+				break;
 
-				float playerPos[3];
-				WorldSpaceCenter(victim, playerPos);
+			this.trace_hit_enemy=true;
 
-				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
-				{	
-					Call_StartFunction(null, Attack_Function);
-					Call_PushCell(this.client);
-					Call_PushCell(victim);
-					Call_PushCell(this.damagetype);
-					Call_PushFloatRef(Dmg);
-					Call_Finish();
+			float playerPos[3];
+			WorldSpaceCenter(victim, playerPos);
 
-					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
-				}
+			if(Attack_Function && Attack_Function != INVALID_FUNCTION)
+			{	
+				Call_StartFunction(null, Attack_Function);
+				Call_PushCell(this.client);
+				Call_PushCell(victim);
+				Call_PushCell(this.damagetype);
+				Call_PushFloatRef(Dmg);
+				Call_Finish();
+
+				//static void On_LaserHit(int client, int target, int damagetype, float &damage)
 			}
 		}
+	}
+	void Enumerate_Simple()
+	{
+		if(this.max_targets)
+			i_maxtargets_hit = this.max_targets;
+		else
+			i_maxtargets_hit = MAX_TARGETS_HIT;
+
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
+
+		float hullMin[3], hullMax[3];
+		this.SetHull(hullMin, hullMax);
+
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(this.client);
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Player_Laser_BEAM_TraceUsers, this.client);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+		FinishLagCompensation_Base_boss();
+
+		//the idea for this one is to then use
+		//for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+		//to loop throught the stuff. inside the specific npc that needs to use this
 	}
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
@@ -1888,17 +1913,12 @@ enum struct Player_Laser_Logic
 		if(this.target_hitfalloff)
 			Falloff = this.target_hitfalloff;
 
-		Zero(Player_Laser_BEAM_HitDetected);
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
-		hullMin[0] = -this.Radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
+		this.SetHull(hullMin, hullMax);
 
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(this.client);
@@ -1908,32 +1928,50 @@ enum struct Player_Laser_Logic
 
 		float Dmg = this.Damage;
 				
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Player_Laser_BEAM_HitDetected[loop];
-			if (victim)
-			{
-				this.trace_hit_enemy=true;
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
+			if (!victim)
+				break;
 
-				float playerPos[3];
-				WorldSpaceCenter(victim, playerPos);
-				
-				SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
+			this.trace_hit_enemy=true;
 
-				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
-				{	
-					Call_StartFunction(null, Attack_Function);
-					Call_PushCell(this.client);
-					Call_PushCell(victim);
-					Call_PushCell(this.damagetype);
-					Call_PushFloatRef(Dmg);
-					Call_Finish();
-					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
-				}
+			float playerPos[3];
+			WorldSpaceCenter(victim, playerPos);
+			
+			SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
-				Dmg *= Falloff;
+			if(Attack_Function && Attack_Function != INVALID_FUNCTION)
+			{	
+				Call_StartFunction(null, Attack_Function);
+				Call_PushCell(this.client);
+				Call_PushCell(victim);
+				Call_PushCell(this.damagetype);
+				Call_PushFloatRef(Dmg);
+				Call_Finish();
+				//static void On_LaserHit(int client, int target, int damagetype, float &damage)
 			}
+
+			Dmg *= Falloff;
 		}
+	}
+	void SetHull(float hullMin[3], float hullMax[3])
+	{
+		if(this.Custom_Hull[0] != 0.0 || this.Custom_Hull[1] != 0.0 || this.Custom_Hull[2] != 0.0)
+		{
+			hullMin[0] = -this.Custom_Hull[0];
+			hullMin[1] = -this.Custom_Hull[1];
+			hullMin[2] = -this.Custom_Hull[2];
+		}
+		else
+		{
+			hullMin[0] = -this.Radius;
+			hullMin[1] = hullMin[0];
+			hullMin[2] = hullMin[0];
+		}
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
 	}
 }
 
@@ -1950,10 +1988,10 @@ static bool Player_Laser_BEAM_TraceUsers(int entity, int contentsMask, int clien
 		{
 			for(int i=0 ; i < i_maxtargets_hit ; i++)
 			{
-				if(!Player_Laser_BEAM_HitDetected[i])
+				if(!i_Ruina_Laser_BEAM_HitDetected[i])
 				{
 					i_targets_hit++;
-					Player_Laser_BEAM_HitDetected[i] = entity;
+					i_Ruina_Laser_BEAM_HitDetected[i] = entity;
 					break;
 				}
 			}

@@ -6891,7 +6891,7 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 
 void Store_TryRefreshMenu(int client)
 {
-	if(LastStoreMenu[client] && LastStoreMenu_Store[client] && (LastStoreMenu[client] + 0.5) < GetGameTime())
+	if(LastStoreMenu[client] && LastStoreMenu_Store[client] && (LastStoreMenu[client] + 1.0) < GetGameTime())
 	{
 		MenuPage(client, CurrentMenuItem[client]);
 	}

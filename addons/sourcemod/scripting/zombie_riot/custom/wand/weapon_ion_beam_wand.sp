@@ -16,17 +16,16 @@
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
 static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {null, ...};
-static int i_hand_particle[MAXTF2PLAYERS+1][11];
-static float fl_hud_timer[MAXTF2PLAYERS+1];
+static int i_hand_particle[MAXTF2PLAYERS][11];
+static float fl_hud_timer[MAXTF2PLAYERS];
 
-static float fl_ion_charge_ammount[MAXTF2PLAYERS+1];
+static float fl_ion_charge_ammount[MAXTF2PLAYERS];
 static float fl_Ion_timer[MAXTF2PLAYERS + 1];
 
-static int Prismatic_TargetHit[MAX_NEUVELLETE_TARGETS_HIT+6];
-static bool b_special_active[MAXTF2PLAYERS+1];
-static float fl_beam_angle[MAXTF2PLAYERS+1][2];
-static float fl_throttle[MAXTF2PLAYERS+1];
-static float fl_throttle2[MAXTF2PLAYERS+1];
+static bool b_special_active[MAXTF2PLAYERS];
+static float fl_beam_angle[MAXTF2PLAYERS][2];
+static float fl_throttle[MAXTF2PLAYERS];
+static float fl_throttle2[MAXTF2PLAYERS];
 static float fl_extra_effects_timer[MAXTF2PLAYERS + 1];
 static float fl_m2_timer[MAXTF2PLAYERS + 1];
 static int i_Neuvellete_penetration[MAXTF2PLAYERS + 1];
@@ -1049,7 +1048,7 @@ static void Prismatic_Adjust_Stats(int client, int weapon)
 	fl_penetration_falloff[client] = Pen_Falloff;
 }
 
-static float fl_spinning_angle[MAXTF2PLAYERS+1];
+static float fl_spinning_angle[MAXTF2PLAYERS];
 public Action Neuvellete_tick(int client)
 {
 	//if(IsValidClient(client))
@@ -1206,7 +1205,6 @@ static void Neuvellete_Base_Central_Beam(float Start_Loc[3], float Target_Loc[3]
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, a);
 	
 	TE_SetupBeamPoints(Start_Loc, Target_Loc, BeamWand_Laser, 0, 0, 66, NEUVELLETE_TE_DURATION, ClampBeamWidth(diameter * 0.7 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.25, colorLayer1, 15);
-								
 	TE_SendToAll(0.0);
 	
 	TE_SetupGlowSprite(Start_Loc, gGlow1, NEUVELLETE_TE_DURATION, 0.5, 255);
@@ -1336,70 +1334,17 @@ static void Neuvellete_Create_Spinning_Beams_ALT_ALT(int client, float Origin[3]
 }*/
 static void Prismatic_Damage_Trace(int client, float playerPos[3], float endVec_2[3], float damage)
 {
-	static float hullMin[3];
-	static float hullMax[3];
+	Player_Laser_Logic Laser;
+	Laser.client = client;
+	Laser.Damage = damage;
+	Laser.Radius = 25.0;
+	Laser.damagetype = DMG_PLASMA;
+	Laser.Start_Point = playerPos;
+	Laser.End_Point = endVec_2;
+	Laser.max_targets = i_Neuvellete_penetration[client];
+	Laser.target_hitfalloff = fl_penetration_falloff[client];
+	Laser.Deal_Damage();
 
-	Zero(Prismatic_TargetHit);
-	
-	hullMin[0] = -25.0;
-	hullMin[1] = hullMin[0];
-	hullMin[2] = hullMin[0];
-	hullMax[0] = -hullMin[0];
-	hullMax[1] = -hullMin[1];
-	hullMax[2] = -hullMin[2];
-	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(client);
-	Handle trace;
-	trace = TR_TraceHullFilterEx(playerPos, endVec_2, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-	delete trace;
-	FinishLagCompensation_Base_boss();
-	
-	float vecForward[3];
-	float vecAngles[3];
-	GetAngleVectors(vecAngles, vecForward, NULL_VECTOR, NULL_VECTOR);
-
-	float BEAM_Targets_Hit = 1.0;
-
-	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon_active > 0)
-	{
-		for (int building = 0; building < i_Neuvellete_penetration[client]; building++)
-		{
-			int Victim = Prismatic_TargetHit[building];
-			if(Victim)
-			{
-				if(IsValidEntity(Victim))
-				{
-					float trg_loc[3];
-					WorldSpaceCenter(Victim, trg_loc);
-					
-					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
-					SDKHooks_TakeDamage(Victim, client, client, damage*BEAM_Targets_Hit, DMG_PLASMA, weapon_active, damage_force);
-					
-					BEAM_Targets_Hit *= fl_penetration_falloff[client];
-				}
-			}
-		}
-	}
-}
-
-static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsValidEntity(entity))
-	{
-		if(IsValidEnemy(client, entity, true, true))
-		{
-			for(int i=1; i <= (i_Neuvellete_penetration[client] -1 ); i++)
-			{
-				if(!Prismatic_TargetHit[i])
-				{
-					Prismatic_TargetHit[i] = entity;
-					break;
-				}
-			}
-		}
-	}
-	return false;
 }
 static bool Prismatic_TraceWallsOnly(int entity, int contentsMask)
 {
