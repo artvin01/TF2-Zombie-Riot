@@ -80,7 +80,7 @@ methodmap Wisp < StalkerShared
 			ActivateEntity(entity);
 			SetVariantString("!activator");
 			AcceptEntityInput(entity, "SetParent", npc.index);
-			AcceptEntityInput(entity, "LightOn");
+			//AcceptEntityInput(entity, "LightOn");
 		}
 		
 		npc.m_iWearable1 = entity;
