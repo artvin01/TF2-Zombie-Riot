@@ -59,14 +59,14 @@ void Cheese_MapStart()
 	PrecacheSound(SOUND_LETHAL_ABILITY, true);
 	PrecacheSound(SOUND_MOCHA_ABILITY1, true);
 	PrecacheSound(SOUND_MOCHA_ABILITY2, true);
-    PrecacheSound(SOUND_CHEESEBALL_SQUASH, true);
- //   PrecacheSound(SOUND_ELEMENTALAPPLY, true);
-    PrecacheSound(SOUND_CHEDDAR_ABILITY, true);
-    Zero(Cheese_PenaltyDur);
-    Zero(Cheese_LethalDur);
-    Zero(Cheese_MochaBuild);
-    Zero(Cheese_PapLevel);
-    LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+	PrecacheSound(SOUND_CHEESEBALL_SQUASH, true);
+//   PrecacheSound(SOUND_ELEMENTALAPPLY, true);
+	PrecacheSound(SOUND_CHEDDAR_ABILITY, true);
+	Zero(Cheese_PenaltyDur);
+	Zero(Cheese_LethalDur);
+	Zero(Cheese_MochaBuild);
+	Zero(Cheese_PapLevel);
+	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	Precached = false;
 }

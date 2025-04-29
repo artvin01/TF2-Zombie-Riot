@@ -505,11 +505,14 @@ void Edited_EmitSoundToAll(const char[] sample,
 			{
 				if((f_ZombieVolumeSetting[client] + 1.0) != 0.0 && IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
 				{
-					if(RecentSoundList[client].FindString(sample) != -1)
-						continue;
-					
-					RecentSoundList[client].PushString(sample);
-					CreateTimer(0.1, Timer_RecentSoundRemove, client);
+					if(EnableSilentMode)
+					{
+						if(RecentSoundList[client].FindString(sample) != -1)
+							continue;
+						
+						RecentSoundList[client].PushString(sample);
+						CreateTimer(0.1, Timer_RecentSoundRemove, client);	
+					}
 					
 					float volumeedited = volume;
 					if(EnableSilentMode && !b_thisNpcIsARaid[entity])

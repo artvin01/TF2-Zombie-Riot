@@ -63,7 +63,7 @@ void SDKHook_PluginStart()
 #endif
 	
 #if defined ZR
-	for(int client=1; client<=MaxClients; client++)
+	for(int client=0; client<=MaxClients; client++)
 	{
 		RecentSoundList[client] = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	}
@@ -2293,9 +2293,9 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 #endif	// ZR & RPG
 
 #if defined ZR
-Action Timer_RecentSoundRemove(Handle timer)
+Action Timer_RecentSoundRemove(Handle timer, int client)
 {
-	RecentSoundList[0].Erase(0);
+	RecentSoundList[client].Erase(0);
 	return Plugin_Continue;
 }
 #endif
