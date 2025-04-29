@@ -173,13 +173,6 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 	if((damagetype & DMG_CLUB))
 	{   
-		if(Cheese_PapLevel[attacker] > 0)
-		{
-			if(HasSpecificBuff(victim, "Plasm I") || HasSpecificBuff(victim, "Plasm II"))
-			{
-				HealEntityGlobal(attacker, attacker, (3.0 * float(Cheese_PapLevel[attacker])), 0.0, 0.0, HEAL_SELFHEAL);
-			}   
-		}
 		float cheesedmg = damage;
 		float bleed_dmg = Attributes_Get(weapon, 2, 1.0);
 		bleed_dmg *= Attributes_Get(weapon, 1, 1.0);
@@ -198,7 +191,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 				StartBleedingTimer(victim, attacker, bleed_dmg*0.9, 26, -1, DMG_CLUB);
 			*/
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
+		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.2), weapon);
 	}
 
 	return damage;
@@ -217,15 +210,15 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			if(Cheese_PapLevel[client] >= 4)
-				Ability_Apply_Cooldown(client, slot, LastMann ? 12.0 : 20.0);
+				Ability_Apply_Cooldown(client, slot, LastMann ? 12.0 : 18.0);
 			else
-				Ability_Apply_Cooldown(client, slot, LastMann ? 15.0 : 25.0);
+				Ability_Apply_Cooldown(client, slot, LastMann ? 15.0 : 22.0);
 			EmitSoundToClient(client, SOUND_CHEDDAR_ABILITY);
 		//	Cheese_PlaySplat(client);
 
 			Cheese_TargetsHit[client] = 0.0;
 
-			float basedmg = (750.0 * Attributes_Get(weapon, 2, 1.0));
+			float basedmg = (375.0 * Attributes_Get(weapon, 2, 1.0));
 			basedmg *= Attributes_Get(weapon, 1, 1.0);
 			Client_Shake(client, 0, 35.0, 90.0, 0.6);
 
@@ -275,25 +268,24 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 2)
 		{
 			Rogue_OnAbilityUse(client, weapon);
-			Ability_Apply_Cooldown(client, slot, LastMann ? 22.5 : 35.0);
+			Ability_Apply_Cooldown(client, slot, LastMann ? 25.0 : 40.0);
 			EmitSoundToClient(client, SOUND_LETHAL_ABILITY);
 
 			switch(Cheese_PapLevel[client])
 			{
 				case 2, 3:
 				{
-					ApplyTempAttrib(weapon, 6, 0.7, 7.0);
+					ApplyTempAttrib(weapon, 6, 0.75, 7.0);
 					Cheese_LethalDur[client] = GetGameTime() + 7.0;
 				}
 				case 4, 5:
 				{
-					ApplyTempAttrib(weapon, 6, 0.55, 8.5);
+					ApplyTempAttrib(weapon, 6, 0.625, 8.5);
 					Cheese_LethalDur[client] = GetGameTime() + 8.5;
 				}
 				case 6, 7, 8:
 				{
-					ApplyTempAttrib(weapon, 6, 0.45, 10.0);
-					ApplyTempAttrib(weapon, 2, 1.25, 10.0);
+					ApplyTempAttrib(weapon, 6, 0.5, 10.0);
 					Cheese_LethalDur[client] = GetGameTime() + 10.0;
 				}
 			}
@@ -326,7 +318,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 3)
 		{
 			Rogue_OnAbilityUse(client, weapon);
-			Ability_Apply_Cooldown(client, slot, LastMann ? 40.0 : 60.0);
+			Ability_Apply_Cooldown(client, slot, LastMann ? 45.0 : 70.0);
 			EmitSoundToClient(client, SOUND_MOCHA_ABILITY1);
 			EmitSoundToClient(client, SOUND_MOCHA_ABILITY2);
 
@@ -343,7 +335,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					dmgbuff = 1.9;
 					resbuff = 0.55;
 					atkspdbuff = 0.7;
-					HealEntityGlobal(client, client, MaxHealth * 0.20, 0.6, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.10, 0.6, 5.0, HEAL_SELFHEAL);
 				}
 				case 5, 6:		
 				{
@@ -351,7 +343,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					resbuff = 0.5;
 					atkspdbuff = 0.6;
 					buffdurations = 15.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.25, 0.75, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.125, 0.75, 5.0, HEAL_SELFHEAL);
 				}
 				case 7, 8:
 				{
@@ -359,11 +351,11 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					resbuff = 0.4;
 					atkspdbuff = 0.5;
 					buffdurations = 20.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.35, 1.0, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.175, 1.0, 5.0, HEAL_SELFHEAL);
 				}
 				default:
 				{
-					HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.075, 0.5, 5.0, HEAL_SELFHEAL);
 				}
 			}
 	
@@ -556,20 +548,20 @@ static void TBB_Tick(int client)
 			{
 				if(IsValidEntity(Cheese_BuildingHit[building]))
 				{
-					float duration = 4.0;
+					float duration = 5.0;
 					if(Cheese_PapLevel[client] >= 3)
-						duration += 1.5;
+						duration += 1.75;
 			
 					if(Cheese_PapLevel[client] >= 5)
-						duration += 1.0;
+						duration += 1.25;
 
 					if(b_thisNpcIsARaid[Cheese_BuildingHit[building]])
 					{
-						duration *= 0.4;
+						duration *= 0.5;
 					}
 					else if(b_thisNpcIsABoss[Cheese_BuildingHit[building]])
 					{
-						duration *= 0.67;
+						duration *= 0.75;
 					}
 						
 					if(Cheese_PapLevel[client] >= 5)
