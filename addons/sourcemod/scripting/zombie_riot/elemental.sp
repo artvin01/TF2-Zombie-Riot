@@ -1000,7 +1000,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 					Cheese_BeamEffect(position);
 					position[2] += 32.5;
 				}
-				Cheese_PlaySplat(victim);
+			//	Cheese_PlaySplat(victim);
 			}
 		}
 	}
