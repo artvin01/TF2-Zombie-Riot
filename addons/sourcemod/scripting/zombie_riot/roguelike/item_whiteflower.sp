@@ -336,18 +336,18 @@ public void Rogue_RareWeapon_Collect()
 {
 	char name[64];
 
-	switch(GetURandomInt() % 7)
+	switch(GetURandomInt() % 6)
 	{
 		case 0, 1:
 			strcopy(name, sizeof(name), "Vows of the Sea");
 		
-		case 2:
-			strcopy(name, sizeof(name), "Infinity Blade");
+	//	case 2:
+	//		strcopy(name, sizeof(name), "Infinity Blade");
 		
-		case 3, 4:
+		case 2, 3:
 			strcopy(name, sizeof(name), "Whistle Stop");
 		
-		case 5, 6:
+		case 4, 5:
 			strcopy(name, sizeof(name), "Ancestor Launcher");
 	}
 

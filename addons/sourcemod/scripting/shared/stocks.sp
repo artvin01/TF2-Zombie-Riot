@@ -3483,7 +3483,7 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 		GetAbsOrigin(entity, f_origin);
 		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
 		SetVariantString(strTargetName);
-		SetParent(entity, entIndex, "FadeTrail", _, false);
+		SetParent(entity, entIndex, "", _, false);
 		return entIndex;
 	}	
 	return -1;
@@ -5569,7 +5569,7 @@ stock void GetMapName(char[] buffer, int size)
 	GetMapDisplayName(buffer, buffer, size);
 }
 
-int GetEntityFromHandle(any handle)
+stock int GetEntityFromHandle(any handle)
 {
 	int ent = handle & 0xFFF;
 	if (ent == 0xFFF)
@@ -5578,7 +5578,7 @@ int GetEntityFromHandle(any handle)
 	return ent;
 }
 
-int GetEntityFromAddress(Address entity)
+stock int GetEntityFromAddress(Address entity)
 {
 	if (entity == Address_Null)
 		return -1;

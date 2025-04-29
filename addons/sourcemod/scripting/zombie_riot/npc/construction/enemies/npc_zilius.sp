@@ -542,7 +542,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/construct/bat_prtsstage1.mp3");
 			music.Time = 148;
-			music.Volume = 1.0;
+			music.Volume = 1.6;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "bat_prtsstage1");
 			strcopy(music.Artist, sizeof(music.Artist), "Arknights OST");
@@ -600,12 +600,12 @@ static void Internal_ClotThink(int iNPC)
 				case 4:
 				{
 					CPrintToChatAll("{snow}Zeina{default}: ... Why did you im-");
-					npc.m_flWinAnimationSay = GetGameTime() + 2.0;
+					npc.m_flWinAnimationSay = GetGameTime() + 1.0;
 				} 
 				case 5:
 				{
 					CPrintToChatAll("{black}Zilius{default}: Because you created a simulation thats just pathetic, Dont mess with reality or even a fake of it.");
-					npc.m_flWinAnimationSay = GetGameTime() + 1.0;
+					npc.m_flWinAnimationSay = GetGameTime() + 3.0;
 				} 
 				case 6:
 				{
@@ -630,8 +630,14 @@ static void Internal_ClotThink(int iNPC)
 				} 
 				case 11:
 				{
-					CPrintToChatAll("{black}Izan{default}: ... Nobody can know, theyll have my head on a stick...");
+					CPrintToChatAll("{black}Izan{default}: ... sure... whatever...");
 				} 
+				default:
+				{
+					ForcePlayerWin();
+					npc.m_flWinAnimationSay = 0.0;
+					npc.m_flWinAnimation = 0.0;
+				}
 			
 			}
 			TalkAtWhatAm++;
@@ -1398,7 +1404,7 @@ bool ZiliusFrontSlicer(Construction_Raid_Zilius npc)
 
 static void Zilius_KickTouched(int entity, int enemy)
 {
-	if(!IsValidEnemy(entity, enemy))
+	if(!IsValidEnemy(entity, enemy, true, true))
 		return;
 
 	if(IsIn_HitDetectionCooldown(entity ,enemy, 5))
@@ -1459,8 +1465,8 @@ void Zilius_KickLogic(int iNPC)
 		if(!TouchedNpcResolve(entity_traced))
 			break;
 
-		if(i_IsABuilding[ConvertTouchedResolve(entity_traced)])
-			continue;
+	//	if(i_IsABuilding[ConvertTouchedResolve(entity_traced)])
+	//		continue;
 		
 		Zilius_KickTouched(iNPC,ConvertTouchedResolve(entity_traced));
 	}

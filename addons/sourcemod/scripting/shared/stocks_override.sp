@@ -510,7 +510,7 @@ void Edited_EmitSoundToAll(const char[] sample,
 					if(EnableSilentMode && !b_thisNpcIsARaid[entity])
 					{
 						volumeedited *= 0.7; //Silent-er.
-						level = RoundToCeil(float(level) * 0.7);
+						level = RoundToCeil(float(level) * 0.85);
 					}
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
 				}

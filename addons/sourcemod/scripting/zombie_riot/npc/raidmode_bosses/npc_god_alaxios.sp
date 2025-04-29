@@ -1103,7 +1103,6 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		return Plugin_Continue;
 		
 	GodAlaxios npc = view_as<GodAlaxios>(victim);
-
 	if(npc.m_flReviveAlaxiosTime > GetGameTime(npc.index))
 	{
 		damage = 0.0;
