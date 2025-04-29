@@ -18,7 +18,7 @@ public void Construction_Stalker_Collect()
 	Spawns_GetNextPos(pos, ang, "spawn_2_3");
 	NPC_CreateByName("npc_stalker_combine", 0, pos, ang, TFTeam_Blue);
 
-	Spawns_GetNextPos(pos, ang, "spawn_3_3");
+	Spawns_GetNextPos(pos, ang, "spawn_3_4");
 	NPC_CreateByName("npc_stalker_goggles", 0, pos, ang, TFTeam_Blue);
 
 	Construction_AddMaterial("wizuh", 50, true);

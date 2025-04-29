@@ -146,7 +146,8 @@ methodmap StalkerGoggles < StalkerShared
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
 		npc.i_GunMode = ZR_Waves_GetRound();
 
-		TeleportDiversioToRandLocation(npc.index, .forceSpawn = Rogue_Mode());
+		if(!Construction_Mode())
+			TeleportDiversioToRandLocation(npc.index, .forceSpawn = Rogue_Mode());
 
 		float flPos[3], flAng[3];
 		npc.GetAttachment("head", flPos, flAng);
