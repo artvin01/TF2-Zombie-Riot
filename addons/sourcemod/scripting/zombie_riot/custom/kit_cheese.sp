@@ -34,7 +34,7 @@ Debuff duration is reduced by 60% against raids, and by 33% against bosses.
 #define SOUND_MOCHA_ABILITY1 "items/powerup_pickup_reduced_damage.wav"
 #define SOUND_MOCHA_ABILITY2 "misc/halloween/duck_pickup_pos_01.wav"
 #define SOUND_CHEESEBALL_SQUASH "ui/hitsound_squasher.wav"
-#define SOUND_ELEMENTALAPPLY    "zombiesurvival/cheese_elementalapply.mp3"
+//#define SOUND_ELEMENTALAPPLY    "zombiesurvival/cheese_elementalapply.mp3"
 #define SOUND_CHEDDAR_ABILITY  "weapons/tf2_back_scatter.wav"
 
 static int LaserIndex;
@@ -76,7 +76,7 @@ void Cheese_PrecacheMusic()
 	if(!Precached)
 	{
 		PrecacheSoundCustom("#zombiesurvival/cheese_lastman.mp3",_,1);
-        PrecacheSoundCustom("#zombiesurvival/cheese_elementalapply.mp3",_,1);
+      //  PrecacheSoundCustom("#zombiesurvival/cheese_elementalapply.mp3",_,1);
 		Precached = true;
 	}
 }
@@ -114,7 +114,9 @@ void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
 	{
-		Cheese_PrecacheMusic();
+		if(FileNetwork_Enabled())
+			Cheese_PrecacheMusic();
+			
 		delete EffectTimer[client];
 		EffectTimer[client] = CreateTimer(0.5, Cheese_EffectTimer, client, TIMER_REPEAT);
 	}

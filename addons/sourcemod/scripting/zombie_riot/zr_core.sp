@@ -2984,4 +2984,5 @@ void ZR_FastDownloadForce()
 	ZealotMusicDownload();
 	YakuzaMusicDownload();
 	FullmoonDownload();
+	Cheese_PrecacheMusic();
 }
