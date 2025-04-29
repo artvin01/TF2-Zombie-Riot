@@ -174,8 +174,8 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	if((damagetype & DMG_CLUB))
 	{   
 		float cheesedmg = damage;
-		float bleed_dmg = Attributes_Get(weapon, 2, 1.0);
-		bleed_dmg *= Attributes_Get(weapon, 1, 1.0);
+	//	float bleed_dmg = Attributes_Get(weapon, 2, 1.0);
+	//	bleed_dmg *= Attributes_Get(weapon, 1, 1.0);
 
 		if(Cheese_MochaBuild[attacker] > GetGameTime())
 		{
