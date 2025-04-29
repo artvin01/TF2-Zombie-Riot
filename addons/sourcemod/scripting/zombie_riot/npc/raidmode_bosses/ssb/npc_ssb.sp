@@ -640,50 +640,12 @@ float Spin_StunTime[4] = { 6.0, 4.5, 3.0, 0.0 };					//Duration to stun SSB for 
 float Spin_Friction[4] = { 0.5, 0.66, 0.85, 1.0 };					//SSB's friction while spinning. Higher friction will make Spin 2 Win harder to avoid. (5.0 = default friction)
 float Spin_Acceleration[4] = { 1200.0, 1500.0, 1800.0, 2100.0 };	//SSB's acceleration while spinning (friction does nothing if this is not set). Usually, 2 * Spin_Speed is the optimal value for this. Higher makes it harder to avoid.
 
-//SPOOKY SPECIAL #6 - MEGA MORTIS: SSB once again pulls out his trusty Mortis Masher and lifts it high into the air, charging it with necrotic energy. After X second(s),
-//he slams it down, dealing massive damage within a large radius to anybody who is on the ground. Anyone who is directly hit by the hammer itself is instantly killed,
-//no matter what. This bypasses downs entirely. In other words: don't try to face-tank it, you will fail.
-float Mortis_Delay[4] = { 5.0, 4.5, 4.0, 3.5 };						//Charge time.
-float Mortis_DMG[4] = { 800.0, 1600.0, 2400.0, 3200.0 };			//Damage.
-float Mortis_Radius[4] = { 900.0, 1000.0, 1100.0, 1200.0 };			//Radius.
-float Mortis_InstaDeathRadius[4] = { 100.0, 100.0, 100.0, 100.0 };	//Radius in which players are considered to have been hit directly by the hammer, and are thus instantly killed.
-float Mortis_Falloff_Radius[4] = { 0.5, 0.5, 0.5, 0.5 };			//Falloff based on radius.
-float Mortis_Falloff_MultiHit[4] = { 1.0, 1.0, 1.0, 1.0 };			//Amount to multiply damage dealt for each target hit.
-float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity applied to each target hit.
-
-//ULTIMATE ABILITY - SUPREME SLAYER: A supercharged special stance in which SSB begins to levitate. During this, his movement speed and damage are increased, and his cooldowns
-//are decreased. Spooky Specials are blocked while this is active. This ability is permanently activated if the mercs run out of time, and can also be temporarily activated upon
-//reaching a certain health threshold.
-float Slayer_Duration[4] = { 10.0, 15.0, 20.0, 25.0 };			//Duration (ignored if triggered by mercs running out of time).
-float Slayer_SpeedMult[4] = { 1.1, 1.1, 1.15, 1.2 };			//Movement speed multiplier.
-float Slayer_DMGMult[4] = { 2.0, 2.0, 2.0, 2.0 };				//Damage multiplier.
-float Slayer_CDR[4]	= { 1.5, 2.0, 2.5, 3.0 };					//Amount to divide Spell Card cooldowns while active.
-float Slayer_CDR_Warp[4] = { 1.0, 1.33, 1.66, 2.0 };			//Amount to divide Wizard Warp's cooldown while active.
-float Slayer_Threshold[4] = { -1.0, -1.0, -1.0, 0.2 };			//Health threshold at which to trigger Supreme Slayer when SSB takes damage. Obviously if this is <= 0.0, Supreme Slayer is not enabled on that specified wave phase.
-float Slayer_YouTookTooLong[4] = { 3.0, 3.0, 3.0, 3.0 };		//Amount to multiply all Supreme Slayer stats if it was triggered by the mercs running out of time.
-
-//SPECIAL MOBILITY - WIZARD WARP: SSB spins and teleports to a random player's location. This is essentially just Messenger's teleport but fancier.
-//Also, because it is delayed, this ability can telefrag, otherwise players might abuse it to get SSB stuck for easy damage.
-float Warp_MinCD[4] = { 10.0, 9.0, 8.0, 8.0 };				//Minimum cooldown.
-float Warp_MaxCD[4] = { 20.0, 18.0, 16.0, 14.0 };			//Maximum cooldown.
-float Warp_Range[4] = { 1000.0, 1200.0, 1400.0, 1600.0 };	//Max distance away the teleport location can be in order to activate this ability.
-
 //TO-DO:
-//	- The following abilities still need their base functionality coded:
-//		- MEGA-MORTIS (needs animations too)
 //	- The following abilities need animations:
-//		- MEGA-MORTIS (Wind-Up, Intro Delay Loop, Swing)
 //		- Death Magnetic (Wind-Up, Intro Delay, Activation, attach particle to hand while charging and have player tether beams emit from that hand)
 //		- Necrotic Bombardment, Ring of Tartarus (Finger Snap Gesture, activation beams should spawn from the hand)
 //		- Necrotic Cataclysm (Knockback Pose)
 //		- Spin 2 Win (Reworked Intro Sequence, Hammer Spawn VFX)
-//	- Make Supreme Slayer stance:
-//		- Entered after reaching 33% HP on wave phase 3. Increases movement speed by 66%, triples damage output, and reduces cooldowns by 66%.
-//		- Spooky Specials are blocked during this, but he spams the hell out of Spell Cards (not including Cursed Cross, Death Magnetic, or Ring of Tartarus, which are also blocked).
-//		- Periodically summons clones which fire miniature Necrotic Cataclysm blasts at the nearest player.
-//		- Lasts for 30 seconds.
-//		- Entered permanently with mega-buffed stats when the mercenaries run out of time on any wave phase.
-//	- Make Wizard Warp.
 //	- Important details:
 //		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
 //		- Master of the Damned needs to have scaling on its summons. HP needs to scale with wave count and player count, and the number summoned needs to scale with player count.
@@ -4034,6 +3996,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_LastSpell[npc.index] = -1;
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 
+		//TODO: Adjust this to account for 40-wave games as well as the standard 60-waves
 		int wave = Waves_GetRound() + 1;
 		if (wave <= 15)
 			SSB_WavePhase = 0;
@@ -4076,21 +4039,25 @@ methodmap SupremeSpookmasterBones < CClotBody
 			{
 				npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_1", npc.index, "righteye", {0.0,0.0,0.0});
 				npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_1", npc.index, "lefteye", {0.0,0.0,0.0});
+				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Bones");
 			}
 			case 1:
 			{
 				npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_2", npc.index, "righteye", {0.0,0.0,0.0});
 				npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_2", npc.index, "lefteye", {0.0,0.0,0.0});
+				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Spookmaster Bones");
 			}
 			case 2:
 			{
 				npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_3", npc.index, "righteye", {0.0,0.0,0.0});
 				npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_3", npc.index, "lefteye", {0.0,0.0,0.0});
+				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Supreme Spookmaster Bones");
 			}
 			default:
 			{
 				npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_4", npc.index, "righteye", {0.0,0.0,0.0});
 				npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_4", npc.index, "lefteye", {0.0,0.0,0.0});
+				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Supreme Spookmaster Bones");
 			}
 		}
 
