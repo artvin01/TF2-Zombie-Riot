@@ -1787,11 +1787,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(Construction_Mode())
 					{
-						CPrintToChatAll("%t", "Gained Material", cash, "Cash");
+						CPrintToChatAll("%t", "Gained Material", CashGive, "Cash");
 					}
 					else
 					{
-						CPrintToChatAll("{green}%t","Cash Gained This Wave", cash);
+						CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
 					}
 				}
 			}
