@@ -89,6 +89,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
+- [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 - [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
 

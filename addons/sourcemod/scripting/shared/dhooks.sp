@@ -862,6 +862,19 @@ public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params)
 	return MRES_Supercede;
 }
 */
+public Action CH_PassFilter(int ent1, int ent2, bool &result)
+{
+	if(!(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES))
+		return Plugin_Continue;
+
+	result = PassfilterGlobal(ent1, ent2, true);
+	if(result)
+	{
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
+
+}
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
