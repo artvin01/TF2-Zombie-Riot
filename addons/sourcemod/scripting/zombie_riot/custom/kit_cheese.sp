@@ -6,28 +6,27 @@ was meant to be cheese, but its plasma instead smh.
 
 This kit introduces the Plasmic Elemental status.
 Upon reaching 100%, the target recieves massive damage based on the attacker's 
-pap level and applier weapon, and is debuffed with Plasm II for 8s (bosses for 4s, raids get I for 4s instead).
+pap level and applier weapon, and is debuffed with Plasm II for 10s (bosses for 5s, raids get I for 5s instead).
 Plasmic Elemental buildup is reduced by 50% on bosses and raids 
 for 10/20 seconds respectively when the elemental cooldown wears off.
 If applied via melee, elemental cooldown is reduced to 8s, and deals 25% more damage.
 
 Melee - Deals damage below average and grants low resistance compared to other melees,
 but has a much better health on kill stat and builds the Plasmic Elemental status much faster.
-1st pap allows the user to heal off Plasmed targets with the melee, healing grows stronger with more paps.
-Lethal Injection (M2 Melee Ability) temporarily increases attackspeed, 
-damage and GREATLY increases melee Plasmic Elemental status buildup.
+2nd pap unlocks Lethal Injection (M2 Melee Ability) which temporarily increases attackspeed
+and GREATLY increases melee Plasmic Elemental status buildup.
 Later paps buff this ability to last a bit longer and to inflict true dmg bleed.
-Plasmic Inoculation (R Melee Ability) greatly increases a random stat of the melee temporarily
-(Damage, Resistance, plasmic buildup or attackspeed) and slowly heals the user overtime.
+3rd pap unlocks Plasmic Inoculation (R Melee Ability) which greatly increases a random stat 
+of the melee temporarily (Damage, Resistance, plasmic buildup or attackspeed) and slowly heals the user overtime.
 Later paps buff this ability's buffs and healing to last longer and be a bit stronger.
 
 Primary - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
-These projectiles build the Plasmic Elemental status much slower than the melee.
+These projectiles build the Plasmic Elemental status slower than the melee.
 Plasmic Burst (M2 Primary Ability) - Shoots a short-ranged laser similar to the Laserstick, minus the knockback.
 This laser inflicts Plasm I temporarily to enemies hit by it.
 Later paps buff this ability to have a slightly larger range, less cooldown,
 and allow it to inflict Plasm II instead of I for an overall longer duration.
-Debuff duration is reduced by 60% against raids, and by 33% against bosses.
+Debuff duration is reduced by 50% against raids, and by 25% against bosses.
 */
 
 #define SOUND_LETHAL_ABILITY "items/powerup_pickup_reflect.wav"
