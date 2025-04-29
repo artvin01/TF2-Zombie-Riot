@@ -161,7 +161,7 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 2.0;
 	}
 
-	int spawn = npc.m_iTargetAlly;
+	int spawn = i_TargetAlly[npc.index];
 	if((!IsValidEntity(spawn) || GetEntProp(spawn, Prop_Data, "m_bDisabled")) && (forceLeave || npc.m_iChaseAnger < 1))
 	{
 		spawn = -1;
@@ -194,7 +194,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 		
-		npc.m_iTargetAlly = spawn;
+		i_TargetAlly[npc.index] = spawn;
 	}
 
 	if(npc.m_flAttackHappens)
