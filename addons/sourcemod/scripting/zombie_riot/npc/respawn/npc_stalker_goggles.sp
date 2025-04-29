@@ -312,7 +312,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 	bool sniper = view_as<bool>((npc.i_GunMode + 1) == ZR_Waves_GetRound());
 	if(Construction_Mode())
-		sniper = (npc.i_GunMode + 1) == (CurrentRisk / 2);
+		sniper = (npc.i_GunMode + 1) == (Construction_GetRisk() / 2);
 
 	static float LastKnownPos[3];
 	if(npc.m_flGetClosestTargetTime < gameTime)
