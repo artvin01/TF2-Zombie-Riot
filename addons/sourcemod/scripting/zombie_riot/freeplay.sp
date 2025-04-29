@@ -289,6 +289,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraRangedRes = 1.0;
 		enemy.ExtraSpeed = 1.0;
 		enemy.ExtraDamage = 1.0;
+		enemy.ExtraThinkSpeed = 1.0;
 	}
 	if(RaidFight)
 	{
@@ -313,9 +314,22 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 			case 4:
 			{
-				enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
-				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "wave_60;res3";
+				switch(GetRandomInt(1, 4))
+				{
+					case 1: // mmmmyes
+					{
+						enemy.Index = NPC_GetByPlugin("npc_sea_god_alaxios");
+						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_60;res3;seainfection";
+					}
+					default: // alaxios has no timer in freeplay by default btw
+					{
+						enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
+						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_60;res3";
+					}
+					enemy.ExtraThinkSpeed = 0.85;
+				}
 			}
 			case 5:
 			{
@@ -741,7 +755,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		}
 		else
 		{
-			countscale *= 0.0782; // above 12 players, scaling should be 0.0782 per player, for a max of +25% enemies at 16 players assuming there can't be more.
+			countscale *= 0.0782; // above 12 players, scaling should be 0.0782 per player, for a max of +25% enemies at 16 players.
 		}
 
 		if(countscale < 0.1)
@@ -762,7 +776,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
 
 	// 2 billion limit, it is necessary to prevent them from going bananas
-	if(enemy.Health > 2000000000) // apparently doing health < 0 causes bob's army to go bananas
+	if(enemy.Health > 2000000000) // apparently doing "enemy.Health < 0" causes bob's army to go bananas
 		enemy.Health = 2000000000;
 
 	if(enemy.Team != TFTeam_Red)
