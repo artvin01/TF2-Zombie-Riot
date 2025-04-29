@@ -818,9 +818,12 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	if (!i_IsABuilding[entity])
 		return;
 
-	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
-		return;
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
+	{
+		if(!objstats.m_bConstructBuilding)
+			return; //anyone can pick up construct buildings!
+	}
 	if(IsValidEntity(objstats.m_iMasterBuilding))
 	{
 		entity = objstats.m_iMasterBuilding;

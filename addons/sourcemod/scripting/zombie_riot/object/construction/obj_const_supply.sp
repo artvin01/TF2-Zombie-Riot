@@ -36,7 +36,7 @@ methodmap ObjectSupply < ObjectGeneric
 {
 	public ObjectSupply(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectSupply npc = view_as<ObjectSupply>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/barn_loft001a.mdl", "0.5", "50", {89.0, 89.0, 84.0}, _, false));
+		ObjectSupply npc = view_as<ObjectSupply>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/barn_loft001a.mdl", "0.4", "50", {65.0, 65.0, 70.0}, _, false));
 
 		npc.m_bConstructBuilding = true;
 		npc.FuncCanBuild = ClotCanBuild;
