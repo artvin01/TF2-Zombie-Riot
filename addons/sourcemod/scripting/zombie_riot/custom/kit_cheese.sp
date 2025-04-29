@@ -168,7 +168,7 @@ public Action Cheese_EffectTimer(Handle timer, int client)
 
 public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, int damagetype, int weapon)
 {
-	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		return damage;
 
 	if((damagetype & DMG_CLUB))
