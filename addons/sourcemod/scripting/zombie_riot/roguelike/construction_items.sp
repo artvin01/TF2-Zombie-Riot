@@ -361,19 +361,19 @@ public void GiveCash_Base1()
 {
 	CurrentCash += 500;
 	GlobalExtraCash += 500;
-	CPrintToChatAll("{green}%t","Cash Gained!", 500);
+	CPrintToChatAll("%t", "Gained Material", 500, "Cash");
 }
 public void GiveCash_Base2()
 {
 	CurrentCash += 1500;
 	GlobalExtraCash += 1500;
-	CPrintToChatAll("{green}%t","Cash Gained!", 1500);
+	CPrintToChatAll("%t", "Gained Material", 1500, "Cash");
 }
 public void GiveCash_Base3()
 {
 	CurrentCash += 3000;
 	GlobalExtraCash += 3000;
-	CPrintToChatAll("{green}%t","Cash Gained!", 3000);
+	CPrintToChatAll("%t", "Gained Material", 3000, "Cash");
 }
 static void SpawnRebel(const char[] data = "")
 {

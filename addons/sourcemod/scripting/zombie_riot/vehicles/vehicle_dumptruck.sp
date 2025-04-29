@@ -14,7 +14,7 @@ void VehicleDumpTruck_Setup()
 		NPC_Add(data);
 	}
 	
-//	if(IsFileInDownloads("models/vehicles/dumptruck_empty.mdl"))
+//	if(IsFileInDownloads("models/vehicles/dumptruck_empty_v2.mdl"))
 	{
 		NPCData data;
 		strcopy(data.Name, sizeof(data.Name), "Dump Truck");
@@ -29,7 +29,7 @@ void VehicleDumpTruck_Setup()
 static void ClotPrecache()
 {
 	PrecacheModel("models/vehicles/dumptruck.mdl");
-	PrecacheModel("models/vehicles/dumptruck_empty.mdl");
+	PrecacheModel("models/vehicles/dumptruck_empty_v2.mdl");
 	Vehicle_PrecacheSounds();
 }
 
@@ -47,7 +47,7 @@ methodmap VehicleDumpTruck < VehicleGeneric
 {
 	public VehicleDumpTruck(const float vecPos[3], const float vecAng[3], const char[] data)
 	{
-		VehicleDumpTruck obj = view_as<VehicleDumpTruck>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, data[0] ? "models/vehicles/dumptruck_empty.mdl" : "models/vehicles/dumptruck.mdl", "scripts/vehicles/tf2_dumptruck.txt"));
+		VehicleDumpTruck obj = view_as<VehicleDumpTruck>(VehicleGeneric(vecPos, vecAng, VEHICLE_TYPE_CAR_WHEELS, data[0] ? "models/vehicles/dumptruck_empty_v2.mdl" : "models/vehicles/dumptruck.mdl", "scripts/vehicles/tf2_dumptruck.txt"));
 		
 		obj.m_bNoAttack = true;
 		obj.AddSeat({18.0, -26.0, 54.0}, 0);	// Side Seat

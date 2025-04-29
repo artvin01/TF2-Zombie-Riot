@@ -357,7 +357,7 @@ void Construction_SetupVote(KeyValues kv)
 
 			if(kv.GotoFirstSubKey())
 			{
-				for(int i = 1; i < count; i++)
+				for(int i; i < count; i++)
 				{
 					kv.GotoNextKey();
 				}
@@ -770,11 +770,10 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
-		
 		int cash = 500;
 		int GetRound = Construction_GetRisk() + 3;
 		cash *= GetRound;
-		CPrintToChatAll("{green}%t","Cash Gained!", cash);
+		CPrintToChatAll("%t", "Gained Material", cash, "Cash");
 		CurrentCash += cash;
 		//Extra money.
 		ReviveAll();
@@ -799,15 +798,17 @@ void Construction_BattleVictory()
 				//Failed to spawn, retry. go go!
 			}
 		}
-		if(Amountspawned > 0)
+		/*if(Amountspawned > 0)
 		{
 			CPrintToChatAll("%t","Gifts Spawned", Amountspawned);
 		}
 		else
 		{
 			CPrintToChatAll("%t","No Gifts Spawn");
-		}
+		}*/
 	}
+
+	CPrintToChatAll("%t", "Battle Finished");
 	
 	Waves_RoundEnd();
 	bool victory = true;

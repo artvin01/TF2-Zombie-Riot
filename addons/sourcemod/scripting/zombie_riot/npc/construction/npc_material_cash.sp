@@ -74,6 +74,6 @@ static void ClotDeath(int entity)
 	
 	cash *= GetRound;
 
-	CPrintToChatAll("{green}%t","Cash Gained!", cash);
+	CPrintToChatAll("%t", "Gained Material", cash, "Cash");
 	CurrentCash += cash;
 }
