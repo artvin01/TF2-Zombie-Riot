@@ -106,8 +106,8 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBaseBoss::ResolvePlayerCollision", DHook_ResolvePlayerCollisionPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
-//	DHook_CreateDetour(gamedata, "CTraceFilterSimple::ShouldHitEntity", DHook_ShouldHitEntityPre);	// From SCP:SF
-	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);	// From SCP:SF
+//	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);
+// Dhooking it like this is broken.
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -847,7 +847,7 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	return MRES_Supercede;
 }
 
-
+/*
 public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params) 
 {
 	int toucher = DHookGetParam(params, 1);
@@ -855,20 +855,6 @@ public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params)
 	if(passer == -1)
 		return MRES_Ignored;
 		
-	if(PassfilterGlobal(toucher, passer, true))
-		return MRES_Ignored;
-	
-	ret.Value = false;
-	return MRES_Supercede;
-}
-/*
-public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHookParam param)
-{
-	int toucher = param.Get(1);
-	int passer = GetEntityFromAddress(LoadFromAddress(address + view_as<Address>(4), NumberType_Int32));	// +4 from CTraceFilterSimple::m_pPassEnt
-	if(passer == -1)
-		return MRES_Ignored;
-	// TODO: In RPG, PvP has collisions
 	if(PassfilterGlobal(toucher, passer, true))
 		return MRES_Ignored;
 	
@@ -1118,7 +1104,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			else if(!DoingLagCompensation)
 			{
 #if defined RPG
-				if(((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime()))))
+				if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime())))
 #else
 				if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime()))
 #endif
