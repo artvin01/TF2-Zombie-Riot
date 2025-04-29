@@ -1030,7 +1030,7 @@ void Music_Update(int client)
 				case 10:
 				{
 					EmitCustomToClient(client, "#zombiesurvival/cheese_lastman.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-					SetMusicTimer(client, GetTime() + 179);
+					SetMusicTimer(client, GetTime() + 170);
 				}
 				default:
 				{	
