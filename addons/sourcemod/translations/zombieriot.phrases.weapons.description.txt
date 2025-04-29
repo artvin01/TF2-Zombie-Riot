@@ -369,7 +369,7 @@
 	}
 	"Grenade Launcher Pap 2"
 	{
-		"en"		"Reduced damage but higher attackspeed attack speed and reload speed.\nNow deals 2x dmg against raids."
+		"en"		"Reduced damage but higher attackspeed attack speed and reload speed.\nNow deals 2x dmg against raids.\nExplodes on contact now."
 	}
 	"Grenade Launcher Pap 3"
 	{

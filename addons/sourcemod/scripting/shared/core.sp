@@ -2432,7 +2432,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		h_ArrowInflictorRef[entity] = -1;
 		i_ProjectileExtraFunction[entity] = INVALID_FUNCTION;
 		h_BonusDmgToSpecialArrow[entity] = 1.0;
-		b_RocketBoomEffect[entity] = false;
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		b_EntityIsWandProjectile[entity] = false;

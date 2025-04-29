@@ -7105,32 +7105,44 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	
 	b_IsAGib[prop] = true;
 	
-	if (!nobleed && !EnableSilentMode)
+	if (!nobleed)
 	{
 		if(!metal_colour)
 		{
 			if(BleedType == 0)
 			{
-				int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
-				SetParent(prop, particle);
+				if(!EnableSilentMode)
+				{
+					int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
+					SetParent(prop, particle);
+				}
 				SetEntityRenderColor(prop, 255, 0, 0, 255);
 			}
 			else if(BleedType == 2)
 			{
-				int particle = ParticleEffectAt(pos, "flamethrower_rainbow_bubbles02", Random_time); //This is a permanent particle, gotta delete it manually...
-				SetParent(prop, particle);
+				if(!EnableSilentMode)
+				{
+					int particle = ParticleEffectAt(pos, "flamethrower_rainbow_bubbles02", Random_time); //This is a permanent particle, gotta delete it manually...
+					SetParent(prop, particle);
+				}
 				SetEntityRenderColor(prop, 65, 65, 255, 255);				
 			}
 			else if(BleedType == 3)
 			{
-				int particle = ParticleEffectAt(pos, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
-				SetParent(prop, particle);
+				if(!EnableSilentMode)
+				{
+					int particle = ParticleEffectAt(pos, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
+					SetParent(prop, particle);
+				}
 				SetEntityRenderColor(prop, 200, 0, 200, 255);
 			}
 			else
 			{
-				int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
-				SetParent(prop, particle);
+				if(!EnableSilentMode)
+				{
+					int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
+					SetParent(prop, particle);
+				}
 				SetEntityRenderColor(prop, 0, 255, 0, 255);
 			}
 		}
