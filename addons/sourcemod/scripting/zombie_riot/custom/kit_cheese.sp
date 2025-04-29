@@ -60,7 +60,7 @@ void Cheese_MapStart()
 	PrecacheSound(SOUND_MOCHA_ABILITY1, true);
 	PrecacheSound(SOUND_MOCHA_ABILITY2, true);
     PrecacheSound(SOUND_CHEESEBALL_SQUASH, true);
-    PrecacheSound(SOUND_ELEMENTALAPPLY, true);
+ //   PrecacheSound(SOUND_ELEMENTALAPPLY, true);
     PrecacheSound(SOUND_CHEDDAR_ABILITY, true);
     Zero(Cheese_PenaltyDur);
     Zero(Cheese_LethalDur);
@@ -106,8 +106,8 @@ void Cheese_BeamEffect(float position[3], float startrad = 1.0, float endrad = 1
 void Cheese_PlaySplat(int entity)
 {
     	int pitch = GetRandomInt(75, 125);
-	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
-    	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
+//	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
+   // 	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
 }
 
 void Cheese_Enable(int client, int weapon)
@@ -116,7 +116,7 @@ void Cheese_Enable(int client, int weapon)
 	{
 		if(FileNetwork_Enabled())
 			Cheese_PrecacheMusic();
-			
+
 		delete EffectTimer[client];
 		EffectTimer[client] = CreateTimer(0.5, Cheese_EffectTimer, client, TIMER_REPEAT);
 	}
