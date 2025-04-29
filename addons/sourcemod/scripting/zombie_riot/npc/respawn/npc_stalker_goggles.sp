@@ -146,7 +146,8 @@ methodmap StalkerGoggles < StalkerShared
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
 		npc.i_GunMode = ZR_Waves_GetRound();
 
-		TeleportDiversioToRandLocation(npc.index, .forceSpawn = Rogue_Mode());
+		if(!Construction_Mode())
+			TeleportDiversioToRandLocation(npc.index, .forceSpawn = Rogue_Mode());
 
 		float flPos[3], flAng[3];
 		npc.GetAttachment("head", flPos, flAng);
@@ -310,6 +311,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	}
 
 	bool sniper = view_as<bool>((npc.i_GunMode + 1) == ZR_Waves_GetRound());
+	if(Construction_Mode())
+		sniper = (npc.i_GunMode + 1) == (Construction_GetRisk() / 2);
 
 	static float LastKnownPos[3];
 	if(npc.m_flGetClosestTargetTime < gameTime)
@@ -348,6 +351,14 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					{
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
+
+						if(Construction_Mode())
+						{
+							float wave = float(ZR_Waves_GetRound()+1);
+							wave *= 0.1;
+							npc.m_flWaveScale = wave;
+							npc.m_flWaveScale *= MinibossScalingReturn();
+						}
 
 						float damage = 150.0;
 						damage *= npc.m_flWaveScale;
@@ -750,6 +761,14 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
+				if(Construction_Mode())
+				{
+					float wave = float(ZR_Waves_GetRound()+1);
+					wave *= 0.1;
+					npc.m_flWaveScale = wave;
+					npc.m_flWaveScale *= MinibossScalingReturn();
+				}
+
 				float damageDealt = 150.0;
 				damageDealt *= npc.m_flWaveScale;
 				if(target > MAXTF2PLAYERS)

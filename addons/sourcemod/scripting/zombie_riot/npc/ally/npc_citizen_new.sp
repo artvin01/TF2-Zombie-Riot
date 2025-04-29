@@ -1491,6 +1491,15 @@ methodmap Citizen < CClotBody
 
 		DispatchKeyValue(Text_Entity, "message", text);
 	}
+	public bool CanPathToAlly(int target)
+	{
+		CNavArea startArea = TheNavMesh.GetNavAreaEntity(this.index, view_as<GetNavAreaFlags_t>(0), 1000.0);
+		CNavArea endArea = TheNavMesh.GetNavAreaEntity(target, view_as<GetNavAreaFlags_t>(0), 1000.0);
+		
+		float pos[3];
+		GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+		return TheNavMesh.BuildPath(startArea, endArea, pos);
+	}
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll("weapons/iceaxe/iceaxe_swing1.wav", this.index, _, 80, _, 1.0);
@@ -1709,6 +1718,17 @@ static void CitizenMenu(int client, int page = 0)
 	if(npc.index == -1)
 		return;
 	
+	int ally = npc.m_iTargetAlly;
+	if(IsValidEntity(ally))
+	{
+		// Unstuck me
+		if(!npc.CanPathToAlly(ally))
+		{
+			npc.m_iTargetAlly = 0;
+			npc.m_iSeakingObject = 0;
+		}
+	}
+
 	SetGlobalTransTarget(client);
 
 	char buffer[128];
@@ -2007,30 +2027,33 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 15, 16, 17, 18, 19, 20:
 				{
-					int CheckWhich;
-					switch(index)
+					if(npc.CanPathToAlly(client))
 					{
-						case 15:
-							CheckWhich = 2;
-						case 16:
-							CheckWhich = 1;
-						default:
-							CheckWhich = 3;
-					}
-					int MaxBuildingsSee = 0;
-					int BuildingsSee = 0;
-					BuildingsSee = BuildingAmountRebel(npc.index, CheckWhich, MaxBuildingsSee);
+						int CheckWhich;
+						switch(index)
+						{
+							case 15:
+								CheckWhich = 2;
+							case 16:
+								CheckWhich = 1;
+							default:
+								CheckWhich = 3;
+						}
+						int MaxBuildingsSee = 0;
+						int BuildingsSee = 0;
+						BuildingsSee = BuildingAmountRebel(npc.index, CheckWhich, MaxBuildingsSee);
 
-					if((MaxBuildingsSee - BuildingsSee) <= 0)
-					{
-						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						CitizenMenu(client, page);
-						return 0;
-					}
+						if((MaxBuildingsSee - BuildingsSee) <= 0)
+						{
+							ClientCommand(client, "playgamesound items/medshotno1.wav");
+							CitizenMenu(client, page);
+							return 0;
+						}
 
-					npc.m_iTargetAlly = client;
-					npc.m_iSeakingObject = index - 9;
-					HealingCooldown[npc.index] = GetGameTime() + 2.0;
+						npc.m_iTargetAlly = client;
+						npc.m_iSeakingObject = index - 9;
+						HealingCooldown[npc.index] = GetGameTime() + 2.0;
+					}
 				}
 				case 25:
 				{
@@ -2879,13 +2902,16 @@ public void Citizen_ClotThink(int iNPC)
 
 					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
-					if(dist < distance)
-					{
-						distance = dist;
-						ally = entity;
-						npc.m_iTargetAlly = ally;
-						npc.m_iSeakingObject = 5;
-					}
+					if(dist > distance)
+						continue;
+					
+					if(!npc.CanPathToAlly(entity))
+						continue;
+					
+					distance = dist;
+					ally = entity;
+					npc.m_iTargetAlly = ally;
+					npc.m_iSeakingObject = 5;
 				}
 			}
 			else
@@ -2904,12 +2930,15 @@ public void Citizen_ClotThink(int iNPC)
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
-						{
-							distance = dist;
-							ally = entity;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 5;
-						}
+							continue;
+					
+						if(!npc.CanPathToAlly(entity))
+							continue;
+						
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 5;
 					}
 				}
 			}
@@ -2961,12 +2990,15 @@ public void Citizen_ClotThink(int iNPC)
 				GetAbsOrigin(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
-				{
-					distance = dist;
-					ally = entity;
-					npc.m_iTargetAlly = ally;
-					npc.m_iSeakingObject = 7;
-				}
+					continue;
+				
+				if(!npc.CanPathToAlly(entity))
+					continue;
+				
+				distance = dist;
+				ally = entity;
+				npc.m_iTargetAlly = ally;
+				npc.m_iSeakingObject = 7;
 			}
 		}
 
@@ -3119,12 +3151,15 @@ public void Citizen_ClotThink(int iNPC)
 				GetAbsOrigin(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
-				{
-					distance = dist;
-					ally = entity;
-					npc.m_iTargetAlly = ally;
-					npc.m_iSeakingObject = type;
-				}
+					continue;
+				
+				if(!npc.CanPathToAlly(entity))
+					continue;
+				
+				distance = dist;
+				ally = entity;
+				npc.m_iTargetAlly = ally;
+				npc.m_iSeakingObject = type;
 			}
 		}
 
@@ -3148,12 +3183,15 @@ public void Citizen_ClotThink(int iNPC)
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
-						{
-							distance = dist;
-							ally = entity;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 1;
-						}
+							continue;
+						
+						if(!npc.CanPathToAlly(entity))
+							continue;
+						
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 1;
 					}
 				}
 			}
@@ -3178,12 +3216,15 @@ public void Citizen_ClotThink(int iNPC)
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
-						{
-							distance = dist;
-							ally = entity;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 3;
-						}
+							continue;
+						
+						if(!npc.CanPathToAlly(entity))
+							continue;
+						
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 3;
 					}
 				}
 			}
@@ -3208,12 +3249,15 @@ public void Citizen_ClotThink(int iNPC)
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
-						{
-							distance = dist;
-							ally = entity;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 2;
-						}
+							continue;
+						
+						if(!npc.CanPathToAlly(entity))
+							continue;
+						
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 2;
 					}
 				}
 			}
@@ -4215,6 +4259,16 @@ public void Citizen_ClotThink(int iNPC)
 							}
 						}
 					}
+				}
+			}
+
+			if(ally)
+			{
+				// How do I get to you
+				if(!npc.CanPathToAlly(ally))
+				{
+					WorldSpaceCenter(ally, vecTarget);
+					TeleportEntity(npc.index, vecTarget);
 				}
 			}
 		}
