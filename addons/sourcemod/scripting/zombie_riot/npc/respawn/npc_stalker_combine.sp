@@ -55,9 +55,11 @@ methodmap StalkerShared < CClotBody
 					continue;
 
 				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
-					break;
+					return;
 			}
 		}
+
+		WorldSpaceCenter(this.index, pos);
 	}
 
 	property int m_iChaseAnger	// Allows being able to quickly hide
@@ -391,6 +393,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 
 						float damage = 180.0;
+						if(Construction_Mode())
+							damage *= 5.0;
 
 						if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 							damage *= 8.0;

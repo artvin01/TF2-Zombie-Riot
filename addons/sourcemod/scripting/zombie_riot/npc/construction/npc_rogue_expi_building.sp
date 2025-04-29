@@ -46,7 +46,7 @@ methodmap MaterialEvilExpi < CClotBody
 
 		npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
-		npc.Anger = true;	// If true, summons an attack wave when mining
+		npc.Anger = false;	// If true, summons an attack wave when mining
 		
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
@@ -61,17 +61,17 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		if(Rogue_HasNamedArtifact("Pickaxes and a Map"))
-		{
+		//if(Rogue_HasNamedArtifact("Pickaxes and a Map"))
+		//{
 			Construction_OnTakeDamage("cash", 0, victim, attacker, damage, damagetype);
-		}
+		/*}
 		else
 		{
 			MaterialStone npc = view_as<MaterialStone>(victim);
 			if(npc.Anger)
 				CPrintToChatAll("%t", "Resource Attack Started", attacker, "?????????????");
 			npc.Anger = false;
-		}
+		}*/
 	}
 }
 
@@ -80,7 +80,7 @@ static void ClotDeath(int entity)
 	if(Rogue_HasNamedArtifact("Pickaxes and a Map"))
 	{
 		static const int cash = 5000;
-		CPrintToChatAll("{green}%t","Cash Gained!", cash);
+		CPrintToChatAll("%t", "Gained Material", cash, "Cash");
 		CurrentCash += cash;
 	}
 	else

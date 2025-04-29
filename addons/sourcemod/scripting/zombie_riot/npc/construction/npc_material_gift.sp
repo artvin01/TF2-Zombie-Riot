@@ -78,7 +78,7 @@ static void ClotDeath(int entity)
 	int cash = 150;
 	int GetRound = npc.m_iMyRisk;
 	cash *= GetRound;
-	CPrintToChatAll("{green}%t","Cash Gained!", cash);
+	CPrintToChatAll("%t", "Gained Material", cash, "Cash");
 	CurrentCash += cash;
 	GiveRandomReward(npc.m_iMyRisk, 1);
 	int attacker = EntRefToEntIndex(LastHitRef[entity]);
