@@ -1031,7 +1031,7 @@ static void PrepareSmith_Raid(AgentSmith npc)
 	MusicEnum music;
 	strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/neodammerung.mp3");
 	music.Time = 240;
-	music.Volume = 1.7;
+	music.Volume = 1.5;
 	music.Custom = false;
 	strcopy(music.Name, sizeof(music.Name), "Neodämmerung");
 	strcopy(music.Artist, sizeof(music.Artist), "Don Davis");

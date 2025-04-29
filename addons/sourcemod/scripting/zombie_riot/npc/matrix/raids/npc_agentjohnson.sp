@@ -227,7 +227,7 @@ methodmap AgentJohnson < CClotBody
 		npc.i_AnimSytle = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 230.0;
+		npc.m_flSpeed = 200.0;
 		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 10.0;
 		npc.m_flAbilityOrAttack1 = 0.0;
 		npc.m_flAbilityOrAttack2 = 0.0;
