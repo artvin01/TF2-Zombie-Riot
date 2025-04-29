@@ -75,9 +75,9 @@ void AgentJohnson_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return AgentJohnson(vecPos, vecAng, ally);
+	return AgentJohnson(vecPos, vecAng, ally, data);
 }
 methodmap AgentJohnson < CClotBody
 {
@@ -224,7 +224,7 @@ methodmap AgentJohnson < CClotBody
 
 		//IDLE
 		npc.m_iState = 0;
-		npc.i_AnimSytle = 0;
+		npc.m_iAnimationState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
@@ -331,31 +331,32 @@ public void AgentJohnson_ClotThink(int iNPC)
 
 	if(npc.m_flAbilityOrAttack1)
 	{
-		if(npc.m_flAbilityOrAttack1 < gameTime)
+		if(npc.m_flAbilityOrAttack1 < GetGameTime(npc.index))
 		{
 			float radius = 200.0;
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
 			int color[4] = {255, 50, 40, 255};
-			if(npc.i_AnimSytle != 999)
+			if(npc.m_iAnimationState != 999)
 			{
 				i_NpcWeight[npc.index] = 999;
-				npc.m_flAbilityOrAttack2 = gameTime + 0.65;
+				npc.m_flAbilityOrAttack2 = GetGameTime(npc.index) + 0.65;
 				b_NoGravity[npc.index] = true;
 				npc.SetVelocity({0.0,0.0,0.0});
 				npc.m_bisWalking = false;
-				npc.i_AnimSytle = 999;
+				npc.m_iAnimationState = 999;
 				
 				return;
 			}
 			if(npc.IsOnGround())
 			{
-				npc.i_AnimSytle = 0;
+				npc.m_iAnimationState = 0;
 				npc.m_bisWalking = true;
 				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
-				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
+				if(iActivity_melee > 0) 
+					npc.StartActivity(iActivity_melee);
 				i_NpcWeight[npc.index] = 4;
-				npc.m_flAbilityOrAttack0 = gameTime + 20.0;
+				npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 20.0;
 				npc.m_flAbilityOrAttack1 = 0.0;
 				npc.m_flAbilityOrAttack2 = 0.0;
 				npc.m_flAbilityOrAttack3 = 0.0;
@@ -376,17 +377,17 @@ public void AgentJohnson_ClotThink(int iNPC)
 			}
 			if(npc.m_flAbilityOrAttack2)
 			{
-				if(npc.m_flAbilityOrAttack2 <= gameTime)
+				if(npc.m_flAbilityOrAttack2 <= GetGameTime(npc.index))
 				{
 					b_NoGravity[npc.index] = false;
-					npc.m_flAbilityOrAttack2 = gameTime + 0.1;
+					npc.m_flAbilityOrAttack2 = GetGameTime(npc.index) + 0.1;
 					npc.SetVelocity({0.0,0.0, -1000.0});
 				}
 				else
 				{
-					if(npc.m_flAbilityOrAttack3 <= gameTime)
+					if(npc.m_flAbilityOrAttack3 <= GetGameTime(npc.index))
 					{
-						npc.m_flAbilityOrAttack3 = gameTime + 0.1;
+						npc.m_flAbilityOrAttack3 = GetGameTime(npc.index) + 0.1;
 						spawnRing_Vectors(pos, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.33, 6.0, 0.1, 1, 1.0);
 					}
 					
