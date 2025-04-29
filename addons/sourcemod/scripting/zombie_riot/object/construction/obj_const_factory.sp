@@ -80,11 +80,11 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 
 		maxcount = 1;
 
-		if(Construction_HasNamedResearch("Base Level II"))
-			maxcount++;
-		
-		if(Construction_HasNamedResearch("Base Level III"))
-			maxcount++;
+	//	if(Construction_HasNamedResearch("Base Level II"))
+	//		maxcount++;
+	//	
+	//	if(Construction_HasNamedResearch("Base Level III"))
+	//		maxcount++;
 		
 		if(count >= maxcount)
 			return false;
@@ -190,10 +190,10 @@ static int OssuniaCost()
 			return 10;
 		
 		case 2:
-			return 35;
+			return 999999; //Dont allow more then 2
 		
 		case 3:
-			return 100;
+			return 999999;
 	}
 
 	return 999;

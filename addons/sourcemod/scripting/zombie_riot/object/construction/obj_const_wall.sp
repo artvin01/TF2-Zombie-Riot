@@ -67,7 +67,7 @@ methodmap ObjectWall1 < ObjectGeneric
 {
 	public ObjectWall1(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectWall1 npc = view_as<ObjectWall1>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier01.mdl", _, "600", {49.0, 49.0, 177.0},_,false));
+		ObjectWall1 npc = view_as<ObjectWall1>(ObjectGeneric(client, vecPos, vecAng, "models/props_hydro/metal_barrier01.mdl", _, "600", {49.0, 49.0, 100.0},_,false));
 		
 		npc.FuncCanBuild = ClotCanBuild1;
 		npc.m_bConstructBuilding = true;
@@ -154,7 +154,7 @@ static bool ClotCanBuild2(int client, int &count, int &maxcount)
 		maxcount = 5;
 		
 		if(Construction_HasNamedResearch("Base Level III"))
-			maxcount += 2;
+			maxcount += 4;
 		
 		if((count + 1) >= maxcount)
 			return false;
