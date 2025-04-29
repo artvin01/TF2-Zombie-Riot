@@ -1089,6 +1089,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 				}
 			}
+
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
 			{
 				return false;
@@ -1113,19 +1114,22 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 			
+			//dont do during lag comp, no matter what	
+			else if(!DoingLagCompensation)
+			{
 #if defined RPG
-			else if(!DoingLagCompensation && ((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime()))))
+				if(((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime()))))
 #else
-			else if(!DoingLagCompensation && (entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime()))
+				if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime()))
 #endif
-			{
-				//dont do during lag comp, no matter what	
-				//if a player needs to get unstuck.
-				return false;
-			}
-			else if(!DoingLagCompensation && (entity2 <= MaxClients && entity2 > 0) && b_IgnoreAllCollisionNPC[entity1])
-			{
-				return false;
+				{
+					//if a player needs to get unstuck.
+					return false;
+				}
+				else if((entity2 <= MaxClients && entity2 > 0) && b_IgnoreAllCollisionNPC[entity1])
+				{
+					return false;
+				}
 			}
 			
 		}
