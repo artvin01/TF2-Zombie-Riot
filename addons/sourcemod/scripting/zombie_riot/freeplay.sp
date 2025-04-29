@@ -324,6 +324,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 						enemy.Index = NPC_GetByPlugin("npc_sea_god_alaxios");
 						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.Data = "wave_60;res3;seainfection";
+
+						enemy.ExtraThinkSpeed = 0.85; // ?
 					}
 					default: // alaxios has no timer in freeplay by default btw
 					{
@@ -331,7 +333,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.Data = "wave_60;res3";
 					}
-					enemy.ExtraThinkSpeed = 0.85;
 				}
 			}
 			case 5:
