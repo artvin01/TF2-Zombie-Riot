@@ -196,7 +196,7 @@ methodmap AgentThompson < CClotBody
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/furiousangels.mp3");
 		music.Time = 161;
-		music.Volume = 2.0;
+		music.Volume = 1.7;
 		music.Custom = false;
 		strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
 		strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
