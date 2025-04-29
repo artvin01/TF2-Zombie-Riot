@@ -103,6 +103,7 @@ void Cheese_BeamEffect(float position[3], float startrad = 1.0, float endrad = 1
 	TE_SendToAll();
     }
 }
+/*
 void Cheese_PlaySplat(int entity)
 {
     	int pitch = GetRandomInt(75, 125);
@@ -110,6 +111,7 @@ void Cheese_PlaySplat(int entity)
    // 	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
 }
 
+*/
 void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
@@ -215,7 +217,7 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			else
 				Ability_Apply_Cooldown(client, slot, LastMann ? 15.0 : 25.0);
 			EmitSoundToClient(client, SOUND_CHEDDAR_ABILITY);
-			Cheese_PlaySplat(client);
+		//	Cheese_PlaySplat(client);
 
 			Cheese_TargetsHit[client] = 0.0;
 
