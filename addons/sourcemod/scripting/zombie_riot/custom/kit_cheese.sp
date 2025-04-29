@@ -168,6 +168,9 @@ public Action Cheese_EffectTimer(Handle timer, int client)
 
 public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, int damagetype, int weapon)
 {
+	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return damage;
+
 	if((damagetype & DMG_CLUB))
 	{   
 		if(Cheese_PapLevel[attacker] > 0)
@@ -188,10 +191,12 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 		if(Cheese_LethalDur[attacker] > GetGameTime())
 		{
 			cheesedmg *= 2.35;
+			/*
 			if(Cheese_PapLevel[attacker] == 4)
-				StartBleedingTimer(victim, attacker, bleed_dmg*0.75, 12, -1, DMG_TRUEDAMAGE);
+				StartBleedingTimer(victim, attacker, bleed_dmg*0.75, 12, -1, DMG_CLUB);
 			else if(Cheese_PapLevel[attacker] >= 5)
-				StartBleedingTimer(victim, attacker, bleed_dmg*0.9, 26, -1, DMG_TRUEDAMAGE);
+				StartBleedingTimer(victim, attacker, bleed_dmg*0.9, 26, -1, DMG_CLUB);
+			*/
 		}
 		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
 	}
@@ -201,7 +206,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon)
 {
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.225), weapon);
+	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.225), weapon);
 }
 
 public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int slot)
@@ -226,26 +231,26 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 
 			switch(Cheese_PapLevel[client])
 			{
-					case 3:
-					{
-						Cheese_Burst(client, basedmg, basedmg, 200.0, 10, {0.0, -6.5, 0.0});
-					}
-					case 4:
-					{
-						Cheese_Burst(client, basedmg, basedmg, 220.0, 10, {0.0, -6.5, 0.0});
-					}
-					case 5:
-					{
-						Cheese_Burst(client, basedmg*1.25, basedmg, 240.0, 11, {0.0, -6.5, 0.0});
-					}
-					case 6, 7, 8:
-					{
-						Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 260.0, 12, {0.0, -6.5, 0.0});
-					}
-					default:
-					{
-						Cheese_Burst(client, basedmg, basedmg, 200.0, 10, {0.0, -6.5, 0.0});
-					}
+				case 3:
+				{
+					Cheese_Burst(client, basedmg, basedmg, 200.0, 10, {0.0, -6.5, 0.0});
+				}
+				case 4:
+				{
+					Cheese_Burst(client, basedmg, basedmg, 220.0, 10, {0.0, -6.5, 0.0});
+				}
+				case 5:
+				{
+					Cheese_Burst(client, basedmg*1.25, basedmg, 240.0, 11, {0.0, -6.5, 0.0});
+				}
+				case 6, 7, 8:
+				{
+					Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 260.0, 12, {0.0, -6.5, 0.0});
+				}
+				default:
+				{
+					Cheese_Burst(client, basedmg, basedmg, 200.0, 10, {0.0, -6.5, 0.0});
+				}
 			}
 		}
 		else
