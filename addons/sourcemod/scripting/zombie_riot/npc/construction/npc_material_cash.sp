@@ -42,8 +42,9 @@ methodmap MaterialCash < CClotBody
 		npc.m_iNpcStepVariation = 0;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
-		npc.m_flRangedArmor = 0.1;
+	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = true;	// If true, summons an attack wave when mining
 		npc.m_bCamo = true;	// For AI attacking resources
@@ -51,6 +52,7 @@ methodmap MaterialCash < CClotBody
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
+		b_NoHealthbar[npc.index] = true;
 
 		return npc;
 	}
@@ -66,7 +68,12 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void ClotDeath(int entity)
 {
-	static const int cash = 5000;
-	CPrintToChatAll("{green}%t","Cash Gained!", cash);
+	int cash = 1000;
+
+	int GetRound = Construction_GetRisk() + 1;
+	
+	cash *= GetRound;
+
+	CPrintToChatAll("%t", "Gained Material", cash, "Cash");
 	CurrentCash += cash;
 }

@@ -451,7 +451,7 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				if(AllowHealing == 1)
 					PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
 				else
-					PrintHintText(client, "You Healed %t for %d HP!, you gain a %.0f healing cooldown.", c_NpcName[target], healing, cooldown);
+					PrintHintText(client, "You Healed %s for %d HP!, you gain a %.0f healing cooldown.", NpcStats_ReturnNpcName(target), healing, cooldown);
 
 
 				Ability_Apply_Cooldown(client, 1, cooldown);
@@ -469,7 +469,7 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 			if(AllowHealing == 1)
 				PrintHintText(client, "%N Is already at full hp.", target);
 			else
-				PrintHintText(client, "%t Is already at full hp.", c_NpcName[target]);
+				PrintHintText(client, "%s Is already at full hp.", NpcStats_ReturnNpcName(target));
 		}
 	}
 

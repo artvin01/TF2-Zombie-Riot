@@ -747,6 +747,11 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
 	{
+		bool WasAlreadyPlayed = false;
+		if(f_TraceAttackWasTriggeredSameFrame[victim] == GetGameTime())
+		{
+			WasAlreadyPlayed = true;
+		}
 		f_TraceAttackWasTriggeredSameFrame[victim] = GetGameTime();
 		i_HasBeenHeadShotted[victim] = false;
 #if defined ZR || defined RPG
@@ -757,30 +762,41 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			//Buff bodyshot damage.
 			damage *= 1.4;
 
+#if defined ZR
 			bool Blitzed_By_Riot = false;
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RIOT_SHIELD && f_TimeFrozenStill[victim] > GetGameTime(victim))
 			{
 				Blitzed_By_Riot = true;
 			}
+#endif
+
 			if(f_HeadshotDamageMultiNpc[victim] <= 0.0 && hitgroup == HITGROUP_HEAD)
 			{
 				damage = 0.0;
-				float chargerPos[3];
-				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-				if(b_BoundingBoxVariant[victim] == 1)
+				if(!WasAlreadyPlayed)
 				{
-					chargerPos[2] += 120.0;
+					float chargerPos[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+					if(b_BoundingBoxVariant[victim] == 1)
+					{
+						chargerPos[2] += 120.0;
+					}
+					else
+					{
+						chargerPos[2] += 82.0;
+					}
+					TE_ParticleInt(g_particleMissText, chargerPos);
+					TE_SendToClient(attacker);
+					EmitSoundToClient(attacker, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(95, 105));
 				}
-				else
-				{
-					chargerPos[2] += 82.0;
-				}
-				TE_ParticleInt(g_particleMissText, chargerPos);
-				TE_SendToClient(attacker);
-				EmitSoundToClient(attacker, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(95, 105));
 				return Plugin_Handled;
 			}
+
+#if defined ZR
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
+#else
+			if(hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim])
+#endif
 			{
 				damage *= f_HeadshotDamageMultiNpc[victim];
 
@@ -792,11 +808,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				else
 					damage *= 1.185;
 
+#if defined ZR
 				if(Blitzed_By_Riot) //Extra damage.
 				{
 					damage *= 1.35;
 				}
 				else
+#endif
 				{
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
@@ -809,18 +827,24 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				int pitch = GetRandomInt(90, 110);
 				int random_case = GetRandomInt(1, 2);
 				float volume = 0.7;
-				
-				if(played_headshotsound_already[attacker] >= GetGameTime())
+				/*
+				if(played_headshotsound_already[attacker] = GetGameTime())
 				{
 					random_case = played_headshotsound_already_Case[attacker];
 					pitch = played_headshotsound_already_Pitch[attacker];
-					volume = 0.15;
+					volume = 1.0;
+					played_headshotsound_already[attacker] = GetGameTime()
 				}
-				else
+				else*/
+				if(!WasAlreadyPlayed)
 				{
+#if defined ZR
 					DisplayCritAboveNpc(victim, attacker, Blitzed_By_Riot);
-					played_headshotsound_already_Case[attacker] = random_case;
-					played_headshotsound_already_Pitch[attacker] = pitch;
+#else
+					DisplayCritAboveNpc(victim, attacker);
+#endif
+				//	played_headshotsound_already_Case[attacker] = random_case;
+				//	played_headshotsound_already_Pitch[attacker] = pitch;
 				}
 				
 #if defined ZR 
@@ -851,30 +875,38 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					}
 				}
 #endif	// ZR
-				played_headshotsound_already[attacker] = GetGameTime();
+			//	played_headshotsound_already[attacker] = GetGameTime();
 
+#if defined ZR
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
+#endif
 				{
 					switch(random_case)
 					{
 						case 1:
 						{
-							for(int client=1; client<=MaxClients; client++)
+							if(!EnableSilentMode)
 							{
-								if(IsClientInGame(client) && client != attacker)
+								for(int client=1; client<=MaxClients; client++)
 								{
-									EmitCustomToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+									if(IsClientInGame(client) && client != attacker)
+									{
+										EmitCustomToClient(client, "zombiesurvival/headshot1.wav", victim, _, 80, _, volume, pitch);
+									}
 								}
 							}
 							EmitCustomToClient(attacker, "zombiesurvival/headshot1.wav", _, _, 90, _, volume, pitch);
 						}
 						case 2:
 						{
-							for(int client=1; client<=MaxClients; client++)
+							if(!EnableSilentMode)
 							{
-								if(IsClientInGame(client) && client != attacker)
+								for(int client=1; client<=MaxClients; client++)
 								{
-									EmitCustomToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+									if(IsClientInGame(client) && client != attacker)
+									{
+										EmitCustomToClient(client, "zombiesurvival/headshot2.wav", victim, _, 80, _, volume, pitch);
+									}
 								}
 							}
 							EmitCustomToClient(attacker, "zombiesurvival/headshot2.wav", _, _, 90, _, volume, pitch);
@@ -1065,7 +1097,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if((damagetype & DMG_CRUSH))
 		{
 			damage = 0.0;
-			return Plugin_Handled;
+			return Plugin_Changed;
 		}
 	}
 
@@ -1092,7 +1124,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;
-		return Plugin_Handled;
+		return Plugin_Changed;
+	//	return Plugin_Handled;
 	}
 	//a triggerhurt can never deal more then 10% of a raids health as damage.
 	if(b_IsATriggerHurt[attacker] && b_thisNpcIsARaid[victim])
@@ -1446,7 +1479,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 void CleanAllNpcArray()
 {
 #if defined ZR
-	Zero(played_headshotsound_already);
+//	Zero(played_headshotsound_already);
 	Zero(f_CooldownForHurtHud_Ally);
 	Zero(f_HudCooldownAntiSpam);
 	Zero(f_HudCooldownAntiSpamRaid);
@@ -2081,6 +2114,10 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	if(DontForward)
 		return;
 		
+	if(!HasSpecificBuff(attacker, "Healing Resolve"))
+		return;
+	//Dont bother with the calcs if he isnt even being healed.
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsIn_HitDetectionCooldown(attacker, client, SupportDisplayHurtHud)) //if its IN cooldown!

@@ -1,8 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_PlayMusicSound;
+
 
 methodmap StalkerShared < CClotBody
 {
@@ -56,9 +55,11 @@ methodmap StalkerShared < CClotBody
 					continue;
 
 				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
-					break;
+					return;
 			}
 		}
+
+		WorldSpaceCenter(this.index, pos);
 	}
 
 	property int m_iChaseAnger	// Allows being able to quickly hide
@@ -220,11 +221,11 @@ methodmap StalkerCombine < StalkerShared
 	}
 	public void PlayMusicSound()
 	{
-		if(i_PlayMusicSound > GetTime())
+		if(i_PlayMusicSound[this.index] > GetTime())
 			return;
 		
 		EmitCustomToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100);
-		i_PlayMusicSound = GetTime() + 76;
+		i_PlayMusicSound[this.index] = GetTime() + 76;
 	}
 	
 	public StalkerCombine(float vecPos[3], float vecAng[3], int ally)
@@ -267,7 +268,7 @@ methodmap StalkerCombine < StalkerShared
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
-		i_PlayMusicSound = 0;
+		i_PlayMusicSound[npc.index] = 0;
 		npc.m_iChaseAnger = 0;
 		npc.m_bChaseAnger = false;
 		npc.m_iChaseVisable = 0;
@@ -392,6 +393,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 
 						float damage = 180.0;
+						if(Construction_Mode())
+							damage *= 5.0;
 
 						if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 							damage *= 8.0;
@@ -555,7 +558,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 50.0;
 				npc.m_bChaseAnger = false;
-				i_PlayMusicSound = 0;
+				i_PlayMusicSound[npc.index] = 0;
 
 				for(int i; i < 9; i++)
 				{

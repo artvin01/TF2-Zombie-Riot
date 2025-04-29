@@ -16,6 +16,17 @@
 				"windows"	"\x55\x8B\xEC\x83\xEC\x34\x8B\x15\x2A\x2A\x2A\x2A"
 				"linux"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
 			}
+			"CTFBaseBoss::ResolvePlayerCollision"
+			{
+				// Announcer.MVM_Tank_Planted, very bottom
+				//Long tthink function where you are in right now,  very bottom again, has a  LOC_ and a sub_, if its long, thats probably it.
+			//	"windows64"	"\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x30\x8B\x91\x58\x0A\x00\x00"
+			//	"linux64"		"@_ZN11CTFBaseBoss22ResolvePlayerCollisionEP9CTFPlayer"
+				
+				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x68\x01\x00\x00\x56\x57"
+				"linux"		"@_ZN11CTFBaseBoss22ResolvePlayerCollisionEP9CTFPlayer"
+			}
+
 			"CTFPlayerShared::RecalculatePlayerBodygroups"
 			{
 				// string aPostInventoryA, most top function.
@@ -62,6 +73,12 @@
 				
 				"windows"		"\x55\x8B\xEC\xD9\x05\x2A\x2A\x2A\x2A\x56\x8B\x75\x08\x6A\x00"
 				"linux"			"@_ZN12CTFSpellBook15CastSelfStealthEP9CTFPlayer"
+			}
+			// "AI node graph corrupt\n" -> last function call
+			"UTIL_RemoveImmediate"
+			{
+				"linux"		"@_Z20UTIL_RemoveImmediateP11CBaseEntity"
+				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\xF6\x86\x3C\x01\x00\x00\x01"
 			}
 			"CTFPlayer::TeamFortress_SetSpeed()"
 			{
@@ -224,6 +241,14 @@
 				"linux"		"@_ZN14CWeaponMedigun19AllowedToHealTargetEP11CBaseEntity"
 				"windows"	"\x55\x8B\xEC\x53\x8B\xD9\x56\x57\x8B\x93\x10\x02\x00\x00\x85\xD2\x0F\x84\x2A\x2A\x2A\x2A\xB9\xFF\x1F\x00\x00\x83\xFA\xFF\x74\x2A\x0F\xB7\xCA\xA1\x2A\x2A\x2A\x2A\xC1\xE1\x04\x8D\x78\x04\x03\xF9\x0F\x84\x2A\x2A\x2A\x2A\xC1\xEA\x10\x39\x57\x04\x0F\x85\x2A\x2A\x2A\x2A\x8B\x3F\x85\xFF\x0F\x84\x2A\x2A\x2A\x2A\x8B\x07\x8B\xCF\x8B\x80\x48\x01\x00\x00\xFF\xD0\x84\xC0\x0F\x84\x2A\x2A\x2A\x2A\x8B\x75\x08\x85\xF6\x74\x2A"
 			}
+			"PassServerEntityFilter"
+			{
+				/* String: "RagdollImpact" -> 2 blocks down, , get sub, from Pickup_ForcePlayerToDropThisObject, Xref ->, go all the way up, */
+				"windows" "\x55\x8B\xEC\x56\x8B\x75\x0C\x57\x85\xF6\x74\x2A\x8B\x7D\x08"
+				"windows64" "\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x48\x8B\xFA\x48\x8B\xF1\x48\x85\xD2\x0F\x84\x2A\x2A\x2A\x2A\x48\x3B\xCA"
+				"linux" "@_Z22PassServerEntityFilterPK13IHandleEntityS1_.part.0"
+				"linux64" "@_Z22PassServerEntityFilterPK13IHandleEntityS1_.part.0"
+			}
 			"CTFPlayer::SpeakConceptIfAllowed()"
 			{
 				// unique string xref "disguiseclass:%s"
@@ -303,6 +328,12 @@
 				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC3\x53"
 				"linux"		"@_Z14LookupActivityP10CStudioHdrPKc"
 			}
+			"CTraceFilterSimple::ShouldHitEntity"
+			{
+				"library"	"server"
+				"linux"		"@_ZN18CTraceFilterSimple15ShouldHitEntityEP13IHandleEntityi"
+				"windows"	"\x55\x8B\xEC\x57\xFF\x75\x0C\x8B\xF9\xFF\x75\x08\xE8\x2A\x2A\x2A\x2A\x83\xC4\x08"
+			}
 		}
 		"Functions"
 		{
@@ -333,6 +364,34 @@
 				"callconv"  "thiscall"
 				"return"	"void"
 				"this"		"entity"
+			}
+			"CTFBaseBoss::ResolvePlayerCollision"
+			{
+				"signature"	"CTFBaseBoss::ResolvePlayerCollision"
+				"callconv"  "thiscall"
+				"return"	"void"
+				"this"		"entity"
+				"arguments"
+				{
+					"pPlayer"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
+			"CTFCrossbow::Holster"
+			{
+				"offset"	"CTFCrossbow::Holster"
+				"hooktype"  "entity"
+				"return"	"bool"
+				"this"		"entity"
+				"arguments"
+				{
+					"pSwitchingTo"
+					{
+						"type"	"cbaseentity"
+					}
+				}
 			}
 			
 			"CTFSpellBook::CastSelfStealth"
@@ -413,10 +472,35 @@
 			"CBaseObject::FirstSpawn"
            	{
 				"signature"    	"CBaseObject::FirstSpawn"
-				"callconv"	"thiscall"
+				"callconv"		"thiscall"
   				"return"    	"void"
  				"this"        	"entity"
            	}
+			"PassServerEntityFilter"
+			{
+				"signature"    	"PassServerEntityFilter"
+				"callconv"		"cdecl"
+				"return"		"bool"
+				"arguments"
+				{
+					"toucher" 
+					{
+						"type" "cbaseentity"
+						"linux"
+						{
+							"register"	"eax"
+						}
+					}
+					"passer" 
+					{
+						"type" "cbaseentity"
+						"linux"
+						{
+							"register"	"edx"
+						}
+					}
+				}
+			}
 			"CBaseGrenade::Explode"
 			{
 				"offset"	"CBaseGrenade::Explode"
@@ -691,6 +775,24 @@
 				"return"		"int"
 				"this"			"entity"
 			}
+			"CTraceFilterSimple::ShouldHitEntity"
+			{
+				"signature"	"CTraceFilterSimple::ShouldHitEntity"
+				"callconv"	"thiscall"
+				"return"	"bool"
+				"this"		"address"
+				"arguments"
+				{
+					"pHandleEntity"
+					{
+						"type"	"cbaseentity"
+					}
+					"contentsMask"
+					{
+						"type" 	"int"
+					}
+				}
+			}
 		}
 		"Offsets"
 		{
@@ -804,6 +906,11 @@
 				"linux"		"379"
 				"windows"	"378"
 			}
+			"CTFCrossbow::Holster"
+			{
+				"linux"		"268"
+				"windows"	"262"
+			}
 			"CBaseCombatWeapon::ItemPostFrame()"
 			{
 				"windows"	"272"
@@ -829,6 +936,12 @@
 			{
 				"windows"	"205"
 				"linux"		"206"
+			}
+			"CBaseBoss::m_bResolvePlayerCollisions"
+			{
+				// Offset from m_lastHealthPercentage
+				"windows"	"28"
+				"linux"		"28"
 			}
 		}
 	}

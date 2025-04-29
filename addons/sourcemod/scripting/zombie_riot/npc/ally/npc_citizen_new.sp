@@ -1430,6 +1430,23 @@ methodmap Citizen < CClotBody
 	{
 		float damage = this.m_fGunDamage * this.m_fGunBonusDamage;
 
+		switch(CurrentPlayers)
+		{
+			case 0:
+				CheckAlivePlayers(); //???? what
+			
+			case 1:
+				damage *= 0.4;
+			
+			case 2:
+				damage *= 0.55;
+			
+			case 3:
+				damage *= 0.65;
+
+			case 4:
+				damage *= 0.8;
+		}
 		if(this.m_bCamo)
 		{
 			damage *= CAMO_REBEL_DMG_PENALTY;
@@ -1473,6 +1490,15 @@ methodmap Citizen < CClotBody
 		}
 
 		DispatchKeyValue(Text_Entity, "message", text);
+	}
+	public bool CanPathToAlly(int target)
+	{
+		CNavArea startArea = TheNavMesh.GetNavAreaEntity(this.index, view_as<GetNavAreaFlags_t>(0), 1000.0);
+		CNavArea endArea = TheNavMesh.GetNavAreaEntity(target, view_as<GetNavAreaFlags_t>(0), 1000.0);
+		
+		float pos[3];
+		GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+		return TheNavMesh.BuildPath(startArea, endArea, pos);
 	}
 	public void PlayMeleeSound()
 	{
@@ -1692,6 +1718,17 @@ static void CitizenMenu(int client, int page = 0)
 	if(npc.index == -1)
 		return;
 	
+	int ally = npc.m_iTargetAlly;
+	if(IsValidEntity(ally))
+	{
+		// Unstuck me
+		if(!npc.CanPathToAlly(ally))
+		{
+			npc.m_iTargetAlly = 0;
+			npc.m_iSeakingObject = 0;
+		}
+	}
+
 	SetGlobalTransTarget(client);
 
 	char buffer[128];
@@ -1875,17 +1912,27 @@ static void CitizenMenu(int client, int page = 0)
 					{
 						DontAllowBuilding = false;
 					}
+					if(Construction_Mode())
+					{
+						DontAllowBuilding = false;
+						if(HealingCooldown[npc.index] > GetGameTime())
+							DontAllowBuilding = true;
+
+						if(!Waves_Started())
+							DontAllowBuilding = false;
+					}
+					
 					int MaxBuildingsSee = 0;
 					int BuildingsSee = 0;
-					BuildingsSee = BuildingLimitRebelLeft(npc.index, 2, MaxBuildingsSee);
+					BuildingsSee = BuildingAmountRebel(npc.index, 2, MaxBuildingsSee);
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Barricade At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("15", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
-					BuildingsSee = BuildingLimitRebelLeft(npc.index, 1, MaxBuildingsSee);
+					BuildingsSee = BuildingAmountRebel(npc.index, 1, MaxBuildingsSee);
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Sentry At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("16", buffer);
 
-					BuildingsSee = BuildingLimitRebelLeft(npc.index, 3, MaxBuildingsSee);
+					BuildingsSee = BuildingAmountRebel(npc.index, 3, MaxBuildingsSee);
 					FormatEx(buffer, sizeof(buffer), "%t (%i/%i)", "Build Ammo Box At Me",BuildingsSee, MaxBuildingsSee);
 					menu.AddItem("17", buffer, DontAllowBuilding ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
@@ -1980,30 +2027,33 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 15, 16, 17, 18, 19, 20:
 				{
-					int CheckWhich;
-					switch(index)
+					if(npc.CanPathToAlly(client))
 					{
-						case 15:
-							CheckWhich = 2;
-						case 16:
-							CheckWhich = 1;
-						default:
-							CheckWhich = 3;
-					}
-					int MaxBuildingsSee = 0;
-					int BuildingsSee = 0;
-					BuildingsSee = BuildingLimitRebelLeft(npc.index, CheckWhich, MaxBuildingsSee);
+						int CheckWhich;
+						switch(index)
+						{
+							case 15:
+								CheckWhich = 2;
+							case 16:
+								CheckWhich = 1;
+							default:
+								CheckWhich = 3;
+						}
+						int MaxBuildingsSee = 0;
+						int BuildingsSee = 0;
+						BuildingsSee = BuildingAmountRebel(npc.index, CheckWhich, MaxBuildingsSee);
 
-					if((MaxBuildingsSee - BuildingsSee) <= 0)
-					{
-						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						CitizenMenu(client, page);
-						return 0;
-					}
+						if((MaxBuildingsSee - BuildingsSee) <= 0)
+						{
+							ClientCommand(client, "playgamesound items/medshotno1.wav");
+							CitizenMenu(client, page);
+							return 0;
+						}
 
-					npc.m_iTargetAlly = client;
-					npc.m_iSeakingObject = index - 9;
-					HealingCooldown[npc.index] = GetGameTime() + 2.0;
+						npc.m_iTargetAlly = client;
+						npc.m_iSeakingObject = index - 9;
+						HealingCooldown[npc.index] = GetGameTime() + 2.0;
+					}
 				}
 				case 25:
 				{
@@ -2026,6 +2076,12 @@ bool Rebel_Rename(int client)
 		return false;
 
 	PlayerRenameWho[client] = -1;
+	if(!Native_CanRenameNpc(client))
+	{
+		CPrintToChat(client, "Youre muted buddy.");
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return false;
+	}
 	char buffer[32];
 	GetCmdArgString(buffer, sizeof(buffer));
 	ReplaceString(buffer, sizeof(buffer), "\"", "");
@@ -2034,7 +2090,8 @@ bool Rebel_Rename(int client)
 		return true;
 	
 	b_NameNoTranslation[EntityName] = true;
-	CPrintToChatAll("[SM] %N renamed \"%s\" to \"%s\"", client, c_NpcName[EntityName], buffer);
+	//This REALLY shouldnt say [SM].
+	SPrintToChatAll("%N renamed \"%s\" to \"%s\"", client, c_NpcName[EntityName], buffer);
 	strcopy(c_NpcName[EntityName], sizeof(c_NpcName[]), buffer);
 	return true;
 }
@@ -2405,15 +2462,17 @@ void Citizen_WaveStart()
 			int team = GetTeam(i);
 			if(team == TFTeam_Red)
 			{
-				int DummyValue = 0;
-				npc.m_iCanBuild = (BuildingLimitRebelLeft(npc.index, 1, DummyValue)  > 0) ? 1 : 0;
+				int maxValue = 0;
+				npc.m_iCanBuild = (BuildingAmountRebel(npc.index, 1, maxValue) > 0) ? 0 : 1;
 				
 				if(npc.m_iClassRole == Cit_Builder)
 				{
-					if(BuildingLimitRebelLeft(npc.index, 2, DummyValue) > 0)
+					int amount = BuildingAmountRebel(npc.index, 2, maxValue);
+					if(amount < maxValue)
 						npc.m_iCanBuild += 2;
 					
-					if(BuildingLimitRebelLeft(npc.index, 3, DummyValue) > 0)
+					amount = BuildingAmountRebel(npc.index, 3, maxValue);
+					if(amount < maxValue)
 						npc.m_iCanBuild += 4;
 				}
 			}
@@ -2843,13 +2902,16 @@ public void Citizen_ClotThink(int iNPC)
 
 					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
-					if(dist < distance)
-					{
-						distance = dist;
-						ally = entity;
-						npc.m_iTargetAlly = ally;
-						npc.m_iSeakingObject = 5;
-					}
+					if(dist > distance)
+						continue;
+					
+					if(!npc.CanPathToAlly(entity))
+						continue;
+					
+					distance = dist;
+					ally = entity;
+					npc.m_iTargetAlly = ally;
+					npc.m_iSeakingObject = 5;
 				}
 			}
 			else
@@ -2868,12 +2930,15 @@ public void Citizen_ClotThink(int iNPC)
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
-						{
-							distance = dist;
-							ally = entity;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 5;
-						}
+							continue;
+					
+						if(!npc.CanPathToAlly(entity))
+							continue;
+						
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 5;
 					}
 				}
 			}
@@ -2925,12 +2990,15 @@ public void Citizen_ClotThink(int iNPC)
 				GetAbsOrigin(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
-				{
-					distance = dist;
-					ally = entity;
-					npc.m_iTargetAlly = ally;
-					npc.m_iSeakingObject = 7;
-				}
+					continue;
+				
+				if(!npc.CanPathToAlly(entity))
+					continue;
+				
+				distance = dist;
+				ally = entity;
+				npc.m_iTargetAlly = ally;
+				npc.m_iSeakingObject = 7;
 			}
 		}
 
@@ -3083,12 +3151,15 @@ public void Citizen_ClotThink(int iNPC)
 				GetAbsOrigin(entity, vecTarget);
 				float dist = GetVectorDistance(vecTarget, vecMe, true);
 				if(dist < distance)
-				{
-					distance = dist;
-					ally = entity;
-					npc.m_iTargetAlly = ally;
-					npc.m_iSeakingObject = type;
-				}
+					continue;
+				
+				if(!npc.CanPathToAlly(entity))
+					continue;
+				
+				distance = dist;
+				ally = entity;
+				npc.m_iTargetAlly = ally;
+				npc.m_iSeakingObject = type;
 			}
 		}
 
@@ -3112,12 +3183,15 @@ public void Citizen_ClotThink(int iNPC)
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
-						{
-							distance = dist;
-							ally = entity;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 1;
-						}
+							continue;
+						
+						if(!npc.CanPathToAlly(entity))
+							continue;
+						
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 1;
 					}
 				}
 			}
@@ -3142,12 +3216,15 @@ public void Citizen_ClotThink(int iNPC)
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
-						{
-							distance = dist;
-							ally = entity;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 3;
-						}
+							continue;
+						
+						if(!npc.CanPathToAlly(entity))
+							continue;
+						
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 3;
 					}
 				}
 			}
@@ -3172,12 +3249,15 @@ public void Citizen_ClotThink(int iNPC)
 						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(dist < distance)
-						{
-							distance = dist;
-							ally = entity;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 2;
-						}
+							continue;
+						
+						if(!npc.CanPathToAlly(entity))
+							continue;
+						
+						distance = dist;
+						ally = entity;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 2;
 					}
 				}
 			}
@@ -4181,6 +4261,16 @@ public void Citizen_ClotThink(int iNPC)
 					}
 				}
 			}
+
+			if(ally)
+			{
+				// How do I get to you
+				if(!npc.CanPathToAlly(ally))
+				{
+					WorldSpaceCenter(ally, vecTarget);
+					TeleportEntity(npc.index, vecTarget);
+				}
+			}
 		}
 
 		if(!walkStatus && ally > 0)
@@ -4596,7 +4686,13 @@ public void Citizen_ClotThink(int iNPC)
 
 static bool CanOutRun(int target)
 {
-	return (target <= MaxClients || (300.0 > view_as<CClotBody>(target).GetRunSpeed()));
+	if(target <= MaxClients)
+		return true;
+	if(b_ThisWasAnNpc[target])
+	{
+		return (300.0 > view_as<CClotBody>(target).GetRunSpeed());
+	}
+	return true;
 }
 
 void Citizen_MiniBossSpawn()
@@ -4869,7 +4965,7 @@ public void Citizen_NPCDeath(int entity)
 // 1 is sentry
 // 2 is barricade
 // 3 is Support buildings
-int BuildingLimitRebelLeft(int rebel, int buildingType, int &buildingmax)
+int BuildingAmountRebel(int rebel, int buildingType, int &buildingmax)
 {
 	Citizen npc = view_as<Citizen>(rebel);
 	int limit = 2 + (npc.m_iGunValue / 4000);

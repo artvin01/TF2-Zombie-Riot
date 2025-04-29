@@ -52,10 +52,6 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/ar2/npc_ar2_reload.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-
 static int i_barrage[MAXENTITIES];
 static float fl_barragetimer[MAXENTITIES];
 static float fl_singularbarrage[MAXENTITIES];
@@ -69,7 +65,7 @@ void Alt_CombineDeutsch_OnMapStart_NPC()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
@@ -160,7 +156,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
 	}
@@ -317,7 +313,7 @@ static void Internal_ClotThink(int iNPC)
 			SetEntityRenderColor(npc.m_iWearable3, 1, 1, 1, 1);
 			
 			float  dmg=40.0;
-			if(Waves_GetRound()<40)
+			if(ZR_Waves_GetRound()<40)
 			{
 				dmg=20.0;
 			}
@@ -405,7 +401,7 @@ static void Internal_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float damage=150.0;
-								if(Waves_GetRound()<40)
+								if(ZR_Waves_GetRound()<40)
 								{
 									damage=75.0;
 								}

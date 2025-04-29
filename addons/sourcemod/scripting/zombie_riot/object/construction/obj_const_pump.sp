@@ -20,8 +20,8 @@ void ObjectPump_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_pump");
-	build.Cost = 2000;
-	build.Health = 150;
+	build.Cost = 500;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -42,6 +42,7 @@ methodmap ObjectPump < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.m_bConstructBuilding = true;
 
 		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 120.0;
 

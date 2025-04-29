@@ -499,20 +499,37 @@ void Edited_EmitSoundToAll(const char[] sample,
 	*/
 	if(sample[0] != '#')
 	{
-
-		for(int client=1; client<=MaxClients; client++)
+		if(entity > 0 && b_ThisWasAnNpc[entity])
 		{
-			if(IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
+			for(int client=1; client<=MaxClients; client++)
 			{
-				float volumeedited = volume;
-				if(entity > 0 && b_ThisWasAnNpc[entity])
+				if((f_ZombieVolumeSetting[client] + 1.0) != 0.0 && IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
 				{
+					if(EnableSilentMode)
+					{
+						if(RecentSoundList[client].FindString(sample) != -1)
+							continue;
+						
+						RecentSoundList[client].PushString(sample);
+						CreateTimer(0.1, Timer_RecentSoundRemove, client);	
+					}
+					
+					float volumeedited = volume;
+					if(EnableSilentMode && !b_thisNpcIsARaid[entity])
+					{
+						volumeedited *= 0.7; //Silent-er.
+						level = RoundToCeil(float(level) * 0.85);
+					}
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
+					if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client,entity,channel,level,flags,pitch,speakerentity,origin,dir,updatePos,soundtime))
+						EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
 				}
-				if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client,entity,channel,level,flags,pitch,speakerentity,origin,dir,updatePos,soundtime))
-					EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
-			}
-		}		
+			}	
+		}	
+		else
+		{
+			EmitSoundToAll(sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
+		}
 	}
 	else
 	{
@@ -524,7 +541,6 @@ void Edited_EmitSoundToAll(const char[] sample,
 			}
 		}
 	}
-		
 }
 
 #define EmitSoundToAll Edited_EmitSoundToAll

@@ -84,9 +84,9 @@ static char g_RangedReloadSound[][] = {
 };
 
 static int LastEnemyTargeted[MAXENTITIES];
-static int i_SaidLineAlready[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
+
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
@@ -333,7 +333,7 @@ methodmap OmegaRaid < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
 		if(RaidModeScaling < 55)

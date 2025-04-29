@@ -558,6 +558,8 @@ void Music_EndLastmann(bool Reinforce=false)
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/flaggilant_lastman.mp3", 2.0);
 						case 9:
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3", 2.0);
+						case 10:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/cheese_lastman.mp3", 2.0);
 					}
 					SetMusicTimer(client, 0);
 					StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
@@ -653,6 +655,7 @@ public Action SetTimeBack(Handle timer)
 
 void Music_Stop_All(int client)
 {
+//	LogStackTrace("stoppedmusic");
 	if(DelayStopSoundAll[client] < GetGameTime())
 	{
 		//dont spam these
@@ -934,6 +937,11 @@ void Music_Update(int client)
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
+				if(i_IsNpcType[entity] == STATIONARY_NPC && b_StaticNPC[entity])
+					continue;
+				//if its a stationary static npc, then it by default means no harm.
+
+
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				float distance = GetVectorDistance(chargerPos, targPos, true);
 				CClotBody npcstats = view_as<CClotBody>(entity);
@@ -1018,6 +1026,11 @@ void Music_Update(int client)
 				{
 					EmitCustomToClient(client, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 113);
+				}
+				case 10:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/cheese_lastman.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					SetMusicTimer(client, GetTime() + 170);
 				}
 				default:
 				{	
@@ -1292,7 +1305,7 @@ public float InterMusic_ByDifficulty(int client)
 	if(LastMann)
 		return 1.0;
 	
-	float volume = Waves_GetRound() / 75.0;
+	float volume = ZR_Waves_GetRound() / 75.0;
 	return fClamp(volume, 0.0, 1.0);
 }
 

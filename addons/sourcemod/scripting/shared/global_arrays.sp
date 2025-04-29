@@ -119,6 +119,7 @@ Handle g_hSetLocalOrigin;
 Handle g_hSetLocalAngles;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
+ArrayList RecentSoundList[MAXTF2PLAYERS];
 
 float f_PlayerLastKeyDetected[MAXTF2PLAYERS];
 float f_BotDelayShow[MAXTF2PLAYERS];
@@ -542,8 +543,8 @@ float Mana_Hud_Delay[MAXTF2PLAYERS];
 int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
 
 
-int played_headshotsound_already_Case [MAXTF2PLAYERS];
-int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
+//int played_headshotsound_already_Case [MAXTF2PLAYERS];
+//int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
 int g_particleMissText;
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
@@ -558,7 +559,7 @@ int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
 int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
 int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
 bool b_BackstabLaugh[MAXENTITIES];
-float played_headshotsound_already [MAXTF2PLAYERS];
+//float played_headshotsound_already [MAXTF2PLAYERS];
 int i_IsAloneWeapon[MAXENTITIES];
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
@@ -610,6 +611,8 @@ bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
+int h_NpcHandleEventHook[MAXENTITIES];
+bool b_KillHookHandleEvent[MAXENTITIES];
 #define EP_GENERIC				  		0		  					// Nothing special.
 #define EP_NO_KNOCKBACK			  		(1 << 0)   					// No knockback
 #define EP_DEALS_UNUSED_1			  	(1 << 1)   				// Slash Damage (For no npc scaling, or ignoring resistances.)
@@ -643,6 +646,7 @@ float f_WeaponVolumeStiller[MAXENTITIES];
 float f_WeaponVolumeSetRange[MAXENTITIES];
 float f_FreeplayAlteredDamageOld_Barracks[MAXENTITIES];
 float f_FreeplayAlteredHealthOld_Barracks[MAXENTITIES];
+float f_NpcAdjustFriction[MAXENTITIES];
 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
@@ -731,6 +735,8 @@ float TickrateModify;
 int TickrateModifyInt;
 float f_ClientDoDamageHud[MAXTF2PLAYERS][2];
 float f_ClientDoDamageHud_Hurt[MAXTF2PLAYERS][2];
+float f3_NpcSavePos[MAXENTITIES][3];  
+float f_DelayComputingOfPath[MAXENTITIES];
 
 enum
 {
@@ -760,3 +766,67 @@ enum
 	BLEEDTYPE_SEABORN = 6,
 	BLEEDTYPE_VOID = 7
 }
+
+
+
+int i_TankAntiStuck[MAXENTITIES];
+int i_PlayMusicSound[MAXENTITIES];
+float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+float fl_ThrowPlayerCooldown[MAXENTITIES];
+float fl_ThrowPlayerImmenent[MAXENTITIES];
+bool b_ThrowPlayerImmenent[MAXENTITIES];
+int i_GrabbedThis[MAXENTITIES];
+float fl_ThrowDelay[MAXENTITIES];
+int i_TankThrewThis[MAXENTITIES];
+bool i_ThrowAlly[MAXENTITIES];
+int i_IWantToThrowHim[MAXENTITIES];
+float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
+int i_PlayIdleAlertSound[MAXENTITIES];
+int i_ammo_count[MAXENTITIES];
+bool b_we_are_reloading[MAXENTITIES];
+float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+int i_wingslot[MAXENTITIES];
+int i_haloslot[MAXENTITIES];
+int i_ClosestAlly[MAXENTITIES];
+float i_ClosestAllyCD[MAXENTITIES];
+int i_ClosestAllyTarget[MAXENTITIES];
+float i_ClosestAllyCDTarget[MAXENTITIES];
+
+float fl_BEAM_RechargeTime[MAXENTITIES];	//how long until laser is reusable
+float fl_BEAM_ChargeUpTime[MAXENTITIES];	//how long until the laser BEGINS
+float fl_BEAM_DurationTime[MAXENTITIES];	//how long until the laser ends
+float fl_BEAM_ThrottleTime[MAXENTITIES];	//if you want to make a laser only do something 10 times a second instead of 66 during a think hook
+
+float fl_AbilityVectorData[MAXENTITIES][3];	//if you wish to transfer vector data between stuff. or save it for something else
+int i_Ruina_Laser_BEAM_HitDetected[100];	//if your laser has to hit more then 100 targets, your doing something wrong.
+int i_AmountProjectiles[MAXENTITIES];
+
+int i_NemesisEntitiesHitAoeSwing[MAXENTITIES];	//Who got hit
+float f_NemesisEnemyHitCooldown[MAXENTITIES];
+
+float f_NemesisCauseInfectionBox[MAXENTITIES];
+float f_NemesisHitBoxStart[MAXENTITIES];
+float f_NemesisHitBoxEnd[MAXENTITIES];
+float fl_RegainWalkAnim[MAXENTITIES];
+float fl_OverrideWalkDest[MAXENTITIES];
+float fl_StopDodge[MAXENTITIES];
+float fl_StopDodgeCD[MAXENTITIES];
+
+int i_GunMode[MAXENTITIES];
+int i_GunAmmo[MAXENTITIES];
+float f_NemesisImmuneToInfection[MAXENTITIES];
+float f_NemesisSpecialDeathAnimation[MAXENTITIES];
+float f_NemesisRandomInfectionCycle[MAXENTITIES];
+bool b_InKame[MAXENTITIES];
+bool b_said_player_weaponline[MAXTF2PLAYERS]; //Yes, i know, itll break if multiple raids spawn, but it doesnt really matter....
+float fl_said_player_weaponline_time[MAXENTITIES];
+int i_current_wave[MAXENTITIES];
+bool FactorySpawn[MAXENTITIES];
+bool MK2[MAXENTITIES];
+bool Limit[MAXENTITIES];
+bool Anvil[MAXENTITIES];
+int i_ally_index[MAXENTITIES];
+
+//some lasers had some variation of this, i just condeced it down to 1
+int LaserVarious_HitDetection[MAXENTITIES];
+int i_SaidLineAlready[MAXENTITIES];

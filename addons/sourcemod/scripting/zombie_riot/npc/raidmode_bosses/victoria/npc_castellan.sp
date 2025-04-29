@@ -89,9 +89,7 @@ static bool Gone[MAXENTITIES];
 static bool Gone_Stats[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AlreadySpawned[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static int i_AmountProjectiles[MAXENTITIES];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
 
 static int Temp_Target[MAXENTITIES];
 
@@ -375,8 +373,8 @@ methodmap Castellan < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
-			value = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			value = float(ZR_Waves_GetRound()+1);
 		}
 
 		if(RaidModeScaling < 55)

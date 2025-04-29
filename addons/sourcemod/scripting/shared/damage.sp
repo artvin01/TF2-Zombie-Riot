@@ -105,7 +105,7 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 
 		if(GetTeam(victim) == TFTeam_Red)
 		{
-			int scale = Waves_GetRound();
+			int scale = ZR_Waves_GetRound();
 			if(scale < 2)
 			{
 				damage *= 0.50;
@@ -379,7 +379,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			}
 		}
 
-		int scale = Waves_GetRound();
+		int scale = ZR_Waves_GetRound();
 		if(scale < 2)
 		{
 			damage *= 1.6667;
@@ -444,6 +444,14 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 		
 #if !defined RTS
 		OnTakeDamageDamageBuffs(attacker, inflictor, damage, damagetype, weapon);
+
+#if defined RPG	
+		if(!CheckInHud() && damagePosition[2] != 6969420.0)
+		{
+			//There is crit damage from this item.
+			damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
+		}
+#endif
 
 		OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 		
@@ -1211,6 +1219,16 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Wkit_Soldin_NPCTakeDamage_Ranged(attacker, victim, damage, weapon, damagetype);
 		}
+		case WEAPON_CHEESY_MELEE:
+		{
+			if(!CheckInHud())
+				Cheese_OnTakeDamage_Melee(attacker, victim, damage, damagetype, weapon);
+		}
+		case WEAPON_CHEESY_PRIMARY:
+		{
+			if(!CheckInHud())
+				Cheese_OnTakeDamage_Primary(attacker, victim, damage, weapon);
+		}
 	}
 #endif
 
@@ -1893,13 +1911,6 @@ stock void OnTakeDamageDamageBuffs(int &attacker, int &inflictor, float &damage,
 				}
 			}
 		}
-	}
-#endif
-#if defined RPG	
-	if(!CheckInHud() && damagePosition[2] != 6969420.0)
-	{
-		//There is crit damage from this item.
-		damage *= RPG_BobWetstoneTakeDamage(attacker, victim, damagePosition);
 	}
 #endif
 }

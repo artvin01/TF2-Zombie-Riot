@@ -74,7 +74,7 @@ methodmap WanderingSpirit < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -266,7 +266,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						if(spawn_index > MaxClients)
 						{
 							if(StrEqual(c_NpcName[npc.index], "Wandering Spitit"))
-								strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Vengefull Spitit");
+								strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Vengeful Spitit");
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						//	SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 						//	SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

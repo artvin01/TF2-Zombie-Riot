@@ -21,9 +21,9 @@ static const char g_DronPingSounds[] = "misc/rd_finale_beep01.wav";
 
 static const char g_MeleeHitSounds[] = "npc/scanner/cbot_discharge1.wav";
 
-static bool FactorySpawn[MAXENTITIES];
-static bool MK2[MAXENTITIES];
-static bool Limit[MAXENTITIES];
+
+
+
 static bool Fragments[MAXENTITIES];
 
 void Victorian_TacticalProtector_OnMapStart_NPC()

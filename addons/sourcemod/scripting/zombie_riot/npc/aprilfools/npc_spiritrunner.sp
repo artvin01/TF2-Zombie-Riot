@@ -59,9 +59,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return SpiritRunner(vecPos, vecAng, team);
 }
-static int i_PlayIdleAlertSound[MAXENTITIES];
-static int i_PlayMusicSound[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
 static char[] GetSpiritRunnerHealth()
 {
@@ -71,17 +68,17 @@ static char[] GetSpiritRunnerHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(Waves_GetRound()+1 < 30)
+	if(ZR_Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.20));
 	}
-	else if(Waves_GetRound()+1 < 45)
+	else if(ZR_Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health = health * 3 / 8;

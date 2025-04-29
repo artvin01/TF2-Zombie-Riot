@@ -14,8 +14,8 @@
 	{
 		"horsepower"		"350"
 		"maxrpm"		"3000"
-		"maxspeed"		"35"		// mph
-		"maxReverseSpeed"	"20"		// mph
+		"maxspeed"		"40"		// mph
+		"maxReverseSpeed"	"25"		// mph
 		"autobrakeSpeedGain"	"1.1"		// 10% speed gain while coasting, put on the brakes after that
 		"autobrakeSpeedFactor"	"3.0"		// Brake is this times the speed gain
 		"autotransmission"	"1"

@@ -26,6 +26,12 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/neon_sign_hit_03.wav",
 	"weapons/neon_sign_hit_04.wav"
 };
+static const char g_SuperJumpSound[][] = {
+	"weapons/physcannon/energy_sing_explosion2.wav"
+};
+static const char g_SuperJumpSoundLaunch[][] = {
+	"misc/halloween/spell_mirv_explode_primary.wav",
+};
 void Flaigus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
@@ -34,6 +40,8 @@ void Flaigus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_DefaultMedic_PlayAnnoyedSound)); i++) { PrecacheSound(g_DefaultMedic_PlayAnnoyedSound[i]); }
+	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
+	for (int i = 0; i < (sizeof(g_SuperJumpSoundLaunch)); i++) { PrecacheSound(g_SuperJumpSoundLaunch[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Flaigus");
@@ -79,25 +87,38 @@ methodmap Flaigus < CClotBody
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
+	public void PlaySuperJumpSound()
+	{
+		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlaySuperJumpLaunch()
+	{
+		EmitSoundToAll(g_SuperJumpSoundLaunch[GetRandomInt(0, sizeof(g_SuperJumpSoundLaunch) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
 	public void PlayAnnoyedSound() 
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitSoundToAll(g_DefaultMedic_PlayAnnoyedSound[GetRandomInt(0, sizeof(g_DefaultMedic_PlayAnnoyedSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_PlayAnnoyedSound[GetRandomInt(0, sizeof(g_DefaultMedic_PlayAnnoyedSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
-	property float m_flPrepareFlyAtEnemy
+	property float m_flPrepareFlyAtEnemyCD
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flPrepareFlyAtEnemy
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	public Flaigus(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -123,13 +144,12 @@ methodmap Flaigus < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		VausMagicaGiveShield(npc.index, 3);
-		npc.m_flGainPowerOnceAngerOver = 1.0;
+		npc.m_flPrepareFlyAtEnemyCD = GetGameTime() + 1.0;
 		
 		
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
-		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -155,6 +175,13 @@ methodmap Flaigus < CClotBody
 
 		DualReaEffects(npc.index);
 		
+		npc.m_iWearable9 = npc.EquipItem("head", WINGS_MODELS_1);
+		SetVariantInt(1);
+		AcceptEntityInput(npc.m_iWearable9, "SetBodyGroup");	
+		SetVariantString("0.85");
+		AcceptEntityInput(npc.m_iWearable9, "SetModelScale");
+		SetEntityRenderColor(npc.m_iWearable9, 255, 255, 255, 2);
+		
 		return npc;
 	}
 }
@@ -177,6 +204,7 @@ public void Flaigus_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	FlaigusAnimationChange(npc);
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -237,6 +265,8 @@ public void Flaigus_NPCDeath(int entity)
 	ExpidonsaRemoveEffects(entity);
 		
 	
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -250,6 +280,47 @@ public void Flaigus_NPCDeath(int entity)
 
 void FlaigusSelfDefense(Flaigus npc, float gameTime, int target, float distance)
 {
+	
+	if(npc.m_flPrepareFlyAtEnemyCD < GetGameTime(npc.index) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 13.0))
+	{	
+		if(IsValidEntity(target) && Can_I_See_Enemy_Only(npc.index, target))
+		{
+			//steal alaxios jump :D
+			static float flPos[3]; 
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			static float flPosEnemy[3]; 
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", flPosEnemy);
+			float flDistanceToTarget = GetVectorDistance(flPos, flPosEnemy);
+			float SpeedToPredict = flDistanceToTarget * 1.0;
+			PredictSubjectPositionForProjectiles(npc, target, SpeedToPredict, _,f3_NpcSavePos[npc.index]);
+			flPos[2] += 5.0;
+			ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
+			npc.PlaySuperJumpSound();
+			flPos[2] += 400.0;
+			npc.SetVelocity({0.0,0.0,0.0});
+			PluginBot_Jump(npc.index, flPos);
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 1.0);	
+			npc.m_flPrepareFlyAtEnemy = GetGameTime(npc.index) + 0.6;
+
+			float cooldownDo = 20.0;
+			npc.m_flPrepareFlyAtEnemyCD = GetGameTime(npc.index) + cooldownDo;
+
+			npc.m_iChanged_WalkCycle = 0;
+			npc.FaceTowards(f3_NpcSavePos[npc.index], 15000.0);
+		}
+	}
+	if(npc.m_flPrepareFlyAtEnemy)
+	{
+		static float Size = 75.0;
+		spawnRing_Vectors(f3_NpcSavePos[npc.index], Size * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 100, 200, 1, 0.15, 6.0, 6.0, 2);
+		
+		if(npc.m_flPrepareFlyAtEnemy < GetGameTime(npc.index))
+		{
+			npc.PlaySuperJumpLaunch();
+			npc.m_flPrepareFlyAtEnemy = 0.0;
+			PluginBot_Jump(npc.index, f3_NpcSavePos[npc.index], 2500.0, true);
+		}
+	}
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -303,5 +374,32 @@ void FlaigusSelfDefense(Flaigus npc, float gameTime, int target, float distance)
 				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
 		}
+	}
+}
+
+
+
+void FlaigusAnimationChange(Flaigus npc)
+{
+	if(npc.m_iChanged_WalkCycle == 0)
+	{
+		npc.m_iChanged_WalkCycle = -1;
+	}
+	if (npc.IsOnGround())
+	{
+		if(npc.m_iChanged_WalkCycle != 3)
+		{
+			npc.m_iChanged_WalkCycle = 3;
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+			npc.AddGesture("ACT_MP_JUMP_LAND_MELEE");
+		}	
+	}
+	else
+	{
+		if(npc.m_iChanged_WalkCycle != 4)
+		{
+			npc.m_iChanged_WalkCycle = 4;
+			npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+		}	
 	}
 }

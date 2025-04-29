@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define LASERBEAM "sprites/laserbeam.vmt"
+
 static int i_master_target_id[MAXENTITIES];
 static int i_master_id_ref[MAXENTITIES];
 static int i_npc_type[MAXENTITIES];
@@ -138,6 +140,7 @@ enum
 int g_Ruina_Laser_BEAM;
 int g_Ruina_BEAM_Diamond;
 int g_Ruina_BEAM_Laser;
+int g_Ruina_BEAM_Glow;
 int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
@@ -258,6 +261,8 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 	g_Ruina_BEAM_Combine_Black 	= PrecacheModel("materials/sprites/combineball_trail_black_1.vmt", true);
 	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
+
+	g_Ruina_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 
 	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
 
@@ -572,7 +577,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	if(b_is_battery_buffed[npc.index] && fl_ruina_battery_timer[npc.index] > GameTime)
 		return;
 
-	int wave = Waves_GetRound()+1;
+	int wave = ZR_Waves_GetRound()+1;
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{
@@ -1188,6 +1193,8 @@ void Ruina_Projectile_Touch(int entity, int target)
 		Ruina_Remove_Projectile(entity);
 		return;
 	}
+	if(!IsValidEnemy(owner, target) && target != 0)
+		return;
 
 	if(func==INVALID_FUNCTION)
 	{	
@@ -1196,7 +1203,7 @@ void Ruina_Projectile_Touch(int entity, int target)
 
 		if(fl_ruina_Projectile_radius[entity]>0.0)
 			Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
-		else
+		else if(target != 0)
 			SDKHooks_TakeDamage(target, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
 		Ruina_Remove_Projectile(entity);
@@ -1413,7 +1420,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
 
-	int wave = Waves_GetRound()+1;
+	int wave = ZR_Waves_GetRound()+1;
 
 	float 	dmg 		= 250.0,
 			time 		= 2.5,		//how long until it goes boom
@@ -1510,7 +1517,7 @@ static void Apply_Sickness(int iNPC, int Target)
 void Ruina_Color(int color[4], int wave = -1)
 {
 	if(wave == -1)
-		wave = Waves_GetRound()+1;
+		wave = ZR_Waves_GetRound()+1;
 		
 	if(wave<=15)
 	{
@@ -2436,9 +2443,20 @@ int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 		return -1;
 	}
 }
+stock void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
+{
+	float tmp[3];
+	float actualBeamOffset[3];
 
-static int Ruina_Laser_BEAM_HitDetected[MAXENTITIES];
-static int i_targets_hit;
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	Result_Vec[0] += actualBeamOffset[0];
+	Result_Vec[1] += actualBeamOffset[1];
+	Result_Vec[2] += actualBeamOffset[2];
+}
 enum struct Ruina_Laser_Logic
 {
 	int client;
@@ -2512,13 +2530,9 @@ enum struct Ruina_Laser_Logic
 		}
 		delete trace;
 	}
-	bool Any_entities;
-	//in this case, no default func since this things entire point is to find entities
-	void Detect_Entities(Function Attack_Function)
+	void Enumerate_Simple()
 	{
-		Zero(Ruina_Laser_BEAM_HitDetected);
-
-		i_targets_hit = 0;
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		float hullMin[3], hullMax[3];
 		this.SetHull(hullMin, hullMax);
@@ -2526,9 +2540,25 @@ enum struct Ruina_Laser_Logic
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		//the idea for this one is to then use
+		//for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+		//to loop throught the stuff. inside the specific npc that needs to use this
+	}
+	bool Any_entities;
+	//in this case, no default func since this things entire point is to find entities
+	void Detect_Entities(Function Attack_Function)
+	{
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
+
+		float hullMin[3], hullMax[3];
+		this.SetHull(hullMin, hullMax);
+
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
 			if (victim && (this.Any_entities || IsValidEnemy(this.client, victim)))
 			{
 				this.trace_hit_enemy=true;
@@ -2556,21 +2586,17 @@ enum struct Ruina_Laser_Logic
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
 	{
-
-		Zero(Ruina_Laser_BEAM_HitDetected);
-
-		i_targets_hit = 0;
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		float hullMin[3], hullMax[3];
 		this.SetHull(hullMin, hullMax);
 
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-
-				
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
 			if (victim && IsValidEnemy(this.client, victim))
 			{
 				this.trace_hit_enemy=true;
@@ -2620,7 +2646,7 @@ enum struct Ruina_Laser_Logic
 	}
 }
 
-static bool Ruina_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
+bool Ruina_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
@@ -2628,17 +2654,117 @@ static bool Ruina_Laser_BEAM_TraceUsers(int entity, int contentsMask)
 {
 	if (IsEntityAlive(entity))
 	{
-		for(int i=0 ; i < MAXENTITIES ; i++)
+		for(int i=0 ; i < sizeof(i_Ruina_Laser_BEAM_HitDetected) ; i++)
 		{
-			if(!Ruina_Laser_BEAM_HitDetected[i])
+			if(!i_Ruina_Laser_BEAM_HitDetected[i])
 			{
-				i_targets_hit++;
-				Ruina_Laser_BEAM_HitDetected[i] = entity;
+				i_Ruina_Laser_BEAM_HitDetected[i] = entity;
 				break;
 			}
 		}
 	}
 	return false;
+}
+//A far more "simplified" version of the ruina laser that comes pre packaged with laser effects, falloff, and the like.
+enum struct Basic_NPC_Laser
+{
+	CClotBody npc;
+	float Radius;
+	float Range;
+	float Close_Dps;
+	float Long_Dps;
+	int Color[4];
+
+	float EffectsStartLoc[3];
+	bool DoEffects;
+	bool RelativeOffset;
+}
+void Basic_NPC_Laser_Logic(Basic_NPC_Laser Data)
+{
+	CClotBody npc = Data.npc;
+	float Radius = Data.Radius;
+	float diameter = Radius*2.0;
+	float Range = Data.Range;
+	float Close_Dps =  Data.Close_Dps;
+	float Long_Dps =  Data.Long_Dps;
+	float Max_Dist = Range*Range;
+	
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	
+	GetOffsetLaserStartLoc(Data, Laser);
+
+	if(Data.DoEffects)
+		BeamEffects(Laser.Start_Point, Laser.End_Point, Data.Color, diameter);
+	
+	Laser.Radius = Radius;
+	Laser.Enumerate_Simple();
+	for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+	{
+		//get victims from the "Enumerate_Simple"
+		int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
+		if(!victim)
+			break;	//no more targets are left, break the loop!
+
+		float playerPos[3];
+		GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+		float Dist = GetVectorDistance(Laser.Start_Point, playerPos, true);	//make is squared for optimisation sake
+
+		float Ratio = Dist / Max_Dist;
+		float damage = Close_Dps + (Long_Dps-Close_Dps) * Ratio;
+
+		//somehow negative damage. invert.
+		if (damage < 0)
+			damage *= -1.0;
+		
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_PLASMA);	// 2048 is DMG_NOGIB?
+	}
+}
+//this basically makes the offset actually affect the traces's start pos. annoying, but its needed.
+static void GetOffsetLaserStartLoc(Basic_NPC_Laser Data, Ruina_Laser_Logic Laser)	//:(
+{
+	CClotBody npc = Data.npc;
+	float Angles[3], startPoint[3];
+	WorldSpaceCenter(npc.index, startPoint);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+			
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	Angles[0] = flPitch;
+
+	if(Data.RelativeOffset)
+		Offset_Vector(Data.EffectsStartLoc, Angles, startPoint);
+	else if(Data.EffectsStartLoc[0] != 0.0 || Data.EffectsStartLoc[1] != 0.0 || Data.EffectsStartLoc[2] != 0.0)
+		startPoint = Data.EffectsStartLoc;
+
+	Laser.DoForwardTrace_Custom(Angles, startPoint, Data.Range);
+}
+
+static void BeamEffects(float startPoint[3], float endPoint[3], int color[4], float diameter)
+{
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+	int colorLayer2[4];
+	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, color[3]);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+	TE_SendToAll(0.0);
+//	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
+//	TE_SendToAll(0.0);
+// I have removed one TE as its way too many te's at once.
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
+	TE_SendToAll(0.0);
+	int glowColor[4];
+	SetColorRGBA(glowColor, color[0], color[1], color[2], color[3]);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
+	TE_SendToAll(0.0);
 }
 /*
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])

@@ -207,7 +207,7 @@ public void SeabornSoldier_ClotThink(int iNPC)
 
 							for(int i; i < 5; i++)
 							{
-								if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+								if(MaxEnemiesAllowedSpawnNext(1) <= (EnemyNpcAlive - EnemyNpcAliveStatic))
 								{
 									fl_Extra_Speed[npc.index] *= 1.1;
 									fl_Extra_Damage[npc.index] *= 1.05;

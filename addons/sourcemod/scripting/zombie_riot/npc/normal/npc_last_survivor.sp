@@ -584,7 +584,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			
 			position[0] += s;
 			position[1] += c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -606,7 +606,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -616,7 +616,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			FatherGrigori_DrawIonBeam(position,{0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position,{0, 150, 255, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -638,7 +638,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;
@@ -678,8 +678,8 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, NORMAL_ZOMBIE_VOLUME, {200, 255, 255, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, NORMAL_ZOMBIE_VOLUME, {100, 255, 255, 255}, 3);
-			TE_SendToAll();
+		//	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, NORMAL_ZOMBIE_VOLUME, {100, 255, 255, 255}, 3);
+		//	TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {0, 255, 255, 255}, 3);
 			TE_SendToAll();
 	

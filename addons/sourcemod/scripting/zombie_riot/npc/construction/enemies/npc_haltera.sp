@@ -118,9 +118,6 @@ methodmap Haltera < CClotBody
 			npc.m_flHealMulti = StringToFloat(data);
 		}
 		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -272,6 +269,9 @@ public void Haltera_NPCDeath(int entity)
 	ExpidonsaRemoveEffects(entity);
 		
 	
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -348,10 +348,10 @@ void HalteraSelfDefense(Haltera npc, float gameTime, int target, float distance)
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS",_,_,_, npc.Anger ? 2.0 : 1.0);
-						
-				npc.m_flAttackHappens = gameTime + (npc.Anger ? 0.25 : 0.125);
-				npc.m_flDoingAnimation = gameTime + (npc.Anger ? 0.25 : 0.125);
-				npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.85 : 0.425);
+
+				npc.m_flAttackHappens = gameTime + (npc.Anger ? 0.125 : 0.25);
+				npc.m_flDoingAnimation = gameTime + (npc.Anger ? 0.125 : 0.25);
+				npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.425 : 0.85);
 			}
 		}
 	}

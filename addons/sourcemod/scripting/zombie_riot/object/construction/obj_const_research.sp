@@ -20,7 +20,7 @@ void ObjectResearch_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_research");
-	build.Cost = 1000;
+	build.Cost = 400;
 	build.Health = 50;
 	build.Cooldown = 20.0;
 	build.Func = ClotCanBuild;
@@ -41,6 +41,7 @@ methodmap ObjectResearch < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}
@@ -67,7 +68,9 @@ static int CountBuildings()
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+		{
 			count++;
+		}
 	}
 
 	return count;

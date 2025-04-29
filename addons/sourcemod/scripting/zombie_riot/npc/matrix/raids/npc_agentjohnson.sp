@@ -40,27 +40,16 @@ static char g_RangedAttackSounds[][] = {
 static char g_RangedReloadSound[][] = {
 	"weapons/revolver_worldreload.wav",
 };
-static char g_WarningSounds[][] = {
-	"weapons/vaccinator_charge_tier_03.wav",
-};
-static char g_SlamSounds[][] = {
-	"vo/taunts/spy/spy_taunt_exert_12.mp3",
-	"vo/taunts/spy/spy_taunt_flip_end_12.mp3",
-	"ambient/levels/labs/electric_explosion1.wav",
-	"ambient/levels/labs/electric_explosion2.wav",
-};
 
 void AgentJohnson_OnMapStart_NPC()
 {
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundArray(g_RangedAttackSounds);
-	PrecacheSoundArray(g_RangedReloadSound);
-	PrecacheSoundArray(g_WarningSounds);
-	PrecacheSoundArray(g_SlamSounds);
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	PrecacheModel("models/player/spy.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent Johnson");
@@ -75,17 +64,12 @@ void AgentJohnson_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentJohnson(vecPos, vecAng, ally, data);
+	return AgentJohnson(vecPos, vecAng, ally);
 }
 methodmap AgentJohnson < CClotBody
 {
-	property int i_AnimSytle
-	{
-		public get()							{ return i_TimesSummoned[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
-	}
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -127,17 +111,11 @@ methodmap AgentJohnson < CClotBody
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
-	}
-	public void PlaySlamWarningSound() {
-		EmitSoundToAll(g_WarningSounds[GetRandomInt(0, sizeof(g_WarningSounds) - 1)], _, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(70, 95));
-	}
-	public void PlaySlamSound(int usage) {
-		EmitSoundToAll(g_SlamSounds[usage], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 1.0);
-		EmitSoundToAll(g_SlamSounds[usage], this.index, _, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.5);
+		
 	}
 	
 	
-	public AgentJohnson(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public AgentJohnson(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentJohnson npc = view_as<AgentJohnson>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.10", "700", ally));
 		
@@ -181,21 +159,7 @@ methodmap AgentJohnson < CClotBody
 			}
 		}
 		
-		char buffers[3][64];
-		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		//the very first and 2nd char are SC for scaling
-		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
-		{
-			//remove SC
-			ReplaceString(buffers[0], 64, "sc", "");
-			float value = StringToFloat(buffers[0]);
-			RaidModeScaling = value;
-		}
-		else
-		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
-		}
-
+		RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -221,7 +185,7 @@ methodmap AgentJohnson < CClotBody
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/navras.mp3");
 		music.Time = 181;
-		music.Volume = 1.3;
+		music.Volume = 2.0;
 		music.Custom = false;
 		strcopy(music.Name, sizeof(music.Name), "Navras");
 		strcopy(music.Artist, sizeof(music.Artist), "Juno Reactor");
@@ -229,14 +193,9 @@ methodmap AgentJohnson < CClotBody
 
 		//IDLE
 		npc.m_iState = 0;
-		npc.i_AnimSytle = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 230.0;
-		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 10.0;
-		npc.m_flAbilityOrAttack1 = 0.0;
-		npc.m_flAbilityOrAttack2 = 0.0;
-		npc.m_flAbilityOrAttack3 = 0.0;
+		npc.m_flSpeed = 330.0;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -274,9 +233,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 {
 	AgentJohnson npc = view_as<AgentJohnson>(iNPC);
 	
-	float gameTime = GetGameTime(npc.index);
-
-	if(npc.m_flNextDelayTime > gameTime)
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
@@ -320,7 +277,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 		}
 	}
 
-	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -331,83 +288,17 @@ public void AgentJohnson_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > gameTime)
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	if(npc.m_flAbilityOrAttack1)
-	{
-		if(npc.m_flAbilityOrAttack1 < gameTime)
-		{
-			float radius = 200.0;
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			pos[2] += 5.0;
-			int color[4] = {255, 50, 40, 255};
-			if(npc.i_AnimSytle != 999)
-			{
-				i_NpcWeight[npc.index] = 999;
-				npc.m_flAbilityOrAttack2 = gameTime + 0.65;
-				b_NoGravity[npc.index] = true;
-				npc.SetVelocity({0.0,0.0,0.0});
-				npc.m_bisWalking = false;
-				npc.i_AnimSytle = 999;
-				
-				return;
-			}
-			if(npc.IsOnGround())
-			{
-				npc.i_AnimSytle = 0;
-				npc.m_bisWalking = true;
-				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
-				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-				i_NpcWeight[npc.index] = 4;
-				npc.m_flAbilityOrAttack0 = gameTime + 20.0;
-				npc.m_flAbilityOrAttack1 = 0.0;
-				npc.m_flAbilityOrAttack2 = 0.0;
-				npc.m_flAbilityOrAttack3 = 0.0;
-				spawnRing_Vectors(pos, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.33, 6.0, 0.1, 1, 1.0);
-				float damage = 9.0;
-				damage *= RaidModeScaling;
-				Explode_Logic_Custom(damage , npc.index , npc.index , -1 , pos, radius);	//acts like a rocket
-				
-				DataPack pack_boom = new DataPack();
-				pack_boom.WriteFloat(pos[0]);
-				pack_boom.WriteFloat(pos[1]);
-				pack_boom.WriteFloat(pos[2]);
-				pack_boom.WriteCell(1);
-				RequestFrame(MakeExplosionFrameLater, pack_boom);
-				npc.PlaySlamSound(1);
-				npc.PlaySlamSound(GetRandomInt(2, 3));
-				return;
-			}
-			if(npc.m_flAbilityOrAttack2)
-			{
-				if(npc.m_flAbilityOrAttack2 <= gameTime)
-				{
-					b_NoGravity[npc.index] = false;
-					npc.m_flAbilityOrAttack2 = gameTime + 0.1;
-					npc.SetVelocity({0.0,0.0, -1000.0});
-				}
-				else
-				{
-					if(npc.m_flAbilityOrAttack3 <= gameTime)
-					{
-						npc.m_flAbilityOrAttack3 = gameTime + 0.1;
-						spawnRing_Vectors(pos, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.33, 6.0, 0.1, 1, 1.0);
-					}
-					
-				}
-				return;
-			}
-		}
-	}
 	
-	npc.m_flNextThinkTime = gameTime + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < gameTime)
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -418,6 +309,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 			
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float gameTime = GetGameTime(npc.index);
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
@@ -427,30 +319,6 @@ public void AgentJohnson_ClotThink(int iNPC)
 		else
 		{
 			NPC_SetGoalEntity(npc.index, closest);
-		}
-
-		if(npc.m_flAbilityOrAttack0)//Slam Prepare
-		{
-			if(npc.m_flAbilityOrAttack0 < gameTime)
-			{
-				if(flDistanceToTarget <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.2))
-				{
-					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
-					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
-					static float flPos[3]; 
-					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-					flPos[2] += 5.0;
-					ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
-					npc.AddActivityViaSequence("airwalk_ITEM1");
-					flPos[2] += 500.0;
-					npc.SetVelocity({0.0,0.0,0.0});
-					PluginBot_Jump(npc.index, flPos);
-					npc.FaceTowards(vecTarget, 99999.9);
-					npc.m_flAbilityOrAttack1 = gameTime + 0.45;
-					npc.PlaySlamSound(0);
-					return;
-				}
-			}
 		}
 		
 		Johnsons_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);
@@ -684,6 +552,31 @@ static Action AgentJohnson_OnTakeDamage(int victim, int &attacker, int &inflicto
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	
+
+		if(damagetype & DMG_CLUB)
+		{	
+			npc.m_flMeleeArmor -= 0.05;
+			if(npc.m_flMeleeArmor < 0.05)
+			npc.m_flMeleeArmor = 0.50;
+
+			npc.m_flRangedArmor += 0.05;
+			if(npc.m_flRangedArmor > 2.0)
+			npc.m_flRangedArmor = 2.0;
+		}
+		else if(!(damagetype & DMG_TRUEDAMAGE))
+		{
+			npc.m_flRangedArmor -= 0.05;
+			if(npc.m_flRangedArmor < 0.05)
+			{
+				npc.m_flRangedArmor = 0.50;
+			}
+			npc.m_flMeleeArmor += 0.05;
+			if(npc.m_flMeleeArmor > 2.0)
+			{
+				npc.m_flMeleeArmor = 2.0;
+			}
+		}
 	}
 	return Plugin_Changed;
 }

@@ -105,9 +105,7 @@ static bool YaWeFxxked[MAXENTITIES];
 static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AirRaidStart[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static int i_AmountProjectiles[MAXENTITIES];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
 
 static float Vs_DelayTime[MAXENTITIES];
 static int Vs_Stats[MAXENTITIES];
@@ -427,8 +425,8 @@ methodmap Harrison < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(Waves_GetRound()+1);
-				value = float(Waves_GetRound()+1);
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+				value = float(ZR_Waves_GetRound()+1);
 			}
 
 			if(RaidModeScaling < 55)
@@ -1417,7 +1415,6 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 }
 
 
-static int HarrisonHitDetected[MAXENTITIES];
 
 static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
@@ -1476,7 +1473,7 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		HarrisonHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -1527,7 +1524,7 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (HarrisonHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -1550,7 +1547,7 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 static bool Harrison_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if(IsEntityAlive(entity))
-		HarrisonHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	return false;
 }
 

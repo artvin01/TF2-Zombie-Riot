@@ -83,7 +83,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return The_Shit_Slapper(vecPos, vecAng, team);
 }
-static int i_slap[MAXENTITIES];
 
 methodmap The_Shit_Slapper < CClotBody
 {
@@ -153,7 +152,7 @@ methodmap The_Shit_Slapper < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		i_slap[npc.index]=0;
+		i_ammo_count[npc.index]=0;
 		
 		//IDLE
 		npc.m_flSpeed = 150.0;
@@ -219,10 +218,10 @@ static void Internal_ClotThink(int iNPC)
 		npc.StartPathing();
 		
 		//Target close enough to hit
-		if(i_slap[npc.index]==6)
+		if(i_ammo_count[npc.index]>=6)
 		{
 			EmitSoundToAll("items/powerup_pickup_knockout_melee_hit.wav");
-			i_slap[npc.index]=0;
+			i_ammo_count[npc.index]=0;
 		}
 		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 		float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
@@ -255,13 +254,13 @@ static void Internal_ClotThink(int iNPC)
 						{
 							
 							float damage = 30.0;
-							if(Waves_GetRound()>30)	//the shit slapper will become the most feard thing on the planet
+							if(ZR_Waves_GetRound()>30)	//the shit slapper will become the most feard thing on the planet
 							{
 								damage=175.0;
 							}
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage*scale, DMG_CLUB, -1, _, vecHit);
-							i_slap[npc.index]++;
-							if(i_slap[npc.index] >= 5)
+							i_ammo_count[npc.index]++;
+							if(i_ammo_count[npc.index] >= 5)
 							{
 								if(IsValidClient(target))
 								{
@@ -294,7 +293,6 @@ static void Internal_ClotThink(int iNPC)
 		else
 		{
 			npc.StartPathing();
-			
 		}
 	}
 	else
