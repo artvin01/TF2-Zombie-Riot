@@ -868,7 +868,7 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 		return Plugin_Continue;
 
 	result = PassfilterGlobal(ent1, ent2, true);
-	if(result)
+	if(!result)
 	{
 		return Plugin_Handled;
 	}
