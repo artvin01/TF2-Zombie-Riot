@@ -7,6 +7,7 @@ static float LastKnownPos[3];
 void Wisp_Setup()
 {
 	PrecacheSound(g_IdleSound);
+	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "?????????????");
