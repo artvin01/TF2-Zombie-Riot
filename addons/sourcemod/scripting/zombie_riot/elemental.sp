@@ -985,7 +985,10 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				{
 					ApplyStatusEffect(attacker, victim, "Plasm II", 8.0);
 				}
-				
+
+				if(cheesedmg > float(ReturnEntityMaxHealth(victim)))
+					cheesedmg = 1 + float(ReturnEntityMaxHealth(victim));
+
 				// fun fact: this used to deal true damage. Uh oh!
 				if(melee) // if applied via melee, slight dmg boost and melee type.
 					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg*1.25, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
