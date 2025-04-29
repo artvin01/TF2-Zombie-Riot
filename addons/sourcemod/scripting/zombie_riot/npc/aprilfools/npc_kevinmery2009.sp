@@ -56,8 +56,7 @@ void KevinMery_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "kevinmery2009");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kevinmery2009");
 	strcopy(data.Icon, sizeof(data.Icon), "kevinmery");
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/kevinmery.mp3");
-	PrecacheSoundCustom("#zombiesurvival/aprilfools/plead.mp3");
+	data.Precache = ClotPrecache;
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
@@ -66,9 +65,14 @@ void KevinMery_OnMapStart_NPC()
 }
 
 
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/kevinmery.mp3");
+	PrecacheSoundCustom("#zombiesurvival/aprilfools/plead.mp3");
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return KevinMery(client, vecPos, vecAng, ally);
+	return KevinMery(vecPos, vecAng, ally);
 }
 methodmap KevinMery < CClotBody
 {
@@ -122,7 +126,7 @@ methodmap KevinMery < CClotBody
 	}
 	
 	
-	public KevinMery(int client, float vecPos[3], float vecAng[3], int ally)
+	public KevinMery(float vecPos[3], float vecAng[3], int ally)
 	{
 		KevinMery npc = view_as<KevinMery>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.50", "700", ally));
 		
@@ -542,7 +546,6 @@ static void KevinMery_SelfDefense(KevinMery npc, float gameTime, int target, flo
 
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				npc.m_iOverlordComboAttack++;
 				KevinMery_WeaponSwaps(npc, 1);
 				npc.m_iTarget = Enemy_I_See;
 
@@ -551,28 +554,8 @@ static void KevinMery_SelfDefense(KevinMery npc, float gameTime, int target, flo
 				npc.m_flAttackHappens = gameTime + 0.1;
 				float attack = 1.0;
 				npc.m_flNextMeleeAttack = gameTime + attack;
+				return;
 			}
-		}
-		if(npc.m_iOverlordComboAttack >= 10)
-		{
-			float flPos[3];
-			if(!IsValidEntity(npc.m_iWearable9))
-			{
-				float flAng[3];
-				npc.GetAttachment("hand_R", flPos, flAng);
-				npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "buildingdamage_fire3", npc.index, "hand_R", {0.0, 0.0, 0.0});
-			}
-			float attack2 = 0.35;
-			npc.m_flNextMeleeAttack = gameTime + attack2;
-		}
-		if(npc.m_iOverlordComboAttack >= 20)
-		{
-			npc.m_iOverlordComboAttack = 0;
-		}
-		if(npc.m_iOverlordComboAttack <= 1)
-		{
-			if(IsValidEntity(npc.m_iWearable9))
-			RemoveEntity(npc.m_iWearable9);
 		}
 	}
 }
@@ -586,8 +569,7 @@ static void KevinMery_WeaponSwaps(KevinMery npc, int number = 1)
 			{
 				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-				AcceptEntityInput(npc.m_iWearable1, "Enable");
-				AcceptEntityInput(npc.m_iWearable2, "Disable");
+				AcceptEntityInput(npc.m_iWearable1, "Disable");
 				npc.m_iChanged_WalkCycle = 3;
 			}
 		}
@@ -598,7 +580,6 @@ static void KevinMery_WeaponSwaps(KevinMery npc, int number = 1)
 				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				AcceptEntityInput(npc.m_iWearable2, "Enable");
-				AcceptEntityInput(npc.m_iWearable1, "Disable");
 				npc.m_iChanged_WalkCycle = 4;
 			}
 		}
