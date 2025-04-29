@@ -55,9 +55,11 @@ methodmap StalkerShared < CClotBody
 					continue;
 
 				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
-					break;
+					return;
 			}
 		}
+
+		WorldSpaceCenter(this.index, pos);
 	}
 
 	property int m_iChaseAnger	// Allows being able to quickly hide
