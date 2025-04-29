@@ -170,7 +170,7 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15％\nIncreases npc speed by +25％.\nIncreases attack/reload speed & healrate by +15％."
+		"en"	"{orange}Oh how cheesed you are...\n{green}Increases damage and resistance by +15％\nIncreases npc speed by +25％.\nIncreases attack/reload speed & healrate by +15％."
 	}
 	"Freeplay Eloquence I"
 	{
@@ -1221,5 +1221,29 @@
 	"7 Heavy Souls Desc"
 	{
 		"en"	"Increases damage by 50%%\nIncreases resistance by 50%%\nIncreases attack speed by 100%%"
+	}
+	"Plasm I"
+	{
+		"en" 	"Plasm I"
+	}
+	"Plasm I Desc"
+	{
+		"en"	"Slows NPCs by 5%%.\nReduces attackspeed by 7%%."
+	}
+	"Plasm II"
+	{
+		"en"	"Plasm II"
+	}
+	"Plasm II Desc"
+	{
+		"en" 	"Slows NPCs by 7%%.\nReduces attackspeed by 10%%."
+	}
+	"Plasmatic Rampage"
+	{
+		"en"	"Plasmatic Rampage"
+	}
+	"Plasmatic Rampage Desc"
+	{
+		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Increases damage dealt by 15%%.\nDecreases damage taken by 15%%.\nIncreases attackspeed by 15%%.\n(PLASMA KIT ONLY) Ability cooldowns are reduced."
 	}
 }

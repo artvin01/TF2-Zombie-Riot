@@ -3044,4 +3044,16 @@
 	{
 		"en" "Bubble Wand"
 	}
+	"Plasmic Surprise"
+	{
+		"en" "Plasmic Surprise"
+	}
+	"Plasmic Dosage"
+	{
+		"en" "Plasmic Dosage"
+	}
+	"Koshi's Plasm-inator"
+	{
+		"en" "Koshi's Plasm-inator"
+	}
 }

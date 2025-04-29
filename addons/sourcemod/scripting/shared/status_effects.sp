@@ -154,6 +154,7 @@ void InitStatusEffects()
 	StatusEffects_Construction();
 	StatusEffects_BubbleWand1();
 	StatusEffects_BubbleWand2();
+	StatusEffects_Plasm();
 
 	//freeplay last.
 	StatusEffects_Freeplay1();
@@ -4477,6 +4478,69 @@ void StatusEffects_BubbleWand2()
 	StatusEffect_AddGlobal(data);
 }
 
+void StatusEffects_Plasm()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmatic Rampage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϙ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.85;
+	data.DamageDealMulti			= 0.15;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.85;
+	StatusEffect_AddGlobal(data);
+
+	data.LinkedStatusEffect = 0;
+	data.LinkedStatusEffectNPC = 0;
+	data.AttackspeedBuff = 0.0;
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasm I");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϥ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.05;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 15; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 1.07;
+	StatusEffect_AddGlobal(data);
+
+	data.LinkedStatusEffect = 0;
+	data.LinkedStatusEffectNPC = 0;
+	data.AttackspeedBuff = 0.0;
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasm II");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϥ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.07;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 15; //0 means ignored
+	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 1.1;
+	StatusEffect_AddGlobal(data);
+
+	data.LinkedStatusEffect = 0;
+	data.LinkedStatusEffectNPC = 0;
+	data.AttackspeedBuff = 0.0;
+}
 
 stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Index)
 {

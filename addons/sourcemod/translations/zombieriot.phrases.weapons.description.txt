@@ -4310,4 +4310,56 @@
 	{
 		"en"	"Collect ingredients by dealing damage. Use them to make food that heals and buffs allies."
 	}
+	"Plasma Kit Desc"
+	{
+		"en"	"A special type of weaponry designed by Koshi, if that wasn't obvious.\n[PLASMIC ELEMENTAL STATUS]: Upon filled, deals massive damage to the target and inflicts the Plasm II debuff.\nIf triggered via Melee, immunity cooldown is reduced and deals more dmg."
+	}
+	"Plasma Inject Desc"
+	{
+		"en" 	"A big syringe, filled to the brim with Plasma.\nDamage is below average, but builds the Plasmic Elemental status faster.\nHas a high 'health on kill' stat, deals +15%% extra dmg to raids."
+	}
+	"Plasma Inject Pap 1 Desc"
+	{
+		"en" 	"Overall stat increase, grants a bunch of health.\nYou now heal upon hitting Plasmed targets!"
+	}
+	"Plasma Inject Pap 2 Desc"
+	{
+		"en" 	"Now grants slight ranged resistance. Unlocks Lethal Injection [M2]:\nTemporarily increases attackspeed, and your injections build the Plasmic Elemental status WAY faster."
+	}
+	"Plasma Inject Pap 3 Desc"
+	{
+		"en" 	"Maybe injecting yourself with Plasma isn't a great idea...\nUnlocks Plasmic Inoculation [R]:\nInject yourself with Plasma to gain a huge stat increase (dmg, res, plasmic buildup and atkspd)\nand heal 15%% HP overtime up to 50%%."
+	}
+	"Plasma Inject Pap 4 Desc"
+	{
+		"en" 	"Increases overall stats.\nLethal Injection now lasts slightly longer and inflicts slight bleed while active.\nPlasmic Inoculation's buffs and healing are now stronger."
+	}
+	"Plasma Inject Pap 5 Desc"
+	{
+		"en" 	"Increases overall stats.\nLethal Injection's bleed is now stronger and lasts longer.\nPlasmic Inoculation's buffs and healing are now slightly stronger."
+	}
+	"Plasma Kit Pap Rest Desc"
+	{
+		"en" 	"Increases overall stats."
+	}
+	"Plasminator Desc"
+	{
+		"en"	"Koshi's own weapon - an Expidonsan clockwork assault rifle that shoots Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
+	}
+	"Plasminator Pap 2 Desc"
+	{
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals great damage and inflicts Plasm I temporarily."
+	}
+	"Plasminator Pap 3 Desc"
+	{
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and debuff duration."
+	}
+	"Plasminator Pap 4 Desc"
+	{
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and reduces its cooldown."
+	}
+	"Plasminator Pap 5 Desc"
+	{
+		"en"	"Increases overall stats.\nPlasmic Burst now inflicts Plasm II instead of I, and for a slightly longer duration."
+	}
 }
