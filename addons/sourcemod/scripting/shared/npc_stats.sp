@@ -10200,7 +10200,7 @@ bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int contentsMask, int iExclud
 	{
 		return false;
 	}
-	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, iExclude);
+	bool type = BulletAndMeleeTrace(entity, 0, iExclude);
 	if(!type) //if it collised, return.
 	{
 		return false;

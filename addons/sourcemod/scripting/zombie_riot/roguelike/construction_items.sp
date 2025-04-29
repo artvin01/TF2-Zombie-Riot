@@ -18,7 +18,7 @@ public void Construction_Stalker_Collect()
 	Spawns_GetNextPos(pos, ang, "spawn_2_3");
 	NPC_CreateByName("npc_stalker_combine", 0, pos, ang, TFTeam_Blue);
 
-	Spawns_GetNextPos(pos, ang, "spawn_3_3");
+	Spawns_GetNextPos(pos, ang, "spawn_3_4");
 	NPC_CreateByName("npc_stalker_goggles", 0, pos, ang, TFTeam_Blue);
 
 	Construction_AddMaterial("wizuh", 50, true);
@@ -361,19 +361,19 @@ public void GiveCash_Base1()
 {
 	CurrentCash += 500;
 	GlobalExtraCash += 500;
-	CPrintToChatAll("{green}%t","Cash Gained!", 500);
+	CPrintToChatAll("%t", "Gained Material", 500, "Cash");
 }
 public void GiveCash_Base2()
 {
 	CurrentCash += 1500;
 	GlobalExtraCash += 1500;
-	CPrintToChatAll("{green}%t","Cash Gained!", 1500);
+	CPrintToChatAll("%t", "Gained Material", 1500, "Cash");
 }
 public void GiveCash_Base3()
 {
 	CurrentCash += 3000;
 	GlobalExtraCash += 3000;
-	CPrintToChatAll("{green}%t","Cash Gained!", 3000);
+	CPrintToChatAll("%t", "Gained Material", 3000, "Cash");
 }
 static void SpawnRebel(const char[] data = "")
 {
