@@ -220,7 +220,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack pack)
 	}
 			
 	PrintHintText(client, "%s", CheeseHud);
-	return Plugin_Continue;;
+	return Plugin_Continue;
 }
 
 public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, int damagetype, int weapon)
