@@ -72,9 +72,9 @@ methodmap Wisp < StalkerShared
 			TeleportEntity(entity, vecPos, vecAng, NULL_VECTOR);
 			
 			DispatchKeyValue(entity, "brightness", "9");
-			DispatchKeyValue(entity, "spotlight_radius", "160");
-			DispatchKeyValue(entity, "distance", "160");
-			DispatchKeyValue(entity, "_light", "255 128 0 255");
+			DispatchKeyValue(entity, "spotlight_radius", "128");
+			DispatchKeyValue(entity, "distance", "128");
+			DispatchKeyValue(entity, "_light", "255 128 0 1000");
 			//DispatchKeyValue(entity, "_cone", "-1");
 			DispatchSpawn(entity);
 			ActivateEntity(entity);
@@ -131,7 +131,11 @@ static void ClotThink(int iNPC)
 				}
 
 				if(IsValidEntity(npc.m_iWearable1))
+				{
+					SetVariantString("255 128 0 1000");
+					AcceptEntityInput(npc.m_iWearable1, "Color");
 					AcceptEntityInput(npc.m_iWearable1, "LightOn");
+				}
 				
 				npc.StartIdleSound();
 			}
@@ -306,7 +310,11 @@ static void ClotThink(int iNPC)
 		npc.StopPathing();
 
 		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetVariantString("0 0 0 0");
+			AcceptEntityInput(npc.m_iWearable1, "Color");
 			AcceptEntityInput(npc.m_iWearable1, "LightOff");
+		}
 		
 		npc.StopIdleSound();
 	}
