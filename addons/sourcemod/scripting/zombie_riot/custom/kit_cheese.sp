@@ -119,8 +119,16 @@ void Cheese_Enable(int client, int weapon)
 		//if(FileNetwork_Enabled()) // apparently this is causing it to not download??? BATFOX PLZ HELPPPP YOU MADE FILENETWORK
 		Cheese_PrecacheMusic();
 
-		delete EffectTimer[client];
-		EffectTimer[client] = CreateTimer(0.4, Cheese_EffectTimer, client, TIMER_REPEAT);
+		if(EffectTimer[client] != null)
+		{
+			delete EffectTimer[client];
+			EffectTimer[client] = null;
+		}
+
+		DataPack data;
+		EffectTimer[client] = CreateDataTimer(0.4, Cheese_EffectTimer, client, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
 
@@ -133,92 +141,86 @@ bool Is_Cheesed_Up(int client)
 	return false;
 }
 
-public Action Cheese_EffectTimer(Handle timer, int client)
+public Action Cheese_EffectTimer(Handle timer, DataPack pack)
 {
-	if(IsValidClient(client)) // i'd use IsClientInGame but for some reason it just breaks whenever I (samuu) use it
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(weapon != -1 && IsPlayerAlive(client))
-		{
-			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
-			{
-				Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-				float pos[3]; GetClientAbsOrigin(client, pos);
-				pos[2] += 5.0;
-				if(LastMann)
-				{
-					ApplyStatusEffect(client, client, "Plasmatic Rampage", 1.0);
-					Cheese_BeamEffect(pos, 1.0, 200.0, 0.125, 12.0);
-					return Plugin_Continue;
-				}
-				else
-				{
-					Cheese_BeamEffect(pos, 1.0, 80.0, 0.25, 6.0, true, client);
-				}
+		EffectTimer[client] = null;
+		return Plugin_Stop;
+	}	
 
-				char CheeseHud[255];
-
-				if(Cheese_PapLevel[client] > 1)
-				{
-					if(Cheese_LethalDur[client] > GetGameTime())
-					{
-						Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE! [%.1f]", CheeseHud, Cheese_LethalDur[client]);
-						Cheese_BeamEffect(pos, 1.0, 100.0, 0.2, 7.5);
-					}
-					else
-					{
-						if(Cheese_LethalCD[client] < GetGameTime())
-							Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: Ready!", CheeseHud);
-						else
-							Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: [%.1f]", CheeseHud, Cheese_LethalCD[client]);
-					}
-					
-				}
-			
-				if(Cheese_PapLevel[client] > 2)
-				{
-					if(Cheese_MochaDur[client] > GetGameTime())
-					{
-						Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!! [%.1f]\nEffect: ", CheeseHud, Cheese_MochaDur[client]);
-						Cheese_BeamEffect(pos, 125.0, 1.0, 0.2, 7.5);
-						switch(Cheese_MochaType[client])
-						{
-							case 1:
-							{
-								Format(CheeseHud, sizeof(CheeseHud), "%sBonus Damage", CheeseHud);
-							}
-							case 2:
-							{
-								Format(CheeseHud, sizeof(CheeseHud), "%sResist Boost", CheeseHud);
-							}
-							case 3:
-							{
-								Format(CheeseHud, sizeof(CheeseHud), "%sAtk. Speed", CheeseHud);
-							}
-							case 4:
-							{
-								Format(CheeseHud, sizeof(CheeseHud), "%sPlasma Boost", CheeseHud);
-							}
-						}
-					}
-					else
-					{
-						if(Cheese_MochaCD[client] < GetGameTime())
-							Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: Ready!", CheeseHud);
-						else
-							Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: [%.1f]", CheeseHud, Cheese_MochaCD[client]);
-					}
-				}
-			
-				PrintHintText(client, "%s", CheeseHud);
-			}
-		}
-
+	Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	float pos[3]; GetClientAbsOrigin(client, pos);
+	pos[2] += 5.0;
+	if(LastMann)
+	{
+	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 1.0);
+		Cheese_BeamEffect(pos, 1.0, 200.0, 0.125, 12.0);
 		return Plugin_Continue;
 	}
+	else
+	{
+		Cheese_BeamEffect(pos, 1.0, 80.0, 0.25, 6.0, true, client);
+	}
 
-	EffectTimer[client] = null;
-	return Plugin_Stop;
+	char CheeseHud[255];
+	if(Cheese_PapLevel[client] > 1)
+	{
+		if(Cheese_LethalDur[client] > GetGameTime())
+		{
+			Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE! [%.1f]", CheeseHud, Cheese_LethalDur[client]);
+			Cheese_BeamEffect(pos, 1.0, 100.0, 0.2, 7.5);
+		}
+		else
+		{
+			if(Cheese_LethalCD[client] < GetGameTime())
+				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: Ready!", CheeseHud);
+			else
+				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: [%.1f]", CheeseHud, Cheese_LethalCD[client]);
+		}
+					
+	}
+			
+	if(Cheese_PapLevel[client] > 2)
+	{
+		if(Cheese_MochaDur[client] > GetGameTime())
+		{
+			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!! [%.1f]\nEffect: ", CheeseHud, Cheese_MochaDur[client]);
+			Cheese_BeamEffect(pos, 125.0, 1.0, 0.2, 7.5);
+			switch(Cheese_MochaType[client])
+			{
+				case 1:
+				{
+					Format(CheeseHud, sizeof(CheeseHud), "%sBonus Damage", CheeseHud);
+				}
+				case 2:
+				{
+					Format(CheeseHud, sizeof(CheeseHud), "%sResist Boost", CheeseHud);
+				}
+				case 3:
+				{
+					Format(CheeseHud, sizeof(CheeseHud), "%sAtk. Speed", CheeseHud);
+				}
+				case 4:
+				{
+					Format(CheeseHud, sizeof(CheeseHud), "%sPlasma Boost", CheeseHud);
+				}
+			}
+		}
+		else
+		{
+			if(Cheese_MochaCD[client] < GetGameTime())
+				Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: Ready!", CheeseHud);
+			else
+				Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: [%.1f]", CheeseHud, Cheese_MochaCD[client]);
+		}
+	}
+			
+	PrintHintText(client, "%s", CheeseHud);
+	return Plugin_Continue;;
 }
 
 public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, int damagetype, int weapon)
