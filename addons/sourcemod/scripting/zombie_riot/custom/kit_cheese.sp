@@ -49,6 +49,7 @@ static float Cheese_TargetsHit[MAXTF2PLAYERS];
 static float Cheese_LethalCD[MAXTF2PLAYERS];
 static float Cheese_MochaCD[MAXTF2PLAYERS];
 static int Cheese_MochaType[MAXTF2PLAYERS];
+static float stupidfuckingtimer[MAXTF2PLAYERS];
 
 static Handle EffectTimer[MAXTF2PLAYERS];
 static bool Precached = false;
@@ -68,6 +69,7 @@ void Cheese_MapStart()
 	Zero(Cheese_MochaCD);
 	Zero(Cheese_MochaType);
 	Zero(Cheese_MochaDur);
+	Zero(stupidfuckingtimer);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	Precached = false;
@@ -114,7 +116,7 @@ void Cheese_PlaySplat(int entity)
 
 void Cheese_Enable(int client, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE)
 	{
 		//if(FileNetwork_Enabled()) // apparently this is causing it to not download??? BATFOX PLZ HELPPPP YOU MADE FILENETWORK
 		Cheese_PrecacheMusic();
@@ -126,7 +128,7 @@ void Cheese_Enable(int client, int weapon)
 		}
 
 		DataPack pack;
-		EffectTimer[client] = CreateDataTimer(0.4, Cheese_EffectTimer, pack, TIMER_REPEAT);
+		EffectTimer[client] = CreateDataTimer(0.5, Cheese_EffectTimer, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -141,12 +143,12 @@ bool Is_Cheesed_Up(int client)
 	return false;
 }
 
-public Action Cheese_EffectTimer(Handle timer, DataPack pack)
+public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 {
-	pack.Reset();
-	int client = pack.ReadCell();
-	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	DataDo.Reset();
+	int client = DataDo.ReadCell();
+	int Weapon = EntRefToEntIndex(DataDo.ReadCell());
+	if(!IsValidEntity(Weapon) || !IsValidClient(client) || !IsPlayerAlive(client))
 	{
 		EffectTimer[client] = null;
 		return Plugin_Stop;
@@ -165,6 +167,19 @@ public Action Cheese_EffectTimer(Handle timer, DataPack pack)
 	{
 		Cheese_BeamEffect(pos, 1.0, 80.0, 0.25, 6.0, true, client);
 	}
+	Cheese_Hud(client);		
+	
+	return Plugin_Continue;
+}
+
+static void Cheese_Hud(int client)
+{
+	float GameTime = GetGameTime();
+
+	if(stupidfuckingtimer[client] > GameTime)
+		return;
+
+	stupidfuckingtimer[client] = GameTime + 0.5;
 
 	char CheeseHud[255];
 	if(Cheese_PapLevel[client] > 1)
@@ -218,9 +233,8 @@ public Action Cheese_EffectTimer(Handle timer, DataPack pack)
 				Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: [%.1f]", CheeseHud, Cheese_MochaCD[client]);
 		}
 	}
-			
+
 	PrintHintText(client, "%s", CheeseHud);
-	return Plugin_Continue;
 }
 
 public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, int damagetype, int weapon)
