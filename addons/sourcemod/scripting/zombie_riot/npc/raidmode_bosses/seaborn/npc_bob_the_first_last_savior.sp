@@ -1718,7 +1718,7 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 	if(health != 0)
 	{
 		enemy.Health = health;
-		if(!is_a_boss)
+		if(!boss)
 		{
 			enemy.Health *= MultiGlobalHealth;
 		}

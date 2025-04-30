@@ -795,6 +795,8 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	//Projectile_TeleportAndClip(entity);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	float GrenadePos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
 	if (0 < owner  && owner <= MaxClients)
 	{
 		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
@@ -805,6 +807,19 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 			inflictor = 0;
 		}
 		Explode_Logic_Custom(original_damage, owner, entity, weapon,_,_,_,_,_,_,_,_,_,_,inflictor);
+
+#if defined ZR
+		//Owner was a client
+		//Soldine check
+		//Must be midair
+		if(Wkit_Soldin_BvB(owner) && CanSelfHurtAndJump(owner))
+		{
+			float explosionRadius = 80.0;
+			b_NpcIsTeamkiller[entity] = true;
+			Explode_Logic_Custom(1.0, entity, entity, -1,_,explosionRadius,1.0,1.0,_,99,_,_,RocketJumpManualDo);
+			b_NpcIsTeamkiller[entity] = false;
+		}
+#endif
 	}
 	else if(owner > MaxClients)
 	{
@@ -823,8 +838,6 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false,_,_,_,_,_,inflictor);	
 		}
 	}
-	float GrenadePos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
 	switch(GetRandomInt(1,3))
 	{
 		case 1:
@@ -847,6 +860,34 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	return MRES_Supercede;
 }
 
+#if defined ZR
+static float RocketJumpManualDo(int attacker, int victim, float damage, int weapon)
+{
+	int owner = GetEntPropEnt(attacker, Prop_Send, "m_hOwnerEntity");
+	if(owner != victim)
+		return (-damage); //Remove dmg
+		
+	if((GetEntityFlags(owner) & FL_ONGROUND))
+		return (-damage); //Remove dmg
+		
+	float GrenadePos[3];
+	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", GrenadePos);
+	float ClientPos[3];
+	GetClientEyePosition(owner, ClientPos);
+	float velocity[3];
+
+	float explosionRadius = 80.0;
+	CalculateExplosiveDamageForce(GrenadePos, ClientPos, explosionRadius * 2.0, velocity);
+	velocity[0] = fClamp(velocity[0], -600.0, 600.0);
+	velocity[1] = fClamp(velocity[1], -600.0, 600.0);
+	velocity[2] = fClamp(velocity[2], -850.0, 850.0);
+	//Speed limit
+	TeleportEntity(owner, NULL_VECTOR, NULL_VECTOR, velocity);
+	TF2_AddCondition(owner, TFCond_BlastJumping, 1.0);
+	Wkit_Soldin_Effect(owner);
+	return (-damage); //Remove dmg
+}
+#endif
 /*
 public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params) 
 {
