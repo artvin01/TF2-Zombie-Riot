@@ -550,7 +550,7 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 			LockOnOnce = false;
 		Initiate_HomingProjectile(projectile, 
 			client,
-			30.0,	// Maximum angle lock
+			17.5,	// Maximum angle lock
 			10.0,	// Homing per sec
 			LockOnOnce, // If to lock on the target only once or not.
 			true,	// Change angles?
