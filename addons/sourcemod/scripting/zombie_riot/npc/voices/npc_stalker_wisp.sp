@@ -112,7 +112,7 @@ static void ClotThink(int iNPC)
 	
 	bool forceLeave = (Waves_InSetup() || RaidbossIgnoreBuildingsLogic(1));
 	if(Construction_Mode())
-		forceLeave = (!Construction_Started() || Construction_FinalBattle());
+		forceLeave = (!Construction_Started() || !Construction_InSetup());
 
 	if(!npc.Anger)
 	{
