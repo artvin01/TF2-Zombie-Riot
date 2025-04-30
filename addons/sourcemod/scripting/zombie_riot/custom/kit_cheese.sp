@@ -116,8 +116,8 @@ void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
 	{
-		if(FileNetwork_Enabled())
-			Cheese_PrecacheMusic();
+		//if(FileNetwork_Enabled()) // apparently this is causing it to not download??? BATFOX PLZ HELPPPP YOU MADE FILENETWORK
+		Cheese_PrecacheMusic();
 
 		delete EffectTimer[client];
 		EffectTimer[client] = CreateTimer(0.4, Cheese_EffectTimer, client, TIMER_REPEAT);
