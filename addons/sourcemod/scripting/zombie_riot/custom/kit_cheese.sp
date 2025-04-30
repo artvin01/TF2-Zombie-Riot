@@ -114,13 +114,16 @@ void Cheese_PlaySplat(int entity)
 */
 void Cheese_Enable(int client, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE)
 	{
 		if(FileNetwork_Enabled())
 			Cheese_PrecacheMusic();
 
 		delete EffectTimer[client];
-		EffectTimer[client] = CreateTimer(0.5, Cheese_EffectTimer, client, TIMER_REPEAT);
+		DataPack pack;
+		EffectTimer[client] = CreateDataTimer(0.5, Cheese_EffectTimer, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
 
@@ -133,8 +136,16 @@ bool Is_Cheesed_Up(int client)
 	return false;
 }
 
-public Action Cheese_EffectTimer(Handle timer, int client)
+public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 {
+	DataDo.Reset();
+	int client = DataDo.ReadCell();
+	int Weapon = EntRefToEntIndex(DataDo.ReadCell());
+	if(!IsValidEntity(Weapon))
+	{
+		EffectTimer[client] = null;
+		return Plugin_Stop;
+	}
 	if(IsValidClient(client)) // i'd use IsClientInGame but for some reason it just breaks whenever I (samuu) use it
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
