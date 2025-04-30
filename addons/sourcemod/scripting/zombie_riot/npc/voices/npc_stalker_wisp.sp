@@ -85,6 +85,8 @@ methodmap Wisp < StalkerShared
 		
 		npc.m_iWearable1 = entity;
 
+		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
+
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 
