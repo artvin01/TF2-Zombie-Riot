@@ -33,23 +33,22 @@ Debuff duration is reduced by 50% against raids, and by 25% against bosses.
 #define SOUND_MOCHA_ABILITY1 "items/powerup_pickup_reduced_damage.wav"
 #define SOUND_MOCHA_ABILITY2 "misc/halloween/duck_pickup_pos_01.wav"
 #define SOUND_CHEESEBALL_SQUASH "ui/hitsound_squasher.wav"
-//#define SOUND_ELEMENTALAPPLY    "zombiesurvival/cheese_elementalapply.mp3"
+#define SOUND_ELEMENTALAPPLY    "weapons/airboat/airboat_gun_energy2.wav"
 #define SOUND_CHEDDAR_ABILITY  "weapons/tf2_back_scatter.wav"
 
 static int LaserIndex;
 static float Cheese_PenaltyDur[MAXENTITIES];
 static float Cheese_LethalDur[MAXTF2PLAYERS];
+static float Cheese_MochaDur[MAXTF2PLAYERS];
 static float Cheese_MochaBuild[MAXTF2PLAYERS];
 static int Cheese_PapLevel[MAXTF2PLAYERS];
 
 static int Cheese_Glow;
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
 static float Cheese_TargetsHit[MAXTF2PLAYERS];
-static float Cheese_CloseDamage[MAXTF2PLAYERS];
-static float Cheese_FarDamage[MAXTF2PLAYERS];
-static float Cheese_MaxDistance[MAXTF2PLAYERS];
-static int Cheese_BeamRadius[MAXTF2PLAYERS];
-static float Cheese_BeamOffset[MAXTF2PLAYERS][3];
+static float Cheese_LethalCD[MAXTF2PLAYERS];
+static float Cheese_MochaCD[MAXTF2PLAYERS];
+static int Cheese_MochaType[MAXTF2PLAYERS];
 
 static Handle EffectTimer[MAXTF2PLAYERS];
 static bool Precached = false;
@@ -59,12 +58,16 @@ void Cheese_MapStart()
 	PrecacheSound(SOUND_MOCHA_ABILITY1, true);
 	PrecacheSound(SOUND_MOCHA_ABILITY2, true);
 	PrecacheSound(SOUND_CHEESEBALL_SQUASH, true);
-//   PrecacheSound(SOUND_ELEMENTALAPPLY, true);
+	PrecacheSound(SOUND_ELEMENTALAPPLY, true);
 	PrecacheSound(SOUND_CHEDDAR_ABILITY, true);
 	Zero(Cheese_PenaltyDur);
 	Zero(Cheese_LethalDur);
 	Zero(Cheese_MochaBuild);
 	Zero(Cheese_PapLevel);
+	Zero(Cheese_LethalCD);
+	Zero(Cheese_MochaCD);
+	Zero(Cheese_MochaType);
+	Zero(Cheese_MochaDur);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	Precached = false;
@@ -75,7 +78,6 @@ void Cheese_PrecacheMusic()
 	if(!Precached)
 	{
 		PrecacheSoundCustom("#zombiesurvival/cheese_lastman.mp3",_,1);
-	//  PrecacheSoundCustom("#zombiesurvival/cheese_elementalapply.mp3",_,1);
 		Precached = true;
 	}
 }
@@ -102,15 +104,14 @@ void Cheese_BeamEffect(float position[3], float startrad = 1.0, float endrad = 1
 		TE_SendToAll();
 	}
 }
-/*
+
 void Cheese_PlaySplat(int entity)
 {
-		int pitch = GetRandomInt(75, 125);
-//	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
-// 	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
+	int pitch = GetRandomInt(75, 125);
+	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
+	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
 }
 
-*/
 void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
@@ -119,7 +120,7 @@ void Cheese_Enable(int client, int weapon)
 			Cheese_PrecacheMusic();
 
 		delete EffectTimer[client];
-		EffectTimer[client] = CreateTimer(0.5, Cheese_EffectTimer, client, TIMER_REPEAT);
+		EffectTimer[client] = CreateTimer(0.4, Cheese_EffectTimer, client, TIMER_REPEAT);
 	}
 }
 
@@ -141,20 +142,75 @@ public Action Cheese_EffectTimer(Handle timer, int client)
 		{
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
 			{
+				Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 				float pos[3]; GetClientAbsOrigin(client, pos);
 				pos[2] += 5.0;
 				if(LastMann)
 				{
 					ApplyStatusEffect(client, client, "Plasmatic Rampage", 1.0);
-					Cheese_BeamEffect(pos, 1.0, 150.0, 0.125, 12.0);
-					
+					Cheese_BeamEffect(pos, 1.0, 200.0, 0.125, 12.0);
 					return Plugin_Continue;
 				}
 				else
 				{
-					Cheese_BeamEffect(pos, 1.0, 75.0, 0.25, 6.0, true, client);
+					Cheese_BeamEffect(pos, 1.0, 80.0, 0.25, 6.0, true, client);
 				}
-				Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+
+				char CheeseHud[255];
+
+				if(Cheese_PapLevel[client] > 1)
+				{
+					if(Cheese_LethalDur[client] > GetGameTime())
+					{
+						Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE! [%.1f]", CheeseHud, Cheese_LethalDur[client]);
+						Cheese_BeamEffect(pos, 1.0, 100.0, 0.2, 7.5);
+					}
+					else
+					{
+						if(Cheese_LethalCD[client] < GetGameTime())
+							Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: Ready!", CheeseHud);
+						else
+							Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: [%.1f]", CheeseHud, Cheese_LethalCD[client]);
+					}
+					
+				}
+			
+				if(Cheese_PapLevel[client] > 2)
+				{
+					if(Cheese_MochaDur[client] > GetGameTime())
+					{
+						Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!! [%.1f]\nEffect: ", CheeseHud, Cheese_MochaDur[client]);
+						Cheese_BeamEffect(pos, 125.0, 1.0, 0.2, 7.5);
+						switch(Cheese_MochaType[client])
+						{
+							case 1:
+							{
+								Format(CheeseHud, sizeof(CheeseHud), "%sBonus Damage", CheeseHud);
+							}
+							case 2:
+							{
+								Format(CheeseHud, sizeof(CheeseHud), "%sResist Boost", CheeseHud);
+							}
+							case 3:
+							{
+								Format(CheeseHud, sizeof(CheeseHud), "%sAtk. Speed", CheeseHud);
+							}
+							case 4:
+							{
+								Format(CheeseHud, sizeof(CheeseHud), "%sPlasma Boost", CheeseHud);
+							}
+						}
+					}
+					else
+					{
+						if(Cheese_MochaCD[client] < GetGameTime())
+							Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: Ready!", CheeseHud);
+						else
+							Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: [%.1f]", CheeseHud, Cheese_MochaCD[client]);
+					}
+				}
+			
+				PrintHintText(client, "%s", CheeseHud);
 			}
 		}
 
@@ -173,8 +229,6 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	if((damagetype & DMG_CLUB))
 	{   
 		float cheesedmg = damage;
-	//	float bleed_dmg = Attributes_Get(weapon, 2, 1.0);
-	//	bleed_dmg *= Attributes_Get(weapon, 1, 1.0);
 
 		if(Cheese_MochaBuild[attacker] > GetGameTime())
 		{
@@ -183,12 +237,6 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 		if(Cheese_LethalDur[attacker] > GetGameTime())
 		{
 			cheesedmg *= 2.35;
-			/*
-			if(Cheese_PapLevel[attacker] == 4)
-				StartBleedingTimer(victim, attacker, bleed_dmg*0.75, 12, -1, DMG_CLUB);
-			else if(Cheese_PapLevel[attacker] >= 5)
-				StartBleedingTimer(victim, attacker, bleed_dmg*0.9, 26, -1, DMG_CLUB);
-			*/
 		}
 		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
 	}
@@ -213,7 +261,7 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			else
 				Ability_Apply_Cooldown(client, slot, LastMann ? 15.0 : 22.0);
 			EmitSoundToClient(client, SOUND_CHEDDAR_ABILITY);
-		//	Cheese_PlaySplat(client);
+			Cheese_PlaySplat(client);
 
 			Cheese_TargetsHit[client] = 0.0;
 
@@ -225,23 +273,23 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			{
 				case 3:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 200.0, 10, {0.0, -6.5, 0.0});
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0);
 				}
 				case 4:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 220.0, 10, {0.0, -6.5, 0.0});
+					Cheese_Burst(client, basedmg, basedmg, 235.0, 10.0);
 				}
 				case 5:
 				{
-					Cheese_Burst(client, basedmg*1.25, basedmg, 240.0, 11, {0.0, -6.5, 0.0});
+					Cheese_Burst(client, basedmg*1.25, basedmg, 255.0, 11.0);
 				}
 				case 6, 7, 8:
 				{
-					Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 260.0, 12, {0.0, -6.5, 0.0});
+					Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 270.0, 12.0);
 				}
 				default:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 200.0, 10, {0.0, -6.5, 0.0});
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0);
 				}
 			}
 		}
@@ -264,27 +312,33 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 {
 	if(weapon >= MaxClients)
 	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 2)
+		if (Cheese_LethalCD[client] < GetGameTime() && Cheese_PapLevel[client] >= 2)
 		{
 			Rogue_OnAbilityUse(client, weapon);
-			Ability_Apply_Cooldown(client, slot, LastMann ? 25.0 : 40.0);
+			Cheese_LethalCD[client] = GetGameTime() + LastMann ? 25.0 : 40.0;
 			EmitSoundToClient(client, SOUND_LETHAL_ABILITY);
 
 			switch(Cheese_PapLevel[client])
 			{
 				case 2, 3:
 				{
-					ApplyTempAttrib(weapon, 6, 0.75, 7.0);
+					ApplyTempAttrib(weapon, 6, 0.7, 7.0);
+					ApplyTempAttrib(weapon, 206, 0.93, 7.0);
+					ApplyTempAttrib(weapon, 205, 0.93, 7.0);
 					Cheese_LethalDur[client] = GetGameTime() + 7.0;
 				}
 				case 4, 5:
 				{
-					ApplyTempAttrib(weapon, 6, 0.625, 8.5);
+					ApplyTempAttrib(weapon, 6, 0.6, 8.5);
+					ApplyTempAttrib(weapon, 206, 0.87, 8.5);
+					ApplyTempAttrib(weapon, 205, 0.87, 8.5);
 					Cheese_LethalDur[client] = GetGameTime() + 8.5;
 				}
 				case 6, 7, 8:
 				{
 					ApplyTempAttrib(weapon, 6, 0.5, 10.0);
+					ApplyTempAttrib(weapon, 206, 0.82, 10.0);
+					ApplyTempAttrib(weapon, 205, 0.82, 10.0);
 					Cheese_LethalDur[client] = GetGameTime() + 10.0;
 				}
 			}
@@ -297,14 +351,10 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 		}
 		else
 		{
-			float Ability_CD = Ability_Check_Cooldown(client, slot);
-			if(Ability_CD <= 0.0)
-				Ability_CD = 0.0;
-			
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Cheese_LethalCD[client]);
 			return;
 		}
 	}
@@ -314,16 +364,16 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 {
 	if(weapon >= MaxClients)
 	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 3)
+		if (Cheese_MochaCD[client] < GetGameTime() && Cheese_PapLevel[client] >= 3)
 		{
 			Rogue_OnAbilityUse(client, weapon);
-			Ability_Apply_Cooldown(client, slot, LastMann ? 45.0 : 70.0);
+			Cheese_MochaCD[client] = GetGameTime() + LastMann ? 45.0 : 70.0;
 			EmitSoundToClient(client, SOUND_MOCHA_ABILITY1);
 			EmitSoundToClient(client, SOUND_MOCHA_ABILITY2);
 
-			float dmgbuff = 1.75;
+			float dmgbuff = 1.95;
 			float resbuff = 0.65;
-			float atkspdbuff = 0.75;
+			float atkspdbuff = 0.7;
 			float buffdurations = 10.0;
 			float MaxHealth = float(SDKCall_GetMaxHealth(client));
 
@@ -331,24 +381,24 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 			{
 				case 4:
 				{
-					dmgbuff = 1.9;
+					dmgbuff = 2.15;
 					resbuff = 0.55;
-					atkspdbuff = 0.7;
+					atkspdbuff = 0.65;
 					HealEntityGlobal(client, client, MaxHealth * 0.10, 0.6, 5.0, HEAL_SELFHEAL);
 				}
 				case 5, 6:		
 				{
-					dmgbuff = 2.15;
+					dmgbuff = 2.35;
 					resbuff = 0.5;
-					atkspdbuff = 0.6;
+					atkspdbuff = 0.55;
 					buffdurations = 15.0;
 					HealEntityGlobal(client, client, MaxHealth * 0.125, 0.75, 5.0, HEAL_SELFHEAL);
 				}
 				case 7, 8:
 				{
-					dmgbuff = 2.35;
+					dmgbuff = 2.5;
 					resbuff = 0.4;
-					atkspdbuff = 0.5;
+					atkspdbuff = 0.45;
 					buffdurations = 20.0;
 					HealEntityGlobal(client, client, MaxHealth * 0.175, 1.0, 5.0, HEAL_SELFHEAL);
 				}
@@ -357,33 +407,34 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					HealEntityGlobal(client, client, MaxHealth * 0.075, 0.5, 5.0, HEAL_SELFHEAL);
 				}
 			}
-	
-			SetDefaultHudPosition(client, 235, 75, 210, 3.0);
+
 			switch(GetRandomInt(1, 4))
 			{
-				case 1:
+				case 1: 
 				{
 					ApplyTempAttrib(weapon, 2, dmgbuff, buffdurations);
-					ShowSyncHudText(client, SyncHud_Notifaction, "Recieved x%.2f dmg mult for %.1fs!", dmgbuff, buffdurations);
+					Cheese_MochaType[client] = 1;
 				}
 				case 2:
 				{
-					ApplyTempAttrib(weapon, 206, resbuff, buffdurations);
+					ApplyTempAttrib(weapon, 206, resbuff, buffdurations); 
 					ApplyTempAttrib(weapon, 205, resbuff, buffdurations);
-					ShowSyncHudText(client, SyncHud_Notifaction, "Recieved x%.2f resist mult for %.1fs!", resbuff, buffdurations);
+					Cheese_MochaType[client] = 2;
 				}
 				case 3:
 				{
 					ApplyTempAttrib(weapon, 6, atkspdbuff, buffdurations);
-					ShowSyncHudText(client, SyncHud_Notifaction, "Recieved x%.2f atkspd mult for %.1fs!", atkspdbuff, buffdurations);
+					Cheese_MochaType[client] = 3;
 				}
 				case 4:
 				{
 					Cheese_MochaBuild[client] = GetGameTime() + buffdurations;
-					ShowSyncHudText(client, SyncHud_Notifaction, "Recieved faster elemental buildup for %.1fs!", buffdurations);
+					Cheese_MochaType[client] = 4;
 				}
 			}
-	
+
+			Cheese_MochaDur[client] = GetGameTime() + buffdurations;
+			
 			float position[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", position);
 			position[2] += 10.0;
@@ -395,14 +446,10 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 		}
 		else
 		{
-			float Ability_CD = Ability_Check_Cooldown(client, slot);
-			if(Ability_CD <= 0.0)
-				Ability_CD = 0.0;
-			
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Cheese_MochaCD[client]);
 			return;
 		}
 	}
@@ -490,33 +537,20 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 	}
 }
 
-static void Cheese_Burst(int client, float damageclose, float damagefar, float distance, int radius, float offsets[3])
-{
-	for (int building = 0; building < MAX_TARGETS_HIT; building++)
-	{
-		Cheese_BuildingHit[building] = false;
-		Cheese_TargetsHit[client] = 0.0;
-	}
-
-	Cheese_CloseDamage[client] = damageclose;
-	Cheese_FarDamage[client] = damagefar;
-	Cheese_MaxDistance[client] = distance;
-	Cheese_BeamRadius[client] = radius;
-	Cheese_BeamOffset[client][0] = offsets[0];
-	Cheese_BeamOffset[client][1] = offsets[1];
-	Cheese_BeamOffset[client][2] = offsets[2];
-	
-	TBB_Tick(client);
-}
-
-static void TBB_Tick(int client)
+static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist, float beamradius)
 {
 	if(!IsValidClient(client))
 	{
 		return;
 	}
 
-	float diameter = float(Cheese_BeamRadius[client] * 2);
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
+	{
+		Cheese_BuildingHit[building] = false;
+		Cheese_TargetsHit[client] = 0.0;
+	}
+
+	float diameter = beamradius * 2.0;
 	
 	int red = 235;
 	int green = 75;
@@ -535,8 +569,8 @@ static void TBB_Tick(int client)
 	{
 		TR_GetEndPosition(endPoint, trace);
 		CloseHandle(trace);
-		ConformLineDistance(endPoint, startPoint, endPoint, Cheese_MaxDistance[client]);
-		float lineReduce = Cheese_BeamRadius[client] * 2.0 / 3.0;
+		ConformLineDistance(endPoint, startPoint, endPoint, maxdist);
+		float lineReduce = beamradius * 2.0 / 3.0;
 		float curDist = GetVectorDistance(startPoint, endPoint, false);
 		if (curDist > lineReduce)
 		{
@@ -549,7 +583,7 @@ static void TBB_Tick(int client)
 		}
 		
 		
-		hullMin[0] = -float(Cheese_BeamRadius[client]);
+		hullMin[0] = -beamradius;
 		hullMin[1] = hullMin[0];
 		hullMin[2] = hullMin[0];
 		hullMax[0] = -hullMin[0];
@@ -593,7 +627,7 @@ static void TBB_Tick(int client)
 
 					WorldSpaceCenter(Cheese_BuildingHit[building],playerPos);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = Cheese_CloseDamage[client] + (Cheese_FarDamage[client]-Cheese_CloseDamage[client]) * (distance/Cheese_MaxDistance[client]);
+					float damage = dmgclose + (dmgfar-dmgclose) * (distance/maxdist);
 					if (damage < 0)
 						damage *= -1.0;
 					
@@ -622,7 +656,7 @@ static void TBB_Tick(int client)
 		}
 		
 		static float belowBossEyes[3];
-		GetBeamDrawStartPoint(client, belowBossEyes);
+		GetBeamDrawStartPoint(client, belowBossEyes, {0.0, 6.5, 0.0});
 		int colorLayer4[4];
 		SetColorRGBA(colorLayer4, red, green, blue, 255);
 		int colorLayer3[4];
@@ -648,23 +682,23 @@ static void TBB_Tick(int client)
 	}
 }
 
-static void GetBeamDrawStartPoint(int client, float startPoint[3])
+static void GetBeamDrawStartPoint(int client, float startPoint[3], float offset[3])
 {
 	GetClientEyePosition(client, startPoint);
 	float angles[3];
 	GetClientEyeAngles(client, angles);
 	startPoint[2] -= 25.0;
-	if (0.0 == Cheese_BeamOffset[client][0] && 0.0 == Cheese_BeamOffset[client][1] && 0.0 == Cheese_BeamOffset[client][2])
+	if (0.0 == offset[0] && 0.0 == offset[1] && 0.0 == offset[2])
 	{
 		return;
 	}
 	float tmp[3];
 	float actualBeamOffset[3];
-	tmp[0] = Cheese_BeamOffset[client][0];
-	tmp[1] = Cheese_BeamOffset[client][1];
+	tmp[0] = offset[0];
+	tmp[1] = offset[1];
 	tmp[2] = 0.0;
 	VectorRotate(tmp, angles, actualBeamOffset);
-	actualBeamOffset[2] = Cheese_BeamOffset[client][2];
+	actualBeamOffset[2] = offset[2];
 	startPoint[0] += actualBeamOffset[0];
 	startPoint[1] += actualBeamOffset[1];
 	startPoint[2] += actualBeamOffset[2];
