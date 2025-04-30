@@ -72,8 +72,8 @@ methodmap Wisp < StalkerShared
 			TeleportEntity(entity, vecPos, vecAng, NULL_VECTOR);
 			
 			DispatchKeyValue(entity, "brightness", "9");
-			DispatchKeyValue(entity, "spotlight_radius", "210");
-			DispatchKeyValue(entity, "distance", "210");
+			DispatchKeyValue(entity, "spotlight_radius", "160");
+			DispatchKeyValue(entity, "distance", "160");
 			DispatchKeyValue(entity, "_light", "255 128 0 255");
 			//DispatchKeyValue(entity, "_cone", "-1");
 			DispatchSpawn(entity);
@@ -109,8 +109,10 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
-
+	
 	bool forceLeave = (Waves_InSetup() || RaidbossIgnoreBuildingsLogic(1));
+	if(Construction_Mode())
+		forceLeave = (!Construction_Started() || Construction_FinalBattle());
 
 	if(!npc.Anger)
 	{
@@ -162,7 +164,7 @@ static void ClotThink(int iNPC)
 	}
 
 	int spawn = i_TargetAlly[npc.index];
-	if((!IsValidEntity(spawn) || GetEntProp(spawn, Prop_Data, "m_bDisabled")) && (forceLeave || npc.m_iChaseAnger < 1))
+	if((!IsValidEntity(spawn)/* || GetEntProp(spawn, Prop_Data, "m_bDisabled")*/) && (forceLeave || npc.m_iChaseAnger < 1))
 	{
 		spawn = -1;
 		float TargetLocation[3];
@@ -173,7 +175,7 @@ static void ClotThink(int iNPC)
 			int entity = i_ObjectsSpawners[entitycount];
 			if(IsValidEntity(entity) && entity != 0)
 			{
-				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) != 2)
+				if(/*!GetEntProp(entity, Prop_Data, "m_bDisabled") && */GetTeam(entity) != 2)
 				{
 					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 					float distance = GetVectorDistance( vecPos, TargetLocation, true); 

@@ -63,7 +63,7 @@ void SDKHook_PluginStart()
 #endif
 	
 #if defined ZR
-	for(int client=0; client<=MaxClients; client++)
+	for(int client = 1; client < sizeof(RecentSoundList); client++)
 	{
 		RecentSoundList[client] = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	}
