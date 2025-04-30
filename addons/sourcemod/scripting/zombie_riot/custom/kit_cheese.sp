@@ -465,6 +465,29 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, particle);
 	WandProjectile_ApplyFunctionToEntity(projectile, Cheese_ProjectileTouch);
+
+	if(Cheese_PapLevel[client] > 0)
+	{
+		Handle swingTrace;
+		float  vecSwingForward[3];
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true);
+		FinishLagCompensation_Base_boss();
+		int target = TR_GetEntityIndex(swingTrace);
+		delete swingTrace;
+		float Angles[3];
+		GetClientEyeAngles(client, Angles);
+		bool LockOnOnce = true;
+		if (IsValidEntity(target))
+			LockOnOnce = false;
+		Initiate_HomingProjectile(projectile, 
+			client,
+			30.0,	// Maximum angle lock
+			10.0,	// Homing per sec
+			LockOnOnce, // If to lock on the target only once or not.
+			true,	// Change angles?
+			Angles, // Angles.
+			target); // Homing target
+	}
 }
 
 static void Cheese_Burst(int client, float damageclose, float damagefar, float distance, int radius, float offsets[3])
