@@ -1718,6 +1718,10 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 	if(health != 0)
 	{
 		enemy.Health = health;
+		if(!boss)
+		{
+			enemy.Health *= MultiGlobalHealth;
+		}
 	}
 	enemy.Team = GetTeam(bobindx);
 	strcopy(enemy.CustomName, sizeof(enemy.CustomName), name);

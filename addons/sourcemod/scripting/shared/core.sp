@@ -17,6 +17,7 @@
 #include <cbasenpc>
 #include <tf2utils>
 #include <profiler>
+#include <collisionhook>
 #include <sourcescramble>
 //#include <handledebugger>
 #undef REQUIRE_EXTENSIONS

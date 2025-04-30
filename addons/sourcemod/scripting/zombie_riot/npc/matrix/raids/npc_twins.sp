@@ -221,7 +221,7 @@ methodmap Matrix_Twins < CClotBody
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/doubletrouble.mp3");
 			music.Time = 114;
-			music.Volume = 1.1;
+			music.Volume = 1.0;
 			music.Custom = false;
 			strcopy(music.Name, sizeof(music.Name), "Double Trouble");
 			strcopy(music.Artist, sizeof(music.Artist), "Don Davis");

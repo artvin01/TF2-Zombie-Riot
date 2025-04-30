@@ -106,8 +106,8 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBaseBoss::ResolvePlayerCollision", DHook_ResolvePlayerCollisionPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
-//	DHook_CreateDetour(gamedata, "CTraceFilterSimple::ShouldHitEntity", DHook_ShouldHitEntityPre);	// From SCP:SF
-	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);	// From SCP:SF
+//	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);
+// Dhooking it like this is broken.
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -795,6 +795,8 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	//Projectile_TeleportAndClip(entity);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	float GrenadePos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
 	if (0 < owner  && owner <= MaxClients)
 	{
 		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
@@ -805,6 +807,19 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 			inflictor = 0;
 		}
 		Explode_Logic_Custom(original_damage, owner, entity, weapon,_,_,_,_,_,_,_,_,_,_,inflictor);
+
+#if defined ZR
+		//Owner was a client
+		//Soldine check
+		//Must be midair
+		if(Wkit_Soldin_BvB(owner) && CanSelfHurtAndJump(owner))
+		{
+			float explosionRadius = 80.0;
+			b_NpcIsTeamkiller[entity] = true;
+			Explode_Logic_Custom(1.0, entity, entity, -1,_,explosionRadius,1.0,1.0,_,99,_,_,RocketJumpManualDo);
+			b_NpcIsTeamkiller[entity] = false;
+		}
+#endif
 	}
 	else if(owner > MaxClients)
 	{
@@ -823,8 +838,6 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false,_,_,_,_,_,inflictor);	
 		}
 	}
-	float GrenadePos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
 	switch(GetRandomInt(1,3))
 	{
 		case 1:
@@ -847,7 +860,35 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	return MRES_Supercede;
 }
 
+#if defined ZR
+static float RocketJumpManualDo(int attacker, int victim, float damage, int weapon)
+{
+	int owner = GetEntPropEnt(attacker, Prop_Send, "m_hOwnerEntity");
+	if(owner != victim)
+		return (-damage); //Remove dmg
+		
+	if((GetEntityFlags(owner) & FL_ONGROUND))
+		return (-damage); //Remove dmg
+		
+	float GrenadePos[3];
+	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", GrenadePos);
+	float ClientPos[3];
+	GetClientEyePosition(owner, ClientPos);
+	float velocity[3];
 
+	float explosionRadius = 80.0;
+	CalculateExplosiveDamageForce(GrenadePos, ClientPos, explosionRadius * 2.0, velocity);
+	velocity[0] = fClamp(velocity[0], -600.0, 600.0);
+	velocity[1] = fClamp(velocity[1], -600.0, 600.0);
+	velocity[2] = fClamp(velocity[2], -850.0, 850.0);
+	//Speed limit
+	TeleportEntity(owner, NULL_VECTOR, NULL_VECTOR, velocity);
+	TF2_AddCondition(owner, TFCond_BlastJumping, 1.0);
+	Wkit_Soldin_Effect(owner);
+	return (-damage); //Remove dmg
+}
+#endif
+/*
 public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params) 
 {
 	int toucher = DHookGetParam(params, 1);
@@ -861,21 +902,20 @@ public MRESReturn CH_PassServerEntityFilter(DHookReturn ret, DHookParam params)
 	ret.Value = false;
 	return MRES_Supercede;
 }
-/*
-public MRESReturn DHook_ShouldHitEntityPre(Address address, DHookReturn ret, DHookParam param)
-{
-	int toucher = param.Get(1);
-	int passer = GetEntityFromAddress(LoadFromAddress(address + view_as<Address>(4), NumberType_Int32));	// +4 from CTraceFilterSimple::m_pPassEnt
-	if(passer == -1)
-		return MRES_Ignored;
-	// TODO: In RPG, PvP has collisions
-	if(PassfilterGlobal(toucher, passer, true))
-		return MRES_Ignored;
-	
-	ret.Value = false;
-	return MRES_Supercede;
-}
 */
+public Action CH_PassFilter(int ent1, int ent2, bool &result)
+{
+	if(!(ent1 >= 0 && ent1 <= MAXENTITIES && ent2 >= 0 && ent2 <= MAXENTITIES))
+		return Plugin_Continue;
+
+	result = PassfilterGlobal(ent1, ent2, true);
+	if(!result)
+	{
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
+
+}
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
@@ -1089,6 +1129,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 				}
 			}
+
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
 			{
 				return false;
@@ -1113,19 +1154,22 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 			
+			//dont do during lag comp, no matter what	
+			else if(!DoingLagCompensation)
+			{
 #if defined RPG
-			else if(!DoingLagCompensation && ((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime()))))
+				if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime())))
 #else
-			else if(!DoingLagCompensation && (entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime()))
+				if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime()))
 #endif
-			{
-				//dont do during lag comp, no matter what	
-				//if a player needs to get unstuck.
-				return false;
-			}
-			else if(!DoingLagCompensation && (entity2 <= MaxClients && entity2 > 0) && b_IgnoreAllCollisionNPC[entity1])
-			{
-				return false;
+				{
+					//if a player needs to get unstuck.
+					return false;
+				}
+				else if((entity2 <= MaxClients && entity2 > 0) && b_IgnoreAllCollisionNPC[entity1])
+				{
+					return false;
+				}
 			}
 			
 		}

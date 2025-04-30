@@ -246,8 +246,8 @@
 				/* String: "RagdollImpact" -> 2 blocks down, , get sub, from Pickup_ForcePlayerToDropThisObject, Xref ->, go all the way up, */
 				"windows" "\x55\x8B\xEC\x56\x8B\x75\x0C\x57\x85\xF6\x74\x2A\x8B\x7D\x08"
 				"windows64" "\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x48\x8B\xFA\x48\x8B\xF1\x48\x85\xD2\x0F\x84\x2A\x2A\x2A\x2A\x48\x3B\xCA"
-				"linux" "@_Z22PassServerEntityFilterPK13IHandleEntityS1_.part.0"
-				"linux64" "@_Z22PassServerEntityFilterPK13IHandleEntityS1_.part.0"
+				"linux" "@_Z22PassServerEntityFilterPK13IHandleEntityS1_"
+				"linux64" "@_Z22PassServerEntityFilterPK13IHandleEntityS1_"
 			}
 			"CTFPlayer::SpeakConceptIfAllowed()"
 			{
@@ -486,18 +486,18 @@
 					"toucher" 
 					{
 						"type" "cbaseentity"
-						"linux"
-						{
-							"register"	"eax"
-						}
+					//	"linux"
+					//	{
+					//		"register"	"eax"
+					//	}
 					}
 					"passer" 
 					{
 						"type" "cbaseentity"
-						"linux"
-						{
-							"register"	"edx"
-						}
+					//	"linux"
+					//	{
+					//		"register"	"edx"
+					//	}
 					}
 				}
 			}
