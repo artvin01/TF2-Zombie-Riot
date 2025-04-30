@@ -315,7 +315,10 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 		if (Cheese_LethalCD[client] < GetGameTime() && Cheese_PapLevel[client] >= 2)
 		{
 			Rogue_OnAbilityUse(client, weapon);
-			Cheese_LethalCD[client] = GetGameTime() + LastMann ? 25.0 : 40.0;
+			float cd = 40.0;
+			if(LastMann)
+				cd = 25.0;
+			Cheese_LethalCD[client] = GetGameTime() + cd;
 			EmitSoundToClient(client, SOUND_LETHAL_ABILITY);
 
 			switch(Cheese_PapLevel[client])
@@ -367,7 +370,10 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 		if (Cheese_MochaCD[client] < GetGameTime() && Cheese_PapLevel[client] >= 3)
 		{
 			Rogue_OnAbilityUse(client, weapon);
-			Cheese_MochaCD[client] = GetGameTime() + LastMann ? 45.0 : 70.0;
+			float cd = 70.0;
+			if(LastMann)
+				cd = 45.0;
+			Cheese_MochaCD[client] = GetGameTime() + cd;
 			EmitSoundToClient(client, SOUND_MOCHA_ABILITY1);
 			EmitSoundToClient(client, SOUND_MOCHA_ABILITY2);
 
