@@ -4346,6 +4346,10 @@
 	{
 		"en"	"Koshi's own weapon - an Expidonsan clockwork assault rifle that shoots Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
 	}
+	"Plasminator Pap 1 Desc"
+	{
+		"en"	"Now has a slight bit of homing! Also increases overall stats."
+	}
 	"Plasminator Pap 2 Desc"
 	{
 		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts Plasm I temporarily."
