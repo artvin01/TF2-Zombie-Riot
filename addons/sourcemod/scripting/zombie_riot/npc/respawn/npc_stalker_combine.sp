@@ -40,22 +40,24 @@ methodmap StalkerShared < CClotBody
 		}
 
 		CNavArea startArea = TheNavMesh.GetNavAreaEntity(this.index, view_as<GetNavAreaFlags_t>(0), 1000.0);
-		
-		for(int i; i < 50; i++)
+		if(startArea != NULL_AREA)
 		{
-			CNavArea RandomArea = PickRandomArea();
-			if(RandomArea != NULL_AREA)
+			for(int i; i < 50; i++)
 			{
-				int NavAttribs = RandomArea.GetAttributes();
-				if(NavAttribs & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE|NAV_MESH_NO_HOSTAGES))
-					continue;
-				
-				RandomArea.GetCenter(pos);
-				if(!TheNavMesh.BuildPath(startArea, RandomArea, pos))
-					continue;
+				CNavArea RandomArea = PickRandomArea();
+				if(RandomArea != NULL_AREA)
+				{
+					int NavAttribs = RandomArea.GetAttributes();
+					if(NavAttribs & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE|NAV_MESH_NO_HOSTAGES))
+						continue;
+					
+					RandomArea.GetCenter(pos);
+					if(!TheNavMesh.BuildPath(startArea, RandomArea, pos))
+						continue;
 
-				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
-					return;
+					if(GetVectorDistance(pos, pos2, true) < 2000000.0)
+						return;
+				}
 			}
 		}
 
