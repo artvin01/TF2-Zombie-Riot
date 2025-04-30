@@ -87,7 +87,7 @@ bool Wkit_Soldin_BvB(int client)
 
 bool CanSelfHurtAndJump(int client)
 {
-	if(i_SoldineRocketjumpCharge[client] >= SOLDINE_MAX_ROCKETJUMP_CHARGE && !b_DisableSuperJump[client] && i_PaPLevel[client] >= 3)
+	if(i_SoldineRocketjumpCharge[client] >= SOLDINE_MAX_ROCKETJUMP_CHARGE && !b_DisableSuperJump[client] && i_PaPLevel[client] >= 2)
 	{
 		return true;
 	}
