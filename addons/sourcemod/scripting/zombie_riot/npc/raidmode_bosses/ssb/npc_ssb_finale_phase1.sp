@@ -74,6 +74,15 @@ static float Teleport_EntityMult[4] = { 4.0, 6.0, 8.0, 10.0 };					//Amount to m
 static float Teleport_Knockback[4] = { 600.0, 900.0, 1200.0, 1500.0 };			//Knockback velocity applied to enemies hit by the shockwave.
 static float Teleport_FallbackRadius[4] = { 1200.0, 1600.0, 2000.0, 2400.0 };	//Radius in which a random nav area will be chosen for the teleport location instead of a random enemy, if none of the enemies can be successfully teleported above.
 
+//NECROTIC CATASTROPHE: A more powerful variant of npc_ssb's Necrotic Cataclysm. This time, it's green! Wow!
+//If SSB is being carried by his carrier skeleton, this attack can rotate, making it extra dangerous.
+static float Catastrophe_IntroSpeed[4] = { 1.0, 1.25, 1.25, 1.5 };			//Intro speed multiplier. Higher values make the intro animation play faster, which means the beam starts charging up sooner.
+static float Catastrophe_Delay[4] = { 1.25, 1.15, 1.075, 1.0 };				//Time until the laser is fired after SSB begins charging.
+static float Catastrophe_DMG[4] = { 4800.0, 12000.0, 30000.0, 75000.0 };	//Damage dealt by the laser.
+static float Catastrophe_EntityMult[4] = { 10.0, 15.0, 17.5, 20.0 };		//Amount to multiply damage dealt by the laser to entities.
+static float Catastrophe_Width[4] = { 475.0, 550.0, 600.0, 650.0 };			//Laser width, in hammer units.
+static float Catastrophe_YawSpeed[4]//TODO: = { X, X, X, X };				//Yaw speed applied to SSB's carrier skeleton while this ability is active, if he has a carrier.
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -1271,6 +1280,14 @@ public void SSBChair_AnimEvent(int entity, int event)
 		case 1006:	//Hands have clapped, play sound.
 		{
 			EmitSoundToAll(SND_CLAP, _, _, 120);
+		}
+		case 1007:	//Necrotic Catastrophe intro animation has finished, transition to charge-up loop and begin VFX.
+		{
+			//TODO
+		}
+		case 1008:	//SSB yells something at this point in the animation, play sound.
+		{
+			//TODO
 		}
 	}
 }
