@@ -125,7 +125,7 @@ void Cheese_Enable(int client, int weapon)
 			EffectTimer[client] = null;
 		}
 
-		DataPack data;
+		DataPack pack;
 		EffectTimer[client] = CreateDataTimer(0.4, Cheese_EffectTimer, client, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
