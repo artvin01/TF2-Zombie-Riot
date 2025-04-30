@@ -908,7 +908,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	}
 }
 
-void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int weapon, bool ignorearmor = false)
+void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int weapon, bool ignoreArmor = false)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -951,7 +951,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				{
 					SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.25), DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
 					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
-					Cheese_SetPenaltyDuration(victim, immunitycd + 10.0);
+					Cheese_SetPenaltyDuration(victim, 10.0);
 					
 					float position[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
