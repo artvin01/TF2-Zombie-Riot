@@ -139,6 +139,10 @@ static char LastWaveWas[64];
 static int Freeplay_Info;
 //static bool Freeplay_w500reached;
 static float MinibossScalingHandle = 1.0;
+static float Freeplay_TimeCash;
+static float Freeplay_CashTimeLeft;
+static float Freeplay_TimeExp;
+static float Freeplay_ExpTimeLeft;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
@@ -214,6 +218,15 @@ void Waves_MapStart()
 		SetEntProp(objective, Prop_Send, "m_iChallengeIndex", -1);
 
 	Waves_UpdateMvMStats();
+	Freeplay_TimeCash = 0.0;
+	Freeplay_CashTimeLeft = 0.0;
+	Freeplay_TimeExp = 0.0;
+	Freeplay_ExpTimeLeft = 0.0;
+}
+
+int Waves_MapSeed()
+{
+	return MapSeed;
 }
 
 void Waves_PlayerSpawn(int client)
@@ -319,12 +332,17 @@ bool Waves_CallVote(int client, int force = 0)
 				if(length >= 4 && vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
+					if(AprilFoolsIconOverride() == STEAM_HAPPY)
+						Format(vote.Name, sizeof(vote.Name), "Steam Happy (Cooldown)");
 					menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
 				}
 				// Unlocks (atleast one player needs it)
 				else if(vote.Unlock1[0] && (!Items_HasNamedItem(client, vote.Unlock1) || (vote.Unlock2[0] && !Items_HasNamedItem(client, vote.Unlock2))))
 				{
 					Format(vote.Name, sizeof(vote.Name), "%s (%s)", vote.Name, vote.Append);
+					if(AprilFoolsIconOverride() == STEAM_HAPPY)
+						Format(vote.Name, sizeof(vote.Name), "Steam Happy (%s)", vote.Append);
+						
 					menu.AddItem(vote.Config, vote.Name, (Items_HasNamedItem(0, vote.Unlock1) && (!vote.Unlock2[0] || Items_HasNamedItem(0, vote.Unlock2))) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 				}
 				else
@@ -624,12 +642,17 @@ void Waves_SetupVote(KeyValues map)
 			Voting.PushArray(vote);
 
 			// If we're downloading via downloadstable, add every vote option to that
-			if(!autoSelect && CvarFileNetworkDisable.IntValue > 0)
+			if(!autoSelect && !FileNetwork_Enabled())
 			{
 				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 				KeyValues wavekv = new KeyValues("Waves");
 				wavekv.ImportFromFile(buffer);
-				Waves_CacheWaves(wavekv, CvarFileNetworkDisable.IntValue > 1);
+				bool CacheNpcs = false;
+				if(!FileNetworkLib_Installed())
+					CacheNpcs = true;
+				if(CvarFileNetworkDisable.IntValue > 1)
+					CacheNpcs = true;
+				Waves_CacheWaves(wavekv, CacheNpcs);
 				delete wavekv;
 			}
 
@@ -824,7 +847,7 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 		}
 	}
 
-	level /= 10;
+	level /= 4;
 	if(level < 1)
 		return false;
 
@@ -888,6 +911,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	}
 	
 	Rounds = new ArrayList(sizeof(Round));
+	
+	CurrentRound = 0;
+	CurrentWave = -1;
 	
 	Waves_ClearWaves();
 	Waves_ResetCashGiveWaveEnd();
@@ -1566,13 +1592,12 @@ void Waves_ClearWaves()
 
 void Waves_Progress(bool donotAdvanceRound = false)
 {
-	/*
-	PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
+	/*PrintCenterTextAll("Waves_Progress %d | %d | %d | %d | %d", InSetup ? 0 : 1,
 		Rounds ? 1 : 0,
 		CvarNoRoundStart.BoolValue ? 0 : 1,
 		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
-		Cooldown > GetGameTime() ? 0 : 1);
-	*/
+		Cooldown > GetGameTime() ? 0 : 1);*/
+	
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime())
 		return;
 
@@ -1760,7 +1785,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(CashGive)
 				{
-					CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
+					if(Construction_Mode())
+					{
+						CPrintToChatAll("%t", "Gained Material", CashGive, "Cash");
+					}
+					else
+					{
+						CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
+					}
 				}
 			}
 			
@@ -2015,7 +2047,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						DoOverlay(client, "", 2);
 						if(GetClientTeam(client)==2 && IsPlayerAlive(client))
 						{
-							GiveXP(client, round.Xp);
+							GiveXP(client, round.Xp * 10);
 							if(round.Setup > 0.0)
 							{
 								SetGlobalTransTarget(client);
@@ -2031,6 +2063,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ReviveAll();
 				CheckAlivePlayers();
 			}
+			BlockOtherRaidMusic = false;
 			if(round.AmmoBoxExtra)
 			{
 				Ammo_Count_Ready += round.AmmoBoxExtra;	
@@ -2167,7 +2200,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
-						Music_Stop_All(i);
+						if(!Construction_Mode() || Construction_FinalBattle())
+							Music_Stop_All(i);
+
 						if(!subgame)
 						{
 							SendConVarValue(i, sv_cheats, "1");
@@ -2224,12 +2259,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						float last = roundtime.FloatValue;
 						roundtime.FloatValue = 20.0;
 
-						MVMHud_Disable();
-						int entity = CreateEntityByName("game_round_win"); 
-						DispatchKeyValue(entity, "force_map_reset", "1");
-						SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-						DispatchSpawn(entity);
-						AcceptEntityInput(entity, "RoundWin");
+						ForcePlayerWin();
 
 						roundtime.FloatValue = last;
 					}
@@ -2340,7 +2370,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Ammo_Count_Ready = 8;
 	}
 
-	WaveStart_SubWaveStart();
+	if(!Construction_Mode() || Construction_FinalBattle())	// In Construction: Base raids must be dealt with
+		WaveStart_SubWaveStart();
+	
 	if(CurrentWave == 0 && GiveAmmoSupplies)
 	{
 		Renable_Powerups();
@@ -2428,7 +2460,9 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "freeplay_start_4");
 				}
 			}
-			FreeplayTimeLimit = GetGameTime() + 3600.0; //one hour.
+			FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
+			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash AND experience you'll get!");
+			CreateTimer(0.1, Freeplay_ExtraCashTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			DeleteShadowsOffZombieRiot();
 			Freeplay_Info = 0;
 		}
@@ -2439,6 +2473,62 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 	}
 
 	return Plugin_Continue;
+}
+
+static Action Freeplay_ExtraCashTimer(Handle timer)
+{
+	if(FreeplayTimeLimit < GetGameTime())
+	{
+		return Plugin_Stop;
+	}
+
+	if(Freeplay_CashTimeLeft < GetGameTime())
+	{
+		if(Freeplay_TimeCash > 0.0)
+		{
+			Freeplay_TimeCash -= 7.5;
+			if(Freeplay_TimeCash < 0.0)
+				Freeplay_TimeCash = 0.0;
+		}
+	}
+
+	if(Freeplay_ExpTimeLeft < GetGameTime())
+	{
+		if(Freeplay_TimeExp > 0.0)
+		{
+			Freeplay_TimeExp -= 2.5;
+			if(Freeplay_TimeExp < 0.0)
+				Freeplay_TimeExp = 0.0;
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+void Freeplay_SetCashTime(float duration)
+{
+	Freeplay_CashTimeLeft = duration;
+}
+float Freeplay_GetRemainingCash()
+{
+	return Freeplay_TimeCash;
+}
+void Freeplay_SetRemainingCash(float amount)
+{
+	Freeplay_TimeCash = amount;
+}
+
+void Freeplay_SetExpTime(float duration)
+{
+	Freeplay_ExpTimeLeft = duration;
+}
+float Freeplay_GetRemainingExp()
+{
+	return Freeplay_TimeExp;
+}
+void Freeplay_SetRemainingExp(float amount)
+{
+	Freeplay_TimeExp = amount;
 }
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
@@ -2469,11 +2559,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 		{
 			if(item)
 			{
-				int entity = CreateEntityByName("game_round_win"); 
-				DispatchKeyValue(entity, "force_map_reset", "1");
-				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-				DispatchSpawn(entity);
-				AcceptEntityInput(entity, "RoundWin");
+				ForcePlayerWin();
 			}
 		}
 	}
@@ -2556,7 +2642,7 @@ bool Waves_Started()
 	return (CurrentRound || CurrentWave != -1);
 }
 
-int Waves_GetRound()
+int ZR_Waves_GetRound()
 {
 	if(Construction_Mode())
 		return Construction_GetRound();
@@ -2629,17 +2715,8 @@ void WaveEndLogicExtra()
 {
 	SeaFounder_ClearnNethersea();
 	VoidArea_ClearnNethersea();
-	M3_AbilitiesWaveEnd();
-	Specter_AbilitiesWaveEnd();	
-	Rapier_CashWaveEnd();
-	LeperResetUses();
-	SniperMonkey_ResetUses();
-	ResetFlameTail();
-	Building_ResetRewardValuesWave();
 	FallenWarriorGetRandomSeedEachWave();
-	CastleBreaker_ResetCashGain();
-	ZombieDrops_AllowExtraCash();
-	Zero(i_MaxArmorTableUsed);
+	ResetAbilitiesWaveEnd();
 	for(int client; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client))
@@ -2660,6 +2737,20 @@ void WaveEndLogicExtra()
 	}
 }
 
+void ResetAbilitiesWaveEnd()
+{
+	M3_AbilitiesWaveEnd();
+	Specter_AbilitiesWaveEnd();	
+	Rapier_CashWaveEnd();
+	LeperResetUses();
+	SniperMonkey_ResetUses();
+	ResetFlameTail();
+	Building_ResetRewardValuesWave();
+	CastleBreaker_ResetCashGain();
+	ZombieDrops_AllowExtraCash();
+	Zero(i_MaxArmorTableUsed);
+}
+
 void WaveStart_SubWaveStart(float time = 0.0)
 {
 //	f_ZombieAntiDelaySpeedUp = Cooldown + 600.0;
@@ -2673,7 +2764,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_Mode())
+	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -2724,6 +2815,10 @@ void Zombie_Delay_Warning()
 			{
 				i_ZombieAntiDelaySpeedUp = 6;
 				CPrintToChatAll("{crimson}Die.");
+				
+				if(Construction_Mode())
+					ForcePlayerLoss();
+				
 				if(!Rogue_Mode())
 					AntiDelaySpawnEnemies(999999999, 5, true);
 			}
@@ -2792,28 +2887,23 @@ void DoGlobalMultiScaling()
 {
 	float playercount = ZRStocks_PlayerScalingDynamic();
 
-	playercount = Pow ((playercount * 0.65), 1.2);
-
-	//on low player counts it does not scale well.
+	if(playercount < 2.0)
+		playercount = 2.0;
 	
-	/*
-		at 14 players, it scales fine, at lower, it starts getting really hard, tihs 
+	if(ZRStocks_PlayerScalingDynamic(0.0,true, true) >= 19.0)
+		EnableSilentMode = true;
+	else
+		EnableSilentMode = false;
 
-	*/
+//	EnableSilentMode = true;
+	
+	playercount *= 0.88;
 
-	float multi = Pow(1.08, playercount);
-	if(multi > 10.0)
-	{
-		//woops, scales too much now.
-		multi = 8.0;
-		multi += (playercount * 0.1);
-	}
-
-	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
+	float multi = playercount / 4.0;
 	
 	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
-
+	
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 
@@ -2879,12 +2969,12 @@ static int GetObjectiveResource()
 {
 	return FindEntityByClassname(-1, "tf_objective_resource");
 }
-
+/*
 static int GetMvMStats()
 {
 	return FindEntityByClassname(-1, "tf_mann_vs_machine_stats");
 }
-
+*/
 void Waves_UpdateMvMStats(int frames = 10)
 {
 	if(!UpdateFramed)
@@ -3024,6 +3114,8 @@ static void UpdateMvMStatsFrame()
 							{
 								strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 							}
+							if(AprilFoolsIconOverride() == STEAM_HAPPY)
+								strcopy(icon[b], sizeof(icon[]), "steamhappy");
 						}
 
 						count[b] += num;
@@ -3076,6 +3168,8 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 						}
+						if(AprilFoolsIconOverride() == STEAM_HAPPY)
+							strcopy(icon[b], sizeof(icon[]), "steamhappy");
 					}
 					
 					break;
@@ -3133,6 +3227,8 @@ static void UpdateMvMStatsFrame()
 						{
 							strcopy(icon[b], sizeof(icon[]), "robo_extremethreat");
 						}
+						if(AprilFoolsIconOverride() == STEAM_HAPPY)
+							strcopy(icon[b], sizeof(icon[]), "steamhappy");
 					}
 					
 					break;
@@ -3179,6 +3275,10 @@ static void UpdateMvMStatsFrame()
 
 void Waves_SetCreditAcquired(int amount)
 {
+	//No warning, this is unused as of now.
+	amount += 1;
+	amount = amount + 1;
+	/*
 	int mvm = GetMvMStats();
 	if(mvm != -1)
 	{
@@ -3193,6 +3293,7 @@ void Waves_SetCreditAcquired(int amount)
 		SetVariantString(buffer);
 		AcceptEntityInput(mvm, "RunScriptCode");
 	}
+	*/
 }
 
 static int SetupFlags(const Enemy data, bool support)
@@ -3636,11 +3737,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			}
 				
 
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
+			ForcePlayerWin();
 			return true;
 		}
 		WaveEndLogicExtra();
@@ -3752,7 +3849,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{
 						SetHudTextParams(-1.0, -1.0, 5.0, 255, 135, 0, 255);
-						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further? :3");
+						ShowHudText(client, -1, "You've gone far, lads...\nBut will you make it further?");
 					}
 				}
 			}
@@ -3864,6 +3961,7 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 			}
 		}
 		
+		
 		ReviveAll();
 		
 		Music_EndLastmann();
@@ -3921,4 +4019,4 @@ int Waves_CashGainedTotalThisWave()
 	return CashGainedTotal;
 }
 
-#include "zombie_riot/modifiers.sp"
+#include "modifiers.sp"

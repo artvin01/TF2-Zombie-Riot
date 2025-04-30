@@ -156,7 +156,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_BobSuperMeleeCharge);
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	
-	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
+	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob_intro.mp3");
+	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob_loop.mp3");
 }
 
 static void ClotPrecacheSea()
@@ -266,6 +267,11 @@ methodmap RaidbossBobTheFirst < CClotBody
 	{
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
 	}
+	property float m_flOverrideMusicNow
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 
 	public RaidbossBobTheFirst(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -347,6 +353,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_thisNpcIsARaid[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		}
 		else
 		{
@@ -416,13 +423,16 @@ methodmap RaidbossBobTheFirst < CClotBody
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
 			WavesUpdateDifficultyName();
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob.mp3");
-			music.Time = 697;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob_intro.mp3");
+			music.Time = 44;
 			music.Volume = 1.99;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Darkest Dungeon - The Final Combat (Added Narrator)");
-			strcopy(music.Artist, sizeof(music.Artist), "Music (Stuart Chatwood) Editor of Narrator (Liruox)");
-			Music_SetRaidMusic(music);
+			strcopy(music.Name, sizeof(music.Name), "Irln Last Stand against the Sea Intro");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			Music_SetRaidMusic(music, true);
+
+		
+			npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
 			npc.StopPathing();
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -437,7 +447,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			if(CurrentModifOn() == 1)
 			{
-				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", c_NpcName[npc.index]);
+				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			else
 			{
@@ -445,15 +455,15 @@ methodmap RaidbossBobTheFirst < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -467,6 +477,21 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 {
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(iNPC);
 	
+	if(npc.m_flOverrideMusicNow)
+	{
+		if(npc.m_flOverrideMusicNow < GetGameTime())
+		{
+			npc.m_flOverrideMusicNow = 0.0;
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob_loop.mp3");
+			music.Time = 181;
+			music.Volume = 1.85;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Irln Last Stand against the Sea");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			Music_SetRaidMusic(music, false);
+		}
+	}	
 	float gameTime = GetGameTime(npc.index);
 
 	if(npc.Anger || npc.m_bFakeClone || i_RaidGrantExtra[npc.index] > 1)
@@ -521,20 +546,20 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		{
 			if(!b_BobPistolPhaseSaid[npc.index])
 			{
-				CPrintToChatAll("{crimson}%s uses his immensive willpower to regain some strength...", c_NpcName[npc.index]);
+				CPrintToChatAll("{crimson}%s uses his immensive willpower to regain some strength...", NpcStats_ReturnNpcName(npc.index, true));
 				switch(GetRandomInt(0,2))
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: Hope my sharp shooting skills will miss your brain, curing is still an option.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: Hope my sharp shooting skills will miss your brain, curing is still an option.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: If only i could cure it off you with this handgun, have to take lives to save lives.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: If only i could cure it off you with this handgun, have to take lives to save lives.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: Im starting to reach my limit...", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: Im starting to reach my limit...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 				int MaxHealth = ReturnEntityMaxHealth(npc.index);
@@ -583,15 +608,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{white}%s{default}: One infected left.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: One infected left.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}
@@ -615,13 +640,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 3)
 			{
 				case 0:
-					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", NpcStats_ReturnNpcName(npc.index, true));
 				
 				case 1:
-					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", NpcStats_ReturnNpcName(npc.index, true));
 				
 				case 2:
-					CPrintToChatAll("{white}%s{default}: Nobody wins.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: Nobody wins.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			
 			// Play funny animation intro
@@ -633,7 +658,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", c_NpcName[npc.index]);
+			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", NpcStats_ReturnNpcName(npc.index, true));
 			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) -1);
 			fl_Extra_Damage[npc.index] = 999.9;
@@ -913,7 +938,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 				if(CurrentModifOn() == 1 && i_RaidGrantExtra[npc.index] == 1)
-					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 		}
 		int summon;
@@ -1153,7 +1178,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 										float VulnerabilityToGive = 0.10;
 										if(npc.m_bFakeClone)
 											VulnerabilityToGive = 0.05;
-										IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
+										IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 									}	
 	
 								}
@@ -1163,7 +1188,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									if(npc.m_bFakeClone)
 										VulnerabilityToGive = 0.05;
 
-									IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
+									IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 								}	
 								if(!Knocked)
 									Custom_Knockback(npc.index, target, 150.0, true);
@@ -1955,7 +1980,6 @@ stock void BobPullTarget(int bobnpc, int enemy)
 	}
 }
 
-static int SensalHitDetected_2[MAXENTITIES];
 
 void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], float TimeUntillHit, float damage, bool kick)
 {
@@ -2054,7 +2078,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected_2[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	float VectorTarget[3];
 	float VectorStart[3];
@@ -2108,7 +2132,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected_2[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float damage = damagedata;
@@ -2149,7 +2173,7 @@ public bool Sensal_BEAM_TraceUsers_2(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected_2[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

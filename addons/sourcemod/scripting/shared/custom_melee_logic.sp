@@ -556,16 +556,56 @@ enum
 
 };
 
-public void Timer_Do_Melee_Attack(DataPack pack)
+int MeleeRandomSeed[MAXENTITIES];
+float f_TimeTillMeleeAttackShould[MAXENTITIES];
+public void Timer_Do_Melee_Attack(int weapon, int client,int FrameDelay, char[] classname)
+{
+
+	static int RandomSeed;
+	RandomSeed++;
+	MeleeRandomSeed[weapon] = RandomSeed;
+	//We record the last attacked melee, too lazyfor fancy shit.
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteString(classname);
+	pack.WriteCell(RandomSeed);
+	if(FrameDelay <= 0 || f_TimeTillMeleeAttackShould[weapon] >= GetGameTime())
+	{
+		if(f_TimeTillMeleeAttackShould[weapon] < GetGameTime())
+			delete pack;
+
+		DataPack pack2 = new DataPack();
+		pack2.WriteCell(GetClientUserId(client));
+		pack2.WriteCell(EntIndexToEntRef(weapon));
+		pack2.WriteString(classname);
+		pack2.WriteCell(RandomSeed);
+		Timer_Do_Melee_Attack_Internal(pack2);
+	}
+
+	if(FrameDelay > 0)
+		RequestFrames(Timer_Do_Melee_Attack_Internal, FrameDelay, pack);
+
+	f_TimeTillMeleeAttackShould[weapon] = (GetTickInterval() * float(FrameDelay) + GetGameTime());
+}
+public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	char classname[32];
 	pack.ReadString(classname, 32);
+	int RandomSeedGet = pack.ReadCell();
 	if(client && weapon != -1 && IsValidCurrentWeapon(client, weapon))
 	{
-
+		if(MeleeRandomSeed[weapon] != RandomSeedGet)
+		{
+			//We performed a melee attack inbetween melee attacks, cancel this one!
+			//When melee wepaons attack too fast, we dont care about howpresize it may be, its not worth it.
+			delete pack;
+			return;
+		}
 #if defined ZR
 		float damage_test_validity = 1.0; 
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -657,9 +697,21 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		if(soundIndex > 0 && !DontPlaySound)
 		{
 			char SoundStringToPlay[256];
-			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])
+			bool OverrideSound = false;
+#if defined ZR
+			switch(i_CustomWeaponEquipLogic[weapon])
 			{
-				EmitSoundToAll(c_WeaponSoundOverrideString[weapon], client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
+				case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
+				{
+					OverrideSound = true;
+					Format(SoundStringToPlay,sizeof(SoundStringToPlay),"replay/snip.wav");	
+				}
+			}
+#endif
+			if(soundIndex == MELEE_HIT && OverrideSound)
+			{
+				
+				EmitSoundToAll(SoundStringToPlay, client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
 				, _, 1.0 * f_WeaponVolumeStiller[weapon]);
 			}
 			else if(i_WeaponSoundIndexOverride[weapon] != -1)
@@ -871,7 +923,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			TR_TraceRayFilter(vecHit, impactEndPos, MASK_SHOT_HULL, RayType_EndPoint, BulletAndMeleeTrace, client);
 			if(TR_DidHit())
 			{
-				UTIL_ImpactTrace(client, pos, DMG_CLUB);
+				UTIL_ImpactTrace(pos, DMG_CLUB);
 			}
 		}
 		delete swingTrace;

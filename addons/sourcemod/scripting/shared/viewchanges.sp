@@ -89,7 +89,7 @@ static int RobotIndex[10];
 static int CustomIndex[sizeof(PlayerModelsCustom)];
 static int CustomHandIndex[sizeof(PlayerCustomHands)];
 
-static bool b_AntiSameFrameUpdate[MAXTF2PLAYERS][32];
+static bool b_AntiSameFrameUpdate[MAXTF2PLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;
@@ -121,7 +121,7 @@ void ViewChange_MapStart()
 	{
 		CustomHandIndex[i] = PlayerCustomHands[i][0] ? PrecacheModel(PlayerCustomHands[i], true) : 0;
 	}
-	Zero2(b_AntiSameFrameUpdate);
+	Zero(b_AntiSameFrameUpdate);
 
 #if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
@@ -226,7 +226,7 @@ void ViewChange_PlayerModel(int client)
 				int index;
 				int sound = -1;
 				int body = -1;
-				bool anim;
+				bool anim, noCosmetic;
 
 				if(i_PlayerModelOverrideIndexWearable[client] >= 0 && i_PlayerModelOverrideIndexWearable[client] < sizeof(PlayerModelsCustom))
 				{
@@ -234,13 +234,15 @@ void ViewChange_PlayerModel(int client)
 					sound = i_PlayerModelOverrideIndexWearable[client];
 					body = PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]];
 					anim = Viewchanges_PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]];
+					noCosmetic = true;
 				}
 				else
 				{
 					index = PlayerIndex[CurrentClass[client]];
 				}
 
-				Native_OnClientWorldmodel(client, CurrentClass[client], index, sound, body, anim);
+				if(Native_OnClientWorldmodel(client, CurrentClass[client], index, sound, body, anim, noCosmetic))
+					OverridePlayerModel(client, -1, noCosmetic);
 
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", index);
 
@@ -320,7 +322,7 @@ void ViewChange_PlayerModel(int client)
 #if defined ZR || defined RPG
 public void AntiSameFrameUpdateRemove0(int client)
 {
-	b_AntiSameFrameUpdate[client][0] = false;
+	b_AntiSameFrameUpdate[client] = false;
 }
 
 
@@ -343,12 +345,14 @@ void ViewChange_Update(int client, bool full = true)
 		ViewChange_DeleteHands(client);
 	
 
-	if(b_AntiSameFrameUpdate[client][0])
+	//Some weapons or things call it in the same frame, lets prevent this!
+	//If people somehow spam switch, or multiple things call it, lets wait a frame before updating, it allows for easy use iwthout breaking everything
+	if(b_AntiSameFrameUpdate[client])
 		return;
 		
 	RequestFrame(AntiSameFrameUpdateRemove0, client);
 
-	b_AntiSameFrameUpdate[client][0] = true;
+	b_AntiSameFrameUpdate[client] = true;
 	char classname[36];
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)
@@ -550,7 +554,9 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				if (weapon != INVALID_ENT_REFERENCE)
 					SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 			}
+#if defined ZR
 			SDKHooks_UpdateMarkForDeath(client, true);
+#endif
 			f_UpdateModelIssues[client] = GetGameTime() + 0.1;
 			return;
 		}

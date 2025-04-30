@@ -192,7 +192,7 @@ methodmap MedivalBuilding < CClotBody
 //		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 //		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		if(data[0])
@@ -218,7 +218,7 @@ methodmap MedivalBuilding < CClotBody
 		}
 		i_NpcIsABuilding[npc.index] = true;
 
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
@@ -292,9 +292,9 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				}
 			}
 			//emercency stop. 
-			float IncreaceSpawnRates = 6.5;
+			float IncreaseSpawnRates = 6.5;
 
-			IncreaceSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
+			IncreaseSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
 
 			if((GetTeam(iNPC) != TFTeam_Red && npc_current_count < MaxEnemiesAllowedSpawnNext(0)) || (GetTeam(iNPC) == TFTeam_Red && npc_current_count < 6))
 			{
@@ -308,13 +308,13 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 				if(GetTeam(iNPC) == TFTeam_Red)
 				{
-					IncreaceSpawnRates *= 5.0; //way slower.
+					IncreaseSpawnRates *= 5.0; //way slower.
 				}
 				
 				if(i_currentwave[iNPC] < 15)
 				{
 					EnemyToSpawn = "npc_medival_militia";
-					IncreaceSpawnRates *= 1.2; //less swarm!
+					IncreaseSpawnRates *= 1.2; //less swarm!
 				}
 				else if(i_currentwave[iNPC] < 20)
 				{
@@ -327,7 +327,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				else if(i_currentwave[iNPC] < 30)
 				{
 					EnemyToSpawn = "npc_medival_swordsman";
-					IncreaceSpawnRates *= 0.75; //Swarm.
+					IncreaseSpawnRates *= 0.75; //Swarm.
 				}
 				else if(i_currentwave[iNPC] < 40)
 				{
@@ -336,41 +336,46 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				else if(i_currentwave[iNPC] < 45)
 				{
 					EnemyToSpawn = "npc_medival_twohanded_swordsman";
-					IncreaceSpawnRates *= 0.85; //Swarm.
+					IncreaseSpawnRates *= 0.85; //Swarm.
 				}
 				else if(i_currentwave[iNPC] < 50)
 				{
 					EnemyToSpawn = "npc_medival_champion";
-					IncreaceSpawnRates *= 1.75; //less swarm!
+					IncreaseSpawnRates *= 1.75; //less swarm!
 				}
 				else if(i_currentwave[iNPC] < 55)
 				{
 					EnemyToSpawn = "npc_medival_champion";
-					IncreaceSpawnRates *= 1.0;
+					IncreaseSpawnRates *= 1.0;
 				}
 				else if(i_currentwave[iNPC] < 60)
 				{
 					EnemyToSpawn = "npc_medival_champion";
-					IncreaceSpawnRates *= 0.85; //Swarm.
+					IncreaseSpawnRates *= 0.85; //Swarm.
 				}
 				else if(i_currentwave[iNPC] >= 60)
 				{
 					EnemyToSpawn = "npc_medival_construct";
-					IncreaceSpawnRates *= 0.70; //Swarm.
+					IncreaseSpawnRates *= 0.70; //Swarm.
 					Construct = true;
 				}
 				
 				if(Rogue_Mode())
-					IncreaceSpawnRates *= 3.0;
+					IncreaseSpawnRates *= 3.0;
 
 				int spawn_index = NPC_CreateByName(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
+					if(b_StaticNPC[spawn_index])
+						AddNpcToAliveList(spawn_index, 1);
+					
 					npc.PlayMeleeMissSound();
 					npc.PlayMeleeMissSound();
 					if(GetTeam(iNPC) != TFTeam_Red)
 					{
-						NpcAddedToZombiesLeftCurrently(spawn_index, true);
+						if(!b_StaticNPC[spawn_index])
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					}
 					else
 					{
@@ -386,10 +391,10 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			}
 			else
 			{
-				IncreaceSpawnRates = 0.0; //Try again next frame.
+				IncreaseSpawnRates = 0.0; //Try again next frame.
 			}
 
-			npc.m_flAttackHappens = GetGameTime(npc.index) + IncreaceSpawnRates;
+			npc.m_flAttackHappens = GetGameTime(npc.index) + IncreaseSpawnRates;
 		}
 		if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 		{
@@ -404,10 +409,10 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					/*
-					float IncreaceAttackspeed = 1.0;
+					float IncreaseAttackspeed = 1.0;
 
 
-					IncreaceAttackspeed *= (1.0 - ((12.0 - 1.0) * 7.0 / 110.0));
+					IncreaseAttackspeed *= (1.0 - ((12.0 - 1.0) * 7.0 / 110.0));
 					*/
 					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 5.0;
 					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + (f_PlayerScalingBuilding * 0.055);
@@ -502,7 +507,7 @@ public void MedivalBuilding_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 
 	
 		

@@ -303,19 +303,19 @@ methodmap ObjectBarracks < ObjectGeneric
 			if(CivType[client] == Combine)
 			{
 				SetEntityModel(npc.index, SUMMONER_MODEL_3);
-				if(IsValidEntity(npc.m_iWearable2))
+				if(IsValidEntity(npc.m_iWearable1))
 				{
-					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
-					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_3);
+					SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale") * 0.75);
+					SetEntityModel(npc.m_iWearable1, SUMMONER_MODEL_3);
 				}
 			}
 			else if(CivType[client] != Combine)
 			{
 				SetEntityModel(npc.index, SUMMONER_MODEL_2);
-				if(IsValidEntity(npc.m_iWearable2))
+				if(IsValidEntity(npc.m_iWearable1))
 				{
-					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
-					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+					SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale") * 0.75);
+					SetEntityModel(npc.m_iWearable1, SUMMONER_MODEL_2);
 				}
 			}
 			SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale") * 0.75);
@@ -1007,7 +1007,7 @@ void Barracks_BuildingThink(int entity)
 		{
 			subtractVillager = 1;
 		}
-		if((ActiveCurrentNpcsBarracksTotal() < (9 + (Rogue_Barracks_BonusSupply() * 2))) && (subtractVillager || ((GetSupplyLeft(client)) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))))
+		if((GetGlobalSupplyLeft() > 0) && (subtractVillager || ((GetSupplyLeft(client)) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))))
 		{
 			float gameTime = GetGameTime();
 			if(TrainingIn[client] < gameTime)
@@ -1125,10 +1125,10 @@ void Barracks_BuildingThink(int entity)
 	if(!b_Anger[npc.index])
 	{
 		SetEntityModel(npc.index, SUMMONER_MODEL_2);
-		if(IsValidEntity(npc.m_iWearable2))
+		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
-			SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_flModelScale") * 0.75);
+			SetEntityModel(npc.m_iWearable1, SUMMONER_MODEL_2);
 		}
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale") * 0.75);
 		float minbounds[3] = {-18.0, -18.0, 0.0};
@@ -1385,11 +1385,11 @@ void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
 		SupplyRate[client] += 10;
 
-	if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))	// lol
-		SupplyRate[client] += 15;
+	if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))	// does this even work?
+		SupplyRate[client] += 35;
 
-	if(Store_HasNamedItem(client, "Messed Up Cheesy Brain"))	// lol
-		SupplyRate[client] += 20;
+	if(Store_HasNamedItem(client, "Messed Up Cheesy Brain")) // and this even?
+		SupplyRate[client] += 35;
 
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = true;/*Items_HasNamedItem(client, "Medieval Crown");*/
@@ -1406,7 +1406,7 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 {
 	bool AllowResoruceGen = false;
 
-	if(Rogue_Mode())
+	if(Rogue_Mode() || Construction_Mode())
 	{
 		AllowResoruceGen = Waves_Started();
 	}
@@ -1557,7 +1557,7 @@ static void SummonerMenu(int client, int viewer)
 		if(ResearchIn[client])
 		{
 			float gameTime = GetGameTime();
-			FormatEx(buffer1, sizeof(buffer1), "Researching %t... (%.0f%%)", BuildingUpgrade_Names[GetRData(ResearchIndex[client], UpgradeIndex)],
+			FormatEx(buffer1, sizeof(buffer1), "Researching %t... (%.0f％)", BuildingUpgrade_Names[GetRData(ResearchIndex[client], UpgradeIndex)],
 				100.0 - ((ResearchIn[client] - gameTime) * 100.0 / (ResearchIn[client] - ResearchStartedIn[client])));
 			
 			menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -1759,7 +1759,7 @@ static void SummonerMenu(int client, int viewer)
 			{
 				subtractVillager = 1;
 			}
-			if(ActiveCurrentNpcsBarracksTotal() >= (9 + (Rogue_Barracks_BonusSupply() * 2)))
+			if(GetGlobalSupplyLeft() < 1)
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
@@ -1780,7 +1780,7 @@ static void SummonerMenu(int client, int viewer)
 			{
 				float gameTime = GetGameTime();
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", buffer2,
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f％)\n ", buffer2,
 					100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
 			}
 
@@ -1939,7 +1939,9 @@ static void SummonerMenu(int client, int viewer)
 static int GetSupplyLeft(int client)
 {
 	int personal = ActiveCurrentNpcsBarracks(client);
-	return 3 + Rogue_Barracks_BonusSupply() - personal;
+	personal -= Rogue_Barracks_BonusSupply();
+	personal -= ObjectSupply_CountBuildings();
+	return 3 - personal;
 }
 
 //void AddItemToTrainingList(char item, )
@@ -2216,12 +2218,17 @@ int ActiveCurrentNpcsBarracksTotal()
 			}
 		}
 	}
+
 	return CurrentAlive;
 }
 
-
-
-
+int GetGlobalSupplyLeft()
+{
+	int CurrentAlive = ActiveCurrentNpcsBarracksTotal();
+	CurrentAlive -= Rogue_Barracks_BonusSupply() * 2;
+	CurrentAlive -= ObjectSupply_CountBuildings();
+	return 9 - CurrentAlive;
+}
 
 void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage, int damagetype)
 {

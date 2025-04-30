@@ -22,14 +22,15 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeAttackShortSounds[][] = {
 	"weapons/sniper_rifle_classic_shoot.wav",
 };
-/*
+
 int LighthouseID;
 
 int LighthouseGlobaID()
 {
 	return LighthouseID;
 }
-*/
+
+
 void Iberia_Lighthouse_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -44,7 +45,7 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	LighthouseID = NPC_Add(data);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_1);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_2);
 }
@@ -115,10 +116,10 @@ methodmap IberiaLighthouse < CClotBody
 		b_NpcUnableToDie[npc.index] = true;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", IBERIA_LIGHTHOUSE_MODEL_1);
+		npc.m_iWearable1 = npc.EquipItemSeperate(IBERIA_LIGHTHOUSE_MODEL_1);
 		SetVariantString("0.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItemSeperate("partyhat", IBERIA_LIGHTHOUSE_MODEL_2,_,_,_,170.0);
+		npc.m_iWearable2 = npc.EquipItemSeperate(IBERIA_LIGHTHOUSE_MODEL_2,_,_,_,170.0);
 		SetVariantString("2.7");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
@@ -126,7 +127,7 @@ methodmap IberiaLighthouse < CClotBody
 		
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
@@ -294,6 +295,13 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 		}
 		return;
 	}
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidModeScaling = 0.0;	//just a safety net
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidModeTime = GetGameTime(npc.index) + 9000.0;
+		RaidAllowsBuildings = true;
+	}
 	//global range.
 	npc.m_flNextRangedSpecialAttack = 0.0;
 	IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9999.0);
@@ -335,7 +343,7 @@ public void IberiaLighthouse_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

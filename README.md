@@ -25,16 +25,6 @@ Most of the code is made towards client prediction to make the best experience.
 
 if you for some ungodly reason need 100 player zr, grab the 100 player version, otherwise use the other version for more performance and less ram usage.
 
-Use THIS compiler version if you dont want any wierd issues when coding yourself:
-
-1.12.0.7162
-
-Use this compiler incase you think compiling ZR takes too long, as they changed something
-
-1.12.0.7031
-
-if you do, only get the handles.inc from this.
-
 
 ### Where can I see this gamemode in action?
 
@@ -87,19 +77,19 @@ global zr can be a shared database across multiple servers, local one should sta
 
 ### Dependencies
 
-Sourcemod 1.12 Is a Must.
+Sourcemod 1.13 Is a Must.
 For both linux and Windows, not all linux gamedata might be here.
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
 - [Flaming Sarge's TF2Attribute fork](https://github.com/FlaminSarge/tf2attributes)
 - [TF2Items](https://builds.limetech.io/?project=tf2items)
 - [SteamWorks](https://users.alliedmods.net/~kyles/builds/SteamWorks/)
-- [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC)
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
+- [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 - [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
 

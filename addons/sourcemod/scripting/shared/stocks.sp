@@ -1010,7 +1010,7 @@ stock int TF2_CreateGlow(int iEnt)
 	return ent;
 }
 
-stock int TF2_CreateGlow_White(int iEnt, const char[] model, int parentTo, float modelsize)
+stock int TF2_CreateGlow_White(const char[] model, int parentTo, float modelsize)
 {
 	int entity = CreateEntityByName("tf_taunt_prop");
 	if(IsValidEntity(entity))
@@ -1296,6 +1296,12 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
+	if(HasSpecificBuff(reciever, "Anti-Waves"))
+	{
+		//Ignore all healing that isnt absolute
+		if(!(flag_extrarules & (HEAL_ABSOLUTE)))
+			return 0;
+	}
 	if(HealTotal < 0)
 	{
 		if(healer > 0)
@@ -2503,12 +2509,12 @@ stock bool IsSpaceOccupiedIgnorePlayersOnlyNpc(const float pos[3], const float m
 	return bHit;
 }
 
-public bool TraceEntityFilterPlayer(int entity, any contentsMask) //Borrowed from Apocalips
+public bool TraceEntityFilterPlayer(int entity, int contentsMask) //Borrowed from Apocalips
 {
 	return entity > MaxClients;
 }
 
-public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
+public bool TraceRayOnlyNpc(int entity, int contentsMask, any data)
 {
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
@@ -2522,7 +2528,7 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	return !(entity == data);
 }
 
-stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, int team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
+stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, int team=TFTeam_Red) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
 {
 	if (!IsValidClient(client)) //Self-explanatory
 	{
@@ -2846,7 +2852,7 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 #if defined ZR
 
 //alot is  borrowed from CountPlayersOnRed
-float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false)
+float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false, bool IgnoreLevelLimit = false)
 {
 	//dont be 0
 	float ScaleReturn = 0.01;
@@ -2854,7 +2860,7 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 	{
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
-			if(Database_IsCached(client) && Level[client] <= 30)
+			if(!IgnoreLevelLimit && Database_IsCached(client) && Level[client] <= 30)
 			{
 				float CurrentLevel = float(Level[client]);
 				CurrentLevel += 30.0;
@@ -2918,7 +2924,6 @@ void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
 	}
 }
 
-int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
 int client, //To get attributes from and to see what is my enemy!
@@ -3077,7 +3082,8 @@ int inflictor = 0)
 			where did i explode
 		*/
 	}
-	DoExlosionTraceCheck(spawnLoc, explosionRadius, entityToEvaluateFrom);
+	ArrayList HitEntitiesSphereExplosionTrace = new ArrayList();
+	DoExlosionTraceCheck(spawnLoc, explosionRadius, entityToEvaluateFrom, HitEntitiesSphereExplosionTrace);
 	/*
 	This trace does not filter on what is hit first, thats kinda bad, it filters by what entity number is smaller.
 	solution: Trace all entities, get all their distances, and do a rating, with this we get what entity is the closest
@@ -3093,50 +3099,50 @@ int inflictor = 0)
 	{
 		maxtargetshit = 20; //we do not care.
 	}
-	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+	
+	int length = HitEntitiesSphereExplosionTrace.Length;
+	for (int i = 0; i < length; i++)
 	{
-		if(!HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
-			break;
+		int entity_traced = HitEntitiesSphereExplosionTrace.Get(i);
 		
-		WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom], VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]]);
-		distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]], spawnLoc, true);
+		WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
+		distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
 		//Save their distances.
 	}
+	
 	//do another check, this time we only need the amount of entities we actually hit.
 	//Im lazy and dumb, i dont know a better way.
-	for (int repeatloop = 0; repeatloop <= maxtargetshit; repeatloop++)
+
+	
+	for (int repeatloop = 0; repeatloop <= maxtargetshit && length > 0; repeatloop++)
 	{
-		int ClosestTarget;
 		float ClosestDistance;
-		int indexTraced;
-		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+		int ClosestIndex;
+		for (int i = 0; i < length; i++)
 		{
-			if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
+			int entity_traced = HitEntitiesSphereExplosionTrace.Get(i);
+			
+			if( ClosestDistance ) 
 			{
-				if( ClosestDistance ) 
+				if( distance[entity_traced] < ClosestDistance ) 
 				{
-					if( distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] < ClosestDistance ) 
-					{
-						indexTraced = entity_traced;
-						ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]; 
-						ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];  
-					}
-				} 
-				else 
-				{
-					indexTraced = entity_traced;
-					ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]; 
-					ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];
-				}	
-			}
-			else
+					ClosestIndex = i; 
+					ClosestDistance = distance[entity_traced];  
+				}
+			} 
+			else 
 			{
-				break;
+				ClosestIndex = i; 
+				ClosestDistance = distance[entity_traced];
 			}
 		}
-		/*
-		We will filter out each entity and them damage them accordingly.
-		*/
+
+		int ClosestTarget = HitEntitiesSphereExplosionTrace.Get(ClosestIndex);
+		HitEntitiesSphereExplosionTrace.Erase(ClosestIndex);
+		length--;
+		
+	//	We will filter out each entity and them damage them accordingly.
+		
 		if(IsValidEntity(ClosestTarget))
 		{	
 			static float vicpos[3];
@@ -3153,7 +3159,7 @@ int inflictor = 0)
 									
 				if(Traced_Target != ClosestTarget)
 				{	
-					return;
+					continue;
 				}
 			}
 			if(ignite)
@@ -3231,21 +3237,11 @@ int inflictor = 0)
 				damage_reduction *= ExplosionDmgMultihitFalloff;
 			}
 		}
-		HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom] = false; //we will need to filter them out entirely now, we did dmg, and thus, its done!
-
-		indexTraced++;
-		for(; indexTraced < MAXENTITIES; indexTraced++)
-		{
-			HitEntitiesSphereExplosionTrace[indexTraced - 1][entityToEvaluateFrom] = HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom];
-			
-			if(!HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom])
-				break;
-		}
-	
+		
 		ClosestTarget = false;
 		ClosestDistance = 0.0;
-		indexTraced = 0;
 	}
+	delete HitEntitiesSphereExplosionTrace;
 }
 
 //#define PARTITION_SOLID_EDICTS        (1 << 1) /**< every edict_t that isn't SOLID_TRIGGER or SOLID_NOT (and static props) */
@@ -3253,29 +3249,28 @@ int inflictor = 0)
 //#define PARTITION_NON_STATIC_EDICTS   (1 << 5) /**< everything in solid & trigger except the static props, includes SOLID_NOTs */
 //#define PARTITION_STATIC_PROPS        (1 << 7)
 
-void DoExlosionTraceCheck(const float pos1[3], float radius, int entity)
+void DoExlosionTraceCheck(const float pos1[3], float radius, int entity, ArrayList HitEntitiesSphereExplosionTrace)
 {
-	for(int i=0; i < MAXENTITIES; i++)
-	{
-		HitEntitiesSphereExplosionTrace[i][entity] = false;
-	}
-	TR_EnumerateEntitiesSphere(pos1, radius, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_EnumerateEntitiesInRange, entity);
+	DataPack packFilter = new DataPack();
+	packFilter.WriteCell(HitEntitiesSphereExplosionTrace);
+	packFilter.WriteCell(entity);
+	TR_EnumerateEntitiesSphere(pos1, radius, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_EnumerateEntitiesInRange, packFilter);
+
+	delete packFilter;
 	//It does all needed logic here.
 }
 
-public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, int filterentity)
+public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, DataPack packFilter)
 {
+	packFilter.Reset();
+	ArrayList HitEntitiesSphereExplosionTrace = packFilter.ReadCell();
+	int filterentity = packFilter.ReadCell();
 	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
 	{
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
-		for(int i=0; i < MAXENTITIES; i++)
-		{
-			if(!HitEntitiesSphereExplosionTrace[i][filterentity])
-			{
-				HitEntitiesSphereExplosionTrace[i][filterentity] = entity;
-				break;
-			}
-		}
+		//Add a new entity to the arrray list
+		HitEntitiesSphereExplosionTrace.Push(entity);
+		
 	}
 	//always keep going!
 	return true;
@@ -3490,7 +3485,7 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 		GetAbsOrigin(entity, f_origin);
 		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
 		SetVariantString(strTargetName);
-		SetParent(entity, entIndex, "FadeTrail", _, false);
+		SetParent(entity, entIndex, "", _, false);
 		return entIndex;
 	}	
 	return -1;
@@ -4030,11 +4025,11 @@ stock char[] CharPercent(float value)
 	static char buffer[16];
 	if(value < 1.0)
 	{
-		Format(buffer, sizeof(buffer), "%d%%", 100 - RoundFloat((1.0 / value) * 100.0));
+		Format(buffer, sizeof(buffer), "%d％", 100 - RoundFloat((1.0 / value) * 100.0));
 	}
 	else
 	{
-		Format(buffer, sizeof(buffer), "+%d%%", RoundFloat((value - 1.0) * 100.0));
+		Format(buffer, sizeof(buffer), "+%d％", RoundFloat((value - 1.0) * 100.0));
 	}
 	return buffer;
 } 
@@ -4280,7 +4275,7 @@ void PlayFakeDeathSound(int client)
 }
 */
 
-stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
+stock bool ShouldNpcDealBonusDamage(int entity)
 {
 	if(entity < 1)
 	{
@@ -4382,16 +4377,20 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0, int MaxHealingPermitted = 9999999)
 {
 //	bool isNotClient = false;
-		
-	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
-	int flMaxHealth;
-	if(entity > MaxClients)
+	
+	int flHealth, flMaxHealth;
+
+	#if defined ZR
+	if(i_IsVehicle[entity])
 	{
-		flMaxHealth = ReturnEntityMaxHealth(entity);
+		flHealth = Armor_Charge[entity];
+		flMaxHealth = 10000;
 	}
 	else
+	#endif
 	{
-		flMaxHealth = SDKCall_GetMaxHealth(entity);
+		flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
+		flMaxHealth = ReturnEntityMaxHealth(entity);
 	}
 
 	int i_TargetHealAmount; //Health to actaully apply
@@ -4438,17 +4437,36 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	int MaxHeal = RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti);
 	if(flHealth < MaxHeal)
 	{
-
 		if(newHealth >= MaxHeal) //allow 1 tick of overheal.
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
+			#if defined ZR
+			if(i_IsVehicle[entity])
+			{
+				Armor_Charge[entity] = MaxHeal;
+			}
+			else
+			#endif
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
+			}
+			
 			newHealth = MaxHeal;
 
 			HealAmount = newHealth - flHealth;
 		}
 		else
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			#if defined ZR
+			if(i_IsVehicle[entity])
+			{
+				Armor_Charge[entity] = newHealth;
+			}
+			else
+			#endif
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+			}
+
 			HealAmount = newHealth - flHealth;
 		}
 	}
@@ -4962,7 +4980,7 @@ stock void DoClientHitmarker(int client)
 
 */
 
-stock void UTIL_ImpactTrace(int  client , const float start[3], int iDamageType, const char[] pCustomImpactName = "Impact")
+stock void UTIL_ImpactTrace(const float start[3], int iDamageType, const char[] pCustomImpactName = "Impact")
 {
 	if(TR_GetEntityIndex() == -1 || TR_GetFraction() == 1.0)
 	{ 
@@ -5005,8 +5023,10 @@ stock void TE_SetupEffectDispatch(const float origin[3], const float start[3], c
 	TE_WriteNum("m_nColor", color);
 	TE_WriteFloat("m_flRadius", radius);
 	TE_WriteNum("m_bCustomColors", customColors);
-	//TE_WriteVector("m_CustomColors.m_vecColor1", customColor1);
-	//TE_WriteVector("m_CustomColors.m_vecColor2", customColor2);
+	if(customColor1[0] != 0.0)
+		TE_WriteVector("m_CustomColors.m_vecColor1", customColor1);
+	if(customColor2[0] != 0.0)
+		TE_WriteVector("m_CustomColors.m_vecColor2", customColor2);
 	TE_WriteNum("m_bControlPoint1", controlPoint1);
 	TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", cp1ParticleAttachment);
 	TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", cp1Offset[0]);
@@ -5411,8 +5431,8 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255] = "",
 	else
 		WorldSpaceCenter(endEnt, endPos);
 
-	//int particle = ParticleEffectAtOcean(startPos, effect, duration, _, false);
-	//int particle2 = ParticleEffectAtOcean(endPos, effect, duration, _, false);
+	//int particle = ParticleEffectAtOcean(startPos, effect, duration, false);
+	//int particle2 = ParticleEffectAtOcean(endPos, effect, duration, false);
 	int particle = ParticleEffectAt_Parent(startPos, effect, startEnt, startPoint, _, false);
 	int particle2 = ParticleEffectAt_Parent(endPos, effect, endEnt, endPoint, _, false);
 	if (duration > 0.0)
@@ -5541,4 +5561,157 @@ stock int FindEntityByNPC(int &i)
 	}
 
 	return -1;
+}
+
+enum
+{
+	HitCooldown = 0,
+	SupportDisplayHurtHud = 1,
+	IgniteClientside = 2,
+	Osmosisdebuff = 3,
+	TankThrowLogic = 4,
+	
+}
+
+enum struct HitDetectionEnum
+{
+	int Attacker;
+	int Victim;
+	float Time;
+	int Offset;
+}
+static ArrayList hGlobalHitDetectionLogic;
+
+bool IsIn_HitDetectionCooldown(int attacker, int victim, int offset = 0)
+{
+	// ArrayList is empty currently
+	if(!hGlobalHitDetectionLogic)
+		return false;
+	
+	HitDetectionEnum data;
+	int length = hGlobalHitDetectionLogic.Length;
+	for(int i; i < length; i++)
+	{
+		// Loop through the arraylist to find the right attacker and victim
+		hGlobalHitDetectionLogic.GetArray(i, data);
+		if(data.Attacker == attacker && data.Victim == victim && data.Offset == offset)
+		{
+			// We found our match
+			return data.Time > GetGameTime();
+		}
+	}
+
+	// We found nothing
+	return false;
+}
+
+void Set_HitDetectionCooldown(int attacker, int victim, float time, int offset = 0)
+{
+	// Create if empty
+	if(!hGlobalHitDetectionLogic)
+		hGlobalHitDetectionLogic = new ArrayList(sizeof(HitDetectionEnum));
+	
+	HitDetectionEnum data;
+	int length = hGlobalHitDetectionLogic.Length;
+	for(int i; i < length; i++)
+	{
+		// Loop through the arraylist to find the right attacker and victim
+		hGlobalHitDetectionLogic.GetArray(i, data);
+		if(data.Attacker == attacker && data.Victim == victim && data.Offset == offset)
+		{
+			// We found our match, update the value
+			data.Time = time;
+			hGlobalHitDetectionLogic.SetArray(i, data);
+			return;
+		}
+	}
+
+	// Create a new entry
+	data.Attacker = attacker;
+	data.Victim = victim;
+	data.Offset = offset;
+	data.Time = time;
+	hGlobalHitDetectionLogic.PushArray(data);
+}
+
+// Deletes the entry if a entity died/removed/etc.
+void EntityKilled_HitDetectionCooldown(int entity, int offset = -1)
+{
+	// ArrayList is empty currently
+	if(!hGlobalHitDetectionLogic)
+		return;
+	
+	HitDetectionEnum data;
+	int length = hGlobalHitDetectionLogic.Length;
+	for(int i; i < length; i++)
+	{
+		// Loop through the arraylist to find the right attacker and victim
+		hGlobalHitDetectionLogic.GetArray(i, data);
+		
+		if(offset != -1 && data.Offset != offset)
+			continue;
+
+		if(data.Attacker == entity || data.Victim == entity)
+		{
+			// We found a match
+			hGlobalHitDetectionLogic.Erase(i);
+			i--;
+			length--;
+		}
+	}
+}
+
+stock void GetMapName(char[] buffer, int size)
+{
+	GetCurrentMap(buffer, size);
+	GetMapDisplayName(buffer, buffer, size);
+}
+
+stock int GetEntityFromHandle(any handle)
+{
+	int ent = handle & 0xFFF;
+	if (ent == 0xFFF)
+		ent = -1;
+
+	return ent;
+}
+
+stock int GetEntityFromAddress(Address entity)
+{
+	if (entity == Address_Null)
+		return -1;
+
+	return GetEntityFromHandle(LoadFromAddress(entity + view_as<Address>(FindDataMapInfo(0, "m_angRotation") + 12), NumberType_Int32));
+}
+
+stock void RunScriptCode(int entity, int activator, int caller, const char[] format, any...)
+{
+    if (!IsValidEntity(entity))
+        return;
+    
+    static char buffer[1024];
+    VFormat(buffer, sizeof(buffer), format, 5);
+    
+    SetVariantString(buffer);
+    AcceptEntityInput(entity, "RunScriptCode", activator, caller);
+}
+
+
+stock void Projectile_TeleportAndClip(int entity)
+{
+	float VecPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", VecPos);
+
+	//todo: instead of angle, get speed of said projectile, and caclulate the angle from said speed
+	//This is just a placeholder
+	float VecAng[3];
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", VecAng);
+	Handle hTrace = TR_TraceRayFilterEx(VecPos, VecAng, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, BulletAndMeleeTrace, entity);
+	if ( TR_GetFraction(hTrace) < 1.0)
+	{
+		//collision
+		TR_GetEndPosition(VecPos, hTrace);
+		SDKCall_SetAbsOrigin(entity, VecPos);
+	}
+	delete hTrace;
 }

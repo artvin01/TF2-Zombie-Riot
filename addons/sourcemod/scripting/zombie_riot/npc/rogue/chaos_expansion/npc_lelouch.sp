@@ -1,3 +1,4 @@
+// grr twink
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -206,8 +207,8 @@ static const char g_LaserLoop[][] = {
 
 */
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 int i_Lelouch_Index;
 #define LELOUCH_BLADE_MODEL "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl"
@@ -227,9 +228,9 @@ int i_Lelouch_Index;
 #define LELOUCH_CRYSTAL_SHIELD_STRENGTH 0.1	//How much res each crystal gives. eg: 4 crystals alive, each does 0.1, total res is 40%
 
 static float fl_Anchor_Fixed_Spawn_Pos[3][3] ={
-	{8731.121094, 2849.591797, -3318.968750},
-	{6070.426270, -2539.363281, -3319.968750},
-	{11448.688477, -64.187515, -3318.968750}
+	{8731.121094, 2849.591797, -3378.968750},
+	{6070.426270, -2539.363281, -3378.968750},
+	{11448.688477, -64.187515, -3378.968750}
 };
 static int i_AnchorID_Ref[MAXENTITIES][3];
 static bool b_Anchors_Created[MAXENTITIES];
@@ -242,12 +243,12 @@ static bool b_Standard_Anchor;
 static bool b_crystals_active[MAXENTITIES];
 static bool b_animation_set[MAXENTITIES];
 static bool b_test_mode[MAXENTITIES];
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
 
 static const char NameColour[] = "{black}";
 static const char TextColour[] = "{snow}";
 
-static int i_wingslot[MAXENTITIES];
+
 static int i_specialentslot[MAXENTITIES];
 
 void Lelouch_OnMapStart_NPC()
@@ -258,7 +259,7 @@ void Lelouch_OnMapStart_NPC()
 	data.Category = Type_BlueParadox;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "Chaos_insane"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "lelouch"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
@@ -371,7 +372,7 @@ methodmap Lelouch < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH - 10);
 		
 
 	}
@@ -583,7 +584,7 @@ methodmap Lelouch < CClotBody
 	{
 		Lelouch npc = view_as<Lelouch>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 		
@@ -688,7 +689,7 @@ methodmap Lelouch < CClotBody
 		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/spy/spy_spats.mdl", _, skin);
 		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tw2_roman_wreath/tw2_roman_wreath_spy.mdl", _, skin);
 
-		npc.m_iWearable9 = npc.EquipItemSeperate("head", LELOUCH_CRYSTAL_MODEL, _,_, 2.75, 50.0);
+		npc.m_iWearable9 = npc.EquipItemSeperate(LELOUCH_CRYSTAL_MODEL, _,_, 2.75, 50.0);
 
 		if(IsValidEntity(npc.m_iWearable9))
 		{
@@ -731,7 +732,7 @@ methodmap Lelouch < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -749,6 +750,7 @@ methodmap Lelouch < CClotBody
 		RaidModeScaling *= amount_of_people;
 
 		RaidModeScaling *= 1.1;
+		RaidModeScaling *= 0.25;
 
 		if(b_test_mode[npc.index])
 			RaidModeTime = FAR_FUTURE;
@@ -760,11 +762,12 @@ methodmap Lelouch < CClotBody
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 
 		b_wonviatimer[npc.index] = false;
+		Ruina_Set_Battery_Buffer(npc.index, true);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 
 		return npc;
 	}
-	
-	
 }
 static void Lelouch_WinLine(int entity)
 {
@@ -775,7 +778,7 @@ static void Lelouch_WinLine(int entity)
 	
 	switch(GetRandomInt(0, 1))
 	{
-		case 0: Lelouch_Lines(npc, "Twirl you're all alone");
+		case 0: Lelouch_Lines(npc, "Twirl you're all alone.");
 		case 1: Lelouch_Lines(npc, "They all failed Twirl, now all thats left is you..");
 	}
 
@@ -800,6 +803,24 @@ static void Lelouch_WinLine(int entity)
 	Ruina_Ion_Storm(entity);
 	EmitSoundToAll(BLITZLIGHT_ATTACK);
 
+}
+static void CheckLeLouchShieldCharge(Lelouch npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = npc.m_flCrystalCoolDownTimer - GameTime;
+	PercentageCharge = (TimeUntillTeleLeft  / (100.0));
+
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
 }
 static void Ruina_Ion_Storm(int iNPC)
 {
@@ -833,7 +854,7 @@ static void ClotThink(int iNPC)
 	Lelouch npc = view_as<Lelouch>(iNPC);
 	
 	KeepTimerFrozen();
-
+	CheckLeLouchShieldCharge(npc);
 	if(RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
@@ -845,7 +866,7 @@ static void ClotThink(int iNPC)
 		{
 			switch(GetRandomInt(0, 1))
 			{
-				case 0: Lelouch_Lines(npc, "It is too late, the end has come atlast");
+				case 0: Lelouch_Lines(npc, "It is too late, the end has come atlast...");
 				case 1: Lelouch_Lines(npc, "Twirl tell me, how does it feel to be on the losing side for once?");
 			}
 		}
@@ -1002,7 +1023,7 @@ static void Self_Defense(Lelouch npc, float flDistanceToTarget)
 	Melee.damage = Modify_Damage(-1, 25.0);
 	Melee.bonus_dmg = Modify_Damage(-1, 50.0);
 	Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
-	Melee.swing_speed = 0.9;
+	Melee.swing_speed = 1.2;
 	Melee.swing_delay = 0.37;
 	Melee.turn_speed = 20000.0;
 	Melee.gameTime = GameTime;
@@ -1158,7 +1179,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	}
 	
 	int Health = ReturnEntityMaxHealth(npc.index);
-	Health = RoundToFloor(Health*0.1);
+	Health = RoundToFloor(float(Health)*0.06);
 
 	npc.PlayCrystalSounds();
 
@@ -1189,7 +1210,7 @@ static bool Create_Crystal_Shields(Lelouch npc)
 	if(IsValidEntity(npc.m_iSpecialEntSlot))
 		RemoveEntity(npc.m_iSpecialEntSlot);
 
-	npc.m_iSpecialEntSlot = npc.EquipItemSeperate("head", LELOUCH_LIGHT_MODEL ,_,_,_,300.0);
+	npc.m_iSpecialEntSlot = npc.EquipItemSeperate(LELOUCH_LIGHT_MODEL ,_,_,_,300.0);
 
 	return true;
 }
@@ -1991,9 +2012,9 @@ static void Create_Anchors(Lelouch npc)
 
 	float HP_Scale = 1.0;
 
-	//we are in NEITHER rouge or freeplay.
-	//allthough, if freeplay lelouch turns out being a bitch consistently, then it can be made to apply to freeplay.
-	if(!Rogue_Mode() && !Waves_InFreeplay())
+	// we aren't in rogue, nerf summon health
+	// freeplay lelouch is lolmao
+	if(!Rogue_Mode())
 	{
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 
@@ -2061,14 +2082,18 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	AproxRandomSpaceToWalkTo[0]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	AproxRandomSpaceToWalkTo[1]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	char Data[64]; Data = red ? "lelouch;nospawns;noweaver;full" : "nospawns;noweaver;full";
-	if(Waves_GetRound()+1 < 60)
+	if(ZR_Waves_GetRound()+1 < 60)
 		Format(Data, sizeof(Data), "%sforce60", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{
-		if(GetTeam(npc.index) != TFTeam_Red)
+		if(GetTeam(spawn_index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		}
+		else
+		{
+			b_ThisEntityIgnored[spawn_index] = true;
 		}
 		if(Rogue_Mode())
 			TeleportEntity(spawn_index, fl_Anchor_Fixed_Spawn_Pos[loop]);
@@ -2164,13 +2189,13 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			switch(GetRandomInt(0,1))
 			{
-				case 0: Lelouch_Lines(npc, "You have killed all the anchors within the aloted time");
-				case 1: Lelouch_Lines(npc, "My Anchors, how dare you");
+				case 0: Lelouch_Lines(npc, "You have killed all the anchors within the aloted time...");
+				case 1: Lelouch_Lines(npc, "My Anchors, how dare you!");
 			}
 			
 			switch(GetRandomInt(0,1))
 			{
-				case 0: CPrintToChatAll("{purple}Twirl{snow}: All your Anchors are belong to me now");
+				case 0: CPrintToChatAll("{purple}Twirl{snow}: All your Anchors are belong to me now..!");
 				case 1: CPrintToChatAll("{purple}Twirl{snow}: I'm yoinking your Anchor's now~");
 			}
 			
@@ -2219,11 +2244,11 @@ static void Anchor_Phase_Logic(Lelouch npc)
 
 			switch(GetRandomInt(0,1))
 			{
-				case 0: Lelouch_Lines(npc, "You managed to avert certain doom for yourself, good for you");
+				case 0: Lelouch_Lines(npc, "You managed to avert certain doom for yourself, good for you.");
 				case 1: Lelouch_Lines(npc, "You almost made, have a complimentary *clap clap*");
 			}
 
-			CPrintToChatAll("{purple}Twirl{snow}: Well on the bright side we don't have to worry about his death ray");
+			CPrintToChatAll("{purple}Twirl{snow}: Well on the bright side we don't have to worry about his death ray.");
 		}
 		RaidModeScaling = fl_RaidModeScaling_Buffer;
 		FreezeTimer(false);
@@ -2432,20 +2457,6 @@ static int[] Lelouch_Colors()
 {
 	int color[4] = {255,255,255,255};
 	return color;
-}
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
 }
 
 static void Handle_Animations(Lelouch npc)
@@ -2692,9 +2703,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		switch(GetRandomInt(0, 2))
 		{
-			case 0:	Lelouch_Lines(npc, "My crystal shield, you will pay for that");
-			case 1: Lelouch_Lines(npc, "AGH, HOW DARE YOU");
-			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me");
+			case 0:	Lelouch_Lines(npc, "My crystal shield, you will pay for that!");
+			case 1: Lelouch_Lines(npc, "AGH, HOW DARE YOU!!!");
+			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me!");
 		}
 		
 		RaidModeScaling *= 1.2;
@@ -2859,6 +2870,7 @@ static void Lelouch_Weapon_Lines(Lelouch npc, int client)
 }
 static int i_summon_weaver(Lelouch npc)
 {
+	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.1, 1.0, 0.0, HEAL_ABSOLUTE);
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	int maxhealth;
@@ -2951,6 +2963,19 @@ static void NPC_Death(int entity)
 		for(float fl=0.0 ; fl < 10.0 ; fl += 0.15)
 		{
 			CreateTimer(fl, KaboomRogueOnlyEffect_LeLouch, 50, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		Waves_ClearWaveCurrentSpawningEnemies();
+		
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
+			{
+				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				{
+					SmiteNpcToDeath(entitynpc);
+				}
+			}
 		}
 		GiveProgressDelay(12.0);
 	}

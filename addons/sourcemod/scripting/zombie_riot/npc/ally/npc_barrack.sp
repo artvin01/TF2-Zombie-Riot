@@ -373,7 +373,7 @@ methodmap BarrackBody < CClotBody
 				RemoveEntity(npc.m_iTeamGlow);
 			}
 
-			npc.m_iWearable7 = npc.EquipItemSeperate("partyhat", ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
+			npc.m_iWearable7 = npc.EquipItemSeperate(ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
 			SetVariantString("0.65");
 			AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 			BarrackOwner[npc.m_iWearable7] = client > 0 ? client : 0;
@@ -882,7 +882,7 @@ static void ShowMenu(int client, int entity)
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(BarrackBody_MenuH);
-	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", c_NpcName[entity]);
+	menu.SetTitle("%t\n \n%s\n ", "TF2: Zombie Riot", NpcStats_ReturnNpcName(entity));
 
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));

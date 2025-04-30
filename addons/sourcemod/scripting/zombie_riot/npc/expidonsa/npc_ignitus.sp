@@ -73,9 +73,7 @@ methodmap Ignitus < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -289,11 +287,11 @@ void IgnitusSelfdefense(Ignitus npc, float gameTime, int target, float distance)
 					
 					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						NPC_Ignite(target, npc.index, 20.0, -1, 4.0);
+						NPC_Ignite(target, npc.index, 30.0, -1, 4.0);
 					}
 					if(!ShouldNpcDealBonusDamage(target))
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 					}
 					else
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);

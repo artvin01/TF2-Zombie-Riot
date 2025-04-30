@@ -73,7 +73,7 @@ void AgentKurt_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentKurt(client, vecPos, vecAng, ally);
+	return AgentKurt(vecPos, vecAng, ally);
 }
 methodmap AgentKurt < CClotBody
 {
@@ -122,7 +122,7 @@ methodmap AgentKurt < CClotBody
 	}
 	
 	
-	public AgentKurt(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentKurt(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentKurt npc = view_as<AgentKurt>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
 		

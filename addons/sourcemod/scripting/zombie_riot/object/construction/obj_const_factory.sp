@@ -11,7 +11,7 @@ static const char Vehicles[][] =
 	"vehicle_pickup"
 };
 
-static const int IronCost = 25;
+static const int IronCost = 15;
 
 static int NPCId;
 static float GlobalCooldown;
@@ -34,9 +34,9 @@ void ObjectFactory_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_factory");
-	build.Cost = 5000;
-	build.Health = 250;
-	build.Cooldown = 180.0;
+	build.Cost = 2000;
+	build.Health = 100;
+	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
@@ -50,17 +50,18 @@ methodmap ObjectFactory < ObjectGeneric
 {
 	public ObjectFactory(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectFactory npc = view_as<ObjectFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", _, "600", {312.0, 280.0, 231.0}));
+		ObjectFactory npc = view_as<ObjectFactory>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mann_hatch.mdl", "0.5", "600", {80.0, 80.0, 16.0}));
 		
  		b_CantCollidie[npc.index] = true;
 	 	b_CantCollidieAlly[npc.index] = true;
 		npc.m_bThisEntityIgnored = true;
+		npc.m_bConstructBuilding = true;
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
-
+		
 		return npc;
 	}
 }
@@ -70,7 +71,21 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = CountBuildings();
+		
+		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Vehicle Factory"))
+		{
+			maxcount = 0;
+			return false;
+		}
+
 		maxcount = 1;
+
+	//	if(Construction_HasNamedResearch("Base Level II"))
+	//		maxcount++;
+	//	
+	//	if(Construction_HasNamedResearch("Base Level III"))
+	//		maxcount++;
+		
 		if(count >= maxcount)
 			return false;
 	}
@@ -113,7 +128,7 @@ static bool ClotCanUse(ObjectFactory npc, int client)
 	return true;
 }
 
-static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
+static void ClotShowInteractHud(ObjectFactory npc, int client)
 {
 	if(GlobalCooldown > GetGameTime())
 	{
@@ -121,7 +136,9 @@ static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 	}
 	else
 	{
-		PrintCenterText(client, "Press [T (spray)] to build a vehicle using materials.");
+		char button[64];
+		PlayerHasInteract(client, button, sizeof(button));
+		PrintCenterText(client, "%sto build a vehicle using materials.", button);
 	}
 }
 
@@ -147,7 +164,9 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material iron", ossunia, ossuniaCost, "Material ossunia", "Crouch and select to view description");
+	char buffer2[512];
+	Format(buffer2, sizeof(buffer2), "%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material iron", ossunia, ossuniaCost, "Material ossunia", "Crouch and select to view description");
+	menu.SetTitle(buffer2);
 
 	char buffer[64];
 	for(int i; i < sizeof(Vehicles); i++)
@@ -162,13 +181,22 @@ static void ThisBuildingMenu(int client)
 
 static int OssuniaCost()
 {
-	int ossuniaCost = CountVehicles();
-	if(ossuniaCost)
+	switch(CountVehicles())
 	{
-		ossuniaCost *= 2;
-		ossuniaCost *= ossuniaCost;
+		case 0:
+			return 0;
+		
+		case 1:
+			return 10;
+		
+		case 2:
+			return 999999; //Dont allow more then 2
+		
+		case 3:
+			return 999999;
 	}
-	return ossuniaCost;
+
+	return 999;
 }
 
 static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choice)
@@ -213,7 +241,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 
 					if(pos[0])
 					{
-						GlobalCooldown = Construction_GetNextAttack() + 450.0;
+						GlobalCooldown = Construction_GetNextAttack();
 						
 						Construction_AddMaterial("iron", -IronCost, true);
 						Construction_AddMaterial("ossunia", -ossuniaCost, true);

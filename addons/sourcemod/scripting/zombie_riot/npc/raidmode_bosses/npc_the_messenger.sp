@@ -112,7 +112,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_SyctheInitiateSound));   i++) { PrecacheSound(g_SyctheInitiateSound[i]);   }
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/messenger_ost.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -327,8 +327,8 @@ methodmap TheMessenger < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
-			value = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			value = float(ZR_Waves_GetRound()+1);
 		}
 
 		if(RaidModeScaling < 55)
@@ -364,12 +364,12 @@ methodmap TheMessenger < CClotBody
 		RaidModeScaling *= 0.5;
 		
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/messenger.mp3");
-		music.Time = 219;
-		music.Volume = 1.25;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/messenger_ost.mp3");
+		music.Time = 230;
+		music.Volume = 1.6;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Brutality -Rebuild-");
-		strcopy(music.Artist, sizeof(music.Artist), "Chihiro Aoki");
+		strcopy(music.Name, sizeof(music.Name), "Ultimatum");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 		
 		npc.m_iChanged_WalkCycle = -1;
@@ -1154,7 +1154,9 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 										
 							if(i_RaidGrantExtra[npc.index] <= 2)
 							{
-								NPC_Ignite(targetTrace, npc.index,6.0, -1, 2.5);
+								float Proj_Damage = 22.0 * RaidModeScaling;
+								Proj_Damage *= 0.1;
+								NPC_Ignite(targetTrace, npc.index,Proj_Damage, -1, 2.5);
 							}
 							else
 							{
@@ -1247,7 +1249,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 
 		if(i_RaidGrantExtra[owner] <= 2)
 		{
-			NPC_Ignite(target, owner,DamageDeal * 0.2, -1, 2.5);
+			NPC_Ignite(target, owner,DamageDeal * 0.1, -1, 2.5);
 		}
 		else
 		{

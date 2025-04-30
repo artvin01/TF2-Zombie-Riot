@@ -34,7 +34,7 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_boost_drain_time", "99999.0"); //Overheal Logic, make it perma
 	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
 
-	ConVar_Add("tf_scout_air_dash_count", "0"); //Remove doublejumps
+	ConVar_Add("tf_scout_air_dash_count", "-1"); //Remove doublejumps
 	ConVar_Add("tf_allow_player_use", "1"); //Allow use!
 	ConVar_Add("tf_flamethrower_boxsize", "0.0"); //Flamethrower Particles are useless in ZR
 
@@ -45,9 +45,18 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
 	//going above this is dumb
 	ConVar_Add("tf_mvm_max_connected_players", "99");
+#endif
+#if defined ZR || defined RPG
+	ConVar_Add("mp_waitingforplayers_time", "0.0");
+#endif
+#if defined RPG
+	ConVar_Add("mp_friendlyfire", "1.0");
+#endif
 
+#if defined ZR
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "-1", "How many players can play at once?");
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
+	Cvar_VshMapFix = CreateConVar("zr_stripmaplogic", "0", "Strip maps of logic for ZR", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "0", "No Panzer will spawn or anything alike");
 	zr_voteconfig = CreateConVar("zr_voteconfig", "raidmode", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "", "Tags to blacklist from weapons config");
@@ -58,7 +67,7 @@ void ConVar_PluginStart()
 	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
-	zr_enemymulticap = CreateConVar("zr_enemymulticap", "5.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
+	zr_enemymulticap = CreateConVar("zr_enemymulticap", "4.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
 	zr_multi_multiplier = CreateConVar("zr_multi_enemy", "1.0", "Multiply the current scaling");
 	zr_multi_maxcap = CreateConVar("zr_multi_zr_cap", "1.0", "Multiply the current max enemies allowed");
 	zr_raidmultihp = CreateConVar("zr_raidmultihp", "1.0", "Multiply any boss HP that acts as a raid or megaboss, usefull for certain maps.");
@@ -71,7 +80,6 @@ void ConVar_PluginStart()
 	CvarSkillPoints = CreateConVar("zr_skillpoints", "1", "If skill points are enabled");
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
-	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
 	CvarAutoSelectWave = CreateConVar("zr_autoselectwave", "0", "If to automatically set a wave on map start instead of running a vote");
 
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
@@ -82,32 +90,29 @@ void ConVar_PluginStart()
 	HookConVarChange(CvarAutoSelectWave, WavesCvarChanged);
 	HookConVarChange(zr_ignoremapconfig, DownloadCvarChanged);
 	HookConVarChange(zr_downloadconfig, DownloadCvarChanged);
-#else
-	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
 
 #if defined ZR || defined RPG
 	CvarFileNetworkDisable = CreateConVar("zr_filenetwork_disable", "0", "0 means as intended, 1 means fast download sounds (itll download any waves present instnatly), 2 means download MVM style matreials too");
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
-	ConVar_Add("mp_waitingforplayers_time", "0.0");
-#endif
+	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
+	
 	//default should be 0.1
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.1", "How long zombie spawn protection lasts for.");
-	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+#endif
 
 #if defined ZR || defined RTS	
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
+
+	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	zr_interactforcereload = CreateConVar("zr_interactforcereload", "0", "force interact with reload, it also blocks spray interacting like before.");
 
-#if defined RPG
-	ConVar_Add("mp_friendlyfire", "1.0"); // default: 0.9 Ty to miku for showing me
-#endif
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 
-	AutoExecConfig(true, "zombie_riot");
+	//AutoExecConfig(true, "zombie_riot");
 	
 }
 
@@ -133,8 +138,17 @@ stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=tr
 {
 	CvarInfo info;
 	info.cvar = FindConVar(name);
-	if(info.cvar.Flags & FCVAR_PROTECTED)
+	if(!info.cvar)
+	{
+		LogError("Invalid cvar \"%s\" from being set from config", name);
 		return;
+	}
+	
+	if(info.cvar.Flags & FCVAR_PROTECTED)
+	{
+		LogError("Blocked \"%s\" from being set from config", name);
+		return;
+	}
 	
 	info.cvar.Flags &= ~FCVAR_CHEAT;
 	strcopy(info.value, sizeof(info.value), value);
@@ -178,10 +192,10 @@ void ConVar_Enable()
 {
 	if(!CvarEnabled)
 	{
+		CvarInfo info;
 		int length = CvarList.Length;
 		for(int i; i<length; i++)
 		{
-			CvarInfo info;
 			CvarList.GetArray(i, info);
 			info.cvar.GetString(info.defaul, sizeof(info.defaul));
 			CvarList.SetArray(i, info);
@@ -195,7 +209,6 @@ void ConVar_Enable()
 			length = CvarMapList.Length;
 			for(int i; i<length; i++)
 			{
-				CvarInfo info;
 				CvarMapList.GetArray(i, info);
 				info.cvar.GetString(info.defaul, sizeof(info.defaul));
 				CvarMapList.SetArray(i, info);
@@ -213,10 +226,10 @@ void ConVar_Disable()
 {
 	if(CvarEnabled)
 	{
+		CvarInfo info;
 		int length = CvarList.Length;
 		for(int i; i<length; i++)
 		{
-			CvarInfo info;
 			CvarList.GetArray(i, info);
 
 			info.cvar.RemoveChangeHook(ConVar_OnChanged);
@@ -228,7 +241,6 @@ void ConVar_Disable()
 			length = CvarMapList.Length;
 			for(int i; i<length; i++)
 			{
-				CvarInfo info;
 				CvarMapList.GetArray(i, info);
 
 				info.cvar.RemoveChangeHook(ConVar_OnChanged);
@@ -273,6 +285,7 @@ static void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 	//update store if these are updated.
 	Items_SetupConfig();
 	Store_ConfigSetup();
+	CheckAprilFools();
 }
 
 static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
@@ -281,7 +294,7 @@ static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 		return;
 	
 	char mapname[64];
-	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapName(mapname, sizeof(mapname));
 	KeyValues kv = Configs_GetMapKv(mapname);
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
@@ -294,7 +307,7 @@ static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char
 		return;
 	
 	char mapname[64];
-	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapName(mapname, sizeof(mapname));
 	KeyValues kv = Configs_GetMapKv(mapname);
 	FileNetwork_ConfigSetup(kv);
 	Building_ConfigSetup();

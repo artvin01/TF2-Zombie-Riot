@@ -16,7 +16,7 @@ static char g_KillSounds[][] =
 	"cof/purnell/kill3.mp3",
 	"cof/purnell/kill4.mp3"
 };
-static float i_ClosestAllyCDTarget[MAXENTITIES];
+
 
 
 void SpecialDoctor_OnMapStart()
@@ -43,9 +43,9 @@ void SpecialDoctor_OnMapStart()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpecialDoctor(vecPos, vecAng, team, data);
+	return SpecialDoctor(vecPos, vecAng, team);
 }
 
 methodmap SpecialDoctor < CClotBody
@@ -93,7 +93,7 @@ methodmap SpecialDoctor < CClotBody
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0);
 	}
 
-	public SpecialDoctor(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SpecialDoctor(float vecPos[3], float vecAng[3], int ally)
 	{
 		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(70), ally));
 		i_NpcWeight[npc.index] = 3;
@@ -152,7 +152,7 @@ methodmap SpecialDoctor < CClotBody
 		npc.m_iAttacksTillReload = 5;
 		npc.m_flReloadDelay = GetGameTime(npc.index) + 0.8;
 
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();

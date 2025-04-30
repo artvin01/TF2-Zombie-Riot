@@ -41,7 +41,7 @@ void VictoriaScorcher_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaScorcher(client, vecPos, vecAng, ally);
+	return VictoriaScorcher(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaScorcher < CClotBody
@@ -104,7 +104,7 @@ methodmap VictoriaScorcher < CClotBody
 		}
 	}
 	
-	public VictoriaScorcher(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaScorcher(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaScorcher npc = view_as<VictoriaScorcher>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "7000", ally));
 		

@@ -95,7 +95,7 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 		
 		Format(particle, sizeof(particle), "%s", "flaregun_energyfield_blue");
 
-		EmitSoundToAll(SOUND_BUBBLE_SHOT, client, _, 65, _, 0.45, GetRandomInt(80, 120));
+		EmitSoundToAll(SOUND_BUBBLE_SHOT, client, _, 65, _, 0.45, GetRandomInt(80, 135));
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, particle);
 		int model = ApplyCustomModelToWandProjectile(projectile, "models/buildables/sentry_shield.mdl", 0.65, "", -15.0);
 		SetEntProp(model, Prop_Send, "m_nSkin", 1);
@@ -167,34 +167,34 @@ public Action Timer_BubbleWand(Handle timer, int ent)
 			TE_SendToClient(sf_BubbleOwner[projectile]);
 
 			float dmgmult = 1.0;
-			float dmgmultrate = 1.025;
+			float dmgmultrate = 1.0275;
 			float dmglimit = 1.5;
 			switch(pap)
 			{
 				case 1:
 				{
-					dmglimit = 1.65;
-					dmgmultrate = 1.035;
+					dmglimit = 1.7;
+					dmgmultrate = 1.04;
 				}
 				case 2:
 				{
-					dmglimit = 1.8;
-					dmgmultrate = 1.035;
+					dmglimit = 1.85;
+					dmgmultrate = 1.04;
 				}
 				case 3:
 				{
-					dmglimit = 1.95;
-					dmgmultrate = 1.04;
+					dmglimit = 2.0;
+					dmgmultrate = 1.045;
 				}
 				case 4:
 				{
-					dmglimit = 2.25;
-					dmgmultrate = 1.05;
+					dmglimit = 2.15;
+					dmgmultrate = 1.055;
 				}
 				default:
 				{
-					dmglimit = 1.5;
-					dmgmultrate = 1.025;
+					dmglimit = 1.55;
+					dmgmultrate = 1.075;
 				}
 			}
 
@@ -259,21 +259,31 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 		int pap = 0;
 		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 
-		int mana_cost = 250;
-		if(pap == 4)
-			mana_cost = 450;
+		// This is for the ability's mana cost to scale with mana cost modifiers
+		int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 0.0));
+		switch(pap)
+		{
+			case 2:
+			{
+				mana_cost = RoundToFloor(mana_cost*4.0); // 65 base -> ability costs 260 on pap 2
+			}
+			case 3, 4:
+			{
+				mana_cost = RoundToFloor(mana_cost*3.0); // 90/115 base -> ability costs 270/345 on pap 3/4 respectively
+			}
+		}
 
 		if(mana_cost <= Current_Mana[client])
 		{
-			if (Ability_Check_Cooldown(client, slot) < 0.0)
+			if (Ability_Check_Cooldown(client, slot) < 0.0 && !HasSpecificBuff(client, "Bubble Frenzy"))
 			{
 				Rogue_OnAbilityUse(client, weapon);
-				Ability_Apply_Cooldown(client, slot, 30.0);
+				Ability_Apply_Cooldown(client, slot, 37.5);
 				EmitSoundToClient(client, SOUND_BUBBLE_ABILITY);
 
-				ApplyStatusEffect(weapon, weapon, "Bubble Frenzy", 10.0);
+				ApplyStatusEffect(client, client, "Bubble Frenzy", 10.0);
 				ApplyTempAttrib(weapon, 6, 0.5, 10.0);
-				ApplyTempAttrib(weapon, 733, 0.5, 10.0);
+				ApplyTempAttrib(weapon, 733, 0.65, 10.0);
 				//dont allow the player to use this and then switch weapons
 				//inacse of tonic and etc, its not a problem as its supposed to be mixed, i.e. group buff
 				//in this case its a free damage buff that can be spammed alot

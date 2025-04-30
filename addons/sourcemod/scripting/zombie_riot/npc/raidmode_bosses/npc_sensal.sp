@@ -8,12 +8,12 @@
 static bool BlockLoseSay;
 
 
-static int i_SaidLineAlready[MAXENTITIES];
+
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -387,7 +387,7 @@ methodmap Sensal < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -397,11 +397,11 @@ methodmap Sensal < CClotBody
 				RaidModeScaling *= 0.38;
 			}
 				
-			if(Waves_GetRound()+1 > 40 && Waves_GetRound()+1 < 55)
+			if(ZR_Waves_GetRound()+1 > 40 && ZR_Waves_GetRound()+1 < 55)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(Waves_GetRound()+1 > 55)
+			else if(ZR_Waves_GetRound()+1 > 55)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.65;
@@ -1596,7 +1596,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 		}
 		float VulnerabilityToGive = 0.065;
-		IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 5.0, true);
+		IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 5.0, true);
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
@@ -1747,8 +1747,7 @@ bool SensalTransformation(Sensal npc)
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable3, 255, 35, 35, 255);
+			
 		//	i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
 			i_NpcWeight[npc.index] = 4;
 			SensalEffects(npc.index, view_as<int>(npc.Anger));
@@ -2009,9 +2008,6 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 
 
 
-
-int SensalHitDetected[MAXENTITIES];
-
 void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
 
@@ -2074,7 +2070,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -2133,7 +2129,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -2157,7 +2153,7 @@ public bool Sensal_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

@@ -53,7 +53,7 @@ static void ClotPrecache()
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunwinddown.wav");
 	PrecacheSound("mvm/giant_soldier/giant_soldier_rocket_shoot.wav");
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
-	PrecacheSoundCustom("#zombiesurvival/internius/the_purge.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/chaos_engineered_cyborg.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -231,7 +231,7 @@ methodmap ThePurge < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		RaidModeScaling *= 0.19;
 		
@@ -251,12 +251,12 @@ methodmap ThePurge < CClotBody
 		RaidModeScaling *= 1.65;
 
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/the_purge.mp3");
-		music.Time = 229;
-		music.Volume = 1.5;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_engineered_cyborg.mp3");
+		music.Time = 183;
+		music.Volume = 1.6;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Right Trigger Warning");
-		strcopy(music.Artist, sizeof(music.Artist), "Mick Gordon");
+		strcopy(music.Name, sizeof(music.Name), "Chaos Engineered Cyborg");
+		strcopy(music.Artist, sizeof(music.Artist), "Granda Bard");
 		Music_SetRaidMusic(music);
 		
 		Citizen_MiniBossSpawn();

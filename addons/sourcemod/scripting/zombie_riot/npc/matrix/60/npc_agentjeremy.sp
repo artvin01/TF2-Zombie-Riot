@@ -68,7 +68,7 @@ void AgentJeremy_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentJeremy(client, vecPos, vecAng, ally);
+	return AgentJeremy(vecPos, vecAng, ally);
 }
 methodmap AgentJeremy < CClotBody
 {
@@ -117,7 +117,7 @@ methodmap AgentJeremy < CClotBody
 	}
 	
 	
-	public AgentJeremy(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentJeremy(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentJeremy npc = view_as<AgentJeremy>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "700", ally));
 		

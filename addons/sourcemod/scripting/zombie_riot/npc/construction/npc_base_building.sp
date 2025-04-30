@@ -34,8 +34,8 @@ methodmap BaseBuilding < BarrackBody
 		
 		BaseBuilding npc = view_as<BaseBuilding>(BarrackBody(client, vecPos, vecAng, "10000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0, "models/pickups/pickup_powerup_resistance.mdl"));
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
-		SetVariantString("0.1");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
+		SetVariantString("0.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		i_NpcWeight[npc.index] = 999;
@@ -95,14 +95,9 @@ public void BaseBuilding_ClotThink(int iNPC)
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			}
-			else  if(Waves_Started())
+			else if(Waves_Started())
 			{
-				int endround = CreateEntityByName("game_round_win"); 
-				DispatchKeyValue(endround, "force_map_reset", "1");
-				SetEntProp(endround, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-				DispatchSpawn(endround);
-				AcceptEntityInput(endround, "RoundWin");
-				Music_RoundEnd(endround);
+				SDKHooks_TakeDamage(npc.index, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE);
 			}
 		}
 		else
@@ -121,7 +116,7 @@ void BaseBuilding_NPCDeath(int entity)
 
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 	BarrackBody_NPCDeath(npc.index);
 	if(Waves_Started())
 	{
@@ -131,7 +126,26 @@ void BaseBuilding_NPCDeath(int entity)
 		DispatchSpawn(endround);
 		AcceptEntityInput(endround, "RoundWin");
 		Music_RoundEnd(endround);
+
+		CreateTimer(1.0, Timer_EverythingExplodes, _, TIMER_FLAG_NO_MAPCHANGE);
 	}
+}
+
+static Action Timer_EverythingExplodes(Handle timer)
+{
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
+	{
+		float pos[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		makeexplosion(-1, pos, 0, 0);
+		SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE);
+
+		CreateTimer(0.2, Timer_EverythingExplodes, _, TIMER_FLAG_NO_MAPCHANGE);
+		break;
+	}
+
+	return Plugin_Continue;
 }
 
 void BaseBuilding_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

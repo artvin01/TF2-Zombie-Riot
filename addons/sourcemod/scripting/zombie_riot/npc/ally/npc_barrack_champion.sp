@@ -15,14 +15,14 @@ public void BarrackChampionOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackChampion(client, vecPos, vecAng, ally);
+	return BarrackChampion(client, vecPos, vecAng);
 }
 
 methodmap BarrackChampion < BarrackBody
 {
-	public BarrackChampion(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackChampion(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackChampion npc = view_as<BarrackChampion>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

@@ -89,9 +89,7 @@ static bool Gone[MAXENTITIES];
 static bool Gone_Stats[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AlreadySpawned[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static int i_AmountProjectiles[MAXENTITIES];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
 
 static int Temp_Target[MAXENTITIES];
 
@@ -375,8 +373,8 @@ methodmap Castellan < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
-			value = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			value = float(ZR_Waves_GetRound()+1);
 		}
 
 		if(RaidModeScaling < 55)
@@ -416,14 +414,19 @@ methodmap Castellan < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 			b_NpcUnableToDie[npc.index] = true;
 		}
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
-		music.Time = 154;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
-		strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
-		Music_SetRaidMusic(music);
+
+		if(StrContains(data, "nomusic") == -1)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_castellan.mp3");
+			music.Time = 154;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
+			strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
+			Music_SetRaidMusic(music);
+		}
+
 		npc.m_iChanged_WalkCycle = -1;
 
 		int skin = 1;
@@ -923,7 +926,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			I_cant_do_this_all_day[npc.index]=0;
 			ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
-			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
+			IncreaseEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;
 			RaidModeTime += 35.0;

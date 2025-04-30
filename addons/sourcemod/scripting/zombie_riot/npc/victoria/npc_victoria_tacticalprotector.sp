@@ -21,9 +21,9 @@ static const char g_DronPingSounds[] = "misc/rd_finale_beep01.wav";
 
 static const char g_MeleeHitSounds[] = "npc/scanner/cbot_discharge1.wav";
 
-static bool FactorySpawn[MAXENTITIES];
-static bool MK2[MAXENTITIES];
-static bool Limit[MAXENTITIES];
+
+
+
 static bool Fragments[MAXENTITIES];
 
 void Victorian_TacticalProtector_OnMapStart_NPC()
@@ -48,7 +48,7 @@ void Victorian_TacticalProtector_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaProtector(client, vecPos, vecAng, ally, data);
+	return VictoriaProtector(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaProtector < CClotBody
@@ -79,7 +79,7 @@ methodmap VictoriaProtector < CClotBody
 	{
 		EmitSoundToAll(g_DronPingSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public VictoriaProtector(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaProtector(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaProtector npc = view_as<VictoriaProtector>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.45", "15000", ally, false, true));
 		
@@ -243,7 +243,7 @@ static void VictoriaProtector_ClotThink(int iNPC)
 						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-						IncreaceEntityDamageTakenBy(spawn_index, 0.05, 1.0);
+						IncreaseEntityDamageTakenBy(spawn_index, 0.05, 1.0);
 					}
 					npc.m_bFUCKYOU=true;
 					npc.m_flNextThinkTime = gameTime + 1.0;
@@ -328,7 +328,7 @@ static Action VictoriaProtector_OnTakeDamage(int victim, int &attacker, int &inf
 		if(!npc.Anger)
 		{
 			damage=0.0;
-			IncreaceEntityDamageTakenBy(npc.index, 0.15, 5.0);
+			IncreaseEntityDamageTakenBy(npc.index, 0.15, 5.0);
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 2;
 			npc.m_flSpeed = 0.0;

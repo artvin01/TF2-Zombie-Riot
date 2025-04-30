@@ -23,9 +23,9 @@ static ArrayList DownloadList;
 
 void FileNetwork_PluginStart()
 {
-#if defined _filenetwork_included
 	RegServerCmd("zr_showfilenetlist", DebugCommand);
 
+#if defined _filenetwork_included
 	SoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	SoundAlts = new StringMap();
 	ExtraList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
@@ -38,11 +38,11 @@ void FileNetwork_PluginStart()
 #endif
 }
 
-#if defined _filenetwork_included
 static Action DebugCommand(int args)
 {
 	char buffer[PLATFORM_MAX_PATH];
 
+#if defined _filenetwork_included
 	if(SoundList)
 	{
 		int length = SoundList.Length;
@@ -62,10 +62,20 @@ static Action DebugCommand(int args)
 			PrintToServer("\"%s\"", buffer);
 		}
 	}
+#endif
+
+	if(DownloadList)
+	{
+		int length = DownloadList.Length;
+		for(int i; i < length; i++)
+		{
+			DownloadList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("(DL) \"%s\"", buffer);
+		}
+	}
 
 	return Plugin_Handled;
 }
-#endif
 
 stock void FileNetwork_LibraryAdded(const char[] name)
 {
@@ -91,6 +101,24 @@ stock void FileNetwork_LibraryRemoved(const char[] name)
 #endif
 }
 
+stock bool FileNetwork_Enabled()
+{
+#if defined _filenetwork_included
+	if(FileNetworkLib)
+		return CvarFileNetworkDisable.IntValue < 1;
+#endif
+	return false;
+}
+
+stock bool FileNetworkLib_Installed()
+{
+#if defined _filenetwork_included
+	if(FileNetworkLib)
+		return true;
+#endif
+
+	return false;
+}
 void FileNetwork_MapStart()
 {
 	InServerSetup = true;
@@ -176,7 +204,9 @@ void FileNetwork_ConfigSetup(KeyValues map)
 	{
 		map.Rewind();
 		if(map.JumpToKey("Packages"))
+		{
 			enabled = map;
+		}
 	}
 
 	if(!enabled)
@@ -192,7 +222,8 @@ void FileNetwork_ConfigSetup(KeyValues map)
 		else
 		{
 			enabled = kv;
-			enabled.JumpToKey("Default");
+			if(!enabled.JumpToKey("Default"))
+				LogError("No default download packages in downloads.cfg");
 		}
 
 	}
@@ -273,8 +304,11 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 	
 	PrecacheSound(sound);
 
+	if(!InServerSetup)
+		PrintToServer("PrecacheSoundCustom::TooLate '%s'", sound);
+
 #if defined _filenetwork_included
-	if(InServerSetup && CvarFileNetworkDisable.IntValue > 0)
+	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 0))
 #else
 	if(InServerSetup)
 #endif
@@ -304,14 +338,16 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 
 stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 {
-	char buffer[PLATFORM_MAX_PATH];
+	if(!InServerSetup)
+		PrintToServer("PrecacheSoundCustom::TooLate '%s'", icon);
 
+	char buffer[PLATFORM_MAX_PATH];
 	if(vtf)
 	{
 		FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
 
 #if defined _filenetwork_included
-		if(InServerSetup && CvarFileNetworkDisable.IntValue > 1)
+		if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 1))
 #else
 		if(InServerSetup)
 #endif
@@ -329,7 +365,7 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
 
 #if defined _filenetwork_included
-	if(InServerSetup && CvarFileNetworkDisable.IntValue > 1)
+	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 1))
 #else
 	if(InServerSetup)
 #endif
@@ -350,8 +386,19 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 #endif
 }
 
-static void AddToDownloadsTable(const char[] file, const char[] original = "")
+stock void AddToDownloadsTable(const char[] file, const char[] original = "")
 {
+	if(!InServerSetup)
+	{
+		LogStackTrace("Tried to add '%s' to downloads, but too late", file);
+
+		// Kill the plugin, we don't want client cache issues
+		if(StrContains(file, "sound", false) != -1)
+			SetFailState("Tried to add '%s' to downloads, but too late", file);
+		
+		return;
+	}
+	
 	if(DownloadList.FindString(file) == -1)
 	{
 		AddFileToDownloadsTable(file);
@@ -412,7 +459,7 @@ static void SendNextFile(int client)
 		ExtraList.GetString(ExtraLevel[client], download, sizeof(download));
 
 		pack = new DataPack();
-		pack.WriteCell(true);	// Is an extra
+		pack.WriteCell(1);	// Is an extra
 	}
 	else if(SoundLevel[client] < SoundList.Length)
 	{
@@ -420,7 +467,7 @@ static void SendNextFile(int client)
 		Format(download, sizeof(download), "sound/%s", download[download[0] == '#' ? 1 : 0]);
 		
 		pack = new DataPack();
-		pack.WriteCell(false);	// Is a sound
+		pack.WriteCell(0);	// Is a sound
 	}
 
 	if(pack)
@@ -431,7 +478,7 @@ static void SendNextFile(int client)
 		
 		static char filecheck[PLATFORM_MAX_PATH];
 		FormatFileCheck(download, client, filecheck, sizeof(filecheck));
-		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
+		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack, 10);
 		if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
 		{
 			Format(filecheck, sizeof(filecheck), "download/%s", filecheck);
@@ -467,48 +514,63 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 	{
 		static char download[PLATFORM_MAX_PATH];
 		pack.Reset();
-		bool extra = pack.ReadCell();
+		int type = pack.ReadCell();
 		pack.ReadString(download, sizeof(download));
 
 		if(success)
 		{
-			if(extra)
+			switch(type)
 			{
-				ExtraLevel[client]++;
-			}
-			else
-			{
-				SoundLevel[client]++;
-				if(IsValidClient(client))
+				case 0:
 				{
-					/*
-					char buffer[PLATFORM_MAX_PATH];
-					Format(buffer, sizeof(buffer), "%s", download);
-					ReplaceString(buffer, sizeof(buffer), "#", "");
-					ReplaceString(buffer, sizeof(buffer), "sound/", "");
-
-					PrecacheSound(buffer);
-					EmitSoundToClient(client, buffer, client, SNDCHAN_STATIC, .volume = 0.1);
-
-					PrintToChat(client, "%s",buffer);
-					DataPack pack1;
-					CreateDataTimer(5.0, Timer_FixSoundsCancelThem, pack1, TIMER_FLAG_NO_MAPCHANGE);
-					pack1.WriteString(buffer);
-					pack1.WriteCell(EntIndexToEntRef(client));
-					*/
-					if(!DoingSoundFix[client])
+					SoundLevel[client]++;
+					if(IsValidClient(client))
 					{
-						DataPack pack2;
-						CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
-						pack2.WriteCell(0);
-						pack2.WriteCell(EntIndexToEntRef(client));
-						pack2.WriteCell(0);
-						DoingSoundFix[client] = true;
+						/*
+						char buffer[PLATFORM_MAX_PATH];
+						Format(buffer, sizeof(buffer), "%s", download);
+						ReplaceString(buffer, sizeof(buffer), "#", "");
+						ReplaceString(buffer, sizeof(buffer), "sound/", "");
+
+						PrecacheSound(buffer);
+						EmitSoundToClient(client, buffer, client, SNDCHAN_STATIC, .volume = 0.1);
+
+						PrintToChat(client, "%s",buffer);
+						DataPack pack1;
+						CreateDataTimer(5.0, Timer_FixSoundsCancelThem, pack1, TIMER_FLAG_NO_MAPCHANGE);
+						pack1.WriteString(buffer);
+						pack1.WriteCell(EntIndexToEntRef(client));
+						*/
+						if(!DoingSoundFix[client])
+						{
+							DataPack pack2;
+							CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+							pack2.WriteCell(0);
+							pack2.WriteCell(EntIndexToEntRef(client));
+							pack2.WriteCell(0);
+							DoingSoundFix[client] = true;
+						}
+					}
+
+					SendNextFile(client);
+				}
+				case 1:
+				{
+					ExtraLevel[client]++;
+					SendNextFile(client);
+				}
+				case 2:
+				{
+					Function func = pack.ReadFunction();
+					if(func != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, func);
+						Call_PushCell(client);
+						Call_PushString(download);
+						Call_Finish();
 					}
 				}
 			}
-
-			SendNextFile(client);
 		}
 		else
 		{
@@ -640,30 +702,47 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			}
 
 			pack.Reset();
-			if(pack.ReadCell())
+			int type = pack.ReadCell();
+			switch(type)
 			{
-				ExtraLevel[client]++;
-			}
-			else
-			{
-				//Fix soundcache issues
-				/*
-					//When the sound is first played, it has an ugly ass reverb to it, this fixes it.
-				*/
-				if(!DoingSoundFix[client])
+				case 0:
 				{
-					DataPack pack2;
-					CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
-					pack2.WriteCell(0);
-					pack2.WriteCell(EntIndexToEntRef(client));
-					pack2.WriteCell(0);
-					DoingSoundFix[client] = true;
+					//Fix soundcache issues
+					/*
+						//When the sound is first played, it has an ugly ass reverb to it, this fixes it.
+					*/
+					if(!DoingSoundFix[client])
+					{
+						DataPack pack2;
+						CreateDataTimer(0.25, StartSoundCache_ManualLoop, pack2, TIMER_FLAG_NO_MAPCHANGE);
+						pack2.WriteCell(0);
+						pack2.WriteCell(EntIndexToEntRef(client));
+						pack2.WriteCell(0);
+						DoingSoundFix[client] = true;
+					}
+
+					SoundLevel[client]++;
+					SendNextFile(client);
 				}
-				SoundLevel[client]++;
+				case 1:
+				{
+					ExtraLevel[client]++;
+					SendNextFile(client);
+				}
+				case 2:
+				{
+					pack.ReadString(filecheck, sizeof(filecheck));
+
+					Function func = pack.ReadFunction();
+					if(func != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, func);
+						Call_PushCell(client);
+						Call_PushString(file);
+						Call_Finish();
+					}
+				}
 			}
-
-
-			SendNextFile(client);
 		}
 		else
 		{
@@ -724,7 +803,7 @@ stock void StopCustomSound(int entity, int channel, const char[] sound, float vo
 
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	if(DownloadList.FindString(sound) != -1)
+	if(!FileNetwork_Enabled() || DownloadList.FindString(sound) != -1)
 	{
 		float volume2 = volume;
 		int count = RoundToCeil(volume);
@@ -880,4 +959,26 @@ stock bool IsFileInDownloads(const char[] file)
 	}
 
 	return false;
+}
+
+stock void SendSingleFileToClient(int client, const char[] download, Function func)
+{
+#if defined _filenetwork_included
+	if(!FileNetworkLib || CvarFileNetworkDisable.IntValue > 0)
+		return;
+	
+	DataPack pack = new DataPack();
+	pack.WriteCell(2);
+	pack.WriteString(download);
+	pack.WriteFunction(func);
+	
+	static char filecheck[PLATFORM_MAX_PATH];
+	FormatFileCheck(download, client, filecheck, sizeof(filecheck));
+	FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack, 10);
+	if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
+	{
+		Format(filecheck, sizeof(filecheck), "download/%s", filecheck);
+		DeleteFile(filecheck);
+	}
+#endif
 }

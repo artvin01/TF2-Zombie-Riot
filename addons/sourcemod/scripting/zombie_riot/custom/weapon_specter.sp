@@ -75,7 +75,7 @@ static int Specter_GetSpecterFlags(int weapon)
 	return flags;
 }
 
-stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
 
 	int flags = Specter_GetSpecterFlags(weapon);
@@ -141,6 +141,84 @@ int SpecterHowManyEnemiesHit(int client, int weapon)
 	return (survival ? 4 : ((flags & SPECTER_THREE) ? 3 : 2));
 }
 
+#define FIREAXE_EXPLOSION 100.0
+
+public void Weapon_FireAxeBoomM2(int client, int weapon, bool &result, int slot)
+{
+	Weapon_FireAxeBoomM2_Internal(client, weapon, result, slot, 0);
+}
+public void Weapon_FireAxeBoomM2_Pap(int client, int weapon, bool &result, int slot)
+{
+	Weapon_FireAxeBoomM2_Internal(client, weapon, result, slot, 1);
+}
+public void Weapon_FireAxeBoomM2_Internal(int client, int weapon, bool &result, int slot, int Pap)
+{
+	float cooldown = Ability_Check_Cooldown(client, slot);
+	if(cooldown > 0.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
+		return;
+	}
+	float flPos[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+	
+	ParticleEffectAt(flPos, "heavy_ring_of_fire", 0.5);
+
+	flPos[2] += 45.0;
+	float damage = 65.0;
+
+	damage *= Attributes_Get(weapon, 1, 1.0);
+
+	damage *= Attributes_Get(weapon, 2, 1.0);
+
+	damage *= 2.0;
+	Ability_Apply_Cooldown(client, slot, 20.0);
+
+	b_LagCompNPC_No_Layers = true;
+	b_LagCompNPC_OnlyAllies = false;
+	StartLagCompensation_Base_Boss(client);
+
+	i_ExplosiveProjectileHexArray[weapon] = 0;
+	i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
+	Explode_Logic_Custom(damage, client, weapon, weapon, flPos, FIREAXE_EXPLOSION, _, _, _, 5, true);
+	EmitSoundToAll(WAND_FIREBALL_SOUND, client, SNDCHAN_AUTO, 80, _, 0.7, 90);
+
+	FinishLagCompensation_Base_boss();
+	if(Pap)
+	{
+		float vel = 1500.0;
+
+		int entity = CreateEntityByName("tf_projectile_spellfireball");
+		if(IsValidEntity(entity))
+		{
+			float ang[3], pos[3], velVec[3], buffer[3];
+			GetClientEyePosition(client, pos);
+			GetClientEyeAngles(client, ang);
+		
+			GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
+			velVec[0] = buffer[0] * vel;
+			velVec[1] = buffer[1] * vel;
+			velVec[2] = buffer[2] * vel;
+		
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+			SetTeam(entity, GetTeam(client));
+			
+			DispatchSpawn(entity);
+			
+		//	SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+		//	SetEntityGravity(entity, f_PyreGravity[tier]);
+			TeleportEntity(entity, pos, ang, velVec);
+			
+			f_CustomGrenadeDamage[entity] = damage;
+			SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+		}
+	}
+}
+
 public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 {
 	float cooldown = Ability_Check_Cooldown(client, slot);
@@ -155,11 +233,10 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
 			ApplyTempAttrib(weapon, 412, 0.35, SPECTER_BONE_FRACTURE_DURATION);
-			CreateTimer(0.5, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		}
 		else
 		{
-			CreateTimer(0.1, Specter_DrainTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			ApplyStatusEffect(client, client, "Infinite Will", SPECTER_BONE_FRACTURE_DURATION);
 		}
 
 		ApplyTempAttrib(weapon, 6, 0.5,SPECTER_BONE_FRACTURE_DURATION);

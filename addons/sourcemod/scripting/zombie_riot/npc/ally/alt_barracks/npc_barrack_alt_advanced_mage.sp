@@ -8,7 +8,6 @@ static const char g_RangedAttackSounds[][] = {
 static int i_barrage[MAXENTITIES];
 static float fl_barragetimer[MAXENTITIES];
 static float fl_singularbarrage[MAXENTITIES];
-static int i_AmountProjectiles[MAXENTITIES];
 
 static const char g_IdleSounds[][] =
 {
@@ -46,9 +45,9 @@ public void Barrack_Alt_Advanced_Mage_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Advanced_Mage(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Advanced_Mage(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Advanced_Mage < BarrackBody
@@ -79,7 +78,7 @@ methodmap Barrack_Alt_Advanced_Mage < BarrackBody
 		
 
 	}
-	public Barrack_Alt_Advanced_Mage(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Advanced_Mage(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Advanced_Mage npc = view_as<Barrack_Alt_Advanced_Mage>(BarrackBody(client, vecPos, vecAng, "250", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

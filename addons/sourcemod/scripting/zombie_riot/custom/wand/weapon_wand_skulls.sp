@@ -391,20 +391,20 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 						case 0:
 						{
 							SetEntityRenderColor(Drone, 100, 255, 180, 255);
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_1, _, "bloodpoint");
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_1);
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0);
 						}
 						case 1:
 						{
 							SetEntityRenderColor(Drone, 255, 140, 70, 255);
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_2, _, "bloodpoint");
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_2);
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0);
 						}
 						case 2:
 						{
 							SetEntityRenderColor(Drone, 120, 200, 255, 255);
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_3, _, "bloodpoint");
-							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0, "bloodpoint");
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_3);
+							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0);
 						}
 					}
 					
@@ -447,7 +447,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					Current_Mana[client] -= mana_cost;
 					Ability_Apply_Cooldown(client, 2, 5.0);
 					SetDefaultHudPosition(client);
-					//SetGlobalTransTarget(client);
+					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Skull Servant Summoned", Skulls_ArrayStack[client].Length, Skulls_MaxSkulls[tier]);
 				}
 			}
@@ -577,6 +577,8 @@ public void Skulls_Management(int client)
 			}
 		}
 	}
+	if(Skulls_ArrayStack[client].Length <= 0)
+		DeleteAllSkulls(client);
 }
 
 public void Skull_AttemptShoot(int ent, int client)
@@ -705,7 +707,7 @@ void GetAngleToPoint(int ent, float TargetLoc[3], float DummyAngles[3], const fl
 public int Skull_GetClosestTarget(int ent, float range)
 {
 	if (ent < MaxClients + 1 || ent > 2048)
-	return -1;
+		return -1;
 		
 	int Closest = -1;
 	float ShortestDistance = 9999999.0;
@@ -729,11 +731,12 @@ public int Skull_GetClosestTarget(int ent, float range)
 			float dist = GetVectorDistance(DroneLoc, TargetLoc, true);
 			if(dist <= range)
 			{	
-				Handle Trace = TR_TraceRayFilterEx(DroneLoc, TargetLoc, MASK_SHOT, RayType_EndPoint, Skull_DontHitSkulls);
+				Handle Trace = TR_TraceRayFilterEx(DroneLoc, TargetLoc, MASK_ALL, RayType_EndPoint, Skull_DontHitSkulls);
 					
-				if (!TR_DidHit(Trace))
+				if (TR_DidHit(Trace))
 				{
-					if (dist < ShortestDistance)
+					int iHit = TR_GetEntityIndex(Trace);
+					if (b_ThisWasAnNpc[iHit] && dist < ShortestDistance)
 					{
 						Closest = i;
 						ShortestDistance = dist;
@@ -905,7 +908,7 @@ bool Skulls_PlayerHasNoSkulls(int client)
 	return (Skulls_ArrayStack[client] == null || !Skulls_ArrayStack[client].Length);
 }
 
-stock void Skull_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+stock void Skull_AttachParticle(int entity, char type[255], float duration = 0.0, float zTrans = 0.0)
 {
 	if (IsValidEntity(entity))
 	{
@@ -955,7 +958,7 @@ stock void GetViewVector(float fVecAngle[3], float fOutPut[3])
 	fOutPut[2] = -Sine(fVecAngle[0] / (180 / FLOAT_PI));
 }
 
-public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Apocalips
+public bool Skull_DontHitSkulls(int entity, int contentsMask) //Borrowed from Apocalips
 {
 	if (IsValidClient(entity))
 	{

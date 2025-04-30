@@ -64,26 +64,7 @@ static char g_PullSounds[][] = {
 #define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
 #define PILLAR_SPACING 170.0
 
-static bool Silvester_BEAM_CanUse[MAXENTITIES];
-static bool Silvester_BEAM_IsUsing[MAXENTITIES];
-static int Silvester_BEAM_TicksActive[MAXENTITIES];
-int Silvester_BEAM_Laser;
 int Silvester_BEAM_Laser_1;
-static int Silvester_BEAM_Glow;
-static float Silvester_BEAM_CloseDPT[MAXENTITIES];
-static float Silvester_BEAM_FarDPT[MAXENTITIES];
-static int Silvester_BEAM_MaxDistance[MAXENTITIES];
-static int Silvester_BEAM_BeamRadius[MAXENTITIES];
-static int Silvester_BEAM_ColorHex[MAXENTITIES];
-static int Silvester_BEAM_ChargeUpTime[MAXENTITIES];
-static float Silvester_BEAM_CloseBuildingDPT[MAXENTITIES];
-static float Silvester_BEAM_FarBuildingDPT[MAXENTITIES];
-static float Silvester_BEAM_Duration[MAXENTITIES];
-static float Silvester_BEAM_BeamOffset[MAXENTITIES][3];
-static float Silvester_BEAM_ZOffset[MAXENTITIES];
-static bool Silvester_BEAM_HitDetected[MAXENTITIES];
-static bool Silvester_BEAM_UseWeapon[MAXENTITIES];
-static float fl_Timebeforekamehameha[MAXENTITIES];
 static int i_InKame[MAXENTITIES];
 static bool b_RageAnimated[MAXENTITIES];
 
@@ -117,24 +98,19 @@ public void RaidbossSilvester_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = Silvester_TBB_Precahce;
 	NPC_Add(data);
-	Silvester_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
-	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
 	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LINKBEAM);
 	PrecacheModel(PILLAR_MODEL);
+
+	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
 	
-	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 void Silvester_TBB_Precahce()
 {
@@ -151,9 +127,9 @@ void Silvester_TBB_Precahce()
 	for (int i = 0; i < (sizeof(g_AngerSoundsPassed));   i++) { PrecacheSound(g_AngerSoundsPassed[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
+	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 	
-	
-	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester.mp3");
+	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester_waldch_duo.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -171,8 +147,8 @@ methodmap RaidbossSilvester < CClotBody
 {
 	property float m_flTimebeforekamehameha
 	{
-		public get()							{ return fl_Timebeforekamehameha[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_Timebeforekamehameha[this.index] = TempValueForProperty; }
+		public get()							{ return fl_BEAM_RechargeTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_RechargeTime[this.index] = TempValueForProperty; }
 	}
 	property int m_iInKame
 	{
@@ -180,7 +156,8 @@ methodmap RaidbossSilvester < CClotBody
 		public set(int TempValueForProperty) 	{ i_InKame[this.index] = TempValueForProperty; }
 	}
 
-	public void PlayIdleSound(bool repeat = false) {
+	public void PlayIdleSound() 
+	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		int sound = GetRandomInt(0, sizeof(g_IdleSounds) - 1);
@@ -250,9 +227,6 @@ methodmap RaidbossSilvester < CClotBody
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayPullSound()");
-		#endif
 	}
 	
 	
@@ -260,9 +234,7 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -274,6 +246,11 @@ methodmap RaidbossSilvester < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
+	}
+	public void PlayLaserLaunchSound() {
+		int chose = GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound)-1);
+		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public RaidbossSilvester(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -362,7 +339,7 @@ methodmap RaidbossSilvester < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 
 		f_TalkDelayCheck = 0.0;
@@ -459,12 +436,12 @@ methodmap RaidbossSilvester < CClotBody
 		if(!ingoremusic)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
-			music.Time = 117;
-			music.Volume = 2.0;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester_waldch_duo.mp3");
+			music.Time = 260;
+			music.Volume = 1.6;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
-			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			strcopy(music.Name, sizeof(music.Name), "The Duo that Warns in inconspicuous Ways");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 		else
@@ -659,8 +636,7 @@ static void Internal_ClotThink(int iNPC)
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
+			
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Angeled Silvester");
 			i_NpcWeight[npc.index] = 4;
 
@@ -1051,8 +1027,7 @@ static void Internal_ClotThink(int iNPC)
 							velocity[0] *= -1.0;
 							velocity[1] *= -1.0;
 						//	velocity[2] *= -1.0;
-							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);    
-							RequestFrame(ApplySdkHookSilvesterThrow, EntIndexToEntRef(EnemyLoop));   					
+							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);    				
 						}
 					}
 				}
@@ -1162,11 +1137,7 @@ static void Internal_ClotThink(int iNPC)
 					float Distance = GetVectorDistance(victimPos, partnerPos, true);
 					if(Distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 					{	
-						npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 50.0;
-						if(npc.Anger)
-						{
-							npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 40.0;
-						}
+						npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + (npc.Anger ? 40.0 : 50.0);
 						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 						Silvester_TBB_Ability(npc.index);
 						npc.m_iInKame = 2;
@@ -1180,11 +1151,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 				else
 				{
-					npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 50.0;
-					if(npc.Anger)
-					{
-						npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 40.0;
-					}
+					npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + (npc.Anger ? 40.0 : 50.0);
 					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
@@ -1640,124 +1607,6 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 	}
 }
 
-
-static float fl_ThrowDelay[MAXENTITIES];
-public Action contact_throw_Silvester_entity(int client)
-{
-	CClotBody npc = view_as<CClotBody>(client);
-	float targPos[3];
-	float chargerPos[3];
-	float flVel[3];
-	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
-	bool EndThrow = false;
-	if (IsValidClient(client) && IsPlayerAlive(client) && dieingstate[client] == 0 && TeutonType[client] == TEUTON_NONE)
-	{
-		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-		{
-			if (fl_ThrowDelay[client] < GetGameTime())
-			{
-				EndThrow = true;
-			}		
-		}
-	}
-	else if(!b_NpcHasDied[client]) //It died.
-	{
-		if(npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime())
-		{
-			EndThrow = true;
-		}
-	}
-	else
-	{
-		EndThrow = true;
-	}
-	if(EndThrow)
-	{
-		for(int entity=1; entity < MAXENTITIES; entity++)
-		{
-			b_AlreadyHitTankThrow[client][entity] = false;
-		}
-
-		SDKUnhook(client, SDKHook_PreThink, contact_throw_Silvester_entity);	
-		return Plugin_Continue;
-	}
-	else
-	{
-		char classname[60];
-		WorldSpaceCenter(client, chargerPos);
-		for(int entity=1; entity <= MAXENTITIES; entity++)
-		{
-			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
-			{
-				GetEntityClassname(entity, classname, sizeof(classname));
-				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
-				{
-					WorldSpaceCenter(entity, targPos);
-					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetTeam(entity)!=GetTeam(client))
-					{
-						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
-						{		
-							if(!b_NpcHasDied[entity])
-								continue;
-								
-							int damage;
-							if(client <= MaxClients)
-							{
-								damage = ReturnEntityMaxHealth(client) / 3;
-							}
-							if(damage > 2000)
-							{
-								damage = 2000;
-							}
-							
-							if(!ShouldNpcDealBonusDamage(entity))
-							{
-								damage *= 4;
-							}
-							
-							SDKHooks_TakeDamage(entity, 0, 0, float(damage), DMG_GENERIC, -1, NULL_VECTOR, targPos);
-							EmitSoundToAll("weapons/physcannon/energy_disintegrate5.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
-							b_AlreadyHitTankThrow[client][entity] = true;
-							if(entity <= MaxClients)
-							{
-								float newVel[3];
-								
-								newVel[0] = GetEntPropFloat(entity, Prop_Send, "m_vecVelocity[0]") * 2.0;
-								newVel[1] = GetEntPropFloat(entity, Prop_Send, "m_vecVelocity[1]") * 2.0;
-								newVel[2] = 500.0;
-												
-								for (int i = 0; i < 3; i++)
-								{
-									flVel[i] += newVel[i];
-								}				
-								TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, flVel); 
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return Plugin_Continue;
-}
-
-
-void ApplySdkHookSilvesterThrow(int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(IsValidEntity(entity))
-	{
-		for(int entity1=1; entity1 < MAXENTITIES; entity1++)
-		{
-			b_AlreadyHitTankThrow[entity][entity1] = false;
-		}
-		fl_ThrowDelay[entity] = GetGameTime(entity) + 0.1;
-		SDKHook(entity, SDKHook_PreThink, contact_throw_Silvester_entity);		
-	}
-}
-
-
-
 void Silvester_SpawnAllyDuoRaid(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -2024,7 +1873,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			Range += (float(count -1) * 10.0);
 			Range += 10.0;
 			
-			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
+			makeexplosion(entity, SpawnParticlePos, RoundToCeil(damage), RoundToCeil(Range),_,_,false);
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)
 			{
@@ -2063,6 +1912,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 
 void Silvester_TBB_Ability(int client)
 {
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(client);
 	float flPos[3]; // original
 	float flAng[3]; // original
 	GetAttachment(client, "effect_hand_r", flPos, flAng);
@@ -2072,246 +1922,52 @@ void Silvester_TBB_Ability(int client)
 	GetAttachment(client, "effect_hand_l", flPos, flAng);
 	int particler = ParticleEffectAt(flPos, "eyeboss_death_vortex", 4.0);
 	SetParent(client, particler, "effect_hand_l");
-			
-	Silvester_BEAM_IsUsing[client] = false;
-	Silvester_BEAM_TicksActive[client] = 0;
 
-	Silvester_BEAM_CanUse[client] = true;
-	Silvester_BEAM_CloseDPT[client] = 16.0 * RaidModeScaling;
-	Silvester_BEAM_FarDPT[client] = 12.0 * RaidModeScaling;
-	Silvester_BEAM_MaxDistance[client] = 2000;
-	Silvester_BEAM_BeamRadius[client] = 45;
-	Silvester_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	Silvester_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
-	Silvester_BEAM_CloseBuildingDPT[client] = 0.0;
-	Silvester_BEAM_FarBuildingDPT[client] = 0.0;
-	Silvester_BEAM_Duration[client] = 6.0;
-	
-	Silvester_BEAM_BeamOffset[client][0] = 0.0;
-	Silvester_BEAM_BeamOffset[client][1] = 0.0;
-	Silvester_BEAM_BeamOffset[client][2] = 0.0;
-
-	Silvester_BEAM_ZOffset[client] = 0.0;
-	Silvester_BEAM_UseWeapon[client] = false;
-
-	Silvester_BEAM_IsUsing[client] = true;
-	Silvester_BEAM_TicksActive[client] = 0;
+	float GameTime = GetGameTime(npc.index);
+	fl_BEAM_DurationTime[npc.index] = GameTime + 5.0;
+	fl_BEAM_ChargeUpTime[npc.index] = GameTime + 3.0;
 	
 	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
 	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
 	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
 	
-	switch(GetRandomInt(1, 4))
-	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-		}		
-	}
-			
-
-	CreateTimer(5.0, Silvester_TBB_Timer, EntRefToEntIndex(client), TIMER_FLAG_NO_MAPCHANGE);
+	npc.PlayLaserLaunchSound();
+	
+	SDKUnhook(client, SDKHook_Think, Silvester_TBB_Tick);
 	SDKHook(client, SDKHook_Think, Silvester_TBB_Tick);
 }
 
-
-public Action Silvester_TBB_Timer(Handle timer, int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(!IsValidEntity(client))
-		return Plugin_Continue;
-
-	Silvester_BEAM_IsUsing[client] = false;
-	
-	Silvester_BEAM_TicksActive[client] = 0;
-	
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
-	
-	return Plugin_Continue;
-}
-
-
-public bool Silvester_BEAM_TraceWallsOnly(int entity, int contentsMask)
-{
-	return !entity;
-}
-
-
-public bool Silvester_BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsEntityAlive(entity))
-	{
-		Silvester_BEAM_HitDetected[entity] = true;
-	}
-	return false;
-}
-
-static void Silvester_GetBeamDrawStartPoint(int client, float startPoint[3])
-{
-	float angles[3];
-	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	GetAbsOrigin(client, startPoint);
-	startPoint[2] += 50.0;
-	
-	RaidbossSilvester npc = view_as<RaidbossSilvester>(client);
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-			return;	
-	float flPitch = npc.GetPoseParameter(iPitch);
-	flPitch *= -1.0;
-	angles[0] = flPitch;
-	GetAbsOrigin(client, startPoint);
-	startPoint[2] += 50.0;
-	
-	if (0.0 == Silvester_BEAM_BeamOffset[client][0] && 0.0 == Silvester_BEAM_BeamOffset[client][1] && 0.0 == Silvester_BEAM_BeamOffset[client][2])
-	{
-		return;
-	}
-	float tmp[3];
-	float actualBeamOffset[3];
-	tmp[0] = Silvester_BEAM_BeamOffset[client][0];
-	tmp[1] = Silvester_BEAM_BeamOffset[client][1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, angles, actualBeamOffset);
-	actualBeamOffset[2] = Silvester_BEAM_BeamOffset[client][2];
-	startPoint[0] += actualBeamOffset[0];
-	startPoint[1] += actualBeamOffset[1];
-	startPoint[2] += actualBeamOffset[2];
-}
 public Action Silvester_TBB_Tick(int client)
 {
-	static int tickCountClient[MAXENTITIES];
-	if(!IsValidEntity(client) || !Silvester_BEAM_IsUsing[client])
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(client);
+	float GameTime = GetGameTime(npc.index);
+	if(!IsValidEntity(client) || fl_BEAM_DurationTime[npc.index] < GameTime)
 	{
-		tickCountClient[client] = 0;
 		SDKUnhook(client, SDKHook_Think, Silvester_TBB_Tick);
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(client);
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+		
 		npc.m_iInKame = 1;
+
+		return Plugin_Stop;
 	}
 
-	int tickCount = tickCountClient[client];
-	tickCountClient[client]++;
+	if(fl_BEAM_ChargeUpTime[npc.index] > GameTime)
+		return Plugin_Continue;
 
-	Silvester_BEAM_TicksActive[client] = tickCount;
-	float diameter = float(Silvester_BEAM_BeamRadius[client] * 2);
-	int r = GetR(Silvester_BEAM_ColorHex[client]);
-	int g = GetG(Silvester_BEAM_ColorHex[client]);
-	int b = GetB(Silvester_BEAM_ColorHex[client]);
-	if (Silvester_BEAM_ChargeUpTime[client] <= tickCount)
-	{
-		static float angles[3];
-		static float startPoint[3];
-		static float endPoint[3];
-		static float hullMin[3];
-		static float hullMax[3];
-		static float playerPos[3];
-		GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(client);
-		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return Plugin_Continue;
-			
-		float flPitch = npc.GetPoseParameter(iPitch);
-		flPitch *= -1.0;
-		angles[0] = flPitch;
-		GetAbsOrigin(client, startPoint);
-		startPoint[2] += 75.0;
+	Basic_NPC_Laser Data;
+	Data.npc = npc;
+	Data.Radius = 45.0;
+	Data.Range = 2000.0;
+	//divided by 6 since its every tick, and by TickrateModify
+	Data.Close_Dps = RaidModeScaling * 16.0 / 6.0 / TickrateModify;
+	Data.Long_Dps = RaidModeScaling * 12.0 / 6.0 / TickrateModify;
+	Data.Color = {238, 221, 68, 60};
+	Data.DoEffects = true;
+	Basic_NPC_Laser_Logic(Data);
 
-		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Silvester_BEAM_TraceWallsOnly);
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(endPoint, trace);
-			delete trace;
-			ConformLineDistance(endPoint, startPoint, endPoint, float(Silvester_BEAM_MaxDistance[client]));
-			float lineReduce = Silvester_BEAM_BeamRadius[client] * 2.0 / 3.0;
-			float curDist = GetVectorDistance(startPoint, endPoint, false);
-			if (curDist > lineReduce)
-			{
-				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
-			}
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				Silvester_BEAM_HitDetected[i] = false;
-			}
-			
-			
-			hullMin[0] = -float(Silvester_BEAM_BeamRadius[client]);
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, Silvester_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete trace;
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
-			{
-				if (Silvester_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
-				{
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = Silvester_BEAM_CloseDPT[client] + (Silvester_BEAM_FarDPT[client]-Silvester_BEAM_CloseDPT[client]) * (distance/Silvester_BEAM_MaxDistance[client]);
-					if (damage < 0)
-						damage *= -1.0;
-
-					if(victim > MAXTF2PLAYERS)
-					{
-						damage *= 3.0; //give 3x dmg to anything
-					}
-					damage /= TickrateModify;
-					float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, vic_vec);	// 2048 is DMG_NOGIB?
-				}
-			}
-			
-			static float belowBossEyes[3];
-			Silvester_GetBeamDrawStartPoint(client, belowBossEyes);
-			int colorLayer4[4];
-			SetColorRGBA(colorLayer4, r, g, b, 30);
-			int colorLayer3[4];
-			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 30);
-			int colorLayer2[4];
-			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
-			int colorLayer1[4];
-			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Silvester_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Silvester_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Silvester_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Silvester_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
-			TE_SendToAll(0.0);
-			int glowColor[4];
-			SetColorRGBA(glowColor, r, g, b, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Silvester_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
-			TE_SendToAll(0.0);
-		}
-		else
-		{
-			delete trace;
-		}
-		delete trace;
-	}
 	return Plugin_Continue;
 }
 

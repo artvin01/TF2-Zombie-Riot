@@ -94,17 +94,17 @@ static char[] GetBuildingHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(Waves_GetRound()+1 < 30)
+	if(ZR_Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.20));
 	}
-	else if(Waves_GetRound()+1 < 45)
+	else if(ZR_Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;
@@ -225,14 +225,14 @@ methodmap Magia_Anchor < CClotBody
 
 		b_is_magia_tower[npc.index]=true;
 
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_CUSTOM_MODELS_3);
+		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
-		int wave = Waves_GetRound()+1;
+		int wave = ZR_Waves_GetRound()+1;
 
 		if(StrContains(data, "force15") != -1)
 			wave = 15;
@@ -493,9 +493,9 @@ static void ClotThink(int iNPC)
 
 	if(i_special_tower_logic[npc.index] == 1)
 	{
-		float Radius = 450.0;
-		Master_Apply_Defense_Buff(npc.index, Radius, 5.0, 0.75);	//25% resistances
-		Master_Apply_Attack_Buff(npc.index, Radius, 5.0, 0.25);		//25% dmg bonus
+		float Radius = 650.0;
+		Master_Apply_Defense_Buff(npc.index, Radius, 20.0, 0.75);	//25% resistances
+		Master_Apply_Attack_Buff(npc.index, Radius, 20.0, 0.25);		//25% dmg bonus
 
 		float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=30.0;
 		int color[4]; Ruina_Color(color);
@@ -791,7 +791,7 @@ static void NPC_Death(int entity)
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 
 	b_is_magia_tower[npc.index]=false;
 

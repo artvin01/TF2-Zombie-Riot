@@ -43,13 +43,13 @@ public void Barrack_Alt_Barrager_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Barrager(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Barrager(client, vecPos, vecAng);
 }
 
-static int i_ammo_count[MAXENTITIES];
-static bool b_we_are_reloading[MAXENTITIES];
+
+
 static float fl_npc_basespeed;
 
 methodmap Barrack_Alt_Barrager < BarrackBody
@@ -73,7 +73,7 @@ methodmap Barrack_Alt_Barrager < BarrackBody
 		
 
 	}
-	public Barrack_Alt_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Barrager(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Barrager npc = view_as<Barrack_Alt_Barrager>(BarrackBody(client, vecPos, vecAng, "250", "models/player/Soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

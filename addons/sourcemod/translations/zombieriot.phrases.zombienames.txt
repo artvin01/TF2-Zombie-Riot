@@ -682,9 +682,9 @@
 		"pt"		"Corredor de Serras"
 		"nl"		"Zaagloper"
 	}
-	"True Fusion Warrior"
+	"Infected Silvester"
 	{
-		"en" 		"True Fusion Warrior"
+		"en" 		"Infected Silvester"
 		"ru" 		"Истинный Термоядерный Воин"
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
@@ -1042,6 +1042,22 @@
 	{
 		"en" 		"Corrupted Barney"
 	}
+	"Baby"
+	{
+		"en"		"Baby"
+	}
+	"Children"
+	{
+		"en"		"Children"
+	}
+	"Stranger"
+	{
+		"en"		"Stranger"
+	}
+	"Taller"
+	{
+		"en"		"Taller"
+	}
 	"Voided Vanguard"
 	{
 		"en" 		"Voided Vanguard"
@@ -1052,6 +1068,13 @@
 		"ru"		"Кахмлстайн"
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
+	}
+	"Kahmlstein?"
+	{
+		"en"		"Kahmlstein?"
+		"ru"		"Кахмлстайн?"
+		"pt"		"Kahmlstein?" 
+		"nl"		"Kahmlstein?"
 	}
 	"Chaos Kahmlstein"
 	{
@@ -1497,6 +1520,14 @@
 		"en"		"Silvester"
 		"pt"		"Silvester"
 		"ru"		"Сильвестр"
+	}
+	"Zeina"
+	{
+		"en"		"Zeina"
+	}
+	"Zilius"
+	{
+		"en"		"Zilius"
 	}
 	"Waldch"
 	{
@@ -2071,6 +2102,10 @@
 	{
 		"en" 		"Diversionistico"
 	}
+	"Diversionistico Elitus"
+	{
+		"en" 		"Diversionistico Elitus"
+	}
 	"Adiantum"
 	{
 		"en"	"Adiantum"
@@ -2110,6 +2145,14 @@
 	"Soldine"
 	{
 		"en"	"Soldine"
+	}
+	"Soldinus ilus"
+	{
+		"en"	"Soldinus ilus"
+	}
+	"Selfam Scythus"
+	{
+		"en"	"Selfam Scythus"
 	}
 	"Protecta"
 	{
@@ -2548,7 +2591,15 @@
 	}
 	"Vengeful Spirit"
 	{
-		"en"	"Vengeful Spirit"
+		"en"	"Vengefull Spirit"
+	}
+	"Wandering Spitit"
+	{
+		"en"	"Wandering Spitit"
+	}
+	"Vengeful Spitit"
+	{
+		"en"	"Vengeful Spitit"
 	}
 	"Fallen Warrior"
 	{
@@ -3008,7 +3059,7 @@
 	}
 	"Void Creep Desc"
 	{
-		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15％), regen, damage(20％) and speed(5％)."
 	}
 	"Void Elemental Damage"
 	{
@@ -3324,14 +3375,6 @@
 	{
 		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
 	}
-	"Antinel"
-	{
-		"en"		"Antinel"
-	}
-	"SIGMALLER"
-	{
-		"en"		"SIGMALLER"
-	}
 	"Ironborus"
 	{
 		"en"		"Ironborus"
@@ -3362,7 +3405,7 @@
 	}
 	"Beacon Constructor Desc"
 	{
-		"en"		"Places Beacons if close enough, has 50%% resistance and reduced speed while it carries one."
+		"en"		"Places Beacons if close enough, has 50％ resistance and reduced speed while it carries one."
 	}
 	"Iberia Lighthouse"
 	{
@@ -4187,10 +4230,6 @@
 	{
 		"en" "Vanishing Matter"
 	}
-	"Spotter"
-	{
-		"en" "Spotter"
-	}
 	"Annoying Spirit"
 	{
 		"en" "Annoying Spirit"
@@ -4206,5 +4245,149 @@
 	"Airboat"
 	{
 		"en"	"Airboat"
+	}
+	"Male 07"
+	{
+		"en"	"Male 07"
+	}
+	"Spiritrunner"
+	{
+		"en"	"Spiritrunner"
+	}
+	"Todd Howard"
+	{
+		"en"	"Todd Howard"
+	}
+	"Sea-Infected Todd Howard"
+	{
+		"en"	"Sea-Infected Todd Howard"
+	}
+	"kevinmery2009"
+	{
+		"en"	"kevinmery2009"
+	}
+	"Red Heavy"
+	{
+		"en"	"Red Heavy"
+	}
+	"Blue Heavy"
+	{
+		"en"	"Blue Heavy"
+	}
+	"Cyan Heavy"
+	{
+		"en"	"Cyan Heavy"
+	}
+	"Green Heavy"
+	{
+		"en"	"Green Heavy"
+	}
+	"Orange Heavy"
+	{
+		"en"	"Orange Heavy"
+	}
+	"Yellow Heavy"
+	{
+		"en"	"Yellow Heavy"
+	}
+	"Purple Heavy"
+	{
+		"en"	"Purple Heavy"
+	}
+	"Anti-Camp Temperal Buster"
+	{
+		"en"	"Anti-Camp Temperal Buster"
+	}
+	"Troll Rifler"
+	{
+		"en"	"Troll Rifler"
+	}
+	"Troll Cop"
+	{
+		"en"	"Troll Cop"
+	}
+	"Troll RPG Carrier"
+	{
+		"en"	"Troll RPG Carrier"
+	}
+	"Troll Brawler"
+	{
+		"en"	"Troll Brawler"
+	}
+	"Crystallized Horror"
+	{
+		"en" 	"Crystallized Horror"
+	}
+	"Eirasus"
+	{
+		"en"	"Eirasus"
+	}
+	"Eirasus Desc"
+	{
+		"en"	"Simular to an Erasus.\nSpawns with shields.\nGains the 'Angered expidonsan' buff once its shield breaks."
+	}
+	"Haltera"
+	{
+		"en"	"Haltera"
+	}
+	"Haltera Desc"
+	{
+		"en"	"Simular to a Guardus\nOnce below half HP, loses their hat and gains 2x attackspeed but loses half their damage\nTheir healing is unchanged..."
+	}
+	"Flaigus"
+	{
+		"en"	"Flaigus"
+	}
+	"Flaigus Desc"
+	{
+		"en"	"Simular to an Dual-Rea.\nSpawns with shields.\nWill Fly towards you once every so often."
+	}
+	"Biggun Assisa"
+	{
+		"en"	"Biggun Assisa"
+	}
+	"Biggun Assisa Desc"
+	{
+		"en"	"Simular to a Minigun Assisa\nOnce armor is broken once, their lose their hat and will gain double damage."
+	}
+	"Hia Expidonsan Rejuvinator"
+	{
+		"en"	"Hia Expidonsan Rejuvinator"
+	}
+	"Hia Expidonsan Rejuvinator Desc"
+	{
+		"en"	"Very fast medic that spawns with shields.\nWhen shield is broken, their lose alot of their speed.\nWhen they heal an ally they give the 'Rejuvinator' Buff."
+	}
+	"Cuttus Siccino"
+	{
+		"en"	"Cuttus Siccino"
+	}
+	"Cuttus Siccino Desc"
+	{
+		"en"	"Very fast attacking, very low damage dealing enemy.\nGives infinite stacking vulnerability."
+	}
+	"Armsa Manu"
+	{
+		"en"	"Armsa Manu"
+	}
+	"Armsa Manu Desc"
+	{
+		"en"	"Simular to Rifal manu.\nEvery 10th shot deals 10x the damage."
+	}
+	"Speedus Absolutos"
+	{
+		"en"	"Speedus Absolutos"
+	}
+	"Speedus Absolutos Desc"
+	{
+		"en"	"Will survive certain death for 0.5 seconds.\nOnce it Reaches 1 hp, it will teleport behind the attacker."
+	}
+	"Vaus Shaldus"
+	{
+		"en"	"Vaus Shaldus"
+	}
+	"Vaus Shaldus Desc"
+	{
+		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
 	}
 }

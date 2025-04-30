@@ -26,31 +26,13 @@ static char g_PullSounds[][] = {
 	"weapons/physcannon/superphys_launch4.wav",
 };
 
-static float fl_self_heal_timer[MAXENTITIES];
-
-static char gLaser2;
-
-static float BEAM_Targets_Hit[MAXENTITIES];
-static bool Scientific_Witchery_BEAM_HitDetected[MAXENTITIES];
-static int Scientific_Witchery_BEAM_BuildingHit[MAXENTITIES];
-static float fl_runaway_timer_timeout[MAXENTITIES];
-
-float fl_trace_target_timeout[MAXENTITIES][MAXENTITIES];
-
-
-static int i_AmountProjectiles[MAXENTITIES];
-
 public void Barrack_Alt_Scientific_Witchery_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++)			{ PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleSounds));   i++)					{ PrecacheSound(g_IdleSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
-	
-	Zero(fl_self_heal_timer);
-	Zero2(fl_trace_target_timeout);
-	
-	gLaser2 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Scientific Witchery");
@@ -63,9 +45,9 @@ public void Barrack_Alt_Scientific_Witchery_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
@@ -75,12 +57,19 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 		public get()							{ return i_AmountProjectiles[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
+	property int m_iFantasiaHits
+	{
+		public get()							{ return this.m_iState; }
+		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
+	}
+	property float m_flRunAwayTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME*0.5);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayPullSound()");
-		#endif
 	}
 	public void PlayIdleSound()
 	{
@@ -103,7 +92,7 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 		
 		
 	}
-	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
@@ -170,8 +159,8 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		
-		fl_self_heal_timer[npc.index] = GetGameTime(npc.index) + 1.0;
-		fl_runaway_timer_timeout[npc.index] = 0.0;
+		fl_ruina_in_combat_timer[npc.index] = GetGameTime(npc.index) + 1.0;
+		npc.m_flRunAwayTimer = 0.0;
 		
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
@@ -179,87 +168,96 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 	}
 }
 
-public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
+static void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 {
 	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(iNPC);
 	float GameTime = GetGameTime(iNPC);
-	if(BarrackBody_ThinkStart(npc.index, GameTime))
-	{
-		BarrackBody_ThinkTarget(npc.index, true, GameTime);
-		int PrimaryThreatIndex = npc.m_iTarget;
-		
-		
-		
-		if(PrimaryThreatIndex > 0)
-		{
-			npc.PlayIdleAlertSound();
-			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
+	
+	if(!BarrackBody_ThinkStart(npc.index, GameTime))
+		return;
 
-			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
-			if(flDistanceToTarget < (300.0 * 300.0) && npc.m_flNextMeleeAttack < GameTime)
+	BarrackBody_ThinkTarget(npc.index, true, GameTime);
+	int PrimaryThreatIndex = npc.m_iTarget;
+	
+	if(PrimaryThreatIndex > 0)
+	{
+		npc.PlayIdleAlertSound();
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+
+		if(flDistanceToTarget < (1250.0 * 1250.0))
+		{
+			npc.FaceTowards(vecTarget, 3000.0);
+			npc.m_bAllowBackWalking = true;
+		}
+		else
+			npc.m_bAllowBackWalking = false;	
+
+		int IcanSeeEnemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+
+		if(npc.m_flNextMeleeAttack < GameTime && IsValidEnemy(npc.index, IcanSeeEnemy))
+		{
+			if(flDistanceToTarget < (600.0 * 600.0))
 			{
 				npc.AddGesture("ACT_MP_THROW");
-				npc.m_flNextMeleeAttack = GameTime + 1.25 * npc.BonusFireRate;
-				
-				Horizontal_Slicer(npc.index, vecTarget, 300.0);
-				npc.FaceTowards(vecTarget);
-				npc.FaceTowards(vecTarget);
+				npc.m_flNextMeleeAttack = GameTime + 4.0 * npc.BonusFireRate;
+				Invoke_Horizontal_Slicer(npc.index, vecTarget, 600.0);
 			}
-			else if(flDistanceToTarget < (1250.0 * 1250.0) && npc.m_flNextMeleeAttack < GameTime)
+			else if(flDistanceToTarget < (1250.0 * 1250.0))
 			{
-				Create_Laser_Hell(npc.index, vecTarget);
-				npc.m_flNextMeleeAttack = GameTime + 2.0 * npc.BonusFireRate;
+				Invoke_Vertical_Slicer(npc.index, vecTarget);
+				npc.m_flNextMeleeAttack = GameTime + 3.0 * npc.BonusFireRate;
 				
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-				npc.FaceTowards(vecTarget);
-				npc.FaceTowards(vecTarget);
 			}
-			npc.StartPathing();
-			
 		}
-		else
-		{
-			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
-			npc.PlayIdleSound();
-		}
+		npc.StartPathing();
 		
-		float Health =float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-		float MaxHealth =  float(ReturnEntityMaxHealth(npc.index));
-		if(fl_self_heal_timer[npc.index]<GameTime)
+	}
+	else
+	{
+		npc.m_bAllowBackWalking = false;
+		npc.PlayIdleSound();
+	}
+	
+	float Health =float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+	float MaxHealth =  float(ReturnEntityMaxHealth(npc.index));
+	if(fl_ruina_in_combat_timer[npc.index]<GameTime)
+	{
+		int Heal_Amt = RoundToFloor((MaxHealth / 100.0)*1.0);
+		if(Health+Heal_Amt < MaxHealth)
 		{
-			int Heal_Amt = RoundToFloor((MaxHealth / 100.0)*1.0);
-			if(Health+Heal_Amt < MaxHealth)
-			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(Health) + Heal_Amt);
-			}
-
-			fl_self_heal_timer[npc.index] = GameTime + 0.25;
+			HealEntityGlobal(npc.index, npc.index, float(Heal_Amt), 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 		}
-		float H_Amt = (Health / MaxHealth) * 100.0;
-		if(H_Amt<10.0 && fl_runaway_timer_timeout[npc.index] < GameTime)	//RUNAWAY FOR YOUR LIFE
+
+		fl_ruina_in_combat_timer[npc.index] = GameTime + 0.25;
+	}
+
+	float movepseed = 250.0;
+	float H_Amt = (Health / MaxHealth) * 100.0;
+	if(H_Amt<10.0 && npc.m_flRunAwayTimer < GameTime)	//RUNAWAY FOR YOUR LIFE
+	{
+		npc.m_flRunAwayTimer = GameTime + 60.0;
+		npc.CmdOverride = Command_RetreatPlayer;	//npc retreats to the player
+	}
+	else
+	{
+		if(H_Amt<10.0)	//RUNAWAY FOR YOUR LIFE
 		{
-			fl_runaway_timer_timeout[npc.index] = GameTime + 60.0;
-			npc.CmdOverride = Command_RetreatPlayer;	//npc retreats to the player
+			movepseed = 375.0;
 		}
 		else
 		{
-			if(H_Amt<10.0)	//RUNAWAY FOR YOUR LIFE
-			{
-				npc.m_flSpeed = 375.0;
-			}
-			else
-			{
-				npc.m_flSpeed = 250.0;
-			}
-		}
-		if(H_Amt>90.0 && npc.CmdOverride==Command_RetreatPlayer && fl_runaway_timer_timeout[npc.index] > GameTime)
-		{
-			npc.CmdOverride=Command_Default;
+			movepseed = 250.0;
 		}
 	}
+	if(H_Amt>90.0 && npc.CmdOverride==Command_RetreatPlayer && npc.m_flRunAwayTimer > GameTime)
+	{
+		npc.CmdOverride=Command_Default;
+	}
+
+	BarrackBody_ThinkMove(npc.index, movepseed, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
 }
 
 void Barrack_Alt_Scientific_Witchery_NPCDeath(int entity)
@@ -267,179 +265,144 @@ void Barrack_Alt_Scientific_Witchery_NPCDeath(int entity)
 	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	
-	SDKUnhook(npc.index, SDKHook_Think, Scientific_Witchery_TBB_Ability);
-	SDKUnhook(npc.index, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
+	SDKUnhook(npc.index, SDKHook_Think, Witch_VerticalSlicer_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Witch_HorizontaSlicer_Tick);
 }
 //Horizontal Slicer
-static int H_Tick_Count[MAXENTITIES];
-static int H_Tick_Count_Max[MAXENTITIES];
+
 
 #define H_SLICER_AMOUNT_WITCH 6	//how many individual pieces of the arc are there, more = nicer curve but more traces
 
-static int H_i_Slicer_Throttle[MAXENTITIES];
+static float fl_horizontal_slicer_angleset = 45.0;
+static float fl_horizontal_slicer_timer = 1.75;
+static float fl_starting_vec[MAXENTITIES][3];
 
-static float H_fl_target_vec[MAXENTITIES][H_SLICER_AMOUNT_WITCH+2][3];
-static float H_fl_starting_vec[MAXENTITIES][3];
-static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT_WITCH+2][3];
-
-static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
+static void Invoke_Horizontal_Slicer(int client, float vecTarget[3], float Range)
 {
+	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
 	float Vec_offset[3]; Vec_offset = vecTarget;
 	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
-	
-	H_fl_starting_vec[client] = Npc_Vec;
+	fl_BEAM_ChargeUpTime[client] = Range;
 	
 	float ang_Look[3];
 	
 	MakeVectorFromPoints(Npc_Vec, Vec_offset, ang_Look);
 	GetVectorAngles(ang_Look, ang_Look);
 	
-	float wide_set = 45.0;	//How big the angle difference from left to right, in this case its 90 \/ if you set it to 90 rather then 45 it would be a 180 degree swing
+	float wide_set = fl_horizontal_slicer_angleset;	//How big the angle difference from left to right, in this case its 90 \/ if you set it to 90 rather then 45 it would be a 180 degree swing
 	
 	ang_Look[1] -= wide_set;
 	float type = (wide_set*2) / H_SLICER_AMOUNT_WITCH;
 	ang_Look[1] -= type;
 	if(ang_Look[1]>360.0)
 	{
-		ang_Look[1] = 0.0;
+		ang_Look[1] -= 360.0;
 	}
 	else if(ang_Look[1]<0.0)
 	{
 		ang_Look[1] +=360.0;
 	}
 		
-	for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH+1 ; i++)
-	{
-		H_fl_current_vec[client][i] = Npc_Vec;
-		
-		
-		
-					
-		float tempAngles[3], endLoc[3], Direction[3];
-		
-		tempAngles[0] = ang_Look[0];
-		tempAngles[1] = ang_Look[1] + type * i;
-		tempAngles[2] = 0.0;
-		
-		if(ang_Look[1]>360.0)
-		{
-			ang_Look[1] -= 360.0;
-		}
-							
-		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(Direction, Range);
-		AddVectors(Npc_Vec, Direction, endLoc);
-			
-							
-		
-		H_fl_target_vec[client][i] = endLoc;
-		
-	}
+	fl_AbilityVectorData[client] = ang_Look;
+	fl_starting_vec[client] = Npc_Vec;
 	
-	float time = 1.25;
+	fl_BEAM_DurationTime[npc.index] = fl_horizontal_slicer_timer*npc.BonusFireRate + GetGameTime(npc.index);
+	npc.m_iFantasiaHits = 0;
+	fl_BEAM_ThrottleTime[client] = 0.0;
 	
-	Scientific_Witchery_BEAM_BuildingHit[client] = 0;
-	H_i_Slicer_Throttle[client] = 0;
 
-	H_Tick_Count[client] = 0;
-	H_Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
-	
-	SDKUnhook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
-	SDKHook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
+	SDKUnhook(client, SDKHook_Think, Witch_VerticalSlicer_Tick);
+	SDKUnhook(client, SDKHook_Think, Witch_HorizontaSlicer_Tick);
+	SDKHook(client, SDKHook_Think, Witch_HorizontaSlicer_Tick);
 	
 }
-static Action Scientific_Witchery_TBB_Ability_Two(int client)
+static float[] fl_GetSlicerPoints(int npc, int section)
 {
-	if(!IsValidEntity(client) || H_Tick_Count_Max[client]<H_Tick_Count[client] || Scientific_Witchery_BEAM_BuildingHit[client] >=11)
+	float wide_set = fl_horizontal_slicer_angleset;	//How big the angle difference from left to right, in this case its 90 \/ if you set it to 90 rather then 45 it would be a 180 degree swing
+
+	float type = (wide_set*2) / H_SLICER_AMOUNT_WITCH;
+
+	float ang_Look[3]; ang_Look = fl_AbilityVectorData[npc];
+	
+	float tempAngles[3];
+	
+	tempAngles[0] = ang_Look[0];
+	tempAngles[1] = ang_Look[1] + type * section;
+	tempAngles[2] = 0.0;
+	
+	return tempAngles;
+}
+static void Witch_HorizontaSlicer_Tick(int client)
+{
+	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
+	float GameTime = GetGameTime(npc.index);
+
+	if(fl_BEAM_DurationTime[npc.index] < GameTime || npc.m_iFantasiaHits >10)
 	{
-		H_Tick_Count[client] = 0;
-		SDKUnhook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
-		return Plugin_Handled;
+		SDKUnhook(npc.index, SDKHook_Think, Witch_VerticalSlicer_Tick);
+		return;
 	}
-	H_Tick_Count[client]++;
-	H_i_Slicer_Throttle[client]++;
+	if(fl_BEAM_ThrottleTime[npc.index] > GameTime)
+		return;
+
+	fl_BEAM_ThrottleTime[npc.index] = GameTime + 0.1;
+
+	float Ratio = (fl_BEAM_DurationTime[npc.index]-GameTime) / (fl_horizontal_slicer_timer*npc.BonusFireRate);
 	
 	float Spn_Vec[3];
-	Spn_Vec = H_fl_starting_vec[client];
-	
-	for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH+1 ; i++)
-	{
-		float Trg_Vec[3], Cur_Vec[3], vecAngles[3], Direction[3];
-	
-	
-		Trg_Vec = H_fl_target_vec[client][i];
-		Cur_Vec = H_fl_current_vec[client][i];
-		
-		
-		float Dist = GetVectorDistance(Spn_Vec, Trg_Vec);
-		float Speed = Dist / (H_Tick_Count_Max[client]/2);
-		
-		
-		MakeVectorFromPoints(Spn_Vec, Trg_Vec, vecAngles);
-		GetVectorAngles(vecAngles, vecAngles);
-			
-		GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(Direction, Speed);
-		AddVectors(Cur_Vec, Direction, Cur_Vec);
-		
-		
-		
-		H_fl_current_vec[client][i] = Cur_Vec;
-		
-	}
-	
+	Spn_Vec = fl_starting_vec[client];
+
+	float DistToDo = fl_BEAM_ChargeUpTime[client] * (1.0-Ratio);
+
+	float Vectors_Previus[3];
+
 	int colour[4];
 	colour[0] = 0;
 	colour[1] = 125;
 	colour[2] = 255;
 	colour[3] = 255;
-		
-	if(H_i_Slicer_Throttle[client]>2)
+	
+	for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH+1 ; i++)
 	{
-		H_i_Slicer_Throttle[client] = 0;
-		for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH ; i++)
+		float SlicerAngles[3], SlicerLoc[3];
+		SlicerAngles = fl_GetSlicerPoints(npc.index, i);
+	
+		Get_Fake_Forward_Vec(DistToDo, SlicerAngles, SlicerLoc, Spn_Vec);
+
+		if(i>1)
 		{
-			Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 5000.0); // Horizontal Slicer dmg
+			Scientific_Witchery_DmgTrace(client, SlicerLoc, Vectors_Previus, 2.0, 7500.0); // Horizontal Slicer dmg
 			
-			TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
+			TE_SetupBeamPoints(SlicerLoc, Vectors_Previus, g_Ruina_Laser_BEAM, 0, 0, 0, 0.1, 5.0, 5.0, 0, 0.1, colour, 1);
 			TE_SendToAll(0.0);
-			
 		}
+
+		Vectors_Previus = SlicerLoc;
 	}
-	
-	
-	return Plugin_Continue;
-	
 }
 
 //	Verical Slier
-static int Tick_Count[MAXENTITIES];
-static int Tick_Count_Max[MAXENTITIES];
 
-static int i_Slicer_Throttle[MAXENTITIES];
-
-static float fl_target_vec[MAXENTITIES][3];
-static float fl_starting_vec[MAXENTITIES][3];
-static float fl_current_vec[MAXENTITIES][3];
-
-static void Create_Laser_Hell(int client, float vecTarget[3])
+static float fl_vertical_slicer_max_timer = 1.25;
+static void Invoke_Vertical_Slicer(int client, float vecTarget[3])
 {
+	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
 	float Vec_offset[3]; Vec_offset = vecTarget;
 	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
-	
-	fl_target_vec[client] = Vec_offset;
+	fl_AbilityVectorData[client] = Vec_offset;
 	fl_starting_vec[client] = Npc_Vec;
-	fl_current_vec[client] = Npc_Vec;
 	
 	Npc_Vec[2] -= 125.0;
 	Vec_offset[2] -= 125.0;
 	float skyloc[3];
 	
-	float time = 1.25;
+	float time = fl_vertical_slicer_max_timer*npc.BonusFireRate;
+
+	fl_BEAM_DurationTime[npc.index] = time + GetGameTime(npc.index);
 	
-	i_Slicer_Throttle[client] = 0;
+	fl_BEAM_ThrottleTime[client] = 0.0;
 	int colour[4];
 	colour[0] = 0;
 	colour[1] = 125;
@@ -447,119 +410,104 @@ static void Create_Laser_Hell(int client, float vecTarget[3])
 	colour[3] = 255;
 	skyloc = Npc_Vec;
 	skyloc[2] += 300.0;
-	Scientific_Witchery_BEAM_BuildingHit[client] = 0;
-	TE_SetupBeamPoints(Npc_Vec, skyloc, gLaser2, 0, 0, 0, time, 0.75, 5.0, 0, 0.1, colour, 1);
+	npc.m_iFantasiaHits = 0;
+	TE_SetupBeamPoints(Npc_Vec, skyloc, g_Ruina_Laser_BEAM, 0, 0, 0, time, 0.75, 5.0, 0, 0.1, colour, 1);
 	TE_SendToAll(0.0);
 	
 	skyloc = Vec_offset;
 	skyloc[2] += 300.0;
-	TE_SetupBeamPoints(Vec_offset, skyloc, gLaser2, 0, 0, 0, time, 0.75, 5.0, 0, 0.1, colour, 1);
+	TE_SetupBeamPoints(Vec_offset, skyloc, g_Ruina_Laser_BEAM, 0, 0, 0, time, 0.75, 5.0, 0, 0.1, colour, 1);
 	TE_SendToAll(0.0);
-	Tick_Count[client] = 0;
-	Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
-	SDKUnhook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability);
-	SDKHook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability);
+	SDKUnhook(client, SDKHook_Think, Witch_HorizontaSlicer_Tick);
+	SDKUnhook(client, SDKHook_Think, Witch_VerticalSlicer_Tick);
+	SDKHook(client, SDKHook_Think, Witch_VerticalSlicer_Tick);
 }
-static Action Scientific_Witchery_TBB_Ability(int client)
+static Action Witch_VerticalSlicer_Tick(int client)
 {
-	if(!IsValidEntity(client) || Tick_Count_Max[client]<Tick_Count[client] || Scientific_Witchery_BEAM_BuildingHit[client] >=11)
+	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
+	float GameTime = GetGameTime(npc.index);
+	if(!IsValidEntity(client) || fl_BEAM_DurationTime[npc.index] < GameTime || npc.m_iFantasiaHits >10)
 	{
-		Tick_Count[client] = 0;
-		SDKUnhook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability);
-		return Plugin_Handled;
+		SDKUnhook(client, SDKHook_Think, Witch_VerticalSlicer_Tick);
+		return Plugin_Stop;
 	}
-	Tick_Count[client]++;
-	i_Slicer_Throttle[client]++;
+	if(fl_BEAM_ThrottleTime[client] > GameTime)
+		return Plugin_Continue;
+
+	fl_BEAM_ThrottleTime[client] = GameTime + 0.1;
 	
-	float Trg_Vec[3], Cur_Vec[3], Spn_Vec[3], vecAngles[3], Direction[3], skyloc[3];
+	float Trg_Vec[3], Cur_Vec[3], Spn_Vec[3], vecAngles[3], skyloc[3];
 	
-	Trg_Vec = fl_target_vec[client];
-	Cur_Vec = fl_current_vec[client];
+	Trg_Vec = fl_AbilityVectorData[client];
+	
 	Spn_Vec = fl_starting_vec[client];
 	
 	float Dist = GetVectorDistance(Spn_Vec, Trg_Vec);
-	float Speed = Dist / Tick_Count_Max[client];
-	
+
+	float ratio = (fl_BEAM_DurationTime[npc.index]-GameTime) / (fl_vertical_slicer_max_timer*npc.BonusFireRate);
 	
 	MakeVectorFromPoints(Spn_Vec, Trg_Vec, vecAngles);
 	GetVectorAngles(vecAngles, vecAngles);
-		
-	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-	ScaleVector(Direction, Speed);
-	AddVectors(Cur_Vec, Direction, Cur_Vec);
+
+	Get_Fake_Forward_Vec(Dist*(1.0-ratio), vecAngles, Cur_Vec, Spn_Vec);
 	
 	int colour[4];
 	colour[0] = 0;
 	colour[1] = 125;
 	colour[2] = 255;
 	colour[3] = 255;
-	
-	fl_current_vec[client] = Cur_Vec;
-	if(i_Slicer_Throttle[client]>2)
-	{
-		i_Slicer_Throttle[client] = 0;
-		Scientific_Witchery_Ability(client, Cur_Vec, skyloc, 2.0, 5000.0); // Vertical Laser dmg
-		skyloc = Cur_Vec;
-		skyloc[2] += 150.0;
-		Cur_Vec[2] -= 150.0;
-		TE_SetupBeamPoints(Cur_Vec, skyloc, gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
-		TE_SendToAll(0.0);
-	}
+
+	skyloc = Cur_Vec;
+
+	skyloc[2] += 150.0;
+
+	Scientific_Witchery_DmgTrace(client, Cur_Vec, skyloc, 2.0, 8500.0); // Vertical Laser dmg
+
+	Cur_Vec[2] -= 150.0;
+	TE_SetupBeamPoints(Cur_Vec, skyloc, g_Ruina_Laser_BEAM, 0, 0, 0, 0.1, 5.0, 5.0, 0, 0.1, colour, 1);
+	TE_SendToAll(0.0);
+
 	return Plugin_Continue;
-	
 }
 
-static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[3], float radius, float dmg)
+static void Scientific_Witchery_DmgTrace(int client, float Vec_1[3], float Vec_2[3], float radius, float dmg)
 {
-
 	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
 
-	static float hullMin[3];
-	static float hullMax[3];
+	int inflictor = GetClientOfUserId(npc.OwnerUserId);
+	if(inflictor==-1)
+		inflictor=npc.index;
 
-	for (int i = 1; i < MAXENTITIES; i++)
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	Laser.Radius = radius;
+	Laser.Start_Point = Vec_1;
+	Laser.End_Point = Vec_2;
+	Laser.Enumerate_Simple();
+	for(int i=0 ; i < sizeof(i_Ruina_Laser_BEAM_HitDetected) ; i++)
 	{
-		Scientific_Witchery_BEAM_HitDetected[i] = false;
+		int victim = i_Ruina_Laser_BEAM_HitDetected[i];
+
+		if(!victim || npc.m_iFantasiaHits > 10)
+			break;
+
+		if(IsIn_HitDetectionCooldown(npc.index,victim))
+			continue;
+			
+		Set_HitDetectionCooldown(npc.index,victim, GetGameTime() + 0.25);
+
+		npc.m_iFantasiaHits++;
+
+		SDKHooks_TakeDamage(victim, npc.index, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), dmg, 1)), DMG_PLASMA);	// 2048 is DMG_NOGIB?
 	}
-	
-	hullMin[0] = -radius;
-	hullMin[1] = hullMin[0];
-	hullMin[2] = hullMin[0];
-	hullMax[0] = -hullMin[0];
-	hullMax[1] = -hullMin[1];
-	hullMax[2] = -hullMin[2];
-	Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Scientific_Witchery_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-	delete trace;
-	
-	BEAM_Targets_Hit[client] = 1.0;
-	
-	for (int victim = 1; victim < MAXENTITIES; victim++)
-	{
-		if (Scientific_Witchery_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
-		{
-			int inflictor = GetClientOfUserId(npc.OwnerUserId);
-			if(inflictor==-1)
-			{
-				inflictor=client;
-			}
-			SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),dmg, 1))*BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-			BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
-		}
-	}
-	
-	
+
 }
-static bool Scientific_Witchery_BEAM_TraceUsers(int entity, int contentsMask, int client)
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
-	if (IsEntityAlive(entity) && Scientific_Witchery_BEAM_BuildingHit[client]<11)
-	{
-		if(fl_trace_target_timeout[client][entity]<=GetGameTime())
-		{
-			fl_trace_target_timeout[client][entity] = GetGameTime() + 0.25;
-			Scientific_Witchery_BEAM_BuildingHit[client]++;
-			Scientific_Witchery_BEAM_HitDetected[entity] = true;
-		}
-	}
-	return false;
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
 }

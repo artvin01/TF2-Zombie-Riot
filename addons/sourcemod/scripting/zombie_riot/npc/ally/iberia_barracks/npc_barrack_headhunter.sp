@@ -53,9 +53,9 @@ void Barracks_Iberia_Headhunter_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Headhunter(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Headhunter(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Iberia_Headhunter < BarrackBody
@@ -71,9 +71,7 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -83,18 +81,14 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+
 	}
 	
 	public void PlayNPCDeath() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeSound() {
@@ -109,7 +103,7 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Headhunter(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Headhunter(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(BarrackBody(client, vecPos, vecAng, "800", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

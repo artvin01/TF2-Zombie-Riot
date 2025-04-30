@@ -792,7 +792,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 	
 	char HUDText[255] = "";
 	
-	Format(HUDText, sizeof(HUDText), "%sRaishi Concentration: [%.0f%%%%%%%%%]", HUDText, charge_percent);
+	Format(HUDText, sizeof(HUDText), "%sRaishi Concentration: [%.0f％]", HUDText, charge_percent);
 
 
 	if(pap>=2)
@@ -860,7 +860,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 		else
 		{
 			float Charge = 100.0*(fl_hyper_arrow_charge[client]/QUINCY_BOW_HYPER_CHARGE);
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow [%.0f%%%%%%%%%]", HUDText, Charge);
+			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow [%.0f％]", HUDText, Charge);
 		}
 	}
 	
@@ -884,11 +884,12 @@ public void Quincy_Touch(int entity, int target)
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		float GameTime = GetGameTime();
+//		float GameTime = GetGameTime();
 
-		if(f_GlobalHitDetectionLogic[owner][target] < GameTime)
+		
+		if(!IsIn_HitDetectionCooldown(entity,target))
 		{
-			f_GlobalHitDetectionLogic[owner][target] = GameTime+0.25;
+			Set_HitDetectionCooldown(entity,target, FAR_FUTURE);
 			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 			
 			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity]*fl_quincy_penetrated[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?

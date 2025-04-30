@@ -10,6 +10,7 @@ static char g_HurtSounds[][] =
 
 static bool SimonHasDied;
 static int SimonRagdollRef = INVALID_ENT_REFERENCE;
+static float fl_Damage_Boost = 1.0;
 
 void Simon_MapStart()
 {
@@ -105,6 +106,14 @@ methodmap Simon < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeScaling = 0.0;
+			RaidAllowsBuildings = true;
+		}
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 
@@ -148,17 +157,29 @@ methodmap Simon < CClotBody
 	property bool m_bHasKilled
 	{
 		public get()		{ return view_as<bool>(this.m_iOverlordComboAttack); }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 1; }
+		public set(bool value) 	
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 1; 
+		}
 	}
 	property bool m_bRetreating
 	{
 		public get()		{ return this.m_iOverlordComboAttack > 1; }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 2; }
+		public set(bool value)
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 2; 
+		}
 	}
 	property bool m_bRanAway
 	{
 		public get()		{ return this.m_iOverlordComboAttack == 3; }
-		public set(bool value) 	{ this.m_iOverlordComboAttack = 3; }
+		public set(bool value) 
+		{ 
+			if(value || !value)
+				this.m_iOverlordComboAttack = 3; 
+		}
 	}
 }
 
@@ -211,7 +232,7 @@ public void Simon_ClotThink(int iNPC)
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		if(!npc.m_bRetreating && npc.m_bHasKilled && health < (maxhealth / 2))
 		{
-			if(Waves_GetRound() != (npc.m_bLostHalfHealth ? 59 : 54))
+			if(ZR_Waves_GetRound() != (npc.m_bLostHalfHealth ? 59 : 54))
 				npc.m_bRetreating = true;
 		}
 		
@@ -245,9 +266,9 @@ public void Simon_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						if(target <= MaxClients)
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0 * fl_Damage_Boost, DMG_CLUB, -1, _, vecHit);
 						else
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 1500.0, DMG_CLUB, -1, _, vecHit);	
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 1500.0 * fl_Damage_Boost, DMG_CLUB, -1, _, vecHit);	
 						Custom_Knockback(npc.index, target, 500.0);
 						npc.m_iAttacksTillReload++;
 					}
@@ -310,7 +331,7 @@ public void Simon_ClotThink(int iNPC)
 							npc.m_iAttacksTillReload--;
 							
 							PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0,_, vecTarget);
-							npc.FireRocket(vecTarget, 140.0, 1000.0, "models/weapons/w_bullet.mdl", 2.0);
+							npc.FireRocket(vecTarget, 140.0 * fl_Damage_Boost, 1000.0, "models/weapons/w_bullet.mdl", 2.0);
 							
 							npc.PlayShootSound();
 						}
@@ -471,6 +492,7 @@ public void Simon_ClotThink(int iNPC)
 					npc.m_bRanAway = true;
 					npc.m_fCreditsOnKill = 0.0;
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
+					fl_Damage_Boost += 0.50;
 					return;
 				}
 				
@@ -491,6 +513,7 @@ public void Simon_ClotThink(int iNPC)
 					npc.m_bRanAway = true;
 					npc.m_fCreditsOnKill = 0.0;
 					SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9);
+					fl_Damage_Boost += 0.50;
 					ExcuteRelay("zr_simonescaped");
 					return;
 				}

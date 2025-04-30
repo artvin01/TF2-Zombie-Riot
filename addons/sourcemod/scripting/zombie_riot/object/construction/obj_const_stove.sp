@@ -3,16 +3,25 @@
 
 static const char Artifacts[][] =
 {
-	"Founder Fondue",
-	"Predator Pancakes",
-	"Brandguider Brunch",
-	"Spewer Spewers",
-	"Swarmcaller Sandwich",
-	"Reefbreaker Ravioli"
+	"Atomic Soda",
+	"Critical Water",
+	"Questionable Milk",
+	"Festive Atomic Soda",
+	"Bread in Milk",
+	"Steamed Mackerel",
+	"BBQ Mackerel",
+	"Beer Bottle",
+	"The Sandvich",
+	"The Dalokohs Bar",
+	"The Buffalo Steak Sandvich",
+	"The Fishcake",
+	"The Robo-Sandvich",
+	"The Festive Sandvich",
+	"The Second Banana"
 };
 
-static const int WaterCost = 10;
-static const int BofaCost = 30;
+static const int WaterCost = 100;
+static const int BofaCost = 5;
 
 static int NPCId;
 static float GlobalCooldown;
@@ -38,8 +47,8 @@ void ObjectStove_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_stove");
-	build.Cost = 3000;
-	build.Health = 150;
+	build.Cost = 1000;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -54,12 +63,13 @@ methodmap ObjectStove < ObjectGeneric
 {
 	public ObjectStove(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectStove npc = view_as<ObjectStove>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {36.0, 54.0, 41.0}));
+		ObjectStove npc = view_as<ObjectStove>(ObjectGeneric(client, vecPos, vecAng, "models/props_c17/furniturestove001a.mdl", _, "600", {27.0, 27.0, 41.0}, 20.0));
 		
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}
@@ -70,6 +80,13 @@ static bool ClotCanBuild(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = CountBuildings();
+		
+		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Cooking Stove"))
+		{
+			maxcount = 0;
+			return false;
+		}
+
 		maxcount = 1;
 		if(count >= maxcount)
 			return false;
@@ -100,7 +117,7 @@ static bool ClotCanUse(ObjectStove npc, int client)
 	return true;
 }
 
-static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
+static void ClotShowInteractHud(ObjectStove npc, int client)
 {
 	if(GlobalCooldown > GetGameTime())
 	{
@@ -108,7 +125,9 @@ static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 	}
 	else
 	{
-		PrintCenterText(client, "Press [T (spray)] to cook something using materials.");
+		char button[64];
+		PlayerHasInteract(client, button, sizeof(button));
+		PrintCenterText(client, "%sto cook something using materials.", button);
 	}
 }
 
@@ -149,8 +168,11 @@ static void ThisBuildingMenu(int client)
 	char buffer[64];
 	for(int i; i < sizeof(Enabled); i++)
 	{
-		FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
-		menu.AddItem(Artifacts[i], buffer);
+		if(Enabled[i])
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
+			menu.AddItem(Artifacts[i], buffer);
+		}
 	}
 
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -179,7 +201,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			}
 			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial("water") >= WaterCost && Construction_GetMaterial("bofazem") >= BofaCost)
 			{
-				GlobalCooldown = Construction_GetNextAttack() + 120.0;
+				GlobalCooldown = GetGameTime() + 250.0;
 				Shuffled = false;
 
 				CPrintToChatAll("%t", "Player Used 2 to", client, WaterCost, "Material water", BofaCost, "Material bofazem");

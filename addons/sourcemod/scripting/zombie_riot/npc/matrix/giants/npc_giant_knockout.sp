@@ -67,35 +67,7 @@ void GiantKnockout_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return GiantKnockout(client, vecPos, vecAng, ally);
-}
-
-static char[] GetPanzerHealth()
-{
-	int health = 15;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
+	return GiantKnockout(vecPos, vecAng, ally);
 }
 
 methodmap GiantKnockout < CClotBody
@@ -145,9 +117,9 @@ methodmap GiantKnockout < CClotBody
 	}
 	
 	
-	public GiantKnockout(int client, float vecPos[3], float vecAng[3], int ally)
+	public GiantKnockout(float vecPos[3], float vecAng[3], int ally)
 	{
-		GiantKnockout npc = view_as<GiantKnockout>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", GetPanzerHealth(), ally));
+		GiantKnockout npc = view_as<GiantKnockout>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "5000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -174,10 +146,6 @@ methodmap GiantKnockout < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 225.0;
-
-		float wave = float(Waves_GetRound()+1);
-		wave *= 0.1;
-		npc.m_flWaveScale = wave;
 				
 		int skin = 0;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -364,7 +332,6 @@ public Action GiantKnockout_OnTakeDamage(int victim, int &attacker, int &inflict
 static float AgentHealthDamageMulti(CClotBody npc)
 {
 	float damage = 10.0;
-	damage *= npc.m_flWaveScale;
 	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float ratio = health / maxhealth;

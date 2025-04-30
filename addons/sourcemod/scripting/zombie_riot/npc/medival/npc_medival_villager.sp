@@ -43,9 +43,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing3.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
 static int NPCId;
 
@@ -57,7 +54,7 @@ void MedivalVillager_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));   i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Medieval Villager");
@@ -85,8 +82,8 @@ static bool b_WantTobuild[MAXENTITIES];
 static bool b_AlreadyReparing[MAXENTITIES];
 static float f_RandomTolerance[MAXENTITIES];
 static int i_BuildingRef[MAXENTITIES];
-static int i_ClosestAlly[MAXENTITIES];
-static float i_ClosestAllyCD[MAXENTITIES];
+
+
 
 methodmap MedivalVillager < CClotBody
 {
@@ -96,9 +93,7 @@ methodmap MedivalVillager < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -143,7 +138,7 @@ methodmap MedivalVillager < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		
 	}
@@ -194,7 +189,7 @@ methodmap MedivalVillager < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
@@ -619,10 +614,15 @@ public void MedivalVillager_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_medival_building", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
+					if(b_StaticNPC[spawn_index])
+						AddNpcToAliveList(spawn_index, 1);
+					
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
 					if(GetTeam(iNPC) != TFTeam_Red)
 					{
-						NpcAddedToZombiesLeftCurrently(spawn_index, true);
+						if(!b_StaticNPC[spawn_index])
+							NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					}
 					i_AttacksTillMegahit[spawn_index] = 10;
 					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);

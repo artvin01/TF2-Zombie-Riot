@@ -209,9 +209,6 @@ methodmap CuredFatherGrigori < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(48.0, 60.0);
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayIdleSound()");
-		#endif
 	}
 	
 	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
@@ -551,9 +548,7 @@ methodmap CuredFatherGrigori < CClotBody
 		}
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 38.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayIdleAlertSound()");
-		#endif
+
 	}
 	
 	public void PlayHurtSound() {
@@ -566,9 +561,7 @@ methodmap CuredFatherGrigori < CClotBody
 			EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayHurtSound()");
-		#endif
+
 	}
 	
 	public void PlayDeathSound() {
@@ -576,16 +569,10 @@ methodmap CuredFatherGrigori < CClotBody
 		if(i_SpecialGrigoriReplace == 0)
 			EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayDeathSound()");
-		#endif
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayRangedSound()");
-		#endif
 	}
 	
 	public void PlayMeleeSound() {
@@ -594,9 +581,6 @@ methodmap CuredFatherGrigori < CClotBody
 			if(i_SpecialGrigoriReplace == 0)
 			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 			
-			#if defined DEBUG_SOUND
-			PrintToServer("CCuredFatherGrigori::PlayMeleeHitSound()");
-			#endif
 		}
 	}
 	
@@ -605,17 +589,11 @@ methodmap CuredFatherGrigori < CClotBody
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, 95, _, 1.0);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, 95, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::Playnpc.AngerSound()");
-		#endif
 	}
 	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayRangedSound()");
-		#endif
 	}
 	
 	public void PlayKilledEnemy() {
@@ -645,26 +623,18 @@ methodmap CuredFatherGrigori < CClotBody
 			}
 		}
 		this.m_flNextIdleSound += 2.0;
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayRangedSound()");
-		#endif
+
 	}
 	
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayPullSound()");
-		#endif
 	}
 	
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayTeleportSound()");
-		#endif
 	}
 	public void PlaySadMourn() {
 		if(i_SpecialGrigoriReplace == 0)
@@ -693,16 +663,10 @@ methodmap CuredFatherGrigori < CClotBody
 		}
 		
 		this.m_flNextIdleSound += 2.0;
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayTeleportSound()");
-		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredFatherGrigori::PlayMeleeHitSound()");
-		#endif
 	}
 	property float m_MakeGrigoriGlow
 	{
@@ -744,7 +708,7 @@ methodmap CuredFatherGrigori < CClotBody
 		char SizeDo[256];
 
 		if(i_SpecialGrigoriReplace == 0)
-			FormatEx(ModelDo, sizeof(ModelDo), "models/zombie_riot/hl2/monk.mdl");
+			FormatEx(ModelDo, sizeof(ModelDo), "models/monk.mdl");
 		else
 			FormatEx(ModelDo, sizeof(ModelDo), "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl");
 			
@@ -761,6 +725,7 @@ methodmap CuredFatherGrigori < CClotBody
 			b_NameNoTranslation[npc.index] = true;
 		}
 
+		
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

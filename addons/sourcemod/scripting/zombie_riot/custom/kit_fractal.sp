@@ -26,22 +26,16 @@ static float f_AniSoundSpam[MAXTF2PLAYERS];
 
 #define FRACTAL_KIT_PASSIVE_OVERDRIVE_COST 1.0
 #define FRACTAL_KIT_FANTASIA_COST 5.0
-#define FRACTAL_KIT_FANTASIA_GAIN 2.0
+#define FRACTAL_KIT_FANTASIA_GAIN 5.0		//how many crystals the player gains when fantasia does dmg
 #define FRACTAL_KIT_STARFALL_COST 75.0
-#define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8
-#define KRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
+#define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8	//how much dmg is reduced every time fantasia does damage
+#define FRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
 #define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.15
+#define FRACTAL_KIT_STARFALL_FALLOFF 0.75	//how much to reduce dmg per bounce/jump
 static float fl_max_crystal_amt[MAXTF2PLAYERS];
 static float fl_current_crystal_amt[MAXTF2PLAYERS];
 
 /*
-	IDEA: Get the npc' angle vectors, and compare those to incoming damage, basically a directional shield that respects the anim!
-
-	Laser needs a sound start and end
-	Add the shield mentioned above.
-
-	Lower how bright effects are.
-
 
 	//the anim npc has the medic backpack, this annoys me greatly
 */
@@ -577,7 +571,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 			pack.WriteCell(EntIndexToEntRef(weapon));
 
 			Adjust_Crystal_Stats(client, weapon);
-			if(CvarFileNetworkDisable.IntValue <= 0)
+			if(FileNetwork_Enabled())
 				PrecacheTwirlMusic();
 			
 		}
@@ -591,7 +585,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 
 		i_WeaponGotLastmanBuff[weapon] = false;
 
-		if(CvarFileNetworkDisable.IntValue <= 0)
+		if(FileNetwork_Enabled())
 			PrecacheTwirlMusic();
 			
 		DataPack pack;
@@ -645,10 +639,11 @@ static void Delete_Fantasia(int client)
 		i_fantasia_laser_ref[client][i] = INVALID_ENT_REFERENCE;
 	}
 }
-
+static int i_fantasia_hitcount[MAXTF2PLAYERS];
 static float fl_fantasia_targetshit[MAXTF2PLAYERS];
 static float fl_fantasia_damage[MAXTF2PLAYERS];
 static float fl_fantasia_true_duration[MAXTF2PLAYERS];
+
 public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 {
 	if(b_cannon_animation_active[client])
@@ -711,6 +706,7 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 
 	Origin[2]-=17.5;
 
+	i_fantasia_hitcount[client] = 0;
 	fl_fantasia_targetshit[client] = 1.0;
 	fl_fantasia_damage[client] = 100.0;
 	fl_fantasia_damage[client] *= Attributes_Get(weapon, 410, 1.0);
@@ -718,11 +714,6 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 	Create_Fantasia(client, Origin);
 
 	fl_fantasia_origin[client] = Origin;
-
-	for(int i=0 ; i < MAXENTITIES ; i++)
-	{
-		f_GlobalHitDetectionLogic[client][i] = 0.0;
-	}
 
 	SDKUnhook(client, SDKHook_PreThink, Fantasia_Tick);
 	SDKHook(client, SDKHook_PreThink, Fantasia_Tick);
@@ -796,7 +787,7 @@ static Action Fantasia_Tick(int client)
 {
 	float GameTime = GetGameTime();
 
-	if(b_invalid_client(client) || fl_fantasia_duration[client] < GameTime)
+	if(b_invalid_client(client) || fl_fantasia_duration[client] < GameTime || i_fantasia_hitcount[client] >= 10)
 	{
 
 		Delete_Fantasia(client);
@@ -902,16 +893,21 @@ void Fractal_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 }
 static void OnFantasiaHit(int client, int target, int damagetype, float &damage)
 {
-	float GameTime = GetGameTime();
-	if(f_GlobalHitDetectionLogic[client][target] > GameTime)
+	//Fantsasy blade will have an offset of (MAXENTITIES 
+	//Client instead of target, so it gets removed if the target dies
+	if(IsIn_HitDetectionCooldown(client + MAXENTITIES,target))
+	{
 		return;
-	f_GlobalHitDetectionLogic[client][target] = GameTime + 1.0;
+	}
+	Set_HitDetectionCooldown(client + MAXENTITIES,target, GetGameTime() + 1.0);
 
 	float dps = fl_fantasia_damage[client]*fl_fantasia_targetshit[client];
 	fl_fantasia_targetshit[client] *= FRACTAL_KIT_FANTASIA_ONHIT_LOSS;
 	SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
 	
 	fl_current_crystal_amt[client] += ((b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target]) ? FRACTAL_KIT_FANTASIA_GAIN * 4.0 : FRACTAL_KIT_FANTASIA_GAIN);
+
+	i_fantasia_hitcount[client]++;
 
 	if(fl_current_crystal_amt[client] > fl_max_crystal_amt[client])
 		fl_current_crystal_amt[client] = fl_max_crystal_amt[client];
@@ -945,7 +941,7 @@ public void Kit_Fractal_OverDrive(int client, int weapon, bool &result, int slot
 	b_overdrive_active[client] = true;
 }
 
-static int i_targeted_ID[MAXTF2PLAYERS][KRACTAL_KIT_STARFALL_JUMP_AMT];
+static int i_targeted_ID[MAXTF2PLAYERS][FRACTAL_KIT_STARFALL_JUMP_AMT];
 public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 {
 	if(b_cannon_animation_active[client])
@@ -977,7 +973,7 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 
-	for(int i=0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+	for(int i=0 ; i < FRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
 	{
 		i_targeted_ID[client][i] = INVALID_ENT_REFERENCE;
 	}
@@ -996,15 +992,15 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	Laser.DoForwardTrace_Basic(Range);
 	float dps = 150.0;
 	dps *=Attributes_Get(weapon, 410, 1.0);
-	Check_StarfallAOE(client, Laser.End_Point, Radius, KRACTAL_KIT_STARFALL_JUMP_AMT-1, dps, true);
+	Check_StarfallAOE(client, Laser.End_Point, Radius, FRACTAL_KIT_STARFALL_JUMP_AMT-1, dps, true);
 
 }
-static int i_entity_targeted[KRACTAL_KIT_STARFALL_JUMP_AMT];
+static int i_entity_targeted[FRACTAL_KIT_STARFALL_JUMP_AMT];
 static void AoeExplosionCheckCast(int entity, int victim, float damage, int weapon)
 {
 	if(IsValidEnemy(entity, victim))
 	{
-		for(int i=0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+		for(int i=0 ; i < FRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
 		{
 			if(!i_entity_targeted[i])
 			{
@@ -1043,12 +1039,12 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 
 		return;
 	}
-	for (int entitys = 0; entitys < KRACTAL_KIT_STARFALL_JUMP_AMT; entitys++)
+	for (int entitys = 0; entitys < FRACTAL_KIT_STARFALL_JUMP_AMT; entitys++)
 	{
 		if(i_entity_targeted[entitys] > 0)
 		{
 			bool the_same = false;
-			for(int i= 0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+			for(int i= 0 ; i < FRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
 			{
 				if(i_entity_targeted[entitys] == EntRefToEntIndex(i_targeted_ID[client][i]))
 					the_same =true;
@@ -1063,7 +1059,7 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 			DataPack pack;
 			CreateDataTimer(speed, Timer_StarfallIon, pack, TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(client));
-			pack.WriteFloat(damage);
+			pack.WriteFloat(damage*FRACTAL_KIT_STARFALL_FALLOFF);
 			pack.WriteFloat(Radius);
 			pack.WriteCell(cycle);
 			pack.WriteFloatArray(pos1, 3);
@@ -1738,20 +1734,6 @@ void Kit_Fractal_ResetRound()
 
 //stuff that im probably gonna use a lot in other future weapons.
 
-void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
-}
 void Send_Te_Client_ZR(int client)
 {
 	if(LastMann)
@@ -1760,7 +1742,6 @@ void Send_Te_Client_ZR(int client)
 		TE_SendToClient(client);
 }
 
-static int Player_Laser_BEAM_HitDetected[MAXENTITIES];
 static int i_targets_hit;
 static int i_maxtargets_hit;
 enum struct Player_Laser_Logic
@@ -1778,6 +1759,9 @@ enum struct Player_Laser_Logic
 
 	bool trace_hit;
 	bool trace_hit_enemy;
+	float MaxDist;
+
+	float Custom_Hull[3];
 
 	/*
 
@@ -1788,6 +1772,9 @@ enum struct Player_Laser_Logic
 		float Angles[3], startPoint[3], Loc[3];
 		GetClientEyePosition(this.client, startPoint);
 		GetClientEyeAngles(this.client, Angles);
+
+		if(Dist != -1.0)
+			this.MaxDist = Dist;
 
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(this.client);
@@ -1816,6 +1803,9 @@ enum struct Player_Laser_Logic
 	}
 	void DoForwardTrace_Custom(float Angles[3], float startPoint[3], float Dist=-1.0)
 	{
+		if(Dist != -1.0)
+			this.MaxDist = Dist;
+
 		float Loc[3];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(this.client);
@@ -1849,17 +1839,12 @@ enum struct Player_Laser_Logic
 		else
 			i_maxtargets_hit = MAX_TARGETS_HIT;
 
-		Zero(Player_Laser_BEAM_HitDetected);
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
-		hullMin[0] = -this.Radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
+		this.SetHull(hullMin, hullMax);
 
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(this.client);
@@ -1869,29 +1854,51 @@ enum struct Player_Laser_Logic
 
 		float Dmg = this.Damage;
 				
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Player_Laser_BEAM_HitDetected[loop];
-			if (victim)
-			{
-				this.trace_hit_enemy=true;
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
+			if (!victim)
+				break;
 
-				float playerPos[3];
-				WorldSpaceCenter(victim, playerPos);
+			this.trace_hit_enemy=true;
 
-				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
-				{	
-					Call_StartFunction(null, Attack_Function);
-					Call_PushCell(this.client);
-					Call_PushCell(victim);
-					Call_PushCell(this.damagetype);
-					Call_PushFloatRef(Dmg);
-					Call_Finish();
+			float playerPos[3];
+			WorldSpaceCenter(victim, playerPos);
 
-					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
-				}
+			if(Attack_Function && Attack_Function != INVALID_FUNCTION)
+			{	
+				Call_StartFunction(null, Attack_Function);
+				Call_PushCell(this.client);
+				Call_PushCell(victim);
+				Call_PushCell(this.damagetype);
+				Call_PushFloatRef(Dmg);
+				Call_Finish();
+
+				//static void On_LaserHit(int client, int target, int damagetype, float &damage)
 			}
 		}
+	}
+	void Enumerate_Simple()
+	{
+		if(this.max_targets)
+			i_maxtargets_hit = this.max_targets;
+		else
+			i_maxtargets_hit = MAX_TARGETS_HIT;
+
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
+
+		float hullMin[3], hullMax[3];
+		this.SetHull(hullMin, hullMax);
+
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(this.client);
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Player_Laser_BEAM_TraceUsers, this.client);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+		FinishLagCompensation_Base_boss();
+
+		//the idea for this one is to then use
+		//for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+		//to loop throught the stuff. inside the specific npc that needs to use this
 	}
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
@@ -1906,17 +1913,12 @@ enum struct Player_Laser_Logic
 		if(this.target_hitfalloff)
 			Falloff = this.target_hitfalloff;
 
-		Zero(Player_Laser_BEAM_HitDetected);
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		i_targets_hit = 0;
 
 		float hullMin[3], hullMax[3];
-		hullMin[0] = -this.Radius;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
+		this.SetHull(hullMin, hullMax);
 
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(this.client);
@@ -1926,32 +1928,50 @@ enum struct Player_Laser_Logic
 
 		float Dmg = this.Damage;
 				
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Player_Laser_BEAM_HitDetected[loop];
-			if (victim)
-			{
-				this.trace_hit_enemy=true;
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
+			if (!victim)
+				break;
 
-				float playerPos[3];
-				WorldSpaceCenter(victim, playerPos);
-				
-				SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
+			this.trace_hit_enemy=true;
 
-				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
-				{	
-					Call_StartFunction(null, Attack_Function);
-					Call_PushCell(this.client);
-					Call_PushCell(victim);
-					Call_PushCell(this.damagetype);
-					Call_PushFloatRef(Dmg);
-					Call_Finish();
-					//static void On_LaserHit(int client, int target, int damagetype, float &damage)
-				}
+			float playerPos[3];
+			WorldSpaceCenter(victim, playerPos);
+			
+			SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
-				Dmg *= Falloff;
+			if(Attack_Function && Attack_Function != INVALID_FUNCTION)
+			{	
+				Call_StartFunction(null, Attack_Function);
+				Call_PushCell(this.client);
+				Call_PushCell(victim);
+				Call_PushCell(this.damagetype);
+				Call_PushFloatRef(Dmg);
+				Call_Finish();
+				//static void On_LaserHit(int client, int target, int damagetype, float &damage)
 			}
+
+			Dmg *= Falloff;
 		}
+	}
+	void SetHull(float hullMin[3], float hullMax[3])
+	{
+		if(this.Custom_Hull[0] != 0.0 || this.Custom_Hull[1] != 0.0 || this.Custom_Hull[2] != 0.0)
+		{
+			hullMin[0] = -this.Custom_Hull[0];
+			hullMin[1] = -this.Custom_Hull[1];
+			hullMin[2] = -this.Custom_Hull[2];
+		}
+		else
+		{
+			hullMin[0] = -this.Radius;
+			hullMin[1] = hullMin[0];
+			hullMin[2] = hullMin[0];
+		}
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
 	}
 }
 
@@ -1968,10 +1988,10 @@ static bool Player_Laser_BEAM_TraceUsers(int entity, int contentsMask, int clien
 		{
 			for(int i=0 ; i < i_maxtargets_hit ; i++)
 			{
-				if(!Player_Laser_BEAM_HitDetected[i])
+				if(!i_Ruina_Laser_BEAM_HitDetected[i])
 				{
 					i_targets_hit++;
-					Player_Laser_BEAM_HitDetected[i] = entity;
+					i_Ruina_Laser_BEAM_HitDetected[i] = entity;
 					break;
 				}
 			}

@@ -91,11 +91,11 @@ public void BalanceDropMinimum(float multi)
 	if(VIPBuilding_Active())
 		f_PowerupSpawnMulti *= 4.0;
 		
-	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
-	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
-	i_KillTheseManyMorePowerup_Health = RoundToCeil((f_KillTheseManyMorePowerup_base_Health + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
-	i_KillTheseManyMorePowerup_Money = RoundToCeil((f_KillTheseManyMorePowerup_base_Money + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
-	i_KillTheseManyMorePowerup_Grigori = RoundToCeil((f_KillTheseManyMorePowerup_base_Grigori + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Health = RoundToCeil((f_KillTheseManyMorePowerup_base_Health + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Money = RoundToCeil((f_KillTheseManyMorePowerup_base_Money + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Grigori = RoundToCeil((f_KillTheseManyMorePowerup_base_Grigori + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
 }
 
 void Drops_ResetChances()
@@ -308,18 +308,16 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 				client_pos[2] += 35.0;
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
-					int base_boss = -1;
 					ParticleEffectAt(powerup_pos, "utaunt_snowring_space_parent", 1.0);
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(NUKE_SOUND, _, SNDCHAN_STATIC, 100, _);
-					while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
+					
+					int a, ienemy;
+					while((ienemy = FindEntityByNPC(a)) != -1)
 					{
-						if(IsValidEntity(base_boss) && base_boss > 0)
+						if(GetTeam(ienemy) != TFTeam_Red)
 						{
-							if(GetTeam(base_boss) != TFTeam_Red)
-							{
-								Cryo_FreezeZombie(entity, base_boss, 3);
-							}
+							Cryo_FreezeZombie(client, ienemy, 3);
 						}
 					}
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)

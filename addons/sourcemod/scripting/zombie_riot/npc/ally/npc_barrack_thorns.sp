@@ -44,9 +44,9 @@ public void Barracks_Thorns()
 	
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackThorns(client, vecPos, vecAng, ally);
+	return BarrackThorns(client, vecPos, vecAng);
 }
 bool ThornsHasElite[MAXENTITIES];
 bool ThornsHasMaxPot[MAXENTITIES];
@@ -79,7 +79,7 @@ methodmap BarrackThorns < BarrackBody
 		EmitSoundToAll(g_ThornsDeath[GetRandomInt(0, sizeof(g_ThornsDeath) - 1)],
 		this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	public BarrackThorns(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackThorns(int client, float vecPos[3], float vecAng[3])
 	{
 		bool elite ;
 		bool MaxPot;

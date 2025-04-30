@@ -48,9 +48,9 @@ stock int TwirlFollower_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return TwirlFollower(vecPos, vecAng, team, data);
+	return TwirlFollower(vecPos, vecAng, team);
 }
 
 static Action TwirlFollower_SpeechTimer(Handle timer, DataPack pack)
@@ -235,7 +235,7 @@ methodmap TwirlFollower < CClotBody
 	}
 	public int i_weapon_type()
 	{
-		int wave = Waves_GetRound()+1;
+		int wave = ZR_Waves_GetRound()+1;
 
 		if(this.m_fbGunout)	//ranged
 		{
@@ -319,9 +319,9 @@ methodmap TwirlFollower < CClotBody
 			return 1;	//ranged
 	}
 	
-	public TwirlFollower(float vecPos[3], float vecAng[3],int ally, const char[] data)
+	public TwirlFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		TwirlFollower npc = view_as<TwirlFollower>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", TFTeam_Red, true, true));
+		TwirlFollower npc = view_as<TwirlFollower>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", ally, true, true));
 		
 		npc.m_iChanged_WalkCycle = 1;
 		i_NpcWeight[npc.index] = 4;

@@ -146,16 +146,18 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 		pack.WriteCell(EntIndexToEntRef(weapon));
 
 		Soldine_EyeHandler(client);
-
-		if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
-		{
-			// MASS REPLACE THIS IN ALL FILES
-			PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3",_,1);
-			Precached = true;
-		}
+		SoldineKitDownload();
 	}
 }
-
+void SoldineKitDownload()
+{
+	if(!Precached)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3",_,1);
+		Precached = true;
+	}
+}
 static void Delete_Halo(int client)
 {
 	int halo_particle = EntRefToEntIndex(ParticleRef[client]);
@@ -305,11 +307,10 @@ static void Wkit_Soldin_Effect(int client)
 
 	if(IsValidEntity(getweapon))
 	{
-		int RocketLoad = GetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"));
 		int RockeyAmmo=	GetAmmo(client, 8);
 		int RocketAmmoMAX=RoundToCeil(8.0* Attributes_Get(getweapon, 4, 1.0));
 		SetAmmo(client, 8, RockeyAmmo-RocketAmmoMAX);
-		SetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), RocketLoad+RocketAmmoMAX);
+		SetEntData(getweapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), RocketAmmoMAX);
 	}
 	int entity;
 	entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);

@@ -75,25 +75,6 @@ static char g_HappySounds[][] =
 };
 
 
-int i_NemesisEntitiesHitAoeSwing[MAXENTITIES];	//Who got hit
-float f_NemesisEnemyHitCooldown[MAXENTITIES];
-
-float f_NemesisCauseInfectionBox[MAXENTITIES];
-float f_NemesisHitBoxStart[MAXENTITIES];
-float f_NemesisHitBoxEnd[MAXENTITIES];
-static int i_GrabbedThis[MAXENTITIES];
-static float fl_RegainWalkAnim[MAXENTITIES];
-static float fl_OverrideWalkDest[MAXENTITIES];
-static float fl_StopDodge[MAXENTITIES];
-static float fl_StopDodgeCD[MAXENTITIES];
-
-static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
-static int i_TankAntiStuck[MAXENTITIES];
-static int i_GunMode[MAXENTITIES];
-static int i_GunAmmo[MAXENTITIES];
-static float f_NemesisImmuneToInfection[MAXENTITIES];
-static float f_NemesisSpecialDeathAnimation[MAXENTITIES];
-static float f_NemesisRandomInfectionCycle[MAXENTITIES];
 #define NEMESIS_MODEL "models/zombie_riot/bosses/nemesis_ft1_v6.mdl"
 #define INFECTION_MODEL "models/weapons/w_bugbait.mdl"
 #define INFECTION_RANGE 150.0
@@ -1201,7 +1182,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{
-			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client] > 500)
+			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client_repat	] > 500)
 			{
 				if(!XenoExtraLogic())
 				{

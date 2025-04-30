@@ -72,9 +72,7 @@ methodmap Eurainis < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -195,11 +193,14 @@ methodmap Eurainis < CClotBody
 		SetVariantInt(RUINA_EUR_STAFF_2);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
 
+		fl_ruina_battery_max[npc.index] = 4000.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
+		SetVariantInt(1 + 2 + 4 + 8);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		return npc;
 	}
@@ -250,7 +251,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>4000.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
@@ -263,12 +264,11 @@ static void ClotThink(int iNPC)
 
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
+			fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 			Eurainis_Spawn_Minnions(npc);
 		}
-		
 	}
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -396,7 +396,7 @@ static void Eurainis_Spawn_Minnions(Eurainis npc)
 	}
 	
 	spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
-	maxhealth = RoundToNearest(maxhealth * 0.45);
+	maxhealth = RoundToNearest(maxhealth * 1.8);
 
 	if(spawn_index > MaxClients)
 	{

@@ -48,7 +48,7 @@
 	}
 	"Luck Up 1 Desc"
 	{
-		"en" 		"Gain an additional +0.005%% chance to crit an enemy for 2x damage on any damage instance."
+		"en" 		"Gain an additional +0.005％ chance to crit an enemy for 2x damage on any damage instance."
 	}
 	"Weapon Damage All 1"
 	{
@@ -56,7 +56,7 @@
 	}
 	"Weapon Damage All 1 Desc"
 	{
-		"en" 		"Gain a multiplicative +0.05%% damage buff to all weapons."
+		"en" 		"Gain a multiplicative +0.05％ damage buff to all weapons."
 	}
 	"Weapon Damage All 1 High"
 	{
@@ -64,7 +64,7 @@
 	}
 	"Weapon Damage All 1 High Desc"
 	{
-		"en" 		"Gain a multiplicative +0.2%% damage buff to all weapons."
+		"en" 		"Gain a multiplicative +0.2％ damage buff to all weapons."
 	}
 	"Attackspeed & Reload All 1"
 	{
@@ -72,7 +72,7 @@
 	}
 	"Attackspeed & Reload All 1 Desc"
 	{
-		"en" 		"Gain a multiplicative +0.05%% attackspeed & reload buff to all weapons."
+		"en" 		"Gain a multiplicative +0.05％ attackspeed & reload buff to all weapons."
 	}
 	"Attackspeed & Reload All 1 High"
 	{
@@ -80,7 +80,7 @@
 	}
 	"Attackspeed & Reload All 1 High Desc"
 	{
-		"en" 		"Gain a multiplicative +0.2%% attackspeed & reload buff to all weapons."
+		"en" 		"Gain a multiplicative +0.2％ attackspeed & reload buff to all weapons."
 	}
 	"Health Up 1"
 	{
@@ -112,7 +112,7 @@
 	}
 	"Resist 1 Desc"
 	{
-		"en" 		"Gain a multiplicative +0.05%% Resistance to all sources"
+		"en" 		"Gain a multiplicative +0.05％ Resistance to all sources"
 	}
 	"Cash Up 1"
 	{
@@ -144,7 +144,7 @@
 	}
 	"Reload All 1 Desc"
 	{
-		"en" 		"Gain a multiplicative +0.025%% reload buff to all weapons."
+		"en" 		"Gain a multiplicative +0.025％ reload buff to all weapons."
 	}
 	"Attackspeed All 1"
 	{
@@ -152,7 +152,7 @@
 	}
 	"Attackspeed All 1 Desc"
 	{
-		"en" 		"Gain a multiplicative +0.02%% Attackspeed buff to all weapons."
+		"en" 		"Gain a multiplicative +0.02％ Attackspeed buff to all weapons."
 	}
 	"FusionBuffDo"
 	{
@@ -160,7 +160,7 @@
 	}
 	"FusionBuffDo Desc"
 	{
-		"en" 		"Gain a multiplicative +0.25%% Extra Damage and multiplicative +0.5%% Resistance."
+		"en" 		"Gain a multiplicative +0.25％ Extra Damage and multiplicative +0.5％ Resistance."
 	}
 	"Kahmlstein Buff"
 	{
@@ -168,7 +168,7 @@
 	}
 	"Kahmlstein Buff Desc"
 	{
-		"en" 		"Gain a multiplicative +1%%% Extra Damage."
+		"en" 		"Gain a multiplicative +1％ Extra Damage."
 	}
 	"Cash Up Barney 1"
 	{
@@ -184,7 +184,7 @@
 	}
 	"Sensal Buff Do Desc"
 	{
-		"en" 		"Gain a multiplicative +0.35%% Extra Damage and multiplicative +1.0%% Resistance."
+		"en" 		"Gain a multiplicative +0.35％ Extra Damage and multiplicative +1.0％ Resistance."
 	}
 	"Alaxios Godly Powerup"
 	{
@@ -192,7 +192,7 @@
 	}
 	"Alaxios Godly Powerup Desc"
 	{
-		"en" 		"Gain a multiplicative +1.0%% Resistance and 15 HP."
+		"en" 		"Gain a multiplicative +1.0％ Resistance and 15 HP."
 	}
 	"Bob's Healing Hand"
 	{
@@ -200,7 +200,7 @@
 	}
 	"Bob's Healing Hand Desc"
 	{
-		"en" 		"Gain a 25 HP.\nAn additional +0.05%% luck and 1%% building HP and reduces revive time by 5 out of 250"
+		"en" 		"Gain a 25 HP.\nAn additional +0.05％ luck and 1％ building HP and reduces revive time by 5 out of 250"
 	}
 	"Blitzkrieg Buff"
 	{
@@ -208,7 +208,7 @@
 	}
 	"Blitzkrieg Buff Desc"
 	{
-		"en" 		"Gain a multiplicative +0.5%% Attackspeed and reload speed bonus."
+		"en" 		"Gain a multiplicative +0.5％ Attackspeed and reload speed bonus."
 	}
 	"Waldch's Blue Goggles"
 	{
@@ -216,7 +216,7 @@
 	}
 	"Waldch's Blue Goggles Desc"
 	{
-		"en" 		"Gain a multiplicative +1.5%% Reload speed bonus."
+		"en" 		"Gain a multiplicative +1.5％ Reload speed bonus."
 	}
 	"Iberia's Last Hope Up"
 	{
@@ -224,7 +224,7 @@
 	}
 	"Iberia's Last Hope Up Desc"
 	{
-		"en" 		"Gain a multiplicative +1.0%% Attackspeed speed bonus."
+		"en" 		"Gain a multiplicative +1.0％ Attackspeed speed bonus."
 	}
 	"Calmaticus Heart Up"
 	{
@@ -248,7 +248,7 @@
 	}
 	"Building Hp Up 1 Desc"
 	{
-		"en" 		"Your buildings gain a multiplicative +0.1%% HP"
+		"en" 		"Your buildings gain a multiplicative +0.1％ HP"
 	}
 	"Building Repair Up 1"
 	{
@@ -256,7 +256,7 @@
 	}
 	"Building Repair Up 1 Desc"
 	{
-		"en" 		"Your Repairspeed gains a multiplicative +0.1%% speed"
+		"en" 		"Your Repairspeed gains a multiplicative +0.1％ speed"
 	}
 	"Building Extra Damage Up 1"
 	{
@@ -264,7 +264,7 @@
 	}
 	"Building Extra Damage Up 1 Desc"
 	{
-		"en" 		"Your buildings gain a multiplicative +0.1%% Damage"
+		"en" 		"Your buildings gain a multiplicative +0.1％ Damage"
 	}
 	"Twirl Hairpin 1"
 	{
@@ -272,7 +272,7 @@
 	}
 	"Twirl Hairpin 1 Desc"
 	{
-		"en" 		"Gain 0.5%% Extra mana Regen"
+		"en" 		"Gain 0.5％ Extra mana Regen"
 	}
 	"Iberia Training"
 	{
@@ -280,7 +280,7 @@
 	}
 	"Iberia Training Desc"
 	{
-		"en" 		"Gain a multiplicative +1%% Attackspeed and reload speed bonus."
+		"en" 		"Gain a multiplicative +1％ Attackspeed and reload speed bonus."
 	}
 	"Extra Healing Up"
 	{
@@ -288,7 +288,7 @@
 	}
 	"Extra Healing Up Desc"
 	{
-		"en" 		"Gain a multiplicative +0.1%% Extra Healing from all sources."
+		"en" 		"Gain a multiplicative +0.1％ Extra Healing from all sources."
 	}
 	"Extra Healing Up High"
 	{
@@ -296,7 +296,7 @@
 	}
 	"Extra Healing Up High Desc"
 	{
-		"en" 		"Gain a multiplicative +0.5%% Extra Healing from all sources."
+		"en" 		"Gain a multiplicative +0.5％ Extra Healing from all sources."
 	}
 	"ReviveTime Reduce"
 	{

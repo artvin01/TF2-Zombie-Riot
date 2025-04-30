@@ -7,6 +7,7 @@ static float LastKnownPos[3];
 void Wisp_Setup()
 {
 	PrecacheSound(g_IdleSound);
+	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "?????????????");
@@ -79,7 +80,7 @@ methodmap Wisp < StalkerShared
 			ActivateEntity(entity);
 			SetVariantString("!activator");
 			AcceptEntityInput(entity, "SetParent", npc.index);
-			AcceptEntityInput(entity, "LightOn");
+			//AcceptEntityInput(entity, "LightOn");
 		}
 		
 		npc.m_iWearable1 = entity;
@@ -160,7 +161,7 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 2.0;
 	}
 
-	int spawn = npc.m_iTargetAlly;
+	int spawn = i_TargetAlly[npc.index];
 	if((!IsValidEntity(spawn) || GetEntProp(spawn, Prop_Data, "m_bDisabled")) && (forceLeave || npc.m_iChaseAnger < 1))
 	{
 		spawn = -1;
@@ -193,7 +194,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 		
-		npc.m_iTargetAlly = spawn;
+		i_TargetAlly[npc.index] = spawn;
 	}
 
 	if(npc.m_flAttackHappens)
@@ -284,7 +285,12 @@ static void ClotThink(int iNPC)
 		{
 			float vecTarget[3]; GetEntPropVector(spawn, Prop_Data, "m_vecAbsOrigin", vecTarget); 
 			float vecMe[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
+
+			float zpos = vecTarget[2];
+			
+			vecTarget[2] = vecMe[2];
 			float distance = GetVectorDistance(vecTarget, vecMe, true);
+			vecTarget[2] = zpos;
 
 			if(distance > 5000.0)
 			{

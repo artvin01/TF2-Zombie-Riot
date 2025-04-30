@@ -74,7 +74,7 @@ methodmap WanderingSpirit < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		float wave = float(Waves_GetRound()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -99,6 +99,9 @@ methodmap WanderingSpirit < CClotBody
 		//counts as a static npc, means it wont count towards NPC limit.
 		if(StrContains(data, "ghostbusters") == -1)
 			AddNpcToAliveList(npc.index, 1);
+
+		if(GetRandomInt(1,10) == 1)
+			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Wandering Spitit");
 
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
@@ -254,7 +257,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 				{
 					npc.m_iState = 0;
 					SmiteNpcToDeath(npc.index);
-					CPrintToChatAll("{crimson}The spirit is unable to move on and splits apart...");
+					CPrintToChatAll("{crimson}%t is unable to move on and splits apart...",c_NpcName[npc.index]);
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 					for(int loop=1; loop<=CountPlayersOnRed(); loop++)
@@ -262,6 +265,8 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						int spawn_index = NPC_CreateByName("npc_vengefull_spirit", -1, pos, ang, GetTeam(npc.index));
 						if(spawn_index > MaxClients)
 						{
+							if(StrEqual(c_NpcName[npc.index], "Wandering Spitit"))
+								strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Vengeful Spitit");
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						//	SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 						//	SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

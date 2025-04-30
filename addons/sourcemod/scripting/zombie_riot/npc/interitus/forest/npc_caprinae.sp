@@ -194,7 +194,7 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 
-				if(npc.Anger && EnemyNpcAlive > (MaxEnemiesAllowedSpawnNext(1) - 3))
+				if(npc.Anger && (EnemyNpcAlive - EnemyNpcAliveStatic) > (MaxEnemiesAllowedSpawnNext(1) - 3))
 				{
 					// Too many alive: Clone explodes now
 					fl_Extra_Damage[npc.index] *= 3.0;
@@ -258,7 +258,7 @@ static void ClotDeath(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 	startPosition[2] += 45;
 	
-	makeexplosion(entity, entity, startPosition, "", 600, 150, _, _, true, true, 15.0);
+	makeexplosion(entity, startPosition, 600, 150, _, true, true, 15.0);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -32,6 +32,10 @@ methodmap VehicleGeneric < CClotBody
 		i_IsVehicle[obj] = 2;
 		NPCStats_SetFuncsToZero(obj);
 
+#if defined ZR
+		Armor_Charge[obj] = 10000;
+#endif
+
 		SDKHook(obj, SDKHook_Think, VehicleThink);
 		SDKHook(obj, SDKHook_OnTakeDamage, VehicleTakeDamage);
 
@@ -343,8 +347,13 @@ bool Vehicle_Enter(int vehicle, int target)
 	if(index == -2)
 		return false;
 	
-	SetEntityCollisionGroup(target, COLLISION_GROUP_IN_VEHICLE);
-	SetEntityMoveType(target, MOVETYPE_NONE);
+//	PrintToChatAll("Vehicle_Enter %d: %N entered in slot %d", vehicle, target, index);
+	
+	if(!b_ThisWasAnNpc[target])
+	{
+		SetEntityCollisionGroup(target, COLLISION_GROUP_IN_VEHICLE);
+		SetEntityMoveType(target, MOVETYPE_NONE);
+	}
 
 	if(index == -1)
 	{
@@ -356,6 +365,9 @@ bool Vehicle_Enter(int vehicle, int target)
 		GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos1);
 		GetEntPropVector(obj.index, Prop_Data, "m_vecSeatPos", pos2, index);
 
+		// Offset for not being ducked
+		pos2[2] -= 18.0;
+
 		TeleportEntity(target, pos1, _, {0.0, 0.0, 0.0});
 		SetParent(obj.index, target, "root", pos2);
 
@@ -364,22 +376,32 @@ bool Vehicle_Enter(int vehicle, int target)
 	
 	if(target > 0 && target <= MaxClients)
 	{
-		/*SetEntityFlags(target, GetEntityFlags(target) & ~(FL_DUCKING));
+		SetEntityFlags(target, GetEntityFlags(target) & ~(FL_DUCKING));
 		SetEntProp(target, Prop_Send, "m_nAirDucked", 8);
 		SetEntProp(target, Prop_Data, "deadflag", true);
 		SetVariantString("self.AddCustomAttribute(\"no_duck\", 1, -1)");
-		AcceptEntityInput(target, "RunScriptCode");*/
-		ForcePlayerCrouch(target, true, false);
+		AcceptEntityInput(target, "RunScriptCode");
+		/*ForcePlayerCrouch(target, true, false);*/
 	}
 	return true;
 }
 
 static void SwitchToDriver(VehicleGeneric obj, int target)
 {
+	for(int i; i < VEHICLE_MAX_SEATS; i++)
+	{
+		int passenger = GetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", i);
+		if(passenger == target)
+		{
+			SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", -1, i);
+			break;
+		}
+	}
+
 	float pos[3];
 	GetEntPropVector(obj.index, Prop_Data, "m_vecOrigin", pos);
 	TeleportEntity(target, pos, _, {0.0, 0.0, 0.0});
-	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -40.0});
+	SetParent(obj.index, target, "vehicle_driver_eyes", {0.0, 0.0, -68.0});	// Was -40 when being ducked
 	
 	AcceptEntityInput(obj.index, "TurnOn");
 	obj.m_hDriver = target;
@@ -425,6 +447,7 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 	{
 		obj.m_hDriver = -1;
 		wasDriver = true;
+//		PrintToChatAll("ExitVehicle %d: %N exit as driver", vehicle, target);
 	}
 	else
 	{
@@ -434,10 +457,15 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 			if(passenger == target)
 			{
 				SetEntPropEnt(obj.index, Prop_Data, "m_hSeatEntity", -1, i);
+	//			PrintToChatAll("ExitVehicle %d: %N exit as passenger %d", vehicle, target, i);
 				break;
 			}
 		}
 	}
+
+//	int entity = Vehicle_Driver(target);
+//	if(entity != -1)
+//		PrintToChatAll("ExitVehicle %d: %N still in a seat somehow???", vehicle, target);
 
 	AcceptEntityInput(target, "ClearParent");
 
@@ -463,15 +491,16 @@ static void ExitVehicle(int vehicle, int target, bool killed, bool teleport)
 		SetEntityCollisionGroup(target, COLLISION_GROUP_PLAYER);
 		SetEntityMoveType(target, MOVETYPE_WALK);
 		
-		/*SetVariantString("self.RemoveCustomAttribute(\"no_duck\")");
-		AcceptEntityInput(target, "RunScriptCode");*/
-		ForcePlayerCrouch(target, false);
+		SetVariantString("self.RemoveCustomAttribute(\"no_duck\")");
+		AcceptEntityInput(target, "RunScriptCode");
+		/*ForcePlayerCrouch(target, false);*/
 	}
 
 	if(teleport)
 	{
 		CanExit(obj.index, pos, ang);
 		GetEntPropVector(obj.index, Prop_Data, "m_vecVelocity", vel);
+		pos[2] += 8.0;
 		ang[2] = 0.0;
 		TeleportEntity(target, pos, ang, vel);
 	}

@@ -1,23 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
-
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-	"vo/medic_painsharp05.mp3",
-	"vo/medic_painsharp06.mp3",
-	"vo/medic_painsharp07.mp3",
-	"vo/medic_painsharp08.mp3",
-};
-
 static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/medic_taunts16.mp3",
 	"vo/taunts/medic_taunts12.mp3",
@@ -46,8 +29,8 @@ static char g_RangedReloadSound[][] = {
 
 void GiantRegeneration_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
@@ -68,35 +51,7 @@ void GiantRegeneration_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return GiantRegeneration(client, vecPos, vecAng, ally, data);
-}
-
-static char[] GetPanzerHealth()
-{
-	int health = 15;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
+	return GiantRegeneration(vecPos, vecAng, ally, data);
 }
 
 static float fl_Cooldown[MAXENTITIES];
@@ -139,13 +94,13 @@ methodmap GiantRegeneration < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound()
@@ -167,9 +122,9 @@ methodmap GiantRegeneration < CClotBody
 	}
 	
 	
-	public GiantRegeneration(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public GiantRegeneration(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		GiantRegeneration npc = view_as<GiantRegeneration>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.3", GetPanzerHealth(), ally));
+		GiantRegeneration npc = view_as<GiantRegeneration>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.3", "5000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -206,7 +161,7 @@ methodmap GiantRegeneration < CClotBody
 		}
 		else
 		{	
-			npc.i_WaveType = (Waves_GetRound()+1);
+			npc.i_WaveType = (ZR_Waves_GetRound()+1);
 		}
 		//IDLE
 		npc.m_iState = 0;
@@ -419,12 +374,11 @@ public void GiantRegeneration_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									float damage = 25.0;
-									damage *= npc.m_flWaveScale;
+									float damage = 45.0;
 
 									SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 
-									Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 9 : 7);
+									Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 15 : 15);
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();

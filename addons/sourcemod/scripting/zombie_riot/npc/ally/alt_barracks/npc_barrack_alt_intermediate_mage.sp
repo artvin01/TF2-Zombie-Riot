@@ -40,9 +40,9 @@ public void Barrack_Alt_Intermediate_Mage_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Intermediate_Mage(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Intermediate_Mage(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
@@ -68,7 +68,7 @@ methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 		
 
 	}
-	public Barrack_Alt_Intermediate_Mage(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Intermediate_Mage(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Intermediate_Mage npc = view_as<Barrack_Alt_Intermediate_Mage>(BarrackBody(client, vecPos, vecAng, "165", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		

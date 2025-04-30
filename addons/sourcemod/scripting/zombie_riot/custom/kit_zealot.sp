@@ -74,7 +74,7 @@ public void Weapon_ZealotRCheckCD(int client, int weapon, bool &result, int slot
 
 void Zealot_ApplyGlobalRCooldown(int client, float Duration)
 {
-	Duration *= CooldownReductionAmount(client);
+	Duration *= CooldownReductionAmount();
 
 	f_DashCooldownZealot[client] = GetGameTime() + Duration;
 	int weapon1;
@@ -144,7 +144,7 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 				TF2_AddCondition(client, TFCond_LostFooting, CHARGE_DURATION);
 				TF2_AddCondition(client, TFCond_AirCurrent, CHARGE_DURATION);
 				TF2_AddCondition(client, TFCond_FreezeInput, CHARGE_DURATION);
-				IncreaceEntityDamageTakenBy(client, 0.25, CHARGE_DURATION);
+				IncreaseEntityDamageTakenBy(client, 0.25, CHARGE_DURATION);
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + CHARGE_DURATION + 0.5;
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + CHARGE_DURATION + 0.5;
 				ApplyStatusEffect(client, client, "Intangible", 3.0);
@@ -177,10 +177,6 @@ public void Weapon_ZealotBlockRapier(int client, int weapon, bool &result, int s
 					SetParent(viewmodelModel, particle);
 				}
 				EmitSoundToAll("items/powerup_pickup_strength.wav", client, SNDCHAN_STATIC,75,_,0.65, GetRandomInt(105,109));
-				for (int entity = 0; entity < MAXENTITIES; entity++)
-				{
-					f_GlobalHitDetectionLogic[client][entity] = 0.0;
-				}
 				SDKUnhook(client, SDKHook_PreThink, Client_ZealotChargeDo);
 				SDKHook(client, SDKHook_PreThink, Client_ZealotChargeDo);
 				f_ZealotDamageSave[client] = CHARGE_DEFAULT_DAMGAE;
@@ -536,16 +532,21 @@ public void Enable_Zealot(int client, int weapon) // Enable management, handle w
 			SetParent(client, entity);
 			ParticleRef[client] = EntIndexToEntRef(entity);
 		}
-		if(!Precached && CvarFileNetworkDisable.IntValue <= 0)
-		{
-			// MASS REPLACE THIS IN ALL FILES
-			PrecacheSoundCustom("#zombiesurvival/zealot_lastman_1.mp3",_,1);
-			Precached = true;
-		}
+		ZealotMusicDownload();
 	}
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ZEALOT_GUN) //
 	{
 		f_PistolGet[client] = EntIndexToEntRef(weapon);
+	}
+}
+
+void ZealotMusicDownload()
+{
+	if(!Precached)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("#zombiesurvival/zealot_lastman_1.mp3",_,1);
+		Precached = true;
 	}
 }
 
@@ -883,16 +884,19 @@ public void Client_ZealotChargeDo(int client)
 
 float ZealotOnlyHitOnce(int attacker, int victim, float &damage, int weapon)
 {
-	if(f_GlobalHitDetectionLogic[attacker][victim])
+	
+	//Zealot will have an offset of 10000, always increment by Maxentities.
+	//Client instead of target, so it gets removed if the target dies
+	if(IsIn_HitDetectionCooldown(attacker + (MAXENTITIES * 2),victim))
 	{
 		damage = 0.0;
 		return 0.0;
 	}
+	Set_HitDetectionCooldown(attacker + (MAXENTITIES * 2),victim, GetGameTime() + 1.0);
 	float targPos[3];
 	WorldSpaceCenter(victim, targPos);
 	EmitSoundToAll("plats/tram_hit4.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 	TE_Particle("skull_island_embers", targPos, NULL_VECTOR, NULL_VECTOR, victim, _, _, _, _, _, _, _, _, _, 0.0);
-	f_GlobalHitDetectionLogic[attacker][victim] = 1.0;
 	return 0.0;
 }
 

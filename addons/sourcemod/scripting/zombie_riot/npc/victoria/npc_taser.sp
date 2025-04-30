@@ -55,7 +55,7 @@ void VictoriaTaser_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaTaser(client, vecPos, vecAng, ally);
+	return VictoriaTaser(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaTaser < CClotBody
@@ -95,7 +95,7 @@ methodmap VictoriaTaser < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, 0.5, 80);
 	}
 
-	public VictoriaTaser(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaTaser(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaTaser npc = view_as<VictoriaTaser>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "25000", ally));
 		

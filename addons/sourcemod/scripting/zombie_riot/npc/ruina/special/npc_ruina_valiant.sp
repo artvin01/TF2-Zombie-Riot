@@ -53,7 +53,7 @@ static int i_anchor_id[MAXENTITIES];
 static int i_failsafe[MAXENTITIES];
 static float fl_spawn_timeout[MAXENTITIES];
 
-#define RUINA_ANCHOR_FAILSAFE_AMMOUNT 33
+#define RUINA_ANCHOR_FAILSAFE_AMMOUNT 66
 
 #define VENIUM_SPAWN_SOUND	"hl1/ambience/particle_suck2.wav"
 static float fl_last_summon;
@@ -102,7 +102,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		}
 	}
 	fl_last_summon = 0.1;
-	return Valiant(vecPos, vecAng, team, data);
+	return Valiant(vecPos, vecAng, team);
 }
 
 methodmap Valiant < CClotBody
@@ -114,17 +114,13 @@ methodmap Valiant < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -174,7 +170,7 @@ methodmap Valiant < CClotBody
 	}
 	
 	
-	public Valiant(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Valiant(float vecPos[3], float vecAng[3], int ally)
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -286,7 +282,15 @@ methodmap Valiant < CClotBody
 					ShowGameText(client_check, "voice_player", 1, "%t", "Venium Spawn");	
 				}
 			}
-			TeleportDiversioToRandLocation(npc.index);
+
+			float maxrange = 2500.0;
+			int Decicion = TeleportDiversioToRandLocation(npc.index,true, maxrange, 500.0);
+
+			if(Decicion == 2)
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, maxrange, 250.0);
+
+			if(Decicion == 2)
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, maxrange, 0.0);
 		}
 
 		float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec); float sky_loc[3]; sky_loc = npc_vec; sky_loc[2]+=999.0;
@@ -573,7 +577,7 @@ static void Venium_Build_Anchor(Valiant npc)
 
 	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);
 	
-	if(flDistanceToBuild < (500.0 * 500.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
+	if(flDistanceToBuild < (750.0 * 750.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
 	{
 		i_failsafe[npc.index]++;
 		return; //The building is too close, we want to retry! it is unfair otherwise.

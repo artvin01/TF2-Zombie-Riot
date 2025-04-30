@@ -62,7 +62,7 @@ static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBigpipe(client, vecPos, vecAng, ally, data);
+	return VictoriaBigpipe(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaBigpipe < CClotBody
@@ -131,7 +131,7 @@ methodmap VictoriaBigpipe < CClotBody
 		}
 	}
 	
-	public VictoriaBigpipe(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaBigpipe(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaBigpipe npc = view_as<VictoriaBigpipe>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally,false));
 		
@@ -463,8 +463,8 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 						if(IsValidEnemy(npc.index, target))
 						{
 							float damageDealt = 20.0;
-							if(Waves_GetRound()+1 > 12)
-								damageDealt *= float(Waves_GetRound()+1)*0.1;
+							if(ZR_Waves_GetRound()+1 > 12)
+								damageDealt *= float(ZR_Waves_GetRound()+1)*0.1;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 

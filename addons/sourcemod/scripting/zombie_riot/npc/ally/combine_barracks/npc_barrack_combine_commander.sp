@@ -64,9 +64,9 @@ void Barracks_Combine_Commander_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Combine_Commander(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Commander(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Combine_Commander < BarrackBody
@@ -139,7 +139,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_AUTO, 70, _, 0.35, 100);
 	}
 
-	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "1250", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		

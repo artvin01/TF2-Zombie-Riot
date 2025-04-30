@@ -1,22 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
 
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-	"vo/medic_painsharp05.mp3",
-	"vo/medic_painsharp06.mp3",
-	"vo/medic_painsharp07.mp3",
-	"vo/medic_painsharp08.mp3",
-};
 
 static const char g_IdleSounds[][] = {
 	"vo/medic_standonthepoint01.mp3",
@@ -83,8 +68,8 @@ void Lex_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_LaserWebInvokeSounds);
@@ -165,17 +150,13 @@ methodmap Lex < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -194,7 +175,7 @@ methodmap Lex < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 		
@@ -202,7 +183,7 @@ methodmap Lex < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
@@ -211,25 +192,16 @@ methodmap Lex < CClotBody
 	
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::Playnpc.AngerSound()");
-		#endif
 	}
 
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeSound()");
-		#endif
 	}
 	public void PlayLaserWebInvokeSound() {
 		EmitSoundToAll(g_LaserWebInvokeSounds[GetRandomInt(0, sizeof(g_LaserWebInvokeSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayLaserWebInvokeSound()");
-		#endif
+
 	}
 
 	public void PlayMeleeMissSound() {
@@ -274,7 +246,7 @@ methodmap Lex < CClotBody
 		
 		return IsValidAlly(this.index, EntRefToEntIndex(this.m_ially));
 	}
-	public void Share_Damage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)	//share the damage taken across both. but it will still do 25%? more dmg to the on being attacked.
+	public void Share_Damage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])	//share the damage taken across both. but it will still do 25%? more dmg to the on being attacked.
 	{
 		if(!this.IsAlive())
 			return;
@@ -412,7 +384,7 @@ methodmap Lex < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,1.25,85.0);
+		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,1.25,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_W30_HAND_CREST);
@@ -439,6 +411,7 @@ methodmap Lex < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 				
+		fl_ruina_battery_max[npc.index] = 3000.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -524,10 +497,9 @@ static void ClotThink(int iNPC)
 
 	int PrimaryThreatIndex = npc.Get_Target();
 
-
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>3000.0 && npc.m_flDoingAnimation < GameTime-1.0)	//every 30 seconds.
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && npc.m_flDoingAnimation < GameTime-1.0)	//every 30 seconds.
 	{
 		b_ruina_battery_ability_active[npc.index] = true;
 		Master_Apply_Shield_Buff(npc.index, 100.0, 0.1);	//90% shield to all but itself. tiny radius tho
@@ -667,9 +639,9 @@ static void ClotThink(int iNPC)
 					Laser.Start_Point = Vec1;
 					Laser.End_Point = Vec2;
 
-					Laser.Radius = 5.0;
-					Laser.Damage = 10.0;
-					Laser.Bonus_Damage = 60.0;
+					Laser.Radius = 7.5;
+					Laser.Damage = 25.0;
+					Laser.Bonus_Damage = 80.0;
 					Laser.damagetype = DMG_PLASMA;
 
 					Laser.Deal_Damage(On_LaserHit);
@@ -809,7 +781,7 @@ static void ClotThink(int iNPC)
 }
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
-	Ruina_Add_Mana_Sickness(client, target, 0.01, 10);
+	Ruina_Add_Mana_Sickness(client, target, 0.075, 20);
 }
 static Action Lex_Slow_Projectiles(Handle Timer, int ref)
 {
@@ -864,7 +836,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	npc.Share_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	npc.Share_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		

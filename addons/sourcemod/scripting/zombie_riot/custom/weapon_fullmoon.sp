@@ -55,6 +55,7 @@ void FullMoon_Enable(int client, int weapon)
 			Attributes_SetMulti(weapon, 412, 1.8);
 			//force panic attack and vulnerability
 			Panic_Attack[weapon] = 0.175;
+			FullmoonDownload();
 		}
 		return;
 	}
@@ -68,19 +69,22 @@ void FullMoon_Enable(int client, int weapon)
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		Attributes_SetMulti(weapon, 412, 1.8);
 		Panic_Attack[weapon] = 0.175;
-		if(!Precached)
-		{
-			// MASS REPLACE THIS IN ALL FILES
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_attack.mp3",_,1);
-			/*
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry1.mp3",_,1);
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry2.mp3",_,1);
-			*/
-			Precached = true;
-		}
+		FullmoonDownload();
 	}
 }
-
+void FullmoonDownload()
+{
+	if(!Precached)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_attack.mp3",_,1);
+		/*
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry1.mp3",_,1);
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry2.mp3",_,1);
+		*/
+		Precached = true;
+	}
+}
 public void FullMoonDoubleHp(int client, StringMap map)
 {
 	if(map)	// Player
@@ -170,13 +174,13 @@ public void FullMoon_Cooldown_Logic(int client, int weapon)
 {
 	if(f_FullMoonAbility[client] > GetGameTime())
 	{
-		MakeBladeBloddy(client, true, weapon);
+		MakeBladeBloddy(client, true);
 		TF2_AddCondition(client, TFCond_CritOnKill, 0.3);
 		StopSound(client, SNDCHAN_STATIC, "weapons/crit_power.wav");
 	}
 	else
 	{
-		MakeBladeBloddy(client, false, weapon);
+		MakeBladeBloddy(client, false);
 	}
 
 	if(f_FullMoonHudCD[client] < GetGameTime() && i_Current_Pap[client] > 1)

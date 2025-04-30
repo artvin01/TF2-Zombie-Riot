@@ -11,7 +11,7 @@ static const char g_Spawn[][] = {
 };
 
 static int NPCId;
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static float fl_KamikazeInitiate;
 static float fl_KamikazeSpawnDelay;
 static float fl_KamikazeSpawnRateDelay;
@@ -66,7 +66,7 @@ methodmap BeheadedKamiKaze < CClotBody
 	
 	public BeheadedKamiKaze(float vecPos[3], float vecAng[3], int ally)
 	{
-		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(10, true), ally));
+		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(3, true), ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.m_bisWalking = false;
@@ -100,7 +100,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		float wave = float(Waves_GetRound()+1); //Wave scaling
+		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
 		
 		wave *= 0.1;
 

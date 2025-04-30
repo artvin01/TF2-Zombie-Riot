@@ -56,44 +56,12 @@ static char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
 
-static char gGlow1;
-static char gExplosive1;
-static char gLaser1;
-
-static bool FusionWarrior_BEAM_CanUse[MAXENTITIES];
-static bool FusionWarrior_BEAM_IsUsing[MAXENTITIES];
-static int FusionWarrior_BEAM_TicksActive[MAXENTITIES];
-int FusionWarrior_BEAM_Laser;
-int FusionWarrior_BEAM_Glow;
-static float FusionWarrior_BEAM_CloseDPT[MAXENTITIES];
-static float FusionWarrior_BEAM_FarDPT[MAXENTITIES];
-static int FusionWarrior_BEAM_MaxDistance[MAXENTITIES];
-static int FusionWarrior_BEAM_BeamRadius[MAXENTITIES];
-static int FusionWarrior_BEAM_ColorHex[MAXENTITIES];
-static int FusionWarrior_BEAM_ChargeUpTime[MAXENTITIES];
-static float FusionWarrior_BEAM_CloseBuildingDPT[MAXENTITIES];
-static float FusionWarrior_BEAM_FarBuildingDPT[MAXENTITIES];
-static float FusionWarrior_BEAM_Duration[MAXENTITIES];
-static float FusionWarrior_BEAM_BeamOffset[MAXENTITIES][3];
-static float FusionWarrior_BEAM_ZOffset[MAXENTITIES];
-static bool FusionWarrior_BEAM_HitDetected[MAXENTITIES];
-static bool FusionWarrior_BEAM_UseWeapon[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-
-
-static float fl_Timebeforekamehameha[MAXENTITIES];
-static bool b_InKame[MAXENTITIES];
-static float fl_NextPull[MAXENTITIES];
-static int i_AmountProjectiles[MAXENTITIES];
-
-
-static int i_SaidLineAlready[MAXENTITIES];
-static float f_TimeSinceHasBeenHurt[MAXENTITIES];
+static int gExplosive1;
 
 public void TrueFusionWarrior_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "True Fusion Warrior");
+	strcopy(data.Name, sizeof(data.Name), "Infected Silvester");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_true_fusion_warrior");
 	strcopy(data.Icon, sizeof(data.Icon), "fusion_warrior");
 	data.IconCustom = true;
@@ -102,10 +70,8 @@ public void TrueFusionWarrior_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
-	TrueFusionWarrior_TBB_Precahce();
-	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
-	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
+
+	
 }
 
 static void ClotPrecache()
@@ -122,28 +88,20 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
-	
-	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
-	
+
+	PrecacheSoundArray(g_DefaultLaserLaunchSound);
+	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	
 	PrecacheSound("player/flow.wav");
 
-	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
+	PrecacheSoundCustom("#zombiesurvival/fusion_raid/infected_silvester_ostr.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return TrueFusionWarrior(vecPos, vecAng, team, data);
-}
-void TrueFusionWarrior_TBB_Precahce()
-{
-	FusionWarrior_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	FusionWarrior_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
 methodmap TrueFusionWarrior < CClotBody
@@ -155,8 +113,8 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 	property float m_flTimebeforekamehameha
 	{
-		public get()							{ return fl_Timebeforekamehameha[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_Timebeforekamehameha[this.index] = TempValueForProperty; }
+		public get()							{ return fl_BEAM_RechargeTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_RechargeTime[this.index] = TempValueForProperty; }
 	}
 	property bool m_bInKame
 	{
@@ -165,21 +123,25 @@ methodmap TrueFusionWarrior < CClotBody
 	}
 	property float m_flNextPull
 	{
-		public get()							{ return fl_NextPull[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextPull[this.index] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	public void PlayIdleSound(bool repeat = false) {
+	property float m_flTimeSinceHasBeenHurt
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+
+	public void PlayIdleSound()
+	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
+
 		int sound = GetRandomInt(0, sizeof(g_IdleSounds) - 1);
 		
 		EmitSoundToAll(g_IdleSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_IdleSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	
 	}
 	
@@ -191,11 +153,7 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_IdleAlertedSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
+
 	}
 	
 	public void PlayHurtSound() {
@@ -205,10 +163,6 @@ methodmap TrueFusionWarrior < CClotBody
 		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_HurtSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayDeathSound() {
@@ -229,10 +183,6 @@ methodmap TrueFusionWarrior < CClotBody
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
 		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		DataPack pack;
-		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteString(g_AngerSounds[sound]);
-		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
 	public void PlayRangedSound() {
@@ -244,18 +194,13 @@ methodmap TrueFusionWarrior < CClotBody
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayPullSound()");
-		#endif
 	}
 	
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -267,6 +212,11 @@ methodmap TrueFusionWarrior < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
+	}
+	public void PlayLaserLaunchSound() {
+		int chose = GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound)-1);
+		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public TrueFusionWarrior(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -293,7 +243,7 @@ methodmap TrueFusionWarrior < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester? Spawn");
 			}
 		}
 		
@@ -344,7 +294,7 @@ methodmap TrueFusionWarrior < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
 		/*
@@ -447,17 +397,17 @@ methodmap TrueFusionWarrior < CClotBody
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/fusion_raid/fusion_bgm.mp3");
-		music.Time = 178;
-		music.Volume = 2.0;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/fusion_raid/infected_silvester_ostr.mp3");
+		music.Time = 167;
+		music.Volume = 1.6;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Dragon Ball Z Dokkan Battle - LR Nappa & Vegeta");
-		strcopy(music.Artist, sizeof(music.Artist), "???");
+		strcopy(music.Name, sizeof(music.Name), "Investigation Goes Awry");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 		
 		npc.Anger = false;
 		b_angered_twice[npc.index] = false;
-		f_TimeSinceHasBeenHurt[npc.index] = 0.0;
+		npc.m_flTimeSinceHasBeenHurt = 0.0;
 		//IDLE
 		npc.m_flSpeed = 330.0;
 		
@@ -491,15 +441,15 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}True Fusion Warrior{default}: Run... Away...");
+					CPrintToChatAll("{gold}Silvester?{default}: Run... Away...");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}True Fusion Warrior{default}: Help...");
+					CPrintToChatAll("{gold}Silvester?{default}: Help...");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}True Fusion Warrior{crimson}: AGHHRRR!!!");
+					CPrintToChatAll("{gold}Silvester?{crimson}: AGHHRRR!!!");
 				}
 			}
 		}
@@ -508,14 +458,14 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{gold}True Fusion Warrior{default}: New... victims to infect...");
+		CPrintToChatAll("{gold}Silvester?{default}: New... victims to infect...");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{gold}True Fusion Warrior{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
+		CPrintToChatAll("{gold}Silvester?{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -557,7 +507,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
-		if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
+		if(GetGameTime() > npc.m_flTimeSinceHasBeenHurt)
 		{
 			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, I thank you, though beware of the rogue machine... {red}Blitzkrieg.");
 			npc.m_bDissapearOnDeath = true;
@@ -571,22 +521,22 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 		}
-		else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
+		else if(GetGameTime() + 5.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 4)
 		{
 			i_SaidLineAlready[npc.index] = 4;
 			CPrintToChatAll("{gold}Silvester{default}: Help the world, retain the chaos!");
 		}
-		else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
+		else if(GetGameTime() + 10.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 3)
 		{
 			i_SaidLineAlready[npc.index] = 3;
 			CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and I will warn you of dangers.");
 		}
-		else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
+		else if(GetGameTime() + 13.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 2)
 		{
 			i_SaidLineAlready[npc.index] = 2;
 			CPrintToChatAll("{gold}Silvester{default}: A huge chaos is breaking out, you were able to knock some sense into me..!");
 		}
-		else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
+		else if(GetGameTime() + 16.5 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 1)
 		{
 			i_SaidLineAlready[npc.index] = 1;
 			CPrintToChatAll("{gold}Silvester{default}: Listen to me, please!");
@@ -713,17 +663,11 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			
 			if(i_RaidGrantExtra[npc.index] >= 3)
 			{
-				if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index) && !npc.Anger)
+				if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index))
 				{
-					npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 35.0;
+					npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + (npc.Anger ? 35.0 : 35.0);
 					npc.m_bInKame = true;
-					TrueFusionWarrior_TBB_Ability(npc.index);
-				}
-				else if(npc.m_flTimebeforekamehameha < GetGameTime(npc.index) && npc.Anger)
-				{
-					npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 35.0;
-					npc.m_bInKame = true;
-					TrueFusionWarrior_TBB_Ability_Anger(npc.index);
+					Invoke_TrueFusionWarrior_Kameha(npc);
 				}
 			}
 			if(npc.m_bInKame)
@@ -994,7 +938,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
+	npc.m_flTimeSinceHasBeenHurt = GetGameTime() + 20.0;
 
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
@@ -1015,9 +959,6 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		//FusionApplyEffects(npc.index, 1);
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
 			
 		SetVariantColor(view_as<int>({255, 255, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
@@ -1111,330 +1052,58 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 
 // Ent_Create style position from Doomsday Nuke
 
-void TrueFusionWarrior_TBB_Ability_Anger(int client)
+void Invoke_TrueFusionWarrior_Kameha(TrueFusionWarrior npc)
 {
-	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
-	
-	FusionWarrior_BEAM_IsUsing[client] = false;
-	FusionWarrior_BEAM_TicksActive[client] = 0;
+	float GameTime = GetGameTime(npc.index);
+	fl_BEAM_ChargeUpTime[npc.index] = GameTime + 3.0;
+	fl_BEAM_DurationTime[npc.index] = GameTime + (npc.Anger ? 6.0 : 5.0);
 
-	FusionWarrior_BEAM_CanUse[client] = true;
-	FusionWarrior_BEAM_CloseDPT[client] = 20.0 * RaidModeScaling;
-	FusionWarrior_BEAM_FarDPT[client] = 18.0 * RaidModeScaling;
-	FusionWarrior_BEAM_MaxDistance[client] = 2000;
-	FusionWarrior_BEAM_BeamRadius[client] = 45;
-	FusionWarrior_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	FusionWarrior_BEAM_ChargeUpTime[client] = RoundToFloor(200 * TickrateModify);
-	FusionWarrior_BEAM_CloseBuildingDPT[client] = 0.0;
-	FusionWarrior_BEAM_FarBuildingDPT[client] = 0.0;
-	FusionWarrior_BEAM_Duration[client] = 6.0;
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 75);
 	
-	FusionWarrior_BEAM_BeamOffset[client][0] = 0.0;
-	FusionWarrior_BEAM_BeamOffset[client][1] = 0.0;
-	FusionWarrior_BEAM_BeamOffset[client][2] = 0.0;
-
-	FusionWarrior_BEAM_ZOffset[client] = 0.0;
-	FusionWarrior_BEAM_UseWeapon[client] = false;
-
-	FusionWarrior_BEAM_IsUsing[client] = true;
-	FusionWarrior_BEAM_TicksActive[client] = 0;
+	npc.PlayLaserLaunchSound();
 	
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	
-	switch(GetRandomInt(1, 4))
-	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-		}		
-	}
-			
-
-	CreateTimer(5.0, TrueFusionWarrior_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-	SDKHook(client, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
+	SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 }
 
 
-void TrueFusionWarrior_TBB_Ability(int client)
+static Action TrueFusionWarrior_TBB_Tick(int client)
 {
-	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
-	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
-			
-	FusionWarrior_BEAM_IsUsing[client] = false;
-	FusionWarrior_BEAM_TicksActive[client] = 0;
-
-	FusionWarrior_BEAM_CanUse[client] = true;
-	FusionWarrior_BEAM_CloseDPT[client] = 14.0 * RaidModeScaling;
-	FusionWarrior_BEAM_FarDPT[client] = 12.0 * RaidModeScaling;
-	FusionWarrior_BEAM_MaxDistance[client] = 2000;
-	FusionWarrior_BEAM_BeamRadius[client] = 25;
-	FusionWarrior_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	FusionWarrior_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
-	FusionWarrior_BEAM_CloseBuildingDPT[client] = 0.0;
-	FusionWarrior_BEAM_FarBuildingDPT[client] = 0.0;
-	FusionWarrior_BEAM_Duration[client] = 4.0;
-	
-	FusionWarrior_BEAM_BeamOffset[client][0] = 0.0;
-	FusionWarrior_BEAM_BeamOffset[client][1] = 0.0;
-	FusionWarrior_BEAM_BeamOffset[client][2] = 0.0;
-
-	FusionWarrior_BEAM_ZOffset[client] = 0.0;
-	FusionWarrior_BEAM_UseWeapon[client] = false;
-
-	FusionWarrior_BEAM_IsUsing[client] = true;
-	FusionWarrior_BEAM_TicksActive[client] = 0;
-	
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	
-	switch(GetRandomInt(1, 4))
+	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(client);
+	float GameTime = GetGameTime(npc.index);
+	if(!IsValidEntity(client) || fl_BEAM_DurationTime[npc.index] < GameTime)
 	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-		}		
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+
+		SDKUnhook(client, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
+		npc.m_bInKame = false;
+		return Plugin_Stop;
 	}
-			
 
-	CreateTimer(5.0, TrueFusionWarrior_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-	SDKHook(client, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
-	
-}
-
-public Action TrueFusionWarrior_TBB_Timer(Handle timer, int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(!IsValidEntity(client))
+	if(fl_BEAM_ChargeUpTime[npc.index] > GameTime)
 		return Plugin_Continue;
 
-	FusionWarrior_BEAM_IsUsing[client] = false;
-	
-	FusionWarrior_BEAM_TicksActive[client] = 0;
-	
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
-	
+	Basic_NPC_Laser Data;
+	Data.npc = npc;
+	Data.Radius = 45.0;
+	Data.Range = 2000.0;
+	//divided by 6 since its every tick, and by TickrateModify
+	Data.Close_Dps = RaidModeScaling * (npc.Anger ? 20.0 : 15.0) / 6.0 / TickrateModify;
+	Data.Long_Dps = RaidModeScaling * (npc.Anger ? 18.5 : 12.0) / 6.0 / TickrateModify;
+	Data.Color = (npc.Anger ? {238, 221, 68, 60} : {255, 255, 255, 30});
+	Data.DoEffects = true;
+	Basic_NPC_Laser_Logic(Data);
+
 	return Plugin_Continue;
 }
 
-
-
-public bool FusionWarrior_BEAM_TraceWallsOnly(int entity, int contentsMask)
-{
-	return !entity;
-}
-
-public bool FusionWarrior_BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsEntityAlive(entity))
-	{
-		FusionWarrior_BEAM_HitDetected[entity] = true;
-	}
-	return false;
-}
-
-static void FusionWarrior_GetBeamDrawStartPoint(int client, float startPoint[3])
-{
-	float angles[3];
-	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	GetAbsOrigin(client, startPoint);
-	startPoint[2] += 50.0;
-	
-	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(client);
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-			return;	
-	float flPitch = npc.GetPoseParameter(iPitch);
-	flPitch *= -1.0;
-	angles[0] = flPitch;
-	GetAbsOrigin(client, startPoint);
-	startPoint[2] += 50.0;
-	
-	if (0.0 == FusionWarrior_BEAM_BeamOffset[client][0] && 0.0 == FusionWarrior_BEAM_BeamOffset[client][1] && 0.0 == FusionWarrior_BEAM_BeamOffset[client][2])
-	{
-		return;
-	}
-	float tmp[3];
-	float actualBeamOffset[3];
-	tmp[0] = FusionWarrior_BEAM_BeamOffset[client][0];
-	tmp[1] = FusionWarrior_BEAM_BeamOffset[client][1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, angles, actualBeamOffset);
-	actualBeamOffset[2] = FusionWarrior_BEAM_BeamOffset[client][2];
-	startPoint[0] += actualBeamOffset[0];
-	startPoint[1] += actualBeamOffset[1];
-	startPoint[2] += actualBeamOffset[2];
-}
-
-public Action TrueFusionWarrior_TBB_Tick(int client)
-{
-	static int tickCountClient[MAXENTITIES];
-	if(!IsValidEntity(client) || !FusionWarrior_BEAM_IsUsing[client])
-	{
-		tickCountClient[client] = 0;
-		SDKUnhook(client, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
-		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(client);
-		npc.m_bInKame = false;
-	}
-
-	int tickCount = tickCountClient[client];
-	tickCountClient[client]++;
-
-	FusionWarrior_BEAM_TicksActive[client] = tickCount;
-	float diameter = float(FusionWarrior_BEAM_BeamRadius[client] * 2);
-	int r = GetR(FusionWarrior_BEAM_ColorHex[client]);
-	int g = GetG(FusionWarrior_BEAM_ColorHex[client]);
-	int b = GetB(FusionWarrior_BEAM_ColorHex[client]);
-	if (FusionWarrior_BEAM_ChargeUpTime[client] <= tickCount)
-	{
-		static float angles[3];
-		static float startPoint[3];
-		static float endPoint[3];
-		static float hullMin[3];
-		static float hullMax[3];
-		static float playerPos[3];
-		GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(client);
-		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return Plugin_Continue;
-			
-		float flPitch = npc.GetPoseParameter(iPitch);
-		flPitch *= -1.0;
-		angles[0] = flPitch;
-		GetAbsOrigin(client, startPoint);
-		startPoint[2] += 50.0;
-
-		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, FusionWarrior_BEAM_TraceWallsOnly);
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
-			ConformLineDistance(endPoint, startPoint, endPoint, float(FusionWarrior_BEAM_MaxDistance[client]));
-			float lineReduce = FusionWarrior_BEAM_BeamRadius[client] * 2.0 / 3.0;
-			float curDist = GetVectorDistance(startPoint, endPoint, false);
-			if (curDist > lineReduce)
-			{
-				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
-			}
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				FusionWarrior_BEAM_HitDetected[i] = false;
-			}
-			
-			
-			hullMin[0] = -float(FusionWarrior_BEAM_BeamRadius[client]);
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, FusionWarrior_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete trace;
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
-			{
-				if (FusionWarrior_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
-				{
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = FusionWarrior_BEAM_CloseDPT[client] + (FusionWarrior_BEAM_FarDPT[client]-FusionWarrior_BEAM_CloseDPT[client]) * (distance/FusionWarrior_BEAM_MaxDistance[client]);
-					if (damage < 0)
-						damage *= -1.0;
-
-					if(victim > MAXTF2PLAYERS)
-					{
-						damage *= 3.0; //give 3x dmg to anything
-					}
-					damage /= TickrateModify;
-					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
-
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
-				}
-			}
-			
-			static float belowBossEyes[3];
-			FusionWarrior_GetBeamDrawStartPoint(client, belowBossEyes);
-			int colorLayer4[4];
-			SetColorRGBA(colorLayer4, r, g, b, 30);
-			int colorLayer3[4];
-			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 30);
-			int colorLayer2[4];
-			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
-			int colorLayer1[4];
-			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
-			TE_SendToAll(0.0);
-			int glowColor[4];
-			SetColorRGBA(glowColor, r, g, b, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, FusionWarrior_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
-			TE_SendToAll(0.0);
-		}
-		else
-		{
-			delete trace;
-		}
-		delete trace;
-	}
-	return Plugin_Continue;
-}
-
-public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	char sound[128];
-	pack.ReadString(sound, 128);
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(entity) && entity>MaxClients)
-	{
-		EmitSoundToAll(sound, entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	return Plugin_Handled; 
-}
 
 public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 {
@@ -1477,10 +1146,10 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 	position[1] = startPosition[1];
 	position[2] = startPosition[2] + 3000.0;	
 	
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.15, 25.0, 25.0, 0, 1.0, color, 3 );
+	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 0.15, 25.0, 25.0, 0, 1.0, color, 3 );
 	TE_SendToAll();
 	position[2] -= 1490.0;
-	TE_SetupGlowSprite(startPosition, gGlow1, 1.0, 1.0, 255);
+	TE_SetupGlowSprite(startPosition, g_Ruina_Glow_Blue, 1.0, 1.0, 255);
 	TE_SendToAll();
 }
 
@@ -1502,6 +1171,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			delete data;
 			return;
 		}
+		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 175, 55, 255, 1, 0.2, 12.0, 4.0, 3);	
 		
 		if (Iondistance > 0)
 		{
@@ -1517,7 +1187,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			
 			position[0] += s;
 			position[1] += c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -1539,7 +1209,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -1549,7 +1219,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -1571,7 +1241,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;
@@ -1599,25 +1269,26 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		{
 			startPosition[2] += 25.0;
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage), 100);
+				makeexplosion(client, startPosition, RoundToCeil(Iondamage), 100);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage * 1.25), 120);
+				makeexplosion(client, startPosition, RoundToCeil(Iondamage * 1.25), 120);
 				
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
+			spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 175, 55, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;
 			startPosition[2] += -200;
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {212, 175, 55, 255}, 3);
+			TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {212, 175, 55, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {212, 175, 55, 200}, 3);
+			TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {212, 175, 55, 200}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {212, 175, 55, 120}, 3);
-			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {212, 175, 55, 75}, 3);
+		//	TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {212, 175, 55, 120}, 3);
+		//	TE_SendToAll();
+			TE_SetupBeamPoints(startPosition, position, g_Ruina_BEAM_Laser, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {212, 175, 55, 75}, 3);
 			TE_SendToAll();
 	
 			position[2] = startPosition[2] + 50.0;

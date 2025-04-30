@@ -134,7 +134,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
 				int WavesAllow = spawn.MaxWavesAllowed;
-				int WavesLeft = Waves_GetRound() - spawn.WaveCreatedIn;
+				int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
 				if(WavesLeft >= WavesAllow)
 				{
 					SpawnerList.Erase(i);
@@ -174,7 +174,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				{
 					//999 means its a perma spawn or a boss spawn, whatever it may be.
 					int WavesAllow = spawn.MaxWavesAllowed;
-					int WavesLeft = Waves_GetRound() - spawn.WaveCreatedIn;
+					int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
 					if(WavesLeft >= WavesAllow)
 					{
 						SpawnerList.Erase(i);
@@ -282,7 +282,7 @@ void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false
 		spawn.BaseBoss = base_boss;
 		spawn.AllySpawner = allyspawner;
 		spawn.MaxSpawnsAllowed = MaxSpawnsAllowed;
-		spawn.WaveCreatedIn = Waves_GetRound();
+		spawn.WaveCreatedIn = ZR_Waves_GetRound();
 		spawn.MaxWavesAllowed = WavesAllowed;
 		spawn.CurrentSpawnsPerformed = 0;
 		spawn.SpawnSetting = i_SpawnSetting;
@@ -330,7 +330,7 @@ void Spawners_Timer()
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
 				int WavesAllow = spawn.MaxWavesAllowed;
-				int WavesLeft = Waves_GetRound() - spawn.WaveCreatedIn;
+				int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
 				if(WavesLeft >= WavesAllow)
 				{
 					SpawnerList.Erase(index);
@@ -428,10 +428,10 @@ void Spawners_Timer()
 		}
 	}
 	
-	if(maxSpawners > length)
-		maxSpawners = length;
+	if(maxSpawners > pointsList.Length)
+		maxSpawners = pointsList.Length;
 	
-	if(length)
+	if(maxSpawners)
 	{
 		// Sort points
 		pointsList.Sort(Sort_Descending, Sort_Float);

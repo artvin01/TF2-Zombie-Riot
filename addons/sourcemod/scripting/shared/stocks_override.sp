@@ -36,10 +36,16 @@ stock void Stock_SetEntityMoveType(int entity, MoveType mt)
 		ThrowError("Do not dare! Dont set SetEntityMoveType on an NPC that isnt MOVECUSTOM.");
 		return;
 	}
-	else
+
+#if defined ZR
+	if(entity > 0 && entity <= MaxClients && Vehicle_Driver(entity) != -1)
 	{
-		SetEntityMoveType(entity, mt);
+		// Nuh uh, we're driving
+		mt = MOVETYPE_NONE;
 	}
+#endif
+	
+	SetEntityMoveType(entity, mt);
 }
 
 #define SetEntityMoveType Stock_SetEntityMoveType
@@ -212,6 +218,30 @@ void Stock_SetHudTextParams(float x, float y, float holdTime, int r, int g, int 
 }
 
 #define SetHudTextParams Stock_SetHudTextParams
+
+int Stock_ShowSyncHudText(int client, Handle sync, const char[] message, any ...)
+{
+	int ReturnFlags = GetEntProp(client, Prop_Send, "m_iHideHUD");
+	if(ReturnFlags & HIDEHUD_ALL) //hide.
+		return 0;
+
+	char buffer[512];
+	VFormat(buffer, sizeof(buffer), message, 4);
+	return ShowSyncHudText(client, sync, buffer);
+}
+#define ShowSyncHudText Stock_ShowSyncHudText
+
+void Stock_PrintHintText(int client, const char[] format, any ...)
+{
+	int ReturnFlags = GetEntProp(client, Prop_Send, "m_iHideHUD");
+	if(ReturnFlags & HIDEHUD_ALL) //hide.
+		return;
+
+	char buffer[512];
+	VFormat(buffer, sizeof(buffer), format, 3);
+	PrintHintText(client, buffer);
+}
+#define PrintHintText Stock_PrintHintText
 
 stock void ResetToZero(any[] array, int length)
 {
@@ -469,20 +499,34 @@ void Edited_EmitSoundToAll(const char[] sample,
 	*/
 	if(sample[0] != '#')
 	{
-
-		for(int client=1; client<=MaxClients; client++)
+		if(entity > 0 && b_ThisWasAnNpc[entity])
 		{
-			if(IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
+			for(int client=1; client<=MaxClients; client++)
 			{
-				float volumeedited = volume;
-				if(entity > 0 && b_ThisWasAnNpc[entity])
+				if((f_ZombieVolumeSetting[client] + 1.0) != 0.0 && IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
 				{
+					float volumeedited = volume;
+					if(EnableSilentMode && !b_thisNpcIsARaid[entity])
+					{
+						if(RecentSoundList[client].FindString(sample) != -1)
+							continue;
+						
+						RecentSoundList[client].PushString(sample);
+						CreateTimer(0.1, Timer_RecentSoundRemove, client);	
+						volumeedited *= 0.7; //Silent-er.
+						//	level = RoundToCeil(float(level) * 0.85);
+						//dont change level
+					}
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
+					if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client,entity,channel,level,flags,pitch,speakerentity,origin,dir,updatePos,soundtime))
+						EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
 				}
-				if(volumeedited > 0.0)
-					EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
-			}
-		}		
+			}	
+		}	
+		else
+		{
+			EmitSoundToAll(sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
+		}
 	}
 	else
 	{
@@ -494,7 +538,6 @@ void Edited_EmitSoundToAll(const char[] sample,
 			}
 		}
 	}
-		
 }
 
 #define EmitSoundToAll Edited_EmitSoundToAll

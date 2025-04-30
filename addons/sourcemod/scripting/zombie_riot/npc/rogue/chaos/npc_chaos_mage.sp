@@ -117,15 +117,16 @@ methodmap ChaosMage < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		func_NPCDeath[npc.index] = view_as<Function>(ChaosMage_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ChaosMage_OnTakeDamage);
+		func_NPCOnTakeDamagePost[npc.index] = view_as<Function>(ChaosMage_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ChaosMage_ClotThink);
-		b_NpcUnableToDie[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 9999999.0);
 		
 		
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
 		fl_TotalArmor[npc.index] = 0.25;
+		npc.m_iHealthBar = 1;
 		
 		
 		int skin = 1;
@@ -178,7 +179,7 @@ public void ChaosMage_ClotThink(int iNPC)
 		}
 		if(npc.m_flChaosRevive < GetGameTime(npc.index))
 		{
-			b_NpcUnableToDie[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Infinite Will");
 			b_NpcIsInvulnerable[npc.index] = false;
 			HealEntityGlobal(npc.index, npc.index, 999999.9, 1.15, 0.0, HEAL_SELFHEAL);
 			npc.m_flChaosRevive = 0.0;
@@ -224,7 +225,7 @@ public void ChaosMage_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action ChaosMage_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action ChaosMage_OnTakeDamage(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	ChaosMage npc = view_as<ChaosMage>(victim);
 		
@@ -236,7 +237,7 @@ public Action ChaosMage_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
+	if(npc.m_iHealthBar <= 0 && !npc.Anger)
 	{
 		npc.Anger = true;
 		npc.m_flChaosRevive = GetGameTime(npc.index) + 1.7;

@@ -54,9 +54,9 @@ public void Barracks_Iberia_Commando_Precache() // Arrivati qui
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Commando(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Commando(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Iberia_Commando < BarrackBody
@@ -89,7 +89,7 @@ methodmap Barrack_Iberia_Commando < BarrackBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME*0.5, 100);
 	}
-	public Barrack_Iberia_Commando(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Commando(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Iberia_Commando npc = view_as<Barrack_Iberia_Commando>(BarrackBody(client, vecPos, vecAng, "400", "models/player/demo.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		i_NpcWeight[npc.index] = 1;

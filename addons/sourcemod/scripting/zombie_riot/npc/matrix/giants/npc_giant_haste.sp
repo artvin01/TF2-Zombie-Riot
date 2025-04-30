@@ -67,35 +67,7 @@ void GiantHaste_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return GiantHaste(client, vecPos, vecAng, ally);
-}
-
-static char[] GetPanzerHealth()
-{
-	int health = 15;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
-	}
-	else if(Waves_GetRound()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
+	return GiantHaste(vecPos, vecAng, ally);
 }
 
 methodmap GiantHaste < CClotBody
@@ -143,9 +115,9 @@ methodmap GiantHaste < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public GiantHaste(int client, float vecPos[3], float vecAng[3], int ally)
+	public GiantHaste(float vecPos[3], float vecAng[3], int ally)
 	{
-		GiantHaste npc = view_as<GiantHaste>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.3", GetPanzerHealth(), ally));
+		GiantHaste npc = view_as<GiantHaste>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.3", "5000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -173,10 +145,6 @@ methodmap GiantHaste < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 225.0;
-		
-		float wave = float(Waves_GetRound()+1);
-		wave *= 0.1;
-		npc.m_flWaveScale = wave;
 				
 		int skin = 0;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -301,14 +269,13 @@ public void GiantHaste_ClotThink(int iNPC)
 						if(IsValidEnemy(npc.index, target))
 						{
 							float damage = 50.0;
-							damage *= npc.m_flWaveScale;
 							if(ShouldNpcDealBonusDamage(target))
-							damage *= 5.0;
+							damage *= 1.5;
 							if(target > 0)
 							{
 								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 
-								Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 9 : 7);
+								Elemental_AddCorruptionDamage(target, npc.index, npc.index ? 15 : 15);
 								// Hit sound
 								npc.PlayMeleeHitSound();
 							}

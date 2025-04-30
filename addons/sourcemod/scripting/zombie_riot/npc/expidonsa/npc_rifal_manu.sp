@@ -23,7 +23,7 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/smg_shoot.wav",
+	"weapons/doom_sniper_smg.wav"
 };
 
 

@@ -146,7 +146,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	PrecacheSoundArray(g_BobSuperMeleeCharge);
-	PrecacheSoundCustom("#zombiesurvival/internius/khamlstein.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/chaos_reigns_intro.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/chaos_reigns_loop.mp3");
 	PrecacheSound("player/taunt_knuckle_crack.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
 }
@@ -269,6 +270,11 @@ methodmap ChaosKahmlstein < CClotBody
 	{
 		EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", this.index, SNDCHAN_STATIC, 80, _, 3.0);	
 	}
+	property float m_flFixAttackCanceling
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	public ChaosKahmlstein(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -342,6 +348,7 @@ methodmap ChaosKahmlstein < CClotBody
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			b_NoKillFeed[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 			npc.PlayTeleportSound();
 		}
 		else if(StrContains(data, "fake_3") != -1)
@@ -356,6 +363,7 @@ methodmap ChaosKahmlstein < CClotBody
 			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 10.0;
 			npc.i_GunMode = 1;
 			b_NoKillFeed[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 			npc.PlayTeleportSound();
 		}
 		else if(StrContains(data, "fake_4") != -1)
@@ -369,6 +377,7 @@ methodmap ChaosKahmlstein < CClotBody
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flRangedSpecialDelay = 0.0;
 			b_NoKillFeed[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 			npc.PlayTeleportSound();
 		}
 		else
@@ -399,12 +408,12 @@ methodmap ChaosKahmlstein < CClotBody
 				{
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
 					MusicEnum music;
-					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
-					music.Time = 294;
-					music.Volume = 1.5;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
+					music.Time = 240;
+					music.Volume = 1.2;
 					music.Custom = true;
-					strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
-					strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 					Music_SetRaidMusic(music);
 				}
 				else
@@ -430,8 +439,8 @@ methodmap ChaosKahmlstein < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(Waves_GetRound()+1);
-				value = float(Waves_GetRound()+1);
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+				value = float(ZR_Waves_GetRound()+1);
 			}
 
 			if(RaidModeScaling < 55)
@@ -596,16 +605,31 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				npc.m_bPathing = false;
 				i_khamlCutscene[npc.index] = 13;
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have seen enough.. I knew I should've stepped in from the start. {crimson} You made a mistake of sending him out alone.");
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_intro.mp3");
+				music.Time = 42;
+				music.Volume = 1.65;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+				Music_SetRaidMusic(music);
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + 3);
+					}
+				}
 			}
 			else
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
-				music.Time = 294;
-				music.Volume = 1.5;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
+				music.Time = 240;
+				music.Volume = 1.2;
 				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
-				strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+				strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 				Music_SetRaidMusic(music);
 				i_khamlCutscene[npc.index] = 0;
 			}
@@ -618,6 +642,15 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 41.0)
 				{
+					
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_loop.mp3");
+					music.Time = 240;
+					music.Volume = 1.2;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
+					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+					Music_SetRaidMusic(music, false);
 					i_khamlCutscene[npc.index] = 12;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: You. Come closer and look me in the face... {crimson} Or are you too scared?");
 				}
@@ -710,15 +743,8 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's begin.");
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
-					MusicEnum music;
-					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
-					music.Time = 294;
-					music.Volume = 1.5;
-					music.Custom = true;
-					strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
-					strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
-					Music_SetRaidMusic(music);
 				}
+				
 			}
 		}
 		return;
@@ -961,6 +987,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	}
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
+		npc.m_flFixAttackCanceling = 0.0;
 		ChaosKahmlsteinAnimationChange(npc);
 	}
 }
@@ -969,7 +996,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 {
 	if(i_RaidGrantExtra[npc.index] < 2)
 	{
-		if(!npc.m_flAttackHappens_2 && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
+		if(!npc.m_flAttackHappens_2 && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 		{
 			npc.PlayIdleAlertSound();
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
@@ -984,6 +1011,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 			npc.m_iOverlordComboAttack = 555;
 			npc.m_iChanged_WalkCycle = 0;
 			npc.m_flAttackHappens_2 = GetGameTime(npc.index) + (0.7 * (1.0 / f_MessengerSpeedUp[npc.index]));
+			npc.m_flFixAttackCanceling = 1.0;
 		}
 		if(npc.m_flAttackHappens_2 > GetGameTime(npc.index))
 		{
@@ -1087,7 +1115,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 
 bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target)
 {
-	if(!npc.m_flInJump && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+	if(!npc.m_flInJump && npc.m_flRangedSpecialDelay < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 	{
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
@@ -1102,7 +1130,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		}
 		else
 			npc.SetCycle(0.55);
-
+		npc.m_flFixAttackCanceling = 1.0;
 		npc.SetPlaybackRate(1.2 *f_MessengerSpeedUp[npc.index]);
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + (1.85 * (1.0 / f_MessengerSpeedUp[npc.index]));	
 		npc.m_iOverlordComboAttack = 5555;
@@ -1674,7 +1702,6 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 #define KAHML_MELEE_SIZE 50
 #define KAHML_MELEE_SIZE_F 50.0
 
-static int SensalHitDetected_2[MAXENTITIES];
 
 void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], float TimeUntillHit, float damage, bool kick, float RangeOfPunch)
 {
@@ -1779,7 +1806,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected_2[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	float VectorTarget[3];
 	float VectorStart[3];
@@ -1833,7 +1860,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected_2[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float damage = damagedata;
@@ -1873,7 +1900,7 @@ public bool Sensal_BEAM_TraceUsers_3(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected_2[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }
@@ -1882,7 +1909,7 @@ public bool Sensal_BEAM_TraceUsers_3(int entity, int contentsMask, int client)
 
 bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 {
-	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flJumpCooldown < GetGameTime(npc.index))
+	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flJumpCooldown < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 	{
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
@@ -1898,6 +1925,7 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 		npc.m_iChanged_WalkCycle = 0;
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + (10.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		EmitSoundToAll("mvm/mvm_tank_horn.wav");
+		npc.m_flFixAttackCanceling = 1.0;
 	}
 	if(npc.m_flNextRangedBarrage_Spam)
 	{

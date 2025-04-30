@@ -20,11 +20,10 @@ void ObjectConstruction_LightHouse_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_lighthouse");
-	build.Cost = 538;
-	build.Health = 420;
-	build.HealthScaleCost = true;
-	build.Cooldown = 15.0;
-	build.Func = ObjectConstruction_LightHouse_CanBuild;
+	build.Cost = 1000;
+	build.Health = 100;
+	build.Cooldown = 60.0;
+	build.Func = ClotCanBuild;
 	Building_Add(build);
 }
 
@@ -44,22 +43,27 @@ methodmap ObjectConstruction_LightHouse < ObjectGeneric
 	{
 		ObjectConstruction_LightHouse npc = view_as<ObjectConstruction_LightHouse>(ObjectGeneric(client, vecPos, vecAng, "models/props_sunshine/lighthouse_blu_bottom.mdl", "0.3", "600",{40.0, 40.0, 350.0},_,false));
 		
-		npc.FuncCanBuild = ObjectConstruction_LightHouse_CanBuild;
+		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCThink[npc.index] = ClotThink;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}
 }
 
-public bool ObjectConstruction_LightHouse_CanBuild(int client, int &count, int &maxcount)
+static bool ClotCanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = ObjectConstruction_LightHouse_Buildings(client) + ObjectRevenant_Buildings(client)/* + ActiveCurrentNpcsBarracks(client, true)*/;
-		maxcount = Merchant_IsAMerchant(client) ? 0 : 4;
-		if(maxcount == 4 && i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
-			maxcount = 1;
+		count = CountBuildings();
+		
+		if(!CvarInfiniteCash.BoolValue && !Construction_HasNamedResearch("Giant Lighthouse"))
+		{
+			maxcount = 0;
+			return false;
+		}
 
+		maxcount = 3;
 		if(count >= maxcount)
 			return false;
 	}
@@ -74,42 +78,24 @@ static void ClotThink(ObjectSentrygun npc)
 	{
 		return;
 	}
-	LighthouseGiveBuff(npc.index, 500.0);
-}
-public bool ObjectConstruction_LightHouse_CanBuildCheap(int client, int &count, int &maxcount)
-{
-	if(!ObjectConstruction_LightHouse_CanBuild(client, count, maxcount))
-		return false;
-	
-	if(client)
-	{
-		count = 0;
-		maxcount = (Level[client] > 19 || CvarInfiniteCash.BoolValue) ? 1 : 0;
-		if(count >= maxcount)
-			return false;
-	}
-
-	return true;
+	LighthouseGiveBuff(npc.index, 2000.0);
 }
 
-int ObjectConstruction_LightHouse_Buildings(int owner)
+static int CountBuildings()
 {
 	int count;
 	
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
-		{
-			if(NPCId == i_NpcInternalId[entity])
-				count++;
-		}
+		if(NPCId == i_NpcInternalId[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+			count++;
 	}
 
 	return count;
 }
 
-void LighthouseGiveBuff(int iNpc, float range = 500.0)
+static void LighthouseGiveBuff(int iNpc, float range = 2000.0)
 {
 	b_NpcIsTeamkiller[iNpc] = true;
 	Explode_Logic_Custom(0.0,
@@ -128,7 +114,7 @@ void LighthouseGiveBuff(int iNpc, float range = 500.0)
 	b_NpcIsTeamkiller[iNpc] = false;
 }
 
-void LighthouseGiveBuffDo(int entity, int victim, float damage, int weapon)
+static void LighthouseGiveBuffDo(int entity, int victim, float damage, int weapon)
 {
 	if(entity == victim)
 		return;

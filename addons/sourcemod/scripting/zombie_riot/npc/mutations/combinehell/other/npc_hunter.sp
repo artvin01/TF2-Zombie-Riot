@@ -69,7 +69,7 @@ void Hunter_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Hunter(client, vecPos, vecAng, ally);
+	return Hunter(vecPos, vecAng, ally);
 }
 methodmap Hunter < CClotBody
 {
@@ -120,7 +120,7 @@ methodmap Hunter < CClotBody
 	}
 	
 	
-	public Hunter(int client, float vecPos[3], float vecAng[3], int ally)
+	public Hunter(float vecPos[3], float vecAng[3], int ally)
 	{
 		Hunter npc = view_as<Hunter>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/hunter.mdl", "1.0", "1000", ally));
 		

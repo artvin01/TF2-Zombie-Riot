@@ -47,9 +47,9 @@ public void Barrack_Alt_Mecha_Loader_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Alt_Mecha_Loader(client, vecPos, vecAng, ally);
+	return Barrack_Alt_Mecha_Loader(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Alt_Mecha_Loader < BarrackBody
@@ -79,11 +79,9 @@ methodmap Barrack_Alt_Mecha_Loader < BarrackBody
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+
 	}
-	public Barrack_Alt_Mecha_Loader(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Alt_Mecha_Loader(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Alt_Mecha_Loader npc = view_as<Barrack_Alt_Mecha_Loader>(BarrackBody(client, vecPos, vecAng, "500", "models/bots/heavy/bot_heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		

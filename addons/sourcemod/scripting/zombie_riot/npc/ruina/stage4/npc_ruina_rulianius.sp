@@ -36,9 +36,6 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/samurai/tf_katana_slice_03.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static const char g_FantasiaSound[][] = {
 	"ambient/machines/thumper_hit.wav",
 };
@@ -65,7 +62,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_FantasiaSound);
 	Zero(i_damage_taken);
 	PrecacheModel("models/player/soldier.mdl");
@@ -119,17 +116,13 @@ methodmap Rulianius < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
 
 	public void PlayFantasiaSound() {
 		EmitSoundToAll(g_FantasiaSound[GetRandomInt(0, sizeof(g_FantasiaSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayFantasiaSound()");
-		#endif
 	}
 	
 	
@@ -155,13 +148,18 @@ methodmap Rulianius < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		bool rogue_Extra = StrContains(data, "rogue") != -1;
-		npc.m_flNextRangedBarrage_Singular = 99999999.9;
-		npc.m_flNextRangedBarrage_Spam = 0.0;
+		npc.m_flNextRangedBarrage_Singular = FAR_FUTURE;
+		fl_ruina_battery_timeout[npc.index] = FAR_FUTURE;
+
+		npc.m_flNextRangedBarrage_Spam = 0.0;	//for logic, if its above game time the npc won't ever attack. used for the laser punch
+		npc.m_iState = -1;	//if its 0, it will do an annoying thing the moment it spawns. so make it -1 to stop that.
+
 		fl_npc_basespeed = 300.0;
 		if(rogue_Extra)
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Elite Rulianius");
-			npc.m_flNextRangedBarrage_Singular = GetGameTime() + GetRandomFloat(5.0, 30.0);
+			npc.m_flNextRangedBarrage_Singular = GetGameTime() + GetRandomFloat(5.0, 10.0);
+			fl_ruina_battery_timeout[npc.index] = 0.0;
 			float flPos[3];
 			float flAng[3];
 			npc.GetAttachment("effect_hand_r", flPos, flAng);
@@ -207,6 +205,7 @@ methodmap Rulianius < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
+		fl_ruina_battery_max[npc.index] = 3000.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -291,7 +290,7 @@ static void ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;
 
 	
-	if(fl_ruina_battery[npc.index]>3000.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = true;

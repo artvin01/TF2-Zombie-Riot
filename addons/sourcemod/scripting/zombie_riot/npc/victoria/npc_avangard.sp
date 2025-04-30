@@ -38,7 +38,7 @@ int VictorianAvangard_ID()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianOfflineAvangard(client, vecPos, vecAng, ally, data);
+	return VictorianOfflineAvangard(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianOfflineAvangard < CClotBody
@@ -66,7 +66,7 @@ methodmap VictorianOfflineAvangard < CClotBody
 		
 	}
 	
-	public VictorianOfflineAvangard(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictorianOfflineAvangard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "1.75", "100000", ally, _, true));
 		
@@ -188,7 +188,7 @@ static void ClotThink(int iNPC)
 			if(!npc.m_bFUCKYOU)
 			{
 				npc.PlayActivationSound();
-				IncreaceEntityDamageTakenBy(npc.index, 0.000001, 1.0);
+				IncreaseEntityDamageTakenBy(npc.index, 0.000001, 1.0);
 			}
 			i_AttacksTillMegahit[iNPC] = 601;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");

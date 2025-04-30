@@ -610,30 +610,68 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			NervousLastTouch[client] = TheNavMesh.GetNavArea(pos, 70.0);
 			if(NervousLastTouch[client] != NULL_AREA && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
-				bool resist = (SeaMelee_IsSeaborn(client) || Building_NeatherseaReduced(client));
-				float MaxHealth = float(SDKCall_GetMaxHealth(client));
-
-				float damageDeal;
-				
-				damageDeal = MaxHealth * 0.0025;
-
-				if(resist)
-					damageDeal *= 0.2;
-				
-				damageDeal *= Attributes_GetOnPlayer(client, Attrib_TerrianRes);
-
-				if(damageDeal < 2.0) //whatever is higher.
+				bool resist = (Building_NeatherseaReduced(client));
+				bool ignore = false;
+				bool Benifit = (SeaMelee_IsSeaborn(client));
+				int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(Active_weapon > 1)
 				{
-					damageDeal = 2.0;
+					switch(i_CustomWeaponEquipLogic[Active_weapon])
+					{
+						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP:
+						{
+							Benifit = true;
+						}
+						case WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SKADI:
+						{
+							ignore = true;
+						}
+					}
+				}
+				if(ignore)
+				{
+					int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
+					if(IsValidEntity(entity))
+					{
+						RemoveEntity(entity);
+					}
+					continue;
 				}
 
-				SDKHooks_TakeDamage(client, 0, 0, damageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
-				// 120 x 0.25 x 0.2
+				//when fighing bob, you are technically a sea creature...
+				if(!StrContains(WhatDifficultySetting, "You."))
+					Benifit = true;
+				
+				if(Benifit)
+				{
+					ApplyStatusEffect(client, client, "Sea Strength", 1.0);
+				}
+				else
+				{
+					ApplyStatusEffect(client, client, "Sea Presence", 1.0);
+					float MaxHealth = float(SDKCall_GetMaxHealth(client));
 
-				if(!resist)
-					Elemental_AddNervousDamage(client, 0, RoundToCeil(damageDeal / 6.0), false);
-					// 20 x 0.25 x 0.2
- 
+					float damageDeal;
+					
+					damageDeal = MaxHealth * 0.0025;
+
+					if(resist)
+						damageDeal *= 0.2;
+					
+					damageDeal *= Attributes_GetOnPlayer(client, Attrib_TerrianRes);
+
+					if(damageDeal < 2.0) //whatever is higher.
+					{
+						damageDeal = 2.0;
+					}
+
+					SDKHooks_TakeDamage(client, 0, 0, damageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
+					// 120 x 0.25 x 0.2
+
+					if(!resist)
+						Elemental_AddNervousDamage(client, 0, RoundToCeil(damageDeal / 6.0), false);
+						// 20 x 0.25 x 0.2
+				}
 				int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 				if(!IsValidEntity(entity))
 				{
@@ -671,6 +709,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				{
 					NervousTouching[entity] = NervousTouching[0];
 					NervousLastTouch[entity] = NULL_AREA;
+					ApplyStatusEffect(entity, entity, "Sea Presence", 1.0);
 				}
 			}
 			else
@@ -685,6 +724,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
 					*/
+					ApplyStatusEffect(entity, entity, "Sea Presence", 1.0);
 					ApplyStatusEffect(entity, entity, "Teslar Shock", 1.0);
 
 					NervousTouching[entity] = NervousTouching[0];

@@ -51,8 +51,8 @@ static float fl_Infection_Meter[MAXTF2PLAYERS];
 static float fl_Default_Speed = 300.0;
 static int smith_id = -1;
 static int i_RedAmount;
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static float f_TalkDelayCheck;//apparently exist in silvester xeno, however idk where it's suppose to be put in the .sp so it's this
 static int i_TalkDelayCheck;
@@ -89,7 +89,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return AgentSmith(client, vecPos, vecAng, ally, data);
+	return AgentSmith(vecPos, vecAng, ally, data);
 }
 
 methodmap AgentSmith < CClotBody
@@ -165,7 +165,7 @@ methodmap AgentSmith < CClotBody
 		b_NpcIsInvulnerable[this.index] = uber;
 	}
 	
-	public AgentSmith(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public AgentSmith(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool raid = StrContains(data, "raid_time") != -1;
 		AgentSmith npc = view_as<AgentSmith>(CClotBody(vecPos, vecAng, "models/zombie_riot/matrix/smith30.mdl", raid ? "1.15" : "1.0", "30000", ally, false));
@@ -207,7 +207,7 @@ methodmap AgentSmith < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(Waves_GetRound()+1);
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
 			}
 			
 			if(RaidModeScaling < 55)
@@ -805,7 +805,7 @@ static void Smith_Infection(AgentSmith npc)
 					fl_Infection_Meter[victim] += 0.102;
 				}
 			}
-			PrintCenterText(victim, "Your Infection is rising - %.0f%%% | Cure %.0f%%%", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
+			PrintCenterText(victim, "Your Infection is rising - %.0f％ | Cure %.0f％", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
 			for(int clients = 1 ; clients <= MaxClients ; clients++)
 			{
 				if(IsValidClient(clients) && TeutonType[victim] != TEUTON_WAITING)
@@ -819,7 +819,7 @@ static void Smith_Infection(AgentSmith npc)
 						{
 							fl_Cure_Meter[victim] += cure_amount;
 						}
-						PrintCenterText(clients, "%N Is being infected. Stay Near him to Remove the Infection!!\n %.0f%%% | Cure %.0f%%%", victim, (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
+						PrintCenterText(clients, "%N Is being infected. Stay Near him to Remove the Infection!!\n %.0f％ | Cure %.0f％", victim, (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
 					}
 				}
 			}
@@ -1031,7 +1031,7 @@ static void PrepareSmith_Raid(AgentSmith npc)
 	MusicEnum music;
 	strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/neodammerung.mp3");
 	music.Time = 240;
-	music.Volume = 1.7;
+	music.Volume = 1.5;
 	music.Custom = false;
 	strcopy(music.Name, sizeof(music.Name), "Neodämmerung");
 	strcopy(music.Artist, sizeof(music.Artist), "Don Davis");

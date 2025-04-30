@@ -144,9 +144,7 @@ methodmap XenoFatherGrigori < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -189,9 +187,7 @@ methodmap XenoFatherGrigori < CClotBody
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::Playnpc.AngerSound()");
-		#endif
+
 	}
 	
 	public void PlayRangedSound() {
@@ -202,19 +198,14 @@ methodmap XenoFatherGrigori < CClotBody
 	
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayPullSound()");
-		#endif
+
 	}
 	
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
@@ -230,7 +221,7 @@ methodmap XenoFatherGrigori < CClotBody
 	
 	public XenoFatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
-		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
+		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -610,6 +601,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			delete data;
 			return;
 		}
+		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 150, 255, 150, 255, 1, 0.2, 12.0, 4.0, 3);	
 		
 		if (Iondistance > 0)
 		{
@@ -625,7 +617,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			
 			position[0] += s;
 			position[1] += c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -647,7 +639,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -657,7 +649,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position,{150, 255, 150, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -679,7 +671,7 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
+		//	XenoFatherGrigori_DrawIonBeam(position, {150, 255, 150, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;
@@ -706,10 +698,11 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 		else
 		{
 			startPosition[2] += 25.0;
-			makeexplosion(client, client, startPosition, "", 150, 175);
+			makeexplosion(client, startPosition, 150, 175);
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1_Xeno, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
+			spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 150, 255, 150, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;
@@ -718,8 +711,8 @@ public void XenoFatherGrigori_DrawIonBeam(float startPosition[3], const int colo
 			TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {150, 255, 150, 255}, 3);
-			TE_SendToAll();
+		//	TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {150, 255, 150, 255}, 3);
+		//	TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1_Xeno, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {150, 255, 150, 255}, 3);
 			TE_SendToAll();
 	

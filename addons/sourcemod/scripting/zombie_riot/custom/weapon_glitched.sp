@@ -324,7 +324,7 @@ public void Glitched_Reload2(int client, int weapon, const char[] classname)
 		}
 	}
 	
-	float bulletPerShot = GetRandomInt(-5, 5) * 1.0;
+	float bulletPerShot = GetRandomInt(-2, 2) * 1.0;
 	if (bulletPerShot<1.0)
 		bulletPerShot = 1.0;
 	

@@ -31,9 +31,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
 static const char g_FuckyouSounds[][] = {
 	"vo/medic_mvm_stand_alone01.wav",
@@ -46,7 +43,7 @@ void VictorianCaffeinator_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));   i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);   }
 	PrecacheModel("models/bots/medic/bot_medic.mdl");
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM);
@@ -63,7 +60,7 @@ void VictorianCaffeinator_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianCaffeinator(client, vecPos, vecAng, ally);
+	return VictorianCaffeinator(vecPos, vecAng, ally);
 }
 methodmap VictorianCaffeinator < CClotBody
 {
@@ -115,7 +112,7 @@ methodmap VictorianCaffeinator < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		
 	}
@@ -125,7 +122,7 @@ methodmap VictorianCaffeinator < CClotBody
 		
 
 	}
-	public VictorianCaffeinator(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianCaffeinator(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianCaffeinator npc = view_as<VictorianCaffeinator>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "30000", ally));
 		
@@ -212,7 +209,7 @@ methodmap VictorianCaffeinator < CClotBody
 		
 		return npc;
 	}
-	public void StartHealing(int iEnt)
+	public void StartHealing()
 	{
 		int im_iWearable3 = this.m_iWearable3;
 		if(im_iWearable3 != INVALID_ENT_REFERENCE)
@@ -306,7 +303,7 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 				}
 				if(!npc.m_bnew_target)
 				{
-					npc.StartHealing(PrimaryThreatIndex);
+					npc.StartHealing();
 					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 255, 0, 0, 3.0, 3.0, 1.35, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;

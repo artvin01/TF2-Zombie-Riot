@@ -62,7 +62,7 @@ void Zapper_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Zapper(client, vecPos, vecAng, ally);
+	return Zapper(vecPos, vecAng, ally);
 }
 methodmap Zapper < CClotBody
 {
@@ -72,9 +72,7 @@ methodmap Zapper < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -124,7 +122,7 @@ methodmap Zapper < CClotBody
 	}
 	
 	
-	public Zapper(int client, float vecPos[3], float vecAng[3], int ally)
+	public Zapper(float vecPos[3], float vecAng[3], int ally)
 	{
 		Zapper npc = view_as<Zapper>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.00", "1900", ally, false, true));
 		

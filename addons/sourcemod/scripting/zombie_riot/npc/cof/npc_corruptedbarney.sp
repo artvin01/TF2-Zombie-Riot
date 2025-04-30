@@ -281,7 +281,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 					SetClientName(client, Buffer);
 					SetEntPropString(client, Prop_Data, "m_szNetname", Buffer);
 				}
-				IncreaceEntityDamageTakenBy(client, GetRandomFloat(0.05, 0.1), 0.1, true);
+				IncreaseEntityDamageTakenBy(client, GetRandomFloat(0.05, 0.1), 0.1, true);
 				Attributes_Set(client, 26, GetRandomFloat(2500.0, 5000.0));
 				f_damageAddedTogether[client] = float(GetURandomInt());
 				f_damageAddedTogetherGametime[client] = GetGameTime() + 0.6;
@@ -374,6 +374,10 @@ public void CorruptedBarney_NPCDeath(int entity)
 				CPrintToChat(client_repat, "{default}Corrupted Barney Vanishes and leaves...: {crimson}''Corrupted Barney's Chainsaw''{default}!");
 			}
 		}
+	}
+	for (int client_repat = 0; client_repat < MaxClients; client_repat++)
+	{
+		i_AmountDowned[client_repat] = 0;
 	}
 }
 void CorruptedBarneySelfDefense(CorruptedBarney npc, float gameTime, int target, float distance)

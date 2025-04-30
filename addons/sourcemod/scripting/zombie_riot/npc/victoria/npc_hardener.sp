@@ -1,20 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_negativevocalization01.mp3",
-	"vo/medic_negativevocalization02.mp3",
-	"vo/medic_negativevocalization03.mp3",
-	"vo/medic_negativevocalization04.mp3",
-};
-
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-};
-
 static const char g_IdleAlertedSounds[][] = {
 	")vo/medic_specialcompleted01.mp3",
 	")vo/medic_specialcompleted02.mp3",
@@ -40,9 +26,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
 static const char g_FuckyouSounds[][] = {
 	"vo/medic_mvm_stand_alone01.wav",
@@ -50,12 +33,12 @@ static const char g_FuckyouSounds[][] = {
 
 void VictorianHardener_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));   i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);   }
 	PrecacheModel("models/player/medic.mdl");
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LASERBEAM);
@@ -72,7 +55,7 @@ void VictorianHardener_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianHardener(client, vecPos, vecAng, ally);
+	return VictorianHardener(vecPos, vecAng, ally);
 }
 methodmap VictorianHardener < CClotBody
 {
@@ -93,7 +76,7 @@ methodmap VictorianHardener < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		
 		
@@ -101,7 +84,7 @@ methodmap VictorianHardener < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		
 	}
@@ -118,7 +101,7 @@ methodmap VictorianHardener < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		
 	}
@@ -128,7 +111,7 @@ methodmap VictorianHardener < CClotBody
 		
 
 	}
-	public VictorianHardener(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianHardener(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianHardener npc = view_as<VictorianHardener>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
@@ -209,7 +192,7 @@ methodmap VictorianHardener < CClotBody
 		
 		return npc;
 	}
-	public void StartHealing(int iEnt)
+	public void StartHealing()
 	{
 		int im_iWearable3 = this.m_iWearable3;
 		if(im_iWearable3 != INVALID_ENT_REFERENCE)
@@ -303,7 +286,7 @@ public void VictorianHardener_ClotThink(int iNPC)
 				}
 				if(!npc.m_bnew_target)
 				{
-					npc.StartHealing(PrimaryThreatIndex);
+					npc.StartHealing();
 					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;

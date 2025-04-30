@@ -10,9 +10,9 @@ void MyNPCs()
 	ChaosKahmlstein_OnMapStart_NPC();
 }
 
-#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
-#include "standalone/npc/npc_sensal.sp"
-#include "standalone/npc/npc_bob_the_first_last_savior.sp"
-#include "standalone/npc/npc_donnerkrieg.sp"
-#include "standalone/npc/npc_schwertkrieg.sp"
-#include "standalone/npc/npc_chaos_kahmlstein.sp"
+#include "../zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
+#include "npc/npc_sensal.sp"
+#include "npc/npc_bob_the_first_last_savior.sp"
+#include "npc/npc_donnerkrieg.sp"
+#include "npc/npc_schwertkrieg.sp"
+#include "npc/npc_chaos_kahmlstein.sp"

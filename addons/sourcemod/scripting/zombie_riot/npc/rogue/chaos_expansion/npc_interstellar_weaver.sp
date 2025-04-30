@@ -135,6 +135,8 @@ methodmap Interstellar_Weaver < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		fl_TotalArmor[npc.index] = 0.5;
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -577,8 +579,12 @@ static void ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, true);
-		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+		if(IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)))
+			npc.m_iTarget = GetClosestTarget(EntRefToEntIndex(npc.m_iState), true);
+		else
+			npc.m_iTarget = GetClosestTarget(npc.index, true);
+
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime()*3.0 + 10.0;
 
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))	//a failsafe targeting system thats a LOT more forgiving.
 		{
@@ -716,16 +722,21 @@ static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 
+	float target_vec[3];
+	GetAbsOrigin(New_Target, target_vec);
+	target_vec[2]+=250.0;
+/*
 	float target_vec[3], flDistanceToTarget; GetAbsOrigin(New_Target, target_vec);
 
 	flDistanceToTarget = GetVectorDistance(target_vec, Npc_Vec, true);
 
-	if(flDistanceToTarget>(200.0*200.0))
-		target_vec[2]+=250.0;
-	else
-		target_vec[2]+=75.0;
+//	if(flDistanceToTarget>(200.0*200.0))
+	target_vec[2]+=250.0;
+	//DONT FLY INTO THE TARGET LIKE AN EAGLE!!!
+//	else
+//		target_vec[2]+=75.0;
 
-
+*/
 	Storm_Weaver_Fly(npc, target_vec);
 }
 static void Storm_Weaver_Fly(Interstellar_Weaver npc, float target_vec[3])

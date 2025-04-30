@@ -61,32 +61,15 @@ Spiral laser crystals?
 Give Karlas smth?
 
 */
+#define STELLA_DEBUFF_RANGE 100.0
+bool b_allow_karlas_transform[MAXENTITIES];
 
-static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+
 
 static const char g_nightmare_cannon_core_sound[][] = {
 	"zombiesurvival/seaborn/loop_laser.mp3",
 };
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
-
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-};
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-};
 static const char g_LaserAttackSounds[][] = {
 	"weapons/physcannon/energy_sing_flyby1.wav",
 	"weapons/physcannon/energy_sing_flyby2.wav",
@@ -100,13 +83,13 @@ static const char g_OnLunarGraceHitSounds[][] = {
 };
 
 static int i_particle_effects[MAXENTITIES][3];
-static int i_wingslot[MAXENTITIES];
+
 
 #define STELLA_TE_DURATION 0.07
 
 static char gExplosive1;
-static int i_ally_index[MAXENTITIES];
-static bool b_InKame[MAXENTITIES];
+
+
 static bool b_tripple_raid[MAXENTITIES];
 
 #define STELLA_NC_DURATION 13.0
@@ -118,7 +101,6 @@ static bool b_tripple_raid[MAXENTITIES];
 
 static float fl_npc_basespeed;
 static bool b_test_mode[MAXENTITIES];
-static int i_current_wave[MAXENTITIES];
 static bool b_bobwave[MAXENTITIES];
 static bool b_IonStormInitiated[MAXENTITIES];
 static bool b_LastMannLines[MAXENTITIES];
@@ -130,8 +112,8 @@ static const char TextColour[] = "{snow}";
 
 static char gGlow1;	//blue
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 void Stella_OnMapStart_NPC()
 {
@@ -156,9 +138,9 @@ static void ClotPrecache()
 
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
+	PrecacheSoundArray(g_DefaultMedic_IdleAlertedSounds);
 	PrecacheSoundArray(g_LaserAttackSounds);
 	PrecacheSoundArray(g_LaserChargesounds);
 	PrecacheSoundArray(g_OnLunarGraceHitSounds);
@@ -204,7 +186,7 @@ methodmap Stella < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_IdleAlertedSounds[GetRandomInt(0, sizeof(g_DefaultMedic_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound= GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);	
 	}
 	
@@ -213,11 +195,11 @@ methodmap Stella < CClotBody
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
 	
 	public void PlayDeathSound() {
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
 	public void PlayLaserAttackSound() {
@@ -230,6 +212,11 @@ methodmap Stella < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flInvulnerability
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
 	property float m_flNorm_Attack_Throttle
 	{
@@ -700,7 +687,7 @@ methodmap Stella < CClotBody
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
-		int wave = Waves_GetRound()+1;
+		int wave = ZR_Waves_GetRound()+1;
 
 		if(StrContains(data, "force15") != -1)
 			wave = 15;
@@ -713,6 +700,8 @@ methodmap Stella < CClotBody
 		else if(StrContains(data, "hell") != -1)
 			wave = -1;
 
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
+		
 		b_NormLaserOnly[npc.index] = (StrContains(data, "normonly") != -1);
 
 		npc.m_bSaidWinLine = false;
@@ -723,7 +712,7 @@ methodmap Stella < CClotBody
 		//idk
 		if(wave == -1)
 		{
-			wave = 60 + Waves_GetRound();
+			wave = 60 + ZR_Waves_GetRound();
 		}
 		i_current_wave[npc.index] = wave;
 		
@@ -745,6 +734,9 @@ methodmap Stella < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_bDissapearOnDeath = true;
+		ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
+		f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE, //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
+		b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		
 		RaidModeTime = GetGameTime() + 250.0;
 		
@@ -932,6 +924,9 @@ methodmap Stella < CClotBody
 		Zero(b_said_player_weaponline);
 		b_IonStormInitiated[npc.index] = false;
 		b_LastMannLines[npc.index] = false;
+		Ruina_Set_Battery_Buffer(npc.index, true);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
 		return npc;
 	}
 }
@@ -948,6 +943,25 @@ static void Do_OnSpawn(int ref)
 	}
 }
 
+static void CheckChargeTimeStella(Stella npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = npc.m_flNC_Recharge - GameTime;
+
+	PercentageCharge = (TimeUntillTeleLeft  / (npc.Anger ? 30.0 : 40.0));
+
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
+}
 static void Win_Line(int entity)
 {	
 	Stella npc = view_as<Stella>(entity);
@@ -1001,6 +1015,22 @@ static void Internal_ClotThink(int iNPC)
 {
 	Stella npc = view_as<Stella>(iNPC);
 
+	CheckChargeTimeStella(npc);
+	if(npc.m_flInvulnerability)
+	{
+		int ally = npc.Ally;
+		Stella npcally = view_as<Stella>(ally);
+		if(IsValidEntity(ally) && npcally.m_flInvulnerability)
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(ally));
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+		else if(!IsValidEntity(ally))
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+	}
+	
 	if(RaidModeTime < GetGameTime() && !b_IonStormInitiated[npc.index])
 	{
 		if(!npc.m_bSaidWinLine)
@@ -1445,20 +1475,6 @@ static void OnAOEHit(int entity, int victim, float damage, int weapon)
 	TE_SetupBeamPoints(EnemyVec, Sky, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 0, 0.1, 2.5, 2.5, 0, 5.0, color, 3);
 	TE_SendToAll();
 }
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
-}
 static void Body_Pitch(Stella npc, float VecSelfNpc[3], float vecTarget[3])
 {
 	int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -1697,26 +1713,33 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 
 		npc.m_bKarlasRetreat = true;
-		int chose = GetRandomInt(1, 12);
+		int max_dialogue = i_current_wave[npc.index] >= 30 ? 11 : 9;
+		int chose = GetRandomInt(1, max_dialogue);
 		switch(chose)
 		{
-			case 1: Stella_Lines(npc, "{snow}Thats it {crimson}i'm going to kill you{snow}.");	
+			case 1: Stella_Lines(npc, "{snow}Thats it {crimson}I'm going to kill you{snow}.");	
 			case 2: Stella_Lines(npc, "{crimson}hm, {snow}Wonder how this will end...");
 			case 3: Stella_Lines(npc, "{crimson}PREPARE {snow}Thyself, {aqua}Judgement {crimson}Is near{snow}.");
-			case 4: Stella_Lines(npc, "Oh not again now train's gone and {crimson}Left{snow}.");
-			case 5: Stella_Lines(npc, "Oh not again now cannon's gone and {crimson}recharged{snow}.");
-			case 6: Stella_Lines(npc, "Aiming this thing is actually quite {crimson}complex {snow}ya know.");
-			case 7: Stella_Lines(npc, "Ya know, im getting quite bored of {crimson}this{snow} whole charade");
-			case 8: Stella_Lines(npc, "Oh how {crimson}Tiny{snow} you all look from up here.");
-			case 9: Stella_Lines(npc, "Heh {crimson}This is{snow} gonna be funny.");
-			case 10:Stella_Lines(npc, "This has become quite troublesome.");
-			case 11:Stella_Lines(npc, "Master....");
-			case 12:Stella_Lines(npc, "I've got a question for you, how do you think Holy Water is made?");
+			case 4: Stella_Lines(npc, "Aiming this thing is actually quite {crimson}complex {snow}ya know.");
+			case 5: Stella_Lines(npc, "I'm getting quite bored of {crimson}this{snow} whole charade");
+			case 6: Stella_Lines(npc, "Oh how {crimson}Tiny{snow} you all look from up here.");
+			case 7: Stella_Lines(npc, "This has become quite troublesome.");
+			case 8: Stella_Lines(npc, "Master....");
+			case 9: Stella_Lines(npc, "I, in the name of...");
+
+			case 10:Stella_Lines(npc, "Hey {crimson}Karlas{snow}, you got the new mirror?");
+			case 11:Stella_Lines(npc, "{crimson}Karlas{snow}, you did ask for persmission to use {purple}her{snow} mirror right?");
+
+			//case 4: Stella_Lines(npc, "Oh not again now train's gone and {crimson}Left{snow}.");
+			//case 5: Stella_Lines(npc, "Oh not again now cannon's gone and {crimson}recharged{snow}.");
+			//case 9: Stella_Lines(npc, "Heh {crimson}This is{snow} gonna be funny.");
+			//case 12:Stella_Lines(npc, "I've got a question for you, how do you think Holy Water is made?");
 		}
 		//CPrintToChatAll("Chose %i", chose);
 		npc.m_iNC_Dialogue = chose;
 
 		npc.m_flNC_Grace = GameTime + GetRandomFloat(6.0, 12.0);
+		fl_ruina_battery_timeout[npc.index] = npc.m_flNC_Grace;	//make it show on the hud!
 	}
 	else if(npc.m_flNC_Grace < GameTime && b_Valid_NC_Initialistaion(npc, 1))
 	{
@@ -1747,15 +1770,20 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 			case 1: Stella_Lines(npc, "And I'll Do IT WITH THIS CANNON.");
 			case 2: Stella_Lines(npc, "This is gonna end {crimson}Poorly for you all{snow}.");
 			case 3: Stella_Lines(npc, "{crimson}JUDGEMENT BE UPON THEE{snow}!");
-			case 4: Stella_Lines(npc, "And the city's to far to walk to the end while I...");
-			case 5: Stella_Lines(npc, "And the Cannons's Capacitor's to small..");
-			case 6: Stella_Lines(npc, "However its still{crimson} worth the effort{snow}.");
-			case 7: Stella_Lines(npc, "So to amuse myself,{crimson} I'll commit murder on you all{snow}.");
-			case 8: Stella_Lines(npc, "But your tiny stature won't save you from my Nightmare Cannon");
-			case 9: Stella_Lines(npc, "{crimson}HERE COMES THE FUNNY{snow}.");
-			case 10:Stella_Lines(npc, "So I'll just {crimson}remove{snow} the troublesome component!");
-			case 11:Stella_Lines(npc, "{aqua}SPARK!");
-			case 12:Stella_Lines(npc, "By boiling the hell out of it, {aqua}hehehe....");
+			case 4: Stella_Lines(npc, "However its still{crimson} worth the effort{snow}.");
+			case 5: Stella_Lines(npc, "So I'll use you all as {crimson}tools for my amusement");
+			case 6: Stella_Lines(npc, "But your tiny stature won't save you from my Fractal Beam Emitter");
+			case 7: Stella_Lines(npc, "So I'll just {crimson}remove{snow} the troublesome component!");
+			case 8: Stella_Lines(npc, "{aqua}SPARK!");
+			case 9: Stella_Lines(npc, "Shall {crimson}Eviscerate you all");
+
+			case 10:Stella_Lines(npc, "You all are about to see your own doomed reflections.. heh");
+			case 11:Stella_Lines(npc, "Guess we'll findout once we return");
+
+			//case 4: Stella_Lines(npc, "And the city's to far to walk to the end while I...");
+			//case 5: Stella_Lines(npc, "And the Cannons's Capacitor's to small..");
+			//case 9: Stella_Lines(npc, "{crimson}HERE COMES THE FUNNY{snow}.");
+			//case 12:Stella_Lines(npc, "By boiling the hell out of it, {aqua}hehehe....");
 
 			default: CPrintToChatAll("%s It seems my master forgot to set a proper dialogue line for this specific number, how peculiar. Anyway, here's the ID: [%i]", npc.GetName(), npc.m_iNC_Dialogue);
 		}
@@ -2061,9 +2089,57 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 {
 	Stella npc = view_as<Stella>(victim);
 		
+	int health;
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	{
+		
+		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
+		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
+		if(npc.Ally)
+		{
+			//only actually bother saying something if stella will exist during the iron will state.
+			//aka only if karlas is alive.
+			int chose = GetRandomInt(1, 4);
+			switch(chose)
+			{
+				case 1: Stella_Lines(npc, "{snow}You... You really think thats all I have....?!");	
+				case 2: Stella_Lines(npc, "{snow}Oh lord.. this actually hurts...");
+				case 3: Stella_Lines(npc, "{snow}Karlas...");
+				case 4: Stella_Lines(npc, "{snow}Its getting kinda cold..");
+			}
+			RaidModeTime +=17.0; //Extra time due to invuln
+			
+			if(!npc.m_flInvulnerability)
+			{
+				Karlas karl = view_as<Karlas>(npc.Ally);
+				karl.Anger = true;
+				b_allow_karlas_transform[karl.index] = true;
+				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
+				NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
+				NpcStats_RuinaAgilityStengthen(npc.index, 1.15);//15% speed bonus, going bellow 1.0 will make npc's slower
+				ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
+				NpcStats_RuinaDamageStengthen(npc.index, 0.1);	//10% dmg bonus
+				
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Defense", 999.0);
+				NpcStats_RuinaDefenseStengthen(npc.Ally, 0.8);	//20% resistances
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Agility", 999.0);
+				NpcStats_RuinaAgilityStengthen(npc.Ally, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Damage", 999.0);
+				NpcStats_RuinaDamageStengthen(npc.Ally, 0.1);	//10% dmg bonus
+				
+				ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
+				ApplyStatusEffect(npc.Ally, npc.Ally, "Ancient Melodies", 999.0);
+			}
+		}
+		npc.m_flInvulnerability = 1.0;
+	}
+
 	if(attacker <= 0)
 		return Plugin_Continue;
-
 
 	Stella_Weapon_Lines(npc, attacker);
 	
@@ -2072,6 +2148,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
 	
 	return Plugin_Changed;
 }
@@ -2164,14 +2241,17 @@ static void Internal_NPCDeath(int entity)
 		{
 			if(npc.Ally)
 			{
-				Karlas karl = view_as<Karlas>(npc.Ally);
-				karl.Anger = true;
-				NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-				switch(GetRandomInt(1,3))
+				if(!npc.m_flInvulnerability)
 				{
-					case 1: Stella_Lines(npc, "Hmph, I'll let {crimson}Karlas{snow} handle this");
-					case 2: Stella_Lines(npc, "You still have {crimson}Karlas{snow} to deal with... heh");
-					case 3: Stella_Lines(npc, "I hope you like spining blades");
+					Karlas karl = view_as<Karlas>(npc.Ally);
+					karl.Anger = true;
+					NpcSpeechBubble(npc.Ally, ">>:(", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					switch(GetRandomInt(1,3))
+					{
+						case 1: Stella_Lines(npc, "Hmph, I'll let {crimson}Karlas{snow} handle this");
+						case 2: Stella_Lines(npc, "You still have {crimson}Karlas{snow} to deal with... heh");
+						case 3: Stella_Lines(npc, "I hope you like spining blades");
+					}	
 				}
 			}
 			else
@@ -2281,6 +2361,13 @@ static void Self_Defense(Stella npc, float flDistanceToTarget)
 		npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
 		TE_SetupBeamPoints(flPos, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, 2.0, 2.0, 0, 0.01, color, 3);	
 		TE_SendToAll(0.0);
+		//uncomment this and the other thing to reenable
+		if(npc.m_flNorm_Attack_Throttle < GameTime)
+		{
+			npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
+			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+			spawnRing_Vectors(VecSelfNpcabs, STELLA_DEBUFF_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, /*duration*/ 0.11, 1.0, 1.0, 1);	
+		}
 	}
 
 	float Attack_Speed = 3.3;	//how often she attacks.
@@ -2334,6 +2421,7 @@ static float Modify_Damage(float damage)
 	damage*=RaidModeScaling;
 	return damage;
 }
+
 public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 {
 	Stella npc = view_as<Stella>(iNPC);
@@ -2345,18 +2433,9 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		npc.Set_Crest_Charging_Phase(false);
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		SDKUnhook(npc.index, SDKHook_Think, Normal_Laser_Think);
+		
 		return Plugin_Stop;
 	}
-
-	/*
-	//uncomment this and the other thing to reenable
-	bool update = false;
-	if(npc.m_flNorm_Attack_Throttle < GameTime)
-	{
-		npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
-		update = true;
-	}*/
-
 	npc.m_bAllowBackWalking = true;
 
 	bool Silence = NpcStats_IsEnemySilenced(npc.index);
@@ -2407,7 +2486,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 			Turn_Speed *= 0.8;
 
 		Turn_Speed /=TickrateModify;
-		Turn_Speed /=f_AttackSpeedNpcIncreace[npc.index];
+		Turn_Speed /=f_AttackSpeedNpcIncrease[npc.index];
 
 		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
 		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
@@ -2424,10 +2503,10 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	//if(update)
 	{
 		//extreme amounts of trolley
-		float Dmg = Modify_Damage(1.1);
+		float Dmg = Modify_Damage(npc.Anger ? 2.0 : 1.1);
 		Dmg *= (0.75-Logarithm(Ratio));
 		Dmg /= TickrateModify;	//since the damage is dealt every tick, make it so the dmg is modified by tickrate modif.
-		Dmg /=f_AttackSpeedNpcIncreace[npc.index];
+		Dmg /=f_AttackSpeedNpcIncrease[npc.index];
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;
@@ -2435,6 +2514,15 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 
+		//uncomment this and the other thing to reenable
+		if(npc.m_flNorm_Attack_Throttle < GameTime)
+		{
+			npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
+			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+			spawnRing_Vectors(VecSelfNpcabs, STELLA_DEBUFF_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, /*duration*/ 0.11, 3.0, 3.0, 1);	
+
+			Explode_Logic_Custom(Dmg, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
+		}
 		//CPrintToChatAll("Damage: %f", Dmg);
 	}
 
@@ -2472,6 +2560,14 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 
 	return Plugin_Continue;
 }
+
+float StellaDebuffTargetsInRange(int entity, int victim, float damage, int weapon)
+{
+	ApplyStatusEffect(victim, victim, "Teslar Electricution", 8.0);
+	return damage;
+}
+
+
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
 	float Direction[3];
@@ -2686,6 +2782,10 @@ static int i_Get_Laser_Target(Stella npc, float Range = -1.0)
 void Stella_Lines(Stella npc, const char[] text)
 {
 	if(b_test_mode[npc.index])
+		return;
+	
+	//if in laststand state, don't speak about stuff.
+	if(npc.m_flInvulnerability)
 		return;
 
 	CPrintToChatAll("%s %s", npc.GetName(), text);

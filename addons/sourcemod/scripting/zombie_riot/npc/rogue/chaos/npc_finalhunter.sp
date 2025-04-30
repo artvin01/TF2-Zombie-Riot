@@ -104,6 +104,7 @@ methodmap FinalHunter < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 		Is_a_Medic[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 		
@@ -152,7 +153,7 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_bStaticNPC)
 	{
-		if(Waves_Started() && (Waves_GetMaxRound() -1) == Waves_GetRound())
+		if(Waves_Started() && (Waves_GetMaxRound() -1) == ZR_Waves_GetRound())
 		{
 			npc.m_bStaticNPC = false;
 			Is_a_Medic[npc.index] = false;

@@ -69,7 +69,7 @@ void AgentThompson_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return AgentThompson(client, vecPos, vecAng, ally, data);
+	return AgentThompson(vecPos, vecAng, ally, data);
 }
 methodmap AgentThompson < CClotBody
 {
@@ -122,7 +122,7 @@ methodmap AgentThompson < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
 	}
 	
-	public AgentThompson(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public AgentThompson(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		AgentThompson npc = view_as<AgentThompson>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.10", "700", ally));
 		
@@ -168,7 +168,7 @@ methodmap AgentThompson < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
 		if(RaidModeScaling < 55)
@@ -196,7 +196,7 @@ methodmap AgentThompson < CClotBody
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/furiousangels.mp3");
 		music.Time = 161;
-		music.Volume = 2.0;
+		music.Volume = 1.7;
 		music.Custom = false;
 		strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
 		strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");

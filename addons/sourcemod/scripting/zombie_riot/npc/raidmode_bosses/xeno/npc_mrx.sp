@@ -75,14 +75,13 @@ static char g_NeckSnap[][] =
 	"player/taunt_knuckle_crack.wav",
 };
 
-static int i_GrabbedThis[MAXENTITIES];
-static float fl_RegainWalkAnim[MAXENTITIES];
 
-static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
+
+
 static int i_SideHurtWhich[MAXENTITIES];
-static float f_NemesisImmuneToInfection[MAXENTITIES];
-static float f_NemesisSpecialDeathAnimation[MAXENTITIES];
-static float f_NemesisRandomInfectionCycle[MAXENTITIES];
+
+
+
 
 static float f_MassRushHitAttack[MAXENTITIES];
 static float f_MassRushHitAttackCD[MAXENTITIES];
@@ -529,8 +528,8 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				if(IsValidEntity(client))
 				{
 					SDKHooks_TakeDamage(client, npc.index, npc.index, 7000.0, DMG_CRUSH, -1);
-					f_AntiStuckPhaseThrough[client] = GetGameTime() + 2.0;
-					ApplyStatusEffect(client, client, "Intangible", 2.0);
+					f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0;
+					ApplyStatusEffect(client, client, "Intangible", 3.0);
 					if(client <= MaxClients)
 						Client_Shake(client, 0, 20.0, 20.0, 1.0, false);
 
@@ -623,7 +622,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 					{
 						SetEntityMoveType(Enemy_I_See, MOVETYPE_NONE); //Cant move XD
 						SetEntityCollisionGroup(Enemy_I_See, 1);
-						TF2_AddCondition(Enemy_I_See, TFCond_FreezeInput, 5.0);
+						FreezeNpcInTime(Enemy_I_See, 5.0);
 					}
 					else
 					{

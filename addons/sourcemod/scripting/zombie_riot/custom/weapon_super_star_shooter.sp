@@ -79,10 +79,6 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 		
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_STAR_SHOOTER, weapon, "powerup_icon_supernova");
 	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
-	for (int entity = 0; entity < MAXENTITIES; entity++)
-	{
-		f_GlobalHitDetectionLogic[projectile][entity] = 0.0;
-	}
 }
 
 
@@ -135,10 +131,6 @@ public void Super_Star_Shooter_pap1_Main(int client, int weapon, bool crit, int 
 	//burningplayer_corpse_rainbow_stars
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_STAR_SHOOTER, weapon, "powerup_icon_supernova");
 	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
-	for (int entity = 0; entity < MAXENTITIES; entity++)
-	{
-		f_GlobalHitDetectionLogic[projectile][entity] = 0.0;
-	}
 }
 
 public void Star_Shooter_Meteor_shower_ability(int client, int weapon, bool crit, int slot)// ability stuff here
@@ -182,13 +174,13 @@ public Action Disable_Star_Shooter_Ability(Handle timer, int client)
 
 public void SuperStarShooterOnHit(int entity, int target)
 {
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
-		if(f_GlobalHitDetectionLogic[entity][target])
+		if(IsIn_HitDetectionCooldown(entity,target))
 			return;
 
-		f_GlobalHitDetectionLogic[entity][target] = 1.0;
+		Set_HitDetectionCooldown(entity,target, FAR_FUTURE);
+
 		//Code to do damage position and ragdolls
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
@@ -208,6 +200,7 @@ public void SuperStarShooterOnHit(int entity, int target)
 	}
 	else if(target == 0)
 	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -284,7 +277,7 @@ public void Starshooter_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client]);
+			PrintHintText(client,"Star Shooter Overheat %i％", SSS_overheat[client]);
 			
 		}
 		starshooter_hud_delay[client] = GetGameTime() + 0.5;

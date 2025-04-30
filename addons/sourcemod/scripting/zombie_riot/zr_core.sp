@@ -32,7 +32,7 @@ public const int AmmoData[][] =
 	{ 10, 10 },			//Stickybombs
 	{ 10, 100 },		//Minigun Barrel
 	{ 10, 10 },			//Custom Bolt
-	{ 10, 100 },		//Medical Syringes
+	{ 10, 75 },		//Medical Syringes
 	{ 10, 12 },			//Sniper Rifle Rounds
 	{ 10, 12 },			//Arrows
 	{ 10, 60 },			//SMG Magazines
@@ -218,6 +218,10 @@ enum
 	WEAPON_X10KNIFE = 141,
 	WEAPON_RUINA_DRONE_KNIFE = 142,
 	WEAPON_TORNADO_BLITZ = 143,
+	WEAPON_BUFFPOTION = 144,
+	WEAPON_REIUJI_WAND = 145,
+	WEAPON_CHEESY_MELEE = 146,
+	WEAPON_CHEESY_PRIMARY = 147,
 }
 
 enum
@@ -259,6 +263,7 @@ ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
+ConVar Cvar_VshMapFix;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
@@ -437,167 +442,173 @@ int i_WaveHasFreeplay = 0;
 float fl_MatrixReflect[MAXENTITIES];
 
 
-#include "zombie_riot/npc.sp"	// Global NPC List
+#include "include/zombie_riot.inc"
 
-#include "zombie_riot/building.sp"
-#include "zombie_riot/database.sp"
-#include "zombie_riot/elemental.sp"
-#include "zombie_riot/escape.sp"
-#include "zombie_riot/freeplay.sp"
-#include "zombie_riot/items.sp"
-#include "zombie_riot/music.sp"
-#include "zombie_riot/natives.sp"
-#include "zombie_riot/queue.sp"
-#include "zombie_riot/skilltree.sp"
-#include "zombie_riot/spawns.sp"
-#include "zombie_riot/store.sp"
-#include "zombie_riot/teuton_sound_override.sp"
-#include "zombie_riot/barney_sound_override.sp"
-#include "zombie_riot/kleiner_sound_override.sp"
-#include "zombie_riot/tutorial.sp"
-#include "zombie_riot/waves.sp"
-#include "zombie_riot/zombie_drops.sp"
-#include "zombie_riot/rogue.sp"
-#include "zombie_riot/mvm_hud.sp"
-#include "zombie_riot/steamworks.sp"
-#include "zombie_riot/zsclassic.sp"
-#include "zombie_riot/construction.sp"
-#include "zombie_riot/sm_skyboxprops.sp"
-#include "zombie_riot/custom/homing_projectile_logic.sp"
-#include "zombie_riot/custom/weapon_slug_rifle.sp"
-#include "zombie_riot/custom/weapon_boom_stick.sp"
-#include "zombie_riot/custom/weapon_heavy_eagle.sp"
-#include "zombie_riot/custom/weapon_annabelle.sp"
-#include "zombie_riot/custom/weapon_rampager.sp"
-#include "zombie_riot/custom/weapon_heaven_eagle.sp"
-#include "zombie_riot/custom/weapon_star_shooter.sp"
-#include "zombie_riot/custom/weapon_bison.sp"
-#include "zombie_riot/custom/weapon_pomson.sp"
-#include "zombie_riot/custom/weapon_cowmangler.sp"
-#include "zombie_riot/custom/weapon_cowmangler_2.sp"
-#include "zombie_riot/custom/weapon_auto_shotgun.sp"
-#include "zombie_riot/custom/weapon_tornado.sp"
-#include "zombie_riot/custom/weapon_fists_of_kahml.sp"
-#include "zombie_riot/custom/weapon_fusion_melee.sp"
-#include "zombie_riot/custom/spike_layer.sp"
-#include "zombie_riot/custom/weapon_grenade.sp"
-#include "zombie_riot/custom/wand/weapon_default_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_increace_attack.sp"
-#include "zombie_riot/custom/wand/weapon_fire_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_fire_ball.sp"
-#include "zombie_riot/custom/wand/weapon_lightning_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_cryo.sp"
-#include "zombie_riot/custom/wand/weapon_wand_lightning_spell.sp"
-#include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
-#include "zombie_riot/custom/wand/weapon_autoaim_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_skulls.sp"
-#include "zombie_riot/custom/weapon_arrow_shot.sp"
-//#include "zombie_riot/custom/weapon_pipe_shot.sp"
-#include "zombie_riot/custom/weapon_survival_knife.sp"
-#include "zombie_riot/custom/weapon_glitched.sp"
-//#include "zombie_riot/custom/weimage.pngapon_minecraft.sp"
-#include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
-#include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
-#include "zombie_riot/custom/wand/weapon_elemental_staff_2.sp"
-//#include "zombie_riot/custom/weapon_black_fire_wand.sp"
-#include "zombie_riot/custom/wand/weapon_chlorophite.sp"
-#include "zombie_riot/custom/wand/weapon_chlorophite_heavy.sp"
-#include "zombie_riot/custom/weapon_drink_resupply_mana.sp"
-#include "zombie_riot/custom/weapon_wind_staff.sp"
-#include "zombie_riot/custom/wand/weapon_nailgun.sp"
-#include "zombie_riot/custom/weapon_five_seven.sp"
-#include "zombie_riot/custom/weapon_gb_medigun.sp"
-#include "zombie_riot/custom/weapon_charged_handgun.sp"
-#include "zombie_riot/custom/wand/weapon_wand_beam.sp"
-#include "zombie_riot/custom/wand/weapon_wand_lightning_pap.sp"
-#include "zombie_riot/custom/wand/weapon_calcium_wand.sp"
-#include "zombie_riot/custom/wand/weapon_wand_calcium_spell.sp"
-#include "zombie_riot/custom/weapon_passive_banner.sp"
-#include "zombie_riot/custom/weapon_ark.sp"
-#include "zombie_riot/custom/coin_flip.sp"
-#include "zombie_riot/custom/weapon_manual_reload.sp"
-#include "zombie_riot/custom/weapon_super_star_shooter.sp"
-#include "zombie_riot/custom/weapon_Texan_business.sp"
-#include "zombie_riot/custom/weapon_explosivebullets.sp"
-#include "zombie_riot/custom/weapon_sniper_monkey.sp"
-#include "zombie_riot/custom/weapon_cspyknife.sp"
-#include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
-#include "zombie_riot/custom/weapon_riotshield.sp"
-#include "zombie_riot/custom/m3_abilities.sp"
-#include "zombie_riot/custom/weapon_health_hose.sp"
-#include "zombie_riot/custom/weapon_superubersaw.sp"
-#include "shared/custom/joke_medigun_mod_drain_health.sp"
-#include "shared/custom/weapon_judgement_of_iberia.sp"
-#include "shared/custom/weapon_phlog_replacement.sp"
-#include "zombie_riot/custom/weapon_cosmic_terror.sp"
-#include "zombie_riot/custom/wand/weapon_wand_potions.sp"
-#include "zombie_riot/custom/weapon_ocean_song.sp"
-#include "zombie_riot/custom/wand/weapon_lantean_wand.sp"
-#include "zombie_riot/custom/weapon_specter.sp"
-#include "zombie_riot/custom/weapon_yamato.sp"
-#include "zombie_riot/custom/wand/weapon_quincy_bow.sp"
-#include "zombie_riot/custom/weapon_fantasy_blade.sp"
-#include "zombie_riot/custom/weapon_saga.sp"
-#include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
-#include "zombie_riot/custom/weapon_mlynar.sp"
-#include "zombie_riot/custom/weapon_enforcer.sp"
-#include "zombie_riot/custom/weapon_blemishine.sp"
-#include "zombie_riot/custom/weapon_gladiia.sp"
-#include "zombie_riot/custom/weapon_vampire_knives.sp"
-#include "zombie_riot/custom/weapon_judge.sp"
-#include "zombie_riot/custom/weapon_board.sp"
-#include "zombie_riot/custom/wand/weapon_german_caster.sp"
-#include "zombie_riot/custom/weapon_sensal.sp"
-#include "zombie_riot/custom/weapon_hazard.sp"
-#include "zombie_riot/custom/weapon_casino.sp"
-#include "zombie_riot/custom/wand/weapon_ion_beam_wand.sp"
-#include "zombie_riot/custom/kit_seaborn.sp"
-#include "zombie_riot/custom/weapon_class_leper.sp"
-#include "zombie_riot/custom/kit_flagellant.sp"
-#include "zombie_riot/custom/kit_zealot.sp"
-#include "zombie_riot/custom/kit_purnell.sp"
-#include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
-#include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
-#include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
-#include "zombie_riot/custom/weapon_trash_cannon.sp"
-#include "zombie_riot/custom/weapon_rusty_rifle.sp"
-#include "zombie_riot/custom/weapon_wrathful_blade.sp"
-#include "zombie_riot/custom/kit_blitzkrieg.sp"
-#include "zombie_riot/custom/kit_fractal.sp"
-#include "zombie_riot/custom/weapon_laz_laser_cannon.sp"
-#include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
-#include "zombie_riot/custom/weapon_fullmoon.sp"
-#include "zombie_riot/custom/red_blade.sp"
-#include "zombie_riot/custom/weapon_rapier.sp"
-#include "zombie_riot/custom/wand/weapon_wand_gravaton.sp"
-#include "zombie_riot/custom/weapon_heavy_particle_rifle.sp"
-#include "zombie_riot/custom/weapon_railcannon.sp"
-#include "zombie_riot/custom/wand/weapon_dimension_ripper.sp"
-#include "zombie_riot/custom/weapon_hell_hoe.sp"
-#include "zombie_riot/custom/wand/weapon_ludo.sp"
-#include "zombie_riot/custom/weapon_messenger.sp"
-#include "zombie_riot/custom/kit_blacksmith.sp"
-#include "zombie_riot/custom/weapon_deagle_west.sp"
-#include "zombie_riot/custom/weapon_victorian.sp"
-#include "zombie_riot/custom/weapon_obuch.sp"
-#include "zombie_riot/custom/kit_merchant.sp"
-#include "zombie_riot/custom/weapon_mg42.sp"
-#include "zombie_riot/custom/weapon_chainsaw.sp"
-#include "zombie_riot/custom/weapon_flametail.sp"
-#include "zombie_riot/custom/weapon_ulpianus.sp"
-#include "zombie_riot/custom/wand/weapon_wand_magnesis.sp"
-#include "zombie_riot/custom/kit_blacksmith_brew.sp"
-#include "zombie_riot/custom/weapon_yakuza.sp"
-#include "zombie_riot/custom/weapon_skadi.sp"
-#include "zombie_riot/custom/weapon_hunting_rifle.sp"
-#include "zombie_riot/custom/wand/weapon_logos.sp"
-#include "zombie_riot/custom/weapon_walter.sp"
-#include "zombie_riot/custom/wand/weapon_wand_nymph.sp"
-#include "zombie_riot/custom/weapon_castlebreaker.sp"
-#include "zombie_riot/custom/kit_soldine.sp"
-#include "zombie_riot/custom/weapon_kritzkrieg.sp"
-#include "zombie_riot/custom/wand/weapon_bubble_wand.sp"
+#include "npc.sp"	// Global NPC List
+
+#include "aprilfools_settings.sp"
+#include "building.sp"
+#include "database.sp"
+#include "elemental.sp"
+#include "escape.sp"
+#include "freeplay.sp"
+#include "items.sp"
+#include "music.sp"
+#include "natives.sp"
+#include "queue.sp"
+#include "skilltree.sp"
+#include "spawns.sp"
+#include "store.sp"
+#include "teuton_sound_override.sp"
+#include "barney_sound_override.sp"
+#include "kleiner_sound_override.sp"
+#include "tutorial.sp"
+#include "waves.sp"
+#include "zombie_drops.sp"
+#include "rogue.sp"
+#include "mvm_hud.sp"
+#include "steamworks.sp"
+#include "zsclassic.sp"
+#include "construction.sp"
+#include "sm_skyboxprops.sp"
+#include "custom/homing_projectile_logic.sp"
+#include "custom/weapon_slug_rifle.sp"
+#include "custom/weapon_boom_stick.sp"
+#include "custom/weapon_heavy_eagle.sp"
+#include "custom/weapon_annabelle.sp"
+#include "custom/weapon_rampager.sp"
+#include "custom/weapon_heaven_eagle.sp"
+#include "custom/weapon_star_shooter.sp"
+#include "custom/weapon_bison.sp"
+#include "custom/weapon_pomson.sp"
+#include "custom/weapon_cowmangler.sp"
+#include "custom/weapon_cowmangler_2.sp"
+#include "custom/weapon_auto_shotgun.sp"
+#include "custom/weapon_tornado.sp"
+#include "custom/weapon_fists_of_kahml.sp"
+#include "custom/weapon_fusion_melee.sp"
+#include "custom/spike_layer.sp"
+#include "custom/weapon_grenade.sp"
+#include "custom/wand/weapon_default_wand.sp"
+#include "custom/wand/weapon_wand_increase_attack.sp"
+#include "custom/wand/weapon_fire_wand.sp"
+#include "custom/wand/weapon_wand_fire_ball.sp"
+#include "custom/wand/weapon_lightning_wand.sp"
+#include "custom/wand/weapon_wand_cryo.sp"
+#include "custom/wand/weapon_wand_lightning_spell.sp"
+#include "custom/wand/weapon_necromancy_wand.sp"
+#include "custom/wand/weapon_wand_necro_spell.sp"
+#include "custom/wand/weapon_autoaim_wand.sp"
+#include "custom/wand/weapon_wand_skulls.sp"
+#include "custom/weapon_arrow_shot.sp"
+//#include "custom/weapon_pipe_shot.sp"
+#include "custom/weapon_survival_knife.sp"
+#include "custom/weapon_glitched.sp"
+//#include "custom/weimage.pngapon_minecraft.sp"
+#include "custom/arse_enal_layer_tripmine.sp"
+#include "custom/wand/weapon_elemental_staff.sp"
+#include "custom/wand/weapon_elemental_staff_2.sp"
+//#include "custom/weapon_black_fire_wand.sp"
+#include "custom/wand/weapon_chlorophite.sp"
+#include "custom/wand/weapon_chlorophite_heavy.sp"
+#include "custom/weapon_drink_resupply_mana.sp"
+#include "custom/weapon_wind_staff.sp"
+#include "custom/wand/weapon_nailgun.sp"
+#include "custom/weapon_five_seven.sp"
+#include "custom/weapon_gb_medigun.sp"
+#include "custom/weapon_charged_handgun.sp"
+#include "custom/wand/weapon_wand_beam.sp"
+#include "custom/wand/weapon_wand_lightning_pap.sp"
+#include "custom/wand/weapon_calcium_wand.sp"
+#include "custom/wand/weapon_wand_calcium_spell.sp"
+#include "custom/weapon_passive_banner.sp"
+#include "custom/weapon_ark.sp"
+#include "custom/coin_flip.sp"
+#include "custom/weapon_manual_reload.sp"
+#include "custom/weapon_super_star_shooter.sp"
+#include "custom/weapon_Texan_business.sp"
+#include "custom/weapon_explosivebullets.sp"
+#include "custom/weapon_sniper_monkey.sp"
+#include "custom/weapon_cspyknife.sp"
+#include "custom/wand/weapon_quantum_weaponry.sp"
+#include "custom/weapon_riotshield.sp"
+#include "custom/m3_abilities.sp"
+#include "custom/weapon_health_hose.sp"
+#include "custom/weapon_superubersaw.sp"
+#include "../shared/custom/joke_medigun_mod_drain_health.sp"
+#include "../shared/custom/weapon_judgement_of_iberia.sp"
+#include "../shared/custom/weapon_phlog_replacement.sp"
+#include "custom/weapon_cosmic_terror.sp"
+#include "custom/wand/weapon_wand_potions.sp"
+#include "custom/weapon_ocean_song.sp"
+#include "custom/wand/weapon_lantean_wand.sp"
+#include "custom/weapon_specter.sp"
+#include "custom/weapon_yamato.sp"
+#include "custom/wand/weapon_quincy_bow.sp"
+#include "custom/weapon_fantasy_blade.sp"
+#include "custom/weapon_saga.sp"
+#include "custom/wand/weapon_wand_beam_pap.sp"
+#include "custom/weapon_mlynar.sp"
+#include "custom/weapon_enforcer.sp"
+#include "custom/weapon_blemishine.sp"
+#include "custom/weapon_gladiia.sp"
+#include "custom/weapon_vampire_knives.sp"
+#include "custom/weapon_judge.sp"
+#include "custom/weapon_board.sp"
+#include "custom/wand/weapon_german_caster.sp"
+#include "custom/weapon_sensal.sp"
+#include "custom/weapon_hazard.sp"
+#include "custom/weapon_casino.sp"
+#include "custom/wand/weapon_ion_beam_wand.sp"
+#include "custom/kit_seaborn.sp"
+#include "custom/weapon_class_leper.sp"
+#include "custom/kit_flagellant.sp"
+#include "custom/kit_zealot.sp"
+#include "custom/kit_purnell.sp"
+#include "custom/cosmetics/silvester_cosmetics_yay.sp"
+#include "custom/cosmetics/magia_cosmetics.sp"
+#include "custom/wand/weapon_wand_impact_lance.sp"
+#include "custom/weapon_trash_cannon.sp"
+#include "custom/weapon_rusty_rifle.sp"
+#include "custom/weapon_wrathful_blade.sp"
+#include "custom/kit_blitzkrieg.sp"
+#include "custom/kit_fractal.sp"
+#include "custom/weapon_laz_laser_cannon.sp"
+#include "custom/weapon_angelic_shotgonnus.sp"
+#include "custom/weapon_fullmoon.sp"
+#include "custom/red_blade.sp"
+#include "custom/weapon_rapier.sp"
+#include "custom/wand/weapon_wand_gravaton.sp"
+#include "custom/wand/weapon_wand_reiuji.sp"
+#include "custom/weapon_heavy_particle_rifle.sp"
+#include "custom/weapon_railcannon.sp"
+#include "custom/wand/weapon_dimension_ripper.sp"
+#include "custom/weapon_hell_hoe.sp"
+#include "custom/wand/weapon_ludo.sp"
+#include "custom/weapon_messenger.sp"
+#include "custom/kit_blacksmith.sp"
+#include "custom/weapon_deagle_west.sp"
+#include "custom/weapon_victorian.sp"
+#include "custom/weapon_obuch.sp"
+#include "custom/kit_merchant.sp"
+#include "custom/weapon_mg42.sp"
+#include "custom/weapon_chainsaw.sp"
+#include "custom/weapon_flametail.sp"
+#include "custom/weapon_ulpianus.sp"
+#include "custom/wand/weapon_wand_magnesis.sp"
+#include "custom/kit_blacksmith_brew.sp"
+#include "custom/weapon_yakuza.sp"
+#include "custom/weapon_skadi.sp"
+#include "custom/weapon_hunting_rifle.sp"
+#include "custom/wand/weapon_logos.sp"
+#include "custom/weapon_walter.sp"
+#include "custom/wand/weapon_wand_nymph.sp"
+#include "custom/weapon_castlebreaker.sp"
+#include "custom/kit_soldine.sp"
+#include "custom/weapon_kritzkrieg.sp"
+#include "custom/wand/weapon_bubble_wand.sp"
+#include "custom/kit_blacksmith_grill.sp"
+#include "custom/kit_cheese.sp"
 
 void ZR_PluginLoad()
 {
@@ -725,6 +736,7 @@ void ZR_MapStart()
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
+	Seaborn_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	WavesUpdateDifficultyName();
@@ -803,10 +815,6 @@ void ZR_MapStart()
 	Waves_MapStart();
 	Freeplay_OnMapStart();
 	Music_MapStart();
-	Star_Shooter_MapStart();
-	Bison_MapStart();
-	Pomson_MapStart();
-	Mangler_MapStart();
 	Wand_Map_Precache();
 	Wand_Skulls_Precache();
 	Wand_Attackspeed_Map_Precache();
@@ -841,8 +849,6 @@ void ZR_MapStart()
 	BoomStick_MapPrecache();
 	MG42_Map_Precache();
 	Charged_Handgun_Map_Precache();
-	TBB_Precahce_Mangler_2();
-	BeamWand_MapStart();
 	M3_Abilities_Precache();
 	Ark_autoaim_Map_Precache();
 	Wand_LightningPap_Map_Precache();
@@ -882,6 +888,7 @@ void ZR_MapStart()
 	ResetMapStartRedBladeWeapon();
 	Mapstart_Chainsaw();
 	Gravaton_Wand_MapStart();
+	Reiuji_Wand_OnMapStart();
 	Heavy_Particle_Rifle_Mapstart();
 	Precache_Railcannon();
 	ResetMapStartDimWeapon();
@@ -903,6 +910,7 @@ void ZR_MapStart()
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
+	Cheese_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -925,6 +933,9 @@ void ZR_MapStart()
 
 public void OnMapInit()
 {
+	if(!Cvar_VshMapFix.BoolValue)
+		return;
+		//skip
 	OnMapInit_ZR();
 
 	//nerf full health kits
@@ -970,6 +981,10 @@ public Action GlobalTimer(Handle timer)
 		f_AllowInstabuildRegardless = 0.0;
 		ForceMusicStopAndReset = true;
 	}
+	if(Rogue_Mode() || Construction_Mode())
+	{
+		ForceMusicStopAndReset = false;
+	}
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -983,8 +998,6 @@ public Action GlobalTimer(Handle timer)
 			{
 				Music_Update(client);
 			}
-			
-			PlayerApplyDefaults(client);
 		}
 	}
 	
@@ -993,6 +1006,16 @@ public Action GlobalTimer(Handle timer)
 	
 	Zombie_Delay_Warning();
 	Spawners_Timer();
+	if(frame % 100)
+		return Plugin_Continue;
+
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			PlayerApplyDefaults(client);
+		}
+	}
 	return Plugin_Continue;
 }
 
@@ -1020,6 +1043,9 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
+	if(Waves_Started())
+		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
+	
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);
@@ -1034,6 +1060,7 @@ void ZR_ClientPutInServer(int client)
 
 void ZR_ClientDisconnect(int client)
 {
+	Native_ZR_OnGetXP(client, XP[client], 1);
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
 	DataBase_ClientDisconnect(client);
@@ -1072,6 +1099,7 @@ void ZR_ClientDisconnect(int client)
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
 	//reeset to 0
+	Leper_ClientDisconnect(client);
 }
 
 public void OnMapInit_ZR()
@@ -1204,7 +1232,7 @@ public Action Command_RTdFail(int client, int args)
 {
 	if(client)
 	{
-		CPrintToChat(client, "{crimson}[ZR] Looks like the dice broke.");
+		SPrintToChat(client, "Looks like the dice broke.");
 		ClientCommand(client, "playgamesound vo/k_lab/kl_fiddlesticks.wav");
 	}
 	return Plugin_Handled;
@@ -1410,6 +1438,7 @@ public Action Command_SetXp(int client, int args)
 		if(money > 0)
 		{
 			PrintToChat(targets[target], "Your XP got set to %i from the admin %N!", money, client);
+			Native_ZR_OnGetXP(client, money, 1);
 			XP[targets[target]] = money;
 		}
 	}
@@ -1447,11 +1476,13 @@ public Action Command_GiveXp(int client, int args)
 		if(money > 0)
 		{
 			PrintToChat(targets[target], "You got %i XP from the admin %N!", money, client);
+			Native_ZR_OnGetXP(client, money, 0);
 			XP[targets[target]] += money;
 		}
 		else
 		{
 			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
+			Native_ZR_OnGetXP(client, money, 0);
 			XP[targets[target]] += money;			
 		}
 	}
@@ -1677,12 +1708,12 @@ public Action Timer_Dieing(Handle timer, int client)
 					if(b_DyingTextOff[client])
 					{
 						b_DyingTextOff[client] = false;
-						SetVariantString("DOWNED [T]");
+						SetVariantString("DOWNED");
 						AcceptEntityInput(TextFormat, "SetText");
 					}
 					else
 					{
-						SetVariantString("REVIVE [T]");
+						SetVariantString("REVIVE");
 						AcceptEntityInput(TextFormat, "SetText");
 						b_DyingTextOff[client] = true;
 					}
@@ -1910,7 +1941,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
 					{
 						FreezeNpcInTime(entity, 3.0, true);
-						IncreaceEntityDamageTakenBy(entity, 0.000001, 3.0);
+						IncreaseEntityDamageTakenBy(entity, 0.000001, 3.0);
 					}
 				}
 				RaidModeTime += 3.0;
@@ -1982,13 +2013,45 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}The Machine Within %N screams: FOR VICTORY",client);
 							Yakuza_Lastman(7);
 						}
+						if(IsFlaggilant(client) || IsClientLeper(client))
+						{
+							if(IsFlaggilant(client))
+								CPrintToChatAll("{crimson}The undying soul %N refuses to ever die.",client);
+							else if(IsClientLeper(client))
+								CPrintToChatAll("{crimson}The King %N cannot stand this any longer..!",client);
+								
+							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+							if(weapon != -1)
+							{
+								Saga_ChargeReduction(client, weapon, 999.9);
+							}
+							Yakuza_Lastman(8);
+						}
+						if(SeaMelee_IsSeaborn(client))
+						{
+							CPrintToChatAll("{crimson}The sea entirely corrupts %N.",client);
+							Yakuza_Lastman(9);
+						}
+						if(Merchant_IsAMerchant(client))
+						{
+							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
+							Yakuza_Lastman(10);
+						}
+						if(Is_Cheesed_Up(client))
+						{
+							CPrintToChatAll("{darkviolet}%N decides to Plasmify himself as a last resort...", client);
+							Yakuza_Lastman(11);
+						}
 						
 						for(int i=1; i<=MaxClients; i++)
 						{
 							if(IsClientInGame(i) && !IsFakeClient(i))
 							{
-								Music_Stop_All(i);
-								SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
+								if(!BlockLastmanMusicRaidboss(i))
+								{
+									Music_Stop_All(i);
+									SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
+								}
 								SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 							}
 						}
@@ -2046,11 +2109,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 		if(!rogue)
 		{
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
+			ForcePlayerLoss();
 		}
 
 		if(killed)
@@ -2349,10 +2408,26 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	if(!setmusicfalse)
 		ZombieMusicPlayed = setmusicfalse;
 
+	float pos2[3];
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	{
+		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
+		int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
+		if(!IsValidEntity(entity_close))
+			continue;
+
+		GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[entity_close], f3_CustomMinMaxBoundingBox[entity_close]))
+			continue;
+			
+		int builder_owner = GetEntPropEnt(entity_close, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, entity_close);
+	}
 //	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	for(int client=1; client<=MaxClients; client++)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
 			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
@@ -2491,20 +2566,11 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 	CheckAlivePlayers();
 }
 
-int XpToLevel(int xp)
-{
-	return RoundToFloor(Pow(xp / 200.0, 0.5));
-}
-int LevelToXp(int lv)
-{
-	return lv * lv * 200;
-}
-
 float XpFloatGive[MAXTF2PLAYERS];
 
-void GiveXP(int client, int xp)
+void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilently = false)
 {
-	if(Waves_InFreeplay())
+	if(Waves_InFreeplay() && !freeplay)
 	{
 		//no xp in freeplay.
 		return;
@@ -2512,12 +2578,15 @@ void GiveXP(int client, int xp)
 
 	float DecimalXp = float(xp);
 
-	DecimalXp *= CvarXpMultiplier.FloatValue;
-	
-	if(DecimalXp >= 10000.0)
+	if(!SetXpAndLevelSilently)
 	{
-		//looks like someone got a bullshit amount of points somehow, ignore!
-		return;
+		DecimalXp *= CvarXpMultiplier.FloatValue;
+		
+		if(DecimalXp >= 10000.0)
+		{
+			//looks like someone got a bullshit amount of points somehow, ignore!
+			return;
+		}
 	}
 	
 	XpFloatGive[client] += DecimalXp;
@@ -2534,13 +2603,14 @@ void GiveXP(int client, int xp)
 	}
 
 	XP[client] += XpGive;
+	Native_ZR_OnGetXP(client, XpGive, 0);
 
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
 	{
 		if(CvarLeveling.BoolValue)
 		{
-			if(Level[client] < STARTER_WEAPON_LEVEL)
+			if(!SetXpAndLevelSilently && Level[client] < STARTER_WEAPON_LEVEL)
 			{
 				static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 				ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
@@ -2557,14 +2627,17 @@ void GiveXP(int client, int xp)
 			{
 				Level[client]++;
 
-				if(Level[client] == STARTER_WEAPON_LEVEL)
+				if(!SetXpAndLevelSilently)
 				{
-					CPrintToChat(client, "%t", "All Weapons Unlocked");
+					if(Level[client] == STARTER_WEAPON_LEVEL)
+					{
+						CPrintToChat(client, "%t", "All Weapons Unlocked");
+					}
+					
+					Store_PrintLevelItems(client, Level[client]);
 				}
-				
-				Store_PrintLevelItems(client, Level[client]);
 			}
-			if(CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
+			if(!SetXpAndLevelSilently && CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
 			{
 				SkillTree_CalcSkillPoints(client);
 				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
@@ -2591,19 +2664,25 @@ void PlayerApplyDefaults(int client)
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
-		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+
+		if(f_BegPlayerToSetRagdollFade[client] != FAR_FUTURE && f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+		{
+			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
+			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+		}
+
+		if(f_BegPlayerR_TeethSet[client] != FAR_FUTURE && f_BegPlayerR_TeethSet[client] < GetGameTime())
+		{
+			f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
+			QueryClientConVar(client, "r_teeth", ConVarCallback_r_teeth);
+		}
+
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
 		if(point_difference > 0)
 		{
-			if(Classic_Mode() || Waves_GetRound() > 59)
-			{
-				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
-			}
-			else
-			{
-				GiveXP(client, point_difference);
-			}
+			//Too much xp given, we have to reduce it by 10x
+			GiveXP(client, point_difference / 5);
 		}
 		
 		i_PreviousPointAmount[client] = PlayerPoints[client];
@@ -2856,6 +2935,7 @@ void ForcePlayerWin()
 	DispatchSpawn(entity);
 	AcceptEntityInput(entity, "RoundWin");
 	RemoveAllCustomMusic();
+	Native_ZR_OnWinTeam(TFTeam_Red);
 }
 
 void ForcePlayerLoss()
@@ -2869,4 +2949,41 @@ void ForcePlayerLoss()
 	AcceptEntityInput(entity, "RoundWin");
 	Music_RoundEnd(entity);
 	RaidBossActive = INVALID_ENT_REFERENCE;
+	Native_ZR_OnWinTeam(TFTeam_Blue);
+}
+
+
+
+stock void SPrintToChat(int client, const char[] message, any ...)
+{
+	SetGlobalTransTarget(client);
+	char buffer[192];
+	VFormat(buffer, sizeof(buffer), message, 3);
+	CPrintToChat(client, "%s%s", STORE_PREFIX, buffer);
+}
+stock void SPrintToChatAll(const char[] message, any ...)
+{
+	char buffer[192];
+	VFormat(buffer, sizeof(buffer), message, 2);
+	CPrintToChatAll("%s%s", STORE_PREFIX, buffer);
+}
+
+
+//IF you disable ingame downloads, it will download all these files nontherless!
+void ZR_FastDownloadForce()
+{
+	//do not download!!
+	if(FileNetwork_Enabled())
+		return;
+
+	PrecacheSharedDarkestMusic();
+	PrecacheTwirlMusic();
+	SeaBornMusicDo();
+	PurnellMusicOst();
+	PrecacheBlitzMusic();
+	SoldineKitDownload();
+	ZealotMusicDownload();
+	YakuzaMusicDownload();
+	FullmoonDownload();
+	Cheese_PrecacheMusic();
 }

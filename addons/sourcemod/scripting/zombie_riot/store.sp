@@ -2,6 +2,9 @@
 #pragma newdecls required
 
 #define SELL_AMOUNT 0.9
+bool PapPreviewMode[MAXTF2PLAYERS];
+float CDDisplayHint_LoadoutStore[MAXTF2PLAYERS];
+float CDDisplayHint_LoadoutConfirmAuto[MAXTF2PLAYERS];
 
 enum struct ItemInfo
 {
@@ -78,7 +81,7 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
-	char WeaponSoundOverrideString[255];
+//	char WeaponSoundOverrideString[255];
 	char WeaponHudExtra[16];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
@@ -255,8 +258,8 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sweapon_sound_index_override", prefix);
 		this.WeaponSoundIndexOverride	= view_as<bool>(kv.GetNum(buffer, 0));
 
-		Format(buffer, sizeof(buffer), "%ssound_weapon_override_string", prefix);
-		kv.GetString(buffer, this.WeaponSoundOverrideString, sizeof(buffer));
+	//	Format(buffer, sizeof(buffer), "%ssound_weapon_override_string", prefix);
+	//	kv.GetString(buffer, this.WeaponSoundOverrideString, sizeof(buffer));
 
 		Format(buffer, sizeof(buffer), "%smodel_weapon_override", prefix);
 		kv.GetString(buffer, this.WeaponModelOverride, sizeof(buffer));
@@ -298,12 +301,6 @@ enum struct ItemInfo
 		else
 		{
 			this.WeaponModelIndexOverride = 0;
-		}
-
-		if(this.WeaponSoundOverrideString[0])
-		{
-			//precache the sound!
-			PrecacheSound(this.WeaponSoundOverrideString, true);
 		}
 	
 		
@@ -464,6 +461,7 @@ enum struct Item
 	char Tags[256];
 	char Author[128];
 	bool NoKit;
+	bool ForceAllowWithKit; //For wrenches.
 	
 	ArrayList ItemInfos;
 	
@@ -538,7 +536,7 @@ static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 //static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
-static KeyValues StoreBalanceLog;
+//static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
 static ArrayList ChoosenTags[MAXTF2PLAYERS];
 static bool UsingChoosenTags[MAXTF2PLAYERS];
@@ -727,7 +725,7 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 	return 0.0;
 }
 
-stock float CooldownReductionAmount(int client)
+stock float CooldownReductionAmount()
 {
 	float Cooldown = 1.0;
 	if(MazeatItemHas())
@@ -737,7 +735,7 @@ stock float CooldownReductionAmount(int client)
 	return Cooldown;
 }
 
-void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1)
+void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1, bool ignoreCooldown = false)
 {
 	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
 	if(weapon != -1)
@@ -747,7 +745,8 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 			static Item item;
 			StoreItems.GetArray(StoreWeapon[weapon], item);
 #if defined ZR
-			cooldown *= CooldownReductionAmount(client);
+			if(!ignoreCooldown)
+				cooldown *= CooldownReductionAmount();
 #endif
 			
 			switch(what_slot)
@@ -787,7 +786,7 @@ void Store_OpenItemPage(int client)
 	else
 	{
 		SetGlobalTransTarget(client);
-		CPrintToChat(client,"{red}[ZR] {yellow}%t", "Cant Display");
+		SPrintToChat(client,"%t", "Cant Display");
 	}
 }
 
@@ -959,7 +958,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 }
 
 // Returns the top most weapon (or -1 for no change)
-int Store_CycleItems(int client, int slot)
+int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 {
 	char buffer[36];
 	
@@ -982,7 +981,8 @@ int Store_CycleItems(int client, int slot)
 				if(previousIndex != -1)
 				{
 					// Replace this weapon with the previous slot (1 <- 2)
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(ChangeWeapon)
+						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
 					if(topWeapon == -1)
 						topWeapon = weapon;
 				}
@@ -995,7 +995,8 @@ int Store_CycleItems(int client, int slot)
 	if(firstWeapon != -1)
 	{
 		// First to Last (7 <- 0)
-		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+		if(ChangeWeapon)
+			SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
 	}
 
 	return topWeapon;
@@ -1004,6 +1005,7 @@ int Store_CycleItems(int client, int slot)
 void Store_ConfigSetup()
 {
 	ClearAllTempAttributes();
+	Zero(CDDisplayHint_LoadoutStore);
 	delete StoreTags;
 	StoreTags = new ArrayList(ByteCountToCells(32));
 
@@ -1020,7 +1022,7 @@ void Store_ConfigSetup()
 		delete StoreItems;
 	}
 	
-	delete StoreBalanceLog;
+//	delete StoreBalanceLog;
 	StoreItems = new ArrayList(sizeof(Item));
 	
 	char buffer[PLATFORM_MAX_PATH];
@@ -1049,9 +1051,9 @@ void Store_ConfigSetup()
 
 	delete kv;
 
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
-	StoreBalanceLog = new KeyValues("UsageLog");
-	StoreBalanceLog.ImportFromFile(buffer);
+//	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
+//	StoreBalanceLog = new KeyValues("UsageLog");
+//	StoreBalanceLog.ImportFromFile(buffer);
 }
 
 static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, bool rogueSell, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
@@ -1059,7 +1061,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	int cost = hiddenType == 2 ? 0 : kv.GetNum("cost", -1);
 	bool isItem = cost >= 0;
 	
-	char buffer[128], buffers[6][32];
+	char buffer[128], buffers[12][32];
 
 	Item item;
 	item.Section = section;
@@ -1117,6 +1119,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	item.IgnoreSlots = view_as<bool>(kv.GetNum("ignore_equip_region"));
 	item.RogueAlwaysSell = view_as<bool>(kv.GetNum("rogue_always_sell", rogueSell ? 1 : 0));
 	item.NoKit = view_as<bool>(kv.GetNum("nokit", noKits ? 1 : 0));
+	item.ForceAllowWithKit = view_as<bool>(kv.GetNum("forcewithkits"));
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
@@ -1236,8 +1239,7 @@ bool Store_CanPapItem(int client, int index)
 	}
 	return false;
 }
-
-void Store_PackMenu(int client, int index, int entity, int owner)
+void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, bool Preview = false)
 {
 	if(!IsValidClient(owner))
 		return;
@@ -1247,12 +1249,18 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 		
 	if(index > 0)
 	{
+		PapPreviewMode[client] = Preview;
 		static Item item;
 		StoreItems.GetArray(index, item);
-		if(item.Owned[client])
+		if(item.Owned[client] || Preview)
 		{
 			ItemInfo info;
-			if(item.GetItemInfo(item.Owned[client] - 1, info))
+			int OwnedItemIndex = item.Owned[client];
+			if(Preview)
+			{
+				OwnedItemIndex = owneditemlevel;
+			}
+			if(item.GetItemInfo(OwnedItemIndex - 1, info))
 			{
 				int count = info.PackBranches;
 				if(count > 0)
@@ -1270,7 +1278,12 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 					}
 					SetGlobalTransTarget(client);
 					char buf[64];
-					if(StarterCashMode[client])
+					if(PapPreviewMode[client])
+					{
+						Format(buf, sizeof(buf), "%t", "Preview Mode Pap");
+						cash = 999999;
+					}
+					else if(StarterCashMode[client])
 						Format(buf, sizeof(buf), "%t", "Loadout Credits", cash);
 					else
 						Format(buf, sizeof(buf), "%t", "Credits", cash);
@@ -1290,23 +1303,34 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 					}
 					What in the god damn?!
 					*/
-					int userid = (client == owner || owner == -1) ? -1 : GetClientUserId(owner);
+					int userid = EntIndexToEntRef(client);
+					if(IsValidClient(owner))
+					{
+						userid = EntIndexToEntRef(owner);
+					}
+					char dataFirst[64];
+					FormatEx(dataFirst, sizeof(dataFirst), "%i;%i;%i", index, (OwnedItemIndex), userid);
 					
 					for(int i = skip; i < count; i++)
 					{
-						if(item.GetItemInfo(item.Owned[client] + i, info) && info.Cost)
+						if(item.GetItemInfo(OwnedItemIndex + i, info) && info.Cost)
 						{
-							ItemCostPap(client, item, info, info.Cost);
+							ItemCostPap(item, info.Cost);
 
-							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, item.Owned[client] + i, entity, userid);
+//							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, OwnedItemIndex + i, entity, userid);
+							FormatEx(data, sizeof(data), "%i;%i;%i", index, (OwnedItemIndex + i), userid);
 							FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
 							menu.AddItem(data, buffer, cash < info.Cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 							if(info.Desc[0])
 							{
-								info.Desc = TranslateItemDescription(client, info.Desc, info.Rogue_Desc);
-								StrCat(info.Desc, sizeof(info.Desc), "\n ");
-								menu.AddItem("", info.Desc, ITEMDRAW_DISABLED);
+							//	info.Desc = TranslateItemDescription(client, info.Desc, info.Rogue_Desc);
+							//	StrCat(info.Desc, sizeof(info.Desc), "\n ");
+								char DescWeapon[64];
+								char DescWeaponFuse[128];
+								Format(DescWeaponFuse, sizeof(DescWeaponFuse), "%s-explain-%s", dataFirst,data);
+								FormatEx(DescWeapon, sizeof(DescWeapon), "%t\n ", "Describe This Weapon");
+								menu.AddItem(DescWeaponFuse, DescWeapon, ITEMDRAW_DEFAULT);
 							}
 						}
 					}
@@ -1343,22 +1367,80 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			ResetStoreMenuLogic(client);
 			char buffer[64];
+
 			menu.GetItem(choice, buffer, sizeof(buffer));
+			if(StrContains(buffer, "-explain-", false) != -1)
+			{
+				char valuesChar[2][64];
+				ExplodeString(buffer, "-explain-", valuesChar, sizeof(valuesChar), sizeof(valuesChar[]));
+				//remove explain from text.
+
+				int values[3];
+				ExplodeStringInt(valuesChar[0], ";", values, sizeof(values));
+
+				int ValuesDisplay[3];
+				ExplodeStringInt(valuesChar[1], ";", ValuesDisplay, sizeof(ValuesDisplay));
+				
+				static Item item;
+				StoreItems.GetArray(values[0], item);
+				int OwnedItemIndex = ValuesDisplay[1];
+
+				if(OwnedItemIndex)
+				{
+					ItemInfo info;
+					if(item.GetItemInfo(ValuesDisplay[1], info) && info.Cost)
+					{ 	
+						//This code is ass
+						SPrintToChat(client, "%s:",TranslateItemName(client, item.Name, info.Custom_Name));
+						char bufferSizeSplit[512];
+						char DescDo[256];
+						Format(DescDo, sizeof(DescDo), "%s", info.Desc);
+						char DescDo2[256];
+						Format(DescDo2, sizeof(DescDo2), "%s", info.Rogue_Desc);
+						bufferSizeSplit = TranslateItemDescription_Long(client, DescDo, DescDo2);
+						char Display1[240];
+						char Display2[240];
+						Format(Display1, sizeof(Display1), "%s", bufferSizeSplit);
+						if(strlen(bufferSizeSplit) > 240) //If 240 exists, split.
+						{
+							Format(Display2, sizeof(Display2), "%s", bufferSizeSplit[239]);
+							CPrintToChat(client, "%s%s-", STORE_COLOR ,Display1);
+						}
+						else
+							CPrintToChat(client, "%s%s", STORE_COLOR ,Display1);
+
+						if(Display2[0])
+							CPrintToChat(client, "%s%s", STORE_COLOR ,Display2);
+					}
+				}
+
+				Store_PackMenu(client, values[0], values[1], EntRefToEntIndex(values[2]), PapPreviewMode[client]);
+				return 0;
+			}
 			
-			int values[4];
+			int values[3];
 			ExplodeStringInt(buffer, ";", values, sizeof(values));
 			
 			static Item item;
 			StoreItems.GetArray(values[0], item);
-			if(item.Owned[client])
+			int OwnedItemIndex = item.Owned[client];
+			if(PapPreviewMode[client]) //so it atelast displays
+				OwnedItemIndex = values[1];
+
+			if(OwnedItemIndex)
 			{
 				int owner = -1;
-				
+
 				ItemInfo info;
 				if(item.GetItemInfo(values[1], info) && info.Cost)
-				{
-					ItemCostPap(client, item, info, info.Cost);
-					if((CurrentCash-CashSpent[client]) >= info.Cost)
+				{ 	
+					ItemCostPap(item, info.Cost);
+					if(PapPreviewMode[client])
+					{
+						//If client clicks on anything, view that pap instead.
+						values[1] = values[1] + 1;
+					}
+					else if((CurrentCash-CashSpent[client]) >= info.Cost)
 					{
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
@@ -1418,13 +1500,13 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
-						owner = GetClientOfUserId(values[3]);
+						owner = EntRefToEntIndex(values[2]);
 						if(IsValidClient(owner))
 							Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
 					}
 				}
 				
-				Store_PackMenu(client, values[0], values[2], owner);
+				Store_PackMenu(client, values[0], values[1], EntRefToEntIndex(values[2]), PapPreviewMode[client]);
 			}
 		}
 	}
@@ -1518,12 +1600,12 @@ void Store_Reset()
 		CashSpentGivePostSetup[c] = 0;
 		CashSpentGivePostSetupWarning[c] = false;
 	}
-	if(StoreBalanceLog)
-	{
-		char buffer[PLATFORM_MAX_PATH];
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
-		StoreBalanceLog.ExportToFile(buffer);
-	}
+//	if(StoreBalanceLog)
+//	{
+//		char buffer[PLATFORM_MAX_PATH];
+//		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
+//		StoreBalanceLog.ExportToFile(buffer);
+//	}
 }
 
 /*bool Store_HasAnyItem(int client)
@@ -1691,7 +1773,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = 0;
 					}
 					item.RogueBoughtRecently[client] += 1;
-					item.BuyWave[client] = Waves_GetRound();
+					item.BuyWave[client] = ZR_Waves_GetRound();
 					if(info.NoRefundWanted)
 					{
 						item.BuyWave[client] = -1;
@@ -1700,8 +1782,8 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					if(!item.BoughtBefore[client])
 					{
 						item.BoughtBefore[client] = true;
-						StoreBalanceLog.Rewind();
-						StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+					//	StoreBalanceLog.Rewind();
+					//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 					}
 					StoreItems.SetArray(a, item);
 					return;
@@ -1756,22 +1838,25 @@ void Store_EquipSlotCheck(int client, Item mainItem)
 		{
 			subItem.GetItemInfo(0, info);
 			
-			if(mainItem.ParentKit)
+			if(!subItem.ForceAllowWithKit && !mainItem.ForceAllowWithKit)
 			{
-				if(subItem.NoKit || (!subItem.ChildKit && info.Classname[0] && TF2_GetClassnameSlot(info.Classname) <= TFWeaponSlot_Melee))
+				if(mainItem.ParentKit)
 				{
-					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
-					Store_Unequip(client, i);
-					continue;
+					if(subItem.NoKit || (!subItem.ChildKit && info.Classname[0] && TF2_GetClassnameSlot(info.Classname) <= TFWeaponSlot_Melee))
+					{
+						PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
+						Store_Unequip(client, i);
+						continue;
+					}
 				}
-			}
-			else if(mainItem.NoKit || isWeapon)
-			{
-				if(subItem.ParentKit)
+				else if(mainItem.NoKit || isWeapon)
 				{
-					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
-					Store_Unequip(client, i);
-					continue;
+					if(subItem.ParentKit)
+					{
+						PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
+						Store_Unequip(client, i);
+						continue;
+					}
 				}
 			}
 
@@ -1990,7 +2075,7 @@ public void ReShowSettingsHud(int client)
 	menu2.AddItem("-85", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed increase");
-	if(b_TauntSpeedIncreace[client])
+	if(b_TauntSpeedIncrease[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -2000,7 +2085,11 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-71", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	if(!zr_interactforcereload.BoolValue)
+		FormatEx(buffer, sizeof(buffer), "%t", "Interact With Reload");
+	else
+		FormatEx(buffer, sizeof(buffer), "%t", "Interact With Spray");
+
 	if(b_InteractWithReload[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
@@ -2031,7 +2120,16 @@ public void ReShowSettingsHud(int client)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
-	menu2.AddItem("-91", buffer);
+	FormatEx(buffer, sizeof(buffer), "%t", "Disable Status Lastmann Music");
+	if(b_LastManDisable[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-96", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Fix First Sound Play Manually");
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
@@ -2480,13 +2578,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -71: 
 				{
-					if(b_TauntSpeedIncreace[client])
+					if(b_TauntSpeedIncrease[client])
 					{
-						b_TauntSpeedIncreace[client] = false;
+						b_TauntSpeedIncrease[client] = false;
 					}
 					else
 					{
-						b_TauntSpeedIncreace[client] = true;
+						b_TauntSpeedIncrease[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}
@@ -2532,6 +2630,20 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 						b_DisableSetupMusic[client] = true;
 					}
 					SetGlobalTransTarget(client);
+					ReShowSettingsHud(client);
+				}
+				case -96: 
+				{
+					if(b_LastManDisable[client])
+					{
+						b_LastManDisable[client] = false;
+					}
+					else
+					{
+						b_LastManDisable[client] = true;
+					}
+					SetGlobalTransTarget(client);
+					PrintToChat(client,"%t", "Disable Status Lastmann Music Explain");
 					ReShowSettingsHud(client);
 				}
 				case -91: 
@@ -2643,9 +2755,9 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!unlock || !item.Hidden) && (!unlock || !item.RogueAlwaysSell)))
+		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!unlock || ResetStore || !item.Hidden) && (!unlock || ResetStore || !item.RogueAlwaysSell)))
 		{
-			if(item.GregOnlySell == 2)	// We always sell this if unbought
+			if(item.GregOnlySell == 2 && ResetStore != 1)	// We always sell this if unbought
 			{
 				float ApplySale = 0.7;
 				if(override >= 0.0)
@@ -2782,7 +2894,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "{green}Recovered at -%d%% off:{palegreen}", RoundFloat((1.0 - override) * 100.0));
+				Format(buffer, sizeof(buffer), "{green}Recovered at -%d％ off:{palegreen}", RoundFloat((1.0 - override) * 100.0));
 			}
 
 			for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
@@ -3016,6 +3128,28 @@ static void MenuPage(int client, int section)
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 		return;
 	
+	if(Waves_Started())
+	{
+		if(CashSpentTotal[client] <= 0)
+		{
+			CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
+		}
+		else if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
+		{
+			StarterCashMode[client] = false; //confirm automatically.
+		}
+		if(CDDisplayHint_LoadoutStore[client] < GetGameTime() && StarterCashMode[client])
+		{
+			SetGlobalTransTarget(client);
+			SPrintToChat(client, "%t", "Loadout In Store");
+			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 30.0;
+		}
+	}
+	else
+	{
+		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
+		//this is done because new players are confused often.
+	}
 	SetGlobalTransTarget(client);
 	
 	Menu menu;
@@ -3078,12 +3212,8 @@ static void MenuPage(int client, int section)
 			int level = item.Owned[client] - 1;
 			if(item.ParentKit || level < 0 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 				level = 0;
-			
+
 			item.GetItemInfo(level, info);
-			
-			level = item.Owned[client];
-			if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
-				level = 1;
 			
 			char buf[64];
 			if(StarterCashMode[client])
@@ -3092,79 +3222,39 @@ static void MenuPage(int client, int section)
 				Format(buf, sizeof(buf), "%t", "Credits", cash);
 
 			SetGlobalTransTarget(client);
-			ItemInfo info2;
-			if(item.GetItemInfo(level, info2))
+			if(NPCOnly[client] == 1)
 			{
-				if(NPCOnly[client] == 1)
+				if(i_SpecialGrigoriReplace == 0)
 				{
-					if(i_SpecialGrigoriReplace == 0)
+					if(Rogue_Mode())
 					{
-						if(Rogue_Mode())
-						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");	
-						}
+						FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					}
 					else
 					{
-						if(Rogue_Mode())
-						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");	
-						}						
+						FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					}
-				}
-				else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
-				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%s\n \n%s \n<%t>", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
 				}
 				else
 				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n%t\n%s  \n<%t>", "TF2: Zombie Riot", buf, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name),"Can Be Pack-A-Punched");
+					if(Rogue_Mode())
+					{
+						FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
+					}
 				}
+			}
+			else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
+			{
+				FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n \n%s ", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 			}
 			else
 			{
-				if(NPCOnly[client] == 1)
-				{
-					if(i_SpecialGrigoriReplace == 0)
-					{
-						if(Rogue_Mode())
-						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
-						}
-					}
-					else
-					{
-						if(Rogue_Mode())
-						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 10%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%s\n \n%s ", "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
-						}
-					}
-				}
-				else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
-				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n \n%s ", "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
-				}
-				else
-				{
-					FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n%t\n%s ", "TF2: Zombie Riot", buf, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
-				}				
-			}
+				FormatEx(buffer, sizeof(buffer), "%t\n \n%s\n%t\n%s ", "TF2: Zombie Riot", buf, "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
+			}				
 			
 
 			//		, TranslateItemName(client, item.Name) , item.PackCost > 0 ? "<Packable>" : ""
@@ -3266,7 +3356,7 @@ static void MenuPage(int client, int section)
 					menu.AddItem(buffer2, buffer, style);	// 0
 					Repeat_Filler ++;
 					
-					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
+					bool fullSell = (item.BuyWave[client] == ZR_Waves_GetRound());
 					bool canSell = (!item.ChildKit && item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
 					if(item.GregOnlySell == 2)
 					{
@@ -3323,9 +3413,19 @@ static void MenuPage(int client, int section)
 						Repeat_Filler ++;
 						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 					}
+					
+					level = item.Owned[client];
+					if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
+						level = 1;
 
+					bool CanBePapped = false;
+					ItemInfo info2;
+					if(item.GetItemInfo(level, info2))
+						CanBePapped = true;
+					
 					bool tinker = Blacksmith_HasTinker(client, section);
-					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
+					
+					if(CanBePapped)
 					{
 						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
 						{
@@ -3336,12 +3436,30 @@ static void MenuPage(int client, int section)
 							}
 							else
 							{
+								Repeat_Filler ++;
+								break;
+							}
+						}
+						FormatEx(buffer, sizeof(buffer), "%t", "View PAP Upgrades");
+						menu.AddItem(buffer2, buffer);
+					}
+					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
+					{
+						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
+						{
+							if(Repeat_Filler < 5)
+							{
+								Repeat_Filler ++;
+								menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
+							}
+							else
+							{
+								Repeat_Filler ++;
 								break;
 							}
 						}
 						FormatEx(buffer, sizeof(buffer), "%t", tinker ? "View Modifiers" : (info.ExtraDesc[0] ? "Extra Description" : "Tags & Author"));
 
-						
 						menu.AddItem(buffer2, buffer);
 					}
 				}
@@ -3365,11 +3483,11 @@ static void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%ss\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
+			menu.SetTitle("%t\n%t\n%t\n \n%ss\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20％ off here!", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else if(UsingChoosenTags[client])
 		{
-			if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
+			if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
 			{
 				menu.SetTitle("%t\n%t\n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", buf);
 			}
@@ -3378,7 +3496,7 @@ static void MenuPage(int client, int section)
 				menu.SetTitle("%t\n%t\n%s\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", buf, "Store Discount");
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
+		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%s\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", buf, TranslateItemName(client, item.Name, info.Custom_Name));
 		}
@@ -3402,13 +3520,13 @@ static void MenuPage(int client, int section)
 		if(NPCOnly[client] == 1)
 		{
 			if(i_SpecialGrigoriReplace == 0)
-				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", buf);
+				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20％ off here!", buf);
 			else
 			{
-				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "The World Machine's Items","All Items are 20%% off here!", buf);
+				menu.SetTitle("%t\n%t\n%t\n \n%s\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "The World Machine's Items","All Items are 20％ off here!", buf);
 			}
 		}
-		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
+		else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
 		{
 			if(UsingChoosenTags[client])
 			{
@@ -3698,7 +3816,7 @@ static void MenuPage(int client, int section)
 					}
 					else if(!item.WhiteOut && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
+						FormatEx(buffer, sizeof(buffer), "%s [%.0f％]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 						style = ITEMDRAW_DISABLED;
 					}
 					else
@@ -4212,6 +4330,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					{
 						XP[client] = LevelToXp(5);
 						Level[client] = 0; //Just incase.
+						Native_ZR_OnGetXP(client, XP[client], 1);
 						GiveXP(client, 0);
 					}
 					case -24:
@@ -4429,7 +4548,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = 0;
 									item.Sell[client] = 0;
 								}
-								item.BuyWave[client] = Waves_GetRound();
+								item.BuyWave[client] = ZR_Waves_GetRound();
 								item.Equipped[client] = false;
 
 								if(item.GregOnlySell == 2)
@@ -4439,8 +4558,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(!item.BoughtBefore[client])
 								{
 									item.BoughtBefore[client] = true;
-									StoreBalanceLog.Rewind();
-									StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+								//	StoreBalanceLog.Rewind();
+								//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 								}
 								
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -4490,7 +4609,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = Waves_GetRound();
+								item.BuyWave[client] = ZR_Waves_GetRound();
 								if(item.GregOnlySell == 2)
 								{
 									item.Sell[client] = 0;
@@ -4505,8 +4624,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(!item.BoughtBefore[client])
 								{
 									item.BoughtBefore[client] = true;
-									StoreBalanceLog.Rewind();
-									StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+								//	StoreBalanceLog.Rewind();
+								//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 								}
 								
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -4545,7 +4664,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							item.BuyPrice[client] = info.Cost;
 							item.RogueBoughtRecently[client] += 1;
 							item.Sell[client] = ItemSell(base, info.Cost);
-							item.BuyWave[client] = Waves_GetRound();
+							item.BuyWave[client] = ZR_Waves_GetRound();
 							if(item.GregOnlySell == 2)
 							{
 								item.Sell[client] = 0;
@@ -4558,8 +4677,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							if(!item.BoughtBefore[client])
 							{
 								item.BoughtBefore[client] = true;
-								StoreBalanceLog.Rewind();
-								StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+							//	StoreBalanceLog.Rewind();
+							//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 							}
 							
 							StoreItems.SetArray(index, item);
@@ -4644,7 +4763,23 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				{
 					TryAndSellOrUnequipItem(index, item, client, false, true);
 				}
-				case 4:
+				case 4:	
+				{
+
+					item.GetItemInfo(0, info);
+					int level = item.Owned[client];
+					if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
+						level = 1;
+
+					//can be papped ? See if yes
+					ItemInfo info2;
+					if(item.GetItemInfo(level, info2))
+					{
+						Store_PackMenu(client, index, level, client, true);
+						return 0;
+					}
+				}
+				case 5:
 				{
 					item.GetItemInfo(0, info);
 
@@ -5217,7 +5352,7 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
-	
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
@@ -5240,6 +5375,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 	if(removeWeapons)
 	{
+		b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 		TF2_RegeneratePlayer(client);
 		Manual_Impulse_101(client, health);
 		return;
@@ -5594,6 +5730,18 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
 					
+					if(!StrContains(info.Classname, "tf_weapon_crossbow"))
+					{
+						//Fix crossbow infinite reload issue
+						//it messes up Zr balance heavily and causes other bugs.
+						//Shouldnt apply to support ones.
+						if(!info.IsSupport && !info.IsAlone)
+						{
+							CrossbowGiveDhook(entity, false);
+						}
+						else
+							CrossbowGiveDhook(entity, true);
+					}
 					HidePlayerWeaponModel(client, entity, true);
 
 					//new item bought, make sure to update the current order and stuff of weapon changing client
@@ -5766,7 +5914,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] 				= class;
 					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
-					Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
+				//	Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;
@@ -5830,13 +5978,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	else
 	{
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
-		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_fireaxe" };
-		
+		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench" };
 		entity = CreateEntityByName(Classnames[CurrentClass[client]]);
 
 		if(entity > MaxClients)
 		{
-			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 194, 6 };
+			static const int Indexes[] = { 196, 0, 3, 196, 1, 8, 5, 2, 194, 30758 };
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
 
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
@@ -6151,6 +6298,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Saga_Enable(client, entity);
 //		Enable_WeaponBoard(client, entity);
 		Enable_Casino(client, entity);
+		Enable_BuffPotion(client, entity);
 		Enable_Ludo(client, entity);
 		Enable_Rapier(client, entity);
 		Enable_Mlynar(client, entity);
@@ -6179,6 +6327,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		FullMoon_Enable(client, entity);
 		Enable_RedBladeWeapon(client, entity);
 		Enable_Gravaton_Wand(client, entity);
+		Enable_Reiuji_Wand(client, entity);
 		Enable_Dimension_Wand(client, entity);
 		Enable_Management_Hell_Hoe(client, entity);
 		Enable_Management_GrenadeHud(client, entity);
@@ -6192,7 +6341,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
-		Ulpianus_Enable(client, entity);
+		Ulpianus_Enable(entity);
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
@@ -6202,6 +6351,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Walter_Enable(client, entity);
 		Enable_CastleBreakerWeapon(client, entity);
 		Purnell_Enable(client, entity);
+		Medigun_SetModeDo(client, entity);
+		Cheese_Enable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
@@ -6440,9 +6591,43 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 	return buffer;
 }
 
+char[] TranslateItemDescription_Long(int client, const char Desc[256], const char Rogue_Desc[256])
+{
+	static int ServerLang = -1;
+	if(ServerLang == -1)
+		ServerLang = GetServerLanguage();
+	
+	char buffer[512]; 
+
+	if(Rogue_Mode() && Rogue_Desc[0])
+	{
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Rogue_Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Rogue_Desc, client);
+		}
+	}
+	else
+	{
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+		}
+	}
+
+	return buffer;
+}
+
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && Waves_InSetup());
+	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && !Construction_Mode() && Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -6451,7 +6636,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * Waves_GetRound();
+	cost += item.CostPerWave * ZR_Waves_GetRound();
 
 	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 	{
@@ -6543,7 +6728,7 @@ static int ItemSell(int base, int discount)
 	return RoundToCeil(cost * ratio);
 }
 
-static stock void ItemCostPap(int client, const Item item, const ItemInfo info, int &cost)
+static stock void ItemCostPap(const Item item, int &cost)
 {
 	if(Rogue_Mode())
 	{
@@ -6706,7 +6891,7 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 
 void Store_TryRefreshMenu(int client)
 {
-	if(LastStoreMenu[client] && LastStoreMenu_Store[client] && (LastStoreMenu[client] + 0.5) < GetGameTime())
+	if(LastStoreMenu[client] && LastStoreMenu_Store[client] && (LastStoreMenu[client] + 3.0) < GetGameTime())
 	{
 		MenuPage(client, CurrentMenuItem[client]);
 	}
@@ -7081,7 +7266,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			{
 
 				int sell = item.Sell[client];
-				if(item.BuyWave[client] == Waves_GetRound())
+				if(item.BuyWave[client] == ZR_Waves_GetRound())
 					sell = item.BuyPrice[client];
 				
 				if(sell) //make sure it even can be sold.

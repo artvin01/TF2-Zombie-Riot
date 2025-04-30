@@ -6,12 +6,9 @@
 #define Silvester_LASER_THICKNESS 25
 
 
-static int i_SaidLineAlready[MAXENTITIES];
-static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
+
 static bool b_SilvLine[MAXENTITIES];
 static bool b_SilvesterAttackSame[MAXENTITIES];
 
@@ -23,16 +20,7 @@ static const char g_DeathSounds[][] = {
 static char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
-static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
-};
+
 
 static const char g_MissAbilitySound[][] = {
 	"vo/soldier_negativevocalization01.mp3",
@@ -114,7 +102,7 @@ void Silvester_OnMapStart_NPC()
 static void ClotPrecache()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
@@ -151,11 +139,6 @@ methodmap Silvester < CClotBody
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
-	property float m_flCurrentlySpeedRage
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
-	}
 	property float m_flSilvesterSlicerCD
 	{
 		public get()							{ return fl_RangedSpecialDelay[this.index]; }
@@ -167,6 +150,11 @@ methodmap Silvester < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AttackHappens_2[this.index] = TempValueForProperty; }
 	}
 
+	property float m_flInTeleportLogic
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	property float f_SilvesterMeleeSliceHappening
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
@@ -259,7 +247,7 @@ methodmap Silvester < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
 	
@@ -327,7 +315,7 @@ methodmap Silvester < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		//IDLE
-		npc.m_flCurrentlySpeedRage = 0.0;
+		npc.m_flInTeleportLogic = 0.0;
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -354,10 +342,6 @@ methodmap Silvester < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		
 		b_angered_twice[npc.index] = false;
-		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
-		{
-			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
-		}
 		
 		if(StrContains(data, "wave_30") != -1)
 		{
@@ -519,7 +503,6 @@ methodmap Silvester < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		Nemal_SilvesterApplyEffects(npc.index, false);
-		SilvesterEarsApply(npc.index);
 		
 		return npc;
 	}
@@ -588,6 +571,116 @@ static void Internal_ClotThink(int iNPC)
 			b_NpcIsInvulnerable[npc.index] = false;
 			npc.m_flSilvesterDelayStart = 0.0;
 			npc.m_bisWalking = true;
+		}
+		return;
+	}
+	if(npc.m_flInTeleportLogic)
+	{
+		if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+		{
+			return;
+		}
+
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+		if(npc.m_flSilvesterSlicerHappening)
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			return;
+		}
+		if(b_NpcIsInvulnerable[npc.index])
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			return;
+		}
+		
+		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
+		if(!IsValidEntity(allynpc.index)) //DEAD!!
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			npc.m_flChangeTargetsSilvester -= 3.0;
+			CPrintToChatAll("{gold}Silvester{default}: Oh damn She is already gone...");
+			return;
+		}
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		float WorldSpaceVec2[3]; WorldSpaceCenter(allynpc.index, WorldSpaceVec2);
+		float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
+		if(flDistanceToTarget < (400.0 * 400.0))
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			npc.m_flChangeTargetsSilvester -= 3.0;
+			return;
+			//too close, cancel.
+		}
+		int r = 150;
+		int g = 150;
+		int b = 0;
+		int a = 200;
+		
+		spawnRing(npc.index, 75.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+		spawnRing(npc.index, 75.0 * 2.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+		spawnRing(npc.index, 75.0 * 2.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+
+		spawnRing(allynpc.index, 75.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+		spawnRing(allynpc.index, 75.0 * 2.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+		spawnRing(allynpc.index, 75.0 * 2.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+
+		//Teleport to nemal with animation
+		if(npc.m_flInTeleportLogic < (GetGameTime(npc.index))) //teleport and stuff
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			
+			ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+			ParticleEffectAt(WorldSpaceVec2, "teleported_blue", 0.5);
+			npc.PlayDeathSound();	
+			TeleportEntity(npc.index, WorldSpaceVec2);
+			//go to sister!
+		}
+		else if(npc.m_flInTeleportLogic < (GetGameTime(npc.index) + 1.3)) //last second
+		{
+			if(npc.m_iChanged_WalkCycle != 21)
+			{
+				npc.m_bisWalking = false;
+				NPC_StopPathing(npc.index);
+				npc.m_iChanged_WalkCycle = 21;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("taunt_peace_medic");
+				npc.SetCycle(0.02);
+			}
+		}
+		else
+		{
+			if(npc.m_iChanged_WalkCycle != 20)
+			{
+				npc.m_bisWalking = false;
+				NPC_StopPathing(npc.index);
+				npc.m_iChanged_WalkCycle = 20;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("taunt_borrowed_bones");
+				npc.SetCycle(0.03);
+				switch(GetRandomInt(0,4 * 2)) //have half the chance to say nothing
+				{
+					case 0:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Hold on {lightblue}Nemal{default} i'm coming!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Oy oy oy! Cant attack her like that! I'll crush you!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: {lightblue}Nemal{default}... {darkblue}Waldch{default}... you both are the same i swear!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Rahhh, ill teleport to you wait.");
+					}
+					case 4:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Here i go !");
+					}
+				}
+			}
 		}
 		return;
 	}
@@ -742,12 +835,18 @@ static void Internal_ClotThink(int iNPC)
 			b_SilvesterAttackSame[npc.index] = false;
 			//Get the next closest target!
 			static float flPos[3]; 
-			if(npc.m_flSilvesterChangeTargets >= 3.0)
+			if(npc.m_flSilvesterChangeTargets >= 4.0)
 			{
 				GetEntPropVector(allynpc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 				//only get nemals target every so often.
 				npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,700.0,_,_,allynpc.m_iTarget, flPos);
 				npc.m_flSilvesterChangeTargets += 1.0;
+				if(!ForceRedo)
+				{
+					npc.m_flInTeleportLogic = GetGameTime(npc.index) + 3.0;
+					ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.0);
+				}
+				npc.m_flChangeTargetsSilvester += 3.0;
 			}
 			else
 			{
@@ -762,8 +861,14 @@ static void Internal_ClotThink(int iNPC)
 				//looks like silvester found no target...
 				//Did we try to get a target near nemal?
 				//if we did. then force targetting a closet eneemy from nemal anyways.
-				if(npc.m_flSilvesterChangeTargets >= 4.0)
+				if(npc.m_flSilvesterChangeTargets >= 5.0)
 				{
+					if(!ForceRedo)
+					{
+						npc.m_flInTeleportLogic = GetGameTime(npc.index) + 3.0;
+						ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.0);
+					}
+					npc.m_flChangeTargetsSilvester += 3.0;
 					npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,_/*allynpc.m_iTarget*/, flPos);
 					npc.m_flSilvesterChangeTargets = 5.0;
 					WasForcingSameTarget = true;
@@ -771,7 +876,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 			}
 			//We didnt force to target the same guy as nemal, we allow normal attacking.
-			if(!WasForcingSameTarget && npc.m_flSilvesterChangeTargets >= 4.0)
+			if(!WasForcingSameTarget && npc.m_flSilvesterChangeTargets >= 5.0)
 			{
 				npc.m_flSilvesterChangeTargets = 0.0;
 			}
@@ -882,24 +987,6 @@ static void Internal_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget > GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 13.0) 
-		{
-			//The enemy is WAY too far away, give 2x speed.
-			if(npc.m_flCurrentlySpeedRage == 0.0)
-			{
-				npc.m_flCurrentlySpeedRage = 1.0;
-				fl_Extra_Speed[npc.index] *= 2.0; 
-			}
-		}
-		else
-		{
-			//Reduce it again if close enough
-			if(npc.m_flCurrentlySpeedRage == 1.0)
-			{
-				npc.m_flCurrentlySpeedRage = 0.0;
-				fl_Extra_Speed[npc.index] *= 0.5; 
-			}
-		}
 		switch(SetGoalVectorIndex)
 		{
 			case 0:
@@ -987,7 +1074,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 			b_angered_twice[npc.index] = true; 
 			i_SaidLineAlready[npc.index] = 0; 
-			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			RaidModeTime += 25.0;
 			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
@@ -1047,13 +1133,6 @@ static void Internal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-	{
-		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-		{
-			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-		}					
-	}
 	if(BlockLoseSay)
 		return;
 
@@ -1102,6 +1181,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.StartPathing();
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
+					npc.AddGesture("ACT_MP_JUMP_LAND_ALLCLASS");
 				}	
 			}
 			else
@@ -1129,6 +1209,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.StartPathing();
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
+					npc.AddGesture("ACT_MP_JUMP_LAND_MELEE");
 				}	
 			}
 			else
@@ -1145,7 +1226,6 @@ void SilvesterAnimationChange(Silvester npc)
 			}
 		}
 	}
-
 }
 int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distance, bool NemalAssistance)
 {
@@ -1296,18 +1376,10 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 										
 							if(!Knocked)
 							{
-								if(npc.m_flCurrentlySpeedRage == 1.0)
-								{
-									//We REALLY want to attack someone else, give uber knockback
-									Custom_Knockback(npc.index, targetTrace, 900.0, true);
-								}
+								if(npc.Anger)
+									Custom_Knockback(npc.index, targetTrace, 350.0, true); 
 								else
-								{
-									if(npc.Anger)
-										Custom_Knockback(npc.index, targetTrace, 350.0, true); 
-									else
-										Custom_Knockback(npc.index, targetTrace, 450.0, true); 
-								}
+									Custom_Knockback(npc.index, targetTrace, 450.0, true); 
 							}
 						} 
 					}
@@ -1609,17 +1681,17 @@ void SilvesterEarsApply(int iNpc, char[] attachment = "head")
 	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
 	
 
-	i_ExpidonsaEnergyEffect[iNpc][50] = EntIndexToEntRef(particle_ears1);
-	i_ExpidonsaEnergyEffect[iNpc][51] = EntIndexToEntRef(particle_ears2);
-	i_ExpidonsaEnergyEffect[iNpc][52] = EntIndexToEntRef(particle_ears3);
-	i_ExpidonsaEnergyEffect[iNpc][53] = EntIndexToEntRef(particle_ears4);
-	i_ExpidonsaEnergyEffect[iNpc][54] = EntIndexToEntRef(Laser_ears_1);
-	i_ExpidonsaEnergyEffect[iNpc][55] = EntIndexToEntRef(Laser_ears_2);
-	i_ExpidonsaEnergyEffect[iNpc][56] = EntIndexToEntRef(particle_ears2_r);
-	i_ExpidonsaEnergyEffect[iNpc][57] = EntIndexToEntRef(particle_ears3_r);
-	i_ExpidonsaEnergyEffect[iNpc][58] = EntIndexToEntRef(particle_ears4_r);
-	i_ExpidonsaEnergyEffect[iNpc][59] = EntIndexToEntRef(Laser_ears_1_r);
-	i_ExpidonsaEnergyEffect[iNpc][60] = EntIndexToEntRef(Laser_ears_2_r);
+	i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][16] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][17] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][18] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][19] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][20] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][21] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][22] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][23] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][24] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][25] = EntIndexToEntRef(Laser_ears_2_r);
 }
 void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 {

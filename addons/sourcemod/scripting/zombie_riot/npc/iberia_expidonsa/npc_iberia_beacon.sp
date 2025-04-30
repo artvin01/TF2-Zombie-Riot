@@ -193,7 +193,7 @@ public void IberiaBeacon_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 }
 
 static char[] GetBuildingHealth()
@@ -205,13 +205,13 @@ static char[] GetBuildingHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(Waves_GetRound()+1 < 30)
+	if(ZR_Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.20));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
 	}
 	
 	health /= 2;

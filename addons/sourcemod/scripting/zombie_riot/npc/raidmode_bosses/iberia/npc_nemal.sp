@@ -7,12 +7,12 @@
 
 
 
-static int i_SaidLineAlready[MAXENTITIES];
+
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 static bool TripleLol;
 static float NemalAntiLaserDo[MAXENTITIES];
 
@@ -21,16 +21,7 @@ static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
-static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
-};
+
 
 static const char g_MissAbilitySound[][] = {
 	"vo/soldier_negativevocalization01.mp3",
@@ -131,7 +122,7 @@ void Nemal_OnMapStart_NPC()
 static void ClotPrecache()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
@@ -148,7 +139,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MineLayed));   i++) { PrecacheSound(g_MineLayed[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
-	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/expidonsa_training_montage.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
@@ -290,7 +281,7 @@ methodmap Nemal < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 105);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 105);
 		
 	}
 	
@@ -559,8 +550,8 @@ methodmap Nemal < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
-			value = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			value = float(ZR_Waves_GetRound()+1);
 		}
 
 		if(RaidModeScaling < 55)
@@ -1538,7 +1529,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_flTimeUntillMark < GetGameTime(npc.index))
 							{
 								damage *= 1.35;
-								ApplyStatusEffect(npc.index, targetTrace, "Marked", 5.0);
+								ApplyStatusEffect(npc.index, targetTrace, "Marked", 15.0);
 								MarkCooldown = true;
 							}
 							
@@ -2139,12 +2130,12 @@ bool NemalSummonSilvester(Nemal npc)
 		if(i_RaidGrantExtra[npc.index] >= 3 && !TripleLol)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
-			music.Time = 227;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/expidonsa_training_montage.mp3");
+			music.Time = 300;
 			music.Volume = 2.0;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "06 Flirt With Bomb");
-			strcopy(music.Artist, sizeof(music.Artist), "???");
+			strcopy(music.Name, sizeof(music.Name), "Expidonsa Training Montage");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 		npc.m_iChanged_WalkCycle = 0;
@@ -2967,7 +2958,7 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 	else
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
-	ApplyStatusEffect(entity, victim, "Marked", 15.0);
+	ApplyStatusEffect(entity, victim, "Marked", 20.0);
 	
 	//if it was a barracks units, half damage
 	if(victim > MaxClients)

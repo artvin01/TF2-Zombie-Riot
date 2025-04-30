@@ -159,10 +159,11 @@ methodmap Whiteflower_RagingBlader < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
 		//prevent a oneshot.
-		b_NpcUnableToDie[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 9999999.0);
+		npc.m_iHealthBar = 1;
 
 		func_NPCDeath[npc.index] = Whiteflower_RagingBlader_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Whiteflower_RagingBlader_OnTakeDamage;
+		func_NPCOnTakeDamagePost[npc.index] = Whiteflower_RagingBlader_OnTakeDamage;
 		func_NPCThink[npc.index] = Whiteflower_RagingBlader_ClotThink;
 		
 	
@@ -218,18 +219,6 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
-	
-	if(!b_NpcUnableToDie[npc.index])
-	{
-		if(!IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
-			{
-				b_NpcUnableToDie[npc.index] = true;
-				ExtinguishTarget(npc.index);
-			}
-		}
 	}
 	
 	if(npc.m_flAttackHappens)
@@ -366,7 +355,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 }
 
 
-public Action Whiteflower_RagingBlader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Whiteflower_RagingBlader_OnTakeDamage(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, float damageForce[3], float damagePosition[3], int damagecustom, bool &SlayNpc)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -381,17 +370,17 @@ public Action Whiteflower_RagingBlader_OnTakeDamage(int victim, int &attacker, i
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(b_NpcUnableToDie[npc.index])
+	if(HasSpecificBuff(victim, "Infinite Will"))
 	{
-		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		if(npc.m_iHealthBar <= 0)
 		{
-			b_NpcUnableToDie[npc.index] = false;
-			damage = 1.0;
+			RemoveSpecificBuff(npc.index, "Infinite Will");
 			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 			flMaxhealth *= 0.45;
-			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToNearest(flMaxhealth));
 			DesertYadeamDoHealEffect(npc.index, 250.0);
 			IgniteTargetEffect(npc.index);
+			SlayNpc = false;
 		}
 	}
 	return Plugin_Changed;

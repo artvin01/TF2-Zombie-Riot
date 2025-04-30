@@ -5,8 +5,8 @@
 #define IRENE_EXPLOSIVES 150.0
 bool Irene_CurrentEnemyVictimised[MAXENTITIES];
 bool Irene_TargetsFound;
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -158,6 +158,13 @@ methodmap Iberiainqusitor_irene < CClotBody
 		npc.m_flSpeed = 345.0;
 		npc.m_iAttacksTillReload = 0;
 		npc.m_flAirTimeAbilityCD = GetGameTime() + 15.0;
+		if(!IsValidEntity(RaidBossActive) || (IsValidEntity(RaidBossActive) && LighthouseGlobaID() == i_NpcInternalId[EntRefToEntIndex(RaidBossActive)]))
+		{
+			RaidModeScaling = 0.0;	//just a safety net
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+		}
 		
 		
 		int skin = 1;
@@ -513,7 +520,7 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
-							ApplyStatusEffect(npc.index, target, "Marked", 10.0);
+							ApplyStatusEffect(npc.index, target, "Marked", 15.0);
 						}
 						
 					}
@@ -687,7 +694,7 @@ float Irene_AirExploder(int entity, int victim, float damage, int weapon)
 	else
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
-	ApplyStatusEffect(entity, victim, "Marked", 15.0);
+	ApplyStatusEffect(entity, victim, "Marked", 20.0);
 	Irene_CurrentEnemyVictimised[victim] = true;
 	return damage;
 }

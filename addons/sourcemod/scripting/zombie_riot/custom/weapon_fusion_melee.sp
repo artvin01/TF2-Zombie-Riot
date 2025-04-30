@@ -53,6 +53,7 @@ public void Fusion_Melee_OnMapStart()
 	PrecacheSound(NEARL_EXTRA_DAMAGE_SOUND);
 	PrecacheSound("weapons/rescue_ranger_charge_01.wav");
 	PrecacheSound("weapons/rescue_ranger_charge_02.wav");
+	PrecacheSound("replay/snip.wav");
 	Zero(f_NearlDurationCheckApply);
 	Zero(f_NearlThinkDelay);
 	Zero(f_SpeedFistsOfSpeed);
@@ -383,7 +384,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 				maxhealth = RoundToCeil(float(maxhealth) * 1.05);
 				ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
 				ApplyTempAttrib(weapon, 6, 1.45, 10.0); //slower attack speed
-				ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreaced by 40%
+				ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreased by 40%
 
 				int spawn_index = NPC_CreateByName("npc_nearl_sword", -1, fPos, fAng, GetTeam(client));
 				if(spawn_index > MaxClients)
@@ -938,7 +939,6 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable)
 
 }
 
-
 public void Enable_FusionWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	Enable_VoidBlade(client, weapon);
@@ -962,7 +962,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 						i_WeaponBodygroup[weapon] 	= 16384;
 						i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 						i_WeaponSoundIndexOverride[weapon] = 30667;
-						strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
+					//	strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
 					}
 				}
 			}
@@ -996,7 +996,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 					i_WeaponBodygroup[weapon] 	= 16384;
 					i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 					i_WeaponSoundIndexOverride[weapon] = 30667;
-					strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
+				//	strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
 				}
 			}
 		}

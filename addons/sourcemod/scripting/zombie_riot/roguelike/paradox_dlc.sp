@@ -54,7 +54,7 @@ void Rogue_ParadoxDLC_StunTime(int entity, float &time)
 
 void Rogue_ParadoxDLC_AbilityUsed(int client)
 {
-	if(TulipTimer)
+	if(TulipTimer != null)
 		RequestFrame(BlackTulipDecay, GetClientUserId(client));
 }
 
@@ -156,9 +156,15 @@ public void Rogue_MachinaWaldch_StageStart()
 {
 	if(MachinaWaldch > 0)
 	{
-		int entity = NPC_CreateByName("npc_stalker_goggles", 0, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, TFTeam_Red);
+		float pos[3], ang[3];
+		Spawns_GetNextPos(pos, ang);
+
+		int entity = NPC_CreateByName("npc_stalker_goggles", 0, pos, ang, TFTeam_Red, _, true);
 		if(entity != -1)
 		{
+			Rogue_AllySpawned(entity);
+			Waves_AllySpawned(entity);
+
 			SetEntProp(entity, Prop_Data, "m_iHealth", MachinaWaldch);
 			fl_Extra_Damage[entity] *= 2.0;
 		}

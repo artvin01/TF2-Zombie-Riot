@@ -84,17 +84,13 @@ methodmap Malianium < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -201,6 +197,7 @@ methodmap Malianium < CClotBody
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
+		fl_ruina_battery_max[npc.index] = 500.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -246,16 +243,14 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-
 	Ruina_Add_Battery(npc.index, 1.25);
-
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
 	float radius = 275.0;
-	if(fl_ruina_battery[npc.index]>500.0 && fl_ruina_battery_timer[npc.index] < GameTime)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
@@ -267,9 +262,6 @@ static void ClotThink(int iNPC)
 		i_NpcWeight[npc.index] = 999;
 
 		npc.m_flSpeed = 0.0;
-
-		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
-		TE_SendToAll();
 
 		npc.m_flRangedArmor = 0.25;
 		npc.m_flMeleeArmor 	= 0.25;
@@ -284,6 +276,11 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
 		Master_Apply_Battery_Buff(npc.index, radius, 60.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
+
+		radius = GetRandomFloat(radius*0.9, radius*1.1); 
+
+		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
+		TE_SendToAll();
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{

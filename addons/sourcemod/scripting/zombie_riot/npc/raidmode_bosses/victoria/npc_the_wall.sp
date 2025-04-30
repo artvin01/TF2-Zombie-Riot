@@ -90,8 +90,8 @@ static bool Frozen_Player[MAXTF2PLAYERS];
 static int MechanizedProtector[MAXENTITIES][3];
 static int LifeSupportDevice[MAXENTITIES][3];
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static int OverrideOwner[MAXENTITIES];
 
@@ -148,7 +148,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Huscarls(client, vecPos, vecAng, ally, data);
+	return Huscarls(vecPos, vecAng, ally, data);
 }
 
 methodmap Huscarls < CClotBody
@@ -278,7 +278,7 @@ methodmap Huscarls < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
-	public Huscarls(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Huscarls(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Huscarls npc = view_as<Huscarls>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
@@ -412,14 +412,18 @@ methodmap Huscarls < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
-			music.Time = 132;
-			music.Volume = 2.3;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
-			strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
-			Music_SetRaidMusic(music);
+			if(StrContains(data, "nomusic") == -1)
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
+				music.Time = 132;
+				music.Volume = 2.3;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
+				strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
+				Music_SetRaidMusic(music);
+			}
+			
 			npc.m_iChanged_WalkCycle = -1;
 
 			CPrintToChatAll("{lightblue}Huscarls{default}: You will not Pass ''Iron Gate''!");
@@ -436,7 +440,7 @@ methodmap Huscarls < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(Waves_GetRound()+1);
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
 			}
 			
 			if(RaidModeScaling < 55)
@@ -782,7 +786,7 @@ static void Internal_ClotThink(int iNPC)
 						&& !b_NpcHasDied[LifeSupportDevice[npc.index][i]] && GetTeam(LifeSupportDevice[npc.index][i]) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(LifeSupportDevice[npc.index][i], 1.6, true);
-							IncreaceEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
+							IncreaseEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
 						}
 					}
 					Delay_Attribute[npc.index] = gameTime + 1.5;
@@ -803,7 +807,7 @@ static void Internal_ClotThink(int iNPC)
 						&& !b_NpcHasDied[LifeSupportDevice[npc.index][i]] && GetTeam(LifeSupportDevice[npc.index][i]) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(LifeSupportDevice[npc.index][i], 1.6, true);
-							IncreaceEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
+							IncreaseEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
 						}
 					}
 				}

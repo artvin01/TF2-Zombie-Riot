@@ -68,7 +68,7 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
-	char WeaponSoundOverrideString[255];
+//	char WeaponSoundOverrideString[255];
 	char WeaponHudExtra[16];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
@@ -150,7 +150,7 @@ enum struct ItemInfo
 		this.SemiAutoStats_ReloadTime			= kv.GetFloat("semi_auto_stats_reloadtime");
 		this.WeaponSoundIndexOverride	= view_as<bool>(kv.GetNum("weapon_sound_index_override", 0));
 
-		kv.GetString("sound_weapon_override_string", this.WeaponSoundOverrideString, sizeof(this.WeaponSoundOverrideString));
+	//	kv.GetString("sound_weapon_override_string", this.WeaponSoundOverrideString, sizeof(this.WeaponSoundOverrideString));
 		kv.GetString("model_weapon_override", this.WeaponModelOverride, sizeof(this.WeaponModelOverride));
 		kv.GetString("weapon_hud_extra", this.WeaponHudExtra, sizeof(this.WeaponHudExtra));
 		
@@ -517,7 +517,7 @@ static void ReShowSettingsHud(int client)
 	menu2.AddItem("-42", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed increase");
-	if(b_TauntSpeedIncreace[client])
+	if(b_TauntSpeedIncrease[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -961,13 +961,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -71: 
 				{
-					if(b_TauntSpeedIncreace[client])
+					if(b_TauntSpeedIncrease[client])
 					{
-						b_TauntSpeedIncreace[client] = false;
+						b_TauntSpeedIncrease[client] = false;
 					}
 					else
 					{
-						b_TauntSpeedIncreace[client] = true;
+						b_TauntSpeedIncrease[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}
@@ -1497,7 +1497,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] 				= info.WeaponForceClass;
 					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
-					Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
+				//	Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;
@@ -2171,7 +2171,7 @@ stock void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
 
 
 // Returns the top most weapon (or -1 for no change)
-int Store_CycleItems(int client, int slot)
+int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 {
 	char buffer[36];
 	
@@ -2194,7 +2194,8 @@ int Store_CycleItems(int client, int slot)
 				if(previousIndex != -1)
 				{
 					// Replace this weapon with the previous slot (1 <- 2)
-					SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(ChangeWeapon)
+						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
 					if(topWeapon == -1)
 						topWeapon = weapon;
 				}
@@ -2207,7 +2208,8 @@ int Store_CycleItems(int client, int slot)
 	if(firstWeapon != -1)
 	{
 		// First to Last (7 <- 0)
-		SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+		if(ChangeWeapon)
+			SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
 	}
 
 	return topWeapon;

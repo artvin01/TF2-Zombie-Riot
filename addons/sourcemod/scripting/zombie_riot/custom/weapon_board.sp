@@ -175,10 +175,11 @@ public void Punish(int victim, int weapon, int bool) //AOE parry damage that sca
 	GetClientAbsOrigin(victim, UserLoc);
 
 	float Range = 250.0;
-	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(victim);				
+//	b_LagCompNPC_No_Layers = true;
+//	StartLagCompensation_Base_Boss(victim);		
+//This is only used when you press m2 and get hurt, using lag comp on this makes no sense.		
 	Explode_Logic_Custom(damage, victim, victim, weapon, _, Range, 1.0, _, false, 6,_,_);
-	FinishLagCompensation_Base_boss();
+//	FinishLagCompensation_Base_boss();
 
 	i_ExplosiveProjectileHexArray[victim] = value;
 
@@ -837,7 +838,7 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 35)
 	char model[PLATFORM_MAX_PATH];
 	ModelIndexToString(ModelIndex, model, PLATFORM_MAX_PATH);
 
-	int Glow = TF2_CreateGlow_White(WeaponModel, model, client, f_WeaponSizeOverride[active]);
+	int Glow = TF2_CreateGlow_White(model, client, f_WeaponSizeOverride[active]);
 	SetVariantColor(view_as<int>({255, 255, 255, 200}));
 	AcceptEntityInput(Glow, "SetGlowColor");
 	//save for deletion when they switch away too fast

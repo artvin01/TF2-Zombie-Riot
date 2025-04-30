@@ -53,7 +53,7 @@ static int i_radioguard_particle[MAXENTITIES];
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Victorian_Radioguard(client, vecPos, vecAng, ally);
+	return Victorian_Radioguard(vecPos, vecAng, ally);
 }
 
 methodmap Victorian_Radioguard < CClotBody
@@ -93,9 +93,9 @@ methodmap Victorian_Radioguard < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, 0.5, 80);
 	}
 
-	public Victorian_Radioguard(int client, float vecPos[3], float vecAng[3], int ally)
+	public Victorian_Radioguard(float vecPos[3], float vecAng[3], int ally)
 	{
-		Victorian_Radioguard npc = view_as<Victorian_Radioguard>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "80000", ally));
+		Victorian_Radioguard npc = view_as<Victorian_Radioguard>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "80000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

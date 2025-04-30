@@ -75,75 +75,46 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Soldier_Barrager(vecPos, vecAng, team);
 }
 
-static int i_ammo_count[MAXENTITIES];
-static bool b_target_close[MAXENTITIES];
-static bool b_we_are_reloading[MAXENTITIES];
-static float fl_idle_timer[MAXENTITIES];
-
 methodmap Soldier_Barrager < CClotBody
 {
+	property int m_iAmmo
+	{
+		public get()							{ return i_ammo_count[this.index]; }
+		public set(int TempValueForProperty) 	{ i_ammo_count[this.index] = TempValueForProperty; }
+	}
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);	
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
+			return;	
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 80, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
-		
-		
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
-		
-		
 	}
-
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
-		
-		
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-
 	}
-	
 	public Soldier_Barrager(float vecPos[3], float vecAng[3], int ally)
 	{
 		Soldier_Barrager npc = view_as<Soldier_Barrager>(CClotBody(vecPos, vecAng, "models/player/Soldier.mdl", "1.0", "2000", ally));
@@ -154,8 +125,6 @@ methodmap Soldier_Barrager < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -173,10 +142,9 @@ methodmap Soldier_Barrager < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		i_ammo_count[npc.index]=10;
-		b_target_close[npc.index]=false;
+		npc.m_iAmmo=10;
 		b_we_are_reloading[npc.index]=false;
-		fl_idle_timer[npc.index] = 2.0 + GetGameTime(npc.index);
+		fl_ruina_in_combat_timer[npc.index] = 2.0 + GetGameTime(npc.index);
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -216,7 +184,6 @@ methodmap Soldier_Barrager < CClotBody
 		
 		npc.StartPathing();
 		
-		
 		return npc;
 	}
 }
@@ -236,7 +203,7 @@ static void Internal_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
-			
+	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -260,138 +227,111 @@ static void Internal_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
-	{
-		
-			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
-			
-			if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index] && !b_target_close[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
-			{
-				b_we_are_reloading[npc.index]=true;
-			}
-			if((b_we_are_reloading[npc.index] || (b_target_close[npc.index] && i_ammo_count[npc.index]<=0)) && npc.m_flReloadIn<GameTime)	//Reload IF. Target too close. Empty clip.
-			{
-				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-				npc.m_flReloadIn = 0.75 + GameTime;
-				i_ammo_count[npc.index]++;
-				npc.PlayRangedReloadSound();
-			}
-			if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && !b_target_close[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
-			{
-				npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-				npc.m_flReloadIn = 0.75 + GameTime;
-				i_ammo_count[npc.index]++;
-				npc.PlayRangedReloadSound();
-			}
-			if(i_ammo_count[npc.index]>=10)	//npc will stop reloading once clip size is full.
-			{
-				b_we_are_reloading[npc.index]=false;
-			}
-			if(flDistanceToTarget < 60000)
-			{
-				b_target_close[npc.index]=true;
-			}
-			else
-			{
-				b_target_close[npc.index]=false;
-			}
-			if((i_ammo_count[npc.index]==0 || b_we_are_reloading[npc.index]) && !b_target_close[npc.index])	//Run away if ammo is 0 or we are reloading. Don't run if target is too close
-			{
-				npc.StartPathing();
-				
-				npc.m_flSpeed = 250.0;	//reloading is a hard job.
-				
-				int Enemy_I_See;
-			
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
-				{
-					float vBackoffPos[3];
-					
-					BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-					
-					NPC_SetGoalVector(npc.index, vBackoffPos, true);
-				}
-			}
-			else if(flDistanceToTarget < 120000 && i_ammo_count[npc.index]>0)
-			{
-				npc.m_flSpeed = 270.0;
-				int Enemy_I_See;
-				
-				fl_idle_timer[npc.index] = 2.5 + GameTime;
-				
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See))
-				{	
-					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GameTime && i_ammo_count[npc.index] >=0)
-					{
-						//Play attack anim
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 750.0, _,vecTarget);
-						npc.FaceTowards(vecTarget, 20000.0);
-						npc.PlayMeleeSound();
-						float dmg = 12.5;
-						if(Waves_GetRound()>=45)
-						{
-							dmg=17.5;
-						}
-						npc.FireRocket(vecTarget, dmg, 750.0);
-						npc.m_flNextMeleeAttack = GameTime + 0.5;
-						npc.m_flReloadIn = GameTime + 1.75;
-						i_ammo_count[npc.index]--;
-					}
-				}
-				else
-				{
-					npc.StartPathing();
-					
-				}
-			}
-			else
-			{
-				npc.StartPathing();
-				
-			}
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius())
-			{
-				
-				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-				/*
-				int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-				
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-				*/
-				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else
-			{
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-	}
-	else
+	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.PlayIdleAlertSound();
+		return;
 	}
-	npc.PlayIdleAlertSound();
+		
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+
+	//Predict their pos.
+	if(flDistanceToTarget < npc.GetLeadRadius())
+	{
+		float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
+		NPC_SetGoalVector(npc.index, vPredictedPos);
+	}
+	else
+	{
+		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+	}
+
+	int max_ammo = 15;
+	bool close = (flDistanceToTarget < 60000);
+	
+	if(npc.m_iAmmo<=0 && !b_we_are_reloading[npc.index] && !close)	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
+	{
+		b_we_are_reloading[npc.index]=true;
+	}
+	if((b_we_are_reloading[npc.index] || (close && npc.m_iAmmo<=0)) && npc.m_flReloadIn<GameTime)	//Reload IF. Target too close. Empty clip.
+	{
+		npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
+		npc.m_flReloadIn = 0.75 + GameTime;
+		npc.m_iAmmo++;
+		npc.PlayRangedReloadSound();
+	}
+	if(fl_ruina_in_combat_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && !close && npc.m_iAmmo<max_ammo)	//reload if not attacking/idle for long
+	{
+		npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
+		npc.m_flReloadIn = 0.75 + GameTime;
+		npc.m_iAmmo++;
+		npc.PlayRangedReloadSound();
+	}
+	if(npc.m_iAmmo>=max_ammo)	//npc will stop reloading once clip size is full.
+	{
+		b_we_are_reloading[npc.index]=false;
+	}
+	if((npc.m_iAmmo<=0 || b_we_are_reloading[npc.index]) && !close)	//Run away if ammo is 0 or we are reloading. Don't run if target is too close
+	{
+		npc.StartPathing();
+		
+		npc.m_flSpeed = 250.0;	//reloading is a hard job.
+		
+		int Enemy_I_See;
+	
+		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+		//Target close enough to hit
+		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		{
+			float vBackoffPos[3];
+			
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
+			
+			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+		}
+	}
+	else if(flDistanceToTarget < 120000 && npc.m_iAmmo>0)
+	{
+		npc.m_flSpeed = 270.0;
+		int Enemy_I_See;
+		
+		fl_ruina_in_combat_timer[npc.index] = 2.5 + GameTime;
+		
+		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+		//Target close enough to hit
+		if(IsValidEnemy(npc.index, Enemy_I_See))
+		{	
+			//Can we attack right now?
+			if(npc.m_flNextMeleeAttack < GameTime && npc.m_iAmmo >0)
+			{
+				//Play attack anim
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 750.0, _,vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
+				npc.PlayMeleeSound();
+				float dmg = 17.5;
+				npc.FireRocket(vecTarget, dmg, 750.0);
+				npc.m_flNextMeleeAttack = GameTime + 0.5;
+				npc.m_flReloadIn = GameTime + 1.75;
+				npc.m_iAmmo--;
+			}
+		}
+		else
+		{
+			npc.StartPathing();
+		}
+	}
+	else
+	{
+		npc.StartPathing();
+	}
 }
 
 

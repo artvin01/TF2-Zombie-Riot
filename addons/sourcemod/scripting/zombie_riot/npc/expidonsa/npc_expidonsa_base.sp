@@ -2,7 +2,7 @@
 #pragma newdecls required
 //
 
-#define MAX_EXPI_ENERGY_EFFECTS 71
+#define MAX_EXPI_ENERGY_EFFECTS 26
 
 
 
@@ -83,7 +83,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 		if(!CheckInHud() && DrainShield)
 		{
 #if defined ZR
-			if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
+			if(HasSpecificBuff(victim, "Zilius Prime Technology") || attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
 #else
 			if(attacker <=MaxClients)
 #endif
@@ -132,6 +132,14 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	if(b_thisNpcIsARaid[entity])
 	{
 		MaxShieldCapacity = 250;
+		if(amount >= 250)
+			MaxShieldCapacity = amount;
+		if(Construction_Mode())
+			MaxShieldCapacity = 99999999; //no limit.
+	}
+	if(HasSpecificBuff(entity, "Zilius Prime Technology"))
+	{
+		MaxShieldCapacity *= 2;
 	}
 	if(MaxShieldCapacity < 1)
 		MaxShieldCapacity = 1;
@@ -337,12 +345,3 @@ float ExpidonsanShieldBroke(int entity)
 	return(f_Expidonsa_ShieldBroke[entity]);
 }
 #endif
-stock bool Expidonsa_DontHealBosses(int entity, int victim, float &healingammount)
-{
-	if(b_thisNpcIsABoss[victim] ||
-		b_thisNpcIsARaid[victim] ||
-		b_StaticNPC[victim])
-		return true;
-
-	return false;
-}

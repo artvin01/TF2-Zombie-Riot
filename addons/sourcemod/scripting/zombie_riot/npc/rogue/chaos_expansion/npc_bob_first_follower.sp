@@ -41,9 +41,9 @@ stock int BobTheFirstFollower_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return BobTheFirstFollower(vecPos, vecAng, team, data);
+	return BobTheFirstFollower(vecPos, vecAng, team);
 }
 
 static Action BobTheFirstFollower_SpeechTimer(Handle timer, DataPack pack)
@@ -69,10 +69,6 @@ methodmap BobTheFirstFollower < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME - 0.3);
-	}
-	public void PlayDeathSound(int who) 
-	{
-	//	EmitSoundToAll("npc/strider/striderx_die1.wav", who, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayBobMeleePostHit()
 	{
@@ -222,9 +218,9 @@ methodmap BobTheFirstFollower < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
-	public BobTheFirstFollower(float vecPos[3], float vecAng[3],int ally, const char[] data)
+	public BobTheFirstFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		BobTheFirstFollower npc = view_as<BobTheFirstFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", TFTeam_Red, true, true));
+		BobTheFirstFollower npc = view_as<BobTheFirstFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_RUN_BOB");
@@ -355,7 +351,7 @@ static void ClotThink(int iNPC)
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-						IncreaceEntityDamageTakenBy(target, 0.02, 3.0, true);
+						IncreaseEntityDamageTakenBy(target, 0.02, 3.0, true);
 					}
 				}
 

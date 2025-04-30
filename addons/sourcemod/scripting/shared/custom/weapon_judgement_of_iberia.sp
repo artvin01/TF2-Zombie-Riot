@@ -118,7 +118,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
-	if(!StrContains(WhatDifficultySetting_Internal, "Stella & Karlas") || !StrContains(WhatDifficultySetting_Internal, "You."))
+	if(!StrContains(WhatDifficultySetting_Internal, "Stella & Karlas") || !StrContains(WhatDifficultySetting, "You."))
 	{
 		ThereWasSeaborn = true;
 	}
@@ -340,13 +340,13 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 
 					if (b_thisNpcIsABoss[target] || raidboss_active)
 					{
-						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_BOSS_AIRTIME;
+						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_BOSS_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_BOSS_AIRTIME; //Kick up for way less time.
 						FreezeNpcInTime(target,IRENE_BOSS_AIRTIME);
 					}
 					else
 					{
-						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_AIRTIME;
+						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_AIRTIME; //Kick up for the full skill duration.
 						FreezeNpcInTime(target,IRENE_AIRTIME);
 					}

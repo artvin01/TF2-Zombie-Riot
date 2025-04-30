@@ -83,17 +83,13 @@ methodmap Draconia < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -198,14 +194,15 @@ methodmap Draconia < CClotBody
 			"models/player/items/medic/berliners_bucket_helm.mdl",
 			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
-			RUINA_CUSTOM_MODELS_1
+			RUINA_CUSTOM_MODELS_1,
+			"models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl"
 		};
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		SetVariantInt(1);
+		SetVariantInt(1 + 2 + 4 + 8);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
@@ -215,10 +212,12 @@ methodmap Draconia < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, skin);	
+		npc.m_iWearable8 = npc.EquipItem("head", Items[7], _, skin);	
 
 		SetVariantInt(RUINA_MAGI_GUN_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
 				
+		fl_ruina_battery_max[npc.index] = 350.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -266,7 +265,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>350.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
@@ -418,5 +417,7 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	
 }
