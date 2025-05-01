@@ -1527,6 +1527,10 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	if(health != 0)
 	{
 		enemy.Health = health;
+		if(!is_a_boss)
+		{
+			enemy.Health *= MultiGlobalHealth;
+		}
 	}
 	enemy.Is_Boss = view_as<int>(is_a_boss);
 	enemy.Is_Immune_To_Nuke = true;
@@ -1537,6 +1541,7 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	enemy.ExtraDamage = 1.0;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
+	
 	if(!Waves_InFreeplay())
 	{
 		for(int i; i<count; i++)
