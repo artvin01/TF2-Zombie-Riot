@@ -466,7 +466,7 @@ public Action BigBones_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
-		npc.m_iWearable1 = npc.EquipItemSeperate("root", BONEZONE_MODEL, "big_bones_burst", StringToInt(BONES_BIG_SKIN_BUFFED), StringToFloat(BONES_BIG_SCALE_BUFFED));
+		npc.m_iWearable1 = npc.EquipItemSeperate(BONEZONE_MODEL, "big_bones_burst", StringToInt(BONES_BIG_SKIN_BUFFED), StringToFloat(BONES_BIG_SCALE_BUFFED));
 		
 		if (IsValidEntity(npc.m_iWearable1))	//The skin parameter of EquipItemSeperate doesn't seem to work, so I have to do this instead
 			DispatchKeyValue(npc.m_iWearable1, "skin", BONES_BIG_SKIN_BUFFED);

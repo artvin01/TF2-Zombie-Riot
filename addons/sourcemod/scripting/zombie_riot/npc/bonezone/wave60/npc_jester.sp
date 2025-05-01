@@ -521,7 +521,7 @@ void Jester_AttachFuseParticles(CClotBody npc, bool left = true, bool right = tr
 	{
 		if (left)
 		{
-			npc.m_iWearable1 = npc.EquipItemSeperate("bomb_left_center", MODEL_JESTER_CANNONBALL, "", 1);
+			npc.m_iWearable1 = npc.EquipItemSeperate(MODEL_JESTER_CANNONBALL, "", 1);
 			if (IsValidEntity(npc.m_iWearable1))
 			{
 				SetParent(npc.index, npc.m_iWearable1, "bomb_left_center");
@@ -540,7 +540,7 @@ void Jester_AttachFuseParticles(CClotBody npc, bool left = true, bool right = tr
 
 		if (right)
 		{
-			npc.m_iWearable2 = npc.EquipItemSeperate("bomb_right_center", MODEL_JESTER_CANNONBALL, "", 1);
+			npc.m_iWearable2 = npc.EquipItemSeperate(MODEL_JESTER_CANNONBALL, "", 1);
 			if (IsValidEntity(npc.m_iWearable2))
 			{
 				SetParent(npc.index, npc.m_iWearable2, "bomb_right_center");

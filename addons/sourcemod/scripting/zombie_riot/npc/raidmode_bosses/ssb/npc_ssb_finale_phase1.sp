@@ -40,14 +40,18 @@ static float Waver_Knockback[4] = { 600.0, 900.0, 1200.0, 1500.0 };			//Knockbac
 static float Waver_Cooldown[4] = { 12.0, 11.0, 10.0, 9.0 };					//Cooldown between uses.
 
 //NECROTIC BOMBARDMENT: SSB marks every enemy's location, and then strikes that location with a blast of necrotic energy after a short delay.
+#define BOMBARDMENT_NAME	"Necrotic Bombardment"
 static float Bombardment_Radius[4] = { 180.0, 220.0, 260.0, 300.0 };		//Blast radius.
 static float Bombardment_Delay[4] = { 2.0, 1.9, 1.8, 1.66 };				//Time until the blast hits.
 static float Bombardment_DMG[4]	= { 200.0, 400.0, 800.0, 1600.0 };			//Damage dealt by the blast.
 static float Bombardment_EntityMult[4] = { 5.0, 10.0, 15.0, 20.0 };			//Amount to multiply damage dealt to entities.
 static float Bombardment_Falloff_MultiHit[4] = { 0.66, 0.7, 0.75, 0.8 };	//Amount to multiply damage per target hit.
 static float Bombardment_Falloff_Radius[4] = { 0.5, 0.66, 0.75, 0.8 };		//Maximum distance-based falloff.
+static float Bombardment_Cooldown[4] = { 12.0, 11.0, 10.0, 9.0 };			//Ability cooldown.
+static float Bombardment_GlobalCD[4] = { 4.0, 3.0, 2.0, 1.0 };				//Global cooldown.
 
 //RING OF HELL: SSB fires a cluster of explosive skulls in a ring pattern. These skulls transform into homing skulls after a short delay.
+#define HELLRING_NAME		"Ring of Hell"
 static int HellRing_NumSkulls[4] = { 12, 16, 20, 28 };						//The number of skulls fired.
 static int HellRing_MaxTargets[4] = { 3, 4, 5, 8 };							//Maximum targets hit by a single skull explosion.
 static float HellRing_Velocity[4] = { 265.0, 300.0, 350.0, 400.0 };			//Skull velocity.
@@ -59,10 +63,13 @@ static float HellRing_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };				//Amount to mul
 static float HellRing_Radius[4] = { 50.0, 50.0, 50.0, 50.0 };				//Skull explosion radius.
 static float HellRing_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };		//Skull falloff, based on radius.
 static float HellRing_Falloff_MultiHit[4] = { 0.66, 0.76, 0.86, 1.0 }; 		//Amount to multiply explosion damage for each target hit.
-static float HellRing_Pitch[4] = { 5.0, 5.0, 5.0, 5.0 };					//Amount to tilt skull vertical velocity on spawn, used mainly for VFX.
+static float HellRing_Pitch[4] = { 5.0, 5.0, 5.0, 5.0 };					//Amount to tilt skull vertical angle on spawn, used mainly for VFX.
+static float HellRing_Cooldown[4] = { 12.0, 11.0, 10.0, 9.0 };				//Ability cooldown.
+static float HellRing_GlobalCD[4] = { 5.0, 4.0, 3.0, 2.0 };					//Global cooldown.
 
 //SPATIAL DISPLACEMENT: SSB claps his hands and teleports directly above a random enemy. After a short delay, he will fall to the ground, creating a shockwave
 //when he lands. This shockwave knocks enemies away.
+#define TELEPORT_NAME		"Spatial Displacement"
 static float Teleport_Height[4] = { 800.0, 800.0, 800.0, 800.0 };				//Maximum distance above the target SSB will teleport. If a valid height is not found, he'll choose a random nav spot instead of an enemy.
 static float Teleport_Delay[4] = { 0.5, 0.45, 0.4, 0.33 };						//Delay after teleporting before SSB falls down. DO NOT make this longer than 0.5, the ability will break if you do. I know how to fix it, but unless it becomes totally necessary to make this longer than 0.85 I won't bother.
 static float Teleport_FallSpeed[4] = { 800.0, 900.0, 1000.0, 1200.0 };			//Rate at which SSB falls to the ground when he begins falling.
@@ -73,15 +80,20 @@ static float Teleport_Falloff_Radius[4] = { 0.25, 0.25, 0.33, 0.5 };			//Distanc
 static float Teleport_EntityMult[4] = { 4.0, 6.0, 8.0, 10.0 };					//Amount to multiply damage dealt to entities.
 static float Teleport_Knockback[4] = { 600.0, 900.0, 1200.0, 1500.0 };			//Knockback velocity applied to enemies hit by the shockwave.
 static float Teleport_FallbackRadius[4] = { 1200.0, 1600.0, 2000.0, 2400.0 };	//Radius in which a random nav area will be chosen for the teleport location instead of a random enemy, if none of the enemies can be successfully teleported above.
+static float Teleport_Cooldown[4] = { 20.0, 16.0, 12.0, 8.0 };					//Ability cooldown.
+static float Teleport_GlobalCD[4] = { 2.0, 1.5, 1.0, 0.0 };						//Global cooldown.
 
 //NECROTIC CATASTROPHE: A more powerful variant of npc_ssb's Necrotic Cataclysm. This time, it's green! Wow!
 //If SSB is being carried by his carrier skeleton, this attack can rotate, making it extra dangerous.
+#define CATASTROPHE_NAME	"Necrotic Catastrophe"
 static float Catastrophe_IntroSpeed[4] = { 1.0, 1.25, 1.25, 1.5 };			//Intro speed multiplier. Higher values make the intro animation play faster, which means the beam starts charging up sooner.
 static float Catastrophe_Delay[4] = { 1.25, 1.15, 1.075, 1.0 };				//Time until the laser is fired after SSB begins charging.
 static float Catastrophe_DMG[4] = { 4800.0, 12000.0, 30000.0, 75000.0 };	//Damage dealt by the laser.
 static float Catastrophe_EntityMult[4] = { 10.0, 15.0, 17.5, 20.0 };		//Amount to multiply damage dealt by the laser to entities.
 static float Catastrophe_Width[4] = { 475.0, 550.0, 600.0, 650.0 };			//Laser width, in hammer units.
-static float Catastrophe_YawSpeed[4]//TODO: = { X, X, X, X };				//Yaw speed applied to SSB's carrier skeleton while this ability is active, if he has a carrier.
+static float Catastrophe_YawSpeed[4];//TODO: = { X, X, X, X };				//Yaw speed applied to SSB's carrier skeleton while this ability is active, if he has a carrier.
+static float Catastrophe_Cooldown[4] = { 30.0, 25.0, 20.0, 15.0 };			//Ability cooldown.
+static float Catastrophe_GlobalCD[4] = { 5.0, 4.0, 3.0, 2.0 };				//Global cooldown.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -240,8 +252,11 @@ Function ChairSpell_Filter[SSBCHAIR_MAX_ABILITIES] = { INVALID_FUNCTION, ... };	
 
 float ChairSpell_Cooldown[SSBCHAIR_MAX_ABILITIES] = { 0.0, ... };
 float ChairSpell_NextUse[SSBCHAIR_MAX_ABILITIES] = { 0.0, ... };
+float ChairSpell_GlobalCooldown[SSBCHAIR_MAX_ABILITIES] = { 0.0, ... };
 
 int ChairSpell_Tier[SSBCHAIR_MAX_ABILITIES] = { 0, ... };
+
+char ChairSpell_Name[SSBCHAIR_MAX_ABILITIES][255];
 
 methodmap SSBChair_Spell __nullable__
 {
@@ -266,7 +281,21 @@ methodmap SSBChair_Spell __nullable__
 		Call_PushCell(target);
 		Call_Finish();
 
-		this.NextUse = GetGameTime(user.index) + this.Cooldown;
+		float gt = GetGameTime(user.index);
+		for (int i = 0; i < GetArraySize(SSB_ChairSpells[user.index]); i++)
+		{
+			SSBChair_Spell spell = view_as<SSBChair_Spell>(GetArrayCell(SSB_ChairSpells[user.index], i));
+
+			if (spell.Index == this.Index)
+				spell.NextUse = gt + this.Cooldown;
+			else
+			{
+				if (spell.NextUse < gt)
+					spell.NextUse = gt + this.GlobalCooldown;
+				else
+					spell.NextUse += this.GlobalCooldown;
+			}
+		}
 	}
 
 	public bool CheckCanUse(SSBChair user, int target = -1)
@@ -292,6 +321,9 @@ methodmap SSBChair_Spell __nullable__
 
 		return success;
 	}
+
+	public void SetName(char[] name) { strcopy(ChairSpell_Name[this.Index], 255, name); }
+	public void GetName(char[] output, int size = 255) { strcopy(output, size, ChairSpell_Name[this.Index]); }
 
 	public void Delete()
 	{
@@ -327,6 +359,12 @@ methodmap SSBChair_Spell __nullable__
 	{
 		public get () { return ChairSpell_Cooldown[this.Index]; }
 		public set(float value) { ChairSpell_Cooldown[this.Index] = value; }
+	}
+
+	property float GlobalCooldown
+	{
+		public get () { return ChairSpell_GlobalCooldown[this.Index]; }
+		public set(float value) { ChairSpell_GlobalCooldown[this.Index] = value; }
 	}
 
 	property float NextUse
@@ -1024,12 +1062,12 @@ methodmap SSBChair < CClotBody
 		SSB_ChairSpells[this.index] = new ArrayList(255);
 
 		//TODO: Populate abilities here
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(9.0, 3.0, 0, SSBChair_Bombardment));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(12.0, 6.0, 0, SSBChair_RingOfHell));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(15.0, 9.0, 0, SSBChair_Teleport));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Bombardment_Cooldown[0], 3.0, 0, SSBChair_Bombardment, _, Bombardment_GlobalCD[0], BOMBARDMENT_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(HellRing_Cooldown[0], 6.0, 0, SSBChair_RingOfHell, _, HellRing_GlobalCD[0], HELLRING_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Teleport_Cooldown[0], 9.0, 0, SSBChair_Teleport, _, Teleport_GlobalCD[0], TELEPORT_NAME));
 	}
 
-	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
+	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, float globalCD = 0.0, char[] name = "")
 	{
 		SSBChair_Spell spell = new SSBChair_Spell();
 
@@ -1038,6 +1076,8 @@ methodmap SSBChair < CClotBody
 		spell.ActivationFunction = ActivationFunction;
 		spell.FilterFunction = FilterFunction;
 		spell.Tier = tier;
+		spell.GlobalCooldown = globalCD;
+		spell.SetName(name);
 
 		return spell;
 	}
@@ -1396,17 +1436,36 @@ public void SSBChair_ClotThink(int iNPC)
 		else
 		{
 			b_NpcIsInvulnerable[npc.index] = false;
-			
-			switch(Chair_Tier[npc.index])
-			{
-				case 0:
-				{
-
-				}
-			}
-
 			Chair_Tier[npc.index]++;
 			b_SSBChairHasArmy[npc.index] = false;
+
+			for (int i = 0; i < GetArraySize(SSB_ChairSpells[npc.index]); i++)
+			{
+				SSBChair_Spell spell = view_as<SSBChair_Spell>(GetArrayCell(SSB_ChairSpells[npc.index], i));
+				char name[255];
+				spell.GetName(name, 255);
+
+				if (StrEqual(name, BOMBARDMENT_NAME))
+				{
+					spell.Cooldown = Bombardment_Cooldown[Chair_Tier[npc.index]];
+					spell.GlobalCooldown = Bombardment_GlobalCD[Chair_Tier[npc.index]];
+				}
+				else if (StrEqual(name, HELLRING_NAME))
+				{
+					spell.Cooldown = HellRing_Cooldown[Chair_Tier[npc.index]];
+					spell.GlobalCooldown = HellRing_GlobalCD[Chair_Tier[npc.index]];
+				}
+				else if (StrEqual(name, TELEPORT_NAME))
+				{
+					spell.Cooldown = Teleport_Cooldown[Chair_Tier[npc.index]];
+					spell.GlobalCooldown = Teleport_GlobalCD[Chair_Tier[npc.index]];
+				}
+				else if (StrEqual(name, CATASTROPHE_NAME))
+				{
+					spell.Cooldown = Catastrophe_Cooldown[Chair_Tier[npc.index]];
+					spell.GlobalCooldown = Catastrophe_GlobalCD[Chair_Tier[npc.index]];
+				}
+			}
 		}
 	}
 
