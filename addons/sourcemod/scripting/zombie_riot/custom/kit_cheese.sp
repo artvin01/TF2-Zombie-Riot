@@ -552,7 +552,7 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 	{
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(client));
-		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
 		if(LoopFire == 0)
 			pack.WriteCell(0);
 		else
