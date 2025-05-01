@@ -335,7 +335,7 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 {
 	if(weapon >= MaxClients)
 	{
-		if (Cheese_LethalCD[client] < GetGameTime() && Cheese_PapLevel[client] >= 2)
+		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 2)
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			float cd = 40.0;
@@ -394,7 +394,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 {
 	if(weapon >= MaxClients)
 	{
-		if (Cheese_MochaCD[client] < GetGameTime() && Cheese_PapLevel[client] >= 3)
+		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 3)
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			float cd = 70.0;
