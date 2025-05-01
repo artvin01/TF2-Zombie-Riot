@@ -4324,7 +4324,7 @@
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Now grants slight ranged resistance. Unlocks Lethal Injection [M2]:\nTemporarily increases attackspeed, and your injections build the Plasmic Elemental status WAY faster."
+		"en" 	"Now grants slight ranged resistance. Unlocks Lethal Injection [M2]:\nTemporarily increases attackspeed, resistance, and your injections build the Plasmic Elemental status WAY faster."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
@@ -4332,7 +4332,7 @@
 	}
 	"Plasma Inject Pap 4 Desc"
 	{
-		"en" 	"Increases overall stats.\nLethal Injection's now lasts longer and its attackspeed bonus is now slightly stronger.\nPlasmic Inoculation's buffs and healing are now stronger."
+		"en" 	"Increases overall stats.\nIncreases Lethal Injection's, duration, attackspeed and resistances.\nPlasmic Inoculation's buffs and healing are now stronger."
 	}
 	"Plasma Inject Pap 5 Desc"
 	{
@@ -4345,6 +4345,10 @@
 	"Plasminator Desc"
 	{
 		"en"	"Koshi's own weapon - an Expidonsan clockwork assault rifle that shoots Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
+	}
+	"Plasminator Pap 1 Desc"
+	{
+		"en"	"Projectiles will now home at enemies if you aim at them! Also increases overall stats."
 	}
 	"Plasminator Pap 2 Desc"
 	{

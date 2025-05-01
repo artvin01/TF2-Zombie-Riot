@@ -324,8 +324,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 						enemy.Index = NPC_GetByPlugin("npc_sea_god_alaxios");
 						enemy.Health = RoundToFloor((6500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.Data = "wave_60;res3;seainfection";
-
-						enemy.ExtraThinkSpeed = 0.85; // ?
 					}
 					default: // alaxios has no timer in freeplay by default btw
 					{
@@ -334,6 +332,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 						enemy.Data = "wave_60;res3";
 					}
 				}
+				enemy.ExtraThinkSpeed = 0.85; // ??? :bruh~1:
 			}
 			case 5:
 			{
@@ -431,14 +430,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.ExtraDamage = 0.75;
 			}
 			/*
-			case -1:
+			case -1: // might readd after i check the rework
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor((5000000.0 / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75; // johnson gets way too much damage in freeplay, reduce it
 			}
-
-			//FUCK you eno your raid is boring
 			*/
 			case 21:
 			{
@@ -466,7 +463,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
 				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 26: // WHEN THE DUST SETTLES
+			case 26:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_lelouch");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
@@ -707,9 +704,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		{
 			if(enemy.Health)
 			{
-				enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.5);
 				if(StrContains(enemy.CustomName, "First ") != -1)
-					enemy.Health -= HealthBonus;
+				{
+					enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.5);
+				}
+				else
+				{
+					enemy.Health = RoundToCeil((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009)) * 0.5);
+				}
 			}
 	
 			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
@@ -780,7 +782,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
 
 	// 2 billion limit, it is necessary to prevent them from going bananas
-	if(enemy.Health > 2000000000) // apparently doing "enemy.Health < 0" causes bob's army to go bananas
+	if(enemy.Health < 0 || enemy.Health > 2000000000) // nvm it was a float-int error lmao
 		enemy.Health = 2000000000;
 
 	if(enemy.Team != TFTeam_Red)
@@ -792,7 +794,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 static Action Freeplay_RouletteMessage(Handle timer)
 {
-	RaidFight = GetRandomInt(1, 27);
+	RaidFight = GetRandomInt(1, 26);
 	EmitSoundToAll("misc/halloween/spelltick_set.wav", _, _, _, _, _, GetRandomInt(70, 135));
 	switch(RaidFight)
 	{
@@ -898,7 +900,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		{
 			CPrintToChatAll("{blue}CASTELLAN! {gold}- {red}In the name of victoria, he won't allow you further in!");
 		}
-		case 26: // WHEN THE DUST SETTLES
+		case 26:
 		{
 			CPrintToChatAll("{darkviolet}LELOUCH! {gold}- {red}The chaos-afflicted ruinian i've spoken about before...");
 		}
