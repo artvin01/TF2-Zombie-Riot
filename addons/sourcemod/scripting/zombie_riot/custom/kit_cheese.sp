@@ -162,7 +162,6 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 0.6);
 		HealEntityGlobal(client, client, 6.0, 0.25, 0.0, HEAL_SELFHEAL);
 		Cheese_BeamEffect(pos, 200.0, 1.0, 0.075, 10.0);
-		return Plugin_Continue;
 	}
 	else
 	{
