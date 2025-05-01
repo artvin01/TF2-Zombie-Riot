@@ -4348,7 +4348,7 @@
 	}
 	"Plasminator Pap 1 Desc"
 	{
-		"en"	"Now has a slight bit of homing! Also increases overall stats."
+		"en"	"Projectiles will now home at enemies if you aim at them! Also increases overall stats."
 	}
 	"Plasminator Pap 2 Desc"
 	{
