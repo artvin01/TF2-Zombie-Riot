@@ -558,7 +558,7 @@ void Music_EndLastmann(bool Reinforce=false)
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/flaggilant_lastman.mp3", 2.0);
 						case 9:
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3", 2.0);
-						case 11:
+						case 10:
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/cheese_lastman.mp3", 2.0);
 					}
 					SetMusicTimer(client, 0);
@@ -1027,7 +1027,7 @@ void Music_Update(int client)
 					EmitCustomToClient(client, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 113);
 				}
-				case 11:
+				case 10:
 				{
 					EmitCustomToClient(client, "#zombiesurvival/cheese_lastman.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 170);

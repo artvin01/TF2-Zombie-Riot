@@ -1127,11 +1127,8 @@ enum struct Ruina_Projectiles
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, Velocity, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-
-			if(h_NpcSolidHookType[entity] != 0)
-				DHookRemoveHookID(h_NpcSolidHookType[entity]);
-			h_NpcSolidHookType[entity] = 0;
-			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Ruina_RocketExplodePre);
+			
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Ruina_RocketExplodePre);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Ruina_Projectile_Touch);
 

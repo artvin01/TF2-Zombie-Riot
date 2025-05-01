@@ -2967,11 +2967,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-
-			if(h_NpcSolidHookType[entity] != 0)
-				DHookRemoveHookID(h_NpcSolidHookType[entity]);
-			h_NpcSolidHookType[entity] = 0;
-			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
+			
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 			return entity;
@@ -3106,12 +3103,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-
-			if(h_NpcSolidHookType[entity] != 0)
-				DHookRemoveHookID(h_NpcSolidHookType[entity]);
-			h_NpcSolidHookType[entity] = 0;
-
-			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
+			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
@@ -7113,44 +7105,32 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	
 	b_IsAGib[prop] = true;
 	
-	if (!nobleed)
+	if (!nobleed && !EnableSilentMode)
 	{
 		if(!metal_colour)
 		{
 			if(BleedType == 0)
 			{
-				if(!EnableSilentMode)
-				{
-					int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
-					SetParent(prop, particle);
-				}
+				int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
 				SetEntityRenderColor(prop, 255, 0, 0, 255);
 			}
 			else if(BleedType == 2)
 			{
-				if(!EnableSilentMode)
-				{
-					int particle = ParticleEffectAt(pos, "flamethrower_rainbow_bubbles02", Random_time); //This is a permanent particle, gotta delete it manually...
-					SetParent(prop, particle);
-				}
+				int particle = ParticleEffectAt(pos, "flamethrower_rainbow_bubbles02", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
 				SetEntityRenderColor(prop, 65, 65, 255, 255);				
 			}
 			else if(BleedType == 3)
 			{
-				if(!EnableSilentMode)
-				{
-					int particle = ParticleEffectAt(pos, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
-					SetParent(prop, particle);
-				}
+				int particle = ParticleEffectAt(pos, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
 				SetEntityRenderColor(prop, 200, 0, 200, 255);
 			}
 			else
 			{
-				if(!EnableSilentMode)
-				{
-					int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
-					SetParent(prop, particle);
-				}
+				int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
 				SetEntityRenderColor(prop, 0, 255, 0, 255);
 			}
 		}

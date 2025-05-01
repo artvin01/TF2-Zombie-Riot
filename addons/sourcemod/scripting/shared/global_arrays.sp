@@ -414,6 +414,7 @@ int i_EntityRenderColour3[MAXENTITIES]={255, ...};
 int i_EntityRenderColour4[MAXENTITIES]={255, ...};
 bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 
+bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
 int i_Wearable[MAXENTITIES][9];
 int i_FreezeWearable[MAXENTITIES];

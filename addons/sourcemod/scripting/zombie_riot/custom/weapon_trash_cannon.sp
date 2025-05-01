@@ -1237,10 +1237,8 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 		}
 		
 		i_TrashTier[prop] = tier;
-		if(h_NpcSolidHookType[prop] != 0)
-			DHookRemoveHookID(h_NpcSolidHookType[prop]);
-		h_NpcSolidHookType[prop] = 0;
-		h_NpcSolidHookType[prop] = g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
+		
+		g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
 		
 		return prop;
 	}

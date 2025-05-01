@@ -2904,7 +2904,7 @@ bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)
 }
 
 
-void ForcePlayerWin(bool fakeout = false)
+void ForcePlayerWin()
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -2915,8 +2915,7 @@ void ForcePlayerWin(bool fakeout = false)
 			SendConVarValue(client, sv_cheats, "1");
 		}
 	}
-	if(!fakeout)
-		ResetReplications();
+	ResetReplications();
 
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
@@ -2928,17 +2927,14 @@ void ForcePlayerWin(bool fakeout = false)
 
 	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
-	if(!fakeout)
-	{
-		MVMHud_Disable();
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		RemoveAllCustomMusic();
-		Native_ZR_OnWinTeam(TFTeam_Red);
-	}
+	MVMHud_Disable();
+	int entity = CreateEntityByName("game_round_win"); 
+	DispatchKeyValue(entity, "force_map_reset", "1");
+	SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
+	DispatchSpawn(entity);
+	AcceptEntityInput(entity, "RoundWin");
+	RemoveAllCustomMusic();
+	Native_ZR_OnWinTeam(TFTeam_Red);
 }
 
 void ForcePlayerLoss()

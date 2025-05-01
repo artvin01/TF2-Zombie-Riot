@@ -2895,7 +2895,7 @@ void DoGlobalMultiScaling()
 	else
 		EnableSilentMode = false;
 
-//	EnableSilentMode = true;
+	EnableSilentMode = true;
 	
 	playercount *= 0.88;
 

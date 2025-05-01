@@ -109,7 +109,7 @@ public void ApplyExplosionDhook_Rocket(int entity)
 //	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
 	if(!b_EntityIsArrow[entity] && !b_EntityIsWandProjectile[entity]) //No!
 	{
-		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
 	CreateTimer(1.0, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 //Heavily increase thedelay, this rarely ever happens, and if it does, then it should check every 2 seconds at the most!
@@ -143,37 +143,77 @@ public Action FixVelocityStandStillRocket(Handle Timer, int ref)
 
 public MRESReturn DHook_RocketExplodePre(int entity)
 {
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if (0 < owner  && owner <= MaxClients)
+	
+	if(b_RocketBoomEffect[entity])
 	{
-		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-		int inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-		if(!IsValidEntity(inflictor))
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if (0 < owner  && owner <= MaxClients)
 		{
-			inflictor = 0;
+			float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+			int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+
+			int inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+			if(!IsValidEntity(inflictor))
+			{
+				inflictor = 0;
+			}
+			Explode_Logic_Custom(original_damage, owner, entity, weapon,_,_,_,_,_,_,_,_,_,_,inflictor);
 		}
-		Explode_Logic_Custom(original_damage, owner, entity, weapon,_,_,_,_,_,_,_,_,_,_,inflictor);
+		else if(owner > MaxClients)
+		{
+			float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+			int inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+			if(!IsValidEntity(inflictor))
+			{
+				inflictor = 0;
+			}
+			if(GetTeam(entity) != view_as<int>(TFTeam_Red))
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true,_,_,_,_,_,inflictor);	
+			}
+			else
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false,_,_,_,_,_,inflictor);	
+			}
+		}
+		RemoveEntity(entity);
+		return MRES_Supercede;
 	}
-	else if(owner > MaxClients)
+	else
 	{
-		float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-	//	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-	//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
-		int inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-		if(!IsValidEntity(inflictor))
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if (0 < owner  && owner <= MaxClients)
 		{
-			inflictor = 0;
+			float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+			int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+			int inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+			if(!IsValidEntity(inflictor))
+			{
+				inflictor = 0;
+			}
+			Explode_Logic_Custom(original_damage, owner, entity, weapon,_,_,_,_,_,_,_,_,_,_,inflictor);
 		}
-		if(GetTeam(entity) != view_as<int>(TFTeam_Red))
+		else if(owner > MaxClients)
 		{
-			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true,_,_,_,_,_,inflictor);	
-		}
-		else
-		{
-			Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false,_,_,_,_,_,inflictor);	
+			float original_damage = GetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+		//	int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+		//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+			int inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+			if(!IsValidEntity(inflictor))
+			{
+				inflictor = 0;
+			}
+			if(GetTeam(entity) != view_as<int>(TFTeam_Red))
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true,_,_,_,_,_,inflictor);	
+			}
+			else
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false,_,_,_,_,_,inflictor);	
+			}
 		}
 	}
 	return MRES_Ignored;

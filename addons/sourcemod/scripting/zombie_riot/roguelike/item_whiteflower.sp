@@ -241,7 +241,6 @@ public void Rogue_SoulTerraria_Weapon(int entity, int client)
 		StrContains(buffer, "Repaired Ark", false) != -1 ||
 		StrContains(buffer, "Star Shooter", false) != -1 ||
 		StrContains(buffer, "Super Star Shooter", false) != -1 ||
-		StrContains(buffer, "Koshi's Plasm-inator", false) != -1 ||
 		StrContains(buffer, "Tinker's Wrench", false) != -1)
 	{
 		AnnounceSoulBuff(client, entity, 5);

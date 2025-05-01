@@ -1494,12 +1494,7 @@ methodmap Citizen < CClotBody
 	public bool CanPathToAlly(int target)
 	{
 		CNavArea startArea = TheNavMesh.GetNavAreaEntity(this.index, view_as<GetNavAreaFlags_t>(0), 1000.0);
-		if(startArea == NULL_AREA)
-			return false;
-		
 		CNavArea endArea = TheNavMesh.GetNavAreaEntity(target, view_as<GetNavAreaFlags_t>(0), 1000.0);
-		if(endArea == NULL_AREA)
-			return false;
 		
 		float pos[3];
 		GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);

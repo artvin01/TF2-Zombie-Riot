@@ -1244,6 +1244,6 @@
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Increases damage dealt, overall resist and attackspeed by +15%%.\n{yellow}(BELOW IS FOR PLASMIC SURPRISE ONLY)\n{green}Ability cooldowns are reduced and you gain extra regen below 25%% HP."
+		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Increases damage dealt by 15%%.\nDecreases damage taken by 15%%.\nIncreases attackspeed by 15%%.\n(PLASMA KIT ONLY) Ability cooldowns are reduced."
 	}
 }
