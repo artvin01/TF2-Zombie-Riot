@@ -74,7 +74,7 @@ public void Weapon_ZealotRCheckCD(int client, int weapon, bool &result, int slot
 
 void Zealot_ApplyGlobalRCooldown(int client, float Duration)
 {
-	Duration *= CooldownReductionAmount();
+	Duration *= CooldownReductionAmount(client);
 
 	f_DashCooldownZealot[client] = GetGameTime() + Duration;
 	int weapon1;
@@ -84,7 +84,7 @@ void Zealot_ApplyGlobalRCooldown(int client, float Duration)
 		//make sure to not brick melees...
 		if(IsValidEntity(weapon1))
 		{
-			Ability_Apply_Cooldown(client, 3, Duration, weapon1);
+			Ability_Apply_Cooldown(client, 3, Duration, weapon1, true);
 		}
 	}
 }
@@ -103,7 +103,7 @@ void Zealot_ReduceGlobalRCooldown(int client, float Duration, bool potion = fals
 				if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_ZEALOT_POTION)
 				{
 					float CurrentCD = Ability_Check_Cooldown(client, 2, weapon1);
-					Ability_Apply_Cooldown(client, 2, CurrentCD - Duration, weapon1);
+					Ability_Apply_Cooldown(client, 2, CurrentCD - Duration, weapon1, true);
 					f_PotionCooldownDo[client] -= Duration;
 					GrenadeApplyCooldownHud(client, f_PotionCooldownDo[client] - GetGameTime());
 				}
@@ -111,7 +111,7 @@ void Zealot_ReduceGlobalRCooldown(int client, float Duration, bool potion = fals
 			else
 			{
 				float CurrentCD = Ability_Check_Cooldown(client, 3, weapon1);
-				Ability_Apply_Cooldown(client, 3, CurrentCD - Duration, weapon1);
+				Ability_Apply_Cooldown(client, 3, CurrentCD - Duration, weapon1, true);
 			}
 		}
 	}

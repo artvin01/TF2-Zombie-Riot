@@ -6,6 +6,18 @@ public void Rogue_None_Remove()
 	// Nothing happens when removed
 }
 
+public void FlagShip_Rogue_Refresh_Remove()
+{
+	// Refresh players when removed
+	for(int entity = 1; entity <= MAXENTITIES; entity++)
+	{
+		if(!IsValidEntity(entity))
+			continue;
+			
+		RemoveSpecificBuff(entity, "Ziberian Flagship Weaponry");
+	}
+	Rogue_Refresh_Remove();
+}
 public void Rogue_Refresh_Remove()
 {
 	// Refresh players when removed

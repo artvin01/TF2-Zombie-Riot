@@ -125,6 +125,12 @@ public void Construction_S_Ally(int entity, StringMap map)
 	MultiSpeed(entity, map, 1.01);
 }
 
+public void FlagShipCalling(int entity, StringMap map)
+{
+	MultiSpeed(entity, map, 1.1);
+	ApplyStatusEffect(entity, entity, "Ziberian Flagship Weaponry", 9999999.9);
+}
+
 // Speed++ Health-
 public void Construction_SH_Ally(int entity, StringMap map)
 {

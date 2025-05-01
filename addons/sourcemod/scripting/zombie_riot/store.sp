@@ -725,12 +725,16 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 	return 0.0;
 }
 
-stock float CooldownReductionAmount()
+stock float CooldownReductionAmount(int client)
 {
 	float Cooldown = 1.0;
 	if(MazeatItemHas())
 	{
 		Cooldown *= 0.66;
+	}
+	if(HasSpecificBuff(client, "Ziberian Flagship Weaponry"))
+	{
+		Cooldown *= 0.85;
 	}
 	return Cooldown;
 }
@@ -746,7 +750,7 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 			StoreItems.GetArray(StoreWeapon[weapon], item);
 #if defined ZR
 			if(!ignoreCooldown)
-				cooldown *= CooldownReductionAmount();
+				cooldown *= CooldownReductionAmount(client);
 #endif
 			
 			switch(what_slot)
