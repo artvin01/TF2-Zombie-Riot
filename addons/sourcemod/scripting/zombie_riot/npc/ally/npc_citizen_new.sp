@@ -1036,6 +1036,11 @@ methodmap Citizen < CClotBody
 		
 		return npc;
 	}
+	property float m_flTeleportCooldownAntiStuck
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	property int m_iSeed
 	{
@@ -4270,10 +4275,16 @@ public void Citizen_ClotThink(int iNPC)
 			if(ally)
 			{
 				// How do I get to you
-				if(!npc.CanPathToAlly(ally))
+				if(npc.m_flTeleportCooldownAntiStuck < gameTime)
 				{
-					WorldSpaceCenter(ally, vecTarget);
-					TeleportEntity(npc.index, vecTarget);
+					//dont spam expensive logic.
+					npc.m_flTeleportCooldownAntiStuck = gameTime + 2.0;
+					if(!npc.CanPathToAlly(ally))
+					{
+						WorldSpaceCenter(ally, vecTarget);
+						TeleportEntity(npc.index, vecTarget);
+						npc.m_flTeleportCooldownAntiStuck = gameTime + 15.0;
+					}
 				}
 			}
 		}
