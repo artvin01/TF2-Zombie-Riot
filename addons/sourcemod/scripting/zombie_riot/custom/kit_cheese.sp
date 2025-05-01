@@ -33,7 +33,7 @@ Debuff duration is reduced by 50% against raids, and by 25% against bosses.
 #define SOUND_MOCHA_ABILITY1 "items/powerup_pickup_reduced_damage.wav"
 #define SOUND_MOCHA_ABILITY2 "misc/halloween/duck_pickup_pos_01.wav"
 #define SOUND_CHEESEBALL_SQUASH "ui/hitsound_squasher.wav"
-#define SOUND_ELEMENTALAPPLY    "weapons/airboat/airboat_gun_energy2.wav"
+#define SOUND_ELEMENTALAPPLY    "ui/killsound_vortex.wav"
 #define SOUND_CHEDDAR_ABILITY  "weapons/tf2_back_scatter.wav"
 
 static int LaserIndex;
