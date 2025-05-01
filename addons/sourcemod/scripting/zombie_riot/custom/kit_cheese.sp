@@ -111,7 +111,7 @@ void Cheese_PlaySplat(int entity)
 {
 	int pitch = GetRandomInt(75, 125);
 	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
-	EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
+	//EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
 }
 
 void Cheese_Enable(int client, int weapon)
