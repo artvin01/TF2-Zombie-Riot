@@ -255,11 +255,11 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 		if(Cheese_MochaBuild[attacker] > GetGameTime())
 		{
-			cheesedmg *= 1.75;
+			cheesedmg *= 1.5;
 		}
 		if(Cheese_LethalDur[attacker] > GetGameTime())
 		{
-			cheesedmg *= 2.35;
+			cheesedmg *= 2.0;
 		}
 		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
 	}
@@ -296,23 +296,23 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			{
 				case 3:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0);
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0, weapon);
 				}
 				case 4:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 235.0, 10.0);
+					Cheese_Burst(client, basedmg, basedmg, 235.0, 10.0, weapon);
 				}
 				case 5:
 				{
-					Cheese_Burst(client, basedmg*1.25, basedmg, 255.0, 11.0);
+					Cheese_Burst(client, basedmg*1.25, basedmg, 255.0, 11.0, weapon);
 				}
 				case 6, 7, 8:
 				{
-					Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 270.0, 12.0);
+					Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 270.0, 12.0, weapon);
 				}
 				default:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0);
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0, weapon);
 				}
 			}
 		}
@@ -550,6 +550,8 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, particle);
 	WandProjectile_ApplyFunctionToEntity(projectile, Cheese_ProjectileTouch);
 
+	/*
+	// naw, this is too stupid
 	if(Cheese_PapLevel[client] > 0)
 	{
 		Handle swingTrace;
@@ -572,9 +574,10 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 			Angles, // Angles.
 			target); // Homing target
 	}
+	*/
 }
 
-static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist, float beamradius)
+static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist, float beamradius, int weapon)
 {
 	if(!IsValidClient(client))
 	{
@@ -641,6 +644,12 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 			{
 				if(IsValidEntity(Cheese_BuildingHit[building]))
 				{
+					WorldSpaceCenter(Cheese_BuildingHit[building],playerPos);
+					float distance = GetVectorDistance(startPoint, playerPos, false);
+					float damage = dmgclose + (dmgfar-dmgclose) * (distance/maxdist);
+					if (damage < 0)
+						damage *= -1.0;
+
 					float duration = 5.0;
 					if(Cheese_PapLevel[client] >= 3)
 						duration += 1.75;
@@ -662,11 +671,8 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 					else
 						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm I", duration);
 
-					WorldSpaceCenter(Cheese_BuildingHit[building],playerPos);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = dmgclose + (dmgfar-dmgclose) * (distance/maxdist);
-					if (damage < 0)
-						damage *= -1.0;
+					if(IsValidEntity(weapon))
+						Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.25), weapon);
 					
 					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
@@ -693,7 +699,7 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 		}
 		
 		static float belowBossEyes[3];
-		GetBeamDrawStartPoint(client, belowBossEyes, {0.0, 6.5, 0.0});
+		GetBeamDrawStartPoint(client, belowBossEyes, {0.0, 0.0, 0.0});
 		int colorLayer4[4];
 		SetColorRGBA(colorLayer4, red, green, blue, 255);
 		int colorLayer3[4];
