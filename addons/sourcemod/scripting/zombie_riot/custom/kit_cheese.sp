@@ -179,19 +179,17 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 		Cheese_BeamEffect(pos, 125.0, 1.0, 0.25, 8.0);
 	}
 
-	Cheese_Hud(client);		
+	Cheese_Hud(client, false);		
 	
 	return Plugin_Continue;
 }
 
-static void Cheese_Hud(int client)
+static void Cheese_Hud(int client, bool ignorecd)
 {
 	float GameTime = GetGameTime();
 
-	if(hudtimer[client] > GameTime)
+	if(hudtimer[client] > GameTime && !ignorecd)
 		return;
-
-	hudtimer[client] = GameTime + 0.5;
 
 	char CheeseHud[255];
 	if(Cheese_PapLevel[client] > 1)
@@ -206,8 +204,7 @@ static void Cheese_Hud(int client)
 				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: Ready!", CheeseHud);
 			else
 				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: [%.1f]", CheeseHud, Cheese_LethalCD[client]);
-		}
-					
+		}			
 	}
 			
 	if(Cheese_PapLevel[client] > 2)
@@ -244,6 +241,7 @@ static void Cheese_Hud(int client)
 		}
 	}
 
+	hudtimer[client] = GameTime + 0.5;
 	PrintHintText(client, "%s", CheeseHud);
 }
 
@@ -560,8 +558,8 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 			LockOnOnce = false;
 		Initiate_HomingProjectile(projectile, 
 			client,
-			17.5,	// Maximum angle lock
-			10.0,	// Homing per sec
+			10.0,	// Maximum angle lock
+			3.0,	// Homing per sec
 			LockOnOnce, // If to lock on the target only once or not.
 			true,	// Change angles?
 			Angles, // Angles.
