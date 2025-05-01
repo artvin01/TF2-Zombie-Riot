@@ -533,24 +533,6 @@
 				"return"	"void"
 				"this"		"entity"
 			}
-			"CGameRules::ShouldCollide"
-			{
-				"offset"	"CGameRules::ShouldCollide"
-				"hooktype"	"gamerules"
-				"return"	"bool"
-				"this"		"ignore"
-				"arguments"
-				{
-					"collisionGroup0"
-					{
-						"type"	"int"
-					}
-					"collisionGroup1"
-					{
-						"type"	"int"
-					}
-				}
-			}
 			"CTFPlayer::CanAirDash"
 			{
 				"signature"	"CTFPlayer::CanAirDash"
@@ -674,13 +656,6 @@
 				"return"	"void"
 				"this"		"entity"
 			}
-			"CTFBot::Event_Killed()"
-			{
-				"offset"	"CTFBot::Event_Killed()"
-				"hooktype"	"entity"
-				"return"	"void"
-				"this"		"entity"
-			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
 				// virtual void PipebombTouch( CBaseEntity *pOther )
@@ -798,123 +773,93 @@
 		{
 			"CBaseEntity::WorldSpaceCenter"		
 			{		
-				"windows"	"155"		
+				"windows"	"157"		
 				"linux"		"156"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
-				"windows" 	"260"
-				"linux" 	"261"
+				"windows" 	"261"
+				"linux" 	"262"
 			}
 			"CEconItemView::IterateAttributes"
 			{
 				"windows"	"18"
 				"linux"		"19"
 			}
-			"CTFBot::Event_Killed()"
-			{
-				"windows"	"68"
-				"linux"		"69"
-			}
 			"CWeaponMedigun::PrimaryAttack()"
-			{
-				"windows"	"286"
-				"linux"		"292"
-			}
-			"CTFPistol_ScoutPrimary::SecondaryAttack()"
 			{
 				"windows"	"287"
 				"linux"		"293"
 			}
+			"CTFPistol_ScoutPrimary::SecondaryAttack()"
+			{
+				"windows"	"288"
+				"linux"		"294"
+			}
 			"CTFWeaponBase::FinishReload()"
 			{
-				"windows"	"281"
-				"linux"		"287"
+				"windows"	"282"
+				"linux"		"288"
 			}
 			"CBaseCombatWeapon::Reload()"
 			{
-				"windows"	"283"
-				"linux"		"289"
+				"windows"	"284"
+				"linux"		"290"
 			}
 			"CBasePlayer::EquipWearable"
 			{
 				"linux"		"439"
 				"windows"	"438"
 			}
-			"CTFPlayerAnimState::DoAnimationEvent" //(PlayerAnimEvent_t, int)
-			{
-				"linux"		"3"
-				"windows"	"2"
-			}
-			"CTFPlayerAnimState::Update"	//(float, float)
-			{
-				"linux"		"5"
-				"windows"	"4"
-			}
-			"CPlayerInfo::GetLocalOrigin"	//(float)
-			{
-				"linux"		"3"
-				"windows"	"3"
-			}
-			"CPlayerInfo::GetLocalAngles"	//(float)
-			{
-				"linux"		"5"
-				"windows"	"5"
-			}
 			"CBasePlayer::ForceRespawn"
 			{
-				"linux"		"337"
-				"windows"	"336"
-			}
-			"CGameRules::ShouldCollide"
-			{
-				"linux"		"30"
-				"windows"	"29"
+				"linux"		"338"
+				"windows"	"337"
 			}
 			"CBaseEntity::GetVectors"
 			{
-				"windows"	"142"
-				"linux"		"143"
+				"windows"	"143"
+				"linux"		"144"
 			}
 			"CTFParticleCannon::FireChargedShot"
 			{
-				"windows"	"491"
-				"linux"		"498"
+				"windows"	"493"
+				"linux"		"500"
 			}
 			"CBaseGrenade::Explode"
-			{
-				"linux"		"236"
-				"windows"	"235"
-			}
-			"CBaseGrenade::Detonate"
 			{
 				"linux"		"237"
 				"windows"	"236"
 			}
+			"CBaseGrenade::Detonate"
+			{
+				"linux"		"238"
+				"windows"	"237"
+			}
 			"CTFBaseRocket::Explode"
 			{
-				"linux"		"240"
-				"windows"	"239"
+				"linux"		"241"
+				"windows"	"240"
 			}
 			"CTFProjectile_SpellFireball::Explode"
 			{
-				"linux"		"250"
-				"windows"	"247"
+				"linux"		"251"
+				"windows"	"248"
 			}
 			"CBasePlayer::CheatImpulseCommands"
 			{
-				"linux"		"379"
-				"windows"	"378"
+				"linux"		"380"
+				"windows"	"379"
 			}
 			"CTFCrossbow::Holster"
 			{
-				"linux"		"268"
-				"windows"	"262"
+				"linux"		"269"
+				"windows"	"263"
 			}
 			"CBaseCombatWeapon::ItemPostFrame()"
 			{
-				"windows"	"272"
-				"linux"		"278"
+				"windows"	"273"
+				"linux"		"279"
 			}
 			//CBaseEntity is arbitrary.
 			"CBaseEntity::UpdateTransmitState()"
@@ -924,8 +869,8 @@
 			}
 			"CBaseAnimating::RefreshCollisionBounds"
 			{
-				"windows"	"218"
-				"linux"		"219"
+				"windows"	"219"
+				"linux"		"220"
 			}
 			"IBody::GetSolidMask"
 			{
@@ -934,8 +879,8 @@
 			}
 			"CBaseAnimating::BecomeRagdollOnClient"
 			{
-				"windows"	"205"
-				"linux"		"206"
+				"windows"	"206"
+				"linux"		"207"
 			}
 			"CBaseBoss::m_bResolvePlayerCollisions"
 			{

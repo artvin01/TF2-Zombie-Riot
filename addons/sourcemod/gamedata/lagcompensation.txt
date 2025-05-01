@@ -8,17 +8,13 @@
 			{
 				"library"	"server"
 				"linux"			"16"
-				"windows"		"15"
-				"linux64"		"16"
-				"windows64"		"15"
+				"windows"		"16"
 			}
 			"CTFPlayer::WantsLagCompensationOnEntity"
 			{
-				"library"	"server"
-				"linux"		"335"
+				"library"		"server"
+				"linux"			"336"
 				"windows"		"334"
-				"linux64"		"335"
-				"windows64"		"334"
 			}
 		}
 		"Signatures"
