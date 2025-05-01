@@ -110,7 +110,7 @@ void NPC_ConfigSetup()
 	VehicleHL2_Setup();
 	VehicleFullJeep_Setup();
 	VehicleAmbulance_Setup();
-	VehicleBus_Setup();
+//	VehicleBus_Setup(); This vehicle is too big.
 	VehicleCamper_Setup();
 	VehicleDumpTruck_Setup();
 	VehicleLandrover_Setup();
@@ -1317,7 +1317,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "../shared/vehicles/vehicle_hl2.sp"
 #include "vehicles/vehicle_fulljeep.sp"
 #include "vehicles/vehicle_ambulance.sp"
-#include "vehicles/vehicle_bus.sp"
+//#include "vehicles/vehicle_bus.sp"
 #include "vehicles/vehicle_camper.sp"
 #include "vehicles/vehicle_dumptruck.sp"
 #include "vehicles/vehicle_landrover.sp"
