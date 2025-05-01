@@ -4489,12 +4489,12 @@ void StatusEffects_Plasm()
 	data.DamageDealMulti			= 0.15;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
+	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.85;
+	data.AttackspeedBuff			= 0.75;
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
