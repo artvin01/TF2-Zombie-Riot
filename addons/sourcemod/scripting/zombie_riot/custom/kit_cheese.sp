@@ -49,7 +49,7 @@ static float Cheese_TargetsHit[MAXTF2PLAYERS];
 static float Cheese_LethalCD[MAXTF2PLAYERS];
 static float Cheese_MochaCD[MAXTF2PLAYERS];
 static int Cheese_MochaType[MAXTF2PLAYERS];
-static float stupidfuckingtimer[MAXTF2PLAYERS];
+static float hudtimer[MAXTF2PLAYERS];
 
 static Handle EffectTimer[MAXTF2PLAYERS];
 static bool Precached = false;
@@ -69,7 +69,7 @@ void Cheese_MapStart()
 	Zero(Cheese_MochaCD);
 	Zero(Cheese_MochaType);
 	Zero(Cheese_MochaDur);
-	Zero(stupidfuckingtimer);
+	Zero(hudtimer);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	Precached = false;
@@ -97,12 +97,12 @@ void Cheese_BeamEffect(float position[3], float startrad = 1.0, float endrad = 1
 {
 	if(elemental)
 	{
-		TE_SetupBeamRingPoint(position, startrad, endrad, LaserIndex, LaserIndex, 0, 1, lifetime, width, 0.0, { 235, 75, 210, 65 }, 1, 0);
+		TE_SetupBeamRingPoint(position, startrad, endrad, LaserIndex, LaserIndex, 0, 1, lifetime, width, 0.0, { 235, 75, 210, 60 }, 1, 0);
 		TE_SendToClient(client);
 	}
 	else
 	{
-		TE_SetupBeamRingPoint(position, startrad, endrad, LaserIndex, LaserIndex, 0, 1, lifetime, width, 0.0, { 235, 75, 210, 255 }, 1, 0);
+		TE_SetupBeamRingPoint(position, startrad, endrad, LaserIndex, LaserIndex, 0, 1, lifetime, width, 0.0, { 235, 75, 210, 200 }, 1, 0);
 		TE_SendToAll();
 	}
 }
@@ -128,7 +128,7 @@ void Cheese_Enable(int client, int weapon)
 		}
 
 		DataPack pack;
-		EffectTimer[client] = CreateDataTimer(0.5, Cheese_EffectTimer, pack, TIMER_REPEAT);
+		EffectTimer[client] = CreateDataTimer(0.25, Cheese_EffectTimer, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -159,14 +159,26 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	pos[2] += 5.0;
 	if(LastMann)
 	{
-	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 1.0);
-		Cheese_BeamEffect(pos, 1.0, 200.0, 0.125, 12.0);
+	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 0.6);
+		HealEntityGlobal(client, client, 6.0, 0.25, 0.0, HEAL_SELFHEAL);
+		Cheese_BeamEffect(pos, 200.0, 1.0, 0.075, 10.0);
 		return Plugin_Continue;
 	}
 	else
 	{
-		Cheese_BeamEffect(pos, 1.0, 80.0, 0.25, 6.0, true, client);
+		Cheese_BeamEffect(pos, 1.0, 75.0, 0.075, 5.0, true, client);
 	}
+
+	if(Cheese_LethalDur[client] > GetGameTime())
+	{
+		Cheese_BeamEffect(pos, 1.0, 100.0, 0.25, 8.0);
+	}
+
+	if(Cheese_MochaDur[client] > GetGameTime())
+	{
+		Cheese_BeamEffect(pos, 125.0, 1.0, 0.25, 8.0);
+	}
+
 	Cheese_Hud(client);		
 	
 	return Plugin_Continue;
@@ -176,10 +188,10 @@ static void Cheese_Hud(int client)
 {
 	float GameTime = GetGameTime();
 
-	if(stupidfuckingtimer[client] > GameTime)
+	if(hudtimer[client] > GameTime)
 		return;
 
-	stupidfuckingtimer[client] = GameTime + 0.5;
+	hudtimer[client] = GameTime + 0.5;
 
 	char CheeseHud[255];
 	if(Cheese_PapLevel[client] > 1)
@@ -187,7 +199,6 @@ static void Cheese_Hud(int client)
 		if(Cheese_LethalDur[client] > GetGameTime())
 		{
 			Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE! [%.1f]", CheeseHud, Cheese_LethalDur[client]);
-			Cheese_BeamEffect(pos, 1.0, 100.0, 0.2, 7.5);
 		}
 		else
 		{
@@ -204,7 +215,6 @@ static void Cheese_Hud(int client)
 		if(Cheese_MochaDur[client] > GetGameTime())
 		{
 			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!! [%.1f]\nEffect: ", CheeseHud, Cheese_MochaDur[client]);
-			Cheese_BeamEffect(pos, 125.0, 1.0, 0.2, 7.5);
 			switch(Cheese_MochaType[client])
 			{
 				case 1:
@@ -262,7 +272,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon)
 {
-	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.45), weapon);
+	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.33), weapon);
 }
 
 public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int slot)
