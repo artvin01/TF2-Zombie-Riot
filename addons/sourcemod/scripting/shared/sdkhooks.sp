@@ -1287,6 +1287,13 @@ public void OnPostThink(int client)
 					green = 77;
 					blue = 43;
 				}
+				//plasma
+				case 5:
+				{
+					red = 235;
+					green = 75;
+					blue = 215;
+				}
 				//seaborn
 				default:
 				{

@@ -1220,7 +1220,7 @@
 	}
 	"7 Heavy Souls Desc"
 	{
-		"en"	"Increases damage by 50%%\nIncreases resistance by 50%%\nIncreases attack speed by 100%%"
+		"en"	"Increases damage by 50％\nIncreases resistance by 50％\nIncreases attack speed by 100％"
 	}
 	"Plasm I"
 	{
@@ -1228,7 +1228,7 @@
 	}
 	"Plasm I Desc"
 	{
-		"en"	"Slows NPCs by 5%%.\nReduces attackspeed by 7%%."
+		"en"	"Slows NPCs by 5％.\nReduces attackspeed by 7％."
 	}
 	"Plasm II"
 	{
@@ -1236,7 +1236,7 @@
 	}
 	"Plasm II Desc"
 	{
-		"en" 	"Slows NPCs by 7%%.\nReduces attackspeed by 10%%."
+		"en" 	"Slows NPCs by 7％.\nReduces attackspeed by 10％."
 	}
 	"Plasmatic Rampage"
 	{
@@ -1244,6 +1244,38 @@
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Increases damage dealt by 15%%.\nDecreases damage taken by 15%%.\nIncreases attackspeed by 15%%.\n(PLASMA KIT ONLY) Ability cooldowns are reduced."
+		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Boost damage dealt and resist +15％.\nBoosts attackspeed by +25％\n{yellow}(BELOW IS FOR PLASMIC SURPRISE ONLY)\n{darkviolet}Ability cooldowns are reduced, gain extra regen below 25％ HP."
+	}
+	"Plasmatized Lethalitation"
+	{
+		"en"	"Plasmatized Lethalitation"
+	}
+	"Plasmatized Lethalitation Desc"
+	{
+		"en" 	"Incrased Attackspeed and 2x Plasmic Elemental Buildup against enemies."
+	}
+	"Plasmatized Inoculation"
+	{
+		"en"	"Plasmatized Inoculation"
+	}
+	"Plasmatized Inoculation Desc"
+	{
+		"en" 	"Gain Random Plasma Effect shown in your hud."
+	}
+	"Plasm-Allocator"
+	{
+		"en"	"Plasm-Allocator"
+	}
+	"Plasm-Allocator Desc"
+	{
+		"en" 	"1.5x Plasmic Elemental Buildup against enemies."
+	}
+	"Ziberian Flagship Weaponry"
+	{
+		"en"	"Ziberian Flagship Weaponry"
+	}
+	"Ziberian Flagship Weaponry Desc"
+	{
+		"en" 	"Take 25％ Less damage\nDeal 10％ More damage\nAttack 10％ Faster.\nReduces cooldowns by 15％"
 	}
 }

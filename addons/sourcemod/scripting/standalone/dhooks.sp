@@ -109,7 +109,7 @@ public void ApplyExplosionDhook_Rocket(int entity)
 //	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
 	if(!b_EntityIsArrow[entity] && !b_EntityIsWandProjectile[entity]) //No!
 	{
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
+		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, DHook_RocketExplodePre);
 	}
 	CreateTimer(1.0, FixVelocityStandStillRocket, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 //Heavily increase thedelay, this rarely ever happens, and if it does, then it should check every 2 seconds at the most!

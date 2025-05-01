@@ -4302,6 +4302,23 @@ void StatusEffects_Construction()
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 0.7;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ziberian Flagship Weaponry");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "վ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= 0.1;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	//-0.5
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 0.9;
+	StatusEffect_AddGlobal(data);
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Expidonsan Anger");
@@ -4489,12 +4506,12 @@ void StatusEffects_Plasm()
 	data.DamageDealMulti			= 0.15;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = true;
+	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.85;
+	data.AttackspeedBuff			= 0.75;
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -4540,6 +4557,46 @@ void StatusEffects_Plasm()
 	data.LinkedStatusEffect = 0;
 	data.LinkedStatusEffectNPC = 0;
 	data.AttackspeedBuff = 0.0;
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmatized Lethalitation");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ի");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmatized Inoculation");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ծ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasm-Allocator");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Գ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
 
 stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Index)

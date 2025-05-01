@@ -577,7 +577,7 @@
 	}
 	"Flagship Calling Desc"
 	{
-		"en"	"Recover a high-grade weapon in the store at a discount."
+		"en"	"Increase Movementspeed by 10％\nGain the ''Ziberian Flagship Weaponry''."
 	}
 	"Tranquilizer Turret"
 	{

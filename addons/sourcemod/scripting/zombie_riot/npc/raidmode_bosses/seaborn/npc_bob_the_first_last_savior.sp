@@ -1720,7 +1720,7 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 		enemy.Health = health;
 		if(!boss)
 		{
-			enemy.Health *= MultiGlobalHealth;
+			enemy.Health = RoundToNearest(float(enemy.Health) * MultiGlobalHealth);
 		}
 	}
 	enemy.Team = GetTeam(bobindx);

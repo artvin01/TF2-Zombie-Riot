@@ -1529,7 +1529,7 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 		enemy.Health = health;
 		if(!is_a_boss)
 		{
-			enemy.Health *= MultiGlobalHealth;
+			enemy.Health = RoundToNearest(float(enemy.Health) * MultiGlobalHealth);
 		}
 	}
 	enemy.Is_Boss = view_as<int>(is_a_boss);

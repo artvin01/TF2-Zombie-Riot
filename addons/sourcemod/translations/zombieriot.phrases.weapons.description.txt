@@ -4324,7 +4324,7 @@
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Now grants slight ranged resistance. Unlocks Lethal Injection [M2]:\nTemporarily increases attackspeed, and your injections build the Plasmic Elemental status WAY faster."
+		"en" 	"Now grants slight ranged resistance. Unlocks Lethal Injection [M2]:\nTemporarily boosts attackspeed, resistance, and doubles Plasmic Elemental melee buildup."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
@@ -4332,7 +4332,7 @@
 	}
 	"Plasma Inject Pap 4 Desc"
 	{
-		"en" 	"Increases overall stats.\nLethal Injection's now lasts longer and its attackspeed bonus is now slightly stronger.\nPlasmic Inoculation's buffs and healing are now stronger."
+		"en" 	"Increases overall stats.\nIncreases Lethal Injection's, duration, attackspeed and resistances.\nPlasmic Inoculation's buffs and healing are now stronger."
 	}
 	"Plasma Inject Pap 5 Desc"
 	{
@@ -4348,7 +4348,7 @@
 	}
 	"Plasminator Pap 2 Desc"
 	{
-		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts Plasm I temporarily."
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage, inflicts Plasm I temporarily and inflicts 25%% of its damage as Plasmic Elemental damage."
 	}
 	"Plasminator Pap 3 Desc"
 	{
