@@ -381,11 +381,10 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 			float Ability_CD = Ability_Check_Cooldown(client, slot);
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
-
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Cheese_LethalCD[client] - GetGameTime());
 			return;
 		}
 	}
@@ -484,11 +483,10 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 			float Ability_CD = Ability_Check_Cooldown(client, slot);
 			if(Ability_CD <= 0.0)
 				Ability_CD = 0.0;
-
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Cheese_MochaCD[client] - GetGameTime());
 			return;
 		}
 	}

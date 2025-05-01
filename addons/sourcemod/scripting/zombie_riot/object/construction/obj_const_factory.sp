@@ -4,7 +4,7 @@
 static const char Vehicles[][] =
 {
 	"vehicle_ambulance",
-	"vehicle_bus",
+//	"vehicle_bus",
 	"vehicle_camper",
 	"vehicle_dumptruck_empty",
 	"vehicle_landrover",
