@@ -2763,6 +2763,10 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	if(health != 0)
 	{
 		enemy.Health = health;
+		if(!is_a_boss)
+		{
+			enemy.Health *= MultiGlobalHealth;
+		}
 	}
 	enemy.Is_Boss = view_as<int>(is_a_boss);
 	enemy.Is_Immune_To_Nuke = true;

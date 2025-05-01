@@ -250,6 +250,9 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 		{
 			ModelSizeAdd = 3.0;
 		}
+		if(h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Tornado_RocketExplodePre); //In this case I reused code that was reused due to laziness, I am the ultiamte lazy. *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Tornado_Blitz_StartTouch);

@@ -2635,8 +2635,10 @@ static int Create_Crystal(int client, float vecTarget[3], float damage, float ro
 		Set_Projectile_Collision(entity); //If red, set to 27
 
 
-
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Donner_Crystal_DHook_RocketExplodePre); //*yawn*
+		if(h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
+		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Donner_Crystal_DHook_RocketExplodePre); //*yawn*
 		
 		SDKHook(entity, SDKHook_StartTouch, Crystal_Donner_StartTouch);
 
