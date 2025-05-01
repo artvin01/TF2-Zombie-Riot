@@ -147,8 +147,8 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 {
 	DataDo.Reset();
 	int client = DataDo.ReadCell();
-	int Weapon = EntRefToEntIndex(DataDo.ReadCell());
-	if(!IsValidEntity(Weapon) || !IsValidClient(client) || !IsPlayerAlive(client))
+	int weapon = EntRefToEntIndex(DataDo.ReadCell());
+	if(!IsValidEntity(weapon) || !IsValidClient(client) || !IsPlayerAlive(client))
 	{
 		EffectTimer[client] = null;
 		return Plugin_Stop;
