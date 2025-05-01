@@ -5597,3 +5597,23 @@ stock void RunScriptCode(int entity, int activator, int caller, const char[] for
     SetVariantString(buffer);
     AcceptEntityInput(entity, "RunScriptCode", activator, caller);
 }
+
+
+stock void Projectile_TeleportAndClip(int entity)
+{
+	float VecPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", VecPos);
+
+	//todo: instead of angle, get speed of said projectile, and caclulate the angle from said speed
+	//This is just a placeholder
+	float VecAng[3];
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", VecAng);
+	Handle hTrace = TR_TraceRayFilterEx(VecPos, VecAng, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, BulletAndMeleeTrace, entity);
+	if ( TR_GetFraction(hTrace) < 1.0)
+	{
+		//collision
+		TR_GetEndPosition(VecPos, hTrace);
+		SDKCall_SetAbsOrigin(entity, VecPos);
+	}
+	delete hTrace;
+}

@@ -63,7 +63,7 @@ void SDKHook_PluginStart()
 #endif
 	
 #if defined ZR
-	for(int client=0; client<=MaxClients; client++)
+	for(int client = 1; client < sizeof(RecentSoundList); client++)
 	{
 		RecentSoundList[client] = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	}
@@ -71,6 +71,7 @@ void SDKHook_PluginStart()
 
 #if !defined NOG
 	AddNormalSoundHook(SDKHook_NormalSHook);
+	AddAmbientSoundHook(SDKHook_AmbientSoundHook);
 #endif
 }
 void SDKHook_MapStart()
@@ -1286,6 +1287,13 @@ public void OnPostThink(int client)
 					green = 77;
 					blue = 43;
 				}
+				//plasma
+				case 5:
+				{
+					red = 235;
+					green = 75;
+					blue = 215;
+				}
 				//seaborn
 				default:
 				{
@@ -2299,7 +2307,30 @@ Action Timer_RecentSoundRemove(Handle timer, int client)
 	return Plugin_Continue;
 }
 #endif
-
+public Action SDKHook_AmbientSoundHook(char sample[PLATFORM_MAX_PATH], int &entity,float &volume, int &level, int &pitch, float pos[3], int &flags, float &delay)
+{
+	if(StrContains(sample, "pipe_bomb", true) != -1)
+	{
+		if(EnableSilentMode)
+		{
+			volume *= 0.8;
+			level = level - 5;
+			//Explosions are too loud, silence them.
+		}
+		return Plugin_Changed;
+	}
+	if(StrContains(sample, "explode", true) != -1)
+	{
+		if(EnableSilentMode)
+		{
+			volume *= 0.8;
+			level = level - 5;
+			//Explosions are too loud, silence them.
+		}
+		return Plugin_Changed;
+	}
+	return Plugin_Continue;
+}
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
 	/*

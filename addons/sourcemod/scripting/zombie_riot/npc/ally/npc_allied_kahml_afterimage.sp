@@ -128,16 +128,6 @@ methodmap AlliedKahmlAbility < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 		npc.StartPathing();
-	/*
-		b_DoNotUnStuck[npc.index] = true;
-		b_NoGravity[npc.index] = true;
-
-		fl_heal_cooldown[spawn_index] = damage;
-		i_Changed_WalkCycle[spawn_index] = EntIndexToEntRef(weapon);
-		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6); 
-*/
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
 

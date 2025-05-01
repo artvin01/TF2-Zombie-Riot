@@ -170,6 +170,9 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		//todo: Fix them
 		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
+		if(h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
