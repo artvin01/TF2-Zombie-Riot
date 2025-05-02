@@ -3585,13 +3585,22 @@ static void MenuPage(int client, int section)
 	}
 	if(section == -2)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Sell All Items", client);
+		if(Waves_Started())
+			FormatEx(buffer, sizeof(buffer), "%T", "Sell All Items", client);
+		else
+			FormatEx(buffer, sizeof(buffer), "%T", "Return to loadout Menu", client);
+
 		menu.AddItem("-999969", buffer);
 	}
 	if(section == -999969)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Sell Items Confirm", client);
-		menu.AddItem("-9999691", buffer, ITEMDRAW_DISABLED);
+		char buffer2[128];
+		if(Waves_Started())
+			FormatEx(buffer2, sizeof(buffer2), "%T", "Sell Items Confirm", client);
+		else
+			FormatEx(buffer2, sizeof(buffer2), "%T", "Sell Items Confirm Pref", client);
+
+		menu.AddItem("-9999691", buffer2, ITEMDRAW_DISABLED);
 		FormatEx(buffer, sizeof(buffer), "%T", "No", client);
 		menu.AddItem("-9999692", buffer);
 		FormatEx(buffer, sizeof(buffer), "%T", "Yes", client);
@@ -3610,6 +3619,10 @@ static void MenuPage(int client, int section)
 		Store_GiveAll(client, GetClientHealth(client));
 		ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 		MenuPage(client, 0);
+		if(!Waves_Started())
+		{
+			StarterCashMode[client] = true;
+		}
 		return;
 	}
 	else

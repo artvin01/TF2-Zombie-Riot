@@ -306,9 +306,17 @@
 	{
 		"en"		"Are you sure you want to sell all your items?"
 	}
+	"Sell Items Confirm Pref"
+	{
+		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your loadout store!"
+	}
 	"Sell All Items"
 	{
 		"en"		"Sell all items"
+	}
+	"Return to loadout Menu"
+	{
+		"en"		"Return to loadout Menu"
 	}
 	"Confirm Loadout"
 	{
