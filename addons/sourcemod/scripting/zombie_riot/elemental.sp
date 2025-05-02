@@ -1013,7 +1013,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				else
 				{
-					ApplyStatusEffect(attacker, victim, "Plasm II", 999.0);
+					ApplyStatusEffect(attacker, victim, "Plasm II", 10.0);
 				}
 
 				if(melee) // if applied via melee, slight dmg boost.
