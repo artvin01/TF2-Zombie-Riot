@@ -308,15 +308,15 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			{
 				case 3:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0, weapon);
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 12.0, weapon);
 				}
 				case 4:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 235.0, 10.0, weapon);
+					Cheese_Burst(client, basedmg, basedmg, 235.0, 12.0, weapon);
 				}
 				case 5:
 				{
-					Cheese_Burst(client, basedmg*1.25, basedmg, 255.0, 11.0, weapon);
+					Cheese_Burst(client, basedmg*1.25, basedmg, 255.0, 12.0, weapon);
 				}
 				case 6, 7, 8:
 				{
@@ -324,7 +324,7 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 				}
 				default:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0, weapon);
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 12.0, weapon);
 				}
 			}
 		}
@@ -430,7 +430,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					dmgbuff = 2.15;
 					resbuff = 0.55;
 					atkspdbuff = 0.65;
-					HealEntityGlobal(client, client, MaxHealth * 0.10, 0.6, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.2, 0.6, buffdurations, HEAL_SELFHEAL);
 				}
 				case 5, 6:		
 				{
@@ -438,7 +438,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					resbuff = 0.5;
 					atkspdbuff = 0.55;
 					buffdurations = 15.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.125, 0.75, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.25, 0.75, buffdurations, HEAL_SELFHEAL);
 				}
 				case 7, 8:
 				{
@@ -446,11 +446,11 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					resbuff = 0.4;
 					atkspdbuff = 0.45;
 					buffdurations = 20.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.175, 1.0, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.3, 1.0, buffdurations, HEAL_SELFHEAL);
 				}
 				default:
 				{
-					HealEntityGlobal(client, client, MaxHealth * 0.075, 0.5, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, buffdurations, HEAL_SELFHEAL);
 				}
 			}
 
