@@ -324,7 +324,7 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 				}
 				default:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 120.0, weapon);
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 12.0, weapon);
 				}
 			}
 		}
