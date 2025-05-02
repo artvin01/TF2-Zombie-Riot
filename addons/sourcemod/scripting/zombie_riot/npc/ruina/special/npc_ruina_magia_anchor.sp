@@ -350,7 +350,8 @@ methodmap Magia_Anchor < CClotBody
 		npc.m_flMeleeArmor = 2.5;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 115.0;
 
-		SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
+		if(GetTeam(npc.index) != 2)
+			SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
 
 		/*int test;
 		test = GetEntProp(npc.index, Prop_Data, "m_usSolidFlags");

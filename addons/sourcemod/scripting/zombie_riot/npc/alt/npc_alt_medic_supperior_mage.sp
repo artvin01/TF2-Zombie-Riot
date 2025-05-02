@@ -327,7 +327,7 @@ static void Internal_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							float damage = 45.0 * (1.0+(1-(Health/MaxHealth))*2);
-							if(ZR_Waves_GetRound()<=45)
+							if(iRuinaWave()<=45)
 							{
 								damage=damage/1.75;
 							}
