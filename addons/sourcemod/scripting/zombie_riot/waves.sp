@@ -3392,7 +3392,7 @@ void AlreadyWaitingSet(bool set)
 {
 	AlreadySetWaiting = set;
 }
-void Waves_SetReadyStatus(int status)
+void Waves_SetReadyStatus(int status, bool stopmusic = true)
 {
 	//LogStackTrace("Hello! -> %d", status);
 	switch(status)
@@ -3445,7 +3445,7 @@ void Waves_SetReadyStatus(int status)
 		}
 		case 2:	// Waiting
 		{
-			if(!AlreadySetWaiting && !Rogue_Mode())
+			if(stopmusic && !AlreadySetWaiting && !Rogue_Mode())
 			{
 				for(int client=1; client<=MaxClients; client++)
 				{

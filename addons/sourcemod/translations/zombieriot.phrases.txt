@@ -1964,13 +1964,25 @@
 	{
 		"en"		"Support Buildings"
 	}	
-	"Singular Buildings"
+	"Support Buildings Explain"
 	{
-		"en"		"Singular Buildings"
+		"en"		"To build more, buy builder upgrades!"
+	}	
+	"Unique Buildings"
+	{
+		"en"		"Unique Buildings"
+	}	
+	"Unique Buildings Explain"
+	{
+		"en"		"You can only have 1 building from this section at once!"
 	}	
 	"Construct Buildings"
 	{
 		"en"		"Construct Buildings"
+	}	
+	"Construct Buildings Explain"
+	{
+		"en"		"Global limits, and you can move any of these from other players!"
 	}	
 	"Which perk do you desire?"
 	{
@@ -2148,6 +2160,14 @@
 		"pt"		"Comprar apenas os itens grátis"
 		"nl"		"Koop alleen graties artikelen"
 		"chi"       "只购买免费商品"
+	}
+	"Favorite"
+	{
+		"en"		"Favorite this loadout to autobuy it when you connect"
+	}
+	"Un Favorite"
+	{
+		"en"		"Un Favorite"
 	}
 	"Getting Your Items"
 	{
