@@ -1001,13 +1001,13 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 
 				if(b_thisNpcIsARaid[victim])
 				{
-					cheesedmg *= 2.75;
+					cheesedmg *= 3.0;
 					ApplyStatusEffect(attacker, victim, "Plasm I", 5.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 20.0);
 				}
 				else if(b_thisNpcIsABoss[victim])
 				{
-					cheesedmg *= 2.0;
+					cheesedmg *= 2.25;
 					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 10.0);
 				}
