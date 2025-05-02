@@ -430,7 +430,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					dmgbuff = 2.15;
 					resbuff = 0.55;
 					atkspdbuff = 0.65;
-					HealEntityGlobal(client, client, MaxHealth * 0.2, 0.6, buffdurations, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.15, 0.6, buffdurations, HEAL_SELFHEAL);
 				}
 				case 5, 6:		
 				{
@@ -438,7 +438,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					resbuff = 0.5;
 					atkspdbuff = 0.55;
 					buffdurations = 15.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.25, 0.75, buffdurations, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.20, 0.75, buffdurations, HEAL_SELFHEAL);
 				}
 				case 7, 8:
 				{
@@ -446,7 +446,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					resbuff = 0.4;
 					atkspdbuff = 0.45;
 					buffdurations = 20.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.3, 1.0, buffdurations, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.25, 1.0, buffdurations, HEAL_SELFHEAL);
 				}
 				default:
 				{
