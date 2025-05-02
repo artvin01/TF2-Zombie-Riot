@@ -7424,9 +7424,13 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 	if(customcolors)
 	{
 		TE_WriteNum("m_bCustomColors", customcolors);
-		TE_WriteVector("m_CustomColors.m_vecColor1", color1);
-		if(customcolors == 2)
-			TE_WriteVector("m_CustomColors.m_vecColor2", color2);
+		if(color1[2] == 11.1) //This shit doesnt work and spams console, block.
+		{
+			TE_WriteVector("m_CustomColors.m_vecColor1", color1);
+			if(customcolors == 2)
+				TE_WriteVector("m_CustomColors.m_vecColor2", color2);
+			
+		}
 	}
 
 	if(controlpoint != -1)

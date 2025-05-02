@@ -38,18 +38,14 @@ Debuff duration is reduced by 50% against raids, and by 25% against bosses.
 
 static int LaserIndex;
 static float Cheese_PenaltyDur[MAXENTITIES];
-static float Cheese_LethalDur[MAXTF2PLAYERS];
-static float Cheese_MochaDur[MAXTF2PLAYERS];
-static float Cheese_MochaBuild[MAXTF2PLAYERS];
 static int Cheese_PapLevel[MAXTF2PLAYERS];
 
 static int Cheese_Glow;
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
 static float Cheese_TargetsHit[MAXTF2PLAYERS];
-static float Cheese_LethalCD[MAXTF2PLAYERS];
-static float Cheese_MochaCD[MAXTF2PLAYERS];
 static int Cheese_MochaType[MAXTF2PLAYERS];
 static float hudtimer[MAXTF2PLAYERS];
+static int iref_WeaponConnect[MAXPLAYERS+1][2];
 
 static Handle EffectTimer[MAXTF2PLAYERS];
 static bool Precached = false;
@@ -61,14 +57,10 @@ void Cheese_MapStart()
 	PrecacheSound(SOUND_CHEESEBALL_SQUASH, true);
 	PrecacheSound(SOUND_ELEMENTALAPPLY, true);
 	PrecacheSound(SOUND_CHEDDAR_ABILITY, true);
+	PrecacheSound(")weapons/tf2_backshot_shotty.wav");
 	Zero(Cheese_PenaltyDur);
-	Zero(Cheese_LethalDur);
-	Zero(Cheese_MochaBuild);
 	Zero(Cheese_PapLevel);
-	Zero(Cheese_LethalCD);
-	Zero(Cheese_MochaCD);
 	Zero(Cheese_MochaType);
-	Zero(Cheese_MochaDur);
 	Zero(hudtimer);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
@@ -116,10 +108,15 @@ void Cheese_PlaySplat(int entity)
 
 void Cheese_Enable(int client, int weapon)
 {
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
+	{
+		iref_WeaponConnect[client][1] = EntIndexToEntRef(weapon);
+	}
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE)
 	{
-		//if(FileNetwork_Enabled()) // apparently this is causing it to not download??? BATFOX PLZ HELPPPP YOU MADE FILENETWORK
-		Cheese_PrecacheMusic();
+		iref_WeaponConnect[client][0] = EntIndexToEntRef(weapon);
+		if(FileNetwork_Enabled()) // samuu: apparently this is causing it to not download??? BATFOX PLZ HELPPPP YOU MADE FILENETWORK
+			Cheese_PrecacheMusic(); //artvin: Sound files are not uploaded to fast DL, construction forces fast downloads, i.e. error.
 
 		if(EffectTimer[client] != null)
 		{
@@ -168,12 +165,11 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 		Cheese_BeamEffect(pos, 1.0, 75.0, 0.075, 5.0, true, client);
 	}
 
-	if(Cheese_LethalDur[client] > GetGameTime())
+	if(HasSpecificBuff(client, "Plasmatized Lethalitation"))
 	{
 		Cheese_BeamEffect(pos, 1.0, 100.0, 0.25, 8.0);
 	}
-
-	if(Cheese_MochaDur[client] > GetGameTime())
+	if(HasSpecificBuff(client, "Plasmatized Inoculation"))
 	{
 		Cheese_BeamEffect(pos, 125.0, 1.0, 0.25, 8.0);
 	}
@@ -190,27 +186,43 @@ static void Cheese_Hud(int client, bool ignorecd)
 	if(hudtimer[client] > GameTime && !ignorecd)
 		return;
 
+	float LethalCooldown = 0.0;
+	float MochaCD = 0.0;
+	int WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][0]);
+	if(IsValidEntity(WeaponEntity))
+	{
+		//3 is R
+		MochaCD = Ability_Check_Cooldown(client, 3, WeaponEntity);
+		//2 is M2
+		LethalCooldown = Ability_Check_Cooldown(client, 2, WeaponEntity);
+	}
+//	WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][1]);
+//	if(IsValidEntity(WeaponEntity))
+//	{
+//
+//	}
+
 	char CheeseHud[255];
 	if(Cheese_PapLevel[client] > 1)
 	{
-		if(Cheese_LethalDur[client] > GetGameTime())
+		if(HasSpecificBuff(client, "Plasmatized Lethalitation"))
 		{
-			Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE! [%.1f]", CheeseHud, Cheese_LethalDur[client] - GetGameTime());
+			Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE!", CheeseHud);
 		}
 		else
 		{
-			if(Cheese_LethalCD[client] < GetGameTime())
+			if(LethalCooldown <= 0.0)
 				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: Ready!", CheeseHud);
 			else
-				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: [%.1f]", CheeseHud, Cheese_LethalCD[client] - GetGameTime());
+				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: [%.1f]", CheeseHud, LethalCooldown);
 		}			
 	}
 			
 	if(Cheese_PapLevel[client] > 2)
 	{
-		if(Cheese_MochaDur[client] > GetGameTime())
+		if(HasSpecificBuff(client, "Plasmatized Inoculation"))
 		{
-			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!! [%.1f]\nEffect: ", CheeseHud, Cheese_MochaDur[client] - GetGameTime());
+			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!!\nEffect: ", CheeseHud);
 			switch(Cheese_MochaType[client])
 			{
 				case 1:
@@ -233,10 +245,10 @@ static void Cheese_Hud(int client, bool ignorecd)
 		}
 		else
 		{
-			if(Cheese_MochaCD[client] < GetGameTime())
+			if(MochaCD <= 0.0)
 				Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: Ready!", CheeseHud);
 			else
-				Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: [%.1f]", CheeseHud, Cheese_MochaCD[client] - GetGameTime());
+				Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: [%.1f]", CheeseHud, MochaCD);
 		}
 	}
 
@@ -253,13 +265,13 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	{   
 		float cheesedmg = damage;
 
-		if(Cheese_MochaBuild[attacker] > GetGameTime())
+		if(HasSpecificBuff(attacker, "Plasm-Allocator"))
 		{
-			cheesedmg *= 1.75;
+			cheesedmg *= 1.5;
 		}
-		if(Cheese_LethalDur[attacker] > GetGameTime())
+		if(HasSpecificBuff(attacker, "Plasmatized Lethalitation"))
 		{
-			cheesedmg *= 2.35;
+			cheesedmg *= 2.0;
 		}
 		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
 	}
@@ -296,23 +308,23 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			{
 				case 3:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0);
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 12.0, weapon);
 				}
 				case 4:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 235.0, 10.0);
+					Cheese_Burst(client, basedmg, basedmg, 235.0, 12.0, weapon);
 				}
 				case 5:
 				{
-					Cheese_Burst(client, basedmg*1.25, basedmg, 255.0, 11.0);
+					Cheese_Burst(client, basedmg*1.25, basedmg, 255.0, 12.0, weapon);
 				}
 				case 6, 7, 8:
 				{
-					Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 270.0, 12.0);
+					Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 270.0, 12.0, weapon);
 				}
 				default:
 				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 10.0);
+					Cheese_Burst(client, basedmg, basedmg, 215.0, 12.0, weapon);
 				}
 			}
 		}
@@ -335,13 +347,14 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 {
 	if(weapon >= MaxClients)
 	{
-		if (Cheese_LethalCD[client] < GetGameTime() && Cheese_PapLevel[client] >= 2)
+		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 2)
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			float cd = 40.0;
 			if(LastMann)
 				cd = 25.0;
-			Cheese_LethalCD[client] = GetGameTime() + cd;
+
+			Ability_Apply_Cooldown(client, slot, cd);
 			EmitSoundToClient(client, SOUND_LETHAL_ABILITY);
 
 			switch(Cheese_PapLevel[client])
@@ -351,21 +364,21 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 					ApplyTempAttrib(weapon, 6, 0.7, 7.0);
 					ApplyTempAttrib(weapon, 206, 0.93, 7.0);
 					ApplyTempAttrib(weapon, 205, 0.93, 7.0);
-					Cheese_LethalDur[client] = GetGameTime() + 7.0;
+					ApplyStatusEffect(client, client, "Plasmatized Lethalitation", 7.0);
 				}
 				case 4, 5:
 				{
 					ApplyTempAttrib(weapon, 6, 0.6, 8.5);
 					ApplyTempAttrib(weapon, 206, 0.87, 8.5);
 					ApplyTempAttrib(weapon, 205, 0.87, 8.5);
-					Cheese_LethalDur[client] = GetGameTime() + 8.5;
+					ApplyStatusEffect(client, client, "Plasmatized Lethalitation", 8.5);
 				}
 				case 6, 7, 8:
 				{
 					ApplyTempAttrib(weapon, 6, 0.5, 10.0);
 					ApplyTempAttrib(weapon, 206, 0.82, 10.0);
 					ApplyTempAttrib(weapon, 205, 0.82, 10.0);
-					Cheese_LethalDur[client] = GetGameTime() + 10.0;
+					ApplyStatusEffect(client, client, "Plasmatized Lethalitation", 10.0);
 				}
 			}
 			float position[3];
@@ -377,10 +390,13 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 		}
 		else
 		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Cheese_LethalCD[client] - GetGameTime());
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 			return;
 		}
 	}
@@ -390,13 +406,14 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 {
 	if(weapon >= MaxClients)
 	{
-		if (Cheese_MochaCD[client] < GetGameTime() && Cheese_PapLevel[client] >= 3)
+		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 3)
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			float cd = 70.0;
 			if(LastMann)
 				cd = 45.0;
-			Cheese_MochaCD[client] = GetGameTime() + cd;
+
+			Ability_Apply_Cooldown(client, slot, cd);
 			EmitSoundToClient(client, SOUND_MOCHA_ABILITY1);
 			EmitSoundToClient(client, SOUND_MOCHA_ABILITY2);
 
@@ -413,7 +430,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					dmgbuff = 2.15;
 					resbuff = 0.55;
 					atkspdbuff = 0.65;
-					HealEntityGlobal(client, client, MaxHealth * 0.10, 0.6, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.15, 0.6, buffdurations, HEAL_SELFHEAL);
 				}
 				case 5, 6:		
 				{
@@ -421,7 +438,7 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					resbuff = 0.5;
 					atkspdbuff = 0.55;
 					buffdurations = 15.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.125, 0.75, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.20, 0.75, buffdurations, HEAL_SELFHEAL);
 				}
 				case 7, 8:
 				{
@@ -429,11 +446,11 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 					resbuff = 0.4;
 					atkspdbuff = 0.45;
 					buffdurations = 20.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.175, 1.0, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.25, 1.0, buffdurations, HEAL_SELFHEAL);
 				}
 				default:
 				{
-					HealEntityGlobal(client, client, MaxHealth * 0.075, 0.5, 5.0, HEAL_SELFHEAL);
+					HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, buffdurations, HEAL_SELFHEAL);
 				}
 			}
 
@@ -457,12 +474,12 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 				}
 				case 4:
 				{
-					Cheese_MochaBuild[client] = GetGameTime() + buffdurations;
+					ApplyStatusEffect(client, client, "Plasm-Allocator", buffdurations);
 					Cheese_MochaType[client] = 4;
 				}
 			}
 
-			Cheese_MochaDur[client] = GetGameTime() + buffdurations;
+			ApplyStatusEffect(client, client, "Plasmatized Inoculation", buffdurations);
 			
 			float position[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", position);
@@ -475,10 +492,13 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 		}
 		else
 		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Cheese_MochaCD[client] - GetGameTime());
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 			return;
 		}
 	}
@@ -522,9 +542,49 @@ public void Cheese_ProjectileTouch(int entity, int target)
 
 public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 {		
+	int FrameDelayAdd = 10;
+	float Attackspeed = Attributes_Get(weapon, 6, 1.0);
+	Attackspeed *= 0.5;
+	//by default attacks pretty slow.
+
+	FrameDelayAdd = RoundToNearest(float(FrameDelayAdd) * Attackspeed);
+	for(int LoopFire ; LoopFire <= 2; LoopFire++)
+	{
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		if(LoopFire == 0)
+			pack.WriteCell(0);
+		else
+			pack.WriteCell(1);
+
+		if(LoopFire == 0)
+			Weapon_Kit_Cheddinator_FireInternal(pack);
+		else
+			RequestFrames(Weapon_Kit_Cheddinator_FireInternal, RoundToNearest(float(FrameDelayAdd) * LoopFire), pack);
+	}
+}
+public void Weapon_Kit_Cheddinator_FireInternal(DataPack DataDo)
+{		
+	DataDo.Reset();
+	int client = EntRefToEntIndex(DataDo.ReadCell());
+	int weapon = EntRefToEntIndex(DataDo.ReadCell());
+	bool PlaySound = DataDo.ReadCell();
+	delete DataDo;
+
+	if(!IsValidEntity(weapon) || !IsValidClient(client))
+		return;
+	if(PlaySound)
+	{
+	//	char SoundStringToPlay[255];
+	//	SDKCall_GetShootSound(weapon, SINGLE, SoundStringToPlay, sizeof(SoundStringToPlay));
+
+		EmitSoundToAll(")weapons/tf2_backshot_shotty.wav", client, SNDCHAN_WEAPON, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
+			, _, 1.0 * f_WeaponVolumeStiller[weapon]);
+	}
+
 	float damage = 125.0;
 	damage *= WeaponDamageAttributeMultipliers(weapon);
-	damage *= Attributes_Get(weapon, 1, 1.0);
 		
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
@@ -541,32 +601,9 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, particle);
 	WandProjectile_ApplyFunctionToEntity(projectile, Cheese_ProjectileTouch);
-
-	if(Cheese_PapLevel[client] > 0)
-	{
-		Handle swingTrace;
-		float  vecSwingForward[3];
-		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true);
-		FinishLagCompensation_Base_boss();
-		int target = TR_GetEntityIndex(swingTrace);
-		delete swingTrace;
-		float Angles[3];
-		GetClientEyeAngles(client, Angles);
-		bool LockOnOnce = true;
-		if (IsValidEntity(target))
-			LockOnOnce = false;
-		Initiate_HomingProjectile(projectile, 
-			client,
-			15.0,	// Maximum angle lock
-			5.0,	// Homing per sec
-			LockOnOnce, // If to lock on the target only once or not.
-			true,	// Change angles?
-			Angles, // Angles.
-			target); // Homing target
-	}
 }
 
-static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist, float beamradius)
+static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist, float beamradius, int weapon)
 {
 	if(!IsValidClient(client))
 	{
@@ -633,6 +670,12 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 			{
 				if(IsValidEntity(Cheese_BuildingHit[building]))
 				{
+					WorldSpaceCenter(Cheese_BuildingHit[building],playerPos);
+					float distance = GetVectorDistance(startPoint, playerPos, false);
+					float damage = dmgclose + (dmgfar-dmgclose) * (distance/maxdist);
+					if (damage < 0)
+						damage *= -1.0;
+
 					float duration = 5.0;
 					if(Cheese_PapLevel[client] >= 3)
 						duration += 1.75;
@@ -654,11 +697,8 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 					else
 						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm I", duration);
 
-					WorldSpaceCenter(Cheese_BuildingHit[building],playerPos);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = dmgclose + (dmgfar-dmgclose) * (distance/maxdist);
-					if (damage < 0)
-						damage *= -1.0;
+					if(IsValidEntity(weapon))
+						Elemental_AddPlasmicDamage(Cheese_BuildingHit[building], client, RoundToNearest(damage * 0.25), weapon);
 					
 					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
@@ -685,7 +725,7 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 		}
 		
 		static float belowBossEyes[3];
-		GetBeamDrawStartPoint(client, belowBossEyes, {0.0, 6.5, 0.0});
+		GetBeamDrawStartPoint(client, belowBossEyes, {0.0, 0.0, 0.0});
 		int colorLayer4[4];
 		SetColorRGBA(colorLayer4, red, green, blue, 255);
 		int colorLayer3[4];

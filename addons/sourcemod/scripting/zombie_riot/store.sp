@@ -725,12 +725,16 @@ float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 	return 0.0;
 }
 
-stock float CooldownReductionAmount()
+stock float CooldownReductionAmount(int client)
 {
 	float Cooldown = 1.0;
 	if(MazeatItemHas())
 	{
 		Cooldown *= 0.66;
+	}
+	if(HasSpecificBuff(client, "Ziberian Flagship Weaponry"))
+	{
+		Cooldown *= 0.85;
 	}
 	return Cooldown;
 }
@@ -746,7 +750,7 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 			StoreItems.GetArray(StoreWeapon[weapon], item);
 #if defined ZR
 			if(!ignoreCooldown)
-				cooldown *= CooldownReductionAmount();
+				cooldown *= CooldownReductionAmount(client);
 #endif
 			
 			switch(what_slot)
@@ -3547,7 +3551,7 @@ static void MenuPage(int client, int section)
 				{
 					ConfirmAllow = ITEMDRAW_DEFAULT;
 				}
-				if(CashSpentTotal[client] > 1 && Waves_Started())
+				if((CashSpentTotal[client] > 1/*|| Level[client] >= 10*/))
 				{
 					ConfirmAllow = ITEMDRAW_DEFAULT;
 				}
@@ -3581,13 +3585,22 @@ static void MenuPage(int client, int section)
 	}
 	if(section == -2)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Sell All Items", client);
+		if(Waves_Started())
+			FormatEx(buffer, sizeof(buffer), "%T", "Sell All Items", client);
+		else
+			FormatEx(buffer, sizeof(buffer), "%T", "Return to loadout Menu", client);
+
 		menu.AddItem("-999969", buffer);
 	}
 	if(section == -999969)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Sell Items Confirm", client);
-		menu.AddItem("-9999691", buffer, ITEMDRAW_DISABLED);
+		char buffer2[128];
+		if(Waves_Started())
+			FormatEx(buffer2, sizeof(buffer2), "%T", "Sell Items Confirm", client);
+		else
+			FormatEx(buffer2, sizeof(buffer2), "%T", "Sell Items Confirm Pref", client);
+
+		menu.AddItem("-9999691", buffer2, ITEMDRAW_DISABLED);
 		FormatEx(buffer, sizeof(buffer), "%T", "No", client);
 		menu.AddItem("-9999692", buffer);
 		FormatEx(buffer, sizeof(buffer), "%T", "Yes", client);
@@ -3606,6 +3619,10 @@ static void MenuPage(int client, int section)
 		Store_GiveAll(client, GetClientHealth(client));
 		ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 		MenuPage(client, 0);
+		if(!Waves_Started())
+		{
+			StarterCashMode[client] = true;
+		}
 		return;
 	}
 	else

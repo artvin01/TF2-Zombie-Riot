@@ -306,9 +306,17 @@
 	{
 		"en"		"Are you sure you want to sell all your items?"
 	}
+	"Sell Items Confirm Pref"
+	{
+		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your loadout store!"
+	}
 	"Sell All Items"
 	{
 		"en"		"Sell all items"
+	}
+	"Return to loadout Menu"
+	{
+		"en"		"Return to loadout Menu"
 	}
 	"Confirm Loadout"
 	{
@@ -1509,7 +1517,7 @@
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"on the Perkmachine to gain a strong temporary perk."
+		"en" 		"on the Perkmachine to gain a strong perk that lasts till you are dead/downed."
 	}
 	"PackAPunch Tooltip"
 	{
@@ -2077,7 +2085,7 @@
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
-		"en"		"Use this machine to get a temporary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+		"en"		"Use this machine to get a boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
 	}
 	"Tutorial Show Hint Perk Machine Build One"
 	{
