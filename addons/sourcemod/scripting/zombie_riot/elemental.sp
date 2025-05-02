@@ -1019,6 +1019,9 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				if(melee) // if applied via melee, slight dmg boost.
 					cheesedmg *= 1.25;
 
+				if(cheesedmg > float(ReturnEntityMaxHealth(victim)))
+					cheesedmg = float(ReturnEntityMaxHealth(victim));
+
 				if(melee) // if applied via melee, change dmg type to melee.
 					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
 				else
