@@ -152,26 +152,10 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	}	
 
 	Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-	float pos[3]; GetClientAbsOrigin(client, pos);
-	pos[2] += 5.0;
 	if(LastMann)
 	{
-	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 0.6);
-		HealEntityGlobal(client, client, 6.0, 0.25, 0.0, HEAL_SELFHEAL);
-		Cheese_BeamEffect(pos, 200.0, 1.0, 0.075, 10.0);
-	}
-	else
-	{
-		Cheese_BeamEffect(pos, 1.0, 75.0, 0.075, 5.0, true, client);
-	}
-
-	if(HasSpecificBuff(client, "Plasmatized Lethalitation"))
-	{
-		Cheese_BeamEffect(pos, 1.0, 100.0, 0.25, 8.0);
-	}
-	if(HasSpecificBuff(client, "Plasmatized Inoculation"))
-	{
-		Cheese_BeamEffect(pos, 125.0, 1.0, 0.25, 8.0);
+	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 0.5);
+		HealEntityGlobal(client, client, 12.0, 0.25, 0.0, HEAL_SELFHEAL);
 	}
 
 	Cheese_Hud(client, false);		
@@ -185,6 +169,17 @@ static void Cheese_Hud(int client, bool ignorecd)
 
 	if(hudtimer[client] > GameTime && !ignorecd)
 		return;
+
+	float pos[3]; GetClientAbsOrigin(client, pos);
+	pos[2] += 5.0;
+	if(LastMann)
+	{
+		Cheese_BeamEffect(pos, 200.0, 1.0, 0.075, 10.0);
+	}
+	else
+	{
+		Cheese_BeamEffect(pos, 1.0, 75.0, 0.075, 5.0, true, client);
+	}
 
 	float LethalCooldown = 0.0;
 	float MochaCD = 0.0;
@@ -207,6 +202,7 @@ static void Cheese_Hud(int client, bool ignorecd)
 	{
 		if(HasSpecificBuff(client, "Plasmatized Lethalitation"))
 		{
+			Cheese_BeamEffect(pos, 1.0, 100.0, 0.25, 8.0);
 			Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE!", CheeseHud);
 		}
 		else
@@ -222,6 +218,7 @@ static void Cheese_Hud(int client, bool ignorecd)
 	{
 		if(HasSpecificBuff(client, "Plasmatized Inoculation"))
 		{
+			Cheese_BeamEffect(pos, 125.0, 1.0, 0.25, 8.0);
 			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!!\nEffect: ", CheeseHud);
 			switch(Cheese_MochaType[client])
 			{
