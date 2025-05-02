@@ -988,20 +988,20 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				float cheesedmg;
 				if(paplvl > 1)
 				{
-					cheesedmg = (935.0 * ((paplvl + paplvl)));
+					cheesedmg = (675.0 * (paplvl + paplvl));
 				}
 				else if(paplvl > 3)
 				{
-					cheesedmg = (1215.0 * ((paplvl + paplvl)));
+					cheesedmg = (810.0 * (paplvl + paplvl));
 				}
 				else
 				{
-					cheesedmg = 750.0 * (1 + paplvl);
+					cheesedmg = 500.0 * (1 + paplvl);
 				}
 
 				if(b_thisNpcIsARaid[victim])
 				{
-					cheesedmg *= 3.0;
+					cheesedmg *= 2.75;
 					ApplyStatusEffect(attacker, victim, "Plasm I", 5.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 20.0);
 				}
@@ -1013,11 +1013,10 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				else
 				{
-					cheesedmg *= 0.5;
 					ApplyStatusEffect(attacker, victim, "Plasm II", 999.0);
 				}
 
-				if(melee) // if applied via melee, slight dmg boost and melee type.
+				if(melee) // if applied via melee, slight dmg boost.
 					cheesedmg *= 1.25;
 
 				if(melee) // if applied via melee, change dmg type to melee.
