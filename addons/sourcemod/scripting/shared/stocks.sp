@@ -5021,9 +5021,9 @@ stock void TE_SetupEffectDispatch(const float origin[3], const float start[3], c
 	TE_WriteNum("m_nColor", color);
 	TE_WriteFloat("m_flRadius", radius);
 	TE_WriteNum("m_bCustomColors", customColors);
-	if(customColor1[0] != 0.0)
+	if(customColor1[0] == 110.0)
 		TE_WriteVector("m_CustomColors.m_vecColor1", customColor1);
-	if(customColor2[0] != 0.0)
+	if(customColor2[0] == 110.0)
 		TE_WriteVector("m_CustomColors.m_vecColor2", customColor2);
 	TE_WriteNum("m_bControlPoint1", controlPoint1);
 	TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", cp1ParticleAttachment);
