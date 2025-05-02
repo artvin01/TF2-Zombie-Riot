@@ -3551,7 +3551,7 @@ static void MenuPage(int client, int section)
 				{
 					ConfirmAllow = ITEMDRAW_DEFAULT;
 				}
-				if((CashSpentTotal[client] > 1 || Level[client] >= 10 /*when 10, assume they are good enough to understand this*/))
+				if((CashSpentTotal[client] > 1/*|| Level[client] >= 10*/))
 				{
 					ConfirmAllow = ITEMDRAW_DEFAULT;
 				}
