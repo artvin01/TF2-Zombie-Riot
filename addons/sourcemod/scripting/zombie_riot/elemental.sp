@@ -988,46 +988,40 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				float cheesedmg;
 				if(paplvl > 1)
 				{
-					cheesedmg = (1350.0 * ((paplvl + paplvl)));
+					cheesedmg = (935.0 * ((paplvl + paplvl)));
 				}
 				else if(paplvl > 3)
 				{
-					cheesedmg = (1625.0 * ((paplvl + paplvl)));
+					cheesedmg = (1215.0 * ((paplvl + paplvl)));
 				}
 				else
 				{
-					cheesedmg = 1000.0 * (1 + paplvl);
+					cheesedmg = 750.0 * (1 + paplvl);
 				}
-
-				if(melee) // if applied via melee, slight dmg boost.
-					cheesedmg *= 1.25;
 
 				if(b_thisNpcIsARaid[victim])
 				{
-					cheesedmg *= 2.75;
+					cheesedmg *= 3.0;
 					ApplyStatusEffect(attacker, victim, "Plasm I", 5.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 20.0);
 				}
 				else if(b_thisNpcIsABoss[victim])
 				{
-					cheesedmg *= 1.85;
+					cheesedmg *= 2.0;
 					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 10.0);
 				}
 				else
 				{
-					ApplyStatusEffect(attacker, victim, "Plasm II", 10.0);
+					cheesedmg *= 0.5;
+					ApplyStatusEffect(attacker, victim, "Plasm II", 999.0);
 				}
 
-				// important
-				cheesedmg *= 0.8;
-
-				if(cheesedmg > float(ReturnEntityMaxHealth(victim)))
-					cheesedmg = 1 + float(ReturnEntityMaxHealth(victim));
-
-				// fun fact: this used to deal true damage. Uh oh!
 				if(melee) // if applied via melee, slight dmg boost and melee type.
-					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg*1.25, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
+					cheesedmg *= 1.25;
+
+				if(melee) // if applied via melee, change dmg type to melee.
+					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
 				else
 					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, weapon);
 
