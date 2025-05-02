@@ -1509,7 +1509,7 @@
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"on the Perkmachine to gain a strong temporary perk."
+		"en" 		"on the Perkmachine to gain a strong perk that lasts till you are dead/downed."
 	}
 	"PackAPunch Tooltip"
 	{
@@ -2077,7 +2077,7 @@
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
-		"en"		"Use this machine to get a temporary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+		"en"		"Use this machine to get a boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
 	}
 	"Tutorial Show Hint Perk Machine Build One"
 	{
