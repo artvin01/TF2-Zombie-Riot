@@ -305,7 +305,7 @@ methodmap Sensal < CClotBody
 			}
 		}
 
-		RaidModeScaling = 60.0;//float(ZR_GetWaveCount()+1);
+		RaidModeScaling = 60.0;//float(ZR_Waves_GetRound()+1);
 		b_RageAnimated[npc.index] = false;
 		if(RaidModeScaling < 55)
 		{
@@ -643,7 +643,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			//RaidModeTime += 60.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			
@@ -1061,7 +1061,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	Sensal npc = view_as<Sensal>(victim);
-	//if(ZR_GetWaveCount()+1 >= 45)
+	//if(ZR_Waves_GetRound()+1 >= 45)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
@@ -1094,7 +1094,7 @@ void SensalThrowScythes(Sensal npc)
 	float pos[3];
 	WorldSpaceCenter(npc.index, pos);
 	
-//	if(ZR_GetWaveCount()+1 >= 60)
+//	if(ZR_Waves_GetRound()+1 >= 60)
 	MaxCount = 3;
 
 	for(int Repeat; Repeat <= 7; Repeat++)
@@ -1472,9 +1472,9 @@ bool SensalTransformation(Sensal npc)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);		
 			npc.m_flAttackHappens_2 = 0.0;	
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -1500,9 +1500,9 @@ bool SensalTransformation(Sensal npc)
 			AcceptEntityInput(npc.index, "SetBodyGroup");
 			b_CannotBeHeadshot[npc.index] = false;
 			b_CannotBeBackstabbed[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Clear Head");
+			RemoveSpecificBuff(npc.index, "Solid Stance");
+			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			npc.StartPathing();
 			npc.m_bPathing = true;
@@ -1927,21 +1927,4 @@ public bool Sensal_BEAM_TraceUsers(int entity, int contentsMask, int client)
 public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
-}
-
-
-float[] GetBehindTarget(int target, float Distance, float origin[3])
-{
-	float VecForward[3];
-	float vecRight[3];
-	float vecUp[3];
-	
-	GetVectors(target, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-	
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = origin[0] - VecForward[0] * (Distance);
-	vecSwingEnd[1] = origin[1] - VecForward[1] * (Distance);
-	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
-
-	return vecSwingEnd;
 }

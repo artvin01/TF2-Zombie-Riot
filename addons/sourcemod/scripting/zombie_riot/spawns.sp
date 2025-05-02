@@ -37,7 +37,7 @@ void Spawns_MapEnd()
 	LastNamedSpawn = 0.0;
 }
 
-bool Spawns_CanSpawnNext(bool rogue)
+bool Spawns_CanSpawnNext()
 {
 	if(!SpawnerList)
 	{
@@ -45,7 +45,7 @@ bool Spawns_CanSpawnNext(bool rogue)
 	}
 	float gameTime = GetGameTime();
 
-	if(rogue)
+	if(Rogue_Mode())
 	{
 		if(LastNamedSpawn > gameTime)
 			return false;
@@ -99,7 +99,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 
 	int bestIndex = -1;
 	float bestPoints = 0.0;
-
+	bool SpawnWasDeleted = false;
 	int nonBossSpawners;
 	int length = SpawnerList.Length;
 	for(int i; i < length; i++)
@@ -111,6 +111,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			SpawnerList.Erase(i);
 			i--; //we try again.
 			length--;
+			SpawnWasDeleted = true;
 			continue;
 		}
 
@@ -129,17 +130,17 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
 				continue;
 			
-			
 			if(spawn.MaxWavesAllowed != 999)
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
 				int WavesAllow = spawn.MaxWavesAllowed;
-				int WavesLeft = ZR_GetWaveCount() - spawn.WaveCreatedIn;
+				int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
 				if(WavesLeft >= WavesAllow)
 				{
 					SpawnerList.Erase(i);
 					i--; //we try again.
 					length--;
+					SpawnWasDeleted = true;
 					//EDIT:looks like deleting it is bad.
 					continue;
 				}
@@ -161,15 +162,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		{
 			SpawnerList.GetArray(i, spawn);
 
-			if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
-			{
-				SpawnerList.Erase(i);
-				i--; //we try again.
-				length--;
-				continue;
-			}
-
-			if(StrContains(spawn.Name, name) == -1)	// Invalid name, ignore
+			if(StrContains(spawn.Name, name, false) == -1)	// Invalid name, ignore
 				continue;
 			
 			if(!spawn.BaseBoss)
@@ -181,19 +174,20 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				{
 					//999 means its a perma spawn or a boss spawn, whatever it may be.
 					int WavesAllow = spawn.MaxWavesAllowed;
-					int WavesLeft = ZR_GetWaveCount() - spawn.WaveCreatedIn;
+					int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
 					if(WavesLeft >= WavesAllow)
 					{
 						SpawnerList.Erase(i);
 						i--; //we try again.
 						length--;
+						SpawnWasDeleted = true;
 						continue;
 					}
 				}
 				nonBossSpawners++;
 			}
-			
-			if(/*bestIndex == -1 || */(spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
+			//get atleast 1 spawnpont?
+			if(bestIndex == -1 || (spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
 			{
 				bestIndex = i;
 				bestPoints = spawn.Points;
@@ -202,7 +196,14 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	}
 
 	if(bestIndex == -1)
+	{
+		if(SpawnWasDeleted)
+		{
+			//Update all spawns.	
+			Spawners_Timer();
+		}
 		return false;
+	}
 	
 	SpawnerList.GetArray(bestIndex, spawn);
 	GetEntPropVector(spawn.EntRef, Prop_Data, "m_vecOrigin", pos);
@@ -213,6 +214,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		{
 			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy));
 		}
+		/*
 		else if(name[0])
 		{
 			float playerSpeedUp = 1.0 + (MultiGlobalEnemy * 0.5);
@@ -220,6 +222,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 
 			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (baseTime / playerSpeedUp));
 		}
+		*/
 		else
 		{
 			float nearSpeedUp = 4.0 * (spawn.Points / HighestPoints);
@@ -258,6 +261,11 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		//never give spawnprotection if it spawns from an NPC.
 		spawnerSetting |= 1;
 	}
+	if(SpawnWasDeleted)
+	{
+		//Update all spawns.	
+		Spawners_Timer();
+	}
 	return true;
 }
 
@@ -274,7 +282,7 @@ void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false
 		spawn.BaseBoss = base_boss;
 		spawn.AllySpawner = allyspawner;
 		spawn.MaxSpawnsAllowed = MaxSpawnsAllowed;
-		spawn.WaveCreatedIn = ZR_GetWaveCount();
+		spawn.WaveCreatedIn = ZR_Waves_GetRound();
 		spawn.MaxWavesAllowed = WavesAllowed;
 		spawn.CurrentSpawnsPerformed = 0;
 		spawn.SpawnSetting = i_SpawnSetting;
@@ -312,6 +320,7 @@ void Spawners_Timer()
 			length--;
 			continue;
 		}
+
 		if(!spawn.BaseBoss)
 		{
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
@@ -321,7 +330,7 @@ void Spawners_Timer()
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
 				int WavesAllow = spawn.MaxWavesAllowed;
-				int WavesLeft = ZR_GetWaveCount() - spawn.WaveCreatedIn;
+				int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
 				if(WavesLeft >= WavesAllow)
 				{
 					SpawnerList.Erase(index);
@@ -331,7 +340,8 @@ void Spawners_Timer()
 				}
 			}
 		}
-		spawn.Points = 0.0;
+
+		spawn.Points = (!spawn.BaseBoss && Construction_BlockSpawner(spawn.Name)) ? -999.0 : 0.0;
 		SpawnerList.SetArray(index, spawn);	
 	}
 	int PlayersGathered = 0;
@@ -341,13 +351,13 @@ void Spawners_Timer()
 		{
 			if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 			{
-				PlayersGathered ++;
+				PlayersGathered++;
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
 
 				for(int index; index < length; index++)
 				{
 					SpawnerList.GetArray(index, spawn);
-					if(spawn.AllySpawner)
+					if(spawn.AllySpawner || spawn.Points < 0.0)
 						continue;
 					
 					int entity_Ref = spawn.EntRef;
@@ -364,7 +374,7 @@ void Spawners_Timer()
 					if( distance < 100000000.0)
 					{
 						//For Zr_lila_panic, this might be outdated code, look into it.
-						if(StrEqual(spawn.Name, "underground"))
+						/*if(StrEqual(spawn.Name, "underground"))
 						{
 							if(!b_PlayerIsInAnotherPart[client])
 							{
@@ -377,14 +387,10 @@ void Spawners_Timer()
 							{
 								continue;
 							}
-						}
-							
-						float inverting_score_calc;
-						inverting_score_calc = ( distance / 100000000.0);
-						inverting_score_calc -= 1.0;
-						inverting_score_calc *= -1.0;
-                        
-						spawn.Points += inverting_score_calc;
+						}*/
+						
+						float inverting_score_calc = ( distance / 100000000.0) - 1.0;
+						spawn.Points -= inverting_score_calc;
 						SpawnerList.SetArray(index, spawn);							
 					}
 				}
@@ -406,27 +412,26 @@ void Spawners_Timer()
 		if(spawn.Points > 0.0)
 		{
 			spawn.Points /= PlayersGathered;
+			SpawnerList.SetArray(index, spawn);
 		}
-		else
-		{
-			spawn.Points = 0.0;
-		}
-		SpawnerList.SetArray(index, spawn);
 	}
 
 	for(int index; index < length; index++)
 	{
 		SpawnerList.GetArray(index, spawn);
-		if(spawn.BaseBoss)
-			maxSpawners++;
-		
-		pointsList.Push(spawn.Points);
+		if(spawn.Points >= 0.0)
+		{
+			if(spawn.BaseBoss)
+				maxSpawners++;
+			
+			pointsList.Push(spawn.Points);
+		}
 	}
 	
-	if(maxSpawners > length)
-		maxSpawners = length;
+	if(maxSpawners > pointsList.Length)
+		maxSpawners = pointsList.Length;
 	
-	if(length)
+	if(maxSpawners)
 	{
 		// Sort points
 		pointsList.Sort(Sort_Descending, Sort_Float);

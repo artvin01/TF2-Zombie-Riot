@@ -35,7 +35,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 15.0);
 				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				Mana_Hud_Delay[client] = 0.0;
@@ -43,7 +43,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				Current_Mana[client] -= mana_cost;
 				
 				delay_hud[client] = 0.0;
-				float damage = 800.0;
+				float damage = 500.0;
 				damage *= Attributes_Get(weapon, 410, 1.0);
 					
 				f_OriginalDamage[client] = damage;
@@ -109,7 +109,7 @@ static float Elemental_BeforeExplodeHit(int attacker, int victim, float &damage,
 		damage *= 0.1;
 	}
 	HitAlreadyWithSame[attacker][victim] = true;
-	if(f_ElementalAmplification[victim] > GetGameTime())
+	if(NpcStats_ElementalAmp(victim))
 	{
 		//double!
 		bool PlaySound = false;
@@ -289,7 +289,7 @@ stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
 
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 		{
 			float TargetLocation[3]; 
@@ -437,7 +437,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 	{
 		if(f_PassangerAbilityCooldownRegen[client] < GetGameTime())
 		{
-			f_PassangerAbilityCooldownRegen[client] = GetGameTime() + PASSANGER_ABILITY_REGARGE_TIME;
+			f_PassangerAbilityCooldownRegen[client] = GetGameTime() +(PASSANGER_ABILITY_REGARGE_TIME * CooldownReductionAmount(client));
 			i_PassangerAbilityCount[client]++;
 			if(i_PassangerAbilityCount[client] >= 2)
 			{
@@ -480,7 +480,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 				}				
 			}
 
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_PassangerHudDelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -503,7 +503,7 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 		int mana_cost = 350;
 		if(mana_cost <= Current_Mana[client])
 		{		
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 			Mana_Hud_Delay[client] = 0.0;
 			
@@ -512,7 +512,7 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 			delay_hud[client] = 0.0;
 			if(i_PassangerAbilityCount[client] == 2)
 			{
-				f_PassangerAbilityCooldownRegen[client] = GetGameTime() + PASSANGER_ABILITY_REGARGE_TIME;
+				f_PassangerAbilityCooldownRegen[client] = GetGameTime() + (PASSANGER_ABILITY_REGARGE_TIME * CooldownReductionAmount(client));
 			}
 			i_PassangerAbilityCount[client] -= 1;
 
@@ -593,11 +593,16 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 void Passanger_Lightning_Strike(int client, int target, int weapon, float damage, float StartLightningPos[3], bool Firstlightning = true)
 {
 	static float vecHit[3];
-	GetBeamDrawStartPoint_Stock(client, StartLightningPos);
+	if(weapon != -2)
+		GetBeamDrawStartPoint_Stock(client, StartLightningPos);
+		
 	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
+	vecHit[2] += 40.0;
+
+	//weapon = -1 means its a building that caused it, i guess.
 
 	//deal more damage during raids, otherwise its really weak in most cases.
-	if(b_PassangerExtraCharge[client])
+	if(client <= MaxClients && b_PassangerExtraCharge[client])
 	{
 		damage *= 1.1;
 	}
@@ -607,9 +612,13 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 		Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 1);
 	}
 	WorldSpaceCenter(target, StartLightningPos);
-	f_PassangerDebuff[target] = GetGameTime() + 0.3;
+	ApplyStatusEffect(client, target, "Electric Impairability", 0.3);
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
-	f_CooldownForHurtHud[client] = 0.0;
+	if(weapon == -2)
+		ApplyStatusEffect(client, target, "Medusa's Teslar", 5.0);
+
+	if(client <= MaxClients)
+		f_CooldownForHurtHud[client] = 0.0;
 	b_EntityHitByLightning[target] = true;
 	float original_damage = damage;
 	for (int loop = 6; loop > 2; loop--)
@@ -625,9 +634,13 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 				if(Firstlightning == false)
 					damage /= 0.5;
 			}
-			f_PassangerDebuff[enemy] = GetGameTime() + 0.3;
-			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
-			f_CooldownForHurtHud[client] = 0.0;
+			ApplyStatusEffect(client, enemy, "Electric Impairability", 0.3);
+			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	
+			if(weapon == -2)
+				ApplyStatusEffect(client, target, "Medusa's Teslar", 5.0);
+
+			if(client <= MaxClients)	
+				f_CooldownForHurtHud[client] = 0.0;
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecHit);
 			float EnemyVecPos[3]; WorldSpaceCenter(enemy, EnemyVecPos);
 			Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 3);
@@ -709,7 +722,7 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 		static int targets[i_MaxcountNpc];
 		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				static float TargetLocation[3]; 

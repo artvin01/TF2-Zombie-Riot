@@ -83,7 +83,7 @@ methodmap SeabornPyro < CClotBody
 	
 	public SeabornPyro(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2225", ally));
+		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -180,14 +180,7 @@ public void SeabornPyro_ClotThink(int iNPC)
 					{
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							if(target > MaxClients)
-							{
-							//	NPC_Ignite(target, npc.index, 5.0, -1);
-							}
-							else
-							{
-								TF2_AddCondition(target, TFCond_Gas, 1.5);
-							}
+							NPC_Ignite(target, npc.index,4.0, -1, 5.0);
 						}
 						
 						npc.PlayMeleeHitSound();

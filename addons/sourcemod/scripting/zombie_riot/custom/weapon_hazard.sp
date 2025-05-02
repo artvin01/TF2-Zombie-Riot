@@ -171,7 +171,6 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 				case 15:
 				{
 					PrintHintText(attacker,"J̸̨͝Ä̷̻͆Ç̸̛̮K̵̻͗þ̸̤͝Ơ̶͚̈†̸̲̍!̴̡́");
-					ClientCommand(attacker, "playgamesound player/crit_received1.wav");
 					DisplayCritAboveNpc(victim, attacker, true);
 					DamageMod = 6.0;
 					ApplyTempAttrib(weapon, 6, 0.8, 5.0);
@@ -384,7 +383,7 @@ public void Hazard_Luck(int client, int weapon, bool crit, int slot)
 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 30.0);
 		EmitSoundToAll("weapons/weapon_crit_charged_off.wav", client);
 		if(IsValidEntity(viewmodelModel))
@@ -420,7 +419,7 @@ public void Hazard_Luck_Pap(int client, int weapon, bool crit, int slot)
 		
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 20.0);
 		EmitSoundToAll("weapons/weapon_crit_charged_off.wav", client);
 		if(IsValidEntity(viewmodelModel))

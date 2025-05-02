@@ -1,8 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_PlayMusicSound;
+
 
 methodmap StalkerShared < CClotBody
 {
@@ -40,21 +39,29 @@ methodmap StalkerShared < CClotBody
 			}
 		}
 
-		for(int i; i < 50; i++)
+		CNavArea startArea = TheNavMesh.GetNavAreaEntity(this.index, view_as<GetNavAreaFlags_t>(0), 1000.0);
+		if(startArea != NULL_AREA)
 		{
-			CNavArea RandomArea = PickRandomArea();
-			if(RandomArea != NULL_AREA)
+			for(int i; i < 50; i++)
 			{
-				int NavAttribs = RandomArea.GetAttributes();
-				if(NavAttribs & NAV_MESH_AVOID)
+				CNavArea RandomArea = PickRandomArea();
+				if(RandomArea != NULL_AREA)
 				{
-					continue;
+					int NavAttribs = RandomArea.GetAttributes();
+					if(NavAttribs & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE|NAV_MESH_NO_HOSTAGES))
+						continue;
+					
+					RandomArea.GetCenter(pos);
+					if(!TheNavMesh.BuildPath(startArea, RandomArea, pos))
+						continue;
+
+					if(GetVectorDistance(pos, pos2, true) < 2000000.0)
+						return;
 				}
-				RandomArea.GetCenter(pos);
-				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
-					break;
 			}
 		}
+
+		WorldSpaceCenter(this.index, pos);
 	}
 
 	property int m_iChaseAnger	// Allows being able to quickly hide
@@ -216,11 +223,11 @@ methodmap StalkerCombine < StalkerShared
 	}
 	public void PlayMusicSound()
 	{
-		if(i_PlayMusicSound > GetTime())
+		if(i_PlayMusicSound[this.index] > GetTime())
 			return;
 		
 		EmitCustomToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100);
-		i_PlayMusicSound = GetTime() + 76;
+		i_PlayMusicSound[this.index] = GetTime() + 76;
 	}
 	
 	public StalkerCombine(float vecPos[3], float vecAng[3], int ally)
@@ -263,7 +270,7 @@ methodmap StalkerCombine < StalkerShared
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
-		i_PlayMusicSound = 0;
+		i_PlayMusicSound[npc.index] = 0;
 		npc.m_iChaseAnger = 0;
 		npc.m_bChaseAnger = false;
 		npc.m_iChaseVisable = 0;
@@ -328,7 +335,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		{
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == CuredFatherGrigori_ID())
 				{
 					float EntityLocation[3], TargetLocation[3]; 
@@ -388,6 +395,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 
 						float damage = 180.0;
+						if(Construction_Mode())
+							damage *= 5.0;
 
 						if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 							damage *= 8.0;
@@ -551,7 +560,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 50.0;
 				npc.m_bChaseAnger = false;
-				i_PlayMusicSound = 0;
+				i_PlayMusicSound[npc.index] = 0;
 
 				for(int i; i < 9; i++)
 				{
@@ -628,7 +637,7 @@ public Action StalkerCombine_OnTakeDamage(int victim, int &attacker, int &inflic
 	if(damage > 9999999.9)
 		return Plugin_Continue;
 	
-	if(damagetype & DMG_DROWN)
+	if(damagetype & DMG_OUTOFBOUNDS)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -655,13 +664,8 @@ public Action StalkerCombine_OnTakeDamage(int victim, int &attacker, int &inflic
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	// This stalker can't be killed but can be slowed via normal means
-	if(f_SpecterDyingDebuff[victim] < gameTime)
-		f_SpecterDyingDebuff[victim] = gameTime;
 	
-	f_SpecterDyingDebuff[victim] += damage / 150.0;
-	if(f_SpecterDyingDebuff[victim] > (gameTime + 5.0))
-		f_SpecterDyingDebuff[victim] = gameTime + 5.0;
+	ApplyStatusEffect(victim, victim, "Specter's Aura", 5.0);
 
 	if(!b_StaticNPC[victim])
 		return Plugin_Changed;

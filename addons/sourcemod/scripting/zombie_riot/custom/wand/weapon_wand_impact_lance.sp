@@ -151,7 +151,7 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 				return;
 			}
 
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 30.0);
 
 			Current_Mana[client]-=mana_cost;
@@ -204,7 +204,7 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 
 			i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
 		
-			float damage = 250.0;
+			float damage = 200.0;
 			
 			damage *= Attributes_Get(weapon, 410, 1.0);
 
@@ -271,7 +271,7 @@ public void Impact_Lance_Throw_Lance(int client, int weapon, bool crit, int slot
 		
 		delay_hud[client] = 0.0;
 
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
 
 		float speed = 1250.0;
@@ -366,12 +366,16 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 		CreateDataTimer(10.0, Timer_RemoveEntity_Impact_Lance_Projectile, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteCell(EntIndexToEntRef(particle));
-		
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Impact_Lance_RocketExplodePre); 
+
+		if(h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
+
+		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Impact_Lance_RocketExplodePre); 
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Impact_Lance_StartTouch);
 		Impact_Lance_Effects_Projectile(client, entity);
-		
+		/*
 		if(!Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 		{
 
@@ -380,6 +384,7 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 			pack2.WriteCell(EntIndexToEntRef(client));
 			pack2.WriteCell(EntIndexToEntRef(entity));
 		}
+		*/
 	}
 	return;
 }

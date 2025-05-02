@@ -12,6 +12,10 @@
 		"pt"		"Zumbi de Headcrab"
 		"nl"		"Hoofdkrab Zombie"
 	}
+	"Z-Main"
+	{
+		"en"		"Z-Main"
+	}
 	"Fortified Headcrab Zombie"
 	{
 		"en" 		"Fortified Headcrab Zombie"
@@ -678,12 +682,16 @@
 		"pt"		"Corredor de Serras"
 		"nl"		"Zaagloper"
 	}
-	"True Fusion Warrior"
+	"Infected Silvester"
 	{
-		"en" 		"True Fusion Warrior"
+		"en" 		"Infected Silvester"
 		"ru" 		"Истинный Термоядерный Воин"
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
+	}
+	"Silvester's Past Afterimage"
+	{
+		"en" 		"Silvester's Past Afterimage"
 	}
 	"Medic Charger"
 	{
@@ -746,17 +754,9 @@
 		"ru" 		"Элитный Комбайн"
 		"en" 		"Barracks Elite"
 	}
-	"Barracks Deflector"
+	"Barracks Peacekeeper"
 	{
-		"en" 		"Combine Deflector"
-		"ru" 		"Комбайн Отражатель"
-		"en" 		"Barracks Deflector"
-	}
-	"Barracks Sniper"
-	{
-		"en" 		"Combine Sniper"
-		"ru" 		"Комбайн Снайпер"
-		"en" 		"Barracks Sniper"
+		"en" 		"Combine Peacekeeper"
 	}
 	"Barracks Super"
 	{
@@ -769,6 +769,10 @@
 		"en" 		"Combine Commander"
 		"ru" 		"Комбайн Командир"
 		"en" 		"Barracks Commander"
+	}
+	"Barracks Chaos Containment Unit"
+	{
+		"en" 		"Chaos Containment Unit"
 	}
 	"Barracks Giant ddt"
 	{
@@ -821,6 +825,10 @@
 		"en"		"Iberian Guards"
 		"ru" 		"Стражи Иберии"
 	}
+	"Barracks Iberian Commando"
+	{
+		"en"		"Iberian Commando"
+	}
 	"Barracks Iberian Elite Gunner"
 	{
 		"en"		"Iberian Elite Gunner"
@@ -831,11 +839,15 @@
 		"en"		"Iberian Headhunter"
 		"ru" 		"Охотник за головами Иберии"
 	}	
+	"Barracks Iberia Inquisitor Lynsen"
+	{
+		"en"		"Inquisitor Lynsen"
+	}
 	"Barracks Iberian Lighthouse Guardian"
 	{
 		"en"		"Guardian of the Lighthouse"
 		"ru" 		"Хранитель Маяка"
-	}	
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
@@ -955,6 +967,10 @@
 		"pt"		"Rebelde"
 		"nl"		"Rebel"
 	}
+	"Chaos Rebel"
+	{
+		"en" 		"Chaos Rebel"
+	}
 	"Barney"
 	{
 		"en" 		"Barney"
@@ -1026,6 +1042,22 @@
 	{
 		"en" 		"Corrupted Barney"
 	}
+	"Baby"
+	{
+		"en"		"Baby"
+	}
+	"Children"
+	{
+		"en"		"Children"
+	}
+	"Stranger"
+	{
+		"en"		"Stranger"
+	}
+	"Taller"
+	{
+		"en"		"Taller"
+	}
 	"Voided Vanguard"
 	{
 		"en" 		"Voided Vanguard"
@@ -1036,6 +1068,13 @@
 		"ru"		"Кахмлстайн"
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
+	}
+	"Kahmlstein?"
+	{
+		"en"		"Kahmlstein?"
+		"ru"		"Кахмлстайн?"
+		"pt"		"Kahmlstein?" 
+		"nl"		"Kahmlstein?"
 	}
 	"Chaos Kahmlstein"
 	{
@@ -1292,13 +1331,13 @@
 		"pt"		"Balão de Ouro"
 		"ru"		"Золотой шар"
 	}
-	"Medival Scout"
+	"Medieval Scout"
 	{
 		"en"		"Ridden Scout"
 		"pt"		"Scout Montado"
 		"ru"		"Ездовой разведчик"
 	}
-	"Medival Villager"
+	"Medieval Villager"
 	{
 		"en"		"Villager"
 		"pt"		"Aldeão"
@@ -1310,7 +1349,7 @@
 		"pt"		"Edifício"
 		"ru"		"Постройка"
 	}
-	"Medival Construct"
+	"Medieval Construct"
 	{
 		"en"		"Construct"
 		"pt"		"Construção"
@@ -1406,31 +1445,31 @@
 		"pt"		"Aquiles"
 		"ru"		"Ахилл"
 	}
-	"Medival Arbalest"
+	"Medieval Arbalest"
 	{
 		"en"		"Medieval Arbalest"
 		"pt"		"Arbalest Medieval"
 		"ru"		"Арбалетчик средневековья"
 	}
-	"Medival Brawler"
+	"Medieval Brawler"
 	{
 		"en"		"Medieval Brawler"
 		"pt"		"Lutador Medieval"
 		"ru"		"Боец средневековья"
 	}
-	"Medival Longbowmen"
+	"Medieval Longbowmen"
 	{
 		"en"		"Medieval Longbowmen"
 		"pt"		"Arqueiro Medieval"
 		"ru"		"Лучник средневековья"
 	}
-	"Medival Halberdier"
+	"Medieval Halberdier"
 	{
 		"en"		"Medieval Halberdier"
 		"pt"		"Alabardeiro Medieval"
 		"ru"		"Алебардист средневековья"
 	}
-	"Medival Elite Longbowmen"
+	"Medieval Elite Longbowmen"
 	{
 		"en"		"Medieval Elite Longbowmen"
 		"pt"		"Arqueiro Elite Medieval"
@@ -1481,6 +1520,14 @@
 		"en"		"Silvester"
 		"pt"		"Silvester"
 		"ru"		"Сильвестр"
+	}
+	"Zeina"
+	{
+		"en"		"Zeina"
+	}
+	"Zilius"
+	{
+		"en"		"Zilius"
 	}
 	"Waldch"
 	{
@@ -1773,6 +1820,10 @@
 		"en"		"God Alaxios"
 		"ru"		"Бог Алаксиос"
 	}
+	"Sea-Infected God Alaxios"
+	{
+		"en"		"Sea-Infected God Alaxios"
+	}
 	"Seaborn Scout"
 	{
 		"en"		"Seaborn Scout"
@@ -1838,6 +1889,10 @@
 		"en"		"Intermediate Medic Mage"
 		"ru"		"Средний маг-медик"
 	}
+	"Barracks Advanced Mage"
+	{
+		"en"		"Advanced Medic Mage"
+	}
 	"Barracks Ikunagae"
 	{
 		"en"		"Iku Nagae"
@@ -1874,10 +1929,9 @@
 		"en"		"Barrager"
 		"ru"		"Бомбардир"
 	}
-	"Barracks Berserker"
+	"Barracks Mecha Loader"
 	{
-		"en"		"Berserker"
-		"ru"		"Берсерк"
+		"en"		"Mecha Loader"
 	}
 	"Barracks Crossbow Medic"
 	{
@@ -1961,30 +2015,60 @@
 		"en"		"Seaborn Guard"
 		"ru" 		"Морерождённый страж"
 	}
+	"Guard"
+	{
+		"en"		"Guard"
+		"ru" 		"страж"
+	}
 	"Seaborn Defender"
 	{
 		"en"		"Seaborn Defender"
 		"ru" 		"Морерождённый Защитник"
+	}
+	"Defender"
+	{
+		"en"		"Defender"
+		"ru" 		"Защитник"
 	}
 	"Seaborn Vanguard"
 	{
 		"en"		"Seaborn Vanguard"
 		"ru" 		"Морерождённый Авангард"
 	}
+	"Vanguard"
+	{
+		"en"		"Vanguard"
+		"ru" 		"Авангард"
+	}
 	"Seaborn Caster"
 	{
 		"en"		"Seaborn Caster"
 		"ru" 		"Морерождённый Маг"
+	}
+	"Caster"
+	{
+		"en"		"Caster"
+		"ru" 		"Маг"
 	}
 	"Seaborn Specialist"
 	{
 		"en"		"Seaborn Specialist"
 		"ru" 		"Морерождённый Специалист"
 	}
+	"Specialist"
+	{
+		"en"		"Specialist"
+		"ru" 		"Специалист"
+	}
 	"Seaborn Supporter"
 	{
 		"en"		"Seaborn Supporter"
 		"ru" 		"Морерождённый Поддерживающий"
+	}
+	"Supporter"
+	{
+		"en"		"Supporter"
+		"ru" 		"Поддерживающий"
 	}
 	"Theocracy"
 	{
@@ -2017,6 +2101,10 @@
 	"Diversionistico"
 	{
 		"en" 		"Diversionistico"
+	}
+	"Diversionistico Elitus"
+	{
+		"en" 		"Diversionistico Elitus"
 	}
 	"Adiantum"
 	{
@@ -2057,6 +2145,14 @@
 	"Soldine"
 	{
 		"en"	"Soldine"
+	}
+	"Soldinus ilus"
+	{
+		"en"	"Soldinus ilus"
+	}
+	"Selfam Scythus"
+	{
+		"en"	"Selfam Scythus"
 	}
 	"Protecta"
 	{
@@ -2193,6 +2289,10 @@
 	{
 		"en"	"Stellar Weaver"
 	}
+	"Interstellar Weaver"
+	{
+		"en"	"Interstellar Weaver"
+	}
 	"Daedalus"
 	{
 		"en"	"Daedalus"
@@ -2309,6 +2409,14 @@
 	{
 		"en"	"Ancient Demon"
 	}
+	"Hallam's Great Demon"
+	{
+		"en"	"Hallam's Great Demon"
+	}
+	"Ihanal Demon Whisperer"
+	{
+		"en"	"Ihanal Demon Whisperer"
+	}
 	"Winter Sniper"
 	{
 		"en"	"Winter Sniper"
@@ -2384,6 +2492,10 @@
 	"Mad Doctor"
 	{
 		"en"	"Mad Doctor"
+	}
+	"John The Almighty"
+	{
+		"en"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 	}
 	"Abomination"
 	{
@@ -2477,14 +2589,30 @@
 	{
 		"en"	"Wandering Spirit"
 	}
-	"Vengefull Spirit"
+	"Vengeful Spirit"
 	{
 		"en"	"Vengefull Spirit"
+	}
+	"Wandering Spitit"
+	{
+		"en"	"Wandering Spitit"
+	}
+	"Vengeful Spitit"
+	{
+		"en"	"Vengeful Spitit"
 	}
 	"Fallen Warrior"
 	{
 		"en"	"Guln the Fallen One"
 		"ru" 	"Павший Гулн"
+	}
+	"Ravaging Intellectual"
+	{
+		"en"	"Ravaging Intellectual?"
+	}
+	"Ravaging Intellectual Desc"
+	{
+		"en"	"A promise is a promise.\nApplies a buff on hit against you.\nHas an aura that gives the buff to allies.\nWhen losing a life, spawns a clone that does the same as him, and always attacks the same target.\nSometimes teleports all allies to a location."
 	}
 	"Lex"
 	{
@@ -2622,6 +2750,10 @@
 	{
 		"en"	"A stronger Variant"
 	}
+	"Elite Rulianius"
+	{
+		"en"	"Elite Rulianius"
+	}
 	"Rulianius"
 	{
 		"en"	"Rulianius"
@@ -2645,8 +2777,23 @@
 	}
 	"Twirl Desc"
 	{
-		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
-		"ru" 	"Лидер Руины\nОна не сражается с вами с полную силу...\nОна только использует силу магического гребеня\nЕсли вы увидете эффекты на её руках,Это озночает что одно из её Комбо готово"
+		"en"	"The ruler of Ruina\nIt is advidsable not to group up aggainst her\nIf 4 or more people are near her, she has the ability to teleport\nIn addition, on wave 60, walk in a circle to avoid her Ion spam attack."
+	}
+	"Lelouch Blade"
+	{
+		"en"	"Lelouch's Blade"
+	}
+	"Lelouch Crystal"
+	{
+		"en"	"Lelouch's Crystal"
+	}
+	"Lelouch"
+	{
+		"en"	"Lelouch"
+	}
+	"Fractal Cannon"
+	{
+		"en"	"Fractal Cannon"
 	}
 	"Ealing"
 	{
@@ -2887,7 +3034,7 @@
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
+		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks.\n(Silence)makes voidbuff weaker"
 		"ru" 	"Сердце Бездны...\nПервая способность:Засасывает всех союзников и если слишком близко,Наносит очень много урона.\nМожет ударить несколько раз подряд если долго никого не бил.\nВо время его существования,Распостронение бездны Очень усилено.\nКоллоны бездны появляются под врагами.\nЕсли Уровень здоровья пал до низкого начнёт распостронять бездну там где ходит.\n(заглушение)ослабляет Усиление от бездны"
 	}
 	"Voided Diversionistico"
@@ -2912,7 +3059,7 @@
 	}
 	"Void Creep Desc"
 	{
-		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15％), regen, damage(20％) and speed(5％)."
 	}
 	"Void Elemental Damage"
 	{
@@ -2926,6 +3073,10 @@
 	{
 		"en"	"Vhxis"
 		"ru" 	"Всикс"
+	}
+	"Random Boss"
+	{
+		"en"	"Random Boss"
 	}
 	"Vhxis Desc"
 	{
@@ -2955,6 +3106,18 @@
 	"Chaos Insane Desc"
 	{
 		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
+	}
+	"Chaos Swordsman"
+	{
+		"en"	"Chaos Swordsman"
+	}
+	"Chaos Swordsman Desc"
+	{
+		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
+	}
+	"Chaos Mercenaries"
+	{
+		"en"	"Chaos Mercenaries"
 	}
 	"Chaos Knight?"
 	{
@@ -3009,10 +3172,26 @@
 		"en" 		"Zombine"
 		"ru" 		"Зомбайн"
 	}
-	"Omega"
+	"Headcrab"
 	{
-		"en"		"Omega"
-		"ru" 		"Омега"
+		"en"		"Headcrab"
+	}
+	"Poison Headcrab"
+	{
+		"en"		"Poison Headcrab"
+	}
+	"Z-Main Headcrab"
+	{
+		"en"		"Z-Main Headcrab"
+	}
+	"Z-Main Poison Zombie"
+	{
+		"en"		"Z-Main Poison Zombie"
+	}
+	"3650"
+	{
+		"en"		"3650"
+		"ru" 		"3650"
 	}
 	"Nemal"
 	{
@@ -3062,7 +3241,7 @@
 	}
 	"Beacon Constructor Desc"
 	{
-		"en"		"Places Beacons if close enough, has 50%% resistance and reduced speed while it carries one."
+		"en"		"Places Beacons if close enough, has 50％ resistance and reduced speed while it carries one."
 	}
 	"Iberia Lighthouse"
 	{
@@ -3323,5 +3502,728 @@
 	"Bob's Duck ''Dubby''"
 	{
 		"en"	"Bob's Duck ''Dubby''"
+	}
+	"Factory"
+	{
+		"en"	"Factory"
+		"ko"	"군수 공장"
+	}
+	"Batter"
+	{
+		"en"	"Leatherboots Batter"
+		"ko"	"가죽부츠 정찰대 타자"
+	}
+	"Charger"
+	{
+		"en"	"Leatherboots Charger"
+		"ko"	"가죽부츠 정찰대 돌격병"
+	}
+	"Teslar"
+	{
+		"en"	"Leatherboots Teslar"
+		"ko"	"가죽부츠 정찰대 테슬라"
+	}
+	"Victorian Vanguard"
+	{
+		"en"	"Leatherboots Vanguard"
+		"ko"	"가죽부츠 정찰대 뱅가드"
+	}
+	"Victorian Igniter"
+	{
+		"en"	"Leatherboots Igniter"
+		"ko"	"가죽부츠 정찰대 점화병"
+	}
+	"Grenadier"
+	{
+		"en"	"Leatherboots Grenadier"
+		"ko"	"가죽부츠 정찰대 투척병"
+	}
+	"Victorian ScoutSquad Leader"
+	{
+		"en"	"Leatherboots Leader"
+		"ko"	"가죽부츠 정찰대 리더"
+	}
+	"Supplier"
+	{
+		"en"	"Leatherboots Supplier"
+		"ko"	"가죽부츠 정찰대 보급병"
+	}
+	"Ballista"
+	{
+		"en"	"Leatherboots Ballista"
+		"ko"	"가죽부츠 정찰대 발리스타"
+	}
+	"Birdeye"
+	{
+		"en"	"Birdeye"
+		"ko"	"버드아이"
+	}
+	"Bigpipe"
+	{
+		"en"	"Big pipe"
+		"ko"	"빅 파이프"
+	}
+	"Harbringer"
+	{
+		"en"	"Harbringer"
+		"ko"	"하브링거"
+	}
+	"Signaller"
+	{
+		"en"	"Victorian Signaller"
+		"ko"	"빅토리아 전령병"
+	}
+	"Chaos Affected Signaller"
+	{
+		"en"	"Chaos Affected Signaller"
+	}
+	"Chaos Affected Eradicator"
+	{
+		"en"	"Chaos Affected Eradicator"
+	}
+	"Humbee"
+	{
+		"en"	"Irongate Humbee"
+		"ko"	"강철게이트 험비"
+	}
+	"Shotgunner"
+	{
+		"en"	"Irongate Shotgunner"
+		"ko"	"강철게이트 샷거너"
+	}
+	"Bulldozer"
+	{
+		"en"	"Irongate Bulldozer"
+		"ko"	"강철게이트 불도져"
+	}
+	"Hardender"
+	{
+		"en"	"Irongate Hardender"
+		"ko"	"강철게이트 경화자"
+	}
+	"Raider"
+	{
+		"en"	"Irongate Raider"
+		"ko"	"강철게이트 침략자"
+	}
+	"Zapper"
+	{
+		"en"	"Irongate Zapper"
+		"ko"	"강철게이트 잽퍼"
+	}
+	"Payback"
+	{
+		"en"	"Irongate Payback"
+		"ko"	"강철게이트 복수자"
+	}
+	"Blocker"
+	{
+		"en"	"Irongate Blocker"
+		"ko"	"강철게이트 블록커"
+	}
+	"Victoria Destructor"
+	{
+		"en"	"Irongate Destructor"
+		"ko"	"강철게이트 페기물 소각자"
+	}
+	"Victoria Tactical Protector"
+	{
+		"en"	"Irongate Tactical Protector"
+		"ko"	"강철게이트 전술 프로텍터"
+	}
+	"Victoria Aviator"
+	{
+		"en"	"Irongate Aviator"
+		"ko"	"아이언 실드에 타라 신지"
+	}
+	"IronShield"
+	{
+		"en"	"Irongate IronShield"
+		"ko"	"강철게이트 아이언실드"
+	}
+	"Basebreaker"
+	{
+		"en"	"Trooper  Basebreaker"
+		"ko"	"트루퍼 기지파괴자"
+	}
+	"Booster"
+	{
+		"en"	"Trooper  Booster"
+		"ko"	"트루퍼 부스터"
+	}
+	"Scorcher"
+	{
+		"en"	"Trooper  Scorcher"
+		"ko"	"트루퍼 방화병"
+	}	
+	"Mowdown"
+	{
+		"en"	"Trooper  Mowdown"
+		"ko"	"트루퍼 벌집피자 제조기"
+	}
+	"Mechafist"
+	{
+		"en"	"Trooper  Mechafist"
+		"ko"	"트루퍼 메카피스트"
+	}
+	"Assulter"
+	{
+		"en"	"Trooper  Assulter"
+		"ko"	"트루퍼 보병"
+	}
+	"Cyborg Assulter"
+	{
+		"en"	"Cyborg Assulter"
+	}
+	"Anti-Armor Infantry"
+	{
+		"en"	"Trooper  Anti-Armor Infantry"
+		"ko"	"트루퍼 대전차 보병"
+	}
+	"Victorian Mortar"
+	{
+		"en"	"Trooper  Mortar"
+		"ko"	"트루퍼 박격포병"
+	}
+	"Bomb Cart"
+	{
+		"en"	"Trooper  Bombcart"
+		"ko"	"트루퍼 폭탄 C.A.R.T"
+	}
+	"Breachcart"
+	{
+		"en"	"Trooper  Breachcart"
+		"ko"	"트루퍼 브리칭 전차"
+	}
+	"Victoria Tacticalunit"
+	{
+		"en"	"Trooper Tactical Operator"
+		"ko"	"트루퍼 전술 오퍼레이터"
+	}
+	"Caffeinator"
+	{
+		"en"	"Brassbunker Caffeinator"
+		"ko"	"브라스벙커 카'페인'네이터"
+	}
+	"Welder"
+	{
+		"en"	"Brassbunker Welder"
+		"ko"	"브라스벙커 용접 전사"
+	}
+	"Mechanist"
+	{
+		"en"	"Brassbunker Mechanist"
+		"ko"	"브라스벙커 메카니스트"
+	}
+	"Avangard"
+	{
+		"en"	"Brassbunker Avangard"
+		"ko"	"브라스벙커 아방가르드"
+	}
+	"Tanker"
+	{
+		"en"	"Brassbunker Tanker"
+		"ko"	"브라스벙커 탱커"
+	}
+	"Brassbunker Ambusher"
+	{
+		"en"	"Brassbunker Ambusher"
+		"ko"	"브라스벙커 매복자"
+	}
+	"Pulverizer"
+	{
+		"en"	"Brassbunker Pulverizer"
+		"ko"	"브라스벙커 분쇄기"
+	}
+	"Victoria Taser"
+	{
+		"en"	"Brassbunker Taser"
+		"ko"	"브라스벙커 테이저"
+	}
+	"Victoria Tank"
+	{
+		"en"	"Brassbunker Tank"
+		"ko"	"브라스벙커 탱크"
+	}
+	"Victoria Factory"
+	{
+		"en"	"Victorian Factory"
+		"ko"	"빅토리아 군수공장"
+	}
+	"Victoria Radiomast"
+	{
+		"en"	"Victorian Radiomast"
+		"ko"	"빅토리아 라디오마스트"
+	}
+	"Radio Guard"
+	{
+		"en"	"Radiomast Guard"
+		"ko"	"라디오마스트 가드"
+	}
+	"Radio Repair"
+	{
+		"en"	"Radio Repair"
+		"ko"	"라디오 수리 전문가"
+	}
+	"Victoria Anvil"
+	{
+		"en"	"''Anvil''"
+		"ko"	"''모루''"
+	}
+	"Victoria Anvil MK2"
+	{
+		"en"	"''Anvil'' Mk2"
+		"ko"	"''모루'' Mk2"
+	}
+	"Victoria Fragments"
+	{
+		"en"	"''Fragments''"
+		"ko"	"''파편''"
+	}
+	"Victoria Fragments MK2"
+	{
+		"en"	"''Fragments'' Mk2"
+		"ko"	"''파편'' Mk2"
+	}
+	"Victoria Atomizer"
+	{
+		"en"	"Atomizer"
+		"ko"	"인수분해"
+	}
+	"Victoria Huscarls"
+	{
+		"en"	"Huscarls"
+		"ko"	"허스칼"
+	}
+	"Victoria Harrison"
+	{
+		"en"	"Harrison"
+		"ko"	"해리슨"
+	}
+	"Victoria Castellan"
+	{
+		"en"	"Castellan"
+		"ko"	"카스텔란"
+	}
+	"Agent John"
+	{
+		"en"		"Agent John"
+	}
+	"Agent James"
+	{
+		"en"		"Agent James"
+	}
+	"Agent Alexander"
+	{
+		"en"		"Agent Alexander"
+	}
+	"Agent Alan"
+	{
+		"en"		"Agent Alan"
+	}
+	"Agent Chase"
+	{
+		"en"		"Agent Chase"
+	}
+	"Agent Dave"
+	{
+		"en"		"Agent Dave"
+	}
+	"Agent Graham"
+	{
+		"en"		"Agent Graham"
+	}
+	"Agent Steve"
+	{
+		"en"		"Agent Steve"
+	}
+	"Agent Eric"
+	{
+		"en"		"Agent Eric"
+	}
+	"Agent Jack"
+	{
+		"en"		"Agent Jack"
+	}
+	"Agent Jim"
+	{
+		"en"		"Agent Jim"
+	}
+	"Agent Josh"
+	{
+		"en"		"Agent Josh"
+	}
+	"Agent Kenneth"
+	{
+		"en"		"Agent Kenneth"
+	}
+	"Agent Paul"
+	{
+		"en"		"Agent Paul"
+	}
+	"Agent Tyler"
+	{
+		"en"		"Agent Tyler"
+	}
+	"Agent Wayne"
+	{
+		"en"		"Agent Wayne"
+	}
+	"Merovingian"
+	{
+		"en"		"Merovingian"
+	}
+	"Agent Ben"
+	{
+		"en"		"Agent Ben"
+	}
+	"Agent Chad"
+	{
+		"en"		"Agent Chad"
+	}
+	"Agent Chris"
+	{
+		"en"		"Agent Chris"
+	}
+	"Agent Dick"
+	{
+		"en"		"Agent Dick"
+	}
+	"Agent Ian"
+	{
+		"en"		"Agent Ian"
+	}
+	"Agent Jackson"
+	{
+		"en"		"Agent Jackson"
+	}
+	"Agent Mike"
+	{
+		"en"		"Agent Mike"
+	}
+	"Agent Sam"
+	{
+		"en"		"Agent Sam"
+	}
+	"Agent Zack"
+	{
+		"en"		"Agent Zack"
+	}
+	"Agent Connor"
+	{
+		"en"		"Agent Connor"
+	}
+	"Agent Henry"
+	{
+		"en"		"Agent Henry"
+	}
+	"Agent Jeremy"
+	{
+		"en"		"Agent Jeremy"
+	}
+	"Agent Jones"
+	{
+		"en"		"Agent Jones"
+	}
+	"Agent Kurt"
+	{
+		"en"		"Agent Kurt"
+	}
+	"Agent Logan"
+	{
+		"en"		"Agent Logan"
+	}
+	"Agent Ross"
+	{
+		"en"		"Agent Ross"
+	}
+	"Agent Spencer"
+	{
+		"en"		"Agent Spencer"
+	}
+	"Agent Todd"
+	{
+		"en"		"Agent Todd"
+	}
+	"Agent Thompson"
+	{
+		"en"		"Agent Thompson"
+	}
+	"Agent Johnson"
+	{
+		"en"		"Agent Johnson"
+	}
+	"Twin No."
+	{
+		"en"		"Twin No."
+	}
+	"Agent Smith"
+	{
+		"en"		"Agent Smith"
+	}
+	"Smith"
+	{
+		"en"		"Smith"
+	}
+	"Hijacked Red Pill"
+	{
+		"en"		"Hijacked Red Pill"
+	}
+	"Seaborn Metro Cop"
+	{
+		"en"		"Seaborn Metro Cop"
+	}
+	"Seaborn Metro Raider"
+	{
+		"en"		"Seaborn Metro Raider"
+	}
+	"Seaborn W.F. Rifler"
+	{
+		"en"		"Seaborn W.F. Rifler"
+	}
+	"Seaborn W.F. Elite"
+	{
+		"en"		"Seaborn W.F. Elite"
+	}
+	"Seaborn W.F. Shotgunner"
+	{
+		"en"		"Seaborn W.F. Shotgunner"
+	}
+	"Voided Metro Cop"
+	{
+		"en"		"Voided Metro Cop"
+	}
+	"Voided Metro Raider"
+	{
+		"en"		"Voided Metro Raider"
+	}
+	"Voided W.F. Rifler"
+	{
+		"en"		"Voided W.F. Rifler"
+	}
+	"Voided W.F. Elite"
+	{
+		"en"		"Voided W.F. Elite"
+	}
+	"Voided W.F. Shotgunner"
+	{
+		"en"		"Voided W.F. Shotgunner"
+	}
+	"Hunter"
+	{
+		"en"		"Hunter"
+	}
+	"Merlton"
+	{
+		"en"		"Merlton"
+	}
+	"Lost Knight"
+	{
+		"en"		"Lost Knight"
+	}
+	"Omega"
+	{
+		"en"		"Omega"
+		"ru"		"Омега"
+	}
+	"Victoria"
+	{
+		"en"		"Victoria"
+	}
+	"Matrix"
+	{
+		"en"		"Matrix"
+	}
+	"Mutations"
+	{
+		"en"		"Mutations"
+	}
+	"Positive"
+	{
+		"en"		"Positive"
+	}
+	"Negative"
+	{
+		"en"		"Negative"
+	}
+	"Major Voided"
+	{
+		"en"	"Major Voided"
+	}
+	"Chaos Evil Demon"
+	{
+		"en"	"Chaos Evil Demon"
+	}
+	"Disturbed Umbral"
+	{
+		"en" "Disturbed Umbral"
+	}
+	"Immutable Heavy"
+	{
+		"en" "Immutable Heavy"
+	}
+	"Vanishing Matter"
+	{
+		"en" "Vanishing Matter"
+	}
+	"Annoying Spirit"
+	{
+		"en" "Annoying Spirit"
+	}
+	"Darkened Heavy"
+	{
+		"en" "Darkened Heavy"
+	}
+	"ATV"
+	{
+		"en"	"ATV"
+	}
+	"Airboat"
+	{
+		"en"	"Airboat"
+	}
+	"Male 07"
+	{
+		"en"	"Male 07"
+	}
+	"Spiritrunner"
+	{
+		"en"	"Spiritrunner"
+	}
+	"Todd Howard"
+	{
+		"en"	"Todd Howard"
+	}
+	"Sea-Infected Todd Howard"
+	{
+		"en"	"Sea-Infected Todd Howard"
+	}
+	"kevinmery2009"
+	{
+		"en"	"kevinmery2009"
+	}
+	"Red Heavy"
+	{
+		"en"	"Red Heavy"
+	}
+	"Blue Heavy"
+	{
+		"en"	"Blue Heavy"
+	}
+	"Cyan Heavy"
+	{
+		"en"	"Cyan Heavy"
+	}
+	"Green Heavy"
+	{
+		"en"	"Green Heavy"
+	}
+	"Orange Heavy"
+	{
+		"en"	"Orange Heavy"
+	}
+	"Yellow Heavy"
+	{
+		"en"	"Yellow Heavy"
+	}
+	"Purple Heavy"
+	{
+		"en"	"Purple Heavy"
+	}
+	"Anti-Camp Temperal Buster"
+	{
+		"en"	"Anti-Camp Temperal Buster"
+	}
+	"Troll Rifler"
+	{
+		"en"	"Troll Rifler"
+	}
+	"Troll Cop"
+	{
+		"en"	"Troll Cop"
+	}
+	"Troll RPG Carrier"
+	{
+		"en"	"Troll RPG Carrier"
+	}
+	"Troll Brawler"
+	{
+		"en"	"Troll Brawler"
+	}
+	"Crystallized Horror"
+	{
+		"en" 	"Crystallized Horror"
+	}
+	"Eirasus"
+	{
+		"en"	"Eirasus"
+	}
+	"Eirasus Desc"
+	{
+		"en"	"Simular to an Erasus.\nSpawns with shields.\nGains the 'Angered expidonsan' buff once its shield breaks."
+	}
+	"Haltera"
+	{
+		"en"	"Haltera"
+	}
+	"Haltera Desc"
+	{
+		"en"	"Simular to a Guardus\nOnce below half HP, loses their hat and gains 2x attackspeed but loses half their damage\nTheir healing is unchanged..."
+	}
+	"Flaigus"
+	{
+		"en"	"Flaigus"
+	}
+	"Flaigus Desc"
+	{
+		"en"	"Simular to an Dual-Rea.\nSpawns with shields.\nWill Fly towards you once every so often."
+	}
+	"Biggun Assisa"
+	{
+		"en"	"Biggun Assisa"
+	}
+	"Biggun Assisa Desc"
+	{
+		"en"	"Simular to a Minigun Assisa\nOnce armor is broken once, their lose their hat and will gain double damage."
+	}
+	"Hia Expidonsan Rejuvinator"
+	{
+		"en"	"Hia Expidonsan Rejuvinator"
+	}
+	"Hia Expidonsan Rejuvinator Desc"
+	{
+		"en"	"Very fast medic that spawns with shields.\nWhen shield is broken, their lose alot of their speed.\nWhen they heal an ally they give the 'Rejuvinator' Buff."
+	}
+	"Cuttus Siccino"
+	{
+		"en"	"Cuttus Siccino"
+	}
+	"Cuttus Siccino Desc"
+	{
+		"en"	"Very fast attacking, very low damage dealing enemy.\nGives infinite stacking vulnerability."
+	}
+	"Armsa Manu"
+	{
+		"en"	"Armsa Manu"
+	}
+	"Armsa Manu Desc"
+	{
+		"en"	"Simular to Rifal manu.\nEvery 10th shot deals 10x the damage."
+	}
+	"Speedus Absolutos"
+	{
+		"en"	"Speedus Absolutos"
+	}
+	"Speedus Absolutos Desc"
+	{
+		"en"	"Will survive certain death for 0.5 seconds.\nOnce it Reaches 1 hp, it will teleport behind the attacker."
+	}
+	"Vaus Shaldus"
+	{
+		"en"	"Vaus Shaldus"
+	}
+	"Vaus Shaldus Desc"
+	{
+		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
 	}
 }

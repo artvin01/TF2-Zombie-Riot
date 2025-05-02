@@ -283,17 +283,7 @@ void VoidEalingSelfDefense(VoidEaling npc, float gameTime, int target, float dis
 
 					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						if(target > MaxClients)
-						{
-							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
-						}
-						else
-						{
-							if (!IsInvuln(target))
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 5);
-							}
-						}
+						StartBleedingTimer(target, npc.index, 4.0, 5, -1, DMG_TRUEDAMAGE, 0);
 					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

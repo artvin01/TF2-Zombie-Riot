@@ -660,7 +660,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 					// Ask our squad members if they can see them
 					for(int i; i < count; i++)
 					{
-						BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
+						BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]));
 						if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 						{
 							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))
@@ -849,7 +849,7 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 				npc.m_flMeleeArmor = 1.1;
 		}
 	}
-	else if(!(damagetype & DMG_SLASH))
+	else if(!(damagetype & DMG_TRUEDAMAGE))
 	{
 		if(npc.m_flRangedArmor < 1.1)
 		{

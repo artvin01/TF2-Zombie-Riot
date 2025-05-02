@@ -94,7 +94,7 @@ public void Wrathful_Blade_ResetAll()
 #define SND_WRATHSTRIKE_SMASH_2			")mvm/giant_soldier/giant_soldier_explode.wav"
 #define SND_WRATHSTRIKE_SWING			")misc/halloween/strongman_fast_whoosh_01.wav"
 
-#define FURY_AURA						"burningplayer_red"
+#define FURY_AURA						"burningplayer_corpse"
 #define FURY_RINGS						"heavy_ring_of_fire"
 #define WRATH_OBLITERATED				"hammer_impact_button_dust"
 
@@ -126,24 +126,16 @@ void Wrathful_Blade_Precache()
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
-float Player_OnTakeDamage_WrathfulBlade(int victim, float &damage, int attacker)
+float Player_OnTakeDamage_WrathfulBlade(int victim, float &damage)
 {
-	if (Fury_Active[victim] && attacker != 0)
+	if (Fury_Active[victim]/* && attacker != 0*/)
 	{
 		damage *= Fury_ResMult[Fury_Tier[victim]];
 	}
-
-	Fury_DamagedAt[victim] = GetGameTime() + 3.0;
+	if(!CheckInHud())
+		Fury_DamagedAt[victim] = GetGameTime() + 3.0;
 
 	return damage;
-}
-
-float Player_OnTakeDamage_WrathfulBlade_Hud(int victim)
-{
-	if (Fury_Active[victim])
-		return Fury_ResMult[Fury_Tier[victim]];
-
-	return 1.0;
 }
 
 void WrathfulBlade_OnKill(int client, int victim)
@@ -283,7 +275,7 @@ public void Wrath_HUD(int client, int weapon, bool forced)
 
 			PrintHintText(client, HUDText);
 
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 
 		f_NextWrathHUD[client] = GetGameTime() + 0.5;
@@ -351,7 +343,7 @@ public Action Wrath_MeleeAttack(Handle timelytimer, DataPack pack)
 	float baseDMG = 65.0 * Wrath_Multiplier[client]; 
 	baseDMG *= Attributes_Get(weapon, 2, 1.0);
 	baseDMG *= Attributes_Get(weapon, 1, 1.0);
-	baseDMG *= Attributes_Get(weapon, 1000, 1.0);
+//	baseDMG *= Attributes_Get(weapon, 1000, 1.0);
 			 
 	ArrayList victims = new ArrayList(255);
 
@@ -560,7 +552,7 @@ public Action Fury_Logic(Handle timelytimer, int id)
 		float DMG = Fury_BurnDMG[tier];
 		DMG *= Attributes_Get(weapon, 1, 1.0);
 		DMG *= Attributes_Get(weapon, 2, 1.0);
-		DMG *= Attributes_Get(weapon, 1000, 1.0);
+	//	DMG *= Attributes_Get(weapon, 1000, 1.0);
 
 		float pos[3];
 		WorldSpaceCenter(client, pos);

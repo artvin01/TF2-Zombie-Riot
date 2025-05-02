@@ -33,13 +33,13 @@ enum struct ItemInfo
 	char Custom_Name[64];
 
 	int Index;
-	int Attrib[16];
-	float Value[16];
+	int Attrib[32];
+	float Value[32];
 	int Attribs;
 
 	int Index2;
-	int Attrib2[16];
-	float Value2[16];
+	int Attrib2[32];
+	float Value2[32];
 	int Attribs2;
 
 	int Ammo;
@@ -68,7 +68,8 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
-	char WeaponSoundOverrideString[255];
+//	char WeaponSoundOverrideString[255];
+	char WeaponHudExtra[16];
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
@@ -149,8 +150,9 @@ enum struct ItemInfo
 		this.SemiAutoStats_ReloadTime			= kv.GetFloat("semi_auto_stats_reloadtime");
 		this.WeaponSoundIndexOverride	= view_as<bool>(kv.GetNum("weapon_sound_index_override", 0));
 
-		kv.GetString("sound_weapon_override_string", this.WeaponSoundOverrideString, sizeof(this.WeaponSoundOverrideString));
+	//	kv.GetString("sound_weapon_override_string", this.WeaponSoundOverrideString, sizeof(this.WeaponSoundOverrideString));
 		kv.GetString("model_weapon_override", this.WeaponModelOverride, sizeof(this.WeaponModelOverride));
+		kv.GetString("weapon_hud_extra", this.WeaponHudExtra, sizeof(this.WeaponHudExtra));
 		
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum("weapon_vmt_setting", -1));
 		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum("weapon_bodygroup", -1));
@@ -205,7 +207,7 @@ enum struct ItemInfo
 		this.Melee_Allows_Headshots 		= view_as<bool>(kv.GetNum("melee_can_headshot", 0));
 		this.Attack3AbilitySlot			= kv.GetNum("attack_3_ability_slot");
 		
-		static char buffers[32][16];
+		static char buffers[64][16];
 		kv.GetString("attributes", buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i < this.Attribs; i++)
@@ -274,6 +276,7 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 void RpgPluginStart_Store()
 {
 	RegConsoleCmd("rpg_settings", SettingsStore_Command);
+	ClearAllTempAttributes();
 }
 
 public Action SettingsStore_Command(int client, int args)
@@ -395,7 +398,12 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 		{
 			static ItemInfo info;
 			EquippedItems.GetArray(pos, info);
-			
+#if defined ZR
+			if(MazeatItemHas())
+			{
+				cooldown *= 0.5;
+			}
+#endif
 			info.Cooldown[what_slot - 1] = cooldown + GetGameTime();
 
 			EquippedItems.SetArray(pos, info);
@@ -476,7 +484,7 @@ static void ReShowSettingsHud(int client)
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
 
-	if(b_HudLowHealthShake[client])
+	if(b_HudLowHealthShake_UNSUED[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -508,8 +516,8 @@ static void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-42", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
-	if(b_TauntSpeedIncreace[client])
+	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed increase");
+	if(b_TauntSpeedIncrease[client])
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -898,13 +906,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -40: 
 				{
-					if(b_HudLowHealthShake[client])
+					if(b_HudLowHealthShake_UNSUED[client])
 					{
-						b_HudLowHealthShake[client] = false;
+						b_HudLowHealthShake_UNSUED[client] = false;
 					}
 					else
 					{
-						b_HudLowHealthShake[client] = true;
+						b_HudLowHealthShake_UNSUED[client] = true;
 					}
 					
 					ReShowSettingsHud(client);
@@ -953,13 +961,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -71: 
 				{
-					if(b_TauntSpeedIncreace[client])
+					if(b_TauntSpeedIncrease[client])
 					{
-						b_TauntSpeedIncreace[client] = false;
+						b_TauntSpeedIncrease[client] = false;
 					}
 					else
 					{
-						b_TauntSpeedIncreace[client] = true;
+						b_TauntSpeedIncrease[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}
@@ -993,8 +1001,7 @@ void Store_ApplyAttribs(int client)
 {
 	if(!EquippedItems)
 		return;
-
-	float SpeedAttribBefore = Attributes_Get(client, 442, 1.0);
+		
 	Attributes_RemoveAll(client);
 	Stats_ApplyAttribsPre(client);
 	
@@ -1096,6 +1103,7 @@ void Store_ApplyAttribs(int client)
 	int attribs = 0;
 	for(int i; i < length; i++)
 	{
+		/*
 		if(attribs && !(attribs % 16))
 		{
 			if(!TF2_GetWearable(client, entity))
@@ -1110,6 +1118,7 @@ void Store_ApplyAttribs(int client)
 			Attributes_RemoveAll(entity);
 			attribs++;
 		}
+		*/
 
 		snapshot.GetKey(i, buffer1, sizeof(buffer1));
 		if(map.GetValue(buffer1, value))
@@ -1126,8 +1135,9 @@ void Store_ApplyAttribs(int client)
 		}
 	}
 
-	Stats_ApplyAttribsPost(client, ClassForStats, SpeedAttribBefore);
-
+	Stats_ApplyAttribsPost(client, ClassForStats);
+	
+	/*
 	while(TF2_GetWearable(client, entity))
 	{
 		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
@@ -1135,6 +1145,7 @@ void Store_ApplyAttribs(int client)
 		
 		Attributes_RemoveAll(entity);
 	}
+	*/
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
 	
@@ -1335,18 +1346,18 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
 					/*
-					LogMessage("Weapon Spawned!");
-					LogMessage("Name of client %N and index %i",client,client);
-					LogMessage("info.Classname: %s",info.Classname);
-					LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
+				//	LogMessage("Weapon Spawned!");
+				//	LogMessage("Name of client %N and index %i",client,client);
+				//	LogMessage("info.Classname: %s",info.Classname);
+				//	LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
 					char AttributePrint[255];
 					for(int i=0; i<info.Attribs; i++)
 					{
 						Format(AttributePrint,sizeof(AttributePrint),"%s %i ;",AttributePrint, info.Attrib[i]);	
 						Format(AttributePrint,sizeof(AttributePrint),"%s %.1f ;",AttributePrint, info.Value[i]);	
 					}
-					LogMessage("attributes: ''%s''",AttributePrint);
-					LogMessage("info.Attribs: %i",info.Attribs);
+					PrintToChatAll("attributes: ''%s''",AttributePrint);
+				//	LogMessage("info.Attribs: %i",info.Attribs);
 					*/
 				}
 				else
@@ -1380,6 +1391,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_MeleeAttackFrameDelay[entity] = info.Melee_AttackDelayFrame;
 					b_MeleeCanHeadshot[entity] = info.Melee_Allows_Headshots;
 					
+					OriginalWeapon_AmmoType[entity] = -1;
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -1389,6 +1401,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								if(info.Ammo == 30)
 								{
 									SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", -1);
+									OriginalWeapon_AmmoType[entity] = -1;
 								}
 								else
 								{
@@ -1420,21 +1433,27 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									if(info.Ammo) //my man broke my shit.
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
+										OriginalWeapon_AmmoType[entity] = info.Ammo;
 									}
 								}
 							}
 						}
+						/*
+
+						//This broke as of 20/12/2024, the 64bit update brok it to be specific.
+
 						//CANT USE AMMO 1 or 2 or something,
 						//Allows you to switch to the weapon even though it has no ammo, there is PROOOOOOOOOOOOOOOOOOOBAABLY no weapon in the game that actually uses this
 						//IF IT DOES!!! then make an exception, but as far as i know, no need.	
 						
-						if(info.Ammo/* != Ammo_Hand_Grenade && info.Ammo != Ammo_Potion_Supply*/) //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
+						if(info.Ammo != Ammo_Hand_Grenade && info.Ammo != Ammo_Potion_Supply //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
 						{
 							//It varies between 29 and 30, its better to just test it after each update
 							//my guess is that the compiler optimiser from valve changes it, since its client and serverside varies
 							SetAmmo(client, 29, 99999);
 							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 29);
 						}
+						*/
 					}
 					
 					if(info.IsWand > 0)
@@ -1472,12 +1491,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;  //R status to weapon
 					}
+					Format(c_WeaponUseAbilitiesHud[entity],sizeof(c_WeaponUseAbilitiesHud[]),"%s",info.WeaponHudExtra);	
 					
 					i_WeaponArchetype[entity] 				= info.WeaponArchetype;
 					i_WeaponForceClass[entity] 				= info.WeaponForceClass;
 					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
-					Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
+				//	Format(c_WeaponSoundOverrideString[entity],sizeof(c_WeaponSoundOverrideString[]),"%s",info.WeaponSoundOverrideString);	
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_WeaponVolumeStiller[entity]				= info.WeaponVolumeStiller;
@@ -2065,4 +2085,132 @@ public void Ammo_TagDeploy(int client, int weapon, int index)
 			i_TagColor[client] =	{255,255,255,255};
 		}
 	}
+}
+
+
+int GetAmmoType_WeaponPrimary(int weapon)
+{
+	return OriginalWeapon_AmmoType[weapon];
+}
+
+
+
+static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
+
+/*
+	Example:
+
+	static TempAttribStore TempStoreAttrib;
+
+	TempStoreAttrib.Attribute = 6;
+	TempStoreAttrib.Value = 0.75;
+	TempStoreAttrib.GameTimeRemoveAt = GetGameTime() + 5.0; //5 second duration
+	TempStoreAttrib.Weapon_StoreIndex = StoreWeapon[weapon];
+	TempStoreAttrib.Apply_TempAttrib(client, weapon);
+
+	//gives attackspeed for 5 seconds with an increase of 25%!
+
+
+*/
+enum struct TempAttribStore
+{
+	int Attribute;
+	float Value;
+	float GameTimeRemoveAt;
+	int Weapon_StoreIndex;
+	int ClientOnly_ResetCountSave;
+	/*
+	Function FuncBeforeApply;
+	Function FuncAfterApply;
+	*/
+	void Apply_TempAttrib(int client, int weapon)
+	{
+		ApplyTempAttrib_Internal(weapon, this.Attribute, this.Value, this.GameTimeRemoveAt - GetGameTime(), ClientAttribResetCount[client]);
+		if(!List_TempApplyWeaponPer[client])
+			List_TempApplyWeaponPer[client] = new ArrayList(sizeof(TempAttribStore));
+
+		List_TempApplyWeaponPer[client].PushArray(this);
+	}
+}
+
+//on map restart
+void ClearAllTempAttributes()
+{
+	for(int c = 0; c < MAXTF2PLAYERS; c++)
+	{
+		delete List_TempApplyWeaponPer[c];
+	}
+}
+
+stock void WeaponSpawn_Reapply(int client, int weapon, int storeindex)
+{
+	if(!List_TempApplyWeaponPer[client])
+	{
+		return;
+	}
+	static TempAttribStore TempStoreAttrib;
+	int length = List_TempApplyWeaponPer[client].Length;
+	for(int i; i<length; i++)
+	{
+		List_TempApplyWeaponPer[client].GetArray(i, TempStoreAttrib);
+		if(TempStoreAttrib.GameTimeRemoveAt < GetGameTime())
+		{
+			List_TempApplyWeaponPer[client].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
+		if(storeindex == TempStoreAttrib.Weapon_StoreIndex)
+		{
+			ApplyTempAttrib_Internal(weapon, TempStoreAttrib.Attribute, TempStoreAttrib.Value, TempStoreAttrib.GameTimeRemoveAt - GetGameTime(), ClientAttribResetCount[client]);
+			//Give all the things needed to the weapon again.
+		}
+	}
+	//????
+}
+
+
+// Returns the top most weapon (or -1 for no change)
+int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
+{
+	char buffer[36];
+	
+	int topWeapon = -1;
+	int firstWeapon = -1;
+	int previousIndex = -1;
+
+	int length = GetMaxWeapons(client);
+	for(int i; i < length; i++)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+		if(weapon != -1)
+		{
+			GetEntityClassname(weapon, buffer, sizeof(buffer));
+			if(TF2_GetClassnameSlot(buffer) == slot)
+			{
+				if(firstWeapon == -1)
+					firstWeapon = weapon;
+
+				if(previousIndex != -1)
+				{
+					// Replace this weapon with the previous slot (1 <- 2)
+					if(ChangeWeapon)
+						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, previousIndex);
+					if(topWeapon == -1)
+						topWeapon = weapon;
+				}
+
+				previousIndex = i;
+			}
+		}
+	}
+
+	if(firstWeapon != -1)
+	{
+		// First to Last (7 <- 0)
+		if(ChangeWeapon)
+			SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", firstWeapon, previousIndex);
+	}
+
+	return topWeapon;
 }

@@ -490,7 +490,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.m_flGetClosestTargetTime < gameTime || !IsEntityAlive(npc.m_iTarget))
+	if(npc.m_flGetClosestTargetTime < gameTime || !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -508,7 +508,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[other] == i_NpcInternalId[npc.index])
@@ -1219,7 +1219,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != INVALID_ENT_REFERENCE && other != npc.index)
 				{
 					if(i_NpcInternalId[other] == BOB_THE_FIRST || i_NpcInternalId[other] == BOB_THE_FIRST_S)
@@ -1248,7 +1248,7 @@ static void Internal_NPCDeath(int entity)
 
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != INVALID_ENT_REFERENCE && other != npc.index)
 		{
 			if(GetTeam(npc.index) == GetTeam(other))
@@ -1309,7 +1309,7 @@ public Action Smite_Timer_Bob(Handle Smite_Logic, DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		 
 		CreateEarthquake(spawnLoc, 1.0, BOB_FIRST_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increace
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increase
 	
 		return Plugin_Stop;
 	}
@@ -1379,7 +1379,7 @@ stock void BobPullTarget(int bobnpc, int enemy)
 		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, velocity);
 		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
 		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);	
-		IncreaceEntityDamageTakenBy(enemy, 0.5, 0.5);
+		IncreaseEntityDamageTakenBy(enemy, 0.5, 0.5);
 		//give 50% res for 0.5 seconds
 	}
 	else
@@ -1676,7 +1676,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			
 			position[0] += s;
 			position[1] += c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -1698,7 +1698,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -1708,7 +1708,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -1730,7 +1730,7 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
+		//	TrueFusionwarrior_DrawIonBeam(position, {212, 175, 55, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;
@@ -1758,10 +1758,10 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 		{
 			startPosition[2] += 25.0;
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage), 100);
+				makeexplosion(client, startPosition, RoundToCeil(Iondamage), 100);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage * 1.25), 120);
+				makeexplosion(client, startPosition, RoundToCeil(Iondamage * 1.25), 120);
 				
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
@@ -1774,8 +1774,8 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {212, 175, 55, 200}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {212, 175, 55, 120}, 3);
-			TE_SendToAll();
+		//	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {212, 175, 55, 120}, 3);
+		//	TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {212, 175, 55, 75}, 3);
 			TE_SendToAll();
 	

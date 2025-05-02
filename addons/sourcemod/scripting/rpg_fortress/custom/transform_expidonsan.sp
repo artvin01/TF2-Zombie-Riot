@@ -358,7 +358,7 @@ public Action TimerExpidonsan_Transform(Handle timer, DataPack pack)
 		}
 		//This is the 4th form, just a hud, nothing else.
 		PrintHintText(client,"%s",LeperHud);
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 	}
 	return Plugin_Continue;
 }

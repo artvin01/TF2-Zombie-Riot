@@ -170,6 +170,9 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		//todo: Fix them
 		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
+		if(h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
@@ -354,6 +357,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_Logos_ProjectileTouch(entity, target);
 		}
+		case WEAPON_NYMPH:
+		{
+			Weapon_Nymph_ProjectileTouch(entity, target);
+		}
 	}
 #endif
 }
@@ -381,7 +388,7 @@ static void OnDestroy_Proj(CClotBody body)
 	return;
 }
 
-stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation)
+stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation, float OffsetDown = 0.0)
 {
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[rocket]);
 	if(IsValidEntity(extra_index))
@@ -404,7 +411,14 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 		DispatchSpawn(entity);
 		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 		MakeObjectIntangeable(entity);
-		SetParent(rocket, entity);
+		if(OffsetDown == 0.0)
+			SetParent(rocket, entity);
+		else
+		{
+			float Offset3[3];
+			Offset3[2] = OffsetDown;
+			SetParent(rocket, entity, "root", Offset3, false);
+		}
 		iref_PropAppliedToRocket[rocket] = EntIndexToEntRef(entity);
 		
 		if(defaultAnimation[0])

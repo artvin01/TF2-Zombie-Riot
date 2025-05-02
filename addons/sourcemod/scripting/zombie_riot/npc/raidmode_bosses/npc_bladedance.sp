@@ -145,6 +145,7 @@ methodmap RaidbossBladedance < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 		}
+		RemoveAllDamageAddition();
 
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;
@@ -185,7 +186,7 @@ methodmap RaidbossBladedance < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		RaidModeScaling = 9999999.99;
+		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
 
@@ -250,7 +251,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 		RaidBossActive = EntIndexToEntRef(npc.index);
 	}
 	
-	if(npc.m_flGetClosestTargetTime < gameTime || !IsEntityAlive(npc.m_iTarget))
+	if(npc.m_flGetClosestTargetTime < gameTime || !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -284,12 +285,12 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 
 			int team = GetTeam(npc.index);
-			int entity = -1;
-			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			int a, entity;
+			while((entity = FindEntityByNPC(a)) != -1)
 			{
 				if(!b_NpcHasDied[entity] && GetTeam(entity) == team)
 				{
-					f_GodAlaxiosBuff[entity] = GetGameTime() + 16.0;
+					ApplyStatusEffect(npc.index, entity, "Godly Motivation", 16.0);
 					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 				}
 			}
@@ -436,7 +437,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 		CPrintToChatAll("{crimson}Bladedance{default} escapes from you... and gains the ability to copy {crimson}you.");
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Bob's true fear");
 				CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
@@ -444,7 +445,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entitynpc = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entitynpc))
 			{
 				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))

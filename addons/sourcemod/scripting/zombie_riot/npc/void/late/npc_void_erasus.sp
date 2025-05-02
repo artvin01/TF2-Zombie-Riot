@@ -1,22 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
 
-static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
-};
+
 
 
 static const char g_IdleAlertedSounds[][] = {
@@ -39,8 +25,8 @@ static const char g_MeleeHitSounds[][] = {
 
 void VoidedErasus_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
@@ -79,13 +65,13 @@ methodmap VoidedErasus < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	
 	public void PlayMeleeSound()
@@ -133,7 +119,12 @@ methodmap VoidedErasus < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		VoidedErasusEffects(npc.index);
+		npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetVariantInt(8192);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 9);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
 		SetVariantString("1.0");
@@ -281,7 +272,7 @@ void VoidedErasusSelfDefense(VoidedErasus npc, float gameTime, int target, float
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 120.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.0;
 
@@ -317,69 +308,4 @@ void VoidedErasusSelfDefense(VoidedErasus npc, float gameTime, int target, float
 			}
 		}
 	}
-}
-
-
-void VoidedErasusEffects(int iNpc)
-{
-	if(AtEdictLimit(EDICT_NPC))
-		return;
-	
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
-
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({2.0,50.0,0.0}, "", 0.0); //First offset we go by
-
-	
-	int particle_2_i = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3_i = InfoTargetParentAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_i = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_i = InfoTargetParentAt({-2.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	
-	SetParent(particle_1, particle_2_i, "",_, true);
-	SetParent(particle_1, particle_3_i, "",_, true);
-	SetParent(particle_1, particle_4_i, "",_, true);
-	SetParent(particle_1, particle_5_i, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_); 
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 125, 0, 125, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 125, 0, 125, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 125, 0, 125, 2.0, 1.0, 1.0, LASERBEAM);
-	
-	int Laser_1_i = ConnectWithBeamClient(particle_2_i, particle_3_i, 125, 0, 125, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4_i, 125, 0, 125, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3_i = ConnectWithBeamClient(particle_4_i, particle_5_i, 125, 0, 125, 2.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(particle_2_i);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_3_i);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(particle_4_i);
-	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_5_i);
-	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(Laser_3);
-	i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(Laser_1_i);
-	i_ExpidonsaEnergyEffect[iNpc][13] = EntIndexToEntRef(Laser_2_i);
-	i_ExpidonsaEnergyEffect[iNpc][14] = EntIndexToEntRef(Laser_3_i);
 }

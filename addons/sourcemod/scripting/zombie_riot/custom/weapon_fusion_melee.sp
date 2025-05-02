@@ -53,6 +53,7 @@ public void Fusion_Melee_OnMapStart()
 	PrecacheSound(NEARL_EXTRA_DAMAGE_SOUND);
 	PrecacheSound("weapons/rescue_ranger_charge_01.wav");
 	PrecacheSound("weapons/rescue_ranger_charge_02.wav");
+	PrecacheSound("replay/snip.wav");
 	Zero(f_NearlDurationCheckApply);
 	Zero(f_NearlThinkDelay);
 	Zero(f_SpeedFistsOfSpeed);
@@ -89,8 +90,11 @@ bool IsFusionWeapon(int Index)
 #define MINYAW_RAID_SHIELD -60.0
 #define MAXYAW_RAID_SHIELD 60.0
 
-public float Player_OnTakeDamage_Fusion(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_Fusion(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
 	// need position of either the inflictor or the attacker
 	float actualDamagePos[3];
 	float victimPos[3];
@@ -173,7 +177,7 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 
 		Duration[client] = GetGameTime() + 10.0; //Just a test.
@@ -183,7 +187,7 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 		CreateTimer(0.1, Empower_ringTracker, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Empower_ringTracker_effect, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.0, Empower_ringTracker_effect, client, TIMER_FLAG_NO_MAPCHANGE); //Make it happen atleast once instantly
-		f_EmpowerStateSelf[client] = GetGameTime() + 0.6;
+		ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
 		spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
 	}
 	else
@@ -204,7 +208,8 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 
 public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, int slot)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -212,9 +217,10 @@ public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, in
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
+	
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 
 		Duration[client] = GetGameTime() + 10.0; //Just a test.
@@ -224,7 +230,7 @@ public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, in
 		CreateTimer(0.1, Empower_ringTracker, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Empower_ringTracker_effect, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.0, Empower_ringTracker_effect, client, TIMER_FLAG_NO_MAPCHANGE); //Make it happen atleast once instantly
-		f_EmpowerStateSelf[client] = GetGameTime() + 0.6;
+		ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
 		spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
 	}
 	else
@@ -252,7 +258,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 		{
 			spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 10, 0.11, EMPOWER_WIDTH, 6.0, 10);
 			
-			f_EmpowerStateSelf[client] = GetGameTime() + 0.6;
+			ApplyStatusEffect(client, client, "Self Empowerment", 0.6);
 
 			float chargerPos[3];
 			float targPos[3];
@@ -264,7 +270,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 					GetClientAbsOrigin(targ, targPos);
 					if (targ != client && GetVectorDistance(chargerPos, targPos, true) <= (EMPOWER_RANGE * EMPOWER_RANGE))
 					{
-						f_EmpowerStateOther[targ] = GetGameTime() + 0.6;
+						ApplyStatusEffect(client, targ, "Ally Empowerment", 0.6);
 					}
 				}
 			}
@@ -272,13 +278,13 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 			//Buff allied npcs too! Is cool!
 			for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 			{
-				int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+				int baseboss_index_allied = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 				if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
 				{
 					GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", chargerPos);
 					if (GetVectorDistance(chargerPos, targPos, true) <= (EMPOWER_RANGE * EMPOWER_RANGE))
 					{
-						f_EmpowerStateOther[baseboss_index_allied] = GetGameTime() + 0.6;
+						ApplyStatusEffect(client, baseboss_index_allied, "Ally Empowerment", 0.6);
 					}
 				}
 			}
@@ -337,7 +343,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 
 			if(validpos)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 				float damage = 500.0;
 				damage *= Attributes_Get(weapon, 2, 1.0);
@@ -373,17 +379,12 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 						AddEntityToThirdPersonTransitMode(client, particle_halo);
 						SetParent(viewmodelModel, particle_halo, "head");
 					}
-					maxhealth = RoundToCeil(float(maxhealth) * 1.05);
-					ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
-					ApplyTempAttrib(weapon, 6, 1.45, 10.0); //slower attack speed
-					ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreaced by 40%
 				}
-				else
-				{
-					ApplyTempAttrib(weapon, 2, 2.5, 10.0); //way higher damage.
-					ApplyTempAttrib(weapon, 6, 1.5, 10.0); //slower attack speed
-					ApplyTempAttrib(weapon, 412, 0.60, 10.0); //Less damage taken from all sources decreaced by 40%
-				}
+
+				maxhealth = RoundToCeil(float(maxhealth) * 1.05);
+				ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
+				ApplyTempAttrib(weapon, 6, 1.45, 10.0); //slower attack speed
+				ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreased by 40%
 
 				int spawn_index = NPC_CreateByName("npc_nearl_sword", -1, fPos, fAng, GetTeam(client));
 				if(spawn_index > MaxClients)
@@ -396,7 +397,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 					float EnemyPos[3];
 					for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+						int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
 						if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 						{
 							GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", EnemyPos);
@@ -628,11 +629,11 @@ bool FusionWeaponCheckEffects_IfNotAvaiable(int iNpc, int weapon)
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
-			thingsToLoop = 12;
+			thingsToLoop = 0;
 		}
 		case WEAPON_WALDCH_SWORD_REAL:
 		{
-			thingsToLoop = 15;
+			thingsToLoop = 0;
 		}
 	}
 	for(int loop = 0; loop <=thingsToLoop; loop++)
@@ -665,13 +666,12 @@ void ApplyExtraFusionWeaponEffects(int client, bool remove = false, int weapon)
 	if(FusionWeaponCheckEffects_IfNotAvaiable(client, weapon))
 	{
 		FusionWeaponRemoveEffects(client);
-		FusionWeaponEffects(client, client, viewmodelModel, "effect_hand_r", weapon);
+		FusionWeaponEffects(client, client, viewmodelModel, weapon);
 	}
 }
 
 
-
-void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment = "effect_hand_r", int weapon)
+void FusionWeaponEffects(int owner, int client, int Wearable, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
@@ -693,6 +693,7 @@ void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 		{
 			FusionWeaponEffectPap3(owner, client, Wearable);
 		}
+		/*
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
 			FusionWeaponEffectPap_Siccerino(owner, client, Wearable, attachment);
@@ -701,6 +702,7 @@ void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 		{
 			FusionWeaponEffectPap_Siccerino_Waldch(owner, client, Wearable, attachment);
 		}
+		*/
 	}
 }
 
@@ -937,120 +939,6 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable)
 
 }
 
-
-void FusionWeaponEffectPap_Siccerino(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
-{
-	float flPos[3];
-	float flAng[3];
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
-
-	int particle_3_i = InfoTargetParentAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_i = InfoTargetParentAt({-10.0,50.0,0.0}, "", 0.0); //First offset we go by
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-
-	
-	SetParent(particle_1, particle_3_i, "",_, true);
-	SetParent(particle_1, particle_5_i, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(Wearable, particle_1, attachment,_); 
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 255, 35, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	int Laser_1_i = ConnectWithBeamClient(particle_2, particle_3_i, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3_i = ConnectWithBeamClient(particle_4, particle_5_i, 35, 255, 35, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	
-	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
-	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
-	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
-	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
-	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(particle_3_i);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(particle_5_i);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(Laser_1_i);
-	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(Laser_2_i);
-	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_3_i);
-
-}
-
-static void FusionWeaponEffectPap_Siccerino_Waldch(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
-{
-	float flPos[3];
-	float flAng[3];
-
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = InfoTargetParentAt({5.0,50.0,0.0}, "", 0.0); //First offset we go by
-
-	
-	int particle_2_i = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3_i = InfoTargetParentAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_i = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_i = InfoTargetParentAt({-5.0,50.0,0.0}, "", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	
-	SetParent(particle_1, particle_2_i, "",_, true);
-	SetParent(particle_1, particle_3_i, "",_, true);
-	SetParent(particle_1, particle_4_i, "",_, true);
-	SetParent(particle_1, particle_5_i, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(Wearable, particle_1, attachment,_); 
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	
-	int Laser_1_i = ConnectWithBeamClient(particle_2_i, particle_3_i, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4_i, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
-	int Laser_3_i = ConnectWithBeamClient(particle_4_i, particle_5_i, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM, owner);
-	int Laser_4_i = ConnectWithBeamClient(particle_5, particle_5_i, 15, 15, 125, 0.5, 0.5, 50.0, LASERBEAM, owner);
-	
-
-	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
-	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
-	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
-	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
-	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(particle_2_i);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(particle_3_i);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(particle_4_i);
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(particle_5_i);
-	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(Laser_3);
-	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_i);
-	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_i);
-	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_i);
-	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(Laser_4_i);
-}
-
 public void Enable_FusionWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	Enable_VoidBlade(client, weapon);
@@ -1070,9 +958,11 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 					}
 					else
 					{
+						i_WeaponVMTExtraSetting[weapon] = 0;
+						i_WeaponBodygroup[weapon] 	= 16384;
 						i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 						i_WeaponSoundIndexOverride[weapon] = 30667;
-						strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
+					//	strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
 					}
 				}
 			}
@@ -1102,9 +992,11 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 				}
 				else
 				{
+					i_WeaponVMTExtraSetting[weapon] = 0;
+					i_WeaponBodygroup[weapon] 	= 16384;
 					i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
 					i_WeaponSoundIndexOverride[weapon] = 30667;
-					strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
+				//	strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
 				}
 			}
 		}
@@ -1152,7 +1044,7 @@ public void Siccerino_ability_m2(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 30.0); //Semi long cooldown, this is a strong buff.
 
 		EmitSoundToAll(SICCERINO_FAST_ATTACK_SOUND, client, SNDCHAN_STATIC, 90, _, 0.6);
@@ -1185,32 +1077,14 @@ static Action Siccerino_revert_toNormal(Handle ringTracker, int ref)
 	return Plugin_Stop;
 }
 
-#define SICCERINO_BONUS_DAMAGE 0.025
-#define SICCERINO_BONUS_DAMAGE_MAX 2.0
-#define SICCERINO_BONUS_DAMAGE_MAX_RAID 1.5
 
-#define SICCERINO_BONUS_DAMAGE_WALDCH 0.03
+#define SICCERINO_BONUS_DAMAGE_WALDCH 0.06
 #define SICCERINO_BONUS_DAMAGE_MAX_WALDCH 2.2
 #define SICCERINO_BONUS_DAMAGE_MAX_RAID_WALDCH 1.65
 
 float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
-	{
-		if(b_thisNpcIsARaid[victim])
-		{
-			if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX_RAID)
-			{
-				return SICCERINO_BONUS_DAMAGE_MAX_RAID;
-			}
-		}
-		else if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX)
-		{
-			return SICCERINO_BONUS_DAMAGE_MAX;
-		}
-		return f_SiccerinoExtraDamage[attacker][victim];
-	}			
-	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_NOVISUAL || i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_REAL)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO ||i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_NOVISUAL || i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_REAL)
 	{
 		if(b_thisNpcIsARaid[victim])
 		{
@@ -1224,25 +1098,30 @@ float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 			return SICCERINO_BONUS_DAMAGE_MAX_WALDCH;
 		}
 		return f_SiccerinoExtraDamage[attacker][victim];
-	}	
+	}
 	return 1.0;
 }
-public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, int weapon)
+
+public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, int weapon, int damagetype)
 {
+	if(!(damagetype & DMG_CLUB))
+		return damage;
+		
 	float ExtraDamageDo;
-	damage *= f_SiccerinoExtraDamage[attacker][victim];
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
-		ExtraDamageDo = SICCERINO_BONUS_DAMAGE;
-	else
-		ExtraDamageDo = SICCERINO_BONUS_DAMAGE_WALDCH;
+	damage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 
-	f_SiccerinoExtraDamage[attacker][victim] += ExtraDamageDo;
+	ExtraDamageDo = SICCERINO_BONUS_DAMAGE_WALDCH;
+		
+	if(!CheckInHud())
+	{
+		f_SiccerinoExtraDamage[attacker][victim] += ExtraDamageDo;
 
-	DataPack pack;
-	CreateDataTimer(SICCERINO_DEBUFF_FADE, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(attacker));
-	pack.WriteCell(EntIndexToEntRef(victim));		
-	pack.WriteFloat(ExtraDamageDo);		
+		DataPack pack;
+		CreateDataTimer(SICCERINO_DEBUFF_FADE, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(attacker));
+		pack.WriteCell(EntIndexToEntRef(victim));		
+		pack.WriteFloat(ExtraDamageDo);		
+	}
 
 	return damage;
 }
@@ -1269,7 +1148,8 @@ float f_SuperSliceTimeUntillAttack_CD[MAXTF2PLAYERS];
 
 public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -1277,9 +1157,10 @@ public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
+	
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0); //Semi long cooldown, this is a strong buff.
 
 		EmitSoundToAll(SICCERINO_PREPARE_SICCORS_SOUND, client, SNDCHAN_STATIC, 70, _, 0.6);
@@ -1388,7 +1269,6 @@ void DrawBigSiccerinoSiccors(int weapon_active, float Angles[3], int client, flo
 
 	if(AngleDeviation == 0.0)
 	{
-		
 		EmitSoundToAll(g_Siccerino_snapSound[GetRandomInt(0, sizeof(g_Siccerino_snapSound) - 1)],
 		 client, SNDCHAN_STATIC, 90, _, 1.0);
 		for (int building = 0; building < MAX_TARGETS_HIT; building++)
@@ -1454,8 +1334,7 @@ static bool Siccerino_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(client, entity, true, true))
 		{
 			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
@@ -1559,7 +1438,7 @@ void VoidTimerHudShow(int client)
 		FormatEx(SensalHud, sizeof(SensalHud), "Shield Charge [%.0f％]", f_VoidShieldTillCharge[client] * 100.0);		
 		FormatEx(SensalHud, sizeof(SensalHud), "%s\nShields [%i / %i]",SensalHud, i_VoidCurrentShields[client], MAX_VOID_SHIELD_ALLOW);		
 		PrintHintText(client, "%s", SensalHud);
-		StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+		
 	}
 }
 
@@ -1605,22 +1484,13 @@ void WeaponVoidBlade_OnTakeDamage(int attacker, int victim, int zr_damage_custom
 	VoidTimerHudShow(attacker);
 }
 
-public float Player_OnTakeDamage_VoidBlade_Hud(int victim)
-{
-	float damage = 1.0;
-	if(i_VoidCurrentShields[victim] >= 1)
-	{
-		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
-			damage *= 0.6;
-		else
-			damage *= 0.25;
-	}
-	return damage;
-}
-public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
 	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
-	{
+	{	
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			return damage;
+
 		if(i_VoidCurrentShields[victim] >= 1)
 		{
 			if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
@@ -1633,11 +1503,17 @@ public float Player_OnTakeDamage_VoidBlade(int victim, float &damage, int attack
 	}
 	if(i_VoidCurrentShields[victim] >= 1)
 	{
-		if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
-			damage *= 0.6;
-		else
-			damage *= 0.25;
+		if(!(damagetype & DMG_TRUEDAMAGE))
+		{
+			if(RaidbossIgnoreBuildingsLogic(1)) //during raids, give less res.
+				damage *= 0.6;
+			else
+				damage *= 0.25;
+		}
 			
+		if(CheckInHud())
+			return damage;
+		
 		i_VoidCurrentShields[victim]--;
 		if(i_VoidCurrentShields[victim] <= 0)
 		{
@@ -1684,10 +1560,10 @@ public void Void_MeleeDoubleTapAbility(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 		f_VoidDoubleTapAbility[client] = GetGameTime() + 10.0; //Just a test.
-		f_EmpowerStateSelf[client] = GetGameTime() + 10.0;
+		ApplyStatusEffect(client, client, "Self Empowerment", 10.0);
 		EmitSoundToAll(NEARL_ACTIVE_SOUND, client, SNDCHAN_STATIC, 85, _, 0.5, 70);
 	}
 	else
@@ -1706,7 +1582,7 @@ public void Void_MeleeDoubleTapAbility(int client, int weapon, bool crit, int sl
 
 public void WeaponVoidDoubleStrike(int client, int weapon, bool crit, int slot)
 {
-	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float attackspeed = Attributes_Get(weapon, 6, 1.0);
 	if(!b_WeaponAttackSpeedModified[weapon] && f_VoidDoubleTapAbility[client] >= GetGameTime()) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 	{
 		b_WeaponAttackSpeedModified[weapon] = true;

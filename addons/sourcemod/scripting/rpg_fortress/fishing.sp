@@ -454,9 +454,9 @@ void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, in
 				case 2016:
 				{
 					if(value[i])
-						Format(desc, 512, "%s\nFishing Attraction: %.0f%%", desc, 1.6 / value[i]);
+						Format(desc, 512, "%s\nFishing Attraction: %.0f％", desc, 1.6 / value[i]);
 				}
-				case 2017:
+				case 5017:
 				{
 					int pos = RoundFloat(value[i]);
 					if(pos < sizeof(FishingLevels))
@@ -469,10 +469,8 @@ void Fishing_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, in
 
 public void Fishing_RodM1(int client, int weapon)
 {
-	float ApplyCooldown = 0.8 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float ApplyCooldown = 0.8 * Attributes_Get(weapon, 6, 1.0);
 	Ability_Apply_Cooldown(client, 1, ApplyCooldown);
-//	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-//	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
 	
 	DataPack pack;
 	CreateDataTimer(0.2, Fishing_RodM1Delay, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -482,8 +480,8 @@ public void Fishing_RodM1(int client, int weapon)
 
 public void FishingRodSetRarity(int client, int weapon, int index)
 {
-	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	FishingTier[client] = RoundToNearest(Attributes_Get(weapon, 5017, 0.0));
+	FishingRate[client] = Attributes_Get(weapon, 2016, 1.0);
 	int totalInt = Stats_Intelligence(client);
 	if(totalInt >= 5000)
 		FishingRate[client] *= 0.75;
@@ -492,8 +490,8 @@ public void FishingRodSetRarity(int client, int weapon, int index)
 
 public void FishingRodCycleRarity(int client, int weapon, int index)
 {
-	FishingTier[client] = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2017));
-	FishingRate[client] = Attributes_FindOnWeapon(client, weapon, 2016, true, 1.0);
+	FishingTier[client] = RoundToNearest(Attributes_Get(weapon, 5017, 0.0));
+	FishingRate[client] = Attributes_Get(weapon, 2016, 1.0);
 	int totalInt = Stats_Intelligence(client);
 	if(totalInt >= 5000)
 		FishingRate[client] *= 0.75;
@@ -603,7 +601,7 @@ public void Fishing_RodM2(int client, int weapon)
 			}
 			
 			if(count)
-				SPrintToChat(client, "%s %d%%", current, count * 100 / length);
+				SPrintToChat(client, "%s %d％", current, count * 100 / length);
 
 			strcopy(current, sizeof(current), buffer);
 			count = 1;
@@ -680,7 +678,7 @@ void Fishing_EditorMenu(int client)
 
 						if(FishList.ContainsKey(buffer1))
 						{
-							FormatEx(buffer2, sizeof(buffer2), "%s x%d (%.2f%%)", buffer1, count, float(count) * 100.0 / float(total));
+							FormatEx(buffer2, sizeof(buffer2), "%s x%d (%.2f％)", buffer1, count, float(count) * 100.0 / float(total));
 						}
 						else
 						{

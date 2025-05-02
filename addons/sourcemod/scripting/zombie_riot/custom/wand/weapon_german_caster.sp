@@ -212,12 +212,12 @@ public Action Weapon_German_Timer(Handle timer, int client)
 				}
 
 				PrintHintText(client, "Charges: %d", GermanCharges[client]);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 			else
 			{
 				PrintHintText(client, "Charges: %d", GermanCharges[client]);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 
 				SDKhooks_SetManaRegenDelayTime(client, 1.0);
 				return Plugin_Continue;
@@ -297,8 +297,8 @@ void Weapon_German_WandTouch(int entity, int target)
 
 		if(GermanAltModule[owner] > 1)
 		{
-			if(f_ArmorCurrosionImmunity[target] > GetGameTime())
-				StartBleedingTimer(target, owner, DamageWand * 0.075, 4, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+			if(Nymph_AllowBonusDamage(target))
+				StartBleedingTimer(target, owner, DamageWand * 0.075, 4, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 		}
 
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -339,7 +339,7 @@ public void Weapon_German_M2(int client, int weapon, bool &result, int slot)
 		}
 		else
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
 			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 

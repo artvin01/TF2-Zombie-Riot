@@ -93,6 +93,11 @@ methodmap VoudExpidonsanCleaner < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
+	property float m_flPulveriserAttackDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public VoudExpidonsanCleaner(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -259,11 +264,12 @@ int VoudExpidonsanCleanerSelfDefense(VoudExpidonsanCleaner npc, float gameTime, 
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeHitSound();
 				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-				int projectile = npc.FireParticleRocket(vecTarget, 4.0, 1000.0, 150.0, "unusual_icetornado_blue_parent", true);
+				int projectile = npc.FireParticleRocket(vecTarget, 12.0, 1000.0, 150.0, "unusual_icetornado_blue_parent", true);
 				SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 				int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+				npc.m_flNextMeleeAttack = gameTime + 0.2;
 				
 				SDKHook(projectile, SDKHook_StartTouch, ExpidonsaCleaner_Rocket_Particle_StartTouch);	
 			}
@@ -386,7 +392,7 @@ public void ExpidonsaCleaner_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		
-		Elemental_AddVoidDamage(target, owner, 10, true);
+		Elemental_AddVoidDamage(target, owner, 20, true);
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{

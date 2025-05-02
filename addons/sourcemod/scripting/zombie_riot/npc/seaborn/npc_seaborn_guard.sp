@@ -55,9 +55,9 @@ void SeabornGuard_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornGuard(vecPos, vecAng, team);
+	return SeabornGuard(vecPos, vecAng, team, data);
 }
 
 methodmap SeabornGuard < CClotBody
@@ -87,9 +87,9 @@ methodmap SeabornGuard < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornGuard(float vecPos[3], float vecAng[3], int ally)
+	public SeabornGuard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SeabornGuard npc = view_as<SeabornGuard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "30000", ally, false));
+		SeabornGuard npc = view_as<SeabornGuard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "40000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -112,8 +112,6 @@ methodmap SeabornGuard < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
 		SetVariantString("1.0");
@@ -125,15 +123,26 @@ methodmap SeabornGuard < CClotBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
 		
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/medic/hw2013_spacemans_suit/hw2013_spacemans_suit.mdl");
 		SetVariantString("0.9");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
+		if(!StrContains(data, "normal"))
+		{
+			npc.m_iBleedType = BLEEDTYPE_NORMAL;
+			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Guard");
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
+		}
 
 		return npc;
 	}
@@ -206,10 +215,10 @@ public void SeabornGuard_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = 130.0;
+						float attack = 200.0;
 
 						if(npc.m_iOverlordComboAttack == 2 || ShouldNpcDealBonusDamage(target))
-							attack *= 3.0;
+							attack *= 4.0;
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);

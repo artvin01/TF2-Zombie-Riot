@@ -182,7 +182,7 @@ public void WinterIrritatedPerson_ClotThink(int iNPC)
 	}
 	if (!npc.m_bisWalking && npc.IsOnGround())
 	{
-		float damageDealt = 150.0;
+		float damageDealt = 1500.0;
 		switch(npc.g_TimesSummoned)
 		{
 			case 1:
@@ -371,7 +371,7 @@ void WinterIrritatedPersonSelfDefense(WinterIrritatedPerson npc, float gameTime,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 65.0;
+					float damageDealt = 100.0;
 					switch(npc.g_TimesSummoned)
 					{
 						case 1:

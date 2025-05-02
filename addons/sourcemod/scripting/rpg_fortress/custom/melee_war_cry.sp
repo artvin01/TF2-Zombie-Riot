@@ -210,7 +210,7 @@ static Action Timer_MeleeWarCryBuffWeapons(Handle dashHud, DataPack pack)
 		}
 		if (WarCryBuff_Duration[client] < GetGameTime())
 		{
-			h_WarcryTimerBuff[client] = INVALID_HANDLE;
+			h_WarcryTimerBuff[o_client] = INVALID_HANDLE;
 			return Plugin_Stop;
 		}
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -298,7 +298,7 @@ static Action Timer_MeleeWarCryBuffWeapons(Handle dashHud, DataPack pack)
 			if(Attributes_Has(weapon, 4003))
 				Attributes_SetMulti(weapon, 4003, 1.0 / WarCryBuff_Amount[weapon]);
 
-			h_WarcryTimerBuff[weapon] = INVALID_HANDLE;
+			h_WarcryTimerBuff[o_client] = INVALID_HANDLE;
 			WarCryBuff_Amount[weapon] = 1.0;
 			return Plugin_Stop;
 		}

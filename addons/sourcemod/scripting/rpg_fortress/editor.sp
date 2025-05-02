@@ -156,7 +156,7 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 void Editor_MainMenu(int client)
 {
 	EditMenu menu = new EditMenu();
-	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\nPress reload/interact an object to pull up it's editor menu\nPress special attack to toggle noclip\n ");
+	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\nPress [T (spray)]/interact an object to pull up it's editor menu\nPress special attack to toggle noclip\n ");
 
 	menu.AddItem("reloadrpg", "Reload RPG Fortress");
 	menu.AddItem("reloadstore", "Reload Text Store");

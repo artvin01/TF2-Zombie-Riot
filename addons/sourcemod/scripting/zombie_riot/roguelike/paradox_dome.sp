@@ -5,7 +5,7 @@
 
 #define DOME_PROP_RADIUS 10000.0 // Don't change
 
-#define DOME_FADE_START_MULTIPLIER 0.7
+#define DOME_FADE_START_MULTIPLIER 0.85
 #define DOME_FADE_ALPHA_MAX 64
 
 #define DOME_NEARBY_SOUND	"ui/medic_alert.wav"
@@ -186,7 +186,7 @@ static Action Dome_TimerBleed(Handle hTimer)
 				float health = float(GetClientHealth(iClient));
 				if(health < flDamage)
 				{
-					SDKHooks_TakeDamage(iClient, 0, 0, flDamage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(iClient, 0, 0, flDamage, DMG_OUTOFBOUNDS|DMG_PREVENT_PHYSICS_FORCE);
 				}
 				else
 				{

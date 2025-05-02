@@ -1,13 +1,8 @@
 "Phrases"
 {
-	"True Fusion Warrior Spawn"
+	"Silvester? Spawn"
 	{
-		"en" 		"The True Fusion Warrior has arrived."
-		"fr" 		"Le Guerrier Tru Fusion est ici."
-		"ru" 		"Истинный Термоядерный воин прибыл."
-		"pt"		"O Verdadeiro Guerreiro da Fusão chegou."
-		"nl"		"De Ware Fuziekrijger is gearriveerd"
-		"chi"       "真正的融合战士已经到来。"
+		"en" 		"Xeno infected Silvester Pleads for help!"
 	}
 	"Silvester And Waldch Arrived."
 	{
@@ -15,6 +10,10 @@
 		"ru" 		"Сильвестр И Валдч прибыли."
 		"fr" 		"Silvester et Waldch sont ici."
 		"chi"		"西尔韦斯特和瓦德奇到来。"
+	}
+	"Zilius Arrived Arrived."
+	{
+		"en" 		"Zilius Arrived the leader of the exlusionary Expidonsans."
 	}
 	"Nemesis Arrived."
 	{
@@ -38,6 +37,10 @@
 		"ru" 		"Прибыл Атлант и великий лидер Алаксиос."
 		"pt"		"The Atlantean and great leader Alaxios chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
+	}
+	"Sea Alaxios Arrived"
+	{
+		"en" 		"The Infected Atlantean is screaming for help free him before it can make use of his power."
 	}
 	"Run while you can."
 	{
@@ -206,7 +209,7 @@
 		"pt"		"Um pedaço de sombra. Nunca saiu, nem nunca existiu verdadeiramente."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
 	}
-	"Medival Speech 1"
+	"Medieval Speech 1"
 	{
 		"en" 		"A king wants to Conquer this land!"
 		"fr" 		"Un roi veut conquérir ce pays!"
@@ -214,7 +217,7 @@
 		"pt"		"Um rei quer conquistar esta terra!"
 		"chi" 		"有位国王进军了！"
 	}
-	"Medival Speech 2"
+	"Medieval Speech 2"
 	{
 		"en" 		"A stray villager has appeared, stop them!"
 		"fr" 		"Un villageois errant a apparu, arrêtez-le!"
@@ -222,7 +225,7 @@
 		"pt"		"Um aldeão perdido apareceu, pare-o!"
 		"chi" 		"有村民出现了，快阻止他们！"
 	}
-	"Medival Speech 3"
+	"Medieval Speech 3"
 	{
 		"en" 		"An invasion of the past is accuring!"
 		"fr" 		"Le passé dirige une invasion!"
@@ -294,6 +297,10 @@
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
 	}
+	"Diversionistico_Elitus Spawn"
+	{
+		"en"	"Diversionistico Elitus Spawn."
+	}
 	"Voided Diversionistico Spawn"
 	{
 		"en"	"Voided Diversionistico Spawn"
@@ -344,7 +351,7 @@
 	}
 	"Spirit Spawns 1"
 	{
-		"en" 		"A spitit appeared... release it before its too late!"
+		"en" 		"A spirit appeared... release it before its too late!"
 		"ru" 		"Появлися Дух... Освободите его пока не поздно!"
 		"fr" 		"Un esprit apparaît... libérez-le avant qu'il soit trop tard!"
 		"chi"		"一个冤魂出现了。赶紧驱掉它！"
@@ -419,40 +426,85 @@
 		"fr"		"Sa majesté, l'Ultime Sorceresse est ici..."
 		"chi"		"女王陛下，至高法师，法术之主，降临了。"
 	}
-	"Omega 1"
+	"Lelouch Spawn"
+	{
+		"en"		"Kill him before he opens the gate"
+	}
+	"3650 1"
 	{
 		"en"		"Armaments locked and loaded."
 		"ru" 		"Вооружение заряжено и готово."
 		"chi"		"目标已锁定，武器已上膛。"
 		"fr"		"Armements préts et chargés."
 	}
-	"Omega 2"
+	"3650 2"
 	{
 		"en"		"A sui generis soldier enters the scene."
 		"ru" 		"Солдат sui generis выходит на поле битвы."
 		"chi"		"一个异常显眼的士兵进入了场地。"
 		"fr"		"Un soldat sui generis entre la scène."
 	}
-	"Omega 3"
+	"3650 3"
 	{
-		"en"		"Omega makes an appearance."
-		"ru" 		"Омега появляется."
+		"en"		"3650 makes an appearance."
+		"ru" 		"3650 появляется."
 		"chi"		"欧米茄现身了。"
-		"fr"		"Omega apparaît."
+		"fr"		"3650 apparaît."
 	}
-	"Omega 1"
+	"Zmain spawn Text 1"
 	{
-		"en"		"Armaments locked and loaded."
-		"fr"		"Armements préts et chargés."
+		"en"		"A group of highly intelligent zombies appear."
 	}
-	"Omega 2"
+	"Zmain spawn Text 2"
 	{
-		"en"		"A sui generis soldier enters the scene."
-		"fr"		"Un soldat sui generis entre la scène."
+		"en"		"The Z-Mains planned something against you."
 	}
-	"Omega 3"
+	"Zmain spawn Text 3"
 	{
-		"en"		"Omega makes an appearance."
-		"fr"		"Omega apparaît."
+		"en"		"Be glad PVP isnt a thing..."
+	}
+	"John Spawn Text 1"
+	{
+		"en"		"RUN!"
+	}
+	"John Spawn Text 2"
+	{
+		"en"		"Maybe you can rob him back? Or just run..."
+	}
+	"John Spawn Text 3"
+	{
+		"en"		"I dont know... just run."
+	}
+	"Mikusch Spawn 1"
+	{
+		"en"		"Hope you're not the talky type."
+	}
+	"Mikusch Spawn 2"
+	{
+		"en"		"Intelligence is required."
+	}
+	"Mikusch Spawn 3"
+	{
+		"en"		"A promise is a promise"
+	}
+	"Victorian Radiomast Is Here!"
+	{
+		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
+	}
+	"Atomizer Arrived"
+	{
+		"en" 		"Leatherboots Scoutsquad's elite, Incoming Atomizer."
+	}
+	"Huscarls Arrived"
+	{
+		"en" 		 "Huscarls halts you."
+	}
+	"Harrison Arrived"
+	{
+		"en" 		 "The Pilot of Victorian Artillery, Harrison Arrived."
+	}
+	"Castellan Arrived"
+	{
+		"en" 		 "Castellan arrives to put end to this."
 	}
 }

@@ -137,7 +137,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		DataPack pack3 = new DataPack();
 		pack3.WriteCell(GetClientUserId(client));
 		RequestFrames(CancelSoundEarlyMlynar, 40, pack3);
-
+		
 		for(int repeat; repeat <= MaxRepeats; repeat ++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, Speed, 99999.9, 0.0, -1, weapon, "", AngEffect);
@@ -154,6 +154,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 			RequestFrames(Mylnar_DeleteLaserAndParticle, 18, pack2);
 			AngEffect[1] += (180.0 / float(MaxRepeats));
 		}
+		
 
 		float vecSwingForward[3];
 		GetAngleVectors(ang2, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
@@ -164,7 +165,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		damage *= Attributes_Get(weapon, 2, 1.0);
-		damage *= Attributes_Get(weapon, 1000, 1.0);
+	//	damage *= Attributes_Get(weapon, 1000, 1.0);
 
 
 		damage *= f_MlynarDmgMultiPassive[client];
@@ -228,7 +229,7 @@ public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME);
 		f_MlynarAbilityActiveTime[client] = GetGameTime() + 15.0;
 		b_MlynarResetStats[client] = true;
@@ -240,6 +241,7 @@ public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 		int weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword");
 		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
+		SetPlayerActiveWeapon(client, weapon_new);
 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
 		ViewChange_Switch(client, weapon_new, "tf_weapon_sword");
 		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
@@ -265,7 +267,7 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
 		{
 			Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME - 5.0);
@@ -293,6 +295,7 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 			weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword Pap");
 		}
 		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
+		SetPlayerActiveWeapon(client, weapon_new);
 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
 		ViewChange_Switch(client, weapon_new, "tf_weapon_sword");
 		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
@@ -465,7 +468,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			{
 				PrintHintText(client,"Unbrilliant Glory [READY]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
 			}
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_MlynarHudDelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -514,7 +517,7 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		}
 		damageModif *= Attributes_Get(weapon, 1, 1.0);
 		damageModif *= Attributes_Get(weapon, 2, 1.0);
-		damageModif *= Attributes_Get(weapon, 1000, 1.0);
+	//	damageModif *= Attributes_Get(weapon, 1000, 1.0);
 
 		damageModif *= f_MlynarDmgMultiPassive[victim];
 		damageModif *= f_MlynarDmgMultiAgressiveClose[victim];
@@ -547,7 +550,7 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteFloat(damageModif);
-		pack.WriteCell(DMG_SLASH);
+		pack.WriteCell(DMG_TRUEDAMAGE);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteFloat(0.0);
 		pack.WriteFloat(0.0);

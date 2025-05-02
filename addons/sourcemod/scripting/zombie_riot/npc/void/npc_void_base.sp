@@ -338,7 +338,7 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
@@ -352,6 +352,10 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 				if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
 				{
 					VoidWave_ApplyBuff(entity, 1.0);
+				}
+				else if(RenderToAll)
+				{
+					ApplyStatusEffect(entity, entity, "Void Presence", 1.0);
 				}
 			}
 		}
@@ -369,6 +373,10 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 				if(ClientPossesesVoidBlade(client))
 				{
 					VoidWave_ApplyBuff(client, 1.0);
+				}
+				else if(RenderToAll)
+				{
+					ApplyStatusEffect(client, client, "Void Presence", 1.0);
 				}
 				NervousTouching[client] = NervousTouching[0];
 			}

@@ -210,7 +210,7 @@ enum struct TinkerEnum
 		kv.GetString("func_mining", this.Desc, 256);
 		this.FuncMining = GetFunctionByName(null, this.Desc);
 
-		static char buffers[32][16];
+		static char buffers[64][16];
 		kv.GetString("attribs", this.Desc, 256);
 		this.Attribs = ExplodeString(this.Desc, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i < this.Attribs; i++)

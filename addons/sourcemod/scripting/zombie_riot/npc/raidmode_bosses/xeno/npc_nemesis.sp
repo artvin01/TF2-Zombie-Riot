@@ -75,25 +75,6 @@ static char g_HappySounds[][] =
 };
 
 
-int i_NemesisEntitiesHitAoeSwing[MAXENTITIES];	//Who got hit
-float f_NemesisEnemyHitCooldown[MAXENTITIES];
-
-float f_NemesisCauseInfectionBox[MAXENTITIES];
-float f_NemesisHitBoxStart[MAXENTITIES];
-float f_NemesisHitBoxEnd[MAXENTITIES];
-static int i_GrabbedThis[MAXENTITIES];
-static float fl_RegainWalkAnim[MAXENTITIES];
-static float fl_OverrideWalkDest[MAXENTITIES];
-static float fl_StopDodge[MAXENTITIES];
-static float fl_StopDodgeCD[MAXENTITIES];
-
-static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
-static int i_TankAntiStuck[MAXENTITIES];
-static int i_GunMode[MAXENTITIES];
-static int i_GunAmmo[MAXENTITIES];
-static float f_NemesisImmuneToInfection[MAXENTITIES];
-static float f_NemesisSpecialDeathAnimation[MAXENTITIES];
-static float f_NemesisRandomInfectionCycle[MAXENTITIES];
 #define NEMESIS_MODEL "models/zombie_riot/bosses/nemesis_ft1_v6.mdl"
 #define INFECTION_MODEL "models/weapons/w_bugbait.mdl"
 #define INFECTION_RANGE 150.0
@@ -107,9 +88,6 @@ float InfectionDelay()
 }
 void RaidbossNemesis_OnMapStart()
 {
-	if(!IsFileInDownloads(NEMESIS_MODEL))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nemesis");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_nemesis");
@@ -259,9 +237,10 @@ methodmap RaidbossNemesis < CClotBody
 			}
 		}
 		b_thisNpcIsARaid[npc.index] = true;
+		RemoveAllDamageAddition();
 
 		Music_SetRaidMusicSimple("#zombie_riot/320_now_1.mp3", 200, true, 1.3);
-		RaidModeScaling = 9999999.99;
+		RaidModeScaling = 0.0;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		WavesUpdateDifficultyName();
 		npc.m_bThisNpcIsABoss = true;
@@ -672,8 +651,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					}
 					else
 					{
-						b_NoGravity[client_victim] = true;
-						b_CannotBeKnockedUp[client_victim] = true;
+						b_NoGravity[client_victim] = false;
 						npc.SetVelocity({0.0,0.0,0.0});
 					}
 					npc.m_flNextRangedAttackHappening = 0.0;	
@@ -734,6 +712,16 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
 							npc.PlayRangedSound();
 
+							if(i_IsVehicle[Enemy_I_See] == 2)
+							{
+								int driver = Vehicle_Driver(Enemy_I_See);
+								if(driver != -1)
+								{
+									Enemy_I_See = driver;
+									Vehicle_Exit(driver);
+								}
+							}
+
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
 							
 							float flPos[3]; // original
@@ -754,7 +742,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							else
 							{
 								b_NoGravity[Enemy_I_See] = true;
-								b_CannotBeKnockedUp[Enemy_I_See] = true;
 								npcenemy.SetVelocity({0.0,0.0,0.0});
 							}
 							f_TankGrabbedStandStill[npcenemy.index] = GetGameTime() + 3.5;
@@ -1105,8 +1092,7 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		if(IsValidEntity(client))
 		{
 			AcceptEntityInput(client, "ClearParent");
-			b_NoGravity[client] = true;
-			b_CannotBeKnockedUp[client] = true;
+			b_NoGravity[client] = false;
 			npc.SetVelocity({0.0,0.0,0.0});
 			if(IsValidClient(client))
 			{
@@ -1138,8 +1124,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	if(IsValidEntity(client))
 	{
 		AcceptEntityInput(client, "ClearParent");
-		b_NoGravity[client] = true;
-		b_CannotBeKnockedUp[client] = true;
+		b_NoGravity[client] = false;
 		npc.SetVelocity({0.0,0.0,0.0});
 		if(IsValidClient(client))
 		{
@@ -1197,7 +1182,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{
-			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
+			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client_repat	] > 500)
 			{
 				if(!XenoExtraLogic())
 				{
@@ -1208,12 +1193,12 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 				{
-					f_HussarBuff[other] = FAR_FUTURE;
+					ApplyStatusEffect(npc.index, other, "Hussar's Warscream", 999999.0);	
 				}
 			}
 		}
@@ -1599,7 +1584,7 @@ public Action Nemesis_DoInfectionThrowInternal(Handle timer, DataPack DataNem)
 	}
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 	{
-		int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int enemy = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(enemy) && IsValidEnemy(entity, enemy, false, false))
 		{
 			bool Hit_something = Can_I_See_Enemy_Only(entity, enemy);
@@ -1697,7 +1682,7 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 //		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 //		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
 			int InfectionCount = 15;
-			StartBleedingTimer_Against_Client(victim, entity, 150.0, InfectionCount);
+			StartBleedingTimer(victim, entity, 150.0, InfectionCount, -1, DMG_TRUEDAMAGE, 0);
 			DataPack pack;
 			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(victim));

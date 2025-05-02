@@ -109,9 +109,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_HappySounds);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return RaidbossBlueGoggles(vecPos, vecAng, team, data);
+	return RaidbossBlueGoggles(vecPos, vecAng, team);
 }
 methodmap RaidbossBlueGoggles < CClotBody
 {
@@ -202,7 +202,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		public set(float value) 	{	this.m_flJumpCooldown = value;	}
 	}
 
-	public RaidbossBlueGoggles(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RaidbossBlueGoggles(float vecPos[3], float vecAng[3], int ally)
 	{
 		RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -221,13 +221,6 @@ methodmap RaidbossBlueGoggles < CClotBody
 		func_NPCDeath[npc.index] = RaidbossBlueGoggles_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = RaidbossBlueGoggles_OnTakeDamage;
 		func_NPCThink[npc.index] = RaidbossBlueGoggles_ClotThink;
-		bool final = StrContains(data, "final_item") != -1;
-		
-		if(final)
-		{
-			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = 1;
-		}
 		/*
 			Cosmetics
 		*/
@@ -261,6 +254,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
 		f_GogglesHurtTeleport[npc.index] = 0.0;
 		i_GogglesHurtTalkMessage[npc.index] = 0;
+		WaldchEarsApply(npc.index);
 
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -309,6 +303,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 
 	//Raidmode timer runs out, they lost.
+	if(npc.m_flPiggyFor)
+	{
+		SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0}); //keep teleporting just incase.
+	}
 	if(LastMann && !AlreadySaidLastmann)
 	{
 		if(!npc.m_fbGunout)
@@ -504,7 +502,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.m_flGetClosestTargetTime < gameTime || !IsEntityAlive(npc.m_iTarget))
+	if(npc.m_flGetClosestTargetTime < gameTime || !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -606,7 +604,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.m_flSpeed = 290.0;
 			SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 			AcceptEntityInput(npc.index, "ClearParent");
-			b_CannotBeKnockedUp[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Solid Stance");
 			b_NoGravity[npc.index] = false;
 			float flPos[3]; // original
 			b_DoNotUnStuck[npc.index] = false;
@@ -635,7 +633,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
-		int tier = (Waves_GetRound() / 15);
+		int tier = (ZR_Waves_GetRound() / 15);
 		if(alone)
 			tier++;
 
@@ -717,9 +715,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
-				NPCStats_RemoveAllDebuffs(ally);
-				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 5.0;
-				f_HussarBuff[ally] = GetGameTime(ally) + 10.0;
+				NPCStats_RemoveAllDebuffs(ally, 5.0);
+				ApplyStatusEffect(npc.index, ally, "Hussar's Warscream", 10.0);
 
 				npc.PlayBuffSound();
 			}
@@ -754,7 +751,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				SetParent(npcally.index, npc.index, "");
 				b_NoGravity[npc.index] = true;
 				b_DoNotUnStuck[npc.index] = true;
-				b_CannotBeKnockedUp[npc.index] = true;
+				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);		
 				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 				npc.SetVelocity({0.0,0.0,0.0});
 				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);
@@ -872,7 +869,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.25;
 								npc.m_flSwitchCooldown = gameTime + 1.0;
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
-								if(ZR_GetWaveCount()+1 >= 60)
+								if(i_RaidGrantExtra[npc.index] >= 5)
 								{
 									npc.m_flNextMeleeAttack = gameTime + 0.55;
 								}
@@ -897,10 +894,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();
-							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
-							
+							int BulletHere = npc.FireParticleRocket(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0, 0.0, "raygun_projectile_blue_crit", false);
+			
+							float position[3];
+							GetEntPropVector(BulletHere, Prop_Data, "m_vecAbsOrigin", position); 
+							TE_Particle("mvm_soldier_shockwave", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+							CreateTimer(0.1, WaldchCoolEffectOnProjectile, EntIndexToEntRef(BulletHere), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 							npc.m_flNextMeleeAttack = gameTime + 1.5;
-							if(ZR_GetWaveCount()+1 >= 60)
+							if(i_RaidGrantExtra[npc.index] >= 5)
 							{
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
 							}
@@ -956,7 +957,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						{
 							damage *= 2.5;
 						}
-						if(ZR_GetWaveCount()+1 >= 60)
+						if(i_RaidGrantExtra[npc.index] >= 5)
 						{
 							damage *= 1.15;
 						}
@@ -977,10 +978,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						
 						vecMe[2] += 45;
 						
-						b_ThisNpcIsSawrunner[npc.index] = true;
-						i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+						i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;
 						Explode_Logic_Custom(3000.0 * zr_smallmapbalancemulti.FloatValue, 0, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 20);
-						b_ThisNpcIsSawrunner[npc.index] = false;
+					
 						
 						npc.PlayBoomSound();
 						TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
@@ -1072,7 +1072,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 		
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(victim);
 	
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(!b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -1131,6 +1131,7 @@ public void RaidbossBlueGoggles_NPCDeath(int entity)
 	
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();
+	ExpidonsaRemoveEffects(entity);
 	
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.
@@ -1204,4 +1205,94 @@ bool IsPartnerGivingUpGoggles(int entity)
 		return true;
 
 	return b_angered_twice[entity];
+}
+
+
+void WaldchEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
+{
+	int red = 255;
+	int green = 25;
+	int blue = 25;
+	float flPos[3];
+	float flAng[3];
+	int particle_ears1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	//fist ear
+	float DoApply[3];
+	DoApply = {0.0,-2.5,-5.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,-6.0,-10.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,-8.0,3.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	
+	//fist ear
+	DoApply = {0.0,2.5,-5.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,6.0,-10.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,8.0,3.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+
+	SetParent(particle_ears1, particle_ears2, "",_, true);
+	SetParent(particle_ears1, particle_ears3, "",_, true);
+	SetParent(particle_ears1, particle_ears4, "",_, true);
+	SetParent(particle_ears1, particle_ears2_r, "",_, true);
+	SetParent(particle_ears1, particle_ears3_r, "",_, true);
+	SetParent(particle_ears1, particle_ears4_r, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_ears1, flPos);
+	SetEntPropVector(particle_ears1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_ears1, attachment,_);
+
+
+	int Laser_ears_1 = ConnectWithBeamClient(particle_ears4, particle_ears2, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2 = ConnectWithBeamClient(particle_ears4, particle_ears3, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+
+	int Laser_ears_1_r = ConnectWithBeamClient(particle_ears4_r, particle_ears2_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+
+public Action WaldchCoolEffectOnProjectile(Handle timer, any entid)
+{
+	int Projectile = EntRefToEntIndex(entid);
+	if(IsValidEntity(Projectile))
+	{
+		float position[3];
+		GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", position); 
+		TE_Particle("mvm_soldier_shockwave", position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+					
+	}
+	return Plugin_Handled;
 }

@@ -18,14 +18,14 @@ public void BarrackMilitiaOnMapStart()
 	
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackMilitia(client, vecPos, vecAng, ally);
+	return BarrackMilitia(client, vecPos, vecAng);
 }
 
 methodmap BarrackMilitia < BarrackBody
 {
-	public BarrackMilitia(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackMilitia(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackMilitia npc = view_as<BarrackMilitia>(BarrackBody(client, vecPos, vecAng, "165",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
@@ -92,7 +92,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 280.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 300.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}
@@ -107,7 +107,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE", "ACT_WALK");
+		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_IDLE", "ACT_WALK");
 	}
 }
 

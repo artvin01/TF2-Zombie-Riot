@@ -3,7 +3,7 @@
 
 static int BrokenBlade;
 static int BladeDancer;
-static float BladeDancerTime;
+static float BladedanceChangeOwner;
 static float LastFlowerHealth;
 static ArrayStack LastShadowHealth;
 static bool Friendship;
@@ -11,7 +11,7 @@ static bool Friendship;
 void Rogue_StoryTeller_Reset()
 {
 	BrokenBlade = 0;
-	BladeDancer = 0;
+	BladedanceChangeOwner = 0.0;
 	LastFlowerHealth = 1000.0;
 	delete LastShadowHealth;
 	Friendship = false;
@@ -36,12 +36,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 
 		// +20% max health
 		map.GetValue("26", value);
-
-		value += ClassHealth(WeaponClass[entity]);
-		value *= 1.2;
-		value -= ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", value);
+		map.SetValue("26", value * 1.2);
 
 		// -10% movement speed
 		value = 1.0;
@@ -114,12 +109,7 @@ public void Rogue_Brokenblade_Ally(int entity, StringMap map)
 
 		// -20% max health
 		map.GetValue("26", value);
-
-		value += ClassHealth(WeaponClass[entity]);
-		value *= 0.8;
-		value -= ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", value);
+		map.SetValue("26", value * 0.8);
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
@@ -135,55 +125,107 @@ public void Rogue_Brokenblade_Ally(int entity, StringMap map)
 	}
 }
 
+Handle BladeDanceItemCollect;
+public void Rogue_Bladedance_Collect()
+{
+	BladedanceChangeOwner = 0.0;
+	delete BladeDanceItemCollect;
+	BladeDanceItemCollect = CreateTimer(1.5, Timer_BladedancerTimer, _, TIMER_REPEAT);
+}
+public void Rogue_Bladedance_Remove()
+{
+	delete BladeDanceItemCollect;
+	BladeDancer = 0;
+	Rogue_Refresh_Remove();
+}
+
+float RogueBladedance_DamageBonus(int attacker, int inflictor, int victim)
+{
+	if(BladeDancer <= 0)
+		return 1.0;
+	
+	int CalcsDo = -1;
+	if(BladeDancer == inflictor)
+		CalcsDo = inflictor;
+	if(BladeDancer == attacker)
+		CalcsDo = attacker;
+
+	if(CalcsDo <= 0)
+		return 1.0;
+
+	//not same team, give 2x dmg
+	if(GetTeam(CalcsDo) != GetTeam(victim))
+	{
+		return 2.0;
+	}
+	return 1.0;
+}
+
+static Action Timer_BladedancerTimer(Handle timer)
+{
+	if(BladeDancer > 0)
+	{
+		//change bladedancer if dead or smth
+		//dont change if they are downed but have a self revive so to speak
+		if(TeutonType[BladeDancer] != TEUTON_NONE || !IsClientInGame(BladeDancer) || !IsPlayerAlive(BladeDancer) || (dieingstate[BladeDancer] && !b_LeftForDead[BladeDancer]))
+		{
+			//Find new friend!
+			BladedanceChangeOwner = 0.0;
+		}
+	}
+
+	if(BladedanceChangeOwner > GetGameTime())
+		return Plugin_Continue;
+		
+	//Keep bladedancer for 2 mins
+	BladedanceChangeOwner = GetGameTime() + 180.0;
+
+	int NewDancerFind = -1;
+	//400 is more then enough.
+
+	int victims;
+	int[] victim = new int[MaxClients];
+
+	for(int target = 1; target <= MaxClients; target++)
+	{
+		if(BladeDancer != target && TeutonType[target] == TEUTON_NONE && IsClientInGame(target) && IsPlayerAlive(target) && !dieingstate[target])
+		{
+			victim[victims++] = target;
+		}
+	}
+	
+	if(victims)
+	{
+		int winner = victim[GetURandomInt() % victims];
+		NewDancerFind = winner;
+	}
+
+	//if no one was found, keep.
+	if(NewDancerFind != -1)
+	{
+		BladeDancer = NewDancerFind;
+	}
+	if(IsValidClient(BladeDancer))
+	{
+		CPrintToChatAll("{red}%N {crimson}recieved +100％ max health and +100％ damage bonus and +100％ heal rate.", BladeDancer);
+	}
+	return Plugin_Continue;
+}
 public void Rogue_Bladedance_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		if(BladeDancer && BladeDancer != entity)
+		if(BladeDancer == entity)
 		{
-			if(fabs(GetGameTime() - BladeDancerTime) < 180 && IsClientInGame(BladeDancer) && IsPlayerAlive(BladeDancer) && TeutonType[BladeDancer] == TEUTON_NONE && !dieingstate[BladeDancer])
-				return;
-		}
-
-		if(TeutonType[entity] == TEUTON_NONE && !dieingstate[entity])
-		{
-			if(BladeDancer != entity)
-			{
-				BladeDancer = entity;
-				BladeDancerTime = GetGameTime();
-				CPrintToChatAll("{red}%N {crimson}recieved +100%% max health and +100%% damage bonus.", BladeDancer);
-			}
-
 			float value;
-
-			// +200% max health
+			
+			// +100% max health
 			map.GetValue("26", value);
+			map.SetValue("26", value * 2.0);
 
-			value += ClassHealth(WeaponClass[entity]);
-			value *= 2.0;
-			value -= ClassHealth(WeaponClass[entity]);
-
-			map.SetValue("26", value);
-
-			// +200% building damage
-			value = 1.0;
-			map.GetValue("287", value);
-			map.SetValue("287", value * 2.0);
-		}
-	}
-}
-
-public void Rogue_Bladedance_Weapon(int entity)
-{
-	if(BladeDancer == GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity"))
-	{
-		Attributes_SetMulti(entity, 2, 2.0);
-		Attributes_SetMulti(entity, 410, 2.0);
-		char buffer[36];
-		GetEntityClassname(entity, buffer, sizeof(buffer));
-		if(StrEqual(buffer, "tf_weapon_medigun"))
-		{
-			Attributes_SetMulti(entity, 1, 2.0);
+			// +100% Heal rate
+			map.GetValue("8", value);
+			map.SetValue("8", value * 2.0);
 		}
 	}
 }
@@ -194,9 +236,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 	{
 		float last;
 		map.GetValue("26", last);
-		last += ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", RemoveExtraHealth(WeaponClass[entity], LastFlowerHealth));
+		map.SetValue("26", LastFlowerHealth);
 
 		LastFlowerHealth = last * 1.25;
 	}
@@ -240,8 +280,6 @@ public void Rogue_Shadow_Ally(int entity, StringMap map)
 		
 		float last;
 		map.GetValue("26", last);
-		last += ClassHealth(WeaponClass[entity]);
-
 		LastShadowHealth.Push(RoundFloat(last));
 	}
 	else if(!b_NpcHasDied[entity] && LastShadowHealth && !LastShadowHealth.Empty)	// NPCs
@@ -292,12 +330,7 @@ public void Rogue_CombineCrown_Ally(int entity, StringMap map)
 
 		// -5% max health
 		map.GetValue("26", value);
-
-		value += ClassHealth(WeaponClass[entity]);
-		value *= 0.95;
-		value -= ClassHealth(WeaponClass[entity]);
-
-		map.SetValue("26", value);
+		map.SetValue("26", value * 0.95);
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{

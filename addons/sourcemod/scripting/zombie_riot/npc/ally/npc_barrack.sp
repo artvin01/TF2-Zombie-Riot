@@ -134,6 +134,7 @@ static bool NpcSpecialCommand[MAXENTITIES];
 static bool FreeToSelect[MAXENTITIES];
 static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
+static int i_RalleyTarget[MAXENTITIES];
 
 methodmap BarrackBody < CClotBody
 {
@@ -264,13 +265,25 @@ methodmap BarrackBody < CClotBody
 	}
 	property int m_iTargetRally
 	{
-		public get()
-		{
-			return i_OverlordComboAttack[this.index];
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_RalleyTarget[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+			return returnint;
 		}
-		public set(int value)
+		public set(int iInt) 
 		{
-			i_OverlordComboAttack[this.index] = value;
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_RalleyTarget[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_RalleyTarget[this.index] = EntIndexToEntRef(iInt);
+			}
 		}
 	}
 	property int OwnerUserId
@@ -318,9 +331,9 @@ methodmap BarrackBody < CClotBody
 	public BarrackBody(int client, float vecPos[3], float vecAng[3],
 	 const char[] health, const char[] modelpath = COMBINE_CUSTOM_MODEL,
 	  int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575",
-	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool IsInvuln = false)
+	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool IsInvuln = false, int NpcTypeLogicdo = 0)
 	{
-		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, TFTeam_Red, IsInvuln, .Ally_Collideeachother = !IsInvuln));
+		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, TFTeam_Red, IsInvuln, .Ally_Collideeachother = !IsInvuln, .NpcTypeLogic = NpcTypeLogicdo));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -331,6 +344,7 @@ methodmap BarrackBody < CClotBody
 		CommandOverride[npc.index] = -1;
 		NpcSpecialCommand[npc.index] = false;
 		FreeToSelect[npc.index] = false;
+		npc.m_iTargetRally = 0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -359,7 +373,7 @@ methodmap BarrackBody < CClotBody
 				RemoveEntity(npc.m_iTeamGlow);
 			}
 
-			npc.m_iWearable7 = npc.EquipItemSeperate("partyhat", ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
+			npc.m_iWearable7 = npc.EquipItemSeperate(ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
 			SetVariantString("0.65");
 			AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 			BarrackOwner[npc.m_iWearable7] = client > 0 ? client : 0;
@@ -372,8 +386,9 @@ methodmap BarrackBody < CClotBody
 			int Textentity = BarrackBody_HealthHud(npc, ExtraOffset);
 			BarrackOwner[Textentity] = client > 0 ? client : 0;
 		}
+		if(NpcTypeLogicdo == 0)
+			npc.StartPathing();
 
-		npc.StartPathing();
 		Barracks_UpdateEntityUpgrades(npc.index,client > 0 ? client : 0,true, true);
 		return npc;
 	}
@@ -469,7 +484,7 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 	BarrackBody_HealthHud(npc,offsetHealth);
 	if(f_NextHealTime[npc.index] < GameTime && !i_NpcIsABuilding[npc.index])
 	{
-		f_NextHealTime[npc.index] = GameTime + 0.5;
+		f_NextHealTime[npc.index] = GameTime + 0.25;
 		int HealingAmount;
 		int client = GetClientOfUserId(npc.OwnerUserId);
 		if(client > 0)
@@ -484,14 +499,7 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 			}
 			if(HealingAmount > 0)
 			{
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < ReturnEntityMaxHealth(npc.index))
-				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
-					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
-					{
-						SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
-					}
-				}
+				HealEntityGlobal(iNPC, iNPC, float(HealingAmount), 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 		}
 			
@@ -546,12 +554,6 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
 		}
-		/*
-		else
-		{
-			npc.m_iTarget = -1;
-		}
-		*/
 		
 		if(npc.m_iTargetAlly > 0 && !passive)
 		{
@@ -562,8 +564,8 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 		{
 			npc.m_iTargetRally = 0;
 
-			int entity = MaxClients + 1;
-			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			int a, entity;
+			while((entity = FindEntityByNPC(a)) != -1)
 			{
 				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetTeam(entity) == 2)
 				{
@@ -590,6 +592,9 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = 
 void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true, bool sound=true)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
+	if(!IsValidEntity(iNPC))
+		return;
+	//Some error, i really dont know.
 
 	bool pathed;
 	float gameTime = GetGameTime(npc.index);
@@ -877,7 +882,7 @@ static void ShowMenu(int client, int entity)
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(BarrackBody_MenuH);
-	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", c_NpcName[entity]);
+	menu.SetTitle("%t\n \n%s\n ", "TF2: Zombie Riot", NpcStats_ReturnNpcName(entity));
 
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));

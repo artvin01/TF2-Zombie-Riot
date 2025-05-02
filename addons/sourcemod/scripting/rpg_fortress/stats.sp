@@ -53,7 +53,7 @@ void Stats_EnableCharacter(int client)
 
 	Race race;
 	Races_GetClientInfo(client, race);
-	if(race.StartLevel > 0)
+	if(race.StartLevel > 0 && (Stats_GetStatCount(client) / BaseUpdateStats) <= 0)
 	{
 		int stats = Stats_GetStatCount(client) + ReskillPoints[client];
 		int minStats = race.StartLevel * BaseUpdateStats;
@@ -437,7 +437,7 @@ void Stats_ApplyAttribsPre(int client)
 	Stats_ClearCustomStats(client);
 }
 
-void Stats_ReskillEverything(int client)
+void Stats_ReskillEverything(int client, int Setstats = 0)
 {
 	int stats = Stats_GetStatCount(client);
 	
@@ -448,13 +448,20 @@ void Stats_ReskillEverything(int client)
 	StatStructure[client] = 0;
 	StatIntelligence[client] = 0;
 	StatCapacity[client] = 0;
-	ReskillPoints[client] += stats;
+
+	if(Setstats == 0)
+		ReskillPoints[client] = stats;
+	else
+		ReskillPoints[client] = Setstats;
+
 
 	Stats_SaveClientStats(client);
+	//Reset em.
+	Store_ApplyAttribs(client);
 	FakeClientCommandEx(client, "rpg_stats");
 }
 
-void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
+void Stats_ApplyAttribsPost(int client, TFClassType class)
 {
 	Attributes_SetAdd(client, 26, RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
 	Attributes_Set(client, 252, 0.0/*Stats_KnockbackResist(client)*/);
@@ -462,8 +469,6 @@ void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 	//in RPG we will give knockback another way.
 
 	Stats_ApplyMovementSpeedUpdate(client, class);
-	
-	Attributes_SetMulti(client, 442, SpeedExtra);
 
 	static Race race;
 	static Form form;
@@ -919,11 +924,11 @@ public Action Stats_ShowStats(int client, int args)
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			total = Stats_Agility(client, amount, bonus, multirace);
-			FormatEx(buffer, sizeof(buffer), "AGI: [%d x%.2f] + %d = [%d] (%.1f%% Speed)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
+			FormatEx(buffer, sizeof(buffer), "AGI: [%d x%.2f] + %d = [%d] (%.1f％ Speed)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
 			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 			total = Stats_Luck(client, amount, bonus, multirace);
-			FormatEx(buffer, sizeof(buffer), "LUC: [%d x%.2f] + %d = [%d] (%.1f%% Crits)", amount, multirace, bonus, total, (1 + total) * 0.1);
+			FormatEx(buffer, sizeof(buffer), "LUC: [%d x%.2f] + %d = [%d] (%.1f％ Crits)", amount, multirace, bonus, total, (1 + total) * 0.1);
 			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 			menu.AddItem(NULL_STRING, "Increase Input Multi", InputMulti[client] > 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);

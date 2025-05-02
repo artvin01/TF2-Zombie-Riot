@@ -35,7 +35,7 @@ static void ClotPrecache()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Storm_Weaver_Mid(client, vecPos, vecAng, team, StringToFloat(data));
+	return Storm_Weaver_Mid(vecPos, vecAng, team, StringToFloat(data));
 }
 
 methodmap Storm_Weaver_Mid < CClotBody
@@ -54,7 +54,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
-	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], int ally, float in_line_id)
+	public Storm_Weaver_Mid(float vecPos[3], float vecAng[3], int ally, float in_line_id)
 	{
 		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
@@ -94,6 +94,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 		b_DoNotUnStuck[npc.index] = true;
 
+		npc.m_bDissapearOnDeath = true;
 		b_NoKnockbackFromSources[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -147,29 +148,17 @@ static void ClotThink(int iNPC)
 	{
 		float Follow_Loc[3];
 		GetEntPropVector(follow_id, Prop_Send, "m_vecOrigin", Follow_Loc);
-
-		int I_see=Can_I_See_Ally(npc.index, follow_id);
-		if(I_see==follow_id)
-		{
-			Storm_Weaver_Middle_Movement(npc, Follow_Loc, false);	//we can see it, travel normally!
-		}
-		else
-		{
-			Storm_Weaver_Middle_Movement(npc, Follow_Loc, true);	//we can't see the thing we are following, noclip
-		}
+		Storm_Weaver_Middle_Movement(npc, Follow_Loc);	//we can see it, travel normally!
 		
 	}
 	else
 	{
-		npc.m_bDissapearOnDeath = true;	
 		//CPrintToChatAll("death cause no hp.");
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 
 		return;
 	}
-
-
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		int Enemy_I_See;
@@ -183,7 +172,7 @@ static void ClotThink(int iNPC)
 
 			if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
 			{
-				float Ratio = (ZR_GetWaveCount()+1)/60.0;
+				float Ratio = (ZR_Waves_GetRound()+1)/60.0;
 				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
 				Stellar_Weaver_Attack(npc.index, vecTarget, 50.0*Ratio, 500.0, 15.0, 500.0*Ratio, 150.0, 10.0);
 				b_stellar_weaver_allow_attack[npc.index] = false;
@@ -193,7 +182,7 @@ static void ClotThink(int iNPC)
 			if(GameTime > npc.m_flNextRangedAttack)
 			{
 				npc.PlayMeleeHitSound();
-				float Ratio = (ZR_GetWaveCount()+1)/60.0;
+				float Ratio = (ZR_Waves_GetRound()+1)/60.0;
 				float DamageDone = 50.0*Ratio;
 				npc.FireParticleRocket(vecTarget, DamageDone, 1250.0, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 5.0;
@@ -249,4 +238,12 @@ static void NPC_Death(int entity)
 	
 	Ruina_NPCDeath_Override(entity);
 
+	float pos1[3];
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos1);
+	DataPack pack_boom1 = new DataPack();
+	pack_boom1.WriteFloat(pos1[0]);
+	pack_boom1.WriteFloat(pos1[1]);
+	pack_boom1.WriteFloat(pos1[2]);
+	pack_boom1.WriteCell(1);
+	RequestFrame(MakeExplosionFrameLater, pack_boom1);
 }

@@ -217,7 +217,7 @@ methodmap EndSpeaker < CClotBody
 
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == Remain_ID() && IsEntityAlive(entity))
 			{
 				remain[count++] = entity;
@@ -265,7 +265,7 @@ methodmap EndSpeaker < CClotBody
 					spawnRing_Vectors(vecOther, DEEP_SEA_VORE_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 2.0, 6.0, 0.1, 1);
 				}
 
-				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_DROWN_DAMAGE;
+				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_TRUE_DAMAGE;
 				Explode_Logic_Custom(9999.9, -1, this.index, -1, vecTarget, DEEP_SEA_VORE_RANGE, _, _, true, _, false);
 				EmitSoundToAll(GrabBuff[GetRandomInt(0, sizeof(GrabBuff) - 1)], entity, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 				
@@ -329,7 +329,7 @@ methodmap EndSpeaker < CClotBody
 
 		if(this.m_hBuffs & BUFF_SWARMCALLER)
 		{
-			b_CannotBeSlowed[this.index] = true;
+			ApplyStatusEffect(this.index, this.index, "Fluid Movement", FAR_FUTURE);	
 			this.m_bThisNpcIsABoss = true;
 
 			this.m_iWearable5 = ParticleEffectAt(vecTarget, "powerup_icon_agility", -1.0);
@@ -497,7 +497,7 @@ bool EndSpeaker_GetPos(float pos[3])
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE &&
 			i_NpcInternalId[entity] >= EndspeakerLowId &&
 			i_NpcInternalId[entity] <= EndspeakerHighId &&

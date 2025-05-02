@@ -36,10 +36,16 @@ stock void Stock_SetEntityMoveType(int entity, MoveType mt)
 		ThrowError("Do not dare! Dont set SetEntityMoveType on an NPC that isnt MOVECUSTOM.");
 		return;
 	}
-	else
+
+#if defined ZR
+	if(entity > 0 && entity <= MaxClients && Vehicle_Driver(entity) != -1)
 	{
-		SetEntityMoveType(entity, mt);
+		// Nuh uh, we're driving
+		mt = MOVETYPE_NONE;
 	}
+#endif
+	
+	SetEntityMoveType(entity, mt);
 }
 
 #define SetEntityMoveType Stock_SetEntityMoveType
@@ -58,12 +64,7 @@ TODO:
 
 //Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
 
-/*
-Always check if any of the wearables has this netprop. HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"), this is needed cus what if
-an npc uses a particle effect for example? (fusion warrior)
-*/
-
-stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntityColour = true, int SetOverride = 0, bool ingore_wearables = true, bool dontchangewearablecolour = true)
+stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntityColour = true, int SetOverride = 0, bool ingore_wearables = true, bool dontchangewearablecolour = true, bool ForceColour = false)
 {
 	if(TrueEntityColour || SetOverride != 0)
 	{
@@ -73,7 +74,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
 			{
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex) && HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"))
+				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
 				{	
 					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
 					{
@@ -90,7 +91,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			if(SetOverride == 1)
 			{
@@ -112,7 +113,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
 			{
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex) && HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"))
+				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
 				{	
 					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
 					{					
@@ -128,7 +129,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity] || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity] || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0) || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			SetEntityRenderMode(entity, mode);
 		}
@@ -139,7 +140,7 @@ stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntit
 
 
 //Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
-stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=255, int a=255, bool TrueEntityColour = true, bool ingore_wearables = true, bool dontchangewearablecolour = true)
+stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=255, int a=255, bool TrueEntityColour = true, bool ingore_wearables = true, bool dontchangewearablecolour = true, bool ForceColour = false)
 {	
 	bool ColorWasSet = false;
 	if(TrueEntityColour)
@@ -150,7 +151,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
 			{
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex) && HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"))
+				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
 				{	
 					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
 					{
@@ -162,7 +163,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 				}
 			}
 		}
-		if(i_EntityRenderColour4[entity] != 0) //If it has NO colour, then do NOT recolour.
+		if(i_EntityRenderColour4[entity] != 0 || ForceColour) //If it has NO colour, then do NOT recolour.
 		{
 			i_EntityRenderColour1[entity] = r;
 			i_EntityRenderColour2[entity] = g;
@@ -180,9 +181,9 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
 			{
 				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex) && HasEntProp(WearableEntityIndex, Prop_Send, "m_nRenderMode"))
+				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
 				{	
-					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
+					if(i_EntityRenderColour4[WearableEntityIndex] != 0 || ForceColour)
 					{
 						if(!TrueEntityColour)
 						{
@@ -200,7 +201,7 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 				}
 			}
 		}
-		if((i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity]) || (ColorWasSet && !i_EntityRenderOverride[entity]) || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
+		if(ForceColour || (i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity]) || (ColorWasSet && !i_EntityRenderOverride[entity]) || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
 		{
 			SetEntityRenderColor(entity, r, g, b, a);
 		}
@@ -217,6 +218,30 @@ void Stock_SetHudTextParams(float x, float y, float holdTime, int r, int g, int 
 }
 
 #define SetHudTextParams Stock_SetHudTextParams
+
+int Stock_ShowSyncHudText(int client, Handle sync, const char[] message, any ...)
+{
+	int ReturnFlags = GetEntProp(client, Prop_Send, "m_iHideHUD");
+	if(ReturnFlags & HIDEHUD_ALL) //hide.
+		return 0;
+
+	char buffer[512];
+	VFormat(buffer, sizeof(buffer), message, 4);
+	return ShowSyncHudText(client, sync, buffer);
+}
+#define ShowSyncHudText Stock_ShowSyncHudText
+
+void Stock_PrintHintText(int client, const char[] format, any ...)
+{
+	int ReturnFlags = GetEntProp(client, Prop_Send, "m_iHideHUD");
+	if(ReturnFlags & HIDEHUD_ALL) //hide.
+		return;
+
+	char buffer[512];
+	VFormat(buffer, sizeof(buffer), format, 3);
+	PrintHintText(client, buffer);
+}
+#define PrintHintText Stock_PrintHintText
 
 stock void ResetToZero(any[] array, int length)
 {
@@ -474,20 +499,34 @@ void Edited_EmitSoundToAll(const char[] sample,
 	*/
 	if(sample[0] != '#')
 	{
-
-		for(int client=1; client<=MaxClients; client++)
+		if(entity > 0 && b_ThisWasAnNpc[entity])
 		{
-			if(IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
+			for(int client=1; client<=MaxClients; client++)
 			{
-				float volumeedited = volume;
-				if(entity > 0 && b_ThisWasAnNpc[entity])
+				if((f_ZombieVolumeSetting[client] + 1.0) != 0.0 && IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
 				{
+					float volumeedited = volume;
+					if(EnableSilentMode && !b_thisNpcIsARaid[entity])
+					{
+						if(RecentSoundList[client].FindString(sample) != -1)
+							continue;
+						
+						RecentSoundList[client].PushString(sample);
+						CreateTimer(0.1, Timer_RecentSoundRemove, client);	
+						volumeedited *= 0.7; //Silent-er.
+						//	level = RoundToCeil(float(level) * 0.85);
+						//dont change level
+					}
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
+					if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client,entity,channel,level,flags,pitch,speakerentity,origin,dir,updatePos,soundtime))
+						EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
 				}
-				if(volumeedited > 0.0)
-					EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
-			}
-		}		
+			}	
+		}	
+		else
+		{
+			EmitSoundToAll(sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
+		}
 	}
 	else
 	{
@@ -499,7 +538,6 @@ void Edited_EmitSoundToAll(const char[] sample,
 			}
 		}
 	}
-		
 }
 
 #define EmitSoundToAll Edited_EmitSoundToAll
@@ -534,7 +572,7 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
 			*/
 			int entity = -1;
-			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			while((entity=FindEntityByClassname(entity, "zr_base_boss")) != -1)
 			{
 #if defined ZR
 				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
@@ -567,3 +605,66 @@ bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int
 }
 
 #define AcceptEntityInput Stock_AcceptEntityInput
+
+stock void Stock_RemoveEntity(int entity)
+{
+	if(entity >= 0 && entity <= MaxClients)
+	{
+		ThrowError("Unintended RemoveEntity on entity %d.", entity);
+		return;
+	}
+
+	if(entity > MaxClients && entity < MAXENTITIES && ViewChange_IsViewmodelRef(EntIndexToEntRef(entity)))
+	{
+		LogStackTrace("Possible unintended RemoveEntity entity index leaking.");
+	}
+
+	RemoveEntity(entity);
+}
+
+#define RemoveEntity Stock_RemoveEntity
+
+stock int EntRefToEntIndexFast(int &ref)
+{
+	if(ref == -1)
+		return ref;
+	
+	int entity = EntRefToEntIndex(ref);
+	if(entity == -1)
+		ref = -1;
+	
+	return entity;
+}
+
+//#define EntRefToEntIndex EntRefToEntIndexFast
+/*
+int GameruleEntity()
+{
+	int Gamerules = FindEntityByClassname(-1, "tf_gamerules");
+	return Gamerules;
+}
+
+void GameRules_SetPropFloat_Replace(const char[] prop, any value, int element=0, bool changeState=false)
+{
+	SetEntPropFloat(GameruleEntity(), Prop_Send, prop, value, element);
+}
+void GameRules_SetProp_Replace(const char[] prop, any value, int size = 4, int element=0, bool changeState=false)
+{
+	SetEntProp(GameruleEntity(), Prop_Send, prop, value, size, element);
+}
+float GameRules_GetPropFloat_Replace(const char[] prop, int element=0)
+{
+	return GetEntPropFloat(GameruleEntity(), Prop_Send, prop, element);
+}
+int GameRules_GetProp_Replace(const char[] prop, int size = 4, int element=0)
+{
+	return GetEntProp(GameruleEntity(), Prop_Send, prop, size, element);
+}
+	
+RoundState GameRules_GetRoundState_Replace()
+{
+	return view_as<RoundState>(GameRules_GetProp("m_iRoundState"));
+}
+
+#define GameRules_GetRoundState GameRules_GetRoundState_Replace
+*/

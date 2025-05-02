@@ -92,7 +92,7 @@ methodmap SeabornSoldier < CClotBody
 	
 	public SeabornSoldier(float vecPos[3], float vecAng[3], int ally)
 	{
-		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "4000", ally));
+		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "8000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -207,7 +207,7 @@ public void SeabornSoldier_ClotThink(int iNPC)
 
 							for(int i; i < 5; i++)
 							{
-								if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+								if(MaxEnemiesAllowedSpawnNext(1) <= (EnemyNpcAlive - EnemyNpcAliveStatic))
 								{
 									fl_Extra_Speed[npc.index] *= 1.1;
 									fl_Extra_Damage[npc.index] *= 1.05;

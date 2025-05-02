@@ -17,6 +17,15 @@ void ObjectPackAPunch_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_packapunch");
+	build.Cost = 1000;
+	build.Health = 50;
+	build.Cooldown = 60.0;
+	build.Func = ObjectGeneric_CanBuild;
+	Building_Add(build);
+
 	Zero(b_LastWeaponCheckBias);
 	Zero(f_CheckWeaponDelay);
 }
@@ -49,7 +58,8 @@ static bool ClotCanUse(ObjectPackAPunch npc, int client)
 	if(!Pap_WeaponCheck(client))
 		return false;
 	
-	bool started = Waves_Started();
+	//Just allow.
+	bool started = true;// Waves_Started();
 	if(started || Rogue_Mode() || CvarNoRoundStart.BoolValue)
 	{
 		return true;
@@ -84,11 +94,19 @@ bool Pap_WeaponCheck(int client, bool force = false)
 static void ClotShowInteractHud(ObjectPackAPunch npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "PackAPunch Tooltip");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay,"PackAPunch Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 {
+	if(ClientTutorialStep(client) == 5)
+	{
+		KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+		SetClientTutorialStep(client, 6);
+		DoTutorialStep(client, false);	
+	}
 	f_CheckWeaponDelay[client] = 0.0;
 	if(!ClotCanUse(npc, client))
 	{
@@ -115,181 +133,6 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 	if(owner > MaxClients)
 		owner = client;
 
-	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
+	Store_PackMenu(client, StoreWeapon[weapon], -1, owner);
 	return true;
 }
-/*
-static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int client, int choice)
-{
-	switch(action)
-	{
-		case MenuAction_End:
-		{
-			delete menu;
-		}
-		case MenuAction_Cancel:
-		{
-			ResetStoreMenuLogic(client);
-		}
-		case MenuAction_Select:
-		{
-			ResetStoreMenuLogic(client);
-			char buffer[24];
-			menu.GetItem(choice, buffer, sizeof(buffer));
-			int id = StringToInt(buffer);
-
-			if(id == -3)
-			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}
-					Do_Perk_Machine_Logic(owner, client, entity, 1);
-				}
-			}
-			else if(id == -4)
-			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}
-					Do_Perk_Machine_Logic(owner, client, entity, 2);
-				}
-			}
-			else if(id == -5)
-			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}
-					Do_Perk_Machine_Logic(owner, client, entity, 3);
-				}
-			}
-			else if(id == -6)
-			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}
-					Do_Perk_Machine_Logic(owner, client, entity, 4);
-				}
-			}
-			else if(id == -7)
-			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}	
-					Do_Perk_Machine_Logic(owner, client, entity, 5);
-				}
-			}
-			else if(id == -8)
-			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					Do_Perk_Machine_Logic(owner, client, entity, 6);
-				}
-			}
-			else if(id == -9)
-			{
-				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
-				if(IsValidEntity(entity))
-				{
-					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					Do_Perk_Machine_Logic(owner, client, entity, 7);
-				}
-			}
-		}
-	}
-	return 0;
-}
-
-static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
-{
-	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
-	ApplyBuildingCollectCooldown(entity, client, 40.0);
-	
-	i_CurrentEquippedPerk[client] = what_perk;
-	i_CurrentEquippedPerkPreviously[client] = what_perk;
-	
-	if(!Rogue_Mode() && owner > 0 && owner != client)
-	{
-		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
-		{
-			GiveCredits(owner, 40, true);
-			Perk_Machine_money_limit[owner][client] += 1;
-			Resupplies_Supplied[owner] += 4;
-			SetDefaultHudPosition(owner);
-			SetGlobalTransTarget(owner);
-			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
-		}
-	}
-	float pos[3];
-	float angles[3];
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-
-	pos[2] += 45.0;
-	angles[1] -= 90.0;
-
-	int particle = ParticleEffectAt(pos, "flamethrower_underwater", 1.0);
-	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
-	Perk_Machine_Sickness[client] = GetGameTime() + 2.0;
-	SetDefaultHudPosition(client, _, _, _, 5.0);
-	SetGlobalTransTarget(client);
-	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
-	Store_ApplyAttribs(client);
-	Store_GiveAll(client, GetClientHealth(client));	
-	Barracks_UpdateAllEntityUpgrades(client);
-}
-*/

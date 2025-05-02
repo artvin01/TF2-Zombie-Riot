@@ -145,6 +145,7 @@ int i_EntitiesHitAoeSwing[MAXENTITIES]= {-1, ...};	//Who got hit
 int i_EntitiesHitAtOnceMax; //How many do we stack
 bool b_iHitNothing;
 
+int i_CheckWeaponLogic;
 void MapStart_CustomMeleePrecache()
 {
 	for (int i = 0; i < (sizeof(g_KnifeHitFlesh));	   i++) { PrecacheSound(g_KnifeHitFlesh[i]);	   }
@@ -177,9 +178,6 @@ public void SepcialBackstabLaughSpy(int attacker)
 #if defined RPG
 #define WEAPON_BOOM_HAMMER 10000
 #endif
-
-#define MELEE_RANGE 64.0
-#define MELEE_BOUNDS 22.0
 stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0,
  bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {
@@ -248,6 +246,14 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = 10;
 			}
+			case WEAPON_CASTLEBREAKER:
+			{
+				CastleBreaker_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
+			case WEAPON_BOARD:
+			{
+				Board_DoSwingTrace(enemies_hit_aoe, CustomMeleeRange);
+			}
 		}	
 	}
 #endif
@@ -289,7 +295,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	//this is a problem.
 	//we will modify the ranges for specically these traces in melee to compensate for this lack of sight.
 	float vecSwingEndHull[3];
-	float vecSwingEndHullHeadshot[3];
 	
 	float ExtraMeleeRange = 1.0;
 	if(weapon > 0)
@@ -301,10 +306,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * ExtraMeleeRange);
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * ExtraMeleeRange);
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * ExtraMeleeRange);
-
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
 	
 		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
 		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
@@ -316,10 +317,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * ExtraMeleeRange);
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * ExtraMeleeRange);
 
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
-
 		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
 		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
 		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
@@ -327,55 +324,80 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
 	
+	i_MeleeHitboxHit[client] = -1;
+	int HitTargetFilter = 0;
+	if(weapon > 0 && b_MeleeCanHeadshot[weapon])
+	{
+		Handle TempTrace;
+		TempTrace = TR_TraceRayFilterEx(vecSwingStart, ang, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+		if (TR_DidHit(TempTrace))
+		{
+			int target_temp = TR_GetEntityIndex(TempTrace);
+			//its confirmed to be a headshot.
+			if(target_temp > 0 && !b_CannotBeHeadshot[target_temp])
+			{
+				i_MeleeHitboxHit[client] = TR_GetHitGroup(TempTrace);
+				HitTargetFilter = target_temp;
+			}
+		} 	
+		delete TempTrace;
+	}
+	//If we can backstab, then we should check if we can backstab ANY target currently in the way. if yes, prioritise
+	if(weapon > 0 && f_BackstabDmgMulti[weapon] != 0.0)
+	{
+		i_CheckWeaponLogic = weapon;
+		Handle TempTrace;
+		TempTrace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace_BackstabCheck, client );
+		if ( TR_GetFraction(TempTrace) >= 1.0)
+		{
+			delete TempTrace;
+			TempTrace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_BackstabCheck, client );
+		}
+		if (TR_DidHit(TempTrace))
+		{
+			int target_temp = TR_GetEntityIndex(TempTrace);
+			//its confirmed to be a headshot.
+			if(target_temp > 0)
+			{
+				HitTargetFilter = target_temp;
+			}
+		} 	
+		delete TempTrace;
+		i_CheckWeaponLogic = 0;
+	}
 	if(enemies_hit_aoe <= 1)
 	{
 		//not a cleave.
 		if(!Hit_ally)
 		{
-			// See if we hit anything.
-			/*
-				Inacse we want to hit, hitboxes.
-			*/
-			i_MeleeHitboxHit[client] = -1;
-
-			if(weapon > 0 && b_MeleeCanHeadshot[weapon])
+			bool FireNormalTrace = true;
+			if(HitTargetFilter)
 			{
-				//can we headshot?
-				//if yes, did we hit an enemy?
-				//if no, resort to normal hit detection.
-				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEndHullHeadshot, MASK_SHOT, RayType_EndPoint, BulletAndMeleeTrace, client );
-				if ( TR_GetFraction(trace) < 1.0)
+				BulletTraceFilterEntity(HitTargetFilter);
+				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
+				if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
 				{
-					int target = TR_GetEntityIndex(trace);	
-					if(target > 0)
-					{
-						i_MeleeHitboxHit[client] = TR_GetHitGroup(trace);
-						return;
-					}
-					else
-					{
-						FinishLagCompensation_Base_boss();
-						b_LagCompNPC_No_Layers = true;
-						StartLagCompensation_Base_Boss(client);
-						delete trace;
-					}
-				}
-				else
-				{
-					FinishLagCompensation_Base_boss();
-					b_LagCompNPC_No_Layers = true;
-					StartLagCompensation_Base_Boss(client);
 					delete trace;
+					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+					FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
+				}
+				if(HitTargetFilter == TR_GetEntityIndex(trace))
+				{
+					FireNormalTrace = false;
+				}
+				BulletTraceFilterEntity(0);
+			}
+			if(FireNormalTrace)
+			{
+				trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
+				if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
+				{
+					delete trace;
+					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+					FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
 				}
 			}
-			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client );
-			if ( TR_GetFraction(trace) >= 1.0 && enemies_hit_aoe != -1)
-			{
-				delete trace;
-				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
-				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
-			}
+
 		}
 		else
 		{
@@ -386,7 +408,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceAlly, client );
 				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}			
 		}		
 	}
@@ -405,11 +426,9 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
 				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client);
-			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}
 		}
 	}
-
 }
 
 stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon, bool &PlayOnceOnly = false)
@@ -433,7 +452,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 		{
 			case 649: //The Spy-cicle, because it has no hit enemy sound.
 			{
-				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 90, _, 1.0);
+				EmitSoundToAll(g_KnifeHitFlesh[GetRandomInt(0, sizeof(g_KnifeHitFlesh) - 1)], client, SNDCHAN_ITEM, 75, _, 1.0);
 				return ZEROSOUND;
 			}
 		}
@@ -537,16 +556,56 @@ enum
 
 };
 
-public void Timer_Do_Melee_Attack(DataPack pack)
+int MeleeRandomSeed[MAXENTITIES];
+float f_TimeTillMeleeAttackShould[MAXENTITIES];
+public void Timer_Do_Melee_Attack(int weapon, int client,int FrameDelay, char[] classname)
+{
+
+	static int RandomSeed;
+	RandomSeed++;
+	MeleeRandomSeed[weapon] = RandomSeed;
+	//We record the last attacked melee, too lazyfor fancy shit.
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteString(classname);
+	pack.WriteCell(RandomSeed);
+	if(FrameDelay <= 0 || f_TimeTillMeleeAttackShould[weapon] >= GetGameTime())
+	{
+		if(f_TimeTillMeleeAttackShould[weapon] < GetGameTime())
+			delete pack;
+
+		DataPack pack2 = new DataPack();
+		pack2.WriteCell(GetClientUserId(client));
+		pack2.WriteCell(EntIndexToEntRef(weapon));
+		pack2.WriteString(classname);
+		pack2.WriteCell(RandomSeed);
+		Timer_Do_Melee_Attack_Internal(pack2);
+	}
+
+	if(FrameDelay > 0)
+		RequestFrames(Timer_Do_Melee_Attack_Internal, FrameDelay, pack);
+
+	f_TimeTillMeleeAttackShould[weapon] = (GetTickInterval() * float(FrameDelay) + GetGameTime());
+}
+public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	char classname[32];
 	pack.ReadString(classname, 32);
+	int RandomSeedGet = pack.ReadCell();
 	if(client && weapon != -1 && IsValidCurrentWeapon(client, weapon))
 	{
-
+		if(MeleeRandomSeed[weapon] != RandomSeedGet)
+		{
+			//We performed a melee attack inbetween melee attacks, cancel this one!
+			//When melee wepaons attack too fast, we dont care about howpresize it may be, its not worth it.
+			delete pack;
+			return;
+		}
 #if defined ZR
 		float damage_test_validity = 1.0; 
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -568,9 +627,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		Handle swingTrace;
 		if(!b_MeleeCanHeadshot[weapon])
 			b_LagCompNPC_No_Layers = true;
+		/*
 		else
 			b_LagCompNPC_ExtendBoundingBox = true;
-
+		*/
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward,_,_,_,_,aoeSwing, weapon);
@@ -637,9 +697,21 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		if(soundIndex > 0 && !DontPlaySound)
 		{
 			char SoundStringToPlay[256];
-			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])
+			bool OverrideSound = false;
+#if defined ZR
+			switch(i_CustomWeaponEquipLogic[weapon])
 			{
-				EmitSoundToAll(c_WeaponSoundOverrideString[weapon], client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
+				case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
+				{
+					OverrideSound = true;
+					Format(SoundStringToPlay,sizeof(SoundStringToPlay),"replay/snip.wav");	
+				}
+			}
+#endif
+			if(soundIndex == MELEE_HIT && OverrideSound)
+			{
+				
+				EmitSoundToAll(SoundStringToPlay, client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
 				, _, 1.0 * f_WeaponVolumeStiller[weapon]);
 			}
 			else if(i_WeaponSoundIndexOverride[weapon] != -1)
@@ -690,6 +762,13 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
 				Blitzkrieg_Kit_ModifyMeleeDmg(client, damage);
+			}
+			case WEAPON_KAHMLFIST:
+			{
+				//recoded, prevent abuse
+				float Attrib = Attributes_Get(weapon, 1, 1.0);
+				if(Attrib >= 2.75)
+					Attributes_Set(weapon, 1, 1.0);
 			}
 		}
 #endif
@@ -844,7 +923,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			TR_TraceRayFilter(vecHit, impactEndPos, MASK_SHOT_HULL, RayType_EndPoint, BulletAndMeleeTrace, client);
 			if(TR_DidHit())
 			{
-				UTIL_ImpactTrace(client, pos, DMG_CLUB);
+				UTIL_ImpactTrace(pos, DMG_CLUB);
 			}
 		}
 		delete swingTrace;
@@ -948,4 +1027,31 @@ void AOEHammerExtraLogic(int entity, int victim, float damage, int weapon)
 	{
 		damage *= 1.15;
 	}	
+}
+
+
+bool CanBackstabEnemyPreCheck(int attacker, int weapon, int victim)
+{
+	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
+	{
+#if defined ZR
+		return (IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim]);
+#else
+		return (IsBehindAndFacingTarget(attacker, victim, weapon) || i_NpcIsABuilding[victim]);
+#endif
+	}
+	return false;
+}
+
+
+static bool BulletAndMeleeTrace_BackstabCheck(int entity, int contentsMask, any iExclude)
+{
+	bool type = BulletAndMeleeTrace(entity, contentsMask, iExclude);
+	if(!type) //if it collised, return.
+	{
+		return type;
+	}
+
+	
+	return (CanBackstabEnemyPreCheck(iExclude, i_CheckWeaponLogic, entity));
 }

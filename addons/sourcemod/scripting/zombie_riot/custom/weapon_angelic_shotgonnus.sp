@@ -148,20 +148,20 @@ void Angelic_Shotgun_DoSwingTrace(int client, float &CustomMeleeRange, float &Cu
 	{
 		case 3:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+			CustomMeleeRange = MELEE_RANGE * 1.25;
+			CustomMeleeWide = MELEE_BOUNDS * 1.25;
 			enemies_hit_aoe = 3;
 		}
 		case 1,2:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.2;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.2;
+			CustomMeleeRange = MELEE_RANGE * 1.2;
+			CustomMeleeWide = MELEE_BOUNDS * 1.2;
 			enemies_hit_aoe = 3;
 		}
 		default:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.15;
+			CustomMeleeRange = MELEE_RANGE * 1.15;
+			CustomMeleeWide = MELEE_BOUNDS * 1.15;
 			enemies_hit_aoe = 2;
 		}
 	}
@@ -289,7 +289,7 @@ public void Angelic_Shotgun_Cooldown_Logic(int client, int weapon)
 				}
 			}
 			PrintHintText(client,"%s",AbilityHud);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_AngelicShotgunHudCD[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -371,8 +371,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				if(b_PossesItemTraining[client])
-					HealingPerHit *= 1.1;
+
+				HealingPerHit *= 1.1;
 
 				HealEntityGlobal(client, client, HealingPerHit, 1.35,_,HEAL_SELFHEAL);
 
@@ -391,8 +391,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				if(b_PossesItemTraining[client])
-					HealingPerHit *= 1.1;
+
+				HealingPerHit *= 1.1;
 				HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
 			}
 		}
@@ -409,8 +409,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				if(b_PossesItemTraining[client])
-					HealingPerHit *= 1.1;
+
+				HealingPerHit *= 1.1;
 				HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
 			}
 		}
@@ -428,8 +428,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				if(b_PossesItemTraining[client])
-					HealingPerHit *= 1.1;
+
+				HealingPerHit *= 1.1;
 
 				HealEntityGlobal(client, client, HealingPerHit, 1.15,_,HEAL_SELFHEAL);
 			}
@@ -506,7 +506,7 @@ public void Angelic_ShotgunEffectM1(int client, int weapon, bool crit, int slot)
 	if(GiveDoubleStrike)
 	{
 		f_DoubleHitStack[client] = 0;
-		float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+		float attackspeed = Attributes_Get(weapon, 6, 1.0);
 		if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 		{
 			if(i_AbilityActiveAngelic[client])
@@ -530,7 +530,7 @@ public void Angelic_ShotgunEffectM1(int client, int weapon, bool crit, int slot)
 	else
 	{
 		i_NextAttackDoubleHit[weapon] = 0;
-		float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+		float attackspeed = Attributes_Get(weapon, 6, 1.0);
 		if(b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 		{
 			i_NextAttackDoubleHit[weapon] = 1;

@@ -49,20 +49,15 @@ int MoraleBoostLevelAt(int entity)
 	return ReturnSet;
 }
 
-void GiveEntityMoraleBoost(int giver, int entity, float MoraleValue)
+void GiveEntityMoraleBoost(int entity, float MoraleValue)
 {
-	//We need to scale this with players, the less players,
-	//the more morale they give, as theres more NPCS that give morale and its overall shorter
-	//In this case, me might aswell re-use PlayerCountBuffScaling!
-
 	//you cant morale boost buildings...
 	if(i_NpcIsABuilding[entity])
 		return;
-
-	if(i_NpcInternalId[giver] != LighthouseGlobaID())
-		MoraleValue *= PlayerCountBuffScaling;
 	//dont scale if its the lighthouse.
-
+	
+	MoraleValue *= 1.3;
+	
 	f_MoraleBoostCurrent[entity] += MoraleValue;
 	f_TimeSinceMoraleBoost[entity] = GetGameTime() + 7.5;
 	

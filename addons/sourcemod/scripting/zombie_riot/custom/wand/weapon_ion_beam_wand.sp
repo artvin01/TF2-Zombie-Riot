@@ -16,17 +16,16 @@
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
 static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {null, ...};
-static int i_hand_particle[MAXTF2PLAYERS+1][11];
-static float fl_hud_timer[MAXTF2PLAYERS+1];
+static int i_hand_particle[MAXTF2PLAYERS][11];
+static float fl_hud_timer[MAXTF2PLAYERS];
 
-static float fl_ion_charge_ammount[MAXTF2PLAYERS+1];
+static float fl_ion_charge_ammount[MAXTF2PLAYERS];
 static float fl_Ion_timer[MAXTF2PLAYERS + 1];
 
-static int Prismatic_TargetHit[MAX_NEUVELLETE_TARGETS_HIT+6];
-static bool b_special_active[MAXTF2PLAYERS+1];
-static float fl_beam_angle[MAXTF2PLAYERS+1][2];
-static float fl_throttle[MAXTF2PLAYERS+1];
-static float fl_throttle2[MAXTF2PLAYERS+1];
+static bool b_special_active[MAXTF2PLAYERS];
+static float fl_beam_angle[MAXTF2PLAYERS][2];
+static float fl_throttle[MAXTF2PLAYERS];
+static float fl_throttle2[MAXTF2PLAYERS];
 static float fl_extra_effects_timer[MAXTF2PLAYERS + 1];
 static float fl_m2_timer[MAXTF2PLAYERS + 1];
 static int i_Neuvellete_penetration[MAXTF2PLAYERS + 1];
@@ -86,7 +85,7 @@ public void Ion_Beam_Wand_MapStart()
 //Tottal charge time is these 2 combined
 
 #define NEUVELLETE_BASELINE_ION_DMG 350.0
-#define NEUVELLETE_BASELINE_ION_RANGE 200.0
+#define NEUVELLETE_BASELINE_ION_RANGE 500.0
 
 #define NEUVELLETE_BASELINE_DAMAGE 140.0
 #define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
@@ -269,7 +268,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			}
 			Mana_Cost += RoundToFloor(float(Mana_Cost)*0.1);
 			
-			DamagE *= 1.45;
+			DamagE *= 1.52;
 			
 			Effects |= (1 << 7); //pulse
 			
@@ -621,7 +620,7 @@ static void Neuvellete_Hud(int client, int weapon)
 	
 	
 	PrintHintText(client, HUDText);
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 static bool b_hexagon_ancored[MAXTF2PLAYERS];
 static bool b_hexagon_created[MAXTF2PLAYERS];
@@ -641,10 +640,7 @@ static void Witch_Hexagon_Witchery(int client, int weapon)
 	
 	float DamagE = NEUVELLETE_BASELINE_ION_DMG*(fl_ion_charge_ammount[client]/100.0);
 	
-	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/100.0);
-		
-	
-	
+	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/1000.0);
 	
 	float Null = 0.0;
 	int Null2 = 0;
@@ -733,7 +729,7 @@ static Action Hexagon_Witchery_Tick(int client)
 						tempAngles[2] = 0.0;
 						
 						GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-						ScaleVector(Direction, range*0.25);
+						ScaleVector(Direction, range);
 						AddVectors(origin_vec, Direction, EndLoc);
 						vec_temp[i] = EndLoc;
 					}			
@@ -788,7 +784,7 @@ static Action Hexagon_Witchery_Tick(int client)
 					tempAngles[2] = 0.0;
 					
 					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-					ScaleVector(Direction, range*0.25);
+					ScaleVector(Direction, range);
 					AddVectors(origin_vec, Direction, EndLoc);
 					vec_temp[i] = EndLoc;
 				}			
@@ -833,9 +829,9 @@ static Action Hexagon_Witchery_Tick(int client)
 		colour[0] = 255;
 		colour[1] = 255;
 		colour[2] = 255;
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.10, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*3.25);
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 2.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.2, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*2.0);
-		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 3.5, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.35, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*1.75);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.10, 5.0, 1.25, 1 , range*3.25);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 2.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.2, 5.0, 1.25, 1 , range*2.0);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 3.5, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.35, 5.0, 1.25, 1 , range*1.75);
 		
 		TE_SetupExplosion(origin_vec, gExplosive1, 0.1, 1, 0, 0, 0);
 		TE_SendToAll();
@@ -1052,7 +1048,7 @@ static void Prismatic_Adjust_Stats(int client, int weapon)
 	fl_penetration_falloff[client] = Pen_Falloff;
 }
 
-static float fl_spinning_angle[MAXTF2PLAYERS+1];
+static float fl_spinning_angle[MAXTF2PLAYERS];
 public Action Neuvellete_tick(int client)
 {
 	//if(IsValidClient(client))
@@ -1162,21 +1158,9 @@ static void Get_Loc(int client, float Start_Loc[3], float Beam_Angles[3], float 
 	GetClientEyePosition(client, Pos);
 	float PosEffects[3];
 	PosEffects = Pos;
-	
-	int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 
-	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//note: redo the laser turning so its less choopy, also make it use ENV beams instead of Te
-	
-	if(IsValidEntity(viewmodelModel) && !HasWings)
-	{
-		float flAng[3];
-		GetAttachment(viewmodelModel, "effect_hand_r", PosEffects, flAng);	
-	}
-	else
-	{
-		PosEffects[2] -= 35.0;
-		Pos[2] -= 35.0;
-	}
+	PosEffects[2] -= 35.0;
+	Pos[2] -= 35.0;
 
 	Handle trace = TR_TraceRayFilterEx(Pos, Beam_Angles, 11, RayType_Infinite, Prismatic_TraceWallsOnly);
 	TR_GetEndPosition(Target_Loc, trace);
@@ -1221,7 +1205,6 @@ static void Neuvellete_Base_Central_Beam(float Start_Loc[3], float Target_Loc[3]
 	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, a);
 	
 	TE_SetupBeamPoints(Start_Loc, Target_Loc, BeamWand_Laser, 0, 0, 66, NEUVELLETE_TE_DURATION, ClampBeamWidth(diameter * 0.7 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.25, colorLayer1, 15);
-								
 	TE_SendToAll(0.0);
 	
 	TE_SetupGlowSprite(Start_Loc, gGlow1, NEUVELLETE_TE_DURATION, 0.5, 255);
@@ -1351,71 +1334,17 @@ static void Neuvellete_Create_Spinning_Beams_ALT_ALT(int client, float Origin[3]
 }*/
 static void Prismatic_Damage_Trace(int client, float playerPos[3], float endVec_2[3], float damage)
 {
-	static float hullMin[3];
-	static float hullMax[3];
+	Player_Laser_Logic Laser;
+	Laser.client = client;
+	Laser.Damage = damage;
+	Laser.Radius = 25.0;
+	Laser.damagetype = DMG_PLASMA;
+	Laser.Start_Point = playerPos;
+	Laser.End_Point = endVec_2;
+	Laser.max_targets = i_Neuvellete_penetration[client];
+	Laser.target_hitfalloff = fl_penetration_falloff[client];
+	Laser.Deal_Damage();
 
-	Zero(Prismatic_TargetHit);
-	
-	hullMin[0] = -25.0;
-	hullMin[1] = hullMin[0];
-	hullMin[2] = hullMin[0];
-	hullMax[0] = -hullMin[0];
-	hullMax[1] = -hullMin[1];
-	hullMax[2] = -hullMin[2];
-	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(client);
-	Handle trace;
-	trace = TR_TraceHullFilterEx(playerPos, endVec_2, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-	delete trace;
-	FinishLagCompensation_Base_boss();
-	
-	float vecForward[3];
-	float vecAngles[3];
-	GetAngleVectors(vecAngles, vecForward, NULL_VECTOR, NULL_VECTOR);
-
-	float BEAM_Targets_Hit = 1.0;
-
-	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon_active > 0)
-	{
-		for (int building = 0; building < i_Neuvellete_penetration[client]; building++)
-		{
-			int Victim = Prismatic_TargetHit[building];
-			if(Victim)
-			{
-				if(IsValidEntity(Victim))
-				{
-					float trg_loc[3];
-					WorldSpaceCenter(Victim, trg_loc);
-					
-					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
-					SDKHooks_TakeDamage(Victim, client, client, damage*BEAM_Targets_Hit, DMG_PLASMA, weapon_active, damage_force);
-					
-					BEAM_Targets_Hit *= fl_penetration_falloff[client];
-				}
-			}
-		}
-	}
-}
-
-static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsValidEntity(entity))
-	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
-		{
-			for(int i=1; i <= (i_Neuvellete_penetration[client] -1 ); i++)
-			{
-				if(!Prismatic_TargetHit[i])
-				{
-					Prismatic_TargetHit[i] = entity;
-					break;
-				}
-			}
-		}
-	}
-	return false;
 }
 static bool Prismatic_TraceWallsOnly(int entity, int contentsMask)
 {
@@ -1429,6 +1358,8 @@ public void Neuvellete_Menu(int client, int weapon)
 		
 	Menu menu2 = new Menu(Neuvellete_Menu_Selection);
 	int flags = i_Neuvellete_HEX_Array[client];
+
+	SetGlobalTransTarget(client);
 	
 	if(i_Neuvellete_Skill_Points[client]>0)
 	{

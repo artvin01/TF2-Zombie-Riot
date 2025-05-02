@@ -1,0 +1,10 @@
+UnlitGeneric
+{
+$basetexture "zombie_riot/overlays/leper_overlay"
+$alphatest "0"
+$translucent "1"
+$nolod "1"
+$ignorez    "1"
+
+
+}

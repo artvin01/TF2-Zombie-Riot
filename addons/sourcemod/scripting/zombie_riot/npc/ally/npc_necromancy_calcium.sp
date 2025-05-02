@@ -98,9 +98,7 @@ methodmap NecroCalcium < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -246,11 +244,9 @@ public void NecroCalcium_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-	
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, false, .ExtraValidityFunction = Necromancy_AttackMarkOnly);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	int owner;
@@ -260,7 +256,7 @@ public void NecroCalcium_ClotThink(int iNPC)
 	{
 		int PrimaryThreatIndex = npc.m_iTarget;
 		
-		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+		if(IsValidEnemy(npc.index, PrimaryThreatIndex) && NpcStats_IberiaIsEnemyMarked(PrimaryThreatIndex))
 		{
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				
@@ -366,7 +362,7 @@ public void NecroCalcium_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
-			npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, _, false, .ExtraValidityFunction = Necromancy_AttackMarkOnly);
 		}
 		npc.PlayIdleAlertSound();
 	}
@@ -374,6 +370,15 @@ public void NecroCalcium_ClotThink(int iNPC)
 	{
 		SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	}
+}
+
+bool Necromancy_AttackMarkOnly(int entity, int target)
+{
+	if(NpcStats_IberiaIsEnemyMarked(target))
+	{
+		return true;
+	}
+	return false;
 }
 
 public Action NecroCalcium_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

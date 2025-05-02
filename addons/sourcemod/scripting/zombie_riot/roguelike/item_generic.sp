@@ -6,6 +6,18 @@ public void Rogue_None_Remove()
 	// Nothing happens when removed
 }
 
+public void FlagShip_Rogue_Refresh_Remove()
+{
+	// Refresh players when removed
+	for(int entity = 1; entity <= MAXENTITIES; entity++)
+	{
+		if(!IsValidEntity(entity))
+			continue;
+			
+		RemoveSpecificBuff(entity, "Ziberian Flagship Weaponry");
+	}
+	Rogue_Refresh_Remove();
+}
 public void Rogue_Refresh_Remove()
 {
 	// Refresh players when removed
@@ -126,21 +138,6 @@ public void Rogue_Item_ElasticFlyingCapeRemove()
 	b_ElasticFlyingCape = false;
 }
 
-public void Rogue_Item_HealingSalve()
-{
-	b_HealingSalve = true;
-}
-public void Rogue_Item_HealingSalveRemove()
-{
-	b_HealingSalve = false;
-}
-
-void Rogue_HealingSalve(int client, int &healing_Amount)
-{
-	if(b_HealingSalve)
-		healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
-}
-
 public void Rogue_SteelRazor_Weapon(int entity)
 {
 	// +15% damage bonus for melee's
@@ -216,8 +213,8 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 		{
 			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
-				//15%% more melee dmg for all allies
-				if(damagetype & (DMG_CLUB|DMG_SLASH))
+				//15％ more melee dmg for all allies
+				if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 				{
 					damage *= 1.15;
 				}
@@ -230,8 +227,8 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 		{
 			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
-				//15%% more Ranged dmg for all allies
-				if(damagetype & (DMG_CLUB|DMG_SLASH))
+				//15％ more Ranged dmg for all allies
+				if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 				{
 
 				}

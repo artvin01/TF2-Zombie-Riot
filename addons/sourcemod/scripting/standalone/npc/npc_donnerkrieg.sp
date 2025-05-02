@@ -186,7 +186,6 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
-	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_5.mp3");
 
 	PrecacheSound("misc/halloween/gotohell.wav");
 
@@ -208,6 +207,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 
 	PrecacheSound("ambient/energy/whiteflash.wav", true);
 	
+	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_5.mp3");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_donnerkrieg");
@@ -233,9 +233,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		EmitSoundToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, SNDPITCH_NORMAL);
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayNightmareSound()");
-		#endif
+
 	}*/
 
 	public void PlayIdleAlertSound() {
@@ -379,7 +377,6 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		//Music_SetRaidMusicSimple("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
 		
 		b_thisNpcIsARaid[npc.index] = true;
 
@@ -2638,8 +2635,10 @@ static int Create_Crystal(int client, float vecTarget[3], float damage, float ro
 		Set_Projectile_Collision(entity); //If red, set to 27
 
 
-
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Donner_Crystal_DHook_RocketExplodePre); //*yawn*
+		if(h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
+		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Donner_Crystal_DHook_RocketExplodePre); //*yawn*
 		
 		SDKHook(entity, SDKHook_StartTouch, Crystal_Donner_StartTouch);
 

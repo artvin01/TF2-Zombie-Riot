@@ -16,9 +16,9 @@ public void BarrackMonkOnMapStart()
 	
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackMonk(client, vecPos, vecAng, ally);
+	return BarrackMonk(client, vecPos, vecAng);
 }
 
 
@@ -29,7 +29,7 @@ methodmap BarrackMonk < BarrackBody
 		return;
 	//	EmitSoundToAll("ambient/rottenburg/tunneldoor_open.wav", this.index, _, 60, _, 0.4, 60);
 	}
-	public BarrackMonk(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackMonk(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackMonk npc = view_as<BarrackMonk>(BarrackBody(client, vecPos, vecAng, "750",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
@@ -88,7 +88,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 			npc.m_flAttackHappens = GameTime + 1.3;
 			npc.m_flDoingAnimation = GameTime + 1.3;
 			npc.m_flReloadDelay = GameTime + 1.3;
-			npc.m_flNextMeleeAttack = GameTime + 10.3;
+			npc.m_flNextMeleeAttack = GameTime + 8.3;
 		}
 
 		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MONK_IDLE", "ACT_MONK_WALK", 90000.0);

@@ -234,13 +234,13 @@ public void CombineElite_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
-					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(i_ObjectsNpcsTotal[i]));
+					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]));
 					if(ally.index != -1 && ally.index != npc.index && GetTeam(npc.index) == GetTeam(ally.index))
 					{
 						WorldSpaceCenter(ally.index, vecTarget);
 						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
-							f_PernellBuff[ally.index] = GetGameTime() + 10.0;
+							ApplyStatusEffect(npc.index, ally.index, "False Therapy", 10.0);
 							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
 							break;
 						}

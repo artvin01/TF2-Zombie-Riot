@@ -77,9 +77,6 @@ methodmap CuredPurnell < CClotBody
 	public void PlayRangedReloadSound() {
 		EmitCustomToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredPurnell::PlayRangedSound()");
-		#endif
 	}
 	
 	public void PlayMeleeSound() {
@@ -87,51 +84,32 @@ methodmap CuredPurnell < CClotBody
 		{
 			EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 			
-			#if defined DEBUG_SOUND
-			PrintToServer("CCuredPurnell::PlayMeleeHitSound()");
-			#endif
 		}
 	}
 	
 	public void PlayRangedSound() {
 		EmitCustomToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 90, _, 1.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredPurnell::PlayRangedSound()");
-		#endif
 	}
 	
 	public void PlayKilledEnemy() {
 		EmitCustomToAll(g_KilledEnemy[GetRandomInt(0, sizeof(g_KilledEnemy) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		this.m_flNextIdleSound += 2.0;
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredPurnell::PlayRangedSound()");
-		#endif
 	}
 	
 	public void PlayPullSound() {
 		EmitCustomToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredPurnell::PlayPullSound()");
-		#endif
 	}
 	
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredPurnell::PlayTeleportSound()");
-		#endif
 	}
 
 	public void PlayMeleeHitSound() {
 		EmitCustomToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CCuredPurnell::PlayMeleeHitSound()");
-		#endif
 	}
 
 	public void PlayMeleeMissSound() {
@@ -240,8 +218,8 @@ public void CuredPurnell_ClotThink(int iNPC)
 	if(npc.m_iTargetWalkTo > 0)
 	{
 		if (GetTeam(npc.m_iTargetWalkTo)==GetTeam(npc.index) && 
-		b_BobsCuringHand[npc.m_iTargetWalkTo] && b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= 20 && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
-		&& GetEntPropEnt(npc.m_iTargetWalkTo, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[npc.m_iTargetWalkTo])
+		/*b_BobsCuringHand[npc.m_iTargetWalkTo] && */b_BobsCuringHand_Revived[npc.m_iTargetWalkTo] >= GREGPOINTS_REV_NEEDED && TeutonType[npc.m_iTargetWalkTo] == TEUTON_NONE && dieingstate[npc.m_iTargetWalkTo] > 0 
+		&& !b_LeftForDead[npc.m_iTargetWalkTo])
 		{
 			//walk to client.
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);

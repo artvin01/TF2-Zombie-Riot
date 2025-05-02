@@ -18,6 +18,7 @@ void DuckFollower_Setup()
 {
 	PrecacheModel("models/workshop/player/items/pyro/eotl_ducky/eotl_bonus_duck.mdl");
 
+	for (int i = 0; i < (sizeof(g_IdleSounds)); i++) { PrecacheSound(g_IdleSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bob's Duck ''Dubby''");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_duck_follower");
@@ -36,7 +37,7 @@ int DuckFollower_ID()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return DuckFollower(client, vecPos, vecAng);
+	return DuckFollower(vecPos, vecAng);
 }
 
 methodmap DuckFollower < CClotBody
@@ -50,7 +51,7 @@ methodmap DuckFollower < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	
-	public DuckFollower(int client, float vecPos[3], float vecAng[3])
+	public DuckFollower( float vecPos[3], float vecAng[3])
 	{
 		DuckFollower npc = view_as<DuckFollower>(CClotBody(vecPos, vecAng, "models/workshop/player/items/pyro/eotl_ducky/eotl_bonus_duck.mdl", "1.0", "50000", TFTeam_Red, true, false));
 		
@@ -94,7 +95,7 @@ static void ClotThink(int iNPC)
 	
 	if(i_TargetToWalkTo[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		ally = GetClosestAllyPlayer(npc.index, _, ally);
+		ally = GetClosestAllyPlayer(npc.index, ally);
 		npc.m_iTargetWalkTo = ally;
 		npc.m_flGetClosestTargetTime = gameTime + 10.0;
 	}
@@ -110,7 +111,7 @@ static void ClotThink(int iNPC)
 		{
 			// Close enough
 			npc.StopPathing();
-			f_BobDuckBuff[ally] = GetGameTime() + 3.0;
+			ApplyStatusEffect(npc.index, ally, "Bobs Duck Dubby", 3.0);
 		}
 		else
 		{

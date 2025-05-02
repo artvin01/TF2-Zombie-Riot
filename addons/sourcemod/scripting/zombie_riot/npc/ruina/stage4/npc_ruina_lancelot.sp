@@ -1,22 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
 
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-	"vo/medic_painsharp05.mp3",
-	"vo/medic_painsharp06.mp3",
-	"vo/medic_painsharp07.mp3",
-	"vo/medic_painsharp08.mp3",
-};
 
 static const char g_IdleSounds[][] = {
 	"vo/medic_standonthepoint01.mp3",
@@ -81,8 +66,8 @@ static void ClotPrecache()
 	Zero(b_leader);
 	Zero(fl_retreat_timer);
 	Zero(i_follow_Id);
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
@@ -110,17 +95,13 @@ methodmap Lancelot < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -139,14 +120,14 @@ methodmap Lancelot < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 		
 	}
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
@@ -164,10 +145,6 @@ methodmap Lancelot < CClotBody
 	
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::Playnpc.AngerSound()");
-		#endif
 	}
 	
 	public void AdjustWalkCycle()
@@ -270,6 +247,7 @@ methodmap Lancelot < CClotBody
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
+		fl_ruina_battery_max[npc.index] = 2500.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -290,12 +268,12 @@ static void Equalize_HP(Lancelot npc, int &attacker, int &inflictor, float &dama
 {
 
 	int valids[10];
-	int i=1;
+	int i=0;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
 		if(i > 9)
 			break;	//somehow more then 10 lancelot's exist, abort.
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
 			if(baseboss_index == npc.index)
@@ -326,7 +304,7 @@ static bool Lancelot_Leader(Lancelot npc)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
 			if(b_leader[baseboss_index])
@@ -375,7 +353,6 @@ static void ClotThink(int iNPC)
 
 	Ruina_Add_Battery(npc.index, 5.0);
 
-
 	if(b_leader[npc.index])
 	{
 		if(npc.m_flGetClosestTargetTime < GameTime)
@@ -421,15 +398,24 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>2500.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		if(fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
-			if(!IsValidEntity(npc.m_iWearable8))
+			if(!AtEdictLimit(EDICT_NPC))
 			{
-				float flPos[3], flAng[3];
-				npc.GetAttachment("effect_hand_r", flPos, flAng);
-				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+				if(!IsValidEntity(npc.m_iWearable8))
+				{
+					float flPos[3];
+					npc.GetAttachment("effect_hand_r", flPos, NULL_VECTOR);
+					npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
+				}
+				if(!IsValidEntity(npc.m_iWearable9))
+				{
+					float flPos[3]; // original
+					npc.GetAttachment("head", flPos, NULL_VECTOR);
+					npc.m_iWearable9 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
+				}
 			}
 		}
 	}
@@ -437,6 +423,8 @@ static void ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iWearable8))
 			RemoveEntity(npc.m_iWearable8);
+		if(IsValidEntity(npc.m_iWearable9))
+			RemoveEntity(npc.m_iWearable9);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -458,7 +446,7 @@ static void ClotThink(int iNPC)
 								
 		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 
-		if(fl_ruina_battery[npc.index]>2500.0 && fl_ruina_battery_timeout[npc.index] < GameTime)
+		if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && fl_ruina_battery_timeout[npc.index] < GameTime)
 			Lancelot_Particle_Accelerator(npc,flDistanceToTarget);
 		
 
@@ -487,7 +475,7 @@ static void ClotThink(int iNPC)
 
 static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryThreatIndex)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	float Swing_Speed = (npc.Anger ? 1.0 : 2.0);
 	float Swing_Delay = (npc.Anger ? 0.1 : 0.2);
 
@@ -544,7 +532,7 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 		}
 	}
 
@@ -571,7 +559,7 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 
 static void Lancelot_Particle_Accelerator(Lancelot npc, float Dist)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(Dist < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*5.0)
 	{
 		float Radius = 250.0;
@@ -752,4 +740,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+	if(IsValidEntity(npc.m_iWearable9))
+		RemoveEntity(npc.m_iWearable9);
 }

@@ -1,26 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
-
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-};
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-};
-
 static const char g_MeleeHitSounds[][] = {
 	"weapons/ubersaw_hit1.wav",
 	"weapons/ubersaw_hit2.wav",
@@ -31,72 +11,23 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
-static char g_RangedAttackSounds[][] = {
-	"weapons/capper_shoot.wav",
-};
 //static j1
 
-static bool b_nightmare_logic[MAXENTITIES];
-static float fl_nightmare_grace_period[MAXENTITIES];
-static bool b_fuck_you_line_used[MAXENTITIES];
-static bool b_train_line_used[MAXENTITIES];
-static float fl_cannon_Recharged[MAXENTITIES];
-
-static bool b_fucking_volvo[MAXENTITIES];
-
-static float fl_nightmare_end_timer[MAXENTITIES];
-
-static int i_AmountProjectiles[MAXENTITIES];
-
-static bool b_health_stripped[MAXENTITIES];
-
-static bool NightmareCannon_BEAM_CanUse[MAXENTITIES];
-static bool NightmareCannon_BEAM_IsUsing[MAXENTITIES];
-static int NightmareCannon_BEAM_TicksActive[MAXENTITIES];
-static int NightmareCannon_BEAM_Laser;
-static int NightmareCannon_BEAM_Glow;
-static float NightmareCannon_BEAM_CloseDPT[MAXENTITIES];
-static float NightmareCannon_BEAM_FarDPT[MAXENTITIES];
-static int NightmareCannon_BEAM_MaxDistance[MAXENTITIES];
-static int NightmareCannon_BEAM_BeamRadius[MAXENTITIES];
-static int NightmareCannon_BEAM_ColorHex[MAXENTITIES];
-static int NightmareCannon_BEAM_ChargeUpTime[MAXENTITIES];
-static float NightmareCannon_BEAM_CloseBuildingDPT[MAXENTITIES];
-static float NightmareCannon_BEAM_FarBuildingDPT[MAXENTITIES];
-static float NightmareCannon_BEAM_Duration[MAXENTITIES];
-static float NightmareCannon_BEAM_BeamOffset[MAXENTITIES][3];
-static float NightmareCannon_BEAM_ZOffset[MAXENTITIES];
-static bool NightmareCannon_BEAM_HitDetected[MAXENTITIES];
-static int NightmareCannon_BEAM_BuildingHit[MAXENTITIES];
-static bool NightmareCannon_BEAM_UseWeapon[MAXENTITIES];
-
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-
-
-
-static int i_SaidLineAlready[MAXENTITIES];
-
-
-static bool b_InKame[MAXENTITIES];
 static bool b_enraged=false;
 
 void Donnerkrieg_OnMapStart_NPC()
 {
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
+	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
+	PrecacheSoundArray(g_DefaultMedic_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
-	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
+	PrecacheSoundArray(g_DefaultCapperShootSound);
+	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 	
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
-	NightmareCannon_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	NightmareCannon_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav");
@@ -134,62 +65,58 @@ methodmap Donnerkrieg < CClotBody
 		public get()							{ return b_InKame[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_InKame[this.index] = TempValueForProperty; }
 	}
+	property float m_flNorm_Attack_Duration
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flNCWindup
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property int m_iCannonActive
+	{
+		public get()							{ return this.m_iState; }
+		public set(int TempValueForProperty) 	{ this.m_iState = TempValueForProperty; }
+	}
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMedic_IdleAlertedSounds[GetRandomInt(0, sizeof(g_DefaultMedic_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
-		
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	
 	public void PlayDeathSound() {
-	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
+		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-
 	}
-
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-
+		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
+	public void PlayLaserLaunchSound() {
+		int chose = GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound)-1);
+		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
 	
 	
 	public Donnerkrieg(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
+		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -218,14 +145,16 @@ methodmap Donnerkrieg < CClotBody
 		}
 		else
 		{
-			RaidModeScaling = 10.0;	//just a safety net
 			if(!IsValidEntity(RaidBossActive))
 			{
+				RaidModeScaling = 0.0;
 				RaidBossActive = EntIndexToEntRef(npc.index);
 				RaidModeTime = GetGameTime(npc.index) + 9000.0;
 				RaidAllowsBuildings = true;
 			}
 		}
+		
+		TwirlEarsApply(npc.index,_,0.75);
 
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
@@ -234,8 +163,6 @@ methodmap Donnerkrieg < CClotBody
 		g_b_donner_died=false;
 
 		b_enraged=false;
-
-		b_health_stripped[npc.index] = false;
 		//IDLE
 		npc.m_flSpeed = 300.0;
 		
@@ -264,15 +191,14 @@ methodmap Donnerkrieg < CClotBody
 		//SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
-		b_fuck_you_line_used[npc.index] = false;
-		b_train_line_used[npc.index] = false;
-		b_nightmare_logic[npc.index] = false;
-		fl_nightmare_grace_period[npc.index] = 0.0;
-		b_fucking_volvo[npc.index] = false;
+		npc.m_bFUCKYOU = false;
+		npc.m_bFUCKYOU_move_anim = false;
+		npc.m_iCannonActive = false;
+		fl_BEAM_ChargeUpTime[npc.index] = 0.0;
 		
 		
-		fl_nightmare_end_timer[npc.index]= GetGameTime(npc.index) + 10.0;
-		fl_cannon_Recharged[npc.index]= GetGameTime(npc.index) + 10.0;
+		fl_BEAM_DurationTime[npc.index]= GetGameTime(npc.index) + 10.0;
+		fl_BEAM_RechargeTime[npc.index]= GetGameTime(npc.index) + 10.0;
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
@@ -290,11 +216,14 @@ methodmap Donnerkrieg < CClotBody
 	//	b_Schwertkrieg_Alive = false;
 		
 		//RaidModeTime = GetGameTime() + 100.0;
+		ApplyStatusEffect(npc.index, npc.index, "Ruina Battery Charge", 9999.0);
+		fl_ruina_battery_max[npc.index] = 1000000.0; //so high itll never be reached.
+		fl_ruina_battery[npc.index] = 0.0;
+
+		npc.m_flNorm_Attack_Duration = 0.0;
 		
 		return npc;
 	}
-	
-	
 }
 
 
@@ -302,8 +231,9 @@ static void Internal_ClotThink(int iNPC)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
+	CheckChargeTimeDonnerKrieg(npc);
 	float GameTime = GetGameTime(npc.index);
-	if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//donnerkrieg handles the timer if its the same index
+	if(EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//donnerkrieg handles the timer if its the same index
 	{
 		if(RaidModeTime < GameTime)
 		{
@@ -312,17 +242,24 @@ static void Internal_ClotThink(int iNPC)
 			func_NPCThink[npc.index] = INVALID_FUNCTION;
 		}
 	}
+	if(npc.m_flNorm_Attack_Duration > GameTime)
+	{
+		if(!npc.m_iCannonActive)
+			DonnerNormAttack(npc);
+	}
+		
+
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-	if(!IsValidEntity(RaidBossActive) && !g_b_donner_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
+	if(!IsValidEntity(RaidBossActive) && !g_b_donner_died && i_RaidGrantExtra[npc.index] == 1)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
 	else
 	{
-		if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_donner_died && i_RaidGrantExtra[npc.index] == 1)
+		if(EntRefToEntIndex(RaidBossActive)==npc.index && g_b_donner_died && i_RaidGrantExtra[npc.index] == 1)
 		{
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
@@ -348,9 +285,9 @@ static void Internal_ClotThink(int iNPC)
 
 	if(g_b_angered && !b_enraged)
 	{
-		if(!b_nightmare_logic[npc.index])
+		if(!npc.m_iCannonActive)
 		{
-			fl_cannon_Recharged[npc.index]=0.0;
+			fl_BEAM_RechargeTime[npc.index]=0.0;
 			b_enraged=true;
 		}
 	}
@@ -393,7 +330,7 @@ static void Internal_ClotThink(int iNPC)
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				for (int client = 0; client < MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Blitzkrieg's Army");
 						CPrintToChat(client,"{default}You now have access to: {crimson}''Blitzkrieg's Army''{default}!");
@@ -453,11 +390,8 @@ static void Internal_ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable6))
 				RemoveEntity(npc.m_iWearable6);
 				
-			NightmareCannon_BEAM_IsUsing[npc.index] = false;
-		
-			NightmareCannon_BEAM_TicksActive[npc.index] = 0;
 			
-			fl_nightmare_end_timer[npc.index] = 0.0;
+			fl_BEAM_DurationTime[npc.index] = 0.0;
 			
 			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
@@ -466,18 +400,18 @@ static void Internal_ClotThink(int iNPC)
 		}
 		return; //He is trying to help.
 	}
-	if(fl_nightmare_end_timer[npc.index] < GameTime && b_nightmare_logic[npc.index])
+	if(fl_BEAM_DurationTime[npc.index] < GameTime && npc.m_iCannonActive)
 	{	
 		npc.m_flRangedArmor = 1.0;
-		b_nightmare_logic[npc.index] = false;
+		npc.m_iCannonActive = false;
 		
 		if(g_b_angered)
 		{
-			fl_cannon_Recharged[npc.index] = GameTime + 30.0;
+			fl_BEAM_RechargeTime[npc.index] = GameTime + 30.0;
 		}
 		else		
 		{		
-			fl_cannon_Recharged[npc.index] = GameTime + 90.0;
+			fl_BEAM_RechargeTime[npc.index] = GameTime + 90.0;
 		}
 		npc.m_flSpeed = 300.0;
 		
@@ -497,12 +431,12 @@ static void Internal_ClotThink(int iNPC)
 		
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		if(fl_cannon_Recharged[npc.index]<GameTime && !b_nightmare_logic[npc.index])
+		if(fl_BEAM_RechargeTime[npc.index]<GameTime && !npc.m_iCannonActive)
 		{
-			fl_nightmare_end_timer[npc.index] = GameTime + 20.0;
+			fl_BEAM_DurationTime[npc.index] = GameTime + 20.0;
 			Donnerkrieg_Nightmare_Logic(npc.index, PrimaryThreatIndex);
 		}
-		if(!b_nightmare_logic[npc.index])
+		if(!npc.m_iCannonActive)
 		{	
 	
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
@@ -557,11 +491,11 @@ static void Internal_ClotThink(int iNPC)
 				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
 				if(g_b_angered)
 				{
-					npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
+					npc.FireParticleRocket(vecTarget, 1250.0 , 400.0 , 100.0 , "raygun_projectile_blue");
 				}
 				else
 				{
-					npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
+					npc.FireParticleRocket(vecTarget, 250.0 , 400.0 , 100.0 , "raygun_projectile_blue");
 				}
 					
 				//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
@@ -595,7 +529,9 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flAttackHappens_bullshit = GameTime+0.54;
 						npc.m_flAttackHappenswillhappen = true;
 						npc.FaceTowards(vecTarget);
-						Normal_Attack_BEAM_TBB_Ability(npc.index);
+
+						npc.PlayLaserLaunchSound();
+						npc.m_flNorm_Attack_Duration = GameTime + 0.25;
 						
 						if(flDistanceToTarget < 100.0*100.0)	//to prevent players from sitting ontop of donnerkrieg and just stabing his head
 						{
@@ -609,7 +545,7 @@ static void Internal_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 22.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);						
 								} 
 							}
 							delete swingTrace;
@@ -641,7 +577,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
-	if(!npc.m_bInKame && !b_nightmare_logic[npc.index])
+	if(!npc.m_bInKame && !npc.m_iCannonActive)
 	{
 		npc.StartPathing();
 	}
@@ -649,29 +585,25 @@ static void Internal_ClotThink(int iNPC)
 }
 
 static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
-{
-
-				
+{		
 	Donnerkrieg npc = view_as<Donnerkrieg>(ref);
-	
 
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-
 	float GameTime = GetGameTime(npc.index);
 	if(!npc.m_bInKame)
 	{
-		if(!b_nightmare_logic[npc.index])
+		if(!npc.m_iCannonActive)
 		{
 			if(g_b_angered)
 			{
-				fl_nightmare_grace_period[npc.index] = GameTime + 1.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
+				fl_BEAM_ChargeUpTime[npc.index] = GameTime + 1.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
 			}
 			else
 			{
-				fl_nightmare_grace_period[npc.index] = GameTime + 10.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
+				fl_BEAM_ChargeUpTime[npc.index] = GameTime + 10.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
 			}
 			
-			b_nightmare_logic[npc.index] = true;
+			npc.m_iCannonActive = true;
 			
 			switch(GetRandomInt(1,6))
 			{
@@ -694,7 +626,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 						case 5:
 						{
 							CPrintToChatAll("{crimson}Donnerkrieg{default}: Oh not again now train's gone and {crimson}Left{default}.");	
-							b_train_line_used[npc.index] = true;
+							npc.m_bFUCKYOU_move_anim = true;
 						}				
 						default:
 						{
@@ -706,7 +638,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				case 5:
 				{
 					CPrintToChatAll("{crimson}Donnerkrieg{default}: Aiming this thing is actually quite {crimson}complex {default}ya know.");	
-					b_fuck_you_line_used[npc.index] = true;
+					npc.m_bFUCKYOU = true;
 				}
 				case 6:
 				{
@@ -729,10 +661,10 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 				
-				if(fl_nightmare_grace_period[npc.index]<GameTime)
+				if(fl_BEAM_ChargeUpTime[npc.index]<GameTime)
 				{
-					fl_nightmare_grace_period[npc.index] = GameTime + 99.0;
-					if(!b_fuck_you_line_used[npc.index] && !b_train_line_used[npc.index])
+					fl_BEAM_ChargeUpTime[npc.index] = GameTime + 99.0;
+					if(!npc.m_bFUCKYOU && !npc.m_bFUCKYOU_move_anim)
 					{	
 						switch(GetRandomInt(1,3))
 						{
@@ -752,14 +684,14 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					}
 					else
 					{
-						if(b_train_line_used[npc.index])
+						if(npc.m_bFUCKYOU_move_anim)
 						{
 							CPrintToChatAll("{crimson}Donnerkrieg{default}: {crimson}And the city's to far to walk to the end while I...");	
-							b_train_line_used[npc.index] = false;
+							npc.m_bFUCKYOU_move_anim = false;
 						}
-						else if(b_fuck_you_line_used[npc.index])
+						else if(npc.m_bFUCKYOU)
 						{
-							b_fuck_you_line_used[npc.index] = false;
+							npc.m_bFUCKYOU = false;
 							CPrintToChatAll("{crimson}Donnerkrieg{default}: However its still{crimson} worth the effort");	
 						}
 						
@@ -855,8 +787,8 @@ static Action Donner_Nightmare_Offset(Handle timer, int ref)
 	if(IsValidEntity(client))
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(client);
-		fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + 15.0;
-		NightmareCannon_TBB_Ability(npc.index);
+		fl_BEAM_DurationTime[npc.index] = GetGameTime(npc.index) + 15.0;
+		Invoke_NightmareCannon(npc);
 	}
 	return Plugin_Handled;
 }
@@ -864,8 +796,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(victim);
 	
-	
-		
 	if(attacker <= 0)
 		return Plugin_Continue;
 	
@@ -875,7 +805,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_blPlayHurtAnimation = true;
 	}
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0 && i_RaidGrantExtra[npc.index] == 1)
+	if(RoundToCeil(damage)>=Health && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(g_b_item_allowed)
 		{
@@ -913,11 +843,9 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			if(IsValidEntity(npc.m_iWearable6))
 				RemoveEntity(npc.m_iWearable6);
 				
-			NightmareCannon_BEAM_IsUsing[npc.index] = false;
-		
-			NightmareCannon_BEAM_TicksActive[npc.index] = 0;
+
 			
-			fl_nightmare_end_timer[npc.index] = 0.0;
+			fl_BEAM_DurationTime[npc.index] = 0.0;
 			
 			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
@@ -939,6 +867,7 @@ static void Internal_NPCDeath(int entity)
 	
 	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 	b_NpcIsInvulnerable[npc.index] = false;
+	ExpidonsaRemoveEffects(entity);
 			
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 	{
@@ -968,355 +897,93 @@ static void Internal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable6))	//temp particles
 		RemoveEntity(npc.m_iWearable6);
 }
-void Normal_Attack_BEAM_TBB_Ability(int client)
+static void DonnerNormAttack(Donnerkrieg npc)
 {
-	for (int building = 1; building < MaxClients; building++)
-	{
-		NightmareCannon_BEAM_BuildingHit[building] = false;
-	}
-			
-	NightmareCannon_BEAM_IsUsing[client] = false;
-	NightmareCannon_BEAM_TicksActive[client] = 0;
+	Basic_NPC_Laser Data;
+	Data.npc = npc;
+	Data.Radius = 10.0;
+	Data.Range = 1000.0;
+	//divided by 6 since its every tick, and by TickrateModify
+	Data.Close_Dps = 200.0 / 6.0 / TickrateModify;
+	Data.Long_Dps = 100.0 / 6.0 / TickrateModify;
+	Data.Color = {255, 255, 255, 30};
+	Data.DoEffects = true;
+	GetAttachment(npc.index, "effect_hand_r", Data.EffectsStartLoc, NULL_VECTOR);
+	Basic_NPC_Laser_Logic(Data);
 
-	NightmareCannon_BEAM_CanUse[client] = true;
-
-	float dmg = 20.0*RaidModeScaling;
-	if(g_b_angered)
-	{
-		dmg *= 1.5;
-	}
-	NightmareCannon_BEAM_CloseDPT[client] = dmg;
-	NightmareCannon_BEAM_FarDPT[client] = dmg;
-	NightmareCannon_BEAM_MaxDistance[client] = 1000;
-	NightmareCannon_BEAM_BeamRadius[client] = 10;
-	NightmareCannon_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	NightmareCannon_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
-	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
-	NightmareCannon_BEAM_FarBuildingDPT[client] = 0.0;
-	NightmareCannon_BEAM_Duration[client] = 0.25;
-	
-	NightmareCannon_BEAM_BeamOffset[client][0] = 0.0;
-	NightmareCannon_BEAM_BeamOffset[client][1] = 0.0;
-	NightmareCannon_BEAM_BeamOffset[client][2] = 0.0;
-
-	NightmareCannon_BEAM_ZOffset[client] = 0.0;
-	NightmareCannon_BEAM_UseWeapon[client] = false;
-
-	NightmareCannon_BEAM_IsUsing[client] = true;
-	NightmareCannon_BEAM_TicksActive[client] = 0;
-	
-	switch(GetRandomInt(1, 4))
-	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);				
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-		}		
-	}
-			
-
-	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-	SDKHook(client, SDKHook_Think, NightmareCannon_TBB_Tick);
-	
 }
-void NightmareCannon_TBB_Ability(int client)
+static void Invoke_NightmareCannon(Donnerkrieg npc)
 {
-	for (int building = 1; building < MaxClients; building++)
-	{
-		NightmareCannon_BEAM_BuildingHit[building] = false;
-	}
-	
-	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
 	EmitSoundToAll("mvm/mvm_tank_ping.wav");
-			
-	NightmareCannon_BEAM_IsUsing[client] = false;
-	NightmareCannon_BEAM_TicksActive[client] = 0;
 
-	NightmareCannon_BEAM_CanUse[client] = true;
-	float dmg = 500.0*RaidModeScaling;
-	if(g_b_angered)
-	{
-		dmg *= 1.5;
-	}
-	NightmareCannon_BEAM_CloseDPT[client] = dmg;
-	NightmareCannon_BEAM_FarDPT[client] = dmg;
-	NightmareCannon_BEAM_MaxDistance[client] = 10000;
-	NightmareCannon_BEAM_BeamRadius[client] = 150;
-	NightmareCannon_BEAM_ColorHex[client] = ParseColor("ff0303");
-	NightmareCannon_BEAM_ChargeUpTime[client] = RoundToFloor(150 * TickrateModify);
-	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
-	NightmareCannon_BEAM_FarBuildingDPT[client] = 0.0;
-	NightmareCannon_BEAM_Duration[client] = 15.0;
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 75);
+	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 75);
 	
-	NightmareCannon_BEAM_BeamOffset[client][0] = 0.0;	//forward/back
-	NightmareCannon_BEAM_BeamOffset[client][1] = -1.0;	//left right
-	NightmareCannon_BEAM_BeamOffset[client][2] = 25.0;	//up down
+	npc.PlayLaserLaunchSound();
 
-	NightmareCannon_BEAM_ZOffset[client] = 0.0;
-	NightmareCannon_BEAM_UseWeapon[client] = false;
+	npc.m_flNCWindup = GetGameTime() + 1.5;
 
-	NightmareCannon_BEAM_IsUsing[client] = true;
-	NightmareCannon_BEAM_TicksActive[client] = 0;
-	
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	
-	switch(GetRandomInt(1, 4))
-	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-		}		
-	}
-			
-
-	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-	SDKHook(client, SDKHook_Think, NightmareCannon_TBB_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, NightmareCannon_TBB_Tick);
+	SDKHook(npc.index, SDKHook_Think, NightmareCannon_TBB_Tick);
 	
 }
-public Action NightmareCannon_TBB_Timer(Handle timer, int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(!IsValidEntity(client))
-		return Plugin_Continue;
-
-	NightmareCannon_BEAM_IsUsing[client] = false;
-	
-	NightmareCannon_BEAM_TicksActive[client] = 0;
-	
-	b_fucking_volvo[client] = false;
-	
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
-	
-	return Plugin_Continue;
-}
-
-public bool NightmareCannon_BEAM_TraceWallsOnly(int entity, int contentsMask)
-{
-	return !entity;
-}
-
-
-public bool NightmareCannon_BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsEntityAlive(entity))
-	{
-		NightmareCannon_BEAM_HitDetected[entity] = true;
-	}
-	return false;
-}
-
-
-static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3])
-{
-	float angles[3];
-	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	GetAbsOrigin(client, startPoint);
-	startPoint[2] += 50.0;
-	
-	Donnerkrieg npc = view_as<Donnerkrieg>(client);
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-			return;	
-	float flPitch = npc.GetPoseParameter(iPitch);
-	flPitch *= -1.0;
-	angles[0] = flPitch;
-	GetAbsOrigin(client, startPoint);
-	startPoint[2] += 50.0;
-	
-	if (0.0 == NightmareCannon_BEAM_BeamOffset[client][0] && 0.0 == NightmareCannon_BEAM_BeamOffset[client][1] && 0.0 == NightmareCannon_BEAM_BeamOffset[client][2])
-	{
-		return;
-	}
-	float tmp[3];
-	float actualBeamOffset[3];
-	tmp[0] = NightmareCannon_BEAM_BeamOffset[client][0];
-	tmp[1] = NightmareCannon_BEAM_BeamOffset[client][1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, angles, actualBeamOffset);
-	actualBeamOffset[2] = NightmareCannon_BEAM_BeamOffset[client][2];
-	startPoint[0] += actualBeamOffset[0];
-	startPoint[1] += actualBeamOffset[1];
-	startPoint[2] += actualBeamOffset[2];
-}
-
 public Action NightmareCannon_TBB_Tick(int client)
 {
-	static int tickCountClient[MAXENTITIES];
-	if(!IsValidEntity(client) || !NightmareCannon_BEAM_IsUsing[client])
+	Donnerkrieg npc = view_as<Donnerkrieg>(client);
+	float GameTime = GetGameTime(npc.index);
+	if(!IsValidEntity(client) || fl_BEAM_DurationTime[npc.index] < GameTime)
 	{
-		tickCountClient[client] = 0;
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+
 		SDKUnhook(client, SDKHook_Think, NightmareCannon_TBB_Tick);
-		Donnerkrieg npc = view_as<Donnerkrieg>(client);
 		npc.m_bInKame = false;
+		return Plugin_Stop;
 	}
 
-	int tickCount = tickCountClient[client];
-	tickCountClient[client]++;
+	if(npc.m_flNCWindup > GameTime)
+		return Plugin_Continue;
+
+	Basic_NPC_Laser Data;
+	Data.npc = npc;
+	Data.Radius = 150.0;
+	Data.Range = -1.0;
+	//divided by 6 since its every tick, and by TickrateModify
+	Data.Close_Dps = 750.0 / 6.0 / TickrateModify;
+	Data.Long_Dps = 450.0 / 6.0 / TickrateModify;
+	Data.Color = {255, 3, 3, 60};
+	Data.DoEffects = true;
+	Data.RelativeOffset = true;
+	Data.EffectsStartLoc[0] = 0.0;	//forward/back
+	Data.EffectsStartLoc[1] = -1.0;	//left right
+	Data.EffectsStartLoc[2] = 25.0;	//up down
+	Basic_NPC_Laser_Logic(Data);
 	
-	
-
-	NightmareCannon_BEAM_TicksActive[client] = tickCount;
-	float diameter = float(NightmareCannon_BEAM_BeamRadius[client] * 4);
-	int r = GetR(NightmareCannon_BEAM_ColorHex[client]);
-	int g = GetG(NightmareCannon_BEAM_ColorHex[client]);
-	int b = GetB(NightmareCannon_BEAM_ColorHex[client]);
-	if (NightmareCannon_BEAM_ChargeUpTime[client] <= tickCount)
-	{
-		static float angles[3];
-		static float startPoint[3];
-		static float endPoint[3];
-		static float hullMin[3];
-		static float hullMax[3];
-		static float playerPos[3];
-		GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-		Donnerkrieg npc = view_as<Donnerkrieg>(client);
-		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return Plugin_Continue;
-			
-		float flPitch = npc.GetPoseParameter(iPitch);
-		flPitch *= -1.0;
-		angles[0] = flPitch;
-		GetAbsOrigin(client, startPoint);
-		startPoint[2] += 50.0;
-		
-		if(!b_nightmare_logic[npc.index])
-		{
-			float flAng[3]; // original
-			GetAttachment(npc.index, "effect_hand_r", startPoint, flAng);
-		}
-
-		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, NightmareCannon_BEAM_TraceWallsOnly);
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(endPoint, trace);
-			delete trace;
-			ConformLineDistance(endPoint, startPoint, endPoint, float(NightmareCannon_BEAM_MaxDistance[client]));
-			float lineReduce = NightmareCannon_BEAM_BeamRadius[client] * 2.0 / 3.0;
-			float curDist = GetVectorDistance(startPoint, endPoint, false);
-			if (curDist > lineReduce)
-			{
-				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
-			}
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				NightmareCannon_BEAM_HitDetected[i] = false;
-			}
-			
-			if(!b_health_stripped)
-			{
-				int PrimaryThreatIndex = npc.m_iTarget;
-				if(IsValidEnemy(npc.index, PrimaryThreatIndex) &&  !b_nightmare_logic[npc.index])
-				{
-					float target_vec[3]; GetAbsOrigin(PrimaryThreatIndex, target_vec);
-					endPoint[2] = target_vec[2];
-				}
-			}
-			
-			hullMin[0] = -float(NightmareCannon_BEAM_BeamRadius[client]);
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, NightmareCannon_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete trace;
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
-			{
-				if (NightmareCannon_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
-				{
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = NightmareCannon_BEAM_CloseDPT[client] + (NightmareCannon_BEAM_FarDPT[client]-NightmareCannon_BEAM_CloseDPT[client]) * (distance/NightmareCannon_BEAM_MaxDistance[client]);
-					if (damage < 0)
-						damage *= -1.0;
-
-					if(ShouldNpcDealBonusDamage(victim))
-					{
-						damage *= 5.0;
-					}
-					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
-				}
-			}
-			static float belowBossEyes[3];
-			if(!b_nightmare_logic[npc.index])
-			{
-				belowBossEyes = startPoint;
-				
-			}
-			else
-			{
-				
-				NightmareCannon_GetBeamDrawStartPoint(client, belowBossEyes);
-			}
-			
-			int colorLayer4[4];
-			SetColorRGBA(colorLayer4, r, g, b, 30);
-			int colorLayer3[4];
-			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 30);
-			int colorLayer2[4];
-			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
-			int colorLayer1[4];
-			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, NightmareCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, NightmareCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer2, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, NightmareCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer3, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, NightmareCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter), ClampBeamWidth(diameter), 0, 1.0, colorLayer4, 3);
-			TE_SendToAll(0.0);
-			int glowColor[4];
-			SetColorRGBA(glowColor, r, g, b, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, NightmareCannon_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter*2.5), ClampBeamWidth(diameter), 0, 2.5, glowColor, 0);
-			TE_SendToAll(0.0);
-			
-			
-		}
-		else
-		{
-			delete trace;
-		}
-		delete trace;
-	}
 	return Plugin_Continue;
+}
+
+
+static void CheckChargeTimeDonnerKrieg(Donnerkrieg npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float PercentageCharge = 0.0;
+	float TimeUntillTeleLeft = fl_BEAM_RechargeTime[npc.index] - GameTime;
+
+	PercentageCharge = (TimeUntillTeleLeft  / (90.0));
+	
+	if(PercentageCharge <= 0.0)
+		PercentageCharge = 0.0;
+
+	if(PercentageCharge >= 1.0)
+		PercentageCharge = 1.0;
+
+	PercentageCharge -= 1.0;
+	PercentageCharge *= -1.0;
+
+	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
 }

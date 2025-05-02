@@ -19,14 +19,14 @@ public void BarrackSwordsmanOnMapStart()
 	
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackSwordsman(client, vecPos, vecAng, ally);
+	return BarrackSwordsman(client, vecPos, vecAng);
 }
 
 methodmap BarrackSwordsman < BarrackBody
 {
-	public BarrackSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackSwordsman(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackSwordsman npc = view_as<BarrackSwordsman>(BarrackBody(client, vecPos, vecAng, "400",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
@@ -99,7 +99,7 @@ public void BarrackSwordsman_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1050.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),850.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

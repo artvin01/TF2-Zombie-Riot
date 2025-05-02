@@ -112,7 +112,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_SyctheInitiateSound));   i++) { PrecacheSound(g_SyctheInitiateSound[i]);   }
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	PrecacheSoundCustom("#zombiesurvival/internius/messenger.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/messenger_ost.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -182,7 +182,7 @@ methodmap TheMessenger < CClotBody
 			return;
 			
 		this.m_flidle_talk = GetGameTime(this.index) + 0.1;
-		if(ZR_GetWaveCount()+1 <= 15)
+		if(i_RaidGrantExtra[this.index] < 3)
 			EmitSoundToAll(g_MessengerThrowFire[GetRandomInt(0, sizeof(g_MessengerThrowFire) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		else
 			EmitSoundToAll(g_MessengerThrowIce[GetRandomInt(0, sizeof(g_MessengerThrowIce) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -270,14 +270,33 @@ methodmap TheMessenger < CClotBody
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("mvm/mvm_tank_start.wav", _, _, _, _, 1.0);	
 		b_thisNpcIsARaid[npc.index] = true;
+		RemoveAllDamageAddition();
 		
+
+		i_RaidGrantExtra[npc.index] = 1;
+		if(StrContains(data, "wave_15") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 2;
+		}
+		else if(StrContains(data, "wave_30") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 3;
+		}
+		else if(StrContains(data, "wave_45") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 4;
+		}
+		else if(StrContains(data, "wave_60") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 5;
+		}
 
 		bool final = StrContains(data, "Cutscene_Khaml") != -1;
 		
 		if(final)
 		{
 			TeleportDiversioToRandLocation(npc.index);
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 6;
 			f_messenger_cutscene_necksnap[npc.index] = GetGameTime() + 2.0;
 		}
 		
@@ -294,8 +313,24 @@ methodmap TheMessenger < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
-		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+	
+		float value;
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			value = float(ZR_Waves_GetRound()+1);
+		}
+
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -317,11 +352,11 @@ methodmap TheMessenger < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+		if(value > 40 && value < 55)
 		{
 			RaidModeScaling *= 0.85;
 		}
-		else if(ZR_GetWaveCount()+1 > 55)
+		else if(value > 55)
 		{
 			RaidModeScaling *= 0.7;
 		}
@@ -329,12 +364,12 @@ methodmap TheMessenger < CClotBody
 		RaidModeScaling *= 0.5;
 		
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/messenger.mp3");
-		music.Time = 219;
-		music.Volume = 1.25;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/messenger_ost.mp3");
+		music.Time = 230;
+		music.Volume = 1.6;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Brutality -Rebuild-");
-		strcopy(music.Artist, sizeof(music.Artist), "Chihiro Aoki");
+		strcopy(music.Name, sizeof(music.Name), "Ultimatum");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 		
 		npc.m_iChanged_WalkCycle = -1;
@@ -349,7 +384,7 @@ methodmap TheMessenger < CClotBody
 		
 		if(!final)
 		{
-			if(ZR_GetWaveCount()+1 <= 15)
+			if(i_RaidGrantExtra[npc.index] <= 2)
 			{
 				IgniteTargetEffect(npc.m_iWearable1);
 				CPrintToChatAll("{lightblue}The Messenger{default}: Welcome, welcome sinners! I'm bearing a message to you all!");
@@ -403,9 +438,9 @@ public void TheMessenger_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(i_RaidGrantExtra[npc.index] > 0)
+	if(i_RaidGrantExtra[npc.index] >= 6)
 	{
-		i_RaidGrantExtra[npc.index] = 0;
+		i_RaidGrantExtra[npc.index] = 6;
 		CPrintToChatAll("{lightblue}The Messenger{default}: {crimson}AHAHAHAHHAHAHAHA!!! ALL OF YOU ARE DEAD!!");
 		return;
 	}
@@ -418,7 +453,7 @@ public void TheMessenger_ClotThink(int iNPC)
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		BlockLoseSay = true;
-		if(ZR_GetWaveCount()+1 <= 15)
+		if(i_RaidGrantExtra[npc.index] <= 2)
 		{
 			switch(GetRandomInt(0,2))
 			{
@@ -446,7 +481,7 @@ public void TheMessenger_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			if(ZR_GetWaveCount()+1 <= 15)
+			if(i_RaidGrantExtra[npc.index] <= 2)
 			{
 				switch(GetRandomInt(0,2))
 				{
@@ -716,7 +751,7 @@ bool Messanger_Elemental_Attack_TempPowerup(TheMessenger npc)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			
-			if(ZR_GetWaveCount()+1 <= 15)
+			if(i_RaidGrantExtra[npc.index] <= 2)
 				IgniteTargetEffect(npc.m_iWearable1);
 
 			npc.m_flNextRangedBarrage_Spam = 0.0;
@@ -873,7 +908,7 @@ public void TheMessenger_NPCDeath(int entity)
 
 	if(b_thisNpcIsARaid[npc.index])
 	{
-		if(ZR_GetWaveCount()+1 <= 15)
+		if(i_RaidGrantExtra[npc.index] <= 2)
 		{
 			switch(GetRandomInt(0,3))
 			{
@@ -1001,7 +1036,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 					npc.FaceTowards(vecTarget, 20000.0);
 					int projectile;
 					float Proj_Damage = 22.0 * RaidModeScaling;
-					if(ZR_GetWaveCount()+1 <= 15)
+					if(i_RaidGrantExtra[npc.index] <= 2)
 						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false);
 					else
 						projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false);
@@ -1117,12 +1152,11 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 								}
 							}
 										
-							if(ZR_GetWaveCount()+1 <= 15)
+							if(i_RaidGrantExtra[npc.index] <= 2)
 							{
-								if(targetTrace <= MaxClients)
-									TF2_IgnitePlayer(targetTrace, targetTrace, 5.0);
-
-								StartBleedingTimer_Against_Client(targetTrace, npc.index, 3.0, 5);
+								float Proj_Damage = 22.0 * RaidModeScaling;
+								Proj_Damage *= 0.1;
+								NPC_Ignite(targetTrace, npc.index,Proj_Damage, -1, 2.5);
 							}
 							else
 							{
@@ -1213,12 +1247,9 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 
-		if(ZR_GetWaveCount()+1 <= 15)
+		if(i_RaidGrantExtra[owner] <= 2)
 		{
-			if(target <= MaxClients)
-				TF2_IgnitePlayer(target, target, 5.0);
-
-			StartBleedingTimer_Against_Client(target, owner, DamageDeal * 0.1, 5);
+			NPC_Ignite(target, owner,DamageDeal * 0.1, -1, 2.5);
 		}
 		else
 		{
@@ -1281,7 +1312,7 @@ void MessengerInitiateGroupAttack(TheMessenger npc)
 
 			int projectile;
 			float Proj_Damage = 22.0 * RaidModeScaling;
-			if(ZR_GetWaveCount()+1 <= 15)
+			if(i_RaidGrantExtra[npc.index] <= 2)
 				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_red", false,_,true, vecHitPart);
 			else
 				projectile = npc.FireParticleRocket(vecHit, Proj_Damage, 1000.0, 150.0, "spell_fireball_small_blue", false,_,true, vecHitPart);
@@ -1356,7 +1387,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 
 public void TheMessenger_Win(int entity)
 {
-	if(ZR_GetWaveCount()+1 <= 15)
+	if(i_RaidGrantExtra[entity] <= 2)
 	{
 		switch(GetRandomInt(0,2))
 		{

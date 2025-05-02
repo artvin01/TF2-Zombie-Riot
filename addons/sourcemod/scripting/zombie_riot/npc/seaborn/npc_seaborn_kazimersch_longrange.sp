@@ -91,7 +91,7 @@ methodmap KazimierzLongArcher < CClotBody
 	
 	public KazimierzLongArcher(float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
+		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000", ally));
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcWeight[npc.index] = 1;
@@ -345,7 +345,7 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 			{
 				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 				{
-					int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
 						CClotBody npcenemy = view_as<CClotBody>(entity_close);

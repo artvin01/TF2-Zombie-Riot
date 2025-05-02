@@ -12,7 +12,7 @@ void CreateMVMPopulator()
 
 		i_MVMPopulator = populator;
 
-		//Disables thinking.
+		// EFL_NO_THINK_FUNCTION (1 << 22)
 		SetEntityFlags(i_MVMPopulator, GetEntityFlags(i_MVMPopulator)|4194304);
 	}
 

@@ -26,7 +26,7 @@ public void Weapon_Anti_Material_Rifle_Deploy(int client, int weapon)
 {
 	if (i_CustomWeaponEquipLogic[weapon] == WEAPON_URANIUM_RIFLE)	 // 125
 	{
-		if(Items_HasNamedItem(client, "Head Equipped Blue Goggles"))
+	//	if(Items_HasNamedItem(client, "Head Equipped Blue Goggles"))
 		{
 			Attributes_Set(weapon, 304, 1.1);
 		}
@@ -39,8 +39,11 @@ void WeaponUranium_OnTakeDamage(int attacker,int victim, float &damage, float da
 	if(Uranium_TimeTillBigHit[attacker][victim] < GetGameTime())
 	{
 		damage *= 2.2;
-		Uranium_TimeTillBigHit[attacker][victim] = GetGameTime() + 20.0;
-		EmitSoundToClient(attacker, "weapons/physcannon/energy_sing_explosion2.wav", attacker, SNDCHAN_STATIC, 80, _, 1.0);
-		TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
+		if(!CheckInHud())
+		{
+			Uranium_TimeTillBigHit[attacker][victim] = GetGameTime() + 40.0;
+			EmitSoundToClient(attacker, "weapons/physcannon/energy_sing_explosion2.wav", attacker, SNDCHAN_STATIC, 80, _, 1.0);
+			TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
+		}
 	}
 }

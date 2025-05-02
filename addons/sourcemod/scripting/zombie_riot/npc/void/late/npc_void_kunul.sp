@@ -275,17 +275,7 @@ void VoidKunulSelfDefense(VoidKunul npc, float gameTime, int target, float dista
 
 					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						if(target > MaxClients)
-						{
-							StartBleedingTimer_Against_Client(target, npc.index, 7.0, 5);
-						}
-						else
-						{
-							if (!IsInvuln(target))
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 7.0, 5);
-							}
-						}
+						StartBleedingTimer(target, npc.index, 6.5, 5, -1, DMG_TRUEDAMAGE, 0);
 					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

@@ -74,6 +74,7 @@ enum struct Yamato_Blades
 			{
 				SetEntPropEnt(ModelApply, Prop_Send, "m_hOwnerEntity", client);
 				float angles[3];
+				Angles = angles; //????
 				GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
 				angles[1]+=180.0;
 				TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
@@ -715,7 +716,7 @@ public void Yamato_Loop_Logic(int client, int weapon)
 			}
 			Format(HUDText, sizeof(HUDText), "%s Motivation: [%i/%i]", HUDText, RoundToFloor(fl_Yamato_Motivation[client]), RoundToFloor(YAMATO_MAX_MOTIVATION));
 			PrintHintText(client, HUDText);
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_Yamatohuddelay[client] = GameTime + 0.5;
 		}
 
@@ -767,8 +768,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(client, entity, true, true))
 		{
 			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{

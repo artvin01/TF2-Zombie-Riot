@@ -47,9 +47,9 @@ void Barracks_Iberia_Gunner_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Gunner(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Gunner(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Iberia_Gunner < BarrackBody
@@ -84,7 +84,7 @@ methodmap Barrack_Iberia_Gunner < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Iberia_Gunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Gunner(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(BarrackBody(client, vecPos, vecAng, "120", "models/player/soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
@@ -98,7 +98,7 @@ methodmap Barrack_Iberia_Gunner < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Iberia_Gunner_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Iberia_Gunner_ClotThink;
-		npc.m_flSpeed = 125.0;
+		npc.m_flSpeed = 100.0;
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flRangedSpecialDelay = 0.0;
@@ -130,6 +130,9 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 {
 	Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(iNPC);
 	float GameTime = GetGameTime(iNPC);
+	
+	GrantEntityArmor(iNPC, true, 0.5, 0.66, 0);
+	
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
@@ -143,7 +146,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 150000.0)
+			if(flDistanceToTarget < 100000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -174,7 +177,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flSpeed = 125.0;
+						npc.m_flSpeed = 100.0;
 					}
 				}
 			}
@@ -184,7 +187,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 125.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 125000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 100.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 85000.0,_, true);
 	}
 }
 

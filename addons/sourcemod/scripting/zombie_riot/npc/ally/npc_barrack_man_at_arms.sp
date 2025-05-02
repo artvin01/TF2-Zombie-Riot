@@ -19,15 +19,15 @@ public void BarrackManAtArmsOnMapStart()
 	
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackManAtArms(client, vecPos, vecAng, ally);
+	return BarrackManAtArms(client, vecPos, vecAng);
 }
 methodmap BarrackManAtArms < BarrackBody
 {
-	public BarrackManAtArms(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackManAtArms(int client, float vecPos[3], float vecAng[3])
 	{
-		BarrackManAtArms npc = view_as<BarrackManAtArms>(BarrackBody(client, vecPos, vecAng, "225",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		BarrackManAtArms npc = view_as<BarrackManAtArms>(BarrackBody(client, vecPos, vecAng, "275",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "sword");
@@ -97,7 +97,7 @@ public void BarrackManAtArms_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),480.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),500.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							}
 						}

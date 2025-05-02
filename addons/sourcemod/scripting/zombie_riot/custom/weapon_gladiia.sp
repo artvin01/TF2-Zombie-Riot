@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define LASERBEAM_PANZER "cable/rope.vmt"
 static Handle HealingTimer[MAXTF2PLAYERS] = {null, ...};
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 
@@ -15,6 +16,7 @@ void Gladiia_MapStart()
 	PrecacheSound("weapons/grappling_hook_reel_stop.wav");
 	PrecacheSound("weapons/grappling_hook_impact_flesh.wav");
 	PrecacheSound("weapons/grappling_hook_shoot.wav");
+	PrecacheModel(LASERBEAM_PANZER);
 }
 
 void Gladiia_Enable(int client, int weapon)
@@ -131,7 +133,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 						if(amount)
 						{
-							f_WeaponSpecificClassBuff[client][0] = GetGameTime() + 0.5;
+							ApplyStatusEffect(client, client, "Waterless Training", 0.5);
 							int maxhealth = SDKCall_GetMaxHealth(client);
 							if(maxhealth > 1000)
 								maxhealth = 1000;
@@ -202,7 +204,7 @@ public Action Gladiia_TimerS1L4(Handle timer, int client)
 					WeaponCharge[client] = 24;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / 12, 12 - (WeaponCharge[client] % 12));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -227,7 +229,7 @@ public Action Gladiia_TimerS1L7(Handle timer, int client)
 					WeaponCharge[client] = 20;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / 10, 10 - (WeaponCharge[client] % 10));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -252,7 +254,7 @@ public Action Gladiia_TimerS1L8(Handle timer, int client)
 					WeaponCharge[client] = 30;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / 10, 10 - (WeaponCharge[client] % 10));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -277,7 +279,7 @@ public Action Gladiia_TimerS1L10(Handle timer, int client)
 					WeaponCharge[client] = 24;
 				
 				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / 8, 8 - (WeaponCharge[client] % 8));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -298,8 +300,11 @@ void Gladiia_OnTakeDamageEnemy(int victim, int attacker, float &damage)
 	}
 }
 
-float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage)
+float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage, int damagetype)
 {
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
 	switch(EliteLevel[victim])
 	{
 		case 1:
@@ -321,33 +326,14 @@ float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage)
 	return damage;
 }
 
-float Gladiia_OnTakeDamageSelf_Hud(int victim)
-{
-	switch(EliteLevel[victim])
-	{
-		case 3:
-		{
-			return 0.85;//0.7;
-		}
-	}
-
-	return 1.0;
-}
-
-float Gladiia_OnTakeDamageAlly(int victim, int attacker, float damage)
+float Gladiia_OnTakeDamageAlly(int victim, int attacker, float damage, int damagetype)
 {
 	if(EliteLevel[victim])	// Being two fishes are we?
 		return damage;
-	
-	return Gladiia_OnTakeDamageSelf(GetHighestGladiiaClient(), attacker, damage);
-}
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
 
-float Gladiia_OnTakeDamageAlly_Hud(int victim)
-{
-	if(EliteLevel[victim])	// Being two fishes are we?
-		return 1.0;
-	
-	return Gladiia_OnTakeDamageSelf_Hud(GetHighestGladiiaClient());
+	return Gladiia_OnTakeDamageSelf(GetHighestGladiiaClient(), attacker, damage, damagetype);
 }
 
 static int GetHighestGladiiaClient()
@@ -440,7 +426,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			if(force >= 0)
 			{
 				if(module)
-					SDKHooks_TakeDamage(entity, client, client, 3200.0, DMG_PLASMA, weapon);
+					SDKHooks_TakeDamage(entity, client, client, 3200.0, DMG_CLUB, weapon);
 
 				FreezeNpcInTime(entity, 0.3 + (force * 0.1));
 				Custom_Knockback(client, entity, -1500.0, true, true, true, 0.3 + (force * 0.1));
@@ -450,7 +436,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			else if(force == -1)
 			{
 				if(module)
-					SDKHooks_TakeDamage(entity, client, client, 280.0, DMG_PLASMA, weapon);
+					SDKHooks_TakeDamage(entity, client, client, 280.0, DMG_CLUB, weapon);
 
 				FreezeNpcInTime(entity, 0.2);
 				Custom_Knockback(client, entity, -300.0, true, true, true, 0.2);
@@ -460,7 +446,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			else if(force == -2)
 			{
 				if(module)
-					SDKHooks_TakeDamage(entity, client, client, 24.0, DMG_PLASMA, weapon);
+					SDKHooks_TakeDamage(entity, client, client, 24.0, DMG_CLUB, weapon);
 
 				FreezeNpcInTime(entity, 0.5);
 
@@ -470,7 +456,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			float damage = 65.0 * damagemulti;
 			damage *= Attributes_Get(weapon, 2, 1.0);
 			
-			SDKHooks_TakeDamage(entity, client, client, damage, DMG_PLASMA, weapon);
+			SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon);
 
 			EmitSoundToAll("weapons/grappling_hook_impact_flesh.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 			EmitSoundToAll("weapons/grappling_hook_shoot.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -478,7 +464,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			Ability_Apply_Cooldown(client, slot, 1.0);
 			WeaponCharge[client] -= cost;
 
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(ConnectWithBeam(client, entity, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER)), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -550,7 +536,7 @@ void Gladiia_WandTouch(int entity, int target)
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(particle > MaxClients)

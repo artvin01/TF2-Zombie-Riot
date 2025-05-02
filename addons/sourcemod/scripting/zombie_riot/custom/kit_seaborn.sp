@@ -8,6 +8,12 @@ static bool SpecialEffect[MAXTF2PLAYERS];
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 static Handle EffectTimer[MAXTF2PLAYERS];
 
+static bool b_musicprecached;
+
+public void Seaborn_OnMapStart()
+{
+	b_musicprecached = false;
+}
 public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 {
 	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
@@ -19,7 +25,7 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 90.0);
 
 	EmitSoundToClient(client, "ambient/halloween/thunder_01.wav");
@@ -59,27 +65,40 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 	}*/
 }
 
+void SeaBornMusicDo()
+{
+	if(!b_musicprecached)
+	{
+		PrecacheSoundCustom("#zombiesurvival/wave_music/bat_rglk2boss1.mp3");
+	}
+	b_musicprecached = true;
+}
 void SeaMelee_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{
+
 		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
 		delete EffectTimer[client];
 		EffectTimer[client] = CreateTimer(0.2, SeaMelee_TimerEffect, client, TIMER_REPEAT);
+		SeaBornMusicDo();
 	}
 }
 
 bool SeaMelee_IsSeaborn(int client)
 {
-	return ParticleRef[client] != -1;
+	if(EffectTimer[client] == null)
+		return false;
+
+	return true;
 }
 
 public Action SeaMelee_TimerEffect(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(!dieingstate[client] && IsPlayerAlive(client))
+		if(IsPlayerAlive(client))
 		{
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(weapon != INVALID_ENT_REFERENCE)
@@ -88,6 +107,12 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 				{
 					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_ULPIANUS:
 					{
+						if(LastMann)
+						{
+							float enemypos[3]; 
+							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", enemypos);
+							SeaFounder_SpawnNethersea(enemypos);
+						}
 						b_IsCannibal[client] = true;
 
 						bool special = SpecialEffectFor[client] > GetGameTime();
@@ -107,7 +132,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 							}
 						}
 
-						if(ParticleRef[client] == -1)
+						if(MeleeLevel[client] >= 0 && ParticleRef[client] == -1)
 						{
 							float pos[3]; GetClientAbsOrigin(client, pos);
 							pos[2] += 1.0;
@@ -120,26 +145,11 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 								SpecialEffect[client] = special;
 							}
 						}
-						
-						return Plugin_Continue;
 					}
 				}
+				return Plugin_Continue;
 			}
 		}
-		
-		if(ParticleRef[client] != -1)
-		{
-			int entity = EntRefToEntIndex(ParticleRef[client]);
-			if(entity > MaxClients)
-			{
-				TeleportEntity(entity, OFF_THE_MAP);
-				RemoveEntity(entity);
-			}
-
-			ParticleRef[client] = -1;
-		}
-
-		return Plugin_Continue;
 	}
 		
 	if(ParticleRef[client] != -1)
@@ -158,30 +168,32 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-#define DEFAULT_MELEE_RANGE 64.0
-#define DEFAULT_MELEE_BOUNDS 22.0
 void SeaMelee_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
 {
 	switch(MeleeLevel[client])
 	{
+		case -1:
+		{
+			enemies_hit_aoe = 2;
+		}
 		case 1:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+			CustomMeleeRange = MELEE_RANGE * 1.25;
+			CustomMeleeWide = MELEE_BOUNDS * 1.25;
 			ignore_walls = true;
 			enemies_hit_aoe = 4;
 		}
 		case 2:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+			CustomMeleeRange = MELEE_RANGE * 1.25;
+			CustomMeleeWide = MELEE_BOUNDS * 1.25;
 			ignore_walls = true;
 			enemies_hit_aoe = 5;
 		}
 		default:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.15;
+			CustomMeleeRange = MELEE_RANGE * 1.15;
+			CustomMeleeWide = MELEE_BOUNDS * 1.15;
 			enemies_hit_aoe = 3;
 		}
 	}
@@ -198,7 +210,7 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 60.0);
 
 	ClientCommand(client, "playgamesound ambient/halloween/male_scream_13.wav");
@@ -207,13 +219,20 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 
-	int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
-	if(entity > MaxClients)
+	int SpawnMaxEnemies = 2;
+	if(LastMann)
+		SpawnMaxEnemies = 4;
+		
+	for(int i; i < SpawnMaxEnemies; i++)
 	{
-		fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
-		CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-		i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
-		b_ShowNpcHealthbar[entity] = true;
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
+		if(entity > MaxClients)
+		{
+			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
+			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+			b_ShowNpcHealthbar[entity] = true;
+		}
 	}
 }
 
@@ -228,7 +247,7 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 75.0);
 
 	ClientCommand(client, "playgamesound ambient/halloween/male_scream_13.wav");
@@ -236,8 +255,11 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 	float pos1[3], ang[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-
-	for(int i; i < 2; i++)
+	int SpawnMaxEnemies = 2;
+	if(LastMann)
+		SpawnMaxEnemies = 4;
+		
+	for(int i; i < SpawnMaxEnemies; i++)
 	{
 		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
@@ -261,7 +283,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 90.0);
 
 	ClientCommand(client, "playgamesound ambient/halloween/male_scream_13.wav");
@@ -274,13 +296,22 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 	float pos1[3], /*pos2[3], */ang[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-
-	for(int i; i < 3; i++)
+	
+	int SpawnMaxEnemies = 3;
+	if(LastMann)
+	{
+		SpawnMaxEnemies = 6;
+		Ability_Apply_Cooldown(client, slot, 30.0);
+	}
+		
+	for(int i; i < SpawnMaxEnemies; i++)
 	{
 		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
 		if(entity > MaxClients)
 		{
 			int maxhealth = SDKCall_GetMaxHealth(client) / 2; //2x health cus no resistance.
+			if(LastMann)
+				maxhealth *= 2;
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
@@ -331,13 +362,35 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 	if(ammo > 4)
 	{
 		StartPlayerOnlyLagComp(client, true);
-		int target = GetClientPointVisibleOnlyClient(client, 150.0);
+		float pos[3];
+		int target = GetClientPointVisiblePlayersNPCs(client, 120.0, pos, false);
 		EndPlayerOnlyLagComp(client);
 
-		if(target > 0 && target <= MaxClients && dieingstate[target] == 0)
+		int AllowHealing = 0;
+		if(IsValidEntity(target))
 		{
-			int health = GetEntProp(target, Prop_Send, "m_iHealth");
-			int maxHealth = SDKCall_GetMaxHealth(target);
+			if(IsValidClient(target))
+			{
+				if(dieingstate[target] == 0)
+					AllowHealing = 1;
+			}
+			else if(Citizen_IsIt(target))
+			{
+				if(!Citizen_ThatIsDowned(target))
+					AllowHealing = 2;
+			}
+			else if(!b_NpcHasDied[target])
+			{
+				AllowHealing = 2;
+			}
+		}
+		
+		if(AllowHealing > 0)
+		{
+			SetGlobalTransTarget(client);
+
+			int health = GetEntProp(target, Prop_Data, "m_iHealth");
+			int maxHealth = ReturnEntityMaxHealth(target);
 			if(health < maxHealth)
 			{
 				int healing = maxHealth - health;
@@ -351,11 +404,11 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				{
 					if(Pap == 1)
 					{
-						healing = 60;
+						healing = 50;
 					}
 					else
 					{
-						healing = 80;
+						healing = 100;
 					}
 				}
 
@@ -375,7 +428,10 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 					return;
 				}
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+
+				if(AllowHealing == 1)
+					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+
 				float cooldown;
 				if(Pap != 0.0)
 				{
@@ -392,17 +448,28 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				if(cooldown > 15.0)
 					cooldown = 15.0;
 				
-				PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
+				if(AllowHealing == 1)
+					PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
+				else
+					PrintHintText(client, "You Healed %s for %d HP!, you gain a %.0f healing cooldown.", NpcStats_ReturnNpcName(target), healing, cooldown);
+
 
 				Ability_Apply_Cooldown(client, 1, cooldown);
 				Ability_Apply_Cooldown(client, 2, cooldown);
 
 				CurrentAmmo[client][21] = ammo - healing;
 				SetAmmo(client, 21, CurrentAmmo[client][21]);
+
+				int BeamIndex = ConnectWithBeam(client, target, 70, 200, 70, 2.0, 2.0, 1.1, "sprites/laserbeam.vmt");
+				SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
+				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+
 				return;
 			}
-			
-			PrintHintText(client, "%N Is already at full hp.", target);
+			if(AllowHealing == 1)
+				PrintHintText(client, "%N Is already at full hp.", target);
+			else
+				PrintHintText(client, "%s Is already at full hp.", NpcStats_ReturnNpcName(target));
 		}
 	}
 
@@ -441,7 +508,7 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 			}
 			else
 			{
-				healing = 30;
+				healing = 40;
 			}
 		}
 

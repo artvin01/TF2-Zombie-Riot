@@ -132,7 +132,7 @@ public void Weapon_Walter_M2(int client, int weapon, bool &result, int slot)
 		}
 		else
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 
 			MakePlayerGiveResponseVoice(client, 1); //haha!
 			int entity = Store_GiveSpecificItem(client, "Explosive Dawn");
@@ -158,6 +158,8 @@ public void Weapon_Walter_M2(int client, int weapon, bool &result, int slot)
 
 			CreateTimer(0.1, Timer_Walter_Summon, GetClientUserId(client));
 			CreateTimer(1.6, Timer_Walter_Summon, GetClientUserId(client));
+			
+			Ability_Apply_Cooldown(client, 2, 180.0, weapon);
 		}
 	}
 }

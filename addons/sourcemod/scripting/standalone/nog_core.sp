@@ -14,11 +14,11 @@
 
 ConVar zr_showdamagehud;
 
-#include "standalone/convars.sp"
-#include "standalone/dhooks.sp"
-#include "standalone/natives.sp"
-#include "standalone/npc.sp"
-#include "zombie_riot/custom/homing_projectile_logic.sp"
+#include "convars.sp"
+#include "dhooks.sp"
+#include "natives.sp"
+#include "npc.sp"
+#include "../zombie_riot/custom/homing_projectile_logic.sp"
 
 void NOG_PluginLoad()
 {
@@ -75,20 +75,14 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 			for(int i; i < count; i++)
 			{
 				int defense = 0;
-				if(f_EmpowerStateOther[client] > gameTime)
+				if(HasSpecificBuff(client, "Ally Empowerment"))
 					defense++;
 				
-				if(f_EmpowerStateSelf[client] > gameTime)
+				if(HasSpecificBuff(client, "Self Empowerment"))
 					defense++;
 				
-				if(f_HussarBuff[client] > gameTime)
+				if(HasSpecificBuff(client, "Hussar's Warscream"))
 					defense++;
-				
-				if(Resistance_Overall_Low[client] > gameTime)
-					defense += 2;
-				
-				if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
-					defense += 4;
 
 				if(enemy[i])
 				{
@@ -114,7 +108,7 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 	{
 		for(int a; a < i_MaxcountNpcTotal; a++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && GetTeam(entity) != team && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
@@ -137,10 +131,7 @@ void GetHighDefTargets(CClotBody npc, int[] enemy, int count, bool respectTrace 
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);
 
-						if(Resistance_Overall_Low[entity] > gameTime)
-							defense += 2;
-						
-						if(f_BattilonsNpcBuff[entity] > gameTime)
+						if(HasSpecificBuff(entity, "Defensive Backup"))
 							defense += 4;
 
 						if(enemy[i] && def[i] < defense)

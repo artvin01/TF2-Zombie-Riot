@@ -27,8 +27,16 @@ int MagiaWingsType(int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_IMPACT_LANCE: type = WINGS_LANCELOT;	//time to cosplay as a lancelot.
-		case WEAPON_GRAVATON_WAND: type = WINGS_RULIANA;
+		case WEAPON_IMPACT_LANCE: 
+		{
+			bool blitz =view_as<bool>(Store_HasNamedItem(client, "Blitzkrieg's Army"));
+			if(!blitz)
+				type = WINGS_LANCELOT;	//time to cosplay as a lancelot.
+			else
+				type = WINGS_KARLAS;	
+		}
+		case WEAPON_GRAVATON_WAND, WEAPON_REIUJI_WAND: type = WINGS_RULIANA;
+		case WEAPON_ION_BEAM_PULSE: type = WINGS_STELLA;
 	}
 	return type;
 

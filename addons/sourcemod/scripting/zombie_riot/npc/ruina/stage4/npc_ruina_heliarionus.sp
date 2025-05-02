@@ -81,9 +81,7 @@ methodmap Heliarionus < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -208,7 +206,7 @@ methodmap Heliarionus < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,2.0,85.0);
+		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,2.0,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_WINGS_2);
@@ -221,6 +219,7 @@ methodmap Heliarionus < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
+		fl_ruina_battery_max[npc.index] = 1000.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -277,7 +276,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>1000.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
@@ -317,7 +316,7 @@ static void ClotThink(int iNPC)
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 					int color[4];
 					Ruina_Color(color);
-					Helia_Healing_Logic(npc.index, 600, 175.0, GameTime, 3.5);
+					Helia_Healing_Logic(npc.index, 900, 175.0, GameTime, 3.5);
 
 				}
 				else	
@@ -325,7 +324,7 @@ static void ClotThink(int iNPC)
 
 					int color[4];
 					Ruina_Color(color);
-					Helia_Healing_Logic(npc.index, 900, 250.0, GameTime, 3.5);
+					Helia_Healing_Logic(npc.index, 1200, 250.0, GameTime, 3.5);
 
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;

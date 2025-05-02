@@ -14,9 +14,9 @@ enum struct TinkerEnum
 	int Rarity;
 }
 
-static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
-static const int MetalGain[] = { 5, 8, 11, 15, 20, 35 };
-static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
+static const int SupportBuildings[] = { 2, 2, 5, 9, 14, 14, 15 };
+static const int MetalGain[] = { 0, 5, 8, 11, 15, 20, 35 };
+static const float Cooldowns[] = { 180.0, 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
 static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
 
@@ -31,6 +31,14 @@ void Blacksmith_RoundStart()
 	delete Tinkers;
 }
 
+bool Blacksmith_Lastman(int client)
+{
+	bool Purnell_Went_Nuts = false;
+	if(EffectTimer[client] != null)
+		Purnell_Went_Nuts = true;
+	
+	return Purnell_Went_Nuts;
+}
 int Blacksmith_Additional_SupportBuildings(int client)
 {
 	return i_AdditionalSupportBuildings[client];
@@ -97,7 +105,7 @@ void Blacksmith_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
 	{
-		SmithLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+		SmithLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0)) + 1;
 
 		if(SmithLevel[client] >= sizeof(MetalGain))
 			SmithLevel[client] = sizeof(MetalGain) - 1;
@@ -120,6 +128,7 @@ void Blacksmith_Enable(int client, int weapon)
 				Tinkers.GetArray(a, tinker);
 				if(tinker.AccountId == account && tinker.StoreIndex == StoreWeapon[weapon])
 				{
+					ApplyStatusEffect(weapon, weapon, "Tinkering Curiosity", 99999999.9);
 					for(int b; b < sizeof(tinker.Attrib); b++)
 					{
 						if(!tinker.Attrib[b])
@@ -154,7 +163,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 
 					i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
 
-					if(ParticleRef[client] == -1)
+					if(SmithLevel[client] > 0 && ParticleRef[client] == -1)
 					{
 						float pos[3]; GetClientAbsOrigin(client, pos);
 						pos[2] += 1.0;
@@ -218,7 +227,7 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 10.0);
 
 	ClientCommand(client, "playgamesound weapons/gunslinger_three_hit.wav");
@@ -695,11 +704,11 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 	}
 	else if(value < 1.0)
 	{
-		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((1.0 - value) * 100.0));
+		FormatEx(buffer, sizeof(buffer), "%d％ ", RoundToCeil((1.0 - value) * 100.0));
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((value - 1.0) * 100.0));
+		FormatEx(buffer, sizeof(buffer), "%d％ ", RoundToCeil((value - 1.0) * 100.0));
 	}
 
 	//inverse the inverse!
@@ -844,7 +853,7 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 
 	}
 	
-	CPrintToChat(client, "%s {yellow}(%d%%)", buffer, RoundToCeil(luck * 100.0));
+	CPrintToChat(client, "%s {yellow}(%d％)", buffer, RoundToCeil(luck * 100.0));
 }
 
 static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)

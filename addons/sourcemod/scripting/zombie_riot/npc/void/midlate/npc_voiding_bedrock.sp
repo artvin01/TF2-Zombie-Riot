@@ -278,7 +278,9 @@ void VoidingBedrockSelfDefense(VoidingBedrock npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 35.0;
+					float damageDealt = 55.0;
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2.5;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

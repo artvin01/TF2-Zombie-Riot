@@ -52,9 +52,9 @@ void Barracks_Iberia_Healer_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Iberia_Healer(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Healer(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Iberia_Healer < BarrackBody
@@ -65,9 +65,7 @@ methodmap Barrack_Iberia_Healer < BarrackBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -77,18 +75,14 @@ methodmap Barrack_Iberia_Healer < BarrackBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+
 	}
 	
 	public void PlayNPCDeath() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeSound() {
@@ -103,7 +97,7 @@ methodmap Barrack_Iberia_Healer < BarrackBody
 
 	}
 
-	public Barrack_Iberia_Healer(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Healer(int client, float vecPos[3], float vecAng[3])
 	{
 		Barrack_Iberia_Healer npc = view_as<Barrack_Iberia_Healer>(BarrackBody(client, vecPos, vecAng, "350", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
@@ -117,6 +111,7 @@ methodmap Barrack_Iberia_Healer < BarrackBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
+
 
 		KillFeed_SetKillIcon(npc.index, "bat");
 
@@ -184,7 +179,7 @@ public void Barrack_Iberia_Healer_ClotThink(int iNPC)
 							{
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),650.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
-								ExpidonsaGroupHeal(npc.index, 150.0, 2, 80.0, 1.0, true);
+								ExpidonsaGroupHeal(npc.index, 150.0, 3, 200.0, 1.0, true, IberiaBarracks_HealSelfLimitCD);
 								DesertYadeamDoHealEffect(npc.index, 150.0);
 							} 
 						}
@@ -210,7 +205,7 @@ void Barrack_Iberia_Healer_NPCDeath(int entity)
 {
 	Barrack_Iberia_Healer npc = view_as<Barrack_Iberia_Healer>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	ExpidonsaGroupHeal(npc.index, 300.0, 3, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),250.0, 0), 1.0, true);
+	ExpidonsaGroupHeal(npc.index, 300.0, 3, 600.0, 1.0, true, IberiaBarracks_HealSelfLimitCD);
 	DesertYadeamDoHealEffect(npc.index, 300.0);
 	npc.PlayNPCDeath();
 }

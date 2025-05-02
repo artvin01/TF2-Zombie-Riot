@@ -21,11 +21,22 @@ bool IsWeaponKazimierz(int weapon)
 {
 	return (i_WeaponArchetype[weapon] == 23 || i_CustomWeaponEquipLogic[weapon] == WEAPON_NEARL);
 }
-bool FlameTail_Global_Buff()
-{
-	return KaziBuffed;
-}
 
+void ResetFlameTail()
+{
+	KaziBuffed = false;
+	//begone!
+	for(int client; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client))
+		{
+			if(IsValidEntity(WeaponRef[client]) && (WeaponLevel[client] == 3 || WeaponLevel[client] == 4))
+			{
+				KaziBuffed = true;
+			}
+		}
+	}
+}
 void Flametail_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FLAMETAIL)
@@ -41,11 +52,7 @@ void Flametail_Enable(int client, int weapon)
 			{
 				WeaponTimer[client] = CreateTimer(3.7 / ResourceRegenMulti, Flametail_Timer1, client, TIMER_REPEAT);
 			}
-			case 1:
-			{
-
-			}
-			case 2:
+			case 1, 2:
 			{
 
 			}
@@ -53,6 +60,13 @@ void Flametail_Enable(int client, int weapon)
 			{
 				KaziBuffed = true;
 			}
+		}
+	}
+	if(IsWeaponKazimierz(weapon))	// Abyssal Hunter
+	{
+		if(KaziBuffed)
+		{
+			ApplyStatusEffect(weapon, weapon, "Flaming Agility", 99999999.9);
 		}
 	}
 }
@@ -64,10 +78,11 @@ public Action Flametail_Timer1(Handle timer, int client)
 		int weapon = EntRefToEntIndex(WeaponRef[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") && AllowMaxCashgainWaveCustom(client))
 			{
 				CashRecievedNonWave[client]++;
 				CashSpent[client]--;
+				AddCustomCashMadeThisWave(client, 1);
 			}
 			
 			return Plugin_Continue;
@@ -90,7 +105,7 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 	}
 	else
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		MakePlayerGiveResponseVoice(client, 4);
 
 		int cash;
@@ -128,6 +143,8 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 			}
 		}
 
+		cash *= 3;
+
 		if(WeaponLevel[client] > 1)
 		{
 			DodgeFor[client] = GetGameTime() + 4.0;
@@ -142,16 +159,17 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 
 		DodgeNext[client] = true;
 		
-		if(!Waves_InSetup())
+		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))
 		{
 			cash = RoundFloat(cash * ResourceRegenMulti);
 			CashRecievedNonWave[client] += cash;
 			CashSpent[client] -= cash;
+			AddCustomCashMadeThisWave(client, cash);
 		}
 
 		Ability_Apply_Cooldown(client, slot, cooldown);
 		ClientCommand(client, "playgamesound " ... FLAMETAIL_ABILITY);
-		MakeBladeBloddy(client, true, weapon);
+		MakeBladeBloddy(client, true);
 		DataPack pack;
 		CreateDataTimer(4.0, Timer_ExtinguishThings, pack);
 		pack.WriteCell(EntIndexToEntRef(client));
@@ -168,7 +186,7 @@ public Action Timer_ExtinguishThings(Handle timer, DataPack pack)
 	{
 		return Plugin_Stop;
 	}
-	MakeBladeBloddy(client, false, weapon);
+	MakeBladeBloddy(client, false);
 	return Plugin_Stop;
 }
 
@@ -190,11 +208,9 @@ void Flametail_NPCTakeDamage(int attacker, float &damage, int weapon, float dama
 	}
 }
 
-void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype)
+void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype, int weaponinhand)
 {
-	if(damagetype & DMG_SLASH)
-		return;
-	
+	//i mean its a dodge, dont ignore.
 	bool dodged;
 	
 	if(DodgeNext[victim])
@@ -206,40 +222,41 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype)
 			DodgeNext[victim] = false;
 		}
 	}
-	
-	if(!dodged && KaziBuffed)
+
+	if(!dodged && NpcStats_KazimierzDodge(weaponinhand))
 	{
+		if(!KaziBuffed)
+		{
+			RemoveSpecificBuff(weaponinhand, "Flaming Agility");
+			return;
+		}
 		// Kazimierz Global Buff
 		if(damagetype & DMG_CLUB)
 		{
-			int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
-			if(weapon != -1 && IsWeaponKazimierz(weapon))
+			bool found;
+
+			for(int client = 1; client <= MaxClients; client++)
 			{
-				bool found;
-
-				for(int client = 1; client <= MaxClients; client++)
+				if(WeaponLevel[client] > 2 && IsClientInGame(client) && IsPlayerAlive(client) &&
+					!dieingstate[client] && TeutonType[client] == TEUTON_NONE &&
+					EntIndexToEntRef(weaponinhand) == WeaponRef[client])
 				{
-					if(WeaponLevel[client] > 2 && IsClientInGame(client) && IsPlayerAlive(client) &&
-					   !dieingstate[client] && TeutonType[client] == TEUTON_NONE &&
-					   EntIndexToEntRef(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon")) == WeaponRef[client])
-					{
-						found = true;
-						break;
-					}
+					found = true;
+					break;
 				}
+			}
 
-				if(found)
-				{
-					// Double Chance for Self
-					float chance = WeaponLevel[victim] > 2 ? 0.22 : 0.11;
+			if(found)
+			{
+				// Double Chance for Self
+				float chance = WeaponLevel[victim] > 2 ? 0.22 : 0.11;
 
-					// Chance cut in half during raids
-					if(RaidbossIgnoreBuildingsLogic(1))
-						chance *= 0.5;
-					
-					if(chance > GetURandomFloat())
-						dodged = true;
-				}
+				// Chance cut in half during raids
+				if(RaidbossIgnoreBuildingsLogic(1))
+					chance *= 0.5;
+				
+				if(chance > GetURandomFloat())
+					dodged = true;
 			}
 		}
 	}

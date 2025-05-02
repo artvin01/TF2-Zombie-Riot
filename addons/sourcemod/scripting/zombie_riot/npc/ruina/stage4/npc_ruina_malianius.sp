@@ -84,17 +84,13 @@ methodmap Malianius < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -165,6 +161,9 @@ methodmap Malianius < CClotBody
 			RUINA_CUSTOM_MODELS_1
 		};
 
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iChanged_WalkCycle = 0;
 
 		int skin = 1;	//1=blue, 0=red
@@ -180,9 +179,6 @@ methodmap Malianius < CClotBody
 
 		SetVariantInt(RUINA_STAFF_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -201,6 +197,7 @@ methodmap Malianius < CClotBody
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
+		fl_ruina_battery_max[npc.index] = 500.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -254,7 +251,7 @@ static void ClotThink(int iNPC)
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
 	float radius = 300.0;
-	if(fl_ruina_battery[npc.index]>500.0 && fl_ruina_battery_timer[npc.index] < GameTime)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
@@ -268,13 +265,10 @@ static void ClotThink(int iNPC)
 
 		npc.m_flSpeed = 0.0;
 
-		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
-		TE_SendToAll();
+		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.70);	//30% resistances
 
-		Master_Apply_Defense_Buff(npc.index, 300.0, 5.0, 0.9);	//10% resistances
-
-		npc.m_flRangedArmor = 0.1;
-		npc.m_flMeleeArmor 	= 0.1;
+		npc.m_flRangedArmor = 0.25;
+		npc.m_flMeleeArmor 	= 0.25;
 
 		Fire_Random_Ion(npc);
 
@@ -286,6 +280,10 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
 		Master_Apply_Battery_Buff(npc.index, radius, 120.0);
+
+		radius = GetRandomFloat(radius*0.9, radius*1.1); 
+		TE_SetupBeamRingPoint(Npc_Vec, radius*2.0, radius*2.0+0.1, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
+		TE_SendToAll();
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{
@@ -373,7 +371,7 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_bAllowBackWalking)
 		{
-			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
 		}	
 		else
@@ -424,7 +422,8 @@ static void Fire_Random_Ion(Malianius npc)
 			TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
 			TE_SendToAll();
 
-			EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
+			Ruina_IonSoundInvoke(Predicted_Pos);
+			
 			DataPack pack;
 			CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(npc.index));

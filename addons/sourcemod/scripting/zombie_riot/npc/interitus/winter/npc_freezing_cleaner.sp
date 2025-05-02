@@ -75,6 +75,11 @@ methodmap WinterFreezingCleaner < CClotBody
 		
 	}
 	
+	property float m_flPulveriserAttackDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -249,6 +254,11 @@ public void WinterFreezingCleaner_NPCDeath(int entity)
 
 void WinterFreezingCleanerSelfDefense(WinterFreezingCleaner npc)
 {
+	if(npc.m_flPulveriserAttackDelay > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flPulveriserAttackDelay = GetGameTime(npc.index) + 0.2;
 	int target;
 	target = npc.m_iTarget;
 	//some Ranged units will behave differently.
@@ -262,7 +272,7 @@ void WinterFreezingCleanerSelfDefense(WinterFreezingCleaner npc)
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 4.0, 1000.0, 150.0, "unusual_icetornado_blue_parent", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "unusual_icetornado_blue_parent", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
@@ -302,7 +312,7 @@ public void FreezingCleaner_Rocket_Particle_StartTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		
-		Elemental_AddCyroDamage(target, owner, 5, true);
+		Elemental_AddCyroDamage(target, owner, 10, true);
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{

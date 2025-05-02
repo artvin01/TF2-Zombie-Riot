@@ -3,7 +3,7 @@
 
 bool b_IsInTutorialMode[MAXTF2PLAYERS];
 int i_TutorialStep[MAXTF2PLAYERS];
-float f_TutorialUpdateStep[MAXTF2PLAYERS];
+bool b_GrantFreeItemsOnce[MAXTF2PLAYERS];
 
 static Handle SyncHud;
 
@@ -14,14 +14,25 @@ void Tutorial_PluginStart()
 
 void Tutorial_ClientSetup(int client, int value)
 {
+	if(CvarInfiniteCash.BoolValue)
+	{
+		TutorialEndFully(client);
+		return;
+	}
 	f_TutorialUpdateStep[client] = 0.0;
-	
-	if(value != 2)
+
+	if(value != 6)
 	{
 	 	StartTutorial(client);
+		//in tutorial mode, give enough so they can build both at once and enough metal too.
+		b_GrantFreeItemsOnce[client] = true;
 	}
 	else
 	{
+		//reset tutorial to start if they didnt buy anything.
+		if(value <= 3)
+			value = 0;
+		b_GrantFreeItemsOnce[client] = true;
 		SetClientTutorialStep(client, 0);
 		b_IsInTutorialMode[client] = false;
 	}
@@ -98,12 +109,13 @@ void DoTutorialStep(int client, bool obeycooldown)
 			vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * 30.0;
 			
 			char TutorialText[256];*/
+			static int UniqueIdDo;
 			switch(i_TutorialStep[client])
 			{
 				case 1:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 1.5, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_1");
 					//"This is the short Tutorial. Open chat and type /store to open the store!"
 					
@@ -112,7 +124,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 2:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 1.5, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_2");
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
 					//"Good! You can also Open the store with TAB when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
@@ -120,48 +132,150 @@ void DoTutorialStep(int client, bool obeycooldown)
 				case 3:
 				{
 					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, -1.0, 8.0, 255, 0, 0, 255);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
 					ShowSyncHudText(client, SyncHud, "%t", "tutorial_3");
-					f_TutorialUpdateStep[client] = GetGameTime() + 8.0;
+					SPrintToChat(client,"%t","tutorial_3");
+					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
+					SetClientTutorialStep(client, 4);
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
 					//"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
-				
-					//two means done.
+				}
+				case 4:
+				{
+					if(TeutonType[client] == TEUTON_NONE)
+					{
+						if(b_GrantFreeItemsOnce[client] && Level[client] < 5)
+						{
+							b_GrantFreeItemsOnce[client] = false;
+							Store_GiveSpecificItem(client, "Construction Novice");
+							SetAmmo(client, Ammo_Metal, 2500);
+							CurrentAmmo[client][3] = GetAmmo(client, 3);
+						}
+						SetGlobalTransTarget(client);
+
+						int entity = MaxClients + 1;
+						char buffer[255];
+						bool FoundOne = false;
+						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+						{
+							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+							if(!StrContains(buffer, "obj_perkmachine"))
+							{
+								float vecTarget[3];
+								vecTarget[2] += 60.0;
+								
+								SetGlobalTransTarget(client);
+								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Perk Machine");
+								Event event = CreateEvent("show_annotation");
+								FoundOne = true;
+								if(event)
+								{
+									event.SetFloat("worldNormalX", vecTarget[0]);
+									event.SetFloat("worldNormalY", vecTarget[1]);
+									event.SetFloat("worldNormalZ", vecTarget[2]);
+									event.SetInt("follow_entindex", entity);
+									event.SetFloat("lifetime", 10.0);
+									event.SetString("text", buffer);
+									event.SetString("play_sound", "vo/null.mp3");
+									KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+									UniqueIdDo++;
+									event.SetInt("id", UniqueIdDo);
+									i_CurrentIdBeforeAnnoation[client] = UniqueIdDo;
+									event.FireToClient(client);
+								}
+								break;
+							}
+						}
+						if(!FoundOne)
+							SPrintToChat(client,"%t","Tutorial Show Hint Perk Machine Build One");
+						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
+					}
+				}
+				case 5:
+				{
+					if(TeutonType[client] == TEUTON_NONE)
+					{
+						if(b_GrantFreeItemsOnce[client])
+						{
+							b_GrantFreeItemsOnce[client] = false;
+							Store_GiveSpecificItem(client, "Construction Novice");
+							SetAmmo(client, Ammo_Metal, 2500);
+							CurrentAmmo[client][3] = GetAmmo(client, 3);
+						}
+						bool FoundOne = false;
+						int entity = MaxClients + 1;
+						char buffer[255];
+						while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+						{
+							NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+							if(!StrContains(buffer, "obj_packapunch"))
+							{
+								float vecTarget[3];
+								vecTarget[2] += 60.0;
+
+								SetGlobalTransTarget(client);
+								Format(buffer, sizeof(buffer), "%t", "Tutorial Show Hint Pack a Punch");
+								Event event = CreateEvent("show_annotation");
+								FoundOne = true;
+								if(event)
+								{
+									event.SetFloat("worldNormalX", vecTarget[0]);
+									event.SetFloat("worldNormalY", vecTarget[1]);
+									event.SetFloat("worldNormalZ", vecTarget[2]);
+									event.SetInt("follow_entindex", entity);
+									event.SetFloat("lifetime", 10.0);
+									event.SetString("text", buffer);
+									event.SetString("play_sound", "vo/null.mp3");
+									KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+									UniqueIdDo++;
+									event.SetInt("id", UniqueIdDo);
+									i_CurrentIdBeforeAnnoation[client] = UniqueIdDo;
+									event.FireToClient(client);
+								}
+								break;
+							}
+						}
+						if(!FoundOne)
+							SPrintToChat(client,"%t","Tutorial Show Hint Pack a Punch Build One");
+
+						f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
+					}
+				}
+				case 6:
+				{
 					
-					Database_GlobalSetInt(client, DATATABLE_MISC, "tutorial", 2);
-	
-					CreateTimer(8.0, TimerTutorial_End, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+					SetGlobalTransTarget(client);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_4");
+					f_TutorialUpdateStep[client] = GetGameTime() + 20.0;
+					SetClientTutorialStep(client, 7);
+				}
+				case 7:
+				{
+					
+					SetGlobalTransTarget(client);
+					SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+					ShowSyncHudText(client, SyncHud, "%t", "tutorial_5");
+					TutorialEndFully(client);
 				}
 			}
 		}
 	}
 }
 
-public Action TimerTutorial_End(Handle timer, int ref)
+void KillMostCurrentIDAnnotation(int client, int id)
 {
-	int client = EntRefToEntIndex(ref);
-	if(IsValidClient(client))
+	Event event = CreateEvent("hide_annotation");
+	if(event)
 	{
-		SetClientTutorialMode(client, false);
-		SetClientTutorialStep(client, 0);
-		
-		/*float pos[3], ang[3];
-		GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-		GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-		DHook_RespawnPlayer(client);
-		
-		SetEntProp(client, Prop_Send, "m_bDucked", true);
-		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-		if (TeutonType[client] == TEUTON_NONE) 
-		{
-			CClotBody npc = view_as<CClotBody>(client);
-			npc.m_bThisEntityIgnored = false;
-		}
-		TeleportEntity(client, pos, ang, NULL_VECTOR);
-					
-		TF2_RemoveCondition(client, TFCond_FreezeInput); //make it 1 second long, incase anything breaks, that itll kill itself eventually.
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 5.0); //Give 5 seconds of uber so they dont get instamurdered.*/
+		event.SetInt("id", id);
+		event.FireToClient(client);
 	}
-	return Plugin_Stop;
 }
 
+
+void TutorialEndFully(int client)
+{
+	Database_GlobalSetInt(client, DATATABLE_MISC, "tutorial", 6);
+	SetClientTutorialMode(client, false);
+}

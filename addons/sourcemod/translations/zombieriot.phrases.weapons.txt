@@ -1327,14 +1327,14 @@
 		"nl"		"Zwaar vest"
 		"chi"       	"重型防弹衣"
 	}
-	"Jesus's Blessing"
+	"Grigori's Blessing"
 	{
-		"en"		"Jesus's Blessing"
+		"en"		"Grigori's Blessing"
 		"fr"		"Bénédiction de Jésus"
 		"ru"		"Благословение Иисуса"
 		"de"		"Jesu Segen"
-		"pt"		"Bênção de Jesus"
-		"nl" 		"Jesus's Zegen"
+		"pt"		"Bênção de Grigori"
+		"nl" 		"Grigori's Zegen"
 		"chi"       	"耶稣的祝福"
 	}
 	"Full Riot Gear Set"
@@ -2671,6 +2671,10 @@
 		"fr"	"Sortilège du Gravaton"
 		"chi"	"引力法术"
 	}
+	"Reiuji Wand"
+	{
+		"en"	"Reiuji Wand"
+	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"
@@ -2731,6 +2735,10 @@
 	{
 		"en"	"Merchant Brewing Stand"
 		"ru"	"Подставка для заваривания Торговца"
+	}
+	"Merchant Grill"
+	{
+		"en"	"Merchant Grill"
 	}
 	"Tinker Research"
 	{
@@ -2862,5 +2870,190 @@
 	"Ancestor Launcher"
 	{
 		"en"	"Ancestor Launcher"
+	}
+	"Victorian Launcher"
+	{
+		"en"	"Victorian Launcher"
+		"ko"	"빅토리안 런쳐"
+	}
+	"Castle Breaker"
+	{
+		"en"	"Castle Breaker"
+		"ko"	"캐슬 브레이커"
+	}
+	"Steam Knight's Spear"
+	{
+		"en"	"Steam Knight's Spear"
+		"ko"	"증기 기사의 창"
+	}
+	"Prototype Kit"
+	{
+		"en"		"Prototype Kit"
+		"ko"		"프로토타입 키트"
+	}
+	"Taurus Revolver"
+	{
+		"en"	"Taurus Revolver"
+	}
+	"Hand"
+	{
+		"en"	"Hand"
+	}
+	"Ketamine"
+	{
+		"en" "Ketamine"
+	}
+	"Cannabis"
+	{
+		"en" "Cannabis"
+	}
+	"Fentanyl"
+	{
+		"en" "Fentanyl"
+	}
+	"Building Dummies"
+	{
+		"en" "Building for Dummies 101"
+	}
+	"Dubious Cheesy Ideas"
+	{
+		"en" "Dubious Cheesy Ideas"
+	}
+	"Messed Up Cheesy Brain"
+	{
+		"en" "Messed Up Cheesy Brain"
+	}
+	"Birdeye Ammo"
+	{
+		"en" "Birdeye's Ammo"
+	}
+	"Waldch's Railgun Rounds"
+	{
+		"en" "Waldch's Railgun Rounds"
+	}
+	"Cheesy Doomsday Pack"
+	{
+		"en" "Cheesy Doomsday Pack"
+	}
+	"Twirl Magic"
+	{
+		"en" "A Fraction of Twirl's Magic"
+	}
+	"Magical Fontina Aura"
+	{
+		"en" "Magical Fontina Aura"
+	}
+	"Domain Expansion: Cheese"
+	{
+		"en" "Domain Expansion: Cheese"
+	}
+	"Bob's Willpower"
+	{
+		"en" "Bob's Willpower"
+	}
+	"A Wheel of Gouda"
+	{
+		"en" "A Wheel of Gouda"
+	}
+	"THE BIG CHEESE!"
+	{
+		"en" "THE BIG CHEESE!"
+	}
+	"Nanomachines"
+	{
+		"en" "Nanohealing Technology"
+	}
+	"Voided Rejuvenator Pack"
+	{
+		"en" "Voided Rejuvenator Pack"
+	}
+	"Cheesy Slimy Aid Kit"
+	{
+		"en" "Cheesy Slimy Aid Kit"
+	}
+	"Kit Modernizer I"
+	{
+		"en" "Kit Modernizer I"
+	}
+	"Kit Modernizer II"
+	{
+		"en" "Kit Modernizer II"
+	}
+	"Kit Modernizer III"
+	{
+		"en" "Kit Modernizer III"
+	}
+	"Kit Modernizer IV"
+	{
+		"en" "Kit Modernizer IV"
+	}
+	"Kit Modernizer V"
+	{
+		"en" "Kit Modernizer V"
+	}
+	"Unit Reformator I"
+	{
+		"en" "Unit Reformator I"
+	}
+	"Unit Reformator II"
+	{
+		"en" "Unit Reformator II"
+	}
+	"Unit Reformator III"
+	{
+		"en" "Unit Reformator III"
+	}
+	"Unit Reformator IV"
+	{
+		"en" "Unit Reformator IV"
+	}
+	"Unit Reformator V"
+	{
+		"en" "Unit Reformator V"
+	}
+	"Adaptive Medigun"
+	{
+		"en"		"Adaptive Medigun"
+		"ko"		"적응형 메디건"
+	}
+	"Armor Medigun"
+	{
+		"en"		"Armor Medigun"
+		"ko"		"아머 메디건"
+	}
+	"Overclocking Devices"
+	{
+		"en"		"Overclocking Medigun"
+		"ko"		"과부하 메디건"
+	}
+	"Reinforce"
+	{
+		"en"	"Reinforce"
+		"ko"	"증원 요청"
+	}
+	"Reconstructive Teleporter"
+	{
+		"en"	"Reconstructive Teleporter"
+		"ko"	"재구성 텔레포터"
+	}
+	"Koshi's Goods"
+	{
+		"en" "Koshi's Goods"
+	}
+	"Bubble Wand"
+	{
+		"en" "Bubble Wand"
+	}
+	"Plasmic Surprise"
+	{
+		"en" "Plasmic Surprise"
+	}
+	"Plasmic Dosage"
+	{
+		"en" "Plasmic Dosage"
+	}
+	"Koshi's Plasm-inator"
+	{
+		"en" "Koshi's Plasm-inator"
 	}
 }

@@ -7,12 +7,12 @@
 
 
 
-static int i_SaidLineAlready[MAXENTITIES];
+
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 static bool TripleLol;
 static float NemalAntiLaserDo[MAXENTITIES];
 
@@ -21,16 +21,7 @@ static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
-static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
-};
+
 
 static const char g_MissAbilitySound[][] = {
 	"vo/soldier_negativevocalization01.mp3",
@@ -131,7 +122,7 @@ void Nemal_OnMapStart_NPC()
 static void ClotPrecache()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
@@ -148,7 +139,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MineLayed));   i++) { PrecacheSound(g_MineLayed[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
-	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/expidonsa_training_montage.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 }
 
@@ -290,7 +281,7 @@ methodmap Nemal < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 105);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 105);
 		
 	}
 	
@@ -407,10 +398,11 @@ methodmap Nemal < CClotBody
 		{
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
+		RemoveAllDamageAddition();
 		
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
-		if(!StrContains(data, "wave_15"))
+		if(StrContains(data, "wave_15") != -1)
 		{
 			f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
 			i_RaidGrantExtra[npc.index] = 1;
@@ -434,7 +426,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_30"))
+		if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 			switch(GetRandomInt(0,3))
@@ -457,7 +449,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_45"))
+		if(StrContains(data, "wave_45") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 			switch(GetRandomInt(0,3))
@@ -480,7 +472,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_60"))
+		if(StrContains(data, "wave_60") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 			switch(GetRandomInt(0,3))
@@ -545,7 +537,22 @@ methodmap Nemal < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		float value;
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			value = float(ZR_Waves_GetRound()+1);
+		}
 
 		if(RaidModeScaling < 55)
 		{
@@ -556,7 +563,7 @@ methodmap Nemal < CClotBody
 			RaidModeScaling *= 0.38;
 		}
 
-		if(ZR_GetWaveCount()+1 > 55)
+		if(value > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.7;
@@ -909,7 +916,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	if(i_RaidGrantExtra[npc.index] == 5)
 	{
-		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
+		if(!b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] && RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
@@ -919,7 +926,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			RaidModeTime += 25.0;
-			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
@@ -1162,14 +1169,12 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_iNemalComboAttack >= 3)
 							{
 								//if they already have teslar, do stronger one
-								if(f_LowTeslarDebuff[targetTrace] > GetGameTime())
+								if(NpcStats_IsEnemyTeslar(targetTrace, false) || NpcStats_IsEnemyTeslar(targetTrace, true))
 								{
-									if(f_HighTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-										f_HighTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+									ApplyStatusEffect(npc.index, targetTrace, "Teslar Electricution", 5.0);
 								}
 
-								if(f_LowTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-									f_LowTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+								ApplyStatusEffect(npc.index, targetTrace, "Teslar Shock", 5.0);
 
 								ResetStack = true;
 							}
@@ -1224,9 +1229,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					{
 						flMaxhealth *= 0.75;
 					}
-					int CurrentPlayersAlive = CountPlayersOnRed(1);
-					float HpScalingDecreace = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
-					flMaxhealth *= HpScalingDecreace;
+					flMaxhealth *= NpcDoHealthRegenScaling();
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
@@ -1511,14 +1514,12 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_iNemalComboAttack >= 3)
 							{
 								//if they already have teslar, do stronger one
-								if(f_LowTeslarDebuff[targetTrace] > GetGameTime())
+								if(NpcStats_IsEnemyTeslar(targetTrace, false) || NpcStats_IsEnemyTeslar(targetTrace, true))
 								{
-									if(f_HighTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-										f_HighTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+									ApplyStatusEffect(npc.index, targetTrace, "Teslar Electricution", 5.0);
 								}
 
-								if(f_LowTeslarDebuff[targetTrace] - 5.0 < GetGameTime())
-									f_LowTeslarDebuff[targetTrace] = GetGameTime() + 5.0;
+								ApplyStatusEffect(npc.index, targetTrace, "Teslar Shock", 5.0);
 
 								ResetStack = true;
 							}
@@ -1528,7 +1529,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 							if(npc.m_flTimeUntillMark < GetGameTime(npc.index))
 							{
 								damage *= 1.35;
-								NpcStats_IberiaMarkEnemy(targetTrace, 5.0);
+								ApplyStatusEffect(npc.index, targetTrace, "Marked", 15.0);
 								MarkCooldown = true;
 							}
 							
@@ -1689,6 +1690,7 @@ void NemalEffects(int iNpc, int colour = 0, char[] attachment = "head")
 	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_4_r);
 	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_2_r);
+	
 	NemalEffects2(iNpc, 0, "back_lower");
 }
 void NemalEffects2(int iNpc, int colour = 0, char[] attachment = "back_lower")
@@ -1772,7 +1774,7 @@ bool NemalTalkPostWin(Nemal npc)
 		BlockLoseSay = true;
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Iberian and Expidonsan Training");
 				CPrintToChat(client,"{default}You feel more skilled and obtain: {gold}''Iberian and Expidonsan Training''{default}!");
@@ -1819,9 +1821,9 @@ bool NemalTransformation(Nemal npc)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			b_CannotBeStunned[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
-			b_CannotBeSlowed[npc.index] = true;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);		
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 			npc.m_flNemalSlicerHappening = 0.0;	
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
@@ -1845,9 +1847,9 @@ bool NemalTransformation(Nemal npc)
 		{
 			b_CannotBeHeadshot[npc.index] = false;
 			b_CannotBeBackstabbed[npc.index] = false;
-			b_CannotBeStunned[npc.index] = false;
-			b_CannotBeKnockedUp[npc.index] = false;
-			b_CannotBeSlowed[npc.index] = false;
+			RemoveSpecificBuff(npc.index, "Clear Head");
+			RemoveSpecificBuff(npc.index, "Solid Stance");
+			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			NPC_StartPathing(npc.index);
 			npc.m_bPathing = true;
@@ -1857,7 +1859,7 @@ bool NemalTransformation(Nemal npc)
 			i_NpcWeight[npc.index] = 4;
 			npc.m_flRangedArmor = 0.35;
 			npc.m_flMeleeArmor = 1.75;		
-			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flNemalSuperRes = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 
@@ -2128,12 +2130,12 @@ bool NemalSummonSilvester(Nemal npc)
 		if(i_RaidGrantExtra[npc.index] >= 3 && !TripleLol)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid_wave60_1.mp3");
-			music.Time = 227;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/expidonsa_training_montage.mp3");
+			music.Time = 300;
 			music.Volume = 2.0;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "06 Flirt With Bomb");
-			strcopy(music.Artist, sizeof(music.Artist), "???");
+			strcopy(music.Name, sizeof(music.Name), "Expidonsa Training Montage");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 		npc.m_iChanged_WalkCycle = 0;
@@ -2710,8 +2712,7 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 						SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile] * 0.5, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 					}
 				
-					if(f_LowTeslarDebuff[Loop] - 5.0 < GetGameTime())
-						f_LowTeslarDebuff[Loop] = GetGameTime() + 5.0;
+					ApplyStatusEffect(OwnerEntity, Loop, "Teslar Shock", 5.0);
 				}
 			}
 		}
@@ -2918,8 +2919,6 @@ float NemalMineExploderFriendly(int entity, int victim, float damage, int weapon
 	//Knock target up
 	if(victim <= MaxClients)
 	{
-		f_HighTeslarDebuff[victim] = 0.0;
-		f_LowTeslarDebuff[victim] = 0.0;
 		NemalAntiLaserDo[victim] = GetGameTime() + 4.0;
 		DetonateCurrentMine = true;
 		float vDirection[3];
@@ -2938,6 +2937,8 @@ float NemalMineExploderFriendly(int entity, int victim, float damage, int weapon
 		vDirection[2] = 1000.0;
 		
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vDirection);
+		NPCStats_RemoveAllDebuffs(victim, 0.0);
+		//Cure off debuffs, oops forgot.
 	}
 	
 	return damage;
@@ -2957,7 +2958,7 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 	else
 		TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,1000.0});
 
-	NpcStats_IberiaMarkEnemy(victim, 15.0);
+	ApplyStatusEffect(entity, victim, "Marked", 20.0);
 	
 	//if it was a barracks units, half damage
 	if(victim > MaxClients)

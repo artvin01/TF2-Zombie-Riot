@@ -23,7 +23,6 @@
 Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
-int i_NextAttackDoubleHit[MAXENTITIES];
 static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
 static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
 static float f_TargetAirtime[MAXENTITIES];
@@ -103,7 +102,7 @@ void Reset_stats_Irene_Singular_Weapon(int weapon) //This is on weapon remake. c
 
 public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)
 {
-	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float attackspeed = Attributes_Get(weapon, 6, 1.0);
 	if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 	{
 		b_WeaponAttackSpeedModified[weapon] = true;
@@ -119,7 +118,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
-	if(!StrContains(WhatDifficultySetting_Internal, "Stella & Karlas") || !StrContains(WhatDifficultySetting_Internal, "You."))
+	if(!StrContains(WhatDifficultySetting_Internal, "Stella & Karlas") || !StrContains(WhatDifficultySetting, "You."))
 	{
 		ThereWasSeaborn = true;
 	}
@@ -127,7 +126,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
 			{
 				ThereWasSeaborn = true;
@@ -249,7 +248,7 @@ public void Irene_Cooldown_Logic(int client, int weapon)
 				}
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_Irenehuddelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -260,7 +259,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 	//This ability has no cooldown in itself, it just relies on hits you do.
 	if(i_IreneHitsDone[client] >= IRENE_JUDGEMENT_MAX_HITS_NEEDED || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		i_IreneHitsDone[client] = 0;
 		//Sucess! You have enough charges.
 		//Heavy logic incomming.
@@ -313,7 +312,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int target = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int target = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEnemy(client, target, true, false))
 			{
 				WorldSpaceCenter(target, VicLoc);
@@ -341,19 +340,19 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 
 					if (b_thisNpcIsABoss[target] || raidboss_active)
 					{
-						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_BOSS_AIRTIME;
+						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_BOSS_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_BOSS_AIRTIME; //Kick up for way less time.
 						FreezeNpcInTime(target,IRENE_BOSS_AIRTIME);
 					}
 					else
 					{
-						f_TankGrabbedStandStill[target] = GetGameTime(target) + IRENE_AIRTIME;
+						f_TankGrabbedStandStill[target] = GetGameTime() + IRENE_AIRTIME;
 						f_TargetAirtime[target] = GetGameTime() + IRENE_AIRTIME; //Kick up for the full skill duration.
 						FreezeNpcInTime(target,IRENE_AIRTIME);
 					}
 					spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, IRENE_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
 					SDKUnhook(target, SDKHook_Think, Npc_Irene_Launch);
-					if(!b_CannotBeKnockedUp[target])
+					if(!HasSpecificBuff(target, "Solid Stance"))
 						SDKHook(target, SDKHook_Think, Npc_Irene_Launch);
 					//For now, there is no limit.
 				}
@@ -432,7 +431,7 @@ public void Npc_Irene_Launch_client(int client)
 
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int enemy = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEnemy(client, enemy, true, false))
 				{
 					WorldSpaceCenter(enemy, VicLoc);

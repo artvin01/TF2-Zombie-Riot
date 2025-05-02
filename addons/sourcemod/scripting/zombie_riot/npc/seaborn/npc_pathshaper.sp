@@ -98,7 +98,7 @@ methodmap Pathshaper < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Pathshaper_OnTakeDamage;
 		func_NPCThink[npc.index] = Pathshaper_ClotThink;
 		
-		npc.m_flSpeed = 125.0;	// 0.5 x 250
+		npc.m_flSpeed = 250.0;	// 0.5 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -176,7 +176,7 @@ public void Pathshaper_ClotThink(int iNPC)
 					if(target > 0)
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 8000.0 : 400.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 8000.0 : 800.0, DMG_CLUB);
 						// 800 x 0.5
 
 						Custom_Knockback(npc.index, target, 750.0);
@@ -247,7 +247,7 @@ void Pathshaper_NPCDeath(int entityy)
 	int team = GetTeam(entityy);
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PathshaperFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			RequestFrame(KillNpc, i_ObjectsNpcsTotal[i]);
@@ -261,7 +261,7 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 	int count;
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PathshaperFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			if(++count == limit)

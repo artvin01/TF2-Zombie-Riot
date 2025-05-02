@@ -31,10 +31,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing3.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-
 static const char g_IdleAlertedSounds[][] =
 {
 	"npc/metropolice/vo/airwatchsubjectis505.wav",
@@ -51,7 +47,7 @@ void Barracks_Combine_Collos_Precache()
 	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	
 	NPCData data;
@@ -64,9 +60,9 @@ void Barracks_Combine_Collos_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Combine_Collos(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Collos(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Combine_Collos < BarrackBody
@@ -77,9 +73,7 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -89,18 +83,14 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+
 	}
 	
 	public void PlayNPCDeath() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+
 	}
 	
 	public void PlayMeleeSound() {
@@ -122,16 +112,13 @@ methodmap Barrack_Combine_Collos < BarrackBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
 	}
 
-	public Barrack_Combine_Collos(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Collos(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "600", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "500", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
@@ -208,7 +195,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 					if(!npc.m_fbRangedSpecialOn)
 					{
 						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
+						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
 						npc.PlayRangedAttackSecondarySound();
 						npc.m_fbRangedSpecialOn = true;
 						npc.Anger = true;
@@ -228,7 +215,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 
 							if(npc.Anger)
 							{
-								damage *= 2.0;
+								damage *= 5.0;
 							}
 							
 							if(target > 0) 

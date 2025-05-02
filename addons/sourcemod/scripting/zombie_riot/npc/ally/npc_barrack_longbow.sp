@@ -6,7 +6,7 @@
 public void BarrackLongbowOnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Medival Longbowmen");
+	strcopy(data.Name, sizeof(data.Name), "Medieval Longbowmen");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_longbow");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -16,13 +16,13 @@ public void BarrackLongbowOnMapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return BarrackLongbow(client, vecPos, vecAng, ally);
+	return BarrackLongbow(client, vecPos, vecAng);
 }
 methodmap BarrackLongbow < BarrackBody
 {
-	public BarrackLongbow(int client, float vecPos[3], float vecAng[3], int ally)
+	public BarrackLongbow(int client, float vecPos[3], float vecAng[3])
 	{
 		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
@@ -81,14 +81,14 @@ public void BarrackLongbow_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GameTime + (3.0 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
 						npc.m_flReloadDelay = GameTime + (1.0 * npc.BonusFireRate);
 					}
 				}
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 275.0, "ACT_LONGBOW_IDLE", "ACT_LONGBOW_WALK", 250000.0);
+		BarrackBody_ThinkMove(npc.index, 275.0, "ACT_LONGBOW_IDLE", "ACT_LONGBOW_WALK", 275000.0);
 	}
 }
 
@@ -104,7 +104,7 @@ void BarrackLongbow_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			npc.FireArrow(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),4200.0, 1), 2000.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
+			npc.FireArrow(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8000.0, 1), 2000.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
 		}
 	}
 }

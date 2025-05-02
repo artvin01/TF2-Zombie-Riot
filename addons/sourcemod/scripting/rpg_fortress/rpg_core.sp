@@ -11,6 +11,10 @@ enum
 {
 	WEAPON_BIGFRYINGPAN = 1,
 	WEAPON_LANTEAN = 2,
+
+
+	//any that are shared, just stick it here.
+	WEAPON_KRITZKRIEG = 999,
 }
 
 int BaseStrength;
@@ -83,78 +87,78 @@ static char MapConfig[64];
 Cookie HudSettings_Cookies;
 Cookie HudSettingsExtra_Cookies;
 
-#include "rpg_fortress/npc.sp"	// Global NPC List
+#include "npc.sp"	// Global NPC List
 
-#include "rpg_fortress/races.sp"
-#include "rpg_fortress/actor.sp"
-#include "rpg_fortress/cooking.sp"
-#include "rpg_fortress/crafting.sp"
-#include "rpg_fortress/dungeon.sp"
-#include "rpg_fortress/editor.sp"
-#include "rpg_fortress/fishing.sp"
-#include "rpg_fortress/games.sp"
-#include "rpg_fortress/garden.sp"
-#include "rpg_fortress/mining.sp"
-#include "rpg_fortress/music.sp"
-#include "rpg_fortress/party.sp"
-#include "rpg_fortress/plots.sp"
-#include "rpg_fortress/quests.sp"
-#include "rpg_fortress/saves.sp"
-#include "rpg_fortress/spawns.sp"
-#include "rpg_fortress/stats.sp"
-#include "rpg_fortress/store.sp"
-#include "rpg_fortress/textstore.sp"
-#include "rpg_fortress/tinker.sp"
-#include "rpg_fortress/traffic.sp"
-#include "rpg_fortress/worldtext.sp"
-#include "rpg_fortress/zones.sp"
-#include "rpg_fortress/custom/wand/weapon_default_wand.sp"
-#include "rpg_fortress/custom/wand/weapon_lantean_wand.sp"
-#include "rpg_fortress/custom/weapon_samurai_sword.sp"
-#include "rpg_fortress/custom/weapon_brick.sp"
-#include "zombie_riot/custom/homing_projectile_logic.sp"
-#include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
-#include "rpg_fortress/custom/weapon_passanger.sp"
-#include "rpg_fortress/custom/passive_true_strength.sp"
-#include "rpg_fortress/custom/melee_war_cry.sp"
-#include "rpg_fortress/custom/passive_chrono_shift.sp"
-#include "rpg_fortress/custom/weapon_heal_aoe.sp"
-#include "rpg_fortress/custom/passive_golden_agility.sp"
-#include "rpg_fortress/custom/weapon_bubble_proc.sp"
-#include "rpg_fortress/custom/emblem_doublejump.sp"
-#include "rpg_fortress/custom/weapon_boom_stick.sp"
-#include "rpg_fortress/custom/skill_big_bang.sp"
-#include "rpg_fortress/custom/octane_kick_melee.sp"
-#include "rpg_fortress/custom/ranged_back_rocket.sp"
-#include "rpg_fortress/custom/mage_skill_oblitiration_shot.sp"
+#include "races.sp"
+#include "actor.sp"
+#include "cooking.sp"
+#include "crafting.sp"
+#include "dungeon.sp"
+#include "editor.sp"
+#include "fishing.sp"
+#include "games.sp"
+#include "garden.sp"
+#include "mining.sp"
+#include "music.sp"
+#include "party.sp"
+#include "plots.sp"
+#include "quests.sp"
+#include "saves.sp"
+#include "spawns.sp"
+#include "stats.sp"
+#include "store.sp"
+#include "textstore.sp"
+#include "tinker.sp"
+#include "traffic.sp"
+#include "worldtext.sp"
+#include "zones.sp"
+#include "custom/wand/weapon_default_wand.sp"
+#include "custom/wand/weapon_lantean_wand.sp"
+#include "custom/weapon_samurai_sword.sp"
+#include "custom/weapon_brick.sp"
+#include "../zombie_riot/custom/homing_projectile_logic.sp"
+#include "custom/accesorry_mudrock_shield.sp"
+#include "custom/weapon_passanger.sp"
+#include "custom/passive_true_strength.sp"
+#include "custom/melee_war_cry.sp"
+#include "custom/passive_chrono_shift.sp"
+#include "custom/weapon_heal_aoe.sp"
+#include "custom/passive_golden_agility.sp"
+#include "custom/weapon_bubble_proc.sp"
+#include "custom/emblem_doublejump.sp"
+#include "custom/weapon_boom_stick.sp"
+#include "custom/skill_big_bang.sp"
+#include "custom/octane_kick_melee.sp"
+#include "custom/ranged_back_rocket.sp"
+#include "custom/mage_skill_oblitiration_shot.sp"
 
 /*
-#include "rpg_fortress/custom/wand/weapon_default_wand.sp"
-#include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
-#include "rpg_fortress/custom/wand/weapon_lightning_wand.sp"
-#include "rpg_fortress/custom/wand/weapon_icicles.sp"
-#include "rpg_fortress/custom/potion_healing_effects.sp"
-#include "rpg_fortress/custom/ground_beserkhealtharmor.sp"	
-#include "rpg_fortress/custom/ranged_sentrythrow.sp"
+#include "custom/wand/weapon_default_wand.sp"
+#include "custom/wand/weapon_fire_wand.sp"
+#include "custom/wand/weapon_lightning_wand.sp"
+#include "custom/wand/weapon_icicles.sp"
+#include "custom/potion_healing_effects.sp"
+#include "custom/ground_beserkhealtharmor.sp"	
+#include "custom/ranged_sentrythrow.sp"
 */
-#include "rpg_fortress/custom/ground_pound_melee.sp"
-#include "rpg_fortress/custom/ranged_mortar_strike.sp"
-#include "rpg_fortress/custom/weapon_wand_fire_ball.sp"
-#include "shared/custom/joke_medigun_mod_drain_health.sp"
-#include "rpg_fortress/custom/weapon_short_teleport.sp"
-#include "rpg_fortress/custom/ground_aircutter.sp"	
-#include "rpg_fortress/custom/ranged_quick_reflex.sp"
+#include "custom/ground_pound_melee.sp"
+#include "custom/ranged_mortar_strike.sp"
+#include "custom/weapon_wand_fire_ball.sp"
+#include "../shared/custom/joke_medigun_mod_drain_health.sp"
+#include "custom/weapon_short_teleport.sp"
+#include "custom/ground_aircutter.sp"	
+#include "custom/ranged_quick_reflex.sp"
 /*
-#include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
-#include "rpg_fortress/custom/weapon_semi_auto.sp"
-#include "rpg_fortress/custom/wand/weapon_sword_wand.sp"
+#include "custom/wand/weapon_arts_wand.sp"
+#include "custom/weapon_semi_auto.sp"
+#include "custom/wand/weapon_sword_wand.sp"
 */
-#include "rpg_fortress/custom/weapon_coin_flip.sp"
-#include "rpg_fortress/custom/transform_expidonsan.sp"
-#include "rpg_fortress/custom/transform_iberian.sp"
-#include "rpg_fortress/custom/transform_merc_human.sp"
-#include "rpg_fortress/custom/transform_ruianian.sp"
-#include "rpg_fortress/custom/transform_seaborn.sp"
+#include "custom/weapon_coin_flip.sp"
+#include "custom/transform_expidonsan.sp"
+#include "custom/transform_iberian.sp"
+#include "custom/transform_merc_human.sp"
+#include "custom/transform_ruianian.sp"
+#include "custom/transform_seaborn.sp"
 
 void RPG_PluginStart()
 {
@@ -162,6 +166,7 @@ void RPG_PluginStart()
 	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_enable_pvp", Command_EnablePVP, ADMFLAG_ROOT, "Enable PVP");
+	RegAdminCmd("sm_resetstats_grant", Command_GiveReset, ADMFLAG_ROOT, "Resets their char and sets Skillpoints (set to 0 to just reset them)");
 	
 	LoadTranslations("rpgfortress.phrases");
 
@@ -321,8 +326,12 @@ void RPG_SetupMapSpecific(const char[] mapname)
 
 	if(!found)
 		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
-	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
-	LoadSoundScript(buffer);
+	
+	if(LibraryExists("LoadSoundscript"))
+	{
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
+		LoadSoundScript(buffer);
+	}
 }
 void RPG_ConfigSetup()
 {
@@ -410,7 +419,7 @@ void RPG_ClientDisconnect(int client)
 		FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
 		HudSettings_Cookies.Set(client, buffer);
 
-		FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+		FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake_UNSUED[client], b_HudHitMarker[client]);
 		HudSettingsExtra_Cookies.Set(client, buffer);
 	}
 
@@ -550,14 +559,14 @@ static void HudSettings_ClientCookiesCached(int client)
 		bool buffers[3];
 		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 		b_HudScreenShake[client] = buffers[0];
-		b_HudLowHealthShake[client] = buffers[1];
+		b_HudLowHealthShake_UNSUED[client] = buffers[1];
 		b_HudHitMarker[client] = buffers[2];
 	}
 	else
 	{
 		// Cookie empty, get our own
 		b_HudScreenShake[client] = true;
-		b_HudLowHealthShake[client] = true;
+		b_HudLowHealthShake_UNSUED[client] = true;
 		b_HudHitMarker[client] = true;
 	}
 }
@@ -645,6 +654,48 @@ public Action Command_GiveXp(int client, int args)
 			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
 			int xp = money;
 			Stats_GiveXP(targets[target], xp);
+		}
+	}
+	
+	return Plugin_Handled;
+}
+public Action Command_GiveReset(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_resetstats_grant <target> <skillpoints> (0 to use default)");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "An admin reset your character and set your skillpoints.", money);
+			Stats_ReskillEverything(targets[target], money);
+		}
+		else
+		{
+			PrintToChat(targets[target], "An admin reset your character, you got awarded back all your skillpoints.", money);
+			Stats_ReskillEverything(targets[target], money);
 		}
 	}
 	

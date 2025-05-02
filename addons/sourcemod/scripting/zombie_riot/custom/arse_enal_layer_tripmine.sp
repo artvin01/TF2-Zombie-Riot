@@ -164,7 +164,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 		else
 		{
 			//ONLY give back ammo IF the Spike has full health.
-			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1); //Give ammo back that they just spend like an idiot
@@ -181,7 +181,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 	else
 	{
 		//ONLY give back ammo IF the Spike has full health.
-		int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+		int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1); //Give ammo back that they just spend like an idiot
@@ -213,7 +213,7 @@ public void Weapon_Arsenal_Trap_M2(int client, int weapon, const char[] classnam
 					{
 						Trip_Owner[entity] = -1;
 						//ONLY give back ammo IF the Spike has full health.
-						int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+						int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
@@ -252,7 +252,7 @@ public void Spike_Pick_Back_up_Arse(int client, int weapon, const char[] classna
 							SetEntitySpike(entity, 0);
 							Trip_Owner[entity] = -1;
 							//ONLY give back ammo IF the Spike has full health.
-							int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+							int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 							PlaySound = true;
 							SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
 							for(int i; i<Ammo_MAX; i++)
@@ -302,7 +302,7 @@ public void Spike_Pick_Back_up_Arse(int client, int weapon, const char[] classna
 					{
 						SetEntitySpike(entity, 0);
 						Trip_Owner[entity] = -1;
-						int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+						int Ammo_type = GetAmmoType_WeaponPrimary(weapon);
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
@@ -627,7 +627,7 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 		
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int npc = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int npc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if (IsValidEntity(npc) && !b_NpcHasDied[npc] && GetTeam(npc) != TFTeam_Red)
 			{
 				if(i_HowManyBombsOnThisEntity[npc][client] > 0)
@@ -730,7 +730,7 @@ void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false, 
 	
 	if(!b_NpcHasDied[npc]) //Incase it gets called later.
 	{
-		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.
+		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage dealt by by secondary internal combustion too.
 		SDKHooks_TakeDamage(npc, client, client, damage * 0.5, DMG_BLAST | ZR_DAMAGE_IGNORE_DEATH_PENALTY); //extra damage to the target that was hit cus yeah.
 	}
 }

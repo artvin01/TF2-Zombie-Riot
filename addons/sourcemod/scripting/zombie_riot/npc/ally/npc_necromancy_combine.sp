@@ -100,9 +100,7 @@ methodmap NecroCombine < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -165,7 +163,7 @@ methodmap NecroCombine < CClotBody
 	}
 	
 	
-	public NecroCombine(int client, float vecPos[3], float vecAng[3], float damage_multiplier = 1.0)
+	public NecroCombine(int client, float vecPos[3], float vecAng[3])
 	{
 		NecroCombine npc = view_as<NecroCombine>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.8", "1250", TFTeam_Red, true, false));
 		SetVariantInt(1);
@@ -260,8 +258,7 @@ public void NecroCombine_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-	
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true, .ExtraValidityFunction = Necromancy_AttackMarkOnly);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	int owner;
@@ -271,7 +268,7 @@ public void NecroCombine_ClotThink(int iNPC)
 	{
 		int PrimaryThreatIndex = npc.m_iTarget;
 		
-		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
+		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true) && NpcStats_IberiaIsEnemyMarked(PrimaryThreatIndex))
 		{
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				
@@ -376,7 +373,7 @@ public void NecroCombine_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
-			npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, _, true, .ExtraValidityFunction = Necromancy_AttackMarkOnly);
 		}
 		npc.PlayIdleAlertSound();
 	}

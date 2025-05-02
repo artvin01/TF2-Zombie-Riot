@@ -149,32 +149,6 @@ enum struct BuildEnum
 	}
 }
 
-methodmap IntMap < StringMap
-{
-	public IntMap()
-	{
-		return view_as<IntMap>(new StringMap());
-	}
-	public bool GetValue(int key, any &value)
-	{
-		static char buffer[14];
-		IntToString(key, buffer, sizeof(buffer));
-		return GetTrieValue(this, buffer, value);
-	}
-	public void SetValue(int key, any value, bool replace = true)
-	{
-		static char buffer[14];
-		IntToString(key, buffer, sizeof(buffer));
-		SetTrieValue(this, buffer, value, replace);
-	}
-	public bool Erase(int key)
-	{
-		static char buffer[14];
-		IntToString(key, buffer, sizeof(buffer));
-		return RemoveFromTrie(this, buffer);
-	}
-}
-
 enum
 {
 	Build_None = 0,
@@ -182,10 +156,10 @@ enum
 	Build_All
 }
 
-#include "rpg_fortress/plots/crafting.sp"
-#include "rpg_fortress/plots/mining.sp"
-#include "rpg_fortress/plots/misc.sp"
-#include "rpg_fortress/plots/skinswap.sp"
+#include "plots/crafting.sp"
+#include "plots/mining.sp"
+#include "plots/misc.sp"
+#include "plots/skinswap.sp"
 
 static KeyValues PlotKv;
 static ArrayList BlockList;
@@ -834,34 +808,7 @@ static void LoadPlot(int client, int zone)
 
 static void UnloadPlot(int userid, int zone)
 {
-	PlotOwner.Erase(zone);
-	/*
-	}
-	else
-	{
-		StringMapSnapshot snap = PlotOwner.Snapshot();
-		int length = snap.Length;
-		for(int i; i < length; i++)
-		{
-			int size = snap.KeyBufferSize(i) + 1;
-			char[] buffer = new char[size];
-			snap.GetKey(i, buffer, size);
-			
-			if(!PlotOwner.GetValue(buffer, size))
-			{
-				// Should never happen
-				PlotOwner.Erase(buffer);
-			}
-			else if(size == userid)
-			{
-				// This plot owned by this player
-				PlotOwner.Erase(buffer);
-				break;
-			}
-		}
-		delete snap;
-	}
-	*/
+	PlotOwner.Remove(zone);
 	
 	int client = GetClientOfUserId(userid);
 	if(client)

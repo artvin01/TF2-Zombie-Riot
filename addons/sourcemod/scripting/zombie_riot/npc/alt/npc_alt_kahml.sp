@@ -135,7 +135,7 @@ public void Kahmlstein_OnMapStart_NPC()
 	PrecacheModel("models/effects/combineball.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Kahmlstein");
+	strcopy(data.Name, sizeof(data.Name), "Kahmlstein?");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_kahml");
 	data.Category = Type_Alt;
 	data.Func = ClotSummon;
@@ -158,9 +158,7 @@ methodmap Kahmlstein < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -211,9 +209,7 @@ methodmap Kahmlstein < CClotBody
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	public void PlayChargeSound() {
 		EmitSoundToAll(g_charge_sound[GetRandomInt(0, sizeof(g_charge_sound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
@@ -248,7 +244,9 @@ methodmap Kahmlstein < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
-			RaidModeScaling = 10.0;
+			RaidModeScaling = MultiGlobalHealth;
+			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
+				RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -384,6 +382,7 @@ static void Internal_ClotThink(int iNPC)
 	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	fl_kahml_galactic_strenght[npc.index] = 1+(1-(Health/MaxHealth))*1.5;
+	fl_kahml_galactic_strenght[npc.index] *= 2.0;
 	
 	float armour_melee;
 	float armour_ranged;
@@ -814,16 +813,16 @@ static void Internal_ClotThink(int iNPC)
 										}
 									}
 									fl_kahml_main_melee_damage[npc.index] *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
 								}
 								else if(ShouldNpcDealBonusDamage(target))
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0*fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0*fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
 								
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
 								}
 								if(IsValidClient(target))
 								{
@@ -876,7 +875,7 @@ static void Internal_ClotThink(int iNPC)
 						if(fl_attack_timeout[npc.index] < GameTime)
 						{
 							npc.PlayRangedSound();
-							npc.FireRocket(vecTarget, fl_kahml_main_melee_damage[npc.index], 2500.0, "models/effects/combineball.mdl", 1.0, EP_NO_KNOCKBACK);
+							npc.FireRocket(vecTarget, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, 2500.0, "models/effects/combineball.mdl", 1.0, EP_NO_KNOCKBACK);
 						}
 						npc.m_flNextMeleeAttack = GameTime + 0.075 / fl_kahml_galactic_strenght[npc.index];
 						

@@ -8,7 +8,7 @@ void Ulpianus_MapStart()
 	Elited = false;
 }
 
-stock void Ulpianus_Enable(int client, int weapon)
+stock void Ulpianus_Enable(int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{
@@ -21,7 +21,7 @@ stock void Ulpianus_Enable(int client, int weapon)
 	}
 	else if(Elited && i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
 	{
-		b_WeaponSpecificClassBuff[weapon][1] = true;
+		ApplyStatusEffect(weapon, weapon, "Ulpianus' Seriousness", 9999999.0);
 		Attributes_SetMulti(weapon, 6, 0.8);
 		Attributes_Set(weapon, 140, 540.0);
 	}

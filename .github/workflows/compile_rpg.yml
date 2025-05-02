@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sm-version: ['1.12.X']
+        sm-version: [ '1.13.X' ]
     
     steps:
       - name: Install Checkout
@@ -76,7 +76,7 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
-          spcomp -O2 -v2 -E -i "include" -o rpg_fortress.smx rpg_fortress.sp
+          spcomp -O2 -v2 -i "include" -o rpg_fortress.smx rpg_fortress.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
 
       - name: Upload Artifacts

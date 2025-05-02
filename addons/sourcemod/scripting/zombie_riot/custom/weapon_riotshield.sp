@@ -87,18 +87,14 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 				{
 					find = true;
 
-					float Duration_ExtraDamage = 2.0;
 					float Duration_Stun = 1.0;
 					float Duration_Stun_Boss = 0.5;
 
 					if(pap == 1)
 					{
-						Duration_ExtraDamage = 3.0;
 						Duration_Stun = 1.5;
 						Duration_Stun_Boss = 0.75;
 					}
-
-					f_TargetWasBlitzedByRiotShield[RIOT_EnemiesHit[enemy_hit]][weapon] = GetGameTime() + Duration_ExtraDamage;
 
 					if(!b_thisNpcIsABoss[RIOT_EnemiesHit[enemy_hit]] && !RaidActive)
 					{
@@ -115,7 +111,7 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 
 		if(find)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			//Boom! Do effects and buff weapon!
 
 			if(pap == 2)
@@ -323,7 +319,7 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
+			if (((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 			{
 				for(int i=1; i <= (MAX_TARGETS_HIT_RIOT -1 ); i++)
 				{
@@ -341,11 +337,43 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 }
 
 //taken and edited from ff2_sarysapub3
-public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int damagetype)
 {
+	/*
+		Because the hud checks this every so ofte, we can use this as a pseudo Timer,
+
+	*/
+	if(Armor_Charge[victim] <= 0)
+	{
+		if(i_NextAttackDoubleHit[weapon])
+		{
+			Attributes_SetMulti(weapon, 54, (1.0 / 0.95));
+			SDKCall_SetSpeed(victim);
+		}
+
+		i_NextAttackDoubleHit[weapon] = false;
+	}
+	else
+	{
+		if(!i_NextAttackDoubleHit[weapon])
+		{
+			Attributes_SetMulti(weapon, 54, 0.95);
+			SDKCall_SetSpeed(victim);
+		}
+			
+		i_NextAttackDoubleHit[weapon] = true;
+	}
+	if(CheckInHud())
+	{
+		return damage;
+	}
 	// Require armor charge
 	if(Armor_Charge[victim] < 1)
 		return damage;
+
+	if(damagetype & DMG_TRUEDAMAGE)
+		return damage;
+
 	
 	// need position of either the inflictor or the attacker
 	float actualDamagePos[3];
@@ -355,7 +383,7 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	GetEntPropVector(victim, Prop_Send, "m_vecOrigin", victimPos);
 
 	bool BlockAnyways = false;
-	if(damagePosition[0]) //Make sure if it doesnt
+	if(!damagePosition[0]) //Make sure if it doesnt
 	{
 		if(IsValidEntity(attacker))
 		{
@@ -436,5 +464,4 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 
 	return damage;
 }
-
 

@@ -205,13 +205,11 @@ static void BurnTarget(CombineOverlordCC npc, int entity)
 	}
 	else if(npc.m_hCCFlags & CC_FLAG_BURNDAMAGE)
 	{
-		TF2_AddCondition(entity, TFCond_Gas, 1.5);
-		StartBleedingTimer_Against_Client(entity, npc.index, 6.0, 20);
+		NPC_Ignite(entity, npc.index,8.0, -1, 10.0);
 	}
 	else
 	{
-		TF2_AddCondition(entity, TFCond_Gas, 1.5);
-		StartBleedingTimer_Against_Client(entity, npc.index, 2.0, 20);
+		NPC_Ignite(entity, npc.index,4.0, -1, 10.0);
 	}
 }
 
@@ -226,7 +224,7 @@ public Action CombineOverlordCC_TakeDamage(int victim, int &attacker, int &infli
 		if(npc.m_flMeleeArmor > 1.5)
 			npc.m_flMeleeArmor = 1.5;
 	}
-	else if(!(damagetype & DMG_SLASH))
+	else if(!(damagetype & DMG_TRUEDAMAGE))
 	{
 		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		npc.m_flRangedArmor += 0.005;

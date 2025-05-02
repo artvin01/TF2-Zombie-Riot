@@ -53,12 +53,12 @@ static void ClotPrecache()
 	PrecacheSound("mvm/giant_heavy/giant_heavy_gunwinddown.wav");
 	PrecacheSound("mvm/giant_soldier/giant_soldier_rocket_shoot.wav");
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
-	PrecacheSoundCustom("#zombiesurvival/internius/the_purge.mp3");
+	PrecacheSoundCustom("#zombiesurvival/internius/chaos_engineered_cyborg.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return ThePurge(vecPos, vecAng, team);
+	return ThePurge(vecPos, vecAng, team, data);
 }
 methodmap ThePurge < CClotBody
 {
@@ -136,7 +136,7 @@ methodmap ThePurge < CClotBody
 			this.m_iWearable1 = this.EquipItem("head", model);
 	}
 
-	public ThePurge(float vecPos[3], float vecAng[3], int team)
+	public ThePurge(float vecPos[3], float vecAng[3], int team, const char[] data)
 	{
 		ThePurge npc = view_as<ThePurge>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "25000", team, false, true, true, true));
 		
@@ -211,13 +211,29 @@ methodmap ThePurge < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "The Purge Arrived");
 			}
 		}
+		RemoveAllDamageAddition();
 		CPrintToChatAll("{crimson}The Purge{default}: {crimson}Engaging the targets.");
 			
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1) * 0.19;
+		
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+		}
+		RaidModeScaling *= 0.19;
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
@@ -235,12 +251,12 @@ methodmap ThePurge < CClotBody
 		RaidModeScaling *= 1.65;
 
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/the_purge.mp3");
-		music.Time = 229;
-		music.Volume = 1.5;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_engineered_cyborg.mp3");
+		music.Time = 183;
+		music.Volume = 1.6;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Right Trigger Warning");
-		strcopy(music.Artist, sizeof(music.Artist), "Mick Gordon");
+		strcopy(music.Name, sizeof(music.Name), "Chaos Engineered Cyborg");
+		strcopy(music.Artist, sizeof(music.Artist), "Granda Bard");
 		Music_SetRaidMusic(music);
 		
 		Citizen_MiniBossSpawn();

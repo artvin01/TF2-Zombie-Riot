@@ -31,14 +31,14 @@ public float Rogue_Encounter_OptionalBattle()
 
 public float Rogue_Encounter_HardBattle()
 {
-	Rogue_SetBattleIngots(4 + (Rogue_GetRound() / 2));
+	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));
 	return 0.0;
 }
 
 public float Rogue_Encounter_BossBattle()
 {
 	Rogue_SetRequiredBattle(true);
-	Rogue_SetBattleIngots(5 + (Rogue_GetRound() / 2));
+	Rogue_SetBattleIngots(5 + (Rogue_GetFloor() / 2));
 	return 0.0;
 }
 

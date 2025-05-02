@@ -79,8 +79,8 @@ void Zones_Rebuild()
 		RemoveEntity(entity);
 	}
 
-	entity = -1;
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(hFromSpawnerIndex[entity] != -1)
 			NPC_Despawn(entity);

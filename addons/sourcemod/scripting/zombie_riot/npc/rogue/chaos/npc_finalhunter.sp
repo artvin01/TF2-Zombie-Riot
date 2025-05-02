@@ -104,6 +104,7 @@ methodmap FinalHunter < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 		Is_a_Medic[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 		
@@ -152,7 +153,7 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_bStaticNPC)
 	{
-		if(Waves_Started() && (Waves_GetMaxRound() -1) == Waves_GetRound())
+		if(Waves_Started() && (Waves_GetMaxRound() -1) == ZR_Waves_GetRound())
 		{
 			npc.m_bStaticNPC = false;
 			Is_a_Medic[npc.index] = false;
@@ -169,15 +170,15 @@ static void ClotThink(int iNPC)
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 1.0;
+			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			Waves_Progress();
 
 			CPrintToChatAll("{darkred}Wildingen Hitman{default}: {black}It's inside me");
 
-
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					view_as<GogglesFollower>(other).Speech("What the fuck!");
@@ -199,7 +200,7 @@ static void ClotThink(int iNPC)
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					target = other;
@@ -264,7 +265,7 @@ static void ClotThink(int iNPC)
 					if(ScalingDo <= 0.75)
 						ScalingDo = 0.75;
 
-					health -= maxhealth / RoundToNearest(60.0 / ScalingDo);
+					health -= (maxhealth / RoundToNearest(60.0 / ScalingDo) / 2);
 
 					if(health < 1)
 					{
@@ -273,7 +274,7 @@ static void ClotThink(int iNPC)
 
 						RaidBossActive = EntIndexToEntRef(npc.index);
 						RaidModeTime = GetGameTime() + 9000.0;
-						RaidModeScaling = 1.0;
+						RaidModeScaling = 0.0;
 						RaidAllowsBuildings = true;
 
 						EmitSoundToAll("mvm/mvm_warning.wav");
@@ -311,7 +312,7 @@ static void ClotThink(int iNPC)
 							npc.PlayMeleeHitSound();
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
 							if(target > MaxClients || (!dieingstate[target] && IsPlayerAlive(target)))
-								NpcStats_IberiaMarkEnemy(target, 30.0);
+								ApplyStatusEffect(npc.index, target, "Marked", 30.0);
 							
 							Custom_Knockback(npc.index, target, 1000.0, true); 
 						}

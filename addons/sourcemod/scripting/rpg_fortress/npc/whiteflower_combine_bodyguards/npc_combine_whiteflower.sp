@@ -860,7 +860,10 @@ public Action Timer_WF_SupportGrenadeIndication(Handle timer, DataPack pack)
 			}
 			return Plugin_Stop;
 		}
-	}
+	}	
+	if(!IsValidEntity(Projectile))
+		return Plugin_Stop;
+		
 	float DamageDeal = pack.ReadFloat();
 	float RangeSupport = pack.ReadFloat();
 	float RangeSupport2 = RangeSupport * 0.25; 
@@ -908,6 +911,9 @@ public Action Timer_WF_SupportGrenade(Handle timer, DataPack pack)
 		}
 	}
 	
+	if(!IsValidEntity(Projectile))
+		return Plugin_Stop;
+		
 	float DamageDeal = pack.ReadFloat();
 	float RangeSupport = pack.ReadFloat();
 	float HealDo = pack.ReadFloat();
@@ -1063,6 +1069,7 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 	if(enemy <= MaxClients)
 	{
 		f_AntiStuckPhaseThrough[enemy] = GetGameTime() + 1.0;
+		ApplyStatusEffect(enemy, enemy, "Intangible", 1.0);
 		Custom_Knockback(entity, enemy, 1500.0, true, true);
 		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
 		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);

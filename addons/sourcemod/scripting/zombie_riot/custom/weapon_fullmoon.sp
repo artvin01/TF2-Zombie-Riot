@@ -52,9 +52,10 @@ void FullMoon_Enable(int client, int weapon)
 			h_TimerFullMoon[client] = CreateDataTimer(0.1, Timer_Management_FullMoon, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			Attributes_SetMulti(weapon, 412, 2.0);
+			Attributes_SetMulti(weapon, 412, 1.8);
 			//force panic attack and vulnerability
 			Panic_Attack[weapon] = 0.175;
+			FullmoonDownload();
 		}
 		return;
 	}
@@ -66,21 +67,24 @@ void FullMoon_Enable(int client, int weapon)
 		h_TimerFullMoon[client] = CreateDataTimer(0.1, Timer_Management_FullMoon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		Attributes_SetMulti(weapon, 412, 2.0);
+		Attributes_SetMulti(weapon, 412, 1.8);
 		Panic_Attack[weapon] = 0.175;
-		if(!Precached)
-		{
-			// MASS REPLACE THIS IN ALL FILES
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_attack.mp3",_,1);
-			/*
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry1.mp3",_,1);
-			PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry2.mp3",_,1);
-			*/
-			Precached = true;
-		}
+		FullmoonDownload();
 	}
 }
-
+void FullmoonDownload()
+{
+	if(!Precached)
+	{
+		// MASS REPLACE THIS IN ALL FILES
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_attack.mp3",_,1);
+		/*
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry1.mp3",_,1);
+		PrecacheSoundCustom("zombie_riot/weapons/hellagur_warcry2.mp3",_,1);
+		*/
+		Precached = true;
+	}
+}
 public void FullMoonDoubleHp(int client, StringMap map)
 {
 	if(map)	// Player
@@ -138,10 +142,10 @@ void FullMoon_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMel
 	if(f_FullMoonAbility[client] > GetGameTime())
 	{
 		//double melee range
-		//only increace wideness atinybit
+		//only increase wideness atinybit
 		enemies_hit_aoe = 3; //hit 3 targets.
-		CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
-		CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+		CustomMeleeRange = MELEE_RANGE * 1.25;
+		CustomMeleeWide = MELEE_BOUNDS * 1.25;
 	}
 }
 
@@ -170,13 +174,13 @@ public void FullMoon_Cooldown_Logic(int client, int weapon)
 {
 	if(f_FullMoonAbility[client] > GetGameTime())
 	{
-		MakeBladeBloddy(client, true, weapon);
+		MakeBladeBloddy(client, true);
 		TF2_AddCondition(client, TFCond_CritOnKill, 0.3);
 		StopSound(client, SNDCHAN_STATIC, "weapons/crit_power.wav");
 	}
 	else
 	{
-		MakeBladeBloddy(client, false, weapon);
+		MakeBladeBloddy(client, false);
 	}
 
 	if(f_FullMoonHudCD[client] < GetGameTime() && i_Current_Pap[client] > 1)
@@ -334,7 +338,7 @@ public void FullMoonAbilityM2(int client, int weapon, bool crit, int slot)
 		return;	
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 //	MakePlayerGiveResponseVoice(client, 1); //haha!
 //	EmitCustomToAll(GetRandomInt(0,1) ? "zombie_riot/weapons/hellagur_warcry1.mp3" : "zombie_riot/weapons/hellagur_warcry2.mp3", 

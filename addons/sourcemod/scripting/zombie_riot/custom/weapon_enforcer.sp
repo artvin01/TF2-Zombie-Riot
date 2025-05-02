@@ -153,6 +153,9 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 			if(weight < 0)
 				weight = 1;
 			
+			if(HasSpecificBuff(EnemiesHit[i], "Solid Stance"))
+				continue;
+
 			float knockback = ENFORCER_KNOCKBACK;
 			switch(weight)
 			{
@@ -227,7 +230,7 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 				Ability_Apply_Cooldown(client, slot, 3.0);	
 			}
 
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			ShowClientManualAmmoCount(client, weapon);
 		}
 		else
@@ -246,7 +249,7 @@ public bool Enforcer_TraceTargets(int entity, int contentsMask, int client)
 	if(IsValidEntity(entity))
 	{
 		GetEntityClassname(entity, classname, sizeof(classname));
-		if(((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
+		if(((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 		{
 			for(int i; i < sizeof(EnemiesHit); i++)
 			{

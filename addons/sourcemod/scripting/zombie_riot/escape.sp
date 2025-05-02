@@ -25,8 +25,24 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 			}
 		}
 	}
+	int a;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(IsValidEntity(entity))
+		{
+			if(entity != 0)
+			{
+				b_DissapearOnDeath[entity] = true;
+				b_DoGibThisNpc[entity] = true;
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
+			}
+		}
+	}
 	entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	while((entity=FindEntityByClassname(entity, "zr_base_stationary")) != -1)
 	{
 		if(IsValidEntity(entity))
 		{
