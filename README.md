@@ -84,12 +84,12 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [Flaming Sarge's TF2Attribute fork](https://github.com/FlaminSarge/tf2attributes)
 - [TF2Items](https://builds.limetech.io/?project=tf2items)
 - [SteamWorks](https://users.alliedmods.net/~kyles/builds/SteamWorks/)
-- [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC)
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
+- [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 - [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
 

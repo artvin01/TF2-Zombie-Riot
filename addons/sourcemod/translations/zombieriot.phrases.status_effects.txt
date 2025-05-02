@@ -170,7 +170,7 @@
 	}
 	"Cheesy Presence Desc"
 	{
-		"en"	"May your training be cheesy.\nIncreases damage and resistance by +15％\nIncreases npc speed by +25％.\nIncreases attack/reload speed & healrate by +15％."
+		"en"	"{orange}Oh how cheesed you are...\n{green}Increases damage and resistance by +15％\nIncreases npc speed by +25％.\nIncreases attack/reload speed & healrate by +15％."
 	}
 	"Freeplay Eloquence I"
 	{
@@ -556,6 +556,14 @@
 	{
 		"en"	"Increases damage dealt by 25％"
 	}
+	"Expidonsan War Cry"
+	{
+		"en"	"Expidonsan War Cry"
+	}
+	"Expidonsan War Cry Desc"
+	{
+		"en"	"Increases damage dealt by 50％"
+	}
 	"Defensive Backup"
 	{
 		"en"	"Defensive Backup"
@@ -563,6 +571,14 @@
 	"Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 15％"
+	}
+	"Very Defensive Backup"
+	{
+		"en"	"Very Defensive Backup"
+	}
+	"Very Defensive Backup Desc"
+	{
+		"en"	"Decreases damage taken by 50％"
 	}
 	"UBERCHARGED"
 	{
@@ -1044,13 +1060,53 @@
 	{
 		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％"
 	}
-	"Lighthouse Enlightment Detect"
+	"Expidonsan Anger"
 	{
-		"en" "Lighthouse Enlightment Detect"
+		"en" "Expidonsan Anger"
 	}
-	"Lighthouse Enlightment Detect Desc"
+	"Expidonsan Anger Desc"
 	{
-		"en"	"Ignore This."
+		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％\nIncreases NPC movementspeed by 15％"
+	}
+	"Rejuvinator's Medizine"
+	{
+		"en" "Rejuvinator's Medizine"
+	}
+	"Rejuvinator's Medizine Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate and reloadspeed by 30％"
+	}
+	"Cut Hair"
+	{
+		"en" "Cut Hair"
+	}
+	"Cut Hair Desc"
+	{
+		"en"	"You got a new fade, expidonsans despite being cats are really good at cutting hair huh?"
+	}
+	"Anti-Waves"
+	{
+		"en" "Anti-Waves"
+	}
+	"Anti-Waves Desc"
+	{
+		"en"	"Prevents any healing.\n{green}Doesnt prevent absolute healing."
+	}
+	"Zilius Prime Technology"
+	{
+		"en" "Zilius Prime Technology"
+	}
+	"Zilius Prime Technology Desc"
+	{
+		"en"	"Increases attack/reload speed & healrate by 20％\nExpidonsan shield's take half duration damage, and have 2x the capacity"
+	}
+	"We gotta go bald"
+	{
+		"en" "We gotta go bald"
+	}
+	"We gotta go bald Desc"
+	{
+		"en"	"They messed up your hair, welp."
 	}
 	"Soggy"
 	{
@@ -1082,7 +1138,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" "Increases player attack/reload speed & healrate and reloadspeed by 20％"
+		"en" "Increases attack/reload speed & healrate and reloadspeed by 20％"
 	}
 	"Physical Therapy"
 	{
@@ -1164,6 +1220,62 @@
 	}
 	"7 Heavy Souls Desc"
 	{
-		"en"	"Increases damage by 50%%\nIncreases resistance by 50%%\nIncreases attack speed by 100%%"
+		"en"	"Increases damage by 50％\nIncreases resistance by 50％\nIncreases attack speed by 100％"
+	}
+	"Plasm I"
+	{
+		"en" 	"Plasm I"
+	}
+	"Plasm I Desc"
+	{
+		"en"	"Slows NPCs by 5％.\nReduces attackspeed by 7％."
+	}
+	"Plasm II"
+	{
+		"en"	"Plasm II"
+	}
+	"Plasm II Desc"
+	{
+		"en" 	"Slows NPCs by 7％.\nReduces attackspeed by 10％."
+	}
+	"Plasmatic Rampage"
+	{
+		"en"	"Plasmatic Rampage"
+	}
+	"Plasmatic Rampage Desc"
+	{
+		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Boost damage dealt and resist +15％.\nBoosts attackspeed by +25％\n{yellow}(BELOW IS FOR PLASMIC SURPRISE ONLY)\n{darkviolet}Ability cooldowns are reduced, gain extra regen below 25％ HP."
+	}
+	"Plasmatized Lethalitation"
+	{
+		"en"	"Plasmatized Lethalitation"
+	}
+	"Plasmatized Lethalitation Desc"
+	{
+		"en" 	"Incrased Attackspeed and 2x Plasmic Elemental Buildup against enemies."
+	}
+	"Plasmatized Inoculation"
+	{
+		"en"	"Plasmatized Inoculation"
+	}
+	"Plasmatized Inoculation Desc"
+	{
+		"en" 	"Gain Random Plasma Effect shown in your hud."
+	}
+	"Plasm-Allocator"
+	{
+		"en"	"Plasm-Allocator"
+	}
+	"Plasm-Allocator Desc"
+	{
+		"en" 	"1.5x Plasmic Elemental Buildup against enemies."
+	}
+	"Ziberian Flagship Weaponry"
+	{
+		"en"	"Ziberian Flagship Weaponry"
+	}
+	"Ziberian Flagship Weaponry Desc"
+	{
+		"en" 	"Take 25％ Less damage\nDeal 10％ More damage\nAttack 10％ Faster.\nReduces cooldowns by 15％"
 	}
 }

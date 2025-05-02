@@ -42,15 +42,18 @@ methodmap MaterialWizuh < CClotBody
 		npc.m_iNpcStepVariation = 0;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
-		npc.m_flMeleeArmor = 0.1;
-		npc.m_flRangedArmor = 0.5;
+		npc.m_flMeleeArmor = 0.5;
+		npc.m_flRangedArmor = 2.0;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = true;	// If true, summons an attack wave when mining
+		npc.m_bCamo = true;	// For AI attacking resources
 		
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
+		b_NoHealthbar[npc.index] = true;
 
 		return npc;
 	}
@@ -60,12 +63,12 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		Construction_OnTakeDamage("wizuh", 20, victim, attacker, damage, damagetype);
+		Construction_OnTakeDamage("wizuh", 0, victim, attacker, damage, damagetype);
 	}
 }
 
 static void ClotDeath(int entity)
 {
 	MaterialWizuh npc = view_as<MaterialWizuh>(entity);
-	Construction_NPCDeath("wizuh", 20, npc);
+	Construction_NPCDeath("wizuh", 30, npc);
 }

@@ -106,7 +106,7 @@ methodmap SeabornDefender < CClotBody
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		
-		switch(Waves_GetRound() % 3)
+		switch(ZR_Waves_GetRound() % 3)
 		{
 			case 0:
 			{
@@ -261,7 +261,7 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 
-		switch(Waves_GetRound() % 3)
+		switch(ZR_Waves_GetRound() % 3)
 		{
 			case 0:
 			{

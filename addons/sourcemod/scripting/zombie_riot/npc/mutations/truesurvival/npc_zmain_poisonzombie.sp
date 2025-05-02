@@ -77,9 +77,7 @@ methodmap ZMainPoisonZombie < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -154,7 +152,7 @@ methodmap ZMainPoisonZombie < CClotBody
 		//IDLE
 		npc.m_flSpeed = 330.0;
 
-		float wave = float(Waves_GetRound()+1); //Wave scaling
+		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
 		
 		wave *= 0.1;
 

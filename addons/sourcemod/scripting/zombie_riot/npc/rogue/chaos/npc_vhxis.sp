@@ -316,7 +316,7 @@ methodmap Vhxis < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 
 
@@ -1041,7 +1041,6 @@ bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 
 
 
-int VoidVhxisHitDetected[MAXENTITIES];
 
 void VoidVhxisInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
@@ -1101,7 +1100,7 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		VoidVhxisHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -1154,7 +1153,7 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (VoidVhxisHitDetected[victim] && IsValidEnemy(entity, victim, true))
+		if (LaserVarious_HitDetection[victim] && IsValidEnemy(entity, victim, true))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -1179,7 +1178,7 @@ public bool VoidVhxis_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		VoidVhxisHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

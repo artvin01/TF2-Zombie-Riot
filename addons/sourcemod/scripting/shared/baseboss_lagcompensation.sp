@@ -266,6 +266,8 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	SDKCall_SetLocalOrigin(entity, org);
+	EntityRestoreSave[index].m_vecOrigin = org;
+	EntityRestoreSave[index].m_vecAngles = ang;
 	
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
@@ -476,9 +478,16 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 				SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 			}
 		}
+		static float OriginGet[3];
+		static float AngGet[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", OriginGet);
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", AngGet);
+		
+		if(AreVectorsEqual(OriginGet, EntityRestoreSave[index].m_vecOrigin))
+			SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
 
-		SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
-		SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
+		if(AreVectorsEqual(AngGet, EntityRestoreSave[index].m_vecAngles))
+			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
 		
 		if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 		{

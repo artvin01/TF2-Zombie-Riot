@@ -366,8 +366,12 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 		CreateDataTimer(10.0, Timer_RemoveEntity_Impact_Lance_Projectile, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteCell(EntIndexToEntRef(particle));
-		
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Impact_Lance_RocketExplodePre); 
+
+		if(h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
+
+		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Impact_Lance_RocketExplodePre); 
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Impact_Lance_StartTouch);
 		Impact_Lance_Effects_Projectile(client, entity);

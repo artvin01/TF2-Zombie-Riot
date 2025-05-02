@@ -139,8 +139,6 @@ static void SetBossBloonPower(int players, bool elite)
 	RaidModeScaling *= 0.2 + (players * 0.2);
 }
 
-static int i_PlayMusicSound;
-
 void Bloonarius_MapStart()
 {
 	NPCData data;
@@ -285,7 +283,7 @@ methodmap Bloonarius < CClotBody
 		
 		RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
 
-		i_PlayMusicSound = 0;
+		i_PlayMusicSound[npc.index] = 0;
 		ToggleMapMusic(false);
 		npc.m_flMeleeArmor = 1.15;
 		
@@ -331,9 +329,9 @@ public void Bloonarius_ClotThink(int iNPC)
 	if(Music_Disabled())
 	{
 		int time = GetTime();
-		if(i_PlayMusicSound < time)
+		if(i_PlayMusicSound[npc.index] < time)
 		{
-			i_PlayMusicSound = time + 198;
+			i_PlayMusicSound[npc.index] = time + 198;
 			EmitCustomToAll("#zombie_riot/btd/musicbossbloonarius.mp3", npc.index, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 		}
 	}

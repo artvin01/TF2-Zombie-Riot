@@ -42,10 +42,12 @@ methodmap MaterialOssunia < CClotBody
 		npc.m_iNpcStepVariation = 0;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 
-		npc.m_flRangedArmor = 0.1;
+	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
 		npc.Anger = true;	// If true, summons an attack wave when mining
+		npc.m_bCamo = true;	// For AI attacking resources
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 125);
@@ -53,6 +55,7 @@ methodmap MaterialOssunia < CClotBody
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
+		b_NoHealthbar[npc.index] = true;
 
 		return npc;
 	}
@@ -64,7 +67,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		MaterialOssunia npc = view_as<MaterialOssunia>(victim);
 		bool angery = npc.Anger;
-		if(Construction_OnTakeDamage("ossunia", 20, victim, attacker, damage, damagetype))
+		if(Construction_OnTakeDamage("ossunia", 0, victim, attacker, damage, damagetype))
 		{
 			if(angery)
 			{
@@ -94,5 +97,5 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 static void ClotDeath(int entity)
 {
 	MaterialOssunia npc = view_as<MaterialOssunia>(entity);
-	Construction_NPCDeath("ossunia", 20, npc);
+	Construction_NPCDeath("ossunia", 30, npc);
 }

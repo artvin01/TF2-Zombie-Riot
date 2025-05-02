@@ -10,10 +10,36 @@
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {red}Used {1} {2}!"
 	}
+	"Battle Finished"
+	{
+		"en"		"{orange}(Construct) The battle is over!"
+	}
+	"Cash"
+	{
+		"en"		"Cash"
+	}
 	"Resource Attack Started"
 	{
 		"#format"	"{1:N},{2:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
+	}
+	"Gifts Spawned"
+	{
+		"#format"	"{1:d}"
+		"en"		"{orange}(Construct) {green}{1} {default}raid remains have appeared!"
+	}
+	"No Gifts Spawn"
+	{
+		"en"		"{orange}(Construct) {red}No raid remains appeared, too many exist already..."
+	}
+	"Found a gift remain"
+	{
+		"#format"	"{1:N}"
+		"en"		"{orange}(Construct) {red}{1} {green}found and obtained raid remains!"
+	}
+	"Found a gift remain No Attacker"
+	{
+		"en"		"{orange}(Construct) {green}Someone found and obtained raid remains!"
 	}
 	"Player Used 1 to"
 	{
@@ -32,7 +58,7 @@
 	}
 	"Finish Research Desc"
 	{
-		"#format"	"{1:N},{2:s}"
+		"#format"	"{1:s},{2:t}"
 		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
 	}
 	"Crouch and select to view description"
@@ -48,9 +74,18 @@
 		"#format"	"{1:d}"
 		"en"	"Claim Research: {1}s"
 	}
+	"Start Mining"
+	{
+		"#format"	"{1:s}"
+		"en"	"Start mining {1}?\n A raid might spawn nearby."
+	}
 	"Broken Server"
 	{
 		"en"	"Broken Server"
+	}
+	"Left Remains Of Raids"
+	{
+		"en"	"Left Remains Of Raids"
 	}
 	"Material wood"
 	{
@@ -126,7 +161,7 @@
 	}
 	"Vehicle Production Desc"
 	{
-		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but Rogue Expidonsans appear more often."
+		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
 	}
 	"Void Blueprints"
 	{
@@ -166,7 +201,7 @@
 	}
 	"Dump Truck Desc"
 	{
-		"en"	"A vehicle that can hold up to 6 players or resources in the back."
+		"en"	"A vehicle that can hold up to 6 players. Has increased max armor."
 	}
 	"Landrover"
 	{
@@ -214,7 +249,7 @@
 	}
 	"Giant Lighthouse Desc"
 	{
-		"en" 		"TODO"
+		"en" 		"Allies gain +30％ attack speed in its radius."
 	}
 	"Water Pump"
 	{
@@ -238,7 +273,7 @@
 	}
 	"Base Level II Desc"
 	{
-		"en"	"Unlocks more upgrades and increases construct traits."
+		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
 	}
 	"Base Level III"
 	{
@@ -246,7 +281,7 @@
 	}
 	"Base Level III Desc"
 	{
-		"en"	"Unlocks more upgrades and increases construct traits."
+		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
 	}
 	"Enchanced Water Pump"
 	{
@@ -326,7 +361,7 @@
 	}
 	"Atomic Soda Desc"
 	{
-		"en"	"Don't ask Scout where it's from.\n{green}Players gain +1% movement speed"
+		"en"	"Don't ask Scout where it's from.\n{green}Players gain +1％ movement speed"
 	}
 	"Critical Water"
 	{
@@ -334,7 +369,7 @@
 	}
 	"Critical Water Desc"
 	{
-		"en"	"With a new flavor.\n{green}Allies gain +5% damage bonus"
+		"en"	"With a new flavor.\n{green}Allies gain +5％ damage bonus"
 	}
 	"Questionable Milk"
 	{
@@ -454,7 +489,7 @@
 	}
 	"Rogue Expi Start 2"
 	{
-		"en"	"These Expidonsans don't seem to be on your side..?"
+		"en"	"I don't think this is a test anymore..."
 	}
 	"Expidonsa Tech Chip Install"
 	{
@@ -462,6 +497,166 @@
 	}
 	"Expidonsa Tech Chip Install Desc"
 	{
-		"en"	"{blue}Should we install the Expidonsa Tech Chip into our system?"
+		"en"	"Should we install the Expidonsa Tech Chip into our system?"
+	}
+	"System Malfunction"
+	{
+		"en"	"System Malfunction"
+	}
+	"System Malfunction Desc"
+	{
+		"en"	"Oh. dear.\n{red}Construct traits have a chance to fail {blue}and rogue expidonsans are after you."
+	}
+	"Rebel Calling I"
+	{
+		"en"	"Rebel Calling I"
+	}
+	"Rebel Calling I Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Rebel Calling II"
+	{
+		"en"	"Rebel Calling II"
+	}
+	"Rebel Calling II Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Rebel Calling III"
+	{
+		"en"	"Rebel Calling III"
+	}
+	"Rebel Calling III Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Rebel Calling IV"
+	{
+		"en"	"Rebel Calling IV"
+	}
+	"Rebel Calling IV Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Rebel Calling V"
+	{
+		"en"	"Rebel Calling V"
+	}
+	"Rebel Calling V Desc"
+	{
+		"en"	"An additional rebel will appear on the map."
+	}
+	"Heavy Calliber"
+	{
+		"en"	"Heavy Caliber"
+	}
+	"Heavy Calliber Desc"
+	{
+		"en"	"A construct that attacks using long-range high-damage rounds."
+	}
+	"Minigun Turret"
+	{
+		"en"	"Minigun Turret"
+	}
+	"Minigun Turret Desc"
+	{
+		"en"	"A construct that attacks using short-range rapid firing rounds."
+	}
+	"Teslar's Medusa"
+	{
+		"en"	"Teslar's Medusa"
+	}
+	"Teslar's Medusa Desc"
+	{
+		"en"	"A construct that attacks using short-range lightning that chains, slows, and debuffs enemies."
+	}
+	"Flagship Calling"
+	{
+		"en"	"Flagship Calling"
+	}
+	"Flagship Calling Desc"
+	{
+		"en"	"Increase Movementspeed by 10％\nGain the ''Ziberian Flagship Weaponry''."
+	}
+	"Tranquilizer Turret"
+	{
+		"en"	"Tranquilizer Turret"
+	}
+	"Tranquilizer Turret Desc"
+	{
+		"en"	"A construct that attacks using non-damaging stunning rounds."
+	}
+	"The Dispenser"
+	{
+		"en"	"The Dispenser"
+	}
+	"The Dispenser Desc"
+	{
+		"en"	"A construct that heals nearby allies."
+	}
+	"Decorative Furniture"
+	{
+		"en"	"Decorative Furniture"
+	}
+	"Decorative Furniture Desc"
+	{
+		"en"	"Unlocks a set of decorative furniture, for morale."
+	}
+	"Decorative Lamp"
+	{
+		"en"	"Decorative Lamp"
+	}
+	"Decorative Lamp Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Decorative Shelf"
+	{
+		"en"	"Decorative Shelf"
+	}
+	"Decorative Shelf Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Decorative Desk"
+	{
+		"en"	"Decorative Desk"
+	}
+	"Decorative Desk Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Decorative Couch"
+	{
+		"en"	"Decorative Couch"
+	}
+	"Decorative Couch Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Decorative Chair"
+	{
+		"en"	"Decorative Chair"
+	}
+	"Decorative Chair Desc"
+	{
+		"en"	"A construct that improves morale and the desire to defend."
+	}
+	"Command Center"
+	{
+		"en"	"Command Center"
+	}
+	"Command Center Desc"
+	{
+		"en"	"Unlocks constructs used for the Barracks."
+	}
+	"Barracks House"
+	{
+		"en"	"Barracks House"
+	}
+	"Barracks House Desc"
+	{
+		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies."
 	}
 }

@@ -2671,6 +2671,10 @@
 		"fr"	"Sortilège du Gravaton"
 		"chi"	"引力法术"
 	}
+	"Reiuji Wand"
+	{
+		"en"	"Reiuji Wand"
+	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"
@@ -3039,5 +3043,17 @@
 	"Bubble Wand"
 	{
 		"en" "Bubble Wand"
+	}
+	"Plasmic Surprise"
+	{
+		"en" "Plasmic Surprise"
+	}
+	"Plasmic Dosage"
+	{
+		"en" "Plasmic Dosage"
+	}
+	"Koshi's Plasm-inator"
+	{
+		"en" "Koshi's Plasm-inator"
 	}
 }

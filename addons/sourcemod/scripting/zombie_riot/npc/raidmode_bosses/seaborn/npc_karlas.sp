@@ -25,13 +25,6 @@ static const char g_HurtSounds[][] = {
 	"ambient/levels/prison/radio_random15.wav",
 };
 
-static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-};
-
 static const char g_MeleeHitSounds[][] = {
 	"weapons/batsaber_hit_flesh1.wav",
 	"weapons/batsaber_hit_flesh2.wav",
@@ -44,9 +37,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/batsaber_swing3.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_TeleportSounds[][] = {
 	"weapons/bison_main_shot.wav",
 };
@@ -89,8 +79,7 @@ static float fl_npc_basespeed;
 
 //Logic for duo raidboss
 
-static int i_current_wave[MAXENTITIES];
-static int i_ally_index[MAXENTITIES];
+
 static bool b_bobwave[MAXENTITIES];
 
 static bool b_swords_created[MAXENTITIES];
@@ -108,7 +97,7 @@ static float fl_karlas_sword_battery[MAXENTITIES];
 static int i_dance_of_light_sword_id[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sword_throttle[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sound_spam_timer[MAXENTITIES];
-static int i_wingslot[MAXENTITIES];
+
 static bool b_lostOVERDRIVE[MAXENTITIES];
 
 
@@ -142,10 +131,10 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_DefaultMedic_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_Sword_Impact_Sound);
 	PrecacheSoundArray(g_BuffSounds);
@@ -186,7 +175,7 @@ methodmap Karlas < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMedic_IdleAlertedSounds[GetRandomInt(0, sizeof(g_DefaultMedic_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		
@@ -225,7 +214,7 @@ methodmap Karlas < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
 	}
@@ -654,7 +643,7 @@ static void Win_Line(int entity)
 void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob, bool tripple)
 {	
 	if(wave == -2)
-		wave = Waves_GetRound()+1;
+		wave = ZR_Waves_GetRound()+1;
 
 	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);
@@ -837,7 +826,7 @@ static void Internal_ClotThink(int iNPC)
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		GetTarget(npc);
 		return;
 	}
 	
@@ -1254,7 +1243,7 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 	RequestFrame(Projectile_Detect_Loop, pack);
 	
 }
-static Action KillProjectileHoming(Handle Timer, int iRef)
+Action KillProjectileHoming(Handle Timer, int iRef)
 {
 	int Projectile = EntRefToEntIndex(iRef);
 	if(!IsValidEntity(Projectile))
@@ -1848,20 +1837,6 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 		}
 	}
 }
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
-}
 static void Karlas_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
 {
 	float originalPostionTrace[3];
@@ -1966,6 +1941,9 @@ static Action Karlas_Ring_Loops(Handle Loop, DataPack pack)
 	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 1.0, 30.0, 0.1, color, 1, 0);
 	TE_SendToAll();
 
+	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, (radius*2.0) + 0.1, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
+	TE_SendToAll();
+
 	Handle pack2;
 	CreateDataTimer(1.0, Karlas_Ring_Loops, pack2, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack2, EntRefToEntIndex(entity));
@@ -2024,7 +2002,7 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 
 	TE_SetupBeamRingPoint(spawnLoc, 1.0, radius*2.0, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
 	TE_SendToAll();
-
+	
 	float start = 75.0;
 	float end = 75.0;
 	TE_SetupBeamPoints(spawnLoc, sky_loc, g_Ruina_BEAM_Diamond, 0, 0, 0, 1.0, start, end, 0, 1.0, color, 3);

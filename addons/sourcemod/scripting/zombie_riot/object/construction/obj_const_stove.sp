@@ -20,8 +20,8 @@ static const char Artifacts[][] =
 	"The Second Banana"
 };
 
-static const int WaterCost = 10;
-static const int BofaCost = 30;
+static const int WaterCost = 100;
+static const int BofaCost = 5;
 
 static int NPCId;
 static float GlobalCooldown;
@@ -47,8 +47,8 @@ void ObjectStove_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_stove");
-	build.Cost = 3000;
-	build.Health = 150;
+	build.Cost = 1000;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -69,6 +69,7 @@ methodmap ObjectStove < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.m_bConstructBuilding = true;
 
 		return npc;
 	}
@@ -167,8 +168,11 @@ static void ThisBuildingMenu(int client)
 	char buffer[64];
 	for(int i; i < sizeof(Enabled); i++)
 	{
-		FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
-		menu.AddItem(Artifacts[i], buffer);
+		if(Enabled[i])
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
+			menu.AddItem(Artifacts[i], buffer);
+		}
 	}
 
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -197,7 +201,7 @@ static int ThisBuildingMenuH(Menu menu, MenuAction action, int client, int choic
 			}
 			else if(GlobalCooldown < GetGameTime() && Construction_GetMaterial("water") >= WaterCost && Construction_GetMaterial("bofazem") >= BofaCost)
 			{
-				GlobalCooldown = Construction_GetNextAttack() + 180.0;
+				GlobalCooldown = GetGameTime() + 250.0;
 				Shuffled = false;
 
 				CPrintToChatAll("%t", "Player Used 2 to", client, WaterCost, "Material water", BofaCost, "Material bofazem");

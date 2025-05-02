@@ -123,7 +123,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	RoundStartTime = FAR_FUTURE;
 	//FOR ZR
 	char mapname[64];
-	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapName(mapname, sizeof(mapname));
 	
 	KeyValues kv = Configs_GetMapKv(mapname);
 	
@@ -260,7 +260,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
-	  	AcceptEntityInput(client, "SetCustomModel");
+	  	AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 
@@ -323,8 +323,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			TF2Attrib_RemoveAll(client);
 			Attributes_Set(client, 68, -1.0);
 			SetVariantString(COMBINE_CUSTOM_MODEL);
-	  		AcceptEntityInput(client, "SetCustomModel");
-	   		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
+	  		AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 	   		
 	   		b_ThisEntityIgnored[client] = true;
 			
@@ -414,7 +413,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 			else
 			{
-				Store_GiveAll(client, Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
+				Store_GiveAll(client, ZR_Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
 			SetAmmo(client, 1, 9999);

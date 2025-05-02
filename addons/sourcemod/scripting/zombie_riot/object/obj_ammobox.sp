@@ -99,6 +99,13 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 {
 	if(ClotCanUse(npc, client))
 	{
+		if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+		{
+			Building_Collect_Cooldown[npc.index][client] = GetGameTime() + 5.0;
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return true;
+		}
+
 	//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 	//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 	//	ApplyBuildingCollectCooldown(npc.index, client, 5.0, true);

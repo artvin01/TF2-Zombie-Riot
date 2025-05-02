@@ -79,9 +79,7 @@ methodmap Barrack_Alt_Mecha_Loader < BarrackBody
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+
 	}
 	public Barrack_Alt_Mecha_Loader(int client, float vecPos[3], float vecAng[3])
 	{

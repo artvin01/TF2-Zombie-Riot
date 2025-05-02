@@ -241,6 +241,7 @@ public void Rogue_SoulTerraria_Weapon(int entity, int client)
 		StrContains(buffer, "Repaired Ark", false) != -1 ||
 		StrContains(buffer, "Star Shooter", false) != -1 ||
 		StrContains(buffer, "Super Star Shooter", false) != -1 ||
+		StrContains(buffer, "Koshi's Plasm-inator", false) != -1 ||
 		StrContains(buffer, "Tinker's Wrench", false) != -1)
 	{
 		AnnounceSoulBuff(client, entity, 5);
@@ -336,22 +337,22 @@ public void Rogue_RareWeapon_Collect()
 {
 	char name[64];
 
-	switch(GetURandomInt() % 7)
+	switch(GetURandomInt() % 6)
 	{
 		case 0, 1:
 			strcopy(name, sizeof(name), "Vows of the Sea");
 		
-		case 2:
-			strcopy(name, sizeof(name), "Infinity Blade");
+	//	case 2:
+	//		strcopy(name, sizeof(name), "Infinity Blade");
 		
-		case 3, 4:
+		case 2, 3:
 			strcopy(name, sizeof(name), "Whistle Stop");
 		
-		case 5, 6:
+		case 4, 5:
 			strcopy(name, sizeof(name), "Ancestor Launcher");
 	}
 
-	Store_DiscountNamedItem(name, 999);
+	Store_DiscountNamedItem(name, 999, 0.6);
 	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
 }
 

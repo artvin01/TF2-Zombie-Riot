@@ -11,10 +11,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/shovel_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-
 void Male07_OnMapStart()
 {
 	PrecacheModel(NPCModel);
@@ -55,7 +51,7 @@ methodmap Male07 < CClotBody
 
 	public void PlayMeleeMissSound()
 	{
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
 	public Male07(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -332,7 +328,7 @@ public Action Male_Spawner_Delay(Handle timer, DataPack pack)
 {
 	GiveProgressDelay(1.0);
 	//Keep waiting.
-	if(MaxEnemiesAllowedSpawnNext(1) < EnemyNpcAlive)
+	if(MaxEnemiesAllowedSpawnNext(1) < (EnemyNpcAlive - EnemyNpcAliveStatic))
 		return Plugin_Continue;
 
 	pack.Reset();

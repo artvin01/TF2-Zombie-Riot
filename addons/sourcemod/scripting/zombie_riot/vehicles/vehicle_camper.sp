@@ -3,8 +3,8 @@
 
 void VehicleCamper_Setup()
 {
-	if(!IsFileInDownloads("models/vehicles/camper.mdl"))
-		return;
+//	if(!IsFileInDownloads("models/vehicles/camper.mdl"))
+//		return;
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Camper Van");

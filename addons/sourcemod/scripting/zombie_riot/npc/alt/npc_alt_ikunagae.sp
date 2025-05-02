@@ -31,79 +31,24 @@ static char g_MeleeHitSounds[][] = {
 	"weapons/metal_gloves_hit_flesh3.wav",
 	"weapons/metal_gloves_hit_flesh4.wav",
 };
-static char g_RangedAttackSounds[][] = {
-	"weapons/capper_shoot.wav",
-};
-static char g_PullSounds[][] = {
-	"weapons/physcannon/superphys_launch1.wav",
-	"weapons/physcannon/superphys_launch2.wav",
-	"weapons/physcannon/superphys_launch3.wav",
-	"weapons/physcannon/superphys_launch4.wav",
-};
 
 
-//static char gLaser1;
-static char gLaser2;
-
-static bool clearance[MAXENTITIES]={false,...};
-
-static int i_AmountProjectiles[MAXENTITIES];
-
-static int i_Severity_Spin_To_Win[MAXENTITIES];
-static bool b_Severity_Spin_To_Win[MAXENTITIES];
-
-static int i_Severity_Barrage[MAXENTITIES];
-
-
-static float fl_Severity_Scaramouche[MAXENTITIES];
-
-static float fl_Scaramouche_Ability_Timer[MAXENTITIES];
 static float fl_Scaramouche_Global_Ability_Timer;
 
-static float fl_Spin_To_Win_Ability_Timer[MAXENTITIES];
 static float fl_Spin_To_Win_Global_Ability_Timer;
-
-static bool Ikunagae_BEAM_CanUse[MAXENTITIES];
-static bool Ikunagae_BEAM_IsUsing[MAXENTITIES];
-static int Ikunagae_BEAM_TicksActive[MAXENTITIES];
-static int Ikunagae_BEAM_Laser;
-static int Ikunagae_BEAM_Glow;
-static float Ikunagae_BEAM_CloseDPT[MAXENTITIES];
-static float Ikunagae_BEAM_FarDPT[MAXENTITIES];
-static int Ikunagae_BEAM_MaxDistance[MAXENTITIES];
-static int Ikunagae_BEAM_BeamRadius[MAXENTITIES];
-static int Ikunagae_BEAM_ColorHex[MAXENTITIES];
-static int Ikunagae_BEAM_ChargeUpTime[MAXENTITIES];
-static float Ikunagae_BEAM_CloseBuildingDPT[MAXENTITIES];
-static float Ikunagae_BEAM_FarBuildingDPT[MAXENTITIES];
-static float Ikunagae_BEAM_Duration[MAXENTITIES];
-static float Ikunagae_BEAM_BeamOffset[MAXENTITIES][3];
-static float Ikunagae_BEAM_ZOffset[MAXENTITIES];
-static bool Ikunagae_BEAM_HitDetected[MAXENTITIES];
-static int Ikunagae_BEAM_BuildingHit[MAXENTITIES];
-static bool Ikunagae_BEAM_UseWeapon[MAXENTITIES];
 
 public void Ikunagae_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_DefaultCapperShootSound);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_PullSounds);
-	
-	Ikunagae_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	Ikunagae_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
-	
-	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
+	PrecacheSoundArray(g_DefaultLaserLaunchSound);
+
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	
-	//gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-	gLaser2= PrecacheModel("materials/sprites/lgtning.vmt");
 	PrecacheModel("materials/sprites/laserbeam.vmt", true);
 
 	NPCData data;
@@ -128,52 +73,80 @@ methodmap Ikunagae < CClotBody
 		public get()							{ return i_AmountProjectiles[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
+	property float m_flNorm_Attack_Duration
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flScaraSeverity
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flAnglesAbility
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flAnglesSpinToWin
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_flSpinToWinDuration
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flScaraAbilityTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flSpinToWinAbilityTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property int m_iBarrageSeverity
+	{
+		public get()		{ return this.m_iMedkitAnnoyance; }
+		public set(int value) 	{ this.m_iMedkitAnnoyance = value; }
+	}
+	property int m_iBarrageBooleanThing
+	{
+		public get()		{ return i_GunMode[this.index]; }
+		public set(int value) 	{ i_GunMode[this.index] = value; }
+	}
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
-		
-		
 	}
-	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
-		
-
 	}
 	public void PlayDeathSound() {
 		
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
-		
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+			return;	
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;	
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-		
-		
-		
-	}
-	public void PlayPullSound() {
-		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayPullSound()");
-		#endif
 	}
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-
+		EmitSoundToAll(g_DefaultCapperShootSound[GetRandomInt(0, sizeof(g_DefaultCapperShootSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	//static bool b_scaramouche_used[MAXENTITIES] = { false, ... };
+	public void PlayLaserLaunchSound() {
+		int chose = GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound)-1);
+		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
 	public Ikunagae(float vecPos[3], float vecAng[3], int ally)
 	{
 		Ikunagae npc = view_as<Ikunagae>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
@@ -183,25 +156,20 @@ methodmap Ikunagae < CClotBody
 		
 		i_NpcWeight[npc.index] = 3;
 		
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);		
-		
-		
+
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		
-		
+
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
@@ -266,43 +234,35 @@ methodmap Ikunagae < CClotBody
 		npc.StartPathing();
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 5.0;
-		i_Severity_Barrage[npc.index] = 6;
+		npc.m_iBarrageSeverity = 6;
 
 		if(GetTeam(npc.index)!=TFTeam_Red)
 		{
-			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
-			fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
-
-			fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
+			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + GetRandomFloat(12.0, 20.0);
+			//Randomised to prevent mega lag.
 			
-			clearance[npc.index] = false;
-			b_Severity_Spin_To_Win[npc.index] = false;
+			npc.m_flScaraAbilityTimer = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
+
+			npc.m_flSpinToWinAbilityTimer = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
+			
+			npc.m_iBarrageBooleanThing = false;
 			
 			Severity_Core(npc.index);
 		}
-
-		
-		
-		
-		
-		//Scaramouche_Activate(npc.index);
-		
-		//Spin_To_Win_Activate(npc.index, 3, false, 60.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 4
-		
 		return npc;
 	}
 	
 	
 }
 
-static float Normal_Attack_Angles[MAXENTITIES];	//placing this here to use the clot think.
-
-
 static void Internal_ClotThink(int iNPC)
 {
 	Ikunagae npc = view_as<Ikunagae>(iNPC);
 
 	float GameTime = GetGameTime(npc.index);
+
+	if(npc.m_flNorm_Attack_Duration > GameTime)
+		Iku_NormAttackTick(npc);
 	
 	if(npc.m_flNextDelayTime > GameTime)
 	{
@@ -322,11 +282,11 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(GetTeam(npc.index)!=TFTeam_Red)
 	{
-		Normal_Attack_Angles[npc.index] += 1.0;
+		npc.m_flAnglesAbility += 1.0;
 		
-		if(Normal_Attack_Angles[npc.index]>=135.0)
+		if(npc.m_flAnglesAbility>=135.0)
 		{
-			Normal_Attack_Angles[npc.index] = 45.0;
+			npc.m_flAnglesAbility = 45.0;
 		}
 	}
 	if(npc.m_flNextThinkTime > GameTime)
@@ -389,25 +349,24 @@ static void Internal_ClotThink(int iNPC)
 		{
 			if(fl_Spin_To_Win_Global_Ability_Timer < GameTime)
 			{
-				if(fl_Spin_To_Win_Ability_Timer[npc.index] < GameTime)
+				if(npc.m_flSpinToWinAbilityTimer < GameTime)
 				{
-					clearance[npc.index] = false;
-					fl_Spin_To_Win_Ability_Timer[npc.index] = GameTime + 12.5;	//retry in 12.5 seconds
-					Spin_To_Win_Clearance_Check(npc.index);
-					if(clearance[npc.index])
+					npc.m_flSpinToWinAbilityTimer = GameTime + 12.5;	//retry in 12.5 seconds
+
+					if(Spin_To_Win_Clearance_Check(npc.index))
 					{
-						fl_Spin_To_Win_Ability_Timer[npc.index] = GameTime + 120.0;
+						npc.m_flSpinToWinAbilityTimer = GameTime + 120.0;
 						fl_Spin_To_Win_Global_Ability_Timer=GameTime + 30.0;
 						
-						Spin_To_Win_Activate(npc.index, i_Severity_Spin_To_Win[npc.index], b_Severity_Spin_To_Win[npc.index], 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
+						Spin_To_Win_Activate(npc.index, 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
 					}
 				}
 			}
 			if(fl_Scaramouche_Global_Ability_Timer < GameTime)
 			{
-				if(fl_Scaramouche_Ability_Timer[npc.index] < GameTime)
+				if(npc.m_flScaraAbilityTimer < GameTime)
 				{
-					fl_Scaramouche_Ability_Timer[npc.index] = GameTime + 60.0;
+					npc.m_flScaraAbilityTimer = GameTime + 60.0;
 					fl_Scaramouche_Global_Ability_Timer = GameTime + 12.5;
 					Scaramouche_Activate(npc.index);
 				}
@@ -472,12 +431,14 @@ static void Internal_ClotThink(int iNPC)
 			{
 				if(flDistanceToTarget < 202500 && npc.m_flNextMeleeAttack < GameTime)
 				{
-					npc.PlayPullSound();
 					npc.m_flNextMeleeAttack = GameTime + 1.5;
 					npc.AddGesture("ACT_MP_THROW");
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.FaceTowards(vecTarget, 20000.0);
-					Normal_Attack_BEAM_Iku_Ability(npc.index);
+					fl_BEAM_ChargeUpTime[npc.index] = GameTime + 0.2;
+					npc.m_flNorm_Attack_Duration = GameTime + 0.45;
+					npc.PlayLaserLaunchSound();
+					
 				}
 
 				npc.StartPathing();
@@ -486,10 +447,10 @@ static void Internal_ClotThink(int iNPC)
 			{	
 				npc.m_iAmountProjectiles += 1;
 				float dmg = 100.0;
-				Normal_Attack_Start(npc.index, PrimaryThreatIndex, dmg, true);	//kinda custom attack logic for this npc
+				Barrage_Attack_Start(npc.index, PrimaryThreatIndex, dmg, true);	//kinda custom attack logic for this npc
 				npc.PlayRangedSound();
 				npc.m_flNextRangedBarrage_Singular = GameTime + 0.1;
-				if(npc.m_iAmountProjectiles >= i_Severity_Barrage[npc.index])
+				if(npc.m_iAmountProjectiles >= npc.m_iBarrageSeverity)
 				{
 					npc.m_iAmountProjectiles = 0;
 					npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
@@ -559,24 +520,21 @@ static void Internal_NPCDeath(int entity)
 
 #define IKU_MAX_VORTEXES 10
 
-static float fl_Scaramouche_Angle[MAXENTITIES];
-
-static int i_Scaramouche_Vortex_ID[MAXENTITIES][IKU_MAX_VORTEXES+1];
+static int i_Scaramouche_Vortex_ID[MAXENTITIES][IKU_MAX_VORTEXES];
 static int i_Scaramouche_Vortex_Total[MAXENTITIES];
-static float fl_Scaramouche_Vortex_Attack_Timer[MAXENTITIES][IKU_MAX_VORTEXES+1];
-static float fl_Scaramouche_Vortex_Timer[MAXENTITIES][IKU_MAX_VORTEXES+1];
-static float fl_Scaramouche_Vortex_Vec[MAXENTITIES][IKU_MAX_VORTEXES+1][3]; 
+static float fl_Scaramouche_Vortex_Attack_Timer[MAXENTITIES][IKU_MAX_VORTEXES];
+static float fl_Scaramouche_Vortex_Timer[MAXENTITIES][IKU_MAX_VORTEXES];
+static float fl_Scaramouche_Vortex_Vec[MAXENTITIES][IKU_MAX_VORTEXES][3]; 
 
 static void Scaramouche_Activate(int client)
 {
 	Ikunagae npc = view_as<Ikunagae>(client);
 	
 	float time = 5.0;
-	
-	fl_Scaramouche_Angle[npc.index] = 180.0;
+
 	i_Scaramouche_Vortex_Total[npc.index] = 0;
 	
-	for(int i=0 ; i<IKU_MAX_VORTEXES+1 ; i++)
+	for(int i=0 ; i<IKU_MAX_VORTEXES ; i++)
 	{
 		i_Scaramouche_Vortex_ID[npc.index][i] = -1;
 	}
@@ -589,7 +547,7 @@ static void Scaramouche_Activate(int client)
 	int type_class = 2;
 	int type = 0;
 	float range = 600.0 / type_class;
-	for(int j=1 ; j<=IKU_MAX_VORTEXES; j++)
+	for(int j=0 ; j<IKU_MAX_VORTEXES; j++)
 	{
 		type++;
 		if(type>type_class)
@@ -648,7 +606,7 @@ public Action Scaramouche_TBB_Tick(int client)
 		SDKUnhook(client, SDKHook_Think, Scaramouche_TBB_Tick);
 	}
 	
-	for(int i=0 ; i<=i_Scaramouche_Vortex_Total[npc.index] ; i++)
+	for(int i=0 ; i< i_Scaramouche_Vortex_Total[npc.index] ; i++)
 	{
 		if(i_Scaramouche_Vortex_ID[npc.index][i]==1 && fl_Scaramouche_Vortex_Attack_Timer[npc.index][i]<GetGameTime(npc.index))
 		{
@@ -658,7 +616,7 @@ public Action Scaramouche_TBB_Tick(int client)
 			}
 			else
 			{
-				fl_Scaramouche_Vortex_Attack_Timer[npc.index][i] = GetGameTime(npc.index) + fl_Severity_Scaramouche[npc.index];
+				fl_Scaramouche_Vortex_Attack_Timer[npc.index][i] = GetGameTime(npc.index) + npc.m_flScaraSeverity;
 				float Location[3];
 				Location = fl_Scaramouche_Vortex_Vec[npc.index][i];
 				int PrimaryThreatIndex = npc.m_iTarget;
@@ -675,10 +633,6 @@ public Action Scaramouche_TBB_Tick(int client)
 	return Plugin_Continue;
 
 }
-static bool Scaramouche_BEAM_TraceWallsOnly(int entity, int contentsMask)
-{
-	return !entity;
-}
 static void Scaramouche_BEAM(int client, float UserLoc[3], float vecAngles[3], int type, float range)
 {
 	float startPoint[3];
@@ -686,7 +640,7 @@ static void Scaramouche_BEAM(int client, float UserLoc[3], float vecAngles[3], i
 	float Range = range * type;
 	
 	startPoint = UserLoc;
-	Handle trace = TR_TraceRayFilterEx(UserLoc, vecAngles, 11, RayType_Infinite, Scaramouche_BEAM_TraceWallsOnly);
+	Handle trace = TR_TraceRayFilterEx(UserLoc, vecAngles, 11, RayType_Infinite, Ruina_Laser_BEAM_TraceWallsOnly);
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
@@ -705,7 +659,7 @@ static void Scaramouche_BEAM(int client, float UserLoc[3], float vecAngles[3], i
 		colour[1]=146;
 		colour[2]=158;
 		colour[3]=175;
-		TE_SetupBeamPoints(endPoint, UserLoc, gLaser2, 0, 0, 0, 0.1, 15.0, 15.0, 0, 0.1, colour, 1);
+		TE_SetupBeamPoints(endPoint, UserLoc, g_Ruina_BEAM_lightning, 0, 0, 0, 0.1, 15.0, 15.0, 0, 0.1, colour, 1);
 		TE_SendToAll();
 			
 	}
@@ -716,34 +670,23 @@ static void Scaramouche_Do_Effect_And_Attack(int client, float EndLoc[3])
 	Ikunagae npc = view_as<Ikunagae>(client);
 	ParticleEffectAt(EndLoc, "eyeboss_tp_vortex", 5.0);
 	
-	i_Scaramouche_Vortex_Total[client]++;
 	i_Scaramouche_Vortex_ID[client][i_Scaramouche_Vortex_Total[client]] = 1;
 	fl_Scaramouche_Vortex_Timer[client][i_Scaramouche_Vortex_Total[client]] = GetGameTime(npc.index) + 7.5;
 	fl_Scaramouche_Vortex_Vec[client][i_Scaramouche_Vortex_Total[client]] = EndLoc;
-	
-
+	i_Scaramouche_Vortex_Total[client]++;
 }
 ///SPIN_TO_WIN Core
 
-static float fl_Spin_to_win_Angle[MAXENTITIES];
-static float fl_spin_to_win_Origin_Vec[MAXENTITIES][3];
-static float fl_spin_to_win_duration[MAXENTITIES];
 
-static int i_spin_to_win_Severity[MAXENTITIES];
-static int i_spin_to_win_throttle[MAXENTITIES];
 
-static bool b_spin_to_win_Alternate[MAXENTITIES];
-
-static void Spin_To_Win_Activate(int client, int severity, bool alternate_attack, float time, float charge_time)
+static void Spin_To_Win_Activate(int client, float time, float charge_time)
 {
 	Ikunagae npc = view_as<Ikunagae>(client);
 	
 	charge_time /= 1.7;
-	fl_spin_to_win_duration[npc.index] = time;
-	fl_Spin_to_win_Angle[npc.index] = 0.0;
-	i_spin_to_win_Severity[npc.index] = severity;
-	b_spin_to_win_Alternate[npc.index] = alternate_attack;
-	i_spin_to_win_throttle[npc.index] = 0;
+	npc.m_flSpinToWinDuration = time;
+	npc.m_flAnglesSpinToWin = 0.0;
+	fl_BEAM_ThrottleTime[npc.index] = 0.0;
 	
 	float UserLoc[3];
 	GetAbsOrigin(client, UserLoc);
@@ -763,14 +706,13 @@ static void Spin_To_Win_Activate(int client, int severity, bool alternate_attack
 	skyloc = UserLoc;
 	skyloc[2] = 5000.0;
 	
-	TE_SetupBeamPoints(UserLoc, skyloc, gLaser2, 0, 0, 0, charge_time*1.7, 22.0, 10.2, 1, 8.0, color, 0);
+	TE_SetupBeamPoints(UserLoc, skyloc, g_Ruina_BEAM_lightning, 0, 0, 0, charge_time*1.7, 22.0, 10.2, 1, 8.0, color, 0);
 	TE_SendToAll();
 	UserLoc[2] += 50.0;
-	fl_spin_to_win_Origin_Vec[client] = UserLoc;
+	fl_AbilityVectorData[client] = UserLoc;
 	
 	UserLoc[2] += 45.0;
 	float Range = 10.0*charge_time*1.7;
-
 	
 	spawnRing_Vectors(UserLoc, Range * 2.1, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, charge_time*1.7, 6.0, 0.1, 1, 1.0);
 	UserLoc[2] -= 12.5;
@@ -796,7 +738,7 @@ public Action Spin_To_Win_Activate_Timer(Handle timer, int ref)
 		
 	Ikunagae npc = view_as<Ikunagae>(client);
 	
-	CreateTimer(fl_spin_to_win_duration[npc.index], Spin_To_Win_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(npc.m_flSpinToWinDuration, Spin_To_Win_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, Spin_To_Win_TBB_Tick);
 	
 	return Plugin_Continue;
@@ -822,26 +764,26 @@ public Action Spin_To_Win_TBB_Tick(int client)
 	}
 	
 	float UserLoc[3], UserAng[3];
-	UserLoc = fl_spin_to_win_Origin_Vec[client];
+	UserLoc = fl_AbilityVectorData[client];
 	
 	UserAng[0] = 0.0;
-	UserAng[1] = fl_Spin_to_win_Angle[npc.index];
+	UserAng[1] = npc.m_flAnglesSpinToWin;
 	UserAng[2] = 0.0;
 	
 	float CustomAng = 1.0;
 	float distance = 100.0;
 	
-	fl_Spin_to_win_Angle[npc.index] += 1.5;
+	npc.m_flAnglesSpinToWin += 1.5;
 	
-	if (fl_Spin_to_win_Angle[npc.index] >= 360.0)
+	if (npc.m_flAnglesSpinToWin >= 360.0)
 	{
-		fl_Spin_to_win_Angle[npc.index] = 0.0;
+		npc.m_flAnglesSpinToWin = 0.0;
 	}
-	int testing = i_spin_to_win_Severity[npc.index];
-	if(i_spin_to_win_throttle[npc.index]> RoundToFloor(15*TickrateModify))//Very fast
+	int testing = npc.m_iState;
+	if(fl_BEAM_ThrottleTime[npc.index] < GetGameTime(npc.index))//Very fast
 	{
-		i_spin_to_win_throttle[npc.index] = 0;
-		if(b_spin_to_win_Alternate[npc.index])
+		fl_BEAM_ThrottleTime[npc.index] = GetGameTime(npc.index) + 0.25;
+		if(npc.m_iBarrageBooleanThing)
 		{
 			for(int j=0 ; j<=1 ; j++)
 			{
@@ -887,12 +829,8 @@ public Action Spin_To_Win_TBB_Tick(int client)
 			}
 		}
 	}
-	i_spin_to_win_throttle[npc.index]++;
 	return Plugin_Continue;
 }
-
-static int Spin_To_Win_Damage_Multi[MAXENTITIES];
-
 static void Spin_To_Win_attack(int client, float endLoc[3], int type)
 {
 	
@@ -902,7 +840,7 @@ static void Spin_To_Win_attack(int client, float endLoc[3], int type)
 	{
 		case 0:
 		{
-			npc.FireParticleRocket(endLoc, 25.0*Spin_To_Win_Damage_Multi[client] , 300.0 , 100.0 , "raygun_projectile_blue_crit",_,_,true,fl_spin_to_win_Origin_Vec[client]);
+			npc.FireParticleRocket(endLoc, 25.0 , 300.0 , 100.0 , "raygun_projectile_blue_crit",_,_,true,fl_AbilityVectorData[client]);
 			r = 41;
 			g = 146;
 			b = 158;
@@ -910,7 +848,7 @@ static void Spin_To_Win_attack(int client, float endLoc[3], int type)
 		}
 		case 1:
 		{
-			npc.FireParticleRocket(endLoc, 25.0*Spin_To_Win_Damage_Multi[client] , 300.0 , 100.0 , "raygun_projectile_red_crit",_,_,true,fl_spin_to_win_Origin_Vec[client]);
+			npc.FireParticleRocket(endLoc, 25.0, 300.0 , 100.0 , "raygun_projectile_red_crit",_,_,true,fl_AbilityVectorData[client]);
 			r = 158;
 			g = 146;
 			b = 41;
@@ -924,15 +862,14 @@ static void Spin_To_Win_attack(int client, float endLoc[3], int type)
 	color[2] = b;
 	color[3] = a;
 	float Aya_UserLoc[3];
-	Aya_UserLoc = fl_spin_to_win_Origin_Vec[client];
+	Aya_UserLoc = fl_AbilityVectorData[client];
 									
-	TE_SetupBeamPoints(endLoc, Aya_UserLoc, gLaser2, 0, 0, 0, 0.3, 22.0, 10.2, 0, 4.0, color, 0);
+	TE_SetupBeamPoints(endLoc, Aya_UserLoc, g_Ruina_BEAM_lightning, 0, 0, 0, 0.3, 22.0, 10.2, 0, 4.0, color, 0);
 	TE_SendToAll();
 			//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 }
-static void Spin_To_Win_Clearance_Check(int client)
+static bool Spin_To_Win_Clearance_Check(int client)
 {
-	
 	float UserLoc[3], Angles[3];
 	GetAbsOrigin(client, UserLoc);
 	float distance = 100.0;
@@ -955,7 +892,7 @@ static void Spin_To_Win_Clearance_Check(int client)
 		
 		float endPoint[3];
 	
-		Handle trace = TR_TraceRayFilterEx(UserLoc, Angles, 11, RayType_Infinite, Scaramouche_BEAM_TraceWallsOnly);
+		Handle trace = TR_TraceRayFilterEx(UserLoc, Angles, 11, RayType_Infinite, Ruina_Laser_BEAM_TraceWallsOnly);
 		if(TR_DidHit(trace))
 		{
 			TR_GetEndPosition(endPoint, trace);
@@ -984,25 +921,16 @@ static void Spin_To_Win_Clearance_Check(int client)
 		}
 		delete trace;
 	}
-	if(Total_Hit/360>=0.75)
-	{
-		clearance[client]=true;
-	}
-	else
-	{
-		clearance[client]=false;
-	}
+	return (Total_Hit/360>=0.75);
 }
 ///barrage attack Core.
 
-static void Normal_Attack_Start(int client, int target, float damgae, bool alternate)
+static void Barrage_Attack_Start(int client, int target, float damgae, bool alternate)
 {
-	
 	Ikunagae npc = view_as<Ikunagae>(client);
 	
 	float Angles[3], distance = 100.0, UserLoc[3];
-				
-				
+	
 	GetAbsOrigin(npc.index, UserLoc);
 	
 	UserLoc[2] += 50.0;
@@ -1053,14 +981,14 @@ static void Normal_Attack_Start(int client, int target, float damgae, bool alter
 			}
 			float tempAngles[3], endLoc[3], Direction[3];
 			tempAngles[0] = Angles[0];
-			tempAngles[1] = Angles[1] + type*Normal_Attack_Angles[npc.index]+alpha;
+			tempAngles[1] = Angles[1] + type*npc.m_flAnglesAbility+alpha;
 			tempAngles[2] = 0.0;
 														
 			GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
 			ScaleVector(Direction, distance);
 			AddVectors(UserLoc, Direction, endLoc);
 											
-			TE_SetupBeamPoints(endLoc, UserLoc, gLaser2, 0, 0, 0, 0.2, 22.0, 10.2, 0, 4.0, color, 0);
+			TE_SetupBeamPoints(endLoc, UserLoc, g_Ruina_BEAM_lightning, 0, 0, 0, 0.2, 22.0, 10.2, 0, 4.0, color, 0);
 			TE_SendToAll();
 			
 			npc.FireParticleRocket(endLoc, damgae , 450.0 , 100.0 , "raygun_projectile_blue");
@@ -1072,7 +1000,7 @@ static void Normal_Attack_Start(int client, int target, float damgae, bool alter
 	{
 		float tempAngles[3], endLoc[3], Direction[3];
 		tempAngles[0] = /*-32.5+*/Angles[0];
-		tempAngles[1] = Angles[1] + Normal_Attack_Angles[npc.index]-90;
+		tempAngles[1] = Angles[1] + npc.m_flAnglesAbility-90;
 		tempAngles[2] = 0.0;
 													
 		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
@@ -1091,7 +1019,7 @@ static void Normal_Attack_Start(int client, int target, float damgae, bool alter
 		color[2] = b;
 		color[3] = a;
 										
-		TE_SetupBeamPoints(endLoc, UserLoc, gLaser2, 0, 0, 0, 0.8, 22.0, 10.2, 10, 4.0, color, 0);
+		TE_SetupBeamPoints(endLoc, UserLoc, g_Ruina_BEAM_lightning, 0, 0, 0, 0.8, 22.0, 10.2, 10, 4.0, color, 0);
 		TE_SendToAll();
 		
 		npc.FireParticleRocket(endLoc, damgae , 450.0 , 100.0 , "raygun_projectile_blue");
@@ -1108,293 +1036,48 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
-	float Health_Current = Health * 100 / MaxHealth;
-	
-	if(Health_Current>90)
+	float Ratio = Health / MaxHealth;
+
+	int spin_min = 2;
+	int spin_max = 6;
+
+	int barrage_min = 6;
+	int barrage_max = 24;
+
+	float scara_min = 0.5;
+	float scara_max = 3.0;
+
+	npc.m_iBarrageBooleanThing = (Ratio < 0.4);
+
+	npc.m_iState = RoundToCeil(spin_min + (spin_max - spin_min) * (1.0-Ratio));
+	npc.m_iBarrageSeverity= RoundToCeil(barrage_min + (barrage_max - barrage_min) * (1.0-Ratio));
+	npc.m_flScaraSeverity = scara_min + (scara_max - scara_min) * Ratio;
+	/*
+	if((ZR_Waves_GetRound()+1)==59)	//Makes it so the spam on wave 59 doesn't absoluetly annihialate the server.
 	{
-		i_Severity_Spin_To_Win[npc.index] = 2;
-		b_Severity_Spin_To_Win[npc.index] = false;
-		i_Severity_Barrage[npc.index] = 6;
-		fl_Severity_Scaramouche[npc.index] = 3.0; //The timer thats used to attack on this ability
-		Spin_To_Win_Damage_Multi[npc.index] = 1;
+		npc.m_iBarrageSeverity= 4;
 	}
-	else if(Health_Current>80)
-	{
-		i_Severity_Barrage[npc.index] = 8;
-		fl_Severity_Scaramouche[npc.index] = 2.9;
-	}
-	else if(Health_Current>70)
-	{
-		i_Severity_Spin_To_Win[npc.index] = 3;
-		i_Severity_Barrage[npc.index] = 10;
-		fl_Severity_Scaramouche[npc.index] = 2.85;
-	}
-	else if(Health_Current>60)
-	{
-		i_Severity_Barrage[npc.index] = 12;
-		fl_Severity_Scaramouche[npc.index] = 2.8;
-		i_Severity_Spin_To_Win[npc.index] = 4;
-	}
-	else if(Health_Current>50)
-	{
-		i_Severity_Spin_To_Win[npc.index] = 4;
-		i_Severity_Barrage[npc.index] = 12;
-		fl_Severity_Scaramouche[npc.index] = 2.75;
-		Spin_To_Win_Damage_Multi[npc.index] = 2;
-	}
-	else if(Health_Current>40)
-	{
-		i_Severity_Spin_To_Win[npc.index] = 2;
-		b_Severity_Spin_To_Win[npc.index] = true;
-		i_Severity_Barrage[npc.index] = 13;
-		fl_Severity_Scaramouche[npc.index] = 2.70;
-	}
-	else if(Health_Current>30)
-	{
-		Spin_To_Win_Damage_Multi[npc.index] = 3;
-		i_Severity_Barrage[npc.index] = 13;
-		fl_Severity_Scaramouche[npc.index] = 2.60;
-	}
-	else if(Health_Current>20)
-	{
-		Spin_To_Win_Damage_Multi[npc.index] = 6;
-		i_Severity_Spin_To_Win[npc.index] = 4;
-		fl_Severity_Scaramouche[npc.index] = 2.25;
-		i_Severity_Barrage[npc.index] = 14;
-	}
-	else if(Health_Current>10)
-	{
-		fl_Severity_Scaramouche[npc.index] = 1.75;
-		Spin_To_Win_Damage_Multi[npc.index] = 6;
-		i_Severity_Barrage[npc.index] = 16;
-	}
-	else	// THATS IT YOU FUCKERS
-	{
-		fl_Severity_Scaramouche[npc.index] = 0.5;
-		Spin_To_Win_Damage_Multi[npc.index] = 6;
-		i_Severity_Barrage[npc.index] = 24;
-	}
-	
-	if((Waves_GetRound()+1)==59)	//Makes it so the spam on wave 59 doesn't absoluetly annihialate the server.
-	{
-		i_Severity_Barrage[npc.index] = 4;
-	}
+	*/
 }
 
 ///Primary Long attack core
 
-static void Normal_Attack_BEAM_Iku_Ability(int client)
+static void Iku_NormAttackTick(Ikunagae npc)
 {
-	for (int building = 1; building < MaxClients; building++)
-	{
-		Ikunagae_BEAM_BuildingHit[building] = false;
-	}
-			
-	Ikunagae_BEAM_IsUsing[client] = false;
-	Ikunagae_BEAM_TicksActive[client] = 0;
-
-	Ikunagae_BEAM_CanUse[client] = true;
-	Ikunagae_BEAM_CloseDPT[client] = 30.0;
-	Ikunagae_BEAM_FarDPT[client] = 25.0;
-	Ikunagae_BEAM_MaxDistance[client] = 1000;
-	Ikunagae_BEAM_BeamRadius[client] = 10;
-	Ikunagae_BEAM_ColorHex[client] = ParseColor("c1f7f4");
-	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
-	Ikunagae_BEAM_CloseBuildingDPT[client] = 0.0;
-	Ikunagae_BEAM_FarBuildingDPT[client] = 0.0;
-	Ikunagae_BEAM_Duration[client] = 0.25;
-	
-	Ikunagae_BEAM_BeamOffset[client][0] = 0.0;
-	Ikunagae_BEAM_BeamOffset[client][1] = 0.0;
-	Ikunagae_BEAM_BeamOffset[client][2] = 0.0;
-
-	Ikunagae_BEAM_ZOffset[client] = 0.0;
-	Ikunagae_BEAM_UseWeapon[client] = false;
-
-	Ikunagae_BEAM_IsUsing[client] = true;
-	Ikunagae_BEAM_TicksActive[client] = 0;
-
-	CreateTimer(Ikunagae_BEAM_Duration[client], Ikunagae_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-	SDKHook(client, SDKHook_Think, Ikunagae_TBB_Tick);
-	
-}
-static Action Ikunagae_TBB_Timer(Handle timer, int ref)
-{
-	int client = EntRefToEntIndex(ref);
-	if(!IsValidEntity(client))
-		return Plugin_Continue;
-
-	Ikunagae_BEAM_IsUsing[client] = false;
-	
-	Ikunagae_BEAM_TicksActive[client] = 0;
-	
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	
-	return Plugin_Continue;
-}
-
-static bool Ikunagae_BEAM_TraceWallsOnly(int entity, int contentsMask)
-{
-	return !entity;
-}
-
-static bool Ikunagae_BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsEntityAlive(entity))
-	{
-		Ikunagae_BEAM_HitDetected[entity] = true;
-	}
-	return false;
-}
-static void Ikunagae_GetBeamDrawStartPoint(int client, float startPoint[3])
-{
-	float angles[3];
-	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	GetAbsOrigin(client, startPoint);
-	startPoint[2] += 50.0;
-	
-	Ikunagae npc = view_as<Ikunagae>(client);
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-			return;	
-	float flPitch = npc.GetPoseParameter(iPitch);
-	flPitch *= -1.0;
-	angles[0] = flPitch;
-	GetAbsOrigin(client, startPoint);
-	startPoint[2] += 50.0;
-	
-	if (0.0 == Ikunagae_BEAM_BeamOffset[client][0] && 0.0 == Ikunagae_BEAM_BeamOffset[client][1] && 0.0 == Ikunagae_BEAM_BeamOffset[client][2])
-	{
+	if(fl_BEAM_ChargeUpTime[npc.index] > GetGameTime(npc.index))
 		return;
-	}
-	float tmp[3];
-	float actualBeamOffset[3];
-	tmp[0] = Ikunagae_BEAM_BeamOffset[client][0];
-	tmp[1] = Ikunagae_BEAM_BeamOffset[client][1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, angles, actualBeamOffset);
-	actualBeamOffset[2] = Ikunagae_BEAM_BeamOffset[client][2];
-	startPoint[0] += actualBeamOffset[0];
-	startPoint[1] += actualBeamOffset[1];
-	startPoint[2] += actualBeamOffset[2];
-}
 
-static Action Ikunagae_TBB_Tick(int client)
-{
-	static int tickCountClient[MAXENTITIES];
-	if(!IsValidEntity(client) || !Ikunagae_BEAM_IsUsing[client])
-	{
-		tickCountClient[client] = 0;
-		SDKUnhook(client, SDKHook_Think, Ikunagae_TBB_Tick);
-	}
-
-	int tickCount = tickCountClient[client];
-	tickCountClient[client]++;
-
-	Ikunagae_BEAM_TicksActive[client] = tickCount;
-	float diameter = float(Ikunagae_BEAM_BeamRadius[client] * 4);
-	int r = GetR(Ikunagae_BEAM_ColorHex[client]);
-	int g = GetG(Ikunagae_BEAM_ColorHex[client]);
-	int b = GetB(Ikunagae_BEAM_ColorHex[client]);
-	if (Ikunagae_BEAM_ChargeUpTime[client] <= tickCount)
-	{
-		static float angles[3];
-		static float startPoint[3];
-		static float endPoint[3];
-		static float hullMin[3];
-		static float hullMax[3];
-		static float playerPos[3];
-		GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-		Ikunagae npc = view_as<Ikunagae>(client);
-		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return Plugin_Continue;
-			
-		float flPitch = npc.GetPoseParameter(iPitch);
-		flPitch *= -1.0;
-		angles[0] = flPitch;
-		GetAbsOrigin(client, startPoint);
-		startPoint[2] += 50.0;
-
-		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Ikunagae_BEAM_TraceWallsOnly);
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
-			ConformLineDistance(endPoint, startPoint, endPoint, float(Ikunagae_BEAM_MaxDistance[client]));
-			float lineReduce = Ikunagae_BEAM_BeamRadius[client] * 2.0 / 3.0;
-			float curDist = GetVectorDistance(startPoint, endPoint, false);
-			if (curDist > lineReduce)
-			{
-				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
-			}
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				Ikunagae_BEAM_HitDetected[i] = false;
-			}
-			
-			
-			hullMin[0] = -float(Ikunagae_BEAM_BeamRadius[client]);
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, Ikunagae_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete trace;
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
-			{
-				if (Ikunagae_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
-				{
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = Ikunagae_BEAM_CloseDPT[client] + (Ikunagae_BEAM_FarDPT[client]-Ikunagae_BEAM_CloseDPT[client]) * (distance/Ikunagae_BEAM_MaxDistance[client]);
-					if (damage < 0)
-						damage *= -1.0;
-
-
-					if(ShouldNpcDealBonusDamage(victim))
-					{
-						damage *= 5.0;
-					}
-					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
-				}
-			}
-			
-			static float belowBossEyes[3];
-			Ikunagae_GetBeamDrawStartPoint(client, belowBossEyes);
-			int colorLayer4[4];
-			SetColorRGBA(colorLayer4, r, g, b, 30);
-			int colorLayer3[4];
-			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 30);
-			int colorLayer2[4];
-			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
-			int colorLayer1[4];
-			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Ikunagae_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Ikunagae_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Ikunagae_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Ikunagae_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
-			TE_SendToAll(0.0);
-			int glowColor[4];
-			SetColorRGBA(glowColor, r, g, b, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, Ikunagae_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
-			TE_SendToAll(0.0);
-		}
-		else
-		{
-			delete trace;
-		}
-		delete trace;
-	}
-	return Plugin_Continue;
+	Basic_NPC_Laser Data;
+	Data.npc = npc;
+	Data.Radius = 10.0;
+	Data.Range = 1000.0;
+	//divided by 6 since its every tick, and by TickrateModify
+	Data.Close_Dps = 60.0 / 6.0 / TickrateModify;
+	Data.Long_Dps = 45.0 / 6.0 / TickrateModify;
+	Data.Color = {193, 247, 244, 30};
+	Data.DoEffects = true;
+	GetAttachment(npc.index, "effect_hand_r", Data.EffectsStartLoc, NULL_VECTOR);
+	Basic_NPC_Laser_Logic(Data);
 }
 
 ///Npc Spawn Core

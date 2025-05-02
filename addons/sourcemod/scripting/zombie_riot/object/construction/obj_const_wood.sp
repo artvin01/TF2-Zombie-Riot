@@ -20,8 +20,8 @@ void ObjectWood_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_wood");
-	build.Cost = 3000;
-	build.Health = 150;
+	build.Cost = 1000;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -36,12 +36,13 @@ methodmap ObjectWood < ObjectGeneric
 {
 	public ObjectWood(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectWood npc = view_as<ObjectWood>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/tractor_01.mdl", _, "600", {114.0, 114.0, 150.0}));
+		ObjectWood npc = view_as<ObjectWood>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/tractor_01.mdl", "0.8", "600", {80.0, 80.0, 80.0}));
 		
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.m_bConstructBuilding = true;
 
 		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 130.0;
 
@@ -116,6 +117,13 @@ static bool ClotInteract(int client, int weapon, ObjectWood npc)
 {
 	if(!ClotCanUse(npc, client))
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+
+	if((GetURandomInt() % 3) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+	{
+		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 65.0;
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}

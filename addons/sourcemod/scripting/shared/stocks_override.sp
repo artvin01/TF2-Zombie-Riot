@@ -36,10 +36,16 @@ stock void Stock_SetEntityMoveType(int entity, MoveType mt)
 		ThrowError("Do not dare! Dont set SetEntityMoveType on an NPC that isnt MOVECUSTOM.");
 		return;
 	}
-	else
+
+#if defined ZR
+	if(entity > 0 && entity <= MaxClients && Vehicle_Driver(entity) != -1)
 	{
-		SetEntityMoveType(entity, mt);
+		// Nuh uh, we're driving
+		mt = MOVETYPE_NONE;
 	}
+#endif
+	
+	SetEntityMoveType(entity, mt);
 }
 
 #define SetEntityMoveType Stock_SetEntityMoveType
@@ -493,20 +499,34 @@ void Edited_EmitSoundToAll(const char[] sample,
 	*/
 	if(sample[0] != '#')
 	{
-
-		for(int client=1; client<=MaxClients; client++)
+		if(entity > 0 && b_ThisWasAnNpc[entity])
 		{
-			if(IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
+			for(int client=1; client<=MaxClients; client++)
 			{
-				float volumeedited = volume;
-				if(entity > 0 && b_ThisWasAnNpc[entity])
+				if((f_ZombieVolumeSetting[client] + 1.0) != 0.0 && IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
 				{
+					float volumeedited = volume;
+					if(EnableSilentMode && !b_thisNpcIsARaid[entity])
+					{
+						if(RecentSoundList[client].FindString(sample) != -1)
+							continue;
+						
+						RecentSoundList[client].PushString(sample);
+						CreateTimer(0.1, Timer_RecentSoundRemove, client);	
+						volumeedited *= 0.7; //Silent-er.
+						//	level = RoundToCeil(float(level) * 0.85);
+						//dont change level
+					}
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
+					if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client,entity,channel,level,flags,pitch,speakerentity,origin,dir,updatePos,soundtime))
+						EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
 				}
-				if(volumeedited > 0.0 && !AprilFoolsSoundDo(volumeedited, client,entity,channel,level,flags,pitch,speakerentity,origin,dir,updatePos,soundtime))
-					EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
-			}
-		}		
+			}	
+		}	
+		else
+		{
+			EmitSoundToAll(sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
+		}
 	}
 	else
 	{
@@ -518,7 +538,6 @@ void Edited_EmitSoundToAll(const char[] sample,
 			}
 		}
 	}
-		
 }
 
 #define EmitSoundToAll Edited_EmitSoundToAll

@@ -264,7 +264,7 @@ public void Adiantum_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float dmg = 30.0;
-								if(Waves_GetRound()>40)
+								if(ZR_Waves_GetRound()>40)
 								{
 									dmg=50.0;
 								}

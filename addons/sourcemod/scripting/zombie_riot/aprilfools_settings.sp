@@ -16,20 +16,20 @@ void CheckAprilFools()
 		PrecacheModel("models/steamhappy.mdl");
 		PrecacheModel("materials/hud/leaderboard_class_steamhappy.vtf");
 		PrecacheModel("materials/hud/leaderboard_class_steamhappy.vmt");
-		AddFileToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vtf");	
-		AddFileToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vmt");		
-		AddFileToDownloadsTable("models/steamhappy.dx80.vtx");			
-		AddFileToDownloadsTable("models/steamhappy.dx90.vtx");			
-		AddFileToDownloadsTable("models/steamhappy.mdl");			
-		AddFileToDownloadsTable("models/steamhappy.vvd");			
-		AddFileToDownloadsTable("models/steamhappy.dx90.vtx");	
-		AddFileToDownloadsTable("materials/steamhappy/happycolors.vmt");		
-		AddFileToDownloadsTable("materials/steamhappy/happycolorable.vmt");		
-		AddFileToDownloadsTable("materials/steamhappy/eye.vmt");		
-		AddFileToDownloadsTable("materials/steamhappy/happycolors.vtf");
-		AddFileToDownloadsTable("materials/steamhappy/happycolorable.vtf");
-		AddFileToDownloadsTable("materials/steamhappy/eye.vtf");
-		AddFileToDownloadsTable("sound/zombie_riot/yippe.mp3");
+		AddToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vtf");	
+		AddToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vmt");		
+		AddToDownloadsTable("models/steamhappy.dx80.vtx");			
+		AddToDownloadsTable("models/steamhappy.dx90.vtx");			
+		AddToDownloadsTable("models/steamhappy.mdl");			
+		AddToDownloadsTable("models/steamhappy.vvd");			
+		AddToDownloadsTable("models/steamhappy.dx90.vtx");	
+		AddToDownloadsTable("materials/steamhappy/happycolors.vmt");		
+		AddToDownloadsTable("materials/steamhappy/happycolorable.vmt");		
+		AddToDownloadsTable("materials/steamhappy/eye.vmt");		
+		AddToDownloadsTable("materials/steamhappy/happycolors.vtf");
+		AddToDownloadsTable("materials/steamhappy/happycolorable.vtf");
+		AddToDownloadsTable("materials/steamhappy/eye.vtf");
+		AddToDownloadsTable("sound/zombie_riot/yippe.mp3");
 	}
 }
 int AprilFoolsIconOverride()
@@ -95,7 +95,21 @@ bool ModelReplaceDo(int iNpc, int TeamIs)
 void AprilFoolsModelHideWearables(int iNpc)
 {
 	if(f_AprilFoolsSetStuff[iNpc])
-		return;
+	{
+		//Reuse....
+		/*
+		if(!b_thisNpcIsARaid[iNpc])
+		{
+			//If its not a raidboss,then dont send over animation data, it really doesnt make a big difference.
+			//Lets hope it wont break.
+			SetEntProp(iNpc, Prop_Send, "m_bClientSideAnimation", 1);
+		}
+		else
+			SetEntProp(iNpc, Prop_Send, "m_bClientSideAnimation", 0);
+		*/
+
+		f_AprilFoolsSetStuff[iNpc] = 1.0;
+	}
 
 	if(AprilFoolsMode <= 0)
 		return;

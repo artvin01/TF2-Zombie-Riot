@@ -11,8 +11,8 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 	{
 		if(CurrentAmmo[client][Ammo_Hand_Grenade] >= 1)
 		{
-			Give_bomb_back[client] = CreateTimer(60.0 * CooldownReductionAmount(), Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(60.0 * CooldownReductionAmount(), Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
+			Give_bomb_back[client] = CreateTimer(60.0 * CooldownReductionAmount(client), Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(60.0 * CooldownReductionAmount(client), Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
 		//	CreateTimer(59.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 			GrenadeApplyCooldownHud(client, 60.0);
 			if(Handle_on[client])
@@ -26,7 +26,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 			CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
 			Handle_on[client] = true;
 			
-			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + (60.0 * CooldownReductionAmount());
+			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + (60.0 * CooldownReductionAmount(client));
 			
 				
 			ManaCalculationsBefore(client);

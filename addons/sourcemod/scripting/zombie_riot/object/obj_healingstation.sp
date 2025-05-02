@@ -68,6 +68,14 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
+
+	if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+	{
+		Building_Collect_Cooldown[npc.index][client] = GetGameTime() + 5.0;
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+
 	int owner;
 	owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 	ApplyBuildingCollectCooldown(npc.index, client, 90.0);

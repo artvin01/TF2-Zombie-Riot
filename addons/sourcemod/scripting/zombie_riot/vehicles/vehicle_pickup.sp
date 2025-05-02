@@ -3,8 +3,8 @@
 
 void VehiclePickup_Setup()
 {
-	if(!IsFileInDownloads("models/vehicles/pickup03.mdl"))
-		return;
+//	if(!IsFileInDownloads("models/vehicles/pickup03.mdl"))
+//		return;
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pickup Truck");

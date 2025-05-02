@@ -13,6 +13,7 @@ enum
 	Element_Osmosis,
 	Element_Corruption,
 	Element_Burger,
+	Element_Plasma,
 
 	Element_MAX
 }
@@ -26,7 +27,8 @@ static const char ElementName[][] =
 	"VO",
 	"OS",
 	"CO",
-	"FOOD"
+	"FOOD",
+	"PL"
 };
 
 static float LastTime[MAXENTITIES];
@@ -109,7 +111,7 @@ static int TriggerDamage(int entity, int type)
 		{
 			divide = 4.0;
 		}
-		case Element_Void:
+		case Element_Void, Element_Plasma:
 		{
 			divide = 2.0;
 		}
@@ -829,7 +831,7 @@ static char g_Agent_Summons[][] =
 static void Matrix_Spawning(int entity, int count)
 {
 	int summon = GetRandomInt(0, 6);
-	int wave = (Waves_GetRound() + 1);
+	int wave = (ZR_Waves_GetRound() + 1);
 	if(wave >= 30)
 	{
 		summon = GetRandomInt(7, 11);
@@ -903,5 +905,142 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 				}
 			}
 		}
+	}
+}
+
+void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int weapon, bool ignoreArmor = false)
+{
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
+	if(b_NpcIsInvulnerable[victim])
+		return;
+
+	bool melee = (i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE);
+
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(NpcStats_ElementalAmp(victim))
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
+	if(Cheese_GetPenaltyDuration(victim) > GetGameTime())
+	{
+		damage = RoundToNearest(float(damage) * 0.5);
+	}
+	if(victim <= MaxClients) // VS Players, but why?
+	{
+		Armor_DebuffType[victim] = 5;
+		if((f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
+		{
+			if(i_HealthBeforeSuit[victim] > 0)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.25), DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
+					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
+					Cheese_SetPenaltyDuration(victim, 10.0);
+					
+					float position[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+					position[2] += 10.0;
+					for(int i = 0; i < 3; i++)
+					{
+						Cheese_BeamEffect(position);
+						position[2] += 32.5;
+					}
+					Cheese_PlaySplat(victim);
+					Armor_Charge[victim] = 0;
+					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 5.0;
+				}
+			}
+		}
+	}
+	else if(!b_NpcHasDied[victim])	// VS NPCs
+	{
+		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
+		{
+			int trigger = TriggerDamage(victim, Element_Plasma);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_Plasma;
+			ElementDamage[victim][Element_Plasma] += damage;
+			if(ElementDamage[victim][Element_Plasma] > trigger)
+			{
+				ElementDamage[victim][Element_Plasma] = 0;
+				float immunitycd = melee ? 10.0 : 15.0;
+				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + immunitycd;
+
+				// i am pap
+				int paplvl = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+				float cheesedmg;
+				if(paplvl > 1)
+				{
+					cheesedmg = (675.0 * (paplvl + paplvl));
+				}
+				else if(paplvl > 3)
+				{
+					cheesedmg = (810.0 * (paplvl + paplvl));
+				}
+				else
+				{
+					cheesedmg = 500.0 * (1 + paplvl);
+				}
+
+				if(b_thisNpcIsARaid[victim])
+				{
+					cheesedmg *= 3.0;
+					ApplyStatusEffect(attacker, victim, "Plasm I", 5.0);
+					Cheese_SetPenaltyDuration(victim, immunitycd + 20.0);
+				}
+				else if(b_thisNpcIsABoss[victim])
+				{
+					cheesedmg *= 2.25;
+					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
+					Cheese_SetPenaltyDuration(victim, immunitycd + 10.0);
+				}
+				else
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm II", 10.0);
+				}
+
+				if(melee) // if applied via melee, slight dmg boost.
+					cheesedmg *= 1.25;
+
+				if(cheesedmg > float(ReturnEntityMaxHealth(victim)))
+					cheesedmg = float(ReturnEntityMaxHealth(victim));
+
+				if(melee) // if applied via melee, change dmg type to melee.
+					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
+				else
+					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, weapon);
+
+				float position[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+				position[2] += 10.0;
+				for(int i = 0; i < 3; i++)
+				{
+					Cheese_BeamEffect(position);
+					position[2] += 32.5;
+				}
+				Cheese_PlaySplat(victim);
+			}
+		}
+	}
+	else if(i_IsABuilding[victim])
+	{
+		// no effect yet
 	}
 }

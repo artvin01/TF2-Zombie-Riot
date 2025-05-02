@@ -37,10 +37,6 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/sniper_railgun_world_reload.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-
 void Sniper_railgunner_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -48,7 +44,7 @@ void Sniper_railgunner_OnMapStart_NPC()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/sniper.mdl");
@@ -68,8 +64,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return Sniper_railgunner(vecPos, vecAng, team);
 }
-
-static int i_overcharge[MAXENTITIES];
 
 methodmap Sniper_railgunner < CClotBody
 {
@@ -126,7 +120,7 @@ methodmap Sniper_railgunner < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
 	}
@@ -165,7 +159,7 @@ methodmap Sniper_railgunner < CClotBody
 		
 		npc.Anger = false;
 		
-		i_overcharge[npc.index] = 0;
+		i_ammo_count[npc.index] = 0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/sniper/sniper_zombie.mdl");
 		SetVariantString("1.0");
@@ -284,18 +278,18 @@ static void Internal_ClotThink(int iNPC)
 							speed = 1250.0;
 							damage = 50.0;
 							
-							if(i_overcharge[npc.index] > 5 && !NpcStats_IsEnemySilenced(npc.index))	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
+							if(i_ammo_count[npc.index] > 5 && !NpcStats_IsEnemySilenced(npc.index))	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
 							{
 								speed = 2000.0;
 								damage = 50.0;
-								i_overcharge[npc.index] = 0;
+								i_ammo_count[npc.index] = 0;
 								npc.m_flNextMeleeAttack = GameTime + 7.0;	//long reload, the gun overheated from the charge shot.
 								npc.PlayMeleeSound();
 								if(flDistanceToTarget < 1000000)	//doesn't predict over 1000 hu
 								{
 									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
-								if(Waves_GetRound()<40)
+								if(ZR_Waves_GetRound()<40)
 								{
 									damage=20.0;
 								}
@@ -309,13 +303,13 @@ static void Internal_ClotThink(int iNPC)
 								{
 									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
-								if(Waves_GetRound()<40)
+								if(ZR_Waves_GetRound()<40)
 								{
 									damage=25.0;
 								}
 								npc.FireArrow(vecTarget, damage, speed);
 								npc.m_flNextMeleeAttack = GameTime + 1.75;
-								i_overcharge[npc.index]++;
+								i_ammo_count[npc.index]++;
 								npc.PlayRangedSound();
 							}	
 							npc.m_flJumpStartTime = GameTime + 0.9;

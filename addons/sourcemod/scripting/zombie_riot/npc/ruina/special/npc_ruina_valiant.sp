@@ -114,17 +114,13 @@ methodmap Valiant < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -288,13 +284,13 @@ methodmap Valiant < CClotBody
 			}
 
 			float maxrange = 2500.0;
-			int Decicion = TeleportDiversioToRandLocation(spawn_index,true, maxrange, 500.0);
+			int Decicion = TeleportDiversioToRandLocation(npc.index,true, maxrange, 500.0);
 
 			if(Decicion == 2)
-				Decicion = TeleportDiversioToRandLocation(spawn_index, true, maxrange, 250.0);
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, maxrange, 250.0);
 
 			if(Decicion == 2)
-				Decicion = TeleportDiversioToRandLocation(spawn_index, true, maxrange, 0.0);
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, maxrange, 0.0);
 		}
 
 		float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec); float sky_loc[3]; sky_loc = npc_vec; sky_loc[2]+=999.0;

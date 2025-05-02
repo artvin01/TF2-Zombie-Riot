@@ -67,7 +67,7 @@ methodmap ObjectTinkerGrill < ObjectGeneric
 			switch(i)
 			{
 				case 0:
-					npc.m_iWearable7 = entity;
+					npc.m_iWearable3 = entity;
 				case 1:
 					npc.m_iWearable4 = entity;
 				case 2:
@@ -86,7 +86,7 @@ methodmap ObjectTinkerGrill < ObjectGeneric
 		switch(pos)
 		{
 			case 0:
-				return this.m_iWearable7;
+				return this.m_iWearable3;
 			case 1:
 				return this.m_iWearable4;
 			case 2:
@@ -218,6 +218,13 @@ static bool ClotInteract(int client, int weapon, ObjectTinkerGrill npc)
 {
 	if(!ClotCanUse(npc, client))
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+
+	if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+	{
+		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 5.0;
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}

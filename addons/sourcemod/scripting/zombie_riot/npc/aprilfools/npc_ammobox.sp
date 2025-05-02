@@ -8,15 +8,6 @@ static const char g_MeleeHitSounds[][] = {
 	"mvm/melee_impacts/bottle_hit_robo02.wav",
 	"mvm/melee_impacts/bottle_hit_robo03.wav",
 };
-
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/shovel_swing.wav",
-};
-
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-
 void AmmoBox_OnMapStart()
 {
 	PrecacheModel(NPCModel);
@@ -40,21 +31,10 @@ static int Garrison[MAXENTITIES];
 
 methodmap AmmoBox < CClotBody
 {
-	public void PlayMeleeSound()
-	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
-	
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-
-	public void PlayMeleeMissSound()
-	{
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-	}
-	
 	public AmmoBox(float vecPos[3], int ally, const char[] data)
 	{
 		AmmoBox npc = view_as<AmmoBox>(CClotBody(vecPos, {0.0, 0.0, 0.0}, NPCModel, "1.0", "30000", ally, false, true));
@@ -429,7 +409,7 @@ public Action Ammo_Spawner_Delay(Handle timer, DataPack pack)
 {
 	GiveProgressDelay(1.0);
 	//Keep waiting.
-	if(MaxEnemiesAllowedSpawnNext(1) < EnemyNpcAlive)
+	if(MaxEnemiesAllowedSpawnNext(1) < (EnemyNpcAlive - EnemyNpcAliveStatic))
 		return Plugin_Continue;
 
 	pack.Reset();

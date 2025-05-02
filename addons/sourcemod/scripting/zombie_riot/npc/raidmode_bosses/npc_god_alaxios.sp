@@ -37,9 +37,6 @@ static char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
 static char g_SlamSounds[][] = {
 	"ambient/rottenburg/barrier_smash.wav"
@@ -114,7 +111,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSoundCustom(g_HurtSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));        i++) { PrecacheSound(g_MeleeHitSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));        i++) { PrecacheSound(g_MeleeAttackSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));        i++) { PrecacheSound(g_MeleeMissSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));        i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
 	PrecacheSoundCustom("#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
@@ -130,7 +127,7 @@ static void ClotPrecache_SeaAlaxios()
 	for (int i = 0; i < (sizeof(g_SeaHurtSounds));        i++) { PrecacheSoundCustom(g_SeaHurtSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));        i++) { PrecacheSound(g_MeleeHitSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));        i++) { PrecacheSound(g_MeleeAttackSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));        i++) { PrecacheSound(g_MeleeMissSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));        i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
 	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
@@ -149,7 +146,6 @@ static float f_AlaxiosCantDieLimit[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
-int Alaxiosspeedint[MAXENTITIES];
 methodmap GodAlaxios < CClotBody
 {
 	property float m_flAlaxiosBuffEffect
@@ -246,7 +242,7 @@ methodmap GodAlaxios < CClotBody
 	}
 	public void PlayMeleeMissSound() 
 	{
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlaySlamSound() 
 	{
@@ -299,7 +295,6 @@ methodmap GodAlaxios < CClotBody
 		npc.m_iChanged_WalkCycle = 4;
 		npc.SetActivity("ACT_WALK");
 		npc.m_flSpeed = 320.0;
-		Alaxiosspeedint[npc.index] = 320;
 	
 		npc.m_flMeleeArmor = 1.25;
 		
@@ -420,7 +415,7 @@ methodmap GodAlaxios < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
 		npc.Anger = false;
@@ -854,22 +849,16 @@ public void GodAlaxios_ClotThink(int iNPC)
 		}
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 	}
-	//float point impresicion...
-	if(Alaxiosspeedint[npc.index] == 320)
+	if(npc.m_flSpeed >= 1.0)
 	{
 		if(HasSpecificBuff(npc.index, "Godly Motivation"))
 		{
 			npc.m_flSpeed = 220.0;
-			Alaxiosspeedint[npc.index] = 220;
 		}
-	}
-	else if(Alaxiosspeedint[npc.index] == 220)
-	{
-		if(!HasSpecificBuff(npc.index, "Godly Motivation"))
+		else if(!HasSpecificBuff(npc.index, "Godly Motivation"))
 		{
-			Alaxiosspeedint[npc.index] = 320;
 			npc.m_flSpeed = 320.0;
-		}		
+		}	
 	}
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -1035,7 +1024,6 @@ public void GodAlaxios_ClotThink(int iNPC)
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
 				
-				Alaxiosspeedint[npc.index] = 0;
 				npc.m_flSpeed = 0.0;
 				if(npc.m_bPathing)
 				{
@@ -1115,7 +1103,6 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		return Plugin_Continue;
 		
 	GodAlaxios npc = view_as<GodAlaxios>(victim);
-
 	if(npc.m_flReviveAlaxiosTime > GetGameTime(npc.index))
 	{
 		damage = 0.0;
@@ -1538,6 +1525,10 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	if(health != 0)
 	{
 		enemy.Health = health;
+		if(!is_a_boss)
+		{
+			enemy.Health = RoundToNearest(float(enemy.Health) * MultiGlobalHealth);
+		}
 	}
 	enemy.Is_Boss = view_as<int>(is_a_boss);
 	enemy.Is_Immune_To_Nuke = true;
@@ -1548,6 +1539,7 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	enemy.ExtraDamage = 1.0;
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(alaxios);
+	
 	if(!Waves_InFreeplay())
 	{
 		for(int i; i<count; i++)
@@ -1737,7 +1729,7 @@ void GodAlaxiosJumpSpecial(GodAlaxios npc, float gameTime)
 			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 200);
 
 			npc.GetAttachment("weapon_bone", selfpos, flAng);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
 			TE_SendToAll(0.0);
 			spawnRing_Vectors(ThrowPos, Range * 2.0 * zr_smallmapbalancemulti.FloatValue, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.15, 5.0, 0.0, 1);	
 		}
@@ -1773,17 +1765,17 @@ void GodAlaxiosJumpSpecial(GodAlaxios npc, float gameTime)
 			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
 			int colorLayer1[4];
 			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 1.0, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
 			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.9, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.9, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
 			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.8, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.8, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
 			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Laser, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
 			TE_SendToAll(0.0);
 			int glowColor[4];
 			SetColorRGBA(glowColor, r, g, b, 150);
-			TE_SetupBeamPoints(selfpos, ThrowPos, FusionWarrior_BEAM_Glow, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
+			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Glow, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 			TE_SendToAll(0.0);
 			spawnRing_Vectors(ThrowPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.5, 5.0, 0.0, 1,Range * 2.0 * zr_smallmapbalancemulti.FloatValue);	
 			float damage = 600.0;
@@ -1800,7 +1792,6 @@ void GodAlaxiosJumpSpecial(GodAlaxios npc, float gameTime)
 				npc.m_iChanged_WalkCycle = 4;
 				npc.SetActivity("ACT_WALK");
 				npc.StartPathing();
-				Alaxiosspeedint[npc.index] = 320;
 				npc.m_flSpeed = 320.0;
 				npc.m_bisWalking = true;
 			}

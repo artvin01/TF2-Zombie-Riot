@@ -224,12 +224,14 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			XP[client] = results[1].FetchInt(1);
 			if(XP[client] < 0) //no infinite back leveling.
 				XP[client] = 0; 
+			
+			Native_ZR_OnGetXP(client, XP[client], 2);
 			PlayStreak[client] = results[1].FetchInt(2);
 			Scrap[client] = results[1].FetchInt(3);
 			tutorial = results[1].FetchInt(4);
 			Level[client] = XpToLevel(XP[client]);
 			if(Level[client] < 0) //no infinite back leveling.
-				Level[client] = 0; 
+				Level[client] = 0;
 		}
 		else if(!results[1].MoreRows)
 		{
@@ -237,6 +239,8 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			XP[client] = StringToInt(buffer);
 			if(XP[client] < 0) //no infinite back leveling.
 				XP[client] = 0; 
+
+			Native_ZR_OnGetXP(client, XP[client], 2);
 			Level[client] = XpToLevel(XP[client]);
 			if(Level[client] < 0) //no infinite back leveling.
 				Level[client] = 0; 

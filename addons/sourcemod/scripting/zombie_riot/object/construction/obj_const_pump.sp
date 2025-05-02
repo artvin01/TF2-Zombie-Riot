@@ -20,8 +20,8 @@ void ObjectPump_MapStart()
 	BuildingInfo build;
 	build.Section = 2;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_const_pump");
-	build.Cost = 2000;
-	build.Health = 150;
+	build.Cost = 500;
+	build.Health = 50;
 	build.Cooldown = 60.0;
 	build.Func = ClotCanBuild;
 	Building_Add(build);
@@ -42,6 +42,7 @@ methodmap ObjectPump < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		npc.FuncCanBuild = ClotCanBuild;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.m_bConstructBuilding = true;
 
 		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 120.0;
 
@@ -120,7 +121,13 @@ static bool ClotInteract(int client, int weapon, ObjectPump npc)
 		return true;
 	}
 
-	float time = 120.0;
+	if((GetURandomInt() % 3) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+	{
+		Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 60.0;
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+
 	int amount = 10;
 
 	if(Construction_HasNamedResearch("Base Level II"))
@@ -133,6 +140,6 @@ static bool ClotInteract(int client, int weapon, ObjectPump npc)
 		amount *= 2;
 
 	Construction_AddMaterial("water", amount);
-	Building_Collect_Cooldown[npc.index][0] = GetGameTime() + time;
+	Building_Collect_Cooldown[npc.index][0] = GetGameTime() + 120.0;
 	return true;
 }

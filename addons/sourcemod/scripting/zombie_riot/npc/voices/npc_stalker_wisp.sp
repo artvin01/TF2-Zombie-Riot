@@ -7,6 +7,7 @@ static float LastKnownPos[3];
 void Wisp_Setup()
 {
 	PrecacheSound(g_IdleSound);
+	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "?????????????");
@@ -71,18 +72,20 @@ methodmap Wisp < StalkerShared
 			TeleportEntity(entity, vecPos, vecAng, NULL_VECTOR);
 			
 			DispatchKeyValue(entity, "brightness", "9");
-			DispatchKeyValue(entity, "spotlight_radius", "210");
-			DispatchKeyValue(entity, "distance", "210");
-			DispatchKeyValue(entity, "_light", "255 128 0 255");
+			DispatchKeyValue(entity, "spotlight_radius", "128");
+			DispatchKeyValue(entity, "distance", "128");
+			DispatchKeyValue(entity, "_light", "255 128 0 1000");
 			//DispatchKeyValue(entity, "_cone", "-1");
 			DispatchSpawn(entity);
 			ActivateEntity(entity);
 			SetVariantString("!activator");
 			AcceptEntityInput(entity, "SetParent", npc.index);
-			AcceptEntityInput(entity, "LightOn");
+			//AcceptEntityInput(entity, "LightOn");
 		}
 		
 		npc.m_iWearable1 = entity;
+
+		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
@@ -108,8 +111,10 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
-
+	
 	bool forceLeave = (Waves_InSetup() || RaidbossIgnoreBuildingsLogic(1));
+	if(Construction_Mode())
+		forceLeave = (!Construction_Started() || !Construction_InSetup());
 
 	if(!npc.Anger)
 	{
@@ -128,7 +133,11 @@ static void ClotThink(int iNPC)
 				}
 
 				if(IsValidEntity(npc.m_iWearable1))
+				{
+					SetVariantString("255 128 0 1000");
+					AcceptEntityInput(npc.m_iWearable1, "Color");
 					AcceptEntityInput(npc.m_iWearable1, "LightOn");
+				}
 				
 				npc.StartIdleSound();
 			}
@@ -160,8 +169,8 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 2.0;
 	}
 
-	int spawn = npc.m_iTargetAlly;
-	if((!IsValidEntity(spawn) || GetEntProp(spawn, Prop_Data, "m_bDisabled")) && (forceLeave || npc.m_iChaseAnger < 1))
+	int spawn = i_TargetAlly[npc.index];
+	if((!IsValidEntity(spawn)/* || GetEntProp(spawn, Prop_Data, "m_bDisabled")*/) && (forceLeave || npc.m_iChaseAnger < 1))
 	{
 		spawn = -1;
 		float TargetLocation[3];
@@ -172,7 +181,7 @@ static void ClotThink(int iNPC)
 			int entity = i_ObjectsSpawners[entitycount];
 			if(IsValidEntity(entity) && entity != 0)
 			{
-				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) != 2)
+				if(/*!GetEntProp(entity, Prop_Data, "m_bDisabled") && */GetTeam(entity) != 2)
 				{
 					GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 					float distance = GetVectorDistance( vecPos, TargetLocation, true); 
@@ -193,7 +202,7 @@ static void ClotThink(int iNPC)
 			}
 		}
 		
-		npc.m_iTargetAlly = spawn;
+		i_TargetAlly[npc.index] = spawn;
 	}
 
 	if(npc.m_flAttackHappens)
@@ -284,7 +293,12 @@ static void ClotThink(int iNPC)
 		{
 			float vecTarget[3]; GetEntPropVector(spawn, Prop_Data, "m_vecAbsOrigin", vecTarget); 
 			float vecMe[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
+
+			float zpos = vecTarget[2];
+			
+			vecTarget[2] = vecMe[2];
 			float distance = GetVectorDistance(vecTarget, vecMe, true);
+			vecTarget[2] = zpos;
 
 			if(distance > 5000.0)
 			{
@@ -298,7 +312,11 @@ static void ClotThink(int iNPC)
 		npc.StopPathing();
 
 		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetVariantString("0 0 0 0");
+			AcceptEntityInput(npc.m_iWearable1, "Color");
 			AcceptEntityInput(npc.m_iWearable1, "LightOff");
+		}
 		
 		npc.StopIdleSound();
 	}

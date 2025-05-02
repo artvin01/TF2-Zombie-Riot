@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle syncdashhud;
+//static Handle syncdashhud;
 static int Has_a_bob[MAXPLAYERS+1]={0, ...};
 static int bob_owner_id[MAXPLAYERS+1]={0, ...};
 static int who_owns_this_bob[2048]={0, ...};
@@ -68,7 +68,8 @@ static char g_MeleeMissSounds[][] = {
 
 public void BobTheGod_OnPluginStart()
 {
-	syncdashhud = CreateHudSynchronizer();
+	return;
+//	syncdashhud = CreateHudSynchronizer();
 }
 public void BobTheGod_OnMapStart_NPC()
 {
@@ -125,9 +126,7 @@ methodmap BobTheGod < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -319,6 +318,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	{
 		if (IsValidClient(client))
 		{
+			/*
 			SetGlobalTransTarget(client);
 			if(!npc.m_bIsFriendly && npc.m_b_follow && !npc.m_b_stand_still)
 			{
@@ -360,6 +360,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				SetHudTextParams(0.9, 0.72, 0.15, 180, 180, 180, 180);
 				ShowSyncHudText(client, syncdashhud, "%t\n%t [%i/24]\n%t\n%t", "Bob The Second", "Pistol Ammo", npc.m_iAttacksTillReload, "Bob The Second is friendly and doesn't follow you! BUT stands still", "Use voice Commands to command him!");
 			}
+			*/
 			npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.04;
 			npc.Update();
 		}
@@ -563,7 +564,7 @@ public void BobTheGod_ClotThink(int iNPC)
 						npc.m_iAttacksTillReload = 24;
 						npc.PlayRangedReloadSound();
 						npc.m_bReloaded = true;
-					//	PrintHintText(client, "Bob The Second: Reloading!");
+					//	//PrintHintText(client, "Bob The Second: Reloading!");
 					}
 					
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
@@ -691,14 +692,14 @@ public void BobTheGod_ClotThink(int iNPC)
 									{
 									//	int client = who_owns_this_bob[npc.index];
 										SetGlobalTransTarget(client);
-										PrintHintText(client, "%t %t","Bob The Second:", "I got them!");
+										//PrintHintText(client, "%t %t","Bob The Second:", "I got them!");
 										
 									}
 									else
 									{
 									//	int client = who_owns_this_bob[npc.index];
 										SetGlobalTransTarget(client);
-										PrintHintText(client, "%t %t","Bob The Second:", "Take This!");
+										//PrintHintText(client, "%t %t","Bob The Second:", "Take This!");
 										
 										
 										float vAngles[3], vDirection[3];
@@ -772,7 +773,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					npc.m_flSpeed = 260.0;
 					npc.m_bmovedelay_walk = false;
 					npc.m_bmovedelay = false;
-				//	PrintHintText(client, "Bob The Second: I'm coming towards you, sir!");
+				//	//PrintHintText(client, "Bob The Second: I'm coming towards you, sir!");
 				}
 				npc.m_iState = 0;
 			}
@@ -792,7 +793,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					npc.m_flSpeed = 90.0;
 					npc.m_bmovedelay_run = false;
 					npc.m_bmovedelay = false;
-				//	PrintHintText(client, "Bob The Second: Hello, sir!");
+				//	//PrintHintText(client, "Bob The Second: Hello, sir!");
 					npc.m_flidle_talk = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 				}
 				npc.m_iState = 0;
@@ -819,14 +820,14 @@ public void BobTheGod_ClotThink(int iNPC)
 				if(npc.m_bIsFriendly)
 				{
 					SetGlobalTransTarget(client);
-					PrintHintText(client, "%t %t","Bob The Second:", "I'll stand beside you, sir!");
+					//PrintHintText(client, "%t %t","Bob The Second:", "I'll stand beside you, sir!");
 										
 					
 				}
 				else if(!npc.m_bIsFriendly)
 				{
 					SetGlobalTransTarget(client);
-					PrintHintText(client, "%t %t","Bob The Second:", "I'll guard you, sir!");
+					//PrintHintText(client, "%t %t","Bob The Second:", "I'll guard you, sir!");
 					
 				}
 				npc.m_flidle_talk = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
@@ -844,7 +845,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_fbGunout = true;
 				npc.m_bReloaded = false;
 				SetGlobalTransTarget(client);
-				PrintHintText(client, "%t %t","Bob The Second:", "Reloading near you, sir!");
+				//PrintHintText(client, "%t %t","Bob The Second:", "Reloading near you, sir!");
 				
 			}
 			else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flReloadDelay < GetGameTime(npc.index) && npc.m_iAttacksTillReload == 24)
@@ -865,35 +866,35 @@ public void BobTheGod_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "I'm pretty bored...");
+							//PrintHintText(client, "%t %t","Bob The Second:", "I'm pretty bored...");
 						}
 						case 2:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "I hope your day is going well!");
+							//PrintHintText(client, "%t %t","Bob The Second:", "I hope your day is going well!");
 						}
 						case 3:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "Sometimes i wonder why this war exists.");
+							//PrintHintText(client, "%t %t","Bob The Second:", "Sometimes i wonder why this war exists.");
 						}
 						case 4:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "I'm pretty bored...");
+							//PrintHintText(client, "%t %t","Bob The Second:", "I'm pretty bored...");
 						}
 						case 5:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "Just saying, never give up!");
+							//PrintHintText(client, "%t %t","Bob The Second:", "Just saying, never give up!");
 						}
 						case 6:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "Could i borrow your gun perhaps?");
+							//PrintHintText(client, "%t %t","Bob The Second:", "Could i borrow your gun perhaps?");
 						}
 						case 7:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "Im pretty confident in my abilities!");
+							//PrintHintText(client, "%t %t","Bob The Second:", "Im pretty confident in my abilities!");
 						}
 						case 8:
 						{
-							PrintHintText(client, "%t %t","Bob The Second:", "Pick up that can.");
+							//PrintHintText(client, "%t %t","Bob The Second:", "Pick up that can.");
 						}
 					}
 						
@@ -907,31 +908,31 @@ public void BobTheGod_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							PrintHintText(client, "Bob The Second: I don't feel good..");
+							//PrintHintText(client, "Bob The Second: I don't feel good..");
 						}
 						case 2:
 						{
-							PrintHintText(client, "Bob The Second: I'm hurt...");
+							//PrintHintText(client, "Bob The Second: I'm hurt...");
 						}
 						case 3:
 						{
-							PrintHintText(client, "Bob The Second: I hate this..");
+							//PrintHintText(client, "Bob The Second: I hate this..");
 						}
 						case 4:
 						{
-							PrintHintText(client, "Bob The Second: I'm pretty exhausted...");
+							//PrintHintText(client, "Bob The Second: I'm pretty exhausted...");
 						}
 						case 5:
 						{
-							PrintHintText(client, "Bob The Second: I'm tired...");
+							//PrintHintText(client, "Bob The Second: I'm tired...");
 						}
 						case 6:
 						{
-							PrintHintText(client, "Bob The Second: Can we relax, please?");
+							//PrintHintText(client, "Bob The Second: Can we relax, please?");
 						}
 						case 7:
 						{
-							PrintHintText(client, "Bob The Second: I might be a goner soon..");
+							//PrintHintText(client, "Bob The Second: I might be a goner soon..");
 						}
 					}	
 					
@@ -961,6 +962,10 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 {
 //	PrintToServer(">>>>>>>>>> PluginBot_OnActorEmoted %i who %i concept %i", bot_entidx, who, concept);
 
+
+	//justbocks.
+	if(actor.index != 9999999)
+		return 9;
 	int bot_entidx = actor.index;
 	int who = emoter.index;
 	int concept = emote;
@@ -976,7 +981,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			return 0;
 		
 		SetGlobalTransTarget(client);
-		PrintHintText(client, "%t %t","Bob The Second:", "On my way, sir!");
+		//PrintHintText(client, "%t %t","Bob The Second:", "On my way, sir!");
 		npc.m_flidle_talk += 2.0;
 		float StartOrigin[3], Angles[3], vecPos[3];
 		GetClientEyeAngles(who, Angles);
@@ -1032,7 +1037,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.AddGesture("ACT_METROPOLICE_POINT");
 			
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Im watching there, dont worry!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Im watching there, dont worry!");
 			npc.m_flidle_talk += 2.0;
 			float StartOrigin[3], Angles[3], vecPos[3];
 			GetClientEyeAngles(who, Angles);
@@ -1066,7 +1071,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Spy? I'm keeping my eye there.");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Spy? I'm keeping my eye there.");
 			npc.m_flidle_talk += 2.0;
 			float StartOrigin[3], Angles[3], vecPos[3];
 			GetClientEyeAngles(who, Angles);
@@ -1106,7 +1111,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Sentry here? Its better to wait for teammates to engage so i'll look.");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Sentry here? Its better to wait for teammates to engage so i'll look.");
 			npc.m_flidle_talk += 2.0;
 			float StartOrigin[3], Angles[3], vecPos[3];
 			GetClientEyeAngles(who, Angles);
@@ -1146,7 +1151,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I cant build a teleporter, sorry.");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I cant build a teleporter, sorry.");
 			npc.m_flidle_talk += 2.0;
 		}
 	}
@@ -1168,7 +1173,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I cant build a teleporter, sorry.");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I cant build a teleporter, sorry.");
 			npc.m_flidle_talk += 2.0;
 		}
 	}
@@ -1190,7 +1195,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I cant build a sentry, sorry.");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I cant build a sentry, sorry.");
 			npc.m_flidle_talk += 2.0;
 		}
 	}
@@ -1212,7 +1217,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I can't give you ubercharge...");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I can't give you ubercharge...");
 			npc.m_flidle_talk += 2.0;
 		}
 	}
@@ -1230,7 +1235,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(!npc.m_b_stand_still) //Already moving, geez!
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Standing right here!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Standing right here!");
 			npc.m_flidle_talk += 2.0;
 			npc.m_b_stand_still = true;
 			return 0;
@@ -1239,7 +1244,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		else if(npc.m_b_stand_still) //Already moving, geez!
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I'm on my move again!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I'm on my move again!");
 			npc.m_flidle_talk += 2.0;
 			npc.m_b_stand_still = false;
 			return 0;
@@ -1279,7 +1284,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			NPC_SetGoalEntity(npc.index, client);
 			
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I am coming !");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I am coming !");
 			npc.m_flidle_talk += 2.0;
 			
 			npc.m_bIsFriendly = false;
@@ -1290,7 +1295,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		else
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I'm already here!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I'm already here!");
 			npc.m_flidle_talk += 2.0;
 		}	
 		TeleportEntity(npc.index, pos, NULL_VECTOR, NULL_VECTOR); 
@@ -1316,7 +1321,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			int iActivity_melee = npc.LookupActivity("ACT_BUSY_THREAT");
 			if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I'm glad to help!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I'm glad to help!");
 			npc.m_flidle_talk += 2.0;
 		}
 		
@@ -1334,7 +1339,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			return 0;
 		
 		SetGlobalTransTarget(client);
-		PrintHintText(client, "%t %t","Bob The Second:", "Follow? Sure!");
+		//PrintHintText(client, "%t %t","Bob The Second:", "Follow? Sure!");
 		npc.m_flidle_talk += 2.0;
 		npc.m_b_follow = true;
 		
@@ -1359,7 +1364,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "My left or yours?");
+			//PrintHintText(client, "%t %t","Bob The Second:", "My left or yours?");
 			npc.m_flidle_talk += 2.0;
 		}
 		
@@ -1384,7 +1389,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "My right or yours?");
+			//PrintHintText(client, "%t %t","Bob The Second:", "My right or yours?");
 			npc.m_flidle_talk += 2.0;
 		}
 		
@@ -1411,7 +1416,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.FaceTowards(pos, 10000.0);
 			npc.AddGesture("ACT_MELEE_ATTACK_THRUST");
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Cheers to you too, like a drink, get it?");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Cheers to you too, like a drink, get it?");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1419,7 +1424,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
 		{
 			npc.AddGesture("ACT_PICKUP_GROUND");
-			PrintHintText(client, "Bob The Second: Its more of a jeer, hurt here...");
+			//PrintHintText(client, "Bob The Second: Its more of a jeer, hurt here...");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1446,14 +1451,14 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Ah come on, lighten your mood!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Ah come on, lighten your mood!");
 			
 			npc.m_flidle_talk += 2.0;
 		}
 		/*
 		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
 		{
-			PrintHintText(client, "Bob The Second: Yeah agreed...");
+			//PrintHintText(client, "Bob The Second: Yeah agreed...");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1479,14 +1484,14 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Positivity is the way to go!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Positivity is the way to go!");
 			
 			npc.m_flidle_talk += 2.0;
 		}
 		/*
 		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
 		{
-			PrintHintText(client, "Bob The Second: Not the time for it...");
+			//PrintHintText(client, "Bob The Second: Not the time for it...");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1512,14 +1517,14 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Why negative? Nothing to worry about!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Why negative? Nothing to worry about!");
 			
 			npc.m_flidle_talk += 2.0;
 		}
 		/*
 		else if (flDistanceToTarget < 300 && GetEntProp(npc.index, Prop_Data, "m_iHealth") < 500)
 		{
-			PrintHintText(client, "Bob The Second: Yeah its not looking great, but lets try to feel better...");
+			//PrintHintText(client, "Bob The Second: Yeah its not looking great, but lets try to feel better...");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1538,7 +1543,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			return 0;
 		
 		SetGlobalTransTarget(client);
-		PrintHintText(client, "%t %t","Bob The Second:", "Not Follow? Sure!");
+		//PrintHintText(client, "%t %t","Bob The Second:", "Not Follow? Sure!");
 		
 		npc.m_flidle_talk += 2.0;
 		npc.m_b_follow = false;
@@ -1561,7 +1566,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			//npc.FaceTowards(pos, 10000.0);
 			npc.AddGesture("ACT_DEACTIVATE_BATON");
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I'll hurt no one!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I'll hurt no one!");
 			
 			npc.m_flidle_talk += 2.0;
 			npc.m_bIsFriendly = true;
@@ -1571,7 +1576,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			npc.AddGesture("ACT_ACTIVATE_BATON");
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I'll attack once more!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I'll attack once more!");
 			
 			npc.m_flidle_talk += 2.0;
 			npc.m_bIsFriendly = false;
@@ -1597,7 +1602,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I try my best to aim well!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I try my best to aim well!");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1623,7 +1628,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		if(flDistanceToTarget < 300)
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "You are doing a good job aswell!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "You are doing a good job aswell!");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1653,7 +1658,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.FaceTowards(pos, 10000.0);
 			npc.AddGesture("ACT_PUSH_PLAYER");
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Here, have this medkit!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Here, have this medkit!");
 			
 			npc.m_flidle_talk += 2.0;
 			CreateTimer(0.3, BobTheGod_showHud, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -1662,7 +1667,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Sorry, i dont have a medkit on me...");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Sorry, i dont have a medkit on me...");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1670,7 +1675,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Sorry, i dont have a medkit on me, please wait.");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Sorry, i dont have a medkit on me, please wait.");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1678,7 +1683,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I do not have a medkit.");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I do not have a medkit.");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1686,7 +1691,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			npc.m_iMedkitAnnoyance += 1;
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I dont have a medkit, have patience.");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I dont have a medkit, have patience.");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1694,7 +1699,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		{
 			npc.m_iMedkitAnnoyance = 0;
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "I told you i do not have a medikit!!!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "I told you i do not have a medikit!!!");
 			
 			npc.m_flidle_talk += 2.0;
 			npc.FaceTowards(pos, 10000.0);
@@ -1705,7 +1710,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		else
 		{
 			SetGlobalTransTarget(client);
-			PrintHintText(client, "%t %t","Bob The Second:", "Youre too far away!");
+			//PrintHintText(client, "%t %t","Bob The Second:", "Youre too far away!");
 			
 			npc.m_flidle_talk += 2.0;
 		}
@@ -1795,7 +1800,7 @@ public Action Bob_player_killed(Event hEvent, const char[] sEvName, bool bDontBr
 			npc.m_bIsFriendly = false;
 		//	NPCDeath(npc.index);
 			SetGlobalTransTarget(victim);
-			PrintHintText(victim, "%t %t","Bob The Second:", "This can't be...");
+			//PrintHintText(victim, "%t %t","Bob The Second:", "This can't be...");
 			
 		}
 	}
@@ -1826,13 +1831,13 @@ public Action BobTheGod_Owner_Hurt(int victim, int &attacker, int &inflictor, fl
 	{
 		npc.m_flHurtie = GetGameTime(npc.index) + 0.50;
 		SetGlobalTransTarget(victim);
-		PrintHintText(victim, "%t %t","Bob The Second:", "I will protect you!");
+		//PrintHintText(victim, "%t %t","Bob The Second:", "I will protect you!");
 	}
 	else if(npc.m_flHurtie < GetGameTime(npc.index) && npc.m_bIsFriendly)
 	{
 		npc.m_flHurtie = GetGameTime(npc.index) + 0.50;
 		SetGlobalTransTarget(victim);
-		PrintHintText(victim, "%t %t","Bob The Second:", "You told me to be friendly.");
+		//PrintHintText(victim, "%t %t","Bob The Second:", "You told me to be friendly.");
 	}
 	return Plugin_Changed;
 }
@@ -1855,7 +1860,7 @@ public void BobTheGod_NPCDeath(int entity)
 	int client = who_owns_this_bob[npc.index];
 	if(IsValidClient(client))
 	{
-	//	PrintHintText(client, "Bob has died :(");
+	//	//PrintHintText(client, "Bob has died :(");
 	//	
 		SDKUnhook(client, SDKHook_OnTakeDamageAlive, BobTheGod_Owner_Hurt);
 	}

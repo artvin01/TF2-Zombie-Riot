@@ -6,9 +6,9 @@
 #define Silvester_LASER_THICKNESS 25
 
 
-static int i_SaidLineAlready[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
+
 static bool b_SilvLine[MAXENTITIES];
 static bool b_SilvesterAttackSame[MAXENTITIES];
 
@@ -661,7 +661,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Hold on{lightblue}Nemal{default} i'm coming!");
+						CPrintToChatAll("{gold}Silvester{default}: Hold on {lightblue}Nemal{default} i'm coming!");
 					}
 					case 1:
 					{
@@ -842,7 +842,10 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,700.0,_,_,allynpc.m_iTarget, flPos);
 				npc.m_flSilvesterChangeTargets += 1.0;
 				if(!ForceRedo)
+				{
 					npc.m_flInTeleportLogic = GetGameTime(npc.index) + 3.0;
+					ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.0);
+				}
 				npc.m_flChangeTargetsSilvester += 3.0;
 			}
 			else
@@ -861,7 +864,10 @@ static void Internal_ClotThink(int iNPC)
 				if(npc.m_flSilvesterChangeTargets >= 5.0)
 				{
 					if(!ForceRedo)
+					{
 						npc.m_flInTeleportLogic = GetGameTime(npc.index) + 3.0;
+						ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.0);
+					}
 					npc.m_flChangeTargetsSilvester += 3.0;
 					npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,_/*allynpc.m_iTarget*/, flPos);
 					npc.m_flSilvesterChangeTargets = 5.0;
@@ -1175,6 +1181,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.StartPathing();
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
+					npc.AddGesture("ACT_MP_JUMP_LAND_ALLCLASS");
 				}	
 			}
 			else
@@ -1202,6 +1209,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.StartPathing();
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
+					npc.AddGesture("ACT_MP_JUMP_LAND_MELEE");
 				}	
 			}
 			else
@@ -1218,7 +1226,6 @@ void SilvesterAnimationChange(Silvester npc)
 			}
 		}
 	}
-
 }
 int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distance, bool NemalAssistance)
 {

@@ -1,8 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_PlayMusicSound;
+
 
 void StalkerFather_MapStart()
 {
@@ -29,12 +28,12 @@ methodmap StalkerFather < StalkerShared
 {
 	public void PlayMusicSound()
 	{
-		if(i_PlayMusicSound > GetTime())
+		if(i_PlayMusicSound[this.index] > GetTime())
 			return;
 		
 		EmitSoundToAll("#music/radio1.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		EmitSoundToAll("#music/radio1.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		i_PlayMusicSound = GetTime() + 39;
+		i_PlayMusicSound[this.index] = GetTime() + 39;
 	}
 	
 	public StalkerFather(float vecPos[3], float vecAng[3], int ally)
@@ -73,7 +72,7 @@ methodmap StalkerFather < StalkerShared
 		npc.m_iState = -1;
 		npc.m_flSpeed = 92.0;	// 80 Run Speed * 1.15 Model Size
 
-		i_PlayMusicSound = 0;
+		i_PlayMusicSound[npc.index] = 0;
 		npc.m_iChaseAnger = 0;
 		npc.m_bChaseAnger = false;
 		npc.m_iChaseVisable = 0;
@@ -89,7 +88,7 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup()/* && Waves_GetRound() > 29*/)
+	if(!Waves_InSetup()/* && ZR_Waves_GetRound() > 29*/)
 	{
 		if(b_NpcIsInvulnerable[npc.index])
 		{
@@ -111,7 +110,7 @@ public void StalkerFather_ClotThink(int iNPC)
 			StopSound(npc.index, SNDCHAN_STATIC, "#music/radio1.mp3");
 		}
 
-		i_PlayMusicSound = 0;
+		i_PlayMusicSound[npc.index] = 0;
 		FreezeNpcInTime(npc.index, 0.5);
 		return;
 	}
@@ -338,7 +337,7 @@ public Action StalkerFather_OnTakeDamage(int victim, int &attacker, int &inflict
 
 	damage *= 15.0 / float(PlayersInGame);
 
-	if(!Waves_InSetup() && Waves_GetRound() > 29)
+	if(!Waves_InSetup() && ZR_Waves_GetRound() > 29)
 		return Plugin_Changed;
 	
 	damage = 0.0;

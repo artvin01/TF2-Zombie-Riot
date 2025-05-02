@@ -84,9 +84,9 @@ static char g_RangedReloadSound[][] = {
 };
 
 static int LastEnemyTargeted[MAXENTITIES];
-static int i_SaidLineAlready[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
+
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
@@ -333,7 +333,7 @@ methodmap OmegaRaid < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(Waves_GetRound()+1);
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
 		if(RaidModeScaling < 55)
@@ -741,7 +741,15 @@ static void Omegas_SelfDefense(OmegaRaid npc, float gameTime, int target, float 
 							{
 								damage *= RaidModeScaling + 100.0;
 								npc.AddGesture("ACT_PUSH_PLAYER");
-								FreezeNpcInTime(target, 1.0);
+								float duration = 1.0;
+								if(target <= MaxClients && target > 0)
+								{
+								    TF2_AddCondition(target, TFCond_FreezeInput, duration);  
+								}
+								else
+								{
+								    FreezeNpcInTime(target, duration);
+								}
 								Custom_Knockback(npc.index, targetTrace, 1000.0, true, true);
 								Explode_Logic_Custom(50.0, -1, npc.index, -1, vecTarget, 100.0, _, _, true, _, false);
 								ParticleEffectAt(vecTarget, "hightower_explosion", 1.0);
@@ -1343,7 +1351,7 @@ static void OmegaRaid_GrantItem()
 		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Omega's Medallion");
-			CPrintToChat(client,"{white}Bob{default} convinced {gold}Omega{default} that you were protecting him from {crimson}Whiteflower's{default} army, in return, you got {gold}Omega's Medallion{default}!");
+			CPrintToChat(client,"{white}Bob{default} convinced {gold}Omega{default} that he was being protected by you, by holding off {crimson}Whiteflower's{default} army, in return, you got {gold}Omega's Medallion{default}!");
 		}
 	}
 }

@@ -18,7 +18,7 @@ public void Construction_Stalker_Collect()
 	Spawns_GetNextPos(pos, ang, "spawn_2_3");
 	NPC_CreateByName("npc_stalker_combine", 0, pos, ang, TFTeam_Blue);
 
-	Spawns_GetNextPos(pos, ang, "spawn_3_3");
+	Spawns_GetNextPos(pos, ang, "spawn_3_4");
 	NPC_CreateByName("npc_stalker_goggles", 0, pos, ang, TFTeam_Blue);
 
 	Construction_AddMaterial("wizuh", 50, true);
@@ -123,6 +123,12 @@ public void Construction_HA_Ally(int entity, StringMap map)
 public void Construction_S_Ally(int entity, StringMap map)
 {
 	MultiSpeed(entity, map, 1.01);
+}
+
+public void FlagShipCalling(int entity, StringMap map)
+{
+	MultiSpeed(entity, map, 1.1);
+	ApplyStatusEffect(entity, entity, "Ziberian Flagship Weaponry", 9999999.9);
 }
 
 // Speed++ Health-
@@ -306,14 +312,145 @@ static void MultiHealth(int entity, StringMap map, float amount)
 
 public void Construction_BadExpi_Collect()
 {
-	CPrintToChatAll("{purple}???{default}: Hah, I knew you'll fall for it.");
+	if(!Construction_FinalBattle())
+	{
+		CreateTimer(4.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
 
-	if(Construction_FinalBattle())
+static Action Timer_DialogueNewEnd(Handle timer, int part)
+{
+	switch(part)
 	{
-		//CreateTimer(2.0, Timer_DialogueBadEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+		case 0:
+		{
+			CPrintToChatAll("{black}???{default}: Hah, I knew you'll fall for it.");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{black}???{default}: So that's where your located.");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{black}???{default}: Now stay there and accept your fate.");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{black}???{default}: Expidonsa was and always should be the only race on Irln.");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{black}???{default}: So die you damn forerunners.");
+		}
+		default:
+		{
+			Rogue_GiveNamedArtifact("System Malfunction");
+			return Plugin_Continue;
+		}
 	}
-	else
+
+	CreateTimer(2.0, Timer_DialogueNewEnd, part + 1, TIMER_FLAG_NO_MAPCHANGE);
+	return Plugin_Continue;
+}
+
+public void Construction_Rebel_Collect()
+{
+	SpawnRebel();
+}
+
+public void Construction_Alyx_Collect()
+{
+	SpawnRebel("a");
+}
+
+public void GiveCash_Base1()
+{
+	CurrentCash += 500;
+	GlobalExtraCash += 500;
+	CPrintToChatAll("%t", "Gained Material", 500, "Cash");
+}
+public void GiveCash_Base2()
+{
+	CurrentCash += 1500;
+	GlobalExtraCash += 1500;
+	CPrintToChatAll("%t", "Gained Material", 1500, "Cash");
+}
+public void GiveCash_Base3()
+{
+	CurrentCash += 3000;
+	GlobalExtraCash += 3000;
+	CPrintToChatAll("%t", "Gained Material", 3000, "Cash");
+}
+static void SpawnRebel(const char[] data = "")
+{
+	float pos[3], ang[3];
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
-		//CreateTimer(2.0, Timer_DialogueNewEnd, 0, TIMER_FLAG_NO_MAPCHANGE);
+		if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == TFTeam_Red && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
+		{
+			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
+			break;
+		}
 	}
+
+	CNavArea goalArea = TheNavMesh.GetNavArea(pos, 1000.0);
+	if(goalArea == NULL_AREA)
+	{
+		PrintToChatAll("ERROR: Could not find valid nav area for location (%f %f %f)", pos[0], pos[1], pos[2]);
+		return;
+	}
+	
+	for(int i; i < 50; i++)
+	{
+		CNavArea startArea = PickRandomArea();
+		if(startArea == NULL_AREA)
+			continue;
+		
+		if(startArea.GetAttributes() & (NAV_MESH_AVOID|NAV_MESH_DONT_HIDE))
+			continue;
+		
+		if(!TheNavMesh.BuildPath(startArea, goalArea, pos))
+			continue;
+		
+		startArea.GetCenter(pos);
+		pos[2] += 10.0;
+		ang[0] = 0.0;
+		ang[1] = float(GetURandomInt() % 360);
+		ang[2] = 0.0;
+
+		NPC_CreateByName("npc_citizen", 0, pos, ang, TFTeam_Red, data);
+		break;
+	}
+}
+
+public void Construction_RareWeapon_Collect()
+{
+	char name[64];
+	float discount = 0.7;
+
+	switch(GetURandomInt() % 6)
+	{
+		case 0, 1:
+		{
+			strcopy(name, sizeof(name), "Vows of the Sea");
+			discount = 0.5;
+		}
+	//	case 2:
+	//	{
+	//		strcopy(name, sizeof(name), "Infinity Blade");
+	//		discount = 0.5;
+	//	}
+		case 2, 3:
+		{
+			strcopy(name, sizeof(name), "Whistle Stop");
+		}
+		case 4, 5:
+		{
+			strcopy(name, sizeof(name), "Ancestor Launcher");
+		}
+	}
+
+	Store_DiscountNamedItem(name, 999, discount);
+	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
 }
