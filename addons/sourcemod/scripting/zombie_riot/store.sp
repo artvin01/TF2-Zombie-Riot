@@ -736,6 +736,10 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.85;
 	}
+	if(HasSpecificBuff(client, "Dimensional Turbulence"))
+	{
+		Cooldown *= 0.25;
+	}
 	return Cooldown;
 }
 

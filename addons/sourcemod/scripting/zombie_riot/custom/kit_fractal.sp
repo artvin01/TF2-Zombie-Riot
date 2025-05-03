@@ -1763,6 +1763,8 @@ enum struct Player_Laser_Logic
 
 	float Custom_Hull[3];
 
+	int weapon;
+
 	/*
 
 	*/
@@ -1936,10 +1938,9 @@ enum struct Player_Laser_Logic
 
 			this.trace_hit_enemy=true;
 
-			float playerPos[3];
-			WorldSpaceCenter(victim, playerPos);
+			this.DoDamage(victim, Dmg, this.weapon, {0.0,0.0,0.0});
 			
-			SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
+			//SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
 			if(Attack_Function && Attack_Function != INVALID_FUNCTION)
 			{	
@@ -1954,6 +1955,33 @@ enum struct Player_Laser_Logic
 
 			Dmg *= Falloff;
 		}
+	}
+	void DoDamage(int victim, float Dmg, int weapon_active, float damage_force[3])
+	{
+		float playerPos[3];
+		WorldSpaceCenter(victim, playerPos);
+
+		if(!IsValidEntity(weapon_active))
+		{
+			SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
+			return;
+		}
+		
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(victim));
+		pack.WriteCell(EntIndexToEntRef(this.client));
+		pack.WriteCell(EntIndexToEntRef(this.client));
+		pack.WriteFloat(Dmg);
+		pack.WriteCell(this.damagetype);
+		pack.WriteCell(weapon_active);
+		pack.WriteFloat(damage_force[0]);
+		pack.WriteFloat(damage_force[1]);
+		pack.WriteFloat(damage_force[2]);
+		pack.WriteFloat(playerPos[0]);
+		pack.WriteFloat(playerPos[1]);
+		pack.WriteFloat(playerPos[2]);
+		pack.WriteCell(0);
+		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 	}
 	void SetHull(float hullMin[3], float hullMax[3])
 	{
