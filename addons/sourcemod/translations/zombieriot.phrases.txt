@@ -890,6 +890,14 @@
 		"pt"		"Mana: [{1}/{2}] (+{3})"
 		"chi" 		"法力值: [{1}/{2}] (+{3})"
 	}
+	"Current Mana Inf"
+	{
+		"en" 		"Mana: [∞]"
+		"ru"		"Мана: [∞]"
+		"fr" 		"Mana: [∞]"
+		"pt"		"Mana: [∞]"
+		"chi" 		"法力值: [∞]"
+	}
 	"Not Enough Mana"
 	{
 		"#format"	"{1:d}"
