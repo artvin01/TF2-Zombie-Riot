@@ -596,9 +596,9 @@ public void Dimensional_Turbulence_Enemy(int iNpc)
 {
 	ApplyStatusEffect(iNpc, iNpc, "Dimensional Turbulence", 999999.9);
 	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
-	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 2.0));
-	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 2.0));
-	fl_GibVulnerablity[iNpc] *= 2.0;
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.5));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.5));
+	fl_GibVulnerablity[iNpc] *= 1.5;
 }
 public void Dimensional_Turbulence_Ally(int entity, StringMap map)
 {
