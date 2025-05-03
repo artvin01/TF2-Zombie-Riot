@@ -799,11 +799,11 @@ methodmap Stella < CClotBody
 			default_theme = false;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
-			music.Time = 285;
-			music.Volume = 2.0;
+			music.Time = 190;
+			music.Volume = 1.65;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Solar Sect of Mystic Wisdom ~ Nuclear Fusion");
-			strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
+			strcopy(music.Name, sizeof(music.Name), "Night life in Ruina");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);	
 		}
 

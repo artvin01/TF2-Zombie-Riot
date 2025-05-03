@@ -1725,7 +1725,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		{
 			CheckInHudEnable(2);
 			StatusEffect_OnTakeDamage_DealNegative(attacker, victim, DamagePercDo, testvalue);
-			Damage_NPCAttacker(attacker, DamagePercDo, testvalue);
+			Damage_NPCAttacker(victim, DamagePercDo, testvalue);
 			Damage_AnyAttacker(attacker, victim, victim, DamagePercDo, testvalue);
 			CheckInHudEnable(0);
 #if defined ZR
