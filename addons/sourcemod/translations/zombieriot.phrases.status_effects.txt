@@ -1278,4 +1278,12 @@
 	{
 		"en" 	"Take 25％ Less damage\nDeal 10％ More damage\nAttack 10％ Faster.\nReduces cooldowns by 15％"
 	}
+	"Dimensional Turbulence"
+	{
+		"en"	"Dimensional Turbulence"
+	}
+	"Dimensional Turbulence Desc"
+	{
+		"en" 	"2x Attackspeed, Infinite mana/Reserve Ammo\n20％ Movementspeed\n75％ Less Cooldowns\n2x Revive speed\n50％ more HP and Healing"
+	}
 }

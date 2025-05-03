@@ -1315,6 +1315,13 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
 #if defined ZR
+		if(HasSpecificBuff(healer, "Dimensional Turbulence"))
+		{
+			if(GetTeam(healer) == TFTeam_Red)
+				HealTotal *= 1.5;
+			else
+				HealTotal *= 2.0;
+		}
 		if(b_HealthyEssence && GetTeam(reciever) == TFTeam_Red)
 			HealTotal *= 1.25;
 			

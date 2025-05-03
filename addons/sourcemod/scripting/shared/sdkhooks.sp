@@ -559,6 +559,12 @@ public void OnPostThink(int client)
 		{
 			mana_regen[client] = 0.0;
 		}
+		if(HasSpecificBuff(client, "Dimensional Turbulence"))
+		{
+			Current_Mana[client] = 9999999;
+			mana_regen[client] = 9999999.9;
+			max_mana[client] = 9999999.9;
+		}
 					
 		Mana_Hud_Delay[client] = 0.0;
 	}
@@ -1130,30 +1136,39 @@ public void OnPostThink(int client)
 			}
 #endif
 
-			for(int i=1; i<21; i++)
+			bool InfMana = false;
+			if(HasSpecificBuff(client, "Dimensional Turbulence"))
+				InfMana = true;
+
+			if(!InfMana)
 			{
-				if(Current_Mana[client] >= max_mana[client]*(i*0.05))
+				for(int i=1; i<21; i++)
 				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-				}
-				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-				}
-				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					if(Current_Mana[client] >= max_mana[client]*(i*0.05))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+					}
+					else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+					}
+					else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					}
 				}
 			}
 				
 			SetGlobalTransTarget(client);
-			
 #if defined ZR
-			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+			if(!InfMana)
+				Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+			else
+				Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana Inf", buffer);
 #elseif defined RPG
 			static Form form;
 			Races_GetClientInfo(client, _, form);
