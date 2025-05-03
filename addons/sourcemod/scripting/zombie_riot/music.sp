@@ -995,7 +995,7 @@ void Music_Update(int client)
 				case 3:
 				{
 					EmitCustomToClient(client, RAIDBOSS_TWIRL_THEME,client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.2);
-					SetMusicTimer(client, GetTime() + 172);
+					SetMusicTimer(client, GetTime() + 190);
 				}
 				case 4:
 				{

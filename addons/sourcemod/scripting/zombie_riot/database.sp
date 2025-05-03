@@ -330,6 +330,22 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(ForceNiko)
 			OverridePlayerModel(client, NIKO_2, true);
 	}
+	if(Loadouts[client])
+	{
+		int LengthIAm = Loadouts[client].Length;
+		char BufferString[255];
+		for(int i; i < LengthIAm; i++)
+		{
+			Loadouts[client].GetString(i, BufferString, sizeof(BufferString));
+			if(!StrContains(BufferString, "[♥]"))
+			{
+				//Force buy me!
+				Database_LoadLoadout(client, BufferString, false);
+				break;
+			}
+		}
+	}
+		
 }
 
 public void MapChooser_OnPreMapEnd()
@@ -514,6 +530,23 @@ void Database_DeleteLoadout(int client, const char[] name)
 			
 			char buffer[256];
 			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			tr.AddQuery(buffer);
+			
+			Global.Execute(tr, Database_Success, Database_Fail);
+		}
+	}
+}
+void Database_EditName(int client, const char[] name, const char[] newname)
+{
+	if(Global)
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			char buffer[256];
+			Global.Format(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_LOADOUT ... " SET loadout = '%s' WHERE steamid = %d AND loadout = '%s';", newname, id, name);
 			tr.AddQuery(buffer);
 			
 			Global.Execute(tr, Database_Success, Database_Fail);

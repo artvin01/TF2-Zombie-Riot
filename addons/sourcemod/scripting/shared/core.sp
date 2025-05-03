@@ -1123,7 +1123,7 @@ public void OnMapStart()
 
 #if defined ZR
 	ZR_MapStart();
-	Waves_SetReadyStatus(2);
+	Waves_SetReadyStatus(2, false);
 #endif
 
 #if defined RPG

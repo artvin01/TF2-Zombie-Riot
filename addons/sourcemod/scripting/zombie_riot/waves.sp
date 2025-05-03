@@ -1122,9 +1122,11 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		Rounds.PushArray(round);
 	} while(kv.GotoNextKey());
 
-	// Rounds.Length
+	int waves = Rounds.Length;
+	if(waves > 1)	//incase some wavetype has only 1 waves 
+		waves-=1;	//this makes it scale cleanly on fastmode. since Rounds.Length gets the wave amount PLUS 1. so 40 waves is 41, 60 is 61, etc.
 	//if we are above 60 waves, we dont change it from 1.0, i.e. it cant go lower!
-	MinibossScalingHandle = (60.0 / float(Rounds.Length));
+	MinibossScalingHandle = (60.0 / float(waves));
 	if(MinibossScalingHandle <= 1.0)
 		MinibossScalingHandle = 1.0;
 
@@ -3392,7 +3394,7 @@ void AlreadyWaitingSet(bool set)
 {
 	AlreadySetWaiting = set;
 }
-void Waves_SetReadyStatus(int status)
+void Waves_SetReadyStatus(int status, bool stopmusic = true)
 {
 	//LogStackTrace("Hello! -> %d", status);
 	switch(status)
@@ -3445,7 +3447,7 @@ void Waves_SetReadyStatus(int status)
 		}
 		case 2:	// Waiting
 		{
-			if(!AlreadySetWaiting && !Rogue_Mode())
+			if(stopmusic && !AlreadySetWaiting && !Rogue_Mode())
 			{
 				for(int client=1; client<=MaxClients; client++)
 				{

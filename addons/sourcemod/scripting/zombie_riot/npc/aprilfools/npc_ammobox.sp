@@ -333,7 +333,7 @@ void AmmoBox_NPCDeath(int entity)
 		{
 			for(int i; i < 1; i++)
 			{
-				int other = NPC_CreateByName("npc_chaos_mage", -1, pos, ang, team);
+				int other = NPC_CreateByName("npc_suicider", -1, pos, ang, team);
 				if(other > MaxClients)
 				{
 					if(team != TFTeam_Red)

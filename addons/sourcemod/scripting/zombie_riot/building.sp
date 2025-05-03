@@ -7,7 +7,7 @@
 static const char SectionName[][] =
 {
 	"Support Buildings",
-	"Singular Buildings",
+	"Unique Buildings",
 	"Construct Buildings"
 };
 
@@ -277,9 +277,29 @@ static void BuildingMenu(int client)
 	Menu menu = new Menu(BuildingMenuH);
 	SetGlobalTransTarget(client);
 
-	menu.SetTitle("%t\n ", "Building Menu");
+	char buffer1[196], buffer2[64], buffer3[196];
+	if(MenuSection[client] == -1)
+		FormatEx(buffer3, sizeof(buffer3), "%T\n ", "Building Menu", client);
+	else
+		FormatEx(buffer3, sizeof(buffer3), "%T", "Building Menu", client);
+		
+	switch(MenuSection[client])
+	{
+		case 0:
+		{
+			Format(buffer3, sizeof(buffer3), "%s\n%T\n ", buffer3,"Support Buildings Explain", client);
+		}
+		case 1:
+		{
+			Format(buffer3, sizeof(buffer3), "%s\n%T\n ", buffer3,"Unique Buildings Explain", client);
+		}
+		case 2:
+		{
+			Format(buffer1, sizeof(buffer1), "%s\n%T\n ", buffer3,"Construct Buildings Explain", client);
+		}
+	}
+	menu.SetTitle("%s", buffer3);
 
-	char buffer1[196], buffer2[64];
 
 	if(MenuSection[client] == -1 || !ducking)
 	{

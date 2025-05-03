@@ -577,9 +577,9 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	if(b_is_battery_buffed[npc.index] && fl_ruina_battery_timer[npc.index] > GameTime)
 		return;
 
-	int wave = ZR_Waves_GetRound()+1;
+	int wave = iRuinaWave();
 	//whats a "switch" statement??
-	if(wave<=15)	
+	/*if(wave<=15)	
 	{
 
 	}
@@ -588,7 +588,8 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		
 	}
 	//npc's during "stage 3" get energy from taking dmg. going into its whole "sacrifice" theme.
-	else if(wave <= 45)	
+	else*/ 
+	if(wave <= 45)	
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
@@ -1423,7 +1424,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
 
-	int wave = ZR_Waves_GetRound()+1;
+	int wave = iRuinaWave();
 
 	float 	dmg 		= 250.0,
 			time 		= 2.5,		//how long until it goes boom
@@ -1520,7 +1521,7 @@ static void Apply_Sickness(int iNPC, int Target)
 void Ruina_Color(int color[4], int wave = -1)
 {
 	if(wave == -1)
-		wave = ZR_Waves_GetRound()+1;
+		wave = iRuinaWave();
 		
 	if(wave<=15)
 	{
@@ -2459,6 +2460,12 @@ stock void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result
 	Result_Vec[0] += actualBeamOffset[0];
 	Result_Vec[1] += actualBeamOffset[1];
 	Result_Vec[2] += actualBeamOffset[2];
+}
+int iRuinaWave()
+{
+	int wave = ZR_Waves_GetRound()+1;
+	wave = RoundToCeil(wave * MinibossScalingReturn());
+	return wave;
 }
 enum struct Ruina_Laser_Logic
 {

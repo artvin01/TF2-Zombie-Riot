@@ -97,6 +97,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int client=1; client<=MaxClients; client++)
 	{
 		i_AmountDowned[client] = 0;
+		Building_ClientDisconnect(client);
 		for(int i; i<Ammo_MAX; i++)
 		{
 			CurrentAmmo[client][i] = CurrentAmmo[0][i];
