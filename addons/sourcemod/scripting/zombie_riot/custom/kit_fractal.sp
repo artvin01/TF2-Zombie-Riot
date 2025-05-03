@@ -1763,6 +1763,8 @@ enum struct Player_Laser_Logic
 
 	float Custom_Hull[3];
 
+	int weapon;
+
 	/*
 
 	*/
@@ -1936,10 +1938,7 @@ enum struct Player_Laser_Logic
 
 			this.trace_hit_enemy=true;
 
-			float playerPos[3];
-			WorldSpaceCenter(victim, playerPos);
-
-			this.DoDamage(victim, Dmg, 0, {0.0,0.0,0.0});
+			this.DoDamage(victim, Dmg, this.weapon, {0.0,0.0,0.0});
 			
 			//SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
@@ -1961,6 +1960,12 @@ enum struct Player_Laser_Logic
 	{
 		float playerPos[3];
 		WorldSpaceCenter(victim, playerPos);
+
+		if(!IsValidEntity(weapon_active))
+		{
+			SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
+			return;
+		}
 		
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(victim));
@@ -1968,7 +1973,7 @@ enum struct Player_Laser_Logic
 		pack.WriteCell(EntIndexToEntRef(this.client));
 		pack.WriteFloat(Dmg);
 		pack.WriteCell(this.damagetype);
-		pack.WriteCell(EntIndexToEntRef(weapon_active));
+		pack.WriteCell(weapon_active);
 		pack.WriteFloat(damage_force[0]);
 		pack.WriteFloat(damage_force[1]);
 		pack.WriteFloat(damage_force[2]);
