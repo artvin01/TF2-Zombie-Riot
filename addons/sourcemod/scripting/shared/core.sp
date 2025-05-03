@@ -1381,6 +1381,12 @@ public Action DoRoleplayTalk(int client, int args)
 		ReplyToCommand(client, "You cant use this command right now.");
 		return Plugin_Handled;
 	}
+	if(!Native_CanRenameNpc(client))
+	{
+		CPrintToChat(client, "Youre muted buddy.");
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return Plugin_Handled;
+	}
 	f_RoleplayTalkLimit[client] = GetGameTime() + 10.0;
 	
 	char Text[64];
