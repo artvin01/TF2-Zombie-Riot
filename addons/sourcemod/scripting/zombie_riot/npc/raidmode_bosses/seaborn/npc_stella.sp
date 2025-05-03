@@ -2486,7 +2486,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 			Turn_Speed *= 0.8;
 
 		Turn_Speed /=TickrateModify;
-		Turn_Speed /=f_AttackSpeedNpcIncrease[npc.index];
+		Turn_Speed /= ReturnEntityAttackspeed(npc.index);
 
 		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
 		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
@@ -2506,7 +2506,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		float Dmg = Modify_Damage(npc.Anger ? 2.0 : 1.1);
 		Dmg *= (0.75-Logarithm(Ratio));
 		Dmg /= TickrateModify;	//since the damage is dealt every tick, make it so the dmg is modified by tickrate modif.
-		Dmg /=f_AttackSpeedNpcIncrease[npc.index];
+		Dmg /=ReturnEntityAttackspeed(npc.index);
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;

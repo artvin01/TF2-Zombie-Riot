@@ -1709,7 +1709,7 @@ void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStar
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 

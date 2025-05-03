@@ -1987,11 +1987,10 @@ stock void BobPullTarget(int bobnpc, int enemy)
 
 void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], float TimeUntillHit, float damage, bool kick)
 {
-
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 

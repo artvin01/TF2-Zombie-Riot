@@ -2157,7 +2157,7 @@
 	}
 	"Turbulance Desc"
 	{
-		"en"	"Play the game under extreme Speed.\nEveryone gets the ''Dimensional Turbulance'' Buff.\nEnemies additonally gain 2x HP, 2x Healrate."
+		"en"	"Play the game under extreme Speed.\nEveryone gets the ''Dimensional Turbulance'' Buff."
 	}
 	"Secondary Mercs"
 	{
