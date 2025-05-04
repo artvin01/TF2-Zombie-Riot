@@ -1587,7 +1587,7 @@ void Store_Reset()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		item.NPCSeller = 0;
+		item.NPCSeller = false;
 		item.NPCSeller_WaveStart = 0;
 		for(int c; c<MAXTF2PLAYERS; c++)
 		{
