@@ -5338,14 +5338,11 @@ stock void SetTeam(int entity, int teamSet)
 		TeamNumber[entity] = teamSet;
 		if(teamSet <= TFTeam_Blue)
 		{
-
-#if !defined RTS
 			if(entity <= MaxClients)
 			{
 				ChangeClientTeam(entity, teamSet);
 			}
 			else
-#endif
 
 			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
@@ -5353,15 +5350,19 @@ stock void SetTeam(int entity, int teamSet)
 		}
 		else if(teamSet > TFTeam_Blue)
 		{
-
-#if !defined RTS
 			if(entity <= MaxClients)
 			{
-				ChangeClientTeam(entity, TFTeam_Blue);
+				if(teamSet >= 4)
+				{
+					ChangeClientTeam(entity, TFTeam_Red);
+					//With this we set custom teams=
+				}
+				else
+				{
+					ChangeClientTeam(entity, TFTeam_Blue);	
+				}
 			}
 			else
-#endif
-
 			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", 4);
 			}

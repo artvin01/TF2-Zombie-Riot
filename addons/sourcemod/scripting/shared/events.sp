@@ -13,6 +13,7 @@ void Events_PluginStart()
 	HookEvent("player_connect_client", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
+	HookEvent("teams_changed", EventHook_TeamsChanged, EventHookMode_PostNoCopy);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 #if defined ZR
 	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Pre);
@@ -165,7 +166,7 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		int client = GetClientOfUserId(event.GetInt("userid"));
 		if(client)
 		{
-			ChangeClientTeam(client, 3);
+			SetTeam(client, 3);
 			OnAutoTeam(client, name, 0);
 		}
 	}
@@ -739,3 +740,24 @@ public Action OnRelayFireUser1(const char[] output, int entity, int caller, floa
 	return Plugin_Continue;
 }
 #endif*/
+
+static float DontRepeatSameFrame;
+static void EventHook_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
+{
+	if(DontRepeatSameFrame == GetGameTime())
+		return;
+	
+	DontRepeatSameFrame = GetGameTime();
+	RequestFrame(CheckAndValidifyTeam);
+	//No way to seemingly detect
+	//PrintToChatAll("EventHook_TeamsChanged");
+}
+
+void CheckAndValidifyTeam()
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && TeamNumber[client] <= 4) //If their team is customly set, dont do this
+			TeamNumber[client] = GetEntProp(client, Prop_Data, "m_iTeamNum");
+	}
+}

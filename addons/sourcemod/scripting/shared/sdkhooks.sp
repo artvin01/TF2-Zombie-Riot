@@ -1879,7 +1879,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 		}
 		else
-			return Plugin_Handled;	
+		{
+			if(attacker == victim)
+				return Plugin_Handled;	
+		}
 
 #if defined RPG		
 		if(!CheckInHud())
@@ -2078,7 +2081,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			bool Any_Left = false;
 			for(int client=1; client<=MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+				if(IsClientInGame(client) && GetTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 				{
 					if(victim != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 					{

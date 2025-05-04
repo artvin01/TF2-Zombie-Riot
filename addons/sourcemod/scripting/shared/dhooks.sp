@@ -1533,7 +1533,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 #if !defined RTS
 		int team = KillFeed_GetBotTeam(client);
 		if(GetClientTeam(client) != team)
-			ChangeClientTeam(client, team);
+			SetTeam(client, team);
 #endif
 		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
 		return MRES_Supercede;
@@ -1541,14 +1541,14 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	if(GetClientTeam(client) != 2)
 	{
-		ChangeClientTeam(client, 2);
+		SetTeam(client, 2);
 		return MRES_Supercede;
 	}
 
 #if defined RPG
 	if(!Saves_HasCharacter(client))
 	{
-		ChangeClientTeam(client, TFTeam_Spectator);
+		SetTeam(client, TFTeam_Spectator);
 		return MRES_Supercede;
 	}
 	

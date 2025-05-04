@@ -231,7 +231,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 	{
 		if(IsFakeClient(client))
 		{
-			ChangeClientTeam(client, view_as<int>(TFTeam_Blue));
+			SetTeam(client, view_as<int>(TFTeam_Blue));
 		}
 #if defined ZR
 		else if(Queue_JoinTeam(client))
@@ -239,7 +239,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 		else
 #endif
 		{
-			ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+			SetTeam(client, view_as<int>(TFTeam_Red));
 			ShowVGUIPanel(client, "class_red");
 		}
 	}
