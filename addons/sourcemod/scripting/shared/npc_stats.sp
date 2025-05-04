@@ -2136,20 +2136,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		this.ResetSequence(iSequence);
 		this.ResetSequenceInfo();
-	//	this.SetSequence(iSequence);
-		this.SetPlaybackRate(1.0, true);
+		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-		//Its like setcycle, but itdoes it for us so it worsk clientside	
-	//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 		this.ResetSequenceInfo();
 		this.m_iAnimationState = iSequence;
-	//	int layer = this.FindGestureLayerBySequence(iSequence);
-	//	if(layer != -1)
-	//	{
-	//		CAnimationLayer alayer = this.GetAnimOverlay(layer);
-	//		alayer.m_flPlaybackRate = 1.0;
-	//		alayer.m_flCycle = 0.0;
-	//	}
 	
 	}
 	public void AddGestureViaSequence(const char[] anim)
@@ -2223,10 +2213,8 @@ methodmap CClotBody < CBaseCombatCharacter
 				this.m_iActivity = 0;
 				
 				this.SetSequence(sequence);
-				this.SetPlaybackRate(1.0, true);
+				this.SetPlaybackRate(1.0);
 				this.SetCycle(0.0);
-			//Its like setcycle, but itdoes it for us so it worsk clientside	
-			//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 				this.ResetSequenceInfo();
 			}
 		}
@@ -3105,9 +3093,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.m_iActivity = iActivity;
 		
 		this.SetSequence(nSequence);
-		this.SetPlaybackRate(1.0, true);
+		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-	//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 	
 		this.ResetSequenceInfo();
 		
