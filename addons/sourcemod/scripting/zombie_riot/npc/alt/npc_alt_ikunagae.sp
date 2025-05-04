@@ -1072,8 +1072,8 @@ static void Iku_NormAttackTick(Ikunagae npc)
 	Data.Radius = 10.0;
 	Data.Range = 1000.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = 60.0 / 6.0 / TickrateModify;
-	Data.Long_Dps = 45.0 / 6.0 / TickrateModify;
+	Data.Close_Dps = 60.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = 45.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = {193, 247, 244, 30};
 	Data.DoEffects = true;
 	GetAttachment(npc.index, "effect_hand_r", Data.EffectsStartLoc, NULL_VECTOR);

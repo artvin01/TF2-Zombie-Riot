@@ -221,6 +221,8 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	{
 		return false;
 	}
+
+#if defined ZR
 	if(i_IsABuilding[data])
 	{
 		ObjectGeneric objstats = view_as<ObjectGeneric>(data);
@@ -229,6 +231,8 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 		else if(objstats.m_iExtrabuilding2 == entity)
 			return false;
 	}
+#endif
+
 	return true;
 }
 

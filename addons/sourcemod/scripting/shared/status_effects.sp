@@ -160,6 +160,7 @@ void InitStatusEffects()
 	StatusEffects_Freeplay1();
 	StatusEffects_Freeplay2();
 	StatusEffects_Freeplay3();
+	StatusEffects_Modifiers();
 }
 
 static int CategoryPage[MAXTF2PLAYERS];
@@ -4659,4 +4660,26 @@ stock float Status_Effects_GetCustomValue(int victim, int Index)
 		delete E_AL_StatusEffects[victim];
 
 	return BuffValuereturn;
+}
+
+
+
+void StatusEffects_Modifiers()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Dimensional Turbulence");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "DT");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.2;
+	data.AttackspeedBuff			= 0.5;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }

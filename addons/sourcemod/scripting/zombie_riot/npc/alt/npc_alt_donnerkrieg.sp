@@ -904,8 +904,8 @@ static void DonnerNormAttack(Donnerkrieg npc)
 	Data.Radius = 10.0;
 	Data.Range = 1000.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = 200.0 / 6.0 / TickrateModify;
-	Data.Long_Dps = 100.0 / 6.0 / TickrateModify;
+	Data.Close_Dps = 200.0 / 6.0 / TickrateModify / ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = 100.0 / 6.0 / TickrateModify / ReturnEntityAttackspeed(npc.index);
 	Data.Color = {255, 255, 255, 30};
 	Data.DoEffects = true;
 	GetAttachment(npc.index, "effect_hand_r", Data.EffectsStartLoc, NULL_VECTOR);
@@ -954,8 +954,8 @@ public Action NightmareCannon_TBB_Tick(int client)
 	Data.Radius = 150.0;
 	Data.Range = -1.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = 750.0 / 6.0 / TickrateModify;
-	Data.Long_Dps = 450.0 / 6.0 / TickrateModify;
+	Data.Close_Dps = 750.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = 450.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = {255, 3, 3, 60};
 	Data.DoEffects = true;
 	Data.RelativeOffset = true;

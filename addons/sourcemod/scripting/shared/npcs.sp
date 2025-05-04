@@ -841,7 +841,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #if defined ZR
 					DisplayCritAboveNpc(victim, attacker, Blitzed_By_Riot);
 #else
-					DisplayCritAboveNpc(victim, attacker);
+					DisplayCritAboveNpc(victim, attacker, false);
 #endif
 				//	played_headshotsound_already_Case[attacker] = random_case;
 				//	played_headshotsound_already_Pitch[attacker] = pitch;
@@ -1725,7 +1725,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		{
 			CheckInHudEnable(2);
 			StatusEffect_OnTakeDamage_DealNegative(attacker, victim, DamagePercDo, testvalue);
-			Damage_NPCAttacker(attacker, DamagePercDo, testvalue);
+			Damage_NPCAttacker(victim, DamagePercDo, testvalue);
 			Damage_AnyAttacker(attacker, victim, victim, DamagePercDo, testvalue);
 			CheckInHudEnable(0);
 #if defined ZR

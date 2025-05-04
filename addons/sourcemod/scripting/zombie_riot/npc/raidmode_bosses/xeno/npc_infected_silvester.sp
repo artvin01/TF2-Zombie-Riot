@@ -1962,8 +1962,8 @@ public Action Silvester_TBB_Tick(int client)
 	Data.Radius = 45.0;
 	Data.Range = 2000.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = RaidModeScaling * 16.0 / 6.0 / TickrateModify;
-	Data.Long_Dps = RaidModeScaling * 12.0 / 6.0 / TickrateModify;
+	Data.Close_Dps = RaidModeScaling * 16.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = RaidModeScaling * 12.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = {238, 221, 68, 60};
 	Data.DoEffects = true;
 	Basic_NPC_Laser_Logic(Data);

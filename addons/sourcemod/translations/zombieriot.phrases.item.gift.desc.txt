@@ -2151,6 +2151,14 @@
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 25％ faster.\n1 down, enemies heal 50％ more."
 	}
+	"Turbulance"
+	{
+		"en"	"Turbulance"
+	}
+	"Turbulance Desc"
+	{
+		"en"	"Play the game under extreme Speed.\nEveryone gets the ''Dimensional Turbulance'' Buff."
+	}
 	"Secondary Mercs"
 	{
 		"en"	"Secondary Mercs"

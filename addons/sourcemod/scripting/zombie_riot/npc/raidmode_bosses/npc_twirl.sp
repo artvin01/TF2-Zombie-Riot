@@ -64,7 +64,8 @@ static const char g_FractalSound[][] = {
 
 
 #define TWIRL_TE_DURATION 0.1
-#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3"
+//#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3", now used for wave 15, deivid cant decide 
+#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/twirl_theme_new.mp3"
 static float fl_player_weapon_score[MAXTF2PLAYERS];
 
 static int i_melee_combo[MAXENTITIES];
@@ -683,10 +684,10 @@ methodmap Twirl < CClotBody
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
-			music.Time = 172;
+			music.Time = 190;
 			music.Volume = 1.65;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Ruler Of Ruina Decends");
+			strcopy(music.Name, sizeof(music.Name), "Night life in Ruina");
 			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);	
 		}

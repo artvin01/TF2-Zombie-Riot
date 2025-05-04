@@ -210,6 +210,10 @@ public Action Command_PetMenu(int client, int args)
 	return Plugin_Handled;
 }
 
+float ReturnEntityAttackspeed(int iNpc)
+{
+	return f_AttackSpeedNpcIncrease[iNpc];
+}
 
 void OnMapStart_NPC_Base()
 {
@@ -490,7 +494,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//FIX: This fixes lookup activity not working.
 		npcstats.StartActivity(0);
 		npcstats.SetSequence(0);
-		npcstats.SetPlaybackRate(1.0);
+		npcstats.SetPlaybackRate(1.0, true);
 		npcstats.SetCycle(0.0);
 		npcstats.ResetSequenceInfo();
 		//FIX: This fixes lookup activity not working.
@@ -2110,7 +2114,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
-			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (f_AttackSpeedNpcIncrease[this.index])));
+			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (ReturnEntityAttackspeed(this.index))));
 	}
 
 	public void RemoveGesture(const char[] anim)
@@ -2132,20 +2136,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		this.ResetSequence(iSequence);
 		this.ResetSequenceInfo();
-	//	this.SetSequence(iSequence);
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-		//Its like setcycle, but itdoes it for us so it worsk clientside	
-	//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 		this.ResetSequenceInfo();
 		this.m_iAnimationState = iSequence;
-	//	int layer = this.FindGestureLayerBySequence(iSequence);
-	//	if(layer != -1)
-	//	{
-	//		CAnimationLayer alayer = this.GetAnimOverlay(layer);
-	//		alayer.m_flPlaybackRate = 1.0;
-	//		alayer.m_flCycle = 0.0;
-	//	}
 	
 	}
 	public void AddGestureViaSequence(const char[] anim)
@@ -2221,8 +2215,6 @@ methodmap CClotBody < CBaseCombatCharacter
 				this.SetSequence(sequence);
 				this.SetPlaybackRate(1.0);
 				this.SetCycle(0.0);
-			//Its like setcycle, but itdoes it for us so it worsk clientside	
-			//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 				this.ResetSequenceInfo();
 			}
 		}
@@ -2485,63 +2477,20 @@ methodmap CClotBody < CBaseCombatCharacter
 	
 	public void SetSequence(int iSequence)	{ SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); }
 	public float GetPlaybackRate() { return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); }
-	public void SetPlaybackRate(float flRate) { SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate); }
+	public void SetPlaybackRate(float flRate, bool DontAlter = false) 
+	{
+		if(DontAlter || flRate == 0.0)
+		{
+			SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate);
+			return;
+		}
+
+		SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate / ReturnEntityAttackspeed(this.index));
+	}
 	public void SetCycle(float flCycle)	   
 	{
-		//We are chacning cycles, we must disable this.
-	//	SetEntProp(this.index, Prop_Send, "m_bClientSideAnimation", 0);
 		SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); 
 	}
-	/*
-	public void SetSequence(int iSequence)
-	{
-		if(iSequence == -1)
-			return;
-
-		
-		int layer = this.AddLayeredSequence(iSequence, 1);
-		if (!this.IsValidLayer(layer))
-		{
-			i_MasterSequenceNpc[this.index] = -1;
-			return;
-		}
-
-		this.SetLayerCycle(layer, 0.0);
-		this.SetLayerPlaybackRate(layer, 1.0);
-		f_MasterSequenceNpcPlayBackRate[this.index] = 1.0;
-
-		i_MasterSequenceNpc[this.index] = layer;
-		// SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); 
-	}
-	public float GetPlaybackRate() 
-	{
-		//return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); 
-		if(i_MasterSequenceNpc[this.index] == -1)
-		{
-			return -1.0;
-		}
-		return f_MasterSequenceNpcPlayBackRate[this.index];
-	}
-	public void SetPlaybackRate(float flRate) 
-	{
-		//we cant just 
-		if(i_MasterSequenceNpc[this.index] == -1)
-		{
-			return;
-		}
-		f_MasterSequenceNpcPlayBackRate[this.index] = flRate;
-		this.SetLayerPlaybackRate(i_MasterSequenceNpc[this.index], flRate);
-	}
-	public void SetCycle(float flCycle)
-	{
-		if(i_MasterSequenceNpc[this.index] == -1)
-		{
-			return;
-		}
-		this.SetLayerCycle(i_MasterSequenceNpc[this.index], flCycle);
-	//	 SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); 
-	}
-	*/
 	
 	public void GetVectors(float pForward[3], float pRight[3], float pUp[3]) { view_as<CBaseEntity>(this).GetVectors(pForward, pRight, pUp); }
 	
@@ -3146,7 +3095,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.SetSequence(nSequence);
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-	//	SetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset", !GetEntProp(this.index, Prop_Send, "m_bClientSideFrameReset"));	
 	
 		this.ResetSequenceInfo();
 		
@@ -3210,7 +3158,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 1.0);
 			}
-			view_as<CClotBody>(this.index).SetPlaybackRate(f_LayerSpeedFrozeRestore[this.index]);
+			view_as<CClotBody>(this.index).SetPlaybackRate(f_LayerSpeedFrozeRestore[this.index], true);
 
 			if(IsValidEntity(view_as<CClotBody>(this.index).m_iFreezeWearable))
 				RemoveEntity(view_as<CClotBody>(this.index).m_iFreezeWearable);
@@ -3230,12 +3178,12 @@ methodmap CClotBody < CBaseCombatCharacter
 				if(PlaybackSpeed <= 0.01)
 					PlaybackSpeed = 0.01;
 					
-				this.SetPlaybackRate(PlaybackSpeed);
+				this.SetPlaybackRate(PlaybackSpeed, true);
 			}
 			else
 			{
 				//if its lower then this value, then itll mess up and particles wont animate.
-				this.SetPlaybackRate(0.01);
+				this.SetPlaybackRate(0.01, true);
 			}
 		}
 		
@@ -6050,7 +5998,7 @@ public void NpcBaseThinkPost(int iNPC)
 		//calc once
 	}
 	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime() + SimulationTimeDelay);
-	if(f_AttackSpeedNpcIncrease[iNPC] == 1.0)
+	if(ReturnEntityAttackspeed(iNPC) == 1.0)
 		return;
 		
 	if(f_TimeFrozenStill[iNPC] > GetGameTime(iNPC))
@@ -6058,13 +6006,10 @@ public void NpcBaseThinkPost(int iNPC)
 		
 	float time = GetGameTime() - lastThink;	// Time since the last time this NPC thought
 
-	//It like, speed sup their world time?
-	//f_StunExtraGametimeDuration[iNPC] += ((GetTickInterval() * f_AttackSpeedNpcIncrease[iNPC]) - GetTickInterval());
-	//Shitty attackspeed increase.
-	if(f_AttackSpeedNpcIncrease[iNPC] < 1.0)	// Buffs
-		f_StunExtraGametimeDuration[iNPC] += (time - (time / f_AttackSpeedNpcIncrease[iNPC]));
+	if(ReturnEntityAttackspeed(iNPC) < 1.0)	// Buffs
+		f_StunExtraGametimeDuration[iNPC] += (time - (time / ReturnEntityAttackspeed(iNPC)));
 	else	// Nerfs
-		f_StunExtraGametimeDuration[iNPC] += ((time * f_AttackSpeedNpcIncrease[iNPC]) - time);
+		f_StunExtraGametimeDuration[iNPC] += ((time * ReturnEntityAttackspeed(iNPC)) - time);
 }
 void NpcDrawWorldLogic(int entity)
 {
@@ -9523,7 +9468,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
 
 	f_LayerSpeedFrozeRestore[npc] = view_as<CClotBody>(npc).GetPlaybackRate();
-	view_as<CClotBody>(npc).SetPlaybackRate(0.0);
+	view_as<CClotBody>(npc).SetPlaybackRate(0.0, true);
 	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();
 	for(int i; i < layerCount; i++)
 	{
