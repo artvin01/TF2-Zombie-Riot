@@ -1418,6 +1418,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	int Compensator = param.Get(1);
 	if(TeamBeforeChange)
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TeamBeforeChange);
+	TeamBeforeChange = 0;
 	FinishLagCompMoveBack();
 	b_LagCompAlliedPlayers = false;
 	
@@ -2346,6 +2347,6 @@ int OffsetLagCompStart_UserInfoReturn()
 	static int ReturnInfo;
 	if(!ReturnInfo)
 		ReturnInfo = (FindSendPropInfo("CTFPlayer", "m_hViewModel") + 76);
-		
+
 	return ReturnInfo;
 }
