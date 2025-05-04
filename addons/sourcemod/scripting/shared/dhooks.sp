@@ -2344,6 +2344,8 @@ int OffsetLagCompStart_UserInfoReturn()
 {
 	//Get to CUserCmd				*m_pCurrentCommand;
 	static int ReturnInfo;
-	ReturnInfo = (FindSendPropInfo("CTFPlayer", "m_hViewModel") + 76);
+	if(!ReturnInfo)
+		ReturnInfo = (FindSendPropInfo("CTFPlayer", "m_hViewModel") + 76);
+		
 	return ReturnInfo;
 }
