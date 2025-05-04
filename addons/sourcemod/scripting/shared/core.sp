@@ -1505,6 +1505,7 @@ public void OnClientPutInServer(int client)
 #endif
 
 	b_IsPlayerABot[client] = false;
+	TeamNumber[client] = -1;
 #if !defined NOG
 	if(IsFakeClient(client))
 	{
@@ -1533,7 +1534,7 @@ public void OnClientPutInServer(int client)
 				}
 			}
 		}
-		ChangeClientTeam(client, TFTeam_Blue);
+		SetTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
 		return;

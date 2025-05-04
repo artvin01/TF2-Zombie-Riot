@@ -4672,6 +4672,7 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 
 	if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
+		
 	else if(!b_NpcHasDied[entity])
 	{
 		if(GetTeam(iExclude) == GetTeam(entity))

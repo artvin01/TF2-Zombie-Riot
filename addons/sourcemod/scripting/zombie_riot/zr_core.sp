@@ -673,6 +673,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_ROOT, "Fake Death Count"); 	//DEBUG
 	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
 	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
+	RegAdminCmd("sm_forceset_team", Command_SetTeamCustom, ADMFLAG_ROOT, "Set Team custom to a player"); 	//DEBUG
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	
@@ -1244,7 +1245,7 @@ public Action Command_AFK(int client, int args)
 		UnequipDispenser(client, true);
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
-		ChangeClientTeam(client, 1);
+		SetTeam(client, 1);
 		Queue_ClientDisconnect(client);
 	}
 	return Plugin_Handled;
@@ -1542,7 +1543,7 @@ public Action Command_AFKKnight(int client, int args)
 	if(client)
 	{
 		WaitingInQueue[client] = true;
-		ChangeClientTeam(client, 2);
+		SetTeam(client, 2);
 	}
 	return Plugin_Handled;
 }
@@ -2989,4 +2990,41 @@ void ZR_FastDownloadForce()
 	YakuzaMusicDownload();
 	FullmoonDownload();
 	Cheese_PrecacheMusic();
+}
+
+
+
+public Action Command_SetTeamCustom(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_forceset_team <target> <team (above 4)>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int teamset = StringToInt(buf); 
+	
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		PrintToChatAll("target %i, TeamSet %i",targets[target], teamset);
+		SetTeam(targets[target], teamset);
+	}
+	
+	return Plugin_Handled;
 }
