@@ -71,9 +71,12 @@ static void ClotDeath(int entity)
 	int cash = 1000;
 
 	int GetRound = Construction_GetRisk() + 1;
-	
-	cash *= GetRound;
 
+	if(GetRound > 5)
+		GetRound = 5;
+		
+	cash *= GetRound;
+	
 	CPrintToChatAll("%t", "Gained Material", cash, "Cash");
 	CurrentCash += cash;
 }

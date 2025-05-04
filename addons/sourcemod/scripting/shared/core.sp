@@ -111,6 +111,7 @@ ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 ConVar zr_interactforcereload;
 bool BlockOtherRaidMusic = false;
+//ConVar CvarDebugOffset;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -939,8 +940,10 @@ public void OnPluginEnd()
 			DHook_UnhookClient(i);
 #endif
 			OnClientDisconnect(i);
+#if defined ZR
 			if(!CvarInfiniteCash.BoolValue) //if on, assume were on a test server, dont slay.
 				ForcePlayerSuicide(i);
+#endif
 		}
 	}
 
@@ -1381,12 +1384,14 @@ public Action DoRoleplayTalk(int client, int args)
 		ReplyToCommand(client, "You cant use this command right now.");
 		return Plugin_Handled;
 	}
+#if defined ZR
 	if(!Native_CanRenameNpc(client))
 	{
 		CPrintToChat(client, "Youre muted buddy.");
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return Plugin_Handled;
 	}
+#endif
 	f_RoleplayTalkLimit[client] = GetGameTime() + 10.0;
 	
 	char Text[64];

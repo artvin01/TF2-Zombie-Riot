@@ -259,7 +259,7 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 			npc.m_flNextRangedAttackHappening = 0.0;
 			float vecTarget2[3];
 			WorldSpaceCenter(npc.index, vecTarget2);
-			makeexplosion(npc.index, npc.index, vecTarget2, "", 35000, 200);
+			makeexplosion(npc.index, vecTarget2, 35000, 200);
 			int maxhealth = ReturnEntityMaxHealth(npc.index);
 			maxhealth /= 5;
 			HealEntityGlobal(npc.index, npc.index, -float(maxhealth), 1.0, 0.0, _);

@@ -63,6 +63,7 @@ void StartLagCompensation_Base_Boss(int client)
 		FinishLagCompensation_Base_boss(-1, false);
 	}
 	DoingLagCompensation = true;
+//	PrintToChatAll("StartLagCompensation_Base_Boss");
 	
 	// Get true latency
 	
@@ -187,15 +188,6 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		// get next record
 		record = EntityTrack[index][i];
 		
-		/*float delta[3]
-		SubtractVectors(record.m_vecOrigin, prevOrg, delta);
-		if(Length2DSqr(delta) > m_flTeleportDistanceSqr)
-		{
-			// lost track, too much difference
-			return; 
-		}*/
-		
-		// did we find a context smaller than target time ?
 		if(record.m_flSimulationTime <= currentTime)
 			break; // hurra, stop
 		
@@ -218,8 +210,6 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		
 		VectorLerp(record.m_vecAngles, prevRecord.m_vecAngles, frac, ang);
 		VectorLerp(record.m_vecOrigin, prevRecord.m_vecOrigin, frac, org);
-	//	VectorLerp(record.m_vecMinsPreScaled, prevRecord.m_vecMinsPreScaled, frac, minsPreScaled);
-	//	VectorLerp(record.m_vecMaxsPreScaled, prevRecord.m_vecMaxsPreScaled, frac, maxsPreScaled);
 	}
 	else
 	{
@@ -227,12 +217,9 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		// just copy these values since they are the best we have
 		ang = record.m_vecAngles;
 		org = record.m_vecOrigin;
-	//	minsPreScaled = record.m_vecMinsPreScaled;
-	//	maxsPreScaled = record.m_vecMaxsPreScaled;
 	}
 	
-//	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", EntityRestore[entity].m_vecMinsPreScaled);
-//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", EntityRestore[index].m_vecMaxsPreScaled);
+	
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", EntityRestore[index].m_vecOrigin);
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles);
 
@@ -244,8 +231,8 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	{	
 		EntityRestore[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 		EntityRestore[index].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
-		EntityRestore[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	}
+	EntityRestore[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 
 	if(b_LagCompNPC_ExtendBoundingBox)
 	{
@@ -253,21 +240,21 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 #if defined ZR
 		if(GetTeam(entity) != TFTeam_Red)
 #endif
-		
 		{
 			SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
 			SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
-
 			
 			CClotBody npc = view_as<CClotBody>(entity);
 			npc.UpdateCollisionBox();
 		}
 	}
 
-	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	SDKCall_SetLocalOrigin(entity, org);
+	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	EntityRestoreSave[index].m_vecOrigin = org;
 	EntityRestoreSave[index].m_vecAngles = ang;
+	SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
+	EntityRestoreSave[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
@@ -275,7 +262,6 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 #endif
 	{
-		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
 		bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
 		if(interpolationAllowed)
 		{
@@ -314,7 +300,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 		////////////////////////
 		// Now do all the layers
-#if defined ZR
+#if defined RTS
 		if(GetTeam(entity) != TFTeam_Red)
 #endif
 		{
@@ -376,11 +362,10 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 				}
 			}
 		}
+		EntityRestoreSave[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
+		EntityRestoreSave[index].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 	}
 
-	EntityRestoreSave[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
-	EntityRestoreSave[index].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
-	EntityRestoreSave[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	//only invalidate when we actually update the bones, otherwise there is no reason to do this.
 	//if this bool is on, then that means whateverhappens only goes for position or collision box.
 	//if the code needs the bones for any reason, then simply enable this bool when doing the compensation.
@@ -395,6 +380,8 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 {
 //	if(!DoingLagCompensation)
 //		ThrowError("Not in BaseBoss Lag Comp");
+//	if(ForceOptionalEntity == -2)
+//		PrintToChatAll("FinishLagCompensation_Base_boss");
 	
 	if(ForceOptionalEntity == -2)
 		DoingLagCompensation = false;
@@ -485,14 +472,16 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 		
 		if(AreVectorsEqual(OriginGet, EntityRestoreSave[index].m_vecOrigin))
 			SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
+		
 
 		if(AreVectorsEqual(AngGet, EntityRestoreSave[index].m_vecAngles))
 			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
 		
+		if(GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime") == EntityRestoreSave[index].m_flSimulationTime)
+			SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
+			
 		if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 		{
-			
-			SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
 			int CurrentSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 			if(CurrentSequence == EntityRestoreSave[index].m_masterSequence) //They didnt update sequence?
 			{

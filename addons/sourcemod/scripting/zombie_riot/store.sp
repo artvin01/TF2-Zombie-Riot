@@ -1573,7 +1573,7 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
-	Store_RandomizeNPCStore(1);
+	//Store_RandomizeNPCStore(1);
 	
 	for(int c; c<MAXTF2PLAYERS; c++)
 	{
@@ -1587,6 +1587,8 @@ void Store_Reset()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
+		item.NPCSeller = false;
+		item.NPCSeller_WaveStart = 0;
 		for(int c; c<MAXTF2PLAYERS; c++)
 		{
 			item.Owned[c] = 0;
@@ -3617,7 +3619,8 @@ static void MenuPage(int client, int section)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			TryAndSellOrUnequipItem(i, item, client, false, false, true);
+			if(!item.Hidden) //dont sell hidden items!
+				TryAndSellOrUnequipItem(i, item, client, false, false, true);
 		}
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));

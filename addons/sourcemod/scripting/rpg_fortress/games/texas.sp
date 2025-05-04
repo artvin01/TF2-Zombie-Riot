@@ -329,7 +329,7 @@ static void TexasMenu(int client)
 			{
 				menu.SetTitle("Texas Hold 'Em\n%s... %.0f\n ", RankNames[GetCardRank(Cards[client])], TimeLeft - GetGameTime());
 
-				for(int i; i < sizeof(GlobalHand[]); i++)
+				for(int i; i < sizeof(GlobalHand); i++)
 				{
 					menu.AddItem(buffer, Games_GetCardIcon(GlobalHand[i]), ITEMDRAW_DISABLED);
 				}
