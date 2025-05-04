@@ -3619,7 +3619,8 @@ static void MenuPage(int client, int section)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			TryAndSellOrUnequipItem(i, item, client, false, false, true);
+			if(!item.Hidden) //dont sell hidden items!
+				TryAndSellOrUnequipItem(i, item, client, false, false, true);
 		}
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
