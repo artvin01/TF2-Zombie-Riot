@@ -173,11 +173,11 @@ enum struct ItemInfo
 			this.WeaponModelIndexOverride = 0;
 		}
 
-		if(this.WeaponSoundOverrideString[0])
-		{
-			//precache the sound!
-			PrecacheSound(this.WeaponSoundOverrideString, true);
-		}
+		//if(this.WeaponSoundOverrideString[0])
+		//{
+		//	//precache the sound!
+		//	PrecacheSound(this.WeaponSoundOverrideString, true);
+		//}
 
 		char buffer[256];
 		kv.GetString("func_attack", buffer, sizeof(buffer));

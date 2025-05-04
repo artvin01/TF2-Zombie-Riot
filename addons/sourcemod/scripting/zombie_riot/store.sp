@@ -1573,7 +1573,7 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
-	Store_RandomizeNPCStore(1);
+	//Store_RandomizeNPCStore(1);
 	
 	for(int c; c<MAXTF2PLAYERS; c++)
 	{
@@ -1587,6 +1587,8 @@ void Store_Reset()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
+		item.NPCSeller = false;
+		item.NPCSeller_WaveStart = 0;
 		for(int c; c<MAXTF2PLAYERS; c++)
 		{
 			item.Owned[c] = 0;

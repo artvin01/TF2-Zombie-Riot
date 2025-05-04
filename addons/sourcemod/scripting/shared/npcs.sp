@@ -841,7 +841,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #if defined ZR
 					DisplayCritAboveNpc(victim, attacker, Blitzed_By_Riot);
 #else
-					DisplayCritAboveNpc(victim, attacker);
+					DisplayCritAboveNpc(victim, attacker, false);
 #endif
 				//	played_headshotsound_already_Case[attacker] = random_case;
 				//	played_headshotsound_already_Pitch[attacker] = pitch;

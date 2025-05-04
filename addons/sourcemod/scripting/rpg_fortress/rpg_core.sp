@@ -556,11 +556,11 @@ static void HudSettings_ClientCookiesCached(int client)
 	if(buffer[0])
 	{
 		// Cookie has stuff, get values
-		bool buffers[3];
+		int buffers[3];
 		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
-		b_HudScreenShake[client] = buffers[0];
-		b_HudLowHealthShake_UNSUED[client] = buffers[1];
-		b_HudHitMarker[client] = buffers[2];
+		b_HudScreenShake[client] = view_as<bool>(buffers[0]);
+		b_HudLowHealthShake_UNSUED[client] = view_as<bool>(buffers[1]);
+		b_HudHitMarker[client] = view_as<bool>(buffers[2]);
 	}
 	else
 	{

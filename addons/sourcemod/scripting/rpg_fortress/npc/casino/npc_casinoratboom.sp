@@ -219,6 +219,6 @@ static void ClotDeath(int entity)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos); 
 		pos[2] += 30;
 
-		makeexplosion(npc.index, _, pos, _, RoundFloat(CasinoShared_GetDamage(npc, 0.3)), 100, _, _, true);
+		makeexplosion(npc.index, pos, RoundFloat(CasinoShared_GetDamage(npc, 0.3)), 100, _, true);
 	}
 }
