@@ -5318,10 +5318,10 @@ stock int GetTeam(int entity)
 				return -1;
 		}
 
-#if !defined RTS
-		if(entity && entity <= MaxClients)
-			return GetClientTeam(entity);
-#endif
+//#if !defined RTS
+//		if(entity && entity <= MaxClients)
+//			return GetClientTeam(entity);
+//#endif
 
 		if(TeamNumber[entity] == -1)
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");

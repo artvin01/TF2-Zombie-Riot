@@ -22,38 +22,23 @@ static DynamicHook g_DHookScoutSecondaryFire;
 #if defined ZR
 static bool IsRespawning;
 #endif
-
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DhookCrossbowHolster;
 DynamicHook g_DhookUpdateTransmitState; 
-//static DynamicHook g_DHookShouldCollide; //from mikusch but edited
 
 static DynamicDetour g_CalcPlayerScore;
-
 static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
-
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings	
-
 static bool b_LagCompNPC;
 
-//static DynamicHook HookCreateFakeClientStuff;
 static DynamicHook HookItemIterateAttribute;
 static ArrayList RawEntityHooks;
 static int m_bOnlyIterateItemViewAttributes;
 static int m_Item;
-//Handle dHookCheckUpgradeOnHit;
-/*
-// Offsets from mikusch but edited
-static int g_OffsetWeaponMode;
-static int g_OffsetWeaponInfo;
-static int g_OffsetWeaponPunchAngle;
-*/
 static bool GrenadeExplodedAlready[MAXENTITIES];
-
-//#include <dhooks_gameconf_shim>
 
 stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     Handle res = DHookCreateFromConf(game_config, name);
@@ -171,6 +156,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
 		
+
 	g_DhookWantsLagCompensationOnEntity = DHookCreateFromConf(gamedata_lag_comp,
 			"CTFPlayer::WantsLagCompensationOnEntity");
 
@@ -1229,12 +1215,13 @@ public void StartLagCompResetValues()
 	b_LagCompNPC_OnlyAllies = false;
 }
 
+int TeamBeforeChange;
 //if you find a way thats better to ignore fellow dispensers then tell me..!
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
 	StartLagCompResetValues();
-	
+//	PrintToChatAll("StartLagCompensationPre");
 	bool already_moved = false;
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
@@ -1243,7 +1230,8 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = true;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
-	//	TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
+		TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TFTeam_Blue);
 		return MRES_Ignored;
 	}
 	
@@ -1425,8 +1413,11 @@ public void FinishLagCompMoveBack()
 
 public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
 {
-//	PrintToChatAll("finish lag comp");
+//	PrintToChatAll("FinishLagCompensation");
 	//Set this to false to be sure.
+	int Compensator = param.Get(1);
+	if(TeamBeforeChange)
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TeamBeforeChange);
 	FinishLagCompMoveBack();
 	b_LagCompAlliedPlayers = false;
 	
@@ -2347,4 +2338,12 @@ public MRESReturn DhookBlockCrossbowPost(int entity)
 		SetBackAmmoCrossbow = false;
 	}
 	return MRES_Ignored;
+}
+
+int OffsetLagCompStart_UserInfoReturn()
+{
+	//Get to CUserCmd				*m_pCurrentCommand;
+	static int ReturnInfo;
+	ReturnInfo = (FindSendPropInfo("CTFPlayer", "m_hViewModel") + 76);
+	return ReturnInfo;
 }

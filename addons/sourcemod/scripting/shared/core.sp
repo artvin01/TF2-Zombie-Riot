@@ -111,6 +111,7 @@ ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 ConVar zr_interactforcereload;
 bool BlockOtherRaidMusic = false;
+//ConVar CvarDebugOffset;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
