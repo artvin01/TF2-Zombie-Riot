@@ -1121,9 +1121,11 @@ static void MerchantThink(int client, int &cost)
 		}
 		case Merchant_Lee:
 		{
-			if(MerchantLevel[client] > 2 && TF2_IsPlayerInCondition(client, TFCond_Dazed))
+			if(MerchantLevel[client] > 2 && (TF2_IsPlayerInCondition(client, TFCond_Dazed) || TF2_IsPlayerInCondition(client, TFCond_HalloweenKartNoTurn) || TF2_IsPlayerInCondition(client, TFCond_FreezeInput)))
 			{
 				TF2_RemoveCondition(client, TFCond_Dazed);
+				TF2_RemoveCondition(client, TFCond_HalloweenKartNoTurn);
+				TF2_RemoveCondition(client, TFCond_FreezeInput);
 
 				int entity = EntRefToEntIndex(MerchantEffect[client]);
 				if(IsValidEnemy(client, entity, true, true))
