@@ -3022,7 +3022,8 @@ public Action Command_SetTeamCustom(int client, int args)
 	
 	for(int target; target<matches; target++)
 	{
-		SetTeam(target, teamset);
+		PrintToChatAll("target %i, TeamSet %i",targets[target], teamset);
+		SetTeam(targets[target], teamset);
 	}
 	
 	return Plugin_Handled;

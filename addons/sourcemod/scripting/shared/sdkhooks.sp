@@ -220,6 +220,7 @@ stock void SDKHook_HookClient(int client)
 	SDKUnhook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
 	SDKHook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
 #endif
+
 }
 
 public void CheckWeaponAmmoLogicExternal(DataPack pack)
@@ -1692,20 +1693,6 @@ int CheckInHud()
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-#if defined ZR
-
-	if(IsValidEntity(victim) && CanSelfHurtAndJump(victim) && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
-	{
-		if(CanSelfHurtAndJump(victim))
-		{
-			damage = 1.0;
-			int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-			SetEntProp(victim, Prop_Data, "m_iHealth", flHealth + 1);
-			return Plugin_Changed;
-		}
-		return Plugin_Continue;
-	}
-#endif
 	if(!CheckInHud())
 	{
 		ClientPassAliveCheck[victim] = false;

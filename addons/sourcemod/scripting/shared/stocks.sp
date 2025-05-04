@@ -5343,7 +5343,6 @@ stock void SetTeam(int entity, int teamSet)
 				ChangeClientTeam(entity, teamSet);
 			}
 			else
-
 			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 			}
