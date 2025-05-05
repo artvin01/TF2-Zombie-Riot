@@ -118,6 +118,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zealot_RoundStart();
 	Drops_ResetChances();
 
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client))
+			Loadout_DatabaseLoadFavorite(client);
+	}
 	if(RoundStartTime > GetGameTime())
 		return;
 	
