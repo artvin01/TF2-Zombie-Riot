@@ -2169,6 +2169,14 @@
 		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
 		"ru"	"Первые наёмники уже потерпели крах.\n35％ больше врагов,25％ быстрее спавн,15％ больше живих врагов одновременно\nОни наносят 15％ больше урона и 25％ больше барикадам,имеют 50％ больше хп и на 4％ быстрее\nВраги получают 50％ больше исцеления."
 	}
+	"Paranormal Activity"
+	{
+		"en"	"Paranormal Activity"
+	}
+	"Paranormal Activity Desc"
+	{
+		"en"	"You killed them all, and now, you will pay the price.\nEvery enemy is a spirit, and they deal 5％ extra damage."
+	}
 	"BUSTING"
 	{
 		"en"	"BUSTING"
