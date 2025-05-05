@@ -921,6 +921,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 		return;
 
 	bool melee = (i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE);
+	// i am pap
+	float paplvl = Attributes_Get(weapon, 122, 0.0);
 
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
@@ -929,9 +931,9 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 	if(Cheese_GetPenaltyDuration(victim) > GetGameTime())
 	{
-		damage = RoundToNearest(float(damage) * 0.5);
+		damage = RoundToNearest(float(damage) * 0.2);
 	}
-	if(victim <= MaxClients) // VS Players, but why?
+	if(victim <= MaxClients) // VS Players, in the rare occasion ZR pvp is turned on
 	{
 		Armor_DebuffType[victim] = 5;
 		if((f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
@@ -981,51 +983,30 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			{
 				ElementDamage[victim][Element_Plasma] = 0;
 				float immunitycd = melee ? 10.0 : 15.0;
+				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.5); // at max pap (8), its 9 seconds if melee, or 6.5 seconds if ranged
+				float vuln_duration = (melee ? 4.0 : 2.0) + (paplvl * 0.25); // at max pap (8), its 6 seconds if melee, or 4 seconds if ranged
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + immunitycd;
 
-				// i am pap
-			//	int paplvl = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-			//	float cheesedmg;
-			//	if(paplvl > 1)
-			//	{
-			//		cheesedmg = (675.0 * (paplvl + paplvl));
-			//	}
-			//	else if(paplvl > 3)
-			//	{
-			//		cheesedmg = (810.0 * (paplvl + paplvl));
-			//	}
-			//	else
-			//	{
-			//		cheesedmg = 500.0 * (1 + paplvl);
-			//	}
+				if(HasSpecificBuff(victim, "Plasm I"))
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
+				}
+				else if(HasSpecificBuff(victim, "Plasm II"))
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm III", duration);
+				}
 
 				if(b_thisNpcIsARaid[victim])
 				{
-			//		cheesedmg *= 3.0;
-					ApplyStatusEffect(attacker, victim, "Plasm I", 5.0);
-					Cheese_SetPenaltyDuration(victim, immunitycd + 20.0);
+					duration *= 0.5;
+					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
 				}
 				else if(b_thisNpcIsABoss[victim])
 				{
-			//		cheesedmg *= 2.25;
-					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
-					Cheese_SetPenaltyDuration(victim, immunitycd + 10.0);
+					duration *= 0.75;
+					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
 				}
-				else
-				{
-					ApplyStatusEffect(attacker, victim, "Plasm II", 10.0);
-				}
-
-			//	if(melee) // if applied via melee, slight dmg boost.
-			//		cheesedmg *= 1.25;
-
-			//	if(cheesedmg > float(ReturnEntityMaxHealth(victim)))
-			//		cheesedmg = float(ReturnEntityMaxHealth(victim));
-
-			//	if(melee) // if applied via melee, change dmg type to melee.
-			//		SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
-			//	else
-			//		SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, weapon);
+				IncreaseEntityDamageTakenBy(victim, 1.06 + (0.03*paplvl), vuln_duration); // up to +30% dmg taken at max pap (8)	
 
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
@@ -1039,8 +1020,29 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			}
 		}
 	}
-	else if(i_IsABuilding[victim])
+	else if(i_IsABuilding[victim]) // In the rare occasion you inflict plasmic elemental damage to buildings (4/5/2024 mini incident)
 	{
-		// no effect yet
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		if(!melee)
+			damage = RoundToNearest(float(damage) * 0.5);
+		Repair -= damage;
+		if(Repair <= 0)
+		{
+			NPC_Ignite(victim, attacker, 10.0, weapon, 100.0);
+				
+			Repair = 0;
+			float position[3];
+			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+			position[2] += 10.0;
+			for(int i = 0; i < 2; i++)
+			{
+				Cheese_BeamEffect(position);
+				position[2] += 20.5;
+			}
+			Cheese_PlaySplat(victim);
+		}
+			
+		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }
