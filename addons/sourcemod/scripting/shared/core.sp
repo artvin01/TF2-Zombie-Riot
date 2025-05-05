@@ -111,6 +111,7 @@ ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 ConVar zr_interactforcereload;
 bool BlockOtherRaidMusic = false;
+//ConVar CvarDebugOffset;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -939,8 +940,10 @@ public void OnPluginEnd()
 			DHook_UnhookClient(i);
 #endif
 			OnClientDisconnect(i);
+#if defined ZR
 			if(!CvarInfiniteCash.BoolValue) //if on, assume were on a test server, dont slay.
 				ForcePlayerSuicide(i);
+#endif
 		}
 	}
 
@@ -1123,7 +1126,7 @@ public void OnMapStart()
 
 #if defined ZR
 	ZR_MapStart();
-	Waves_SetReadyStatus(2);
+	Waves_SetReadyStatus(2, false);
 #endif
 
 #if defined RPG
@@ -1381,6 +1384,14 @@ public Action DoRoleplayTalk(int client, int args)
 		ReplyToCommand(client, "You cant use this command right now.");
 		return Plugin_Handled;
 	}
+#if defined ZR
+	if(!Native_CanRenameNpc(client))
+	{
+		CPrintToChat(client, "Youre muted buddy.");
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return Plugin_Handled;
+	}
+#endif
 	f_RoleplayTalkLimit[client] = GetGameTime() + 10.0;
 	
 	char Text[64];
@@ -1494,6 +1505,7 @@ public void OnClientPutInServer(int client)
 #endif
 
 	b_IsPlayerABot[client] = false;
+	TeamNumber[client] = -1;
 #if !defined NOG
 	if(IsFakeClient(client))
 	{
@@ -1522,7 +1534,7 @@ public void OnClientPutInServer(int client)
 				}
 			}
 		}
-		ChangeClientTeam(client, TFTeam_Blue);
+		SetTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
 		return;
@@ -2057,12 +2069,23 @@ public void Update_Ammo(DataPack pack)
 		for(int i; i<Ammo_MAX; i++)
 		{
 			CurrentAmmo[client][i] = GetAmmo(client, i);
-		}	
+		}
 	}
 	else
 	{
 		delete pack;
 		return;
+	}
+	if(HasSpecificBuff(client, "Dimensional Turbulence"))
+	{
+		if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+		{
+			for(int i; i<=Ammo_Laser; i++)
+			{
+				CurrentAmmo[client][i] = 9999;
+				SetAmmo(client, i, 9999);
+			}
+		}
 	}
 	int weapon_ref = pack.ReadCell();
 	if(weapon_ref == -1)
@@ -3462,6 +3485,10 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	if(medigun > 0)
 	{
 		speed = RoundToNearest(float(speed) * 0.65);
+	}
+	if(HasSpecificBuff(client, "Dimensional Turbulence"))
+	{
+		speed *= 2;
 	}
 
 	Rogue_ReviveSpeed(speed);

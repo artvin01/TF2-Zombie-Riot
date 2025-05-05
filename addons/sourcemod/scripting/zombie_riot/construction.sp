@@ -770,7 +770,7 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
-		int cash = 500;
+		int cash = 300;
 		int GetRound = Construction_GetRisk() + 3;
 		cash *= GetRound;
 		CPrintToChatAll("%t", "Gained Material", cash, "Cash");

@@ -143,7 +143,7 @@ static void ClotPrecache()
 	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl", true);
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_huscarls.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/huscarl_ost_new.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -415,12 +415,12 @@ methodmap Huscarls < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
-				music.Time = 132;
-				music.Volume = 2.3;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/huscarl_ost_new.mp3");
+				music.Time = 232;
+				music.Volume = 1.7;
 				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
-				strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
+				strcopy(music.Name, sizeof(music.Name), "Unstoppable Force");
+				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 				Music_SetRaidMusic(music);
 			}
 			

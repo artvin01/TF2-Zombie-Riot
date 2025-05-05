@@ -481,8 +481,8 @@ static Action Superrior_Mage_LaserTick(int client)
 	Data.Radius = 10.0;
 	Data.Range = (npc.Anger ? 750.0 : 500.0);
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = (npc.Anger ? 30.0 : 20.0) / 6.0 / TickrateModify;
-	Data.Long_Dps = (npc.Anger ? 17.5: 10.0) / 6.0 / TickrateModify;
+	Data.Close_Dps = (npc.Anger ? 30.0 : 20.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = (npc.Anger ? 17.5: 10.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = (npc.Anger ? {255, 255, 255, 60} : {5, 9, 250, 30});
 	Data.DoEffects = true;
 	GetAttachment(npc.index, "effect_hand_l", Data.EffectsStartLoc, NULL_VECTOR);

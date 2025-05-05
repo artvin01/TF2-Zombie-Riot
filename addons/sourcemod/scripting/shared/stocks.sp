@@ -1315,6 +1315,10 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
 #if defined ZR
+		if(HasSpecificBuff(healer, "Dimensional Turbulence"))
+		{
+			HealTotal *= 1.5;
+		}
 		if(b_HealthyEssence && GetTeam(reciever) == TFTeam_Red)
 			HealTotal *= 1.25;
 			
@@ -5314,10 +5318,10 @@ stock int GetTeam(int entity)
 				return -1;
 		}
 
-#if !defined RTS
-		if(entity && entity <= MaxClients)
-			return GetClientTeam(entity);
-#endif
+//#if !defined RTS
+//		if(entity && entity <= MaxClients)
+//			return GetClientTeam(entity);
+//#endif
 
 		if(TeamNumber[entity] == -1)
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
@@ -5334,30 +5338,30 @@ stock void SetTeam(int entity, int teamSet)
 		TeamNumber[entity] = teamSet;
 		if(teamSet <= TFTeam_Blue)
 		{
-
-#if !defined RTS
 			if(entity <= MaxClients)
 			{
 				ChangeClientTeam(entity, teamSet);
 			}
 			else
-#endif
-
 			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
 			}
 		}
 		else if(teamSet > TFTeam_Blue)
 		{
-
-#if !defined RTS
 			if(entity <= MaxClients)
 			{
-				ChangeClientTeam(entity, TFTeam_Blue);
+				if(teamSet >= 4)
+				{
+					ChangeClientTeam(entity, TFTeam_Red);
+					//With this we set custom teams=
+				}
+				else
+				{
+					ChangeClientTeam(entity, TFTeam_Blue);	
+				}
 			}
 			else
-#endif
-
 			{
 				SetEntProp(entity, Prop_Data, "m_iTeamNum", 4);
 			}

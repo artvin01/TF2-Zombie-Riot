@@ -220,6 +220,7 @@ stock void SDKHook_HookClient(int client)
 	SDKUnhook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
 	SDKHook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
 #endif
+
 }
 
 public void CheckWeaponAmmoLogicExternal(DataPack pack)
@@ -558,6 +559,12 @@ public void OnPostThink(int client)
 		else
 		{
 			mana_regen[client] = 0.0;
+		}
+		if(HasSpecificBuff(client, "Dimensional Turbulence"))
+		{
+			Current_Mana[client] = 9999999;
+			mana_regen[client] = 9999999.9;
+			max_mana[client] = 9999999.9;
 		}
 					
 		Mana_Hud_Delay[client] = 0.0;
@@ -1130,30 +1137,39 @@ public void OnPostThink(int client)
 			}
 #endif
 
-			for(int i=1; i<21; i++)
+			bool InfMana = false;
+			if(HasSpecificBuff(client, "Dimensional Turbulence"))
+				InfMana = true;
+
+			if(!InfMana)
 			{
-				if(Current_Mana[client] >= max_mana[client]*(i*0.05))
+				for(int i=1; i<21; i++)
 				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-				}
-				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-				}
-				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					if(Current_Mana[client] >= max_mana[client]*(i*0.05))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+					}
+					else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+					}
+					else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					}
 				}
 			}
 				
 			SetGlobalTransTarget(client);
-			
 #if defined ZR
-			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+			if(!InfMana)
+				Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+			else
+				Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana Inf", buffer);
 #elseif defined RPG
 			static Form form;
 			Races_GetClientInfo(client, _, form);
@@ -1677,20 +1693,6 @@ int CheckInHud()
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-#if defined ZR
-
-	if(IsValidEntity(victim) && CanSelfHurtAndJump(victim) && TeutonType[victim] == TEUTON_NONE && dieingstate[victim] <= 0 && victim == attacker)
-	{
-		if(CanSelfHurtAndJump(victim))
-		{
-			damage = 1.0;
-			int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-			SetEntProp(victim, Prop_Data, "m_iHealth", flHealth + 1);
-			return Plugin_Changed;
-		}
-		return Plugin_Continue;
-	}
-#endif
 	if(!CheckInHud())
 	{
 		ClientPassAliveCheck[victim] = false;
@@ -1864,7 +1866,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 		}
 		else
-			return Plugin_Handled;	
+		{
+			if(attacker == victim)
+				return Plugin_Handled;	
+		}
 
 #if defined RPG		
 		if(!CheckInHud())
@@ -2063,7 +2068,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			bool Any_Left = false;
 			for(int client=1; client<=MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+				if(IsClientInGame(client) && GetTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 				{
 					if(victim != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 					{

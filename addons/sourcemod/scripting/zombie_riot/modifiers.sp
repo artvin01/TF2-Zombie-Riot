@@ -7,6 +7,7 @@ static int CurrentModifActive = 0;
 #define CHAOS_INTRUSION 1
 #define SECONDARY_MERCS 2
 #define OLD_TIMES 3
+#define TURBOLENCES 4
 
 void Modifier_MiniBossSpawn(bool &spawns)
 {
@@ -47,6 +48,11 @@ public void Modifier_Remove_SecondaryMercs()
 public void Modifier_Collect_OldTimes()
 {
 	CurrentModifActive = OLD_TIMES;
+}
+
+public void Modifier_Collect_Turbolences()
+{
+	CurrentModifActive = TURBOLENCES;
 }
 
 public void Modifier_Remove_OldTimes()

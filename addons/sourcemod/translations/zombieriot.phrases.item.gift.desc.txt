@@ -1056,7 +1056,7 @@
 	}
 	"Nearl Radiant Sword Desc"
 	{
-		"en"		"A distacting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
+		"en"		"A distracting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
 		"ru"		"Искажающий меч отвлекающий врагов на себя,когда враги атакуют его,любое максимальное улучшение энергетического клинка будет наносить в 2 раза больше урона им."
 	}
 	"Whiteflower Subject Desc"
@@ -2150,6 +2150,14 @@
 	"Old Times Desc"
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 25％ faster.\n1 down, enemies heal 50％ more."
+	}
+	"Turbulance"
+	{
+		"en"	"Turbulance"
+	}
+	"Turbulance Desc"
+	{
+		"en"	"Play the game under extreme Speed.\nEveryone gets the ''Dimensional Turbulance'' Buff."
 	}
 	"Secondary Mercs"
 	{

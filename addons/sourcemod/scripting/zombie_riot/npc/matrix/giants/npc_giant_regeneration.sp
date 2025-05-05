@@ -42,7 +42,7 @@ void GiantRegeneration_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_giant_regeneration");
 	strcopy(data.Icon, sizeof(data.Icon), "matrix_medic_regeneration");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Matrix;
 	data.Func = ClotSummon;
 	NPC_Add(data);

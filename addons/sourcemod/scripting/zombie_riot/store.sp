@@ -736,6 +736,10 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.85;
 	}
+	if(HasSpecificBuff(client, "Dimensional Turbulence"))
+	{
+		Cooldown *= 0.25;
+	}
 	return Cooldown;
 }
 
@@ -1569,7 +1573,7 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
-	Store_RandomizeNPCStore(1);
+	//Store_RandomizeNPCStore(1);
 	
 	for(int c; c<MAXTF2PLAYERS; c++)
 	{
@@ -1583,6 +1587,8 @@ void Store_Reset()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
+		item.NPCSeller = false;
+		item.NPCSeller_WaveStart = 0;
 		for(int c; c<MAXTF2PLAYERS; c++)
 		{
 			item.Owned[c] = 0;
@@ -3613,7 +3619,8 @@ static void MenuPage(int client, int section)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			TryAndSellOrUnequipItem(i, item, client, false, false, true);
+			if(!item.Hidden) //dont sell hidden items!
+				TryAndSellOrUnequipItem(i, item, client, false, false, true);
 		}
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
@@ -4850,11 +4857,25 @@ static void LoadoutItem(int client, const char[] name)
 	
 	char buffer[64];
 	
+	//We will check for favorites the lazy way.
+	
 	FormatEx(buffer, sizeof(buffer), "%T", "All Items", client);
 	menu.AddItem(name, buffer);
 	
 	FormatEx(buffer, sizeof(buffer), "%T", "Free Only", client);
 	menu.AddItem(name, buffer);
+	
+	if(!StrContains(name, "[♥]"))
+	{
+		FormatEx(buffer, sizeof(buffer), "%T", "Un Favorite", client);
+		menu.AddItem(name, buffer);
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%T", "Favorite", client);
+		menu.AddItem(name, buffer);
+	}
+
 	
 	menu.AddItem(name, buffer, ITEMDRAW_SPACER);
 	
@@ -4897,7 +4918,35 @@ public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choic
 					
 					Database_LoadLoadout(client, buffer, choice == 1);
 				}
-				case 3:
+				case 2:
+				{
+					char buffer2[256];
+					if(!StrContains(buffer, "[♥]"))
+					{
+						//Remove favorite
+						FormatEx(buffer2, sizeof(buffer2), "%s", buffer[5]);
+						int index = Loadouts[client].FindString(buffer);
+						if(index != -1)
+						{
+							Database_EditName(client, buffer, buffer2);
+							Loadouts[client].SetString(index, buffer2, sizeof(buffer2));
+						}
+						LoadoutPage(client);
+					}
+					else
+					{
+						//Add favorite
+						FormatEx(buffer2, sizeof(buffer2), "[♥]%s", buffer);
+						int index = Loadouts[client].FindString(buffer);
+						if(index != -1)
+						{
+							Database_EditName(client, buffer, buffer2);
+							Loadouts[client].SetString(index, buffer2, sizeof(buffer2));
+						}
+						LoadoutPage(client);
+					}
+				}
+				case 4:
 				{
 					int index = Loadouts[client].FindString(buffer);
 					if(index != -1)
@@ -4923,6 +4972,11 @@ public bool Store_SayCommand(int client)
 	GetCmdArgString(buffer, sizeof(buffer));
 	ReplaceString(buffer, sizeof(buffer), "\"", "");
 	
+	if(!StrContains(buffer, "[♥]"))
+	{
+		PrintToChat(client, "%T", "Invalid Name", client);
+		return true;
+	}
 	int length = 33;
 	if(Database_Escape(buffer, sizeof(buffer), length) && length < 31)
 	{

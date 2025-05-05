@@ -588,6 +588,7 @@ static void Particle_Beam(int client, int pap, float target_vec[3], int colour[4
 static void Beam_Wand_Laser_Attack(int client, float endVec_2[3], int num, float damage)
 {
 	Player_Laser_Logic Laser;
+	Laser.weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	Laser.client = client;
 	Laser.Damage = damage;
 	Laser.Radius = 25.0;
@@ -599,61 +600,61 @@ static void Beam_Wand_Laser_Attack(int client, float endVec_2[3], int num, float
 }
 static void Beam_Wand_Laser_Effect(int client, float endVec_2[3], int colour[4], int num)
 {
-		float endVec[3]; endVec = fl_laser_edge_vec[client][num];
-		float diameter = 75.0;
-		float duration1 = 0.11;
-		float duration2 = 0.22;
-		int a;
-		if(bl_overdrive_beam[client])
-		{
-			a = colour[3];
-			diameter = 50.0;
-			diameter /= 2.0;
-		}
-		else
-		{
-			a = 75;
-		}
-		if(bl_particle_type[client])
-		{
-			diameter = 150.0;
-			duration1 = 0.75;
-			duration2 = 0.5;
-		}
-		int r, g, b;
-		r = colour[0];
-		g = colour[1];
-		b = colour[2];
-		int colorLayer4[4];
-		SetColorRGBA(colorLayer4, r, g, b, a);
-		int colorLayer3[4];
-		SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, a);
-		int colorLayer2[4];
-		SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, a);
-		int colorLayer1[4];
-		SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, a);
-		if(bl_overdrive_beam[client])
-		{
-			TE_SetupBeamPoints(endVec, endVec_2, BeamWand_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.5, colorLayer1, 3);
-		}
-		else
-		{
-			TE_SetupBeamPoints(endVec, endVec_2, BeamWand_Laser, 0, 0, 0, duration1, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.5, colorLayer1, 3);
-		}
-		TE_SendToAll(0.0);
-		int glowColor[4];
-		
-		diameter /= 1.5;
-		SetColorRGBA(glowColor, r, g, b, a);
-		if(bl_overdrive_beam[client])
-		{
-			TE_SetupBeamPoints(endVec, endVec_2, BeamWand_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.25, glowColor, 0);
-		}
-		else
-		{
-			TE_SetupBeamPoints(endVec, endVec_2, BeamWand_Glow, 0, 0, 0, duration2, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.4, glowColor, 0);
-		}
-		TE_SendToAll(0.0);
+	float endVec[3]; endVec = fl_laser_edge_vec[client][num];
+	float diameter = 75.0;
+	float duration1 = 0.11;
+	float duration2 = 0.22;
+	int a;
+	if(bl_overdrive_beam[client])
+	{
+		a = colour[3];
+		diameter = 50.0;
+		diameter /= 2.0;
+	}
+	else
+	{
+		a = 75;
+	}
+	if(bl_particle_type[client])
+	{
+		diameter = 150.0;
+		duration1 = 0.75;
+		duration2 = 0.5;
+	}
+	int r, g, b;
+	r = colour[0];
+	g = colour[1];
+	b = colour[2];
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, r, g, b, a);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, a);
+	int colorLayer2[4];
+	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, a);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, a);
+	if(bl_overdrive_beam[client])
+	{
+		TE_SetupBeamPoints(endVec, endVec_2, BeamWand_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.5, colorLayer1, 3);
+	}
+	else
+	{
+		TE_SetupBeamPoints(endVec, endVec_2, BeamWand_Laser, 0, 0, 0, duration1, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.5, colorLayer1, 3);
+	}
+	TE_SendToAll(0.0);
+	int glowColor[4];
+	
+	diameter /= 1.5;
+	SetColorRGBA(glowColor, r, g, b, a);
+	if(bl_overdrive_beam[client])
+	{
+		TE_SetupBeamPoints(endVec, endVec_2, BeamWand_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.25, glowColor, 0);
+	}
+	else
+	{
+		TE_SetupBeamPoints(endVec, endVec_2, BeamWand_Glow, 0, 0, 0, duration2, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.4, glowColor, 0);
+	}
+	TE_SendToAll(0.0);
 }
 static void Beam_Wand_Spawn_Effect(int client,float target_vec[3], int colour[4])
 {
