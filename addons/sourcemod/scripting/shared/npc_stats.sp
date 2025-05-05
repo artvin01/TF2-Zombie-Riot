@@ -9417,6 +9417,8 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 		{
 			return;
 		}
+		if(HasSpecificBuff(npc, "Dimensional Turbulence"))
+			Duration_Stun *= 0.25;
 		TF2_AddCondition(npc, TFCond_FreezeInput, Duration_Stun);
 		ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun);	
 		return;
@@ -9446,13 +9448,23 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 		if(f_RaidStunResistance[npc] > GameTime)
 		{
 			if(HasSpecificBuff(npc, "Shook Head"))
-				Duration_Stun_Post *= 0.5;
+				Duration_Stun_Post *= 0.25;
 		}
 
 #if defined ZR
 		Rogue_ParadoxDLC_StunTime(npc, Duration_Stun_Post);
 #endif
 	}
+	
+	if(HasSpecificBuff(npc, "Dimensional Turbulence"))
+		Duration_Stun_Post *= 0.25;
+
+	if(Duration_Stun_Post <= 0.05)
+	{
+		//this is too little, do not bother
+		return;
+	}
+
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
