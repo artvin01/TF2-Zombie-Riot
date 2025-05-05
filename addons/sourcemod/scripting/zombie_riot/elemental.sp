@@ -998,15 +998,19 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 
 				if(b_thisNpcIsARaid[victim])
 				{
-					duration *= 0.5;
+					duration *= 0.65;
 					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
 				}
 				else if(b_thisNpcIsABoss[victim])
 				{
-					duration *= 0.75;
-					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
+					duration *= 0.8;
+					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
 				}
-				IncreaseEntityDamageTakenBy(victim, 1.06 + (0.03*paplvl), vuln_duration); // up to +30% dmg taken at max pap (8)	
+				else
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
+				}
+				IncreaseEntityDamageTakenBy(victim, 1.08 + (0.03*paplvl), vuln_duration); // up to +40% dmg taken at max pap (8)
 
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
