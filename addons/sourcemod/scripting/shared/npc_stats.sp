@@ -8878,7 +8878,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
-	f_RaidStunResistance[entity] = 0.0;
 	i_TextEntity[entity][0] = -1;
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
@@ -9445,19 +9444,15 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	float Duration_Stun_Post = Duration_Stun;
 	if(!IgnoreAllLogic)
 	{
-		if(f_RaidStunResistance[npc] > GameTime)
-		{
-			if(HasSpecificBuff(npc, "Shook Head"))
-				Duration_Stun_Post *= 0.25;
-		}
+		if(HasSpecificBuff(npc, "Shook Head"))
+			Duration_Stun_Post *= 0.5;
 
 #if defined ZR
 		Rogue_ParadoxDLC_StunTime(npc, Duration_Stun_Post);
 #endif
+		if(HasSpecificBuff(npc, "Dimensional Turbulence"))
+			Duration_Stun_Post *= 0.5;
 	}
-	
-	if(HasSpecificBuff(npc, "Dimensional Turbulence"))
-		Duration_Stun_Post *= 0.25;
 
 	if(Duration_Stun_Post <= 0.05)
 	{
