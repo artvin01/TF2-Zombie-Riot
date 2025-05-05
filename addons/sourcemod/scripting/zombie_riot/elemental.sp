@@ -984,7 +984,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + immunitycd;
 
 				// i am pap
-				int paplvl = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			//	int paplvl = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 			//	float cheesedmg;
 			//	if(paplvl > 1)
 			//	{

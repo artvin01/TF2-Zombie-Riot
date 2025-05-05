@@ -2138,7 +2138,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.ResetSequenceInfo();
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-		this.ResetSequenceInfo();
 		this.m_iAnimationState = iSequence;
 	
 	}
@@ -2213,9 +2212,9 @@ methodmap CClotBody < CBaseCombatCharacter
 				this.m_iActivity = 0;
 				
 				this.SetSequence(sequence);
-				this.SetPlaybackRate(1.0);
-				this.SetCycle(0.0);
 				this.ResetSequenceInfo();
+				this.SetCycle(0.0);
+				this.SetPlaybackRate(1.0);
 			}
 		}
 		else
@@ -2484,8 +2483,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate);
 			return;
 		}
-
-		SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate / ReturnEntityAttackspeed(this.index));
+	//	PrintToChatAll(" Speed playback %f",flRate / ReturnEntityAttackspeed(this.index));
+		SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", (flRate / ReturnEntityAttackspeed(this.index)));
 	}
 	public void SetCycle(float flCycle)	   
 	{
@@ -3093,10 +3092,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.m_iActivity = iActivity;
 		
 		this.SetSequence(nSequence);
+		this.ResetSequenceInfo();
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-	
-		this.ResetSequenceInfo();
+
 		
 		return true;
 	}

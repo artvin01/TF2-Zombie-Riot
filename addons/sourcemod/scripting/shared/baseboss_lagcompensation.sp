@@ -222,6 +222,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", EntityRestore[index].m_vecOrigin);
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles);
+	EntityRestore[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
@@ -232,7 +233,6 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		EntityRestore[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 		EntityRestore[index].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 	}
-	EntityRestore[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 
 	if(b_LagCompNPC_ExtendBoundingBox)
 	{
@@ -251,10 +251,11 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 	SDKCall_SetLocalOrigin(entity, org);
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+	SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
+
 	EntityRestoreSave[index].m_vecOrigin = org;
 	EntityRestoreSave[index].m_vecAngles = ang;
-	SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
-	EntityRestoreSave[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
+//	EntityRestoreSave[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
@@ -376,12 +377,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 }
 
 void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset = true)
-//public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
-//	if(!DoingLagCompensation)
-//		ThrowError("Not in BaseBoss Lag Comp");
-//	if(ForceOptionalEntity == -2)
-//		PrintToChatAll("FinishLagCompensation_Base_boss");
 	
 	if(ForceOptionalEntity == -2)
 		DoingLagCompensation = false;
@@ -477,8 +473,7 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 		if(AreVectorsEqual(AngGet, EntityRestoreSave[index].m_vecAngles))
 			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
 		
-		if(GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime") == EntityRestoreSave[index].m_flSimulationTime)
-			SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
+		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
 			
 		if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 		{
@@ -585,9 +580,8 @@ void LagCompensationThink_Forward()
 				record.m_flSimulationTime	= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
-
 #if defined ZR
-				if(GetTeam(entity) != TFTeam_Red) //If its an allied baseboss, make sure to not get layers.
+				if(GetTeam(entity) != TFTeam_Red) //If its an allied entity, dont get layers, dont alter them a its never used.
 #endif
 				{
 					record.m_layerRecords = overlay.GetNumAnimOverlays();
@@ -616,7 +610,6 @@ void LagCompensationThink_Forward()
 
 				EntityTrack[index][EntityTrackCount[index]] = record;
 				EntityTrackCount[index]++;
-				//PrintToServer("%d Added %d -> %d", entity, length, EntityTrack[entity].Length);
 			}
 		}
 	}
@@ -666,7 +659,7 @@ void AddEntityToLagCompList(int entity)
 
 void RemoveEntityToLagCompList(int entity)
 {
-	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Remove lag comp
 	{
 		if (EntRefToEntIndexFast(i_Objects_Apply_Lagcompensation[i]) == entity)
 		{

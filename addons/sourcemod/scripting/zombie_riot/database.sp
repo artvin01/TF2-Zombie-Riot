@@ -330,22 +330,27 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(ForceNiko)
 			OverridePlayerModel(client, NIKO_2, true);
 	}
-	if(Loadouts[client])
+	Loadout_DatabaseLoadFavorite(client);
+}
+
+public void Loadout_DatabaseLoadFavorite(int client)
+{
+	if(!Loadouts[client])
+		return;
+
+	int LengthIAm = Loadouts[client].Length;
+	char BufferString[255];
+	for(int i; i < LengthIAm; i++)
 	{
-		int LengthIAm = Loadouts[client].Length;
-		char BufferString[255];
-		for(int i; i < LengthIAm; i++)
+		Loadouts[client].GetString(i, BufferString, sizeof(BufferString));
+		if(!StrContains(BufferString, "[♥]"))
 		{
-			Loadouts[client].GetString(i, BufferString, sizeof(BufferString));
-			if(!StrContains(BufferString, "[♥]"))
-			{
-				//Force buy me!
-				Database_LoadLoadout(client, BufferString, false);
-				break;
-			}
+			//Force buy me!
+			SPrintToChat(client, "%t", "Getting favorite loadout");
+			Database_LoadLoadout(client, BufferString, false);
+			return;
 		}
 	}
-		
 }
 
 public void MapChooser_OnPreMapEnd()

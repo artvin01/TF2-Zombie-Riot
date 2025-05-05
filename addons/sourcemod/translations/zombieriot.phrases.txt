@@ -4177,4 +4177,8 @@
 	{
 		"en"		"The round has started and you're in the loadout store!\nConfirm your loadout in the store menu to get access to more weapons and cash from the waves!"
 	}
+	"Getting favorite loadout"
+	{
+		"en"		"Loading your favorited loadout...."
+	}
 }
