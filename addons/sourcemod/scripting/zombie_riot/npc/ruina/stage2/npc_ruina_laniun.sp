@@ -177,7 +177,7 @@ methodmap Laniun < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		SetVariantInt(2 + 4 + 8);
+		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		npc.m_iChanged_WalkCycle = 1;
