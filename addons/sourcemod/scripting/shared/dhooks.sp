@@ -1787,22 +1787,7 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 	return MRES_Ignored;
 }*/
 #endif
-/*
-// g_bWarnedAboutMaxplayersInMVM
-public MRESReturn PreClientUpdatePre(Handle hParams)
-{
-//	CvarTfMMMode.IntValue = 1;
-	GameRules_SetProp("m_bPlayingMannVsMachine", true);
-	return MRES_Ignored;
-}
 
-public MRESReturn PreClientUpdatePost(Handle hParams)
-{
-//	CvarTfMMMode.IntValue = 0;
-	GameRules_SetProp("m_bPlayingMannVsMachine", false);
-	return MRES_Ignored;
-}
-*/
 #if defined ZR
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");

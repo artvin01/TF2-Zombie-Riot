@@ -751,45 +751,6 @@ public void OnPluginStart()
 	
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
 	RegConsoleCmd("sm_getpos", GetPos);
-	RegConsoleCmd("sm_me", DoRoleplayTalk);
-
-	sv_cheats = FindConVar("sv_cheats");
-	nav_edit = FindConVar("nav_edit");
-
-#if defined ZR
-	cvarTimeScale = FindConVar("host_timescale");
-#endif
-
-#if !defined NOG
-	CvarMpSolidObjects = FindConVar("tf_solidobjects");
-	if(CvarMpSolidObjects)
-		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-/*
-	CvarAirAcclerate = FindConVar("sv_airaccelerate");
-	if(CvarAirAcclerate)
-		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-*/
-	Cvar_clamp_back_speed = FindConVar("tf_clamp_back_speed");
-	if(Cvar_clamp_back_speed)
-		Cvar_clamp_back_speed.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-
-	Cvar_LoostFooting = FindConVar("tf_movement_lost_footing_friction");
-	if(Cvar_LoostFooting)
-		Cvar_LoostFooting.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-
-	CvarTfMMMode = FindConVar("tf_mm_servermode");
-	if(CvarTfMMMode)
-		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-		
-	cvar_nbAvoidObstacle = FindConVar("nb_allow_avoiding");
-	if(cvar_nbAvoidObstacle)
-		cvar_nbAvoidObstacle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-
-	//FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
-	FindConVar("sv_tags").Flags &= ~FCVAR_NOTIFY;
-
-	sv_cheats.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-#endif
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.weapons.description");
@@ -1369,66 +1330,6 @@ public Action GetPos(int client, int args)
 
 	GetClientEyeAngles(client, pos);
 	ReplyToCommand(client, "m_vecAngles: %f %f %f", pos[0], pos[1], pos[2]);
-	return Plugin_Handled;
-}
-
-public Action DoRoleplayTalk(int client, int args)
-{
-	if(f_RoleplayTalkLimit[client] > GetGameTime())
-	{
-		ReplyToCommand(client, "Sorry! Youre on a cooldown, wait %.1f seconds.", f_RoleplayTalkLimit[client] - GetGameTime());
-		return Plugin_Handled;
-	}
-	if(GetTeam(client) != TFTeam_Red || !IsPlayerAlive(client))
-	{
-		ReplyToCommand(client, "You cant use this command right now.");
-		return Plugin_Handled;
-	}
-#if defined ZR
-	if(!Native_CanRenameNpc(client))
-	{
-		CPrintToChat(client, "Youre muted buddy.");
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return Plugin_Handled;
-	}
-#endif
-	f_RoleplayTalkLimit[client] = GetGameTime() + 10.0;
-	
-	char Text[64];
-	GetCmdArg(1, Text, sizeof(Text));
-	if(!Text[0])
-	{
-		ReplyToCommand(client, "[SM] sm_me [Text (64 chars at max)] [Red 0-255] [Green0-255] [Blue0-255] [Alpha0-255]");
-		return Plugin_Handled;
-	}
-	char Text2[32];
-	char Text3[66];
-	strcopy(Text2, sizeof(Text2), Text);
-	Format(Text3, sizeof(Text3), "%s\n%s",Text2,Text[32]);
-	
-	int ColourGive[4];
-	ColourGive = {255,255,255,255};
-	if(args >= 2)
-		ColourGive[0] = GetCmdArgInt(2);
-	if(args >= 3)
-		ColourGive[1] = GetCmdArgInt(3);
-	if(args >= 4)
-		ColourGive[2] = GetCmdArgInt(4);
-	if(args >= 5)
-		ColourGive[3] = GetCmdArgInt(5);
-
-	float Offset[3];
-	Offset[2] = 90.0;
-	if(i_PlayerModelOverrideIndexWearable[client] == NIKO_2)
-		Offset[2] = 75.0;
-
-#if defined ZR
-	if(TeutonType[client] != TEUTON_NONE)
-		Offset[2] = 50.0;
-#endif
-
-	NpcSpeechBubble(client, Text3, 6, ColourGive, Offset, "");
-
 	return Plugin_Handled;
 }
 

@@ -127,6 +127,7 @@ methodmap Male07 < CClotBody
 			SetVariantString("!activator");
 			AcceptEntityInput(entity, "SetParent", npc.index);
 			AcceptEntityInput(entity, "LightOn");
+			b_EntityCantBeColoured[entity] = true;
 		}
 		
 		npc.m_flMeleeArmor = 0.50;

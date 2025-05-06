@@ -1030,6 +1030,9 @@ static void Purnell_DebuffApply(int client, int target, int overdose, float Dura
 			}
 		}
 	}
+
+	//for hud
+	ApplyStatusEffect(client, target, "Therapy Duration", DurationGive);
 //	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
 //	PrintHintText(client, "%s", text);
 }

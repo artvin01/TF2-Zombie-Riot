@@ -59,7 +59,6 @@ void DoPlayerLaserEffectsBigger(Player_Laser_Logic Laser, int color[4])
 void PlayerLaserDoDamageCombined(Player_Laser_Logic Laser, float Close_Dps, float Long_Dps)
 {
 	Laser.weapon = GetEntPropEnt(Laser.client, Prop_Send, "m_hActiveWeapon");
-	
 	float TargetsHitFallOff = 1.0;
 	Laser.Enumerate_Simple();
 	for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)

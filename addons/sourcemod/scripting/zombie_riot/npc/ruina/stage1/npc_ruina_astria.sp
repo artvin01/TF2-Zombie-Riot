@@ -161,7 +161,7 @@ methodmap Astria < CClotBody
 	
 	public Astria(float vecPos[3], float vecAng[3], int ally)
 	{
-		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
+		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally, _,_,true));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -309,7 +309,7 @@ static void ClotThink(int iNPC)
 
 		//Astria_Teleport_Allies(npc.index, 350.0, {20, 150, 255, 150});
 
-		Master_Apply_Defense_Buff(npc.index, 300.0, 15.0, 0.10);	//10% resistances
+		Master_Apply_Defense_Buff(npc.index, 300.0, 15.0, 0.9);	//10% resistances
 		//a long lasting defense buff.
 
 		Ruina_Master_Release_Slaves(npc.index);

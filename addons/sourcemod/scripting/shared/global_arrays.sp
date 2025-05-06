@@ -129,14 +129,8 @@ int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 float i_WasInResPowerup[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
-#if !defined NOG
-ConVar cvar_nbAvoidObstacle;
-ConVar CvarMpSolidObjects; //mp_solidobjects 
-ConVar CvarTfMMMode; // tf_mm_servermode
-//ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
-#endif
 ConVar sv_cheats;
 ConVar nav_edit;
 bool DoingLagCompensation;
@@ -371,7 +365,6 @@ bool b_NoGravity[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
-float f_RaidStunResistance[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];

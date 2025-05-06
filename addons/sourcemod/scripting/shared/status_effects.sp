@@ -4011,9 +4011,9 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 
 void StatusEffects_PurnellKitBuffs()
 {
-
 	//20% Faster attackspeed.
 	StatusEffect data;
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Hectic Therapy");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ᵽ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -4142,8 +4142,22 @@ void StatusEffects_PurnellKitDeBuffs()
 {
 	//Same as Cryo
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Icy Dereliction");
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Therapy Duration");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ḟ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Icy Dereliction");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.10;
@@ -4158,7 +4172,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as ant raid
 	strcopy(data.BuffName, sizeof(data.BuffName), "Raiding Dereliction");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₣");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.1;
@@ -4172,7 +4186,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as ant raid
 	strcopy(data.BuffName, sizeof(data.BuffName), "Degrading Dereliction");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "℉");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -4186,7 +4200,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as Near Zero
 	strcopy(data.BuffName, sizeof(data.BuffName), "Zero Therapy");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꟻ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.15;
@@ -4200,7 +4214,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as Golden Curse
 	strcopy(data.BuffName, sizeof(data.BuffName), "Debt Causing Dereliction");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϝ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.2;
@@ -4214,7 +4228,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as cudgelled
 	strcopy(data.BuffName, sizeof(data.BuffName), "Headache Incuding Dereliction");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϝ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.3;
@@ -4228,7 +4242,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as TEslar
 	strcopy(data.BuffName, sizeof(data.BuffName), "Shocking Dereliction");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "f");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.2;
@@ -4242,7 +4256,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as Specter Aura
 	strcopy(data.BuffName, sizeof(data.BuffName), "Therapists Aura");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϝ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -4256,7 +4270,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as Teslar Electricution
 	strcopy(data.BuffName, sizeof(data.BuffName), "Electric Dereliction");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "𐌅");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.25;
@@ -4270,7 +4284,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	
 	//Same as Caffinated Drain
 	strcopy(data.BuffName, sizeof(data.BuffName), "Caffinated Dereliction");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ɸ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.25; //take 25% more damage

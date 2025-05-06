@@ -1292,6 +1292,14 @@
 	}
 	"Dimensional Turbulence Desc"
 	{
-		"en" 	"2x Attackspeed, Infinite mana/Reserve Ammo\n20％ Movementspeed\n75％ Less Cooldowns\n2x Revive speed\n50％ more HP and Healing"
+		"en" 	"2x Attackspeed, Infinite mana/Reserve Ammo\n20％ Movementspeed\n75％ Less Cooldowns\n2x Revive speed\n50％ more HP and Healing\n50％ less stun duration"
+	}
+	"Therapy Duration"
+	{
+		"en"	"Therapy Duration"
+	}
+	"Therapy Duration Desc"
+	{
+		"en" 	"Under the influence of Therapy debuffs..."
 	}
 }

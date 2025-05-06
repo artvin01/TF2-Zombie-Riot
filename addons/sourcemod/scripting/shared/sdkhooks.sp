@@ -359,7 +359,6 @@ public void OnPreThinkPost(int client)
 	{
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
 	}
-//	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
 	Cvar_clamp_back_speed.FloatValue = f_Client_BackwardsWalkPenalty[client];
 	Cvar_LoostFooting.FloatValue = f_Client_LostFriction[client];
 }
@@ -455,25 +454,6 @@ public void OnPostThink(int client)
 				b_DisplayDamageHud[client][0] = false;
 		}
 	}
-	/*
-	if(b_AntiSlopeCamp[client])
-	{	
-		//make them slide off stuff.
-		if(ReplicateClient_Svairaccelerate[client] != 2.0)
-		{
-			ReplicateClient_Svairaccelerate[client] = 2.0;
-			CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set down
-		}
-	}
-	else
-	{
-		if(ReplicateClient_Svairaccelerate[client] != 10.0)
-		{
-			ReplicateClient_Svairaccelerate[client] = 10.0;
-			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
-		}
-	}
-	*/
 	if(ReplicateClient_BackwardsWalk[client] != f_Client_BackwardsWalkPenalty[client])
 	{
 		char IntToStringDo[4];
