@@ -154,7 +154,7 @@ void InitStatusEffects()
 	StatusEffects_Construction();
 	StatusEffects_BubbleWand1();
 	StatusEffects_BubbleWand2();
-	StatusEffects_Plasm();
+	//StatusEffects_Plasm();
 
 	//freeplay last.
 	StatusEffects_Freeplay1();
@@ -4510,6 +4510,7 @@ void StatusEffects_BubbleWand2()
 	StatusEffect_AddGlobal(data);
 }
 
+/*
 void StatusEffects_Plasm()
 {
 	StatusEffect data;
@@ -4632,7 +4633,7 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
-
+*/
 stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Index)
 {
 	if(!E_AL_StatusEffects[victim])
