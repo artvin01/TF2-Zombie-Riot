@@ -299,7 +299,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 		{
 			cheesedmg *= 2.0;
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
+		//Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
 	}
 
 	return damage;
@@ -307,7 +307,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon)
 {
-	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.33), weapon);
+	//Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.33), weapon);
 }
 
 public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int slot)
