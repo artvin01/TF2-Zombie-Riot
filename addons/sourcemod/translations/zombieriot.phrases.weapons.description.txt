@@ -4312,31 +4312,35 @@
 	}
 	"Plasma Kit Desc"
 	{
-		"en"	"A special type of weaponry designed by Koshi, if that wasn't obvious.\n[PLASMIC ELEMENTAL STATUS]: Upon filled, deals massive damage to the target and inflicts the Plasm II debuff.\nIf triggered via Melee, immunity cooldown is reduced and deals more dmg."
+		"en"	"A special gift made by Koshi for the mercs, as a reward for all the training in the Expidonsan Simulator."
+	}
+	"Plasma Elemental Desc"
+	{
+		"en"	"{darkviolet}Upon filled, Plasmic Elemental debuff inflicts vulnerability and the Plasm debuff on the enemy.\n{green}Plasm strength increases if the victim is already Plasm-ed.\n{yellow}Plasm debuff duration and vulnerability strength/duration scale with the attacker's PaP level.\n{green}If fully filled via melee, immunity cooldown is reduced, and debuff/vuln durations are increased."
 	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big syringe, filled to the brim with Plasma.\nDamage is below average, but builds the Plasmic Elemental status faster.\nHas a high 'health on kill' stat, deals +15%% extra dmg to raids."
+		"en" 	"A big syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage and has extra effects when triggering its elemental effect with this."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
-		"en" 	"Overall stat increase, grants a bunch of health."
+		"en" 	"Increases overall stats, grants a bunch of health.\nNow deals extra damage against Plasm-ed targets!"
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Now grants slight ranged resistance. Unlocks Lethal Injection [M2]:\nTemporarily boosts attackspeed, resistance, and doubles Plasmic Elemental melee buildup."
+		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict extra damage and MASSIVE Plasmic Elemental damage."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
-		"en" 	"Maybe injecting yourself with Plasma isn't a great idea...\nUnlocks Plasmic Inoculation [R]:\nInject yourself with Plasma to gain a huge stat increase (dmg, res, plasmic buildup and atkspd)\nand heal a bit of HP overtime up to 50%%."
+		"en" 	"increases overall stats.\nReduces Lethal Injection's cooldown, and allows it to inflict Plasm I on the victim."
 	}
 	"Plasma Inject Pap 4 Desc"
 	{
-		"en" 	"Increases overall stats.\nIncreases Lethal Injection's, duration, attackspeed and resistances.\nPlasmic Inoculation's buffs and healing are now stronger."
+		"en" 	"Increases overall stats.\nReduces Lethal Injection's cooldown, and grants it an extra ability charge!"
 	}
 	"Plasma Inject Pap 5 Desc"
 	{
-		"en" 	"Increases overall stats.\nPlasmic Inoculation's buffs and healing are now slightly stronger."
+		"en" 	"Increases overall stats.\nGrants Lethal Injection another extra charge, and allows it to inflict Plasm II instead of I."
 	}
 	"Plasma Kit Pap Rest Desc"
 	{
@@ -4344,22 +4348,18 @@
 	}
 	"Plasminator Desc"
 	{
-		"en"	"Koshi's own weapon - an Expidonsan clockwork assault rifle that shoots Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
+		"en"	"An Expidonsan clockwork assault rifle, that shoots rapid Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
 	}
 	"Plasminator Pap 2 Desc"
 	{
-		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage, inflicts Plasm I temporarily and inflicts 25%% of its damage as Plasmic Elemental damage."
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts 35%% of its damage as Plasmic Elemental damage."
 	}
 	"Plasminator Pap 3 Desc"
 	{
-		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and debuff duration."
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and plasmic elemental damage."
 	}
 	"Plasminator Pap 4 Desc"
 	{
-		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and reduces its cooldown."
-	}
-	"Plasminator Pap 5 Desc"
-	{
-		"en"	"Increases overall stats.\nPlasmic Burst now inflicts Plasm II instead of I, and for a slightly longer duration."
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range, plasmic elemental damage and reduces its cooldown."
 	}
 }
