@@ -2223,7 +2223,7 @@ static void Internal_NPCDeath(int entity)
 
 	if(b_tripple_raid[npc.index])
 	{
-		Twirl_OnStellaKarlasDeath(npc.Ally);
+		Twirl_OnStellaKarlasDeath();
 	}
 
 	if(!npc.m_bSaidWinLine)

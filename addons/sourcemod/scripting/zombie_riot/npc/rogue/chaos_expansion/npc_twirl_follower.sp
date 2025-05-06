@@ -800,19 +800,19 @@ static bool Laser_Initiate(TwirlFollower npc)
 
 	npc.m_bisWalking = false;
 
-	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
-	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick_Follower);
+	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick_Follower);
 
 	return true;
 }
-static Action Magia_Overflow_Tick(int iNPC)
+static Action Magia_Overflow_Tick_Follower(int iNPC)
 {
 	TwirlFollower npc = view_as<TwirlFollower>(iNPC);
 	float GameTime = GetGameTime(npc.index);
 
 	if(npc.m_flLaserDuration < GameTime)
 	{
-		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick_Follower);
 
 		npc.m_bisWalking = true;
 		npc.m_flSpeed = fl_npc_basespeed;
