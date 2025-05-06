@@ -1162,7 +1162,9 @@ public void OnMapEnd()
 	ConVar_Disable();
 	FileNetwork_MapEnd();
 	NpcStats_OnMapEnd();
+#if defined ZR
 	RemoveMVMLogicSafety();
+#endif
 }
 
 public void OnConfigsExecuted()
