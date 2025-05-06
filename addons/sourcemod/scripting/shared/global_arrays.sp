@@ -129,14 +129,8 @@ int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 float i_WasInResPowerup[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
-#if !defined NOG
-ConVar cvar_nbAvoidObstacle;
-ConVar CvarMpSolidObjects; //mp_solidobjects 
-ConVar CvarTfMMMode; // tf_mm_servermode
-//ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
-#endif
 ConVar sv_cheats;
 ConVar nav_edit;
 bool DoingLagCompensation;
