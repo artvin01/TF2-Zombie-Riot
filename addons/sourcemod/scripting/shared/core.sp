@@ -912,6 +912,7 @@ public void OnPluginEnd()
 #endif
 }
 
+#if defined ZR
 void RemoveMVMLogicSafety()
 {
 	char mapname[64];
@@ -937,8 +938,8 @@ void RemoveMVMLogicSafety()
 		// This may cause the global populator pointer to be set to NULL even if a new populator was created.
 		SDKCall_RemoveImmediate(populator);
 	}
-
 }
+#endif
 void Core_PrecacheGlobalCustom()
 {
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
