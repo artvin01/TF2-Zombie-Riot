@@ -6353,7 +6353,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_CastleBreakerWeapon(client, entity);
 		Purnell_Enable(client, entity);
 		Medigun_SetModeDo(client, entity);
-		Cheese_Enable(client, entity);
+		//Cheese_Enable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
