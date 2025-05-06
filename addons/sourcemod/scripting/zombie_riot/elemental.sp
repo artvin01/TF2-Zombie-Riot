@@ -929,10 +929,6 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(Cheese_GetPenaltyDuration(victim) > GetGameTime())
-	{
-		damage = RoundToNearest(float(damage) * 0.2);
-	}
 	if(victim <= MaxClients) // VS Players, in the rare occasion ZR pvp is turned on
 	{
 		Armor_DebuffType[victim] = 5;
