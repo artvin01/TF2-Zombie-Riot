@@ -77,6 +77,7 @@ static float fl_comsic_gaze_timer[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
 
 static float fl_npc_basespeed;
+static bool b_force_transformation;
 
 static int i_barrage_ammo[MAXENTITIES];
 static int i_lunar_ammo[MAXENTITIES];
@@ -618,6 +619,8 @@ methodmap Twirl < CClotBody
 	public Twirl(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+
+		//data: sc%% ; test, verikia, force15, force30, force45, force60, triple_enemies, final_item, blockinv
 		
 		npc.m_iChanged_WalkCycle = 1;
 		i_barrage_ammo[npc.index] = 0;
@@ -632,7 +635,10 @@ methodmap Twirl < CClotBody
 
 		c_NpcName[npc.index] = "Twirl";
 
+		b_force_transformation = false;
+
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
+		b_force_transformation = StrContains(data, "verkia") != -1;
 
 		int wave = ZR_Waves_GetRound()+1;
 
@@ -672,7 +678,7 @@ methodmap Twirl < CClotBody
 		}
 		b_tripple_raid[npc.index] = false;
 		bool default_theme = true;
-		if((StrContains(data, "triple_enemi") != -1))
+		if((StrContains(data, "triple_enemies") != -1))
 		{
 			b_tripple_raid[npc.index] = true;
 			default_theme = false;
@@ -799,7 +805,7 @@ methodmap Twirl < CClotBody
 
 		npc.Anger = false;
 
-		if(StrContains(data, "triple_enemies") != -1)
+		if(b_tripple_raid[npc.index])
 		{
 			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
 			Twirl_Lines(npc, "... Except Karlas but shhhh!");
@@ -807,6 +813,8 @@ methodmap Twirl < CClotBody
 			CPrintToChatAll("{crimson}Karlas{snow}: :(");
 			RaidModeTime = GetGameTime(npc.index) + 500.0;
 			GiveOneRevive(true);
+
+			i_ranged_ammo[npc.index] = 18;
 		}
 		else if(wave <=15)
 		{
@@ -941,6 +949,12 @@ static void Twirl_WinLine(int entity)
 	if(b_wonviatimer)
 		return;
 
+	if(b_force_transformation)
+	{
+		Twirl_Lines(npc, "{crimson}Perish");
+		return;
+	}
+
 	switch(GetRandomInt(0, 10))
 	{
 		case 0: Twirl_Lines(npc, "Wait, you're all dead already??");
@@ -1027,16 +1041,19 @@ static void ClotThink(int iNPC)
 	if(LastMann && !b_lastman)
 	{
 		b_lastman = true;
-		switch(GetRandomInt(0, 7))
+		if(b_force_transformation)
 		{
-			case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
-			case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
-			case 2: Twirl_Lines(npc, "I know you're capable more than just this");
-			case 3: Twirl_Lines(npc, "You're the last one alive, {purple}but{snow} are you the strongest?");
-			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
-			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
-			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
-			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
+			switch(GetRandomInt(0, 7))
+			{
+				case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
+				case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
+				case 2: Twirl_Lines(npc, "I know you're capable more than just this");
+				case 3: Twirl_Lines(npc, "You're the last one alive, {purple}but{snow} are you the strongest?");
+				case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
+				case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
+				case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
+				case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
+			}
 		}
 	}
 
@@ -1047,7 +1064,11 @@ static void ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		int wave = i_current_wave[npc.index];
 		b_wonviatimer = true;
-		if(wave <=60)
+		if(b_force_transformation)
+		{
+			Twirl_Lines(npc, "Begone. Times Up.");
+		}
+		else if(wave <=60)
 		{
 			switch(GetRandomInt(0, 9))
 			{
@@ -1076,22 +1097,36 @@ static void ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.Anger && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
+	if((npc.Anger) && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
 		npc.m_flNextChargeSpecialAttack = FAR_FUTURE;
 
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
-		switch(GetRandomInt(0, 6))
+
+		if(b_force_transformation)
 		{
-			case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
-			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
-			case 2: Twirl_Lines(npc, "Round 2. Fight!");
-			case 3: Twirl_Lines(npc, "Ai, this is getting fun");
-			case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
-			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
-			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
+			switch(GetRandomInt(0, 2))
+			{
+				case 0: Twirl_Lines(npc, "You ain't getting a normal phase shift");
+				case 1: Twirl_Lines(npc, "This time, I ain't waiting");
+				case 2: Twirl_Lines(npc, "Its time to ramp the heater up to {crimson}max");
+			}
 		}
+		else
+		{
+			switch(GetRandomInt(0, 6))
+			{
+				case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
+				case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
+				case 2: Twirl_Lines(npc, "Round 2. Fight!");
+				case 3: Twirl_Lines(npc, "Ai, this is getting fun");
+				case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
+				case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
+				case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
+			}
+		}
+		
 		fl_magia_overflow_recharge[npc.index] -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
 
@@ -1399,25 +1434,44 @@ static void Final_Invocation(Twirl npc)
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
 		}
 	}
-	switch(GetRandomInt(0, 7))
+	if(b_force_transformation)
 	{
-		case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
-		case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
-		case 2: Twirl_Lines(npc, "How's your aoe situation?");
-		case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
-		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
-		case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
-		case 6: Twirl_Lines(npc, "The Final Invocation!");
-		case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
+		switch(GetRandomInt(0, 3))
+		{
+			case 0: Twirl_Lines(npc, "I refuse to let you go beyond this point");
+			case 1: Twirl_Lines(npc, "{crimson}Perish.");
+			case 2: Twirl_Lines(npc, "{crimson}I Got a Glock in my rari.");
+			case 3: Twirl_Lines(npc, "{crimson}I'm going to mount your heads on a staff as a warning for others not to fuck with me");
+		}
 	}
+	else
+	{
+		switch(GetRandomInt(0, 7))
+		{
+			case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
+			case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
+			case 2: Twirl_Lines(npc, "How's your aoe situation?");
+			case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
+			case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
+			case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
+			case 6: Twirl_Lines(npc, "The Final Invocation!");
+			case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
+		}
+	}
+	
 	RaidModeTime += 60.0;
 
 	GiveOneRevive(false);
-	switch(GetRandomInt(0, 1))
+
+	if(!b_force_transformation)
 	{
-		case 0: Twirl_Lines(npc, "Hm? Whats this? You seem eager?");
-		case 1: Twirl_Lines(npc, "Oh my, looks like this wont be as easy as i thought...");
+		switch(GetRandomInt(0, 1))
+		{
+			case 0: Twirl_Lines(npc, "Hm? Whats this? You seem eager?");
+			case 1: Twirl_Lines(npc, "Oh my, looks like this wont be as easy as i thought...");
+		}
 	}
+	
 
 	for(int i=0 ; i < MaxClients ; i++)
 	{
@@ -1481,17 +1535,20 @@ static void lunar_Radiance(Twirl npc)
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
 
-	switch(GetRandomInt(0, 17))
+	if(!b_force_transformation)
 	{
-		case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
-		case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
-		case 5: Twirl_Lines(npc, "Lookout {crimson}Above{snow}!");
-		case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
-		case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
-		case 11: Twirl_Lines(npc, "Dance little merc, dance...");
-		case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
-		case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
-		case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
+		switch(GetRandomInt(0, 17))
+		{
+			case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
+			case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
+			case 5: Twirl_Lines(npc, "Lookout {crimson}Above{snow}!");
+			case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
+			case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
+			case 11: Twirl_Lines(npc, "Dance little merc, dance...");
+			case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
+			case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
+			case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
+		}
 	}
 
 	float flPos[3], flAng[3];
@@ -1603,9 +1660,9 @@ static void lunar_Radiance_Tick(int iNPC)
 	if(i_lunar_ammo[npc.index] > amt)
 	{
 		i_lunar_ammo[npc.index] = 0;
-		fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 30.0 : 45.0);
+		fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 55.0 : 75.0);
 		if(b_tripple_raid[npc.index])
-			fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 50.0 : 60.0);
+			fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 60.0 : 90.0);
 
 		StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
 
@@ -1938,6 +1995,9 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	if(!IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 		return;
 
+	npc.m_flRangedArmor = 0.3;
+	npc.m_flMeleeArmor = 0.5;
+
 	Target = Enemy_I_See;
 
 	EmitSoundToAll("ui/rd_2base_alarm.wav");
@@ -2021,6 +2081,9 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
+
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.5;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_bisWalking = true;
@@ -2667,6 +2730,9 @@ static bool Retreat(Twirl npc, bool custom = false)
 		fl_force_ranged[npc.index] = GameTime + 8.0;	
 	}
 
+	if(b_force_transformation)
+		return true;
+
 	switch(GetRandomInt(0, 13))
 	{
 		case 0: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
@@ -3248,8 +3314,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		b_allow_final_invocation[npc.index] = true;
 	}
-
-	if(!npc.Anger && (MaxHealth/2) >= Health && i_current_wave[npc.index] >=30) //Anger after half hp
+	if(!npc.Anger && (((MaxHealth/2) >= Health) || b_force_transformation ) && i_current_wave[npc.index] >=30) //Anger after half hp
 	{
 		Kill_Abilities(npc);	//force kill abilities when entering a transformation.
 		npc.Anger = true; //	>:(
@@ -3304,6 +3369,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 }
 static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 {
+	if(b_force_transformation)
+		return;
+
 	if(client > MaxClients)
 		return;
 
@@ -3446,7 +3514,15 @@ static void NPC_Death(int entity)
 	if(!b_wonviakill && !b_wonviatimer && !b_allow_final[npc.index])
 	{	
 		int wave = i_current_wave[npc.index];
-		if(wave <=15)
+		if(b_force_transformation)
+		{
+			switch(GetRandomInt(0, 1))
+			{
+				case 0: Twirl_Lines(npc, "{crimson}Bye");
+				case 1: Twirl_Lines(npc, "{crimson}I'm Leaving.");
+			}
+		}
+		else if(wave <=15)
 		{
 			switch(GetRandomInt(0, 4))
 			{
@@ -3551,9 +3627,65 @@ static void Twirl_Lines(Twirl npc, const char[] text)
 
 	CPrintToChatAll("%s %s", npc.GetName(), text);
 }
-void Twirl_OnStellaKarlasDeath(int karlas)
+void Twirl_OnStellaKarlasDeath()
 {
-	int Twirl_Index = -1;
+	int Raids[3];
+	Raids = i_GetAllPartiesInvolved();
+	//twirl is dead, simple.
+
+	int Twirl_index = Raids[0],
+		Stella_index = Raids[1],
+		Karlas_index = Raids[2];
+
+	if(!IsValidEntity(Twirl_index))
+		return;
+
+	Twirl npc = view_as<Twirl>(Twirl_index);
+
+	//stella died first.
+	if(!Stella_index && Karlas_index)
+	{
+		Twirl_Lines(npc, "{crimson}Karlas{snow}! Switch to me, I'm now your priority");
+
+		Set_Karlas_Ally(npc.index, Karlas_index, i_current_wave[npc.index], false, true);
+		Stella stella = view_as<Stella>(npc.index);
+		Karlas karl = view_as<Karlas>(Karlas_index);
+		karl.m_flNextRangedBarrage_Singular -= 15.0;
+		karl.Anger = true;
+		stella.m_bKarlasRetreat = false;
+	}
+	//Karlas died first
+	else if(Stella_index && !Karlas_index)
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0: Twirl_Lines(npc, "Hey's just because hes the only man here doesn't mean he should have died first.");
+			case 1: Twirl_Lines(npc, "Oh, neat, now {aqua}Stella{snow}'s all mine.");
+			case 2: Twirl_Lines(npc, "Huh, there goes my rival.");
+		}
+		
+	}
+	//both are dead.
+	else if(!Stella_index && !Karlas_index)
+	{
+		b_force_transformation = true;
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:Twirl_Lines(npc, "Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN");
+			case 1:Twirl_Lines(npc, "{crimson}I won't let you win");
+			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
+		}
+		b_tripple_raid[npc.index] = false;
+		if(fl_Extra_Damage[npc.index] < 1.0)
+			fl_Extra_Damage[npc.index] = 1.0;
+		if(fl_Extra_Speed[npc.index] < 1.0)
+			fl_Extra_Speed[npc.index] = 1.0;
+		i_ranged_ammo[npc.index] += RoundToFloor(i_ranged_ammo[npc.index]*0.5);
+	}
+}
+static int[] i_GetAllPartiesInvolved()
+{
+	int BothAlive[3] = {0, 0, 0};
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
@@ -3562,48 +3694,24 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 			char npc_classname[60];
 			NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 
-			if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_ruina_twirl") && IsEntityAlive(entity)))
+			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcHasDied[entity])
 			{
-				Twirl_Index = entity;
-				break;
+				if(StrEqual(npc_classname, "npc_ruina_twirl"))
+				{
+					BothAlive[0] = entity;
+				}
+				else if(StrEqual(npc_classname, "npc_stella"))
+				{
+					BothAlive[1] = entity;
+				}
+				else if(StrEqual(npc_classname, "npc_karlas"))
+				{
+					BothAlive[2] = entity;
+				}
 			}
 		}
 	}
-	
-	//twirl is dead, simple.
-	if(!IsValidEntity(Twirl_Index))
-		return;
-
-	Twirl npc = view_as<Twirl>(Twirl_Index);
-	//karlas is dead.
-	//-2 == karlas is dead 100%
-	//is valid ent is for when stella dies, we need to check if karlas is still valid or not.
-	//TECHNICALLY, its possible for karlas to die first, meaning stella is still alive when twirl unlocks herself.
-	//but like, when the fuck is karlas ever killed first????
-	if(karlas == -2 || !IsValidEntity(karlas))
-	{
-		switch(GetRandomInt(0, 2))
-		{
-			case 0:Twirl_Lines(npc, "Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN");
-			case 1:Twirl_Lines(npc, "{crimson}I won't let you win");
-			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
-		}
-		b_tripple_raid[Twirl_Index] = false;
-		fl_Extra_Damage[Twirl_Index] = 1.0;
-		fl_Extra_Speed[Twirl_Index]  = 1.0;
-		
-		return;
-	}
-	else
-	{
-		Twirl_Lines(npc, "{crimson}Karlas{snow}! Switch to me, I'm now your priority");
-	}
-	Set_Karlas_Ally(Twirl_Index, karlas, i_current_wave[Twirl_Index], false, true);
-	Stella stella = view_as<Stella>(Twirl_Index);
-	Karlas karl = view_as<Karlas>(karlas);
-	karl.m_flNextRangedBarrage_Singular -= 15.0;
-	karl.Anger = true;	//he won't transform tho
-	stella.m_bKarlasRetreat = false;
+	return BothAlive;
 }
 
 

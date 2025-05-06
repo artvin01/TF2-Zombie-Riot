@@ -2138,7 +2138,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.ResetSequenceInfo();
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-		this.ResetSequenceInfo();
 		this.m_iAnimationState = iSequence;
 	
 	}
@@ -2213,9 +2212,9 @@ methodmap CClotBody < CBaseCombatCharacter
 				this.m_iActivity = 0;
 				
 				this.SetSequence(sequence);
-				this.SetPlaybackRate(1.0);
-				this.SetCycle(0.0);
 				this.ResetSequenceInfo();
+				this.SetCycle(0.0);
+				this.SetPlaybackRate(1.0);
 			}
 		}
 		else
@@ -2484,8 +2483,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate);
 			return;
 		}
-
-		SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate / ReturnEntityAttackspeed(this.index));
+	//	PrintToChatAll(" Speed playback %f",flRate / ReturnEntityAttackspeed(this.index));
+		SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", (flRate / ReturnEntityAttackspeed(this.index)));
 	}
 	public void SetCycle(float flCycle)	   
 	{
@@ -3093,10 +3092,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.m_iActivity = iActivity;
 		
 		this.SetSequence(nSequence);
+		this.ResetSequenceInfo();
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
-	
-		this.ResetSequenceInfo();
+
 		
 		return true;
 	}
@@ -4672,6 +4671,7 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 
 	if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
+		
 	else if(!b_NpcHasDied[entity])
 	{
 		if(GetTeam(iExclude) == GetTeam(entity))
@@ -8878,7 +8878,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
-	f_RaidStunResistance[entity] = 0.0;
 	i_TextEntity[entity][0] = -1;
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
@@ -9417,6 +9416,8 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 		{
 			return;
 		}
+		if(HasSpecificBuff(npc, "Dimensional Turbulence"))
+			Duration_Stun *= 0.25;
 		TF2_AddCondition(npc, TFCond_FreezeInput, Duration_Stun);
 		ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun);	
 		return;
@@ -9443,16 +9444,22 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 	float Duration_Stun_Post = Duration_Stun;
 	if(!IgnoreAllLogic)
 	{
-		if(f_RaidStunResistance[npc] > GameTime)
-		{
-			if(HasSpecificBuff(npc, "Shook Head"))
-				Duration_Stun_Post *= 0.5;
-		}
+		if(HasSpecificBuff(npc, "Shook Head"))
+			Duration_Stun_Post *= 0.5;
 
 #if defined ZR
 		Rogue_ParadoxDLC_StunTime(npc, Duration_Stun_Post);
 #endif
+		if(HasSpecificBuff(npc, "Dimensional Turbulence"))
+			Duration_Stun_Post *= 0.5;
 	}
+
+	if(Duration_Stun_Post <= 0.05)
+	{
+		//this is too little, do not bother
+		return;
+	}
+
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];

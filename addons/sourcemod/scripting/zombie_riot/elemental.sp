@@ -984,30 +984,30 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + immunitycd;
 
 				// i am pap
-				int paplvl = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-				float cheesedmg;
-				if(paplvl > 1)
-				{
-					cheesedmg = (675.0 * (paplvl + paplvl));
-				}
-				else if(paplvl > 3)
-				{
-					cheesedmg = (810.0 * (paplvl + paplvl));
-				}
-				else
-				{
-					cheesedmg = 500.0 * (1 + paplvl);
-				}
+			//	int paplvl = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			//	float cheesedmg;
+			//	if(paplvl > 1)
+			//	{
+			//		cheesedmg = (675.0 * (paplvl + paplvl));
+			//	}
+			//	else if(paplvl > 3)
+			//	{
+			//		cheesedmg = (810.0 * (paplvl + paplvl));
+			//	}
+			//	else
+			//	{
+			//		cheesedmg = 500.0 * (1 + paplvl);
+			//	}
 
 				if(b_thisNpcIsARaid[victim])
 				{
-					cheesedmg *= 3.0;
+			//		cheesedmg *= 3.0;
 					ApplyStatusEffect(attacker, victim, "Plasm I", 5.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 20.0);
 				}
 				else if(b_thisNpcIsABoss[victim])
 				{
-					cheesedmg *= 2.25;
+			//		cheesedmg *= 2.25;
 					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
 					Cheese_SetPenaltyDuration(victim, immunitycd + 10.0);
 				}
@@ -1016,21 +1016,21 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 					ApplyStatusEffect(attacker, victim, "Plasm II", 10.0);
 				}
 
-				if(melee) // if applied via melee, slight dmg boost.
-					cheesedmg *= 1.25;
+			//	if(melee) // if applied via melee, slight dmg boost.
+			//		cheesedmg *= 1.25;
 
-				if(cheesedmg > float(ReturnEntityMaxHealth(victim)))
-					cheesedmg = float(ReturnEntityMaxHealth(victim));
+			//	if(cheesedmg > float(ReturnEntityMaxHealth(victim)))
+			//		cheesedmg = float(ReturnEntityMaxHealth(victim));
 
-				if(melee) // if applied via melee, change dmg type to melee.
-					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
-				else
-					SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, weapon);
+			//	if(melee) // if applied via melee, change dmg type to melee.
+			//		SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
+			//	else
+			//		SDKHooks_TakeDamage(victim, attacker, attacker, cheesedmg, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, weapon);
 
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 				position[2] += 10.0;
-				for(int i = 0; i < 3; i++)
+				for(int i = 0; i < 2; i++)
 				{
 					Cheese_BeamEffect(position);
 					position[2] += 32.5;

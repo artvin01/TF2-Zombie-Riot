@@ -328,7 +328,7 @@ void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 		{
 			b_LagCompAlliedPlayers = true;
 		}
-		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(3512)));
+		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(OffsetLagCompStart_UserInfoReturn())));
 //		StartLagCompensation_Base_Boss(client, true);
 	}
 }

@@ -1056,7 +1056,7 @@
 	}
 	"Nearl Radiant Sword Desc"
 	{
-		"en"		"A distacting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
+		"en"		"A distracting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
 		"ru"		"Искажающий меч отвлекающий врагов на себя,когда враги атакуют его,любое максимальное улучшение энергетического клинка будет наносить в 2 раза больше урона им."
 	}
 	"Whiteflower Subject Desc"

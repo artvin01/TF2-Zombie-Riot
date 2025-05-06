@@ -111,6 +111,7 @@ ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 ConVar zr_interactforcereload;
 bool BlockOtherRaidMusic = false;
+//ConVar CvarDebugOffset;
 
 int CurrentEntities;
 bool Toggle_sv_cheats = false;
@@ -763,11 +764,7 @@ public void OnPluginStart()
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
 		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-/*
-	CvarAirAcclerate = FindConVar("sv_airaccelerate");
-	if(CvarAirAcclerate)
-		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-*/
+		
 	Cvar_clamp_back_speed = FindConVar("tf_clamp_back_speed");
 	if(Cvar_clamp_back_speed)
 		Cvar_clamp_back_speed.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
@@ -1504,6 +1501,7 @@ public void OnClientPutInServer(int client)
 #endif
 
 	b_IsPlayerABot[client] = false;
+	TeamNumber[client] = -1;
 #if !defined NOG
 	if(IsFakeClient(client))
 	{
@@ -1532,7 +1530,7 @@ public void OnClientPutInServer(int client)
 				}
 			}
 		}
-		ChangeClientTeam(client, TFTeam_Blue);
+		SetTeam(client, TFTeam_Blue);
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
 		return;

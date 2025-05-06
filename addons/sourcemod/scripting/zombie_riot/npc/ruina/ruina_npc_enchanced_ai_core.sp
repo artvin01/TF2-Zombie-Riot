@@ -269,9 +269,17 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_Glow_Blue = PrecacheModel("sprites/blueglow2.vmt", true);
 	g_Ruina_Glow_Red = PrecacheModel("sprites/redglow2.vmt", true);
 }
+static void OffsetGive_BatteryChargeStatus(int ref)
+{
+	int npc = EntRefToEntIndex(ref);
+	if(!IsValidEntity(npc))
+		return;
+	
+	ApplyStatusEffect(npc, npc, "Ruina Battery Charge", 9999.0);
+}
 void Ruina_Set_Heirarchy(int client, int type)
 {
-	ApplyStatusEffect(client, client, "Ruina Battery Charge", 9999.0);
+	RequestFrame(OffsetGive_BatteryChargeStatus, EntIndexToEntRef(client));
 
 	Ruina_Remove_Shield(client);
 	b_ruina_npc[client] = true;

@@ -2651,7 +2651,7 @@ static void Internal_NPCDeath(int entity)
 
 	if(b_tripple_raid[npc.index])
 	{
-		Twirl_OnStellaKarlasDeath(-2);
+		Twirl_OnStellaKarlasDeath();
 	}
 
 	if(npc.Ally)
