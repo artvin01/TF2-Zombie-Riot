@@ -754,7 +754,7 @@ static void Smith_SelfDefense(AgentSmith npc, float gameTime, int target, float 
 static void Smith_Infection(AgentSmith npc)
 {
 	int victim = EntRefToEntIndex(i_Victim_Infection[npc.index]);
-	if(IsValidClient(victim) && TeutonType[victim] != TEUTON_WAITING)
+	if(IsValidClient(victim) && TeutonType[victim] == TEUTON_NONE)
 	{
 		float cure_amount = 0.10;
 		float vicPos[3];
@@ -766,7 +766,7 @@ static void Smith_Infection(AgentSmith npc)
 			Agent_Smith_Cloner(npc, 1, ReturnEntityMaxHealth(npc.index)/7);
 			return;
 		}
-		if(GetClientTeam(victim) == 2 && TeutonType[victim] != TEUTON_WAITING)
+		if(GetClientTeam(victim) == 2 && TeutonType[victim] == TEUTON_NONE)
 		{
 			//if(!TF2_IsPlayerInCondition(victim, TFCond_Dazed))
 			//{
@@ -808,7 +808,7 @@ static void Smith_Infection(AgentSmith npc)
 			PrintCenterText(victim, "Your Infection is rising - %.0f％ | Cure %.0f％", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
 			for(int clients = 1 ; clients <= MaxClients ; clients++)
 			{
-				if(IsValidClient(clients) && TeutonType[victim] != TEUTON_WAITING)
+				if(IsValidClient(clients) && TeutonType[victim] == TEUTON_NONE)
 				{
 					if(clients != victim)
 					{

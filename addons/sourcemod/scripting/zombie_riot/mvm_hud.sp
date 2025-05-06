@@ -21,6 +21,22 @@ void CreateMVMPopulator()
 	GameRules_SetProp("m_bPlayingSpecialDeliveryMode", true);
 }
 
+void RevertMVMPoplator()
+{
+	//find populator
+	int populator = FindEntityByClassname(-1, "info_populator");
+	if(populator == -1 || populator != i_MVMPopulator)
+	{
+		if(!IsValidEntity(populator))
+			populator = CreateEntityByName("info_populator");
+
+		i_MVMPopulator = populator;
+
+		// EFL_NO_THINK_FUNCTION (1 << 22)
+		SetEntityFlags(i_MVMPopulator, GetEntityFlags(i_MVMPopulator) &~ 4194304);
+	}
+}
+
 void MVMHud_Disable()
 {
 	GameRules_SetProp("m_bPlayingMannVsMachine", false);

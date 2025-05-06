@@ -701,10 +701,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 #if defined ZR
 	ZR_PluginLoad();
 #endif
-	
-#if defined NOG
-	NOG_PluginLoad();
-#endif
 
 	return APLRes_Success;
 }
@@ -758,7 +754,6 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
-//	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
 	LoadTranslations("zombieriot.phrases.status_effects");
 	
@@ -897,9 +892,7 @@ public void OnPluginEnd()
 	{
 		if(IsClientInGame(i))
 		{
-#if !defined NOG
 			DHook_UnhookClient(i);
-#endif
 			OnClientDisconnect(i);
 #if defined ZR
 			if(!CvarInfiniteCash.BoolValue) //if on, assume were on a test server, dont slay.
@@ -908,27 +901,35 @@ public void OnPluginEnd()
 		}
 	}
 
-#if defined RTS_CAMERA
-	RTSCamera_PluginEnd();
-#endif
 	
 #if defined RPG
 	RPG_PluginEnd();
 #endif
-	
-#if defined RTS
-	RTS_PluginEnd();
-#endif
 
 #if defined ZR
-	Waves_MapEnd();
+//	Waves_MapEnd(); DO NOT CALL THIS ON PLUGIN END, plugin ends anways, why change anything???
+	RemoveMVMLogicSafety();
+#endif
+}
+
+#if defined ZR
+void RemoveMVMLogicSafety()
+{
+	char mapname[64];
+	GetMapName(mapname, sizeof(mapname));
+	if(!StrContains(mapname, "mvm_"))
+	{
+		//This new map has MVM logic, DO NOT REMOVE MVM!!!
+		RevertMVMPoplator();
+		return;
+	}
 	MVMHud_Disable();
 	GameRules_SetProp("m_iRoundState", 0);
 
 	//disable all ZR logic.
 	SetVariantString("ForceEnableUpgrades(0)");
 	AcceptEntityInput(0, "RunScriptCode");
-
+	
 	int populator = FindEntityByClassname(-1, "info_populator");
 	if (populator != -1)
 	{
@@ -937,28 +938,8 @@ public void OnPluginEnd()
 		// This may cause the global populator pointer to be set to NULL even if a new populator was created.
 		SDKCall_RemoveImmediate(populator);
 	}
-	/*
-	char path[256];
-	for(int i=MAXENTITIES; i>MaxClients; i--)
-	{
-		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
-		{
-			if(!StrContains(path, "zr_base_npc"))
-				RemoveEntity(i);
-
-			if(!StrContains(path, "zr_base_stationary"))
-				RemoveEntity(i);
-
-			if(!StrContains(path, "obj_building"))
-				RemoveEntity(i);
-
-			//prevent crash, needs to be instant.
-		}
-	}
-	*/
-#endif
 }
-
+#endif
 void Core_PrecacheGlobalCustom()
 {
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
@@ -1161,7 +1142,7 @@ public void OnMapEnd()
 #if defined ZR
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsFakeClient(client) && IsClientSourceTV(client))
+		if(IsClientInGame(client) && IsFakeClient(client))
 		{
 			KickClient(client);
 		}
@@ -1181,6 +1162,9 @@ public void OnMapEnd()
 	ConVar_Disable();
 	FileNetwork_MapEnd();
 	NpcStats_OnMapEnd();
+#if defined ZR
+	RemoveMVMLogicSafety();
+#endif
 }
 
 public void OnConfigsExecuted()
