@@ -1228,7 +1228,7 @@
 	}
 	"Plasm I Desc"
 	{
-		"en"	"Slows NPCs by 5％.\nReduces attackspeed by 7％."
+		"en"	"Slows NPCs by 8％.\nReduces attackspeed by 5％."
 	}
 	"Plasm II"
 	{
@@ -1236,7 +1236,15 @@
 	}
 	"Plasm II Desc"
 	{
-		"en" 	"Slows NPCs by 7％.\nReduces attackspeed by 10％."
+		"en" 	"Slows NPCs by 11％.\nReduces attackspeed by 8％."
+	}
+	"Plasm III"
+	{
+		"en"	"Plasm III"
+	}
+	"Plasm III Desc"
+	{
+		"en" 	"Slows NPCs by 14％.\nReduces attackspeed by 11％."
 	}
 	"Plasmatic Rampage"
 	{
