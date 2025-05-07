@@ -741,6 +741,8 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 					VotingMods.GetArray(choosen, vote);
 
 					CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
+					if(vote.Desc[0])
+						PrintToChatAll("%t", vote.Desc);
 					EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 					EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 
@@ -1598,6 +1600,8 @@ public Action Waves_EndVote(Handle timer, float time)
 			else
 			{
 				CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
+				if(vote.Desc[0])
+					PrintToChatAll("%t", vote.Desc);
 				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 				
@@ -4144,7 +4148,7 @@ int Waves_AverageLevelGet(int MaxLevelAllow)
 	int LevelObtained;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client))
+		if(IsClientInGame(client) && !IsFakeClient(client))
 		{
 			if(Level[client] >= MaxLevelAllow)
 				LevelObtained += MaxLevelAllow;
