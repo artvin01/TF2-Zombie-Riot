@@ -1110,7 +1110,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		SetEntProp(victim, Prop_Data, "m_lifeState", 0);
 	}
 	
-	//drown is out of map stuff.
+	//drown is out of p stuff.
 	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		damage = 5.0;
@@ -2533,7 +2533,6 @@ void Npcs_AddUnderscoreToText(char[] buffer, int lengthstring)
 	}
 	int length = strlen(buffer);
 	char ExportChar[255];
-//	PrintToChatAll("-------------------");
 	for(int a; a<length; a++)
 	{
 		static char CharTemp[8];
