@@ -304,7 +304,7 @@ static void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 
 static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	if(!Configs_HasExecuted())
+	if(!Configs_HasExecuted() || StrEqual(oldValue, newValue))
 		return;
 	
 	char mapname[64];
@@ -317,7 +317,7 @@ static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 
 static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	if(!Configs_HasExecuted())
+	if(!Configs_HasExecuted() || StrEqual(oldValue, newValue))
 		return;
 	
 	char mapname[64];

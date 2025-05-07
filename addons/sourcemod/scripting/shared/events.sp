@@ -153,6 +153,16 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
+	if(CvarAutoSelectWave.BoolValue)
+	{
+		char mapname[64];
+		GetMapName(mapname, sizeof(mapname));
+		
+		KeyValues kv = Configs_GetMapKv(mapname);
+		Waves_SetupVote(kv, true);
+		delete kv;
+	}
+	
 	DeleteShadowsOffZombieRiot();
 	for(int client=1; client<=MaxClients; client++)
 	{
