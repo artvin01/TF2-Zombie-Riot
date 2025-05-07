@@ -118,6 +118,7 @@ methodmap PurpleHeavy < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		AddNpcToAliveList(npc.index, 1);
+		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 1.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 214, 53, 219, 255);
@@ -143,12 +144,17 @@ public void PurpleHeavy_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
-
-	if(IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	if(npc.m_flAbilityOrAttack0)
 	{
-		int ally = GetClosestAlly(npc.index);
-		float DurationGive = 999999.0;
-		ApplyStatusEffect(npc.index, ally, "Defensive Backup", DurationGive);
+		npc.m_flAbilityOrAttack0 = gameTime + 10.0;
+		for(int Ally; Ally < MAXENTITIES; Ally ++)
+		{
+			if(IsValidAlly(npc.index, Ally))
+			{
+				float DurationGive = 999999.0;
+				ApplyStatusEffect(npc.index, Ally, "Ally Empowerment", DurationGive);
+			}
+		}
 	}
 	
 	if(npc.m_flNextThinkTime > gameTime)
