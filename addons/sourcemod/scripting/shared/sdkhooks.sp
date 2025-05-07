@@ -717,7 +717,7 @@ public void OnPostThink(int client)
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}
 				had_An_ability = true;
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -741,7 +741,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -767,7 +767,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -794,7 +794,7 @@ public void OnPostThink(int client)
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
 				
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{	
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -822,7 +822,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
