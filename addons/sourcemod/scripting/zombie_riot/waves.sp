@@ -566,7 +566,7 @@ void Waves_SetupVote(KeyValues map)
 	delete Voting;
 	delete VotingMods;
 	
-	KeyValues kv = map;
+	KeyValues kv = zr_ignoremapconfig.BoolValue ? null : map;
 	if(kv)
 	{
 		kv.Rewind();
