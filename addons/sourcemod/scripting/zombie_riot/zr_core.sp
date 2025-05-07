@@ -220,8 +220,8 @@ enum
 	WEAPON_TORNADO_BLITZ = 143,
 	WEAPON_BUFFPOTION = 144,
 	WEAPON_REIUJI_WAND = 145,
-	WEAPON_CHEESY_MELEE = 146,
-	WEAPON_CHEESY_PRIMARY = 147,
+	//WEAPON_CHEESY_MELEE = 146,
+	//WEAPON_CHEESY_PRIMARY = 147,
 }
 
 enum
@@ -607,7 +607,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_kritzkrieg.sp"
 #include "custom/wand/weapon_bubble_wand.sp"
 #include "custom/kit_blacksmith_grill.sp"
-#include "custom/kit_cheese.sp"
+//#include "custom/kit_cheese.sp"
 
 void ZR_PluginLoad()
 {
@@ -620,7 +620,6 @@ void ZR_PluginStart()
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
-	
 
 	//any noob will eventually type these!!
 	RegConsoleCmd("sm_store", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -650,7 +649,6 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_wearme", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_zr", 			Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_lidlnord", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_lidlsüd", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_kaufland", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_ikea",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_zabka",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -676,10 +674,6 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_forceset_team", Command_SetTeamCustom, ADMFLAG_ROOT, "Set Team custom to a player"); 	//DEBUG
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
-	
-//	CvarSvRollagle = FindConVar("sv_rollangle");
-//	if(CvarSvRollagle)
-//		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
 	Construction_PluginStart();
@@ -910,7 +904,7 @@ void ZR_MapStart()
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
-	Cheese_MapStart();
+	//Cheese_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -2037,11 +2031,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
 							Yakuza_Lastman(10);
 						}
+						/*
 						if(Is_Cheesed_Up(client))
 						{
 							CPrintToChatAll("{darkviolet}%N decides to Plasmify himself as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
+						*/
 						
 						for(int i=1; i<=MaxClients; i++)
 						{
@@ -2989,7 +2985,7 @@ void ZR_FastDownloadForce()
 	ZealotMusicDownload();
 	YakuzaMusicDownload();
 	FullmoonDownload();
-	Cheese_PrecacheMusic();
+	//Cheese_PrecacheMusic();
 }
 
 
