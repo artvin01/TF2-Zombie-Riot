@@ -2047,14 +2047,16 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					if(IsClientInGame(client))
 					{
 						DoOverlay(client, "", 2);
-						if(GetClientTeam(client)==2 && IsPlayerAlive(client))
+						if(GetClientTeam(client)==2 && TEUTON_TYPE[client] != TEUTON_WAITING && f_PlayerLastKeyDetected[client] > GetGameTime() - 10.0)
 						{
-							GiveXP(client, round.Xp * 10);
+							//make sure client isnt afk.
+							//Make sure client is playing the wave
+
+							GiveXP(client, round.Xp * 5);
 							if(round.Setup > 0.0)
 							{
 								SetGlobalTransTarget(client);
 								PrintHintText(client, "%t","Press TAB To open the store");
-								
 							}
 						}
 					}
@@ -3815,8 +3817,12 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			if(IsClientInGame(client))
 			{
 				DoOverlay(client, "", 2);
-				if(IsPlayerAlive(client) && GetClientTeam(client)==2)
+				if(GetClientTeam(client)==2 && TEUTON_TYPE[client] != TEUTON_WAITING && f_PlayerLastKeyDetected[client] > GetGameTime() - 10.0)
+				{
+					//make sure client isnt afk.
+					//Make sure client is playing the wave
 					GiveXP(client, round.Xp);
+				}
 			}
 		}
 		

@@ -1008,6 +1008,20 @@ public Action GlobalTimer(Handle timer)
 		if(IsClientInGame(client))
 		{
 			PlayerApplyDefaults(client);
+			if(HasSpecificBuff(client, "Dimensional Turbulence"))
+			{
+				if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+				{
+					for(int i; i<=Ammo_Laser; i++)
+					{
+						if(i == Ammo_Jar)
+							continue;
+							
+						CurrentAmmo[client][i] = 9999;
+						SetAmmo(client, i, 9999);
+					}
+				}
+			}
 		}
 	}
 	return Plugin_Continue;

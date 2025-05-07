@@ -49,7 +49,7 @@ enum
 	Ammo_Revolver,		// 19	Revolverss
 	Ammo_Shotgun,		// 20	Shotgun, Shortstop, Force-A-Nature, Soda Popper
 	Ammo_Heal,		// 21 Healing Ammunition
-	Ammo_Medigun,		// 22 Medigun Ammunition
+	Ammo_UNSUED,		// 22 UNSUED
 	Ammo_Laser,		// 23 Laser Battery
 	Ammo_Hand_Grenade,		// 24 Hand Grenade types
 	Ammo_Potion_Supply,		// 25 Drink Types
