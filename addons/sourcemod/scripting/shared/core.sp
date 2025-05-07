@@ -1967,6 +1967,9 @@ public void Update_Ammo(DataPack pack)
 		{
 			for(int i; i<=Ammo_Laser; i++)
 			{
+				if(i == Ammo_Jar)
+					continue;
+					
 				CurrentAmmo[client][i] = 9999;
 				SetAmmo(client, i, 9999);
 			}

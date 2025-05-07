@@ -407,23 +407,26 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 			b_ShoveSound[client] = true;
 			static float Entity_Position[3];
 			WorldSpaceCenter(EnemyHit, Entity_Position);
-			switch(TypeOfShove)
+			if(!b_NpcIsInvulnerable[EnemyHit])
 			{
-				case 0:
+				switch(TypeOfShove)
 				{
-					float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
-					SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
+					case 0:
+					{
+						float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
+						SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
+					}
+					case 1:
+					{
+						float knockback = fl_Push_Knockback[client];
+						if(!b_thisNpcIsARaid[EnemyHit])
+							SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
+						Logic_Purnell_Debuff(client, EnemyHit, damage, weapon);
+						float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
+						SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
+					}
+					//dmg penalty
 				}
-				case 1:
-				{
-					float knockback = fl_Push_Knockback[client];
-					if(!b_thisNpcIsARaid[EnemyHit])
-						SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
-					Logic_Purnell_Debuff(client, EnemyHit, damage, weapon);
-					float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
-					SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
-				}
-				//dmg penalty
 			}
 			damage *= 0.75;
 		}
