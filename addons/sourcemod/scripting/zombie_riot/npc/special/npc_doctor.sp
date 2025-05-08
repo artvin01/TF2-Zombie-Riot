@@ -98,8 +98,7 @@ methodmap SpecialDoctor < CClotBody
 		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(70), ally));
 		i_NpcWeight[npc.index] = 3;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_MP_RUN_SECONDARY");
@@ -202,7 +201,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		int target = GetClosestAlly(npc.index, (250.0 * 250.0), _,DoctorBuffAlly);
 		if(target)
 		{
-			if(HasSpecificBuff(target, "False Therapy"))
+			if(!HasSpecificBuff(target, "False Therapy"))
 			{
 				ApplyStatusEffect(npc.index, target, "False Therapy", 30.0);
 				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_SECONDARY",_,_,_,3.0);
@@ -482,6 +481,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 {
 	SpecialDoctor npc = view_as<SpecialDoctor>(entity);
 
+	npc.SetModel("models/player/medic.mdl");
 	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
@@ -509,7 +509,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 public bool DoctorBuffAlly(int provider, int entity)
 {
 	if(HasSpecificBuff(entity, "False Therapy"))
-		return true;
-		
-	return false;
+		return false;
+
+	return true;
 }

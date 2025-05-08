@@ -1723,39 +1723,19 @@
 	}
 	"Raidboss"
 	{
-		"en" 		"Raidboss"
-		"fr" 		"Boss de Raid"
-		"ru" 		"Рейд Босс"
-		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
-		"nl"		"Invalsbaas"
-		"chi"		"世界级Boss"
+		"en" 		"RAID"
 	}
 	"Superboss"
 	{
-		"en" 		"Superboss"
-		"ru" 		"Супер босс"
-		"fr" 		"Super Boss"
-		"chi"		"Super-Boss"
+		"en" 		"Super"
 	}
 	"Power"
 	{
-		"en" 		"Power"
-		"fr" 		"Pouvoir"
-		"ru" 		"Сила"
-		"de"		"Kraft"
-		"pt"		"Força"
-		"nl"		"Kracht"
-		"chi"       "力量"
+		"en" 		" ✹"
 	}
 	"TIME LEFT"
 	{
-		"en" 		"TIME LEFT"
-		"fr" 		"TEMPS RESTANT"
-		"ru" 		"ОСТАЛОСЬ ВРЕМЕНИ"
-		"de"		"ZEIT VERBLEIBT"
-		"pt"		"TEMPO RESTANTE"
-		"nl"		"OVERIGE TIJD"
-		"chi"       "剩余时间"
+		"en" 		"⏱ "
 	}	
 	"Father Grigori No Talk"
 	{

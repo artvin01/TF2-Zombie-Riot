@@ -1951,19 +1951,19 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		//Does it have power? No power also hides timer showing
 		if(RaidModeScaling != 0.0)
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t : ", ExtraHudHurt, "Power");
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s|%t", ExtraHudHurt, "Power");
 			//time show or not
 			if(Timer_Show > 800.0)
 				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％]", ExtraHudHurt, RaidModeScaling * 100.0);
 			else
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％ | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％ | %t%.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
 		}
 		else
 		{
 			if(Timer_Show > 800.0)
 				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s]", ExtraHudHurt);
 			else
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t: %.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s|%t%.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
 		}
 		
 		//add name and health
