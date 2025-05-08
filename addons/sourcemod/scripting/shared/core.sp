@@ -1568,6 +1568,7 @@ public void OnClientDisconnect(int client)
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake_UNSUED[client] = true;
 	b_HudHitMarker[client] = true;
+	b_DisplayDamageHudSetting[client] = false;
 	f_ZombieVolumeSetting[client] = 0.0;
 }
 

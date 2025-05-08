@@ -3510,6 +3510,14 @@
 	{
 		"en" 	"This will disable lastman music for you during raidbosses music"
 	}
+	"DamageHud Setting"
+	{
+		"en" 	"Always Display Damage Hud"
+	}
+	"DamageHud Setting Explain"
+	{
+		"en" 	"Enabling this setting will force ZR damage numbers, even if you enabled the TF2 damage number setting."
+	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"

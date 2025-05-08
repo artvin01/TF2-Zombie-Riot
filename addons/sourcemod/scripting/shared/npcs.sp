@@ -1900,7 +1900,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(Debuff_Adder[0])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		if(!b_DamageNumbers[attacker])
+		if(b_DisplayDamageHudSetting[attacker] || !b_DamageNumbers[attacker])
 		{
 			static char c_DmgDelt[64];
 			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
@@ -2010,7 +2010,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(Debuff_Adder[0])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		if(!b_DamageNumbers[attacker])
+		if(b_DisplayDamageHudSetting[attacker] || !b_DamageNumbers[attacker])
 		{
 			static char c_DmgDelt[64];
 			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
