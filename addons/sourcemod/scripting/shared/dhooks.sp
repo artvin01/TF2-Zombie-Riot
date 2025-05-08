@@ -1987,6 +1987,54 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 
 //We want to disable them auto switching weapons during this, the reason being is that it messes with out custom equip logic, bad!
 
+
+#if defined ZR
+int BannerWearable[MAXTF2PLAYERS];
+int BannerWearableModelIndex[3];
+#endif
+bool DidEventHandleChange = false;
+void DHooks_MapStart()
+{
+#if defined ZR
+	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
+	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
+	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
+#endif
+	DidEventHandleChange = false;
+	RequestFrame(OverrideNpcHurtShortToLong);
+	//g_bCustomEventsAvailable = false;
+
+	//if(g_DHookShouldCollide)
+	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
+}
+
+void OverrideNpcHurtShortToLong()
+{
+	if(!DidEventHandleChange)
+	{
+		if (g_aGameEventManager && g_hSDKLoadEvents)
+		{
+			DidEventHandleChange = true;
+			char eventsFile[PLATFORM_MAX_PATH];
+			BuildPath(Path_SM, eventsFile, sizeof(eventsFile), "data/zombie_riot/zrevents.res");
+			LogMessage("Loading custom events file '%s'", eventsFile);
+			if (SDKCall(g_hSDKLoadEvents, g_aGameEventManager, eventsFile))
+			{
+				//g_bCustomEventsAvailable = true;
+				LogMessage("Success!");
+				SDKCall(g_hSDKReloadEvents);
+			}
+			else
+			{
+				LogError("FAILED to load custom events file '%s'", eventsFile);
+			}
+		}
+		else
+		{
+			LogError("FAILED to load custom events file (Missing Gamedata!)");
+		}
+	}
+}
 #if defined ZR
 bool PersonInitiatedHornBlow[MAXTF2PLAYERS];
 public MRESReturn Dhook_BlowHorn_Post(int entity)
@@ -2104,50 +2152,6 @@ stock void DelayEffectOnHorn(int ref)
 	
 
 	//"Expidonsan Battery Device"
-}
-
-int BannerWearable[MAXTF2PLAYERS];
-int BannerWearableModelIndex[3];
-bool DidEventHandleChange = false;
-void DHooks_MapStart()
-{
-	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
-	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
-	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
-	DidEventHandleChange = false;
-	RequestFrame(OverrideNpcHurtShortToLong);
-	//g_bCustomEventsAvailable = false;
-
-	//if(g_DHookShouldCollide)
-	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
-}
-
-void OverrideNpcHurtShortToLong()
-{
-	if(!DidEventHandleChange)
-	{
-		if (g_aGameEventManager && g_hSDKLoadEvents)
-		{
-			DidEventHandleChange = true;
-			char eventsFile[PLATFORM_MAX_PATH];
-			BuildPath(Path_SM, eventsFile, sizeof(eventsFile), "data/zombie_riot/zrevents.res");
-			LogMessage("Loading custom events file '%s'", eventsFile);
-			if (SDKCall(g_hSDKLoadEvents, g_aGameEventManager, eventsFile))
-			{
-				//g_bCustomEventsAvailable = true;
-				LogMessage("Success!");
-				SDKCall(g_hSDKReloadEvents);
-			}
-			else
-			{
-				LogError("FAILED to load custom events file '%s'", eventsFile);
-			}
-		}
-		else
-		{
-			LogError("FAILED to load custom events file (Missing Gamedata!)");
-		}
-	}
 }
 
 public Action TimerGrantBannerDuration(Handle timer, int ref)

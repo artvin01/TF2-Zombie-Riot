@@ -988,6 +988,7 @@ public void OnMapStart()
 	Zero(f_ClientReviveDelayReviveTime);
 	Zero(f_MutePlayerTalkShutUp);
 	ResetIgnorePointVisible();
+	DHooks_MapStart();
 
 #if defined ZR || defined RPG
 	Core_PrecacheGlobalCustom();

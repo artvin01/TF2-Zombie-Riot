@@ -719,7 +719,6 @@ void ZR_MapStart()
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
-	DHooks_MapStart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
