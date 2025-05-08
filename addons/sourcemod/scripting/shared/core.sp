@@ -2998,6 +2998,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SDKCall_SetSpeed(client);
 	}
+	else if(condition == TFCond_Ubercharged)
+	{
+		ApplyStatusEffect(client, client, "UBERCHARGED", 15.0);
+	}
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
@@ -3006,6 +3010,10 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	{
 		switch(condition)
 		{
+			case TFCond_Ubercharged:
+			{
+				RemoveSpecificBuff(client, "UBERCHARGED");
+			}
 			case TFCond_Zoomed:
 			{
 				ViewChange_Update(client);

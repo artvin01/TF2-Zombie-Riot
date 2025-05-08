@@ -2129,8 +2129,8 @@
 	}
 	"Chaos Intrusion Desc"
 	{
-		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 15％ faster, and 10％ more zombies are alive at once.\nEnemeis deal 12％ more damage, have 30％ more HP and are 3％ faster."
-		"ru"	"Вы пришли слишком поздно,Хаос получил полный эффект...\nВолны спавнят 25％ больше врагов,Спанят на 15％ быстрее,10％ больше зомби в живых единовременнл.\nВраги наносят на 12％ больше урона,и имеют 30％ больше здоровья и на 3％ быстрее"
+		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 20％ faster, and 10％ more zombies are alive at once.\nEnemeis deal 12％ more damage, have 30％ more HP and are 3％ faster."
+		"ru"	"Вы пришли слишком поздно,Хаос получил полный эффект...\nВолны спавнят 25％ больше врагов,Спанят на 20％ быстрее,10％ больше зомби в живых единовременнл.\nВраги наносят на 12％ больше урона,и имеют 30％ больше здоровья и на 3％ быстрее"
 	}
 	"Standard"
 	{
@@ -2149,7 +2149,7 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 25％ faster.\n1 down, enemies heal 50％ more."
+		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 33％ faster.\n1 down, enemies heal 50％ more."
 	}
 	"Turbulance"
 	{
@@ -2166,8 +2166,8 @@
 	}
 	"Secondary Mercs Desc"
 	{
-		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
-		"ru"	"Первые наёмники уже потерпели крах.\n35％ больше врагов,25％ быстрее спавн,15％ больше живих врагов одновременно\nОни наносят 15％ больше урона и 25％ больше барикадам,имеют 50％ больше хп и на 4％ быстрее\nВраги получают 50％ больше исцеления."
+		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
+		"ru"	"Первые наёмники уже потерпели крах.\n35％ больше врагов,33％ быстрее спавн,15％ больше живих врагов одновременно\nОни наносят 15％ больше урона и 25％ больше барикадам,имеют 50％ больше хп и на 4％ быстрее\nВраги получают 50％ больше исцеления."
 	}
 	"Paranormal Activity"
 	{
