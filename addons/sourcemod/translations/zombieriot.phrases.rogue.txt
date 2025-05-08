@@ -1718,7 +1718,7 @@
 	}
 	"Hand of Stock Desc"
 	{
-		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +50％ faster."
+		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +100％ faster."
 	}
 	"Hand of the Elite"
 	{
