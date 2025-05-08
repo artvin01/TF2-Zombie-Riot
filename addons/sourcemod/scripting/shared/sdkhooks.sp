@@ -1750,9 +1750,20 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 	}
-
-	//Bleed shouldnt ignore uber.
-	if(RaidbossIgnoreBuildingsLogic(1) || ((damagetype & DMG_TRUEDAMAGE) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
+	if(IsInvuln(victim, true))
+	{
+		if(!(damagetype & DMG_OUTOFBOUNDS))
+		{
+			if(!CheckInHud())
+			{
+				f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
+				ClientPassAliveCheck[victim] = true;
+			}
+			damage = 0.0;
+			return Plugin_Handled;	
+		}
+	}
+	else
 	{
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
@@ -1761,28 +1772,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
 				TF2_RemoveCondition(victim, TFCond_Ubercharged);
 			}
-			if(!(damagetype & DMG_TRUEDAMAGE))
-				damage *= 0.5;
+			damage *= UberLogicInternal(99999);
 		}
 	}
-	else
-	{
-		//if its not during raids, do...
-		if(!(damagetype & DMG_OUTOFBOUNDS))
-		{
-			if(IsInvuln(victim))
-			{
-				if(!CheckInHud())
-				{
-					f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
-					ClientPassAliveCheck[victim] = true;
-				}
-				damage = 0.0;
-				return Plugin_Handled;	
-			}
-		}
-	}
-	
+
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.

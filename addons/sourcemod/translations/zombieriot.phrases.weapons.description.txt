@@ -1898,9 +1898,9 @@
 	}
 	"Concentrated Agelitus Desc"
 	{
-		"en"	"Magic Weapons deal 5％ less damage, you have 10％ less max mana and mana regen, but your magic projectiles are 50％ faster."
-		"fr"	"-5％ dégats magiques, -10％ Mana maximum et regénération de Mana, +50％ vitesse des projectiles"
-		"chi"	"魔法武器-5％伤害，-10％回蓝和上限，但是投射物+50％速度。"
+		"en"	"Magic Weapons deal 5％ less damage, you have 10％ less max mana and mana regen, but your magic projectiles are 25％ faster."
+		"fr"	"-5％ dégats magiques, -10％ Mana maximum et regénération de Mana, +25％ vitesse des projectiles"
+		"chi"	"魔法武器-5％伤害，-10％回蓝和上限，但是投射物+25％速度。"
 	}
 	"Aggreviated Silence Desc"
 	{
