@@ -1212,7 +1212,7 @@
 	}
 	"Weapon Clocking Desc"
 	{
-		"en"	"Boosts attack/reload speed & healrate by 10％"
+		"en"	"Boosts attack/reload speed & healrate by 5％"
 	}
 	"7 Heavy Souls"
 	{
