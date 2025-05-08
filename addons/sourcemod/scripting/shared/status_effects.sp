@@ -3138,15 +3138,11 @@ void StatusEffects_SupportWeapons()
 	
 float UberTakeDamageLogic(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
-	return (UberLogicInternal(victim));
+	return (UberLogicInternal());
 }
 
-float UberLogicInternal(int victim)
+float UberLogicInternal()
 {
-	if(victim <= MaxClients)
-	{
-		return 1.0;
-	}
 	if(RaidbossIgnoreBuildingsLogic(1))
 	{
 		return 0.5;

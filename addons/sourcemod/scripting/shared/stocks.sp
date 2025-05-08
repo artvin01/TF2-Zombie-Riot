@@ -1972,6 +1972,9 @@ stock bool IsInvuln(int client, bool IgnoreNormalUber = false) //Borrowed from B
 	}
 	else
 	{
+		if(HasSpecificBuff(client, "UBERCHARGED"))
+			return true;
+
 		return (TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
 			TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
 			TF2_IsPlayerInCondition(client, TFCond_UberchargedOnTakeDamage) ||

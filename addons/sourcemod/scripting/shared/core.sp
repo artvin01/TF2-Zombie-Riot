@@ -608,6 +608,8 @@ int Armor_Wearable[MAXTF2PLAYERS];
 int Cosmetic_WearableExtra[MAXTF2PLAYERS];
 #endif
 
+bool b_DamageNumbers[MAXTF2PLAYERS];
+
 int OriginalWeapon_AmmoType[MAXENTITIES];
 
 /*
@@ -1337,6 +1339,20 @@ public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult res
 {
 	if(result == ConVarQuery_Okay)
 		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
+}
+public void ConVarCallback_DamageNumbers(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(StringToInt(cvarValue) == 0)
+		{
+			b_DamageNumbers[client] = false;
+		}
+		else
+		{
+			b_DamageNumbers[client] = true;
+		}
+	}
 }
 public void ConVarCallback_FirstPersonViewModel(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {
@@ -2998,8 +3014,11 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SDKCall_SetSpeed(client);
 	}
-	else if(condition == TFCond_Ubercharged)
+	else if(condition == TFCond_UberBulletResist)
 	{
+		//This counts as uber in ZR!
+		TF2_AddCondition(client, TFCond_UberBlastResist, 99.0);
+		TF2_AddCondition(client, TFCond_UberFireResist, 99.0);
 		ApplyStatusEffect(client, client, "UBERCHARGED", 15.0);
 	}
 }
@@ -3010,9 +3029,11 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	{
 		switch(condition)
 		{
-			case TFCond_Ubercharged:
+			case TFCond_UberBulletResist:
 			{
 				RemoveSpecificBuff(client, "UBERCHARGED");
+				TF2_RemoveCondition(client, TFCond_UberBlastResist);
+				TF2_RemoveCondition(client, TFCond_UberFireResist);
 			}
 			case TFCond_Zoomed:
 			{

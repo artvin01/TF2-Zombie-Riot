@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+//static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeathSilent[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
@@ -40,7 +40,7 @@ void SDKHooks_ClearAll()
 	Zero(f_EntityHazardCheckDelay);
 	Zero(f_EntityOutOfNav);
 	
-	Zero(i_WasInUber);
+//	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeathSilent);
 	Zero(i_WasInMarkedForDeath);
 	Zero(i_WasInDefenseBuff);
@@ -1611,10 +1611,10 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 #if defined ZR
 void RegainTf2Buffs(int victim)
 {
-	if(i_WasInUber[victim])
-	{
-		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
-	}
+//	if(i_WasInUber[victim])
+//	{
+//		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
+//	}
 	if(i_WasInMarkedForDeath[victim])
 	{
 		TF2_AddCondition(victim, TFCond_MarkedForDeath, i_WasInMarkedForDeath[victim]);
@@ -1635,7 +1635,7 @@ void RegainTf2Buffs(int victim)
 	{
 		TF2_AddCondition(victim, TFCond_RuneResist, i_WasInResPowerup[victim]);
 	}
-	i_WasInUber[victim] = 0.0;
+//	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeathSilent[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 	i_WasInJarate[victim] = 0.0;
@@ -1677,7 +1677,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		ClientPassAliveCheck[victim] = false;
 #if defined ZR
-		i_WasInUber[victim] = 0.0;
+	//	i_WasInUber[victim] = 0.0;
 		i_WasInMarkedForDeathSilent[victim] = 0.0;
 		i_WasInMarkedForDeath[victim] = 0.0;
 		i_WasInDefenseBuff[victim] = 0.0;
@@ -1763,8 +1763,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;	
 		}
 	}
+	/*
 	else
 	{
+		
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
 			if(!CheckInHud())
@@ -1775,6 +1777,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= UberLogicInternal(99999);
 		}
 	}
+	*/
 
 	if(damagetype & DMG_CRIT)
 	{

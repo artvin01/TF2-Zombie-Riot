@@ -39,6 +39,10 @@ static ArrayList RawEntityHooks;
 static int m_bOnlyIterateItemViewAttributes;
 static int m_Item;
 static bool GrenadeExplodedAlready[MAXENTITIES];
+Handle g_hSDKLoadEvents;
+Handle g_hSDKReloadEvents;
+Address g_aGameEventManager;
+
 
 stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     Handle res = DHookCreateFromConf(game_config, name);
@@ -148,6 +152,37 @@ void DHook_Setup()
 	//Fixes mediguns giving extra speed where it was not intended.
 	//gamedata first try!!
 	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
+
+
+	//https://github.com/CookieCat45/Risk-Fortress-2/blob/a98baf90d1074da6f82b53d30747aae354589b9a/scripting/rf2.sp#L281
+	DynamicDetour g_hDetourCreateEvent = DynamicDetour.FromConf(gamedata, "CGameEventManager::CreateEvent");
+	if (!g_hDetourCreateEvent || !g_hDetourCreateEvent.Enable(Hook_Pre, Detour_CreateEvent))
+	{
+		LogError("[DHooks] Failed to create detour for CGameEventManager::CreateEvent");
+	}
+
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CGameEventManager::LoadEventsFromFile");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	g_hSDKLoadEvents = EndPrepSDKCall();
+	if (!g_hSDKLoadEvents)
+	{
+		LogError("[SDK] Failed to create call to CGameEventManager::LoadEventsFromFile");
+	}
+	
+	if (g_hDetourCreateEvent)
+	{
+		CreateEvent("give_me_my_cgameeventmanager_pointer", true);
+	}
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "SV_CreateBaseline");
+	g_hSDKReloadEvents = EndPrepSDKCall();
+	if (!g_hSDKReloadEvents)
+	{
+		LogError("[SDK] Failed to create call to SV_CreateBaseline");
+	}
+
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -2073,14 +2108,46 @@ stock void DelayEffectOnHorn(int ref)
 
 int BannerWearable[MAXTF2PLAYERS];
 int BannerWearableModelIndex[3];
+bool DidEventHandleChange = false;
 void DHooks_MapStart()
 {
 	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
 	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
 	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
-	
+	DidEventHandleChange = false;
+	RequestFrame(OverrideNpcHurtShortToLong);
+	//g_bCustomEventsAvailable = false;
+
 	//if(g_DHookShouldCollide)
 	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
+}
+
+void OverrideNpcHurtShortToLong()
+{
+	if(!DidEventHandleChange)
+	{
+		if (g_aGameEventManager && g_hSDKLoadEvents)
+		{
+			DidEventHandleChange = true;
+			char eventsFile[PLATFORM_MAX_PATH];
+			BuildPath(Path_SM, eventsFile, sizeof(eventsFile), "data/zombie_riot/zrevents.res");
+			LogMessage("Loading custom events file '%s'", eventsFile);
+			if (SDKCall(g_hSDKLoadEvents, g_aGameEventManager, eventsFile))
+			{
+				//g_bCustomEventsAvailable = true;
+				LogMessage("Success!");
+				SDKCall(g_hSDKReloadEvents);
+			}
+			else
+			{
+				LogError("FAILED to load custom events file '%s'", eventsFile);
+			}
+		}
+		else
+		{
+			LogError("FAILED to load custom events file (Missing Gamedata!)");
+		}
+	}
 }
 
 public Action TimerGrantBannerDuration(Handle timer, int ref)
@@ -2334,4 +2401,13 @@ int OffsetLagCompStart_UserInfoReturn()
 		ReturnInfo = (FindSendPropInfo("CTFPlayer", "m_hViewModel") + 76);
 
 	return ReturnInfo;
+}
+
+
+public MRESReturn Detour_CreateEvent(Address eventManager, DHookReturn returnVal, DHookParam params)
+{
+	g_aGameEventManager = eventManager;
+	
+	RequestFrame(OverrideNpcHurtShortToLong);
+	return MRES_Ignored;
 }

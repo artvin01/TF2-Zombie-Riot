@@ -242,7 +242,7 @@ public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 		i_PHLOGHitsDone[client] = 0;
 		f_PHLOGabilitydelay[client] = GetGameTime() + 10.0; //Have a cooldown so they cannot spam it.
 		EmitSoundToAll(PHLOG_ABILITY, client, _, 75, _, 0.60);
-		TF2_AddCondition(client, TFCond_Ubercharged, 1.0); //ohboy
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0); //ohboy
 		TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 10.0);
 		TF2_AddCondition(client, TFCond_CritCanteen, 10.0);
 		ApplyTempAttrib(weapon, 2, 1.35, 10.0); //way higher damage.
