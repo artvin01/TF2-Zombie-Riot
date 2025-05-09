@@ -2,7 +2,7 @@
 #pragma newdecls required
 //
 
-#define MAX_EXPI_ENERGY_EFFECTS 71
+#define MAX_EXPI_ENERGY_EFFECTS 26
 
 
 
@@ -69,14 +69,21 @@ stock int VausMagicaShieldLeft(int victim)
 {
 	return i_ExpidonsaShieldCapacity[victim];
 }
-void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage, int ZrDamageType, int weapon)
+void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage,int damagetype, int ZrDamageType, int weapon)
 {
-	if(i_ExpidonsaShieldCapacity[victim] > 0 && (!(ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
+	if(i_ExpidonsaShieldCapacity[victim] > 0)
 	{
-		if(!CheckInHud())
+		bool DrainShield = true;
+		if(IsEntitySentrygun(attacker))
+			DrainShield = false;
+		
+		if((ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+			DrainShield = false;
+		
+		if(!CheckInHud() && DrainShield)
 		{
 #if defined ZR
-			if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
+			if(HasSpecificBuff(victim, "Zilius Prime Technology") || attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
 #else
 			if(attacker <=MaxClients)
 #endif
@@ -94,7 +101,9 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 			}
 		}
 
-		damage *= 0.25;
+		if(!(damagetype & (DMG_TRUEDAMAGE)))
+			damage *= 0.25;
+			
 		if(!CheckInHud())
 		{
 			if(i_ExpidonsaShieldCapacity[victim] <= 0)
@@ -111,7 +120,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 		}
 	}
 }
-
+#define DEFAULTMAXRAID_SHIELDCAP 250
 void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 {
 	float CapacityMaxMulti = float(CountPlayersOnRed(_, true)) / 7.0;
@@ -122,12 +131,20 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	}
 	if(b_thisNpcIsARaid[entity])
 	{
-		MaxShieldCapacity = 250;
+		MaxShieldCapacity = DEFAULTMAXRAID_SHIELDCAP;
+		if(amount >= DEFAULTMAXRAID_SHIELDCAP)
+			MaxShieldCapacity = amount;
+		if(Construction_Mode())
+			MaxShieldCapacity = 99999999; //no limit.
+	}
+	if(HasSpecificBuff(entity, "Zilius Prime Technology"))
+	{
+		MaxShieldCapacity *= 2;
 	}
 	if(MaxShieldCapacity < 1)
 		MaxShieldCapacity = 1;
 
-	if((f_Expidonsa_ShieldBroke[entity] > GetGameTime() && !ignorecooldown) && MaxShieldCapacity < 250)
+	if((f_Expidonsa_ShieldBroke[entity] > GetGameTime() && !ignorecooldown) && MaxShieldCapacity < DEFAULTMAXRAID_SHIELDCAP)
 	{
 		return; //do not give shield.
 	}
@@ -328,12 +345,3 @@ float ExpidonsanShieldBroke(int entity)
 	return(f_Expidonsa_ShieldBroke[entity]);
 }
 #endif
-stock bool Expidonsa_DontHealBosses(int entity, int victim, float &healingammount)
-{
-	if(b_thisNpcIsABoss[victim] ||
-		b_thisNpcIsARaid[victim] ||
-		b_StaticNPC[victim])
-		return true;
-
-	return false;
-}

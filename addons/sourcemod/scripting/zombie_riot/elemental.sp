@@ -12,6 +12,8 @@ enum
 	Element_Void,
 	Element_Osmosis,
 	Element_Corruption,
+	Element_Burger,
+	//Element_Plasma,
 
 	Element_MAX
 }
@@ -24,7 +26,9 @@ static const char ElementName[][] =
 	"NE",
 	"VO",
 	"OS",
-	"CO"
+	"CO",
+	"FOOD",
+	//"PL"
 };
 
 static float LastTime[MAXENTITIES];
@@ -42,8 +46,11 @@ void Elemental_ClearDamage(int entity)
 	}
 }
 
-stock bool Elemental_HasDamage(int entity)
+stock bool Elemental_HasDamage(int entity, int type = -1)
 {
+	if(type != -1)
+		return view_as<bool>(ElementDamage[entity][type]);
+	
 	for(int i; i < Element_MAX; i++)
 	{
 		if(ElementDamage[entity][i])
@@ -104,33 +111,49 @@ static int TriggerDamage(int entity, int type)
 		{
 			divide = 4.0;
 		}
-		case Element_Void:
+		case Element_Void: // add Element_Plasma here later
 		{
 			divide = 2.0;
+		}
+		case Element_Burger:
+		{
+			divide = 2.0;
+
+			if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+			{
+				divide = 3.0;
+			}
+			else if(b_thisNpcIsABoss[entity])
+			{
+				divide = 3.0;
+			}
 		}
 	}
 
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
-
-	//also works against superbosses.
-	if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+	
+	if(type != Element_Burger)
 	{
-		divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
-	}
-	else if(b_thisNpcIsABoss[entity])
-	{
-		divide *= (3.0 * MultiGlobalHealth); //Reduce way further so its good against bosses.
-	}
-	else if (b_IsGiant[entity])
-	{
-		divide *= 2.0;
+		//also works against superbosses.
+		if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+		{
+			divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
+		}
+		else if(b_thisNpcIsABoss[entity])
+		{
+			divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
+		}
+		else if (b_IsGiant[entity])
+		{
+			divide *= 2.0;
+		}
 	}
 
 	return RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
 }
 
-bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
+bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 {
 	float gameTime = GetGameTime();
 	
@@ -170,12 +193,19 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 		return false;
 	
 	// <CY 50%>
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d%%>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
 	return true;
 }
 
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -203,9 +233,9 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 					
 					if(!HasSpecificBuff(victim, "Fluid Movement"))
-						TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+						TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
 
-					DealTruedamageToEnemy(0, victim, b_BobsTrueFear[victim] ? 400.0 : 500.0);
+					DealTruedamageToEnemy(0, victim, 500.0);
 				}
 			}
 			
@@ -264,6 +294,13 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 
 void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
@@ -347,7 +384,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				ElementDamage[victim][Element_Chaos] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 5.0;
 
-				IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
+				IncreaseEntityDamageTakenBy(victim, 1.30, 10.0);
 				NPC_Ignite(victim, attacker, 10.0, -1);
 
 				float burn = GetTeam(victim) == TFTeam_Red ? 10.0 : 25.0;
@@ -358,13 +395,20 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		IncreaceEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
+		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
 	}
 }
 
 
 void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool VoidWeaponDo = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
@@ -469,19 +513,22 @@ static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon
 
 static void SakratanGroupDebuffInternal(int victim)
 {
-	if(victim <= MaxClients && !b_BobsTrueFear[victim])
+	if(victim <= MaxClients)
 	{
 		DealTruedamageToEnemy(0, victim, 250.0);
 	}
-	else
-	{
-		DealTruedamageToEnemy(0, victim, 200.0);
-	}
-	IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
+	IncreaseEntityDamageTakenBy(victim, 1.30, 10.0);
 }
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
@@ -514,12 +561,19 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		IncreaceEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
+		IncreaseEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
 	}
 }
 
 void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
@@ -560,6 +614,13 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 
 void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	
@@ -590,16 +651,10 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 		}
 	}
 }
-
-bool Osmosis_ClientGaveBuff[MAXENTITIES][MAXTF2PLAYERS];
-
 void OsmosisElementalEffectEnable(int victim, float time)
 {
 	//Reset hit detection on all players
-	for(int i; i < MaxClients; i++)
-	{
-		Osmosis_ClientGaveBuff[victim][i] = false;
-	}
+	EntityKilled_HitDetectionCooldown(victim, Osmosisdebuff);
 	if(time > 0.0)
 		ApplyStatusEffect(victim, victim, "Osmosis'ity", time);
 }
@@ -617,7 +672,7 @@ void OsmosisElementalEffect_Detection(int attacker, int victim)
 	if(!NpcStats_InOsmosis(victim))
 		return;
 	
-	if(Osmosis_ClientGaveBuff[victim][attacker])
+	if(IsIn_HitDetectionCooldown(victim,attacker, Osmosisdebuff))
 		return;
 
 	int weapon_holding = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
@@ -627,13 +682,20 @@ void OsmosisElementalEffect_Detection(int attacker, int victim)
 	if(!Saga_IsChargeWeapon(attacker, weapon_holding))
 		return;
 
-	Osmosis_ClientGaveBuff[victim][attacker] = true;
+	Set_HitDetectionCooldown(victim,attacker, FAR_FUTURE, Osmosisdebuff);
 	//play a little sound!
 	Saga_ChargeReduction(attacker, weapon_holding, 2.0);
 	ClientCommand(attacker, "playgamesound ui/mm_medal_click.wav");
 }
 void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
@@ -645,10 +707,12 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	if(victim <= MaxClients)
 	{
-		if(Items_HasNamedItem(victim, "Matrix's Curse"))
+		/*
+		if(Items_HasNamedItem(victim, "Matrix's Curse") && !Items_HasNamedItem(victim, "A Block of Cheese"))
 		{
 			damage = RoundToNearest(float(damage) * 1.2);
 		}
+		*/
 		Armor_DebuffType[victim] = 4;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
@@ -767,7 +831,7 @@ static char g_Agent_Summons[][] =
 static void Matrix_Spawning(int entity, int count)
 {
 	int summon = GetRandomInt(0, 6);
-	int wave = (ZR_GetWaveCount() + 1);
+	int wave = (ZR_Waves_GetRound() + 1);
 	if(wave >= 30)
 	{
 		summon = GetRandomInt(7, 11);
@@ -807,3 +871,180 @@ static void Matrix_Spawning(int entity, int count)
 	}
 	Zombies_Currently_Still_Ongoing += count;
 }
+
+void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
+{
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
+	if(b_NpcIsInvulnerable[victim])
+		return;
+	
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
+	{
+		if(f_ArmorCurrosionImmunity[victim][Element_Burger] < GetGameTime())
+		{
+			int trigger = TriggerDamage(victim, Element_Burger);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_Burger;
+			ElementDamage[victim][Element_Burger] += damage;
+			if(ElementDamage[victim][Element_Burger] > trigger)
+			{
+				ElementDamage[victim][Element_Burger] = 0;
+				f_ArmorCurrosionImmunity[victim][Element_Burger] = GetGameTime() + 100.0;
+
+				if(func_NPCThink[victim] != MedivalConstruct_ClotThink || EntRefToEntIndex(RaidBossActive) != -1)
+				{
+					SDKHooks_TakeDamage(victim, attacker, attacker, ReturnEntityMaxHealth(victim) * 5.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_GIB_REGARDLESS);
+				}
+			}
+		}
+	}
+}
+
+/*
+void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int weapon, bool ignoreArmor = false)
+{
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	
+	if(b_NpcIsInvulnerable[victim])
+		return;
+
+	bool melee = (i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE);
+	// i am pap
+	float paplvl = Attributes_Get(weapon, 122, 0.0);
+
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(NpcStats_ElementalAmp(victim))
+	{
+		damage = RoundToNearest(float(damage) * 1.3);
+	}
+	if(victim <= MaxClients) // VS Players, in the rare occasion ZR pvp is turned on
+	{
+		Armor_DebuffType[victim] = 5;
+		if((f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
+		{
+			if(i_HealthBeforeSuit[victim] > 0)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.25), DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
+					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
+					Cheese_SetPenaltyDuration(victim, 10.0);
+					
+					float position[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+					position[2] += 10.0;
+					for(int i = 0; i < 3; i++)
+					{
+						Cheese_BeamEffect(position);
+						position[2] += 32.5;
+					}
+					Cheese_PlaySplat(victim);
+					Armor_Charge[victim] = 0;
+					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 5.0;
+				}
+			}
+		}
+	}
+	else if(!b_NpcHasDied[victim])	// VS NPCs
+	{
+		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
+		{
+			int trigger = TriggerDamage(victim, Element_Plasma);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_Plasma;
+			ElementDamage[victim][Element_Plasma] += damage;
+			if(ElementDamage[victim][Element_Plasma] > trigger)
+			{
+				ElementDamage[victim][Element_Plasma] = 0;
+				float immunitycd = melee ? 10.0 : 15.0;
+				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.5); // at max pap (8), its 9 seconds if melee, or 6.5 seconds if ranged
+				float vuln_duration = (melee ? 4.0 : 2.0) + (paplvl * 0.25); // at max pap (8), its 6 seconds if melee, or 4 seconds if ranged
+				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + immunitycd;
+
+				if(HasSpecificBuff(victim, "Plasm I"))
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
+				}
+				else if(HasSpecificBuff(victim, "Plasm II"))
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm III", duration);
+				}
+
+				if(b_thisNpcIsARaid[victim])
+				{
+					duration *= 0.65;
+					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
+				}
+				else if(b_thisNpcIsABoss[victim])
+				{
+					duration *= 0.8;
+					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
+				}
+				else
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
+				}
+				IncreaseEntityDamageTakenBy(victim, 1.08 + (0.03*paplvl), vuln_duration); // up to +40% dmg taken at max pap (8)
+
+				float position[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+				position[2] += 10.0;
+				for(int i = 0; i < 2; i++)
+				{
+					Cheese_BeamEffect(position);
+					position[2] += 32.5;
+				}
+				Cheese_PlaySplat(victim);
+			}
+		}
+	}
+	else if(i_IsABuilding[victim]) // In the rare occasion you inflict plasmic elemental damage to buildings (4/5/2024 mini incident)
+	{
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		if(!melee)
+			damage = RoundToNearest(float(damage) * 0.5);
+		Repair -= damage;
+		if(Repair <= 0)
+		{
+			NPC_Ignite(victim, attacker, 10.0, weapon, 100.0);
+				
+			Repair = 0;
+			float position[3];
+			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+			position[2] += 10.0;
+			for(int i = 0; i < 2; i++)
+			{
+				Cheese_BeamEffect(position);
+				position[2] += 20.5;
+			}
+			Cheese_PlaySplat(victim);
+		}
+			
+		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
+	}
+}
+*/

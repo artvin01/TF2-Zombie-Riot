@@ -301,7 +301,21 @@ methodmap Whiteflower_Boss < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+		}
+
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -322,16 +336,8 @@ methodmap Whiteflower_Boss < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-		{
-			RaidModeScaling *= 0.85;
-		}
-		else if(ZR_GetWaveCount()+1 > 55)
-		{
-			RaidModeScaling *= 0.7;
-		}
 
+		RaidModeScaling *= 0.7;
 		RaidModeScaling *= 1.85;
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -1109,11 +1115,15 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	int speech = GetRandomInt(1,10);
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(self);
 	float ReduceEnemyCountLogic = 1.0 / MultiGlobalEnemy;
-	fl_TotalArmor[self] *= (1.0 + (0.005 * ReduceEnemyCountLogic));
-	if(fl_TotalArmor[self] >= 1.0)
+	if(!Waves_InFreeplay())
 	{
-		fl_TotalArmor[self] = 1.0;
+		fl_TotalArmor[self] *= (1.0 + (0.005 * ReduceEnemyCountLogic));
+		if(fl_TotalArmor[self] >= 1.0)
+		{
+			fl_TotalArmor[self] = 1.0;
+		}
 	}
+	
 	RaidModeScaling *= (1.0- (0.0025 * ReduceEnemyCountLogic));
 	if(npc.m_flCooldownSay > GetGameTime())
 	{
@@ -1124,7 +1134,7 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");	
+			CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");
 		}
 		case 2:
 		{
@@ -1132,7 +1142,15 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		}
 		case 3:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: First my arm so im alone? Pah!");	
+			if(!Waves_InFreeplay())
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: First my army so im alone? Pah!");
+			}
+			else
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: From one maniac to another huh?");
+			}
+			
 		}
 		case 4:
 		{
@@ -1156,14 +1174,31 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 		}
 		case 9:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: They atleast believe in their leader, do you?");	
+			if(!Waves_InFreeplay())
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: They atleast believe in their leader, do you?");	
+			}
+			else
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");
+			}	
 		}
 		case 10:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: I actually care for them, do you care for your own army?");	
+			if(!Waves_InFreeplay())
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: I actually care for them, do you care for your own army?");	
+			}
+			else
+			{
+				CPrintToChatAll("{crimson}Whiteflower{default}: You are dirty.");
+			}
 		}
 	}
-	CPrintToChatAll("He weakens as you defeat his army.");	
+	if(!Waves_InFreeplay())
+	{
+		CPrintToChatAll("He weakens as you defeat his army.");	
+	}
 }
 
 
@@ -1193,6 +1228,7 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 	if(enemy <= MaxClients)
 	{
 		f_AntiStuckPhaseThrough[enemy] = GetGameTime() + 1.0;
+		ApplyStatusEffect(enemy, enemy, "Intangible", 1.0);
 		Custom_Knockback(entity, enemy, 1500.0, true, true);
 		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
 		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);

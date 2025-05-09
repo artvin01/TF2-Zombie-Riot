@@ -1,22 +1,25 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+bool allowMultipleMondos = true;		//Set to false to prevent multiple Mondo Massacres from being rolled in the same wave.
+int i_LastMondoWave = -1;
+
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Weapon_Damage[3] = { 100.0, 250.0, 500.0 }; Default damage is 100, pap1 is 250, pap2 is 500.
 
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
 int i_FlimsyMaxTargets[3] = { 4, 5, 6 };				//Max targets hit by the blast.
 
-float f_FlimsyDMG[3] = { 600.0, 1500.0, 2000.0 };		//Flimsy Rocket base damage.
-float f_FlimsyRadius[3] = { 200.0, 150.0, 200.0 };		//Flimsy Rocket explosion radius.
-float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile velocity.
+float f_FlimsyDMG[3] = { 840.0, 2400.0, 3250.0 };		//Flimsy Rocket base damage.
+float f_FlimsyRadius[3] = { 200.0, 200.0, 200.0 };		//Flimsy Rocket explosion radius.
+float f_FlimsyVelocity[3] = { 1200.0, 1200.0, 1200.0 };	//Flimsy Rocket projectile velocity.
 
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
 int i_ShockMaxHits[3] = { 6, 7, 8 };					//Max number of zombies hit by the shock.
 
-float f_ShockChance[3] = { 0.1, 0.12, 0.14 };			//Chance for Shock Stock to be fired.
+float f_ShockChance[3] = { 0.1, 0.2, 0.25 };			//Chance for Shock Stock to be fired.
 float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
-float f_ShockDMG[3] = { 1200.0, 2000.0, 3000.0 };		//Base damage dealt.
+float f_ShockDMG[3] = { 1200.0, 2600.0, 3500.0 };		//Base damage dealt.
 float f_ShockRadius[3] = { 100.0, 150.0, 200.0 };		//Initial blast radius.
 float f_ShockChainRadius[3] = { 400.0, 600.0, 800.0 };	//Chain lightning radius.
 float f_ShockDMGReductionPerHit[3] = { 0.65, 0.75, 0.85 };	//Amount to multiply damage dealt for each zombie shocked.
@@ -30,27 +33,27 @@ float f_MortarChance[3] = { 0.04, 0.06, 0.08 };
 bool b_MortarEnabled[3] = { false, false, false };
 
 //BUNDLE OF ARROWS: A giant shotgun blast of Huntsman arrows.
-int i_ArrowsMinArrows[3] = { 6, 8, 12 };		//Minimum number of arrows fired.
-int i_ArrowsMaxArrows[3] = { 8, 12, 16 };		//Maximum number of arrows fired.
+int i_ArrowsMinArrows[3] = { 3, 5, 6 };		//Minimum number of arrows fired.
+int i_ArrowsMaxArrows[3] = { 4, 6, 7 };		//Maximum number of arrows fired.
 
-float f_ArrowsChance[3] = { 0.04, 0.08, 0.12 };			//Chance for Bundle of Arrows to be fired.
-float f_ArrowsDMG[3] = { 600.0, 800.0, 1000.0 };			//Base arrow damage.
+float f_ArrowsChance[3] = { 0.08, 0.14, 0.18 };			//Chance for Bundle of Arrows to be fired.
+float f_ArrowsDMG[3] = { 1200.0, 1600.0, 2000.0 };			//Base arrow damage.
 float f_ArrowsVelocity[3] = { 1200.0, 1600.0, 2000.0 }; //Arrow velocity.
 float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
 bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled on this pap level?
 
 //PYRE: A fireball which is affected by gravity.
-float f_PyreChance[3] = { 0.06, 0.1, 0.14 };			//Chance for Pyre to be fired.
-float f_PyreDMG[3] = { 1000.0, 2500.0, 4000.0 };		//Damage dealt by fireballs.
+float f_PyreChance[3] = { 0.12, 0.16, 0.1 };			//Chance for Pyre to be fired.
+float f_PyreDMG[3] = { 2000.0, 3500.0, 5500.0 };		//Damage dealt by fireballs.
 float f_PyreVel[3] = { 600.0, 800.0, 1200.0 };			//Fireball velocity.
 float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
 
 bool b_PyreEnabled[3] = { true, true, true };			//Is Pyre enabled on this pap level?
 
 //SKELETON: Fires a shotgun blast of skeleton gibs which deal huge damage, but have a small radius and can only hit one zombie each.
-float f_SkeletonChance[3] = { 0.00, 0.1, 0.14 };		//Chance for Skeleton to be fired.
+float f_SkeletonChance[3] = { 0.00, 0.15, 0.22 };		//Chance for Skeleton to be fired.
 float f_SkeletonVel[3] = { 800.0, 1000.0, 1200.0 };		//Skeleton projectile velocity.
-float f_SkeletonDMG[3] = { 1000.0, 1200.0, 1600.0 };	//Skeleton damage.
+float f_SkeletonDMG[3] = { 1500.0, 2000.0, 2400.0 };	//Skeleton damage.
 float f_SkeletonRadius[3] = { 90.0, 95.0, 100.0 };		//Skeleton radius.
 float f_SkeletonSpread[3] = { 8.0, 8.0, 8.0 };			//Skeleton projectile deviation.
 
@@ -69,13 +72,13 @@ bool b_IceEnabled[3] = { false, true, true };
 //TRASH: Fires a garbage bag which explodes on impact, releasing a cluster of smaller projectiles.
 int i_TrashMaxTargets[3] = { 4, 5, 6 };				//Max targets hit by the blast.
 int i_TrashMiniMaxTargets[3] = { 2, 3, 4 };				//Max targets hit by the blast of extra projectiles.
-int i_TrashMinExtras[3] = { 6, 8, 12 };					//Minimum number of extra projectiles created when the trash bag explodes.
-int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectiles created when the trash bag explodes.
+int i_TrashMinExtras[3] = { 3, 4, 5 };					//Minimum number of extra projectiles created when the trash bag explodes.
+int i_TrashMaxExtras[3] = { 4, 5, 6 };				//Maximum number of extra projectiles created when the trash bag explodes.
 
-float f_TrashChance[3] = { 0.04, 0.08, 0.12 };			//Chance for Trash to be fired.
+float f_TrashChance[3] = { 0.08, 0.12, 0.16 };			//Chance for Trash to be fired.
 float f_TrashVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the trash bag.
 float f_TrashMiniVelocity[3] = { 400.0, 450.0, 500.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
-float f_TrashDMG[3] = { 800.0, 1500.0, 2000.0 };			//Base damage for the trash bag.
+float f_TrashDMG[3] = { 1600.0, 3000.0, 4000.0 };			//Base damage for the trash bag.
 float f_TrashMiniDMG[3] = { 400.0, 750.0, 1000.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
 float f_TrashRadius[3] = { 400.0, 250.0, 350.0 };			//Blast radius for the trash bag.
 float f_TrashMiniRadius[3] = { 200.0, 150.0, 175.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
@@ -83,12 +86,12 @@ float f_TrashMiniRadius[3] = { 200.0, 150.0, 175.0 };		//Blast radius for the ex
 bool b_TrashEnabled[3] = { true, true, true };			//Is Trash enabled on this pap tier?
 
 //MICRO-MISSILES: Fires a burst of X micro-missiles which aggressively home in on the nearest enemy after a short delay and explode.
-int i_MissilesCount[3] = { 2, 3, 4 };						//The number of micro-missiles fired.
+int i_MissilesCount[3] = { 2, 3, 3 };						//The number of micro-missiles fired.
 int i_MissilesMaxTargets[3] = { 4, 5, 6 };					//The max number of zombies hit by the blast.
-int i_MissilesNumWaves[3] = { 6, 3, 6 };					//Number of sets of micro-missiles to be fired.
+int i_MissilesNumWaves[3] = { 2, 2, 2 };					//Number of sets of micro-missiles to be fired.
 
-float f_MissilesChance[3] = { 0.00, 0.00, 0.05 };			//The chance for Micro-Missiles to be fired.
-float f_MissilesDMG[3] = { 400.0, 800.0, 1200.0 };			//Base missile damage.
+float f_MissilesChance[3] = { 0.00, 0.00, 0.07 };			//The chance for Micro-Missiles to be fired.
+float f_MissilesDMG[3] = { 800.0, 1600.0, 2400.0 };			//Base missile damage.
 float f_MissilesVelocity[3] = { 1600.0, 1800.0, 2000.0 };	//Base missile velocity.
 float f_MissilesRadius[3] = { 200.0, 150.0, 200.0 };		//Base blast radius.
 float f_MissilesSpread[3] = { 6.0, 6.0, 6.0 };				//Micro-Missile initial projectile spread.
@@ -102,7 +105,7 @@ int i_MondoMaxTargets[3] = { 999, 999, 999 };
 
 float f_MondoChance[3] = { 0.00, 0.00, 0.0001 };
 float f_MondoVelocity[3] = { 2000.0, 3000.0, 4000.0 };
-float f_MondoDMG[3] = { 100000.0, 100000.0, 100000.0 };
+float f_MondoDMG[3] = { 300000.0, 300000.0, 300000.0 };
 float f_MondoRadius[3] = { 2000.0, 3000.0, 4000.0 };
 
 bool b_MondoEnabled[3] = { false, false, true };
@@ -143,10 +146,10 @@ Handle Timer_Trash[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 public const char s_SkeletonGibs[][] =
 {
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_arm_l.mdl",
-	"models/bots/skeleton_sniper/skeleton_sniper_gib_arm_r.mdl",
+//	"models/bots/skeleton_sniper/skeleton_sniper_gib_arm_r.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
-	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_r.mdl",
+//	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_r.mdl", dont spawn so many.... cuauses massive lag.
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl"
 };
 
@@ -221,6 +224,8 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_MONDO_FIRE, true);
 	PrecacheSound(SOUND_MONDO_BREAK_1, true);
 	PrecacheSound(SOUND_MONDO_BREAK_2, true);
+
+	i_LastMondoWave = -1;
 }
 
 static float f_NextShockTime[2049] = { 0.0, ... };
@@ -231,6 +236,7 @@ public void Trash_Cannon_EntityDestroyed(int ent)
 		return;
 		
 	f_NextShockTime[ent] = 0.0;
+	i_TrashTier[ent] = 0;
 }
 
 public void Enable_Trash_Cannon(int client, int weapon)
@@ -301,10 +307,13 @@ public void Trash_HUD(int client, int weapon, bool forced)
 				case 8:
 					PrintHintText(client, "NEXT: Micro-Missile Barrage");
 				default:
-					PrintHintText(client, "NEXT: Flimsy Rocket");
+				{
+					if (i_TrashTier[weapon] > 1)
+						PrintHintText(client, "NEXT: Fireball");
+					else
+						PrintHintText(client, "NEXT: Flimsy Rocket");
+				}
 			}
-			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 		}
 		f_TrashNextHUD[client] = GetGameTime() + 0.5;
 	}
@@ -365,6 +374,8 @@ public void Trash_Cannon_ChooseNext(int client, int weapon, int tier)
 
 public void Trash_Cannon_Shoot(int client, int weapon, bool crit, int tier)
 {
+	i_TrashTier[weapon] = tier;
+
 	if (!Trash_Mondo(client, weapon, tier))	//Mondo will override EVERY other possible roll if it is obtained.
 	{
 		switch(i_NextShot[client])
@@ -386,7 +397,12 @@ public void Trash_Cannon_Shoot(int client, int weapon, bool crit, int tier)
 			case 8:
 				Trash_Missiles(client, weapon, tier);
 			default:
-				Trash_FlimsyRocket(client, weapon, tier);
+			{
+				if (tier > 1)
+					Trash_Pyre(client, weapon, tier);
+				else
+					Trash_FlimsyRocket(client, weapon, tier);
+			}
 		}
 	}
 	
@@ -508,7 +524,7 @@ public MRESReturn Shock_Explode(int entity)
 
 	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int ent = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		
 		if (IsValidEntity(ent) && !b_NpcHasDied[ent])
 		{
@@ -1065,7 +1081,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 	if (!b_MondoEnabled[tier])
 		return false;
 		
-	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier])
+	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier] || (ZR_Waves_GetRound() == i_LastMondoWave && !allowMultipleMondos))
 		return false;
 		
 	int M_O_N_D_O = Trash_LaunchPhysProp(client, MODEL_MONDO, 5.0, f_MondoVelocity[tier], weapon, tier, Mondo_Explode, true, true);
@@ -1075,6 +1091,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 		EmitSoundToAll(SOUND_MONDO_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0, 80);
 	}
 		
+	i_LastMondoWave = ZR_Waves_GetRound();
 	return true;
 }
 
@@ -1220,8 +1237,10 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 		}
 		
 		i_TrashTier[prop] = tier;
-		
-		g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
+		if(h_NpcSolidHookType[prop] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[prop]);
+		h_NpcSolidHookType[prop] = 0;
+		h_NpcSolidHookType[prop] = g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
 		
 		return prop;
 	}
@@ -1236,7 +1255,7 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 	
 	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int ent = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		
 		if (IsValidEntity(ent) && GetTeam(ent) != TFTeam_Red && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
 		{

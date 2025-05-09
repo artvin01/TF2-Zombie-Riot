@@ -15,11 +15,11 @@ public void Weapon_GB_Ball(int client, int weapon, bool crit)
 		SetAmmo(client, 22, (GetAmmo(client, 22) - 50));
 		CurrentAmmo[client][22] = GetAmmo(client, 22);
 		PrintHintText(client,"Medigun Medicine Fluid: %iml\n Press RELOAD to Enable Fast Cooldown system.\n Press M2 to Shoot Energy projectiles.", GetAmmo(client, 22));
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		
 		float damage = 75.0;
 
-		damage *= Attributes_FindOnWeapon(client, weapon, 8, true, 1.0);
+		damage *= Attributes_Get(weapon, 8, 1.0);
 
 		float speed = 2000.0;
 

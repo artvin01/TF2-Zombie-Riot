@@ -69,7 +69,7 @@ void AgentWayne_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentWayne(client, vecPos, vecAng, ally);
+	return AgentWayne(vecPos, vecAng, ally);
 }
 methodmap AgentWayne < CClotBody
 {
@@ -112,7 +112,7 @@ methodmap AgentWayne < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentWayne(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentWayne(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentWayne npc = view_as<AgentWayne>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
 		
@@ -407,7 +407,23 @@ public Action AgentWayne_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			//damage *= 0.1;//how much the npc takes
 
 			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 25 : 10);
-			SDKHooks_TakeDamage(attacker, npc.index, npc.index, parrydamage, DMG_CLUB, -1);
+			static float Entity_Position[3];
+			WorldSpaceCenter(attacker, Entity_Position );
+			DataPack pack = new DataPack();
+			pack.WriteCell(EntIndexToEntRef(attacker));
+			pack.WriteCell(EntIndexToEntRef(npc.index));
+			pack.WriteCell(EntIndexToEntRef(npc.index));
+			pack.WriteFloat(parrydamage);
+			pack.WriteCell(DMG_CLUB);
+			pack.WriteCell(-1.0);
+			pack.WriteFloat(0.0);
+			pack.WriteFloat(0.0);
+			pack.WriteFloat(1.0);
+			pack.WriteFloat(Entity_Position[0]);
+			pack.WriteFloat(Entity_Position[1]);
+			pack.WriteFloat(Entity_Position[2]);
+			pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+			RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 		}
     }
 		

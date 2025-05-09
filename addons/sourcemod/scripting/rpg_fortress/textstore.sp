@@ -674,32 +674,32 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 			}
 			else
 			{
-				static int attrib[16];
-				static float value[16];
-				static char buffers[32][16];
+				static int Attrib[32];
+				static float Value[32];
+				static char buffers[64][16];
 
 				kv.GetString("attributes", buffer, sizeof(buffer));
 				int count = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 				for(int i; i < count; i++)
 				{
-					attrib[i] = StringToInt(buffers[i*2]);
-					if(!attrib[i])
+					Attrib[i] = StringToInt(buffers[i*2]);
+					if(!Attrib[i])
 					{
 						count = i;
 						break;
 					}
 					
-					value[i] = StringToFloat(buffers[i*2+1]);
+					Value[i] = StringToFloat(buffers[i*2+1]);
 				}
 				
 			//	Ammo_DescItem(kv, desc);
-				Mining_DescItem(kv, desc, attrib, value, count);
-				Fishing_DescItem(kv, desc, attrib, value, count);
-				Stats_DescItem(desc, attrib, value, count);
+				Mining_DescItem(kv, desc, Attrib, Value, count);
+				Fishing_DescItem(kv, desc, Attrib, Value, count);
+				Stats_DescItem(desc, Attrib, Value, count);
 				
 				int archetype = kv.GetNum("archetype");
 				kv.GetString("classname", buffer, sizeof(buffer));
-				Config_CreateDescription(ItemArchetype[archetype], buffer, attrib, value, count, desc, 512);
+				Config_CreateDescription(ItemArchetype[archetype], buffer, Attrib, Value, count, desc, 512);
 				
 				int level = kv.GetNum("level");
 				if(level > 0)
@@ -2114,7 +2114,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 		}
 		else if(Level[client] < 10)
 		{
-			SPrintToChat(client, "TIP: Press RELOAD (R) to pick up an item");
+			SPrintToChat(client, "TIP: Press [T (spray)] to pick up an item");
 			return true;
 		}
 	}

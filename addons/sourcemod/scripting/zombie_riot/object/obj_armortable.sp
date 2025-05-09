@@ -14,6 +14,14 @@ void ObjectArmorTable_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_armortable");
+	build.Cost = 400;
+	build.Health = 50;
+	build.Cooldown = 20.0;
+	build.Func = ObjectGeneric_CanBuild;
+	Building_Add(build);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -53,13 +61,22 @@ static bool ClotCanUse(ObjectArmorTable npc, int client)
 static void ClotShowInteractHud(ObjectArmorTable npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Armortable Tooltip");
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay, "Armortable Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 {
 	if(!ClotCanUse(npc, client))
 	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return true;
+	}
+
+	if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+	{
+		Building_Collect_Cooldown[npc.index][client] = GetGameTime() + 5.0;
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
@@ -90,7 +107,7 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 		return true;
 	}
 	int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	Building_GiveRewardsUse(client, owner, 15, true, 0.35, true);
+	Building_GiveRewardsUse(client, owner, 30, true, 0.5, true);
 	GiveArmorViaPercentage(client, 0.2, 1.0);
 	ApplyBuildingCollectCooldown(npc.index, client, 45.0);
 	ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
@@ -98,7 +115,7 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	pos[2] += 45.0;
 
-	ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
+	TE_Particle("halloween_boss_axe_hit_sparks", pos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	return true;
 }

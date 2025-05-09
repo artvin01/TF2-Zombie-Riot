@@ -44,7 +44,9 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 0.65;
+			RaidModeScaling = MultiGlobalHealth;
+			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
+				RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		return npc;
@@ -148,6 +150,8 @@ public void EndSpeaker3_ClotThink(int iNPC)
 								attack *= 15.0;
 							
 							KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+							
+							attack*= MultiGlobalHealth; //Incase too many enemies, boost damage.
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 						}
 					}

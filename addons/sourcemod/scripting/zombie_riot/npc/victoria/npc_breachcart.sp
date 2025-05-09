@@ -64,7 +64,7 @@ void VictoriaBreachcart_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBreachcart(client, vecPos, vecAng, ally, data);
+	return VictoriaBreachcart(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaBreachcart < CClotBody
@@ -103,7 +103,7 @@ methodmap VictoriaBreachcart < CClotBody
 		
 	}
 
-	public VictoriaBreachcart(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaBreachcart(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaBreachcart npc = view_as<VictoriaBreachcart>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, _, true));
 		
@@ -142,9 +142,9 @@ methodmap VictoriaBreachcart < CClotBody
 		npc.m_flMeleeArmor = 2.00;
 		npc.m_flRangedArmor = 0.75;
 
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);		
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_bat.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sum20_hazard_headgear/sum20_hazard_headgear.mdl");
@@ -153,7 +153,7 @@ methodmap VictoriaBreachcart < CClotBody
 
 		if(npc.g_TimesSummoned == 0)
 		{
-			npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/bots/tw2/boss_bot/static_boss_tank.mdl");
+			npc.m_iWearable2 = npc.EquipItemSeperate("models/bots/tw2/boss_bot/static_boss_tank.mdl");
 			SetVariantString("0.3");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		}
@@ -175,7 +175,7 @@ static void ClotThink(int iNPC)
 		{
 			if(!IsValidEntity(npc.m_iWearable2))
 			{
-				npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/bots/tw2/boss_bot/static_boss_tank.mdl");
+				npc.m_iWearable2 = npc.EquipItemSeperate("models/bots/tw2/boss_bot/static_boss_tank.mdl");
 				SetVariantString("0.3");
 				AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			}
@@ -256,7 +256,7 @@ static void ClotThink(int iNPC)
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
 			bool Deploy=false;
-			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+			if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 			{
 				int entity = NPC_CreateByName("npc_bombcart", -1, pos, ang, GetTeam(npc.index), "EX");
 				if(entity > MaxClients)

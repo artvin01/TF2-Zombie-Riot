@@ -181,7 +181,7 @@ methodmap XenoMedicHealer < CClotBody
 	}
 	
 	
-	public void StartHealing(int iEnt)
+	public void StartHealing()
 	{
 		int iWeapon = this.m_iWearable3;
 		if(iWeapon != INVALID_ENT_REFERENCE)
@@ -272,7 +272,7 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 				}
 				if(!npc.m_bnew_target)
 				{
-					npc.StartHealing(PrimaryThreatIndex);
+					npc.StartHealing();
 					npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 100, 100, 250, 3.0, 3.0, 1.35, LASERBEAM);
 					npc.Healing = true;
 					npc.m_bnew_target = true;

@@ -118,7 +118,7 @@ public void Cryo_CheckBurst(int client, int weapon, bool &result, int slot, floa
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rogue_OnAbilityUse(weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Cryo_ActivateBurst(client, weapon, result, slot, damage, freezemult, mana_cost, radius);
 			}
 			else
@@ -258,12 +258,8 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 			Cryo_IsCryo[projectile] = true;
 			Cryo_SlowType[projectile] = SlowType;
 			EmitSoundToAll(SOUND_WAND_CRYO_M1, client, _, 60, _, 0.4, 80);
-			for (int entity = 0; entity < MAXENTITIES; entity++)
-			{
-				f_GlobalHitDetectionLogic[projectile][entity] = 0.0;
-			}
 			SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
-
+		
 		//	CreateTimer(0.25, Cryo_Timer, EntIndexToEntRef(projectile), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		}
 		
@@ -295,6 +291,11 @@ public void Cryo_Touch(int entity, int target)
 {
 	if (target > 0)	
 	{
+		if(IsIn_HitDetectionCooldown(entity,target))
+			return;
+			
+		Set_HitDetectionCooldown(entity,target, FAR_FUTURE);
+
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);		
@@ -302,63 +303,64 @@ public void Cryo_Touch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		if(!f_GlobalHitDetectionLogic[entity][target])
+		
+		WorldSpaceCenter(target, VicLoc);
+		//Code to do damage position and ragdolls
+		//Code to do damage position and ragdolls
+		switch (Cryo_SlowType[entity])
 		{
-			WorldSpaceCenter(target, VicLoc);
-			//Code to do damage position and ragdolls
-			//Code to do damage position and ragdolls
-			switch (Cryo_SlowType[entity])
+			case 0:
 			{
-				case 0:
-				{
-					ApplyStatusEffect(owner, target, "Freeze", 1.0);
-				}
-				case 1:
-				{
-					ApplyStatusEffect(owner, target, "Cryo", 1.0);
-				}
-				case 2:
-				{
-					ApplyStatusEffect(owner, target, "Near Zero", 1.0);
-				}
+				ApplyStatusEffect(owner, target, "Freeze", 1.0);
 			}
-			
-			//float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
-
-			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-			if(owner == -1)
+			case 1:
 			{
-				int particle = EntRefToEntIndex(i_WandParticle[entity]);
-				if(IsValidEntity(particle))
-				{
-					RemoveEntity(particle);
-				}
-				RemoveEntity(entity);
+				ApplyStatusEffect(owner, target, "Cryo", 1.0);
 			}
-			
-			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, {0.0,0.0,0.0}, VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
-			
-			//float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
-			
-			if (!Cryo_Frozen[target] && !Cryo_Slowed[target])
+			case 2:
 			{
-				Elemental_AddCyroDamage(target, owner, RoundFloat(f_WandDamage[entity]), Cryo_SlowType[entity]);
+				ApplyStatusEffect(owner, target, "Near Zero", 1.0);
 			}
-			
-			f_GlobalHitDetectionLogic[entity][target] = 1.0;
-			f_WandDamage[entity] *= Cryo_M1_ReductionScale;
 		}
+		
+		//float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		if(owner == -1)
+		{
+			int particle = EntRefToEntIndex(i_WandParticle[entity]);
+			if(IsValidEntity(particle))
+			{
+				RemoveEntity(particle);
+			}
+			RemoveEntity(entity);
+		}
+		
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, {0.0,0.0,0.0}, VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+		
+		//float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+		
+		if (!Cryo_Frozen[target] && !Cryo_Slowed[target])
+		{
+			Elemental_AddCyroDamage(target, owner, RoundFloat(f_WandDamage[entity]), Cryo_SlowType[entity]);
+		}
+		
+		f_WandDamage[entity] *= Cryo_M1_ReductionScale;
 	}
 }
 
-public void Cryo_FreezeZombie(int client, int zombie, int type)
+void Cryo_FreezeZombie(int client, int zombie, int type)
 {
 	if (!IsValidEntity(zombie))
 		return;
 
+	if(!IsEntityAlive(zombie))
+		return;
+		
 	Cryo_SlowType_Zombie[zombie] = type;
 	
-	EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 80);
+	if(type != 3)
+		EmitSoundToAll(SOUND_WAND_CRYO_FREEZE, zombie, SNDCHAN_STATIC, 80);
 	CClotBody ZNPC = view_as<CClotBody>(zombie);
 	Cryo_Frozen[zombie] = true;
 	Cryo_FreezeLevel[zombie] = 0.0;
@@ -378,24 +380,42 @@ public void Cryo_FreezeZombie(int client, int zombie, int type)
 		{
 			FreezeDuration = Cryo_FreezeDuration_Pap2;
 		}
+		case 3:
+		{
+			if(b_thisNpcIsARaid[zombie])
+			{
+				FreezeDuration = 1.0;
+			}
+			else if(b_thisNpcIsABoss[zombie] || b_ThisNpcIsImmuneToNuke[zombie])
+			{
+				FreezeDuration = 2.0;
+			}
+			else
+			{
+				FreezeDuration = 5.0;
+			}
+		}
 	}
 
 	if(b_thisNpcIsARaid[zombie])
 	{
-		FreezeDuration *= 0.75; //Less duration against raids.
+		if(type != 3)
+			FreezeDuration *= 0.75; //Less duration against raids.
 	}
 
 	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	FreezeNpcInTime(zombie, FreezeDuration);
-	ApplyStatusEffect(client, zombie, "Frozen", FreezeDuration);
-	if (!IsValidEntity(ZNPC.m_iFreezeWearable))
+	if(type != 3)
+		ApplyStatusEffect(client, zombie, "Frozen", FreezeDuration);
+
+	if (!IsValidEntity(ZNPC.m_iFreezeWearable) && !HasSpecificBuff(zombie, "Clear Head"))
 	{
 		float offsetToHeight = 40.0;
 		if(b_IsGiant[zombie])
 		{
 			offsetToHeight = 55.0;
 		}
-		ZNPC.m_iFreezeWearable = ZNPC.EquipItemSeperate("partyhat", "models/props_moonbase/moon_gravel_crystal_blue.mdl",_,_,_,offsetToHeight);
+		ZNPC.m_iFreezeWearable = ZNPC.EquipItemSeperate("models/props_moonbase/moon_gravel_crystal_blue.mdl",_,_,_,offsetToHeight);
 		if(b_IsGiant[zombie])
 		{
 			SetVariantString("3.6");
@@ -437,7 +457,7 @@ public Action Cryo_Unfreeze(Handle Unfreeze, int ref)
 	int zombie = EntRefToEntIndex(ref);
 	
 	if (!IsValidEntity(zombie))
-	return Plugin_Continue;
+		return Plugin_Continue;
 	
 	if (Cryo_Frozen[zombie])
 	{

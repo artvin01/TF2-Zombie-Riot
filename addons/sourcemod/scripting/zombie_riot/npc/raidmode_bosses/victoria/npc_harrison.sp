@@ -92,6 +92,10 @@ static const char g_PlayRocketshotready[][] = {
 static const char g_LaserBeamSounds[][] = {
 	"weapons/bumper_car_speed_boost_start.wav",
 };
+static const char g_LaserBeamSoundsStart[][] = {
+	"weapons/cow_mangler_over_charge_shot.wav",
+};
+
 static const char g_BoomSounds[] = "mvm/mvm_tank_explode.wav";
 static const char g_IncomingBoomSounds[] = "weapons/drg_wrench_teleport.wav";
 
@@ -101,9 +105,7 @@ static bool YaWeFxxked[MAXENTITIES];
 static bool GETBFG[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
 static bool AirRaidStart[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static int i_AmountProjectiles[MAXENTITIES];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
 
 static float Vs_DelayTime[MAXENTITIES];
 static int Vs_Stats[MAXENTITIES];
@@ -142,6 +144,9 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsPrepare)); i++) { PrecacheSound(g_RangedAttackSoundsPrepare[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MG42AttackSounds)); i++) { PrecacheSound(g_MG42AttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_LaserBeamSounds)); i++) { PrecacheSound(g_LaserBeamSounds[i]); }
+	for (int i = 0; i < (sizeof(g_LaserBeamSoundsStart)); i++) { PrecacheSound(g_LaserBeamSoundsStart[i]); }
+
 	PrecacheSound(g_DronShotHitSounds);
 	PrecacheSound(g_MeleeHitSounds);
 	PrecacheSound(g_AngerSounds);
@@ -265,6 +270,10 @@ methodmap Harrison < CClotBody
 	public void PlayLaserBeamSound()
 	{
 		EmitSoundToAll(g_LaserBeamSounds[GetRandomInt(0, sizeof(g_LaserBeamSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,125));
+	}
+	public void PlayLaserBeamSoundStart()
+	{
+		EmitSoundToAll(g_LaserBeamSoundsStart[GetRandomInt(0, sizeof(g_LaserBeamSoundsStart) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
 	}
 	property float m_flTimeUntillSummonRocket
 	{
@@ -403,7 +412,23 @@ methodmap Harrison < CClotBody
 			RaidAllowsBuildings = false;
 			CPrintToChatAll("{skyblue}Harrison{default}: Spotted the Intruders. I guess they leave me no chance but to do it myself");
 			
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			float value;
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+				value = float(ZR_Waves_GetRound()+1);
+			}
+
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -425,23 +450,28 @@ methodmap Harrison < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+			if(value > 40 && value < 55)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(ZR_GetWaveCount()+1 > 55)
+			else if(value > 55)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.85;
 			}
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
-			music.Time = 92;
-			music.Volume = 1.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "RAGE");
-			strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
-			Music_SetRaidMusic(music);
+			
+			if(StrContains(data, "nomusic") == -1)
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_harrison.mp3");
+				music.Time = 92;
+				music.Volume = 1.0;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "RAGE");
+				strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
+				Music_SetRaidMusic(music);
+			}
+			
 			npc.m_iChanged_WalkCycle = -1;
 		}
 		int skin = 1;
@@ -897,7 +927,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_fbRangedSpecialOn)
 		{
 			I_cant_do_this_all_day[npc.index]=0;
-			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
+			IncreaseEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			npc.m_bFUCKYOU=true;
 			RaidModeTime += 35.0;
@@ -1113,7 +1143,6 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float projectile_speed = 800.0;
 
-		npc.PlayLaserBeamSound();
 
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed, 40.0, vecTarget);
 		if(!Can_I_See_Enemy_Only(npc.index, target)) //cant see enemy in the predicted position, we will instead just attack normally
@@ -1131,9 +1160,14 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 		{
 			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
 		}
+		if(npc.m_iOverlordComboAttack == 0)
+		{
+			npc.PlayLaserBeamSoundStart();
+		}
 		//float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		if(npc.m_iOverlordComboAttack < 12)
 		{
+			npc.PlayLaserBeamSound();
 			npc.m_iOverlordComboAttack += 1;
 			HarrisonInitiateLaserAttack(npc.index, vecTarget, flPos); //laser finger!
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
@@ -1301,17 +1335,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 								{
 									if(!NpcStats_IsEnemySilenced(npc.index))
 									{
-										if(target > MaxClients)
-										{
-											StartBleedingTimer_Against_Client(target, npc.index, damage * 0.1, 4);
-										}
-										else
-										{
-											if (!IsInvuln(target))
-											{
-												StartBleedingTimer_Against_Client(target, npc.index, damage * 0.1, 4);
-											}
-										}
+										StartBleedingTimer(targetTrace, npc.index, damage * 0.1, 4, -1, DMG_TRUEDAMAGE, 0);
 									}
 								}
 											
@@ -1391,7 +1415,6 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 }
 
 
-static int HarrisonHitDetected[MAXENTITIES];
 
 static void HarrisonInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
@@ -1450,7 +1473,7 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		HarrisonHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -1495,13 +1518,13 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 35.0 * RaidModeScaling;
-	float FarDamage = 30.0 * RaidModeScaling;
+	float CloseDamage = 70.0 * RaidModeScaling;
+	float FarDamage = 60.0 * RaidModeScaling;
 	float MaxDistance = 5000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (HarrisonHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -1509,8 +1532,11 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 			if (damage < 0)
 				damage *= -1.0;
 
+			
+			if(victim > MaxClients) //make sure barracks units arent bad, they now get targetted too.
+				damage *= 0.25;
 
-			SDKHooks_TakeDamage(victim, entity, entity, damage * RaidModeScaling, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				
 		}
 	}
@@ -1521,7 +1547,7 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 static bool Harrison_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if(IsEntityAlive(entity))
-		HarrisonHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	return false;
 }
 
@@ -1566,7 +1592,7 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 	{
 		case 1:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			SetVariantInt(32);
@@ -1574,7 +1600,7 @@ static void ResetHarrisonWeapon(Harrison npc, int weapon_Type)
 		}
 		case 2:
 		{
-			npc.m_iWearable2 = npc.EquipItem("head", "models/zombie_riot/weapons/custom_weaponry_1_36.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			SetVariantInt(32);
@@ -1672,7 +1698,7 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 			AcceptEntityInput(prop2, "DisableCollision");
 			vAngles[0] += 90.0;
 			TeleportEntity(prop2, spawnLoc, vAngles, NULL_VECTOR);
-			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(2.0, Timer_RemoveEntityFancy, EntIndexToEntRef(prop2), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
 		/*
@@ -1689,7 +1715,7 @@ static Action Delay_Drop_Rocket(Handle Smite_Logic, DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
 		CreateEarthquake(spawnLoc, 1.0, BombRange * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombRange * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increace
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BombRange * 1.4,_,0.8, true, 100, false, 25.0);  //Explosion range increase
 	
 		return Plugin_Stop;
 	}

@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define LASERBEAM "sprites/laserbeam.vmt"
+
 static int i_master_target_id[MAXENTITIES];
 static int i_master_id_ref[MAXENTITIES];
 static int i_npc_type[MAXENTITIES];
@@ -27,7 +29,6 @@ float fl_rally_timer[MAXENTITIES];
 bool b_rally_active[MAXENTITIES];
 
 static bool b_is_battery_buffed[MAXENTITIES];
-float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_battery_timeout[MAXENTITIES];
@@ -139,10 +140,24 @@ enum
 int g_Ruina_Laser_BEAM;
 int g_Ruina_BEAM_Diamond;
 int g_Ruina_BEAM_Laser;
+int g_Ruina_BEAM_Glow;
 int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
 int g_Ruina_BEAM_lightning;
+char g_Ruina_Glow_Blue;	//blue
+char g_Ruina_Glow_Red;	//red
+
+static char g_EnergyChargeSounds[][] = {
+	"weapons/airboat/airboat_gun_energy1.wav",
+	"weapons/airboat/airboat_gun_energy2.wav",
+};
+char g_Ruina_MagicAttackSounds[][] = {
+	"ambient/energy/zap3.wav",
+	"ambient/energy/zap7.wav",
+	"ambient/energy/zap8.wav",
+	"ambient/energy/zap9.wav"
+};
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -151,7 +166,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 void Ruina_Ai_Core_Mapstart()
 {
-
 	NPCData data1;
 	strcopy(data1.Name, sizeof(data1.Name), "Mana Overload");
 	strcopy(data1.Plugin, sizeof(data1.Plugin), "npc_donoteveruse_3");
@@ -171,6 +185,8 @@ void Ruina_Ai_Core_Mapstart()
 	data2.IconCustom = false;											//download needed?
 	data2.Flags = 0;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data2);
+
+	PrecacheSoundArray(g_EnergyChargeSounds);
 
 	Zero(b_ruina_npc);
 
@@ -192,6 +208,7 @@ void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_battery);
 	Zero(b_ruina_battery_ability_active);
 	Zero(fl_ruina_battery_timer);
+	Zero(fl_ruina_battery_max);
 	
 	Zero(fl_ruina_shield_timer);
 	Zero(i_shield_effect);
@@ -245,10 +262,25 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_BEAM_Combine_Black 	= PrecacheModel("materials/sprites/combineball_trail_black_1.vmt", true);
 	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
 
+	g_Ruina_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+
 	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
+
+	g_Ruina_Glow_Blue = PrecacheModel("sprites/blueglow2.vmt", true);
+	g_Ruina_Glow_Red = PrecacheModel("sprites/redglow2.vmt", true);
+}
+static void OffsetGive_BatteryChargeStatus(int ref)
+{
+	int npc = EntRefToEntIndex(ref);
+	if(!IsValidEntity(npc))
+		return;
+	
+	ApplyStatusEffect(npc, npc, "Ruina Battery Charge", 9999.0);
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
+	RequestFrame(OffsetGive_BatteryChargeStatus, EntIndexToEntRef(client));
+
 	Ruina_Remove_Shield(client);
 	b_ruina_npc[client] = true;
 	b_ruina_nerf_healing[client] = false;
@@ -359,6 +391,8 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	if(b_thisNpcIsARaid[client])
 	{
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
+		if(Waves_InFreeplay())
+			Shield_Power = 0.06;
 	}
 
 	GrantEntityArmor(client, false, Shield_Power, strenght, 1);
@@ -440,8 +474,10 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 	i_shield_effect[client] = EntIndexToEntRef(Shield);
 }
 
-public void Ruina_NPCDeath_Override(int entity)
+void Ruina_NPCDeath_Override(int entity)
 {
+	fl_ruina_battery_max[entity] = 0.0;
+
 	b_ruina_npc[entity] = false;
 	b_is_a_master[entity] = false;
 	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[entity]);
@@ -456,7 +492,7 @@ public void Ruina_NPCDeath_Override(int entity)
 	i_npc_type[entity] = 0;
 	b_ruina_nerf_healing[entity] = false;
 }
-public int Ruina_Get_Target(int iNPC, float GameTime)
+int Ruina_Get_Target(int iNPC, float GameTime)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -476,7 +512,7 @@ static int GetRandomMaster(int client)
 	int valid = -1;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
 			if(Check_If_I_Am_The_Right_Slave(client, baseboss_index))
@@ -491,7 +527,7 @@ static int GetClosestHealer(int client)
 	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_ruina_npc_healer[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
@@ -514,7 +550,7 @@ static int GetClosestAnchor(int client)
 	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_sniper_anchor_point[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
@@ -549,9 +585,9 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	if(b_is_battery_buffed[npc.index] && fl_ruina_battery_timer[npc.index] > GameTime)
 		return;
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = iRuinaWave();
 	//whats a "switch" statement??
-	if(wave<=15)	
+	/*if(wave<=15)	
 	{
 
 	}
@@ -560,7 +596,8 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		
 	}
 	//npc's during "stage 3" get energy from taking dmg. going into its whole "sacrifice" theme.
-	else if(wave <= 45)	
+	else*/ 
+	if(wave <= 45)	
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
@@ -1099,8 +1136,11 @@ enum struct Ruina_Projectiles
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, Velocity, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
-			
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Ruina_RocketExplodePre);
+
+			if(h_NpcSolidHookType[entity] != 0)
+				DHookRemoveHookID(h_NpcSolidHookType[entity]);
+			h_NpcSolidHookType[entity] = 0;
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Ruina_RocketExplodePre);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Ruina_Projectile_Touch);
 
@@ -1165,6 +1205,8 @@ void Ruina_Projectile_Touch(int entity, int target)
 		Ruina_Remove_Projectile(entity);
 		return;
 	}
+	if(!IsValidEnemy(owner, target) && target != 0)
+		return;
 
 	if(func==INVALID_FUNCTION)
 	{	
@@ -1173,7 +1215,7 @@ void Ruina_Projectile_Touch(int entity, int target)
 
 		if(fl_ruina_Projectile_radius[entity]>0.0)
 			Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
-		else
+		else if(target != 0)
 			SDKHooks_TakeDamage(target, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
 		Ruina_Remove_Projectile(entity);
@@ -1229,7 +1271,7 @@ enum struct Ruina_Self_Defense
 	float gameTime;
 	int status;
 
-	void Swing_Melee(Function OnAttack = INVALID_FUNCTION)
+	void Swing_Melee(Function OnAttack = INVALID_FUNCTION, Function OnSwing = INVALID_FUNCTION)
 	{
 		CClotBody npc = view_as<CClotBody>(this.iNPC);
 
@@ -1238,6 +1280,13 @@ enum struct Ruina_Self_Defense
 			if(npc.m_flAttackHappens < this.gameTime)
 			{
 				npc.m_flAttackHappens = 0.0;
+
+				if(OnSwing && OnSwing!=INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, OnSwing);
+					Call_PushCell(npc.index);
+					Call_Finish();
+				}
 				
 				Handle swingTrace;
 				float target_vec[3]; WorldSpaceCenter(this.target, target_vec);
@@ -1318,7 +1367,7 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 
 	if(GetTeam(victim) != TFTeam_Red)
 		return;
-
+	ManaCalculationsBefore(victim);
 	float GameTime = GetGameTime();
 
 	bool override = b_override_Sickness[entity];
@@ -1383,7 +1432,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
 
-	int wave = ZR_GetWaveCount()+1;
+	int wave = iRuinaWave();
 
 	float 	dmg 		= 250.0,
 			time 		= 2.5,		//how long until it goes boom
@@ -1453,7 +1502,12 @@ static void Apply_Sickness(int iNPC, int Target)
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, color, 1, 0);
 	TE_SendToAll();
 
-	EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	//BECOME LOUDER!!!!!!1111111!!1!!!!!!!!!!!!!1!!!!
+	EmitSoundToClient(Target, RUINA_ION_CANNON_SOUND_SPAWN, Target, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 1.0);
+	EmitSoundToClient(Target, RUINA_ION_CANNON_SOUND_SPAWN, Target, SNDCHAN_STATIC, SNDLEVEL_NORMAL, _, 0.7);
+
+	Ruina_IonSoundInvoke(end_point);
+
 	DataPack pack;
 	CreateDataTimer(time, Ruina_Mana_Sickness_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(GetTeam(iNPC));
@@ -1472,9 +1526,11 @@ static void Apply_Sickness(int iNPC, int Target)
 
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }
-void Ruina_Color(int color[4])
+void Ruina_Color(int color[4], int wave = -1)
 {
-	int wave = ZR_GetWaveCount()+1;
+	if(wave == -1)
+		wave = iRuinaWave();
+		
 	if(wave<=15)
 	{
 		color 	= {255, 0, 0, 255};
@@ -1545,7 +1601,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == Team)
@@ -1567,7 +1623,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		int entity = EntRefToEntIndexFast(i_ObjectsBuilding[a]);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
 			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
@@ -1623,6 +1679,7 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, end_point, Radius, _, _, true, _ , _    , 2.0, Generic_ion_OnHit);
 
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 
 	if(Sickness_flat || Sickness_Multi)
 		Ruina_AOE_Add_Mana_Sickness(end_point, iNPC, Radius, Sickness_Multi, Sickness_flat,Override);
@@ -1649,6 +1706,11 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 	CreateTimer(0.25, Nearl_Falling_Shot, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 
 	return Plugin_Stop;
+}
+void Ruina_IonSoundInvoke(float Loc[3])
+{
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Loc);
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Loc);
 }
 static void Generic_ion_OnHit(int entity, int victim, float damage, int weapon)
 {
@@ -1726,12 +1788,14 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
 	{	
 		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.3, false, Ruina_NerfHealingOnBossesOrHealers , Ruina_HealVisualEffect);
-		//DesertYadeamDoHealEffect(npc.index, Range);
-		int color[4]; Ruina_Color(color);
-		float Npc_Vec[3];
-		GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=2.5;
-		TE_SetupBeamRingPoint(Npc_Vec, 0.0, Range*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, 10.0, 1.0, color, 1, 0);
-		TE_SendToAll();
+		DesertYadeamDoHealEffect(npc.index, Range);
+
+		//int color[4]; Ruina_Color(color);
+		//float Npc_Vec[3];
+		//GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=2.5;
+		//TE_SetupBeamRingPoint(Npc_Vec, 0.0, Range*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, 10.0, 1.0, color, 1, 0);
+		//TE_SendToAll();
+
 		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
 	}
 }
@@ -1745,7 +1809,7 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 
 	if(Ratio > 1.0)
 	{//the target npc has overheal, nerf the healing ratio
-		healingammount*=0.2;
+		healingammount*=0.9;
 	}
 	
 	if(fl_npc_healing_duration[npc.index] < GetGameTime(npc.index))
@@ -1757,17 +1821,17 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 		}
 		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
 		{//this npc is a raid/boss healing target
-			healingammount *=0.5;
+			healingammount *=0.8;
 		}
 	}
 	if(b_ruina_npc_healer[healed_target])
 	{//this npc MUST have less healing.
-		healingammount *=0.5;
+		healingammount *=0.8;
 	}
 
 	if(!b_ruina_npc[healed_target])
 	{//ruina is now xenophobic of other races. and people. mostly to nerf minibosses from being healed
-		healingammount *=0.1;
+		healingammount *=0.5;
 	}
 	
 
@@ -2056,6 +2120,8 @@ void Master_Apply_Shield_Buff(int client, float range, float power, bool overrid
 }
 void Master_Apply_Battery_Buff(int client, float range, float power)
 {
+	EmitSoundToAll(g_EnergyChargeSounds[GetRandomInt(0, sizeof(g_EnergyChargeSounds) - 1)], client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.25, GetRandomInt(RUINA_NPC_PITCH-25, RUINA_NPC_PITCH+25));
+	
 	Apply_Master_Buff(client, RUINA_BATTERY_BUFF, range, 0.0, power);
 }
 void Ruina_Special_Logic(int iNPC, int Target)
@@ -2389,9 +2455,26 @@ int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 		return -1;
 	}
 }
+stock void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
+{
+	float tmp[3];
+	float actualBeamOffset[3];
 
-static int Ruina_Laser_BEAM_HitDetected[MAXENTITIES];
-static int i_targets_hit;
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	Result_Vec[0] += actualBeamOffset[0];
+	Result_Vec[1] += actualBeamOffset[1];
+	Result_Vec[2] += actualBeamOffset[2];
+}
+int iRuinaWave()
+{
+	int wave = ZR_Waves_GetRound()+1;
+	wave = RoundToCeil(wave * MinibossScalingReturn());
+	return wave;
+}
 enum struct Ruina_Laser_Logic
 {
 	int client;
@@ -2465,13 +2548,9 @@ enum struct Ruina_Laser_Logic
 		}
 		delete trace;
 	}
-	bool Any_entities;
-	//in this case, no default func since this things entire point is to find entities
-	void Detect_Entities(Function Attack_Function)
+	void Enumerate_Simple()
 	{
-		Zero(Ruina_Laser_BEAM_HitDetected);
-
-		i_targets_hit = 0;
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		float hullMin[3], hullMax[3];
 		this.SetHull(hullMin, hullMax);
@@ -2479,10 +2558,25 @@ enum struct Ruina_Laser_Logic
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 
-				
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		//the idea for this one is to then use
+		//for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+		//to loop throught the stuff. inside the specific npc that needs to use this
+	}
+	bool Any_entities;
+	//in this case, no default func since this things entire point is to find entities
+	void Detect_Entities(Function Attack_Function)
+	{
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
+
+		float hullMin[3], hullMax[3];
+		this.SetHull(hullMin, hullMax);
+
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
 			if (victim && (this.Any_entities || IsValidEnemy(this.client, victim)))
 			{
 				this.trace_hit_enemy=true;
@@ -2510,21 +2604,17 @@ enum struct Ruina_Laser_Logic
 
 	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
 	{
-
-		Zero(Ruina_Laser_BEAM_HitDetected);
-
-		i_targets_hit = 0;
+		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
 		float hullMin[3], hullMax[3];
 		this.SetHull(hullMin, hullMax);
 
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-
-				
-		for (int loop = 0; loop < i_targets_hit; loop++)
+		
+		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
-			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
 			if (victim && IsValidEnemy(this.client, victim))
 			{
 				this.trace_hit_enemy=true;
@@ -2561,7 +2651,6 @@ enum struct Ruina_Laser_Logic
 			hullMin[0] = -this.Custom_Hull[0];
 			hullMin[1] = -this.Custom_Hull[1];
 			hullMin[2] = -this.Custom_Hull[2];
-			return;
 		}
 		else
 		{
@@ -2575,7 +2664,7 @@ enum struct Ruina_Laser_Logic
 	}
 }
 
-static bool Ruina_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
+bool Ruina_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
@@ -2583,17 +2672,117 @@ static bool Ruina_Laser_BEAM_TraceUsers(int entity, int contentsMask)
 {
 	if (IsEntityAlive(entity))
 	{
-		for(int i=0 ; i < MAXENTITIES ; i++)
+		for(int i=0 ; i < sizeof(i_Ruina_Laser_BEAM_HitDetected) ; i++)
 		{
-			if(!Ruina_Laser_BEAM_HitDetected[i])
+			if(!i_Ruina_Laser_BEAM_HitDetected[i])
 			{
-				i_targets_hit++;
-				Ruina_Laser_BEAM_HitDetected[i] = entity;
+				i_Ruina_Laser_BEAM_HitDetected[i] = entity;
 				break;
 			}
 		}
 	}
 	return false;
+}
+//A far more "simplified" version of the ruina laser that comes pre packaged with laser effects, falloff, and the like.
+enum struct Basic_NPC_Laser
+{
+	CClotBody npc;
+	float Radius;
+	float Range;
+	float Close_Dps;
+	float Long_Dps;
+	int Color[4];
+
+	float EffectsStartLoc[3];
+	bool DoEffects;
+	bool RelativeOffset;
+}
+void Basic_NPC_Laser_Logic(Basic_NPC_Laser Data)
+{
+	CClotBody npc = Data.npc;
+	float Radius = Data.Radius;
+	float diameter = Radius*2.0;
+	float Range = Data.Range;
+	float Close_Dps =  Data.Close_Dps;
+	float Long_Dps =  Data.Long_Dps;
+	float Max_Dist = Range*Range;
+	
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	
+	GetOffsetLaserStartLoc(Data, Laser);
+
+	if(Data.DoEffects)
+		BeamEffects(Laser.Start_Point, Laser.End_Point, Data.Color, diameter);
+	
+	Laser.Radius = Radius;
+	Laser.Enumerate_Simple();
+	for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
+	{
+		//get victims from the "Enumerate_Simple"
+		int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
+		if(!victim)
+			break;	//no more targets are left, break the loop!
+
+		float playerPos[3];
+		GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+		float Dist = GetVectorDistance(Laser.Start_Point, playerPos, true);	//make is squared for optimisation sake
+
+		float Ratio = Dist / Max_Dist;
+		float damage = Close_Dps + (Long_Dps-Close_Dps) * Ratio;
+
+		//somehow negative damage. invert.
+		if (damage < 0)
+			damage *= -1.0;
+		
+		SDKHooks_TakeDamage(victim, npc.index, npc.index, damage, DMG_PLASMA);	// 2048 is DMG_NOGIB?
+	}
+}
+//this basically makes the offset actually affect the traces's start pos. annoying, but its needed.
+static void GetOffsetLaserStartLoc(Basic_NPC_Laser Data, Ruina_Laser_Logic Laser)	//:(
+{
+	CClotBody npc = Data.npc;
+	float Angles[3], startPoint[3];
+	WorldSpaceCenter(npc.index, startPoint);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+			
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	Angles[0] = flPitch;
+
+	if(Data.RelativeOffset)
+		Offset_Vector(Data.EffectsStartLoc, Angles, startPoint);
+	else if(Data.EffectsStartLoc[0] != 0.0 || Data.EffectsStartLoc[1] != 0.0 || Data.EffectsStartLoc[2] != 0.0)
+		startPoint = Data.EffectsStartLoc;
+
+	Laser.DoForwardTrace_Custom(Angles, startPoint, Data.Range);
+}
+
+static void BeamEffects(float startPoint[3], float endPoint[3], int color[4], float diameter)
+{
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+	int colorLayer2[4];
+	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, color[3]);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+	TE_SendToAll(0.0);
+//	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
+//	TE_SendToAll(0.0);
+// I have removed one TE as its way too many te's at once.
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
+	TE_SendToAll(0.0);
+	int glowColor[4];
+	SetColorRGBA(glowColor, color[0], color[1], color[2], color[3]);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
+	TE_SendToAll(0.0);
 }
 /*
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])

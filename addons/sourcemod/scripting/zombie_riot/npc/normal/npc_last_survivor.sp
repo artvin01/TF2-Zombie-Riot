@@ -112,7 +112,7 @@ public void FatherGrigori_OnMapStart_NPC()
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	PrecacheModel("models/zombie_riot/hl2/monk.mdl");
+	PrecacheModel("models/monk.mdl");
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
@@ -141,9 +141,7 @@ methodmap FatherGrigori < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -186,9 +184,6 @@ methodmap FatherGrigori < CClotBody
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::Playnpc.AngerSound()");
-		#endif
 	}
 	
 	public void PlayRangedSound() {
@@ -200,18 +195,13 @@ methodmap FatherGrigori < CClotBody
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayPullSound()");
-		#endif
 	}
 	
 	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
-		#endif
+
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -227,7 +217,7 @@ methodmap FatherGrigori < CClotBody
 	
 	public FatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
-		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
+		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -579,6 +569,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			return;
 		}
 		
+		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 150, 255, 255, 1, 0.2, 12.0, 4.0, 3);	
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
@@ -593,7 +584,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			
 			position[0] += s;
 			position[1] += c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -615,7 +606,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 			
 			// Stage 3
 			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
@@ -625,7 +616,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] += s;
 			position[1] += c;
-			FatherGrigori_DrawIonBeam(position,{0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position,{0, 150, 255, 255});
 			
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
@@ -647,7 +638,7 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[1] = startPosition[1];
 			position[0] -= s;
 			position[1] -= c;
-			FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
+		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
 	
 			if (nphi >= 360)
 				nphi = 0.0;
@@ -674,10 +665,11 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 		else
 		{
 			startPosition[2] += 25.0;
-			makeexplosion(client, client, startPosition, "", 150, 175);
+			makeexplosion(client, startPosition, 150, 175);
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
+			spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
 			position[0] = startPosition[0];
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;
@@ -686,8 +678,8 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, NORMAL_ZOMBIE_VOLUME, {200, 255, 255, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, NORMAL_ZOMBIE_VOLUME, {100, 255, 255, 255}, 3);
-			TE_SendToAll();
+		//	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, NORMAL_ZOMBIE_VOLUME, {100, 255, 255, 255}, 3);
+		//	TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {0, 255, 255, 255}, 3);
 			TE_SendToAll();
 	

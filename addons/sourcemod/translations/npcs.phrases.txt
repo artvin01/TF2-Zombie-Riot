@@ -10,6 +10,10 @@
 		"ru" 		"Зомби"
 		"fr" 		"Zombie"
 	}
+	"Z-Main"
+	{
+		"en" 		"Z-Main"
+	}
 	"Metro Cop"
 	{
 		"en"		"Metro Cop"

@@ -41,7 +41,7 @@ public void Red_charge_ability(int client, int weapon, bool crit, int slot) // t
 		}
 		i_RedBladeNpcToCharge[client] = EntIndexToEntRef(target);
 
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 10.0);
 		EmitSoundToAll("items/powerup_pickup_supernova_activate.wav", client, _, 80, _, 0.8, 100);
 
@@ -121,7 +121,7 @@ public Action Timer_Management_RedBlade(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		RedBladeHudShow(client, weapon);
+		RedBladeHudShow(client);
 	}
 	else
 	{
@@ -132,7 +132,7 @@ public Action Timer_Management_RedBlade(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void RedBladeHudShow(int client, int weapon)
+void RedBladeHudShow(int client)
 {
 	if(f_RedBladeChargeDuration[client] > GetGameTime())
 	{
@@ -157,11 +157,11 @@ void RedBladeHudShow(int client, int weapon)
 	if(f_RedBladehuddelay[client] < GetGameTime())
 	{
 		f_RedBladehuddelay[client] = GetGameTime() + 0.5;
-		CheckRedBladeBelowHalfHealth(client, weapon);
+		CheckRedBladeBelowHalfHealth(client);
 	}
 }
 
-void CheckRedBladeBelowHalfHealth(int client, int weapon)
+void CheckRedBladeBelowHalfHealth(int client)
 {
 	float flHealth = float(GetEntProp(client, Prop_Send, "m_iHealth"));
 	float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);
@@ -170,25 +170,25 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 	{
 		EmitSoundToAll("ambient/cp_harbor/furnace_1_shot_02.wav", client, SNDCHAN_STATIC, 70, _, 0.35);
 		HALFORNO[client] = true;
-		MakeBladeBloddy(client, true, weapon);
+		MakeBladeBloddy(client, true);
 	}
 	if (flpercenthpfrommax <= 0.5)
 	{
 		PrintHintText(client,"Rage Activated");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		if(!IsRedBladeEffectSpawned(client))
 		{
 			CreateRedBladeEffect(client);
 		}
-		MakeBladeBloddy(client, true, weapon);
+		MakeBladeBloddy(client, true);
 	}
 	else if (HALFORNO[client])
 	{
 		PrintHintText(client,"Rage Deactivated");
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		HALFORNO[client]=false;
 		DestroyRedBladeEffect(client);
-		MakeBladeBloddy(client, false, weapon);
+		MakeBladeBloddy(client, false);
 	}
 }
 
@@ -199,8 +199,10 @@ void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int 
 	{
 		damage *= 0.75;
 	}
+	/*
 	if(!b_OverlordsFinalWish[attacker])
 		return;
+	*/
 	
 	if(damagetype & DMG_CLUB)
 		NPC_Ignite(victim, attacker, 3.0, weapon);
@@ -222,11 +224,11 @@ void WeaponRedBlade_OnTakeDamage(int attacker, int victim, float &damage)
 	}
 }
 
-void WeaponRedBlade_OnTakeDamage_Post(int victim, int weapon)
+void WeaponRedBlade_OnTakeDamage_Post(int victim)
 {
-	CheckRedBladeBelowHalfHealth(victim, weapon);
+	CheckRedBladeBelowHalfHealth(victim);
 }
-stock void MakeBladeBloddy(int client, bool ignite, int weapon)
+stock void MakeBladeBloddy(int client, bool ignite)
 {
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);

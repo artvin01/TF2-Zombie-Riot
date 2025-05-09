@@ -68,7 +68,7 @@ void AgentJackson_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentJackson(client, vecPos, vecAng, ally);
+	return AgentJackson(vecPos, vecAng, ally);
 }
 methodmap AgentJackson < CClotBody
 {
@@ -117,7 +117,7 @@ methodmap AgentJackson < CClotBody
 	}
 	
 	
-	public AgentJackson(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentJackson(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentJackson npc = view_as<AgentJackson>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
 		

@@ -47,9 +47,9 @@ void Iberia_SeabornAnnihilator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Iberia_SeabornAnnihilator(vecPos, vecAng, team, data);
+	return Iberia_SeabornAnnihilator(vecPos, vecAng, team);
 }
 
 methodmap Iberia_SeabornAnnihilator < CClotBody
@@ -92,7 +92,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 	}
 	
 	
-	public Iberia_SeabornAnnihilator(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Iberia_SeabornAnnihilator(float vecPos[3], float vecAng[3], int ally)
 	{
 		Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "50000000", ally, false, true));
 		
@@ -137,7 +137,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 35.0);
+		SetMoraleDoIberia(npc.index, 100.0);
 		Is_a_Medic[npc.index] = true;
 		
 
@@ -228,7 +228,6 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 		{
 			if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)))
 			{
-				
 				if(npc.m_iChanged_WalkCycle == 1)
 				{
 					npc.m_flEnrageHappening = GetGameTime() + 2.0;
@@ -244,21 +243,20 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 					}
 					return;
 				}
-				npc.m_flRecheckIfAlliesDead = GetGameTime() + 2.0;
+				//wait before trying again!
+				npc.m_flRecheckIfAlliesDead = GetGameTime() + 5.0;
 				npc.m_iChanged_WalkCycle = 1;
 				return;
 			}	
 			else
 			{
+				//5 second waiting time
 				npc.m_iChanged_WalkCycle = 2;
 			}
 			
 		}	
 	}
-	else
-	{
-
-	}
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);

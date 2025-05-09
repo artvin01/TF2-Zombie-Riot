@@ -39,7 +39,7 @@ methodmap NPCActor < CClotBody
 		}
 		else
 		{
-			view_as<CClotBody>(this).AddGestureViaSequence(name, cancel_animation);
+			view_as<CClotBody>(this).AddGestureViaSequence(name);
 		}
 	}
 	public void SetActivity(const char[] name)

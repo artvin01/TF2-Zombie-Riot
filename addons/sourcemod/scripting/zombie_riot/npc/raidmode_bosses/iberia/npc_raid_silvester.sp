@@ -6,12 +6,9 @@
 #define Silvester_LASER_THICKNESS 25
 
 
-static int i_SaidLineAlready[MAXENTITIES];
-static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
-static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
+
 static bool b_SilvLine[MAXENTITIES];
 static bool b_SilvesterAttackSame[MAXENTITIES];
 
@@ -23,16 +20,7 @@ static const char g_DeathSounds[][] = {
 static char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
-static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
-};
+
 
 static const char g_MissAbilitySound[][] = {
 	"vo/soldier_negativevocalization01.mp3",
@@ -114,7 +102,7 @@ void Silvester_OnMapStart_NPC()
 static void ClotPrecache()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_DefaultMedic_HurtSounds));		i++) { PrecacheSound(g_DefaultMedic_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
@@ -151,11 +139,6 @@ methodmap Silvester < CClotBody
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
-	property float m_flCurrentlySpeedRage
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
-	}
 	property float m_flSilvesterSlicerCD
 	{
 		public get()							{ return fl_RangedSpecialDelay[this.index]; }
@@ -167,6 +150,11 @@ methodmap Silvester < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AttackHappens_2[this.index] = TempValueForProperty; }
 	}
 
+	property float m_flInTeleportLogic
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	property float f_SilvesterMeleeSliceHappening
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
@@ -259,7 +247,7 @@ methodmap Silvester < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
 	
@@ -327,7 +315,7 @@ methodmap Silvester < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
 		//IDLE
-		npc.m_flCurrentlySpeedRage = 0.0;
+		npc.m_flInTeleportLogic = 0.0;
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -354,12 +342,8 @@ methodmap Silvester < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		
 		b_angered_twice[npc.index] = false;
-		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
-		{
-			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
-		}
 		
-		if(!StrContains(data, "wave_30"))
+		if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 			switch(GetRandomInt(0,3))
@@ -382,7 +366,7 @@ methodmap Silvester < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_45"))
+		if(StrContains(data, "wave_45") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 			switch(GetRandomInt(0,3))
@@ -405,7 +389,7 @@ methodmap Silvester < CClotBody
 				}
 			}
 		}
-		if(!StrContains(data, "wave_60"))
+		if(StrContains(data, "wave_60") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 			switch(GetRandomInt(0,3))
@@ -590,6 +574,116 @@ static void Internal_ClotThink(int iNPC)
 		}
 		return;
 	}
+	if(npc.m_flInTeleportLogic)
+	{
+		if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+		{
+			return;
+		}
+
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+		if(npc.m_flSilvesterSlicerHappening)
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			return;
+		}
+		if(b_NpcIsInvulnerable[npc.index])
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			return;
+		}
+		
+		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
+		if(!IsValidEntity(allynpc.index)) //DEAD!!
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			npc.m_flChangeTargetsSilvester -= 3.0;
+			CPrintToChatAll("{gold}Silvester{default}: Oh damn She is already gone...");
+			return;
+		}
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		float WorldSpaceVec2[3]; WorldSpaceCenter(allynpc.index, WorldSpaceVec2);
+		float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
+		if(flDistanceToTarget < (400.0 * 400.0))
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			npc.m_flChangeTargetsSilvester -= 3.0;
+			return;
+			//too close, cancel.
+		}
+		int r = 150;
+		int g = 150;
+		int b = 0;
+		int a = 200;
+		
+		spawnRing(npc.index, 75.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+		spawnRing(npc.index, 75.0 * 2.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+		spawnRing(npc.index, 75.0 * 2.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+
+		spawnRing(allynpc.index, 75.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+		spawnRing(allynpc.index, 75.0 * 2.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+		spawnRing(allynpc.index, 75.0 * 2.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 3.0, 3.1, 1);
+
+		//Teleport to nemal with animation
+		if(npc.m_flInTeleportLogic < (GetGameTime(npc.index))) //teleport and stuff
+		{
+			npc.m_flInTeleportLogic = 0.0;
+			
+			ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+			ParticleEffectAt(WorldSpaceVec2, "teleported_blue", 0.5);
+			npc.PlayDeathSound();	
+			TeleportEntity(npc.index, WorldSpaceVec2);
+			//go to sister!
+		}
+		else if(npc.m_flInTeleportLogic < (GetGameTime(npc.index) + 1.3)) //last second
+		{
+			if(npc.m_iChanged_WalkCycle != 21)
+			{
+				npc.m_bisWalking = false;
+				NPC_StopPathing(npc.index);
+				npc.m_iChanged_WalkCycle = 21;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("taunt_peace_medic");
+				npc.SetCycle(0.02);
+			}
+		}
+		else
+		{
+			if(npc.m_iChanged_WalkCycle != 20)
+			{
+				npc.m_bisWalking = false;
+				NPC_StopPathing(npc.index);
+				npc.m_iChanged_WalkCycle = 20;
+				npc.m_bisWalking = false;
+				npc.AddActivityViaSequence("taunt_borrowed_bones");
+				npc.SetCycle(0.03);
+				switch(GetRandomInt(0,4 * 2)) //have half the chance to say nothing
+				{
+					case 0:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Hold on {lightblue}Nemal{default} i'm coming!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Oy oy oy! Cant attack her like that! I'll crush you!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: {lightblue}Nemal{default}... {darkblue}Waldch{default}... you both are the same i swear!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Rahhh, ill teleport to you wait.");
+					}
+					case 4:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Here i go !");
+					}
+				}
+			}
+		}
+		return;
+	}
 	
 	if(LastMann)
 	{
@@ -741,12 +835,18 @@ static void Internal_ClotThink(int iNPC)
 			b_SilvesterAttackSame[npc.index] = false;
 			//Get the next closest target!
 			static float flPos[3]; 
-			if(npc.m_flSilvesterChangeTargets >= 3.0)
+			if(npc.m_flSilvesterChangeTargets >= 4.0)
 			{
 				GetEntPropVector(allynpc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 				//only get nemals target every so often.
 				npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,700.0,_,_,allynpc.m_iTarget, flPos);
 				npc.m_flSilvesterChangeTargets += 1.0;
+				if(!ForceRedo)
+				{
+					npc.m_flInTeleportLogic = GetGameTime(npc.index) + 3.0;
+					ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.0);
+				}
+				npc.m_flChangeTargetsSilvester += 3.0;
 			}
 			else
 			{
@@ -761,8 +861,14 @@ static void Internal_ClotThink(int iNPC)
 				//looks like silvester found no target...
 				//Did we try to get a target near nemal?
 				//if we did. then force targetting a closet eneemy from nemal anyways.
-				if(npc.m_flSilvesterChangeTargets >= 4.0)
+				if(npc.m_flSilvesterChangeTargets >= 5.0)
 				{
+					if(!ForceRedo)
+					{
+						npc.m_flInTeleportLogic = GetGameTime(npc.index) + 3.0;
+						ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.0);
+					}
+					npc.m_flChangeTargetsSilvester += 3.0;
 					npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,_/*allynpc.m_iTarget*/, flPos);
 					npc.m_flSilvesterChangeTargets = 5.0;
 					WasForcingSameTarget = true;
@@ -770,7 +876,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 			}
 			//We didnt force to target the same guy as nemal, we allow normal attacking.
-			if(!WasForcingSameTarget && npc.m_flSilvesterChangeTargets >= 4.0)
+			if(!WasForcingSameTarget && npc.m_flSilvesterChangeTargets >= 5.0)
 			{
 				npc.m_flSilvesterChangeTargets = 0.0;
 			}
@@ -881,24 +987,6 @@ static void Internal_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget > GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 13.0) 
-		{
-			//The enemy is WAY too far away, give 2x speed.
-			if(npc.m_flCurrentlySpeedRage == 0.0)
-			{
-				npc.m_flCurrentlySpeedRage = 1.0;
-				fl_Extra_Speed[npc.index] *= 2.0; 
-			}
-		}
-		else
-		{
-			//Reduce it again if close enough
-			if(npc.m_flCurrentlySpeedRage == 1.0)
-			{
-				npc.m_flCurrentlySpeedRage = 0.0;
-				fl_Extra_Speed[npc.index] *= 0.5; 
-			}
-		}
 		switch(SetGoalVectorIndex)
 		{
 			case 0:
@@ -986,7 +1074,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 			b_angered_twice[npc.index] = true; 
 			i_SaidLineAlready[npc.index] = 0; 
-			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 			RaidModeTime += 25.0;
 			NPCStats_RemoveAllDebuffs(npc.index, 1.0);
 			b_NpcIsInvulnerable[npc.index] = true;
@@ -1046,13 +1133,6 @@ static void Internal_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-	{
-		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-		{
-			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-		}					
-	}
 	if(BlockLoseSay)
 		return;
 
@@ -1101,6 +1181,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.StartPathing();
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
+					npc.AddGesture("ACT_MP_JUMP_LAND_ALLCLASS");
 				}	
 			}
 			else
@@ -1128,6 +1209,7 @@ void SilvesterAnimationChange(Silvester npc)
 					npc.StartPathing();
 					npc.m_flSpeed = 320.0;
 					npc.m_bAllowBackWalking = false;
+					npc.AddGesture("ACT_MP_JUMP_LAND_MELEE");
 				}	
 			}
 			else
@@ -1144,7 +1226,6 @@ void SilvesterAnimationChange(Silvester npc)
 			}
 		}
 	}
-
 }
 int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distance, bool NemalAssistance)
 {
@@ -1165,6 +1246,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				flPos[2] += 500.0;
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
+				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 3.25);	
 				npc.m_flSilvesterSlicerHappening = GetGameTime(npc.index) + 1.0;
 				float cooldownDo  = 30.0;
 				if(!NemalAssistance)
@@ -1294,18 +1376,10 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 										
 							if(!Knocked)
 							{
-								if(npc.m_flCurrentlySpeedRage == 1.0)
-								{
-									//We REALLY want to attack someone else, give uber knockback
-									Custom_Knockback(npc.index, targetTrace, 900.0, true);
-								}
+								if(npc.Anger)
+									Custom_Knockback(npc.index, targetTrace, 350.0, true); 
 								else
-								{
-									if(npc.Anger)
-										Custom_Knockback(npc.index, targetTrace, 350.0, true); 
-									else
-										Custom_Knockback(npc.index, targetTrace, 450.0, true); 
-								}
+									Custom_Knockback(npc.index, targetTrace, 450.0, true); 
 							}
 						} 
 					}
@@ -1427,9 +1501,9 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 			npc.m_flSilvesterSlicerHappening = 0.0;	
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
@@ -1456,7 +1530,7 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 			i_NpcWeight[npc.index] = 4;
 			RaidModeScaling *= 1.10;
-			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flDoingAnimation = 0.0;
 
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");
@@ -1551,6 +1625,7 @@ void Nemal_SilvesterApplyEffects(int entity, bool withoutweapon = false)
 		if(IsValidEntity(npc.m_iWearable9))
 			RemoveEntity(npc.m_iWearable9);
 		ExpidonsaRemoveEffects(entity);
+		SilvesterEarsApply(npc.index);
 		if(withoutweapon)
 			Nemal_SilvesterApplyEffectsForm2(entity, 0);	
 		else	
@@ -1561,13 +1636,63 @@ void Nemal_SilvesterApplyEffects(int entity, bool withoutweapon = false)
 		if(IsValidEntity(npc.m_iWearable9))
 			RemoveEntity(npc.m_iWearable9);
 		ExpidonsaRemoveEffects(entity);
+		SilvesterEarsApply(npc.index);
 		if(withoutweapon)
 			Nemal_SilvesterApplyEffectsForm2(entity, 0);	
 		else	
 			Nemal_SilvesterApplyEffectsForm2(entity, 1);		
 	}
 }
+void SilvesterEarsApply(int iNpc, char[] attachment = "head")
+{
+	
+	int red = 255;
+	int green = 215;
+	int blue = 0;
+	float flPos[3];
+	float flAng[3];
+	int particle_ears1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	//fist ear
+	int particle_ears2 = InfoTargetParentAt({0.0,-2.5,0.0}, "", 0.0); //First offset we go by
+	int particle_ears3 = InfoTargetParentAt({0.0,-6.0,-5.0}, "", 0.0); //First offset we go by
+	int particle_ears4 = InfoTargetParentAt({0.0,-8.0,3.0}, "", 0.0); //First offset we go by
+	
+	//fist ear
+	int particle_ears2_r = InfoTargetParentAt({0.0,2.5,0.0}, "", 0.0); //First offset we go by
+	int particle_ears3_r = InfoTargetParentAt({0.0,6.0,-5.0}, "", 0.0); //First offset we go by
+	int particle_ears4_r = InfoTargetParentAt({0.0,8.0,3.0}, "", 0.0); //First offset we go by
 
+	SetParent(particle_ears1, particle_ears2, "",_, true);
+	SetParent(particle_ears1, particle_ears3, "",_, true);
+	SetParent(particle_ears1, particle_ears4, "",_, true);
+	SetParent(particle_ears1, particle_ears2_r, "",_, true);
+	SetParent(particle_ears1, particle_ears3_r, "",_, true);
+	SetParent(particle_ears1, particle_ears4_r, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_ears1, flPos);
+	SetEntPropVector(particle_ears1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_ears1, attachment,_);
+
+
+	int Laser_ears_1 = ConnectWithBeamClient(particle_ears4, particle_ears2, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_ears_2 = ConnectWithBeamClient(particle_ears4, particle_ears3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+
+	int Laser_ears_1_r = ConnectWithBeamClient(particle_ears4_r, particle_ears2_r, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][16] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][17] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][18] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][19] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][20] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][21] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][22] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][23] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][24] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][25] = EntIndexToEntRef(Laser_ears_2_r);
+}
 void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 {
 	if(AtEdictLimit(EDICT_RAID))
@@ -1587,6 +1712,7 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 	AcceptEntityInput(npc.m_iWearable9, "SetBodyGroup");	
 	SetVariantString("1.35");
 	AcceptEntityInput(npc.m_iWearable9, "SetModelScale");
+	SetEntityRenderColor(npc.m_iWearable9, 255, 255, 255, 3);
 	
 	if(WeaponSettingDo == 1 || WeaponSettingDo == 2)
 	{
@@ -1652,234 +1778,6 @@ void Nemal_SilvesterApplyEffectsForm2(int entity, int WeaponSettingDo = 0)
 		i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
 		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);	
 	}
-
-	//possible loop function?
-
-	/*
-		Fist axies from the POV of the person LOOKINGF at the equipper
-		flag
-
-		1st: left and right, negative is left, positive is right 
-		2nd: Up and down, negative up, positive down.
-		3rd: front and back, negative goes back.
-	*/
-
-	/*
-	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	GetAttachment(entity, "flag", flPos, flAng);
-	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
-	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
-	SetParent(entity, ParticleOffsetMain, "flag",_);
-
-	int particle_1_Wingset_1 = InfoTargetParentAt({35.0,40.0,-15.0}, "", 0.0); //This is the root bone basically
-
-	int particle_2_Wingset_1 = InfoTargetParentAt({-16.0,-16.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_1 = InfoTargetParentAt({16.0,16.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_1 = InfoTargetParentAt({-8.0,12.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_1 = InfoTargetParentAt({12.0,-8.0,-12.0}, "", 0.0);
-
-
-	SetParent(particle_1_Wingset_1, particle_2_Wingset_1, "",_, true);
-	SetParent(particle_1_Wingset_1, particle_3_Wingset_1, "",_, true);
-	SetParent(particle_1_Wingset_1, particle_4_Wingset_1, "",_, true);
-	SetParent(particle_1_Wingset_1, particle_5_Wingset_1, "",_, true);
-
-	
-	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_1, flPos);
-	SetEntPropVector(particle_1_Wingset_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_1_Wingset_1, "",_);
-	
-	int Laser_1_Wingset_1 = ConnectWithBeamClient(particle_2_Wingset_1, particle_5_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_1 = ConnectWithBeamClient(particle_2_Wingset_1, particle_4_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_1 = ConnectWithBeamClient(particle_4_Wingset_1, particle_3_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_1 = ConnectWithBeamClient(particle_5_Wingset_1, particle_3_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-
-	
-	i_ExpidonsaEnergyEffect[entity][15] = EntIndexToEntRef(particle_1_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][16] = EntIndexToEntRef(particle_2_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][17] = EntIndexToEntRef(particle_3_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][18] = EntIndexToEntRef(particle_4_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][19] = EntIndexToEntRef(particle_5_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][20] = EntIndexToEntRef(Laser_1_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][21] = EntIndexToEntRef(Laser_2_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][22] = EntIndexToEntRef(Laser_3_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][23] = EntIndexToEntRef(Laser_4_Wingset_1);
-	
-	int particle_1_Wingset_2 = InfoTargetParentAt({35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
-
-	int particle_2_Wingset_2 = InfoTargetParentAt({16.0,-16.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_2 = InfoTargetParentAt({-16.0,16.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_2 = InfoTargetParentAt({-8.0,-12.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_2 = InfoTargetParentAt({12.0,8.0,-12.0}, "", 0.0);
-
-	SetParent(particle_1_Wingset_2, particle_2_Wingset_2, "",_, true);
-	SetParent(particle_1_Wingset_2, particle_3_Wingset_2, "",_, true);
-	SetParent(particle_1_Wingset_2, particle_4_Wingset_2, "",_, true);
-	SetParent(particle_1_Wingset_2, particle_5_Wingset_2, "",_, true);
-
-	
-	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_2, flPos);
-	SetEntPropVector(particle_1_Wingset_2, Prop_Data, "m_angRotation", flAng);
-	SetParent(ParticleOffsetMain, particle_1_Wingset_2, "",_);
-	
-	int Laser_1_Wingset_2 = ConnectWithBeamClient(particle_2_Wingset_2, particle_5_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_2 = ConnectWithBeamClient(particle_2_Wingset_2, particle_4_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_2 = ConnectWithBeamClient(particle_4_Wingset_2, particle_3_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_2 = ConnectWithBeamClient(particle_5_Wingset_2, particle_3_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-
-	
-	i_ExpidonsaEnergyEffect[entity][24] = EntIndexToEntRef(particle_1_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][25] = EntIndexToEntRef(particle_2_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][26] = EntIndexToEntRef(particle_3_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][27] = EntIndexToEntRef(particle_4_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][28] = EntIndexToEntRef(particle_5_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][29] = EntIndexToEntRef(Laser_1_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][30] = EntIndexToEntRef(Laser_2_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][31] = EntIndexToEntRef(Laser_3_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][32] = EntIndexToEntRef(Laser_4_Wingset_2);
-
-
-
-	
-	int particle_1_Wingset_3 = InfoTargetParentAt({-35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
-
-	int particle_2_Wingset_3 = InfoTargetParentAt({-16.0,-16.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_3 = InfoTargetParentAt({16.0,16.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_3 = InfoTargetParentAt({-12.0,8.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_3 = InfoTargetParentAt({8.0,-12.0,-12.0}, "", 0.0);
-
-	SetParent(particle_1_Wingset_3, particle_2_Wingset_3, "",_, true);
-	SetParent(particle_1_Wingset_3, particle_3_Wingset_3, "",_, true);
-	SetParent(particle_1_Wingset_3, particle_4_Wingset_3, "",_, true);
-	SetParent(particle_1_Wingset_3, particle_5_Wingset_3, "",_, true);
-
-	
-	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_3, flPos);
-	SetEntPropVector(particle_1_Wingset_3, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_1_Wingset_3, "",_);
-	
-	int Laser_1_Wingset_3 = ConnectWithBeamClient(particle_2_Wingset_3, particle_5_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_3 = ConnectWithBeamClient(particle_2_Wingset_3, particle_4_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_3 = ConnectWithBeamClient(particle_4_Wingset_3, particle_3_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_3 = ConnectWithBeamClient(particle_5_Wingset_3, particle_3_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-
-	
-	i_ExpidonsaEnergyEffect[entity][33] = EntIndexToEntRef(particle_1_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][34] = EntIndexToEntRef(particle_2_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][35] = EntIndexToEntRef(particle_3_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][36] = EntIndexToEntRef(particle_4_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][37] = EntIndexToEntRef(particle_5_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][38] = EntIndexToEntRef(Laser_1_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][39] = EntIndexToEntRef(Laser_2_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][40] = EntIndexToEntRef(Laser_3_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][41] = EntIndexToEntRef(Laser_4_Wingset_3);
-
-
-	
-	int particle_1_Wingset_4 = InfoTargetParentAt({-35.0,40.0,-15.0}, "", 0.0); //This is the root bone basically
-
-	int particle_2_Wingset_4 = InfoTargetParentAt({-16.0,16.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_4 = InfoTargetParentAt({16.0,-16.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_4 = InfoTargetParentAt({8.0,12.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_4 = InfoTargetParentAt({-12.0,-8.0,-12.0}, "", 0.0);
-
-	SetParent(particle_1_Wingset_4, particle_2_Wingset_4, "",_, true);
-	SetParent(particle_1_Wingset_4, particle_3_Wingset_4, "",_, true);
-	SetParent(particle_1_Wingset_4, particle_4_Wingset_4, "",_, true);
-	SetParent(particle_1_Wingset_4, particle_5_Wingset_4, "",_, true);
-
-	
-	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_4, flPos);
-	SetEntPropVector(particle_1_Wingset_4, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_1_Wingset_4, "",_);
-	
-	int Laser_1_Wingset_4 = ConnectWithBeamClient(particle_2_Wingset_4, particle_5_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_4 = ConnectWithBeamClient(particle_2_Wingset_4, particle_4_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_4 = ConnectWithBeamClient(particle_4_Wingset_4, particle_3_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_4 = ConnectWithBeamClient(particle_5_Wingset_4, particle_3_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-
-	
-	i_ExpidonsaEnergyEffect[entity][42] = EntIndexToEntRef(particle_1_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][43] = EntIndexToEntRef(particle_2_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][44] = EntIndexToEntRef(particle_3_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][45] = EntIndexToEntRef(particle_4_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][46] = EntIndexToEntRef(particle_5_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][47] = EntIndexToEntRef(Laser_1_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][48] = EntIndexToEntRef(Laser_2_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][49] = EntIndexToEntRef(Laser_3_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][50] = EntIndexToEntRef(Laser_4_Wingset_4);
-
-
-	
-	
-	int particle_1_Wingset_5 = InfoTargetParentAt({-50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
-
-	int particle_2_Wingset_5 = InfoTargetParentAt({-20.0,0.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_5 = InfoTargetParentAt({20.0,0.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_5 = InfoTargetParentAt({-3.0,14.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_5 = InfoTargetParentAt({-3.0,-14.0,-12.0}, "", 0.0);
-
-	SetParent(particle_1_Wingset_5, particle_2_Wingset_5, "",_, true);
-	SetParent(particle_1_Wingset_5, particle_3_Wingset_5, "",_, true);
-	SetParent(particle_1_Wingset_5, particle_4_Wingset_5, "",_, true);
-	SetParent(particle_1_Wingset_5, particle_5_Wingset_5, "",_, true);
-
-	
-	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_5, flPos);
-	SetEntPropVector(particle_1_Wingset_5, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_1_Wingset_5, "",_);
-	
-	int Laser_1_Wingset_5 = ConnectWithBeamClient(particle_2_Wingset_5, particle_5_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_5 = ConnectWithBeamClient(particle_2_Wingset_5, particle_4_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_5 = ConnectWithBeamClient(particle_4_Wingset_5, particle_3_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_5 = ConnectWithBeamClient(particle_5_Wingset_5, particle_3_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-
-	
-	i_ExpidonsaEnergyEffect[entity][51] = EntIndexToEntRef(particle_1_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][52] = EntIndexToEntRef(particle_2_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][53] = EntIndexToEntRef(particle_3_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][54] = EntIndexToEntRef(particle_4_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][55] = EntIndexToEntRef(particle_5_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][56] = EntIndexToEntRef(Laser_1_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][57] = EntIndexToEntRef(Laser_2_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][58] = EntIndexToEntRef(Laser_3_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][59] = EntIndexToEntRef(Laser_4_Wingset_5);
-
-
-	int particle_1_Wingset_6 = InfoTargetParentAt({50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
-
-	int particle_2_Wingset_6 = InfoTargetParentAt({-20.0,0.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_6 = InfoTargetParentAt({20.0,0.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_6 = InfoTargetParentAt({3.0,14.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_6 = InfoTargetParentAt({3.0,-14.0,-12.0}, "", 0.0);
-
-	SetParent(particle_1_Wingset_6, particle_2_Wingset_6, "",_, true);
-	SetParent(particle_1_Wingset_6, particle_3_Wingset_6, "",_, true);
-	SetParent(particle_1_Wingset_6, particle_4_Wingset_6, "",_, true);
-	SetParent(particle_1_Wingset_6, particle_5_Wingset_6, "",_, true);
-
-	
-	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_6, flPos);
-	SetEntPropVector(particle_1_Wingset_6, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_1_Wingset_6, "",_);
-	
-	int Laser_1_Wingset_6 = ConnectWithBeamClient(particle_2_Wingset_6, particle_5_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_6 = ConnectWithBeamClient(particle_2_Wingset_6, particle_4_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_6 = ConnectWithBeamClient(particle_4_Wingset_6, particle_3_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_6 = ConnectWithBeamClient(particle_5_Wingset_6, particle_3_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
-
-	
-	i_ExpidonsaEnergyEffect[entity][60] = EntIndexToEntRef(particle_1_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][61] = EntIndexToEntRef(particle_2_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][62] = EntIndexToEntRef(particle_3_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][63] = EntIndexToEntRef(particle_4_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][64] = EntIndexToEntRef(particle_5_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][65] = EntIndexToEntRef(Laser_1_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][66] = EntIndexToEntRef(Laser_2_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][67] = EntIndexToEntRef(Laser_3_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][68] = EntIndexToEntRef(Laser_4_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][69] = EntIndexToEntRef(ParticleOffsetMain);
-	*/
 }
 
 static int LastEnemyTargeted[MAXENTITIES];

@@ -6,6 +6,18 @@ public void Rogue_None_Remove()
 	// Nothing happens when removed
 }
 
+public void FlagShip_Rogue_Refresh_Remove()
+{
+	// Refresh players when removed
+	for(int entity = 1; entity <= MAXENTITIES; entity++)
+	{
+		if(!IsValidEntity(entity))
+			continue;
+			
+		RemoveSpecificBuff(entity, "Ziberian Flagship Weaponry");
+	}
+	Rogue_Refresh_Remove();
+}
 public void Rogue_Refresh_Remove()
 {
 	// Refresh players when removed
@@ -126,21 +138,6 @@ public void Rogue_Item_ElasticFlyingCapeRemove()
 	b_ElasticFlyingCape = false;
 }
 
-public void Rogue_Item_HealingSalve()
-{
-	b_HealingSalve = true;
-}
-public void Rogue_Item_HealingSalveRemove()
-{
-	b_HealingSalve = false;
-}
-
-void Rogue_HealingSalve(int client, int &healing_Amount)
-{
-	if(b_HealingSalve)
-		healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
-}
-
 public void Rogue_SteelRazor_Weapon(int entity)
 {
 	// +15% damage bonus for melee's
@@ -216,7 +213,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 		{
 			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
-				//15%% more melee dmg for all allies
+				//15％ more melee dmg for all allies
 				if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 				{
 					damage *= 1.15;
@@ -230,7 +227,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 		{
 			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
-				//15%% more Ranged dmg for all allies
+				//15％ more Ranged dmg for all allies
 				if(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))
 				{
 
@@ -595,7 +592,37 @@ public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 	}
 }
 
+public void Dimensional_Turbulence_Enemy(int iNpc)
+{
+	ApplyStatusEffect(iNpc, iNpc, "Dimensional Turbulence", 999999.9);
+	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.5));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.5));
+	fl_GibVulnerablity[iNpc] *= 1.5;
+}
+public void Dimensional_Turbulence_Ally(int entity, StringMap map)
+{
+	ApplyStatusEffect(entity, entity, "Dimensional Turbulence", 999999.9);
+	if(map)	// Player
+	{
+		float value;
 
+		// +50% max health
+		map.GetValue("26", value);
+		map.SetValue("26", value * 1.5);
+
+		value = 1.0;
+		map.GetValue("107", value);
+		map.SetValue("107", value * 1.2);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		// +15% max health
+		int health = RoundToCeil((float(ReturnEntityMaxHealth(entity)) * 1.5));
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	}
+}
 
 public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 {

@@ -11,23 +11,12 @@ enum struct SoulBuff
 }
 
 static ArrayList AnnouncedBuff;
-static bool CoinExchanger;
 static int RottenBone;
 static int EmptyPlate;
 
 void Rogue_Whiteflower_Reset()
 {
 	delete AnnouncedBuff;
-}
-
-void Rogue_Whiteflower_IngotGiven(int &ingots)
-{
-	if(CoinExchanger)
-	{
-		CurrentCash += 200 * ingots;
-		GlobalExtraCash += 200 * ingots;
-		ingots = 0;
-	}
 }
 
 bool Rogue_Whiteflower_RemainDrop(int type)
@@ -109,7 +98,8 @@ public void Rogue_SoulFreaks_Weapon(int entity, int client)
 		StrContains(buffer, "Fists Of Kahmlstein", false) != -1 ||
 		StrContains(buffer, "Skull Servants", false) != -1 ||
 		StrContains(buffer, "Wightmare", false) != -1 ||
-		StrContains(buffer, "Aresenal's Tripmine Layer", false) != -1)
+		StrContains(buffer, "Aresenal's Tripmine Layer", false) != -1||
+		Wkit_Soldin_BvB(client))
 	{
 		AnnounceSoulBuff(client, entity, 0);
 
@@ -229,8 +219,9 @@ static Action Timer_DeathDoor(Handle timer, DataPack pack)
 		if(client && IsPlayerAlive(client))
 		{
 			if(GetClientHealth(client) > 199)
-				TF2_AddCondition(client, TFCond_PreventDeath, 5.0);
-			
+			{
+				ApplyStatusEffect(client, client, "Infinite Will", 5.0);
+			}
 			return Plugin_Continue;
 		}
 	}
@@ -250,6 +241,7 @@ public void Rogue_SoulTerraria_Weapon(int entity, int client)
 		StrContains(buffer, "Repaired Ark", false) != -1 ||
 		StrContains(buffer, "Star Shooter", false) != -1 ||
 		StrContains(buffer, "Super Star Shooter", false) != -1 ||
+		StrContains(buffer, "Koshi's Plasm-inator", false) != -1 ||
 		StrContains(buffer, "Tinker's Wrench", false) != -1)
 	{
 		AnnounceSoulBuff(client, entity, 5);
@@ -321,39 +313,46 @@ public void Rogue_CursedRelic_Weapon(int entity, int client)
 public void Rogue_Exchanger_Collect()
 {
 	int ingots = Rogue_GetIngots();
+	if(ingots <= 0)
+		return;
+		
 	Rogue_AddIngots(-ingots, true);
 	
 	CurrentCash += 200 * ingots;
 	GlobalExtraCash += 200 * ingots;
-
-	CoinExchanger = true;
 }
 
-public void Rogue_Exchanger_Remove()
+public void Rogue_Exchanger_IngotChanged(int &ingots)
 {
-	CoinExchanger = false;
+	if(ingots <= 0)
+		return;
+
+	CurrentCash += 200 * ingots;
+	GlobalExtraCash += 200 * ingots;
+	CPrintToChatAll("{green}%t","Cash Gained!", 200 * ingots);
+	ingots = 0;
 }
 
 public void Rogue_RareWeapon_Collect()
 {
 	char name[64];
 
-	switch(GetURandomInt() % 7)
+	switch(GetURandomInt() % 6)
 	{
 		case 0, 1:
 			strcopy(name, sizeof(name), "Vows of the Sea");
 		
-		case 2:
-			strcopy(name, sizeof(name), "Infinity Blade");
+	//	case 2:
+	//		strcopy(name, sizeof(name), "Infinity Blade");
 		
-		case 3, 4:
+		case 2, 3:
 			strcopy(name, sizeof(name), "Whistle Stop");
 		
-		case 5, 6:
+		case 4, 5:
 			strcopy(name, sizeof(name), "Ancestor Launcher");
 	}
 
-	Store_DiscountNamedItem(name, 999);
+	Store_DiscountNamedItem(name, 999, 0.6);
 	CPrintToChatAll("{green}Recovered Items: {palegreen}%s", name);
 }
 

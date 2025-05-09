@@ -24,9 +24,10 @@ public void Enable_HHH_Axe_Ability(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_HHH_AXE)
 		return;
-
+	/*
 	if(i_PlayerModelOverrideIndexWearable[client] == -1)
 		OverridePlayerModel(client, HHH_SkeletonOverride, true);
+	*/
 }
 
 public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
@@ -108,7 +109,6 @@ public void Fists_of_Kahml(int client, int weapon, bool crit, int slot)
 
 	if(how_many_times_fisted[client] >= 3)
 	{
-		Rogue_OnAbilityUse(weapon);
 		if(IsValidEntity(viewmodelModel))
 		{
 			GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
@@ -165,7 +165,8 @@ public Action Apply_cool_effects_kahml(Handle cut_timer, int client)
 
 public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 {
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -173,9 +174,10 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
 		return;
 	}
+	
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 60.0);
 		Attributes_Set(weapon, 396, 0.25);
 
@@ -190,6 +192,7 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		f_DurationOfProjectileAttack[client] = GetGameTime() + 10.0;
 		if(spawn_index > 0)
 		{
+				
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 			EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", client, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
@@ -201,25 +204,6 @@ public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 		}
 	}
 }
-
-public void Enable_Kahml_Fist_Ability(int client, int weapon) 
-{
-	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_KAHMLFIST)
-		return;
-
-	if(Items_HasNamedItem(client, "Kahml's Contained Chaos"))
-	{
-		if(f_DurationOfProjectileAttack[client] > GetGameTime())
-		{
-			i_InternalMeleeTrace[weapon] = false;
-			Attributes_Set(weapon, 396, 0.25);
-		}
-
-		i_Hex_WeaponUsesTheseAbilities[weapon] |= ABILITY_R;  //R status to weapon
-		EntityFuncAttack3[weapon] = view_as<Function>(Fists_of_Kahml_Ablity_2);
-	}
-}
-
 
 public void Melee_KahmlFistTouch(int entity, int target)
 {

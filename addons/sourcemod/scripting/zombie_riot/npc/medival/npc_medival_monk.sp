@@ -75,9 +75,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/shovel_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
 static const char g_WarCry[][] = {
 	"ambient/rottenburg/tunneldoor_open.wav",
@@ -93,7 +90,7 @@ void MedivalMonk_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));   i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_WarCry));   i++) { PrecacheSound(g_WarCry[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
@@ -112,10 +109,10 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return MedivalMonk(vecPos, vecAng, team);
 }
 
-static int i_ClosestAlly[MAXENTITIES];
-static float i_ClosestAllyCD[MAXENTITIES];
-static int i_ClosestAllyTarget[MAXENTITIES];
-static float i_ClosestAllyCDTarget[MAXENTITIES];
+
+
+
+
 
 #define MONK_MAXRANGE 250.0 	
 #define MONK_MAXRANGE_ALLY 350.0 		
@@ -166,7 +163,7 @@ methodmap MedivalMonk < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	public void PlayMeleeWarCry() {
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 90, _, 0.8, 100);
@@ -578,7 +575,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		BarrackBody npc = view_as<BarrackBody>(Monk);
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && GetTeam(entity_close) != TFTeam_Red)
 			{
 				static float pos2[3];
@@ -595,23 +592,33 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	}
 	else
 	{
-		if(!NpcStats_IsEnemySilenced(Monk))
+		static float pos2[3];
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
-			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
+			int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close])
 			{
-				int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close] && GetTeam(entity_close) != TFTeam_Red)
+				if(!NpcStats_IsEnemySilenced(Monk) && GetTeam(entity_close) != TFTeam_Red && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close])
 				{
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(entity_close, _, regrow);
-					if(regrow)
+					//Insta fullheal enemeis
+					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 					{
-						static float pos2[3];
-						GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+						bool regrow = true;
+						Building_CamoOrRegrowBlocker(entity_close, _, regrow);
+						if(regrow)
 						{
-							SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+							HealEntityGlobal(entity_close, entity_close, 999999.9, 1.0, 1.0, HEAL_ABSOLUTE);
 						}
+					}
+				}
+				if(GetTeam(entity_close) == TFTeam_Red)
+				{
+					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE) )
+					{
+						float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);
+						SDKHooks_TakeDamage(entity_close, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
 					}
 				}
 			}
@@ -620,7 +627,6 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
 			{
-				static float pos2[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 				{
@@ -629,26 +635,11 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				}
 			}
 		}
-		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
-		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-			if(IsValidEntity(entity_close) && GetTeam(entity_close) == TFTeam_Red)
-			{
-				static float pos2[3];
-				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE) )
-				{
-					float WorldSpaceVec[3]; WorldSpaceCenter(entity_close, WorldSpaceVec);
-					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
-				}
-			}
-		}
 		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 			if(IsValidEntity(entity_close))
 			{
-				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 				{

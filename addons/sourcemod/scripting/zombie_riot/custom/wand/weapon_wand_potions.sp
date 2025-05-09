@@ -9,16 +9,130 @@
 #define SOUND_TRANSFORM2	"ambient/halloween/thunder_01.wav"
 #define SOUND_SHRINK		"items/powerup_pickup_plague_infected.wav"
 
-static Handle BuffTimer[MAXENTITIES];
 static float TonicBuff[MAXTF2PLAYERS];
 static float TonicBuff_CD[MAXTF2PLAYERS];
 static Handle ShrinkTimer[MAXENTITIES];
 static float f_RaidShrinkImmunity[MAXENTITIES];
 
 
+static Handle h_PotionBuff[MAXPLAYERS+1] = {null, ...};
+
+public void Enable_BuffPotion(int client, int weapon) 
+{
+	if (h_PotionBuff[client] != null)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BUFFPOTION) 
+		{
+			//Is the weapon it again?
+			//Yes?
+			delete h_PotionBuff[client];
+			h_PotionBuff[client] = null;
+			DataPack pack;
+			h_PotionBuff[client] = CreateDataTimer(0.2, Timer_Management_BuffPotion, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BUFFPOTION)   //9 Is for Passanger
+	{
+		DataPack pack;
+		h_PotionBuff[client] = CreateDataTimer(0.2, Timer_Management_BuffPotion, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+
+#define SMELLY_SNIPPER_RANGE_BUFFICON 1000.0
+
+public Action Timer_Management_BuffPotion(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		h_PotionBuff[client] = null;
+		return Plugin_Stop;
+	}	
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
+		return Plugin_Continue;
+
+
+	float posme[3];
+	float pos2[3];
+
+	float ang[3];
+	GetClientEyeAngles(client, ang);
+
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", posme);
+	for(int clientloop = 1; clientloop <= MaxClients; clientloop++)
+	{
+		if(!IsClientInGame(clientloop))
+			continue;
+
+		if(!IsPlayerAlive(clientloop))
+			continue;
+
+		if(client == clientloop)
+			continue;
+
+		if(TeutonType[client] != TEUTON_NONE) //annoyin
+			continue;
+
+		GetEntPropVector(clientloop, Prop_Data, "m_vecAbsOrigin", pos2);
+		if(GetVectorDistance(posme, pos2, true) > (SMELLY_SNIPPER_RANGE_BUFFICON * SMELLY_SNIPPER_RANGE_BUFFICON))
+			continue;
+
+		bool HasAnyBuff = false;
+		if(HasSpecificBuff(clientloop, "Mystery Beer"))
+			HasAnyBuff = true;
+
+		if(HasSpecificBuff(clientloop, "Mystery Brew"))
+			HasAnyBuff = true;
+
+		static float PosOffset[3];
+		PosOffset = pos2;
+		pos2[2] += 90.0;
+		PosOffset[2] += 110.0;
+
+		if(HasAnyBuff)
+		{
+			TE_SetupBeamPoints(pos2, PosOffset, Shared_BEAM_Laser, Shared_BEAM_Glow, 0, 0, 0.21, 10.0, 2.0, 0, 0.0, {0, 255, 0, 255}, 0);
+			TE_SendToClient(client);
+			continue;
+		}
+		
+
+	//	TE_SetupBeamLaser(client, clientloop, Shared_BEAM_Laser, Shared_BEAM_Glow, 0, 0, 1.0, 
+	//			4.0, 2.0, 0, 2.0, {175, 200, 100, 255}, 0);
+	//	TE_SendToClient(client);
+
+		TE_SetupBeamPoints(pos2, PosOffset, Shared_BEAM_Laser, Shared_BEAM_Glow, 0, 0, 0.21, 2.0, 2.0, 0, 0.0, {175, 200, 100, 255}, 0);
+		TE_SendToClient(client);
+		static float PosOffset1[3];
+		PosOffset1 = PosOffset;
+		PosOffset1[2] -= 13.0;
+		GetBeamDrawStartPoint_Stock(client, PosOffset1, {0.0,5.0,0.0}, ang);
+		TE_SetupBeamPoints(pos2, PosOffset1, Shared_BEAM_Laser, Shared_BEAM_Glow, 0, 0, 0.21, 2.0, 2.0, 0, 0.0, {175, 200, 100, 255}, 0);
+		TE_SendToClient(client);
+		static float PosOffset2[3];
+		PosOffset2 = PosOffset;
+		PosOffset2[2] -= 13.0;
+		GetBeamDrawStartPoint_Stock(client, PosOffset2, {0.0,-5.0,0.0}, ang);
+		TE_SetupBeamPoints(pos2, PosOffset2, Shared_BEAM_Laser, Shared_BEAM_Glow, 0, 0, 0.2, 2.0, 2.0, 0, 0.0, {175, 200, 100, 255}, 0);
+		TE_SendToClient(client);
+
+	}
+	return Plugin_Continue;
+}
+
+
 void Wands_Potions_EntityCreated(int entity)
 {
-	delete BuffTimer[entity];
 	delete ShrinkTimer[entity];
 }
 
@@ -98,7 +212,7 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 {
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -108,7 +222,7 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 
 	if(PotionM1(client, weapon, touch, extra))
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, cooldown);
 	}
 }
@@ -151,7 +265,8 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 		SetEntityGravity(entity, 1.5);
 		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 
-		int model = GetEntProp(weapon, Prop_Send, "m_iWorldModelIndex");
+		int model = i_WeaponModelIndexOverride[weapon];
+		SetEntProp(entity, Prop_Send, "m_nBody", i_WeaponBodygroup[weapon]);
 		for(int i; i < 4; i++)
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", model, _, i);
@@ -226,7 +341,7 @@ public void WandPotion_DoTrueDamageBleed(int entity, int enemy, float damage, in
 	if (!IsValidEntity(owner))
 		return;
 
-	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 32.0, 5, weapon, DMG_TRUEDAMAGE);
 }
 
 
@@ -249,28 +364,9 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 	
 	if(target > 0 && target <= MaxClients)
 	{
-		int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-		if(weapon != -1)
-		{
-			i_ExtraPlayerPoints[owner] += 10;
-			
-			if(BuffTimer[weapon])
-				TriggerTimer(BuffTimer[weapon]);
-			
-			float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffAttackspeedScaling);
-			
-			if(Attributes_Has(weapon,6))
-			{
-				Attributes_SetMulti(weapon, 6, multi);
-			}
-			
-			ApplyStatusEffect(weapon, weapon, "Mystery Beer", 5.5);
-
-			DataPack pack;
-			BuffTimer[weapon] = CreateDataTimer(5.5, Weapon_Wand_PotionBuffRemove, pack);
-			pack.WriteCell(weapon);
-			pack.WriteFloat(multi);
-		}
+		i_ExtraPlayerPoints[owner] += 10;
+		
+		ApplyStatusEffect(owner, target, "Mystery Beer", 11.0);
 	}
 	else
 	{
@@ -281,28 +377,25 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 				{
-					int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-					if(weapon != -1)
-					{
-						i_ExtraPlayerPoints[owner] += 10;
-						
-						if(BuffTimer[weapon])
-							TriggerTimer(BuffTimer[weapon]);
-						
-						float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffAttackspeedScaling);
+					i_ExtraPlayerPoints[owner] += 10;
 
-						if(Attributes_Has(weapon,6))
-						{
-							Attributes_SetMulti(weapon, 6, multi);
-						}
+					ApplyStatusEffect(client, client, "Mystery Beer", 11.0);
+					break;
+				}
+			}
+		}
+		int a, entity1;
+		while((entity1 = FindEntityByNPC(a)) != -1)
+		{
+			if(GetTeam(entity1) == GetTeam(owner))
+			{
+				GetEntPropVector(entity1, Prop_Data, "m_vecAbsOrigin", pos2);
+				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
+				{
+					i_ExtraPlayerPoints[owner] += 10;
 
-						ApplyStatusEffect(weapon, weapon, "Mystery Beer", 5.5);
-						DataPack pack;
-						BuffTimer[weapon] = CreateDataTimer(5.5, Weapon_Wand_PotionBuffRemove, pack);
-						pack.WriteCell(weapon);
-						pack.WriteFloat(multi);
-						break;
-					}
+					ApplyStatusEffect(entity1, entity1, "Mystery Beer",11.0);
+					break;
 				}
 			}
 		}
@@ -335,30 +428,26 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 			{
-				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon != -1)
-				{
-					i_ExtraPlayerPoints[owner] += 12;
-					
-					if(BuffTimer[weapon])
-						TriggerTimer(BuffTimer[weapon]);
-					
-					float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffAttackspeedScaling);
-
-					if(Attributes_Has(weapon,6))
-					{
-						Attributes_SetMulti(weapon, 6, multi);
-					}
-
-					ApplyStatusEffect(weapon, weapon, "Mystery Beer", 7.5);
-					DataPack pack;
-					BuffTimer[weapon] = CreateDataTimer(7.5, Weapon_Wand_PotionBuffRemove, pack);
-					pack.WriteCell(weapon);
-					pack.WriteFloat(multi);
-				}
+				i_ExtraPlayerPoints[owner] += 12;
+				ApplyStatusEffect(client, client, "Mystery Beer", 15.0);
 			}
 		}
 	}
+	int a, entity1;
+	while((entity1 = FindEntityByNPC(a)) != -1)
+	{
+		if(GetTeam(entity1) == GetTeam(owner))
+		{
+			GetEntPropVector(entity1, Prop_Data, "m_vecAbsOrigin", pos2);
+			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
+			{
+				i_ExtraPlayerPoints[owner] += 20;
+
+				ApplyStatusEffect(entity1, entity1, "Mystery Beer", 15.0);
+			}
+		}
+	}
+
 
 	RemoveEntity(entity);
 }
@@ -391,23 +480,23 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 				if(weapon != -1)
 				{
 					i_ExtraPlayerPoints[owner] += 20;
-					
-					if(BuffTimer[weapon])
-						TriggerTimer(BuffTimer[weapon]);
-					
-					float multi = MaxNumBuffValue(0.8, 1.0, PlayerCountBuffAttackspeedScaling);
 
-					if(Attributes_Has(weapon,6))
-					{
-						Attributes_SetMulti(weapon, 6, multi);
-					}
-
-					ApplyStatusEffect(weapon, weapon, "Mystery Beer", 999.9);
-					DataPack pack;
-					BuffTimer[weapon] = CreateDataTimer(999.9, Weapon_Wand_PotionBuffRemove, pack);
-					pack.WriteCell(weapon);
-					pack.WriteFloat(multi);
+					ApplyStatusEffect(client, client, "Mystery Brew", 300.0);
 				}
+			}
+		}
+	}
+	int a, entity1;
+	while((entity1 = FindEntityByNPC(a)) != -1)
+	{
+		if(GetTeam(entity1) == GetTeam(owner))
+		{
+			GetEntPropVector(entity1, Prop_Data, "m_vecAbsOrigin", pos2);
+			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
+			{
+				i_ExtraPlayerPoints[owner] += 20;
+
+				ApplyStatusEffect(entity1, entity1, "Mystery Brew", 300.0);
 			}
 		}
 	}
@@ -415,21 +504,6 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 	RemoveEntity(entity);
 }
 
-public Action Weapon_Wand_PotionBuffRemove(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int entity = pack.ReadCell();
-	if(IsValidEntity(entity))
-	{
-		if(Attributes_Has(entity,6))
-		{
-			Attributes_SetMulti(entity, 6, 1.0 / pack.ReadFloat());
-		}
-	}
-
-	BuffTimer[entity] = null;
-	return Plugin_Continue;
-}
 
 public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 {
@@ -530,14 +604,13 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 45.0);
 
 	EmitSoundToClient(client, SOUND_TRANSFORM1);
 
-	ApplyTempAttrib(weapon, 6, 0.2, 10.0);
-	ApplyTempAttrib(weapon, 410, 0.5, 10.0);
-	ApplyTempAttrib(weapon, 733, 0.2, 10.0);
+	ApplyStatusEffect(client, client, "Tonic Affliction", 10.0);
+	ApplyStatusEffect(client, client, "Tonic Affliction Hide", 10.0);
 }
 
 public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, int slot)
@@ -565,14 +638,13 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 	
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 45.0);
 
 	EmitSoundToClient(client, SOUND_TRANSFORM2);
 
-	ApplyTempAttrib(weapon, 6, 0.2, 10.0);
-	ApplyTempAttrib(weapon, 410, 0.5, 10.0);
-	ApplyTempAttrib(weapon, 733, 0.2, 10.0);
+	ApplyStatusEffect(client, client, "Tonic Affliction", 10.0);
+	ApplyStatusEffect(client, client, "Tonic Affliction Hide", 10.0);
 
 	float pos1[3], pos2[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -590,19 +662,32 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 				if(entity != -1)
 				{
-					ApplyTempAttrib(entity, 2, 0.4, 10.0);
-					ApplyTempAttrib(entity, 6, 0.333, 10.0);
-					ApplyTempAttrib(entity, 97, 0.333, 10.0);
-					ApplyTempAttrib(entity, 410, 0.4, 10.0);
-					ApplyTempAttrib(entity, 733, 0.333, 10.0);
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 
 					TonicBuff[target] = Mana_Regen_Delay[client];
 					ApplyStatusEffect(client, target, "Tonic Affliction", 10.0);
-
+					ApplyStatusEffect(client, target, "Tonic Affliction Hide", 10.0);
+					
 					if(++count > 2)
 						break;
 				}
+			}
+		}
+	}
+	count = 0;
+	int a, entity1;
+	while((entity1 = FindEntityByNPC(a)) != -1)
+	{
+		if(GetTeam(entity1) == GetTeam(client))
+		{
+			GetEntPropVector(entity1, Prop_Data, "m_vecAbsOrigin", pos2);
+			if(GetVectorDistance(pos1, pos2, true) < 40000) // 200 HU
+			{
+				i_ExtraPlayerPoints[client] += 10;
+				ApplyStatusEffect(client, entity1, "Tonic Affliction", 10.0);
+				ApplyStatusEffect(client, entity1, "Tonic Affliction Hide", 10.0);
+				if(++count > 2)
+					break;
 			}
 		}
 	}
@@ -831,8 +916,8 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 			float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
 			SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
 		}
-		ApplyStatusEffect(owner, enemy, "Shrinking", FAR_FUTURE);
-		Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_TRUEDAMAGE, weapon);
+		ApplyStatusEffect(owner, enemy, "Shrinking", 999999.0);	
+	//	Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_TRUEDAMAGE, weapon);
 	}
 }
 public Action Weapon_Wand_PotionEndShrink(Handle timer, DataPack pack)

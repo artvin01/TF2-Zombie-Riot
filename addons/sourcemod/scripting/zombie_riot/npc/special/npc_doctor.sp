@@ -16,7 +16,7 @@ static char g_KillSounds[][] =
 	"cof/purnell/kill3.mp3",
 	"cof/purnell/kill4.mp3"
 };
-static float i_ClosestAllyCDTarget[MAXENTITIES];
+
 
 
 void SpecialDoctor_OnMapStart()
@@ -43,37 +43,11 @@ void SpecialDoctor_OnMapStart()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return SpecialDoctor(vecPos, vecAng, team, data);
+	return SpecialDoctor(vecPos, vecAng, team);
 }
 
-static char[] GetPanzerHealth()
-{
-	int health = 110;
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(ZR_GetWaveCount()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
-	}
-	else if(ZR_GetWaveCount()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 methodmap SpecialDoctor < CClotBody
 {
 	public void PlayHurtSound()
@@ -119,13 +93,12 @@ methodmap SpecialDoctor < CClotBody
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0);
 	}
 
-	public SpecialDoctor(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SpecialDoctor(float vecPos[3], float vecAng[3], int ally)
 	{
-		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", GetPanzerHealth(), ally));
+		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(70), ally));
 		i_NpcWeight[npc.index] = 3;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_MP_RUN_SECONDARY");
@@ -178,9 +151,10 @@ methodmap SpecialDoctor < CClotBody
 		npc.m_iAttacksTillReload = 5;
 		npc.m_flReloadDelay = GetGameTime(npc.index) + 0.8;
 
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 
@@ -227,7 +201,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		int target = GetClosestAlly(npc.index, (250.0 * 250.0), _,DoctorBuffAlly);
 		if(target)
 		{
-			if(HasSpecificBuff(target, "False Therapy"))
+			if(!HasSpecificBuff(target, "False Therapy"))
 			{
 				ApplyStatusEffect(npc.index, target, "False Therapy", 30.0);
 				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_SECONDARY",_,_,_,3.0);
@@ -507,6 +481,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 {
 	SpecialDoctor npc = view_as<SpecialDoctor>(entity);
 
+	npc.SetModel("models/player/medic.mdl");
 	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
@@ -534,7 +509,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 public bool DoctorBuffAlly(int provider, int entity)
 {
 	if(HasSpecificBuff(entity, "False Therapy"))
-		return true;
-		
-	return false;
+		return false;
+
+	return true;
 }

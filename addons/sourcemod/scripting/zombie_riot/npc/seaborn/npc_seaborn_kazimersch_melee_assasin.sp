@@ -36,9 +36,6 @@ static const char g_MeleeDeflectAttack[][] = {
 	"weapons/samurai/tf_katana_impact_object_02.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 
 void KazimierzKnightAssasin_OnMapStart_NPC()
 {
@@ -48,7 +45,7 @@ void KazimierzKnightAssasin_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeDeflectAttack));	i++) { PrecacheSound(g_MeleeDeflectAttack[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));   i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 
 	NPCData data;
@@ -117,7 +114,7 @@ methodmap KazimierzKnightAssasin < CClotBody
 
 	public void PlayMeleeMissSound() 
 	{
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	
 	
@@ -229,10 +226,7 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 
 		if(camo && !KazimierzMeleeAssasinRange(npc, 500.0))
 		{
-			float SelfPos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
-			SelfPos[2] += 20.0;
-			if(IsPointHazard(SelfPos))
+			if(i_InHurtZone[npc.index])
 			{
 				npc.m_flSpeed = 250.0;
 				npc.m_flExtraDamage += 1.0;
@@ -459,7 +453,7 @@ public bool KazimierzMeleeAssasinRange(KazimierzKnightAssasin npc, float range)
 	}
 	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 	{
-		int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		int entity_close = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 		if(IsValidEntity(entity_close))
 		{
 			CClotBody npcenemy = view_as<CClotBody>(entity_close);

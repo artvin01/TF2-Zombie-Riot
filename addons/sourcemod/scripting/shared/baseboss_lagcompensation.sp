@@ -38,6 +38,7 @@ static float ViewAngles[MAXTF2PLAYERS][3];
 static LagRecord EntityTrack[ZR_MAX_LAG_COMP][67];
 static int EntityTrackCount[ZR_MAX_LAG_COMP];
 static LagRecord EntityRestore[ZR_MAX_LAG_COMP];
+static LagRecord EntityRestoreSave[ZR_MAX_LAG_COMP];
 static bool WasBackTracked[ZR_MAX_LAG_COMP];
 
 static int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
@@ -56,17 +57,13 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 /* game/server/player_lagcompensation.cpp#L328 */
 void StartLagCompensation_Base_Boss(int client)
 {
-//	if(DoingLagCompensation)
-//	{
-	//	LogError("Tried to lag compensate twice, sorry! no can do.");
-//		return;
-//	}
 	if(DoingLagCompensation)
 	{
-		PrintToChatAll("Was alrady in DoingLagCompensation But tried doing another?");
+		PrintToChatAll("Was already in DoingLagCompensation But tried doing another?");
 		FinishLagCompensation_Base_boss(-1, false);
 	}
 	DoingLagCompensation = true;
+//	PrintToChatAll("StartLagCompensation_Base_Boss");
 	
 	// Get true latency
 	
@@ -97,7 +94,7 @@ void StartLagCompensation_Base_Boss(int client)
 
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		int entity = EntRefToEntIndexFast(i_Objects_Apply_Lagcompensation[index]);
 		if(IsValidEntity(entity))
 		{
 			// Custom checks for if things should lag compensate (based on things like what team the player is on).
@@ -191,15 +188,6 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		// get next record
 		record = EntityTrack[index][i];
 		
-		/*float delta[3]
-		SubtractVectors(record.m_vecOrigin, prevOrg, delta);
-		if(Length2DSqr(delta) > m_flTeleportDistanceSqr)
-		{
-			// lost track, too much difference
-			return; 
-		}*/
-		
-		// did we find a context smaller than target time ?
 		if(record.m_flSimulationTime <= currentTime)
 			break; // hurra, stop
 		
@@ -222,8 +210,6 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		
 		VectorLerp(record.m_vecAngles, prevRecord.m_vecAngles, frac, ang);
 		VectorLerp(record.m_vecOrigin, prevRecord.m_vecOrigin, frac, org);
-	//	VectorLerp(record.m_vecMinsPreScaled, prevRecord.m_vecMinsPreScaled, frac, minsPreScaled);
-	//	VectorLerp(record.m_vecMaxsPreScaled, prevRecord.m_vecMaxsPreScaled, frac, maxsPreScaled);
 	}
 	else
 	{
@@ -231,14 +217,12 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 		// just copy these values since they are the best we have
 		ang = record.m_vecAngles;
 		org = record.m_vecOrigin;
-	//	minsPreScaled = record.m_vecMinsPreScaled;
-	//	maxsPreScaled = record.m_vecMaxsPreScaled;
 	}
 	
-//	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", EntityRestore[entity].m_vecMinsPreScaled);
-//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", EntityRestore[index].m_vecMaxsPreScaled);
+	
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", EntityRestore[index].m_vecOrigin);
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles);
+	EntityRestore[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
@@ -248,7 +232,6 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	{	
 		EntityRestore[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 		EntityRestore[index].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
-		EntityRestore[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	}
 
 	if(b_LagCompNPC_ExtendBoundingBox)
@@ -257,19 +240,22 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 #if defined ZR
 		if(GetTeam(entity) != TFTeam_Red)
 #endif
-		
 		{
 			SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
 			SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
-
 			
 			CClotBody npc = view_as<CClotBody>(entity);
 			npc.UpdateCollisionBox();
 		}
 	}
 
-	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	SDKCall_SetLocalOrigin(entity, org);
+	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+	SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
+
+	EntityRestoreSave[index].m_vecOrigin = org;
+	EntityRestoreSave[index].m_vecAngles = ang;
+//	EntityRestoreSave[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
@@ -277,10 +263,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 #endif
 	{
-		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
-
 		bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
-		
 		if(interpolationAllowed)
 		{
 			SetEntProp(entity, Prop_Data, "m_nSequence", Lerpint(frac, record.m_masterSequence, prevRecord.m_masterSequence));
@@ -318,7 +301,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 		////////////////////////
 		// Now do all the layers
-#if defined ZR
+#if defined RTS
 		if(GetTeam(entity) != TFTeam_Red)
 #endif
 		{
@@ -372,9 +355,16 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 						overlayLayer.m_nSequence = record.m_sequence[i];
 						overlay.SetLayerWeight(i, record.m_weight[i]);
 					}
+
+					EntityRestoreSave[index].m_cycle[i] = overlay.GetLayerCycle(i);
+					EntityRestoreSave[index].m_order[i] = overlayLayer.m_nOrder;
+					EntityRestoreSave[index].m_sequence[i] = overlay.GetLayerSequence(i);
+					EntityRestoreSave[index].m_weight[i] = overlay.GetLayerWeight(i);
 				}
 			}
 		}
+		EntityRestoreSave[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
+		EntityRestoreSave[index].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 	}
 
 	//only invalidate when we actually update the bones, otherwise there is no reason to do this.
@@ -386,127 +376,151 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	WasBackTracked[index] = true;
 }
 
-void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1, bool DoReset = true)
-//public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
+void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset = true)
 {
-//	if(!DoingLagCompensation)
-//		ThrowError("Not in BaseBoss Lag Comp");
 	
-	if(ForceOptionalEntity == -1)
+	if(ForceOptionalEntity == -2)
 		DoingLagCompensation = false;
 
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity;
-		
-		entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		int entity = EntRefToEntIndexFast(i_Objects_Apply_Lagcompensation[index]);
 		//if its a selected entity:
-		if(ForceOptionalEntity != -1)
+		if(ForceOptionalEntity != -2)
 		{
 			if(entity != ForceOptionalEntity)
 				continue;
 		}
-
-		if(IsValidEntity(entity) && WasBackTracked[index])
+		if(!WasBackTracked[index])
 		{
-#if defined ZR
-			if(GetTeam(entity) != TFTeam_Red)
-#endif
-			{
-				if(b_LagCompNPC_ExtendBoundingBox)
-				{
-					static float m_vecMaxs[3];
-					static float m_vecMins[3];
-					m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
-					m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
-					
-					SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
-					
-					SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
-					
-					CClotBody npc = view_as<CClotBody>(entity);
-					npc.UpdateCollisionBox();
-					
-					if(b_BoundingBoxVariant[entity] == 1)
-					{
-						m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-						m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-					}			
-					else
-					{
-						m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-						m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
-					}
-
-					if(f3_CustomMinMaxBoundingBox[entity][1] != 0.0)
-					{
-						m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[entity][0];
-						m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[entity][1];
-						m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[entity][2];
-						
-						if(f3_CustomMinMaxBoundingBoxMinExtra[entity][1] != 0.0)
-						{
-							m_vecMins[0] = f3_CustomMinMaxBoundingBoxMinExtra[entity][0];
-							m_vecMins[1] = f3_CustomMinMaxBoundingBoxMinExtra[entity][1];
-							m_vecMins[2] = f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
-						}
-						else
-						{
-							m_vecMins[0] = -f3_CustomMinMaxBoundingBox[entity][0];
-							m_vecMins[1] = -f3_CustomMinMaxBoundingBox[entity][1];
-							m_vecMins[2] = 0.0;
-						}
-
-					}
-
-					SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
-					SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
-				}
-			}
-
-			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
-			SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
-			
-#if defined RTS
-			if(!b_LagCompNPC_No_Layers)
-#else
-			if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
-#endif
-
-			{
-				SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
-				SetEntProp(entity, Prop_Data, "m_nSequence", EntityRestore[index].m_masterSequence);
-				SetEntPropFloat(entity, Prop_Data, "m_flCycle", EntityRestore[index].m_masterCycle);
-				
-				if(EntityRestore[index].m_layerRecords)
-				{
-					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
-					if(overlay.IsValid())
-					{
-						int layerCount = overlay.GetNumAnimOverlays();
-						if(layerCount >= EntityRestore[index].m_layerRecords)
-							layerCount = EntityRestore[index].m_layerRecords - 1;
-						
-						for(int i; i < layerCount; i++)
-						{
-							CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
-							currentLayer.m_flCycle = EntityRestore[index].m_cycle[i];
-							currentLayer.m_nOrder = EntityRestore[index].m_order[i];
-							currentLayer.m_nSequence = EntityRestore[index].m_sequence[i];
-							currentLayer.m_flWeight = EntityRestore[index].m_weight[i];
-						}
-					}
-				}
-			}
-
-			WasBackTracked[index] = false;
-			//we only wanted to lag comp this entity, were done.
 			if(ForceOptionalEntity == entity)
 				return;
+
+			continue;
 		}
+
+
+		WasBackTracked[index] = false;
+		if(!IsValidEntity(entity))
+		{ 	
+			if(ForceOptionalEntity == entity)
+				return;
+
+			continue;
+		}
+
+#if defined ZR
+		if(GetTeam(entity) != TFTeam_Red)
+#endif
+		{
+			if(b_LagCompNPC_ExtendBoundingBox)
+			{
+				static float m_vecMaxs[3];
+				static float m_vecMins[3];
+				m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
+				m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
+				SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
+				SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
+
+				CClotBody npc = view_as<CClotBody>(entity);
+				npc.UpdateCollisionBox();
+				
+				if(b_BoundingBoxVariant[entity] == 1)
+				{
+					m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+					m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+				}			
+				else
+				{
+					m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+					m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
+				}
+
+				if(f3_CustomMinMaxBoundingBox[entity][1] != 0.0)
+				{
+					m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[entity][0];
+					m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[entity][1];
+					m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[entity][2];
+					
+					if(f3_CustomMinMaxBoundingBoxMinExtra[entity][1] != 0.0)
+					{
+						m_vecMins[0] = f3_CustomMinMaxBoundingBoxMinExtra[entity][0];
+						m_vecMins[1] = f3_CustomMinMaxBoundingBoxMinExtra[entity][1];
+						m_vecMins[2] = f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
+					}
+					else
+					{
+						m_vecMins[0] = -f3_CustomMinMaxBoundingBox[entity][0];
+						m_vecMins[1] = -f3_CustomMinMaxBoundingBox[entity][1];
+						m_vecMins[2] = 0.0;
+					}
+
+				}
+
+				SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
+				SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
+			}
+		}
+		static float OriginGet[3];
+		static float AngGet[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", OriginGet);
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", AngGet);
+		
+		if(AreVectorsEqual(OriginGet, EntityRestoreSave[index].m_vecOrigin))
+			SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
+		
+
+		if(AreVectorsEqual(AngGet, EntityRestoreSave[index].m_vecAngles))
+			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
+		
+		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
+			
+		if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
+		{
+			int CurrentSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
+			if(CurrentSequence == EntityRestoreSave[index].m_masterSequence) //They didnt update sequence?
+			{
+				SetEntProp(entity, Prop_Data, "m_nSequence", EntityRestore[index].m_masterSequence);
+				SetEntPropFloat(entity, Prop_Data, "m_flCycle", EntityRestore[index].m_masterCycle);
+
+			}
+			
+			if(EntityRestore[index].m_layerRecords)
+			{
+				CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
+				if(overlay.IsValid())
+				{
+					int layerCount = overlay.GetNumAnimOverlays();
+					if(layerCount >= EntityRestore[index].m_layerRecords)
+						layerCount = EntityRestore[index].m_layerRecords - 1;
+					
+					for(int i; i < layerCount; i++)
+					{
+						CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
+	
+						if(currentLayer.m_flCycle == EntityRestoreSave[index].m_cycle[i])
+							currentLayer.m_flCycle = EntityRestore[index].m_cycle[i];
+
+						if(currentLayer.m_nOrder == EntityRestoreSave[index].m_order[i])
+							currentLayer.m_nOrder = EntityRestore[index].m_order[i];
+
+						if(currentLayer.m_nSequence == EntityRestoreSave[index].m_sequence[i])
+							currentLayer.m_nSequence = EntityRestore[index].m_sequence[i];
+
+						if(currentLayer.m_flWeight == EntityRestoreSave[index].m_weight[i])
+							currentLayer.m_flWeight = EntityRestore[index].m_weight[i];
+					}
+				}
+			}
+		}
+
+		WasBackTracked[index] = false;
+		//we only wanted to lag comp this entity, were done.
+		if(ForceOptionalEntity == entity)
+			return;
 	}
 
-	if(ForceOptionalEntity == -1 && DoReset)
+	if(ForceOptionalEntity == -2 && DoReset)
 		StartLagCompResetValues();
 }
 
@@ -523,7 +537,7 @@ void LagCompensationThink_Forward()
 	// Iterate all active NPCs
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		int entity = EntRefToEntIndexFast(i_Objects_Apply_Lagcompensation[index]);
 		if(IsValidEntity(entity))
 		{
 			if(EntityTrackCount[index] < 0)
@@ -566,9 +580,8 @@ void LagCompensationThink_Forward()
 				record.m_flSimulationTime	= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
-
 #if defined ZR
-				if(GetTeam(entity) != TFTeam_Red) //If its an allied baseboss, make sure to not get layers.
+				if(GetTeam(entity) != TFTeam_Red) //If its an allied entity, dont get layers, dont alter them a its never used.
 #endif
 				{
 					record.m_layerRecords = overlay.GetNumAnimOverlays();
@@ -597,7 +610,6 @@ void LagCompensationThink_Forward()
 
 				EntityTrack[index][EntityTrackCount[index]] = record;
 				EntityTrackCount[index]++;
-				//PrintToServer("%d Added %d -> %d", entity, length, EntityTrack[entity].Length);
 			}
 		}
 	}
@@ -635,7 +647,7 @@ void AddEntityToLagCompList(int entity)
 {
 	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
 	{
-		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
+		if (EntRefToEntIndexFast(i_Objects_Apply_Lagcompensation[i]) <= 0)
 		{
 			EntityTrackCount[i] = -1;
 			i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
@@ -647,9 +659,9 @@ void AddEntityToLagCompList(int entity)
 
 void RemoveEntityToLagCompList(int entity)
 {
-	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Remove lag comp
 	{
-		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) == entity)
+		if (EntRefToEntIndexFast(i_Objects_Apply_Lagcompensation[i]) == entity)
 		{
 			i_Objects_Apply_Lagcompensation[i] = -1;
 			WasBackTracked[i] = false;

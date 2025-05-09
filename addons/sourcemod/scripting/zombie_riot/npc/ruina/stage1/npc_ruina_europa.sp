@@ -71,9 +71,7 @@ methodmap Europa < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -137,6 +135,8 @@ methodmap Europa < CClotBody
 		
 		*/
 		
+		SetVariantInt(1 + 2 + 4 + 8);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -177,7 +177,7 @@ methodmap Europa < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 				
-				
+		fl_ruina_battery_max[npc.index] = 6000.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -232,7 +232,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>6000.0)
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index])
 	{
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
@@ -244,12 +244,11 @@ static void ClotThink(int iNPC)
 
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
+			fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 			Europa_Spawn_Minnions(npc);
 		}
-		
 	}
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -372,7 +371,7 @@ static void Europa_Spawn_Minnions(Europa npc)
 	int spawn_index;
 	
 	spawn_index = NPC_CreateByName("npc_ruina_drone", npc.index, pos, ang, GetTeam(npc.index));
-	maxhealth = RoundToNearest(maxhealth * 0.45);
+	maxhealth = RoundToNearest(maxhealth * 1.5);
 
 	if(spawn_index > MaxClients)
 	{

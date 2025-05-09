@@ -107,7 +107,7 @@ void VictoriaBirdeye_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictoriaBirdeye(client, vecPos, vecAng, ally, data);
+	return VictoriaBirdeye(vecPos, vecAng, ally, data);
 }
 
 methodmap VictoriaBirdeye < CClotBody
@@ -158,7 +158,7 @@ methodmap VictoriaBirdeye < CClotBody
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public VictoriaBirdeye(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictoriaBirdeye(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictoriaBirdeye npc = view_as<VictoriaBirdeye>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "150000", ally));
 		i_NpcWeight[npc.index] = 1;
@@ -459,7 +459,7 @@ public Action VictoriaBirdeye_OnTakeDamage(int victim, int &attacker, int &infli
 		if(!npc.Anger)
 		{
 			damage=0.0;
-			IncreaceEntityDamageTakenBy(npc.index, 0.000001, 0.2);
+			IncreaseEntityDamageTakenBy(npc.index, 0.000001, 0.2);
 			if(b_SUPERDUPERRAGE[npc.index])
 			{
 				npc.PlayIdleAlertSound();
@@ -663,7 +663,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
 				if(IsValidClient(target))
-					IncreaceEntityDamageTakenBy(target, 0.5, 5.0, true);
+					IncreaseEntityDamageTakenBy(target, 0.5, 5.0, true);
 				else
 					ApplyStatusEffect(npc.index, target, "Silenced", (b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target] ? 30.0 : 60.0));
 			} 

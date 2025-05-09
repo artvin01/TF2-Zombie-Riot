@@ -59,7 +59,7 @@ public void Texan_business_altattack(int client, int weapon, bool crit, int slot
 				return;
 			}
 			
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 30.0);
 			static float EntLoc[3];
 

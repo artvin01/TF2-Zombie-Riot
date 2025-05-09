@@ -212,8 +212,6 @@ static void ClotThink(int iNPC)
 		return;
 	}
 	
-	
-	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();

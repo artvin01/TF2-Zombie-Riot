@@ -15,7 +15,12 @@ enum
 	Attrib_ReviveTimeCut = 4033,
 	Attrib_ExtendExtraCashGain = 4034,
 	Attrib_ReduceMedifluidCost = 4035,
-	Attrib_ReduceMetalCost = 4036
+	Attrib_ReduceMetalCost = 4036,
+	Attrib_BarracksHealth = 4037,
+	Attrib_BarracksDamage = 4038,
+	Attrib_BlessingBuff = 4039,
+	Attrib_ArmorOnHit = 4040,
+	Attrib_ArmorOnHitMax = 4041
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -40,7 +45,11 @@ bool Attribute_ServerSide(int attribute)
 	
 	switch(attribute)
 	{
-		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93: //gibs on hit
+		/*
+
+		Various attributes that are not needed as actual attributes.
+		*/
+		case 526,733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93,8:
 		{
 			return true;
 		}
@@ -90,8 +99,19 @@ stock bool Attributes_RemoveAll(int entity)
 	return TF2Attrib_RemoveAll(entity);
 }
 
+int ReplaceAttribute_Internally(int attribute)
+{
+	switch(attribute)
+	{
+		//replace dmg attrib with another, this is due to the MVM hud on pressing inspect fucking crashing you at high dmges
+		case 2:
+			return 1000;
+	}
+	return attribute;
+}
 bool Attributes_Has(int entity, int attrib)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	if(!WeaponAttributes[entity])
 		return false;
 	
@@ -102,6 +122,7 @@ bool Attributes_Has(int entity, int attrib)
 
 float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	if(WeaponAttributes[entity])
 	{
 		float value = defaul;
@@ -117,6 +138,7 @@ float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 
 bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = false)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	if(!DoOnlyTf2Side)
 	{
 		if(!WeaponAttributes[entity])
@@ -142,6 +164,7 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 
 stock void Attributes_SetAdd(int entity, int attrib, float amount)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	if(attrib == Attrib_SetArchetype)
 	{
 		i_WeaponArchetype[entity] = RoundFloat(amount);
@@ -171,6 +194,7 @@ stock void Attributes_SetAdd(int entity, int attrib, float amount)
 
 stock void Attributes_SetMulti(int entity, int attrib, float amount)
 {
+	attrib = ReplaceAttribute_Internally(attrib);
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
 
@@ -190,6 +214,32 @@ stock void Attributes_SetMulti(int entity, int attrib, float amount)
 	WeaponAttributes[entity].SetValue(buffer, value);
 	if(!Attribute_ServerSide(attrib))
 		Attributes_Set(entity, attrib, value, true);
+
+	if(Attribute_IsMovementSpeed(attrib))
+	{
+		int owner;
+		if(entity <= MaxClients)
+			owner = entity;
+		else
+			owner = GetEntPropEnt(owner, Prop_Send, "m_hOwnerEntity");
+		if(owner > 0 && owner <= MaxClients)
+		{
+			SDKCall_SetSpeed(owner);
+		}
+	}
+}
+
+bool Attribute_IsMovementSpeed(int attrib)
+{
+	switch(attrib)
+	{
+		case 442, 107, 54:
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 stock bool Attributes_GetString(int entity, int attrib, char[] value, int length, int &size = 0)
@@ -197,6 +247,7 @@ stock bool Attributes_GetString(int entity, int attrib, char[] value, int length
 	if(!WeaponAttributes[entity])
 		return false;
 
+	attrib = ReplaceAttribute_Internally(attrib);
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
 	return WeaponAttributes[entity].GetString(buffer, value, length, size);
@@ -206,6 +257,8 @@ stock void Attributes_SetString(int entity, int attrib, const char[] value)
 {
 	if(!WeaponAttributes[entity])
 		WeaponAttributes[entity] = new StringMap();
+	
+	attrib = ReplaceAttribute_Internally(attrib);
 	
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
@@ -241,6 +294,7 @@ int Attributes_Airdashes(int client)
 }
 #endif
 
+float PreventSameFrameGivearmor[MAXTF2PLAYERS];
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{
@@ -260,6 +314,21 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
 			}
 			
+#if defined ZR
+			value = Attributes_Get(weapon, Attrib_ArmorOnHit, 0.0);
+			if(PreventSameFrameGivearmor[client] == GetGameTime())
+				value = 0.0;
+				
+			if(value)
+			{
+				PreventSameFrameGivearmor[client] = GetGameTime();
+				if(b_thisNpcIsARaid[victim])
+					value *= 2.0;
+
+				float ArmorMax = Attributes_Get(weapon, Attrib_ArmorOnHitMax, 1.0);
+				GiveArmorViaPercentage(client, value / ArmorMax, ArmorMax);
+			}
+#endif
 	
 			value = Attributes_Get(weapon, 149, 0.0);	// bleeding duration
 			if(value)
@@ -278,12 +347,12 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 					
 				NPC_Ignite(victim, client, value, weapon);
 			}	
-			
-			if(Attributes_Get(weapon, 638, 0.0))	// Extinquisher
+			value = Attributes_Get(weapon, 638, 0.0);
+			if(value)	// Extinquisher
 			{
 				if(IgniteFor[victim] > 0)
 				{
-					damage *= 1.5;
+					damage *= (1.5 * value);
 					DisplayCritAboveNpc(victim, client, true);
 				}
 				//dont actually extinquish, just give them more damage.
@@ -292,7 +361,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			value = Attributes_Get(weapon, 17, 0.0);
 			if(value)
 			{
-				if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
+				if(!HasSpecificBuff(client, "UBERCHARGED") && !TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
 				{
 					// add uber charge on hit
 					
@@ -464,6 +533,10 @@ void Attributes_OnKill(int victim, int client, int weapon)
 				{
 					value *= 2.0;
 				}
+				//Grilled!
+				if(HasSpecificBuff(victim, "Burn"))
+					value *= 1.1;
+					
 				HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
 			}
 		}
@@ -480,27 +553,25 @@ void Attributes_OnKill(int victim, int client, int weapon)
 
 }
 
-float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWeapons = false)
+//override default
+float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWeapons = false, float defaultValue = -1.0)
 {
+	bool AttribWasFound = false;
 	float defaul = multi ? 1.0 : 0.0;
-	float result = Attributes_Get(client, index, defaul);
+
+	float TempFind = Attributes_Get(client, index, -1.0);
+	float result;
+	if(TempFind != -1.0)
+	{
+		AttribWasFound = true;
+		result = TempFind;
+	}
+	else
+	{
+		result = defaul;
+	}
 	
 	int entity = MaxClients + 1;
-	while(TF2_GetWearable(client, entity))
-	{
-		float value = Attributes_Get(entity, index, defaul);
-		if(value != defaul)
-		{
-			if(multi)
-			{
-				result *= value;
-			}
-			else
-			{
-				result += value;
-			}
-		}
-	}
 	
 	if(!noWeapons)
 	{
@@ -518,6 +589,7 @@ float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWe
 			float value = Attributes_Get(entity, index, defaul);
 			if(value != defaul)
 			{
+				AttribWasFound = true;
 				if(multi)
 				{
 					result *= value;
@@ -529,7 +601,17 @@ float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWe
 			}
 		}
 	}
-	
+	if(!AttribWasFound)
+	{
+		if(defaultValue == -1.0)
+		{
+			return defaul;
+		}
+		else
+		{
+			return defaultValue;
+		}
+	}
 	return result;
 }
 
@@ -541,7 +623,8 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 		defaul = defaultstat;
 	}
 	float result = Attributes_Get(client, index, defaul);
-	
+
+	/*
 	int wearable = MaxClients + 1;
 	while(TF2_GetWearable(client, wearable))
 	{
@@ -558,6 +641,7 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 			}
 		}
 	}
+	*/
 	
 	if(entity > MaxClients)
 	{
@@ -578,27 +662,13 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 	return result;
 }
 
-stock float Attributes_FindOnWeapon(int client, int entity, int index, bool multi=false, float defaul=0.0)
-{
-	return Attributes_Get(entity, index, defaul);
-}
-
-stock float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, float defaul=0.0, bool IgnoreWeaponsEquipped = false, bool DoNotIngoreEquippedWeapon = false)
-{
-	if(IgnoreWeaponsEquipped && DoNotIngoreEquippedWeapon)
-		return Attributes_GetOnWeapon(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), index, multi);
-	
-	return Attributes_GetOnPlayer(client, index, multi, IgnoreWeaponsEquipped);
-}
-
 /*
-
 #define MULTIDMG_NONE 		 ( 1<<0 )
 #define MULTIDMG_MAGIC_WAND  ( 1<<1 )
 #define MULTIDMG_BLEED 		 ( 1<<2 )
 #define MULTIDMG_BUILDER 	 ( 1<<3 )
-
 */
+
 float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, int client = 0)
 {
 	float DamageBonusLogic = 1.0;
@@ -607,13 +677,13 @@ float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, in
 		if(client > 0)
 		{
 			float attack_speed;		
-			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+			attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true); //Sentry attack speed bonus
 							
-			DamageBonusLogic = attack_speed * DamageBonusLogic * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			DamageBonusLogic = attack_speed * DamageBonusLogic * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 			return DamageBonusLogic;	
 		}
 	}
-	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
+//	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
 #if defined ZR
 	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_TEUTON_DEAD)
 #endif

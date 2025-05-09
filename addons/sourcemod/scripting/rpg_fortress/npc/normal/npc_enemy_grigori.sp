@@ -125,7 +125,7 @@ public void EnemyFatherGrigori_OnMapStart_NPC()
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	PrecacheModel("models/zombie_riot/hl2/monk.mdl");
+	PrecacheModel("models/monk.mdl");
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
@@ -226,7 +226,7 @@ methodmap EnemyFatherGrigori < CClotBody
 	}
 	public EnemyFatherGrigori(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "300", ally, false,_,_,_,_));
+		EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
@@ -922,6 +922,7 @@ public void FatherGrigori_IonAttack(Handle &data)
 		delete data;
 		return;
 	}
+	spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 150, 255, 255, 1, 0.2, 12.0, 4.0, 3);	
 		
 	if (Iondistance > 0)
 	{
@@ -1018,10 +1019,11 @@ public void FatherGrigori_IonAttack(Handle &data)
 	else
 	{
 		startPosition[2] += 25.0;
-		makeexplosion(client, client, startPosition, "", 40000/*damage*/, 175/*Range */);
+		makeexplosion(client, startPosition, 40000/*damage*/, 175/*Range */);
 		startPosition[2] -= 25.0;
 		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 		TE_SendToAll();
+		spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
 		position[0] = startPosition[0];
 		position[1] = startPosition[1];
 		position[2] += startPosition[2] + 900.0;

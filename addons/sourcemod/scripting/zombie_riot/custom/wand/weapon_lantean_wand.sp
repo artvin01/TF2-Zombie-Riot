@@ -48,7 +48,6 @@ public void Weapon_lantean_Wand_ClearAll()
 	Zero(fl_AimbotTimer);
 	Zero(fl_hud_timer);
 	Zero(fl_lantean_Wand_Drone_Life);
-	Zero2(f_GlobalHitDetectionLogic);
 	Zero(fl_lantean_drone_life);
 	Zero(fl_targetshit);
 	Zero(b_is_lantean);
@@ -147,7 +146,7 @@ public void Lantean_Reload_Ability(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 5.0);
 
 			Current_Mana[client] -=mana_cost;
@@ -209,7 +208,7 @@ public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 30.0);
 
 			Current_Mana[client] -= mana_cost;
@@ -391,12 +390,8 @@ float time)
 	pack.WriteCell(EntIndexToEntRef(particle));
 	pack.WriteCell(client);
 
-	float GameTimeExtra = GetGameTime() + 0.25;
+//	float GameTimeExtra = GetGameTime() + 0.25;
 	//Dont instantly collide for reasons.
-	for (int entity = 0; entity < MAXENTITIES; entity++)
-	{
-		f_GlobalHitDetectionLogic[projectile][entity] = GameTimeExtra;
-	}
 	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch_World);//need collisions all the time!
 
@@ -486,11 +481,11 @@ public void lantean_Wand_Touch(int entity, int target)
 {
 	if (target > 0)	
 	{
-		if(f_GlobalHitDetectionLogic[entity][target] > GetGameTime())
+		if(IsIn_HitDetectionCooldown(entity,target))
 		{
 			return;
 		}
-		f_GlobalHitDetectionLogic[entity][target] = GetGameTime() + 0.3;
+		Set_HitDetectionCooldown(entity,target, GetGameTime() + 0.3);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -620,7 +615,7 @@ static void Lantean_Wand_Hud(int client)
 	{
 		PrintHintText(client,"Drone Overcharge: %i", lantean_Wand_Drone_Count[client]);
 	}
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 {

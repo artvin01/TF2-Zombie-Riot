@@ -285,7 +285,7 @@ void VoidHeavyPerisherSelfDefense(VoidHeavyPerisher npc, float gameTime, int tar
 					float ModelSize = GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 					damageDealt *= ModelSize;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 3.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

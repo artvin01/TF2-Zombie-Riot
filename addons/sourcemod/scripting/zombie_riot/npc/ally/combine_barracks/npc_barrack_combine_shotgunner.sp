@@ -19,7 +19,8 @@ static const char g_IdleSounds[][] =
 
 static const char g_RangedAttackSounds[][] =
 {
-	"weapons/ar2/fire1.wav",
+	"weapons/shotgun/shotgun_fire6.wav",
+	"weapons/shotgun/shotgun_fire7.wav",
 };
 
 static const char g_RangedReloadSound[][] =
@@ -55,9 +56,9 @@ void Barracks_Combine_Shotgun_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return Barrack_Combine_Shotgun(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Shotgun(client, vecPos, vecAng);
 }
 
 methodmap Barrack_Combine_Shotgun < BarrackBody
@@ -100,9 +101,9 @@ methodmap Barrack_Combine_Shotgun < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Combine_Shotgun(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Shotgun(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(BarrackBody(client, vecPos, vecAng, "650", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(BarrackBody(client, vecPos, vecAng, "325", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -143,7 +144,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 20000.0)
+			if(flDistanceToTarget < 25000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -152,8 +153,8 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.AddGesture("ACT_RELOAD_SHOTGUN1");
-						npc.m_flNextRangedAttack = GameTime + 2.2;
+						npc.AddGesture("ACT_RELOAD");
+						npc.m_flNextRangedAttack = GameTime + 4.0;
 						npc.m_iAttacksTillReload = 6;
 						npc.PlayPistolReload();
 					}
@@ -174,10 +175,10 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (1.5 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2250.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 1687.5, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
@@ -193,7 +194,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN_AIM_SHOTGUN", 19000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN_AIM_SHOTGUN", 20000.0,_, true);
 	}
 }
 

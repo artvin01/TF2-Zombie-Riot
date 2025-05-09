@@ -35,7 +35,8 @@ static const char Categories[][] =
 	"Iberia Expidonsa Alliance",
 	"Whiteflower Specials",
 	"Victoria",
-	"Matrix"
+	"Matrix",
+	"Mutations",
 };
 
 enum struct GiftItem
@@ -57,7 +58,7 @@ static int CategoryPage[MAXTF2PLAYERS];
 
 static int g_BeamIndex = -1;
 static int i_RarityType[MAXENTITIES];
-static float f_IncreaceChanceManually = 1.0;
+static float f_IncreaseChanceManually = 1.0;
 static bool b_ForceSpawnNextTime;
 
 void Items_PluginStart()
@@ -363,19 +364,39 @@ bool Items_HasNamedItem(int client, const char[] name)
 			static GiftItem item;
 			GiftItems.GetArray(i, item);
 			if(StrEqual(item.Name, name, false))
-				return view_as<bool>(GetFlagsOfLevel(client, IdToLevel(i)) & IdToFlag(i));
+			{
+				if(client)
+					return view_as<bool>(GetFlagsOfLevel(client, IdToLevel(i)) & IdToFlag(i));
+				
+				for(int target = 1; target <= MaxClients; target++)
+				{
+					if(IsClientInGame(target) && GetClientTeam(target) == 2 && (GetFlagsOfLevel(target, IdToLevel(i)) & IdToFlag(i)))
+						return true;
+				}
+			}
 		}
 	}
 	
 	return false;
 }
 
-bool Items_GiveIdItem(int client, int id)
+bool Items_GiveIdItem(int client, int id, bool noForward = false)
 {
+	if(!noForward && GiftItems && id < GiftItems.Length)
+	{
+		static GiftItem item;
+		GiftItems.GetArray(id, item);
+		if(Native_OnGivenItem(id, item.Name))
+		{
+			Items_GiveNamedItem(client, item.Name, true);
+			return false;
+		}
+	}
+
 	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id));
 }
 
-bool Items_GiveNamedItem(int client, const char[] name)
+bool Items_GiveNamedItem(int client, const char[] name, bool noForward = false)
 {
 	if(name[0] && GiftItems)
 	{
@@ -386,7 +407,7 @@ bool Items_GiveNamedItem(int client, const char[] name)
 			GiftItems.GetArray(i, item);
 			if(StrEqual(item.Name, name, false))
 			{
-				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i));
+				Items_GiveIdItem(client, i, noForward);
 				return true;
 			}
 		}
@@ -576,9 +597,9 @@ void Gift_DropChance(int entity)
 	{
 		if(IsValidEntity(entity))
 		{
-			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobalEnemy + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaceChanceManually))) //Never let it divide by 0
+			if(b_ForceSpawnNextTime || (GetRandomFloat(0.0, 200.0) < ((GIFT_CHANCE / (MultiGlobalEnemy + 0.0001)) * f_ExtraDropChanceRarity * f_IncreaseChanceManually))) //Never let it divide by 0
 			{
-				f_IncreaceChanceManually = 1.0;
+				f_IncreaseChanceManually = 1.0;
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 20.0;
@@ -595,7 +616,7 @@ void Gift_DropChance(int entity)
 			}	
 			else
 			{
-				f_IncreaceChanceManually += 0.0015;
+				f_IncreaseChanceManually += 0.0015;
 			}
 		}
 	}
@@ -724,6 +745,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						int XpToGive = TempCalc * MultiExtra;
 						CPrintToChat(i,"%t", "Pickup Gift", NameOfTheHero, XpToGive);
 						XP[i] += XpToGive;
+						Native_ZR_OnGetXP(i, XpToGive, 0);
 						GiveXP(i, 0);
 					}
 				}

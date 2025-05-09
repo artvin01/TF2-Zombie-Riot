@@ -38,7 +38,7 @@ int VictorianAvangard_ID()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianOfflineAvangard(client, vecPos, vecAng, ally, data);
+	return VictorianOfflineAvangard(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianOfflineAvangard < CClotBody
@@ -66,7 +66,7 @@ methodmap VictorianOfflineAvangard < CClotBody
 		
 	}
 	
-	public VictorianOfflineAvangard(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictorianOfflineAvangard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianOfflineAvangard npc = view_as<VictorianOfflineAvangard>(CClotBody(vecPos, vecAng, "models/bots/soldier_boss/bot_soldier_boss.mdl", "1.75", "100000", ally, _, true));
 		
@@ -96,9 +96,9 @@ methodmap VictorianOfflineAvangard < CClotBody
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 0.90;
 
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		
 		if(!StrContains(data, "only"))
@@ -188,7 +188,7 @@ static void ClotThink(int iNPC)
 			if(!npc.m_bFUCKYOU)
 			{
 				npc.PlayActivationSound();
-				IncreaceEntityDamageTakenBy(npc.index, 0.000001, 1.0);
+				IncreaseEntityDamageTakenBy(npc.index, 0.000001, 1.0);
 			}
 			i_AttacksTillMegahit[iNPC] = 601;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_blackbox/c_blackbox.mdl");
@@ -298,7 +298,7 @@ static void ClotThink(int iNPC)
 		bool villagerexists = false;
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 			if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianMechanist_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
 				villagerexists = true;

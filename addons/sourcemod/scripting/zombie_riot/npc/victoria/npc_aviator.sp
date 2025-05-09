@@ -191,9 +191,9 @@ methodmap Aviator < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/engineer/tw_engineerbot_armor/tw_engineerbot_armor.mdl");
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/engineer/tw_engineerbot_armor/tw_engineerbot_armor.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -272,6 +272,8 @@ public void Aviator_ClotThink(int iNPC)
 						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
 						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 1.1;
 						b_StaticNPC[entity] = b_StaticNPC[npc.index];
+						if(b_StaticNPC[entity])
+							AddNpcToAliveList(entity, 1);
 						b_thisNpcIsABoss[entity] = b_thisNpcIsABoss[npc.index];
 						b_thisNpcHasAnOutline[entity] = b_thisNpcHasAnOutline[npc.index];
 						view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
@@ -443,7 +445,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 	if(npc.m_flAttackHappens)
 	{
 		npc.i_GunMode = 0;
-		if(gameTime > npc.m_flAttackHappens && npc.m_flNextMeleeAttack < gameTime)
+		if(gameTime > npc.m_flAttackHappens)
 		{
 			npc.m_flAttackHappens = 0.0;
 			Handle swingTrace;
@@ -477,7 +479,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 	}
 
 	//This ranged unit is more of an intruder, so we will get whatever enemy its pathing
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
+	if(npc.m_flNextMeleeAttack < gameTime && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
 	{
 		//close enough to concider as a melee range attack.
 		npc.i_GunMode = 0;

@@ -22,14 +22,15 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeAttackShortSounds[][] = {
 	"weapons/sniper_rifle_classic_shoot.wav",
 };
-/*
+
 int LighthouseID;
 
 int LighthouseGlobaID()
 {
 	return LighthouseID;
 }
-*/
+
+
 void Iberia_Lighthouse_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -44,7 +45,7 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	LighthouseID = NPC_Add(data);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_1);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_2);
 }
@@ -108,17 +109,17 @@ methodmap IberiaLighthouse < CClotBody
 	}
 	public IberiaLighthouse(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
+		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(100), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
 		b_NpcUnableToDie[npc.index] = true;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", IBERIA_LIGHTHOUSE_MODEL_1);
+		npc.m_iWearable1 = npc.EquipItemSeperate(IBERIA_LIGHTHOUSE_MODEL_1);
 		SetVariantString("0.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItemSeperate("partyhat", IBERIA_LIGHTHOUSE_MODEL_2,_,_,_,170.0);
+		npc.m_iWearable2 = npc.EquipItemSeperate(IBERIA_LIGHTHOUSE_MODEL_2,_,_,_,170.0);
 		SetVariantString("2.7");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
@@ -126,11 +127,12 @@ methodmap IberiaLighthouse < CClotBody
 		
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		
 		wave *= 0.1;
 	
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
@@ -144,7 +146,7 @@ methodmap IberiaLighthouse < CClotBody
 		b_thisNpcIsABoss[npc.index] = true;
 		if(!IsValidEntity(RaidBossActive))
 		{
-			RaidModeScaling = 10.0;	//just a safety net
+			RaidModeScaling = 0.0;	//just a safety net
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidAllowsBuildings = true;
@@ -160,7 +162,6 @@ methodmap IberiaLighthouse < CClotBody
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
 		npc.m_flNemalSummonSilvesterCD = GetGameTime() + 25.0;
 
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
@@ -294,6 +295,13 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 		}
 		return;
 	}
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidModeScaling = 0.0;	//just a safety net
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidModeTime = GetGameTime(npc.index) + 9000.0;
+		RaidAllowsBuildings = true;
+	}
 	//global range.
 	npc.m_flNextRangedSpecialAttack = 0.0;
 	IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9999.0);
@@ -335,7 +343,7 @@ public void IberiaLighthouse_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -345,38 +353,6 @@ public void IberiaLighthouse_NPCDeath(int entity)
 }
 
 
-
-
-static char[] GetBuildingHealth()
-{
-	int health = 120;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(ZR_GetWaveCount()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
-	}
-	else if(ZR_GetWaveCount()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health /= 2;
-	
-	
-	health = RoundToCeil(float(health) * 1.2);
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
 
 int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 {

@@ -69,7 +69,7 @@ void Victorian_Charger_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianCharger(client, vecPos, vecAng, ally);
+	return VictorianCharger(vecPos, vecAng, ally);
 }
 
 methodmap VictorianCharger < CClotBody
@@ -115,7 +115,7 @@ methodmap VictorianCharger < CClotBody
 	}
 	
 	
-	public VictorianCharger(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianCharger(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianCharger npc = view_as<VictorianCharger>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1000", ally));
 		

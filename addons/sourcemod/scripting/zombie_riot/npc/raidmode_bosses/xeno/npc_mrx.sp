@@ -75,14 +75,13 @@ static char g_NeckSnap[][] =
 	"player/taunt_knuckle_crack.wav",
 };
 
-static int i_GrabbedThis[MAXENTITIES];
-static float fl_RegainWalkAnim[MAXENTITIES];
 
-static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
+
+
 static int i_SideHurtWhich[MAXENTITIES];
-static float f_NemesisImmuneToInfection[MAXENTITIES];
-static float f_NemesisSpecialDeathAnimation[MAXENTITIES];
-static float f_NemesisRandomInfectionCycle[MAXENTITIES];
+
+
+
 
 static float f_MassRushHitAttack[MAXENTITIES];
 static float f_MassRushHitAttackCD[MAXENTITIES];
@@ -298,7 +297,7 @@ methodmap RaidbossMrX < CClotBody
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 
-		RaidModeScaling = 9999999.99;
+		RaidModeScaling = 0.0;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		WavesUpdateDifficultyName();
 		npc.m_bThisNpcIsABoss = true;
@@ -529,13 +528,14 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				if(IsValidEntity(client))
 				{
 					SDKHooks_TakeDamage(client, npc.index, npc.index, 7000.0, DMG_CRUSH, -1);
-					f_AntiStuckPhaseThrough[client] = GetGameTime() + 2.0;
+					f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0;
+					ApplyStatusEffect(client, client, "Intangible", 3.0);
 					if(client <= MaxClients)
 						Client_Shake(client, 0, 20.0, 20.0, 1.0, false);
 
 					npc.PlaySnapSound();
-					b_NoGravity[client] = true;
-					ApplyStatusEffect(client, client, "Solid Stance", FAR_FUTURE);	
+					b_NoGravity[client] = false;
+					RemoveSpecificBuff(client, "Solid Stance");
 					npc.SetVelocity({0.0,0.0,0.0});
 					if(IsValidClient(client))
 					{
@@ -591,6 +591,17 @@ public void RaidbossMrX_ClotThink(int iNPC)
 						NPC_StopPathing(npc.index);
 						f_NpcTurnPenalty[npc.index] = 0.0;
 					}
+
+					if(i_IsVehicle[Enemy_I_See] == 2)
+					{
+						int driver = Vehicle_Driver(Enemy_I_See);
+						if(driver != -1)
+						{
+							Enemy_I_See = driver;
+							Vehicle_Exit(driver);
+						}
+					}
+					
 					npc.m_flNextRangedAttackHappening = 0.0;
 					npc.m_flDoingAnimation = gameTime + 5.0;
 					npc.flXenoInfectedSpecialHurtTime = gameTime + 5.0;
@@ -611,12 +622,12 @@ public void RaidbossMrX_ClotThink(int iNPC)
 					{
 						SetEntityMoveType(Enemy_I_See, MOVETYPE_NONE); //Cant move XD
 						SetEntityCollisionGroup(Enemy_I_See, 1);
-						TF2_AddCondition(Enemy_I_See, TFCond_FreezeInput, 5.0);
+						FreezeNpcInTime(Enemy_I_See, 5.0);
 					}
 					else
 					{
 						b_NoGravity[Enemy_I_See] = true;
-						ApplyStatusEffect(Enemy_I_See, Enemy_I_See, "Solid Stance", FAR_FUTURE);	
+						ApplyStatusEffect(Enemy_I_See, Enemy_I_See, "Solid Stance", 999999.0);	
 						npcenemy.SetVelocity({0.0,0.0,0.0});
 					}
 					f_TankGrabbedStandStill[npcenemy.index] = GetGameTime() + 5.5;
@@ -1016,12 +1027,12 @@ public void RaidbossMrX_NPCDeath(int entity)
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 				{
-					ApplyStatusEffect(npc.index, other, "Hussar's Warscream", FAR_FUTURE);
+					ApplyStatusEffect(npc.index, other, "Hussar's Warscream", 999999.0);	
 				}
 			}
 		}

@@ -52,7 +52,7 @@ void VictorianVanguard_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianVanguard(client, vecPos, vecAng, ally);
+	return VictorianVanguard(vecPos, vecAng, ally);
 }
 
 methodmap VictorianVanguard < CClotBody
@@ -94,7 +94,7 @@ methodmap VictorianVanguard < CClotBody
 	}
 	
 	
-	public VictorianVanguard(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianVanguard(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianVanguard npc = view_as<VictorianVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1000", ally,false));
 		

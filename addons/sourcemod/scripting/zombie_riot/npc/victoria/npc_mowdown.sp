@@ -47,7 +47,7 @@ void VictoriaMowdown_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaMowdown(client, vecPos, vecAng, ally);
+	return VictoriaMowdown(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaMowdown < CClotBody
@@ -104,9 +104,9 @@ methodmap VictoriaMowdown < CClotBody
         }
     }
 
-	public VictoriaMowdown(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaMowdown(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "26000", ally));
+		VictoriaMowdown npc = view_as<VictoriaMowdown>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.4", "26000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

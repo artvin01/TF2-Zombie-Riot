@@ -385,7 +385,7 @@ void RaidbossBobTheFirst_Duo_NPCDeath(int entity)
 	WavesUpdateDifficultyName();
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != INVALID_ENT_REFERENCE && other != npc.index)
 		{
 			if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -407,7 +407,7 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 	
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int victim = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(victim != INVALID_ENT_REFERENCE && GetTeam(victim) != TFTeam_Red)
 			SmiteNpcToDeath(victim);
 	}
@@ -439,11 +439,11 @@ static void GivePlayerItems(int coolwin = 0)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
 			if(coolwin == 0)
-				CPrintToChat(client, "{default}Bob has defeated you, however... you gained: {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}Bob has cured you of the sea, you gained: {yellow}''Bob's Curing Hand''{default}!");
 			else
 				CPrintToChat(client, "{default}You didnt attack bob for no reason and thus he gives you: {yellow}''Bob's Curing Hand''{default}!");
 		}
@@ -500,7 +500,7 @@ public Action Smite_Timer_Bob(Handle Smite_Logic, DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		 
 		CreateEarthquake(spawnLoc, 1.0, BOB_FIRST_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increace
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increase
 	
 		return Plugin_Stop;
 	}
@@ -579,7 +579,6 @@ stock void BobPullTarget(int bobnpc, int enemy)
 	}
 }
 
-static int SensalHitDetected_2[MAXENTITIES];
 
 void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], float TimeUntillHit, float damage, bool kick)
 {
@@ -587,7 +586,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	RaidbossBobTheFirst_Duo npc = view_as<RaidbossBobTheFirst_Duo>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 
@@ -678,7 +677,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected_2[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	float VectorTarget[3];
 	float VectorStart[3];
@@ -732,7 +731,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected_2[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float damage = damagedata;
@@ -773,7 +772,7 @@ public bool Sensal_BEAM_TraceUsers_2(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected_2[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

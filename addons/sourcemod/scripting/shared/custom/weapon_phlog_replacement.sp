@@ -89,6 +89,7 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 	BEAM_Targets_Hit[client] = 1.0;
 	float damage = 25.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
+	damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
 	float playerPos[3];
 
 	for (int building = 0; building < MAX_TARGETS_FLAME; building++)
@@ -129,8 +130,7 @@ static bool Flamer_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(client, entity, true, true))
 		{
 			for(int i=0; i < MAX_TARGETS_FLAME; i++)
 			{
@@ -216,7 +216,7 @@ public void PHLOG_Cooldown_Logic(int client, int weapon)
 				PrintHintText(client,"Phlog Hit Charge [Cooldown: %.1f]",f_PHLOGabilitydelay[client] - GetGameTime());
 			}
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 			f_PHLOGhuddelay[client] = GetGameTime() + 0.5;
 		}
 	}
@@ -238,11 +238,11 @@ public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 	//This ability has no cooldown in itself, it just relies on hits you do.
 	if(i_PHLOGHitsDone[client] >= PHLOG_JUDGEMENT_MAX_HITS_NEEDED || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		i_PHLOGHitsDone[client] = 0;
 		f_PHLOGabilitydelay[client] = GetGameTime() + 10.0; //Have a cooldown so they cannot spam it.
 		EmitSoundToAll(PHLOG_ABILITY, client, _, 75, _, 0.60);
-		TF2_AddCondition(client, TFCond_Ubercharged, 1.0); //ohboy
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0); //ohboy
 		TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 10.0);
 		TF2_AddCondition(client, TFCond_CritCanteen, 10.0);
 		ApplyTempAttrib(weapon, 2, 1.35, 10.0); //way higher damage.

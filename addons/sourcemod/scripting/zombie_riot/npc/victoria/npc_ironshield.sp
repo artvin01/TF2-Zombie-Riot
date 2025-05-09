@@ -51,7 +51,7 @@ void VictorianIronShield_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianIronShield(client, vecPos, vecAng, ally);
+	return VictorianIronShield(vecPos, vecAng, ally);
 }
 methodmap VictorianIronShield < CClotBody
 {
@@ -61,9 +61,7 @@ methodmap VictorianIronShield < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -106,7 +104,7 @@ methodmap VictorianIronShield < CClotBody
 
 	}
 	
-	public VictorianIronShield(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianIronShield(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianIronShield npc = view_as<VictorianIronShield>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.5", "65000", ally, false, true));
 		
@@ -287,7 +285,7 @@ void VictorianIronShieldSelfdefense(VictorianIronShield npc, float gameTime, int
 					if(npc.m_iOverlordComboAttack <= 0)
 					{
 						float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-						makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(HitDamage * 2.5), 150,_,_,_, false, 10.0);
+						makeexplosion(npc.index, npc_vec, RoundToCeil(HitDamage * 2.5), 150,_,_, false, 10.0);
 						npc.m_iOverlordComboAttack = 2;
 					}
 					else
@@ -385,6 +383,8 @@ public void VictorianIronShield_NPCDeath(int entity)
 		fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 		b_StaticNPC[other] = b_StaticNPC[npc.index];
+		if(b_StaticNPC[other])
+			AddNpcToAliveList(other, 1);
 	}
 
 	if(IsValidEntity(npc.m_iWearable1))

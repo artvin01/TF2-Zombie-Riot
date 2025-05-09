@@ -72,7 +72,7 @@ void Twin1_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Matrix_Twins(client, vecPos, vecAng, ally, data);
+	return Matrix_Twins(vecPos, vecAng, ally, data);
 }
 methodmap Matrix_Twins < CClotBody
 {
@@ -142,7 +142,7 @@ methodmap Matrix_Twins < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
-	public Matrix_Twins(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Matrix_Twins(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Matrix_Twins npc = view_as<Matrix_Twins>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "700", ally));
 		
@@ -179,11 +179,49 @@ methodmap Matrix_Twins < CClotBody
 		bool raid = StrContains(data, "Im_The_raid") != -1;
 		if(raid)
 		{
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				float value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			}
+			
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+			float amount_of_people = float(CountPlayersOnRed());
+			
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			
+			amount_of_people *= 0.12;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
+				
+			RaidModeScaling *= amount_of_people;
+			RaidModeScaling *= 0.85;
+
 			RaidPrepare(npc);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/doubletrouble.mp3");
 			music.Time = 114;
-			music.Volume = 1.1;
+			music.Volume = 1.0;
 			music.Custom = false;
 			strcopy(music.Name, sizeof(music.Name), "Double Trouble");
 			strcopy(music.Artist, sizeof(music.Artist), "Don Davis");
@@ -679,7 +717,7 @@ static void Matrix_Twins_Apply_Healing(Matrix_Twins npc, float gameTime)
 
 static void Matrix_Twins_healspeak(Matrix_Twins npc)
 {
-	CPrintToChatAll("{forestgreen}%s{default}: %s", c_NpcName[npc.index], npc.b_Twin_On ? "My Healing Glasses are now Ready." : "My Self Regeneration is now Ready.");
+	CPrintToChatAll("{forestgreen}%s{default}: %s", NpcStats_ReturnNpcName(npc.index), npc.b_Twin_On ? "My Healing Glasses are now Ready." : "My Self Regeneration is now Ready.");
 }
 
 static void Matrix_Twins_Reset_Healing(Matrix_Twins npc, float gameTime)
@@ -750,38 +788,7 @@ static void RaidPrepare(Matrix_Twins npc)
 	
 	b_thisNpcIsARaid[npc.index] = true;
 	npc.m_flMeleeArmor = 1.25;
-
-	RaidModeScaling = float(ZR_GetWaveCount()+1);
-	if(RaidModeScaling < 55)
-	{
-		RaidModeScaling *= 0.19; //abit low, inreacing
-	}
-	else
-	{
-		RaidModeScaling *= 0.38;
-	}
 	
-	float amount_of_people = float(CountPlayersOnRed());
-	if(amount_of_people > 12.0)
-	{
-		amount_of_people = 12.0;
-	}
-	amount_of_people *= 0.12;
-	
-	if(amount_of_people < 1.0)
-		amount_of_people = 1.0;
-
-	RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-	
-	if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-	{
-		RaidModeScaling *= 0.85;
-	}
-	else if(ZR_GetWaveCount()+1 > 55)
-	{
-		RaidModeTime = GetGameTime(npc.index) + 220.0;
-		RaidModeScaling *= 0.85;
-	}
 }
 
 static void Spawn_My_Brother(Matrix_Twins npc)

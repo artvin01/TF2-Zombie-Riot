@@ -108,7 +108,7 @@ float Vs_RechargeTimeMax[MAXENTITIES];
 static int Vs_Target[MAXENTITIES];
 static int Vs_ParticleSpawned[MAXENTITIES];
 static float Vs_Temp_Pos[MAXENTITIES][3];
-bool Vs_LockOn[MAXTF2PLAYERS];
+bool Vs_LockOn[MAXENTITIES];
 int Vs_Atomizer_To_Huscarls;
 
 static float FTL[MAXENTITIES];
@@ -120,8 +120,8 @@ static int I_cant_do_this_all_day[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool YaWeFxxked[MAXENTITIES];
 static bool ParticleSpawned[MAXENTITIES];
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 static bool SUPERHIT[MAXENTITIES];
 
 static int gLaser1;
@@ -292,7 +292,7 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 99.0;
 			npc.m_flAngerDelay = GetGameTime() + 99.0;
 			npc.PlaySupportSpawnSound();
-			CPrintToChatAll("{blue}Atomizer{default}: Did you really thought we would let you sabotage our Radiotower?");
+			CPrintToChatAll("{blue}Atomizer{default}: Did you really think we would let you sabotage our Radiotower?");
 		}
 		else
 		{
@@ -346,19 +346,35 @@ methodmap Atomizer < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
-			music.Time = 128;
-			music.Volume = 2.0;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
-			strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
-			Music_SetRaidMusic(music);
+			if(StrContains(data, "nomusic") == -1)
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_atomizer.mp3");
+				music.Time = 128;
+				music.Volume = 2.0;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Hard to Ignore");
+				strcopy(music.Artist, sizeof(music.Artist), "UNFINISH");
+				Music_SetRaidMusic(music);
+			}
 			
 			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let them get out alive!");
 			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 			
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				float value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			}
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -380,16 +396,6 @@ methodmap Atomizer < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-			{
-				RaidModeScaling *= 0.85;
-			}
-			else if(ZR_GetWaveCount()+1 > 55)
-			{
-				FTL[npc.index] = 220.0;
-				RaidModeTime = GetGameTime(npc.index) + FTL[npc.index];
-				RaidModeScaling *= 0.65;
-			}
 		}
 		npc.m_iChanged_WalkCycle = -1;
 
@@ -530,7 +536,7 @@ static void Clone_ClotThink(int iNPC)
 				}						
 			}
 		}
-		IncreaceEntityDamageTakenBy(npc.index, 0.7, 0.1);
+		IncreaseEntityDamageTakenBy(npc.index, 0.7, 0.1);
 		spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 		spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 		npc.m_flDoingAnimation = gameTime + 1.1;
@@ -760,7 +766,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
 				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
@@ -945,7 +951,7 @@ static void Internal_ClotThink(int iNPC)
 					}						
 				}
 			}
-			IncreaceEntityDamageTakenBy(npc.index, 0.7, 0.1);
+			IncreaseEntityDamageTakenBy(npc.index, 0.7, 0.1);
 			spawnRing_Vectors(ProjLocBase, 250.0  * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 			spawnRing_Vectors(ProjLocBase, 250.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 175, 255, 150, 1, 0.3, 5.0, 8.0, 3);	
 			npc.m_flDoingAnimation = gameTime + 1.1;
@@ -1078,7 +1084,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			I_cant_do_this_all_day[npc.index]=0;
 			npc.m_bFUCKYOU=true;
-			IncreaceEntityDamageTakenBy(npc.index, 0.05, 1.0);
+			IncreaseEntityDamageTakenBy(npc.index, 0.05, 1.0);
 			npc.m_fbRangedSpecialOn = true;
 			FTL[npc.index] += 5.0;
 			RaidModeTime += 5.0;

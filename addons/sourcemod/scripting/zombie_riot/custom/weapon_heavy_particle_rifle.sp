@@ -39,7 +39,7 @@ public void Heavy_Particle_Rifle_Mapstart()
 }
 
 
-
+#define BASE_HEAVYRIFLE_CLIPSIZE_NEED (40.0 * 2.0)
 public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classname, bool &result)
 {
 	float speed = 1500.0;
@@ -72,7 +72,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 	}
 	else
 	{
-		int max_shots= RoundToFloor(40.0 * Attributes_Get(weapon, 4, 1.0)*0.75/HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
+		int max_shots= RoundToFloor(BASE_HEAVYRIFLE_CLIPSIZE_NEED * Attributes_Get(weapon, 4, 1.0)*0.75/HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
 
 		float ratio =  float(i_shotsfired[client])/float(max_shots);
 
@@ -90,7 +90,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 			{
 				f_hud_timer[client] = GameTime+0.5;
 				PrintHintText(client, "Particle Reactor: [FULL POWER]");
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 			if(!b_fullcharge_sound[client])
 			{
@@ -107,7 +107,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 			{
 				f_hud_timer[client] = GameTime+0.5;
 				PrintHintText(client, "Particle Reactor: [%.1f/%.1f]",ratio,HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 		}
 	}
@@ -125,7 +125,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 	Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_HEAVY_PARTICLE_RIFLE, weapon, "unusual_genplasmos_b_parent", angles);
 
 }
-
+/*
 public float Player_OnTakeDamage_Heavy_Particle_Rifle(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
 	// need position of either the inflictor or the attacker
@@ -186,7 +186,7 @@ public float Player_OnTakeDamage_Heavy_Particle_Rifle(int victim, float &damage,
 	}
 	return damage;
 }
-
+*/
 public void Weapon_Heavy_Particle_Rifle(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);

@@ -105,7 +105,7 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 	}
 	else
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		MakePlayerGiveResponseVoice(client, 4);
 
 		int cash;
@@ -169,7 +169,7 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 
 		Ability_Apply_Cooldown(client, slot, cooldown);
 		ClientCommand(client, "playgamesound " ... FLAMETAIL_ABILITY);
-		MakeBladeBloddy(client, true, weapon);
+		MakeBladeBloddy(client, true);
 		DataPack pack;
 		CreateDataTimer(4.0, Timer_ExtinguishThings, pack);
 		pack.WriteCell(EntIndexToEntRef(client));
@@ -186,7 +186,7 @@ public Action Timer_ExtinguishThings(Handle timer, DataPack pack)
 	{
 		return Plugin_Stop;
 	}
-	MakeBladeBloddy(client, false, weapon);
+	MakeBladeBloddy(client, false);
 	return Plugin_Stop;
 }
 

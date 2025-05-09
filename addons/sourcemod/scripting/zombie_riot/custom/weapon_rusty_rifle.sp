@@ -124,7 +124,7 @@ public void Rusty_HUD(int client, int weapon, bool forced)
 			else
 				PrintHintText(client, "Big Shot is not loaded.");
 			
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			
 		}
 
 		f_NextRustyHUD[client] = GetGameTime() + 0.5;
@@ -389,7 +389,7 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 			SetForceButtonState(client, true, IN_RELOAD);
 			RequestFrame(BigShot_RemoveForcedReload, GetClientUserId(client));
 			EmitSoundToAll(SND_RUSTY_BIGSHOT_PREPARE, client);
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			BigShot_Active[client] = true;
 			BigShot_Tier[client] = tier;
 			Rusty_HUD(client, weapon, true);

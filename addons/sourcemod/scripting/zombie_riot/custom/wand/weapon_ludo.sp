@@ -1654,47 +1654,47 @@ static void Ludo_Show_Hud(int client)
 				case 0:
 				{
 					PrintHintText(client,"[No cards drawn!]\n[%.1i] Cards\nBlackjack Value: %.1i/21", CardCounter[client], BlackJack[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 1:
 				{
 					PrintHintText(client,"[%s]\n[%.1i] Cards\nBlackjack Value: %.1i/21", FirstCard[client], CardCounter[client], BlackJack[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 2:
 				{
 					PrintHintText(client,"[%s | %s]\n[%.1i] Cards\nBlackjack Value: %.1i/21", FirstCard[client], SecondCard[client], CardCounter[client], BlackJack[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 3:
 				{
 					PrintHintText(client,"[%s | %s | %s]\n[%.1i] Cards\nBlackjack Value: %.1i/21", FirstCard[client], SecondCard[client], ThirdCard[client], CardCounter[client], BlackJack[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 4:
 				{
 					PrintHintText(client,"[%s | %s | %s | %s]\n[%.1i] Cards\nBlackjack Value: %.1i/21", FirstCard[client], SecondCard[client], ThirdCard[client], FourthCard[client], CardCounter[client], BlackJack[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 5:
 				{
 					PrintHintText(client,"[%s | %s | %s | %s | %s]\n[%.1i] Cards\nBlackjack Value: %.1i/21", FirstCard[client], SecondCard[client], ThirdCard[client], FourthCard[client], FifthCard[client], CardCounter[client], BlackJack[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 6:
 				{
 					PrintHintText(client,"[%s | %s | %s | %s | %s | %s]\n[%.1i] Cards\nBlackjack Value: %.1i/21", FirstCard[client], SecondCard[client], ThirdCard[client], FourthCard[client], FifthCard[client], SixthCard[client], CardCounter[client], BlackJack[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 7:
 				{
 					PrintHintText(client,"[%s | %s | %s | %s | %s | %s | %s]\n[%.1i] Cards\nBlackjack Value: %.1i/21", FirstCard[client], SecondCard[client], ThirdCard[client], FourthCard[client], FifthCard[client], SixthCard[client], SeventhCard[client], CardCounter[client], BlackJack[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				default:
 				{
 					PrintHintText(client,"Error! Press M2, if this persists contact Mened and SCREAM AT THEM!!!!!");
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 			}
 		}
@@ -1705,47 +1705,47 @@ static void Ludo_Show_Hud(int client)
 				case 0:
 				{
 					PrintHintText(client,"[No cards drawn!]\n[%.1i] Cards\nBlackjack Value: %.1i/21\nMathematical Foresight: [%.1i]", CardCounter[client], BlackJack[client], BlackjackCounterRandom[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 1:
 				{
 					PrintHintText(client,"[%s%s]\n[%.1i] Cards\nBlackjack Value: %.1i/21\nMathematical Foresight: [%.1i]", FirstCard[client], FirstCardSymbol[client], CardCounter[client], BlackJack[client], BlackjackCounterRandom[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 2:
 				{
 					PrintHintText(client,"[%s%s | %s%s]\n[%.1i] Cards\nBlackjack Value: %.1i/21\nMathematical Foresight: [%.1i]", FirstCard[client], FirstCardSymbol[client], SecondCard[client], SecondCardSymbol[client], CardCounter[client], BlackJack[client], BlackjackCounterRandom[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 3:
 				{
 					PrintHintText(client,"[%s%s | %s%s | %s%s]\n[%.1i] Cards\nBlackjack Value: %.1i/21\nMathematical Foresight: [%.1i]", FirstCard[client], FirstCardSymbol[client], SecondCard[client], SecondCardSymbol[client], ThirdCard[client], ThirdCardSymbol[client], CardCounter[client], BlackJack[client], BlackjackCounterRandom[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 4:
 				{
 					PrintHintText(client,"[%s%s | %s%s | %s%s | %s%s]\n[%.1i] Cards\nBlackjack Value: %.1i/21\nMathematical Foresight: [%.1i]", FirstCard[client], FirstCardSymbol[client], SecondCard[client], SecondCardSymbol[client], ThirdCard[client], ThirdCardSymbol[client], FourthCard[client], FourthCardSymbol[client], CardCounter[client], BlackJack[client], BlackjackCounterRandom[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 5:
 				{
 					PrintHintText(client,"[%s%s | %s%s | %s%s | %s%s | %s%s]\n[%.1i] Cards\nBlackjack Value: %.1i/21\nMathematical Foresight: [%.1i]", FirstCard[client], FirstCardSymbol[client], SecondCard[client], SecondCardSymbol[client], ThirdCard[client], ThirdCardSymbol[client], FourthCard[client], FourthCardSymbol[client], FifthCard[client], FifthCardSymbol[client], CardCounter[client], BlackJack[client], BlackjackCounterRandom[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 6:
 				{
 					PrintHintText(client,"[%s%s | %s%s | %s%s | %s%s | %s%s | %s%s]\n[%.1i] Cards\nBlackjack Value: %.1i/21\nMathematical Foresight: [%.1i]", FirstCard[client], FirstCardSymbol[client], SecondCard[client], SecondCardSymbol[client], ThirdCard[client], ThirdCardSymbol[client], FourthCard[client], FourthCardSymbol[client], FifthCard[client], FifthCardSymbol[client], SixthCard[client], SixthCardSymbol[client], CardCounter[client], BlackJack[client], BlackjackCounterRandom[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				case 7:
 				{
 					PrintHintText(client,"[%s%s | %s%s | %s%s | %s%s | %s%s | %s%s | %s%s]\n[%.1i] Cards\nBlackjack Value: %.1i/21\nMathematical Foresight: [%.1i]", FirstCard[client], FirstCardSymbol[client], SecondCard[client], SecondCardSymbol[client], ThirdCard[client], ThirdCardSymbol[client], FourthCard[client], FourthCardSymbol[client], FifthCard[client], FifthCardSymbol[client], SixthCard[client], SixthCardSymbol[client], SeventhCard[client], SeventhCardSymbol[client], CardCounter[client], BlackJack[client], BlackjackCounterRandom[client]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 				default:
 				{
 					PrintHintText(client,"Error! Press M2, if this persists contact Mened and SCREAM AT THEM!!!!!");
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					
 				}
 			}
 		}

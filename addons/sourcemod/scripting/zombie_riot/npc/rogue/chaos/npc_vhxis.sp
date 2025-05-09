@@ -301,10 +301,25 @@ methodmap Vhxis < CClotBody
 		
 		RaidModeTime = GetGameTime(npc.index) + 350.0;
 		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
-		
+
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+		}
+
+
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -1026,7 +1041,6 @@ bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 
 
 
-int VoidVhxisHitDetected[MAXENTITIES];
 
 void VoidVhxisInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
@@ -1086,7 +1100,7 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		VoidVhxisHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -1139,7 +1153,7 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (VoidVhxisHitDetected[victim] && IsValidEnemy(entity, victim, true))
+		if (LaserVarious_HitDetection[victim] && IsValidEnemy(entity, victim, true))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -1153,7 +1167,7 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			Elemental_AddVoidDamage(victim, entity, 200, true, true);
-			IncreaceEntityDamageTakenBy(victim, 0.15, 10.0, true);
+			IncreaseEntityDamageTakenBy(victim, 0.15, 10.0, true);
 		}
 	}
 	delete pack;
@@ -1164,7 +1178,7 @@ public bool VoidVhxis_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		VoidVhxisHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

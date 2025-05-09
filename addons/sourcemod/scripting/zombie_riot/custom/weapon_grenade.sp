@@ -9,6 +9,7 @@ static int g_ProjectileModel;
 static int g_ProjectileModelPipe;
 Handle TimerHudGrenade[MAXPLAYERS+1] = {null, ...};
 static float f_GrenadeHudCD[MAXPLAYERS+1];
+static float OriginalSize[MAXENTITIES];
 
 
 public bool ClientHasUseableGrenadeOrDrink(int client)
@@ -41,6 +42,8 @@ public void Enable_Management_GrenadeHud(int client, int weapon) // Enable manag
 			TimerHudGrenade[client] = CreateDataTimer(0.5, TimerHudGrenade_Manager, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
+			OriginalSize[weapon] = f_WeaponSizeOverride[weapon];
+			UpdateWeaponVisibleGrenade(weapon, client);
 			return;
 		}
 	}
@@ -51,6 +54,8 @@ public void Enable_Management_GrenadeHud(int client, int weapon) // Enable manag
 		TimerHudGrenade[client] = CreateDataTimer(0.5, TimerHudGrenade_Manager, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+		OriginalSize[weapon] = f_WeaponSizeOverride[weapon];
+		UpdateWeaponVisibleGrenade(weapon, client);
 	}
 }
 public Action TimerHudGrenade_Manager(Handle timer, DataPack pack)
@@ -63,9 +68,42 @@ public Action TimerHudGrenade_Manager(Handle timer, DataPack pack)
 		TimerHudGrenade[client] = null;
 		return Plugin_Stop;
 	}	
+	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	UpdateWeaponVisibleGrenade(weapon, client, (weapon_active == weapon));
 	return Plugin_Continue;
 }
 
+void UpdateWeaponVisibleGrenade(int weapon, int client, bool Update = false)
+{
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ZEALOT_POTION)
+	{
+		if (Ability_Check_Cooldown(client, 2, weapon) > 0.0)
+		{
+			f_WeaponSizeOverride[weapon] = 0.0;
+			f_WeaponSizeOverrideViewmodel[weapon] = 0.0;
+		}
+		else
+		{
+			f_WeaponSizeOverride[weapon] = OriginalSize[weapon];
+			f_WeaponSizeOverrideViewmodel[weapon] = OriginalSize[weapon];
+		}
+	}
+	else
+	{
+		if(CurrentAmmo[client][Ammo_Hand_Grenade] == 0)
+		{
+			f_WeaponSizeOverride[weapon] = 0.0;
+			f_WeaponSizeOverrideViewmodel[weapon] = 0.0;
+		}
+		else
+		{
+			f_WeaponSizeOverride[weapon] = OriginalSize[weapon];
+			f_WeaponSizeOverrideViewmodel[weapon] = OriginalSize[weapon];
+		}
+	}
+	if(Update)
+		HidePlayerWeaponModel(client, weapon);
+}
 public void Grenade_Custom_Precache()
 {
 	Zero(Handle_on);
@@ -74,7 +112,7 @@ public void Grenade_Custom_Precache()
 	PrecacheSound("mvm/giant_demoman/giant_demoman_grenade_shoot.wav");
 	
 	g_ProjectileModel = PrecacheModel("models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
-	g_ProjectileModelPipe = PrecacheModel("models/workshop/weapons/c_models/c_caber/c_caber.mdl");
+	g_ProjectileModelPipe = PrecacheModel("models/weapons/w_grenade.mdl");
 }
 
 public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)
@@ -82,10 +120,10 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 	if(weapon >= MaxClients)
 	{
 		weapon_id[client] = weapon;
-		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(15.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
+		Give_bomb_back[client] = CreateTimer(15.0 * CooldownReductionAmount(client), Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(15.0 * CooldownReductionAmount(client), Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
 	//	CreateTimer(14.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-		GrenadeApplyCooldownHud(client, 15.0);
+		GrenadeApplyCooldownHud(client, 15.0 * CooldownReductionAmount(client));
 		if(Handle_on[client])
 		{
 			delete Give_bomb_back[client];
@@ -96,6 +134,7 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 		Handle_on[client] = true;
 		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
+		UpdateWeaponVisibleGrenade(weapon, client, true);
 	}
 }
 
@@ -126,9 +165,12 @@ public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool
 	if(weapon >= MaxClients)
 	{
 		weapon_id[client] = weapon;
-		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
+		float DefaultCooldownAlly = 15.0;
+		DefaultCooldownAlly *= CooldownReductionAmount(client);
+		DefaultCooldownAlly *= Attributes_Get(weapon, 97, 1.0);
+		Give_bomb_back[client] = CreateTimer(DefaultCooldownAlly, Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
 	//	CreateTimer(14.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-		GrenadeApplyCooldownHud(client, 15.0);
+		GrenadeApplyCooldownHud(client, DefaultCooldownAlly);
 		if(Handle_on[client])
 		{
 			delete Give_bomb_back[client];
@@ -139,6 +181,7 @@ public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool
 		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
 		Handle_on[client] = true;
+		UpdateWeaponVisibleGrenade(weapon, client, true);
 	}
 }
 

@@ -69,7 +69,7 @@ void AgentBen_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AgentBen(client, vecPos, vecAng, ally);
+	return AgentBen(vecPos, vecAng, ally);
 }
 
 methodmap AgentBen < CClotBody
@@ -117,7 +117,7 @@ methodmap AgentBen < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 95);
 	}
 	
-	public AgentBen(int client, float vecPos[3], float vecAng[3], int ally)
+	public AgentBen(float vecPos[3], float vecAng[3], int ally)
 	{
 		AgentBen npc = view_as<AgentBen>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "700", ally));
 		

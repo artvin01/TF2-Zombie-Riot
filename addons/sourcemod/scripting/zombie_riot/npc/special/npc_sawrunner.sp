@@ -55,37 +55,9 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return SawRunner(vecPos, vecAng, team);
 }
-static int i_PlayIdleAlertSound[MAXENTITIES];
-static int i_PlayMusicSound[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 
-static char[] GetSawRunnerHealth()
-{
-	int health = 65;
-	
-	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(ZR_GetWaveCount()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
-	}
-	else if(ZR_GetWaveCount()+1 < 45)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
-	}
-	
-	health = health * 3 / 8;
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
-}
+
+
 
 methodmap SawRunner < CClotBody
 {
@@ -107,9 +79,7 @@ methodmap SawRunner < CClotBody
 		EmitCustomToAll(g_IdleChainsaw[GetRandomInt(0, sizeof(g_IdleChainsaw) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetEngineTime() + 2.5;
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -155,7 +125,7 @@ methodmap SawRunner < CClotBody
 	
 	public SawRunner(float vecPos[3], float vecAng[3], int ally)
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", GetSawRunnerHealth(), ally, false, false, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", MinibossHealthScaling(90), ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 2;
 		
@@ -183,6 +153,7 @@ methodmap SawRunner < CClotBody
 		func_NPCOnTakeDamage[npc.index] = SawRunner_OnTakeDamage;
 		func_NPCThink[npc.index] = SawRunner_ClotThink;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
+		f_HeadshotDamageMultiNpc[npc.index] = 2.0;
 		
 		
 		npc.m_flSpeed = 200.0;
@@ -195,6 +166,10 @@ methodmap SawRunner < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.StartPathing();
+		b_HideHealth[npc.index] = true;
+		b_NoHealthbar[npc.index] = true;
+		//counts as a static npc, means it wont count towards NPC limit.
+		AddNpcToAliveList(npc.index, 1);
 		
 		
 		return npc;
@@ -488,7 +463,7 @@ public Action Timer_RemoveEntitySawrunner_Tantrum(Handle timer, any entid)
 	{
 		float pos[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-		makeexplosion(-1, -1, pos, "", 150, 300);
+		makeexplosion(-1, pos, 150, 300);
 	}
 	return Plugin_Handled;
 }

@@ -150,7 +150,9 @@ methodmap LastKnight < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 0.5;
+			RaidModeScaling = MultiGlobalHealth;
+			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
+				RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -226,7 +228,7 @@ public void LastKnight_ClotThink(int iNPC)
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(entity != INVALID_ENT_REFERENCE && entity != npc.index && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && GetTeam(entity) != TFTeam_Red)
 				{
 					found = true;
@@ -285,7 +287,6 @@ public void LastKnight_ClotThink(int iNPC)
 
 	if(aggressive)
 	{
-		npc.m_flMeleeArmor = 0.4;
 		npc.m_flRangedArmor = 0.4;
 	}
 	
@@ -322,6 +323,12 @@ public void LastKnight_ClotThink(int iNPC)
 						
 						if(target > MaxClients)
 						{
+							if(i_NpcInternalId[target] == CitizenRunner_Id())
+							{
+								damage *= 20.0;
+								view_as<CClotBody>(target).m_bNoKillFeed = true;
+							}
+
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 20.0;
 							
@@ -335,6 +342,8 @@ public void LastKnight_ClotThink(int iNPC)
 						{
 							damage *= 1.75;
 						}
+						
+						damage *= MultiGlobalHealth; //Incase too many enemies, boost damage.
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
@@ -386,7 +395,7 @@ public void LastKnight_ClotThink(int iNPC)
 			if(distance < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos, true);
 			}
 			else 
 			{
@@ -432,8 +441,6 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			if(ratio < 3)
 			{
 				npc.m_iPhase = 1;
-				if(RaidBossActive == EntRefToEntIndex(npc.index))
-					RaidModeScaling = 0.75;
 			}
 		}
 		case 1:
@@ -441,15 +448,12 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			if(ratio < 1)
 			{
 				npc.m_iPhase = 2;
-				npc.m_flSpeed = 350.0;
+				npc.m_flSpeed = 300.0;
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
 				npc.m_flNextThinkTime = gameTime + 8.3;
 				npc.StopPathing();
-
-				if(RaidBossActive == EntRefToEntIndex(npc.index))
-					RaidModeScaling = 1.0;
 			}
 		}
 	}

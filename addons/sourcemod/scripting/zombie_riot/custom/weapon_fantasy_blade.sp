@@ -300,7 +300,7 @@ static void Fantasy_Show_Hud(int client, float GameTime, int pap)
 		
 	}
 	
-	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	
 }
 
 static void Get_Fake_Forward_Vec(int client, float Range, float Vec_Target[3])
@@ -462,6 +462,7 @@ static int i_halo_particles[MAXTF2PLAYERS+1];
 			
 static void Create_Halo_And_Wings(int client)
 {
+	//block
 	//Ty artvin <3
 	
 	int viewmodelModel;
@@ -481,7 +482,7 @@ static void Create_Halo_And_Wings(int client)
 
 	int pap = i_Current_Pap[client];
 
-	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//so the wings don't intefere with one another
+	bool HasWings = MagiaWingsDo(client);
 	if(HasWings)
 	{
 		if(pap>=2)
@@ -490,7 +491,7 @@ static void Create_Halo_And_Wings(int client)
 		}
 	}
 	
-	if(pap == 1)
+//	if(pap == 1)
 	{
 		bool do_new = false;
 		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
@@ -501,6 +502,8 @@ static void Create_Halo_And_Wings(int client)
 		if(do_new)
 			Create_Halo(client);
 	}
+	/*
+	Block this, too many effects are bad.
 	if(pap == 2)
 	{
 		bool do_new = false;
@@ -532,6 +535,7 @@ static void Create_Halo_And_Wings(int client)
 			Create_Wings(client,viewmodelModel);
 		}
 	}
+	*/
 }
 
 static void Create_Halo(int client)
@@ -557,6 +561,7 @@ static void Create_Halo(int client)
 	SetParent(viewmodelModel, particle, "head");
 	i_halo_particles[client] = EntIndexToEntRef(particle);
 }
+/*
 static void Create_Wings(int client, int viewmodelModel)
 {
 	float flPos[3];
@@ -622,6 +627,7 @@ static void Create_Wings(int client, int viewmodelModel)
 	i_wing_particles[client][5] = EntIndexToEntRef(particle_0);
 	
 }
+*/
 static void Destroy_Halo_And_Wings(int client)
 {
 	for(int i=0 ; i < 6 ; i++)
@@ -644,6 +650,7 @@ static void Destroy_Halo_And_Wings(int client)
 	if(IsValidEntity(halo_particle))
 		RemoveEntity(halo_particle);
 }
+
 			
 		  ////////////////////
 		 /// Slicer Logic ///
@@ -953,11 +960,13 @@ static bool Fantasy_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity) && Fantasy_Blade_BEAM_BuildingHit[client]<=FANTASY_BLADE_MAX_PENETRATION)
 	{
-		if(f_GlobalHitDetectionLogic[entity][client]<=GetGameTime())
+		//always increment by Maxentities.
+		//Client instead of target, so it gets removed if the target dies
+		if(!IsIn_HitDetectionCooldown(client + (MAXENTITIES * 3),entity))
 		{
-			f_GlobalHitDetectionLogic[entity][client] = GetGameTime() + 0.25;
 			Fantasy_Blade_BEAM_BuildingHit[client]++;
 			Fantasy_Blade_BEAM_HitDetected[entity] = true;
+			Set_HitDetectionCooldown(client + (MAXENTITIES * 3),entity, GetGameTime() + 0.25);
 		}
 	}
 	return false;
@@ -966,8 +975,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(client, entity, true, true))
 		{
 			b_I_hit_something[client] = true;
 		}

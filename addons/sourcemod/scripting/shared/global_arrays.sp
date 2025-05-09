@@ -17,6 +17,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_STAIR_ANTI_ABUSE_DAMAGE				(1 << 9)
 #define ZR_DAMAGE_NPC_REFLECT					(1 << 10)	//this npc reflects damage to another npc that can also reflect damage, use this to filter out the damage.
 #define ZR_DAMAGE_CANNOTGIB_REGARDLESS			(1 << 11)
+#define ZR_DAMAGE_ALLOW_SELFHURT				(1 << 12)
 
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.
@@ -48,7 +49,7 @@ enum
 	Ammo_Revolver,		// 19	Revolverss
 	Ammo_Shotgun,		// 20	Shotgun, Shortstop, Force-A-Nature, Soda Popper
 	Ammo_Heal,		// 21 Healing Ammunition
-	Ammo_Medigun,		// 22 Medigun Ammunition
+	Ammo_UNSUED,		// 22 UNSUED
 	Ammo_Laser,		// 23 Laser Battery
 	Ammo_Hand_Grenade,		// 24 Hand Grenade types
 	Ammo_Potion_Supply,		// 25 Drink Types
@@ -115,9 +116,12 @@ bool ForceNiko;
 Handle g_hImpulse;
 
 Handle g_hSetLocalOrigin;
+Handle g_hSetLocalAngles;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
+ArrayList RecentSoundList[MAXTF2PLAYERS];
 
+float f_PlayerLastKeyDetected[MAXTF2PLAYERS];
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 float f_PreventMedigunCrashMaybe[MAXTF2PLAYERS];
@@ -125,14 +129,8 @@ int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 float i_WasInResPowerup[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
-#if !defined NOG
-ConVar cvar_nbAvoidObstacle;
-ConVar CvarMpSolidObjects; //mp_solidobjects 
-ConVar CvarTfMMMode; // tf_mm_servermode
-ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
-#endif
 ConVar sv_cheats;
 ConVar nav_edit;
 bool DoingLagCompensation;
@@ -172,10 +170,11 @@ int g_particleImpactRubber;
 float f_damageAddedTogether[MAXTF2PLAYERS];
 float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
 int i_HudVictimToDisplay[MAXTF2PLAYERS];
+int i_HudVictimToDisplay2[MAXTF2PLAYERS];
 #endif
 
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
-bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
+//bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_ClientConnectTime[MAXENTITIES];	
 float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
@@ -186,11 +185,12 @@ float f_MultiDamageDealt[MAXENTITIES];
 float f_ExtraOffsetNpcHudAbove[MAXENTITIES];
 int i_OwnerEntityEnvLaser[MAXENTITIES];
 int TeamNumber[MAXENTITIES];
+int i_NextAttackDoubleHit[MAXENTITIES];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
 float f_NoUnstuckVariousReasons[MAXENTITIES];
-bool b_PlayerIsInAnotherPart[MAXENTITIES];
+//bool b_PlayerIsInAnotherPart[MAXENTITIES];
 bool b_EntityIsStairAbusing[MAXENTITIES];
 bool b_EntityCantBeColoured[MAXENTITIES];
 float f_EntityIsStairAbusing[MAXENTITIES];
@@ -209,6 +209,7 @@ ConVar CvarXpMultiplier;
 TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 
+bool b_GivePlayerHint[MAXTF2PLAYERS];
 #if defined ZR
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool b_IgnoreMapMusic[MAXTF2PLAYERS];
@@ -239,7 +240,7 @@ float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
-int i_PlayerToCustomBuilding[MAXTF2PLAYERS] = {0, ...};
+int i_PlayerToCustomBuilding[MAXENTITIES] = {0, ...};
 float f_BuildingIsNotReady[MAXTF2PLAYERS] = {0.0, ...};
 float f_AmmoConsumeExtra[MAXTF2PLAYERS];
 #endif
@@ -254,8 +255,14 @@ Handle SyncHud_ArmorCounter;
 
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
+#if defined ZR
 float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.7, ...};
 float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.7, ...};
+#else
+float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.9, ...};
+float f_Client_BackwardsWalkPenalty[MAXTF2PLAYERS]={0.9, ...};
+#endif
+
 float f_Client_LostFriction[MAXTF2PLAYERS]={0.1, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
@@ -265,7 +272,7 @@ bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 float f_HealDelayParticle[MAXENTITIES]={1.0, ...};
 
 bool b_IsAloneOnServer = false;
-bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
+bool b_TauntSpeedIncrease[MAXTF2PLAYERS] = {true, ...};
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
@@ -280,20 +287,32 @@ const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 
 float f_ClientReviveDelay[MAXENTITIES];
 float f_ClientReviveDelayMax[MAXENTITIES];
+float f_ClientReviveDelayReviveTime[MAXENTITIES];
 float f_ClientBeingReviveDelay[MAXENTITIES];
 
-#define MAXSTICKYCOUNTTONPC 12
+#define MAXSTICKYCOUNTTONPC 42
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 
 float Resistance_for_building_Low[MAXENTITIES];
 
-bool b_DisplayDamageHud[MAXTF2PLAYERS];
+bool b_DisplayDamageHud[MAXTF2PLAYERS][2];
+float f_DisplayDamageHudCooldown[MAXTF2PLAYERS];
 bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
+float fl_ruina_battery[MAXENTITIES];
+float fl_ruina_battery_max[MAXENTITIES];
+bool b_DisplayDamageHudSetting[MAXTF2PLAYERS] = {false, ...};
 
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
-bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
+bool b_HudLowHealthShake_UNSUED[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
+int i_CurrentIdBeforeAnnoation[MAXTF2PLAYERS];
+float f_TutorialUpdateStep[MAXTF2PLAYERS];
+
+//Just speeds up their time ig?
+float f_AttackSpeedNpcIncrease[MAXENTITIES] = {1.0, ...};
+float f_AllowInstabuildRegardless = 0.0;
+int ClientAttribResetCount[MAXTF2PLAYERS];
 
 
 //This is for going through things via lag comp or other reasons to teleport things away.
@@ -333,12 +352,13 @@ float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
 
+bool b_HideHealth[MAXENTITIES];
 bool b_IsABow[MAXENTITIES];
 bool b_WeaponHasNoClip[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
 int PrevOwnerMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
-float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
+int i_IsNpcType[MAXENTITIES];
 int i_npcspawnprotection[MAXENTITIES];
 float f_DomeInsideTest[MAXENTITIES];
 bool b_Frozen[MAXENTITIES];
@@ -346,9 +366,7 @@ bool b_NoGravity[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
-float f_RaidStunResistance[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
-float f_BannerAproxDur[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_DuelStatus[MAXENTITIES];
@@ -390,7 +408,6 @@ int i_EntityRenderColour3[MAXENTITIES]={255, ...};
 int i_EntityRenderColour4[MAXENTITIES]={255, ...};
 bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 
-bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
 int i_Wearable[MAXENTITIES][9];
 int i_FreezeWearable[MAXENTITIES];
@@ -399,14 +416,19 @@ int i_InvincibleParticlePrev[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
+char c_WeaponUseAbilitiesHud[MAXENTITIES][16];
+float PrepareMusicVolume[MAXTF2PLAYERS];
 
 
 //Used for any double arrays like lantean wand or health hose.
-float f_GlobalHitDetectionLogic[MAXENTITIES][MAXENTITIES];
 #if defined ZR
-bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
+float f_BannerAproxDur[MAXENTITIES];
+//bool b_AlreadyHitTankThrow[MAXENTITIES][MAXENTITIES];
 #endif
 
+// This is used for stuff like: Youre on fire, or mark for death icon above your head
+//this is needed as when you change classes via our system tf2 just deletes it, screw tf2.
+float f_UpdateModelIssues[MAXTF2PLAYERS];
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -435,7 +457,7 @@ bool b_JunalSpecialGear100k[MAXENTITIES];
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 bool IsInsideManageRegularWeapons;
 bool b_ProximityAmmo[MAXTF2PLAYERS];
-int i_HeadshotAffinity[MAXPLAYERS + 1]={0, ...}; 
+int i_HeadshotAffinity[MAXTF2PLAYERS]={0, ...}; 
 int i_nm_body_client[MAXTF2PLAYERS];
 int i_CurrentEquippedPerk[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
@@ -453,18 +475,17 @@ float Mana_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
 float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
 float Mana_Loss_Delay[MAXTF2PLAYERS];
-float RollAngle_Regen_Delay[MAXTF2PLAYERS];
+//float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 bool b_FaceStabber[MAXENTITIES];
-int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
-int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
-int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
+int Armor_Level[MAXTF2PLAYERS]={0, ...}; 				//701
+int Grigori_Blessing[MAXTF2PLAYERS]={0, ...}; 				//777
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
 bool b_AggreviatedSilence[MAXTF2PLAYERS];
 bool b_ArmorVisualiser[MAXENTITIES];
-bool b_BobsCuringHand[MAXTF2PLAYERS];
-bool b_XenoVial[MAXTF2PLAYERS];
+//bool b_BobsCuringHand[MAXTF2PLAYERS];
+//bool b_XenoVial[MAXTF2PLAYERS];
 int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
@@ -475,19 +496,20 @@ bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
 float f_ClientArmorRegen[MAXENTITIES];
-bool b_NemesisHeart[MAXTF2PLAYERS];
-bool b_OverlordsFinalWish[MAXTF2PLAYERS];
-bool b_BobsTrueFear[MAXTF2PLAYERS];
-bool b_TwirlHairpins[MAXTF2PLAYERS];
-bool b_KahmlLastWish[MAXTF2PLAYERS];
-bool b_VoidPortalOpened[MAXTF2PLAYERS];
-bool b_AvangardCoreB[MAXTF2PLAYERS];
+//bool b_NemesisHeart[MAXTF2PLAYERS];
+//bool b_OverlordsFinalWish[MAXTF2PLAYERS];
+//bool b_BobsTrueFear[MAXTF2PLAYERS];
+//bool b_TwirlHairpins[MAXTF2PLAYERS];
+//bool b_KahmlLastWish[MAXTF2PLAYERS];
+//bool b_VoidPortalOpened[MAXTF2PLAYERS];
+//bool b_AvangardCoreB[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
-float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
+float f_CooldownForHurtHud_Ally[MAXTF2PLAYERS];	
 float mana_regen[MAXTF2PLAYERS];
 bool has_mage_weapon[MAXTF2PLAYERS];
-int i_SoftShoes[MAXPLAYERS + 1]={0, ...}; 				//527
+int i_SoftShoes[MAXTF2PLAYERS]={0, ...}; 				//527
 bool b_IsCannibal[MAXTF2PLAYERS];
+bool b_Reinforce[MAXTF2PLAYERS];
 char g_GibEating[][] = {
 	"physics/flesh/flesh_squishy_impact_hard1.wav",
 	"physics/flesh/flesh_squishy_impact_hard2.wav",
@@ -496,6 +518,8 @@ char g_GibEating[][] = {
 };
 #endif
 #endif
+bool b_AvoidBuildingsAtAllCosts[MAXENTITIES];	
+float f_MaxAnimationSpeed[MAXENTITIES];	
 Handle g_hRecalculatePlayerBodygroups;
 float f_WandDamage[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //
@@ -512,13 +536,13 @@ float Mana_Hud_Delay[MAXTF2PLAYERS];
 int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
 
 
-int played_headshotsound_already_Case [MAXTF2PLAYERS];
-int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
+//int played_headshotsound_already_Case [MAXTF2PLAYERS];
+//int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
 int g_particleMissText;
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
-float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
+float Mana_Regen_Level[MAXTF2PLAYERS]={0.0, ...};				//405
 int i_SurvivalKnifeCount[MAXENTITIES]={0, ...}; 				//33
 int i_GlitchedGun[MAXENTITIES]={0, ...}; 				//731
 int i_AresenalTrap[MAXENTITIES]={0, ...}; 				//719
@@ -528,11 +552,11 @@ int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
 int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
 int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
 bool b_BackstabLaugh[MAXENTITIES];
-float played_headshotsound_already [MAXTF2PLAYERS];
+//float played_headshotsound_already [MAXTF2PLAYERS];
 int i_IsAloneWeapon[MAXENTITIES];
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
-char c_WeaponSoundOverrideString[MAXENTITIES][255];
+//char c_WeaponSoundOverrideString[MAXENTITIES][255];
 int WeaponRef_viewmodel[MAXTF2PLAYERS] = {-1, ...};
 int HandRef[MAXTF2PLAYERS] = {-1, ...};
 int i_Viewmodel_PlayerModel[MAXENTITIES] = {-1, ...};
@@ -559,6 +583,7 @@ Function EntityFuncReload4[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetRagdollFade[MAXTF2PLAYERS];
+float f_BegPlayerR_TeethSet[MAXTF2PLAYERS];
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -579,6 +604,8 @@ bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
 int h_NpcSolidHookType[MAXENTITIES];
+int h_NpcHandleEventHook[MAXENTITIES];
+bool b_KillHookHandleEvent[MAXENTITIES];
 #define EP_GENERIC				  		0		  					// Nothing special.
 #define EP_NO_KNOCKBACK			  		(1 << 0)   					// No knockback
 #define EP_DEALS_UNUSED_1			  	(1 << 1)   				// Slash Damage (For no npc scaling, or ignoring resistances.)
@@ -588,16 +615,17 @@ int h_NpcSolidHookType[MAXENTITIES];
 #define EP_DEALS_TRUE_DAMAGE			 	(1 << 5)
 #define EP_IS_ICE_DAMAGE			  		(1 << 6)   				// Even if its anything then blast, it will still gib.
 
-float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
-float f_DelayLookingAtHud[MAXPLAYERS+1];
+float f_TempCooldownForVisualManaPotions[MAXTF2PLAYERS+1];
+float f_DelayLookingAtHud[MAXTF2PLAYERS+1];
 bool b_EntityIsArrow[MAXENTITIES];
 bool b_EntityIsWandProjectile[MAXENTITIES];
 bool b_EntityIgnoredByShield[MAXENTITIES];
 int i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
 bool i_IsSupportWeapon[MAXENTITIES]; 
+bool i_IsKitWeapon[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
-bool b_IsVehicle[MAXENTITIES]; 
+int i_IsVehicle[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
 int i_WeaponSoundIndexOverride[MAXENTITIES];
@@ -609,6 +637,10 @@ float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 float f_WeaponVolumeStiller[MAXENTITIES];
 float f_WeaponVolumeSetRange[MAXENTITIES];
+float f_FreeplayAlteredDamageOld_Barracks[MAXENTITIES];
+float f_FreeplayAlteredHealthOld_Barracks[MAXENTITIES];
+float f_NpcAdjustFriction[MAXENTITIES];
+
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -647,8 +679,8 @@ bool b_ThisEntityIgnoredBeingCarried[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
-bool b_IsPlayerABot[MAXPLAYERS+1];
-float f_CooldownForHurtHud[MAXPLAYERS];
+bool b_IsPlayerABot[MAXTF2PLAYERS+1];
+float f_CooldownForHurtHud[MAXTF2PLAYERS];
 int i_PreviousInteractedEntity[MAXENTITIES];
 //Otherwise we get kicks if there is too much hurting going on.
 
@@ -694,6 +726,10 @@ float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
 
 float TickrateModify;
 int TickrateModifyInt;
+float f_ClientDoDamageHud[MAXTF2PLAYERS][2];
+float f_ClientDoDamageHud_Hurt[MAXTF2PLAYERS][2];
+float f3_NpcSavePos[MAXENTITIES][3];  
+float f_DelayComputingOfPath[MAXENTITIES];
 
 enum
 {
@@ -723,3 +759,67 @@ enum
 	BLEEDTYPE_SEABORN = 6,
 	BLEEDTYPE_VOID = 7
 }
+
+
+
+int i_TankAntiStuck[MAXENTITIES];
+int i_PlayMusicSound[MAXENTITIES];
+float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+float fl_ThrowPlayerCooldown[MAXENTITIES];
+float fl_ThrowPlayerImmenent[MAXENTITIES];
+bool b_ThrowPlayerImmenent[MAXENTITIES];
+int i_GrabbedThis[MAXENTITIES];
+float fl_ThrowDelay[MAXENTITIES];
+int i_TankThrewThis[MAXENTITIES];
+bool i_ThrowAlly[MAXENTITIES];
+int i_IWantToThrowHim[MAXENTITIES];
+float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
+int i_PlayIdleAlertSound[MAXENTITIES];
+int i_ammo_count[MAXENTITIES];
+bool b_we_are_reloading[MAXENTITIES];
+float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
+int i_wingslot[MAXENTITIES];
+int i_haloslot[MAXENTITIES];
+int i_ClosestAlly[MAXENTITIES];
+float i_ClosestAllyCD[MAXENTITIES];
+int i_ClosestAllyTarget[MAXENTITIES];
+float i_ClosestAllyCDTarget[MAXENTITIES];
+
+float fl_BEAM_RechargeTime[MAXENTITIES];	//how long until laser is reusable
+float fl_BEAM_ChargeUpTime[MAXENTITIES];	//how long until the laser BEGINS
+float fl_BEAM_DurationTime[MAXENTITIES];	//how long until the laser ends
+float fl_BEAM_ThrottleTime[MAXENTITIES];	//if you want to make a laser only do something 10 times a second instead of 66 during a think hook
+
+float fl_AbilityVectorData[MAXENTITIES][3];	//if you wish to transfer vector data between stuff. or save it for something else
+int i_Ruina_Laser_BEAM_HitDetected[100];	//if your laser has to hit more then 100 targets, your doing something wrong.
+int i_AmountProjectiles[MAXENTITIES];
+
+int i_NemesisEntitiesHitAoeSwing[MAXENTITIES];	//Who got hit
+float f_NemesisEnemyHitCooldown[MAXENTITIES];
+
+float f_NemesisCauseInfectionBox[MAXENTITIES];
+float f_NemesisHitBoxStart[MAXENTITIES];
+float f_NemesisHitBoxEnd[MAXENTITIES];
+float fl_RegainWalkAnim[MAXENTITIES];
+float fl_OverrideWalkDest[MAXENTITIES];
+float fl_StopDodge[MAXENTITIES];
+float fl_StopDodgeCD[MAXENTITIES];
+
+int i_GunMode[MAXENTITIES];
+int i_GunAmmo[MAXENTITIES];
+float f_NemesisImmuneToInfection[MAXENTITIES];
+float f_NemesisSpecialDeathAnimation[MAXENTITIES];
+float f_NemesisRandomInfectionCycle[MAXENTITIES];
+bool b_InKame[MAXENTITIES];
+bool b_said_player_weaponline[MAXTF2PLAYERS]; //Yes, i know, itll break if multiple raids spawn, but it doesnt really matter....
+float fl_said_player_weaponline_time[MAXENTITIES];
+int i_current_wave[MAXENTITIES];
+bool FactorySpawn[MAXENTITIES];
+bool MK2[MAXENTITIES];
+bool Limit[MAXENTITIES];
+bool Anvil[MAXENTITIES];
+int i_ally_index[MAXENTITIES];
+
+//some lasers had some variation of this, i just condeced it down to 1
+int LaserVarious_HitDetection[MAXENTITIES];
+int i_SaidLineAlready[MAXENTITIES];

@@ -18,11 +18,11 @@ void VengefullSpirit_OnMapStart_NPC()
 	PrecacheModel("models/stalker.mdl");
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Vengefull Spirit");
+	strcopy(data.Name, sizeof(data.Name), "Vengeful Spirit");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vengefull_spirit");
 	strcopy(data.Icon, sizeof(data.Icon), ""); 				//leaderboard_class_(insert the name)
-	data.IconCustom = false;								//download needed?
-	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.IconCustom = false;													//download needed?
+	data.Flags = 0;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -46,7 +46,7 @@ methodmap VengefullSpirit < CClotBody
 	
 	public VengefullSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
-		VengefullSpirit npc = view_as<VengefullSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", "550", ally));
+		VengefullSpirit npc = view_as<VengefullSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", MinibossHealthScaling(45, true), ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -67,9 +67,10 @@ methodmap VengefullSpirit < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		float wave = float(ZR_GetWaveCount()+1);
+		float wave = float(ZR_Waves_GetRound()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+		npc.m_flWaveScale *= MinibossScalingReturn();
 		
 		//IDLE
 		npc.m_iState = 4;
@@ -81,7 +82,13 @@ methodmap VengefullSpirit < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 0, 125);
 
-		TeleportDiversioToRandLocation(npc.index);
+		int Decicion = TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
+
+		if(Decicion == 2)
+			Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 250.0);
+
+		if(Decicion == 2)
+			Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
 
 		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);

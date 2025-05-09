@@ -90,8 +90,8 @@ static bool Frozen_Player[MAXTF2PLAYERS];
 static int MechanizedProtector[MAXENTITIES][3];
 static int LifeSupportDevice[MAXENTITIES][3];
 
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static int OverrideOwner[MAXENTITIES];
 
@@ -143,12 +143,12 @@ static void ClotPrecache()
 	g_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl", true);
-	PrecacheSoundCustom("#zombiesurvival/victoria/raid_huscarls.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria/huscarl_ost_new.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Huscarls(client, vecPos, vecAng, ally, data);
+	return Huscarls(vecPos, vecAng, ally, data);
 }
 
 methodmap Huscarls < CClotBody
@@ -278,7 +278,7 @@ methodmap Huscarls < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
-	public Huscarls(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Huscarls(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Huscarls npc = view_as<Huscarls>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
@@ -412,19 +412,37 @@ methodmap Huscarls < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/raid_huscarls.mp3");
-			music.Time = 132;
-			music.Volume = 2.3;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Dance of the Dreadnought (Original Soundtrack Vol. II)");
-			strcopy(music.Artist, sizeof(music.Artist), "Deep Rock Galactic");
-			Music_SetRaidMusic(music);
+			if(StrContains(data, "nomusic") == -1)
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria/huscarl_ost_new.mp3");
+				music.Time = 232;
+				music.Volume = 1.7;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Unstoppable Force");
+				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+				Music_SetRaidMusic(music);
+			}
+			
 			npc.m_iChanged_WalkCycle = -1;
 
 			CPrintToChatAll("{lightblue}Huscarls{default}: You will not Pass ''Iron Gate''!");
 			
-			RaidModeScaling = float(ZR_GetWaveCount()+1);
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				float value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			}
+			
 			if(RaidModeScaling < 55)
 			{
 				RaidModeScaling *= 0.19; //abit low, inreacing
@@ -446,15 +464,6 @@ methodmap Huscarls < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-			{
-				RaidModeScaling *= 0.85;
-			}
-			else if(ZR_GetWaveCount()+1 > 55)
-			{
-				RaidModeTime = GetGameTime(npc.index) + 220;
-				RaidModeScaling *= 0.85;
-			}
 		}
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -651,7 +660,7 @@ static void Internal_ClotThink(int iNPC)
 			//case 2:CPrintToChatAll("{lightblue}Huscarls{default}: {blue}Harrison{default}? The situation is over. Let's go back.");
 		}
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		for(int i; i<16; i++)
+		for(int i; i<8; i++)
 		{
 			int spawn_index = NPC_CreateByName("npc_avangard", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "only");
 			if(spawn_index > MaxClients)
@@ -666,7 +675,13 @@ static void Internal_ClotThink(int iNPC)
 				i_AttacksTillMegahit[spawn_index] = 600;
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
-				TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+				int Decicion = TeleportDiversioToRandLocation(spawn_index,_,1250.0, 500.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 250.0);
+
+				if(Decicion == 2)
+					Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1250.0, 0.0);
 			}
 		}
 		npc.PlayTeleportSound();
@@ -677,7 +692,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
 				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.3);
 		}
@@ -755,7 +770,14 @@ static void Internal_ClotThink(int iNPC)
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
 						LifeSupportDevice[npc.index][I_cant_do_this_all_day[npc.index]-1] = spawn_index;
 						MechanizedProtector[npc.index][I_cant_do_this_all_day[npc.index]-1] = EntIndexToEntRef(ConnectWithBeam(npc.index, spawn_index, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM));
-						TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
+						int Decicion = TeleportDiversioToRandLocation(spawn_index,_,2500.0, 1750.0);
+
+						if(Decicion == 2)
+							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 1750.0, 500.0);
+
+						if(Decicion == 2)
+							Decicion = TeleportDiversioToRandLocation(spawn_index, _, 500.0, 0.0);
+
 						npc.PlayTeleportSound();
 					}
 					for(int i = 0; i < (sizeof(LifeSupportDevice[])); i++)
@@ -764,7 +786,7 @@ static void Internal_ClotThink(int iNPC)
 						&& !b_NpcHasDied[LifeSupportDevice[npc.index][i]] && GetTeam(LifeSupportDevice[npc.index][i]) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(LifeSupportDevice[npc.index][i], 1.6, true);
-							IncreaceEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
+							IncreaseEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
 						}
 					}
 					Delay_Attribute[npc.index] = gameTime + 1.5;
@@ -785,7 +807,7 @@ static void Internal_ClotThink(int iNPC)
 						&& !b_NpcHasDied[LifeSupportDevice[npc.index][i]] && GetTeam(LifeSupportDevice[npc.index][i]) == GetTeam(npc.index))
 						{
 							FreezeNpcInTime(LifeSupportDevice[npc.index][i], 1.6, true);
-							IncreaceEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
+							IncreaseEntityDamageTakenBy(LifeSupportDevice[npc.index][i], 0.000001, 1.6);
 						}
 					}
 				}
@@ -854,8 +876,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.PlayAngerSound();
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, I knew it would broke");
-						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed its performance issues when they were disabled");
+						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, knew they'd break apart so easily.");
+						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed their performance issues beforehand...");
 					}
 					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
 					npc.m_flAttackHappens = 0.0;

@@ -383,7 +383,7 @@ public void Hazard_Luck(int client, int weapon, bool crit, int slot)
 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 30.0);
 		EmitSoundToAll("weapons/weapon_crit_charged_off.wav", client);
 		if(IsValidEntity(viewmodelModel))
@@ -419,7 +419,7 @@ public void Hazard_Luck_Pap(int client, int weapon, bool crit, int slot)
 		
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 20.0);
 		EmitSoundToAll("weapons/weapon_crit_charged_off.wav", client);
 		if(IsValidEntity(viewmodelModel))

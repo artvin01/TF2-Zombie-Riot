@@ -24,7 +24,15 @@ void Database_PluginStart()
 	Database db = SQLite_UseDatabase(DATABASE_LOCAL, error, sizeof(error));
 	Database_LocalConnected(db, error);
 	
-	Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
+	if(SQL_CheckConfig(DATABASE_GLOBAL))
+	{
+		Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
+	}
+	else
+	{
+		db = SQLite_UseDatabase(DATABASE_GLOBAL, error, sizeof(error));
+		Database_GlobalConnected(db, error, db);
+	}
 
 	RegServerCmd("zr_convert_from_textstore", DBCommand);
 
@@ -139,11 +147,6 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 	}
 }
 
-bool Database_IsLan()
-{
-	return !Global;
-}
-
 bool Database_IsCached(int client)
 {
 	return Cached[client];
@@ -219,16 +222,28 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(results[1].FetchRow())
 		{
 			XP[client] = results[1].FetchInt(1);
+			if(XP[client] < 0) //no infinite back leveling.
+				XP[client] = 0; 
+			
+			Native_ZR_OnGetXP(client, XP[client], 2);
 			PlayStreak[client] = results[1].FetchInt(2);
 			Scrap[client] = results[1].FetchInt(3);
 			tutorial = results[1].FetchInt(4);
 			Level[client] = XpToLevel(XP[client]);
+			if(Level[client] < 0) //no infinite back leveling.
+				Level[client] = 0;
 		}
 		else if(!results[1].MoreRows)
 		{
 			CookieXP.Get(client, buffer, sizeof(buffer));
 			XP[client] = StringToInt(buffer);
+			if(XP[client] < 0) //no infinite back leveling.
+				XP[client] = 0; 
+
+			Native_ZR_OnGetXP(client, XP[client], 2);
 			Level[client] = XpToLevel(XP[client]);
+			if(Level[client] < 0) //no infinite back leveling.
+				Level[client] = 0; 
 
 			CookieScrap.Get(client, buffer, sizeof(buffer));
 			Scrap[client] = StringToInt(buffer);
@@ -244,7 +259,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(results[2].FetchRow())
 		{
 			int value = results[2].FetchInt(1);
-			if(value >= 2)
+			if(value >= 1)
 			{
 				OverridePlayerModel(client, value - 1, Viewchanges_PlayerModelsAnims[value - 1]);
 				JoinClassInternal(client, CurrentClass[client]);
@@ -258,11 +273,11 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			f_NotifHudOffsetX[client] = results[2].FetchFloat(8);
 			f_NotifHudOffsetY[client] = results[2].FetchFloat(9);
 			b_HudScreenShake[client] = view_as<bool>(results[2].FetchInt(10));
-			b_HudLowHealthShake[client] = view_as<bool>(results[2].FetchInt(11));
+			b_HudLowHealthShake_UNSUED[client] = view_as<bool>(results[2].FetchInt(11));
 			b_HudHitMarker[client] = view_as<bool>(results[2].FetchInt(12));
 			thirdperson[client] = view_as<bool>(results[2].FetchInt(13));
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
-			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
+			b_TauntSpeedIncrease[client] = view_as<bool>(results[2].FetchFloat(15));
 			f_Data_InBattleHudDisableDelay[client] = results[2].FetchFloat(16);
 
 			int music = results[2].FetchInt(17);
@@ -272,6 +287,11 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			b_EnableCountedDowns[client] = view_as<bool>(music & (1 << 3));
 			b_EnableClutterSetting[client] = view_as<bool>(music & (1 << 4));
 			b_EnableNumeralArmor[client] = view_as<bool>(music & (1 << 5));
+			b_InteractWithReload[client] = view_as<bool>(music & (1 << 6));
+			b_DisableSetupMusic[client] = view_as<bool>(music & (1 << 7));
+			b_DisableStatusEffectHints[client] = view_as<bool>(music & (1 << 8));
+			b_LastManDisable[client] = view_as<bool>(music & (1 << 9));
+			b_DisplayDamageHudSetting[client] = view_as<bool>(music & (1 << 10));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -310,6 +330,35 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			
 		if(ForceNiko)
 			OverridePlayerModel(client, NIKO_2, true);
+	}
+	Loadout_DatabaseLoadFavorite(client);
+}
+
+public void Loadout_DatabaseLoadFavorite(int client)
+{
+	if(!Loadouts[client])
+		return;
+
+	int LengthIAm = Loadouts[client].Length;
+	char BufferString[255];
+	for(int i; i < LengthIAm; i++)
+	{
+		Loadouts[client].GetString(i, BufferString, sizeof(BufferString));
+		if(!StrContains(BufferString, "[♥]"))
+		{
+			//Force buy me!
+			SPrintToChat(client, "%t", "Getting favorite loadout");
+			Database_LoadLoadout(client, BufferString, false);
+			return;
+		}
+	}
+}
+
+public void MapChooser_OnPreMapEnd()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		DataBase_ClientDisconnect(client);
 	}
 }
 
@@ -368,13 +417,13 @@ void DataBase_ClientDisconnect(int client)
 				f_NotifHudOffsetX[client],
 				f_NotifHudOffsetY[client],
 				b_HudScreenShake[client],
-				b_HudLowHealthShake[client],
+				b_HudLowHealthShake_UNSUED[client],
 				b_HudHitMarker[client],
 				thirdperson[client],
 				f_ZombieVolumeSetting[client],
-				b_TauntSpeedIncreace[client],
+				b_TauntSpeedIncrease[client],
 				f_Data_InBattleHudDisableDelay[client],
-				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0)),
+				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0) + (b_DisableSetupMusic[client] ? 128 : 0) + (b_DisableStatusEffectHints[client] ? 256 : 0) + (b_LastManDisable[client] ? 512 : 0) + (b_DisplayDamageHudSetting[client] ? 1024 : 0)),
 				id);
 			}
 			else
@@ -406,11 +455,11 @@ void DataBase_ClientDisconnect(int client)
 				f_NotifHudOffsetX[client],
 				f_NotifHudOffsetY[client],
 				b_HudScreenShake[client],
-				b_HudLowHealthShake[client],
+				b_HudLowHealthShake_UNSUED[client],
 				b_HudHitMarker[client],
 				thirdperson[client],
 				f_ZombieVolumeSetting[client],
-				b_TauntSpeedIncreace[client],
+				b_TauntSpeedIncrease[client],
 				f_Data_InBattleHudDisableDelay[client],
 				view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0),
 				id);				
@@ -487,6 +536,23 @@ void Database_DeleteLoadout(int client, const char[] name)
 			
 			char buffer[256];
 			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			tr.AddQuery(buffer);
+			
+			Global.Execute(tr, Database_Success, Database_Fail);
+		}
+	}
+}
+void Database_EditName(int client, const char[] name, const char[] newname)
+{
+	if(Global)
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			char buffer[256];
+			Global.Format(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_LOADOUT ... " SET loadout = '%s' WHERE steamid = %d AND loadout = '%s';", newname, id, name);
 			tr.AddQuery(buffer);
 			
 			Global.Execute(tr, Database_Success, Database_Fail);

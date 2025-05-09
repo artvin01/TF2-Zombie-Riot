@@ -104,6 +104,7 @@ methodmap FinalHunter < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 		Is_a_Medic[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 		
@@ -152,7 +153,7 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_bStaticNPC)
 	{
-		if(Waves_Started() && (Waves_GetMaxRound() -1) == Waves_GetRound())
+		if(Waves_Started() && (Waves_GetMaxRound() -1) == ZR_Waves_GetRound())
 		{
 			npc.m_bStaticNPC = false;
 			Is_a_Medic[npc.index] = false;
@@ -169,15 +170,15 @@ static void ClotThink(int iNPC)
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
-			RaidModeScaling = 1.0;
+			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
+			Waves_Progress();
 
 			CPrintToChatAll("{darkred}Wildingen Hitman{default}: {black}It's inside me");
 
-
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					view_as<GogglesFollower>(other).Speech("What the fuck!");
@@ -199,7 +200,7 @@ static void ClotThink(int iNPC)
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					target = other;
@@ -273,7 +274,7 @@ static void ClotThink(int iNPC)
 
 						RaidBossActive = EntIndexToEntRef(npc.index);
 						RaidModeTime = GetGameTime() + 9000.0;
-						RaidModeScaling = 1.0;
+						RaidModeScaling = 0.0;
 						RaidAllowsBuildings = true;
 
 						EmitSoundToAll("mvm/mvm_warning.wav");

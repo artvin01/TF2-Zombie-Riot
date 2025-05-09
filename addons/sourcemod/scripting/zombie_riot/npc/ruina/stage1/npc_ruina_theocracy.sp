@@ -136,9 +136,6 @@ methodmap Theocracy < CClotBody
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::Playnpc.AngerSound()");
-		#endif
 	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -228,6 +225,7 @@ methodmap Theocracy < CClotBody
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
+		fl_ruina_battery_max[npc.index] = THEOCRACY_STRING_THEORY_BATTERY_COST;
 		fl_ruina_battery[npc.index] = 0.0;
 		npc.PlayChargeSound();
 		Theocracy_String_Theory(EntIndexToEntRef(npc.index));
@@ -533,7 +531,7 @@ static void Theocracy_Melee_Hit(int client, int target, float vecHit[3])
 
 	int color[4]; Ruina_Color(color);
 
-	float Thick_Start = GetRandomFloat(4.0, 8.0);
+	float Thick_Start = GetRandomFloat(8.0, 16.0);
 	float Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
 	int laser = ConnectWithBeam(npc.m_iWearable1, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
 	if(IsValidEntity(laser))
@@ -565,7 +563,7 @@ static void Theocracy_Melee_Hit(int client, int target, float vecHit[3])
 		if(AtEdictLimit(EDICT_NPC))
 			continue;
 
-		Thick_Start = GetRandomFloat(4.0, 8.0);
+		Thick_Start = GetRandomFloat(8.0, 16.0);
 		Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
 		laser = ConnectWithBeam(Laser_Origin, i_detected_ends[i], color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
 		if(IsValidEntity(laser))
@@ -702,7 +700,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		Ruina_Add_Battery(npc.index, damage);
 	}
-	if(fl_ruina_battery[npc.index]>THEOCRACY_STRING_THEORY_BATTERY_COST && !b_ruina_battery_ability_active[npc.index])
+	if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && !b_ruina_battery_ability_active[npc.index])
 	{
 		npc.PlayChargeSound();
 		fl_ruina_battery[npc.index] = 0.0;

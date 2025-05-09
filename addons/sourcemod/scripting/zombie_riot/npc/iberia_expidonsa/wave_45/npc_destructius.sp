@@ -109,7 +109,7 @@ methodmap IberianDestructius < CClotBody
 	
 	public IberianDestructius(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "6000", ally, false, true));
+		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 

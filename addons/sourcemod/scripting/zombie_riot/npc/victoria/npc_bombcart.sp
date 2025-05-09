@@ -29,7 +29,7 @@ void VictoriaBombcart_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaBombcart(client, vecPos, vecAng, ally);
+	return VictoriaBombcart(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaBombcart < CClotBody
@@ -50,7 +50,7 @@ methodmap VictoriaBombcart < CClotBody
 	}
 
 	
-	public VictoriaBombcart(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaBombcart(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaBombcart npc = view_as<VictoriaBombcart>(CClotBody(vecPos, vecAng, "models/combine_apc_dynamic.mdl", "0.25", "750", ally));
 		
@@ -73,7 +73,7 @@ methodmap VictoriaBombcart < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("m_vecAbsOrigin", "models/workshop/player/items/demo/sum22_head_banger/sum22_head_banger.mdl",_,1,1.75,-120.0);
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/workshop/player/items/demo/sum22_head_banger/sum22_head_banger.mdl",_,1,1.75,-120.0);
 
 		return npc;
 	}
@@ -145,7 +145,7 @@ public void VictoriaBombcart_ClotThink(int iNPC)
 							
 						float startPosition[3];
 						GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", startPosition);
-						makeexplosion(-1, -1, startPosition, "" , 0, 0, 0.0 , 0);
+						makeexplosion(-1, startPosition, 0, 0);
 						
 						
 						
@@ -195,7 +195,7 @@ void VictoriaBombcart_NPCDeath(int entity)
 	
 	if(NpcStats_VictorianCallToArms(npc.index))
 	{
-		Explode_Logic_Custom(50.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0);
+		Explode_Logic_Custom(100.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0);
 		ParticleEffectAt(startPosition, "rd_robot_explosion_smoke_linger", 2.0);
 		npc.PlayMeleeHitSound();
 	}	

@@ -122,7 +122,7 @@ void Queue_Menu(int client)
 	CvarRerouteToIp.GetString(buffer, sizeof(buffer));
 	if(buffer[0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%t", "Redirect to different ZR server");
+		FormatEx(buffer, sizeof(buffer), "%t\n ", "Redirect to different ZR server");
 		menu.AddItem("", buffer);
 	}
 	else
@@ -130,10 +130,8 @@ void Queue_Menu(int client)
 		menu.AddItem("", buffer, ITEMDRAW_SPACER);
 	}
 	
-	menu.AddItem("0", " ", ITEMDRAW_SPACER);
-	
 	menu.AddItem("sm_encyclopedia", "Encyclopedia");
-	
+	/*
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	if(StrContains(buffer, "nominigames", false) == -1)
 	{
@@ -143,10 +141,8 @@ void Queue_Menu(int client)
 		menu.AddItem("sm_solitaire", "Solitaire");
 		menu.AddItem("sm_pong", "Pong");
 		menu.AddItem("sm_connect4", "Connect4");
-	}
+	}*/
 	
-	menu.Pagination = false;
-	menu.ExitButton = true;
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
@@ -166,7 +162,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 				{
 					if(IsValidClient(client))
 					{
-						ChangeClientTeam(client, 1);
+						SetTeam(client, 1);
 						Queue_Menu(client);
 					}
 				}
@@ -184,7 +180,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 									Queue_Menu(client);
 									if(GetClientTeam(client) != 2)
 									{
-										ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+										SetTeam(client, view_as<int>(TFTeam_Red));
 										ShowVGUIPanel(client, "class_red");
 									}
 									return 0;
@@ -192,7 +188,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 							}
 						}
 						
-						ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+						SetTeam(client, view_as<int>(TFTeam_Red));
 						if(IsPlayerAlive(client))
 							ForcePlayerSuicide(client);
 						
@@ -209,7 +205,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 						ClientCommand(client,"redirect %s",buffer);
 					}
 				}
-				case 4:
+				case 3:
 				{
 					Items_EncyclopediaMenu(client);
 				}
@@ -230,7 +226,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 
 bool Queue_JoinTeam(int client)
 {
-	if(!WaitingInQueue[client] && GetClientTeam(client) == 2)
+	if(Waves_InVote() || (!WaitingInQueue[client] && GetClientTeam(client) == 2))
 		return false;
 	
 	int count;
@@ -241,7 +237,7 @@ bool Queue_JoinTeam(int client)
 			if(++count >= CalcMaxPlayers())
 			{
 				WaitingInQueue[client] = true;
-				ChangeClientTeam(client, 2);
+				SetTeam(client, 2);
 				PrintCenterText(client, "Server is Full: You will now join when a slot is available");
 				return false;
 			}
@@ -286,22 +282,8 @@ void Queue_ClientDisconnect(int client)
 		if(IsPlayerAlive(target))
 			ForcePlayerSuicide(target);
 		
-		ChangeClientTeam(target, view_as<int>(TFTeam_Red));
+		SetTeam(target, view_as<int>(TFTeam_Red));
 		ShowVGUIPanel(target, "class_red");
 		PlayStreak[client] = 1;
 	}
-}
-
-
-int CalcMaxPlayers()
-{
-	int playercount = CvarMaxPlayerAlive.IntValue;
-	/*
-	if(OperationSystem == OS_Linux)
-	{
-		playercount -= 2; //linux is abit shite
-	}
-	*/
-
-	return playercount;
 }

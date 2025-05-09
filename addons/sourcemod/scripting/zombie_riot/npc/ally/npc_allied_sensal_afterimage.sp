@@ -25,9 +25,9 @@ void AlliedSensalAbility_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return AlliedSensalAbility(client, vecPos, vecAng, ally);
+	return AlliedSensalAbility(client, vecPos, vecAng);
 }
 methodmap AlliedSensalAbility < CClotBody
 {
@@ -41,7 +41,7 @@ methodmap AlliedSensalAbility < CClotBody
 	}
 
 	
-	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3], int ally)
+	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3])
 	{
 		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", TFTeam_Red, true));
 		
@@ -125,7 +125,7 @@ methodmap AlliedSensalAbility < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 		func_NPCDeath[npc.index] = AlliedSensalAbility_NPCDeath;
 		func_NPCThink[npc.index] = AlliedSensalAbility_ClotThink;
 

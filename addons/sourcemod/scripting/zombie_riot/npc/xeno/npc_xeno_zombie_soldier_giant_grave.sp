@@ -89,9 +89,7 @@ methodmap XenoSoldierGiant < CClotBody
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
+
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -392,7 +390,7 @@ public void XenoSoldierGiant_ClotDamagedPost(int victim, int attacker, int infli
 			maxhealth /= 7;
 			for(int i; i<1; i++)
 			{
-				if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+				if(MaxEnemiesAllowedSpawnNext(1) <= (EnemyNpcAlive - EnemyNpcAliveStatic))
 				{
 					fl_TotalArmor[npc.index] = 0.5;
 					//grrr i cant spawn!!!!

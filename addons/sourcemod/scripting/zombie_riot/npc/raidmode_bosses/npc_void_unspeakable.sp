@@ -54,6 +54,7 @@ static const char g_TeleportSound[][] = {
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 static int NpcID;
+bool BossrushLogic = false;
 
 int VoidUnspeakableNpcID()
 {
@@ -232,14 +233,15 @@ methodmap VoidUnspeakable < CClotBody
 
 		VoidUnspeakable npc = view_as<VoidUnspeakable>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", SizeChar, "25000", ally, false, true));
 		
+		i_RaidGrantExtra[npc.index] = WaveSetting;
 		if(WaveSetting == 5)
 		{
 			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = 0;
 		}
+		BossrushLogic = false;
 		if(StrContains(data, "bossrush") != -1)
 		{
-			i_RaidGrantExtra[npc.index] = -5;
+			BossrushLogic = true;
 		}
 		RemoveAllDamageAddition();
 		npc.m_flDeathAnimation = 0.0;
@@ -307,8 +309,24 @@ methodmap VoidUnspeakable < CClotBody
 		RaidAllowsBuildings = false;
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_flMeleeArmor = 1.25;	
-		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
+
+		float value;
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+		{
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+		}
+		else
+		{	
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			value = float(ZR_Waves_GetRound()+1);
+		}
+
 		if(RaidModeScaling < 55)
 		{
 			RaidModeScaling *= 0.19; //abit low, inreacing
@@ -331,17 +349,17 @@ methodmap VoidUnspeakable < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+		if(value > 40.0 && value < 55.0)
 		{
 			RaidModeScaling *= 0.85;
 		}
-		else if(ZR_GetWaveCount()+1 > 55)
+		else if(value > 55.0)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.85;
 		}
 
-		if(i_RaidGrantExtra[npc.index] != -5)
+		if(!BossrushLogic)
 		{
 			if(FogEntity != INVALID_ENT_REFERENCE)
 			{
@@ -724,7 +742,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		if((health / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
-			ApplyStatusEffect(npc.index, npc.index, "Battilons Backup", 5.0);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 5.0);
 			npc.m_flResistanceBuffs = GetGameTime() + 2.0;
 			float ProjectileLoc[3];	
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
@@ -750,7 +768,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		{
 			RaidModeTime = FAR_FUTURE;
 			//its in phase 2.
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 10;
 			npc.m_flDeathAnimation = GetGameTime(npc.index) + 45.0;
 			//emergency slay if it bricks somehow.
 			RequestFrames(KillNpc,3000, EntIndexToEntRef(npc.index));
@@ -869,9 +887,9 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		flMaxhealth *= 0.001;
 		
 		int CurrentPlayersAlive = CountPlayersOnRed(1);
-		float HpScalingDecreace = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
-		flMaxhealth *= HpScalingDecreace;
-		if(ZR_GetWaveCount()+1 >= 60)
+		float HpScalingDecrease = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
+		flMaxhealth *= HpScalingDecrease;
+		if(i_RaidGrantExtra[npc.index] >= 4)
 			flMaxhealth *= 1.25;
 
 		float ProjectileLoc[3];
@@ -897,7 +915,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		float cpos[3];
 		float velocity[3];
 		float ScaleVectorDoMulti = -300.0;
-		if(ZR_GetWaveCount()+1 >= 30)
+		if(i_RaidGrantExtra[npc.index] >= 2)
 			ScaleVectorDoMulti = -400.0;
 
 		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
@@ -1023,7 +1041,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		npc.m_flDoingAnimation = gameTime + 5.0;
 		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 2.0;
 		npc.m_flVoidMatterAbosorbCooldown = gameTime + 35.0;
-		if(ZR_GetWaveCount()+1 > 55)
+		if(i_RaidGrantExtra[npc.index] >= 4)
 			npc.m_flVoidMatterAbosorbCooldown = gameTime + 28.0;
 
 		return true;
@@ -1040,7 +1058,7 @@ public void VoidUnspeakable_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	if(i_RaidGrantExtra[npc.index] != -5)
+	if(!BossrushLogic)
 	{
 		if(FogEntity != INVALID_ENT_REFERENCE)
 		{
@@ -1174,7 +1192,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 		}
 	}
 
-	if(npc.m_flDoingAnimation < gameTime && gameTime > npc.m_flVoidPillarAttack && ZR_GetWaveCount()+1 > 20)
+	if(npc.m_flDoingAnimation < gameTime && gameTime > npc.m_flVoidPillarAttack && i_RaidGrantExtra[npc.index] >= 2)
 	{
 		
 		int Enemy_I_See;
@@ -1236,7 +1254,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 
 					float QuakeSize = 1.2;
 					float ReactionTime = 1.1;
-					if(ZR_GetWaveCount()+1 > 55)
+					if(i_RaidGrantExtra[npc.index] >= 4)
 					{
 						QuakeSize = 1.5;
 						ReactionTime = 0.9;
@@ -1309,19 +1327,19 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 
 		switch(i_RaidGrantExtra[npc.index])
 		{
-			case 2:
+			case 11:
 			{
 				CPrintToChatAll("{purple}FOOLISH MORTALS, YOU THINK YOU CAN STOP US");
 			}
-			case 3:
+			case 12:
 			{
 				CPrintToChatAll("{purple}THERE'S NOTHING YOU CAN DO ANYMORE");
 			}
-			case 4:
+			case 13:
 			{
 				CPrintToChatAll("{purple}WITNESS THE END OF ALL TIMES, RIGHT HERE AND NOW");
 			}
-			case 5:
+			case 14:
 			{
 				CPrintToChatAll("{purple}BECOME ONE WITH THE VOID");
 			}

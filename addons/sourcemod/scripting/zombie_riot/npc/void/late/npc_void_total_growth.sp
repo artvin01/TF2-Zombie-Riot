@@ -281,7 +281,7 @@ void VoidTotalGrowthSelfDefense(VoidTotalGrowth npc, float gameTime, int target,
 					damageDealt *= ModelSize;
 
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 6.0;
+						damageDealt *= 3.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

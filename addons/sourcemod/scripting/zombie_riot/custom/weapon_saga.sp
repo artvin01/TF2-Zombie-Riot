@@ -113,7 +113,7 @@ void Saga_ChargeReduction(int client, int weapon, float time)
 		float cooldown = Ability_Check_Cooldown(client, i, weapon);
 		if(cooldown > 0.0)
 		{
-			Ability_Apply_Cooldown(client, i, cooldown - time, weapon);
+			Ability_Apply_Cooldown(client, i, cooldown - time, weapon, true);
 			break;
 		}
 	}
@@ -193,7 +193,7 @@ public Action Saga_Timer2(Handle timer, int client)
 					WeaponCharge[client] = 32;
 				
 				PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / 16, 16 - (WeaponCharge[client] % 16));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 
 			return Plugin_Continue;
@@ -218,7 +218,7 @@ public Action Saga_Timer3(Handle timer, int client)
 					WeaponCharge[client] = 39;
 				
 				PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / 13, 13 - (WeaponCharge[client] % 13));
-				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				
 			}
 			else
 			{
@@ -260,7 +260,7 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 	}
 	else
 	{
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		MakePlayerGiveResponseVoice(client, 4); //haha!
 		WeaponCharge[client] -= cost + 1;
 		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))

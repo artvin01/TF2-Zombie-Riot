@@ -13,6 +13,7 @@ void Events_PluginStart()
 	HookEvent("player_connect_client", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
+	HookEvent("teams_changed", EventHook_TeamsChanged, EventHookMode_PostNoCopy);
 //	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 #if defined ZR
 	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Pre);
@@ -30,6 +31,7 @@ void Events_PluginStart()
 }
 
 #if defined ZR
+
 public Action EventOverride_ArrowImpact(Event event, const char[] name, bool dontBroadcast)
 {
 	int AttachedEntity = event.GetInt("attachedEntity");
@@ -77,6 +79,7 @@ float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
+	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
 	
@@ -95,6 +98,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int client=1; client<=MaxClients; client++)
 	{
 		i_AmountDowned[client] = 0;
+		Building_ClientDisconnect(client);
 		for(int i; i<Ammo_MAX; i++)
 		{
 			CurrentAmmo[client][i] = CurrentAmmo[0][i];
@@ -102,62 +106,39 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	}
 	
 	CreateMVMPopulator();
-	
+	Zero(b_BobsCuringHand_Revived);
 	
 	Escape_RoundStart();
-	Waves_RoundStart();
+	Waves_RoundStart(true);
 	Blacksmith_RoundStart();
 	Merchant_RoundStart();
 	Flametail_RoundStart();
 	BlacksmithBrew_RoundStart();
+	BlacksmithGrill_RoundStart();
+	Zealot_RoundStart();
+	Drops_ResetChances();
 
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client))
+			Loadout_DatabaseLoadFavorite(client);
+	}
 	if(RoundStartTime > GetGameTime())
 		return;
 	
+	Waves_SetReadyStatus(2);
 	RoundStartTime = FAR_FUTURE;
 	//FOR ZR
 	char mapname[64];
-	char buffer[PLATFORM_MAX_PATH];
-	KeyValues kv;
+	GetMapName(mapname, sizeof(mapname));
 	
-	if(!zr_ignoremapconfig.BoolValue)
-	{
-		GetCurrentMap(mapname, sizeof(mapname));
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/maps");
-		DirectoryListing dir = OpenDirectory(buffer);
-		if(dir != INVALID_HANDLE)
-		{
-			FileType file;
-			char filename[68];
-			while(dir.GetNext(filename, sizeof(filename), file))
-			{
-				if(file != FileType_File)
-					continue;
-
-				if(SplitString(filename, ".cfg", filename, sizeof(filename)) == -1)
-					continue;
-					
-				if(StrContains(mapname, filename))
-					continue;
-
-				kv = new KeyValues("Map");
-				Format(buffer, sizeof(buffer), "%s/%s.cfg", buffer, filename);
-				if(!kv.ImportFromFile(buffer))
-					LogError("[Config] Found '%s' but was unable to read", buffer);
-
-				break;
-			}
-			delete dir;
-		}
-	}
-//	FileNetwork_MapEnd();
+	KeyValues kv = Configs_GetMapKv(mapname);
+	
+	DeleteStatusEffectsFromAll();
 	Waves_MapEnd();
-//	FileNetwork_ConfigSetup(kv);
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
 	delete kv;
-//	Core_PrecacheGlobalCustom();
-//	PrecacheMusicZr();
 #endif
 
 #if defined RPG
@@ -172,6 +153,17 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
+	if(CvarAutoSelectWave.BoolValue)
+	{
+		char mapname[64];
+		GetMapName(mapname, sizeof(mapname));
+		
+		KeyValues kv = Configs_GetMapKv(mapname);
+		Waves_SetupVote(kv, true);
+		delete kv;
+	}
+	
+	DeleteShadowsOffZombieRiot();
 	for(int client=1; client<=MaxClients; client++)
 	{
 		SetMusicTimer(client, 0);
@@ -189,7 +181,7 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		int client = GetClientOfUserId(event.GetInt("userid"));
 		if(client)
 		{
-			ChangeClientTeam(client, 3);
+			SetTeam(client, 3);
 			OnAutoTeam(client, name, 0);
 		}
 	}
@@ -231,6 +223,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Damage_dealt_in_total[client] = 0.0;
 			Resupplies_Supplied[client] = 0;
 			i_BarricadeHasBeenDamaged[client] = 0;
+			i_PlayerDamaged[client] = 0;
 			CashRecievedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;
@@ -245,10 +238,12 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			TeutonType[client_check] = 0;
 	}
 	
+	DeleteStatusEffectsFromAll();
 	Store_Reset();
 	Waves_RoundEnd();
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
+	Construction_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
 	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
@@ -266,6 +261,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
+		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 #if defined ZR
 		TransferDispenserBackToOtherEntity(client, true);
 #endif
@@ -281,7 +277,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
-	  	AcceptEntityInput(client, "SetCustomModel");
+	  	AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 
@@ -344,8 +340,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			TF2Attrib_RemoveAll(client);
 			Attributes_Set(client, 68, -1.0);
 			SetVariantString(COMBINE_CUSTOM_MODEL);
-	  		AcceptEntityInput(client, "SetCustomModel");
-	   		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
+	  		AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 	   		
 	   		b_ThisEntityIgnored[client] = true;
 			
@@ -372,15 +367,18 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		Attributes_Set(weapon_index, 263, 0.0);
 	   		Attributes_Set(weapon_index, 6, 1.2);
 	   		Attributes_Set(weapon_index, 412, 0.0);
-			if(b_VoidPortalOpened[client])
+			
+		//	if(b_VoidPortalOpened[client])
 			{
 	   			Attributes_Set(weapon_index, 443, 1.25);
 	   			Attributes_Set(weapon_index, 442, 1.25);
 			}
+			/*
 			else
 			{
 	   			Attributes_Set(weapon_index, 442, 1.1);
 			}
+			*/
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
 	   		Attributes_Set(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));
@@ -426,14 +424,13 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			ViewChange_PlayerModel(client);
 			ViewChange_Update(client);
 			Store_ApplyAttribs(client);
-			Pets_PlayerResupply(client);
 			
 			if(dieingstate[client])
 			{
 			}
 			else
 			{
-				Store_GiveAll(client, Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
+				Store_GiveAll(client, ZR_Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
 			SetAmmo(client, 1, 9999);
@@ -513,6 +510,7 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		
 #if defined ZR
 		Waves_PlayerSpawn(client);
+		Vehicle_PlayerSpawn(client);
 #endif
 
 #if defined ZR || defined RPG
@@ -543,7 +541,8 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-	
+	// Dead Ringer doesn't exist!!
+
 #if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
@@ -580,6 +579,8 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	// Save current uber.
 	ClientSaveUber(client);
 	SDKHooks_UpdateMarkForDeath(client, true);
+	PurnellDeathsound(client);
+	Vehicle_Exit(client, true);
 #endif
 
 #if defined RPG
@@ -754,3 +755,24 @@ public Action OnRelayFireUser1(const char[] output, int entity, int caller, floa
 	return Plugin_Continue;
 }
 #endif*/
+
+static float DontRepeatSameFrame;
+static void EventHook_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
+{
+	if(DontRepeatSameFrame == GetGameTime())
+		return;
+	
+	DontRepeatSameFrame = GetGameTime();
+	RequestFrame(CheckAndValidifyTeam);
+	//No way to seemingly detect
+	//PrintToChatAll("EventHook_TeamsChanged");
+}
+
+void CheckAndValidifyTeam()
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && TeamNumber[client] <= 4) //If their team is customly set, dont do this
+			TeamNumber[client] = GetEntProp(client, Prop_Data, "m_iTeamNum");
+	}
+}

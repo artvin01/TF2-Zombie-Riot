@@ -7,15 +7,18 @@ static bool RedMoon;
 static bool StartEasyMode;
 static bool StartLastman;
 static bool ForceNextHunter;
+
 static Handle FrostTimer;
+static Handle AnxietyTimer;
 static ArrayList WinterTheme;
 
 public float Rogue_Encounter_ForcedHunterBattle()
 {
 	ForceNextHunter = true;
-	Rogue_SetBattleIngots(4 + (Rogue_GetRound() / 2));
+	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));
 	return 0.0;
 }
+
 
 bool Rogue_Paradox_IgnoreOdds()
 {
@@ -85,7 +88,7 @@ void Rogue_Paradox_ReviveSpeed(int &amount)
 		amount = RoundToNearest(float(amount) * 1.25);
 }
 
-bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
+bool Rogue_Paradox_GrigoriBlessing(int client)
 {
 	if(FrostTimer && dieingstate[client] == 0)
 	{
@@ -95,7 +98,7 @@ bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
 			int maxhealth = SDKCall_GetMaxHealth(client);
 
 			// Degen if no blessing or above 50% health
-			if(Jesus_Blessing[client] != 1 || (health > maxhealth / 2))
+			if(Grigori_Blessing[client] != 1 || (health > maxhealth / 2))
 			{
 				int damage = maxhealth / -400;
 				health += damage;
@@ -104,13 +107,11 @@ bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
 					damage = 1 - health;
 					health = 1;
 				}
-
-				healing_Amount += damage;
 				SetEntityHealth(client, health);
 			}
 		}
 
-		return true;	// Override Jesus Blessing
+		return true;	// Override Grigori Blessing
 	}
 
 	return false;
@@ -167,9 +168,37 @@ public void Rogue_Weapon_Collect()
 	Ammo_Count_Ready += 30;
 }
 
-public void Rogue_Something_Collect()
+public void Rogue_SomethingElse_Enemy(int entity)
 {
-	Rogue_AddChaos(30, true);
+	int stats = Rogue_GetFloor() + (Rogue_GetChaos() / 5);
+	float multi = 1.0 + (stats * 0.01);
+	
+	fl_Extra_Damage[entity] *= multi;
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * multi));
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * multi));
+}
+
+public void Rogue_SomethingElse_Collect()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_bob_first_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
 }
 
 public void Rogue_HeavyWind_Weapon(int entity)
@@ -224,6 +253,20 @@ public void Rogue_HeavyRain_Enemy(int entity)
 	}
 }
 
+public void Rogue_Ruinan_BadGuy(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.15;
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 1.25));
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.25));
+}
+
+public void Rogue_Ruinan_GoodGuy(int entity)
+{
+	fl_Extra_Damage[entity] *= 0.9;
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 0.85));
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 0.85));
+}
+
 public void Rogue_Curse_HeavyRain(bool enable)
 {
 	if(enable)
@@ -268,11 +311,40 @@ public void Rogue_Curse_RedMoon(bool enable)
 	RedMoon = enable;
 }
 
+public void Rogue_ShadowingDarkness(bool enable)
+{
+	delete AnxietyTimer;
+
+	if(enable)
+		AnxietyTimer = CreateTimer(0.25, Timer_AnxietyTimer, _, TIMER_REPEAT);
+}
+
+static Action Timer_AnxietyTimer(Handle timer)
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		{
+			ApplyStatusEffect(entity, entity, "Extreme Anxiety", 1.0);
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2)
+		{
+			ApplyStatusEffect(client_summon, client_summon, "Extreme Anxiety", 1.0);
+		}
+	}
+
+	return Plugin_Continue;
+}
+
 static Action Timer_ParadoxFrost(Handle timer)
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcIsInvulnerable[entity])
 		{
 			if(WinterTheme && WinterTheme.FindValue(i_NpcInternalId[entity]) != -1)
@@ -295,4 +367,248 @@ static Action Timer_ParadoxFrost(Handle timer)
 	}
 
 	return Plugin_Continue;
+}
+
+public void Rogue_BlueGoggles_Collect()
+{
+	/*
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	*/
+	//dont allow both bob and goggles, only 1 follower.
+	
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_goggles_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+
+public void Rogue_BlueGoggles_Remove()
+{
+	/*
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	*/
+}
+
+bool MazeatTechLost;
+
+bool MazeatItemHas()
+{
+	return MazeatTechLost;
+}
+
+public void Rogue_MazeatLostTech_Collect()
+{
+	MazeatTechLost = true;
+}
+
+public void Rogue_MazeatLostTech_Remove()
+{
+	MazeatTechLost = false;
+}
+
+static Handle KahmlsteinTimer;
+
+public void Rogue_Kahmlstein_Collect()
+{
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_kahmlstein_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+
+	delete KahmlsteinTimer;
+	KahmlsteinTimer = CreateTimer(1.5, Timer_KahmlsteinTimer, _, TIMER_REPEAT);
+}
+
+public void Rogue_Kahmlstein_Remove()
+{
+	/*
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	*/
+
+	delete KahmlsteinTimer;
+}
+
+static Action Timer_KahmlsteinTimer(Handle timer)
+{
+	if(Rogue_CanRegen())
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+			{
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon != -1)
+					Saga_ChargeReduction(client, weapon, 1.0);
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+public void Rogue_Twirl_Collect()
+{
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_twirl_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+
+	delete KahmlsteinTimer;
+	KahmlsteinTimer = CreateTimer(1.5, Timer_TwirlTimer, _, TIMER_REPEAT);
+}
+public void Rogue_Twirl_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value = 1.0;
+		// +15% mana cap and regen
+		map.GetValue("405", value);
+		map.SetValue("405", value * 1.15);
+	}
+}
+public void Rogue_Twirl_Weapon(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value = 1.0;
+
+		// +100% mana cap and regen
+		map.GetValue("405", value);
+		map.SetValue("405", value * 2.0);
+	}
+}
+
+static Action Timer_TwirlTimer(Handle timer)
+{
+	if(Rogue_CanRegen())
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+			{
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon != -1)
+					Saga_ChargeReduction(client, weapon, 0.5);
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+public void Rogue_Twirl_Remove()
+{
+	delete KahmlsteinTimer;
+	Rogue_Refresh_Remove();
+}
+
+static ArrayList RuniaGemTimers;
+
+public void Rogue_RuinaGem_StageStart()
+{
+	if(RuniaGemTimers)
+		Rogue_RuinaGem_Remove();
+	
+	RuniaGemTimers = new ArrayList();
+	
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client) && GetClientTeam(client) == 2)
+		{
+			RuniaGemTimers.Push(CreateTimer(1.0, RuniaGem_Timer, EntIndexToEntRef(client), TIMER_REPEAT));
+		}
+	}
+
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && !b_NpcIsInvulnerable[entity] && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
+		{
+			RuniaGemTimers.Push(CreateTimer(1.0, RuniaGem_Timer, EntIndexToEntRef(entity), TIMER_REPEAT));
+		}
+	}
+}
+
+public void Rogue_RuinaGem_Remove()
+{
+	if(RuniaGemTimers)
+	{
+		int length = RuniaGemTimers.Length;
+		for(int i; i < length; i++)
+		{
+			CloseHandle(RuniaGemTimers.Get(i));
+		}
+
+		delete RuniaGemTimers;
+	}
+}
+
+static Action RuniaGem_Timer(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity != -1)
+	{
+		int health = entity > MaxClients ? GetEntProp(entity, Prop_Data, "m_iHealth") : GetClientHealth(entity);
+		int maxhealth = ReturnEntityMaxHealth(entity);
+		if(health > (maxhealth / 2))
+			return Plugin_Continue;
+		
+		if(entity > MaxClients)
+		{
+			HealEntityGlobal(entity, entity, float(maxhealth / 2), 1.0, 1.0, HEAL_ABSOLUTE);
+		}
+		else
+		{
+			GiveCompleteInvul(entity, 2.0);
+			f_OneShotProtectionTimer[entity] = GetGameTime() + 60.0;
+			HealEntityGlobal(entity, entity, float(maxhealth / 2), 1.0, 1.0, HEAL_ABSOLUTE);
+		}
+
+		EmitSoundToAll("misc/halloween/spell_overheal.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
+	}
+
+	RuniaGemTimers.Erase(RuniaGemTimers.FindValue(timer));
+	return Plugin_Stop;
 }

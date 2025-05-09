@@ -247,7 +247,7 @@ void Pathshaper_NPCDeath(int entityy)
 	int team = GetTeam(entityy);
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PathshaperFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			RequestFrame(KillNpc, i_ObjectsNpcsTotal[i]);
@@ -261,7 +261,7 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 	int count;
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PathshaperFractal_ID() && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			if(++count == limit)

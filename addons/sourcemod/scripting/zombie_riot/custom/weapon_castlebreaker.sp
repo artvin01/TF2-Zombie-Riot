@@ -50,8 +50,8 @@ static void CastleBreaker_Map_Precache() //Anything that needs to be precaced li
 
 void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
 {
-	CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15; //shorter than rapier
-	CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 0.85;
+	CustomMeleeRange = MELEE_RANGE * 1.15; //shorter than rapier
+	CustomMeleeWide = MELEE_BOUNDS * 0.85;
 	if(b_AbilityActivated[client])
 	{
 		enemies_hit_aoe = 2; //hit 2 targets.
@@ -60,7 +60,7 @@ void CastleBreaker_DoSwingTrace(int client, float &CustomMeleeRange, float &Cust
 
 public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 {
-	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	float attackspeed = Attributes_Get(weapon, 6, 1.0);
 	if(b_AbilityActivated[client])
 	{
 		b_AbilityDone[client] = false;
@@ -101,7 +101,7 @@ public void CastleBreaker_M1(int client, int weapon, bool crit, int slot)
 				DataPack pack;
 				CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(weapon);
+				pack.WriteCell(EntIndexToEntRef(weapon));
 				pack.WriteCell(Change[client]);
 			}
 			return;
@@ -172,14 +172,14 @@ public void CastleBreaker_Modechange(int client, int weapon, bool crit, int slot
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 			return;
 		}
-		Rogue_OnAbilityUse(weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
 		Change[client]=!Change[client];
 		CastleBreaker_Cylinder[client]=0;
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_ChangeSound, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(GetClientUserId(client));
-		pack.WriteCell(weapon);
+		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(Change[client]);
 	}
 }
@@ -192,8 +192,8 @@ void CastleBreakerCashOnKill(int client)
 	if(!Waves_InSetup())
 	{
 		float cashgain = 1.0;
-		if(b_AvangardCoreB[client])//do you have this unlock?
-			cashgain += 1.0;
+	//	if(b_AvangardCoreB[client])//do you have this unlock?
+		cashgain += 1.0;
 		if(CastleBreaker_WeaponPap[client]>=2)
 			cashgain += 1.0;
 		int cash = RoundFloat(cashgain * ResourceRegenMulti);
@@ -210,7 +210,7 @@ public void CastleBreaker_Ability_M2(int client, int weapon, bool crit, int slot
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rogue_OnAbilityUse(weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll("ambient/cp_harbor/furnace_1_shot_05.wav", client, SNDCHAN_AUTO, 70, _, 1.0);
 			b_AbilityActivated[client] = true;
@@ -366,7 +366,7 @@ static void CreateCastleBreakerEffect(int client)
 		else
 			PrintHintText(client,"Mode: PIERCE / Blast Shells: %i", new_ammo);
 
-		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		
 		CastleBreaker_HUDDelay[client] = GetGameTime() + 0.5;
 	}
 	if(b_AbilityActivated[client])
@@ -402,7 +402,13 @@ static Action Timer_ChangeSound(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
-	int weapon = pack.ReadCell();
+	if(!IsValidClient(client))
+		return Plugin_Stop;
+
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(weapon))
+		return Plugin_Stop;
+
 	bool GetMode = pack.ReadCell();
 	if(CastleBreaker_SoundsDelay[client] > GetGameTime())
 		return Plugin_Continue;
@@ -449,7 +455,7 @@ static Action Timer_ChangeSound(Handle timer, DataPack pack)
 			}
 		}
 	}
-	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime(weapon)+1.0);
-	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime(client)+1.0);
+	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime()+1.0);
+	SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime()+1.0);
 	return Plugin_Continue;
 }

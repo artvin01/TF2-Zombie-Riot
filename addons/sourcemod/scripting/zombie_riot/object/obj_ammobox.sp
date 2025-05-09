@@ -1,9 +1,16 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static char g_RandomModelGive[][] = {
+	"models/items/ammocrate_ar2.mdl",
+	"models/items/ammocrate_smg1.mdl",
+	"models/items/ammocrate_grenade.mdl",
+	"models/items/ammocrate_rockets.mdl",
+};
+
 void ObjectAmmobox_MapStart()
 {
-	PrecacheModel("models/items/ammocrate_smg1.mdl");
+	for (int i = 0; i < (sizeof(g_RandomModelGive));	   i++) { PrecacheModel(g_RandomModelGive[i]);	   }
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ammo Box");
@@ -14,6 +21,14 @@ void ObjectAmmobox_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_ammobox");
+	build.Cost = 600;
+	build.Health = 50;
+	build.Cooldown = 20.0;
+	build.Func = ObjectGeneric_CanBuild;
+	Building_Add(build);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -26,7 +41,7 @@ methodmap ObjectAmmobox < ObjectGeneric
 {
 	public ObjectAmmobox(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectAmmobox npc = view_as<ObjectAmmobox>(ObjectGeneric(client, vecPos, vecAng, "models/items/ammocrate_smg1.mdl", _,"50", {20.0, 20.0, 33.0}, 15.0));
+		ObjectAmmobox npc = view_as<ObjectAmmobox>(ObjectGeneric(client, vecPos, vecAng, g_RandomModelGive[GetRandomInt(0, sizeof(g_RandomModelGive) - 1)], _,"50", {20.0, 20.0, 32.0}, 14.0));
 		
 		npc.SetActivity("Idle", true);
 
@@ -34,6 +49,7 @@ methodmap ObjectAmmobox < ObjectGeneric
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCThink[npc.index] = ClotThink;
 		func_NPCInteract[npc.index] = ClotInteract;
+		npc.SetPlaybackRate(0.5);	
 
 		return npc;
 	}
@@ -74,13 +90,22 @@ static bool ClotCanUse(ObjectAmmobox npc, int client)
 static void ClotShowInteractHud(ObjectAmmobox npc, int client)
 {
 	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Ammobox Tooltip", Ammo_Count_Ready - Ammo_Count_Used[client]);
+	char ButtonDisplay[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	PrintCenterText(client, "%s%t", ButtonDisplay, "Ammobox Tooltip", Ammo_Count_Ready - Ammo_Count_Used[client]);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 {
 	if(ClotCanUse(npc, client))
 	{
+		if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
+		{
+			Building_Collect_Cooldown[npc.index][client] = GetGameTime() + 5.0;
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return true;
+		}
+
 	//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 	//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 	//	ApplyBuildingCollectCooldown(npc.index, client, 5.0, true);
@@ -142,35 +167,21 @@ int AmmoboxUsed(int client, int entity)
 	{
 		if(i_IsWandWeapon[weapon])
 		{
-			float max_mana_temp = 800.0;
-			float mana_regen_temp = 100.0;
-			
-			if(i_CurrentEquippedPerk[client] == 4)
-			{
-				mana_regen_temp *= 1.35;
-			}
-			
-			if(Mana_Regen_Level[client])
-			{			
-				mana_regen_temp *= Mana_Regen_Level[client];
-				max_mana_temp *= Mana_Regen_Level[client];	
-			}
-			if(b_AggreviatedSilence[client])
-				mana_regen_temp *= 0.30;
+			ManaCalculationsBefore(client);
 
 		//	mana_regen_temp *= 0.5;
 			
-			if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+			if(Current_Mana[client] < RoundToCeil(max_mana[client] * 2.0))
 			{
 				Ammo_Count_Used[client] += 2;
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+				if(Current_Mana[client] < RoundToCeil(max_mana[client] * 2.0))
 				{
-					Current_Mana[client] += RoundToCeil(mana_regen_temp);
+					Current_Mana[client] += RoundToCeil(mana_regen[client] * 10.0);
 					
-					if(Current_Mana[client] > RoundToCeil(max_mana_temp)) //Should only apply during actual regen
-						Current_Mana[client] = RoundToCeil(max_mana_temp);
+					if(Current_Mana[client] > RoundToCeil(max_mana[client] * 2.0)) //Should only apply during actual regen
+						Current_Mana[client] = RoundToCeil(max_mana[client] * 2.0);
 				}
 
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);

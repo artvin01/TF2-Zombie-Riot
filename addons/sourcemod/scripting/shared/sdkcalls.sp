@@ -22,6 +22,7 @@ static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 #endif
 
+static Handle g_SDKCallRemoveImmediate;
 
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
@@ -57,6 +58,13 @@ void SDKCall_Setup()
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
 
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalAngles");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	g_hSetLocalAngles = EndPrepSDKCall();
+	if(!g_hSetLocalAngles)
+		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
+
 	//CBasePlayer
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
@@ -84,8 +92,10 @@ void SDKCall_Setup()
 	g_hSetAbsAngle = EndPrepSDKCall();
 	if(!g_hSetAbsAngle)
 		LogError("[Gamedata] Could not find CBaseEntity::SetAbsAngles");
-		
 
+	//From mikusch!
+	g_SDKCallRemoveImmediate = PrepSDKCall_RemoveImmediate(gamedata);
+		
 
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBasePlayer::CheatImpulseCommands");
@@ -216,12 +226,19 @@ void SDKCall_SetLocalOrigin(int index, float localOrigin[3])
 		SDKCall(g_hSetLocalOrigin, index, localOrigin);
 	}
 }
+void SDKCall_SetLocalAngles(int index, float Anglesl[3])
+{
+	if(g_hSetLocalAngles)
+	{
+		SDKCall(g_hSetLocalAngles, index, Anglesl);
+	}
+}
 
 void SDKCall_InvalidateBoneCache(int index)
 {
 	SDKCall(g_hInvalidateBoneCache, index);
 }
-/*
+
 void SDKCall_SetAbsOrigin(int index, float AbsOrigin[3])
 {
 	if(g_hSetAbsOrigin)
@@ -229,7 +246,7 @@ void SDKCall_SetAbsOrigin(int index, float AbsOrigin[3])
 		SDKCall(g_hSetAbsOrigin, index, AbsOrigin);
 	}
 }
-
+/*
 void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 {
 	if(g_hSetAbsAngle)
@@ -311,7 +328,7 @@ void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 		{
 			b_LagCompAlliedPlayers = true;
 		}
-		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(3512)));
+		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(OffsetLagCompStart_UserInfoReturn())));
 //		StartLagCompensation_Base_Boss(client, true);
 	}
 }
@@ -336,19 +353,19 @@ void UpdateBlockedNavmesh()
 	//This broke and is probably inlined, above is a way easier method.
 //	SDKCall(g_hSDKUpdateBlocked);
 }	
-
-stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
+/*
+stock int SpawnBotCustom()
 {
 	PrintToChatAll("trest");
 	ServerCommand("sv_cheats 1; bot ; sv_cheats 0");
 //	int bot = CreateFakeClient(Name);
-	/*
+	
 	int bot = SDKCall(
 	gH_BotAddCommand,
 	Name, // name
 	false // bReportFakeClient
 	);
-	*/
+	
 //	if (IsValidClient(bot))
 //	{
 //		PrintToChatAll("party!");
@@ -357,7 +374,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 	return -1;
 }
-
+*/
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
 #if defined ZR || defined RPG
@@ -429,7 +446,9 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 {
 	int entity = FindEntityByClassname(-1, "tf_gamerules");
 	if(entity == -1)
+	{
 		return;
+	}
 
 	static int Size1;
 	if(!Size1)
@@ -464,5 +483,30 @@ void SDKCall_SetSpeed(int client)
 	else
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.001);
+	}
+}
+
+
+
+static Handle PrepSDKCall_RemoveImmediate(GameData gamedata)
+{
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "UTIL_RemoveImmediate");
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+	
+	Handle call = EndPrepSDKCall();
+	if (!call)
+	{
+		LogMessage("Failed to create SDKCall: UTIL_RemoveImmediate");
+	}
+	
+	return call;
+}
+
+void SDKCall_RemoveImmediate(int entity)
+{
+	if (g_SDKCallRemoveImmediate)
+	{
+		SDKCall(g_SDKCallRemoveImmediate, entity);
 	}
 }

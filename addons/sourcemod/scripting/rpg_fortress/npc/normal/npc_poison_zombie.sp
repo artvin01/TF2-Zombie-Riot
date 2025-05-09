@@ -196,7 +196,7 @@ public void PoisonZombie_ClotThink(int iNPC)
 						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						KillFeed_SetKillIcon(npc.index, "taunt_soldier");
-						StartBleedingTimer_Against_Client(target, npc.index, 8000.0, 5);
+						StartBleedingTimer(target, npc.index,8000.0, 5, -1, DMG_TRUEDAMAGE, 0);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						

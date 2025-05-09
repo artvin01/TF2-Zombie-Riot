@@ -45,7 +45,7 @@ void VictoriaRadiomast_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaRadiomast(client, vecPos, vecAng, ally);
+	return VictoriaRadiomast(vecPos, vecAng, ally);
 }
 methodmap VictoriaRadiomast < CClotBody
 {
@@ -65,21 +65,21 @@ methodmap VictoriaRadiomast < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.3);
 	}
 	
-	public VictoriaRadiomast(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaRadiomast(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaRadiomast npc = view_as<VictoriaRadiomast>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE,"1000000", ally, false,true,_,_,{30.0,30.0,200.0}));
+		VictoriaRadiomast npc = view_as<VictoriaRadiomast>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE,"1000000", ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", VictoriaRadiomast_MODEL_1,_,1);
+		npc.m_iWearable1 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_1,_,1);
 		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItemSeperate("partyhat", VictoriaRadiomast_MODEL_2,_,_,_,70.0);
+		npc.m_iWearable2 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_2,_,_,_,70.0);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		npc.m_iWearable3 = npc.EquipItemSeperate("partyhat", VictoriaRadiomast_MODEL_3,_,1);
+		npc.m_iWearable3 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_3,_,1);
 		SetVariantString("0.95");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -104,7 +104,7 @@ methodmap VictoriaRadiomast < CClotBody
 			RaidModeTime = FAR_FUTURE;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = true;
-			RaidModeScaling = 19.721;
+			RaidModeScaling = 0.0;
 		}
 
 		func_NPCDeath[npc.index] = view_as<Function>(VictoriaRadiomast_NPCDeath);
@@ -114,7 +114,6 @@ methodmap VictoriaRadiomast < CClotBody
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
 
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
 		switch(Decicion)
@@ -206,10 +205,8 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 			}
 		}
 	}
-	
-	if(IsValidEntity(RaidBossActive) && RaidBossActive == EntIndexToEntRef(npc.index))
-		RaidModeScaling = (InfiniteWave-(npc.m_flNextMeleeAttack - gameTime))/InfiniteWave;
-	if(Waves_IsEmpty())
+		
+	if(Waves_IsEmpty() && npc.m_flNextMeleeAttack < gameTime)
 	{
 		int ISVOLI= 1;
 		ISVOLI = RoundToNearest(4.0); 
@@ -398,7 +395,7 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
 		{
 			ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
@@ -429,6 +426,8 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
 				b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
 				b_StaticNPC[other] = b_StaticNPC[npc.index];
+				if(b_StaticNPC[other])
+					AddNpcToAliveList(other, 1);
 			}
 			int other1 = NPC_CreateByName("npc_radio_repair", -1, pos, ang, team, "EX");
 			if(other1 > MaxClients)
@@ -445,6 +444,8 @@ public void VictoriaRadiomast_ClotThink(int iNPC)
 				fl_Extra_Damage[other1] = fl_Extra_Damage[npc.index];
 				b_thisNpcIsABoss[other1] = b_thisNpcIsABoss[npc.index];
 				b_StaticNPC[other1] = b_StaticNPC[npc.index];
+				if(b_StaticNPC[other])
+					AddNpcToAliveList(other, 1);
 			}
 		 }
 		npc.Anger = true;

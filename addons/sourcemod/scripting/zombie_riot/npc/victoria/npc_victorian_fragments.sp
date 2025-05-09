@@ -5,15 +5,13 @@ static const char g_DeathSounds[] = "npc/scanner/scanner_explode_crash2.wav";
 static const char g_AttackReadySounds[] = "weapons/sentry_spot_client.wav";
 static const char g_AttackRocketSounds[] = "weapons/sentry_shoot3.wav";
 static float SET_XZY_POS[MAXENTITIES][3];
-static bool MK2[MAXENTITIES];
-static bool Limit[MAXENTITIES];
+
+
 static bool ISVOLI[MAXENTITIES];
 static int OverrideTarget[MAXENTITIES];
 static int OverrideAlly[MAXENTITIES];
 static float IDiying[MAXENTITIES];
 
-static int SaveSolidFlags[MAXENTITIES];
-static int SaveSolidType[MAXENTITIES];
 
 void VictorianDroneFragments_MapStart()
 {
@@ -37,7 +35,7 @@ void VictorianDroneFragments_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianDroneFragments(client, vecPos, vecAng, ally, data);
+	return VictorianDroneFragments(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianDroneFragments < CClotBody
@@ -55,7 +53,7 @@ methodmap VictorianDroneFragments < CClotBody
 		EmitSoundToAll(g_AttackReadySounds, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public VictorianDroneFragments(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictorianDroneFragments(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianDroneFragments npc = view_as<VictorianDroneFragments>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
@@ -66,21 +64,19 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
-		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
-		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
 		MK2[npc.index]=false;
 		Limit[npc.index]=false;
 		ISVOLI[npc.index]=false;
 		OverrideTarget[npc.index] = -1;
 		OverrideAlly[npc.index] = -1;
 		
-		bool FactorySpawn;
+		bool FactorySpawndo;
 		static char countext[20][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
-			else if(!StrContains(countext[i], "factory"))FactorySpawn=true;
+			else if(!StrContains(countext[i], "factory"))FactorySpawndo=true;
 			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Fragments MK2");}
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
 			else if(!StrContains(countext[i], "isvoli"))ISVOLI[npc.index]=true;
@@ -110,11 +106,12 @@ methodmap VictorianDroneFragments < CClotBody
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 1.00;
 		
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
-		b_IgnoreAllCollisionNPC[npc.index]=true;
+		b_IgnoreAllCollisionNPC[npc.index] = true;
+		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = true;
 		npc.m_bFUCKYOU = true;
@@ -126,7 +123,7 @@ methodmap VictorianDroneFragments < CClotBody
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry1_gib1.mdl",_,1,1.001,_,true);
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/buildables/gibs/sentry1_gib1.mdl",_,1,1.001,_,true);
 		Ang[0] = -90.0;
 		Ang[1] = 270.0;
 		Vec[1] -= 36.5;
@@ -135,7 +132,7 @@ methodmap VictorianDroneFragments < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry2_gib3.mdl",_,1,1.001,_,true);
+		npc.m_iWearable2 = npc.EquipItemSeperate("models/buildables/gibs/sentry2_gib3.mdl",_,1,1.001,_,true);
 		Ang[0] = 30.0;
 		Ang[1] = 0.0;
 		Ang[2] = -90.0;
@@ -145,7 +142,7 @@ methodmap VictorianDroneFragments < CClotBody
 		TeleportEntity(npc.m_iWearable2, Vec, Ang, NULL_VECTOR);
 		
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable3 = npc.EquipItemSeperate("head", "models/buildables/gibs/sentry2_gib3.mdl",_,1,1.001,_,true);
+		npc.m_iWearable3 = npc.EquipItemSeperate("models/buildables/gibs/sentry2_gib3.mdl",_,1,1.001,_,true);
 		Ang[0] = 30.0;
 		Ang[1] = 0.0;
 		Ang[2] = -90.0;
@@ -155,7 +152,7 @@ methodmap VictorianDroneFragments < CClotBody
 		TeleportEntity(npc.m_iWearable3, Vec, Ang, NULL_VECTOR);
 		
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable4 = npc.EquipItemSeperate("head", "models/props_teaser/saucer.mdl",_,1,1.001,_,true);
+		npc.m_iWearable4 = npc.EquipItemSeperate("models/props_teaser/saucer.mdl",_,1,1.001,_,true);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
 		
@@ -182,11 +179,11 @@ methodmap VictorianDroneFragments < CClotBody
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		GetAbsOrigin(npc.index, Vec);
-		if(FactorySpawn)
+		if(FactorySpawndo)
 		{
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if (IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 				{
 					GetAbsOrigin(entity, Vec);
@@ -236,7 +233,6 @@ static void ClotThink(int iNPC)
 	else
 	{
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
-		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -356,12 +352,6 @@ static void ClotThink(int iNPC)
 		if(GetVectorDistance(SET_XZY_POS[npc.index], VecSelfNpc) < 200.0)
 		{
 			float NPCAng[3];
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
-			if(GetTeam(npc.index) == TFTeam_Red)
-				SetEntityCollisionGroup(npc.index, 24);
-			else
-				SetEntityCollisionGroup(npc.index, 9);
 			npc.m_flSpeed = 0.0;
 			VecSelfNpc[2] += 500.0;
 			npc.SetVelocity({0.0,0.0,0.0});
@@ -381,7 +371,6 @@ static void ClotThink(int iNPC)
 			if(gameTime > npc.m_flCharge_delay)
 			{
 				float Pathing[3], Npvel[3], NPCAng[3];
-				MakeObjectIntangeable(npc.index);
 				SubtractVectors(SET_XZY_POS[npc.index], VecSelfNpc, Pathing);
 				GetEntPropVector(npc.m_iWearable4, Prop_Data, "m_angRotation", NPCAng);
 				npc.GetVelocity(Npvel);
@@ -438,14 +427,14 @@ int VictoriaFragmentsAssaultMode(int iNPC, float gameTime, int target, float dis
 			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
 			Handle swingTrace;
-			if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+			if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }, .vecSwingStartOffset = 10.0))
 			{
 				target = TR_GetEntityIndex(swingTrace);	
 					
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
-				float origin[3], angles[3];
-				view_as<CClotBody>(npc.index).GetAttachment("partyhat", origin, angles);
+				float origin[3];
+				WorldSpaceCenter(npc.index, origin);
 				ShootLaser(npc.index, "bullet_tracer01_red", origin, vecHit, false);
 				npc.m_flNextMeleeAttack = gameTime + 0.3;
 				if(IsValidEnemy(npc.index, target))

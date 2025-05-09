@@ -121,9 +121,6 @@ methodmap AnfuhrerEisenhard < CClotBody
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayAngerSound()");
-		#endif
 	}
 	
 	
@@ -394,7 +391,7 @@ void AnfuhrerEisenhardSelfDefense(AnfuhrerEisenhard npc, float gameTime, int tar
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					IncreaceEntityDamageTakenBy(target, 0.15, 5.0, true);
+					IncreaseEntityDamageTakenBy(target, 0.15, 5.0, true);
 					//give 15% dmg vul with each hit for 5 secs
 
 					// Hit sound

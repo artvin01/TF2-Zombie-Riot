@@ -115,12 +115,25 @@ void RaidbossBobTheFirst_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "?????????????");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+
+	
+	//download fixes
+	strcopy(data.Name, sizeof(data.Name), "?????????????");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_last_savior_sealogic");
+	data.IconCustom = false;
+	data.Flags = -1;
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecacheSea;
+	NPC_Add(data);
+
+	
 }
 
 static void ClotPrecache()
@@ -143,7 +156,14 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_BobSuperMeleeCharge);
 	PrecacheSoundArray(g_BobSuperMeleeCharge_Hit);
 	
-	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob.mp3");
+	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob_intro.mp3");
+	PrecacheSoundCustom("#zombiesurvival/bob_raid/bob_loop.mp3");
+}
+
+static void ClotPrecacheSea()
+{
+	ClotPrecache();
+	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/incomming_boss_wait_scary.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -247,6 +267,11 @@ methodmap RaidbossBobTheFirst < CClotBody
 	{
 		public get()		{	return i_RaidGrantExtra[this.index] < 0;	}
 	}
+	property float m_flOverrideMusicNow
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 
 	public RaidbossBobTheFirst(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -256,7 +281,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(IsValidEntity(entity))
 			{
 				char npc_classname[60];
@@ -328,6 +353,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_thisNpcIsARaid[npc.index] = true;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		}
 		else
 		{
@@ -397,19 +423,22 @@ methodmap RaidbossBobTheFirst < CClotBody
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
 			WavesUpdateDifficultyName();
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob.mp3");
-			music.Time = 697;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob_intro.mp3");
+			music.Time = 44;
 			music.Volume = 1.99;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Darkest Dungeon - The Final Combat (Added Narrator)");
-			strcopy(music.Artist, sizeof(music.Artist), "Music (Stuart Chatwood) Editor of Narrator (Liruox)");
-			Music_SetRaidMusic(music);
+			strcopy(music.Name, sizeof(music.Name), "Irln Last Stand against the Sea Intro");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			Music_SetRaidMusic(music, true);
+
+		
+			npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
 			npc.StopPathing();
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 			RaidModeTime = GetGameTime() + 292.0;
-			RaidModeScaling = 9999999.99;
+			RaidModeScaling = 0.0;
 			Zero(b_EnemyCloseToMainBob);
 		}
 
@@ -418,7 +447,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		{
 			if(CurrentModifOn() == 1)
 			{
-				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", c_NpcName[npc.index]);
+				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			else
 			{
@@ -426,15 +455,15 @@ methodmap RaidbossBobTheFirst < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: Stella and Karlas, you did enough, stand back.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -448,6 +477,21 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 {
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(iNPC);
 	
+	if(npc.m_flOverrideMusicNow)
+	{
+		if(npc.m_flOverrideMusicNow < GetGameTime())
+		{
+			npc.m_flOverrideMusicNow = 0.0;
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/bob_raid/bob_loop.mp3");
+			music.Time = 181;
+			music.Volume = 1.85;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Irln Last Stand against the Sea");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			Music_SetRaidMusic(music, false);
+		}
+	}	
 	float gameTime = GetGameTime(npc.index);
 
 	if(npc.Anger || npc.m_bFakeClone || i_RaidGrantExtra[npc.index] > 1)
@@ -472,7 +516,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -502,20 +546,20 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		{
 			if(!b_BobPistolPhaseSaid[npc.index])
 			{
-				CPrintToChatAll("{crimson}%s uses his immensive willpower to regain some strength...", c_NpcName[npc.index]);
+				CPrintToChatAll("{crimson}%s uses his immensive willpower to regain some strength...", NpcStats_ReturnNpcName(npc.index, true));
 				switch(GetRandomInt(0,2))
 				{
 					case 0:
 					{
-						CPrintToChatAll("{white}%s{default}: Hope my sharp shooting skills will miss your brain, curing is still an option.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: Hope my sharp shooting skills will miss your brain, curing is still an option.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{white}%s{default}: If only i could cure it off you with this handgun, have to take lives to save lives.", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: If only i could cure it off you with this handgun, have to take lives to save lives.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{white}%s{default}: Im starting to reach my limit...", c_NpcName[npc.index]);
+						CPrintToChatAll("{white}%s{default}: Im starting to reach my limit...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 				int MaxHealth = ReturnEntityMaxHealth(npc.index);
@@ -530,7 +574,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		int FellowBobFound = 0;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != INVALID_ENT_REFERENCE && other != npc.index)
 			{
 				if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -564,15 +608,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{white}%s{default}: One infected left.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: One infected left.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: This nightmare ends soon.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: Last. Infected. Left.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}
@@ -596,13 +640,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			switch(GetURandomInt() % 3)
 			{
 				case 0:
-					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: You weren't supposed to have this infection.", NpcStats_ReturnNpcName(npc.index, true));
 				
 				case 1:
-					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: No choice but to kill you, it consumes you.", NpcStats_ReturnNpcName(npc.index, true));
 				
 				case 2:
-					CPrintToChatAll("{white}%s{default}: Nobody wins.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: Nobody wins.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			
 			// Play funny animation intro
@@ -614,7 +658,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", c_NpcName[npc.index]);
+			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", NpcStats_ReturnNpcName(npc.index, true));
 			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) -1);
 			fl_Extra_Damage[npc.index] = 999.9;
@@ -659,41 +703,34 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: What if you killed Seaborn before Xeno..?");
+					CPrintToChatAll("{white}Bob the First{default}: Wait... no... you were fighting it..! No this.. This cannot be!");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 5:
 				{
-					CPrintToChatAll("{white}Bob the First{default}: Well nothing is holding this one back now...");
+					CPrintToChatAll("{white}Bob the First{default}: Im too hurt, i cant, i have to run... i cant....");
 					npc.m_flNextThinkTime = gameTime + 4.0;
 				}
 				case 6:
 				{
 					CPrintToChatAll("{white}Bob the First{default}: ...");
-					npc.m_flNextThinkTime = gameTime + 3.0;
+					npc.m_flNextThinkTime = gameTime + 2.0;
 				}
 				case 7:
 				{
-					GiveProgressDelay(1.0);
+					GiveProgressDelay(30.0);
 					SmiteNpcToDeath(npc.index);
-
-					Enemy enemy;
-
-					enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-					enemy.Health = 2099999999;
-					enemy.Is_Boss = 2;
-					enemy.ExtraSpeed = 1.5;
-					enemy.ExtraDamage = 3.0;
-					enemy.ExtraMeleeRes = 0.5;
-					enemy.ExtraRangedRes = 0.5;
-					enemy.ExtraSize = 1.0;
-					enemy.Team = 3;
-
-					Waves_AddNextEnemy(enemy);
-
-					Zombies_Currently_Still_Ongoing++;
-
-					CreateTimer(0.9, Bob_DeathCutsceneCheck, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					CPrintToChatAll("{white}Bob the First leaves in a hurry... something is wrong, should you follow him.....? Too late now...");
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/incomming_boss_wait_scary.mp3");
+					music.Time = 100;
+					music.Volume = 1.0;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Howilng Emptiness");
+					strcopy(music.Artist, sizeof(music.Artist), "....");
+					Music_SetRaidMusic(music);
+					GivePlayerItems();
+					return;
 				}
 			}
 		}
@@ -901,7 +938,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			{
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 				if(CurrentModifOn() == 1 && i_RaidGrantExtra[npc.index] == 1)
-					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", c_NpcName[npc.index]);
+					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 		}
 		int summon;
@@ -1141,7 +1178,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 										float VulnerabilityToGive = 0.10;
 										if(npc.m_bFakeClone)
 											VulnerabilityToGive = 0.05;
-										IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
+										IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 									}	
 	
 								}
@@ -1151,7 +1188,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									if(npc.m_bFakeClone)
 										VulnerabilityToGive = 0.05;
 
-									IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
+									IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 								}	
 								if(!Knocked)
 									Custom_Knockback(npc.index, target, 150.0, true);
@@ -1620,8 +1657,8 @@ void GiveOneRevive(bool ignorelimit = false)
 		}
 	}
 
-	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(Citizen_IsIt(entity))
 		{
@@ -1641,7 +1678,7 @@ static void SetupMidWave(int entity)
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(15.0 * MultiGlobalEnemy), 1500);
 	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(7.0 * MultiGlobalEnemy), 5000);
-	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", RoundToCeil(2.0 * MultiGlobalEnemy), RoundToCeil(20000.0 * MultiGlobalHighHealthBoss),1 );
+	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", RoundToCeil(2.0 * MultiGlobalEnemy), RoundToCeil(10000.0 * MultiGlobalHighHealthBoss),1 );
 
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
@@ -1673,14 +1710,18 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 	enemy.Index = NPC_GetByPlugin(plugin);
 	enemy.Is_Boss = boss;
 	enemy.Is_Health_Scaled = 1;
-	enemy.ExtraMeleeRes = 0.02;
-	enemy.ExtraRangedRes = 0.02;
+	enemy.ExtraMeleeRes = 0.03;
+	enemy.ExtraRangedRes = 0.03;
 	enemy.ExtraSpeed = 1.5;
 	enemy.ExtraDamage = 4.0;
 	enemy.ExtraSize = 1.0;
 	if(health != 0)
 	{
 		enemy.Health = health;
+		if(!boss)
+		{
+			enemy.Health = RoundToNearest(float(enemy.Health) * MultiGlobalHealth);
+		}
 	}
 	enemy.Team = GetTeam(bobindx);
 	strcopy(enemy.CustomName, sizeof(enemy.CustomName), name);
@@ -1729,7 +1770,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 		}
 	}
 
-	if(i_RaidGrantExtra[npc.index] == 1 && Waves_GetRound() > 55)
+	if(i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -1755,7 +1796,7 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 			
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != INVALID_ENT_REFERENCE && other != npc.index)
 				{
 					if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -1785,7 +1826,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 	WavesUpdateDifficultyName();
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != INVALID_ENT_REFERENCE && other != npc.index)
 		{
 			if(i_NpcInternalId[npc.index] == i_NpcInternalId[other])
@@ -1797,53 +1838,17 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 			}
 		}
 	}
-	
-}
-
-static Action Bob_DeathCutsceneCheck(Handle timer)
-{
-	if(!LastMann)
-		return Plugin_Continue;
-	
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(victim != INVALID_ENT_REFERENCE && GetTeam(victim) != TFTeam_Red)
-			SmiteNpcToDeath(victim);
-	}
-	
-	GiveProgressDelay(6.0);
-	Waves_ForceSetup(6.0);
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && !IsFakeClient(client))
-		{
-			if(IsPlayerAlive(client))
-				ForcePlayerSuicide(client);
-			
-			ApplyLastmanOrDyingOverlay(client);
-			SendConVarValue(client, sv_cheats, "1");
-		}
-	}
-	ResetReplications();
-
-	cvarTimeScale.SetFloat(0.1);
-	CreateTimer(0.5, SetTimeBack);
-
-	GivePlayerItems();
-	return Plugin_Stop;
 }
 
 static void GivePlayerItems(int coolwin = 0)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
 			if(coolwin == 0)
-				CPrintToChat(client, "{default}Bob has defeated you, however... you gained: {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}Bob has cured you of the sea, you gained: {yellow}''Bob's Curing Hand''{default}!");
 			else
 				CPrintToChat(client, "{default}You didnt attack bob for no reason and thus he gives you: {yellow}''Bob's Curing Hand''{default}!");
 		}
@@ -1900,7 +1905,7 @@ public Action Smite_Timer_Bob(Handle Smite_Logic, DataPack pack)
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		 
 		CreateEarthquake(spawnLoc, 1.0, BOB_FIRST_LIGHTNING_RANGE * 2.5, 16.0, 255.0);
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increace
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, BOB_FIRST_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increase
 	
 		return Plugin_Stop;
 	}
@@ -1979,15 +1984,13 @@ stock void BobPullTarget(int bobnpc, int enemy)
 	}
 }
 
-static int SensalHitDetected_2[MAXENTITIES];
 
 void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], float TimeUntillHit, float damage, bool kick)
 {
-
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 
@@ -2051,7 +2054,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 		GetBeamDrawStartPoint_Stock(entity, VectorStartEdit,OffsetFromMiddle, AnglesEdit);
 
 		SetColorRGBA(glowColor, red, green, blue, Alpha);
-		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
+		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit * ReturnEntityAttackspeed(entity), ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
 	
@@ -2078,7 +2081,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected_2[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	float VectorTarget[3];
 	float VectorStart[3];
@@ -2132,7 +2135,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected_2[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float damage = damagedata;
@@ -2173,7 +2176,7 @@ public bool Sensal_BEAM_TraceUsers_2(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected_2[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }

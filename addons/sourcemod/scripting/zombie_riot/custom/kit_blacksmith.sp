@@ -31,6 +31,14 @@ void Blacksmith_RoundStart()
 	delete Tinkers;
 }
 
+bool Blacksmith_Lastman(int client)
+{
+	bool Purnell_Went_Nuts = false;
+	if(EffectTimer[client] != null)
+		Purnell_Went_Nuts = true;
+	
+	return Purnell_Went_Nuts;
+}
 int Blacksmith_Additional_SupportBuildings(int client)
 {
 	return i_AdditionalSupportBuildings[client];
@@ -219,7 +227,7 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 		return;
 	}
 
-	Rogue_OnAbilityUse(weapon);
+	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 10.0);
 
 	ClientCommand(client, "playgamesound weapons/gunslinger_three_hit.wav");
@@ -696,11 +704,11 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 	}
 	else if(value < 1.0)
 	{
-		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((1.0 - value) * 100.0));
+		FormatEx(buffer, sizeof(buffer), "%d％ ", RoundToCeil((1.0 - value) * 100.0));
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%d%% ", RoundToCeil((value - 1.0) * 100.0));
+		FormatEx(buffer, sizeof(buffer), "%d％ ", RoundToCeil((value - 1.0) * 100.0));
 	}
 
 	//inverse the inverse!
@@ -845,7 +853,7 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 
 	}
 	
-	CPrintToChat(client, "%s {yellow}(%d%%)", buffer, RoundToCeil(luck * 100.0));
+	CPrintToChat(client, "%s {yellow}(%d％)", buffer, RoundToCeil(luck * 100.0));
 }
 
 static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)

@@ -48,7 +48,7 @@ void VictorianShotgunner_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianShotgunner(client, vecPos, vecAng, ally);
+	return VictorianShotgunner(vecPos, vecAng, ally);
 }
 
 
@@ -87,7 +87,7 @@ methodmap VictorianShotgunner < CClotBody
 	}
 	
 	
-	public VictorianShotgunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictorianShotgunner(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianShotgunner npc = view_as<VictorianShotgunner>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "1750", ally));
 		
@@ -285,17 +285,7 @@ int VictorianShotgunnerSelfDefense(VictorianShotgunner npc, float gameTime, int 
 							damageDealt *= 3.0;
 						if(NpcStats_VictorianCallToArms(npc.index))
 						{
-							if(target > MaxClients)
-							{
-								StartBleedingTimer_Against_Client(target, npc.index, 4.0, 4);
-							}
-							else
-							{
-								if (!IsInvuln(target))
-								{
-									StartBleedingTimer_Against_Client(target, npc.index, 4.0, 4);
-								}
-							}
+							StartBleedingTimer(target, npc.index, 4.0, 4, -1, DMG_TRUEDAMAGE, 0);
 						}
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);

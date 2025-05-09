@@ -94,17 +94,17 @@ static char[] GetBuildingHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(ZR_GetWaveCount()+1 < 30)
+	if(ZR_Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.20));
 	}
-	else if(ZR_GetWaveCount()+1 < 45)
+	else if(ZR_Waves_GetRound()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;
@@ -122,13 +122,13 @@ static float fl_weaver_charge[MAXENTITIES];
 static int i_weaver_index[MAXENTITIES];
 static int i_wave[MAXENTITIES];
 static bool b_allow_spawns[MAXENTITIES];
-
+static int i_special_tower_logic[MAXENTITIES];
 static int i_current_cycle[MAXENTITIES];
 static int i_strikes[MAXTF2PLAYERS];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
-
+static float f_PlayerScalingBuilding;
 void Magia_Anchor_OnMapStart_NPC()
 {
 	NPCData data;
@@ -217,7 +217,7 @@ methodmap Magia_Anchor < CClotBody
 	
 	public Magia_Anchor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,350.0}));
+		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,350.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -225,14 +225,14 @@ methodmap Magia_Anchor < CClotBody
 
 		b_is_magia_tower[npc.index]=true;
 
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_CUSTOM_MODELS_3);
+		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
-		int wave = ZR_GetWaveCount()+1;
+		int wave = ZR_Waves_GetRound()+1;
 
 		if(StrContains(data, "force15") != -1)
 			wave = 15;
@@ -244,6 +244,7 @@ methodmap Magia_Anchor < CClotBody
 			wave = 60;
 
 		i_wave[npc.index] = wave;
+		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
 
 		fl_weaver_charge[npc.index] = 0.0;
 		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;
@@ -258,6 +259,10 @@ methodmap Magia_Anchor < CClotBody
 		else
 			b_allow_spawns[npc.index] = true;
 		
+		i_special_tower_logic[npc.index] = 0;
+
+		if(StrContains(data, "lelouch") != -1)
+			i_special_tower_logic[npc.index] = 1;
 		
 		if(StrContains(data, "raid") != -1)
 			i_RaidGrantExtra[npc.index] = RAIDITEM_INDEX_WIN_COND;
@@ -324,8 +329,6 @@ methodmap Magia_Anchor < CClotBody
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
-		//f_PlayerScalingBuilding = float(CountPlayersOnRed());
-
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
@@ -344,12 +347,11 @@ methodmap Magia_Anchor < CClotBody
 		npc.m_flRangedArmor = 1.0;
 		npc.m_flAttackHappens = 0.0;
 
-		NPC_StopPathing(npc.index);
-
 		npc.m_flMeleeArmor = 2.5;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 115.0;
 
-		SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
+		if(GetTeam(npc.index) != 2)
+			SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
 
 		/*int test;
 		test = GetEntProp(npc.index, Prop_Data, "m_usSolidFlags");
@@ -428,7 +430,23 @@ static void ClotThink(int iNPC)
 		
 		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 		VecSelfNpcabs[2] += 100.0;
-		if(SpawnedOneAlready > GetGameTime())
+		if(GetTeam(npc.index) == TFTeam_Red)
+		{
+			Event event = CreateEvent("show_annotation");
+			if(event)
+			{
+				event.SetFloat("worldPosX", VecSelfNpcabs[0]);
+				event.SetFloat("worldPosY", VecSelfNpcabs[1]);
+				event.SetFloat("worldPosZ", VecSelfNpcabs[2]);
+				event.SetFloat("lifetime", 7.0);
+				event.SetString("text", "Allied Magia Anchors!");
+				event.SetString("play_sound", "vo/null.mp3");
+				IdRef++;
+				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
+				event.Fire();
+			}
+		}
+		else if(SpawnedOneAlready > GetGameTime())
 		{
 			Event event = CreateEvent("show_annotation");
 			if(event)
@@ -459,6 +477,7 @@ static void ClotThink(int iNPC)
 				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
 				event.Fire();
 			}
+			SpawnedOneAlready = GetGameTime() + 60.0;
 		}
 	}
 	
@@ -472,6 +491,18 @@ static void ClotThink(int iNPC)
 		return;
 
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	if(i_special_tower_logic[npc.index] == 1)
+	{
+		float Radius = 650.0;
+		Master_Apply_Defense_Buff(npc.index, Radius, 20.0, 0.75);	//25% resistances
+		Master_Apply_Attack_Buff(npc.index, Radius, 20.0, 0.25);		//25% dmg bonus
+
+		float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec); Npc_Vec[2]+=30.0;
+		int color[4]; Ruina_Color(color);
+		TE_SetupBeamRingPoint(Npc_Vec, Radius*2.0, Radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, 0.1, 12.0, 0.1, color, 1, 0);
+		TE_SendToAll();
+	}
 
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
 	{
@@ -496,7 +527,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 	int npc_current_count;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
 		{
 			npc_current_count += 1;
@@ -552,14 +583,21 @@ static void Spawning_Logic(Magia_Anchor npc)
 	int npc_current_count;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
 		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
 		{
 			npc_current_count += 1;
 		}
 	}
 
-	if(npc_current_count > LimitNpcs)
+	int limit = MaxEnemiesAllowedSpawnNext(0);
+
+	switch(i_special_tower_logic[npc.index])
+	{
+		case 1: limit /=2;
+	}
+
+	if(npc_current_count > limit)
 		return;
 
 	int wave = i_wave[npc.index];
@@ -567,13 +605,34 @@ static void Spawning_Logic(Magia_Anchor npc)
 	if(Ratio < -0.5)
 		Ratio=-0.5;
 	float Time = 1.0 + Ratio;
-	fl_ruina_battery_timer[npc.index] = GameTime + Time;
+	
 	float ratio = float(wave)/60.0;
-	int health = RoundToFloor(15000.0*ratio);
+	int health = RoundToFloor(13500.0*ratio);
 	if(wave >=35)
 		health = RoundToFloor(health * 2.0);
 	if(wave >=60)
 		health = RoundToFloor(health * 1.5);
+
+	switch(i_special_tower_logic[npc.index])
+	{
+		case 1:
+		{
+			health = RoundToCeil(health*2.0);
+		}
+		default:
+		{
+			float PlayerMulti = 2.0 - (f_PlayerScalingBuilding/14.0);
+			if(PlayerMulti < 0.8)
+				PlayerMulti = 0.8;
+			
+			if(PlayerMulti > 2.0)
+				PlayerMulti = 2.0;
+
+			Time *= PlayerMulti;
+		}
+	}
+
+	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 	//whats a "switch" statement??
 	if(wave<=15)	
 	{
@@ -621,6 +680,14 @@ static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int c
 
 				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
 				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+
+				switch(i_special_tower_logic[npc.index])
+				{
+					case 1:
+					{
+						fl_Extra_Damage[spawn_index] *= 3.5;
+					}
+				}
 			}	
 		}
 		return;
@@ -724,7 +791,7 @@ static void NPC_Death(int entity)
 	npc.PlayDeathSound();	
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-	makeexplosion(-1, -1, pos, "", 0, 0);
+	makeexplosion(-1, pos, 0, 0);
 
 	b_is_magia_tower[npc.index]=false;
 
@@ -752,7 +819,7 @@ static int i_find_weaver(Magia_Anchor npc)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
 			char npc_classname[60];
@@ -800,7 +867,7 @@ int i_GetMagiaAnchor(CClotBody npc)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
 			if(b_is_magia_tower[baseboss_index])

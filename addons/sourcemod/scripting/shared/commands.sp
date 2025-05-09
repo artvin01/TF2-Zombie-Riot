@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 #if defined ZR
-bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 static bool BlockNext[MAXTF2PLAYERS];
 #endif
 
@@ -62,7 +61,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 			Store_SwapItems(client);
 		}
 #endif
-		return Plugin_Handled;
+		return Plugin_Continue;
 	}
 #if defined ZR
 	else if(!StrContains(buffer, "MvM_UpgradesBegin", false))
@@ -86,6 +85,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	{
 		//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
 		f_MedicCallIngore[client] = GetGameTime() + 0.5;
+		
 		bool has_been_done = BuildingCustomCommand(client);
 		if(has_been_done)
 		{
@@ -194,6 +194,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	RemoveInvul(client);
 	RequestFrames(Removeinvul1frame, 10, EntIndexToEntRef(client));
 	PrintToChat(client, "You changed classes immedietly!");
+	f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; //little cooldown to prevent bug
 }
 #endif
 
@@ -230,7 +231,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 	{
 		if(IsFakeClient(client))
 		{
-			ChangeClientTeam(client, view_as<int>(TFTeam_Blue));
+			SetTeam(client, view_as<int>(TFTeam_Blue));
 		}
 #if defined ZR
 		else if(Queue_JoinTeam(client))
@@ -238,7 +239,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 		else
 #endif
 		{
-			ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+			SetTeam(client, view_as<int>(TFTeam_Red));
 			ShowVGUIPanel(client, "class_red");
 		}
 	}
@@ -265,8 +266,6 @@ public Action OnTaunt(int client, const char[] command, int args)
 	{
 		return Plugin_Handled;
 	}
-	
-	Pets_OnTaunt(client);
 #endif
 	return Plugin_Continue;
 }
@@ -276,6 +275,9 @@ public Action OnSayCommand(int client, const char[] command, int args)
 	
 #if defined ZR
 	if(Store_SayCommand(client))
+		return Plugin_Handled;
+		
+	if(Rebel_Rename(client))
 		return Plugin_Handled;
 #endif
 	
@@ -321,9 +323,38 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 #endif
 					return Plugin_Handled;
 				}
+				/*
+				//Block medic call.
+				return Plugin_Handled;
+				*/
 			}
 		}
 	}
 	return Plugin_Continue;
 }
 #endif
+
+
+
+bool DoInteractKeyLogic(float angles[3], int client)
+{
+	bool Success = false;
+	f_ClientReviveDelayReviveTime[client] = GetGameTime() + 1.0;
+#if defined ZR
+	if(angles[0] < -70.0)
+	{
+		int entity = EntRefToEntIndex(Building_Mounted[client]);
+		if(IsValidEntity(entity))
+		{
+			Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), client);
+		}
+	}
+#endif
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	StartPlayerOnlyLagComp(client, true);
+	if(InteractKey(client, weapon_holding, true))
+		Success = true;
+
+	EndPlayerOnlyLagComp(client);
+	return Success;
+}

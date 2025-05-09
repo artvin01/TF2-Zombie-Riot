@@ -90,6 +90,7 @@ methodmap TheHunter < CClotBody
 		
 		
 		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
@@ -290,7 +291,7 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
-			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_PLAYERSOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
 			/*
 			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
@@ -323,7 +324,7 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
-			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_PLAYERSOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
 			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
 			{

@@ -46,9 +46,9 @@ void SeabornDefender_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornDefender(vecPos, vecAng, team);
+	return SeabornDefender(vecPos, vecAng, team, data);
 }
 
 methodmap SeabornDefender < CClotBody
@@ -74,7 +74,7 @@ methodmap SeabornDefender < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornDefender(float vecPos[3], float vecAng[3], int ally)
+	public SeabornDefender(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeabornDefender npc = view_as<SeabornDefender>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "100000", ally, false));
 
@@ -99,8 +99,6 @@ methodmap SeabornDefender < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_targe", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield_all.mdl");
 		SetVariantString("1.0");
@@ -108,7 +106,7 @@ methodmap SeabornDefender < CClotBody
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		
-		switch(Rogue_GetRound() % 3)
+		switch(ZR_Waves_GetRound() % 3)
 		{
 			case 0:
 			{
@@ -128,9 +126,19 @@ methodmap SeabornDefender < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
-
+		if(!StrContains(data, "normal"))
+		{
+			npc.m_iBleedType = BLEEDTYPE_NORMAL;
+			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Defender");
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+		}
 		return npc;
 	}
 }
@@ -253,7 +261,7 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 
-		switch(Rogue_GetRound() % 3)
+		switch(ZR_Waves_GetRound() % 3)
 		{
 			case 0:
 			{

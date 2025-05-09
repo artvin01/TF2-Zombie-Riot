@@ -129,7 +129,7 @@ methodmap IberiaCombastia < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(IberiaCombastia_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaCombastia_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(IberiaCombastia_ClotThink);
-		NPCStats_RemoveAllDebuffs(npc.index, FAR_FUTURE);
+		ApplyStatusEffect(npc.index, npc.index, "Thick Blood", 999999.0);	
 		
 		
 		npc.StartPathing();
@@ -139,7 +139,7 @@ methodmap IberiaCombastia < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 20.0);
+		SetMoraleDoIberia(npc.index, 17.0);
 		
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_torchers_trench_coat/dec23_torchers_trench_coat.mdl");
@@ -277,9 +277,9 @@ void IberiaCombastiaSelfDefense(IberiaCombastia npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 85.0;
+					float damageDealt = 80.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 4.0;
+						damageDealt *= 3.5;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

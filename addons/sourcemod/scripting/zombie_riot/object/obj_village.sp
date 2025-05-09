@@ -60,6 +60,15 @@ void ObjectVillage_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+
+	BuildingInfo build;
+	build.Section = 1;
+	strcopy(build.Plugin, sizeof(build.Plugin), "obj_village");
+	build.Cost = 1200;
+	build.Health = 30;
+	build.Cooldown = 30.0;
+	build.Func = ObjectGeneric_CanBuildSentry;
+	Building_Add(build);
 }
 int Building_GetClientVillageFlags(int client)
 {
@@ -143,7 +152,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		}
 	}
 
-	i_ExtraPlayerPoints[owner] += 2; //Static low point increace.
+	i_ExtraPlayerPoints[owner] += 2; //Static low point increase.
 	if(entity != INVALID_ENT_REFERENCE)
 		BuildingVillageChangeModel(owner, entity);
 	
@@ -619,14 +628,14 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 			
 			if(Village_Flags[Owner] & VILLAGE_050)
 			{
-				i_ExtraPlayerPoints[Owner] += 100; //Static point increace.
+				i_ExtraPlayerPoints[Owner] += 100; //Static point increase.
 				Village_ReloadBuffFor[Owner] = gameTime + 20.0;
 				EmitSoundToAll("items/powerup_pickup_uber.wav");
 				EmitSoundToAll("items/powerup_pickup_uber.wav");
 			}
 			else
 			{
-				i_ExtraPlayerPoints[Owner] += 50; //Static point increace.
+				i_ExtraPlayerPoints[Owner] += 50; //Static point increase.
 				Village_ReloadBuffFor[Owner] = gameTime + 15.0;
 				EmitSoundToAll("player/mannpower_invulnerable.wav", npc.index);
 				EmitSoundToAll("player/mannpower_invulnerable.wav", npc.index);
@@ -1119,7 +1128,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						{
 							if(Attributes_Has(entity, 6))
 								Attributes_SetMulti(entity, 6, 0.88);	// Fire Rate
-							
+								
 							if(Attributes_Has(entity, 97))
 								Attributes_SetMulti(entity, 97, 0.88);	// Reload Time
 							

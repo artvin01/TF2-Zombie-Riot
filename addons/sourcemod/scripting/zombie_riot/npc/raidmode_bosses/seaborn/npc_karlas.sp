@@ -25,13 +25,6 @@ static const char g_HurtSounds[][] = {
 	"ambient/levels/prison/radio_random15.wav",
 };
 
-static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-};
-
 static const char g_MeleeHitSounds[][] = {
 	"weapons/batsaber_hit_flesh1.wav",
 	"weapons/batsaber_hit_flesh2.wav",
@@ -44,9 +37,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/batsaber_swing3.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
 static char g_TeleportSounds[][] = {
 	"weapons/bison_main_shot.wav",
 };
@@ -89,8 +79,7 @@ static float fl_npc_basespeed;
 
 //Logic for duo raidboss
 
-static int i_current_wave[MAXENTITIES];
-static int i_ally_index[MAXENTITIES];
+
 static bool b_bobwave[MAXENTITIES];
 
 static bool b_swords_created[MAXENTITIES];
@@ -108,7 +97,7 @@ static float fl_karlas_sword_battery[MAXENTITIES];
 static int i_dance_of_light_sword_id[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sword_throttle[MAXENTITIES][KARLAS_SWORDS_AMT];
 static float fl_dance_of_light_sound_spam_timer[MAXENTITIES];
-static int i_wingslot[MAXENTITIES];
+
 static bool b_lostOVERDRIVE[MAXENTITIES];
 
 
@@ -142,10 +131,10 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_DefaultMedic_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_Sword_Impact_Sound);
 	PrecacheSoundArray(g_BuffSounds);
@@ -186,7 +175,7 @@ methodmap Karlas < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DefaultMedic_IdleAlertedSounds[GetRandomInt(0, sizeof(g_DefaultMedic_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		
@@ -206,8 +195,11 @@ methodmap Karlas < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		int rng = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[rng], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound() {
@@ -222,7 +214,7 @@ methodmap Karlas < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DefaultMeleeMissSounds[GetRandomInt(0, sizeof(g_DefaultMeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
 	}
@@ -324,6 +316,11 @@ methodmap Karlas < CClotBody
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
+	property float m_flInvulnerability
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
 	property int m_iParticles1
 	{
 		public get()		 
@@ -387,19 +384,19 @@ methodmap Karlas < CClotBody
 		{
 			//we are teleporting and also can't move, take a heavily defensive position.	
 			if(b_teleport_strike_active[this.index])
-				fAmt -=0.8;
+				fAmt -=0.5;
 
 			//we are retreating to stella, take a more defensive position.
 			if(this.m_bRetreat)
-				fAmt -=0.25;
+				fAmt -=0.15;
 			
 			//we are doing our "amazon delivery service", we cannot move, give uis armour
 			if(this.m_flSlicerBarrageCD == FAR_FUTURE)
-				fAmt -= 0.6;
+				fAmt -= 0.3;
 
 			//we are being used as a mirror, cannot move, take defensive stance.
 			if(this.m_flNC_LockedOn > GetGameTime(this.index))
-				fAmt -= 0.45;
+				fAmt -= 0.15;
 			
 			if(this.Anger)
 				fAmt -=0.25;
@@ -424,19 +421,19 @@ methodmap Karlas < CClotBody
 		{
 			//we are teleporting and also can't move, take a heavily defensive position.	
 			if(b_teleport_strike_active[this.index])
-				fAmt -=0.5;
+				fAmt -=0.3;
 
 			//we are retreating to stella, take a more defensive position.
 			if(this.m_bRetreat)
-				fAmt -=0.25;
+				fAmt -=0.15;
 			
-			//we are doing our "amazon delivery service", we cannot move, give uis armour
+			//we are doing our "amazon delivery service", we cannot move, give us armour
 			if(this.m_flSlicerBarrageCD == FAR_FUTURE)
-				fAmt -= 0.6;
+				fAmt -= 0.3;
 
 			//we are being used as a mirror, cannot move, take defensive stance.
 			if(this.m_flNC_LockedOn > GetGameTime(this.index))
-				fAmt -= 0.45;
+				fAmt -= 0.15;
 
 			if(this.Anger)
 				fAmt -=0.25;
@@ -511,6 +508,8 @@ methodmap Karlas < CClotBody
 		fl_teleport_strike_recharge[npc.index] = GetGameTime()+25.0;
 		b_teleport_strike_active[npc.index]=false;
 
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
+
 		Zero(fl_dance_of_light_sound_spam_timer);
 
 		npc.m_fbGunout = false;
@@ -570,6 +569,7 @@ methodmap Karlas < CClotBody
 		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");	
+		KarlasEarsApply(npc.index,_,0.75);
 
 		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
 		SetVariantInt(WINGS_KARLAS);
@@ -616,6 +616,8 @@ methodmap Karlas < CClotBody
 
 		if((StrContains(data, "anger") != -1))
 			npc.Anger = true;
+
+		b_allow_karlas_transform[npc.index] = false;
 		
 		return npc;
 	}
@@ -641,7 +643,7 @@ static void Win_Line(int entity)
 void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob, bool tripple)
 {	
 	if(wave == -2)
-		wave = ZR_GetWaveCount()+1;
+		wave = ZR_Waves_GetRound()+1;
 
 	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);
@@ -655,6 +657,21 @@ static void Internal_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 
+	if(npc.m_flInvulnerability)
+	{
+		int ally = npc.Ally;
+		Karlas npcally = view_as<Karlas>(ally);
+		if(IsValidEntity(ally) && npcally.m_flInvulnerability)
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(ally));
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+		else if(!IsValidEntity(ally))
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+	}
+	
 	if(RaidModeTime < GetGameTime() && !npc.Ally && !b_lostOVERDRIVE[npc.index])
 	{
 		CPrintToChatAll("{crimson}Karlas{snow}: >:)");
@@ -809,7 +826,7 @@ static void Internal_ClotThink(int iNPC)
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		GetTarget(npc);
 		return;
 	}
 	
@@ -845,7 +862,7 @@ static void Internal_ClotThink(int iNPC)
 			if(flDistanceToAlly < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*10.0 && Can_I_See_Enemy_Only(npc.index, Ally))
 			{
 				NPCStats_RemoveAllDebuffs(Ally, 1.0);
-				ApplyStatusEffect(npc.index, Ally, "Battilons Backup", 2.5);
+				ApplyStatusEffect(npc.index, Ally, "Defensive Backup", 2.5);
 			}
 
 			//Karlas_Teleport_Core(npc, PrimaryThreatIndex);
@@ -1105,7 +1122,7 @@ static void Blade_Logic(Karlas npc)
 		{
 			case 2:	//Aggresive - spin around him while extended
 			{
-				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 10.0*RaidModeScaling);
+				Karlas_Manipulate_Sword_Location(npc, npc_Vec, npc_Vec, GameTime, 7.5, 12.0*RaidModeScaling);
 			}
 			case 4:	//becomes pseudo wings. neutral state for when the things are "recharging"
 			{
@@ -1214,12 +1231,26 @@ static void Fire_Hiigara_Projectile(Karlas npc, int PrimaryThreatIndex)
 	struct_Projectile[Proj].particles[1] = EntIndexToEntRef(left);
 	struct_Projectile[Proj].particles[2] = EntIndexToEntRef(right);
 
-	CreateTimer(Time, Timer_RemoveEntity, EntIndexToEntRef(ParticleOffsetMain), TIMER_FLAG_NO_MAPCHANGE);
+	float Distance = GetVectorDistance(SelfVec, VecTarget);
+	float Timer_Span = Distance/Speed;
+	Timer_Span *=(npc.Anger ? 0.75 : 0.5) + 0.25;
+	
+
+	CreateTimer(Timer_Span, KillProjectileHoming, EntIndexToEntRef(Proj), TIMER_FLAG_NO_MAPCHANGE);
 
 	DataPack pack = new DataPack();
 	pack.WriteCell(EntIndexToEntRef(Proj));
 	RequestFrame(Projectile_Detect_Loop, pack);
 	
+}
+Action KillProjectileHoming(Handle Timer, int iRef)
+{
+	int Projectile = EntRefToEntIndex(iRef);
+	if(!IsValidEntity(Projectile))
+		return Plugin_Stop;
+	
+	HomingProjectile_Deactivate(Projectile);
+	return Plugin_Stop;
 }
 static void Projectile_Detect_Loop(DataPack pack)
 {
@@ -1271,8 +1302,8 @@ static void Projectile_Detect_Loop(DataPack pack)
 
 	Ruina_Laser_Logic Laser;
 	Laser.client = owner;
-	Laser.Damage = Modify_Damage(-1, 25.0);
-	Laser.Bonus_Damage = Modify_Damage(-1, 25.0) * 6.0;
+	Laser.Damage = Modify_Damage(-1, 17.0);
+	Laser.Bonus_Damage = Modify_Damage(-1, 17.0) * 6.0;
 	Laser.damagetype = DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE;
 	//Laser.Radius = radius;
 	Laser.End_Point = Vec_Points[1];
@@ -1284,27 +1315,24 @@ static void Projectile_Detect_Loop(DataPack pack)
 	DataPack pack2 = new DataPack();
 	pack2.WriteCell(EntIndexToEntRef(projectile));
 	float Throttle = 0.04;	//0.025
-	int frames_offset = RoundToCeil(66.0*Throttle);	//no need to call this every frame if avoidable
+	int frames_offset = RoundToCeil((66.0*TickrateModify)*Throttle);	//no need to call this every frame if avoidable
 	if(frames_offset < 0)
 		frames_offset = 1;
 	RequestFrames(Projectile_Detect_Loop, frames_offset, pack2);
 
 	
 }
-static void On_LaserHit(int client, int target, int damagetype, float damage)
+static void On_LaserHit(int karlas, int target, int damagetype, float damage)
 {
-	for (int entity = 0; entity < MAXENTITIES; entity++)
-	{
-		f_GlobalHitDetectionLogic[client][entity] = 0.0;
-	}
-	if(f_GlobalHitDetectionLogic[client][target] > GetGameTime())
-		return;
 	
-	f_GlobalHitDetectionLogic[client][target] = GetGameTime() + 0.25;	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
+	if(IsIn_HitDetectionCooldown(karlas,target))
+		return;
+			
+	Set_HitDetectionCooldown(karlas,target, GetGameTime() + 0.25);	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
 
 	int pitch = GetRandomInt(125,135);
 	EmitSoundToAll(KARLAS_SLICER_HIT, target, SNDCHAN_AUTO, 75,_,0.8,pitch);
-	SDKHooks_TakeDamage(target, client, client, damage, damagetype, -1); 
+	SDKHooks_TakeDamage(target, karlas, karlas, damage, damagetype, -1); 
 }
 static void Func_On_Proj_Touch(int entity, int other)
 {
@@ -1349,7 +1377,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 	}
 		
 
-	if(!b_lostOVERDRIVE[npc.index] && (fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime)))
+	if(fl_retreat_timer[npc.index] != -1.0 && !b_lostOVERDRIVE[npc.index] && (fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime)))
 	{
 		npc.m_bAllowBackWalking=true;
 		float vBackoffPos[3];
@@ -1379,11 +1407,31 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 		if(Karlas_Status(npc, GameTime)==1)
 			return;
 
-		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : 1.0);
-		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.2);
+		float Swing_Speed = (b_lostOVERDRIVE[npc.index] ? 0.2 : (npc.Anger ? 1.5 : 2.5));
+		float Swing_Delay = (b_lostOVERDRIVE[npc.index] ? 0.0 : 0.25);
+
+		bool Silence = NpcStats_IsEnemySilenced(npc.index);
+		float Knockback_Deal = Silence ? 560.0 : 900.0;
 		if(npc.m_flNextMeleeAttack < GameTime)
 		{
+			if(!b_lostOVERDRIVE[npc.index])
+			{
+				int Nearby = Nearby_Players(npc, 400.0);
 
+				int amount_of_people = 6;
+
+				float Ratio = 1.0 - (Nearby/float(amount_of_people));
+				if(Ratio <0.0)
+					Ratio = 0.0;
+
+				float MinSpeed = (npc.Anger ? 0.175 : 0.3);
+				float MinDelay = 0.1;	//must be lower, since uh, otherwise the melee doesn't ever hit
+
+				Swing_Speed = MinSpeed + (Swing_Speed - MinSpeed) * Ratio;
+				Swing_Delay = MinDelay + (Swing_Delay - MinDelay) * Ratio;
+
+				Knockback_Deal *=Ratio;
+			}
 			//Play attack ani
 			if (!npc.m_flAttackHappenswillhappen)
 			{
@@ -1396,7 +1444,10 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 				
 			if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 			{
-				fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+				if(Swing_Speed > 0.9)
+					fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+				else
+					fl_retreat_timer[npc.index] = -1.0;
 
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -1413,37 +1464,20 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 
 						if(fl_karlas_sword_battery[npc.index]> GameTime)
 						{
-							fl_karlas_sword_battery[npc.index] +=1.5;
+							fl_karlas_sword_battery[npc.index] +=2.0;
 						}
-						
-						if(IsValidClient(target))
+
+						//clause ae karlas knockback
+						if(!b_lostOVERDRIVE[npc.index])
 						{
-							float Bonus_damage = 1.0;
-							int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 							
-							if(IsValidEntity(weapon))
-							{	
-								char classname[32];
-								GetEntityClassname(weapon, classname, 32);
-							
-								int weapon_slot = TF2_GetClassnameSlot(classname);
-							
-								if(weapon_slot != 2 || i_IsWandWeapon[weapon])
-								{
-									Bonus_damage = 1.5;
-								}
-								meleedmg *= Bonus_damage;
-							}
-							//clause ae karlas knockback
-							if(!b_lostOVERDRIVE[npc.index])
+							if(IsValidClient(target) && !Silence)
 							{
-								Custom_Knockback(npc.index, target, 900.0, true);
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
-							
+							Custom_Knockback(npc.index, target, Knockback_Deal, true);
 						}
-
 						SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();	
 					
@@ -1529,7 +1563,7 @@ static void Fire_Wave_Barrage(Karlas npc)
 	
 	//taunt_the_fist_bump_fistbump
 
-	int Amt = (npc.Anger ? 9 : 7); 
+	int Amt = (npc.Anger ? 12 : 8); 
 	float Fire_Rate = (npc.Anger ? 0.5 : 1.0);	//how long between slicer bursts
 
 	if(npc.m_iSlicersFired > Amt+1)
@@ -1581,6 +1615,9 @@ static void Fire_Wave_Barrage(Karlas npc)
 
 	npc.m_iSlicersFired++;
 
+	//get a target right infront of karlas.
+	//or if one is not found, use standard targeting logic.
+	npc.m_iTarget = i_Get_Laser_Target(npc);
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		return;
 
@@ -1693,7 +1730,7 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 
 			npc_Loc[2]+=10.0;
 			int color[4];
-			Ruina_Color(color);
+			Ruina_Color(color, i_current_wave[npc.index]);
 			TE_SetupBeamRingPoint(npc_Loc, 250.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, 12.0, 0.75, color, 1, 0);
 			TE_SendToAll();
 
@@ -1800,20 +1837,6 @@ static void Karlas_Teleport_Strike(Karlas npc, float flDistanceToTarget, float G
 		}
 	}
 }
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
-}
 static void Karlas_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
 {
 	float originalPostionTrace[3];
@@ -1862,7 +1885,7 @@ static void Karlas_Teleport_Boom(Karlas npc, float Location[3])
 	if(npc.Anger)
 		radius *= 1.25;	
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 
 	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
@@ -1912,10 +1935,13 @@ static Action Karlas_Ring_Loops(Handle Loop, DataPack pack)
 	if(npc.Anger)
 		radius *= 1.25;	
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 
 	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 1.0, 30.0, 0.1, color, 1, 0);
+	TE_SendToAll();
+
+	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, (radius*2.0) + 0.1, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
 	TE_SendToAll();
 
 	Handle pack2;
@@ -1949,7 +1975,7 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 	float damage = 200.0*RaidModeScaling;	//very deadly!
 	float radius = KARLAS_TELEPORT_STRIKE_RADIUS;
 	int color[4];
-	Ruina_Color(color);
+	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
 	int loop_for = 15;		//15
 	float height = 1500.0;	//1500
@@ -1976,7 +2002,7 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 
 	TE_SetupBeamRingPoint(spawnLoc, 1.0, radius*2.0, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
 	TE_SendToAll();
-
+	
 	float start = 75.0;
 	float end = 75.0;
 	TE_SetupBeamPoints(spawnLoc, sky_loc, g_Ruina_BEAM_Diamond, 0, 0, 0, 1.0, start, end, 0, 1.0, color, 3);
@@ -2231,6 +2257,49 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 {
 	Karlas npc = view_as<Karlas>(victim);
 		
+	int health;
+	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	{
+
+		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
+		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
+		int ally = npc.Ally;
+		if(IsValidEntity(ally))
+		{
+			switch(GetRandomInt(0, 1))
+			{
+				case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
+				case 1: CPrintToChatAll("{crimson}Karlas{snow}: *slight pain grunt*");
+			}
+			RaidModeTime +=17.0; //Extra time due to invuln
+		
+			Stella donner = view_as<Stella>(ally);
+			donner.Anger=true;
+			ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 15.0);
+			ApplyStatusEffect(ally, ally, "Hardened Aura", 15.0);
+
+			ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
+			NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+			ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
+			NpcStats_RuinaAgilityStengthen(npc.index, 1.15);//15% speed bonus, going bellow 1.0 will make npc's slower
+			ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
+			NpcStats_RuinaDamageStengthen(npc.index, 0.1);	//10% dmg bonus
+			
+			ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Defense", 999.0);
+			NpcStats_RuinaDefenseStengthen(npc.Ally, 0.8);	//20% resistances
+			ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Agility", 999.0);
+			NpcStats_RuinaAgilityStengthen(npc.Ally, 1.15);	//15% speed bonus, going bellow 1.0 will make npc's slower
+			ApplyStatusEffect(npc.Ally, npc.Ally, "Ruina's Damage", 999.0);
+			NpcStats_RuinaDamageStengthen(npc.Ally, 0.1);	//10% dmg bonus
+
+			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
+			ApplyStatusEffect(ally, ally, "Ancient Melodies", 999.0);
+		}
+		npc.m_flInvulnerability = 1.0;
+	}
+	
+
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
@@ -2247,8 +2316,9 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	int wave = i_current_wave[npc.index];
 
 	//stella is dead, its wave 30 or beyond, health is less then 80% we are not teleporting, we are not being lockedon by stella, we are not doing an animation
-	if(!b_angered_twice[npc.index] && wave >=30 && !IsValidAlly(npc.index, npc.Ally) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if(!b_angered_twice[npc.index] && wave >=30 && (!IsValidAlly(npc.index, npc.Ally) || b_allow_karlas_transform[npc.index]) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
+		b_allow_karlas_transform[npc.index] = false;
 		b_angered_twice[npc.index]=true;
 		npc.m_flNextChargeSpecialAttack = GetGameTime()+8.0;
 		npc.m_bisWalking = false;
@@ -2258,10 +2328,10 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.SetCycle(0.01);
 		npc.Anger = true;
 
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
 		if(npc.m_flSlicerBarrageActive > GetGameTime(npc.index))
 		{
@@ -2281,7 +2351,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
 	return Plugin_Changed;
 }
 
@@ -2290,7 +2359,7 @@ static void Karlas_Lifeloss_Initialize(Karlas npc)
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 
-	npc.m_iWearable7 = npc.EquipItemSeperate("head", KARLAS_LIGHT_MODEL ,_,_,_,300.0);
+	npc.m_iWearable7 = npc.EquipItemSeperate(KARLAS_LIGHT_MODEL ,_,_,_,300.0);
 	
 }
 static void Karlas_Lifeloss_Logic(Karlas npc)
@@ -2322,7 +2391,7 @@ static void Karlas_Lifeloss_Logic(Karlas npc)
 		Loc[2] += 150.0*Ratio;
 		float Loc2[3]; GetAbsOrigin(npc.index, Loc2); Loc2[2]+=25.0;
 		float speed = 30.0 - 25.0*Ratio;
-		Karlas_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, 15.0*RaidModeScaling);
+		Karlas_Manipulate_Sword_Location(npc, Loc, Loc2, GetGameTime(), speed, 20.0*RaidModeScaling);	//they are spinning up, so deal lotsa damage
 	}
 }
 static void Karlas_SwordWings_Logic(Karlas npc, float npc_Vec[3])
@@ -2576,12 +2645,13 @@ static void Internal_NPCDeath(int entity)
 		Stella donner = view_as<Stella>(ally);
 		donner.Anger=true;
 	}
+	ExpidonsaRemoveEffects(entity);
 	RaidModeScaling *= 1.2;
-	RaidModeTime +=50.0;
+	RaidModeTime +=30.0;
 
 	if(b_tripple_raid[npc.index])
 	{
-		Twirl_OnStellaKarlasDeath(-2);
+		Twirl_OnStellaKarlasDeath();
 	}
 
 	if(npc.Ally)
@@ -2690,4 +2760,94 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
 	
 	TE_SendToAll();
+}
+
+
+void KarlasEarsApply(int iNpc, char[] attachment = "head", float size = 1.0)
+{
+	int red = 255;
+	int green = 125;
+	int blue = 125;
+	float flPos[3];
+	float flAng[3];
+	int particle_ears1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	//fist ear
+	float DoApply[3];
+	DoApply = {0.0,-2.5,-5.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,-6.0,-5.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,-8.0,3.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4 = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	
+	//fist ear
+	DoApply = {0.0,2.5,-5.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears2_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,6.0,-5.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears3_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+	DoApply = {0.0,8.0,3.0};
+	DoApply[0] *= size;
+	DoApply[1] *= size;
+	DoApply[2] *= size;
+	int particle_ears4_r = InfoTargetParentAt(DoApply, "", 0.0); //First offset we go by
+
+	SetParent(particle_ears1, particle_ears2, "",_, true);
+	SetParent(particle_ears1, particle_ears3, "",_, true);
+	SetParent(particle_ears1, particle_ears4, "",_, true);
+	SetParent(particle_ears1, particle_ears2_r, "",_, true);
+	SetParent(particle_ears1, particle_ears3_r, "",_, true);
+	SetParent(particle_ears1, particle_ears4_r, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_ears1, flPos);
+	SetEntPropVector(particle_ears1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_ears1, attachment,_);
+
+
+	int Laser_ears_1 = ConnectWithBeamClient(particle_ears4, particle_ears2, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2 = ConnectWithBeamClient(particle_ears4, particle_ears3, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+
+	int Laser_ears_1_r = ConnectWithBeamClient(particle_ears4_r, particle_ears2_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0 * size, 1.0 * size, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+
+public Action Fusion_RepeatSound_Doublevoice(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	char sound[128];
+	pack.ReadString(sound, 128);
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		EmitSoundToAll(sound, entity, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	return Plugin_Handled; 
 }

@@ -8,12 +8,12 @@
 static bool BlockLoseSay;
 
 
-static int i_SaidLineAlready[MAXENTITIES];
+
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
-static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static bool b_said_player_weaponline[MAXTF2PLAYERS];
-static float fl_said_player_weaponline_time[MAXENTITIES];
+
+
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -109,9 +109,6 @@ int SensalNPCID()
 }
 void Sensal_OnMapStart_NPC()
 {
-	if(!IsFileInDownloads(WEAPON_CUSTOM_WEAPONRY_1))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Sensal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal");
@@ -305,9 +302,27 @@ methodmap Sensal < CClotBody
 
 		bool final = StrContains(data, "final_item") != -1;
 		
+		i_RaidGrantExtra[npc.index] = 1;
+		if(StrContains(data, "wave_15") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 2;
+		}
+		else if(StrContains(data, "wave_30") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 3;
+		}
+		else if(StrContains(data, "wave_45") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 4;
+		}
+		else if(StrContains(data, "wave_60") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 5;
+		}
+		
 		if(final)
 		{
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 6;
 			b_NpcUnableToDie[npc.index] = true;
 		}
 		bool cutscene = StrContains(data, "duo_cutscene") != -1;
@@ -340,17 +355,60 @@ methodmap Sensal < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
-		
-		RaidModeScaling = float(ZR_GetWaveCount()+1);
-		b_RageAnimated[npc.index] = false;
-		if(RaidModeScaling < 55)
+
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		//the very first and 2nd char are SC for scaling
+		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			//remove SC
+			ReplaceString(buffers[0], 64, "sc", "");
+			float value = StringToFloat(buffers[0]);
+			RaidModeScaling = value;
+
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+
+			if(value > 40.0 && value < 55.0)
+			{
+				RaidModeScaling *= 0.85;
+			}
+			else if(value > 55.0)
+			{
+				RaidModeTime = GetGameTime(npc.index) + 220.0;
+				RaidModeScaling *= 0.65;
+			}
 		}
 		else
-		{
-			RaidModeScaling *= 0.38;
+		{	
+			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			if(RaidModeScaling < 55)
+			{
+				RaidModeScaling *= 0.19; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.38;
+			}
+				
+			if(ZR_Waves_GetRound()+1 > 40 && ZR_Waves_GetRound()+1 < 55)
+			{
+				RaidModeScaling *= 0.85;
+			}
+			else if(ZR_Waves_GetRound()+1 > 55)
+			{
+				RaidModeTime = GetGameTime(npc.index) + 220.0;
+				RaidModeScaling *= 0.65;
+			}
 		}
+
+		b_RageAnimated[npc.index] = false;
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
@@ -363,16 +421,7 @@ methodmap Sensal < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-		{
-			RaidModeScaling *= 0.85;
-		}
-		else if(ZR_GetWaveCount()+1 > 55)
-		{
-			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.65;
-		}
+
 		if(!cutscene && !cutscene2 && !tripple)
 		{
 			RemoveAllDamageAddition();
@@ -553,7 +602,7 @@ static void Internal_ClotThink(int iNPC)
 				CPrintToChatAll("{blue}Castellan{default}: We will return to Victoria now.");
 				for (int client = 0; client < MaxClients; client++)
 				{
-					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
 						CPrintToChat(client,"{default}As Castellan and his army leave, they drop something: {darkblue}''Avangard's Processing Core-B''{default}!");
@@ -734,7 +783,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_blPlayHurtAnimation = true;
 	}		
 	Sensal_Weapon_Lines(npc, attacker);
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	if(!b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 6)
 	{
 		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
@@ -913,7 +962,7 @@ void SensalAnimationChange(Sensal npc)
 int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 {
 	npc.i_GunMode = 0;
-	if(ZR_GetWaveCount()+1 >= 45 && npc.m_flAngerDelay < GetGameTime(npc.index))
+	if(i_RaidGrantExtra[npc.index] >= 4 && npc.m_flAngerDelay < GetGameTime(npc.index))
 	{
 		int Enemy_I_See;
 									
@@ -961,7 +1010,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flAngerDelay = gameTime + 60.0;
 
-			if(ZR_GetWaveCount()+1 >= 60)
+			if(i_RaidGrantExtra[npc.index] >= 5)
 			{
 				npc.m_flReloadIn = gameTime + 1.5;
 				npc.SetPlaybackRate(2.0);
@@ -990,14 +1039,14 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
 			SensalGiveShield(npc.index, CountPlayersOnRed(1));
 
-			if(ZR_GetWaveCount()+1 >= 15)
+			if(i_RaidGrantExtra[npc.index] >= 2)
 				npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
 				
-			if(ZR_GetWaveCount()+1 >= 30)
+			if(i_RaidGrantExtra[npc.index] >= 3)
 				npc.m_flNextRangedSpecialAttackHappens = gameTime + 5.5;
 		}
 	}
-	else if(ZR_GetWaveCount()+1 >= 30 && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+	else if(i_RaidGrantExtra[npc.index] >= 3 && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 	{
 		int Enemy_I_See;
 									
@@ -1021,7 +1070,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 2);
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
-			if(ZR_GetWaveCount()+1 >= 60)
+			if(i_RaidGrantExtra[npc.index] >= 5)
 			{
 				npc.m_flAttackHappens_2 = gameTime + 1.275;
 				npc.SetPlaybackRate(1.25);
@@ -1205,7 +1254,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	Sensal npc = view_as<Sensal>(victim);
-	if(ZR_GetWaveCount()+1 >= 45)
+	if(i_RaidGrantExtra[victim] >= 4)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
@@ -1238,7 +1287,7 @@ void SensalThrowScythes(Sensal npc)
 	float pos[3];
 	WorldSpaceCenter(npc.index, pos);
 	
-	if(ZR_GetWaveCount()+1 >= 60)
+	if(i_RaidGrantExtra[npc.index] >= 5)
 		MaxCount = 2;
 
 	for(int Repeat; Repeat <= 7; Repeat++)
@@ -1547,7 +1596,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 		}
 		float VulnerabilityToGive = 0.065;
-		IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 5.0, true);
+		IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 5.0, true);
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
@@ -1612,7 +1661,7 @@ bool SensalTalkPostWin(Sensal npc)
 		BlockLoseSay = true;
 		for (int client = 0; client < MaxClients; client++)
 		{
-			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Expidonsan Battery Device");
 				CPrintToChat(client,"{default}Sensal gave you a high tech battery: {darkblue}''Expidonsan Battery Device''{default}!");
@@ -1657,9 +1706,9 @@ bool SensalTransformation(Sensal npc)
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
-			ApplyStatusEffect(npc.index, npc.index, "Clear Head", FAR_FUTURE);	
-			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 			npc.m_flAttackHappens_2 = 0.0;	
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -1698,8 +1747,7 @@ bool SensalTransformation(Sensal npc)
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable3, 255, 35, 35, 255);
+			
 		//	i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
 			i_NpcWeight[npc.index] = 4;
 			SensalEffects(npc.index, view_as<int>(npc.Anger));
@@ -1808,7 +1856,7 @@ bool SensalMassLaserAttack(Sensal npc)
 			if(foundEnemy)
 			{
 				int Pitch = 100;
-				if(ZR_GetWaveCount()+1 >= 60)
+				if(i_RaidGrantExtra[npc.index] >= 5)
 					Pitch = 125;
 
 				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME, Pitch);
@@ -1960,9 +2008,6 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 
 
 
-
-int SensalHitDetected[MAXENTITIES];
-
 void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
 
@@ -2025,7 +2070,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected[i] = false;
+		LaserVarious_HitDetection[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -2084,7 +2129,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -2108,7 +2153,7 @@ public bool Sensal_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected[entity] = true;
+		LaserVarious_HitDetection[entity] = true;
 	}
 	return false;
 }
@@ -2122,15 +2167,15 @@ public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
 void SensalGiveShield(int sensal, int shieldcount)
 {
 	Sensal npc = view_as<Sensal>(sensal);
-	if(ZR_GetWaveCount()+1 >= 60)
+	if(i_RaidGrantExtra[sensal] >= 5)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 1.4);
 	}
-	else if(ZR_GetWaveCount()+1 >= 45)
+	else if(i_RaidGrantExtra[sensal] >= 4)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 1.3);
 	}
-	else if(ZR_GetWaveCount()+1 >= 30)
+	else if(i_RaidGrantExtra[sensal] >= 3)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 1.25);
 	}

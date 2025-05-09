@@ -44,9 +44,9 @@ void SeabornSupporter_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SeabornSupporter(vecPos, vecAng, team);
+	return SeabornSupporter(vecPos, vecAng, team, data);
 }
 
 methodmap SeabornSupporter < CClotBody
@@ -72,7 +72,7 @@ methodmap SeabornSupporter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSupporter(float vecPos[3], float vecAng[3], int ally)
+	public SeabornSupporter(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "70000", ally, false));
 
@@ -98,8 +98,6 @@ methodmap SeabornSupporter < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("0.7");
@@ -109,8 +107,20 @@ methodmap SeabornSupporter < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+
+		if(!StrContains(data, "normal"))
+		{
+			npc.m_iBleedType = BLEEDTYPE_NORMAL;
+			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Supporter");
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+		}
 
 		return npc;
 	}
@@ -210,9 +220,14 @@ public void SeabornSupporter_ClotThink(int iNPC)
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
-			if(MaxEnemiesAllowedSpawnNext(1) > EnemyNpcAlive)
+			if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 			{
-				int entity = NPC_CreateByName("npc_searunner", -1, pos, ang, GetTeam(npc.index), "EX");
+				int entity;
+				if(npc.m_iBleedType == BLEEDTYPE_NORMAL) 
+					entity = NPC_CreateByName("npc_seaborn_guard", -1, pos, ang, GetTeam(npc.index), "normal");
+				else
+					entity = NPC_CreateByName("npc_searunner", -1, pos, ang, GetTeam(npc.index), "EX");
+
 				if(entity > MaxClients)
 				{
 					if(GetTeam(npc.index) != TFTeam_Red)
@@ -226,6 +241,10 @@ public void SeabornSupporter_ClotThink(int iNPC)
 					fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 0.85;
 					fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 2.0;
 					view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
+					float ModelSize = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+					ModelSize *= 0.65;
+					SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelSize); // ZZZZ i sleep
+	
 				}
 			}
 			else

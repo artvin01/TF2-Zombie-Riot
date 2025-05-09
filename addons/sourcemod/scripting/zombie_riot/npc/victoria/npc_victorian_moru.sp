@@ -3,12 +3,9 @@
 
 static const char g_DeathSounds[] = "npc/scanner/scanner_explode_crash2.wav";
 static const char g_HealSound[] = "physics/metal/metal_box_strain1.wav";
-static bool MK2[MAXENTITIES];
-static bool Limit[MAXENTITIES];
-static int OverrideAlly[MAXENTITIES];
 
-static int SaveSolidFlags[MAXENTITIES];
-static int SaveSolidType[MAXENTITIES];
+
+static int OverrideAlly[MAXENTITIES];
 
 void VictorianDroneAnvil_MapStart()
 {
@@ -28,7 +25,7 @@ void VictorianDroneAnvil_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VictorianDroneAnvil(client, vecPos, vecAng, ally, data);
+	return VictorianDroneAnvil(vecPos, vecAng, ally, data);
 }
 
 methodmap VictorianDroneAnvil < CClotBody
@@ -42,7 +39,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		EmitSoundToAll(g_HealSound, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.1, 110);
 	}
 	
-	public VictorianDroneAnvil(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public VictorianDroneAnvil(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VictorianDroneAnvil npc = view_as<VictorianDroneAnvil>(CClotBody(vecPos, vecAng, "models/props_teaser/saucer.mdl", "1.0", "3000", ally, _, true, .CustomThreeDimensions = {20.0, 20.0, 20.0}, .CustomThreeDimensionsextra = {-20.0, -20.0, -20.0}));
 		
@@ -54,20 +51,20 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
-		SaveSolidFlags[npc.index]=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
-		SaveSolidType[npc.index]=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
+		b_IgnoreAllCollisionNPC[npc.index] = true;
+		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
 		
 		MK2[npc.index]=false;
 		Limit[npc.index]=false;
 		OverrideAlly[npc.index]=-1;
 		
-		bool FactorySpawn;
+		bool FactorySpawndo;
 		static char countext[20][1024];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
-			if(!StrContains(countext[i], "factory"))FactorySpawn=true;
+			if(!StrContains(countext[i], "factory"))FactorySpawndo=true;
 			else if(!StrContains(countext[i], "mk2")){MK2[npc.index]=true;strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Victoria Anvil MK2");}
 			else if(!StrContains(countext[i], "limit"))Limit[npc.index]=true;
 			int targetdata = StringToInt(countext[i]);
@@ -89,11 +86,10 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.m_flMeleeArmor = 1.00;
 		npc.m_flRangedArmor = 1.00;
 		
-		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
+		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
-		b_IgnoreAllCollisionNPC[npc.index]=true;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = true;
 		npc.Anger = false;
@@ -103,7 +99,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable1 = npc.EquipItemSeperate("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl",_,1,1.001,_,true);
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl",_,1,1.001,_,true);
 		Vec[0] += 15.5;
 		Vec[1] += 0.5;
 		Vec[2] -= 61.5;
@@ -112,7 +108,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 		
 		GetAbsOrigin(npc.index, Vec);
-		npc.m_iWearable2 = npc.EquipItemSeperate("head", "models/props_teaser/saucer.mdl",_,1,1.001,_,true);
+		npc.m_iWearable2 = npc.EquipItemSeperate("models/props_teaser/saucer.mdl",_,1,1.001,_,true);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 		
@@ -133,11 +129,11 @@ methodmap VictorianDroneAnvil < CClotBody
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		GetAbsOrigin(npc.index, Vec);
-		if(FactorySpawn)
+		if(FactorySpawndo)
 		{
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && i_NpcInternalId[entity] == VictorianFactory_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
 				{
 					GetAbsOrigin(entity, Vec);
@@ -187,7 +183,6 @@ static void ClotThink(int iNPC)
 	else
 	{
 		npc.m_flSpeed = NpcStats_VictorianCallToArms(npc.index) ? 400.0 : 300.0;
-		if(!b_IgnoreAllCollisionNPC[npc.index])b_IgnoreAllCollisionNPC[npc.index]=true;
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -222,12 +217,6 @@ static void ClotThink(int iNPC)
 		case 0://attack
 		{
 			npc.m_bisWalking = false;
-			SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", SaveSolidFlags[npc.index]);
-			SetEntProp(npc.index, Prop_Data, "m_nSolidType", SaveSolidType[npc.index]);
-			if(GetTeam(npc.index) == TFTeam_Red)
-				SetEntityCollisionGroup(npc.index, 24);
-			else
-				SetEntityCollisionGroup(npc.index, 9);
 			npc.m_flCharge_delay = gameTime + 0.8;
 			
 			if(!npc.Anger && Limit[npc.index])
@@ -242,8 +231,6 @@ static void ClotThink(int iNPC)
 		}
 		case 2://notfound
 		{
-			MakeObjectIntangeable(npc.index);
-			b_IgnoreAllCollisionNPC[npc.index]=true;
 			if(gameTime > npc.m_flCharge_delay)
 			{
 				npc.m_bisWalking = true;
@@ -303,14 +290,14 @@ int VictoriaAnvilDefenseMode(int iNPC, float gameTime, int target, float distanc
 			float entitypos[3], dist;
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+				int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEntity(entity) && entity!=npc.index && GetTeam(entity) == GetTeam(npc.index))
 				{
 					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entitypos);
 					dist = GetVectorDistance(vecTarget, entitypos);
 					if(dist<(MK2[npc.index] ? 400.0 : 200.0))
 					{
-						IncreaceEntityDamageTakenBy(entity, 0.8, 0.3);
+						IncreaseEntityDamageTakenBy(entity, 0.8, 0.3);
 						HealEntityGlobal(npc.index, entity, 75.0, 1.0);
 					}
 				}

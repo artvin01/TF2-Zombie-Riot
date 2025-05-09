@@ -41,7 +41,7 @@ void VictoriaScorcher_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaScorcher(client, vecPos, vecAng, ally);
+	return VictoriaScorcher(vecPos, vecAng, ally);
 }
 
 methodmap VictoriaScorcher < CClotBody
@@ -73,6 +73,11 @@ methodmap VictoriaScorcher < CClotBody
 		
 	}
 	
+	property float m_flPulveriserAttackDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -99,7 +104,7 @@ methodmap VictoriaScorcher < CClotBody
 		}
 	}
 	
-	public VictoriaScorcher(int client, float vecPos[3], float vecAng[3], int ally)
+	public VictoriaScorcher(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictoriaScorcher npc = view_as<VictoriaScorcher>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "7000", ally));
 		
@@ -337,6 +342,12 @@ public void VictoriaScorcher_NPCDeath(int entity)
 
 void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 {
+	if(npc.m_flPulveriserAttackDelay > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flPulveriserAttackDelay = GetGameTime(npc.index) + 0.2;
+
 	int target;
 	target = npc.m_iTarget;
 	//some Ranged units will behave differently.
@@ -350,7 +361,7 @@ void VictoriaScorcherSelfDefense(VictoriaScorcher npc)
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 4.0, 1000.0, 150.0, "m_brazier_flame", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "m_brazier_flame", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
@@ -391,19 +402,19 @@ public void VictoriaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 		if(target > MaxClients)
 		{
-			StartBleedingTimer_Against_Client(target, entity, 4.0, 1);
+			StartBleedingTimer(target, owner, 8.0, 1, -1, DMG_TRUEDAMAGE, 0);
 		}
 		else
 		{
 			if (!IsInvuln(target))
 			{
-				int Burntime = 1;
+				float Burntime = 1.0;
 				if(NpcStats_VictorianCallToArms(owner))
 				{
-					Burntime *= 2;
+					Burntime *= 2.0;
 				}
-				StartBleedingTimer_Against_Client(target, entity, 4.0, Burntime);
-				TF2_IgnitePlayer(target, target, 2.0);
+				Burntime *= 0.5;
+				NPC_Ignite(target, owner,16.0, -1, Burntime);
 			}
 		}
 

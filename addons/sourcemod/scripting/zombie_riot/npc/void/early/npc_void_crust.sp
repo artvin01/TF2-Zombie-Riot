@@ -292,6 +292,8 @@ void VoidHardCrustSelfDefense(VoidHardCrust npc, float gameTime, int target, flo
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 35.0;
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
