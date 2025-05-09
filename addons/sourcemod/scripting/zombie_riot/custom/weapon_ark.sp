@@ -43,6 +43,10 @@ static float f_LappLandAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_LappLandhuddelay[MAXPLAYERS+1]={0.0, ...};
 static int i_QuibaiAttacksMade[MAXPLAYERS+1]={0, ...};
 
+//final pap new ability thingies
+static float Duration[MAXTF2PLAYERS];
+float AbilityLocation[3];
+
 void Ark_autoaim_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT_AUTOAIM);
@@ -1443,4 +1447,95 @@ float QuibaiAttackSpeed(int number_bef)
 	Number -= (0.03 * number_bef);
 
 	return Number;
+}
+
+
+public void Ark_Melee_Empower_State(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		if(Ark_Hits[client] >= 15)
+		{
+			Ark_Hits[client] -= 15;
+			Rogue_OnAbilityUse(client, weapon);
+			Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
+
+			Duration[client] = GetGameTime() + 15.0; //Just a test.
+			GetClientAbsOrigin(client, AbilityLocation);
+
+			//EmitSoundToAll(EMPOWER_SOUND, client, SNDCHAN_STATIC, 90, _, 0.6);
+			weapon_id[client] = EntIndexToEntRef(weapon);
+			CreateTimer(0.1, ArkDomainLogic, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			spawnRing_Vectors(AbilityLocation, 300.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/0, /*B*/255, /*alpha*/50, 1, /*duration*/ 15.0, 20.0, 5.0, 1);
+			ParticleEffectAt(AbilityLocation, "merasmus_object_spawn", 5.0);
+			ClientCommand(client, "playgamesound misc/outer_space_transition_01.wav");
+			ClientCommand(client, "playgamesound mvm/mvm_deploy_giant.wav");
+			ApplyStatusEffect(client, client, "Empowering Domain", 0.5);
+
+			spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, /*R*/0, /*G*/255, /*B*/255, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not enough charge");
+		}
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+
+
+static Action ArkDomainLogic(Handle ringTracker, int client)
+{
+	if (IsValidClient(client) && Duration[client] > GetGameTime())
+	{
+		int ActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+		if(EntRefToEntIndex(weapon_id[client]) == ActiveWeapon)
+		{
+			b_NpcIsTeamkiller[client] = true;
+			b_AllowSelfTarget[client] = true;
+			Explode_Logic_Custom(0.0, client, client, ActiveWeapon, AbilityLocation, 300.0, _, _, false, _, _, _, ArkAreaBuffAbility);
+			b_NpcIsTeamkiller[client] = false;
+			b_AllowSelfTarget[client] = false;
+		}
+		else
+		{
+			return Plugin_Stop;
+		}
+
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+
+	return Plugin_Continue;
+}
+
+void ArkAreaBuffAbility(int client)
+{
+	ApplyStatusEffect(client, client, "Empowering Domain", 0.5);
+	//PrintToChatAll("Buff Test");
+	//ClientCommand(client, "playgamesound mvm/mvm_fallpain01.wav"); too much sound spam
+	
+	/*
+	float HealingPerTick = 2.0;
+	int healingdone = HealEntityGlobal(client, client, HealingPerTick, 1.25,_,HEAL_SELFHEAL);
+	if(healingdone > 0)
+		ApplyHealEvent(client, healingdone);
+	*/
+	//arvin said no :<
 }

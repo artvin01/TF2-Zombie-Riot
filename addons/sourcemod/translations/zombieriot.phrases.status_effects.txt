@@ -1302,4 +1302,12 @@
 	{
 		"en" 	"Under the influence of Therapy debuffs..."
 	}
+	"Empowering Domain"
+	{
+		"en"	"Empowering Domain"
+	}
+	"Empowering Domain Desc"
+	{
+		"en"	"Increases damage and damage reduction by 15%
+	}
 }
