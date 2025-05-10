@@ -3138,7 +3138,7 @@ void StatusEffects_SupportWeapons()
 	data.LinkedStatusEffectNPC 		= 0;
 	data.AttackspeedBuff			= 0.0;
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Empowering Domain Hiden");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Empowering Domain Hidden");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused

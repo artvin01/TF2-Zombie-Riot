@@ -85,7 +85,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		if(HasSpecificBuff(client, "Empowering Domain"))
-			Ability_Apply_Cooldown(client, slot, 3.75);
+			Ability_Apply_Cooldown(client, slot, 15.0 * 0.4);
 		else
 			Ability_Apply_Cooldown(client, slot, 15.0);
 
@@ -131,7 +131,7 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		if(HasSpecificBuff(client, "Empowering Domain"))
-			Ability_Apply_Cooldown(client, slot, 3.75);
+			Ability_Apply_Cooldown(client, slot, 15.0 * 0.4);
 		else
 			Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
@@ -178,7 +178,7 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		if(HasSpecificBuff(client, "Empowering Domain"))
-			Ability_Apply_Cooldown(client, slot, 3.75);
+			Ability_Apply_Cooldown(client, slot, 15.0 * 0.4);
 		else
 			Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
@@ -224,7 +224,7 @@ public void Ark_empower_ability_4(int client, int weapon, bool crit, int slot) /
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		if(HasSpecificBuff(client, "Empowering Domain"))
-			Ability_Apply_Cooldown(client, slot, 3.75);
+			Ability_Apply_Cooldown(client, slot, 15.0 * 0.4);
 		else
 			Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
