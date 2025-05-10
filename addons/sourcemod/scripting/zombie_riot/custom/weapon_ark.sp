@@ -45,7 +45,6 @@ static int i_QuibaiAttacksMade[MAXPLAYERS+1]={0, ...};
 
 //final pap new ability thingies
 static float Duration[MAXTF2PLAYERS];
-float AbilityLocation[MAXTF2PLAYERS][3];
 
 void Ark_autoaim_Map_Precache()
 {
@@ -1476,13 +1475,13 @@ public void Ark_Melee_Empower_State(int client, int weapon, bool crit, int slot)
 			Ability_Apply_Cooldown(client, 2, 1.0);
 
 			Duration[client] = GetGameTime() + 15.0; //Just a test.
-			GetClientAbsOrigin(client, AbilityLocation[client]);
+			GetClientAbsOrigin(client, fl_AbilityVectorData[client]);
 
 			//EmitSoundToAll(EMPOWER_SOUND, client, SNDCHAN_STATIC, 90, _, 0.6);
 			weapon_id[client] = EntIndexToEntRef(weapon);
 			CreateTimer(0.4, ArkDomainLogic, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-			spawnRing_Vectors(AbilityLocation[client], 300.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/0, /*B*/255, /*alpha*/50, 1, /*duration*/ 0.5, 20.0, 5.0, 1, _,client);
-			TE_Particle("merasmus_object_spawn", AbilityLocation[client], NULL_VECTOR, NULL_VECTOR, client, _, _, _, _, _, _, _, _, _, 0.0, client);
+			spawnRing_Vectors(fl_AbilityVectorData[client], 300.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/0, /*B*/255, /*alpha*/50, 1, /*duration*/ 0.5, 20.0, 5.0, 1, _,client);
+			TE_Particle("merasmus_object_spawn", fl_AbilityVectorData[client], NULL_VECTOR, NULL_VECTOR, client, _, _, _, _, _, _, _, _, _, 0.0, client);
 			ClientCommand(client, "playgamesound misc/outer_space_transition_01.wav");
 			ClientCommand(client, "playgamesound mvm/mvm_deploy_giant.wav");
 			ApplyStatusEffect(client, client, "Empowering Domain Hidden", 0.5);
@@ -1521,10 +1520,10 @@ static Action ArkDomainLogic(Handle ringTracker, int client)
 
 		if(EntRefToEntIndex(weapon_id[client]) == ActiveWeapon)
 		{
-			spawnRing_Vectors(AbilityLocation[client], 300.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/0, /*B*/255, /*alpha*/50, 1, /*duration*/ 0.5, 20.0, 5.0, 1, _,client);
+			spawnRing_Vectors(fl_AbilityVectorData[client], 300.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/0, /*B*/255, /*alpha*/50, 1, /*duration*/ 0.5, 20.0, 5.0, 1, _,client);
 			b_NpcIsTeamkiller[client] = true;
 			b_AllowSelfTarget[client] = true;
-			Explode_Logic_Custom(0.0, client, client, ActiveWeapon, AbilityLocation[client], 300.0, _, _, false, 99, _, _, ArkAreaBuffAbility);
+			Explode_Logic_Custom(0.0, client, client, ActiveWeapon, fl_AbilityVectorData[client], 300.0, _, _, false, 99, _, _, ArkAreaBuffAbility);
 			b_NpcIsTeamkiller[client] = false;
 			b_AllowSelfTarget[client] = false;
 		}
