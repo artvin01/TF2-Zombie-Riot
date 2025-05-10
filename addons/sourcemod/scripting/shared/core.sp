@@ -2218,6 +2218,9 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #if defined ZR
 void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
+	if(!IsValidEntity(entity))
+		return;
+	
 	SDKHook_TeamSpawn_SpawnPostInternal(entity);
 }
 void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0, int MaxWaves = 999)

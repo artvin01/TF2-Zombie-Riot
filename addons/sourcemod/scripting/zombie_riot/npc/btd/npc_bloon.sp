@@ -154,18 +154,18 @@ static float BloonSpeedMulti()
 	return 1.0 + (CurrentRound - 70) * 0.02;
 }
 
-int Bloon_Health(bool fortified, int type)
+int Bloon_Health(float HealthDifference , bool fortified, int type)
 {
 	if(!fortified)
-		return BloonHealth[type];
+		return RoundToNearest(HealthDifference * float(BloonHealth[type]));
 	
 	if(type == Bloon_Lead)
-		return (BloonHealth[type] * 4) - BloonHealth[Bloon_Black];
+		return RoundToNearest(HealthDifference * float((BloonHealth[type] * 4) - BloonHealth[Bloon_Black]));
 	
 	if(type == Bloon_Ceramic)
-		return (BloonHealth[type] * 2) - BloonHealth[Bloon_Rainbow];
+		return RoundToNearest(HealthDifference * float((BloonHealth[type] * 2) - BloonHealth[Bloon_Rainbow]));
 	
-	return BloonHealth[type];
+	return RoundToNearest(HealthDifference * float(BloonHealth[type]));
 }
 
 void Bloon_MapStart()
@@ -310,6 +310,11 @@ methodmap Bloon < CClotBody
 			Sprite[this.index] = EntIndexToEntRef(value);
 		}
 	}
+	property float m_flHealthDifference
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayLeadSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundLead) - 1);
@@ -340,6 +345,7 @@ methodmap Bloon < CClotBody
 	}
 	public int UpdateBloonInfo()
 	{
+		ObtainHealthDifference(this.index);
 		this.m_iBleedType = this.m_iType == Bloon_Lead ? BLEEDTYPE_METAL : BLEEDTYPE_RUBBER;
 		this.m_flSpeed = BloonSpeeds[this.m_iType] * BloonSpeedMulti();
 		
@@ -356,7 +362,7 @@ methodmap Bloon < CClotBody
 			char buffer[128];
 			if(this.m_iType == Bloon_Ceramic)
 			{
-				int rainbow = Bloon_Health(this.m_bFortified, Bloon_Rainbow);
+				int rainbow = Bloon_Health(this.m_flHealthDifference,this.m_bFortified, Bloon_Rainbow);
 				int health = (GetEntProp(this.index, Prop_Data, "m_iHealth") - rainbow) * 5;
 				int maxhealth = GetEntProp(this.index, Prop_Data, "m_iMaxHealth") - rainbow;
 				int type = (health / maxhealth);
@@ -446,11 +452,12 @@ methodmap Bloon < CClotBody
 	}
 	public int UpdateBloonOnDamage()
 	{
+		ObtainHealthDifference(this.index);
 		int health = GetEntProp(this.index, Prop_Data, "m_iHealth");
 		for(int i; i<9; i++)
 		{
 			int type = this.RegrowsInto(i);
-			if(health <= Bloon_Health(this.m_bFortified, type))
+			if(health <= Bloon_Health(this.m_flHealthDifference,this.m_bFortified, type))
 			{
 				if(this.m_iType != type || type == Bloon_Ceramic)
 				{
@@ -470,7 +477,7 @@ methodmap Bloon < CClotBody
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
 		
 		char buffer[7];
-		IntToString(Bloon_Health(fortified, type), buffer, sizeof(buffer));
+		IntToString(Bloon_Health(1.0, fortified, type), buffer, sizeof(buffer));
 		
 		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally));
 		
@@ -497,6 +504,7 @@ methodmap Bloon < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDoNotGiveWaveDelay = true;
+		npc.m_flHealthDifference = -1.0;
 		
 		func_NPCDeath[npc.index] = Bloon_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Bloon_OnTakeDamage;
@@ -782,4 +790,17 @@ public void Bloon_NPCDeath(int entity)
 		AcceptEntityInput(sprite, "HideSprite");
 		RemoveEntity(sprite);
 	}
+}
+
+
+
+void ObtainHealthDifference(int entity)
+{
+	Bloon npc = view_as<Bloon>(entity);
+	if(npc.m_flHealthDifference != -1.0)	
+		return;
+	int CurrentMaxHp = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int OriginalMaxHp = Bloon_Health(1.0, npc.m_bFortified, npc.m_iOriginalType);
+
+	npc.m_flHealthDifference = float(OriginalMaxHp) / float(CurrentMaxHp);
 }
