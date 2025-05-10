@@ -163,8 +163,8 @@ void Cheese_Enable(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE)
 	{
 		iref_WeaponConnect[client][0] = EntIndexToEntRef(weapon);
-		if(FileNetwork_Enabled()) // samuu: apparently this is causing it to not download??? BATFOX PLZ HELPPPP YOU MADE FILENETWORK
-			Cheese_PrecacheMusic(); //artvin: Sound files are not uploaded to fast DL, construction forces fast downloads, i.e. error.
+		if(FileNetwork_Enabled())
+			Cheese_PrecacheMusic();
 
 		if(EffectTimer[client] != null)
 		{

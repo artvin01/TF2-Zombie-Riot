@@ -1178,7 +1178,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_SUPERUBERSAW:
 		{
 			if(!CheckInHud())
-				Superubersaw_OnTakeDamage(victim, attacker, damage);
+				Superubersaw_OnTakeDamage(victim, attacker, damage, weapon);
 		}
 		case WEAPON_YAKUZA:
 		{

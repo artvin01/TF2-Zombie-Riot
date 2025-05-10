@@ -91,8 +91,6 @@ bool EnableSilentMode = false;
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
-#define MEDIGUN_ATTRIBUTE_EXPONTENT 1.45
-
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;

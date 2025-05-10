@@ -260,9 +260,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 					float AttributeRate = Attributes_GetOnWeapon(owner, medigun, 8, true);
-					AttributeRate = Pow(AttributeRate, MEDIGUN_ATTRIBUTE_EXPONTENT);
+					AttributeRate *= Attributes_Get(medigun, 7, 1.0); //Extra damage
 					flDrainRate *= AttributeRate; // We have to make it more exponential, damage scales much harder.
-					//do the same for super uber mega duper uber saw!
 					target_sucked_long[healTarget] += 0.10;
 				
 					if(target_sucked_long[healTarget] >= 4.0)
