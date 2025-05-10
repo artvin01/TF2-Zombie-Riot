@@ -3767,6 +3767,8 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 	{
 		Limit_Gibs = true;
 	}
+	if(EnableSilentMode)
+		Limit_Gibs = true;
 
 	static int Main_Gib;
 	int GibAny;
@@ -7047,7 +7049,7 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 
 	float Random_time = GetRandomFloat(6.0, 7.0);
-	if(CurrentGibCount > ZR_MAX_GIBCOUNT_ABSOLUTE)
+	if(EnableSilentMode || CurrentGibCount > ZR_MAX_GIBCOUNT_ABSOLUTE)
 	{
 		Random_time *= 0.5; //half the duration if there are too many gibs
 	}
