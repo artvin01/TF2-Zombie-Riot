@@ -1427,40 +1427,44 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 		{
 			if (f_CooldownForHurtParticle[victim] < GameTime)
 			{
-				f_CooldownForHurtParticle[victim] = GameTime + 0.1;
+				if(EnableSilentMode)
+					f_CooldownForHurtParticle[victim] = GameTime + 1.0;
+				else
+					f_CooldownForHurtParticle[victim] = GameTime + 0.25;
+
 				if(npcBase.m_iBleedType == BLEEDTYPE_NORMAL)
 				{
 					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_METAL)
 				{
 					damagePosition[2] -= 40.0;
 					TE_ParticleInt(g_particleImpactMetal, damagePosition);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_RUBBER)
 				{
 					TE_ParticleInt(g_particleImpactRubber, damagePosition);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_XENO)
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_SEABORN)
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_VOID)
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 			}
 		}
