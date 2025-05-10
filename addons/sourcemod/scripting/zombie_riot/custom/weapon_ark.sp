@@ -1471,7 +1471,8 @@ public void Ark_Melee_Empower_State(int client, int weapon, bool crit, int slot)
 		{
 			Ark_Hits[client] -= 15;
 			Rogue_OnAbilityUse(client, weapon);
-			Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
+			//duration of the domain should be included.
+			Ability_Apply_Cooldown(client, slot, 60.0 + 15.0); //Semi long cooldown, this is a strong buff.
 			Ability_Apply_Cooldown(client, 2, 1.0);
 
 			Duration[client] = GetGameTime() + 15.0; //Just a test.
