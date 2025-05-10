@@ -329,7 +329,7 @@ public void Hose_UpdateText(int owner)
 //Syringe gun Pap Stuff
 public void Weapon_Syringe_Gun_Fire_M2(int client, int weapon, bool crit, int slot)
 {
-	if (Ability_Check_Cooldown(client, slot) > 0.0 && Ability_Check_Cooldown(client, slot) < 500.0)
+	if (Ability_Check_Cooldown(client, slot) > 0.0 && Ability_Check_Cooldown(client, slot) < 999.0)
 	{
 		float Ability_CD = Ability_Check_Cooldown(client, slot);
 		
@@ -362,9 +362,9 @@ public void Weapon_Syringe_Gun_Fire_M2(int client, int weapon, bool crit, int sl
 	delete swingTrace;
 	if(SpawnHealthkit_SyringeGun(client, vec))
 	{
-		if(Ability_Check_Cooldown(client, slot) < 500.0)
+		if(Ability_Check_Cooldown(client, slot) < 999.0)
 		{
-			Ability_Apply_Cooldown(client, slot, 999.0); //Semi long cooldown, this is a strong buff.
+			Ability_Apply_Cooldown(client, slot, 9999999.0); //Semi long cooldown, this is a strong buff.
 		}
 		else
 		{

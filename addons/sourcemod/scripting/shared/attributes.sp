@@ -361,7 +361,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			value = Attributes_Get(weapon, 17, 0.0);
 			if(value)
 			{
-				if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
+				if(!HasSpecificBuff(client, "UBERCHARGED") && !TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
 				{
 					// add uber charge on hit
 					

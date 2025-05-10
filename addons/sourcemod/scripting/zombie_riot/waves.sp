@@ -560,13 +560,17 @@ void Waves_MapEnd()
 	ModFuncWeapon = INVALID_FUNCTION;
 }
 
-void Waves_SetupVote(KeyValues map)
+void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 {
-	Cooldown = 0.0;
-	delete Voting;
+	if(!modifierOnly)
+	{
+		Cooldown = 0.0;
+		delete Voting;
+	}
+
 	delete VotingMods;
 	
-	KeyValues kv = map;
+	KeyValues kv = zr_ignoremapconfig.BoolValue ? null : map;
 	if(kv)
 	{
 		kv.Rewind();
@@ -585,12 +589,14 @@ void Waves_SetupVote(KeyValues map)
 		kv.ImportFromFile(buffer);
 	}
 	
-	StartCash = kv.GetNum("cash", 700);
+	if(!modifierOnly)
+		StartCash = kv.GetNum("cash", 700);
 
 	// Construction Gamemode
 	if(map && kv.GetNum("construction"))
 	{
-		Construction_SetupVote(kv);
+		if(!modifierOnly)
+			Construction_SetupVote(kv);
 
 		if(kv != map)
 			delete kv;
@@ -601,7 +607,8 @@ void Waves_SetupVote(KeyValues map)
 	// Rogue Gamemode
 	if(map && kv.GetNum("roguemode"))
 	{
-		Rogue_SetupVote(kv);
+		if(!modifierOnly)
+			Rogue_SetupVote(kv);
 
 		if(kv != map)
 			delete kv;
@@ -609,61 +616,68 @@ void Waves_SetupVote(KeyValues map)
 		return;
 	}
 
-	// ZS-Classic Gamemode
-	if(kv.GetNum("classicmode"))
-		Classic_Enable();
-	
-	// Is a wave cfg itself
-	if(!kv.JumpToKey("Waves"))
+	if(!modifierOnly)
 	{
-		Waves_SetupWaves(kv, true);
-
-		if(kv != map)
-			delete kv;
-		
-		return;
+		// ZS-Classic Gamemode
+		if(kv.GetNum("classicmode"))
+			Classic_Enable();
 	}
 
 	bool autoSelect = CvarAutoSelectWave.BoolValue;	
-	Voting = new ArrayList(sizeof(Vote));
-	
 	Vote vote;
-	if(kv.GotoFirstSubKey())
+	
+	if(!modifierOnly)
 	{
-		do
+		// Is a wave cfg itself
+		if(!kv.JumpToKey("Waves"))
 		{
-			kv.GetSectionName(vote.Name, sizeof(vote.Name));
-			kv.GetString("file", vote.Config, sizeof(vote.Config));
-			kv.GetString("desc", vote.Desc, sizeof(vote.Desc));
-			kv.GetString("unlock", vote.Unlock1, sizeof(vote.Unlock1));
-			kv.GetString("unlock2", vote.Unlock2, sizeof(vote.Unlock2));
-			kv.GetString("unlockdesc", vote.Append, sizeof(vote.Append));
-			vote.Level = kv.GetNum("level");
-			Voting.PushArray(vote);
+			Waves_SetupWaves(kv, true);
 
-			// If we're downloading via downloadstable, add every vote option to that
-			if(!autoSelect && !FileNetwork_Enabled())
+			if(kv != map)
+				delete kv;
+			
+			return;
+		}
+
+		Voting = new ArrayList(sizeof(Vote));
+		
+		if(kv.GotoFirstSubKey())
+		{
+			do
 			{
-				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
-				KeyValues wavekv = new KeyValues("Waves");
-				wavekv.ImportFromFile(buffer);
-				bool CacheNpcs = false;
-				if(!FileNetworkLib_Installed())
-					CacheNpcs = true;
-				if(CvarFileNetworkDisable.IntValue > 1)
-					CacheNpcs = true;
-				Waves_CacheWaves(wavekv, CacheNpcs);
-				delete wavekv;
-			}
+				kv.GetSectionName(vote.Name, sizeof(vote.Name));
+				kv.GetString("file", vote.Config, sizeof(vote.Config));
+				kv.GetString("desc", vote.Desc, sizeof(vote.Desc));
+				kv.GetString("unlock", vote.Unlock1, sizeof(vote.Unlock1));
+				kv.GetString("unlock2", vote.Unlock2, sizeof(vote.Unlock2));
+				kv.GetString("unlockdesc", vote.Append, sizeof(vote.Append));
+				vote.Level = kv.GetNum("level");
+				Voting.PushArray(vote);
 
-		} while(kv.GotoNextKey());
+				// If we're downloading via downloadstable, add every vote option to that
+				if(!autoSelect && !FileNetwork_Enabled())
+				{
+					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+					KeyValues wavekv = new KeyValues("Waves");
+					wavekv.ImportFromFile(buffer);
+					bool CacheNpcs = false;
+					if(!FileNetworkLib_Installed())
+						CacheNpcs = true;
+					if(CvarFileNetworkDisable.IntValue > 1)
+						CacheNpcs = true;
+					Waves_CacheWaves(wavekv, CacheNpcs);
+					delete wavekv;
+				}
+
+			} while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
 
 		kv.GoBack();
 	}
 
-	kv.GoBack();
-
-	if(!autoSelect && kv.JumpToKey("Modifiers"))
+	if(autoSelect == modifierOnly && kv.JumpToKey("Modifiers"))
 	{
 		if(kv.GotoFirstSubKey())
 		{
@@ -696,12 +710,75 @@ void Waves_SetupVote(KeyValues map)
 			} while(kv.GotoNextKey());
 
 			kv.GoBack();
+
+			// Auto-select the modifier based on average player level
+			if(modifierOnly)
+			{
+				int choosenLevel = 0;
+				int choosen = -1;
+				int AverageLevel = Waves_AverageLevelGet(100);
+				int length = VotingMods.Length;
+				for(int i; i < length; i++)
+				{
+					VotingMods.GetArray(i, vote);
+
+					float multi = float(vote.Level) / 1000.0;
+
+					int level = WaveLevel;
+					if(level < 10)
+						level = 10;
+					
+					level += RoundFloat(level * multi);
+					if(AverageLevel > level && level > choosenLevel)
+					{
+						choosen = i;
+						choosenLevel = level;
+					}
+				}
+
+				if(choosen != -1)
+				{
+					VotingMods.GetArray(choosen, vote);
+
+					CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
+					if(vote.Desc[0])
+						PrintToChatAll("%t", vote.Desc);
+					EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
+					EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
+
+					WaveLevel = choosenLevel;
+					Native_OnDifficultySet(-1, WhatDifficultySetting_Internal, WaveLevel);
+					
+					FormatEx(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s [%s]", WhatDifficultySetting_Internal, vote.Name);
+					Waves_SetDifficultyName(WhatDifficultySetting);
+
+					char funcs[5][64];
+					ExplodeString(vote.Config, ";", funcs, sizeof(funcs), sizeof(funcs[]));
+					
+					Function func = funcs[0][0] ? GetFunctionByName(null, funcs[0]) : INVALID_FUNCTION;
+					ModFuncRemove = funcs[1][0] ? GetFunctionByName(null, funcs[1]) : INVALID_FUNCTION;
+					ModFuncAlly = funcs[2][0] ? GetFunctionByName(null, funcs[2]) : INVALID_FUNCTION;
+					ModFuncEnemy = funcs[3][0] ? GetFunctionByName(null, funcs[3]) : INVALID_FUNCTION;
+					ModFuncWeapon = funcs[4][0] ? GetFunctionByName(null, funcs[4]) : INVALID_FUNCTION;
+
+					if(func != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, func);
+						Call_Finish();
+					}
+				}
+
+				delete VotingMods;
+			}
 		}
 	}
 
 	if(kv != map)
 		delete kv;
 	
+	if(modifierOnly)
+		return;
+
 	if(autoSelect)
 	{
 		int pos = MapSeed % Voting.Length;
@@ -1523,6 +1600,8 @@ public Action Waves_EndVote(Handle timer, float time)
 			else
 			{
 				CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
+				if(vote.Desc[0])
+					PrintToChatAll("%t", vote.Desc);
 				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 				
@@ -1903,6 +1982,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
+
+			bool wasEmptyWave = !round.Waves.Length;
 			
 			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
@@ -2040,21 +2121,56 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			
 			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) == -1);
-		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
+			//if(!wasEmptyWave)
 			{
 				for(int client=1; client<=MaxClients; client++)
 				{
 					if(IsClientInGame(client))
 					{
 						DoOverlay(client, "", 2);
-						if(GetClientTeam(client)==2 && IsPlayerAlive(client))
+						if(!wasEmptyWave && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && f_PlayerLastKeyDetected[client] > GetGameTime() - 10.0)
 						{
-							GiveXP(client, round.Xp * 10);
+							//make sure client isnt afk.
+							//Make sure client is playing the wave
+
+							int xp = round.Xp;
+							if(round.Xp)
+							{
+								//fast fix, as we dont want to edit EVERY single config.
+								xp *= 5;
+							}
+							else
+							{
+								xp = WaveLevel;
+								if(xp > 50)
+									xp = 50;
+								else if(xp < 25)
+									xp = 25;
+								
+								if(CurrentCash < 5000)	// < 15 (5700 - 1000)
+								{
+									//xp *= 1;
+								}
+								else if(CurrentCash < 18000)	// < 30 (19300 - 2500)
+								{
+									xp *= 2;
+								}
+								else if(CurrentCash < 41000)	// < 45 (42050 - 5000)
+								{
+									xp *= 4;
+								}
+								else
+								{
+									xp *= 8;
+								}
+							}
+
+							GiveXP(client, xp);
+						
 							if(round.Setup > 0.0)
 							{
 								SetGlobalTransTarget(client);
 								PrintHintText(client, "%t","Press TAB To open the store");
-								
 							}
 						}
 					}
@@ -3815,8 +3931,12 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			if(IsClientInGame(client))
 			{
 				DoOverlay(client, "", 2);
-				if(IsPlayerAlive(client) && GetClientTeam(client)==2)
+				if(GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && f_PlayerLastKeyDetected[client] > GetGameTime() - 10.0)
+				{
+					//make sure client isnt afk.
+					//Make sure client is playing the wave
 					GiveXP(client, round.Xp);
+				}
 			}
 		}
 		
@@ -4020,5 +4140,35 @@ int Waves_CashGainedTotalThisWave()
 {
 	return CashGainedTotal;
 }
+
+int Waves_AverageLevelGet(int MaxLevelAllow)
+{
+	//Max levels is used incase you dont want to scale a lvl 500 player as lvl 500 player, in this case it should only go as high as lvl 120 imo.
+	int ClientsGot;
+	int LevelObtained;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && !IsFakeClient(client))
+		{
+			if(Level[client] >= MaxLevelAllow)
+				LevelObtained += MaxLevelAllow;
+			else if(Level[client] <= 0) //Dont divide by 0...
+				LevelObtained += 1;
+			else
+				LevelObtained += Level[client];
+
+			ClientsGot++;
+		}
+	}
+	if(ClientsGot <= 0)
+	{
+		//return lvl 1.
+		return 1;
+	}
+	//This will obtain the average level of the server.
+	return (LevelObtained / ClientsGot);
+}
+
+
 
 #include "modifiers.sp"

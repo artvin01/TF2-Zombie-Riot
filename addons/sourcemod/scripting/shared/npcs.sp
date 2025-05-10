@@ -1027,10 +1027,6 @@ public void Func_Breakable_Post(int victim, int attacker, int inflictor, float d
 	if (event) 
 	{
 		int display = RoundToFloor(damage);
-		while(display > 32000)
-		{
-			display /= 10;
-		}
 
 		event.SetInt("entindex", victim);
 		event.SetInt("health", Health > 0 ? Health : 0);
@@ -1300,12 +1296,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			Event event = CreateEvent("npc_hurt");
 			if(event) 
 			{
-				int display = RoundToFloor(Damageaftercalc);
-				while(display > 32000)
-				{
-					display /= 10;
-				}
-
+				int display = RoundToNearest(Damageaftercalc);
 				event.SetInt("entindex", victim);
 				event.SetInt("health", health);
 				event.SetInt("damageamount", display);
@@ -1909,16 +1900,19 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(Debuff_Adder[0])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		static char c_DmgDelt[64];
-		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
-		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
-		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+		if(b_DisplayDamageHudSetting[attacker] || !b_DamageNumbers[attacker])
+		{
+			static char c_DmgDelt[64];
+			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+			offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+			ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
 #if defined ZR
-		if(!raidboss_active)
+			if(!raidboss_active)
 #endif
-		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
+			{
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
+			}
 		}
 		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
@@ -1957,19 +1951,19 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		//Does it have power? No power also hides timer showing
 		if(RaidModeScaling != 0.0)
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t : ", ExtraHudHurt, "Power");
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s|%t", ExtraHudHurt, "Power");
 			//time show or not
 			if(Timer_Show > 800.0)
 				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％]", ExtraHudHurt, RaidModeScaling * 100.0);
 			else
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％ | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％ | %t%.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
 		}
 		else
 		{
 			if(Timer_Show > 800.0)
 				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s]", ExtraHudHurt);
 			else
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t: %.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s|%t%.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
 		}
 		
 		//add name and health
@@ -2016,13 +2010,15 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(Debuff_Adder[0])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		static char c_DmgDelt[64];
-		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
-		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
-		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+		if(b_DisplayDamageHudSetting[attacker] || !b_DamageNumbers[attacker])
+		{
+			static char c_DmgDelt[64];
+			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+			offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+			ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
-			
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);	
+		}
 		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
 	}

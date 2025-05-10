@@ -110,7 +110,7 @@ public void Rogue_HandAmbusher_Weapon(int entity)
 	{
 		// +5s bleed duration
 		Attributes_SetAdd(entity, 149, 5.0);
-		Attributes_SetMulti(entity, 6, 0.76);
+		Attributes_SetMulti(entity, 6, 0.75);
 	}
 }
 public void Rogue_HandInfinite_Weapon(int entity)

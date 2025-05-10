@@ -582,17 +582,30 @@ public bool ObjectGeneric_CanBuild(int client, int &count, int &maxcount)
 	return true;
 }
 
+public bool ObjectGeneric_CanBuildSentryBarracks(int client, int &count, int &maxcount)
+{
+	if(!client)
+		return false;
+		
+	return ObjectGeneric_CanBuildSentryInternal(client, count, maxcount);
+}
 public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 {
 	if(!client)
 		return false;
-	
+	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
+		return false;
+
+	return ObjectGeneric_CanBuildSentryInternal(client, count, maxcount);
+}
+
+bool ObjectGeneric_CanBuildSentryInternal(int client, int &count, int &maxcount)
+{
 	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
 	maxcount = (Blacksmith_IsASmith(client) || Merchant_IsAMerchant(client)) ? 0 : 1;
 
 	return (!count && maxcount);
 }
-
 bool Object_CanBuild(Function func, int client, int &count = 0, int &maxcount = 0)
 {
 	bool result;

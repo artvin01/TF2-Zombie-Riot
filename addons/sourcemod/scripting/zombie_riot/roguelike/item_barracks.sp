@@ -58,7 +58,7 @@ public void Rogue_ThumbRing_Ally(int entity, StringMap map)
 		NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
 		if(StrContains(buffer, "archer") != -1 || StrContains(buffer, "bow") != -1 || StrContains(buffer, "arbelast") != -1)
 		{
-			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.75;
 		}
 	}
 }
@@ -71,11 +71,11 @@ public void Rogue_ThumbRing_Weapon(int entity)
 	{
 		if(Attributes_Has(entity,6))
 		{
-			Attributes_Set(entity, 6, Attributes_Get(entity, 6, 1.0) * 0.85);
+			Attributes_Set(entity, 6, Attributes_Get(entity, 6, 1.0) * 0.75);
 		}
 		if(Attributes_Has(entity,97))
 		{
-			Attributes_Set(entity, 97, Attributes_Get(entity, 97, 1.0) * 0.85);
+			Attributes_Set(entity, 97, Attributes_Get(entity, 97, 1.0) * 0.75);
 		}
 	}
 }

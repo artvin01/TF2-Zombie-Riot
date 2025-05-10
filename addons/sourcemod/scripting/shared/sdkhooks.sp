@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+//static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeathSilent[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
@@ -40,7 +40,7 @@ void SDKHooks_ClearAll()
 	Zero(f_EntityHazardCheckDelay);
 	Zero(f_EntityOutOfNav);
 	
-	Zero(i_WasInUber);
+//	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeathSilent);
 	Zero(i_WasInMarkedForDeath);
 	Zero(i_WasInDefenseBuff);
@@ -717,7 +717,7 @@ public void OnPostThink(int client)
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}
 				had_An_ability = true;
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -741,7 +741,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -767,7 +767,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -794,7 +794,7 @@ public void OnPostThink(int client)
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
 				
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{	
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -822,7 +822,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -1611,10 +1611,10 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 #if defined ZR
 void RegainTf2Buffs(int victim)
 {
-	if(i_WasInUber[victim])
-	{
-		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
-	}
+//	if(i_WasInUber[victim])
+//	{
+//		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
+//	}
 	if(i_WasInMarkedForDeath[victim])
 	{
 		TF2_AddCondition(victim, TFCond_MarkedForDeath, i_WasInMarkedForDeath[victim]);
@@ -1635,7 +1635,7 @@ void RegainTf2Buffs(int victim)
 	{
 		TF2_AddCondition(victim, TFCond_RuneResist, i_WasInResPowerup[victim]);
 	}
-	i_WasInUber[victim] = 0.0;
+//	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeathSilent[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 	i_WasInJarate[victim] = 0.0;
@@ -1677,7 +1677,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		ClientPassAliveCheck[victim] = false;
 #if defined ZR
-		i_WasInUber[victim] = 0.0;
+	//	i_WasInUber[victim] = 0.0;
 		i_WasInMarkedForDeathSilent[victim] = 0.0;
 		i_WasInMarkedForDeath[victim] = 0.0;
 		i_WasInDefenseBuff[victim] = 0.0;
@@ -1750,10 +1750,23 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 	}
-
-	//Bleed shouldnt ignore uber.
-	if(RaidbossIgnoreBuildingsLogic(1) || ((damagetype & DMG_TRUEDAMAGE) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
+	if(IsInvuln(victim, true))
 	{
+		if(!(damagetype & DMG_OUTOFBOUNDS))
+		{
+			if(!CheckInHud())
+			{
+				f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
+				ClientPassAliveCheck[victim] = true;
+			}
+			damage = 0.0;
+			return Plugin_Handled;	
+		}
+	}
+	/*
+	else
+	{
+		
 		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
 		{
 			if(!CheckInHud())
@@ -1761,28 +1774,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
 				TF2_RemoveCondition(victim, TFCond_Ubercharged);
 			}
-			if(!(damagetype & DMG_TRUEDAMAGE))
-				damage *= 0.5;
+			damage *= UberLogicInternal(99999);
 		}
 	}
-	else
-	{
-		//if its not during raids, do...
-		if(!(damagetype & DMG_OUTOFBOUNDS))
-		{
-			if(IsInvuln(victim))
-			{
-				if(!CheckInHud())
-				{
-					f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
-					ClientPassAliveCheck[victim] = true;
-				}
-				damage = 0.0;
-				return Plugin_Handled;	
-			}
-		}
-	}
-	
+	*/
+
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
