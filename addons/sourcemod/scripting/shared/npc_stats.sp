@@ -6679,13 +6679,13 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		if(Limit_Gibs)	
 			f_GibHealingAmount[prop] *= 3.0;
 
-		if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+		if(b_thisNpcIsABoss[pThis] || b_thisNpcIsARaid[pThis])
 		{
-			f_GibHealingAmount[pThis] *= 4.0;
+			f_GibHealingAmount[prop] *= 4.0;
 		}
-		else if(b_IsGiant[victim])
+		else if(b_IsGiant[pThis])
 		{
-			f_GibHealingAmount[pThis] *= 2.0;
+			f_GibHealingAmount[prop] *= 2.0;
 		}
 
 		float ang[3];
