@@ -586,7 +586,7 @@
 	}
 	"UBERCHARGED Desc"
 	{
-		"en"	"Gain 90％ Resistance\nDuring raids, have 50％ resistance.\nThis resistance works against True damage."
+		"en"	"Gain 90％ Resistance\nDuring raids, have 50％ resistance."
 	}
 	"Healing Resolve"
 	{
