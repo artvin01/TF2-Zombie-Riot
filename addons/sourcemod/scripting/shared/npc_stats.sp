@@ -6601,7 +6601,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 				
 	float damageForce[3];
 	npc.m_vecpunchforce(damageForce, false);
-	ScaleVector(damageForce, 0.5); //Reduce overall
+	ScaleVector(damageForce, 0.025); //Reduce overall
 
 	bool Limit_Gibs = false;
 	if(CurrentGibCount > ZR_MAX_GIBCOUNT)
@@ -6611,7 +6611,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 	if(EnableSilentMode)
 		Limit_Gibs = true;
 
-	if(npc.m_iBleedType == BLEEDTYPE_NORMAL)
+	if(npc.m_iBleedType == BLEEDTYPE_METAL)
 		npc.PlayGibSoundMetal();
 	else if(npc.m_iBleedType != BLEEDTYPE_RUBBER)
 		npc.PlayGibSound();
@@ -6659,7 +6659,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		}
 		TempForce = damageForce;
 		if(GibLoop == 0 && npc.m_iBleedType == BLEEDTYPE_NORMAL)
-			ScaleVector(TempForce, 0.02);
+			ScaleVector(TempForce, 0.4);
 		//This gib in specific has too much knockback.
 
 		if(npc.m_iBleedType == BLEEDTYPE_METAL)
@@ -6671,7 +6671,21 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		DispatchKeyValue(prop, "massScale", "1.0");
 		DispatchKeyValue(prop, "spawnflags", "2");
 		if(npc.m_bIsGiant)
-			DispatchKeyValue(prop, "modelscale", "1.6");
+		{
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 1)
+			{
+				DispatchKeyValue(prop, "modelscale", "1.2");
+			}
+			else
+				DispatchKeyValue(prop, "modelscale", "1.6");
+		}
+		else
+		{
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 1)
+			{
+				DispatchKeyValue(prop, "modelscale", "0.8");
+			}
+		}
 
 		float Random_time = GetRandomFloat(6.0, 7.0);
 		if(EnableSilentMode || CurrentGibCount > ZR_MAX_GIBCOUNT_ABSOLUTE)
