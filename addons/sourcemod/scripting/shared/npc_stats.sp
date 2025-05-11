@@ -6718,21 +6718,25 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		{
 			case BLEEDTYPE_NORMAL:
 			{
-				ParticleSet = ParticleEffectAt(TempPosition, "blood_trail_red_01_goop", Random_time); 
+				if(!EnableSilentMode)
+					ParticleSet = ParticleEffectAt(TempPosition, "blood_trail_red_01_goop", Random_time); 
 				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 255, 0, 0, 255);
 			}
 			case BLEEDTYPE_METAL:
 			{
-				ParticleSet = ParticleEffectAt(TempPosition, "tpdamage_4", Random_time); 
+				if(!EnableSilentMode)
+					ParticleSet = ParticleEffectAt(TempPosition, "tpdamage_4", Random_time); 
 			}
 			case BLEEDTYPE_RUBBER:
 			{
-				ParticleSet = ParticleEffectAt(TempPosition, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
+				if(!EnableSilentMode)
+					ParticleSet = ParticleEffectAt(TempPosition, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
 			}
 			case BLEEDTYPE_XENO:
 			{
-				ParticleSet = ParticleEffectAt(TempPosition, "blood_impact_green_01", Random_time); 
+				if(!EnableSilentMode)
+					ParticleSet = ParticleEffectAt(TempPosition, "blood_impact_green_01", Random_time); 
 				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 0, 255, 0, 255);
 			}
@@ -6742,14 +6746,20 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 			}
 			case BLEEDTYPE_SEABORN:
 			{
-				ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 
+				if(!EnableSilentMode)
+					ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 
 				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 65, 65, 255, 255);
 			}
 			case BLEEDTYPE_VOID:
 			{
-				TE_BloodSprite(TempPosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
-				TE_SendToAllInRange(TempPosition, RangeType_Visibility);
+				if(!EnableSilentMode)
+				{
+					TE_BloodSprite(TempPosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
+					TE_SendToAllInRange(TempPosition, RangeType_Visibility);
+				}
+				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(prop, 200, 0, 200, 255);
 			}
 		}	
 		if(ParticleSet != -1)
