@@ -2791,6 +2791,29 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				{
 					item.NPCSeller_WaveStart--;
 					StoreItems.SetArray(i, item);
+					static Item CurrentItem;
+					CurrentItem = item;
+					if(CurrentItem.Section != -1)
+					{
+						static Item ParentItem;
+						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
+						{
+							//This just prevents infinite loops.
+							StoreItems.GetArray(CurrentItem.Section, ParentItem);
+							ParentItem.NPCSeller_Discount = 0.0;
+							ParentItem.NPCSeller = false;
+							if(ParentItem.NPCSeller_WaveStart < CurrentItem.NPCSeller_WaveStart)
+								ParentItem.NPCSeller_WaveStart = CurrentItem.NPCSeller_WaveStart;
+								
+							StoreItems.SetArray(CurrentItem.Section, ParentItem);
+							if(ParentItem.Section != -1)
+							{
+								CurrentItem = ParentItem;
+							}
+							else
+								break;
+						}
+					}
 				}
 
 				if(!item.NPCSeller && !item.RogueAlwaysSell)
@@ -2805,6 +2828,29 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				if(addItem == 0 && !subtract_wave)
 				{
 					item.NPCSeller = false;
+					static Item CurrentItem;
+					CurrentItem = item;
+					if(CurrentItem.Section != -1)
+					{
+						static Item ParentItem;
+						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
+						{
+							//This just prevents infinite loops.
+							StoreItems.GetArray(CurrentItem.Section, ParentItem);
+							ParentItem.NPCSeller_Discount = 0.0;
+							ParentItem.NPCSeller = false;
+							if(ResetStore)
+								item.NPCSeller_WaveStart = 0;
+								
+							StoreItems.SetArray(CurrentItem.Section, ParentItem);
+							if(ParentItem.Section != -1)
+							{
+								CurrentItem = ParentItem;
+							}
+							else
+								break;
+						}
+					}
 					if(ResetStore)
 					{
 						item.NPCSeller_WaveStart = 0;
@@ -2814,6 +2860,29 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
 				{
 					item.NPCSeller_WaveStart -= 1;
+					static Item CurrentItem;
+					CurrentItem = item;
+					if(CurrentItem.Section != -1)
+					{
+						static Item ParentItem;
+						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
+						{
+							//This just prevents infinite loops.
+							StoreItems.GetArray(CurrentItem.Section, ParentItem);
+							ParentItem.NPCSeller_Discount = 0.0;
+							ParentItem.NPCSeller = false;
+							if(ParentItem.NPCSeller_WaveStart < CurrentItem.NPCSeller_WaveStart)
+								ParentItem.NPCSeller_WaveStart = CurrentItem.NPCSeller_WaveStart;
+								
+							StoreItems.SetArray(CurrentItem.Section, ParentItem);
+							if(ParentItem.Section != -1)
+							{
+								CurrentItem = ParentItem;
+							}
+							else
+								break;
+						}
+					}
 				}
 				
 				item.GetItemInfo(0, info);
@@ -2883,35 +2952,31 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			{
 				CPrintToChatAll("{palegreen}%s%s",item.Name, item.NPCSeller_Discount < 1.0 ? " [$]" : "");
 			}
+			item.NPCSeller = true;
+			StoreItems.SetArray(indexes[i], item);
 			
-			static Item ParentItem;
-			static Item PrevItem;
-			PrevItem = item;
-			int indexcheck = StringToInt(PrevItem.Name);
-			for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
+			if(item.Section != -1)
 			{
-				PrintToChatAll("looüp check 1");
-				//This just prevents infinite loops.
-				if(indexcheck >= 0)
+				static Item ParentItem;
+				for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
 				{
-					PrintToChatAll("looüp check 2");
-					StoreItems.GetArray(PrevItem.Section, ParentItem);
-					indexcheck = StringToInt(ParentItem.Name);
-					if(indexcheck >= 0)
+					//This just prevents infinite loops.
+					StoreItems.GetArray(item.Section, ParentItem);
+					if(ParentItem.NPCSeller_Discount == 0.0 || ParentItem.NPCSeller_Discount > item.NPCSeller_Discount)
+						ParentItem.NPCSeller_Discount = item.NPCSeller_Discount;
+
+					if(ParentItem.NPCSeller_WaveStart < item.NPCSeller_WaveStart)
+						ParentItem.NPCSeller_WaveStart = item.NPCSeller_WaveStart;
+						
+					StoreItems.SetArray(item.Section, ParentItem);
+					if(ParentItem.Section != -1)
 					{
-						PrintToChatAll("looüp check 3 %s",ParentItem.Name);
-						PrevItem.NPCSeller_Discount = item.NPCSeller_Discount;
-						StoreItems.SetArray(indexcheck, ParentItem);
-						PrevItem = ParentItem;
+						item = ParentItem;
 					}
 					else
 						break;
 				}
-				else
-					break;
 			}
-			item.NPCSeller = true;
-			StoreItems.SetArray(indexes[i], item);
 		}
 	}
 	else if(unlock)
@@ -3698,9 +3763,13 @@ static void MenuPage(int client, int section)
 				IntToString(i, info.Classname, sizeof(info.Classname));
 				//do not have custom name here, its in the menu and thus the custom names never apear. this isnt even for weapons.
 				FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
-				if(item.NPCSeller_Discount > 0.0 && item.NPCSeller_Discount < 1.0)
+				if(item.NPCSeller_WaveStart > 0)
 				{
-					Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
+					Format(buffer, sizeof(buffer), "%s{$$}", buffer);
+				}
+				else if(item.NPCSeller_Discount > 0.0 && item.NPCSeller_Discount < 1.0)
+				{
+					Format(buffer, sizeof(buffer), "%s{$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
 				}
 				//category has some type of sale in it !
 				menu.AddItem(info.Classname, buffer);
