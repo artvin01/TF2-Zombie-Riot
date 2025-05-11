@@ -6611,6 +6611,12 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 	if(EnableSilentMode)
 		Limit_Gibs = true;
 
+	if(npc.m_iBleedType == BLEEDTYPE_NORMAL)
+		npc.PlayGibSoundMetal();
+	else if(npc.m_iBleedType != BLEEDTYPE_RUBBER)
+		npc.PlayGibSound();
+
+
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				
 	for(int GibLoop; GibLoop < 3; GibLoop++)
@@ -6732,13 +6738,13 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 			}
 			case BLEEDTYPE_SKELETON:
 			{
-
+				//insert.
 			}
 			case BLEEDTYPE_SEABORN:
 			{
 				ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 
 				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(prop, 200, 0, 200, 255);
+				SetEntityRenderColor(prop, 65, 65, 255, 255);
 			}
 			case BLEEDTYPE_VOID:
 			{
