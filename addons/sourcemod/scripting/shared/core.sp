@@ -91,8 +91,6 @@ bool EnableSilentMode = false;
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
-#define MEDIGUN_ATTRIBUTE_EXPONTENT 1.45
-
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
@@ -2220,6 +2218,9 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #if defined ZR
 void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
+	if(!IsValidEntity(entity))
+		return;
+	
 	SDKHook_TeamSpawn_SpawnPostInternal(entity);
 }
 void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0, int MaxWaves = 999)

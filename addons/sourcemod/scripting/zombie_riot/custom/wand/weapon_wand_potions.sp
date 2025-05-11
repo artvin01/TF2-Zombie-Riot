@@ -565,7 +565,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 		if(view_as<Bloon>(enemy).m_bFortified)
 		{
 			view_as<Bloon>(enemy).m_bFortified = false;
-			SetEntProp(enemy, Prop_Data, "m_iMaxHealth", Bloon_Health(false, view_as<Bloon>(enemy).m_iOriginalType));
+			SetEntProp(enemy, Prop_Data, "m_iMaxHealth", Bloon_Health(view_as<Bloon>(enemy).m_flHealthDifference,false, view_as<Bloon>(enemy).m_iOriginalType));
 		}
 	}
 	else

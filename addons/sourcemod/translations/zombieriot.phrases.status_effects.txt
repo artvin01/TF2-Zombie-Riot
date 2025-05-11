@@ -586,7 +586,7 @@
 	}
 	"UBERCHARGED Desc"
 	{
-		"en"	"Gain 90％ Resistance\nDuring raids, have 50％ resistance.\nThis resistance works against True damage."
+		"en"	"Gain 90％ Resistance\nDuring raids, have 50％ resistance."
 	}
 	"Healing Resolve"
 	{
@@ -1301,5 +1301,17 @@
 	"Therapy Duration Desc"
 	{
 		"en" 	"Under the influence of Therapy debuffs..."
+	}
+	"Empowering Domain Hidden"
+	{
+		"en"	"Empowering Domai Hidden"
+	}
+	"Empowering Domain"
+	{
+		"en"	"Empowering Domain"
+	}
+	"Empowering Domain Desc"
+	{
+		"en"	"Increases damage +15％\nBoosts attackspeed by +25％\nReduces Ark's Parry cooldown by 60％.\nResets Ark parry cooldown upon activation to 1 Sec.\n{crimson}However, you take 20％ more damage..."
 	}
 }

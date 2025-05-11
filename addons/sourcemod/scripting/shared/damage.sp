@@ -117,7 +117,13 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 		}
 	}
 #endif
-
+	if(!CheckInHud() && !b_NpcIsTeamkiller[attacker])
+	{
+		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
+		{
+			return true;
+		}
+	}
 	
 #if defined RPG
 	if(!CheckInHud())
@@ -609,13 +615,6 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 #endif
 
-	if(!b_NpcIsTeamkiller[attacker])
-	{
-		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
-		{
-			return true;
-		}
-	}
 	if(b_ThisEntityIgnored[victim])
 	{
 		//True damage ignores this.
@@ -899,14 +898,7 @@ static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflicto
 		}
 	}
 #endif
-//For huds, show anyways!
-	if(!b_NpcIsTeamkiller[attacker])
-	{
-		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
-		{
-			return true;
-		}
-	}
+
 	return false;
 }
 
@@ -1178,7 +1170,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_SUPERUBERSAW:
 		{
 			if(!CheckInHud())
-				Superubersaw_OnTakeDamage(victim, attacker, damage);
+				Superubersaw_OnTakeDamage(victim, attacker, damage, weapon);
 		}
 		case WEAPON_YAKUZA:
 		{

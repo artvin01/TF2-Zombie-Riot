@@ -1739,17 +1739,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
-	if(damagetype & DMG_TRUEDAMAGE)
-	{
-		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
-		{
-			if(f_RecievedTruedamageHit[victim] < GetGameTime())
-			{
-				f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
-				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
-			}
-		}
-	}
 	if(IsInvuln(victim, true))
 	{
 		if(!(damagetype & DMG_OUTOFBOUNDS))
@@ -1763,21 +1752,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;	
 		}
 	}
-	/*
-	else
-	{
-		
-		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
-		{
-			if(!CheckInHud())
-			{
-				i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
-				TF2_RemoveCondition(victim, TFCond_Ubercharged);
-			}
-			damage *= UberLogicInternal(99999);
-		}
-	}
-	*/
 
 	if(damagetype & DMG_CRIT)
 	{
@@ -1907,6 +1881,18 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
+	}
+	
+	if(damagetype & DMG_TRUEDAMAGE)
+	{
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			if(f_RecievedTruedamageHit[victim] < GetGameTime())
+			{
+				f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
+				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+			}
+		}
 	}
 	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
 

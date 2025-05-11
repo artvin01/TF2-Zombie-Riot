@@ -659,6 +659,7 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_buff", Command_GiveBuff, ADMFLAG_ROOT, "Give a named buff");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person"); //old and unused.
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_set_xp", Command_SetXp, ADMFLAG_ROOT, "Set XP to the Person");
@@ -1367,6 +1368,45 @@ public Action Command_GiveCash(int client, int args)
 			PrintToChat(targets[target], "You lost %i cash due to the admin %N!", money, client);
 			CashSpent[targets[target]] -= money;			
 		}
+	}
+	
+	return Plugin_Handled;
+}
+
+public Action Command_GiveBuff(int client, int args)
+{
+	//What are you.
+	if(args < 2)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_buff <target> <buffname> <duration>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[128];
+	GetCmdArg(2, buf, sizeof(buf));
+
+	char buf2[16];
+	GetCmdArg(3, buf2, sizeof(buf2));
+	float buffduration = StringToFloat(buf2); 
+	
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		PrintToChat(targets[target], "You got the %s buff for %.1f seconds, from the admin %N!", buf, buffduration, client);
+		ApplyStatusEffect(targets[target], targets[target], buf, buffduration);
 	}
 	
 	return Plugin_Handled;
