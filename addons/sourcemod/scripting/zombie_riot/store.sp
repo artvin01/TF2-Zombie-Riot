@@ -2883,6 +2883,33 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			{
 				CPrintToChatAll("{palegreen}%s%s",item.Name, item.NPCSeller_Discount < 1.0 ? " [$]" : "");
 			}
+			
+			static Item ParentItem;
+			static Item PrevItem;
+			PrevItem = item;
+			int indexcheck = StringToInt(PrevItem.Name);
+			for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
+			{
+				PrintToChatAll("looüp check 1");
+				//This just prevents infinite loops.
+				if(indexcheck >= 0)
+				{
+					PrintToChatAll("looüp check 2");
+					StoreItems.GetArray(PrevItem.Section, ParentItem);
+					indexcheck = StringToInt(ParentItem.Name);
+					if(indexcheck >= 0)
+					{
+						PrintToChatAll("looüp check 3 %s",ParentItem.Name);
+						PrevItem.NPCSeller_Discount = item.NPCSeller_Discount;
+						StoreItems.SetArray(indexcheck, ParentItem);
+						PrevItem = ParentItem;
+					}
+					else
+						break;
+				}
+				else
+					break;
+			}
 			item.NPCSeller = true;
 			StoreItems.SetArray(indexes[i], item);
 		}
@@ -2940,124 +2967,6 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 		delete sections;
 	}
 }
-
-/*void Store_RoundStart()
-{
-	static Item item;
-	static ItemInfo info;
-	ArrayList[] lists = new ArrayList[HighestTier+1];
-	char buffer[PLATFORM_MAX_PATH], buffers[4][12];
-	int entity = MaxClients+1;
-	while((entity=FindEntityByClassname(entity, "prop_dynamic")) != -1)
-	{
-		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		if(!StrContains(buffer, "zr_weapon_", false))
-		{
-			int tier = ExplodeString(buffer, "_", buffers, sizeof(buffers), sizeof(buffers[])) - 1;
-			tier = StringToInt(buffers[tier]);
-			if(tier >= 0 && tier <= HighestTier)
-			{
-				int length;
-				if(!lists[tier])
-				{
-					lists[tier] = GetAllWeaponsWithTier(tier);
-					if(!(length = lists[tier].Length))
-					{
-						delete lists[tier];
-						lists[tier] = null;
-						RemoveEntity(entity);
-						continue;
-					}
-				}
-				else if(!(length = lists[tier].Length))
-				{
-					delete lists[tier];
-					lists[tier] = GetAllWeaponsWithTier(tier);
-				}
-				
-				length = GetRandomInt(0, length-1);
-				int ids[2];
-				lists[tier].GetArray(length, ids);
-				StoreItems.GetArray(ids[0], item);
-				item.GetItemInfo(ids[1], info);
-				lists[tier].Erase(length);
-				
-				if(info.Model[0])
-					SetEntityModel(entity, info.Model);
-				
-				SetEntProp(entity, Prop_Send, "m_nSkin", ids[0]);
-				SetEntProp(entity, Prop_Send, "m_nBody", ids[1]);
-				
-				if(tier >= sizeof(RenderColors))
-					tier = sizeof(RenderColors)-1;
-				
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(entity, RenderColors[tier][0], RenderColors[tier][1], RenderColors[tier][2], RenderColors[tier][3]);
-			}
-			else
-			{
-				RemoveEntity(entity);
-				continue;
-			}
-			
-			SetEntityCollisionGroup(entity, 1);
-		//	SetEntProp(entity, Prop_Send, "m_CollisionGroup", 2);
-			AcceptEntityInput(entity, "DisableShadow");
-			AcceptEntityInput(entity, "EnableCollision");
-			//Relocate weapon to higher height, looks much better
-			float pos[3];
-			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-			pos[2] += 0.8;
-			TeleportEntity(entity, pos, NULL_VECTOR, NULL_VECTOR);
-		}
-	}
-	
-	for(int i; i<=HighestTier; i++)
-	{
-		if(lists[i])
-		{
-			delete lists[i];
-			lists[i] = null;
-		}
-	}
-}
-
-public bool Do_Not_Collide(int client, int collisiongroup, int contentsmask, bool originalResult)
-{
-	if(collisiongroup == 9) //Only npc's
-		return false;
-	else
-		return originalResult;
-} 
-
-static ArrayList GetAllWeaponsWithTier(int tier)
-{
-	ArrayList list = new ArrayList(2);
-	
-	static Item item;
-	static ItemInfo info;
-	int length = StoreItems.Length;
-	int array[2];
-	for(int i; i<length; i++)
-	{
-		StoreItems.GetArray(i, item);
-		for(int a; item.GetItemInfo(a, info); a++)
-		{
-			if(info.Tier == tier)
-			{
-				array[0] = i;
-				array[1] = a;
-				for(int b; b<info.Rarity; b++)
-				{
-					list.PushArray(array);
-				}
-			}
-		}
-	}
-	
-	return list;
-}*/
-
 public Action Access_StoreViaCommand(int client, int args)
 {
 	if (!IsClientInGame(client))
@@ -3649,7 +3558,7 @@ static void MenuPage(int client, int section)
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
 		ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
-		MenuPage(client, 0);
+		MenuPage(client, 0);	
 		if(!Waves_Started())
 		{
 			StarterCashMode[client] = true;
@@ -3788,7 +3697,13 @@ static void MenuPage(int client, int section)
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 				IntToString(i, info.Classname, sizeof(info.Classname));
 				//do not have custom name here, its in the menu and thus the custom names never apear. this isnt even for weapons.
-				menu.AddItem(info.Classname, TranslateItemName(client, item.Name, ""));
+				FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
+				if(item.NPCSeller_Discount > 0.0 && item.NPCSeller_Discount < 1.0)
+				{
+					Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
+				}
+				//category has some type of sale in it !
+				menu.AddItem(info.Classname, buffer);
 				found = true;
 			}
 			else
@@ -6926,7 +6841,7 @@ bool DisplayMenuAtCustom(Menu menu, int client, int item)
 	int count = menu.ItemCount;
 	int base = (item / 7 * 7);
 	char data[16], buffer[64];
-	bool next = count > (base + 6);
+	bool next = count > (base + 7);
 	int info;
 
 	// Add a newline to the item before Back/Previous

@@ -6611,7 +6611,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 	if(EnableSilentMode)
 		Limit_Gibs = true;
 
-	if(npc.m_iBleedType == BLEEDTYPE_NORMAL)
+	if(npc.m_iBleedType == BLEEDTYPE_METAL)
 		npc.PlayGibSoundMetal();
 	else if(npc.m_iBleedType != BLEEDTYPE_RUBBER)
 		npc.PlayGibSound();
