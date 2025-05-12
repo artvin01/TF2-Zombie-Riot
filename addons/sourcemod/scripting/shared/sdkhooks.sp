@@ -407,7 +407,12 @@ public void OnPostThink(int client)
 			}
 		}
 	}
-
+#if defined ZR
+	if(SkillTree_InMenu(client))
+	{
+		TreeMenu(client,_, false);
+	}
+#endif
 	if(GetTeam(client) == 2)
 	{
 #if defined ZR
