@@ -1315,7 +1315,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						userid = EntIndexToEntRef(owner);
 					}
 					char dataFirst[64];
-					FormatEx(dataFirst, sizeof(dataFirst), "%i;%i;%i", index, (OwnedItemIndex), userid);
+					Format(dataFirst, sizeof(dataFirst), "%i;%i;%i", index, (OwnedItemIndex), userid);
 					
 					for(int i = skip; i < count; i++)
 					{
@@ -1323,9 +1323,9 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						{
 							ItemCostPap(item, info.Cost);
 
-//							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, OwnedItemIndex + i, entity, userid);
-							FormatEx(data, sizeof(data), "%i;%i;%i", index, (OwnedItemIndex + i), userid);
-							FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
+//							Format(data, sizeof(data), "%d;%d;%d;%d", index, OwnedItemIndex + i, entity, userid);
+							Format(data, sizeof(data), "%i;%i;%i", index, (OwnedItemIndex + i), userid);
+							Format(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
 							menu.AddItem(data, buffer, cash < info.Cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 							if(info.Desc[0])
@@ -1335,7 +1335,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 								char DescWeapon[64];
 								char DescWeaponFuse[128];
 								Format(DescWeaponFuse, sizeof(DescWeaponFuse), "%s-explain-%s", dataFirst,data);
-								FormatEx(DescWeapon, sizeof(DescWeapon), "%T\n ", "Describe This Weapon", client);
+								Format(DescWeapon, sizeof(DescWeapon), "%T\n ", "Describe This Weapon", client);
 								menu.AddItem(DescWeaponFuse, DescWeapon, ITEMDRAW_DEFAULT);
 							}
 						}
@@ -1343,7 +1343,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 					
 					if(!data[0])
 					{
-						FormatEx(buffer, sizeof(buffer), "%T", "Cannot Pap this", client);
+						Format(buffer, sizeof(buffer), "%T", "Cannot Pap this", client);
 						menu.AddItem("", buffer, ITEMDRAW_DISABLED);
 					}
 					
@@ -1518,42 +1518,6 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-
-/*int Store_PackCurrentItem(int client, int index)
-{
-	if(index > 0)
-	{
-		static Item item;
-		StoreItems.GetArray(index, item);
-		if(item.Owned[client])
-		{
-			ItemInfo info;
-			if(!item.GetItemInfo(item.Owned[client], info))
-				return 1;
-			
-			int money_for_pap = info.Cost;
-			if(money_for_pap > 0)
-			{		
-				if(money_for_pap <= (CurrentCash-CashSpent[client]))
-				{
-					CashSpent[client] += money_for_pap;
-					item.Owned[client]++;
-					StoreItems.SetArray(index, item);
-					return 3; //You just paped it.
-				}
-				else
-				{
-					return 2; //You dont got enough money to pap it.
-				}
-			}
-			else
-			{
-				return 1; //You own it but this weapon cannot be pack a punched.
-			}
-		}
-	}
-	return 0; //you dont own the item.
-}*/
 
 void Store_RogueEndFightReset()
 {
@@ -1963,193 +1927,193 @@ public void ReShowSettingsHud(int client)
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%T", "Settings Page", client);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Armor Hud Setting", client);
+	Format(buffer, sizeof(buffer), "%T", "Armor Hud Setting", client);
 	menu2.AddItem("-2", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Hurt Hud Setting", client);
+	Format(buffer, sizeof(buffer), "%T", "Hurt Hud Setting", client);
 	menu2.AddItem("-8", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Weapon Hud Setting", client);
+	Format(buffer, sizeof(buffer), "%T", "Weapon Hud Setting", client);
 	menu2.AddItem("-14", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Notif Hud Setting", client);
+	Format(buffer, sizeof(buffer), "%T", "Notif Hud Setting", client);
 	menu2.AddItem("-20", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Zombie Volume Setting Show", client);
+	Format(buffer, sizeof(buffer), "%T", "Zombie Volume Setting Show", client);
 	menu2.AddItem("-55", buffer);
 
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Low Health Shake", client);
+	Format(buffer, sizeof(buffer), "%T", "Low Health Shake", client);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Weapon Screen Shake", client);
+	Format(buffer, sizeof(buffer), "%T", "Weapon Screen Shake", client);
 	if(b_HudScreenShake[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-41", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Hit Marker", client);
+	Format(buffer, sizeof(buffer), "%T", "Hit Marker", client);
 	if(b_HudHitMarker[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-42", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Disable Map Music", client);
+	Format(buffer, sizeof(buffer), "%T", "Disable Map Music", client);
 	if(b_IgnoreMapMusic[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-80", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Disable Ambient Music", client);
+	Format(buffer, sizeof(buffer), "%T", "Disable Ambient Music", client);
 	if(b_DisableDynamicMusic[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-81", buffer);
 
 	
-	FormatEx(buffer, sizeof(buffer), "%T", "Enable Ammobox Count Perma", client);
+	Format(buffer, sizeof(buffer), "%T", "Enable Ammobox Count Perma", client);
 	if(b_EnableRightSideAmmoboxCount[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-82", buffer);
 
 	
-	FormatEx(buffer, sizeof(buffer), "%T", "Enable Visible Downs", client);
+	Format(buffer, sizeof(buffer), "%T", "Enable Visible Downs", client);
 	if(b_EnableCountedDowns[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-83", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Enable Visual Clutter", client);
+	Format(buffer, sizeof(buffer), "%T", "Enable Visual Clutter", client);
 	if(b_EnableClutterSetting[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-84", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Enable Numeral Armor", client);
+	Format(buffer, sizeof(buffer), "%T", "Enable Numeral Armor", client);
 	if(b_EnableNumeralArmor[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-85", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Taunt Speed increase", client);
+	Format(buffer, sizeof(buffer), "%T", "Taunt Speed increase", client);
 	if(b_TauntSpeedIncrease[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-71", buffer);
 
 	if(!zr_interactforcereload.BoolValue)
-		FormatEx(buffer, sizeof(buffer), "%T", "Interact With Reload", client);
+		Format(buffer, sizeof(buffer), "%T", "Interact With Reload", client);
 	else
-		FormatEx(buffer, sizeof(buffer), "%T", "Interact With Spray", client);
+		Format(buffer, sizeof(buffer), "%T", "Interact With Spray", client);
 
 	if(b_InteractWithReload[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-73", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Disable Setup Music", client);
+	Format(buffer, sizeof(buffer), "%T", "Disable Setup Music", client);
 	if(b_DisableSetupMusic[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-90", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Disable Status Effect Hints", client);
+	Format(buffer, sizeof(buffer), "%T", "Disable Status Effect Hints", client);
 	if(b_DisableStatusEffectHints[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
-	FormatEx(buffer, sizeof(buffer), "%T", "Disable Status Lastmann Music", client);
+	Format(buffer, sizeof(buffer), "%T", "Disable Status Lastmann Music", client);
 	if(b_LastManDisable[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 
 	menu2.AddItem("-96", buffer);
-	FormatEx(buffer, sizeof(buffer), "%T", "DamageHud Setting", client);
+	Format(buffer, sizeof(buffer), "%T", "DamageHud Setting", client);
 	if(b_DisplayDamageHudSetting[client])
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-97", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Fix First Sound Play Manually", client);
-	FormatEx(buffer, sizeof(buffer), "%s", buffer);
+	Format(buffer, sizeof(buffer), "%T", "Fix First Sound Play Manually", client);
+	Format(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-86", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "See Tutorial Again", client);
-	FormatEx(buffer, sizeof(buffer), "%s", buffer);
+	Format(buffer, sizeof(buffer), "%T", "See Tutorial Again", client);
+	Format(buffer, sizeof(buffer), "%s", buffer);
 	menu2.AddItem("-95", buffer);
 	
 
 	
-	FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+	Format(buffer, sizeof(buffer), "%T", "Back", client);
 	menu2.AddItem("-999", buffer);
 	menu2.Pagination = 1;
 	
@@ -2164,22 +2128,22 @@ public void ReShowArmorHud(int client)
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%T", "Armor Hud Setting Inside", client,f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Up", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Up", client);
 	menu2.AddItem("-3", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Down", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Down", client);
 	menu2.AddItem("-4", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Left", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Left", client);
 	menu2.AddItem("-5", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Right", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Right", client);
 	menu2.AddItem("-6", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Reset to Default", client);
+	Format(buffer, sizeof(buffer), "%T", "Reset to Default", client);
 	menu2.AddItem("-7", buffer);
 					
-	FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+	Format(buffer, sizeof(buffer), "%T", "Back", client);
 	menu2.AddItem("-1", buffer);
 
 	menu2.Display(client, MENU_TIME_FOREVER);
@@ -2193,22 +2157,22 @@ public void ReShowHurtHud(int client)
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%T", "Hurt Hud Setting Inside", client,f_HurtHudOffsetX[client],f_HurtHudOffsetY[client]);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Up", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Up", client);
 	menu2.AddItem("-9", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Down", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Down", client);
 	menu2.AddItem("-10", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Left", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Left", client);
 	menu2.AddItem("-11", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Right", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Right", client);
 	menu2.AddItem("-12", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Reset to Default", client);
+	Format(buffer, sizeof(buffer), "%T", "Reset to Default", client);
 	menu2.AddItem("-13", buffer);
 					
-	FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+	Format(buffer, sizeof(buffer), "%T", "Back", client);
 	menu2.AddItem("-1", buffer);
 
 	menu2.Display(client, MENU_TIME_FOREVER);
@@ -2224,22 +2188,22 @@ public void ReShowWeaponHud(int client)
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%T", "Weapon Hud Setting Inside", client,f_WeaponHudOffsetX[client],f_WeaponHudOffsetY[client]);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Up", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Up", client);
 	menu2.AddItem("-15", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Down", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Down", client);
 	menu2.AddItem("-16", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Left", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Left", client);
 	menu2.AddItem("-17", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Right", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Right", client);
 	menu2.AddItem("-18", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Reset to Default", client);
+	Format(buffer, sizeof(buffer), "%T", "Reset to Default", client);
 	menu2.AddItem("-19", buffer);
 					
-	FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+	Format(buffer, sizeof(buffer), "%T", "Back", client);
 	menu2.AddItem("-1", buffer);
 
 	menu2.Display(client, MENU_TIME_FOREVER);
@@ -2253,22 +2217,22 @@ public void ReShowNotifHud(int client)
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%T", "Notif Hud Setting Inside", client,f_NotifHudOffsetX[client],f_NotifHudOffsetY[client]);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Up", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Up", client);
 	menu2.AddItem("-21", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Down", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Down", client);
 	menu2.AddItem("-22", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Left", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Left", client);
 	menu2.AddItem("-23", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Move Hud Right", client);
+	Format(buffer, sizeof(buffer), "%T", "Move Hud Right", client);
 	menu2.AddItem("-24", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Reset to Default", client);
+	Format(buffer, sizeof(buffer), "%T", "Reset to Default", client);
 	menu2.AddItem("-25", buffer);
 					
-	FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+	Format(buffer, sizeof(buffer), "%T", "Back", client);
 	menu2.AddItem("-1", buffer);
 
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "nothing");
@@ -2286,13 +2250,13 @@ public void ReShowVolumeHud(int client)
 	
 	menu2.SetTitle("%T", "Zombie Volume Setting", client,volumeSettingShow);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Turn up volume", client);
+	Format(buffer, sizeof(buffer), "%T", "Turn up volume", client);
 	menu2.AddItem("-63", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Turn down volume", client);
+	Format(buffer, sizeof(buffer), "%T", "Turn down volume", client);
 	menu2.AddItem("-64", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+	Format(buffer, sizeof(buffer), "%T", "Back", client);
 	menu2.AddItem("-1", buffer);
 
 	menu2.Display(client, MENU_TIME_FOREVER);
@@ -3207,32 +3171,32 @@ static void MenuPage(int client, int section)
 				{
 					if(Rogue_Mode())
 					{
-						FormatEx(buffer, sizeof(buffer), "%T\n%T\n%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, "Father Grigori's Store", client,"All Items are 10％ off here!", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
+						Format(buffer, sizeof(buffer), "%T\n%T\n%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, "Father Grigori's Store", client,"All Items are 10％ off here!", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%T\n%T\n%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, "Father Grigori's Store", client,"All Items are 20％ off here!", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
+						Format(buffer, sizeof(buffer), "%T\n%T\n%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, "Father Grigori's Store", client,"All Items are 20％ off here!", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					}
 				}
 				else
 				{
 					if(Rogue_Mode())
 					{
-						FormatEx(buffer, sizeof(buffer), "%T\n%T\n%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, "The World Machine's Items", client,"All Items are 10％ off here!", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
+						Format(buffer, sizeof(buffer), "%T\n%T\n%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, "The World Machine's Items", client,"All Items are 10％ off here!", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%T\n%T\n%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, "The World Machine's Items", client,"All Items are 20％ off here!", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
+						Format(buffer, sizeof(buffer), "%T\n%T\n%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, "The World Machine's Items", client,"All Items are 20％ off here!", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
 					}
 				}
 			}
 			else if(CurrentRound < 2 || Rogue_NoDiscount() || Construction_Mode() || !Waves_InSetup())
 			{
-				FormatEx(buffer, sizeof(buffer), "%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
+				Format(buffer, sizeof(buffer), "%T\n \n%s\n \n%s ", "TF2: Zombie Riot", client, buf, TranslateItemName(client, item.Name, info.Custom_Name));
 			}
 			else
 			{
-				FormatEx(buffer, sizeof(buffer), "%T\n \n%s\n%T\n%s ", "TF2: Zombie Riot", client, buf, "Store Discount", client, TranslateItemName(client, item.Name, info.Custom_Name));
+				Format(buffer, sizeof(buffer), "%T\n \n%s\n%T\n%s ", "TF2: Zombie Riot", client, buf, "Store Discount", client, TranslateItemName(client, item.Name, info.Custom_Name));
 			}				
 			
 
@@ -3249,7 +3213,7 @@ static void MenuPage(int client, int section)
 				if(!item.NPCWeaponAlways)
 					info.Cost -= NPCCash[client];
 				
-				FormatEx(buffer, sizeof(buffer), "%T ($%d)", "Buy", client, info.Cost);
+				Format(buffer, sizeof(buffer), "%T ($%d)", "Buy", client, info.Cost);
 				menu.AddItem(buffer2, buffer, info.Cost > cash ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 			else
@@ -3261,7 +3225,7 @@ static void MenuPage(int client, int section)
 					{
 						style = ITEMDRAW_DISABLED;
 					}
-					FormatEx(buffer, sizeof(buffer), "%T ($%d) [%d]", "Buy Scrap", client, info.ScrapCost , Scrap[client]);
+					Format(buffer, sizeof(buffer), "%T ($%d) [%d]", "Buy Scrap", client, info.ScrapCost , Scrap[client]);
 
 					char buffer2[16];
 					IntToString(section, buffer2, sizeof(buffer2));
@@ -3278,26 +3242,26 @@ static void MenuPage(int client, int section)
 						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
 						{	
 							int cost = AmmoData[info.AmmoBuyMenuOnly][0];
-							FormatEx(buffer, sizeof(buffer), "%T ($%d)", AmmoNames[info.AmmoBuyMenuOnly], client, cost);
+							Format(buffer, sizeof(buffer), "%T ($%d)", AmmoNames[info.AmmoBuyMenuOnly], client, cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 						}
 						else if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 						{	
 							int cost = AmmoData[info.Ammo][0];
-							FormatEx(buffer, sizeof(buffer), "%T ($%d)", AmmoNames[info.Ammo], client, cost);
+							Format(buffer, sizeof(buffer), "%T ($%d)", AmmoNames[info.Ammo], client, cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 						}
 						else	// No Ammo
 						{
-							FormatEx(buffer, sizeof(buffer), "%s", "-");
+							Format(buffer, sizeof(buffer), "%s", "-");
 							style = ITEMDRAW_DISABLED;
 						}
 					}
 					else if(item.ChildKit || item.Owned[client] || (info.Cost <= 0 && (item.Scale*item.Scaled[client]) <= 0))	// Owned already or free
 					{
-						FormatEx(buffer, sizeof(buffer), "%T", "Equip", client);
+						Format(buffer, sizeof(buffer), "%T", "Equip", client);
 						if(info.VisualDescOnly)
 						{
 							style = ITEMDRAW_DISABLED;
@@ -3319,11 +3283,11 @@ static void MenuPage(int client, int section)
 
 						if(Maxed_Building)
 						{
-							FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
+							Format(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
 						}
 						else*/
 						{
-							FormatEx(buffer, sizeof(buffer), "%T ($%d)", "Buy", client, info.Cost);
+							Format(buffer, sizeof(buffer), "%T ($%d)", "Buy", client, info.Cost);
 						}
 
 						if(info.Cost > cash)
@@ -3346,7 +3310,7 @@ static void MenuPage(int client, int section)
 						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
 						{
 							int cost = AmmoData[info.AmmoBuyMenuOnly][0] * 10;
-							FormatEx(buffer, sizeof(buffer), "%T x10 ($%d)", AmmoNames[info.AmmoBuyMenuOnly], client, cost);
+							Format(buffer, sizeof(buffer), "%T x10 ($%d)", AmmoNames[info.AmmoBuyMenuOnly], client, cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 							Repeat_Filler ++;
@@ -3355,7 +3319,7 @@ static void MenuPage(int client, int section)
 						else
 						{
 							int cost = AmmoData[info.Ammo][0] * 10;
-							FormatEx(buffer, sizeof(buffer), "%T x10 ($%d)", AmmoNames[info.Ammo], client, cost);
+							Format(buffer, sizeof(buffer), "%T x10 ($%d)", AmmoNames[info.Ammo], client, cost);
 							if(cost > cash)
 								style = ITEMDRAW_DISABLED;
 							Repeat_Filler ++;
@@ -3371,7 +3335,7 @@ static void MenuPage(int client, int section)
 					//We shall allow unequipping again.
 					if(item.Equipped[client] && item.GregOnlySell != 2)
 					{
-						FormatEx(buffer, sizeof(buffer), "%T", "Unequip", client);
+						Format(buffer, sizeof(buffer), "%T", "Unequip", client);
 						menu.AddItem(buffer2, buffer, item.ChildKit ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);	// 2
 						Repeat_Filler ++;
 					}
@@ -3384,7 +3348,7 @@ static void MenuPage(int client, int section)
 					if(canSell)
 					{
 						Repeat_Filler ++;
-						FormatEx(buffer, sizeof(buffer), "%T ($%d) | (%T: $%d)", "Sell", client, fullSell ? item.BuyPrice[client] : item.Sell[client], "Credits After Selling", client, (fullSell ? item.BuyPrice[client] : item.Sell[client]) + (cash));	// 3
+						Format(buffer, sizeof(buffer), "%T ($%d) | (%T: $%d)", "Sell", client, fullSell ? item.BuyPrice[client] : item.Sell[client], "Credits After Selling", client, (fullSell ? item.BuyPrice[client] : item.Sell[client]) + (cash));	// 3
 						menu.AddItem(buffer2, buffer);
 					}
 					else
@@ -3419,7 +3383,7 @@ static void MenuPage(int client, int section)
 								break;
 							}
 						}
-						FormatEx(buffer, sizeof(buffer), "%T", "View PAP Upgrades", client);
+						Format(buffer, sizeof(buffer), "%T", "View PAP Upgrades", client);
 						menu.AddItem(buffer2, buffer);
 					}
 					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
@@ -3437,7 +3401,7 @@ static void MenuPage(int client, int section)
 								break;
 							}
 						}
-						FormatEx(buffer, sizeof(buffer), "%T", tinker ? "View Modifiers" : (info.ExtraDesc[0] ? "Extra Description" : "Tags & Author"), client);
+						Format(buffer, sizeof(buffer), "%T", tinker ? "View Modifiers" : (info.ExtraDesc[0] ? "Extra Description" : "Tags & Author"), client);
 
 						menu.AddItem(buffer2, buffer);
 					}
@@ -3549,7 +3513,7 @@ static void MenuPage(int client, int section)
 			char buffer[32];
 			if(StarterCashMode[client])
 			{
-				FormatEx(buffer, sizeof(buffer), "%T\n ", "Confirm Loadout", client);
+				Format(buffer, sizeof(buffer), "%T\n ", "Confirm Loadout", client);
 				int ConfirmAllow = ITEMDRAW_DISABLED;
 				if(CvarInfiniteCash.BoolValue)
 				{
@@ -3567,7 +3531,7 @@ static void MenuPage(int client, int section)
 			}
 			else
 			{
-				FormatEx(buffer, sizeof(buffer), "%T", "Owned Items", client);
+				Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
 				menu.AddItem("-2", buffer);
 			}
 		}
@@ -3590,9 +3554,9 @@ static void MenuPage(int client, int section)
 	if(section == -2)
 	{
 		if(Waves_Started())
-			FormatEx(buffer, sizeof(buffer), "%T", "Sell All Items", client);
+			Format(buffer, sizeof(buffer), "%T", "Sell All Items", client);
 		else
-			FormatEx(buffer, sizeof(buffer), "%T", "Return to loadout Menu", client);
+			Format(buffer, sizeof(buffer), "%T", "Return to loadout Menu", client);
 
 		menu.AddItem("-999969", buffer);
 	}
@@ -3600,14 +3564,14 @@ static void MenuPage(int client, int section)
 	{
 		char buffer2[128];
 		if(Waves_Started())
-			FormatEx(buffer2, sizeof(buffer2), "%T", "Sell Items Confirm", client);
+			Format(buffer2, sizeof(buffer2), "%T", "Sell Items Confirm", client);
 		else
-			FormatEx(buffer2, sizeof(buffer2), "%T", "Sell Items Confirm Pref", client);
+			Format(buffer2, sizeof(buffer2), "%T", "Sell Items Confirm Pref", client);
 
 		menu.AddItem("-9999691", buffer2, ITEMDRAW_DISABLED);
-		FormatEx(buffer, sizeof(buffer), "%T", "No", client);
+		Format(buffer, sizeof(buffer), "%T", "No", client);
 		menu.AddItem("-9999692", buffer);
-		FormatEx(buffer, sizeof(buffer), "%T", "Yes", client);
+		Format(buffer, sizeof(buffer), "%T", "Yes", client);
 		menu.AddItem("-9999693", buffer);
 
 	}
@@ -3725,7 +3689,7 @@ static void MenuPage(int client, int section)
 					if((info.Cost < 1001 || info.Cost <= CurrentCash) && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
 					{
 						ItemCost(client, item, info.Cost);
-						FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
+						Format(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
 						
 						if(!item.BoughtBefore[client])
 						{
@@ -3762,7 +3726,7 @@ static void MenuPage(int client, int section)
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 				IntToString(i, info.Classname, sizeof(info.Classname));
 				//do not have custom name here, its in the menu and thus the custom names never apear. this isnt even for weapons.
-				FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
+				Format(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 				if(item.NPCSeller_WaveStart > 0)
 				{
 					Format(buffer, sizeof(buffer), "%s{$$}", buffer);
@@ -3785,25 +3749,25 @@ static void MenuPage(int client, int section)
 					
 					if(info.ScrapCost > 0)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.ScrapCost, Scrap[client]);
+						Format(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.ScrapCost, Scrap[client]);
 						if(Item_ClientHasAllRarity(client, info.UnboxRarity))
 							style = ITEMDRAW_DISABLED;
 					}
 					else if(item.Equipped[client])
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [%T]", TranslateItemName(client, item.Name, info.Custom_Name), "Equipped", client);
+						Format(buffer, sizeof(buffer), "%s [%T]", TranslateItemName(client, item.Name, info.Custom_Name), "Equipped", client);
 					}
 					else if(item.Owned[client] > 1)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [%T]", TranslateItemName(client, item.Name, info.Custom_Name), "Packed", client);
+						Format(buffer, sizeof(buffer), "%s [%T]", TranslateItemName(client, item.Name, info.Custom_Name), "Packed", client);
 					}
 					else if(item.Owned[client])
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [%T]", TranslateItemName(client, item.Name, info.Custom_Name), "Purchased", client);
+						Format(buffer, sizeof(buffer), "%s [%T]", TranslateItemName(client, item.Name, info.Custom_Name), "Purchased", client);
 					}
 					else if(!info.Cost && item.Level)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [Lv %d]", TranslateItemName(client, item.Name, info.Custom_Name), item.Level);
+						Format(buffer, sizeof(buffer), "%s [Lv %d]", TranslateItemName(client, item.Name, info.Custom_Name), item.Level);
 					}
 					else if(info.Cost >= 999999 && !CvarInfiniteCash.BoolValue)
 					{
@@ -3815,11 +3779,11 @@ static void MenuPage(int client, int section)
 					}
 					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [↓]", TranslateItemName(client, item.Name, info.Custom_Name));
+						Format(buffer, sizeof(buffer), "%s [↓]", TranslateItemName(client, item.Name, info.Custom_Name));
 					}
 					else if(!item.WhiteOut && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [%.0f％]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
+						Format(buffer, sizeof(buffer), "%s [%.0f％]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 						style = ITEMDRAW_DISABLED;
 					}
 					else
@@ -3827,23 +3791,23 @@ static void MenuPage(int client, int section)
 						ItemCost(client, item, info.Cost);
 						if(hasKit && item.NoKit)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s [WEAPON KIT EQUIPPED]", TranslateItemName(client, item.Name, info.Custom_Name));
+							Format(buffer, sizeof(buffer), "%s [WEAPON KIT EQUIPPED]", TranslateItemName(client, item.Name, info.Custom_Name));
 							style = ITEMDRAW_DISABLED;
 						}
 						else
 						{
 							if(item.WhiteOut)
 							{
-								FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
+								Format(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 								style = ITEMDRAW_DISABLED;
 							}
 							else if(!info.Cost)
 							{
-								FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
+								Format(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 							}
 							else
 							{
-								FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
+								Format(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
 							}
 						}
 					}
@@ -3886,7 +3850,7 @@ static void MenuPage(int client, int section)
 	{
 		if(!found)
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", "None", client);
+			Format(buffer, sizeof(buffer), "%T", "None", client);
 			IntToString(CurrentMenuItem[client], info.Classname, sizeof(info.Classname));
 			menu.AddItem(info.Classname, buffer, ITEMDRAW_DISABLED);
 		}
@@ -3903,13 +3867,13 @@ static void MenuPage(int client, int section)
 	{
 		if(Level[client] > STARTER_WEAPON_LEVEL)
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", "Loadouts", client);
+			Format(buffer, sizeof(buffer), "%T", "Loadouts", client);
 			menu.AddItem("-22", buffer);
 		}
 
 		if(Rogue_ArtifactEnabled())
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", "Collected Artifacts", client);
+			Format(buffer, sizeof(buffer), "%T", "Collected Artifacts", client);
 			menu.AddItem("-24", buffer);
 		}
 
@@ -3917,33 +3881,33 @@ static void MenuPage(int client, int section)
 		{
 			if(CvarSkillPoints.BoolValue)
 			{
-				FormatEx(buffer, sizeof(buffer), "%T", "Skill Tree", client);
+				Format(buffer, sizeof(buffer), "%T", "Skill Tree", client);
 				menu.AddItem("-25", buffer);
 			}
 
-			FormatEx(buffer, sizeof(buffer), "%T", "Cherrypick Weapon", client);
+			Format(buffer, sizeof(buffer), "%T", "Cherrypick Weapon", client);
 			menu.AddItem("-30", buffer);
 		}
 		
-		FormatEx(buffer, sizeof(buffer), "%T", "Help?", client);
+		Format(buffer, sizeof(buffer), "%T", "Help?", client);
 		menu.AddItem("-3", buffer);
 		
 		if(starterPlayer)
 		{
 			menu.AddItem("-43", buffer, ITEMDRAW_SPACER);
 
-			FormatEx(buffer, sizeof(buffer), "%T", "Skip Starter", client);
+			Format(buffer, sizeof(buffer), "%T", "Skip Starter", client);
 			menu.AddItem("-43", buffer);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", "Settings", client); //Settings
+			Format(buffer, sizeof(buffer), "%T", "Settings", client); //Settings
 			menu.AddItem("-23", buffer);
 
-			FormatEx(buffer, sizeof(buffer), "%T", "Encyclopedia", client);
+			Format(buffer, sizeof(buffer), "%T", "Encyclopedia", client);
 			menu.AddItem("-13", buffer);
 
-			FormatEx(buffer, sizeof(buffer), "%T", "Status Effect List", client);
+			Format(buffer, sizeof(buffer), "%T", "Status Effect List", client);
 			menu.AddItem("-100", buffer);
 		}
 
@@ -3956,7 +3920,7 @@ static void MenuPage(int client, int section)
 	{
 		if(!found)
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", "None", client);
+			Format(buffer, sizeof(buffer), "%T", "None", client);
 			menu.AddItem("0", buffer, ITEMDRAW_DISABLED);
 		}
 
@@ -4051,7 +4015,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Credits Page", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4061,14 +4025,14 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Help Title?", client);
 
-						FormatEx(buffer, sizeof(buffer), "%T", "Gamemode Credits", client); //credits is whatever, put in back.
+						Format(buffer, sizeof(buffer), "%T", "Gamemode Credits", client); //credits is whatever, put in back.
 						menu2.AddItem("-21", buffer);
 
 						if(CvarCustomModels.BoolValue)
 						{
 							if(IsFileInDownloads("models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"))
 							{
-								FormatEx(buffer, sizeof(buffer), "%T", "Custom Models", client);
+								Format(buffer, sizeof(buffer), "%T", "Custom Models", client);
 								menu2.AddItem("-45", buffer);
 							}
 							else
@@ -4077,31 +4041,31 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 							}
 						}
 
-						FormatEx(buffer, sizeof(buffer), "%T", "Buff/Debuff List", client);
+						Format(buffer, sizeof(buffer), "%T", "Buff/Debuff List", client);
 						menu2.AddItem("-12", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Gamemode Help?", client);
+						Format(buffer, sizeof(buffer), "%T", "Gamemode Help?", client);
 						menu2.AddItem("-4", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Command Help?", client);
+						Format(buffer, sizeof(buffer), "%T", "Command Help?", client);
 						menu2.AddItem("-5", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Difficulty Help?", client);
+						Format(buffer, sizeof(buffer), "%T", "Difficulty Help?", client);
 						menu2.AddItem("-6", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Level Help?", client);
+						Format(buffer, sizeof(buffer), "%T", "Level Help?", client);
 						menu2.AddItem("-7", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Special Zombies Help?", client);
+						Format(buffer, sizeof(buffer), "%T", "Special Zombies Help?", client);
 						menu2.AddItem("-8", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Revival Help?", client);
+						Format(buffer, sizeof(buffer), "%T", "Revival Help?", client);
 						menu2.AddItem("-9", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Building Help?", client);
+						Format(buffer, sizeof(buffer), "%T", "Building Help?", client);
 						menu2.AddItem("-10", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Extra Buttons Help?", client);
+						Format(buffer, sizeof(buffer), "%T", "Extra Buttons Help?", client);
 						menu2.AddItem("-11", buffer);
 						
 						menu2.ExitBackButton = true;
@@ -4112,7 +4076,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Gamemode Help Explained", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4123,10 +4087,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						menu2.SetTitle("%T", "Debuff/Buff Explain 1", client);
 
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Show Debuffs", client);
+						Format(buffer, sizeof(buffer), "%T", "Show Debuffs", client);
 						menu2.AddItem("-53", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4134,13 +4098,13 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -53:
 					{
 						Menu menu2 = new Menu(Store_MenuPage);
-						menu2.SetTitle("%T", "Debuff/Buff Explain 2");
+						menu2.SetTitle("%T", "Debuff/Buff Explain 2", client);
 
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Show Buffs", client);
+						Format(buffer, sizeof(buffer), "%T", "Show Buffs", client);
 						menu2.AddItem("-12", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4150,7 +4114,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Command Help Explained", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4160,7 +4124,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Difficulty Help Explained", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4170,7 +4134,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Level Help Explained", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4180,7 +4144,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Special Zombies Explained", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4190,7 +4154,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Revival Zombies Explained", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4200,7 +4164,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Building Explained", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4210,7 +4174,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Extra Buttons Explained", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4228,25 +4192,25 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Bored or Dead Minigame", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Idlemine", client);
+						Format(buffer, sizeof(buffer), "%T", "Idlemine", client);
 						menu2.AddItem("-15", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Tetris", client);
+						Format(buffer, sizeof(buffer), "%T", "Tetris", client);
 						menu2.AddItem("-16", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Snake", client);
+						Format(buffer, sizeof(buffer), "%T", "Snake", client);
 						menu2.AddItem("-17", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Solitaire", client);
+						Format(buffer, sizeof(buffer), "%T", "Solitaire", client);
 						menu2.AddItem("-18", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Pong", client);
+						Format(buffer, sizeof(buffer), "%T", "Pong", client);
 						menu2.AddItem("-19", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Connect 4", client);
+						Format(buffer, sizeof(buffer), "%T", "Connect 4", client);
 						menu2.AddItem("-20", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4284,10 +4248,19 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Skip Starter Confirm", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Skip Starter Yes", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
+						menu2.AddItem("-1", buffer);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
+						menu2.AddItem("-1", buffer);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
+						menu2.AddItem("-1", buffer);
+						Format(buffer, sizeof(buffer), "%T", "Skip Starter Button", client);
 						menu2.AddItem("-44", buffer);
-
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
+						menu2.AddItem("-1", buffer);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
+						menu2.AddItem("-1", buffer);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4298,6 +4271,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Level[client] = 0; //Just incase.
 						Native_ZR_OnGetXP(client, XP[client], 1);
 						GiveXP(client, 0);
+						TutorialEndFully(client);
 					}
 					case -24:
 					{
@@ -4312,25 +4286,25 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Menu menu2 = new Menu(Store_MenuPage);
 						menu2.SetTitle("%T", "Custom Models", client);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "TF2 Class", client);
+						Format(buffer, sizeof(buffer), "%T", "TF2 Class", client);
 						menu2.AddItem("-46", buffer);
 						
-						FormatEx(buffer, sizeof(buffer), "%T", "Barney", client);
+						Format(buffer, sizeof(buffer), "%T", "Barney", client);
 						menu2.AddItem("-47", buffer);
 
-						FormatEx(buffer, sizeof(buffer), "%T", "Niko Oneshot", client);
+						Format(buffer, sizeof(buffer), "%T", "Niko Oneshot", client);
 						menu2.AddItem("-48", buffer);
 
-						FormatEx(buffer, sizeof(buffer), "%T", "Skeleboy", client);
+						Format(buffer, sizeof(buffer), "%T", "Skeleboy", client);
 						menu2.AddItem("-49", buffer);
 
-						FormatEx(buffer, sizeof(buffer), "%T", "Kleiner", client);
+						Format(buffer, sizeof(buffer), "%T", "Kleiner", client);
 						menu2.AddItem("-50", buffer);
 
-						FormatEx(buffer, sizeof(buffer), "%T", "Fat HHH", client);
+						Format(buffer, sizeof(buffer), "%T", "Fat HHH", client);
 						menu2.AddItem("-151", buffer);
 
-						FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+						Format(buffer, sizeof(buffer), "%T", "Back", client);
 						menu2.AddItem("-1", buffer);
 						
 						menu2.Display(client, MENU_TIME_FOREVER);
@@ -4757,7 +4731,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						int tags = ExplodeString(item.Tags, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 						if(tags)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, buffers[0], ""));
+							Format(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, buffers[0], ""));
 
 							for(int i = 1; i < tags; i++)
 							{
@@ -4770,10 +4744,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 
 					if(info.ExtraDesc[0])
 					{
-						FormatEx(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, info.ExtraDesc, info.Rogue_Desc));
+						Format(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, info.ExtraDesc, info.Rogue_Desc));
 						PrintToChat(client, buffer);
 						char buffer2[256];
-						FormatEx(buffer2, sizeof(buffer2), "%s", TranslateItemDescription(client, info.ExtraDesc_1, info.Rogue_Desc));
+						Format(buffer2, sizeof(buffer2), "%s", TranslateItemDescription(client, info.ExtraDesc_1, info.Rogue_Desc));
 						PrintToChat(client, buffer2);
 					}
 
@@ -4812,7 +4786,7 @@ static void LoadoutPage(int client, bool last = false)
 	
 	if(!length)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "None", client);
+		Format(buffer, sizeof(buffer), "%T", "None", client);
 		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
 	}
 
@@ -4867,27 +4841,27 @@ static void LoadoutItem(int client, const char[] name)
 	
 	//We will check for favorites the lazy way.
 	
-	FormatEx(buffer, sizeof(buffer), "%T", "All Items", client);
+	Format(buffer, sizeof(buffer), "%T", "All Items", client);
 	menu.AddItem(name, buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%T", "Free Only", client);
+	Format(buffer, sizeof(buffer), "%T", "Free Only", client);
 	menu.AddItem(name, buffer);
 	
 	if(!StrContains(name, "[♥]"))
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Un Favorite", client);
+		Format(buffer, sizeof(buffer), "%T", "Un Favorite", client);
 		menu.AddItem(name, buffer);
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Favorite", client);
+		Format(buffer, sizeof(buffer), "%T", "Favorite", client);
 		menu.AddItem(name, buffer);
 	}
 
 	
 	menu.AddItem(name, buffer, ITEMDRAW_SPACER);
 	
-	FormatEx(buffer, sizeof(buffer), "%T", "Delete Loadout", client);
+	Format(buffer, sizeof(buffer), "%T", "Delete Loadout", client);
 	menu.AddItem(name, buffer);
 	
 	menu.ExitBackButton = true;
@@ -4932,7 +4906,7 @@ public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choic
 					if(!StrContains(buffer, "[♥]"))
 					{
 						//Remove favorite
-						FormatEx(buffer2, sizeof(buffer2), "%s", buffer[5]);
+						Format(buffer2, sizeof(buffer2), "%s", buffer[5]);
 						int index = Loadouts[client].FindString(buffer);
 						if(index != -1)
 						{
@@ -4944,7 +4918,7 @@ public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choic
 					else
 					{
 						//Add favorite
-						FormatEx(buffer2, sizeof(buffer2), "[♥]%s", buffer);
+						Format(buffer2, sizeof(buffer2), "[♥]%s", buffer);
 						int index = Loadouts[client].FindString(buffer);
 						if(index != -1)
 						{
@@ -4973,6 +4947,25 @@ public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choic
 
 public bool Store_SayCommand(int client)
 {
+	/*
+	if(Level[client] < 5)
+	{
+		char buffer1[64], buffer2[256];
+		GetCmdArgString(buffer1, sizeof(buffer1));
+		strcopy(buffer2, sizeof(buffer2), "Basic Wand");
+		if(StrContains(buffer1, buffer2, false) != -1 || StrContains(buffer1, TranslateItemDescription(client, buffer2, ""), false) != -1)
+		{
+			XP[client] = LevelToXp(5);
+			Level[client] = 0; //Just incase.
+			Native_ZR_OnGetXP(client, XP[client], 1);
+			GiveXP(client, 0);
+
+			CancelClientMenu(client);
+			TutorialEndFully(client);
+			return true;
+		}
+	}
+	*/
 	if(!InLoadoutMenu[client])
 		return false;
 	
@@ -5018,17 +5011,17 @@ static void Store_CherrypickMenu(int client, int item = 0)
 	
 	char trans[32], buffer[256];
 
-	FormatEx(trans, sizeof(trans), "%T", "Search With Tags", client);
+	Format(trans, sizeof(trans), "%T", "Search With Tags", client);
 	menu.AddItem(buffer, trans, ChoosenTags[client].Length ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-	FormatEx(trans, sizeof(trans), "%T", "Clear Whitelist", client);
+	Format(trans, sizeof(trans), "%T", "Clear Whitelist", client);
 	menu.AddItem(buffer, trans, ChoosenTags[client].Length ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	
 	int length = StoreTags.Length;
 	for(int i; i < length; i++)
 	{
 		StoreTags.GetString(i, buffer, sizeof(buffer));
-		FormatEx(trans, sizeof(trans), "[%s] %s", ChoosenTags[client].FindString(buffer) == -1 ? " " : "X", TranslateItemDescription(client, buffer, ""));
+		Format(trans, sizeof(trans), "[%s] %s", ChoosenTags[client].FindString(buffer) == -1 ? " " : "X", TranslateItemDescription(client, buffer, ""));
 		menu.AddItem(buffer, trans);
 	}
 	
@@ -6533,7 +6526,7 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 		{
 			if(TranslationPhraseExists(Custom_Name))
 			{
-				FormatEx(buffer, sizeof(buffer), "%T", Custom_Name, client);
+				Format(buffer, sizeof(buffer), "%T", Custom_Name, client);
 			}
 			else
 			{
@@ -6544,7 +6537,7 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 		{
 			if(TranslationPhraseExists(name))
 			{
-				FormatEx(buffer, sizeof(buffer), "%T", name, client);
+				Format(buffer, sizeof(buffer), "%T", name, client);
 			}
 			else
 			{
@@ -6556,11 +6549,11 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 	{	
 		if(Custom_Name[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "%s", Custom_Name, client);
+			Format(buffer, sizeof(buffer), "%s", Custom_Name, client);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s", name, client);
+			Format(buffer, sizeof(buffer), "%s", name, client);
 		}
 	}*/
 	return buffer;
@@ -6578,22 +6571,22 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 	{
 		if(TranslationPhraseExists(Desc))
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", Rogue_Desc, client);
+			Format(buffer, sizeof(buffer), "%T", Rogue_Desc, client);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s", Rogue_Desc, client);
+			Format(buffer, sizeof(buffer), "%s", Rogue_Desc, client);
 		}
 	}
 	else
 	{
 		if(TranslationPhraseExists(Desc))
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+			Format(buffer, sizeof(buffer), "%T", Desc, client);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+			Format(buffer, sizeof(buffer), "%s", Desc, client);
 		}
 	}
 
@@ -6612,22 +6605,22 @@ char[] TranslateItemDescription_Long(int client, const char Desc[256], const cha
 	{
 		if(TranslationPhraseExists(Desc))
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", Rogue_Desc, client);
+			Format(buffer, sizeof(buffer), "%T", Rogue_Desc, client);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s", Rogue_Desc, client);
+			Format(buffer, sizeof(buffer), "%s", Rogue_Desc, client);
 		}
 	}
 	else
 	{
 		if(TranslationPhraseExists(Desc))
 		{
-			FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+			Format(buffer, sizeof(buffer), "%T", Desc, client);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+			Format(buffer, sizeof(buffer), "%s", Desc, client);
 		}
 	}
 
@@ -6923,7 +6916,7 @@ bool DisplayMenuAtCustom(Menu menu, int client, int item)
 
 	if(base > 0)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Previous", client);
+		Format(buffer, sizeof(buffer), "%T", "Previous", client);
 
 		int pos = base + 7;
 		if(count > pos)
@@ -6945,7 +6938,7 @@ bool DisplayMenuAtCustom(Menu menu, int client, int item)
 	}
 	else if(menu.ExitBackButton)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Back", client);
+		Format(buffer, sizeof(buffer), "%T", "Back", client);
 
 		int pos = base + 7;
 		if(count > pos)
@@ -6988,7 +6981,7 @@ bool DisplayMenuAtCustom(Menu menu, int client, int item)
 
 	if(next)
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", "Next", client);
+		Format(buffer, sizeof(buffer), "%T", "Next", client);
 
 		int pos = base + 8;
 		if(count > pos)
@@ -7009,7 +7002,7 @@ bool DisplayMenuAtCustom(Menu menu, int client, int item)
 		}
 	}
 
-	FormatEx(buffer, sizeof(buffer), "%T", "Exit", client);
+	Format(buffer, sizeof(buffer), "%T", "Exit", client);
 
 	int pos = base + 9;
 	if(count > pos)

@@ -862,8 +862,8 @@
 			}
 			"CTFParticleCannon::FireChargedShot"
 			{
-				"windows"	"493"
-				"linux"		"500"
+				"windows"	"494"
+				"linux"		"501"
 			}
 			"CBaseGrenade::Explode"
 			{

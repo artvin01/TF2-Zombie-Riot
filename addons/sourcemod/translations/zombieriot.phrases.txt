@@ -1447,12 +1447,7 @@
 	}
 	"Building Explained"
 	{
-		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
-		"fr" 		"Vous pouvez utiliser des construction en appuyant R.\nLes constructeurs peuvent monter leurs constructions.\nCeci vous permet d'appuyer R sur eux pour utiliser les constructions montés."
-		"ru" 		"R - использование построек.\nНад головой игроков с постройкой будет значок.\nR - для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
-		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
-		"pt"		"Você pode utilizar maquinas apertando R nelas.\nPessoas podem montar construções e teram um icone sobre suas cabeças.\nIsto permite que você aperta R nelas para o mesmo efeito.\nÍcone de Regen: Caixa de Munição.\nÍcone de Escudo: Mesa de Armadura.\nÍcone de Coroa: Maquina de Habilidades.\nÍcone de luva: Pack-A-Punch.\nÍcone de Vampiro: Estação de Cura."
-		"nl"		"Je kunt machines gebruiken met de R toets.\nMensen kunnen gebouwen dragen en zullen dan een icoon boven hun hoofd hebben.\nDit zorgt ervoor dat je de R toets op hen kunt gebruiken om hetzelfde effect te bekomen als het gebouw dat ze dragen.\nGeneratie icoon: Amunitiekist\nSchild icoon: Schild tafel.\nKoning's icoon: Perk Machine.\nKlop Icoon: Pack-A-Punch.\nVampier icoon: genezingsstation"
+		"en" 		"You can use machines by pressing R/T on them.\nPeople can mount buildings with a wrench.\nThis allows you to press R on them for the same effect."
 	}
 	"Extra Buttons Explained"
 	{
@@ -2207,17 +2202,15 @@
 	}
 	"Skip Starter"
 	{
-		"en"		"Skip starter weapons and unlock advanced weapons"
-		"ru"		"Пропустить начальное оружие и открыть продвинутое оружие"
-		"chi"       "跳过初级武器并解锁高级武器"
+		"en"		"I have played Zombie Riot before"
 	}
 	"Skip Starter Confirm"
 	{
-		"en"		"You have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
+		"en"		"Are you already familiar with Zombie Riot?\n \nAre you sure?\nlike, very sure that you know what youre doing?"
 	}
-	"Skip Starter Yes"
+	"Skip Starter Button"
 	{
-		"en"		"Yes, I am."
+		"en"		"Pretty sure."
 	}
 	"nothing"
 	{
