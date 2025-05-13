@@ -924,11 +924,7 @@ void RemoveMVMLogicSafety()
 		return;
 	}
 	MVMHud_Disable();
-	GameRules_SetProp("m_iRoundState", 0);
-
-	//disable all ZR logic.
-	SetVariantString("ForceEnableUpgrades(0)");
-	AcceptEntityInput(0, "RunScriptCode");
+//	GameRules_SetProp("m_iRoundstate", 0);
 	
 	int populator = FindEntityByClassname(-1, "info_populator");
 	if (populator != -1)
@@ -2441,20 +2437,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		RPG_EntityCreated(entity, classname);
 		TextStore_EntityCreated(entity);
 #endif
-		b_IsAProjectile[entity] = false;
-/*		if(!StrContains(classname, "env_entity_dissolver"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
-		else*/
-		if(!StrContains(classname, "tf_logic_arena")
-		 || !StrContains(classname, "team_control_point")
-		  || !StrContains(classname, "trigger_capture_area")
-		  || !StrContains(classname, "item_ammopack_small")
-		  || !StrContains(classname, "item_ammopack_medium")
-		  || !StrContains(classname, "item_ammopack_full")
-		  || !StrContains(classname, "tf_ammo_pack")
-		  || !StrContains(classname, "entity_revive_marker")
+		b_IsAProjectile[entity] = false; 	
+		if(!StrContains(classname, "entity_revive_marker")
 		  || !StrContains(classname, "tf_projectile_energy_ring")
 		  || !StrContains(classname, "entity_medigun_shield")
 		  || !StrContains(classname, "tf_projectile_energy_ball")

@@ -656,7 +656,7 @@ void ZR_PluginStart()
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
+	//RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
 	RegAdminCmd("sm_give_buff", Command_GiveBuff, ADMFLAG_ROOT, "Give a named buff");
@@ -2670,8 +2670,6 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 					SetEntityHealth(client, maxhealth);
 			}
 			
-			SetGlobalTransTarget(client);
-			PrintToChat(client, "%t", "Level Up", Level[client]);
 			
 			while(Level[client] < nextLevel)
 			{
@@ -2687,10 +2685,11 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 					Store_PrintLevelItems(client, Level[client]);
 				}
 			}
+			PrintToChat(client, "%T", "Level Up",client, Level[client]);
 			if(!SetXpAndLevelSilently && CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
 			{
 				SkillTree_CalcSkillPoints(client);
-				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
+				CPrintToChat(client, "%T", "Current Skill Points",client, SkillTree_UnspentPoints(client));
 			}
 		}
 	}

@@ -407,7 +407,12 @@ public void OnPostThink(int client)
 			}
 		}
 	}
-
+#if defined ZR
+	if(SkillTree_InMenu(client))
+	{
+		TreeMenu(client,_, false);
+	}
+#endif
 	if(GetTeam(client) == 2)
 	{
 #if defined ZR
@@ -446,7 +451,11 @@ public void OnPostThink(int client)
 	if(b_DisplayDamageHud[client][0] || b_DisplayDamageHud[client][1])
 	{
 		//damage hud
+#if defined ZR
+		if(!SkillTree_InMenu(client) && Calculate_And_Display_HP_Hud(client, b_DisplayDamageHud[client][1]))
+#else
 		if(Calculate_And_Display_HP_Hud(client, b_DisplayDamageHud[client][1]))
+#endif
 		{
 			if(b_DisplayDamageHud[client][1])
 				b_DisplayDamageHud[client][1] = false;
@@ -1217,7 +1226,7 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%s\n%s", Debuff_Adder, buffer);
 			HudY += -0.0345; //correct offset
 		}
-		if(buffer[0])
+		if(buffer[0] && !SkillTree_InMenu(client))
 		{
 			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, Alpha);
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
@@ -1478,8 +1487,13 @@ public void OnPostThink(int client)
 		{
 			Format(buffer, sizeof(buffer), "%s%c%c", buffer, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
 		}
-		SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
-		ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
+#if defined ZR
+		if(!SkillTree_InMenu(client))
+#endif
+		{
+			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
+			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
+		}
 			
 				
 		static char HudBuffer[256];
