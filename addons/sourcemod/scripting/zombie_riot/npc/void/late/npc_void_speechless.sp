@@ -389,7 +389,7 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						VausMagicaGiveShield(npc.index, 4, true);
+						VausMagicaGiveShield(npc.index, 2, true);
 					}
 
 					// Hit sound
