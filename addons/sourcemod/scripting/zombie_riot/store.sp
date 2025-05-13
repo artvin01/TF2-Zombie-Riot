@@ -491,7 +491,11 @@ enum struct Item
 	bool GetItemInfo(int index, ItemInfo info)
 	{
 		if(!this.ItemInfos || index >= this.ItemInfos.Length)
+		{
+			static ItemInfo BlankInfo;
+			info = BlankInfo;
 			return false;
+		}
 		
 		this.ItemInfos.GetArray(index, info);
 		return true;
@@ -3207,8 +3211,6 @@ static void MenuPage(int client, int section)
 				Format(buffer, sizeof(buffer), "%T\n \n%s\n%T\n%s ", "TF2: Zombie Riot", client, buf, "Store Discount", client, info.Custom_Name);
 			}				
 			
-
-			//		, TranslateItemName(client, item.Name) , item.PackCost > 0 ? "<Packable>" : ""
 			Config_CreateDescription(ItemArchetype[info.WeaponArchetype], info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
 			
 			TranslateItemName(client, info.Desc, info.Rogue_Desc, info.Rogue_Desc, sizeof(info.Rogue_Desc));
@@ -3281,25 +3283,7 @@ static void MenuPage(int client, int section)
 					{
 						ItemCost(client, item, info.Cost);
 						
-/*						bool Maxed_Building = false;
-						if(item.MaxBarricadesBuild)
-						{
-							if(BarricadeMaxSupply(client) >= MaxBarricadesAllowed(client))
-							{
-								Maxed_Building = true;
-								style = ITEMDRAW_DISABLED;
-							}
-						}
-
-						if(Maxed_Building)
-						{
-							Format(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
-						}
-						else*/
-						{
-							Format(buffer, sizeof(buffer), "%T ($%d)", "Buy", client, info.Cost);
-						}
-
+						Format(buffer, sizeof(buffer), "%T ($%d)", "Buy", client, info.Cost);
 						if(info.Cost > cash)
 							style = ITEMDRAW_DISABLED;
 					}
@@ -3609,7 +3593,7 @@ static void MenuPage(int client, int section)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			//item.GetItemInfo(0, info);
+			item.GetItemInfo(0, info);
 			if(NPCOnly[client] == 1)	// Greg Store Menu
 			{
 				if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel)
@@ -3737,8 +3721,17 @@ static void MenuPage(int client, int section)
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 				IntToString(i, info.Classname, sizeof(info.Classname));
 				//do not have custom name here, its in the menu and thus the custom names never apear. this isnt even for weapons.
-				TranslateItemName(client, item.Name, _, info.Custom_Name, sizeof(info.Custom_Name));
-				menu.AddItem(info.Classname, info.Custom_Name);
+				TranslateItemName(client, item.Name, info.Custom_Name, buffer, sizeof(buffer));
+				if(item.NPCSeller_WaveStart > 0)
+				{
+					Format(buffer, sizeof(buffer), "%s{$$}", buffer);
+				}
+				else if(item.NPCSeller_Discount > 0.0 && item.NPCSeller_Discount < 1.0)
+				{
+					Format(buffer, sizeof(buffer), "%s{$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
+				}
+				//category has some type of sale in it !
+				menu.AddItem(info.Classname, buffer);
 				found = true;
 			}
 			else
