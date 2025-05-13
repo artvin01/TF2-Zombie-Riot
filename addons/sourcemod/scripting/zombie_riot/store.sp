@@ -3752,7 +3752,7 @@ static void MenuPage(int client, int section)
 					
 					if(info.ScrapCost > 0)
 					{
-						FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", info.Custom_Name, info.ScrapCost, Scrap[client]);
+						Format(buffer, sizeof(buffer), "%s ($%d) [$%d]", info.Custom_Name, info.ScrapCost, Scrap[client]);
 						if(Item_ClientHasAllRarity(client, info.UnboxRarity))
 							style = ITEMDRAW_DISABLED;
 					}
@@ -5025,7 +5025,7 @@ static void Store_CherrypickMenu(int client, int item = 0)
 	{
 		StoreTags.GetString(i, buffer, sizeof(buffer));
 		TranslateItemName(client, buffer, _, buffer, sizeof(buffer));
-		FormatEx(trans, sizeof(trans), "[%s] %s", ChoosenTags[client].FindString(buffer) == -1 ? " " : "X", buffer);
+		Format(trans, sizeof(trans), "[%s] %s", ChoosenTags[client].FindString(buffer) == -1 ? " " : "X", buffer);
 		menu.AddItem(buffer, trans);
 	}
 	
@@ -6522,13 +6522,13 @@ int TranslateItemName(int client, const char[] name, const char[] Custom_Name = 
 	if(Custom_Name[0])
 	{
 		if(TranslationPhraseExists(Custom_Name))
-			return FormatEx(buffer, sizeof(buffer), "%T", Custom_Name, client);
+			return Format(buffer, sizeof(buffer), "%T", Custom_Name, client);
 		
 		return strcopy(buffer, sizeof(buffer), Custom_Name);
 	}
 	else if(TranslationPhraseExists(name))
 	{
-		return FormatEx(buffer, sizeof(buffer), "%T", name, client);
+		return Format(buffer, sizeof(buffer), "%T", name, client);
 	}
 
 	return strcopy(buffer, sizeof(buffer), name);
