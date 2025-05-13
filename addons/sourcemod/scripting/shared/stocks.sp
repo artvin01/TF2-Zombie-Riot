@@ -1326,7 +1326,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
  		Building_CamoOrRegrowBlocker(healer, _, RegrowthBlock);
 		if(RegrowthBlock)
 		{
-			HealTotal *= 0.5;
+			HealTotal *= 0.85;
 		}
 		if(HasSpecificBuff(reciever, "Burn"))
 			HealTotal *= 0.75;
