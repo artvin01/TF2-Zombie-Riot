@@ -733,19 +733,19 @@ void TreeMenu(int client, bool force = false, bool displayMenu = true)
 		PlayerSteamId /= 4;
 	}
 
-	if(PlayerSteamId <= 50)
+	if(PlayerSteamId <= 125)
 	{
-		PlayerSteamId = 50;
+		PlayerSteamId = 125;
 	}
 	switch(PlayerSteamIdDigit1)
 	{
-		case 0, 4, 8:
+		case 0, 4:
 		{
 			red = RoundToNearest(float(PlayerSteamId) * 0.1 * GetRandomFloat(0.95, 1.05));
 			green = RoundToNearest(float(PlayerSteamId) * 1.5 * GetRandomFloat(0.95, 1.05));
 			blue = RoundToNearest(float(PlayerSteamId) * 1.0 * GetRandomFloat(0.95, 1.05));
 		}
-		case 1, 5, 9:
+		case 1, 5:
 		{
 			red = RoundToNearest(float(PlayerSteamId) * 0.5 * GetRandomFloat(0.95, 1.05));
 			green = RoundToNearest(float(PlayerSteamId) * 0.7 * GetRandomFloat(0.95, 1.05));
@@ -759,9 +759,15 @@ void TreeMenu(int client, bool force = false, bool displayMenu = true)
 		}
 		case 3, 7:
 		{
-			red = RoundToNearest(float(PlayerSteamId) * 1.0 * GetRandomFloat(0.95, 1.05));
-			green = RoundToNearest(float(PlayerSteamId) * 1.0 * GetRandomFloat(0.95, 1.05));
-			blue = RoundToNearest(float(PlayerSteamId) * 1.0 * GetRandomFloat(0.95, 1.05));
+			red = RoundToNearest(float(PlayerSteamId) * 1.1 * GetRandomFloat(0.95, 1.05));
+			green = RoundToNearest(float(PlayerSteamId) * 0.6 * GetRandomFloat(0.95, 1.05));
+			blue = RoundToNearest(float(PlayerSteamId) * 1.1 * GetRandomFloat(0.95, 1.05));
+		}
+		case 8, 9:
+		{
+			red = RoundToNearest(float(PlayerSteamId) * 0.8 * GetRandomFloat(0.95, 1.05));
+			green = RoundToNearest(float(PlayerSteamId) * 0.2 * GetRandomFloat(0.95, 1.05));
+			blue = RoundToNearest(float(PlayerSteamId) * 1.1 * GetRandomFloat(0.95, 1.05));
 		}
 	}
 

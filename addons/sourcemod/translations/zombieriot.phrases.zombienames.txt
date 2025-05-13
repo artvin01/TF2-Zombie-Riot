@@ -3019,13 +3019,13 @@
 	{
 		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
 	}
-	"Voided Expidonsan Explorer"
+	"Speechless"
 	{
-		"en"	"Voided Expidonsan Explorer"
+		"en"	"Speechless"
 	}
-	"Voided Expidonsan Explorer Desc"
+	"Speechless Desc"
 	{
-		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHas extreme speeds even with such power."
+		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHe ignores the shield cooldown if hitting a barricade, or anything with his laser.\nGains attackspeed as he attacks, lowers when he doesnt."
 	}
 	"Unspeakable"
 	{

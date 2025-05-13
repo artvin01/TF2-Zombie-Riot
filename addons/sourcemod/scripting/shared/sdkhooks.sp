@@ -1226,7 +1226,11 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%s\n%s", Debuff_Adder, buffer);
 			HudY += -0.0345; //correct offset
 		}
+#if defined ZR
 		if(buffer[0] && !SkillTree_InMenu(client))
+#else
+		if(buffer[0])
+#endif
 		{
 			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, Alpha);
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);

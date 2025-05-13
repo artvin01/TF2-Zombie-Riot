@@ -820,7 +820,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		FormatEx(buffer, sizeof(buffer), "%s [1 Banana]%s", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || points < 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Lowers non-boss enemies from", ITEMDRAW_DISABLED);
-		menu.AddItem("", "gaining health in the influence radius as much (50% usually).\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gaining health in the influence radius as much (15% usually).\n ", ITEMDRAW_DISABLED);
 	}
 	
 	if(Village_Flags[client] & VILLAGE_005)

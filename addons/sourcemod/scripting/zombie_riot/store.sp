@@ -2757,6 +2757,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 					StoreItems.SetArray(i, item);
 					static Item CurrentItem;
 					CurrentItem = item;
+					int LatestHighestSaleWave = 0;
 					if(CurrentItem.Section != -1)
 					{
 						static Item ParentItem;
@@ -2766,8 +2767,11 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 							StoreItems.GetArray(CurrentItem.Section, ParentItem);
 							ParentItem.NPCSeller_Discount = 0.0;
 							ParentItem.NPCSeller = false;
-							if(ParentItem.NPCSeller_WaveStart < CurrentItem.NPCSeller_WaveStart)
-								ParentItem.NPCSeller_WaveStart = CurrentItem.NPCSeller_WaveStart;
+							if(CurrentItem.NPCSeller_WaveStart > LatestHighestSaleWave)
+								LatestHighestSaleWave = CurrentItem.NPCSeller_WaveStart;
+
+							if(ParentItem.NPCSeller_WaveStart > LatestHighestSaleWave)
+								ParentItem.NPCSeller_WaveStart = LatestHighestSaleWave;
 								
 							StoreItems.SetArray(CurrentItem.Section, ParentItem);
 							if(ParentItem.Section != -1)

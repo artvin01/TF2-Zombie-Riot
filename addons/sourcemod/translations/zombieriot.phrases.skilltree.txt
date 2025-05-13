@@ -204,7 +204,7 @@
 	}
 	"Bob's Healing Hand Desc"
 	{
-		"en" 		"Gain a 25 HP.\nAn additional +0.05％ luck and 1％ building HP and reduces revive time by 5 out of 250"
+		"en" 		"Gain 25 HP.\nAn additional +0.05％ luck and 1％ building HP and reduces revive time by 5 out of 250"
 	}
 	"Blitzkrieg Buff"
 	{
