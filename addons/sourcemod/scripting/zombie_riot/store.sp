@@ -1766,8 +1766,8 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 		}
 	}
 	
-	TranslateItemName(client, name, _, name, sizeof(name));
-	PrintToChat(client, "%t", "Could Not Buy Item", name);
+	TranslateItemName(client, name, _, info.Custom_Name, sizeof(info.Custom_Name));
+	PrintToChat(client, "%t", "Could Not Buy Item", info.Custom_Name);
 }
 
 void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
