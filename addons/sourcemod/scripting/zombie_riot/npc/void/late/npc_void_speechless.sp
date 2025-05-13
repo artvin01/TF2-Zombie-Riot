@@ -374,10 +374,10 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 325.0;
+					float damageDealt = 300.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 11.0;
+						damageDealt *= 5.0;
 					}
 					damageDealt *= MultiGlobalHealth; //Incase too many enemies, boost damage.
 
