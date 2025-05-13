@@ -26,9 +26,26 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 {	
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	{
+		
+		if (Ability_Check_Cooldown(client, slot) > 0.0)
+		{
+
+			float Ability_CD = Ability_Check_Cooldown(client, 2);
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			return;
+		}
+		//ignore rest.
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 80)
 		{
+			Ability_Apply_Cooldown(client, 2, 30.0);
 			Rogue_OnAbilityUse(client, entity);
 			new_ammo -= 80;
 			SetAmmo(client, 23, new_ammo);
