@@ -192,7 +192,7 @@ methodmap VoidSpeechless < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 7);
 		npc.m_flAttackspeedIncrease = 1.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 350.0;
+		npc.m_flSpeed = 330.0;
 		
 		
 		int skin = 1;
