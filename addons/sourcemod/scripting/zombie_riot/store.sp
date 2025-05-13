@@ -6522,16 +6522,16 @@ int TranslateItemName(int client, const char[] name, const char[] Custom_Name = 
 	if(Custom_Name[0])
 	{
 		if(TranslationPhraseExists(Custom_Name))
-			return Format(buffer, sizeof(buffer), "%T", Custom_Name, client);
+			return Format(buffer, length, "%T", Custom_Name, client);
 		
-		return strcopy(buffer, sizeof(buffer), Custom_Name);
+		return strcopy(buffer, length, Custom_Name);
 	}
 	else if(TranslationPhraseExists(name))
 	{
-		return Format(buffer, sizeof(buffer), "%T", name, client);
+		return Format(buffer, length, "%T", name, client);
 	}
 
-	return strcopy(buffer, sizeof(buffer), name);
+	return strcopy(buffer, length, name);
 }
 
 /*
