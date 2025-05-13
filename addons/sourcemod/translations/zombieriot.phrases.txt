@@ -59,10 +59,12 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"---Loadout Store---\nCredit Points: {1}"
+		"es"		"---Tienda de Equipamiento---\nPuntos de Credito: {1}"
 	}
 	"Preview Mode Pap"
 	{
 		"en"		"Preview Mode"
+		"es"		"Vista Previa"
 	}
 	"Credits"
 	{
@@ -96,11 +98,13 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Current Skillpoints: {1}"
+		"es"		"{green}Puntos de Habilidad actuales: {1}"
 	}
 	"Credits_Menu_New"
 	{
 		"#format"	"{1:d}"
 		"en"		"Extra Cash: +{1}"
+		"es"		"Dinero Extra: +{1}"
 		"ru"		"Дополнительные кредиты: +{1}"
 		"fr"		"Argent Extra: +{1}"
 		"pt"		"Crédito Extra: +{1}"
@@ -191,6 +195,7 @@
 	"XP Loading"
 	{
 		"en"		"Loading your levels..."
+		"es"		"Cargando tus niveles..."
 		"fr"		"Chargement de vos niveaux..."
 		"pt"		"Carregando seus níveis..."
 		"ru"		"Загрузка уровней..."
@@ -286,6 +291,7 @@
 	"Unequip"
 	{
 		"en"		"Unequip"
+		"es"		"Desequipar"
 		"fr"		"Déséquiper"
 		"ru"		"Снять"
 		"de"		"Ablegen"
@@ -296,6 +302,7 @@
 	"Owned Items"
 	{
 		"en"		"Bought Items"
+		"es"		"Objetos Adquiridos"
 		"fr"		"Objets Achetés"
 		"ru"		"Приобретённое"
 		"pt"		"Itens Comprados"
@@ -305,6 +312,7 @@
 	"Sell Items Confirm"
 	{
 		"en"		"Are you sure you want to sell all your items?"
+		"es"		"Estas seguro que quieres vender todos tus objetos?"
 	}
 	"Sell Items Confirm Pref"
 	{
@@ -321,6 +329,7 @@
 	"Confirm Loadout"
 	{
 		"en"		"Confirm & Access Store"
+		"es"		"Confirmar y acceder a la tienda"
 	}
 	"N/A"
 	{
@@ -432,6 +441,7 @@
 	"Flamethrower Tank"
 	{
 		"en"		"Oil"
+		"es"		"Aceite"
 	}
 	"Flares"
 	{
