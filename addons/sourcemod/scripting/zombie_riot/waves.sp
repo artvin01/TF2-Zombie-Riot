@@ -1891,6 +1891,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",CurrentRound);
 				ExcuteRelay(ExecuteRelayThings);
 			}
+
+			bool wasEmptyWave = !round.Waves.Length;
+			
+			if(!wasEmptyWave)
+				Native_OnWaveEnd();
+
 			RequestFrames(StopMapMusicAll, 60);
 			
 			Waves_ClearWaves();
@@ -1982,8 +1988,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
-
-			bool wasEmptyWave = !round.Waves.Length;
 			
 			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
@@ -2781,9 +2785,9 @@ int ZR_Waves_GetRound()
 	return CurrentRound;
 }
 
-int Waves_GetMaxRound()
+int Waves_GetMaxRound(bool real = false)
 {
-	return FakeMaxWaves ? FakeMaxWaves : (Rounds.Length-1);
+	return (!real && FakeMaxWaves) ? FakeMaxWaves : (Rounds.Length-1);
 }
 
 float GetWaveSetupCooldown()
