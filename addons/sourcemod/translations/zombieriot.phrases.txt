@@ -2623,6 +2623,10 @@
 	{
 		"en"		"Please set, set ''r_teeth'' to 0, in the console! Due to the 64x bit update some older models will glitch out if this is enabled!"
 	}
+	"Buildable Village"
+	{
+		"en"	"Buildable Village"
+	}
 	"Redirect to different ZR server"
 	{
 		"en"		"Redirect to different ZR server"
