@@ -22,13 +22,31 @@ void OnManglerCreated(int entity)
 	g_Particle_cannon_2nd_fire.HookEntity(Hook_Pre, entity, Mangler_2nd);
 }
 
+#define MANGLERSLOT_DEFAULT 2
 public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 {	
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	{
+		
+		if (Ability_Check_Cooldown(client, MANGLERSLOT_DEFAULT) > 0.0)
+		{
+
+			float Ability_CD = Ability_Check_Cooldown(client, MANGLERSLOT_DEFAULT);
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			return MRES_Ignored;
+		}
+		//ignore rest.
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 80)
 		{
+			Ability_Apply_Cooldown(client, MANGLERSLOT_DEFAULT, 30.0);
 			Rogue_OnAbilityUse(client, entity);
 			new_ammo -= 80;
 			SetAmmo(client, 23, new_ammo);

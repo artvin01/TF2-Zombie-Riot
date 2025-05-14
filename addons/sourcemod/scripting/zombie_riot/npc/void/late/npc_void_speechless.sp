@@ -192,7 +192,7 @@ methodmap VoidSpeechless < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 7);
 		npc.m_flAttackspeedIncrease = 1.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 350.0;
+		npc.m_flSpeed = 330.0;
 		
 		
 		int skin = 1;
@@ -374,10 +374,10 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 325.0;
+					float damageDealt = 300.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 11.0;
+						damageDealt *= 5.0;
 					}
 					damageDealt *= MultiGlobalHealth; //Incase too many enemies, boost damage.
 
@@ -389,7 +389,7 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						VausMagicaGiveShield(npc.index, 4, true);
+						VausMagicaGiveShield(npc.index, 2, true);
 					}
 
 					// Hit sound
