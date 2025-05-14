@@ -927,6 +927,12 @@
 				"windows"	"28"
 				"linux"		"28"
 			}
+			"CServerGameDLL::GetTickInterval()"
+			{
+                "library"    	"server"
+				"windows"		"10"
+				"linux"			"10"
+			}
 		}
 	}
 }
