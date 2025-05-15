@@ -59,10 +59,12 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"---Loadout Store---\nCredit Points: {1}"
+		"es"		"---Tienda de Equipamiento---\nPuntos de Credito: {1}"
 	}
 	"Preview Mode Pap"
 	{
 		"en"		"Preview Mode"
+		"es"		"Vista Previa"
 	}
 	"Credits"
 	{
@@ -96,11 +98,13 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Current Skillpoints: {1}"
+		"es"		"{green}Puntos de Habilidad actuales: {1}"
 	}
 	"Credits_Menu_New"
 	{
 		"#format"	"{1:d}"
 		"en"		"Extra Cash: +{1}"
+		"es"		"Dinero Extra: +{1}"
 		"ru"		"Дополнительные кредиты: +{1}"
 		"fr"		"Argent Extra: +{1}"
 		"pt"		"Crédito Extra: +{1}"
@@ -191,6 +195,7 @@
 	"XP Loading"
 	{
 		"en"		"Loading your levels..."
+		"es"		"Cargando tus niveles..."
 		"fr"		"Chargement de vos niveaux..."
 		"pt"		"Carregando seus níveis..."
 		"ru"		"Загрузка уровней..."
@@ -286,6 +291,7 @@
 	"Unequip"
 	{
 		"en"		"Unequip"
+		"es"		"Desequipar"
 		"fr"		"Déséquiper"
 		"ru"		"Снять"
 		"de"		"Ablegen"
@@ -296,6 +302,7 @@
 	"Owned Items"
 	{
 		"en"		"Bought Items"
+		"es"		"Objetos Adquiridos"
 		"fr"		"Objets Achetés"
 		"ru"		"Приобретённое"
 		"pt"		"Itens Comprados"
@@ -305,6 +312,7 @@
 	"Sell Items Confirm"
 	{
 		"en"		"Are you sure you want to sell all your items?"
+		"es"		"Estas seguro que quieres vender todos tus objetos?"
 	}
 	"Sell Items Confirm Pref"
 	{
@@ -321,6 +329,7 @@
 	"Confirm Loadout"
 	{
 		"en"		"Confirm & Access Store"
+		"es"		"Confirmar y acceder a la tienda"
 	}
 	"N/A"
 	{
@@ -432,6 +441,7 @@
 	"Flamethrower Tank"
 	{
 		"en"		"Oil"
+		"es"		"Aceite"
 	}
 	"Flares"
 	{
@@ -744,6 +754,7 @@
 	"Object Cooldown NextWave"
 	{
 		"en" 		"This Object is unuseable untill the next wave."
+		"es"		"Este objeto no es usable hasta la siguiente oleada."
 	}
 	"Object Cooldown"
 	{
@@ -1393,10 +1404,12 @@
 	"Debuff/Buff Explain 1"
 	{
 		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damgae calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
+		"es"		"A la izquierda hay debuffs, y a la derecha hay buffs.\nCada simbolo es un debuff o buff.\nEl 'dedito' significa el daño cuerpo a cuerpo total que recibes, y la flecha significa el daño total a distancia que recibes.\nSe subrayan apenas recibas el daño correspondiente a estos.\nEl daño verdadero no subraya, y ignora estas resistencias."
 	}
 	"Debuff/Buff Explain 2"
 	{
 		"en" 		"There are too many buffs and debuffs to be shown.\nSee ''Status Effect List'' For every single buff.\nAlternatively, you get a message in chat when you get a new debuff or buff applied to you."
+		"es"		"Hay demasiados buffs y debuffs a mostrar.\nMira 'Lista de Efectos' para ver todos los buffs/debuffs.\nAlternativamente, cuando recibes uno, se mostrara en el chat."
 	}
 	"Show Debuffs"
 	{
@@ -1748,6 +1761,7 @@
 	"Father Grigori Spawn"
 	{
 		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20％ Discount on random items!"
+		"es"		"Grigori ha sido curado!\nHablale a cada tanto para ver sus descuentos en su tienda!"
 		"fr"		"Grigori est guéri!\nVous pouvez lui parler lors des temps de préparation pour un rabais de 20％ dans son boutique!"
 		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время таймера подготовки, чтобы получить скидку 20％ на случайные предметы!"
 		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20％ Discount auf zufällige Gegenstände zu bekommen!"
@@ -1769,14 +1783,17 @@
 	"StatusEffectList"
 	{
 		"en" 		"Status Effect List"
+		"es"		"Lista de Efectos"
 	}
 	"Status Effect List"
 	{
 		"en" 		"Status Effect List"
+		"es"		"Lista de Efectos"
 	}
 	"Father Grigori's Store"
 	{
 		"en" 		"Father Grigori's Store"
+		"es"		"Tienda del Padre Grigori"
 		"fr" 		"Boutique de Père Grigori"
 		"ru" 		"Магазин отца Григория"
 		"de"		"Vater Grigori's Shop"
@@ -1811,6 +1828,7 @@
 	"All Items are 20％ off here!"
 	{
 		"en"		"All Items are 20％ off here! {$}\nOne Item is 30％ off! {$$}"
+		"es"		"Todos los items aca tienen un descuento del 20%%! {$}\nUn item tiene descuento del 30%%! {$$}"
 		"fr"		"Tous achats ont un rabais de 20％! {$}\nUn achat a un rabais de 30％! {$$}"
 		"ru"		"На все товары скидка 20％! {$}\nНа один товар скидка 30%! {$$}"
 //		"de"		"All Gegenstände sind 20％ off hier!"
@@ -1831,6 +1849,7 @@
 	"Can Be Pack-A-Punched"
 	{
 		"en"		"Can Be Pack-A-Punched"
+		"es"		"Puede ser Mejorado"
 		"pr"		"Peut être amélioré avec Pack-a-Punch"
 		"ru"		"Можно улучшить"
 		"de"		"Kann man Pack-A-Punchen"
@@ -1850,6 +1869,7 @@
 	"Your loadout was updated from your previous state."
 	{
 		"en"		"Your loadout was updated from your previous state."
+		"es"		"Tu equipamiento se actualizo de tu estado anterior."
 		"fr"		"Votre chargement a été mis à jour."
 		"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
@@ -1877,10 +1897,12 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{green}''{1}'' picked up a gift box! Everyone gains {2} XP!"
+		"es"		"{green}''{1}'' agarro un regalito! Todos reciben {2} de XP!"
 	}
 	"Press TAB To open the store"
 	{
 		"en"		"Press TAB To open the store"
+		"es"		"Presiona TAB para abrir la tienda."
 		"fr"		"Appuyez TAB pour ouvrir la boutique"
 		"ru"		"Нажмите TAB для открытия магазина"
 		"de"		"Drücke auf TAB, um den Shop zu öffnen."
@@ -1921,6 +1943,7 @@
 	"Difficulty set to"
 	{
 		"en"		"Difficulty set to"
+		"es"		"Dificultad puesta en"
 		"fr"		"La difficulté est maintenant"
 		"ru"		"Сложность установлена на"
 		"de"		"Schwierigkeitgrad eingestellt auf"
@@ -1931,6 +1954,7 @@
 	"Vote for the difficulty"
 	{
 		"en"		"Vote for the difficulty"
+		"es"		"Vota por la dificultad"
 		"fr"		"Votez pour la difficulté"
 		"ru"		"Проголосуйте за сложность"
 		"de"		"Stimmen sie für die Schwierigkeit ab"
@@ -1949,22 +1973,27 @@
 	"Mount Menu Explain"
 	{
 		"en"		"When you crouch and M2 a building, you mount it!\nYou see it in your armor hud as a 2 letter name!\nLeft is mounted building, right is your perk."
+		"es"		"Cuando te agachas y le haces click derecho a una construccion, la montas!\nLa ves en tu hud con un nombre de 2 letras!\nIzquierda - Construccion montada, Derecha - Beneficio actual."
 	}	
 	"Support Buildings"
 	{
 		"en"		"Support Buildings"
+		"es"		"Construcciones de Soporte"
 	}	
 	"Support Buildings Explain"
 	{
 		"en"		"To build more, buy builder upgrades!\nYou gain money and ammobox supplies when your buildings are used!"
+		"es"		"Para construir mas, compra mejoras de construccion!\nGanas dinero y mas suministros de municion cuando se usan tus construcciones!"
 	}	
 	"Unique Buildings"
 	{
 		"en"		"Unique Buildings"
+		"es"		"Construcciones Unicas"
 	}	
 	"Unique Buildings Explain"
 	{
 		"en"		"You can only have 1 building from this section at once!\nThey are used on [E]"
+		"es"		"Solo puedes tener 1 de estas construcciones a la vez!\nSe usan llamando al MEDICO. [E]"
 	}	
 	"Construct Buildings"
 	{
