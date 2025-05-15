@@ -685,6 +685,7 @@
 	"Infected Silvester"
 	{
 		"en" 		"Infected Silvester"
+		"es"		"Xeno-Silvester"
 		"ru" 		"Истинный Термоядерный Воин"
 		"pt"		"Verdadeiro Guerreiro de Fusão"
 		"nl"		"Ware Fuzie Krijger"
@@ -692,6 +693,7 @@
 	"Silvester's Past Afterimage"
 	{
 		"en" 		"Silvester's Past Afterimage"
+		"es"		"Ilusion de Silvester"
 	}
 	"Medic Charger"
 	{
@@ -932,6 +934,7 @@
 	"Blitzkrieg"
 	{
 		"en" 		"Blitzkrieg"
+		"es"		"Blitzkrieg"
 		"fr" 		"Blitzkrieg"
 		"ru" 		"Блицкриг"
 		"pt"		"Blitzkrieg"
@@ -1538,6 +1541,7 @@
 	"Angeled Silvester"
 	{
 		"en"		"Angeled Silvester"
+		"es"		"Silvester Angelico"
 		"pt"		"Silvester Angelical"
 		"ru"		"Ангел Сильвестр"
 	}
@@ -1818,6 +1822,7 @@
 	"God Alaxios"
 	{
 		"en"		"God Alaxios"
+		"es"		"Dios Alaxios"
 		"ru"		"Бог Алаксиос"
 	}
 	"Sea-Infected God Alaxios"
@@ -2357,20 +2362,24 @@
 	"?????????????"
 	{
 		"en"	"?????????????"
+		"es"	"???????????????"
 	}
 	"??????? First"
 	{
 		"en"	"??????? First"
+		"es"	"??????? Primero"
 		"ru" 	"?????? Первый"
 	}
 	"??? the First"
 	{
 		"en"	"??? the First"
+		"es"	"???, el Primero"
 		"ru" 	"??? Первый"
 	}
 	"Bob the First"
 	{
 		"en"	"Bob the First"
+		"es"	"Bob, el Primero"
 		"ru" 	"Боб Первый"
 	}
 	"Ahim"
@@ -2540,11 +2549,13 @@
 	"The Messenger"
 	{
 		"en"	"The Messenger"
+		"es"	"El Mensajero"
 		"ru" 	"Предвестник"
 	}
 	"The Purge"
 	{
 		"en"	"The Purge"
+		"es"	"La Purga"
 		"ru" 	"Зачищик"
 	}
 	"Rouge Expidonsan Doctor"
@@ -2558,6 +2569,7 @@
 	"Bob the Second"
 	{
 		"en"	"Bob the Second"
+		"es"	"Bob, el Segundo"
 		"ru" 	"Боб Второй"
 	}
 	"Wildingen Hitman"
@@ -3064,51 +3076,63 @@
 	"Void Elemental Damage"
 	{
 		"en"	"Void Elemental Damage"
+		"es"	"Daño Elemental del Vacio"
 	}
 	"Void Elemental Damage Desc"
 	{
 		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
+		"es"	"Cuando se llena, los enemigos del Vacio se fortalecen, y liberas fluido del Vacio debajo tuyo.\nSe cura con armadura.\nLos enemigos fortalecidos se pueden debilitar con Silencio."
 	}
 	"Chaos Elemental Damage"
 	{
 		"en"	"Chaos Elemental Damage"
+		"es"	"Daño Elemental Caótico"
 	}
 	"Chaos Elemental Damage Desc"
 	{
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 250 truedamage to all allies.\nAlso gives 30％ Vulnerability for 10 seconds."
+		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 250 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +30%% de daño."
 	}
 	"Nervous Impairment Elemental Damage"
 	{
 		"en"	"Nervous Impairment Elemental Damage"
+		"es"	"Daño Elemental Nervioso"
 	}
 	"Nervous Impairment Elemental Damage Desc"
 	{
 		"en"	"Once full, Your nervous system breaks down.\nYou recieve 500 truedamage and are heavily slowed for 5 seconds."
+		"es"	"Cuando se llena, tu sistema nervioso se pone... nervioso, y falla.\nRecibes 500 de daño verdadero y te ralentizas mucho por 5 segundos."
 	}
 	"Corruption Elemental Damage"
 	{
 		"en"	"Corruption Elemental Damage"
+		"es"	"Daño Elemental Corrupto"
 	}
 	"Corruption Elemental Damage Desc"
 	{
 		"en"	"Once full, You aleart more agents.\nA extreamly strong agent appaers somewhere."
+		"es"	"Cuando se llena, alertas a mas agentes.\nUn agente muy fuerte aparece en algun lado."
 	}
 	"Elemental Damage"
 	{
 		"en" "Elemental Damage"
+		"es" "Daño Elemental"
 	}
 	"Elemental Damage Desc"
 	{
 		"en" "It will display in your hud as the above icon.\nIf it fills up your armor bar, you take heavy drawbacks, unqiue to each.\nRegain armor to cure yourself."
+		"es" "Se mostrara en tu HUD como el icono superior.\nSi la barra entera se llena, recibes maleficios fuertes y diferentes.\nRecibe armadura para curar este daño."
 	}
 
 	"Overmana Overload"
 	{
 		"en" "Overmana Overload"
+		"es" "Sobrecarga de Mana"
 	}
 	"Overmana Overload Desc"
 	{
 		"en" "Your mana overloads, you cannot contain it.\nYou are slowed for some time heavily, a ruinan cannon strikes onto your location after sometime.\nDamage depends on your Max mana."
+		"es" "Tu mana se sobrecarga, no puedes contenerlo.\nEres ralentizado temporalmente, y un Cañon Ruiniaco es marcado en tu posicion.\nEl daño depende de tu mana maximo."
 	}
 
 	"Vhxis"
