@@ -779,8 +779,8 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent. Healing allies heals you too, and gives both you and your patient the Healing Resolve buff.\nAllows slow revival from afar, uber grants 90%% (50%% during raids) resistance and debuff immunity.\nCan drain enemies by changing mode via CTRL/Crouch + RELOAD (or Spray key)."
-		"es"	"Overheal permanente, curar a aliados te curara a ti tambien. Curar dara el buff de Resolucion Curativa.\nPermite revivir a distancia lentamente, la uber da 90%% (50%% durante raids) de resistencia y immunidad a debuffs.\nPermite drenar a enemigos cambiando de modo con CTRL/Agacharse + RELOAD."
+		"en"	"Overheal is permanent. Healing allies heals you too, and gives both you and your patient the Healing Resolve buff.\nAllows slow revival from afar, ubercharge grants the UBERCHARGED and Hardened Aura buffs.\nCan drain enemies by changing mode via CTRL/Crouch + RELOAD (or Spray key)."
+		"es"	"Overheal permanente, curar a aliados te curara a ti tambien, y dara el buff de Resolucion Curativa.\nPermite revivir a distancia lentamente, la uber da los buffs de SOBRECARGADO y Aura Reforzada.\nPermite drenar a enemigos cambiando de modo con CTRL/Agacharse + RELOAD."
 	}
 	
 	"Battle Medigun Desc"
@@ -1480,26 +1480,31 @@
 	"Sentrygun Desc"
 	{
 		"en"	"Good against everything."
+		"es"	"Util contra todo."
 		"fr"	"Bon pour tout."
 	}
 	"Mortar Desc"
 	{
 		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto.\nDeals massive group damage, good against massses."
+		"es"	"Llama al MEDICO para marcar un lugar para que el mortero dispare una bomba.\nHace daño masivo en area."
 		"fr"	"Appuyez MEDIC pour marquer un endroit où faire tomber un tir de mortier.\nBon pour les groupes d'ennemis."
 	}
 	"Railgun Desc"
 	{
 		"en"	"Use it with MEDIC to make it shoot a giant laser.\nDeals huge damage to the first enemy hit, good against single bosses."
+		"es"	"Usalo llamando al MEDICO para disparar un gran laser.\nHace MUCHO daño al primer enemigo que golpea."
 		"fr"	"Appuyez MEDIC pour le faire tirer un rayon laser massif.\nInflige beaucoup de dégats au premier ennemi frappé. Bon pour les Boss."
 	}
 	"Food Fridge Desc"
 	{
-		"en"	"Heals for 40 Health, scales with medigun upgrades."
+		"en"	"Heals for 60 Health, scales with medic upgrades."
+		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas.
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 	}
 	"Village Desc"
 	{
 		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuilt."
+		"es"	"Provee varios buffs a tus aliados y puede mejorarse para mas buffs.\nLos buffs comprados persisten aun si se destruye y reconstruye."
 		"fr"	"Améliore vos coéquipiers et peut être amélioré pour plus d'améliorations.\nAméliorations restent même si détruit et replacé."
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
 		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
