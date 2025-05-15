@@ -93,6 +93,7 @@
 	"Weapons"
 	{
 		"en" 		"Weapons"
+		"es"		"Armas"
 		"fr" 		"Armes"
 		"ru" 		"Оружие"
 		"de"		"Waffen"
@@ -619,6 +620,7 @@
 	"Melee Weapons"//Melee Here
 	{
 		"en"		"Melee Weapons"
+		"es"		"Armas Cuerpo a Cuerpo"
 		"fr"		"Armes Corps-à-Corps"
 		"ru"		"Ближний бой"
 		"de"		"Nahkampfwaffen"
@@ -940,6 +942,7 @@
 	"Melee Upgrades"//Melee Upgrades HERE!!!
 	{
 		"en"		"Melee Upgrades"
+		"es"		"Mejoras Cuerpo a Cuerpo"
 		"fr"		"Améliorations Corps-à-Corps"
 		"ru"		"Улучш. ближн. боя"
 		"de"		"Nahkampf Upgrades"
@@ -1150,6 +1153,7 @@
 	"Ranged Upgrades"//Ranged Upgrades HERE!!!
 	{
 		"en"		"Ranged Upgrades"
+		"es"		"Mejoras a Distancia"
 		"fr"		"Améliorations Armes à Portée"
 		"ru"		"Улучшения дальнего боя"
 		"de"		"Fernkampf-Upgrades"
@@ -2080,6 +2084,7 @@
 	{
 		"en"       "Builder Gear"
 		"fr"       "Équipement de Constructeur"
+		"es"	   "Equip. de Construccion"
 		"ru"       "Снаряж. строителя"
 		"chi"       "工程师物品"
 	}
@@ -2245,6 +2250,7 @@
 	"Extra Gear"
 	{
 		"en"       "Extra Gear"
+		"es"	   "Equipamiento Extra"
 		"fr"       "Équipement Éxtra"
 		"ru"       "Доп. снаряжение"
 		"chi"       "额外装置"
