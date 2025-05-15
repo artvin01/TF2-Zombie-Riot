@@ -924,7 +924,7 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 		}
 	}
 
-	level /= 4;
+	level /= 3;
 	if(level < 1)
 		return false;
 
