@@ -760,6 +760,7 @@
 	"Mage Weapons"//Mage here
 	{
 		"en"		"Mage Weapons"
+		"es"		"Armas de Mago"
 		"fr"		"Armes Magiques"
 		"ru"		"Оружие магов"
 		"de"		"Magie Waffen"
