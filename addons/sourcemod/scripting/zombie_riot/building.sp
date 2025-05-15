@@ -285,6 +285,10 @@ static void BuildingMenu(int client)
 		
 	switch(MenuSection[client])
 	{
+		case -1:
+		{
+			Format(buffer3, sizeof(buffer3), "%s\n%T\n ", buffer3,"Mount Menu Explain", client);
+		}
 		case 0:
 		{
 			Format(buffer3, sizeof(buffer3), "%s\n%T\n ", buffer3,"Support Buildings Explain", client);
@@ -771,7 +775,10 @@ void Building_ShowInteractionHud(int client, int entity)
 					
 					Hide_Hud = false;
 					SetGlobalTransTarget(client);
-					PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
+					if(Building_Picking_up_cd >= 999999.9)
+						PrintCenterText(client, "%t","Object Cooldown NextWave");
+					else
+						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
 				}
 				else if(Object_ShowInteractHud(client, entity))
 				{

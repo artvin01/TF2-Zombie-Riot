@@ -1429,9 +1429,9 @@
 		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench.\nHold crouch and M2 to mount buildings on yourself!"
 	}
 	
-	"Texan business Desc"
+	"Builders Axe Desc"
 	{
-		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
+		"en"	"A melee axe that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
 		"fr"	"Dégats corps-à-corps s'améliorent avec vos Améliorations Constructeur.\nAppuyez M2 pour vous lancer et améliorer les dégats de cet arme 12x.\nAméliorations Construction requis."
 	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"

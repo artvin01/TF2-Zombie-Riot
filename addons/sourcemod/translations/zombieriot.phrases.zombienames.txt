@@ -3069,6 +3069,48 @@
 	{
 		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
 	}
+	"Chaos Elemental Damage"
+	{
+		"en"	"Chaos Elemental Damage"
+	}
+	"Chaos Elemental Damage Desc"
+	{
+		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 250 truedamage to all allies.\nAlso gives 30％ Vulnerability for 10 seconds."
+	}
+	"Nervous Impairment Elemental Damage"
+	{
+		"en"	"Nervous Impairment Elemental Damage"
+	}
+	"Nervous Impairment Elemental Damage Desc"
+	{
+		"en"	"Once full, Your nervous system breaks down.\nYou recieve 500 truedamage and are heavily slowed for 5 seconds."
+	}
+	"Corruption Elemental Damage"
+	{
+		"en"	"Corruption Elemental Damage"
+	}
+	"Corruption Elemental Damage Desc"
+	{
+		"en"	"Once full, You aleart more agents.\nA extreamly strong agent appaers somewhere."
+	}
+	"Elemental Damage"
+	{
+		"en" "Elemental Damage"
+	}
+	"Elemental Damage Desc"
+	{
+		"en" "It will display in your hud as the above icon.\nIf it fills up your armor bar, you take heavy drawbacks, unqiue to each.\nRegain armor to cure yourself."
+	}
+
+	"Overmana Overload"
+	{
+		"en" "Overmana Overload"
+	}
+	"Overmana Overload Desc"
+	{
+		"en" "Your mana overloads, you cannot contain it.\nYou are slowed for some time heavily, a ruinan cannon strikes onto your location after sometime.\nDamage depends on your Max mana."
+	}
+
 	"Vhxis"
 	{
 		"en"	"Vhxis"

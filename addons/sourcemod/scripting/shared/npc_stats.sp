@@ -388,11 +388,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
 #if defined ZR
 		if(!ModelReplaceDo(npc, Ally))
+#endif
 		{
 			DispatchKeyValue(npc, "model",	 model);
 			view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		}
-#endif
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{

@@ -2223,14 +2223,14 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potentnial {gold}%N{default}? You dont even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvesters{default} blade? Why is he so nice to everyone...");
 		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}, you...");}
-		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such expidonsan weaponry{gold}%N{default}?",client);
+		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such expidonsan weaponry {gold}%N{default}?",client);
 		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "What? How did you get this elite blade {gold}%N{default}?",client);
 		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Kazimierz?");
 		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "Kahmlstein caused enough problems as it is.");
 		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "This machine is gone now, use it better then it has {gold}%N{default}.",client);
 		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon{gold}%N{default}?",client);
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon {gold}%N{default}?",client);
 		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "The lance... the only weapon that was forged from both ruina and {gold}expidonsa{default}...");
 		/*
 		//uncomment on release

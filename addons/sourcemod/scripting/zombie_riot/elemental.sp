@@ -236,6 +236,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 						TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
 
 					DealTruedamageToEnemy(0, victim, 500.0);
+					Force_ExplainBuffToClient(victim, "Nervous Impairment Elemental Damage");
 				}
 			}
 			
@@ -351,6 +352,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					SakratanGroupDebuff);
 					b_NpcIsTeamkiller[victim] = false;
 					f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 10.0;
+					Force_ExplainBuffToClient(victim, "Chaos Elemental Damage");
 				//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 				}
 			}
@@ -446,6 +448,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 					FramingInfestorSpread(victim);
 					EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					f_ArmorCurrosionImmunity[victim][Element_Void] = GetGameTime() + 5.0;
+					Force_ExplainBuffToClient(victim, "Void Elemental Damage");
 					//Do code for void spread
 				}
 			}
@@ -732,6 +735,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 
 					EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					f_ArmorCurrosionImmunity[victim][Element_Corruption] = GetGameTime() + 5.0;
+					Force_ExplainBuffToClient(victim, "Corruption Elemental Damage");
 				}
 			}
 			
