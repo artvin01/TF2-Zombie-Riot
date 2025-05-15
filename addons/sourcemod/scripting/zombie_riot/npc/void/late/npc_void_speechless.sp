@@ -54,9 +54,9 @@ void VoidSpeechless_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return VoidSpeechless(vecPos, vecAng, team);
+	return VoidSpeechless(vecPos, vecAng, team, data);
 }
 
 methodmap VoidSpeechless < CClotBody
@@ -126,7 +126,7 @@ methodmap VoidSpeechless < CClotBody
 	}	
 	
 	
-	public VoidSpeechless(float vecPos[3], float vecAng[3], int ally)
+	public VoidSpeechless(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VoidSpeechless npc = view_as<VoidSpeechless>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "12500", ally));
 		
@@ -153,6 +153,11 @@ methodmap VoidSpeechless < CClotBody
 		npc.m_flGiveBuffOnce = 0.0;
 
 		
+		bool final = StrContains(data, "final_item") != -1;
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -164,23 +169,26 @@ methodmap VoidSpeechless < CClotBody
 		}
 
 		npc.m_iHealthBar = 1;
-		switch(GetRandomInt(0,3))
+		if(i_RaidGrantExtra[npc.index] == 1)
 		{
-			case 0:
+			switch(GetRandomInt(0,3))
 			{
-				CPrintToChatAll("{violet}Speechless{default}: It controlls us, it knows our immunity to chaos, kill us...");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{violet}Speechless{default}: Help me..");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{violet}Speechless{default}: Tell {blue}Sensal{default}.. his shields are useless...");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{violet}Speechless{default}: I cannot controll my body...");
+				case 0:
+				{
+					CPrintToChatAll("{violet}Speechless{default}: It controlls us, it knows our immunity to chaos, kill us...");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{violet}Speechless{default}: Help me..");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{violet}Speechless{default}: Tell {blue}Sensal{default}.. his shields are useless...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{violet}Speechless{default}: I cannot controll my body...");
+				}
 			}
 		}
 		
@@ -606,8 +614,11 @@ void ExpidonsanExplorerLifeLoss(VoidSpeechless npc)
 		ApplyStatusEffect(npc.index, npc.index, "Expidonsan Anger", 99999.0);
 		ApplyStatusEffect(npc.index, npc.index, "Zilius Prime Technology", 99999.0);
 		npc.m_flSpeed = 330.0;
-		CPrintToChatAll("{violet}Speechless{default}: Zilius was right... Im sorry...\n{purple}It takes full controll of The expidonsans body.");
-		CPrintToChatAll("{violet}The forgotten expidonsans suit activates its protocolls and repells the void as much as it can, as such, blocks all healing from itself.");
+		if(i_RaidGrantExtra[npc.index] == 1)
+		{
+			CPrintToChatAll("{violet}Speechless{default}: Zilius was right... Im sorry...\n{purple}It takes full controll of The expidonsans body.");
+			CPrintToChatAll("{violet}The forgotten expidonsans suit activates its protocolls and repells the void as much as it can, as such, blocks all healing from itself.");
+		}
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
 		npc.PlayShieldRegenSoundInit();
