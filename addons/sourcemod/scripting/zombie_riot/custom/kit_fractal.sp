@@ -1742,7 +1742,6 @@ void Send_Te_Client_ZR(int client)
 		TE_SendToClient(client);
 }
 
-static int i_targets_hit;
 static int i_maxtargets_hit;
 enum struct Player_Laser_Logic
 {
@@ -1843,8 +1842,6 @@ enum struct Player_Laser_Logic
 
 		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
-		i_targets_hit = 0;
-
 		float hullMin[3], hullMax[3];
 		this.SetHull(hullMin, hullMax);
 
@@ -1917,8 +1914,6 @@ enum struct Player_Laser_Logic
 
 		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
-		i_targets_hit = 0;
-
 		float hullMin[3], hullMax[3];
 		this.SetHull(hullMin, hullMax);
 
@@ -1929,7 +1924,7 @@ enum struct Player_Laser_Logic
 		FinishLagCompensation_Base_boss();
 
 		float Dmg = this.Damage;
-				
+		
 		for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 		{
 			int victim = i_Ruina_Laser_BEAM_HitDetected[loop];
@@ -2018,7 +2013,6 @@ static bool Player_Laser_BEAM_TraceUsers(int entity, int contentsMask, int clien
 			{
 				if(!i_Ruina_Laser_BEAM_HitDetected[i])
 				{
-					i_targets_hit++;
 					i_Ruina_Laser_BEAM_HitDetected[i] = entity;
 					break;
 				}
