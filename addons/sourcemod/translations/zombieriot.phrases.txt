@@ -4164,6 +4164,7 @@
 	{
 		"en"	"Player not detected"
 		"ko"	"플레이어를 감지 할 수 없습니다."
+		"es"	"Jugador no detectado"
 	}
 	"Use Only Alive"
 	{
