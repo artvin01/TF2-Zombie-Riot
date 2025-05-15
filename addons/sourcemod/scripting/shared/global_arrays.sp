@@ -49,7 +49,7 @@ enum
 	Ammo_Revolver,		// 19	Revolverss
 	Ammo_Shotgun,		// 20	Shotgun, Shortstop, Force-A-Nature, Soda Popper
 	Ammo_Heal,		// 21 Healing Ammunition
-	Ammo_Medigun,		// 22 Medigun Ammunition
+	Ammo_UNSUED,		// 22 UNSUED
 	Ammo_Laser,		// 23 Laser Battery
 	Ammo_Hand_Grenade,		// 24 Hand Grenade types
 	Ammo_Potion_Supply,		// 25 Drink Types
@@ -129,14 +129,8 @@ int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 float i_WasInResPowerup[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
-#if !defined NOG
-ConVar cvar_nbAvoidObstacle;
-ConVar CvarMpSolidObjects; //mp_solidobjects 
-ConVar CvarTfMMMode; // tf_mm_servermode
-//ConVar CvarAirAcclerate; //sv_airaccelerate
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
-#endif
 ConVar sv_cheats;
 ConVar nav_edit;
 bool DoingLagCompensation;
@@ -307,6 +301,7 @@ float f_DisplayDamageHudCooldown[MAXTF2PLAYERS];
 bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 float fl_ruina_battery[MAXENTITIES];
 float fl_ruina_battery_max[MAXENTITIES];
+bool b_DisplayDamageHudSetting[MAXTF2PLAYERS] = {false, ...};
 
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
 bool b_HudLowHealthShake_UNSUED[MAXTF2PLAYERS] = {true, ...};

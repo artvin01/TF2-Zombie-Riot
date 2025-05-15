@@ -220,8 +220,8 @@ enum
 	WEAPON_TORNADO_BLITZ = 143,
 	WEAPON_BUFFPOTION = 144,
 	WEAPON_REIUJI_WAND = 145,
-	WEAPON_CHEESY_MELEE = 146,
-	WEAPON_CHEESY_PRIMARY = 147,
+	//WEAPON_CHEESY_MELEE = 146,
+	//WEAPON_CHEESY_PRIMARY = 147,
 }
 
 enum
@@ -607,7 +607,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_kritzkrieg.sp"
 #include "custom/wand/weapon_bubble_wand.sp"
 #include "custom/kit_blacksmith_grill.sp"
-#include "custom/kit_cheese.sp"
+//#include "custom/kit_cheese.sp"
 
 void ZR_PluginLoad()
 {
@@ -620,7 +620,6 @@ void ZR_PluginStart()
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
-	
 
 	//any noob will eventually type these!!
 	RegConsoleCmd("sm_store", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -650,7 +649,6 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_wearme", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_zr", 			Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_lidlnord", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_lidlsüd", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_kaufland", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_ikea",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_zabka",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -658,9 +656,10 @@ void ZR_PluginStart()
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
+	//RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_buff", Command_GiveBuff, ADMFLAG_ROOT, "Give a named buff");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person"); //old and unused.
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_set_xp", Command_SetXp, ADMFLAG_ROOT, "Set XP to the Person");
@@ -676,10 +675,6 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_forceset_team", Command_SetTeamCustom, ADMFLAG_ROOT, "Set Team custom to a player"); 	//DEBUG
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
-	
-//	CvarSvRollagle = FindConVar("sv_rollangle");
-//	if(CvarSvRollagle)
-//		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
 	Construction_PluginStart();
@@ -725,7 +720,6 @@ void ZR_MapStart()
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
-	DHooks_MapStart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
@@ -910,7 +904,7 @@ void ZR_MapStart()
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
-	Cheese_MapStart();
+	//Cheese_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1014,6 +1008,20 @@ public Action GlobalTimer(Handle timer)
 		if(IsClientInGame(client))
 		{
 			PlayerApplyDefaults(client);
+			if(HasSpecificBuff(client, "Dimensional Turbulence"))
+			{
+				if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+				{
+					for(int i; i<=Ammo_Laser; i++)
+					{
+						if(i == Ammo_Jar)
+							continue;
+							
+						CurrentAmmo[client][i] = 9999;
+						SetAmmo(client, i, 9999);
+					}
+				}
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -1056,6 +1064,7 @@ void ZR_ClientPutInServer(int client)
 			TeutonType[client_summon] = TEUTON_NONE;
 		}
 	}
+	CheckAllClientPrefs(client);
 }
 
 void ZR_ClientDisconnect(int client)
@@ -1359,6 +1368,45 @@ public Action Command_GiveCash(int client, int args)
 			PrintToChat(targets[target], "You lost %i cash due to the admin %N!", money, client);
 			CashSpent[targets[target]] -= money;			
 		}
+	}
+	
+	return Plugin_Handled;
+}
+
+public Action Command_GiveBuff(int client, int args)
+{
+	//What are you.
+	if(args < 2)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_buff <target> <buffname> <duration>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[128];
+	GetCmdArg(2, buf, sizeof(buf));
+
+	char buf2[16];
+	GetCmdArg(3, buf2, sizeof(buf2));
+	float buffduration = StringToFloat(buf2); 
+	
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		PrintToChat(targets[target], "You got the %s buff for %.1f seconds, from the admin %N!", buf, buffduration, client);
+		ApplyStatusEffect(targets[target], targets[target], buf, buffduration);
 	}
 	
 	return Plugin_Handled;
@@ -2037,11 +2085,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
 							Yakuza_Lastman(10);
 						}
+						/*
 						if(Is_Cheesed_Up(client))
 						{
 							CPrintToChatAll("{darkviolet}%N decides to Plasmify himself as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
+						*/
 						
 						for(int i=1; i<=MaxClients; i++)
 						{
@@ -2620,8 +2670,6 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 					SetEntityHealth(client, maxhealth);
 			}
 			
-			SetGlobalTransTarget(client);
-			PrintToChat(client, "%t", "Level Up", Level[client]);
 			
 			while(Level[client] < nextLevel)
 			{
@@ -2637,10 +2685,11 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 					Store_PrintLevelItems(client, Level[client]);
 				}
 			}
+			PrintToChat(client, "%T", "Level Up",client, Level[client]);
 			if(!SetXpAndLevelSilently && CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
 			{
 				SkillTree_CalcSkillPoints(client);
-				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
+				CPrintToChat(client, "%T", "Current Skill Points",client, SkillTree_UnspentPoints(client));
 			}
 		}
 	}
@@ -2661,22 +2710,7 @@ void PlayerApplyDefaults(int client)
 	}
 	else if(!IsFakeClient(client))
 	{
-
-		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
-		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
-
-		if(f_BegPlayerToSetRagdollFade[client] != FAR_FUTURE && f_BegPlayerToSetRagdollFade[client] < GetGameTime())
-		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
-			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
-		}
-
-		if(f_BegPlayerR_TeethSet[client] != FAR_FUTURE && f_BegPlayerR_TeethSet[client] < GetGameTime())
-		{
-			f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
-			QueryClientConVar(client, "r_teeth", ConVarCallback_r_teeth);
-		}
-
+		CheckAllClientPrefs(client);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
 		if(point_difference > 0)
@@ -2687,6 +2721,25 @@ void PlayerApplyDefaults(int client)
 		
 		i_PreviousPointAmount[client] = PlayerPoints[client];
     }
+}
+
+void CheckAllClientPrefs(int client)
+{
+	QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
+	QueryClientConVar(client, "hud_combattext", ConVarCallback_DamageNumbers); //cl_showpluginmessages
+	QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
+
+	if(f_BegPlayerToSetRagdollFade[client] != FAR_FUTURE && f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+	{
+		f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
+		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+	}
+
+	if(f_BegPlayerR_TeethSet[client] != FAR_FUTURE && f_BegPlayerR_TeethSet[client] < GetGameTime())
+	{
+		f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
+		QueryClientConVar(client, "r_teeth", ConVarCallback_r_teeth);
+	}
 }
 
 float GetClientSaveUberGametime[MAXTF2PLAYERS];
@@ -2989,7 +3042,7 @@ void ZR_FastDownloadForce()
 	ZealotMusicDownload();
 	YakuzaMusicDownload();
 	FullmoonDownload();
-	Cheese_PrecacheMusic();
+	//Cheese_PrecacheMusic();
 }
 
 

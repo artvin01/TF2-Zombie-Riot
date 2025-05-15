@@ -754,9 +754,9 @@ static void Smith_SelfDefense(AgentSmith npc, float gameTime, int target, float 
 static void Smith_Infection(AgentSmith npc)
 {
 	int victim = EntRefToEntIndex(i_Victim_Infection[npc.index]);
-	if(IsValidClient(victim))
+	if(IsValidClient(victim) && TeutonType[victim] == TEUTON_NONE)
 	{
-		float cure_amount = 0.07;
+		float cure_amount = 0.10;
 		float vicPos[3];
 		
 		if(fl_Infection_Meter[victim] >= 10.0)
@@ -766,7 +766,7 @@ static void Smith_Infection(AgentSmith npc)
 			Agent_Smith_Cloner(npc, 1, ReturnEntityMaxHealth(npc.index)/7);
 			return;
 		}
-		if(GetClientTeam(victim) == 2 && TeutonType[victim] != TEUTON_WAITING)
+		if(GetClientTeam(victim) == 2 && TeutonType[victim] == TEUTON_NONE)
 		{
 			//if(!TF2_IsPlayerInCondition(victim, TFCond_Dazed))
 			//{
@@ -778,37 +778,37 @@ static void Smith_Infection(AgentSmith npc)
 			{
 				case 2:
 				{
-					fl_Infection_Meter[victim] += 0.060;
+					fl_Infection_Meter[victim] += 0.12;
 				}
 				case 3, 4:
 				{
-					fl_Infection_Meter[victim] += 0.070;
+					fl_Infection_Meter[victim] += 0.14;
 				}
 				case 5, 6:
 				{
-					fl_Infection_Meter[victim] += 0.080;
+					fl_Infection_Meter[victim] += 0.16;
 				}
 				case 7, 8:
 				{
-					fl_Infection_Meter[victim] += 0.085;
+					fl_Infection_Meter[victim] += 0.17;
 				}
 				case 9, 10:
 				{
-					fl_Infection_Meter[victim] += 0.090;
+					fl_Infection_Meter[victim] += 0.18;
 				}
 				case 11, 12:
 				{
-					fl_Infection_Meter[victim] += 0.095;
+					fl_Infection_Meter[victim] += 0.19;
 				}
 				case 13, 14:
 				{
-					fl_Infection_Meter[victim] += 0.102;
+					fl_Infection_Meter[victim] += 0.204;
 				}
 			}
 			PrintCenterText(victim, "Your Infection is rising - %.0f％ | Cure %.0f％", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));
 			for(int clients = 1 ; clients <= MaxClients ; clients++)
 			{
-				if(IsValidClient(clients) && TeutonType[victim] != TEUTON_WAITING)
+				if(IsValidClient(clients) && TeutonType[victim] == TEUTON_NONE)
 				{
 					if(clients != victim)
 					{
@@ -901,7 +901,6 @@ static Action AgentSmith_OnTakeDamage(int victim, int &attacker, int &inflictor,
 					RemoveNpcFromEnemyList(npc.index);
 					GiveProgressDelay(28.0);
 					damage = 0.0;
-					Agent_Smith_Reply("{darkgreen}This seems to be an unexpected result.");//*this is just a placeholder*
 					int corruptedvictim = EntRefToEntIndex(i_Victim_Infection[npc.index]);
 					if(corruptedvictim > 0)
 					{

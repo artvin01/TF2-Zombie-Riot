@@ -14,6 +14,10 @@
 	{
 		"en"	"\n---This menu overrides your movement! Close to move again!---\n"
 	}
+	"Browse Skill Tree Explain Full"
+	{
+		"en"	"You move in the skilltree with your movement keys.\nUpgrade skills by jumping.\nYou need to invest into enough skillpoints to unlock new paths.\nYou cannot move during this!"
+	}
 	"Browse Skill Tree"
 	{
 		"en"	"Browse Skill Tree"
@@ -200,7 +204,7 @@
 	}
 	"Bob's Healing Hand Desc"
 	{
-		"en" 		"Gain a 25 HP.\nAn additional +0.05％ luck and 1％ building HP and reduces revive time by 5 out of 250"
+		"en" 		"Gain 25 HP.\nAn additional +0.05％ luck and 1％ building HP and reduces revive time by 5 out of 250"
 	}
 	"Blitzkrieg Buff"
 	{

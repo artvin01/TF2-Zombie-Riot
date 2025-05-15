@@ -2,65 +2,122 @@
 #pragma newdecls required
 
 /*
-was meant to be cheese, but its plasma instead smh. 
+TODO: make everything later
 
-This kit introduces the Plasmic Elemental status.
-Upon reaching 100%, the target recieves massive damage based on the attacker's 
-pap level and applier weapon, and is debuffed with Plasm II for 10s (bosses for 5s, raids get I for 5s instead).
-Plasmic Elemental buildup is reduced by 50% on bosses and raids 
-for 10/20 seconds respectively when the elemental cooldown wears off.
-If applied via melee, elemental cooldown is reduced to 8s, and deals 25% more damage.
+this is STILL plasma, not cheese... smh....
 
-Melee - Deals damage below average and grants low resistance compared to other melees,
-but has a much better health on kill stat and builds the Plasmic Elemental status much faster.
-2nd pap unlocks Lethal Injection (M2 Melee Ability) which temporarily increases attackspeed
-and GREATLY increases melee Plasmic Elemental status buildup.
-Later paps buff this ability to last a bit longer and to inflict true dmg bleed.
-3rd pap unlocks Plasmic Inoculation (R Melee Ability) which greatly increases a random stat 
-of the melee temporarily (Damage, Resistance, plasmic buildup or attackspeed) and slowly heals the user overtime.
-Later paps buff this ability's buffs and healing to last longer and be a bit stronger.
+This kit introduces the Plasmic Elemental debuff.
+If filled, the following happens:
+- victim recieves vulnerability for a certain duration, both things based on attacker's pap level, 
+maxing out at +40% vulnerability for 6 (melee) / 4 (ranged) seconds.
+- victim recieves the Plasm I debuff with a duration based on attacker's pap level, 
+maximg out at 9 (melee) / 6 (ranged) seconds. duration is reduced by 20% on bosses and by 35% on raids
+- if the victim already has a Plasm debuff, its strength is increased, up to Plasm III.
+(say, if the victim has Plasm I, it gets upgraded to Plasm II, and if it has Plasm II, it gets upgraded to Plasm III.)
+- elemental immunity cooldown is reduced from 15 to 10 seconds.
 
-Primary - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
-These projectiles build the Plasmic Elemental status slower than the melee.
-Plasmic Burst (M2 Primary Ability) - Shoots a short-ranged laser similar to the Laserstick, minus the knockback.
-This laser inflicts Plasm I temporarily to enemies hit by it.
-Later paps buff this ability to have a slightly larger range, less cooldown,
-and allow it to inflict Plasm II instead of I for an overall longer duration.
-Debuff duration is reduced by 50% against raids, and by 25% against bosses.
+Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
+Inflicts 100% of its damage as Plasmic Elemental damage.
+Lethal Injection (M2 Melee Ability), upon activation:
+- Next melee attack will deal x1.75 damage
+- Next melee attack will deal x3.5 Plasmic Elemental damage.
+PaP Upgrades (all of them increase overall stats):
+1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets.
+2 - Unlocks Lethal Injection.
+3 - Reduces Lethal Injection's cooldown, allows it to inflict Plasm I for 3 seconds.
+4 - Ditto, grants it an extra charge.
+5 - Ditto, allows it to inflict Plasm II for 4 seconds instead of I for 3.
+
+Plas-Matter Siphoner (secondary) - A 'vacuum' that sucks the plasmatic matter off nearby enemies,
+and transforms it into energy that powers the Plasma Injector and the Plasminator.
+Grants a bonus +10% melee resistance and +5% ranged resistance while held.
+Deals a very small amount of damage in an area (like the mana succ thing from the twink kit), but
+as it damages, it grants very small general bonuses, and increases stats for the melee and primary.
+The rate at which the bonuses are granted is doubled if the enemy has more than 25% Plasmic Elemental damage,
+but also drains said damage by 2% each time.
+Upon reaching +50% charge, the Siphoner will begin to overheat, and either reaching 100% charge or
+disabling it after this point causes it to go into a 18 second cooldown before it can be reused again.
+These bonuses slowly decay overtime down to 0% after 3 seconds of not draining anything.
+Maximum base bonuses:
+- +25% Overall resistance
+- +20% Melee damage
+- +10% Primary damage
+- +35% Plasmic Elemental damage
+- +20% Attack speed
+- 9HP Regen per second
+PaP Upgrades (also increases resists while held and how many enemies the Siphoner can feed off by 1 each):
+1 - Increases maximum melee+primary damage and attackspeed bonuses.
+2 - Ditto, now also increases maximum Plasmic Elemental damage bonus.
+3 - Ditto, now also increases maximum overall resistance and HP regen bonuses.
+5 - Increases all maximum stats.
+5 - Increases all maximum stats.
+
+Koshi's Plasminator (primary) - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
+These projectiles deal 25% of their damage as Plasmic Elemental damage.
+Plasmic Burst (M2 Primary Ability), upon activation:
+- Shoots a short-ranged laser that causes a bit of shake.
+- This laser inflicts AoE damage in front, and deals 35% of its damage as Plasmic Elemental damage.
+PaP Upgrades (all of them increase overall stats):
+1 - Nothing special.
+2 - Unlocks Plasmic Burst.
+3 - Slightly increases Plasmic Burst's range and increases its Plasmic Elemental damage by an additional 5%.
+4 - Ditto, also reduces its cooldown.
+5 - Ditto.
+
+6th, 7th and 8th paps increase ALL stats and almost all ability stats overall.
 */
 
 #define SOUND_LETHAL_ABILITY "items/powerup_pickup_reflect.wav"
-#define SOUND_MOCHA_ABILITY1 "items/powerup_pickup_reduced_damage.wav"
-#define SOUND_MOCHA_ABILITY2 "misc/halloween/duck_pickup_pos_01.wav"
+#define SOUND_SIPHONER_HALFCHARGE "misc/halloween/duck_pickup_pos_01.wav"
 #define SOUND_CHEESEBALL_SQUASH "ui/hitsound_squasher.wav"
 #define SOUND_ELEMENTALAPPLY    "ui/killsound_vortex.wav"
 #define SOUND_CHEDDAR_ABILITY  "weapons/tf2_back_scatter.wav"
 
 static int LaserIndex;
-static float Cheese_PenaltyDur[MAXENTITIES];
 static int Cheese_PapLevel[MAXTF2PLAYERS];
+static float Cheese_Siphoner_CurrentDecayRate[MAXTF2PLAYERS];
+static float Cheese_Siphoner_Timeout[MAXTF2PLAYERS];
+static float Cheese_Siphoner_DecayDelay[MAXTF2PLAYERS];
+static bool Cheese_Siphoner_HalfCharge[MAXTF2PLAYERS];
 
 static int Cheese_Glow;
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
 static float Cheese_TargetsHit[MAXTF2PLAYERS];
-static int Cheese_MochaType[MAXTF2PLAYERS];
 static float hudtimer[MAXTF2PLAYERS];
 static int iref_WeaponConnect[MAXPLAYERS+1][2];
+
+static int Cheese_Siphoner_TargetMaximum[9] = {2, 2, 3, 3, 4, 4, 5, 6, 6}; // Maximum amount of enemies that the Siphoner can hit.
+static float Cheese_Siphoner_Range[9] = {250.0, 262.5, 275.0, 287.5, 300.0, 300.0, 300.0, 300.0, 300.0}; // Range of the Siphoner
+static float Cheese_Siphoner_MaxResistance[9] = {0.75, 0.75, 0.725, 0.7, 0.675, 0.65, 0.6, 0.5, 0.4}; // Maximum resistance boost from the Siphoner
+static float Cheese_Siphoner_MaxMeleeDamage[9] = {1.2, 1.25, 1.3, 1.35, 1.4, 1.5, 1.6, 1.75, 2.0}; // Maximum melee damage boost from the Siphoner
+static float Cheese_Siphoner_MaxPrimaryDamage[9] = {1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.5, 1.75}; // Maximum primary damage boost from the Siphoner
+static float Cheese_Siphoner_MaxPlasmicDamage[9] = {1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.7, 1.85, 2.0}; // Maximum plasmic elemental damage boost from the Siphoner
+static float Cheese_Siphoner_MaxAttackspeed[9] = {0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5, 0.45, 0.4}; // Maximum attackspeed boost from the Siphoner
+static int Cheese_Siphoner_MaxRegen[9] = {9, 9, 9, 12, 15, 18, 21, 24, 30}; // Maximum HP regen boost from the Siphoner
+
+static float Cheese_Siphoner_MaxCharge[9] = {2500.0, 3000.0, 4000.0, 6000.0, 9000.0, 15000.0, 20000.0, 25000.0, 32500.0}; // Maximum Siphoner charge. BASE CHARGE RATE WILL ALWAYS BE 75.0!
+static float Cheese_Siphoner_MaxDecayRate[9] = {300.0, 400.0, 500.0, 600.0, 750.0, 900.0, 1150.0, 1300.0, 1500.0}; // Maximum Siphoner decay rate every 0.5s. Decay rate increases exponentially as it goes.
+static float Cheese_Siphoner_BaseDecayRate = 20.0; // Formula is (baserate * (pap level * 0.5)), this only takes effect after pap 2
+
+static int Cheese_Lethal_MaxCharges[9] = {1, 1, 1, 2, 3, 3, 4, 4, 5}; // How many charges Lethal Injection has
+static float Cheese_Burst_ElementalDmg[9]  = {0.35, 0.35, 0.35, 0.4, 0.45, 0.5, 0.6, 0.75, 1.0}; // Elemental damage multiplier for Plasmic Burst
+static float Cheese_Burst_Cooldown[9]  = {22.5, 22.5, 22.5, 22.5, 17.5, 15.0, 12.5, 10.0, 7.5}; // Plasmic Burst's cooldown
 
 static Handle EffectTimer[MAXTF2PLAYERS];
 static bool Precached = false;
 void Cheese_MapStart()
 {
 	PrecacheSound(SOUND_LETHAL_ABILITY, true);
-	PrecacheSound(SOUND_MOCHA_ABILITY1, true);
-	PrecacheSound(SOUND_MOCHA_ABILITY2, true);
+	PrecacheSound(SOUND_SIPHONER_HALFCHARGE, true);
 	PrecacheSound(SOUND_CHEESEBALL_SQUASH, true);
 	PrecacheSound(SOUND_ELEMENTALAPPLY, true);
 	PrecacheSound(SOUND_CHEDDAR_ABILITY, true);
 	PrecacheSound(")weapons/tf2_backshot_shotty.wav");
-	Zero(Cheese_PenaltyDur);
 	Zero(Cheese_PapLevel);
-	Zero(Cheese_MochaType);
+	Zero(Cheese_Siphoner_CurrentDecayRate);
+	Zero(Cheese_Siphoner_Timeout);
+	Zero(Cheese_Siphoner_DecayDelay);
+	Zero(Cheese_Siphoner_HalfCharge);
 	Zero(hudtimer);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
@@ -76,15 +133,6 @@ void Cheese_PrecacheMusic()
 	}
 }
 
-
-float Cheese_GetPenaltyDuration(int entity)
-{
-	return Cheese_PenaltyDur[entity];
-}
-void Cheese_SetPenaltyDuration(int entity, float duration)
-{
-	Cheese_PenaltyDur[entity] = GetGameTime() + duration;
-}
 void Cheese_BeamEffect(float position[3], float startrad = 1.0, float endrad = 125.0, float lifetime = 0.25, float width = 6.5, bool elemental = false, int client = -1)
 {
 	if(elemental)
@@ -115,8 +163,8 @@ void Cheese_Enable(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE)
 	{
 		iref_WeaponConnect[client][0] = EntIndexToEntRef(weapon);
-		if(FileNetwork_Enabled()) // samuu: apparently this is causing it to not download??? BATFOX PLZ HELPPPP YOU MADE FILENETWORK
-			Cheese_PrecacheMusic(); //artvin: Sound files are not uploaded to fast DL, construction forces fast downloads, i.e. error.
+		if(FileNetwork_Enabled())
+			Cheese_PrecacheMusic();
 
 		if(EffectTimer[client] != null)
 		{
@@ -219,26 +267,7 @@ static void Cheese_Hud(int client, bool ignorecd)
 		if(HasSpecificBuff(client, "Plasmatized Inoculation"))
 		{
 			Cheese_BeamEffect(pos, 125.0, 1.0, 0.25, 8.0);
-			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!!\nEffect: ", CheeseHud);
-			switch(Cheese_MochaType[client])
-			{
-				case 1:
-				{
-					Format(CheeseHud, sizeof(CheeseHud), "%sBonus Damage", CheeseHud);
-				}
-				case 2:
-				{
-					Format(CheeseHud, sizeof(CheeseHud), "%sResist Boost", CheeseHud);
-				}
-				case 3:
-				{
-					Format(CheeseHud, sizeof(CheeseHud), "%sAtk. Speed", CheeseHud);
-				}
-				case 4:
-				{
-					Format(CheeseHud, sizeof(CheeseHud), "%sPlasma Boost", CheeseHud);
-				}
-			}
+			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!!", CheeseHud);
 		}
 		else
 		{
@@ -270,7 +299,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 		{
 			cheesedmg *= 2.0;
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
+		//Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
 	}
 
 	return damage;
@@ -278,7 +307,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon)
 {
-	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.33), weapon);
+	//Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.33), weapon);
 }
 
 public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int slot)
@@ -411,8 +440,6 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 				cd = 45.0;
 
 			Ability_Apply_Cooldown(client, slot, cd);
-			EmitSoundToClient(client, SOUND_MOCHA_ABILITY1);
-			EmitSoundToClient(client, SOUND_MOCHA_ABILITY2);
 
 			float dmgbuff = 1.95;
 			float resbuff = 0.65;
@@ -448,31 +475,6 @@ public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int 
 				default:
 				{
 					HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, buffdurations, HEAL_SELFHEAL);
-				}
-			}
-
-			switch(GetRandomInt(1, 4))
-			{
-				case 1: 
-				{
-					ApplyTempAttrib(weapon, 2, dmgbuff, buffdurations);
-					Cheese_MochaType[client] = 1;
-				}
-				case 2:
-				{
-					ApplyTempAttrib(weapon, 206, resbuff, buffdurations); 
-					ApplyTempAttrib(weapon, 205, resbuff, buffdurations);
-					Cheese_MochaType[client] = 2;
-				}
-				case 3:
-				{
-					ApplyTempAttrib(weapon, 6, atkspdbuff, buffdurations);
-					Cheese_MochaType[client] = 3;
-				}
-				case 4:
-				{
-					ApplyStatusEffect(client, client, "Plasm-Allocator", buffdurations);
-					Cheese_MochaType[client] = 4;
 				}
 			}
 
@@ -542,7 +544,6 @@ public void Weapon_Kit_Cheddinator_Fire(int client, int weapon, bool crit)
 	int FrameDelayAdd = 10;
 	float Attackspeed = Attributes_Get(weapon, 6, 1.0);
 	Attackspeed *= 0.5;
-	//by default attacks pretty slow.
 
 	FrameDelayAdd = RoundToNearest(float(FrameDelayAdd) * Attackspeed);
 	for(int LoopFire ; LoopFire <= 2; LoopFire++)

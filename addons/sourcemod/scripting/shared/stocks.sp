@@ -1326,7 +1326,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
  		Building_CamoOrRegrowBlocker(healer, _, RegrowthBlock);
 		if(RegrowthBlock)
 		{
-			HealTotal *= 0.5;
+			HealTotal *= 0.85;
 		}
 		if(HasSpecificBuff(reciever, "Burn"))
 			HealTotal *= 0.75;
@@ -1960,6 +1960,8 @@ stock bool IsInvuln(int client, bool IgnoreNormalUber = false) //Borrowed from B
 
 	if(!IgnoreNormalUber)
 	{
+		if(HasSpecificBuff(client, "UBERCHARGED"))
+			return true;
 		return (TF2_IsPlayerInCondition(client, TFCond_Ubercharged) ||
 			TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
 			TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
@@ -1972,6 +1974,7 @@ stock bool IsInvuln(int client, bool IgnoreNormalUber = false) //Borrowed from B
 	}
 	else
 	{
+
 		return (TF2_IsPlayerInCondition(client, TFCond_UberchargedCanteen) ||
 			TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden) ||
 			TF2_IsPlayerInCondition(client, TFCond_UberchargedOnTakeDamage) ||

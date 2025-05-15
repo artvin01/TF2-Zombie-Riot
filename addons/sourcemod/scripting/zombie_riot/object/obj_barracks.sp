@@ -275,7 +275,7 @@ void ObjectBarracks_MapStart()
 	build.Cost = 1200;
 	build.Health = 50;
 	build.Cooldown = 15.0;
-	build.Func = ObjectGeneric_CanBuildSentry;
+	build.Func = ObjectGeneric_CanBuildSentryBarracks;
 	Building_Add(build);
 }
 

@@ -1027,10 +1027,6 @@ public void Func_Breakable_Post(int victim, int attacker, int inflictor, float d
 	if (event) 
 	{
 		int display = RoundToFloor(damage);
-		while(display > 32000)
-		{
-			display /= 10;
-		}
 
 		event.SetInt("entindex", victim);
 		event.SetInt("health", Health > 0 ? Health : 0);
@@ -1110,7 +1106,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		SetEntProp(victim, Prop_Data, "m_lifeState", 0);
 	}
 	
-	//drown is out of map stuff.
+	//drown is out of p stuff.
 	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		damage = 5.0;
@@ -1300,12 +1296,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			Event event = CreateEvent("npc_hurt");
 			if(event) 
 			{
-				int display = RoundToFloor(Damageaftercalc);
-				while(display > 32000)
-				{
-					display /= 10;
-				}
-
+				int display = RoundToNearest(Damageaftercalc);
 				event.SetInt("entindex", victim);
 				event.SetInt("health", health);
 				event.SetInt("damageamount", display);
@@ -1436,40 +1427,44 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 		{
 			if (f_CooldownForHurtParticle[victim] < GameTime)
 			{
-				f_CooldownForHurtParticle[victim] = GameTime + 0.1;
+				if(EnableSilentMode)
+					f_CooldownForHurtParticle[victim] = GameTime + 1.0;
+				else
+					f_CooldownForHurtParticle[victim] = GameTime + 0.25;
+
 				if(npcBase.m_iBleedType == BLEEDTYPE_NORMAL)
 				{
 					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_METAL)
 				{
 					damagePosition[2] -= 40.0;
 					TE_ParticleInt(g_particleImpactMetal, damagePosition);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_RUBBER)
 				{
 					TE_ParticleInt(g_particleImpactRubber, damagePosition);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_XENO)
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_SEABORN)
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 				else if (npcBase.m_iBleedType == BLEEDTYPE_VOID)
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
-					TE_SendToAll();
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 			}
 		}
@@ -1909,16 +1904,19 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(Debuff_Adder[0])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		static char c_DmgDelt[64];
-		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
-		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
-		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+		if(b_DisplayDamageHudSetting[attacker] || !b_DamageNumbers[attacker])
+		{
+			static char c_DmgDelt[64];
+			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+			offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+			ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
 #if defined ZR
-		if(!raidboss_active)
+			if(!raidboss_active)
 #endif
-		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
+			{
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
+			}
 		}
 		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
@@ -1957,19 +1955,19 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		//Does it have power? No power also hides timer showing
 		if(RaidModeScaling != 0.0)
 		{
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t : ", ExtraHudHurt, "Power");
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s|%t", ExtraHudHurt, "Power");
 			//time show or not
 			if(Timer_Show > 800.0)
 				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％]", ExtraHudHurt, RaidModeScaling * 100.0);
 			else
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％ | %t: %.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s%.1f％ | %t%.1f]", ExtraHudHurt, RaidModeScaling * 100.0, "TIME LEFT", Timer_Show);
 		}
 		else
 		{
 			if(Timer_Show > 800.0)
 				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s]", ExtraHudHurt);
 			else
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s | %t: %.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s|%t%.1f]", ExtraHudHurt, "TIME LEFT", Timer_Show);
 		}
 		
 		//add name and health
@@ -2016,13 +2014,15 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(Debuff_Adder[0])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		static char c_DmgDelt[64];
-		IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
-		offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
-		ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+		if(b_DisplayDamageHudSetting[attacker] || !b_DamageNumbers[attacker])
+		{
+			static char c_DmgDelt[64];
+			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+			offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+			ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
-			
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);	
+		}
 		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
 
 	}
@@ -2533,7 +2533,6 @@ void Npcs_AddUnderscoreToText(char[] buffer, int lengthstring)
 	}
 	int length = strlen(buffer);
 	char ExportChar[255];
-//	PrintToChatAll("-------------------");
 	for(int a; a<length; a++)
 	{
 		static char CharTemp[8];

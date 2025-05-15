@@ -91,8 +91,6 @@ bool EnableSilentMode = false;
 public const float OFF_THE_MAP[3] = { 16383.0, 16383.0, -16383.0 };
 public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
-#define MEDIGUN_ATTRIBUTE_EXPONTENT 1.45
-
 #if defined ZR
 ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
@@ -608,6 +606,8 @@ int Armor_Wearable[MAXTF2PLAYERS];
 int Cosmetic_WearableExtra[MAXTF2PLAYERS];
 #endif
 
+bool b_DamageNumbers[MAXTF2PLAYERS];
+
 int OriginalWeapon_AmmoType[MAXENTITIES];
 
 /*
@@ -701,10 +701,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 #if defined ZR
 	ZR_PluginLoad();
 #endif
-	
-#if defined NOG
-	NOG_PluginLoad();
-#endif
 
 	return APLRes_Success;
 }
@@ -751,45 +747,6 @@ public void OnPluginStart()
 	
 	RegAdminCmd("sm_test_hud_notif", Command_Hudnotif, ADMFLAG_GENERIC, "Hud Notif");
 	RegConsoleCmd("sm_getpos", GetPos);
-	RegConsoleCmd("sm_me", DoRoleplayTalk);
-
-	sv_cheats = FindConVar("sv_cheats");
-	nav_edit = FindConVar("nav_edit");
-
-#if defined ZR
-	cvarTimeScale = FindConVar("host_timescale");
-#endif
-
-#if !defined NOG
-	CvarMpSolidObjects = FindConVar("tf_solidobjects");
-	if(CvarMpSolidObjects)
-		CvarMpSolidObjects.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-/*
-	CvarAirAcclerate = FindConVar("sv_airaccelerate");
-	if(CvarAirAcclerate)
-		CvarAirAcclerate.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-*/
-	Cvar_clamp_back_speed = FindConVar("tf_clamp_back_speed");
-	if(Cvar_clamp_back_speed)
-		Cvar_clamp_back_speed.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-
-	Cvar_LoostFooting = FindConVar("tf_movement_lost_footing_friction");
-	if(Cvar_LoostFooting)
-		Cvar_LoostFooting.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-
-	CvarTfMMMode = FindConVar("tf_mm_servermode");
-	if(CvarTfMMMode)
-		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-		
-	cvar_nbAvoidObstacle = FindConVar("nb_allow_avoiding");
-	if(cvar_nbAvoidObstacle)
-		cvar_nbAvoidObstacle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-
-	//FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
-	FindConVar("sv_tags").Flags &= ~FCVAR_NOTIFY;
-
-	sv_cheats.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
-#endif
 	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.weapons.description");
@@ -797,7 +754,6 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
-//	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");
 	LoadTranslations("zombieriot.phrases.status_effects");
 	
@@ -936,9 +892,7 @@ public void OnPluginEnd()
 	{
 		if(IsClientInGame(i))
 		{
-#if !defined NOG
 			DHook_UnhookClient(i);
-#endif
 			OnClientDisconnect(i);
 #if defined ZR
 			if(!CvarInfiniteCash.BoolValue) //if on, assume were on a test server, dont slay.
@@ -947,27 +901,31 @@ public void OnPluginEnd()
 		}
 	}
 
-#if defined RTS_CAMERA
-	RTSCamera_PluginEnd();
-#endif
 	
 #if defined RPG
 	RPG_PluginEnd();
 #endif
-	
-#if defined RTS
-	RTS_PluginEnd();
-#endif
 
 #if defined ZR
-	Waves_MapEnd();
+//	Waves_MapEnd(); DO NOT CALL THIS ON PLUGIN END, plugin ends anways, why change anything???
+	RemoveMVMLogicSafety();
+#endif
+}
+
+#if defined ZR
+void RemoveMVMLogicSafety()
+{
+	char mapname[64];
+	GetMapName(mapname, sizeof(mapname));
+	if(!StrContains(mapname, "mvm_"))
+	{
+		//This new map has MVM logic, DO NOT REMOVE MVM!!!
+		RevertMVMPoplator();
+		return;
+	}
 	MVMHud_Disable();
-	GameRules_SetProp("m_iRoundState", 0);
-
-	//disable all ZR logic.
-	SetVariantString("ForceEnableUpgrades(0)");
-	AcceptEntityInput(0, "RunScriptCode");
-
+//	GameRules_SetProp("m_iRoundstate", 0);
+	
 	int populator = FindEntityByClassname(-1, "info_populator");
 	if (populator != -1)
 	{
@@ -976,28 +934,8 @@ public void OnPluginEnd()
 		// This may cause the global populator pointer to be set to NULL even if a new populator was created.
 		SDKCall_RemoveImmediate(populator);
 	}
-	/*
-	char path[256];
-	for(int i=MAXENTITIES; i>MaxClients; i--)
-	{
-		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
-		{
-			if(!StrContains(path, "zr_base_npc"))
-				RemoveEntity(i);
-
-			if(!StrContains(path, "zr_base_stationary"))
-				RemoveEntity(i);
-
-			if(!StrContains(path, "obj_building"))
-				RemoveEntity(i);
-
-			//prevent crash, needs to be instant.
-		}
-	}
-	*/
-#endif
 }
-
+#endif
 void Core_PrecacheGlobalCustom()
 {
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
@@ -1044,6 +982,7 @@ public void OnMapStart()
 	Zero(f_ClientReviveDelayReviveTime);
 	Zero(f_MutePlayerTalkShutUp);
 	ResetIgnorePointVisible();
+	DHooks_MapStart();
 
 #if defined ZR || defined RPG
 	Core_PrecacheGlobalCustom();
@@ -1200,7 +1139,7 @@ public void OnMapEnd()
 #if defined ZR
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsFakeClient(client) && IsClientSourceTV(client))
+		if(IsClientInGame(client) && IsFakeClient(client))
 		{
 			KickClient(client);
 		}
@@ -1220,6 +1159,9 @@ public void OnMapEnd()
 	ConVar_Disable();
 	FileNetwork_MapEnd();
 	NpcStats_OnMapEnd();
+#if defined ZR
+	RemoveMVMLogicSafety();
+#endif
 }
 
 public void OnConfigsExecuted()
@@ -1372,66 +1314,6 @@ public Action GetPos(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action DoRoleplayTalk(int client, int args)
-{
-	if(f_RoleplayTalkLimit[client] > GetGameTime())
-	{
-		ReplyToCommand(client, "Sorry! Youre on a cooldown, wait %.1f seconds.", f_RoleplayTalkLimit[client] - GetGameTime());
-		return Plugin_Handled;
-	}
-	if(GetTeam(client) != TFTeam_Red || !IsPlayerAlive(client))
-	{
-		ReplyToCommand(client, "You cant use this command right now.");
-		return Plugin_Handled;
-	}
-#if defined ZR
-	if(!Native_CanRenameNpc(client))
-	{
-		CPrintToChat(client, "Youre muted buddy.");
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return Plugin_Handled;
-	}
-#endif
-	f_RoleplayTalkLimit[client] = GetGameTime() + 10.0;
-	
-	char Text[64];
-	GetCmdArg(1, Text, sizeof(Text));
-	if(!Text[0])
-	{
-		ReplyToCommand(client, "[SM] sm_me [Text (64 chars at max)] [Red 0-255] [Green0-255] [Blue0-255] [Alpha0-255]");
-		return Plugin_Handled;
-	}
-	char Text2[32];
-	char Text3[66];
-	strcopy(Text2, sizeof(Text2), Text);
-	Format(Text3, sizeof(Text3), "%s\n%s",Text2,Text[32]);
-	
-	int ColourGive[4];
-	ColourGive = {255,255,255,255};
-	if(args >= 2)
-		ColourGive[0] = GetCmdArgInt(2);
-	if(args >= 3)
-		ColourGive[1] = GetCmdArgInt(3);
-	if(args >= 4)
-		ColourGive[2] = GetCmdArgInt(4);
-	if(args >= 5)
-		ColourGive[3] = GetCmdArgInt(5);
-
-	float Offset[3];
-	Offset[2] = 90.0;
-	if(i_PlayerModelOverrideIndexWearable[client] == NIKO_2)
-		Offset[2] = 75.0;
-
-#if defined ZR
-	if(TeutonType[client] != TEUTON_NONE)
-		Offset[2] = 50.0;
-#endif
-
-	NpcSpeechBubble(client, Text3, 6, ColourGive, Offset, "");
-
-	return Plugin_Handled;
-}
-
 public Action Command_ToggleReload(int client, int args)
 {
 	if(b_MarkForReload)
@@ -1452,6 +1334,20 @@ public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult res
 {
 	if(result == ConVarQuery_Okay)
 		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
+}
+public void ConVarCallback_DamageNumbers(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(StringToInt(cvarValue) == 0)
+		{
+			b_DamageNumbers[client] = false;
+		}
+		else
+		{
+			b_DamageNumbers[client] = true;
+		}
+	}
 }
 public void ConVarCallback_FirstPersonViewModel(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {
@@ -1666,6 +1562,7 @@ public void OnClientDisconnect(int client)
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake_UNSUED[client] = true;
 	b_HudHitMarker[client] = true;
+	b_DisplayDamageHudSetting[client] = false;
 	f_ZombieVolumeSetting[client] = 0.0;
 }
 
@@ -2082,6 +1979,9 @@ public void Update_Ammo(DataPack pack)
 		{
 			for(int i; i<=Ammo_Laser; i++)
 			{
+				if(i == Ammo_Jar)
+					continue;
+					
 				CurrentAmmo[client][i] = 9999;
 				SetAmmo(client, i, 9999);
 			}
@@ -2314,6 +2214,9 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #if defined ZR
 void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
+	if(!IsValidEntity(entity))
+		return;
+	
 	SDKHook_TeamSpawn_SpawnPostInternal(entity);
 }
 void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0, int MaxWaves = 999)
@@ -2534,20 +2437,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		RPG_EntityCreated(entity, classname);
 		TextStore_EntityCreated(entity);
 #endif
-		b_IsAProjectile[entity] = false;
-/*		if(!StrContains(classname, "env_entity_dissolver"))
-		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
-		}
-		else*/
-		if(!StrContains(classname, "tf_logic_arena")
-		 || !StrContains(classname, "team_control_point")
-		  || !StrContains(classname, "trigger_capture_area")
-		  || !StrContains(classname, "item_ammopack_small")
-		  || !StrContains(classname, "item_ammopack_medium")
-		  || !StrContains(classname, "item_ammopack_full")
-		  || !StrContains(classname, "tf_ammo_pack")
-		  || !StrContains(classname, "entity_revive_marker")
+		b_IsAProjectile[entity] = false; 	
+		if(!StrContains(classname, "entity_revive_marker")
 		  || !StrContains(classname, "tf_projectile_energy_ring")
 		  || !StrContains(classname, "entity_medigun_shield")
 		  || !StrContains(classname, "tf_projectile_energy_ball")
@@ -3110,6 +3001,13 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SDKCall_SetSpeed(client);
 	}
+	else if(condition == TFCond_UberBulletResist)
+	{
+		//This counts as uber in ZR!
+		TF2_AddCondition(client, TFCond_UberBlastResist, 99.0);
+		TF2_AddCondition(client, TFCond_UberFireResist, 99.0);
+		ApplyStatusEffect(client, client, "UBERCHARGED", 15.0);
+	}
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
@@ -3118,6 +3016,12 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	{
 		switch(condition)
 		{
+			case TFCond_UberBulletResist:
+			{
+				RemoveSpecificBuff(client, "UBERCHARGED");
+				TF2_RemoveCondition(client, TFCond_UberBlastResist);
+				TF2_RemoveCondition(client, TFCond_UberFireResist);
+			}
 			case TFCond_Zoomed:
 			{
 				ViewChange_Update(client);

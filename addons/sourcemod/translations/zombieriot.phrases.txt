@@ -1197,27 +1197,27 @@
 	}
 	"Juggernog Recieved"
 	{
-		"en" 		"JUGGERNOG! 1.15x Damage resistance and +100HP"
-		"fr" 		"JUGGERNOG! 1.15x résistance contre les dégats, +100HP"
-		"ru" 		"ДЖАГГЕР-ФАНТА! 1.15x сопротивления урону и +100 ед. здоровья"
-		"de"		"JUGGERNOG!	1.15-fache Schaden Resistenz und +100HP"
-		"pt"		"JUGGERNOG! 1.15x Resistência a danos e +100HP"
-		"nl"		"JUGGERNOG! 1.15x Schade resistentie en +100 levenspunten"
+		"en" 		"JUGGERNOG! 15％ Damage resistance and +100HP"
+		"fr" 		"JUGGERNOG! 15％ résistance contre les dégats, +100HP"
+		"ru" 		"ДЖАГГЕР-ФАНТА! 15％ сопротивления урону и +100 ед. здоровья"
+		"de"		"JUGGERNOG!	15％ Schaden Resistenz und +100HP"
+		"pt"		"JUGGERNOG! 15％ Resistência a danos e +100HP"
+		"nl"		"JUGGERNOG! 15％ Schade resistentie en +100 levenspunten"
 		"chi" 		"身体强化:获得伤害抗性和生命值提升"
 	}
 	"Double Tap Recieved"
 	{
-		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
-		"fr" 		"DOUBLE-TOUCHE! Attaques 1.15x plus rapides, 1.15x dégats par vos bâtiments."
-		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки и урона у построек"
-		"pt"		"TOQUE DUPLO! 1.15x Velocidade de Ataque extra e Dano com construções"
-		"nl"		"DUBBELTIKKEN! 1.15 Extra Aanvalssnelheid en Gebouwsschade"
+		"en" 		"DOUBLE TAP! 17％ Extra attack speed and Building Damage"
+		"fr" 		"DOUBLE-TOUCHE! Attaques 17％ plus rapides, 17％ dégats par vos bâtiments."
+		"ru" 		"ПИФ-ПАФ! 17％ дополнительной скорости атаки и урона у построек"
+		"pt"		"TOQUE DUPLO! 17％ Velocidade de Ataque extra e Dano com construções"
+		"nl"		"DUBBELTIKKEN! 17％ Extra Aanvalssnelheid en Gebouwsschade"
 		"chi" 		"精神强化:攻击速度提升、建筑伤害提升"
 	}	
 	"Speed Cola Recieved"
 	{
-		"en" 		"SPEED COLA! 1.3x Extra reload, switchspeed and Mana regen"
-		"fr" 		"SPEED COLA! 1.3x vitesse de recharge de munitions et de Mana, 1.3x vitesse de changement d'arme."
+		"en" 		"SPEED COLA! 1.42x Extra reload, switchspeed and Mana regen"
+		"fr" 		"SPEED COLA! 1.42x vitesse de recharge de munitions et de Mana, vitesse de changement d'arme."
 	}
 	"Deadshot Daiquiri Recieved"
 	{
@@ -1228,7 +1228,7 @@
 	}
 	"Widows Wine Recieved"
 	{
-		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
+		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
 		"fr" 		"VIN DES VEUVES! Protection rechargable qui bloque 75％ des dégats et affaiblit les ennemis quand activé.\nLes ennemis affaiblits recoivent 35％ plus de dégats et se ralentissent considérablement."
 		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
 		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
@@ -1447,12 +1447,7 @@
 	}
 	"Building Explained"
 	{
-		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
-		"fr" 		"Vous pouvez utiliser des construction en appuyant R.\nLes constructeurs peuvent monter leurs constructions.\nCeci vous permet d'appuyer R sur eux pour utiliser les constructions montés."
-		"ru" 		"R - использование построек.\nНад головой игроков с постройкой будет значок.\nR - для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
-		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
-		"pt"		"Você pode utilizar maquinas apertando R nelas.\nPessoas podem montar construções e teram um icone sobre suas cabeças.\nIsto permite que você aperta R nelas para o mesmo efeito.\nÍcone de Regen: Caixa de Munição.\nÍcone de Escudo: Mesa de Armadura.\nÍcone de Coroa: Maquina de Habilidades.\nÍcone de luva: Pack-A-Punch.\nÍcone de Vampiro: Estação de Cura."
-		"nl"		"Je kunt machines gebruiken met de R toets.\nMensen kunnen gebouwen dragen en zullen dan een icoon boven hun hoofd hebben.\nDit zorgt ervoor dat je de R toets op hen kunt gebruiken om hetzelfde effect te bekomen als het gebouw dat ze dragen.\nGeneratie icoon: Amunitiekist\nSchild icoon: Schild tafel.\nKoning's icoon: Perk Machine.\nKlop Icoon: Pack-A-Punch.\nVampier icoon: genezingsstation"
+		"en" 		"You can use machines by pressing R/T on them.\nPeople can mount buildings with a wrench.\nThis allows you to press R on them for the same effect."
 	}
 	"Extra Buttons Explained"
 	{
@@ -1723,39 +1718,19 @@
 	}
 	"Raidboss"
 	{
-		"en" 		"Raidboss"
-		"fr" 		"Boss de Raid"
-		"ru" 		"Рейд Босс"
-		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
-		"nl"		"Invalsbaas"
-		"chi"		"世界级Boss"
+		"en" 		"RAID"
 	}
 	"Superboss"
 	{
-		"en" 		"Superboss"
-		"ru" 		"Супер босс"
-		"fr" 		"Super Boss"
-		"chi"		"Super-Boss"
+		"en" 		"Super"
 	}
 	"Power"
 	{
-		"en" 		"Power"
-		"fr" 		"Pouvoir"
-		"ru" 		"Сила"
-		"de"		"Kraft"
-		"pt"		"Força"
-		"nl"		"Kracht"
-		"chi"       "力量"
+		"en" 		" ✹"
 	}
 	"TIME LEFT"
 	{
-		"en" 		"TIME LEFT"
-		"fr" 		"TEMPS RESTANT"
-		"ru" 		"ОСТАЛОСЬ ВРЕМЕНИ"
-		"de"		"ZEIT VERBLEIBT"
-		"pt"		"TEMPO RESTANTE"
-		"nl"		"OVERIGE TIJD"
-		"chi"       "剩余时间"
+		"en" 		"⏱ "
 	}	
 	"Father Grigori No Talk"
 	{
@@ -2227,17 +2202,15 @@
 	}
 	"Skip Starter"
 	{
-		"en"		"Skip starter weapons and unlock advanced weapons"
-		"ru"		"Пропустить начальное оружие и открыть продвинутое оружие"
-		"chi"       "跳过初级武器并解锁高级武器"
+		"en"		"I have played Zombie Riot before"
 	}
 	"Skip Starter Confirm"
 	{
-		"en"		"You have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
+		"en"		"Are you already familiar with Zombie Riot?\n \nAre you sure?\nlike, very sure that you know what youre doing?"
 	}
-	"Skip Starter Yes"
+	"Skip Starter Button"
 	{
-		"en"		"Yes, I am."
+		"en"		"Pretty sure."
 	}
 	"nothing"
 	{
@@ -2649,6 +2622,10 @@
 	"Show Ragdoll Teeth Message"
 	{
 		"en"		"Please set, set ''r_teeth'' to 0, in the console! Due to the 64x bit update some older models will glitch out if this is enabled!"
+	}
+	"Buildable Village"
+	{
+		"en"	"Buildable Village"
 	}
 	"Redirect to different ZR server"
 	{
@@ -3509,6 +3486,14 @@
 	"Disable Status Lastmann Music Explain"
 	{
 		"en" 	"This will disable lastman music for you during raidbosses music"
+	}
+	"DamageHud Setting"
+	{
+		"en" 	"Always Display Damage Hud"
+	}
+	"DamageHud Setting Explain"
+	{
+		"en" 	"Enabling this setting will force ZR damage numbers, even if you enabled the TF2 damage number setting."
 	}
 	"Fix First Sound Play Manually"
 	{

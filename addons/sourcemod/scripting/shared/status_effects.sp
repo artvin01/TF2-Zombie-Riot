@@ -154,7 +154,7 @@ void InitStatusEffects()
 	StatusEffects_Construction();
 	StatusEffects_BubbleWand1();
 	StatusEffects_BubbleWand2();
-	StatusEffects_Plasm();
+	//StatusEffects_Plasm();
 
 	//freeplay last.
 	StatusEffects_Freeplay1();
@@ -1848,7 +1848,7 @@ void StatusEffects_Freeplay1()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.85;
+	data.AttackspeedBuff			= (1.0 / 1.15);
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Eloquence I");
@@ -1950,7 +1950,7 @@ void StatusEffects_Freeplay3()
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.93;
+	data.AttackspeedBuff			= (1.0 / 1.06);
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -1970,7 +1970,7 @@ void StatusEffects_Freeplay3()
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.86;
+	data.AttackspeedBuff			= (1.0 / 1.14);
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -1990,7 +1990,7 @@ void StatusEffects_Freeplay3()
 	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.79;
+	data.AttackspeedBuff			= (1.0 / 1.21);
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -2737,7 +2737,7 @@ void StatusEffects_Medieval()
 	data.DamageTakenMulti 			= 0.75;
 	data.DamageDealMulti			= 0.125;
 	data.MovementspeedModif			= 1.5;
-	data.AttackspeedBuff			= 0.75;
+	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
@@ -2773,7 +2773,7 @@ void StatusEffects_Medieval()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.AttackspeedBuff			= 0.9;
+	data.AttackspeedBuff			= (1.0 / 1.1);
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
@@ -2790,7 +2790,7 @@ void StatusEffects_Medieval()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.AttackspeedBuff			= 0.9;
+	data.AttackspeedBuff			= (1.0 / 1.1);
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
@@ -2820,7 +2820,7 @@ void StatusEffects_MERLT0N_BUFF()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
-	data.AttackspeedBuff			= 0.75;
+	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
@@ -2959,7 +2959,7 @@ void StatusEffects_SupportWeapons()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.0;
-	data.DamageDealMulti			= 0.0;
+	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
@@ -3056,7 +3056,7 @@ void StatusEffects_SupportWeapons()
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.8;
+	data.AttackspeedBuff			= (1.0 / 1.2);
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect 		= 0;
@@ -3095,7 +3095,7 @@ void StatusEffects_SupportWeapons()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.5;
+	data.DamageDealMulti			= 0.4;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
@@ -3125,7 +3125,7 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.9;
+	data.AttackspeedBuff			= 0.952;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
@@ -3133,18 +3133,58 @@ void StatusEffects_SupportWeapons()
 	data.Status_SpeedFunc 			= INVALID_FUNCTION;
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
+	data.AttackspeedBuff			= 0.0;
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Empowering Domain Hidden");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.2;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Empowering Domain");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⨭");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.15;
+	data.MovementspeedModif			= -1.0;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= (1.0 / 1.25);
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 	
 float UberTakeDamageLogic(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
-	// Enfeeble fades out with time
-	if(RaidbossIgnoreBuildingsLogic(1) || ((damagetype & DMG_TRUEDAMAGE) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
+	return (UberLogicInternal());
+}
+
+float UberLogicInternal()
+{
+	if(RaidbossIgnoreBuildingsLogic(1))
 	{
-		if(!(damagetype & DMG_TRUEDAMAGE))
-			return 0.5;
+		return 0.5;
 	}
-	return 0.0;
+	else
+	{
+		return 0.1;
+	}
 }
 float AdaptiveMedigun_MeleeFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
@@ -3262,7 +3302,7 @@ void StatusEffects_FallenWarrior()
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.OnTakeDamage_PostAttacker	= Altered_FunctionsBuffSpread;
-	data.AttackspeedBuff			= 0.66;
+	data.AttackspeedBuff			= (1.0 / 1.5);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -3704,7 +3744,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.44;
+	data.DamageDealMulti			= 0.7;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
@@ -3712,8 +3752,8 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
-
 	data.ElementalLogic				= false;
+	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Tonic Affliction");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌇");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "T"); //dont display above head, so empty
@@ -3725,7 +3765,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.333;
+	data.AttackspeedBuff			= (1.0 / 2.0);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -3745,7 +3785,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.8;
+	data.AttackspeedBuff			= (1.0 / 1.2);
 	data.Slot						= 11; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= INVALID_FUNCTION;
@@ -3763,7 +3803,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.ShouldScaleWithPlayerCount = false;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.75;
+	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.Slot						= 11; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= INVALID_FUNCTION;
@@ -4025,7 +4065,7 @@ void StatusEffects_PurnellKitBuffs()
 	data.ShouldScaleWithPlayerCount = false;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.8;
+	data.AttackspeedBuff			= (1 / 1.2);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -4315,7 +4355,7 @@ void StatusEffects_Construction()
 	//-0.5
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.7;
+	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ziberian Flagship Weaponry");
@@ -4332,7 +4372,7 @@ void StatusEffects_Construction()
 	//-0.5
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.9;
+	data.AttackspeedBuff			= (1.0 / 1.1);
 	StatusEffect_AddGlobal(data);
 
 	
@@ -4350,7 +4390,7 @@ void StatusEffects_Construction()
 	//-0.5
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.7;
+	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Rejuvinator's Medizine");
@@ -4367,7 +4407,7 @@ void StatusEffects_Construction()
 	//-0.5
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.7;
+	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 	
 	data.LinkedStatusEffect 		= 0;
@@ -4452,7 +4492,7 @@ void StatusEffects_Construction()
 	data.ShouldScaleWithPlayerCount = false;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.8;
+	data.AttackspeedBuff			= (1.0 / 1.2);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -4510,6 +4550,7 @@ void StatusEffects_BubbleWand2()
 	StatusEffect_AddGlobal(data);
 }
 
+/*
 void StatusEffects_Plasm()
 {
 	StatusEffect data;
@@ -4534,19 +4575,19 @@ void StatusEffects_Plasm()
 	data.AttackspeedBuff = 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Plasm I");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϥ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϧ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 0.05;
+	data.MovementspeedModif			= 0.08;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 15; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 1.07;
+	data.AttackspeedBuff			= 1.05;
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -4554,25 +4595,44 @@ void StatusEffects_Plasm()
 	data.AttackspeedBuff = 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Plasm II");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϥ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϥ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 0.07;
+	data.MovementspeedModif			= 0.11;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 15; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 1.1;
+	data.AttackspeedBuff			= 1.08;
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
 	data.LinkedStatusEffectNPC = 0;
 	data.AttackspeedBuff = 0.0;
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasm III");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϥ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.14;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 15; //0 means ignored
+	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 1.11;
+	StatusEffect_AddGlobal(data);
+
+	data.LinkedStatusEffect = 0;
+	data.LinkedStatusEffectNPC = 0;
+	data.AttackspeedBuff = 0.0;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmatized Lethalitation");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ի");
@@ -4613,7 +4673,7 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
-
+*/
 stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Index)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -4688,7 +4748,7 @@ void StatusEffects_Modifiers()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 1.2;
-	data.AttackspeedBuff			= 0.5;
+	data.AttackspeedBuff			= (1.0 / 2.0);
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;

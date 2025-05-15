@@ -6,6 +6,7 @@ enum struct CvarInfo
 	ConVar cvar;
 	char value[16];
 	char defaul[16];
+	int OldFlags;
 	bool enforce;
 }
 
@@ -43,7 +44,6 @@ void ConVar_PluginStart()
 	ConVar_Add("mp_tournament", "1"); //NEEDS to be 1 , or else mvm logic seems to break in ZR.
 	ConVar_Add("mp_disable_respawn_times", "1.0"); 
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
-	//going above this is dumb
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 #endif
 #if defined ZR || defined RPG
@@ -113,26 +113,37 @@ void ConVar_PluginStart()
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 
-	//AutoExecConfig(true, "zombie_riot");
-	
+	sv_cheats = ConVar_Add("sv_cheats", "0", false, (FCVAR_NOTIFY | FCVAR_REPLICATED));
+	nav_edit = FindConVar("nav_edit");
+
+#if defined ZR
+	cvarTimeScale = FindConVar("host_timescale");
+#endif
+
+	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED));
+	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED));
+	ConVar_Add("sv_tags", "", false, (FCVAR_NOTIFY));
 }
 
-static void ConVar_Add(const char[] name, const char[] value, bool enforce=true)
+static ConVar ConVar_Add(const char[] name, const char[] value, bool enforce=true, int flagsremove = FCVAR_CHEAT)
 {
 	CvarInfo info;
 	info.cvar = FindConVar(name);
-	info.cvar.Flags &= ~FCVAR_CHEAT;
+	info.OldFlags = info.cvar.Flags;
+	info.cvar.Flags &= ~(flagsremove);
 	strcopy(info.value, sizeof(info.value), value);
 	info.enforce = enforce;
 
 	if(CvarEnabled)
 	{
 		info.cvar.GetString(info.defaul, sizeof(info.defaul));
-		info.cvar.SetString(info.value);
+		if(value[0])
+			info.cvar.SetString(info.value);
 		info.cvar.AddChangeHook(ConVar_OnChanged);
 	}
 
 	CvarList.PushArray(info);
+	return (info.cvar);
 }
 
 stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=true)
@@ -151,6 +162,7 @@ stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=tr
 		return;
 	}
 	
+	info.OldFlags = info.cvar.Flags;
 	info.cvar.Flags &= ~FCVAR_CHEAT;
 	strcopy(info.value, sizeof(info.value), value);
 	info.enforce = enforce;
@@ -158,7 +170,8 @@ stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=tr
 	if(CvarEnabled)
 	{
 		info.cvar.GetString(info.defaul, sizeof(info.defaul));
-		info.cvar.SetString(info.value);
+		if(value[0])
+			info.cvar.SetString(info.value);
 		info.cvar.AddChangeHook(ConVar_OnChanged);
 	}
 
@@ -200,8 +213,10 @@ void ConVar_Enable()
 			CvarList.GetArray(i, info);
 			info.cvar.GetString(info.defaul, sizeof(info.defaul));
 			CvarList.SetArray(i, info);
+			
+			if(info.value[0])
+				info.cvar.SetString(info.value);
 
-			info.cvar.SetString(info.value);
 			info.cvar.AddChangeHook(ConVar_OnChanged);
 		}
 
@@ -214,7 +229,9 @@ void ConVar_Enable()
 				info.cvar.GetString(info.defaul, sizeof(info.defaul));
 				CvarMapList.SetArray(i, info);
 
-				info.cvar.SetString(info.value);
+				if(info.value[0])
+					info.cvar.SetString(info.value);
+					
 				info.cvar.AddChangeHook(ConVar_OnChanged);
 			}
 		}
@@ -232,9 +249,9 @@ void ConVar_Disable()
 		for(int i; i<length; i++)
 		{
 			CvarList.GetArray(i, info);
-
 			info.cvar.RemoveChangeHook(ConVar_OnChanged);
 			info.cvar.SetString(info.defaul);
+			info.cvar.Flags = info.OldFlags;
 		}
 
 		if(CvarMapList)
@@ -246,6 +263,7 @@ void ConVar_Disable()
 
 				info.cvar.RemoveChangeHook(ConVar_OnChanged);
 				info.cvar.SetString(info.defaul);
+				info.cvar.Flags = info.OldFlags;
 			}
 
 			delete CvarMapList;
@@ -271,11 +289,6 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 				CvarList.SetArray(index, info);
 				info.cvar.SetString(info.value);
 			}
-			else
-			{
-				info.cvar.RemoveChangeHook(ConVar_OnChanged);
-				CvarList.Erase(index);
-			}
 		}
 	}
 }
@@ -291,7 +304,7 @@ static void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 
 static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	if(!Configs_HasExecuted())
+	if(!Configs_HasExecuted() || StrEqual(oldValue, newValue))
 		return;
 	
 	char mapname[64];
@@ -304,7 +317,7 @@ static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 
 static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	if(!Configs_HasExecuted())
+	if(!Configs_HasExecuted() || StrEqual(oldValue, newValue))
 		return;
 	
 	char mapname[64];

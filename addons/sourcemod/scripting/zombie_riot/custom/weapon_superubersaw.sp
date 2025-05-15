@@ -73,68 +73,39 @@ bool PlayCustomSoundSuperubersaw(int client)
 }
 void SuperUbersaw_Post(int client)
 {
-	f_PercentageHealTillUbersaw[client] = 0.0;
+	float Ratio = SuperUbersawPercentage(client);
+	if(Ratio >= 1.0)
+		f_PercentageHealTillUbersaw[client] = 0.0;
 }
 
 
-stock void Superubersaw_OnTakeDamage(int victim, int &attacker, float &damage)
+stock void Superubersaw_OnTakeDamage(int victim, int &attacker, float &damage, int weapon)
 {
 	float Ratio = SuperUbersawPercentage(attacker);
-	if(Ratio >= 0.5)
+	if(Ratio >= 1.0)
 	{
 		if (b_thisNpcIsARaid[victim])
 		{
-			damage *= 2.0;
+			damage *= 2.5;
 		}
-	}
-	if(Ratio < 0.49)
-	{
-		damage *= 2.0;
-	}
-	else if(Ratio < 0.74)
-	{
-		damage *= 3.35;
-	}
-	else if(Ratio < 0.99)
-	{
-		damage *= 4.5;
-	}
-	else
-	{
-		damage *= 6.0;
+		damage *= 12.0;
 		DisplayCritAboveNpc(victim, attacker, true);
 		SensalCauseKnockback(attacker, victim, 1.5);
 	}
 	float AttributeRate = Attributes_GetOnPlayer(attacker, 8, true, true);
-	AttributeRate = Pow(AttributeRate, MEDIGUN_ATTRIBUTE_EXPONTENT);
+	AttributeRate *= Attributes_Get(weapon, 7, 1.0); //Extra damage
 	damage *= AttributeRate; // We have to make it more exponential, damage scales much harder.
-
 }
 
 int SuperubersawHowManyEnemiesHit(int client)
 {
 	float Ratio = SuperUbersawPercentage(client);
-	if(Ratio < 0.24)
-	{
-		return 1;
-	}
-	else if(Ratio < 0.49)
-	{
-		return 2;
-	}
-	else if(Ratio < 0.74)
-	{
-		return 3;
-	}
-	else if(Ratio < 0.99)
-	{
-		return 4;
-	}
-	else
+	if(Ratio >= 1.0)
 	{
 		return 7;
 		//max power
 	}
+	return 1;
 }
 
 public Action Timer_Management_SuperubersawAlter(Handle timer, DataPack pack)

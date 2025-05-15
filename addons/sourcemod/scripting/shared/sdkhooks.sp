@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
+//static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeathSilent[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
@@ -40,7 +40,7 @@ void SDKHooks_ClearAll()
 	Zero(f_EntityHazardCheckDelay);
 	Zero(f_EntityOutOfNav);
 	
-	Zero(i_WasInUber);
+//	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeathSilent);
 	Zero(i_WasInMarkedForDeath);
 	Zero(i_WasInDefenseBuff);
@@ -359,7 +359,6 @@ public void OnPreThinkPost(int client)
 	{
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
 	}
-//	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
 	Cvar_clamp_back_speed.FloatValue = f_Client_BackwardsWalkPenalty[client];
 	Cvar_LoostFooting.FloatValue = f_Client_LostFriction[client];
 }
@@ -408,7 +407,12 @@ public void OnPostThink(int client)
 			}
 		}
 	}
-
+#if defined ZR
+	if(SkillTree_InMenu(client))
+	{
+		TreeMenu(client,_, false);
+	}
+#endif
 	if(GetTeam(client) == 2)
 	{
 #if defined ZR
@@ -447,7 +451,11 @@ public void OnPostThink(int client)
 	if(b_DisplayDamageHud[client][0] || b_DisplayDamageHud[client][1])
 	{
 		//damage hud
+#if defined ZR
+		if(!SkillTree_InMenu(client) && Calculate_And_Display_HP_Hud(client, b_DisplayDamageHud[client][1]))
+#else
 		if(Calculate_And_Display_HP_Hud(client, b_DisplayDamageHud[client][1]))
+#endif
 		{
 			if(b_DisplayDamageHud[client][1])
 				b_DisplayDamageHud[client][1] = false;
@@ -455,25 +463,6 @@ public void OnPostThink(int client)
 				b_DisplayDamageHud[client][0] = false;
 		}
 	}
-	/*
-	if(b_AntiSlopeCamp[client])
-	{	
-		//make them slide off stuff.
-		if(ReplicateClient_Svairaccelerate[client] != 2.0)
-		{
-			ReplicateClient_Svairaccelerate[client] = 2.0;
-			CvarAirAcclerate.ReplicateToClient(client, "2.0"); //set down
-		}
-	}
-	else
-	{
-		if(ReplicateClient_Svairaccelerate[client] != 10.0)
-		{
-			ReplicateClient_Svairaccelerate[client] = 10.0;
-			CvarAirAcclerate.ReplicateToClient(client, "10.0"); //set replicate back to normal.
-		}
-	}
-	*/
 	if(ReplicateClient_BackwardsWalk[client] != f_Client_BackwardsWalkPenalty[client])
 	{
 		char IntToStringDo[4];
@@ -737,7 +726,7 @@ public void OnPostThink(int client)
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}
 				had_An_ability = true;
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -761,7 +750,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -787,7 +776,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -814,7 +803,7 @@ public void OnPostThink(int client)
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
 				
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{	
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -842,7 +831,7 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "| %s", buffer);
 				}	
-				if(cooldown_time < 0.0)
+				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
 				{
 					IsReady = true;
 					cooldown_time = 0.0;
@@ -1237,7 +1226,11 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%s\n%s", Debuff_Adder, buffer);
 			HudY += -0.0345; //correct offset
 		}
+#if defined ZR
+		if(buffer[0] && !SkillTree_InMenu(client))
+#else
 		if(buffer[0])
+#endif
 		{
 			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, Alpha);
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
@@ -1498,8 +1491,13 @@ public void OnPostThink(int client)
 		{
 			Format(buffer, sizeof(buffer), "%s%c%c", buffer, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
 		}
-		SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
-		ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
+#if defined ZR
+		if(!SkillTree_InMenu(client))
+#endif
+		{
+			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
+			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
+		}
 			
 				
 		static char HudBuffer[256];
@@ -1631,10 +1629,10 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 #if defined ZR
 void RegainTf2Buffs(int victim)
 {
-	if(i_WasInUber[victim])
-	{
-		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
-	}
+//	if(i_WasInUber[victim])
+//	{
+//		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber[victim]);
+//	}
 	if(i_WasInMarkedForDeath[victim])
 	{
 		TF2_AddCondition(victim, TFCond_MarkedForDeath, i_WasInMarkedForDeath[victim]);
@@ -1655,7 +1653,7 @@ void RegainTf2Buffs(int victim)
 	{
 		TF2_AddCondition(victim, TFCond_RuneResist, i_WasInResPowerup[victim]);
 	}
-	i_WasInUber[victim] = 0.0;
+//	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeathSilent[victim] = 0.0;
 	i_WasInDefenseBuff[victim] = 0.0;
 	i_WasInJarate[victim] = 0.0;
@@ -1697,7 +1695,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		ClientPassAliveCheck[victim] = false;
 #if defined ZR
-		i_WasInUber[victim] = 0.0;
+	//	i_WasInUber[victim] = 0.0;
 		i_WasInMarkedForDeathSilent[victim] = 0.0;
 		i_WasInMarkedForDeath[victim] = 0.0;
 		i_WasInDefenseBuff[victim] = 0.0;
@@ -1759,50 +1757,20 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
-	if(damagetype & DMG_TRUEDAMAGE)
+	if(IsInvuln(victim, true))
 	{
-		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
-		{
-			if(f_RecievedTruedamageHit[victim] < GetGameTime())
-			{
-				f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
-				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
-			}
-		}
-	}
-
-	//Bleed shouldnt ignore uber.
-	if(RaidbossIgnoreBuildingsLogic(1) || ((damagetype & DMG_TRUEDAMAGE) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
-	{
-		if(TF2_IsPlayerInCondition(victim, TFCond_Ubercharged))
+		if(!(damagetype & DMG_OUTOFBOUNDS))
 		{
 			if(!CheckInHud())
 			{
-				i_WasInUber[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Ubercharged);
-				TF2_RemoveCondition(victim, TFCond_Ubercharged);
+				f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
+				ClientPassAliveCheck[victim] = true;
 			}
-			if(!(damagetype & DMG_TRUEDAMAGE))
-				damage *= 0.5;
+			damage = 0.0;
+			return Plugin_Handled;	
 		}
 	}
-	else
-	{
-		//if its not during raids, do...
-		if(!(damagetype & DMG_OUTOFBOUNDS))
-		{
-			if(IsInvuln(victim))
-			{
-				if(!CheckInHud())
-				{
-					f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
-					ClientPassAliveCheck[victim] = true;
-				}
-				damage = 0.0;
-				return Plugin_Handled;	
-			}
-		}
-	}
-	
+
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
@@ -1931,6 +1899,18 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
 		return Plugin_Handled;
+	}
+	
+	if(damagetype & DMG_TRUEDAMAGE)
+	{
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			if(f_RecievedTruedamageHit[victim] < GetGameTime())
+			{
+				f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
+				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+			}
+		}
 	}
 	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
 
