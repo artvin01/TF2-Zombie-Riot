@@ -108,8 +108,6 @@
 			{
 				//air_dash_count, smaller function.
 				"library"	"server"
-				"linux64"		"@_ZNK9CTFPlayer10CanAirDashEv"
-				"windows64"	"\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x30\x8B\x81\xD4\x1E\x00\x00"
 				
 				"linux"		"@_ZNK9CTFPlayer10CanAirDashEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x57\x8B\xF9\x8B\x87\xB4\x1B\x00\x00"
