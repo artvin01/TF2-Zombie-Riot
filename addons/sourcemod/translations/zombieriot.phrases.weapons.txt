@@ -1291,6 +1291,7 @@
 		"de"		"Passive Upgrades"
 		"pt"		"Melhorias Passivas"
 		"nl"		"Passieve Upgrades"
+		"es"		"Mejoras Pasivas"
 		"chi"       	"被动升级"
 	}
 	"Body armor"
