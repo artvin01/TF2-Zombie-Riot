@@ -711,7 +711,7 @@ public void OnPluginStart()
 	CurrentAmmo[0] = { 1, 1, 1, 200, 1, 1, 1,
 	48,
 	24,
-	200,
+	600,
 	16,
 	20,
 	32,

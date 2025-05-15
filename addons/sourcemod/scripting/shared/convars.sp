@@ -125,7 +125,7 @@ void ConVar_PluginStart()
 	ConVar_Add("sv_tags", "", false, (FCVAR_NOTIFY));
 	
 #if defined RPG	
-
+	AutoExecConfig(true, "zombie_riot");
 #endif
 }
 
