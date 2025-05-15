@@ -161,6 +161,7 @@ void InitStatusEffects()
 	StatusEffects_Freeplay2();
 	StatusEffects_Freeplay3();
 	StatusEffects_Modifiers();
+	StatusEffects_Explainelemental();
 }
 
 static int CategoryPage[MAXTF2PLAYERS];
@@ -545,7 +546,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
 
 	if(owner > 0 && owner <= MaxClients && owner != victim)
-		ExplainBuffToClient(owner, Apply_MasterStatusEffect, Apply_StatusEffect, true);
+		ExplainBuffToClient(owner, Apply_MasterStatusEffect, true);
 
 	int linked = Apply_MasterStatusEffect.LinkedStatusEffect;
 	if(linked > 0)
@@ -934,7 +935,6 @@ void Force_ExplainBuffToClient(int client, const char[] name)
 {
 	int index;
 	index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
-
 	if(index == -1)
 	{
 		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
@@ -942,24 +942,25 @@ void Force_ExplainBuffToClient(int client, const char[] name)
 		return;
 	}
 	StatusEffect Apply_MasterStatusEffect;
-	E_StatusEffect Apply_StatusEffect;
 	AL_StatusEffects.GetArray(index, Apply_MasterStatusEffect);
-	ExplainBuffToClient(client, Apply_MasterStatusEffect, Apply_StatusEffect, false);
+	ExplainBuffToClient(client, Apply_MasterStatusEffect, false, index);
 }
-void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool AppliedOntoOthers = false)
+void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, bool AppliedOntoOthers = false, int index = -1)
 {
 	//Bad client
 	if(client <= 0 && client > MaxClients)
 		return;
-
 	//Debuff has no icon, so we dont care.
 	if(!Apply_MasterStatusEffect.HudDisplay[0])
 		return;
 
-	if(DisplayBuffHintToClient[client][Apply_StatusEffect.BuffIndex])
-		return;
-	
 	if(!Apply_MasterStatusEffect.BuffName[0])
+		return;
+	if(index == -1)
+	{
+		index = AL_StatusEffects.FindString(Apply_MasterStatusEffect.BuffName, StatusEffect::BuffName);
+	}
+	if(DisplayBuffHintToClient[client][index])
 		return;
 
 	if(b_DisableStatusEffectHints[client])
@@ -972,7 +973,7 @@ void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_St
 	
 	SetGlobalTransTarget(client);
  	char buffer[400];
-	DisplayBuffHintToClient[client][Apply_StatusEffect.BuffIndex] = true;
+	DisplayBuffHintToClient[client][index] = true;
 	FormatEx(buffer, sizeof(buffer), "%s Desc", Apply_MasterStatusEffect.BuffName);
 	if(!TranslationPhraseExists(buffer))
 		return;
@@ -993,7 +994,6 @@ void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, E_St
 	{
 		CPrintToChat(client,"%t","Scale With Player");
 	}
-	DisplayBuffHintToClient[client][Apply_StatusEffect.BuffIndex] = true;
 }
 void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, char[] Debuff_Adder_right, int SizeOfChar, int DisplayWeapon = -1)
 {
@@ -1015,7 +1015,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		{
 			// Something was changed
 			i -= (length - E_AL_StatusEffects[victim].Length);
-			length = E_AL_StatusEffects[victim].Length
+			length = E_AL_StatusEffects[victim].Length;
 			if(i < 0)
 			{
 				i = -1;
@@ -1055,8 +1055,9 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		if(!b_ThisWasAnNpc[victim] && owner > 0 && owner <= MaxClients) //Dont display to owner if the victimn was an npc
 			ShowToClient = owner;
 
+
 		if(ShowToClient > 0 && ShowToClient <= MaxClients)
-			ExplainBuffToClient(ShowToClient, Apply_MasterStatusEffect, Apply_StatusEffect);
+			ExplainBuffToClient(ShowToClient, Apply_MasterStatusEffect);
 
 		if(Apply_MasterStatusEffect.HudDisplay_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.HudDisplay_Func)
 		{
@@ -4454,6 +4455,7 @@ void StatusEffects_Construction()
 	data.SlotPriority				= 1;
 	StatusEffect_AddGlobal(data);
 
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Zeinas Protection");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ẕ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -4755,5 +4757,87 @@ void StatusEffects_Modifiers()
 	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+void StatusEffects_Explainelemental()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Elemental Damage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛛");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Void Elemental Damage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Chaos Elemental Damage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Corruption Elemental Damage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Nervous Impairment Elemental Damage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Overmana Overload");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 }

@@ -751,6 +751,10 @@
 		"nl"		"U hebt uw maximale mana berijkt!"
 		"chi"       "你的法力值已达到最大值"
 	}
+	"Object Cooldown NextWave"
+	{
+		"en" 		"This Object is unuseable untill the next wave."
+	}
 	"Object Cooldown"
 	{
 		"#format"	"{1:.1f}"
@@ -1398,12 +1402,11 @@
 	}
 	"Debuff/Buff Explain 1"
 	{
-		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken."
-		"fr" 		"À votre gauche sera vous affaiblissements.\nÀ votre droite sera vos buffs.\nChaque symbol sera un buff ou affaiblissement.\nLa main représente le ％ des dégats corps à corps reçus, La flèche représente le ％ des dégats à portée reçus."
+		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damgae calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
 	}
 	"Debuff/Buff Explain 2"
 	{
-		"en" 		"There are too many buffs and debuffs to be shown.\nSee ''Status Effect List'' For every single buff."
+		"en" 		"There are too many buffs and debuffs to be shown.\nSee ''Status Effect List'' For every single buff.\nAlternatively, you get a message in chat when you get a new debuff or buff applied to you."
 	}
 	"Show Debuffs"
 	{
@@ -1953,13 +1956,17 @@
 		"pt"		"Você quer melhorar sua arma atual?"
 		"nl"		"Wil je uw huidige wapen Pack-A-Punchen?"
 	}
+	"Mount Menu Explain"
+	{
+		"en"		"When you crouch and M2 a building, you mount it!\nYou see it in your armor hud as a 2 letter name!\nLeft is mounted building, right is your perk."
+	}	
 	"Support Buildings"
 	{
 		"en"		"Support Buildings"
 	}	
 	"Support Buildings Explain"
 	{
-		"en"		"To build more, buy builder upgrades!"
+		"en"		"To build more, buy builder upgrades!\nYou gain money and ammobox supplies when your buildings are used!"
 	}	
 	"Unique Buildings"
 	{
@@ -1967,7 +1974,7 @@
 	}	
 	"Unique Buildings Explain"
 	{
-		"en"		"You can only have 1 building from this section at once!"
+		"en"		"You can only have 1 building from this section at once!\nThey are used on [E]"
 	}	
 	"Construct Buildings"
 	{

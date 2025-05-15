@@ -1473,21 +1473,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	return MRES_Supercede;
 }
 
-/*
-void Dhook_BotFastNow(int bot)
-{
-	if(HookCreateFakeClientStuff)
-	{
-		int RawHookGive = DHookRaw(HookCreateFakeClientStuff, true, view_as<Address>(baseNPC.GetBody()));
-	}
-}
-public MRESReturn Create_FakeClientExPre(Address pThis, Handle hReturn, Handle hParams)			  
-{ 
-	//this sets the fakebot to true.
-	DHookSetParam(hParams, 2, true);
-	return MRES_Supercede; 
-}
-*/
 void DHook_HookClient(int client)
 {
 
@@ -1511,17 +1496,6 @@ void DHook_UnhookClient(int client)
 		DynamicHook.RemoveHook(ForceRespawnHook[client]);
 	
 }
-/*
-void DHook_ClientDisconnect()
-{
-	Disconnecting = true;
-}
-
-void DHook_ClientDisconnectPost()
-{
-	Disconnecting = false;
-}
-*/
 
 #if defined ZR
 void DHook_RespawnPlayer(int client)

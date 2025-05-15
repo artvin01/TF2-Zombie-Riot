@@ -1490,6 +1490,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	if(!HasSpecificBuff(Target, "Fluid Movement"))
 		TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);	//50% slower
 
+	Force_ExplainBuffToClient(Target, "Overmana Overload");
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
 	end_point[2]+=5.0;

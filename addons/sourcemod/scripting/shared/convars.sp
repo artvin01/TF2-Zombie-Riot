@@ -123,6 +123,10 @@ void ConVar_PluginStart()
 	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED));
 	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED));
 	ConVar_Add("sv_tags", "", false, (FCVAR_NOTIFY));
+	
+#if defined RPG	
+	AutoExecConfig(true, "zombie_riot");
+#endif
 }
 
 static ConVar ConVar_Add(const char[] name, const char[] value, bool enforce=true, int flagsremove = FCVAR_CHEAT)

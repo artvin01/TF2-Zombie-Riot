@@ -2030,7 +2030,7 @@ public void ReShowSettingsHud(int client)
 		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-84", buffer);
-
+	/*
 	Format(buffer, sizeof(buffer), "%T", "Enable Numeral Armor", client);
 	if(b_EnableNumeralArmor[client])
 	{
@@ -2041,6 +2041,7 @@ public void ReShowSettingsHud(int client)
 		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-85", buffer);
+	*/
 
 	Format(buffer, sizeof(buffer), "%T", "Taunt Speed increase", client);
 	if(b_TauntSpeedIncrease[client])
@@ -2846,8 +2847,8 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 							StoreItems.GetArray(CurrentItem.Section, ParentItem);
 							ParentItem.NPCSeller_Discount = 0.0;
 							ParentItem.NPCSeller = false;
-							if(ParentItem.NPCSeller_WaveStart < CurrentItem.NPCSeller_WaveStart)
-								ParentItem.NPCSeller_WaveStart = CurrentItem.NPCSeller_WaveStart;
+							if(ParentItem.NPCSeller_WaveStart < CurrentItem.NPCSeller_WaveStart -1)
+								ParentItem.NPCSeller_WaveStart = CurrentItem.NPCSeller_WaveStart -1;
 								
 							StoreItems.SetArray(CurrentItem.Section, ParentItem);
 							if(ParentItem.Section != -1)
@@ -3471,7 +3472,7 @@ static void MenuPage(int client, int section)
 			}
 			else if(!CvarLeveling.BoolValue)
 			{
-				menu.SetTitle("%T\n \n%st\n ", "TF2: Zombie Riot", client, buf);
+				menu.SetTitle("%T\n \n%s\n ", "TF2: Zombie Riot", client, buf);
 			}
 			else if(Database_IsCached(client))
 			{

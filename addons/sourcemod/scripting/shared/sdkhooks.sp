@@ -1339,10 +1339,78 @@ public void OnPostThink(int client)
 
 		ArmorDisplayClient(client);
 
-		static char buffer[64];
+		static char buffer[20]; //armor
+		static char buffer2[20];	//perks and stuff
+		bool Armor_Regenerating = false;
+		static int ArmorRegenCounter[MAXTF2PLAYERS];
+		if(armorEnt == client && f_ClientArmorRegen[client] > GetGameTime())
+		{
+			Armor_Regenerating = true;
+		}
+		if(Armor_Regenerating)
+		{
+			ArmorRegenCounter[client]++;
+			if(ArmorRegenCounter[client] > 3)
+			{
+				ArmorRegenCounter[client] = 0;
+			}
+		}
+		int armor = abs(Armor_Charge[armorEnt]);
+		if(Armor_Charge[armorEnt] >= 0)
+		{	
+			if(armor > 0)
+			{
+				if(armor > Armor_Max)
+					Format(buffer, sizeof(buffer), "⛨ ", buffer);
+				else
+					Format(buffer, sizeof(buffer), "⛉ ", buffer);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "⛉ ", buffer);
+			}
+			static char c_ArmorCurrent[64];
+			if(vehicle != -1)
+			{
+				if(Armor_Charge[armorEnt] < 1)
+				{
+					Format(buffer, sizeof(buffer), "%s------\nREPAIR\n------\n", buffer);
+				}
+			}
+			if(Armor_Charge[armorEnt] >= 0)
+			{
+				IntToString(armor,c_ArmorCurrent, sizeof(c_ArmorCurrent));
+				int offset = armor < 0 ? 1 : 0;
+				ThousandString(c_ArmorCurrent[offset], sizeof(c_ArmorCurrent) - offset);
+				Format(buffer, sizeof(buffer), "%s%s", buffer, c_ArmorCurrent);
+			}
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "⛛ ", buffer);
+			for(int i=1; i<5; i++)
+			{
+				if(armor >= Armor_Max*(float(i)*0.22))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(armor > Armor_Max*((float(i)*0.22) - (1.0/60.0)) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(armor > Armor_Max*((float(i)*0.22) - (1.0/30.0)))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+			}
+		}
 		if(vehicle != -1)
 		{
-			Format(buffer, sizeof(buffer), "%s\n", Vehicle_Driver(vehicle) == client ? "DRI" : "PAS");
+			Format(buffer2, sizeof(buffer2), "%s",Vehicle_Driver(vehicle) == client ? "DRI" : "PAS");
 		}
 		else if(IsValidEntity(Building_Mounted[client]))
 		{
@@ -1359,144 +1427,54 @@ public void OnPostThink(int client)
 			NPC_GetPluginById(i_NpcInternalId[converted_ref], npc_classname, sizeof(npc_classname));
 			npc_classname[4] = CharToUpper(npc_classname[4]);
 			npc_classname[5] = CharToUpper(npc_classname[5]);
+			if(Cooldowntocheck > 99.9)
+				Cooldowntocheck = 99.9;
 			if(Cooldowntocheck > 0.0)
 			{
-				Format(buffer, sizeof(buffer), "%.1f\n%s\n", Cooldowntocheck, npc_classname[4]);
+				Format(buffer2, sizeof(buffer2), "%s:%0.f",npc_classname[4], Cooldowntocheck);
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "%s\n", npc_classname[4]);
+				Format(buffer2, sizeof(buffer2), "%s",npc_classname[4]);
 			}
 		}
 		else
 		{
-			strcopy(buffer, sizeof(buffer), "\n\n");	 //so the spacing stays!
+			//no mount or anything
+			Format(buffer2, sizeof(buffer2), "---");
 		}
-
-		bool Armor_Regenerating = false;
-		static int ArmorRegenCounter[MAXTF2PLAYERS];
-		if(armorEnt == client && f_ClientArmorRegen[client] > GetGameTime())
+		if(i_CurrentEquippedPerk[client] >= 1)
 		{
-			Armor_Regenerating = true;
-		}
-		if(Armor_Regenerating)
-		{
-			ArmorRegenCounter[client]++;
-			if(ArmorRegenCounter[client] > 3)
+			Format(buffer2, sizeof(buffer2), "%s|", buffer2);
+			if(i_CurrentEquippedPerk[client] == 6)
 			{
-				ArmorRegenCounter[client] = 0;
-			}
-		}
-		int armor = abs(Armor_Charge[armorEnt]);
-		if(b_EnableNumeralArmor[client])
-		{
-			static char c_ArmorCurrent[64];
-			if(Armor_Charge[armorEnt] >= 0)
-			{
-				IntToString(armor,c_ArmorCurrent, sizeof(c_ArmorCurrent));
-				int offset = armor < 0 ? 1 : 0;
-				ThousandString(c_ArmorCurrent[offset], sizeof(c_ArmorCurrent) - offset);
-				Format(buffer, sizeof(buffer), "%s|%s|\n", buffer, c_ArmorCurrent);
-			}
-			else
-			{
+				float slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GameTime;
 				
-				Armor_Max -= armor;
-				IntToString(Armor_Max,c_ArmorCurrent, sizeof(c_ArmorCurrent));
-				int offset = Armor_Max < 0 ? 1 : 0;
-				ThousandString(c_ArmorCurrent[offset], sizeof(c_ArmorCurrent) - offset);
-				Format(buffer, sizeof(buffer), "%s|%s|\n", buffer, c_ArmorCurrent);
-			}
-		}
-		else if(vehicle != -1)
-		{
-			if(Armor_Charge[armorEnt] < 1)
-			{
-				Format(buffer, sizeof(buffer), "%s------\nREPAIR\n------\n", buffer);
-			}
-			else
-			{
-				for(int i=9; i>0; i--)
+				if(slowdown_amount < 0.0)
 				{
-					if(armor >= Armor_Max*(i*0.1111))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-					}
-					else if(armor > Armor_Max*(i*0.1111 - 0.037))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-					}
-					else if(armor > Armor_Max*(i*0.1111 - 0.07407))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
-					}
-					
-					if((i % 3) == 1)
-					{
-						Format(buffer, sizeof(buffer), "%s\n", buffer);
-					}
-				}
-			}
-		}
-		else
-		{
-			for(int i=6; i>0; i--)
-			{
-				if(Armor_Charge[armorEnt] == 0)
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
-				}
-				else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-				}
-				else if(armor > Armor_Max*(i*0.1666 - 0.0555))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-				}
-				else if(armor > Armor_Max*(i*0.1666 - 0.111))
-				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+					Format(buffer2, sizeof(buffer2), "%sWI", buffer2, slowdown_amount);
 				}
 				else
 				{
-					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+					Format(buffer2, sizeof(buffer2), "%s%.1f", buffer2, slowdown_amount);
 				}
-				
-				if((i % 2) == 1)
-				{
-					Format(buffer, sizeof(buffer), "%s\n", buffer);
-				}
-			}
-		}
-		
-		if(i_CurrentEquippedPerk[client] == 6)
-		{
-			float slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GameTime;
-			
-			if(slowdown_amount < 0.0)
-			{
-				Format(buffer, sizeof(buffer), "%sWI", buffer, slowdown_amount);
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
+				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
 			}
 		}
-		else if(i_CurrentEquippedPerk[client] >= 1)
+		else
 		{
-			Format(buffer, sizeof(buffer), "%s%c%c", buffer, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
+			Format(buffer2, sizeof(buffer2), "%s|---",buffer2);
 		}
+		
 #if defined ZR
 		if(!SkillTree_InMenu(client))
 #endif
 		{
-			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
-			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
+			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.9 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
+			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s\n%s", buffer, buffer2);
 		}
 			
 				
@@ -3070,6 +3048,7 @@ void ArmorDisplayClient(int client, bool deleteOverride = false)
 	if(ShieldLogicDo == 2)
 	{
 		TF2_AddCondition(client, TFCond_Milked, 1.0);
+		Force_ExplainBuffToClient(client, "Elemental Damage");
 		Client_Had_ArmorDebuff[client] = true;
 		return;
 	}

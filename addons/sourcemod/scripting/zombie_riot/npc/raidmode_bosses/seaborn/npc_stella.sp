@@ -95,7 +95,7 @@ static bool b_tripple_raid[MAXENTITIES];
 #define STELLA_NC_DURATION 13.0
 #define STELLA_NC_TURNRATE 500.0	//max turnrate.
 #define STELLA_NC_TURNRATE_ANGER 700.0
-#define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
+#define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/echos_of_the_wrong_war.mp3"
 
 #define STELLA_NORMAL_LASER_DURATION 0.7
 
@@ -811,11 +811,11 @@ methodmap Stella < CClotBody
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), STELLA_KARLAS_THEME);
-			music.Time = 290;
-			music.Volume = 2.0;
+			music.Time = 237;
+			music.Volume = 1.85;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Arknights - Martyr/Guiding Ahead Boss");
-			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			strcopy(music.Name, sizeof(music.Name), "Echos of the wrong war");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 		
