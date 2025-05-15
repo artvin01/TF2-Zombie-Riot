@@ -1973,7 +1973,7 @@
 	"Mount Menu Explain"
 	{
 		"en"		"When you crouch and M2 a building, you mount it!\nYou see it in your armor hud as a 2 letter name!\nLeft is mounted building, right is your perk."
-		"es"		"Cuando te agachas y le haces click derecho a una construccion, la montas!\nLa ves en tu hud con un nombre de 2 letras!\nIzquierda - Construccion montada, Derecha - Beneficio actual."
+		"es"		"Cuando te agachas y le haces click derecho a una construccion, la montas!\nLa ves en tu hud con un nombre de 2 letras!\nIzq. - Objeto Montado | Drcha. - Beneficio actual."
 	}	
 	"Support Buildings"
 	{
