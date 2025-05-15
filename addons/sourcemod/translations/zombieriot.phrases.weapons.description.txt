@@ -779,8 +779,8 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent. Healing allies heals you too, and gives both you and your patient the Healing Resolve buff.\nAllows slow revival from afar, ubercharge grants the UBERCHARGED and Hardened Aura buffs.\nCan drain enemies by changing mode via CTRL/Crouch + RELOAD (or Spray key)."
-		"es"	"Overheal permanente, curar a aliados te curara a ti tambien, y dara el buff de Resolucion Curativa.\nPermite revivir a distancia lentamente, la uber da los buffs de SOBRECARGADO y Aura Reforzada.\nPermite drenar a enemigos cambiando de modo con CTRL/Agacharse + RELOAD."
+		"en"	"Heals and buffs allies and yourself while healing, overheal is permanent.\nAllows slow revival from afar, ubercharge grants the UBERCHARGED and Hardened Aura buffs.\nDAMAGE MODE: Change via CTRL/Crouch + RELOAD (or Spray key)."
+		"es"	"Cura y potencia a tus aliados y a ti mismo mientras curas.\nPermite revivir a distancia, la uber da los buffs de SOBRECARGADO y Aura Reforzada.\nMODO DAÑO: Cambia con CTRL/Agachar + RELOAD."
 	}
 	
 	"Battle Medigun Desc"
@@ -1427,8 +1427,8 @@
 	
 	"Wrench Desc"
 	{
-		"en"	"Press RELOAD/SPRAY to place buildings while the wrench is out.\nAllows you to repair buildings, and to mount yours by pressing CTRL/Crouch + RIGHT CLICK while looking at one."
-		"es"	"Presiona RELOAD/SPRAY para colocar construcciones teniendo la llave en la mano.\nPermite reparar construcciones, y montar las tuyas en tu espalda presionando CTRL/Agacharse + CLICK DERECHO mientras miras una."
+		"en"	"Press RELOAD/SPRAY to place buildings while the wrench is out.\nAllows you to repair buildings and to mount yours.\n(Press CTRL/Crouch + RIGHT CLICK while looking at one)"
+		"es"	"Presiona RELOAD/SPRAY para colocar construcciones teniendo la llave en la mano.\nPermite reparar construcciones y montar las tuyas.\n(CTRL/Agachar + CLICK DERECHO mientras miras una)"
 	}
 	
 	"Texan business Desc"
