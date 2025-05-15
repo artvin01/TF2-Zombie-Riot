@@ -173,6 +173,18 @@ forward Action ZR_OnWinTeam(int Team);
  */
 forward void ZR_OnGetXP(int client, int Xp, int Mode);
 
+/**
+ * Called when a wave ends
+ * 
+ * Rogue/Construction: Called during the stage/raid
+ * 
+ * @param waves		New wave number
+ * @param maxwaves	Displayed max number of waves
+ * @param realmaxwaves	Real max number of waves
+ * 
+ * @return	
+ */
+forward void ZR_OnWaveEnd(int waves, int maxwaves, int realmaxwaves);
 
 /**
  * Set Client XP Yourself
