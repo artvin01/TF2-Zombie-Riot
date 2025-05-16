@@ -3516,13 +3516,15 @@
 	}
 	"The Tinker Desc"
 	{
-		"en"	"A blacksmith builder, already including building upgrades and gear.\nProvides a custom building which allows players to tinker weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes.\nGenerates metal and able to tank more damage."
+		"en"	"A blacksmith builder capable of generating metal, already including building upgrades and gear.\nTINKER'S WORKSHOP: Building which allows players to tinker weapons.\nTinkering (or reusing) applies a random set of attributes to the weapon."
+		"es"	"Un constructor herrero capaz de generar metal, incluyendo ya mejoras y equipo de construccion.\nYUNQUE DEL CALDERERO: Permite reforjar el arma en tu mano.\nReforjar un arma aplicara un conjunto de atributos al azar."
 		"fr"	"Bonne résistance et regénére du métal.\nPeut construire une enclume qui permet aux coéquiper de modifier leurs armes.\nLes modifications donne des attributs aléatoires.\nVient avec des améliorations pour Constructeur."
 		"chi"	"匠工建筑师，自带建筑升级和装备。\n多一个建筑：匠工台。\n会对武器附加随机属性。\n自动回复金属，更肉。"
 	}
 	"Tinker Wrench Desc"
 	{
-		"en"	"Similar to a standard wrench, but swings slower, however has an ability to swing much faster for a moment."
+		"en"	"Similar to a common wrench, but able to deal damage.\nHas a VERY poor repair rate."
+		"es"	"Similar a una llave inglesa comun, pero es capaz de hacer daño.\nTiene la caracteristica de ser MUY malo reparando construcciones."
 		"fr"	"Cadence d'attaque lente. Abilité accélère la cadence d'attaque."
 		"chi"	"类似普通版手，但更慢。不过有一个加速的技能。"
 	}
@@ -3534,48 +3536,58 @@
 	}
 	"Tinker Workshop Desc"
 	{
-		"en"	"A building that has a high health pool, can always be repaired, and allows players to tinker their weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes."
+		"en"	"Has high HP, regens repair HP overtime. Allows players to tinker their weapons."
+		"es"	"Vida alta, regenera vida de reparacion. Permite a los jugadores reforjar sus armas."
 		"fr"	"Enclume à haute durabilité, peut toujours être réparé.\nDonne des modifications aléatoires aux armes."
 	}
 	"Tinker Research Desc"
 	{
-		"en"	"Increases resistance of Tinker Workshop and generates metal while active"
+		"en"	"Holding this object on your hand allows you to regenerate metal.\n(Only works after papping once)"
+		"es"	"Tener este objeto en tu mano te permite generar metal.\n(Solo funciona despues de mejorarlo 1 vez)"
 		"fr"	"Améliore la durabilité de l'enclume. Regénére votre métal."
 		"chi"	"增加匠工台抗性和回复金属"
 	}
 	"Tinker Ranger Desc"
 	{
 		"en"	"Fires bolt projectiles."
+		"es"	"Dispara tornillos."
 	}
 	"Tinker Pap 0 Desc"
 	{
-		"en"	"Grants a ranged weapon that fires special bolt projectiles and Tinker Research now generates metal while active."
+		"en"	"Grants a ranged weapon that fires special bolt projectiles.\nTinker Research now generates metal while active."
+		"es"	"Otorga un arma a distancia que dispara tornillos.\nInvestigacion del Calderero ahora regenera metal mientras esta activo."
 	}
 	"Tinker Pap 1 Desc"
 	{
-		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
+		"en"	"Increases building health and kit damage. Increases metal regen by +6.\nGrants +3 support buildings and reduces Tinker cooldown by 30s."
+		"es"	"Incrementa la vida de las construcciones y el daño del kit. Aumenta la regeneracion de metal en un +6.\nOtorga +3 construcciones de soporte y reduce el cooldown del yunque en 30s."
 		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
 		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-30s工作台"
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
+		"en"	"Increases building health and kit damage. Increases metal regen by +6.\nGrants +4 support buildings and reduces Tinker cooldown by 30s.\nAdds a chance for Tier 2 effects."
+		"es"	"Incrementa la vida de las construcciones y el daño del kit. Aumenta la regeneracion de metal en un +6.\nOtorga +4 construcciones de soporte y reduce el cooldown del yunque en 30s.\nAhora puedes sacar sets de atributos de Tier 2!"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
+		"en"	"Increases building health and kit damage. Increases metal regen by +8.\nGrants +5 support buildings and reduces Tinker cooldown by 30s.\nAdds a chance for Tier 3 effects."
+		"es"	"Incrementa la vida de las construcciones y el daño del kit. Aumenta la regeneracion de metal en un +8.\nOtorga +5 construcciones de soporte y reduce el cooldown del yunque en 30s.\nAhora puedes sacar sets de atributos de Tier 3!"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"Increases building health and kit damage. Increases metal regen by +10.\nReduces Tinker cooldown by 30s."
+		"es"	"Incrementa la vida de las construcciones y el daño del kit. Aumenta la regeneracion de metal en un +10.\nReduce el cooldown del yunque en 30s."
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"Increases kit damage. Increases metal regen by +15.\nReduces Tinker cooldown by 30s."
+		"es"	"Incrementa el daño del kit. Aumenta la regeneracion de metal en un +15.\nReduce el cooldown del yunque en 30s."
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"Increases building health and kit damage.\nGrants +1 support building and reduces Tinker cooldown by 30s."
+		"es"	"Incrementa la vida de las construcciones y el daño del kit.\nOtorga +1 construccion de soporte y reduce el cooldown del yunque en 30s."
 	}
 	"West Pap 1 Desc"
 	{
