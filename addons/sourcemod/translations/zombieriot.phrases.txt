@@ -3806,6 +3806,7 @@
 	"Blacksmith Maxed"
 	{
 		"en"		"Maximum amount of attributes applied to this weapon"
+		"es"		"Cantidad de atributos maxima alcanzada"
 		"fr"		"Le maximum d'effets de forge est atteint sur cet arme."
 		"chi"		"抵达武器属性上限！"
 	}
@@ -3819,6 +3820,7 @@
 	"The Blacksmith Failed!"
 	{
 		"en"		"The builder is no longer alive or nothing is on this!"
+		"es"		"El constructor no esta vivo o no hay nada en esto!"
 	}
 	"Blacksmith No Attribs"
 	{
@@ -3924,36 +3926,42 @@
 	"Anvil Menu Main"
 	{
 		"en"	"What do you wish to do with the Anvil?"
+		"es"	"Que deseas hacer con el yunque?"
 		"fr"	"Que voulez-vous faire avec l'enclume?"
 		"chi"	"您想对铁砧做什么？"
 	}
 	"Re-Roll Weapon Stats"
 	{
 		"en"	"Re-Roll Weapon Stats"
+		"es"	"Reforjar tu arma"
 		"fr"	"Obtenir des effets aléatoires"
 		"chi"	"获取新属性"
 	}
 	"Remove Weapon Stats"
 	{
 		"en"	"Remove Weapon Stats"
+		"es"	"Des-enforjar tu arma"
 		"fr"	"Enlever les effets de cet arme"
 		"chi"	"移除武器属性"
 	}
 	"Display Current Stats"
 	{
 		"en"	"Display Current Stats"
+		"es"	"Ver reforja actual"
 		"fr"	"Voir les effets de cet arme"
 		"chi"	"查看当前属性"
 	}
 	"Custom Models"
 	{
 		"en"	"Custom Models"
+		"es"	"Modelos Personalizados"
 		"fr"	"Modèles personnalisés"
 		"chi"	"自定义模型"
 	}
 	"TF2 Class"
 	{
 		"en"	"TF2 Class"
+		"es"	"Clase de TF2"
 		"fr"	"Classes TF2"
 		"chi"	"兵种模型"
 	}
@@ -3972,6 +3980,7 @@
 	"Skeleboy"
 	{
 		"en"	"Skeleboy"
+		"es"	"Esqueletico"
 		"fr"	"M. Squelette"
 		"chi"	"骷髅"
 	}
@@ -3984,6 +3993,7 @@
 	"Fat HHH"
 	{
 		"en"	"Fat HHH"
+		"es"	"HHH Gordito"
 	}
 	"Iberia & Nemal"
 	{
@@ -4032,6 +4042,7 @@
 	"Class Vote Citizen Do"
 	{
 		"en"	"The rebel will pick whatever has the most player votes, from the top down."
+		"es"	"El rebelde elegira la clase con mas votos, mira abajo de esto."
 	}
 	"DPS Class"
 	{
