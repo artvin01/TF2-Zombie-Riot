@@ -11,6 +11,7 @@
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
+		"es"		"Arquetipo: Multi-Disparo"
 		"fr"		"Archetype: Multi-plombs"
 		"ru"		"Архетип: Мультивыстрел"
 		"chi"		"类型：霰弹"
@@ -18,6 +19,7 @@
 	"Rapid Fire"
 	{
 		"en"		"Archetype: Rapid Fire"
+		"es"		"Arquetipo: Disparo Rapido"
 		"fr"		"Archetype: Tirs Rapides"
 		"ru"		"Архетип: Быстрый огонь"
 		"chi"		"类型：连发"
@@ -25,6 +27,7 @@
 	"Single Pellet"
 	{
 		"en"		"Archetype: Single Pellet"
+		"es"		"Arquetipo: Disparo Simple"
 		"fr"		"Archetype: Chevrotine"
 		"ru"		"Архетип: Одиночный выстрел"
 		"chi"		"类型：单发"
@@ -32,6 +35,7 @@
 	"Infinite Fire"
 	{
 		"en"		"Archetype: Infinite Fire"
+		"es"		"Arquetipo: Disparo Infinito"
 		"fr"		"Archetype: Tir Infini"
 		"ru"		"Архетип: Бесконечный огонь"
 		"chi"		"类型：火力压制"
@@ -39,6 +43,7 @@
 	"Trap Master"
 	{
 		"en"		"Archetype: Trap Master"
+		"es"		"Arquetipo: Maestro de las Trampas"
 		"fr"		"Archetype: Maître des Pièges"
 		"ru"		"Архетип: Ловчий"
 		"chi"		"类型：陷阱大师"
@@ -46,6 +51,7 @@
 	"Far Range"
 	{
 		"en"		"Archetype: Far Range"
+		"es"		"Arquetipo: Larga Distancia"
 		"fr"		"Archetype: Longue Portée"
 		"ru"		"Архетип: Дальняя дальность"
 		"chi"		"类型：远程"
@@ -53,13 +59,15 @@
 	"Explosive Mind"
 	{
 		"en"		"Archetype: Explosive Mind"
+		"es"		"Arquetipo: Mente Explosiva"
 		"fr"		"Archetype: Maître des Explosions"
 		"ru"		"Архетип: Взрывной разум"
 		"chi"		"类型：爆炸"
 	}
 	"Team Support"
 	{
-		"en"		"Archetype: Team Support"
+		"en"		"Archetype: Team Support"	
+		"es"		"Arquetipo: Soporte de Equipo"
 		"fr"		"Archetype: Bon Coéquipier"
 		"ru"		"Архетип: Командная поддержка"
 		"chi"		"类型：辅助"
@@ -67,6 +75,7 @@
 	"ArchDebuff"
 	{
 		"en"		"Archetype: Debuff"
+		"es"		"Arquetipo: Debuff"
 		"fr"		"Archetype: Affaiblisseur"
 		"ru"		"Архетип: Ослабление"
 		"chi"		"类型：Debuff"
@@ -74,6 +83,7 @@
 	"Brawler"
 	{
 		"en"		"Archetype: Brawler"
+		"es"		"Arquetipo: Boxeador"
 		"fr"		"Archetype: Bagarreur"
 		"ru"		"Архетип: Потасовщик"
 		"chi"		"类型：战士"
@@ -81,6 +91,7 @@
 	"Ambusher"
 	{
 		"en"		"Archetype: Ambusher"
+		"es"		"Arquetipo: Emboscador"
 		"fr"		"Archetype: Embusqueur"
 		"ru"		"Архетип: Засадник"
 		"chi"		"类型：偷袭"
@@ -88,6 +99,7 @@
 	"Combatant"
 	{
 		"en"		"Archetype: Combatant"
+		"es"		"Arquetipo: Combatiente"
 		"fr"		"Archetype: Combatant"
 		"ru"		"Архетип: Боец"
 		"chi"		"类型：斗士"
@@ -95,6 +107,7 @@
 	"Aberration"
 	{
 		"en"		"Archetype: Aberration"
+		"es"		"Arquetipo: Aberracion"
 		"fr"		"Archetype: Aberration"
 		"ru"		"Архетип: Аберрация"
 		"chi"		"类型：异类"
@@ -102,6 +115,7 @@
 	"Duelist"
 	{
 		"en"		"Archetype: Duelist"
+		"es"		"Arquetipo: Duelista"
 		"fr"		"Archetype: Dueliste"
 		"ru"		"Архетип: Дуэлянт"
 		"chi"		"类型：决斗士"
@@ -109,6 +123,7 @@
 	"Lord"
 	{
 		"en"		"Archetype: Lord"
+		"es"		"Arquetipo: Lord"
 		"fr"		"Archetype: Roi"
 		"ru"		"Архетип: Лорд"
 		"chi"		"类型：领主"
@@ -116,6 +131,7 @@
 	"Crusher"
 	{
 		"en"		"Archetype: Crusher"
+		"es"		"Arquetipo: Triturador"
 		"fr"		"Archetype: Broyeur"
 		"ru"		"Архетип: Дробитель"
 		"chi"		"类型：碾压"
@@ -123,6 +139,7 @@
 	"Summoner"
 	{
 		"en"		"Archetype: Summoner"
+		"es"		"Arquetipo: Invocador"
 		"fr"		"Archetype: Convoqueur"
 		"ru"		"Архетип: Призыватель"
 		"chi"		"类型：召唤师"
@@ -130,6 +147,7 @@
 	"Chain Caster"
 	{
 		"en"		"Archetype: Chain Caster"
+		"es"		"Arquetipo: Hechizo-Cadena"
 		"fr"		"Archetype: Sortilèges Successifs"
 		"ru"		"Архетип: Маг цепей"
 		"chi"		"类型：连环法师"
@@ -137,6 +155,7 @@
 	"Multi Caster"
 	{
 		"en"		"Archetype: Multi Caster"
+		"es"		"Arquetipo: Multi-Hechizo"
 		"fr"		"Archetype: Multi-sortilèges"
 		"ru"		"Архетип: Мульти маг"
 		"chi"		"类型：多重法师"
@@ -144,12 +163,14 @@
 	"Base Caster"
 	{
 		"en"		"Archetype: Base Caster"
+		"es"		"Arquetipo: Hechizo Base"
 		"fr"		"Archetype: Sortilèges Amateurs"
 		"ru"		"Архетип: Базовый маг"
 	}
 	"Mythic Caster"
 	{
 		"en"		"Archetype: Mythic Caster"
+		"es"		"Arquetipo: Hechizo Mitico"
 		"fr"		"Archetype: Sortilèges Mythiques"
 		"chi"		"类型：至尊法师"
 		"ru"		"Архетип: Мифический маг"
@@ -157,11 +178,13 @@
 	"Psychic Warlord"
 	{
 		"en"		"Archetype: Psychic Warlord"
+		"es"		"Arquetipo: Guerrero Psíquico"
 		"ru"		"Архетип: психический полководец"
 	}
 	"Abyssal Hunter"
 	{
 		"en"		"Archetype: Abyssal Hunter"
+		"es"		"Arquetipo: Cazador Abisal"
 		"fr"		"Archetype: Chasseur des Abîmes"
 		"ru"		"Архетип: Охотник Бездны"
 		"chi"		"类型：深海猎人"
@@ -169,6 +192,7 @@
 	"Kazimierz"
 	{
 		"en"		"Archetype: Kazimierz"
+		"es"		"Arquetipo: Kazimierz"
 		"ru"		"Архетип: Казимерз"
 		"fr"		"Archetype: Kazimierz"
 		"chi"		"类型：卡齐米日"
@@ -176,6 +200,7 @@
 	"Bloodletter"
 	{
 		"en"		"Archetype: Bloodletter"
+		"es"		"Arquetipo: Sangria"
 		"ru"		"Арехтип: Кровопускатель"
 		"fr"		"Archetype: Hémorragie"
 		"chi"		"类型：放血者"
@@ -183,6 +208,7 @@
 	"Bloody Butcher"
 	{
 		"en"		"Archetype: Bloody Butcher"
+		"es"		"Arquetipo: Carnicero"
 		"ru"		"Архетип: Кровавый Мясник"
 		"fr"		"Archetype: Boucher Dégorgeur"
 		"chi"		"类型：血腥屠夫"
@@ -190,6 +216,7 @@
 	"Archetype Victoria"
 	{
 		"en"		"Archetype: Victoria"
+		"es"		"Arquetipo: Victoria"
 		"ko"		"유형: 빅토리아"
 	}
 
