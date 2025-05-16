@@ -2747,11 +2747,13 @@
 	"Merchant Brewing Stand"
 	{
 		"en"	"Merchant Brewing Stand"
+		"es"	"Estanteria de Pociones"
 		"ru"	"Подставка для заваривания Торговца"
 	}
 	"Merchant Grill"
 	{
 		"en"	"Merchant Grill"
+		"es"	"Parrilla del Mercader"
 	}
 	"Tinker Research"
 	{
@@ -2772,6 +2774,7 @@
 	"The Merchant"
 	{
 		"en"	"The Merchant"
+		"es"	"El Mercader"
 		"ru"	"Торговец"
 		"fr"	"Le Marchand"
 		"chi"	"商人"
@@ -2779,6 +2782,7 @@
 	"Merchant's Wrench"
 	{
 		"en"	"Merchant's Wrench"
+		"es"	"Llave 'Inglesa' del Mercader"
 		"ru"	"Гаечынй ключ Торговца"
 		"fr"	"Clé du Marchand"
 		"chi"	"商人扳手"
@@ -2786,6 +2790,7 @@
 	"Merchant Emergency Button"
 	{
 		"en"	"Merchant Emergency Button"
+		"es"	"Boton de Emergencia del Mercader"
 		"ru"	"Аварийная кнопка торговца"
 		"fr"	"Bouton de Secours du Marchand"
 		"chi"	"商人紧急按钮"
@@ -2793,6 +2798,7 @@
 	"The Merchant Skilled"
 	{
 		"en"	"The Merchant: Skilled"
+		"es"	"El Mercader: Habilidoso"
 		"ru"	"Торговец:Умелый"
 		"fr"	"Le Marchand: Qualifié"
 		"chi"	"进阶商人"
@@ -2800,6 +2806,7 @@
 	"The Merchant Elite"
 	{
 		"en"	"The Merchant: Elite"
+		"es"	"El Mercader: Elite"
 		"ru"	"Торговец:Элитный"
 		"fr"	"Le Marchand: Élite"
 		"chi"	"精英商人"
@@ -2807,6 +2814,7 @@
 	"The Merchant Mastery 1"
 	{
 		"en"	"The Merchant: Mastery 1"
+		"es"	"El Mercader: Maestria 1"
 		"ru"	"Торговец:Мастерство 1"
 		"fr"	"Le Marchand: Maître 1"
 		"chi"	"商人精通： 1"
@@ -2814,6 +2822,7 @@
 	"The Merchant Mastery 2"
 	{
 		"en"	"The Merchant: Mastery 2"
+		"es"	"El Mercader: Maestria 2"
 		"ru"	"Торговец:Мастретсво 2"
 		"fr"	"Le Marchand: Maître 2"
 		"chi"	"商人精通： 3"
@@ -2821,6 +2830,7 @@
 	"The Merchant Mastery 3"
 	{
 		"en"	"The Merchant: Mastery 3"
+		"es"	"El Mercader: Maestria 3"
 		"ru"	"Торговец: Мастерство 3"
 		"fr"	"Le Marchand: Maître 3"
 		"chi"	"商人精通： 3"
