@@ -3794,10 +3794,12 @@
 	"Blacksmith Tooltip"
 	{
 		"en"		"to apply a tinker effect to your active weapon."
+		"es"		"para reforjar tu arma."
 	}
 	"Blacksmith Used"
 	{
 		"en"		"Someone used your Tinker Station, you gain +20 Cash!"
+		"es"		"Alguien uso tu Yunque, ganas +20 de dinero!"
 		"fr"		"Quelqu'un a utilisé votre Station de Forgerie, vous obtenez +20 Argent!"
 		"chi"		"有人用了你的铁砧，+20现金！"
 	}
@@ -3810,6 +3812,7 @@
 	"Blacksmith Underleveled"
 	{
 		"en"		"You can not tinker this weapon"
+		"es"		"No puedes reforjar esta arma."
 		"fr"		"Vous ne pouvez pas appliquer un effet de forge sur cet arme."
 		"chi"		"此武器无法被修改。"
 	}
@@ -3820,18 +3823,21 @@
 	"Blacksmith No Attribs"
 	{
 		"en"		"You have no tinker stats."
+		"es"		"Tu arma no esta reforjada."
 		"fr"		"Vous n'avez pas d'effet de forge."
 		"chi"		"你没有任何匠工效果。"
 	}
 	"Removed Tinker Attributes"
 	{
 		"en"		"Removed Tinker Attributes"
+		"es"		"Arma des-enforjada"
 		"fr"		"Enlevé les effets de forge."
 		"chi"		"已移除匠工效果。"
 	}
 	"View Modifiers"
 	{
 		"en"	"View Modifiers"
+		"es"	"Ver Reforja actual"
 		"fr"	"Voir effets de forge"
 		"de" 	"oha ein deutscher!"
 		"chi"	"查看效果"
