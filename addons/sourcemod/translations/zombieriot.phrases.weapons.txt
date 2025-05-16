@@ -2739,7 +2739,7 @@
 	"Tinker Workshop"
 	{
 		"en"	"Tinker Workshop"
-		"es"	"Anvil del Calderero"
+		"es"	"Yunque del Calderero"
 		"ru"	"мастерская Жестянщика"
 		"fr"	"Laboratoire du Forgeron"
 		"chi"	"匠工坊"
