@@ -196,7 +196,7 @@ methodmap RavagingIntellect < CClotBody
 	
 	public RavagingIntellect(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		RavagingIntellect npc = view_as<RavagingIntellect>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", MinibossHealthScaling(40), ally));
+		RavagingIntellect npc = view_as<RavagingIntellect>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", MinibossHealthScaling(40.0), ally));
 		i_NpcWeight[npc.index] = 3;
 		
 

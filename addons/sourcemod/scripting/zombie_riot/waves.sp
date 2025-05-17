@@ -3079,6 +3079,14 @@ void DoGlobalMultiScaling()
 	}
 }
 
+void ScalingMultiplyEnemyHpGlobalScale(int iNpc)
+{
+	float Maxhealth = float(ReturnEntityMaxHealth(iNpc));
+	Maxhealth *= MultiGlobalHealth;
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToNearest(Maxhealth));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToNearest(Maxhealth));
+}
+
 void Waves_ForceSetup(float cooldown)
 {
 	Cooldown = GetGameTime() + cooldown;
@@ -3579,6 +3587,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 				}	
 			}
 			AlreadySetWaiting = true;
+			DeleteShadowsOffZombieRiot();
 			SDKCall_ResetPlayerAndTeamReadyState();
 			
 			GameRules_SetProp("m_bInWaitingForPlayers", true);

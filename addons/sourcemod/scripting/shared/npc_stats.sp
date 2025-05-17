@@ -5604,7 +5604,7 @@ public void NpcBaseThinkPost(int iNPC)
 	static float SimulationTimeDelay;
 	if(!SimulationTimeDelay)
 	{
-		SimulationTimeDelay = (0.05 * TickrateModify);
+		SimulationTimeDelay = (0.05/* * TickrateModify*/);
 		//calc once
 	}
 	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime() + SimulationTimeDelay);

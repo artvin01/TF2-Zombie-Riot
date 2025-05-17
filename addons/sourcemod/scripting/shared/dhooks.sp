@@ -1816,69 +1816,47 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	
 	
 	int target = DHookGetParam(hParams, 1);
+
+	float HealAmmount = 20.0;
+
+	HealAmmount *= Attributes_GetOnWeapon(owner, originalLauncher, 8, true);
 	
-	int ammo_amount_left = GetAmmo(owner, 21);
-	if(ammo_amount_left > 0)
+
+	
+	float GameTime = GetGameTime();
+	if(f_TimeUntillNormalHeal[target] > GameTime)
 	{
-		float HealAmmount = 20.0;
-
-		HealAmmount *= Attributes_GetOnWeapon(owner, originalLauncher, 8, true);
+		HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
+	}
+	
+	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
+	int flMaxHealth = SDKCall_GetMaxHealth(target);
+	
+	int Health_To_Max;
+	
+	Health_To_Max = flMaxHealth - flHealth;
+	
+	if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
+	{
+		ClientCommand(owner, "playgamesound items/medshotno1.wav");
+		SetGlobalTransTarget(owner);
+		PrintHintText(owner,"%N %t", target, "Is already at full hp");
 		
-
+		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
+		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
+	}
+	else
+	{
+		HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
 		
-		float GameTime = GetGameTime();
-		if(f_TimeUntillNormalHeal[target] > GameTime)
-		{
-			HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
-		}
+		ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
+		ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+		SetGlobalTransTarget(owner);
 		
-		if(ammo_amount_left > RoundToCeil(HealAmmount))
-		{
-			ammo_amount_left = RoundToCeil(HealAmmount);
-		}
-		
-		int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
-		int flMaxHealth = SDKCall_GetMaxHealth(target);
-		
-		int Health_To_Max;
-		
-		Health_To_Max = flMaxHealth - flHealth;
-		
-		if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
-		{
-			ClientCommand(owner, "playgamesound items/medshotno1.wav");
-			SetGlobalTransTarget(owner);
-			PrintHintText(owner,"%N %t", target, "Is already at full hp");
+		PrintHintText(owner,"%t", "You healed for", target, RoundToNearest(HealAmmount));
 			
-			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
-			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
-		}
-		else
-		{
-			if(Health_To_Max < RoundToCeil(HealAmmount))
-			{
-				ammo_amount_left = Health_To_Max;
-			}
-
-			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
-			
-			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
-			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-			SetGlobalTransTarget(owner);
-			
-			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
-			if(ammo_amount_left > 0)
-				ReduceMediFluidCost(owner, ammo_amount_left);
-				
-			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
-			SetAmmo(owner, 21, new_ammo);
-			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
-			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
-			for(int i; i<Ammo_MAX; i++)
-			{
-				CurrentAmmo[owner][i] = GetAmmo(owner, i);
-			}
-		}
+		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
+		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 	}
 
 	

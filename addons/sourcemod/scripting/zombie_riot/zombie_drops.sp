@@ -438,14 +438,6 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										{
 											AddAmmoClient(client_Hud, i_WeaponAmmoAdjustable[weapon] ,_,4.0);
 										}
-										else if(weaponindex == 211 || weaponindex == 998)
-										{
-											AddAmmoClient(client_Hud, 21 ,_,4.0);
-										}
-										else if(weaponindex == 411)
-										{
-											AddAmmoClient(client_Hud, 22 ,_,4.0);
-										}
 										else if(weaponindex == 441 || weaponindex == 35)
 										{
 											AddAmmoClient(client_Hud, 23 ,_,4.0);	
@@ -471,18 +463,6 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 							{
 								CurrentAmmo[client_Hud][i] = GetAmmo(client_Hud, i);
 							}
-							/*
-							Only give ammo to weapons they already have. Otherwise its just op lol, never had ammo issues ever with this, it was funny.
-							SetAmmo(client_Hud, Ammo_Metal, GetAmmo(client_Hud, Ammo_Metal)+(AmmoData[Ammo_Metal][1]*4));
-							for(int i=Ammo_Jar; i<Ammo_MAX; i++)
-							{
-								SetAmmo(client_Hud, i, GetAmmo(client_Hud, i)+(AmmoData[i][1]*4));
-							}
-							for(int i; i<Ammo_MAX; i++)
-							{
-								CurrentAmmo[client_Hud][i] = GetAmmo(client_Hud, i);
-							}
-							*/
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
 							ShowHudText(client_Hud,  -1, "%t", "Max Ammo Activated");

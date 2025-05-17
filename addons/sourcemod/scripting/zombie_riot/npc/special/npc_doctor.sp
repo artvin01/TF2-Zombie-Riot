@@ -95,7 +95,7 @@ methodmap SpecialDoctor < CClotBody
 
 	public SpecialDoctor(float vecPos[3], float vecAng[3], int ally)
 	{
-		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(70), ally));
+		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(70.0), ally));
 		i_NpcWeight[npc.index] = 3;
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);

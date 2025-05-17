@@ -136,7 +136,7 @@ methodmap L4D2_Tank < CClotBody
 	
 	public L4D2_Tank(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", MinibossHealthScaling(100), ally, false, true));
+		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", MinibossHealthScaling(100.0), ally, false, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		

@@ -87,6 +87,7 @@ void Object_PluginStart()
 	.DefineIntField("m_iMaxHealth")
 	.DefineBoolField("m_bSentryBuilding")
 	.DefineBoolField("m_bConstructBuilding")
+	.DefineFloatField("m_fLastTimeClaimed")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -451,6 +452,17 @@ methodmap ObjectGeneric < CClotBody
 			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bSentryBuilding"));
 		}
 	}
+	property float LastTimeClaimed
+	{
+		public set(float value)
+		{
+			SetEntPropFloat(this.index, Prop_Data, "m_fLastTimeClaimed", value);
+		}
+		public get()
+		{
+			return GetEntPropFloat(this.index, Prop_Data, "m_fLastTimeClaimed");
+		}
+	}
 	property bool m_bConstructBuilding
 	{
 		public set(bool value)
@@ -659,6 +671,12 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 	if(owner == -1)
 	{
+		//give 30 sec untill it destroys itself
+		if(objstats.LastTimeClaimed + 30.0 < GetGameTime())
+		{
+			DestroyBuildingDo(objstats.index);
+			return false;
+		}
 		if(FuncCanBuild[objstats.index] && FuncCanBuild[objstats.index] != INVALID_FUNCTION)
 		{
 			// If 0 can't build, destory the unclaimed building (sentry)
@@ -690,6 +708,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	}
 	else
 	{
+		objstats.LastTimeClaimed = GetGameTime();
 		for(int target = 1; target <= MaxClients; target++)
 		{
 			if(FuncCanUse[objstats.index] && FuncCanUse[objstats.index] != INVALID_FUNCTION && IsClientInGame(target) && IsPlayerAlive(target))
@@ -737,27 +756,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		{
 			SetEntityRenderColor(objstats.index, r, g, 0, 255);
 		}
-		/*
-		if(b_Anger[wearable])
-		{
-			this.SetSequence(0);	
-		}
-		else
-		{
-			this.SetSequence(0);
-		}
-		*/
-		/*
-		wearable = objstats.m_iWearable2;
-		if(wearable != -1)
-		{
-			SetEntityRenderColor(wearable, r, g, 0, 255);
-		}
-		else
-		{
-			SetEntityRenderColor(objstats.index, r, g, 0, 255);
-		}
-		*/
 		
 	}
 	return true;
