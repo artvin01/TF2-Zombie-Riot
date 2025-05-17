@@ -244,7 +244,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		if(b_MediunDamageModeSet[medigun])
 		{
 			//We hurt enemies, make sure all valid checks are the same as before.
-			int new_ammo = GetAmmo(owner, 21);
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 21) > 0 && b_ThisWasAnNpc[healTarget] && !b_NpcHasDied[healTarget] && GetTeam(healTarget) != TFTeam_Red)
 			{
 				bool team = GetTeam(owner)==GetTeam(healTarget);
@@ -285,28 +284,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					HealPointToReinforce(owner, 1, 0.0005);
 #endif		
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
-					new_ammo -= 1;
 					
 				}
-#if defined ZR						
-				SetAmmo(owner, 21, new_ammo);
-				CurrentAmmo[owner][21] = GetAmmo(owner, 21);
-#endif					
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				if(new_ammo > 0)
-					PrintHintText(owner,"[DAMAGE MODE]\nMedigun Medicine Fluid: %iml", new_ammo);
-				else
-					PrintHintText(owner,"[DAMAGE MODE]\nMedigun Medicine Fluid: NO AMMO!!!", new_ammo);
+				PrintHintText(owner,"[DAMAGE MODE]");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
 		else if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 			//we heal players or npcs, make sure we can heal them.
-			int new_ammo = GetAmmo(owner, 21);
-			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && !b_NpcHasDied[healTarget] && GetTeam(healTarget) == TFTeam_Red) && GetAmmo(owner, 21) > 0)
+			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && !b_NpcHasDied[healTarget] && GetTeam(healTarget) == TFTeam_Red))
 			{
 				bool team = GetTeam(owner)==GetTeam(healTarget);
 				if(team)
@@ -428,17 +418,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 						i_targethealedLastBy[healTarget] = owner;
 						//self heal
-						int ammoSubtract;
-						ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
-						if(ammoSubtract > 0)
-							ReduceMediFluidCost(owner, ammoSubtract);
-						new_ammo -= ammoSubtract;
+						HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0);
 
 						//Ally Heal
-						ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
-						if(ammoSubtract > 0)
-							ReduceMediFluidCost(owner, ammoSubtract);
-						new_ammo -= ammoSubtract;
+						HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0);
 
 						if(!b_NpcHasDied[healTarget])
 						{
@@ -463,19 +446,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 				}
 				Set_HitDetectionCooldown(healTarget,owner, GetGameTime() + 0.25, SupportDisplayHurtHud);
-#if defined ZR
-				SetAmmo(owner, 21, new_ammo);
-				CurrentAmmo[owner][21] = GetAmmo(owner, 21);
-#endif
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
 				if(What_type_Heal != 5.0)
 				{
-					if(new_ammo > 0)
-						PrintHintText(owner,"Medigun Medicine Fluid: %iml", new_ammo);
-					else
-						PrintHintText(owner,"NO MEDIGUN AMMO!!!");
+					PrintHintText(owner,"[HEALING MODE]");
 				}
 				else
 				{
@@ -483,157 +459,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						case 0:
 						{
-							if(new_ammo > 0)
-								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: General", new_ammo);
-							else
-								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: General");
+							PrintHintText(owner,"[HEALING MODE]\nMode: General");
 						}
 						case 1:
 						{
-							if(new_ammo > 0)
-								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Melee", new_ammo);
-							else
-								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: Melee");
+							PrintHintText(owner,"[HEALING MODE]\nMode: Melee");
 						}
 						case 2:
 						{
-							if(new_ammo > 0)
-								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Ranged", new_ammo);
-							else
-								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: Ranged");
+							PrintHintText(owner,"[HEALING MODE]\nMode: Ranged");
 						}
 					}
 				}
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
-			}
-		}
-		else if(What_type_Heal == 4.0 && GetAmmo(owner, 22) > 0)
-		{
-			//Special medigun that sucks hp, but also reduces has cooldown.
-			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 22) > 0 && b_ThisWasAnNpc[healTarget] && !b_NpcHasDied[healTarget] && GetTeam(healTarget) != TFTeam_Red)
-			{
-				float flDrainRate = 500.0;
-				if (b_thisNpcIsARaid[healTarget])
-				{
-					flDrainRate *= 0.65;
-				}
-				
-				MedigunChargeUber(owner, medigun, 5.0);
-
-				int new_ammo = GetAmmo(owner, 22);
-				
-				flDrainRate *= Attributes_Get(medigun, 1, 1.0);
-				flDrainRate *= Attributes_GetOnWeapon(owner, medigun, 8, true);
-				//there are some updgras that require medigun damage only!
-				
-				target_sucked_long[healTarget] += 0.07;
-				
-				if(target_sucked_long[healTarget] >= 4.0)
-				{
-					target_sucked_long[healTarget] = 4.0;
-				}
-					
-				if(Handle_on_target_sucked_long[healTarget])
-				{
-					delete Revert_target_sucked_long_timer[healTarget];
-				}
-				Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
-				Handle_on_target_sucked_long[healTarget] = true;
-					
-				flDrainRate *= target_sucked_long[healTarget];
-					
-				static float Entity_Position[3];
-				WorldSpaceCenter(healTarget, Entity_Position );
-					
-				SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
-
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-				if (flChargeLevel==1.0) 
-				{
-					SetEntProp(medigun, Prop_Send, "m_bChargeRelease", 1);
-				}
-				new_ammo -= 6;
-
-#if defined ZR
-				SetAmmo(owner, 22, new_ammo);
-				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
-#endif				
-				if(medigun_hud_delay[owner] < GetGameTime())
-				{
-					if(!gb_medigun_on_reload[owner])
-					{
-						PrintHintText(owner,"Medigun Medicine Fluid: %iml\n Press RELOAD to Enable Fast Cooldown system.\n Press M2 to Shoot Energy projectiles.", new_ammo);
-					}
-					else
-					{
-						PrintHintText(owner,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
-					}
-					medigun_hud_delay[owner] = GetGameTime() + 0.5;
-				}
-			}
-			else if (gb_medigun_on_reload[owner])
-			{
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-						
-				if (flChargeLevel > 0.0) 
-				{
-					float heatrefresh = 0.05;
-
-					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
-					
-					flChargeLevel -= heatrefresh*0.1;
-					
-					if (flChargeLevel < 0.0)
-					{
-						flChargeLevel = 0.0;
-					}
-					
-					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
-				else
-				{
-					
-					gb_medigun_on_reload[owner] = false;
-				}
-			}
-			else if (GetEntProp(medigun, Prop_Send, "m_bChargeRelease")==1)
-			{
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-				if (flChargeLevel > 0.0) 
-				{
-					float heatrefresh = 0.05;
-
-					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
-					
-					flChargeLevel -= heatrefresh*0.1;
-					
-					if (flChargeLevel < 0.0)
-					{
-						flChargeLevel = 0.0;
-					}
-					
-					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
-			}
-			else 
-			{
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-						
-				if (flChargeLevel > 0.0) 
-				{
-					float heatrefresh = 0.05;
-
-					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
-
-					flChargeLevel -= heatrefresh*0.1;
-
-					if (flChargeLevel < 0.0)
-					{
-						flChargeLevel = 0.0;
-					}
-					
-					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
 			}
 		}
 	}

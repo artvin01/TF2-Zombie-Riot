@@ -705,6 +705,9 @@ stock void SetAmmo(int client, int type, int ammo)
 {
 	if(type == Ammo_Metal)
 	{
+		if(ammo < 10)
+			ammo = 10;
+		//Never ever set lower then 1!!!
 		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
 	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
@@ -4048,7 +4051,7 @@ stock char[] CharPercent(float value)
 
 stock bool AmmoBlacklist(int Ammotype)
 {
-	if(Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
+	if(Ammotype >= 0 && Ammotype<= 2 || Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
 	{
 		return false;
 	}
