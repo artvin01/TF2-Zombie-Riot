@@ -1197,27 +1197,27 @@
 	}
 	"Juggernog Recieved"
 	{
-		"en" 		"JUGGERNOG! 1.15x Damage resistance and +100HP"
-		"fr" 		"JUGGERNOG! 1.15x résistance contre les dégats, +100HP"
-		"ru" 		"ДЖАГГЕР-ФАНТА! 1.15x сопротивления урону и +100 ед. здоровья"
-		"de"		"JUGGERNOG!	1.15-fache Schaden Resistenz und +100HP"
-		"pt"		"JUGGERNOG! 1.15x Resistência a danos e +100HP"
-		"nl"		"JUGGERNOG! 1.15x Schade resistentie en +100 levenspunten"
+		"en" 		"JUGGERNOG! 15％ Damage resistance and +100HP"
+		"fr" 		"JUGGERNOG! 15％ résistance contre les dégats, +100HP"
+		"ru" 		"ДЖАГГЕР-ФАНТА! 15％ сопротивления урону и +100 ед. здоровья"
+		"de"		"JUGGERNOG!	15％ Schaden Resistenz und +100HP"
+		"pt"		"JUGGERNOG! 15％ Resistência a danos e +100HP"
+		"nl"		"JUGGERNOG! 15％ Schade resistentie en +100 levenspunten"
 		"chi" 		"身体强化:获得伤害抗性和生命值提升"
 	}
 	"Double Tap Recieved"
 	{
-		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
-		"fr" 		"DOUBLE-TOUCHE! Attaques 1.15x plus rapides, 1.15x dégats par vos bâtiments."
-		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки и урона у построек"
-		"pt"		"TOQUE DUPLO! 1.15x Velocidade de Ataque extra e Dano com construções"
-		"nl"		"DUBBELTIKKEN! 1.15 Extra Aanvalssnelheid en Gebouwsschade"
+		"en" 		"DOUBLE TAP! 17％ Extra attack speed and Building Damage"
+		"fr" 		"DOUBLE-TOUCHE! Attaques 17％ plus rapides, 17％ dégats par vos bâtiments."
+		"ru" 		"ПИФ-ПАФ! 17％ дополнительной скорости атаки и урона у построек"
+		"pt"		"TOQUE DUPLO! 17％ Velocidade de Ataque extra e Dano com construções"
+		"nl"		"DUBBELTIKKEN! 17％ Extra Aanvalssnelheid en Gebouwsschade"
 		"chi" 		"精神强化:攻击速度提升、建筑伤害提升"
 	}	
 	"Speed Cola Recieved"
 	{
-		"en" 		"SPEED COLA! 1.3x Extra reload, switchspeed and Mana regen"
-		"fr" 		"SPEED COLA! 1.3x vitesse de recharge de munitions et de Mana, 1.3x vitesse de changement d'arme."
+		"en" 		"SPEED COLA! 1.42x Extra reload, switchspeed and Mana regen"
+		"fr" 		"SPEED COLA! 1.42x vitesse de recharge de munitions et de Mana, vitesse de changement d'arme."
 	}
 	"Deadshot Daiquiri Recieved"
 	{
@@ -1228,7 +1228,7 @@
 	}
 	"Widows Wine Recieved"
 	{
-		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
+		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
 		"fr" 		"VIN DES VEUVES! Protection rechargable qui bloque 75％ des dégats et affaiblit les ennemis quand activé.\nLes ennemis affaiblits recoivent 35％ plus de dégats et se ralentissent considérablement."
 		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
 		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
@@ -1723,39 +1723,19 @@
 	}
 	"Raidboss"
 	{
-		"en" 		"Raidboss"
-		"fr" 		"Boss de Raid"
-		"ru" 		"Рейд Босс"
-		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
-		"nl"		"Invalsbaas"
-		"chi"		"世界级Boss"
+		"en" 		"RAID"
 	}
 	"Superboss"
 	{
-		"en" 		"Superboss"
-		"ru" 		"Супер босс"
-		"fr" 		"Super Boss"
-		"chi"		"Super-Boss"
+		"en" 		"Super"
 	}
 	"Power"
 	{
-		"en" 		"Power"
-		"fr" 		"Pouvoir"
-		"ru" 		"Сила"
-		"de"		"Kraft"
-		"pt"		"Força"
-		"nl"		"Kracht"
-		"chi"       "力量"
+		"en" 		" ✹"
 	}
 	"TIME LEFT"
 	{
-		"en" 		"TIME LEFT"
-		"fr" 		"TEMPS RESTANT"
-		"ru" 		"ОСТАЛОСЬ ВРЕМЕНИ"
-		"de"		"ZEIT VERBLEIBT"
-		"pt"		"TEMPO RESTANTE"
-		"nl"		"OVERIGE TIJD"
-		"chi"       "剩余时间"
+		"en" 		"⏱ "
 	}	
 	"Father Grigori No Talk"
 	{
@@ -3509,6 +3489,14 @@
 	"Disable Status Lastmann Music Explain"
 	{
 		"en" 	"This will disable lastman music for you during raidbosses music"
+	}
+	"DamageHud Setting"
+	{
+		"en" 	"Always Display Damage Hud"
+	}
+	"DamageHud Setting Explain"
+	{
+		"en" 	"Enabling this setting will force ZR damage numbers, even if you enabled the TF2 damage number setting."
 	}
 	"Fix First Sound Play Manually"
 	{

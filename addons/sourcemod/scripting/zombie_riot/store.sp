@@ -2126,7 +2126,18 @@ public void ReShowSettingsHud(int client)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
+
 	menu2.AddItem("-96", buffer);
+	FormatEx(buffer, sizeof(buffer), "%T", "DamageHud Setting", client);
+	if(b_DisplayDamageHudSetting[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-97", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%T", "Fix First Sound Play Manually", client);
 	FormatEx(buffer, sizeof(buffer), "%s", buffer);
@@ -2628,6 +2639,19 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 						b_LastManDisable[client] = true;
 					}
 					PrintToChat(client,"%t", "Disable Status Lastmann Music Explain");
+					ReShowSettingsHud(client);
+				}
+				case -97:
+				{
+					if(b_DisplayDamageHudSetting[client])
+					{
+						b_DisplayDamageHudSetting[client] = false;
+					}
+					else
+					{
+						b_DisplayDamageHudSetting[client] = true;
+					}
+					PrintToChat(client,"%t", "DamageHud Setting Explain");
 					ReShowSettingsHud(client);
 				}
 				case -91: 
