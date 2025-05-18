@@ -115,7 +115,7 @@ methodmap VausTechicus < CClotBody
 		func_NPCThink[npc.index] = VausTechicus_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		VausMagicaShieldGiving(npc, GetGameTime()); //Give shield on spawn
+		VausTechicusShieldGiving(npc, GetGameTime()); //Give shield on spawn
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(0.0, 15.0);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
