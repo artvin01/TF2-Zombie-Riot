@@ -402,6 +402,16 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					}
 
+					if(enemy.Is_Boss >= 1 || enemy.Is_Health_Scaled >= 1)
+					{		
+						//If its any of these, dont scale HP
+					}
+					else if(GetTeam(entity_Spawner) != 2 && MultiGlobalHealth >= 1.0)
+					{
+						//if they are an enemy, and the scaling is too high.
+						//i put this here instead of in waves.sp as some NPCS dont have an HP defined in the config, resulting in no HP gain.
+						ScalingMultiplyEnemyHpGlobalScale(entity_Spawner);
+					}
 					if(GetTeam(entity_Spawner) == 2)
 					{
 						Rogue_AllySpawned(entity_Spawner);

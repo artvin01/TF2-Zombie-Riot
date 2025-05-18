@@ -6672,16 +6672,16 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		DispatchKeyValue(prop, "spawnflags", "2");
 		if(npc.m_bIsGiant)
 		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 1)
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
 			{
-				DispatchKeyValue(prop, "modelscale", "1.2");
+				DispatchKeyValue(prop, "modelscale", "1.1");
 			}
 			else
 				DispatchKeyValue(prop, "modelscale", "1.6");
 		}
 		else
 		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 1)
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
 			{
 				DispatchKeyValue(prop, "modelscale", "0.8");
 			}
