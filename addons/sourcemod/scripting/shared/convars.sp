@@ -36,6 +36,7 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
 
 	ConVar_Add("tf_scout_air_dash_count", "-1"); //Remove doublejumps
+	//todo: update this everyone someone switches to scout, or put the no doublejump flag on all scout weapons
 	ConVar_Add("tf_allow_player_use", "1"); //Allow use!
 	ConVar_Add("tf_flamethrower_boxsize", "0.0"); //Flamethrower Particles are useless in ZR
 
