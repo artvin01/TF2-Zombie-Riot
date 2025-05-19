@@ -737,8 +737,8 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 		{
 			damage = 40.0;
 		}
-		
-		if(Item_Index != 155)
+
+		if(Attributes_Get(weapon, 4042, 0.0) != 1.0)
 		{
 			damage *= WeaponDamageAttributeMultipliers(weapon);
 		}

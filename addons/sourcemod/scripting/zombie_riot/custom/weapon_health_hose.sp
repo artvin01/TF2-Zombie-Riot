@@ -275,15 +275,7 @@ public bool Hose_Heal(int owner, int entity, float amt)
 		amt *= 1.65;
 	}
 		
-	int new_ammo = GetAmmo(owner, 21);
-	int ammoSubtract;
-	ammoSubtract = HealEntityGlobal(owner, entity, amt, 1.0, 0.0, _, new_ammo);	
-	
-	ApplyStatusEffect(owner, entity, "Healing Resolve", 2.0);
-	if(ammoSubtract <= 0)
-	{
-		return false;
-	}
+	HealEntityGlobal(owner, entity, amt, 1.0, 0.0);	
 
 	if(flHealth <= flMaxHealth * 0.5)
 	{
@@ -295,13 +287,7 @@ public bool Hose_Heal(int owner, int entity, float amt)
 		}
 		DisplayCritAboveNpc(entity, owner, PlaySound, .minicrit = true); //Display crit above head
 	}
-		
-	new_ammo -= ammoSubtract;
-	if(ammoSubtract > 0)
-		ReduceMediFluidCost(owner, ammoSubtract);
-	SetAmmo(owner, 21, new_ammo);
 	HealEntityGlobal(owner, owner, amt * SelfHealMult, 1.0, 0.0);	
-	CurrentAmmo[owner][21] = GetAmmo(owner, 21);
 	return true;
 }
 
@@ -404,65 +390,47 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 	EndPlayerOnlyLagComp(client);
 	if(IsValidAlly(client, target))
 	{
-		int ammo_amount_left = GetAmmo(client, 21);
-		if(ammo_amount_left > 0)
+		float HealAmmount = 20.0;
+
+		if(GetEntPropFloat(weapon, Prop_Send, "m_flChargedDamage") >= 149.0)
 		{
-			float HealAmmount = 20.0;
-
-			if(GetEntPropFloat(weapon, Prop_Send, "m_flChargedDamage") >= 149.0)
-			{
-				HealAmmount *= 3.0;
-			}
-
-			HealAmmount *= Attributes_GetOnWeapon(client, weapon, 8, true);
-
-			float GameTime = GetGameTime();
-			if(f_TimeUntillNormalHeal[target] > GameTime)
-			{
-				HealAmmount *= 0.25; //make sure they dont get the full benifit if hurt recently.
-			}
-			
-			if(ammo_amount_left > RoundToCeil(HealAmmount))
-			{
-				ammo_amount_left = RoundToCeil(HealAmmount);
-			}
-
-			float flHealth = float(GetEntProp(target, Prop_Data, "m_iHealth"));
-			float flMaxHealth;
-			
-			flMaxHealth = float(ReturnEntityMaxHealth(target));
-
-			flMaxHealth *= 1.15;
-			
-			int Health_To_Max;
-			
-			Health_To_Max = RoundToNearest(flMaxHealth) - RoundToNearest(flHealth);
-
-			if(Health_To_Max < RoundToCeil(HealAmmount))
-			{
-				ammo_amount_left = Health_To_Max;
-			}
-
-			HealEntityGlobal(client, target, float(ammo_amount_left), 1.15, 1.0, _);
-			
-			ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-
-			if(target <= MaxClients)
-				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-
-			SetGlobalTransTarget(client);
-			if(target <= MaxClients)
-				PrintHintText(client, "%t", "You healed for", target, ammo_amount_left);
-
-			if(ammo_amount_left > 0)
-				ReduceMediFluidCost(client, ammo_amount_left);
-			int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
-			SetAmmo(client, 21, new_ammo);
-			for(int i; i<Ammo_MAX; i++)
-			{
-				CurrentAmmo[client][i] = GetAmmo(client, i);
-			}
+			HealAmmount *= 3.0;
 		}
+
+		HealAmmount *= Attributes_GetOnWeapon(client, weapon, 8, true);
+
+		float GameTime = GetGameTime();
+		if(f_TimeUntillNormalHeal[target] > GameTime)
+		{
+			HealAmmount *= 0.25; //make sure they dont get the full benifit if hurt recently.
+		}
+		float flHealth = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+		float flMaxHealth;
+		
+		flMaxHealth = float(ReturnEntityMaxHealth(target));
+
+		flMaxHealth *= 1.15;
+		
+		int Health_To_Max;
+		
+		Health_To_Max = RoundToNearest(flMaxHealth) - RoundToNearest(flHealth);
+
+		if(Health_To_Max < RoundToCeil(HealAmmount))
+		{
+			HealAmmount = float(Health_To_Max);
+		}
+
+		HealEntityGlobal(client, target, HealAmmount, 1.15, 1.0, _);
+		
+		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
+
+		if(target <= MaxClients)
+			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+
+		SetGlobalTransTarget(client);
+		if(target <= MaxClients)
+			PrintHintText(client, "%t", "You healed for", target, HealAmmount);
+
 		
 		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);
 		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);

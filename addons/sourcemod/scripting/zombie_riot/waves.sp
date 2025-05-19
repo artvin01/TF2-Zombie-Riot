@@ -1828,10 +1828,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
 				wave.EnemyData.Health = Tempomary_Health;
 			}
-			else if(MultiGlobalHealth > 1.0)
-			{
-				wave.EnemyData.Health = RoundToNearest(float(wave.EnemyData.Health) * MultiGlobalHealth);
-			}
 		
 			for(int i; i<count; i++)
 			{
@@ -1877,6 +1873,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
+			DeleteShadowsOffZombieRiot();
 			Citizen_WaveStart();
 			ExcuteRelay("zr_wavedone");
 			Waves_ResetCashGiveWaveEnd();
@@ -3079,6 +3076,14 @@ void DoGlobalMultiScaling()
 	}
 }
 
+void ScalingMultiplyEnemyHpGlobalScale(int iNpc)
+{
+	float Maxhealth = float(ReturnEntityMaxHealth(iNpc));
+	Maxhealth *= MultiGlobalHealth;
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToNearest(Maxhealth));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToNearest(Maxhealth));
+}
+
 void Waves_ForceSetup(float cooldown)
 {
 	Cooldown = GetGameTime() + cooldown;
@@ -3521,6 +3526,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 	{
 		case 0:	// Normal
 		{
+			DeleteShadowsOffZombieRiot();
 			InSetup = false;
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
 			GameRules_SetProp("m_bInSetup", false);
@@ -3538,6 +3544,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 		}
 		case 1:	// Ready Up
 		{
+			DeleteShadowsOffZombieRiot();
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
 			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
@@ -3579,6 +3586,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 				}	
 			}
 			AlreadySetWaiting = true;
+			DeleteShadowsOffZombieRiot();
 			SDKCall_ResetPlayerAndTeamReadyState();
 			
 			GameRules_SetProp("m_bInWaitingForPlayers", true);

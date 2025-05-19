@@ -2554,4 +2554,9 @@
 	{
 		"en" 	"A being made out of chaos and void combined..."
 	}
+	"Upgrades stack with each other"
+	{
+		"en" "Upgrades stack with each other!"
+		"es" "LAS MEJORAS SE ACUMULAN ENTRE SI!!"
+	}
 }

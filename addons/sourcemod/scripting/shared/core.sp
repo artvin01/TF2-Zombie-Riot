@@ -708,10 +708,10 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnPluginStart()
 {
 #if defined ZR
-	CurrentAmmo[0] = { 1, 1, 1, 200, 1, 1, 1,
+	CurrentAmmo[0] = { 1, 1, 1, 600, 1, 1, 1,
 	48,
 	24,
-	600,
+	200,
 	16,
 	20,
 	32,
@@ -1120,7 +1120,10 @@ void DeleteShadowsOffZombieRiot()
 
 	if(IsValidEntity(entityshadow))
 	{
-		RemoveEntity(entityshadow);
+		SetVariantInt(1); 
+		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
+		//RemoveEntity(entityshadow);
+		return;
 	}
 	entityshadow = CreateEntityByName("shadow_control");
 	

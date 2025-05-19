@@ -213,32 +213,6 @@ int AmmoboxUsed(int client, int entity)
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 				return true;
 			}
-			else if(weaponindex == 211 || weaponindex == 998)
-			{
-				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				AddAmmoClient(client, 21 ,_,2.0);
-				Ammo_Count_Used[client] += 1;
-				for(int i; i<Ammo_MAX; i++)
-				{
-					CurrentAmmo[client][i] = GetAmmo(client, i);
-				}	
-				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				return true;
-			}
-			else if(weaponindex == 411)
-			{
-				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				AddAmmoClient(client, 22 ,_,2.0);
-				Ammo_Count_Used[client] += 1;
-				for(int i; i<Ammo_MAX; i++)
-				{
-					CurrentAmmo[client][i] = GetAmmo(client, i);
-				}	
-				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				return true;
-			}
 			else if(weaponindex == 441 || weaponindex == 35)
 			{
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");

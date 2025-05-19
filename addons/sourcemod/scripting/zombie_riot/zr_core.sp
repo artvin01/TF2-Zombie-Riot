@@ -1300,7 +1300,8 @@ public Action CommandDebugHudTest(int client, int args)
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
-	CheckAlivePlayers(0, 0, true);
+//	CheckAlivePlayers(0, 0, true);
+	DoGlobalMultiScaling();
 
 	return Plugin_Handled;
 }

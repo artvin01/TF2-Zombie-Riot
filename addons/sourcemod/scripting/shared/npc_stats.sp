@@ -5604,7 +5604,7 @@ public void NpcBaseThinkPost(int iNPC)
 	static float SimulationTimeDelay;
 	if(!SimulationTimeDelay)
 	{
-		SimulationTimeDelay = (0.05 * TickrateModify);
+		SimulationTimeDelay = (0.05/* * TickrateModify*/);
 		//calc once
 	}
 	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime() + SimulationTimeDelay);
@@ -5835,12 +5835,16 @@ public void NpcBaseThink(int iNPC)
 		HealEntityGlobal(iNPC, iNPC, float(i_HpRegenInBattle[iNPC]), 1.0, 0.0, HEAL_SELFHEAL | HEAL_PASSIVE_NO_NOTIF);
 		RPGNpc_UpdateHpHud(iNPC);
 	}
+#endif
 	if(f_InBattleDelay[iNPC] < GetGameTime())
 	{
-		f_InBattleDelay[iNPC] = GetGameTime() + 0.25;
+		StatusEffect_TimerCallDo(iNPC);
+		f_InBattleDelay[iNPC] = GetGameTime() + 0.4;
+#if defined RPG
 		HealOutOfBattleNpc(iNPC);
-	}
+		HealOutOfBattleNpc(iNPC);
 #endif
+	}
 
 	if(CvarDisableThink.BoolValue)
 		return;
@@ -6672,16 +6676,16 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		DispatchKeyValue(prop, "spawnflags", "2");
 		if(npc.m_bIsGiant)
 		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 1)
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
 			{
-				DispatchKeyValue(prop, "modelscale", "1.2");
+				DispatchKeyValue(prop, "modelscale", "1.1");
 			}
 			else
 				DispatchKeyValue(prop, "modelscale", "1.6");
 		}
 		else
 		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 1)
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
 			{
 				DispatchKeyValue(prop, "modelscale", "0.8");
 			}

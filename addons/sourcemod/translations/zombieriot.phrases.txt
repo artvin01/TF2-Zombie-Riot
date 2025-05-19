@@ -1973,7 +1973,7 @@
 	"Mount Menu Explain"
 	{
 		"en"		"When you crouch and M2 a building, you mount it!\nYou see it in your armor hud as a 2 letter name!\nLeft is mounted building, right is your perk."
-		"es"		"Cuando te agachas y le haces click derecho a una construccion, la montas!\nLa ves en tu hud con un nombre de 2 letras!\nIzquierda - Construccion montada, Derecha - Beneficio actual."
+		"es"		"Cuando te agachas y le haces click derecho a una construccion, la montas!\nLa ves en tu hud con un nombre de 2 letras!\nIzq. - Objeto Montado | Drcha. - Beneficio actual."
 	}	
 	"Support Buildings"
 	{
@@ -3794,44 +3794,52 @@
 	"Blacksmith Tooltip"
 	{
 		"en"		"to apply a tinker effect to your active weapon."
+		"es"		"para reforjar tu arma."
 	}
 	"Blacksmith Used"
 	{
 		"en"		"Someone used your Tinker Station, you gain +20 Cash!"
+		"es"		"Alguien uso tu Yunque, ganas +20 de dinero!"
 		"fr"		"Quelqu'un a utilisé votre Station de Forgerie, vous obtenez +20 Argent!"
 		"chi"		"有人用了你的铁砧，+20现金！"
 	}
 	"Blacksmith Maxed"
 	{
 		"en"		"Maximum amount of attributes applied to this weapon"
+		"es"		"Cantidad de atributos maxima alcanzada"
 		"fr"		"Le maximum d'effets de forge est atteint sur cet arme."
 		"chi"		"抵达武器属性上限！"
 	}
 	"Blacksmith Underleveled"
 	{
 		"en"		"You can not tinker this weapon"
+		"es"		"No puedes reforjar esta arma."
 		"fr"		"Vous ne pouvez pas appliquer un effet de forge sur cet arme."
 		"chi"		"此武器无法被修改。"
 	}
 	"The Blacksmith Failed!"
 	{
 		"en"		"The builder is no longer alive or nothing is on this!"
+		"es"		"El constructor no esta vivo o no hay nada en esto!"
 	}
 	"Blacksmith No Attribs"
 	{
 		"en"		"You have no tinker stats."
+		"es"		"Tu arma no esta reforjada."
 		"fr"		"Vous n'avez pas d'effet de forge."
 		"chi"		"你没有任何匠工效果。"
 	}
 	"Removed Tinker Attributes"
 	{
 		"en"		"Removed Tinker Attributes"
+		"es"		"Arma des-enforjada"
 		"fr"		"Enlevé les effets de forge."
 		"chi"		"已移除匠工效果。"
 	}
 	"View Modifiers"
 	{
 		"en"	"View Modifiers"
+		"es"	"Ver Reforja actual"
 		"fr"	"Voir effets de forge"
 		"de" 	"oha ein deutscher!"
 		"chi"	"查看效果"
@@ -3918,36 +3926,42 @@
 	"Anvil Menu Main"
 	{
 		"en"	"What do you wish to do with the Anvil?"
+		"es"	"Que deseas hacer con el yunque?"
 		"fr"	"Que voulez-vous faire avec l'enclume?"
 		"chi"	"您想对铁砧做什么？"
 	}
 	"Re-Roll Weapon Stats"
 	{
 		"en"	"Re-Roll Weapon Stats"
+		"es"	"Reforjar tu arma"
 		"fr"	"Obtenir des effets aléatoires"
 		"chi"	"获取新属性"
 	}
 	"Remove Weapon Stats"
 	{
 		"en"	"Remove Weapon Stats"
+		"es"	"Des-enforjar tu arma"
 		"fr"	"Enlever les effets de cet arme"
 		"chi"	"移除武器属性"
 	}
 	"Display Current Stats"
 	{
 		"en"	"Display Current Stats"
+		"es"	"Ver reforja actual"
 		"fr"	"Voir les effets de cet arme"
 		"chi"	"查看当前属性"
 	}
 	"Custom Models"
 	{
 		"en"	"Custom Models"
+		"es"	"Modelos Personalizados"
 		"fr"	"Modèles personnalisés"
 		"chi"	"自定义模型"
 	}
 	"TF2 Class"
 	{
 		"en"	"TF2 Class"
+		"es"	"Clase de TF2"
 		"fr"	"Classes TF2"
 		"chi"	"兵种模型"
 	}
@@ -3966,6 +3980,7 @@
 	"Skeleboy"
 	{
 		"en"	"Skeleboy"
+		"es"	"Esqueletico"
 		"fr"	"M. Squelette"
 		"chi"	"骷髅"
 	}
@@ -3978,6 +3993,7 @@
 	"Fat HHH"
 	{
 		"en"	"Fat HHH"
+		"es"	"HHH Gordito"
 	}
 	"Iberia & Nemal"
 	{
@@ -4026,6 +4042,7 @@
 	"Class Vote Citizen Do"
 	{
 		"en"	"The rebel will pick whatever has the most player votes, from the top down."
+		"es"	"El rebelde elegira la clase con mas votos, mira abajo de esto."
 	}
 	"DPS Class"
 	{

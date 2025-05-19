@@ -177,7 +177,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 	{
 		// Reduce damage taken as new players in extreme difficulties
-		if(Level[victim] < 29 && Database_IsCached(victim))
+		if(Level[victim] < 10 && Database_IsCached(victim))
 		{
 			int rank = Waves_GetLevel();
 			if(rank > Level[victim])
@@ -188,10 +188,10 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					reduce = 0.5;
 				
 				// Between 20-29 make it less of a spike between handicap and none
-				if(Level[victim] > 19)
-					reduce *= (29 - Level[victim]) * 0.1;
+				if(Level[victim] > 5)
+					reduce *= (9 - Level[victim]) * 0.1;
 
-				damage *= 1.0 - reduce;
+				damage *= (1.0 - reduce);
 			}
 		}
 	}
