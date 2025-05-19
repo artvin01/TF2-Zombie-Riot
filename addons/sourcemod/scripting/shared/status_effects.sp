@@ -385,6 +385,7 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
+			//dont delete it here, it will break other for loops.
 		//	E_AL_StatusEffects[victim].Erase(ArrayPosition);
 		}
 		else
