@@ -1348,4 +1348,26 @@
 	{
 		"en"	"Increases damage +15％\nBoosts attackspeed by +25％\nReduces Ark's Parry cooldown by 60％.\nResets Ark parry cooldown upon activation to 1 Sec.\n{crimson}However, you take 20％ more damage..."
 	}
+	"Purging Intention"
+	{
+		"en" "Purging Intention"
+	}
+	"Purging Intention Desc"
+	{
+		"en" "Uncureable.\nPurge is after you.\nYou gain Primal fear much faster."
+	}
+	"Primal Fear"
+	{
+		"en" "Primal Fear"
+	}
+	"Primal Fear Desc"
+	{
+		"en" "Uncureable.\nGain a multiplicative damage vulnerability.\nStacks upto 2x damage taken.\nAvoid purge to lower this overtime."
+	}
+	//This is just used for cooldown stuff.
+	"Primal Fear Hide"
+	{
+		"en" "Primal Fear Hide"
+	}
+
 }
