@@ -685,6 +685,10 @@
 	"Infected Silvester"
 	{
 		"en" 		"Infected Silvester"
+		"es"		"Silvester Infectado"
+		"ru" 		"Истинный Термоядерный Воин"
+		"pt"		"Verdadeiro Guerreiro de Fusão"
+		"nl"		"Ware Fuzie Krijger"
 	}
 	"Silvester's Past Afterimage"
 	{
