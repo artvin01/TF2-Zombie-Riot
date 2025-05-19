@@ -166,7 +166,7 @@ methodmap FallenWarrior < CClotBody
 
 	public FallenWarrior(float vecPos[3], float vecAng[3], int ally)
 	{
-		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.4", MinibossHealthScaling(100), ally));
+		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.4", MinibossHealthScaling(100.0), ally));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup"); 

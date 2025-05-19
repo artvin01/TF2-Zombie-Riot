@@ -134,7 +134,7 @@ methodmap JohnTheAllmighty < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		npc.m_iActualHealth = StringToInt(MinibossHealthScaling(160));
+		npc.m_iActualHealth = StringToInt(MinibossHealthScaling(160.0));
 
 		npc.m_flNextMeleeAttack = 0.0;
 		for(int client1 = 1; client1 <= MaxClients; client1++)

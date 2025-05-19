@@ -705,6 +705,9 @@ stock void SetAmmo(int client, int type, int ammo)
 {
 	if(type == Ammo_Metal)
 	{
+		if(ammo < 10)
+			ammo = 10;
+		//Never ever set lower then 1!!!
 		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
 	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
@@ -1092,6 +1095,11 @@ stock int GiveWearable(int client, int index)
 }
 
 stock bool AreVectorsEqual(const float vVec1[3], const float vVec2[3])
+{
+	return (vVec1[0] == vVec2[0] && vVec1[1] == vVec2[1] && vVec1[2] == vVec2[2]);
+} 
+
+stock bool AreVectorsEqualAprox(const float vVec1[3], const float vVec2[3])
 {
 	return (vVec1[0] == vVec2[0] && vVec1[1] == vVec2[1] && vVec1[2] == vVec2[2]);
 } 
@@ -2865,12 +2873,12 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 	{
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
-			if(!IgnoreLevelLimit && Database_IsCached(client) && Level[client] <= 30)
+			if(!IgnoreLevelLimit && Database_IsCached(client) && Level[client] <= 20)
 			{
 				float CurrentLevel = float(Level[client]);
-				CurrentLevel += 30.0;
+				CurrentLevel += 20.0;
 				//so lvl 0 is atleast resulting in 0.5 Scaling
-				ScaleReturn += (CurrentLevel / 60.0);
+				ScaleReturn += (CurrentLevel / 40.0);
 			}
 			else
 			{
@@ -4043,7 +4051,7 @@ stock char[] CharPercent(float value)
 
 stock bool AmmoBlacklist(int Ammotype)
 {
-	if(Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
+	if(Ammotype >= 0 && Ammotype<= 2 || Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
 	{
 		return false;
 	}

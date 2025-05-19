@@ -1120,7 +1120,10 @@ void DeleteShadowsOffZombieRiot()
 
 	if(IsValidEntity(entityshadow))
 	{
-		RemoveEntity(entityshadow);
+		SetVariantInt(1); 
+		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
+		//RemoveEntity(entityshadow);
+		return;
 	}
 	entityshadow = CreateEntityByName("shadow_control");
 	
