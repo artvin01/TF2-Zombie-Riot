@@ -385,7 +385,7 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+		//	E_AL_StatusEffects[victim].Erase(ArrayPosition);
 		}
 		else
 		{
@@ -3999,7 +3999,7 @@ void StatusEffect_TimerCallDo(int victim)
 		}
 		if(Apply_MasterStatusEffect.TimerRepeatCall_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.TimerRepeatCall_Func)
 		{
-			//We have a valid function ignore the original value.
+			
 			Call_StartFunction(null, Apply_MasterStatusEffect.TimerRepeatCall_Func);
 			Call_PushCell(victim);
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
