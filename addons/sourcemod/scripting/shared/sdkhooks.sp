@@ -599,6 +599,12 @@ public void OnPostThink(int client)
 		has_mage_weapon[client] = true;	//now force the mana hud even if your not a mage. this only applies to non mages if you got overmana, and the only way you can get overmana without a mage weapon is if you got hit by ruina's debuff.
 	}
 
+	if(f_InBattleDelay[client] < GetGameTime())
+	{
+		//re using NPC value.
+		StatusEffect_TimerCallDo(client);
+		f_InBattleDelay[client] = GetGameTime() + 0.4;
+	}
 	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;

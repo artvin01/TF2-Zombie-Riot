@@ -3130,7 +3130,6 @@
 		"en" "Your mana overloads, you cannot contain it.\nYou are slowed for some time heavily, a ruinan cannon strikes onto your location after sometime.\nDamage depends on your Max mana."
 		"es" "Tu mana se sobrecarga, no puedes contenerlo.\nEres ralentizado temporalmente, y un Cañon Ruiniaco es marcado en tu posicion.\nEl daño depende de tu mana maximo."
 	}
-
 	"Vhxis"
 	{
 		"en"	"Vhxis"

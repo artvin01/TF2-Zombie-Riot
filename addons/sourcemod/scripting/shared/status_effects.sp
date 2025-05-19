@@ -38,6 +38,7 @@ enum struct StatusEffect
 	Function OnTakeDamage_DealFunc;
 	Function Status_SpeedFunc;
 	Function HudDisplay_Func;
+	Function TimerRepeatCall_Func; //for things such as regen. calls at a fixed 0.4.
 	Function OnTakeDamage_PostVictim;
 	Function OnTakeDamage_PostAttacker;
 
@@ -162,6 +163,7 @@ void InitStatusEffects()
 	StatusEffects_Freeplay3();
 	StatusEffects_Modifiers();
 	StatusEffects_Explainelemental();
+	StatusEffects_Purge();
 }
 
 static int CategoryPage[MAXTF2PLAYERS];
@@ -383,7 +385,8 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			//dont delete it here, it will break other for loops.
+		//	E_AL_StatusEffects[victim].Erase(ArrayPosition);
 		}
 		else
 		{
@@ -3975,6 +3978,40 @@ void StatusEffects_StatusEffectListOnly()
 }
 
 
+void StatusEffect_TimerCallDo(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+	
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	//No debuffs or status effects, skip.
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i<length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(i);
+			i--;
+			length--;
+			continue;
+		}
+		if(Apply_MasterStatusEffect.TimerRepeatCall_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.TimerRepeatCall_Func)
+		{
+			
+			Call_StartFunction(null, Apply_MasterStatusEffect.TimerRepeatCall_Func);
+			Call_PushCell(victim);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+			Call_Finish();
+		}
+	}
+
+	if(length < 1)
+		delete E_AL_StatusEffects[victim];
+}
 void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage, int damagetype)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -4840,4 +4877,108 @@ void StatusEffects_Explainelemental()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
+}
+
+
+int PrimalFearIndex;
+void StatusEffects_Purge()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Purging Intention");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "☠");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.ElementalLogic				= true;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Primal Fear");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⚠");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.ElementalLogic				= true;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnTakeDamage_TakenFunc 	= PrimalFear_Func;
+	data.TimerRepeatCall_Func 		= PrimalFear_FuncTimer;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	PrimalFearIndex = StatusEffect_AddGlobal(data);
+
+	//This is used to determine when it allows to cool down primal fear!
+	strcopy(data.BuffName, sizeof(data.BuffName), "Primal Fear Hide");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.ElementalLogic				= true;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+}
+
+
+void PrimalFear_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(HasSpecificBuff(entity, "Primal Fear Hide"))
+		return;
+	NpcStats_PrimalFearChange(entity, -0.05);
+}
+
+float PrimalFear_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	return (basedamage * (Apply_StatusEffect.DataForUse));
+}
+
+stock void NpcStats_PrimalFearChange(int victim, float AddBuff)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(PrimalFearIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+		}
+		else
+		{
+			float NewBuffValue = Apply_StatusEffect.DataForUse;
+			NewBuffValue += AddBuff;
+
+			if(NewBuffValue >= 1.0)
+				NewBuffValue = 1.0;
+			else if(NewBuffValue <= 0.0)
+			{
+				//if its 0, or less
+				RemoveSpecificBuff(victim, "Primal Fear");
+				return;
+			}
+			
+			Apply_StatusEffect.DataForUse = NewBuffValue;
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+	if(E_AL_StatusEffects[victim].Length < 1)
+		delete E_AL_StatusEffects[victim];
 }
