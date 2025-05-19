@@ -308,9 +308,9 @@ void StrangerSelfDefense(Stranger npc, float gameTime, int target, float distanc
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 1.0;
+					float damageDealt = 2.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 25.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
