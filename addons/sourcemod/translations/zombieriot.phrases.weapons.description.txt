@@ -1526,7 +1526,7 @@
 	"Food Fridge Desc"
 	{
 		"en"	"Heals for 60 Health, scales with medic upgrades."
-		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas.
+		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas."
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 	}
 	"Village Desc"
