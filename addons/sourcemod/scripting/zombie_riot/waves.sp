@@ -1873,7 +1873,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 			}
 			
-			DeleteShadowsOffZombieRiot();
 			Citizen_WaveStart();
 			ExcuteRelay("zr_wavedone");
 			Waves_ResetCashGiveWaveEnd();
@@ -2582,7 +2581,6 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 			FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
 			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash AND experience you'll get!");
 			CreateTimer(0.1, Freeplay_ExtraCashTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-			DeleteShadowsOffZombieRiot();
 			Freeplay_Info = 0;
 		}
 		default:
@@ -3526,7 +3524,6 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 	{
 		case 0:	// Normal
 		{
-			DeleteShadowsOffZombieRiot();
 			InSetup = false;
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
 			GameRules_SetProp("m_bInSetup", false);
@@ -3544,7 +3541,6 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 		}
 		case 1:	// Ready Up
 		{
-			DeleteShadowsOffZombieRiot();
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
 			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);
@@ -3586,7 +3582,6 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 				}	
 			}
 			AlreadySetWaiting = true;
-			DeleteShadowsOffZombieRiot();
 			SDKCall_ResetPlayerAndTeamReadyState();
 			
 			GameRules_SetProp("m_bInWaitingForPlayers", true);

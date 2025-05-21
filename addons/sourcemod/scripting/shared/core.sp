@@ -1118,25 +1118,32 @@ void DeleteShadowsOffZombieRiot()
 	int entityshadow = -1;
 	entityshadow = FindEntityByClassname(entityshadow, "shadow_control");
 
-	if(IsValidEntity(entityshadow))
+	if(!IsValidEntity(entityshadow))
 	{
-		SetVariantInt(1); 
-		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
-		//RemoveEntity(entityshadow);
-		return;
+		entityshadow = CreateEntityByName("shadow_control");
+		DispatchSpawn(entityshadow);
 	}
-	entityshadow = CreateEntityByName("shadow_control");
 	
 	//Create new shadow entity, and make own own rules
 	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
-	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
 	if(IsValidEntity(entityshadow))
 	{
-		DispatchSpawn(entityshadow);
+		//This just badly hides shadows
+		/*
+		Whenever we set sv_cheats to 1, and to 0, it sets r_shadows_gamecontrol  to all clients to 0
+		to fix this we have to delete and remake the shadow controll EVERY TIME.
+		This is terrible
+		Colour atleast just hides ths shadows which is fine enough, i guess.
+
+		We cant set EF_NOSHADOW  on npcs for some reason either ,it is a dark day.
+		*/
+		DispatchKeyValue(entityshadow,"color", "255 255 255 0");
 		SetVariantInt(1); 
 		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
 	}
+
 }
+
 public void OnMapEnd()
 {
 #if defined ZR

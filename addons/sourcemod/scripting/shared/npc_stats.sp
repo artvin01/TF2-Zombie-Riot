@@ -399,12 +399,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			DispatchKeyValue(npc,	   "health",	 health);
 		}
 		
-		DispatchKeyValue(npc, "shadowcastdist", "1");
-		DispatchKeyValue(npc, "disablereceiveshadows", "1");
-		DispatchKeyValue(npc, "disableshadows", "1");
-		DispatchKeyValue(npc, "disableshadowdepth", "1");
-		DispatchKeyValue(npc, "disableselfshadowing", "1");  
-		
 		i_IsNpcType[npc] = NpcTypeLogic;
 		f_LastBaseThinkTime[npc] = GetGameTime();
 
@@ -2528,13 +2522,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 			DispatchKeyValueFloat(item, "modelscale", model_size);
 		}
-		/*
-		DispatchKeyValue(item, "shadowcastdist", "0");
-		DispatchKeyValue(item, "disablereceiveshadows", "1");
-		DispatchKeyValue(item, "disableshadows", "1");
-		DispatchKeyValue(item, "disableshadowdepth", "1");
-		DispatchKeyValue(item, "disableselfshadowing", "1");  
-		*/
 		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES|EF_NOSHADOW );
 		SetEntityMoveType(item, MOVETYPE_NONE);
