@@ -1713,7 +1713,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 #endif
-
+	
 #if defined ZR
 	if(TeutonType[victim])
 	{
@@ -1755,6 +1755,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 
+	if(HasSpecificBuff(victim, "Archo's Posion"))
+	{
+		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
+		{
+			damagetype = DMG_TRUEDAMAGE;
+		}
+	}
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
@@ -2199,7 +2206,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 			i_WasInJarate[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Jarated);
 			TF2_RemoveCondition(victim, TFCond_Jarated);
 		}
-		damage *= 1.35;
+	//	damage *= 1.35;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{

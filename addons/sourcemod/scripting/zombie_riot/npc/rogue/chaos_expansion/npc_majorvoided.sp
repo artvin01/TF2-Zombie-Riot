@@ -299,7 +299,7 @@ static void ClotDeath(int entity)
 		if(b_StaticNPC[other])
 			AddNpcToAliveList(other, 1);
 		
-		FreezeNpcInTime(other, 8.0);
+		FreezeNpcInTime(other, 4.0);
 	}
 
 	if(IsValidEntity(npc.m_iWearable1))

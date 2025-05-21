@@ -1964,7 +1964,19 @@ stock bool IsEven( int iNum )
 stock bool IsInvuln(int client, bool IgnoreNormalUber = false) //Borrowed from Batfoxkid
 {
 	if(!IsValidClient(client))
-		return true;
+	{
+		if(!IsValidEntity(client))
+		{
+			return false;
+		}
+		if(HasSpecificBuff(client, "Unstoppable Force"))
+			return true;
+
+		if(b_NpcIsInvulnerable[client])
+			return true;
+		
+		return false;
+	}
 
 	if(!IgnoreNormalUber)
 	{

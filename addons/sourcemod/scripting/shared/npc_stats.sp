@@ -4635,7 +4635,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(b_NpcIsInvulnerable[enemy] && !target_invul)
+			if(IsInvuln(enemy) && !target_invul)
 			{
 				return false;
 			}
@@ -10598,7 +10598,7 @@ void IsEntityInvincible_Shield(int entity)
 	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = 2;
 #endif
-	if(b_NpcIsInvulnerable[entity])
+	if(IsInvuln(entity, true))
 		NpcInvulShieldDisplay = 1;
 	
 	CClotBody npc = view_as<CClotBody>(entity);

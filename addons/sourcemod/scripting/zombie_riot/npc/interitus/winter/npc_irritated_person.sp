@@ -198,7 +198,7 @@ public void WinterIrritatedPerson_ClotThink(int iNPC)
 		static float flMyPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		flMyPos[2] += 15.0;
-		Explode_Logic_Custom(damageDealt, npc.index, npc.index, -1, flMyPos,100.0, 1.0, _, true, 20);
+		Explode_Logic_Custom(damageDealt, npc.index, npc.index, -1, flMyPos,250.0, 1.0, _, true, 20);
 		TE_Particle("asplode_hoodoo", flMyPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
 		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
