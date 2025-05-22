@@ -263,6 +263,11 @@ public void Hose_Touch(int entity, int other)
 
 public bool Hose_Heal(int owner, int entity, float amt)
 {
+	//prevent healing downed enemies
+	if(entity <= MaxClients && (TeutonType[entity] != TEUTON_NONE || dieingstate[entity] != 0))
+	{
+		return false;
+	}
 	if (f_TimeUntillNormalHeal[entity] > GetGameTime())
 	{
 		amt *= 0.35;
