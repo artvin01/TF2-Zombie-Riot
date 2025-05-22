@@ -4622,7 +4622,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(IsInvuln(enemy) && !target_invul)
+			if(IsInvuln(enemy, true) && !target_invul)
 			{
 				return false;
 			}
