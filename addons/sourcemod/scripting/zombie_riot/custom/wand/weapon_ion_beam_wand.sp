@@ -15,7 +15,7 @@
 
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
-static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerNeuvellete_Management[MAXTF2PLAYERS+1] = {null, ...};
 static int i_hand_particle[MAXTF2PLAYERS][11];
 static float fl_hud_timer[MAXTF2PLAYERS];
 

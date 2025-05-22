@@ -23,7 +23,7 @@ static float Cryo_M2_Radius = 400.0;
 static float Cryo_M2_Radius_Pap = 500.0;
 static float Cryo_M2_Radius_Pap2 = 600.0;
 
-static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
 static float Cryo_M2_Cooldown = 15.0;	//M2 Cooldown
 
 //static float Cryo_FreezeRequirement = 0.30; //% of target's max health M1 must do in order to trigger the freeze
@@ -253,14 +253,10 @@ public void Weapon_Wand_Cryo_Shoot(int client, int weapon, bool crit, int slot, 
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 11, weapon, ParticleName, Angles);
 
 			//Remove unused hook.
-		//	SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
 
 			Cryo_IsCryo[projectile] = true;
 			Cryo_SlowType[projectile] = SlowType;
 			EmitSoundToAll(SOUND_WAND_CRYO_M1, client, _, 60, _, 0.4, 80);
-			SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
-		
-		//	CreateTimer(0.25, Cryo_Timer, EntIndexToEntRef(projectile), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		}
 		
 	}

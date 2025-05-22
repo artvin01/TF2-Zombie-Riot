@@ -7,7 +7,7 @@
 #define CARD_SHOOT		 	"player/taunt_heavy_upper_cut.wav"
 #define CARD_BOOM			"misc/halloween/merasmus_hiding_explode.wav"
 
-Handle Timer_Ludo_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Ludo_Management[MAXTF2PLAYERS+1] = {INVALID_HANDLE, ...};
 
 static int BlackJack[MAXTF2PLAYERS];
 static int BlackjackCounter[MAXTF2PLAYERS];

@@ -2,12 +2,12 @@
 #pragma newdecls required
 
 static float fl_cosmic_heating_timer[MAXTF2PLAYERS];
-static float Cosmic_Base_BeamSpeed[MAXPLAYERS+1] = {0.0, ...};
-static float Cosmic_DMG[MAXPLAYERS+1] = {0.0, ...};
-static float Cosmic_Radius[MAXPLAYERS+1] = {0.0, ...};
-static float Cosmic_BeamLoc[MAXPLAYERS+1][3];
-static float Cosmic_Terror_Hud_Delay[MAXPLAYERS+1] = {0.0, ...};
-static float Cosmic_Terror_Trace_Delay[MAXPLAYERS+1] = {0.0, ...};
+static float Cosmic_Base_BeamSpeed[MAXTF2PLAYERS+1] = {0.0, ...};
+static float Cosmic_DMG[MAXTF2PLAYERS+1] = {0.0, ...};
+static float Cosmic_Radius[MAXTF2PLAYERS+1] = {0.0, ...};
+static float Cosmic_BeamLoc[MAXTF2PLAYERS+1][3];
+static float Cosmic_Terror_Hud_Delay[MAXTF2PLAYERS+1] = {0.0, ...};
+static float Cosmic_Terror_Trace_Delay[MAXTF2PLAYERS+1] = {0.0, ...};
 
 static int i_Railcannon_ammo[MAXTF2PLAYERS];
 static float fl_Ammo_Gain_Timer[MAXTF2PLAYERS];
@@ -53,32 +53,32 @@ void Cosmic_Map_Precache()
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
 
-static float fl_Cosmic_Dmg_Throttle[MAXPLAYERS+1]={0.0,...};
+static float fl_Cosmic_Dmg_Throttle[MAXTF2PLAYERS+1]={0.0,...};
 static bool b_cosmic_touchdown[MAXTF2PLAYERS];
-static float fl_Cosmic_TE_Throttle[MAXPLAYERS+1]={0.0,...};
-static float fl_Cosmic_Heat[MAXPLAYERS+1]={0.0,...};
-static float Cosmic_Heat_Max[MAXPLAYERS+1]={0.0,...};
-static float Cosmic_Terror_Charge_Timer[MAXPLAYERS+1];
+static float fl_Cosmic_TE_Throttle[MAXTF2PLAYERS+1]={0.0,...};
+static float fl_Cosmic_Heat[MAXTF2PLAYERS+1]={0.0,...};
+static float Cosmic_Heat_Max[MAXTF2PLAYERS+1]={0.0,...};
+static float Cosmic_Terror_Charge_Timer[MAXTF2PLAYERS+1];
 
-static float Cosmic_Terror_Charge_Timer_Base[MAXPLAYERS+1];
-static float fl_angle[MAXPLAYERS+1];
-static bool b_use_override_angle[MAXPLAYERS+1];
-static float fl_spin_speed[MAXPLAYERS+1];
-static int i_effect_amount[MAXPLAYERS+1];
-static int i_current_number[MAXPLAYERS+1];
-static bool b_arced_number[MAXPLAYERS+1];
+static float Cosmic_Terror_Charge_Timer_Base[MAXTF2PLAYERS+1];
+static float fl_angle[MAXTF2PLAYERS+1];
+static bool b_use_override_angle[MAXTF2PLAYERS+1];
+static float fl_spin_speed[MAXTF2PLAYERS+1];
+static int i_effect_amount[MAXTF2PLAYERS+1];
+static int i_current_number[MAXTF2PLAYERS+1];
+static bool b_arced_number[MAXTF2PLAYERS+1];
 
 static float fl_cosmic_heat_multi[MAXTF2PLAYERS];
-static int Cosmic_Terror_Pap[MAXPLAYERS+1]={0,...};
-static bool b_cosmic_overheat[MAXPLAYERS+1]={false, ...};
-static bool Cosmic_Terror_On[MAXPLAYERS+1]={false, ...};
-static float fl_Cosmic_Terror_Sound_Timer[MAXPLAYERS+1]={0.0,...};
-static float Cosmic_Terror_Sound_Charge_Timer[MAXPLAYERS+1]={0.0,...};
-static float Cosmic_Terror_Sound_Charge_Timer2[MAXPLAYERS+1]={0.0,...};
-static int Cosmic_Terror_Charge_Sound_interval[MAXPLAYERS+1]={0,...};
-static float Cosmic_Terror_Angle[MAXPLAYERS+1]={0.0,...};
-static float Cosmic_Terror_Last_Known_Loc[MAXPLAYERS + 1][3];
-static float fl_hexagon_angle[MAXPLAYERS+1];
+static int Cosmic_Terror_Pap[MAXTF2PLAYERS+1]={0,...};
+static bool b_cosmic_overheat[MAXTF2PLAYERS+1]={false, ...};
+static bool Cosmic_Terror_On[MAXTF2PLAYERS+1]={false, ...};
+static float fl_Cosmic_Terror_Sound_Timer[MAXTF2PLAYERS+1]={0.0,...};
+static float Cosmic_Terror_Sound_Charge_Timer[MAXTF2PLAYERS+1]={0.0,...};
+static float Cosmic_Terror_Sound_Charge_Timer2[MAXTF2PLAYERS+1]={0.0,...};
+static int Cosmic_Terror_Charge_Sound_interval[MAXTF2PLAYERS+1]={0,...};
+static float Cosmic_Terror_Angle[MAXTF2PLAYERS+1]={0.0,...};
+static float Cosmic_Terror_Last_Known_Loc[MAXTF2PLAYERS + 1][3];
+static float fl_hexagon_angle[MAXTF2PLAYERS+1];
 
 public void Cosmic_Terror_Pap0(int client, int weapon, bool &result, int slot)
 {
@@ -870,7 +870,7 @@ public void Cosmic_Terror_Do_Dmg(int client)
 	}
 }
 
-static Handle h_Cosmic_Weapons_Managment[MAXPLAYERS+1] = {null, ...};
+static Handle h_Cosmic_Weapons_Managment[MAXTF2PLAYERS+1] = {null, ...};
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 
 //Railgun

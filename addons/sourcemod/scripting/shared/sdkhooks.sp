@@ -2307,7 +2307,10 @@ public Action SDKHook_AmbientSoundHook(char sample[PLATFORM_MAX_PATH], int &enti
 	}
 	return Plugin_Continue;
 }
-public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
+
+public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH],
+	  int &entity, int &channel, float &volume, int &level, int &pitch, int &flags,
+	  char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
 	/*
 	if(b_IsAmbientGeneric[entity])

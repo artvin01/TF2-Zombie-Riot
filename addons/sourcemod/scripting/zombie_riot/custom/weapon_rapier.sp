@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-Handle Timer_Rapier_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-static Handle DuelState_timer[MAXPLAYERS+1];
+Handle Timer_Rapier_Management[MAXTF2PLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle DuelState_timer[MAXTF2PLAYERS+1];
 
 #define DUEL					"ui/duel_challenge.wav"
 //#define DUEL2					"coach/coach_look_here.wav"

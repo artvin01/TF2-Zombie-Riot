@@ -58,8 +58,8 @@ static const char Categories[][] =
 };
 #define MAXBUFFSEXPLAIN 500
 //thres never gonna be more then 500 lol
-bool DisplayBuffHintToClient[MAXPLAYERS][MAXBUFFSEXPLAIN];
-float DisplayChatBuffCD[MAXPLAYERS];
+bool DisplayBuffHintToClient[MAXTF2PLAYERS][MAXBUFFSEXPLAIN];
+float DisplayChatBuffCD[MAXTF2PLAYERS];
 
 static ArrayList E_AL_StatusEffects[MAXENTITIES];
 

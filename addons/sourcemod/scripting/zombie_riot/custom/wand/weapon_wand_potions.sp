@@ -15,7 +15,7 @@ static Handle ShrinkTimer[MAXENTITIES];
 static float f_RaidShrinkImmunity[MAXENTITIES];
 
 
-static Handle h_PotionBuff[MAXPLAYERS+1] = {null, ...};
+static Handle h_PotionBuff[MAXTF2PLAYERS+1] = {null, ...};
 
 public void Enable_BuffPotion(int client, int weapon) 
 {

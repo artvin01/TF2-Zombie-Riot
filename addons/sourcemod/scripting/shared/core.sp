@@ -1218,7 +1218,7 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1258,7 +1258,7 @@ public Action Command_FakeDeathCount(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{

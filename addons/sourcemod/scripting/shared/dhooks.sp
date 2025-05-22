@@ -1054,7 +1054,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-					if(i_WandIdNumber[entity1] != 0)
+					if(func_WandOnTouchReturn(entity1))
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
@@ -1847,13 +1847,13 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	}
 	else
 	{
-		HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
+		int HealedFor = HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
 		
 		ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 		ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 		SetGlobalTransTarget(owner);
 		
-		PrintHintText(owner,"%t", "You healed for", target, RoundToNearest(HealAmmount));
+		PrintHintText(owner,"%t", "You healed for", target, HealedFor);
 			
 		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
 		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);

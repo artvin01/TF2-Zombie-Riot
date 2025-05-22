@@ -179,10 +179,10 @@ void Liberi_GrantImmortality(int entity, int victim)
 {
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int flMaxHealth = ReturnEntityMaxHealth(victim);
-	ApplyStatusEffect(entity, victim, "Unstoppable Force", Rogue_Paradox_RedMoon() ? 3.0 : 0.35);
-	ApplyStatusEffect(entity, victim, "War Cry",		  Rogue_Paradox_RedMoon() ? 3.0 : 0.35);	
-	ApplyStatusEffect(entity, victim, "Defensive Backup", Rogue_Paradox_RedMoon() ? 3.0 : 0.35);	
-	ApplyStatusEffect(entity, victim, "Ancient Melodies", Rogue_Paradox_RedMoon() ? 3.0 : 0.35);	
+	ApplyStatusEffect(entity, victim, "Unstoppable Force", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);
+	ApplyStatusEffect(entity, victim, "War Cry",		  Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
+	ApplyStatusEffect(entity, victim, "Defensive Backup", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
+	ApplyStatusEffect(entity, victim, "Ancient Melodies", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
 	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 	{
 		//bosses and raids need much more overheal to get this insanely strong buff!
