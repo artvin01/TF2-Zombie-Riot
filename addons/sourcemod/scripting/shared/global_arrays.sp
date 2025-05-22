@@ -65,7 +65,7 @@ public const char ItemArchetype[][] =
 	"Multi Pellet",		// 1
 	"Rapid Fire",		// 2
 	"Infinite Fire",	// 3
-	"none",		// 4
+	"None",		// 4
 	"Single Pellet",	// 5
 	"Far Range",		// 6
 	"Trap Master",		// 7 this can include builder weapons!
