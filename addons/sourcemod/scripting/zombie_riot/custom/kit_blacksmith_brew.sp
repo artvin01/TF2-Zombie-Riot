@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 // Amount of aspect (kills) needed for one part of a potion
-#define ASPECT_REQUIRED	17.0
+#define ASPECT_REQUIRED	8.5
 
 static const char AspectName[][] =
 {
@@ -129,31 +129,6 @@ static void CacheBrewer()
 	c.Add(Brew_502, A_Agility, A_Strength, A_Water);
 }
 
-/*
-bool BlacksmithBrew_HasEffect(int client, int index, float &duration)
-{
-	if(Brews)
-	{
-		int account = GetSteamAccountID(client, false);
-		if(account)
-		{
-			static BrewEnum brew;
-			int length = Brews.Length;
-			for(int a; a < length; a++)
-			{
-				Brews.GetArray(a, brew);
-				if(brew.AccountId == account && brew.StoreIndex == index)
-				{
-					duration = brew.EndAt - GetGameTimeBrew();
-					return true;
-				}
-			}
-		}
-	}
-	
-	return false;
-}
-*/
 void BlacksmithBrew_ExtraDesc(int client, int weapon, bool first = false)
 {
 	if(Brews)

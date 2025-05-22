@@ -287,8 +287,6 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 		Laser.DoForwardTrace_Custom(angles, Origin, 1000.0);
 		PlayerLaserDoDamageCombined(Laser, damage, damage*0.75);
 		DoPlayerLaserEffectsBigger(Laser, color);
-		
-
 	}
 }
 
