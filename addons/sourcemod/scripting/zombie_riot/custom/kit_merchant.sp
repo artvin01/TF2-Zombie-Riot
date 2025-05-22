@@ -184,6 +184,11 @@ public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int s
 		return;
 	}
 
+	if(MerchantWeaponRef[client] != -1 && MerchantStyle[client] >= 0)
+	{
+		MerchantEnd(client);
+		return;
+	}
 	if(dieingstate[client] != 0 || (Ability_Check_Cooldown(client, slot) > 0.0 && !CvarInfiniteCash.BoolValue))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -1088,6 +1093,7 @@ static void MerchantEnd(int client, float customCD = -1.0)
 			Ability_Apply_Cooldown(client, MerchantAbilitySlot[client], cooldown, weapon);
 		}
 	}
+	MerchantAddAttrib(client, Attrib_SlowImmune, 0.0);
 	
 	Store_RemoveSpecificItem(client, "Loyalty and Generosity");
 	Store_RemoveSpecificItem(client, "Lavish and Prodigal");
