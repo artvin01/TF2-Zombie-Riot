@@ -4622,8 +4622,9 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(IsInvuln(enemy, true) && !target_invul)
+			if(enemy > MaxClients && IsInvuln(enemy, true) && !target_invul)
 			{
+				//invlun check is only for npcs!
 				return false;
 			}
 
