@@ -2206,7 +2206,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 			i_WasInJarate[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Jarated);
 			TF2_RemoveCondition(victim, TFCond_Jarated);
 		}
-	//	damage *= 1.35;
+		damage *= 1.35;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{
