@@ -386,9 +386,12 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 					{
 						if(IsClientInGame(client) && GetSteamAccountID(client, false) == brew.AccountId)
 						{
-							char buffer2[64];
-							Store_GetItemName(brew.StoreIndex, client, buffer2, sizeof(buffer2));
-							CPrintToChat(client, "{yellow}%s {default}effect has ran out on {yellow}%s", buffer, buffer2);
+							if(brew.StoreIndex != -1)
+							{
+								char buffer2[64];
+								Store_GetItemName(brew.StoreIndex, client, buffer2, sizeof(buffer2));
+								CPrintToChat(client, "{yellow}%s {default}effect has ran out on {yellow}%s", buffer, buffer2);
+							}
 							break;
 						}
 					}
