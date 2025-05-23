@@ -3650,6 +3650,7 @@ void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 			Format(Buffer, Buffersize, "%t","Interact With T Spray");
 		}
 	}
+	
 }
 
 

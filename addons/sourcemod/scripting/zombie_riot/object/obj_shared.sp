@@ -764,7 +764,14 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 bool Object_ShowInteractHud(int client, int entity)
 {
 	if(!FuncShowInteractHud[entity] || FuncShowInteractHud[entity] == INVALID_FUNCTION)
-		return false;
+	{
+		//No interact hud....
+		//display it forcefully.
+		char ButtonDisplay[255];
+		BuildingVialityDisplay(client, entity, ButtonDisplay, sizeof(ButtonDisplay));
+		PrintCenterText(client, "%s", ButtonDisplay);
+		return true;
+	}
 	
 	Call_StartFunction(null, FuncShowInteractHud[entity]);
 	Call_PushCell(entity);
@@ -1178,31 +1185,37 @@ void BuildingUpdateTextHud(int building)
 		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
 		SpacerAdd += (strlen(ThousandBuffer) / 2);
 		SpacerAdd = RoundToNearest(float(SpacerAdd) * 1.5);
+		SpacerAdd += 3;
 		for(int AddSpacer; AddSpacer <= SpacerAdd; AddSpacer++)
 		{
 			Format(HealthText, sizeof(HealthText), "%s ", HealthText);
 		}
-		Format(HealthText, sizeof(HealthText), "%s\n%s", HealthText, ThousandBuffer);
+		Format(HealthText, sizeof(HealthText), "%s\nHP %s", HealthText, ThousandBuffer);
 	}
 	else
 	{
-		char ThousandBuffer[64];
 		char ThousandBuffer2[64];
-		IntToString(Repair, ThousandBuffer, sizeof(ThousandBuffer));
-		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
 		IntToString(Health, ThousandBuffer2, sizeof(ThousandBuffer2));
 		ThousandString(ThousandBuffer2, sizeof(ThousandBuffer2));
-		SpacerAdd += (strlen(ThousandBuffer) / 2);
-		SpacerAdd += (strlen(ThousandBuffer2) / 2);
+		int SpacerThousand;
+		SpacerThousand += (strlen(ThousandBuffer2) / 2);
+		SpacerAdd += SpacerThousand;
+		int MaxRepair = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
+		float RatioLeft = float(Repair) / float(MaxRepair);
 		SpacerAdd += 2;
 		SpacerAdd = RoundToNearest(float(SpacerAdd) * 1.5);
+		RatioLeft *= 100.0;
 		for(int AddSpacer; AddSpacer <= SpacerAdd; AddSpacer++)
 		{
 			Format(HealthText, sizeof(HealthText), " %s", HealthText);
 		}
-		Format(HealthText, sizeof(HealthText), "%s\n%s", HealthText, ThousandBuffer);
-		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, " -> ");
-		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer2);
+		Format(HealthText, sizeof(HealthText), "%s\n%s HP\n", HealthText, ThousandBuffer2, RatioLeft);
+		SpacerThousand -= 3;
+		for(int AddSpacer; AddSpacer <= SpacerThousand; AddSpacer++)
+		{
+			Format(HealthText, sizeof(HealthText), "%s ", HealthText);
+		}
+		Format(HealthText, sizeof(HealthText), "%s(%0.f%% R)", HealthText, RatioLeft);
 	}
 
 
@@ -1224,16 +1237,28 @@ void BuildingUpdateTextHud(int building)
 		objstats.m_iWearable2 = TextEntity;	
 	}
 }
-/*
-static Action SetTransmit_OwnerOfBuilding(int entity, int client)
+
+void BuildingVialityDisplay(int client, int building ,char[] Buffer, int Buffersize)
 {
-	if(OwnerOfText[entity] == client)
-	{
-		return Plugin_Continue;
-	}
-	return Plugin_Handled;
+	int Repair = GetEntProp(building, Prop_Data, "m_iRepair");
+	int MaxRepair = GetEntProp(building, Prop_Data, "m_iRepairMax");
+
+	int Health = GetEntProp(building, Prop_Data, "m_iHealth");
+	int MaxHealth = GetEntProp(building, Prop_Data, "m_iMaxHealth");
+	
+	float RepairPercnt = float(Repair) / float(MaxRepair);
+	RepairPercnt *= 100.0;
+	
+	char ThousandBuffer1[128];
+	IntToString(Health, ThousandBuffer1, sizeof(ThousandBuffer1));
+	ThousandString(ThousandBuffer1, sizeof(ThousandBuffer1));
+	
+	char ThousandBuffer2[128];
+	IntToString(MaxHealth, ThousandBuffer2, sizeof(ThousandBuffer2));
+	ThousandString(ThousandBuffer2, sizeof(ThousandBuffer2));
+	Format(Buffer, Buffersize, "%T","Viality Building Display", client, ThousandBuffer1, ThousandBuffer2, RepairPercnt);
 }
-*/
+
 
 int FloatToInt_DamageValue_ObjBuilding(int victim, float damage)
 {
