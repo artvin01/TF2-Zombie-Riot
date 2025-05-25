@@ -232,16 +232,15 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 		if(IsFakeClient(client))
 		{
 			SetTeam(client, view_as<int>(TFTeam_Blue));
+			return Plugin_Handled;
 		}
 #if defined ZR
-		else if(Queue_JoinTeam(client))
+		Queue_JoinTeam(client);
+		return Plugin_Continue;
 #else
-		else
+		SetTeam(client, view_as<int>(TFTeam_Red));
+		ShowVGUIPanel(client, "class_red");
 #endif
-		{
-			SetTeam(client, view_as<int>(TFTeam_Red));
-			ShowVGUIPanel(client, "class_red");
-		}
 	}
 	return Plugin_Handled;
 }

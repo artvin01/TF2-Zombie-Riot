@@ -23,7 +23,13 @@ void ConVar_PluginStart()
 	ConVar_Add("mp_forceautoteam", "1.0"); //Force red
 	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");//Bot logic to not break it
 	ConVar_Add("tf_bot_keep_class_after_death", "1.0"); //Bot logic to not break it
+#if defined ZR
+	ConVar_Add("mp_humans_must_join_team", "any"); //Only read
+#else 
 	ConVar_Add("mp_humans_must_join_team", "red"); //Only read
+#endif
+	ConVar_Add("mp_allowspectators", "1");
+	
 	ConVar_Add("mp_teams_unbalance_limit", "0.0"); //Dont rebalance
 	ConVar_Add("mp_scrambleteams_auto", "0.0"); //No scramble
 	ConVar_Add("tf_dropped_weapon_lifetime", "0.0"); //Remove dropped weapons
@@ -50,9 +56,7 @@ void ConVar_PluginStart()
 #if defined ZR || defined RPG
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
-#if defined RPG
-	ConVar_Add("mp_friendlyfire", "1.0");
-#endif
+	mp_friendlyfire = ConVar_Add("mp_friendlyfire", "1.0");
 
 #if defined ZR
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "-1", "How many players can play at once?");

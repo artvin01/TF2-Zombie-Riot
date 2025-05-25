@@ -207,19 +207,14 @@ stock void SDKHook_HookClient(int client)
 #endif
 #endif
 
-#if defined NOG
-	SDKUnhook(client, SDKHook_PostThink, OnPostThink_OnlyHurtHud);
-	SDKHook(client, SDKHook_PostThink, OnPostThink_OnlyHurtHud);
-#endif
 
-#if !defined RTS
 	SDKUnhook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	SDKUnhook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
 	SDKHook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
-#endif
+	
 
 }
 
@@ -478,7 +473,9 @@ public void OnPostThink(int client)
 		ReplicateClient_LostFooting[client] = f_Client_LostFriction[client];
 	}
 
+#if defined ZR
 	CorrectClientsideMultiweapon(client, 2);
+#endif
 	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!
 	bool WasAirborn = false;
 	if (!(GetEntityFlags(client) & FL_ONGROUND))
@@ -1476,7 +1473,7 @@ public void OnPostThink(int client)
 		}
 		
 #if defined ZR
-		if(!SkillTree_InMenu(client))
+		if(!SkillTree_InMenu(client) && GetTeam(client) == TFTeam_Red && TeutonType[client] == TEUTON_NONE)
 #endif
 		{
 			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.9 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
@@ -1574,6 +1571,7 @@ public void OnPostThinkPost(int client)
 public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 #if defined ZR
+	TakeDamage_EnableMVM();
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
 	if(!(damagetype & (DMG_OUTOFBOUNDS|DMG_FALL)))
 	{
@@ -1677,6 +1675,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 {
 	if(!CheckInHud())
 	{
+		TakeDamage_DisableMVM();
 		ClientPassAliveCheck[victim] = false;
 #if defined ZR
 	//	i_WasInUber[victim] = 0.0;
@@ -1722,6 +1721,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(!(damagetype & DMG_CRUSH))
 		{
 			damage = 0.0;
+			TakeDamage_EnableMVM();
 			return Plugin_Handled;
 		}
 		else
@@ -1739,6 +1739,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(f_ClientInvul[victim] > GameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
 	{
 		damage = 0.0;
+		TakeDamage_EnableMVM();
 		return Plugin_Handled;
 	}
 	if(IsInvuln(victim, true))
@@ -1751,6 +1752,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				ClientPassAliveCheck[victim] = true;
 			}
 			damage = 0.0;
+			TakeDamage_EnableMVM();
 			return Plugin_Handled;	
 		}
 	}
@@ -1780,15 +1782,20 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamage 1");
 				damage = 2.0;
 				ClientPassAliveCheck[victim] = true;
+				TakeDamage_EnableMVM();
 				return Plugin_Changed;	
 			}
+			TakeDamage_EnableMVM();
 			return Plugin_Handled;
 		}
 		else
 #endif
 		{
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ALLOW_SELFHURT) && victim == attacker)
+			{
+				TakeDamage_EnableMVM();
 				return Plugin_Handled;
+			}
 		}
 	}
 	//Fall damage logic
@@ -1810,6 +1817,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(f_ImmuneToFalldamage[victim] > GameTime)
 		{
 			damage = 0.0;
+			TakeDamage_EnableMVM();
 			return Plugin_Handled;	
 		}
 	}
@@ -1818,8 +1826,19 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 #if defined RPG
 		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
-#endif
-
+		{
+			TakeDamage_EnableMVM();
+			return Plugin_Handled;	
+		}
+		else
+		{
+			if(attacker == victim)
+			{
+				TakeDamage_EnableMVM();
+				return Plugin_Handled;	
+			}
+		}
+#else
 		if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_ALLOW_SELFHURT) && victim == attacker)
 		{
 
@@ -1827,8 +1846,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		else
 		{
 			if(attacker == victim)
+			{
+				TakeDamage_EnableMVM();
 				return Plugin_Handled;	
+			}
 		}
+#endif
+
 
 #if defined RPG		
 		if(!CheckInHud())
@@ -1851,7 +1875,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 #endif
-	
 #if defined RPG
 	if((damagetype & DMG_OUTOFBOUNDS) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 	{
@@ -1876,6 +1899,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(!CheckInHud() && Ability_TrueStrength_Shield_OnTakeDamage(victim))
 	{
 		damage = 0.0;
+		TakeDamage_EnableMVM();
 		return Plugin_Handled;	
 	}
 	if(!CheckInHud())
@@ -1889,6 +1913,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	if(Damage_Modifiy(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 	{
+		TakeDamage_EnableMVM();
 		return Plugin_Handled;
 	}
 	
@@ -1964,6 +1989,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 {
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 1");
 	//in on take damage, the client shouldnt be reciving this down phase, kill em.
+	TakeDamage_EnableMVM();
 	if(ClientPassAliveCheck[victim])
 	{	
 		ClientPassAliveCheck[victim] = false;
@@ -2506,7 +2532,6 @@ public void OnWeaponSwitchPost(int client, int weapon)
 #if defined ZR
 		if(PreviousWeapon != weapon)
 			OnWeaponSwitchPre(client, EntRefToEntIndex(i_PreviousWeapon[client]));
-#endif
 
 		if(IsValidEntity(PreviousWeapon))
 		{
@@ -2531,6 +2556,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			}
 			Store_CycleItems(client, CurrentSlot);
 		}
+#endif
 		i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 		
 		static char buffer[36];

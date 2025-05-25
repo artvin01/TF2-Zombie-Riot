@@ -656,7 +656,7 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				menu.SetTitle("RPG Fortress\n \nCharacter Creation:\n ");
 
 				FormatEx(buffer1, sizeof(buffer1), "Race: %s", race.Name);
-				menu.AddItem(id, buffer1, (level > 99 && !CvarRPGInfiniteLevelAndAmmo.BoolValue) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(id, buffer1, (level > 199 && !CvarRPGInfiniteLevelAndAmmo.BoolValue) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 				kv.GetString("model", buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Outfit: %s", buffer2);

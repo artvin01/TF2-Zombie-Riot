@@ -1151,6 +1151,7 @@ void BuildingUpdateTextHud(int building)
 	int Repair = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
 
 	int Health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
+	int MaxHealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
 	HealthColour[3] = 255;
@@ -1172,6 +1173,15 @@ void BuildingUpdateTextHud(int building)
 		Format(HealthText, sizeof(HealthText), "[[[%s]]]",HealthText);
 		SpacerAdd -= 2;
 	}
+	char ThousandBuffer2[64];
+	char ThousandBuffer3[64];
+	IntToString(Health, ThousandBuffer2, sizeof(ThousandBuffer2));
+	ThousandString(ThousandBuffer2, sizeof(ThousandBuffer2));
+	IntToString(MaxHealth, ThousandBuffer3, sizeof(ThousandBuffer3));
+	ThousandString(ThousandBuffer3, sizeof(ThousandBuffer3));
+	int SpacerThousand;
+	SpacerThousand += (strlen(ThousandBuffer2) / 2);
+	SpacerThousand += (strlen(ThousandBuffer3) / 2);
 	if(Repair <= 0)
 	{
 		if(Resistance_for_building_High[objstats.index] < GetGameTime())
@@ -1180,25 +1190,17 @@ void BuildingUpdateTextHud(int building)
 		HealthColour[0] = 255;
 		HealthColour[1] = 0;
 		HealthColour[3] = 255;
-		char ThousandBuffer[128];
-		IntToString(Health, ThousandBuffer, sizeof(ThousandBuffer));
-		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
-		SpacerAdd += (strlen(ThousandBuffer) / 2);
+		SpacerAdd += SpacerThousand;
 		SpacerAdd = RoundToNearest(float(SpacerAdd) * 1.5);
 		SpacerAdd += 3;
 		for(int AddSpacer; AddSpacer <= SpacerAdd; AddSpacer++)
 		{
 			Format(HealthText, sizeof(HealthText), "%s ", HealthText);
 		}
-		Format(HealthText, sizeof(HealthText), "%s\nHP %s", HealthText, ThousandBuffer);
+		Format(HealthText, sizeof(HealthText), "%s\n%s/%s HP", HealthText, ThousandBuffer2, ThousandBuffer3);
 	}
 	else
 	{
-		char ThousandBuffer2[64];
-		IntToString(Health, ThousandBuffer2, sizeof(ThousandBuffer2));
-		ThousandString(ThousandBuffer2, sizeof(ThousandBuffer2));
-		int SpacerThousand;
-		SpacerThousand += (strlen(ThousandBuffer2) / 2);
 		SpacerAdd += SpacerThousand;
 		int MaxRepair = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
 		float RatioLeft = float(Repair) / float(MaxRepair);
@@ -1209,8 +1211,7 @@ void BuildingUpdateTextHud(int building)
 		{
 			Format(HealthText, sizeof(HealthText), " %s", HealthText);
 		}
-		Format(HealthText, sizeof(HealthText), "%s\n%s HP\n", HealthText, ThousandBuffer2, RatioLeft);
-		SpacerThousand -= 3;
+		Format(HealthText, sizeof(HealthText), "%s\n%s/%s HP\n", HealthText, ThousandBuffer2, ThousandBuffer3, RatioLeft);
 		for(int AddSpacer; AddSpacer <= SpacerThousand; AddSpacer++)
 		{
 			Format(HealthText, sizeof(HealthText), "%s ", HealthText);

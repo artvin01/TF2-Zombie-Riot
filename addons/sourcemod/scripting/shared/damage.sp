@@ -121,7 +121,18 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 	{
 		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
 		{
-			return true;
+#if defined RPG
+			if(attacker <= MaxClients && attacker > 0 && attacker != 0)
+			{
+				if(!(RPGCore_PlayerCanPVP(attacker,victim)))
+					return true;
+
+			}
+			else
+#endif
+			{
+				return true;
+			}
 		}
 	}
 	

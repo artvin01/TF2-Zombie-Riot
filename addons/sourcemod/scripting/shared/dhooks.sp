@@ -56,7 +56,6 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
 
 void DHook_Setup()
 {
-//	return;
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	if (!gamedata) 
@@ -79,9 +78,8 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFGameRules::IsQuickBuildTime", DHookCallback_CTFGameRules_IsQuickBuildTime_Pre);
 #endif
 
-#if !defined RTS
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-#endif
+
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
@@ -95,8 +93,6 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBaseBoss::ResolvePlayerCollision", DHook_ResolvePlayerCollisionPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
-//	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);
-// Dhooking it like this is broken.
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -201,27 +197,7 @@ void DHook_Setup()
 	
 	delete gamedata_lag_comp;
 }
-/*
-public MRESReturn DhookStrikeTargetArrow_Pre(int pThis, Handle hReturn, Handle hParams)
-{
-	PrintToChatAll("DhookStrikeTargetArrow_Pre");
-	int projtype = GetEntProp(pThis, Prop_Send, "m_iProjectileType");
-	PrintToChatAll("DhookStrikeTargetArrow_Pre projtype %i",projtype);
-	
-	if(projtype != 8)
-		return MRES_Ignored;
 
-	PrintToChatAll("DhookStrikeTargetArrow_Pre2");
-	int other = DHookGetParam(hParams, 2);
-
-	if(!b_ThisWasAnNpc[other])
-		return MRES_Ignored;
-	PrintToChatAll("DhookStrikeTargetArrow_Pre3");
-
-	DHookSetReturn(hReturn, true);
-	return MRES_Override;
-}
-*/
 int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)

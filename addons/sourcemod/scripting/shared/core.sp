@@ -3186,13 +3186,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 }
 #endif	// ZR & RPG
 
-/*
-public void Frame_OffCheats()
-{
-	CvarCheats.SetBool(false, false, false);
-}
-*/
-
 #if defined _tf2items_included
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
 {
@@ -3668,4 +3661,31 @@ int CalcMaxPlayers()
 	*/
 
 	return playercount;
+}
+
+
+//This is needed as MVM breaks friendly fire.
+void TakeDamage_EnableMVM()
+{
+#if defined ZR
+	if(CheckInHud())
+		return;
+
+	if(mp_friendlyfire.IntValue == 0)
+		return;
+		
+	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+#endif
+}
+void TakeDamage_DisableMVM()
+{
+#if defined ZR
+	if(CheckInHud())
+		return;
+
+	if(mp_friendlyfire.IntValue == 0)
+		return;
+
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+#endif
 }

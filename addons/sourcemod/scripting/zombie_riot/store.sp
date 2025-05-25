@@ -637,54 +637,6 @@ void Store_WeaponSwitch(int client, int weapon)
 		}
 	}
 }
-/*
-bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
-{
-	if(StoreItems)
-	{
-		static Item item;
-		static ItemInfo info;
-		int choiceIndex, choiceInfo;
-		int choicePrice = value;
-		
-		int length = StoreItems.Length;
-		for(int i; i<length; i++)
-		{
-			StoreItems.GetArray(i, item);
-			if(item.NPCWeapon >= 0 && item.GiftId == -1 && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
-			{
-				int current;
-				for(int a; item.GetItemInfo(a, info); a++)
-				{
-					ItemCost(0, item, info.Cost);
-					current += info.Cost;
-					
-					if(current > budget)
-						break;
-					
-					if(current > choicePrice)
-					{
-						choiceIndex = i;
-						choiceInfo = a;
-						choicePrice = current;
-					}
-					
-					if(!packs || info.PackBranches != 1 || info.PackSkip)
-						break;
-				}
-			}
-		}
-		
-		if(choicePrice > value)
-		{
-			StoreItems.GetArray(choiceIndex, item);
-			item.GetItemInfo(choiceInfo, info);
-			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, RoundToCeil(float(choicePrice) * SELL_AMOUNT), info, 0);
-			return view_as<bool>(choiceInfo);
-		}
-	}
-	return false;
-}*/
 
 stock bool Store_ActiveCanMulti(int client)
 {
@@ -1134,7 +1086,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
-	CharToUpper(item.Name[0]);
+	item.Name[0] = CharToUpper(item.Name[0]);
 	
 	if(isItem)
 	{
@@ -3725,11 +3677,11 @@ static void MenuPage(int client, int section)
 				TranslateItemName(client, item.Name, info.Custom_Name, buffer, sizeof(buffer));
 				if(item.NPCSeller_WaveStart > 0)
 				{
-					Format(buffer, sizeof(buffer), "%s{$$}", buffer);
+					Format(buffer, sizeof(buffer), "%s {$$}", buffer);
 				}
 				else if(item.NPCSeller_Discount > 0.0 && item.NPCSeller_Discount < 1.0)
 				{
-					Format(buffer, sizeof(buffer), "%s{$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
+					Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
 				}
 				//category has some type of sale in it !
 				menu.AddItem(info.Classname, buffer);
