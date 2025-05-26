@@ -386,7 +386,7 @@ bool Items_GiveIdItem(int client, int id, bool noForward = false)
 	{
 		static GiftItem item;
 		GiftItems.GetArray(id, item);
-		if(Native_OnGivenItem(id, item.Name))
+		if(Native_OnGivenItem(client, item.Name, id))
 		{
 			Items_GiveNamedItem(client, item.Name, true);
 			return false;
