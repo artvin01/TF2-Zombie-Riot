@@ -3667,6 +3667,7 @@ int CalcMaxPlayers()
 //This is needed as MVM breaks friendly fire.
 void TakeDamage_EnableMVM()
 {
+/*
 #if defined ZR
 	if(CheckInHud())
 		return;
@@ -3676,9 +3677,11 @@ void TakeDamage_EnableMVM()
 		
 	GameRules_SetProp("m_bPlayingMannVsMachine", true);
 #endif
+*/
 }
 void TakeDamage_DisableMVM()
 {
+/*
 #if defined ZR
 	if(CheckInHud())
 		return;
@@ -3688,4 +3691,5 @@ void TakeDamage_DisableMVM()
 
 	GameRules_SetProp("m_bPlayingMannVsMachine", false);
 #endif
+*/
 }
