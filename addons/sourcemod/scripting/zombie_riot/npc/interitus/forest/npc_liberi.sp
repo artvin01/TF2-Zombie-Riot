@@ -131,7 +131,7 @@ static void ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		ExpidonsaGroupHeal(npc.index, 300.0, 99, 2000.0, 4.0, false,Expidonsa_DontHealSameIndex,Liberi_GrantImmortality);
+		ExpidonsaGroupHeal(npc.index, 300.0, 99, 1000.0, 1.5, false,Expidonsa_DontHealSameIndex,Liberi_GrantImmortality);
 	}
 
 	int target = npc.m_iTargetAlly;
@@ -183,15 +183,7 @@ void Liberi_GrantImmortality(int entity, int victim)
 	ApplyStatusEffect(entity, victim, "War Cry",		  Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
 	ApplyStatusEffect(entity, victim, "Defensive Backup", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
 	ApplyStatusEffect(entity, victim, "Ancient Melodies", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
-	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
-	{
-		//bosses and raids need much more overheal to get this insanely strong buff!
-		flMaxHealth = RoundToCeil(float(flMaxHealth) * 2.0);
-	}
-	else
-	{
-		flMaxHealth = RoundToCeil(float(flMaxHealth) * 3.0);
-	}
+	flMaxHealth = RoundToCeil(float(flMaxHealth) * 1.45);
 	//silence disables this superbuff accuring.
 	if(!NpcStats_IsEnemySilenced(entity) && !NpcStats_IsEnemySilenced(victim))
 	{
