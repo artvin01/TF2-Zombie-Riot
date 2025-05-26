@@ -26,7 +26,7 @@ void Natives_PluginLoad()
 	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell, Param_String, Param_Cell);
 	OnClientLoaded = new GlobalForward("ZR_OnClientLoaded", ET_Ignore, Param_Cell);
 	OnClientWorldmodel = new GlobalForward("ZR_OnClientWorldmodel", ET_Event, Param_Cell, Param_Cell, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef);
-	OnGivenItem = new GlobalForward("ZR_OnGivenItem", ET_Event, Param_Cell, Param_String);
+	OnGivenItem = new GlobalForward("ZR_OnGivenItem", ET_Event, Param_Cell, Param_String, Param_Cell);
 	OnKilledNPC = new GlobalForward("ZR_OnKilledNPC", ET_Ignore, Param_Cell, Param_String);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
@@ -94,13 +94,14 @@ bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, i
 	return action >= Plugin_Changed;
 }
 
-bool Native_OnGivenItem(int client, char item[64])
+bool Native_OnGivenItem(int client, char item[64], int index)
 {
 	Action action;
 
 	Call_StartForward(OnGivenItem);
 	Call_PushCell(client);
 	Call_PushStringEx(item, sizeof(item), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+	Call_PushCell(index);
 	Call_Finish(action);
 
 	if(action >= Plugin_Handled)

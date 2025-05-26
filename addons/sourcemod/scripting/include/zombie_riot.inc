@@ -127,10 +127,11 @@ forward Action ZR_OnClientWorldmodel(int client, TFClassType class, int &worldmo
  * 
  * @param client	Client index
  * @param item		Item name
+ * @param id		ID of the item
  * 
  * @return		Plugin_Changed if the item was changed, Plugin_Handled to stop the item from being given
  */
-forward Action ZR_OnGivenItem(int client, char item[64]);
+forward Action ZR_OnGivenItem(int client, char item[64], int id);
 
 /**
  * Called when a player kills a NPC
