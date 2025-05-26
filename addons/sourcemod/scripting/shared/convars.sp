@@ -56,7 +56,10 @@ void ConVar_PluginStart()
 #if defined ZR || defined RPG
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
-	mp_friendlyfire = ConVar_Add("mp_friendlyfire", "1.0");
+//	mp_friendlyfire = ConVar_Add("mp_friendlyfire", "1.0");
+#if defined RPG
+	ConVar_Add("mp_friendlyfire", "1.0");
+#endif
 
 #if defined ZR
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "-1", "How many players can play at once?");

@@ -133,7 +133,7 @@ ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
 ConVar sv_cheats;
 ConVar nav_edit;
-ConVar mp_friendlyfire;
+//ConVar mp_friendlyfire;
 bool DoingLagCompensation;
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_ExtendBoundingBox;
