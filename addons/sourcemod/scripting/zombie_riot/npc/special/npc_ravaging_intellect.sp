@@ -275,11 +275,11 @@ methodmap RavagingIntellect < CClotBody
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get out before i make you.");
+						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get out before I make you.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Blah blah blah i don't care.");
+						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Blah blah blah I don't care.");
 					}
 					case 3:
 					{
@@ -676,7 +676,7 @@ public void RavagingIntellect_NPCDeath(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: This is getting on my nerves, im leaving.");
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: This is getting on my nerves, i'm leaving.");
 			}
 			case 1:
 			{

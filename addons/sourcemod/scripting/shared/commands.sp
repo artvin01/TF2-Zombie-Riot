@@ -169,7 +169,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	{
 		CurrentClass[client] = ClassChangeTo;
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", ClassChangeTo);
-		PrintToChat(client, "You are unable to change classes instantly, itll be changed later when you respawn.");
+		PrintToChat(client, "You are unable to change classes instantly, it'll be changed later when you respawn.");
 		return;
 	}
 #if defined ZR
@@ -193,7 +193,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	TeleportEntity(client, clientvec, clientveceye, SubjectAbsVelocity);
 	RemoveInvul(client);
 	RequestFrames(Removeinvul1frame, 10, EntIndexToEntRef(client));
-	PrintToChat(client, "You changed classes immedietly!");
+	PrintToChat(client, "You changed classes immedietely!");
 	f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; //little cooldown to prevent bug
 }
 #endif
