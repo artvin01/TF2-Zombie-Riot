@@ -56,7 +56,7 @@ void Native_OnClientLoaded(int client)
 void Native_ZR_OnWinTeam(int team)
 {
 	Call_StartForward(OnTeamWin);
-	Call_PushCell(team);
+	Call_PushCell(view_as<TFTeam>(team));
 	Call_Finish();
 }
 

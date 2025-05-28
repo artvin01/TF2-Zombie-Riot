@@ -160,7 +160,7 @@ forward Action ZR_OnGivenCash(int client, int &cash);
  * 
  * @return		Plugin_Changed if the amount was changed, Plugin_Handled to stop cash being given
  */
-forward Action ZR_OnWinTeam(int Team);
+forward Action ZR_OnWinTeam(TFTeam Team);
 
 /**
  * Whenever any client gets XP, this is spammed! Be Warned!
