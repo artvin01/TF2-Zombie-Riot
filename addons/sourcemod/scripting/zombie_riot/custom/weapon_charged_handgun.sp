@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
-static float base_chargetime[MAXPLAYERS+1]={-1.0, ...};
-static int weapon_id[MAXPLAYERS+1]={0, ...};
-static bool Handle_on[MAXPLAYERS+1]={false, ...};
+static Handle Revert_Weapon_Back_Timer[MAXTF2PLAYERS+1];
+static float base_chargetime[MAXTF2PLAYERS+1]={-1.0, ...};
+static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
+static bool Handle_on[MAXTF2PLAYERS+1]={false, ...};
 
 static float Damage_Reduction[MAXENTITIES]={0.0, ...};
 static float Damage_Tornado[MAXENTITIES]={0.0, ...};

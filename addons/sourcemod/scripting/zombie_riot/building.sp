@@ -2091,7 +2091,7 @@ public bool BuildingCustomCommand(int client)
 	return false;
 }
 
-int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
+int i2_MountedInfoAndBuilding[2][MAXTF2PLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {

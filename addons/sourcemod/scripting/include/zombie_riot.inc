@@ -127,10 +127,11 @@ forward Action ZR_OnClientWorldmodel(int client, TFClassType class, int &worldmo
  * 
  * @param client	Client index
  * @param item		Item name
+ * @param id		ID of the item
  * 
  * @return		Plugin_Changed if the item was changed, Plugin_Handled to stop the item from being given
  */
-forward Action ZR_OnGivenItem(int client, char item[64]);
+forward Action ZR_OnGivenItem(int client, char item[64], int id);
 
 /**
  * Called when a player kills a NPC
@@ -159,7 +160,7 @@ forward Action ZR_OnGivenCash(int client, int &cash);
  * 
  * @return		Plugin_Changed if the amount was changed, Plugin_Handled to stop cash being given
  */
-forward Action ZR_OnWinTeam(int Team);
+forward Action ZR_OnWinTeam(TFTeam Team);
 
 /**
  * Whenever any client gets XP, this is spammed! Be Warned!

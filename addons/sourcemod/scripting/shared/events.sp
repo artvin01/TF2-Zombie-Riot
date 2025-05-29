@@ -14,7 +14,6 @@ void Events_PluginStart()
 	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
 	HookEvent("teams_changed", EventHook_TeamsChanged, EventHookMode_PostNoCopy);
-//	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
 #if defined ZR
 	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Pre);
 	HookEvent("mvm_begin_wave", OnSetupFinished, EventHookMode_PostNoCopy);
@@ -122,6 +121,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	{
 		if(IsValidClient(client))
 			Loadout_DatabaseLoadFavorite(client);
+		Armor_Charge[client] = 0; //reset armor to 0
 	}
 	if(RoundStartTime > GetGameTime())
 		return;
@@ -163,7 +163,6 @@ public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 		delete kv;
 	}
 	
-	DeleteShadowsOffZombieRiot();
 	for(int client=1; client<=MaxClients; client++)
 	{
 		SetMusicTimer(client, 0);
@@ -190,7 +189,7 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		return Plugin_Continue;
 	
 	event.BroadcastDisabled = true;
-	return Plugin_Changed;
+	return Plugin_Continue;
 }
 
 public Action OnBannerDeploy(Event event, const char[] name, bool dontBroadcast)
@@ -516,22 +515,6 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR || defined RPG
 		Thirdperson_PlayerSpawn(client);
 #endif
-		/*
-		// Resets the hand/arm pos for melee weapons 
-		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
-		//come out from behind and it litterally looks like a dick
-		//Im unsure why this happens, something with the hothand probably as it looks like that.
-		CClotBody npc = view_as<CClotBody>(client);
-		int index = npc.LookupPoseParameter("r_hand_grip");
-		if(index >= 0)
-			npc.SetPoseParameter(index, 0.0);
-		
-		index = npc.LookupPoseParameter("r_arm");
-		if(index >= 0)
-			npc.SetPoseParameter(index, 0.0);
-
-			THis now crashes in 64bit? perhaps?
-		*/
 	}
 }
 
@@ -561,6 +544,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	pack.WriteCell(-1);
 	Update_Ammo(pack);
 	Escape_DropItem(client);
+	Armor_Charge[client] = 0; //reset to 0 on death
 
 	//Incase they die, do suit!
 	if(!Rogue_Mode())
@@ -621,22 +605,6 @@ public Action OnRestartTimer(Event event, const char[] name, bool dontBroadcast)
 	event.BroadcastDisabled = true;
 	return Plugin_Changed;
 }
-
-/*
-public Action NavBlocked(Event event, const char[] name, bool dontBroadcast)
-{
-	PrintHintText(1, "t");
-	
-	int area = event.GetInt("area");
-	bool blocked = event.GetBool("blocked");
-	if(blocked)
-	{
-		PrintToChatAll("%i", area);
-	}
-	
-	return Plugin_Stop;
-}
-*/
 
 public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
@@ -716,45 +684,6 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 	//This breaks maps.
 	return Plugin_Continue;
 }
-/*
-#if defined ZR
-public Action OnRelayFireUser1(const char[] output, int entity, int caller, float delay)
-{
-	int client = caller;
-	if(client > MaxClients)
-		client = GetOwnerLoop(client);
-
-	if(client > 0 && client <= MaxClients)
-	{
-
-
-		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
-
-		if(!StrContains(name, "zr_cash_", false))
-		{
-			float gameTime = GetGameTime();
-			if(GiveCashDelay[client] > gameTime)
-				return Plugin_Continue;
-		
-			GiveCashDelay[client] = gameTime + 0.5;
-
-			char buffers[4][12];
-			ExplodeString(name, "_", buffers, sizeof(buffers), sizeof(buffers[]));
-			
-			int cash = StringToInt(buffers[2]);
-			CashSpent[client] -= cash;
-			CashRecievedNonWave[client] += cash;
-			
-			PrintToChat(client, "Gained %d cash!", cash);
-		}
-	}
-	// DO NOT DO 
-	// return Plugin_Handled;!!!!!!
-	//This breaks maps.
-	return Plugin_Continue;
-}
-#endif*/
 
 static float DontRepeatSameFrame;
 static void EventHook_TeamsChanged(Event event, const char[] name, bool dontBroadcast)

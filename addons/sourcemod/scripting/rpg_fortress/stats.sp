@@ -1159,7 +1159,7 @@ public Action Command_Give_Mastery(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	float money = StringToFloat(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{

@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-Handle TimerYamatoManagement[MAXPLAYERS+1] = {null, ...};
+Handle TimerYamatoManagement[MAXTF2PLAYERS+1] = {null, ...};
 static float f_Yamatohuddelay[MAXTF2PLAYERS+1];
 
 static int i_Yamato_Rainsword_Count[MAXTF2PLAYERS+1];

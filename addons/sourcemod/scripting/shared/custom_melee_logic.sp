@@ -587,7 +587,12 @@ public void Timer_Do_Melee_Attack(int weapon, int client,int FrameDelay, char[] 
 	if(FrameDelay > 0)
 		RequestFrames(Timer_Do_Melee_Attack_Internal, FrameDelay, pack);
 
-	f_TimeTillMeleeAttackShould[weapon] = (GetTickInterval() * float(FrameDelay) + GetGameTime());
+	static float DefaultInterval;
+	if(DefaultInterval == 0.0)
+	{
+		DefaultInterval = 1.0 / 66.0;
+	}
+	f_TimeTillMeleeAttackShould[weapon] = ((DefaultInterval * float(FrameDelay)) + GetGameTime());
 }
 public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 {

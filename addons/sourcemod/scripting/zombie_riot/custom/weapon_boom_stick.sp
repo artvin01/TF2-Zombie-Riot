@@ -230,6 +230,9 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
 
 	float damage = 6.0;
+	damage *= 6.33;
+	//fix broken damage ?
+	//old beamstick code was WACK.
 	
 	damage *= Attributes_Get(weapon, 1, 1.0);
 	damage *= Attributes_Get(weapon, 2, 1.0);
@@ -287,8 +290,6 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 		Laser.DoForwardTrace_Custom(angles, Origin, 1000.0);
 		PlayerLaserDoDamageCombined(Laser, damage, damage*0.75);
 		DoPlayerLaserEffectsBigger(Laser, color);
-		
-
 	}
 }
 

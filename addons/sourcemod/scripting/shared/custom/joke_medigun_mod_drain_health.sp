@@ -331,7 +331,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 #if defined ZR
-					if(Citizen_ThatIsDowned(healTarget) || healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
+					if(dieingstate[owner] == 0 && (Citizen_ThatIsDowned(healTarget) || healTarget <= MaxClients && dieingstate[healTarget] > 0))
 					{
 						if(healTarget <= MaxClients)
 						{

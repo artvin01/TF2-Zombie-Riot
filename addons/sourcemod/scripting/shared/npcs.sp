@@ -750,8 +750,9 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	if(inflictor < 1 || inflictor > MaxClients)
 		return Plugin_Continue;
 
-	if(b_NpcIsInvulnerable[victim])
+	if(IsInvuln(victim, true))
 		return Plugin_Continue;
+	
 	
 //	if((damagetype & (DMG_BULLET)) || (damagetype & (DMG_BUCKSHOT))) // Needed, other crap for some reason can trigger headshots, so just make sure only bullets can do this.
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
@@ -1106,6 +1107,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			return Plugin_Changed;
 		}
 	}
+	if(HasSpecificBuff(victim, "Archo's Posion"))
+	{
+		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
+		{
+			damagetype = DMG_TRUEDAMAGE;
+		}
+	}
 
 	float GameTime = GetGameTime();
 	if(!CheckInHud())
@@ -1125,8 +1133,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 	}
 	//LogEntryInvicibleTest(victim, attacker, damage, 2);
-	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
-	if(b_NpcIsInvulnerable[victim]/* && damage < 9999999.9*/)
+	if(IsInvuln(victim, true)/* && damage < 9999999.9*/)
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;
@@ -1265,9 +1272,9 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	}
 #if defined ZR
-	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc > 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #else
-	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim]) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc > 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #endif
 	{
 #if !defined RTS
@@ -1344,7 +1351,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	{
 		SlayNpc = false;
 	}
-	if(b_NpcIsInvulnerable[victim] || b_NpcUnableToDie[victim])
+	if(IsInvuln(victim, true) || b_NpcUnableToDie[victim])
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
 		{
@@ -1618,7 +1625,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	int green = 255;
 	int blue = 0;
 
-	if(b_NpcIsInvulnerable[victim])
+	if(IsInvuln(victim, true))
 	{
 		red = 255;
 		green = 255;
@@ -1661,7 +1668,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	bool armor_added = false;
 	bool ResAdded = false;
-	if(b_NpcIsInvulnerable[victim])
+	if(IsInvuln(victim, true))
 	{
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "%t", "Invulnerable Npc");
 		armor_added = true;
@@ -1681,7 +1688,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		int attackertestDo = attacker;
 		float testvalue1[3];
 
-		if(!b_NpcIsInvulnerable[victim])
+		if(!IsInvuln(victim, true))
 		{
 			CheckInHudEnable(1);
 			int DmgType = DMG_CLUB;
@@ -1707,7 +1714,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 #endif
 		}
 
-		if(percentage_melee != 100.0 && !b_NpcIsInvulnerable[victim])
+		if(percentage_melee != 100.0 && !IsInvuln(victim, true))
 		{
 			char NumberAdd[32];
 			ResAdded = true;
@@ -1726,7 +1733,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, NumberAdd);
 		}
 		float DamagePercDo = 100.0;
-		if(!b_NpcIsInvulnerable[victim])
+		if(!IsInvuln(victim, true))
 		{
 			CheckInHudEnable(2);
 			StatusEffect_OnTakeDamage_DealNegative(attacker, victim, DamagePercDo, testvalue);
@@ -1744,7 +1751,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 #endif
 		}
 
-		if((DamagePercDo != 100.0) && !b_NpcIsInvulnerable[victim])	
+		if((DamagePercDo != 100.0) && !IsInvuln(victim, true))	
 		{
 			if(ResAdded)
 			{
@@ -1773,7 +1780,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			armor_added = true;
 		}
 
-		if(percentage_ranged != 100.0 && !b_NpcIsInvulnerable[victim])	
+		if(percentage_ranged != 100.0 && !IsInvuln(victim, true))	
 		{
 			static char NumberAdd[32];
 			if(ResAdded)
@@ -2088,7 +2095,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		float GameTime = GetGameTime();
 		bool raidboss_active = false;
 
-		if(!b_NpcIsInvulnerable[victim])
+		if(!IsInvuln(victim, true))
 		{
 			if(RaidbossIgnoreBuildingsLogic())
 			{

@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 #define EMPOWER_RANGE 200.0
-static Handle h_TimerFusionWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerFusionWeaponManagement[MAXTF2PLAYERS+1] = {null, ...};
 #define NEARL_ACTIVE_SOUND "mvm/mvm_tele_activate.wav"
 #define NEARL_EXTRA_DAMAGE_SOUND "misc/ks_tier_04_kill_01.wav"
 #define NEARL_STUN_RANGE 200.0
@@ -33,7 +33,7 @@ static int i_SpeedFistsOfSpeedHit[MAXTF2PLAYERS];
 static int i_PreviousBladePap[MAXTF2PLAYERS];
 
 static float f_SiccerinoExtraDamage[MAXTF2PLAYERS][MAXENTITIES];
-static float f_VoidHudDelay[MAXPLAYERS+1]={0.0, ...};
+static float f_VoidHudDelay[MAXTF2PLAYERS+1]={0.0, ...};
 static int i_VoidCurrentShields[MAXTF2PLAYERS];
 static float f_VoidShieldTillCharge[MAXTF2PLAYERS];
 static bool b_HasVoidBladeInHand[MAXTF2PLAYERS];

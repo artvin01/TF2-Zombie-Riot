@@ -1118,25 +1118,32 @@ void DeleteShadowsOffZombieRiot()
 	int entityshadow = -1;
 	entityshadow = FindEntityByClassname(entityshadow, "shadow_control");
 
-	if(IsValidEntity(entityshadow))
+	if(!IsValidEntity(entityshadow))
 	{
-		SetVariantInt(1); 
-		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
-		//RemoveEntity(entityshadow);
-		return;
+		entityshadow = CreateEntityByName("shadow_control");
+		DispatchSpawn(entityshadow);
 	}
-	entityshadow = CreateEntityByName("shadow_control");
 	
 	//Create new shadow entity, and make own own rules
 	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
-	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
 	if(IsValidEntity(entityshadow))
 	{
-		DispatchSpawn(entityshadow);
+		//This just badly hides shadows
+		/*
+		Whenever we set sv_cheats to 1, and to 0, it sets r_shadows_gamecontrol  to all clients to 0
+		to fix this we have to delete and remake the shadow controll EVERY TIME.
+		This is terrible
+		Colour atleast just hides ths shadows which is fine enough, i guess.
+
+		We cant set EF_NOSHADOW  on npcs for some reason either ,it is a dark day.
+		*/
+		DispatchKeyValue(entityshadow,"color", "255 255 255 0");
 		SetVariantInt(1); 
 		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
 	}
+
 }
+
 public void OnMapEnd()
 {
 #if defined ZR
@@ -1211,7 +1218,7 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1251,7 +1258,7 @@ public Action Command_FakeDeathCount(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -3179,13 +3186,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 }
 #endif	// ZR & RPG
 
-/*
-public void Frame_OffCheats()
-{
-	CvarCheats.SetBool(false, false, false);
-}
-*/
-
 #if defined _tf2items_included
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
 {
@@ -3643,6 +3643,7 @@ void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 			Format(Buffer, Buffersize, "%t","Interact With T Spray");
 		}
 	}
+	
 }
 
 
@@ -3660,4 +3661,35 @@ int CalcMaxPlayers()
 	*/
 
 	return playercount;
+}
+
+
+//This is needed as MVM breaks friendly fire.
+void TakeDamage_EnableMVM()
+{
+/*
+#if defined ZR
+	if(CheckInHud())
+		return;
+
+	if(mp_friendlyfire.IntValue == 0)
+		return;
+		
+	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+#endif
+*/
+}
+void TakeDamage_DisableMVM()
+{
+/*
+#if defined ZR
+	if(CheckInHud())
+		return;
+
+	if(mp_friendlyfire.IntValue == 0)
+		return;
+
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+#endif
+*/
 }

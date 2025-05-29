@@ -210,8 +210,11 @@ static bool ClotCanUse(ObjectTinkerGrill npc, int client)
 
 static void ClotShowInteractHud(ObjectTinkerGrill npc, int client)
 {
-	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Healing Station Tooltip");
+	char ButtonDisplay[255];
+	char ButtonDisplay2[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	BuildingVialityDisplay(client, npc.index, ButtonDisplay2, sizeof(ButtonDisplay2));
+	PrintCenterText(client, "%s\n%s%T",ButtonDisplay2,ButtonDisplay, "Healing Station Tooltip",client);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectTinkerGrill npc)

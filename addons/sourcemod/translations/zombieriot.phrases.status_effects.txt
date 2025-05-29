@@ -606,6 +606,22 @@
 		"en"	"Decreases damage taken by 90％.\n{yellow}During raids, you take 50％ reduced damage instead."
 		"es"	"Reduce el daño recibido en un 90%%.\n{yellow}Durante un raid, recibes 50%% en lugar de 90%%."
 	}
+	"Unstoppable Force"
+	{
+		"en"	"Unstoppable Force"
+	}
+	"Unstoppable Force Desc"
+	{
+		"en"	"Immune to any and all damage with no exceptions."
+	}
+	"Archo's Posion"
+	{
+		"en"	"Archo's Posion"
+	}
+	"Archo's Posion Desc"
+	{
+		"en"	"Any and all damage you take is converted into true damage."
+	}
 	"Healing Resolve"
 	{
 		"en"	"Healing Resolve"
@@ -832,11 +848,11 @@
 	{
 		"en"	"Increases attack/reload speed & healrate by 100％\nDecreases damage dealt by 40％"
 	}
-	"Tonic Affliction Hidden"
+	"Tonic Affliction Hide"
 	{
-		"en"	"Tonic Affliction Hidden"
+		"en"	"Tonic Affliction Hide"
 	}
-	"Tonic Affliction  Hidden Desc"
+	"Tonic Affliction Hide Desc"
 	{
 		"en"	"Ignore."
 	}
@@ -1121,6 +1137,14 @@
 	"Anti-Waves Desc"
 	{
 		"en"	"Prevents any healing.\n{green}Doesnt prevent absolute healing."
+	}
+	"Zeinas Protection"
+	{
+		"en" "Zeinas Protection"
+	}
+	"Zeinas Protection Desc"
+	{
+		"en"	"Take 15％ less damage"
 	}
 	"Zilius Prime Technology"
 	{

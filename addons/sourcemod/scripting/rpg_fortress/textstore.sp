@@ -2845,8 +2845,8 @@ void De_TransformClient(int client)
 }
 
 
-static Handle XpTimerHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-static int XPGainedOverTime[MAXPLAYERS+1] = {0, ...};
+static Handle XpTimerHandle[MAXTF2PLAYERS+1] = {INVALID_HANDLE, ...};
+static int XPGainedOverTime[MAXTF2PLAYERS+1] = {0, ...};
 
 void RPGTextstore_XpToChat(int client, int XPAdd)
 {

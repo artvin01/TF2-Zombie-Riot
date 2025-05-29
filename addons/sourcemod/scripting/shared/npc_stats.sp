@@ -399,12 +399,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			DispatchKeyValue(npc,	   "health",	 health);
 		}
 		
-		DispatchKeyValue(npc, "shadowcastdist", "1");
-		DispatchKeyValue(npc, "disablereceiveshadows", "1");
-		DispatchKeyValue(npc, "disableshadows", "1");
-		DispatchKeyValue(npc, "disableshadowdepth", "1");
-		DispatchKeyValue(npc, "disableselfshadowing", "1");  
-		
 		i_IsNpcType[npc] = NpcTypeLogic;
 		f_LastBaseThinkTime[npc] = GetGameTime();
 
@@ -2528,13 +2522,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 			DispatchKeyValueFloat(item, "modelscale", model_size);
 		}
-		/*
-		DispatchKeyValue(item, "shadowcastdist", "0");
-		DispatchKeyValue(item, "disablereceiveshadows", "1");
-		DispatchKeyValue(item, "disableshadows", "1");
-		DispatchKeyValue(item, "disableshadowdepth", "1");
-		DispatchKeyValue(item, "disableselfshadowing", "1");  
-		*/
 		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES|EF_NOSHADOW );
 		SetEntityMoveType(item, MOVETYPE_NONE);
@@ -4635,8 +4622,9 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(b_NpcIsInvulnerable[enemy] && !target_invul)
+			if(enemy > MaxClients && IsInvuln(enemy, true) && !target_invul)
 			{
+				//invlun check is only for npcs!
 				return false;
 			}
 
@@ -10598,7 +10586,7 @@ void IsEntityInvincible_Shield(int entity)
 	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = 2;
 #endif
-	if(b_NpcIsInvulnerable[entity])
+	if(IsInvuln(entity, true))
 		NpcInvulShieldDisplay = 1;
 	
 	CClotBody npc = view_as<CClotBody>(entity);

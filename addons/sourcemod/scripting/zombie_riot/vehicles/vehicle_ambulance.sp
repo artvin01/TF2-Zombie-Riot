@@ -70,15 +70,14 @@ static bool ClotShowInteractHud(VehicleFullJeep obj, int client)
 	if(fabs(fabs(ang1[1]) - fabs(ang2[1])) > 15.0)
 		return false;
 	
-	SetGlobalTransTarget(client);
 
 	if(Building_Collect_Cooldown[obj.index][client] > GetGameTime())
 	{
-		PrintCenterText(client, "%t", "Object Cooldown", Building_Collect_Cooldown[obj.index][client] - GetGameTime());
+		PrintCenterText(client, "%T", "Object Cooldown", client,Building_Collect_Cooldown[obj.index][client] - GetGameTime());
 	}
 	else
 	{
-		PrintCenterText(client, "%t", "Healing Station Tooltip");
+		PrintCenterText(client, "%T", "Healing Station Tooltip", client);
 	}
 	return true;
 }

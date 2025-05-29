@@ -316,7 +316,6 @@ public void FallenWarrior_ClotThink(int iNPC)
 			}
 		}
 	}
-	float TrueArmor = 1.0;
 
 	if(npc.m_bLostHalfHealth)
 	{
@@ -328,7 +327,6 @@ public void FallenWarrior_ClotThink(int iNPC)
 		{
 			npc.m_flSpeed += 100.0;
 		}
-		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
 		if(!npc.Anger)
 		{
@@ -352,7 +350,6 @@ public void FallenWarrior_ClotThink(int iNPC)
 	{
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 	}
-	fl_TotalArmor[npc.index] = TrueArmor;
 
 	
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
@@ -602,8 +599,8 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 					}	
 					if(npc.m_bLostHalfHealth)
 					{
-						damageDealt *= 2.0;
-						NPC_Ignite(target, npc.index,12.0, -1, 30.0);
+						damageDealt *= 1.25;
+						NPC_Ignite(target, npc.index,12.0, -1, damageDealt * 0.05);
 					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

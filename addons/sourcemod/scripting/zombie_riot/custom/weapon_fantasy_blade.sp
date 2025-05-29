@@ -28,7 +28,7 @@
 	Wings
 */
 
-static Handle h_TimerFantasyManagement[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerFantasyManagement[MAXTF2PLAYERS+1] = {null, ...};
 
 
 static float fl_Shard_Ammount[MAXTF2PLAYERS+1];

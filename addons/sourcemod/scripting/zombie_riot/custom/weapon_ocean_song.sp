@@ -1,14 +1,14 @@
-static Handle h_TimerOceanSongManagement[MAXPLAYERS+1] = {null, ...};
-static int i_Particle_1[MAXPLAYERS+1];
-static int i_Particle_2[MAXPLAYERS+1];
-static int i_Particle_3[MAXPLAYERS+1];
-static int i_Particle_4[MAXPLAYERS+1];
-static int i_Laser_1[MAXPLAYERS+1];
-static float f_OceanBuffAbility[MAXPLAYERS+1];
-static float f_OceanIndicator[MAXPLAYERS+1];
-static float f_OceanIndicatorHud[MAXPLAYERS+1];
+static Handle h_TimerOceanSongManagement[MAXTF2PLAYERS+1] = {null, ...};
+static int i_Particle_1[MAXTF2PLAYERS+1];
+static int i_Particle_2[MAXTF2PLAYERS+1];
+static int i_Particle_3[MAXTF2PLAYERS+1];
+static int i_Particle_4[MAXTF2PLAYERS+1];
+static int i_Laser_1[MAXTF2PLAYERS+1];
+static float f_OceanBuffAbility[MAXTF2PLAYERS+1];
+static float f_OceanIndicator[MAXTF2PLAYERS+1];
+static float f_OceanIndicatorHud[MAXTF2PLAYERS+1];
 
-static int ColourOcean[MAXPLAYERS+1][4];
+static int ColourOcean[MAXTF2PLAYERS+1][4];
 
 #define OCEAN_HEAL_BASE 0.15
 #define OCEAN_SOUND "ambient_mp3/lair/cap_1_tone_metal_movement2.mp3"

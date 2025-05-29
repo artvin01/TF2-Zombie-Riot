@@ -58,8 +58,8 @@ static const char Categories[][] =
 };
 #define MAXBUFFSEXPLAIN 500
 //thres never gonna be more then 500 lol
-bool DisplayBuffHintToClient[MAXPLAYERS][MAXBUFFSEXPLAIN];
-float DisplayChatBuffCD[MAXPLAYERS];
+bool DisplayBuffHintToClient[MAXTF2PLAYERS][MAXBUFFSEXPLAIN];
+float DisplayChatBuffCD[MAXTF2PLAYERS];
 
 static ArrayList E_AL_StatusEffects[MAXENTITIES];
 
@@ -2975,6 +2975,33 @@ void StatusEffects_SupportWeapons()
 	StatusEffect_AddGlobal(data);
 
 	data.OnTakeDamage_TakenFunc = INVALID_FUNCTION;
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Unstoppable Force");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "שׁ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Archo's Posion");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꜻ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Healing Adaptiveness All");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍫");

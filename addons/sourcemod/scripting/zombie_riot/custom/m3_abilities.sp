@@ -1,12 +1,12 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
-static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
+static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown_2[MAXTF2PLAYERS+1]={0.0, ...};
+static int Attack3AbilitySlotArray[MAXTF2PLAYERS+1]={0, ...};
 static float f_HealDelay[MAXENTITIES];
 static float f_Duration[MAXENTITIES];
-static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
+static bool b_ActivatedDuringLastMann[MAXTF2PLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
@@ -15,7 +15,7 @@ static int i_MaxMorhpinesThisRound [MAXTF2PLAYERS];
 static float f_ReinforceTillMax[MAXTF2PLAYERS];
 static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
 static int i_MaxRevivesAWave;
-static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
+static float MorphineCharge[MAXTF2PLAYERS+1]={0.0, ...};
 
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -1120,8 +1120,8 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 }
 
 
-int i_BuildingSelectedToBeDeleted[MAXPLAYERS + 1];
-int i_BuildingSelectedToBeUnClaimed[MAXPLAYERS + 1];
+int i_BuildingSelectedToBeDeleted[MAXTF2PLAYERS + 1];
+int i_BuildingSelectedToBeUnClaimed[MAXTF2PLAYERS + 1];
 
 
 public void Un_ClaimBuildingLookedAt(int client)

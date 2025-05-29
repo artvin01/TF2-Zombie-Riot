@@ -167,7 +167,7 @@ public Action Items_GiveCmd(int client, int args)
 		GetCmdArg(1, pattern, sizeof(pattern));
 
 		int length;
-		int targets[MAXPLAYERS];
+		int targets[MAXTF2PLAYERS];
 		bool targetNounIsMultiLanguage;
 		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
 		{
@@ -206,7 +206,7 @@ public Action Items_GiveAllCmd(int client, int args)
 		GetCmdArg(1, pattern, sizeof(pattern));
 
 		int length;
-		int targets[MAXPLAYERS];
+		int targets[MAXTF2PLAYERS];
 		bool targetNounIsMultiLanguage;
 		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
 		{
@@ -259,7 +259,7 @@ public Action Items_RemoveAllCmd(int client, int args)
 		GetCmdArg(1, pattern, sizeof(pattern));
 
 		int length;
-		int targets[MAXPLAYERS];
+		int targets[MAXTF2PLAYERS];
 		bool targetNounIsMultiLanguage;
 		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
 		{
@@ -386,7 +386,7 @@ bool Items_GiveIdItem(int client, int id, bool noForward = false)
 	{
 		static GiftItem item;
 		GiftItems.GetArray(id, item);
-		if(Native_OnGivenItem(id, item.Name))
+		if(Native_OnGivenItem(client, item.Name, id))
 		{
 			Items_GiveNamedItem(client, item.Name, true);
 			return false;

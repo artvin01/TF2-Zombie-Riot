@@ -5,7 +5,7 @@
 
 #define PHLOG_ABILITY "misc/halloween/spell_overheal.wav"
 
-Handle h_TimerPHLOGManagement[MAXPLAYERS+1] = {null, ...};
+Handle h_TimerPHLOGManagement[MAXTF2PLAYERS+1] = {null, ...};
 static float f_PHLOGhuddelay[MAXTF2PLAYERS];
 static float f_PHLOGabilitydelay[MAXTF2PLAYERS];
 static int i_PHLOGHitsDone[MAXTF2PLAYERS];

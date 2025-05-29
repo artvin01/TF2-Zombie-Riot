@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static int i_FireBallsToThrow[MAXPLAYERS+1]={0, ...};
+static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static int i_FireBallsToThrow[MAXTF2PLAYERS+1]={0, ...};
 static float f_OriginalDamage[MAXTF2PLAYERS];
 static int i_weaponused[MAXTF2PLAYERS];
 

@@ -1463,7 +1463,7 @@
 	}
 	"Building Explained"
 	{
-		"en" 		"You can use machines by pressing R/T on them.\nPeople can mount buildings with a wrench.\nThis allows you to press R on them for the same effect."
+		"en" 		"You can use machines by pressing R/T on them.\nYou can mount buildings with a wrench.\nUse them by looking UP and pressing your interact key.\nThis allows you to press R on them for the same effect.\nBuilding display is shown above a building, in this order, its explained as:\nName of owner\nCurrent health\nRepair Left."
 	}
 	"Extra Buttons Explained"
 	{
@@ -1511,6 +1511,11 @@
 	"Interact With R" //KEEP THE SPACE!
 	{
 		"en"		"Press [R/ Use] "
+	}
+	"Viality Building Display"
+	{
+		"#format"	"{1:s},{2:s},{3:.0f}"
+		"en"		"HP: {1} / {2} | Repair left: {3}％"
 	}
 	"Interact With T Spray"
 	{

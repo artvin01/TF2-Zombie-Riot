@@ -7,13 +7,13 @@ static float		 BulletsLoaded[MAXTF2PLAYERS]={5.0, ...};
 static float		 CurrentMaxBullets[MAXTF2PLAYERS];
 static int		 IsCurrentlyReloading[MAXTF2PLAYERS];
 static float		AttackedRecently[MAXTF2PLAYERS];
-static float	 AmmoHudDelay[MAXPLAYERS+1]={0.0, ...};
-float reload_speed_bonus[MAXPLAYERS+1]={1.0, ...};
-float clip_size_bonus[MAXPLAYERS+1]={1.0, ...};
-float temporarythingy[MAXPLAYERS+1]; //we do this so we can round the float to a whole number, we dont want 5,7 bullets being a possibility or everything breaks
+static float	 AmmoHudDelay[MAXTF2PLAYERS+1]={0.0, ...};
+float reload_speed_bonus[MAXTF2PLAYERS+1]={1.0, ...};
+float clip_size_bonus[MAXTF2PLAYERS+1]={1.0, ...};
+float temporarythingy[MAXTF2PLAYERS+1]; //we do this so we can round the float to a whole number, we dont want 5,7 bullets being a possibility or everything breaks
 
 
-Handle	 Timer_Hunting_Rifle_Management[MAXPLAYERS + 1] = { null, ... };
+Handle	 Timer_Hunting_Rifle_Management[MAXTF2PLAYERS + 1] = { null, ... };
 
 public void Hunting_Rifle_Attack_Main(int client, int weapon, bool crit, int slot)  // stuff that happens when you press m1
 {

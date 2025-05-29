@@ -1,19 +1,19 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_TimerKitBlitzkriegManagement[MAXPLAYERS+1] = {null, ...};
-static float fl_hud_timer[MAXPLAYERS+1];
-static float fl_primary_reloading[MAXPLAYERS+1];
-static bool b_primary_lock[MAXPLAYERS+1];
-static float fl_ion_charge[MAXPLAYERS+1];
-static float fl_ion_gain_multi[MAXPLAYERS+1];
-static int i_patten_type[MAXPLAYERS+1];
-static float fl_ammo_efficiency[MAXPLAYERS+1];
-static int i_ion_effects[MAXPLAYERS+1];
-static float fl_ion_timer_recharge[MAXPLAYERS+1];
+static Handle h_TimerKitBlitzkriegManagement[MAXTF2PLAYERS+1] = {null, ...};
+static float fl_hud_timer[MAXTF2PLAYERS+1];
+static float fl_primary_reloading[MAXTF2PLAYERS+1];
+static bool b_primary_lock[MAXTF2PLAYERS+1];
+static float fl_ion_charge[MAXTF2PLAYERS+1];
+static float fl_ion_gain_multi[MAXTF2PLAYERS+1];
+static int i_patten_type[MAXTF2PLAYERS+1];
+static float fl_ammo_efficiency[MAXTF2PLAYERS+1];
+static int i_ion_effects[MAXTF2PLAYERS+1];
+static float fl_ion_timer_recharge[MAXTF2PLAYERS+1];
 static int i_WeaponGotLastmanBuff[MAXENTITIES];
 
-static bool b_was_lastman[MAXPLAYERS+1];
+static bool b_was_lastman[MAXTF2PLAYERS+1];
 
 static int g_particleImpactTornado;
 

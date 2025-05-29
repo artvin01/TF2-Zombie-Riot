@@ -420,15 +420,15 @@ float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
 int Building_Mounted[MAXENTITIES];
 
 
-float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
-int i_DyingParticleIndication[MAXPLAYERS + 1][3];
+float f_DisableDyingTimer[MAXTF2PLAYERS + 1]={0.0, ...};
+int i_DyingParticleIndication[MAXTF2PLAYERS + 1][3];
 //1 is text, 2 is glow, 3 is death marker
-float f_DyingTextTimer[MAXPLAYERS + 1];
-bool b_DyingTextOff[MAXPLAYERS + 1];
+float f_DyingTextTimer[MAXTF2PLAYERS + 1];
+bool b_DyingTextOff[MAXTF2PLAYERS + 1];
 
 float GlobalCheckDelayAntiLagPlayerScale;
 bool AllowSpecialSpawns;
-int i_AmountDowned[MAXPLAYERS+1];
+int i_AmountDowned[MAXTF2PLAYERS+1];
 
 bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
@@ -1274,7 +1274,7 @@ public Action Command_TestTutorial(int client, int args)
 	static char pattern[PLATFORM_MAX_PATH];
 	GetCmdArg(1, pattern, sizeof(pattern));
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1349,7 +1349,7 @@ public Action Command_GiveCash(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1396,7 +1396,7 @@ public Action Command_GiveBuff(int client, int args)
 	float buffduration = StringToFloat(buf2); 
 	
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1430,7 +1430,7 @@ public Action Command_GiveScrap(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1474,7 +1474,7 @@ public Action Command_SetXp(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1512,7 +1512,7 @@ public Action Command_GiveXp(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1560,7 +1560,7 @@ public Action Command_GiveDialogBox(int client, int args)
 	char buf2[64];
 	GetCmdArg(3, buf2, sizeof(buf2));
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -3066,7 +3066,7 @@ public Action Command_SetTeamCustom(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int teamset = StringToInt(buf); 
 	
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{

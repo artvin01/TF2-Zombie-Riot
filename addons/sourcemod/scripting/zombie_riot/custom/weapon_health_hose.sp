@@ -15,10 +15,10 @@ static float Hose_HealLoss[MAXENTITIES] = { 0.0, ... };
 static float Hose_HealMin[MAXENTITIES] = { 0.0, ... };
 static int Hose_Owner[MAXENTITIES] = { -1, ... };
 static bool Hose_GiveUber[MAXENTITIES] = { false, ... };
-static float Hose_Uber[MAXPLAYERS + 1] = { 0.0, ... };
-static float Hose_NextHealSound[MAXPLAYERS + 1] = { 0.0, ... };
-static bool Hose_Charged[MAXPLAYERS + 1] = { false, ... };
-static bool Hose_ShotgunCharge[MAXPLAYERS + 1] = { false, ... };
+static float Hose_Uber[MAXTF2PLAYERS + 1] = { 0.0, ... };
+static float Hose_NextHealSound[MAXTF2PLAYERS + 1] = { 0.0, ... };
+static bool Hose_Charged[MAXTF2PLAYERS + 1] = { false, ... };
+static bool Hose_ShotgunCharge[MAXTF2PLAYERS + 1] = { false, ... };
 
 #define SOUND_HOSE_HEALED		"weapons/rescue_ranger_charge_01.wav"
 #define SOUND_HOSE_UBER_END		"player/invuln_off_vaccinator.wav"
@@ -263,6 +263,11 @@ public void Hose_Touch(int entity, int other)
 
 public bool Hose_Heal(int owner, int entity, float amt)
 {
+	//prevent healing downed enemies
+	if(entity <= MaxClients && (TeutonType[entity] != TEUTON_NONE || dieingstate[entity] != 0))
+	{
+		return false;
+	}
 	if (f_TimeUntillNormalHeal[entity] > GetGameTime())
 	{
 		amt *= 0.35;
@@ -420,7 +425,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			HealAmmount = float(Health_To_Max);
 		}
 
-		HealEntityGlobal(client, target, HealAmmount, 1.15, 1.0, _);
+		int HealedFor = HealEntityGlobal(client, target, HealAmmount, 1.15, 1.0, _);
 		
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
@@ -429,7 +434,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 
 		SetGlobalTransTarget(client);
 		if(target <= MaxClients)
-			PrintHintText(client, "%t", "You healed for", target, HealAmmount);
+			PrintHintText(client, "%t", "You healed for", target, HealedFor);
 
 		
 		ApplyStatusEffect(client, client, "Healing Resolve", 5.0);

@@ -84,7 +84,7 @@ static int Cheese_Glow;
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
 static float Cheese_TargetsHit[MAXTF2PLAYERS];
 static float hudtimer[MAXTF2PLAYERS];
-static int iref_WeaponConnect[MAXPLAYERS+1][2];
+static int iref_WeaponConnect[MAXTF2PLAYERS+1][2];
 
 static int Cheese_Siphoner_TargetMaximum[9] = {2, 2, 3, 3, 4, 4, 5, 6, 6}; // Maximum amount of enemies that the Siphoner can hit.
 static float Cheese_Siphoner_Range[9] = {250.0, 262.5, 275.0, 287.5, 300.0, 300.0, 300.0, 300.0, 300.0}; // Range of the Siphoner

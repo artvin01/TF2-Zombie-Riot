@@ -20,7 +20,7 @@
 
 #define IRENE_KICKUP_1 "mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 
-Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
+Handle h_TimerIreneManagement[MAXTF2PLAYERS+1] = {null, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
 static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
