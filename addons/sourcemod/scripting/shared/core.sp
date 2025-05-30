@@ -31,15 +31,15 @@
 #define CHAR_PARTEMPTY	"▒"
 #define CHAR_EMPTY	"░"
 
-//#define TFTeam			PLZUSE_int
+//#define TFTeam			PleaseUse_int
 #define TFTeam_Unassigned 	0
 #define TFTeam_Spectator 	1
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
 #define TFTeam_Stalkers 		5
 
-#define TF2_GetClientTeam	PLZUSE_GetTeam
-#define TF2_ChangeClientTeam	PLZUSE_SetTeam
+#define TF2_GetClientTeam	PleaseUse_GetTeam
+#define TF2_ChangeClientTeam	PleaseUse_SetTeam
 
 #define RoundState_ZombieRiot view_as<RoundState>(11)
 
