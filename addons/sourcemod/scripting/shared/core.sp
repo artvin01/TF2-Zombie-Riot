@@ -31,7 +31,7 @@
 #define CHAR_PARTEMPTY	"▒"
 #define CHAR_EMPTY	"░"
 
-#define TFTeam			PLZUSE_int
+//#define TFTeam			PLZUSE_int
 #define TFTeam_Unassigned 	0
 #define TFTeam_Spectator 	1
 #define TFTeam_Red 		2
