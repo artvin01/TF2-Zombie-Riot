@@ -5830,7 +5830,6 @@ public void NpcBaseThink(int iNPC)
 		f_InBattleDelay[iNPC] = GetGameTime() + 0.4;
 #if defined RPG
 		HealOutOfBattleNpc(iNPC);
-		HealOutOfBattleNpc(iNPC);
 #endif
 	}
 

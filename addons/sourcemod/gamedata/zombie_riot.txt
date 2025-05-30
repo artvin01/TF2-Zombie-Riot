@@ -170,9 +170,6 @@
 			"CBaseAnimating::InvalidateBoneCache"// Void CBaseCombatCharacter::Weapon_Drop ("ValveBiped.Weapon_bone"), Big function with 11 calls, the 5th one from top, very small function
 			{
 				"library"	"server"
-				"linux64"		"@_ZN14CBaseAnimating19InvalidateBoneCacheEv"
-				"windows64"	"\x48\x8B\x89\x88\x05\x00\x00\xE9\x2A\x2A\x2A\x2A"
-				
 				"linux"		"@_ZN14CBaseAnimating19InvalidateBoneCacheEv"
 				"windows"	"\xFF\xB1\x6C\x04\x00\x00"
 			}
