@@ -10824,7 +10824,7 @@ void ResetAllArmorStatues(int entiity)
 }
 
 stock void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType,
-float custom_maxarmour = 0.0)
+float custom_maxarmour = 0.0, int ArmorGiver = -1)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(Once)
@@ -10871,6 +10871,10 @@ float custom_maxarmour = 0.0)
 			npc.m_flArmorCountMax = npc.m_flArmorCount;
 	}
 	
+	if(ArmorGiver > 0 && custom_maxarmour > 0.0)
+	{
+		ApplyArmorEvent(entity, RoundToNearest(custom_maxarmour), ArmorGiver);
+	}
 	//any extra logic please add here. deivid.
 }
 

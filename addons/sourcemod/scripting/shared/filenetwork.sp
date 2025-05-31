@@ -398,9 +398,10 @@ stock void AddToDownloadsTable(const char[] file, const char[] original = "")
 		
 		return;
 	}
-	
+
 	if(DownloadList.FindString(file) == -1)
 	{
+//		PrintToServer("[ZR] AddToDownloadsTable 3 %s",file);
 		AddFileToDownloadsTable(file);
 		DownloadList.PushString(file);
 		if(original[0])

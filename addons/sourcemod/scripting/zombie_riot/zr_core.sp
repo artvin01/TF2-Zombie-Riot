@@ -2298,7 +2298,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 }
 
 float f_IncrementalSmallArmor[MAXENTITIES];
-stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false, bool HealCorrosion = false)
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false, bool HealCorrosion = false, int ArmorGiver = -1)
 {
 	int Armor_Max;
 	
@@ -2309,10 +2309,9 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
 	*/
+	float ArmorToGive;
 	if(Armor_Charge[client] < Armor_Max)
 	{
-		float ArmorToGive;
-
 		if(flat)
 		{
 			int i_TargetHealAmount; //Health to actaully apply
@@ -2361,7 +2360,6 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		{
 			if(dieingstate[client] == 0)
 				HealEntityGlobal(client, client, ArmorToGive * 0.5, 1.0,_,HEAL_SELFHEAL);
-
 			return;
 		}
 		Armor_Charge[client] += RoundToNearest(ArmorToGive);
@@ -2376,6 +2374,11 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		{
 			Armor_Charge[client] = Armor_Max;
 		}
+	}
+
+	if(ArmorGiver > 0 && ArmorToGive > 0.0)
+	{
+		ApplyArmorEvent(client, RoundToNearest(ArmorToGive), ArmorGiver);
 	}
 	
 }
@@ -3044,6 +3047,8 @@ void ZR_FastDownloadForce()
 	YakuzaMusicDownload();
 	FullmoonDownload();
 	//Cheese_PrecacheMusic();
+	Core_PrecacheGlobalCustom();
+	PrecacheMusicZr();
 }
 
 

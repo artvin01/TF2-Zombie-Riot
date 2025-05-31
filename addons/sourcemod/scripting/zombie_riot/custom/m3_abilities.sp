@@ -434,11 +434,11 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 						EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
 						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
-							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0);
+							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0,_,_,client);
 						}
 						else
 						{
-							GiveArmorViaPercentage(target, 0.075, 1.0);
+							GiveArmorViaPercentage(target, 0.075, 1.0, _,_,client);
 						}
 						continue;
 					}
@@ -446,18 +446,18 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 					if(b_ThisWasAnNpc[target] && IsEntityAlive(target, true))
 					{
 						//IsValidnpc
-						float Healing_GiveArmor = 3.0;
+						float Healing_GiveArmor = 0.075;
 						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
 							//recently hurt, half armor.
 							Healing_GiveArmor *= 0.5;
 							GrantEntityArmor(target, false, 0.25, 0.25, 0,
-								ReturnEntityMaxHealth(target) * Healing_GiveArmor);
+								ReturnEntityMaxHealth(target) * Healing_GiveArmor, client);
 						}
 						else
 						{
 							GrantEntityArmor(target, false, 0.25, 0.25, 0,
-								ReturnEntityMaxHealth(target) * Healing_GiveArmor);
+								ReturnEntityMaxHealth(target) * Healing_GiveArmor, client);
 						}	
 						continue;
 					}

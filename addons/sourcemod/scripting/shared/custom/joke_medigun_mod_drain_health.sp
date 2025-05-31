@@ -398,10 +398,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 								Healing_GiveArmor *= 0.33;
 							}	
 							if(healTarget <= MaxClients)
-								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true,_,owner);
 							else
+							{
 								GrantEntityArmor(healTarget, false, 0.25, 0.25, 0,
-									flMaxHealth * Healing_GiveArmor);
+									flMaxHealth * Healing_GiveArmor, owner);
+							}
 
 							
 							Healing_GiveArmor = 0.35;
@@ -412,7 +414,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							{
 								Healing_GiveArmor *= 0.25;
 							}
-							GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true);
+							GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true,_,owner);
 						}
 #endif
 

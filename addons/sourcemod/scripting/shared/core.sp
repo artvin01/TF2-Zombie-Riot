@@ -983,10 +983,9 @@ public void OnMapStart()
 	Zero(f_MutePlayerTalkShutUp);
 	ResetIgnorePointVisible();
 	DHooks_MapStart();
-
 #if defined ZR || defined RPG
-	Core_PrecacheGlobalCustom();
 	FileNetwork_MapStart();
+	Core_PrecacheGlobalCustom();
 #endif
 
 	PrecacheSound("weapons/explode1.wav");

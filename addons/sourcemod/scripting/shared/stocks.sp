@@ -1496,6 +1496,7 @@ enum struct HealEventSaveInfo
 {
 	int HealedTarget;
 	int HealAmount;
+	int ArmorAmount;
 }
 
 static int i_HealsDone_Event[MAXENTITIES]={0, ...};
@@ -1518,7 +1519,7 @@ stock void ApplyHealEvent(int entindex, int amount, int ownerheal = 0)
 	{
 		DisplayHealParticleAbove(entindex);
 	}
-	if(ownerheal <= MaxClients && ownerheal != 0 && ownerheal != entindex)
+	if(ownerheal <= MaxClients && ownerheal > 0 && ownerheal != entindex)
 	{
 		if(!h_Arraylist_HealEventAlly[ownerheal])
 			h_Arraylist_HealEventAlly[ownerheal] = new ArrayList(sizeof(HealEventSaveInfo));
@@ -1557,6 +1558,47 @@ stock void ApplyHealEvent(int entindex, int amount, int ownerheal = 0)
 		}
 	}
 }
+stock void ApplyArmorEvent(int entindex, int amount, int ownerheal = 0)
+{
+	if(ownerheal <= MaxClients && ownerheal > 0 && ownerheal != entindex)
+	{
+		if(!h_Arraylist_HealEventAlly[ownerheal])
+			h_Arraylist_HealEventAlly[ownerheal] = new ArrayList(sizeof(HealEventSaveInfo));
+
+		HealEventSaveInfo data;
+		bool FoundTarget = false;
+		int length = h_Arraylist_HealEventAlly[ownerheal].Length;
+		for(int i; i < length; i++)
+		{
+			// Loop through the arraylist to find the Heal Target
+			h_Arraylist_HealEventAlly[ownerheal].GetArray(i, data);
+			
+			if(EntRefToEntIndex(data.HealedTarget) != entindex)
+				continue;
+
+			//we found a match
+			data.ArmorAmount += amount;
+			FoundTarget = true;
+			h_Arraylist_HealEventAlly[ownerheal].SetArray(i, data);
+		}
+		if(!FoundTarget)
+		{
+			// Create a new entry
+			data.HealedTarget = EntIndexToEntRef(entindex);
+			data.ArmorAmount = amount;
+			h_Arraylist_HealEventAlly[ownerheal].PushArray(data);
+		}
+		
+		if (h_Timer_HealEventApply_Ally[ownerheal] == null)
+		{
+			DataPack pack;
+			h_Timer_HealEventApply_Ally[ownerheal] = CreateDataTimer(1.0, Timer_HealEventApply_Ally, pack, _);
+			pack.WriteCell(ownerheal);
+			pack.WriteCell(EntIndexToEntRef(ownerheal));
+		}
+	}
+}
+
 
 public Action Timer_HealEventApply_Ally(Handle timer, DataPack pack)
 {
@@ -1579,13 +1621,25 @@ public Action Timer_HealEventApply_Ally(Handle timer, DataPack pack)
 		
 		if(!IsValidEntity(data.HealedTarget))
 			continue;
-
-		Event event = CreateEvent("building_healed", true);
-		event.SetInt("priority", 1);
-		event.SetInt("building", EntRefToEntIndex(data.HealedTarget));
-		event.SetInt("healer", clientOriginalIndex);
-		event.SetInt("amount", data.HealAmount);
-		event.FireToClient(clientOriginalIndex);
+	
+		if(data.HealAmount)
+		{
+			Event event = CreateEvent("building_healed", true);
+			event.SetInt("priority", 1);
+			event.SetInt("building", EntRefToEntIndex(data.HealedTarget));
+			event.SetInt("healer", clientOriginalIndex);
+			event.SetInt("amount", data.HealAmount);
+			event.FireToClient(clientOriginalIndex);
+		}
+		if(data.ArmorAmount)
+		{
+			Event event = CreateEvent("player_bonuspoints", true);
+			event.SetInt("priority", 1);
+			event.SetInt("source_entindex", EntRefToEntIndex(data.HealedTarget));
+			event.SetInt("player_entindex", clientOriginalIndex);
+			event.SetInt("points", data.ArmorAmount * 10);
+			event.FireToClient(clientOriginalIndex);
+		}
 	}
 	delete h_Arraylist_HealEventAlly[clientOriginalIndex];
 	h_Timer_HealEventApply_Ally[clientOriginalIndex] = null;

@@ -624,10 +624,17 @@ public void OnPostThink(int client)
 					HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					
 					float attrib = Attributes_Get(client, Attrib_BlessingBuff, 1.0);
-					if(attrib >= 1.0 && f_TimeUntillNormalHeal[client] < GetGameTime())
+					if(f_TimeUntillNormalHeal[client] < GetGameTime())
 					{
-						attrib -= 1.0; //1.0 is default
-						HealEntityGlobal(client, client, (MaxHealth * attrib), 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
+					//	float DefaultRegenArmor = 0.05;
+						if(attrib >= 1.0)
+						{
+							attrib -= 1.0; //1.0 is default
+							HealEntityGlobal(client, client, (MaxHealth * attrib), 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
+					//		DefaultRegenArmor += attrib;
+						}
+					//	if(Armor_Charge[client] >= 0)
+					//		GiveArmorViaPercentage(client, DefaultRegenArmor, 0.25);
 					}
 				}
 			}
