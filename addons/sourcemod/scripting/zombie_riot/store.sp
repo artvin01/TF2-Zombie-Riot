@@ -2735,6 +2735,12 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 		{
 			if(item.NPCSeller_WaveStart > 0)
 			{
+				if((item.NPCSeller_WaveStart -1) <= 0)
+				{
+					item.NPCSeller_Discount = 1.0;
+					item.NPCSeller = false;
+					//remove said sale
+				}
 				item.NPCSeller_WaveStart--;
 				StoreItems.SetArray(i, item);
 				continue;
