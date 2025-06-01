@@ -82,7 +82,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		if(ScalingEnemies >= 14.0)
 			ScalingEnemies = 14.0;
 
-		ScalingEnemies *= zr_multi_multiplier.FloatValue;
+		ScalingEnemies *= zr_multi_scaling.FloatValue;
 
 		float f_limit = Pow(1.115, ScalingEnemies);
 
@@ -2469,7 +2469,7 @@ void GiveProgressDelay(float Time)
 #if defined ZR
 int MaxNpcEnemyAllowed()
 {
-	return RoundToNearest(float(NPC_HARD_LIMIT) * zr_multi_maxcap.FloatValue);
+	return RoundToNearest(float(NPC_HARD_LIMIT) * zr_multi_maxenemiesalive_cap.FloatValue);
 }
 
 float MaxEnemyMulti()

@@ -1734,8 +1734,6 @@ static void NPC_Death(int entity)
 		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);	
 	}
 
-//	Music_RoundEnd(entity);
-
 
 	RaidModeTime += 45.0;
 	

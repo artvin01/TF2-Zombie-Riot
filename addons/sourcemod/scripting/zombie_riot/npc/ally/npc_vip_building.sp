@@ -99,14 +99,9 @@ public void VIPBuilding_ClotThink(int iNPC)
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			}
-			else  if(Waves_Started())
+			else if(Waves_Started())
 			{
-				int endround = CreateEntityByName("game_round_win"); 
-				DispatchKeyValue(endround, "force_map_reset", "1");
-				SetEntProp(endround, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-				DispatchSpawn(endround);
-				AcceptEntityInput(endround, "RoundWin");
-				Music_RoundEnd(endround);
+				ForcePlayerLoss();
 			}
 		}
 		else
@@ -131,12 +126,7 @@ void VIPBuilding_NPCDeath(int entity)
 	BarrackBody_NPCDeath(npc.index);
 	if(Waves_Started())
 	{
-		int endround = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(endround, "force_map_reset", "1");
-		SetEntProp(endround, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(endround);
-		AcceptEntityInput(endround, "RoundWin");
-		Music_RoundEnd(endround);
+		ForcePlayerLoss();
 	}
 }
 

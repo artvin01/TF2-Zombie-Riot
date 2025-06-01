@@ -562,11 +562,7 @@ public void Bloonarius_NPCDeath(int entity)
 
 	if(npc.m_bnew_target)
 	{
-		int entitygame = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entitygame, "force_map_reset", "1");
-		SetEntProp(entitygame, Prop_Data, "m_iTeamNum", TFTeam_Red);
-		DispatchSpawn(entitygame);
-		AcceptEntityInput(entitygame, "RoundWin");
+		ForcePlayerWin();
 	}
 	
 	Spawns_RemoveFromArray(entity);

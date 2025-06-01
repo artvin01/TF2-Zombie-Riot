@@ -3040,7 +3040,7 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 		ScaleReturn += Citizen_Count() * rebels;
 
 	if(!IgnoreMulti)
-		ScaleReturn *= zr_multi_multiplier.FloatValue;
+		ScaleReturn *= zr_multi_scaling.FloatValue;
 	
 	return ScaleReturn;
 }

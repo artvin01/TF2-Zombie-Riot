@@ -495,7 +495,6 @@ methodmap Bloon < CClotBody
 		npc.m_bRegrow = regrow;
 		npc.m_iType = type;
 		npc.m_iOriginalType = type;
-		npc.UpdateBloonInfo();
 		
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
@@ -532,7 +531,10 @@ public void Bloon_ClotThink(int iNPC)
 	{
 		return;
 	}
-	
+	if(npc.m_flHealthDifference != -1.0)	
+	{
+		ObtainHealthDifference(iNPC);
+	}
 	npc.m_flNextDelayTime = gameTime + 0.04;
 	
 	npc.Update();	
