@@ -21,7 +21,9 @@ enum
 	Attrib_BlessingBuff = 4039,
 	Attrib_ArmorOnHit = 4040,
 	Attrib_ArmorOnHitMax = 4041,
-	Attrib_Melee_UseBuilderDamage = 4042
+	Attrib_Melee_UseBuilderDamage = 4042,
+	Attrib_HeadshotBonus = 4043,
+	Attrib_ReviveSpeedBonus = 4044
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

@@ -3362,6 +3362,26 @@
 		"fr"	"Cadence de tir améliorée, dégats réduits. Arme se recharge en une fois.\nChaque deuxième tir utilise pas de munitions."
 		"chi"	"同时填装整个弹夹，超高射速，但是伤害更低。每第二发不消耗弹药。"
 	}
+	"USP Desc"
+	{
+		"en" 	"Basic pistol.\nDeals 20％ Extra headshot damage and has less falloff."
+	}
+	"USP PAP 1"
+	{
+		"en" 	"Incrased Attackspeed, clipsize, and damage."
+	}
+	"USP PAP 2"
+	{
+		"en" 	"Incrased Attackspeed, clipsize, and damage.\nWith your pistol you now revive allies 50％ Faster.\nM2 Activates Trigger finger!"
+	}
+	"USP PAP 3"
+	{
+		"en" 	"Incrased Attackspeed, clipsize, and damage."
+	}
+	"USP PAP 4"
+	{
+		"en" 	"Incrased Attackspeed, clipsize, and damage.\nYour weapon has next to no falloff.\nAbility Lasts Longer."
+	}
 	"Autoshotgun Pap 2"
 	{
 		"en"	"More dmg, more clip, more attackspeed."

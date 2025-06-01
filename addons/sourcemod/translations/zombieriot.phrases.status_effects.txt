@@ -1186,6 +1186,22 @@
 	{
 		"en" "Attack 2x Faster, only works on bubble wand."
 	}
+	"Trigger Finger"
+	{
+		"en" "Trigger Finger"
+	}
+	"Trigger Finger Desc"
+	{
+		"en" "Attack & reload 2x Faster, only works on USP.\n{crimson}But deal 15％ less damage during it."
+	}
+	"Trigger Finger Hidden"
+	{
+		"en" "Trigger Finger Hidden"
+	}
+	"Trigger Finger Hidden Desc"
+	{
+		"en" "Trigger Finger Hidden Desc"
+	}
 	"Hectic Therapy"
 	{
 		"en" "Hectic Therapy"

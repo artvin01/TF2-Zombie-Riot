@@ -972,13 +972,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
-#if !defined RTS
 		if(b_ProjectileCollideIgnoreWorld[entity1])
 		{
-			Wand_Base_StartTouch(entity1, entity2);
+		//	Wand_Base_StartTouch(entity1, entity2);
 			return false;
 		}
-#endif
 
 #if defined ZR
 	
@@ -1010,15 +1008,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-#if !defined RTS
 			if(i_IsABuilding[entity2] && RaidbossIgnoreBuildingsLogic(2))
 			{
 				return false;
 			}
-#endif
 		}
-
-#if !defined RTS
 		else if(b_IsAProjectile[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
 #if defined ZR
@@ -1110,13 +1104,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-#endif	// Non-RTS
-//enemy NPC
-#if defined RTS
-		if(!b_NpcHasDied[entity1])
-#else	
 		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
-#endif
 		{
 			//ignore buildings, neccecary during some situations
 			if(i_IsABuilding[entity2])
@@ -1138,11 +1126,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 				}
 			}
-#if defined RTS
-			else if(!b_NpcHasDied[entity2])
-#else
 			else if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
-#endif
 			{
 				return false;
 			}
@@ -1171,7 +1155,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			
 		}
 //allied NPC
-#if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
 			
@@ -1192,7 +1175,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 			
 		}
-#endif
 		else if(i_IsVehicle[entity1])
 		{
 			if(!i_IsVehicle[entity2])

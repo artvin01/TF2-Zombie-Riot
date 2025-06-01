@@ -491,7 +491,7 @@ public void Rogue_Vote_Prophecy2(const Vote vote, int index)
 
 				int recover = 10;
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
-				Store_RandomizeNPCStore(0, recover);
+				Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, recover);
 			}
 			case 2:
 			{
@@ -537,7 +537,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 
 				int recover = 10;
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
-				Store_RandomizeNPCStore(0, recover);
+				Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, recover);
 			}
 			case 1:
 			{
@@ -590,7 +590,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 				Rogue_AddIngots(15);
 				int recover = 5;
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
-				Store_RandomizeNPCStore(0, recover);
+				Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, recover);
 			}
 		}
 	}
@@ -658,7 +658,7 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 
 					int recover = 1;
 					Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
-					Store_RandomizeNPCStore(0, recover);
+					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, recover);
 					title = 'e';
 				}
 				case 7, 8:

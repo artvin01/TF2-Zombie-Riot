@@ -921,8 +921,6 @@ void ZR_MapStart()
 	//AcceptEntityInput(0, "RunScriptCode");
 	CreateMVMPopulator();
 	RoundStartTime = FAR_FUTURE;
-	
-	//Store_RandomizeNPCStore(1);
 }
 
 public void OnMapInit()
@@ -1600,7 +1598,7 @@ public Action Command_AFKKnight(int client, int args)
 public Action Command_SpawnGrigori(int client, int args)
 {
 	Spawn_Cured_Grigori();
-	Store_RandomizeNPCStore(0);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 	return Plugin_Handled;
 }
 

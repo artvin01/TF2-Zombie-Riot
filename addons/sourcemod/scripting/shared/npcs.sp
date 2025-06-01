@@ -811,6 +811,9 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			{
 				damage *= f_HeadshotDamageMultiNpc[victim];
 
+				//incase it has headshot multi
+				damage *= Attributes_Get(weapon, Attrib_HeadshotBonus, 1.0);
+
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 1.42;

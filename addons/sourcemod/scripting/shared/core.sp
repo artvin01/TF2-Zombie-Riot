@@ -654,20 +654,12 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "viewchanges.sp"
 #endif
 
-#if !defined RTS
 #include "attributes.sp"
-#endif
 
-#if !defined NOG
 #include "commands.sp"
 #include "convars.sp"
 #include "dhooks.sp"
 #include "events.sp"
-#endif
-
-#if defined RTS
-#include "rtscamera.sp"
-#endif
 
 #if defined ZR || defined NOG
 #include "npccamera.sp"
@@ -1153,7 +1145,7 @@ public void OnMapEnd()
 			KickClient(client);
 		}
 	}
-	Store_RandomizeNPCStore(1);
+	Store_RandomizeNPCStore(ZR_STORE_RESET);
 	OnRoundEnd(null, NULL_STRING, false);
 	Waves_MapEnd();
 	Spawns_MapEnd();
@@ -3388,6 +3380,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		if(WasClientReviving)
 			speed = 6;
 	}
+		
 	if(medigun > 0)
 	{
 		speed = RoundToNearest(float(speed) * 0.65);
@@ -3397,6 +3390,14 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		speed *= 2;
 	}
 
+	if(WasClientReviving)
+	{
+		int activeWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(activeWeapon))
+		{
+			speed = RoundToNearest(float(speed) * Attributes_Get(activeWeapon, Attrib_ReviveSpeedBonus, 1.0));
+		}
+	}
 	Rogue_ReviveSpeed(speed);
 	if(WasRevivingEntity)
 	{

@@ -2439,18 +2439,18 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
-				Store_RandomizeNPCStore(0, _, true);
+				Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
 				if(refreshNPCStore)
-					Store_RandomizeNPCStore(0);
+					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 				
 				NPC_SpawnNext(panzer_spawn, panzer_sound);
 				return;
 			}
 
 			if(refreshNPCStore)
-				Store_RandomizeNPCStore(0);
+				Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 			
-			Store_RandomizeNPCStore(0, _, true);
+			Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
 		}
 	}
 	else if(subgame)

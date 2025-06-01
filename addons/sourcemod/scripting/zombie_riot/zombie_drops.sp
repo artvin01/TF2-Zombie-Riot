@@ -769,7 +769,8 @@ public Action Timer_Detect_Player_Near_Grigori(Handle timer, any entid)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(GRIGORI_POWERUP_SOUND, _, SNDCHAN_STATIC, 100, _);
-					Store_RandomizeNPCStore(0, 1);
+					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, 1);
+					
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))

@@ -1494,8 +1494,6 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
-	//Store_RandomizeNPCStore(1);
-	
 	for(int c; c<MAXTF2PLAYERS; c++)
 	{
 		StarterCashMode[c] = true;
@@ -1510,6 +1508,7 @@ void Store_Reset()
 		StoreItems.GetArray(i, item);
 		item.NPCSeller = false;
 		item.NPCSeller_WaveStart = 0;
+		item.NPCSeller_Discount = 1.0;
 		for(int c; c<MAXTF2PLAYERS; c++)
 		{
 			item.Owned[c] = 0;
@@ -2664,165 +2663,129 @@ void Store_DiscountNamedItem(const char[] name, int timed = 0, float discount = 
 	}
 }
 
-void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave = false, float override = -1.0)
+#define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
+#define ZR_STORE_DEFAULT_SALE (1 << 2) //This  will reset the current normally sold items, and put up a new set of items
+#define ZR_STORE_WAVEPASSED (1 << 3) //any storelogic that should be called when a wave passes
+
+void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -1.0)
 {
 	int amount;
 	int length = StoreItems.Length;
 	int[] indexes = new int[length];
 	bool rogue = Rogue_Mode();
 	bool unlock = Rogue_UnlockStore();
-	
+
 	static Item item;
 	static ItemInfo info;
 	int GrigoriCashLogic = CurrentCash;
+	//we dont want to go above this cash amount.
 	if(GrigoriCashLogic > 70000)
 		GrigoriCashLogic = 70000;
-		
+
+	//If we are in unlock mode, i.e. rogue2, then we want to have a minimim cash amount.
 	if(unlock)
 	{
 		if(GrigoriCashLogic < 5000)
 			GrigoriCashLogic = 5000;
 	}
 
+	
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!unlock || ResetStore || !item.Hidden) && (!unlock || ResetStore || !item.RogueAlwaysSell)))
+		//In here we get each and every single store item that exists in ZR
+		//This will not happen if we want to reset the store entirely.
+		if((StoreFlags & ZR_STORE_RESET))
 		{
-			if(item.GregOnlySell == 2 && ResetStore != 1)	// We always sell this if unbought
+			//We want to entirely reset the store...
+			item.NPCSeller_Discount = 1.0;
+			item.NPCSeller = false;
+			item.NPCSeller_WaveStart = 0;
+			StoreItems.SetArray(i, item);
+			continue;
+		}
+		if(item.GregOnlySell == 2 && (!(StoreFlags & ZR_STORE_RESET)))
+		{
+			//We always sell this if unbought
+			//Some items have to be always sold no matter what, in this case its grigori's ammo.
+			float ApplySale = 0.7;
+			if(override >= 0.0)
+				ApplySale = override;
+
+			item.NPCSeller_Discount = ApplySale;
+			item.NPCSeller = true;
+
+			for(int c = 1; c <= MaxClients; c++)
 			{
-				float ApplySale = 0.7;
-				if(override >= 0.0)
-					ApplySale = override;
-
-				item.NPCSeller_Discount = ApplySale;
-				item.NPCSeller = true;
-
-				for(int c = 1; c <= MaxClients; c++)
-				{
-					if(item.Owned[c] || item.BoughtBefore[c])
-					{
-						item.NPCSeller = false;
-						break;
-					}
-				}
-				
-				StoreItems.SetArray(i, item);
-			}
-			else if(unlock && !ResetStore)	// Don't reset items, add random ones (rogue)
-			{
-				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
-				{
-					item.NPCSeller_WaveStart--;
-					StoreItems.SetArray(i, item);
-					static Item CurrentItem;
-					CurrentItem = item;
-					int LatestHighestSaleWave = 0;
-					if(CurrentItem.Section != -1)
-					{
-						static Item ParentItem;
-						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
-						{
-							//This just prevents infinite loops.
-							StoreItems.GetArray(CurrentItem.Section, ParentItem);
-							ParentItem.NPCSeller_Discount = 0.0;
-							ParentItem.NPCSeller = false;
-							if(CurrentItem.NPCSeller_WaveStart > LatestHighestSaleWave)
-								LatestHighestSaleWave = CurrentItem.NPCSeller_WaveStart;
-
-							if(ParentItem.NPCSeller_WaveStart > LatestHighestSaleWave)
-								ParentItem.NPCSeller_WaveStart = LatestHighestSaleWave;
-								
-							StoreItems.SetArray(CurrentItem.Section, ParentItem);
-							if(ParentItem.Section != -1)
-							{
-								CurrentItem = ParentItem;
-							}
-							else
-								break;
-						}
-					}
-				}
-
-				if(!item.NPCSeller && !item.RogueAlwaysSell)
-				{
-					item.GetItemInfo(0, info);
-					if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 4))
-						indexes[amount++] = i;
-				}
-			}
-			else if(ResetStore != 2)	// Reset items, add random ones (normal)
-			{
-				if(addItem == 0 && !subtract_wave)
+				if(item.Owned[c] || item.BoughtBefore[c])
 				{
 					item.NPCSeller = false;
-					static Item CurrentItem;
-					CurrentItem = item;
-					if(CurrentItem.Section != -1)
-					{
-						static Item ParentItem;
-						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
-						{
-							//This just prevents infinite loops.
-							StoreItems.GetArray(CurrentItem.Section, ParentItem);
-							ParentItem.NPCSeller_Discount = 0.0;
-							ParentItem.NPCSeller = false;
-							if(ResetStore)
-								item.NPCSeller_WaveStart = 0;
-								
-							StoreItems.SetArray(CurrentItem.Section, ParentItem);
-							if(ParentItem.Section != -1)
-							{
-								CurrentItem = ParentItem;
-							}
-							else
-								break;
-						}
-					}
-					if(ResetStore)
-					{
-						item.NPCSeller_WaveStart = 0;
-					}
+					break;
 				}
+			}
+			
+			StoreItems.SetArray(i, item);
+			continue;
+			//We only want to do this to the item.
+			//it never really has to be reset.
+		}
 
-				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
-				{
-					item.NPCSeller_WaveStart -= 1;
-					static Item CurrentItem;
-					CurrentItem = item;
-					if(CurrentItem.Section != -1)
-					{
-						static Item ParentItem;
-						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
-						{
-							//This just prevents infinite loops.
-							StoreItems.GetArray(CurrentItem.Section, ParentItem);
-							ParentItem.NPCSeller_Discount = 0.0;
-							ParentItem.NPCSeller = false;
-							if(ParentItem.NPCSeller_WaveStart < CurrentItem.NPCSeller_WaveStart -1)
-								ParentItem.NPCSeller_WaveStart = CurrentItem.NPCSeller_WaveStart -1;
-								
-							StoreItems.SetArray(CurrentItem.Section, ParentItem);
-							if(ParentItem.Section != -1)
-							{
-								CurrentItem = ParentItem;
-							}
-							else
-								break;
-						}
-					}
-				}
-				
-				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > ((GrigoriCashLogic / 3)- 1000) && info.Cost_Unlock < GrigoriCashLogic)
-					indexes[amount++] = i;
-				
+		//Any item thats within a sale thats time limited should tick down here.
+		if((StoreFlags & ZR_STORE_WAVEPASSED))
+		{
+			if(item.NPCSeller_WaveStart > 0)
+			{
+				item.NPCSeller_WaveStart--;
 				StoreItems.SetArray(i, item);
+				continue;
+			}
+		}
+		if(!unlock)
+		{
+			//in normal zr, we have a few different rules.
+			if((StoreFlags & ZR_STORE_DEFAULT_SALE))
+			{
+				if((item.GregOnlySell && item.GregOnlySell != 2) || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!item.Hidden)))
+				{
+					item.GetItemInfo(0, info);
+					if(info.Cost > 0 && info.Cost_Unlock > ((GrigoriCashLogic / 3)- 1000) && info.Cost_Unlock < GrigoriCashLogic)
+						indexes[amount++] = i;
+				}
+				if(item.NPCSeller && addItem == 0)
+				{
+					item.NPCSeller = false;
+					if(item.NPCSeller_WaveStart <= 0)
+					{
+						item.NPCSeller_Discount = 1.0;
+					}
+					StoreItems.SetArray(i, item);
+				}
+			}
+		}
+		else
+		{
+			//We want to add a few items to the aviable unlock list in rogue2
+			if((StoreFlags & ZR_STORE_DEFAULT_SALE))
+			{
+				if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!item.Hidden)))
+				{
+					if(!item.NPCSeller && !item.RogueAlwaysSell)
+					{
+						item.GetItemInfo(0, info);
+						if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 4))
+							indexes[amount++] = i;
+					}
+					//if we assume a sale like this is happening, thenwe must reset all previously sold items!
+				}
 			}
 		}
 	}
 
-	if(subtract_wave || ResetStore)
+
+	
+	//we dont want to call the bottom part if we are to reset the store!
+	//or just pass waves for indication purposes...
+	if((StoreFlags & ZR_STORE_WAVEPASSED) || (StoreFlags & ZR_STORE_RESET))
 		return;
 	
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
@@ -2886,6 +2849,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			if(item.Section != -1)
 			{
 				static Item ParentItem;
+				//In here we will give any parent of said sold item the discount!
 				for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
 				{
 					//This just prevents infinite loops.
@@ -3549,6 +3513,9 @@ static void MenuPage(int client, int section)
 			item.GetItemInfo(0, info);
 			if(NPCOnly[client] == 1)	// Greg Store Menu
 			{
+				if(!item.ItemInfos)
+					continue;
+					//dont display categories here....
 				if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel)
 					continue;
 			}
@@ -3593,7 +3560,7 @@ static void MenuPage(int client, int section)
 			{
 				continue;
 			}
-			else if(item.NPCSeller || item.NPCSeller_WaveStart != 0)
+			else if(item.NPCSeller || item.NPCSeller_WaveStart > 0)
 			{
 				//empty
 			}

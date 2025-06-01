@@ -64,7 +64,7 @@ public void Ikunagae_OnMapStart_NPC()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Ikunagae(vecPos, vecAng, team);
+	return Ikunagae(vecPos, vecAng, team, data);
 }
 methodmap Ikunagae < CClotBody
 {
@@ -113,6 +113,11 @@ methodmap Ikunagae < CClotBody
 		public get()		{ return this.m_iMedkitAnnoyance; }
 		public set(int value) 	{ this.m_iMedkitAnnoyance = value; }
 	}
+	property int m_iMaxSpawnsDo
+	{
+		public get()		{ return this.m_iAttacksTillMegahit; }
+		public set(int value) 	{ this.m_iAttacksTillMegahit = value; }
+	}
 	property int m_iBarrageBooleanThing
 	{
 		public get()		{ return i_GunMode[this.index]; }
@@ -147,7 +152,7 @@ methodmap Ikunagae < CClotBody
 		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_DefaultLaserLaunchSound[chose], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public Ikunagae(float vecPos[3], float vecAng[3], int ally)
+	public Ikunagae(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Ikunagae npc = view_as<Ikunagae>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
@@ -175,6 +180,12 @@ methodmap Ikunagae < CClotBody
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+		bool LimitSpawns = StrContains(data, "limit_spawns") != -1;
+		npc.m_iMaxSpawnsDo = 9999;
+		if(LimitSpawns)
+		{
+			npc.m_iMaxSpawnsDo = 3;
+		}
 		
 
 		//models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl
@@ -1091,6 +1102,11 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 	{
 		npc.g_TimesSummoned++;
+		if(npc.m_iMaxSpawnsDo == 3)
+		{
+			//half said spawns.
+			npc.g_TimesSummoned++;
+		}
 		maxhealth /= hp_multi;
 		for(int i; i<1; i++)
 		{
