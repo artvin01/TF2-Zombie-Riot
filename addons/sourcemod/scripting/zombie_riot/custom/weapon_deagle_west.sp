@@ -251,8 +251,8 @@ public void TriggerFinger_UspAbility(int client, int weapon, bool crit, int slot
 		
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 35.0);
-		ApplyTempAttrib(weapon, 6, 0.5, 2.0);
-		ApplyTempAttrib(weapon, 97, 0.5, 2.0);
+		ApplyTempAttrib(weapon, 6, 0.5, 3.0);
+		ApplyTempAttrib(weapon, 97, 0.5, 3.0);
 		MakePlayerGiveResponseVoice(client, 1);
 		EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
 		ApplyStatusEffect(client, client, "Trigger Finger", 3.0);
@@ -279,8 +279,8 @@ public void TriggerFinger_UspAbility2(int client, int weapon, bool crit, int slo
 		
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 35.0);
-		ApplyTempAttrib(weapon, 6, 0.5, 3.0);
-		ApplyTempAttrib(weapon, 97, 0.5, 3.0);
+		ApplyTempAttrib(weapon, 6, 0.5, 4.0);
+		ApplyTempAttrib(weapon, 97, 0.5, 4.0);
 		MakePlayerGiveResponseVoice(client, 1);
 		EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
 		ApplyStatusEffect(client, client, "Trigger Finger", 4.0);
