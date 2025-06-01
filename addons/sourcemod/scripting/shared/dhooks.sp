@@ -1021,6 +1021,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
 #endif
 			{
+#if defined ZR
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
@@ -1046,6 +1047,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 						}						
 					}
 				}
+#endif
 				return false;
 			}
 			if(b_IsATrigger[entity2])
