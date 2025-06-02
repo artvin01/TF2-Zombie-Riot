@@ -119,12 +119,18 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsValidClient(client))
-			Loadout_DatabaseLoadFavorite(client);
 		Armor_Charge[client] = 0; //reset armor to 0
 	}
 	if(RoundStartTime > GetGameTime())
+	{
+		//This asumes it already picked a map, get loadouts while not redoing map logic!
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsValidClient(client))
+				Loadout_DatabaseLoadFavorite(client);
+		}
 		return;
+	}
 	
 	Waves_SetReadyStatus(2);
 	RoundStartTime = FAR_FUTURE;
