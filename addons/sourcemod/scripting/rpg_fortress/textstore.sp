@@ -151,6 +151,7 @@ enum struct StoreEnum
 			{
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
 				DispatchKeyValue(entity, "model", this.Model);
+				PrintToServer("RPG DEBUG! Model tried to set: %s",this.Model);
 				
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
 				
