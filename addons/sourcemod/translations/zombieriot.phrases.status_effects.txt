@@ -1334,7 +1334,7 @@
 	}
 	"Plasmatized Lethalitation Desc"
 	{
-		"en" 	"Incrased Attackspeed and 2x Plasmic Elemental Buildup against enemies."
+		"en" 	"Increased Attackspeed and 2x Plasmic Elemental Buildup against enemies."
 	}
 	"Plasmatized Inoculation"
 	{

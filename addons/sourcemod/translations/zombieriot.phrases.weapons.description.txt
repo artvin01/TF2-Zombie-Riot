@@ -3368,19 +3368,19 @@
 	}
 	"USP PAP 1"
 	{
-		"en" 	"Incrased Attackspeed, clipsize, and damage."
+		"en" 	"Increased Attackspeed, clipsize, and damage."
 	}
 	"USP PAP 2"
 	{
-		"en" 	"Incrased Attackspeed, clipsize, and damage.\nWith your pistol you now revive allies 50％ Faster.\nM2 Activates Trigger finger!"
+		"en" 	"Increased Attackspeed, clipsize, and damage.\nWith your pistol you now revive allies 50％ Faster.\nM2 Activates Trigger finger!"
 	}
 	"USP PAP 3"
 	{
-		"en" 	"Incrased Attackspeed, clipsize, and damage."
+		"en" 	"Increased Attackspeed, clipsize, and damage."
 	}
 	"USP PAP 4"
 	{
-		"en" 	"Incrased Attackspeed, clipsize, and damage.\nYour weapon has less falloff.\nAbility Lasts Longer."
+		"en" 	"Increased Attackspeed, clipsize, and damage.\nYour weapon has less falloff.\nAbility Lasts Longer."
 	}
 	"Autoshotgun Pap 2"
 	{
