@@ -2863,6 +2863,8 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 
 					if(ParentItem.NPCSeller_WaveStart < item.NPCSeller_WaveStart)
 						ParentItem.NPCSeller_WaveStart = item.NPCSeller_WaveStart;
+
+					ParentItem.NPCSeller = true;
 						
 					StoreItems.SetArray(item.Section, ParentItem);
 					if(ParentItem.Section != -1)
