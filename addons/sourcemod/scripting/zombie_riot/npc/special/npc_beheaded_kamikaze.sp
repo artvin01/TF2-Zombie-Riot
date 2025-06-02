@@ -129,7 +129,7 @@ methodmap BeheadedKamiKaze < CClotBody
 
 			fl_KamikazeInitiate = GetGameTime() + 15.0;
 			
-			if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
+			if(!TeleportDiversioToRandLocation(npc.index,_,2500.0, 1250.0))
 			{
 				//incase their random spawn code fails, they'll spawn here.
 				int Spawner_entity = GetRandomActiveSpawner();

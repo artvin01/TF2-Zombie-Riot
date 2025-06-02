@@ -2757,14 +2757,11 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 					if(info.Cost > 0 && info.Cost_Unlock > ((GrigoriCashLogic / 3)- 1000) && info.Cost_Unlock < GrigoriCashLogic)
 						indexes[amount++] = i;
 				}
-				
-				if(item.NPCSeller_WaveStart <= 0)
-				{
-					item.NPCSeller_Discount = 1.0;
-				}
-				if(item.NPCSeller && addItem == 0)
+
+				if(item.NPCSeller && addItem == 0 && item.NPCSeller_WaveStart <= 0)
 				{
 					item.NPCSeller = false;
+					item.NPCSeller_Discount = 1.0;
 					StoreItems.SetArray(i, item);
 				}
 			}

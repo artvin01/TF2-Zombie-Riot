@@ -475,7 +475,7 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		return 3;
 	
 	Diversionistico npc = view_as<Diversionistico>(iNPC);
-	for( int loop = 1; loop <= 500; loop++ ) 
+	for( int loop = 1; loop <= 100; loop++ ) 
 	{
 		float AproxRandomSpaceToWalkTo[3];
 		CNavArea RandomArea = PickRandomArea();	

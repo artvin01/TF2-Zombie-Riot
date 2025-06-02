@@ -3364,7 +3364,7 @@
 	}
 	"USP Desc"
 	{
-		"en" 	"Basic pistol.\nDeals 20％ Extra headshot damage and has less falloff."
+		"en" 	"Basic pistol.\nDeals 20％ Extra headshot damage."
 	}
 	"USP PAP 1"
 	{
@@ -3380,7 +3380,7 @@
 	}
 	"USP PAP 4"
 	{
-		"en" 	"Incrased Attackspeed, clipsize, and damage.\nYour weapon has next to no falloff.\nAbility Lasts Longer."
+		"en" 	"Incrased Attackspeed, clipsize, and damage.\nYour weapon has less falloff.\nAbility Lasts Longer."
 	}
 	"Autoshotgun Pap 2"
 	{
