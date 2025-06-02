@@ -10,7 +10,7 @@
 #define SOUND_OVERHEAT "player/medic_charged_death.wav"
 
 #define MAX_VICTORIAN_SUPERCHARGE 10
-static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerVictorianLauncherManagement[MAXTF2PLAYERS+1] = {null, ...};
 static bool HasRocketSteam[MAXTF2PLAYERS];
 static int i_VictoriaParticle[MAXTF2PLAYERS];
 static int LineofDefenseParticle_I[MAXTF2PLAYERS];

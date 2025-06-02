@@ -102,17 +102,15 @@
 				"library"	"server"
 				
 				"linux"		"@_ZN17CBaseCombatWeapon12FinishReloadEv"
-				"windows"	"\x56\x8B\xF1\x8B\x06\x8B\x80\xF4\x06\x00\x00\xFF\xD0\x84\xC0\x74\x2A\xC6\x86\xD8\x05\x00\x00\x00"
+				"windows"	"\x56\x8B\xF1\x8B\x06\x8B\x80\xF8\x06\x00\x00\xFF\xD0\x84\xC0\x74\x2A\xC6\x86\xD8\x05\x00\x00\x00"
 			}
 			"CTFPlayer::CanAirDash"
 			{
 				//air_dash_count, smaller function.
 				"library"	"server"
-				"linux64"		"@_ZNK9CTFPlayer10CanAirDashEv"
-				"windows64"	"\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x30\x8B\x81\xD4\x1E\x00\x00"
 				
 				"linux"		"@_ZNK9CTFPlayer10CanAirDashEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x57\x8B\xF9\x8B\x87\xB4\x1B\x00\x00"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x57\x8B\xF9\x8B\x87\xBC\x1B\x00\x00"
 			}
 			"CTFPlayer::GetChargeEffectBeingProvided"
 			{
@@ -120,19 +118,14 @@
 				// CTFPlayerShared::SetChargeEffect called by CTFPlayerShared::RecalculateChargeEffects
 				// CTFPlayerShared::RecalculateChargeEffects calls CTFPlayer::GetChargeEffectBeingProvided
 				"library"	"server"
-				"linux64"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
-				"windows64"	"\x40\x53\x48\x83\xEC\x50\x48\x8D\x81\x20\x27\x00\x00"
-				
 				
 				"linux"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
-				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8D\x86\xC4\x22\x00\x00"
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8D\x86\xCC\x22\x00\x00"
 			}
 			"CTFPlayer::RegenThink"
 			{
 				//string RegenThink, small function
 				"library"	"server"
-			//	"linux64"		"@_ZN9CTFPlayer10RegenThinkEv"
-			//	"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x45\x33\xC0"
 				
 				"linux"		"@_ZN9CTFPlayer10RegenThinkEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x7C\x56\x8B\xF1\x8B\x06"
@@ -177,9 +170,6 @@
 			"CBaseAnimating::InvalidateBoneCache"// Void CBaseCombatCharacter::Weapon_Drop ("ValveBiped.Weapon_bone"), Big function with 11 calls, the 5th one from top, very small function
 			{
 				"library"	"server"
-				"linux64"		"@_ZN14CBaseAnimating19InvalidateBoneCacheEv"
-				"windows64"	"\x48\x8B\x89\x88\x05\x00\x00\xE9\x2A\x2A\x2A\x2A"
-				
 				"linux"		"@_ZN14CBaseAnimating19InvalidateBoneCacheEv"
 				"windows"	"\xFF\xB1\x6C\x04\x00\x00"
 			}
@@ -862,8 +852,8 @@
 			}
 			"CTFParticleCannon::FireChargedShot"
 			{
-				"windows"	"493"
-				"linux"		"500"
+				"windows"	"494"
+				"linux"		"501"
 			}
 			"CBaseGrenade::Explode"
 			{
@@ -926,6 +916,12 @@
 				// Offset from m_lastHealthPercentage
 				"windows"	"28"
 				"linux"		"28"
+			}
+			"CServerGameDLL::GetTickInterval()"
+			{
+                "library"    	"server"
+				"windows"		"10"
+				"linux"			"10"
 			}
 		}
 	}

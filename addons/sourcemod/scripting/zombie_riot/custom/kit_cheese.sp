@@ -84,7 +84,7 @@ static int Cheese_Glow;
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
 static float Cheese_TargetsHit[MAXTF2PLAYERS];
 static float hudtimer[MAXTF2PLAYERS];
-static int iref_WeaponConnect[MAXPLAYERS+1][2];
+static int iref_WeaponConnect[MAXTF2PLAYERS+1][2];
 
 static int Cheese_Siphoner_TargetMaximum[9] = {2, 2, 3, 3, 4, 4, 5, 6, 6}; // Maximum amount of enemies that the Siphoner can hit.
 static float Cheese_Siphoner_Range[9] = {250.0, 262.5, 275.0, 287.5, 300.0, 300.0, 300.0, 300.0, 300.0}; // Range of the Siphoner
@@ -163,8 +163,8 @@ void Cheese_Enable(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE)
 	{
 		iref_WeaponConnect[client][0] = EntIndexToEntRef(weapon);
-		if(FileNetwork_Enabled()) // samuu: apparently this is causing it to not download??? BATFOX PLZ HELPPPP YOU MADE FILENETWORK
-			Cheese_PrecacheMusic(); //artvin: Sound files are not uploaded to fast DL, construction forces fast downloads, i.e. error.
+		if(FileNetwork_Enabled())
+			Cheese_PrecacheMusic();
 
 		if(EffectTimer[client] != null)
 		{

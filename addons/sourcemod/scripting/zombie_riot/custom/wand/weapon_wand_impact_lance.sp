@@ -472,7 +472,7 @@ public Action Timer_RemoveEntity_Impact_Lance_Projectile(Handle timer, DataPack 
 #define IMPACT_LANCE_EFFECTS 25
 static int i_Impact_Lance_CosmeticEffect[MAXENTITIES][IMPACT_LANCE_EFFECTS];
 
-static Handle h_Impact_Lance_CosmeticEffectManagement[MAXPLAYERS+1] = {null, ...};
+static Handle h_Impact_Lance_CosmeticEffectManagement[MAXTF2PLAYERS+1] = {null, ...};
 
 void Impact_Lance_CosmeticRemoveEffects(int iNpc)
 {

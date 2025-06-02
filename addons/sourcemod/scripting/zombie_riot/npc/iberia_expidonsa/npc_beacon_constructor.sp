@@ -288,6 +288,7 @@ void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float dista
 				npc1.m_flNextThinkTime = GetGameTime() + 2.0;
 				fl_AbilityOrAttack[spawn_index] = fl_AbilityOrAttack[npc.index];
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 			}
 			npc.PlayBuildSound();
 			npc.m_flSpeed = 300.0;

@@ -22,6 +22,8 @@ static int ReverseDir(int dir)
 	return newDir;
 }
 
+static Handle SyncHudSkilltree;
+float MenuHudCooldown_SK[MAXTF2PLAYERS];
 enum struct Skill
 {
 	char Name[32];
@@ -74,10 +76,12 @@ static int PointsSpent[MAXTF2PLAYERS];
 void SkillTree_PluginStart()
 {
 	LoadTranslations("zombieriot.phrases.skilltree");
+	SyncHudSkilltree = CreateHudSynchronizer();
 }
 
 void SkillTree_ConfigSetup()
 {
+	Zero(MenuHudCooldown_SK);
 	delete SkillListSnap;
 	delete SkillList;
 	SkillList = new StringMap();
@@ -408,15 +412,14 @@ static void MainMenu(int client)
 	
 	Menu menu = new Menu(MainMenuH);
 
-	SetGlobalTransTarget(client);
 	
-	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Skill Points", points);
+	menu.SetTitle("%T\n \n%T\n%T\n ", "TF2: Zombie Riot", client,"Skill Points", client, points, "Browse Skill Tree Explain Full", client);
 
 	char buffer[64];
-	FormatEx(buffer, sizeof(buffer), "%t", "Browse Skill Tree");
+	Format(buffer, sizeof(buffer), "%T","Browse Skill Tree", client);
 	menu.AddItem(NULL_STRING, buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Reset Skill Tree");
+	Format(buffer, sizeof(buffer), "%T","Reset Skill Tree", client);
 	menu.AddItem(NULL_STRING, buffer);
 
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -436,7 +439,7 @@ static int MainMenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				case 0:
 				{
-					TreeMenu(client);
+					TreeMenu(client, true);
 
 					if(InMenu[client] && CustomMusic.Path[0])
 					{
@@ -503,8 +506,12 @@ bool SkillTree_InMenu(int client)
 	return InMenu[client];
 }
 
-static void TreeMenu(int client)
+void TreeMenu(int client, bool force = false, bool displayMenu = true)
 {
+	if(!force && MenuHudCooldown_SK[client] > GetGameTime())
+	{
+		return;
+	}
 	if(PointsSpent[client] == -1)
 		SkillTree_CalcSkillPoints(client);
 	
@@ -513,6 +520,7 @@ static void TreeMenu(int client)
 	
 	int points = (Level[client] * POINTS_PER_LEVEL) - PointsSpent[client];
 
+	MenuHudCooldown_SK[client] = GetGameTime() + 0.25;
 	static Skill skill;
 
 	if(!Selected[client][0])
@@ -607,9 +615,9 @@ static void TreeMenu(int client)
 	// Left Side
 	if(buffers[LEFT][0])
 	{
-		Format(buffer, sizeof(buffer), "%s %s [%s] %s", buffers[LEFT],
+		Format(buffer, sizeof(buffer), "%s %s %s %s", buffers[LEFT],
 								ArrowH[skill.Dir == RIGHT ? 1 : 0],
-								CanAccess[client][LEFT] ? "A" : "  ",
+								CanAccess[client][LEFT] ? ArrowH[skill.Dir == RIGHT ? 1 : 0] : "[X]",
 								ArrowH[skill.Dir == RIGHT ? 1 : 0]);
 	}
 	else
@@ -638,28 +646,31 @@ static void TreeMenu(int client)
 	{
 		for(int a = 1; a < 11; a++)
 		{
-			leftBuffer[a][i] = GetURandomInt() % 99 ? '	' : '*';
+		//	leftBuffer[a][i] = GetURandomInt() % 99 ? '	' : '*';
+			leftBuffer[a][i] = '	';
 		}
 	}
 
 	length = leftSize - (strlen(buffers[UP]) / 3);
 	for(int i; i < length; i++)
 	{
-		leftBuffer[0][i] = GetURandomInt() % 99 ? '	' : '*';
+		leftBuffer[0][i] = '	';
+	//	leftBuffer[0][i] = GetURandomInt() % 99 ? '	' : '*';
 	}
 
 	length = leftSize - (strlen(buffers[DOWN]) / 3);
 	for(int i; i < length; i++)
 	{
-		leftBuffer[11][i] = GetURandomInt() % 99 ? '	' : '*';
+		leftBuffer[11][i] = '	';
+	//	leftBuffer[11][i] = GetURandomInt() % 99 ? '	' : '*';
 	}
 
 	// Right Side
 	if(buffers[RIGHT][0])
 	{
-		Format(buffer, sizeof(buffer), "%s %s [%s] %s %s", buffer,
+		Format(buffer, sizeof(buffer), "%s %s %s %s %s", buffer,
 								ArrowH[skill.Dir == LEFT ? 0 : 1],
-								CanAccess[client][RIGHT] ? "D" : "  ",
+								CanAccess[client][RIGHT] ? ArrowH[skill.Dir == LEFT ? 0 : 1] : "[X]",
 								ArrowH[skill.Dir == LEFT ? 0 : 1],
 								buffers[RIGHT]);
 	}
@@ -667,10 +678,10 @@ static void TreeMenu(int client)
 	// Top Side
 	if(buffers[UP][0])
 	{
-		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s", leftBuffer[0], buffers[UP],
+		Format(buffer, sizeof(buffer), "%s%s\n%s %s\n%s %s\n%s %s\n%s %s\n%s %s\n%s", leftBuffer[0], buffers[UP],
 											leftBuffer[1], skill.Dir == DOWN ? "v" : "^",
 											leftBuffer[2], skill.Dir == DOWN ? "v" : "^",
-											leftBuffer[3], CanAccess[client][UP] ? "W" : "  ",
+											leftBuffer[3], CanAccess[client][UP] ? (skill.Dir == DOWN ? "v" : "^") : "[X]",
 											leftBuffer[4], skill.Dir == DOWN ? "v" : "^",
 											leftBuffer[5], skill.Dir == DOWN ? "v" : "^",
 											buffer);
@@ -689,10 +700,10 @@ static void TreeMenu(int client)
 	// Bottom Side
 	if(buffers[DOWN][0])
 	{
-		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %s\n%s[%s]\n%s %s\n%s %s\n%s%s", buffer,
+		Format(buffer, sizeof(buffer), "%s\n%s %s\n%s %s\n%s %s\n%s %s\n%s %s\n%s%s", buffer,
 											leftBuffer[6], skill.Dir == UP ? "^" : "v",
 											leftBuffer[7], skill.Dir == UP ? "^" : "v",
-											leftBuffer[8], CanAccess[client][DOWN] ? "S" : "  ",
+											leftBuffer[8], CanAccess[client][DOWN] ? (skill.Dir == UP ? "^" : "v") : "[X]",
 											leftBuffer[9], skill.Dir == UP ? "^" : "v",
 											leftBuffer[10], skill.Dir == UP ? "^" : "v",
 											leftBuffer[11], buffers[DOWN]);
@@ -709,19 +720,75 @@ static void TreeMenu(int client)
 	}
 
 	Format(buffers[0], sizeof(buffers[]), "%s Desc", skill.Name);
-	
-	Menu menu = new Menu(TreeMenuH);
-	menu.SetTitle("%s\n \n%t\n%t", buffer, buffers[0], "Browse Skill Tree Explain");
+
+	static int red;
+	static int green;
+	static int blue;
+	int PlayerSteamId = GetSteamAccountID(client);
+	int PlayerSteamIdDigit1;
+	PlayerSteamId = (PlayerSteamId % 1000);
+	PlayerSteamIdDigit1 = (PlayerSteamId % 10);
+	if(PlayerSteamId >= 255)
+	{
+		PlayerSteamId /= 4;
+	}
+
+	if(PlayerSteamId <= 125)
+	{
+		PlayerSteamId = 125;
+	}
+	switch(PlayerSteamIdDigit1)
+	{
+		case 0, 4:
+		{
+			red = RoundToNearest(float(PlayerSteamId) * 0.1 * GetRandomFloat(0.95, 1.05));
+			green = RoundToNearest(float(PlayerSteamId) * 1.5 * GetRandomFloat(0.95, 1.05));
+			blue = RoundToNearest(float(PlayerSteamId) * 1.0 * GetRandomFloat(0.95, 1.05));
+		}
+		case 1, 5:
+		{
+			red = RoundToNearest(float(PlayerSteamId) * 0.5 * GetRandomFloat(0.95, 1.05));
+			green = RoundToNearest(float(PlayerSteamId) * 0.7 * GetRandomFloat(0.95, 1.05));
+			blue = RoundToNearest(float(PlayerSteamId) * 1.5 * GetRandomFloat(0.95, 1.05));
+		}
+		case 2, 6:
+		{
+			red = RoundToNearest(float(PlayerSteamId) * 1.5 * GetRandomFloat(0.95, 1.05));
+			green = RoundToNearest(float(PlayerSteamId) * 0.5 * GetRandomFloat(0.95, 1.05));
+			blue = RoundToNearest(float(PlayerSteamId) * 0.5 * GetRandomFloat(0.95, 1.05));
+		}
+		case 3, 7:
+		{
+			red = RoundToNearest(float(PlayerSteamId) * 1.1 * GetRandomFloat(0.95, 1.05));
+			green = RoundToNearest(float(PlayerSteamId) * 0.6 * GetRandomFloat(0.95, 1.05));
+			blue = RoundToNearest(float(PlayerSteamId) * 1.1 * GetRandomFloat(0.95, 1.05));
+		}
+		case 8, 9:
+		{
+			red = RoundToNearest(float(PlayerSteamId) * 0.8 * GetRandomFloat(0.95, 1.05));
+			green = RoundToNearest(float(PlayerSteamId) * 0.2 * GetRandomFloat(0.95, 1.05));
+			blue = RoundToNearest(float(PlayerSteamId) * 1.1 * GetRandomFloat(0.95, 1.05));
+		}
+	}
+
+	if(red >= 255)
+		red = 255;
+	if(green >= 255)
+		green = 255;
+	if(blue >= 255)
+		blue = 255;
+
+	SetHudTextParams(-1.0, -1.0, 0.3, red, green, blue, 255);
+
+	char BufferSyncHud[512];
+	strcopy(BufferSyncHud, sizeof(BufferSyncHud), buffer);
+	ReplaceString(BufferSyncHud,sizeof(BufferSyncHud), "	", "");
+	Format(BufferSyncHud, sizeof(BufferSyncHud),"%s\n-------------\n%T", BufferSyncHud, buffers[0], client);
+	ShowSyncHudText(client, SyncHudSkilltree, BufferSyncHud);
+
 
 	bool upgrade;
 	
-	/*
-	if(skill.Key[0] && !Items_HasNamedItem(client, skill.Key))
-	{
-		Format(buffer, sizeof(buffer), "Requires \"%s\"", skill.Key);
-	}
-	else 
-	*/
 	if(!charge)
 	{
 		Format(buffer, sizeof(buffer), "%t (%d / %d)", "Unlock Skill", points, skill.Cost);
@@ -746,14 +813,20 @@ static void TreeMenu(int client)
 
 	CanAccess[client][DIR_MAX] = upgrade;
 
-	menu.AddItem(NULL_STRING, buffer, upgrade ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem(names[UP], "W", CanAccess[client][UP] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[LEFT], "A", CanAccess[client][LEFT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[DOWN], "S", CanAccess[client][DOWN] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
-	menu.AddItem(names[RIGHT], "D", CanAccess[client][RIGHT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+	if(displayMenu)
+	{
+		Menu menu = new Menu(TreeMenuH);
+		menu.SetTitle("");
+		menu.AddItem(NULL_STRING, buffer, upgrade ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		menu.AddItem(names[UP], "W", CanAccess[client][UP] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+		menu.AddItem(names[LEFT], "A", CanAccess[client][LEFT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+		menu.AddItem(names[DOWN], "S", CanAccess[client][DOWN] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
+		menu.AddItem(names[RIGHT], "D", CanAccess[client][RIGHT] ? ITEMDRAW_DEFAULT : ITEMDRAW_SPACER);
 
-	menu.OptionFlags |= MENUFLAG_NO_SOUND;
-	InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+		menu.OptionFlags |= MENUFLAG_NO_SOUND;
+		InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
+	//	DoOverlayLogicLeper(client);
+	}
 }
 
 static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
@@ -773,6 +846,8 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 
 			if(choice == MenuCancel_Exit)
 				MainMenu(client);
+
+		//	DoOverlayLogicLeperNormal(client);
 		}
 		case MenuAction_Select:
 		{
@@ -801,7 +876,7 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 					delete SkillCountSnap[client];
 				}
 
-				TreeMenu(client);
+				TreeMenu(client, true);
 			}
 		}
 	}

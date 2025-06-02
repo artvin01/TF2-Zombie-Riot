@@ -4,18 +4,18 @@
 #define WARCRY_RESISTANCE_MIN 0.95
 #define WARCRY_RESISTANCE_MAX 0.9
 
-static float WarCry_Duration[MAXPLAYERS+1] = {0.0, ...};
-static float WarCry_DamageTaken[MAXPLAYERS+1] = {0.0, ...};
+static float WarCry_Duration[MAXTF2PLAYERS+1] = {0.0, ...};
+static float WarCry_DamageTaken[MAXTF2PLAYERS+1] = {0.0, ...};
 
-static float WarCryBuff_Duration[MAXPLAYERS+1] = {0.0, ...};
+static float WarCryBuff_Duration[MAXTF2PLAYERS+1] = {0.0, ...};
 static float WarCryBuff_Amount[MAXENTITIES] = {1.0, ...};
-static float WarCryBuff_Resistance[MAXPLAYERS+1] = {1.0, ...};
+static float WarCryBuff_Resistance[MAXTF2PLAYERS+1] = {1.0, ...};
 static Handle h_WarcryTimerBuff[MAXENTITIES];
 
 //prevent switching weapons
-static int i_MeleeWeaponRef[MAXPLAYERS+1] = {0, ...};
+static int i_MeleeWeaponRef[MAXTF2PLAYERS+1] = {0, ...};
 
-static Handle h_WarcryTimer[MAXPLAYERS+1];
+static Handle h_WarcryTimer[MAXTF2PLAYERS+1];
 
 void WarCryOnMapStart()
 {

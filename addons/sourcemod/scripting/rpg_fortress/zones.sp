@@ -152,11 +152,11 @@ void Zones_Rebuild()
 					SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
 					SetEntityCollisionGroup(entity, 5);
 					
-					SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", mins);
-					SetEntPropVector(entity, Prop_Send, "m_vecMins", mins);
+					SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", mins);
+					SetEntPropVector(entity, Prop_Data, "m_vecMins", mins);
 					
-					SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxs);
-					SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs);
+					SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", maxs);
+					SetEntPropVector(entity, Prop_Data, "m_vecMaxs", maxs);
 
 					ZonesKv.GetVector("telepos", mins);
 					SetEntPropVector(entity, Prop_Data, "m_vecTelePos", mins);
@@ -197,7 +197,7 @@ void Zones_Rebuild()
 						}
 					}
 
-					view_as<CClotBody>(entity).UpdateCollisionBox();
+				//	view_as<CClotBody>(entity).UpdateCollisionBox();
 
 					SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW); 
 					TeleportEntity(entity, pos, NULL_VECTOR, NULL_VECTOR);

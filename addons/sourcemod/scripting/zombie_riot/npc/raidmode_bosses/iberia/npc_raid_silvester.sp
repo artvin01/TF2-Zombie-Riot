@@ -585,10 +585,12 @@ static void Internal_ClotThink(int iNPC)
 		if(npc.m_flSilvesterSlicerHappening)
 		{
 			npc.m_flInTeleportLogic = 0.0;
+			RemoveSpecificBuff(npc.index, "Very Defensive Backup");
 			return;
 		}
 		if(b_NpcIsInvulnerable[npc.index])
 		{
+			RemoveSpecificBuff(npc.index, "Very Defensive Backup");
 			npc.m_flInTeleportLogic = 0.0;
 			return;
 		}
@@ -599,6 +601,7 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_flInTeleportLogic = 0.0;
 			npc.m_flChangeTargetsSilvester -= 3.0;
 			CPrintToChatAll("{gold}Silvester{default}: Oh damn She is already gone...");
+			RemoveSpecificBuff(npc.index, "Very Defensive Backup");
 			return;
 		}
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -608,6 +611,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			npc.m_flInTeleportLogic = 0.0;
 			npc.m_flChangeTargetsSilvester -= 3.0;
+			RemoveSpecificBuff(npc.index, "Very Defensive Backup");
 			return;
 			//too close, cancel.
 		}
@@ -633,6 +637,7 @@ static void Internal_ClotThink(int iNPC)
 			ParticleEffectAt(WorldSpaceVec2, "teleported_blue", 0.5);
 			npc.PlayDeathSound();	
 			TeleportEntity(npc.index, WorldSpaceVec2);
+			RemoveSpecificBuff(npc.index, "Very Defensive Backup");
 			//go to sister!
 		}
 		else if(npc.m_flInTeleportLogic < (GetGameTime(npc.index) + 1.3)) //last second

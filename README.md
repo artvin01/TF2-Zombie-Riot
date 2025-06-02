@@ -46,6 +46,7 @@ Main Servers:
 ## cvar's
 
 Check the Cvar File.
+shared/convars.sp
  
 ## Commands
 
@@ -92,13 +93,17 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 - [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
+- [Max speed unlocker/Edict Alloc](https://github.com/Mikusch/SourceScramble-Patches) (install both speed unlocker and Alloc)
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
 
 
 ## Optional Things
-- [Max speed unlocker/Edict Alloc](https://github.com/Mikusch/SourceScramble-Patches) (install both speed unlocker and Alloc)
+If youre above 16 players, i recommend these plugins extra:
+- [Any Tickrate modifier](https://github.com/Mikusch/SM-TickrateChanger)
+This is an example for a LINUX one.
+Any one will work.
 ## Credits
 
 Current coders that in anyway actively helped, in order of how much:

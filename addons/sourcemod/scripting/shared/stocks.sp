@@ -705,6 +705,9 @@ stock void SetAmmo(int client, int type, int ammo)
 {
 	if(type == Ammo_Metal)
 	{
+		if(ammo < 10)
+			ammo = 10;
+		//Never ever set lower then 1!!!
 		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
 	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
@@ -1096,6 +1099,11 @@ stock bool AreVectorsEqual(const float vVec1[3], const float vVec2[3])
 	return (vVec1[0] == vVec2[0] && vVec1[1] == vVec2[1] && vVec1[2] == vVec2[2]);
 } 
 
+stock bool AreVectorsEqualAprox(const float vVec1[3], const float vVec2[3])
+{
+	return (vVec1[0] == vVec2[0] && vVec1[1] == vVec2[1] && vVec1[2] == vVec2[2]);
+} 
+
 public Action Timer_RemoveEntity(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
@@ -1326,7 +1334,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
  		Building_CamoOrRegrowBlocker(healer, _, RegrowthBlock);
 		if(RegrowthBlock)
 		{
-			HealTotal *= 0.5;
+			HealTotal *= 0.85;
 		}
 		if(HasSpecificBuff(reciever, "Burn"))
 			HealTotal *= 0.75;
@@ -1366,24 +1374,24 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		if(HealingDoneInt > 0)
 		{
 #if defined ZR
-		if(healer != reciever)
-		{
-			Healing_done_in_total[healer] += HealingDoneInt;
-			if(healer <= MaxClients)
+			if(healer != reciever)
 			{
-				//dont get it from healing buildings
-				if(!i_IsABuilding[reciever])
+				Healing_done_in_total[healer] += HealingDoneInt;
+				if(healer <= MaxClients)
 				{
-					AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
-					HealPointToReinforce(healer, HealingDoneInt, 0.0);
-					GiveRageOnDamage(healer, float(HealingDoneInt) * 2.0);
+					//dont get it from healing buildings
+					if(!i_IsABuilding[reciever])
+					{
+						AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
+						HealPointToReinforce(healer, HealingDoneInt, 0.0);
+						GiveRageOnDamage(healer, float(HealingDoneInt) * 2.0);
+					}
 				}
 			}
-		}
 #endif
 //only apply heal event if its not a passive self heal
-		if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))
-			ApplyHealEvent(reciever, HealingDoneInt);
+			if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))
+				ApplyHealEvent(reciever, HealingDoneInt, healer);
 		}
 		return HealingDoneInt;
 	}
@@ -1455,7 +1463,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	int HealthHealed = HealEntityViaFloat(entity, HealthToGive, HealthMaxPercentage);
 	if(HealthHealed > 0)
 	{
-		ApplyHealEvent(entity, HealthHealed);	// Show healing number
+		ApplyHealEvent(entity, HealthHealed, healer);	// Show healing number
 		if(healer > 0 && healer != entity)
 		{
 			Healing_done_in_total[healer] += HealthHealed;
@@ -1480,14 +1488,25 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 }
 
 //doing this litterally every heal spams it, so we make a 0.5 second delay, and thus, will stack it, and then show it all at once.
-Handle h_Timer_HealEventApply[MAXPLAYERS+1] = {null, ...};
+Handle h_Timer_HealEventApply[MAXTF2PLAYERS+1] = {null, ...};
+Handle h_Timer_HealEventApply_Ally[MAXTF2PLAYERS+1] = {null, ...};
+ArrayList h_Arraylist_HealEventAlly[MAXTF2PLAYERS+1];
+
+enum struct HealEventSaveInfo
+{
+	int HealedTarget;
+	int HealAmount;
+	int ArmorAmount;
+}
+
 static int i_HealsDone_Event[MAXENTITIES]={0, ...};
 
-stock void ApplyHealEvent(int entindex, int amount)
+stock void ApplyHealEvent(int entindex, int amount, int ownerheal = 0)
 {
 	if(IsValidClient(entindex))
 	{
 		i_HealsDone_Event[entindex] += amount;
+			
 		if (h_Timer_HealEventApply[entindex] == null)
 		{
 			DataPack pack;
@@ -1500,7 +1519,133 @@ stock void ApplyHealEvent(int entindex, int amount)
 	{
 		DisplayHealParticleAbove(entindex);
 	}
+	if(ownerheal <= MaxClients && ownerheal > 0 && ownerheal != entindex)
+	{
+		if(!h_Arraylist_HealEventAlly[ownerheal])
+			h_Arraylist_HealEventAlly[ownerheal] = new ArrayList(sizeof(HealEventSaveInfo));
+
+		HealEventSaveInfo data;
+		bool FoundTarget = false;
+		int length = h_Arraylist_HealEventAlly[ownerheal].Length;
+		for(int i; i < length; i++)
+		{
+			// Loop through the arraylist to find the Heal Target
+			h_Arraylist_HealEventAlly[ownerheal].GetArray(i, data);
+			
+			if(EntRefToEntIndex(data.HealedTarget) != entindex)
+				continue;
+
+			//we found a match
+			data.HealAmount += amount;
+			FoundTarget = true;
+			h_Arraylist_HealEventAlly[ownerheal].SetArray(i, data);
+		}
+		if(!FoundTarget)
+		{
+			// Create a new entry
+			data.HealedTarget = EntIndexToEntRef(entindex);
+			data.HealAmount = amount;
+			h_Arraylist_HealEventAlly[ownerheal].PushArray(data);
+		}
+
+		
+		if (h_Timer_HealEventApply_Ally[ownerheal] == null)
+		{
+			DataPack pack;
+			h_Timer_HealEventApply_Ally[ownerheal] = CreateDataTimer(1.0, Timer_HealEventApply_Ally, pack, _);
+			pack.WriteCell(ownerheal);
+			pack.WriteCell(EntIndexToEntRef(ownerheal));
+		}
+	}
 }
+stock void ApplyArmorEvent(int entindex, int amount, int ownerheal = 0)
+{
+	if(ownerheal <= MaxClients && ownerheal > 0 && ownerheal != entindex)
+	{
+		if(!h_Arraylist_HealEventAlly[ownerheal])
+			h_Arraylist_HealEventAlly[ownerheal] = new ArrayList(sizeof(HealEventSaveInfo));
+
+		HealEventSaveInfo data;
+		bool FoundTarget = false;
+		int length = h_Arraylist_HealEventAlly[ownerheal].Length;
+		for(int i; i < length; i++)
+		{
+			// Loop through the arraylist to find the Heal Target
+			h_Arraylist_HealEventAlly[ownerheal].GetArray(i, data);
+			
+			if(EntRefToEntIndex(data.HealedTarget) != entindex)
+				continue;
+
+			//we found a match
+			data.ArmorAmount += amount;
+			FoundTarget = true;
+			h_Arraylist_HealEventAlly[ownerheal].SetArray(i, data);
+		}
+		if(!FoundTarget)
+		{
+			// Create a new entry
+			data.HealedTarget = EntIndexToEntRef(entindex);
+			data.ArmorAmount = amount;
+			h_Arraylist_HealEventAlly[ownerheal].PushArray(data);
+		}
+		
+		if (h_Timer_HealEventApply_Ally[ownerheal] == null)
+		{
+			DataPack pack;
+			h_Timer_HealEventApply_Ally[ownerheal] = CreateDataTimer(1.0, Timer_HealEventApply_Ally, pack, _);
+			pack.WriteCell(ownerheal);
+			pack.WriteCell(EntIndexToEntRef(ownerheal));
+		}
+	}
+}
+
+
+public Action Timer_HealEventApply_Ally(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int clientOriginalIndex = pack.ReadCell();
+	int client = EntRefToEntIndex(pack.ReadCell());
+
+	if (!IsValidMulti(client))
+	{
+		h_Timer_HealEventApply_Ally[clientOriginalIndex] = null;
+		delete h_Arraylist_HealEventAlly[clientOriginalIndex];
+		return Plugin_Stop;
+	}
+	HealEventSaveInfo data;
+	int length = h_Arraylist_HealEventAlly[clientOriginalIndex].Length;
+	for(int i; i < length; i++)
+	{
+		// Loop through the arraylist to find the Heal Target
+		h_Arraylist_HealEventAlly[clientOriginalIndex].GetArray(i, data);
+		
+		if(!IsValidEntity(data.HealedTarget))
+			continue;
+	
+		if(data.HealAmount)
+		{
+			Event event = CreateEvent("building_healed", true);
+			event.SetInt("priority", 1);
+			event.SetInt("building", EntRefToEntIndex(data.HealedTarget));
+			event.SetInt("healer", clientOriginalIndex);
+			event.SetInt("amount", data.HealAmount);
+			event.FireToClient(clientOriginalIndex);
+		}
+		if(data.ArmorAmount)
+		{
+			Event event = CreateEvent("player_bonuspoints", true);
+			event.SetInt("priority", 1);
+			event.SetInt("source_entindex", EntRefToEntIndex(data.HealedTarget));
+			event.SetInt("player_entindex", clientOriginalIndex);
+			event.SetInt("points", data.ArmorAmount * 10);
+			event.FireToClient(clientOriginalIndex);
+		}
+	}
+	delete h_Arraylist_HealEventAlly[clientOriginalIndex];
+	h_Timer_HealEventApply_Ally[clientOriginalIndex] = null;
+	return Plugin_Stop;
+}
+
 
 public Action Timer_HealEventApply(Handle timer, DataPack pack)
 {
@@ -1863,7 +2008,7 @@ stock void DoOverlay(int client, const char[] overlay, int Methods = 0)
 
 public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 {
-	if(entity > MAXPLAYERS)
+	if(entity > MAXTF2PLAYERS)
 	{
 		return false;
 	}
@@ -1956,7 +2101,19 @@ stock bool IsEven( int iNum )
 stock bool IsInvuln(int client, bool IgnoreNormalUber = false) //Borrowed from Batfoxkid
 {
 	if(!IsValidClient(client))
-		return true;
+	{
+		if(!IsValidEntity(client))
+		{
+			return false;
+		}
+		if(HasSpecificBuff(client, "Unstoppable Force"))
+			return true;
+
+		if(b_NpcIsInvulnerable[client])
+			return true;
+		
+		return false;
+	}
 
 	if(!IgnoreNormalUber)
 	{
@@ -2865,12 +3022,12 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 	{
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{
-			if(!IgnoreLevelLimit && Database_IsCached(client) && Level[client] <= 30)
+			if(!IgnoreLevelLimit && Database_IsCached(client) && Level[client] <= 20)
 			{
 				float CurrentLevel = float(Level[client]);
-				CurrentLevel += 30.0;
+				CurrentLevel += 20.0;
 				//so lvl 0 is atleast resulting in 0.5 Scaling
-				ScaleReturn += (CurrentLevel / 60.0);
+				ScaleReturn += (CurrentLevel / 40.0);
 			}
 			else
 			{
@@ -2883,7 +3040,7 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 		ScaleReturn += Citizen_Count() * rebels;
 
 	if(!IgnoreMulti)
-		ScaleReturn *= zr_multi_multiplier.FloatValue;
+		ScaleReturn *= zr_multi_scaling.FloatValue;
 	
 	return ScaleReturn;
 }
@@ -3621,7 +3778,7 @@ stock void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, f
 	SetEventFloat(event, "worldPosY", pos[1]);
 	SetEventFloat(event, "worldPosZ", pos[2]);
 	SetEventFloat(event, "lifetime", lifetime);
-//	SetEventInt(event, "id", annotation_id*MAXPLAYERS + client + ANNOTATION_OFFSET);
+//	SetEventInt(event, "id", annotation_id*MAXTF2PLAYERS + client + ANNOTATION_OFFSET);
 	SetEventString(event, "text", Text);
 	SetEventString(event, "play_sound", "vo/null.wav");
 	SetEventInt(event, "visibilityBitfield", (1 << client));
@@ -3773,7 +3930,7 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 }
 
 
-//static int b_TextEntityToOwner[MAXPLAYERS];
+//static int b_TextEntityToOwner[MAXTF2PLAYERS];
 #if defined RPG
 
 int BrushToEntity(int brush)
@@ -4043,7 +4200,7 @@ stock char[] CharPercent(float value)
 
 stock bool AmmoBlacklist(int Ammotype)
 {
-	if(Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
+	if(Ammotype >= 0 && Ammotype<= 2 || Ammotype == -1 || Ammotype >= Ammo_Hand_Grenade)
 	{
 		return false;
 	}

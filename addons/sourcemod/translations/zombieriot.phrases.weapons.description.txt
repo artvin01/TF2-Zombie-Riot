@@ -779,7 +779,8 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing buffs.\nallows revive from afar but slower\nUber gives debuff immunity.\nChange Mode with R (If you interact with R, its Crouch + R)"
+		"en"	"Heals and buffs allies and yourself while healing, overheal is permanent.\nAllows slow revival from afar, ubercharge grants the UBERCHARGED and Hardened Aura buffs.\nDAMAGE MODE: Change via CTRL/Crouch + RELOAD (or Spray key)."
+		"es"	"Cura y potencia a tus aliados y a ti mismo mientras curas.\nPermite revivir a distancia, la uber da los buffs de SOBRECARGADO y Aura Reforzada.\nMODO DAÑO: Cambia con CTRL/Agachar + RELOAD."
 	}
 	
 	"Battle Medigun Desc"
@@ -1078,7 +1079,7 @@
 	}
 	"Fractured Ark Pap 12"
 	{
-		"en"	"Increased damage, energy gain and parry reflect power increased.\nYour first parry during the ability is greatly empowered"
+		"en"	"Increased damage, energy gain and parry reflect power increased.\nYour first parry during the ability is greatly empowered.\nUnlocks a new ability which summons a stationary domain which buffs you"
 	}
 	
 	"Longsword Desc"
@@ -1426,12 +1427,14 @@
 	
 	"Wrench Desc"
 	{
-		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench.\nHold crouch and M2 to mount buildings on yourself!"
+		"en"	"Press RELOAD/SPRAY to place buildings while the wrench is out.\nAllows you to repair buildings and to mount yours.\n(Press CTRL/Crouch + RIGHT CLICK while looking at one)"
+		"es"	"Presiona RELOAD/SPRAY para colocar construcciones teniendo la llave en la mano.\nPermite reparar construcciones y montar las tuyas.\n(CTRL/Agachar + CLICK DERECHO mientras miras una)"
 	}
 	
-	"Texan business Desc"
+	"Builders Axe Desc"
 	{
-		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
+		"en"	"A melee axe that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
+		"es"	"Un hacha que escala con el daño de constructor.\nM2: Embiste hacia adelante, el siguiente golpe hara un +1200%% de daño extra.\nNecesitas suficientes mejoras de constructor para que funcione."
 		"fr"	"Dégats corps-à-corps s'améliorent avec vos Améliorations Constructeur.\nAppuyez M2 pour vous lancer et améliorer les dégats de cet arme 12x.\nAméliorations Construction requis."
 	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
@@ -1454,46 +1457,55 @@
 	"Armor Table Desc"
 	{
 		"en"	"using gives you Armour."
+		"es"	"usar esto te otorga Armadura."
 		"fr"	"Donne de l'armure."
 	}
 	"Ammo Box Desc"
 	{
 		"en"	"using gives you ammo for your holding weapon."
+		"es"	"usar esto te dara municion para tu arma."
 		"fr"	"Donne des munitions."
 	}
 	"Perk Machine Desc"
 	{
 		"en"	"using will give you a perk that vanishes on death/downed."
+		"es"	"usar esto te dara un beneficio que dura hasta que mueras/te derriben."
 		"fr"	"Donne des Perks, qui améliorent les joueurs, mais se perdent quand KO."
 	}
 	"Pack-a-Punch Desc"
 	{
-		"en"	"gives weapnos upgrades, person with the most upgrades gets the most cash instead."
+		"en"	"allows you to upgrade your weapon, recommended to have only one globally."
+		"es"	"permite mejorar tu arma, recomendado no poner mas de 1 globalmente."
 		"fr"	"Améliore les armes."
 	}
 	"Sentrygun Desc"
 	{
 		"en"	"Good against everything."
+		"es"	"Util contra todo."
 		"fr"	"Bon pour tout."
 	}
 	"Mortar Desc"
 	{
 		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto.\nDeals massive group damage, good against massses."
+		"es"	"Llama al MEDICO para marcar un lugar para que el mortero dispare una bomba.\nHace daño masivo en area."
 		"fr"	"Appuyez MEDIC pour marquer un endroit où faire tomber un tir de mortier.\nBon pour les groupes d'ennemis."
 	}
 	"Railgun Desc"
 	{
 		"en"	"Use it with MEDIC to make it shoot a giant laser.\nDeals huge damage to the first enemy hit, good against single bosses."
+		"es"	"Usalo llamando al MEDICO para disparar un gran laser.\nHace MUCHO daño al primer enemigo que golpea."
 		"fr"	"Appuyez MEDIC pour le faire tirer un rayon laser massif.\nInflige beaucoup de dégats au premier ennemi frappé. Bon pour les Boss."
 	}
 	"Food Fridge Desc"
 	{
-		"en"	"Heals for 40 Health, scales with medigun upgrades."
+		"en"	"Heals for 60 Health, scales with medic upgrades."
+		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas.
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 	}
 	"Village Desc"
 	{
 		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuilt."
+		"es"	"Provee varios buffs a tus aliados y puede mejorarse para mas buffs.\nLos buffs comprados persisten aun si se destruye y reconstruye."
 		"fr"	"Améliore vos coéquipiers et peut être amélioré pour plus d'améliorations.\nAméliorations restent même si détruit et replacé."
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
 		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
@@ -1759,32 +1771,31 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 30％ (cant go below 1)"
+		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 30％ (cant go below 1)"
 	}
-	
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
 	}
-	
+
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
 	}
 	
 	"Panic Attack Desc"
@@ -3351,6 +3362,26 @@
 		"fr"	"Cadence de tir améliorée, dégats réduits. Arme se recharge en une fois.\nChaque deuxième tir utilise pas de munitions."
 		"chi"	"同时填装整个弹夹，超高射速，但是伤害更低。每第二发不消耗弹药。"
 	}
+	"USP Desc"
+	{
+		"en" 	"Basic pistol.\nDeals 20％ Extra headshot damage."
+	}
+	"USP PAP 1"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage."
+	}
+	"USP PAP 2"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage.\nWith your pistol you now revive allies 50％ Faster.\nM2 Activates Trigger finger!"
+	}
+	"USP PAP 3"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage."
+	}
+	"USP PAP 4"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage.\nYour weapon has less falloff.\nAbility Lasts Longer."
+	}
 	"Autoshotgun Pap 2"
 	{
 		"en"	"More dmg, more clip, more attackspeed."
@@ -3377,15 +3408,18 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"You have different medigun modes! boost melee, ranged, or both resitances.\nPress Crouch+R to swítch damage modes instead now"
+		"en"	"Changes the medigun to grant different mode types, boosting melee/ranged resistance or both.\nDamage mode is now changed via CTRL/Crouch + RELOAD now."
+		"es"	"Cambia la medigun para dar distintos modos, aumentando la resistencia cuerpo a cuerpo, a distancia, o ambas.\nCambiar de modo ahora requiere siempre que utilizes CTRL/Agacharse + RELOAD."
 	}
 	"Medigun Desc Pap 2"
 	{
-		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades."
+		"en"	"Medigun now regenerates YOUR and your patient's armor while healing.\nScales with medigun upgrades."
+		"es"	"Curar a aliados con la medigun ahora restaurara tu armadura y la de tu paciente.\nAumenta con mejoras medicas."
 	}
 	"Medigun Desc Pap 3"
 	{
-		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, +mana recovery, + overclock buff on heal."
+		"en"	"Your uber will now instantly restore your armor, and will greatly increase your patient's efficiency.\n(Mana regeneration, Extra attackspeed and damage boost)"
+		"es"	"Tu uber ahora restaurara completamente la armadura, y incrementara mayormente la eficiencia de tu paciente.\n(Regeneracion de mana, velocidad de ataque extra y daño extra)"
 	}
 	"Flash Grenade Desc"
 	{
@@ -3932,7 +3966,7 @@
 	}
 	"Super-Uber-Saw Desc"
 	{
-		"en"	"Healing allies, reviving teammates, and hurting with the battle medigun charges the ubersaw.\nThe more its charged, the stronger and more enemeis it hits with 1 attack.\nScales with medigun upgrades.\nIf above 50％ Charge, deals 2x dmg vs raids."
+		"en"	"Healing allies, reviving teammates, and hurting with the battle medigun charges the ubersaw.\nAt 100％ Power it deals massive damage, cleaves, and knocks back.\nWhen charged,deals 2.5x dmg vs raids.\nScales with medigun upgrades.\n"
 	}
 	"Super-Uber-Saw Desc 1"
 	{
@@ -4129,11 +4163,7 @@
 	}
 	"Therapy Desc"
 	{
-		"en"	"Kit has no self resistance, you instead have high hp regen as youre a doctor."
-	}
-	"Hand Desc"
-	{
-		"en"	"Relax, I'm not one of them.\nCure your teammates, or charge the enemies extra money for another therapy session.\nM2: Shove enemies away, and apply a random debuff upon doing so.\nM1: Apply a random buff on an ally."
+		"en"	"Kit has no self resistance, you instead have high hp regen as youre a doctor.\nYour pistol cannot reload.\nDebuff the enemy with your M2, a melee attack.\nOn melee hit, gain ammo."
 	}
 	"Hand Pap 1"
 	{
@@ -4149,7 +4179,7 @@
 	}
 	"Taurus Revolver Pap 1"
 	{
-		"en"	"Base damage increased, More regen.\nGain an M2 Ability that allows you to Pistol Whip the enemies, gives 1 ammo and reduces cooldowns on hit, more against raids.\nGain Expert's Mind as a passive buff.\nBuffing allies heals them and you for 10％ max hp upto 50％ max hp"
+		"en"	"Base damage increased, More regen.\nGain Expert's Mind as a passive buff.\nYou can now buff allies with R\nBuffing allies heals them and you for 10％ max hp upto 50％ max hp"
 	}
 	"Taurus Revolver Last Pap"
 	{

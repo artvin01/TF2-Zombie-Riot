@@ -374,6 +374,7 @@ methodmap Whiteflower_Boss < CClotBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 		NPC_StartPathing(npc.index);
+		AlreadySaidWin = false;
 		
 		return npc;
 	}
@@ -388,7 +389,6 @@ public void WhiteflowerWinLine(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	//b_NpcHasDied[client]
 	CPrintToChatAll("{crimson}Whiteflower{default}: Now all thats left.\nIs Bob.");	
 }
 

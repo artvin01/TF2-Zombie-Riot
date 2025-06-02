@@ -75,7 +75,7 @@ public void Rogue_FirstClass_Collect()
 	}
 	*/
 	Spawn_Cured_Grigori();
-	Store_RandomizeNPCStore(0);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 }
 
 public void Rogue_Curse_Obsessed(bool enable)

@@ -49,7 +49,7 @@ static int MoabHealth(bool fortified)
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
-	return RoundFloat(value) + (Bloon_Health(fortified, Bloon_Ceramic) * 9);	// 104x3x3 RGB
+	return RoundFloat(value) + (Bloon_Health(1.0,fortified, Bloon_Ceramic) * 9);	// 104x3x3 RGB
 }
 
 void Bfb_MapStart()

@@ -96,7 +96,7 @@ methodmap ZMainHeadcrab < CClotBody
 	
 	public ZMainHeadcrab(float vecPos[3], float vecAng[3], int ally)
 	{
-		ZMainHeadcrab npc = view_as<ZMainHeadcrab>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", MinibossHealthScaling(20), ally, false));
+		ZMainHeadcrab npc = view_as<ZMainHeadcrab>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", MinibossHealthScaling(20.0), ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		

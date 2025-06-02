@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-Handle Timer_Casino_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-static Handle DamageFalloff_timer[MAXPLAYERS+1];
-static Handle AmmoRefill_timer[MAXPLAYERS+1];
-static Handle Frenzy_timer[MAXPLAYERS+1];
-static Handle Payday_timer[MAXPLAYERS+1];
+Handle Timer_Casino_Management[MAXTF2PLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle DamageFalloff_timer[MAXTF2PLAYERS+1];
+static Handle AmmoRefill_timer[MAXTF2PLAYERS+1];
+static Handle Frenzy_timer[MAXTF2PLAYERS+1];
+static Handle Payday_timer[MAXTF2PLAYERS+1];
 
 char g_RandomColoursDo[][] = {
 	"aliceblue", 

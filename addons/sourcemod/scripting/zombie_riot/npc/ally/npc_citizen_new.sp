@@ -2095,6 +2095,7 @@ bool Rebel_Rename(int client)
 	char buffer[32];
 	GetCmdArgString(buffer, sizeof(buffer));
 	ReplaceString(buffer, sizeof(buffer), "\"", "");
+	CRemoveTags(buffer, sizeof(buffer));
 
 	if(!buffer[0])
 		return true;

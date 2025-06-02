@@ -257,7 +257,7 @@ void AnarchyMadDoctorSelfDefense(AnarchyMadDoctor npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 65.0;
 					if(npc.m_iOverlordComboAttack >= 3)
 					{
 						damageDealt *= 2.0;

@@ -169,7 +169,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	{
 		CurrentClass[client] = ClassChangeTo;
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", ClassChangeTo);
-		PrintToChat(client, "You are unable to change classes instantly, itll be changed later when you respawn.");
+		PrintToChat(client, "You are unable to change classes instantly, it'll be changed later when you respawn.");
 		return;
 	}
 #if defined ZR
@@ -193,7 +193,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	TeleportEntity(client, clientvec, clientveceye, SubjectAbsVelocity);
 	RemoveInvul(client);
 	RequestFrames(Removeinvul1frame, 10, EntIndexToEntRef(client));
-	PrintToChat(client, "You changed classes immedietly!");
+	PrintToChat(client, "You changed classes immedietely!");
 	f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; //little cooldown to prevent bug
 }
 #endif
@@ -232,16 +232,15 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 		if(IsFakeClient(client))
 		{
 			SetTeam(client, view_as<int>(TFTeam_Blue));
+			return Plugin_Handled;
 		}
 #if defined ZR
-		else if(Queue_JoinTeam(client))
+		Queue_JoinTeam(client);
+		return Plugin_Continue;
 #else
-		else
+		SetTeam(client, view_as<int>(TFTeam_Red));
+		ShowVGUIPanel(client, "class_red");
 #endif
-		{
-			SetTeam(client, view_as<int>(TFTeam_Red));
-			ShowVGUIPanel(client, "class_red");
-		}
 	}
 	return Plugin_Handled;
 }

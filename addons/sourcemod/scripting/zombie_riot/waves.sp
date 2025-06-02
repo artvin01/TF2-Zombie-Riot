@@ -924,7 +924,7 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 		}
 	}
 
-	level /= 4;
+	level /= 3;
 	if(level < 1)
 		return false;
 
@@ -1610,8 +1610,9 @@ public Action Waves_EndVote(Handle timer, float time)
 					float multi = float(vote.Level) / 1000.0;
 
 					int level = WaveLevel;
-					if(level < 10)
-						level = 10;
+					if(level < 20) 
+						level = 20;
+					//assume 20 is the minimum.
 					
 					WaveLevel += RoundFloat(level * multi);
 
@@ -1828,10 +1829,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
 				wave.EnemyData.Health = Tempomary_Health;
 			}
-			else if(MultiGlobalHealth > 1.0)
-			{
-				wave.EnemyData.Health = RoundToNearest(float(wave.EnemyData.Health) * MultiGlobalHealth);
-			}
 		
 			for(int i; i<count; i++)
 			{
@@ -1891,6 +1888,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",CurrentRound);
 				ExcuteRelay(ExecuteRelayThings);
 			}
+
+			bool wasEmptyWave = !round.Waves.Length;
+			
+			if(!wasEmptyWave)
+				Native_OnWaveEnd();
+
 			RequestFrames(StopMapMusicAll, 60);
 			
 			Waves_ClearWaves();
@@ -1982,8 +1985,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
-
-			bool wasEmptyWave = !round.Waves.Length;
 			
 			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
@@ -2439,18 +2440,20 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
-				Store_RandomizeNPCStore(0, _, true);
+				Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
 				if(refreshNPCStore)
-					Store_RandomizeNPCStore(0);
+					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
+
 				
 				NPC_SpawnNext(panzer_spawn, panzer_sound);
 				return;
 			}
 
-			if(refreshNPCStore)
-				Store_RandomizeNPCStore(0);
+			Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
 			
-			Store_RandomizeNPCStore(0, _, true);
+			if(refreshNPCStore)
+				Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
+			
 		}
 	}
 	else if(subgame)
@@ -2581,7 +2584,6 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 			FreeplayTimeLimit = GetGameTime() + 3607.5; // one hour and 7.5 extra seconds because of setup time smh
 			CPrintToChatAll("{yellow}IMPORTANT: The faster you beat waves, the more cash AND experience you'll get!");
 			CreateTimer(0.1, Freeplay_ExtraCashTimer, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-			DeleteShadowsOffZombieRiot();
 			Freeplay_Info = 0;
 		}
 		default:
@@ -2781,9 +2783,9 @@ int ZR_Waves_GetRound()
 	return CurrentRound;
 }
 
-int Waves_GetMaxRound()
+int Waves_GetMaxRound(bool real = false)
 {
-	return FakeMaxWaves ? FakeMaxWaves : (Rounds.Length-1);
+	return (!real && FakeMaxWaves) ? FakeMaxWaves : (Rounds.Length-1);
 }
 
 float GetWaveSetupCooldown()
@@ -3031,7 +3033,7 @@ void DoGlobalMultiScaling()
 	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
-	float cap = zr_enemymulticap.FloatValue;
+	float cap = zr_maxscaling_untillhp.FloatValue;
 
 	if(multi > cap)
 	{
@@ -3073,6 +3075,14 @@ void DoGlobalMultiScaling()
 	{
 		PlayerCountResBuffScaling = 0.75;
 	}
+}
+
+void ScalingMultiplyEnemyHpGlobalScale(int iNpc)
+{
+	float Maxhealth = float(ReturnEntityMaxHealth(iNpc));
+	Maxhealth *= MultiGlobalHealth;
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToNearest(Maxhealth));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToNearest(Maxhealth));
 }
 
 void Waves_ForceSetup(float cooldown)

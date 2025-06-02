@@ -90,6 +90,7 @@ methodmap Archosauria < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		Is_a_Medic[npc.index] = true;
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_sydney_sleeper/c_sydney_sleeper.mdl");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_sniper.mdl");
@@ -350,6 +351,8 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 				Elemental_AddChaosDamage(target, npc.index, Rogue_Paradox_RedMoon() ? 300 : 100);
 				if(target <= MaxClients)
 					TF2_AddCondition(target, TFCond_Jarated, Rogue_Paradox_RedMoon() ? 15.0 : 5.0);
+
+				ApplyStatusEffect(npc.index, target, "Archo's Posion", Rogue_Paradox_RedMoon() ? 15.0 : 5.0);
 			} 
 		}
 	}

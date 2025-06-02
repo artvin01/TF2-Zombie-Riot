@@ -266,10 +266,10 @@ ConVar Cvar_VshMapFix;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
-ConVar zr_enemymulticap;
+ConVar zr_maxscaling_untillhp;
 ConVar zr_raidmultihp;
-ConVar zr_multi_maxcap;
-ConVar zr_multi_multiplier;
+ConVar zr_multi_maxenemiesalive_cap;
+ConVar zr_multi_scaling;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -420,15 +420,15 @@ float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
 int Building_Mounted[MAXENTITIES];
 
 
-float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
-int i_DyingParticleIndication[MAXPLAYERS + 1][3];
+float f_DisableDyingTimer[MAXTF2PLAYERS + 1]={0.0, ...};
+int i_DyingParticleIndication[MAXTF2PLAYERS + 1][3];
 //1 is text, 2 is glow, 3 is death marker
-float f_DyingTextTimer[MAXPLAYERS + 1];
-bool b_DyingTextOff[MAXPLAYERS + 1];
+float f_DyingTextTimer[MAXTF2PLAYERS + 1];
+bool b_DyingTextOff[MAXTF2PLAYERS + 1];
 
 float GlobalCheckDelayAntiLagPlayerScale;
 bool AllowSpecialSpawns;
-int i_AmountDowned[MAXPLAYERS+1];
+int i_AmountDowned[MAXTF2PLAYERS+1];
 
 bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
@@ -656,9 +656,10 @@ void ZR_PluginStart()
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
+	//RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_buff", Command_GiveBuff, ADMFLAG_ROOT, "Give a named buff");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person"); //old and unused.
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_set_xp", Command_SetXp, ADMFLAG_ROOT, "Set XP to the Person");
@@ -920,8 +921,6 @@ void ZR_MapStart()
 	//AcceptEntityInput(0, "RunScriptCode");
 	CreateMVMPopulator();
 	RoundStartTime = FAR_FUTURE;
-	
-	//Store_RandomizeNPCStore(1);
 }
 
 public void OnMapInit()
@@ -1273,7 +1272,7 @@ public Action Command_TestTutorial(int client, int args)
 	static char pattern[PLATFORM_MAX_PATH];
 	GetCmdArg(1, pattern, sizeof(pattern));
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1299,7 +1298,8 @@ public Action CommandDebugHudTest(int client, int args)
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
-	CheckAlivePlayers(0, 0, true);
+//	CheckAlivePlayers(0, 0, true);
+	DoGlobalMultiScaling();
 
 	return Plugin_Handled;
 }
@@ -1347,7 +1347,7 @@ public Action Command_GiveCash(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1371,6 +1371,45 @@ public Action Command_GiveCash(int client, int args)
 	
 	return Plugin_Handled;
 }
+
+public Action Command_GiveBuff(int client, int args)
+{
+	//What are you.
+	if(args < 2)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_buff <target> <buffname> <duration>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[128];
+	GetCmdArg(2, buf, sizeof(buf));
+
+	char buf2[16];
+	GetCmdArg(3, buf2, sizeof(buf2));
+	float buffduration = StringToFloat(buf2); 
+	
+
+	int targets[MAXTF2PLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		PrintToChat(targets[target], "You got the %s buff for %.1f seconds, from the admin %N!", buf, buffduration, client);
+		ApplyStatusEffect(targets[target], targets[target], buf, buffduration);
+	}
+	
+	return Plugin_Handled;
+}
 public Action Command_GiveScrap(int client, int args)
 {
 	//What are you.
@@ -1389,7 +1428,7 @@ public Action Command_GiveScrap(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1433,7 +1472,7 @@ public Action Command_SetXp(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1471,7 +1510,7 @@ public Action Command_GiveXp(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1519,7 +1558,7 @@ public Action Command_GiveDialogBox(int client, int args)
 	char buf2[64];
 	GetCmdArg(3, buf2, sizeof(buf2));
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1559,7 +1598,7 @@ public Action Command_AFKKnight(int client, int args)
 public Action Command_SpawnGrigori(int client, int args)
 {
 	Spawn_Cured_Grigori();
-	Store_RandomizeNPCStore(0);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 	return Plugin_Handled;
 }
 
@@ -2257,7 +2296,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 }
 
 float f_IncrementalSmallArmor[MAXENTITIES];
-stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false, bool HealCorrosion = false)
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false, bool HealCorrosion = false, int ArmorGiver = -1)
 {
 	int Armor_Max;
 	
@@ -2268,10 +2307,9 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
 	*/
+	float ArmorToGive;
 	if(Armor_Charge[client] < Armor_Max)
 	{
-		float ArmorToGive;
-
 		if(flat)
 		{
 			int i_TargetHealAmount; //Health to actaully apply
@@ -2320,7 +2358,6 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		{
 			if(dieingstate[client] == 0)
 				HealEntityGlobal(client, client, ArmorToGive * 0.5, 1.0,_,HEAL_SELFHEAL);
-
 			return;
 		}
 		Armor_Charge[client] += RoundToNearest(ArmorToGive);
@@ -2335,6 +2372,11 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		{
 			Armor_Charge[client] = Armor_Max;
 		}
+	}
+
+	if(ArmorGiver > 0 && ArmorToGive > 0.0)
+	{
+		ApplyArmorEvent(client, RoundToNearest(ArmorToGive), ArmorGiver);
 	}
 	
 }
@@ -2630,8 +2672,6 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 					SetEntityHealth(client, maxhealth);
 			}
 			
-			SetGlobalTransTarget(client);
-			PrintToChat(client, "%t", "Level Up", Level[client]);
 			
 			while(Level[client] < nextLevel)
 			{
@@ -2647,10 +2687,11 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 					Store_PrintLevelItems(client, Level[client]);
 				}
 			}
+			PrintToChat(client, "%T", "Level Up",client, Level[client]);
 			if(!SetXpAndLevelSilently && CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
 			{
 				SkillTree_CalcSkillPoints(client);
-				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
+				CPrintToChat(client, "%T", "Current Skill Points",client, SkillTree_UnspentPoints(client));
 			}
 		}
 	}
@@ -2959,6 +3000,7 @@ void ForcePlayerWin(bool fakeout = false)
 void ForcePlayerLoss()
 {
 	MVMHud_Disable();
+	ZR_NpcTauntWin();
 	ZR_NpcTauntWinClear();
 	int entity = CreateEntityByName("game_round_win"); 
 	DispatchKeyValue(entity, "force_map_reset", "1");
@@ -3004,6 +3046,8 @@ void ZR_FastDownloadForce()
 	YakuzaMusicDownload();
 	FullmoonDownload();
 	//Cheese_PrecacheMusic();
+	Core_PrecacheGlobalCustom();
+	PrecacheMusicZr();
 }
 
 
@@ -3026,7 +3070,7 @@ public Action Command_SetTeamCustom(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int teamset = StringToInt(buf); 
 	
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{

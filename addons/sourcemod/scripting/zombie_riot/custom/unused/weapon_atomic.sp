@@ -4,8 +4,8 @@
 static float Strength[MAXTF2PLAYERS];
 
 // the R
-static int use_id[MAXPLAYERS + 1]               = { 0, ... };
-static int is_currently_boosted[MAXPLAYERS + 1] = { 0, ... };
+static int use_id[MAXTF2PLAYERS + 1]               = { 0, ... };
+static int is_currently_boosted[MAXTF2PLAYERS + 1] = { 0, ... };
 
 
 static bool  BeamWand_CanUse[MAXTF2PLAYERS];

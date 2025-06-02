@@ -1,12 +1,12 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
-static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
+static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown_2[MAXTF2PLAYERS+1]={0.0, ...};
+static int Attack3AbilitySlotArray[MAXTF2PLAYERS+1]={0, ...};
 static float f_HealDelay[MAXENTITIES];
 static float f_Duration[MAXENTITIES];
-static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
+static bool b_ActivatedDuringLastMann[MAXTF2PLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
@@ -15,7 +15,7 @@ static int i_MaxMorhpinesThisRound [MAXTF2PLAYERS];
 static float f_ReinforceTillMax[MAXTF2PLAYERS];
 static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
 static int i_MaxRevivesAWave;
-static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
+static float MorphineCharge[MAXTF2PLAYERS+1]={0.0, ...};
 
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -434,11 +434,11 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 						EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
 						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
-							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0);
+							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0,_,_,client);
 						}
 						else
 						{
-							GiveArmorViaPercentage(target, 0.075, 1.0);
+							GiveArmorViaPercentage(target, 0.075, 1.0, _,_,client);
 						}
 						continue;
 					}
@@ -446,18 +446,18 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 					if(b_ThisWasAnNpc[target] && IsEntityAlive(target, true))
 					{
 						//IsValidnpc
-						float Healing_GiveArmor = 3.0;
+						float Healing_GiveArmor = 0.075;
 						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
 							//recently hurt, half armor.
 							Healing_GiveArmor *= 0.5;
 							GrantEntityArmor(target, false, 0.25, 0.25, 0,
-								ReturnEntityMaxHealth(target) * Healing_GiveArmor);
+								ReturnEntityMaxHealth(target) * Healing_GiveArmor, client);
 						}
 						else
 						{
 							GrantEntityArmor(target, false, 0.25, 0.25, 0,
-								ReturnEntityMaxHealth(target) * Healing_GiveArmor);
+								ReturnEntityMaxHealth(target) * Healing_GiveArmor, client);
 						}	
 						continue;
 					}
@@ -1120,8 +1120,8 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 }
 
 
-int i_BuildingSelectedToBeDeleted[MAXPLAYERS + 1];
-int i_BuildingSelectedToBeUnClaimed[MAXPLAYERS + 1];
+int i_BuildingSelectedToBeDeleted[MAXTF2PLAYERS + 1];
+int i_BuildingSelectedToBeUnClaimed[MAXTF2PLAYERS + 1];
 
 
 public void Un_ClaimBuildingLookedAt(int client)

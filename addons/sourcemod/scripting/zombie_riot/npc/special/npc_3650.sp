@@ -64,32 +64,31 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return ThirtySixFifty(vecPos, vecAng, team);
 }
 
-char[] MinibossHealthScaling(int health = 110, bool ingoreplayers = false)
+char[] MinibossHealthScaling(float healthDo = 110.0, bool ingoreplayers = false)
 {
 	if(!ingoreplayers)
-		health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yeah its high. will need to scale with waves exponentially.
+		healthDo *= ZRStocks_PlayerScalingDynamic(); //yeah its high. will need to scale with waves exponentially.
 		
 	
-	float temp_float_hp = float(health);
-	temp_float_hp *= MinibossScalingReturn();
+	healthDo *= MinibossScalingReturn();
 	
 	if(ZR_Waves_GetRound()+1 < RoundToNearest(30.0 * (1.0 / MinibossScalingReturn())))
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
+		healthDo = Pow(((healthDo + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25);
 	}
 	else if(ZR_Waves_GetRound()+1 < RoundToNearest(45.0 * (1.0 / MinibossScalingReturn())))
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35));
+		healthDo = Pow(((healthDo + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35);
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.40));
+		healthDo = Pow(((healthDo + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.40);
 	}
 	
-	health /= 3;
+	healthDo /= 3.0;
 	
 	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
+	IntToString(RoundToNearest(healthDo), buffer, sizeof(buffer));
 	return buffer;
 }
 
@@ -164,7 +163,7 @@ methodmap ThirtySixFifty < CClotBody
 
 	public ThirtySixFifty(float vecPos[3], float vecAng[3], int ally)
 	{
-		ThirtySixFifty npc = view_as<ThirtySixFifty>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(70), ally, .IgnoreBuildings = true));
+		ThirtySixFifty npc = view_as<ThirtySixFifty>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(70.0), ally, .IgnoreBuildings = true));
 		
 		i_NpcWeight[npc.index] = 4;
 		

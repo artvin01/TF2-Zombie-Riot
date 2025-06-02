@@ -33,38 +33,25 @@ static Handle FeedTimer;
 
 void AdjustBotCount()
 {
-	return;
-	/*
-	SpawningBot = true;
-	int botcount = 0;
-	for(int client = 1; client <= MaxClients; client++)
+	int CurrentPlayersActive = 0;
+	//We are a real player
+	for(int clientl = 1; clientl <= MaxClients; clientl++)
 	{
-		if(IsClientInGame(client) && IsFakeClient(client) && !IsClientSourceTV(client))
+		if(IsClientInGame(clientl) && !IsClientSourceTV(clientl))
+			CurrentPlayersActive++; //includes bot, doesnt include sourcetv
+	}
+	if((MaxClients - 2) <= CurrentPlayersActive)
+	{
+		for(int botcheck = 1; botcheck <= MaxClients; botcheck++)
 		{
-			botcount += 1;
-			if(botcount > 2)
+			if(IsClientInGame(botcheck) && IsFakeClient(botcheck) && !IsClientSourceTV(botcheck))
 			{
-				botcount -= 1;
-				KickClient(client);
+				//Kick all bots	
+				KickClient(botcheck);
 			}
 		}
 	}
-	for(int loop = 1; loop <= 20; loop++)
-	{
-		if(botcount <= 1)
-		{
-			SpawnBotCustom("bot1", true);
-		//	int botadded = SpawnBotCustom("bot1", true);
-		//	SetTeam(botadded, TFTeam_Blue);
-			botcount++;	
-		}
-		else
-		{
-			break;
-		}
-	}
-	SpawningBot = false;
-	*/
+	return;
 }
 
 void KillFeed_PluginStart()
@@ -91,27 +78,6 @@ void KillFeed_ClientPutInServer(int client)
 			{
 				Bots[i] = client;
 				break;
-			}
-		}
-	}
-	else
-	{
-		int CurrentPlayersActive = 0;
-		//We are a real player
-		for(int clientl = 1; clientl <= MaxClients; clientl++)
-		{
-			if(IsClientInGame(clientl) && !IsClientSourceTV(clientl))
-				CurrentPlayersActive++; //includes bot, doesnt include sourcetv
-		}
-		if((MaxClients - 2) <= CurrentPlayersActive)
-		{
-			for(int botcheck = 1; botcheck <= MaxClients; botcheck++)
-			{
-				if(IsClientInGame(botcheck) && IsFakeClient(botcheck) && !IsClientSourceTV(botcheck))
-				{
-					//Kick all bots	
-					KickClient(botcheck);
-				}
 			}
 		}
 	}

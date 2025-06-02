@@ -28,8 +28,8 @@ static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 static float BEAM_CloseBuildingDPT[MAXTF2PLAYERS];
 static float BEAM_FarBuildingDPT[MAXTF2PLAYERS];
 
-static int weapon_id[MAXPLAYERS+1]={0, ...};
-static float base_chargetime[MAXPLAYERS+1]={-1.0, ...};
+static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
+static float base_chargetime[MAXTF2PLAYERS+1]={-1.0, ...};
 
 static bool Zoom_Active[MAXTF2PLAYERS] = {false, ...};
 static int Zoom_Default[MAXTF2PLAYERS] = {90, ...};

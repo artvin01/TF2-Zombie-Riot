@@ -1758,6 +1758,7 @@ static bool Victoria_Support(Harrison npc)
 	float GameTime = GetGameTime(npc.index);
 	if(Vs_DelayTime[npc.index] > GameTime)
 		return false;
+
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
 	float Vs_Raged = (YaWeFxxked[npc.index] ? 1000.0 : 250.0);
 	bool Vs_Online=false;
@@ -1828,7 +1829,8 @@ static bool Victoria_Support(Harrison npc)
 			position[0] = Vs_Temp_Pos[enemy[i]][0];
 			position[1] = Vs_Temp_Pos[enemy[i]][1];
 			position[2] = Vs_Temp_Pos[enemy[i]][2] - 100.0;
-			TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]]), position, NULL_VECTOR, NULL_VECTOR);
+			if(IsValidEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]])))
+				TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]]), position, NULL_VECTOR, NULL_VECTOR);
 			position[2] += 100.0;
 			
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;

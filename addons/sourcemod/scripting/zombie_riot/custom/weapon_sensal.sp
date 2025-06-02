@@ -1,14 +1,14 @@
-static Handle h_TimerSensalWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerSensalWeaponManagement[MAXTF2PLAYERS+1] = {null, ...};
 
 #define SENSAL_MELEE_CHARGE_ON_HIT 0.25
 #define SENSAL_MELEE_CHARGE_ON_HIT_2 0.1
 
 static float f_SensalAbilityCharge_1[MAXENTITIES];
 static float f_SensalAbilityCharge_2[MAXENTITIES];
-static float f_Sensalhuddelay[MAXPLAYERS+1]={0.0, ...};
-static bool b_ClientPossesBattery[MAXPLAYERS+1]={false, ...};
+static float f_Sensalhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
+static bool b_ClientPossesBattery[MAXTF2PLAYERS+1]={false, ...};
 static float f_Sensal_MaxCharge_1[MAXENTITIES];
-static int i_CosmeticScytheThing[MAXPLAYERS+1]={false, ...};
+static int i_CosmeticScytheThing[MAXTF2PLAYERS+1]={false, ...};
 
 static char g_SyctheHitSound[][] = {
 	"ambient/machines/slicer1.wav",

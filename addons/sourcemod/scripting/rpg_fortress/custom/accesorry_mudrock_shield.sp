@@ -1,12 +1,12 @@
 
-static Handle TrueStrengthShieldHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-static bool TrueStrengthShield[MAXPLAYERS+1] = {false, ...};
-static int TrueStrengthShieldCounter[MAXPLAYERS+1] = {0, ...};
+static Handle TrueStrengthShieldHandle[MAXTF2PLAYERS+1] = {INVALID_HANDLE, ...};
+static bool TrueStrengthShield[MAXTF2PLAYERS+1] = {false, ...};
+static int TrueStrengthShieldCounter[MAXTF2PLAYERS+1] = {0, ...};
 
-static bool BobsPureRage[MAXPLAYERS+1] = {false, ...};
-static bool BobsPocketPhone[MAXPLAYERS+1] = {false, ...};
-static bool FlowerItem[MAXPLAYERS+1] = {false, ...};
-static bool BobsWetstone[MAXPLAYERS+1] = {false, ...};
+static bool BobsPureRage[MAXTF2PLAYERS+1] = {false, ...};
+static bool BobsPocketPhone[MAXTF2PLAYERS+1] = {false, ...};
+static bool FlowerItem[MAXTF2PLAYERS+1] = {false, ...};
+static bool BobsWetstone[MAXTF2PLAYERS+1] = {false, ...};
 
 #define SOUND_CRIT_DEAL_BOB		"weapons/rescue_ranger_charge_01.wav"
 public void TrueStrengthShieldUnequip(int client)

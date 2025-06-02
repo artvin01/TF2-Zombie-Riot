@@ -371,7 +371,7 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 					if (!npc.IsOnGround())
 					{
 						npc.PlayMeleeBackstabSound(target);
-						damageDealt *= 2.0;
+						damageDealt *= 4.0;
 					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

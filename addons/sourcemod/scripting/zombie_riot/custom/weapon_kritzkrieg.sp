@@ -33,9 +33,9 @@ static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadc
 	int target = GetHealingTarget(client);
 	if(IsValidClient(target) && IsPlayerAlive(target)) 
 	{
-		GiveArmorViaPercentage(target, 0.5, 1.0);
+		GiveArmorViaPercentage(target, 0.5, 1.0,_,_,client);
 	}
-	GiveArmorViaPercentage(client, 0.5, 1.0);
+	GiveArmorViaPercentage(client, 0.5, 1.0,_,_,client);
 }
 
 static Action Timer_Kritzkrieg(Handle timer, any medigunid)

@@ -117,7 +117,24 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 		}
 	}
 #endif
+	if(!CheckInHud() && !b_NpcIsTeamkiller[attacker])
+	{
+		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
+		{
+#if defined RPG
+			if(attacker <= MaxClients && attacker > 0 && attacker != 0)
+			{
+				if(!(RPGCore_PlayerCanPVP(attacker,victim)))
+					return true;
 
+			}
+			else
+#endif
+			{
+				return true;
+			}
+		}
+	}
 	
 #if defined RPG
 	if(!CheckInHud())
@@ -171,7 +188,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 	{
 		// Reduce damage taken as new players in extreme difficulties
-		if(Level[victim] < 29 && Database_IsCached(victim))
+		if(Level[victim] < 10 && Database_IsCached(victim))
 		{
 			int rank = Waves_GetLevel();
 			if(rank > Level[victim])
@@ -182,10 +199,10 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					reduce = 0.5;
 				
 				// Between 20-29 make it less of a spike between handicap and none
-				if(Level[victim] > 19)
-					reduce *= (29 - Level[victim]) * 0.1;
+				if(Level[victim] > 5)
+					reduce *= (9 - Level[victim]) * 0.1;
 
-				damage *= 1.0 - reduce;
+				damage *= (1.0 - reduce);
 			}
 		}
 	}
@@ -609,13 +626,6 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 #endif
 
-	if(!b_NpcIsTeamkiller[attacker])
-	{
-		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
-		{
-			return true;
-		}
-	}
 	if(b_ThisEntityIgnored[victim])
 	{
 		//True damage ignores this.
@@ -899,14 +909,7 @@ static stock bool NullfyDamageAndNegate(int victim, int &attacker, int &inflicto
 		}
 	}
 #endif
-//For huds, show anyways!
-	if(!b_NpcIsTeamkiller[attacker])
-	{
-		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
-		{
-			return true;
-		}
-	}
+
 	return false;
 }
 
@@ -1178,7 +1181,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_SUPERUBERSAW:
 		{
 			if(!CheckInHud())
-				Superubersaw_OnTakeDamage(victim, attacker, damage);
+				Superubersaw_OnTakeDamage(victim, attacker, damage, weapon);
 		}
 		case WEAPON_YAKUZA:
 		{

@@ -718,7 +718,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						
 						for(int client = 1; client <= MaxClients; client++)
 						{
-							if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+							if (IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] == 0 && TeutonType[client] == 0 && GetTeam(client) == TFTeam_Red)
 							{
 								float vAngles[3], vDirection[3];
 								
@@ -733,7 +733,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								{				
 									if(vAngles[0] > -45.0)
 									{
-												vAngles[0] = -45.0;
+										vAngles[0] = -45.0;
 									}
 														
 									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
@@ -767,7 +767,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.FaceTowards(vecTarget);
 						for(int client = 1; client <= MaxClients; client++)
 						{
-							if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+							if (IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] == 0 && TeutonType[client] == 0 && GetTeam(client) == TFTeam_Red)
 							{
 								float vAngles[3], vDirection[3];
 								
