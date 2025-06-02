@@ -2043,7 +2043,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);	
 		}
-		ShowSyncHudText(attacker, SyncHudRaid,"%s",ExtraHudHurt);	
+		ShowSyncHudText(attacker, SyncHudRaid, ExtraHudHurt);	
 
 	}
 #endif
