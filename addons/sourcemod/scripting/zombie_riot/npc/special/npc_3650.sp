@@ -203,18 +203,43 @@ methodmap ThirtySixFifty < CClotBody
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		b_thisNpcHasAnOutline[npc.index] = true; 
 
+		npc.m_flAbilityOrAttack0 = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 2.0;
-		npc.m_flMeleeArmor = 1.5;
-		npc.m_flRangedArmor = 1.5;
+		npc.m_flMeleeArmor = 1.0;
+		npc.m_flRangedArmor = 1.0;
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Zero(fl_AlreadyStrippedMusic);
 		npc.StartPathing();
 		
 		Citizen_MiniBossSpawn();
+
+		switch(GetRandomInt(0,4))
+		{
+			case 0:
+			{
+				CPrintToChatAll("{white}3650{default}: You, zombie guy, follow me.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{white}3650{default}: I'm more elite than you are, come on.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{white}3650{default}: You guys can't tell, but I have a mean poker face.");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{white}3650{default}: THEY have medics, why don't WE have medics?");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{white}3650{default}: At least I still have meatshields.");
+			}
+		}
 		return npc;
 	}
 }
@@ -235,6 +260,21 @@ static void ClotThink(int iNPC)
 		EmitCustomToAll("#zombie_riot/omega/calculated.mp3", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100); //song that plays duh
 
 		i_PlayMusicSound[npc.index] = GetTime() + 43; //loops the song perfectly
+	}
+
+	if(npc.m_flAbilityOrAttack0 < gameTime)
+	{
+		npc.m_flAbilityOrAttack0 = gameTime + 0.25;
+		
+		int target = GetClosestAlly(npc.index, (250.0 * 250.0), _);
+		if(target)
+		{
+			GrantEntityArmor(target, false, 1.0, 0.10, 0);
+			ChaosSupporter npc1 = view_as<ChaosSupporter>(npc.index);
+			float ProjectileLoc[3];
+			GetEntPropVector(npc1.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+			spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 150, 150, 0, 200, 1, 0.3, 5.0, 8.0, 3, 40.0 * 2.0);	
+		}
 	}
 
 	if(npc.m_blPlayHurtAnimation)
@@ -284,6 +324,23 @@ static void ClotThink(int iNPC)
 		else
 		{
 			NPC_SetGoalEntity(npc.index, target);
+		}
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		int Enemy_I_See;
+		Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+		if(distance < 10000.0)
+		{
+			if(IsValidEnemy(npc.index, Enemy_I_See)) 
+			{
+				npc.m_bAllowBackWalking = true;
+				float vBackoffPos[3];
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
+				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+			}
+		}
+		else
+		{
+			npc.m_bAllowBackWalking = false;
 		}
 
 		if(npc.m_flSwitchCooldown < gameTime)
@@ -360,9 +417,9 @@ static void ClotThink(int iNPC)
 					{
 						KillFeed_SetKillIcon(npc.index, "shotgun_primary");
 						
-						npc.FaceTowards(vecTarget, 400.0);
+						npc.FaceTowards(vecTarget, 25000.0);
 						if(target > MaxClients)
-							npc.FaceTowards(vecTarget, 9999.0);
+							npc.FaceTowards(vecTarget, 25000.0);
 
 						npc.PlayShotgunSound();
 
@@ -414,7 +471,7 @@ static void ClotThink(int iNPC)
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
 						if(target > MaxClients)
-							npc.FaceTowards(vecTarget, 9999.0);
+							npc.FaceTowards(vecTarget, 25000.0);
 
 						float eyePitch[3];
 						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
@@ -464,7 +521,7 @@ static void ClotThink(int iNPC)
 						npc.PlayAR2Sound();
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
 						if(target > MaxClients)
-							npc.FaceTowards(vecTarget, 9999.0);
+							npc.FaceTowards(vecTarget, 25000.0);
 
 						float eyePitch[3];
 						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
@@ -540,9 +597,9 @@ static void ClotThink(int iNPC)
 					{
 						KillFeed_SetKillIcon(npc.index, "pistol");
 						
-						npc.FaceTowards(vecTarget, 400.0);
+						npc.FaceTowards(vecTarget, 25000.0);
 						if(target > MaxClients)
-							npc.FaceTowards(vecTarget, 9999.0);
+							npc.FaceTowards(vecTarget, 25000.0);
 
 						npc.PlayPistolSound();
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
@@ -592,9 +649,9 @@ static void ClotThink(int iNPC)
 					{
 						KillFeed_SetKillIcon(npc.index, "enforcer");
 						
-						npc.FaceTowards(vecTarget, 400.0);
+						npc.FaceTowards(vecTarget, 25000.0);
 						if(target > MaxClients)
-							npc.FaceTowards(vecTarget, 9999.0);
+							npc.FaceTowards(vecTarget, 25000.0);
 
 						npc.PlayRevolverSound();
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
