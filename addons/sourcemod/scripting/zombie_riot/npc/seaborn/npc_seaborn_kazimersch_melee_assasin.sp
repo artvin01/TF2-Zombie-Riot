@@ -222,7 +222,8 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		bool camo = true;
-		Building_CamoOrRegrowBlocker(npc.index, camo);
+		if(HasSpecificBuff(npc.index, "Revealed"))
+			camo = false;
 
 		if(camo && !KazimierzMeleeAssasinRange(npc, 500.0))
 		{

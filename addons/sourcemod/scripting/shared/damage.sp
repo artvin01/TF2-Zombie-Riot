@@ -2011,37 +2011,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		//Display morale!
 		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
 	}
-	if(victim <= MaxClients)
-	{
-
-		static int VillageBuffs;
-		VillageBuffs = Building_GetClientVillageFlags(victim);
-
-		if(VillageBuffs & VILLAGE_000)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌒%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_200)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌭%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_030)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌬%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_050) //This has priority.
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⍣%s", Debuff_Adder_right);
-		}
-		else if(VillageBuffs & VILLAGE_040)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⍤%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_005) //This has priority.
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "i%s", Debuff_Adder_right);
-		}
-	}
 	
 	//Display Modifiers here.
 	if(Waves_InFreeplay())

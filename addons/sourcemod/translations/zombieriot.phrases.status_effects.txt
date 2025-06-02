@@ -884,11 +884,11 @@
 	{
 		"en"	"Ruina Battery Charge"
 	}
-	"Village"
+	"Village Radar"
 	{
-		"en"	"Village"
+		"en"	"Village Radar"
 	}
-	"Village Desc"
+	"Village Radar Desc"
 	{
 		"en"	"Increases projectile speed and range by 10％"
 	}
@@ -914,7 +914,23 @@
 	}
 	"Homeland Defense Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 12％"
+		"en"	"Increases attack/reload speed & healrate by 24％"
+	}
+	"Growth Blocker"
+	{
+		"en"	"Growth Blocker"
+	}
+	"Growth Blocker Desc"
+	{
+		"en"	"Reduces healing by 15％\nOn some enemies it has extra effects..."
+	}
+	"Revealed"
+	{
+		"en"	"Revealed"
+	}
+	"Revealed Desc"
+	{
+		"en"	"Affected entity is revealed and cannot camo."
 	}
 	"Call To Arms"
 	{
@@ -931,6 +947,30 @@
 	"Iberia Light Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 10％"
+	}
+	"Elemental Curing"
+	{
+		"en"	"Elemental Curing"
+	}
+	"Elemental Curing Desc"
+	{
+		"en"	"Slowly cures your elemental damage by 1％ every second\n{yellow}If recently hurt, its only 0.25％"
+	}
+	"Armor Curing"
+	{
+		"en"	"Armor Curing"
+	}
+	"Armor Curing Desc"
+	{
+		"en"	"Slowly regenerates your armor by 1％ every second\n{yellow}If recently hurt, its only 0.25％"
+	}
+	"Nethersea Antidote"
+	{
+		"en"	"Nethersea Antidote"
+	}
+	"Nethersea Antidote Desc"
+	{
+		"en"	"Reduces the damage caused by nethersea brands by 80％"
 	}
 	"Victoria Nuke"
 	{

@@ -431,7 +431,7 @@ void MonkSelfDefense(MedivalMonk npc, float gameTime)
 		//	spawnRing_Vectors(f3_PlaceLocated[npc.index], MONK_MAXRANGE * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 10.0, 5.0, 3.1, 1, _);		
 			spawnRing_Vectors(f3_PlaceLocated[npc.index], MONK_MAXRANGE * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 10.0, 5.0, 3.1, 1, _);		
 			DataPack pack;
-			CreateDataTimer(0.1, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(0.2, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteFloat(GetGameTime() + 10.0);
 			pack.WriteFloat(f3_PlaceLocated[npc.index][0]);
 			pack.WriteFloat(f3_PlaceLocated[npc.index][1]);
@@ -564,7 +564,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	vector[2] = pack.ReadFloat();
 	bool AlliedUnit = pack.ReadCell();
 	int Monk = EntRefToEntIndex(pack.ReadCell());
-	float damage = 10.0;
+	float damage = 20.0;
 	if(Monk == -1)
 	{
 		Monk = 0;
@@ -604,12 +604,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
 					{
-						bool regrow = true;
-						Building_CamoOrRegrowBlocker(entity_close, _, regrow);
-						if(regrow)
-						{
-							HealEntityGlobal(entity_close, entity_close, 999999.9, 1.0, 1.0, HEAL_ABSOLUTE);
-						}
+						HealEntityGlobal(entity_close, entity_close, 999999.9, 1.0, 1.0, HEAL_ABSOLUTE);
 					}
 				}
 				if(GetTeam(entity_close) == TFTeam_Red)

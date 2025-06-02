@@ -554,10 +554,8 @@ public void Bloon_ClotThink(int iNPC)
 	
 	bool silenced = NpcStats_IsEnemySilenced(npc.index);
 	bool camo = npc.m_bOriginalCamo && !silenced;
-	bool regrow = npc.m_bRegrow && !silenced;
-	Building_CamoOrRegrowBlocker(npc.index, camo, regrow);
 
-	if(regrow)
+	if(!HasSpecificBuff(npc.index, "Growth Blocker"))
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = ReturnEntityMaxHealth(npc.index);

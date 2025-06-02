@@ -1330,9 +1330,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		if(b_HealthyEssence && GetTeam(reciever) == TFTeam_Red)
 			HealTotal *= 1.25;
 			
-		bool RegrowthBlock;
- 		Building_CamoOrRegrowBlocker(healer, _, RegrowthBlock);
-		if(RegrowthBlock)
+		if(HasSpecificBuff(reciever, "Growth Blocker"))
 		{
 			HealTotal *= 0.85;
 		}

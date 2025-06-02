@@ -3,6 +3,10 @@
 
 static ArrayList AL_StatusEffects;
 
+#define BUFF_ATTACKSPEED_BUFF_DISABLE (1 << 1)
+#define BUFF_PROJECTILE_SPEED (1 << 2)
+#define BUFF_PROJECTILE_RANGE (1 << 3)
+
 enum struct StatusEffect
 {
 	char BuffName[64];			 //Used to identify
@@ -25,6 +29,7 @@ enum struct StatusEffect
 	int LinkedStatusEffect; //Which status effect is used for below
 	int LinkedStatusEffectNPC; //Which status effect is used for below
 	float AttackspeedBuff;	//damage buff or nerf
+	int FlagAttackspeedLogic;	//Extra Things
 
 	//IS it elemental? If yes, dont get blocked or removed.
 	bool ShouldScaleWithPlayerCount; 
@@ -1105,6 +1110,8 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 	bool HasBuff = false;
 	float BuffAmount = 1.0;
 	//LinkedStatusEffect
+	int FlagAttackspeedLogicInternal = Apply_MasterStatusEffect.FlagAttackspeedLogic;
+
 	if(Apply_MasterStatusEffect.Positive)
 	{	
 		if(!Apply_MasterStatusEffect.ShouldScaleWithPlayerCount || Apply_StatusEffect.TotalOwners[victim])
@@ -1158,22 +1165,30 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 	}
 	if(E_AL_StatusEffects[victim].Length < 1)
 		delete E_AL_StatusEffects[victim];
-	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect, Apply_MasterStatusEffect.LinkedStatusEffectNPC);
+		
+	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect, Apply_MasterStatusEffect.LinkedStatusEffectNPC, FlagAttackspeedLogicInternal);
 }
 
-bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAmount, int BuffCheckerID, int BuffCheckerIDNPC)
+bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAmount, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
 {
 	//They still have the test buff
 	if(IsValidClient(entity))
-		Status_effects_DoAttackspeedLogic(entity, 1, HasBuff, BuffAmount, BuffCheckerID, BuffCheckerIDNPC);
+		Status_effects_DoAttackspeedLogic(entity, 1, HasBuff, BuffAmount, BuffCheckerID, BuffCheckerIDNPC, FlagAttackspeedLogicInternal);
 	else 
-		Status_effects_DoAttackspeedLogic(entity, 2, HasBuff, BuffAmount, BuffCheckerID, BuffCheckerIDNPC);
+		Status_effects_DoAttackspeedLogic(entity, 2, HasBuff, BuffAmount, BuffCheckerID, BuffCheckerIDNPC, FlagAttackspeedLogicInternal);
 
 	return true;
 }
 
+/*
 
-static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC)
+#define BUFF_ATTACKSPEED_BUFF_DISABLE (1 << 1)
+#define BUFF_PROJECTILE_SPEED (1 << 2)
+#define BUFF_PROJECTILE_RANGE (1 << 3)
+
+*/
+
+static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
 {
 	if(type == 1)
 	{
@@ -1190,17 +1205,30 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					ApplyStatusEffect(entity, weapon, "", 9999999.9, BuffCheckerID);
 					StatusEffects_SetCustomValue(weapon, BuffOriginal, BuffCheckerID);
 					//inf
-					if(Attributes_Has(weapon, 6))
-						Attributes_SetMulti(weapon, 6, BuffOriginal);	// Fire Rate
-					
-					if(Attributes_Has(weapon, 97))
-						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, BuffOriginal);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
 
-					if(Attributes_Has(weapon, 733))
-						Attributes_SetMulti(weapon, 733, BuffOriginal);	// mana cost
-					
-					if(Attributes_Has(weapon, 8))
-						Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, BuffOriginal);	// mana cost
+						
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, BuffOriginal);	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, 1.0 / BuffOriginal);	// Projectile Range
+					}
 				}
 			}
 			else
@@ -1213,17 +1241,30 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				if((BuffRevert != BuffOriginal || !GrantBuff) && BuffRevert != 0.0)
 				{
 					//Just remove the buff it had.
-					if(Attributes_Has(weapon, 6))
-						Attributes_SetMulti(weapon, 6, 1.0 / (BuffRevert));	// Fire Rate
-					
-					if(Attributes_Has(weapon, 97))
-						Attributes_SetMulti(weapon, 97, 1.0 / (BuffRevert));	// Reload Time
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, 1.0 / (BuffRevert));	// Fire Rate
 						
-					if(Attributes_Has(weapon, 733))
-						Attributes_SetMulti(weapon, 733, 1.0 / (BuffRevert));	// mana cost
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, 1.0 / (BuffRevert));	// Reload Time
+							
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, 1.0 / (BuffRevert));	// mana cost
 
-					if(Attributes_Has(weapon, 8))
-						Attributes_SetMulti(weapon, 8, BuffRevert);	// Heal Rate
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, BuffRevert);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, 1.0 / (BuffRevert));	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, BuffOriginal);	// Projectile Range
+					}
 				
 					RemoveSpecificBuff(weapon, "", BuffCheckerID);
 				}
@@ -1233,17 +1274,30 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 					ApplyStatusEffect(entity, weapon, "", 9999999.9, BuffCheckerID);
 					StatusEffects_SetCustomValue(weapon, BuffOriginal, BuffCheckerID);
 					//inf
-					if(Attributes_Has(weapon, 6))
-						Attributes_SetMulti(weapon, 6, BuffOriginal);	// Fire Rate
-					
-					if(Attributes_Has(weapon, 97))
-						Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
+					if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+					{
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, BuffOriginal);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, BuffOriginal);	// Reload Time
 
-					if(Attributes_Has(weapon, 733))
-						Attributes_SetMulti(weapon, 733, BuffOriginal);	// mana cost
+						if(Attributes_Has(weapon, 733))
+							Attributes_SetMulti(weapon, 733, BuffOriginal);	// mana cost
 
-					if(Attributes_Has(weapon, 8))
-						Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / BuffOriginal);	// Heal Rate
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_SPEED))
+					{
+						if(Attributes_Has(weapon, 103))
+							Attributes_SetMulti(weapon, 103, BuffOriginal);	// Projectile Speed
+					}
+					if((FlagAttackspeedLogicInternal & BUFF_PROJECTILE_RANGE))
+					{
+						if(Attributes_Has(weapon, 101))
+							Attributes_SetMulti(weapon, 101, 1.0 / BuffOriginal);	// Projectile Range
+					}
 				}
 			}
 		}
@@ -1260,18 +1314,21 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
 				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
 				
+				if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+				{
 #if defined ZR
-				//They have never recieved a buff yet.
-				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
-				{
-					view_as<Citizen>(entity).m_fGunFirerate *= BuffOriginal;
-					view_as<Citizen>(entity).m_fGunReload *= BuffOriginal;
-					view_as<BarrackBody>(entity).BonusFireRate *= BuffOriginal;
-				}
-				else
+					//They have never recieved a buff yet.
+					if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
+					{
+						view_as<Citizen>(entity).m_fGunFirerate *= BuffOriginal;
+						view_as<Citizen>(entity).m_fGunReload *= BuffOriginal;
+						view_as<BarrackBody>(entity).BonusFireRate *= BuffOriginal;
+					}
+					else
 #endif
-				{
-					f_AttackSpeedNpcIncrease[entity] *= BuffOriginal;
+					{
+						f_AttackSpeedNpcIncrease[entity] *= BuffOriginal;
+					}
 				}
 				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
 				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
@@ -1284,19 +1341,21 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 			//if it changed, we need to update it.
 			if((BuffRevert != BuffOriginal || !GrantBuff) && BuffRevert != 0.0)
 			{
-
+				if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+				{
 #if defined ZR				
-				//They have never recieved a buff yet.
-				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
-				{
-					view_as<Citizen>(entity).m_fGunFirerate *= 1.0 / (BuffRevert);
-					view_as<Citizen>(entity).m_fGunReload *= 1.0 / (BuffRevert);
-					view_as<BarrackBody>(entity).BonusFireRate *= 1.0 / (BuffRevert);
-				}
-				else
+					//They have never recieved a buff yet.
+					if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
+					{
+						view_as<Citizen>(entity).m_fGunFirerate *= 1.0 / (BuffRevert);
+						view_as<Citizen>(entity).m_fGunReload *= 1.0 / (BuffRevert);
+						view_as<BarrackBody>(entity).BonusFireRate *= 1.0 / (BuffRevert);
+					}
+					else
 #endif
-				{
-					f_AttackSpeedNpcIncrease[entity] *= 1.0 / (BuffRevert);
+					{
+						f_AttackSpeedNpcIncrease[entity] *= 1.0 / (BuffRevert);
+					}
 				}
 				RemoveSpecificBuff(entity, "", BuffCheckerIDNPC);
 			}
@@ -1306,18 +1365,21 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				ApplyStatusEffect(entity, entity, "", 9999999.9, BuffCheckerIDNPC);
 				StatusEffects_SetCustomValue(entity, BuffOriginal, BuffCheckerIDNPC);
 				
+				if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
+				{
 #if defined ZR
-				//They have never recieved a buff yet.
-				if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
-				{
-					view_as<Citizen>(entity).m_fGunFirerate *= BuffOriginal;
-					view_as<Citizen>(entity).m_fGunReload *= BuffOriginal;
-					view_as<BarrackBody>(entity).BonusFireRate *= BuffOriginal;
-				}
-				else
+					//They have never recieved a buff yet.
+					if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
+					{
+						view_as<Citizen>(entity).m_fGunFirerate *= BuffOriginal;
+						view_as<Citizen>(entity).m_fGunReload *= BuffOriginal;
+						view_as<BarrackBody>(entity).BonusFireRate *= BuffOriginal;
+					}
+					else
 #endif
-				{
-					f_AttackSpeedNpcIncrease[entity] *= BuffOriginal;
+					{
+						f_AttackSpeedNpcIncrease[entity] *= BuffOriginal;
+					}
 				}
 			}
 		}
@@ -3929,39 +3991,107 @@ void StatusEffects_StatusEffectListOnly()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
-	data.ShouldScaleWithPlayerCount = false;
+	data.ShouldScaleWithPlayerCount = false; //none scale here!
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Revealed");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "r");
+	data.Positive 					= false;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Growth Blocker");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "g");
+	data.Positive 					= false;
+	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Village");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Elemental Curing");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϓ");
+	data.Positive 					= true;
+	data.Slot						= 17;
+	data.SlotPriority				= 1;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Armor Curing");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϔ");
+	data.Positive 					= true;
+	data.Slot						= 17;
+	data.SlotPriority				= 2;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Nethersea Antidote");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ξ");
+	data.Positive 					= true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+	
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Village Radar");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌒");
 	data.Positive 					= true;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= (1.0 / 1.1);
+	data.FlagAttackspeedLogic 		= (BUFF_ATTACKSPEED_BUFF_DISABLE | BUFF_PROJECTILE_SPEED | BUFF_PROJECTILE_RANGE);
 	StatusEffect_AddGlobal(data);
+
+	data.FlagAttackspeedLogic		= 0;
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
+	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Jungle Drums");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌭");
 	data.Positive 					= true;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= (1.0 / 1.025);
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Intelligence");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌬");
 	data.Positive 					= true;
+	data.DamageDealMulti			= 0.05;
 	StatusEffect_AddGlobal(data);
+
+	data.DamageDealMulti			= -1.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Homeland Defense");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍣");
 	data.Positive 					= true;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Slot						= 16;
+	data.SlotPriority				= 2;
+	data.AttackspeedBuff			= (1.0 / 1.24);
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Call To Arms");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍤");
 	data.Positive 					= true;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Slot						= 16; //0 means ignored
+	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
+	data.AttackspeedBuff			= (1.0 / 1.12);
 	StatusEffect_AddGlobal(data);
+
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia Light");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "i");
 	data.Positive 					= true;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= (1.0 / 1.1);
 	StatusEffect_AddGlobal(data);
+	
+	data.FlagAttackspeedLogic		= 0;
+	data.LinkedStatusEffect 		= 0;
+	data.LinkedStatusEffectNPC 		= 0;
+	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Victoria Nuke");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "◈");
@@ -4230,7 +4360,7 @@ void StatusEffects_PurnellKitBuffs()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.9;
-	data.DamageDealMulti			= 0.9;
+	data.DamageDealMulti			= 0.1;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;

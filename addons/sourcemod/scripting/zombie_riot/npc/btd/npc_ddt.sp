@@ -213,7 +213,8 @@ public void DDT_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	bool camo = !NpcStats_IsEnemySilenced(npc.index);
-	Building_CamoOrRegrowBlocker(npc.index, camo);
+	if(HasSpecificBuff(npc.index, "Revealed"))
+		camo = false;
 
 	if(npc.m_bCamo)
 	{

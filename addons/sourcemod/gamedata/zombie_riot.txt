@@ -112,6 +112,12 @@
 				"linux"		"@_ZNK9CTFPlayer10CanAirDashEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x57\x8B\xF9\x8B\x87\xBC\x1B\x00\x00"
 			}
+			"CBaseAnimating::GetBoneCache"
+			{
+				"library"	"server"
+				
+				"linux"		"@_ZN14CBaseAnimating12GetBoneCacheEv"
+			}
 			"CTFPlayer::GetChargeEffectBeingProvided"
 			{
 				// "add_uber_time" -> CTFPlayerShared::SetChargeEffect
@@ -562,6 +568,14 @@
 				"return"	"bool"
 				"this"		"entity"
 			}
+			"CBaseAnimating::GetBoneCache"
+			{
+				"signature"	"CBaseAnimating::GetBoneCache"
+				"callconv"	"thiscall"
+				"return"	"int"
+				"this"		"entity"
+			}
+			
 			"CTFProjectile_HealingBolt::ImpactTeamPlayer()"
 			{
 				"signature"		"CTFProjectile_HealingBolt::ImpactTeamPlayer()"

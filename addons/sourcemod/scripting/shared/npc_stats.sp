@@ -3343,6 +3343,7 @@ public void NPC_Base_InitGamedata()
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+//	DHook_CreateDetour(gamedata, "CBaseAnimating::GetBoneCache", Dhook_BoneAnimPrintDo, _);
 	//this isnt directly the same function, but it should act the same.
 	
 	//SDKCalls
@@ -8682,8 +8683,20 @@ public MRESReturn Rocket_Particle_DHook_RocketExplodePre(int entity)
 {
 	return MRES_Supercede;	//Don't even think about it mate
 }
-
-
+/*
+public MRESReturn Dhook_BoneAnimPrintDo(int entity, DHookReturn ret)
+{
+	if(b_IsInUpdateGroundConstraintLogic)
+	{
+		static char buffer[64];
+		GetEntityClassname(entity, buffer, sizeof(buffer));
+		char model[256];
+		CBaseEntity(entity).GetModelName(model, sizeof(model));
+		PrintToServer("[RPG DEBUG] Dhook_BoneAnimPrintDo Entity: %i| Classname %s | Model Mame %s",entity, buffer, model);
+	}
+	return MRES_Ignored;
+}
+*/
 public MRESReturn Dhook_UpdateGroundConstraint_Pre(DHookParam param)
 {
 	b_IsInUpdateGroundConstraintLogic = true;
