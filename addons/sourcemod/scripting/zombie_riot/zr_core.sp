@@ -3000,6 +3000,7 @@ void ForcePlayerWin(bool fakeout = false)
 void ForcePlayerLoss()
 {
 	MVMHud_Disable();
+	ZR_NpcTauntWin();
 	ZR_NpcTauntWinClear();
 	int entity = CreateEntityByName("game_round_win"); 
 	DispatchKeyValue(entity, "force_map_reset", "1");
