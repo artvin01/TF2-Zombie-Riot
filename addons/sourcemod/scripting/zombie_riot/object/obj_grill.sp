@@ -203,7 +203,15 @@ static void ClotThink(ObjectTinkerGrill npc)
 static bool ClotCanUse(ObjectTinkerGrill npc, int client)
 {
 	if(Building_Collect_Cooldown[npc.index][client] > GetGameTime())
+	{
+		if(GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity") == client)
+		{
+			if(f_MedicCallIngore[client] > GetGameTime())
+				return true;
+		}
+		
 		return false;
+	}
 
 	return true;
 }
