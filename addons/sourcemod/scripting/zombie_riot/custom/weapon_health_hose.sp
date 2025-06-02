@@ -280,7 +280,11 @@ public bool Hose_Heal(int owner, int entity, float amt)
 		amt *= 1.65;
 	}
 		
-	HealEntityGlobal(owner, entity, amt, 1.0, 0.0);	
+	int HealedFor = HealEntityGlobal(owner, entity, amt, 1.0, 0.0);	
+
+	if(HealedFor <= 0)
+		return false;
+	//fail, did not heal, do nothing. dont allow self heal either.
 
 	if(flHealth <= flMaxHealth * 0.5)
 	{
