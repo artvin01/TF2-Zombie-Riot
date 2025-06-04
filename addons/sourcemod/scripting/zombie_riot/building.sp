@@ -4,6 +4,7 @@
 #define SOUND_GRAB_TF "ui/item_default_pickup.wav"      // grab
 #define SOUND_TOSS_TF "ui/item_default_drop.wav"        // throww
 #define MODEL_HEALINGBOLT "models/weapons/w_models/w_repair_claw.mdl"        // throww
+#define SOUND_HOSE_HEALED		"weapons/rescue_ranger_charge_01.wav"
 
 #define CLAW_TRAIL_RED "effects/repair_claw_trail_red.vmt"
 static const char SectionName[][] =
