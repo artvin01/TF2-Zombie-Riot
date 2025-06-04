@@ -1677,7 +1677,7 @@ bool Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	int new_ammo = GetAmmo(client, 3);
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
-	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
+	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true, 1.0);
 
 	RepairRate *= 10.0;
 	RepairRate *= repairspeedModif;

@@ -5106,6 +5106,7 @@ void Store_ApplyAttribs(int client)
 	{
 		map.SetValue("287", 0.5);
 	}
+	map.SetValue("95", 1.0);
 
 	float value;
 	char buffer1[12];
