@@ -10,6 +10,7 @@ static GlobalForward OnGivenCash;
 static GlobalForward OnTeamWin;
 static GlobalForward OnXpChanged;
 static GlobalForward CanRenameNpc;
+static GlobalForward OnWaveEnd;
 
 void Natives_PluginLoad()
 {
@@ -25,12 +26,13 @@ void Natives_PluginLoad()
 	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell, Param_String, Param_Cell);
 	OnClientLoaded = new GlobalForward("ZR_OnClientLoaded", ET_Ignore, Param_Cell);
 	OnClientWorldmodel = new GlobalForward("ZR_OnClientWorldmodel", ET_Event, Param_Cell, Param_Cell, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef);
-	OnGivenItem = new GlobalForward("ZR_OnGivenItem", ET_Event, Param_Cell, Param_String);
+	OnGivenItem = new GlobalForward("ZR_OnGivenItem", ET_Event, Param_Cell, Param_String, Param_Cell);
 	OnKilledNPC = new GlobalForward("ZR_OnKilledNPC", ET_Ignore, Param_Cell, Param_String);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
 	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	CanRenameNpc = new GlobalForward("ZR_CanRenameNPCs", ET_Single, Param_Cell);
+	OnWaveEnd = new GlobalForward("ZR_OnWaveEnd", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 
 	RegPluginLibrary("zombie_riot");
 }
@@ -54,7 +56,7 @@ void Native_OnClientLoaded(int client)
 void Native_ZR_OnWinTeam(int team)
 {
 	Call_StartForward(OnTeamWin);
-	Call_PushCell(team);
+	Call_PushCell(view_as<TFTeam>(team));
 	Call_Finish();
 }
 
@@ -92,13 +94,14 @@ bool Native_OnClientWorldmodel(int client, TFClassType class, int &worldmodel, i
 	return action >= Plugin_Changed;
 }
 
-bool Native_OnGivenItem(int client, char item[64])
+bool Native_OnGivenItem(int client, char item[64], int index)
 {
 	Action action;
 
 	Call_StartForward(OnGivenItem);
 	Call_PushCell(client);
 	Call_PushStringEx(item, sizeof(item), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+	Call_PushCell(index);
 	Call_Finish(action);
 
 	if(action >= Plugin_Handled)
@@ -131,6 +134,15 @@ bool Native_OnGivenCash(int client, int &cash)
 	}
 
 	return false;
+}
+
+void Native_OnWaveEnd()
+{
+	Call_StartForward(OnWaveEnd);
+	Call_PushCell(ZR_Waves_GetRound());
+	Call_PushCell(Waves_GetMaxRound(false));
+	Call_PushCell(Waves_GetMaxRound(true));
+	Call_Finish();
 }
 
 public any Native_ApplyKillEffects(Handle plugin, int numParams)

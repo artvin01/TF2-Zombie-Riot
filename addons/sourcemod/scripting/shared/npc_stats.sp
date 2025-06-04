@@ -388,22 +388,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
 #if defined ZR
 		if(!ModelReplaceDo(npc, Ally))
+#endif
 		{
 			DispatchKeyValue(npc, "model",	 model);
 			view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		}
-#endif
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
 			DispatchKeyValue(npc,	   "health",	 health);
 		}
-		
-		DispatchKeyValue(npc, "shadowcastdist", "1");
-		DispatchKeyValue(npc, "disablereceiveshadows", "1");
-		DispatchKeyValue(npc, "disableshadows", "1");
-		DispatchKeyValue(npc, "disableshadowdepth", "1");
-		DispatchKeyValue(npc, "disableselfshadowing", "1");  
 		
 		i_IsNpcType[npc] = NpcTypeLogic;
 		f_LastBaseThinkTime[npc] = GetGameTime();
@@ -2377,7 +2371,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-	public void FaceTowards(float vecGoal[3], float turnrate = 250.0)
+	public void FaceTowards(float vecGoal[3], float turnrate = 250.0, bool TurnOnWalk = false)
 	{
 		//Sad!
 		//Dont use face towards, why?
@@ -2415,7 +2409,13 @@ methodmap CClotBody < CBaseCombatCharacter
 				angles.y += angleDiff;
 			}
 		*/
-		float deltaT = GetTickInterval();
+		float deltaT = 0.015;
+		//I am dumb, we accidentally made it scale with tickrate....
+		//facepalm.
+		if(TurnOnWalk)
+		{
+			deltaT = GetTickInterval();
+		}
 
 		float angles[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", angles);
@@ -2528,13 +2528,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 			DispatchKeyValueFloat(item, "modelscale", model_size);
 		}
-		/*
-		DispatchKeyValue(item, "shadowcastdist", "0");
-		DispatchKeyValue(item, "disablereceiveshadows", "1");
-		DispatchKeyValue(item, "disableshadows", "1");
-		DispatchKeyValue(item, "disableshadowdepth", "1");
-		DispatchKeyValue(item, "disableselfshadowing", "1");  
-		*/
 		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES|EF_NOSHADOW );
 		SetEntityMoveType(item, MOVETYPE_NONE);
@@ -3356,6 +3349,7 @@ public void NPC_Base_InitGamedata()
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+//	DHook_CreateDetour(gamedata, "CBaseAnimating::GetBoneCache", Dhook_BoneAnimPrintDo, _);
 	//this isnt directly the same function, but it should act the same.
 	
 	//SDKCalls
@@ -4230,7 +4224,7 @@ public int Action_CommandApproach(NextBotAction action, int actor, const float p
 		float pos2[3];
 		pos2 = pos;
 		if(!npc.m_bAllowBackWalking)
-			npc.FaceTowards(pos2, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
+			npc.FaceTowards(pos2, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]), true);
 	}
 	else
 	{
@@ -4635,8 +4629,9 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(b_NpcIsInvulnerable[enemy] && !target_invul)
+			if(enemy > MaxClients && IsInvuln(enemy, true) && !target_invul)
 			{
+				//invlun check is only for npcs!
 				return false;
 			}
 
@@ -5604,7 +5599,7 @@ public void NpcBaseThinkPost(int iNPC)
 	static float SimulationTimeDelay;
 	if(!SimulationTimeDelay)
 	{
-		SimulationTimeDelay = (0.05 * TickrateModify);
+		SimulationTimeDelay = (0.05/* * TickrateModify*/);
 		//calc once
 	}
 	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime() + SimulationTimeDelay);
@@ -5835,12 +5830,15 @@ public void NpcBaseThink(int iNPC)
 		HealEntityGlobal(iNPC, iNPC, float(i_HpRegenInBattle[iNPC]), 1.0, 0.0, HEAL_SELFHEAL | HEAL_PASSIVE_NO_NOTIF);
 		RPGNpc_UpdateHpHud(iNPC);
 	}
+#endif
 	if(f_InBattleDelay[iNPC] < GetGameTime())
 	{
-		f_InBattleDelay[iNPC] = GetGameTime() + 0.25;
+		StatusEffect_TimerCallDo(iNPC);
+		f_InBattleDelay[iNPC] = GetGameTime() + 0.4;
+#if defined RPG
 		HealOutOfBattleNpc(iNPC);
-	}
 #endif
+	}
 
 	if(CvarDisableThink.BoolValue)
 		return;
@@ -6672,16 +6670,16 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		DispatchKeyValue(prop, "spawnflags", "2");
 		if(npc.m_bIsGiant)
 		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 1)
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
 			{
-				DispatchKeyValue(prop, "modelscale", "1.2");
+				DispatchKeyValue(prop, "modelscale", "1.1");
 			}
 			else
 				DispatchKeyValue(prop, "modelscale", "1.6");
 		}
 		else
 		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 1)
+			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
 			{
 				DispatchKeyValue(prop, "modelscale", "0.8");
 			}
@@ -8691,8 +8689,20 @@ public MRESReturn Rocket_Particle_DHook_RocketExplodePre(int entity)
 {
 	return MRES_Supercede;	//Don't even think about it mate
 }
-
-
+/*
+public MRESReturn Dhook_BoneAnimPrintDo(int entity, DHookReturn ret)
+{
+	if(b_IsInUpdateGroundConstraintLogic)
+	{
+		static char buffer[64];
+		GetEntityClassname(entity, buffer, sizeof(buffer));
+		char model[256];
+		CBaseEntity(entity).GetModelName(model, sizeof(model));
+		PrintToServer("[RPG DEBUG] Dhook_BoneAnimPrintDo Entity: %i| Classname %s | Model Mame %s",entity, buffer, model);
+	}
+	return MRES_Ignored;
+}
+*/
 public MRESReturn Dhook_UpdateGroundConstraint_Pre(DHookParam param)
 {
 	b_IsInUpdateGroundConstraintLogic = true;
@@ -10594,7 +10604,7 @@ void IsEntityInvincible_Shield(int entity)
 	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = 2;
 #endif
-	if(b_NpcIsInvulnerable[entity])
+	if(IsInvuln(entity, true))
 		NpcInvulShieldDisplay = 1;
 	
 	CClotBody npc = view_as<CClotBody>(entity);
@@ -10833,7 +10843,7 @@ void ResetAllArmorStatues(int entiity)
 }
 
 stock void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType,
-float custom_maxarmour = 0.0)
+float custom_maxarmour = 0.0, int ArmorGiver = -1)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(Once)
@@ -10880,6 +10890,10 @@ float custom_maxarmour = 0.0)
 			npc.m_flArmorCountMax = npc.m_flArmorCount;
 	}
 	
+	if(ArmorGiver > 0 && custom_maxarmour > 0.0)
+	{
+		ApplyArmorEvent(entity, RoundToNearest(custom_maxarmour), ArmorGiver);
+	}
 	//any extra logic please add here. deivid.
 }
 

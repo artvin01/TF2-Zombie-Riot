@@ -7,14 +7,14 @@
 
 static Handle Soldine_Timer[MAXTF2PLAYERS] = {null, ...};
 static bool Precached;
-float Soldine_HudDelay[MAXPLAYERS+1];
-static int ParticleRef[MAXPLAYERS+1];
-static int i_PaPLevel[MAXPLAYERS+1];
-static float i_SoldineMeleeCharge[MAXPLAYERS+1];
-static float i_SoldineRocketjumpCharge[MAXPLAYERS+1];
-static float f_SoldineRocketJumpDuration[MAXPLAYERS+1];
-static int i_ParticleMeleeHit[MAXPLAYERS+1];
-static bool b_DisableSuperJump[MAXPLAYERS+1];
+float Soldine_HudDelay[MAXTF2PLAYERS+1];
+static int ParticleRef[MAXTF2PLAYERS+1];
+static int i_PaPLevel[MAXTF2PLAYERS+1];
+static float i_SoldineMeleeCharge[MAXTF2PLAYERS+1];
+static float i_SoldineRocketjumpCharge[MAXTF2PLAYERS+1];
+static float f_SoldineRocketJumpDuration[MAXTF2PLAYERS+1];
+static int i_ParticleMeleeHit[MAXTF2PLAYERS+1];
+static bool b_DisableSuperJump[MAXTF2PLAYERS+1];
 
 
 /*

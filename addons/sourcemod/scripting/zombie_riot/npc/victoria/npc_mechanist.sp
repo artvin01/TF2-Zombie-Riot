@@ -374,9 +374,7 @@ static void Internal_ClotThink(int iNPC)
 			//Go repair!
 			if(!b_AlreadyReparing[npc.index])
 			{
-				bool regrow = true;
-				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
-				if(regrow)
+				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
 				{
 					b_AlreadyReparing[npc.index] = true;
 					Behavior = 2;
@@ -711,9 +709,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeHitSound();
 				}
-				bool regrow = true;
-				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
-				if(regrow)
+				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
 				{
 					int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
 					int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");

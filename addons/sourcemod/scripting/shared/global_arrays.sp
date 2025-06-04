@@ -65,7 +65,7 @@ public const char ItemArchetype[][] =
 	"Multi Pellet",		// 1
 	"Rapid Fire",		// 2
 	"Infinite Fire",	// 3
-	"none",		// 4
+	"None",		// 4
 	"Single Pellet",	// 5
 	"Far Range",		// 6
 	"Trap Master",		// 7 this can include builder weapons!
@@ -133,6 +133,7 @@ ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
 ConVar sv_cheats;
 ConVar nav_edit;
+//ConVar mp_friendlyfire;
 bool DoingLagCompensation;
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_ExtendBoundingBox;
@@ -600,6 +601,7 @@ bool b_IsInUpdateGroundConstraintLogic;
 bool b_IgnorePlayerCollisionNPC[MAXENTITIES];
 bool b_ProjectileCollideWithPlayerOnly[MAXENTITIES];
 bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
+int iref_PropAppliedToRocket[MAXENTITIES];
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
@@ -622,6 +624,8 @@ bool b_EntityIsWandProjectile[MAXENTITIES];
 bool b_EntityIgnoredByShield[MAXENTITIES];
 int i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
+bool b_CanSeeBuildingValues[MAXENTITIES]; 
+bool b_CanSeeBuildingValues_Force[MAXTF2PLAYERS+1];
 bool i_IsSupportWeapon[MAXENTITIES]; 
 bool i_IsKitWeapon[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 

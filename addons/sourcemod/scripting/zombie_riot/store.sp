@@ -36,6 +36,7 @@ enum struct ItemInfo
 
 	int IsWand;
 	bool IsWrench;
+	bool Visible_BuildingStats;
 	bool IsSupport;
 	bool IsAlone;
 	bool InternalMeleeTrace;
@@ -236,6 +237,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
+
+		Format(buffer, sizeof(buffer), "%svisible_building_stats", prefix);
+		this.Visible_BuildingStats	= view_as<bool>(kv.GetNum(buffer));
 
 		Format(buffer, sizeof(buffer), "%sis_a_support", prefix);
 		this.IsSupport	= view_as<bool>(kv.GetNum(buffer));
@@ -637,54 +641,6 @@ void Store_WeaponSwitch(int client, int weapon)
 		}
 	}
 }
-/*
-bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
-{
-	if(StoreItems)
-	{
-		static Item item;
-		static ItemInfo info;
-		int choiceIndex, choiceInfo;
-		int choicePrice = value;
-		
-		int length = StoreItems.Length;
-		for(int i; i<length; i++)
-		{
-			StoreItems.GetArray(i, item);
-			if(item.NPCWeapon >= 0 && item.GiftId == -1 && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
-			{
-				int current;
-				for(int a; item.GetItemInfo(a, info); a++)
-				{
-					ItemCost(0, item, info.Cost);
-					current += info.Cost;
-					
-					if(current > budget)
-						break;
-					
-					if(current > choicePrice)
-					{
-						choiceIndex = i;
-						choiceInfo = a;
-						choicePrice = current;
-					}
-					
-					if(!packs || info.PackBranches != 1 || info.PackSkip)
-						break;
-				}
-			}
-		}
-		
-		if(choicePrice > value)
-		{
-			StoreItems.GetArray(choiceIndex, item);
-			item.GetItemInfo(choiceInfo, info);
-			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, RoundToCeil(float(choicePrice) * SELL_AMOUNT), info, 0);
-			return view_as<bool>(choiceInfo);
-		}
-	}
-	return false;
-}*/
 
 stock bool Store_ActiveCanMulti(int client)
 {
@@ -1134,7 +1090,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
-	CharToUpper(item.Name[0]);
+	item.Name[0] = CharToUpper(item.Name[0]);
 	
 	if(isItem)
 	{
@@ -1542,8 +1498,6 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
-	//Store_RandomizeNPCStore(1);
-	
 	for(int c; c<MAXTF2PLAYERS; c++)
 	{
 		StarterCashMode[c] = true;
@@ -1558,6 +1512,7 @@ void Store_Reset()
 		StoreItems.GetArray(i, item);
 		item.NPCSeller = false;
 		item.NPCSeller_WaveStart = 0;
+		item.NPCSeller_Discount = 1.0;
 		for(int c; c<MAXTF2PLAYERS; c++)
 		{
 			item.Owned[c] = 0;
@@ -2030,7 +1985,7 @@ public void ReShowSettingsHud(int client)
 		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-84", buffer);
-
+	/*
 	Format(buffer, sizeof(buffer), "%T", "Enable Numeral Armor", client);
 	if(b_EnableNumeralArmor[client])
 	{
@@ -2041,6 +1996,7 @@ public void ReShowSettingsHud(int client)
 		Format(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-85", buffer);
+	*/
 
 	Format(buffer, sizeof(buffer), "%T", "Taunt Speed increase", client);
 	if(b_TauntSpeedIncrease[client])
@@ -2711,165 +2667,133 @@ void Store_DiscountNamedItem(const char[] name, int timed = 0, float discount = 
 	}
 }
 
-void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave = false, float override = -1.0)
+#define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
+#define ZR_STORE_DEFAULT_SALE (1 << 2) //This  will reset the current normally sold items, and put up a new set of items
+#define ZR_STORE_WAVEPASSED (1 << 3) //any storelogic that should be called when a wave passes
+
+void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -1.0)
 {
 	int amount;
 	int length = StoreItems.Length;
 	int[] indexes = new int[length];
 	bool rogue = Rogue_Mode();
 	bool unlock = Rogue_UnlockStore();
-	
+
 	static Item item;
 	static ItemInfo info;
 	int GrigoriCashLogic = CurrentCash;
+	//we dont want to go above this cash amount.
 	if(GrigoriCashLogic > 70000)
 		GrigoriCashLogic = 70000;
-		
+
+	//If we are in unlock mode, i.e. rogue2, then we want to have a minimim cash amount.
 	if(unlock)
 	{
 		if(GrigoriCashLogic < 5000)
 			GrigoriCashLogic = 5000;
 	}
 
+	
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!unlock || ResetStore || !item.Hidden) && (!unlock || ResetStore || !item.RogueAlwaysSell)))
+		//In here we get each and every single store item that exists in ZR
+		//This will not happen if we want to reset the store entirely.
+		if((StoreFlags & ZR_STORE_RESET))
 		{
-			if(item.GregOnlySell == 2 && ResetStore != 1)	// We always sell this if unbought
+			//We want to entirely reset the store...
+			item.NPCSeller_Discount = 1.0;
+			item.NPCSeller = false;
+			item.NPCSeller_WaveStart = 0;
+			StoreItems.SetArray(i, item);
+			continue;
+		}
+		if(item.GregOnlySell == 2 && (!(StoreFlags & ZR_STORE_RESET)))
+		{
+			//We always sell this if unbought
+			//Some items have to be always sold no matter what, in this case its grigori's ammo.
+			float ApplySale = 0.7;
+			if(override >= 0.0)
+				ApplySale = override;
+
+			item.NPCSeller_Discount = ApplySale;
+			item.NPCSeller = true;
+
+			for(int c = 1; c <= MaxClients; c++)
 			{
-				float ApplySale = 0.7;
-				if(override >= 0.0)
-					ApplySale = override;
-
-				item.NPCSeller_Discount = ApplySale;
-				item.NPCSeller = true;
-
-				for(int c = 1; c <= MaxClients; c++)
-				{
-					if(item.Owned[c] || item.BoughtBefore[c])
-					{
-						item.NPCSeller = false;
-						break;
-					}
-				}
-				
-				StoreItems.SetArray(i, item);
-			}
-			else if(unlock && !ResetStore)	// Don't reset items, add random ones (rogue)
-			{
-				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
-				{
-					item.NPCSeller_WaveStart--;
-					StoreItems.SetArray(i, item);
-					static Item CurrentItem;
-					CurrentItem = item;
-					int LatestHighestSaleWave = 0;
-					if(CurrentItem.Section != -1)
-					{
-						static Item ParentItem;
-						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
-						{
-							//This just prevents infinite loops.
-							StoreItems.GetArray(CurrentItem.Section, ParentItem);
-							ParentItem.NPCSeller_Discount = 0.0;
-							ParentItem.NPCSeller = false;
-							if(CurrentItem.NPCSeller_WaveStart > LatestHighestSaleWave)
-								LatestHighestSaleWave = CurrentItem.NPCSeller_WaveStart;
-
-							if(ParentItem.NPCSeller_WaveStart > LatestHighestSaleWave)
-								ParentItem.NPCSeller_WaveStart = LatestHighestSaleWave;
-								
-							StoreItems.SetArray(CurrentItem.Section, ParentItem);
-							if(ParentItem.Section != -1)
-							{
-								CurrentItem = ParentItem;
-							}
-							else
-								break;
-						}
-					}
-				}
-
-				if(!item.NPCSeller && !item.RogueAlwaysSell)
-				{
-					item.GetItemInfo(0, info);
-					if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 4))
-						indexes[amount++] = i;
-				}
-			}
-			else if(ResetStore != 2)	// Reset items, add random ones (normal)
-			{
-				if(addItem == 0 && !subtract_wave)
+				if(item.Owned[c] || item.BoughtBefore[c])
 				{
 					item.NPCSeller = false;
-					static Item CurrentItem;
-					CurrentItem = item;
-					if(CurrentItem.Section != -1)
-					{
-						static Item ParentItem;
-						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
-						{
-							//This just prevents infinite loops.
-							StoreItems.GetArray(CurrentItem.Section, ParentItem);
-							ParentItem.NPCSeller_Discount = 0.0;
-							ParentItem.NPCSeller = false;
-							if(ResetStore)
-								item.NPCSeller_WaveStart = 0;
-								
-							StoreItems.SetArray(CurrentItem.Section, ParentItem);
-							if(ParentItem.Section != -1)
-							{
-								CurrentItem = ParentItem;
-							}
-							else
-								break;
-						}
-					}
-					if(ResetStore)
-					{
-						item.NPCSeller_WaveStart = 0;
-					}
+					break;
+				}
+			}
+			
+			StoreItems.SetArray(i, item);
+			continue;
+			//We only want to do this to the item.
+			//it never really has to be reset.
+		}
+
+		//Any item thats within a sale thats time limited should tick down here.
+		if((StoreFlags & ZR_STORE_WAVEPASSED))
+		{
+			if(item.NPCSeller_WaveStart > 0)
+			{
+				if((item.NPCSeller_WaveStart -1) <= 0)
+				{
+					item.NPCSeller_Discount = 1.0;
+					item.NPCSeller = false;
+					//remove said sale
+				}
+				item.NPCSeller_WaveStart--;
+				StoreItems.SetArray(i, item);
+				continue;
+			}
+		}
+		if(!unlock)
+		{
+			//in normal zr, we have a few different rules.
+			if((StoreFlags & ZR_STORE_DEFAULT_SALE))
+			{
+				if((item.GregOnlySell && item.GregOnlySell != 2) || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!item.Hidden)))
+				{
+					item.GetItemInfo(0, info);
+					if(info.Cost > 0 && info.Cost_Unlock > ((GrigoriCashLogic / 3)- 1000) && info.Cost_Unlock < GrigoriCashLogic)
+						indexes[amount++] = i;
 				}
 
-				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
+				if(item.NPCSeller && addItem == 0 && item.NPCSeller_WaveStart <= 0)
 				{
-					item.NPCSeller_WaveStart -= 1;
-					static Item CurrentItem;
-					CurrentItem = item;
-					if(CurrentItem.Section != -1)
-					{
-						static Item ParentItem;
-						for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
-						{
-							//This just prevents infinite loops.
-							StoreItems.GetArray(CurrentItem.Section, ParentItem);
-							ParentItem.NPCSeller_Discount = 0.0;
-							ParentItem.NPCSeller = false;
-							if(ParentItem.NPCSeller_WaveStart < CurrentItem.NPCSeller_WaveStart)
-								ParentItem.NPCSeller_WaveStart = CurrentItem.NPCSeller_WaveStart;
-								
-							StoreItems.SetArray(CurrentItem.Section, ParentItem);
-							if(ParentItem.Section != -1)
-							{
-								CurrentItem = ParentItem;
-							}
-							else
-								break;
-						}
-					}
+					item.NPCSeller = false;
+					item.NPCSeller_Discount = 1.0;
+					StoreItems.SetArray(i, item);
 				}
-				
-				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > ((GrigoriCashLogic / 3)- 1000) && info.Cost_Unlock < GrigoriCashLogic)
-					indexes[amount++] = i;
-				
-				StoreItems.SetArray(i, item);
+			}
+		}
+		else
+		{
+			//We want to add a few items to the aviable unlock list in rogue2
+			if((StoreFlags & ZR_STORE_DEFAULT_SALE))
+			{
+				if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!item.Hidden)))
+				{
+					if(!item.NPCSeller && !item.RogueAlwaysSell)
+					{
+						item.GetItemInfo(0, info);
+						if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 4))
+							indexes[amount++] = i;
+					}
+					//if we assume a sale like this is happening, thenwe must reset all previously sold items!
+				}
 			}
 		}
 	}
 
-	if(subtract_wave || ResetStore)
+
+	
+	//we dont want to call the bottom part if we are to reset the store!
+	//or just pass waves for indication purposes...
+	if((StoreFlags & ZR_STORE_WAVEPASSED) || (StoreFlags & ZR_STORE_RESET))
 		return;
 	
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
@@ -2933,6 +2857,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			if(item.Section != -1)
 			{
 				static Item ParentItem;
+				//In here we will give any parent of said sold item the discount!
 				for(int SemiInfLoop ; SemiInfLoop <= 50 ; SemiInfLoop++)
 				{
 					//This just prevents infinite loops.
@@ -2942,6 +2867,8 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 
 					if(ParentItem.NPCSeller_WaveStart < item.NPCSeller_WaveStart)
 						ParentItem.NPCSeller_WaveStart = item.NPCSeller_WaveStart;
+
+					ParentItem.NPCSeller = true;
 						
 					StoreItems.SetArray(item.Section, ParentItem);
 					if(ParentItem.Section != -1)
@@ -3471,7 +3398,7 @@ static void MenuPage(int client, int section)
 			}
 			else if(!CvarLeveling.BoolValue)
 			{
-				menu.SetTitle("%T\n \n%st\n ", "TF2: Zombie Riot", client, buf);
+				menu.SetTitle("%T\n \n%s\n ", "TF2: Zombie Riot", client, buf);
 			}
 			else if(Database_IsCached(client))
 			{
@@ -3596,6 +3523,9 @@ static void MenuPage(int client, int section)
 			item.GetItemInfo(0, info);
 			if(NPCOnly[client] == 1)	// Greg Store Menu
 			{
+				if(!item.ItemInfos)
+					continue;
+					//dont display categories here....
 				if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel)
 					continue;
 			}
@@ -3640,7 +3570,7 @@ static void MenuPage(int client, int section)
 			{
 				continue;
 			}
-			else if(item.NPCSeller || item.NPCSeller_WaveStart != 0)
+			else if(item.NPCSeller || item.NPCSeller_WaveStart > 0)
 			{
 				//empty
 			}
@@ -3724,11 +3654,11 @@ static void MenuPage(int client, int section)
 				TranslateItemName(client, item.Name, info.Custom_Name, buffer, sizeof(buffer));
 				if(item.NPCSeller_WaveStart > 0)
 				{
-					Format(buffer, sizeof(buffer), "%s{$$}", buffer);
+					Format(buffer, sizeof(buffer), "%s {$$}", buffer);
 				}
 				else if(item.NPCSeller_Discount > 0.0 && item.NPCSeller_Discount < 1.0)
 				{
-					Format(buffer, sizeof(buffer), "%s{$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
+					Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
 				}
 				//category has some type of sale in it !
 				menu.AddItem(info.Classname, buffer);
@@ -5176,6 +5106,7 @@ void Store_ApplyAttribs(int client)
 	{
 		map.SetValue("287", 0.5);
 	}
+	map.SetValue("95", 1.0);
 
 	float value;
 	char buffer1[12];
@@ -5462,6 +5393,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_ExpertTrapper[client] = false;
 	b_RaptureZombie[client] = false;
 	b_ArmorVisualiser[client] = false;
+	b_CanSeeBuildingValues_Force[client] = false;
 	b_Reinforce[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
@@ -5782,6 +5714,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsAloneWeapon[entity] = false;
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
+				b_CanSeeBuildingValues[entity] = false;
 				i_IsSupportWeapon[entity] = false;
 				i_IsKitWeapon[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
@@ -5874,6 +5807,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.IsWrench)
 					{
 						i_IsWrench[entity] = true;
+					}
+					if(info.Visible_BuildingStats)
+					{
+						b_CanSeeBuildingValues[entity] = true;
 					}
 					if(info.IsSupport)
 					{
@@ -6115,6 +6052,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 14)
 					{
 						b_Reinforce[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 15)
+					{
+						b_CanSeeBuildingValues_Force[client] = true;
 					}
 
 					int CostDo;

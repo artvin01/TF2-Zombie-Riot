@@ -7,6 +7,7 @@
 	"Headcrab Zombie"
 	{
 		"en" 		"Headcrab Zombie"
+		"es"		"Zombi Cangrejo"
 		"ru" 		"Зомби"
 		"fr" 		"Zombie"
 	}
@@ -17,6 +18,7 @@
 	"Metro Cop"
 	{
 		"en"		"Metro Cop"
+		"es"		"Policia del Metro"
 		"ru" 		"Метро Коп"
 		"fr"		"Métro-police"
 	}
@@ -29,18 +31,21 @@
 	"Bob The First"
 	{
 		"en"		"Bob The First"
+		"es"		"Bob, el Primero"
 		"ru" 		"боб первый"
 		"fr"		"Bob I"
 	}
 	"??????? First"
 	{
 		"en"		"??????? First"
+		"es"		"??????? Primero"
 		"ru" 		"??????? Первый"
 		"fr"		"??????? I"
 	}
 	"??? the First"
 	{
 		"en"		"??? the First"
+		"es"		"???, el Primero"
 		"ru" 		"??? Первый"
 		"fr"		"??? I"
 	}

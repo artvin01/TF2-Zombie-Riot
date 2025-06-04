@@ -166,7 +166,7 @@ methodmap FallenWarrior < CClotBody
 
 	public FallenWarrior(float vecPos[3], float vecAng[3], int ally)
 	{
-		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.4", MinibossHealthScaling(100), ally));
+		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.4", MinibossHealthScaling(100.0), ally));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup"); 
@@ -316,7 +316,6 @@ public void FallenWarrior_ClotThink(int iNPC)
 			}
 		}
 	}
-	float TrueArmor = 1.0;
 
 	if(npc.m_bLostHalfHealth)
 	{
@@ -328,7 +327,6 @@ public void FallenWarrior_ClotThink(int iNPC)
 		{
 			npc.m_flSpeed += 100.0;
 		}
-		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
 		if(!npc.Anger)
 		{
@@ -352,13 +350,16 @@ public void FallenWarrior_ClotThink(int iNPC)
 	{
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 	}
-	fl_TotalArmor[npc.index] = TrueArmor;
 
 	
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 	FallenWarrior_ApplyDebuffInLocation(VecSelfNpcabs, GetTeam(npc.index));
 
 	float Range = GULN_DEBUFF_RANGE;
+	if(GetTeam(npc.index) == 2)
+	{
+		Range *= 0.5;
+	}
 	spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, /*duration*/ 0.11, 20.0, 5.0, 1);	
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -562,6 +563,10 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 
 	FallenWarrior_ApplyDebuffInLocation(VecSelfNpcabs, Team);
 	float Range = GULN_DEBUFF_RANGE;
+	if(Team == 2)
+	{
+		Range *= 0.5;
+	}
 	spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, /*duration*/ 0.11, 20.0, 5.0, 1);	
 
 	return Plugin_Continue;
@@ -602,8 +607,8 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 					}	
 					if(npc.m_bLostHalfHealth)
 					{
-						damageDealt *= 2.0;
-						NPC_Ignite(target, npc.index,12.0, -1, 30.0);
+						damageDealt *= 1.25;
+						NPC_Ignite(target, npc.index,12.0, -1, damageDealt * 0.05);
 					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -650,12 +655,17 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 {
 	float targPos[3];
+	float Range = GULN_DEBUFF_RANGE;
+	if(Team == 2)
+	{
+		Range *= 0.5;
+	}
 	for(int ally=1; ally<=MaxClients; ally++)
 	{
 		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) != Team)
 		{
 			GetClientAbsOrigin(ally, targPos);
-			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
+			if (GetVectorDistance(BannerPos, targPos, true) <= (Range * Range))
 			{
 				ApplyStatusEffect(ally, ally, "Heavy Presence", 1.0);
 			}
@@ -667,7 +677,7 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != Team)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
+			if (GetVectorDistance(BannerPos, targPos, true) <= (Range * Range))
 			{
 				ApplyStatusEffect(ally, ally, "Heavy Presence", 1.0);
 			}

@@ -77,7 +77,7 @@ methodmap Caprinae < CClotBody
 	
 	public Caprinae(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "99000", ally, _, true));
+		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "200000", ally, _, true));
 		
 		if(!data[0])
 		{
@@ -258,7 +258,7 @@ static void ClotDeath(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 	startPosition[2] += 45;
 	
-	makeexplosion(entity, startPosition, 600, 150, _, true, true, 15.0);
+	makeexplosion(entity, startPosition, 1200, 150, _, true, true, 15.0);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

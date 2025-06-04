@@ -440,6 +440,7 @@ static int MainMenuH(Menu menu, MenuAction action, int client, int choice)
 				case 0:
 				{
 					TreeMenu(client, true);
+					UTIL_ScreenFade(client, 33, 9999999, FFADE_IN, 0, 0, 0, 233);
 
 					if(InMenu[client] && CustomMusic.Path[0])
 					{
@@ -785,6 +786,7 @@ void TreeMenu(int client, bool force = false, bool displayMenu = true)
 	ReplaceString(BufferSyncHud,sizeof(BufferSyncHud), "	", "");
 	Format(BufferSyncHud, sizeof(BufferSyncHud),"%s\n-------------\n%T", BufferSyncHud, buffers[0], client);
 	ShowSyncHudText(client, SyncHudSkilltree, BufferSyncHud);
+	UTIL_ScreenFade(client, 33, 9999999, FFADE_IN, 0, 0, 0, 233);
 
 
 	bool upgrade;
@@ -840,6 +842,11 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Cancel:
 		{
 			InMenu[client] = false;
+			if(IsValidClient(client))
+			{
+				UTIL_ScreenFade(client, 1, 1, FFADE_PURGE, 0, 0, 0, 233);
+				UTIL_ScreenFade(client, 66, 66, FFADE_OUT, 0, 0, 0, 233);
+			}
 			
 			if(CustomMusic.Path[0])
 				StopCustomSound(client, SNDCHAN_STATIC, CustomMusic.Path);

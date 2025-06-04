@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_Gravaton_Wand_Hud_Management[MAXPLAYERS+1] = {null, ...};
+static Handle h_Gravaton_Wand_Hud_Management[MAXTF2PLAYERS+1] = {null, ...};
 static float fl_gravaton_charges[MAXTF2PLAYERS+1];
 static int i_Current_Pap[MAXTF2PLAYERS+1];
 static float fl_hud_timer[MAXTF2PLAYERS+1];

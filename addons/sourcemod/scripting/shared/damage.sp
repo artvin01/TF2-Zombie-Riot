@@ -121,7 +121,18 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 	{
 		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
 		{
-			return true;
+#if defined RPG
+			if(attacker <= MaxClients && attacker > 0 && attacker != 0)
+			{
+				if(!(RPGCore_PlayerCanPVP(attacker,victim)))
+					return true;
+
+			}
+			else
+#endif
+			{
+				return true;
+			}
 		}
 	}
 	
@@ -177,7 +188,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 	{
 		// Reduce damage taken as new players in extreme difficulties
-		if(Level[victim] < 29 && Database_IsCached(victim))
+		if(Level[victim] < 10 && Database_IsCached(victim))
 		{
 			int rank = Waves_GetLevel();
 			if(rank > Level[victim])
@@ -188,10 +199,10 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					reduce = 0.5;
 				
 				// Between 20-29 make it less of a spike between handicap and none
-				if(Level[victim] > 19)
-					reduce *= (29 - Level[victim]) * 0.1;
+				if(Level[victim] > 5)
+					reduce *= (9 - Level[victim]) * 0.1;
 
-				damage *= 1.0 - reduce;
+				damage *= (1.0 - reduce);
 			}
 		}
 	}
@@ -1999,37 +2010,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		//Display morale!
 		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
-	}
-	if(victim <= MaxClients)
-	{
-
-		static int VillageBuffs;
-		VillageBuffs = Building_GetClientVillageFlags(victim);
-
-		if(VillageBuffs & VILLAGE_000)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌒%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_200)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌭%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_030)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌬%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_050) //This has priority.
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⍣%s", Debuff_Adder_right);
-		}
-		else if(VillageBuffs & VILLAGE_040)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⍤%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_005) //This has priority.
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "i%s", Debuff_Adder_right);
-		}
 	}
 	
 	//Display Modifiers here.

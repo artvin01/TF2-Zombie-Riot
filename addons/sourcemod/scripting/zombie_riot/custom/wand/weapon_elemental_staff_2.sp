@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
 
 static int client_slammed_how_many_times[MAXTF2PLAYERS];
 static int client_slammed_how_many_times_limit[MAXTF2PLAYERS];
@@ -173,10 +173,10 @@ public Action shockwave_explosions(Handle timer, int client)
 
 //Passanger Ability stuff.
 
-Handle h_TimerPassangerManagement[MAXPLAYERS+1] = {null, ...};
+Handle h_TimerPassangerManagement[MAXTF2PLAYERS+1] = {null, ...};
 static float f_PassangerHudDelay[MAXTF2PLAYERS];
-static int i_PassangerAbilityCount[MAXPLAYERS+1]={0, ...};
-static float f_PassangerAbilityCooldownRegen[MAXPLAYERS+1]={0.0, ...};
+static int i_PassangerAbilityCount[MAXTF2PLAYERS+1]={0, ...};
+static float f_PassangerAbilityCooldownRegen[MAXTF2PLAYERS+1]={0.0, ...};
 
 static int BeamWand_Laser;
 static int BeamWand_Glow;

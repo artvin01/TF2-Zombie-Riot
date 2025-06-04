@@ -31,15 +31,15 @@
 #define CHAR_PARTEMPTY	"▒"
 #define CHAR_EMPTY	"░"
 
-#define TFTeam			PLZUSE_int
+//#define TFTeam			PleaseUse_int
 #define TFTeam_Unassigned 	0
 #define TFTeam_Spectator 	1
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
 #define TFTeam_Stalkers 		5
 
-#define TF2_GetClientTeam	PLZUSE_GetTeam
-#define TF2_ChangeClientTeam	PLZUSE_SetTeam
+#define TF2_GetClientTeam	PleaseUse_GetTeam
+#define TF2_ChangeClientTeam	PleaseUse_SetTeam
 
 #define RoundState_ZombieRiot view_as<RoundState>(11)
 
@@ -654,20 +654,12 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "viewchanges.sp"
 #endif
 
-#if !defined RTS
 #include "attributes.sp"
-#endif
 
-#if !defined NOG
 #include "commands.sp"
 #include "convars.sp"
 #include "dhooks.sp"
 #include "events.sp"
-#endif
-
-#if defined RTS
-#include "rtscamera.sp"
-#endif
 
 #if defined ZR || defined NOG
 #include "npccamera.sp"
@@ -708,7 +700,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnPluginStart()
 {
 #if defined ZR
-	CurrentAmmo[0] = { 1, 1, 1, 200, 1, 1, 1,
+	CurrentAmmo[0] = { 1, 1, 1, 600, 1, 1, 1,
 	48,
 	24,
 	200,
@@ -983,10 +975,9 @@ public void OnMapStart()
 	Zero(f_MutePlayerTalkShutUp);
 	ResetIgnorePointVisible();
 	DHooks_MapStart();
-
 #if defined ZR || defined RPG
-	Core_PrecacheGlobalCustom();
 	FileNetwork_MapStart();
+	Core_PrecacheGlobalCustom();
 #endif
 
 	PrecacheSound("weapons/explode1.wav");
@@ -1118,22 +1109,32 @@ void DeleteShadowsOffZombieRiot()
 	int entityshadow = -1;
 	entityshadow = FindEntityByClassname(entityshadow, "shadow_control");
 
-	if(IsValidEntity(entityshadow))
+	if(!IsValidEntity(entityshadow))
 	{
-		RemoveEntity(entityshadow);
+		entityshadow = CreateEntityByName("shadow_control");
+		DispatchSpawn(entityshadow);
 	}
-	entityshadow = CreateEntityByName("shadow_control");
 	
 	//Create new shadow entity, and make own own rules
 	//This disables shadows form npcs, entirely unneecceary as some models have broken as hell shadows.
-	//DispatchKeyValue(entityshadow,"color", "255 255 255 0");
 	if(IsValidEntity(entityshadow))
 	{
-		DispatchSpawn(entityshadow);
+		//This just badly hides shadows
+		/*
+		Whenever we set sv_cheats to 1, and to 0, it sets r_shadows_gamecontrol  to all clients to 0
+		to fix this we have to delete and remake the shadow controll EVERY TIME.
+		This is terrible
+		Colour atleast just hides ths shadows which is fine enough, i guess.
+
+		We cant set EF_NOSHADOW  on npcs for some reason either ,it is a dark day.
+		*/
+		DispatchKeyValue(entityshadow,"color", "255 255 255 0");
 		SetVariantInt(1); 
 		AcceptEntityInput(entityshadow, "SetShadowsDisabled"); 
 	}
+
 }
+
 public void OnMapEnd()
 {
 #if defined ZR
@@ -1144,7 +1145,7 @@ public void OnMapEnd()
 			KickClient(client);
 		}
 	}
-	Store_RandomizeNPCStore(1);
+	Store_RandomizeNPCStore(ZR_STORE_RESET);
 	OnRoundEnd(null, NULL_STRING, false);
 	Waves_MapEnd();
 	Spawns_MapEnd();
@@ -1208,7 +1209,7 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1248,7 +1249,7 @@ public Action Command_FakeDeathCount(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -2330,6 +2331,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
+		b_CanSeeBuildingValues[entity] = false;
 		i_IsSupportWeapon[entity] = false;
 		LastHitRef[entity] = -1;
 		f_MultiDamageTaken[entity] = 1.0;
@@ -3176,13 +3178,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 }
 #endif	// ZR & RPG
 
-/*
-public void Frame_OffCheats()
-{
-	CvarCheats.SetBool(false, false, false);
-}
-*/
-
 #if defined _tf2items_included
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
 {
@@ -3386,6 +3381,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		if(WasClientReviving)
 			speed = 6;
 	}
+		
 	if(medigun > 0)
 	{
 		speed = RoundToNearest(float(speed) * 0.65);
@@ -3395,6 +3391,14 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		speed *= 2;
 	}
 
+	if(WasClientReviving)
+	{
+		int activeWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(activeWeapon))
+		{
+			speed = RoundToNearest(float(speed) * Attributes_Get(activeWeapon, Attrib_ReviveSpeedBonus, 1.0));
+		}
+	}
 	Rogue_ReviveSpeed(speed);
 	if(WasRevivingEntity)
 	{
@@ -3640,6 +3644,7 @@ void PlayerHasInteract(int client, char[] Buffer, int Buffersize)
 			Format(Buffer, Buffersize, "%t","Interact With T Spray");
 		}
 	}
+	
 }
 
 
@@ -3657,4 +3662,35 @@ int CalcMaxPlayers()
 	*/
 
 	return playercount;
+}
+
+
+//This is needed as MVM breaks friendly fire.
+void TakeDamage_EnableMVM()
+{
+/*
+#if defined ZR
+	if(CheckInHud())
+		return;
+
+	if(mp_friendlyfire.IntValue == 0)
+		return;
+		
+	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+#endif
+*/
+}
+void TakeDamage_DisableMVM()
+{
+/*
+#if defined ZR
+	if(CheckInHud())
+		return;
+
+	if(mp_friendlyfire.IntValue == 0)
+		return;
+
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+#endif
+*/
 }

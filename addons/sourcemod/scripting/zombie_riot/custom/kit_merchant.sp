@@ -184,6 +184,11 @@ public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int s
 		return;
 	}
 
+	if(MerchantWeaponRef[client] != -1 && MerchantStyle[client] >= 0)
+	{
+		MerchantEnd(client);
+		return;
+	}
 	if(dieingstate[client] != 0 || (Ability_Check_Cooldown(client, slot) > 0.0 && !CvarInfiniteCash.BoolValue))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -987,6 +992,26 @@ static void MerchantStart(int client, int slot)
 		MerchantAddAttrib(client, 2, damage);
 		MerchantAddAttrib(client, 6, speed);
 		SetPlayerActiveWeapon(client, weapon);
+		weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		if(weapon != -1)
+		{
+			float cooldown = 35.0;
+
+			switch(MerchantStyle[client])
+			{
+				case Merchant_Jaye:
+				{
+					if(MerchantLevel[client] > 2)
+						cooldown -= 3.0;
+				}
+				case Merchant_Nothing:
+				{
+					//cooldown = 5.0;
+				}
+			}
+
+			Ability_Apply_Cooldown(client, MerchantAbilitySlot[client], cooldown, weapon);
+		}
 	}
 }
 
@@ -1041,31 +1066,34 @@ static void MerchantEnd(int client, float customCD = -1.0)
 			}
 		}
 	}
-
-	weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-	if(weapon != -1)
+	if(customCD > 0.0)
 	{
-		float cooldown = 25.0;
-
-		switch(MerchantStyle[client])
+		weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		if(weapon != -1)
 		{
-			case Merchant_Jaye:
-			{
-				if(MerchantLevel[client] > 2)
-					cooldown -= 3.0;
-			}
-			case Merchant_Nothing:
-			{
-				//cooldown = 5.0;
-			}
-		}
-		if(customCD != -1.0)
-		{
-			cooldown = customCD;
-		}
+			float cooldown = 25.0;
 
-		Ability_Apply_Cooldown(client, MerchantAbilitySlot[client], cooldown, weapon);
+			switch(MerchantStyle[client])
+			{
+				case Merchant_Jaye:
+				{
+					if(MerchantLevel[client] > 2)
+						cooldown -= 3.0;
+				}
+				case Merchant_Nothing:
+				{
+					//cooldown = 5.0;
+				}
+			}
+			if(customCD != -1.0)
+			{
+				cooldown = customCD;
+			}
+
+			Ability_Apply_Cooldown(client, MerchantAbilitySlot[client], cooldown, weapon);
+		}
 	}
+	MerchantAddAttrib(client, Attrib_SlowImmune, 0.0);
 	
 	Store_RemoveSpecificItem(client, "Loyalty and Generosity");
 	Store_RemoveSpecificItem(client, "Lavish and Prodigal");

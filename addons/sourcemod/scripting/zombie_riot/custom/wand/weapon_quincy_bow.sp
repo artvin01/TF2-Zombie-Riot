@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_TimerQuincy_BowManagement[MAXPLAYERS+1] = {null, ...};
+static Handle h_TimerQuincy_BowManagement[MAXTF2PLAYERS+1] = {null, ...};
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 static float fl_Quincy_Charge[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Max_Battery[MAXTF2PLAYERS + 1];

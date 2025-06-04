@@ -145,7 +145,7 @@ methodmap MedivalVillager < CClotBody
 	
 	public MedivalVillager(float vecPos[3], float vecAng[3], int ally)
 	{
-		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(50), ally));
+		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(50.0), ally));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -346,9 +346,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			//Go repair!
 			if(!b_AlreadyReparing[npc.index])
 			{
-				bool regrow = true;
-				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
-				if(regrow)
+				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
 				{
 					b_AlreadyReparing[npc.index] = true;
 					Behavior = 2;
@@ -650,9 +648,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 					npc.m_flSpeed = 0.0;
 				}
 
-				bool regrow = true;
-				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
-				if(regrow)
+				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
 				{
 					int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
 					int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");

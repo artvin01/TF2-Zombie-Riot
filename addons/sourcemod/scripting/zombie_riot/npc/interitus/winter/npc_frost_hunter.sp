@@ -304,7 +304,7 @@ int WinterFrostHunterSelfDefense(WinterFrostHunter npc, float gameTime, int targ
 					
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 35.0;
+						float damageDealt = 45.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 2.5;
 
@@ -369,7 +369,7 @@ int WinterFrostHunterSelfDefense(WinterFrostHunter npc, float gameTime, int targ
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 20.0;
+						float damageDealt = 30.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 

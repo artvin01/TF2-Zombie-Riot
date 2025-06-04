@@ -495,7 +495,6 @@ methodmap Bloon < CClotBody
 		npc.m_bRegrow = regrow;
 		npc.m_iType = type;
 		npc.m_iOriginalType = type;
-		npc.UpdateBloonInfo();
 		
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
@@ -532,7 +531,10 @@ public void Bloon_ClotThink(int iNPC)
 	{
 		return;
 	}
-	
+	if(npc.m_flHealthDifference != -1.0)	
+	{
+		ObtainHealthDifference(iNPC);
+	}
 	npc.m_flNextDelayTime = gameTime + 0.04;
 	
 	npc.Update();	
@@ -552,10 +554,8 @@ public void Bloon_ClotThink(int iNPC)
 	
 	bool silenced = NpcStats_IsEnemySilenced(npc.index);
 	bool camo = npc.m_bOriginalCamo && !silenced;
-	bool regrow = npc.m_bRegrow && !silenced;
-	Building_CamoOrRegrowBlocker(npc.index, camo, regrow);
 
-	if(regrow)
+	if(!HasSpecificBuff(npc.index, "Growth Blocker"))
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = ReturnEntityMaxHealth(npc.index);

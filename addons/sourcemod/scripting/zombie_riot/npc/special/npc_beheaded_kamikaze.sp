@@ -66,7 +66,7 @@ methodmap BeheadedKamiKaze < CClotBody
 	
 	public BeheadedKamiKaze(float vecPos[3], float vecAng[3], int ally)
 	{
-		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(3, true), ally));
+		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(2.0, true), ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.m_bisWalking = false;
@@ -129,7 +129,7 @@ methodmap BeheadedKamiKaze < CClotBody
 
 			fl_KamikazeInitiate = GetGameTime() + 15.0;
 			
-			if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
+			if(!TeleportDiversioToRandLocation(npc.index,_,2500.0, 1250.0))
 			{
 				//incase their random spawn code fails, they'll spawn here.
 				int Spawner_entity = GetRandomActiveSpawner();

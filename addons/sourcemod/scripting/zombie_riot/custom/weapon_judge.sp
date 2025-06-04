@@ -3,7 +3,7 @@
 
 #define JUDGE_MAX_CLIP 5
 
-Handle h_TimerJudgeManagement[MAXPLAYERS+1] = {null, ...};
+Handle h_TimerJudgeManagement[MAXTF2PLAYERS+1] = {null, ...};
 static float f_JudgeHudDelay[MAXTF2PLAYERS];
 static bool b_JudgeFullAmmoSound[MAXTF2PLAYERS];
 static int i_TraurusJudge[MAXTF2PLAYERS];

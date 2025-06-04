@@ -3,7 +3,10 @@
 
 #define SOUND_GRAB_TF "ui/item_default_pickup.wav"      // grab
 #define SOUND_TOSS_TF "ui/item_default_drop.wav"        // throww
+#define MODEL_HEALINGBOLT "models/weapons/w_models/w_repair_claw.mdl"        // throww
+#define SOUND_HOSE_HEALED		"weapons/rescue_ranger_charge_01.wav"
 
+#define CLAW_TRAIL_RED "effects/repair_claw_trail_red.vmt"
 static const char SectionName[][] =
 {
 	"Support Buildings",
@@ -188,6 +191,10 @@ void Building_MapStart()
 	PrecacheSound("npc/manhack/bat_away.wav");
 	Zero(f_ExpidonsanRepairDelay);
 	Zero(i_IDependOnThisBuilding);
+	PrecacheModel(MODEL_HEALINGBOLT);
+	PrecacheModel(CLAW_TRAIL_RED);
+	PrecacheDecal(CLAW_TRAIL_RED, true);
+	PrecacheSound(SOUND_HOSE_HEALED);
 }
 
 void Building_ClientDisconnect(int client)
@@ -285,6 +292,10 @@ static void BuildingMenu(int client)
 		
 	switch(MenuSection[client])
 	{
+		case -1:
+		{
+			Format(buffer3, sizeof(buffer3), "%s\n%T\n ", buffer3,"Mount Menu Explain", client);
+		}
 		case 0:
 		{
 			Format(buffer3, sizeof(buffer3), "%s\n%T\n ", buffer3,"Support Buildings Explain", client);
@@ -771,7 +782,10 @@ void Building_ShowInteractionHud(int client, int entity)
 					
 					Hide_Hud = false;
 					SetGlobalTransTarget(client);
-					PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
+					if(Building_Picking_up_cd >= 999999.9)
+						PrintCenterText(client, "%t","Object Cooldown NextWave");
+					else
+						PrintCenterText(client, "%t","Object Cooldown",Building_Picking_up_cd);
 				}
 				else if(Object_ShowInteractHud(client, entity))
 				{
@@ -829,6 +843,36 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		return;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
+	if(entity < MaxClients)	
+		return;
+
+	if (!IsValidEntity(entity))
+		return;
+
+	if (!i_IsABuilding[entity])
+		return;
+
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
+	{
+		if(!objstats.m_bConstructBuilding)
+			return; //anyone can pick up construct buildings!
+	}
+	if(IsValidEntity(objstats.m_iMasterBuilding))
+	{
+		entity = objstats.m_iMasterBuilding;
+	}
+	Building_PlayerWieldsBuilding(client, entity);
+}
+public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
+{
+	if(IsValidEntity(Player_BuildingBeingCarried[client]))
+	{
+		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
+		Building_AttemptPlace(buildingindx, client);
+		return;
+	}
+	int entity = GetClientPointVisible(client, 9999.0 , false, false,_,1);
 	if(entity < MaxClients)	
 		return;
 
@@ -1600,7 +1644,7 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
 	Building_RepairObject(client, target, weapon,vecHit, 2, 0.2);
 }		
 
-void Building_RepairObject(int client, int target, int weapon,float vectorhit[3], int soundDef = 1, float repairspeedModif = 1.0)
+bool Building_RepairObject(int client, int target, int weapon,float vectorhit[3], int soundDef = 1, float repairspeedModif = 1.0)
 {
 	int iHealth, max_health;
 	if(i_IsVehicle[target])
@@ -1627,13 +1671,13 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 				EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
 			}
 		}
-		return;
+		return false;
 	}
 	
 	int new_ammo = GetAmmo(client, 3);
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
-	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
+	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true, 1.0);
 
 	RepairRate *= 10.0;
 	RepairRate *= repairspeedModif;
@@ -1665,7 +1709,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 				EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
 			}
 		}
-		return;
+		return false;
 	}
 	int Healing_Value = i_HealingAmount;
 	
@@ -1693,7 +1737,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 				}
 
 			}
-			return;
+			return false;
 		}
 		if(!i_IsVehicle[target])
 		{
@@ -1755,6 +1799,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	new_ammo -= HealDo;
 	SetAmmo(client, 3, new_ammo);
 	CurrentAmmo[client][3] = GetAmmo(client, 3);
+	return true;
 }
 
 
@@ -2084,7 +2129,7 @@ public bool BuildingCustomCommand(int client)
 	return false;
 }
 
-int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
+int i2_MountedInfoAndBuilding[2][MAXTF2PLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {
@@ -2478,4 +2523,180 @@ void Building_Check_ValidSupportcount(int client)
 			}
 		}
 	}
+}
+
+//Acts like a tf2 wrench with repairing
+public void Tinker_ShootProjectile(int client, int weapon, bool &result, int slot)
+{
+	float damage = 50.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+		
+	float speed = 2200.0;
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
+	int Projectile = Wand_Projectile_Spawn(client, speed, -1.0, damage, 0, weapon, "",.hideprojectile = true);
+	WandProjectile_ApplyFunctionToEntity(Projectile, Tinker_TouchAnything);
+	SetEntityModel(Projectile, MODEL_HEALINGBOLT);
+	ApplyCustomModelToWandProjectile(Projectile, MODEL_HEALINGBOLT, 1.0, "");
+	b_NpcIsTeamkiller[Projectile] = true;
+	b_AllowCollideWithSelfTeam[Projectile] = true;
+
+	SetEntityMoveType(Projectile, MOVETYPE_FLYGRAVITY);
+	SetEntityGravity(Projectile, 0.15);
+	i_WandParticle[Projectile] = EntIndexToEntRef(Trail_Attach(Projectile, CLAW_TRAIL_RED, 255, 0.3, 3.0, 3.0, 5));
+}
+
+static void Tinker_TouchAnything(int entity, int target)
+{
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	if (target < 0)	
+		return;
+
+	if(target == 0)
+	{
+		int attacker = EntRefToEntIndex(i_WandOwner[entity]);
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(attacker == client)
+				{
+					switch(GetRandomInt(1,3))
+					{
+						case 1:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal.wav", attacker, SNDCHAN_STATIC, 70, _, 0.8);
+						
+						case 2:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal2.wav", attacker, SNDCHAN_STATIC, 70, _, 0.8);
+						
+						case 3:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal4.wav", attacker, SNDCHAN_STATIC, 70, _, 0.80);
+					}	
+				}
+				else
+				{
+
+					switch(GetRandomInt(1,3))
+					{
+						case 1:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal.wav", entity, SNDCHAN_STATIC, 70, _, 0.8);
+						
+						case 2:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal2.wav", entity, SNDCHAN_STATIC, 70, _, 0.8);
+						
+						case 3:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal4.wav", entity, SNDCHAN_STATIC, 70, _, 0.8);
+					}	
+				}
+			}
+		}
+		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
+		if(IsValidEntity(particle))
+		{
+			CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		SetEntityRenderMode(entity, RENDER_NONE);
+		SetEntityMoveType(entity, MOVETYPE_NONE);
+		int FakeThing = EntRefToEntIndex(iref_PropAppliedToRocket[entity]);
+		if(IsValidEntity(FakeThing))
+		{
+			SetEntityRenderMode(FakeThing, RENDER_NONE);
+		}
+		return;
+	}
+	if(GetTeam(entity) != GetTeam(target))
+	{
+		//Code to do damage position and ragdolls
+		static float angles[3];
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		static float Entity_Position[3];
+		WorldSpaceCenter(target, Entity_Position);
+
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		int attacker = EntRefToEntIndex(i_WandOwner[entity]);
+
+		float PushforceDamage[3];
+		CalculateDamageForce(vecForward, 10000.0, PushforceDamage);
+		SDKHooks_TakeDamage(target, attacker, attacker, f_WandDamage[entity], DMG_PLASMA, weapon, PushforceDamage, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(attacker == client)
+				{
+					EmitSoundToClient(client, g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], attacker, SNDCHAN_STATIC, 70, _, 1.0);
+				}
+				else
+				{
+					EmitSoundToClient(client, g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], attacker, SNDCHAN_STATIC, 70, _, 1.0);
+				}
+			}
+		}
+		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
+		if(IsValidEntity(particle))
+		{
+			CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		SetEntityRenderMode(entity, RENDER_NONE);
+		SetEntityMoveType(entity, MOVETYPE_NONE);
+		int FakeThing = EntRefToEntIndex(iref_PropAppliedToRocket[entity]);
+		if(IsValidEntity(FakeThing))
+		{
+			SetEntityRenderMode(FakeThing, RENDER_NONE);
+		}
+		return;
+	}
+	else
+	{
+		if(i_NpcIsABuilding[target])
+		{
+			//heal building?
+			bool RepairDone = false;
+			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+			int attacker = EntRefToEntIndex(i_WandOwner[entity]);
+			if(IsValidEntity(weapon) && IsValidClient(attacker))
+				RepairDone = Building_RepairObject(attacker, target, weapon,{0.0,0.0,0.0}, -1, 0.5);
+			
+			if(!RepairDone)
+				return;
+
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(attacker == client)
+					{
+						EmitSoundToClient(client, SOUND_HOSE_HEALED, attacker, SNDCHAN_STATIC, 70, _, 0.8);
+					}
+					else
+					{
+						EmitSoundToClient(client, SOUND_HOSE_HEALED, entity, SNDCHAN_STATIC, 70, _, 0.8);
+					}
+				}
+			}
+			
+			WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
+			if(IsValidEntity(particle))
+			{
+				CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+			}
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			SetEntityRenderMode(entity, RENDER_NONE);
+			SetEntityMoveType(entity, MOVETYPE_NONE);
+			int FakeThing = EntRefToEntIndex(iref_PropAppliedToRocket[entity]);
+			if(IsValidEntity(FakeThing))
+			{
+				SetEntityRenderMode(FakeThing, RENDER_NONE);
+			}
+		}
+	}
+	
 }

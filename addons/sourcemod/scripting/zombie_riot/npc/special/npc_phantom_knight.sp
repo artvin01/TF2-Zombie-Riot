@@ -155,7 +155,7 @@ methodmap PhantomKnight < CClotBody
 	
 	public PhantomKnight(float vecPos[3], float vecAng[3], int ally)
 	{
-		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(110), ally));
+		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(110.0), ally));
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		//Normal sized Miniboss!

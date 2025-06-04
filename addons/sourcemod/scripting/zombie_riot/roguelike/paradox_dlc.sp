@@ -238,7 +238,7 @@ public void Rogue_Smoking_Remove()
 
 public void Rogue_FreeWeapon_Collect()
 {
-	Store_RandomizeNPCStore(0, 1, _, 0.0);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, 1, 0.01);
 }
 
 public void Rogue_StartSP1_WaveStart()

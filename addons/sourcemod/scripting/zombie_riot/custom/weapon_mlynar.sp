@@ -9,7 +9,7 @@
 #define MYLNAR_MAXANGLEPITCH	90.0
 #define MYLNAR_MAXANGLEYAW		90.0
 
-Handle h_TimerMlynarManagement[MAXPLAYERS+1] = {null, ...};
+Handle h_TimerMlynarManagement[MAXTF2PLAYERS+1] = {null, ...};
 static float f_MlynarHudDelay[MAXTF2PLAYERS];
 static float f_MlynarDmgMultiPassive[MAXTF2PLAYERS] = {1.0, ...};
 static float f_MlynarDmgMultiAgressiveClose[MAXTF2PLAYERS] = {1.0, ...};
@@ -20,7 +20,7 @@ int HitEntitiesSphereMlynar[MAXENTITIES];
 int i_MlynarMaxDamageGetFromSameEnemy[MAXENTITIES];
 static float f_MlynarHurtDuration[MAXTF2PLAYERS];
 static float f_MlynarReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
-static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+static float f_AniSoundSpam[MAXTF2PLAYERS+1]={0.0, ...};
 static int i_RefWeaponDelete[MAXTF2PLAYERS];
 
 //This will be used to tone down damage over time/on kill

@@ -1,14 +1,14 @@
-static Handle h_TimerOceanSongManagement[MAXPLAYERS+1] = {null, ...};
-static int i_Particle_1[MAXPLAYERS+1];
-static int i_Particle_2[MAXPLAYERS+1];
-static int i_Particle_3[MAXPLAYERS+1];
-static int i_Particle_4[MAXPLAYERS+1];
-static int i_Laser_1[MAXPLAYERS+1];
-static float f_OceanBuffAbility[MAXPLAYERS+1];
-static float f_OceanIndicator[MAXPLAYERS+1];
-static float f_OceanIndicatorHud[MAXPLAYERS+1];
+static Handle h_TimerOceanSongManagement[MAXTF2PLAYERS+1] = {null, ...};
+static int i_Particle_1[MAXTF2PLAYERS+1];
+static int i_Particle_2[MAXTF2PLAYERS+1];
+static int i_Particle_3[MAXTF2PLAYERS+1];
+static int i_Particle_4[MAXTF2PLAYERS+1];
+static int i_Laser_1[MAXTF2PLAYERS+1];
+static float f_OceanBuffAbility[MAXTF2PLAYERS+1];
+static float f_OceanIndicator[MAXTF2PLAYERS+1];
+static float f_OceanIndicatorHud[MAXTF2PLAYERS+1];
 
-static int ColourOcean[MAXPLAYERS+1][4];
+static int ColourOcean[MAXTF2PLAYERS+1][4];
 
 #define OCEAN_HEAL_BASE 0.15
 #define OCEAN_SOUND "ambient_mp3/lair/cap_1_tone_metal_movement2.mp3"
@@ -306,25 +306,11 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 			ColourOcean[client][2] = 240;
 			ColourOcean[client][3] = 200;
 		}
-
-		int new_ammo = GetAmmo(client, 21);
-		if(new_ammo <= 0)
-		{
-			if(f_OceanIndicatorHud[client] < GetGameTime())
-			{
-				PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
-				
-				f_OceanIndicatorHud[client] = GetGameTime() + 0.75;
-			}
-			return Plugin_Continue;
-		}
-
 		
 		ApplyExtraOceanEffects(client, false);
 		DoHealingOcean(client, client,_,_,_, weapon);
 		if(f_OceanIndicator[client] < GetGameTime())
 		{
-			PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
 			
 			f_OceanIndicator[client] = GetGameTime() + 0.25;
 			float UserLoc[3];
@@ -333,8 +319,6 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 		
 			if(f_OceanIndicatorHud[client] < GetGameTime())
 			{
-				PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
-				
 				f_OceanIndicatorHud[client] = GetGameTime() + 0.75;
 			}
 		}
@@ -353,21 +337,14 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 	GetEntPropVector(target, Prop_Data, "m_vecOrigin", BannerPos);
 	float flHealMulti = 1.0;
 	float flHealMutli_Calc;
-	int new_ammo;
 	if(!HordingsBuff)
 	{
-		new_ammo = GetAmmo(client, 21);
-		if(new_ammo <= 0)
-		{
-			return;
-		}
 		flHealMulti = Attributes_GetOnPlayer(client, 8, true, true);
 		if(weapon > 0)
 			flHealMulti *= Attributes_Get(weapon, 8, 1.0);
 	}
 	else
 	{
-		new_ammo = 999999;
 		flHealMulti = 1.0;
 	}
 	
@@ -401,20 +378,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 						flHealMutli_Calc = flHealMulti;
 					} 
 					flHealMutli_Calc *= extra_heal * healingMulti;
-					int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0, .MaxHealPermitted = new_ammo);
-					if(healingdone > 0)
-					{
-						if(!HordingsBuff)
-						{
-							ReduceMediFluidCost(client, healingdone);
-							new_ammo -= healingdone;
-							if(new_ammo <= 0)
-							{
-								new_ammo = 0;
-								break;
-							}
-						}
-					}
+					HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
 				}
 				if(!HordingsBuff)
 				{
@@ -447,19 +411,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					flHealMutli_Calc = flHealMulti;
 				} 
 				flHealMutli_Calc *= extra_heal;
-				int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0, .MaxHealPermitted = new_ammo);
-				if(!HordingsBuff)
-				{
-					if(healingdone > 0)
-						ReduceMediFluidCost(client, healingdone);
-						
-					new_ammo -= healingdone;
-					if(new_ammo <= 0)
-					{
-						new_ammo = 0;
-						break;
-					}
-				}
+				HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
 				if(!HordingsBuff)
 				{
 					if(f_OceanBuffAbility[client] > GetGameTime())
@@ -473,12 +425,6 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				}
 			}
 		}
-	}
-	
-	if(!HordingsBuff)
-	{
-		SetAmmo(client, 21, new_ammo);
-		CurrentAmmo[client][21] = GetAmmo(client, 21);
 	}
 }
 

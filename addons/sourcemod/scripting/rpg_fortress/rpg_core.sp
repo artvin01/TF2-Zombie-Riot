@@ -588,7 +588,7 @@ public Action Command_EnablePVP(int client, int args)
 	char buf[12];
 	GetCmdArg(2, buf, sizeof(buf));
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -633,7 +633,7 @@ public Action Command_GiveXp(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -677,7 +677,7 @@ public Action Command_GiveReset(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int money = StringToInt(buf); 
 
-	int targets[MAXPLAYERS], matches;
+	int targets[MAXTF2PLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{

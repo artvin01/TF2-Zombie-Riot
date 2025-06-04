@@ -2,8 +2,8 @@
 #pragma newdecls required
 
 
-static Handle h_TimerManagement[MAXPLAYERS] = {null, ...};
-static float fl_hud_timer[MAXPLAYERS];
+static Handle h_TimerManagement[MAXTF2PLAYERS] = {null, ...};
+static float fl_hud_timer[MAXTF2PLAYERS];
 static bool b_cannon_animation_active[MAXTF2PLAYERS];
 static float fl_animation_cooldown[MAXTF2PLAYERS];
 

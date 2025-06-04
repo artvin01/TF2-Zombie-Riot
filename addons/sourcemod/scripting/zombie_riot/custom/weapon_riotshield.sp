@@ -13,7 +13,7 @@ static int ShieldModel;
 static int ViewmodelRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int WearableRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int RIOT_EnemiesHit[MAX_TARGETS_HIT_RIOT];
-static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+static float f_AniSoundSpam[MAXTF2PLAYERS+1]={0.0, ...};
 
 #define SOUND_RIOTSHIELD_ACTIVATION "weapons/air_burster_explode1.wav"
 

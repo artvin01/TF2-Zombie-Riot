@@ -132,7 +132,10 @@ static void ClotShowInteractHud(ObjectFactory npc, int client)
 {
 	if(GlobalCooldown > GetGameTime())
 	{
-		PrintCenterText(client, "%t", "Object Cooldown", GlobalCooldown - GetGameTime());
+		if(GlobalCooldown - GetGameTime() >= 999999.9)
+			PrintCenterText(client, "%t","Object Cooldown NextWave");
+		else
+			PrintCenterText(client, "%t","Object Cooldown",GlobalCooldown - GetGameTime());
 	}
 	else
 	{

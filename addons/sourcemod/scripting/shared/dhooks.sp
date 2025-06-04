@@ -56,7 +56,6 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
 
 void DHook_Setup()
 {
-//	return;
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	if (!gamedata) 
@@ -79,9 +78,8 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFGameRules::IsQuickBuildTime", DHookCallback_CTFGameRules_IsQuickBuildTime_Pre);
 #endif
 
-#if !defined RTS
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-#endif
+
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
@@ -95,8 +93,6 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBaseBoss::ResolvePlayerCollision", DHook_ResolvePlayerCollisionPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
-//	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);
-// Dhooking it like this is broken.
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -201,27 +197,7 @@ void DHook_Setup()
 	
 	delete gamedata_lag_comp;
 }
-/*
-public MRESReturn DhookStrikeTargetArrow_Pre(int pThis, Handle hReturn, Handle hParams)
-{
-	PrintToChatAll("DhookStrikeTargetArrow_Pre");
-	int projtype = GetEntProp(pThis, Prop_Send, "m_iProjectileType");
-	PrintToChatAll("DhookStrikeTargetArrow_Pre projtype %i",projtype);
-	
-	if(projtype != 8)
-		return MRES_Ignored;
 
-	PrintToChatAll("DhookStrikeTargetArrow_Pre2");
-	int other = DHookGetParam(hParams, 2);
-
-	if(!b_ThisWasAnNpc[other])
-		return MRES_Ignored;
-	PrintToChatAll("DhookStrikeTargetArrow_Pre3");
-
-	DHookSetReturn(hReturn, true);
-	return MRES_Override;
-}
-*/
 int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
@@ -996,13 +972,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
-#if !defined RTS
 		if(b_ProjectileCollideIgnoreWorld[entity1])
 		{
-			Wand_Base_StartTouch(entity1, entity2);
+		//	Wand_Base_StartTouch(entity1, entity2);
 			return false;
 		}
-#endif
 
 #if defined ZR
 	
@@ -1034,15 +1008,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-#if !defined RTS
 			if(i_IsABuilding[entity2] && RaidbossIgnoreBuildingsLogic(2))
 			{
 				return false;
 			}
-#endif
 		}
-
-#if !defined RTS
 		else if(b_IsAProjectile[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
 #if defined ZR
@@ -1051,10 +1021,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
 #endif
 			{
+#if defined ZR
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-					if(i_WandIdNumber[entity1] != 0)
+					if(func_WandOnTouchReturn(entity1))
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
@@ -1076,6 +1047,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 						}						
 					}
 				}
+#endif
 				return false;
 			}
 			if(b_IsATrigger[entity2])
@@ -1134,13 +1106,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-#endif	// Non-RTS
-//enemy NPC
-#if defined RTS
-		if(!b_NpcHasDied[entity1])
-#else	
 		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
-#endif
 		{
 			//ignore buildings, neccecary during some situations
 			if(i_IsABuilding[entity2])
@@ -1162,11 +1128,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 				}
 			}
-#if defined RTS
-			else if(!b_NpcHasDied[entity2])
-#else
 			else if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
-#endif
 			{
 				return false;
 			}
@@ -1195,7 +1157,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			
 		}
 //allied NPC
-#if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
 			
@@ -1216,7 +1177,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 			
 		}
-#endif
 		else if(i_IsVehicle[entity1])
 		{
 			if(!i_IsVehicle[entity2])
@@ -1473,21 +1433,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	return MRES_Supercede;
 }
 
-/*
-void Dhook_BotFastNow(int bot)
-{
-	if(HookCreateFakeClientStuff)
-	{
-		int RawHookGive = DHookRaw(HookCreateFakeClientStuff, true, view_as<Address>(baseNPC.GetBody()));
-	}
-}
-public MRESReturn Create_FakeClientExPre(Address pThis, Handle hReturn, Handle hParams)			  
-{ 
-	//this sets the fakebot to true.
-	DHookSetParam(hParams, 2, true);
-	return MRES_Supercede; 
-}
-*/
 void DHook_HookClient(int client)
 {
 
@@ -1511,17 +1456,6 @@ void DHook_UnhookClient(int client)
 		DynamicHook.RemoveHook(ForceRespawnHook[client]);
 	
 }
-/*
-void DHook_ClientDisconnect()
-{
-	Disconnecting = true;
-}
-
-void DHook_ClientDisconnectPost()
-{
-	Disconnecting = false;
-}
-*/
 
 #if defined ZR
 void DHook_RespawnPlayer(int client)
@@ -1842,69 +1776,47 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	
 	
 	int target = DHookGetParam(hParams, 1);
+
+	float HealAmmount = 20.0;
+
+	HealAmmount *= Attributes_GetOnWeapon(owner, originalLauncher, 8, true);
 	
-	int ammo_amount_left = GetAmmo(owner, 21);
-	if(ammo_amount_left > 0)
+
+	
+	float GameTime = GetGameTime();
+	if(f_TimeUntillNormalHeal[target] > GameTime)
 	{
-		float HealAmmount = 20.0;
-
-		HealAmmount *= Attributes_GetOnWeapon(owner, originalLauncher, 8, true);
+		HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
+	}
+	
+	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
+	int flMaxHealth = SDKCall_GetMaxHealth(target);
+	
+	int Health_To_Max;
+	
+	Health_To_Max = flMaxHealth - flHealth;
+	
+	if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
+	{
+		ClientCommand(owner, "playgamesound items/medshotno1.wav");
+		SetGlobalTransTarget(owner);
+		PrintHintText(owner,"%N %t", target, "Is already at full hp");
 		
-
+		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
+		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
+	}
+	else
+	{
+		int HealedFor = HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
 		
-		float GameTime = GetGameTime();
-		if(f_TimeUntillNormalHeal[target] > GameTime)
-		{
-			HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
-		}
+		ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
+		ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+		SetGlobalTransTarget(owner);
 		
-		if(ammo_amount_left > RoundToCeil(HealAmmount))
-		{
-			ammo_amount_left = RoundToCeil(HealAmmount);
-		}
-		
-		int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
-		int flMaxHealth = SDKCall_GetMaxHealth(target);
-		
-		int Health_To_Max;
-		
-		Health_To_Max = flMaxHealth - flHealth;
-		
-		if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
-		{
-			ClientCommand(owner, "playgamesound items/medshotno1.wav");
-			SetGlobalTransTarget(owner);
-			PrintHintText(owner,"%N %t", target, "Is already at full hp");
+		PrintHintText(owner,"%t", "You healed for", target, HealedFor);
 			
-			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
-			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
-		}
-		else
-		{
-			if(Health_To_Max < RoundToCeil(HealAmmount))
-			{
-				ammo_amount_left = Health_To_Max;
-			}
-
-			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
-			
-			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
-			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-			SetGlobalTransTarget(owner);
-			
-			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
-			if(ammo_amount_left > 0)
-				ReduceMediFluidCost(owner, ammo_amount_left);
-				
-			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
-			SetAmmo(owner, 21, new_ammo);
-			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
-			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
-			for(int i; i<Ammo_MAX; i++)
-			{
-				CurrentAmmo[owner][i] = GetAmmo(owner, i);
-			}
-		}
+		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
+		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 	}
 
 	

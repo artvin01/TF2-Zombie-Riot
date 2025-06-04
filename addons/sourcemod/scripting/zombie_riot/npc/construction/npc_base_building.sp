@@ -120,12 +120,7 @@ void BaseBuilding_NPCDeath(int entity)
 	BarrackBody_NPCDeath(npc.index);
 	if(Waves_Started())
 	{
-		int endround = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(endround, "force_map_reset", "1");
-		SetEntProp(endround, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(endround);
-		AcceptEntityInput(endround, "RoundWin");
-		Music_RoundEnd(endround);
+		ForcePlayerLoss();
 
 		CreateTimer(1.0, Timer_EverythingExplodes, _, TIMER_FLAG_NO_MAPCHANGE);
 	}

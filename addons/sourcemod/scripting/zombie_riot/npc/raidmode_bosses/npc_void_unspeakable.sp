@@ -1215,7 +1215,8 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 			}
 
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[MAXENTITIES];
+			int enemy[10];
+			//It should target upto 10 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.index, (700.0 * 700.0));
 			ResetTEStatusSilvester();
 			SetSilvesterPillarColour({125, 0, 125, 200});

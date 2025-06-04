@@ -186,7 +186,8 @@ public void KazimierzLongArcher_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	bool camo = true;
-	Building_CamoOrRegrowBlocker(npc.index, camo);
+	if(HasSpecificBuff(npc.index, "Revealed"))
+		camo = false;
 
 	if(npc.m_bCamo)
 	{
