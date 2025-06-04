@@ -962,7 +962,7 @@
 	}
 	"Armor Curing Desc"
 	{
-		"en"	"Slowly regenerates your armor by 1％ every second\n{yellow}If recently hurt, its only 0.25％"
+		"en"	"Slowly regenerates your armor by 1％ every second upto half of your armor\n{yellow}If recently hurt, its only 0.25％"
 	}
 	"Nethersea Antidote"
 	{

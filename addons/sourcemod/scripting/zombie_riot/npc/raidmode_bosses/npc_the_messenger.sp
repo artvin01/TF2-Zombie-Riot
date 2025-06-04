@@ -1289,7 +1289,8 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 void MessengerInitiateGroupAttack(TheMessenger npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy[MAXENTITIES];
+	int enemy[20];
+	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	if(!IsValidEntity(npc.m_iWearable2))
 	{
 		float flPos[3];

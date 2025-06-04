@@ -3469,6 +3469,10 @@
 		"fr"	"Vous permet de voir l'armure de vos alliés."
 		"chi"	"看队友的护甲！"
 	}
+	"Building Health Forcer Desc"
+	{
+		"en"	"This makes you always see building HP, No matter what weapon you have."
+	}
 	"Siccerino Pap 2"
 	{
 		"en"	"Your attacks will debuff the enemy so you deal 5％ more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
@@ -3536,9 +3540,7 @@
 	}
 	"The Tinker Desc"
 	{
-		"en"	"A blacksmith builder, already including building upgrades and gear.\nProvides a custom building which allows players to tinker weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes.\nGenerates metal and able to tank more damage."
-		"fr"	"Bonne résistance et regénére du métal.\nPeut construire une enclume qui permet aux coéquiper de modifier leurs armes.\nLes modifications donne des attributs aléatoires.\nVient avec des améliorations pour Constructeur."
-		"chi"	"匠工建筑师，自带建筑升级和装备。\n多一个建筑：匠工台。\n会对武器附加随机属性。\n自动回复金属，更肉。"
+		"en"	"A Blacksmith builder, can only make an anvil as a unique building.\nAnvil can upgrade weapons.\nPrimary: Heals buildings, hurts enemeis, infinite range building pickup.\nSecondary: Generates metal."
 	}
 	"Tinker Wrench Desc"
 	{
@@ -3665,7 +3667,7 @@
 	}
 	"The Merchant Desc"
 	{
-		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand."
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand.\nYour secondary gets an ability selection upon its first pap."
 	}
 	"Merchant Pap -1 Desc"
 	{

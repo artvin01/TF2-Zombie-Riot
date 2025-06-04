@@ -601,6 +601,7 @@ bool b_IsInUpdateGroundConstraintLogic;
 bool b_IgnorePlayerCollisionNPC[MAXENTITIES];
 bool b_ProjectileCollideWithPlayerOnly[MAXENTITIES];
 bool b_IgnoreAllCollisionNPC[MAXENTITIES];		//for npc's that noclip
+int iref_PropAppliedToRocket[MAXENTITIES];
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
@@ -623,6 +624,8 @@ bool b_EntityIsWandProjectile[MAXENTITIES];
 bool b_EntityIgnoredByShield[MAXENTITIES];
 int i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
+bool b_CanSeeBuildingValues[MAXENTITIES]; 
+bool b_CanSeeBuildingValues_Force[MAXTF2PLAYERS+1];
 bool i_IsSupportWeapon[MAXENTITIES]; 
 bool i_IsKitWeapon[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 

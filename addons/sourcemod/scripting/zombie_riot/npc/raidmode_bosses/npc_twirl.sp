@@ -1365,7 +1365,8 @@ static float Target_Angle_Value(Twirl npc, int Target)
 static int i_Get_Laser_Target(Twirl npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXTF2PLAYERS];
+	int enemy_2[20];
+	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
 	//only bother getting targets infront of twirl that are players. + wall check obv
 	int Tmp_Target = -1;
@@ -1700,7 +1701,8 @@ static void lunar_Radiance_Tick(int iNPC)
 	i_lunar_ammo[npc.index] +=1;
 
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXENTITIES];
+	int enemy_2[20];
+	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
 	int i_te_used = 0;
 	for(int i; i < sizeof(enemy_2); i++)

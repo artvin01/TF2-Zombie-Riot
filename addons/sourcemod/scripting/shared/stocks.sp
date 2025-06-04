@@ -2848,7 +2848,8 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1;
 	}
-	else if(i_IsABuilding[other_entity])
+	//Re-use b_AllowCollideWithSelfTeam here
+	else if(!b_AllowCollideWithSelfTeam[owner_projectile] && i_IsABuilding[other_entity])
 	{
 		return -1;
 	}

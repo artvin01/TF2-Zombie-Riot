@@ -2371,7 +2371,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-	public void FaceTowards(float vecGoal[3], float turnrate = 250.0)
+	public void FaceTowards(float vecGoal[3], float turnrate = 250.0, bool TurnOnWalk = false)
 	{
 		//Sad!
 		//Dont use face towards, why?
@@ -2409,7 +2409,13 @@ methodmap CClotBody < CBaseCombatCharacter
 				angles.y += angleDiff;
 			}
 		*/
-		float deltaT = GetTickInterval();
+		float deltaT = 0.015;
+		//I am dumb, we accidentally made it scale with tickrate....
+		//facepalm.
+		if(TurnOnWalk)
+		{
+			deltaT = GetTickInterval();
+		}
 
 		float angles[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", angles);
@@ -4218,7 +4224,7 @@ public int Action_CommandApproach(NextBotAction action, int actor, const float p
 		float pos2[3];
 		pos2 = pos;
 		if(!npc.m_bAllowBackWalking)
-			npc.FaceTowards(pos2, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
+			npc.FaceTowards(pos2, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]), true);
 	}
 	else
 	{

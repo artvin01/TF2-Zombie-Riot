@@ -2331,6 +2331,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
+		b_CanSeeBuildingValues[entity] = false;
 		i_IsSupportWeapon[entity] = false;
 		LastHitRef[entity] = -1;
 		f_MultiDamageTaken[entity] = 1.0;
