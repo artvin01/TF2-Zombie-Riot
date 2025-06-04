@@ -279,7 +279,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "force60");
 			
 			enemy.ExtraDamage *= 0.85;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.265); 
 		}
 		case 18:
 		{
