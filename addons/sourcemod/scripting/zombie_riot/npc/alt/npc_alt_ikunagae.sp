@@ -1105,7 +1105,7 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 		if(npc.m_iMaxSpawnsDo == 3)
 		{
 			//half said spawns.
-			npc.g_TimesSummoned++;
+			npc.g_TimesSummoned += 99; //only ever spawn one!
 		}
 		maxhealth /= hp_multi;
 		for(int i; i<1; i++)
