@@ -1776,7 +1776,8 @@ bool SensalMassLaserAttack(Sensal npc)
 	if(npc.m_flAttackHappens_2)
 	{
 		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy_2[MAXENTITIES];
+		int enemy_2[20]; 
+		//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 		bool ClientTargeted[MAXENTITIES];
 		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
 		for(int i; i < sizeof(enemy_2); i++)

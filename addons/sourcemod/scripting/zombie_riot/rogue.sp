@@ -775,10 +775,10 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 	{
 		SPrintToChatAll("Resetting found Weapons.....");
 		//prevents when restarting, finding 2 instantly...
-		Store_RandomizeNPCStore(1);
+		Store_RandomizeNPCStore(ZR_STORE_RESET);
 		//reveal 15
-		Store_RandomizeNPCStore(0, 10);
-		Store_RandomizeNPCStore(0, 5);
+		Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, 10);
+		Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, 5);
 	}
 }
 
@@ -997,7 +997,9 @@ void Rogue_BattleVictory()
 				Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
 
 				if(recover)
-					Store_RandomizeNPCStore(0, recover);
+				{
+					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, recover);
+				}
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
 				{

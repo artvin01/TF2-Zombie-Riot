@@ -802,7 +802,7 @@ static void Smith_Infection(AgentSmith npc)
 				}
 				case 13, 14:
 				{
-					fl_Infection_Meter[victim] += 0.204;
+					fl_Infection_Meter[victim] += 0.20;
 				}
 			}
 			PrintCenterText(victim, "Your Infection is rising - %.0f％ | Cure %.0f％", (fl_Infection_Meter[victim] * 10.0), (fl_Cure_Meter[victim] * 10.0));

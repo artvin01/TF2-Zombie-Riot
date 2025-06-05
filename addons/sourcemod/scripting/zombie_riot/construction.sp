@@ -983,7 +983,7 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 	if(goalArea == NULL_AREA)
 	{
 		CurrentSpawnName[0] = 0;
-		PrintToChatAll("ERROR: Could not find valid nav area for location (%f %f %f)", pos1[0], pos1[1], pos1[2]);
+		PrintToServer("ERROR: Could not find valid nav area for location (%f %f %f)", pos1[0], pos1[1], pos1[2]);
 		return false;
 	}
 

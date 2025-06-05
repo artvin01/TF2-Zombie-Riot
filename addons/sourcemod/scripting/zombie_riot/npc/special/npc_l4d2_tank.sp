@@ -474,12 +474,15 @@ public void L4D2_Tank_ClotThink(int iNPC)
 							TR_GetEndPosition(vecHit, swingTrace);
 							if(target > 0) 
 							{
-								float damage = 60.0;
+								float damage = 70.0;
 								
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
+								damage *= npc.m_flWaveScale;
+
+								if(ShouldNpcDealBonusDamage(target))
+								{
+									damage *= 15.0;
+								}
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								
 								
 								EntityKilled_HitDetectionCooldown(target, TankThrowLogic);
@@ -616,7 +619,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						fl_ThrowPlayerImmenent[npc.index] = GetGameTime(npc.index) + 1.0;
 						b_ThrowPlayerImmenent[npc.index] = true;
 						npc.m_flStandStill = GetGameTime(npc.index) + 1.5;
-						ApplyStatusEffect(npc.index, npc.index, "UBERCHARGED", 1.5);
+						ApplyStatusEffect(npc.index, ally, "Unstoppable Force", 1.5);
 						i_IWantToThrowHim[npc.index] = -1;
 					}
 				}

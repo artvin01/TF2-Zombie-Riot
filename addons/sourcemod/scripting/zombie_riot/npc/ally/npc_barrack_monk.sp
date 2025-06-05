@@ -70,7 +70,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 				spawnRing_Vectors(vecTarget, MONK_MAXRANGE_ALLY * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 255, 1, 3.0, 5.0, 3.1, 1, _);		
 				
 				DataPack pack;
-				CreateDataTimer(0.1, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+				CreateDataTimer(0.25, MonkHealDamageZone, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 				pack.WriteFloat(GameTime + 3.0);
 				pack.WriteFloat(vecTarget[0]);
 				pack.WriteFloat(vecTarget[1]);

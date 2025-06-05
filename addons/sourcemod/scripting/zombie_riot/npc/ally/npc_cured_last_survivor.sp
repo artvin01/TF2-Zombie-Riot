@@ -1504,7 +1504,6 @@ public void OnBuy_BuffGreg(int client)
 	}
 	
 	CancelClientMenu(client, true);
-	Store_RandomizeNPCStore(2);
 }
 
 

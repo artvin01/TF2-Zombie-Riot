@@ -235,7 +235,8 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 	}
 
 	bool camo = SeaFounder_TouchingNethersea(npc.index);
-	Building_CamoOrRegrowBlocker(npc.index, camo);
+	if(HasSpecificBuff(npc.index, "Revealed"))
+		camo = false;
 
 	if(npc.m_bCamo)
 	{

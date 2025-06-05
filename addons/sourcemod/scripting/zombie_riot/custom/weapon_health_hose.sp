@@ -20,7 +20,6 @@ static float Hose_NextHealSound[MAXTF2PLAYERS + 1] = { 0.0, ... };
 static bool Hose_Charged[MAXTF2PLAYERS + 1] = { false, ... };
 static bool Hose_ShotgunCharge[MAXTF2PLAYERS + 1] = { false, ... };
 
-#define SOUND_HOSE_HEALED		"weapons/rescue_ranger_charge_01.wav"
 #define SOUND_HOSE_UBER_END		"player/invuln_off_vaccinator.wav"
 #define SOUND_HOSE_UBER_ACTIVATE	"player/invuln_on_vaccinator.wav"
 #define SOUND_HOSE_UBER_READY		"weapons/vaccinator_charge_tier_04.wav"
@@ -280,7 +279,11 @@ public bool Hose_Heal(int owner, int entity, float amt)
 		amt *= 1.65;
 	}
 		
-	HealEntityGlobal(owner, entity, amt, 1.0, 0.0);	
+	int HealedFor = HealEntityGlobal(owner, entity, amt, 1.0, 0.0);	
+
+	if(HealedFor <= 0)
+		return false;
+	//fail, did not heal, do nothing. dont allow self heal either.
 
 	if(flHealth <= flMaxHealth * 0.5)
 	{

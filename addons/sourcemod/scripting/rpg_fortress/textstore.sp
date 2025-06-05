@@ -151,6 +151,7 @@ enum struct StoreEnum
 			{
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
 				DispatchKeyValue(entity, "model", this.Model);
+				PrintToServer("RPG DEBUG! Model tried to set: %s",this.Model);
 				
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
 				
@@ -1810,6 +1811,8 @@ static void DropItem(int client, int index, float pos[3], int totalAmount)
 				DispatchSpawn(entity);
 			//	SetEntityCollisionGroup(entity, 2);
 			//	b_Is_Player_Projectile[entity] = true;
+				SDKHook(entity, SDKHook_OnTakeDamage, RPG_HookDroppedItemDamageTaken);
+				//make sure items cannot die.
 
 				int color[4] = {255, 255, 255, 255};
 				if(index != -1)
@@ -1871,6 +1874,12 @@ static void DropItem(int client, int index, float pos[3], int totalAmount)
 			}
 		}
 	}
+}
+
+public Action RPG_HookDroppedItemDamageTaken(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	damage = 0.0;
+	return Plugin_Handled;
 }
 
 bool Textstore_CanSeeItem(int entity, int client)
@@ -2088,7 +2097,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 					if(amount == ItemCount[entity])
 					{
 						int text = EntRefToEntIndex(i_TextEntity[entity][0]);
-						if(text != INVALID_ENT_REFERENCE)
+						if(IsValidEntity(text))
 							RemoveEntity(text);
 						
 						i_TextEntity[entity][0] = INVALID_ENT_REFERENCE;

@@ -15,6 +15,7 @@ void ResetMapStartWest()
 }
 void West_Map_Precache()
 {
+	PrecacheSound("items/powerup_pickup_haste.wav");
 	PrecacheSound(SOUND_REVOLVER_FANG);
 	PrecacheSound(SOUND_REVOLVER_NOON);
 }
@@ -226,5 +227,63 @@ void REVOLER_AIM(int client)
 	{
 		TF2_RemoveCondition(client, TFCond_HalloweenCritCandy);
 		f_West_Aim_Duration[client] = 0.0;
+	}
+}
+
+
+public void TriggerFinger_UspAbility(int client, int weapon, bool crit, int slot, int victim)
+{
+	if(IsValidEntity(client))
+	{
+		if(Ability_Check_Cooldown(client, slot) > 0.0)
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+	
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+		
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			return;
+		}
+		
+		Rogue_OnAbilityUse(client, weapon);
+		Ability_Apply_Cooldown(client, slot, 35.0);
+		ApplyTempAttrib(weapon, 6, 0.5, 3.0);
+		ApplyTempAttrib(weapon, 97, 0.5, 3.0);
+		MakePlayerGiveResponseVoice(client, 1);
+		EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
+		ApplyStatusEffect(client, client, "Trigger Finger", 3.0);
+		ApplyStatusEffect(client, client, "Trigger Finger Hidden", 3.0);
+	}
+}
+public void TriggerFinger_UspAbility2(int client, int weapon, bool crit, int slot, int victim)
+{
+	if(IsValidEntity(client))
+	{
+		if(Ability_Check_Cooldown(client, slot) > 0.0)
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+	
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+		
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			return;
+		}
+		
+		Rogue_OnAbilityUse(client, weapon);
+		Ability_Apply_Cooldown(client, slot, 35.0);
+		ApplyTempAttrib(weapon, 6, 0.5, 4.0);
+		ApplyTempAttrib(weapon, 97, 0.5, 4.0);
+		MakePlayerGiveResponseVoice(client, 1);
+		EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
+		ApplyStatusEffect(client, client, "Trigger Finger", 4.0);
+		ApplyStatusEffect(client, client, "Trigger Finger Hidden", 4.0);
 	}
 }

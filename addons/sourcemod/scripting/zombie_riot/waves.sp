@@ -1610,8 +1610,9 @@ public Action Waves_EndVote(Handle timer, float time)
 					float multi = float(vote.Level) / 1000.0;
 
 					int level = WaveLevel;
-					if(level < 10)
-						level = 10;
+					if(level < 20) 
+						level = 20;
+					//assume 20 is the minimum.
 					
 					WaveLevel += RoundFloat(level * multi);
 
@@ -2439,18 +2440,20 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
-				Store_RandomizeNPCStore(0, _, true);
+				Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
 				if(refreshNPCStore)
-					Store_RandomizeNPCStore(0);
+					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
+
 				
 				NPC_SpawnNext(panzer_spawn, panzer_sound);
 				return;
 			}
 
-			if(refreshNPCStore)
-				Store_RandomizeNPCStore(0);
+			Store_RandomizeNPCStore(ZR_STORE_WAVEPASSED);
 			
-			Store_RandomizeNPCStore(0, _, true);
+			if(refreshNPCStore)
+				Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
+			
 		}
 	}
 	else if(subgame)
@@ -3030,7 +3033,7 @@ void DoGlobalMultiScaling()
 	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
-	float cap = zr_enemymulticap.FloatValue;
+	float cap = zr_maxscaling_untillhp.FloatValue;
 
 	if(multi > cap)
 	{

@@ -193,9 +193,7 @@ public void SeabornSoldier_ClotThink(int iNPC)
 						{
 							int health = ReturnEntityMaxHealth(npc.index);
 
-							bool regrow = true;
-							Building_CamoOrRegrowBlocker(npc.index, _, regrow);
-							if(regrow)
+							if(!HasSpecificBuff(npc.index, "Growth Blocker"))
 								SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 							
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

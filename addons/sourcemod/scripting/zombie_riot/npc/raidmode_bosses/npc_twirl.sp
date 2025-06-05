@@ -1366,6 +1366,7 @@ static int i_Get_Laser_Target(Twirl npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy_2[MAXTF2PLAYERS];
+	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
 	//only bother getting targets infront of twirl that are players. + wall check obv
 	int Tmp_Target = -1;
@@ -1700,7 +1701,8 @@ static void lunar_Radiance_Tick(int iNPC)
 	i_lunar_ammo[npc.index] +=1;
 
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXENTITIES];
+	int enemy_2[20];
+	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
 	int i_te_used = 0;
 	for(int i; i < sizeof(enemy_2); i++)
@@ -1858,20 +1860,21 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			
 		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 
-		float 	projectile_speed = (npc.Anger ? 1800.0 : 900.0),
-				target_vec[3];
-
-		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
+		float target_vec[3];
+		WorldSpaceCenter(PrimaryThreatIndex, target_vec);
 
 		float Dmg = 21.0;
-		float Radius = (npc.Anger ? 150.0 : 100.0);
 		char Particle[50];
 		if(npc.m_iState % 2)
 			Particle = "raygun_projectile_blue";
 		else
 			Particle = "raygun_projectile_red";
 
-		npc.FireParticleRocket(target_vec, Modify_Damage(-1, Dmg) , projectile_speed , Radius , Particle, _, _, true, flPos);
+		float start_speed = 50.0;
+		int projectile = npc.FireParticleRocket(target_vec, Modify_Damage(-1, Dmg) , start_speed , 0.0 , Particle, false, _, true, flPos);
+
+		if(IsValidEntity(projectile))
+			Initiate_Projectile_ParticleAccelerator(npc, projectile, PrimaryThreatIndex);
 	}
 	else
 	{
@@ -1958,6 +1961,77 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			}
 		}
 	}
+}
+//makes a projectile accelerate from slow speeds to really high speeds in 1 second.
+static float fl_projectile_acceleration_time = 0.75;
+static void Initiate_Projectile_ParticleAccelerator(Twirl npc, int projectile, int PrimaryThreatIndex)
+{
+	float GameTime = GetGameTime();
+	fl_BEAM_ChargeUpTime[projectile] = GameTime + fl_projectile_acceleration_time;
+
+	fl_BEAM_DurationTime[projectile] = float(npc.m_iState);
+
+	float 	Homing_Power = 3.0,
+			Homing_Lockon = 80.0;
+
+	float angles[3];
+	GetEntPropVector(projectile, Prop_Data, "m_angRotation", angles);
+
+	Initiate_HomingProjectile(projectile,
+	npc.index,
+	Homing_Lockon,			// float lockonAngleMax,
+	Homing_Power,			// float homingaSec,
+	true,				// bool LockOnlyOnce,
+	true,					// bool changeAngles,
+	angles,
+	PrimaryThreatIndex
+	);
+
+	SDKHook(projectile, SDKHook_Think, Projectile_ParticleCannonThink);
+	SDKHook(projectile, SDKHook_ThinkPost, ProjectileBaseThinkPost);
+
+}
+static Action Projectile_ParticleCannonThink(int entity)
+{
+	float GameTime = GetGameTime();
+	float speed = 375.0;	//this is a magical number that reults in 3k speed in at the end of the formula.
+	//projectile acceleration is complete, kill the think hook
+	if(fl_BEAM_ChargeUpTime[entity] < GameTime)
+	{
+		ReplaceProjectileParticle(entity, fl_BEAM_DurationTime[entity] % 2 ? "drg_manmelter_trail_blue" : "drg_manmelter_trail_red");
+		HomingProjectile_SetProjectileSpeed(entity, 3000.0);
+		//CPrintToChatAll("killed proj hook");
+		SDKUnhook(entity, SDKHook_Think, Projectile_ParticleCannonThink);
+		HomingProjectile_Deactivate(entity);	//also kill homing
+		return Plugin_Stop;
+	}
+	float Ratio = 1.0 - (fl_BEAM_ChargeUpTime[entity] - GameTime) / fl_projectile_acceleration_time;
+	float Original = Ratio;
+
+	//make it start out slower
+	Ratio *= 0.25;
+	if(Original > 0.75)
+		Ratio *= 4.0;//then omega buff it
+	
+	float CalcRatio = (1.0+Ratio);	//when the math isn't math-ing, same issue I had with stella, UGH
+	float projectile_speed = speed * (CalcRatio*CalcRatio*CalcRatio);
+
+	//CPrintToChatAll("speed: %.1f",projectile_speed);
+
+	HomingProjectile_SetProjectileSpeed(entity, projectile_speed);
+	return Plugin_Continue;
+}
+static void ReplaceProjectileParticle(int projectile, const char[] particle_string)
+{
+	int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+	if(IsValidEntity(particle))
+		RemoveEntity(particle);
+
+	float ProjLoc[3];
+	WorldSpaceCenter(projectile, ProjLoc);
+	particle = ParticleEffectAt(ProjLoc, particle_string, 0.0); //Inf duartion
+	i_rocket_particle[projectile]= EntIndexToEntRef(particle);
+	SetParent(projectile, particle);	
 }
 
 static float Modify_Damage(int Target, float damage)
@@ -2598,11 +2672,10 @@ static bool Retreat(Twirl npc, bool custom = false)
 	float Radius = 320.0;	//if too many people are next to her, she just teleports in a direction to escape.
 	
 
-	if((npc.m_flNextTeleport > GameTime || npc.m_flTempIncreaseCDTeleport > GameTime) && !custom)	//internal teleportation device is still recharging...
+	if((npc.m_flNextTeleport > GameTime || npc.m_flTempIncreaseCDTeleport > GameTime))	//internal teleportation device is still recharging...
 		return false;
 
-	if(!custom)
-		npc.m_flTempIncreaseCDTeleport = GameTime + 1.0;
+	npc.m_flTempIncreaseCDTeleport = GameTime + 1.0;
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	
@@ -2654,8 +2727,8 @@ static bool Retreat(Twirl npc, bool custom = false)
 	if(!success)
 		return false;
 	
-	if(!custom)
-		npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
+	//if(!custom)
+	npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
 	
 	//YAY IT WORKED!!!!!!!
 
@@ -2690,6 +2763,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 		end_offset[2] += 12.5;
 	}
 
+	//for custom teleport, don't do the AOE ion strikes when she teleports normally
 	if(custom)
 		return true;
 
@@ -2981,8 +3055,8 @@ static bool Magia_Overflow(Twirl npc)
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return false;
 
-	if(!Retreat(npc, true))
-		return false;
+	npc.m_flTempIncreaseCDTeleport = 0.0;	//so it doesn't block this specific teleport
+	Retreat(npc, true);
 
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure she WILL get the shield.
 	//give the shield to itself.
@@ -3126,7 +3200,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		float Ratio = (1.0 - (Duration / TWIRL_MAGIA_OVERFLOW_DURATION));
 		if(Ratio<0.1)
 			Ratio=0.1;
-		float Dps = Modify_Damage(-1, 5.25)*Ratio;
+		float Dps = Modify_Damage(-1, 20.0)*Ratio;
 		Laser.Damage = Dps;
 		Laser.Radius = Radius;
 		Laser.Bonus_Damage = Dps*6.0;

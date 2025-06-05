@@ -21,13 +21,6 @@ stock Function func_WandOnTouchReturn(int entity)
 }
 #endif
 
-int iref_PropAppliedToRocket[MAXENTITIES];
-//todo:
-//Redo entirely, these projectiles are invis once
-// spawning for some god knows what reason that pisses me the fuck off.
-//somehow make another projectile.
-//for now, we set another model and parent this beacuse fuck this shit.
-
 void WandProjectile_GamedataInit()
 {
 	CEntityFactory EntityFactory = new CEntityFactory("zr_projectile_base", OnCreate_Proj, OnDestroy_Proj);

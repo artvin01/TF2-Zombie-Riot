@@ -527,17 +527,6 @@ public Action SetTransmit_BuildingReady(int entity, int client)
 	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, false);
 	return b_TransmitBiasDo[entity][client];
 }
-public Action SetTransmit_BuildingReadyTestThirdPersonIgnore(int entity, int client)
-{
-	if(f_TransmitDelayCheck[entity][client] > GetGameTime())
-	{
-		return b_TransmitBiasDo[entity][client];
-	}
-	f_TransmitDelayCheck[entity][client] = GetGameTime() + 0.25;
-
-	b_TransmitBiasDo[entity][client] = SetTransmit_BuildingShared(entity, client, false, true);
-	return b_TransmitBiasDo[entity][client];
-}
 
 static Action SetTransmit_BuildingShared(int entity, int client, bool reverse, bool Ignorethird = false)
 {
@@ -1236,6 +1225,7 @@ void BuildingUpdateTextHud(int building)
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable2 = TextEntity;	
+		SDKHook(TextEntity, SDKHook_SetTransmit, SetTransmit_TextBuildingDo);
 	}
 }
 
@@ -1298,4 +1288,18 @@ int FloatToInt_DamageValue_ObjBuilding(int victim, float damage)
 		}		
 	}
 	return Damage_Return;
+}
+
+
+public Action SetTransmit_TextBuildingDo(int entity, int client)
+{
+	if(b_CanSeeBuildingValues_Force[client])
+	{
+		//if the client forces it...
+		return Plugin_Continue;
+	}
+	if(b_CanSeeBuildingValues[client])
+		return Plugin_Continue;
+	else
+		return Plugin_Handled;
 }

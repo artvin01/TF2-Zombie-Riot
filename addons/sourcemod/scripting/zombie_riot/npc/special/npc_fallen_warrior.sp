@@ -356,6 +356,10 @@ public void FallenWarrior_ClotThink(int iNPC)
 	FallenWarrior_ApplyDebuffInLocation(VecSelfNpcabs, GetTeam(npc.index));
 
 	float Range = GULN_DEBUFF_RANGE;
+	if(GetTeam(npc.index) == 2)
+	{
+		Range *= 0.5;
+	}
 	spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, /*duration*/ 0.11, 20.0, 5.0, 1);	
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -559,6 +563,10 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 
 	FallenWarrior_ApplyDebuffInLocation(VecSelfNpcabs, Team);
 	float Range = GULN_DEBUFF_RANGE;
+	if(Team == 2)
+	{
+		Range *= 0.5;
+	}
 	spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, /*duration*/ 0.11, 20.0, 5.0, 1);	
 
 	return Plugin_Continue;
@@ -647,12 +655,17 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 {
 	float targPos[3];
+	float Range = GULN_DEBUFF_RANGE;
+	if(Team == 2)
+	{
+		Range *= 0.5;
+	}
 	for(int ally=1; ally<=MaxClients; ally++)
 	{
 		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) != Team)
 		{
 			GetClientAbsOrigin(ally, targPos);
-			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
+			if (GetVectorDistance(BannerPos, targPos, true) <= (Range * Range))
 			{
 				ApplyStatusEffect(ally, ally, "Heavy Presence", 1.0);
 			}
@@ -664,7 +677,7 @@ void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != Team)
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
+			if (GetVectorDistance(BannerPos, targPos, true) <= (Range * Range))
 			{
 				ApplyStatusEffect(ally, ally, "Heavy Presence", 1.0);
 			}

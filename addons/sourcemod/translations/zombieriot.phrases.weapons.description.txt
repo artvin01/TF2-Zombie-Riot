@@ -3389,6 +3389,26 @@
 		"fr"	"Cadence de tir améliorée, dégats réduits. Arme se recharge en une fois.\nChaque deuxième tir utilise pas de munitions."
 		"chi"	"同时填装整个弹夹，超高射速，但是伤害更低。每第二发不消耗弹药。"
 	}
+	"USP Desc"
+	{
+		"en" 	"Basic pistol.\nDeals 20％ Extra headshot damage."
+	}
+	"USP PAP 1"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage."
+	}
+	"USP PAP 2"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage.\nWith your pistol you now revive allies 50％ Faster.\nM2 Activates Trigger finger!"
+	}
+	"USP PAP 3"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage."
+	}
+	"USP PAP 4"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage.\nYour weapon has less falloff.\nAbility Lasts Longer."
+	}
 	"Autoshotgun Pap 2"
 	{
 		"en"	"More dmg, more clip, more attackspeed."
@@ -3476,6 +3496,10 @@
 		"fr"	"Vous permet de voir l'armure de vos alliés."
 		"chi"	"看队友的护甲！"
 	}
+	"Building Health Forcer Desc"
+	{
+		"en"	"This makes you always see building HP, No matter what weapon you have."
+	}
 	"Siccerino Pap 2"
 	{
 		"en"	"Your attacks will debuff the enemy so you deal 5％ more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
@@ -3543,7 +3567,7 @@
 	}
 	"The Tinker Desc"
 	{
-		"en"	"A blacksmith builder capable of generating metal, already including building upgrades and gear.\nTINKER'S WORKSHOP: Building which allows players to tinker weapons.\nTinkering (or reusing) applies a random set of attributes to the weapon."
+		"en"	"A Blacksmith builder, can only make an anvil as a unique building.\nAnvil can upgrade weapons.\nPrimary: Heals buildings, hurts enemeis, infinite range building pickup.\nSecondary: Generates metal."
 		"es"	"Un constructor herrero capaz de generar metal, incluyendo ya mejoras y equipo de construccion.\nYUNQUE DEL CALDERERO: Permite reforjar el arma en tu mano.\nReforjar un arma aplicara un conjunto de atributos al azar."
 		"fr"	"Bonne résistance et regénére du métal.\nPeut construire une enclume qui permet aux coéquiper de modifier leurs armes.\nLes modifications donne des attributs aléatoires.\nVient avec des améliorations pour Constructeur."
 		"chi"	"匠工建筑师，自带建筑升级和装备。\n多一个建筑：匠工台。\n会对武器附加随机属性。\n自动回复金属，更肉。"
