@@ -567,7 +567,6 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 		Cooldown = 0.0;
 		delete Voting;
 	}
-
 	delete VotingMods;
 	
 	KeyValues kv = zr_ignoremapconfig.BoolValue ? null : map;
@@ -715,7 +714,7 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 			if(modifierOnly)
 			{
 				int choosenLevel = 0;
-				int choosen = -1;
+				int choosen = 0; //Standart.
 				int AverageLevel = Waves_AverageLevelGet(100);
 				int length = VotingMods.Length;
 				for(int i; i < length; i++)

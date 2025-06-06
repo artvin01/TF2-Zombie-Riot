@@ -53,9 +53,11 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 #endif
-#if defined ZR || defined RPG
+
+#if defined RPG
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
+
 //	mp_friendlyfire = ConVar_Add("mp_friendlyfire", "1.0");
 #if defined RPG
 	ConVar_Add("mp_friendlyfire", "1.0");

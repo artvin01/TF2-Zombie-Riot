@@ -902,6 +902,13 @@ public void OnPluginEnd()
 //	Waves_MapEnd(); DO NOT CALL THIS ON PLUGIN END, plugin ends anways, why change anything???
 	RemoveMVMLogicSafety();
 #endif
+	float WaitingForPlayersTime = FindConVar("mp_waitingforplayers_time").FloatValue;
+	if(WaitingForPlayersTime <= 0.0)
+		return;
+	//wait 1 frame.
+	//go go go!
+	GameRules_SetPropFloat("m_flRestartRoundTime", -1.0);
+	ServerCommand("mp_waitingforplayers_restart 1");
 }
 
 #if defined ZR
