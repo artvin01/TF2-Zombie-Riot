@@ -679,7 +679,7 @@ void SpotterAllyBuff(Spotter npc)
 		}
 	}
 
-	for (int client = 0; client < MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{

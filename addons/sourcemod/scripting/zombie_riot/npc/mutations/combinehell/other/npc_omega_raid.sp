@@ -1346,7 +1346,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 
 static void OmegaRaid_GrantItem()
 {
-	for (int client = 0; client < MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{

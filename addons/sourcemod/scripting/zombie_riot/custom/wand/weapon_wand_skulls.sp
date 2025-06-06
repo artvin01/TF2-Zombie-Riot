@@ -706,7 +706,7 @@ void GetAngleToPoint(int ent, float TargetLoc[3], float DummyAngles[3], const fl
 
 public int Skull_GetClosestTarget(int ent, float range)
 {
-	if (ent < MaxClients + 1 || ent > 2048)
+	if (ent <= MaxClients || ent > 2048)
 		return -1;
 		
 	int Closest = -1;
@@ -753,11 +753,11 @@ public int Skull_GetClosestTarget(int ent, float range)
 
 public void Skull_MoveToTargetPosition(int ent, int client)
 {
-	if (ent < MaxClients + 1 || ent > 2048)
-	return;
+	if (ent <= MaxClients || ent > 2048)
+		return;
 	
 	if (!IsValidEntity(ent))
-	return;
+		return;
 	
 	float DroneLoc[3], Velocity[3], Angles[3];
 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", DroneLoc);
@@ -800,8 +800,8 @@ public void Skull_MoveToTargetPosition(int ent, int client)
 
 public void Skull_ChangeSpeed(int ent, float mod, float maximum)
 {
-	if (ent < MaxClients + 1 || ent > 2048)
-	return;
+	if (ent <= MaxClients || ent > 2048)
+		return;
 	
 	if (!IsValidEntity(ent))
 	return;

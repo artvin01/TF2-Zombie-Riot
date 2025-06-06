@@ -2075,7 +2075,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Here, take this. It's going to be safe in your hands.");
 				i_TalkDelayCheck += 1;
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{

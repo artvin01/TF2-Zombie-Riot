@@ -2359,7 +2359,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 						else
 						{
-							for (int client = 0; client < MaxClients; client++)
+							for (int client = 1; client <= MaxClients; client++)
 							{
 								if(IsValidClient(client) && GetClientTeam(client) == 2)
 								{
@@ -2546,7 +2546,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 		}
 		case 1:
 		{
-			for (int client = 0; client < MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2)
 				{
@@ -2559,7 +2559,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 		}
 		case 2:
 		{
-			for (int client = 0; client < MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2)
 				{
@@ -2572,7 +2572,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 		}
 		case 3:
 		{
-			for (int client = 0; client < MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2)
 				{
@@ -3976,7 +3976,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			Citizen_SetupStart();
 			if(CurrentRound+1 == 200)
 			{
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{

@@ -3012,7 +3012,7 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 	{
 		CPrintToChatAll("{crimson}The Island falls down as Twirl escorts you, Lelouch was successfull in the end, but he paid with his life..");
 		CPrintToChatAll("{crimson}The Space to the Courtain has weakened... something terrible is comming...");
-		for(int i=0 ; i < MaxClients ; i++)
+		for(int i=1 ; i <= MaxClients ; i++)
 		{
 			if(IsValidClient(i) && Rogue_Mode())
 			{
@@ -3047,7 +3047,7 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
 	}
 		
-	for(int i=0 ; i < MaxClients ; i++)
+	for(int i=1 ; i <= MaxClients ; i++)
 	{
 		if(IsValidClient(i) && Rogue_Mode())
 		{
