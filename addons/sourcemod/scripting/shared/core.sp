@@ -905,10 +905,8 @@ public void OnPluginEnd()
 	float WaitingForPlayersTime = FindConVar("mp_waitingforplayers_time").FloatValue;
 	if(WaitingForPlayersTime <= 0.0)
 		return;
-	//wait 1 frame.
-	//go go go!
-	GameRules_SetPropFloat("m_flRestartRoundTime", -1.0);
-	ServerCommand("mp_waitingforplayers_restart 1");
+	//Fixes ZR breaking waiting for players.
+	GameRules_SetProp("m_bInWaitingForPlayers", false);
 }
 
 #if defined ZR
