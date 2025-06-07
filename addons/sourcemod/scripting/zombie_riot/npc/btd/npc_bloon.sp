@@ -452,7 +452,7 @@ methodmap Bloon < CClotBody
 	public int UpdateBloonOnDamage()
 	{
 		ObtainHealthDifference(this.index);
-		PrintToChatAll("this.m_flHealthDifference %f",this.m_flHealthDifference);
+		
 		int health = GetEntProp(this.index, Prop_Data, "m_iHealth");
 		for(int i; i<9; i++)
 		{
