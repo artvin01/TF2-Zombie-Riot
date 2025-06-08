@@ -685,7 +685,7 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 		}
 		
 		ClientCommand(client, "playgamesound items/suitchargeok1.wav");
-		if(target < MaxClients)
+		if(target <= MaxClients)
 			ClientCommand(target, "playgamesound items/gift_drop.wav");
 		
 		Ability_Apply_Cooldown(client, slot, cooldown);

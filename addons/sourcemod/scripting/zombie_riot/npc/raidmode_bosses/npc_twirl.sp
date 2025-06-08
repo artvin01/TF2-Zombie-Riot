@@ -1021,7 +1021,7 @@ static void ClotThink(int iNPC)
 					b_NpcUnableToDie[npc.index] = false;
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-					for (int client = 0; client < MaxClients; client++)
+					for (int client = 1; client <= MaxClients; client++)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
@@ -1474,7 +1474,7 @@ static void Final_Invocation(Twirl npc)
 	}
 	
 
-	for(int i=0 ; i < MaxClients ; i++)
+	for(int i=1 ; i <= MaxClients ; i++)
 	{
 		if(IsValidClient(i) && IsClientInGame(i) && IsPlayerAlive(i) && TeutonType[i] == TEUTON_NONE && dieingstate[i] == 0)
 		{
@@ -1918,7 +1918,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 							float Kb = (npc.Anger ? 900.0 : 450.0);
 
 							Custom_Knockback(npc.index, target, Kb, true);
-							if(target < MaxClients)
+							if(target <= MaxClients)
 							{
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);

@@ -762,7 +762,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetDefaultHudPosition(client);
-					ShowSyncHudText(client, SyncHud_Notifaction, "This doesn't seem to effect this weapon!");
+					ShowSyncHudText(client, SyncHud_Notifaction, "Weapon No Effect Tinker");
 					ApplyBuildingCollectCooldown(entity, client, 2.0);
 					return;
 				}
@@ -824,9 +824,8 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 		}
 	}
 
-	ClientCommand(client, "playgamesound items/medshotno1.wav");
-	SetDefaultHudPosition(client);
-	ShowSyncHudText(client, SyncHud_Notifaction, "%t", "The Blacksmith Failed!");
+	DestroyBuildingDo(entity);
+	SPrintToChat(client, "%t", "The Blacksmith Failed!");
 	ApplyBuildingCollectCooldown(entity, client, 3.0);
 }
 

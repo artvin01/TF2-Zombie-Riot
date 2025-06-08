@@ -658,7 +658,7 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 						float Kb = 450.0;
 
 						Custom_Knockback(npc.index, target, Kb, true);
-						if(target < MaxClients)
+						if(target <= MaxClients)
 						{
 							TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);

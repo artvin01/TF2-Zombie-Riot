@@ -366,7 +366,7 @@ public void CorruptedBarney_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
+		for (int client_repat = 1; client_repat <= MaxClients; client_repat++)
 		{
 			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client_repat] > 500)
 			{
@@ -375,7 +375,7 @@ public void CorruptedBarney_NPCDeath(int entity)
 			}
 		}
 	}
-	for (int client_repat = 0; client_repat < MaxClients; client_repat++)
+	for (int client_repat = 1; client_repat <= MaxClients; client_repat++)
 	{
 		i_AmountDowned[client_repat] = 0;
 	}

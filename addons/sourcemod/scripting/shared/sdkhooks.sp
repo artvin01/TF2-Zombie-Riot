@@ -2712,21 +2712,7 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 		if(!b_GaveMarkForDeath[client])
 		{
 			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 9999999.9);
-		//	StopSound(client, SNDCHAN_WEAPON, "weapons/samurai/tf_marked_for_death_indicator.wav");
 			b_GaveMarkForDeath[client] = true;
-			/*
-			int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
-			//this means i dont exist, spawn a new one!!
-			if(entity < MaxClients)
-			{
-				float flPos[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-				flPos[2] += 95.0;
-				i_DyingParticleIndication[client][2] = EntIndexToEntRef(SDKHooks_SpawnParticleDeath(flPos, "mark_for_death", client)); //ze healing station
-			}
-				edit: This SUCKS!!!!!!
-
-			*/
 		}
 	}
 	else
@@ -2735,14 +2721,6 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 		{
 			TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
 			b_GaveMarkForDeath[client] = false;
-			//delete me!
-			/*
-			int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-
-				edit: This SUCKS!!!!!!
-			*/
 		}
 	}
 }

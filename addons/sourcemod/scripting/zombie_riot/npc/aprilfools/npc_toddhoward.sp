@@ -785,7 +785,7 @@ public void ToddHoward_ClotThink(int iNPC)
 		npc.SetActivity("ACT_IDLE");
 		npc.m_bisWalking = false;
 		npc.StopPathing();
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 			{
@@ -2301,7 +2301,7 @@ bool ToddHowardForceTalk()
 			{
 				CPrintToChatAll("{lightblue}Todd Howard{default}: ALL HEIL THE MERCENARIES!! {crimson} FOR BETHESDAAAAAAA!!!!!!!!!!!!!!.");
 				i_TalkDelayCheck = 11;
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{

@@ -567,7 +567,6 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 		Cooldown = 0.0;
 		delete Voting;
 	}
-
 	delete VotingMods;
 	
 	KeyValues kv = zr_ignoremapconfig.BoolValue ? null : map;
@@ -715,7 +714,7 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 			if(modifierOnly)
 			{
 				int choosenLevel = 0;
-				int choosen = -1;
+				int choosen = 0; //Standart.
 				int AverageLevel = Waves_AverageLevelGet(100);
 				int length = VotingMods.Length;
 				for(int i; i < length; i++)
@@ -2359,7 +2358,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						}
 						else
 						{
-							for (int client = 0; client < MaxClients; client++)
+							for (int client = 1; client <= MaxClients; client++)
 							{
 								if(IsValidClient(client) && GetClientTeam(client) == 2)
 								{
@@ -2546,7 +2545,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 		}
 		case 1:
 		{
-			for (int client = 0; client < MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2)
 				{
@@ -2559,7 +2558,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 		}
 		case 2:
 		{
-			for (int client = 0; client < MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2)
 				{
@@ -2572,7 +2571,7 @@ static Action Freeplay_HudInfoTimer(Handle timer)
 		}
 		case 3:
 		{
-			for (int client = 0; client < MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2)
 				{
@@ -3976,7 +3975,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			Citizen_SetupStart();
 			if(CurrentRound+1 == 200)
 			{
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && !b_IsPlayerABot[client])
 					{

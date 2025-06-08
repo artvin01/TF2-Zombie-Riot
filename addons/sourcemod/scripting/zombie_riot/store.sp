@@ -3013,11 +3013,12 @@ static void MenuPage(int client, int section)
 	
 	if(Waves_Started())
 	{
-		if(CashSpentTotal[client] <= 0)
-		{
-			CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
-		}
-		else if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
+	//	if(CashSpentTotal[client] <= 0)
+	//	{
+	//		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
+	//	}
+	//	else 
+		if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
 		{
 			StarterCashMode[client] = false; //confirm automatically.
 		}
@@ -5046,13 +5047,9 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
-	/*
-	if(LastMann)
-		map.SetValue("442", 0.7674418604651163);		// Move Speed
-	else
-	*/
 
 	map.SetValue("442", 1.0);	// Move Speed
+	map.SetValue("49", 1);	// no doublejumps
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
@@ -6176,12 +6173,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 			// Note: This can stack with multi weapons :|
 			//double note: doesnt matter, it wont multiply, i coded specifically for that reason with mediguns!
-		}
-
-		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || i_IsWandWeapon[entity])
-		{
-			Attributes_Set(entity, 49, 1.0);
 		}
 
 		SkillTree_GiveItem(client, entity);

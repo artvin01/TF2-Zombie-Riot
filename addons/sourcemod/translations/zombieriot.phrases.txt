@@ -3824,8 +3824,18 @@
 	}
 	"The Blacksmith Failed!"
 	{
-		"en"		"The builder is no longer alive or nothing is on this!"
-		"es"		"El constructor no esta vivo o no hay nada en esto!"
+		"en"		"The owner no longer owns this kit! Self detonation!!!"
+    "es"    "El dueño ya no tiene este kit! Auto-destruccion!!!"
+	}
+	"Weapon No Effect Tinker"
+	{
+		"en"		"This doesn't seem to effect this weapon!"
+    "es"    "Parece que esto no afecta a tu arma!"
+	}
+	"No Burger Left"
+	{
+		"en"		"No Burgers Left! Probably."
+    "es"    "Sin hamburguesas restantes! Probablemente."
 	}
 	"Blacksmith No Attribs"
 	{
@@ -3858,6 +3868,10 @@
 		"en"	"Bring up Class Change Menu"
 		"fr"	"Montrer le Menu de Changement de Classe"
 		"chi"	"打开兵种切换菜单"
+	}
+	"Display top 5"
+	{
+		"en"	"Display Top 5 Damage and Support"
 	}
 	"Corrode"
 	{

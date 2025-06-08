@@ -276,7 +276,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 
-					for (int client = 0; client < MaxClients; client++)
+					for (int client = 1; client <= MaxClients; client++)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{

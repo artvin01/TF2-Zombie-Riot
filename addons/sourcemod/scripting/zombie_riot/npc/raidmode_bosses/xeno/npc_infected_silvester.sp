@@ -2025,7 +2025,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 						CPrintToChatAll("{gold}Silvester{default}: I REFUSE to let this happen again to us two, don't say i didnt warn you!");
 
 					i_TalkDelayCheck = 5;
-					for (int client = 0; client < MaxClients; client++)
+					for (int client = 1; client <= MaxClients; client++)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{

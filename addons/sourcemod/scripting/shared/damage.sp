@@ -1933,7 +1933,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		Format(Debuff_Adder_left, SizeOfChar, "%s❣(%i)", Debuff_Adder_left, BleedAmountCountStack[victim]);			
 	}
 #if defined RPG
-	if(victim < MaxClients)
+	if(victim <= MaxClients)
 	{
 		if(TrueStength_ClientBuff(victim))
 		{

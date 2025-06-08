@@ -843,7 +843,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		return;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
-	if(entity < MaxClients)	
+	if(entity <= MaxClients)	
 		return;
 
 	if (!IsValidEntity(entity))
@@ -873,7 +873,7 @@ public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
 		return;
 	}
 	int entity = GetClientPointVisible(client, 9999.0 , false, false,_,1);
-	if(entity < MaxClients)	
+	if(entity <= MaxClients)	
 		return;
 
 	if (!IsValidEntity(entity))
@@ -2152,7 +2152,7 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		return false;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
-	if(entity < MaxClients)
+	if(entity <= MaxClients)
 	{
 		return false;
 	}

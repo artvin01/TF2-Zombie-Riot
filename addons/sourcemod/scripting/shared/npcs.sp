@@ -1200,7 +1200,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(CheckInHud())
 		return Plugin_Handled;
 #if defined ZR
-	if(inflictor > 0 && inflictor < MaxClients)
+	if(inflictor > 0 && inflictor <= MaxClients)
 	{	
 		/*
 		if(f_Data_InBattleHudDisableDelay[inflictor] + 2.0 != 0.0)

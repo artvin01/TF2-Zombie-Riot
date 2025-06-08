@@ -902,6 +902,11 @@ public void OnPluginEnd()
 //	Waves_MapEnd(); DO NOT CALL THIS ON PLUGIN END, plugin ends anways, why change anything???
 	RemoveMVMLogicSafety();
 #endif
+	float WaitingForPlayersTime = FindConVar("mp_waitingforplayers_time").FloatValue;
+	if(WaitingForPlayersTime <= 0.0)
+		return;
+	//Fixes ZR breaking waiting for players.
+	GameRules_SetProp("m_bInWaitingForPlayers", false);
 }
 
 #if defined ZR
@@ -928,6 +933,7 @@ void RemoveMVMLogicSafety()
 	}
 }
 #endif
+
 void Core_PrecacheGlobalCustom()
 {
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
