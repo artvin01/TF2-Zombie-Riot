@@ -933,6 +933,7 @@ void RemoveMVMLogicSafety()
 	}
 }
 #endif
+
 void Core_PrecacheGlobalCustom()
 {
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
