@@ -4,47 +4,57 @@
 	{
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {green}Gained {1} {2}!"
+		"chi"		"{orange}{(Construct) {green}获取 {1} {2}！"
 	}
 	"Used Material"
 	{
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {red}Used {1} {2}!"
+		"chi"		"{orange}{(Construct) {green}使用了 {1} {2}！"
 	}
 	"Battle Finished"
 	{
 		"en"		"{orange}(Construct) The battle is over!"
+		"chi"		"{orange}(Construct) 战斗已结束！"
 	}
 	"Cash"
 	{
 		"en"		"Cash"
+		"chi"		"现金"
 	}
 	"Resource Attack Started"
 	{
 		"#format"	"{1:N},{2:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
+		"chi"		"{orange}(Construct) {red}{1} {default}正在收集{orange}{2} {default}，受到了攻击！"
 	}
 	"Gifts Spawned"
 	{
 		"#format"	"{1:d}"
 		"en"		"{orange}(Construct) {green}{1} {default}raid remains have appeared!"
+		"chi"		"{orange}(Construct) {green}{1} {default}RAID碎片出现了！"
 	}
 	"No Gifts Spawn"
 	{
 		"en"		"{orange}(Construct) {red}No raid remains appeared, too many exist already..."
+		"chi"		"{orange}(Construct) {red}没有RAID碎片出现，当前存在过多。"
 	}
 	"Found a gift remain"
 	{
 		"#format"	"{1:N}"
 		"en"		"{orange}(Construct) {red}{1} {green}found and obtained raid remains!"
+		"chi"		"{orange}(Construct) {red}{1} {green}获得了RAID碎片！"
 	}
 	"Found a gift remain No Attacker"
 	{
 		"en"		"{orange}(Construct) {green}Someone found and obtained raid remains!"
+		"chi"		"{orange}(Construct) {green}有人获得了RAID碎片！"
 	}
 	"Player Used 1 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}to make"
+		"chi"		"{orange}(Construct) {red}{1} {default}使用了{orange}{2} {3}制作"
 	}
 	"Player Used 2 to"
 	{
@@ -660,3 +670,4 @@
 		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies."
 	}
 }
+

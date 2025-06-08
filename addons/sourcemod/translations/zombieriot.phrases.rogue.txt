@@ -5,69 +5,93 @@
 		"en"	"INVALID NAME"
 		"pt"	"NOME INVÁLIDO"
 		"ru"	"НЕДЕЙСТВИТЕЛЬНОЕ ИМЯ"
+		"ko"	"=Failed name="
+		"chi"	"错误发生"
 	}
 	"Missing Rogue Translation Desc"
 	{
 		"en"	"INVALID DESC"
 		"pt"	"DESCRIÇÃO INVÁLIDA"
 		"ru"	"НЕДЕЙСТВИТЕЛЬНОЕ ОПИСАНИЕ"
+		"ko"	"=Failed desc="
+		"chi"	"错误发生"
 	}
 	"Allies Amongst Chaos"
 	{
 		"en"	"Allies Amongst Chaos"
 		"pt"	"Aliados em meio o Caos"
 		"ru"	"Союзники среди хаоса"
+		"ko"	"혼돈속 동맹"
+		"chi"	"混沌中的队友"
 	}
 	"A Deeper Discovery"
 	{
 		"en"	"A Deeper Discovery"
 		"pt"	"A Descoberta Profunda"
 		"ru"	"Более глубокая находка"
+		"ko"	"더 깊은 발견"
+		"chi"	"深入调查"
 	}
 	"All Parties Involved"
 	{
 		"en"	"All Parties Involved"
 		"ru"	"Все группы вовлечены"
 		"pt"	"Todas as partes envolvidas"
+		"ko"	"모든 관련 당사자"
+		"chi"	"所有相关方"
 	}
 	"Nightmares Evolve"
 	{
 		"en"	"Nightmares Evolve"
 		"ru"	"Кошмар Эволиционирует"
 		"pt"	"Pesadelos Evolvem"
+		"ko"	"악몽의 진화"
+		"chi"	"噩梦进化"
 	}
 	"Lost Ingots"
 	{
 		"#format"	"{1:d}"
 		"en"		"{red}Lost {1} Australium Ingots!"
+		"ko"		"{red}{1}개의 오스트레일리움을 잃었습니다."
+		"chi"	"{red}失去了{1}的澳金锭"
 	}
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"
 		"ru"	"Время Стоит На Месте"
 		"pt"	"O Tempo Está Parado"
+		"ko"	"시간은 멈춘다"
+		"chi"	"时光之末"
 	}
 	"The Void"
 	{
 		"en"	"The Void"
 		"ru"	"Бездна"
 		"pt"	"O Vazio"
+		"ko"	"공허"
+		"chi"	"虚空"
 	}
 	"For the Fallen"
 	{
 		"en"	"For the Fallen"
+		"ko"	"타락한 자들을 위하여"
+		"chi"	"为堕落者而战"
 	}
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item:"
 		"pt"	"Vote no item inicial:"
 		"ru"	"Голосование за начальный предмет:"
+		"ko"	"시작 아이템 투표:"
+		"chi"	"为起始项目投票："
 	}
 	"Vote for the next stage"
 	{
 		"en"	"Vote for the next stage:"
 		"pt"	"Vote na próxima etapa:"
 		"ru"	"Голосование за следующий этап:"
+		"ko"	"다음 단계 투표:"
+		"chi"	"为下一关投票："
 	}
 	"Additional Starting Ingot"
 	{
@@ -75,6 +99,8 @@
 		"en"	"Starting Australium Ingots ({1} -> {2})"
 		"pt"	"Lingotes iniciais de Austrálio ({1} -> {2})"
 		"ru"	"Начальные слитки австралия ({1} -> {2})"
+		"ko"	"스타팅 오스트레일리움 ({1} -> {2})"
+		"chi"	"澳金锭变化 ({1} -> {2})"
 	}
 	"Stage"
 	{
@@ -82,6 +108,8 @@
 		"en"		"Stage: {1}-{2}"
 		"pt"		"Fase: {1}-{2}"
 		"ru"		"Этап: {1}-{2}"
+		"ko"		"스테이지: {1}-{2}"
+		"chi"	"关卡: {1}-{2}"
 	}
 	"New Artifact"
 	{
@@ -89,6 +117,8 @@
 		"en"	"Collected Artifact: {yellow}{1}"
 		"pt"	"Artefatos Coletados: {yellow}{1}"
 		"ru"	"Получен артефакт: {yellow}{1}"
+		"ko"	"유물 확보: {yellow}{1}"
+		"chi"	"获得藏品: {yellow}{1}"
 	}
 	"Artifact Info"
 	{
@@ -101,6 +131,8 @@
 		"en"	"{green}Gained {1} Australium Ingots!"
 		"pt"	"{green}Adquiriu {1} Barras de Australium!"
 		"ru"	"{green}Получено {1} слитков австралия!"
+		"ko"	"{green}{1}개의 오스트레일리움 흭득!"
+		"chi"	"{green}获得了 {1}澳金锭！"
 	}
 	"Australium Ingots"
 	{
@@ -108,18 +140,24 @@
 		"en"	"Australium Ingots: {1}"
 		"pt"	"Barras de Australium: {1}"
 		"ru"	"Слитков австралия: {1}"
+		"ko"	"오스트레일리움: {1}"
+		"chi"	"澳金锭数量: {1}"
 	}
 	"Encounter"
 	{
 		"en"	"Encounter"
 		"pt"	"Encontro"
 		"ru"	"Встреча"
+		"ko"	"우연한 만남"
+		"chi"	"不期而遇"
 	}
 	"Collected Artifacts"
 	{
 		"en"	"Collected Artifacts"
 		"pt"	"Artefatos Coletados"
 		"ru"	"Собранные артефакты"
+		"ko"	"유물 확보"
+		"chi"	"已获得的藏品"
 	}
 
 	// Encounters
@@ -128,36 +166,47 @@
 		"en"	"Something seems off about this, should we fight or leave right here?"
 		"ru"	"Что-то здесь не так, стоит ли нам драться или уйти прямо здесь?"
 		"pt"	"Algo parece errado sobre isso, devemos lutar ou sair daqui?"
+		"ko"	"뭔가 이상한데, 싸워야 할까, 아니면 여기서 나가야 할까?"
+		"chi"	"这似乎有些不对劲，我们应该在这里战斗还是离开？"
 	}
 	"We can handle this"
 	{
 		"en"	"We can handle this"
 		"pt"	"Podemos cuidar disso"
 		"ru"	"Мы справимся"
+		"ko"	"좋아 우린 이걸 처리 할 수 있어"
+		"chi"	"我们可以处理掉"
 	}
 	"Better leave now"
 	{
 		"en"	"Better leave now"
 		"pt"	"Melhor ir agora"
 		"ru"	"Лучше уйти сейчас"
+		"ko"	"지금은 떠나는게 좋겠어"
+		"chi"	"最好润吧"
 	}
 	"Enter a special battle"
 	{
 		"en"	"Enter a special battle"
 		"pt"	"Entrar em uma batalha especial"
 		"ru"	"Вступить в особую битву"
+		"ko"	"특별한 전투에 참가하기"
+		"chi"	"进入一场特殊的战斗"
 	}
 	"Leave this encounter"
 	{
 		"en"	"Leave this encounter"
 		"pt"	"Abandonar esse encontro"
 		"ru"	"Оставить эту встречу"
+		"ko"	"여기서 떠나기"
+		"chi"	"直接离开"
 	}
 	"Shop Encounter Title"
 	{
 		"en"	"You stumble upon a shop to find an old man selling goods, do you take up his offers?"
 		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
+		"ko"	"당신은 우연히 가게에 들어가서 물건을 파는 노인을 만났는데, 그의 제안을 받아들일 것인가요?"
 	}
 	"Shop Encounter Title Ruina"
 	{
@@ -188,18 +237,22 @@
 		"en"	"Better save up now"
 		"pt"	"É melhor salvar agora"
 		"ru"	"Лучше поднакопить"
+		"ko"	"지금 저축하는 게 낫겠어"
+		"chi"	"还是收手吧"
 	}
 	"Boons Encounter Title"
 	{
 		"en"	"Some items are present before you, but you seem to be only to pick one."
 		"pt"	"Alguns itens são apresentados diante a você, mas você so pode escolher um."
 		"ru"	"Перед вами лежат несколько предметов, но вы, кажется, должны выбрать только один."
+		"ko"	"당신 앞에 몇 가지 물건이 있는데, 당신은 그 중 하나만 고르려고 하는 것 같습니다."
 	}
 	"There's nothing here?"
 	{
 		"en"	"There's nothing here?"
 		"pt"	"Não tem nada aqui?"
 		"ru"	"Тут ничего не было?"
+		"ko"	"여기 아무것도 없나요?"
 	}
 	"Lore Title"
 	{
@@ -210,79 +263,94 @@
 		"en"	"You stumble on a knight wearing a worn-out set of armor and gloomily looking at a sword in a stone.\nHe claims to be a knight journeying in search of the holy sword, and he must bring this sword back to his kingdom to become its rightful ruler.\nHowever, he has no way to pull out the sword from the stone."
 		"pt"	"Você se depara com um cavaleiro vestindo uma armadura desgastada e olhando sombriamente para a espada em uma pedra.\nEle afirma ser um cavaleiro que viaja em busca da espada sagrada e deve trazer essa espada de volta ao seu reino para se tornar seu governante legítimo.\nNo entanto, ele não tem como retirar a espada da pedra."
 		"ru"	"Вы натыкаетесь на рыцаря в изношенных доспехах, который мрачно смотрит на меч в камне.\nОн утверждает, что является рыцарем, путешествующим в поисках священного меча, и должен вернуть этот меч в своё королевство, чтобы стать его законным правителем.\nОднако у него нет способа вытащить меч из камня."
+		"ko"	"당신은 낡은 갑주를 입은 기사가 커다란 바위에 박힌 보검을 수심에 찬 얼굴로 쳐다보고 있는것을 보았다. 자신을 성검을 찾으러 나선 용사라고 밝힌 그는 이 보검을 자신의 왕국으로 가져가야 자기가 왕이 될 수 있다고 한다. 하지만 지금은 돌에서 검을 뽑아낼 수도 없다."
 	}
 	"Sword and Stone Option 1"
 	{
 		"en"	"Might as well smash the sword into two halves"
 		"pt"	"Aproveitar e dividir a espada em duas metades"
 		"ru"	"С таким же успехом можно разбить меч на две половины."
+		"ko"	"검을 쳐서 아예 부러뜨린다"
 	}
 	"Sword and Stone Lore 1"
 	{
 		"en"	"You rack your brain to come up with a solution. In the end, you smash the sword in two. Seeing half of the sword still stuck in the stone, the knight lets out a long sigh, shakes his head, and leaves."
 		"pt"	"Você quebra a cabeça para encontrar uma solução. No final, você quebra a espada em duas. Ao ver a metade da espada ainda presa na pedra, o cavaleiro solta um longo suspiro, balança a cabeça e vai embora."
 		"ru"	"Вы ломаете голову, пытаясь найти решение. В конце концов, вы разбиваете меч на две части. Видя, что половина меча по-прежнему застряла в камне, рыцарь испустил долгий вздох, покачал головой и ушёл."
+		"ko"	"당신은 온갖 방법을 동원해서 결국 보검을 두 동강 내버렸다. 기사는 바위에 남아 있는 보검의 반쪽을 보고는 한숨을 내쉬며 고개를 돌렸다."
 	}
 	"Sword and Stone Option 2"
 	{
 		"en"	"Could use the stone as a hammer"
 		"pt"	"Poderia usar a pedra como martelo"
 		"ru"	"Может использовать камень в качестве молотка"
+		"ko"	"적어도 해머로는 사용할 수 있다"
 	}
 	"Sword and Stone Lore 2"
 	{
 		"en"	"Taking your advice, the knight attempts to lift the sword, the stone still attached. Unable to keep his balance, he trips and falls on the ground head first, knocking himself unconscious."
 		"pt"	"Seguindo seu conselho, o cavaleiro tenta levantar a espada com a pedra ainda presa. Sem conseguir manter o equilíbrio, ele tropeça e cai de cabeça no chão, ficando inconsciente."
 		"ru"	"Послушавшись вашего совета, рыцарь пытается поднять меч, камень всё ещё прикреплен к нему. Не удержав равновесия, он спотыкается и падает на землю головой вперёд, теряя сознание."
+		"ko"	"당신의 제안을 들은 기사는 바위와 함께 검을 들어올리려 했으나 불안정한 무게중심 때문에 쓰러져 머리가 땅에 닿는 순간 기절했다."
 	}
 	"Sword and Stone Option 3"
 	{
 		"en"	"Doesn't look like it's necessary"
 		"pt"	"Parece não ser necessário"
 		"ru"	"Не думаю, что оно больше нужно"
+		"ko"	"검과 왕위에 도대체 무슨 관계가 있다는 거야?"
 	}
 	"Sword and Stone Lore 3a"
 	{
 		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government."
 		"pt"	"\"Pedras estranhas em fortalezas distribuindo espadas não são base para um sistema de governo."
+		"ko"	"''요상한 바위에 꽂힌 반쪽짜리 검 따위는 결코 국가와 정부를 구성하는 토대가 될 수 없으며,"
 	}
 	"Sword and Stone Lore 3b"
 	{
 		"en"	"Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
 		"pt"	"O poder executivo supremo deriva de um mandato das massas, não de alguma cerimônia geológica farsesca\". O cavaleiro acha que você tem razão e sai satisfeito."
+		"ko"	"왕은 민중의 지지로 왕위를 차지해야 합니다. 정체불명의 보검 하나로 왕이 된다는 것도 말이 안 됩니다.''. 기사는 당신의 답변에 만족하며 떠났다."
 	}
 	"Theatrical Lore"
 	{
 		"en"	"You find a middle-aged man rambling away in front of a dressing table.\nHe notices you and howls in your direction, asking you to deliver the prop on the table to the actress.\nYou look at the dressing table and find a crown entwined with thorns."
 		"ru"	"Вы обнаруживаете мужчину средних лет, бредущего к туалетному столику.\nОн замечает вас и завывает в вашу сторону, прося передать актрисе реквизит, лежащий на столике.\n Вы смотрите на туалетный столик и обнаруживаете корону, увитую шипами."
+		"ko"	"한 중년 남성이 화장대 앞에서 뭐라고 중얼거리고 있는 것을 발견했는데, 그가 당신을 보자마자 화장대의 소품을 배우에게 전해 달라고 소리질렀다. 화장대를 바라보니, 거기엔 가시덤불로 휘감긴 왕관이 있었다."
 	}
 	"Theatrical Option 1"
 	{
 		"en"	"Listen to his demands"
 		"ru"	"Выслушать его требования"
+		"ko"	"요구에따른다"
 	}
 	"Theatrical Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 10 ammo supplies"
 		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 10 боеприпасов"
+		"ko"	"{yellow}알수없는 유물을 얻었습니다 {red}하지만 10의 탄약 보급품을 소모했습니다."
 	}
 	"Theatrical Lore 1a"
 	{
 		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden."
+		"ko"	"당신이 왕관을 집으려고 손을 뻗었을 때, 가시덤불에 손가락을 베이는 바람에 깜짝 놀라 손에서 놓쳤더니, 왕관이 땅에 떨어져 반으로 부서졌다."
 	}
 	"Theatrical Lore 1b"
 	{
 		"en"	"You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
+		"ko"	"중년 남성이 당신에게 화를 내려다가 말고 갑자기 무슨 말을 들은 듯 고개를 돌렸다. 그는 머리를 긁적이면서 사실 그 여배우도 여왕 역할을 맡기 싫어서 도망갔다고 하더니, 잠시 뒤 그 역시 종종걸음으로 사라졌다. 소동이 끝난 후, 당신은 가시덤불에서 빠져나온 반쪽 왕관을 아직 온전한 상태로 주웠다."
 	}
 	"Theatrical Option 2"
 	{
 		"en"	"Ignore him"
 		"ru"	"Не обращать на него внимания"
+		"ko"	"그를 무시한다"
 	}
 	"Theatrical Lore 2"
 	{
 		"en"	"You ignore the middle-aged man's howlings and leave."
 		"ru"	"Вы не обращаете внимания на вопли мужчины и уходите."
+		"ko"	"쓸데없이 참견하지 말자"
 	}
 	"Eccentric Lore"
 	{
@@ -635,117 +703,142 @@
 	"Dense Fog"
 	{
 		"en"	"Dense Fog"
+		"chi"	"浓雾"
 	}
 	"Forcefield Chest"
 	{
 		"en"	"Forcefield Chest"
 		"ru"	"Сундук силового поля"
+		"chi"	"力场箱"
 	}
 	"Electric Tower"
 	{
 		"en"	"Electric Tower"
 		"ru"	"Электробашня"
+		"chi"	"电气塔"
 	}
 	"Electric Tower!"
 	{
 		"en"	"Electric Tower ⚠"
+		"chi"	"电气塔⚠"
 	}
 	"Tower Madness"
 	{
 		"en"	"Tower Madness"
 		"ru"	"Безумие башни"
+		"chi"	"疯狂之塔"
 	}
 	"Tower Madness!"
 	{
 		"en"	"Tower Madness ⚠"
+		"chi"	"疯狂之塔⚠"
 	}
 	"Caged Beast"
 	{
 		"en"	"Caged Beast"
 		"ru"	"Зверь в клетке"
+		"chi"	"笼中野兽"
 	}
 	"Elevated Presence"
 	{
 		"en"	"Elevated Presence"
 		"ru"	"Существенное присутствие"
+		"chi"	"重要存在"
 	}
 	"Shop"
 	{
 		"en"	"Shop"
 		"ru"	"Магазин"
+		"chi"	"商店"
 	}
 	"Boons"
 	{
 		"en"	"Boons"
 		"ru"	"Блага"
+		"chi"	"得偿所愿"
 	}
 	"Uncertain Goals"
 	{
 		"en"	"Uncertain Goals"
+		"chi"	"不期而遇"
 	}
 	"Uncertain Goals 1"
 	{
 		"en"	"Uncertain Goals 1"
+		"chi"	"不期而遇 1"
 	}
 	"Uncertain Goals 2"
 	{
 		"en"	"Uncertain Goals 2"
+		"chi"	"不期而遇 2"
 	}
 	"Uncertain Goals 3"
 	{
 		"en"	"Uncertain Goals 3"
+		"chi"	"不期而遇 3"
 	}
 	"Water Fountain"
 	{
 		"en"	"Water Fountain"
 		"ru"	"Водный фонтан"
+		"chi"	"喷泉"
 	}
 	"Water Fountain!"
 	{
 		"en"	"Water Fountain ⚠"
+		"chi"	"喷泉⚠"
 	}
 	"Abandoned Graveyard"
 	{
 		"en"	"Abandoned Graveyard"
 		"ru"	"Заброшенное кладбище"
+		"chi"	"废弃墓地"
 	}
 	"Abandoned Graveyard!"
 	{
 		"en"	"Abandoned Graveyard ⚠"
+		"chi"	"废弃墓地⚠"
 	}
 	"Pure Desert"
 	{
 		"en"	"Pure Desert"
 		"ru"	"Чистая пустыня"
+		"chi"	"纯净沙漠"
 	}
 	"The Sword in the Stone"
 	{
 		"en"	"The Sword in the Stone"
 		"ru"	"Меч в камне"
+		"chi"	"石中剑"
 	}
 	"Theatrical Necessities"
 	{
 		"en"	"Theatrical Necessities"
 		"ru"	"Театральные нужды"
+		"chi"	"戏剧必需品"
 	}
 	"Eccentric Hunchback"
 	{
 		"en"	"Eccentric Hunchback"
 		"ru"	"Горбун-эксцентрик"
+		"chi"	"古怪的驼背"
 	}
 	"Crimson Troupe Stage"
 	{
 		"en"	"Crimson Troupe Stage"
+		"chi"	"绯红剧团"
 	}
 	"Camp"
 	{
 		"en"	"Camp"
 		"ru"	"Лагерь"
+		"chi"	"营地"
 	}
 	"Coffin of Evil"
 	{
 		"en"	"Coffin of Evil"
 		"ru"	"Гроб зла"
+		"chi"	"邪恶棺材"
 	}
 	"Xeno Shaft"
 	{
@@ -756,299 +849,371 @@
 	{
 		"en"	"Stultifera Navis"
 		"ru"	"Стултифера Навис"
+		"chi"	"偷维纳斯"
 	}
 	"Wake Up Call"
 	{
 		"en"	"Wake Up Call"
 		"ru"	"Тревожный звонок"
+		"chi"	"叫醒电话"
 	}
 	"Wake Up Call!"
 	{
 		"en"	"Wake Up Call ⚠"
 		"ru"	"Тревожный звонок ⚠"
+		"chi"	"叫醒电话⚠"
 	}
 	"Shoot The Messager"
 	{
 		"en"	"Shoot The Messenger"
 		"ru"	"Застрелить посланника"
+		"chi"	"射击信使"
 	}
 	"Shoot The Messager!"
 	{
 		"en"	"Shoot The Messenger ⚠"
 		"ru"	"Застрелить посланника ⚠"
+		"chi"	"射击信使⚠"
 	}
 	"Flanking Tactics"
 	{
 		"en"	"Flanking Tactics"
 		"ru"	"Тактика обхода с флангов"
+		"chi"	"侧翼战术"
 	}
 	"Flanking Tactics!"
 	{
 		"en"	"Flanking Tactics ⚠"
 		"ru"	"Тактика обхода с флангов ⚠"
+		"chi"	"侧翼战术⚠"
 	}
 	"Phone Service"
 	{
 		"en"	"Phone Service"
 		"ru"	"Телефонная связь"
+		"chi"	"电话服务"
 	}
 	"Phone Service!"
 	{
 		"en"	"Phone Service ⚠"
 		"ru"	"Телефонная связь ⚠"
+		"chi"	"电话服务⚠"
 	}
 	"Scouting Party"
 	{
 		"en"	"Scouting Party"
+		"chi"	"侦察派对"
 	}
 	"Scouting Party!"
 	{
 		"en"	"Scouting Party ⚠"
+		"chi"	"侦察派对"
 	}
 	"Speed Demons"
 	{
 		"en"	"Speed Demons"
+		"chi"	"急速恶魔"
 	}
 	"Speed Demons!"
 	{
 		"en"	"Speed Demons ⚠"
+		"chi"	"急速恶魔⚠"
 	}
 	"Dried Kelp"
 	{
 		"en"	"Dried Kelp"
+		"chi"	"干海带"
 	}
 	"Dried Kelp!"
 	{
 		"en"	"Dried Kelp ⚠"
+		"chi"	"干海带⚠"
 	}
 	"Fueled By Gold"
 	{
 		"en"	"Fueled By Gold"
+		"chi"	"黄金燃料"
 	}
 	"Fueled By Gold!"
 	{
 		"en"	"Fueled By Gold ⚠"
+		"chi"	"黄金燃料⚠"
 	}
 	"Eye for an Eye"
 	{
 		"en"	"Eye for an Eye"
 		"ru"	"Око за око"
+		"chi"	"以眼还眼"
 	}
 	"Fight to the Death"
 	{
+		"chi"	"干到死"
 		"en"	"Fight to the Death"
 	}
 	"Fight to the Death!"
 	{
 		"en"	"Fight to the Death ⚠"
+		"chi"	"干到死⚠"
 	}
 	"Shooting Range"
 	{
 		"en"	"Shooting Range"
+		"chi"	"射击场"
 	}
 	"Shooting Range!"
 	{
 		"en"	"Shooting Range ⚠"
+		"chi"	"射击场⚠"
 	}
 	"Car Battery"
 	{
 		"en"	"Car Battery"
+		"chi"	"汽车电池"
 	}
 	"Car Battery!"
 	{
 		"en"	"Car Battery ⚠"
+		"chi"	"汽车电池⚠"
 	}
 	"A Date with Arrows"
 	{
 		"en"	"A Date with Arrows"
+		"chi"	"鸿门宴"
 	}
 	"A Date with Arrows!"
 	{
 		"en"	"A Date with Arrows ⚠"
+		"chi"	"鸿门宴⚠"
 	}
 	"Not So Finale"
 	{
 		"en"	"Not So Finale"
+		"chi"	"最后之前"
 	}
 	"Not So Finale!"
 	{
 		"en"	"Not So Finale ⚠"
+		"chi"	"最后之前⚠"
 	}
 	"Gift Delivery"
 	{
 		"en"	"Gift Delivery"
+		"chi"	"礼品配送"
 	}
 	"Gift Delivery!"
 	{
 		"en"	"Gift Delivery ⚠"
+		"chi"	"礼品配送⚠"
 	}
 	"Viscera Cleanup"
 	{
 		"en"	"Viscera Cleanup"
+		"chi"	"内脏清理"
 	}
 	"Viscera Cleanup!"
 	{
 		"en"	"Viscera Cleanup ⚠"
+		"chi"	"内脏清理⚠"
 	}
 	"Forgot My Passport"
 	{
 		"en"	"Forgot My Passport"
+		"chi"	"丢失护照"
 	}
 	"Forgot My Passport!"
 	{
 		"en"	"Forgot My Passport ⚠"
+		"chi"	"丢失护照⚠"
 	}
 	"Castle Age"
 	{
 		"en"	"Castle Age"
+		"chi"	"城堡时代"
 	}
 	"Castle Age!"
 	{
 		"en"	"Castle Age ⚠"
+		"chi"	"城堡时代⚠"
 	}
 	"Terrifying Legends"
 	{
 		"en"	"Terrifying Legends ☠"
+		"chi"	"恐怖传说☠"
 	}
 	"Dungeon Rematch"
 	{
 		"en"	"Dungeon Rematch ☠"
+		"chi"	"地牢重赛☠"
 	}
 	"On Your Guard"
 	{
 		"en"	"On Your Guard"
+		"chi"	"警惕"
 	}
 	"On Your Guard!"
 	{
 		"en"	"On Your Guard ⚠"
+		"chi"	"警惕"
 	}
 	"Darkest Dungeon"
 	{
 		"en"	"Darkest Dungeon"
+		"chi"	"警惕"
 	}
 	"Darkest Dungeon!"
 	{
 		"en"	"Darkest Dungeon ⚠"
+		"chi"	"警惕"
 	}
 	"The Hitman"
 	{
 		"en"	"The Hitman"
+		"chi"	"打人侠"
 	}
 	"The Hitman!"
 	{
 		"en"	"The Hitman ⚠"
+		"chi"	"打人侠⚠"
 	}
 	"Under Tides"
 	{
 		"en"	"Under Tides"
+		"chi"	"覆巢之下"
 	}
 	"Under Tides!"
 	{
 		"en"	"Under Tides ⚠"
+		"chi"	"覆巢之下⚠"
 	}
 	"Fish Bait"
 	{
 		"en"	"Fish Bait"
+		"chi"	"鱼饵"
 	}
 	"Fish Bait!"
 	{
 		"en"	"Fish Bait ⚠"
+		"chi"	"鱼饵⚠"
 	}
 	"Need For Speed"
 	{
 		"en"	"Need For Speed"
+		"chi"	"极品飞车"
 	}
 	"Need For Speed!"
 	{
 		"en"	"Need For Speed ⚠"
+		"chi"	"极品飞车⚠"
 	}
 	"Deep Rock Heist"
 	{
 		"en"	"Deep Rock Heist"
+		"chi"	"深岩抢劫"
 	}
 	"Deep Rock Heist!"
 	{
 		"en"	"Deep Rock Heist ⚠"
+		"chi"	"深岩抢劫⚠"
 	}
 	"Teutons"
 	{
 		"en"	"Teutons"
+		"chi"	"条顿人"
 	}
 	"Teutons!"
 	{
 		"en"	"Teutons ⚠"
+		"chi"	"条顿人⚠"
 	}
 	"Blitz"
 	{
 		"en"	"Blitz"
+		"chi"	"速战速决"
 	}
 	"Blitz!"
 	{
 		"en"	"Blitz ⚠"
+		"chi"	"速战速决⚠"
 	}
 	"Heroic Age"
 	{
 		"en"	"Heroic Age"
+		"chi"	"英雄时代"
 	}
 	"Heroic Age!"
 	{
 		"en"	"Heroic Age ⚠"
+		"chi"	"英雄时代⚠"
 	}
 	"Undead Warriors"
 	{
 		"en"	"Undead Warriors"
+		"chi"	"不死战士"
 	}
 	"Undead Warriors!"
 	{
 		"en"	"Undead Warriors ⚠"
+		"chi"	"不死战士⚠"
 	}
 	"Gray Robots"
 	{
 		"en"	"Gray Robots"
+		"chi"	"格雷机器人"
 	}
 	"Gray Robots!"
 	{
 		"en"	"Gray Robots ⚠"
+		"chi"	"格雷机器人⚠"
 	}
 	"Xeno Monsters"
 	{
 		"en"	"Xeno Monsters"
+		"chi"	"异性怪物"
 	}
 	"Xeno Monsters!"
 	{
 		"en"	"Xeno Monsters ⚠"
+		"chi"	"异性怪物⚠"
 	}
 	"Ambush"
 	{
 		"en"	"Ambush"
+		"chi"	"埋伏"
 	}
 	"Ambush!"
 	{
 		"en"	"Ambush ⚠"
+		"chi"	"埋伏⚠"
 	}
 	"Steel Workers"
 	{
 		"en"	"Steel Workers"
+		"chi"	"钢铁工人"
 	}
 	"Steel Workers!"
 	{
 		"en"	"Steel Workers ⚠"
+		"chi"	"钢铁工人⚠"
 	}
 	"Infighting"
 	{
 		"en"	"Infighting"
+		"chi"	"内讧"
 	}
 	"Infighting!"
 	{
 		"en"	"Infighting ⚠"
+		"chi"	"内讧⚠"
 	}
 	"Simple Yet Deadly"
 	{
 		"en"	"Simple Yet Deadly"
+		"chi"	"简单而致命"
 	}
 	"Simple Yet Deadly!"
 	{
 		"en"	"Simple Yet Deadly ⚠"
+		"chi"	"简单而致命⚠"
 	}
 	"Patient Zero"
 	{
@@ -1061,10 +1226,12 @@
 	"Familiar Yet Not!"
 	{
 		"en"	"Familiar Yet Not ⚠"
+		"chi"	"熟悉但不熟悉⚠"
 	}
 	"Future Or Not!"
 	{
 		"en"	"Future Or Not ⚠"
+		"chi"	"未来与否⚠"
 	}
 	"Bob's Fear"
 	{
@@ -1089,22 +1256,27 @@
 	"Broken Bridge"
 	{
 		"en"	"Broken Bridge"
+		"chi"	"断桥"
 	}
 	"Home Sick"
 	{
 		"en"	"Home Sick"
+		"chi"	"乡思了"
 	}
 	"Home Sick!"
 	{
 		"en"	"Home Sick ⚠"
+		"chi"	"乡思了⚠"
 	}
 	"A Lost War"
 	{
 		"en"	"A Lost War"
+		"chi"	"一场失败的战争"
 	}
 	"A Lost War!"
 	{
 		"en"	"A Lost War ⚠"
+		"chi"	"一场失败的战争⚠"
 	}
 	"Falling Hazard"
 	{
@@ -1121,24 +1293,29 @@
 	"City Hall"
 	{
 		"en"	"City Hall"
+		"chi"	"市政厅"
 	}
 	"City Hall!"
 	{
 		"en"	"City Hall ⚠"
+		"chi"	"市政厅⚠"
 	}
 	"Prompting Engineer"
 	{
 		"en"	"Prompting Engineer ⚠"
+		"chi"	"提示工程师⚠"
 	}
 	"At Strength"
 	{
 		"en"	"At Strength ⚠"
+		"chi"	"高强度⚠"
 	}
 
 	// Curses
 	"Bewildered"
 	{
 		"en"	"Bewildered"
+		"chi"	"茫然"
 	}
 	"Bewildered Desc"
 	{
@@ -1151,6 +1328,7 @@
 	"Sensitive"
 	{
 		"en"	"Sensitive"
+		"chi"	"灵敏"
 	}
 	"Sensitive Desc"
 	{
@@ -1163,6 +1341,7 @@
 	"Obsessed"
 	{
 		"en"	"Obsessed"
+		"chi"	"中邪"
 	}
 	"Obsessed Desc"
 	{
@@ -1175,6 +1354,7 @@
 	"Solitary"
 	{
 		"en"	"Solitary"
+		"chi"	"孤独"
 	}
 	"Solitary Desc"
 	{
@@ -1187,6 +1367,7 @@
 	"Blind"
 	{
 		"en"	"Blind"
+		"chi"	"瞎"
 	}
 	"Blind Desc"
 	{
@@ -1199,6 +1380,7 @@
 	"Gravity Upset"
 	{
 		"en"	"Gravity Upset"
+		"chi"	"重力翻转"
 		"ru"	"Нарушение гравитации"
 	}
 	"Gravity Upset Desc"
@@ -1209,6 +1391,7 @@
 	"Pure Greed"
 	{
 		"en"	"Pure Greed"
+		"chi"	"纯粹的贪婪"
 		"ru"	"Чистая жадность"
 	}
 	"Pure Greed Desc"
@@ -1221,62 +1404,75 @@
 	"Leader Squad"
 	{
 		"en"	"Leader Squad"
+		"chi"	"领导小队"
 		"ru"	"Лидер отряда"
 	}
 	"Leader Squad Desc"
 	{
 		"en"	"{green}Extra Health powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"chi"	"{green}在阶段开始时生成额外的生命值增益.\n{green}当非 Boss 战失败时，继续冒险{yellow}(仅限一次)"
 	}
 	"Gathering Squad"
 	{
 		"en"	"Gathering Squad"
+		"chi"	"集结小队"
 		"ru"	"Собирающий отряд"
 	}
 	"Gathering Squad Desc"
 	{
 		"en"	"{green}Extra Ammo powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"chi"	"{green}在阶段开始时生成额外弹药增益.\n{green}}当非 Boss 战失败时，继续冒险{yellow}(仅限一次)"
 	}
 	"Support Squad"
 	{
 		"en"	"Support Squad"
+		"chi"	"支援小队"
 		"ru"	"Отряд поддержки"
 	}
 	"Support Squad Desc"
 	{
 		"en"	"{green}Start with +20 Australium Ignots and +250 Cash.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"chi"	"{green}开始时有 20 个澳金锭 和 250 块.\n{green}}当非 Boss 战失败时，继续冒险{yellow}(仅限一次)"
 		"ru"	"{green}Начните с +20 слитками австралия и +250 кредитов.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
 	}
 	"Spearhead Squad"
 	{
 		"en"	"Spearhead Squad"
+		"chi"	"先锋小队"
 		"ru"	"Отряд копьеносцев"
 	}
 	"Spearhead Squad Desc"
 	{
 		"en"	"{green}All Allies gain +15％ damage bonus and +50 max health"
+		"chi"	"{green}所有盟友获得 15% 伤害加成和 50 最大生命值"
 	}
 	"Research Squad"
 	{
 		"en"	"Research Squad"
+		"chi"	"研究小队"
 		"ru"	"Отряд исследователей"
 	}
 	"Research Squad Desc"
 	{
 		"en"	"{green}Store items are 10％ off while not in combat"
+		"chi"	"{green}商店物品在不战斗时可享受 10% 的折扣"
 		"ru"	"{green}Скидка на товары в магазине 10％ вне боя"
 	}
 	"First Class Squad"
 	{
 		"en"	"First Class Squad"
+		"chi"	"领头小队"
 		"ru"	"Отряд первого класса"
 	}
 	"First Class Squad Desc"
 	{
 		"en"	"{green}Father Grigori will acompany you."
+		"chi"	"{green}神父会跟你走"
 	}
 	"Provoked Anger"
 	{
 		"en"	"Provoked Anger"
+		"chi"	"激怒"
 		"ru"	"Вызванный гнев"
 	}
 	"Provoked Anger Desc"
@@ -1287,6 +1483,7 @@
 	"Grigori's Coin Purse"
 	{
 		"en"	"Grigori's Coin Purse"
+		"chi"	"零钱包"
 		"ru"	"Монетный кошелёк Григория"
 	}
 	"Grigori's Coin Purse Desc"
@@ -1297,6 +1494,7 @@
 	"Malfunctioning Shield"
 	{
 		"en"	"Malfunctioning Shield"
+		"chi"	"故障防护罩"
 		"ru"	"Неисправный щит"
 	}
 	"Malfunctioning Shield Desc"
@@ -1306,6 +1504,7 @@
 	"Bob's Exchange Money"
 	{
 		"en"	"Bob's Exchange Money"
+		"chi"	"兑换货币"
 		"ru"	"Обменные деньги Боба"
 	}
 	"Bob's Exchange Money Desc"
@@ -1316,6 +1515,7 @@
 	"Music Releasing Radio"
 	{
 		"en"	"Music Releasing Radio"
+		"chi"	"音乐发布电台"
 		"ru"	"Радио, выпускающее музыку"
 	}
 	"Music Releasing Radio Desc"
@@ -1326,6 +1526,7 @@
 	"Wrath Of Itallians"
 	{
 		"en"	"Wrath Of Itallians"
+		"chi"	"叙拉古人的愤怒"
 		"ru"	"Гнев итальянцев"
 	}
 	"Wrath Of Itallians Desc"
@@ -1336,6 +1537,7 @@
 	"Hand Of The Elder Mages"
 	{
 		"en"	"Hand Of The Elder Mages"
+		"chi"	"长老法师之手"
 		"ru"	"Десница старших магов"
 	}
 	"Hand Of The Elder Mages Desc"
@@ -1345,6 +1547,7 @@
 	"Bracelets of Agility"
 	{
 		"en"	"Bracelets of Agility"
+		"chi"	"敏捷手镯"
 		"ru"	"Браслеты ловкости"
 	}
 	"Bracelets of Agility Desc"
@@ -1355,6 +1558,7 @@
 	"Elastic Flying Cape"
 	{
 		"en"	"Elastic Flying Cape"
+		"chi"	"弹性飞披"
 		"ru"	"Эластичный летучий плащ"
 	}
 	"Elastic Flying Cape Desc"
@@ -1365,6 +1569,7 @@
 	"Healing Salve"
 	{
 		"en"	"Healing Salve"
+		"chi"	"治愈药膏"
 		"ru"	"Лечебная мазь"
 	}
 	"Healing Salve Desc"
@@ -1375,6 +1580,7 @@
 	"Steel Razor"
 	{
 		"en"	"Steel Razor"
+		"chi"	"钢剃刀"
 		"ru"	"Стальная бритва"
 	}
 	"Steel Razor Desc"
@@ -1385,6 +1591,7 @@
 	"Healthy Essence"
 	{
 		"en"	"Healthy Essence"
+		"chi"	"健康精华"
 		"ru"	"Эссенция здоровья"
 	}
 	"Healthy Essence Desc"
@@ -1395,6 +1602,7 @@
 	"Chicken Nugget Box"
 	{
 		"en"	"Chicken Nugget Box"
+		"chi"	"鸡块盒"
 		"ru"	"Коробка с куриными наггетсами"
 	}
 	"Chicken Nugget Box Desc"
@@ -1405,6 +1613,7 @@
 	"Fizzy Drink"
 	{
 		"en"	"Fizzy Drink"
+		"chi"	"汽水"
 		"ru"	"Газированный напиток"
 	}
 	"Fizzy Drink Desc"
@@ -1415,6 +1624,7 @@
 	"Hover Glider"
 	{
 		"en"	"Hover Glider"
+		"chi"	"悬停滑翔机"
 		"ru"	"Парящий планёр"
 	}
 	"Hover Glider Desc"
@@ -1425,6 +1635,7 @@
 	"Hand Written Letter"
 	{
 		"en"	"Hand Written Letter"
+		"chi"	"手写信"
 		"ru"	"Рукописное письмо"
 	}
 	"Hand Written Letter Desc"
@@ -1435,6 +1646,7 @@
 	"Crude Flute"
 	{
 		"en"	"Crude Flute"
+		"chi"	"粗笛"
 		"ru"	"Грубая флейта"
 	}
 	"Crude Flute Desc"
@@ -1445,6 +1657,7 @@
 	"Scrapped Wallet"
 	{
 		"en"	"Scrapped Wallet"
+		"chi"	"废弃的钱包"
 		"ru"	"Выброшенный кошелёк"
 	}
 	"Scrapped Wallet Desc"
@@ -1455,6 +1668,7 @@
 	"Golden Coin"
 	{
 		"en"	"Golden Coin"
+		"chi"	"金币"
 		"ru"	"Золотая монета"
 	}
 	"Golden Coin Desc"
@@ -1464,7 +1678,8 @@
 	}
 	"Nickel Injected Pack"
 	{
-		"en"	"Nickel Injected Pack"	
+		"en"	"Nickel Injected Pack"
+		"chi"	"镀镍注射包"	
 		"ru"	"Пакет с никелевым вкраплением"	
 	}
 	"Nickel Injected Pack Desc"
@@ -1474,6 +1689,7 @@
 	"Spanish Specialised Gunpowder"
 	{
 		"en"	"Spanish Specialised Gunpowder"
+		"chi"	"西班牙特种火药"
 		"ru"	"Испанский специальный порох"
 	}
 	"Spanish Specialised Gunpowder Desc"
@@ -1484,6 +1700,7 @@
 	"Supply Depot"
 	{
 		"en"	"Supply Depot"
+		"chi"	"供应仓库"
 		"ru"	"Хранилище"
 	}
 	"Supply Depot Desc"
@@ -1494,6 +1711,7 @@
 	"Al-Hallam's Fortress Blueprints"
 	{
 		"en"	"Al-Hallam's Fortress Blueprints"
+		"chi"	"Al-Hallam 的堡垒蓝图"
 	}
 	"Al-Hallam's Fortress Blueprints Desc"
 	{
@@ -1502,6 +1720,7 @@
 	"Gambesons"
 	{
 		"en"	"Gambesons"
+		"chi"	"甘贝森"
 		"ru"	"Гамбезон"
 	}
 	"Gambesons Desc"
@@ -1512,6 +1731,7 @@
 	"Neosteal Plating"
 	{
 		"en"	"Neosteel Plating"
+		"chi"	"来自 Neosta 的缝线。"
 		"ru"	"Обшивка из неостали"
 	}
 	"Neosteal Plating Desc"
@@ -1522,6 +1742,7 @@
 	"Thumb Ring"
 	{
 		"en"	"Thumb Ring"
+		"chi"	"拇指环"
 		"ru"	"Пальцевое кольцо"
 	}
 	"Thumb Ring Desc"
@@ -1532,6 +1753,7 @@
 	"Blademace"
 	{
 		"en"	"''Blademace''"
+		"chi"	"刃锤"
 		"ru"	"«Булава с лезвием»"
 	}
 	"Blademace Desc"
@@ -1541,6 +1763,7 @@
 	"Brokenblade"
 	{
 		"en"	"''Brokenblade''"
+		"chi"	"断剑"
 		"ru"	"«Сломанный клинок»"
 	}
 	"Brokenblade Desc"
@@ -1551,6 +1774,7 @@
 	"Bladedance"
 	{
 		"en"	"''Bladedance''"
+		"chi"	"《刀舞》"
 		"ru"	"«Взбешённый клинок»"
 	}
 	"Bladedance Desc"
@@ -1560,6 +1784,7 @@
 	"Whiteflower"
 	{
 		"en"	"''Whiteflower''"
+		"chi"	"《白英花》"
 		"ru"	"«Белый цветок»"
 	}
 	"Whiteflower Desc"
@@ -1569,6 +1794,7 @@
 	"Shadow"
 	{
 		"en"	"''Shadow''"
+		"chi"	"《影子》"
 		"ru"	"«Тень»"
 	}
 	"Shadow Desc"
@@ -1579,6 +1805,7 @@
 	"Right Eye of the Natator"
 	{
 		"en"	"''Right Eye of the Natator''"
+		"chi"	"Natator 的右眼"
 		"ru"	"«Правый глаз нататора»"
 	}
 	"Right Eye of the Natator Desc"
@@ -1589,6 +1816,7 @@
 	"Left Eye of the Natator"
 	{
 		"en"	"''Left Eye of the Natator''"
+		"chi"	"Natator 的左眼"
 		"ru"	"«Левый глаз нататора»"
 	}
 	"Left Eye of the Natator Desc"
@@ -1599,6 +1827,7 @@
 	"End of Times"
 	{
 		"en"	"''End of Times''"
+		"chi"	"时光之末"
 		"ru"	"«Конец времён»"
 	}
 	"End of Times Desc"
@@ -1609,6 +1838,7 @@
 	"Proof of Friendship"
 	{
 		"en"	"Proof of Friendship"
+		"chi"	"友谊的证明"
 		"ru"	"Доказательство дружбы"
 	}
 	"Proof of Friendship Desc"
@@ -1619,6 +1849,7 @@
 	"Broken Combine Crown"
 	{
 		"en"	"Broken Combine Crown"
+		"chi"	"破损的联合军皇冠"
 	}
 	"Broken Combine Crown Desc"
 	{
@@ -1627,6 +1858,7 @@
 	"Bob's Reseach Papers"
 	{
 		"en"	"Bob's Reseach Papers"
+		"chi"	"研究论文"
 	}
 	"Bob's Reseach Papers Desc"
 	{
@@ -1635,6 +1867,7 @@
 	"Bob's Final Draft"
 	{
 		"en"	"Bob's Final Draft"
+		"chi"	"最终草稿"
 	}
 	"Bob's Final Draft Desc"
 	{
@@ -1643,6 +1876,7 @@
 	"Hand of Sticks"
 	{
 		"en"	"Hand of Sticks"
+		"chi"	"棍棒之手"
 	}
 	"Hand of Sticks Desc"
 	{
@@ -1651,6 +1885,7 @@
 	"Hand of Quake"
 	{
 		"en"	"Hand of Quake"
+		"chi"	"地震之手"
 	}
 	"Hand of Quake Desc"
 	{
@@ -1659,6 +1894,7 @@
 	"Hand of Travel"
 	{
 		"en"	"Hand of Travel"
+		"chi"	"旅行之手"
 	}
 	"Hand of Travel Desc"
 	{
@@ -1667,6 +1903,7 @@
 	"Hand of Flesh"
 	{
 		"en"	"Hand of Flesh"
+		"chi"	"血肉之手"
 	}
 	"Hand of Flesh Desc"
 	{
@@ -1675,6 +1912,7 @@
 	"Hand of Trapmaster"
 	{
 		"en"	"Hand of Trapmaster"
+		"chi"	"陷阱大师之手"
 	}
 	"Hand of Trapmaster Desc"
 	{
@@ -1683,6 +1921,7 @@
 	"Hand of Geek"
 	{
 		"en"	"Hand of Geek"
+		"chi"	"极客之手"
 	}
 	"Hand of Geek Desc"
 	{
@@ -1691,6 +1930,7 @@
 	"Hand of Incredible Speeds"
 	{
 		"en"	"Hand of Fisting"
+		"chi"	"拳击之手"
 	}
 	"Hand of Incredible Speeds Desc"
 	{
@@ -1699,6 +1939,7 @@
 	"Hand of Suprise"
 	{
 		"en"	"Hand of Suprise"
+		"chi"	"惊奇之手"
 	}
 	"Hand of Suprise Desc"
 	{
@@ -1707,6 +1948,7 @@
 	"Hand of Revenge"
 	{
 		"en"	"Hand of Revenge"
+		"chi"	"复仇之手"
 	}
 	"Hand of Revenge Desc"
 	{
@@ -1715,6 +1957,7 @@
 	"Hand of Stock"
 	{
 		"en"	"Hand of Stock"
+		"chi"	"储备之手"
 	}
 	"Hand of Stock Desc"
 	{
@@ -1723,6 +1966,7 @@
 	"Hand of the Elite"
 	{
 		"en"	"Hand of the Elite"
+		"chi"	"精英之手"
 	}
 	"Hand of the Elite Desc"
 	{
@@ -1731,6 +1975,7 @@
 	"Soul of Boss vs Boss"
 	{
 		"en"	"Soul of Boss vs Boss"
+		"chi"	"bvb之魂"
 	}
 	"Soul of Boss vs Boss Desc"
 	{
@@ -1739,6 +1984,7 @@
 	"Soul of Arknights"
 	{
 		"en"	"Soul of Arknights"
+		"chi"	"明日方舟之魂"
 	}
 	"Soul of Arknights Desc"
 	{
@@ -1747,6 +1993,7 @@
 	"Soul of Bloons Tower Defense"
 	{
 		"en"	"Soul of Bloons Tower Defense"
+		"chi"	"气球塔防之魂"
 	}
 	"Soul of Bloons Tower Defense Desc"
 	{
@@ -1755,6 +2002,7 @@
 	"Soul of Yakuza"
 	{
 		"en"	"Soul of Yakuza"
+		"chi"	"极道之魂"
 	}
 	"Soul of Yakuza Desc"
 	{
@@ -1763,6 +2011,7 @@
 	"Soul of Darkest Dungeon"
 	{
 		"en"	"Soul of Darkest Dungeon"
+		"chi"	"暗黑地牢之魂"
 	}
 	"Soul of Darkest Dungeon Desc"
 	{
@@ -1771,6 +2020,7 @@
 	"Soul of Terraria"
 	{
 		"en"	"Soul of Terraria"
+		"chi"	"泰拉瑞亚之魂"
 	}
 	"Soul of Terraria Desc"
 	{
@@ -1779,6 +2029,7 @@
 	"Xeno Anti-Vial"
 	{
 		"en"	"Xeno Anti-Vial"
+		"chi"	"Xeno血清"
 	}
 	"Xeno Anti-Vial Desc"
 	{
@@ -1787,6 +2038,7 @@
 	"Seaborn Anti-Vial"
 	{
 		"en"	"Seaborn Anti-Vial"
+		"chi"	"海嗣血清"
 	}
 	"Seaborn Anti-Vial Desc"
 	{
@@ -1795,14 +2047,17 @@
 	"Revenge Squad"
 	{
 		"en"	"Revenge Squad"
+		"chi"	"复仇小队"
 	}
 	"Revenge Squad Desc"
 	{
 		"en"	"{blue}You remember what happened, to all of them."
+		"chi"	"{blue}你还记得他们所有人都发生了什么"
 	}
 	"Bob's Orders"
 	{
 		"en"	"Bob's Orders"
+		"chi"	"Bob 的订单"
 	}
 	"Bob's Orders Desc"
 	{
@@ -1811,6 +2066,7 @@
 	"But Nobody Is Here"
 	{
 		"en"	"But nobody is here..."
+		"chi"	"但这里没有人......"
 	}
 	"W.F. Mercenary Iberian"
 	{
@@ -1863,6 +2119,7 @@
 	"Eyes of the Sea"
 	{
 		"en"	"Eyes of the Sea"
+		"chi"	"海洋之眼"
 	}
 	"Eyes of the Sea Desc"
 	{
@@ -1871,6 +2128,7 @@
 	"Copper Ore"
 	{
 		"en"	"Copper Ore"
+		"chi"	"铜矿"
 	}
 	"Copper Ore Desc"
 	{
@@ -1879,6 +2137,7 @@
 	"Iron Ore"
 	{
 		"en"	"Iron Ore"
+		"chi"	"铁矿"
 	}
 	"Iron Ore Desc"
 	{
@@ -1949,3 +2208,4 @@
 		"en"	"You think I fight alone?"
 	}
 }
+

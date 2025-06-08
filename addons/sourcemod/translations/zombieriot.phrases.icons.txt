@@ -3,6 +3,7 @@
 	"Silvester? Spawn"
 	{
 		"en" 		"Xeno infected Silvester Pleads for help!"
+		"chi"		"感染了 Xeno 的 Silvester 恳求帮助！"
 	}
 	"Silvester And Waldch Arrived."
 	{
@@ -14,6 +15,7 @@
 	"Zilius Arrived Arrived."
 	{
 		"en" 		"Zilius Arrived the leader of the exlusionary Expidonsans."
+		"chi"		"极端派 Expidonsans 的领袖齐利乌斯到达了。"
 	}
 	"Nemesis Arrived."
 	{
@@ -21,7 +23,7 @@
 		"fr" 		"Nemesis, la source de l'infection Xéno, est ici."
 		"ru" 		"Прибыл Немезид, изначальный ксенозаразитель."
 		"pt"		"Nemesis, o Xeno infector original chegou."
-		"chi" 		"复仇女神已来。"
+		"chi" 		"最初的Xeno感染者复仇女神已来。"
 	}
 	"Mrx Arrived."
 	{
@@ -41,6 +43,7 @@
 	"Sea Alaxios Arrived"
 	{
 		"en" 		"The Infected Atlantean is screaming for help free him before it can make use of his power."
+		"chi"		"感染的亚特兰蒂斯人正在尖叫着寻求帮助，以免暴走。"
 	}
 	"Run while you can."
 	{
@@ -55,12 +58,14 @@
 		"ru" 		"Жнец Экспидонсы-Сенсал Пожинает."
 		"fr" 		"Le Expidonsan Sensal fauche."
 		"pt"		"O Expidonsan Sensal colhe."
+		"chi"		"Sensal Expidonsan的收割者。"
 	}
 	"Nemal Arrived"
 	{
 		"en" 		"The Iberia/Expidonsan Nemal is here."
 		"ru" 		"Иберец/Экспидонец Немал прибыла."
 		"fr" 		"Le Iberiain/Expidonsian Nemal est ici."
+		"chi"		"伊比利亚人Nemal到达"
 	}
 	"Vhxis arrived"
 	{
@@ -79,13 +84,14 @@
 	"Chaos Kahmlstein Arrived"
 	{
 		"en" 		"Kahmlstein, the rebellious chaos inflicted leader will annihilate you."
-		"ru" 		"Кахмлстейн,мятежный лидер, Подвергнутый хаосу, уничтожит вас.
+		"ru" 		"Кахмлстейн,мятежный лидер, Подвергнутый хаосу, уничтожит вас."
 		"fr" 		"Kahmlstein, le leader rebèle chaotique, va vous détruire."
 		"chi"		"混沌之首，卡姆斯坦因前来歼灭你。"
 	}
 	"Whiteflower The leader"
 	{
 		"en" 		"Whiteflower the traitor and betrayer arrived."
+		"chi"		"背叛者白英花抵达。"
 	}
 	"The Purge Arrived"
 	{
@@ -295,18 +301,19 @@
 		"ru" 	"Diversionistico Появились"
 		"fr"	"Diversionistico Apparaît"
 		"pt"	"Diversionistico Apareceu."
-		"chi"	"Diversionistico Spawn."
+		"chi"	"渗透者已部署."
 	}
 	"Diversionistico_Elitus Spawn"
 	{
 		"en"	"Diversionistico Elitus Spawn."
+		"chi"	"破阵者已部署."
 	}
 	"Voided Diversionistico Spawn"
 	{
 		"en"	"Voided Diversionistico Spawn"
 		"ru" 	"Voided Diversionistico Появились"
 		"fr"	"Diversionistico du Void Apparaît"
-		"chi"	"Voided DIversionistico Spawn."
+		"chi"	"虚空渗透者已部署."
 	}
 	"A Void Gate Apeared..."
 	{
@@ -320,6 +327,7 @@
 		"en"	"Iberian Lighthouse Teleported in!"
 		"ru" 	"Маяк Иберии Телепортировался!"
 		"fr"	"Une phare Iberiain s'est téléporté ici!"
+		"chi"	"伊比利亚灯塔传送了过来"
 	}
 	"Snipers Appear"
 	{
@@ -429,6 +437,7 @@
 	"Lelouch Spawn"
 	{
 		"en"		"Kill him before he opens the gate"
+		"chi"		"在传送门建成之前杀掉他。"
 	}
 	"3650 1"
 	{
@@ -448,63 +457,128 @@
 	{
 		"en"		"3650 makes an appearance."
 		"ru" 		"3650 появляется."
-		"chi"		"欧米茄现身了。"
+		"chi"		"3650现身了。"
 		"fr"		"3650 apparaît."
+	}
+	"The Goons 1"
+	{
+		"en"		"Prepare for a coordinated attack."
+		"ko"		"협동 공격에 대비하십시요."
+	}
+	"The Goons 2"
+	{
+		"en"		"Your position has been revealed to a sniper."
+		"ko"		"저격수에게 위치가 노출됬습니다."
+	}
+	"The Goons 3"
+	{
+		"en"		"Base is under attack."
+		"ko"		"기지가 공격받고 있습니다."
 	}
 	"Zmain spawn Text 1"
 	{
 		"en"		"A group of highly intelligent zombies appear."
+		"chi"		"一群高智商的丧尸出现了。"
 	}
 	"Zmain spawn Text 2"
 	{
 		"en"		"The Z-Mains planned something against you."
+		"chi"		"僵尸领域大神琢磨着怎么搞你。"
 	}
 	"Zmain spawn Text 3"
 	{
 		"en"		"Be glad PVP isnt a thing..."
+		"chi"		"庆幸 PVP 不是一回事......"
 	}
 	"John Spawn Text 1"
 	{
 		"en"		"RUN!"
+		"chi"		"跑！！！"
 	}
 	"John Spawn Text 2"
 	{
 		"en"		"Maybe you can rob him back? Or just run..."
+		"chi"		"也许你能反搞他？还是跑吧"
 	}
 	"John Spawn Text 3"
 	{
 		"en"		"I dont know... just run."
+		"chi"		"我不到啊，跑就得了。"
 	}
 	"Mikusch Spawn 1"
 	{
 		"en"		"Hope you're not the talky type."
+		"chi"		"希望你不是那种磨洋工的人。"
 	}
 	"Mikusch Spawn 2"
 	{
 		"en"		"Intelligence is required."
+		"chi"		"需要动点脑子。"
 	}
 	"Mikusch Spawn 3"
 	{
 		"en"		"A promise is a promise"
+		"chi"		"承诺就是承诺。"
 	}
 	"Victorian Radiomast Is Here!"
 	{
 		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
+		"chi"		"维多利亚时代的信号塔来了！打破这个以结束这一切"
+	}
+	"The Trumpet Skeleton 1"
+	{
+		"en"		"Boo!"
+		"ko"		"뿌국!"
+	}
+	"The Trumpet Skeleton 2"
+	{
+		"en"		"The Skeleton has appeared."
+		"chi"		"骷髅出现了！"
+		"ko"		"스켈레톤이 등장했습니다."
+	}
+	"The Trumpet Skeleton 3"
+	{
+		"en"		"A Trumpet is heard from somewhere."
+		"chi"		"传来了小号的声音。"
+		"ko"		"등''골''이 오싹해집니다.."
+	}
+	"The Victoria Precision Strike 1"
+	{
+		"en"		"Someone is targeting you!"
+		"chi"		"有东西正瞄着你呢。"
+		"ko"		"누군가 당신을 조준합니다!"
+	}
+	"The Victoria Precision Strike 2"
+	{
+		"en"		"Cannon fully loaded."
+		"ko"		"수성포 장전 완료."
+		"chi"		"炮弹已就绪。"
+	}
+	"The Victoria Precision Strike 3"
+	{
+		"en"		"Take care of your head."
+		"ko"		"경고, ''일격에 주님곁으로''(이)가 감지됨."
+		"chi"		"注意头顶。"
 	}
 	"Atomizer Arrived"
 	{
-		"en" 		"Leatherboots Scoutsquad's elite, Incoming Atomizer."
+		"en" 		"Incoming Atomizer."
+		"chi"		"Atomizer来袭"
 	}
 	"Huscarls Arrived"
 	{
 		"en" 		 "Huscarls halts you."
+		"chi"		"Huscarls 让你停下来。"
 	}
 	"Harrison Arrived"
 	{
-		"en" 		 "The Pilot of Victorian Artillery, Harrison Arrived."
+		"en" 		 "Harrison Arrived."
+		"chi"		"Harrison来了。"
 	}
 	"Castellan Arrived"
 	{
 		"en" 		 "Castellan arrives to put end to this."
+		"chi"		"Castellan的到来结束了这一切。"
 	}
 }
+

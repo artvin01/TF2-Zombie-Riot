@@ -4,399 +4,496 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"{red}Gained {1} Chaos Instability!"
+		"chi"		"{red}得到 {1} 坍缩值!"
 		"ru"		"{red}Получено {1} Хаосовой нестабильности!"
 	}
 	"Lost Chaos"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Lost {1} Chaos Instability!"
+		"chi"		"{red}失去 {1} 坍缩值!"
 		"ru"		"{green}Потеряно {1} Хаосовой нестабильности!"
 	}
 	"Heavy Rain"
 	{
 		"en"	"Heavy Rain"
+		"chi"	"暴雨"
 		"ru"	"Тяжелый дождь"
 	}
 	"Heavy Rain Desc"
 	{
 		"en"	"{yellow}All units move 20％ slower, Seaborn units instead move 10％ faster"
+		"chi"	"{yellow}所有单位的移动速度减慢 20%，海嗣单位的移动速度反而加快 10%"
 		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
 	}
 	"Heavy Rain Lore"
 	{
 		"en"	"It begins to rain heavily, you can feel it's weight."
+		"chi"	"雨越下越大，你可以感觉到它的强度。"
 		"ru"	"Начался ливень,Ты можешь почуствовать его тяжесть"
 	}
 	"Extreme Heat"
 	{
 		"en"	"Extreme Heat"
+		"chi"	"酷热"
 		"ru"	"Экстремальная жара"
 	}
 	"Extreme Heat Desc"
 	{
+		"chi"	"{green}敌人生成速度慢 3 倍{red}但友军复活速度慢 1.25 倍，邪魔单位的移动速度加快 20%"
 		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x1.25 slower and Al-Hallem units move 20％ faster"
 	}
 	"Extreme Heat Lore"
 	{
+		"chi"	"卧槽，太烧了"
 		"en"	"You feel the dreaded heat as your skin burns a bit."
 	}
 	"Heavy Wind"
 	{
+		"chi"	"强风"
 		"en"	"Heavy Wind"
 	}
 	"Heavy Wind Desc"
 	{
+		"chi"	"{yellow}所有弹道的移动速度减慢 33%，Expidonsan 弹道的移动速度加快 25%"
 		"en"	"{yellow}All projectiles move 33％ slower, Expidonsan projectiles instead move 25％ faster"
 	}
 	"Heavy Wind Lore"
 	{
+		"chi"	"你几乎无法继续前进。"
 		"en"	"You can barely keep moving forward with this heavy draft."
 	}
 	"Dense Frost"
 	{
+		"chi"	"浓霜"
 		"en"	"Dense Frost"
 	}
 	"Dense Frost Desc"
 	{
+		"chi"	"{yellow}所有单位都会随着时间推移而失去生命值（不能降低到 1 以下）{red}除了 Ziberia 单位"
 		"en"	"{yellow}All units lose health over time (can not be reduced below 1) {red}except for Ziberia units"
 	}
 	"Dense Frost Lore"
 	{
+		"chi"	"霜冻覆盖了你拥有的一切，包括你自己。"
 		"en"	"The frost covers everything you have, including you."
 	}
 	"Red Moon"
 	{
+		"chi"	"血月"
 		"en"	"Red Moon"
 	}
 	"Red Moon Desc"
 	{
+		"chi"	"{red}温迪戈单位的特殊特性得到了增强"
 		"en"	"{red}Wildingen units have their special traits enchanced"
 	}
 	"Red Moon Lore"
 	{
+		"chi"	"当你看到头顶上明亮的红色月亮时，一切都变成了红色。"
 		"en"	"Everything turns red as you see the bright red moon above."
 	}
 	
 	"Shadowing Darkness"
 	{
+		"chi"	"日全食"
 		"en"	"Shadowing Darkness"
 	}
 	"Shadowing Darkness Desc"
 	{
+		"chi"	"{red}每个人都获得 25% 攻击速度。"
 		"en"	"{red}Everyone gains 25％ attackspeed."
 	}
 	"Shadowing Darkness Lore"
 	{
+		"chi"	"他们一直在谈论他，但他不在这里......你是谁？它让你充满焦虑。"
 		"en"	"They kept talking about him, yet he isnt here... who is this? It fills you with anxiety."
 	}
 
 	"Compass and Map"
 	{
 		"en"	"Compass and Map"
+		"chi"	"指南针和地图"
 	}
 	"Compass and Map Desc"
 	{
 		"en"	"Go the right way, nothing more.\n{green}Enemies move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{green}Gain 75％ less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
+		"chi"	"最简单而正确的道路\n{green}敌人移动速度减慢 20%，受到的伤害增加 35%，造成的伤害减少 35%\n{green}混沌施加减少 75%\n{crimson}阻止获得其他结局"
 	}
 	"Healing Supplies"
 	{
 		"en"	"Healing Supplies"
+		"chi"		"医疗用品"
 	}
 	"Healing Supplies Desc"
 	{
 		"en"	"To always be careful of the unknown.\n{green}Restores last stand effect"
+		"chi"		"时刻小心未知。\n{green}恢复最后一人效果"
 	}
 	"Camping Supplies"
 	{
 		"en"	"Camping Supplies"
+		"chi"		"露营用品"
 	}
 	"Camping Supplies Desc"
 	{
 		"en"	"Stay longer so we can search more.\n{yellow}Adds an extra stage to every floor"
+		"chi"		"停留更长时间，以便我们搜索更多。\n{yellow}每层增加一个额外的舞台"
 	}
 	"Trading Supplies"
 	{
 		"en"	"Trading Supplies"
+		"chi"		"训练用品"
 	}
 	"Trading Supplies Desc"
 	{
 		"en"	"Bring some cash for trading later.\n{green}Gain 20 Australium Ingots"
+		"chi"		"带点现金稍后交易。\n{green}获得 20 个澳元素锭"
 	}
 	"Weapon Supplies"
 	{
 		"en"	"Weapon Supplies"
+		"chi"		"武器用品"
 	}
 	"Weapon Supplies Desc"
 	{
 		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 cash and 30 ammo supplies"
+		"chi"		"确保我们的弹药不会用完。\n{green} 获得 250 现金和 30 份弹药补给"
 	}
 	"Bob's Assistance"
 	{
 		"en"	"Bob's Assistance"
+		"chi"		"Bob 的帮助"
 	}
 	"Bob's Assistance Desc"
 	{
+		"chi"		"鲍勃加入你，引导你超越这个目标。每有 5 点坍缩值敌人便增加 1% 的生命值和伤害{blue}并打开一些东西"
 		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1％ health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
 	}
 	"Small Comic Book"
 	{
 		"en"	"Small Comic Book"
+		"chi"		"小漫画书"
 	}
 	"Small Comic Book Desc"
 	{
 		"en"	"A comic that explains how Xeno came to be, you may know who made this.\n{green}Allies gain 2000 barrier"
+		"chi"		"一本解释 Xeno 是如何形成的漫画，你可能知道是谁制作的.\n{green}盟友获得 2000 屏障"
 	}
 	"Large Comic Book"
 	{
 		"en"	"Large Comic Book"
+		"chi"		"大漫画书"
 	}
 	"Large Comic Book Desc"
 	{
 		"en"	"It's a bit heavy, the written date is in the future.\n{green}Allies gain 3000 barrier"
+		"chi"		"这有点重，写的日期是在未来.\n{green}盟友获得 3000 屏障"
 	}
 	"Hot Water Kettle"
 	{
 		"en"	"Hot Water Kettle"
+		"chi"		"热水壶"
 	}
 	"Hot Water Kettle Desc"
 	{
 		"en"	"Want to make some noodles?\n{green}+1000 Cash, Allies gain +125 max health"
+		"chi"		"想我上面给你吃吗?\n{green}+1000 现金，盟友最大生命值 +125"
 	}
 	"Special Suppressor"
 	{
 		"en"	"Special Suppressor"
+		"chi"		"特殊抑制器"
 	}
 	"Special Suppressor Desc"
 	{
 		"en"	"Something used in the past to deal with Xeno.\n{green}Allies gain +250 max health"
+		"chi"		"过去用来对付 Xeno 的东西\n{green}盟友获得 250 最大生命值"
 	}
 	"Stone Gargoyle"
 	{
 		"en"	"Stone Gargoyle"
+		"chi"		"石像鬼"
 	}
 	"Stone Gargoyle Desc"
 	{
 		"en"	"Fits at the palm of your hand.\n{green}Allies gain +375 max health"
+		"chi"		"适合在你的手上，而不是脸上.\n{green}盟友获得 375 最大生命值"
 	}
 	"Vampire's Bed"
 	{
 		"en"	"Vampire's Bed"
+		"chi"		"血魔的床塌"
 	}
 	"Vampire's Bed Desc"
 	{
 		"en"	"Just be glad it's empty.\n{green}Allies gain +500 max health"
+		"chi"		"就好在它是空的.\n{green}盟友获得 500 最大生命值"
 	}
 	"Proof of Longevity"
 	{
 		"en"	"Proof of Longevity"
+		"chi"		"长者之证"
 	}
 	"Proof of Longevity Desc"
 	{
 		"en"	"A tree branch that has withered and flourished.\n{green}Allies gain +750 max health"
+		"chi"		"一根枯萎而茂盛的树枝.\n{green}}盟友获得 750 最大生命值"
 	}
 	"Banshee's Kiss"
 	{
 		"en"	"Banshee's Kiss"
+		"chi"		"女妖之吻"
 	}
 	"Banshee's Kiss Desc"
 	{
 		"en"	"A pretty necklace, who gonna wear it?\n{green}+8000 Cash"
+		"chi"		"一条漂亮的项链，谁会戴呢?\n{green}+ 8000 现金"
 	}
 	"Blood Diamond"
 	{
 		"en"	"Blood Diamond"
+		"chi"		"血钻"
 	}
 	"Blood Diamond Desc"
 	{
 		"en"	"A pretty ring, who gonna wear it?\n{green}+25 Australium Ingots"
+		"chi"		"一枚漂亮的戒指，谁会戴它呢?\n{green} +25 澳元素锭"
 	}
 	"Fissured Restraints"
 	{
 		"en"	"Fissured Restraints"
+		"chi"		"裂缝约束"
 	}
 	"Fissured Restraints Desc"
 	{
 		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies gain -7％ damage"
+		"chi"		"这根坚固的带子似乎曾经被用来抑制可怕的东西...\n{green}敌人的伤害 -7%"
 	}
 	"Abyssal Wyrdmask"
 	{
 		"en"	"Abyssal Wyrdmask"
+		"chi"		"深渊面具"
 	}
 	"Abyssal Wyrdmask Desc"
 	{
 		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies gain -12％ damage"
+		"chi"		"一个不属于你熟悉的任何文化的可怕面具.\n{green}敌人伤害力 -12%"
 	}
 	"Godmother's Token"
 	{
 		"en"	"Godmother's Token"
+		"chi"		"教母的代币"
 	}
 	"Godmother's Token Desc"
 	{
 		"en"	"A laurel of bones.\n{green}Enemies gain -17％ damage"
+		"chi"		"一棵骸骨桂冠.\n{green}}敌人的伤害 -17%"
 	}
 	"The Whisperer in Darknight"
 	{
 		"en"	"''The Whisperer in Darknight''"
+		"chi"		"《暗夜中的低语者》"
 	}
 	"The Whisperer in Darknight Desc"
 	{
 		"en"	"A black vinyl. DO. NOT. TOUCH. IT.\n{green}Enemies gain -10％ max health"
+		"chi"		"黑色黑胶唱片。不要触摸.\n{green}敌人最大生命值 -10%"
 	}
 	"Gold-Plated Dice"
 	{
 		"en"	"Gold-Plated Dice"
+		"chi"		"镀金骰子"
 	}
 	"Gold-Plated Dice Desc"
 	{
 		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -15％ max health"
+		"chi"		"镀金模具的一面代表生命。至于其他 19 个面...\n{green}敌人的最大生命值 -15%"
 	}
 	"The Profound Silence"
 	{
 		"en"	"''The Profound Silence''"
+		"chi"		"大静谧"
 	}
 	"The Profound Silence Desc"
 	{
 		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -20％ max health"
+		"chi"		"一幅描绘伊比利亚历史上最大灾难的画作...\n{green}敌人最大生命值 -20%"
 	}
 	"Emperor's Favor"
 	{
 		"en"	"Emperor's Favor"
+		"chi"		"皇帝的恩宠"
 	}
 	"Emperor's Favor Desc"
 	{
 		"en"	"A very sharp letter opener.\n{green}Player melee weapons gain +15％ damage"
+		"chi"		"一个非常锋利的开信刀.\n{green}玩家近战武器获得 15% 伤害"
 	}
 	"Vieux Vanguard's Blade"
 	{
 		"en"	"Vieux Vanguard's Blade"
+		"chi"		"近卫的刀锋"
 	}
 	"Vieux Vanguard's Blade Desc"
 	{
 		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Player melee weapons gain +25％ damage"
+		"chi"		"一把丢失的深海近卫之刃.\n{green}玩家近战武器获得 25% 伤害"
 	}
 	"Necklace of the Presence"
 	{
 		"en"	"Necklace of the Presence"
+		"chi"		"存在项链"
 	}
 	"Necklace of the Presence Desc"
 	{
 		"en"	"Faith hangs ten centimeters above your heart.\n{green}Player ranged weapons gain +15％ damage"
+		"chi"		"信仰挂在你的心脏上方 10 厘米处.\n{green}玩家远程武器获得 15% 伤害"
 	}
 	"Damaged Revolver Cylinder"
 	{
 		"en"	"Damaged Revolver Cylinder"
+		"chi"		"损坏的左轮手枪"
 	}
 	"Damaged Revolver Cylinder Desc"
 	{
 		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Player ranged weapons gain +25％ damage"
+		"chi"		"她从未投降，即使经历了无数的考验和磨难.\n{green}玩家远程武器获得 25% 的伤害"
 	}
 	"Royal Rapier"
 	{
 		"en"	"Royal Rapier"
+		"chi"		"皇家剑杆"
 	}
 	"Royal Rapier Desc"
 	{
 		"en"	"A highly decorative rapier for nobles.\n{green}Player mage weapons gain +15％ damage"
+		"chi"		"贵族的装饰性很强的细剑.\n{green}玩家法师武器伤害提高 15%"
 	}
 	"Silver Forks"
 	{
 		"en"	"Silver Forks"
+		"chi"		"银餐叉"
 	}
 	"Silver Forks Desc"
 	{
 		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Player mage weapons gain +25％ damage"
+		"chi"		"大祭司不会容忍桌上的任何错误.\n{green}玩家法师武器获得 25% 伤害"
 	}
 	"Noxious Hemostatic Agent"
 	{
 		"en"	"Noxious Hemostatic Agent"
+		"chi"		"有害止血剂"
 	}
 	"Noxious Hemostatic Agent Desc"
 	{
 		"en"	"Don't ask what's in it.\n{green}Allies gain +20％ max health"
+		"chi"		"不要问里面有什么.\n{green}盟友获得 20% 最大生命值"
 	}
 	"First Aid Kit"
 	{
 		"en"	"First Aid Kit"
+		"chi"		"急救箱"
 	}
 	"First Aid Kit Desc"
 	{
 		"en"	"What's different from the held weapon? I don't know.\n{green}Allies gain +35％ max health"
+		"chi"		"和手持的武器有什么不同？我不知道。\n{green}盟友最大生命值+35%"
 	}
 	"Unknown Instrument"
 	{
 		"en"	"Unknown Instrument"
+		"chi"		"未知仪器"
 	}
 	"Unknown Instrument Desc"
 	{
 		"en"	"Don't ask. It's for your own good.\n{green}Allies gain +50％ max health"
+		"chi"		"不要问。这是为了你好.\n{green}盟友最大生命值+50%"
 	}
 	"Rusted Razor"
 	{
 		"en"	"Rusted Razor"
+		"chi"		"生锈的剃刀"
 	}
 	"Rusted Razor Desc"
 	{
 		"en"	"If you cut yourself with this, you know what will happen.\n{green}Enemies gain +15％ melee vulnerability"
+		"chi"		"如果你用这个割伤自己，你就会知道会发生什么.\n{green}敌人获得 15% 近战脆弱性"
 	}
 	"Carriage Driver's Whip"
 	{
 		"en"	"Carriage Driver's Whip"
+		"chi"		"马车夫的鞭子"
 	}
 	"Carriage Driver's Whip Desc"
 	{
 		"en"	"As the troupe's carriage driver, he has no name and no past.\n{green}Enemies gain +25％ melee vulnerability"
+		"chi"		"作为剧团的马车司机，他没有名字，也没有过去.\n{green}敌人获得 25% 的近战脆弱性"
 	}
 	"Avenger"
 	{
 		"en"	"''Avenger''"
+		"chi"		"复仇者"
 	}
 	"Avenger Desc"
 	{
 		"en"	"Looks like a pocket knife in a pouch.\n{green}Enemies gain +35％ melee vulnerability"
+		"chi"		"看起来像一把装在袋子里的小刀.\n{green}敌人的近战脆弱性提高 35%"
 	}
 	"Standard Anti-Riot Instrument"
 	{
 		"en"	"Standard Anti-Riot Instrument"
+		"chi"		"标准防暴仪"
 	}
 	"Standard Anti-Riot Instrument Desc"
 	{
 		"en"	"For general zombie usage.\n{green}Enemies gain +15％ ranged vulnerability"
+		"chi"		"一般僵尸使用.\n{green}敌人获得 15% 远程脆弱性"
 	}
 	"Emperor's Collection"
 	{
 		"en"	"Emperor's Collection"
+		"chi"		"岩石藏品"
 	}
 	"Emperor's Collection Desc"
 	{
 		"en"	"A rock collection, what for?\n{green}Enemies gain +25％ ranged vulnerability"
+		"chi"		"岩石收藏品，有啥用?\n{green}敌人获得 25% 远程脆弱性"
 	}
 	"Brilliant Lament"
 	{
 		"en"	"''Brilliant Lament''"
+		"chi"		"《灿烂的哀歌》"
 	}
 	"Brilliant Lament Desc"
 	{
 		"en"	"His blood yet flows. He has never left this place.\n{green}Enemies gain +35％ ranged vulnerability"
+		"chi"		"他的血液还在流淌。他从未离开过这个地方.\n{green}敌人获得 35% 远程脆弱性"
 	}
 	"Live Rose"
 	{
 		"en"	"Live Rose"
+		"chi"		"活玫瑰"
 	}
 	"Live Rose Desc"
 	{
 		"en"	"Is it you who nourish her, or is it her who protects you?\n{green}Players receive +20％ more health from healing"
+		"chi"		"是你滋养她，还是她保护你?\n{green}玩家从治疗中获得的生命值增加 20%"
 	}
 	"White Flower Crown"
 	{
 		"en"	"White Flower Crown"
+		"chi"		"白花冠"
 	}
 	"White Flower Crown Desc"
 	{
 		"en"	"A floral veil used in Vampire rituals.\n{green}Players receive +30％ more health from healing"
+		"chi"		"血魔仪式中使用的花纱.\n{green}玩家从治疗中获得的生命值增加 30%"
 	}
 	"Dancer's Bracelets"
 	{
 		"en"	"Dancer's Bracelets"
+		"chi"		"舞者手镯"
 	}
 	"Dancer's Bracelets Desc"
 	{
@@ -405,10 +502,12 @@
 	"Peek into the Eternal Night"
 	{
 		"en"	"''Peek into the Eternal Night''"
+		"chi"		"窥视永恒的黑夜"
 	}
 	"Mazeat Lost Technology"
 	{
 		"en"	"''Mazeat Lost Technology''"
+		"chi"		"Mazeat 失落的技术"
 	}
 	"Mazeat Lost Technology Desc"
 	{
@@ -421,6 +520,7 @@
 	"Dead Tree's Echo"
 	{
 		"en"	"''Dead Tree's Echo''"
+		"chi"		"Dead Tree 的 Echo"
 	}
 	"Dead Tree's Echo Desc"
 	{
@@ -429,6 +529,7 @@
 	"Frozen Whetstone"
 	{
 		"en"	"Frozen Whetstone"
+		"chi"		"冰冻磨刀石"
 	}
 	"Frozen Whetstone Desc"
 	{
@@ -437,6 +538,7 @@
 	"Clairvoyant's Reveal"
 	{
 		"en"	"Clairvoyant's Reveal"
+		"chi"		"望远镜"
 	}
 	"Clairvoyant's Reveal Desc"
 	{
@@ -445,6 +547,7 @@
 	"Finshell Shield"
 	{
 		"en"	"Finshell Shield"
+		"chi"		"鳍壳盾牌"
 	}
 	"Finshell Shield Desc"
 	{
@@ -453,6 +556,7 @@
 	"Empty Fowlbeast"
 	{
 		"en"	"Empty Fowlbeast"
+		"chi"		"空鸟兽"
 	}
 	"Empty Fowlbeast Desc"
 	{
@@ -461,6 +565,7 @@
 	"Acahuallan Bowl"
 	{
 		"en"	"Acahuallan Bowl"
+		"chi"		"Acahuallan 碗"
 	}
 	"Acahuallan Bowl Desc"
 	{
@@ -469,22 +574,27 @@
 	"Defender-2"
 	{
 		"en"	"Defender-2"
+		"chi"		"防御者-2"
 	}
 	"Defender-2 Desc"
 	{
 		"en"	"A mass-produced defensive-type drone.\n{green}Allies gain 2500 barrier"
+		"chi"		"一架量产的防御型无人机.\n{green}盟友获得 2500 屏障"
 	}
 	"Golden Chalice"
 	{
 		"en"	"Golden Chalice"
+		"chi"		"金酒之杯"
 	}
 	"Golden Chalice Desc"
 	{
 		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases based Australium Ingots amount"
+		"chi"		"圣徒、骑士和虔诚主义者。他们都是疯子.\n{green}盟友攻击速度增加基于澳元素锭的数量"
 	}
 	"Queen's Fellowship"
 	{
 		"en"	"Queen's Fellowship"
+		"chi"		"女王奖学金"
 	}
 	"Queen's Fellowship Desc"
 	{
@@ -493,14 +603,18 @@
 	"Ancient Tree Fruit"
 	{
 		"en"	"Ancient Tree Fruit"
+		"chi"		"古树果实"
 	}
 	"Ancient Tree Fruit Desc"
 	{
 		"en"	"When the tree bears fruit, the first four are taken.\n{green}Obtain 3 random artifacts"
+		"chi"		"当树结果时，前四个会被拿走.\n{green}获得 3 个随机文物"
 	}
 	"Steam Sale"
 	{
 		"en"	"Steam Sale"
+		"chi"		"打折券"
+		"ko"	"스팀 세일"
 	}
 	"Steam Sale Desc"
 	{
@@ -509,58 +623,73 @@
 	"Steal Grigori"
 	{
 		"en"	"Take them from Father Grigori"
+		"chi"		"从格里高利神父那里拿走它们"
+		"ko"	"그레고리에게 ''할인을 할 것''을 간청한다"
 	}
 	"Steal Grigori Desc"
 	{
 		"en"	"Fight Father Grigori for the chance to take all his items without pay"
+		"ko"	"그레고리와 싸워서 현재 진열된 모든 아이템을 100％ 할인된 가격으로 가져갈수있습니다."
 	}
 	"Steal Ruinian"
 	{
 		"en"	"Take them from the Ruinian"
+		"chi"		"从 Ruinian 那里拿走它们"
 	}
 	"Steal Ruinian Desc"
 	{
 		"en"	"Steal all their precious items!\n{crimson}But twirl might not like that."
+		"chi"		"偷走他们所有的珍贵物品！\n{crimson}但 twirl 可能不喜欢那样。"
 	}
 	"Mark of a Thief"
 	{
 		"en"	"Mark of a Thief"
+		"chi"		"失信人员"
 	}
 	"Mark of a Thief Desc"
 	{
 		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
+		"chi"		"你试图从格里高利神父那里偷东西，你不会回来的。\n{red}商店不再出现"
 	}
 	"Evil Within from Ruina's Great Crystal"
 	{
 		"en"	"Evil Within from Ruina's Great Crystal"
+		"chi"		"来自废墟大水晶的恶念"
 	}
 	"Evil Within from Ruina's Great Crystal Desc"
 	{
 		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies have 25％ more HP and 15％ more damage."
+		"chi"		"你从可怜的 Ruinian 那里偷东西......你内心的邪恶似乎赋予了某人力量{crimson}。敌人的生命值增加 25%，伤害增加 15%。"
 	}
 	"Great Within from Ruina's Great Crystal"
 	{
 		"en"	"Great Within from Ruina's Great Crystal"
+		"chi"		"来自废墟大水晶的赞赏"
 	}
 	"Great Within from Ruina's Great Crystal Desc"
 	{
 		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies have has 15％ Less HP and 10％ less damage."
+		"chi"		"Ruinian快乐地离开，Twirl认可你的行动！\n{green}敌人的生命值减少 15%，伤害减少 10%。"
 	}
 	"Ruinian Shop Help Out"
 	{
 		"en"	"Give Money to the Ruinian"
+		"chi"		"shut up and take my money"
 	}
 	"Ruinian Shop Help Out Desc"
 	{
 		"en"	"Give the Ruinian a certain amount of cash {green} and obtain Twirls Favor."
+		"chi"		"贿赂"
 	}
 	"Bob's Duck"
 	{
 		"en"	"Bob's Duck"
+		"chi"		"鲍勃的小黄鸭"
 	}
 	"Bob's Duck Desc"
 	{
 		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ firing speed, +15％ reload speed, +10％ damage resistance, Whoever the duck follows gains insane buffs"
+		"chi"		"鲍勃心爱的宠物鸭子，''Dubby'''.\n{green}盟友获得 25% 伤害加成、25% 最大生命值、15% 开火速度、15% 装填速度、10% 伤害抗性、鸭子跟随谁获得这疯狂的增益"
 	}
 	"Underground Scorch"
 	{
@@ -613,10 +742,12 @@
 	"The Scraper"
 	{
 		"en"	"The Scraper"
+		"chi"		"刮板"
 	}
 	"The Scraper Desc"
 	{
 		"en"	"Grind the rest for some useful scrap.\n{yellow}Recovered weapon are instead converted into 2 Australium Ingots"
+		"chi"		"研磨其余的以获得一些有用的废料.\n{yellow}回收的武器会被转化为 2 个澳元素锭"
 	}
 	"Suspicious Shrimp Plate"
 	{
@@ -629,10 +760,12 @@
 	"Pack of Smokes"
 	{
 		"en"	"Pack of Smokes"
+		"chi"		"瑞克五代"
 	}
 	"Pack of Smokes Desc"
 	{
 		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
+		"chi"		"芜湖，我有神的力量.\n{green盟友获得 20% 的开火、装填和治疗速度提升{red}但在每关结束后得到5点坍缩值"
 	}
 	"Silver Seal Letter"
 	{
@@ -726,26 +859,32 @@
 	"Waldch Assistance"
 	{
 		"en"	"Waldch's Assistance"
+		"chi"	"Waldch的帮助"
 	}
 	"Waldch Assistance Desc"
 	{
 		"en"	"Waldch joins you."
+		"chi"	"Waldch加入"
 	}
 	"Kahmlstein Guidance"
 	{
 		"en"	"Kahmlstein's Guidance"
+		"chi"	"Waldch的指导"
 	}
 	"Kahmlstein Guidance Desc"
 	{
 		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
+		"chi"	"你加入 Kahmlstein。\n{green}玩家持有的武器冷却时间每 1.5 秒减少 1 秒"
 	}
 	"Twirl Guidance"
 	{
 		"en"	"Twirl's Guidance"
+		"chi"	"Twirl的指导"
 	}
 	"Twirl Guidance Desc"
 	{
 		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15％ max mana and mana regen"
+		"chi"	"你加入 Kahmlstein。\n{green}玩家手持武器的冷却时间每 1.5 秒减少 0.5 秒，法师武器也会获得 15% 的最大法力值和法力恢复"
 	}
 	"Unauthorized Ruina Gem"
 	{
@@ -868,6 +1007,7 @@
 	"Wish Fulfilled"
 	{
 		"en"	"Wish Fulfilled"
+		"chi"	"得偿所愿"
 	}
 	"Wish Fulfilled Lore"
 	{
@@ -1173,10 +1313,13 @@
 	"Emergency Dispatch"
 	{
 		"en"	"Emergency Dispatch"
+		"chi"	"先行一步"
+		"ko"	"You're going to Brazil"
 	}
 	"Emergency Dispatch Lore"
 	{
 		"en"	"You find a Wildingen, seemingly in worry.\nHe asks you if you can spare someone to help his family.\nTheir village is under attack."
+		"ko"	"당신은 걱정스러워 보이는 와일딘겐을 만납니다.\n그는 당신에게 가족을 도울 사람을 보내줄 수 있겠느냐고 묻습니다.\n그들의 마을은 공격을 받고 있습니다."
 	}
 	"Emergency Dispatch Option 1"
 	{
@@ -1242,294 +1385,367 @@
 	"Bad Water"
 	{
 		"en"	"Bad Water"
+		"chi"	"坏水"
 	}
 	"Bad Water!"
 	{
 		"en"	"Bad Water ⚠"
+		"chi"	"坏水 ⚠"
 	}
 	"Town Center"
 	{
 		"en"	"Town Center"
+		"chi"	"城镇中心"
 	}
 	"Town Center!"
 	{
 		"en"	"Town Center ⚠"
+		"chi"	"城镇中心 ⚠"
 	}
 	"Demon Box"
 	{
 		"en"	"Demon Box"
+		"chi"	"恶魔盒子"
 	}
 	"Demon Box!"
 	{
 		"en"	"Demon Box ⚠"
+		"chi"	"恶魔盒子 ⚠"
 	}
 	"Scout Rush"
 	{
 		"en"	"Scout Rush"
+		"chi"	"侦察兵冲击"
 	}
 	"Scout Rush!"
 	{
 		"en"	"Scout Rush ⚠"
+		"chi"	"侦察兵冲击 ⚠"
 	}
 	"False Information"
 	{
 		"en"	"False Information"
+		"chi"	"虚假信息"
 	}
 	"False Information!"
 	{
 		"en"	"False Information ⚠"
+		"chi"	"虚假信息 ⚠"
 	}
 	"Jumping Jacks"
 	{
 		"en"	"Jumping Jacks"
+		"chi"	"天降奇兵"
 	}
 	"Jumping Jacks!"
 	{
 		"en"	"Jumping Jacks ⚠"
+		"chi"	"天降奇兵 ⚠"
 	}
 	"Lost Empires"
 	{
 		"en"	"Lost Empires"
+		"chi"	"失落的帝国"
 	}
 	"Lost Empires!"
 	{
 		"en"	"Lost Empires ⚠"
+		"chi"	"失落的帝国 ⚠"
 	}
 	"Supplies"
 	{
 		"en"	"Supplies"
+		"chi"	"耗材"
 	}
 	"Supplies!"
 	{
 		"en"	"Supplies ⚠"
+		"chi"	"耗材 ⚠"
 	}
 	"No Swimming"
 	{
 		"en"	"No Swimming"
+		"chi"	"禁止游泳"
 	}
 	"No Swimming!"
 	{
 		"en"	"No Swimming ⚠"
+		"chi"	"禁止游泳 ⚠"
 	}
 	"All Hallem"
 	{
 		"en"	"All Hallem"
+		"chi"	"全是邪魔"
 	}
 	"All Hallem!"
 	{
 		"en"	"All Hallem ⚠"
+		"chi"	"全是邪魔 ⚠"
 	}
 	"Camel Riders"
 	{
 		"en"	"Camel Riders"
+		"chi"	"骆驼骑士"
 	}
 	"Camel Riders!"
 	{
 		"en"	"Camel Riders ⚠"
+		"chi"	"骆驼骑士 ⚠"
 	}
 	"Secret Hunter"
 	{
 		"en"	"Secret Hunter"
+		"chi"	"秘密猎人"
 	}
 	"Secret Hunter!"
 	{
 		"en"	"Secret Hunter ⚠"
+		"chi"	"秘密猎人 ⚠"
 	}
 	"Whiteflower Avenger's"
 	{
 		"en"	"Whiteflower Avenger's"
+		"chi"	"WF复仇者"
 	}
 	"Whiteflower Avenger's!"
 	{
 		"en"	"Whiteflower Avenger's ⚠"
+		"chi"	"WF复仇者 ⚠"
 	}
 	"Barricade"
 	{
 		"en"	"Barricade"
+		"chi"	"路障"
 	}
 	"Barricade!"
 	{
 		"en"	"Barricade ⚠"
+		"chi"	"路障 ⚠"
 	}
 	"Into The Shed"
 	{
 		"en"	"Into The Shed"
+		"chi"	"走进棚屋"
 	}
 	"Into The Shed!"
 	{
 		"en"	"Into The Shed ⚠"
+		"chi"	"走进棚屋 ⚠"
 	}
 	"The Abomination"
 	{
 		"en"	"The Abomination"
+		"chi"	"憎恶"
 	}
 	"The Abomination!"
 	{
 		"en"	"The Abomination ⚠"
+		"chi"	"憎恶 ⚠"
 	}
 	"Up To The Roof"
 	{
 		"en"	"Up To The Roof"
+		"chi"	"上房顶"
 	}
 	"Up To The Roof!"
 	{
 		"en"	"Up To The Roof ⚠"
+		"chi"	"上房顶 ⚠"
 	}
 	"Rock Collection"
 	{
 		"en"	"Rock Collection"
+		"chi"	"石头收集"
 	}
 	"Rock Collection!"
 	{
 		"en"	"Rock Collection ⚠"
+		"chi"	"石头收集 ⚠"
 	}
 	"Hitman II"
 	{
 		"en"	"Hitman II"
+		"chi"	"打人侠II"
 	}
 	"Hitman II!"
 	{
 		"en"	"Hitman II ⚠"
+		"chi"	"打人侠II ⚠"
 	}
 	"Pre-Heated Oven"
 	{
 		"en"	"Pre-Heated Oven"
+		"chi"	"预热烘箱"
 	}
 	"Pre-Heated Oven!"
 	{
 		"en"	"Pre-Heated Oven ⚠"
+		"chi"	"预热烘箱 ⚠"
 	}
 	"Pre-Heated Oven?"
 	{
 		"en"	"Pre-Heated Oven ☠"
+		"chi"	"预热烘箱 ☠"
 	}
 	"Yummer"
 	{
 		"en"	"Yummer"
+		"chi"	"好吃"
 	}
 	"Yummer!"
 	{
 		"en"	"Yummer ⚠"
+		"chi"	"好吃 ⚠"
 	}
 	"Yummer?"
 	{
 		"en"	"Yummer ☠"
+		"chi"	"好吃 ☠"
 	}
 	"Heavy Forest"
 	{
 		"en"	"Heavy Forest"
+		"chi"	"机枪丛林"
 	}
 	"Heavy Forest!"
 	{
 		"en"	"Heavy Forest ⚠"
+		"chi"	"机枪丛林 ⚠"
 	}
 	"Heavy Forest?"
 	{
 		"en"	"Heavy Forest ☠"
+		"chi"	"机枪丛林 ☠"
 	}
 	"Frostbite"
 	{
 		"en"	"Frostbite"
+		"chi"	"冻伤"
 	}
 	"Frostbite!"
 	{
 		"en"	"Frostbite ⚠"
+		"chi"	"冻伤 ⚠"
 	}
 	"Frostbite?"
 	{
 		"en"	"Frostbite ☠"
+		"chi"	"冻伤 ☠"
 	}
 	"Heavy Jacket"
 	{
 		"en"	"Heavy Jacket"
+		"chi"	"重型夹克"
 	}
 	"Heavy Jacket!"
 	{
 		"en"	"Heavy Jacket ⚠"
+		"chi"	"重型夹克 ⚠"
 	}
 	"Heavy Jacket?"
 	{
 		"en"	"Heavy Jacket ☠"
+		"chi"	"重型夹克 ☠"
 	}
 	"Freezer Water"
 	{
 		"en"	"Freezer Water"
+		"chi"	"冷冻水"
 	}
 	"Freezer Water!"
 	{
 		"en"	"Freezer Water ⚠"
+		"chi"	"冷冻水 ⚠"
 	}
 	"Freezer Water?"
 	{
 		"en"	"Freezer Water ☠"
+		"chi"	"冷冻水 ☠"
 	}
 	"Home of the North"
 	{
 		"en"	"Home of the North"
+		"chi"	"北方之家"
 	}
 	"Home of the North!"
 	{
 		"en"	"Home of the North ⚠"
+		"chi"	"北方之家 ⚠"
 	}
 	"Home of the North?"
 	{
 		"en"	"Home of the North ☠"
+		"chi"	"北方之家 ☠"
 	}
 	"Das Concrete"
 	{
 		"en"	"Das Concrete"
+		"chi"	"Das Concrete公司"
 	}
 	"Das Concrete!"
 	{
 		"en"	"Das Concrete ⚠"
+		"chi"	"Das Concrete公司 ⚠"
 	}
 	"Machine Works"
 	{
 		"en"	"Machine Works"
+		"chi"	"机械工程"
 	}
 	"Machine Works!"
 	{
 		"en"	"Machine Works ⚠"
+		"chi"	"机械工程 ⚠"
 	}
 	"All In Chaos"
 	{
 		"en"	"All In Chaos"
+		"chi"	"全员坍缩"
 	}
 	"All In Chaos!"
 	{
 		"en"	"All In Chaos ⚠"
+		"chi"	"全员坍缩 ⚠"
 	}
 	"Silk Cradle"
 	{
 		"en"	"Silk Cradle"
+		"chi"	"丝绸摇篮"
 	}
 	"Anchordeep"
 	{
 		"en"	"Anchordeep"
+		"chi"	"沉锚"
 	}
 	"Underground"
 	{
 		"en"	"Underground"
+		"chi"	"地下"
 	}
 	"Anura"
 	{
 		"en"	"Anura"
+		"chi"	"无尾目"
 	}
 	"Darkwood"
 	{
 		"en"	"Darkwood"
+		"chi"	"黑木"
 	}
 	"Last of Interitus"
 	{
 		"en"	"Last of Interitus"
+		"chi"	"最后的 Interitus"
 	}
 	"Escapee 1"
 	{
 		"en"	"Escapee"
+		"chi"	"逃犯"
 	}
 	"Escapee"
 	{
 		"en"	"Escapee"
+		"chi"	"逃犯"
 	}
 	"Escapee Lore"
 	{
@@ -1538,94 +1754,117 @@
 	"Clashing Colors"
 	{
 		"en"	"Clashing Colors ⚠"
+		"chi"	"冲突颜色 ⚠"
 	}
 	"Age Cheats"
 	{
 		"en"	"Age Cheats ⚠"
+		"chi"	"年龄秘籍 ⚠"
 	}
 	"The Old The New"
 	{
 		"en"	"The Old, The New ⚠"
+		"chi"	"古往今来 ⚠"
 	}
 	"Not so Missunderstood"
 	{
 		"en"	"Not so Missunderstood"
+		"chi"	"没那么被误解"
 	}
 	"Not so Missunderstood!"
 	{
 		"en"	"Not so Missunderstood ⚠"
+		"chi"	"没那么被误解 ⚠"
 	}
 	"Broken Defenses"
 	{
 		"en"	"Broken Defenses"
+		"chi"	"破损的防御"
 	}
 	"Broken Defenses!"
 	{
 		"en"	"Broken Defenses ⚠"
+		"chi"	"破损的防御 ⚠"
 	}
 	"Godly army Under Chaos"
 	{
 		"en"	"Godly army Under Chaos"
+		"chi"	"混沌下的神圣军队"
 	}
 	"Godly army Under Chaos!"
 	{
 		"en"	"Godly army Under Chaos ⚠"
+		"chi"	"混沌下的神圣军队 ⚠"
 	}
 	"Forsaken Tribe"
 	{
 		"en"	"Forsaken Tribe"
+		"chi"	"被遗忘的部落"
 	}
 	"Forsaken Tribe!"
 	{
 		"en"	"Forsaken Tribe ⚠"
+		"chi"	"被遗忘的部落 ⚠"
 	}
 	"Roaming Chaos Demons"
 	{
 		"en"	"Roaming Chaos Demons"
+		"chi"	"漫游混沌恶魔"
 	}
 	"Roaming Chaos Demons!"
 	{
 		"en"	"Roaming Chaos Demons ⚠"
+		"chi"	"漫游混沌恶魔 ⚠"
 	}
 	"Antagonising Iberians"
 	{
 		"en"	"Antagonising Iberians"
+		"chi"	"与伊比利亚人对抗"
 	}
 	"Antagonising Iberians!"
 	{
 		"en"	"Antagonising Iberians ⚠"
+		"chi"	"与伊比利亚人对抗 ⚠"
 	}
 	"Lost Zombies"
 	{
 		"en"	"Lost Zombies"
+		"chi"	"迷失的僵尸"
 	}
 	"Lost Zombies!"
 	{
 		"en"	"Lost Zombies ⚠"
+		"chi"	"迷失的僵尸 ⚠"
 	}
 	"Mercs against Mercs"
 	{
 		"en"	"Mercs against Mercs"
+		"chi"	"佣兵对佣兵"
 	}
 	"Mercs against Mercs!"
 	{
 		"en"	"Mercs against Mercs ⚠"
+		"chi"	"佣兵对佣兵 ⚠"
 	}
 	"Ruania"
 	{
 		"en"	"Ruania"
+		"chi"	"废墟"
 	}
 	"Chaos Ruinian"
 	{
 		"en"	"Chaos Ruinian"
+		"chi"	"混沌废墟"
 	}
 	"The Irritated Soldiers"
 	{
 		"en"	"The Irritated Soldiers"
+		"chi"	"被激怒的士兵"
 	}
 	"Hiding Ruinian"
 	{
 		"en"	"Hiding Ruinian"
+		"chi"	"躲起来的废墟人"
 	}
 	"The Magic Betrayed"
 	{
@@ -1634,10 +1873,12 @@
 	"The Courtain"
 	{
 		"en"	"The Courtain"
+		"chi"	"库尔坦"
 	}
 	"The Great Demons Of Hallam"
 	{
 		"en"	"The Great Demons Of Hallam"
+		"chi"	"无垠回荡克雷松"
 	}
 	"Mazeat Lost Tech Lore"
 	{
@@ -1660,3 +1901,4 @@
 		"en"	"{green}Obtain a Grant item, {crimson}but you might get unwanted attention."
 	}
 }
+
