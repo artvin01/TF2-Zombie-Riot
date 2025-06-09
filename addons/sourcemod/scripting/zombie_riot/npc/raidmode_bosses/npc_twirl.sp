@@ -1701,7 +1701,7 @@ static void lunar_Radiance_Tick(int iNPC)
 	i_lunar_ammo[npc.index] +=1;
 
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[20];
+	int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
 	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
 	int i_te_used = 0;

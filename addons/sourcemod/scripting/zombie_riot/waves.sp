@@ -266,6 +266,7 @@ public Action Waves_SetWaveCmd(int client, int args)
 	char buffer[12];
 	GetCmdArgString(buffer, sizeof(buffer));
 	CurrentRound = StringToInt(buffer);
+	RelayCurrentRound = CurrentRound;
 	CurrentWave = -1;
 	Waves_Progress();
 	return Plugin_Handled;
@@ -727,8 +728,8 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 					if(level < 10)
 						level = 10;
 					
-					level += RoundFloat(level * multi);
-					if(AverageLevel > level && level > choosenLevel)
+					level += RoundToNearest(level * multi);
+					if(AverageLevel >= level && level > choosenLevel)
 					{
 						choosen = i;
 						choosenLevel = level;
@@ -990,6 +991,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	CurrentRound = 0;
 	CurrentWave = -1;
+	RelayCurrentRound = 0;
 	
 	Waves_ClearWaves();
 	Waves_ResetCashGiveWaveEnd();
@@ -1409,6 +1411,7 @@ void Waves_RoundEnd()
 	InSetup = true;
 //	InFreeplay = false;
 	CurrentRound = 0;
+	RelayCurrentRound = 0;
 	CurrentWave = -1;
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
 
@@ -1882,10 +1885,26 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Spawners_Timer();
 			if(CurrentRound != length)
 			{
+				int ScalingDoWavesDone = RoundToNearest((float(CurrentRound) * (MinibossScalingReturn())));
 				char ExecuteRelayThings[255];
-				//do not during freeplay.
-				FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",CurrentRound);
-				ExcuteRelay(ExecuteRelayThings);
+				for(; RelayCurrentRound <= ScalingDoWavesDone ; RelayCurrentRound++)
+				{
+					//do not during freeplay.
+					FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",ScalingDoWavesDone);
+					ExcuteRelay(ExecuteRelayThings);
+					if(MinibossScalingReturn() != 1.0) //only do this if were doing special logic
+					{
+						switch(RelayCurrentRound)
+						{
+							case 58:
+							{
+								ExcuteRelay("zr_wavefinish_wave_59");
+								RelayCurrentRound++;
+								//some maps need this called!
+							}
+						}
+					}
+				}
 			}
 
 			bool wasEmptyWave = !round.Waves.Length;
@@ -2459,6 +2478,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	{
 		PrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
 		CurrentRound = 0;
+		RelayCurrentRound = 0;
 		CurrentWave = -1;
 	}
 	else
@@ -3009,14 +3029,15 @@ void DoGlobalMultiScaling()
 	if(playercount < 2.0)
 		playercount = 2.0;
 	
-	if(ZRStocks_PlayerScalingDynamic(0.0,true, true) >= 19.0)
+	int PlayersIngame = RoundToNearest(ZRStocks_PlayerScalingDynamic(0.0,true, true));
+
+	if(PlayersIngame >= 19.0)
 		EnableSilentMode = true;
 	else
 		EnableSilentMode = false;
 
-//	EnableSilentMode = true;
-	
 	playercount *= 0.88;
+	playercount *= GetScaledPlayerCountMulti(PlayersIngame);
 
 	float multi = playercount / 4.0;
 	
@@ -3074,6 +3095,29 @@ void DoGlobalMultiScaling()
 	{
 		PlayerCountResBuffScaling = 0.75;
 	}
+}
+
+// Anything below this amount of players is considered "balanced" and players are each considered as pulling their weight.
+#define SCALE_PLAYERCOUNT_CUTOFF    14
+// Controls how quickly the scaling multiplier drops off.
+// Lower values = slower decay, players beyond SCALE_PLAYERCOUNT_CUTOFF contribute much more to scaling, much longer
+// Higher valeus = faster decay, players beyond SCALE_PLAYERCOUNT_CUTOFF contribute much less to scaling, much sooner
+#define SCALE_DROP_RATE             0.04
+// Lowest possible multiplier for high player counts.
+// Once scaling settles, each player contributes at least 80% of a player, never lower.
+// This only really matters for very high playercounts even beyond 40, simply a safeguard so it can't go into insanity.
+#define SCALE_MIN_MUTIPLIER         0.8
+
+// Returns the effective players for scaling
+float GetScaledPlayerCountMulti(int players)
+{
+    if (players <= SCALE_PLAYERCOUNT_CUTOFF)
+        return 1.0;
+    
+    float excess = float(players - SCALE_PLAYERCOUNT_CUTOFF);
+    float multiplier = 1.0 - (1.0 - SCALE_MIN_MUTIPLIER) * (1.0 - Exponential(-SCALE_DROP_RATE * excess));
+
+    return multiplier;
 }
 
 void ScalingMultiplyEnemyHpGlobalScale(int iNpc)
@@ -3993,149 +4037,6 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 	return false;
 }
 
-/*
-bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, int panzer_chance, bool GiveAmmoSupplies)
-{
-	Rounds.GetArray(length, round);
-	if(++CurrentWave < 8)
-	{
-		DoGlobalMultiScaling();
-
-		int postWaves = CurrentRound - length;
-		f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
-
-		Rounds.GetArray(length, round);
-		length = round.Waves.Length;
-		
-		int Max_Enemy_Get = Freeplay_EnemyCount();
-		for(int i; i < length; i++)
-		{
-			if(Freeplay_ShouldAddEnemy()) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
-			{
-				round.Waves.GetArray(i, wave);
-				Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);
-
-				if(wave.Count > 0)
-				{
-					for(int a; a < wave.Count; a++)
-					{
-						Waves_AddNextEnemy(wave.EnemyData);
-					}
-					
-					Zombies_Currently_Still_Ongoing += wave.Count;
-
-					if(!(--Max_Enemy_Get))
-						break;
-				}
-			}
-		}
-
-		// Note: Artvin remove this, this is freeplay code
-		if(Freeplay_ShouldMiniBoss() && !subgame) //no miniboss during roguelikes.
-		{
-			panzer_spawn = true;
-			NPC_SpawnNext(panzer_spawn, true);
-		}
-		else
-		{
-			panzer_spawn = false;
-			NPC_SpawnNext(false, false);
-		}
-		
-		if(!Enemies.Length)
-		{
-			CurrentWave++;
-			Waves_Progress();
-			return true;
-		}
-		CurrentWave = 9;
-	}
-	else if(donotAdvanceRound)
-	{
-		CurrentWave = 9;
-	}
-	else
-	{
-		WaveEndLogicExtra();
-
-		int postWaves = CurrentRound - length;
-		Freeplay_OnEndWave(round.Cash);
-		CurrentCash += round.Cash;
-
-		if(round.Cash)
-		{
-			CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
-		}
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsClientInGame(client))
-			{
-				if(music_stop)
-				{
-					Music_Stop_All(client);
-				}
-			}
-		}
-		
-		RaidMusicSpecial1.Clear();
-		
-		ExcuteRelay("zr_wavedone");
-		CurrentRound++;
-		CurrentWave = -1;
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client))
-			{
-				DoOverlay(client, "", 2);
-				if(IsPlayerAlive(client) && GetClientTeam(client)==2)
-					GiveXP(client, round.Xp);
-			}
-		}
-		
-		
-		ReviveAll();
-		
-		Music_EndLastmann();
-		CheckAlivePlayers();
-
-		if((CurrentRound % 5) == 4)
-		{
-			Freeplay_SetupStart(true);
-
-			Cooldown = GetGameTime() + 15.0;
-			
-			InSetup = true;
-			ExcuteRelay("zr_setuptime");
-			
-			SpawnTimer(15.0);
-			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-			
-			Menu menu = new Menu(Waves_FreeplayVote);
-			menu.SetTitle("Continue Freeplay..?\nThis will be asked every 5 waves.\n ");
-			menu.AddItem("", "Yes");
-			menu.AddItem("", "No");
-			menu.ExitButton = false;
-			
-			int total = 0;
-			int[] players = new int[MaxClients];
-			for(int i=1; i<=MaxClients; i++)
-			{
-				if(IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i)==2)
-					players[total++] = i;
-			}
-			
-			menu.DisplayVote(players, total, 15);
-			
-			Citizen_SetupStart();
-		}
-		else
-		{
-			return true;
-		}
-	}
-	return false;
-}
-*/
 int CashGainedTotal;
 void Waves_ResetCashGiveWaveEnd()
 {
@@ -4157,7 +4058,7 @@ int Waves_AverageLevelGet(int MaxLevelAllow)
 	int LevelObtained;
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && !IsFakeClient(client))
+		if(IsClientInGame(client) && !IsFakeClient(client) && Database_IsCached(client))
 		{
 			if(Level[client] >= MaxLevelAllow)
 				LevelObtained += MaxLevelAllow;

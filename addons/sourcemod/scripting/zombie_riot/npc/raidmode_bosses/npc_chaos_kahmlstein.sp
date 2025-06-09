@@ -1030,7 +1030,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		if(Target > 0)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[20];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
 			//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
@@ -1151,7 +1151,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		if(Target > 0)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[20];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
 			//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)

@@ -1433,7 +1433,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 				{
 					npc.m_flTimeUntillSummonRocket = 0.0;
 					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-					int enemy[20];
+					int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
 					GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 					for(int i; i < sizeof(enemy); i++)
 					{

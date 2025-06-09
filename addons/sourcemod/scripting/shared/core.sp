@@ -60,6 +60,7 @@
 
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
+#define RAIDBOSS_GLOBAL_ATTACKLIMIT 16
 
 //#pragma dynamic	131072
 //Allah This plugin has so much we need to do this.

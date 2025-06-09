@@ -317,6 +317,7 @@ MusicEnum BGMusicSpecial1;
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
 int CurrentWave = -1;
+int RelayCurrentRound = -1;
 int StartCash;
 float RoundStartTime;
 char WhatDifficultySetting_Internal[32];
@@ -1298,9 +1299,9 @@ public Action CommandDebugHudTest(int client, int args)
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
-//	CheckAlivePlayers(0, 0, true);
 	DoGlobalMultiScaling();
-
+	float ScalingTestDo = GetScaledPlayerCountMulti(Number);
+	PrintToChatAll("ScalingTestDo %f",ScalingTestDo);
 	return Plugin_Handled;
 }
 

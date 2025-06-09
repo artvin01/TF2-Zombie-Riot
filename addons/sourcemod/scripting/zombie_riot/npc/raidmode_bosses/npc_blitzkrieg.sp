@@ -505,7 +505,10 @@ methodmap Blitzkrieg < CClotBody
 		npc.m_iMaxRockets = 20;		//blitz's max ammo, this number changes on lifeloss.
 
 		b_buffed_blitz = StrContains(data, "hyper") != -1;	//mostly for testing. buuuut....
-
+		if(FindInfoTarget("zr_hyperblitz")) //if the map asks for hyperblitz, force hyperblitz.
+		{
+			b_buffed_blitz = true;
+		}
 		b_pureblitz = false;
 		if(!b_buffed_blitz)
 		{
