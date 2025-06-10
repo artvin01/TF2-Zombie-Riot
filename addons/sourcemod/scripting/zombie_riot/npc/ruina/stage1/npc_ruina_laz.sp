@@ -358,7 +358,7 @@ static void ClotThink(int iNPC)
 
 						int beam = ConnectWithBeamClient(npc.m_iWearable5, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
 						CreateTimer(Laser_Time, Timer_RemoveEntity, EntIndexToEntRef(beam), TIMER_FLAG_NO_MAPCHANGE);
-						i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
+						i_rocket_particle[Proj] = EntIndexToEntRef(beam);
 					}
 				}
 			}
