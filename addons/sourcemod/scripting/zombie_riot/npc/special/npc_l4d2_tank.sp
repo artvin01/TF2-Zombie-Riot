@@ -522,7 +522,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 					}
 				}
 			}
-			else if(!I_Wanna_Throw_ally && (flDistanceToTarget < 12500 && fl_ThrowPlayerCooldown[iNPC] < GetGameTime(npc.index) && !npc.m_bLostHalfHealth && (!b_NpcHasDied[closest] || closest < MaxClients) && !i_IsABuilding[closest]))
+			else if(!I_Wanna_Throw_ally && (flDistanceToTarget < 12500 && fl_ThrowPlayerCooldown[iNPC] < GetGameTime(npc.index) && !npc.m_bLostHalfHealth && (!b_NpcHasDied[closest] || closest <= MaxClients) && !i_IsABuilding[closest]))
 			{
 				int Enemy_I_See;
 					

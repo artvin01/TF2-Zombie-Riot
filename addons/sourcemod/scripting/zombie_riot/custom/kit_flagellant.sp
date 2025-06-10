@@ -534,7 +534,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				
 				ClientCommand(client, "playgamesound player/invuln_off_vaccinator.wav");
 
-				if(target < MaxClients)
+				if(target <= MaxClients)
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 				
 				float cooldown = (healing / multi) / 15.0;

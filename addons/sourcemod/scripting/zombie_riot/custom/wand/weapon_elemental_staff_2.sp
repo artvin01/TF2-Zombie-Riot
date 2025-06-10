@@ -227,6 +227,7 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 	if(weapon >= MaxClients)
 	{
 		int mana_cost = 75;
+		mana_cost = RoundToNearest(float(mana_cost) * LaserWeapons_ReturnManaCost(weapon));
 		if(mana_cost <= Current_Mana[client])
 		{
 			SDKhooks_SetManaRegenDelayTime(client, 2.0);
@@ -791,4 +792,17 @@ static void PassangerHandLightningEffect(int entity = -1, float VecPos_target[3]
 	laser = ConnectWithBeam(entity, -1, r, g, b, 3.0, 3.0, 2.35, LASERBEAM, _, VecPos_target,"effect_hand_l");
 
 	CreateTimer(1.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+
+
+float LaserWeapons_ReturnManaCost(int weapon)
+{
+	float ManaCost = 1.0;
+	//This will take into account projectile stuff for lasers, so tinkers and other stuff dont give free damage.
+	ManaCost *= (1.0 / Attributes_Get(weapon, 101, 1.0));
+	ManaCost *= (1.0 / Attributes_Get(weapon, 102, 1.0));
+	ManaCost *= (1.0 / Attributes_Get(weapon, 103, 1.0));
+	ManaCost *= (1.0 / Attributes_Get(weapon, 104, 1.0));
+	return ManaCost;
 }

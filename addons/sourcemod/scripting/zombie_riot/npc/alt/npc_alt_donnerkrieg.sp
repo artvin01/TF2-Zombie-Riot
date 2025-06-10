@@ -328,7 +328,7 @@ static void Internal_ClotThink(int iNPC)
 				CPrintToChatAll("{aqua}Stella{snow}: And hes {crimson}Karlas{snow}!");
 				
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{

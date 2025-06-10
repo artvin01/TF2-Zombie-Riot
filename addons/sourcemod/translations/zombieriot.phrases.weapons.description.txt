@@ -1264,15 +1264,13 @@
 
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nArchetype changes to ''Chain Caster''"
+		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nProjectile speed/Range affect manacost.\nArchetype changes to ''Chain Caster''"
 	}
 	
 	"Beam Wand Desc"
 	{
-		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
-		"fr"	"Laser constant qui épuise le Mana. M2 pompe plus de Mana dans l'attaque pour améliorer les dégats."
-		"ru"	"Удерживайте М1 для постоянного луча уничтожения. М2 - усиление магии, больше маны = сильнее, но выше восстановление."
-		"chi"   "按住M1发出一个恒定的光束来清除你的敌人。M2:魔法超速。更多的法力值=更强更快的CD"
+		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD.\nProjectile speed/Range affect manacost."
+
 	}
 	"Beam Wand Pap 1"
 	{
@@ -3131,9 +3129,7 @@
 	}
 	"Impact Lance Desc 1"
 	{
-		"en"	"Increased damage\nA Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width"
-		"fr"	"Une lance magique qui est manié comme une arme corps-à-corps.\nUtilise du Mana pour attaquer, cause aucun dégat si votre Mana est épuisé.\nPortée longue,\ngrandeur et cadence des attaques réduites."
-		"chi"	"魔法所造的长矛。和近战无区别。\攻击消耗蓝，稍慢的攻击速度。\n蓝耗尽时，不会造成任何伤害。\n更长的距离，更细的判定。"
+		"en"	"A Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width\nProjectile speed/Range affect manacost."
 	}
 	"Impact Lance Desc 2"
 	{

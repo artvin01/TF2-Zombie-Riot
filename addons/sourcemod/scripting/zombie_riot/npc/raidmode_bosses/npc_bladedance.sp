@@ -435,7 +435,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	{
 		CPrintToChatAll("{crimson}Bladedance{default}: You and Bob the first.. you both missunderstand who the enemy is.. its {white}Whiteflower{default} you fools! He betrayed {crimson}Guln{default} aswell!");
 		CPrintToChatAll("{crimson}Bladedance{default} escapes from you... and gains the ability to copy {crimson}you.");
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{

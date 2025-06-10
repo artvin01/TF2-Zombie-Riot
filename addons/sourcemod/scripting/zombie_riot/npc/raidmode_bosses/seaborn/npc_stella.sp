@@ -1412,7 +1412,7 @@ static Action Lunar_Grace_Tick(int iNPC)
 	TE_SetupGlowSprite(flPos, gGlow1, STELLA_TE_DURATION, 0.65, 255);
 	TE_SendToAll();
 
-	if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget < MaxClients)
+	if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget <= MaxClients)
 	{
 		//the one who is getting targeted will see the ring a bit differently.
 		TE_SetupBeamRingPoint(struct_Lunar_Grace_Data[npc.index].Loc, fl_lunar_radius*2.0, fl_lunar_radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, STELLA_TE_DURATION, 6.0, 0.1, {255,255,255,255}, 1, 0);

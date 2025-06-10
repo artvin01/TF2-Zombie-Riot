@@ -600,7 +600,7 @@ static void Internal_ClotThink(int iNPC)
 			case 9:
 			{
 				CPrintToChatAll("{blue}Castellan{default}: We will return to Victoria now.");
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
@@ -1659,7 +1659,7 @@ bool SensalTalkPostWin(Sensal npc)
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
@@ -1776,7 +1776,7 @@ bool SensalMassLaserAttack(Sensal npc)
 	if(npc.m_flAttackHappens_2)
 	{
 		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy_2[20]; 
+		int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
 		//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 		bool ClientTargeted[MAXENTITIES];
 		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);

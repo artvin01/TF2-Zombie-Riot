@@ -512,7 +512,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, I thank you, though beware of the rogue machine... {red}Blitzkrieg.");
 			npc.m_bDissapearOnDeath = true;
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-			for (int client = 0; client < MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 				{

@@ -3820,7 +3820,15 @@
 	}
 	"The Blacksmith Failed!"
 	{
-		"en"		"The builder is no longer alive or nothing is on this!"
+		"en"		"The owner no longer owns this kit! Self detonation!!!"
+	}
+	"Weapon No Effect Tinker"
+	{
+		"en"		"This doesn't seem to effect this weapon!"
+	}
+	"No Burger Left"
+	{
+		"en"		"No Burgers Left! Probably."
 	}
 	"Blacksmith No Attribs"
 	{
@@ -3850,6 +3858,10 @@
 		"en"	"Bring up Class Change Menu"
 		"fr"	"Montrer le Menu de Changement de Classe"
 		"chi"	"打开兵种切换菜单"
+	}
+	"Display top 5"
+	{
+		"en"	"Display Top 5 Damage and Support"
 	}
 	"Corrode"
 	{

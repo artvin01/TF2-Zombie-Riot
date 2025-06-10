@@ -941,7 +941,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
 	{
 #if defined RPG
-		if(ent1 < MaxClients && ent2 < MaxClients)
+		if(ent1 <= MaxClients && ent2 <= MaxClients)
 		{
 			if(RPGCore_PlayerCanPVP(ent1, ent2))
 				return true;
