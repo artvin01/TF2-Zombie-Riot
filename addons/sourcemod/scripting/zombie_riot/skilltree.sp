@@ -251,7 +251,6 @@ void SkillTree_GiveItem(int client, int weapon)
 		}
 
 		StringMapSnapshot snap = map.Snapshot();
-		
 		float value;
 		length = snap.Length;
 		for(int i; i < length; i++)
@@ -261,7 +260,17 @@ void SkillTree_GiveItem(int client, int weapon)
 			snap.GetKey(i, name, size);
 			
 			map.GetValue(name, value);
-			Attributes_SetMulti(weapon, StringToInt(name), 1.0 + value);
+			int AttributeWhich = StringToInt(name);
+			switch(AttributeWhich)
+			{
+				case 6,97:
+				{
+					Attributes_SetMulti(weapon, AttributeWhich, (value * -1.0) + 1.0);
+					//if its these attributes, then actually reduce!
+				}
+				default:
+					Attributes_SetMulti(weapon, AttributeWhich, 1.0 + value);
+			}
 		}
 
 		delete snap;

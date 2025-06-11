@@ -60,6 +60,7 @@
 
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
+#define RAIDBOSS_GLOBAL_ATTACKLIMIT 16
 
 //#pragma dynamic	131072
 //Allah This plugin has so much we need to do this.
@@ -902,6 +903,11 @@ public void OnPluginEnd()
 //	Waves_MapEnd(); DO NOT CALL THIS ON PLUGIN END, plugin ends anways, why change anything???
 	RemoveMVMLogicSafety();
 #endif
+	float WaitingForPlayersTime = FindConVar("mp_waitingforplayers_time").FloatValue;
+	if(WaitingForPlayersTime <= 0.0)
+		return;
+	//Fixes ZR breaking waiting for players.
+	GameRules_SetProp("m_bInWaitingForPlayers", false);
 }
 
 #if defined ZR
@@ -928,6 +934,7 @@ void RemoveMVMLogicSafety()
 	}
 }
 #endif
+
 void Core_PrecacheGlobalCustom()
 {
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");

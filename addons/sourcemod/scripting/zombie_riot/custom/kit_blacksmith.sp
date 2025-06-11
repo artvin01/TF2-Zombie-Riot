@@ -260,9 +260,8 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 	if(owner == -1 || SmithLevel[owner] < 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "The Blacksmith Failed!");
-		ApplyBuildingCollectCooldown(entity, client, FAR_FUTURE);
+		DestroyBuildingDo(entity);
+		SPrintToChat(client, "%t", "The Blacksmith Failed!");
 		return;
 	}
 	
@@ -548,6 +547,25 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 							}
 						}	
 					}
+				}
+				else if(StrEqual(classname, "tf_weapon_flamethrower"))
+				{
+					//flamethrowers get different logic.
+					switch(GetURandomInt() % 3)
+					{
+						case 0:
+						{
+							TinkerMeleeRapidSwing(tinker.Rarity, tinker);
+						}
+						case 1:
+						{
+							TinkerHeavyTrigger(tinker.Rarity, tinker);
+						}
+						case 2:
+						{
+							TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
+						}
+					}	
 				}
 				else
 				{

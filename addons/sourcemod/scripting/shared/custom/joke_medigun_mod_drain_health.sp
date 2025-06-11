@@ -530,6 +530,8 @@ void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUb
 	float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 
 	float HeatExtra = 0.10;
+	
+	HeatExtra *= TickrateModify; //incase tickrate is different.
 
 	if(RespectUberDuration)
 		HeatExtra = HeatExtra / MedigunGetUberDuration(owner);

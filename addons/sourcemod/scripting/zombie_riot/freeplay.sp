@@ -1201,7 +1201,7 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		return Plugin_Stop;
 	}
 
-	for (int client = 0; client < MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
@@ -1384,7 +1384,7 @@ void Freeplay_OnEndWave(int &cash)
 
 	if(Freeplay_GetRemainingExp() > 0.0)
 	{
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && TeutonType[client] != TEUTON_WAITING && GetClientTeam(client) == 2)
 			{
@@ -1969,7 +1969,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && !b_IsPlayerABot[client])
 			{

@@ -105,104 +105,114 @@ void BlacksmithGrill_BuildingUsed(int entity, int client)
 
 static void GrillingUse(int client, int entity)
 {
-	if(dieingstate[client] == 0)
+	if(dieingstate[client] != 0)
 	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(owner != -1)
+		return;
+	}
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(owner == -1)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		DestroyBuildingDo(entity);
+		SPrintToChat(client, "%t", "The Blacksmith Failed!");
+		return;
+	}
+	int level = MerchantLevelReturn(owner);
+
+	if(level < 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		DestroyBuildingDo(entity);
+		SPrintToChat(client, "%t", "The Blacksmith Failed!");
+		return;
+	}
+	if(Selling[owner] && Selling[owner].Length > 0)
+	{
+		int sauce = Selling[owner].Get(0);
+		Selling[owner].Erase(0);
+
+		float healing = 120.0 * Attributes_GetOnPlayer(owner, 8, true);
+		healing *= 0.5; //too op
+
+		char buffer[128];
+		FormatEx(buffer, sizeof(buffer), "Healed %d health", RoundFloat(healing));
+
+		switch(sauce)
 		{
-			int level = MerchantLevelReturn(owner);
-
-			if(level >= 0)
+			case S_Mayo:
 			{
-				if(Selling[owner] && Selling[owner].Length > 0)
+				if(Armor_Charge[client] < 0)
 				{
-					int sauce = Selling[owner].Get(0);
-					Selling[owner].Erase(0);
-
-					float healing = 120.0 * Attributes_GetOnPlayer(owner, 8, true);
-					healing *= 0.5; //too op
-
-					char buffer[128];
-					FormatEx(buffer, sizeof(buffer), "Healed %d health", RoundFloat(healing));
-
-					switch(sauce)
-					{
-						case S_Mayo:
-						{
-							if(Armor_Charge[client] < 0)
-							{
-								Armor_Charge[client] = 0;
-								Format(buffer, sizeof(buffer), "%s and removed elemental damage", buffer);
-							}
-						}
-						case S_Ketchup:
-						{
-							Armor_Charge[client] += MaxArmorCalculation(Armor_Level[client], client, 0.333);
-							Format(buffer, sizeof(buffer), "%s and 33％ armor", buffer);
-						}
-						case S_Mustard:
-						{
-							HealEntityGlobal(owner, client, healing / 10.0, _, 20.0);
-							Format(buffer, sizeof(buffer), "%s and passive healing for 20s", buffer);
-						}
-						case S_Barbecue:
-						{
-							ApplyStatusEffect(owner, client, "Healing Resolve", 15.0);
-							Format(buffer, sizeof(buffer), "%s and buffed for 15s", buffer);
-						}
-						case S_Special:
-						{
-							if(i_AmountDowned[client] > 0)
-							{
-								i_AmountDowned[client]--;
-								Format(buffer, sizeof(buffer), "%s and gained 1 revive", buffer);
-							}
-						}
-					}
-
-					if(sauce >= 0 && sauce < Sauce_MAX)
-					{
-						CPrintToChat(client, "You ate a {yellow}%s Burger{default}\n{green}%s", SauceName[sauce], buffer);
-					}
-					else
-					{
-						CPrintToChat(client, "You ate a {yellow}Plain Burger{default}\n{green}%s", buffer);
-					}
-
-					HealEntityGlobal(owner, client, healing, _, 3.0);
-					Building_GiveRewardsUse(client, owner, 15, true, 0.4, true);
-					ObjectTinkerGrill_UpdateWearables(entity, Selling[owner].Length);
-
-					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-					ClientCommand(client, "playgamesound vo/sandwicheat09.mp3");
-					
-					float cooldown = Cooldowns[level];
-					if(client == owner)
-						cooldown *= 0.5;
-					
-					ApplyBuildingCollectCooldown(entity, client, cooldown);
-
-					if(client != owner)
-					{
-						if(Selling[owner].Length == 0)
-						{
-							ClientCommand(owner, "playgamesound ui/quest_status_tick_novice_complete_pda.wav");
-						}
-						else if(!Rogue_Mode())
-						{
-							ClientCommand(owner, "playgamesound ui/quest_status_tick_novice_friend.wav");
-						}
-					}
-
-					return;
+					Armor_Charge[client] = 0;
+					Format(buffer, sizeof(buffer), "%s and removed elemental damage", buffer);
+				}
+			}
+			case S_Ketchup:
+			{
+				Armor_Charge[client] += MaxArmorCalculation(Armor_Level[client], client, 0.333);
+				Format(buffer, sizeof(buffer), "%s and 33％ armor", buffer);
+			}
+			case S_Mustard:
+			{
+				HealEntityGlobal(owner, client, healing / 10.0, _, 20.0);
+				Format(buffer, sizeof(buffer), "%s and passive healing for 20s", buffer);
+			}
+			case S_Barbecue:
+			{
+				ApplyStatusEffect(owner, client, "Healing Resolve", 15.0);
+				Format(buffer, sizeof(buffer), "%s and buffed for 15s", buffer);
+			}
+			case S_Special:
+			{
+				if(i_AmountDowned[client] > 0)
+				{
+					i_AmountDowned[client]--;
+					Format(buffer, sizeof(buffer), "%s and gained 1 revive", buffer);
 				}
 			}
 		}
 
+		if(sauce >= 0 && sauce < Sauce_MAX)
+		{
+			CPrintToChat(client, "You ate a {yellow}%s Burger{default}\n{green}%s", SauceName[sauce], buffer);
+		}
+		else
+		{
+			CPrintToChat(client, "You ate a {yellow}Plain Burger{default}\n{green}%s", buffer);
+		}
+
+		HealEntityGlobal(owner, client, healing, _, 3.0);
+		Building_GiveRewardsUse(client, owner, 15, true, 0.4, true);
+		ObjectTinkerGrill_UpdateWearables(entity, Selling[owner].Length);
+
+		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
+		ClientCommand(client, "playgamesound vo/sandwicheat09.mp3");
+		
+		float cooldown = Cooldowns[level];
+		if(client == owner)
+			cooldown *= 0.5;
+		
+		ApplyBuildingCollectCooldown(entity, client, cooldown);
+
+		if(client != owner)
+		{
+			if(Selling[owner].Length == 0)
+			{
+				ClientCommand(owner, "playgamesound ui/quest_status_tick_novice_complete_pda.wav");
+			}
+			else if(!Rogue_Mode())
+			{
+				ClientCommand(owner, "playgamesound ui/quest_status_tick_novice_friend.wav");
+			}
+		}
+	}
+	else
+	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "The Blacksmith Failed!");
-		ApplyBuildingCollectCooldown(entity, client, 3.0);
+		ShowSyncHudText(client, SyncHud_Notifaction, "No Burger Left");
+		ApplyBuildingCollectCooldown(entity, client, 2.0);
+		return;
 	}
 }
 

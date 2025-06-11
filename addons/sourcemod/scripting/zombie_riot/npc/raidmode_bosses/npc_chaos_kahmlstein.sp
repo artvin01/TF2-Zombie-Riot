@@ -1030,7 +1030,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		if(Target > 0)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[20];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
 			//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
@@ -1151,7 +1151,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		if(Target > 0)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[20];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
 			//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
@@ -2075,7 +2075,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Here, take this. It's going to be safe in your hands.");
 				i_TalkDelayCheck += 1;
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{

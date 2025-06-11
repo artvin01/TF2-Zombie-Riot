@@ -4339,8 +4339,8 @@
 	}
 	"The Blacksmith Failed!"
 	{
-		"en"		"The builder is no longer alive or nothing is on this!"
-		"ko"		"건축가가 아무도 살아있지 않거나 아무도 이 구조물을 소유하고 있지 않습니다!"
+		"en"		"The owner no longer owns this kit! Self detonation!!!"
+		"ko"		"소유자가 더 이상 이것과 관련된 키트를 소유하고 있지 않습니다! 이 구조물을 자폭시킵니다!"
 	}
 	"Weapon No Effect Tinker"
 	{
@@ -4390,6 +4390,10 @@
 	{
 		"en"	"Display Top 5 Damage and Support"
 		"ko"	"피해량 또는 지원량 순위표 표시"
+	}
+	"Display top 5"
+	{
+		"en"	"Display Top 5 Damage and Support"
 	}
 	"Corrode"
 	{

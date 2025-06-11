@@ -165,6 +165,7 @@ public void Activate_Beam_Wand_Pap(int client, int weapon)
 
 		int mana_cost;
 		mana_cost = RoundFloat(Attributes_Get(weapon, 733, 1.0));
+		mana_cost = RoundToNearest(float(mana_cost) * LaserWeapons_ReturnManaCost(weapon));
 			
 		i_mana_cost_base[client] = mana_cost;	//as far as I am aware there are no effects currently that can affect a weapons mana cost realtime, so rather than getting the attribute every time the weapon fires, we only need to get it if a refresh happens
 		i_weapon_pap_tier[client] = pap;

@@ -818,7 +818,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		npc.SetActivity("ACT_IDLE");
 		npc.m_bisWalking = false;
 		npc.StopPathing();
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 			{
@@ -1402,7 +1402,8 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1200000.0 * MultiGlobalHighHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), 1, true);				
+			//	GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), 1, true);
+			// remove villager, he is too unbalanced on bigger maps.	
 			}			
 		}
 	}
@@ -2324,7 +2325,7 @@ bool AlaxiosForceTalk()
 			{
 				CPrintToChatAll("{lightblue}God Alaxios{default}: ALL HEIL THE MERCENARIES!! {crimson} FOR ATLANTISSSSS!!!!!!!!!!!!!!.");
 				i_TalkDelayCheck = 11;
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{

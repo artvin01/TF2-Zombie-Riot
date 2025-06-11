@@ -345,7 +345,6 @@ methodmap Bloon < CClotBody
 	}
 	public int UpdateBloonInfo()
 	{
-		ObtainHealthDifference(this.index);
 		this.m_iBleedType = this.m_iType == Bloon_Lead ? BLEEDTYPE_METAL : BLEEDTYPE_RUBBER;
 		this.m_flSpeed = BloonSpeeds[this.m_iType] * BloonSpeedMulti();
 		
@@ -453,6 +452,7 @@ methodmap Bloon < CClotBody
 	public int UpdateBloonOnDamage()
 	{
 		ObtainHealthDifference(this.index);
+		
 		int health = GetEntProp(this.index, Prop_Data, "m_iHealth");
 		for(int i; i<9; i++)
 		{
@@ -531,9 +531,9 @@ public void Bloon_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(npc.m_flHealthDifference != -1.0)	
+	if(npc.m_flHealthDifference == -1.0)	
 	{
-		ObtainHealthDifference(iNPC);
+		npc.UpdateBloonOnDamage();
 	}
 	npc.m_flNextDelayTime = gameTime + 0.04;
 	
@@ -667,6 +667,10 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 		return Plugin_Continue;
 	
 	Bloon npc = view_as<Bloon>(victim);
+	if(npc.m_flHealthDifference == -1.0)	
+	{
+		npc.UpdateBloonOnDamage();
+	}
 	
 	bool hot;
 	bool cold;

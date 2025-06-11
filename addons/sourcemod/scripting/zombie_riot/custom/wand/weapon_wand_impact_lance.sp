@@ -84,7 +84,7 @@ void LanceDamageCalc(int client, int weapon, float &damage, bool checkvalidity =
 		return;
 	}
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-
+	mana_cost = RoundToNearest(float(mana_cost) * LaserWeapons_ReturnManaCost(weapon));
 	if(mana_cost <= Current_Mana[client])
 	{
 		if(!checkvalidity)
