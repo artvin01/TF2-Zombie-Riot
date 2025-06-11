@@ -4,659 +4,821 @@
 	{
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {green}Gained {1} {2}!"
+		"ko"		"{orange}(Construct) {green}다음 재료를 획득했습니다: {1} {2}"
 	}
 	"Used Material"
 	{
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {red}Used {1} {2}!"
+		"ko"		"{orange}(Construct) {red}다음 재료를 사용합니다: {1} {2}"
 	}
 	"Battle Finished"
 	{
 		"en"		"{orange}(Construct) The battle is over!"
+		"ko"		"{orange}(Construct) 전투가 끝났습니다!"
 	}
 	"Cash"
 	{
 		"en"		"Cash"
+		"ko"		"자금"
 	}
 	"Resource Attack Started"
 	{
 		"#format"	"{1:N},{2:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
+		"ko"		"{orange}(Construct) {red}{1} {default}가 {orange}{2} {default}를 모으고 있으며 공격받고 있습니다!"
 	}
 	"Gifts Spawned"
 	{
 		"#format"	"{1:d}"
 		"en"		"{orange}(Construct) {green}{1} {default}raid remains have appeared!"
+		"ko"		"{orange}(Construct) {green}{1} {default}의 레이드 부산물이 나타났습니다!"
 	}
 	"No Gifts Spawn"
 	{
 		"en"		"{orange}(Construct) {red}No raid remains appeared, too many exist already..."
+		"ko"		"{orange}(Construct) {red}레이드 부산물이 나오지 않았습니다. 부산물이 너무 많습니다..."
 	}
 	"Found a gift remain"
 	{
 		"#format"	"{1:N}"
 		"en"		"{orange}(Construct) {red}{1} {green}found and obtained raid remains!"
+		"ko"		"{orange}(Construct) {red}{1} {green}이(가) 레이드 부산물을 얻었습니다!"
 	}
 	"Found a gift remain No Attacker"
 	{
 		"en"		"{orange}(Construct) {green}Someone found and obtained raid remains!"
+		"ko"		"{orange}(Construct) {green}누군가가 레이드 부산물을 찾아서 얻었습니다!"
 	}
 	"Player Used 1 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}to make"
+		"ko"		"{orange}(Construct) {red}{1} {default}이(가) {orange}{2} {3} {default}를 사용하여 다음을 수행했습니다:"
 	}
 	"Player Used 2 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
+		"ko"		"{orange}(Construct) {red}{1} {default}이(가) {orange}{2} {3} {default}과 {orange}{4} {5} {default}를 사용하여 다음을 수행했습니다:"
 	}
 	"Player Start Research"
 	{
 		"#format"	"{1:N},{2:s}"
 		"en"		"{orange}(Construct) {red}{1} {default}has started to research {orange}{2}"
+		"ko"		"{orange}(Construct) {red}{1} {default}이(가) 다음 연구를 진행합니다 : {orange}{2}"
 	}
 	"Finish Research Desc"
 	{
 		"#format"	"{1:s},{2:t}"
 		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
+		"ko"		"{orange}(Construct) {default}다음 연구가 끝났습니다 -> {orange}{1}{default}: {2}"
 	}
 	"Crouch and select to view description"
 	{
 		"en"	"Crouch and select to view description"
+		"ko"	"앉은 상태로 선택하여 설명을 보십시오."
 	}
 	"Claim Research"
 	{
 		"en"	"Claim Research"
+		"ko"	"소유권 연구"
 	}
 	"Claim Research Time"
 	{
 		"#format"	"{1:d}"
 		"en"	"Claim Research: {1}s"
+		"ko"	"소유권 연구: {1} 초"
 	}
 	"Start Mining"
 	{
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby."
+		"ko"	"이 {1} 를 채광할까요?\n 레이드가 근처에 스폰될 확률이 있습니다."
 	}
 	"Broken Server"
 	{
 		"en"	"Broken Server"
+		"ko"	"파괴된 서버"
 	}
 	"Left Remains Of Raids"
 	{
 		"en"	"Left Remains Of Raids"
+		"ko"	"남은 레이드 부산물"
 	}
 	"Material wood"
 	{
 		"en"	"Wood"
+		"ko"	"나무"
 	}
 	"Material stone"
 	{
 		"en"	"Stone"
+		"ko"	"돌"
 	}
 	"Material iron"
 	{
 		"en"	"Iron Ore"
+		"ko"	"철 광석"
 	}
 	"Material bofazem"
 	{
 		"en"	"Bottled Bofazem"
+		"ko"	"병에 담긴 보파젬"
 	}
 	"Material copper"
 	{
 		"en"	"Copper Ore"
+		"ko"	"구리 광석"
 	}
 	"Material crystal"
 	{
 		"en"	"Gem Crystal"
+		"ko"	"보석 수정"
 	}
 	"Material jalan"
 	{
 		"en"	"Jalan Ore"
+		"ko"	"잘란 광석"
 	}
 	"Material ossunia"
 	{
 		"en"	"Ossunia Ore"
+		"ko"	"오수니아 광석"
 	}
 	"Material water"
 	{
 		"en"	"Fresh Water"
+		"ko"	"맑은 물"
 	}
 	"Material wizuh"
 	{
 		"en"	"Wizuh Ore"
+		"ko"	"위저 광석"
 	}
 	"Material cash"
 	{
 		"en"	"Cash"
+		"ko"	"자금 재료"
 	}
 	"Pickaxes and a Map"
 	{
 		"en"	"Pickaxes and a Map"
+		"ko"	"곡괭이와 지도"
 	}
 	"Pickaxes and a Map Desc"
 	{
 		"en"	"We asked for a guide, all we got this.\n{green}Enemies and Ore Deposits move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{crimson}Prevents gaining alternative endings."
+		"ko"	"안내를 요청했더니, 이것만 툭 던져주고 갔다.\n{green}모든 적과 광물들의 이동 속도가 20％ 감소하고, 받는 피해가 35％ 증가하며, 공격 피해량이 35％ 감소합니다.\n{crimson}이 아이템을 획득하면 다른 엔딩을 볼 수 없게 됩니다."
 	}
 	"Loud Firepower"
 	{
 		"en"	"Loud Firepower"
+		"ko"	"시끄러운 화력"
 	}
 	"Loud Firepower Desc"
 	{
 		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}but Stalker enemies roam the area."
+		"ko"	"오염이 너무 방출되어 적대 세력의 주의가 조금 끌렸습니다...\n{green}위저 광석 50 개를 보유한 채로 시작하고, 모든 아군의 공격 속도가 +10％ 증가합니다. {red}스토커 계열 적이 해당 지역을 순찰하게 됩니다."
 	}
 	"Heavy Equippment"
 	{
 		"en"	"Heavy Equippment"
+		"ko"	"중장비"
 	}
 	"Heavy Equippment Desc"
 	{
 		"en"	"Our engineers say we need to follow ''guidelines'' to make our stuff safe.\n{green}Start with 50 Jalan, allies gain +125 max health, {red}but Ore Deposits and enemy buildings gain +15％ max health."
+		"ko"	"우리의 엔지니어들이 ''안내서'' 의 지침대로 안전을 준비했다고 합니다.\n{green}잘란 광석 50 개를 보유한 채로 시작하고, 모든 아군의 최대 체력이 +125 증가합니다. {red}광물들과 적 구조물의 최대 체력이 +15％ 증가합니다."
 	}
 	"Vehicle Production"
 	{
 		"en"	"Vehicle Production"
+		"ko"	"차량 생산"
 	}
 	"Vehicle Production Desc"
 	{
 		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
+		"ko"	"차량은 전부 준비되어있습니다. 어서 탑승하시죠.\n{green}오수니아 광석 50 개와 철 광석 15개 및 거점 레벨 I 과 차량 공장 연구가 마쳐진 상태로 시작합니다. {red}희귀 적군이 평소보다 자주 등장합니다.."
 	}
 	"Void Blueprints"
 	{
 		"en"	"Void Blueprints"
+		"ko"	"공허의 청사진"
 	}
 	"Void Blueprints Desc"
 	{
 		"en"	"I don't think we should be following these blueprints.\n{red}Rare enemies have a higher chance of appearing.\nEnemies deal 15％ More damage and have 10％ more health."
+		"ko"	"이 청사진을 따라하면 안 될 것 같은 기분이 듭니다.\n{red}희귀 적군의 등장 확률이 크게 증가합니다.\n모든 적들의 공격력이 15％ 증가하고 최대 체력이 10％ 증가합니다."
 	}
 	"Ambulance"
 	{
 		"en"	"Ambulance"
+		"ko"	"구급차"
 	}
 	"Ambulance Desc"
 	{
 		"en"	"A vehicle that can hold up to 8 players. Able to pick up downed players and revive them. Heals all passengers, scaling with the driver's Medic upgrades."
+		"ko"	"최대 8 명의 플레이어를 태울 수 있는 차량입니다. 다운된 플레이어를 태우고 부활시킬 수 있습니다. 패신저들을 전부 치유합니다. 이 효과들은 운전자의 메딕 업그레이드에 따라서 증가합니다."
 	}
 	"Bus"
 	{
 		"en"	"Bus"
+		"ko"	"버스"
 	}
 	"Bus Desc"
 	{
 		"en"	"A vehicle that can hold up to 24 players."
+		"ko"	"최대 24 명의 플레이어를 태울 수 있는 차량입니다."
 	}
 	"Camper Van"
 	{
 		"en"	"Camper Van"
+		"ko"	"캠핑차"
 	}
 	"Camper Van Desc"
 	{
 		"en"	"A vehicle that can hold up to 4 players. Able to collect ammo from the an ammo box in the back."
+		"ko"	"최대 4 명의 플레이어를 태울 수 있는 차량입니다. 차량 뒤쪽의 탄약 상자를 통해 탄약을 보급할 수 있습니다."
 	}
 	"Dump Truck"
 	{
 		"en"	"Dump Truck"
+		"ko"	"덤프 트럭"
 	}
 	"Dump Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Has increased max armor."
+		"ko"	"최대 6 명의 플레이어를 태울 수 있는 차량입니다. 이 차량은 최대 아머가 증가한 상태입니다."
 	}
 	"Landrover"
 	{
 		"en"	"Landrover"
+		"ko"	"랜드로버"
 	}
 	"Landrover Desc"
 	{
 		"en"	"A vehicle that can hold up to 3 players. Has increased driving speed."
+		"ko"	"최대 3 명의 플레이어를 태울 수 있는 차량입니다. 이 차량은 운전 속도가 증가했습니다."
 	}
 	"Pickup Truck"
 	{
 		"en"	"Pickup Truck"
+		"ko"	"픽업 트럭"
 	}
 	"Pickup Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Prioritizes outside seating."
+		"ko"	"최대 6 명의 플레이어를 태울 수 있는 차량입니다. 외부 좌석을 우선시 합니다."
 	}
 	"Research Station"
 	{
 		"en"	"Research Station"
+		"ko"	"연구 시설"
 	}
 	"Research Station Desc"
 	{
 		"en"	"A construct that can spend materials to research equippment and buildings."
+		"ko"	"재료를 소비하여 장비와 구조물을 연구할 수 있는 구조물입니다."
 	}
 	"Vehicle Factory"
 	{
 		"en"	"Vehicle Factory"
+		"ko"	"차량 공장"
 	}
 	"Vehicle Factory Desc"
 	{
 		"en"	"A construct that can spend materials to build vehicles."
+		"ko"	"재료를 소비하여 차량을 생산할 수 있는 구조물입니다."
 	}
 	"Cooking Stove"
 	{
 		"en"	"Cooking Stove"
+		"ko"	"요리 스토브"
 	}
 	"Cooking Stove Desc"
 	{
 		"en"	"A construct that can spend materials to cook various meals to buff allies."
+		"ko"	"재료를 소비하여 다양한 음식을 제작해 아군에게 버프를 줄 수 있는 구조물입니다."
 	}
 	"Giant Lighthouse"
 	{
 		"en" 		"Giant Lighthouse"
+		"ko" 		"거대 등대"
 	}
 	"Giant Lighthouse Desc"
 	{
 		"en" 		"Allies gain +30％ attack speed in its radius."
+		"ko" 		"범위 내에 있는 모든 아군의 공격 속도를 +30％ 증가시킵니다."
 	}
 	"Water Pump"
 	{
 		"en"	"Water Pump"
+		"ko"	"물 펌프"
 	}
 	"Water Pump Desc"
 	{
 		"en"	"A construct that generates water but needs to be manually collected when finished."
+		"ko"	"물을 생성하는 구조물이지만, 생성이 완료되면 수동으로 모아야합니다."
 	}
 	"Base Level I"
 	{
 		"en"	"Base Level I"
+		"ko"	"거점 레벨 I"
 	}
 	"Base Level I Desc"
 	{
 		"en"	"Unlocks more upgrades and allows building constructs."
+		"ko"	"더 많은 업그레이드와 더 많은 구조물을 해금합니다."
 	}
 	"Base Level II"
 	{
 		"en"	"Base Level II"
+		"ko"	"거점 레벨 II"
 	}
 	"Base Level II Desc"
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
+		"ko"	"더 많은 업그레이드가 해금되고 구조물 특성 및 구조물 최대 설치량이 증가합니다."
 	}
 	"Base Level III"
 	{
 		"en"	"Base Level III"
+		"ko"	"거점 레벨 III"
 	}
 	"Base Level III Desc"
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
+		"ko"	"더 많은 업그레이드가 해금되고 구조물 특성 및 구조물 최대 설치량이 증가합니다."
 	}
 	"Enchanced Water Pump"
 	{
 		"en"	"Enchanced Water Pump"
+		"ko"	"진보된 물 펌프"
 	}
 	"Enchanced Water Pump Desc"
 	{
 		"en"	"Increases water gained from Water Pump by x2.0."
+		"ko"	"물 펌프의 물 생산량이 2배 증가합니다."
 	}
 	"Minting Station"
 	{
 		"en"	"Minting Station"
+		"ko"	"주조소"
 	}
 	"Minting Station Desc"
 	{
 		"en"	"A construct that uses crystals to gain cash."
+		"ko"	"수정을 사용하여 자금을 만들 수 있는 구조물입니다."
 	}
 	"Sawmill Factory"
 	{
 		"en"	"Sawmill Factory"
+		"ko"	"제재소 공장"
 	}
 	"Sawmill Factory Desc"
 	{
 		"en"	"A construct that generates wood but needs to be manually collected when finished."
+		"ko"	"나무를 생산할 수 있는 구조물이지만, 생산이 완료되면 수동으로 모아야합니다."
 	}
 	"Enchanced Sawmill Factory"
 	{
 		"en"	"Enchanced Sawmill Factory"
+		"ko"	"진보된 제재소 공장"
 	}
 	"Enchanced Sawmill Factory Desc"
 	{
 		"en"	"Increases wood gained from Sawmill Factory by x2.0."
+		"ko"	"제재소 공장의 나무 생산량이 2배 증가합니다."
 	}
 	"Stonework Factory"
 	{
 		"en"	"Stonework Factory"
+		"ko"	"석공 공장"
 	}
 	"Stonework Factory Desc"
 	{
 		"en"	"A construct that generates stone but needs to be manually collected when finished."
+		"ko"	"돌을 생산할 수 있는 구조물이지만, 생산이 완료되면 수동으로 모아야합니다."
 	}
 	"Enchanced Stonework Factory"
 	{
 		"en"	"Enchanced Stonework Factory"
+		"ko"	"진보된 석공 공장"
 	}
 	"Enchanced Stonework Factory Desc"
 	{
 		"en"	"Increases stone gained from Stonework Factory by x2.0."
+		"ko"	"석공 공장의 돌 생산량이 2배 증가합니다."
 	}
 	"Small Construct Wall"
 	{
 		"en"	"Small Construct Wall"
+		"ko"	"소형 장벽"
 	}
 	"Small Construct Wall Desc"
 	{
 		"en"	"A construct that has a large health pool for tanking."
+		"ko"	"높은 체력을 보유한 방어용 구조물입니다."
 	}
 	"Large Construct Wall"
 	{
 		"en"	"Large Construct Wall"
+		"ko"	"대형 장벽"
 	}
 	"Large Construct Wall Desc"
 	{
 		"en"	"A construct that has an even large health pool but consumes 2 slots."
+		"ko"	"매우 높은 체력을 보유한 방어용 구조물이지만, 슬롯을 2개 차지합니다."
 	}
 	"Extreme Construct Wall"
 	{
 		"en"	"Extreme Construct Wall"
+		"ko"	"초대형 장벽"
 	}
 	"Extreme Construct Wall Desc"
 	{
 		"en"	"A construct that has an extremely large health pool but consumes 3 slots."
+		"ko"	"극도로 높은 체력을 보유한 방어용 구조물이지만, 슬롯을 3개 차지합니다."
 	}
 	"Atomic Soda"
 	{
 		"en"	"Atomic Soda"
+		"ko"	"원자맛 소다"
 	}
 	"Atomic Soda Desc"
 	{
 		"en"	"Don't ask Scout where it's from.\n{green}Players gain +1％ movement speed"
+		"ko"	"스카웃한테 이게 어디서 나왔냐고 묻지 마세요.\n{green}모든 플레이어의 이동 속도가 +1％ 증가합니다."
 	}
 	"Critical Water"
 	{
 		"en"	"Critical Water"
+		"ko"	"훅가 청정수"
 	}
 	"Critical Water Desc"
 	{
 		"en"	"With a new flavor.\n{green}Allies gain +5％ damage bonus"
+		"ko"	"새로운 맛이 출시되었습니다.\n{green}모든 아군의 공격 피해량이 +5％ 증가합니다."
 	}
 	"Questionable Milk"
 	{
 		"en"	"Questionable Milk"
+		"ko"	"수상한 우유"
 	}
 	"Questionable Milk Desc"
 	{
 		"en"	"Now tell me, do think cows exist.\n{green}Allies gain +5％ max health"
+		"ko"	"잠시만요. 이 게임에 소가 있긴 했나요?\n{green}모든 아군의 최대 체력이 +5％ 증가합니다."
 	}
 	"Festive Atomic Soda"
 	{
 		"en"	"Festive Atomic Soda"
+		"ko"	"축제장식 원자맛 소다"
 	}
 	"Festive Atomic Soda Desc"
 	{
 		"en"	"Extra spicy.\n{green}Players gain +2％ movement speed {red}but -5％ max health"
+		"ko"	"더욱 매콤해졌습니다.\n{green}모든 플레이어의 이동 속도가 +2％ 증가하지만 {red}최대 체력이 -5％ 감소합니다."
 	}
 	"Bread in Milk"
 	{
 		"en"	"Bread in Milk"
+		"ko"	"우유 속의 빵"
 	}
 	"Bread in Milk Desc"
 	{
 		"en"	"I guess it makes it soggy?\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
+		"ko"	"이거 이러면 빵이 축축해지는거 아닌가요?\n{green}모든 아군의 최대 체력이 +10％ 증가하지만 {red}이동 속도가 -1％ 감소합니다."
 	}
 	"Steamed Mackerel"
 	{
 		"en"	"Steamed Mackerel"
+		"ko"	"찐 고등어"
 	}
 	"Steamed Mackerel Desc"
 	{
 		"en"	"Isn't it just cooked then?\n{green}Allies gain +5％ attack speed"
+		"ko"	"이러면 그냥 요리한거 아닌가요?\n{green}모든 아군의 공격 속도가 +5％ 증가합니다."
 	}
 	"BBQ Mackerel"
 	{
 		"en"	"BBQ Mackerel"
+		"ko"	"BBQ 고등어"
 	}
 	"BBQ Mackerel Desc"
 	{
 		"en"	"Ocean to grill to sauce to my mouth.\n{green}Allies gain +10％ attack speed {red}but -5％ max health"
+		"ko"	"바다에서 그릴로, 그릴에서 소스로, 소스에서 입으로 걸어들어오는 음식.\n{green}모든 아군의 공격 속도가 +10％ 증가하지만 {red}최대 체력이 -5％ 감소합니다."
 	}
 	"Beer Bottle"
 	{
 		"en"	"Beer Bottle"
+		"ko"	"맥주병"
 	}
 	"Beer Bottle Desc"
 	{
 		"en"	"I need beer.\n{green}Allies gain +10％ damage bonus {red}but -1％ movement speed"
+		"ko"	"맥주가 필요하다.\n{green}모든 아군의 공격 피해량이 +10％ 증가하지만 {red}이동 속도가 -1％ 감소합니다."
 	}
 	"The Sandvich"
 	{
 		"en"	"The Sandvich"
+		"ko"	"샌드비치"
 	}
 	"The Sandvich Desc"
 	{
 		"en"	"A classic heavy snack.\n{green}Allies gain +5％ max health"
+		"ko"	"헤비의 주요 간식.\n{green}모든 아군의 최대 체력이 +5％ 증가합니다."
 	}
 	"The Dalokohs Bar"
 	{
 		"en"	"The Dalokohs Bar"
+		"ko"	"달로코스 바"
 	}
 	"The Dalokohs Bar Desc"
 	{
 		"en"	"A classic heavy desert.\n{green}Allies gain +5％ max health"
+		"ko"	"헤비의 주요 디저트.\n{green}모든 아군의 최대 체력이 +5％ 증가합니다."
 	}
 	"The Buffalo Steak Sandvich"
 	{
 		"en"	"The Buffalo Steak Sandvich"
+		"ko"	"버팔로 스테이크 샌드비치"
 	}
 	"The Buffalo Steak Sandvich Desc"
 	{
 		"en"	"A classic heavy, uh...\n{green}Allies gain +5％ damage bonus"
+		"ko"	"헤비의 주요... ?\n{green}모든 아군의 공격 피해량이 +5％ 증가합니다."
 	}
 	"The Fishcake"
 	{
 		"en"	"The Fishcake"
+		"ko"	"어육완자"
 	}
 	"The Fishcake Desc"
 	{
 		"en"	"Kind of like fish paste?\n{green}Allies gain +10％ max health {red}but -5％ attack speed"
+		"ko"	"그러니까 어육 페이스트 같은 건가요?\n{green}모든 아군의 최대 체력이 +10％ 증가하지만 {red}공격 속도가 -5％ 감소합니다."
 	}
 	"The Robo-Sandvich"
 	{
 		"en"	"The Robo-Sandvich"
+		"ko"	"로보 샌드비치"
 	}
 	"The Robo-Sandvich Desc"
 	{
 		"en"	"Ok now this is just silly.\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
+		"ko"	"아무리 그래도 이건 좀.\n{green}모든 아군의 최대 체력이 +10％ 증가하지만 {red}이동 속도가 -1％ 감소합니다."
 	}
 	"The Festive Sandvich"
 	{
 		"en"	"The Festive Sandvich"
+		"ko"	"축제장식 샌드비치"
 	}
 	"The Festive Sandvich Desc"
 	{
 		"en"	"Do we unwrap this or?\n{green}Allies gain +10％ max health {red}but -5％ damage bonus"
+		"ko"	"이걸 생으로 먹으라고요?\n{green}모든 아군의 최대 체력이 +10％ 증가하지만 {red}공격 피해량이 -5％ 감소합니다."
 	}
 	"The Second Banana"
 	{
 		"en"	"The Second Banana"
+		"ko"	"2인자의 바나나"
 	}
 	"The Second Banana Desc"
 	{
 		"en"	"Don't think of it.\n{green}Allies gain +1％ movement speed"
+		"ko"	"이상한 상상 하지 말 것.\n{green}모든 아군의 이동 속도가 +1％ 증가합니다."
 	}
 	"Expidonsa Tech Chip"
 	{
 		"en"	"Expidonsa Tech Chip"
+		"ko"	"엑스피돈사 기술 칩"
 	}
 	"Expidonsa Tech Chip Desc"
 	{
 		"en"	"Expidonsa technology, but something seems rather off about it.\n{yellow}Unlocks research Expidonsa Tech Chip Install"
+		"ko"	"엑스피돈사인들의 기술력이지만, 뭔가 이상해보입니다.\n{yellow}엑스피돈사 기술 칩 설치 연구를 해금합니다."
 	}
 	"Rogue Expi Start 1"
 	{
 		"en"	"These Expidonsans don't seem to be on your side..?"
+		"ko"	"이 엑스피돈사인들은 당신의 편이 아닌 것 같습니다...?"
 	}
 	"Rogue Expi Start 2"
 	{
 		"en"	"I don't think this is a test anymore..."
+		"ko"	"이건 더 이상 테스트라고 보기에도 애매한데요..."
 	}
 	"Expidonsa Tech Chip Install"
 	{
 		"en"	"Expidonsa Tech Chip Install"
+		"ko"	"엑스피돈사 기술 칩 설치"
 	}
 	"Expidonsa Tech Chip Install Desc"
 	{
 		"en"	"Should we install the Expidonsa Tech Chip into our system?"
+		"ko"	"우리의 시스템에 엑스피돈사 기술 칩을 설치해볼까요?"
 	}
 	"System Malfunction"
 	{
 		"en"	"System Malfunction"
+		"ko"	"시스템 오작동"
 	}
 	"System Malfunction Desc"
 	{
 		"en"	"Oh. dear.\n{red}Construct traits have a chance to fail {blue}and rogue expidonsans are after you."
+		"ko"	"오, 이런.\n{red}구조물들의 특성이 낮은 확률로 실패합니다. {blue}악한 엑스피돈사인들이 당신을 추격합니다."
 	}
 	"Rebel Calling I"
 	{
 		"en"	"Rebel Calling I"
+		"ko"	"반시민의 부름 I"
 	}
 	"Rebel Calling I Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"ko"	"추가적인 반시민군이 맵에 등장합니다."
 	}
 	"Rebel Calling II"
 	{
 		"en"	"Rebel Calling II"
+		"ko"	"반시민의 부름 II"
 	}
 	"Rebel Calling II Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"ko"	"추가적인 반시민군이 맵에 등장합니다."
 	}
 	"Rebel Calling III"
 	{
 		"en"	"Rebel Calling III"
+		"ko"	"반시민의 부름 III"
 	}
 	"Rebel Calling III Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"ko"	"추가적인 반시민군이 맵에 등장합니다."
 	}
 	"Rebel Calling IV"
 	{
 		"en"	"Rebel Calling IV"
+		"ko"	"반시민의 부름 IV"
 	}
 	"Rebel Calling IV Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"ko"	"추가적인 반시민군이 맵에 등장합니다."
 	}
 	"Rebel Calling V"
 	{
 		"en"	"Rebel Calling V"
+		"ko"	"반시민의 부름 V"
 	}
 	"Rebel Calling V Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"ko"	"추가적인 반시민군이 맵에 등장합니다."
 	}
 	"Heavy Calliber"
 	{
 		"en"	"Heavy Caliber"
+		"ko"	"대구경 터렛"
 	}
 	"Heavy Calliber Desc"
 	{
 		"en"	"A construct that attacks using long-range high-damage rounds."
+		"ko"	"긴 사정거리와 높은 피해를 주는 탄환을 발사하여 공격하는 구조물입니다."
 	}
 	"Minigun Turret"
 	{
 		"en"	"Minigun Turret"
+		"ko"	"미니건 터렛"
 	}
 	"Minigun Turret Desc"
 	{
 		"en"	"A construct that attacks using short-range rapid firing rounds."
+		"ko"	"짧은 사정거리를 지녔지만 공격 속도가 매우 빠른 공격 구조물입니다."
 	}
 	"Teslar's Medusa"
 	{
 		"en"	"Teslar's Medusa"
+		"ko"	"테슬라 메두사"
 	}
 	"Teslar's Medusa Desc"
 	{
 		"en"	"A construct that attacks using short-range lightning that chains, slows, and debuffs enemies."
+		"ko"	"짧은 사정거리를 지녔지만 여러 대상에게 튕기는 체인 라이트닝 공격을 하는 구조물입니다. 공격이 적중한 대상에게 둔화와 디버프를 부여합니다."
 	}
 	"Flagship Calling"
 	{
 		"en"	"Flagship Calling"
+		"ko"	"기함의 부름"
 	}
 	"Flagship Calling Desc"
 	{
 		"en"	"Increase Movementspeed by 10％\nGain the ''Ziberian Flagship Weaponry''."
+		"ko"	"이동 속도가 10％ 증가합니다.\n''자이베리안 기함 무기'' 버프를 얻습니다."
 	}
 	"Tranquilizer Turret"
 	{
 		"en"	"Tranquilizer Turret"
+		"ko"	"안정제 터렛"
 	}
 	"Tranquilizer Turret Desc"
 	{
 		"en"	"A construct that attacks using non-damaging stunning rounds."
+		"ko"	"피해량이 없지만 기절 효과를 부여하는 공격을 하는 구조물입니다."
 	}
 	"The Dispenser"
 	{
 		"en"	"The Dispenser"
+		"ko"	"디스펜서"
 	}
 	"The Dispenser Desc"
 	{
 		"en"	"A construct that heals nearby allies."
+		"ko"	"주변 아군을 치료해주는 구조물입니다."
 	}
 	"Decorative Furniture"
 	{
 		"en"	"Decorative Furniture"
+		"ko"	"장식용 가구"
 	}
 	"Decorative Furniture Desc"
 	{
 		"en"	"Unlocks a set of decorative furniture, for morale."
+		"ko"	"조형에 좋은 장식용 가구 세트를 잠금 해제합니다."
 	}
 	"Decorative Lamp"
 	{
 		"en"	"Decorative Lamp"
+		"ko"	"장식용 램프"
 	}
 	"Decorative Lamp Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
 	}
 	"Decorative Shelf"
 	{
 		"en"	"Decorative Shelf"
+		"ko"	"장식용 책장"
 	}
 	"Decorative Shelf Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
 	}
 	"Decorative Desk"
 	{
 		"en"	"Decorative Desk"
+		"ko"	"장식용 책상"
 	}
 	"Decorative Desk Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
 	}
 	"Decorative Couch"
 	{
 		"en"	"Decorative Couch"
+		"ko"	"장식용 소파"
 	}
 	"Decorative Couch Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
 	}
 	"Decorative Chair"
 	{
 		"en"	"Decorative Chair"
+		"ko"	"장식용 의자"
 	}
 	"Decorative Chair Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"ko"	"조형용 구조물입니다. 방어용으로도 쓸 수 있습니다."
 	}
 	"Command Center"
 	{
 		"en"	"Command Center"
+		"ko"	"커맨드 센터"
 	}
 	"Command Center Desc"
 	{
 		"en"	"Unlocks constructs used for the Barracks."
+		"ko"	"배럭을 해금할 수 있는 구조물입니다."
 	}
 	"Barracks House"
 	{
 		"en"	"Barracks House"
+		"ko"	"배럭 하우스"
 	}
 	"Barracks House Desc"
 	{
 		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies."
+		"ko"	"배럭의 보급품이 +1 증가하고 최대 아군 수가 +1 증가하는 구조물입니다."
 	}
 }
