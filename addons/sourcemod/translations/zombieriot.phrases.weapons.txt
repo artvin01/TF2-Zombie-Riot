@@ -9,6 +9,7 @@
 		"pt"		"Dano"
 		"nl"		"Schade"
 		"chi"       	"伤害"
+		"ko"		"피해량"
 	}
 	"pellets"
 	{
@@ -19,6 +20,7 @@
 		"pt"		"Balas"
 		"nl"		"Korrels"
 		"chi"       	"弹药"
+		"ko"		"탄환 수"
 	}
 	"firerate"
 	{
@@ -29,6 +31,7 @@
 		"pt"		"Cadência de tiro"
 		"nl"		"Vuursnelheid"
 		"chi"       	"射速"
+		"ko"		"공격 속도"
 	}
 	"reload"
 	{
@@ -39,6 +42,7 @@
 		"pt"		"Recarga"
 		"nl"		"Herlaad"
 		"chi"       	"换弹"
+		"ko"		"재장전 속도"
 	}	
 	"clip"
 	{
@@ -49,6 +53,7 @@
 		"pt"		"Cartucho"
 		"nl"		"Clip"
 		"chi"       	"子弹"
+		"ko"		"장탄수"
 	}	
 	"chargespeed"
 	{
@@ -59,6 +64,7 @@
 		"pt"		"Velocidade de Carga"
 		"nl"		"Laadsnelheid"
 		"chi"		"充能速度"
+		"ko"		"충전 속도"
 	}
 	"chargedmg"
 	{
@@ -69,6 +75,7 @@
 		"pt"		"Dano da Carga"
 		"nl"		"Ladingsschade"
 		"chi"		"充能伤害"
+		"ko"		"충전 피해량"
 	}
 	"healing"
 	{
@@ -79,6 +86,7 @@
 		"pt"		"Cura"
 		"nl"		"Genezing"
 		"chi"		"治疗"
+		"ko"		"치유량"
 	}
 	"range"
 	{
@@ -89,6 +97,7 @@
 		"pt"		"Distancia"
 		"nl"		"Afstand"
 		"chi"		"射程"
+		"ko"		"사거리"
 	}
 	"Weapons"
 	{
@@ -100,6 +109,7 @@
 		"pt"		"Armas"
 		"nl"		"Wapens"
 		"chi"       	"武器"
+		"ko" 		"무기"
 	}
 	"Primary Weapons"//Primary path here
 	{
@@ -110,6 +120,7 @@
 		"pt"		"Armas Primárias"
 		"nl"		"Primaire Wapens"
 		"chi"      	 "主武器"
+		"ko" 		"주 무기"
 	}
 	"Syringe Gun"
 	{
@@ -120,6 +131,7 @@
 		"pt"		"Arma de Seringas"
 		"nl"		"Spuitgeweer"
 		"chi"       	"注射枪"
+		"ko" 		"주사기총"
 	}
 	"Sniper Rifle"
 	{
@@ -130,6 +142,7 @@
 		"pt"		"Rifle de Sniper"
 		"nl"		"Scherpshuttersgeweer"
 		"chi"       	"狙击步枪"
+		"ko" 		"저격소총"
 	}
 	"Sawed off Shotgun"
 	{
@@ -140,6 +153,7 @@
 		"pt"		"Escopeta de Cano-Serrado"
 		"nl"		"Afgezaagd Jachtgeweer"
 		"chi"       	"锯断霰弹枪"
+		"ko" 		"단총신 산탄총"
 	}
 	"Annabelle"
 	{
@@ -150,6 +164,7 @@
 		"pt"		"Annabelle"
 		"nl"		"Annabel"
 		"chi"       	"安娜贝拉"
+		"ko" 		"애너벨 산탄총"
 	}
 	"Huntsman"
 	{
@@ -160,6 +175,7 @@
 		"pt"		"Caçador"
 		"nl"		"jager"
 		"chi"     	"猎弓"
+		"ko" 		"헌츠맨"
 	}
 	"Flamethrower"
 	{
@@ -170,6 +186,7 @@
 		"pt"		"Lança-Chamas"
 		"nl"		"Vlammenwerper"
 		"chi"  		"喷火器"
+		"ko" 		"화염방사기"
 	}
 	"Ranged Spike Layer"
 	{
@@ -180,6 +197,7 @@
 		"pt"		"Posicionador de Espinhos a distância"
 		"nl"		"Lange Afstand Spijker legger"
 		"chi"       	"地刺枪"
+		"ko" 		"원격 가시 매설기"
 	}
 	"Crusader's Crossbow"
 	{
@@ -190,6 +208,7 @@
 		"pt"		"Besta do Cruzado"
 		"nl"		"Kruisvaarder's Kruisboog"
 		"chi"       	"十字军弩"
+		"ko" 		"십자군의 쇠뇌"
 	}
 	"Grenade Launcher"
 	{
@@ -200,6 +219,7 @@
 		"pt"		"Lança-Granadas"
 		"nl"		"Granaatwerper"
 		"chi"       	"榴弹发射器"
+		"ko" 		"유탄발사기"
 	}
 	"Tommygun"
 	{
@@ -210,6 +230,7 @@
 		"pt"		"Tommygun"
 		"nl"		"Tommygun"
 		"chi"       	"汤普森冲锋枪"
+		"ko" 		"토미건"
 	}
 	"Double Barrel Shotgun"
 	{
@@ -220,6 +241,7 @@
 		"pt"		"Escopeta de Cano Duplo"
 		"nl"		"Dubbele loop's jachtgeweer"
 		"chi"       	"双管散弹枪"
+		"ko" 		"더블 배럴 산탄총"
 	}
 	"The Pompson 7000"
 	{
@@ -230,6 +252,7 @@
 		"pt"		"A Pomson 7000"
 		"nl"		"De Pompson 7000"
 		"chi"       	"歼灭者7000"
+		"ko" 		"폼슨 7000"
 	}
 	"Dragon's Fury"
 	{
@@ -240,6 +263,7 @@
 		"pt"		"Fúria do Dragão"
 		"nl"		"DrakenFury"
 		"chi"       	"龙之怒焰"
+		"ko" 		"용의 격노"
 	}
 	"Marksman Rifle"
 	{
@@ -250,6 +274,7 @@
 		"pt"		"Rifle de Atirador"
 		"nl"		"Scherpshutter Geweer"
 		"chi"       	"射手步枪"
+		"ko" 		"지정사수 소총"
 	}
 	"Aresenal's Tripmine Layer"
 	{
@@ -260,6 +285,7 @@
 		"pt"		"Camada de Minas do Aresenal"
 		"nl"		"Aresenal's Explosieve Valmijn legger"
 		"chi"       	"Arsenal的地雷布置器"
+		"ko" 		"아스널의 지뢰 매설기"
 	}
 	"Heavy Charge Builder Laser"
 	{
@@ -270,6 +296,7 @@
 		"pt"		"Canhão Elétrico Pesado"
 		"nl"		"Zwaar Geladen Gebouwlazer"
 		"chi"       	"重核激光发射器"
+		"ko" 		"과충전된 건축가의 레이저"
 	}
 	"Railgun"
 	{
@@ -280,6 +307,7 @@
 		"pt"		"Arma laser"
 		"nl"		"Rail gun"
 		"chi"       	"磁轨炮"
+		"ko" 		"레일건"
 	}
 	"The Loch-N-Load"
 	{
@@ -290,6 +318,7 @@
 		"pt"		"Lança Granadas do Lago Ness"
 		"nl"		"De Loch-N-Load"
 		"chi"       	"双管榴弹发射器"
+		"ko" 		"로크 앤 로드"
 	}
 	"Boomstick"
 	{
@@ -300,6 +329,7 @@
 		"pt"		"Cano de Vassoura"
 		"nl"		"Boomstick"
 		"chi"       	"炸裂散弹枪"
+		"ko" 		"붐스틱"
 	}
 	"Terroriser Bomb Implanter Sniperrifle"
 	{
@@ -310,6 +340,7 @@
 		"pt"		"Rifle Implantador de Bombas Aterrorizante"
 		"nl"		"Terrorizerende bomplantende Scherpshuttergeweer"
 		"chi"       	"炸弹植入者狙击枪"
+		"ko" 		"테러리스트 폭탄 이식기 저격소총"
 	}
 	"Rampager Automatic Rifle"
 	{
@@ -320,6 +351,7 @@
 		"pt"		"Rifle de Barragem Automática"
 		"nl"		"Razende Automatisch geweer"
 		"chi"       	"暴走机枪"
+		"ko" 		"광분자의 자동소총"
 	}
 	"Loose Cannon"
 	{
@@ -330,6 +362,7 @@
 		"pt"		"Pavio Curto"
 		"nl"		"Los kannon"
 		"chi"      	 "脱缰巨炮"
+		"ko" 		"통제불능 대포"
 	}
 	"RPG"
 	{
@@ -340,6 +373,7 @@
 		"pt"		"Lança Mísseis"
 		"nl"		"RPG"
 		"chi"       	"RPG"
+		"ko" 		"RPG"
 	}
 	"Peacock's Screw Ball Cannon"
 	{
@@ -350,6 +384,7 @@
 		"pt"		"Canhão de Bolas de Parafuso"
 		"nl"		"Peacock's Schroefbal Kannon"
 		"chi"      	"Peacock的螺丝大炮"
+		"ko" 		"피곡의 나선 공 대포"
 	}
 	"The Cow Mangler 6000"
 	{
@@ -360,6 +395,7 @@
 		"pt"		"Avacalhador 6000"
 		"nl"		"De Koeienmangeler 6000"
 		"chi"       	"搅牛机6000"
+		"ko" 		"소도륙 6000"
 	}
 	"Anti Material Rifle"
 	{
@@ -370,6 +406,7 @@
 		"pt"		"Rifle de Anti-Matéria"
 		"nl"		"Anti-Materie Geweer"
 		"chi"      	"反物质步枪"
+		"ko" 		"반물질 소총"
 	}
 	"Infected Rampager Assult Rifle"
 	{
@@ -380,6 +417,7 @@
 		"pt"		"Rifle de Barragem Automática Infectado"
 		"nl"		"Geinfecteerde Razende Aanvalsgeweer"
 		"chi"       	"血怒步枪"
+		"ko" 		"감염된 광분자의 돌격소총"
 	}
 	"Star Shooter"
 	{
@@ -390,6 +428,7 @@
 		"pt"		"Estrela Cadente"
 		"nl"		"Sterrenschieter"
 		"chi"       	"行星发射器"
+		"ko" 		"유성 발사기"
 	}
 	"Secondary Weapons"//Secondary here
 	{
@@ -400,6 +439,7 @@
 		"pt"		"Armas Secundárias"
 		"nl"		"Tweede Wapen"
 		"chi"       	"副武器"
+		"ko"		"보조 무기"
 	}
 	"Wrangler"
 	{
@@ -410,6 +450,7 @@
 		"pt"		"Peão"
 		"nl"		"Kibbelaar"
 		"chi"       	"遥控手柄"
+		"ko"		"보조 무기"
 	}
 	"USP tactical"
 	{
@@ -420,6 +461,7 @@
 		"pt"		"USP tática"
 		"nl"		"Tactisch USP"
 		"chi"       	"USPT.45"
+		"ko"		"전술 USP"
 	}
 	"Nail Gun"
 	{
@@ -430,6 +472,7 @@
 		"pt"		"Arma de Pregos"
 		"nl"		"Nagelgeweer"
 		"chi"       	"钉枪"
+		"ko"		"못총"
 	}
 	"Deagle"
 	{
@@ -440,6 +483,7 @@
 		"pt"		"Deagle"
 		"nl"		"Deagle"
 		"chi"       	"沙鹰"
+		"ko"		"데글"
 	}
 	"Grenade"
 	{
@@ -450,6 +494,7 @@
 		"pt"		"Granada"
 		"nl"		"Granaat"
 		"chi"       	"手榴弹"
+		"ko"		"수류탄"
 	}
 	"Medikit"
 	{
@@ -460,6 +505,7 @@
 		"pt"		"Kit Médico"
 		"nl"		"Medische Doos"
 		"chi"       	"医疗包"
+		"ko"		"의료 상자"
 	}
 	"Magic Potion"
 	{
@@ -470,6 +516,7 @@
 		"pt"		"Poção de Mago"
 		"nl"		"Magisch Drankje"
 		"chi"       	"魔法药水"
+		"ko"		"마법사의 포션"
 	}
 	"Flaregun"
 	{
@@ -480,6 +527,7 @@
 		"pt"		"Arma sinalizadora"
 		"nl"		"vuurwapen"
 		"chi"       	"信号枪"
+		"ko"		"조명탄 발사기"
 	}
 	"The Righteous Bison"
 	{
@@ -490,6 +538,7 @@
 		"pt"		"Bisão Justiceiro"
 		"nl"		"De Rechtvaardige Bison"
 		"chi"       	"正义野牛"
+		"ko"		"정의의 들소"
 	}
 	"SMG"
 	{
@@ -499,6 +548,7 @@
 		"de"		"SMG"
 		"pt"		"Sub-Metralhadora"
 		"nl"		"SMG"
+		"ko"		"기관단총"
 	}
 	"Battle Medigun"
 	{
@@ -509,6 +559,7 @@
 		"pt"		"Arma Médica de Combate"
 		"nl"		"Aanvalsmedigun"
 		"chi"       	"战斗医疗枪"
+		"ko"		"전투 메디건"
 	}
 	"Charged Handgun"
 	{
@@ -519,6 +570,7 @@
 		"pt"		"Pistola Carregada"
 		"nl"		"Geladen Handgeweer"
 		"chi"       	"充能手枪"
+		"ko"		"충전된 권총"
 	}
 	"Stickybomb Launcher"
 	{
@@ -529,6 +581,7 @@
 		"pt"		"Lança Bombas-Adesivas"
 		"nl"		"Klevende bommenwerper"
 		"chi"       	"粘弹发射器"
+		"ko"		"점착 폭탄 발사기"
 	}
 	"Mechanical Medigun"
 	{
@@ -539,6 +592,7 @@
 		"pt"		"Arma Médica Mecanica"
 		"nl"		"Mechanisch medigun"
 		"chi"       	"机械医疗枪"
+		"ko"		"기계 메디건"
 	}
 	"The Battalion's Backup"
 	{
@@ -549,6 +603,7 @@
 		"pt"		"Reforço do Batalhão"
 		"nl"		"Het Bataljon's Back-up"
 		"chi"       	"军队支援"
+		"ko"		"부대 지원"
 	}
 	"Medigun"
 	{
@@ -559,6 +614,7 @@
 		"pt"		"Arma Médica"
 		"nl"		"Medigun"
 		"chi"       	"医疗枪"
+		"ko"		"메디건"
 	}
 	"P15t0l"
 	{
@@ -569,6 +625,7 @@
 		"pt"		"P15T014"
 		"nl"		"P15T001"
 		"chi"		"ｬ枪ｶ手ｦ手ｪ%?ｬ枪手ｶ｡枪､%Y"
+		"ko"		"잘못된 무기 이름. 오류난 딱총"
 	}
 	"Riot Gun"
 	{
@@ -576,6 +633,7 @@
 		"fr"		"Pistolet des Émeutes"
 		"ru"		"Полицейский пистолет"
 		"chi"		"防暴枪"
+		"ko"		"진압 총"
 	}
 	"Heavy Desert Eagle"
 	{
@@ -586,6 +644,7 @@
 		"pt"		"Desert Eagle Pesada"
 		"nl"		"Zware Deagle"
 		"chi"       	"重型沙漠之鹰"
+		"ko"		"중량 데저트 이글"
 	}
 	"Infected Assult Rifle"
 	{
@@ -596,6 +655,7 @@
 		"pt"		"Riflé de Assalto Infectado"
 		"nl"		"Geinfecteerd Aanvalsgeweer"
 		"chi"       "狂暴突击步枪"
+		"ko"		"감염된 돌격 소총"
 	}
 	"Buff Banner"
 	{
@@ -606,6 +666,7 @@
 		"pt"		"Estandarte do Encorajamento"
 		"nl"		"Krachtgevende Banner"
 		"chi"       	"战旗"
+		"ko"		"사기 증진 깃발"
 	}
 	"PhlogStorms Detonator"
 	{
@@ -616,6 +677,7 @@
 		"pt"		"Detonador FlogisTade"
 		"nl"		"PhlogStorms onsteker"
 		"chi"       	"Phlogstorm信号枪"
+		"ko"		"플로지스톤 기폭 장치"
 	}
 	"Melee Weapons"//Melee Here
 	{
@@ -627,6 +689,7 @@
 		"pt"		"Armas Brancas"
 		"nl"		"Handwapen"
 		"chi"       	"近战"
+		"ko"		"근접 무기"
 	}
 	"Mounter"
 	{
@@ -637,6 +700,7 @@
 		"pt"		"Montador"
 		"nl"		"Drager"
 		"chi"       	"'搬'手"
+		"ko"		"실장기"
 	}
 	"Wrench"
 	{
@@ -648,6 +712,7 @@
 		"pt"		"Chave Inglesa"
 		"nl"		"Moersleutel"
 		"chi"       	"建筑扳手"
+		"ko"		"렌치"
 	}
 	"Knife"
 	{
@@ -658,6 +723,7 @@
 		"pt"		"Faca"
 		"nl"		"mes"
 		"chi"       	"匕首"
+		"ko"		"칼"
 	}
 	"Ubersaw"
 	{
@@ -668,6 +734,7 @@
 		"pt"		"Uberserra"
 		"nl"		"Uberzaag"
 		"chi"       	"充能锯"
+		"ko"		"우버톱"
 	}
 	"Hammer"
 	{
@@ -678,6 +745,7 @@
 		"pt"		"Martelo"
 		"nl"		"Hamer"
 		"chi"       	"重锤"
+		"ko"		"망치"
 	}
 	"Fire Axe"
 	{
@@ -688,6 +756,7 @@
 		"pt"		"Machado de Incêndio"
 		"nl"		"Vuur bijl"
 		"chi"       	"消防斧"
+		"ko"		"소방 도끼"
 	}
 	"Survivalist Blade"
 	{
@@ -698,6 +767,7 @@
 		"pt"		"Faca de Sobrevivência"
 		"nl"		"Overlevingszwaard"
 		"chi"       	"求生之刃"
+		"ko"		"생존주의자의 칼"
 	}
 	"Kunai"
 	{
@@ -708,6 +778,7 @@
 		"pt"		"Kunai"
 		"nl"		"Kunai"
 		"chi"       	"苦无"
+		"ko"		"쿠나이"
 	}
 	"Longsword"
 	{
@@ -718,6 +789,7 @@
 		"pt"		"Espada Longa"
 		"nl"		"Langzwaard"
 		"chi"       	"长剑"
+		"ko"		"장검"
 	}
 	"Speed Fists Of Speed"
 	{
@@ -728,6 +800,7 @@
 		"pt"		"Punhos Velozes da Velocidade"
 		"nl"		"Snelle vuisten van snelheid"
 		"chi"       	"迅猛拳套"
+		"ko"		"초고속 주먹"
 	}
 	"Teslar Staff"
 	{
@@ -737,6 +810,7 @@
 		"de"		"Teslar Stab"
 		"pt"		"Cajado Teslar"
 		"nl"		"Teslar staf"
+		"ko"		"테슬라 스태프"
 	}
 	"Fists Of Kahmlstein"
 	{
@@ -747,6 +821,7 @@
 		"pt"		"Punhos de Kahmlstein"
 		"nl"		"Vuisten van Kahmlstein"
 		"chi"       	"卡姆拳套"
+		"ko"		"캄르스타인의 주먹"
 	}
 	"Infinity Blade"
 	{
@@ -757,6 +832,7 @@
 		"pt"		"Lâmina da Infinidade"
 		"nl"		"Oneindigheidszwaard"
 		"chi"       	"无尽之剑"
+		"ko"		"무한의 검"
 	}
 	"Mage Weapons"//Mage here
 	{
@@ -768,6 +844,7 @@
 		"pt"		"Cajados Mágicos"
 		"nl"		"Magische wapens"
 		"chi"       	"魔法武器"
+		"ko"		"마법 무기"
 	}
 	"Bad Wand"
 	{
@@ -778,6 +855,7 @@
 		"pt"		"Cajado Ruim"
 		"nl"		"Slecht Toverstok"
 		"chi"       	"劣质法杖"
+		"ko"		"나쁜 완드"
 	}
 	"Fire Wand"
 	{
@@ -788,6 +866,7 @@
 		"pt"		"Cajado Incendiário"
 		"nl"		"Vuurstok"
 		"chi"       	"火焰神杖"
+		"ko"		"불의 완드"
 	}
 	"Lightning Staff"
 	{
@@ -798,6 +877,7 @@
 		"pt"		"Cajado Elétrico"
 		"nl"		"Bliksem staf"
 		"chi"       	"雷电神杖"
+		"ko"		"번개 스태프"
 	}
 	"Necromancy Staff"
 	{
@@ -808,6 +888,7 @@
 		"pt"		"Cajado Necromante"
 		"nl"		"Necromantie staf"
 		"chi"       	"亡灵神杖"
+		"ko"		"부두술 스태프"
 	}
 	"Homing Staff"
 	{
@@ -818,6 +899,7 @@
 		"pt"		"Cajado Teleguiado"
 		"nl"		"geleidend staf"
 		"chi"       	"归属神杖"
+		"ko"		"유도 스태프"
 	}
 	"Wind Staff"
 	{
@@ -828,6 +910,7 @@
 		"pt"		"Cajado do Vento"
 		"nl"		"Wind staf"
 		"chi"       	"风神之杖"
+		"ko"		"바람 스태프"
 	}
 	"Elemental Staff"
 	{
@@ -838,6 +921,7 @@
 		"pt"		"Cajado Elemental"
 		"nl"		"elementale Staf"
 		"chi"       	"元素神杖"
+		"ko"		"원소 스태프"
 	}
 	"Buildings"//Buildings here
 	{
@@ -848,12 +932,14 @@
 		"pt"		"Construções"
 		"nl"		"Gebouwen"
 		"chi"       	"建筑物"
+		"ko"		"구조물"
 	}
 	"Decorative Object"
 	{
 		"en"		"Decorative Object"
 		"ru"		"Декоративный объект"
 		"fr"		"Objet Décoratif"
+		"ko"		"장식용 물건"
 	}
 	"Barricade"
 	{
@@ -861,6 +947,7 @@
 		"ru"		"Барикада"
 		"fr"		"Barrière"
 		"chi"		"路障"
+		"ko"		"바리케이드"
 	}
 	"Armor Table"
 	{
@@ -868,6 +955,7 @@
 		"ru"		"Стол с бронёй"
 		"fr"		"Table d'Armure"
 		"chi"		"装甲柜"
+		"ko"		"아머 테이블"
 	}
 	"Ammo Box"
 	{
@@ -875,6 +963,7 @@
 		"ru"		"Ящик с патронами"
 		"fr"		"Boîte de Munitions"
 		"chi"		"弹药箱"
+		"ko"		"탄약 상자"
 	}
 	"Perk Machine"
 	{
@@ -882,6 +971,7 @@
 		"ru"		"Машина Перков"
 		"fr"		"Machine de Perks"
 		"chi"		"可乐机"
+		"ko"		"퍽 기계"
 	}
 	"Pack-a-Punch"
 	{
@@ -889,6 +979,7 @@
 		"ru"		"Машина для улучшения"
 		"fr"		"Machine Pack-a-Punch"
 		"chi"		"升级站"
+		"ko"		"팩 어 펀치"
 	}
 	"Sentrygun"
 	{
@@ -896,12 +987,14 @@
 		"ru"		"Турель"
 		"fr"		"Mitrailleuse"
 		"chi"		"步哨"
+		"ko"		"센트리 건"
 	}
 	"Mortar"
 	{
 		"en"		"Mortar"
 		"fr"		"Mortier"
 		"chi"		"迫击炮"
+		"ko"		"박격포"
 	}
 	"Food Fridge"
 	{
@@ -909,6 +1002,7 @@
 		"ru"		"Холодильник"
 		"fr"		"Frigo de Bouffe"
 		"chi"		"冰箱"
+		"ko"		"냉장고"
 	}
 	"Village"
 	{
@@ -916,6 +1010,7 @@
 		"ru"	    "Деревня"
 		"fr"        "Village"
 		"chi"		"村庄"
+		"ko"		"마을"
 	}
 	"Metal"
 	{
@@ -923,6 +1018,7 @@
 		"ru"		"Метал"
 		"fr"		"Métal"
 		"chi"		"金属"
+		"ko"		"금속"
 	}
 	"Chooseable Buildings (Only one)"
 	{
@@ -930,6 +1026,7 @@
 		"fr"        "Choix de Constructions ( Seulement un )"
 		"ru"        "Выбор постройки (только одну)"
 		"chi"       "可选建筑 [限制一个]"
+		"ko"		"선택형 구조물 (하나만 건설 가능)"
 	}
 	"Upgrades"//Upgrades here!!!!
 	{
@@ -940,6 +1037,7 @@
 		"pt"		"Melhorias"
 		"nl"		"Upgrades"
 		"chi"       	"属性升级"
+		"ko"		"업그레이드"
 	}
 	"Melee Upgrades"//Melee Upgrades HERE!!!
 	{
@@ -951,6 +1049,7 @@
 		"pt"		"Melhorias de Corpo-a-Corpo"
 		"nl"		"Handwapen Upgrades"
 		"chi"       	"近战升级"
+		"ko"		"근접 무기 업그레이드"
 	}
 	"Cannibalism"
 	{
@@ -961,6 +1060,7 @@
 		"pt"		"Canibalismo"
 		"nl"		"Kannibalisme"
 		"chi"       	"肉食者"
+		"ko"		"식인 풍습"
 	}
 	"Copium"
 	{
@@ -971,6 +1071,7 @@
 		"pt"		"Copium"
 		"nl"		"Kopium"
 		"chi"       	"摇头丸"
+		"ko"		"아편"
 	}
 	"Cocain"
 	{
@@ -981,6 +1082,7 @@
 		"pt"		"Cocaina"
 		"nl"		"Cocaine"
 		"chi"       	"可卡因"
+		"ko"		"코카인"
 	}
 	"Steroids"
 	{
@@ -991,6 +1093,7 @@
 		"pt"		"Esteróides"
 		"nl"		"Steroiden"
 		"chi"       	"激素"
+		"ko"		"스테로이드"
 	}
 	"LSD"
 	{
@@ -1001,6 +1104,7 @@
 		"pt"		"LSD"
 		"nl"		"LSD"
 		"chi"		"LSD"
+		"ko"		"LSD"
 	}
 	"Crystal Meth"
 	{
@@ -1011,6 +1115,7 @@
 		"pt"		"Metanfetamina"
 		"nl"		"Crystal Meth"
 		"chi"       	"冰毒"
+		"ko"		"메스암페타민"
 	}
 	"God's Might"
 	{
@@ -1021,6 +1126,7 @@
 		"pt"		"Coragem dos deuses"
 		"nl"		"God's Macht"
 		"chi"       	"上帝的眷顾"
+		"ko"		"신의 힘"
 	}
 	"Bob's Enhancer"
 	{
@@ -1031,6 +1137,7 @@
 		"pt"		"Intensificador de Bob"
 		"nl"		"Bob's Versterker"
 		"chi"       	"鲍勃的增强剂"
+		"ko"		"밥의 증폭기"
 	}
 	"Building Upgrades"//Building Upgrades HERE!!!
 	{
@@ -1041,6 +1148,7 @@
 		"pt"		"Melhorias de Construções"
 		"nl"		"Gebouwen Upgrades"
 		"chi"       	"建筑"
+		"ko"		"구조물 업그레이드"
 	}
 	"Repair Handling book for dummies"
 	{
@@ -1051,6 +1159,7 @@
 		"pt"		"Repair Handling book for newbies"
 		"nl"		"Reparatiehandboek voor Beginners"
 		"chi"      	 "保姆式维修说明书"
+		"ko"		"초짜들도 쉽게 배우는 수리 설명서"
 	}
 	"Construction Novice"
 	{
@@ -1061,6 +1170,7 @@
 		"pt"		"Iniciante de Construção"
 		"nl"		"Bouw Gevorderde"
 		"chi"      	"建筑入门"
+		"ko"		"건축 입문서"
 	}
 	"Ikea Repair Handling Book"
 	{
@@ -1071,6 +1181,7 @@
 		"pt"		"Livro de Manuseio de Reparos Ikea"
 		"nl"		"Ikea Reparatiehandboek"
 		"chi"       	"教科书式维修说明书"
+		"ko"		"이케아 수리 설명서"
 	}
 	"Engineering Repair Handling book"
 	{
@@ -1081,6 +1192,7 @@
 		"pt"		"Livro de Manuseio de Reparos de Engenharia"
 		"nl"		"ingenieur's Reparatiehandboek"
 		"chi"       	"专业级操作手册"
+		"ko"		"공학 수리 설명서"
 	}
 	"Construction Apprentice"
 	{
@@ -1091,6 +1203,7 @@
 		"pt"		"Aprendiz de Construção"
 		"nl"		"Bouw leerling"
 		"chi"       	"建筑学徒"
+		"ko"		"건축 견습생"
 	}
 	"Alien Repair Handling book"
 	{
@@ -1101,6 +1214,7 @@
 		"pt"		"Livro de Manuseio de Reparos Alienígenas"
 		"nl"		"Alien Reparatiehandboek"
 		"chi"       	"外星人维修手册"
+		"ko"		"외계식 수리 설명서"
 	}
 	"Construction Worker"
 	{
@@ -1111,6 +1225,7 @@
 		"pt"		"Trabalhador da Construção"
 		"nl"		"Bouwvakker"
 		"chi"       	"搬砖高手"
+		"ko"		"건축 노동자"
 	}
 	"Cosmic Repair Handling book"
 	{
@@ -1121,6 +1236,7 @@
 		"pt"		"Livro de Manuseio de Reparos Cósmicos"
 		"nl"		"kosmisch Reparatiehandboek"
 		"chi"       	"宇宙修理手册"
+		"ko"		"우주의 수리 설명서"
 	}
 	"Construction Expert"
 	{
@@ -1131,6 +1247,7 @@
 		"pt"		"Especialista em Construção"
 		"nl"		"Bouwexpert"
 		"chi"       	"搬砖专家"
+		"ko"		"건축 전문가"
 	}
 	"Construction Master"
 	{
@@ -1141,6 +1258,7 @@
 		"pt"		"Mestre de construção"
 		"nl"		"Bouwmeester"
 		"chi"       	"搬砖大师"
+		"ko"		"건축의 달인"
 	}
 	"Construction Killer"
 	{
@@ -1151,6 +1269,7 @@
 		"pt"		"Assassino da Construção"
 		"nl"		"Bouwmoordenaar"
 		"chi"       	"建筑杀手"
+		"ko"		"건축 살해범"
 	}
 	"Ranged Upgrades"//Ranged Upgrades HERE!!!
 	{
@@ -1162,6 +1281,7 @@
 		"pt"		"Melhorias de Armas de fogo"
 		"nl"		"Range-upgrades"
 		"chi"       	"远程升级"
+		"ko"		"원거리 무기 업그레이드"
 	}
 	"Accurate Marksman"
 	{
@@ -1172,6 +1292,7 @@
 		"pt"		"Atirador Preciso"
 		"nl"		"Nauwkeurige Scherpschutter"
 		"chi"       	"精确射手"
+		"ko"		"정확한 명사수"
 	}
 	"Ammo Coat"
 	{
@@ -1182,6 +1303,7 @@
 		"pt"		"Colete de Munição"
 		"nl"		"Munitie jas"
 		"chi"       	"子弹袋"
+		"ko"		"탄약 코팅"
 	}
 	"Ammo Coat Elite"
 	{
@@ -1192,6 +1314,7 @@
 		"pt"		"Colete de Munição Aprimorado"
 		"nl"		"Elite Munitie Jas"
 		"chi"       	"弹衣"
+		"ko"		"뛰어난 탄약 코팅"
 	}
 	"Antidote Coated Bullets"
 	{
@@ -1202,6 +1325,7 @@
 		"pt"		"Balas Especiais de Antídoto"
 		"nl"		"Met Tegengif Bedekte Kogels"
 		"chi"       	"解药子弹涂层"
+		"ko"		"항독 코팅 탄약"
 	}
 	"Anti-Matter Bullets"
 	{
@@ -1212,6 +1336,7 @@
 		"pt"		"Balas de Anti-Matéria"
 		"nl"		"Anti-materie Kogels"
 		"chi"       	"反物质弹"
+		"ko"		"반물질 탄약"
 	}
 	"Mage Upgrades"//Mage Upgrades HERE!!!
 	{
@@ -1222,6 +1347,7 @@
 		"pt"		"Melhorias de Mago"
 		"nl"		"Magier's Upgrades"
 		"chi"       	"魔法升级"
+		"ko"		"마법 무기 강화"
 	}
 	"Magical Haste"
 	{
@@ -1232,6 +1358,7 @@
 		"pt"		"Velocidade Mágica"
 		"nl"		"Magische haast"
 		"chi"       	"高速法术"
+		"ko"		"신속의 마법"
 	}
 	"Hastening Potion"
 	{
@@ -1242,6 +1369,7 @@
 		"pt"		"Poção de Pressa"
 		"nl"		"haastende toverdrank"
 		"chi"       	"加速药水"
+		"ko"		"신속 포션"
 	}
 	"The Bombinomicon"
 	{
@@ -1252,6 +1380,7 @@
 		"pt"		"O Bombinomicon"
 		"nl"		"De Bommennomicon"
 		"chi"       	"爆破之书"
+		"ko"		"보미노미콘"
 	}
 	"Betweenlands Potion"
 	{
@@ -1262,6 +1391,7 @@
 		"pt"		"Poção Entre Terras"
 		"nl"		"Tussenlandse toverdrank"
 		"chi"       	"异界药水"
+		"ko"		"2차원 포션"
 	}
 	"Master Scorcerer"
 	{
@@ -1272,6 +1402,7 @@
 		"pt"		"Mestre Feiticeiro"
 		"nl"		"Meester Tovenaar"
 		"chi"       	"魔法大师"
+		"ko"		"대마법사"
 	}
 	"Bob's Magic"
 	{
@@ -1282,6 +1413,7 @@
 		"pt"		"Mágicas do Bob"
 		"nl"		"Bob's Magie"
 		"chi"       	"鲍勃的魔法"
+		"ko"		"밥의 마법"
 	}
 	"Passive Upgrades"//Passive Upgrades HERE!!!
 	{
@@ -1292,6 +1424,7 @@
 		"pt"		"Melhorias Passivas"
 		"nl"		"Passieve Upgrades"
 		"chi"       	"被动升级"
+		"ko"		"패시브 업그레이드"
 	}
 	"Body armor"
 	{
@@ -1302,6 +1435,7 @@
 		"pt"		"Armadura corporal"
 		"nl"		"Kogelvrije Vest"
 		"chi"       	"防弹衣"
+		"ko"		"방탄복"
 	}
 	"Adrenalin"
 	{
@@ -1312,6 +1446,7 @@
 		"pt"		"Adrenalina"
 		"nl"		"Adrenaline"
 		"chi"       	"肾上腺素"
+		"ko"		"아드레날린"
 	}
 	"Kevlar"
 	{
@@ -1322,6 +1457,7 @@
 		"pt"		"Kevlar"
 		"nl"		"Kevlar"
 		"chi"       	"芳族聚酰胺纤维"
+		"ko"		"케블라"
 	}
 	"Heavy Vest"
 	{
@@ -1332,6 +1468,7 @@
 		"pt"		"Colete Pesado"
 		"nl"		"Zwaar vest"
 		"chi"       	"重型防弹衣"
+		"ko"		"중장갑 방탄복"
 	}
 	"Grigori's Blessing"
 	{
@@ -1342,6 +1479,7 @@
 		"pt"		"Bênção de Grigori"
 		"nl" 		"Grigori's Zegen"
 		"chi"       	"耶稣的祝福"
+		"ko"		"그리고리 신부의 축복"
 	}
 	"Full Riot Gear Set"
 	{
@@ -1352,6 +1490,7 @@
 		"pt"		"Conjunto Completo de Equipamentos de Motim"
 		"nl"		"volledige oproersuitrustingset"
 		"chi"       	"全套防暴装备"
+		"ko"		"진압 장비 세트"
 	}
 	"Healthy Apple from Bob"
 	{
@@ -1362,6 +1501,7 @@
 		"pt"		"Maçã Saudável de Bob"
 		"nl"		"Gezonde Appel van Bob"
 		"chi"       	"鲍勃的苹果"
+		"ko"		"밥의 건강한 사과"
 	}
 	"Medigun Upgrades"//Medigun Upgrades HERE!!!
 	{
@@ -1372,6 +1512,7 @@
 		"pt"		"Melhorias de Cura"
 		"nl"		"Medigun Upgrades"
 		"chi"       	"医疗升级"
+		"ko"		"메디건 업그레이드"
 	}
 	"Doctor Certificate"
 	{
@@ -1382,6 +1523,7 @@
 		"pt"		"Certificado Médico"
 		"nl"		"Dokter's Certificaat"
 		"chi"       	"医师资格证"
+		"ko"		"의사 자격증"
 	}
 	"Professor Certificate"
 	{
@@ -1392,6 +1534,7 @@
 		"pt"		"Certificado de Professor"
 		"nl"		"Professor Certificaat"
 		"chi"       	"教授证书"
+		"ko"		"의료교수 자격증"
 	}
 	"Hell's Certificate"
 	{
@@ -1402,6 +1545,7 @@
 		"pt"		"Certificado Infernal"
 		"nl"		"Hell's Certificaat"
 		"chi"       	"阎罗通行证"
+		"ko"		"지옥의 의료 자격증"
 	}
 	"Medic's Lost Medical Lisence"
 	{
@@ -1412,6 +1556,7 @@
 		"pt"		"Licença médica perdida do Medic"
 		"nl"		"Medicus's verloren Medische Licentie"
 		"chi"       	"Medic的行医执照"
+		"ko"		"메딕의 잃어버린 의사 자격증"
 	}
 	"Level Perks"//Lvl Perks here
 	{
@@ -1422,6 +1567,7 @@
 		"pt"		"Habilidade de Níveis"
 		"nl"		"Niveau extras"
 		"chi"       	"等级特权"
+		"ko"		"레벨 퍽"
 	}
 	"Melee Perks"//Lvl Melee perks here
 	{
@@ -1432,6 +1578,7 @@
 		"pt"		"Habilidades de Arma Branca"
 		"nl"		"Handwapen Extras"
 		"chi"       	"近战特效"
+		"ko"		"근접 전용 퍽"
 	}
 	"Panic Attack"
 	{
@@ -1442,6 +1589,7 @@
 		"pt"		"Ataque de Panico"
 		"nl"		"Paniek Aanval"
 		"chi"       	"惊恐发作"
+		"ko"		"공황 공격"
 	}
 	"Barbarians Mind"
 	{
@@ -1452,6 +1600,7 @@
 		"pt"		"Mente Barbará"
 		"nl"		"Barbaars Verstand"
 		"chi"       	"野蛮人思维"
+		"ko"		"야만용사의 마음가짐"
 	}
 	"Building Perks"//Lvl Building perks HERE!!
 	{
@@ -1462,6 +1611,7 @@
 		"pt"		"Habilidade de Construções"
 		"nl"		"Gebouw Extras"
 		"chi"       	"建筑特效"
+		"ko"		"구조물 전용 퍽"
 	}
 	"Mechanic"
 	{
@@ -1472,6 +1622,7 @@
 		"pt"		"Mecânico"
 		"nl"		"Mechanieker"
 		"chi"       	"机械师"
+		"ko"		"기계공"
 	}
 	"Wrenchy Hands"
 	{
@@ -1482,6 +1633,7 @@
 		"pt"		"Mãos engenhosas"
 		"nl"		"Moersleutelhanden"
 		"chi"       	"机械之手"
+		"ko"		"렌치 기술 전문가"
 	}
 	"Sniper Sentry"
 	{
@@ -1492,6 +1644,7 @@
 		"pt"		"Sentinela Sniper"
 		"nl"		"Scherpshutter Schildwacht"
 		"chi"       	"大口径炮台"
+		"ko"		"저격 센트리"
 	}
 	"Minigun Sentry"
 	{
@@ -1502,6 +1655,7 @@
 		"pt"		"Sentinela Minigun"
 		"nl"		"Minigun Schildwacht"
 		"chi"       	"机枪炮台"
+		"ko"		"미니건 센트리"
 	}
 	"Glass Cannon Blueprints"
 	{
@@ -1512,6 +1666,7 @@
 		"pt"		"Cópia Heliográficas de Canhões de Vidro"
 		"nl"		"Glazen kannon blauwdrukken"
 		"chi"       	"玻璃大炮蓝图"
+		"ko"		"유리 대포 청사진"
 	}
 	"Ranged Perks"//Lvl Ranged perks HERE!!!
 	{
@@ -1522,6 +1677,7 @@
 		"pt"		"Habilidades de Arma de fogo"
 		"nl"		"Ranged extras"
 		"chi"       	"攻击特效"
+		"ko"		"원거리 전용 퍽"
 	}
 	"Heavy Caliber"
 	{
@@ -1532,6 +1688,7 @@
 		"pt"		"Alto Calibre"
 		"nl"		"Zwaar Kaliber"
 		"chi"       	"大口径"
+		"ko"		"대구경 탄약"
 	}
 	"Army Belt"
 	{
@@ -1542,6 +1699,7 @@
 		"pt"		"Cinto do Exercito"
 		"nl"		"Leger riem"
 		"chi"       	"军腰带"
+		"ko"		"군용 벨트"
 	}
 	"Headshot Affinity"
 	{
@@ -1552,6 +1710,7 @@
 		"pt"		"Afinidade com Tiros na Cabeça"
 		"nl"		"Hoofdschot Affiniteit"
 		"chi"       	"爆头精准性"
+		"ko"		"헤드샷 애호가"
 	}
 	"Mage Perks"//Lvl Mage perks HERE!!!
 	{
@@ -1562,6 +1721,7 @@
 		"pt"		"Habilidades de Mago"
 		"nl"		"Magische extras"
 		"chi"       	"魔法特效"
+		"ko"		"마법 전용 퍽"
 	}
 	"Mage Fragility"
 	{
@@ -1572,6 +1732,7 @@
 		"pt"		"Fragilidade de Mago"
 		"nl"		"Magische breekbaarheid"
 		"chi"       	"纯粹法师"
+		"ko"		"마법사의 취약성"
 	}
 	"Passive Perks"
 	{
@@ -1582,6 +1743,7 @@
 		"pt"		"Habilidades Passivas"
 		"nl"		"passieve extras"
 		"chi"       	"被动特效"
+		"ko"		"패시브 전용 퍽"
 	}
 	"Heavy Fat"
 	{
@@ -1592,6 +1754,7 @@
 		"pt"		"Peso Pesado"
 		"nl"		"Zwaar vet"
 		"chi"       	"脂肪层"
+		"ko"		"고도비만"
 	}
 	"Android"
 	{
@@ -1602,6 +1765,7 @@
 		"pt"		"Android"
 		"nl"		"Android"
 		"chi"       	"安卓"
+		"ko"		"안드로이드"
 	}
 	"Soft Shoes"
 	{
@@ -1612,6 +1776,7 @@
 		"pt"		"Sapatos Macios"
 		"nl"		"Zachte Schoenen"
 		"chi"       	"软鞋底"
+		"ko"		"부드러운 신발"
 	}
 	"Level Items"
 	{
@@ -1621,6 +1786,7 @@
 		"de"		"Level Gegenstände"
 		"nl"		"Niveau Items"
 		"chi"       	"等级物品"
+		"ko"		"레벨 아이템"
 	}
 	"Level 15 Peashooter"
 	{
@@ -1631,6 +1797,7 @@
 		"pt"		"Atira Ervilhas nível 15"
 		"nl"		"Niveau 15 Zaadschieter"
 		"chi"       	"等级15豌豆射手"
+		"ko"		"레벨 15 피슈터"
 	}
 	"Rusty Wrench"
 	{
@@ -1641,6 +1808,7 @@
 		"pt"		"Chave Inglesa Enferrujada"
 		"nl"		"Verroest Moersleutel"
 		"chi"       	"生锈扳手"
+		"ko"		"녹슨 렌치"
 	}
 	"Cheap Barricade"
 	{
@@ -1651,6 +1819,7 @@
 		"pt"		"Barricada Barata"
 		"nl"		"Goedkope Versperring"
 		"chi"       	"廉价路障"
+		"ko"		"싸구려 바리케이드"
 	}
 	"Sand Blocks"
 	{
@@ -1661,6 +1830,7 @@
 		"pt"		"Barricada de Areia"
 		"nl"		"ZandBlokken"
 		"chi"       	"砂块"
+		"ko"		"모래 블록"
 	}
 	"Inventory"//Inventory here
 	{
@@ -1671,6 +1841,7 @@
 		"pt"		"Inventário"
 		"nl"		"Voorraad"
 		"chi"       	"库存"
+		"ko"		"인벤토리"
 	}
 	"head"
 	{
@@ -1681,6 +1852,7 @@
 		"pt"		"Cabeça"
 		"nl"		"Hoofd"
 		"chi"       	"帽子"
+		"ko"		"머리"
 	}
 	"Scrap Helmet [Common]"
 	{
@@ -1691,6 +1863,7 @@
 		"pt"		"Capacete de Sucata [Comum]"
 		"nl"		"Schroot Helm [Gewoon]"
 		"chi"		"废铁头盔 [常见]"
+		"ko"		"고철 헬멧 [일반]"
 	}
 	"Face Mask [Common]"
 	{
@@ -1701,6 +1874,7 @@
 		"pt"		"Mascará Facial [Comum]"
 		"nl"		"Gezichtsmasker [Gewoon]"
 		"chi"		"面具 [常见]"
+		"ko"		"안면 마스크 [일반]"
 	}
 	"Chest"
 	{
@@ -1711,6 +1885,7 @@
 		"pt"		"Peitoral"
 		"nl"		"Borst"
 		"chi"       	"宝箱"
+		"ko"		"흉부"
 	}
 	"Villager Outfit [Common]"
 	{
@@ -1721,6 +1896,7 @@
 		"pt"		"Vestimenta de Aldeão [Comum]"
 		"nl"		"Dorpskleding [Gewoon]"
 		"chi"		"村民上衣 [常见]"
+		"ko"		"주민의 복장 [일반]"
 	}
 	"Smithed Scrap Chestplate [Uncommon]"
 	{
@@ -1731,6 +1907,7 @@
 		"pt"		"Peitoral de Sucata Forjada [Incomum]"
 		"nl"		"Gesmeed Schroot Borstplaat [Ongewoon]"
 		"chi"		"废铁胸甲 [常见]"
+		"ko"		"단조된 고철 흉갑 [특별]"
 	}
 	"Leggings"
 	{
@@ -1741,6 +1918,7 @@
 		"pt"		"Calças"
 		"nl"		"Broeken"
 		"chi"       	"裤子"
+		"ko"		"바지"
 	}
 	"Blue Jeans [Common]"
 	{
@@ -1751,6 +1929,7 @@
 		"pt"		"Jeans Azuis [Comum]"
 		"nl"		"Blauwe Jeans [Gewoon]"
 		"chi"		"牛仔裤 [常见]"
+		"ko"		"청바지 [일반]"
 	}
 	"shoes"
 	{
@@ -1761,6 +1940,7 @@
 		"pt"		"Sapatos"
 		"nl"		"Schoenen"
 		"chi"       	"鞋子"
+		"ko"		"신발"
 	}
 	"Jordans [Common]"
 	{
@@ -1771,6 +1951,7 @@
 		"pt"		"Nike [Comum]" // your jordans are fake bro, they don't seem to be selled at brazil
 		"nl"		"Jordans [Gewoon]"
 		"chi"		"Jordans [常见]"
+		"ko"		"조던 [일반]"
 	}
 	"Monkey Knowledge"
 	{
@@ -1781,6 +1962,7 @@
 		"pt"		"Conhecimento"
 		"nl"		"Apen Kennis"
 		"chi"       	"特殊技能"
+		"ko"		"원숭이 지식"
 	}
 	"Fast Tack Attacks [Rare]"
 	{
@@ -1791,6 +1973,7 @@
 		"pt"		"Ataques que são Rápidos [Raro]"
 		"nl"		"Snelle Kopspijkeraanvallen [Zeldzaam]"
 		"chi"		"快速攻击 [稀有]"
+		"ko"		"빠른 압정 공격 [희귀]"
 	}
 	"Mega Mauler [Rare]"
 	{
@@ -1801,6 +1984,7 @@
 		"pt"		"Mega Mastigador [Raro]"
 		"nl"		"Mega Mauler [Zeldzaam]"
 		"chi"		"撕裂者 [稀有]"
+		"ko"		"메가 격투자 [희귀]"
 	}
 	"Big Cryo Blast [Uncommon]"
 	{
@@ -1811,6 +1995,7 @@
 		"pt"		"Grande Explosão de Crio [Incomum]"
 		"nl"		"Grote Cryo Opblazer [Ongewoon]"
 		"chi"		"冰冻爆炸 [稀有]"
+		"ko"		"거대 냉동 공격 [특별]"
 	}
 	"Long Turbo [Uncommon]"
 	{
@@ -1821,6 +2006,7 @@
 		"pt"		"Turbo Longo [Incomum]"
 		"nl"		"Lange Turbo [Ongewoon]"
 		"chi"		"超倍加速 [罕见]"
+		"ko"		"긴 터보 [특별]"
 	}
 	"Bonus Monkey! [Rare]"
 	{
@@ -1831,6 +2017,7 @@
 		"pt"		"Macaco Bonus! [Raro]"
 		"nl"		"Bonus Aap! [Zeldzaam]"
 		"chi"		"额外猴子！[稀有]"
+		"ko"		"보너스 원숭이! [희귀]"
 	}
 	"Big Bunch [Rare]"
 	{
@@ -1841,6 +2028,7 @@
 		"pt"		"Punhado Grande [Raro]"
 		"nl"		"Grote Tros [Zeldzaam]"
 		"chi"		"大群[稀有]"
+		"ko"		"커다란 다발 [희귀]"
 	}
 	"Accelerated Aerodarts [Uncommon]"
 	{
@@ -1851,6 +2039,7 @@
 		"pt"		"Dardos Aereos Acelerados [Incomum]"
 		"nl"		"Versnelde Lucht Darts [Ongewoon]"
 		"chi"		"超速针刺[稀有]"
+		"ko"		"가속 공기역학 다트 [특별]"
 	}
 	"Faster Takedowns [Common]"
 	{
@@ -1861,6 +2050,7 @@
 		"pt"		"Derrubada Rápida [Comum]"
 		"nl"		"Snellere Neerhalingen [Gewoon]"
 		"chi"		"快速击倒[常见]"
+		"ko"		"더 빠른 테이크다운 [일반]"
 	}
 	"Extra Burny Stuff [Uncommon]"
 	{
@@ -1871,6 +2061,7 @@
 		"pt"		"Coisas Incendiárias Extras [Incomum]"
 		"nl"		"Extra brandende spullen [Ongewoon]"
 		"chi"		"可燃物[罕见]"
+		"ko"		"추가 연소 물질 [특별]"
 	}
 	"Quad Burst [Legendary]"
 	{
@@ -1881,6 +2072,7 @@
 		"pt"		"Rajada Quádrupla [Lendário]"
 		"nl"		"Viersuitbarsting [Legendarisch]"
 		"chi"		"四倍爆发[传奇]"
+		"ko"		"4중 폭발 [전설]"
 	}
 	"Gun Coolant [Rare]"
 	{
@@ -1891,6 +2083,7 @@
 		"pt"		"Refrigerador de Armas [Raro]"
 		"nl"		"Pistool koelvloeistof [Zeldzaam]"
 		"chi"		"冷却剂[稀有]"
+		"ko"		"총 냉각수 [희귀]"
 	}
 	"Flanking Maneuvers [Rare]"
 	{
@@ -1901,6 +2094,7 @@
 		"pt"		"Manuseios de Emboscada [Raro]"
 		"nl"		"Flankerende maneuvers [Zeldzaam]"
 		"chi"		"战技：偷袭[稀有]"
+		"ko"		"측방 공략 [희귀]"
 	}
 	"Charged Chinooks [Uncommon]"
 	{
@@ -1911,6 +2105,7 @@
 		"pt"		"Chinooks Carregado [Incomum]"
 		"nl"		"Opgeladen Chinooks [Ongewoon]"
 		"chi"		"充能奇诺克[罕见]"
+		"ko"		"충전된 치누크 [특별]"
 	}
 	"Big Bloon Sabotage [Legendary]"
 	{
@@ -1921,6 +2116,7 @@
 		"pt"		"Grande Sabotador de Bloons [Lendário]"
 		"nl"		"Groot Ballonsabotage [Legendarisch]"
 		"chi"		"大型气球毁灭者[传奇]"
+		"ko"		"큰 풍선 파괴 [전설]"
 	}
 	"SUPER Range [Rare]"
 	{
@@ -1931,6 +2127,7 @@
 		"pt"		"SUPER Alcançe [Raro]"
 		"nl"		"SUPER Afstand [Zeldzaam]"
 		"chi"		"超级射程[稀有]"
+		"ko"		"슈퍼 사정거리 [희귀]"
 	}
 	"Heavy Knockback [Legendary]"
 	{
@@ -1941,6 +2138,7 @@
 		"pt"		"Repulsão Pesada [Lendário]"
 		"nl"		"Zware terugslag [Legendarisch]"
 		"chi"		"超级击退[传奇]"
+		"ko"		"드센 넉백 [전설]"
 	}
 	"Speedy Brewing [Uncommon]"
 	{
@@ -1951,6 +2149,7 @@
 		"pt"		"Fervura Veloz [Incomum]"
 		"nl"		"Snel Brouwen [Ongewoon]"
 		"chi"		"快速酿造[罕见]"
+		"ko"		"빠른 약 제조 [특별]"
 	}
 	"Strike Down The False [Uncommon]"
 	{
@@ -1961,6 +2160,7 @@
 		"pt"		"Derrube o Falso [Incomum]"
 		"nl"		"Sla neer de valse [ongewoon]"
 		"chi"		"测谎仪[罕见]"
+		"ko"		"가짜는 끌어내려 [특별]"
 	}
 	"Flame Jet [Common]"
 	{
@@ -1971,6 +2171,7 @@
 		"pt"		"Jato de Labaredas [Comum]"
 		"nl"		"Vlamstraal [Gewoon]"
 		"chi"		"火焰喷射器[常见]"
+		"ko"		"화염 추진기 [일반]"
 	}
 	"Strong Tonic [Rare]"
 	{
@@ -1980,6 +2181,7 @@
 		"de"		"Starkes Stärkungsmittel [Selten]"
 		"nl"		"Sterke Tonic [Zeldzaam]"
 		"chi"		"高浓度汤力水[稀有]"
+		"ko"		"독한 강장제 [희귀]"
 	}
 	"Arcane Impale [Rare]"
 	{
@@ -1990,6 +2192,7 @@
 		"pt"		"Impalamento Arcano [Raro]"
 		"nl"		"Geheimzinnige spietsing [Zeldzaam]"
 		"chi"		"灵力穿透[稀有]"
+		"ko"		"마력 관통 [희귀]"
 	}
 	"Deadly Tranquility [Uncommon]"
 	{
@@ -2000,6 +2203,7 @@
 		"pt"		"Tranquilidade Mortal [Incomum]"
 		"nl"		"Dodelijke Rust [Ongewoon]"
 		"chi"		"死寂[罕见]"
+		"ko"		"위험한 정적 [특별]"
 	}
 	"There Can Be Only One [Mythic]"
 	{
@@ -2010,6 +2214,7 @@
 		"pt"		"So Pode Existir Um [Mítico]"
 		"nl"		"Er Is Er Maar Één [Mythisch]"
 		"chi"		"There Can be Only One[神话]"
+		"ko"		"하나만 돼요 [신화]"
 	}
 	"Tiny Tornadoes [Rare]"
 	{
@@ -2020,6 +2225,7 @@
 		"pt"		"Pequenos Tornados [Raro]"
 		"nl"		"Kleine tornado's [Zeldzaam]"
 		"chi"		"迷你龙卷风[稀有]"
+		"ko"		"작은 토네이도 [희귀]"
 	}
 	"Mana Shield [Legendary]"
 	{
@@ -2030,6 +2236,7 @@
 		"pt"		"Escudo de Mana [Lendário]"
 		"nl"		"Mana Schild [Legendarisch]"
 		"chi"		"能量盾[传说]"
+		"ko"		"마나 보호막 [전설]"
 	}
 	"Vigilant Sentries [Common]"
 	{
@@ -2040,6 +2247,7 @@
 		"pt"		"Vigilante Sentinela [Comum]"
 		"nl"		"Voorzichtige Schildwachters [Gewoon]"
 		"chi"		"高警惕步哨[常见]"
+		"ko"		"철저한 경비 [일반]"
 	}
 	"To ARMS! [Legendary]"
 	{
@@ -2050,6 +2258,7 @@
 		"pt"		"Para os BRAÇOS! [Lendário]"
 		"nl"		"Ten Armen! [Legendarisch]"
 		"chi"		"预备！[传说]"
+		"ko"		"전원 소집! [전설]"
 	}
 	"Healthy Bananas [Legendary]"
 	{
@@ -2060,6 +2269,7 @@
 		"pt"		"Bananas Saúdaveis [Lendário]"
 		"nl"		"Gezonde Bananen [Legendarisch]"
 		"chi"		"健康の香蕉[常见]"
+		"ko"		"건강한 바나나 [전설]"
 	}
 	"Veteran Monkey Training [Uncommon]"
 	{
@@ -2070,6 +2280,7 @@
 		"pt"		"Treinamento Veterano de Primata [Incomum]"
 		"nl"		"Veteraan Apentraining [Ongewoon]"
 		"chi"		"老兵猴子训练[罕见]"
+		"ko"		"베테랑 원숭이 훈련 [특별]"
 	}
 	"Pre-Game Prep [Legendary]"
 	{
@@ -2079,8 +2290,8 @@
 		"de"		"Spielvorbereitung [Legendär]"
 		"pt"		"Preparação antes Jogo [Lendário]"
 		"nl"		"Voorspel Voorbereiding [Legendarisch]"
-
 		"chi"		"提前准备[传说]"
+		"ko"		"사전 준비 [전설]"
 	}
 	"Builder Gear"
 	{
@@ -2089,6 +2300,7 @@
 		"es"	   "Equip. de Construccion"
 		"ru"       "Снаряж. строителя"
 		"chi"       "工程师物品"
+		"ko"	   "건축가 장비"
 	}
 	"Shrapnel Shredder"
 	{
@@ -2096,6 +2308,7 @@
 		"fr"       "Éclatrisateur"
 		"ru"       "Шрапнельный измельчитель"
 		"chi"       "弹片爆破抢"
+		"ko"	   "파편 분쇄기"
 	}
 	"The Pomson 7000"
 	{
@@ -2103,6 +2316,7 @@
 		"fr"       "Pomson 7000"
 		"ru"       "Помсон 7000"
 		"chi"       "歼灭者7000"
+		"ko"	   "폼슨 7000"
 	}
 	"Leone 12 Gauge Super"
 	{
@@ -2110,6 +2324,7 @@
 		"fr"       "Super Leone 12 Gage"
 		"ru"       "Итальянский крупный дробовик"
 		"chi"       "12号利昂"
+		"ko"	   "레오네 12게이지 슈퍼"
 	}
 	"IEM Launcher"
 	{
@@ -2117,13 +2332,15 @@
 		"fr"       "Lanceur Électromagnétique"
 		"ru"       "Пусковая установка ИЭМ"
 		"chi"       "超电磁炮"
+		"ko"	   "IEM 런처"
 	}
 	"Quad Launcher"
 	{
 		"en"       "Quad Launcher"
 		"fr"       "Quad-Lanceur"
 		"ru"       "Счетверённая ракетница"
-		"chi"       "四管榴弹炮"
+		"chi"      "四管榴弹炮"
+		"ko"	   "4연장 런처"
 	}
 	"Terroriser Bomb lmplanter Sniperrifle"
 	{
@@ -2131,6 +2348,7 @@
 		"fr"		"Fusil Implanteur de Bombes Terroriseurs"
 		"ru"       "Снайперская винтовка террориста-закладчика"
 		"chi"       "炸弹植入狙击步枪"
+		"ko"	   "테러리스트 폭탄 이식기 저격소총"
 	}
 	"Neutronstar Burst Cannon"
 	{
@@ -2138,6 +2356,7 @@
 		"fr"       "Cannon de Neutrinos"
 		"ru"       "Нейтронно-звёздная пушка"
 		"chi"       "中子星爆炸炮"
+		"ko"	   "중성자별 격발포"
 	}
 	"People Popper"
 	{
@@ -2145,6 +2364,7 @@
 		"fr"       "Éclatraillette"
 		"ru"       "Лопатель"
 		"chi"       "爆弹smg"
+		"ko"	   "인간 폭파기"
 	}
 	"Fusions Blade"
 	{
@@ -2152,6 +2372,7 @@
 		"fr"       "Lame Fusion"
 		"ru"       "Лезвие фьюжена"
 		"chi"       "融合之刃"
+		"ko"	   "퓨전 블레이드"
 	}
 	"Fractured Ark"
 	{
@@ -2159,6 +2380,7 @@
 		"fr"       "Arc Fracturé"
 		"ru"       "Расколотый ковчег"
 		"chi"       "断裂方舟"
+		"ko"	   "파편화된 방주"
 	}
 	"Zerofuse's Knife"
 	{
@@ -2166,6 +2388,7 @@
 		"fr"       "Couteau de Zerofuse"
 		"ru"       "Нож Зерофуза"
 		"chi"       "零度刃"
+		"ko"	   "제로퓨즈의 칼"
 	}
 	"Medusa Teslar Stick"
 	{
@@ -2173,6 +2396,7 @@
 		"fr"		"Bâton Teslar de Médusa"
 		"ru"		"Палочка медузы Теслар"
 		"chi"		"美杜莎·特斯拉手杖"
+		"ko"	    "메두사 테슬라 막대"
 	}
 	"Beam Wand"
 	{
@@ -2180,12 +2404,14 @@
 		"fr"       "Baguette Rayonneuse"
 		"ru"       "Жезл луча"
 		"chi"       "光之法杖"
+		"ko"	   "빔 완드"
 	}
 	"Cryo Staff"
 	{
 		"en"       "Cryo Staff"
 		"fr"       "Bâton des Glaces"
 		"chi"       "寒冰法杖"
+		"ko"	   "냉동 스태프"
 	}
 	"Only one allowed, sell to see and buy others."
 	{
@@ -2193,6 +2419,7 @@
 		"fr"       "Seulement un est permis, vendez pour voir et échanger pour les autres."
 		"ru"       "Только одно, продайте для покупки другого."
 		"chi"       "只允许装备一个！"
+		"ko"	   "이 장비들은 오직 하나만 보유할 수 있습니다. 다른걸 사용하려면 현재 보유한 것을 판매해야 합니다."
 	}
 	"Throwable Armor Grenade"
 	{
@@ -2200,6 +2427,7 @@
 		"fr"       "Dispenseur d'Armure Lançable"
 		"ru"       "Метат. бронеб. граната"
 		"chi"       "装甲手雷"
+		"ko"	   "아머 보급 수류탄"
 	}
 	"Experimental Burst Pack"
 	{
@@ -2207,6 +2435,7 @@
 		"fr"       "Sac Propulseur Éxpérimental"
 		"ru"       "Эксп. разрывная установка"
 		"chi"       "突击装备"
+		"ko"	   "실험형 폭파 상자"
 	}
 	"Throwable Survival Grenade"
 	{
@@ -2214,6 +2443,7 @@
 		"fr"       "Dispenseur de Soins Lançable"
 		"ru"       "Метат. граната выжив."
 		"chi"       "生存受累"
+		"ko"	   "생존용 수류탄"
 	}
 	"Deployable Quantum Suit"
 	{
@@ -2221,12 +2451,14 @@
 		"fr"       "Armure Quantum Déployable"
 		"ru"       "Развёрт. квантовый костюм"
 		"chi"       "量子套装"
+		"ko"	   "배치형 퀀텀 슈트"
 	}
 	"Throwable Repair Kit"
 	{
 		"en"       "Throwable Repair Kit"
 		"fr"       "Kit de Réparation Lançable"
 		"chi"		"维修手雷"
+		"ko"	   "투척형 수리 도구"
 	}
 	"Primary Builder Weapons"
 	{
@@ -2234,6 +2466,7 @@
 		"fr"       "Armes Principales Constructeur"
 		"ru"       "Осн. оружие строителя"
 		"chi"       "工程师主武器"
+		"ko"	   "건축가 주 무기"
 	}
 	"Secondary Builder Weapons"
 	{
@@ -2241,6 +2474,7 @@
 		"fr"       "Armes Secondaires Constructeur"
 		"ru"       "Доп. оружие строителя"
 		"chi"       "工程师副武器"
+		"ko"	   "건축가 보조 무기"
 	}
 	"Melee Builder Weapons"
 	{
@@ -2248,6 +2482,7 @@
 		"fr"       "Armes Corps à Corps Constructeur"
 		"ru"       "Оружие ближн. боя строителя"
 		"chi"       "工程师近战武器"
+		"ko"	   "건축가 근접 무기"
 	}
 	"Extra Gear"
 	{
@@ -2256,6 +2491,7 @@
 		"fr"       "Équipement Éxtra"
 		"ru"       "Доп. снаряжение"
 		"chi"       "额外装置"
+		"ko"	   "추가 장비들"
 	}
 	"Elite Sniper"
 	{
@@ -2263,6 +2499,7 @@
 		"fr"       "Fusil de Sniper Élite"
 		"ru"       "Элитный снайпер"
 		"chi"       "精英狙击手"
+		"ko"	   "엘리트 저격수"
 	}
 	"All ltems here are affected by Building Upgrades."
 	{
@@ -2270,6 +2507,7 @@
 		"fr"       "Tout achat ici est affecté par les Améliorations de Constructeur"
 		"ru"       "Все предметы здесь влияют на улучшение построек."
 		"chi"       "所有有关建筑的物品已被归类到此列表"
+		"ko"	   "이 곳에 있는 아이템은 전부 구조물 업그레이드의 효과를 받습니다."
 	}
 	"TIP: Only one path can have a tier 3 upgrade" //村庄列表
 	{
@@ -2277,6 +2515,7 @@
 		"fr"       "INDICE: Seulement un trajet peut avoir une amélioration niveau 3"
 		"ru"       "СОВЕТ: Только один путь может иметь улучшение уровня 3"
 		"chi"       "提示:只有一条路径可以拥有三级升级"
+		"ko"	   "팁 : 3티어 업그레이드로 갈 수 있는 유일한 방법입니다."
 	}
 	"Bigger Radius"
 	{
@@ -2284,6 +2523,7 @@
 		"fr"       "Portée Améliorée"
 		"ru"       "Увеличенный радиус"
 		"chi"      "扩大范围"
+		"ko"	   "반경 증가"
 	}
 	"Jungle Drums"
 	{
@@ -2291,6 +2531,7 @@
 		"fr"       "Tambour des Jungles"
 		"ru"       "Барабаны джунглей"
 		"chi"      "加快范围内攻击速度"
+		"ko"	   "정글 드럼"
 	}
 	"Grow Blocker"
 	{
@@ -2298,6 +2539,7 @@
 		"fr"       "Bloqueur de Regénération"
 		"ru"       "Блокировщик роста"
 		"chi"       "生长阻止器"
+		"ko"	   "재생 차단기"
 	}
 	"Rebel Active Camo"
 	{
@@ -2305,6 +2547,7 @@
 		"fr"       "Camouflage Actif"
 		"ru"       "Активный камуфляж повстанца"
 		"chi"      "迷彩服"
+		"ko"	   "반시민군의 위장 활성기"
 	}
 	"Rebel Mounted Armortable"
 	{
@@ -2312,6 +2555,7 @@
 		"fr"       "Table d'Armure Montée"
 		"ru"       "Верстак брони повстанца"
 		"chi"      "便携式装甲柜"
+		"ko"	   "반시민군의 실장형 아머 테이블"
 	}
 	"Rebel Mounted AmmoBox"
 	{
@@ -2319,6 +2563,7 @@
 		"fr"       "Boîte de Munitions Montée"
 		"ru"       "Ящик с боепр. повстанца"
 		"chi"      "便携式弹药箱"
+		"ko"	   "반시민군의 실장형 탄약 상자"
 	}
 	"Rebel Mounted Perk Machine"
 	{
@@ -2326,6 +2571,7 @@
 		"fr"       "Machine à Perks Montée"
 		"ru"       "Перк-машина повстанца"
 		"chi"      "便携式饮料机"
+		"ko"	   "반시민군의 실장형 퍽 기계"
 	}
 	"Rebel Mounted Pack-a-Punch"
 	{
@@ -2333,6 +2579,7 @@
 		"fr"       "Machine Pack-a-Punch Montée"
 		"ru"       "Улучшайзер повстанца"
 		"chi"      "便携式升级台"
+		"ko"	   "반시민군의 실장형 팩 어 펀치"
 	}
 	"Rebel Mounted Healing Station"
 	{
@@ -2340,6 +2587,7 @@
 		"fr"       "Station de Soins Montée"
 		"ru"       "Лечеб. станция повстанца"
 		"chi"      "便携式医疗站"
+		"ko"	   "반시민군의 실장형 회복 기구"
 	}
 	"Judgement Of Iberia"
 	{
@@ -2347,6 +2595,7 @@
 		"fr"       "Judgement de Ibéria"
 		"ru"       "Суд Иберии"
 		"chi"      "伊比利亚之判"
+		"ko"	   "이베리아의 심판"
 	}
 	"Tornado-Blitz"
 	{
@@ -2354,6 +2603,7 @@
 		"fr"		"Blitz Tornades"
 		"ru"		"Торнадо-Блиц"
 		"chi"       "疾风战炮"
+		"ko"		"맹렬의 토네이도"
 	}
 	"Cosmic Terror"
 	{
@@ -2361,6 +2611,7 @@
 		"fr"		"Terreur Cosmique"
 		"ru"		"Космический террор"
 		"chi"       "宇宙恐怖"
+		"ko"		"코즈믹 테러"
 	}
 	"Passanger's Device"
 	{
@@ -2368,6 +2619,7 @@
 		"fr"	"Appareil du Passager"
 		"ru"	"Пассажирское устройство"
 		"chi"   "乘客设备"
+		"ko"	"패신저의 단말기"
 	}
 	"Alchemist Potion"
 	{
@@ -2375,11 +2627,13 @@
 		"fr"	"Potion Alchémique"
 		"ru"	"Зелье алхимика"
 		"chi"   "炼金术士药水"
+		"ko"	"연금술사의 포션"
 	}
 	"Deleting buildings refunds text"
 	{
 		"en"	"Deleting buildings returns spend metal dependant on remaining HP and repair HP"
 		"fr"	"Du métal vous sera retourné pour les construction détruites, dépendant de leur durabilité"
+		"ko"	"제거한 구조물은 남아있는 체력과 수리 내구도에 비례하여 소모된 금속을 돌려줍니다."
 	}
 	"Press your action slot (h) to access an extra menu!"
 	{
@@ -2387,12 +2641,14 @@
 		"fr"	"Appyuez sur le bouton Action (H) pour ouvrir un menu additionel!"
 		"ru"	"Нажмите на ячейку действия (h) для открытия доп. меню!"
 		"chi"	"按下动作/魔法键打开功能面板！[默认h]"
+		"ko"	"연금술사의 포션"
 	}
 	"Barracks"
 	{
 		"en"	"Barracks"
 		"fr"	"Caserne"
 		"chi"	"兵营"
+		"ko"	"배럭"
 	}
 	"Nearl Silvester Spear"
 	{
@@ -2400,6 +2656,7 @@
 		"fr"	"Lance Nearl Silvester"
 		"ru"	"Копьё Нерла Сильвестра"
 		"chi"   "西尔维斯特之矛"
+		"ko"	"니어 실베스터의 창"
 	}
 	"Lapplands Sword"
 	{
@@ -2407,6 +2664,7 @@
 		"fr"	"Épée des Lapplands"
 		"ru"	"Меч лапландцев"
 		"chi"	"拉普兰德的剑"
+		"ko"	"라플란드의 검"
 	}
 	"Lantean Staff"
 	{
@@ -2414,6 +2672,7 @@
 		"fr" 	"Bâton Lantean"
 		"ru" 	"Посох Лантеана"
 		"chi"	"兰亭法杖"
+		"ko"	"랜턴 스태프"
 	}
 	"Chainblade"
 	{
@@ -2421,6 +2680,7 @@
 		"fr"	"Lame Enchaînée"
 		"ru"	"Цепной клинок"
 		"chi"   "链刃"
+		"ko"	"사복검"
 	}
 	"Skilled Chainblade"
 	{
@@ -2428,6 +2688,7 @@
 		"fr"	"Lame Enchaînée des Experts"
 		"ru"	"Искусный цепной клинок"
 		"chi"   "精通链刃"
+		"ko"	"숙련된 사복검"
 	}
 	"Elite Chainblade"
 	{
@@ -2435,6 +2696,7 @@
 		"fr"	"Lame Enchaînée des Élites"
 		"ru"	"Элитный цепной клинок"
 		"chi"   "精英链刃"
+		"ko"	"정예 사복검"
 	}
 	"Elite Skilled Chainblade"
 	{
@@ -2442,6 +2704,7 @@
 		"fr"	"Lame Enchaînée des Savants"
 		"ru"	"Элитный искусный цепной клинок"
 		"chi"   "精英技能链刃"
+		"ko"	"숙련된 정예 사복검"
 	}
 	"Unchained Blade"
 	{
@@ -2449,6 +2712,7 @@
 		"fr"	"Lame Déchaînée"
 		"ru"	"Клинок без цепи"
 		"chi"   "无链之刃"
+		"ko"	"비속박의 검"
 	}
 	"Elite Unchained Blade"
 	{
@@ -2456,6 +2720,7 @@
 		"fr"	"Lame Déchaînée des Élites"
 		"ru"	"Элитный клинок без цепи"
 		"chi"   "精英无链之刃"
+		"ko"	"정예 비속박의 검"
 	}
 	"Preaching Sword"
 	{
@@ -2463,6 +2728,7 @@
 		"fr"	"Épée de Prière"
 		"ru"	"Меч проповедника"
 		"chi"   "传道之剑"
+		"ko"	"설교자의 검"
 	}
 	"Ranged Lego Layer"
 	{
@@ -2470,6 +2736,7 @@
 		"fr"	"Placeur de Legos à Distance"
 		"ru"	"Легомёт"
 		"chi"	"乐高布置器"
+		"ko"	"원거리형 레고 매설기"
 	}
 	"The Enforcer"
 	{
@@ -2477,6 +2744,7 @@
 		"fr"	"L'Exécutant"
 		"ru"	"Головорез"
 		"chi"	"执法者"
+		"ko"	"집행자"
 	}
 	"The Enforcer S1"
 	{
@@ -2484,6 +2752,7 @@
 		"fr"	"L'Exécutant Mk 1"
 		"ru"	"Головорез S1"
 		"chi"	"执法者S1"
+		"ko"	"집행자 S1"
 	}
 	"The Enforcer S2"
 	{
@@ -2491,6 +2760,7 @@
 		"fr"	"L'Exécutant Mk 2"
 		"ru"	"Головорез S2"
 		"chi"	"执法者S2"
+		"ko"	"집행자 S2"
 	}
 	"The Enforcer S3"
 	{
@@ -2498,6 +2768,7 @@
 		"fr"	"L'Exécutant Mk 3"
 		"ru"	"Головорез S3"
 		"chi"	"执法者S3"
+		"ko"	"집행자 S3"
 	}
 	"The Enforcer Lv 4"
 	{
@@ -2505,6 +2776,7 @@
 		"fr"	"L'Exécutant Mk 4"
 		"ru"	"Головорез S4"
 		"chi"	"执法者S4"
+		"ko"	"집행자 S4"
 	}
 	"The Enforcer S5"
 	{
@@ -2512,6 +2784,7 @@
 		"fr"	"L'Exécutant Mk 5"
 		"ru"	"Головорез S5"
 		"chi"	"执法者S5"
+		"ko"	"집행자 S5"
 	}
 	"The Enforcer S6"
 	{
@@ -2519,6 +2792,7 @@
 		"fr"	"L'Exécutant Mk 6"
 		"ru"	"Головорез S6"
 		"chi"	"执法者S7"
+		"ko"	"집행자 S6"
 	}
 	"The Enforcer S7"
 	{
@@ -2526,6 +2800,7 @@
 		"fr"	"L'Exécutant Mk 7"
 		"ru"	"Головорез S7"
 		"chi"	"执法者S7"
+		"ko"	"집행자 S7"
 	}
 	"The Enforcer Mastery 1"
 	{
@@ -2533,6 +2808,7 @@
 		"fr"	"L'Exécutant Pro Mk 1"
 		"ru"	"Мастерство головореза 1"
 		"chi"	"精通执法者；等级1"
+		"ko"	"숙달의 집행자 1"
 	}
 	"The Enforcer Mastery 2"
 	{
@@ -2540,6 +2816,7 @@
 		"fr"	"L'Exécutant Pro Mk 2"
 		"ru"	"Мастерство головореза 2"
 		"chi"	"精通执法者；等级2"
+		"ko"	"숙달의 집행자 2"
 	}
 	"The Enforcer Mastery 3"
 	{
@@ -2547,6 +2824,7 @@
 		"fr"	"L'Exécutant Pro Mk 3"
 		"ru"	"Мастерство головореза 3"
 		"chi"	"精通执法者；等级3"
+		"ko"	"숙달의 집행자 3"
 	}
 	"The Enforcer Mastery 4"
 	{
@@ -2554,6 +2832,7 @@
 		"fr"	"L'Exécutant Pro Mk 4"
 		"ru"	"Мастерство головореза 4"
 		"chi"	"精通执法者；等级4"
+		"ko"	"숙달의 집행자 4"
 	}
 	"The Enforcer Mastery 5"
 	{
@@ -2561,6 +2840,7 @@
 		"fr"	"L'Exécutant Pro Mk 5"
 		"ru"	"Мастерство головореза 5"
 		"chi"	"精通执法者；等级5"
+		"ko"	"숙달의 집행자 5"
 	}
 	"Quincy's Bow"
 	{
@@ -2568,6 +2848,7 @@
 		"ru"	"Лук Квинси"
 		"fr"	"Arc de Quincy"
 		"chi"	"昆西弓"
+		"ko"	"퀸시의 활"
 	}
 	"The Standchen"
 	{
@@ -2575,30 +2856,35 @@
 		"ru"	"De Ständchen"
 		"fr"	"De Ständchen"
 		"chi"	"[韵文]"
+		"ko"	"세레나데"
 	}
 	"The Standchen Pap"
 	{
 		"en"	"De Ständchen Zugabe"
 		"fr"	"De Ständchen Zugabe"
 		"chi"	"[[韵文]]"
+		"ko"	"세레나데 앙코르"
 	}
 	"The Standchen AltPap"
 	{
 		"en"	"De Ständchen de Disharmonie"
 		"fr"	"De Ständchen de Disharmonie"
 		"chi"	"][韵文]["
+		"ko"	"불협화음의 세레나데"
 	}
 	"The Standchen AltPap 2"
 	{
 		"en"	"De Ständchen de Stille"
 		"fr"	"De Ständchen de Stille"
 		"chi"	"]]韵文[["
+		"ko"	"침묵의 세레나데"
 	}
 	"Combo Kits"
 	{
 		"en"	"Combo Kits"
 		"fr"	"Ensembles Combo"
 		"chi"	"组合套装"
+		"ko"	"콤보 키트"
 	}
 	"Seaborn Infection"
 	{
@@ -2606,6 +2892,7 @@
 		"ru"	"Морерождённая инфекция"
 		"fr"	"Infection Seaborn"
 		"chi"	"海嗣感染"
+		"ko"	"시본 감염원"
 	}
 	"Seaborn Claws"
 	{
@@ -2613,6 +2900,7 @@
 		"ru"	"Когти морерождённого"
 		"fr"	"Griffes Seaborn"
 		"chi"	"海嗣利爪"
+		"ko"	"시본 발톱"
 	}
 	"Seaborn Spines"
 	{
@@ -2620,6 +2908,7 @@
 		"ru"	"Шипы морерождённого"
 		"fr"	"Épines Seaborn"
 		"chi"	"海嗣颈骨"
+		"ko"	"시본 가시뼈"
 	}
 	"Seaborn Salve"
 	{
@@ -2627,12 +2916,14 @@
 		"ru"	"Фласка Морерождённого"
 		"fr"	"Baume Seaborn"
 		"chi"	"海嗣药膏"
+		"ko"	"시본 연고"
 	}
 	"The Flagellant"
 	{
 		"en"	"The Flagellant"
 		"fr"	"Le Flagellant"
 		"chi"	"苦修"
+		"ko"	"고행자"
 	}
 	"Punish"
 	{
@@ -2640,6 +2931,7 @@
 		"ru"	"Наказать"
 		"fr"	"Punition"
 		"chi"	"惩罚"
+		"ko"	"징벌"
 	}
 	"Deathless"
 	{
@@ -2647,6 +2939,7 @@
 		"ru"	"Бессмертный"
 		"fr"	"Sans Mort"
 		"chi"	"无死"
+		"ko"	"불멸"
 	}
 	"Ion-Blitz"
 	{
@@ -2655,6 +2948,7 @@
 		"fr"	"Ion-Blitz"
 		"chi"	"闪光"
 		"chi"	"闪「光」"
+		"ko"	"이온-블리츠"
 	}
 	"Blitz-Blade"
 	{
@@ -2663,6 +2957,7 @@
 		"fr"	"Lame Blitz"
 		"chi"	"闪电刃"
 		"chi"	"电「刃」"
+		"ko"	"블리츠 블레이드"
 	}
 	"Hurricane-Blitz"
 	{
@@ -2671,6 +2966,7 @@
 		"fr"	"Cyclone Blitz"
 		"chi"	"闪电战"
 		"chi"	"「闪电战」"
+		"ko"	"허리케인 블리츠"
 	}
 	"Gravaton Spell"
 	{
@@ -2678,10 +2974,12 @@
 		"ru"	"Заклинание гравитации"
 		"fr"	"Sortilège du Gravaton"
 		"chi"	"引力法术"
+		"ko"	"중력 마법"
 	}
 	"Reiuji Wand"
 	{
 		"en"	"Reiuji Wand"
+		"ko"	"레이우지 완드"
 	}
 	"Heavy Particle Rifle"
 	{
@@ -2689,6 +2987,7 @@
 		"ru"	"Винтовка тяжёлых частиц"
 		"fr"	"Fusil de Particules Lourdes"
 		"chi"	"重型粒子步枪"
+		"ko"	"고입자 소총"
 	}
 	"Flash Grenade"
 	{
@@ -2696,6 +2995,7 @@
 		"ru"	"Светошумовая граната"
 		"fr"	"Grenade Flash"
 		"chi"	"闪光弹"
+		"ko"	"섬광탄"
 	}
 	"Flashier Grenade"
 	{
@@ -2703,6 +3003,7 @@
 		"ru"	"Очень яркая граната"
 		"fr"	"Grenade Flash Intense"
 		"chi"	"升级闪光弹"
+		"ko"	"특대 섬광탄"
 	}
 	"Energized Riot Gun"
 	{
@@ -2710,6 +3011,7 @@
 		"ru"	"Заряженный полицейский пистолет"
 		"fr"	"Pistolet des Émeutes Énergisé"
 		"chi"	"充能暴动步枪"
+		"ko"	"활기의 진압 총"
 	}
 	"The Tinker"
 	{
@@ -2717,6 +3019,7 @@
 		"ru"	"Жестянщик"
 		"fr"	"Le Forgeur"
 		"chi"	"匠工"
+		"ko"	"땜장이"
 	}
 	"Tinker's Wrench"
 	{
@@ -2724,6 +3027,7 @@
 		"ru"	"Гаечный ключ жестянщика"
 		"fr"	"Clé du Forgeron"
 		"chi"	"匠工扳手"
+		"ko"	"땜장이의 렌치"
 	}
 	"Tinker's Texan Mounter"
 	{
@@ -2731,6 +3035,7 @@
 		"ru"	"Техатский возводитель Жестянщика"
 		"fr"	"Monteur du Forgeron"
 		"chi"	"多功能扳手"
+		"ko"	"땜장이의 실장 기술력"
 	}
 	"Tinker Workshop"
 	{
@@ -2738,15 +3043,18 @@
 		"ru"	"мастерская Жестянщика"
 		"fr"	"Laboratoire du Forgeron"
 		"chi"	"匠工坊"
+		"ko"	"땜장이의 작업대"
 	}
 	"Merchant Brewing Stand"
 	{
 		"en"	"Merchant Brewing Stand"
 		"ru"	"Подставка для заваривания Торговца"
+		"ko"	"상인의 양조기"
 	}
 	"Merchant Grill"
 	{
 		"en"	"Merchant Grill"
+		"ko"	"상인의 그릴"
 	}
 	"Tinker Research"
 	{
@@ -2754,6 +3062,7 @@
 		"ru"	"Исследование Жестянщика"
 		"fr"	"Recherche du Forgeron"
 		"chi"	"匠工研究"
+		"ko"	"땜장이의 연구 결과물"
 	}
 	"Tinker Ranger"
 	{
@@ -2761,6 +3070,7 @@
 		"ru"	"Рейнджер Жестянщика"
 		"fr"	"Tireur Forgeron"
 		"chi"	"匠工射手"
+		"ko"	"땜장이의 구조대원"
 	}
 	"The Merchant"
 	{
@@ -2768,6 +3078,7 @@
 		"ru"	"Торговец"
 		"fr"	"Le Marchand"
 		"chi"	"商人"
+		"ko"	"상인"
 	}
 	"Merchant's Wrench"
 	{
@@ -2775,6 +3086,7 @@
 		"ru"	"Гаечынй ключ Торговца"
 		"fr"	"Clé du Marchand"
 		"chi"	"商人扳手"
+		"ko"	"상인의 렌치"
 	}
 	"Merchant Emergency Button"
 	{
@@ -2782,6 +3094,7 @@
 		"ru"	"Аварийная кнопка торговца"
 		"fr"	"Bouton de Secours du Marchand"
 		"chi"	"商人紧急按钮"
+		"ko"	"상인의 비상 버튼"
 	}
 	"The Merchant Skilled"
 	{
@@ -2789,6 +3102,7 @@
 		"ru"	"Торговец:Умелый"
 		"fr"	"Le Marchand: Qualifié"
 		"chi"	"进阶商人"
+		"ko"	"숙련된 상인"
 	}
 	"The Merchant Elite"
 	{
@@ -2796,6 +3110,7 @@
 		"ru"	"Торговец:Элитный"
 		"fr"	"Le Marchand: Élite"
 		"chi"	"精英商人"
+		"ko"	"엘리트 상인"
 	}
 	"The Merchant Mastery 1"
 	{
@@ -2803,6 +3118,7 @@
 		"ru"	"Торговец:Мастерство 1"
 		"fr"	"Le Marchand: Maître 1"
 		"chi"	"商人精通： 1"
+		"ko"	"전문가 상인 1"
 	}
 	"The Merchant Mastery 2"
 	{
@@ -2810,6 +3126,7 @@
 		"ru"	"Торговец:Мастретсво 2"
 		"fr"	"Le Marchand: Maître 2"
 		"chi"	"商人精通： 3"
+		"ko"	"전문가 상인 2"
 	}
 	"The Merchant Mastery 3"
 	{
@@ -2817,6 +3134,7 @@
 		"ru"	"Торговец: Мастерство 3"
 		"fr"	"Le Marchand: Maître 3"
 		"chi"	"商人精通： 3"
+		"ko"	"전문가 상인 3"
 	}
 	//"Pinus Knight"
 	//{
@@ -2828,6 +3146,7 @@
 		"en"	"Flaming Tail Knight"
 		"ru"	"Рыцарь горящего хвоста"
 		"fr"	"Chevalier à Queue Enflamée"
+		"ko"	"불타는 꼬리의 기사"
 	}
 	"Song Of The Ocean"
 	{
@@ -2835,12 +3154,14 @@
 		"ru"	"Песян Океана"
 		"fr"	"Chant de l'Océan"
 		"chi"	"海洋之歌"
+		"ko"	"바다의 노래"
 	}
 	"Taurus Judge"
 	{
 		"en"	"Taurus Judge"
 		"fr"	"Juge Taurus"
 		"chi"	"金牛座法官"
+		"ko"	"토러스 저지"
 	}
 	"Vows of the Sea"
 	{
@@ -2848,41 +3169,48 @@
 		"ru"	"Клятвы моря"
 		"fr"	"Voeu Océanique"
 		"chi"	"海之宣言"
+		"ko"	"Vows of the Sea"
 	}
 	"Ludomania"
 	{
 		"en"	"Ludomania"
 		"ru"	"Людомания"
 		"chi"	"卢多狂热"
+		"ko"	"루도마니아"
 	}
 	"Ludomancy"
 	{
 		"en"	"Ludomancy"
 		"ru"	"Людомантия"
 		"chi"	"「圣」卢多"
+		"ko"	"루도맨시"
 	}
 	"The Dragon of Dojima"
 	{
 		"en"	"The Dragon of Dojima"
 		"ru"	"Дракон Доджимы"
+		"ko"	"도지마의 용"
 	}
 	"Normal Fists"
 	{
 		"en"	"''Normal Fists''"
 		"ru"	"''Нормальные кулаки''"
+		"ko"	"'평범한 주먹''"
 	}
 	"Whistle Stop"
 	{
 		"en"	"Whistle Stop"
+		"ko"	"Whistle Stop"
 	}
 	"Ancestor Launcher"
 	{
 		"en"	"Ancestor Launcher"
+		"ko"	"선조들의 발사대"
 	}
 	"Victorian Launcher"
 	{
 		"en"	"Victorian Launcher"
-		"ko"	"빅토리안 런쳐"
+		"ko"	"빅토리안 런처"
 	}
 	"Castle Breaker"
 	{
@@ -2902,122 +3230,152 @@
 	"Taurus Revolver"
 	{
 		"en"	"Taurus Revolver"
+		"ko"	"토러스 리볼버"
 	}
 	"Hand"
 	{
 		"en"	"Hand"
+		"ko"	"손"
 	}
 	"Ketamine"
 	{
 		"en" "Ketamine"
+		"ko" "케타민"
 	}
 	"Cannabis"
 	{
 		"en" "Cannabis"
+		"ko" "마리화나"
 	}
 	"Fentanyl"
 	{
 		"en" "Fentanyl"
+		"ko" "펜타닐"
 	}
 	"Building Dummies"
 	{
 		"en" "Building for Dummies 101"
+		"ko" "초짜들도 할 수 있다! 구조물 건설법 101가지"
 	}
 	"Dubious Cheesy Ideas"
 	{
 		"en" "Dubious Cheesy Ideas"
+		"ko" "의심스러운 치즈 아이디어"
 	}
 	"Messed Up Cheesy Brain"
 	{
 		"en" "Messed Up Cheesy Brain"
+		"ko" "난잡해진 치즈 뇌"
 	}
 	"Birdeye Ammo"
 	{
 		"en" "Birdeye's Ammo"
+		"ko" "버드아이의 탄약"
 	}
 	"Waldch's Railgun Rounds"
 	{
 		"en" "Waldch's Railgun Rounds"
+		"ko" "월드치의 레일건 탄약"
 	}
 	"Cheesy Doomsday Pack"
 	{
 		"en" "Cheesy Doomsday Pack"
+		"ko" "파멸적인 치즈의 날 상자"
 	}
 	"Twirl Magic"
 	{
 		"en" "A Fraction of Twirl's Magic"
+		"ko" "트월의 마법 일부"
 	}
 	"Magical Fontina Aura"
 	{
 		"en" "Magical Fontina Aura"
+		"ko" "매지컬 폰티나 오라"
 	}
 	"Domain Expansion: Cheese"
 	{
 		"en" "Domain Expansion: Cheese"
+		"ko" "도메인 확장 : 치즈"
 	}
 	"Bob's Willpower"
 	{
 		"en" "Bob's Willpower"
+		"ko" "밥의 의지력"
 	}
 	"A Wheel of Gouda"
 	{
 		"en" "A Wheel of Gouda"
+		"ko" "고우다의 돌림판"
 	}
 	"THE BIG CHEESE!"
 	{
 		"en" "THE BIG CHEESE!"
+		"ko" "특 대 치 즈"
 	}
 	"Nanomachines"
 	{
 		"en" "Nanohealing Technology"
+		"ko" "나노힐링 기술력"
 	}
 	"Voided Rejuvenator Pack"
 	{
 		"en" "Voided Rejuvenator Pack"
+		"ko" "침식된 원기 회복사 상자"
 	}
 	"Cheesy Slimy Aid Kit"
 	{
 		"en" "Cheesy Slimy Aid Kit"
+		"ko" "치즈로 덮인 끈적한 의료 상자"
 	}
 	"Kit Modernizer I"
 	{
 		"en" "Kit Modernizer I"
+		"ko" "키트 현대화 I"
 	}
 	"Kit Modernizer II"
 	{
 		"en" "Kit Modernizer II"
+		"ko" "키트 현대화 II"
 	}
 	"Kit Modernizer III"
 	{
 		"en" "Kit Modernizer III"
+		"ko" "키트 현대화 III"
 	}
 	"Kit Modernizer IV"
 	{
 		"en" "Kit Modernizer IV"
+		"ko" "키트 현대화 IV"
 	}
 	"Kit Modernizer V"
 	{
 		"en" "Kit Modernizer V"
+		"ko" "키트 현대화 V"
 	}
 	"Unit Reformator I"
 	{
 		"en" "Unit Reformator I"
+		"ko" "유닛 개혁가 I"
 	}
 	"Unit Reformator II"
 	{
 		"en" "Unit Reformator II"
+		"ko" "유닛 개혁가 II"
 	}
 	"Unit Reformator III"
 	{
 		"en" "Unit Reformator III"
+		"ko" "유닛 개혁가 III"
 	}
 	"Unit Reformator IV"
 	{
 		"en" "Unit Reformator IV"
+		"ko" "유닛 개혁가 IV"
 	}
 	"Unit Reformator V"
 	{
 		"en" "Unit Reformator V"
+		"ko" "유닛 개혁가 V"
 	}
 	"Adaptive Medigun"
 	{
@@ -3047,21 +3405,26 @@
 	"Koshi's Goods"
 	{
 		"en" "Koshi's Goods"
+		"ko" "코쉬의 좋은 물건"
 	}
 	"Bubble Wand"
 	{
 		"en" "Bubble Wand"
+		"ko" "방울 완드"
 	}
 	"Plasmic Surprise"
 	{
 		"en" "Plasmic Surprise"
+		"ko" "플라즈마 서프라이즈"
 	}
 	"Plasmic Dosage"
 	{
 		"en" "Plasmic Dosage"
+		"ko" "투약용 플라즈마"
 	}
 	"Koshi's Plasm-inator"
 	{
 		"en" "Koshi's Plasm-inator"
+		"ko" "코쉬의 플라즈마 활성화장치"
 	}
 }

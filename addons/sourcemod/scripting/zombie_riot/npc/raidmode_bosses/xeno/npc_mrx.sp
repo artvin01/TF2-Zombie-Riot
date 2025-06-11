@@ -1008,7 +1008,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(XenoExtraLogic())
 				{
-					CPrintToChat(client_repat, "{green}Mr.X: I have to activate Project Nemesis...");
+					CPrintToChat(client_repat, "{green}Mr.X: 네메시스 프로젝트를 가동시킬 때가 왔다...");
 				}
 			}
 		}
@@ -1021,7 +1021,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(XenoExtraLogic())
 				{
-					CPrintToChat(client_repat, "{green}Mr.X Escapes... but heavily wounded...");
+					CPrintToChat(client_repat, "{green}Mr.X 가 도주했습니다... 중상을 입은 채로 말이죠.");
 				}
 			}
 		}
