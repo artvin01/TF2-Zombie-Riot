@@ -2341,7 +2341,7 @@
 		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 		"nl"		"Goed! Navigeer nu naar wapens en koop een wapen naar keuze.\nOpen het scorebord (TAB) om de winkel nogmaals te open als het wordt gesloten."
 		"chi"       "好!现在导航到武器并购买任何你想要的武器。\n如果商店被关闭，你可以再次按下TAB键来打开它!"
-		"ko"		"좋습니다! 이제 ''무기'' 항목을 따라가서 원하는 무기를 구매하세요.\n상점이 닫혔다면, 점수판 호출 (탭, Tab) 키를 다시 눌러 상점을 여세요.\n<--------------- 상점! 
+		"ko"		"좋습니다! 이제 ''무기'' 항목을 따라가서 원하는 무기를 구매하세요.\n상점이 닫혔다면, 점수판 호출 (탭, Tab) 키를 다시 눌러 상점을 여세요.\n<--------------- 상점!" 
 	}
 	"tutorial_3"
 	{
@@ -4386,7 +4386,7 @@
 		"chi"	"打开兵种切换菜单"
 		"ko"	"병과 변경 화면으로 들어가기"
 	}
-	"Display top 5"Add commentMore actions
+	"Display top 5"
 	{
 		"en"	"Display Top 5 Damage and Support"
 		"ko"	"피해량 또는 지원량 순위표 표시"
