@@ -399,13 +399,13 @@ methodmap ToddHoward < CClotBody
 		npc.g_TimesSummoned = 0;
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();

@@ -308,13 +308,13 @@ methodmap TrueFusionWarrior < CClotBody
 			92800 wave 60, 1.546 times.
 			//it is roughly always double.
 		*/
-		if(RaidModeScaling < 55.0)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		RemoveAllDamageAddition();
 		

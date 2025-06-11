@@ -786,7 +786,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 
 static char g_Agent_Summons[][] =
 {
-	//wave 1-29 | 0-6
+	//wave 1-19 | 0-6
 	"npc_agent_john",
 	"npc_agent_james",
 	"npc_agent_chase",
@@ -803,7 +803,7 @@ static char g_Agent_Summons[][] =
 	"npc_agent_tyler",
 	"npc_agent_wayne",
 
-	//wave 30-59 | 7-11
+	//wave 20-39 | 7-11
 	"npc_agent_alan",
 	"npc_agent_eric",
 	"npc_agent_jack",
@@ -821,7 +821,7 @@ static char g_Agent_Summons[][] =
 	"npc_agent_mike",
 	"npc_agent_sam",
 
-	//wave 60 | 12-16
+	//wave 40 | 12-16
 	"npc_agent_connor",
 	"npc_agent_henry",
 	"npc_agent_jeremy",
@@ -836,11 +836,11 @@ static void Matrix_Spawning(int entity, int count)
 {
 	int summon = GetRandomInt(0, 6);
 	int wave = (ZR_Waves_GetRound() + 1);
-	if(wave >= 30)
+	if(wave >= 20)
 	{
 		summon = GetRandomInt(7, 11);
 	}
-	if(wave >= 45)
+	if(wave >= 30)
 	{
 		summon = GetRandomInt(12, 16);
 	}

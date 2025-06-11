@@ -1203,8 +1203,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	int waves = Rounds.Length;
 	if(waves > 1)	//incase some wavetype has only 1 waves 
 		waves-=1;	//this makes it scale cleanly on fastmode. since Rounds.Length gets the wave amount PLUS 1. so 40 waves is 41, 60 is 61, etc.
-	//if we are above 60 waves, we dont change it from 1.0, i.e. it cant go lower!
-	MinibossScalingHandle = (60.0 / float(waves));
+	//if we are above 40 waves, we dont change it from 1.0, i.e. it cant go lower!
+	MinibossScalingHandle = (40.0 / float(waves));
 	if(MinibossScalingHandle <= 1.0)
 		MinibossScalingHandle = 1.0;
 
@@ -2792,9 +2792,9 @@ int ZR_Waves_GetRound()
 	if(Waves_InFreeplay())
 	{
 		int RoundGive = CurrentRound;
-		if(RoundGive < 60)
+		if(RoundGive < 40)
 		{
-			RoundGive = 60; //should atleast always be treated as round 60.
+			RoundGive = 40; //should atleast always be treated as round 40.
 		}
 		return RoundGive;
 	}

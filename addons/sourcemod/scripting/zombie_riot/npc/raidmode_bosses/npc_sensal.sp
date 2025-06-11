@@ -366,13 +366,13 @@ methodmap Sensal < CClotBody
 			float value = StringToFloat(buffers[0]);
 			RaidModeScaling = value;
 
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 
 			if(value > 40.0 && value < 55.0)
@@ -388,20 +388,20 @@ methodmap Sensal < CClotBody
 		else
 		{	
 			RaidModeScaling = float(ZR_Waves_GetRound()+1);
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 				
-			if(ZR_Waves_GetRound()+1 > 40 && ZR_Waves_GetRound()+1 < 55)
+			if(ZR_Waves_GetRound()+1 > 25 && ZR_Waves_GetRound()+1 < 35)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(ZR_Waves_GetRound()+1 > 55)
+			else if(ZR_Waves_GetRound()+1 > 35)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.65;

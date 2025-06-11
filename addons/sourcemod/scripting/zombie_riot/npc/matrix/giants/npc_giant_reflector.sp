@@ -353,7 +353,7 @@ public Action GiantReflector_OnTakeDamage(int victim, int &attacker, int &inflic
 static void GiantReflector_Reflect_Enable(GiantReflector npc)
 {
 	float wave = float(ZR_Waves_GetRound()+1);
-	wave *= 0.05;
+	wave *= 0.06667;
 	npc.m_flWaveScale = wave;
 
 	npc.m_flDead_Ringer_Invis = GetGameTime(npc.index) + 3.0 * npc.m_flWaveScale;

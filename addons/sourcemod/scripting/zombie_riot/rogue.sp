@@ -2621,7 +2621,7 @@ bool Rogue_Started()	// Waves_Started()
 
 int Rogue_GetRound()	// ZR_Waves_GetRound()
 {
-	return (CurrentFloor * 15) + (CurrentCount * 2);
+	return (CurrentFloor * 10) + CurrentCount;
 }
 
 int Rogue_GetFloor()

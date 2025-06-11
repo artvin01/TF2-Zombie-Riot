@@ -90,7 +90,7 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
 		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 		
@@ -598,7 +598,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
-	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !Construction_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && ZR_Waves_GetRound() < 59)
+	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !Construction_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && ZR_Waves_GetRound() < 39)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
@@ -765,7 +765,7 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 				if(Construction_Mode())
 				{
 					float wave = float(ZR_Waves_GetRound()+1);
-					wave *= 0.1;
+					wave *= 0.133333;
 					npc.m_flWaveScale = wave;
 					npc.m_flWaveScale *= MinibossScalingReturn();
 				}

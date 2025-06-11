@@ -5056,7 +5056,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("8", 1.5);	//give 50% more healing at the start.
 
 	float KnockbackResistance;
-	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 60, this will equal to 60* dmg
+	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 40, this will equal to 60* dmg
 
 	if(KnockbackResistance > 1.0)
 	{

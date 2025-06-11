@@ -454,15 +454,15 @@ methodmap Twirl < CClotBody
 
 		if(this.m_fbGunout)	//ranged
 		{
-			if(wave<=15)	
+			if(wave<=10)	
 			{
 				return RUINA_TWIRL_CREST_1;
 			}
-			else if(wave <=30)	
+			else if(wave <=20)	
 			{
 				return RUINA_TWIRL_CREST_2;
 			}
-			else if(wave <= 45)	
+			else if(wave <= 30)	
 			{
 				return RUINA_TWIRL_CREST_3;
 			}
@@ -473,15 +473,15 @@ methodmap Twirl < CClotBody
 		}
 		else				//melee
 		{
-			if(wave<=15)	
+			if(wave<=10)	
 			{
 				return RUINA_TWIRL_MELEE_1;
 			}
-			else if(wave <=30)	
+			else if(wave <=20)	
 			{
 				return RUINA_TWIRL_MELEE_2;
 			}
-			else if(wave <= 45)	
+			else if(wave <= 30)	
 			{
 				return RUINA_TWIRL_MELEE_3;
 			}
@@ -642,14 +642,14 @@ methodmap Twirl < CClotBody
 
 		int wave = ZR_Waves_GetRound()+1;
 
-		if(StrContains(data, "force15") != -1)
-			wave = 15;
+		if(StrContains(data, "force10") != -1)
+			wave = 10;
+		if(StrContains(data, "force20") != -1)
+			wave = 20;
 		if(StrContains(data, "force30") != -1)
 			wave = 30;
-		if(StrContains(data, "force45") != -1)
-			wave = 45;
-		if(StrContains(data, "force60") != -1)
-			wave = 60;
+		if(StrContains(data, "force40") != -1)
+			wave = 40;
 
 		npc.m_bDissapearOnDeath = true;
 		npc.m_fbGunout = true;
@@ -746,13 +746,13 @@ methodmap Twirl < CClotBody
 			RaidModeScaling = float(ZR_Waves_GetRound()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -816,7 +816,7 @@ methodmap Twirl < CClotBody
 
 			i_ranged_ammo[npc.index] = 18;
 		}
-		else if(wave <=15)
+		else if(wave <=10)
 		{
 			i_ranged_ammo[npc.index] = 5;
 			switch(GetRandomInt(0, 5))
@@ -829,7 +829,7 @@ methodmap Twirl < CClotBody
 				case 5: Twirl_Lines(npc, "Its time to \"Twirl\" like a beyblade");
 			}
 		}
-		else if(wave <=30)
+		else if(wave <=20)
 		{
 			i_ranged_ammo[npc.index] = 7;
 			switch(GetRandomInt(0, 4))
@@ -841,7 +841,7 @@ methodmap Twirl < CClotBody
 				case 4: Twirl_Lines(npc, "You spin me right round..");
 			}
 		}
-		else if(wave <=45)
+		else if(wave <=30)
 		{
 			i_ranged_ammo[npc.index] = 9;
 			switch(GetRandomInt(0, 4))
@@ -853,7 +853,7 @@ methodmap Twirl < CClotBody
 				case 4: Twirl_Lines(npc, "Time to \"Twirl\", heh");
 			}
 		}
-		else if(wave <=60)
+		else if(wave <=40)
 		{	
 			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 4))
@@ -1068,7 +1068,7 @@ static void ClotThink(int iNPC)
 		{
 			Twirl_Lines(npc, "Begone. Times Up.");
 		}
-		else if(wave <=60)
+		else if(wave <=40)
 		{
 			switch(GetRandomInt(0, 9))
 			{
@@ -1507,7 +1507,7 @@ static int i_lunar_entities[MAXENTITIES][3];
 static float fl_lunar_loop[MAXENTITIES];
 static void lunar_Radiance(Twirl npc)
 {
-	if(i_current_wave[npc.index] <=45)
+	if(i_current_wave[npc.index] <=30)
 		return;
 	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
@@ -2052,7 +2052,7 @@ static float fl_cosmic_gaze_range = 1500.0;
 static float fl_cosmic_gaze_radius = 750.0;
 static void Cosmic_Gaze(Twirl npc, int Target)
 {
-	if(i_current_wave[npc.index]<=30)
+	if(i_current_wave[npc.index]<=20)
 		return;
 
 	float GameTime = GetGameTime(npc.index);
@@ -2459,7 +2459,7 @@ static float fl_Fractal_Gram_SpamTimer(Twirl npc)
 }
 static void Fractal_Gram(Twirl npc, int Target)
 {
-	if(i_current_wave[npc.index]<=15)
+	if(i_current_wave[npc.index]<=10)
 		return;
 
 	float GameTime = GetGameTime(npc.index);
@@ -2576,7 +2576,7 @@ static void Func_On_Proj_Touch(int entity, int other)
 		SDKHooks_TakeDamage(other, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
 	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	if(i_current_wave[owner] >= 45)
+	if(i_current_wave[owner] >= 30)
 	{
 		Twirl npc = view_as<Twirl>(owner);
 		float radius = (npc.Anger ? 300.0 : 250.0);
@@ -2769,7 +2769,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 
 	fl_force_ranged[npc.index] = GameTime + 5.0;	//now force ranged mode for a bit, wouldn't make sense to just rush straight into the same situation you just escaped from
 
-	if(wave<=15)	//stage 1: a simple ion where she was.
+	if(wave<=10)	//stage 1: a simple ion where she was.
 	{
 		float radius = (npc.Anger ? 325.0 : 250.0);
 		float dmg = 50.0;
@@ -2778,7 +2778,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 		float Time = (npc.Anger ? 1.25 : 1.5);
 		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 	}
-	else if(wave <=45)	//stage 2, 3: an ion cast on anyone near her previous location when she teleports
+	else if(wave <=30)	//stage 2, 3: an ion cast on anyone near her previous location when she teleports
 	{
 		float aoe_check = (npc.Anger ? 250.0 : 175.0);
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
@@ -3213,7 +3213,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 	float EndLoc[3]; EndLoc = Laser.End_Point;
 
 	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
-	if(i_current_wave[npc.index] >=60)
+	if(i_current_wave[npc.index] >=40)
 	{
 		color[0] = 0;
 		color[1] = 250;
@@ -3384,11 +3384,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		//CPrintToChatAll("Damage nulified");
 		return Plugin_Changed;
 	}
-	if(!b_allow_final_invocation[npc.index] && (MaxHealth/4) >= Health && i_current_wave[npc.index] >=60 && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if(!b_allow_final_invocation[npc.index] && (MaxHealth/4) >= Health && i_current_wave[npc.index] >=40 && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		b_allow_final_invocation[npc.index] = true;
 	}
-	if(!npc.Anger && (((MaxHealth/2) >= Health) || b_force_transformation ) && i_current_wave[npc.index] >=30) //Anger after half hp
+	if(!npc.Anger && (((MaxHealth/2) >= Health) || b_force_transformation ) && i_current_wave[npc.index] >=20) //Anger after half hp
 	{
 		Kill_Abilities(npc);	//force kill abilities when entering a transformation.
 		npc.Anger = true; //	>:(
@@ -3596,7 +3596,7 @@ static void NPC_Death(int entity)
 				case 1: Twirl_Lines(npc, "{crimson}I'm Leaving.");
 			}
 		}
-		else if(wave <=15)
+		else if(wave <=10)
 		{
 			switch(GetRandomInt(0, 4))
 			{
@@ -3607,7 +3607,7 @@ static void NPC_Death(int entity)
 				case 4: Twirl_Lines(npc, "How interesting..");
 			}
 		}
-		else if(wave <=30)
+		else if(wave <=20)
 		{
 			switch(GetRandomInt(0, 4))
 			{
@@ -3618,7 +3618,7 @@ static void NPC_Death(int entity)
 				case 4: Twirl_Lines(npc, "The simulations seem to be off..");
 			}
 		}
-		else if(wave <=45)
+		else if(wave <=30)
 		{
 			switch(GetRandomInt(0, 4))
 			{
