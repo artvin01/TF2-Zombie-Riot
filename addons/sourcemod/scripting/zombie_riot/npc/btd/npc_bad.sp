@@ -46,7 +46,7 @@ static int MoabHealth(bool fortified)
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
-	return RoundFloat(value * BLOON_HP_RGB);
+	return RoundFloat(value * Bloon_BaseHealth());
 }
 
 void Bad_MapStart()

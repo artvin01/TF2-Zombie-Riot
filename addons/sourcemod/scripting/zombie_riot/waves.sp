@@ -144,6 +144,9 @@ static float Freeplay_CashTimeLeft;
 static float Freeplay_TimeExp;
 static float Freeplay_ExpTimeLeft;
 
+static int RelayCurrentRound = -1;
+static float OverrideScalingManually;
+
 public Action Waves_ProgressTimer(Handle timer)
 {
 	if(Classic_Mode() && ProgressTimerType)
@@ -1007,7 +1010,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 	Barracks_InstaResearchEverything = view_as<bool>(kv.GetNum("full_research"));
 	StartCash = kv.GetNum("cash", StartCash);
-	float OverrideScalingManually = kv.GetFloat("miniboss_scaling", 0.0);
+	OverrideScalingManually = kv.GetFloat("miniboss_scaling", 0.0);
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -1201,12 +1204,15 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	} while(kv.GotoNextKey());
 
 	int waves = Rounds.Length;
-	if(waves > 1)	//incase some wavetype has only 1 waves 
-		waves-=1;	//this makes it scale cleanly on fastmode. since Rounds.Length gets the wave amount PLUS 1. so 40 waves is 41, 60 is 61, etc.
-	//if we are above 40 waves, we dont change it from 1.0, i.e. it cant go lower!
-	MinibossScalingHandle = (40.0 / float(waves));
-	if(MinibossScalingHandle <= 1.0)
-		MinibossScalingHandle = 1.0;
+	if(waves > 58)
+	{
+		if(waves > 1)	//incase some wavetype has only 1 waves 
+			waves--;	//this makes it scale cleanly on fastmode. since Rounds.Length gets the wave amount PLUS 1. so 40 waves is 41, 60 is 61, etc.
+		//if we are above 40 waves, we dont change it from 1.0, i.e. it cant go lower!
+		MinibossScalingHandle = (40.0 / float(waves));
+		if(MinibossScalingHandle <= 1.0)
+			MinibossScalingHandle = 1.0;
+	}
 
 	if(OverrideScalingManually != 0.0)
 		MinibossScalingHandle = OverrideScalingManually;
@@ -1885,26 +1891,28 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Spawners_Timer();
 			if(CurrentRound != length)
 			{
-				int ScalingDoWavesDone = RoundToNearest((float(CurrentRound) * (MinibossScalingReturn())));
-				char ExecuteRelayThings[255];
-				for(; RelayCurrentRound <= ScalingDoWavesDone ; RelayCurrentRound++)
+				char ExecuteRelayThings[64];
+
+				// 60 Wave Scaling
+				int ScalingDoWavesDone = CurrentRound;
+				if(OverrideScalingManually != 0.0)
 				{
-					//do not during freeplay.
-					FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",ScalingDoWavesDone);
-					ExcuteRelay(ExecuteRelayThings);
-					if(MinibossScalingReturn() != 1.0) //only do this if were doing special logic
-					{
-						switch(RelayCurrentRound)
-						{
-							case 58:
-							{
-								ExcuteRelay("zr_wavefinish_wave_59");
-								RelayCurrentRound++;
-								//some maps need this called!
-							}
-						}
-					}
+					ScalingDoWavesDone = RoundToNearest(float(CurrentRound) * OverrideScalingManually);
 				}
+				else if(length < 59)
+				{
+					ScalingDoWavesDone = RoundToNearest(float(CurrentRound) * (60.0 / float(length - 1)));
+				}
+				
+				for(; RelayCurrentRound < ScalingDoWavesDone ; RelayCurrentRound++)
+				{
+					FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%d", RelayCurrentRound + 1);
+					ExcuteRelay(ExecuteRelayThings);
+				}
+
+				// No Scaling
+				FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_waveend_%d", CurrentRound);
+				ExcuteRelay(ExecuteRelayThings);
 			}
 
 			bool wasEmptyWave = !round.Waves.Length;

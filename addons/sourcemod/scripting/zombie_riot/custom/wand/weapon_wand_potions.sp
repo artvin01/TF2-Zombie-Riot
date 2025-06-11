@@ -572,8 +572,8 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 
 			int health = GetEntProp(enemy, Prop_Data, "m_iHealth");
 			
-			int damage = health - RoundFloat(health * ratio);
-			SDKHooks_TakeDamage(enemy, owner, entity, damage, DMG_TRUEDAMAGE, weapon);
+			int bonus = health - RoundFloat(health * ratio);
+			SDKHooks_TakeDamage(enemy, owner, entity, float(bonus), DMG_TRUEDAMAGE, weapon);
 		}
 	}
 	else

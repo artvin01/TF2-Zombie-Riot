@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define BLOON_HP_RGB	150.0
-
 enum
 {
 	Bloon_Red = 0,
@@ -109,20 +107,24 @@ static const char BloonSprites[][] =
 	"ceramic"
 };
 
-static const int BloonRegrowRate[] =
+// Max HP % every 3 second
+static const float BloonRegrowRate[] =
 {
-	10,
-	10,
-	10,
-	10,
-	10,
-	20,
-	20,
-	20,
-	40,
-	40,
-	80,
-	160
+	1.0,		// 1 / 1
+	0.5,		// 1 / 2
+	0.333333,	// 1 / 3
+	0.25,		// 1 / 4
+	0.2,		// 1 / 5
+
+	0.333333,	// 2 / 6
+	0.333333,	// 2 / 6
+	0.333333,	// 2 / 6
+
+	0.571429,	// 4 / 7
+	0.571429,	// 4 / 7
+
+	1.0,		// 8 / 8
+	1.777777	// 16 / 9
 };
 
 static int GetBloonTypeOfData(const char[] data, bool &camo, bool &fortified, bool &regrow)
@@ -154,18 +156,35 @@ static float BloonSpeedMulti()
 	return 1.0 + (CurrentRound - 70) * 0.02;
 }
 
+float Bloon_BaseHealth()
+{
+	float health = 152.0;
+
+	// Nerf late-game health
+	if(CurrentCash > 50000)
+	{
+		health = 75.0;
+	}
+	else if(CurrentCash > 0)
+	{
+		health *= 1.0 - (float(CurrentCash) / 100000.0);
+	}
+
+	return health;
+}
+
 float Bloon_HPRatio(bool fortified, int type)
 {
 	if(!fortified)
-		return BloonHealth[type];
+		return BloonRatio[type];
 	
 	if(type == Bloon_Lead)
-		return (BloonHealth[type] * 4.0) - BloonHealth[Bloon_Black];
+		return (BloonRatio[type] * 4.0) - (BloonRatio[Bloon_Black] * 3.0);
 	
 	if(type == Bloon_Ceramic)
-		return (BloonHealth[type] * 2.0) - BloonHealth[Bloon_Rainbow];
+		return (BloonRatio[type] * 2.0) - BloonRatio[Bloon_Rainbow];
 	
-	return BloonHealth[type];
+	return BloonRatio[type];
 }
 
 void Bloon_MapStart()
@@ -366,7 +385,7 @@ methodmap Bloon < CClotBody
 				health -= maxhealth * (rainbow / total);
 				maxhealth -= maxhealth * (rainbow / total);
 
-				int type = RoundToFloor(float(health) * 5.0 / float(maxhealth));
+				int type = RoundToFloor(health * 5.0 / maxhealth);
 				if(type > 4)
 					type = 4;
 				
@@ -481,7 +500,7 @@ methodmap Bloon < CClotBody
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
 		
 		char buffer[12];
-		IntToString(RoundFloat(Bloon_HPRatio(fortified, type) * BLOON_HP_RGB), buffer, sizeof(buffer));
+		IntToString(RoundFloat(Bloon_HPRatio(fortified, type) * Bloon_BaseHealth()), buffer, sizeof(buffer));
 		
 		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally));
 		
@@ -555,16 +574,17 @@ public void Bloon_ClotThink(int iNPC)
 	
 	bool silenced = NpcStats_IsEnemySilenced(npc.index);
 	bool camo = npc.m_bOriginalCamo && !silenced;
-	bool regrow = npc.m_bRegrow && !silenced;
-	Building_CamoOrRegrowBlocker(npc.index, camo, regrow);
 
-	if(regrow)
+	if(camo && HasSpecificBuff(npc.index, "Revealed"))
+		camo = false;
+
+	if(!silenced && !HasSpecificBuff(npc.index, "Growth Blocker"))
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		if(health < maxhealth)
 		{
-			health += BloonRegrowRate[npc.m_iOriginalType];
+			health += RoundFloat(maxhealth * BloonRegrowRate[npc.m_iOriginalType] / 30.0);
 			if(health > maxhealth)
 				health = maxhealth;
 			

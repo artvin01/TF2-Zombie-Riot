@@ -317,7 +317,6 @@ MusicEnum BGMusicSpecial1;
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
 int CurrentWave = -1;
-int RelayCurrentRound = -1;
 int StartCash;
 float RoundStartTime;
 char WhatDifficultySetting_Internal[32];

@@ -57,7 +57,7 @@ static int MoabHealth(bool fortified)
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
-	return RoundFloat((value + (Bloon_HPRatio(fortified, Bloon_Ceramic) * 3.0) * BLOON_HP_RGB));	// 104x3 RGB
+	return RoundFloat((value + (Bloon_HPRatio(fortified, Bloon_Ceramic) * 3.0) * Bloon_BaseHealth()));	// 104x3 RGB
 }
 
 void DDT_MapStart()
@@ -213,7 +213,7 @@ public void DDT_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	bool camo = !NpcStats_IsEnemySilenced(npc.index);
-	if(HasSpecificBuff(npc.index, "Revealed"))
+	if(camo && HasSpecificBuff(npc.index, "Revealed"))
 		camo = false;
 
 	if(npc.m_bCamo)
